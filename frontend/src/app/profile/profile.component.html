@@ -1,0 +1,33 @@
+<div class="fluid-container">
+  <aside class="col-sm-12 col-md-2 inpage-nav-container oasis-aside">
+    <div *ngIf="authenticationService.currentUserHasRole(authenticationService.roles.student)"  id="nav-anchor"></div>
+    <nav *ngIf="authenticationService.currentUserHasRole(authenticationService.roles.student)"  role="navigation" data-lockfixed="true" class="padding-default bg-tertiary"><h2 translate>menu.profile</h2>
+      <ul class="linklist linklist-dark">
+        <li>
+          <a aria-current="page" routerLinkActive="nav-active" [routerLink]="[{ outlets: { sub: ['edit'] } }]" translate>menu.profile</a>
+        </li>
+        <li>
+          <a aria-current="page" routerLinkActive="nav-active" [routerLink]="[{ outlets: { sub: ['location'] } }]" translate>overview.locationRes</a>
+        </li>
+        <li>
+          <a aria-current="page" routerLinkActive="nav-active" [routerLink]="[{ outlets: { sub: ['locker'] } }]" translate>overview.lockerRes</a>
+        </li>
+        <li>
+          <a aria-current="page" routerLinkActive="nav-active" [routerLink]="[{ outlets: { sub: ['calendar'] } }]" translate>overview.calendar</a>
+        </li>
+        <li>
+          <a aria-current="page" routerLinkActive="nav-active" [routerLink]="[{ outlets: { sub: ['penalties'] } }]" translate>overview.penalties</a>
+        </li>
+        <li>
+          <a aria-current="page" routerLinkActive="nav-active" [routerLink]="[{ outlets: { sub: ['help'] } }]" translate>Help</a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+</div>
+
+
+<article class="col-sm-12 col-md-10 ">
+  <router-outlet name="sub"></router-outlet>
+</article>
+

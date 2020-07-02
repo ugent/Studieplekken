@@ -1,0 +1,33 @@
+#number{
+  margin: 3px;
+}
+
+.modal {
+  position: absolute;
+  float: left;
+  background: transparent;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
+.modal-body {
+  overflow-y: auto;
+}
+
+
+.table td tr {
+  text-align: center;
+}
+
+.helpLink, .helpLink#visited, .helpLink#hover {
+  display: inline-block;
+  background: url(src/assets/images/help.png) no-repeat center;
+  line-height: 49px;
+  height: 16px;
+  width: 16px;
+  text-decoration: none !important;
+  color: white;
+}
+

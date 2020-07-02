@@ -1,0 +1,31 @@
+.row{
+  margin-bottom: 50px;
+}
+
+iframe{
+  border:0;
+  height: 400px;
+  width: 100%;
+}
+
+.reserve{
+  text-align: center;
+  margin-top: 20px;
+}
+
+::ng-deep .closed {
+  background-color: #ededed;
+}
+
+.wrapper {
+  display: inline-block;
+}
+
+.parent {
+  display: flex;
+  flex-direction: column;
+}
+
+::ng-deep .other-month {
+  background-color: #f5f5f5;
+}

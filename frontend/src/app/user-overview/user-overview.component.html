@@ -1,0 +1,359 @@
+<h2 translate>management.users</h2>
+<hr>
+<div *ngIf="authenticationService.currentUserHasRole(authenticationService.roles.admin)">
+  <div class="panel-group content-text mbottom-default">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a data-toggle="collapse" data-parent="#accordion" href="#collapse_styleguide_1" aria-expanded="false"
+             class="collapsed" translate>
+            <i class="glyphicon glyphicon-plus"></i>
+            <i class="glyphicon glyphicon-minus"></i>
+            management.addUser</a>
+        </h4>
+      </div>
+      <div id="collapse_styleguide_1" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+        <div class="panel-body" style="padding: 20px">
+          <div class="col-md-12 personal-info">
+            <form class="form-horizontal" role="form" [formGroup]="userForm" (ngSubmit)="addUser(userForm.value)">
+
+              <div class="form-group">
+                <label class="col-lg-3 control-label" for="mail" translate>management.email</label>
+                <div class="col-lg-8">
+                  <input class="form-control" type="email" id="mail" formControlName="mail">
+                  <div *ngIf="userForm.controls.mail.touched && !userForm.controls.mail.valid "
+                       class="alert alert-danger" translate> from.required
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-lg-3 control-label" for="pwd" translate>management.password</label>
+                <div class="col-lg-8">
+                  <input class="form-control" type="password" id="pwd" formControlName="pwd">
+                  <div *ngIf="userForm.controls.pwd.touched && !userForm.controls.pwd.valid ">
+                    <div *ngIf="userForm.controls.pwd.errors.required" class="alert alert-danger" translate>
+                      from.required
+                    </div>
+                    <div *ngIf="userForm.controls.pwd.errors.minlength" class="alert alert-danger"
+                         [translateParams]="{num: this.minLengthPwd}" translate>
+                      from.minLength
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-lg-3 control-label" for="confPwd" translate>management.confirmPassword</label>
+                <div class="col-lg-8">
+                  <input class="form-control" type="password" id="confPwd" formControlName="confPwd">
+                  <div *ngIf="userForm.errors?.passwordsDifferent && userForm.controls.confPwd.touched"
+                       class="alert alert-danger" translate>
+                    loginAndRegister.pwdMatch
+                  </div>
+                  <div *ngIf="userForm.controls.confPwd.touched && !userForm.controls.confPwd.valid"
+                       class="alert alert-danger" translate> from.required
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-lg-3 control-label" for="role1" translate>management.role</label>
+                <div class="col-lg-8">
+                  <select class="form-control" id="role1" formControlName="role">
+                    <option *ngFor="let rol of roles" [value]="rol" translate> roles.{{rol}}</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-lg-3 control-label" for="role2" translate>management.role</label>
+                <div class="col-lg-8">
+                  <select class="form-control" id="role2" formControlName="role2">
+                    <option *ngFor="let rol of roles" [value]="rol" translate> roles.{{rol}}</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-md-3 control-label"></label>
+                <div class="col-md-8">
+                  <button type="submit" class="btn btn-primary btn-space" [disabled]="disableAddUser"
+                          style="margin-right: 10px" translate>management.add
+                  </button>
+                  <button class="btn btn-default btn-space" (click)="cancel($event)" translate>management.cancel
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr>
+</div>
+
+<app-searchbar [service]="userService" [searchPossibilities]="searchPossibilities"
+               (resultsChanged)="resultsChanged($event)"></app-searchbar>
+
+<div class="panel-group content-text mbottom-default">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion2" href="#collapse_styleguide_2" aria-expanded="false"
+           class="collapsed" translate="">
+          <i class="glyphicon glyphicon-plus"></i>
+          <i class="glyphicon glyphicon-minus"></i>
+          management.filter</a>
+      </h4>
+    </div>
+    <div id="collapse_styleguide_2" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+      <div class="panel-body col-md-12" style="padding: 20px;">
+        <div class="col-xs-12 row">
+          <h3 translate>management.institution</h3>
+          <div class="checkbox checkbox-primary form-group" style="overflow-y: scroll; height: 100px">
+            <ul class="list-unstyled checkboxes">
+              <li class="col-md-12">
+              </li>
+              <li *ngFor="let n of institutions; let i= index" class="col-md-4" style="padding-left: 10px">
+                <input type="checkbox" id="checkbox{{i}}" name="checkboxes" (change)="applyInstitutionFilter()"
+                       value="{{n}}" checked>
+                <label for="checkbox{{i}}">{{n}}</label>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="padding-top: 2vh" class="table-responsive col-md-12">
+  <table *ngIf="results.length > 0" class="table-striped" style="width: 100%" id="resultsTable">
+    <thead class="bg-info">
+    <tr class="firstrow lastrow even">
+      <th scope="col" translate>management.studentid</th>
+      <th scope="col" translate>management.lastName</th>
+      <th scope="col" translate>management.firstName</th>
+      <th scope="col" translate>management.email</th>
+      <th scope="col" translate>management.institution</th>
+      <th scope="col" translate>management.penaltypoints</th>
+      <th scope="col" translate>management.role</th>
+      <th scope="col"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr [@rowsAnimation]="" *ngFor="let user of results.slice(lower,upper)" class="row_odd firstrow odd">
+      <td>{{user.augentID}}</td>
+      <td>{{user.lastName}}</td>
+      <td>{{user.firstName}}</td>
+      <td>{{user.mail}}</td>
+      <td>{{user.institution}}</td>
+      <td>{{user.penaltyPoints}}</td>
+      <td><span *ngFor="let role of user.roles" translate>roles.{{role}} </span></td>
+      <td style="padding-top: 10px">
+        <button (click)="setSelectedUser(user)" class="btn btn-default lastcolumn" data-toggle="modal"
+                data-target="#profiel" translate>management.edit
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<div *ngIf="results.length >= linesOnPage" style="position: center">
+  <div class="col-xs-12" style="position: center">
+    <nav>
+      <ul class="pagination">
+        <li class="disabled">
+          <a href="#" aria-label="Previous">
+            <span aria-hidden="true">«</span>
+          </a>
+        </li>
+        <li [ngClass]="{'active selected': i === floor(lower/20)+1}" style="cursor: pointer"
+            *ngFor="let i of numbers" (click)="newPage(i)"><a>{{i}}</a></li>
+        <!-- next knop <li>
+          <a href="#" aria-label="Next">
+            <span aria-hidden="true">»</span>
+          </a>
+        </li> -->
+      </ul>
+    </nav>
+  </div>
+</div>
+
+<div class="modal fade" id="profiel" tabindex="-1" role="dialog" aria-labelledby="profielLabel"
+     aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="profielLabel" translate>admin.changeProfile</h5>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <form class="form-horizontal" role="form">
+
+            <div class="form-group">
+              <label class="col-lg-3 control-label" for="changefName" translate>management.firstName</label>
+              <div class="col-lg-8">
+                <input [value]="copy.firstName" class="form-control" type="text" id="changefName" disabled>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-lg-3 control-label" for="changelName" translate>management.lastName</label>
+              <div class="col-lg-8">
+                <input [value]="copy.lastName" class="form-control" type="text" id="changelName" disabled>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-lg-3 control-label" for="changeEmail" translate>management.email</label>
+              <div class="col-lg-8">
+                <input class="form-control" type="email" id="changeEmail" [value]="copy.mail" disabled>
+              </div>
+            </div>
+
+
+            <div class="form-group">
+              <div class="row">
+                <label class="col-lg-3 control-label" for="changeRole" translate>management.role</label>
+                <div class="col-lg-8">
+
+                  <div class="col-lg-11" style="padding-left: 5px">
+                    <select class="form-control" id="changeRole" [(ngModel)]="this.copy.roles[0]" name="role"
+                            [disabled]="!authenticationService.currentUserHasRole(authenticationService.roles.admin)">
+                      <option *ngFor="let rol of roles" [value]="rol" translate> roles.{{rol}}</option>
+                    </select>
+                  </div>
+
+                  <!-- only an admin can add a new role to a user -->
+                  <div *ngIf="authenticationService.currentUserHasRole(authenticationService.roles.admin)"
+                       class="col-lg-1">
+                    <span title="Add extra role" class="glyphicon glyphicon-plus" (click)="extraRole = true;"></span>
+                  </div>
+
+                </div>
+              </div>
+
+              <div
+                   class="row">
+                <label *ngIf="(extraRole == true) " class="col-lg-3 control-label" for="changeRole" translate>management.role</label>
+                <div class="col-lg-8">
+                  <div class="col-lg-11" style="padding-left: 5px">
+                    <select *ngIf="(extraRole == true)  " class="form-control" [(ngModel)]="this.copy.roles[1]"
+                            name="role2"
+                    [disabled]="!authenticationService.currentUserHasRole(authenticationService.roles.admin)" >
+                      <option *ngFor="let rol of roles" [value]="rol" translate> roles.{{rol}}</option>
+                    </select>
+                  </div>
+                  <div  *ngIf="authenticationService.currentUserHasRole(authenticationService.roles.admin)" class="col-lg-1">
+                    <span title="Remove extra role" *ngIf="(extraRole == true)" class="glyphicon glyphicon-minus"
+                          (click)="extraRole = false;"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-lg-3 control-label" for="changeInstitution" translate>management.institution</label>
+              <div class="col-lg-8">
+                <input class="form-control" id="changeInstitution" [value]="copy.institution" disabled>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-lg-3 control-label" for="changeStudentNumber"
+                     translate>loginAndRegister.studentNumber</label>
+              <div class="col-lg-8">
+                <input type="text" class="form-control" id="changeStudentNumber" [(ngModel)]="this.copy.augentID"
+                       name="augent">
+                <div id="noIdAlert" [hidden]="this.copy.augentID.trim().length > 0"
+                     class="alert alert-danger" translate> from.required
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-lg-3 control-label" for="changePenaltypoints"
+                     translate>management.penaltypoints</label>
+              <div class="col-lg-8">
+                <input type="text" class="form-control" id="changePenaltypoints" [(ngModel)]="copy.penaltyPoints"
+                       [ngModelOptions]="{standalone: true}" disabled>
+              </div>
+            </div>
+
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn align-left" data-dismiss="modal"
+                (click)="displayPenalties.next('block')" translate>
+          management.managePenalties
+        </button>
+
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="extraRole = false;" translate>
+          location.cancel
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="submit()" translate>
+          general.save
+        </button>
+        <button [hidden]="true" id="closeEditUserModal" data-dismiss="modal" ></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--
+  pop-up when the button management.managePenalties is clicked upon: the variable displayPenalties (an instance of
+  BehaviourBehaviour) will be given the value 'block' and the UserOverviewPenalty will respond to this change of value
+  by querying the penalties and showing them for the user with id copy.augentID (copy was set when clicking on the
+  edit-button in the overview and holds a copy of the selected user)
+-->
+<app-user-overview-penalty [display]="displayPenalties" [augentID]="copy.augentID"
+                           (pointsToBeCalculatedEvent)="handleReturnFromPenaltiesOverview($event)"></app-user-overview-penalty>
+
+<!-- pop-up which is shown when a manager successfully added a user -->
+<div class="modal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false"
+     [ngStyle]="{'display':displaySucces}">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header" style="background-color: green">
+        <button type="button" class="close" aria-label="Close"
+                (click)="this.userForm.reset(); displaySucces='none'; disableAddUser= false;"><span aria-hidden="true">&times;</span>
+        </button>
+        <h2 class="modal-title">Geslaagd!</h2>
+      </div>
+
+      <div class="modal-body" *ngIf="httpCode === 409">
+        <div [translateParams]="{email: this.userForm.controls.mail.value}" translate>
+          management.succeededToAddUser
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- pop-up which is shown when a manager tried to add a user but an error occured -->
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':displayFail}">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header" style="background-color: rgb(200, 0, 0)">
+        <button type="button" class="close" aria-label="Close" (click)="displayFail='none'; disableAddUser= false;">
+          <span aria-hidden="true">&times;</span></button>
+        <h2 class="modal-title" translate>management.fail</h2>
+      </div>
+
+      <div class="modal-body" *ngIf="httpCode === 409">
+        <div [translateParams]="{email: this.userForm.controls.mail.value}" translate>
+          management.failedToAddUser
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

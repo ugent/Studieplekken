@@ -1,0 +1,27 @@
+<div class="container-fluid">
+
+  <div class="row">
+    <div class="col-sm-2 col-md-2 col-lg-3"></div>
+
+    <div class="card col-sm-8 col-md-8 col-lg-6">
+      <div *ngIf="(succeeded | async); else elseBlock">
+        <div>
+          <h1 translate>verify.verified</h1>
+        </div>
+        <div class="_block">
+          <span translate>verify.verifiedMessage</span><a routerLink="/login" translate>verify.click</a>
+        </div>
+      </div>
+      <ng-template #elseBlock>
+        <div>
+          <h1 translate>verify.failed</h1>
+        </div>
+        <div class="_block" translate>
+          verify.problemMessage
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="col-sm-2 col-md-2	col-lg-3"></div>
+  </div>
+</div>

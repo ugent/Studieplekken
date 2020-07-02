@@ -1,0 +1,16 @@
+#registration{
+  max-width: 45em;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 0px;
+}
+.alert{
+  background-color: #e9f0fa;
+  color: #1E64C8;
+  margin-top: 18px;
+  margin-left: 10px;
+  margin-right: 10px;
+  font-size: 17px;
+  line-height: 15px;
+  font-family: "PannoTextMedium",Arial,sans-serif;
+}

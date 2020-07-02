@@ -1,0 +1,31 @@
+<div class="fluid-container"
+     *ngIf="this.authenticationService.currentUserHasRole(authenticationService.roles.admin, authenticationService.roles.employee)">
+  <aside class="col-sm-12 col-md-2 inpage-nav-container oasis-aside">
+    <div id="nav-anchor"></div>
+    <nav role="navigation" data-lockfixed="true" class="bg-tertiary padding-default"><h2 translate>menu.management</h2>
+      <ul class="linklist linklist-dark">
+        <li><a aria-current="page" routerLinkActive="nav-active" style="cursor: pointer"
+               [routerLink]="[{ outlets: { sub: ['users'] } }]" translate>management.users</a></li>
+        <li><a aria-current="page" routerLinkActive="nav-active" style="cursor: pointer"
+               [routerLink]="[{ outlets: { sub: ['locations'] } }]" translate>management.locations</a></li>
+        <li><a aria-current="page" routerLinkActive="nav-active" style="cursor: pointer"
+               [routerLink]="[{ outlets: { sub: ['lockers'] } }]" translate>management.lockers</a></li>
+        <li><a aria-current="page" routerLinkActive="nav-active" style="cursor: pointer"
+               [routerLink]="[{ outlets: { sub: ['locationreservations'] } }]" translate>management.locationreservations</a></li>
+        <li><a aria-current="page" routerLinkActive="nav-active" style="cursor: pointer"
+               [routerLink]="[{ outlets: { sub: ['lockerreservations'] } }]" translate>management.lockerreservations</a></li>
+        <li><a aria-current="page" routerLinkActive="nav-active" style="cursor: pointer"
+             [routerLink]="[{ outlets: { sub: ['locationcalendar'] } }]" translate>management.locationCalendar</a></li>
+        <li><a aria-current="page" routerLinkActive="nav-active" style="cursor: pointer"
+               [routerLink]="[{ outlets: { sub: ['penalties'] } }]" translate>management.penalties</a></li>
+        <li><a aria-current="page" routerLinkActive="nav-active" style="cursor: pointer"
+               [routerLink]="[{ outlets: { sub: ['help'] } }]" translate>Help</a></li>
+      </ul>
+    </nav>
+  </aside>
+</div>
+
+<article class="col-sm-12 col-md-10 "
+         *ngIf="this.authenticationService.currentUserHasRole(authenticationService.roles.admin, authenticationService.roles.employee)">
+  <router-outlet name="sub"></router-outlet>
+</article>

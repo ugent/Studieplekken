@@ -1,0 +1,134 @@
+<h2 translate>management.lockers</h2>
+<hr>
+
+<h3 translate>management.selectLocation</h3>
+
+<form>
+  <div class="form-group">
+    <label class="col-lg-3 control-label" for="location" translate>location.location</label>
+    <div class="col-lg-9 bootstrap-select">
+      <select class="form-control selectpicker" id="location" data-live-search="true" [(ngModel)]="location"
+              (change)="changeLocation()" name="location">
+        <option *ngFor="let loc of locations" [ngValue]="loc">{{loc.name}}</option>
+      </select>
+    </div>
+  </div>
+</form>
+
+<h3 *ngIf="location !== undefined && location.numberOfLockers === 0" translate>location.noLockers</h3>
+
+<div *ngIf="location !== undefined && location.numberOfLockers > 0">
+
+  <h3 translate>management.currentPeriod</h3>
+
+  <form class="form-horizontal" [formGroup]="lockersForm" (ngSubmit)="submit()" id="lockersForm">
+
+    <div class="form-group">
+      <label class="col-lg-3 control-label" for="currentStart" translate>calendar.startDate</label>
+      <div class="col-lg-9">
+        <input class="form-control" id="currentStart" type="date" formControlName="currentStartDate" disabled="true">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-lg-3 control-label" for="currentEnd" translate>calendar.endDate</label>
+      <div class="col-lg-9">
+        <input class="form-control" id="currentEnd" type="date" formControlName="currentEndDate" disabled="true">
+      </div>
+    </div>
+
+    <div class="alert alert-warning">
+      <h3 translate>management.warning</h3>
+      <p translate>management.lockerReservationPeriodWarning</p>
+    </div>
+
+    <h3 translate>management.nextPeriod</h3>
+
+
+    <div class="form-group">
+      <label class="col-lg-3 control-label" for="nextStart" translate>calendar.startDate</label>
+      <div class="col-lg-9">
+        <input class="form-control" id="nextStart" formControlName="nextStartDate" type="date">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-lg-3 control-label" for="nextEnd" translate>calendar.endDate</label>
+      <div class="col-lg-9">
+        <input class="form-control" id="nextEnd" formControlName="nextEndDate" type="date">
+      </div>
+    </div>
+
+    <div class="col-md-offset-8 col-md-2 text-center">
+      <button class="btn btn-primary" type="submit" translate>Ok</button>
+    </div>
+    <div class="col-md-2 text-center">
+      <button class="btn btn-default " (click)="cancel($event)" translate>location.cancel</button>
+    </div>
+
+  </form>
+
+  <div style="padding-top: 2vh; padding-bottom: 20px">
+    <table class="table-striped" style="width: 100%" id="resultsTable">
+      <thead class="bg-info">
+      <tr class="firstrow lastrow even">
+        <th scope="col" translate>management.number</th>
+        <th scope="col" translate>locationOverview.status</th>
+        <th scope="col" translate>location.name</th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr [@rowsAnimation]="" *ngFor="let locker of results.slice(lower, upper)" class="row_odd firstrow odd">
+        <td>{{locker.number}}</td>
+        <td><h3 [translate]="('management.'+getStatus(locker))"></h3></td>
+        <td>{{getOwner(locker)}}</td>
+        <td *ngIf="isOccupied(locker) && !isKeyPickedUp(locker)" style="padding-top: 10px">
+          <button class="btn btn-default lastcolumn" (click)="keyPickedUp(locker)" translate>management.keyPickedUp
+          </button>
+        </td>
+        <td *ngIf="isOccupied(locker) && isKeyPickedUp(locker)" style="padding-top: 10px">
+          <button class="btn btn-default lastcolumn" style="visibility: hidden" translate>management.keyPickedUp
+          </button>
+        </td>
+        <td *ngIf="isOccupied(locker) && isKeyPickedUp(locker)" style="padding-top: 10px">
+          <button class="btn btn-default lastcolumn" (click)="keyBroughtBack(locker)" translate>
+            management.keyBroughtBack
+          </button>
+        </td>
+        <td *ngIf="isOccupied(locker) && !isKeyPickedUp(locker)" style="padding-top: 10px">
+          <button class="btn btn-default lastcolumn" style="visibility: hidden" translate>management.keyBroughtBack
+          </button>
+        </td>
+        <td *ngIf="!isOccupied(locker)" style="padding-top: 10px">
+          <button class="btn btn-default lastcolumn" style="visibility: hidden" translate>management.keyPickedUp
+          </button>
+        </td>
+        <td *ngIf="!isOccupied(locker)" style="padding-top: 10px">
+          <button class="btn btn-default lastcolumn" style="visibility: hidden" translate>management.keyBroughtBack
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<div *ngIf="results.length >= linesOnPage" style="position: center">
+  <div class="col-md-4"></div>
+  <div class="col-xs-12 col-md-4" style="position: center">
+    <nav>
+      <ul class="pagination">
+        <li class="disabled">
+          <a href="#" aria-label="Previous">
+            <span aria-hidden="true">«</span>
+          </a>
+        </li>
+        <li [ngClass]="{'active selected': i === floor(lower/this.linesOnPage)+1}" style="cursor: pointer"
+            *ngFor="let i of numbers" (click)="newPage(i)"><a>{{i}}</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="col-md-4"></div>
+</div>

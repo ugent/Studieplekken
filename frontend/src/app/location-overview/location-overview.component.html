@@ -1,0 +1,70 @@
+<div>
+  <h3 translate>locationOverview.title</h3>
+  <hr>
+</div>
+
+<div class="table-responsive col-md-12">
+  <table *ngIf="results !== undefined && results.length > 0" class="table-striped" style="width: 100%" id="resultsTable">
+    <thead class="bg-info">
+    <tr class="firstrow lastrow even">
+      <th translate>location.location</th>
+      <th translate>locationOverview.date</th>
+      <th translate>location.openingHours</th>
+      <th ></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let res of results.slice(lower, upper)" class="row_odd firstrow odd">
+      <td>{{res.location.name}}</td>
+      <td [translateParams]="{day:res.date.day, year:res.date.year}" [translate]="('locationOverview.'+res.date.month)"></td>
+      <td >
+        <span *ngIf="isFutureDate(res.date)">{{getOpeningHoursToString(res)}} </span>
+        <span *ngIf="!isFutureDate(res.date)">-</span>
+      </td>
+      <td style="padding-top: 10px">
+        <button *ngIf="!isPastOpeningHour(res.date)" class="btn btn-default lastcolumn" (click)="getCancelPoints(res.date); selectedDay = res.date" translate>location.cancel</button>
+        <button *ngIf="isPastOpeningHour(res.date)" class="btn btn-default lastcolumn " style="visibility: hidden"></button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="results === undefined || results.length === 0" translate>
+    locationOverview.noLocationReservations
+  </div>
+</div>
+
+<div *ngIf="results.length >= linesOnPage" style="position: center">
+  <div class="col-xs-12" style="position: center">
+    <nav>
+      <ul class="pagination">
+        <li class="disabled">
+          <a href="#" aria-label="Previous">
+            <span aria-hidden="true">«</span>
+          </a>
+        </li>
+        <li [ngClass]="{'active selected': i === floor(lower/20)+1}" style="cursor: pointer"
+            *ngFor="let i of numbers" (click)="newPage(i)"><a>{{i}}</a></li>
+      </ul>
+    </nav>
+  </div>
+</div>
+
+<!-- pop-up which asks for confirmation when a user wants to delete his reservation-->
+<div class="modal" tabindex="-1" role="dialog" aria-hidden="true" [ngStyle]="{'display':displayCancel}">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" translate>location.cancel</h2>
+      </div>
+      <div class="modal-body">
+        <p translate>location.verifyCancel</p>
+        <p *ngIf="cancelPoints !== 0" [translateParams]="{points:cancelPoints}" translate>location.verifyCancelPoints</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="displayCancel='none'" translate>location.no</button>
+        <button class="btn btn-secondary" (click)="displayCancel='none'; cancelLocationReservation()" translate>location.yes</button>
+      </div>
+    </div>
+  </div>
+</div>

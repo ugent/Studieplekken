@@ -1,0 +1,31 @@
+<div>
+  <h3 [translateParams]="{points: me.penaltyPoints}" translate>profile.penalties</h3>
+  <hr>
+</div>
+
+<div class="table-responsive col-md-12">
+  <table class="table-striped" style="width: 100%" id="penaltiesTable" *ngIf="penalties !== undefined && penalties.length > 0">
+    <thead class="bg-info">
+      <tr class="firstrow lastrow even">
+        <th scope="col" translate>management.eventCode</th>
+        <th scope="col" translate>management.timestamp</th>
+        <th scope="col" translate>management.forDate</th>
+        <th scope="col" translate>management.at</th>
+        <th scope="col" translate>management.receivedPoints</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr [@rowsAnimation]="" *ngFor="let penalty of penalties" class="row_odd firstrow odd">
+        <td>{{penalty.eventCode}}</td>
+        <td>{{penalty.timestamp.day | number: '2.0-0'}}-{{penalty.timestamp.month | number: '2.0-0'}}-{{penalty.timestamp.year}} {{penalty.timestamp.hrs | number: '2.0-0'}}:{{penalty.timestamp.min | number: '2.0-0'}}:{{penalty.timestamp.sec | number: '2.0-0'}}</td>
+        <td>{{penalty.reservationDate.day | number: '2.0-0'}}-{{penalty.reservationDate.month | number: '2.0-0'}}-{{penalty.reservationDate.year}} {{penalty.reservationDate.hrs | number: '2.0-0'}}:{{penalty.reservationDate.min | number: '2.0-0'}}:{{penalty.reservationDate.sec | number: '2.0-0'}}</td>
+        <td>{{penalty.reservationLocation}}</td>
+        <td>{{penalty.receivedPoints}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <div *ngIf="penalties === undefined || penalties.length === 0" translate>
+    profile.noPenalties
+  </div>
+</div>
+

@@ -1,0 +1,84 @@
+<div id="registration">
+  <div class="alert alert-warning" style="margin-top: 0px;">
+    <p translate>loginAndRegister.casWarning</p>
+  </div>
+
+  <div style="margin-top: 5vh">
+    <h2 translate>loginAndRegister.instructionsTitle</h2>
+    <p translate>loginAndRegister.instructions</p>
+  </div>
+
+
+  <h2 style="margin-top: 5vh;" translate>loginAndRegister.registrationTitle</h2>
+  <form class="container-fluid" [formGroup]="r" (ngSubmit)="onSubmit(r.value)" id="registrationForm">
+
+    <div class="form-group">
+      <label for="mail" translate >loginAndRegister.email</label>
+      <input type="email" class="form-control" id="mail" placeholder="name@example.com" formControlName="email" required>
+      <span class="help-block" translate>loginAndRegister.emailInstruction</span>
+      <div *ngIf="r.controls.email.touched && !r.controls.email.valid "
+           class="alert alert-danger" translate> from.required </div>
+    </div>
+
+    <div class="form-group">
+      <label for="password" translate>loginAndRegister.password</label>
+      <input type="password" class="form-control" id="password" formControlName="pwd">
+      <div *ngIf="r.controls.pwd.touched && !r.controls.pwd.valid ">
+        <div *ngIf="r.controls.pwd.errors.required" class="alert alert-danger" translate>
+          from.required
+        </div>
+        <div *ngIf="r.controls.pwd.errors.minlength" class="alert alert-danger"  [translateParams]="{num: this.minLengthPwd}" translate>
+          from.minLength
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="confirmPassword" translate>loginAndRegister.confirmPassword</label>
+      <input type="password" class="form-control" id="confirmPassword" formControlName="confPwd">
+      <div *ngIf="r.errors?.passwordsDifferent && r.controls.confPwd.touched"  class="alert alert-danger" translate>
+        loginAndRegister.pwdMatch
+      </div>
+      <div *ngIf="r.controls.confPwd.touched && !r.controls.confPwd.valid"
+           class="alert alert-danger" translate> from.required </div>
+    </div>
+
+    <hr class="separator">
+
+    <!--<button class="btn btn-primary" routerLink="/verification" translate>loginAndRegister.register</button>-->
+    <button class="btn btn-primary" [disabled]="disabled" type="submit" style="margin-right: 10px;" translate>loginAndRegister.register</button>
+    <button class="btn btn-default " (click)="cancel($event)" translate>management.cancel</button>
+
+  </form>
+</div>
+
+<!-- pop-up which is shown when a student tried to create an account but an error occured -->
+<div class="modal" tabindex="-1" role="dialog"  [ngStyle]="{'display':displayFail}">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" aria-label="Close" (click)="displayFail='none'; disabled= false;"><span aria-hidden="true">&times;</span></button>
+        <h2 class="modal-title" translate >management.fail</h2>
+      </div>
+
+      <div class="modal-body" *ngIf="httpStatus === 403">
+        <div class="alert alert-primary" role="alert" [translateParams]="{email: this.r.controls.email.value}"  translate>
+          loginAndRegister.emailNotRecognizedByLdap
+        </div>
+      </div>
+
+      <div class="modal-body" *ngIf="httpStatus === 409">
+        <div class="alert alert-primary" role="alert" [translateParams]="{email: this.r.controls.email.value}"  translate>
+          loginAndRegister.emailAlreadyLinkedToAccount
+        </div>
+      </div>
+
+      <div class="modal-body" *ngIf="httpStatus === 406">
+        <div class="alert alert-primary" role="alert" [translateParams]="{email: this.r.controls.email.value}"  translate>
+          loginAndRegister.ugentUserMustUseCAS
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

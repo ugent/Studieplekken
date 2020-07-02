@@ -1,0 +1,271 @@
+<div class="container-fluid" *ngIf="location.getValue()!=null" xmlns="http://www.w3.org/1999/html">
+  <h1 class="my-4">{{location.getValue().name}}</h1>
+  <app-countdown [day]="nearestDay.getValue()"></app-countdown>
+  <div class="row">
+    <div class="col-md-7 col-sm-7">
+      <img class="img-responsive" src="{{location.getValue().imageUrl}}" alt="">
+    </div>
+    <div class="row col-md-5 col-sm-5">
+      <div class="row">
+        <p class="text-justify col-md-12 col-sm-12">
+          {{location.getValue().descriptions[appLanguages[this.translate.currentLang]]}}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <h2 translate>management.lockers</h2>
+    <div *ngIf="location.getValue().numberOfLockers !== 0">
+
+      <!-- shows locker reservation period, if there is one assigned to the location -->
+      <h3 *ngIf="this.location.getValue().startPeriodLockers !== undefined && this.location.getValue().endPeriodLockers !== undefined &&
+          this.location.getValue().startPeriodLockers !== null && this.location.getValue().endPeriodLockers !== null"
+          [translateParams]="{startDate:this.location.getValue().startPeriodLockers.day + '/' + this.location.getValue().startPeriodLockers.month + '/' + this.location.getValue().startPeriodLockers.year,
+                endDate:this.location.getValue().endPeriodLockers.day + '/' + this.location.getValue().endPeriodLockers.month + '/' + this.location.getValue().endPeriodLockers.year}" translate>
+      location.lockersAvailable</h3>
+
+      <!-- No locker reservation period is assigned for this location yet -->
+      <h3 *ngIf="this.location.getValue().startPeriodLockers === undefined || this.location.getValue().endPeriodLockers === undefined ||
+          this.location.getValue().startPeriodLockers === null || this.location.getValue().endPeriodLockers === null" translate>
+        location.noPeriodAssigned</h3>
+
+      <!-- locker reservations are open & there are lockers available & the user is allowed to reserve a locker -->
+      <div *ngIf="lockerReservationsAreOpen() && numberOfLockersInUse !== location.getValue().numberOfLockers && allowedToReserveLocker">
+        <button class="btn btn-default" (click)="displayLockerConfirmation = 'block'" translate>location.reserve</button>
+      </div>
+
+      <!-- locker reservations are open but the user is not allowed to reserve a locker -->
+      <div *ngIf="lockerReservationsAreOpen() && numberOfLockersInUse !== location.getValue().numberOfLockers && !allowedToReserveLocker">
+        <h3 translate>location.notAllowedToReserveLocker</h3>
+        <button class="btn btn-default" disabled="true" translate>location.reserve</button>
+      </div>
+
+      <!-- locker reservations are open but there are no lockers available -->
+      <div *ngIf="lockerReservationsAreOpen() && numberOfLockersInUse >= location.getValue().numberOfLockers">
+        <h3 translate>location.noAvailableLockers</h3>
+      </div>
+
+    </div>
+    <h3 *ngIf="location.getValue().numberOfLockers === 0" translate>
+      location.noLockers
+    </h3>
+  </div>
+
+  <div class="alert alert-warning" *ngIf="penaltyPoints >= MAX_PENALTY_POINTS">
+    <h3 translate>location.toManyPointsTitle</h3>
+    <p translate>location.toManyPointsContent</p>
+  </div>
+
+  <div class="row" *ngIf="penaltyPoints < MAX_PENALTY_POINTS">
+
+    <!-- Row above calendar: month + buttons to switch months -->
+
+    <div class="col-md-8">
+      <div class="container-fluid">
+        <h2 style="float: left">
+          {{ viewDate | calendarDate:(view + 'ViewTitle'):this.locale }}
+        </h2>
+        <div class="btn btn-primary" style="float: right; margin: 5px" mwlCalendarNextView
+             [view]="view"
+             [(viewDate)]="viewDate" translate>
+          <span class="glyphicon glyphicon-chevron-right"></span>
+        </div>
+        <div class="btn btn-primary" style="float: right; margin: 5px" mwlCalendarPreviousView
+             [view]="view"
+             [(viewDate)]="viewDate" translate>
+          <span class="glyphicon glyphicon-chevron-left"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="penaltyPoints < MAX_PENALTY_POINTS">
+
+    <div class="col-md-8 col-xs-12 col-sm-12">
+
+      <!-- this is a custom cell template for the calendar, it represents the html for 1 day -->
+
+      <ng-template #customCellTemplate let-day="day" let-locale="locale">
+        <div class="cal-cell-top">
+          <span class="cal-day-badge" *ngIf="day.badgeTotal > 0">{{ day.badgeTotal }}</span>
+          <span class="cal-day-number">{{ day.date | calendarDate:'monthViewDayNumber':locale }}</span>
+        </div>
+
+        <!-- if location is open on this day -->
+        <div *ngIf="isOpen(this.location.getValue().calendar, dateToIDate(day.date))" class="cal-cell-top text-center">
+          <h2 translate>location.openingHours</h2>
+          <h3>{{getOpeningHoursToString(dateToIDate(day.date))}}</h3>
+
+          <!-- checks if the location is already full on this day and shows 'VOLZET' on the day if so -->
+          <h3 *ngIf="!isPastOpeningHour(dateToIDate(day.date)) && !alreadyReservedOnThisLocation(day.date) && isFull(dateToIDate(day.date))" translate>location.full</h3>
+        </div>
+
+        <!-- location is not open on this day -->
+        <h3 *ngIf="!isOpen(this.location.getValue().calendar, dateToIDate(day.date))" class="cal-cell-top text-center"
+            translate>location.closed</h3>
+
+        <!-- location is open on this day but you have already reserved on another location for this day
+              shows text-->
+        <h3 *ngIf="isOpen(this.location.getValue().calendar, dateToIDate(day.date)) && alreadyReservedOnOtherLocation(day.date)"
+            class="text-center" translate>location.alreadyReserved</h3>
+
+        <!-- shows button to reserve if the location is open for this day
+            AND the location is not full for this day AND you have not reserved on another location for this day
+            AND this day is not selected yet
+
+            pushing the button will add this day to a list of days for which the user wants to reserve -->
+        <button *ngIf="!isPastOpeningHour(dateToIDate(day.date)) && isOpen(this.location.getValue().calendar, dateToIDate(day.date)) &&
+              openForReservation(this.location.getValue().calendar, dateToIDate(day.date)) && !isFull(dateToIDate(day.date)) && !alreadyReservedOnThisLocation(day.date) &&
+              !alreadyReservedOnOtherLocation(day.date) && !isSelected(dateToIDate(day.date))"
+            class="btn btn-default " (click)="addDate(dateToIDate(day.date))" translate>location.reserve</button>
+
+        <!-- shows button to unselect a day if the location is open for this day
+             AND the location is not full for this day AND you have not reserved on another location for this day
+             AND this day is in the list of selected days
+
+             pushing the button will remove this day from the list for which the user wants to reserve -->
+        <button *ngIf="!isPastOpeningHour(dateToIDate(day.date)) && isOpen(this.location.getValue().calendar, dateToIDate(day.date)) &&
+              openForReservation(this.location.getValue().calendar, dateToIDate(day.date)) && !isFull(dateToIDate(day.date)) && !alreadyReservedOnThisLocation(day.date) &&
+              !alreadyReservedOnOtherLocation(day.date) && isSelected(dateToIDate(day.date))"
+                class="btn btn-primary" (click)="unselect(dateToIDate(day.date))"><span class="glyphicon glyphicon-trash"></span></button>
+
+        <!-- shows button if the user has already reserved for this day on this location and the day is still in the future
+
+          pushing the button will show a popup where the user can cancel the reservation-->
+        <button *ngIf="alreadyReservedOnThisLocation(day.date) && !isPastOpeningHour(dateToIDate(day.date))" class="btn btn-secondary"
+                (click)="getCancelPoints(day.date); selectedDay = dateToIDate(day.date)" translate>location.cancel</button>
+
+        <!-- shows a button if the location is open for this day and the user has already reserved on another location for this day
+
+          pushing the button will redirect the user to the location for which he/she has already reserved for this day -->
+        <a *ngIf="isOpen(this.location.getValue().calendar, dateToIDate(day.date)) && alreadyReservedOnOtherLocation(day.date)"
+           role="button" class="btn btn-primary" href="location/{{getLocationReservationName(day.date)}}" translate>location.goto</a>
+      </ng-template>
+
+      <!-- the calendar -->
+
+      <div [ngSwitch]="view">
+        <mwl-calendar-month-view
+          [viewDate]="viewDate"
+          [events]="events"
+          [refresh]="refresh"
+          [cellTemplate]="customCellTemplate"
+          [(locale)]=this.locale
+          [weekStartsOn]="1"
+          (beforeViewRender)="beforeMonthViewRender($event)">
+        </mwl-calendar-month-view>
+      </div>
+    </div>
+
+
+    <!-- shows a list of selected days to the right of the calendar -->
+    <div class="col-md-4" *ngIf="selectedDays.length !== 0">
+      <b translate>location.selectedDays</b>
+      <div >
+        <table style="width: 100%" id="daysTable" class="table-striped">
+          <thead class="bg-info">
+          <tr class="firstrow lastrow even">
+            <th scope="col" translate>location.date</th>
+            <th scope="col" translate>location.openingHours</th>
+            <th scope="col"></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let date of selectedDays">
+            <td style="padding: 15px">{{date.day}}/{{date.month}}/{{date.year}}</td>
+            <td style="padding: 15px">{{getOpeningHoursToString(date)}}</td>
+            <td><button class="btn btn-primary" style="margin-top: 10px" (click)="unselect(date)"><span class="glyphicon glyphicon-trash"></span></button></td>
+          </tbody>
+        </table>
+      </div>
+
+      <button class="btn btn-default text-center" style="margin-top: 15px" (click)="submitReservations()" translate>location.confirmReservations</button>
+
+    </div>
+
+  </div>
+
+  <div class="row">
+    <h2 translate>location.location</h2>
+    <iframe [src]="maps" class="col-md-12 col-sm-12"
+            allowfullscreen=""></iframe>
+  </div>
+</div>
+
+<!-- Popup to confirm cancelling location reservation -->
+
+<div class="modal" tabindex="-1" role="dialog" aria-hidden="true" [ngStyle]="{'display':displayCancel}">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" translate>location.cancel</h2>
+      </div>
+      <div class="modal-body">
+        <p translate>location.verifyCancel</p>
+        <p *ngIf="cancelPoints !== 0" [translateParams]="{points:cancelPoints}" translate>location.verifyCancelPoints</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="displayCancel='none'" translate>location.no</button>
+        <button class="btn btn-secondary" (click)="displayCancel='none'; cancelLocationReservation()" translate>location.yes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- popup to show the locationReservationResponse -->
+
+<div class="modal" tabindex="-1" role="dialog" aria-hidden="true" [ngStyle]="{'display':displayLocationReservationResponse}">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" translate>location.yourReservations</h2>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="response !== undefined">
+          <h3 *ngIf="response.valid.length > 0" translate>location.successfullyReserved</h3>
+          <p *ngFor="let valid of response.valid">{{valid.day}}/{{valid.month}}/{{valid.year}}</p>
+
+          <h3 *ngIf="response.full.length > 0" translate>location.responseFull</h3>
+          <p *ngFor="let full of response.full">{{full.day}}/{{full.month}}/{{full.year}}</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="displayLocationReservationResponse='none'; response = undefined" translate>location.ok</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- popup to confirm locker reservation -->
+
+<div class="modal" tabindex="-1" role="dialog" aria-hidden="true" [ngStyle]="{'display':displayLockerConfirmation}">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" translate>location.cancel</h2>
+      </div>
+      <div class="modal-body">
+        <p translate>location.lockerConfirmation</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="displayLockerConfirmation='none'" translate>location.no</button>
+        <button class="btn btn-secondary" (click)="displayLockerConfirmation='none'; reserveLocker()" translate>location.yes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" aria-hidden="true" [ngStyle]="{'display':displayError}">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" aria-label="Close" (click)="displayError='none';"><span aria-hidden="true">&times;</span></button>
+        <h2 class="modal-title" translate>general.error</h2>
+      </div>
+      <div class="modal-body">
+        <p translate> reservation.error</p>
+      </div>
+    </div>
+  </div>
+</div>

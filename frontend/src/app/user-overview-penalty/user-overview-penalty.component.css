@@ -1,0 +1,7 @@
+.pointerCursor:hover {
+  cursor: pointer;
+}
+
+.align-left {
+  float: left;
+}

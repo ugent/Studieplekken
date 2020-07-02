@@ -1,0 +1,421 @@
+<h2 translate>management.locations</h2>
+<hr>
+<div *ngIf="authenticationService.currentUserHasRole(authenticationService.roles.admin)">
+  <div class="panel-group content-text mbottom-default">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a data-toggle="collapse" data-parent="#accordion" href="#collapse_styleguide_1" aria-expanded="false"
+             class="collapsed" translate>
+            <i class="glyphicon glyphicon-plus"></i>
+            <i class="glyphicon glyphicon-minus"></i>
+            admin.addLocation</a>
+        </h4>
+      </div>
+      <div id="collapse_styleguide_1" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+        <div class="panel-body" style="padding: 20px">
+          <div class="col-md-12 personal-info">
+            <div class="addError alert-primary" role="alert" [hidden]="errorAddLocationHidden"
+                 [translateParams]="{nameLocation: this.selectedName}" translate>
+              management.addLocationError
+            </div>
+            <form class="form-horizontal" role="form" [formGroup]="locationForm"
+                  (ngSubmit)="addLocation(locationForm.value)">
+
+              <div class="form-group">
+                <label class="col-md-3 control-label" for="name" translate>admin.name</label>
+                <div class="col-md-8">
+                  <input class="form-control" type="text" id="name" formControlName="name">
+                  <div *ngIf="locationForm.controls.name.touched && !locationForm.controls.name.valid "
+                       class="alert alert-danger" translate> from.required
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-md-3 control-label" for="address" translate>admin.address</label>
+                <div class="col-md-8">
+                  <input class="form-control" type="text" id="address" formControlName="address">
+                  <div *ngIf="locationForm.controls.address.touched && !locationForm.controls.address.valid "
+                       class="alert alert-danger" translate> from.required
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group" *ngFor="let lang of Object.keys(appLanguages)">
+                <label class="col-md-3 control-label" for="{{lang}}"> <span translate> admin.description </span>
+                  in {{languageTranslations[appLanguages[lang]][Object.keys(appLanguages).indexOf(translate.currentLang)]}}
+                </label>
+                <div class="col-md-8" formGroupName="descriptions">
+                  <input class="form-control" type="text" id="{{lang}}" formControlName="{{appLanguages[lang]}}" >
+                  <div
+                    *ngIf="locationForm.controls.descriptions['controls'][appLanguages[lang]].touched && !locationForm.controls.descriptions['controls'][appLanguages[lang]].valid "
+                    class="alert alert-danger" translate> from.required
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-md-3 control-label" for="imageUrl" translate>admin.imageUrl</label>
+                <div class="col-md-8">
+                  <input class="form-control" type="url" id="imageUrl" formControlName="imageUrl">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-md-3 control-label" for="mapsFrameUrl" translate>admin.mapsFrameUrl</label>
+                <div class="col-md-8">
+                  <input class="form-control" type="url" id="mapsFrameUrl" formControlName="mapsFrameUrl">
+                  <div *ngIf="locationForm.controls.mapsFrameUrl.touched && !locationForm.controls.mapsFrameUrl.valid "
+                       class="alert alert-danger" translate> from.mapsFrame
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-md-3 control-label" for="numLockers" translate>admin.lockers</label>
+                <div class="col-md-8">
+                  <input class="form-control" type="number" min="0" id="numLockers" formControlName="numberOfLockers">
+                  <div *ngIf="locationForm.controls.numberOfLockers.touched && !locationForm.controls.numberOfLockers.valid "
+                       class="alert alert-danger" translate> from.positive
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-md-3 control-label" for="numSeats" translate>admin.seats</label>
+                <div class="col-md-8">
+                  <input class="form-control" type="number" id="numSeats" min="0" formControlName="numberOfSeats">
+                  <div
+                    *ngIf="locationForm.controls.numberOfSeats.touched && !locationForm.controls.numberOfSeats.valid "
+                    class="alert alert-danger" translate> from.positive
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-md-3 control-label"></label>
+                <div class="col-md-8">
+                  <button type="submit" class="btn btn-primary btn-space" style="margin-right: 10px" translate>
+                    management.add
+                  </button>
+                  <button class="btn btn-default btn-space" (click)="cancel($event)" translate>management.cancel
+                  </button>
+                </div>
+              </div>
+            </form>
+            <div class="addError alert-primary" role="alert" [hidden]="errorAddLocationHidden"
+                 [translateParams]="{nameLocation: this.selectedName}" translate>
+              management.addLocationError
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr>
+</div>
+
+<div style="padding-top: 2vh" class="table-responsive col-md-12">
+  <table *ngIf="results.length > 0" class="table-striped " style="width: 100%" id="resultsTable">
+    <thead class="bg-info">
+    <tr class="firstrow lastrow even">
+      <th scope="col" translate>admin.name</th>
+      <th scope="col" translate>admin.address</th>
+      <th scope="col" translate>admin.seats</th>
+      <th scope="col" translate>admin.lockers</th>
+      <th *ngIf="authenticationService.currentUserHasRole(authenticationService.roles.admin)" scope="col"></th>
+      <th *ngIf="authenticationService.currentUserHasRole(authenticationService.roles.admin)" scope="col"></th>
+      <th *ngIf="authenticationService.currentUserHasRole(authenticationService.roles.admin)" scope="col"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr [@rowsAnimation]="" *ngFor="let location of results.slice(lower,upper)" class="row_odd firstrow odd">
+      <td>{{location.name}}</td>
+      <td>{{location.address}}</td>
+      <td>{{location.numberOfSeats}}</td>
+      <td>{{location.numberOfLockers}}</td>
+      <td *ngIf="authenticationService.currentUserHasRole(authenticationService.roles.admin)"
+          style="padding-top: 10px; padding-right: 10px">
+        <button class="btn btn-default lastcolumn" (click)="setSelectedLocation(location)" data-toggle="modal"
+                data-target="#changeScanners"><span translate>roles.EMPLOYEE</span>s
+        </button>
+      </td>
+      <td *ngIf="authenticationService.currentUserHasRole(authenticationService.roles.admin)" style="padding-top: 10px">
+        <button class="btn btn-default lastcolumn" (click)="setSelectedLocation(location)" data-toggle="modal"
+                data-target="#changeLocation" translate>admin.change
+        </button>
+      </td>
+      <td *ngIf="authenticationService.currentUserHasRole(authenticationService.roles.admin)"
+          title="{{ 'general.delete' | translate }}" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
+        <span (click)=" displayDelete='block'; selectedName = location.name"
+              class="glyphicon glyphicon-trash pointerCursor"></span></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<div *ngIf="results.length >= linesOnPage" style="position: center">
+  <div class="col-md-4"></div>
+  <div class="col-xs-12 col-md-4" style="position: center">
+    <nav>
+      <ul class="pagination">
+        <li class="disabled">
+          <a href="#" aria-label="Previous">
+            <span aria-hidden="true">«</span>
+          </a>
+        </li>
+        <li [ngClass]="{'active selected': i === floor(lower/20)+1}" style="cursor: pointer"
+            *ngFor="let i of numbers" (click)="newPage(i)"><a>{{i}}</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="col-md-4"></div>
+</div>
+
+<ng-container *ngIf="selectedLocation !== undefined">
+  <div class="modal fade" id="changeScanners" tabindex="-1" role="dialog" aria-labelledby="changeScannersLabel"
+       aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="changeScannersLabel" > <span translate>roles.EMPLOYEE</span>s</h2>
+        </div>
+        <div class="modal-body">
+          <div>
+            <h3><span translate>location.scanners</span> {{selectedLocation.name}}</h3>
+            <hr>
+            <table *ngIf="currentScanners != undefined && currentScanners.length > 0" class="display"
+                   style="width: 100%">
+              <tbody>
+              <tr *ngFor="let nameScanner of currentScanners" class="row_odd firstrow odd">
+                <td>{{nameScanner}}</td>
+                <td title="{{ 'location.removeScanner' | translate }}"
+                    style="padding-left: 10px; padding-right: 10px; padding-top: 10px"><span
+                  (click)="removeScanner(nameScanner)" class="glyphicon glyphicon-trash pointerCursor"></span></td>
+              </tr>
+              </tbody>
+            </table>
+            <div style="text-align:right">
+              <button *ngIf="currentScanners !== undefined && currentScanners.length > 0" type="button"
+                      class="btn btn-default" (click)="removeScanners(currentScanners)" translate>
+                general.removeAll
+              </button>
+            </div>
+
+            <br>
+            <h3 translate> management.addScanners</h3>
+            <hr>
+
+            <div class="search">
+              <div class="input-group">
+                        <span class="twitter-typeahead" style="position: relative; display: inline-block;">
+                          <input type="text" class="form-control typeahead tt-hint"
+                                 value="" readonly="" autocomplete="off"
+                                 spellcheck="false" tabindex="-1" dir="ltr"
+                                 style="position: absolute; top: 0px; left: 0px; border-color: transparent; box-shadow: none; opacity: 1; background: none 0% 0% / auto repeat scroll padding-box border-box rgb(255, 255, 255);"><input
+                          type="text" class="form-control typeahead tt-input" placeholder="" id="search"
+                          name="search" (keyup.enter)="search()" value="" [(ngModel)]="searchValue" autocomplete="off"
+                          spellcheck="false" dir="auto"
+                          style="position: relative; vertical-align: top; background-color: transparent;" autofocus><pre
+                          aria-hidden="true"
+                          style="position: absolute; visibility: hidden; white-space: pre; font-family: PannoTextLight, Arial, sans-serif; font-size: 17px; font-style: normal; font-variant: normal; font-weight: 400; word-spacing: 0px; letter-spacing: 0px; text-indent: 0px; text-rendering: auto; text-transform: none;"></pre><div
+                          class="tt-menu"
+                          style="position: absolute; top: 100%; left: 0px; z-index: 100; display: none;"><div
+                          class="tt-dataset tt-dataset-searchTerms"><div class="tt-suggestion tt-selectable"><strong
+                          class="tt-highlight"></strong></div></div></div></span>
+                <div class="input-group-btn">
+                  <button type="submit" (click)="search()" class="btn btn-default" translate>management.search</button>
+                </div>
+              </div>
+            </div>
+
+            <br>
+
+            <form [formGroup]="scannerForm">
+
+              <!-- overflow makes the results scrollable -->
+              <div style="overflow: auto; max-height: 200px"  class="checkbox checkbox-primary">
+
+                <!-- potential search results -->
+                <div *ngFor="let s of searchedScanners">
+                  <input id="{{s}}" type="checkbox" (change)="onChange(s, $event.target.checked)"/>
+                  <label for="{{s}}"> {{ s }} </label>
+                </div>
+
+                <br>
+
+                <!-- all other employees who weren't already mentioned above -->
+                <div *ngFor="let scanner of potentialScanners">
+                  <input id="{{scanner}}" type="checkbox" (change)="onChange(scanner, $event.target.checked)"/>
+                  <label for="{{scanner}}"> {{ scanner }} </label>
+                </div>
+
+              </div>
+
+              <div style="text-align:right">
+                <button
+                  *ngIf="(this.searchedScanners !== undefined && this.searchedScanners.length > 0) || (this.potentialScanners !== undefined && this.potentialScanners.length > 0) "
+                  class="btn btn-default" (click)="addScanners()" translate>management.add
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" translate>
+            location.cancel
+          </button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="saveScanners()" translate>
+            management.save
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="selectedLocation !== undefined">
+  <div class="modal fade" id="changeLocation" tabindex="-1" role="dialog" aria-labelledby="changeLocationLabel"
+       aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="changeLocationLabel" translate>admin.changeLocation</h5>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="addError alert-primary" role="alert" [hidden]="errorChangeLocationHidden"
+                 [translateParams]="{nameLocation: this.changeLocationForm.controls.name.value}" translate>
+              management.addLocationError
+            </div>
+            <form class="form-horizontal" role="form" [formGroup]="changeLocationForm">
+              <div class="form-group">
+                <label class="col-lg-3 control-label" translate>admin.name</label>
+                <div class="col-lg-8">
+                  <input formControlName="name" class="form-control"
+                         type="text">
+                  <div *ngIf="changeLocationForm.controls.name.touched && !changeLocationForm.controls.name.valid "
+                       class="alert alert-danger" translate> from.required
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-lg-3 control-label" translate>admin.address</label>
+                <div class="col-lg-8">
+                  <input formControlName="address" class="form-control"
+                         type="text">
+                  <div
+                    *ngIf="changeLocationForm.controls.address.touched && !changeLocationForm.controls.address.valid "
+                    class="alert alert-danger" translate> from.required
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group" *ngFor="let l of Object.keys(appLanguages)">
+                <div formGroupName="descriptions">
+                  <label class="col-lg-3 control-label" for="{{l}}"> <span translate> admin.description </span>
+                    in
+                    {{languageTranslations[appLanguages[l]][Object.keys(appLanguages).indexOf(translate.currentLang)]}}
+                  </label>
+                  <div class="col-lg-8" *ngIf="translations !== undefined">
+                    <input class="form-control" type="text" id="{{l}}" (focusout)="changeLanguage(l,$event)"
+                           formControlName="{{appLanguages[l]}}">
+                    <div
+                      *ngIf="changeLocationForm.controls.descriptions['controls'][appLanguages[l]].touched && !changeLocationForm.controls.descriptions['controls'][appLanguages[l]].valid "
+                      class="alert alert-danger" translate> from.required
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-lg-3 control-label" translate>admin.imageUrl</label>
+                <div class="col-lg-8">
+                  <input formControlName="imageUrl"
+                         class="form-control" type="url"/>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-lg-3 control-label" translate>admin.mapsFrameUrl</label>
+                <div class="col-lg-8">
+                  <input formControlName="mapsFrameUrl"
+                         class="form-control" type="url"/>
+                  <div
+                    *ngIf="changeLocationForm.controls.mapsFrameUrl.touched && !changeLocationForm.controls.mapsFrameUrl.valid "
+                    class="alert alert-danger" translate> from.mapsFrame
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-lg-3 control-label" translate>admin.seats</label>
+                <div class="col-lg-8">
+                  <input formControlName="numberOfSeats"
+                         class="form-control" type="number" min="0"/>
+                  <div
+                    *ngIf="changeLocationForm.controls.numberOfSeats.touched && !changeLocationForm.controls.numberOfSeats.valid "
+                    class="alert alert-danger" translate> from.positive
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-lg-3 control-label" translate>admin.lockers</label>
+                <div class="col-lg-8">
+                  <input formControlName="numberOfLockers"
+                         class="form-control" type="number" min="0"/>
+                  <div
+                    *ngIf="changeLocationForm.controls.numberOfLockers.touched && !changeLocationForm.controls.numberOfLockers.valid "
+                    class="alert alert-danger" translate> from.positive
+                </div>
+              </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="setBackLocation()" translate>
+            location.cancel
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="changeLocation()" translate>
+            admin.change
+          </button>
+          <button type="button" data-dismiss="modal" id="closeChangeLocationModalBtn" [hidden]="true"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<!-- pop-up which is shown when a manager tries to delete a record -->
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':displayDelete}">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" aria-label="Close" (click)="displayDelete='none';"><span aria-hidden="true">&times;</span>
+        </button>
+        <h2 class="modal-title"><span translate> general.delete </span>? </h2>
+      </div>
+
+      <div class="modal-body">
+        <div [translateParams]="{locationName: this.selectedName}" translate>
+          management.deleteLocation
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="displayDelete='none'" translate>
+          management.no
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="deleteLocation(selectedName); displayDelete='none'"
+                translate>
+          management.yes
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

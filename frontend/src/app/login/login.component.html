@@ -1,0 +1,48 @@
+<div class="fluid-container" style="margin-bottom: 15px;">
+  <div class="col-xs-12 mb-3 mbottom-default">
+    <div class="row">
+      <div class="col-md-12">
+      </div>
+    </div>
+    <div class="row main">
+      <div class="clearfix bg-tertiary">
+        <div class="col-xs-12 col-sm-4 p-5">
+          <h2 translate>loginAndRegister.login</h2>
+
+          <div *ngIf="!cas" class="mbottom-default">
+              <form class="login-page" id="credentials" [formGroup]="loginForm" (ngSubmit)="login(loginForm.value)">
+                <div class="pbottom-default">
+                  <label for="mail" translate>loginAndRegister.email</label>
+                  <input type="text" class="form-control" id="mail" name="mail" formControlName="mail">
+                </div>
+                <div class="pbottom-default">
+                  <label for="password" translate>loginAndRegister.password</label>
+                  <input type="password" class="form-control" id="password" name="password" formControlName="password" autocomplete="off" >
+                </div>
+                <input id="submit" class="btn btn-secondary" type="submit" value="{{'loginAndRegister.login' | translate}}">
+                <input id="register" type="button" class="btn btn-secondary" routerLink="/registration" value="{{'loginAndRegister.register' | translate}}">
+              </form>
+          </div>
+
+          <a *ngIf="cas" href="cas" class="btn btn-secondary" id="ugent-login-button" translate>loginAndRegister.casLogin</a>
+          <ul class="linklist mt-5">
+            <li *ngIf="!cas"><a (click)="cas = !cas" translate>loginAndRegister.loginForUGent</a></li>
+            <li *ngIf="cas"><a (click)="cas = !cas" translate>loginAndRegister.loginForNonUGent</a></li>
+          </ul>
+        </div>
+        <div class="col-xs-12 col-sm-8" id="image-container" style="background-image: url(assets/images/welcome/welcome.jpg)">
+          <div id="display">
+            <h1>BlokAtUGent</h1>
+            <h2 translate>loginAndRegister.about</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert alert-warning" *ngIf="showError">
+    <h3 translate>loginAndRegister.errorTitle</h3>
+    <p translate>loginAndRegister.errorContent</p>
+  </div>
+</div>
+

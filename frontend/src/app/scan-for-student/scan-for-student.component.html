@@ -1,0 +1,44 @@
+<div class="container" *ngIf="this.authenticationService.currentUser != null &&
+      authenticationService.currentUserHasRole(authenticationService.roles.employee, authenticationService.roles.admin)">
+  <h1>Scan</h1>
+
+  <div class="col-md-12 personal-info">
+    <h3 translate>scan.scan</h3>
+
+    <form class="form-horizontal" role="form" style="padding-bottom:4vh"
+          (ngSubmit)="check(barcode)">
+      <div class="form-group">
+        <div class="container">
+          <div class="row">
+            <label class="col-sm-2 control-label" translate>scan.studentNumber</label>
+            <div class="col-sm-6">
+              <input class="form-control" type="text" id="scanInput" [(ngModel)]="barcode"
+                     [ngModelOptions]="{standalone: true}" (ngModelChange)="check(barcode)" appAutoFocus>
+            </div>
+            <input class="btn btn-primary col-sm-4" type="submit" id="button" value="{{'scan.verify' | translate}}">
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+
+  <div class="col-md-12" style="padding-top: 5vh">
+    <div id="success_alert" style="padding-bottom:4vh;display: none;">
+      <div class="col-md-3"></div>
+      <div class="alert alert-success col-md-6" role="alert">
+        {{successMessage}}
+      </div>
+      <div class="col-md-3"></div>
+    </div>
+
+    <div id="fail_alert" style="padding-bottom:4vh;display: none;">
+      <div class="col-md-3"></div>
+      <div class="alert alert-danger col-md-6" role="alert">
+        {{failMessage}}
+      </div>
+      <div class="col-md-3"></div>
+    </div>
+  </div>
+</div>
+

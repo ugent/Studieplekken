@@ -1,0 +1,46 @@
+<div class="sg-text-container">
+  <h2>Help</h2>
+  <hr>
+  <p translate>help.profileLead</p>
+  <h3 translate>menu.profile</h3>
+  <p class="my-translated-paragraph" translate>help.profile</p>
+
+  <br>
+
+  <h3 translate>overview.locationRes</h3>
+  <p class="my-translated-paragraph" translate>help.profileLocationRes</p>
+
+  <br>
+
+  <h3 translate>overview.lockerRes</h3>
+  <p class="my-translated-paragraph" translate>help.profileLockerRes</p>
+
+  <br>
+
+  <h3 translate>overview.calendar</h3>
+  <p class="my-translated-paragraph" translate>help.profileCalendar</p>
+
+  <br>
+
+  <h3 translate>overview.penalties</h3>
+  <p [translateParams]="{points: this.max_penalty_points}" class="my-translated-paragraph" translate>help.profilePenalties</p>
+
+  <br>
+
+  <table *ngIf="penalties.length > 0" class="table-striped" style="width: 100%" id="resultsTable">
+    <thead class="bg-info">
+    <tr class="firstrow lastrow even">
+      <th scope="col" translate>admin.description</th>
+      <th scope="col" translate>admin.points</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr [@rowsAnimation]="" *ngFor="let penalty of penalties" class="row_odd firstrow odd">
+      <td>{{penalty.descriptions[appLanguages[translate.currentLang]]}}</td>
+      <td>{{penalty.points}}</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <br>
+</div>

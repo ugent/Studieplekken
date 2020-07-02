@@ -1,0 +1,16 @@
+<div *ngIf="visible && this.day != null && this.day.openForReservationDate != null" [hidden]="!visible.getValue()">
+  <h1>
+    <span translate>countdown.nextReservation2</span>
+    <!--<span *ngIf="translateService.currentLang == 'en'">{{day.date.month}}/{{day.date.day}}/{{day.date.year}}</span>
+    <span *ngIf="translateService.currentLang == 'nl'">{{day.date.day}}/{{day.date.month}}/{{day.date.year}}</span>
+    <span translate>countdown.nextReservation3</span>-->
+    <span *ngIf="translateService.currentLang == 'en'">{{day.openForReservationDate.month}}/{{day.openForReservationDate.day}}/{{day.openForReservationDate.year}}</span>
+    <span *ngIf="translateService.currentLang == 'nl'">{{day.openForReservationDate.day}}/{{day.openForReservationDate.month}}/{{day.openForReservationDate.year}}</span>
+    <span translate>countdown.nextReservation4</span>
+    <span>{{formatTime(day.openForReservationDate.hrs)}}:{{formatTime(day.openForReservationDate.min)}}</span>
+  </h1>
+  <h1 id="timeUntilOpenForReservation" *ngIf="timeVisible.getValue()">
+    <span translate>countdown.nextReservation1</span> {{formatTime(hrsTill)}}:{{formatTime(minsTill)}}:{{formatTime(secsTill)}}
+  </h1>
+</div>
+
