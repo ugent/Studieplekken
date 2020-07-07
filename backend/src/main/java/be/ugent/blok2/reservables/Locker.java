@@ -3,7 +3,7 @@ package be.ugent.blok2.reservables;
 
 import java.util.Objects;
 
-public class Locker {
+public class Locker implements Cloneable {
     private int id;
     private int number; // identification number of locker
     private String location;
@@ -41,6 +41,15 @@ public class Locker {
     @Override
     public int hashCode() {
         return Objects.hash(number, id);
+    }
+
+    @Override
+    public Locker clone() {
+        try {
+            return (Locker) super.clone();
+        } catch (CloneNotSupportedException e) {
+            return null;
+        }
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">

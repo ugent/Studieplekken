@@ -100,8 +100,15 @@ public class Location implements Cloneable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Location location = (Location) o;
-        return Objects.equals(name, location.name) &&
-                Objects.equals(address, location.address);
+        return numberOfSeats == location.numberOfSeats &&
+                numberOfLockers == location.numberOfLockers &&
+                Objects.equals(name, location.name) &&
+                Objects.equals(address, location.address) &&
+                Objects.equals(mapsFrame, location.mapsFrame) &&
+                Objects.equals(descriptions, location.descriptions) &&
+                Objects.equals(imageUrl, location.imageUrl) &&
+                Objects.equals(startPeriodLockers, location.startPeriodLockers) &&
+                Objects.equals(endPeriodLockers, location.endPeriodLockers);
     }
 
     @Override
@@ -115,6 +122,35 @@ public class Location implements Cloneable {
         location.setStartPeriodLockers(startPeriodLockers);
         location.setEndPeriodLockers(endPeriodLockers);
         return location;
+    }
+
+    @Override
+    public Location clone() {
+        try {
+            Location l = (Location) super.clone();
+
+            l.setDescriptions(new HashMap<>());
+            for (Language lang : descriptions.keySet()) {
+                l.getDescriptions().put(lang, descriptions.get(lang));
+            }
+
+            l.setStartPeriodLockers(startPeriodLockers.clone());
+            l.setEndPeriodLockers(endPeriodLockers.clone());
+
+            l.setCalendar(new ArrayList<>());
+            for (Day d : calendar) {
+                l.getCalendar().add(d.clone());
+            }
+
+            l.setLockers(new ArrayList<>());
+            for (Locker _l : lockers) {
+                l.getLockers().add(_l.clone());
+            }
+
+            return l;
+        } catch (CloneNotSupportedException e) {
+            return null;
+        }
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">

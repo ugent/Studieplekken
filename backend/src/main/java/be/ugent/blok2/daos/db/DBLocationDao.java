@@ -104,6 +104,8 @@ public class DBLocationDao extends ADB implements ILocationDao {
         try (Connection conn = getConnection()) {
             try {
                 conn.setAutoCommit(false);
+
+                // insert location into the database
                 PreparedStatement st = conn.prepareStatement(databaseProperties.getString("insert_location"));
                 st.setString(1, location.getName());
                 st.setInt(2, location.getNumberOfSeats());
@@ -111,9 +113,12 @@ public class DBLocationDao extends ADB implements ILocationDao {
                 st.setString(4, location.getMapsFrame());
                 st.setString(5, location.getImageUrl());
                 st.setString(6, location.getAddress());
+                st.setString(7, location.getStartPeriodLockers() == null ? "" : location.getStartPeriodLockers().toString());
+                st.setString(8, location.getEndPeriodLockers() == null ? "" : location.getEndPeriodLockers().toString());
                 st.executeUpdate();
 
-                for(Language lang: location.getDescriptions().keySet()){
+                // insert descriptions corresponding to the location into the database
+                for (Language lang: location.getDescriptions().keySet()) {
                     st = conn.prepareStatement(databaseProperties.getString("insert_location_descriptions"));
                     st.setString(1,location.getName());
                     st.setString(2,lang.toString());
@@ -121,14 +126,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
                     st.executeUpdate();
                 }
 
-                //if the location has a calendar, these days also need to be added to the database
-                if (location.getCalendar() != null) {
-                    for (Day day : location.getCalendar()) {
-                        insertCalendarDay(location.getName(), day, conn);
-                    }
-                }
-
-                //when adding a location, lockers need to be added to the database too
+                // insert the lockers corresponding to the location into the databse
                 for (int i = 0; i < location.getNumberOfLockers(); i++) {
                     insertLocker(location.getName(), i, conn);
                 }
@@ -220,9 +218,11 @@ public class DBLocationDao extends ADB implements ILocationDao {
 
     @Override
     public void changeLocation(String name, Location location) {
-        boolean nameChanged = !name.equalsIgnoreCase(location.getName());
+        boolean nameChanged = !name.equals(location.getName());
+
         try (Connection conn = getConnection()) {
             conn.setAutoCommit(false);
+
             // Delete location descriptions
             PreparedStatement st = conn.prepareStatement(databaseProperties.getString("delete_location_descriptions"));
             st.setString(1, name);
@@ -234,28 +234,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
             st.setString(1, location.getName());
             st.executeUpdate();
 
-            if (!nameChanged) {
-                st = conn.prepareStatement(databaseProperties.getString("update_location"));
-                st.setString(1, location.getName());
-                st.setInt(2, location.getNumberOfSeats());
-                st.setInt(3, location.getNumberOfLockers());
-                st.setString(4, location.getMapsFrame());
-                st.setString(5, location.getImageUrl());
-                st.setString(6, location.getAddress());
-                if (location.getStartPeriodLockers() != null) {
-                    st.setString(7, location.getStartPeriodLockers().toString());
-                } else {
-                    st.setString(7, null);
-                }
-                if (location.getEndPeriodLockers() != null) {
-                    st.setString(8, location.getEndPeriodLockers().toString());
-                } else {
-                    st.setString(8, null);
-                }
-                st.setString(9, name);
-                st.executeUpdate();
-            }
-            else{
+            if (nameChanged) {
                 // nieuwe locatie invoegen
                 st = conn.prepareStatement(databaseProperties.getString("insert_location"));
                 st.setString(1, location.getName());
@@ -264,17 +243,19 @@ public class DBLocationDao extends ADB implements ILocationDao {
                 st.setString(4, location.getMapsFrame());
                 st.setString(5, location.getImageUrl());
                 st.setString(6, location.getAddress());
+                st.setString(7, location.getStartPeriodLockers() == null ? "" : location.getStartPeriodLockers().toString());
+                st.setString(8, location.getEndPeriodLockers() == null ? "" : location.getEndPeriodLockers().toString());
                 st.executeUpdate();
 
                 // kalender wijzigen
                 st = conn.prepareStatement(databaseProperties.getString("update_location_calendar"));
-                st.setString(1,location.getName());
-                st.setString(2,name);
+                st.setString(1, location.getName());
+                st.setString(2, name);
                 st.executeUpdate();
 
                 // lockers wijzigen
                 st = conn.prepareStatement(databaseProperties.getString("change_locker_location"));
-                st.setString(1,location.getName());
+                st.setString(1, location.getName());
                 st.setString(2, name);
                 st.executeUpdate();
 
@@ -283,7 +264,20 @@ public class DBLocationDao extends ADB implements ILocationDao {
                 st.setString(1,name);
                 st.executeUpdate();
             }
-            //lockers eventueel toevoegen of verwijderen
+
+            st = conn.prepareStatement(databaseProperties.getString("update_location"));
+            st.setString(1, location.getName());
+            st.setInt(2, location.getNumberOfSeats());
+            st.setInt(3, location.getNumberOfLockers());
+            st.setString(4, location.getMapsFrame());
+            st.setString(5, location.getImageUrl());
+            st.setString(6, location.getAddress());
+            st.setString(7, location.getStartPeriodLockers() == null ? "" : location.getStartPeriodLockers().toString());
+            st.setString(8, location.getEndPeriodLockers() == null ? "" : location.getEndPeriodLockers().toString());
+            st.setString(9, name);
+            st.executeUpdate();
+
+            // lockers eventueel toevoegen of verwijderen
 
             // Add scanners
             for (String s : scanners) {
@@ -294,7 +288,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
             }
 
             // Add location descriptions
-            for(Language lang: location.getDescriptions().keySet()){
+            for (Language lang: location.getDescriptions().keySet()) {
                 st = conn.prepareStatement(databaseProperties.getString("insert_location_descriptions"));
                 st.setString(1,location.getName());
                 st.setString(2,lang.toString());
@@ -356,27 +350,27 @@ public class DBLocationDao extends ADB implements ILocationDao {
             try {
                 conn.setAutoCommit(false);
 
-                //Delete scanners
+                // Delete scanners
                 PreparedStatement st = conn.prepareStatement(databaseProperties.getString("delete_scanners_of_location"));
                 st.setString(1, name);
                 st.execute();
 
-                //Delete descriptions
+                // Delete descriptions
                 st = conn.prepareStatement(databaseProperties.getString("delete_location_descriptions"));
                 st.setString(1, name);
                 st.execute();
 
-                //Delete location reservations for this location
+                // Delete location reservations for this location
                 st = conn.prepareStatement(databaseProperties.getString("delete_location_reservations_of_location"));
                 st.setString(1, name);
                 st.execute();
 
-                //Delete rows in calendar table that have a foreign key for this location
+                // Delete rows in calendar table that have a foreign key for this location
                 st = conn.prepareStatement(databaseProperties.getString("delete_calendar_of_location"));
                 st.setString(1, name);
                 st.execute();
 
-                //Delete locker reservations of lockers of this location
+                // Delete locker reservations of lockers of this location
                 List<Integer> locker_ids = new ArrayList<Integer>();
                 st = conn.prepareStatement(databaseProperties.getString("get_locker_ids_of_location"));
                 st.setString(1, name);
@@ -391,12 +385,12 @@ public class DBLocationDao extends ADB implements ILocationDao {
                     st.execute();
                 }
 
-                //Delete lockers of location
+                // Delete lockers of location
                 st = conn.prepareStatement(databaseProperties.getString("delete_lockers_of_location"));
                 st.setString(1, name);
                 st.execute();
 
-                //Delete the location
+                // Delete the location
                 st = conn.prepareStatement(databaseProperties.getString("delete_location"));
                 st.setString(1, name);
                 st.execute();
@@ -619,8 +613,8 @@ public class DBLocationDao extends ADB implements ILocationDao {
         return lockers;
     }
 
-    //helper method for AddLocation
-    //inserts lockers in the locker table
+    // helper method for AddLocation
+    // inserts lockers in the locker table
     private void insertLocker(String locationName, int number, Connection conn) throws SQLException {
         PreparedStatement st = conn.prepareStatement(databaseProperties.getString("insert_locker"));
         st.setInt(1, number);
@@ -629,7 +623,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
     }
 
 
-    //this method prevents a lot of duplicate code by creating a location out of a row in the resultset
+    // this method prevents a lot of duplicate code by creating a location out of a row in the ResultSet
     private Location createLocation(ResultSet rs) throws SQLException {
         String name = rs.getString(databaseProperties.getString("location_name"));
         int numberOfSeats = rs.getInt(databaseProperties.getString("location_number_of_seats"));

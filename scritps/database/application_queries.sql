@@ -14,7 +14,7 @@ select l.name, l.number_of_seats, l.number_of_lockers
 from public.locations l
     join public.location_descriptions ld
         on l.name = ld.location_name
-where name = ?;
+where l.name = ?;
 
 -- $delete_location
 delete
@@ -22,8 +22,8 @@ from public.locations
 where name = ?;
 
 -- $insert_location
-insert into public.locations (name, number_of_seats, number_of_lockers, maps_frame, image_url, address)
-values (?, ?, ?, ?, ?, ?);
+insert into public.locations (name, number_of_seats, number_of_lockers, maps_frame, image_url, address, start_period_lockers, end_period_lockers)
+values (?, ?, ?, ?, ?, ?, ?, ?);
 
 -- $update_location
 update public.locations
@@ -370,8 +370,9 @@ from public.lockers
 where location_name = ? and number >= ?;
 
 -- $insert_locker
+/* Note: the column 'id' is a auto-increment primary key */
 insert into public.lockers (number, location_name)
-values (?, ?, ?);
+values (?, ?);
 
 -- $change_locker_location
 update public.lockers

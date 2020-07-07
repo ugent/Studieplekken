@@ -58,4 +58,13 @@ public class Time {
     public int hashCode() {
         return (hours + ";" + minutes + ";" + seconds).hashCode();
     }
+
+    @Override
+    public Time clone() {
+        try {
+            return (Time) super.clone();
+        } catch (CloneNotSupportedException e) {
+            return null;
+        }
+    }
 }

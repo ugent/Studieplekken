@@ -121,7 +121,7 @@ COMMENT ON TABLE public.location_reservations IS 'Date in format: yyyy-MM-ddThh:
 CREATE TABLE public.lockers (
     location_name text NOT NULL,
     number integer NOT NULL,
-    id integer NOT NULL
+    id serial NOT NULL
 );
 
 

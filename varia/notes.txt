@@ -1,39 +1,24 @@
-Change table names: to plural:
--------------------------------
-institution							
-location 					
-location_reservation		
-locker 						
-locker_reservation 			
-user						
-
-
-Changes made to database model, but not changed in application (front and back):
---------------------------------------------------------------------------------
-public.location_reservations 		-> changed name user_id/augentid to user_augentid
-public.scanners_loaction 			-> changed name augentid to user_augentid
-public.users_to_verify 				-> removed birthdate, penalty_points, mifareid
-public.locker_reservations 			-> changed name user_id to user_augentid
-public.lockers						-> removed student_limit
-
-
 application queries use soundex
 -------------------------------
 check if certain modules need to be added in the blokatugent.sql script
 
-inform user when locker reservation cleanup occurs
---------------------------------------------------
-there is a cleanup every ... that cleans up the locker reservations
+inform user that locker reservation cleanup occurs every ...
+------------------------------------------------------------
+When a user reserves a locker for a location, the user needs to be informed
+that when he/she does not pick up the key within ... days, the reservation 
+will be canceled.
 
 
 TODO
 ----
-To test whether all changes to the db are put into the application -> create a test blokatugent db and create tests for all DBDao methods
-
-TOSTART: utv_ ... in DBAccountDao vervangen door user_... waar nodig
+Test all DBDaos
 
 
 
+
+Changed made that probably need further changes
+-----------------------------------------------
+	1. DBLocationDao.addLocation -> only add the location, nothing else and its descriptions in different languages. Not the calendar days or start and stop locker reservation dates. This is the task of other DAO methods.
 
 
 

@@ -1,6 +1,7 @@
 package be.ugent.blok2.daos;
 
 import be.ugent.blok2.helpers.Institution;
+import be.ugent.blok2.helpers.Language;
 import be.ugent.blok2.helpers.Resources;
 import be.ugent.blok2.helpers.date.CustomDate;
 import be.ugent.blok2.model.users.Role;
@@ -63,6 +64,8 @@ public class TestDBLocationDao {
         testLocation.setNumberOfSeats(50);
         testLocation.setNumberOfLockers(15);
         testLocation.setMapsFrame("Test Google Maps frame");
+        testLocation.getDescriptions().put(Language.DUTCH, "Dit is een testlocatie.");
+        testLocation.getDescriptions().put(Language.ENGLISH, "This is a test location.");
         testLocation.setImageUrl("https://example.com/image.jpg");
         testLocation.setStartPeriodLockers(startPeriodLockers);
         testLocation.setEndPeriodLockers(endPeriodLockers);
@@ -93,15 +96,30 @@ public class TestDBLocationDao {
 
     @Test
     public void addLocationTest() {
-        // add both user objects to the test database
-        addTestUsers();
-
         locationDao.addLocation(testLocation);
-        Location l = locationDao.getLocation(testLocation.getName());
+        Location l = locationDao.getLocationWithoutLockersAndCalendar(testLocation.getName());
         Assert.assertEquals("addLocation", testLocation, l);
 
-        // remove both user objects from test database
-        removeTestUsers();
+        locationDao.deleteLocation(testLocation.getName());
+        l = locationDao.getLocation(testLocation.getName());
+        Assert.assertNull("addLocation, remove added test location", l);
+    }
+
+    @Test
+    public void changeLocationTest() {
+        locationDao.addLocation(testLocation);
+
+        Location changedTestLocation = testLocation.clone();
+        changedTestLocation.setName("Changed Test Location");
+
+        locationDao.changeLocation(testLocation.getName(), changedTestLocation);
+        Location location = locationDao.getLocationWithoutLockersAndCalendar(changedTestLocation.getName());
+        Assert.assertEquals("changeLocationTest, fetch location by changed name", changedTestLocation, location);
+
+        location = locationDao.getLocationWithoutLockersAndCalendar(testLocation.getName());
+        Assert.assertNull("changeLocationTest, old location name may not have an entry", location);
+
+        locationDao.deleteLocation(changedTestLocation.getName());
     }
 
     private void addTestUsers() {

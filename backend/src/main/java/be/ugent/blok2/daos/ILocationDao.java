@@ -35,7 +35,11 @@ public interface ILocationDao extends IDao {
     List<Location> getAllLocationsWithoutCalendar();
 
     /**
-     * Adds a location to the list of all locations.
+     * Adds a location.
+     * Important note: this method should only add the location, its descriptions
+     * in different languages and the lockers corresponding to the location
+     * to the underlying database. Not the start/stop locker reservation dates
+     * nor the calendar days. Other DAO methods handle these functionalities.
      */
     Location addLocation(Location location) throws AlreadyExistsException;
 

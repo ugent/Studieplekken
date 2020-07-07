@@ -2,7 +2,7 @@ package be.ugent.blok2.helpers.date;
 
 import java.util.Objects;
 
-public class Day {
+public class Day implements Cloneable {
     private CustomDate date;
     private Time openingHour;
     private Time closingHour;
@@ -63,5 +63,15 @@ public class Day {
     @Override
     public int hashCode() {
         return Objects.hash(date, openingHour, closingHour, openForReservationDate);
+    }
+
+    @Override
+    public Day clone() {
+        Day d = new Day();
+        d.setDate(date.clone());
+        d.setOpeningHour(openingHour.clone());
+        d.setClosingHour(closingHour.clone());
+        d.setOpenForReservationDate(openForReservationDate.clone());
+        return d;
     }
 }
