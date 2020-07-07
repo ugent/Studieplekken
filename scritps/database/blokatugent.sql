@@ -235,7 +235,7 @@ CREATE TABLE public.users (
     augentpreferredsn text NOT NULL,
     penalty_points integer,
     mail text NOT NULL,
-    password text NOT NULL,
+    password text,
     institution text NOT NULL,
     barcode text
 );
@@ -588,4 +588,3 @@ insert into public.users (augentid, role, augentpreferredgivenname, augentprefer
 values ('01', 'ADMIN;EMPLOYEE', 'admin', 'admin', 0, 'admin', '$2a$10$3sAUdBwt2sJhhMl3MVZAv.Pv56XHGo2kTbyS.nFeMmPb3dHA1kkTq', 'UGent', '001703195697'),
 ('02', 'EMPLOYEE', 'scanmedewerker', 'scanmedewerker', 0, 'scanmedewerker', '$2a$10$3sAUdBwt2sJhhMl3MVZAv.Pv56XHGo2kTbyS.nFeMmPb3dHA1kkTq', 'UGent', '001703195697'),
 ('03', 'STUDENT;EMPLOYEE', 'student-scanmedewerker', 'student-scanmedewerker', 0, 'student-scanmedewerker', '$2a$10$3sAUdBwt2sJhhMl3MVZAv.Pv56XHGo2kTbyS.nFeMmPb3dHA1kkTq', 'UGent', '001703195697');
- 

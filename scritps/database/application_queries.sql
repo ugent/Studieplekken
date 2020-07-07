@@ -36,14 +36,14 @@ where name = ?;
 -- $get_location_reservations_of_user_by_id
 select *
 from public.location_reservations
-where augentid = ?;
+where user_augentid = ?;
 
 -- $get_location_reservations_of_user_by_name
 select *
 from public.location_reservations l
     join public.users u
-        on l.augentid = u.augentid
-where u.augentPreferredGivenName = ?;
+        on l.user_augentid = u.augentid
+where u.augentpreferredgivenname = ?;
 
 -- $get_location_reservations_of_location
 select *
@@ -53,7 +53,7 @@ where location_name = ?;
 -- $get_location_reservation
 select *
 from public.location_reservations
-where augentid = ? and date = ?;
+where user_augentid = ? and date = ?;
 
 -- $get_absent_students
 SELECT *
@@ -78,7 +78,7 @@ where location_name = ? and date = ?;
 -- $delete_location_reservation
 delete
 from public.location_reservations
-where augentid = ? and date = ?;
+where user_augentid = ? and date = ?;
 
 -- $delete_location_reservations_of_location
 delete
@@ -97,10 +97,10 @@ where location_name = ? and cast(substr(date,0,5) as int)*404 + cast(substr(date
 
 -- $delete_location_reservations_of_user_by_id
 delete from public.location_reservations
-where augentid = ?;
+where user_augentid = ?;
 
 -- $insert_location_reservation
-insert into public.location_reservations (date, location_name, augentid)
+insert into public.location_reservations (date, location_name, user_augentid)
 values (?, ?, ?);
 
 -- $get_user_for_location_reservation
@@ -111,12 +111,12 @@ where augentid = ?;
 -- $set_location_reservation_unattended
 update public.location_reservations
 set attended = false
-where date = ? and augentId = ?;
+where date = ? and user_augentid = ?;
 
 -- $set_location_reservation_attended
 update public.location_reservations
 set attended = true
-where date = ? and augentId = ?;
+where date = ? and user_augentid = ?;
 
 -- $todays_reservations
 select name, count(case when date = ? then 1 end)
@@ -160,10 +160,14 @@ select u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn
     , u.mail, u.password, u.institution, u.barcode
     , coalesce(floor(sum(
         case
+            /*
+                Blacklist event is permanent: no decrease in time.
+                A blacklist event should be removed manually
+            */
             when b.event_code = 16662 then b.received_points
             else b.received_points * x.perc
         end))) as "penalty_points"
-from public.user u
+from public.users u
     left join public.penalty_book b
         on b.user_augentid = u.augentid
     left join x
@@ -197,7 +201,7 @@ where mail = ?;
 
 -- $insert_user
 insert into public.users (mail, augentpreferredsn, augentpreferredgivenname, password, institution, augentid, role, penalty_points, barcode)
-values (?, ?, ?, ?, ?, ?, ?, ?,?);
+values (?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 -- $delete_user
 delete
@@ -218,8 +222,8 @@ from public.users_to_verify
 where augentid = ?;
 
 -- $insert_user_to_be_verified
-insert into public.users_to_verify (mail, augentpreferredsn, augentpreferredgivenname, password, institution, augentid, role, penalty_points, barcode, verification_code, created_timestamp)
-values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+insert into public.users_to_verify (mail, augentpreferredsn, augentpreferredgivenname, password, institution, augentid, role, barcode, verification_code, created_timestamp)
+values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 -- $get_user_to_be_verfied_by_verification_code
 select *
@@ -242,7 +246,7 @@ where TO_TIMESTAMP(created_timestamp, 'YYYY-MM-DD\\THH24:MI:SS') < now() - inter
 -- $get_locker_reservations_of_user_by_id
 select *
 from public.locker_reservations
-where user_id = ?;
+where user_augentid = ?;
 
 -- $get_locker_reservations_of_location
 select *
@@ -268,12 +272,12 @@ where l.location_name = ? and r.key_brought_back = false;
 -- $get_locker_reservation
 select *
 from public.locker_reservations
-where user_id = ? and locker_id = ? and start_date = ? and end_date = ?;
+where user_augentid = ? and locker_id = ? and start_date = ? and end_date = ?;
 
 -- $delete_locker_reservation
 delete
 from public.locker_reservations
-where user_id = ? and locker_id = ? and start_date = ? and end_date = ?;
+where user_augentid = ? and locker_id = ? and start_date = ? and end_date = ?;
 
 -- $delete_locker_reservation_of_locker
 delete
@@ -283,16 +287,16 @@ where locker_id = ?;
 -- $delete_locker_reservations_of_user_by_id
 delete
 from public.locker_reservations
-where user_id = ?;
+where user_augentid = ?;
 
 -- $insert_locker_reservation
-insert into public.locker_reservations (user_id, locker_id, start_date, end_date, key_picked_up, key_brought_back)
+insert into public.locker_reservations (user_augentid, locker_id, start_date, end_date, key_picked_up, key_brought_back)
 values (?, ?, ?, ?, ?, ?);
 
 -- $update_locker_reservation
 update public.locker_reservations
 set key_picked_up = ?, key_brought_back = ?
-where user_id = ? and locker_id = ? and start_date = ? and end_date = ?;
+where user_augentid = ? and locker_id = ? and start_date = ? and end_date = ?;
 
 -- $get_accompanying_users
 select *
@@ -302,10 +306,10 @@ where locker_id = ? and start_date = ?;
 -- $get_locker_reservation_of_user
 select start_date
 from public.locker_reservations
-where user_id = ?;
+where user_augentid = ?;
 
 -- $get_locker_reservation_of_locker
-select start_date, end_date, user_id
+select start_date, end_date, user_augentid
 from public.locker_reservations
 where locker_id = ?;
 
@@ -316,26 +320,26 @@ where not key_picked_up and TO_TIMESTAMP(start_date, 'YYYY-MM-DD\\THH24:MI:SS') 
 
 -- $get_locker_reservation_of_soundex_user_by_complete_name
 select *
-from public.locker_reservations
-    join public.users
-        on augentid = user_id
-    join public.lockers
-        on id = locker_id
+from public.locker_reservations lr
+    join public.users u
+        on u.augentid = lr.user_augentid
+    join public.lockers l
+        on l.id = lr.locker_id
 where metaphone(CONCAT(augentpreferredgivenname, ' ', augentpreferredsn), 10) = metaphone(?, 10) or metaphone(CONCAT(augentpreferredgivenname, ' ', augentpreferredsn), 10) = metaphone(?, 10);
 
 -- $get_locker_reservation_of_soundex_user_by_name
 select *
-from public.locker_reservations
-    join public.users
-        on augentid = user_id
-    join public.lockers
-        on id = locker_id
+from public.locker_reservations lr
+    join public.users u
+        on u.augentid = lr.user_augentid
+    join public.lockers l
+        on l.id = lr.locker_id
 where metaphone(augentpreferredgivenname, 10) = metaphone(? , 5) or metaphone(augentpreferredsn, 10) = metaphone(? , 5);
 
 -- $update_locker_reservations_of_user
-update public.locker_reservation
-set user_id = ?
-where user_id = ?;
+update public.locker_reservations
+set user_augentid = ?
+where user_augentid = ?;
 
 
 
@@ -366,7 +370,7 @@ from public.lockers
 where location_name = ? and number >= ?;
 
 -- $insert_locker
-insert into public.lockers (number, location_name, student_limit)
+insert into public.lockers (number, location_name)
 values (?, ?, ?);
 
 -- $change_locker_location
@@ -424,11 +428,6 @@ select *
 from public.roles;
 
 
-
--- queries for table PENALTY_POINTS
--- $get_max_penalty_points
-select *
-from public.penalty_points;
 
 -- queries for DBPenaltyEventsDao
 -- $get_penalty_events
@@ -506,14 +505,14 @@ where user_augentid = ?;
 
 
 
--- queries for table scanners_location
+-- queries for 'scanners_location'
 -- $get_locations_of_scanner
 select location_name
 from public.scanners_location
-where augentid = ?;
+where user_augentid = ?;
 
 -- $get_scanners_of_location
-select augentid
+select user_augentid
 from public.scanners_location
 where location_name = ?;
 
@@ -523,22 +522,23 @@ where location_name = ?;
 
 -- $delete_scanners_of_location_of_user_by_id
 delete from public.scanners_location
-where augentid = ?;
+where user_augentid = ?;
 
 -- $insert_scanner_and_location
-insert into public.scanners_location (augentid, location_name)
+insert into public.scanners_location (user_augentid, location_name)
 values (?, ?);
 
 -- $update_scanners_of_location_of_user
 update public.scanners_location
-set augentid = ?
-where augentid = ?;
+set user_augentid = ?
+where user_augentid = ?;
 
 
 
--- queries for table LOCATION_DESCRIPTIONS
+-- queries for 'location_descriptions'
 -- $delete_location_descriptions
-delete from public.location_descriptions
+delete
+from public.location_descriptions
 where location_name = ?;
 
 -- $insert_location_descriptions
