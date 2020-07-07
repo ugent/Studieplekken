@@ -25,7 +25,7 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
     public void scheduledCleanup(){
         try (Connection connection = getConnection()){
             Statement statement = connection.createStatement();
-            statement.executeQuery(resourceBundle.getString("daily_cleanup_reservation_of_locker"));
+            statement.executeQuery(databaseProperties.getString("daily_cleanup_reservation_of_locker"));
         } catch (SQLException e) {
         }
     }
@@ -35,7 +35,7 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
         List<LockerReservation> reservations = new ArrayList<>();
         try(Connection conn = getConnection()){
 
-            String queryUser = resourceBundle.getString("get_user_by_<?>").replace("<?>", "u.augentID = ?");
+            String queryUser = databaseProperties.getString("get_user_by_<?>").replace("<?>", "u.augentID = ?");
             PreparedStatement statementUser = conn.prepareStatement(queryUser);
             statementUser.setString(1, augentID);
             ResultSet resultSetUser = statementUser.executeQuery();
@@ -44,16 +44,16 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
                 throw new NoSuchUserException("No user with id = " + augentID);
             }
 
-            PreparedStatement st = conn.prepareStatement(resourceBundle.getString("get_locker_reservations_of_user_by_id"));
+            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_locker_reservations_of_user_by_id"));
             st.setString(1, augentID);
             ResultSet rs = st.executeQuery();
             while(rs.next()){
-                CustomDate startDate = CustomDate.parseString(rs.getString(resourceBundle.getString("lockerres_start")));
-                CustomDate endDate = CustomDate.parseString(rs.getString(resourceBundle.getString("lockerres_end")));
-                User user = getUser(rs.getString(resourceBundle.getString("lockerres_user")), conn);
-                Locker locker = getLocker(rs.getInt(resourceBundle.getString("lockerres_locker_id")), conn);
-                boolean keyPickedUp = rs.getBoolean(resourceBundle.getString("lockerres_key_picked_up"));
-                boolean keyBroughtBack = rs.getBoolean(resourceBundle.getString("lockerres_key_brought_back"));
+                CustomDate startDate = CustomDate.parseString(rs.getString(databaseProperties.getString("locker_reservation_start_date")));
+                CustomDate endDate = CustomDate.parseString(rs.getString(databaseProperties.getString("locker_reservation_end_date")));
+                User user = getUser(rs.getString(databaseProperties.getString("locker_reservation_user_augentid")), conn);
+                Locker locker = getLocker(rs.getInt(databaseProperties.getString("locker_reservation_locker_id")), conn);
+                boolean keyPickedUp = rs.getBoolean(databaseProperties.getString("locker_reservation_key_picked_up"));
+                boolean keyBroughtBack = rs.getBoolean(databaseProperties.getString("locker_reservation_key_brought_back"));
 
                 LockerReservation lockerReservation = new LockerReservation();
                 lockerReservation.setStartDate(startDate);
@@ -76,27 +76,27 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
     public List<LockerReservation> getAllLockerReservationsOfUserByName(String name) {
         List<LockerReservation> res = new ArrayList<>();
         try(Connection conn = getConnection()){
-            PreparedStatement st = conn.prepareStatement(resourceBundle.getString("get_locker_reservation_of_soundex_user_by_complete_name"));
+            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_locker_reservation_of_soundex_user_by_complete_name"));
             st.setString(1, name);
             st.setString(2, name);
             ResultSet rs = st.executeQuery();
             while(rs.next()){
-                CustomDate startDate = CustomDate.parseString(rs.getString(resourceBundle.getString("lockerres_start")));
-                CustomDate endDate = CustomDate.parseString(rs.getString(resourceBundle.getString("lockerres_end")));
-                User user = getUser(rs.getString(resourceBundle.getString("lockerres_user")), conn);
+                CustomDate startDate = CustomDate.parseString(rs.getString(databaseProperties.getString("locker_reservation_start_date")));
+                CustomDate endDate = CustomDate.parseString(rs.getString(databaseProperties.getString("locker_reservation_end_date")));
+                User user = getUser(rs.getString(databaseProperties.getString("locker_reservation_user_augentid")), conn);
 
-                String location = rs.getString(resourceBundle.getString("locker_location"));
-                int number = rs.getInt(resourceBundle.getString("locker_number"));
-                int studentLimit = rs.getInt(resourceBundle.getString("locker_student_limit"));
+                String location = rs.getString(databaseProperties.getString("locker_location"));
+                int number = rs.getInt(databaseProperties.getString("locker_number"));
+                int studentLimit = rs.getInt(databaseProperties.getString("locker_student_limit"));
 
                 Locker locker = new Locker();
-                locker.setId(rs.getInt(resourceBundle.getString("lockerres_locker_id")));
+                locker.setId(rs.getInt(databaseProperties.getString("locker_reservation_locker_id")));
                 locker.setNumber(number);
                 locker.setLocation(location);
                 locker.setStudentLimit(studentLimit);
 
-                boolean keyPickedUp = rs.getBoolean(resourceBundle.getString("lockerres_key_picked_up"));
-                boolean keyBroughtBack = rs.getBoolean(resourceBundle.getString("lockerres_key_brought_back"));
+                boolean keyPickedUp = rs.getBoolean(databaseProperties.getString("locker_reservation_key_picked_up"));
+                boolean keyBroughtBack = rs.getBoolean(databaseProperties.getString("locker_reservation_key_brought_back"));
 
                 LockerReservation lockerReservation = new LockerReservation();
                 lockerReservation.setStartDate(startDate);
@@ -119,27 +119,27 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
          */
         if(res.size()==0){
             try(Connection conn = getConnection()){
-                PreparedStatement st = conn.prepareStatement(resourceBundle.getString("get_locker_reservation_of_soundex_user_by_name"));
+                PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_locker_reservation_of_soundex_user_by_name"));
                 st.setString(1, name);
                 st.setString(2, name);
                 ResultSet rs = st.executeQuery();
                 while(rs.next()){
-                    CustomDate startDate = CustomDate.parseString(rs.getString(resourceBundle.getString("lockerres_start")));
-                    CustomDate endDate = CustomDate.parseString(rs.getString(resourceBundle.getString("lockerres_end")));
-                    User user = getUser(rs.getString(resourceBundle.getString("lockerres_user")), conn);
+                    CustomDate startDate = CustomDate.parseString(rs.getString(databaseProperties.getString("locker_reservation_start_date")));
+                    CustomDate endDate = CustomDate.parseString(rs.getString(databaseProperties.getString("locker_reservation_end_date")));
+                    User user = getUser(rs.getString(databaseProperties.getString("locker_reservation_user_augentid")), conn);
 
-                    String location = rs.getString(resourceBundle.getString("locker_location"));
-                    int number = rs.getInt(resourceBundle.getString("locker_number"));
-                    int studentLimit = rs.getInt(resourceBundle.getString("locker_student_limit"));
+                    String location = rs.getString(databaseProperties.getString("locker_location"));
+                    int number = rs.getInt(databaseProperties.getString("locker_number"));
+                    int studentLimit = rs.getInt(databaseProperties.getString("locker_student_limit"));
 
                     Locker locker = new Locker();
-                    locker.setId(rs.getInt(resourceBundle.getString("lockerres_locker_id")));
+                    locker.setId(rs.getInt(databaseProperties.getString("locker_reservation_locker_id")));
                     locker.setNumber(number);
                     locker.setLocation(location);
                     locker.setStudentLimit(studentLimit);
 
-                    boolean keyPickedUp = rs.getBoolean(resourceBundle.getString("lockerres_key_picked_up"));
-                    boolean keyBroughtBack = rs.getBoolean(resourceBundle.getString("lockerres_key_brought_back"));
+                    boolean keyPickedUp = rs.getBoolean(databaseProperties.getString("locker_reservation_key_picked_up"));
+                    boolean keyBroughtBack = rs.getBoolean(databaseProperties.getString("locker_reservation_key_brought_back"));
 
                     LockerReservation lockerReservation = new LockerReservation();
                     lockerReservation.setStartDate(startDate);
@@ -163,16 +163,16 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
     public List<LockerReservation> getAllLockerReservationsOfLocation(String name) {
         List<LockerReservation> reservations = new ArrayList<>();
         try(Connection conn = getConnection()){
-            PreparedStatement st = conn.prepareStatement(resourceBundle.getString("get_locker_reservations_of_location"));
+            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_locker_reservations_of_location"));
             st.setString(1, name);
             ResultSet rs = st.executeQuery();
             while(rs.next()){
-                CustomDate startDate = CustomDate.parseString(rs.getString(resourceBundle.getString("lockerres_start")));
-                CustomDate endDate = CustomDate.parseString(rs.getString(resourceBundle.getString("lockerres_end")));
-                User user = getUser(rs.getString(resourceBundle.getString("lockerres_user")), conn);
-                Locker locker = getLocker(rs.getInt(resourceBundle.getString("lockerres_locker_id")), conn);
-                boolean keyPickedUp = rs.getBoolean(resourceBundle.getString("lockerres_key_picked_up"));
-                boolean keyBroughtBack = rs.getBoolean(resourceBundle.getString("lockerres_key_brought_back"));
+                CustomDate startDate = CustomDate.parseString(rs.getString(databaseProperties.getString("locker_reservation_start_date")));
+                CustomDate endDate = CustomDate.parseString(rs.getString(databaseProperties.getString("locker_reservation_end_date")));
+                User user = getUser(rs.getString(databaseProperties.getString("locker_reservation_user_augentid")), conn);
+                Locker locker = getLocker(rs.getInt(databaseProperties.getString("locker_reservation_locker_id")), conn);
+                boolean keyPickedUp = rs.getBoolean(databaseProperties.getString("locker_reservation_key_picked_up"));
+                boolean keyBroughtBack = rs.getBoolean(databaseProperties.getString("locker_reservation_key_brought_back"));
 
                 LockerReservation lockerReservation = new LockerReservation();
                 lockerReservation.setStartDate(startDate);
@@ -195,16 +195,16 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
     public List<LockerReservation> getAllLockerReservationsOfLocationWithoutKeyBroughtBack(String name) {
         List<LockerReservation> reservations = new ArrayList<>();
         try(Connection conn = getConnection()){
-            PreparedStatement st = conn.prepareStatement(resourceBundle.getString("get_locker_reservations_of_location_without_key_brought_back"));
+            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_locker_reservations_of_location_without_key_brought_back"));
             st.setString(1, name);
             ResultSet rs = st.executeQuery();
             while(rs.next()){
-                CustomDate startDate = CustomDate.parseString(rs.getString(resourceBundle.getString("lockerres_start")));
-                CustomDate endDate = CustomDate.parseString(rs.getString(resourceBundle.getString("lockerres_end")));
-                User user = getUser(rs.getString(resourceBundle.getString("lockerres_user")), conn);
-                Locker locker = getLocker(rs.getInt(resourceBundle.getString("lockerres_locker_id")), conn);
-                boolean keyPickedUp = rs.getBoolean(resourceBundle.getString("lockerres_key_picked_up"));
-                boolean keyBroughtBack = rs.getBoolean(resourceBundle.getString("lockerres_key_brought_back"));
+                CustomDate startDate = CustomDate.parseString(rs.getString(databaseProperties.getString("locker_reservation_start_date")));
+                CustomDate endDate = CustomDate.parseString(rs.getString(databaseProperties.getString("locker_reservation_end_date")));
+                User user = getUser(rs.getString(databaseProperties.getString("locker_reservation_user_augentid")), conn);
+                Locker locker = getLocker(rs.getInt(databaseProperties.getString("locker_reservation_locker_id")), conn);
+                boolean keyPickedUp = rs.getBoolean(databaseProperties.getString("locker_reservation_key_picked_up"));
+                boolean keyBroughtBack = rs.getBoolean(databaseProperties.getString("locker_reservation_key_brought_back"));
 
                 LockerReservation lockerReservation = new LockerReservation();
                 lockerReservation.setStartDate(startDate);
@@ -227,7 +227,7 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
     public int getNumberOfLockersInUseOfLocation(String locationName){
         int count = 0;
         try(Connection conn = getConnection()){
-            PreparedStatement st = conn.prepareStatement(resourceBundle.getString("count_lockers_in_use_of_location"));
+            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("count_lockers_in_use_of_location"));
             st.setString(1, locationName);
             ResultSet rs = st.executeQuery();
             while(rs.next()){
@@ -243,7 +243,7 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
     @Override
     public LockerReservation getLockerReservation(String augentID, int lockerID, CustomDate startDate, CustomDate endDate) {
         try(Connection conn = getConnection()){
-            PreparedStatement st = conn.prepareStatement(resourceBundle.getString("get_locker_reservation"));
+            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_locker_reservation"));
             st.setString(1, augentID);
             st.setInt(2, lockerID);
             st.setString(3, startDate.toString());
@@ -252,12 +252,12 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
             while(rs.next()){
                 User user = new User();
                 user.setAugentID(augentID);
-                user.setFirstName(rs.getString(resourceBundle.getString("user_surname")));
-                user.setLastName(rs.getString(resourceBundle.getString("user_name")));
+                user.setFirstName(rs.getString(databaseProperties.getString("utv_surname")));
+                user.setLastName(rs.getString(databaseProperties.getString("utv_name")));
                 Locker locker = getLocker(lockerID, conn);
 
-                boolean keyPickedUp = rs.getBoolean(resourceBundle.getString("lockerres_key_picked_up"));
-                boolean keyBroughtBack = rs.getBoolean(resourceBundle.getString("lockerres_key_brought_back"));
+                boolean keyPickedUp = rs.getBoolean(databaseProperties.getString("locker_reservation_key_picked_up"));
+                boolean keyBroughtBack = rs.getBoolean(databaseProperties.getString("locker_reservation_key_brought_back"));
 
                 LockerReservation lockerReservation = new LockerReservation();
                 lockerReservation.setStartDate(startDate);
@@ -279,7 +279,7 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
     @Override
     public void deleteLockerReservation(String augentID, int lockerID, CustomDate startDate, CustomDate endDate) {
         try(Connection conn = getConnection()){
-            PreparedStatement st = conn.prepareStatement(resourceBundle.getString("delete_locker_reservation"));
+            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("delete_locker_reservation"));
             st.setString(1, augentID);
             st.setInt(2, lockerID);
             st.setString(3, startDate.toString());
@@ -294,7 +294,7 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
     @Override
     public LockerReservation addLockerReservation(LockerReservation lockerReservation) {
         try(Connection conn = getConnection()){
-            PreparedStatement st = conn.prepareStatement(resourceBundle.getString("insert_locker_reservation"));
+            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("insert_locker_reservation"));
             st.setString(1, lockerReservation.getOwner().getAugentID());
             st.setInt(2, lockerReservation.getLocker().getId());
             st.setString(3, lockerReservation.getStartDate().toString());
@@ -313,7 +313,7 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
     @Override
     public void changeLockerReservation(LockerReservation lockerReservation) {
         try(Connection conn = getConnection()){
-            PreparedStatement st = conn.prepareStatement(resourceBundle.getString("update_locker_reservation"));
+            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("update_locker_reservation"));
             st.setBoolean(1, lockerReservation.getKeyPickedUp());
             st.setBoolean(2, lockerReservation.getKeyBroughtBack());
             st.setString(3, lockerReservation.getOwner().getAugentID());
@@ -328,27 +328,27 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
     }
 
     private User getUser(String augentID, Connection conn) throws SQLException {
-        PreparedStatement st = conn.prepareStatement(resourceBundle.getString("get_user_by_<?>").replace("<?>", "u.augentid = ?"));
+        PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_user_by_<?>").replace("<?>", "u.augentid = ?"));
         st.setString(1, augentID);
         ResultSet rs = st.executeQuery();
         while(rs.next()){
             User user = new User();
             user.setAugentID(augentID);
-            user.setFirstName(rs.getString(resourceBundle.getString("user_surname")));
-            user.setLastName(rs.getString(resourceBundle.getString("user_name")));
+            user.setFirstName(rs.getString(databaseProperties.getString("utv_surname")));
+            user.setLastName(rs.getString(databaseProperties.getString("utv_name")));
             return user;
         }
         return null;
     }
 
     private Locker getLocker(int lockerID, Connection conn) throws SQLException {
-        PreparedStatement st = conn.prepareStatement(resourceBundle.getString("get_locker"));
+        PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_locker"));
         st.setInt(1, lockerID);
         ResultSet rs = st.executeQuery();
         while(rs.next()){
-            String location = rs.getString(resourceBundle.getString("locker_location"));
-            int number = rs.getInt(resourceBundle.getString("locker_number"));
-            int studentLimit = rs.getInt(resourceBundle.getString("locker_student_limit"));
+            String location = rs.getString(databaseProperties.getString("locker_location"));
+            int number = rs.getInt(databaseProperties.getString("locker_number"));
+            int studentLimit = rs.getInt(databaseProperties.getString("locker_student_limit"));
 
             Locker locker = new Locker();
             locker.setId(lockerID);

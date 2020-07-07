@@ -39,7 +39,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
     public void scheduledCleanup() {
         try (Connection connection = getConnection()) {
             Statement statement = connection.createStatement();
-            statement.executeQuery(resourceBundle.getString("daily_cleanup_user_to_be_verified"));
+            statement.executeQuery(databaseProperties.getString("daily_cleanup_user_to_be_verified"));
         } catch (SQLException e) {
 
         }
@@ -76,7 +76,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
                     from x
                     where week + 1 <= 5
             )
-            SELECT u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.mail, u.password, u.institution, u.birthdate, u.mifareid, u.barcode
+            SELECT u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.mail, u.password, u.institution, u.birthdate, u.barcode
                     , coalesce(floor(sum(case when b.event_code = 16662 then b.received_points
                                 else b.received_points * x.perc end))) as "penalty_points"
             FROM public.user u
@@ -85,29 +85,29 @@ public class DBAccountDao extends ADB implements IAccountDao {
                 LEFT JOIN x
                     ON floor(extract(days from (now() - to_timestamp(b.timestamp, 'YYYY-MM-DD HH24\:MI\:SS'))) / 7) = x.week
             WHERE <?>
-            group by u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.mail, u.password, u.institution, u.birthdate, u.mifareid, u.barcode;
+            group by u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.mail, u.password, u.institution, u.birthdate, u.barcode;
              */
-            String query = resourceBundle.getString("get_user_by_<?>").replace("<?>", "u.mail = ?");
+            String query = databaseProperties.getString("get_user_by_<?>").replace("<?>", "u.mail = ?");
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, email.toLowerCase());
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 User u = new User();
-                u.setAugentID(resultSet.getString(resourceBundle.getString("user_id")));
-                u.setLastName(resultSet.getString(resourceBundle.getString("user_surname")));
-                u.setFirstName(resultSet.getString(resourceBundle.getString("user_name")));
+                u.setAugentID(resultSet.getString(databaseProperties.getString("user_augentid")));
+                u.setLastName(resultSet.getString(databaseProperties.getString("user_surname")));
+                u.setFirstName(resultSet.getString(databaseProperties.getString("user_name")));
                 if (password) {
-                    u.setPassword(resultSet.getString(resourceBundle.getString("user_password")));
+                    u.setPassword(resultSet.getString(databaseProperties.getString("user_password")));
                 } else {
                     u.setPassword("");
                 }
 
-                u.setInstitution(resultSet.getString(resourceBundle.getString("user_institution")));
-                u.setBarcode(resultSet.getString(resourceBundle.getString("user_barcode")));
-                u.setPenaltyPoints(resultSet.getInt(resourceBundle.getString("user_penpoints")));
-                String csvRole = resultSet.getString(resourceBundle.getString("user_role"));
+                u.setInstitution(resultSet.getString(databaseProperties.getString("user_institution")));
+                u.setBarcode(resultSet.getString(databaseProperties.getString("user_barcode")));
+                u.setPenaltyPoints(resultSet.getInt(databaseProperties.getString("user_penalty_points")));
+                String csvRole = resultSet.getString(databaseProperties.getString("user_role"));
                 u.setRoles(csvToRoles(csvRole));
-                u.setMail(resultSet.getString(resourceBundle.getString("user_mail")));
+                u.setMail(resultSet.getString(databaseProperties.getString("user_mail")));
                 return u;
             }
         } catch (Exception e) {
@@ -137,7 +137,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
                     from x
                     where week + 1 <= 5
             )
-            SELECT u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.mail, u.password, u.institution, u.birthdate, u.mifareid, u.barcode
+            SELECT u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.mail, u.password, u.institution, u.birthdate, u.barcode
                     , floor(sum(case when b.event_code = 16662 then b.received_points
                                 else b.received_points * x.perc end)) as "penalty_points"
             FROM public.user u
@@ -146,25 +146,25 @@ public class DBAccountDao extends ADB implements IAccountDao {
                 LEFT JOIN x
                     ON floor(extract(days from (now() - to_timestamp(b.timestamp, 'YYYY-MM-DD HH24\:MI\:SS'))) / 7) = x.week
             WHERE <?>
-            group by u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.mail, u.password, u.institution, u.birthdate, u.mifareid, u.barcode;
+            group by u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.mail, u.password, u.institution, u.birthdate, u.barcode;
              */
-            String query = resourceBundle.getString("get_user_by_<?>").replace("<?>", "u.augentID = ?");
+            String query = databaseProperties.getString("get_user_by_<?>").replace("<?>", "u.augentid = ?");
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, augentID);
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
                 User u = new User();
-                u.setAugentID(resultSet.getString(resourceBundle.getString("user_id")));
-                u.setLastName(resultSet.getString(resourceBundle.getString("user_surname")));
-                u.setFirstName(resultSet.getString(resourceBundle.getString("user_name")));
+                u.setAugentID(resultSet.getString(databaseProperties.getString("user_augentid")));
+                u.setLastName(resultSet.getString(databaseProperties.getString("user_surname")));
+                u.setFirstName(resultSet.getString(databaseProperties.getString("user_name")));
                 u.setPassword("");
-                u.setBarcode(resultSet.getString(resourceBundle.getString("user_barcode")));
-                u.setPenaltyPoints(resultSet.getInt(resourceBundle.getString("user_penpoints")));
-                String csvRole = resultSet.getString(resourceBundle.getString("user_role"));
+                u.setBarcode(resultSet.getString(databaseProperties.getString("user_barcode")));
+                u.setPenaltyPoints(resultSet.getInt(databaseProperties.getString("user_penalty_points")));
+                String csvRole = resultSet.getString(databaseProperties.getString("user_role"));
                 u.setRoles(csvToRoles(csvRole));
-                u.setMail(resultSet.getString(resourceBundle.getString("user_mail")));
-                u.setInstitution(resultSet.getString(resourceBundle.getString("user_institution")));
+                u.setMail(resultSet.getString(databaseProperties.getString("user_mail")));
+                u.setInstitution(resultSet.getString(databaseProperties.getString("user_institution")));
                 return u;
             }
         } catch (Exception e) {
@@ -196,7 +196,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
                     from x
                     where week + 1 <= 5
             )
-            SELECT u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.mail, u.password, u.institution, u.birthdate, u.mifareid, u.barcode
+            SELECT u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.mail, u.password, u.institution, u.birthdate, u.barcode
                     , floor(sum(case when b.event_code = 16662 then b.received_points
                                 else b.received_points * x.perc end)) as "penalty_points"
             FROM public.user u
@@ -205,24 +205,24 @@ public class DBAccountDao extends ADB implements IAccountDao {
                 LEFT JOIN x
                     ON floor(extract(days from (now() - to_timestamp(b.timestamp, 'YYYY-MM-DD HH24\:MI\:SS'))) / 7) = x.week
             WHERE <?>
-            group by u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.mail, u.password, u.institution, u.birthdate, u.mifareid, u.barcode;
+            group by u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.mail, u.password, u.institution, u.birthdate, u.barcode;
              */
-            String query = resourceBundle.getString("get_user_by_<?>").replace("<?>", "u.augentpreferredsn = ?");
+            String query = databaseProperties.getString("get_user_by_<?>").replace("<?>", "u.augentpreferredsn = ?");
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, lastName);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 User u = new User();
-                u.setAugentID(resultSet.getString(resourceBundle.getString("user_id")));
-                u.setLastName(resultSet.getString(resourceBundle.getString("user_surname")));
-                u.setFirstName(resultSet.getString(resourceBundle.getString("user_name")));
-                u.setPassword(resultSet.getString(resourceBundle.getString("user_password")));
-                u.setBarcode(resultSet.getString(resourceBundle.getString("user_barcode")));
-                u.setPenaltyPoints(resultSet.getInt(resourceBundle.getString("user_penpoints")));
-                String csvRole = resultSet.getString(resourceBundle.getString("user_role"));
+                u.setAugentID(resultSet.getString(databaseProperties.getString("user_augentid")));
+                u.setLastName(resultSet.getString(databaseProperties.getString("user_surname")));
+                u.setFirstName(resultSet.getString(databaseProperties.getString("user_name")));
+                u.setPassword(resultSet.getString(databaseProperties.getString("user_password")));
+                u.setBarcode(resultSet.getString(databaseProperties.getString("user_barcode")));
+                u.setPenaltyPoints(resultSet.getInt(databaseProperties.getString("user_penalty_points")));
+                String csvRole = resultSet.getString(databaseProperties.getString("user_role"));
                 u.setRoles(csvToRoles(csvRole));
-                u.setMail(resultSet.getString(resourceBundle.getString("user_mail")));
-                u.setInstitution(resultSet.getString(resourceBundle.getString("user_institution")));
+                u.setMail(resultSet.getString(databaseProperties.getString("user_mail")));
+                u.setInstitution(resultSet.getString(databaseProperties.getString("user_institution")));
                 users.add(u);
             }
         } catch (Exception e) {
@@ -253,7 +253,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
                     from x
                     where week + 1 <= 5
             )
-            SELECT u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.mail, u.password, u.institution, u.birthdate, u.mifareid, u.barcode
+            SELECT u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.mail, u.password, u.institution, u.birthdate, u.barcode
                     , floor(sum(case when b.event_code = 16662 then b.received_points
                                 else b.received_points * x.perc end)) as "penalty_points"
             FROM public.user u
@@ -262,20 +262,20 @@ public class DBAccountDao extends ADB implements IAccountDao {
                 LEFT JOIN x
                     ON floor(extract(days from (now() - to_timestamp(b.timestamp, 'YYYY-MM-DD HH24\:MI\:SS'))) / 7) = x.week
             WHERE <?>
-            group by u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.mail, u.password, u.institution, u.birthdate, u.mifareid, u.barcode;
+            group by u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.mail, u.password, u.institution, u.birthdate, u.barcode;
              */
-            String query = resourceBundle.getString("get_user_by_<?>").replace("<?>", "u.augentpreferredgivenname = ?");
+            String query = databaseProperties.getString("get_user_by_<?>").replace("<?>", "u.augentpreferredgivenname = ?");
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, firstName);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 User u = new User();
-                u.setAugentID(resultSet.getString(resourceBundle.getString("augentID")));
-                u.setLastName(resultSet.getString(resourceBundle.getString("augentPreferredSn")));
-                u.setFirstName(resultSet.getString(resourceBundle.getString("augentPreferredGivenName")));
-                u.setPenaltyPoints(resultSet.getInt(resourceBundle.getString("penaltyPoints")));
-                u.setBarcode(resultSet.getString(resourceBundle.getString("barcode")));
-                String csvRole = resultSet.getString(resourceBundle.getString("role"));
+                u.setAugentID(resultSet.getString(databaseProperties.getString("user_augentid")));
+                u.setLastName(resultSet.getString(databaseProperties.getString("user_surname")));
+                u.setFirstName(resultSet.getString(databaseProperties.getString("user_name")));
+                u.setPenaltyPoints(resultSet.getInt(databaseProperties.getString("user_penalty_points")));
+                u.setBarcode(resultSet.getString(databaseProperties.getString("user_barcode")));
+                String csvRole = resultSet.getString(databaseProperties.getString("user_role"));
                 u.setRoles(csvToRoles(csvRole));
                 users.add(u);
             }
@@ -310,7 +310,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
                     from x
                     where week + 1 <= 5
             )
-            SELECT u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.mail, u.password, u.institution, u.birthdate, u.mifareid, u.barcode
+            SELECT u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.mail, u.password, u.institution, u.birthdate, u.barcode
                     , floor(sum(case when b.event_code = 16662 then b.received_points
                                 else b.received_points * x.perc end)) as "penalty_points"
             FROM public.user u
@@ -319,24 +319,24 @@ public class DBAccountDao extends ADB implements IAccountDao {
                 LEFT JOIN x
                     ON floor(extract(days from (now() - to_timestamp(b.timestamp, 'YYYY-MM-DD HH24\:MI\:SS'))) / 7) = x.week
             WHERE <?>
-            group by u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.mail, u.password, u.institution, u.birthdate, u.mifareid, u.barcode;
+            group by u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.mail, u.password, u.institution, u.birthdate, u.barcode;
              */
             // note: u.augentid is the PK of USER table, therefore it cannot be null and you'll have all results, as if the where clause wasn't there
-            String query = resourceBundle.getString("get_user_by_<?>").replace("<?>", "u.augentid IS NOT NULL");
+            String query = databaseProperties.getString("get_user_by_<?>").replace("<?>", "u.augentid IS NOT NULL");
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 User u = new User();
-                u.setAugentID(resultSet.getString(resourceBundle.getString("user_id")));
-                u.setLastName(resultSet.getString(resourceBundle.getString("user_surname")));
-                u.setFirstName(resultSet.getString(resourceBundle.getString("user_name")));
-                u.setPassword(resultSet.getString(resourceBundle.getString("user_password")));
-                u.setBarcode(resultSet.getString(resourceBundle.getString("user_barcode")));
-                u.setPenaltyPoints(resultSet.getInt(resourceBundle.getString("user_penpoints")));
-                String csvRole = resultSet.getString(resourceBundle.getString("user_role"));
+                u.setAugentID(resultSet.getString(databaseProperties.getString("user_augentid")));
+                u.setLastName(resultSet.getString(databaseProperties.getString("user_surname")));
+                u.setFirstName(resultSet.getString(databaseProperties.getString("user_name")));
+                u.setPassword(resultSet.getString(databaseProperties.getString("user_password")));
+                u.setBarcode(resultSet.getString(databaseProperties.getString("user_barcode")));
+                u.setPenaltyPoints(resultSet.getInt(databaseProperties.getString("user_penalty_points")));
+                String csvRole = resultSet.getString(databaseProperties.getString("user_role"));
                 u.setRoles(csvToRoles(csvRole));
-                u.setMail(resultSet.getString(resourceBundle.getString("user_mail")));
-                u.setInstitution(resultSet.getString(resourceBundle.getString("user_institution")));
+                u.setMail(resultSet.getString(databaseProperties.getString("user_mail")));
+                u.setInstitution(resultSet.getString(databaseProperties.getString("user_institution")));
                 users.add(u);
             }
         } catch (Exception e) {
@@ -361,14 +361,14 @@ public class DBAccountDao extends ADB implements IAccountDao {
         ArrayList<String> users = new ArrayList<>();
         try (Connection connection = getConnection()) {
 
-            String query = resourceBundle.getString("get_user_by_<?>").replace("<?>", "u.role LIKE '%'||?||'%'");
+            String query = databaseProperties.getString("get_user_by_<?>").replace("<?>", "u.role LIKE '%'||?||'%'");
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, role);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                String s1 = resultSet.getString(resourceBundle.getString("user_id"));
-                String s2 = resultSet.getString(resourceBundle.getString("user_name"));
-                String s3 = resultSet.getString(resourceBundle.getString("user_surname"));
+                String s1 = resultSet.getString(databaseProperties.getString("user_augentid"));
+                String s2 = resultSet.getString(databaseProperties.getString("user_name"));
+                String s3 = resultSet.getString(databaseProperties.getString("user_surname"));
                 String s = s1 + ' ' + s3 + ' ' + s2;
                 users.add(s);
             }
@@ -384,10 +384,10 @@ public class DBAccountDao extends ADB implements IAccountDao {
         try (Connection conn = getConnection()) {
             /*
                 INSERT into public.user (mail, augentpreferredsn, augentpreferredgivenname, password
-                                     , institution, augentid, birthdate, role, penalty_points, mifareid, barcode)
+                                     , institution, augentid, birthdate, role, penalty_points, barcode)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?)
              */
-            PreparedStatement pstmt = conn.prepareStatement(resourceBundle.getString("insert_user"));
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("insert_user"));
             pstmt.setString(1, u.getMail().toLowerCase());
             pstmt.setString(2, u.getLastName());
             pstmt.setString(3, u.getFirstName());
@@ -410,10 +410,10 @@ public class DBAccountDao extends ADB implements IAccountDao {
             if (u.getBarcode() == null || u.getBarcode().length() == 0) {
                 // indien geen barcode voorzien werd, deze instellen op UPC-A gegenereerd op basis van AUGent id
                 String barcode = u.getAugentID();
-                while(barcode.length()>11){
-                    barcode=barcode.substring(1);
+                while(barcode.length() > 11){
+                    barcode = barcode.substring(1);
                 }
-                barcode= BarcodeController.calculateUPCACheckSum(barcode);
+                barcode = BarcodeController.calculateUPCACheckSum(barcode);
                 u.setBarcode(barcode);
                 pstmt.setString(9, barcode);
             } else {
@@ -439,35 +439,35 @@ public class DBAccountDao extends ADB implements IAccountDao {
                 /*
                 Delete all location reservations of this user
                  */
-                PreparedStatement st = connection.prepareStatement(resourceBundle.getString("delete_location_reservations_of_user_by_id"));
+                PreparedStatement st = connection.prepareStatement(databaseProperties.getString("delete_location_reservations_of_user_by_id"));
                 st.setString(1, AUGentID);
                 st.execute();
 
                 /*
                 Delete all locker reservations of this user
                  */
-                st = connection.prepareStatement(resourceBundle.getString("delete_locker_reservations_of_user_by_id"));
+                st = connection.prepareStatement(databaseProperties.getString("delete_locker_reservations_of_user_by_id"));
                 st.setString(1, AUGentID);
                 st.execute();
 
                 /*
                 Delete all penalty records of this user
                  */
-                st = connection.prepareStatement(resourceBundle.getString("delete_penalties_of_user_by_id"));
+                st = connection.prepareStatement(databaseProperties.getString("delete_penalties_of_user_by_id"));
                 st.setString(1, AUGentID);
                 st.execute();
 
                 /*
                 Delete records in scanner_location table (necessary if user is a scanner)
                  */
-                st = connection.prepareStatement(resourceBundle.getString("delete_scanners_of_location_of_user_by_id"));
+                st = connection.prepareStatement(databaseProperties.getString("delete_scanners_of_location_of_user_by_id"));
                 st.setString(1, AUGentID);
                 st.execute();
 
                 /*
                 Finally, delete the user
                  */
-                PreparedStatement statement = connection.prepareStatement(resourceBundle.getString("delete_user"));
+                PreparedStatement statement = connection.prepareStatement(databaseProperties.getString("delete_user"));
                 statement.setString(1, AUGentID);
                 statement.execute();
 
@@ -485,7 +485,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
     public String addUserToBeVerified(User u) {
         int count = 0;
         try (Connection connection = getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(resourceBundle.getString("count_user_to_be_verified_by_id"));
+            PreparedStatement statement = connection.prepareStatement(databaseProperties.getString("count_user_to_be_verified_by_id"));
             statement.setString(1, u.getAugentID());
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -499,7 +499,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
         }
         String verificationCode = verificationCodeGenerator.generate();
         try (Connection connection = getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(resourceBundle.getString("insert_user_to_be_verified"));
+            PreparedStatement statement = connection.prepareStatement(databaseProperties.getString("insert_user_to_be_verified"));
             statement.setString(1, u.getMail().toLowerCase());
             statement.setString(2, u.getLastName());
             statement.setString(3, u.getFirstName());
@@ -509,14 +509,13 @@ public class DBAccountDao extends ADB implements IAccountDao {
 
             Role[] roles = u.getRoles();
             statement.setString(7, rolesToCsv(roles));
-            statement.setInt(8, u.getPenaltyPoints());
 
-            setString(statement, 9, u.getBarcode());
-            statement.setString(10, verificationCode);
+            setString(statement, 8, u.getBarcode());
+            statement.setString(9, verificationCode);
 
             LocalDateTime localDate = LocalDateTime.now();
             CustomDate today = new CustomDate(localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth(), localDate.getHour(), localDate.getMinute(), localDate.getSecond());
-            statement.setString(11, today.toString());
+            statement.setString(10, today.toString());
 
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -536,29 +535,32 @@ public class DBAccountDao extends ADB implements IAccountDao {
     @Override
     public void verifyNewUser(String verificationCode) {
         try (Connection connection = getConnection()) {
-            PreparedStatement get = connection.prepareStatement(resourceBundle.getString("get_user_to_be_verfied_by_verification_code"));
-            get.setString(1, verificationCode);
-            ResultSet resultSet = get.executeQuery();
+            // get the user in table USERS_TO_VERIFY with given verification code
+            PreparedStatement pstmtUserToVerify = connection.prepareStatement(databaseProperties.getString("get_user_to_be_verfied_by_verification_code"));
+            pstmtUserToVerify.setString(1, verificationCode);
+            ResultSet resultSet = pstmtUserToVerify.executeQuery();
+
             if (resultSet.next()) {
-                // found a user to verify so copy to the table USER then delete entry in the table USERS_TO_VERIFY
-                // copy entry
-                PreparedStatement copy = connection.prepareStatement(resourceBundle.getString("insert_user"));
-                copy.setString(1, resultSet.getString(resourceBundle.getString("user_mail")));
-                copy.setString(2, resultSet.getString(resourceBundle.getString("user_surname")));
-                copy.setString(3, resultSet.getString(resourceBundle.getString("user_name")));
-                copy.setString(4, resultSet.getString(resourceBundle.getString("user_password")));
-                copy.setString(5, resultSet.getString(resourceBundle.getString("user_institution")));
-                copy.setString(6, resultSet.getString(resourceBundle.getString("user_id")));
-                copy.setString(7, resultSet.getString(resourceBundle.getString("user_role")));
-                copy.setInt(8, resultSet.getInt(resourceBundle.getString("user_penpoints")));
-                copy.setString(9, resultSet.getString(resourceBundle.getString("user_mifareID")));
-                copy.setString(10, resultSet.getString(resourceBundle.getString("user_barcode")));
-                copy.executeUpdate();
+                // there was an entry found in the table USERS_TO_VERIFY with the given verification code
+                // the user must be added to the table USERS and removed from the table USERS_TO_VERIFY.
+
+                // add user to USERS
+                PreparedStatement pstmtUser = connection.prepareStatement(databaseProperties.getString("insert_user"));
+                pstmtUser.setString(1, resultSet.getString(databaseProperties.getString("utv_mail")));
+                pstmtUser.setString(2, resultSet.getString(databaseProperties.getString("utv_surname")));
+                pstmtUser.setString(3, resultSet.getString(databaseProperties.getString("utv_name")));
+                pstmtUser.setString(4, resultSet.getString(databaseProperties.getString("utv_password")));
+                pstmtUser.setString(5, resultSet.getString(databaseProperties.getString("utv_institution")));
+                pstmtUser.setString(6, resultSet.getString(databaseProperties.getString("utv_augentid")));
+                pstmtUser.setString(7, resultSet.getString(databaseProperties.getString("utv_role")));
+                pstmtUser.setInt(8, 0); // penalty_points
+                pstmtUser.setString(9, resultSet.getString(databaseProperties.getString("utv_barcode")));
+                pstmtUser.executeUpdate();
 
                 // delete entry in the table USERS_TO_VERIFY
-                PreparedStatement delete = connection.prepareStatement(resourceBundle.getString("delete_user_to_be_verfied"));
-                delete.setString(1, verificationCode);
-                delete.executeUpdate();
+                PreparedStatement pstmtDeleteUserToVerify = connection.prepareStatement(databaseProperties.getString("delete_user_to_be_verfied"));
+                pstmtDeleteUserToVerify.setString(1, verificationCode);
+                pstmtDeleteUserToVerify.executeUpdate();
             } else {
                 throw new WrongVerificationCodeException("No new user to be verified with verification code "
                         + verificationCode + " was found.");
@@ -595,7 +597,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
                     are updated. Because of the unique constraint on the email of a user, the new user is inserted with a temporary email.
                     After deleting the old record of the user, the email can be replaced.
                      */
-                    PreparedStatement st = connection.prepareStatement(resourceBundle.getString("insert_user"));
+                    PreparedStatement st = connection.prepareStatement(databaseProperties.getString("insert_user"));
                     st.setString(1, "temp@mail.com");
                     st.setString(2, u.getLastName());
                     st.setString(3, u.getFirstName());
@@ -610,7 +612,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
                     /*
                     Update location reservations of this user
                      */
-                    st = connection.prepareStatement(resourceBundle.getString("update_location_reservations_of_user"));
+                    st = connection.prepareStatement(databaseProperties.getString("update_location_reservations_of_user"));
                     st.setString(1, u.getAugentID());
                     st.setString(2, currentUser.getAugentID());
                     st.execute();
@@ -618,7 +620,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
                     /*
                     Update locker reservations of this user
                      */
-                    st = connection.prepareStatement(resourceBundle.getString("update_locker_reservations_of_user"));
+                    st = connection.prepareStatement(databaseProperties.getString("update_locker_reservations_of_user"));
                     st.setString(1, u.getAugentID());
                     st.setString(2, currentUser.getAugentID());
                     st.execute();
@@ -626,7 +628,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
                     /*
                     Update penalties of this user
                      */
-                    st = connection.prepareStatement(resourceBundle.getString("update_penalties_of_user"));
+                    st = connection.prepareStatement(databaseProperties.getString("update_penalties_of_user"));
                     st.setString(1, u.getAugentID());
                     st.setString(2, currentUser.getAugentID());
                     st.execute();
@@ -634,7 +636,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
                     /*
                     Update scanners of location of this user
                      */
-                    st = connection.prepareStatement(resourceBundle.getString("update_scanners_of_location_of_user"));
+                    st = connection.prepareStatement(databaseProperties.getString("update_scanners_of_location_of_user"));
                     st.setString(1, u.getAugentID());
                     st.setString(2, currentUser.getAugentID());
                     st.execute();
@@ -643,14 +645,14 @@ public class DBAccountDao extends ADB implements IAccountDao {
                     After all records using a Foreing Key to this user are changed, the (same) user with the old AUGentID record
                     can be removed.
                      */
-                    st = connection.prepareStatement(resourceBundle.getString("delete_user"));
+                    st = connection.prepareStatement(databaseProperties.getString("delete_user"));
                     st.setString(1, currentUser.getAugentID());
                     st.execute();
 
                     /*
                     At last, change the email of the new user record to the correct email
                      */
-                    st = connection.prepareStatement(resourceBundle.getString("set_mail_of_user_by_id"));
+                    st = connection.prepareStatement(databaseProperties.getString("set_mail_of_user_by_id"));
                     st.setString(1, u.getMail());
                     st.setString(2, u.getAugentID());
                     st.execute();
@@ -661,7 +663,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
                 length has to be 8 characters.
                  */
                 if (u.getPassword() != null && u.getPassword().length() > 0) {
-                    PreparedStatement statement = connection.prepareStatement(resourceBundle.getString("update_user_with_password"));
+                    PreparedStatement statement = connection.prepareStatement(databaseProperties.getString("update_user_with_password"));
 
                     statement.setString(1, u.getMail());
                     statement.setString(2, u.getLastName());
@@ -676,7 +678,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
 
                     statement.executeUpdate();
                 } else {
-                    PreparedStatement statement = connection.prepareStatement(resourceBundle.getString("update_user_without_password"));
+                    PreparedStatement statement = connection.prepareStatement(databaseProperties.getString("update_user_without_password"));
 
                     statement.setString(1, u.getMail());
                     statement.setString(2, u.getLastName());
@@ -706,7 +708,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
     @Override
     public boolean accountExistsByEmail(String email) {
         try (Connection connection = getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(resourceBundle.getString("count_accounts_with_email"));
+            PreparedStatement statement = connection.prepareStatement(databaseProperties.getString("count_accounts_with_email"));
             statement.setString(1, email.toLowerCase());
             ResultSet resultSet = statement.executeQuery();
             resultSet.next();
@@ -724,12 +726,12 @@ public class DBAccountDao extends ADB implements IAccountDao {
 
         ArrayList<String> locations = new ArrayList<>();
         try (Connection connection = getConnection()) {
-            String query = resourceBundle.getString("get_locations_of_scanner");
+            String query = databaseProperties.getString("get_locations_of_scanner");
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, u.getAugentID());
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                locations.add(resultSet.getString(resourceBundle.getString("location_name")));
+                locations.add(resultSet.getString(databaseProperties.getString("scanners_location_name")));
             }
             return locations;
         } catch (Exception e) {

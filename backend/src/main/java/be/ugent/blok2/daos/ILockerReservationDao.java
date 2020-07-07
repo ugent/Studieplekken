@@ -6,7 +6,7 @@ import be.ugent.blok2.reservations.LockerReservation;
 
 import java.util.List;
 
-public interface ILockerReservationDao {
+public interface ILockerReservationDao extends IDao {
     /**
      * Gets a list of all lockerreservations made by the user with the given augentID.
      */

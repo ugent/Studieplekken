@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 @Profile("dummy")
 @Service
-public class DummyLocationDao implements ILocationDao {
+public class DummyLocationDao extends ADummyDao implements ILocationDao {
 
     // a locations name is used as key for the Map
     private Map<String, Location> locations;

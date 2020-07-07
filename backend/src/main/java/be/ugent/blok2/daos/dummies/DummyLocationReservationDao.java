@@ -22,7 +22,7 @@ import java.util.*;
 
 @Profile("dummy")
 @Service
-public class DummyLocationReservationDao implements ILocationReservationDao {
+public class DummyLocationReservationDao extends ADummyDao implements ILocationReservationDao {
     private List<LocationReservation> locationReservations = new ArrayList<>();
     public static LocationReservation TEST_LOCATION_RESERVATION;
     public static User TEST_STUDENT;

@@ -9,7 +9,7 @@ import be.ugent.blok2.model.penalty.PenaltyEvent;
 
 import java.util.List;
 
-public interface IPenaltyEventsDao {
+public interface IPenaltyEventsDao extends IDao {
     List<PenaltyEvent> getPenaltyEvents();
 
     /**

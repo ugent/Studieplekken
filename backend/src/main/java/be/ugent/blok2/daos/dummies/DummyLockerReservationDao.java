@@ -23,7 +23,7 @@ import java.util.List;
 
 @Profile("dummy")
 @Service
-public class DummyLockerReservationDao implements ILockerReservationDao {
+public class DummyLockerReservationDao extends ADummyDao implements ILockerReservationDao {
     public static LockerReservation TEST_LOCKERRESERVATION;
     public static List<User> TEST_USERS;
     public static CustomDate TEST_DATE;

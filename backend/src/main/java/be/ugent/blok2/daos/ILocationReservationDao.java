@@ -8,7 +8,7 @@ import be.ugent.blok2.helpers.date.CustomDate;
 import java.util.List;
 
 
-public interface ILocationReservationDao {
+public interface ILocationReservationDao extends IDao {
     List<LocationReservation> getAllLocationReservationsOfUser(String augentID) throws NoSuchUserException;
 
     List<LocationReservation> getAllLocationReservationsOfUserByName(String userName);

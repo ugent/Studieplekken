@@ -12,7 +12,7 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
-public interface ILocationDao {
+public interface ILocationDao extends IDao {
 
     /**
      * Get a list of all available locations.

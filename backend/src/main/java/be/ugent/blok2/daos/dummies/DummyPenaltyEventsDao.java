@@ -18,7 +18,7 @@ import java.util.*;
 
 @Service
 @Profile("dummy")
-public class DummyPenaltyEventsDao implements IPenaltyEventsDao {
+public class DummyPenaltyEventsDao extends ADummyDao implements IPenaltyEventsDao {
     private Map<Integer, PenaltyEvent> events;
     private Map<String, List<Penalty>> penalty_book; // get Penalties for a user
     public static PenaltyEvent TESTPENALTY;

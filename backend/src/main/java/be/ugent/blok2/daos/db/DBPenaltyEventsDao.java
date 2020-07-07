@@ -26,7 +26,7 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
         List<PenaltyEvent> ret = new ArrayList<>();
         try (Connection conn = getConnection()) {
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(resourceBundle.getString("get_penalty_events"));
+            ResultSet rs = stmt.executeQuery(databaseProperties.getString("get_penalty_events"));
             /*
             select e.code, e.points, e.public_accessible, d.lang_enum, d.description
             from penalty_events e
@@ -35,19 +35,19 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
              */
             Map<Integer, PenaltyEvent> events = new HashMap<>();
             while (rs.next()) {
-                int code = rs.getInt(resourceBundle.getString("event_code"));
+                int code = rs.getInt(databaseProperties.getString("penalty_event_code"));
                 PenaltyEvent e = events.get(code);
                 if (e == null) {
                     e = new PenaltyEvent();
                     e.setCode(code);
-                    e.setPoints(rs.getInt(resourceBundle.getString("event_points")));
-                    e.setPublicAccessible(rs.getBoolean(resourceBundle.getString("event_public_accessible")));
+                    e.setPoints(rs.getInt(databaseProperties.getString("penalty_event_points")));
+                    e.setPublicAccessible(rs.getBoolean(databaseProperties.getString("penalty_event_public_accessible")));
                     e.setDescriptions(new HashMap<>());
                     events.put(code, e);
                 }
 
-                Language lang = Language.valueOf(rs.getString(resourceBundle.getString("desc_lang_enum")));
-                e.getDescriptions().put(lang, rs.getString(resourceBundle.getString("desc_desc")));
+                Language lang = Language.valueOf(rs.getString(databaseProperties.getString("penalty_description_lang_enum")));
+                e.getDescriptions().put(lang, rs.getString(databaseProperties.getString("penalty_description_description")));
             }
 
             ret.addAll(events.values());
@@ -69,19 +69,19 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
                     on e.code = d.event_code
              where e.code = ? ;
              */
-            PreparedStatement pstmt = conn.prepareStatement(resourceBundle.getString("get_penalty_event"));
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("get_penalty_event"));
             pstmt.setInt(1, code);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 if (ret == null) {
                     ret = new PenaltyEvent();
                     ret.setCode(code);
-                    ret.setPoints(rs.getInt(resourceBundle.getString("event_points")));
-                    ret.setPublicAccessible(rs.getBoolean(resourceBundle.getString("event_public_accessible")));
+                    ret.setPoints(rs.getInt(databaseProperties.getString("penalty_event_points")));
+                    ret.setPublicAccessible(rs.getBoolean(databaseProperties.getString("penalty_event_public_accessible")));
                     ret.setDescriptions(new HashMap<>());
                 }
-                Language lang = Language.valueOf(rs.getString(resourceBundle.getString("desc_lang_enum")));
-                ret.getDescriptions().put(lang, rs.getString(resourceBundle.getString("desc_desc")));
+                Language lang = Language.valueOf(rs.getString(databaseProperties.getString("penalty_description_lang_enum")));
+                ret.getDescriptions().put(lang, rs.getString(databaseProperties.getString("penalty_description_description")));
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -99,17 +99,17 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
             from public.penalty_book b
             where b.user_augentid = ?;
              */
-            PreparedStatement pstmt = conn.prepareStatement(resourceBundle.getString("get_penalties"));
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("get_penalties"));
             pstmt.setString(1, augentId);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 Penalty p = new Penalty();
-                p.setAugentID(rs.getString(resourceBundle.getString("book_user_augentid")));
-                p.setEventCode(rs.getInt(resourceBundle.getString("book_event_code")));
-                p.setTimestamp(CustomDate.parseString(rs.getString(resourceBundle.getString("book_timestamp"))));
-                p.setReservationDate(CustomDate.parseString(rs.getString(resourceBundle.getString("book_reservation_date"))));
-                p.setReservationLocation(rs.getString(resourceBundle.getString("book_reservation_location")));
-                p.setReceivedPoints(rs.getInt(resourceBundle.getString("book_received_points")));
+                p.setAugentID(rs.getString(databaseProperties.getString("penalty_book_user_augentid")));
+                p.setEventCode(rs.getInt(databaseProperties.getString("penalty_book_event_code")));
+                p.setTimestamp(CustomDate.parseString(rs.getString(databaseProperties.getString("penalty_book_timestamp"))));
+                p.setReservationDate(CustomDate.parseString(rs.getString(databaseProperties.getString("penalty_book_reservation_date"))));
+                p.setReservationLocation(rs.getString(databaseProperties.getString("penalty_book_reservation_location")));
+                p.setReceivedPoints(rs.getInt(databaseProperties.getString("penalty_book_received_points")));
                 ret.add(p);
             }
         } catch (SQLException e) {
@@ -132,7 +132,7 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
             INSERT INTO public.penalty_events(code, points, public_accessible)
             VALUES (?, ?, ?);
              */
-            PreparedStatement pstmt = conn.prepareStatement(resourceBundle.getString("insert_penalty_event"));
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("insert_penalty_event"));
             pstmt.setInt(1, event.getCode());
             pstmt.setInt(2, event.getPoints());
             pstmt.setBoolean(3, event.getPublicAccessible());
@@ -142,7 +142,7 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
             INSERT INTO public.penalty_descriptions(lang_enum, event_code, description)
             VALUES (?, ?, ?);
              */
-            PreparedStatement pstmt2 = conn.prepareStatement(resourceBundle.getString("insert_penalty_description"));
+            PreparedStatement pstmt2 = conn.prepareStatement(databaseProperties.getString("insert_penalty_description"));
             for (Language lang : event.getDescriptions().keySet()) {
                 pstmt2.setString(1, lang.name());
                 pstmt2.setInt(2, event.getCode());
@@ -155,7 +155,7 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             // code 23505 -> duplicate key value violates unique constraint "penalty_events_pkey"
-            if (e.getSQLState().equals(resourceBundle.getString("sql_state_duplicate_key")))
+            if (e.getSQLState().equals(databaseProperties.getString("sql_state_duplicate_key")))
                 throw new AlreadyExistsException("A penalty event with code " + event.getCode() + " already exists. " +
                         "Use updatePenaltyEvent() instead.");
         }
@@ -164,7 +164,7 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
     @Override
     public void addDescription(int code, Language language, String description) throws NoSuchPenaltyEventException, AlreadyExistsException {
         try (Connection conn = getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(resourceBundle.getString("count_penalty_events_with_code"));
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("count_penalty_events_with_code"));
             /*
             select count(1)
             from penalty_events
@@ -181,12 +181,12 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
             INSERT INTO public.penalty_descriptions(lang_enum, event_code, description)
             VALUES (?, ?, ?);
              */
-            pstmt = conn.prepareStatement(resourceBundle.getString("insert_penalty_description"));
+            pstmt = conn.prepareStatement(databaseProperties.getString("insert_penalty_description"));
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             // code 23505 -> duplicate key value violates unique constraint "penalty_events_pkey"
-            if (e.getSQLState().equals(resourceBundle.getString("sql_state_duplicate_key")))
+            if (e.getSQLState().equals(databaseProperties.getString("sql_state_duplicate_key")))
                 throw new AlreadyExistsException("A penalty event with code " + code + " already exists. " +
                         "Use updatePenaltyEvent() instead.");
         }
@@ -199,7 +199,7 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
             insert into penalty_book(user_augentid, event_code, timestamp, reservation_date, reservation_location, received_points)
             values (?, ?, ?, ?, ?, ?);
              */
-            PreparedStatement pstmt = conn.prepareStatement(resourceBundle.getString("insert_penalty"));
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("insert_penalty"));
             setPreparedStatementWithPenalty(pstmt, penalty);
             pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -217,12 +217,12 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
             // you'll always need 2 queries to update in stead of only one.
             conn.setAutoCommit(false);
 
-            PreparedStatement pstmt = conn.prepareStatement(resourceBundle.getString("update_penalty_event"));
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("update_penalty_event"));
             int count = updatePenaltyEventsEvent(pstmt, event);
             if (count == 0)
                 throw new NoSuchPenaltyEventException("No PenaltyEvent with code " + event.getCode() + " exists. ");
 
-            pstmt = conn.prepareStatement(resourceBundle.getString("update_penalty_description"));
+            pstmt = conn.prepareStatement(databaseProperties.getString("update_penalty_description"));
             for (Language lang : event.getDescriptions().keySet())
                 updatePenaltyEventsDescription(pstmt, event.getCode(), lang, event.getDescriptions().get(lang));
 
@@ -245,7 +245,7 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
             WHERE b.user_augentid = ? AND b.event_code = ? AND b.timestamp = ?
                 AND b.reservation_date = ? AND b.reservation_location = ? AND b.received_points = ?;
              */
-            PreparedStatement pstmt = conn.prepareStatement(resourceBundle.getString("delete_penalty"));
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_penalty"));
             for (Penalty p : remove) {
                 setPreparedStatementWithPenalty(pstmt, p);
                 pstmt.executeUpdate();
@@ -256,7 +256,7 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
             insert into penalty_book(user_augentid, event_code, timestamp, reservation_date, reservation_location, received_points)
             values (?, ?, ?, ?, ?, ?);
              */
-            pstmt = conn.prepareStatement(resourceBundle.getString("insert_penalty"));
+            pstmt = conn.prepareStatement(databaseProperties.getString("insert_penalty"));
             for (Penalty p : add) {
                 if(p.getReceivedPoints() < 0){
                     PenaltyEvent e = getPenaltyEvent(p.getEventCode());
@@ -310,7 +310,7 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
                 DELETE FROM public.penalty_descriptions
                 WHERE lang_enum=? AND event_code=?;
                  */
-                PreparedStatement pstmt = conn.prepareStatement(resourceBundle.getString("delete_penalty_description"));
+                PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_penalty_description"));
                 for (Language lang : event.getDescriptions().keySet()) {
                     pstmt.setString(1, lang.name());
                     pstmt.setInt(2, event.getCode());
@@ -321,7 +321,7 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
                 DELETE FROM public.penalty_events
                 WHERE code=?;
                  */
-                PreparedStatement pstmt2 = conn.prepareStatement(resourceBundle.getString("delete_penalty_event"));
+                PreparedStatement pstmt2 = conn.prepareStatement(databaseProperties.getString("delete_penalty_event"));
                 pstmt2.setInt(1, code);
                 pstmt2.executeUpdate();
 
@@ -340,7 +340,7 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
             DELETE FROM public.penalty_descriptions
             WHERE lang_enum=? AND event_code=?;
              */
-            PreparedStatement pstmt = conn.prepareStatement(resourceBundle.getString("delete_penalty_description"));
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_penalty_description"));
             pstmt.setString(1, language.name());
             pstmt.setInt(2, code);
             int count = pstmt.executeUpdate();
@@ -360,7 +360,7 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
             WHERE b.user_augentid = ? AND b.event_code = ? AND b.timestamp = ?
                 AND b.reservation_date = ? AND b.reservation_location = ? AND b.received_points = ?;
              */
-            PreparedStatement pstmt = conn.prepareStatement(resourceBundle.getString("delete_penalty"));
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_penalty"));
             setPreparedStatementWithPenalty(pstmt, penalty);
             pstmt.executeUpdate();
         } catch (SQLException e) {

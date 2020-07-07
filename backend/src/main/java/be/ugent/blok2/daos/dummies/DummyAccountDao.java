@@ -27,7 +27,7 @@ import java.util.*;
 
 @Profile("dummy")
 @Service
-public class DummyAccountDao implements IAccountDao {
+public class DummyAccountDao extends ADummyDao implements IAccountDao {
     /*
      * In this dummy dao, all users are kept in a HashMap.
      * The keys are the user's email and the value is the instance of the user.

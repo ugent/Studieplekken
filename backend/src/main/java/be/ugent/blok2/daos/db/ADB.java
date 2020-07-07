@@ -1,5 +1,6 @@
 package be.ugent.blok2.daos.db;
 
+import be.ugent.blok2.daos.IDao;
 import be.ugent.blok2.helpers.Resources;
 import org.apache.commons.codec.language.Soundex;
 
@@ -12,15 +13,39 @@ import java.util.ResourceBundle;
 /**
  * Abstract class used for all the database DAOs. Implements universal functionalities.
  */
-public abstract class ADB {
+public abstract class ADB implements IDao {
 
-    protected final ResourceBundle resourceBundle = Resources.applicationProperties;
+    protected final ResourceBundle databaseProperties = Resources.databaseProperties;
+    protected final ResourceBundle applicationProperties = Resources.applicationProperties;
     protected Soundex soundex = new Soundex();
 
+    private String connectionUrl;
+    private String connectionUser;
+    private String connectionPassword;
+
+    public ADB() {
+        useDefaultDatabaseConnection();
+    }
+
     protected Connection getConnection() throws SQLException {
-        Properties props = new Properties();
-        props.setProperty("user", resourceBundle.getString("user"));
-        props.setProperty("password", resourceBundle.getString("pass"));
-        return DriverManager.getConnection(resourceBundle.getString("URL"), props);
+        return DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
+    }
+
+    @Override
+    public void setDatabaseConnectionUrl(String url) {
+        connectionUrl = url;
+    }
+
+    @Override
+    public void setDatabaseCredentials(String user, String password) {
+        connectionUser = user;
+        connectionPassword = password;
+    }
+
+    @Override
+    public void useDefaultDatabaseConnection() {
+        connectionUrl = applicationProperties.getString("db_url");
+        connectionUser = applicationProperties.getString("db_user");
+        connectionPassword = applicationProperties.getString("db_password");
     }
 }

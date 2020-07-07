@@ -5,7 +5,7 @@ import be.ugent.blok2.model.users.User;
 
 import java.util.List;
 
-public interface IAccountDao {
+public interface IAccountDao extends IDao {
 
     /**
      * NOTE: the password of a given user will be empty for security measures.
