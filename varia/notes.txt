@@ -1,20 +1,20 @@
 Change table names: to plural:
 -------------------------------
-institution
-location 
-location_reservation
-locker 
-locker_reservation 
-user
+institution							
+location 					
+location_reservation		
+locker 						
+locker_reservation 			
+user						
 
 
 Changes made to database model, but not changed in application (front and back):
 --------------------------------------------------------------------------------
-public.location_reservation 		-> changed name augentid to user_augentid
-public.penalty_points 				-> remove table 
+public.location_reservations 		-> changed name user_id/augentid to user_augentid
 public.scanners_loaction 			-> changed name augentid to user_augentid
 public.users_to_verify 				-> removed birthdate, penalty_points, mifareid
-public.locker_reservation 			-> changed name user_id to user_augentid
+public.locker_reservations 			-> changed name user_id to user_augentid
+public.lockers						-> removed student_limit
 
 
 application queries use soundex
@@ -24,3 +24,34 @@ check if certain modules need to be added in the blokatugent.sql script
 inform user when locker reservation cleanup occurs
 --------------------------------------------------
 there is a cleanup every ... that cleans up the locker reservations
+
+
+TODO
+----
+To test whether all changes to the db are put into the application -> create a test blokatugent db and create tests for all DBDao methods
+
+TOSTART: utv_ ... in DBAccountDao vervangen door user_... waar nodig
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

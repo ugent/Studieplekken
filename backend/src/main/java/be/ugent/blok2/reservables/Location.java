@@ -12,8 +12,8 @@ import java.util.*;
 public class Location implements Cloneable {
     private String name;
     private String address;
-    private final int numberOfSeats;
-    private final int numberOfLockers;
+    private int numberOfSeats;
+    private int numberOfLockers;
     private String mapsFrame; // this is the HTML-frame from Google Maps to put into the front-end
     private Map<Language, String> descriptions;
     private String imageUrl;
@@ -201,7 +201,13 @@ public class Location implements Cloneable {
 
     public Collection<User> getScanners() { return scanners; }
 
+    public void setNumberOfSeats(int numberOfSeats) {
+        this.numberOfSeats = numberOfSeats;
+    }
 
+    public void setNumberOfLockers(int numberOfLockers) {
+        this.numberOfLockers = numberOfLockers;
+    }
 
     public void setScanners(Collection<User> scanners) { this.scanners = scanners; }
 

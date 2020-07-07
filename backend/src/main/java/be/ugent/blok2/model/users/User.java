@@ -23,7 +23,7 @@ public class User implements Cloneable, UserDetails {
     private String barcode;
     private Role[] roles;
 
-    //The locations a scanner is allowed to scan at
+    // The locations a scanner is allowed to scan at
     private Collection<String> scannerLocations;
 
     public User() {
@@ -67,23 +67,19 @@ public class User implements Cloneable, UserDetails {
         scannerLocations = new ArrayList<>();
     }
 
-    /*
-        Users are identified using the augentID this is a unique id for each user in the augent LDAP system
-     */
     @Override
     public boolean equals(Object o) {
-        // o instanceof User will return false if o is null
-        // so no need to check for null explicitly
-        if (!(o instanceof User)
-                || !o.getClass().getName().equals(getClass().getName()))
-            return false;
-
-        if (o == this)
-            return true;
-
-        User u = (User) o;
-
-        return augentID.equals(u.augentID);
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return penaltyPoints == user.penaltyPoints &&
+                Objects.equals(lastName, user.lastName) &&
+                Objects.equals(firstName, user.firstName) &&
+                Objects.equals(mail, user.mail) &&
+                Objects.equals(institution, user.institution) &&
+                Objects.equals(augentID, user.augentID) &&
+                Objects.equals(barcode, user.barcode) &&
+                Arrays.equals(roles, user.roles);
     }
 
     @Override
@@ -94,11 +90,15 @@ public class User implements Cloneable, UserDetails {
     public User clone() {
         try {
             User c = (User) super.clone();
+
             c.roles = new Role[roles.length];
             for (int i = 0; i < roles.length; i++) {
                 c.roles[i] = roles[i];
             }
+
             c.scannerLocations = new ArrayList<>();
+            c.scannerLocations.addAll(scannerLocations);
+
             return c;
         } catch (CloneNotSupportedException e) {
             return null;

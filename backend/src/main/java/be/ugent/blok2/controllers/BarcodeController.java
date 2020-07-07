@@ -118,24 +118,24 @@ public class BarcodeController {
 
     // function to create a UPC-A barcode from a given number
     // precondition is that the number is 12 digits long
-    public static String calculateUPCACheckSum(String number){
+    public static String calculateUPCACheckSum(String number) {
         char[] arr = number.toCharArray();
         int oddNumberDigits = 0;
         int evenNumberDigits = 0;
         for (int i = 0; i < arr.length; i++) {
-            if(i%2==0){
-                evenNumberDigits+=Integer.parseInt(arr[i]+"");
+            if(i % 2 == 0) {
+                evenNumberDigits+=Integer.parseInt(arr[i] + "");
             }
-            else{
-                oddNumberDigits+=Integer.parseInt(arr[i]+"");
+            else {
+                oddNumberDigits+=Integer.parseInt(arr[i] + "");
             }
         }
-        evenNumberDigits*=3;
+        evenNumberDigits *= 3;
         int sum = evenNumberDigits + oddNumberDigits;
-        sum%=10;
-        if(sum!=0){
-            sum=10-sum;
+        sum %= 10;
+        if (sum != 0) {
+            sum= 10 - sum;
         }
-        return number+sum;
+        return number + sum;
     }
 }
