@@ -70,9 +70,10 @@ public interface ILocationDao extends IDao {
 
     /**
      * This function will add 'count' lockers to the location with name 'locationName'
-     * and the numbers of the lockers will count up from startNumber
+     * If count < 0, then count lockers will be removed. This is only possible if all
+     * lockers are available, which means no locker in the location has been reserved.
      */
-    void addLockers(String locationName, int count, int startNumber);
+    void addLockers(String locationName, int count);
 
     /**
      * This function will delete all lockers with a number higher than or equal to startNumber

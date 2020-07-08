@@ -122,6 +122,46 @@ public class TestDBLocationDao {
         locationDao.deleteLocation(changedTestLocation.getName());
     }
 
+    @Test
+    public void addLockersTest() {
+        locationDao.addLocation(testLocation);
+        Location expectedLocation = testLocation.clone();
+        int prev_n = expectedLocation.getNumberOfLockers();
+
+        // test adding positive amount of lockers
+        int n = 10;
+        expectedLocation.setNumberOfLockers(prev_n + n);
+        locationDao.addLockers(testLocation.getName(), n);
+        Location location = locationDao.getLocationWithoutLockersAndCalendar(testLocation.getName());
+        Assert.assertEquals("addLockersTest, added lockers", expectedLocation, location);
+
+        // test adding negative amount of lockers
+        int _n = -5;
+        expectedLocation.setNumberOfLockers(prev_n + n + _n);
+        locationDao.addLockers(testLocation.getName(), _n);
+        location = locationDao.getLocationWithoutLockersAndCalendar(testLocation.getName());
+        Assert.assertEquals("addLocker, added negative amount of lockers", expectedLocation, location);
+
+        // TODO: reserve lockers and expect SQLException
+
+        locationDao.deleteLocation(testLocation.getName());
+    }
+
+    @Test
+    public void deleteLockersTest() {
+        locationDao.addLocation(testLocation);
+        Location expectedLocation = testLocation.clone();
+        int prev_n = expectedLocation.getNumberOfLockers();
+
+        int n = -5;
+        expectedLocation.setNumberOfLockers(prev_n - n);
+        locationDao.deleteLockers(testLocation.getName(), n);
+        Location location = locationDao.getLocationWithoutLockersAndCalendar(testLocation.getName());
+        Assert.assertEquals("deleteLockersTest", expectedLocation, location);
+
+        locationDao.deleteLocation(testLocation.getName());
+    }
+
     private void addTestUsers() {
         accountDao.directlyAddUser(scannerEmployee);
         accountDao.directlyAddUser(scannerStudent);

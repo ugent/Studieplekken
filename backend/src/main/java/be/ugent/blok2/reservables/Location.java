@@ -77,12 +77,12 @@ public class Location implements Cloneable {
 
     public void deleteLockers(int startNumber){
         Collection<Locker> toRemove = new ArrayList<>();
-        for(Locker locker : this.lockers){
-            if(locker.getNumber() >= startNumber){
+        for (Locker locker : this.lockers) {
+            if (locker.getNumber() >= startNumber) {
                 toRemove.add(locker);
             }
         }
-        for(Locker lock : toRemove){
+        for (Locker lock : toRemove) {
             this.lockers.remove(lock);
         }
     }

@@ -155,7 +155,7 @@ public class LocationController {
                 //lockers toevoegen
                 locationDao.changeLocation(name, location);
                 if(previousLockers != location.getNumberOfLockers()){
-                    locationDao.addLockers(location.getName(), location.getNumberOfLockers()-previousLockers, previousLockers);
+                    locationDao.addLockers(location.getName(), location.getNumberOfLockers()-previousLockers);
                 }
             }
             return new ResponseEntity(HttpStatus.OK);

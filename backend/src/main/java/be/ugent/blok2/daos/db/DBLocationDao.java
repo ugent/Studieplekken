@@ -307,17 +307,23 @@ public class DBLocationDao extends ADB implements ILocationDao {
     }
 
     @Override
-    public void addLockers(String locationName, int count, int startNumber) {
+    public void addLockers(String locationName, int count) {
         try (Connection conn = getConnection()) {
             conn.setAutoCommit(false);
             try {
-                int studentLimit = 2;
-                for (int i = startNumber; i < count + startNumber; i++) {
-                    PreparedStatement st = conn.prepareStatement(databaseProperties.getString("insert_locker"));
-                    st.setInt(1, i);
-                    st.setString(2, locationName);
-                    st.setInt(3, studentLimit);
-                    st.execute();
+                Location location = getLocationWithoutLockersAndCalendar(locationName);
+                int n = location.getNumberOfLockers();
+
+                if (count > 0) {
+                    for (int i = 0; i < count; i++) {
+                        insertLocker(locationName, n++, conn);
+                    }
+                } else if (count < 0) {
+                    // delete lockers will fail if any locker is reserved
+                    // note: count is negative -> n + count < n
+                    deleteLockers(locationName, n + count - 1, conn);
+                    // example: n = 15, count -5  ->  startNumber = 10
+                    // lockers 10, 11, 12, 13 and 14 will be removed
                 }
                 conn.commit();
                 conn.setAutoCommit(true);
@@ -328,20 +334,23 @@ public class DBLocationDao extends ADB implements ILocationDao {
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-
         }
     }
 
     @Override
     public void deleteLockers(String locationName, int startNumber) {
         try (Connection conn = getConnection()) {
-            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("delete_lockers_of_location_from_number"));
-            st.setString(1, locationName);
-            st.setInt(2, startNumber);
-            st.execute();
+            deleteLockers(locationName, startNumber, conn);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private void deleteLockers(String locationName, int startNumber, Connection conn) throws SQLException {
+        PreparedStatement st = conn.prepareStatement(databaseProperties.getString("delete_lockers_of_location_from_number"));
+        st.setString(1, locationName);
+        st.setInt(2, startNumber);
+        st.execute();
     }
 
     @Override
