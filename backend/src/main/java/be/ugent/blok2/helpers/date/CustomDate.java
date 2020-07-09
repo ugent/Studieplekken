@@ -37,9 +37,10 @@ public class CustomDate implements Cloneable {
     }
 
     public static CustomDate parseString(String s) throws DateFormatException {
-        if(s == null){
+        if (s == null) {
             return null;
         }
+
         String[] strings = s.split("T");
         String[] dateParts = strings[0].split("-");
         String[] timeParts = strings[1].split(":");

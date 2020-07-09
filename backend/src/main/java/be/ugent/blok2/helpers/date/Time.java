@@ -3,7 +3,7 @@ package be.ugent.blok2.helpers.date;
 /**
  * This is a 24h Timestamp
  */
-public class Time {
+public class Time implements Cloneable {
     private int hours;
     private int minutes;
     private int seconds;

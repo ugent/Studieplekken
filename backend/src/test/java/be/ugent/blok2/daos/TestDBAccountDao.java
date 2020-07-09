@@ -18,6 +18,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * Note: the test that combines scanner users with locations, is to be found in TestDBLocationDao.java
+ */
+
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @ActiveProfiles({"db", "test"})

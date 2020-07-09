@@ -13,6 +13,7 @@ import be.ugent.blok2.helpers.exceptions.NoSuchLocationException;
 import be.ugent.blok2.model.users.Role;
 import be.ugent.blok2.model.users.User;
 import be.ugent.blok2.reservables.Location;
+import be.ugent.blok2.reservables.Locker;
 import be.ugent.blok2.reservations.LocationReservation;
 import io.swagger.models.auth.In;
 import org.springframework.context.annotation.Profile;
@@ -212,6 +213,11 @@ public class DummyLocationDao extends ADummyDao implements ILocationDao {
     }
 
     @Override
+    public Collection<Locker> getLockers(String locationName) {
+        return locations.get(locationName).getLockers();
+    }
+
+    @Override
     public void addLockers(String locationName, int count) {
         Location location = locations.get(locationName);
         int n = location.getNumberOfLockers();
@@ -296,5 +302,10 @@ public class DummyLocationDao extends ADummyDao implements ILocationDao {
                 locations.get(locationName).getCalendar().remove(d);
             }
 
+    }
+
+    @Override
+    public Collection<Day> getCalendarDays(String locationName) {
+        return locations.get(locationName).getCalendar();
     }
 }
