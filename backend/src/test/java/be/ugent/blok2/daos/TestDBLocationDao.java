@@ -153,9 +153,9 @@ public class TestDBLocationDao {
         Location expectedLocation = testLocation.clone();
         int prev_n = expectedLocation.getNumberOfLockers();
 
-        int n = -5;
+        int n = 5;
         expectedLocation.setNumberOfLockers(prev_n - n);
-        locationDao.deleteLockers(testLocation.getName(), n);
+        locationDao.deleteLockers(testLocation.getName(), prev_n - n);
         Location location = locationDao.getLocationWithoutLockersAndCalendar(testLocation.getName());
         Assert.assertEquals("deleteLockersTest", expectedLocation, location);
 

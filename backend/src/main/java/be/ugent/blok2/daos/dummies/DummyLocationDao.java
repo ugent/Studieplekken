@@ -84,7 +84,7 @@ public class DummyLocationDao extends ADummyDao implements ILocationDao {
                     }*/
 
                     locations.put(location.getName(), location);
-                    addLockers(location.getName(), numberOfLockers, 0);
+                    addLockers(location.getName(), numberOfLockers);
                     //location.setLockers(lockers);
                 }
             }
@@ -212,11 +212,16 @@ public class DummyLocationDao extends ADummyDao implements ILocationDao {
     }
 
     @Override
-    public void addLockers(String locationName, int count, int startNumber){
-        for(int i=0; i<count; i++){
-            locations.get(locationName).addLocker(startNumber, lockerID);
-            lockerID++;
-            startNumber++;
+    public void addLockers(String locationName, int count) {
+        Location location = locations.get(locationName);
+        int n = location.getNumberOfLockers();
+
+        if (count > 0) {
+            for (int i = 0; i < count; i++) {
+                location.addLocker(n++, lockerID++);
+            }
+        } else if (count < 0) {
+            deleteLockers(locationName, n + count);
         }
     }
 

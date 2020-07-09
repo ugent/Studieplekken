@@ -73,6 +73,7 @@ public class Location implements Cloneable {
         Locker locker = new Locker(number, name, studentLimit);
         locker.setId(id);
         this.lockers.add(locker);
+        this.numberOfLockers++;
     }
 
     public void deleteLockers(int startNumber){
@@ -85,6 +86,7 @@ public class Location implements Cloneable {
         for (Locker lock : toRemove) {
             this.lockers.remove(lock);
         }
+        this.numberOfLockers -= toRemove.size();
     }
 
     public void addDay(Day day){

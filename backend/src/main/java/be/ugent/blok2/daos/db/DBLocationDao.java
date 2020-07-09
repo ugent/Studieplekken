@@ -237,14 +237,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
             if (nameChanged) {
                 // nieuwe locatie invoegen
                 st = conn.prepareStatement(databaseProperties.getString("insert_location"));
-                st.setString(1, location.getName());
-                st.setInt(2, location.getNumberOfSeats());
-                st.setInt(3, location.getNumberOfLockers());
-                st.setString(4, location.getMapsFrame());
-                st.setString(5, location.getImageUrl());
-                st.setString(6, location.getAddress());
-                st.setString(7, location.getStartPeriodLockers() == null ? "" : location.getStartPeriodLockers().toString());
-                st.setString(8, location.getEndPeriodLockers() == null ? "" : location.getEndPeriodLockers().toString());
+                prepareUpdateOrInsertLocation(location, st);
                 st.executeUpdate();
 
                 // kalender wijzigen
@@ -263,19 +256,12 @@ public class DBLocationDao extends ADB implements ILocationDao {
                 st = conn.prepareStatement(databaseProperties.getString("delete_location"));
                 st.setString(1,name);
                 st.executeUpdate();
+            } else {
+                st = conn.prepareStatement(databaseProperties.getString("update_location"));
+                prepareUpdateOrInsertLocation(location, st);
+                st.setString(9, name);
+                st.executeUpdate();
             }
-
-            st = conn.prepareStatement(databaseProperties.getString("update_location"));
-            st.setString(1, location.getName());
-            st.setInt(2, location.getNumberOfSeats());
-            st.setInt(3, location.getNumberOfLockers());
-            st.setString(4, location.getMapsFrame());
-            st.setString(5, location.getImageUrl());
-            st.setString(6, location.getAddress());
-            st.setString(7, location.getStartPeriodLockers() == null ? "" : location.getStartPeriodLockers().toString());
-            st.setString(8, location.getEndPeriodLockers() == null ? "" : location.getEndPeriodLockers().toString());
-            st.setString(9, name);
-            st.executeUpdate();
 
             // lockers eventueel toevoegen of verwijderen
 
@@ -308,6 +294,8 @@ public class DBLocationDao extends ADB implements ILocationDao {
 
     @Override
     public void addLockers(String locationName, int count) {
+        if (count == 0) return;
+
         try (Connection conn = getConnection()) {
             conn.setAutoCommit(false);
             try {
@@ -316,15 +304,20 @@ public class DBLocationDao extends ADB implements ILocationDao {
 
                 if (count > 0) {
                     for (int i = 0; i < count; i++) {
-                        insertLocker(locationName, n++, conn);
+                        insertLocker(locationName, n + i, conn);
                     }
-                } else if (count < 0) {
+                } else { // count < 0
                     // delete lockers will fail if any locker is reserved
                     // note: count is negative -> n + count < n
                     deleteLockers(locationName, n + count - 1, conn);
                     // example: n = 15, count -5  ->  startNumber = 10
                     // lockers 10, 11, 12, 13 and 14 will be removed
                 }
+
+                // update location: number_of_lockers has been updated
+                location.setNumberOfLockers(n + count);
+                updateLocation(location, conn);
+
                 conn.commit();
                 conn.setAutoCommit(true);
             } catch (SQLException ex) {
@@ -341,6 +334,13 @@ public class DBLocationDao extends ADB implements ILocationDao {
     public void deleteLockers(String locationName, int startNumber) {
         try (Connection conn = getConnection()) {
             deleteLockers(locationName, startNumber, conn);
+
+            // update location: number_of_lockers has been updated
+            Location location = getLocationWithoutLockersAndCalendar(locationName);
+            int r = location.getNumberOfLockers() - startNumber;
+            int n = location.getNumberOfLockers() - r;
+            location.setNumberOfLockers(n);
+            updateLocation(location, conn);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -660,6 +660,26 @@ public class DBLocationDao extends ADB implements ILocationDao {
         }
 
         return location;
+    }
+
+    private void updateLocation(Location location, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("update_location"));
+        // set ...
+        prepareUpdateOrInsertLocation(location, pstmt);
+        // where ...
+        pstmt.setString(9, location.getName());
+        pstmt.execute();
+    }
+
+    private void prepareUpdateOrInsertLocation(Location location, PreparedStatement pstmt) throws SQLException {
+        pstmt.setString(1, location.getName());
+        pstmt.setInt(2, location.getNumberOfSeats());
+        pstmt.setInt(3, location.getNumberOfLockers());
+        pstmt.setString(4, location.getMapsFrame());
+        pstmt.setString(5, location.getImageUrl());
+        pstmt.setString(6, location.getAddress());
+        pstmt.setString(7, location.getStartPeriodLockers() == null ? "" : location.getStartPeriodLockers().toString());
+        pstmt.setString(8, location.getEndPeriodLockers() == null ? "" : location.getEndPeriodLockers().toString());
     }
 }
 
