@@ -1,30 +1,6 @@
-application queries use soundex
--------------------------------
-check if certain modules need to be added in the blokatugent.sql script
-
-inform user that locker reservation cleanup occurs every ...
-------------------------------------------------------------
-When a user reserves a locker for a location, the user needs to be informed
-that when he/she does not pick up the key within ... days, the reservation 
-will be canceled.
-
-
 TODO
 ----
 Test all DBDaos
-
-
-
-
-Changed made that probably need further changes
------------------------------------------------
-	1. DBLocationDao.addLocation -> only add the location, its descriptions in different languages and the lockers corresponding to the location to the underlying database. Not the start/stop locker reservation dates nor the calendar days. Other DAO methods handle these functionalities.
-
-Changes to make, which need further thaught
--------------------------------------------
-	1. The Location object keeps the calendar days and lockers in a collection -> remove these from the class. In the ILocationDao implementations, just keep the getter for the Location object without calendar and lockers. To retrieve the calendar/lockers for a location, use methods getCalendarDaysOfLocation() and getLockersOfLocation().
-		Note: within the methods to add/delete lockers, make sure that the column number_of_lockers of the Location entry is updated as well
-
 
 
 
