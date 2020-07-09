@@ -19,7 +19,7 @@ public interface ILocationReservationDao extends IDao {
 
     void deleteLocationReservation(String augentID, CustomDate date);
 
-    LocationReservation addLocationReservation(LocationReservation locationReservation);
+    void addLocationReservation(LocationReservation locationReservation);
 
     LocationReservation scanStudent(String location, String barcode);
 

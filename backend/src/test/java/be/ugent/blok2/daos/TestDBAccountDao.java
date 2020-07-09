@@ -1,7 +1,6 @@
 package be.ugent.blok2.daos;
 
 import be.ugent.blok2.TestSharedMethods;
-import be.ugent.blok2.helpers.Institution;
 import be.ugent.blok2.model.users.Role;
 import be.ugent.blok2.model.users.User;
 import org.junit.After;
@@ -36,23 +35,8 @@ public class TestDBAccountDao {
     public void setup() {
         TestSharedMethods.setupTestDaoDatabaseCredentials(accountDao);
 
-        directlyAddedUser = new User();
-        directlyAddedUser.setLastName("Added User");
-        directlyAddedUser.setFirstName("Directly");
-        directlyAddedUser.setMail("dau@ugent.be");
-        directlyAddedUser.setPassword((new BCryptPasswordEncoder()).encode("dau_password"));
-        directlyAddedUser.setInstitution(Institution.UGent);
-        directlyAddedUser.setAugentID("001");
-        directlyAddedUser.setRoles(new Role[]{Role.ADMIN, Role.EMPLOYEE});
-
-        verifiedAddedUser = new User();
-        verifiedAddedUser.setLastName("Added User");
-        verifiedAddedUser.setFirstName("Verified");
-        verifiedAddedUser.setMail("vau@ugent.be");
-        verifiedAddedUser.setPassword((new BCryptPasswordEncoder()).encode("vau_password"));
-        verifiedAddedUser.setInstitution(Institution.UGent);
-        verifiedAddedUser.setAugentID("002");
-        verifiedAddedUser.setRoles(new Role[]{Role.STUDENT});
+        directlyAddedUser = TestSharedMethods.employeeAdminTestUser();
+        verifiedAddedUser = TestSharedMethods.studentEmployeeTestUser();
     }
 
     @After
@@ -86,7 +70,6 @@ public class TestDBAccountDao {
     public void updateUserTest() {
         User expectedChangedUser = directlyAddedUser.clone();
         expectedChangedUser.setRoles(new Role[]{Role.STUDENT});
-        expectedChangedUser.setPassword((new BCryptPasswordEncoder()).encode("Changed Password"));
 
         accountDao.directlyAddUser(directlyAddedUser);
         accountDao.updateUser(expectedChangedUser.getMail(), expectedChangedUser);
@@ -146,13 +129,13 @@ public class TestDBAccountDao {
         removeDirectlyAddedUser();
     }
 
-    void removeDirectlyAddedUser() {
+    private void removeDirectlyAddedUser() {
         accountDao.removeUserById(directlyAddedUser.getAugentID());
         User u = accountDao.getUserById(directlyAddedUser.getAugentID());
         Assert.assertNull(u);
     }
 
-    void removeVerifiedAddedUser() {
+    private void removeVerifiedAddedUser() {
         accountDao.removeUserById(verifiedAddedUser.getAugentID());
         User u = accountDao.getUserById(verifiedAddedUser.getAugentID());
         Assert.assertNull(u);

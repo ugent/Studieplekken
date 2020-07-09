@@ -72,13 +72,11 @@ public class User implements Cloneable, UserDetails {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return penaltyPoints == user.penaltyPoints &&
-                Objects.equals(lastName, user.lastName) &&
+        return Objects.equals(lastName, user.lastName) &&
                 Objects.equals(firstName, user.firstName) &&
-                Objects.equals(mail, user.mail) &&
+                Objects.equals(mail.toLowerCase(), user.mail.toLowerCase()) &&
                 Objects.equals(institution, user.institution) &&
                 Objects.equals(augentID, user.augentID) &&
-                Objects.equals(barcode, user.barcode) &&
                 Arrays.equals(roles, user.roles);
     }
 

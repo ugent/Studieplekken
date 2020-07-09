@@ -576,7 +576,6 @@ public class DBAccountDao extends ADB implements IAccountDao {
             try {
                 connection.setAutoCommit(false);
 
-
                 /*
                 First check if the AUGentID of the user has changed. We do this by fetching the user by email and checking if
                 the AUGentID of this user equals the AUGentID of the given user.
@@ -588,17 +587,18 @@ public class DBAccountDao extends ADB implements IAccountDao {
                 if (currentUser == null) {
                     throw new NoSuchUserException("No user with mail = " + email);
                 }
+
                 if (!currentUser.getAugentID().equals(u.getAugentID())) {
                     /*
                     First, add a new user with the new AUGentID, note that we keep the (same) user with the old
                     AUGentID in the database for now.
 
-                    The old user needs to be kept in the database untill all records containing a foreing key of this user
+                    The old user needs to be kept in the database until all records containing a foreign key of this user
                     are updated. Because of the unique constraint on the email of a user, the new user is inserted with a temporary email.
                     After deleting the old record of the user, the email can be replaced.
                      */
                     PreparedStatement st = connection.prepareStatement(databaseProperties.getString("insert_user"));
-                    st.setString(1, "temp@mail.com");
+                    st.setString(1, "no_mail");
                     st.setString(2, u.getLastName());
                     st.setString(3, u.getFirstName());
                     st.setString(4, currentUser.getPassword());
@@ -656,42 +656,21 @@ public class DBAccountDao extends ADB implements IAccountDao {
                     st.setString(1, u.getMail());
                     st.setString(2, u.getAugentID());
                     st.execute();
-                }
-
-                /*
-                The password will be empty or filled in with a valid password. If filled in, the minimum
-                length has to be 8 characters.
-                 */
-                if (u.getPassword() != null && u.getPassword().length() > 0) {
-                    PreparedStatement statement = connection.prepareStatement(databaseProperties.getString("update_user_with_password"));
-
-                    statement.setString(1, u.getMail());
-                    statement.setString(2, u.getLastName());
-                    statement.setString(3, u.getFirstName());
-                    statement.setString(4, u.getPassword());
-                    statement.setString(5, u.getInstitution());
-                    statement.setString(6, u.getAugentID());
-                    statement.setString(7, rolesToCsv(u.getRoles()));
-                    statement.setInt(8, u.getPenaltyPoints());
-                    statement.setString(9, u.getBarcode());
-                    statement.setString(10, email);
-
-                    statement.executeUpdate();
                 } else {
-                    PreparedStatement statement = connection.prepareStatement(databaseProperties.getString("update_user_without_password"));
-
-                    statement.setString(1, u.getMail());
-                    statement.setString(2, u.getLastName());
-                    statement.setString(3, u.getFirstName());
-                    statement.setString(4, u.getInstitution());
-                    statement.setString(5, u.getAugentID());
-                    statement.setString(6, rolesToCsv(u.getRoles()));
-                    statement.setInt(7, u.getPenaltyPoints());
-                    statement.setString(8, u.getBarcode());
-                    statement.setString(9, email);
-
-                    statement.executeUpdate();
+                    PreparedStatement pstmt = connection.prepareStatement(databaseProperties.getString("update_user"));
+                    pstmt.setString(1, u.getMail());
+                    pstmt.setString(2, u.getLastName());
+                    pstmt.setString(3, u.getFirstName());
+                    pstmt.setString(4, u.getPassword());
+                    pstmt.setString(5, u.getInstitution());
+                    pstmt.setString(6, u.getAugentID());
+                    pstmt.setString(7, rolesToCsv(u.getRoles()));
+                    pstmt.setInt(8, u.getPenaltyPoints());
+                    pstmt.setString(9, u.getBarcode());
+                    pstmt.setString(10, u.getAugentID());
+                    pstmt.execute();
                 }
+
                 connection.commit();
             } catch (SQLException e) {
                 connection.rollback();

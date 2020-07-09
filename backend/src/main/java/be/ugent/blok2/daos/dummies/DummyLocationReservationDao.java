@@ -158,10 +158,9 @@ public class DummyLocationReservationDao extends ADummyDao implements ILocationR
     }
 
     @Override
-    public LocationReservation addLocationReservation(LocationReservation locationReservation) {
+    public void addLocationReservation(LocationReservation locationReservation) {
         if (!locationReservations.contains(locationReservation)) {
             locationReservations.add(locationReservation);
-            return locationReservation;
         }
         throw new AlreadyExistsException("Reservation already exists");
     }

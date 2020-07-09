@@ -1,8 +1,6 @@
 package be.ugent.blok2.daos;
 
 import be.ugent.blok2.TestSharedMethods;
-import be.ugent.blok2.helpers.Language;
-import be.ugent.blok2.helpers.Resources;
 import be.ugent.blok2.helpers.date.Calendar;
 import be.ugent.blok2.helpers.date.CustomDate;
 import be.ugent.blok2.helpers.date.Day;
@@ -41,7 +39,7 @@ public class TestDBLocationDao {
 
         // setup test location objects
         // (reason for static function: avoid duplicate code, TestScannerLocation.java uses the same method)
-        testLocation = TestSharedMethods.setupTestLocation();
+        testLocation = TestSharedMethods.testLocation();
     }
 
     @After

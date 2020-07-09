@@ -156,14 +156,13 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
     }
 
     @Override
-    public LocationReservation addLocationReservation(LocationReservation locationReservation) {
+    public void addLocationReservation(LocationReservation locationReservation) {
         try(Connection conn = getConnection()){
             PreparedStatement st = conn.prepareStatement(databaseProperties.getString("insert_location_reservation"));
             st.setString(1, locationReservation.getDate().toString());
             st.setString(2, locationReservation.getLocation().getName());
             st.setString(3, locationReservation.getUser().getAugentID());
             st.execute();
-            return locationReservation;
         }/*
         catch (SQLIntegrityConstraintViolationException e){
             throw new AlreadyExistsException("User with id "+ locationReservation.getUser().getAugentID() +" already has a reservation on " + locationReservation.getDate().toString());
@@ -171,7 +170,6 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
         catch(SQLException e){
             System.out.println(e.getMessage());
         }
-        return null;
     }
 
     @Override

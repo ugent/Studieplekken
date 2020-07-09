@@ -42,34 +42,12 @@ public class TestScannerLocation {
         TestSharedMethods.setupTestDaoDatabaseCredentials(accountDao);
         TestSharedMethods.setupTestDaoDatabaseCredentials(locationDao);
 
-        testLocation = TestSharedMethods.setupTestLocation();
-
-        testLocation2 = new Location();
-        testLocation2.setName("Second Test Location");
-        testLocation2.setAddress("Second Test street, 20");
-        testLocation2.setNumberOfSeats(100);
-        testLocation2.setNumberOfLockers(10);
-        testLocation2.setMapsFrame("Second Test Google Maps frame");
-        testLocation2.getDescriptions().put(Language.DUTCH, "Dit is een tweede testlocatie.");
-        testLocation2.getDescriptions().put(Language.ENGLISH, "This is a second test location.");
-        testLocation2.setImageUrl("https://example.com/picture.png");
+        testLocation = TestSharedMethods.testLocation();
+        testLocation2 = TestSharedMethods.testLocation2();
 
         // setup test user objects
-        scannerEmployee = new User();
-        scannerEmployee.setFirstName("Scanner1");
-        scannerEmployee.setLastName("Employee");
-        scannerEmployee.setMail("scanner1.employee@ugent.be");
-        scannerEmployee.setInstitution(Institution.UGent);
-        scannerEmployee.setAugentID("003");
-        scannerEmployee.setRoles(new Role[]{Role.EMPLOYEE});
-
-        scannerStudent = new User();
-        scannerStudent.setFirstName("Scanner2");
-        scannerStudent.setLastName("Student");
-        scannerStudent.setMail("scanner2.student@ugent.be");
-        scannerStudent.setInstitution(Institution.UGent);
-        scannerStudent.setAugentID("004");
-        scannerStudent.setRoles(new Role[]{Role.STUDENT, Role.EMPLOYEE});
+        scannerEmployee = TestSharedMethods.employeeAdminTestUser();
+        scannerStudent = TestSharedMethods.studentEmployeeTestUser();
     }
 
     @After
@@ -83,7 +61,7 @@ public class TestScannerLocation {
         locationDao.addLocation(testLocation);
         locationDao.addLocation(testLocation2);
 
-        addTestUsers();
+        TestSharedMethods.addTestUsers(accountDao, scannerStudent, scannerEmployee);
 
         // add both test users as scanners for both test locations
         List<User> users = new ArrayList<>();
@@ -129,31 +107,9 @@ public class TestScannerLocation {
                 expectedUserAugentIds.toArray(), usersForTestLocation2.toArray());
 
         // rollback test setup
-        removeTestUsers();
+        TestSharedMethods.removeTestUsers(accountDao, scannerStudent, scannerEmployee);
 
         locationDao.deleteLocation(testLocation2.getName());
         locationDao.deleteLocation(testLocation.getName());
-    }
-
-    private void addTestUsers() {
-        accountDao.directlyAddUser(scannerEmployee);
-        accountDao.directlyAddUser(scannerStudent);
-
-        User u1 = accountDao.getUserById(scannerEmployee.getAugentID());
-        Assert.assertEquals("Setup scannerEmployee failed", scannerEmployee, u1);
-
-        User u2 = accountDao.getUserById(scannerStudent.getAugentID());
-        Assert.assertEquals("Setup scannerStudent failed", scannerStudent, u2);
-    }
-
-    private void removeTestUsers() {
-        accountDao.removeUserById(scannerEmployee.getAugentID());
-        accountDao.removeUserById(scannerStudent.getAugentID());
-
-        User u1 = accountDao.getUserById(scannerEmployee.getAugentID());
-        Assert.assertNull("Cleanup scannerEmployee failed", u1);
-
-        User u2 = accountDao.getUserById(scannerStudent.getAugentID());
-        Assert.assertNull("Cleanup scannerStudent failed", u2);
     }
 }

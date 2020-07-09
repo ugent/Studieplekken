@@ -184,6 +184,11 @@ where mail = ?;
 select *
 from public.users;
 
+-- $update_user
+update public.users
+set mail = ?, augentpreferredsn = ?, augentpreferredgivenname = ?, password = ?, institution = ?, augentid = ?, role = ?, penalty_points = ?, barcode = ?
+where augentid = ?;
+
 -- $update_user_with_password
 update public.users
 set mail = ?, augentpreferredsn = ?, augentpreferredgivenname = ?, password = ?, institution = ?, augentid = ?, role = ?, penalty_points = ?, barcode = ?
