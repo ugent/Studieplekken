@@ -1,7 +1,7 @@
 package be.ugent.blok2.daos;
 
+import be.ugent.blok2.TestSharedMethods;
 import be.ugent.blok2.helpers.Institution;
-import be.ugent.blok2.helpers.Resources;
 import be.ugent.blok2.model.users.Role;
 import be.ugent.blok2.model.users.User;
 import org.junit.After;
@@ -16,10 +16,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
-import java.util.ResourceBundle;
 
 /**
- * Note: the test that combines scanner users with locations, is to be found in TestDBLocationDao.java
+ * Note: the test that combines scanner users with locations, is to be found in TestScannerLocation.java
  */
 
 @SpringBootTest
@@ -33,15 +32,9 @@ public class TestDBAccountDao {
     private User directlyAddedUser;
     private User verifiedAddedUser;
 
-    private final ResourceBundle applicationProperties = Resources.applicationProperties;
-
     @Before
     public void setup() {
-        accountDao.setDatabaseConnectionUrl(applicationProperties.getString("test_db_url"));
-        accountDao.setDatabaseCredentials(
-                applicationProperties.getString("test_db_user"),
-                applicationProperties.getString("test_db_password")
-        );
+        TestSharedMethods.setupTestDaoDatabaseCredentials(accountDao);
 
         directlyAddedUser = new User();
         directlyAddedUser.setLastName("Added User");
