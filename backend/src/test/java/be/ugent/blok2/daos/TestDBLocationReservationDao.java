@@ -4,8 +4,6 @@ import be.ugent.blok2.TestSharedMethods;
 import be.ugent.blok2.helpers.date.CustomDate;
 import be.ugent.blok2.helpers.date.Day;
 import be.ugent.blok2.helpers.date.Time;
-import be.ugent.blok2.helpers.exceptions.NoSuchReservationException;
-import be.ugent.blok2.model.users.Role;
 import be.ugent.blok2.model.users.User;
 import be.ugent.blok2.reservables.Location;
 import be.ugent.blok2.reservations.LocationReservation;
@@ -26,7 +24,7 @@ import java.util.List;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @ActiveProfiles({"db", "test"})
-public class TestLocationReservationDao {
+public class TestDBLocationReservationDao {
 
     @Autowired
     private ILocationReservationDao locationReservationDao;

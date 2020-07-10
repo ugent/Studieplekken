@@ -1,9 +1,6 @@
 package be.ugent.blok2.daos;
 
 import be.ugent.blok2.TestSharedMethods;
-import be.ugent.blok2.helpers.Institution;
-import be.ugent.blok2.helpers.Language;
-import be.ugent.blok2.model.users.Role;
 import be.ugent.blok2.model.users.User;
 import be.ugent.blok2.reservables.Location;
 import org.junit.After;
@@ -22,7 +19,7 @@ import java.util.List;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @ActiveProfiles({"db", "test"})
-public class TestScannerLocation {
+public class TestDBScannerLocation {
 
     @Autowired
     private IAccountDao accountDao;

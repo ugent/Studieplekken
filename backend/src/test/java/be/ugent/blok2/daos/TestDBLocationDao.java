@@ -2,9 +2,7 @@ package be.ugent.blok2.daos;
 
 import be.ugent.blok2.TestSharedMethods;
 import be.ugent.blok2.helpers.date.Calendar;
-import be.ugent.blok2.helpers.date.CustomDate;
 import be.ugent.blok2.helpers.date.Day;
-import be.ugent.blok2.helpers.date.Time;
 import be.ugent.blok2.reservables.Location;
 import org.junit.After;
 import org.junit.Assert;
@@ -19,7 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.Collection;
 
 /**
- * Note: the test that combines scanner users with locations, is to be found in TestScannerLocation.java
+ * Note: the test that combines scanner users with locations, is to be found in TestDBScannerLocation.java
  */
 
 @SpringBootTest
@@ -38,7 +36,7 @@ public class TestDBLocationDao {
         TestSharedMethods.setupTestDaoDatabaseCredentials(locationDao);
 
         // setup test location objects
-        // (reason for static function: avoid duplicate code, TestScannerLocation.java uses the same method)
+        // (reason for static function: avoid duplicate code, TestDBScannerLocation.java uses the same method)
         testLocation = TestSharedMethods.testLocation();
     }
 
