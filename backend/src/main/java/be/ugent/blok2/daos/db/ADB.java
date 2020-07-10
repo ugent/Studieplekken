@@ -15,8 +15,8 @@ import java.util.ResourceBundle;
  */
 public abstract class ADB implements IDao {
 
-    protected final ResourceBundle databaseProperties = Resources.databaseProperties;
-    protected final ResourceBundle applicationProperties = Resources.applicationProperties;
+    protected static final ResourceBundle databaseProperties = Resources.databaseProperties;
+    protected static final ResourceBundle applicationProperties = Resources.applicationProperties;
     protected Soundex soundex = new Soundex();
 
     private String connectionUrl;

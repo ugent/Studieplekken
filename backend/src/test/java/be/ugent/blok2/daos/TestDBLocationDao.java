@@ -122,16 +122,8 @@ public class TestDBLocationDao {
     public void calendarDaysTest() {
         locationDao.addLocation(testLocation);
 
-        Calendar calendar = new Calendar();
+        Calendar calendar = TestSharedMethods.testCalendar();
         Collection<Day> calendarDays = calendar.getDays();
-        for (int i = 1; i <= 5; i++) {
-            Day d = new Day();
-            d.setDate(CustomDate.parseString("2020-01-0" + i + "T00:00:00"));
-            d.setOpeningHour(new Time(9, 0, 0));
-            d.setClosingHour(new Time(17, 0, 0));
-            d.setOpenForReservationDate(CustomDate.parseString("2019-12-31T09:00:00"));
-            calendarDays.add(d);
-        }
 
         locationDao.addCalendarDays(testLocation.getName(), calendar);
 

@@ -31,16 +31,16 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
                 throw new NoSuchUserException("No user with id = " + augentID);
             }
 
-            List<LocationReservation> reservations = new ArrayList<LocationReservation>();
+            List<LocationReservation> reservations = new ArrayList<>();
             PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_location_reservations_of_user_by_id"));
             st.setString(1, augentID);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
                 try{
                     CustomDate customDate = CustomDate.parseString(rs.getString(databaseProperties.getString("location_reservation_date")));
-                    Location location = new Location(rs.getString(databaseProperties.getString("location_reservation_location_name")));
-                    location.setCalendar(getCalendar(location.getName(), conn));
-                    User user = new User(rs.getString(databaseProperties.getString("location_reservation_user_augentid")));
+                    String locationName = rs.getString(databaseProperties.getString("location_reservation_location_name"));
+                    Location location = DBLocationDao.getLocation(locationName, conn);
+                    User user = DBAccountDao.getUserById(augentID, conn);
                     LocationReservation reservation = new LocationReservation(location, user, customDate);
                     reservations.add(reservation);
                 }
@@ -59,16 +59,17 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
     @Override
     public List<LocationReservation> getAllLocationReservationsOfUserByName(String userName) {
         try(Connection conn = getConnection()){
-            List<LocationReservation> reservations = new ArrayList<LocationReservation>();
+            List<LocationReservation> reservations = new ArrayList<>();
             PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_location_reservations_of_user_by_name"));
             st.setString(1, userName);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
                 try{
                     CustomDate customDate = CustomDate.parseString(rs.getString(databaseProperties.getString("date")));
-                    Location location = new Location(rs.getString(databaseProperties.getString("scanners_location_name")));
-                    location.setCalendar(getCalendar(location.getName(), conn));
-                    User user = new User(rs.getString(databaseProperties.getString("userId")));
+                    String locationName = rs.getString(databaseProperties.getString("location_reservation_location_name"));
+                    Location location = DBLocationDao.getLocation(locationName, conn);
+                    String augentID = rs.getString(databaseProperties.getString("user_augentid"));
+                    User user = DBAccountDao.getUserById(augentID, conn);
                     LocationReservation reservation = new LocationReservation(location, user, customDate);
                     reservations.add(reservation);
                 }
@@ -87,16 +88,17 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
     @Override
     public List<LocationReservation> getAllLocationReservationsOfLocation(String name) {
         try(Connection conn = getConnection()){
-            List<LocationReservation> reservations = new ArrayList<LocationReservation>();
+            List<LocationReservation> reservations = new ArrayList<>();
             PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_location_reservations_of_location"));
             st.setString(1, name);
             ResultSet rs = st.executeQuery();
+            Location location = DBLocationDao.getLocation(name, conn);
             while (rs.next()) {
                 try{
                     CustomDate customDate = CustomDate.parseString(rs.getString(databaseProperties.getString("location_reservation_date")));
-                    Location location = new Location(name);
-                    User user = getUserForLocationReservation(rs.getString(databaseProperties.getString("location_reservation_user_augentid")));
-                    LocationReservation reservation = new LocationReservation(location, user, customDate);
+                    String augentID = databaseProperties.getString("location_reservation_user_augentid");
+                    User user = DBAccountDao.getUserById(augentID, conn);
+                    LocationReservation reservation = new LocationReservation(location.clone(), user, customDate);
                     reservations.add(reservation);
                 }
                 catch(Exception e){
@@ -113,27 +115,25 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
 
     @Override
     public LocationReservation getLocationReservation(String augentID, CustomDate date) {
-        try(Connection conn = getConnection()){
+        try (Connection conn = getConnection()){
 
-            User u = getUserForLocationReservation(augentID);
             PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_location_reservation"));
             st.setString(1, augentID);
             st.setString(2, date.toString());
             ResultSet rs = st.executeQuery();
-            if(rs.next()){
-                try{
+            if (rs.next()) {
+                try {
                     CustomDate customDate = CustomDate.parseString(rs.getString(databaseProperties.getString("location_reservation_date")));
-                    Location location = new Location(rs.getString(databaseProperties.getString("location_reservation_location_name")));
-                    location.setCalendar(getCalendar(location.getName(), conn));
-                    User user = getUserForLocationReservation(augentID);
-                    LocationReservation reservation = new LocationReservation(location, user, customDate);
-                    return reservation;
+                    String locationName = rs.getString(databaseProperties.getString("location_reservation_location_name"));
+                    Location location = DBLocationDao.getLocation(locationName, conn);
+                    User user = DBAccountDao.getUserById(augentID, conn);
+                    return new LocationReservation(location, user, customDate);
                 }
-                catch(Exception e){
+                catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
-            } else{
-                throw new NoSuchReservationException("User with id = " + augentID + " has no reservation on " + date.toString());
+            } else {
+                return null;
             }
         }
         catch(SQLException e){
@@ -157,7 +157,7 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
 
     @Override
     public void addLocationReservation(LocationReservation locationReservation) {
-        try(Connection conn = getConnection()){
+        try (Connection conn = getConnection()) {
             PreparedStatement st = conn.prepareStatement(databaseProperties.getString("insert_location_reservation"));
             st.setString(1, locationReservation.getDate().toString());
             st.setString(2, locationReservation.getLocation().getName());
@@ -173,8 +173,9 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
     }
 
     @Override
+    // TODO: barcode moet augentid worden (zie issue #11)
     public LocationReservation scanStudent(String location, String barcode) {
-        try{
+        try {
             Connection conn = getConnection();
             Calendar c = Calendar.getInstance();
             CustomDate today = new CustomDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH)+1, c.get(Calendar.DATE));
@@ -189,8 +190,8 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
                 user_ids.add(rs.getString(databaseProperties.getString("location_reservation_user_augentid")));
             }
 
-            for(String id : user_ids){
-                if(id.equals(barcode) || id.substring(1).equals(barcode.substring(0, barcode.length()-1)) ||
+            for (String id : user_ids) {
+                if (id.equals(barcode) || id.substring(1).equals(barcode.substring(0, barcode.length()-1)) ||
                         id.equals(barcode.substring(0, barcode.length()-1)) || id.equals(barcode.substring(1))) {
                     st = conn.prepareStatement(databaseProperties.getString("set_location_reservation_attended"));
                     st.setString(1, today.toString());
@@ -227,7 +228,7 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
             st.setString(1, location);
             st.setString(2, date.toString());
             ResultSet rs = st.executeQuery();
-            while(rs.next()){
+            if (rs.next()) {
                 return rs.getInt(1);
             }
             return 0;
@@ -241,16 +242,16 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
     @Override
     public List<LocationReservation> getAbsentStudents(String locationName, CustomDate date) {
         try(Connection conn = getConnection()){
-            List<LocationReservation> reservations = new ArrayList<LocationReservation>();
+            List<LocationReservation> reservations = new ArrayList<>();
             PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_absent_students"));
             st.setString(1, locationName);
             st.setString(2, date.toString());
             ResultSet rs = st.executeQuery();
             while(rs.next()){
-                CustomDate customDate = date;
-                Location location = new Location(locationName);
-                User user = getUserForLocationReservation(rs.getString(databaseProperties.getString("location_reservation_user_augentid")));
-                LocationReservation reservation = new LocationReservation(location, user, customDate);
+                Location location = DBLocationDao.getLocation(locationName, conn);
+                String augentID = rs.getString(databaseProperties.getString("location_reservation_user_augentid"));
+                User user = DBAccountDao.getUserById(augentID, conn);
+                LocationReservation reservation = new LocationReservation(location, user, date);
                 reservations.add(reservation);
             }
             return reservations;
@@ -264,16 +265,16 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
     @Override
     public List<LocationReservation> getPresentStudents(String locationName, CustomDate date) {
         try(Connection conn = getConnection()){
-            List<LocationReservation> reservations = new ArrayList<LocationReservation>();
+            List<LocationReservation> reservations = new ArrayList<>();
             PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_present_students"));
             st.setString(1, locationName);
             st.setString(2, date.toString());
             ResultSet rs = st.executeQuery();
-            while(rs.next()){
-                CustomDate customDate = date;
-                Location location = new Location(locationName);
-                User user = getUserForLocationReservation(rs.getString(databaseProperties.getString("location_reservation_user_augentid")));
-                LocationReservation reservation = new LocationReservation(location, user, customDate);
+            Location location = DBLocationDao.getLocation(locationName, conn);
+            while (rs.next()) {
+                String augentID = rs.getString(databaseProperties.getString("location_reservation_user_augentid"));
+                User user = DBAccountDao.getUserById(augentID, conn);
+                LocationReservation reservation = new LocationReservation(location, user, date);
                 reservations.add(reservation);
             }
             return reservations;
@@ -297,48 +298,4 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
         }
     }
 
-    private Collection<Day> getCalendar(String locationName, Connection conn) throws SQLException {
-        PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_calendar_of_location"));
-        st.setString(1, locationName);
-        ResultSet rs = st.executeQuery();
-        Collection<Day> calendar = new ArrayList<Day>();
-        while (rs.next()) {
-            try {
-                CustomDate date = CustomDate.parseString(rs.getString(databaseProperties.getString("calendar_date")));
-                java.sql.Time sqlOpeningHour = rs.getTime(databaseProperties.getString("calendar_opening_hour"));
-                be.ugent.blok2.helpers.date.Time openingHour = new be.ugent.blok2.helpers.date.Time(sqlOpeningHour.getHours(), sqlOpeningHour.getMinutes(), sqlOpeningHour.getSeconds());
-                java.sql.Time sqlClosingHour = rs.getTime(databaseProperties.getString("calendar_closing_hour"));
-                be.ugent.blok2.helpers.date.Time closingHour = new be.ugent.blok2.helpers.date.Time(sqlClosingHour.getHours(), sqlClosingHour.getMinutes(), sqlClosingHour.getSeconds());
-                CustomDate openReservationDate = CustomDate.parseString(rs.getString(databaseProperties.getString("calendar_open_reservation_date")));
-                Day day = new Day(date, openingHour, closingHour, openReservationDate);
-                calendar.add(day);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-        }
-        return calendar;
-    }
-
-    private User getUserForLocationReservation(String augentID){
-        try(Connection conn = getConnection()) {
-            PreparedStatement stmforUser = conn.prepareStatement(databaseProperties.getString("get_user_for_location_reservation"));
-            stmforUser.setString(1, augentID);
-            ResultSet rsUser = stmforUser.executeQuery();
-            if (rsUser.next()) {
-                try {
-                    User u = new User(augentID);
-                    u.setFirstName(rsUser.getString(databaseProperties.getString("utv_surname")));
-                    u.setLastName(rsUser.getString(databaseProperties.getString("utv_name")));
-                    u.setMail(rsUser.getString(databaseProperties.getString("utv_mail")));
-                    u.setBarcode(rsUser.getString(databaseProperties.getString("utv_barcode")));
-                    return u;
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                }
-            }
-        }catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 }

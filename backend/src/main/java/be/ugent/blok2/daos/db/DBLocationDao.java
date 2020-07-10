@@ -147,18 +147,22 @@ public class DBLocationDao extends ADB implements ILocationDao {
     @Override
     public Location getLocation(String name) {
         try (Connection conn = getConnection()) {
-            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_location"));
-            st.setString(1, name);
-            ResultSet rs = st.executeQuery();
-            if (rs.next()) {
-                Location location = createLocation(rs);
-                location.setCalendar(getCalendar(name, conn));
-                location.setLockers(getLockers(name, conn));
-                return location;
-            }
-            return null;
+            return getLocation(name, conn);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+    public static Location getLocation(String locationName, Connection conn) throws SQLException {
+        PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_location"));
+        st.setString(1, locationName);
+        ResultSet rs = st.executeQuery();
+        if (rs.next()) {
+            Location location = createLocation(rs);
+            location.setCalendar(getCalendar(locationName, conn));
+            location.setLockers(getLockers(locationName, conn));
+            return location;
         }
         return null;
     }
@@ -438,7 +442,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
     // helper method for fetching locations,
     // returns the calendar of a certain location
     // TODO: make public (instead of getLocation with calendar days and locations)
-    private Collection<Day> getCalendar(String locationName, Connection conn) throws SQLException {
+    private static Collection<Day> getCalendar(String locationName, Connection conn) throws SQLException {
         PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_calendar_of_location"));
         st.setString(1, locationName);
         ResultSet rs = st.executeQuery();
@@ -622,7 +626,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
     // helper method when fetching locations
     // returns the lockers of a location
     // TODO: make public (instead of getLocation with calendar days and locations)
-    private Collection<Locker> getLockers(String locationName, Connection conn) throws SQLException {
+    private static Collection<Locker> getLockers(String locationName, Connection conn) throws SQLException {
         Collection<Locker> lockers = new ArrayList<>();
         PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_lockers_of_location"));
         st.setString(1, locationName);
@@ -630,13 +634,11 @@ public class DBLocationDao extends ADB implements ILocationDao {
         while (rs.next()) {
             int lockerID = rs.getInt(databaseProperties.getString("locker_id"));
             int number = rs.getInt(databaseProperties.getString("locker_number"));
-            int studentLimit = rs.getInt(databaseProperties.getString("locker_student_limit"));
 
             Locker locker = new Locker();
             locker.setId(lockerID);
             locker.setNumber(number);
             locker.setLocation(locationName);
-            locker.setStudentLimit(studentLimit);
 
             lockers.add(locker);
         }
@@ -654,7 +656,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
 
 
     // this method prevents a lot of duplicate code by creating a location out of a row in the ResultSet
-    private Location createLocation(ResultSet rs) throws SQLException {
+    private static Location createLocation(ResultSet rs) throws SQLException {
         String name = rs.getString(databaseProperties.getString("location_name"));
         int numberOfSeats = rs.getInt(databaseProperties.getString("location_number_of_seats"));
         int numberOfLockers = rs.getInt(databaseProperties.getString("location_number_of_lockers"));

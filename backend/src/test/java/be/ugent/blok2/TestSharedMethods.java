@@ -5,13 +5,17 @@ import be.ugent.blok2.daos.IDao;
 import be.ugent.blok2.helpers.Institution;
 import be.ugent.blok2.helpers.Language;
 import be.ugent.blok2.helpers.Resources;
+import be.ugent.blok2.helpers.date.Calendar;
 import be.ugent.blok2.helpers.date.CustomDate;
+import be.ugent.blok2.helpers.date.Day;
+import be.ugent.blok2.helpers.date.Time;
 import be.ugent.blok2.model.users.Role;
 import be.ugent.blok2.model.users.User;
 import be.ugent.blok2.reservables.Location;
 import org.junit.Assert;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.Collection;
 import java.util.ResourceBundle;
 
 public class TestSharedMethods {
@@ -97,5 +101,19 @@ public class TestSharedMethods {
             User r = accountDao.getUserById(u.getAugentID());
             Assert.assertNull("removeTestUsers, cleanup test user failed", r);
         }
+    }
+
+    public static Calendar testCalendar() {
+        Calendar calendar = new Calendar();
+        Collection<Day> calendarDays = calendar.getDays();
+        for (int i = 1; i <= 5; i++) {
+            Day d = new Day();
+            d.setDate(CustomDate.parseString("2020-01-0" + i + "T00:00:00"));
+            d.setOpeningHour(new Time(9, 0, 0));
+            d.setClosingHour(new Time(17, 0, 0));
+            d.setOpenForReservationDate(CustomDate.parseString("2019-12-31T09:00:00"));
+            calendarDays.add(d);
+        }
+        return calendar;
     }
 }

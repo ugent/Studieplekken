@@ -3,6 +3,7 @@ package be.ugent.blok2.daos.db;
 import be.ugent.blok2.controllers.BarcodeController;
 import be.ugent.blok2.daos.IAccountDao;
 import be.ugent.blok2.helpers.Institution;
+import be.ugent.blok2.helpers.Resources;
 import be.ugent.blok2.helpers.exceptions.NoSuchUserException;
 import be.ugent.blok2.helpers.generators.IGenerator;
 import be.ugent.blok2.helpers.generators.VerificationCodeGenerator;
@@ -148,28 +149,34 @@ public class DBAccountDao extends ADB implements IAccountDao {
             WHERE <?>
             group by u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.mail, u.password, u.institution, u.birthdate, u.barcode;
              */
-            String query = databaseProperties.getString("get_user_by_<?>").replace("<?>", "u.augentid = ?");
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, augentID);
-            ResultSet resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                User u = new User();
-                u.setAugentID(resultSet.getString(databaseProperties.getString("user_augentid")));
-                u.setLastName(resultSet.getString(databaseProperties.getString("user_surname")));
-                u.setFirstName(resultSet.getString(databaseProperties.getString("user_name")));
-                u.setPassword("");
-                u.setBarcode(resultSet.getString(databaseProperties.getString("user_barcode")));
-                u.setPenaltyPoints(resultSet.getInt(databaseProperties.getString("user_penalty_points")));
-                String csvRole = resultSet.getString(databaseProperties.getString("user_role"));
-                u.setRoles(csvToRoles(csvRole));
-                u.setMail(resultSet.getString(databaseProperties.getString("user_mail")));
-                u.setInstitution(resultSet.getString(databaseProperties.getString("user_institution")));
-                return u;
-            }
+            return getUserById(augentID, connection);
         } catch (Exception e) {
             System.out.println(e.getMessage());
+            return null;
         }
+    }
+
+    public static User getUserById(String augentID, Connection connection) throws SQLException {
+        String query = databaseProperties.getString("get_user_by_<?>").replace("<?>", "u.augentid = ?");
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, augentID);
+        ResultSet resultSet = statement.executeQuery();
+
+        if (resultSet.next()) {
+            User u = new User();
+            u.setAugentID(resultSet.getString(databaseProperties.getString("user_augentid")));
+            u.setLastName(resultSet.getString(databaseProperties.getString("user_surname")));
+            u.setFirstName(resultSet.getString(databaseProperties.getString("user_name")));
+            u.setPassword("");
+            u.setBarcode(resultSet.getString(databaseProperties.getString("user_barcode")));
+            u.setPenaltyPoints(resultSet.getInt(databaseProperties.getString("user_penalty_points")));
+            String csvRole = resultSet.getString(databaseProperties.getString("user_role"));
+            u.setRoles(csvToRoles(csvRole));
+            u.setMail(resultSet.getString(databaseProperties.getString("user_mail")));
+            u.setInstitution(resultSet.getString(databaseProperties.getString("user_institution")));
+            return u;
+        }
+
         return null;
     }
 
@@ -734,7 +741,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
         return csv;
     }
 
-    private Role[] csvToRoles(String csvRoles) {
+    private static Role[] csvToRoles(String csvRoles) {
         String[] split = csvRoles.split(";");
         Role[] roles = new Role[split.length];
         for (int i = 0; i < roles.length; i++) {

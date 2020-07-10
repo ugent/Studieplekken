@@ -45,8 +45,8 @@ public class Location implements Cloneable {
         this.name = name;
         this.numberOfLockers = 0;
         this.numberOfSeats = 0;
-        this.calendar = new ArrayList<Day>();
-        this.lockers = new ArrayList<Locker>();
+        this.calendar = new ArrayList<>();
+        this.lockers = new ArrayList<>();
         this.descriptions = new HashMap<>();
     }
 
