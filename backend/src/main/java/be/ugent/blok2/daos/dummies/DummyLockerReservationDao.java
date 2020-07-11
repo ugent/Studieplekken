@@ -57,8 +57,8 @@ public class DummyLockerReservationDao extends ADummyDao implements ILockerReser
                 "59%3A0xaec2b5045d8ce4a4!2sKantienberg%2C%209000%20Gent!5e0!3m2!1snl!2sbe!4v1582297626156!5m2!1snl!2sbe\" width=\"600\" height=\"450\" frameborder=\"0\" style=\"border:0;\" allo" +
                 "wfullscreen=\"\"></iframe>");
 
-        Locker TEST_LOCKER = new Locker(0, TEST_LOCATION.getName(), 0);
-        Locker n = new Locker(1, "z", 1);
+        Locker TEST_LOCKER = new Locker(0, TEST_LOCATION.getName());
+        Locker n = new Locker(1, "z");
 
         TEST_USERS = new ArrayList<>();
         TEST_USERS.add(a);
@@ -133,7 +133,7 @@ public class DummyLockerReservationDao extends ADummyDao implements ILockerReser
     public List<LockerReservation> getAllLockerReservationsOfLocationWithoutKeyBroughtBack(String locationName){
         List<LockerReservation> reservations = new ArrayList<>();
         for(LockerReservation reservation : lockerReservations){
-            if(reservation.getLocker().getLocation().equalsIgnoreCase(locationName) && !reservation.getKeyBroughtBack()){
+            if (reservation.getLocker().getLocation().equalsIgnoreCase(locationName) && reservation.getKeyReturnedDate() != null) {
                 reservations.add(reservation);
             }
         }
@@ -144,7 +144,7 @@ public class DummyLockerReservationDao extends ADummyDao implements ILockerReser
     public int getNumberOfLockersInUseOfLocation(String locationName){
         int count = 0;
         for(LockerReservation reservation : lockerReservations){
-            if(reservation.getLocker().getLocation().equalsIgnoreCase(locationName) && !reservation.getKeyBroughtBack()){
+            if(reservation.getLocker().getLocation().equalsIgnoreCase(locationName) && reservation.getKeyReturnedDate() != null) {
                 count++;
             }
         }
@@ -154,7 +154,7 @@ public class DummyLockerReservationDao extends ADummyDao implements ILockerReser
     @Override
     public LockerReservation getLockerReservation(String augentID, int lockerID, CustomDate startDate, CustomDate endDate) {
         for (LockerReservation lo : lockerReservations) {
-            if (lo.getOwner().getAugentID().equals(augentID) && lo.getLocker().getId() == lockerID && lo.getStartDate().equals(startDate) && lo.getEndDate().equals(endDate)) {
+            if (lo.getOwner().getAugentID().equals(augentID) && lo.getLocker().getId() == lockerID) {
                 return lo;
             }
         }
@@ -165,7 +165,7 @@ public class DummyLockerReservationDao extends ADummyDao implements ILockerReser
     @Override
     public void deleteLockerReservation(String augentID, int lockerID, CustomDate startDate, CustomDate endDate) {
         for (LockerReservation lo : lockerReservations) {
-            if (lo.getOwner().getAugentID().equals(augentID) && lo.getLocker().getId() == lockerID && lo.getStartDate().equals(startDate) && lo.getEndDate().equals(endDate)) {
+            if (lo.getOwner().getAugentID().equals(augentID) && lo.getLocker().getId() == lockerID) {
                 lockerReservations.remove(lo);
                 return;
             }
@@ -176,10 +176,9 @@ public class DummyLockerReservationDao extends ADummyDao implements ILockerReser
     public void changeLockerReservation(LockerReservation lockerReservation){
         for(LockerReservation res : lockerReservations){
             if(res.getLocker().equals(lockerReservation.getLocker()) && res.getOwner().equals(lockerReservation.getOwner()) &&
-                    res.getStartDate().equals(lockerReservation.getStartDate()) && res.getEndDate().equals(lockerReservation.getEndDate()) &&
                     !res.equals(lockerReservation)){
-                res.setKeyPickedUp(lockerReservation.getKeyPickedUp());
-                res.setKeyBroughtBack(lockerReservation.getKeyBroughtBack());
+                res.setKeyPickupDate(lockerReservation.getKeyPickupDate());
+                res.setKeyReturnedDate(lockerReservation.getKeyReturnedDate());
             }
         }
     }

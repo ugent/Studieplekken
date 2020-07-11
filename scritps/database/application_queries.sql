@@ -336,7 +336,7 @@ where key_pickup_date is null;
 -- $get_locker_reservation_of_soundex_user_by_complete_name
 select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
      , u.augentid, u.role, u.penalty_points, u.barcode
-     , r.locker_id, r.user_augentid, r.key_pickup_date, r.key_return_date
+     , l.id, l.number, l.location_name
      , lr.locker_id, lr.user_augentid, lr.key_pickup_date, lr.key_return_date
 from public.locker_reservations lr
     join public.users u
@@ -348,7 +348,7 @@ where metaphone(CONCAT(augentpreferredgivenname, ' ', augentpreferredsn), 10) = 
 -- $get_locker_reservation_of_soundex_user_by_name
 select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
      , u.augentid, u.role, u.penalty_points, u.barcode
-     , r.locker_id, r.user_augentid, r.key_pickup_date, r.key_return_date
+     , l.id, l.number, l.location_name
      , lr.locker_id, lr.user_augentid, lr.key_pickup_date, lr.key_return_date
 from public.locker_reservations lr
     join public.users u

@@ -7,16 +7,14 @@ public class Locker implements Cloneable {
     private int id;
     private int number; // identification number of locker
     private String location;
-    private int studentLimit;
 
     public Locker() {
 
     }
 
-    public Locker(int number, String location, int studentLimit) {
+    public Locker(int number, String location) {
         this.number = number;
         this.location = location;
-        this.studentLimit = studentLimit;
     }
 
     @Override
@@ -76,14 +74,6 @@ public class Locker implements Cloneable {
 
     public void setLocation(String location) {
         this.location = location;
-    }
-
-    public int getStudentLimit() {
-        return studentLimit;
-    }
-
-    public void setStudentLimit(int studentLimit) {
-        this.studentLimit = studentLimit;
     }
 
     //</editor-fold>

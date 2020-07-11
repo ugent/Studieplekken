@@ -731,7 +731,21 @@ public class DBAccountDao extends ADB implements IAccountDao {
 
     }
 
-    private String rolesToCsv(Role[] roles) {
+    public static User createUser(ResultSet rs) throws SQLException {
+        User u = new User();
+        u.setMail(rs.getString(databaseProperties.getString("user_mail")));
+        u.setLastName(rs.getString(databaseProperties.getString("user_augentpreferredsn")));
+        u.setFirstName(rs.getString(databaseProperties.getString("user_augentpreferredgivenname")));
+        u.setPassword(rs.getString(databaseProperties.getString("user_password")));
+        u.setInstitution(rs.getString(databaseProperties.getString("user_institution")));
+        u.setAugentID(rs.getString(databaseProperties.getString("user_augentid")));
+        u.setRoles(csvToRoles(rs.getString(databaseProperties.getString("user_role"))));
+        u.setPenaltyPoints(rs.getInt(databaseProperties.getString("user_penalty_points")));
+        u.setBarcode(rs.getString(databaseProperties.getString("user_barcode")));
+        return u;
+    }
+
+    private static String rolesToCsv(Role[] roles) {
         String csv = "";
         for (int i = 0; i < roles.length - 1; i++) {
             csv += roles[i].toString();

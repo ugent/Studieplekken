@@ -27,6 +27,7 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
             Statement statement = connection.createStatement();
             statement.executeQuery(databaseProperties.getString("daily_cleanup_reservation_of_locker"));
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -48,22 +49,7 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
             st.setString(1, augentID);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
-                int lockerId = rs.getInt(databaseProperties.getString("locker_reservation_locker_id"));
-                CustomDate startDate = CustomDate.parseString(rs.getString(databaseProperties.getString("locker_reservation_start_date")));
-                CustomDate endDate = CustomDate.parseString(rs.getString(databaseProperties.getString("locker_reservation_end_date")));
-                User user = getUser(rs.getString(databaseProperties.getString("locker_reservation_user_augentid")), conn);
-                Locker locker = getLocker(rs.getInt(databaseProperties.getString("locker_reservation_locker_id")), conn);
-                boolean keyPickedUp = rs.getBoolean(databaseProperties.getString("locker_reservation_key_picked_up"));
-                boolean keyBroughtBack = rs.getBoolean(databaseProperties.getString("locker_reservation_key_brought_back"));
-
-                LockerReservation lockerReservation = new LockerReservation();
-                lockerReservation.setStartDate(startDate);
-                lockerReservation.setEndDate(endDate);
-                lockerReservation.setOwner(user);
-                lockerReservation.setLocker(locker);
-                lockerReservation.setKeyPickedUp(keyPickedUp);
-                lockerReservation.setKeyBroughtBack(keyBroughtBack);
-
+                LockerReservation lockerReservation = createLockerReservation(rs);
                 reservations.add(lockerReservation);
             }
         }
@@ -81,32 +67,8 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
             st.setString(1, name);
             st.setString(2, name);
             ResultSet rs = st.executeQuery();
-            while(rs.next()){
-                CustomDate startDate = CustomDate.parseString(rs.getString(databaseProperties.getString("locker_reservation_start_date")));
-                CustomDate endDate = CustomDate.parseString(rs.getString(databaseProperties.getString("locker_reservation_end_date")));
-                User user = getUser(rs.getString(databaseProperties.getString("locker_reservation_user_augentid")), conn);
-
-                String location = rs.getString(databaseProperties.getString("locker_location"));
-                int number = rs.getInt(databaseProperties.getString("locker_number"));
-                int studentLimit = rs.getInt(databaseProperties.getString("locker_student_limit"));
-
-                Locker locker = new Locker();
-                locker.setId(rs.getInt(databaseProperties.getString("locker_reservation_locker_id")));
-                locker.setNumber(number);
-                locker.setLocation(location);
-                locker.setStudentLimit(studentLimit);
-
-                boolean keyPickedUp = rs.getBoolean(databaseProperties.getString("locker_reservation_key_picked_up"));
-                boolean keyBroughtBack = rs.getBoolean(databaseProperties.getString("locker_reservation_key_brought_back"));
-
-                LockerReservation lockerReservation = new LockerReservation();
-                lockerReservation.setStartDate(startDate);
-                lockerReservation.setEndDate(endDate);
-                lockerReservation.setOwner(user);
-                lockerReservation.setLocker(locker);
-                lockerReservation.setKeyPickedUp(keyPickedUp);
-                lockerReservation.setKeyBroughtBack(keyBroughtBack);
-
+            while (rs.next()) {
+                LockerReservation lockerReservation = createLockerReservation(rs);
                 res.add(lockerReservation);
             }
         }
@@ -119,41 +81,17 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
             there will be checked if there are lockerreservations with a owner that have a similar first of last name.
          */
         if(res.size()==0){
-            try(Connection conn = getConnection()){
+            try (Connection conn = getConnection()) {
                 PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_locker_reservation_of_soundex_user_by_name"));
                 st.setString(1, name);
                 st.setString(2, name);
                 ResultSet rs = st.executeQuery();
-                while(rs.next()){
-                    CustomDate startDate = CustomDate.parseString(rs.getString(databaseProperties.getString("locker_reservation_start_date")));
-                    CustomDate endDate = CustomDate.parseString(rs.getString(databaseProperties.getString("locker_reservation_end_date")));
-                    User user = getUser(rs.getString(databaseProperties.getString("locker_reservation_user_augentid")), conn);
-
-                    String location = rs.getString(databaseProperties.getString("locker_location"));
-                    int number = rs.getInt(databaseProperties.getString("locker_number"));
-                    int studentLimit = rs.getInt(databaseProperties.getString("locker_student_limit"));
-
-                    Locker locker = new Locker();
-                    locker.setId(rs.getInt(databaseProperties.getString("locker_reservation_locker_id")));
-                    locker.setNumber(number);
-                    locker.setLocation(location);
-                    locker.setStudentLimit(studentLimit);
-
-                    boolean keyPickedUp = rs.getBoolean(databaseProperties.getString("locker_reservation_key_picked_up"));
-                    boolean keyBroughtBack = rs.getBoolean(databaseProperties.getString("locker_reservation_key_brought_back"));
-
-                    LockerReservation lockerReservation = new LockerReservation();
-                    lockerReservation.setStartDate(startDate);
-                    lockerReservation.setEndDate(endDate);
-                    lockerReservation.setOwner(user);
-                    lockerReservation.setLocker(locker);
-                    lockerReservation.setKeyPickedUp(keyPickedUp);
-                    lockerReservation.setKeyBroughtBack(keyBroughtBack);
-
+                while (rs.next()) {
+                    LockerReservation lockerReservation = createLockerReservation(rs);
                     res.add(lockerReservation);
                 }
             }
-            catch (SQLException e){
+            catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
         }
@@ -163,30 +101,16 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
     @Override
     public List<LockerReservation> getAllLockerReservationsOfLocation(String name) {
         List<LockerReservation> reservations = new ArrayList<>();
-        try(Connection conn = getConnection()){
+        try (Connection conn = getConnection()) {
             PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_locker_reservations_of_location"));
             st.setString(1, name);
             ResultSet rs = st.executeQuery();
-            while(rs.next()){
-                CustomDate startDate = CustomDate.parseString(rs.getString(databaseProperties.getString("locker_reservation_start_date")));
-                CustomDate endDate = CustomDate.parseString(rs.getString(databaseProperties.getString("locker_reservation_end_date")));
-                User user = getUser(rs.getString(databaseProperties.getString("locker_reservation_user_augentid")), conn);
-                Locker locker = getLocker(rs.getInt(databaseProperties.getString("locker_reservation_locker_id")), conn);
-                boolean keyPickedUp = rs.getBoolean(databaseProperties.getString("locker_reservation_key_picked_up"));
-                boolean keyBroughtBack = rs.getBoolean(databaseProperties.getString("locker_reservation_key_brought_back"));
-
-                LockerReservation lockerReservation = new LockerReservation();
-                lockerReservation.setStartDate(startDate);
-                lockerReservation.setEndDate(endDate);
-                lockerReservation.setOwner(user);
-                lockerReservation.setLocker(locker);
-                lockerReservation.setKeyPickedUp(keyPickedUp);
-                lockerReservation.setKeyBroughtBack(keyBroughtBack);
-
+            while (rs.next()) {
+                LockerReservation lockerReservation = createLockerReservation(rs);
                 reservations.add(lockerReservation);
             }
         }
-        catch(SQLException e){
+        catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return reservations;
@@ -195,43 +119,29 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
     @Override
     public List<LockerReservation> getAllLockerReservationsOfLocationWithoutKeyBroughtBack(String name) {
         List<LockerReservation> reservations = new ArrayList<>();
-        try(Connection conn = getConnection()){
+        try (Connection conn = getConnection()) {
             PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_locker_reservations_of_location_without_key_brought_back"));
             st.setString(1, name);
             ResultSet rs = st.executeQuery();
-            while(rs.next()){
-                CustomDate startDate = CustomDate.parseString(rs.getString(databaseProperties.getString("locker_reservation_start_date")));
-                CustomDate endDate = CustomDate.parseString(rs.getString(databaseProperties.getString("locker_reservation_end_date")));
-                User user = getUser(rs.getString(databaseProperties.getString("locker_reservation_user_augentid")), conn);
-                Locker locker = getLocker(rs.getInt(databaseProperties.getString("locker_reservation_locker_id")), conn);
-                boolean keyPickedUp = rs.getBoolean(databaseProperties.getString("locker_reservation_key_picked_up"));
-                boolean keyBroughtBack = rs.getBoolean(databaseProperties.getString("locker_reservation_key_brought_back"));
-
-                LockerReservation lockerReservation = new LockerReservation();
-                lockerReservation.setStartDate(startDate);
-                lockerReservation.setEndDate(endDate);
-                lockerReservation.setOwner(user);
-                lockerReservation.setLocker(locker);
-                lockerReservation.setKeyPickedUp(keyPickedUp);
-                lockerReservation.setKeyBroughtBack(keyBroughtBack);
-
+            while (rs.next()) {
+                LockerReservation lockerReservation = createLockerReservation(rs);
                 reservations.add(lockerReservation);
             }
         }
-        catch(SQLException e){
+        catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return reservations;
     }
 
     @Override
-    public int getNumberOfLockersInUseOfLocation(String locationName){
+    public int getNumberOfLockersInUseOfLocation(String locationName) {
         int count = 0;
-        try(Connection conn = getConnection()){
+        try (Connection conn = getConnection()) {
             PreparedStatement st = conn.prepareStatement(databaseProperties.getString("count_lockers_in_use_of_location"));
             st.setString(1, locationName);
             ResultSet rs = st.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 count = rs.getInt(1);
             }
         }
@@ -243,35 +153,18 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
 
     @Override
     public LockerReservation getLockerReservation(String augentID, int lockerID, CustomDate startDate, CustomDate endDate) {
-        try(Connection conn = getConnection()){
+        try (Connection conn = getConnection()) {
             PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_locker_reservation"));
             st.setString(1, augentID);
             st.setInt(2, lockerID);
             st.setString(3, startDate.toString());
             st.setString(4, endDate.toString());
             ResultSet rs = st.executeQuery();
-            while(rs.next()){
-                User user = new User();
-                user.setAugentID(augentID);
-                user.setFirstName(rs.getString(databaseProperties.getString("utv_surname")));
-                user.setLastName(rs.getString(databaseProperties.getString("utv_name")));
-                Locker locker = getLocker(lockerID, conn);
-
-                boolean keyPickedUp = rs.getBoolean(databaseProperties.getString("locker_reservation_key_picked_up"));
-                boolean keyBroughtBack = rs.getBoolean(databaseProperties.getString("locker_reservation_key_brought_back"));
-
-                LockerReservation lockerReservation = new LockerReservation();
-                lockerReservation.setStartDate(startDate);
-                lockerReservation.setEndDate(endDate);
-                lockerReservation.setOwner(user);
-                lockerReservation.setLocker(locker);
-                lockerReservation.setKeyPickedUp(keyPickedUp);
-                lockerReservation.setKeyBroughtBack(keyBroughtBack);
-
-                return lockerReservation;
+            if (rs.next()) {
+                return createLockerReservation(rs);
             }
         }
-        catch(SQLException e){
+        catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return null;
@@ -279,7 +172,7 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
 
     @Override
     public void deleteLockerReservation(String augentID, int lockerID, CustomDate startDate, CustomDate endDate) {
-        try(Connection conn = getConnection()){
+        try (Connection conn = getConnection()) {
             PreparedStatement st = conn.prepareStatement(databaseProperties.getString("delete_locker_reservation"));
             st.setString(1, augentID);
             st.setInt(2, lockerID);
@@ -287,7 +180,7 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
             st.setString(4, endDate.toString());
             st.execute();
         }
-        catch(SQLException e){
+        catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -296,74 +189,53 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
     public void addLockerReservation(LockerReservation lockerReservation) {
         try (Connection conn = getConnection()) {
             PreparedStatement st = conn.prepareStatement(databaseProperties.getString("insert_locker_reservation"));
-            st.setString(1, lockerReservation.getOwner().getAugentID());
-            st.setInt(2, lockerReservation.getLocker().getId());
-            st.setString(3, lockerReservation.getStartDate().toString());
-            st.setString(4, lockerReservation.getEndDate().toString());
-            st.setBoolean(5, lockerReservation.getKeyPickedUp());
-            st.setBoolean(6, lockerReservation.getKeyBroughtBack());
+            setupInsertLockerReservationPstmt(lockerReservation, st);
             st.execute();
         }
-        catch(SQLException e){
+        catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
 
     @Override
     public void changeLockerReservation(LockerReservation lockerReservation) {
-        try(Connection conn = getConnection()){
+        try (Connection conn = getConnection()) {
             PreparedStatement st = conn.prepareStatement(databaseProperties.getString("update_locker_reservation"));
-            st.setBoolean(1, lockerReservation.getKeyPickedUp());
-            st.setBoolean(2, lockerReservation.getKeyBroughtBack());
-            st.setString(3, lockerReservation.getOwner().getAugentID());
-            st.setInt(4, lockerReservation.getLocker().getId());
-            st.setString(5, lockerReservation.getStartDate().toString());
-            st.setString(6, lockerReservation.getEndDate().toString());
+            setupUpdateLockerReservationPstmt(lockerReservation, lockerReservation.getLocker().getId(),
+                    lockerReservation.getOwner().getAugentID(), st);
             st.execute();
         }
-        catch(SQLException e){
+        catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
 
-    private User getUser(String augentID, Connection conn) throws SQLException {
-        PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_user_by_<?>").replace("<?>", "u.augentid = ?"));
-        st.setString(1, augentID);
-        ResultSet rs = st.executeQuery();
-        while(rs.next()){
-            User user = new User();
-            user.setAugentID(augentID);
-            user.setFirstName(rs.getString(databaseProperties.getString("utv_surname")));
-            user.setLastName(rs.getString(databaseProperties.getString("utv_name")));
-            return user;
-        }
-        return null;
-    }
-
-    private Locker getLocker(int lockerID, Connection conn) throws SQLException {
-        PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_locker"));
-        st.setInt(1, lockerID);
-        ResultSet rs = st.executeQuery();
-        while(rs.next()){
-            String location = rs.getString(databaseProperties.getString("locker_location"));
-            int number = rs.getInt(databaseProperties.getString("locker_number"));
-            int studentLimit = rs.getInt(databaseProperties.getString("locker_student_limit"));
-
-            Locker locker = new Locker();
-            locker.setId(lockerID);
-            locker.setNumber(number);
-            locker.setLocation(location);
-            locker.setStudentLimit(studentLimit);
-            return locker;
-        }
-        return null;
-    }
-
-    private LockerReservation createLockerReservation(ResultSet rs) {
+    public static LockerReservation createLockerReservation(ResultSet rs) throws SQLException {
         LockerReservation lr = new LockerReservation();
+        User u = DBAccountDao.createUser(rs);
+        Locker l = DBLocationDao.createLocker(rs);
 
-
+        lr.setLocker(l);
+        lr.setOwner(u);
+        lr.setKeyPickupDate(CustomDate.parseString(rs.getString(databaseProperties.getString("locker_reservation_key_pickup_date"))));
+        lr.setKeyReturnedDate(CustomDate.parseString(rs.getString(databaseProperties.getString("locker_reservation_key_return_date"))));
 
         return lr;
+    }
+
+    private void setupInsertLockerReservationPstmt(LockerReservation lr
+            , PreparedStatement pstmt) throws SQLException {
+        pstmt.setInt(1, lr.getLocker().getId());
+        pstmt.setString(2, lr.getOwner().getAugentID());
+        pstmt.setString(3, lr.getKeyPickupDate() == null ? "" : lr.getKeyPickupDate().toString());
+        pstmt.setString(4, lr.getKeyReturnedDate() == null ? "" : lr.getKeyReturnedDate().toString());
+    }
+
+    private void setupUpdateLockerReservationPstmt(LockerReservation lr
+            , int lockerId, String augentId, PreparedStatement pstmt) throws SQLException {
+        pstmt.setString(1, lr.getKeyPickupDate() == null ? "" : lr.getKeyPickupDate().toString());
+        pstmt.setString(2, lr.getKeyReturnedDate() == null ? "" : lr.getKeyReturnedDate().toString());
+        pstmt.setInt(3, lockerId);
+        pstmt.setString(4, augentId);
     }
 }

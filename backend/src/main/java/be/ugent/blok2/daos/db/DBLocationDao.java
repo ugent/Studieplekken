@@ -645,18 +645,8 @@ public class DBLocationDao extends ADB implements ILocationDao {
         return lockers;
     }
 
-    // helper method for AddLocation
-    // inserts lockers in the locker table
-    private void insertLocker(String locationName, int number, Connection conn) throws SQLException {
-        PreparedStatement st = conn.prepareStatement(databaseProperties.getString("insert_locker"));
-        st.setInt(1, number);
-        st.setString(2, locationName);
-        st.execute();
-    }
-
-
     // this method prevents a lot of duplicate code by creating a location out of a row in the ResultSet
-    private static Location createLocation(ResultSet rs) throws SQLException {
+    public static Location createLocation(ResultSet rs) throws SQLException {
         String name = rs.getString(databaseProperties.getString("location_name"));
         int numberOfSeats = rs.getInt(databaseProperties.getString("location_number_of_seats"));
         int numberOfLockers = rs.getInt(databaseProperties.getString("location_number_of_lockers"));
@@ -683,6 +673,23 @@ public class DBLocationDao extends ADB implements ILocationDao {
         }
 
         return location;
+    }
+
+    public static Locker createLocker(ResultSet rs) throws SQLException {
+        Locker l = new Locker();
+        l.setId(rs.getInt(databaseProperties.getString("locker_id")));
+        l.setNumber(rs.getInt(databaseProperties.getString("locker_number")));
+        l.setLocation(rs.getString(databaseProperties.getString("locker_location")));
+        return l;
+    }
+
+    // helper method for AddLocation
+    // inserts lockers in the locker table
+    private void insertLocker(String locationName, int number, Connection conn) throws SQLException {
+        PreparedStatement st = conn.prepareStatement(databaseProperties.getString("insert_locker"));
+        st.setInt(1, number);
+        st.setString(2, locationName);
+        st.execute();
     }
 
     private void updateLocation(Location location, Connection conn) throws SQLException {
