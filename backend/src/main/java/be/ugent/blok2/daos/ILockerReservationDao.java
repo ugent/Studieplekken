@@ -37,7 +37,7 @@ public interface ILockerReservationDao extends IDao {
     /**
      * Delete the lockerreservation with the given details.
      */
-    void deleteLockerReservation(String augentID, int LockerID, CustomDate startDate, CustomDate endDate);
+    void deleteLockerReservation(String augentID, int LockerID);
 
     /**
      * Add a lockerreservation.

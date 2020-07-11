@@ -163,7 +163,7 @@ public class DummyLockerReservationDao extends ADummyDao implements ILockerReser
     }
 
     @Override
-    public void deleteLockerReservation(String augentID, int lockerID, CustomDate startDate, CustomDate endDate) {
+    public void deleteLockerReservation(String augentID, int lockerID) {
         for (LockerReservation lo : lockerReservations) {
             if (lo.getOwner().getAugentID().equals(augentID) && lo.getLocker().getId() == lockerID) {
                 lockerReservations.remove(lo);

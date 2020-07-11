@@ -45,21 +45,25 @@ public class TestDBScannerLocation {
         // setup test user objects
         scannerEmployee = TestSharedMethods.employeeAdminTestUser();
         scannerStudent = TestSharedMethods.studentEmployeeTestUser();
+
+        locationDao.addLocation(testLocation);
+        locationDao.addLocation(testLocation2);
+
+        TestSharedMethods.addTestUsers(accountDao, scannerStudent, scannerEmployee);
     }
 
     @After
     public void cleanup() {
+        TestSharedMethods.removeTestUsers(accountDao, scannerStudent, scannerEmployee);
+
+        locationDao.deleteLocation(testLocation2.getName());
+        locationDao.deleteLocation(testLocation.getName());
+
         accountDao.useDefaultDatabaseConnection();
     }
 
     @Test
     public void locationScannersTest() {
-        // setup test scenario
-        locationDao.addLocation(testLocation);
-        locationDao.addLocation(testLocation2);
-
-        TestSharedMethods.addTestUsers(accountDao, scannerStudent, scannerEmployee);
-
         // add both test users as scanners for both test locations
         List<User> users = new ArrayList<>();
         users.add(scannerEmployee);
@@ -102,11 +106,5 @@ public class TestDBScannerLocation {
                 expectedUserAugentIds.toArray(), usersForTestLocation.toArray());
         Assert.assertArrayEquals("locationScannersTest, correct users fetched for testLocation2?",
                 expectedUserAugentIds.toArray(), usersForTestLocation2.toArray());
-
-        // rollback test setup
-        TestSharedMethods.removeTestUsers(accountDao, scannerStudent, scannerEmployee);
-
-        locationDao.deleteLocation(testLocation2.getName());
-        locationDao.deleteLocation(testLocation.getName());
     }
 }

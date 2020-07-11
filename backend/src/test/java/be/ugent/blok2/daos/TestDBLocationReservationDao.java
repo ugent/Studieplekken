@@ -41,28 +41,34 @@ public class TestDBLocationReservationDao {
 
     @Before
     public void setup() {
+        // Use test database
         TestSharedMethods.setupTestDaoDatabaseCredentials(accountDao);
         TestSharedMethods.setupTestDaoDatabaseCredentials(locationDao);
         TestSharedMethods.setupTestDaoDatabaseCredentials(locationReservationDao);
 
+        // setup test location objects
         testLocation = TestSharedMethods.testLocation();
 
         testUser = TestSharedMethods.employeeAdminTestUser();
         testUser2 = TestSharedMethods.studentEmployeeTestUser();
 
+        // Add test objects to database
+        TestSharedMethods.addTestUsers(accountDao, testUser, testUser2);
+        locationDao.addLocation(testLocation);
     }
 
     @After
-    public void cleanup(){
+    public void cleanup() {
+        // Remove test objects from database
+        locationDao.deleteLocation(testLocation.getName());
+        TestSharedMethods.removeTestUsers(accountDao, testUser2, testUser);
+
+        // Use regular database
         locationReservationDao.useDefaultDatabaseConnection();
     }
 
     @Test
     public void addLocationReservationTest() {
-        // setup test
-        TestSharedMethods.addTestUsers(accountDao, testUser);
-        locationDao.addLocation(testLocation);
-
         // retrieve entries from database instead of using the added instances
         Location location = locationDao.getLocation(testLocation.getName());
         User u = accountDao.getUserById(testUser.getAugentID());
@@ -92,18 +98,10 @@ public class TestDBLocationReservationDao {
         locationReservationDao.deleteLocationReservation(u.getAugentID(), date);
         rlr = locationReservationDao.getLocationReservation(u.getAugentID(), date);
         Assert.assertNull("addLocationReservationTest, delete LocationReservation", rlr);
-
-        // rollback test setup
-        locationDao.deleteLocation(testLocation.getName());
-        TestSharedMethods.removeTestUsers(accountDao, testUser);
     }
 
     @Test
     public void scanStudentTest() {
-        // setup test
-        TestSharedMethods.addTestUsers(accountDao, testUser, testUser2);
-        locationDao.addLocation(testLocation);
-
         // retrieve entries from database instead of using the added instances
         Location location = locationDao.getLocation(testLocation.getName());
         User u1 = accountDao.getUserById(testUser.getAugentID());
@@ -148,7 +146,7 @@ public class TestDBLocationReservationDao {
 
         // get absent students
         List<LocationReservation> absent = locationReservationDao.getAbsentStudents(testLocation.getName(), today);
-        Assert.assertEquals("scanStudentTest, absent size", 1, present.size());
+        Assert.assertEquals("scanStudentTest, absent size", 1, absent.size());
         Assert.assertEquals("scanStudentTest, absent user", u2, absent.get(0).getUser());
 
         // set all students' attended = true for the date
@@ -161,75 +159,5 @@ public class TestDBLocationReservationDao {
         present = locationReservationDao.getPresentStudents(testLocation.getName(), today);
         Assert.assertEquals("scanStudentTest, present size after u1 unattended", 1, present.size());
         Assert.assertEquals("scanStudentTest, present user after u1 unattended should be u2", u2, present.get(0).getUser());
-
-        // rollback test setup
-        locationDao.deleteLocation(testLocation.getName());
-        TestSharedMethods.removeTestUsers(accountDao, testUser2, testUser);
     }
-
-    /*@Test
-    public void testScanStudent() {
-        LocationReservation locationReservation = new LocationReservation(testLocation, users.get(0), date);
-        locationReservationDao.addLocationReservation(locationReservation);
-
-        // attended is initialized to null
-        assertNull(locationReservation.getAttended());
-
-        // should scan correctly as the reservation is set for today
-        locationReservationDao.scanStudent(testLocation.getName(),users.get(0).getBarcode());
-
-        LocationReservation l = locationReservationDao.getLocationReservation(users.get(0).getAugentID(), date);
-        assertNotNull(l);
-        assertTrue(l.getAttended());
-    }
-
-    @Test
-    public void testGetAbsentStudents(){
-
-        // add a reservation for all students in users list
-        for(User u: users){
-            LocationReservation locationReservation = new LocationReservation(testLocation, u, date);
-            locationReservationDao.addLocationReservation(locationReservation);
-        }
-
-        // only scan the first student
-        locationReservationDao.scanStudent(testLocation.getName(), users.get(0).getBarcode());
-
-        List<LocationReservation> absentStudents = locationReservationDao.getAbsentStudents(testLocation.getName(),date);
-
-        // only 2 students haven't scanned yet
-        assertEquals(absentStudents.size(), 2);
-
-        // first student should not be in this list
-        for(LocationReservation l: absentStudents){
-            assertNotEquals(l.getUser(), users.get(0));
-        }
-
-    }
-
-    @Test
-    public void testSetAllStudentsToAttended(){
-
-        // add a reservation for all students in users list
-        for(User u: users){
-            LocationReservation locationReservation = new LocationReservation(testLocation, u, date);
-            locationReservationDao.addLocationReservation(locationReservation);
-        }
-
-        // no students scanned
-
-        locationReservationDao.setAllStudentsOfLocationToAttended(testLocation.getName(), date);
-
-        // check if all reservations have been set to attended
-
-        // only reservations made for this location, should all be set to attended
-        List<LocationReservation> locationReservations = locationReservationDao.getAllLocationReservationsOfLocation(testLocation.getName());
-        for(LocationReservation l: locationReservations){
-            if(l.getAttended()!=null){
-                assertTrue(l.getAttended());
-            }else{
-                fail();
-            }
-        }
-    }*/
 }

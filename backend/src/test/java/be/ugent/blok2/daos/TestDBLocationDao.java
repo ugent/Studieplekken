@@ -32,22 +32,27 @@ public class TestDBLocationDao {
 
     @Before
     public void setup() {
-        // Change database credentials for used daos
+        // Use test database
         TestSharedMethods.setupTestDaoDatabaseCredentials(locationDao);
 
-        // setup test location objects
-        // (reason for static function: avoid duplicate code, TestDBScannerLocation.java uses the same method)
+        // Setup test objects
         testLocation = TestSharedMethods.testLocation();
+
+        // Add test objects to database
+        locationDao.addLocation(testLocation);
     }
 
     @After
     public void cleanup() {
+        // Remove test objects from database
+        locationDao.deleteLocation(testLocation.getName());
+
+        // Use regular database
         locationDao.useDefaultDatabaseConnection();
     }
 
     @Test
     public void addLocationTest() {
-        locationDao.addLocation(testLocation);
         Location l = locationDao.getLocationWithoutLockersAndCalendar(testLocation.getName());
         Assert.assertEquals("addLocation", testLocation, l);
 
@@ -58,8 +63,6 @@ public class TestDBLocationDao {
 
     @Test
     public void changeLocationTest() {
-        locationDao.addLocation(testLocation);
-
         Location changedTestLocation = testLocation.clone();
         changedTestLocation.setName("Changed Test Location");
 
@@ -75,7 +78,6 @@ public class TestDBLocationDao {
 
     @Test
     public void addLockersTest() {
-        locationDao.addLocation(testLocation);
         Location expectedLocation = testLocation.clone();
         int prev_n = expectedLocation.getNumberOfLockers();
 
@@ -94,13 +96,10 @@ public class TestDBLocationDao {
         Assert.assertEquals("addLocker, added negative amount of lockers", expectedLocation, location);
 
         // TODO: reserve lockers and expect SQLException
-
-        locationDao.deleteLocation(testLocation.getName());
     }
 
     @Test
     public void deleteLockersTest() {
-        locationDao.addLocation(testLocation);
         Location expectedLocation = testLocation.clone();
         int prev_n = expectedLocation.getNumberOfLockers();
 
@@ -109,8 +108,6 @@ public class TestDBLocationDao {
         locationDao.deleteLockers(testLocation.getName(), prev_n - n);
         Location location = locationDao.getLocationWithoutLockersAndCalendar(testLocation.getName());
         Assert.assertEquals("deleteLockersTest", expectedLocation, location);
-
-        locationDao.deleteLocation(testLocation.getName());
     }
 
     /*
@@ -118,8 +115,6 @@ public class TestDBLocationDao {
     * */
     @Test
     public void calendarDaysTest() {
-        locationDao.addLocation(testLocation);
-
         Calendar calendar = TestSharedMethods.testCalendar();
         Collection<Day> calendarDays = calendar.getDays();
 
@@ -131,7 +126,5 @@ public class TestDBLocationDao {
         locationDao.deleteCalendarDays(testLocation.getName(), "2020-01-01T00:00:00", "2020-01-05T00:00:00");
         retrievedCalendarDays = locationDao.getCalendarDays(testLocation.getName());
         Assert.assertArrayEquals("calendarDaysTest, deleted calendar days", new Day[]{}, retrievedCalendarDays.toArray());
-
-        locationDao.deleteLocation(testLocation.getName());
     }
 }

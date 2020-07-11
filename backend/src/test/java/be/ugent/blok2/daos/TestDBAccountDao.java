@@ -27,34 +27,45 @@ public class TestDBAccountDao {
     @Autowired
     private IAccountDao accountDao;
 
-    private User directlyAddedUser;
-    private User verifiedAddedUser;
+    private User testUser1;
+    private User testUser2;
 
     @Before
     public void setup() {
         TestSharedMethods.setupTestDaoDatabaseCredentials(accountDao);
 
-        directlyAddedUser = TestSharedMethods.employeeAdminTestUser();
-        verifiedAddedUser = TestSharedMethods.studentEmployeeTestUser();
+        testUser1 = TestSharedMethods.employeeAdminTestUser();
+        testUser2 = TestSharedMethods.studentEmployeeTestUser();
+
+        TestSharedMethods.addTestUsers(accountDao, testUser1, testUser2);
     }
 
     @After
     public void cleanup() {
+        TestSharedMethods.removeTestUsers(accountDao, testUser2, testUser1);
         accountDao.useDefaultDatabaseConnection();
     }
 
     @Test
     public void directlyAddUserTest() {
+        User directlyAddedUser = testUser1.clone();
+        directlyAddedUser.setAugentID("1" + testUser1.getAugentID());
+        directlyAddedUser.setMail("directly.addeduser@ugent.be");
+
         accountDao.directlyAddUser(directlyAddedUser);
         User u = accountDao.getUserById(directlyAddedUser.getAugentID());
         Assert.assertEquals(directlyAddedUser, u);
 
         // remove added user
-        removeDirectlyAddedUser();
+        TestSharedMethods.removeTestUsers(accountDao, directlyAddedUser);
     }
 
     @Test
     public void addUserToBeVerifiedTest() {
+        User verifiedAddedUser = testUser1.clone();
+        verifiedAddedUser.setAugentID("1" + testUser1.getAugentID());
+        verifiedAddedUser.setMail("Verified.AddedUser@UGent.be");
+
         String verificationCode = accountDao.addUserToBeVerified(verifiedAddedUser);
         accountDao.verifyNewUser(verificationCode);
 
@@ -62,81 +73,54 @@ public class TestDBAccountDao {
         Assert.assertEquals(verifiedAddedUser, u);
 
         // remove added user
-        removeVerifiedAddedUser();
+        TestSharedMethods.removeTestUsers(accountDao, verifiedAddedUser);
     }
 
     @Test
     public void updateUserTest() {
-        User expectedChangedUser = directlyAddedUser.clone();
+        User expectedChangedUser = testUser1.clone();
         expectedChangedUser.setRoles(new Role[]{Role.STUDENT});
 
-        accountDao.directlyAddUser(directlyAddedUser);
-        accountDao.updateUser(expectedChangedUser.getMail(), expectedChangedUser);
+        accountDao.updateUser(testUser1.getMail(), expectedChangedUser);
 
-        User actualChangedUser = accountDao.getUserById(directlyAddedUser.getAugentID());
+        User actualChangedUser = accountDao.getUserById(expectedChangedUser.getAugentID());
         Assert.assertEquals(expectedChangedUser, actualChangedUser);
-
-        // remove added user
-        removeDirectlyAddedUser();
     }
 
     @Test
     public void accountExistsByEmailTest() {
-        accountDao.directlyAddUser(directlyAddedUser);
-        boolean exists = accountDao.accountExistsByEmail(directlyAddedUser.getMail());
+        boolean exists = accountDao.accountExistsByEmail(testUser1.getMail());
         Assert.assertTrue(exists);
-
-        // remove added user
-        removeDirectlyAddedUser();
     }
 
     @Test
     public void testGetters() {
-        accountDao.directlyAddUser(directlyAddedUser);
-        accountDao.directlyAddUser(verifiedAddedUser);
+        User u = accountDao.getUserByEmail(testUser1.getMail());
+        Assert.assertEquals("getUserByEmail", testUser1, u);
 
-        User u = accountDao.getUserByEmail(directlyAddedUser.getMail());
-        Assert.assertEquals("getUserByEmail", directlyAddedUser, u);
+        u = accountDao.getUserByEmailWithPassword(testUser1.getMail());
+        Assert.assertEquals("getUserByEmailWithPassword", testUser1, u);
 
-        u = accountDao.getUserByEmailWithPassword(directlyAddedUser.getMail());
-        Assert.assertEquals("getUserByEmailWithPassword", directlyAddedUser, u);
+        u = accountDao.getUserById(testUser1.getAugentID());
+        Assert.assertEquals("getUserById", testUser1, u);
 
-        u = accountDao.getUserById(directlyAddedUser.getAugentID());
-        Assert.assertEquals("getUserById", directlyAddedUser, u);
-
-        List<User> list = accountDao.getUsersByLastName(directlyAddedUser.getLastName());
+        List<User> list = accountDao.getUsersByLastName(testUser1.getLastName());
         Assert.assertEquals("getUsersByLastName", 2, list.size());
 
         list = accountDao.getUsersByLastName("last_name_that_has_no_entry");
         Assert.assertEquals("getUsersByLastName" + list.size(), 0, list.size());
 
-        list = accountDao.getUsersByFirstName(directlyAddedUser.getFirstName());
+        list = accountDao.getUsersByFirstName(testUser1.getFirstName());
         Assert.assertEquals("getUsersByFirstName", 1, list.size());
 
         list = accountDao.getUsersByFirstName("first_name_that_has_no_entry");
         Assert.assertEquals("getUsersByFirstName",0, list.size());
 
-        list = accountDao.getUsersByNameSoundex(directlyAddedUser.getFirstName()
-                + " " + directlyAddedUser.getLastName());
+        list = accountDao.getUsersByNameSoundex(testUser1.getFirstName()
+                + " " + testUser1.getLastName());
         Assert.assertEquals("getUsersByNameSoundex", 1, list.size());
 
         List<String> names = accountDao.getUserNamesByRole(Role.STUDENT.name());
         Assert.assertEquals("getUserNamesByRole", 2, names.size());
-
-        // remove added users
-        removeVerifiedAddedUser();
-        removeDirectlyAddedUser();
-    }
-
-    private void removeDirectlyAddedUser() {
-        accountDao.removeUserById(directlyAddedUser.getAugentID());
-        User u = accountDao.getUserById(directlyAddedUser.getAugentID());
-        Assert.assertNull(u);
-    }
-
-    private void removeVerifiedAddedUser() {
-        accountDao.removeUserById(verifiedAddedUser.getAugentID());
-        User u = accountDao.getUserById(verifiedAddedUser.getAugentID());
-        Assert.assertNull(u);
     }
 }

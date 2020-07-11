@@ -1,4 +1,4 @@
--- queries for table public.locations
+-- queries for table LOCATIONS
 -- $all_locations
 select l.name, l.number_of_seats, l.number_of_lockers
     , l.maps_frame, l.image_url, l.address, l.start_period_lockers
@@ -34,36 +34,100 @@ where name = ?;
 
 -- queries for table LOCATION_RESERVATION
 -- $get_location_reservations_of_user_by_id
-select *
-from public.location_reservations
+select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
+     , u.augentid, u.role, u.penalty_points, u.barcode
+     , l.name, l.number_of_seats, l.number_of_lockers, l.maps_frame, l.image_url, l.address
+     , l.start_period_lockers, l.end_period_lockers
+     , lr.date, lr.location_name, lr.attended, lr.user_augentid
+     , ld.location_name, ld.lang_enum, ld.description
+from public.location_reservations lr
+    join public.users u
+        on u.augentid = lr.user_augentid
+    join public.locations l
+        on l.name = lr.location_name
+    join public.location_descriptions ld
+        on l.name = ld.location_name
 where user_augentid = ?;
 
 -- $get_location_reservations_of_user_by_name
-select *
-from public.location_reservations l
+select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
+     , u.augentid, u.role, u.penalty_points, u.barcode
+     , l.name, l.number_of_seats, l.number_of_lockers, l.maps_frame, l.image_url, l.address
+     , l.start_period_lockers, l.end_period_lockers
+     , lr.date, lr.location_name, lr.attended, lr.user_augentid
+     , ld.location_name, ld.lang_enum, ld.description
+from public.location_reservations lr
     join public.users u
-        on l.user_augentid = u.augentid
+        on u.augentid = lr.user_augentid
+    join public.locations l
+        on l.name = lr.location_name
+    join public.location_descriptions ld
+        on l.name = ld.location_name
 where u.augentpreferredgivenname = ?;
 
 -- $get_location_reservations_of_location
-select *
-from public.location_reservations
-where location_name = ?;
+select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
+     , u.augentid, u.role, u.penalty_points, u.barcode
+     , l.name, l.number_of_seats, l.number_of_lockers, l.maps_frame, l.image_url, l.address
+     , l.start_period_lockers, l.end_period_lockers
+     , lr.date, lr.location_name, lr.attended, lr.user_augentid
+     , ld.location_name, ld.lang_enum, ld.description
+from public.location_reservations lr
+    join public.users u
+        on u.augentid = lr.user_augentid
+    join public.locations l
+        on l.name = lr.location_name
+    join public.location_descriptions ld
+        on l.name = ld.location_name
+where lr.location_name = ?;
 
 -- $get_location_reservation
-select *
-from public.location_reservations
-where user_augentid = ? and date = ?;
+select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
+     , u.augentid, u.role, u.penalty_points, u.barcode
+     , l.name, l.number_of_seats, l.number_of_lockers, l.maps_frame, l.image_url, l.address
+     , l.start_period_lockers, l.end_period_lockers
+     , lr.date, lr.location_name, lr.attended, lr.user_augentid
+     , ld.location_name, ld.lang_enum, ld.description
+from public.location_reservations lr
+    join public.users u
+        on u.augentid = lr.user_augentid
+    join public.locations l
+        on l.name = lr.location_name
+    join public.location_descriptions ld
+        on l.name = ld.location_name
+where lr.user_augentid = ? and lr.date = ?;
 
 -- $get_absent_students
-SELECT *
-from public.location_reservations
-where location_name = ? and date = ? and (attended is null or attended = false);
+select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
+     , u.augentid, u.role, u.penalty_points, u.barcode
+     , l.name, l.number_of_seats, l.number_of_lockers, l.maps_frame, l.image_url, l.address
+     , l.start_period_lockers, l.end_period_lockers
+     , lr.date, lr.location_name, lr.attended, lr.user_augentid
+     , ld.location_name, ld.lang_enum, ld.description
+from public.location_reservations lr
+    join public.users u
+        on u.augentid = lr.user_augentid
+    join public.locations l
+        on l.name = lr.location_name
+    join public.location_descriptions ld
+        on l.name = ld.location_name
+where lr.location_name = ? and lr.date = ? and (lr.attended is null or lr.attended = false);
 
 -- $get_present_students
-select *
-from public.location_reservations
-where location_name = ? and date = ? and attended = true;
+select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
+     , u.augentid, u.role, u.penalty_points, u.barcode
+     , l.name, l.number_of_seats, l.number_of_lockers, l.maps_frame, l.image_url, l.address
+     , l.start_period_lockers, l.end_period_lockers
+     , lr.date, lr.location_name, lr.attended, lr.user_augentid
+     , ld.location_name, ld.lang_enum, ld.description
+from public.location_reservations lr
+    join public.users u
+        on u.augentid = lr.user_augentid
+    join public.locations l
+        on l.name = lr.location_name
+    join public.location_descriptions ld
+        on l.name = ld.location_name
+where lr.location_name = ? and lr.date = ? and lr.attended = true;
 
 -- $count_location_reservations_of_location_for_date
 select count(1)
@@ -85,11 +149,6 @@ delete
 from public.location_reservations
 where location_name = ?;
 
--- $delete_location_reservations_of_location_and_date
-delete
-from public.location_reservations
-where location_name = ? and date = ?;
-
 -- $delete_location_reservations_of_location_between_dates
 delete
 from public.location_reservations
@@ -100,13 +159,8 @@ delete from public.location_reservations
 where user_augentid = ?;
 
 -- $insert_location_reservation
-insert into public.location_reservations (date, location_name, user_augentid)
-values (?, ?, ?);
-
--- $get_user_for_location_reservation
-select augentid, augentpreferredgivenname, augentpreferredsn, mail, barcode
-from public.users
-where augentid = ?;
+insert into public.location_reservations (date, location_name, user_augentid, attended)
+values (?, ?, ?, null);
 
 -- $set_location_reservation_unattended
 update public.location_reservations
@@ -118,7 +172,7 @@ update public.location_reservations
 set attended = true
 where date = ? and user_augentid = ?;
 
--- $todays_reservations
+-- $count_location_reservations_on_date
 select name, count(case when date = ? then 1 end)
 from public.locations
     left join public.location_reservations
@@ -129,11 +183,6 @@ group by name;
 update public.location_reservations
 set augentid = ?
 where augentid = ?;
-
--- $get_location_reservations_of_date
-select *
-from public.location_reservations
-where location_name = ? and date = ?;
 
 
 
@@ -327,11 +376,6 @@ values (?, ?, ?, ?);
 update public.locker_reservations
 set key_pickup_date = ?, key_return_date = ?
 where locker_id = ? and user_augentid = ?;
-
--- $daily_cleanup_reservation_of_locker
-delete
-from public.locker_reservations
-where key_pickup_date is null;
 
 -- $get_locker_reservation_of_soundex_user_by_complete_name
 select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
