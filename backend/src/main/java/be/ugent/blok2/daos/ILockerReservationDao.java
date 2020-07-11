@@ -42,7 +42,7 @@ public interface ILockerReservationDao extends IDao {
     /**
      * Add a lockerreservation.
      */
-    LockerReservation addLockerReservation(LockerReservation lockerReservation);
+    void addLockerReservation(LockerReservation lockerReservation);
 
     /**
      * Change a lockerreservation.

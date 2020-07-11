@@ -185,10 +185,10 @@ public class DummyLockerReservationDao extends ADummyDao implements ILockerReser
     }
 
     @Override
-    public LockerReservation addLockerReservation(LockerReservation lockerReservation) {
+    public void addLockerReservation(LockerReservation lockerReservation) {
         if (!lockerReservations.contains(lockerReservation)) {
             lockerReservations.add(lockerReservation);
-            return lockerReservation;
+            return;
         }
         throw new IllegalArgumentException();
     }

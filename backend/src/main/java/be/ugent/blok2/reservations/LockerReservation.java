@@ -9,22 +9,22 @@ import java.util.Objects;
 public class LockerReservation {
     private User owner;
     private Locker locker;
-    private boolean keyPickedUp;
-    private boolean keyBroughtBack;
-    private CustomDate startDate;
-    private CustomDate endDate;
+    private CustomDate keyPickupDate;
+    private CustomDate keyReturnedDate;
 
     public LockerReservation() {
 
     }
 
-    public LockerReservation(Locker locker, User owner, CustomDate startDate, CustomDate endDate) {
+    public LockerReservation(Locker locker, User owner, CustomDate keyPickupDate, CustomDate keyReturnedDate) {
         this.locker = locker;
         this.owner = owner;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.keyPickedUp = false;
-        this.keyBroughtBack = false;
+        this.keyPickupDate = keyPickupDate;
+        this.keyReturnedDate = keyReturnedDate;
+    }
+    
+    public LockerReservation(Locker locker, User owner) {
+        this(locker, owner, null, null);
     }
 
     @Override
@@ -34,15 +34,13 @@ public class LockerReservation {
         LockerReservation that = (LockerReservation) o;
         return owner.equals(that.owner) &&
                 locker.equals(that.locker) &&
-                keyPickedUp == that.keyPickedUp &&
-                keyBroughtBack == that.keyBroughtBack &&
-                startDate.equals(that.startDate) &&
-                endDate.equals(that.endDate);
+                Objects.equals(keyPickupDate, that.keyPickupDate) &&
+                Objects.equals(keyReturnedDate, that.keyReturnedDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(owner, locker, startDate, endDate);
+        return Objects.hash(owner, locker, keyPickupDate, keyReturnedDate);
     }
 
     @Override
@@ -50,8 +48,8 @@ public class LockerReservation {
         return "LockerReservation{" +
                 "owner=" + owner +
                 ", locker=" + locker +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
+                ", keyPickupDate=" + keyPickupDate +
+                ", keyReturnedDate=" + keyReturnedDate +
                 '}';
     }
 
@@ -63,23 +61,15 @@ public class LockerReservation {
     public User getOwner() {
         return owner;
     }
-    
-    public CustomDate getStartDate() {
-        return startDate;
-    }
-    
-    public CustomDate getEndDate() {
-        return endDate;
+
+    public CustomDate getKeyPickupDate() {
+        return keyPickupDate;
     }
 
-    public boolean getKeyPickedUp(){
-        return keyPickedUp;
+    public CustomDate getKeyReturnedDate() {
+        return keyReturnedDate;
     }
 
-    public boolean getKeyBroughtBack(){
-        return keyBroughtBack;
-    }
-    
     public void setLocker(Locker locker) {
         this.locker = locker;
     }
@@ -88,20 +78,13 @@ public class LockerReservation {
         this.owner = owner;
     }
 
-    public void setStartDate(CustomDate startDate) {
-        this.startDate = startDate;
+    public void setKeyPickupDate(CustomDate keyPickupDate) {
+        this.keyPickupDate = keyPickupDate;
     }
 
-    public void setEndDate(CustomDate endDate) {
-        this.endDate = endDate;
+    public void setKeyReturnedDate(CustomDate keyReturnedDate) {
+        this.keyReturnedDate = keyReturnedDate;
     }
 
-    public void setKeyPickedUp(boolean keyPickedUp){
-        this.keyPickedUp = keyPickedUp;
-    }
-
-    public void setKeyBroughtBack(boolean keyBroughtBack){
-        this.keyBroughtBack = keyBroughtBack;
-    }
     //</editor-fold>
 }

@@ -15,7 +15,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Profile("!dummy")
+@Profile("db")
 @Service
 @EnableScheduling
 public class DBLockerReservationDao extends ADB implements ILockerReservationDao {
@@ -47,7 +47,8 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
             PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_locker_reservations_of_user_by_id"));
             st.setString(1, augentID);
             ResultSet rs = st.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
+                int lockerId = rs.getInt(databaseProperties.getString("locker_reservation_locker_id"));
                 CustomDate startDate = CustomDate.parseString(rs.getString(databaseProperties.getString("locker_reservation_start_date")));
                 CustomDate endDate = CustomDate.parseString(rs.getString(databaseProperties.getString("locker_reservation_end_date")));
                 User user = getUser(rs.getString(databaseProperties.getString("locker_reservation_user_augentid")), conn);
@@ -292,8 +293,8 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
     }
 
     @Override
-    public LockerReservation addLockerReservation(LockerReservation lockerReservation) {
-        try(Connection conn = getConnection()){
+    public void addLockerReservation(LockerReservation lockerReservation) {
+        try (Connection conn = getConnection()) {
             PreparedStatement st = conn.prepareStatement(databaseProperties.getString("insert_locker_reservation"));
             st.setString(1, lockerReservation.getOwner().getAugentID());
             st.setInt(2, lockerReservation.getLocker().getId());
@@ -302,12 +303,10 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
             st.setBoolean(5, lockerReservation.getKeyPickedUp());
             st.setBoolean(6, lockerReservation.getKeyBroughtBack());
             st.execute();
-            return lockerReservation;
         }
         catch(SQLException e){
             System.out.println(e.getMessage());
         }
-        return null;
     }
 
     @Override
@@ -358,5 +357,13 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
             return locker;
         }
         return null;
+    }
+
+    private LockerReservation createLockerReservation(ResultSet rs) {
+        LockerReservation lr = new LockerReservation();
+
+
+
+        return lr;
     }
 }

@@ -249,40 +249,65 @@ where TO_TIMESTAMP(created_timestamp, 'YYYY-MM-DD\\THH24:MI:SS') < now() - inter
 
 -- queries for table LOCKER_RESERVATION
 -- $get_locker_reservations_of_user_by_id
-select *
-from public.locker_reservations
-where user_augentid = ?;
+select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
+     , u.augentid, u.role, u.penalty_points, u.barcode
+     , l.id, l.number, l.location_name
+     , lr.locker_id, lr.user_augentid, lr.key_pickup_date, lr.key_return_date
+from public.locker_reservations lr
+    join public.users u
+        on u.augentid = lr.user_augentid
+    join public.lockers l
+        on l.id = lr.locker_id
+where lr.user_augentid = ?;
 
 -- $get_locker_reservations_of_location
-select *
-from public.locker_reservations r
+select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
+     , u.augentid, u.role, u.penalty_points, u.barcode
+     , l.id, l.number, l.location_name
+     , lr.locker_id, lr.user_augentid, lr.key_pickup_date, lr.key_return_date
+from public.locker_reservations lr
+    join public.users u
+        on u.augentid = lr.user_augentid
     join public.lockers l
-        on r.locker_id = l.id
+        on l.id = lr.locker_id
 where l.location_name = ?;
 
 -- $get_locker_reservations_of_location_without_key_brought_back
-select *
-from public.locker_reservations r
+select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
+     , u.augentid, u.role, u.penalty_points, u.barcode
+     , l.id, l.number, l.location_name
+     , lr.locker_id, lr.user_augentid, lr.key_pickup_date, lr.key_return_date
+from public.locker_reservations lr
+    join public.users u
+        on u.augentid = lr.user_augentid
     join public.lockers l
-        on r.locker_id = l.id
-where l.location_name = ? and r.key_brought_back = false;
+        on l.id = lr.locker_id
+where l.location_name = ? and lr.key_return_date is null
+order by case when lr.key_pickup_date is not null then 0 else 1 end;
 
 -- $count_lockers_in_use_of_location
 select count(1)
 from public.locker_reservations r
     join public.lockers l
         on r.locker_id = l.id
-where l.location_name = ? and r.key_brought_back = false;
+where l.location_name = ? and r.key_pickup_date is not null and r.key_return_date is null;
 
 -- $get_locker_reservation
-select *
-from public.locker_reservations
-where user_augentid = ? and locker_id = ? and start_date = ? and end_date = ?;
+select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
+     , u.augentid, u.role, u.penalty_points, u.barcode
+     , l.id, l.number, l.location_name
+     , lr.locker_id, lr.user_augentid, lr.key_pickup_date, lr.key_return_date
+from public.locker_reservations lr
+    join public.users u
+        on u.augentid = lr.user_augentid
+    join public.lockers l
+        on l.id = lr.locker_id
+where lr.locker_id = ? and lr.user_augentid = ?;
 
 -- $delete_locker_reservation
 delete
 from public.locker_reservations
-where user_augentid = ? and locker_id = ? and start_date = ? and end_date = ?;
+where locker_id = ? and user_augentid = ?;
 
 -- $delete_locker_reservation_of_locker
 delete
@@ -295,36 +320,24 @@ from public.locker_reservations
 where user_augentid = ?;
 
 -- $insert_locker_reservation
-insert into public.locker_reservations (user_augentid, locker_id, start_date, end_date, key_picked_up, key_brought_back)
-values (?, ?, ?, ?, ?, ?);
+insert into public.locker_reservations (locker_id, user_augentid, key_pickup_date, key_return_date)
+values (?, ?, ?, ?);
 
 -- $update_locker_reservation
 update public.locker_reservations
-set key_picked_up = ?, key_brought_back = ?
-where user_augentid = ? and locker_id = ? and start_date = ? and end_date = ?;
-
--- $get_accompanying_users
-select *
-from public.locker_reservations
-where locker_id = ? and start_date = ?;
-
--- $get_locker_reservation_of_user
-select start_date
-from public.locker_reservations
-where user_augentid = ?;
-
--- $get_locker_reservation_of_locker
-select start_date, end_date, user_augentid
-from public.locker_reservations
-where locker_id = ?;
+set key_pickup_date = ?, key_return_date = ?
+where locker_id = ? and user_augentid = ?;
 
 -- $daily_cleanup_reservation_of_locker
 delete
 from public.locker_reservations
-where not key_picked_up and TO_TIMESTAMP(start_date, 'YYYY-MM-DD\\THH24:MI:SS') < now() - interval '5 days';
+where key_pickup_date is null;
 
 -- $get_locker_reservation_of_soundex_user_by_complete_name
-select *
+select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
+     , u.augentid, u.role, u.penalty_points, u.barcode
+     , r.locker_id, r.user_augentid, r.key_pickup_date, r.key_return_date
+     , lr.locker_id, lr.user_augentid, lr.key_pickup_date, lr.key_return_date
 from public.locker_reservations lr
     join public.users u
         on u.augentid = lr.user_augentid
@@ -333,7 +346,10 @@ from public.locker_reservations lr
 where metaphone(CONCAT(augentpreferredgivenname, ' ', augentpreferredsn), 10) = metaphone(?, 10) or metaphone(CONCAT(augentpreferredgivenname, ' ', augentpreferredsn), 10) = metaphone(?, 10);
 
 -- $get_locker_reservation_of_soundex_user_by_name
-select *
+select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
+     , u.augentid, u.role, u.penalty_points, u.barcode
+     , r.locker_id, r.user_augentid, r.key_pickup_date, r.key_return_date
+     , lr.locker_id, lr.user_augentid, lr.key_pickup_date, lr.key_return_date
 from public.locker_reservations lr
     join public.users u
         on u.augentid = lr.user_augentid
@@ -342,6 +358,10 @@ from public.locker_reservations lr
 where metaphone(augentpreferredgivenname, 10) = metaphone(? , 5) or metaphone(augentpreferredsn, 10) = metaphone(? , 5);
 
 -- $update_locker_reservations_of_user
+/*
+  This might seem a strange query but is used
+  when a user's augentID might have been changed
+*/
 update public.locker_reservations
 set user_augentid = ?
 where user_augentid = ?;
