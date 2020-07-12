@@ -734,8 +734,8 @@ public class DBAccountDao extends ADB implements IAccountDao {
     public static User createUser(ResultSet rs) throws SQLException {
         User u = new User();
         u.setMail(rs.getString(databaseProperties.getString("user_mail")));
-        u.setLastName(rs.getString(databaseProperties.getString("user_augentpreferredsn")));
-        u.setFirstName(rs.getString(databaseProperties.getString("user_augentpreferredgivenname")));
+        u.setLastName(rs.getString(databaseProperties.getString("user_surname")));
+        u.setFirstName(rs.getString(databaseProperties.getString("user_name")));
         u.setPassword(rs.getString(databaseProperties.getString("user_password")));
         u.setInstitution(rs.getString(databaseProperties.getString("user_institution")));
         u.setAugentID(rs.getString(databaseProperties.getString("user_augentid")));

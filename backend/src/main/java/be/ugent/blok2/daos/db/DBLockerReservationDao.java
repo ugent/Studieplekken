@@ -21,7 +21,11 @@ import java.util.List;
 public class DBLockerReservationDao extends ADB implements ILockerReservationDao {
 
     // executes daily
-    @Scheduled(fixedRate = 1000*60*60*24)
+    // TODO: should be done in db, have a look at https://stackoverflow.com/a/9490521/9356123
+    //  to track the timestamp of the locker_reservation record insertions. Based on xmin,
+    //  delete certain entries. Probably best to do it as a Perl script which can be put into
+    //  a one shot systemd service on the production server.
+    /*@Scheduled(fixedRate = 1000*60*60*24)
     public void scheduledCleanup(){
         try (Connection connection = getConnection()){
             Statement statement = connection.createStatement();
@@ -29,7 +33,7 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-    }
+    }*/
 
     @Override
     public List<LockerReservation> getAllLockerReservationsOfUser(String augentID) throws NoSuchUserException{
@@ -160,24 +164,22 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
             st.setString(3, startDate.toString());
             st.setString(4, endDate.toString());
             ResultSet rs = st.executeQuery();
-            if (rs.next()) {
+            if (rs.next())
                 return createLockerReservation(rs);
-            }
+            return null;
         }
         catch (SQLException e) {
             System.out.println(e.getMessage());
+            return null;
         }
-        return null;
     }
 
     @Override
-    public void deleteLockerReservation(String augentID, int lockerID, CustomDate startDate, CustomDate endDate) {
+    public void deleteLockerReservation(String augentID, int lockerID) {
         try (Connection conn = getConnection()) {
             PreparedStatement st = conn.prepareStatement(databaseProperties.getString("delete_locker_reservation"));
             st.setString(1, augentID);
             st.setInt(2, lockerID);
-            st.setString(3, startDate.toString());
-            st.setString(4, endDate.toString());
             st.execute();
         }
         catch (SQLException e) {

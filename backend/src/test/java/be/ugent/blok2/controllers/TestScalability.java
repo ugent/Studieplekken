@@ -60,7 +60,7 @@ public class TestScalability {
     public TestScalability(MockMvc mockMvc) {
         restAPITestAdapter = new RestAPITestAdapter(mockMvc);
 
-        TEST_LOCKER = new Locker(1, TEST_LOCATION.getName(),1);
+        TEST_LOCKER = new Locker(1, TEST_LOCATION.getName());
         Collection<Locker> ls = new ArrayList<>();
         ls.add(TEST_LOCKER);
         TEST_LOCATION.setLockers(ls);

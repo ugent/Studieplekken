@@ -70,7 +70,7 @@ public class Location implements Cloneable {
 
     public void addLocker(int number, int id){
         int studentLimit = 2;
-        Locker locker = new Locker(number, name, studentLimit);
+        Locker locker = new Locker(number, name);
         locker.setId(id);
         this.lockers.add(locker);
         this.numberOfLockers++;

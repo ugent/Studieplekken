@@ -100,7 +100,7 @@ CREATE TABLE public.location_reservations (
     date text NOT NULL,
     location_name text NOT NULL,
     attended boolean,
-    user_augentid text
+    user_augentid text NOT NULL
 );
 
 
@@ -132,12 +132,10 @@ ALTER TABLE public.lockers OWNER TO postgres;
 --
 
 CREATE TABLE public.locker_reservations (
-    start_date text NOT NULL,
     locker_id integer NOT NULL,
-    end_date text NOT NULL,
-    user_augentid text,
-    key_picked_up boolean NOT NULL,
-    key_brought_back boolean NOT NULL
+    user_augentid text NOT NULL,
+    key_pickup_date text,
+    key_return_date text
 );
 
 
@@ -313,7 +311,6 @@ alter table only public.location_reservations
 add constraint pk_location_reservations
 primary key (
 	date
-	, location_name
 	, user_augentid
 );
 
@@ -326,9 +323,7 @@ primary key (
 alter table only public.locker_reservations
 add constraint pk_locker_reservations 
 primary key (
-	start_date
-	, locker_id
-	, end_date
+	locker_id
 	, user_augentid
 );
 

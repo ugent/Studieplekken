@@ -39,34 +39,43 @@ public class TestDBLockerReservationDao {
 
     @Before
     public void setup() {
+        // Use test database
         TestSharedMethods.setupTestDaoDatabaseCredentials(accountDao);
         TestSharedMethods.setupTestDaoDatabaseCredentials(locationDao);
         TestSharedMethods.setupTestDaoDatabaseCredentials(lockerReservationDao);
 
+        // Setup test objects
         testLocation = TestSharedMethods.testLocation();
         testUser1 = TestSharedMethods.employeeAdminTestUser();
         testUser2 = TestSharedMethods.studentEmployeeTestUser();
+
+        // Add test objects to database
+        TestSharedMethods.addTestUsers(accountDao, testUser1, testUser2);
+        locationDao.addLocation(testLocation);
     }
 
     @After
     public void cleanup() {
+        // Remove test objects from database
+        locationDao.deleteLocation(testLocation.getName());
+        TestSharedMethods.removeTestUsers(accountDao, testUser2, testUser1);
+
+        // Use regular database
         locationDao.useDefaultDatabaseConnection();
     }
 
     @Test
     // testing add/delete/change in one test
     public void lockerReservationTest() {
-        // setup test
-        TestSharedMethods.addTestUsers(accountDao, testUser1, testUser2);
-        locationDao.addLocation(testLocation);
-
         // test whether users were correctly added to the database
         User u1 = accountDao.getUserById(testUser1.getAugentID());
         User u2 = accountDao.getUserById(testUser2.getAugentID());
         Assert.assertEquals("lockerReservationTest, setup testUser1", testUser1, u1);
         Assert.assertEquals("lockerReservationTest, setup testUser2", testUser2, u2);
 
-        Locker[] lockers = (Locker[]) locationDao.getLockers(testLocation.getName()).toArray();
+        Collection<Locker> lockerCollection = locationDao.getLockers(testLocation.getName());
+        Locker[] lockers = new Locker[lockerCollection.size()];
+        lockerCollection.toArray(lockers);
 
         if (lockers.length < 3)
             Assert.fail("Can't test without at least available lockers. Raise the testLocation.numberOfLockers");
@@ -105,9 +114,5 @@ public class TestDBLockerReservationDao {
         usedLockers = lockerReservationDao.getNumberOfLockersInUseOfLocation(testLocation.getName());
         Assert.assertEquals("lockerReservationTest, usedLockers after reservations and keys " +
                 "picked up and returned again", 0, usedLockers);
-
-        // rollback test
-        locationDao.deleteLocation(testLocation.getName());
-        TestSharedMethods.removeTestUsers(accountDao, testUser2, testUser1);
     }
 }

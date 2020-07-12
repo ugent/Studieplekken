@@ -530,7 +530,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
     public Map<String, Integer> getCountOfReservations(CustomDate date){
         HashMap<String, Integer> count = new HashMap<>();
         try (Connection conn = getConnection()){
-            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("todays_reservations"));
+            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("count_location_reservations_on_date"));
             st.setString(1, date.toString());
             ResultSet rs = st.executeQuery();
             while (rs.next()){

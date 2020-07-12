@@ -128,10 +128,10 @@ public class LockerReservationController extends AController {
             }
 
             //check if the user has the key of the locker
-            if(reservation.getKeyPickedUp() && !reservation.getKeyBroughtBack()){
+            if (reservation.getKeyPickupDate() != null && reservation.getKeyReturnedDate() == null) {
                 return new ResponseEntity<>(mapper.writeValueAsString("You can't delete a locker reservation if the student still has the key of the locker"), HttpStatus.BAD_REQUEST);
             }
-            iLockerReservationDao.deleteLockerReservation(idString, lockerId, startDate, endDate);
+            iLockerReservationDao.deleteLockerReservation(idString, lockerId);
         }
         catch (IllegalArgumentException | JsonProcessingException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -187,7 +187,7 @@ public class LockerReservationController extends AController {
                         Collection<LockerReservation> reservations = iLockerReservationDao.getAllLockerReservationsOfUser(augentID);
                         if (reservations != null) {
                             for (LockerReservation reservation : reservations) {
-                                if (!reservation.getKeyBroughtBack()) {
+                                if (reservation.getKeyReturnedDate() == null) {
 
                                     //User still has key from other locker
                                     return new ResponseEntity<>(mapper.writeValueAsString("User still has key of other locker"), HttpStatus.CONFLICT);

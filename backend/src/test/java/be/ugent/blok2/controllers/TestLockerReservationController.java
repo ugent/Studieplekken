@@ -54,7 +54,7 @@ public class TestLockerReservationController {
         restAPITestAdapter = new RestAPITestAdapter(mockMvc);
         TEST_LOCATION = new Location();
         TEST_LOCATION.setName("TestLocation");
-        TEST_LOCKER = new Locker(1, TEST_LOCATION.getName(),1);
+        TEST_LOCKER = new Locker(1, TEST_LOCATION.getName());
         Collection<Locker> ls = new ArrayList<>();
         ls.add(TEST_LOCKER);
         TEST_LOCATION.setLockers(ls);
