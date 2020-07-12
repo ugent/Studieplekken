@@ -3,6 +3,26 @@ TODO
 Test all DBDaos
 
 
+Bespreking met Wout
+-------------------
+Blok@ toch eerst doen, handig om dingen af te werken
+- Tabelletje faculteiten
+    - Locaties moeten een kolom linkt aan faculteiten
+    - Interface mensen (beheerder) koppelen aan faculteiten
+    - Locaties aanmaken alleen voor de faculteit
+    - Studenten niet koppelen aan faculteiten
+- Scandagen instellen per locatie = dezelfde functionaliteit als kalender
+    - Weg: wanneer inschrijvingen open gaan
+- Scanpagina: Vervangen door simpele locatie/personen tabel
+- Reserveren → een case minder want altijd open
+    - Tonen hoeveel plaatsen over
+    - Reserveren: counter overbodig
+    - Hoeveelheid personen (geen gebruik maken van groepreservaties)
+- Strafpunten: verbergen / automatische uitzetten
+- meerdere locaties:
+    - interface veel veranderen
+    
+
 
 
 
