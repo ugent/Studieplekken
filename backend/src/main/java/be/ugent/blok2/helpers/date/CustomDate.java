@@ -37,7 +37,7 @@ public class CustomDate implements Cloneable {
     }
 
     public static CustomDate parseString(String s) throws DateFormatException {
-        if (s == null) {
+        if (s == null || s.isEmpty()) {
             return null;
         }
 

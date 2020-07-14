@@ -8,7 +8,6 @@ import be.ugent.blok2.reservables.Locker;
 import be.ugent.blok2.reservations.LockerReservation;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
@@ -156,13 +155,11 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
     }
 
     @Override
-    public LockerReservation getLockerReservation(String augentID, int lockerID, CustomDate startDate, CustomDate endDate) {
+    public LockerReservation getLockerReservation(String augentID, int lockerID) {
         try (Connection conn = getConnection()) {
             PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_locker_reservation"));
-            st.setString(1, augentID);
-            st.setInt(2, lockerID);
-            st.setString(3, startDate.toString());
-            st.setString(4, endDate.toString());
+            st.setInt(1, lockerID);
+            st.setString(2, augentID);
             ResultSet rs = st.executeQuery();
             if (rs.next())
                 return createLockerReservation(rs);

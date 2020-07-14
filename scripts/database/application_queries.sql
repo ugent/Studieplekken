@@ -111,7 +111,7 @@ from public.location_reservations lr
         on l.name = lr.location_name
     join public.location_descriptions ld
         on l.name = ld.location_name
-where lr.location_name = ? and lr.date = ? and (lr.attended is null or lr.attended = false);
+where lr.location_name = ? and lr.date = ? and (lr.attended = false or lr.attended is null);
 
 -- $get_present_students
 select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
@@ -176,13 +176,13 @@ where date = ? and user_augentid = ?;
 select name, count(case when date = ? then 1 end)
 from public.locations
     left join public.location_reservations
-        on location.name = location_reservation.location_name
+        on locations.name = location_reservations.location_name
 group by name;
 
 -- $update_location_reservations_of_user
 update public.location_reservations
-set augentid = ?
-where augentid = ?;
+set user_augentid = ?
+where user_augentid = ?;
 
 
 
@@ -332,14 +332,14 @@ from public.locker_reservations lr
     join public.lockers l
         on l.id = lr.locker_id
 where l.location_name = ? and lr.key_return_date is null
-order by case when lr.key_pickup_date is not null then 0 else 1 end;
+order by case when lr.key_pickup_date <> '' then 0 else 1 end;
 
 -- $count_lockers_in_use_of_location
 select count(1)
 from public.locker_reservations r
     join public.lockers l
         on r.locker_id = l.id
-where l.location_name = ? and r.key_pickup_date is not null and r.key_return_date is null;
+where l.location_name = ? and r.key_pickup_date <> '' and r.key_return_date = '';
 
 -- $get_locker_reservation
 select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution

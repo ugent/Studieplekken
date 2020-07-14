@@ -92,6 +92,15 @@ public class TestDBLockerReservationDao {
         lockerReservationDao.addLockerReservation(lr1);
         lockerReservationDao.addLockerReservation(lr2);
 
+        LockerReservation actualLockerReservation1 = lockerReservationDao
+                .getLockerReservation(testUser1.getAugentID(), locker1.getId());
+        LockerReservation actualLockerReservation2 = lockerReservationDao
+                .getLockerReservation(testUser2.getAugentID(), locker2.getId());
+        Assert.assertEquals("lockerReservationTest, retrieved locker reservation 1",
+                lr1, actualLockerReservation1);
+        Assert.assertEquals("lockerReservationTest, retrieved locker reservation 2",
+                lr2, actualLockerReservation2);
+
         usedLockers = lockerReservationDao.getNumberOfLockersInUseOfLocation(testLocation.getName());
         Assert.assertEquals("lockerReservationTest, usedLockers after reservations", 0, usedLockers);
 

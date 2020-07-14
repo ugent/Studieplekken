@@ -152,7 +152,7 @@ public class DummyLockerReservationDao extends ADummyDao implements ILockerReser
     }
 
     @Override
-    public LockerReservation getLockerReservation(String augentID, int lockerID, CustomDate startDate, CustomDate endDate) {
+    public LockerReservation getLockerReservation(String augentID, int lockerID) {
         for (LockerReservation lo : lockerReservations) {
             if (lo.getOwner().getAugentID().equals(augentID) && lo.getLocker().getId() == lockerID) {
                 return lo;

@@ -102,7 +102,9 @@ public class LockerReservationController extends AController {
         if (!isTesting() && u.getAuthorities().contains(new Authority(Role.STUDENT)) && u.getAuthorities().size() == 1 && !idString.equals(u.getAugentID())) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        return new ResponseEntity<>(iLockerReservationDao.getLockerReservation(idString, lockerID, CustomDate.parseString(startDateString), CustomDate.parseString(endDateString)), HttpStatus.OK);
+        // TODO: change frontend, the startDate and endDate used to be part of the PK
+        //return new ResponseEntity<>(iLockerReservationDao.getLockerReservation(idString, lockerID, CustomDate.parseString(startDateString), CustomDate.parseString(endDateString)), HttpStatus.OK);
+        return new ResponseEntity<>(iLockerReservationDao.getLockerReservation(idString, lockerID), HttpStatus.OK);
     }
 
     @DeleteMapping("/{userID}/{lockerId}/{startDate}/{endDate}")
@@ -120,7 +122,9 @@ public class LockerReservationController extends AController {
             CustomDate startDate = CustomDate.parseString(startDateString);
             CustomDate endDate = CustomDate.parseString(endDateString);
 
-            LockerReservation reservation = iLockerReservationDao.getLockerReservation(idString, lockerId, startDate, endDate);
+            // TODO: change frontend, the startDate and endDate used to be part of the PK
+            //LockerReservation reservation = iLockerReservationDao.getLockerReservation(idString, lockerId, startDate, endDate);
+            LockerReservation reservation = iLockerReservationDao.getLockerReservation(idString, lockerId);
 
             //check if reservation exists
             if(reservation == null){

@@ -1,6 +1,5 @@
 package be.ugent.blok2.daos;
 
-import be.ugent.blok2.helpers.date.CustomDate;
 import be.ugent.blok2.helpers.exceptions.NoSuchUserException;
 import be.ugent.blok2.reservations.LockerReservation;
 
@@ -32,7 +31,7 @@ public interface ILockerReservationDao extends IDao {
     /**
      * Gets the lockerreservation with the given details.
      */
-    LockerReservation getLockerReservation(String augentID, int lockerID, CustomDate startDate, CustomDate endDate);
+    LockerReservation getLockerReservation(String augentID, int lockerID);
 
     /**
      * Delete the lockerreservation with the given details.
