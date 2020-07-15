@@ -113,8 +113,7 @@ public class TestDBLocationReservationDao {
         Assert.assertEquals("scanStudentTest, setup testUser2", testUser2, u2);
 
         // Open the location
-        java.util.Calendar juc = java.util.Calendar.getInstance();
-        CustomDate today = new CustomDate(juc.get(java.util.Calendar.YEAR), juc.get(java.util.Calendar.MONTH)+1, juc.get(Calendar.DATE));
+        CustomDate today = CustomDate.today();
         Time openingHour = new Time(9, 0, 0);
         Time closingHour = new Time(17, 0, 0);
         Day d = new Day(today, openingHour, closingHour, today);

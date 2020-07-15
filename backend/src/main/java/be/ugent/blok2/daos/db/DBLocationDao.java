@@ -413,6 +413,11 @@ public class DBLocationDao extends ADB implements ILocationDao {
                 st.setString(1, name);
                 st.execute();
 
+                // Delete penalty events that occurred in this location
+                st = conn.prepareStatement(databaseProperties.getString("delete_penalties_of_location"));
+                st.setString(1, name);
+                st.execute();
+
                 // Delete the location
                 st = conn.prepareStatement(databaseProperties.getString("delete_location"));
                 st.setString(1, name);

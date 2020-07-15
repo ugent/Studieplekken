@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.util.Calendar;
 
 /**
  * This is a custom class to represent a date.
@@ -50,6 +51,18 @@ public class CustomDate implements Cloneable {
         }
 
         return new CustomDate(Integer.parseInt(dateParts[0]), Integer.parseInt(dateParts[1]), Integer.parseInt(dateParts[2]), Integer.parseInt(timeParts[0]), Integer.parseInt(timeParts[1]), Integer.parseInt((timeParts[2].split("\\."))[0]));
+    }
+
+    public static CustomDate today() {
+        java.util.Calendar juc = java.util.Calendar.getInstance();
+        return new CustomDate(juc.get(Calendar.YEAR),
+                juc.get(Calendar.MONTH)+1, juc.get(Calendar.DATE));
+    }
+
+    public static CustomDate now() {
+        java.util.Calendar juc = java.util.Calendar.getInstance();
+        return new CustomDate(juc.get(Calendar.YEAR),juc.get(Calendar.MONTH)+1, juc.get(Calendar.DATE)
+                , juc.get(Calendar.HOUR_OF_DAY), juc.get(Calendar.MINUTE), juc.get(Calendar.SECOND));
     }
 
     @JsonIgnore
