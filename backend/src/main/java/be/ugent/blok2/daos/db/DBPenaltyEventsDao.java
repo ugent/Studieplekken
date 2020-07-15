@@ -59,7 +59,7 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
     }
 
     @Override
-    public PenaltyEvent getPenaltyEvent(int code) throws NoSuchPenaltyEventException {
+    public PenaltyEvent getPenaltyEvent(int code) {
         PenaltyEvent ret = null;
         try (Connection conn = getConnection()) {
             /*
@@ -91,7 +91,7 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
     }
 
     @Override
-    public List<Penalty> getPenalties(String augentId) throws NoSuchUserException {
+    public List<Penalty> getPenalties(String augentId) {
         List<Penalty> ret = new ArrayList<>();
         try (Connection conn = getConnection()) {
             /*
@@ -114,15 +114,13 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
         }
 
         return ret;
     }
 
     @Override
-    public void addPenaltyEvent(PenaltyEvent event) throws AlreadyExistsException {
+    public void addPenaltyEvent(PenaltyEvent event) {
         try (Connection conn = getConnection()) {
             // 1. add penalty_events record
             // 2. add the descriptions
@@ -154,41 +152,19 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
             conn.setAutoCommit(true);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-            // code 23505 -> duplicate key value violates unique constraint "penalty_events_pkey"
-            if (e.getSQLState().equals(databaseProperties.getString("sql_state_duplicate_key")))
-                throw new AlreadyExistsException("A penalty event with code " + event.getCode() + " already exists. " +
-                        "Use updatePenaltyEvent() instead.");
         }
     }
 
     @Override
-    public void addDescription(int code, Language language, String description) throws NoSuchPenaltyEventException, AlreadyExistsException {
+    public void addDescription(int code, Language language, String description) {
         try (Connection conn = getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("count_penalty_events_with_code"));
-            /*
-            select count(1)
-            from penalty_events
-            where code = ?;
-             */
-            ResultSet rs = pstmt.executeQuery();
-            rs.next();
-            int count = rs.getInt(1);
-
-            if (count != 1)
-                throw new NoSuchPenaltyEventException("Penalty event with code " + code + " doesn't exist.");
-
-            /*
-            INSERT INTO public.penalty_descriptions(lang_enum, event_code, description)
-            VALUES (?, ?, ?);
-             */
-            pstmt = conn.prepareStatement(databaseProperties.getString("insert_penalty_description"));
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("insert_penalty_description"));
+            pstmt.setString(1, language.name());
+            pstmt.setInt(2, code);
+            pstmt.setString(3, description);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-            // code 23505 -> duplicate key value violates unique constraint "penalty_events_pkey"
-            if (e.getSQLState().equals(databaseProperties.getString("sql_state_duplicate_key")))
-                throw new AlreadyExistsException("A penalty event with code " + code + " already exists. " +
-                        "Use updatePenaltyEvent() instead.");
         }
     }
 
@@ -208,21 +184,14 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
     }
 
     @Override
-    public void updatePenaltyEvent(int code, PenaltyEvent event) throws NoSuchPenaltyEventException {
+    public void updatePenaltyEvent(int code, PenaltyEvent event) {
         try (Connection conn = getConnection()) {
-            // 1. update penalty_events' record with given code
-            // 2. update all the descriptions
             // Note: it is better to always update, even if the record' corresponding to 'code' holds
             // the same data as 'event' (and actually nothing has to be updated) because when you check for equality,
             // you'll always need 2 queries to update in stead of only one.
             conn.setAutoCommit(false);
 
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("update_penalty_event"));
-            int count = updatePenaltyEventsEvent(pstmt, event);
-            if (count == 0)
-                throw new NoSuchPenaltyEventException("No PenaltyEvent with code " + event.getCode() + " exists. ");
-
-            pstmt = conn.prepareStatement(databaseProperties.getString("update_penalty_description"));
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("update_penalty_description"));
             for (Language lang : event.getDescriptions().keySet())
                 updatePenaltyEventsDescription(pstmt, event.getCode(), lang, event.getDescriptions().get(lang));
 
@@ -234,7 +203,7 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
     }
 
     @Override
-    public void updatePenalties(String augentID, List<Penalty> remove, List<Penalty> add) throws NoSuchUserException, NoSuchPenaltyEventException {
+    public void updatePenalties(String augentID, List<Penalty> remove, List<Penalty> add) {
         try (Connection conn = getConnection()) {
             conn.setAutoCommit(false);
 
@@ -274,7 +243,7 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
         }
     }
 
-    private int updatePenaltyEventsEvent(PreparedStatement pstmt, PenaltyEvent event) throws SQLException, NoSuchPenaltyEventException {
+    private int updatePenaltyEventsEvent(PreparedStatement pstmt, PenaltyEvent event) throws SQLException {
         /*
         UPDATE public.penalty_events
         SET points=?, public_accessible=?
@@ -299,8 +268,9 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
     }
 
     @Override
-    public void deletePenaltyEvent(int code) throws NoSuchPenaltyEventException {
-        // 1. delete all descriptions for this event (otherwise we won't be able to delete this event, due to FK constraints
+    public void deletePenaltyEvent(int code) {
+        // 1. delete all descriptions for this event (FK constraint)
+        // 2. delete all penalty book record using this event (FK constraint) // TODO
         // 2. delete this event
         PenaltyEvent event = getPenaltyEvent(code);
         if (event != null) {
@@ -334,7 +304,7 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
     }
 
     @Override
-    public void deleteDescription(int code, Language language) throws NoSuchPenaltyEventException {
+    public void deleteDescription(int code, Language language) {
         try (Connection conn = getConnection()) {
             /*
             DELETE FROM public.penalty_descriptions
@@ -343,25 +313,24 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
             PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_penalty_description"));
             pstmt.setString(1, language.name());
             pstmt.setInt(2, code);
-            int count = pstmt.executeUpdate();
-            if (count == 0)
-                throw new NoSuchPenaltyEventException("No description to be deleted in " + language + " for PenaltyEvent with code " + code + ".");
+            pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
 
     @Override
-    public void deletePenalty(Penalty penalty) throws NoSuchUserException, NoSuchPenaltyEventException {
+    public void deletePenalty(Penalty penalty) {
         try (Connection conn = getConnection()) {
             /*
             DELETE
             FROM public.penalty_book b
-            WHERE b.user_augentid = ? AND b.event_code = ? AND b.timestamp = ?
-                AND b.reservation_date = ? AND b.reservation_location = ? AND b.received_points = ?;
+            WHERE b.user_augentid = ? AND b.event_code = ? AND b.timestamp = ?;
              */
             PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_penalty"));
-            setPreparedStatementWithPenalty(pstmt, penalty);
+            pstmt.setString(1, penalty.getAugentID());
+            pstmt.setInt(2, penalty.getEventCode());
+            pstmt.setString(3, penalty.getTimestamp().toString());
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());

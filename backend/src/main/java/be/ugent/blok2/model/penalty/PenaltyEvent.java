@@ -4,6 +4,7 @@ import be.ugent.blok2.helpers.Language;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public final class PenaltyEvent {
     private int code;
@@ -46,23 +47,17 @@ public final class PenaltyEvent {
         return that.code == code
                 && that.points == points
                 && that.publicAccessible == publicAccessible
-                && that.descriptions.equals(descriptions);
+                && Objects.equals(descriptions, that.descriptions);
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("PenaltyEvent[code = " + code + ", points = " + points
-                + ", publicAccessible = " + publicAccessible + ", descriptions: {");
-
-        for (Language l : descriptions.keySet()) {
-            sb.append("\t");
-            sb.append(l);
-            sb.append("  ->  ");
-            sb.append(descriptions.get(l));
-        }
-        sb.append("}]");
-
-        return sb.toString();
+        return "PenaltyEvent{" +
+                "code=" + code +
+                ", points=" + points +
+                ", publicAccessible=" + publicAccessible +
+                ", descriptions=" + descriptions +
+                '}';
     }
 
     @Override
