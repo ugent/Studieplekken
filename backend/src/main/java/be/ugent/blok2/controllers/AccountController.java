@@ -32,13 +32,13 @@ import java.util.ResourceBundle;
 @RequestMapping("api/account")
 @Api(value = "Account login/registration system")
 public class AccountController extends AController{
-    private String VERIFICATION_SUBJECT;
+    private final String VERIFICATION_SUBJECT;
 
-    private IAccountDao accountDao;
-    private ResourceBundle applicationBundle;
-    private EmailService emailService;
-    private LdapService ldapService;
-    private UsersCache usersCache;
+    private final IAccountDao accountDao;
+    private final ResourceBundle applicationBundle;
+    private final EmailService emailService;
+    private final LdapService ldapService;
+    private final UsersCache usersCache;
 
     public AccountController(IAccountDao dao, EmailService emailService, LdapService ldapService) {
         this.accountDao = dao;

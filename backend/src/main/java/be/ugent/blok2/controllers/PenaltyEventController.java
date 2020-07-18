@@ -27,7 +27,7 @@ import java.util.List;
 @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
 @Api(value="Penalty events system")
 public class PenaltyEventController {
-    private IPenaltyEventsDao penaltyDao;
+    private final IPenaltyEventsDao penaltyDao;
 
     public PenaltyEventController(IPenaltyEventsDao penaltyDao) {
         this.penaltyDao = penaltyDao;
