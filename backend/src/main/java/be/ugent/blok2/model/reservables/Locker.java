@@ -12,11 +12,6 @@ public class Locker implements Cloneable {
 
     }
 
-    public Locker(int number, String location) {
-        this.number = number;
-        this.location = location;
-    }
-
     @Override
     public String toString() {
         return "Locker{" +
@@ -58,10 +53,6 @@ public class Locker implements Cloneable {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getNumber() {
-        return number;
     }
 
     public void setNumber(int number) {
