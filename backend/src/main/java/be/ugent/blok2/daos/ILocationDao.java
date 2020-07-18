@@ -6,10 +6,9 @@ import be.ugent.blok2.helpers.date.Day;
 import be.ugent.blok2.helpers.exceptions.AlreadyExistsException;
 import be.ugent.blok2.helpers.exceptions.DateFormatException;
 import be.ugent.blok2.model.users.User;
-import be.ugent.blok2.reservables.Location;
-import be.ugent.blok2.reservables.Locker;
+import be.ugent.blok2.model.reservables.Location;
+import be.ugent.blok2.model.reservables.Locker;
 
-import java.text.ParseException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -50,19 +49,11 @@ public interface ILocationDao extends IDao {
      */
     Location getLocation(String name);
 
-    /**
-     * Gets a location with the given name without the calendar.
-     */
+
     Location getLocationWithoutCalendar(String name);
 
-    /**
-     * Gets a location with the given name without lockers.
-     */
     Location getLocationWithoutLockers(String name);
 
-    /**
-     * Gets a location with the given name without the calendar and lockers.
-     */
     Location getLocationWithoutLockersAndCalendar(String name);
 
     /**

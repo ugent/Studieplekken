@@ -1,8 +1,8 @@
-package be.ugent.blok2.reservations;
+package be.ugent.blok2.model.reservations;
 
 import be.ugent.blok2.helpers.date.CustomDate;
 import be.ugent.blok2.model.users.User;
-import be.ugent.blok2.reservables.Locker;
+import be.ugent.blok2.model.reservables.Locker;
 
 import java.util.Objects;
 

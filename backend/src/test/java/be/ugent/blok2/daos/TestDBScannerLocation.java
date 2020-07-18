@@ -2,7 +2,7 @@ package be.ugent.blok2.daos;
 
 import be.ugent.blok2.TestSharedMethods;
 import be.ugent.blok2.model.users.User;
-import be.ugent.blok2.reservables.Location;
+import be.ugent.blok2.model.reservables.Location;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

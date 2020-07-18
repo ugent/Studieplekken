@@ -1,4 +1,4 @@
-package be.ugent.blok2.reservables;
+package be.ugent.blok2.model.reservables;
 
 
 import java.util.Objects;

@@ -8,23 +8,19 @@ import be.ugent.blok2.helpers.exceptions.NoUserLoggedInWithGivenSessionIdMapping
 import be.ugent.blok2.model.users.Authority;
 import be.ugent.blok2.model.users.Role;
 import be.ugent.blok2.model.users.User;
-import be.ugent.blok2.reservables.Location;
-import be.ugent.blok2.reservables.Locker;
-import be.ugent.blok2.reservations.LockerReservation;
+import be.ugent.blok2.model.reservables.Location;
+import be.ugent.blok2.model.reservables.Locker;
+import be.ugent.blok2.model.reservations.LockerReservation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import be.ugent.blok2.helpers.date.CustomDate;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.URI;
-import java.time.LocalDate;
 import java.util.*;
 
 /**

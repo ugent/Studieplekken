@@ -9,8 +9,8 @@ import be.ugent.blok2.helpers.date.Time;
 import be.ugent.blok2.helpers.date.Calendar;
 import be.ugent.blok2.helpers.exceptions.AlreadyExistsException;
 import be.ugent.blok2.model.users.User;
-import be.ugent.blok2.reservables.Location;
-import be.ugent.blok2.reservables.Locker;
+import be.ugent.blok2.model.reservables.Location;
+import be.ugent.blok2.model.reservables.Locker;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 

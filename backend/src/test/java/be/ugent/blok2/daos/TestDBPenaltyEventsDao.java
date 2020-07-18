@@ -6,7 +6,7 @@ import be.ugent.blok2.helpers.date.CustomDate;
 import be.ugent.blok2.model.penalty.Penalty;
 import be.ugent.blok2.model.penalty.PenaltyEvent;
 import be.ugent.blok2.model.users.User;
-import be.ugent.blok2.reservables.Location;
+import be.ugent.blok2.model.reservables.Location;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

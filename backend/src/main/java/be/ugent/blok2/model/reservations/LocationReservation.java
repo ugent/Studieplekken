@@ -1,11 +1,10 @@
-package be.ugent.blok2.reservations;
+package be.ugent.blok2.model.reservations;
 
 import be.ugent.blok2.helpers.date.CustomDate;
 import be.ugent.blok2.model.users.User;
-import be.ugent.blok2.reservables.Location;
+import be.ugent.blok2.model.reservables.Location;
 
 import java.util.Objects;
-import java.util.Optional;
 
 
 public class LocationReservation {

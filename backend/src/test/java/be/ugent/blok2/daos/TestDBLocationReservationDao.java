@@ -5,8 +5,8 @@ import be.ugent.blok2.helpers.date.CustomDate;
 import be.ugent.blok2.helpers.date.Day;
 import be.ugent.blok2.helpers.date.Time;
 import be.ugent.blok2.model.users.User;
-import be.ugent.blok2.reservables.Location;
-import be.ugent.blok2.reservations.LocationReservation;
+import be.ugent.blok2.model.reservables.Location;
+import be.ugent.blok2.model.reservations.LocationReservation;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -18,7 +18,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 @SpringBootTest

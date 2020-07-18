@@ -11,7 +11,7 @@ import be.ugent.blok2.helpers.date.Day;
 import be.ugent.blok2.helpers.date.Time;
 import be.ugent.blok2.model.users.Role;
 import be.ugent.blok2.model.users.User;
-import be.ugent.blok2.reservables.Location;
+import be.ugent.blok2.model.reservables.Location;
 import org.junit.Assert;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 

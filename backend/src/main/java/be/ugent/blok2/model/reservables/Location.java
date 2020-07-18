@@ -1,4 +1,4 @@
-package be.ugent.blok2.reservables;
+package be.ugent.blok2.model.reservables;
 
 import be.ugent.blok2.helpers.Language;
 import be.ugent.blok2.helpers.date.CustomDate;

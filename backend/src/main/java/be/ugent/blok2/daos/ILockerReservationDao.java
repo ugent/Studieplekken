@@ -1,7 +1,7 @@
 package be.ugent.blok2.daos;
 
 import be.ugent.blok2.helpers.exceptions.NoSuchUserException;
-import be.ugent.blok2.reservations.LockerReservation;
+import be.ugent.blok2.model.reservations.LockerReservation;
 
 import java.util.List;
 

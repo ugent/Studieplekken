@@ -4,8 +4,8 @@ import be.ugent.blok2.daos.ILocationReservationDao;
 import be.ugent.blok2.helpers.date.CustomDate;
 import be.ugent.blok2.helpers.exceptions.NoSuchUserException;
 import be.ugent.blok2.model.users.User;
-import be.ugent.blok2.reservables.Location;
-import be.ugent.blok2.reservations.LocationReservation;
+import be.ugent.blok2.model.reservables.Location;
+import be.ugent.blok2.model.reservations.LocationReservation;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
