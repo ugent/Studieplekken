@@ -58,7 +58,7 @@ public class LocationController {
     @PreAuthorize("hasAnyAuthority('ADMIN', 'STUDENT', 'EMPLOYEE')")
     @ApiOperation(value = "Get all locations without calendar and lockers")
     public List<Location> getAllLocationsWithoutLockersAndCalendar(){
-        List<Location> locations = locationDao.getAllLocationsWithoutLockersAndCalendar();
+        List<Location> locations = locationDao.getAllLocations();
         sort(locations);
         return locations;
     }
@@ -68,7 +68,7 @@ public class LocationController {
     @PreAuthorize("hasAnyAuthority('ADMIN', 'STUDENT', 'EMPLOYEE')")
     @ApiOperation(value = "Get all locations without lockers")
     public List<Location> getAllLocationsWithoutLockers(){
-        List<Location> locations = locationDao.getAllLocationsWithoutLockers();
+        List<Location> locations = locationDao.getAllLocations();
         sort(locations);
         return locations;
     }
@@ -78,7 +78,7 @@ public class LocationController {
     @PreAuthorize("hasAnyAuthority('ADMIN', 'STUDENT', 'EMPLOYEE')")
     @ApiOperation(value = "Get all locations without calendar")
     public List<Location> getAllLocationsWithoutCalendar(){
-        List<Location> locations = locationDao.getAllLocationsWithoutCalendar();
+        List<Location> locations = locationDao.getAllLocations();
         sort(locations);
         return locations;
     }
@@ -96,7 +96,7 @@ public class LocationController {
     @PreAuthorize("hasAnyAuthority('ADMIN', 'STUDENT', 'EMPLOYEE')")
     @ApiOperation(value = "Get location without calendar")
     public Location getLocationWithoutCalendar(@PathVariable("name") String name){
-        return locationDao.getLocationWithoutCalendar(name);
+        return locationDao.getLocation(name);
     }
 
     @GetMapping("/{name}/noLockers")
@@ -104,7 +104,7 @@ public class LocationController {
     @PreAuthorize("hasAnyAuthority('ADMIN', 'STUDENT', 'EMPLOYEE')")
     @ApiOperation(value = "Get location without lockers")
     public Location getLocationWithoutLockers(@PathVariable("name") String name){
-        return locationDao.getLocationWithoutLockers(name);
+        return locationDao.getLocation(name);
     }
 
     @GetMapping("/{name}/noLockersAndCalendar")
@@ -112,7 +112,7 @@ public class LocationController {
     @PreAuthorize("hasAnyAuthority('ADMIN', 'STUDENT', 'EMPLOYEE')")
     @ApiOperation(value = "Get location without lockers and calendar")
     public Location getLocationWithoutLockersAndCalendar(@PathVariable("name") String name){
-        return locationDao.getLocationWithoutLockersAndCalendar(name);
+        return locationDao.getLocation(name);
     }
 
     @DeleteMapping("/{name}")

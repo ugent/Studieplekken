@@ -160,7 +160,7 @@ public class LockerReservationController extends AController {
             if(location == null){
                 return new ResponseEntity<>(mapper.writeValueAsString("Location does not exist"), HttpStatus.BAD_REQUEST);
             }
-            Collection<Locker> lockers = location.getLockers();
+            Collection<Locker> lockers = iLocationDao.getLockers(locationName);
             if (lockers != null) {
 
                 //get ongoing reservations;

@@ -21,21 +21,6 @@ public interface ILocationDao extends IDao {
     List<Location> getAllLocations();
 
     /**
-     * Get a list of all available locations but without their lockers and calendar.
-     */
-    List<Location> getAllLocationsWithoutLockersAndCalendar();
-
-    /**
-     * Get a list of all available locations but without their lockers.
-     */
-    List<Location> getAllLocationsWithoutLockers();
-
-    /**
-     * Get a list of all available locations but without their calendar.
-     */
-    List<Location> getAllLocationsWithoutCalendar();
-
-    /**
      * Adds a location.
      * Important note: this method should only add the location, its descriptions
      * in different languages and the lockers corresponding to the location
@@ -48,13 +33,6 @@ public interface ILocationDao extends IDao {
      * Gets a location with the given name.
      */
     Location getLocation(String name);
-
-
-    Location getLocationWithoutCalendar(String name);
-
-    Location getLocationWithoutLockers(String name);
-
-    Location getLocationWithoutLockersAndCalendar(String name);
 
     /**
      * Updates a location, name is the old name of the location.
@@ -109,6 +87,8 @@ public interface ILocationDao extends IDao {
      * Gets a list of all users (their augentIDs) that are allowed to scan at the given location.
      */
     List<String> getScannersFromLocation(String name);
+
+    // TODO: CRUD operations for scanners at location
 
     /**
      * Get a map that maps location names to the number of reservations on the

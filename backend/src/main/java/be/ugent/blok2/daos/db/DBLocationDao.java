@@ -15,7 +15,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
+import java.time.LocalTime;
 import java.util.*;
+
 
 @Profile("!dummy")
 @Service
@@ -35,61 +37,6 @@ public class DBLocationDao extends ADB implements ILocationDao {
             ResultSet rs = st.executeQuery(databaseProperties.getString("all_locations"));
             while (rs.next()) {
                 Location location = createLocation(rs);
-                location.setCalendar(getCalendar(location.getName(), conn));
-                location.setLockers(getLockers(location.getName(), conn));
-                locations.add(location);
-            }
-            return locations;
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return new ArrayList<>();
-    }
-
-    @Override
-    public List<Location> getAllLocationsWithoutLockersAndCalendar() {
-        try (Connection conn = getConnection()) {
-            List<Location> locations = new ArrayList<Location>();
-            Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery(databaseProperties.getString("all_locations"));
-            while (rs.next()) {
-                Location location = createLocation(rs);
-                locations.add(location);
-            }
-            return locations;
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return new ArrayList<>();
-    }
-
-    @Override
-    public List<Location> getAllLocationsWithoutLockers() {
-        try (Connection conn = getConnection()) {
-            List<Location> locations = new ArrayList<Location>();
-            Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery(databaseProperties.getString("all_locations"));
-            while (rs.next()) {
-                Location location = createLocation(rs);
-                location.setCalendar(getCalendar(location.getName(), conn));
-                locations.add(location);
-            }
-            return locations;
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return new ArrayList<>();
-    }
-
-    @Override
-    public List<Location> getAllLocationsWithoutCalendar() {
-        try (Connection conn = getConnection()) {
-            List<Location> locations = new ArrayList<Location>();
-            Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery(databaseProperties.getString("all_locations"));
-            while (rs.next()) {
-                Location location = createLocation(rs);
-                location.setLockers(getLockers(location.getName(), conn));
                 locations.add(location);
             }
             return locations;
@@ -107,22 +54,18 @@ public class DBLocationDao extends ADB implements ILocationDao {
 
                 // insert location into the database
                 PreparedStatement st = conn.prepareStatement(databaseProperties.getString("insert_location"));
-                st.setString(1, location.getName());
-                st.setInt(2, location.getNumberOfSeats());
-                st.setInt(3, location.getNumberOfLockers());
-                st.setString(4, location.getMapsFrame());
-                st.setString(5, location.getImageUrl());
-                st.setString(6, location.getAddress());
-                st.setString(7, location.getStartPeriodLockers() == null ? "" : location.getStartPeriodLockers().toString());
-                st.setString(8, location.getEndPeriodLockers() == null ? "" : location.getEndPeriodLockers().toString());
+                prepareUpdateOrInsertLocationStatement(location, st);
                 st.executeUpdate();
 
                 // insert descriptions corresponding to the location into the database
                 for (Language lang: location.getDescriptions().keySet()) {
                     st = conn.prepareStatement(databaseProperties.getString("insert_location_descriptions"));
-                    st.setString(1,location.getName());
-                    st.setString(2,lang.toString());
-                    st.setString(3, location.getDescriptions().get(lang));
+                    prepareUpdateOrInsertLocationDescriptionStatement(
+                            location.getName(),
+                            lang,
+                            location.getDescriptions().get(lang),
+                            st
+                    );
                     st.executeUpdate();
                 }
 
@@ -159,63 +102,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
         st.setString(1, locationName);
         ResultSet rs = st.executeQuery();
         if (rs.next()) {
-            Location location = createLocation(rs);
-            location.setCalendar(getCalendar(locationName, conn));
-            location.setLockers(getLockers(locationName, conn));
-            return location;
-        }
-        return null;
-    }
-
-    @Override
-    public Location getLocationWithoutCalendar(String name) {
-        try (Connection conn = getConnection()) {
-            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_location"));
-            st.setString(1, name);
-            ResultSet rs = st.executeQuery();
-            if (rs.next()) {
-                Location location = createLocation(rs);
-                location.setLockers(getLockers(name, conn));
-                return location;
-            }
-            return null;
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return null;
-    }
-
-    @Override
-    public Location getLocationWithoutLockers(String name) {
-        try (Connection conn = getConnection()) {
-            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_location"));
-            st.setString(1, name);
-            ResultSet rs = st.executeQuery();
-            if (rs.next()) {
-                Location location = createLocation(rs);
-                location.setCalendar(getCalendar(name, conn));
-                return location;
-            }
-            return null;
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return null;
-    }
-
-    @Override
-    public Location getLocationWithoutLockersAndCalendar(String name) {
-        try (Connection conn = getConnection()) {
-            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_location"));
-            st.setString(1, name);
-            ResultSet rs = st.executeQuery();
-            if (rs.next()) {
-                Location loc = createLocation(rs);
-                return loc;
-            }
-            return null;
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            return createLocation(rs);
         }
         return null;
     }
@@ -241,7 +128,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
             if (nameChanged) {
                 // nieuwe locatie invoegen
                 st = conn.prepareStatement(databaseProperties.getString("insert_location"));
-                prepareUpdateOrInsertLocation(location, st);
+                prepareUpdateOrInsertLocationStatement(location, st);
                 st.executeUpdate();
 
                 // kalender wijzigen
@@ -259,13 +146,12 @@ public class DBLocationDao extends ADB implements ILocationDao {
                 // oude locatie verwijderen
                 st = conn.prepareStatement(databaseProperties.getString("delete_location"));
                 st.setString(1,name);
-                st.executeUpdate();
             } else {
                 st = conn.prepareStatement(databaseProperties.getString("update_location"));
-                prepareUpdateOrInsertLocation(location, st);
+                prepareUpdateOrInsertLocationStatement(location, st);
                 st.setString(9, name);
-                st.executeUpdate();
             }
+            st.executeUpdate();
 
             // lockers eventueel toevoegen of verwijderen
 
@@ -313,7 +199,11 @@ public class DBLocationDao extends ADB implements ILocationDao {
         try (Connection conn = getConnection()) {
             conn.setAutoCommit(false);
             try {
-                Location location = getLocationWithoutLockersAndCalendar(locationName);
+                Location location = getLocation(locationName, conn);
+
+                if (location == null)
+                    throw new SQLException();
+
                 int n = location.getNumberOfLockers();
 
                 if (count > 0) {
@@ -333,11 +223,11 @@ public class DBLocationDao extends ADB implements ILocationDao {
                 updateLocation(location, conn);
 
                 conn.commit();
-                conn.setAutoCommit(true);
             } catch (SQLException ex) {
                 conn.rollback();
-                conn.setAutoCommit(true);
                 System.out.println(ex.getMessage());
+            } finally {
+                conn.setAutoCommit(true);
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -347,14 +237,23 @@ public class DBLocationDao extends ADB implements ILocationDao {
     @Override
     public void deleteLockers(String locationName, int startNumber) {
         try (Connection conn = getConnection()) {
+            conn.setAutoCommit(false);
+
             deleteLockers(locationName, startNumber, conn);
 
             // update location: number_of_lockers has been updated
-            Location location = getLocationWithoutLockersAndCalendar(locationName);
+            Location location = getLocation(locationName, conn);
+
+            if (location == null)
+                throw new SQLException("Location " + locationName + " not found");
+
             int r = location.getNumberOfLockers() - startNumber;
             int n = location.getNumberOfLockers() - r;
             location.setNumberOfLockers(n);
             updateLocation(location, conn);
+
+            conn.commit();
+            conn.setAutoCommit(true);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -394,7 +293,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
                 st.execute();
 
                 // Delete locker reservations of lockers of this location
-                List<Integer> locker_ids = new ArrayList<Integer>();
+                List<Integer> locker_ids = new ArrayList<>();
                 st = conn.prepareStatement(databaseProperties.getString("get_locker_ids_of_location"));
                 st.setString(1, name);
                 ResultSet rs = st.executeQuery();
@@ -451,14 +350,19 @@ public class DBLocationDao extends ADB implements ILocationDao {
         PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_calendar_of_location"));
         st.setString(1, locationName);
         ResultSet rs = st.executeQuery();
-        Collection<Day> calendar = new ArrayList<Day>();
+        Collection<Day> calendar = new ArrayList<>();
         while (rs.next()) {
             try {
                 CustomDate date = CustomDate.parseString(rs.getString(databaseProperties.getString("calendar_date")));
+
                 java.sql.Time sqlOpeningHour = rs.getTime(databaseProperties.getString("calendar_opening_hour"));
-                Time openingHour = new Time(sqlOpeningHour.getHours(), sqlOpeningHour.getMinutes(), sqlOpeningHour.getSeconds());
+                LocalTime utilOpeningHour = sqlOpeningHour.toLocalTime();
+                Time openingHour = new Time(utilOpeningHour.getHour(), utilOpeningHour.getMinute(), utilOpeningHour.getSecond());
+
                 java.sql.Time sqlClosingHour = rs.getTime(databaseProperties.getString("calendar_closing_hour"));
-                Time closingHour = new Time(sqlClosingHour.getHours(), sqlClosingHour.getMinutes(), sqlClosingHour.getSeconds());
+                LocalTime utilClosingHour = sqlClosingHour.toLocalTime();
+                Time closingHour = new Time(utilClosingHour.getHour(), utilClosingHour.getMinute(), utilClosingHour.getSecond());
+
                 CustomDate openReservationDate = CustomDate.parseString(rs.getString(databaseProperties.getString("calendar_open_reservation_date")));
                 Day day = new Day(date, openingHour, closingHour, openReservationDate);
                 calendar.add(day);
@@ -566,8 +470,22 @@ public class DBLocationDao extends ADB implements ILocationDao {
                 st = conn.prepareStatement(databaseProperties.getString("insert_calendar_day"));
                 st.setString(1, day.getDate().toString());
                 st.setString(2, locationName);
-                st.setTime(3, new java.sql.Time(day.getOpeningHour().getHours(), day.getOpeningHour().getMinutes(), day.getOpeningHour().getSeconds()));
-                st.setTime(4, new java.sql.Time(day.getClosingHour().getHours(), day.getClosingHour().getMinutes(), day.getClosingHour().getSeconds()));
+
+                LocalTime openingTime = LocalTime.of(
+                        day.getOpeningHour().getHours(),
+                        day.getOpeningHour().getMinutes(),
+                        day.getOpeningHour().getSeconds()
+                );
+
+                st.setTime(3, java.sql.Time.valueOf(openingTime));
+
+                LocalTime closingTime = LocalTime.of(
+                        day.getClosingHour().getHours(),
+                        day.getClosingHour().getMinutes(),
+                        day.getClosingHour().getSeconds()
+                );
+
+                st.setTime(4, java.sql.Time.valueOf(closingTime));
                 st.setString(5, day.getOpenForReservationDate().toString());
                 st.execute();
             }
@@ -582,8 +500,22 @@ public class DBLocationDao extends ADB implements ILocationDao {
     //helper method to update a row in the calendar table
     private void changeCalendarDay(String locationName, Day day, Connection conn) throws SQLException {
         PreparedStatement st = conn.prepareStatement(databaseProperties.getString("update_calendar_day_of_location"));
-        st.setTime(1, new java.sql.Time(day.getOpeningHour().getHours(), day.getOpeningHour().getMinutes(), day.getOpeningHour().getSeconds()));
-        st.setTime(2, new java.sql.Time(day.getClosingHour().getHours(), day.getClosingHour().getMinutes(), day.getClosingHour().getSeconds()));
+
+        LocalTime openingTime = LocalTime.of(
+                day.getOpeningHour().getHours(),
+                day.getOpeningHour().getMinutes(),
+                day.getOpeningHour().getSeconds()
+        );
+
+        st.setTime(1, java.sql.Time.valueOf(openingTime));
+
+        LocalTime closingTime = LocalTime.of(
+                day.getClosingHour().getHours(),
+                day.getClosingHour().getMinutes(),
+                day.getClosingHour().getSeconds()
+        );
+
+        st.setTime(2, java.sql.Time.valueOf(closingTime));
         st.setString(3, day.getOpenForReservationDate().toString());
         st.setString(4, locationName);
         st.setString(5, day.getDate().toString());
@@ -661,7 +593,8 @@ public class DBLocationDao extends ADB implements ILocationDao {
         CustomDate startPeriodLockers = CustomDate.parseString(rs.getString(databaseProperties.getString("location_start_period_lockers")));
         CustomDate endPeriodLockers = CustomDate.parseString(rs.getString(databaseProperties.getString("location_end_period_lockers")));
 
-        Location location = new Location(name, address, numberOfSeats, numberOfLockers, mapsFrame, new HashMap<>(), imageUrl);
+        Location location = new Location(name, address, numberOfSeats, numberOfLockers, mapsFrame
+                , new HashMap<>(), imageUrl);
         location.setStartPeriodLockers(startPeriodLockers);
         location.setEndPeriodLockers(endPeriodLockers);
 
@@ -669,12 +602,10 @@ public class DBLocationDao extends ADB implements ILocationDao {
         String desc = rs.getString(databaseProperties.getString("location_description_description"));
         location.getDescriptions().put(lang, desc);
 
-        int i = 1;
-        while (i < Language.values().length && rs.next()) {
+        while (rs.next()) {
             lang = Language.valueOf(rs.getString(databaseProperties.getString("location_description_lang_enum")));
             desc = rs.getString(databaseProperties.getString("location_description_description"));
             location.getDescriptions().put(lang, desc);
-            i++;
         }
 
         return location;
@@ -700,13 +631,13 @@ public class DBLocationDao extends ADB implements ILocationDao {
     private void updateLocation(Location location, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("update_location"));
         // set ...
-        prepareUpdateOrInsertLocation(location, pstmt);
+        prepareUpdateOrInsertLocationStatement(location, pstmt);
         // where ...
         pstmt.setString(9, location.getName());
         pstmt.execute();
     }
 
-    private void prepareUpdateOrInsertLocation(Location location, PreparedStatement pstmt) throws SQLException {
+    private void prepareUpdateOrInsertLocationStatement(Location location, PreparedStatement pstmt) throws SQLException {
         pstmt.setString(1, location.getName());
         pstmt.setInt(2, location.getNumberOfSeats());
         pstmt.setInt(3, location.getNumberOfLockers());
@@ -715,6 +646,13 @@ public class DBLocationDao extends ADB implements ILocationDao {
         pstmt.setString(6, location.getAddress());
         pstmt.setString(7, location.getStartPeriodLockers() == null ? "" : location.getStartPeriodLockers().toString());
         pstmt.setString(8, location.getEndPeriodLockers() == null ? "" : location.getEndPeriodLockers().toString());
+    }
+
+    private void prepareUpdateOrInsertLocationDescriptionStatement(String locationName, Language lang
+            , String description, PreparedStatement pstmt) throws SQLException {
+        pstmt.setString(1,locationName);
+        pstmt.setString(2,lang.toString());
+        pstmt.setString(3, description);
     }
 }
 

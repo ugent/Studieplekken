@@ -53,7 +53,7 @@ public class TestDBLocationDao {
 
     @Test
     public void addLocationTest() {
-        Location l = locationDao.getLocationWithoutLockersAndCalendar(testLocation.getName());
+        Location l = locationDao.getLocation(testLocation.getName());
         Assert.assertEquals("addLocation", testLocation, l);
 
         locationDao.deleteLocation(testLocation.getName());
@@ -67,10 +67,10 @@ public class TestDBLocationDao {
         changedTestLocation.setName("Changed Test Location");
 
         locationDao.changeLocation(testLocation.getName(), changedTestLocation);
-        Location location = locationDao.getLocationWithoutLockersAndCalendar(changedTestLocation.getName());
+        Location location = locationDao.getLocation(changedTestLocation.getName());
         Assert.assertEquals("changeLocationTest, fetch location by changed name", changedTestLocation, location);
 
-        location = locationDao.getLocationWithoutLockersAndCalendar(testLocation.getName());
+        location = locationDao.getLocation(testLocation.getName());
         Assert.assertNull("changeLocationTest, old location name may not have an entry", location);
 
         locationDao.deleteLocation(changedTestLocation.getName());
@@ -85,14 +85,14 @@ public class TestDBLocationDao {
         int n = 10;
         expectedLocation.setNumberOfLockers(prev_n + n);
         locationDao.addLockers(testLocation.getName(), n);
-        Location location = locationDao.getLocationWithoutLockersAndCalendar(testLocation.getName());
+        Location location = locationDao.getLocation(testLocation.getName());
         Assert.assertEquals("addLockersTest, added lockers", expectedLocation, location);
 
         // test adding negative amount of lockers
         int _n = -5;
         expectedLocation.setNumberOfLockers(prev_n + n + _n);
         locationDao.addLockers(testLocation.getName(), _n);
-        location = locationDao.getLocationWithoutLockersAndCalendar(testLocation.getName());
+        location = locationDao.getLocation(testLocation.getName());
         Assert.assertEquals("addLocker, added negative amount of lockers", expectedLocation, location);
 
         // TODO: reserve lockers and expect SQLException
@@ -106,7 +106,7 @@ public class TestDBLocationDao {
         int n = 5;
         expectedLocation.setNumberOfLockers(prev_n - n);
         locationDao.deleteLockers(testLocation.getName(), prev_n - n);
-        Location location = locationDao.getLocationWithoutLockersAndCalendar(testLocation.getName());
+        Location location = locationDao.getLocation(testLocation.getName());
         Assert.assertEquals("deleteLockersTest", expectedLocation, location);
     }
 

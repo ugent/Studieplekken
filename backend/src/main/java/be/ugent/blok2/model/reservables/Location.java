@@ -2,12 +2,8 @@ package be.ugent.blok2.model.reservables;
 
 import be.ugent.blok2.helpers.Language;
 import be.ugent.blok2.helpers.date.CustomDate;
-import be.ugent.blok2.helpers.date.Day;
-import be.ugent.blok2.model.users.User;
-
 
 import java.util.*;
-
 
 public class Location implements Cloneable {
     private String name;
@@ -20,12 +16,6 @@ public class Location implements Cloneable {
     private CustomDate startPeriodLockers;
     private CustomDate endPeriodLockers;
 
-    private Collection<Day> calendar;
-    private Collection<Locker> lockers;
-
-    // the employees who have rights to scan at this location
-    private Collection<User> scanners;
-
     public Location(String name, String address, int numberOfSeats, int numberOfLockers
             , String mapsFrame, Map<Language, String> descriptions, String imageUrl) {
         this.name = name;
@@ -35,66 +25,11 @@ public class Location implements Cloneable {
         this.mapsFrame = mapsFrame;
         this.descriptions = descriptions;
         this.imageUrl = imageUrl;
-
-        this.calendar = new ArrayList<>();
-        this.lockers = new ArrayList<>();
-        this.scanners = new ArrayList<>();
-    }
-
-    public Location(String name){
-        this.name = name;
-        this.numberOfLockers = 0;
-        this.numberOfSeats = 0;
-        this.calendar = new ArrayList<>();
-        this.lockers = new ArrayList<>();
-        this.descriptions = new HashMap<>();
-    }
-
-    public Location(String name, String address, int numberOfSeats, int numberOfLockers
-            , String mapsFrame, Map<Language, String> descriptions, String imageUrl
-            , Collection<Day> calendar, Collection<Locker> lockers) {
-        this(name, address, numberOfSeats, numberOfLockers, mapsFrame
-                , descriptions, imageUrl);
-        this.calendar = calendar;
-        this.lockers = lockers;
     }
 
     // default constructor necessary for testing purposes
-    public Location(){
-        this.numberOfLockers = 0;
-        this.numberOfSeats = 0;
-        this.calendar = new ArrayList<>();
-        this.lockers = new ArrayList<>();
+    public Location() {
         this.descriptions = new HashMap<>();
-    }
-
-    public void addLocker(int number, int id){
-        int studentLimit = 2;
-        Locker locker = new Locker(number, name);
-        locker.setId(id);
-        this.lockers.add(locker);
-        this.numberOfLockers++;
-    }
-
-    public void deleteLockers(int startNumber){
-        Collection<Locker> toRemove = new ArrayList<>();
-        for (Locker locker : this.lockers) {
-            if (locker.getNumber() >= startNumber) {
-                toRemove.add(locker);
-            }
-        }
-        for (Locker lock : toRemove) {
-            this.lockers.remove(lock);
-        }
-        this.numberOfLockers -= toRemove.size();
-    }
-
-    public void addDay(Day day){
-        this.calendar.add(day);
-    }
-
-    public void removeDay(Day day){
-        this.calendar.remove(day);
     }
 
     @Override
@@ -118,14 +53,6 @@ public class Location implements Cloneable {
         return Objects.hash(name, address);
     }
 
-    public Location locationWithoutScanners() {
-        Location location = new Location(name, address, numberOfSeats, numberOfLockers, mapsFrame, descriptions,
-                imageUrl, calendar, lockers);
-        location.setStartPeriodLockers(startPeriodLockers);
-        location.setEndPeriodLockers(endPeriodLockers);
-        return location;
-    }
-
     @Override
     public Location clone() {
         try {
@@ -138,16 +65,6 @@ public class Location implements Cloneable {
 
             l.setStartPeriodLockers(startPeriodLockers.clone());
             l.setEndPeriodLockers(endPeriodLockers.clone());
-
-            l.setCalendar(new ArrayList<>());
-            for (Day d : calendar) {
-                l.getCalendar().add(d.clone());
-            }
-
-            l.setLockers(new ArrayList<>());
-            for (Locker _l : lockers) {
-                l.getLockers().add(_l.clone());
-            }
 
             return l;
         } catch (CloneNotSupportedException e) {
@@ -179,14 +96,6 @@ public class Location implements Cloneable {
 
     public Map<Language, String> getDescriptions() {
         return descriptions;
-    }
-
-    public Collection<Day> getCalendar(){
-        return calendar;
-    }
-
-    public Collection<Locker> getLockers(){
-        return lockers;
     }
 
     public String getImageUrl() {
@@ -221,14 +130,6 @@ public class Location implements Cloneable {
         this.imageUrl = url;
     }
 
-    public void setCalendar(Collection<Day> calendar){
-        this.calendar = calendar;
-    }
-
-    public void setLockers(Collection<Locker> lockers){
-        this.lockers = lockers;
-    }
-
     public void setStartPeriodLockers(CustomDate startPeriodLockers){
         this.startPeriodLockers = startPeriodLockers;
     }
@@ -237,8 +138,6 @@ public class Location implements Cloneable {
         this.endPeriodLockers = endPeriodLockers;
     }
 
-    public Collection<User> getScanners() { return scanners; }
-
     public void setNumberOfSeats(int numberOfSeats) {
         this.numberOfSeats = numberOfSeats;
     }
@@ -246,10 +145,6 @@ public class Location implements Cloneable {
     public void setNumberOfLockers(int numberOfLockers) {
         this.numberOfLockers = numberOfLockers;
     }
-
-    public void setScanners(Collection<User> scanners) { this.scanners = scanners; }
-
-
 
     //</editor-fold>
 }
