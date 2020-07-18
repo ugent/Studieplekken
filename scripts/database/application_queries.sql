@@ -47,7 +47,8 @@ from public.location_reservations lr
         on l.name = lr.location_name
     join public.location_descriptions ld
         on l.name = ld.location_name
-where user_augentid = ?;
+where user_augentid = ?
+order by l.name;
 
 -- $get_location_reservations_of_user_by_name
 select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
@@ -63,7 +64,8 @@ from public.location_reservations lr
         on l.name = lr.location_name
     join public.location_descriptions ld
         on l.name = ld.location_name
-where u.augentpreferredgivenname = ?;
+where u.augentpreferredgivenname = ?
+order by l.name;
 
 -- $get_location_reservations_of_location
 select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
@@ -79,7 +81,8 @@ from public.location_reservations lr
         on l.name = lr.location_name
     join public.location_descriptions ld
         on l.name = ld.location_name
-where lr.location_name = ?;
+where lr.location_name = ?
+order by l.name;
 
 -- $get_location_reservation
 select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
@@ -95,7 +98,8 @@ from public.location_reservations lr
         on l.name = lr.location_name
     join public.location_descriptions ld
         on l.name = ld.location_name
-where lr.user_augentid = ? and lr.date = ?;
+where lr.user_augentid = ? and lr.date = ?
+order by l.name;
 
 -- $get_absent_students
 select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
@@ -111,7 +115,8 @@ from public.location_reservations lr
         on l.name = lr.location_name
     join public.location_descriptions ld
         on l.name = ld.location_name
-where lr.location_name = ? and lr.date = ? and (lr.attended = false or lr.attended is null);
+where lr.location_name = ? and lr.date = ? and (lr.attended = false or lr.attended is null)
+order by l.name;
 
 -- $get_present_students
 select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
@@ -127,7 +132,8 @@ from public.location_reservations lr
         on l.name = lr.location_name
     join public.location_descriptions ld
         on l.name = ld.location_name
-where lr.location_name = ? and lr.date = ? and lr.attended = true;
+where lr.location_name = ? and lr.date = ? and lr.attended = true
+order by l.name;
 
 -- $count_location_reservations_of_location_for_date
 select count(1)
@@ -173,11 +179,12 @@ set attended = true
 where date = ? and user_augentid = ?;
 
 -- $count_location_reservations_on_date
-select name, count(case when date = ? then 1 end)
-from public.locations
-    left join public.location_reservations
-        on locations.name = location_reservations.location_name
-group by name;
+select l.name, count(case when lr.date = ? then 1 end)
+from public.locations l
+    left join public.location_reservations lr
+        on l.name = lr.location_name
+group by l.name
+order by l.name;
 
 -- $update_location_reservations_of_user
 update public.location_reservations
