@@ -566,12 +566,17 @@ where code = ?;
 -- $delete_penalty
 delete
 from public.penalty_book b
-where b.user_augentid = ? and b.event_code = ? and b.timestamp = ? and b.reservation_date = ? and b.reservation_location = ? and b.received_points = ?;
+where b.user_augentid = ? and b.event_code = ? and b.timestamp = ?;
 
 -- $delete_penalties_of_user_by_id
 delete
 from public.penalty_book
 where user_augentid = ?;
+
+-- $delete_penalties_of_location
+delete
+from public.penalty_book
+where reservation_location = ?;
 
 
 

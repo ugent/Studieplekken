@@ -1,9 +1,7 @@
 package be.ugent.blok2.security.UserDetailsServices;
 
 import be.ugent.blok2.daos.IAccountDao;
-import be.ugent.blok2.daos.dummies.DummyAccountDao;
 import be.ugent.blok2.helpers.exceptions.LdapException;
-import be.ugent.blok2.helpers.exceptions.NoSuchUserException;
 import be.ugent.blok2.model.users.User;
 import be.ugent.blok2.services.LdapService;
 import org.jasig.cas.client.authentication.AttributePrincipal;
