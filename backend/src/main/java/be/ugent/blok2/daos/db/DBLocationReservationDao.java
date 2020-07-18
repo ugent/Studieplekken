@@ -258,8 +258,13 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
 
     public static LocationReservation createLocationReservation(ResultSet rs) throws SQLException {
         CustomDate customDate = CustomDate.parseString(rs.getString(databaseProperties.getString("location_reservation_date")));
-        Location location = DBLocationDao.createLocation(rs);
+        // Note: it is important that createUser is called before createLocation.
+        //  the reason is that within createLocation, the ResultSet is looped
+        //  because it needs all descriptions. But if you would use the looped
+        //  ResultSet, the internal record pointer is after the last entry and you
+        //  cant go back. So first call createUser(), then createLocation.
         User user = DBAccountDao.createUser(rs);
+        Location location = DBLocationDao.createLocation(rs);
         return new LocationReservation(location, user, customDate);
     }
 }

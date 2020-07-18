@@ -602,10 +602,14 @@ public class DBLocationDao extends ADB implements ILocationDao {
         String desc = rs.getString(databaseProperties.getString("location_description_description"));
         location.getDescriptions().put(lang, desc);
 
-        while (rs.next()) {
+        // iterator to make sure that only descriptions corresponding to one location
+        // are put into the descriptions' Map
+        int i = 0;
+        while (i < Language.values().length && rs.next()) {
             lang = Language.valueOf(rs.getString(databaseProperties.getString("location_description_lang_enum")));
             desc = rs.getString(databaseProperties.getString("location_description_description"));
             location.getDescriptions().put(lang, desc);
+            i++;
         }
 
         return location;
