@@ -11,8 +11,6 @@ import java.util.List;
 public interface ILocationReservationDao extends IDao {
     List<LocationReservation> getAllLocationReservationsOfUser(String augentID) throws NoSuchUserException;
 
-    List<LocationReservation> getAllLocationReservationsOfUserByName(String userName);
-
     List<LocationReservation> getAllLocationReservationsOfLocation(String name);
 
     LocationReservation getLocationReservation(String augentID, CustomDate date);

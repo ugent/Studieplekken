@@ -416,13 +416,13 @@ public class DBLocationDao extends ADB implements ILocationDao {
     }
 
     @Override
-    public List<String> getScannersFromLocation(String name) {
+    public List<String> getScannersFromLocation(String locationName) {
         ArrayList<String> scanners = new ArrayList<>();
         try (Connection connection = getConnection()) {
 
             String query = databaseProperties.getString("get_scanners_of_location");
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, name);
+            statement.setString(1, locationName);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 String augentId = resultSet.getString(databaseProperties.getString("scanners_location_user_augentid"));

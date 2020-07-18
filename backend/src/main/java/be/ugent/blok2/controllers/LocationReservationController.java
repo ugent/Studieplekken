@@ -80,13 +80,6 @@ public class LocationReservationController extends AController {
 
     }
 
-    @GetMapping("/userByName/{userName}")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "View a list of all locationreservations of a user by name")
-    public List<LocationReservation> getAllLocationReservationsOfUserByName(@PathVariable("userName") String userName) {
-        return iLocationReservationDao.getAllLocationReservationsOfUserByName(userName);
-    }
-
     @GetMapping("/location/{name}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN','STUDENT','EMPLOYEE')")

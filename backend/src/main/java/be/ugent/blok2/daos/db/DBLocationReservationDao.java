@@ -49,28 +49,6 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
     }
 
     @Override
-    public List<LocationReservation> getAllLocationReservationsOfUserByName(String userName) {
-        try (Connection conn = getConnection()) {
-            List<LocationReservation> reservations = new ArrayList<>();
-            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_location_reservations_of_user_by_name"));
-            st.setString(1, userName);
-            ResultSet rs = st.executeQuery();
-            while (rs.next()) {
-                try {
-                    LocationReservation locationReservation = createLocationReservation(rs);
-                    reservations.add(locationReservation);
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                }
-            }
-            return reservations;
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return null;
-    }
-
-    @Override
     public List<LocationReservation> getAllLocationReservationsOfLocation(String name) {
         try (Connection conn = getConnection()) {
             List<LocationReservation> reservations = new ArrayList<>();
