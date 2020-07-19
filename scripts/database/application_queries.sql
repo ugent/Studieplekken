@@ -33,47 +33,41 @@ where name = ?;
 
 
 -- queries for table LOCATION_RESERVATION
--- $get_location_reservations_of_user_by_id
-select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
-     , u.augentid, u.role, u.penalty_points, u.barcode
-     , l.name, l.number_of_seats, l.number_of_lockers, l.maps_frame, l.image_url, l.address
-     , l.start_period_lockers, l.end_period_lockers
-     , lr.date, lr.location_name, lr.attended, lr.user_augentid
-     , ld.location_name, ld.lang_enum, ld.description
-from public.location_reservations lr
-    join public.users u
-        on u.augentid = lr.user_augentid
-    join public.locations l
-        on l.name = lr.location_name
-    join public.location_descriptions ld
-        on l.name = ld.location_name
-where user_augentid = ?
-order by l.name;
+-- $get_location_reservations_where_<?>
+/*
+    If you want to change the weekly percentage decrease, you must
+    change the factor and amount of weeks used in the recursive query.
+    Now, every week the amount is reduced with 20%, which means that points
+    will remain effective for 5 weeks.
 
--- $get_location_reservations_of_user_by_name
-select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
-     , u.augentid, u.role, u.penalty_points, u.barcode
-     , l.name, l.number_of_seats, l.number_of_lockers, l.maps_frame, l.image_url, l.address
-     , l.start_period_lockers, l.end_period_lockers
-     , lr.date, lr.location_name, lr.attended, lr.user_augentid
-     , ld.location_name, ld.lang_enum, ld.description
-from public.location_reservations lr
-    join public.users u
-        on u.augentid = lr.user_augentid
-    join public.locations l
-        on l.name = lr.location_name
-    join public.location_descriptions ld
-        on l.name = ld.location_name
-where u.augentpreferredgivenname = ?
-order by l.name;
+    If you would like to change this to 10% (and an effectiveness of 10 weeks),
+    then you'll have to change "- 0.2 * (week + 1) + 1" to "- 0.1 * (week + 1) + 1"
+    and "week + 1 <= 5" to "week + 1 <= 10".
 
--- $get_location_reservations_of_location
+    Note: change get_user_by_<?> as well for consistency
+*/
+with recursive x as (
+    select 0 week, 1.0 perc
+        union all
+    select week + 1, - 0.2 * (week + 1) + 1
+    from x
+    where week + 1 <= 5
+)
 select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
-     , u.augentid, u.role, u.penalty_points, u.barcode
+     , u.augentid, u.role, u.barcode
      , l.name, l.number_of_seats, l.number_of_lockers, l.maps_frame, l.image_url, l.address
      , l.start_period_lockers, l.end_period_lockers
      , lr.date, lr.location_name, lr.attended, lr.user_augentid
      , ld.location_name, ld.lang_enum, ld.description
+	 , coalesce(floor(sum(
+        case
+            /*
+                Blacklist event (16662) is permanent: no decrease in time.
+                A blacklist event should be removed manually
+            */
+            when pb.event_code = 16662 then pb.received_points
+            else pb.received_points * x.perc
+        end)), 0) as "penalty_points"
 from public.location_reservations lr
     join public.users u
         on u.augentid = lr.user_augentid
@@ -81,58 +75,17 @@ from public.location_reservations lr
         on l.name = lr.location_name
     join public.location_descriptions ld
         on l.name = ld.location_name
-where lr.location_name = ?
-order by l.name;
-
--- $get_location_reservation
-select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
+	left join public.penalty_book pb
+		on pb.user_augentid = u.augentid
+	left join x
+		on floor(extract(days from (now() - to_timestamp(pb.timestamp, 'YYYY-MM-DD HH24\:MI\:SS'))) / 7) = x.week
+where <?>
+group by u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
      , u.augentid, u.role, u.penalty_points, u.barcode
      , l.name, l.number_of_seats, l.number_of_lockers, l.maps_frame, l.image_url, l.address
      , l.start_period_lockers, l.end_period_lockers
      , lr.date, lr.location_name, lr.attended, lr.user_augentid
      , ld.location_name, ld.lang_enum, ld.description
-from public.location_reservations lr
-    join public.users u
-        on u.augentid = lr.user_augentid
-    join public.locations l
-        on l.name = lr.location_name
-    join public.location_descriptions ld
-        on l.name = ld.location_name
-where lr.user_augentid = ? and lr.date = ?
-order by l.name;
-
--- $get_absent_students
-select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
-     , u.augentid, u.role, u.penalty_points, u.barcode
-     , l.name, l.number_of_seats, l.number_of_lockers, l.maps_frame, l.image_url, l.address
-     , l.start_period_lockers, l.end_period_lockers
-     , lr.date, lr.location_name, lr.attended, lr.user_augentid
-     , ld.location_name, ld.lang_enum, ld.description
-from public.location_reservations lr
-    join public.users u
-        on u.augentid = lr.user_augentid
-    join public.locations l
-        on l.name = lr.location_name
-    join public.location_descriptions ld
-        on l.name = ld.location_name
-where lr.location_name = ? and lr.date = ? and (lr.attended = false or lr.attended is null)
-order by l.name;
-
--- $get_present_students
-select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
-     , u.augentid, u.role, u.penalty_points, u.barcode
-     , l.name, l.number_of_seats, l.number_of_lockers, l.maps_frame, l.image_url, l.address
-     , l.start_period_lockers, l.end_period_lockers
-     , lr.date, lr.location_name, lr.attended, lr.user_augentid
-     , ld.location_name, ld.lang_enum, ld.description
-from public.location_reservations lr
-    join public.users u
-        on u.augentid = lr.user_augentid
-    join public.locations l
-        on l.name = lr.location_name
-    join public.location_descriptions ld
-        on l.name = ld.location_name
-where lr.location_name = ? and lr.date = ? and lr.attended = true
 order by l.name;
 
 -- $count_location_reservations_of_location_for_date
@@ -204,6 +157,8 @@ where user_augentid = ?;
     If you would like to change this to 10% (and an effectiveness of 10 weeks),
     then you'll have to change "- 0.2 * (week + 1) + 1" to "- 0.1 * (week + 1) + 1"
     and "week + 1 <= 5" to "week + 1 <= 10".
+
+    Note: change get_location_reservations_where_<?> as well for consistency
 */
 with recursive x as (
     select 0 week, 1.0 perc
@@ -222,7 +177,7 @@ select u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn
             */
             when b.event_code = 16662 then b.received_points
             else b.received_points * x.perc
-        end))) as "penalty_points"
+        end)), 0) as "penalty_points"
 from public.users u
     left join public.penalty_book b
         on b.user_augentid = u.augentid
