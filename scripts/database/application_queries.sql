@@ -52,40 +52,48 @@ with recursive x as (
     select week + 1, - 0.2 * (week + 1) + 1
     from x
     where week + 1 <= 5
+), y as (
+	select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
+		, u.augentid, u.role, u.barcode
+		, lr.date, lr.location_name, lr.attended, lr.user_augentid
+		, coalesce(floor(sum(
+        	case
+				/*
+					Blacklist event (16662) is permanent: no decrease in time.
+					A blacklist event should be removed manually
+				*/
+				when pb.event_code = 16662 then pb.received_points
+				else pb.received_points * x.perc
+			end)), 0) as "penalty_points"
+	from public.location_reservations lr
+		join public.users u
+			on u.augentid = lr.user_augentid
+		left join public.penalty_book pb
+			on pb.user_augentid = u.augentid
+		left join x
+			on floor(extract(days from (now() - to_timestamp(pb.timestamp, 'YYYY-MM-DD HH24\:MI\:SS'))) / 7) = x.week
+	where <?>
+	group by u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
+		, u.augentid, u.role, u.barcode
+		, lr.date, lr.location_name, lr.attended, lr.user_augentid
 )
-select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
-     , u.augentid, u.role, u.barcode
-     , l.name, l.number_of_seats, l.number_of_lockers, l.maps_frame, l.image_url, l.address
+select y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
+	 , y.augentid, y.role, y.barcode, y.penalty_points
+	 , y.date, y.location_name, y.attended, y.user_augentid
+	 , l.name, l.number_of_seats, l.number_of_lockers, l.maps_frame, l.image_url, l.address
      , l.start_period_lockers, l.end_period_lockers
-     , lr.date, lr.location_name, lr.attended, lr.user_augentid
-     , ld.location_name, ld.lang_enum, ld.description
-	 , coalesce(floor(sum(
-        case
-            /*
-                Blacklist event (16662) is permanent: no decrease in time.
-                A blacklist event should be removed manually
-            */
-            when pb.event_code = 16662 then pb.received_points
-            else pb.received_points * x.perc
-        end)), 0) as "penalty_points"
-from public.location_reservations lr
-    join public.users u
-        on u.augentid = lr.user_augentid
+     , ld.lang_enum, ld.description
+from y
     join public.locations l
-        on l.name = lr.location_name
+        on l.name = y.location_name
     join public.location_descriptions ld
-        on l.name = ld.location_name
-	left join public.penalty_book pb
-		on pb.user_augentid = u.augentid
-	left join x
-		on floor(extract(days from (now() - to_timestamp(pb.timestamp, 'YYYY-MM-DD HH24\:MI\:SS'))) / 7) = x.week
-where <?>
-group by u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
-     , u.augentid, u.role, u.penalty_points, u.barcode
-     , l.name, l.number_of_seats, l.number_of_lockers, l.maps_frame, l.image_url, l.address
+        on ld.location_name = l.name
+group by y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
+	 , y.augentid, y.role, y.barcode, y.penalty_points
+	 , y.date, y.location_name, y.attended, y.user_augentid
+	 , l.name, l.number_of_seats, l.number_of_lockers, l.maps_frame, l.image_url, l.address
      , l.start_period_lockers, l.end_period_lockers
-     , lr.date, lr.location_name, lr.attended, lr.user_augentid
-     , ld.location_name, ld.lang_enum, ld.description
+     , ld.lang_enum, ld.description
 order by l.name;
 
 -- $count_location_reservations_of_location_for_date
@@ -240,42 +248,62 @@ where TO_TIMESTAMP(created_timestamp, 'YYYY-MM-DD\\THH24:MI:SS') < now() - inter
 
 
 -- queries for table LOCKER_RESERVATION
--- $get_locker_reservations_of_user_by_id
-select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
-     , u.augentid, u.role, u.penalty_points, u.barcode
-     , l.id, l.number, l.location_name
-     , lr.locker_id, lr.user_augentid, lr.key_pickup_date, lr.key_return_date
-from public.locker_reservations lr
-    join public.users u
-        on u.augentid = lr.user_augentid
-    join public.lockers l
-        on l.id = lr.locker_id
-where lr.user_augentid = ?;
-
--- $get_locker_reservations_of_location
-select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
-     , u.augentid, u.role, u.penalty_points, u.barcode
-     , l.id, l.number, l.location_name
-     , lr.locker_id, lr.user_augentid, lr.key_pickup_date, lr.key_return_date
-from public.locker_reservations lr
-    join public.users u
-        on u.augentid = lr.user_augentid
-    join public.lockers l
-        on l.id = lr.locker_id
-where l.location_name = ?;
-
--- $get_locker_reservations_of_location_without_key_brought_back
-select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
-     , u.augentid, u.role, u.penalty_points, u.barcode
-     , l.id, l.number, l.location_name
-     , lr.locker_id, lr.user_augentid, lr.key_pickup_date, lr.key_return_date
-from public.locker_reservations lr
-    join public.users u
-        on u.augentid = lr.user_augentid
-    join public.lockers l
-        on l.id = lr.locker_id
-where l.location_name = ? and lr.key_return_date is null
-order by case when lr.key_pickup_date <> '' then 0 else 1 end;
+-- $get_locker_reservations_where_<?>
+with recursive x as (
+    select 0 week, 1.0 perc
+        union all
+    select week + 1, - 0.2 * (week + 1) + 1
+    from x
+    where week + 1 <= 5
+), y as (
+	select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
+		, u.augentid, u.role, u.barcode
+		, l.location_name, l.number, l.id
+		, lr.locker_id, lr.user_augentid, lr.key_pickup_date, lr.key_return_date
+		, coalesce(floor(sum(
+        	case
+				/*
+					Blacklist event (16662) is permanent: no decrease in time.
+					A blacklist event should be removed manually
+				*/
+				when pb.event_code = 16662 then pb.received_points
+				else pb.received_points * x.perc
+			end)), 0) as "penalty_points"
+	from public.locker_reservations lr
+		join public.lockers l
+			on l.id = lr.locker_id
+		join public.users u
+			on u.augentid = lr.user_augentid
+		left join public.penalty_book pb
+			on pb.user_augentid = u.augentid
+		left join x
+			on floor(extract(days from (now() - to_timestamp(pb.timestamp, 'YYYY-MM-DD HH24\:MI\:SS'))) / 7) = x.week
+	where <?>
+	group by u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
+		, u.augentid, u.role, u.barcode
+		, l.location_name, l.number, l.id
+		, lr.locker_id, lr.user_augentid, lr.key_pickup_date, lr.key_return_date
+)
+select y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
+     , y.augentid, y.role, y.penalty_points, y.barcode
+     , y.id, y.number, y.location_name
+     , y.locker_id, y.user_augentid, y.key_pickup_date, y.key_return_date
+	 , l.name, l.number_of_seats, l.number_of_lockers, l.maps_frame, l.image_url, l.address
+     , l.start_period_lockers, l.end_period_lockers
+	 , ld.lang_enum, ld.description
+from y
+	join public.locations l
+		on l.name = y.location_name
+	join public.location_descriptions ld
+		on ld.location_name = l.name
+group by y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
+     , y.augentid, y.role, y.penalty_points, y.barcode
+     , y.id, y.number, y.location_name
+     , y.locker_id, y.user_augentid, y.key_pickup_date, y.key_return_date
+	 , l.name, l.number_of_seats, l.number_of_lockers, l.maps_frame, l.image_url, l.address
+     , l.start_period_lockers, l.end_period_lockers
+	 , ld.lang_enum, ld.description
+order by l.name;
 
 -- $count_lockers_in_use_of_location
 select count(1)
@@ -283,18 +311,6 @@ from public.locker_reservations r
     join public.lockers l
         on r.locker_id = l.id
 where l.location_name = ? and r.key_pickup_date <> '' and r.key_return_date = '';
-
--- $get_locker_reservation
-select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
-     , u.augentid, u.role, u.penalty_points, u.barcode
-     , l.id, l.number, l.location_name
-     , lr.locker_id, lr.user_augentid, lr.key_pickup_date, lr.key_return_date
-from public.locker_reservations lr
-    join public.users u
-        on u.augentid = lr.user_augentid
-    join public.lockers l
-        on l.id = lr.locker_id
-where lr.locker_id = ? and lr.user_augentid = ?;
 
 -- $delete_locker_reservation
 delete
@@ -320,30 +336,6 @@ update public.locker_reservations
 set key_pickup_date = ?, key_return_date = ?
 where locker_id = ? and user_augentid = ?;
 
--- $get_locker_reservation_of_soundex_user_by_complete_name
-select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
-     , u.augentid, u.role, u.penalty_points, u.barcode
-     , l.id, l.number, l.location_name
-     , lr.locker_id, lr.user_augentid, lr.key_pickup_date, lr.key_return_date
-from public.locker_reservations lr
-    join public.users u
-        on u.augentid = lr.user_augentid
-    join public.lockers l
-        on l.id = lr.locker_id
-where metaphone(CONCAT(augentpreferredgivenname, ' ', augentpreferredsn), 10) = metaphone(?, 10) or metaphone(CONCAT(augentpreferredgivenname, ' ', augentpreferredsn), 10) = metaphone(?, 10);
-
--- $get_locker_reservation_of_soundex_user_by_name
-select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
-     , u.augentid, u.role, u.penalty_points, u.barcode
-     , l.id, l.number, l.location_name
-     , lr.locker_id, lr.user_augentid, lr.key_pickup_date, lr.key_return_date
-from public.locker_reservations lr
-    join public.users u
-        on u.augentid = lr.user_augentid
-    join public.lockers l
-        on l.id = lr.locker_id
-where metaphone(augentpreferredgivenname, 10) = metaphone(? , 5) or metaphone(augentpreferredsn, 10) = metaphone(? , 5);
-
 -- $update_locker_reservations_of_user
 /*
   This might seem a strange query but is used
@@ -356,20 +348,18 @@ where user_augentid = ?;
 
 
 -- queries for table LOCKER
--- $get_locker
-select *
-from public.lockers
-where id = ?;
-
--- $get_lockers_of_location
-select *
-from public.lockers
-where location_name = ?;
-
--- $get_locker_ids_of_location
-select id
-from public.lockers
-where location_name = ?;
+-- $get_lockers_where_<?>
+select l.location_name, l.number, l.id
+	, s.name, s.number_of_seats, s.number_of_lockers, s.maps_frame, s.image_url
+	, s.address, s.start_period_lockers, s.end_period_lockers
+	, sd.lang_enum, sd.description
+from public.lockers l
+	join public.locations s
+		on s.name = l.location_name
+	join public.location_descriptions sd
+		on sd.location_name = s.name
+where <?>
+order by s.name;
 
 -- $delete_lockers_of_location
 delete

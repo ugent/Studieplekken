@@ -1,12 +1,11 @@
 package be.ugent.blok2.model.reservables;
 
-
 import java.util.Objects;
 
 public class Locker implements Cloneable {
     private int id;
     private int number; // identification number of locker
-    private String location;
+    private Location location;
 
     public Locker() {
 
@@ -27,7 +26,7 @@ public class Locker implements Cloneable {
         if (o == null || getClass() != o.getClass()) return false;
         Locker locker = (Locker) o;
         return number == locker.number &&
-                location.equalsIgnoreCase(locker.location) &&
+                Objects.equals(location, locker.getLocation()) &&
                 id == locker.id;
     }
 
@@ -59,11 +58,11 @@ public class Locker implements Cloneable {
         this.number = number;
     }
 
-    public String getLocation() {
+    public Location getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(Location location) {
         this.location = location;
     }
 

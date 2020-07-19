@@ -277,11 +277,6 @@ public class DBLocationDao extends ADB implements ILocationDao {
                 st.setString(1, name);
                 st.execute();
 
-                // Delete descriptions
-                st = conn.prepareStatement(databaseProperties.getString("delete_location_descriptions"));
-                st.setString(1, name);
-                st.execute();
-
                 // Delete location reservations for this location
                 st = conn.prepareStatement(databaseProperties.getString("delete_location_reservations_of_location"));
                 st.setString(1, name);
@@ -293,19 +288,26 @@ public class DBLocationDao extends ADB implements ILocationDao {
                 st.execute();
 
                 // Delete locker reservations of lockers of this location
-                List<Integer> locker_ids = new ArrayList<>();
-                st = conn.prepareStatement(databaseProperties.getString("get_locker_ids_of_location"));
+                List<Locker> locker_ids = new ArrayList<>();
+                String query = databaseProperties.getString("get_lockers_where_<?>");
+                query = query.replace("<?>", "l.location_name = ?");
+                st = conn.prepareStatement(query);
                 st.setString(1, name);
                 ResultSet rs = st.executeQuery();
                 while (rs.next()) {
-                    int id = rs.getInt(databaseProperties.getString("locker_id"));
-                    locker_ids.add(id);
+                    Locker locker = createLocker(rs);
+                    locker_ids.add(locker);
                 }
-                for (int id : locker_ids) {
+                for (Locker l : locker_ids) {
                     st = conn.prepareStatement(databaseProperties.getString("delete_locker_reservation_of_locker"));
-                    st.setInt(1, id);
+                    st.setInt(1, l.getId());
                     st.execute();
                 }
+
+                // Delete descriptions
+                st = conn.prepareStatement(databaseProperties.getString("delete_location_descriptions"));
+                st.setString(1, name);
+                st.execute();
 
                 // Delete lockers of location
                 st = conn.prepareStatement(databaseProperties.getString("delete_lockers_of_location"));
@@ -565,7 +567,9 @@ public class DBLocationDao extends ADB implements ILocationDao {
     // TODO: make public (instead of getLocation with calendar days and locations)
     private static Collection<Locker> getLockers(String locationName, Connection conn) throws SQLException {
         Collection<Locker> lockers = new ArrayList<>();
-        PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_lockers_of_location"));
+        String query = databaseProperties.getString("get_lockers_where_<?>");
+        query = query.replace("<?>", "l.location_name = ?");
+        PreparedStatement st = conn.prepareStatement(query);
         st.setString(1, locationName);
         ResultSet rs = st.executeQuery();
         while (rs.next()) {
@@ -575,7 +579,9 @@ public class DBLocationDao extends ADB implements ILocationDao {
             Locker locker = new Locker();
             locker.setId(lockerID);
             locker.setNumber(number);
-            locker.setLocation(locationName);
+
+            Location location = DBLocationDao.createLocation(rs);
+            locker.setLocation(location);
 
             lockers.add(locker);
         }
@@ -604,7 +610,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
 
         // iterator to make sure that only descriptions corresponding to one location
         // are put into the descriptions' Map
-        int i = 0;
+        int i = 1;
         while (i < Language.values().length && rs.next()) {
             lang = Language.valueOf(rs.getString(databaseProperties.getString("location_description_lang_enum")));
             desc = rs.getString(databaseProperties.getString("location_description_description"));
@@ -619,7 +625,8 @@ public class DBLocationDao extends ADB implements ILocationDao {
         Locker l = new Locker();
         l.setId(rs.getInt(databaseProperties.getString("locker_id")));
         l.setNumber(rs.getInt(databaseProperties.getString("locker_number")));
-        l.setLocation(rs.getString(databaseProperties.getString("locker_location")));
+        Location location = DBLocationDao.createLocation(rs);
+        l.setLocation(location);
         return l;
     }
 

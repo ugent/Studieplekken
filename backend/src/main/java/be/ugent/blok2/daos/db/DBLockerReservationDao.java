@@ -48,7 +48,9 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
                 throw new NoSuchUserException("No user with id = " + augentID);
             }
 
-            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_locker_reservations_of_user_by_id"));
+            String query = databaseProperties.getString("get_locker_reservations_where_<?>");
+            query = query.replace("<?>", "lr.user_augentid = ?");
+            PreparedStatement st = conn.prepareStatement(query);
             st.setString(1, augentID);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
@@ -66,7 +68,9 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
     public List<LockerReservation> getAllLockerReservationsOfUserByName(String name) {
         List<LockerReservation> res = new ArrayList<>();
         try(Connection conn = getConnection()){
-            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_locker_reservation_of_soundex_user_by_complete_name"));
+            String query = databaseProperties.getString("get_locker_reservations_where_<?>");
+            query = query.replace("<?>", "metaphone(CONCAT(augentpreferredgivenname, ' ', augentpreferredsn), 10) = metaphone(?, 10) or metaphone(CONCAT(augentpreferredgivenname, ' ', augentpreferredsn), 10) = metaphone(?, 10)");
+            PreparedStatement st = conn.prepareStatement(query);
             st.setString(1, name);
             st.setString(2, name);
             ResultSet rs = st.executeQuery();
@@ -85,7 +89,9 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
          */
         if(res.size()==0){
             try (Connection conn = getConnection()) {
-                PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_locker_reservation_of_soundex_user_by_name"));
+                String query = databaseProperties.getString("get_locker_reservations_where_<?>");
+                query = query.replace("<?>", "metaphone(augentpreferredgivenname, 10) = metaphone(? , 5) or metaphone(augentpreferredsn, 10) = metaphone(? , 5)");
+                PreparedStatement st = conn.prepareStatement(query);
                 st.setString(1, name);
                 st.setString(2, name);
                 ResultSet rs = st.executeQuery();
@@ -105,7 +111,9 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
     public List<LockerReservation> getAllLockerReservationsOfLocation(String name) {
         List<LockerReservation> reservations = new ArrayList<>();
         try (Connection conn = getConnection()) {
-            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_locker_reservations_of_location"));
+            String query = databaseProperties.getString("get_locker_reservations_where_<?>");
+            query = query.replace("<?>", "l.location_name = ?");
+            PreparedStatement st = conn.prepareStatement(query);
             st.setString(1, name);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
@@ -123,7 +131,9 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
     public List<LockerReservation> getAllLockerReservationsOfLocationWithoutKeyBroughtBack(String name) {
         List<LockerReservation> reservations = new ArrayList<>();
         try (Connection conn = getConnection()) {
-            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_locker_reservations_of_location_without_key_brought_back"));
+            String query = databaseProperties.getString("get_locker_reservations_where_<?>");
+            query = query.replace("<?>", "l.location_name = ? and lr.key_return_date = ''");
+            PreparedStatement st = conn.prepareStatement(query);
             st.setString(1, name);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
@@ -157,7 +167,9 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
     @Override
     public LockerReservation getLockerReservation(String augentID, int lockerID) {
         try (Connection conn = getConnection()) {
-            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_locker_reservation"));
+            String query = databaseProperties.getString("get_locker_reservations_where_<?>");
+            query = query.replace("<?>", "lr.locker_id = ? and lr.user_augentid = ?");
+            PreparedStatement st = conn.prepareStatement(query);
             st.setInt(1, lockerID);
             st.setString(2, augentID);
             ResultSet rs = st.executeQuery();
@@ -211,13 +223,14 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
 
     public static LockerReservation createLockerReservation(ResultSet rs) throws SQLException {
         LockerReservation lr = new LockerReservation();
+        lr.setKeyPickupDate(CustomDate.parseString(rs.getString(databaseProperties.getString("locker_reservation_key_pickup_date"))));
+        lr.setKeyReturnedDate(CustomDate.parseString(rs.getString(databaseProperties.getString("locker_reservation_key_return_date"))));
+
         User u = DBAccountDao.createUser(rs);
         Locker l = DBLocationDao.createLocker(rs);
 
         lr.setLocker(l);
         lr.setOwner(u);
-        lr.setKeyPickupDate(CustomDate.parseString(rs.getString(databaseProperties.getString("locker_reservation_key_pickup_date"))));
-        lr.setKeyReturnedDate(CustomDate.parseString(rs.getString(databaseProperties.getString("locker_reservation_key_return_date"))));
 
         return lr;
     }

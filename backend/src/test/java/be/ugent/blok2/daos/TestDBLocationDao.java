@@ -4,6 +4,7 @@ import be.ugent.blok2.TestSharedMethods;
 import be.ugent.blok2.helpers.date.Calendar;
 import be.ugent.blok2.helpers.date.Day;
 import be.ugent.blok2.model.reservables.Location;
+import be.ugent.blok2.model.reservables.Locker;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -126,5 +127,12 @@ public class TestDBLocationDao {
         locationDao.deleteCalendarDays(testLocation.getName(), "2020-01-01T00:00:00", "2020-01-05T00:00:00");
         retrievedCalendarDays = locationDao.getCalendarDays(testLocation.getName());
         Assert.assertArrayEquals("calendarDaysTest, deleted calendar days", new Day[]{}, retrievedCalendarDays.toArray());
+    }
+
+    @Test
+    public void lockersTest() {
+        Collection<Locker> lockers = locationDao.getLockers(testLocation.getName());
+        Assert.assertEquals("lockersTest, check size getLockers"
+                , testLocation.getNumberOfLockers(), lockers.size());
     }
 }
