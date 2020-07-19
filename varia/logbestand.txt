@@ -1,6 +1,0 @@
-02/06/2020	project gecloned naar nieuwe locatie
-			database wat bijgewerkt, nog niet in frontend- en backendcode aangepast
-			script in dsa/scripts/database om gemakkelijk sql queries in bepaald formaat om te vormen naar queries bruikbaar in application.properties
-			
-			TOSTART: frontend- en backendcode aanpassen (zie notes.txt voor aanpassingen, o.a. meervouden)
-			NEXTUP: pas database uml aan naar meervouden (zie ook notes.txt)
