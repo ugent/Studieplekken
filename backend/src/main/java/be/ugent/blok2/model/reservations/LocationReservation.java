@@ -12,7 +12,6 @@ public class LocationReservation {
     private Location location;
     private CustomDate date;
     private Boolean attended;
-
     public LocationReservation() {
         System.out.println("Creating LocationReservation");
     }
@@ -54,7 +53,7 @@ public class LocationReservation {
     }
 
     public void setAttended(Boolean attended) {
-        this.attended = attended;
+        this.attended=attended;
     }
 
     //</editor-fold>

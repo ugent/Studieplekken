@@ -30,7 +30,7 @@ public class User implements Cloneable, UserDetails {
         this.scannerLocations = new ArrayList<>();
     }
 
-    public User(String augentID) {
+    public User(String augentID){
 
         this.augentID = augentID;
         this.scannerLocations = new ArrayList<>();
@@ -47,8 +47,8 @@ public class User implements Cloneable, UserDetails {
         this.augentID = augentID;
         this.roles = roles;
         this.penaltyPoints = 0;
-        this.barcode = barcode;
-        scannerLocations = new ArrayList<>();
+        this.barcode=barcode;
+        scannerLocations= new ArrayList<>();
     }
 
 
@@ -63,7 +63,7 @@ public class User implements Cloneable, UserDetails {
         this.augentID = augentID;
         this.roles = roles;
         this.penaltyPoints = penaltyPoints;
-        this.barcode = barcode;
+        this.barcode=barcode;
         scannerLocations = new ArrayList<>();
     }
 
@@ -118,7 +118,7 @@ public class User implements Cloneable, UserDetails {
         }
     }
 
-    public void addScanLocation(String l) {
+    public void addScanLocation(String l){
         this.scannerLocations.add(l);
     }
 
@@ -201,7 +201,7 @@ public class User implements Cloneable, UserDetails {
         return password;
     }
 
-    public String getBarcode() {
+    public String getBarcode(){
         return barcode;
     }
 
@@ -237,8 +237,8 @@ public class User implements Cloneable, UserDetails {
         this.roles = roles;
     }
 
-    public void setBarcode(String barcode) {
-        this.barcode = barcode;
+    public void setBarcode(String barcode){
+        this.barcode=barcode;
     }
 
     public Collection<String> getScannerLocations() {
@@ -264,6 +264,6 @@ public class User implements Cloneable, UserDetails {
     }
 
     public String shortString() {
-        return this.getAugentID() + " " + this.getFirstName() + " " + this.getLastName();
+        return this.getAugentID()+" " + this.getFirstName()+ " " + this.getLastName();
     }
 }

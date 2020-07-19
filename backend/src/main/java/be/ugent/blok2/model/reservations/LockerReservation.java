@@ -22,7 +22,7 @@ public class LockerReservation {
         this.keyPickupDate = keyPickupDate;
         this.keyReturnedDate = keyReturnedDate;
     }
-
+    
     public LockerReservation(Locker locker, User owner) {
         this(locker, owner, null, null);
     }
@@ -57,7 +57,7 @@ public class LockerReservation {
     public Locker getLocker() {
         return locker;
     }
-
+    
     public User getOwner() {
         return owner;
     }

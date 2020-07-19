@@ -50,9 +50,9 @@ public class LockerReservationController extends AController {
         if (!isTesting() && u.getAuthorities().contains(new Authority(Role.STUDENT)) && u.getAuthorities().size() == 1 && !idString.equals(u.getAugentID())) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        try {
+        try{
             return new ResponseEntity<>(iLockerReservationDao.getAllLockerReservationsOfUser(idString), HttpStatus.OK);
-        } catch (NoSuchUserException ex) {
+        } catch (NoSuchUserException ex){
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
         }
 
@@ -85,7 +85,7 @@ public class LockerReservationController extends AController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'STUDENT', 'EMPLOYEE')")
     @ApiOperation(value = "Get the number of all ongoing lockerreservations of a location")
-    public int getNumberOfLockerReservationsWithoutKeyBroughtBack(@PathVariable("name") String locationName) {
+    public int getNumberOfLockerReservationsWithoutKeyBroughtBack(@PathVariable("name") String locationName){
         return iLockerReservationDao.getNumberOfLockersInUseOfLocation(locationName);
     }
 
@@ -123,7 +123,7 @@ public class LockerReservationController extends AController {
             LockerReservation reservation = iLockerReservationDao.getLockerReservation(idString, lockerId);
 
             //check if reservation exists
-            if (reservation == null) {
+            if(reservation == null){
                 return new ResponseEntity<>(mapper.writeValueAsString("Locker reservation does not exist"), HttpStatus.BAD_REQUEST);
             }
 
@@ -132,7 +132,8 @@ public class LockerReservationController extends AController {
                 return new ResponseEntity<>(mapper.writeValueAsString("You can't delete a locker reservation if the student still has the key of the locker"), HttpStatus.BAD_REQUEST);
             }
             iLockerReservationDao.deleteLockerReservation(idString, lockerId);
-        } catch (IllegalArgumentException | JsonProcessingException e) {
+        }
+        catch (IllegalArgumentException | JsonProcessingException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -142,7 +143,7 @@ public class LockerReservationController extends AController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'STUDENT', 'EMPLOYEE')")
     @ApiOperation(value = "Update the given lockerreservation")
-    public void changeLockerReservation(@RequestBody LockerReservation lockerReservation) {
+    public void changeLockerReservation(@RequestBody LockerReservation lockerReservation){
         this.iLockerReservationDao.changeLockerReservation(lockerReservation);
     }
 
@@ -150,25 +151,25 @@ public class LockerReservationController extends AController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('ADMIN','STUDENT','EMPLOYEE')")
     @ApiOperation(value = "Reserve a locker")
-    public ResponseEntity<String> addLockerReservation(@PathVariable("location") String locationName, @PathVariable("id") String augentID) {
+    public ResponseEntity<String> addLockerReservation(@PathVariable("location") String locationName, @PathVariable("id") String augentID){
 
         ObjectMapper mapper = new ObjectMapper();
         //get lockers of location
         try {
             Location location = iLocationDao.getLocation(locationName);
-            if (location == null) {
+            if(location == null){
                 return new ResponseEntity<>(mapper.writeValueAsString("Location does not exist"), HttpStatus.BAD_REQUEST);
             }
             Collection<Locker> lockers = iLocationDao.getLockers(locationName);
             if (lockers != null) {
 
                 //get ongoing reservations;
-                Collection<LockerReservation> ongoingLockerReservations = iLockerReservationDao.getAllLockerReservationsOfLocationWithoutKeyBroughtBack(locationName);
+                Collection<LockerReservation>  ongoingLockerReservations = iLockerReservationDao.getAllLockerReservationsOfLocationWithoutKeyBroughtBack(locationName);
 
                 Collection<Locker> inUseLockers = new ArrayList<>();
 
-                if (ongoingLockerReservations != null) {
-                    for (LockerReservation res : ongoingLockerReservations) {
+                if(ongoingLockerReservations != null){
+                    for(LockerReservation res : ongoingLockerReservations){
                         inUseLockers.add(res.getLocker());
                     }
                 }
@@ -195,7 +196,7 @@ public class LockerReservationController extends AController {
                         }
 
                         Calendar tdy = Calendar.getInstance();
-                        CustomDate today = new CustomDate(tdy.get(Calendar.YEAR), tdy.get(Calendar.MONTH) + 1, tdy.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
+                        CustomDate today = new CustomDate(tdy.get(Calendar.YEAR), tdy.get(Calendar.MONTH)+1, tdy.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
                         LockerReservation lockerReservation = new LockerReservation(locker, user, today, location.getEndPeriodLockers());
                         iLockerReservationDao.addLockerReservation(lockerReservation);
                         return new ResponseEntity<>(mapper.writeValueAsString("Successfully reserved locker"), HttpStatus.CREATED);
@@ -204,7 +205,8 @@ public class LockerReservationController extends AController {
                 return new ResponseEntity<>(mapper.writeValueAsString("There are no lockers available right now"), HttpStatus.CONFLICT);
             }
             return new ResponseEntity<>(mapper.writeValueAsString("This location has no lockers"), HttpStatus.BAD_REQUEST);
-        } catch (JsonProcessingException e) {
+        }
+        catch(JsonProcessingException e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

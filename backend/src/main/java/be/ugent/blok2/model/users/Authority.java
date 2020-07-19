@@ -12,8 +12,8 @@ public class Authority implements GrantedAuthority {
 
     private final Role role;
 
-    public Authority(Role role) {
-        this.role = role;
+    public Authority(Role role){
+        this.role=role;
     }
 
     @Override

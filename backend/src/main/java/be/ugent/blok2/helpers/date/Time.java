@@ -7,10 +7,9 @@ public class Time implements Cloneable {
     private int hours;
     private int minutes;
     private int seconds;
-
-    public Time() {
-    }
-
+    
+    public Time() { }
+    
     public Time(int hh, int mm, int ss) {
         hours = hh;
         minutes = mm;
@@ -45,10 +44,10 @@ public class Time implements Cloneable {
     public boolean equals(Object o) {
         if (o == null || !(o instanceof Time))
             return false;
-
+        
         if (this == o)
             return true;
-
+        
         Time t = (Time) o;
         return t.hours == hours
                 && t.minutes == minutes

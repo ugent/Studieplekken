@@ -35,9 +35,9 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
     }*/
 
     @Override
-    public List<LockerReservation> getAllLockerReservationsOfUser(String augentID) throws NoSuchUserException {
+    public List<LockerReservation> getAllLockerReservationsOfUser(String augentID) throws NoSuchUserException{
         List<LockerReservation> reservations = new ArrayList<>();
-        try (Connection conn = getConnection()) {
+        try(Connection conn = getConnection()){
 
             String queryUser = databaseProperties.getString("get_user_by_<?>").replace("<?>", "u.augentID = ?");
             PreparedStatement statementUser = conn.prepareStatement(queryUser);
@@ -55,7 +55,8 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
                 LockerReservation lockerReservation = createLockerReservation(rs);
                 reservations.add(lockerReservation);
             }
-        } catch (SQLException e) {
+        }
+        catch(SQLException e){
             System.out.println(e.getMessage());
         }
         return reservations;
@@ -64,7 +65,7 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
     @Override
     public List<LockerReservation> getAllLockerReservationsOfUserByName(String name) {
         List<LockerReservation> res = new ArrayList<>();
-        try (Connection conn = getConnection()) {
+        try(Connection conn = getConnection()){
             PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_locker_reservation_of_soundex_user_by_complete_name"));
             st.setString(1, name);
             st.setString(2, name);
@@ -73,7 +74,8 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
                 LockerReservation lockerReservation = createLockerReservation(rs);
                 res.add(lockerReservation);
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e){
             System.out.println(e.getMessage());
         }
 
@@ -81,7 +83,7 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
             If there have not been found lockerreservations with owners that have a similar complete name (first + last name). Then
             there will be checked if there are lockerreservations with a owner that have a similar first of last name.
          */
-        if (res.size() == 0) {
+        if(res.size()==0){
             try (Connection conn = getConnection()) {
                 PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_locker_reservation_of_soundex_user_by_name"));
                 st.setString(1, name);
@@ -91,7 +93,8 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
                     LockerReservation lockerReservation = createLockerReservation(rs);
                     res.add(lockerReservation);
                 }
-            } catch (SQLException e) {
+            }
+            catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
         }
@@ -109,7 +112,8 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
                 LockerReservation lockerReservation = createLockerReservation(rs);
                 reservations.add(lockerReservation);
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return reservations;
@@ -126,7 +130,8 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
                 LockerReservation lockerReservation = createLockerReservation(rs);
                 reservations.add(lockerReservation);
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return reservations;
@@ -142,7 +147,8 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
             while (rs.next()) {
                 count = rs.getInt(1);
             }
-        } catch (SQLException e) {
+        }
+        catch(SQLException e){
             System.out.println(e.getMessage());
         }
         return count;
@@ -158,7 +164,8 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
             if (rs.next())
                 return createLockerReservation(rs);
             return null;
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             System.out.println(e.getMessage());
             return null;
         }
@@ -171,7 +178,8 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
             st.setString(1, augentID);
             st.setInt(2, lockerID);
             st.execute();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -182,7 +190,8 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
             PreparedStatement st = conn.prepareStatement(databaseProperties.getString("insert_locker_reservation"));
             setupInsertLockerReservationPstmt(lockerReservation, st);
             st.execute();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -194,7 +203,8 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
             setupUpdateLockerReservationPstmt(lockerReservation, lockerReservation.getLocker().getId(),
                     lockerReservation.getOwner().getAugentID(), st);
             st.execute();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }

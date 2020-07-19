@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -51,7 +50,7 @@ public class LdapService {
         } catch (Exception e) {
             System.out.println();
             throw new LdapException("ERROR: retrieving user from LDAP with mail "
-                    + mail + "\n" + Arrays.toString(e.getStackTrace()));
+                    + mail +  "\n" + Arrays.toString(e.getStackTrace()));
         }
     }
 }

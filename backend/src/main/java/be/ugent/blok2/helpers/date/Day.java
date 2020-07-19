@@ -8,45 +8,44 @@ public class Day implements Cloneable {
     private Time closingHour;
     private CustomDate openForReservationDate;
 
-    public Day() {
-    }
+    public Day(){}
 
-    public Day(CustomDate date, Time openingHour, Time closingHour, CustomDate openForReservationDate) {
+    public Day(CustomDate date, Time openingHour, Time closingHour, CustomDate openForReservationDate){
         this.date = date;
         this.openingHour = openingHour;
         this.closingHour = closingHour;
         this.openForReservationDate = openForReservationDate;
     }
 
-    public CustomDate getDate() {
+    public CustomDate getDate(){
         return date;
     }
 
-    public Time getOpeningHour() {
+    public Time getOpeningHour(){
         return openingHour;
     }
 
-    public Time getClosingHour() {
+    public Time getClosingHour(){
         return closingHour;
     }
 
-    public CustomDate getOpenForReservationDate() {
+    public CustomDate getOpenForReservationDate(){
         return openForReservationDate;
     }
 
-    public void setDate(CustomDate date) {
+    public void setDate(CustomDate date){
         this.date = date;
     }
 
-    public void setOpeningHour(Time openingHour) {
+    public void setOpeningHour(Time openingHour){
         this.openingHour = openingHour;
     }
 
-    public void setClosingHour(Time closingHour) {
+    public void setClosingHour(Time closingHour){
         this.closingHour = closingHour;
     }
 
-    public void setOpenForReservationDate(CustomDate openForReservationDate) {
+    public void setOpenForReservationDate(CustomDate openForReservationDate){
         this.openForReservationDate = openForReservationDate;
     }
 

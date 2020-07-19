@@ -227,7 +227,7 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
              */
             pstmt = conn.prepareStatement(databaseProperties.getString("insert_penalty"));
             for (Penalty p : add) {
-                if (p.getReceivedPoints() < 0) {
+                if(p.getReceivedPoints() < 0){
                     PenaltyEvent e = getPenaltyEvent(p.getEventCode());
                     p.setReceivedPoints(e.getPoints());
                 }

@@ -58,7 +58,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
                 st.executeUpdate();
 
                 // insert descriptions corresponding to the location into the database
-                for (Language lang : location.getDescriptions().keySet()) {
+                for (Language lang: location.getDescriptions().keySet()) {
                     st = conn.prepareStatement(databaseProperties.getString("insert_location_descriptions"));
                     prepareUpdateOrInsertLocationDescriptionStatement(
                             location.getName(),
@@ -145,7 +145,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
 
                 // oude locatie verwijderen
                 st = conn.prepareStatement(databaseProperties.getString("delete_location"));
-                st.setString(1, name);
+                st.setString(1,name);
             } else {
                 st = conn.prepareStatement(databaseProperties.getString("update_location"));
                 prepareUpdateOrInsertLocationStatement(location, st);
@@ -164,10 +164,10 @@ public class DBLocationDao extends ADB implements ILocationDao {
             }
 
             // Add location descriptions
-            for (Language lang : location.getDescriptions().keySet()) {
+            for (Language lang: location.getDescriptions().keySet()) {
                 st = conn.prepareStatement(databaseProperties.getString("insert_location_descriptions"));
-                st.setString(1, location.getName());
-                st.setString(2, lang.toString());
+                st.setString(1,location.getName());
+                st.setString(2,lang.toString());
                 st.setString(3, location.getDescriptions().get(lang));
                 st.executeUpdate();
             }
@@ -436,18 +436,19 @@ public class DBLocationDao extends ADB implements ILocationDao {
     }
 
     @Override
-    public Map<String, Integer> getCountOfReservations(CustomDate date) {
+    public Map<String, Integer> getCountOfReservations(CustomDate date){
         HashMap<String, Integer> count = new HashMap<>();
-        try (Connection conn = getConnection()) {
+        try (Connection conn = getConnection()){
             PreparedStatement st = conn.prepareStatement(databaseProperties.getString("count_location_reservations_on_date"));
             st.setString(1, date.toString());
             ResultSet rs = st.executeQuery();
-            while (rs.next()) {
-                String name = rs.getString(1);
+            while (rs.next()){
+                String name =rs.getString(1);
                 int c = rs.getInt(2);
-                count.put(name, c);
+                count.put(name,c);
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e){
             System.out.println(e.getMessage());
         }
         return count;
@@ -459,7 +460,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
         //check if there is already a row in the database for this location and date
         PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_calendar_day_count"));
         st.setString(1, day.getDate().toString());
-        st.setString(2, locationName);
+        st.setString(2,locationName);
         ResultSet rs = st.executeQuery();
         if (rs.next()) {
             int count = rs.getInt(1);
@@ -653,8 +654,8 @@ public class DBLocationDao extends ADB implements ILocationDao {
 
     private void prepareUpdateOrInsertLocationDescriptionStatement(String locationName, Language lang
             , String description, PreparedStatement pstmt) throws SQLException {
-        pstmt.setString(1, locationName);
-        pstmt.setString(2, lang.toString());
+        pstmt.setString(1,locationName);
+        pstmt.setString(2,lang.toString());
         pstmt.setString(3, description);
     }
 }

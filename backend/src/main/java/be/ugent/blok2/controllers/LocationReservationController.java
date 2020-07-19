@@ -75,10 +75,10 @@ public class LocationReservationController extends AController {
         if (!isTesting() && u.getAuthorities().contains(new Authority(Role.STUDENT)) && u.getAuthorities().size() == 1 && !idString.equals(u.getAugentID())) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        try {
+        try{
             List<LocationReservation> reservations = iLocationReservationDao.getAllLocationReservationsOfUser(idString);
             return new ResponseEntity<>(reservations, HttpStatus.OK);
-        } catch (NoSuchUserException e) {
+        } catch (NoSuchUserException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
 
@@ -102,10 +102,10 @@ public class LocationReservationController extends AController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         CustomDate date = CustomDate.parseString(dateString);
-        try {
+        try{
             LocationReservation locationReservation = iLocationReservationDao.getLocationReservation(idString, date);
             return new ResponseEntity<>(locationReservation, HttpStatus.OK);
-        } catch (NoSuchReservationException ex) {
+        } catch (NoSuchReservationException ex){
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
         }
 
@@ -129,17 +129,17 @@ public class LocationReservationController extends AController {
         int points = Penalty.calculateLateCancelPoints(CustomDate.parseString(dateString), maxPoints);
 
         //add penalty points if those are needed
-        if (points > 0) {
+        if(points > 0){
             Penalty p = new Penalty(idString, PenaltyEvent.CODE_LATE_CANCEL, timestamp, CustomDate.parseString(dateString), "", points);
             penaltyEventsDao.addPenalty(p);
         }
         CustomDate date = CustomDate.parseString(dateString);
         date.setHrs(0);
         date.setMin(0);
-        try {
+        try{
             iLocationReservationDao.deleteLocationReservation(idString, date);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (NoSuchReservationException ex) {
+        } catch (NoSuchReservationException ex){
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
         }
 
@@ -149,7 +149,7 @@ public class LocationReservationController extends AController {
     @PreAuthorize("hasAnyAuthority('STUDENT','EMPLOYEE')")
     @ApiOperation(value = "Reserve a location for the given user on the multiple given dates")
     public ResponseEntity<LocationReservationResponse> addLocationReservations(@RequestBody List<LocationReservation> locationReservations) {
-        System.out.println("Hier kom ik met lijst l.size() = " + locationReservations.size() + " en l.getUser() = " + locationReservations.get(0).getUser());
+	System.out.println("Hier kom ik met lijst l.size() = " + locationReservations.size() + " en l.getUser() = " + locationReservations.get(0).getUser());
         List<CustomDate> valid = new ArrayList<>();
         List<CustomDate> full = new ArrayList<>();
 
@@ -163,7 +163,7 @@ public class LocationReservationController extends AController {
 
                 //Check if the location is open for this date
                 Day day = null;
-                if (calendar != null) {
+                if(calendar != null){
                     for (Day d : calendar) {
                         if (d.getDate().toString().equals(date.toString())) {
                             day = d;
@@ -199,11 +199,13 @@ public class LocationReservationController extends AController {
                         //If you reach a certain amount of penalty points, you are not allowed to make a reservation.
                         else if (locationReservation.getUser().getPenaltyPoints() >= getMaxPenaltyPoints()) {
                             return new ResponseEntity<>(HttpStatus.CONFLICT);
-                        } else {
-                            try {
+                        }
+
+                        else {
+                            try{
                                 iLocationReservationDao.addLocationReservation(locationReservation);
                                 valid.add(locationReservation.getDate());
-                            } catch (AlreadyExistsException ex) {
+                            } catch (AlreadyExistsException ex){
                                 //user has other reservations for this date, the user is only allowed to reserve for 1 location per day
                                 return new ResponseEntity<>(HttpStatus.CONFLICT);
                             }
@@ -306,7 +308,7 @@ public class LocationReservationController extends AController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN','STUDENT','EMPLOYEE')")
     @ApiOperation(value = "Gives the number of reservations of all locations on a given date")
-    public Map<String, Integer> countReservedSeatsOfLocation(@PathVariable("date") String date) {
+    public Map<String, Integer> countReservedSeatsOfLocation(@PathVariable("date") String date){
         return iLocationDao.getCountOfReservations(CustomDate.parseString(date));
     }
 

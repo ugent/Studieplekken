@@ -18,22 +18,22 @@ public abstract class AController {
     @Autowired
     Environment env;
 
-    public boolean isProfileActive(String profile) {
+    public boolean isProfileActive(String profile){
         return Arrays.asList(env.getActiveProfiles()).contains(profile);
     }
 
-    public boolean isTesting() {
+    public boolean isTesting(){
         return isProfileActive("test");
     }
 
     public User getCurrentUser(HttpServletRequest request) throws NoUserLoggedInWithGivenSessionIdMappingException {
-        if (!isTesting()) {
-            User u = null;
+        if(!isTesting()){
+            User u=null;
             // get user from request with its cookie
             Cookie[] cookies = request.getCookies();
-            for (int i = 0; i < cookies.length; i++) {
-                if (cookies[i].getName().equals("mapping")) {
-                    u = UsersCache.getInstance().getBySessionIdMapping(cookies[i].getValue());
+            for (int i = 0; i <cookies.length ; i++) {
+                if(cookies[i].getName().equals("mapping")){
+                    u= UsersCache.getInstance().getBySessionIdMapping(cookies[i].getValue());
                 }
             }
             return u;

@@ -30,7 +30,9 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
             }
 
             List<LocationReservation> reservations = new ArrayList<>();
-            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_location_reservations_of_user_by_id"));
+            String query = databaseProperties.getString("get_location_reservations_where_<?>");
+            query = query.replace("<?>", "u.augentid = ?");
+            PreparedStatement st = conn.prepareStatement(query);
             st.setString(1, augentID);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
@@ -52,14 +54,17 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
     public List<LocationReservation> getAllLocationReservationsOfLocation(String name) {
         try (Connection conn = getConnection()) {
             List<LocationReservation> reservations = new ArrayList<>();
-            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_location_reservations_of_location"));
+            String query = databaseProperties.getString("get_location_reservations_where_<?>");
+            query = query.replace("<?>", "lr.location_name = ?");
+            PreparedStatement st = conn.prepareStatement(query);
             st.setString(1, name);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
                 try {
                     LocationReservation locationReservation = createLocationReservation(rs);
                     reservations.add(locationReservation);
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
             }
@@ -73,14 +78,17 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
     @Override
     public LocationReservation getLocationReservation(String augentID, CustomDate date) {
         try (Connection conn = getConnection()) {
-            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("get_location_reservation"));
+            String query = databaseProperties.getString("get_location_reservations_where_<?>");
+            query = query.replace("<?>", "lr.user_augentid = ? and lr.date = ?");
+            PreparedStatement st = conn.prepareStatement(query);
             st.setString(1, augentID);
             st.setString(2, date.toString());
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
                 try {
                     return createLocationReservation(rs);
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
             } else {
@@ -112,7 +120,7 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
             st.setString(2, locationReservation.getLocation().getName());
             st.setString(3, locationReservation.getUser().getAugentID());
             st.execute();
-        } catch (SQLException e) {
+        } catch(SQLException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -124,7 +132,7 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
             // find out the CustomDate of today (note: Calendar here is java.util.Calendar,
             // not be.ugent.blok2.helpers.Calendar
             Calendar c = Calendar.getInstance();
-            CustomDate today = new CustomDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DATE));
+            CustomDate today = new CustomDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH)+1, c.get(Calendar.DATE));
 
             // set user attended on location reservation
             PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("set_location_reservation_attended"));
@@ -136,7 +144,9 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
             if (n != 1)
                 return null;
 
-            pstmt = conn.prepareStatement(databaseProperties.getString("get_location_reservation"));
+            String query = databaseProperties.getString("get_location_reservations_where_<?>");
+            query = query.replace("<?>", "lr.user_augentid = ? and lr.date = ?");
+            pstmt = conn.prepareStatement(query);
             pstmt.setString(1, augentId);
             pstmt.setString(2, today.toString());
             ResultSet rs = pstmt.executeQuery();
@@ -157,7 +167,8 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
             st.setString(1, location);
             st.setString(2, date.toString());
             st.execute();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -173,7 +184,8 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
                 return rs.getInt(1);
             }
             return 0;
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             System.out.println(e.getMessage());
             return 0;
         }
@@ -182,7 +194,9 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
     @Override
     public List<LocationReservation> getAbsentStudents(String locationName, CustomDate date) {
         try (Connection conn = getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("get_absent_students"));
+            String query = databaseProperties.getString("get_location_reservations_where_<?>");
+            query = query.replace("<?>", "lr.location_name = ? and lr.date = ? and (lr.attended = false or lr.attended is null)");
+            PreparedStatement pstmt = conn.prepareStatement(query);
             return getAbsentOrPresentStudents(locationName, date, pstmt);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -193,16 +207,19 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
     @Override
     public List<LocationReservation> getPresentStudents(String locationName, CustomDate date) {
         try (Connection conn = getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("get_present_students"));
+            String query = databaseProperties.getString("get_location_reservations_where_<?>");
+            query = query.replace("<?>", "lr.location_name = ? and lr.date = ? and lr.attended = true");
+            PreparedStatement pstmt = conn.prepareStatement(query);
             return getAbsentOrPresentStudents(locationName, date, pstmt);
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return null;
     }
 
     private List<LocationReservation> getAbsentOrPresentStudents(String locationName, CustomDate date
-            , PreparedStatement pstmt) throws SQLException {
+            , PreparedStatement pstmt) throws  SQLException {
         List<LocationReservation> reservations = new ArrayList<>();
 
         pstmt.setString(1, locationName);
@@ -220,10 +237,10 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
     @Override
     public void setReservationToUnAttended(String augentId, CustomDate date) {
         try (Connection conn = getConnection()) {
-            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("set_location_reservation_unattended"));
-            st.setString(1, date.toString());
-            st.setString(2, augentId);
-            st.execute();
+                PreparedStatement st = conn.prepareStatement(databaseProperties.getString("set_location_reservation_unattended"));
+                st.setString(1, date.toString());
+                st.setString(2, augentId);
+                st.execute();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
