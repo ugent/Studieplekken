@@ -387,6 +387,43 @@ public class DBAccountDao extends ADB implements IAccountDao {
     }
 
     @Override
+    public User getUserFromBarcode(String barcode) {
+        try (Connection conn = getConnection()) {
+            // The student number and barcode match exactly.
+            // For example, when scanning the barcode page, the student number is encoded as Code 128.
+            User u = getUserById(barcode, conn);
+            if (u != null)
+                return u;
+
+            // The barcode is a UPC-A encoded student number.
+            // Example student number: 000140462060
+            // Example barcode:        001404620603
+            String augentid = "0" + barcode.substring(0, barcode.length() - 1);
+            u = getUserById(augentid);
+            if (u != null)
+                return u;
+
+            // The barcode is EAN13.
+            // Example student number: 114637753611
+            // Example barcode:        1146377536113
+            augentid = barcode.substring(0, barcode.length() - 1);
+            u = getUserById(augentid);
+            if (u != null)
+                return u;
+
+            // Other?
+            if (barcode.charAt(0) == '0') {
+                u = getUserById(barcode.substring(1));
+                if (u != null)
+                    return u;
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
     public User directlyAddUser(User u) {
         try (Connection conn = getConnection()) {
             /*

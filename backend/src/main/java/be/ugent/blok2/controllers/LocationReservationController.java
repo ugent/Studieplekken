@@ -1,5 +1,6 @@
 package be.ugent.blok2.controllers;
 
+import be.ugent.blok2.daos.IAccountDao;
 import be.ugent.blok2.daos.ILocationDao;
 import be.ugent.blok2.daos.ILocationReservationDao;
 import be.ugent.blok2.helpers.LocationReservationResponse;
@@ -48,18 +49,21 @@ public class LocationReservationController extends AController {
     private ResourceBundle applicationBundle;
     private IPenaltyEventsDao penaltyEventsDao;
     private ILocationDao iLocationDao;
+    private IAccountDao accountDao;
 
     // used for broadcasting scanned locationReservations
     @Autowired
     private SimpMessagingTemplate template;
 
     public LocationReservationController(ILocationReservationDao iLocationReservationDao, EmailService emailService,
-                                         IPenaltyEventsDao penaltyEventsDao, ILocationDao iLocationDao) {
+                                         IPenaltyEventsDao penaltyEventsDao, ILocationDao iLocationDao,
+                                         IAccountDao accountDao) {
         this.iLocationReservationDao = iLocationReservationDao;
         this.emailService = emailService;
         this.applicationBundle = Resources.applicationProperties;
         this.penaltyEventsDao = penaltyEventsDao;
         this.iLocationDao = iLocationDao;
+        this.accountDao = accountDao;
     }
 
     @GetMapping("/user/{id}")
@@ -238,7 +242,8 @@ public class LocationReservationController extends AController {
         try {
             ObjectMapper mapper = new ObjectMapper();
             // scanStudent checks if the student has a reservation for the current day of this location and returns that reservation if so
-            LocationReservation locationReservation = iLocationReservationDao.scanStudent(location, barcode);
+            User u = accountDao.getUserFromBarcode(barcode);
+            LocationReservation locationReservation = iLocationReservationDao.scanStudent(location, u.getAugentID());
             if (locationReservation != null && locationReservation.getLocation().getName().toLowerCase().equals(location.toLowerCase())) {
 
                 // this will send a message to a messagebroker where it will be broadcast to all subscribed clients (the scan employees)

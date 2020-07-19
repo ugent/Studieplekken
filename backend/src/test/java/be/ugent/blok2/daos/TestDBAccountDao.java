@@ -123,4 +123,45 @@ public class TestDBAccountDao {
         List<String> names = accountDao.getUserNamesByRole(Role.STUDENT.name());
         Assert.assertEquals("getUserNamesByRole", 2, names.size());
     }
+
+    @Test
+    public void getUserFromBarcodeTest() {
+        // Code 128
+        String barcode = testUser1.getAugentID();
+        User u = accountDao.getUserFromBarcode(barcode);
+        Assert.assertEquals("getUserFromBarcodeTest, code 128", testUser1, u);
+
+        // For the other codes, add another user
+        User user = testUser1.clone();
+
+        String user_student_number = "000140462060";
+        String user_upca_barcode = "001404620603";
+        String user_ean13_barcode = "0001404620603";
+        String user_other_barcode = "0000140462060";
+
+        user.setAugentID(user_student_number);
+        user.setMail("other_mail_due_to_unique_constraint@ugent.be");
+
+        // Before every following assertion, the user is added, queried with the corresponding
+        // encoded student number, and removed. The enclosing additions and removals are
+        // included because if assertion fails, the state of the test database wouldn't be reset
+
+        // UPC-A
+        accountDao.directlyAddUser(user);
+        u = accountDao.getUserFromBarcode(user_upca_barcode);
+        accountDao.removeUserById(user.getAugentID());
+        Assert.assertEquals("getUserFromBarcodeTest, UPC-A", user, u);
+
+        // EAN13
+        accountDao.directlyAddUser(user);
+        u = accountDao.getUserFromBarcode(user_ean13_barcode);
+        accountDao.removeUserById(user.getAugentID());
+        Assert.assertEquals("getUserFromBarcodeTest, EAN13", user, u);
+
+        // Other?
+        accountDao.directlyAddUser(user);
+        u = accountDao.getUserFromBarcode(user_other_barcode);
+        accountDao.removeUserById(user.getAugentID());
+        Assert.assertEquals("getUserFromBarcodeTest, Other?", user, u);
+    }
 }

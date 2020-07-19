@@ -54,6 +54,11 @@ public interface IAccountDao extends IDao {
     List<String> getScannerLocations(String email);
 
     /**
+     * Try to resolve user from barcode
+     */
+    User getUserFromBarcode(String barcode);
+
+    /**
      * Creates a new user that does not need to be verified.
      */
     User directlyAddUser(User u);
