@@ -11,12 +11,12 @@ import javax.servlet.http.HttpSessionListener;
 @WebListener
 public class SessionListener implements HttpSessionListener {
 
-    private static UsersCache usersCache = UsersCache.getInstance();
+    private static final UsersCache usersCache = UsersCache.getInstance();
 
     @Override
     public void sessionCreated(HttpSessionEvent se) {
         // set how long a session can exist when the user is not active
-        se.getSession().setMaxInactiveInterval(2*60*60);
+        se.getSession().setMaxInactiveInterval(2 * 60 * 60);
     }
 
     @Override

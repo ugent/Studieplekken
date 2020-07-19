@@ -231,29 +231,10 @@ from public.users u
 where <?>
 group by u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.mail, u.password, u.institution, u.barcode;
 
--- $get_user_by_mail
-select *
-from public.users
-where mail = ?;
-
--- $get_all_users
-select *
-from public.users;
-
 -- $update_user
 update public.users
 set mail = ?, augentpreferredsn = ?, augentpreferredgivenname = ?, password = ?, institution = ?, augentid = ?, role = ?, penalty_points = ?, barcode = ?
 where augentid = ?;
-
--- $update_user_with_password
-update public.users
-set mail = ?, augentpreferredsn = ?, augentpreferredgivenname = ?, password = ?, institution = ?, augentid = ?, role = ?, penalty_points = ?, barcode = ?
-where mail = ?;
-
--- $update_user_without_password
-update public.users
-set mail = ?, augentpreferredsn = ?, augentpreferredgivenname = ?, institution = ?, augentid = ?, role = ?, penalty_points = ?, barcode = ?
-where mail = ?;
 
 -- $count_accounts_with_email
 select count(1)

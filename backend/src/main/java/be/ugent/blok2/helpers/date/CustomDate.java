@@ -46,7 +46,7 @@ public class CustomDate implements Cloneable {
         String[] dateParts = strings[0].split("-");
         String[] timeParts = strings[1].split(":");
 
-        if(dateParts.length != 3){
+        if (dateParts.length != 3) {
             throw new DateFormatException("Date should have a day, a month and a year.");
         }
 
@@ -56,12 +56,12 @@ public class CustomDate implements Cloneable {
     public static CustomDate today() {
         java.util.Calendar juc = java.util.Calendar.getInstance();
         return new CustomDate(juc.get(Calendar.YEAR),
-                juc.get(Calendar.MONTH)+1, juc.get(Calendar.DATE));
+                juc.get(Calendar.MONTH) + 1, juc.get(Calendar.DATE));
     }
 
     public static CustomDate now() {
         java.util.Calendar juc = java.util.Calendar.getInstance();
-        return new CustomDate(juc.get(Calendar.YEAR),juc.get(Calendar.MONTH)+1, juc.get(Calendar.DATE)
+        return new CustomDate(juc.get(Calendar.YEAR), juc.get(Calendar.MONTH) + 1, juc.get(Calendar.DATE)
                 , juc.get(Calendar.HOUR_OF_DAY), juc.get(Calendar.MINUTE), juc.get(Calendar.SECOND));
     }
 
@@ -72,8 +72,8 @@ public class CustomDate implements Cloneable {
     }
 
     @JsonIgnore
-    public boolean isSameDay(CustomDate day){
-        return  day.year == this.year && day.month == this.month && day.day == this.day;
+    public boolean isSameDay(CustomDate day) {
+        return day.year == this.year && day.month == this.month && day.day == this.day;
     }
 
     @Override
@@ -98,11 +98,8 @@ public class CustomDate implements Cloneable {
         CustomDate date = (CustomDate) obj;
 
         // Compare the data members and return accordingly
-        if (date.year != this.year || date.month != this.month || date.day != this.day || date.hrs != this.hrs ||
-                date.min != this.min || date.sec != this.sec) {
-            return false;
-        }
-        return true;
+        return date.year == this.year && date.month == this.month && date.day == this.day && date.hrs == this.hrs &&
+                date.min == this.min && date.sec == this.sec;
     }
 
     public CustomDate clone() {

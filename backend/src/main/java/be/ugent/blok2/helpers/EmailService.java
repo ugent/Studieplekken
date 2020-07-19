@@ -26,9 +26,9 @@ public class EmailService {
         mailSender.send(msg);
     }
 
-    public void sendMessages(String subject, String text, String... to){
+    public void sendMessages(String subject, String text, String... to) {
         SimpleMailMessage[] messages = new SimpleMailMessage[to.length];
-        for(int i=0; i< to.length; i++){
+        for (int i = 0; i < to.length; i++) {
             SimpleMailMessage msg = new SimpleMailMessage();
             msg.setTo(to[i]);
             msg.setText(text);
@@ -39,7 +39,7 @@ public class EmailService {
     }
 
     // for testing purposes
-    void changeMailSenderProperties(int port, String host, String from){
+    void changeMailSenderProperties(int port, String host, String from) {
         JavaMailSenderImpl impl = (JavaMailSenderImpl) mailSender;
         impl.setPort(port);
         impl.setHost(host);

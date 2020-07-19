@@ -10,10 +10,10 @@ import java.util.Objects;
  */
 public class Authority implements GrantedAuthority {
 
-    private Role role;
+    private final Role role;
 
-    public Authority(Role role){
-        this.role=role;
+    public Authority(Role role) {
+        this.role = role;
     }
 
     @Override

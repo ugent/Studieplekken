@@ -30,7 +30,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
     Roles will be saved in the database in one column as a csv with a semicolon as seperator. This has
     to be implemented universal through all daos that use this column.
      */
-    private IGenerator<String> verificationCodeGenerator = new VerificationCodeGenerator();
+    private final IGenerator<String> verificationCodeGenerator = new VerificationCodeGenerator();
 
     public DBAccountDao() {
     }
@@ -454,7 +454,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
             if (u.getBarcode() == null || u.getBarcode().length() == 0) {
                 // indien geen barcode voorzien werd, deze instellen op UPC-A gegenereerd op basis van AUGent id
                 String barcode = u.getAugentID();
-                while(barcode.length() > 11){
+                while (barcode.length() > 11) {
                     barcode = barcode.substring(1);
                 }
                 barcode = BarcodeController.calculateUPCACheckSum(barcode);
@@ -718,7 +718,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
                 connection.commit();
             } catch (SQLException e) {
                 connection.rollback();
-                if(e.getSQLState().equals("23505")){
+                if (e.getSQLState().equals("23505")) {
                     throw new UserAlreadyExistsException("User with augentid " + u.getAugentID() + " already exists.");
                 }
                 System.out.println(e.getMessage());

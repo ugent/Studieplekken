@@ -27,7 +27,7 @@ import java.net.URLClassLoader;
 @ServletComponentScan
 @SpringBootApplication
 public class Blok2Application extends SpringBootServletInitializer {
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         SpringApplication.run(Blok2Application.class, args);
     }
 

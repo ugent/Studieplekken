@@ -10,14 +10,17 @@ public interface ILockerReservationDao extends IDao {
      * Gets a list of all lockerreservations made by the user with the given augentID.
      */
     List<LockerReservation> getAllLockerReservationsOfUser(String augentID) throws NoSuchUserException;
+
     /**
      * Gets a list of all lockerreservations made by the user with the given name.
      */
     List<LockerReservation> getAllLockerReservationsOfUserByName(String name);
+
     /**
      * Gets a list of all lockerreservations of a given location.
      */
     List<LockerReservation> getAllLockerReservationsOfLocation(String name);
+
     /**
      * Gets a list of all ongoing lockerreservations of a given location.
      */

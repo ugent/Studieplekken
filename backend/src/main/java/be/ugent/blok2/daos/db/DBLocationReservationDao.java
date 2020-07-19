@@ -59,8 +59,7 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
                 try {
                     LocationReservation locationReservation = createLocationReservation(rs);
                     reservations.add(locationReservation);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
             }
@@ -81,8 +80,7 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
             if (rs.next()) {
                 try {
                     return createLocationReservation(rs);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
             } else {
@@ -114,7 +112,7 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
             st.setString(2, locationReservation.getLocation().getName());
             st.setString(3, locationReservation.getUser().getAugentID());
             st.execute();
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -126,7 +124,7 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
             // find out the CustomDate of today (note: Calendar here is java.util.Calendar,
             // not be.ugent.blok2.helpers.Calendar
             Calendar c = Calendar.getInstance();
-            CustomDate today = new CustomDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH)+1, c.get(Calendar.DATE));
+            CustomDate today = new CustomDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DATE));
 
             // set user attended on location reservation
             PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("set_location_reservation_attended"));
@@ -159,8 +157,7 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
             st.setString(1, location);
             st.setString(2, date.toString());
             st.execute();
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -176,8 +173,7 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
                 return rs.getInt(1);
             }
             return 0;
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
             return 0;
         }
@@ -199,15 +195,14 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
         try (Connection conn = getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("get_present_students"));
             return getAbsentOrPresentStudents(locationName, date, pstmt);
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return null;
     }
 
     private List<LocationReservation> getAbsentOrPresentStudents(String locationName, CustomDate date
-            , PreparedStatement pstmt) throws  SQLException {
+            , PreparedStatement pstmt) throws SQLException {
         List<LocationReservation> reservations = new ArrayList<>();
 
         pstmt.setString(1, locationName);
@@ -225,10 +220,10 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
     @Override
     public void setReservationToUnAttended(String augentId, CustomDate date) {
         try (Connection conn = getConnection()) {
-                PreparedStatement st = conn.prepareStatement(databaseProperties.getString("set_location_reservation_unattended"));
-                st.setString(1, date.toString());
-                st.setString(2, augentId);
-                st.execute();
+            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("set_location_reservation_unattended"));
+            st.setString(1, date.toString());
+            st.setString(2, augentId);
+            st.execute();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

@@ -15,7 +15,7 @@ import java.io.IOException;
 
 @Service
 public class LogoutSuccesHandler implements LogoutSuccessHandler {
-    private UsersCache usersCache = UsersCache.getInstance();
+    private final UsersCache usersCache = UsersCache.getInstance();
 
     /**
      * When a user logs out, remove the mapping cookie and notify the userscache to
@@ -24,9 +24,9 @@ public class LogoutSuccesHandler implements LogoutSuccessHandler {
     @Override
     public void onLogoutSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
         HttpSession session = httpServletRequest.getSession();
-        if(session!=null){
+        if (session != null) {
             try {
-                if(authentication !=null && authentication.getPrincipal() != null){
+                if (authentication != null && authentication.getPrincipal() != null) {
                     this.usersCache.logout((User) authentication.getPrincipal());
                 }
             } catch (UserNotLoggedInException e) {

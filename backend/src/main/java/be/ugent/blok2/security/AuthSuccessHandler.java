@@ -13,7 +13,7 @@ import java.io.IOException;
 
 @Service
 public class AuthSuccessHandler implements AuthenticationSuccessHandler {
-    private UsersCache usersCache = UsersCache.getInstance();
+    private final UsersCache usersCache = UsersCache.getInstance();
 
     /**
      * When a user can succesfully login, he gets a mapping cookie from the

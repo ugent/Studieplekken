@@ -130,11 +130,11 @@ public class Location implements Cloneable {
         this.imageUrl = url;
     }
 
-    public void setStartPeriodLockers(CustomDate startPeriodLockers){
+    public void setStartPeriodLockers(CustomDate startPeriodLockers) {
         this.startPeriodLockers = startPeriodLockers;
     }
 
-    public void setEndPeriodLockers(CustomDate endPeriodLockers){
+    public void setEndPeriodLockers(CustomDate endPeriodLockers) {
         this.endPeriodLockers = endPeriodLockers;
     }
 

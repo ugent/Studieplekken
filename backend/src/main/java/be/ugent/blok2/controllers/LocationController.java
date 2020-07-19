@@ -30,14 +30,14 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("api/locations")
-@Api(value="Location management system", description = "Operations pertaining to available locations")
+@Api(value = "Location management system", description = "Operations pertaining to available locations")
 public class LocationController {
 
-    private ILocationDao locationDao;
-    private ILockerReservationDao lockerReservationDao;
-    private IAccountDao accountDao;
+    private final ILocationDao locationDao;
+    private final ILockerReservationDao lockerReservationDao;
+    private final IAccountDao accountDao;
 
-    public LocationController(ILocationDao locationDao, ILockerReservationDao lockerReservationDao,  IAccountDao accountDao) {
+    public LocationController(ILocationDao locationDao, ILockerReservationDao lockerReservationDao, IAccountDao accountDao) {
         this.locationDao = locationDao;
         this.lockerReservationDao = lockerReservationDao;
         this.accountDao = accountDao;
@@ -57,7 +57,7 @@ public class LocationController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'STUDENT', 'EMPLOYEE')")
     @ApiOperation(value = "Get all locations without calendar and lockers")
-    public List<Location> getAllLocationsWithoutLockersAndCalendar(){
+    public List<Location> getAllLocationsWithoutLockersAndCalendar() {
         List<Location> locations = locationDao.getAllLocations();
         sort(locations);
         return locations;
@@ -67,7 +67,7 @@ public class LocationController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'STUDENT', 'EMPLOYEE')")
     @ApiOperation(value = "Get all locations without lockers")
-    public List<Location> getAllLocationsWithoutLockers(){
+    public List<Location> getAllLocationsWithoutLockers() {
         List<Location> locations = locationDao.getAllLocations();
         sort(locations);
         return locations;
@@ -77,7 +77,7 @@ public class LocationController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'STUDENT', 'EMPLOYEE')")
     @ApiOperation(value = "Get all locations without calendar")
-    public List<Location> getAllLocationsWithoutCalendar(){
+    public List<Location> getAllLocationsWithoutCalendar() {
         List<Location> locations = locationDao.getAllLocations();
         sort(locations);
         return locations;
@@ -95,7 +95,7 @@ public class LocationController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'STUDENT', 'EMPLOYEE')")
     @ApiOperation(value = "Get location without calendar")
-    public Location getLocationWithoutCalendar(@PathVariable("name") String name){
+    public Location getLocationWithoutCalendar(@PathVariable("name") String name) {
         return locationDao.getLocation(name);
     }
 
@@ -103,7 +103,7 @@ public class LocationController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'STUDENT', 'EMPLOYEE')")
     @ApiOperation(value = "Get location without lockers")
-    public Location getLocationWithoutLockers(@PathVariable("name") String name){
+    public Location getLocationWithoutLockers(@PathVariable("name") String name) {
         return locationDao.getLocation(name);
     }
 
@@ -111,7 +111,7 @@ public class LocationController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'STUDENT', 'EMPLOYEE')")
     @ApiOperation(value = "Get location without lockers and calendar")
-    public Location getLocationWithoutLockersAndCalendar(@PathVariable("name") String name){
+    public Location getLocationWithoutLockersAndCalendar(@PathVariable("name") String name) {
         return locationDao.getLocation(name);
     }
 
@@ -123,7 +123,7 @@ public class LocationController {
         try {
             locationDao.deleteLocation(name);
             return new ResponseEntity(HttpStatus.NO_CONTENT);
-        } catch (NoSuchLocationException e){
+        } catch (NoSuchLocationException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
@@ -137,33 +137,31 @@ public class LocationController {
             Location previousLocation = locationDao.getLocation(name);
             int previousLockers = previousLocation.getNumberOfLockers();
 
-            if(previousLockers > location.getNumberOfLockers()){
+            if (previousLockers > location.getNumberOfLockers()) {
                 //You can only remove lockers when there are no lockers in use in this location
 
                 Collection<LockerReservation> ongoingReservations = lockerReservationDao.getAllLockerReservationsOfLocationWithoutKeyBroughtBack(name);
-                if(ongoingReservations == null || ongoingReservations.size() == 0){
+                if (ongoingReservations == null || ongoingReservations.size() == 0) {
 
                     //delete lockers
                     locationDao.changeLocation(name, location);
                     locationDao.deleteLockers(location.getName(), location.getNumberOfLockers());
-                }
-                else{
+                } else {
                     return new ResponseEntity<>(mapper.writeValueAsString("Unable to delete lockers if there are lockers in use"), HttpStatus.BAD_REQUEST);
                 }
-            }
-            else if(previousLockers <= location.getNumberOfLockers()){
+            } else if (previousLockers <= location.getNumberOfLockers()) {
                 //lockers toevoegen
                 locationDao.changeLocation(name, location);
-                if(previousLockers != location.getNumberOfLockers()){
-                    locationDao.addLockers(location.getName(), location.getNumberOfLockers()-previousLockers);
+                if (previousLockers != location.getNumberOfLockers()) {
+                    locationDao.addLockers(location.getName(), location.getNumberOfLockers() - previousLockers);
                 }
             }
             return new ResponseEntity(HttpStatus.OK);
-        }  catch (NoSuchLocationException e){
+        } catch (NoSuchLocationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch(JsonProcessingException e){
+        } catch (JsonProcessingException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }  catch (AlreadyExistsException e){
+        } catch (AlreadyExistsException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
@@ -176,7 +174,7 @@ public class LocationController {
         try {
             Location addedLocation = locationDao.addLocation(location);
             return new ResponseEntity(addedLocation, HttpStatus.CREATED);
-        } catch (AlreadyExistsException e){
+        } catch (AlreadyExistsException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
@@ -184,11 +182,11 @@ public class LocationController {
     @PostMapping("/{name}")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @ApiOperation(value = "add calendar days to a location")
-    public ResponseEntity addCalendarDays(@PathVariable("name") String name, @RequestBody Calendar calendar){
-        try{
+    public ResponseEntity addCalendarDays(@PathVariable("name") String name, @RequestBody Calendar calendar) {
+        try {
             locationDao.addCalendarDays(name, calendar);
             return new ResponseEntity(HttpStatus.CREATED);
-        } catch (NoSuchLocationException e){
+        } catch (NoSuchLocationException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
@@ -197,11 +195,11 @@ public class LocationController {
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation(value = "delete a calendar day from a location")
-    public ResponseEntity deleteCalendarDay(@PathVariable("name") String name, @PathVariable("startdate") String startdate, @PathVariable("enddate") String enddate)  {
+    public ResponseEntity deleteCalendarDay(@PathVariable("name") String name, @PathVariable("startdate") String startdate, @PathVariable("enddate") String enddate) {
         try {
             locationDao.deleteCalendarDays(name, startdate, enddate);
             return new ResponseEntity(HttpStatus.NO_CONTENT);
-        } catch (NoSuchLocationException | DateFormatException e){
+        } catch (NoSuchLocationException | DateFormatException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
@@ -209,17 +207,17 @@ public class LocationController {
     @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
     @GetMapping("/scanners/{name}")
     @ApiOperation(value = "get users that are allowed to scan at the given location")
-    public ResponseEntity getScanners(@PathVariable("name") String name){
+    public ResponseEntity getScanners(@PathVariable("name") String name) {
         return new ResponseEntity(locationDao.getScannersFromLocation(name), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping("/scanners/{name}")
     @ApiOperation(value = "give users the permissions to scan at the given location")
-    public ResponseEntity postScanners(@PathVariable("name") String name, @RequestBody String[] scanners){
+    public ResponseEntity postScanners(@PathVariable("name") String name, @RequestBody String[] scanners) {
         List<User> sc = new ArrayList<>();
-        for(String s: scanners){
-            accountDao.setScannerLocation(s.substring(0, s.indexOf(" ")), name );
+        for (String s : scanners) {
+            accountDao.setScannerLocation(s.substring(0, s.indexOf(" ")), name);
             sc.add(accountDao.getUserById(s.substring(0, s.indexOf(" "))));
         }
 
