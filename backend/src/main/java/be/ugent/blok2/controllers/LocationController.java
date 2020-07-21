@@ -4,6 +4,7 @@ import be.ugent.blok2.daos.IAccountDao;
 import be.ugent.blok2.daos.ILocationDao;
 import be.ugent.blok2.daos.ILockerReservationDao;
 import be.ugent.blok2.helpers.date.Calendar;
+import be.ugent.blok2.helpers.date.Day;
 import be.ugent.blok2.helpers.exceptions.AlreadyExistsException;
 import be.ugent.blok2.helpers.exceptions.DateFormatException;
 import be.ugent.blok2.helpers.exceptions.NoSuchLocationException;
@@ -126,6 +127,14 @@ public class LocationController {
         } catch (NoSuchLocationException e){
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("/calendar/{locationName}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'STUDENT', 'EMPLOYEE')")
+    @ApiOperation(value = "Get the calendar days for the specified location")
+    public Collection<Day> getCalendarDays(@PathVariable("locationName") String locationName) {
+        return locationDao.getCalendarDays(locationName);
     }
 
     @PutMapping("/{name}")

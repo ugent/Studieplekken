@@ -4,6 +4,7 @@ import {ILocation} from '../interfaces/ILocation';
 import {Observable} from 'rxjs';
 import {urls} from "../environments/environment";
 import {ICalendar} from "../interfaces/ICalendar";
+import {IDay} from "../interfaces/IDay";
 
 @Injectable()
 export class LocationService {
@@ -14,32 +15,8 @@ export class LocationService {
     return this.http.get<ILocation[]>(urls.locations);
   }
 
-  getAllLocationsWithoutLockersAndCalendar(): Observable<ILocation[]> {
-    return this.http.get<ILocation[]>(urls.locations + '/noLockersAndCalendar');
-  }
-
-  getAllLocationsWithoutLockers(): Observable<ILocation[]> {
-    return this.http.get<ILocation[]>(urls.locations + '/noLockers');
-  }
-
-  getAllLocationsWithoutCalendar(): Observable<ILocation[]> {
-    return this.http.get<ILocation[]>(urls.locations + '/noCalendar');
-  }
-
   getLocation(name: string): Observable<ILocation> {
     return this.http.get<ILocation>(urls.locations + '/' + name);
-  }
-
-  getLocationWithoutCalendar(name: string): Observable<ILocation> {
-    return this.http.get<ILocation>(urls.locations + '/' + name + '/noCalendar');
-  }
-
-  getLocationWithoutLockers(name: string): Observable<ILocation> {
-    return this.http.get<ILocation>(urls.locations + '/' + name + '/noLockers');
-  }
-
-  getLocationWithoutLockersAndCalendar(name: string): Observable<ILocation> {
-    return this.http.get<ILocation>(urls.locations + '/' + name + '/noLockersAndCalendar');
   }
 
   addLocation(location: ILocation): Observable<any> {
@@ -52,6 +29,10 @@ export class LocationService {
 
   deleteLocation(name: string): Observable<any> {
     return this.http.delete(urls.locations + "/" + name);
+  }
+
+  getCalendarDays(locationName: string): Observable<IDay[]> {
+    return this.http.get<IDay[]>(urls.locations + "/calendar" + locationName);
   }
 
   addCalendarDays(name: string, calendar: ICalendar): Observable<any> {

@@ -94,10 +94,9 @@ export class CalendarOverviewComponent implements OnInit {
   ngOnInit(): void {
     //this method fetches all the locations without the lockers for performance, because they are not needed here
     if(this.authenticationService.currentUserHasRole(this.authenticationService.roles.admin)){
-      this.locationService.getAllLocationsWithoutLockers().subscribe(value => {
+      this.locationService.getAllLocations().subscribe(value => {
         this.locations = value;
         this.location = this.locations[0];
-        this.calendar = this.location.calendar;
         this.setDayInfo(this.clickedDate);
         this.refresh.next();
       });
@@ -109,7 +108,6 @@ export class CalendarOverviewComponent implements OnInit {
             this.locations.push(value);
             if(this.locations.length == 1){
               this.location = this.locations[0];
-              this.calendar = this.location.calendar;
               this.setDayInfo(this.clickedDate);
               this.refresh.next();
             }
@@ -127,13 +125,17 @@ export class CalendarOverviewComponent implements OnInit {
     });
 
     //this function subscribes the 'opening and closing hour' fields in the forms to the 'open' checkbox field
-    this.subscribeToOpen();
+    //this.subscribeToOpen();
     this.multipleDaysForm.controls['open'].setValue(false);
   }
 
   locationChanged(): void {
-    this.calendar = this.location.calendar;
-    this.setDayInfo(this.clickedDate);
+    this.locationService.getCalendarDays(this.location.name)
+      .subscribe(days => {
+        this.calendar = days;
+        this.setDayInfo(this.clickedDate);
+      });
+
   }
 
 
@@ -149,7 +151,7 @@ export class CalendarOverviewComponent implements OnInit {
 
   //this method fills in the singleDayForm with information of the clicked day
   setDayInfo(date: Date): void {
-
+/*
     //first set the variables that save this information to undefined
     //when a closed day is clicked, the fields will be empty
     this.openingHour = undefined;
@@ -159,10 +161,9 @@ export class CalendarOverviewComponent implements OnInit {
 
     if(this.location.calendar !== undefined){
 
-      /*
-      the interface IDay represents a calendar day of a location,
-      it has variables like, openingHour, closingHour, openForReservationDate, and the date of that day
-       */
+
+      //the interface IDay represents a calendar day of a location,
+      //it has variables like, openingHour, closingHour, openForReservationDate, and the date of that day
 
       //this method will fetch the day object of the current calendar for the clicked date
       let day: IDay = getDay(this.location.calendar, dateToIDate(date));
@@ -177,12 +178,12 @@ export class CalendarOverviewComponent implements OnInit {
         this.openForReservationTime = {"hours": day.openForReservationDate.hrs, "minutes": day.openForReservationDate.min};
         this.singleDayForm.controls['open'].setValue(true);
       }
-    }
+    }*/
   }
 
   onSubmitSingleDay(): void {
+    /*
     if(this.singleDayForm.valid){
-
       //there's two more if tests here because the selected day is not in the form, testing if the open for reservation date for
       //example is before the selected day, needs to be done here.
 
@@ -262,9 +263,9 @@ export class CalendarOverviewComponent implements OnInit {
         this.showErrorPastDaySubmit = true;
         this.showAlert();
       }
-    }
+    }*/
   }
-
+/*
   cancel(event) {
     event.preventDefault();
     this.setDayInfo(this.clickedDate);
@@ -382,12 +383,12 @@ export class CalendarOverviewComponent implements OnInit {
       that.showErrorPastDaySubmitMultipleDays = false;
     }, this.messageSecondsVisible * 1000);
   }
-
+*/
   /*
   * Enabling and disabling the components like this might seem a lot of duplicate code and you might think it could also be done with a variable
   * and using "disabled" in the html, but this wont work since it's a reactive form.
   * */
-  subscribeToOpen(): void {
+  /*subscribeToOpen(): void {
     this.singleDayForm.controls['open'].valueChanges.subscribe(v => {
       if(v){
         this.singleDayForm.controls['openingHour'].enable();
@@ -472,5 +473,5 @@ export class CalendarOverviewComponent implements OnInit {
   // necessary to avoid selectpicker disappearing after switching pages
   ngAfterContentChecked(): void {
     $('#location').selectpicker('refresh');
-  }
+  }*/
 }

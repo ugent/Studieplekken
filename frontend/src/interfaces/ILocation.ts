@@ -1,8 +1,7 @@
-import {ICalendar} from './ICalendar';
 import {ILocker} from './ILocker';
 import {IDay} from "./IDay";
 import {IDate} from "./IDate";
-import {compareDates, compareDatesWithTime, CustomDate, dateToIDate, dateToString} from "./CustomDate";
+import {compareDates, compareDatesWithTime, dateToIDate} from "./CustomDate";
 
 export interface ILocation {
   name: string;
@@ -12,8 +11,6 @@ export interface ILocation {
   mapsFrame: string;
   descriptions: {};
   imageUrl: string;
-  calendar: IDay[];
-  lockers: ILocker[];
   startPeriodLockers: IDate;
   endPeriodLockers: IDate;
 }
