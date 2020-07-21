@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import be.ugent.blok2.helpers.date.CustomDate;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -151,7 +152,7 @@ public class LockerReservationController extends AController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('ADMIN','STUDENT','EMPLOYEE')")
     @ApiOperation(value = "Reserve a locker")
-    public ResponseEntity<String> addLockerReservation(@PathVariable("location") String locationName, @PathVariable("id") String augentID){
+    public ResponseEntity<String> addLockerReservation(@PathVariable("location") String locationName, @PathVariable("id") String augentID) throws SQLException  {
 
         ObjectMapper mapper = new ObjectMapper();
         //get lockers of location

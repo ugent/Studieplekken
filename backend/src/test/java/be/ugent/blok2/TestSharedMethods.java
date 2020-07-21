@@ -15,6 +15,7 @@ import be.ugent.blok2.model.reservables.Location;
 import org.junit.Assert;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.ResourceBundle;
 
@@ -87,7 +88,7 @@ public class TestSharedMethods {
         return user;
     }
 
-    public static void addTestUsers(IAccountDao accountDao, User... users) {
+    public static void addTestUsers(IAccountDao accountDao, User... users) throws SQLException {
         for (User u : users) {
             accountDao.directlyAddUser(u);
             User r = accountDao.getUserById(u.getAugentID()); // retrieved user
@@ -95,7 +96,7 @@ public class TestSharedMethods {
         }
     }
 
-    public static void removeTestUsers(IAccountDao accountDao, User... users) {
+    public static void removeTestUsers(IAccountDao accountDao, User... users) throws SQLException {
         for (User u : users) {
             accountDao.removeUserById(u.getAugentID());
             User r = accountDao.getUserById(u.getAugentID());

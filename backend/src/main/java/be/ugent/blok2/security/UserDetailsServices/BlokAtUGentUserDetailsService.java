@@ -17,6 +17,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
@@ -41,7 +42,12 @@ public class BlokAtUGentUserDetailsService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = accountDao.getUserByEmailWithPassword(email);
+        User user = null;
+        try {
+            user = accountDao.getUserByEmail(email);
+        } catch (SQLException e) {
+            throw new UsernameNotFoundException(e.getMessage());
+        }
         if (user == null) {
             throw new UsernameNotFoundException("User " + email + " not found!");
         }

@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class TestDBLocationReservationDao {
     private User testUser2;
 
     @Before
-    public void setup() {
+    public void setup() throws SQLException {
         // Use test database
         TestSharedMethods.setupTestDaoDatabaseCredentials(accountDao);
         TestSharedMethods.setupTestDaoDatabaseCredentials(locationDao);
@@ -57,7 +58,7 @@ public class TestDBLocationReservationDao {
     }
 
     @After
-    public void cleanup() {
+    public void cleanup() throws SQLException {
         // Remove test objects from database
         locationDao.deleteLocation(testLocation.getName());
         TestSharedMethods.removeTestUsers(accountDao, testUser2, testUser);
@@ -67,7 +68,7 @@ public class TestDBLocationReservationDao {
     }
 
     @Test
-    public void addLocationReservationTest() {
+    public void addLocationReservationTest() throws SQLException {
         // retrieve entries from database instead of using the added instances
         Location location = locationDao.getLocation(testLocation.getName());
         User u = accountDao.getUserById(testUser.getAugentID());
@@ -100,7 +101,7 @@ public class TestDBLocationReservationDao {
     }
 
     @Test
-    public void scanStudentTest() {
+    public void scanStudentTest() throws SQLException {
         // retrieve entries from database instead of using the added instances
         Location location = locationDao.getLocation(testLocation.getName());
         User u1 = accountDao.getUserById(testUser.getAugentID());

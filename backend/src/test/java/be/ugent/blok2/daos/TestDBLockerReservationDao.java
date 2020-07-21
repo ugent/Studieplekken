@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.sql.SQLException;
 import java.util.Collection;
 
 @SpringBootTest
@@ -37,7 +38,7 @@ public class TestDBLockerReservationDao {
     private User testUser2;
 
     @Before
-    public void setup() {
+    public void setup() throws SQLException {
         // Use test database
         TestSharedMethods.setupTestDaoDatabaseCredentials(accountDao);
         TestSharedMethods.setupTestDaoDatabaseCredentials(locationDao);
@@ -54,7 +55,7 @@ public class TestDBLockerReservationDao {
     }
 
     @After
-    public void cleanup() {
+    public void cleanup() throws SQLException {
         // Remove test objects from database
         locationDao.deleteLocation(testLocation.getName());
         TestSharedMethods.removeTestUsers(accountDao, testUser2, testUser1);
@@ -65,7 +66,7 @@ public class TestDBLockerReservationDao {
 
     @Test
     // testing add/delete/change in one test
-    public void lockerReservationTest() {
+    public void lockerReservationTest()  throws SQLException {
         // test whether users were correctly added to the database
         User u1 = accountDao.getUserById(testUser1.getAugentID());
         User u2 = accountDao.getUserById(testUser2.getAugentID());

@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.*;
 import be.ugent.blok2.helpers.date.CustomDate;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -238,7 +239,7 @@ public class LocationReservationController extends AController {
     @PostMapping("/scan/{location}/{barcode}")
     @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
     @ApiOperation(value = "This method is used to scan students at a location")
-    public ResponseEntity<String> scanStudent(@PathVariable("location") String location, @PathVariable("barcode") String barcode) {
+    public ResponseEntity<String> scanStudent(@PathVariable("location") String location, @PathVariable("barcode") String barcode) throws SQLException {
         try {
             ObjectMapper mapper = new ObjectMapper();
             // scanStudent checks if the student has a reservation for the current day of this location and returns that reservation if so

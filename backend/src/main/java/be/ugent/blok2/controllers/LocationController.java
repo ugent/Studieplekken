@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -225,7 +226,7 @@ public class LocationController {
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping("/scanners/{name}")
     @ApiOperation(value = "give users the permissions to scan at the given location")
-    public ResponseEntity postScanners(@PathVariable("name") String name, @RequestBody String[] scanners){
+    public ResponseEntity postScanners(@PathVariable("name") String name, @RequestBody String[] scanners) throws SQLException {
         List<User> sc = new ArrayList<>();
         for(String s: scanners){
             accountDao.setScannerLocation(s.substring(0, s.indexOf(" ")), name );

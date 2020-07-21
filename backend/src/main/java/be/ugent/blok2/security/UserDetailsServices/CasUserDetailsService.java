@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.AuthenticationUserDetailsSe
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -36,7 +37,14 @@ public class CasUserDetailsService implements AuthenticationUserDetailsService<C
         String mail = (String) principal.getAttributes().get("mail");
 
         // Check if the UGent user has logged in before and therefore has a specific account within the application
-        User user = accountDao.getUserByEmailWithPassword(mail);
+        User user;
+
+        try {
+            user = accountDao.getUserByEmail(mail);
+        } catch (SQLException e) {
+            throw new UsernameNotFoundException(e.getMessage());
+        }
+
         if (user != null)
             return user;
 
@@ -53,7 +61,11 @@ public class CasUserDetailsService implements AuthenticationUserDetailsService<C
             throw new UsernameNotFoundException(e.getMessage());
         }
 
-        user = accountDao.directlyAddUser(user);
+        try {
+            user = accountDao.directlyAddUser(user);
+        } catch (SQLException e) {
+            throw new UsernameNotFoundException(e.getMessage());
+        }
         logger.info("First time UGhent user logged in -> adding user to database: " + user);
 
         return user;
