@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.sql.SQLException;
 import java.util.Collection;
 
 /**
@@ -32,7 +33,7 @@ public class TestDBLocationDao {
     private Location testLocation;
 
     @Before
-    public void setup() {
+    public void setup() throws SQLException {
         // Use test database
         TestSharedMethods.setupTestDaoDatabaseCredentials(locationDao);
 
@@ -44,7 +45,7 @@ public class TestDBLocationDao {
     }
 
     @After
-    public void cleanup() {
+    public void cleanup() throws SQLException {
         // Remove test objects from database
         locationDao.deleteLocation(testLocation.getName());
 
@@ -53,7 +54,7 @@ public class TestDBLocationDao {
     }
 
     @Test
-    public void addLocationTest() {
+    public void addLocationTest() throws SQLException {
         Location l = locationDao.getLocation(testLocation.getName());
         Assert.assertEquals("addLocation", testLocation, l);
 
@@ -63,7 +64,7 @@ public class TestDBLocationDao {
     }
 
     @Test
-    public void changeLocationTest() {
+    public void changeLocationTest() throws SQLException {
         Location changedTestLocation = testLocation.clone();
         changedTestLocation.setName("Changed Test Location");
 
@@ -78,7 +79,7 @@ public class TestDBLocationDao {
     }
 
     @Test
-    public void addLockersTest() {
+    public void addLockersTest() throws SQLException {
         Location expectedLocation = testLocation.clone();
         int prev_n = expectedLocation.getNumberOfLockers();
 
@@ -100,7 +101,7 @@ public class TestDBLocationDao {
     }
 
     @Test
-    public void deleteLockersTest() {
+    public void deleteLockersTest() throws SQLException {
         Location expectedLocation = testLocation.clone();
         int prev_n = expectedLocation.getNumberOfLockers();
 
@@ -115,7 +116,7 @@ public class TestDBLocationDao {
     * getCalendarDays(), addCalendarDays() and deleteCalendarDays will be tested
     * */
     @Test
-    public void calendarDaysTest() {
+    public void calendarDaysTest() throws SQLException {
         Calendar calendar = TestSharedMethods.testCalendar();
         Collection<Day> calendarDays = calendar.getDays();
 
@@ -130,7 +131,7 @@ public class TestDBLocationDao {
     }
 
     @Test
-    public void lockersTest() {
+    public void lockersTest() throws SQLException {
         Collection<Locker> lockers = locationDao.getLockers(testLocation.getName());
         Assert.assertEquals("lockersTest, check size getLockers"
                 , testLocation.getNumberOfLockers(), lockers.size());

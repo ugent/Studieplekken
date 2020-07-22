@@ -49,7 +49,7 @@ public class LocationController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN','STUDENT','EMPLOYEE')")
     @ApiOperation(value = "View a list of available locations")
-    public List<Location> getAllLocations() {
+    public List<Location> getAllLocations() throws SQLException {
         List<Location> ret = locationDao.getAllLocations();
         sort(ret);  // sort based on code, in ascending order
         return ret;
@@ -59,7 +59,7 @@ public class LocationController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'STUDENT', 'EMPLOYEE')")
     @ApiOperation(value = "Get all locations without calendar and lockers")
-    public List<Location> getAllLocationsWithoutLockersAndCalendar(){
+    public List<Location> getAllLocationsWithoutLockersAndCalendar() throws SQLException {
         List<Location> locations = locationDao.getAllLocations();
         sort(locations);
         return locations;
@@ -69,7 +69,7 @@ public class LocationController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'STUDENT', 'EMPLOYEE')")
     @ApiOperation(value = "Get all locations without lockers")
-    public List<Location> getAllLocationsWithoutLockers(){
+    public List<Location> getAllLocationsWithoutLockers() throws SQLException {
         List<Location> locations = locationDao.getAllLocations();
         sort(locations);
         return locations;
@@ -79,7 +79,7 @@ public class LocationController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'STUDENT', 'EMPLOYEE')")
     @ApiOperation(value = "Get all locations without calendar")
-    public List<Location> getAllLocationsWithoutCalendar(){
+    public List<Location> getAllLocationsWithoutCalendar() throws SQLException {
         List<Location> locations = locationDao.getAllLocations();
         sort(locations);
         return locations;
@@ -89,31 +89,7 @@ public class LocationController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN','STUDENT','EMPLOYEE')")
     @ApiOperation(value = "View a specific location")
-    public Location getLocation(@PathVariable("name") String name) {
-        return locationDao.getLocation(name);
-    }
-
-    @GetMapping("/{name}/noCalendar")
-    @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'STUDENT', 'EMPLOYEE')")
-    @ApiOperation(value = "Get location without calendar")
-    public Location getLocationWithoutCalendar(@PathVariable("name") String name){
-        return locationDao.getLocation(name);
-    }
-
-    @GetMapping("/{name}/noLockers")
-    @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'STUDENT', 'EMPLOYEE')")
-    @ApiOperation(value = "Get location without lockers")
-    public Location getLocationWithoutLockers(@PathVariable("name") String name){
-        return locationDao.getLocation(name);
-    }
-
-    @GetMapping("/{name}/noLockersAndCalendar")
-    @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'STUDENT', 'EMPLOYEE')")
-    @ApiOperation(value = "Get location without lockers and calendar")
-    public Location getLocationWithoutLockersAndCalendar(@PathVariable("name") String name){
+    public Location getLocation(@PathVariable("name") String name) throws SQLException {
         return locationDao.getLocation(name);
     }
 
@@ -121,7 +97,7 @@ public class LocationController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @ApiOperation(value = "Delete a location")
-    public ResponseEntity deleteLocation(@PathVariable("name") String name) {
+    public ResponseEntity deleteLocation(@PathVariable("name") String name) throws SQLException {
         try {
             locationDao.deleteLocation(name);
             return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -134,14 +110,14 @@ public class LocationController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'STUDENT', 'EMPLOYEE')")
     @ApiOperation(value = "Get the calendar days for the specified location")
-    public Collection<Day> getCalendarDays(@PathVariable("locationName") String locationName) {
+    public Collection<Day> getCalendarDays(@PathVariable("locationName") String locationName) throws SQLException {
         return locationDao.getCalendarDays(locationName);
     }
 
     @PutMapping("/{name}")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @ApiOperation(value = "Change a location")
-    public ResponseEntity changeLocation(@PathVariable("name") String name, @RequestBody Location location) {
+    public ResponseEntity changeLocation(@PathVariable("name") String name, @RequestBody Location location) throws SQLException {
         ObjectMapper mapper = new ObjectMapper();
         try {
             Location previousLocation = locationDao.getLocation(name);
@@ -182,9 +158,10 @@ public class LocationController {
     @PostMapping
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @ApiOperation(value = "Add a new location")
-    public ResponseEntity addLocation(@RequestBody Location location) {
+    public ResponseEntity addLocation(@RequestBody Location location) throws SQLException {
         try {
-            Location addedLocation = locationDao.addLocation(location);
+            locationDao.addLocation(location);
+            Location addedLocation = locationDao.getLocation(location.getName());
             return new ResponseEntity(addedLocation, HttpStatus.CREATED);
         } catch (AlreadyExistsException e){
             return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -194,7 +171,7 @@ public class LocationController {
     @PostMapping("/{name}")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @ApiOperation(value = "add calendar days to a location")
-    public ResponseEntity addCalendarDays(@PathVariable("name") String name, @RequestBody Calendar calendar){
+    public ResponseEntity addCalendarDays(@PathVariable("name") String name, @RequestBody Calendar calendar) throws SQLException {
         try{
             locationDao.addCalendarDays(name, calendar);
             return new ResponseEntity(HttpStatus.CREATED);
@@ -207,7 +184,7 @@ public class LocationController {
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation(value = "delete a calendar day from a location")
-    public ResponseEntity deleteCalendarDay(@PathVariable("name") String name, @PathVariable("startdate") String startdate, @PathVariable("enddate") String enddate)  {
+    public ResponseEntity deleteCalendarDay(@PathVariable("name") String name, @PathVariable("startdate") String startdate, @PathVariable("enddate") String enddate) throws SQLException {
         try {
             locationDao.deleteCalendarDays(name, startdate, enddate);
             return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -219,7 +196,7 @@ public class LocationController {
     @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
     @GetMapping("/scanners/{name}")
     @ApiOperation(value = "get users that are allowed to scan at the given location")
-    public ResponseEntity getScanners(@PathVariable("name") String name){
+    public ResponseEntity getScanners(@PathVariable("name") String name) throws SQLException {
         return new ResponseEntity(locationDao.getScannersFromLocation(name), HttpStatus.OK);
     }
 

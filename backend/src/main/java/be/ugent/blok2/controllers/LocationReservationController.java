@@ -309,7 +309,7 @@ public class LocationReservationController extends AController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN','STUDENT','EMPLOYEE')")
     @ApiOperation(value = "Gives the number of reservations of all locations on a given date")
-    public Map<String, Integer> countReservedSeatsOfLocation(@PathVariable("date") String date){
+    public Map<String, Integer> countReservedSeatsOfLocation(@PathVariable("date") String date) throws SQLException {
         return iLocationDao.getCountOfReservations(CustomDate.parseString(date));
     }
 
