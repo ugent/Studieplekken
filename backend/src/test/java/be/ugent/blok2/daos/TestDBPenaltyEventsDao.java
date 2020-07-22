@@ -93,7 +93,7 @@ public class TestDBPenaltyEventsDao {
     }
 
     @Test
-    public void permanentPenaltyEventsTest() {
+    public void permanentPenaltyEventsTest() throws SQLException {
         // These tests are supposed to be in the database
         PenaltyEvent test16660 = penaltyEventsDao.getPenaltyEvent(cancellingTooLateEvent.getCode());
         PenaltyEvent test16661 = penaltyEventsDao.getPenaltyEvent(notShowingUpEvent.getCode());
@@ -105,13 +105,13 @@ public class TestDBPenaltyEventsDao {
     }
 
     @Test
-    public void addPenaltyEventTest() {
+    public void addPenaltyEventTest() throws SQLException {
         PenaltyEvent retrievedTestEvent = penaltyEventsDao.getPenaltyEvent(testEvent.getCode());
         Assert.assertEquals("addPenaltyEventTest", testEvent, retrievedTestEvent);
     }
 
     @Test
-    public void deleteAndAddPenaltyEventDescriptionTest() {
+    public void deleteAndAddPenaltyEventDescriptionTest() throws SQLException {
         // Not changing testEvent (although you could change it because the @Before creates a new testEvent for the next @Test)
         PenaltyEvent modifiablePenaltyEvent = testEvent.clone();
 

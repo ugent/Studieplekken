@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
 import java.util.Comparator;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class PenaltyEventController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "View a list of penalties")
-    public List<PenaltyEvent> getPenaltyEvents() {
+    public List<PenaltyEvent> getPenaltyEvents() throws SQLException {
         List<PenaltyEvent> ret = penaltyDao.getPenaltyEvents();
         sort(ret);  // sort based on code, in ascending order
         return ret;
@@ -44,7 +45,7 @@ public class PenaltyEventController {
 
     @GetMapping("/{code}")
     @ApiOperation(value = "View a penalty")
-    public ResponseEntity<Object> getPenaltyEvent(@PathVariable("code") int code) {
+    public ResponseEntity<Object> getPenaltyEvent(@PathVariable("code") int code) throws SQLException {
         try {
             return new ResponseEntity<>(penaltyDao.getPenaltyEvent(code), HttpStatus.OK);
         } catch(NoSuchPenaltyEventException e) {
@@ -55,21 +56,21 @@ public class PenaltyEventController {
     @GetMapping("/user/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "View a list of penalties assigned to the user with the given id")
-    public List<Penalty> getPenalties(@PathVariable("id") String augentID) {
+    public List<Penalty> getPenalties(@PathVariable("id") String augentID) throws SQLException {
         return penaltyDao.getPenalties(augentID);
     }
 
     @GetMapping("/cancelPoints/{date}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Calculates the penalty points that a user will receive if he cancel at this moment for the given date")
-    public int getCancelPoints(@PathVariable("date") String d) throws Exception {
+    public int getCancelPoints(@PathVariable("date") String d) throws SQLException {
         int points = penaltyDao.getPenaltyEvent(PenaltyEvent.CODE_LATE_CANCEL).getPoints();
         return Penalty.calculateLateCancelPoints(CustomDate.parseString(d), points);
     }
 
     @PostMapping("/{code}")
     @ApiOperation(value = "Create a new penalty")
-    public ResponseEntity addPenaltyEvent(@PathVariable int code, @RequestBody PenaltyEvent event) {
+    public ResponseEntity addPenaltyEvent(@PathVariable int code, @RequestBody PenaltyEvent event) throws SQLException {
         if (code != event.getCode()) {
             return new ResponseEntity("URL code is in conflict with event's (from body) code", HttpStatus.BAD_REQUEST);
         }
@@ -84,7 +85,7 @@ public class PenaltyEventController {
 
     @PostMapping(value="/description")
     @ApiOperation(value = "Create a new description for a penaltyevent")
-    public ResponseEntity addDescription(@RequestParam("code") int code, @RequestParam("language") Language language, @RequestParam("description") String description) {
+    public ResponseEntity addDescription(@RequestParam("code") int code, @RequestParam("language") Language language, @RequestParam("description") String description) throws SQLException {
         try {
             penaltyDao.addDescription(code, language, description);
             return new ResponseEntity(HttpStatus.CREATED);
@@ -97,7 +98,7 @@ public class PenaltyEventController {
 
     @PutMapping("/{code}")
     @ApiOperation(value = "Update a penalty event")
-    public ResponseEntity updatePenaltyEvent(@PathVariable("code") int code, @RequestBody PenaltyEvent event) {
+    public ResponseEntity updatePenaltyEvent(@PathVariable("code") int code, @RequestBody PenaltyEvent event) throws SQLException {
         if (code != event.getCode()) {
             return new ResponseEntity("URL code is in conflict with event's (from body) code", HttpStatus.BAD_REQUEST);
         }
@@ -111,14 +112,14 @@ public class PenaltyEventController {
 
     @PutMapping("/user/{id}")
     @ApiOperation(value = "Update penalties of a user")
-    public ResponseEntity updatePenalties(@PathVariable("id") String augentID, @RequestBody Pair<List<Penalty>, List<Penalty>> pair) {
+    public ResponseEntity updatePenalties(@PathVariable("id") String augentID, @RequestBody Pair<List<Penalty>, List<Penalty>> pair) throws SQLException {
         penaltyDao.updatePenalties(augentID, pair.getFirst(), pair.getSecond());
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @DeleteMapping("/{code}")
     @ApiOperation(value = "Delete a penaltyevent")
-    public ResponseEntity deletePenaltyEvent(@PathVariable("code") int code) {
+    public ResponseEntity deletePenaltyEvent(@PathVariable("code") int code) throws SQLException {
         try {
             penaltyDao.deletePenaltyEvent(code);
             return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -129,7 +130,7 @@ public class PenaltyEventController {
 
     @DeleteMapping("/description")
     @ApiOperation(value = "Delete a description of a penaltyevent")
-    public ResponseEntity deleteDescription(@RequestParam("code") int code, @RequestParam("language") Language language) {
+    public ResponseEntity deleteDescription(@RequestParam("code") int code, @RequestParam("language") Language language) throws SQLException {
         try {
             penaltyDao.deleteDescription(code, language);
             return new ResponseEntity(HttpStatus.NO_CONTENT);
