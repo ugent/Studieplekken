@@ -3,12 +3,9 @@ package be.ugent.blok2.daos.db;
 import be.ugent.blok2.controllers.BarcodeController;
 import be.ugent.blok2.daos.IAccountDao;
 import be.ugent.blok2.helpers.Institution;
-import be.ugent.blok2.helpers.exceptions.NoSuchUserException;
 import be.ugent.blok2.helpers.generators.IGenerator;
 import be.ugent.blok2.helpers.generators.VerificationCodeGenerator;
 import be.ugent.blok2.helpers.date.CustomDate;
-import be.ugent.blok2.helpers.exceptions.UserAlreadyExistsException;
-import be.ugent.blok2.helpers.exceptions.WrongVerificationCodeException;
 import be.ugent.blok2.model.users.Role;
 import be.ugent.blok2.model.users.User;
 import org.springframework.context.annotation.Profile;
@@ -40,8 +37,8 @@ public class DBAccountDao extends ADB implements IAccountDao {
     //  a one shot systemd service on the production server.
     /*@Scheduled(fixedRate = 1000 * 60 * 60 * 24)
     public void scheduledCleanup() {
-        try (Connection connection = getConnection()) {
-            Statement statement = connection.createStatement();
+        try (Connection conn = getConnection()) {
+            Statement statement = conn.createStatement();
             statement.executeQuery(databaseProperties.getString("daily_cleanup_user_to_be_verified"));
         } catch (SQLException e) {
 
@@ -70,11 +67,11 @@ public class DBAccountDao extends ADB implements IAccountDao {
         }
     }
 
-    public static User getUserById(String augentID, Connection connection) throws SQLException {
+    public static User getUserById(String augentID, Connection conn) throws SQLException {
         String query = databaseProperties.getString("get_user_by_<?>").replace("<?>", "u.augentid = ?");
-        PreparedStatement statement = connection.prepareStatement(query);
-        statement.setString(1, augentID);
-        ResultSet rs = statement.executeQuery();
+        PreparedStatement pstmt = conn.prepareStatement(query);
+        pstmt.setString(1, augentID);
+        ResultSet rs = pstmt.executeQuery();
 
         if (rs.next()) {
             return createUser(rs);
@@ -125,10 +122,10 @@ public class DBAccountDao extends ADB implements IAccountDao {
         String s1 = soundex.encode(name.toLowerCase());
 
         List<User> users = new ArrayList<>();
-        try (Connection connection = getConnection()) {
+        try (Connection conn = getConnection()) {
             // note: u.augentid is the PK of USER table, therefore it cannot be null and you'll have all results, as if the where clause wasn't there
             String query = databaseProperties.getString("get_user_by_<?>").replace("<?>", "u.augentid IS NOT NULL");
-            PreparedStatement pstmt = connection.prepareStatement(query);
+            PreparedStatement pstmt = conn.prepareStatement(query);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 users.add(createUser(rs));
@@ -288,9 +285,9 @@ public class DBAccountDao extends ADB implements IAccountDao {
                 /*
                 Finally, delete the user
                  */
-                PreparedStatement statement = conn.prepareStatement(databaseProperties.getString("delete_user"));
-                statement.setString(1, AUGentID);
-                statement.execute();
+                pstmt = conn.prepareStatement(databaseProperties.getString("delete_user"));
+                pstmt.setString(1, AUGentID);
+                pstmt.execute();
 
                 conn.commit();
             } catch (SQLException e) {
@@ -326,11 +323,11 @@ public class DBAccountDao extends ADB implements IAccountDao {
         return verificationCode;
     }
 
-    public void setString(PreparedStatement statement, int nr, String value) throws SQLException {
+    public void setString(PreparedStatement pstmt, int nr, String value) throws SQLException {
         if (value != null) {
-            statement.setString(nr, value);
+            pstmt.setString(nr, value);
         } else {
-            statement.setNull(nr, Types.NULL);
+            pstmt.setNull(nr, Types.NULL);
         }
     }
 
@@ -474,10 +471,10 @@ public class DBAccountDao extends ADB implements IAccountDao {
 
     @Override
     public boolean accountExistsByEmail(String email) throws SQLException {
-        try (Connection connection = getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(databaseProperties.getString("count_accounts_with_email"));
-            statement.setString(1, email.toLowerCase());
-            ResultSet resultSet = statement.executeQuery();
+        try (Connection conn = getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("count_accounts_with_email"));
+            pstmt.setString(1, email.toLowerCase());
+            ResultSet resultSet = pstmt.executeQuery();
             resultSet.next();
             return resultSet.getInt(1) == 1;
         }
@@ -489,11 +486,11 @@ public class DBAccountDao extends ADB implements IAccountDao {
         User u = getUserByEmail(email.toLowerCase());
 
         ArrayList<String> locations = new ArrayList<>();
-        try (Connection connection = getConnection()) {
+        try (Connection conn = getConnection()) {
             String query = databaseProperties.getString("get_locations_of_scanner");
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, u.getAugentID());
-            ResultSet resultSet = statement.executeQuery();
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, u.getAugentID());
+            ResultSet resultSet = pstmt.executeQuery();
             while (resultSet.next()) {
                 locations.add(resultSet.getString(databaseProperties.getString("scanners_location_name")));
             }
