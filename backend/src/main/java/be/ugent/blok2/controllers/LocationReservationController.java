@@ -70,7 +70,7 @@ public class LocationReservationController extends AController {
     @GetMapping("/user/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "View a list of all locationreservations of a user by id")
-    public ResponseEntity getAllLocationReservationsOfUser(@PathVariable("id") String idString, HttpServletRequest request) throws NoUserLoggedInWithGivenSessionIdMappingException {
+    public ResponseEntity getAllLocationReservationsOfUser(@PathVariable("id") String idString, HttpServletRequest request) throws SQLException, NoUserLoggedInWithGivenSessionIdMappingException {
         int i = 0;
         User u = getCurrentUser(request);
         if (!isTesting() && u.getAuthorities().contains(new Authority(Role.STUDENT)) && u.getAuthorities().size() == 1 && !idString.equals(u.getAugentID())) {
@@ -89,14 +89,14 @@ public class LocationReservationController extends AController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN','STUDENT','EMPLOYEE')")
     @ApiOperation(value = "View a list of all locationreservations of a location")
-    public List<LocationReservation> getAllLocationReservationsOfLocation(@PathVariable("name") String name) {
+    public List<LocationReservation> getAllLocationReservationsOfLocation(@PathVariable("name") String name) throws SQLException {
         return iLocationReservationDao.getAllLocationReservationsOfLocation(name);
     }
 
     @GetMapping("/user/{id}/date/{date}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Get the locationreservation of the user with the given id on the given date")
-    public ResponseEntity getLocationReservation(@PathVariable("id") String idString, @PathVariable("date") String dateString, HttpServletRequest request) throws Exception {
+    public ResponseEntity getLocationReservation(@PathVariable("id") String idString, @PathVariable("date") String dateString, HttpServletRequest request) throws SQLException, NoUserLoggedInWithGivenSessionIdMappingException {
         User u = getCurrentUser(request);
         // make sure the user is allowed to edit this locationreservation
         if (!isTesting() && u.getAuthorities().contains(new Authority(Role.STUDENT)) && u.getAuthorities().size() == 1 && !idString.equals(u.getAugentID())) {
@@ -115,7 +115,7 @@ public class LocationReservationController extends AController {
     @DeleteMapping("/{id}/{date}")
     @PreAuthorize("hasAnyAuthority('ADMIN','STUDENT','EMPLOYEE')")
     @ApiOperation(value = "Delete the locationreservation of the user with the given id on the given date")
-    public ResponseEntity deleteLocationReservation(@PathVariable("id") String idString, @PathVariable("date") String dateString, HttpServletRequest request) throws Exception {
+    public ResponseEntity deleteLocationReservation(@PathVariable("id") String idString, @PathVariable("date") String dateString, HttpServletRequest request) throws SQLException, NoUserLoggedInWithGivenSessionIdMappingException {
         User u = getCurrentUser(request);
         // make sure the user is allowed to edit this locationreservation
         if (!isTesting() && u.getAuthorities().contains(new Authority(Role.STUDENT)) && u.getAuthorities().size() == 1 && !idString.equals(u.getAugentID())) {
@@ -149,7 +149,7 @@ public class LocationReservationController extends AController {
     @PostMapping
     @PreAuthorize("hasAnyAuthority('STUDENT','EMPLOYEE')")
     @ApiOperation(value = "Reserve a location for the given user on the multiple given dates")
-    public ResponseEntity<LocationReservationResponse> addLocationReservations(@RequestBody List<LocationReservation> locationReservations) {
+    public ResponseEntity<LocationReservationResponse> addLocationReservations(@RequestBody List<LocationReservation> locationReservations) throws SQLException {
 	System.out.println("Hier kom ik met lijst l.size() = " + locationReservations.size() + " en l.getUser() = " + locationReservations.get(0).getUser());
         List<CustomDate> valid = new ArrayList<>();
         List<CustomDate> full = new ArrayList<>();
@@ -262,7 +262,7 @@ public class LocationReservationController extends AController {
 
     @PostMapping("/cancelScan/{location}/{augentId}")
     @ApiOperation(value = "This method is used to cancel a reservation")
-    public ResponseEntity cancelScanOfStudent(@PathVariable("location") String location, @PathVariable("augentId") String augentId, HttpServletRequest request) throws NoUserLoggedInWithGivenSessionIdMappingException {
+    public ResponseEntity cancelScanOfStudent(@PathVariable("location") String location, @PathVariable("augentId") String augentId, HttpServletRequest request) throws SQLException, NoUserLoggedInWithGivenSessionIdMappingException {
         User u = getCurrentUser(request);
         // make sure the user is allowed to edit this locationreservation
         if (!isTesting() && u.getAuthorities().contains(new Authority(Role.STUDENT)) && u.getAuthorities().size() == 1 && !augentId.equals(u.getAugentID())) {
@@ -281,7 +281,7 @@ public class LocationReservationController extends AController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
     @ApiOperation(value = "In case of emergency, when something goes wrong during scanning, all students wil be set to attended for the given location")
-    public void setAllReservationsICE(@PathVariable("locationName") String locationName) {
+    public void setAllReservationsICE(@PathVariable("locationName") String locationName) throws SQLException {
         LocalDate localDate = LocalDate.now();
         iLocationReservationDao.setAllStudentsOfLocationToAttended(locationName,
                 new CustomDate(localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth()));
@@ -292,7 +292,7 @@ public class LocationReservationController extends AController {
     @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
     @ApiOperation(value = "Gives a list of all users that where absent on the given location on the given date")
     public List<LocationReservation> getAbsentStudentsOfLocation(@PathVariable("locationName") String location,
-                                                                 @PathVariable("date") String date) {
+                                                                 @PathVariable("date") String date) throws SQLException {
         return iLocationReservationDao.getAbsentStudents(location, CustomDate.parseString(date));
     }
 
@@ -301,7 +301,7 @@ public class LocationReservationController extends AController {
     @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
     @ApiOperation(value = "Gives a list of all users that where present on the given location on the given date")
     public List<LocationReservation> getPresentStudentsOfLocation(@PathVariable("locationName") String location,
-                                                                  @PathVariable("date") String date) {
+                                                                  @PathVariable("date") String date) throws SQLException {
         return iLocationReservationDao.getPresentStudents(location, CustomDate.parseString(date));
     }
 
@@ -327,7 +327,7 @@ public class LocationReservationController extends AController {
     @PostMapping("/addPenaltyPoints/{location}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Assign penalty points to all given absent students")
-    public void setReservationsToUnattendedAndAddPenaltyPoints(@RequestParam("ids") String[] augentIds, @PathVariable("location") String location) {
+    public void setReservationsToUnattendedAndAddPenaltyPoints(@RequestParam("ids") String[] augentIds, @PathVariable("location") String location) throws SQLException {
         LocalDate localDate = LocalDate.now();
         CustomDate customDate = new CustomDate(localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth(), 0, 0, 0);
 
