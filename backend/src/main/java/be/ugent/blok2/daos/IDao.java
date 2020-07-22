@@ -1,7 +1,5 @@
 package be.ugent.blok2.daos;
 
-import java.util.Properties;
-
 public interface IDao {
     /**
      * Let the DAO use a different connection URL than the one provided

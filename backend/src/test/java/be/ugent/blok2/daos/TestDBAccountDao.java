@@ -13,6 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.validation.constraints.AssertTrue;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -31,7 +33,7 @@ public class TestDBAccountDao {
     private User testUser2;
 
     @Before
-    public void setup() {
+    public void setup() throws SQLException {
         TestSharedMethods.setupTestDaoDatabaseCredentials(accountDao);
 
         testUser1 = TestSharedMethods.employeeAdminTestUser();
@@ -41,13 +43,13 @@ public class TestDBAccountDao {
     }
 
     @After
-    public void cleanup() {
+    public void cleanup() throws SQLException {
         TestSharedMethods.removeTestUsers(accountDao, testUser2, testUser1);
         accountDao.useDefaultDatabaseConnection();
     }
 
     @Test
-    public void directlyAddUserTest() {
+    public void directlyAddUserTest() throws SQLException {
         User directlyAddedUser = testUser1.clone();
         directlyAddedUser.setAugentID("1" + testUser1.getAugentID());
         directlyAddedUser.setMail("directly.addeduser@ugent.be");
@@ -61,13 +63,23 @@ public class TestDBAccountDao {
     }
 
     @Test
-    public void addUserToBeVerifiedTest() {
+    public void addUserToBeVerifiedTest() throws SQLException {
         User verifiedAddedUser = testUser1.clone();
         verifiedAddedUser.setAugentID("1" + testUser1.getAugentID());
         verifiedAddedUser.setMail("Verified.AddedUser@UGent.be");
 
         String verificationCode = accountDao.addUserToBeVerified(verifiedAddedUser);
-        accountDao.verifyNewUser(verificationCode);
+
+        // add the user a second time
+        String shouldBeNull = accountDao.addUserToBeVerified(verifiedAddedUser);
+        Assert.assertNull("addUserToBeVerifiedTest, add user a second time", shouldBeNull);
+
+        boolean added = accountDao.verifyNewUser(verificationCode);
+        Assert.assertTrue("addUserToBeVerifiedTest, verify user", added);
+
+        added = accountDao.verifyNewUser("Verification that does not exist.");
+        Assert.assertFalse("addUserToBeVerified, verify user with false verification code"
+                , added);
 
         User u = accountDao.getUserById(verifiedAddedUser.getAugentID());
         Assert.assertEquals(verifiedAddedUser, u);
@@ -77,29 +89,35 @@ public class TestDBAccountDao {
     }
 
     @Test
-    public void updateUserTest() {
+    public void updateUserTest() throws SQLException {
         User expectedChangedUser = testUser1.clone();
+
+        // change the role opposed to testUser1, update should succeed
         expectedChangedUser.setRoles(new Role[]{Role.STUDENT});
 
-        accountDao.updateUser(testUser1.getMail(), expectedChangedUser);
+        boolean updated = accountDao.updateUser(testUser1.getMail(), expectedChangedUser);
+        Assert.assertTrue("updateUserTest, updated testUser1's role", updated);
 
         User actualChangedUser = accountDao.getUserById(expectedChangedUser.getAugentID());
         Assert.assertEquals(expectedChangedUser, actualChangedUser);
+
+        // change expectedChangedUser's mail to an existing mail, should fail
+        User expectedChangedUser2 = expectedChangedUser.clone();
+        expectedChangedUser2.setMail(testUser2.getMail());
+        updated = accountDao.updateUser(expectedChangedUser.getMail(), expectedChangedUser2);
+        Assert.assertFalse("updateUserTest, update mail to existing mail", updated);
     }
 
     @Test
-    public void accountExistsByEmailTest() {
+    public void accountExistsByEmailTest() throws SQLException {
         boolean exists = accountDao.accountExistsByEmail(testUser1.getMail());
         Assert.assertTrue(exists);
     }
 
     @Test
-    public void testGetters() {
+    public void testGetters() throws SQLException {
         User u = accountDao.getUserByEmail(testUser1.getMail());
         Assert.assertEquals("getUserByEmail", testUser1, u);
-
-        u = accountDao.getUserByEmailWithPassword(testUser1.getMail());
-        Assert.assertEquals("getUserByEmailWithPassword", testUser1, u);
 
         u = accountDao.getUserById(testUser1.getAugentID());
         Assert.assertEquals("getUserById", testUser1, u);
@@ -125,7 +143,7 @@ public class TestDBAccountDao {
     }
 
     @Test
-    public void getUserFromBarcodeTest() {
+    public void getUserFromBarcodeTest() throws SQLException {
         // Code 128
         String barcode = testUser1.getAugentID();
         User u = accountDao.getUserFromBarcode(barcode);

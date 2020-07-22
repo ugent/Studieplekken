@@ -27,7 +27,7 @@ public abstract class AController {
     }
 
     public User getCurrentUser(HttpServletRequest request) throws NoUserLoggedInWithGivenSessionIdMappingException {
-        if(!isTesting()){
+        if (!isTesting()) {
             User u=null;
             // get user from request with its cookie
             Cookie[] cookies = request.getCookies();

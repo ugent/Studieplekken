@@ -202,7 +202,7 @@ where augentid = ?;
 -- $count_accounts_with_email
 select count(1)
 from public.users
-where mail = ?;
+where LOWER(mail) = LOWER(?);
 
 -- $insert_user
 insert into public.users (mail, augentpreferredsn, augentpreferredgivenname, password, institution, augentid, role, penalty_points, barcode)

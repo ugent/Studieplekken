@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,11 +36,6 @@ public class TestDBPenaltyEventsDao {
     @Autowired
     private IPenaltyEventsDao penaltyEventsDao;
 
-    private Map<Language, String> cancellingTooLateDescriptions;
-    private Map<Language, String> notShowingUpDescriptions;
-    private Map<Language, String> blacklistDescriptions;
-    private Map<Language, String> testDescriptions;
-
     private PenaltyEvent cancellingTooLateEvent;
     private PenaltyEvent notShowingUpEvent;
     private PenaltyEvent blacklistEvent;
@@ -49,29 +45,29 @@ public class TestDBPenaltyEventsDao {
     private User testUser;
 
     @Before
-    public void setup() {
+    public void setup() throws SQLException {
         // Use test database
         TestSharedMethods.setupTestDaoDatabaseCredentials(accountDao);
         TestSharedMethods.setupTestDaoDatabaseCredentials(locationDao);
         TestSharedMethods.setupTestDaoDatabaseCredentials(penaltyEventsDao);
 
         // Setup test objects
-        cancellingTooLateDescriptions = new HashMap<>();
+        Map<Language, String> cancellingTooLateDescriptions = new HashMap<>();
         cancellingTooLateDescriptions.put(Language.ENGLISH, "Cancelling too late.");
         cancellingTooLateDescriptions.put(Language.DUTCH, "Te laat annuleren.");
         cancellingTooLateEvent = new PenaltyEvent(16660, 30, true, cancellingTooLateDescriptions);
 
-        notShowingUpDescriptions = new HashMap<>();
+        Map<Language, String> notShowingUpDescriptions = new HashMap<>();
         notShowingUpDescriptions.put(Language.ENGLISH, "Not showing up at all.");
         notShowingUpDescriptions.put(Language.DUTCH, "Niet komen opdagen.");
         notShowingUpEvent = new PenaltyEvent(16661, 50, true, notShowingUpDescriptions);
 
-        blacklistDescriptions = new HashMap<>();
+        Map<Language, String> blacklistDescriptions = new HashMap<>();
         blacklistDescriptions.put(Language.ENGLISH, "Blacklist event.");
         blacklistDescriptions.put(Language.DUTCH, "Blacklist event.");
         blacklistEvent = new PenaltyEvent(16662, 100, true, blacklistDescriptions);
 
-        testDescriptions = new HashMap<>();
+        Map<Language, String> testDescriptions = new HashMap<>();
         testDescriptions.put(Language.ENGLISH, "Test event.");
         testDescriptions.put(Language.DUTCH, "Test event.");
         testEvent = new PenaltyEvent(1, 10, true, testDescriptions);
@@ -86,7 +82,7 @@ public class TestDBPenaltyEventsDao {
     }
 
     @After
-    public void cleanup() {
+    public void cleanup() throws SQLException {
         // Remove test objects from database
         TestSharedMethods.removeTestUsers(accountDao, testUser);
         penaltyEventsDao.deletePenaltyEvent(testEvent.getCode());
@@ -97,7 +93,7 @@ public class TestDBPenaltyEventsDao {
     }
 
     @Test
-    public void permanentPenaltyEventsTest() {
+    public void permanentPenaltyEventsTest() throws SQLException {
         // These tests are supposed to be in the database
         PenaltyEvent test16660 = penaltyEventsDao.getPenaltyEvent(cancellingTooLateEvent.getCode());
         PenaltyEvent test16661 = penaltyEventsDao.getPenaltyEvent(notShowingUpEvent.getCode());
@@ -109,13 +105,13 @@ public class TestDBPenaltyEventsDao {
     }
 
     @Test
-    public void addPenaltyEventTest() {
+    public void addPenaltyEventTest() throws SQLException {
         PenaltyEvent retrievedTestEvent = penaltyEventsDao.getPenaltyEvent(testEvent.getCode());
         Assert.assertEquals("addPenaltyEventTest", testEvent, retrievedTestEvent);
     }
 
     @Test
-    public void deleteAndAddPenaltyEventDescriptionTest() {
+    public void deleteAndAddPenaltyEventDescriptionTest() throws SQLException {
         // Not changing testEvent (although you could change it because the @Before creates a new testEvent for the next @Test)
         PenaltyEvent modifiablePenaltyEvent = testEvent.clone();
 
@@ -139,7 +135,7 @@ public class TestDBPenaltyEventsDao {
     }
 
     @Test
-    public void penaltyBookTest() {
+    public void penaltyBookTest() throws SQLException {
         // setup some test data
         CustomDate thisDayAMonthEarlier = CustomDate.now();
         thisDayAMonthEarlier.setMonth(thisDayAMonthEarlier.getMonth() == 1 ? 12 : thisDayAMonthEarlier.getMonth() - 1);

@@ -21,6 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -56,7 +57,7 @@ public class AccountController extends AController{
      * This implementation is meant for the user
      */
     @PostMapping(value = "/new")
-    public ResponseEntity newAccount(@RequestBody User user) {
+    public ResponseEntity newAccount(@RequestBody User user) throws SQLException {
         try {
             // If user is from UGhent, he/she needs to use CAS
             if (user.getMail().toLowerCase().contains("@ugent"))
@@ -100,7 +101,7 @@ public class AccountController extends AController{
      */
     @PostMapping(value = "/new/by/employee")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'EMPLOYEE')")
-    public ResponseEntity newAccountByEmployee(@RequestBody User u) {
+    public ResponseEntity newAccountByEmployee(@RequestBody User u) throws SQLException {
         // Check that there is no user with email a.getEmail()
         if (accountDao.accountExistsByEmail(u.getMail()))
             return new ResponseEntity("WARNING: User with email " + u.getMail() + " already exists.", HttpStatus.CONFLICT);
@@ -129,7 +130,7 @@ public class AccountController extends AController{
 
     @GetMapping(value = "/verify")
     @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
-    public ResponseEntity verifyAccount(@RequestParam("code") String verificationCode) {
+    public ResponseEntity verifyAccount(@RequestParam("code") String verificationCode) throws SQLException {
         try {
             accountDao.verifyNewUser(verificationCode);
             return new ResponseEntity(HttpStatus.ACCEPTED);
@@ -141,15 +142,16 @@ public class AccountController extends AController{
     @GetMapping(value = "/email/{email}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "View a specific user")
-    public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
+    public ResponseEntity<User> getUserByEmail(@PathVariable String email) throws SQLException {
             User u = accountDao.getUserByEmail(email);
+            u.setPassword("");
             return new ResponseEntity<>(u, HttpStatus.OK);
     }
 
     @GetMapping(value = "/role/{role}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "View a specific user")
-    public List<String> getUsersNamesByRole(@PathVariable String role) {
+    public List<String> getUsersNamesByRole(@PathVariable String role) throws SQLException {
         return accountDao.getUserNamesByRole(role);
     }
 
@@ -163,7 +165,7 @@ public class AccountController extends AController{
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN','STUDENT','EMPLOYEE','SCAN')")
     @ApiOperation(value = "View the logged in user, according to his session id")
-    public ResponseEntity<User> getUserFromSession(@PathVariable String mapping, HttpSession session) {
+    public ResponseEntity<User> getUserFromSession(@PathVariable String mapping, HttpSession session) throws SQLException {
         if(!this.usersCache.isValid(session.getId(), mapping)){
             // in case the cookies don't match, invalidate the session
             session.invalidate();
@@ -182,7 +184,7 @@ public class AccountController extends AController{
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN','STUDENT','EMPLOYEE')")
     @ApiOperation(value = "View a specific user")
-    public ResponseEntity<User> getUserById(@PathVariable String id, HttpServletRequest request) throws NoUserLoggedInWithGivenSessionIdMappingException {
+    public ResponseEntity<User> getUserById(@PathVariable String id, HttpServletRequest request) throws NoUserLoggedInWithGivenSessionIdMappingException, SQLException {
         User u=getCurrentUser(request);
         // make sure students can not access other user their details
         if (!isTesting() && u.getAuthorities().contains(new Authority(Role.STUDENT)) &&
@@ -196,7 +198,7 @@ public class AccountController extends AController{
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
     @ApiOperation(value = "View a list of users")
-    public List<User> getUsersByLastName(@PathVariable String lastName) {
+    public List<User> getUsersByLastName(@PathVariable String lastName) throws SQLException {
         return accountDao.getUsersByLastName(lastName);
     }
 
@@ -204,7 +206,7 @@ public class AccountController extends AController{
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
     @ApiOperation(value = "View a list of users")
-    public List<User> getUsersByName(@PathVariable String name) {
+    public List<User> getUsersByName(@PathVariable String name) throws SQLException {
         // used for searches, the name does not have to written correct
         return accountDao.getUsersByNameSoundex(name);
     }
@@ -213,7 +215,7 @@ public class AccountController extends AController{
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
     @ApiOperation(value = "View a list of users")
-    public List<User> getUsersByFirstName(@PathVariable String firstName) {
+    public List<User> getUsersByFirstName(@PathVariable String firstName) throws SQLException {
         return accountDao.getUsersByFirstName(firstName);
     }
 
@@ -222,7 +224,7 @@ public class AccountController extends AController{
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN','STUDENT','EMPLOYEE')")
     @ApiOperation(value = "Update a specific user")
-    public ResponseEntity updateUser(@RequestBody User user, @PathVariable String email) {
+    public ResponseEntity updateUser(@RequestBody User user, @PathVariable String email) throws SQLException {
         /*
         Received user contains password in plain-text. First we encode the password so the DAO / DB
         only knows the encoded password.
@@ -242,7 +244,7 @@ public class AccountController extends AController{
     }
 
     @GetMapping("/exists/{email}")
-    public ResponseEntity<Boolean> exists(@PathVariable String email) {
+    public ResponseEntity<Boolean> exists(@PathVariable String email) throws SQLException {
         return new ResponseEntity<>(accountDao.accountExistsByEmail(email), HttpStatus.OK);
     }
 
@@ -252,7 +254,7 @@ public class AccountController extends AController{
      */
     @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
     @GetMapping("/scanlocations/{email}")
-    public ResponseEntity getScanlocationsNames(@PathVariable String email) {
+    public ResponseEntity getScanlocationsNames(@PathVariable String email) throws SQLException {
         boolean flag = false;
         User u = accountDao.getUserByEmail(email);
         if(u == null){
@@ -271,7 +273,7 @@ public class AccountController extends AController{
 
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteUser(@PathVariable String id){
+    public ResponseEntity deleteUser(@PathVariable String id) throws SQLException {
         accountDao.removeUserById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

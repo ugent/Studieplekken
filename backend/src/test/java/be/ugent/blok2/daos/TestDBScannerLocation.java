@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class TestDBScannerLocation {
 
     // combine IAccountDao with ILocationDao to test scanner location functionality
     @Before
-    public void setup() {
+    public void setup() throws SQLException {
         // Change database credentials for used daos
         TestSharedMethods.setupTestDaoDatabaseCredentials(accountDao);
         TestSharedMethods.setupTestDaoDatabaseCredentials(locationDao);
@@ -53,7 +54,7 @@ public class TestDBScannerLocation {
     }
 
     @After
-    public void cleanup() {
+    public void cleanup() throws SQLException {
         TestSharedMethods.removeTestUsers(accountDao, scannerStudent, scannerEmployee);
 
         locationDao.deleteLocation(testLocation2.getName());
@@ -63,7 +64,7 @@ public class TestDBScannerLocation {
     }
 
     @Test
-    public void locationScannersTest() {
+    public void locationScannersTest() throws SQLException {
         // add both test users as scanners for both test locations
         List<User> users = new ArrayList<>();
         users.add(scannerEmployee);

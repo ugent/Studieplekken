@@ -2,7 +2,6 @@ package be.ugent.blok2.daos.db;
 
 import be.ugent.blok2.daos.ILocationReservationDao;
 import be.ugent.blok2.helpers.date.CustomDate;
-import be.ugent.blok2.helpers.exceptions.NoSuchUserException;
 import be.ugent.blok2.model.users.User;
 import be.ugent.blok2.model.reservables.Location;
 import be.ugent.blok2.model.reservations.LocationReservation;
@@ -17,117 +16,82 @@ import java.util.*;
 public class DBLocationReservationDao extends ADB implements ILocationReservationDao {
 
     @Override
-    public List<LocationReservation> getAllLocationReservationsOfUser(String augentID) throws NoSuchUserException {
-        try (Connection conn = getConnection()) {
-
-            String queryUser = databaseProperties.getString("get_user_by_<?>").replace("<?>", "u.augentID = ?");
-            PreparedStatement statementUser = conn.prepareStatement(queryUser);
-            statementUser.setString(1, augentID);
-            ResultSet resultSetUser = statementUser.executeQuery();
-
-            if (!resultSetUser.next()) {
-                throw new NoSuchUserException("No user with id = " + augentID);
-            }
-
-            List<LocationReservation> reservations = new ArrayList<>();
-            String query = databaseProperties.getString("get_location_reservations_where_<?>");
-            query = query.replace("<?>", "u.augentid = ?");
-            PreparedStatement st = conn.prepareStatement(query);
-            st.setString(1, augentID);
-            ResultSet rs = st.executeQuery();
-            while (rs.next()) {
-                try {
-                    LocationReservation lockerReservation = createLocationReservation(rs);
-                    reservations.add(lockerReservation);
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                }
-            }
-            return reservations;
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return null;
+    public List<LocationReservation> getAllLocationReservationsOfUser(String augentID) throws SQLException {
+        String query = databaseProperties.getString("get_location_reservations_where_<?>");
+        query = query.replace("<?>", "u.augentid = ?");
+        return getAllLocationsFromQueryWithOneParameter(augentID, query);
     }
 
     @Override
-    public List<LocationReservation> getAllLocationReservationsOfLocation(String name) {
+    public List<LocationReservation> getAllLocationReservationsOfLocation(String locationName) throws SQLException {
+        String query = databaseProperties.getString("get_location_reservations_where_<?>");
+        query = query.replace("<?>", "lr.location_name = ?");
+        return getAllLocationsFromQueryWithOneParameter(locationName, query);
+    }
+
+    private List<LocationReservation> getAllLocationsFromQueryWithOneParameter(String parameterOne, String query)
+            throws SQLException {
         try (Connection conn = getConnection()) {
             List<LocationReservation> reservations = new ArrayList<>();
-            String query = databaseProperties.getString("get_location_reservations_where_<?>");
-            query = query.replace("<?>", "lr.location_name = ?");
-            PreparedStatement st = conn.prepareStatement(query);
-            st.setString(1, name);
-            ResultSet rs = st.executeQuery();
+
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, parameterOne);
+            ResultSet rs = pstmt.executeQuery();
+
             while (rs.next()) {
                 try {
                     LocationReservation locationReservation = createLocationReservation(rs);
                     reservations.add(locationReservation);
-                }
-                catch (Exception e) {
-                    System.out.println(e.getMessage());
+                } catch (Exception ignore) {
                 }
             }
+
             return reservations;
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
         }
-        return null;
     }
 
     @Override
-    public LocationReservation getLocationReservation(String augentID, CustomDate date) {
+    public LocationReservation getLocationReservation(String augentID, CustomDate date) throws SQLException {
         try (Connection conn = getConnection()) {
             String query = databaseProperties.getString("get_location_reservations_where_<?>");
             query = query.replace("<?>", "lr.user_augentid = ? and lr.date = ?");
-            PreparedStatement st = conn.prepareStatement(query);
-            st.setString(1, augentID);
-            st.setString(2, date.toString());
-            ResultSet rs = st.executeQuery();
+
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, augentID);
+            pstmt.setString(2, date.toString());
+            ResultSet rs = pstmt.executeQuery();
+
             if (rs.next()) {
-                try {
-                    return createLocationReservation(rs);
-                }
-                catch (Exception e) {
-                    System.out.println(e.getMessage());
-                }
+                return createLocationReservation(rs);
             } else {
                 return null;
             }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
         }
-        return null;
     }
 
     @Override
-    public void deleteLocationReservation(String augentID, CustomDate date) {
+    public void deleteLocationReservation(String augentID, CustomDate date) throws SQLException {
         try (Connection conn = getConnection()) {
-            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("delete_location_reservation"));
-            st.setString(1, augentID);
-            st.setString(2, date.toString());
-            st.execute();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_location_reservation"));
+            pstmt.setString(1, augentID);
+            pstmt.setString(2, date.toString());
+            pstmt.execute();
         }
     }
 
     @Override
-    public void addLocationReservation(LocationReservation locationReservation) {
+    public void addLocationReservation(LocationReservation locationReservation) throws SQLException {
         try (Connection conn = getConnection()) {
-            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("insert_location_reservation"));
-            st.setString(1, locationReservation.getDate().toString());
-            st.setString(2, locationReservation.getLocation().getName());
-            st.setString(3, locationReservation.getUser().getAugentID());
-            st.execute();
-        } catch(SQLException e) {
-            System.out.println(e.getMessage());
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("insert_location_reservation"));
+            pstmt.setString(1, locationReservation.getDate().toString());
+            pstmt.setString(2, locationReservation.getLocation().getName());
+            pstmt.setString(3, locationReservation.getUser().getAugentID());
+            pstmt.execute();
         }
     }
 
     @Override
-    // TODO: barcode moet augentid worden (zie issue #11)
-    public LocationReservation scanStudent(String location, String augentId) {
+    public LocationReservation scanStudent(String location, String augentId) throws SQLException {
         try (Connection conn = getConnection()) {
             // find out the CustomDate of today (note: Calendar here is java.util.Calendar,
             // not be.ugent.blok2.helpers.Calendar
@@ -150,72 +114,58 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
             pstmt.setString(1, augentId);
             pstmt.setString(2, today.toString());
             ResultSet rs = pstmt.executeQuery();
+
             if (rs.next())
                 return createLocationReservation(rs);
             else
                 return null;
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            return null;
         }
     }
 
     @Override
-    public void setAllStudentsOfLocationToAttended(String location, CustomDate date) {
+    public void setAllStudentsOfLocationToAttended(String location, CustomDate date) throws SQLException {
         try (Connection conn = getConnection()) {
-            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("set_all_location_reservations_attended"));
-            st.setString(1, location);
-            st.setString(2, date.toString());
-            st.execute();
-        }
-        catch (SQLException e) {
-            System.out.println(e.getMessage());
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("set_all_location_reservations_attended"));
+            pstmt.setString(1, location);
+            pstmt.setString(2, date.toString());
+            pstmt.execute();
         }
     }
 
     @Override
-    public int countReservedSeatsOfLocationOnDate(String location, CustomDate date) {
+    public int countReservedSeatsOfLocationOnDate(String location, CustomDate date) throws SQLException {
         try (Connection conn = getConnection()) {
-            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("count_location_reservations_of_location_for_date"));
-            st.setString(1, location);
-            st.setString(2, date.toString());
-            ResultSet rs = st.executeQuery();
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("count_location_reservations_of_location_for_date"));
+            pstmt.setString(1, location);
+            pstmt.setString(2, date.toString());
+            ResultSet rs = pstmt.executeQuery();
+
             if (rs.next()) {
                 return rs.getInt(1);
             }
-            return 0;
-        }
-        catch (SQLException e) {
-            System.out.println(e.getMessage());
+
             return 0;
         }
     }
 
     @Override
-    public List<LocationReservation> getAbsentStudents(String locationName, CustomDate date) {
+    public List<LocationReservation> getAbsentStudents(String locationName, CustomDate date) throws SQLException {
         try (Connection conn = getConnection()) {
             String query = databaseProperties.getString("get_location_reservations_where_<?>");
             query = query.replace("<?>", "lr.location_name = ? and lr.date = ? and (lr.attended = false or lr.attended is null)");
             PreparedStatement pstmt = conn.prepareStatement(query);
             return getAbsentOrPresentStudents(locationName, date, pstmt);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            return null;
         }
     }
 
     @Override
-    public List<LocationReservation> getPresentStudents(String locationName, CustomDate date) {
+    public List<LocationReservation> getPresentStudents(String locationName, CustomDate date) throws SQLException {
         try (Connection conn = getConnection()) {
             String query = databaseProperties.getString("get_location_reservations_where_<?>");
             query = query.replace("<?>", "lr.location_name = ? and lr.date = ? and lr.attended = true");
             PreparedStatement pstmt = conn.prepareStatement(query);
             return getAbsentOrPresentStudents(locationName, date, pstmt);
         }
-        catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return null;
     }
 
     private List<LocationReservation> getAbsentOrPresentStudents(String locationName, CustomDate date
@@ -224,8 +174,8 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
 
         pstmt.setString(1, locationName);
         pstmt.setString(2, date.toString());
-
         ResultSet rs = pstmt.executeQuery();
+
         while (rs.next()) {
             LocationReservation locationReservation = createLocationReservation(rs);
             reservations.add(locationReservation);
@@ -235,14 +185,12 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
     }
 
     @Override
-    public void setReservationToUnAttended(String augentId, CustomDate date) {
+    public void setReservationToUnAttended(String augentId, CustomDate date) throws SQLException {
         try (Connection conn = getConnection()) {
-                PreparedStatement st = conn.prepareStatement(databaseProperties.getString("set_location_reservation_unattended"));
-                st.setString(1, date.toString());
-                st.setString(2, augentId);
-                st.execute();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("set_location_reservation_unattended"));
+            pstmt.setString(1, date.toString());
+            pstmt.setString(2, augentId);
+            pstmt.execute();
         }
     }
 

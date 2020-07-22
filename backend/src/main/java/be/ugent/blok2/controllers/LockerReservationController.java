@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import be.ugent.blok2.helpers.date.CustomDate;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -45,7 +46,7 @@ public class LockerReservationController extends AController {
     @GetMapping("/user/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN','STUDENT','EMPLOYEE')")
     @ApiOperation(value = "View a list of all lockerreservations of a user by id")
-    public ResponseEntity getAllLockerReservationsOfUser(@PathVariable("id") String idString, HttpServletRequest request) throws NoUserLoggedInWithGivenSessionIdMappingException {
+    public ResponseEntity getAllLockerReservationsOfUser(@PathVariable("id") String idString, HttpServletRequest request) throws NoUserLoggedInWithGivenSessionIdMappingException, SQLException {
         User u = getCurrentUser(request);
         if (!isTesting() && u.getAuthorities().contains(new Authority(Role.STUDENT)) && u.getAuthorities().size() == 1 && !idString.equals(u.getAugentID())) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -61,7 +62,7 @@ public class LockerReservationController extends AController {
     @GetMapping("/userByName/{name}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "View a list of all lockerreservations of a user by name")
-    public List<LockerReservation> getAllLockerReservationsOfUserByName(@PathVariable("name") String name) {
+    public List<LockerReservation> getAllLockerReservationsOfUserByName(@PathVariable("name") String name) throws SQLException {
         return iLockerReservationDao.getAllLockerReservationsOfUserByName(name);
     }
 
@@ -69,7 +70,7 @@ public class LockerReservationController extends AController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN','STUDENT','EMPLOYEE')")
     @ApiOperation(value = "View a list of all lockerreservations of a location")
-    public List<LockerReservation> getAllLockerReservationsOfLocation(@PathVariable("name") String name) {
+    public List<LockerReservation> getAllLockerReservationsOfLocation(@PathVariable("name") String name) throws SQLException {
         return iLockerReservationDao.getAllLockerReservationsOfLocation(name);
     }
 
@@ -77,7 +78,7 @@ public class LockerReservationController extends AController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'STUDENT', 'EMPLOYEE')")
     @ApiOperation(value = "View a list of all ongoing lockerreservations of a location")
-    public List<LockerReservation> getAllLockerReservationsOfLocationWithoutKeyBroughtBack(@PathVariable("name") String locationName) throws Exception {
+    public List<LockerReservation> getAllLockerReservationsOfLocationWithoutKeyBroughtBack(@PathVariable("name") String locationName) throws SQLException {
         return iLockerReservationDao.getAllLockerReservationsOfLocationWithoutKeyBroughtBack(locationName);
     }
 
@@ -85,14 +86,14 @@ public class LockerReservationController extends AController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'STUDENT', 'EMPLOYEE')")
     @ApiOperation(value = "Get the number of all ongoing lockerreservations of a location")
-    public int getNumberOfLockerReservationsWithoutKeyBroughtBack(@PathVariable("name") String locationName){
+    public int getNumberOfLockerReservationsWithoutKeyBroughtBack(@PathVariable("name") String locationName) throws SQLException {
         return iLockerReservationDao.getNumberOfLockersInUseOfLocation(locationName);
     }
 
     @GetMapping("/{userId}/{lockerId}/{startDate}/{endDate}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Get the lockerreservation of the given user within the given period")
-    public ResponseEntity<LockerReservation> getLockerReservation(@PathVariable("userId") String idString, @PathVariable("lockerId") int lockerID, @PathVariable("startDate") String startDateString, @PathVariable("endDate") String endDateString, HttpServletRequest request) throws Exception {
+    public ResponseEntity<LockerReservation> getLockerReservation(@PathVariable("userId") String idString, @PathVariable("lockerId") int lockerID, @PathVariable("startDate") String startDateString, @PathVariable("endDate") String endDateString, HttpServletRequest request) throws SQLException, NoUserLoggedInWithGivenSessionIdMappingException {
         User u = getCurrentUser(request);
         // make sure a student can not view other users their lockerreservations
         if (!isTesting() && u.getAuthorities().contains(new Authority(Role.STUDENT)) && u.getAuthorities().size() == 1 && !idString.equals(u.getAugentID())) {
@@ -106,7 +107,7 @@ public class LockerReservationController extends AController {
     @DeleteMapping("/{userID}/{lockerId}/{startDate}/{endDate}")
     @PreAuthorize("hasAnyAuthority('ADMIN','STUDENT','EMPLOYEE')")
     @ApiOperation(value = "Delete the lockerreservation of the given user within the given period")
-    public ResponseEntity<String> deleteLockerReservation(@PathVariable("userID") String idString, @PathVariable("lockerId") int lockerId, @PathVariable("startDate") String startDateString, @PathVariable("endDate") String endDateString, HttpServletRequest request) throws NoUserLoggedInWithGivenSessionIdMappingException {
+    public ResponseEntity<String> deleteLockerReservation(@PathVariable("userID") String idString, @PathVariable("lockerId") int lockerId, @PathVariable("startDate") String startDateString, @PathVariable("endDate") String endDateString, HttpServletRequest request)  throws SQLException, NoUserLoggedInWithGivenSessionIdMappingException {
         ObjectMapper mapper = new ObjectMapper();
 
         User u = getCurrentUser(request);
@@ -143,7 +144,7 @@ public class LockerReservationController extends AController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'STUDENT', 'EMPLOYEE')")
     @ApiOperation(value = "Update the given lockerreservation")
-    public void changeLockerReservation(@RequestBody LockerReservation lockerReservation){
+    public void changeLockerReservation(@RequestBody LockerReservation lockerReservation) throws SQLException {
         this.iLockerReservationDao.changeLockerReservation(lockerReservation);
     }
 
@@ -151,7 +152,7 @@ public class LockerReservationController extends AController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('ADMIN','STUDENT','EMPLOYEE')")
     @ApiOperation(value = "Reserve a locker")
-    public ResponseEntity<String> addLockerReservation(@PathVariable("location") String locationName, @PathVariable("id") String augentID){
+    public ResponseEntity<String> addLockerReservation(@PathVariable("location") String locationName, @PathVariable("id") String augentID) throws SQLException  {
 
         ObjectMapper mapper = new ObjectMapper();
         //get lockers of location
