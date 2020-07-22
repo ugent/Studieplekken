@@ -35,189 +35,141 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
     }*/
 
     @Override
-    public List<LockerReservation> getAllLockerReservationsOfUser(String augentID) throws NoSuchUserException{
-        List<LockerReservation> reservations = new ArrayList<>();
-        try(Connection conn = getConnection()){
-
-            String queryUser = databaseProperties.getString("get_user_by_<?>").replace("<?>", "u.augentID = ?");
-            PreparedStatement statementUser = conn.prepareStatement(queryUser);
-            statementUser.setString(1, augentID);
-            ResultSet resultSetUser = statementUser.executeQuery();
-
-            if (!resultSetUser.next()) {
-                throw new NoSuchUserException("No user with id = " + augentID);
-            }
-
-            String query = databaseProperties.getString("get_locker_reservations_where_<?>");
-            query = query.replace("<?>", "lr.user_augentid = ?");
-            PreparedStatement st = conn.prepareStatement(query);
-            st.setString(1, augentID);
-            ResultSet rs = st.executeQuery();
-            while (rs.next()) {
-                LockerReservation lockerReservation = createLockerReservation(rs);
-                reservations.add(lockerReservation);
-            }
-        }
-        catch(SQLException e){
-            System.out.println(e.getMessage());
-        }
-        return reservations;
+    public List<LockerReservation> getAllLockerReservationsOfUser(String augentID) throws SQLException {
+        String query = databaseProperties.getString("get_locker_reservations_where_<?>");
+        query = query.replace("<?>", "lr.user_augentid = ?");
+        return getAllLockerReservationsFromQueryWithOneParamter(augentID, query);
     }
 
     @Override
-    public List<LockerReservation> getAllLockerReservationsOfUserByName(String name) {
-        List<LockerReservation> res = new ArrayList<>();
-        try(Connection conn = getConnection()){
+    public List<LockerReservation> getAllLockerReservationsOfUserByName(String name) throws SQLException {
+        try (Connection conn = getConnection()) {
+            List<LockerReservation> res = new ArrayList<>();
+
             String query = databaseProperties.getString("get_locker_reservations_where_<?>");
             query = query.replace("<?>", "metaphone(CONCAT(augentpreferredgivenname, ' ', augentpreferredsn), 10) = metaphone(?, 10) or metaphone(CONCAT(augentpreferredgivenname, ' ', augentpreferredsn), 10) = metaphone(?, 10)");
-            PreparedStatement st = conn.prepareStatement(query);
-            st.setString(1, name);
-            st.setString(2, name);
-            ResultSet rs = st.executeQuery();
+
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, name);
+            pstmt.setString(2, name);
+            ResultSet rs = pstmt.executeQuery();
+
             while (rs.next()) {
                 LockerReservation lockerReservation = createLockerReservation(rs);
                 res.add(lockerReservation);
             }
-        }
-        catch (SQLException e){
-            System.out.println(e.getMessage());
-        }
 
-        /*
-            If there have not been found lockerreservations with owners that have a similar complete name (first + last name). Then
-            there will be checked if there are lockerreservations with a owner that have a similar first of last name.
-         */
-        if(res.size()==0){
-            try (Connection conn = getConnection()) {
-                String query = databaseProperties.getString("get_locker_reservations_where_<?>");
+            // If there have not been found lockerreservations with owners that have a similar
+            // complete name (first + last name). Then there will be checked if there are
+            // lockerreservations with a owner that have a similar first of last name.
+
+            if (res.size() == 0) {
+                query = databaseProperties.getString("get_locker_reservations_where_<?>");
                 query = query.replace("<?>", "metaphone(augentpreferredgivenname, 10) = metaphone(? , 5) or metaphone(augentpreferredsn, 10) = metaphone(? , 5)");
-                PreparedStatement st = conn.prepareStatement(query);
-                st.setString(1, name);
-                st.setString(2, name);
-                ResultSet rs = st.executeQuery();
+
+                pstmt = conn.prepareStatement(query);
+                pstmt.setString(1, name);
+                pstmt.setString(2, name);
+                rs = pstmt.executeQuery();
+
                 while (rs.next()) {
                     LockerReservation lockerReservation = createLockerReservation(rs);
                     res.add(lockerReservation);
                 }
             }
-            catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
+            return res;
         }
-        return res;
     }
 
     @Override
-    public List<LockerReservation> getAllLockerReservationsOfLocation(String name) {
-        List<LockerReservation> reservations = new ArrayList<>();
+    public List<LockerReservation> getAllLockerReservationsOfLocation(String name) throws SQLException {
+        String query = databaseProperties.getString("get_locker_reservations_where_<?>");
+        query = query.replace("<?>", "l.location_name = ?");
+        return getAllLockerReservationsFromQueryWithOneParamter(name, query);
+    }
+
+    @Override
+    public List<LockerReservation> getAllLockerReservationsOfLocationWithoutKeyBroughtBack(String name) throws SQLException {
+        String query = databaseProperties.getString("get_locker_reservations_where_<?>");
+        query = query.replace("<?>", "l.location_name = ? and lr.key_return_date = ''");
+        return getAllLockerReservationsFromQueryWithOneParamter(name, query);
+    }
+
+    private List<LockerReservation> getAllLockerReservationsFromQueryWithOneParamter(String parameter, String query)
+            throws SQLException {
         try (Connection conn = getConnection()) {
-            String query = databaseProperties.getString("get_locker_reservations_where_<?>");
-            query = query.replace("<?>", "l.location_name = ?");
-            PreparedStatement st = conn.prepareStatement(query);
-            st.setString(1, name);
-            ResultSet rs = st.executeQuery();
+            List<LockerReservation> reservations = new ArrayList<>();
+
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, parameter);
+            ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 LockerReservation lockerReservation = createLockerReservation(rs);
                 reservations.add(lockerReservation);
             }
+
+            return reservations;
         }
-        catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return reservations;
     }
 
     @Override
-    public List<LockerReservation> getAllLockerReservationsOfLocationWithoutKeyBroughtBack(String name) {
-        List<LockerReservation> reservations = new ArrayList<>();
+    public int getNumberOfLockersInUseOfLocation(String locationName) throws SQLException {
         try (Connection conn = getConnection()) {
-            String query = databaseProperties.getString("get_locker_reservations_where_<?>");
-            query = query.replace("<?>", "l.location_name = ? and lr.key_return_date = ''");
-            PreparedStatement st = conn.prepareStatement(query);
-            st.setString(1, name);
-            ResultSet rs = st.executeQuery();
-            while (rs.next()) {
-                LockerReservation lockerReservation = createLockerReservation(rs);
-                reservations.add(lockerReservation);
-            }
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("count_lockers_in_use_of_location"));
+            pstmt.setString(1, locationName);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next())
+                return rs.getInt(1);
+
+            return 0;
         }
-        catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return reservations;
     }
 
     @Override
-    public int getNumberOfLockersInUseOfLocation(String locationName) {
-        int count = 0;
-        try (Connection conn = getConnection()) {
-            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("count_lockers_in_use_of_location"));
-            st.setString(1, locationName);
-            ResultSet rs = st.executeQuery();
-            while (rs.next()) {
-                count = rs.getInt(1);
-            }
-        }
-        catch(SQLException e){
-            System.out.println(e.getMessage());
-        }
-        return count;
-    }
-
-    @Override
-    public LockerReservation getLockerReservation(String augentID, int lockerID) {
+    public LockerReservation getLockerReservation(String augentID, int lockerID) throws SQLException {
         try (Connection conn = getConnection()) {
             String query = databaseProperties.getString("get_locker_reservations_where_<?>");
             query = query.replace("<?>", "lr.locker_id = ? and lr.user_augentid = ?");
-            PreparedStatement st = conn.prepareStatement(query);
-            st.setInt(1, lockerID);
-            st.setString(2, augentID);
-            ResultSet rs = st.executeQuery();
+
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setInt(1, lockerID);
+            pstmt.setString(2, augentID);
+            ResultSet rs = pstmt.executeQuery();
+
             if (rs.next())
                 return createLockerReservation(rs);
-            return null;
-        }
-        catch (SQLException e) {
-            System.out.println(e.getMessage());
+
             return null;
         }
     }
 
     @Override
-    public void deleteLockerReservation(String augentID, int lockerID) {
+    public void deleteLockerReservation(String augentID, int lockerID) throws SQLException {
         try (Connection conn = getConnection()) {
-            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("delete_locker_reservation"));
-            st.setString(1, augentID);
-            st.setInt(2, lockerID);
-            st.execute();
-        }
-        catch (SQLException e) {
-            System.out.println(e.getMessage());
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_locker_reservation"));
+            pstmt.setString(1, augentID);
+            pstmt.setInt(2, lockerID);
+            pstmt.execute();
         }
     }
 
     @Override
-    public void addLockerReservation(LockerReservation lockerReservation) {
+    public void addLockerReservation(LockerReservation lockerReservation) throws SQLException {
         try (Connection conn = getConnection()) {
-            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("insert_locker_reservation"));
-            setupInsertLockerReservationPstmt(lockerReservation, st);
-            st.execute();
-        }
-        catch (SQLException e) {
-            System.out.println(e.getMessage());
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("insert_locker_reservation"));
+            setupInsertLockerReservationPstmt(lockerReservation, pstmt);
+            pstmt.execute();
         }
     }
 
     @Override
-    public void changeLockerReservation(LockerReservation lockerReservation) {
+    public void changeLockerReservation(LockerReservation lockerReservation) throws SQLException {
         try (Connection conn = getConnection()) {
-            PreparedStatement st = conn.prepareStatement(databaseProperties.getString("update_locker_reservation"));
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("update_locker_reservation"));
             setupUpdateLockerReservationPstmt(lockerReservation, lockerReservation.getLocker().getId(),
-                    lockerReservation.getOwner().getAugentID(), st);
-            st.execute();
-        }
-        catch (SQLException e) {
-            System.out.println(e.getMessage());
+                    lockerReservation.getOwner().getAugentID(), pstmt);
+            pstmt.execute();
         }
     }
 

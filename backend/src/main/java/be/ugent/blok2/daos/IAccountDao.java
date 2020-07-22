@@ -1,17 +1,11 @@
 package be.ugent.blok2.daos;
 
-import be.ugent.blok2.helpers.exceptions.NoSuchUserException;
 import be.ugent.blok2.model.users.User;
 
 import java.sql.SQLException;
 import java.util.List;
 
 public interface IAccountDao extends IDao {
-
-    /**
-     * NOTE: the password of a given user will be empty for security measures.
-     * Only when the name of method has 'WithPassword' in it, the password will be filled in.
-     */
 
     /**
      * Gets the user associated with the given email.

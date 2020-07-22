@@ -1,6 +1,5 @@
 package be.ugent.blok2.daos;
 
-import be.ugent.blok2.helpers.exceptions.NoSuchUserException;
 import be.ugent.blok2.model.reservations.LocationReservation;
 
 import be.ugent.blok2.helpers.date.CustomDate;

@@ -3,8 +3,6 @@ package be.ugent.blok2.daos;
 import be.ugent.blok2.helpers.date.Calendar;
 import be.ugent.blok2.helpers.date.CustomDate;
 import be.ugent.blok2.helpers.date.Day;
-import be.ugent.blok2.helpers.exceptions.AlreadyExistsException;
-import be.ugent.blok2.helpers.exceptions.DateFormatException;
 import be.ugent.blok2.model.users.User;
 import be.ugent.blok2.model.reservables.Location;
 import be.ugent.blok2.model.reservables.Locker;
