@@ -20,51 +20,11 @@ public class User implements Cloneable, UserDetails {
     private String institution;
     private String augentID;
     private int penaltyPoints;
-    private String barcode;
+    //private String barcode;
     private Role[] roles;
 
-    // The locations a scanner is allowed to scan at
-    private Collection<String> scannerLocations;
-
     public User() {
-        this.scannerLocations = new ArrayList<>();
-    }
 
-    public User(String augentID){
-
-        this.augentID = augentID;
-        this.scannerLocations = new ArrayList<>();
-    }
-
-    public User(String augentID, String lastName, String firstName
-            , String mail, String password, String institution,
-                Role[] roles, String barcode) {
-        this.lastName = lastName;
-        this.firstName = firstName;
-        this.mail = mail;
-        this.password = password;
-        this.institution = institution;
-        this.augentID = augentID;
-        this.roles = roles;
-        this.penaltyPoints = 0;
-        this.barcode=barcode;
-        scannerLocations= new ArrayList<>();
-    }
-
-
-    public User(String augentID, String lastName, String firstName
-            , String mail, String password, String institution,
-                Role[] roles, Integer penaltyPoints, String barcode) {
-        this.lastName = lastName;
-        this.firstName = firstName;
-        this.mail = mail;
-        this.password = password;
-        this.institution = institution;
-        this.augentID = augentID;
-        this.roles = roles;
-        this.penaltyPoints = penaltyPoints;
-        this.barcode=barcode;
-        scannerLocations = new ArrayList<>();
     }
 
     @Override
@@ -94,9 +54,6 @@ public class User implements Cloneable, UserDetails {
                 c.roles[i] = roles[i];
             }
 
-            c.scannerLocations = new ArrayList<>();
-            c.scannerLocations.addAll(scannerLocations);
-
             return c;
         } catch (CloneNotSupportedException e) {
             return null;
@@ -111,15 +68,10 @@ public class User implements Cloneable, UserDetails {
             for (int i = 0; i < roles.length; i++) {
                 c.roles[i] = roles[i];
             }
-            c.scannerLocations = new ArrayList<>();
             return c;
         } catch (CloneNotSupportedException e) {
             return null;
         }
-    }
-
-    public void addScanLocation(String l){
-        this.scannerLocations.add(l);
     }
 
     @Override
@@ -168,10 +120,6 @@ public class User implements Cloneable, UserDetails {
         return lastName;
     }
 
-    public void setScannerLocations(Collection<String> scannerLocations) {
-        this.scannerLocations = scannerLocations;
-    }
-
     public String getFirstName() {
         return firstName;
     }
@@ -201,9 +149,9 @@ public class User implements Cloneable, UserDetails {
         return password;
     }
 
-    public String getBarcode(){
+    /*public String getBarcode(){
         return barcode;
-    }
+    }*/
 
     public void setAugentID(String augentID) {
         this.augentID = augentID;
@@ -237,13 +185,9 @@ public class User implements Cloneable, UserDetails {
         this.roles = roles;
     }
 
-    public void setBarcode(String barcode){
+    /*public void setBarcode(String barcode){
         this.barcode=barcode;
-    }
-
-    public Collection<String> getScannerLocations() {
-        return scannerLocations;
-    }
+    }*/
 
 
 //</editor-fold>
@@ -258,7 +202,7 @@ public class User implements Cloneable, UserDetails {
                 ", institution='" + institution + '\'' +
                 ", augentID='" + augentID + '\'' +
                 ", penaltyPoints=" + penaltyPoints +
-                ", barcode='" + barcode + '\'' +
+                //", barcode='" + barcode + '\'' +
                 ", roles=" + Arrays.toString(roles) +
                 '}';
     }

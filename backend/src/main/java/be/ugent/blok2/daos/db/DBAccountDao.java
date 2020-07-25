@@ -228,18 +228,6 @@ public class DBAccountDao extends ADB implements IAccountDao {
             pstmt.setString(6, u.getAugentID());
             pstmt.setString(7, rolesToCsv(u.getRoles()));
             pstmt.setInt(8, u.getPenaltyPoints());
-            if (u.getBarcode() == null || u.getBarcode().length() == 0) {
-                // indien geen barcode voorzien werd, deze instellen op UPC-A gegenereerd op basis van AUGent id
-                String barcode = u.getAugentID();
-                while(barcode.length() > 11){
-                    barcode = barcode.substring(1);
-                }
-                barcode = BarcodeController.calculateUPCACheckSum(barcode);
-                u.setBarcode(barcode);
-                pstmt.setString(9, barcode);
-            } else {
-                pstmt.setString(9, u.getBarcode());
-            }
             pstmt.executeUpdate();
             return u;
         }
@@ -321,14 +309,6 @@ public class DBAccountDao extends ADB implements IAccountDao {
         }
 
         return verificationCode;
-    }
-
-    public void setString(PreparedStatement pstmt, int nr, String value) throws SQLException {
-        if (value != null) {
-            pstmt.setString(nr, value);
-        } else {
-            pstmt.setNull(nr, Types.NULL);
-        }
     }
 
     @Override
@@ -456,7 +436,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
                 } else {
                     PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("update_user"));
                     prepareUpdateOrInsertUser(u, pstmt);
-                    pstmt.setString(10, u.getAugentID());
+                    pstmt.setString(9, u.getAugentID());
                     pstmt.execute();
                 }
 
@@ -509,14 +489,11 @@ public class DBAccountDao extends ADB implements IAccountDao {
     public static User createUser(ResultSet rs) throws SQLException {
         User u = equalPartForCreatingUserOrUserToVerify(rs);
         u.setPenaltyPoints(rs.getInt(databaseProperties.getString("user_penalty_points")));
-        u.setBarcode(rs.getString(databaseProperties.getString("user_barcode")));
         return u;
     }
 
     private static User createUserFromUsersToVerify(ResultSet rs) throws SQLException {
-        User u = equalPartForCreatingUserOrUserToVerify(rs);
-        u.setBarcode(rs.getString(databaseProperties.getString("user_barcode")));
-        return u;
+        return equalPartForCreatingUserOrUserToVerify(rs);
     }
 
     private static User equalPartForCreatingUserOrUserToVerify(ResultSet rs) throws SQLException {
@@ -534,20 +511,18 @@ public class DBAccountDao extends ADB implements IAccountDao {
     private void prepareUpdateOrInsertUser(User u, PreparedStatement pstmt) throws SQLException {
         equalPreparationForUserAndUserToVerify(u, pstmt);
         pstmt.setInt(8, u.getPenaltyPoints());
-        setString(pstmt, 9, u.getBarcode());
+        //setString(pstmt, 9, u.getBarcode());
     }
 
     private void prepareInsertUserToVerify(User u, String verificationCode, PreparedStatement pstmt)
             throws SQLException {
         equalPreparationForUserAndUserToVerify(u, pstmt);
 
-        setString(pstmt, 8, u.getBarcode());
-
-        pstmt.setString(9, verificationCode);
+        pstmt.setString(8, verificationCode);
 
         LocalDateTime localDate = LocalDateTime.now();
         CustomDate today = new CustomDate(localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth(), localDate.getHour(), localDate.getMinute(), localDate.getSecond());
-        pstmt.setString(10, today.toString());
+        pstmt.setString(9, today.toString());
     }
 
     private void equalPreparationForUserAndUserToVerify(User u, PreparedStatement pstmt)

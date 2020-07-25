@@ -234,8 +234,7 @@ CREATE TABLE public.users (
     penalty_points integer,
     mail text NOT NULL,
     password text,
-    institution text NOT NULL,
-    barcode text
+    institution text NOT NULL
 );
 
 
@@ -253,7 +252,6 @@ CREATE TABLE public.users_to_verify (
     institution text NOT NULL,
     augentid text NOT NULL,
     role text NOT NULL,
-    barcode text,
     verification_code text NOT NULL,
     created_timestamp text NOT NULL
 );
@@ -579,7 +577,7 @@ values ('ADMIN'), ('EMPLOYEE'), ('STUDENT');
 --		- user: scanmedewerker 				password: Test1234
 --		- user: student-scanmedewerker		password: Test1234
 --
-insert into public.users (augentid, role, augentpreferredgivenname, augentpreferredsn, penalty_points, mail, password, institution, barcode)
-values ('01', 'ADMIN;EMPLOYEE', 'admin', 'admin', 0, 'admin', '$2a$10$3sAUdBwt2sJhhMl3MVZAv.Pv56XHGo2kTbyS.nFeMmPb3dHA1kkTq', 'UGent', '001703195697'),
-('02', 'EMPLOYEE', 'scanmedewerker', 'scanmedewerker', 0, 'scanmedewerker', '$2a$10$3sAUdBwt2sJhhMl3MVZAv.Pv56XHGo2kTbyS.nFeMmPb3dHA1kkTq', 'UGent', '001703195697'),
-('03', 'STUDENT;EMPLOYEE', 'student-scanmedewerker', 'student-scanmedewerker', 0, 'student-scanmedewerker', '$2a$10$3sAUdBwt2sJhhMl3MVZAv.Pv56XHGo2kTbyS.nFeMmPb3dHA1kkTq', 'UGent', '001703195697');
+insert into public.users (augentid, role, augentpreferredgivenname, augentpreferredsn, penalty_points, mail, password, institution)
+values ('01', 'ADMIN;EMPLOYEE', 'admin', 'admin', 0, 'admin', '$2a$10$3sAUdBwt2sJhhMl3MVZAv.Pv56XHGo2kTbyS.nFeMmPb3dHA1kkTq', 'UGent'),
+('02', 'EMPLOYEE', 'scanmedewerker', 'scanmedewerker', 0, 'scanmedewerker', '$2a$10$3sAUdBwt2sJhhMl3MVZAv.Pv56XHGo2kTbyS.nFeMmPb3dHA1kkTq', 'UGent'),
+('03', 'STUDENT;EMPLOYEE', 'student-scanmedewerker', 'student-scanmedewerker', 0, 'student-scanmedewerker', '$2a$10$3sAUdBwt2sJhhMl3MVZAv.Pv56XHGo2kTbyS.nFeMmPb3dHA1kkTq', 'UGent');
