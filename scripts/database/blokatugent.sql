@@ -120,8 +120,7 @@ COMMENT ON TABLE public.location_reservations IS 'Date in format: yyyy-MM-ddThh:
 
 CREATE TABLE public.lockers (
     location_name text NOT NULL,
-    number integer NOT NULL,
-    id serial NOT NULL
+    number integer NOT NULL
 );
 
 
@@ -132,7 +131,8 @@ ALTER TABLE public.lockers OWNER TO postgres;
 --
 
 CREATE TABLE public.locker_reservations (
-    locker_id integer NOT NULL,
+    location_name text NOT NULL,
+    locker_number integer NOT NULL,
     user_augentid text NOT NULL,
     key_pickup_date text,
     key_return_date text
@@ -314,14 +314,13 @@ primary key (
 
 alter table only public.lockers
 add constraint pk_lockers 
-primary key (
-	id
-);
+primary key (location_name, number);
 
 alter table only public.locker_reservations
 add constraint pk_locker_reservations 
 primary key (
-	locker_id
+	location_name
+	, locker_number
 	, user_augentid
 );
 
@@ -431,8 +430,8 @@ references public.locations (name);
 --
 alter table only public.locker_reservations
 add constraint fk_locker_reservations_to_lockers
-foreign key (locker_id)
-references public.lockers (id);
+foreign key (location_name, locker_number)
+references public.lockers (location_name, number);
 
 alter table only public.locker_reservations
 add constraint fk_locker_reservations_to_users
@@ -511,10 +510,6 @@ references public.institutions (name);
 ----------------- +----------------------------+
 ----------------- |   Set unique constraints   |
 ----------------- +----------------------------+
-alter table public.lockers
-add constraint uc_lockers
-unique (location_name, number);
-
 alter table public.users 
 add constraint uc_users
 unique (mail);

@@ -186,11 +186,11 @@ public class DBLocationDao extends ADB implements ILocationDao {
             st.setString(1, locationName);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
-                int lockerID = rs.getInt(databaseProperties.getString("locker_id"));
+                //int lockerID = rs.getInt(databaseProperties.getString("locker_id"));
                 int number = rs.getInt(databaseProperties.getString("locker_number"));
 
                 Locker locker = new Locker();
-                locker.setId(lockerID);
+                //locker.setId(lockerID);
                 locker.setNumber(number);
 
                 Location location = DBLocationDao.createLocation(rs);
@@ -306,8 +306,9 @@ public class DBLocationDao extends ADB implements ILocationDao {
                     locker_ids.add(locker);
                 }
                 for (Locker l : locker_ids) {
-                    pstmt = conn.prepareStatement(databaseProperties.getString("delete_locker_reservation_of_locker"));
-                    pstmt.setInt(1, l.getId());
+                    pstmt = conn.prepareStatement(databaseProperties.getString("delete_locker_reservation"));
+                    pstmt.setString(1, l.getLocation().getName());
+                    pstmt.setInt(2, l.getNumber());
                     pstmt.execute();
                 }
 
@@ -592,7 +593,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
 
     public static Locker createLocker(ResultSet rs) throws SQLException {
         Locker l = new Locker();
-        l.setId(rs.getInt(databaseProperties.getString("locker_id")));
+        //l.setId(rs.getInt(databaseProperties.getString("locker_id")));
         l.setNumber(rs.getInt(databaseProperties.getString("locker_number")));
         Location location = DBLocationDao.createLocation(rs);
         l.setLocation(location);

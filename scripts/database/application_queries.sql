@@ -258,8 +258,8 @@ with recursive x as (
 ), y as (
 	select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
 		, u.augentid, u.role
-		, l.location_name, l.number, l.id
-		, lr.locker_id, lr.user_augentid, lr.key_pickup_date, lr.key_return_date
+		, l.location_name, l.number
+		, lr.user_augentid, lr.key_pickup_date, lr.key_return_date
 		, coalesce(floor(sum(
         	case
 				/*
@@ -271,7 +271,8 @@ with recursive x as (
 			end)), 0) as "penalty_points"
 	from public.locker_reservations lr
 		join public.lockers l
-			on l.id = lr.locker_id
+			on l.location_name = lr.location_name
+	        and l.number = lr.locker_number
 		join public.users u
 			on u.augentid = lr.user_augentid
 		left join public.penalty_book pb
@@ -281,13 +282,13 @@ with recursive x as (
 	where <?>
 	group by u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
 		, u.augentid, u.role
-		, l.location_name, l.number, l.id
-		, lr.locker_id, lr.user_augentid, lr.key_pickup_date, lr.key_return_date
+		, l.location_name, l.number
+		, lr.user_augentid, lr.key_pickup_date, lr.key_return_date
 )
 select y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
      , y.augentid, y.role, y.penalty_points
-     , y.id, y.number, y.location_name
-     , y.locker_id, y.user_augentid, y.key_pickup_date, y.key_return_date
+     , y.number, y.location_name
+     , y.user_augentid, y.key_pickup_date, y.key_return_date
 	 , l.name, l.number_of_seats, l.number_of_lockers, l.maps_frame, l.image_url, l.address
      , l.start_period_lockers, l.end_period_lockers
 	 , ld.lang_enum, ld.description
@@ -298,8 +299,8 @@ from y
 		on ld.location_name = l.name
 group by y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
      , y.augentid, y.role, y.penalty_points
-     , y.id, y.number, y.location_name
-     , y.locker_id, y.user_augentid, y.key_pickup_date, y.key_return_date
+     , y.number, y.location_name
+     , y.user_augentid, y.key_pickup_date, y.key_return_date
 	 , l.name, l.number_of_seats, l.number_of_lockers, l.maps_frame, l.image_url, l.address
      , l.start_period_lockers, l.end_period_lockers
 	 , ld.lang_enum, ld.description
@@ -309,18 +310,14 @@ order by l.name;
 select count(1)
 from public.locker_reservations r
     join public.lockers l
-        on r.locker_id = l.id
+        on r.location_name = l.location_name
+        and r.locker_number = l.number
 where l.location_name = ? and r.key_pickup_date <> '' and r.key_return_date = '';
 
 -- $delete_locker_reservation
 delete
 from public.locker_reservations
-where locker_id = ? and user_augentid = ?;
-
--- $delete_locker_reservation_of_locker
-delete
-from public.locker_reservations
-where locker_id = ?;
+where location_name = ? and locker_number = ?;
 
 -- $delete_locker_reservations_of_user_by_id
 delete
@@ -328,13 +325,13 @@ from public.locker_reservations
 where user_augentid = ?;
 
 -- $insert_locker_reservation
-insert into public.locker_reservations (locker_id, user_augentid, key_pickup_date, key_return_date)
-values (?, ?, ?, ?);
+insert into public.locker_reservations (location_name, locker_number, user_augentid, key_pickup_date, key_return_date)
+values (?, ?, ?, ?, ?);
 
 -- $update_locker_reservation
 update public.locker_reservations
 set key_pickup_date = ?, key_return_date = ?
-where locker_id = ? and user_augentid = ?;
+where location_name = ? and locker_number = ? and user_augentid = ?;
 
 -- $update_locker_reservations_of_user
 /*
@@ -349,7 +346,7 @@ where user_augentid = ?;
 
 -- queries for table LOCKER
 -- $get_lockers_where_<?>
-select l.location_name, l.number, l.id
+select l.location_name, l.number
 	, s.name, s.number_of_seats, s.number_of_lockers, s.maps_frame, s.image_url
 	, s.address, s.start_period_lockers, s.end_period_lockers
 	, sd.lang_enum, sd.description

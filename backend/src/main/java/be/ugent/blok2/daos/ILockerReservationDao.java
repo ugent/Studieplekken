@@ -31,12 +31,12 @@ public interface ILockerReservationDao extends IDao {
     /**
      * Gets the lockerreservation with the given details.
      */
-    LockerReservation getLockerReservation(String augentID, int lockerID) throws SQLException;
+    LockerReservation getLockerReservation(String locationName, int lockerNumber) throws SQLException;
 
     /**
      * Delete the lockerreservation with the given details.
      */
-    void deleteLockerReservation(String augentID, int LockerID) throws SQLException;
+    void deleteLockerReservation(String locationName, int lockerNumber) throws SQLException;
 
     /**
      * Add a lockerreservation.

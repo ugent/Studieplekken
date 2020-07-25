@@ -3,7 +3,7 @@ package be.ugent.blok2.model.reservables;
 import java.util.Objects;
 
 public class Locker implements Cloneable {
-    private int id;
+    //private int id;
     private int number; // identification number of locker
     private Location location;
 
@@ -16,7 +16,7 @@ public class Locker implements Cloneable {
         return "Locker{" +
                 ", number=" + number +
                 ", location=" + location +
-                ", id=" + id +
+                //", id=" + id +
                 '}';
     }
 
@@ -26,13 +26,14 @@ public class Locker implements Cloneable {
         if (o == null || getClass() != o.getClass()) return false;
         Locker locker = (Locker) o;
         return number == locker.number &&
-                Objects.equals(location, locker.getLocation()) &&
-                id == locker.id;
+                Objects.equals(location, locker.getLocation());
+        // Note: do not include the id, this is just a number that the
+        // database uses for PK. This has no further meaning to the application
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(number, id);
+        return Objects.hash(number/*, id*/);
     }
 
     @Override
@@ -46,13 +47,13 @@ public class Locker implements Cloneable {
 
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
 
-    public int getId() {
+    /*public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
-    }
+    }*/
 
     public void setNumber(int number) {
         this.number = number;

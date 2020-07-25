@@ -135,5 +135,12 @@ public class TestDBLocationDao {
         Collection<Locker> lockers = locationDao.getLockers(testLocation.getName());
         Assert.assertEquals("lockersTest, check size getLockers"
                 , testLocation.getNumberOfLockers(), lockers.size());
+
+        if (testLocation.getNumberOfLockers() > 0) {
+            for (Locker l : lockers) {
+                Assert.assertEquals("lockersTest, check location of each locker"
+                        , testLocation, l.getLocation());
+            }
+        }
     }
 }

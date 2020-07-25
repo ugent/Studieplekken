@@ -127,14 +127,14 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
     }
 
     @Override
-    public LockerReservation getLockerReservation(String augentID, int lockerID) throws SQLException {
+    public LockerReservation getLockerReservation(String locationName, int lockerNumber) throws SQLException {
         try (Connection conn = getConnection()) {
             String query = databaseProperties.getString("get_locker_reservations_where_<?>");
-            query = query.replace("<?>", "lr.locker_id = ? and lr.user_augentid = ?");
+            query = query.replace("<?>", "l.location_name = ? and l.number = ?");
 
             PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setInt(1, lockerID);
-            pstmt.setString(2, augentID);
+            pstmt.setString(1, locationName);
+            pstmt.setInt(2, lockerNumber);
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next())
@@ -145,11 +145,11 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
     }
 
     @Override
-    public void deleteLockerReservation(String augentID, int lockerID) throws SQLException {
+    public void deleteLockerReservation(String locationName, int lockerNumber) throws SQLException {
         try (Connection conn = getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_locker_reservation"));
-            pstmt.setString(1, augentID);
-            pstmt.setInt(2, lockerID);
+            pstmt.setString(1, locationName);
+            pstmt.setInt(2, lockerNumber);
             pstmt.execute();
         }
     }
@@ -167,8 +167,11 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
     public void changeLockerReservation(LockerReservation lockerReservation) throws SQLException {
         try (Connection conn = getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("update_locker_reservation"));
-            setupUpdateLockerReservationPstmt(lockerReservation, lockerReservation.getLocker().getId(),
-                    lockerReservation.getOwner().getAugentID(), pstmt);
+            // set ...
+            setupUpdateLockerReservationPstmt(lockerReservation, pstmt);
+            // where ...
+            pstmt.setString(3, lockerReservation.getLocker().getLocation().getName());
+            pstmt.setInt(4, lockerReservation.getLocker().getNumber());
             pstmt.execute();
         }
     }
@@ -189,17 +192,15 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
 
     private void setupInsertLockerReservationPstmt(LockerReservation lr
             , PreparedStatement pstmt) throws SQLException {
-        pstmt.setInt(1, lr.getLocker().getId());
-        pstmt.setString(2, lr.getOwner().getAugentID());
-        pstmt.setString(3, lr.getKeyPickupDate() == null ? "" : lr.getKeyPickupDate().toString());
-        pstmt.setString(4, lr.getKeyReturnedDate() == null ? "" : lr.getKeyReturnedDate().toString());
+        pstmt.setString(1, lr.getLocker().getLocation().getName());
+        pstmt.setInt(2, lr.getLocker().getNumber());
+        pstmt.setString(3, lr.getOwner().getAugentID());
+        pstmt.setString(4, lr.getKeyPickupDate() == null ? "" : lr.getKeyPickupDate().toString());
+        pstmt.setString(5, lr.getKeyReturnedDate() == null ? "" : lr.getKeyReturnedDate().toString());
     }
 
-    private void setupUpdateLockerReservationPstmt(LockerReservation lr
-            , int lockerId, String augentId, PreparedStatement pstmt) throws SQLException {
+    private void setupUpdateLockerReservationPstmt(LockerReservation lr, PreparedStatement pstmt) throws SQLException {
         pstmt.setString(1, lr.getKeyPickupDate() == null ? "" : lr.getKeyPickupDate().toString());
         pstmt.setString(2, lr.getKeyReturnedDate() == null ? "" : lr.getKeyReturnedDate().toString());
-        pstmt.setInt(3, lockerId);
-        pstmt.setString(4, augentId);
     }
 }
