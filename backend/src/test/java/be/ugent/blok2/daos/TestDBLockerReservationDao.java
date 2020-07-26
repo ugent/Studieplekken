@@ -36,7 +36,6 @@ public class TestDBLockerReservationDao {
     private Location testLocation;
     private User testUser1;
     private User testUser2;
-    private Locker[] testLockers;
     private List<LockerReservation> testLockerReservations;
 
     @Before
@@ -51,14 +50,12 @@ public class TestDBLockerReservationDao {
         testUser1 = TestSharedMethods.employeeAdminTestUser();
         testUser2 = TestSharedMethods.studentEmployeeTestUser();
 
-        testLockers = new Locker[testLocation.getNumberOfLockers()];
         testLockerReservations = new ArrayList<>();
 
         for (int i = 0; i < testLocation.getNumberOfLockers(); i++) {
             Locker locker = new Locker();
             locker.setNumber(i);
             locker.setLocation(testLocation);
-            testLockers[i] = locker;
 
             if (testLockerReservations.size() < 1)
                 testLockerReservations.add(new LockerReservation(locker, testUser1));
