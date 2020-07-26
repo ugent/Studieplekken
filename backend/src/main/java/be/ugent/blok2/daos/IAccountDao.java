@@ -38,11 +38,6 @@ public interface IAccountDao extends IDao {
     List<String> getUserNamesByRole(String role) throws SQLException;
 
     /**
-     * Gets the locations a user with the given email is allowed to scan at.
-     */
-    List<String> getScannerLocations(String email) throws SQLException;
-
-    /**
      * Try to resolve user from barcode
      */
     User getUserFromBarcode(String barcode) throws SQLException;
@@ -76,10 +71,4 @@ public interface IAccountDao extends IDao {
      * Checks if their exists a user with the given email.
      */
     boolean accountExistsByEmail(String email) throws SQLException;
-
-    /**
-     * Adds a location to the list of locations that a user is allowed
-     * to start the scan process at.
-     */
-    void setScannerLocation(String augent, String location) throws SQLException;
 }

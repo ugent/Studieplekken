@@ -3,6 +3,7 @@ package be.ugent.blok2.controllers;
 import be.ugent.blok2.daos.IAccountDao;
 import be.ugent.blok2.daos.ILocationDao;
 import be.ugent.blok2.daos.ILockerReservationDao;
+import be.ugent.blok2.daos.IScannerLocationDao;
 import be.ugent.blok2.helpers.date.Calendar;
 import be.ugent.blok2.helpers.date.Day;
 import be.ugent.blok2.helpers.exceptions.AlreadyExistsException;
@@ -37,12 +38,13 @@ public class LocationController {
 
     private final ILocationDao locationDao;
     private final ILockerReservationDao lockerReservationDao;
-    private final IAccountDao accountDao;
+    private final IScannerLocationDao scannerLocationDao;
 
-    public LocationController(ILocationDao locationDao, ILockerReservationDao lockerReservationDao,  IAccountDao accountDao) {
+    public LocationController(ILocationDao locationDao, ILockerReservationDao lockerReservationDao,
+                              IScannerLocationDao scannerLocationDao) {
         this.locationDao = locationDao;
         this.lockerReservationDao = lockerReservationDao;
-        this.accountDao = accountDao;
+        this.scannerLocationDao = scannerLocationDao;
     }
 
     @GetMapping
@@ -197,7 +199,7 @@ public class LocationController {
     @GetMapping("/scanners/{name}")
     @ApiOperation(value = "get users that are allowed to scan at the given location")
     public ResponseEntity getScanners(@PathVariable("name") String name) throws SQLException {
-        return new ResponseEntity(locationDao.getScannersFromLocation(name), HttpStatus.OK);
+        return new ResponseEntity(scannerLocationDao.getScannersOnLocation(name), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN')")
@@ -206,11 +208,8 @@ public class LocationController {
     public ResponseEntity postScanners(@PathVariable("name") String name, @RequestBody String[] scanners) throws SQLException {
         List<User> sc = new ArrayList<>();
         for(String s: scanners){
-            accountDao.setScannerLocation(s.substring(0, s.indexOf(" ")), name );
-            sc.add(accountDao.getUserById(s.substring(0, s.indexOf(" "))));
+            scannerLocationDao.addScannerLocation(name, s);
         }
-
-        locationDao.setScannersForLocation(name, sc);
 
         return new ResponseEntity(HttpStatus.CREATED);
     }

@@ -13,13 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.validation.constraints.AssertTrue;
 import java.sql.SQLException;
 import java.util.List;
-
-/**
- * Note: the test that combines scanner users with locations, is to be found in TestDBScannerLocation.java
- */
 
 @SpringBootTest
 @RunWith(SpringRunner.class)

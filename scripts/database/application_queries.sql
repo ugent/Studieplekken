@@ -510,33 +510,70 @@ where reservation_location = ?;
 
 
 
--- queries for 'scanners_location'
+-- queries for SCANNERS_LOCATION
 -- $get_locations_of_scanner
-select location_name
-from public.scanners_location
-where user_augentid = ?;
+select l.name, l.number_of_seats, l.number_of_lockers, l.maps_frame
+    , l.image_url, l.address, l.start_period_lockers, l.end_period_lockers
+    , ld.location_name, ld.lang_enum, ld.description
+from public.scanners_location sl
+    join public.locations l
+        on l.name = sl.location_name
+    join public.location_descriptions ld
+        on ld.location_name = l.name
+where sl.user_augentid = ?
+order by l.name;
 
 -- $get_scanners_of_location
-select user_augentid
+with recursive x as (
+    select 0 week, 1.0 perc
+    union all
+    select week + 1, - 0.2 * (week + 1) + 1
+    from x
+    where week + 1 <= 5
+)
+select u.augentid, u.role, u.augentpreferredsn, u.augentpreferredgivenname
+    , u.mail, u.password, u.institution
+    , coalesce(floor(sum(
+        case
+            /*
+                Blacklist event (16662) is permanent: no decrease in time.
+                A blacklist event should be removed manually
+            */
+            when pb.event_code = 16662 then pb.received_points
+            else pb.received_points * x.perc
+            end)), 0) as "penalty_points"
+from public.scanners_location sl
+    join public.users u
+        on u.augentid = sl.user_augentid
+    left join public.penalty_book pb
+              on pb.user_augentid = u.augentid
+    left join x
+              on floor(extract(days from (now() - to_timestamp(pb.timestamp, 'YYYY-MM-DD HH24\:MI\:SS'))) / 7) = x.week
+where sl.location_name = ?
+group by u.augentid, u.role, u.augentpreferredsn, u.augentpreferredgivenname
+    , u.mail, u.password, u.institution;
+
+-- $delete_scanner_location
+delete
 from public.scanners_location
-where location_name = ?;
+where location_name = ? and user_augentid = ?;
 
 -- $delete_scanners_of_location
 delete from public.scanners_location
 where location_name = ?;
 
--- $delete_scanners_of_location_of_user_by_id
+-- $delete_locations_of_scanner
 delete from public.scanners_location
 where user_augentid = ?;
 
--- $insert_scanner_and_location
-insert into public.scanners_location (user_augentid, location_name)
+-- $insert_scanner_on_location
+insert into public.scanners_location (location_name, user_augentid)
 values (?, ?);
 
--- $update_scanners_of_location_of_user
-update public.scanners_location
-set user_augentid = ?
-where user_augentid = ?;
+-- $count_scanner_on_location
+select count(1)
+from public.scanners_location
+where user_augentid = ? and location_name = ?;
 
 
 

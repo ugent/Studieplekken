@@ -266,7 +266,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
                 /*
                 Delete records in scanner_location table (necessary if user is a scanner)
                  */
-                pstmt = conn.prepareStatement(databaseProperties.getString("delete_scanners_of_location_of_user_by_id"));
+                pstmt = conn.prepareStatement(databaseProperties.getString("delete_locations_of_scanner"));
                 pstmt.setString(1, AUGentID);
                 pstmt.execute();
 
@@ -458,32 +458,6 @@ public class DBAccountDao extends ADB implements IAccountDao {
             resultSet.next();
             return resultSet.getInt(1) == 1;
         }
-    }
-
-    @Override
-    public List<String> getScannerLocations(String email) throws SQLException {
-        // get the user to know its ID
-        User u = getUserByEmail(email.toLowerCase());
-
-        ArrayList<String> locations = new ArrayList<>();
-        try (Connection conn = getConnection()) {
-            String query = databaseProperties.getString("get_locations_of_scanner");
-            PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setString(1, u.getAugentID());
-            ResultSet resultSet = pstmt.executeQuery();
-            while (resultSet.next()) {
-                locations.add(resultSet.getString(databaseProperties.getString("scanners_location_name")));
-            }
-            return locations;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        return null;
-    }
-
-    @Override
-    public void setScannerLocation(String AugentID, String nameLocation) {
-
     }
 
     public static User createUser(ResultSet rs) throws SQLException {

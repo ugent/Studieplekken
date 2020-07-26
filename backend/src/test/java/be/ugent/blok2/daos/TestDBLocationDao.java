@@ -18,10 +18,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.sql.SQLException;
 import java.util.Collection;
 
-/**
- * Note: the test that combines scanner users with locations, is to be found in TestDBScannerLocation.java
- */
-
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @ActiveProfiles({"db", "test"})

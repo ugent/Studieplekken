@@ -2,6 +2,7 @@ package be.ugent.blok2.daos.db;
 
 import be.ugent.blok2.daos.IAccountDao;
 import be.ugent.blok2.daos.ILocationDao;
+import be.ugent.blok2.daos.IScannerLocationDao;
 import be.ugent.blok2.helpers.Language;
 import be.ugent.blok2.helpers.date.CustomDate;
 import be.ugent.blok2.helpers.date.Day;
@@ -24,9 +25,11 @@ import java.util.*;
 public class DBLocationDao extends ADB implements ILocationDao {
 
     IAccountDao accountDao;
+    IScannerLocationDao scannerLocationDao;
 
-    public DBLocationDao(IAccountDao accountDao) {
+    public DBLocationDao(IAccountDao accountDao, IScannerLocationDao scannerLocationDao) {
         this.accountDao = accountDao;
+        this.scannerLocationDao = scannerLocationDao;
     }
 
     @Override
@@ -113,7 +116,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
                 pstmt.executeUpdate();
 
                 // Remove scanners
-                List<String> scanners = getScannersFromLocation(location.getName());
+                List<User> scanners = scannerLocationDao.getScannersOnLocation(location.getName());
                 pstmt = conn.prepareStatement(databaseProperties.getString("delete_scanners_of_location"));
                 pstmt.setString(1, location.getName());
                 pstmt.executeUpdate();
@@ -149,10 +152,10 @@ public class DBLocationDao extends ADB implements ILocationDao {
                 // lockers eventueel toevoegen of verwijderen
 
                 // Add scanners
-                for (String s : scanners) {
-                    pstmt = conn.prepareStatement(databaseProperties.getString("insert_scanner_and_location"));
-                    pstmt.setString(1, s.split(" ")[0]);
-                    pstmt.setString(2, location.getName());
+                for (User s : scanners) {
+                    pstmt = conn.prepareStatement(databaseProperties.getString("insert_scanner_on_location"));
+                    pstmt.setString(1, location.getName());
+                    pstmt.setString(2, s.getAugentID());
                     pstmt.executeUpdate();
                 }
 
@@ -383,33 +386,6 @@ public class DBLocationDao extends ADB implements ILocationDao {
                 for (Day day : calendar.getDays()) {
                     insertCalendarDay(locationName, day, conn);
                 }
-                conn.commit();
-            } catch (SQLException e) {
-                conn.rollback();
-            } finally {
-                conn.setAutoCommit(true);
-            }
-        }
-    }
-
-    @Override
-    public void setScannersForLocation(String name, List<User> scanners) throws SQLException {
-        try (Connection conn = getConnection()) {
-            try {
-                conn.setAutoCommit(false);
-
-                // first delete
-                PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_scanners_of_location"));
-                pstmt.setString(1, name);
-                pstmt.executeUpdate();
-
-                for (User u : scanners) {
-                    pstmt = conn.prepareStatement(databaseProperties.getString("insert_scanner_and_location"));
-                    pstmt.setString(1, u.getAugentID());
-                    pstmt.setString(2, name);
-                    pstmt.execute();
-                }
-
                 conn.commit();
             } catch (SQLException e) {
                 conn.rollback();

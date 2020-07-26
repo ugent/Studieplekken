@@ -1,6 +1,7 @@
 package be.ugent.blok2.controllers;
 
 import be.ugent.blok2.daos.IAccountDao;
+import be.ugent.blok2.daos.IScannerLocationDao;
 import be.ugent.blok2.helpers.*;
 import be.ugent.blok2.helpers.date.CustomDate;
 import be.ugent.blok2.helpers.exceptions.*;
@@ -36,13 +37,16 @@ public class AccountController extends AController{
     private final String VERIFICATION_SUBJECT;
 
     private final IAccountDao accountDao;
+    private final IScannerLocationDao scannerLocationDao;
     private final ResourceBundle applicationBundle;
     private final EmailService emailService;
     private final LdapService ldapService;
     private final UsersCache usersCache;
 
-    public AccountController(IAccountDao dao, EmailService emailService, LdapService ldapService) {
+    public AccountController(IAccountDao dao, IScannerLocationDao scannerLocationDao, EmailService emailService,
+                             LdapService ldapService) {
         this.accountDao = dao;
+        this.scannerLocationDao = scannerLocationDao;
         this.applicationBundle = Resources.applicationProperties;
         this.emailService = emailService;
         this.ldapService = ldapService;
@@ -266,7 +270,8 @@ public class AccountController extends AController{
         if(!flag){
             return new ResponseEntity<>("This user isn't an employee or admin so can't have any locations to scan.", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(accountDao.getScannerLocations(email),HttpStatus.OK);
+
+        return new ResponseEntity<>(scannerLocationDao.getLocationsToScanOfUser(u.getAugentID()),HttpStatus.OK);
 
 
     }

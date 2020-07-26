@@ -78,11 +78,6 @@ public interface ILocationDao extends IDao {
     void addCalendarDays(String name, Calendar calendar) throws SQLException;
 
     /**
-     * Sets the list of user that are allowed to scan at the given location.
-     */
-    void setScannersForLocation(String name, List<User> sc) throws SQLException;
-
-    /**
      * Gets a list of all users (their augentIDs) that are allowed to scan at the given location.
      */
     List<String> getScannersFromLocation(String name) throws SQLException;
