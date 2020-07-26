@@ -6,27 +6,31 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface ILockerReservationDao extends IDao {
+
     /**
      * Gets a list of all lockerreservations made by the user with the given augentID.
      */
     List<LockerReservation> getAllLockerReservationsOfUser(String augentID) throws SQLException;
+
     /**
      * Gets a list of all lockerreservations made by the user with the given name.
      */
     List<LockerReservation> getAllLockerReservationsOfUserByName(String name) throws SQLException;
+
     /**
      * Gets a list of all lockerreservations of a given location.
      */
-    List<LockerReservation> getAllLockerReservationsOfLocation(String name) throws SQLException;
+    List<LockerReservation> getAllLockerReservationsOfLocation(String locationName) throws SQLException;
+
     /**
      * Gets a list of all ongoing lockerreservations of a given location.
      */
-    List<LockerReservation> getAllLockerReservationsOfLocationWithoutKeyBroughtBack(String name) throws SQLException;
+    List<LockerReservation> getAllLockerReservationsOfLocationWithoutKeyBroughtBack(String locationName) throws SQLException;
 
     /**
      * Gets the number of lockers that are used at the moment of a given location.
      */
-    int getNumberOfLockersInUseOfLocation(String name) throws SQLException;
+    int getNumberOfLockersInUseOfLocation(String locationName) throws SQLException;
 
     /**
      * Gets the lockerreservation with the given details.
@@ -47,4 +51,5 @@ public interface ILockerReservationDao extends IDao {
      * Change a lockerreservation.
      */
     void changeLockerReservation(LockerReservation lockerReservation) throws SQLException;
+
 }

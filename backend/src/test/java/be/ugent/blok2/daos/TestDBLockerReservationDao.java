@@ -17,10 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -40,8 +37,7 @@ public class TestDBLockerReservationDao {
     private User testUser1;
     private User testUser2;
     private Locker[] testLockers;
-    private LockerReservation testLockerReservation1;
-    private LockerReservation testLockerReservation2;
+    private List<LockerReservation> testLockerReservations;
 
     @Before
     public void setup() throws SQLException {
@@ -56,24 +52,28 @@ public class TestDBLockerReservationDao {
         testUser2 = TestSharedMethods.studentEmployeeTestUser();
 
         testLockers = new Locker[testLocation.getNumberOfLockers()];
+        testLockerReservations = new ArrayList<>();
+
         for (int i = 0; i < testLocation.getNumberOfLockers(); i++) {
             Locker locker = new Locker();
-            //locker.setId(i); // not really necessary, it isn't used for testing//
             locker.setNumber(i);
             locker.setLocation(testLocation);
             testLockers[i] = locker;
 
-            if (testLockerReservation1 == null)
-                testLockerReservation1 = new LockerReservation(locker, testUser1);
-            else if (testLockerReservation2 == null)
-                testLockerReservation2 = new LockerReservation(locker, testUser2);
+            if (testLockerReservations.size() < 1)
+                testLockerReservations.add(new LockerReservation(locker, testUser1));
+            else if (testLockerReservations.size() < 2)
+                testLockerReservations.add(new LockerReservation(locker, testUser2));
+            else if (testLockerReservations.size() < 3)
+                testLockerReservations.add(new LockerReservation(locker, testUser2));
         }
 
         // Add test objects to database
         TestSharedMethods.addTestUsers(accountDao, testUser1, testUser2);
         locationDao.addLocation(testLocation);
-        lockerReservationDao.addLockerReservation(testLockerReservation1);
-        lockerReservationDao.addLockerReservation(testLockerReservation2);
+        lockerReservationDao.addLockerReservation(testLockerReservations.get(0));
+        lockerReservationDao.addLockerReservation(testLockerReservations.get(1));
+        lockerReservationDao.addLockerReservation(testLockerReservations.get(2));
     }
 
     @After
@@ -89,82 +89,130 @@ public class TestDBLockerReservationDao {
 
     @Test
     public void addLockerReservationTest() throws SQLException {
-        // testLockerReservation1 and testLockerReservation2 should be added
+        // these three LockerReservations should've been added by @Begin
+        LockerReservation lr0 = lockerReservationDao.getLockerReservation(
+                testLockerReservations.get(0).getLocker().getLocation().getName(),
+                testLockerReservations.get(0).getLocker().getNumber()
+        );
         LockerReservation lr1 = lockerReservationDao.getLockerReservation(
-                testLockerReservation1.getLocker().getLocation().getName(),
-                testLockerReservation1.getLocker().getNumber()
+                testLockerReservations.get(1).getLocker().getLocation().getName(),
+                testLockerReservations.get(1).getLocker().getNumber()
         );
         LockerReservation lr2 = lockerReservationDao.getLockerReservation(
-                testLockerReservation2.getLocker().getLocation().getName(),
-                testLockerReservation2.getLocker().getNumber()
+                testLockerReservations.get(2).getLocker().getLocation().getName(),
+                testLockerReservations.get(2).getLocker().getNumber()
         );
-        Assert.assertEquals("addLockerReservationTest", testLockerReservation1, lr1);
-        Assert.assertEquals("addLockerReservationTest", testLockerReservation2, lr2);
+
+        Assert.assertEquals("addLockerReservationTest", testLockerReservations.get(0), lr0);
+        Assert.assertEquals("addLockerReservationTest", testLockerReservations.get(1), lr1);
+        Assert.assertEquals("addLockerReservationTest", testLockerReservations.get(2), lr2);
     }
 
     @Test
-    // testing add/delete/change in one test
-    public void lockerReservationTest()  throws SQLException {
-        /*
-        // test whether users were correctly added to the database
-        User u1 = accountDao.getUserById(testUser1.getAugentID());
-        User u2 = accountDao.getUserById(testUser2.getAugentID());
-        Assert.assertEquals("lockerReservationTest, setup testUser1", testUser1, u1);
-        Assert.assertEquals("lockerReservationTest, setup testUser2", testUser2, u2);
+    public void deleteLockerReservationTest() throws SQLException {
+        lockerReservationDao.deleteLockerReservation(testLockerReservations.get(0).getLocker().getLocation().getName(),
+                testLockerReservations.get(0).getLocker().getNumber());
+        lockerReservationDao.deleteLockerReservation(testLockerReservations.get(1).getLocker().getLocation().getName(),
+                testLockerReservations.get(1).getLocker().getNumber());
+        lockerReservationDao.deleteLockerReservation(testLockerReservations.get(2).getLocker().getLocation().getName(),
+                testLockerReservations.get(2).getLocker().getNumber());
 
-        Collection<Locker> lockerCollection = locationDao.getLockers(testLocation.getName());
-        List<Locker> sortedLockers = new ArrayList<>(lockerCollection);
-        sortedLockers.sort(Comparator.comparingInt(Locker::getNumber));
+        LockerReservation lr0 = lockerReservationDao.getLockerReservation(
+                testLockerReservations.get(0).getLocker().getLocation().getName(),
+                testLockerReservations.get(0).getLocker().getNumber()
+        );
+        LockerReservation lr1 = lockerReservationDao.getLockerReservation(
+                testLockerReservations.get(1).getLocker().getLocation().getName(),
+                testLockerReservations.get(1).getLocker().getNumber()
+        );
+        LockerReservation lr2 = lockerReservationDao.getLockerReservation(
+                testLockerReservations.get(2).getLocker().getLocation().getName(),
+                testLockerReservations.get(2).getLocker().getNumber()
+        );
 
-        Locker[] lockers = new Locker[sortedLockers.size()];
-        sortedLockers.toArray(lockers);
-
-        if (lockers.length < 3)
-            Assert.fail("Can't test without at least two available lockers. Raise the testLocation.numberOfLockers");
-
-        Locker locker1 = lockers[0];
-        Locker locker2 = lockers[1];
-
-        LockerReservation lr1 = new LockerReservation(locker1, u1);
-        LockerReservation lr2 = new LockerReservation(locker2, u2);
-
-        int usedLockers = lockerReservationDao.getNumberOfLockersInUseOfLocation(testLocation.getName());
-        Assert.assertEquals("lockerReservationTest, usedLockers without any reservation", 0, usedLockers);
-
-        lockerReservationDao.addLockerReservation(lr1);
-        lockerReservationDao.addLockerReservation(lr2);
-
-        //LockerReservation actualLockerReservation1 = lockerReservationDao
-            //    .getLockerReservation(testUser1.getAugentID(), locker1.getId());
-        //LockerReservation actualLockerReservation2 = lockerReservationDao
-            //    .getLockerReservation(testUser2.getAugentID(), locker2.getId());
-        //Assert.assertEquals("lockerReservationTest, retrieved locker reservation 1",
-             //   lr1, actualLockerReservation1);
-        //Assert.assertEquals("lockerReservationTest, retrieved locker reservation 2",
-            //    lr2, actualLockerReservation2);
-
-        usedLockers = lockerReservationDao.getNumberOfLockersInUseOfLocation(testLocation.getName());
-        Assert.assertEquals("lockerReservationTest, usedLockers after reservations", 0, usedLockers);
-
-        lr1.setKeyPickupDate(new CustomDate(1970, 1, 1));
-        lr2.setKeyPickupDate(new CustomDate(1970, 1, 1));
-
-        lockerReservationDao.changeLockerReservation(lr1);
-        lockerReservationDao.changeLockerReservation(lr2);
-
-        usedLockers = lockerReservationDao.getNumberOfLockersInUseOfLocation(testLocation.getName());
-        Assert.assertEquals("lockerReservationTest, usedLockers after reservations and keys " +
-                "picked up", 2, usedLockers);
-
-        lr1.setKeyReturnedDate(new CustomDate(1970, 1, 31));
-        lr2.setKeyReturnedDate(new CustomDate(1970, 1, 31));
-
-        lockerReservationDao.changeLockerReservation(lr1);
-        lockerReservationDao.changeLockerReservation(lr2);
-
-        usedLockers = lockerReservationDao.getNumberOfLockersInUseOfLocation(testLocation.getName());
-        Assert.assertEquals("lockerReservationTest, usedLockers after reservations and keys " +
-                "picked up and returned again", 0, usedLockers);
-         */
+        Assert.assertNull("deleteLockerReservationTest", lr0);
+        Assert.assertNull("deleteLockerReservationTest", lr1);
+        Assert.assertNull("deleteLockerReservationTest", lr2);
     }
+
+    @Test
+    public void gettersTest() throws SQLException {
+        // getAllLockerReservationsOfUser
+        List<LockerReservation> reservations =
+                lockerReservationDao.getAllLockerReservationsOfUser(testUser1.getAugentID());
+        Assert.assertEquals("test getters, getAllLockerReservationsOfUser", 1, reservations.size());
+
+        reservations = lockerReservationDao.getAllLockerReservationsOfUser(testUser2.getAugentID());
+        Assert.assertEquals("test getters, getAllLockerReservationsOfUser", 2, reservations.size());
+
+        // getAllLockerReservationsOfUserByName (3 cases: first name, last name, first + last name
+        reservations = lockerReservationDao.getAllLockerReservationsOfUserByName(testUser2.getFirstName());
+        Assert.assertEquals("test getters, getAllLockerReservationsOfUserByName",
+                2, reservations.size());
+
+        // Note: both testUser1 and testUser2 have the same last name
+        reservations = lockerReservationDao.getAllLockerReservationsOfUserByName(testUser2.getLastName());
+        Assert.assertEquals("test getters, getAllLockerReservationsOfUserByName",
+                testLockerReservations.size(), reservations.size());
+
+        reservations = lockerReservationDao
+                .getAllLockerReservationsOfUserByName(testUser2.getFirstName() + " " + testUser2.getLastName());
+        Assert.assertEquals("test getters, getAllLockerReservationsOfUserByName",
+                2, reservations.size());
+
+        // getAllLockerReservationsOfLocation
+        reservations = lockerReservationDao.getAllLockerReservationsOfLocation(testLocation.getName());
+        Assert.assertEquals("test getters, getAllLockerReservationsOfLocation",
+                testLockerReservations.size(), reservations.size());
+
+        reservations.sort(Comparator.comparingInt(a -> a.getLocker().getNumber()));
+        testLockerReservations.sort(Comparator.comparingInt(a -> a.getLocker().getNumber()));
+        for (int i = 0; i < reservations.size(); i++) {
+            Assert.assertEquals("test getters, getAllLockerReservationsOfLocation",
+                    testLockerReservations.get(i), reservations.get(i));
+        }
+
+        // getAllLockerReservationsOfLocationWithoutKeyBroughtBack
+        reservations = lockerReservationDao
+                .getAllLockerReservationsOfLocationWithoutKeyBroughtBack(testLocation.getName());
+        Assert.assertEquals("test getters, getAllLockerReservationsOfLocationWithoutKeyBroughtBack",
+                testLockerReservations.size(), reservations.size());
+    }
+
+    @Test
+    public void changeLockerReservationTest() throws SQLException {
+        // set key pickup date
+        testLockerReservations.get(0).setKeyPickupDate(CustomDate.now());
+        testLockerReservations.get(1).setKeyPickupDate(CustomDate.now());
+        testLockerReservations.get(2).setKeyPickupDate(CustomDate.now());
+
+        // change first LockerReservation
+        lockerReservationDao.changeLockerReservation(testLockerReservations.get(0));
+        int lockersInUse = lockerReservationDao.getNumberOfLockersInUseOfLocation(testLocation.getName());
+        Assert.assertEquals("changeLockerReservation, picked up two keys", 1, lockersInUse);
+
+        // change second LockerReservation
+        lockerReservationDao.changeLockerReservation(testLockerReservations.get(1));
+        lockersInUse = lockerReservationDao.getNumberOfLockersInUseOfLocation(testLocation.getName());
+        Assert.assertEquals("changeLockerReservation, picked up two keys", 2, lockersInUse);
+
+        // change third LockerReservation
+        lockerReservationDao.changeLockerReservation(testLockerReservations.get(2));
+        lockersInUse = lockerReservationDao.getNumberOfLockersInUseOfLocation(testLocation.getName());
+        Assert.assertEquals("changeLockerReservation, picked up three keys", 3, lockersInUse);
+
+        // set return date
+        testLockerReservations.get(0).setKeyReturnedDate(CustomDate.now());
+        testLockerReservations.get(1).setKeyReturnedDate(CustomDate.now());
+        testLockerReservations.get(2).setKeyReturnedDate(CustomDate.now());
+
+        // change all LockerReservations
+        lockerReservationDao.changeLockerReservation(testLockerReservations.get(0));
+        lockerReservationDao.changeLockerReservation(testLockerReservations.get(1));
+        lockerReservationDao.changeLockerReservation(testLockerReservations.get(2));
+
+        lockersInUse = lockerReservationDao.getNumberOfLockersInUseOfLocation(testLocation.getName());
+        Assert.assertEquals("changeLockerReservation, returned all keys", 0, lockersInUse);
+    }
+
 }

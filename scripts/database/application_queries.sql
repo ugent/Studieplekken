@@ -331,7 +331,7 @@ values (?, ?, ?, ?, ?);
 -- $update_locker_reservation
 update public.locker_reservations
 set key_pickup_date = ?, key_return_date = ?
-where location_name = ? and locker_number = ? and user_augentid = ?;
+where location_name = ? and locker_number = ?;
 
 -- $update_locker_reservations_of_user
 /*

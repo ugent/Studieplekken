@@ -172,6 +172,7 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
             // where ...
             pstmt.setString(3, lockerReservation.getLocker().getLocation().getName());
             pstmt.setInt(4, lockerReservation.getLocker().getNumber());
+
             pstmt.execute();
         }
     }
