@@ -156,14 +156,9 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
     public void updatePenaltyEvent(int code, PenaltyEvent event) throws SQLException {
         try (Connection conn = getConnection()) {
             try {
-                // Note: it is better to always update, even if the record' corresponding to 'code' holds
-                // the same data as 'event' (and actually nothing has to be updated) because when you check for equality,
-                // you'll always need 2 queries to update in stead of only one.
                 conn.setAutoCommit(false);
 
-                PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("update_penalty_description"));
-                for (Language lang : event.getDescriptions().keySet())
-                    updatePenaltyEventsDescription(pstmt, event.getCode(), lang, event.getDescriptions().get(lang));
+                // TODO
 
                 conn.commit();
                 conn.setAutoCommit(true);
@@ -221,9 +216,6 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
 
     @Override
     public void deletePenaltyEvent(int code) throws SQLException {
-        // 1. delete all descriptions for this event (FK constraint)
-        // 2. delete all penalty book record using this event (FK constraint) // TODO
-        // 2. delete this event
         PenaltyEvent event = getPenaltyEvent(code);
         if (event != null) {
             try (Connection conn = getConnection()) {
@@ -236,6 +228,8 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
                         pstmt.setInt(2, event.getCode());
                         pstmt.executeUpdate();
                     }
+
+                    // TODO: delete penalty_book
 
                     pstmt = conn.prepareStatement(databaseProperties.getString("delete_penalty_event"));
                     pstmt.setInt(1, code);

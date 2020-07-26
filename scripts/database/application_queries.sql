@@ -101,11 +101,6 @@ select count(1)
 from public.location_reservations
 where location_name = ? and date = ?;
 
--- $set_all_location_reservations_attended
-update public.location_reservations
-set attended = true
-where location_name = ? and date = ?;
-
 -- $delete_location_reservation
 delete
 from public.location_reservations
@@ -134,6 +129,11 @@ update public.location_reservations
 set attended = false
 where date = ? and user_augentid = ?;
 
+-- $set_all_location_reservations_attended
+update public.location_reservations
+set attended = true
+where location_name = ? and date = ?;
+
 -- $set_location_reservation_attended
 update public.location_reservations
 set attended = true
@@ -146,6 +146,11 @@ from public.locations l
         on l.name = lr.location_name
 group by l.name
 order by l.name;
+
+-- $update_fk_location_reservations_to_location
+update public.location_reservations
+set location_name = ?
+where location_name = ?;
 
 -- $update_location_reservations_of_user
 update public.location_reservations
@@ -247,7 +252,7 @@ where TO_TIMESTAMP(created_timestamp, 'YYYY-MM-DD\\THH24:MI:SS') < now() - inter
 
 
 
--- queries for table LOCKER_RESERVATION
+-- queries for table LOCKER_RESERVATIONS
 -- $get_locker_reservations_where_<?>
 with recursive x as (
     select 0 week, 1.0 perc
@@ -324,6 +329,11 @@ delete
 from public.locker_reservations
 where user_augentid = ?;
 
+-- $delete_locker_reservations_in_location
+delete
+from public.locker_reservations
+where location_name = ?;
+
 -- $insert_locker_reservation
 insert into public.locker_reservations (location_name, locker_number, user_augentid, key_pickup_date, key_return_date)
 values (?, ?, ?, ?, ?);
@@ -332,6 +342,11 @@ values (?, ?, ?, ?, ?);
 update public.locker_reservations
 set key_pickup_date = ?, key_return_date = ?
 where location_name = ? and locker_number = ?;
+
+-- $update_fk_locker_reservations_to_location
+update public.locker_reservations
+set location_name = ?
+where location_name = ?;
 
 -- $update_locker_reservations_of_user
 /*
@@ -415,7 +430,7 @@ update public.calendar
 set opening_time = ?, closing_time = ?, open_for_reservation_date = ?
 where location_name = ? and date = ?;
 
--- $update_location_calendar
+-- $update_fk_location_name_in_calendar
 update public.calendar
 set location_name = ?
 where location_name = ?;
@@ -477,6 +492,11 @@ where code = ?;
 update public.penalty_descriptions
 set description = ?
 where lang_enum = ? and event_code = ?;
+
+-- $update_fk_penalty_book_to_locations
+update public.penalty_book
+set reservation_location = ?
+where reservation_location = ?;
 
 -- $update_penalties_of_user
 update public.penalty_book
@@ -575,9 +595,19 @@ select count(1)
 from public.scanners_location
 where user_augentid = ? and location_name = ?;
 
+-- $update_fk_scanners_location_to_locations
+update public.scanners_location
+set location_name = ?
+where location_name = ?;
+
+-- $update_fk_scanners_location_to_users
+update public.scanners_location
+set user_augentid = ?
+where user_augentid = ?;
 
 
--- queries for 'location_descriptions'
+
+-- queries for LOCATION_DESCRIPTIONS
 -- $delete_location_descriptions
 delete
 from public.location_descriptions

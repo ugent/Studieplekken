@@ -238,49 +238,15 @@ public class DBAccountDao extends ADB implements IAccountDao {
         try (Connection conn = getConnection()) {
             try {
                 conn.setAutoCommit(false);
-                /*
-                When deleting a user, we need to delete every record that has a foreign key to this user
-                 */
 
-                /*
-                Delete all location reservations of this user
-                 */
-                PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_location_reservations_of_user_by_id"));
-                pstmt.setString(1, AUGentID);
-                pstmt.execute();
-
-                /*
-                Delete all locker reservations of this user
-                 */
-                pstmt = conn.prepareStatement(databaseProperties.getString("delete_locker_reservations_of_user_by_id"));
-                pstmt.setString(1, AUGentID);
-                pstmt.execute();
-
-                /*
-                Delete all penalty records of this user
-                 */
-                pstmt = conn.prepareStatement(databaseProperties.getString("delete_penalties_of_user_by_id"));
-                pstmt.setString(1, AUGentID);
-                pstmt.execute();
-
-                /*
-                Delete records in scanner_location table (necessary if user is a scanner)
-                 */
-                pstmt = conn.prepareStatement(databaseProperties.getString("delete_locations_of_scanner"));
-                pstmt.setString(1, AUGentID);
-                pstmt.execute();
-
-                /*
-                Finally, delete the user
-                 */
-                pstmt = conn.prepareStatement(databaseProperties.getString("delete_user"));
-                pstmt.setString(1, AUGentID);
-                pstmt.execute();
+                // TODO
 
                 conn.commit();
             } catch (SQLException e) {
                 conn.rollback();
                 throw e;
+            } finally {
+                conn.setAutoCommit(true);
             }
         }
     }
@@ -350,101 +316,15 @@ public class DBAccountDao extends ADB implements IAccountDao {
             try {
                 conn.setAutoCommit(false);
 
-                /*
-                First check if the AUGentID of the user has changed. We do this by fetching the user by email and checking if
-                the AUGentID of this user equals the AUGentID of the given user.
-
-                This is necessary because the AUGentID of a user is used as Primary Key in the database. When changing the AUGentID,
-                all records including this id as a Foreign Key need to be updated too.
-                */
-                User currentUser = getUserByEmail(email);
-                if (currentUser == null) {
-                    return false;
-                }
-
-                /*
-                If the email changed, make sure no user with the specified email exists already
-                 */
-                if (!email.equals(u.getMail())) {
-                    User userWithSpecifiedMail = getUserByEmail(u.getMail());
-                    if (userWithSpecifiedMail != null)
-                        return false;
-                }
-
-                if (!currentUser.getAugentID().equals(u.getAugentID())) {
-                    /*
-                    First, add a new user with the new AUGentID, note that we keep the (same) user with the old
-                    AUGentID in the database for now.
-
-                    The old user needs to be kept in the database until all records containing a foreign key of this user
-                    are updated. Because of the unique constraint on the email of a user, the new user is inserted with a temporary email.
-                    After deleting the old record of the user, the email can be replaced.
-                     */
-                    User _u = u.clone();
-                    _u.setMail("no_mail");
-                    PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("insert_user"));
-                    prepareUpdateOrInsertUser(_u, pstmt);
-                    pstmt.execute();
-
-                    /*
-                    Update location reservations of this user
-                     */
-                    pstmt = conn.prepareStatement(databaseProperties.getString("update_location_reservations_of_user"));
-                    pstmt.setString(1, u.getAugentID());
-                    pstmt.setString(2, currentUser.getAugentID());
-                    pstmt.execute();
-
-                    /*
-                    Update locker reservations of this user
-                     */
-                    pstmt = conn.prepareStatement(databaseProperties.getString("update_locker_reservations_of_user"));
-                    pstmt.setString(1, u.getAugentID());
-                    pstmt.setString(2, currentUser.getAugentID());
-                    pstmt.execute();
-
-                    /*
-                    Update penalties of this user
-                     */
-                    pstmt = conn.prepareStatement(databaseProperties.getString("update_penalties_of_user"));
-                    pstmt.setString(1, u.getAugentID());
-                    pstmt.setString(2, currentUser.getAugentID());
-                    pstmt.execute();
-
-                    /*
-                    Update scanners of location of this user
-                     */
-                    pstmt = conn.prepareStatement(databaseProperties.getString("update_scanners_of_location_of_user"));
-                    pstmt.setString(1, u.getAugentID());
-                    pstmt.setString(2, currentUser.getAugentID());
-                    pstmt.execute();
-
-                    /*
-                    After all records using a Foreing Key to this user are changed, the (same) user with the old AUGentID record
-                    can be removed.
-                     */
-                    pstmt = conn.prepareStatement(databaseProperties.getString("delete_user"));
-                    pstmt.setString(1, currentUser.getAugentID());
-                    pstmt.execute();
-
-                    /*
-                    At last, change the email of the new user record to the correct email
-                     */
-                    pstmt = conn.prepareStatement(databaseProperties.getString("set_mail_of_user_by_id"));
-                    pstmt.setString(1, u.getMail());
-                    pstmt.setString(2, u.getAugentID());
-                    pstmt.execute();
-                } else {
-                    PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("update_user"));
-                    prepareUpdateOrInsertUser(u, pstmt);
-                    pstmt.setString(9, u.getAugentID());
-                    pstmt.execute();
-                }
+                // TODO
 
                 conn.commit();
                 return true;
             } catch (SQLException e) {
                 conn.rollback();
                 return false;
+            } finally {
+                conn.setAutoCommit(true);
             }
         }
     }

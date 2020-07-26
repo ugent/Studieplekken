@@ -6,3 +6,4 @@ logs/
 scripts/database/a
 scripts/database/b
 scritps/
+*.lck

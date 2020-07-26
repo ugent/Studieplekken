@@ -61,51 +61,12 @@ public class TestDBLocationDao {
 
     @Test
     public void changeLocationTest() throws SQLException {
-        Location changedTestLocation = testLocation.clone();
-        changedTestLocation.setName("Changed Test Location");
-
-        locationDao.changeLocation(testLocation.getName(), changedTestLocation);
-        Location location = locationDao.getLocation(changedTestLocation.getName());
-        Assert.assertEquals("changeLocationTest, fetch location by changed name", changedTestLocation, location);
-
-        location = locationDao.getLocation(testLocation.getName());
-        Assert.assertNull("changeLocationTest, old location name may not have an entry", location);
-
-        locationDao.deleteLocation(changedTestLocation.getName());
-    }
-
-    @Test
-    public void addLockersTest() throws SQLException {
-        Location expectedLocation = testLocation.clone();
-        int prev_n = expectedLocation.getNumberOfLockers();
-
-        // test adding positive amount of lockers
-        int n = 10;
-        expectedLocation.setNumberOfLockers(prev_n + n);
-        locationDao.addLockers(testLocation.getName(), n);
-        Location location = locationDao.getLocation(testLocation.getName());
-        Assert.assertEquals("addLockersTest, added lockers", expectedLocation, location);
-
-        // test adding negative amount of lockers
-        int _n = -5;
-        expectedLocation.setNumberOfLockers(prev_n + n + _n);
-        locationDao.addLockers(testLocation.getName(), _n);
-        location = locationDao.getLocation(testLocation.getName());
-        Assert.assertEquals("addLocker, added negative amount of lockers", expectedLocation, location);
-
-        // TODO: reserve lockers and expect SQLException
+        // TODO: test cascade
     }
 
     @Test
     public void deleteLockersTest() throws SQLException {
-        Location expectedLocation = testLocation.clone();
-        int prev_n = expectedLocation.getNumberOfLockers();
-
-        int n = 5;
-        expectedLocation.setNumberOfLockers(prev_n - n);
-        locationDao.deleteLockers(testLocation.getName(), prev_n - n);
-        Location location = locationDao.getLocation(testLocation.getName());
-        Assert.assertEquals("deleteLockersTest", expectedLocation, location);
+        // TODO: test cascade
     }
 
     /*

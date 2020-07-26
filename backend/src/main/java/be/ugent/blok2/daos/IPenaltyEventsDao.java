@@ -41,7 +41,6 @@ public interface IPenaltyEventsDao extends IDao {
     /**
      * updatePenaltyEvent() is meant to update an existing PenaltyEvent and/or description(s) associated with the given code.
      * If there is no PenaltyEvent associated with the given code in the first place, nothing should happen.
-     * Note: it is assumed that code == event.getCode(), this is a precondition
      */
     void updatePenaltyEvent(int code, PenaltyEvent event) throws SQLException;
 

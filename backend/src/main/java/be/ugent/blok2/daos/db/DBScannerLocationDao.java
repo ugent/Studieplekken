@@ -73,19 +73,27 @@ public class DBScannerLocationDao extends ADB implements IScannerLocationDao {
     @Override
     public boolean deleteAllScannersOfLocation(String locationName) throws SQLException {
         try (Connection conn = getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_scanners_of_location"));
-            pstmt.setString(1, locationName);
-            return pstmt.executeUpdate() > 0;
+            return deleteAllScannersOfLocation(locationName, conn);
         }
+    }
+
+    public static boolean deleteAllScannersOfLocation(String locationName, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_scanners_of_location"));
+        pstmt.setString(1, locationName);
+        return pstmt.executeUpdate() > 0;
     }
 
     @Override
     public boolean deleteAllLocationsOfScanner(String augentid) throws SQLException {
         try (Connection conn = getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_locations_of_scanner"));
-            pstmt.setString(1, augentid);
-            return pstmt.executeUpdate() > 0;
+            return deleteAllLocationsOfScanner(augentid, conn);
         }
+    }
+
+    public static boolean deleteAllLocationsOfScanner(String augentid, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_locations_of_scanner"));
+        pstmt.setString(1, augentid);
+        return pstmt.executeUpdate() > 0;
     }
 
     @Override
