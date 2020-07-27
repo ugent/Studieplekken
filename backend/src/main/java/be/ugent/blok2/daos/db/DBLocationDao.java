@@ -8,8 +8,6 @@ import be.ugent.blok2.helpers.date.CustomDate;
 import be.ugent.blok2.helpers.date.Day;
 import be.ugent.blok2.helpers.date.Time;
 import be.ugent.blok2.helpers.date.Calendar;
-import be.ugent.blok2.helpers.exceptions.AlreadyExistsException;
-import be.ugent.blok2.model.users.User;
 import be.ugent.blok2.model.reservables.Location;
 import be.ugent.blok2.model.reservables.Locker;
 import org.springframework.context.annotation.Profile;
@@ -114,14 +112,19 @@ public class DBLocationDao extends ADB implements ILocationDao {
 
                 if (!locationName.equals(location.getName())) {
                     // add location, descriptions and lockers
+                    // so, we have added the 'updated' location
+                    // and there are new descriptions and lockers
+                    // with FK to the new location
                     addLocation(location, conn);
                     
-                    // update the FK of calendar, scanner_locations, location_reservations,
-                    // penalty_book and locker_reservations
+                    // update the remaining tables with FK to location:
+                    // calendar, scanner_locations, location_reservations,
+                    // locker_reservations and penalty_book
                     updateForeignKeysToLocation(locationName, location.getName(), conn);
                     
-                    // delete old location, descriptions and lockers
-                    // all other tables with foreign keys are updated
+                    // delete descriptions and lockers with FK to
+                    // the old location, and eventually delete the
+                    // old location as well
                     deleteLocationDescriptions(locationName, conn);
                     deleteLockers(locationName, conn);
                     deleteLocation(locationName, conn);
