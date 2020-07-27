@@ -359,7 +359,7 @@ where user_augentid = ?;
 
 
 
--- queries for table LOCKER
+-- queries for table LOCKERS
 -- $get_lockers_where_<?>
 select l.location_name, l.number
 	, s.name, s.number_of_seats, s.number_of_lockers, s.maps_frame, s.image_url
@@ -388,10 +388,10 @@ where location_name = ? and number >= ?;
 insert into public.lockers (number, location_name)
 values (?, ?);
 
--- $change_locker_location
-update public.lockers
-set location_name = ?
-where location_name = ?;
+-- $delete_locker
+delete
+from public.lockers
+where location_name = ? and number = ?;
 
 
 
@@ -450,7 +450,8 @@ select e.code, e.points, e.public_accessible, d.lang_enum
     , d.description
 from penalty_events e
     join penalty_descriptions d
-        on e.code = d.event_code;
+        on e.code = d.event_code
+order by e.code;
 
 -- $get_penalty_event
 select e.code, e.points, e.public_accessible, d.lang_enum
@@ -498,6 +499,11 @@ update public.penalty_book
 set reservation_location = ?
 where reservation_location = ?;
 
+-- $update_fk_penalty_book_to_penalty_event
+update public.penalty_book
+set event_code = ?
+where event_code = ?;
+
 -- $update_penalties_of_user
 update public.penalty_book
 set user_augentid = ?
@@ -507,6 +513,11 @@ where user_augentid = ?;
 delete
 from public.penalty_descriptions
 where lang_enum = ? and event_code = ?;
+
+-- $delete_penalty_descriptions_by_event_code
+delete
+from public.penalty_descriptions
+where event_code = ?;
 
 -- $delete_penalty_event
 delete
@@ -527,6 +538,11 @@ where user_augentid = ?;
 delete
 from public.penalty_book
 where reservation_location = ?;
+
+-- $delete_penalties_of_penalty_event
+delete
+from public.penalty_book
+where event_code = ?;
 
 
 
