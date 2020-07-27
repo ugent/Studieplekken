@@ -68,20 +68,20 @@ public class DBLocationDao extends ADB implements ILocationDao {
         pstmt.executeUpdate();
 
         // insert descriptions corresponding to the location into the database
-        for (Language lang : location.getDescriptions().keySet()) {
-            pstmt = conn.prepareStatement(databaseProperties.getString("insert_location_descriptions"));
-            prepareUpdateOrInsertLocationDescriptionStatement(
-                    location.getName(),
-                    lang,
-                    location.getDescriptions().get(lang),
-                    pstmt
-            );
-            pstmt.executeUpdate();
-        }
+        addLocationDescriptions(location.getName(), location.getDescriptions(), conn);
 
         // insert the lockers corresponding to the location into the database
         for (int i = 0; i < location.getNumberOfLockers(); i++) {
             insertLocker(location.getName(), i, conn);
+        }
+    }
+
+    private void addLocationDescriptions(String locationName, Map<Language, String> descriptions, Connection conn)
+            throws SQLException{
+        for (Language lang : descriptions.keySet()) {
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("insert_location_descriptions"));
+            prepareUpdateOrInsertLocationDescriptionStatement(locationName, lang, descriptions.get(lang), pstmt);
+            pstmt.executeUpdate();
         }
     }
 
@@ -558,12 +558,63 @@ public class DBLocationDao extends ADB implements ILocationDao {
     }
 
     private void updateLocation(Location location, Connection conn) throws SQLException {
+        Location oldLocation = getLocation(location.getName(), conn);
+
+        if (oldLocation == null)
+            return;
+
+        if (oldLocation.getNumberOfLockers() != location.getNumberOfLockers()) {
+            updateNumberOfLockers(location.getName(), oldLocation.getNumberOfLockers()
+                    , location.getNumberOfLockers(), conn);
+        }
+
+        // It is too complex to determine whether two maps are equal, so always remove all descriptions
+        // and add new ones. The amount of work to delete and re-add them is small enough compared to
+        // determining whether two keySets() and values() are equal.
+        updateDescriptions(location.getName(), location.getDescriptions(), conn);
+
         PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("update_location"));
         // set ...
         prepareUpdateOrInsertLocationStatement(location, pstmt);
         // where ...
         pstmt.setString(9, location.getName());
         pstmt.execute();
+    }
+
+    private void updateNumberOfLockers(String locationName, int from, int to, Connection conn) throws SQLException {
+        if (from > to) {
+            decreaseNumberOfLockers(locationName, from, to, conn);
+        } else {
+            increaseNumberOfLockers(locationName, from, to, conn);
+        }
+    }
+
+    private void increaseNumberOfLockers(String locationName, int from, int to, Connection conn) throws SQLException {
+        for (int i = from; i < to; i++) {
+            insertLocker(locationName, i, conn);
+        }
+    }
+
+    private void decreaseNumberOfLockers(String locationName, int from, int to, Connection conn) throws SQLException {
+        for (int i = from - 1; i >= to; i--) {
+            deleteLocker(locationName, i, conn);
+        }
+    }
+
+    private void deleteLocker(String locationName, int number, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_locker"));
+        pstmt.setString(1, locationName);
+        pstmt.setInt(2, number);
+        pstmt.execute();
+    }
+
+    // It is too complex to determine whether two maps are equal, so always remove all descriptions
+    // and add new ones. The amount of work to delete and re-add them is small enough compared to
+    // determining whether two keySets() and values() are equal.
+    private void updateDescriptions(String locationName, Map<Language, String> descriptions, Connection conn)
+            throws SQLException {
+        deleteLocationDescriptions(locationName, conn);
+        addLocationDescriptions(locationName, descriptions, conn);
     }
 }
 
