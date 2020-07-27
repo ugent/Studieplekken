@@ -10,7 +10,6 @@ import be.ugent.blok2.helpers.date.Time;
 import be.ugent.blok2.helpers.date.Calendar;
 import be.ugent.blok2.model.reservables.Location;
 import be.ugent.blok2.model.reservables.Locker;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
@@ -18,7 +17,6 @@ import java.time.LocalTime;
 import java.util.*;
 
 
-@Profile("!dummy")
 @Service
 public class DBLocationDao extends ADB implements ILocationDao {
 

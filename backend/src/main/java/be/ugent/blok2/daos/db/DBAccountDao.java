@@ -1,6 +1,5 @@
 package be.ugent.blok2.daos.db;
 
-import be.ugent.blok2.controllers.BarcodeController;
 import be.ugent.blok2.daos.IAccountDao;
 import be.ugent.blok2.helpers.Institution;
 import be.ugent.blok2.helpers.generators.IGenerator;
@@ -8,7 +7,6 @@ import be.ugent.blok2.helpers.generators.VerificationCodeGenerator;
 import be.ugent.blok2.helpers.date.CustomDate;
 import be.ugent.blok2.model.users.Role;
 import be.ugent.blok2.model.users.User;
-import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +15,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Profile("!dummy")
 @Service
 @EnableScheduling
 public class DBAccountDao extends ADB implements IAccountDao {

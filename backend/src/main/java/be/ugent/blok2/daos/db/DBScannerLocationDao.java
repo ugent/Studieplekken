@@ -3,7 +3,6 @@ package be.ugent.blok2.daos.db;
 import be.ugent.blok2.daos.IScannerLocationDao;
 import be.ugent.blok2.model.reservables.Location;
 import be.ugent.blok2.model.users.User;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
@@ -13,7 +12,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Profile("db")
 @Service
 public class DBScannerLocationDao extends ADB implements IScannerLocationDao {
     @Override
