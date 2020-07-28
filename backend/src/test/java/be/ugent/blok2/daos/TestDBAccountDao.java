@@ -90,7 +90,7 @@ public class TestDBAccountDao {
         // change the role opposed to testUser1, update should succeed
         expectedChangedUser.setRoles(new Role[]{Role.STUDENT});
 
-        boolean updated = accountDao.updateUser(testUser1.getMail(), expectedChangedUser);
+        boolean updated = accountDao.updateUserByMail(testUser1.getMail(), expectedChangedUser);
         Assert.assertTrue("updateUserTest, updated testUser1's role", updated);
 
         User actualChangedUser = accountDao.getUserById(expectedChangedUser.getAugentID());
@@ -99,7 +99,7 @@ public class TestDBAccountDao {
         // change expectedChangedUser's mail to an existing mail, should fail
         User expectedChangedUser2 = expectedChangedUser.clone();
         expectedChangedUser2.setMail(testUser2.getMail());
-        updated = accountDao.updateUser(expectedChangedUser.getMail(), expectedChangedUser2);
+        updated = accountDao.updateUserByMail(expectedChangedUser.getMail(), expectedChangedUser2);
         Assert.assertFalse("updateUserTest, update mail to existing mail", updated);
     }
 

@@ -111,14 +111,14 @@ delete
 from public.location_reservations
 where location_name = ?;
 
+-- $delete_location_reservations_of_user
+delete from public.location_reservations
+where user_augentid = ?;
+
 -- $delete_location_reservations_of_location_between_dates
 delete
 from public.location_reservations
 where location_name = ? and cast(substr(date,0,5) as int)*404 + cast(substr(date,6,2) as int)*31 + cast(substr(date,9,2) as int) between ? and ?;
-
--- $delete_location_reservations_of_user_by_id
-delete from public.location_reservations
-where user_augentid = ?;
 
 -- $insert_location_reservation
 insert into public.location_reservations (date, location_name, user_augentid, attended)
@@ -152,7 +152,7 @@ update public.location_reservations
 set location_name = ?
 where location_name = ?;
 
--- $update_location_reservations_of_user
+-- $update_fk_location_reservations_to_user
 update public.location_reservations
 set user_augentid = ?
 where user_augentid = ?;
@@ -324,7 +324,7 @@ delete
 from public.locker_reservations
 where location_name = ? and locker_number = ?;
 
--- $delete_locker_reservations_of_user_by_id
+-- $delete_locker_reservations_of_user
 delete
 from public.locker_reservations
 where user_augentid = ?;
@@ -348,11 +348,7 @@ update public.locker_reservations
 set location_name = ?
 where location_name = ?;
 
--- $update_locker_reservations_of_user
-/*
-  This might seem a strange query but is used
-  when a user's augentID might have been changed
-*/
+-- $update_fk_locker_reservations_to_user
 update public.locker_reservations
 set user_augentid = ?
 where user_augentid = ?;
@@ -504,7 +500,7 @@ update public.penalty_book
 set event_code = ?
 where event_code = ?;
 
--- $update_penalties_of_user
+-- $update_fk_penalty_book_to_user
 update public.penalty_book
 set user_augentid = ?
 where user_augentid = ?;
@@ -543,6 +539,11 @@ where reservation_location = ?;
 delete
 from public.penalty_book
 where event_code = ?;
+
+-- $delete_penalties_of_user
+delete
+from public.penalty_book
+where user_augentid = ?;
 
 
 
@@ -616,7 +617,7 @@ update public.scanners_location
 set location_name = ?
 where location_name = ?;
 
--- $update_fk_scanners_location_to_users
+-- $update_fk_scanners_location_to_user
 update public.scanners_location
 set user_augentid = ?
 where user_augentid = ?;

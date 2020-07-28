@@ -236,7 +236,7 @@ public class AccountController extends AController{
             user.setPassword(encoder.encode(user.getPassword()));
         }
         try{
-            accountDao.updateUser(email, user);
+            accountDao.updateUserByMail(email, user);
             return new ResponseEntity(HttpStatus.OK);
         } catch (NoSuchUserException ex){
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
