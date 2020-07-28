@@ -50,7 +50,7 @@ public interface IAccountDao extends IDao {
     /**
      * Removes the user with the given AUGentID.
      */
-    void removeUserById(String AUGentID) throws SQLException;
+    void deleteUser(String AUGentID) throws SQLException;
 
     /**
      * Adds a user to a list of unverified users awaiting their verification.

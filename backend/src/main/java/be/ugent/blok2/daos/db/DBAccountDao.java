@@ -231,7 +231,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
     }
 
     @Override
-    public void removeUserById(String AUGentID) throws SQLException {
+    public void deleteUser(String AUGentID) throws SQLException {
         try (Connection conn = getConnection()) {
             try {
                 conn.setAutoCommit(false);

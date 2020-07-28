@@ -162,19 +162,19 @@ public class TestDBAccountDao {
         // UPC-A
         accountDao.directlyAddUser(user);
         u = accountDao.getUserFromBarcode(user_upca_barcode);
-        accountDao.removeUserById(user.getAugentID());
+        accountDao.deleteUser(user.getAugentID());
         Assert.assertEquals("getUserFromBarcodeTest, UPC-A", user, u);
 
         // EAN13
         accountDao.directlyAddUser(user);
         u = accountDao.getUserFromBarcode(user_ean13_barcode);
-        accountDao.removeUserById(user.getAugentID());
+        accountDao.deleteUser(user.getAugentID());
         Assert.assertEquals("getUserFromBarcodeTest, EAN13", user, u);
 
         // Other?
         accountDao.directlyAddUser(user);
         u = accountDao.getUserFromBarcode(user_other_barcode);
-        accountDao.removeUserById(user.getAugentID());
+        accountDao.deleteUser(user.getAugentID());
         Assert.assertEquals("getUserFromBarcodeTest, Other?", user, u);
     }
 }
