@@ -59,16 +59,6 @@ public class TestDBLocationDao {
         Assert.assertNull("addLocation, remove added test location", l);
     }
 
-    @Test
-    public void changeLocationTest() throws SQLException {
-        // TODO: test cascade
-    }
-
-    @Test
-    public void deleteLockersTest() throws SQLException {
-        // TODO: test cascade
-    }
-
     /*
     * getCalendarDays(), addCalendarDays() and deleteCalendarDays will be tested
     * */
