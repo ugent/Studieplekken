@@ -241,6 +241,12 @@ CREATE TABLE public.users (
 ALTER TABLE public.users OWNER TO postgres;
 
 --
+-- Name: TABLE penalty_book; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON TABLE public.users IS 'Be aware: the column penalty_points does not mean anything as a value. Because every time a USER is selected, the penalty points need to be calculated using the PENALTY_BOOK';
+
+--
 -- Name: users_to_verify; Type: TABLE; Schema: public; Owner: postgres
 --
 
