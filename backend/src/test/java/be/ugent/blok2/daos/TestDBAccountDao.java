@@ -95,12 +95,14 @@ public class TestDBAccountDao {
 
         User actualChangedUser = accountDao.getUserById(expectedChangedUser.getAugentID());
         Assert.assertEquals(expectedChangedUser, actualChangedUser);
+    }
 
+    @Test(expected = SQLException.class)
+    public void updateUserToExistingMailTest() throws SQLException {
         // change expectedChangedUser's mail to an existing mail, should fail
-        User expectedChangedUser2 = expectedChangedUser.clone();
-        expectedChangedUser2.setMail(testUser2.getMail());
-        updated = accountDao.updateUserByMail(expectedChangedUser.getMail(), expectedChangedUser2);
-        Assert.assertFalse("updateUserTest, update mail to existing mail", updated);
+        User updated = testUser1.clone();
+        updated.setMail(testUser2.getMail());
+        accountDao.updateUserById(testUser1.getAugentID(), updated);
     }
 
     @Test
