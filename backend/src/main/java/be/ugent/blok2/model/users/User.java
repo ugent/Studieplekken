@@ -20,7 +20,6 @@ public class User implements Cloneable, UserDetails {
     private String institution;
     private String augentID;
     private int penaltyPoints;
-    //private String barcode;
     private Role[] roles;
 
     public User() {
@@ -50,9 +49,7 @@ public class User implements Cloneable, UserDetails {
             User c = (User) super.clone();
 
             c.roles = new Role[roles.length];
-            for (int i = 0; i < roles.length; i++) {
-                c.roles[i] = roles[i];
-            }
+            System.arraycopy(roles, 0, c.roles, 0, roles.length);
 
             return c;
         } catch (CloneNotSupportedException e) {
@@ -65,9 +62,7 @@ public class User implements Cloneable, UserDetails {
             User c = (User) super.clone();
             c.password = "";
             c.roles = new Role[roles.length];
-            for (int i = 0; i < roles.length; i++) {
-                c.roles[i] = roles[i];
-            }
+            System.arraycopy(roles, 0, c.roles, 0, roles.length);
             return c;
         } catch (CloneNotSupportedException e) {
             return null;
@@ -78,8 +73,8 @@ public class User implements Cloneable, UserDetails {
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         ArrayList<Authority> authorities = new ArrayList<>();
-        for (int i = 0; i < roles.length; i++) {
-            authorities.add(new Authority(roles[i]));
+        for (Role role : roles) {
+            authorities.add(new Authority(role));
         }
         return authorities;
     }
@@ -149,10 +144,6 @@ public class User implements Cloneable, UserDetails {
         return password;
     }
 
-    /*public String getBarcode(){
-        return barcode;
-    }*/
-
     public void setAugentID(String augentID) {
         this.augentID = augentID;
     }
@@ -185,11 +176,6 @@ public class User implements Cloneable, UserDetails {
         this.roles = roles;
     }
 
-    /*public void setBarcode(String barcode){
-        this.barcode=barcode;
-    }*/
-
-
 //</editor-fold>
 
     @Override
@@ -207,7 +193,4 @@ public class User implements Cloneable, UserDetails {
                 '}';
     }
 
-    public String shortString() {
-        return this.getAugentID()+" " + this.getFirstName()+ " " + this.getLastName();
-    }
 }

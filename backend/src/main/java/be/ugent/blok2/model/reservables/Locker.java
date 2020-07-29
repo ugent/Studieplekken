@@ -8,7 +8,11 @@ public class Locker implements Cloneable {
     private Location location;
 
     public Locker() {
+    }
 
+    public Locker(int number, Location location) {
+        this.number = number;
+        this.location = location;
     }
 
     @Override
