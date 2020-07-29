@@ -281,7 +281,7 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
         deletePenaltyEventDescriptions(code, conn);
         deletePenaltyBookEntries(code, conn);
 
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("$delete_penalty_event"));
+        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_penalty_event"));
         pstmt.setInt(1, code);
         pstmt.execute();
     }

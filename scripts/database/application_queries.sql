@@ -471,11 +471,6 @@ values (?, ?, ?);
 insert into penalty_book (user_augentid, event_code, timestamp, reservation_date, reservation_location, received_points)
 values (?, ?, ?, ?, ?, ?);
 
--- $count_penalty_events_with_code
-select count(1)
-from penalty_events
-where code = ?;
-
 -- $insert_penalty_description
 insert into public.penalty_descriptions (lang_enum, event_code, description)
 values (?, ?, ?);
@@ -484,11 +479,6 @@ values (?, ?, ?);
 update public.penalty_events
 set points = ?, public_accessible = ?
 where code = ?;
-
--- $update_penalty_description
-update public.penalty_descriptions
-set description = ?
-where lang_enum = ? and event_code = ?;
 
 -- $update_fk_penalty_book_to_locations
 update public.penalty_book
@@ -524,11 +514,6 @@ where code = ?;
 delete
 from public.penalty_book b
 where b.user_augentid = ? and b.event_code = ? and b.timestamp = ?;
-
--- $delete_penalties_of_user_by_id
-delete
-from public.penalty_book
-where user_augentid = ?;
 
 -- $delete_penalties_of_location
 delete
