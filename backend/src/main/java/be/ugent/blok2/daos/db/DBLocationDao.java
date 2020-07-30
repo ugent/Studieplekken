@@ -602,7 +602,16 @@ public class DBLocationDao extends ADB implements ILocationDao {
     }
 
     private void deleteLocker(String locationName, int number, Connection conn) throws SQLException {
+        deleteLockerReservation(locationName, number, conn);
+
         PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_locker"));
+        pstmt.setString(1, locationName);
+        pstmt.setInt(2, number);
+        pstmt.execute();
+    }
+
+    private void deleteLockerReservation(String locationName, int number, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_locker_reservation"));
         pstmt.setString(1, locationName);
         pstmt.setInt(2, number);
         pstmt.execute();
