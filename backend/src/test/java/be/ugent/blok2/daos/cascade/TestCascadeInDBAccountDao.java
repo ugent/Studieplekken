@@ -94,13 +94,14 @@ public class TestCascadeInDBAccountDao {
         testLockerReservation2 = new LockerReservation(testLocker2, testUser);
 
         Map<Language, String> descriptions = new HashMap<>();
-        descriptions.put(Language.DUTCH, "Dit is een test omschrijving");
-        descriptions.put(Language.ENGLISH, "This is a test description");
+        descriptions.put(Language.DUTCH, "Dit is een test omschrijving van een penalty event met code 0");
+        descriptions.put(Language.ENGLISH, "This is a test description of a penalty event with code 0");
         testPenaltyEvent = new PenaltyEvent(0, 10, true, descriptions);
 
         // Note: the received amount of points are 10 and 20, not testPenaltyEvent.getCode()
         // because when the penalties are retrieved from the penaltyEventDao, the list will
-        // be sorted by received points before asserting
+        // be sorted by received points before asserting, if they would be equal we can't sort
+        // on the points and be sure about the equality of the actual and expected list.
         testPenalty1 = new Penalty(testUser.getAugentID(), testPenaltyEvent.getCode(), CustomDate.now(), CustomDate.now(), testLocation1.getName(), 10);
         testPenalty2 = new Penalty(testUser.getAugentID(), testPenaltyEvent.getCode(), new CustomDate(1970, 1, 1), CustomDate.now(), testLocation2.getName(), 20);
 
@@ -122,8 +123,9 @@ public class TestCascadeInDBAccountDao {
     @After
     public void cleanup() throws SQLException {
         // Remove test objects from database
-        // Note that here, I am not relying on the cascade because that's
-        // what we are testing here in this class
+        // Note, I am not relying on the cascade because that's
+        // what we are testing here in this class ...
+        scannerLocationDao.deleteAllLocationsOfScanner(testUser.getAugentID());
         penaltyEventsDao.deletePenalty(testPenalty2);
         penaltyEventsDao.deletePenalty(testPenalty1);
         penaltyEventsDao.deletePenaltyEvent(testPenaltyEvent.getCode());
@@ -135,7 +137,7 @@ public class TestCascadeInDBAccountDao {
                 testLocationReservation2.getDate());
         locationReservationDao.deleteLocationReservation(testLocationReservation1.getUser().getAugentID(),
                 testLocationReservation1.getDate());
-        // okay, cascade is assumed to be okay for the lockers here... (but it does)
+        // ... okay, cascade is assumed to be okay for the lockers here... (but it is)
         locationDao.deleteLocation(testLocation2.getName());
         locationDao.deleteLocation(testLocation1.getName());
         accountDao.deleteUser(testUser.getAugentID());
@@ -150,15 +152,61 @@ public class TestCascadeInDBAccountDao {
     }
 
     @Test
-    public void updateUserWithoutCascadeTest() throws SQLException {
+    public void updateUserWithoutCascadeNeededTest() throws SQLException {
         updateUserFieldWithoutAUGentID(testUser);
         accountDao.updateUserById(testUser.getAugentID(), testUser);
         User u = accountDao.getUserById(testUser.getAugentID());
-        Assert.assertEquals("updateUserKeepFK", testUser, u);
+        Assert.assertEquals("updateUserWithoutCascadeNeededTest", testUser, u);
+
+        LocationReservation lr1 = locationReservationDao.getLocationReservation(
+                testLocationReservation1.getUser().getAugentID(),
+                testLocationReservation1.getDate());
+        Assert.assertEquals("updateUserWithoutCascadeNeededTest, testLocationReservation1",
+                testLocationReservation1, lr1);
+
+        LocationReservation lr2 = locationReservationDao.getLocationReservation(
+                testLocationReservation2.getUser().getAugentID(),
+                testLocationReservation2.getDate());
+        Assert.assertEquals("updateUserWithoutCascadeNeededTest, testLocationReservation2",
+                testLocationReservation2, lr2);
+
+        LockerReservation lor1 = lockerReservationDao.getLockerReservation(
+                testLockerReservation1.getLocker().getLocation().getName(),
+                testLockerReservation1.getLocker().getNumber());
+        Assert.assertEquals("updateUserWithoutCascadeNeededTest, testLockerReservation1",
+                testLockerReservation1, lor1);
+
+        LockerReservation lor2 = lockerReservationDao.getLockerReservation(
+                testLockerReservation2.getLocker().getLocation().getName(),
+                testLockerReservation2.getLocker().getNumber());
+        Assert.assertEquals("updateUserWithoutCascadeNeededTest, testLockerReservation2",
+                testLockerReservation2, lor2);
+
+        List<Penalty> penalties = penaltyEventsDao.getPenaltiesByUser(testUser.getAugentID());
+        penalties.sort(Comparator.comparing(Penalty::getReceivedPoints));
+
+        List<Penalty> expectedPenalties = new ArrayList<>();
+        expectedPenalties.add(testPenalty1);
+        expectedPenalties.add(testPenalty2);
+        expectedPenalties.sort(Comparator.comparing(Penalty::getReceivedPoints));
+
+        Assert.assertEquals("updateUserWithoutCascadeNeededTest, penalties", expectedPenalties,
+                penalties);
+
+        List<Location> scannerLocations = scannerLocationDao.getLocationsToScanOfUser(testUser.getAugentID());
+        scannerLocations.sort(Comparator.comparing(Location::getName));
+
+        List<Location> expectedLocations = new ArrayList<>();
+        expectedLocations.add(testLocation1);
+        expectedLocations.add(testLocation2);
+        expectedLocations.sort(Comparator.comparing(Location::getName));
+
+        Assert.assertEquals("updateUserWithoutCascadeNeededTest, locations to scan with new id",
+                expectedLocations, scannerLocations);
     }
 
     @Test
-    public void updateUserWithCascadeTest() throws SQLException {
+    public void updateUserWithCascadeNeededTest() throws SQLException {
         updateUserFieldWithoutAUGentID(testUser);
         String oldAUGentID = testUser.getAugentID();
         testUser.setAugentID(testUser.getAugentID() + "Iets in een test");
@@ -166,11 +214,11 @@ public class TestCascadeInDBAccountDao {
 
         // the User needs to be updated in the first place
         User u = accountDao.getUserById(testUser.getAugentID());
-        Assert.assertEquals("updateUserWithCascadeTest, user", testUser, u);
+        Assert.assertEquals("updateUserWithCascadeNeededTest, user", testUser, u);
 
         // the User with the old augentid needs to be removed
         u = accountDao.getUserById(oldAUGentID);
-        Assert.assertNull("updateUserWithCascadeTest, old user needs to be removed", u);
+        Assert.assertNull("updateUserWithCascadeNeededTest, old user needs to be removed", u);
 
         // check whether the entries in LOCATION_RESERVATIONS have been updated in cascade
         // note that because of references, the User object in testLocationReservation1/2
@@ -178,33 +226,33 @@ public class TestCascadeInDBAccountDao {
         LocationReservation lr1 = locationReservationDao.getLocationReservation(
                 testLocationReservation1.getUser().getAugentID(),
                 testLocationReservation1.getDate());
-        Assert.assertEquals("updateUserWithCascade, testLocationReservation1",
+        Assert.assertEquals("updateUserWithCascadeNeededTest, testLocationReservation1",
                 testLocationReservation1, lr1);
 
         LocationReservation lr2 = locationReservationDao.getLocationReservation(
                 testLocationReservation2.getUser().getAugentID(),
                 testLocationReservation2.getDate());
-        Assert.assertEquals("updateUserWithCascade, testLocationReservation2",
+        Assert.assertEquals("updateUserWithCascadeNeededTest, testLocationReservation2",
                 testLocationReservation2, lr2);
 
         // check whether the entries in LOCKER_RESERVATIONS have been updated in cascade
         LockerReservation lor1 = lockerReservationDao.getLockerReservation(
                 testLockerReservation1.getLocker().getLocation().getName(),
                 testLockerReservation1.getLocker().getNumber());
-        Assert.assertEquals("updateUserWithCascade, testLockerReservation1",
+        Assert.assertEquals("updateUserWithCascadeNeededTest, testLockerReservation1",
                 testLockerReservation1, lor1);
 
         LockerReservation lor2 = lockerReservationDao.getLockerReservation(
                 testLockerReservation2.getLocker().getLocation().getName(),
                 testLockerReservation2.getLocker().getNumber());
-        Assert.assertEquals("updateUserWithCascade, testLockerReservation2",
+        Assert.assertEquals("updateUserWithCascadeNeededTest, testLockerReservation2",
                 testLockerReservation2, lor2);
 
         // check whether the entries in PENALTY_BOOK have been updated in cascade
-        List<Penalty> penalties = penaltyEventsDao.getPenalties(testUser.getAugentID());
+        List<Penalty> penalties = penaltyEventsDao.getPenaltiesByUser(testUser.getAugentID());
         penalties.sort(Comparator.comparing(Penalty::getReceivedPoints));
 
-        // PenaltyEvent doesn't keep a reference to User, but the augentid
+        // Penalty objects don't keep a reference to User, but have a String with the augentid
         testPenalty1.setAugentID(testUser.getAugentID());
         testPenalty2.setAugentID(testUser.getAugentID());
 
@@ -213,12 +261,12 @@ public class TestCascadeInDBAccountDao {
         expectedPenalties.add(testPenalty2);
         expectedPenalties.sort(Comparator.comparing(Penalty::getReceivedPoints));
 
-        Assert.assertEquals("updateUserWithCascade, penalties", expectedPenalties,
+        Assert.assertEquals("updateUserWithCascadeNeededTest, penalties", expectedPenalties,
                 penalties);
 
-        // check whether the entries in SCANNERS_LOCATION
+        // check whether the entries in SCANNERS_LOCATION have been updated in cascade
         List<Location> scannerLocations = scannerLocationDao.getLocationsToScanOfUser(oldAUGentID);
-        Assert.assertEquals("updateUserWithCascade, locations to scan with old id",
+        Assert.assertEquals("updateUserWithCascadeNeededTest, locations to scan with old id",
                 0, scannerLocations.size());
 
         scannerLocations = scannerLocationDao.getLocationsToScanOfUser(testUser.getAugentID());
@@ -229,19 +277,21 @@ public class TestCascadeInDBAccountDao {
         expectedLocations.add(testLocation2);
         expectedLocations.sort(Comparator.comparing(Location::getName));
 
-        Assert.assertEquals("updateUserWithCascade, locations to scan with new id",
+        Assert.assertEquals("updateUserWithCascadeNeededTest, locations to scan with new id",
                 expectedLocations, scannerLocations);
     }
 
     @Test
     public void deleteUserTest() throws SQLException {
         accountDao.deleteUser(testUser.getAugentID());
+        User u = accountDao.getUserById(testUser.getAugentID());
+        Assert.assertNull("deleteUserTest, user must be deleted", u);
 
         List<Location> scannerLocations = scannerLocationDao.getLocationsToScanOfUser(testUser.getAugentID());
         Assert.assertEquals("deleteUserTest, scannerLocations", 0,
                 scannerLocations.size());
 
-        List<Penalty> penalties = penaltyEventsDao.getPenalties(testUser.getAugentID());
+        List<Penalty> penalties = penaltyEventsDao.getPenaltiesByUser(testUser.getAugentID());
         Assert.assertEquals("deleteUserTest, penalties", 0, penalties.size());
 
         List<LocationReservation> locationReservations = locationReservationDao

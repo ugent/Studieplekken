@@ -281,8 +281,6 @@ alter table only public.calendar
 add constraint pk_calendar 
 primary key (
 	location_name
-	, opening_time
-	, closing_time
 	, date
 );
 

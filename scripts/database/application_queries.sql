@@ -457,11 +457,17 @@ from penalty_events e
         on e.code = d.event_code
 where e.code = ?;
 
--- $get_penalties
+-- $get_penalties_by_user
 select b.user_augentid, b.event_code, b.timestamp, b.reservation_date
     , b.received_points, b.reservation_location
 from public.penalty_book b
 where b.user_augentid = ?;
+
+-- $get_penalties_by_location
+select b.user_augentid, b.event_code, b.timestamp, b.reservation_date
+     , b.received_points, b.reservation_location
+from public.penalty_book b
+where b.reservation_location = ?;
 
 -- $insert_penalty_event
 insert into public.penalty_events (code, points, public_accessible)

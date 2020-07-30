@@ -57,7 +57,7 @@ public class PenaltyEventController {
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "View a list of penalties assigned to the user with the given id")
     public List<Penalty> getPenalties(@PathVariable("id") String augentID) throws SQLException {
-        return penaltyDao.getPenalties(augentID);
+        return penaltyDao.getPenaltiesByUser(augentID);
     }
 
     @GetMapping("/cancelPoints/{date}")

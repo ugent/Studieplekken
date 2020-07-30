@@ -150,27 +150,39 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
     }
 
     @Override
-    public List<Penalty> getPenalties(String augentId) throws SQLException {
+    public List<Penalty> getPenaltiesByUser(String augentId) throws SQLException {
         try (Connection conn = getConnection()) {
-            List<Penalty> ret = new ArrayList<>();
-
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("get_penalties"));
-            pstmt.setString(1, augentId);
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                Penalty p = new Penalty();
-                p.setAugentID(rs.getString(databaseProperties.getString("penalty_book_user_augentid")));
-                p.setEventCode(rs.getInt(databaseProperties.getString("penalty_book_event_code")));
-                p.setTimestamp(CustomDate.parseString(rs.getString(databaseProperties.getString("penalty_book_timestamp"))));
-                p.setReservationDate(CustomDate.parseString(rs.getString(databaseProperties.getString("penalty_book_reservation_date"))));
-                p.setReservationLocation(rs.getString(databaseProperties.getString("penalty_book_reservation_location")));
-                p.setReceivedPoints(rs.getInt(databaseProperties.getString("penalty_book_received_points")));
-                ret.add(p);
-            }
-
-            return  ret;
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("get_penalties_by_user"));
+            return getPenaltiesByOneParameter(augentId, pstmt);
         }
+    }
+
+    @Override
+    public List<Penalty> getPenaltiesByLocation(String locationName) throws SQLException {
+        try (Connection conn = getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("get_penalties_by_location"));
+            return getPenaltiesByOneParameter(locationName, pstmt);
+        }
+    }
+
+    private List<Penalty> getPenaltiesByOneParameter(String param, PreparedStatement pstmt) throws SQLException {
+        pstmt.setString(1, param);
+        ResultSet rs = pstmt.executeQuery();
+
+        List<Penalty> ret = new ArrayList<>();
+
+        while (rs.next()) {
+            Penalty p = new Penalty();
+            p.setAugentID(rs.getString(databaseProperties.getString("penalty_book_user_augentid")));
+            p.setEventCode(rs.getInt(databaseProperties.getString("penalty_book_event_code")));
+            p.setTimestamp(CustomDate.parseString(rs.getString(databaseProperties.getString("penalty_book_timestamp"))));
+            p.setReservationDate(CustomDate.parseString(rs.getString(databaseProperties.getString("penalty_book_reservation_date"))));
+            p.setReservationLocation(rs.getString(databaseProperties.getString("penalty_book_reservation_location")));
+            p.setReceivedPoints(rs.getInt(databaseProperties.getString("penalty_book_received_points")));
+            ret.add(p);
+        }
+
+        return  ret;
     }
 
     @Override

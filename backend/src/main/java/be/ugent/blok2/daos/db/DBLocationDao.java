@@ -517,7 +517,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
         PreparedStatement pstmt = conn.prepareStatement(databaseProperties
                 .getString("update_fk_location_name_in_calendar"));
         pstmt.setString(1, newLocationName);
-        pstmt.setString(1, oldLocationName);
+        pstmt.setString(2, oldLocationName);
         pstmt.execute();
     }
     
@@ -526,7 +526,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
         PreparedStatement pstmt = conn.prepareStatement(databaseProperties
                 .getString("update_fk_scanners_location_to_locations"));
         pstmt.setString(1, newLocationName);
-        pstmt.setString(1, oldLocationName);
+        pstmt.setString(2, oldLocationName);
         pstmt.execute();
     }
     
@@ -535,7 +535,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
         PreparedStatement pstmt = conn.prepareStatement(databaseProperties
                 .getString("update_fk_location_reservations_to_location"));
         pstmt.setString(1, newLocationName);
-        pstmt.setString(1, oldLocationName);
+        pstmt.setString(2, oldLocationName);
         pstmt.execute();
     }
     
@@ -544,7 +544,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
         PreparedStatement pstmt = conn.prepareStatement(databaseProperties
                 .getString("update_fk_locker_reservations_to_location"));
         pstmt.setString(1, newLocationName);
-        pstmt.setString(1, oldLocationName);
+        pstmt.setString(2, oldLocationName);
         pstmt.execute();
     }
     
@@ -553,7 +553,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
         PreparedStatement pstmt = conn.prepareStatement(databaseProperties
                 .getString("update_fk_penalty_book_to_locations"));
         pstmt.setString(1, newLocationName);
-        pstmt.setString(1, oldLocationName);
+        pstmt.setString(2, oldLocationName);
         pstmt.execute();
     }
 

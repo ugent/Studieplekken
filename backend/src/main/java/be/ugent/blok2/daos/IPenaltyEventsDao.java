@@ -52,7 +52,12 @@ public interface IPenaltyEventsDao extends IDao {
     /**
      * Get the actual occurrence of a PenaltyEvent: e.g. someone has cancelled after 17:00 the day before opening
      */
-    List<Penalty> getPenalties(String augentId) throws SQLException;
+    List<Penalty> getPenaltiesByUser(String augentId) throws SQLException;
+
+    /**
+     * Get all occurences of a PenaltyEvent within a location
+     */
+    List<Penalty> getPenaltiesByLocation(String locationName) throws SQLException;
 
     /**
      * addPenalty() adds a Penalty to the so called Penalty Book (like the Order Book in a stock exchange market)

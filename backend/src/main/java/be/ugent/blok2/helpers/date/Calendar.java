@@ -5,14 +5,15 @@ import java.util.Collection;
 
 
 public class Calendar {
+
     private Collection<Day> days;
     
     public Calendar(Collection<Day> days) {
         this.days = days;
     }
 
-    public Calendar(){
-        this.days = new ArrayList<Day>();
+    public Calendar() {
+        this.days = new ArrayList<>();
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
