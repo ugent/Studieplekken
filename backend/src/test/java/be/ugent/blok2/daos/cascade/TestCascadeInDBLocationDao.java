@@ -2,7 +2,9 @@ package be.ugent.blok2.daos.cascade;
 
 import be.ugent.blok2.TestSharedMethods;
 import be.ugent.blok2.daos.*;
+import be.ugent.blok2.daos.db.ADB;
 import be.ugent.blok2.helpers.Language;
+import be.ugent.blok2.helpers.Resources;
 import be.ugent.blok2.helpers.date.Calendar;
 import be.ugent.blok2.helpers.date.CustomDate;
 import be.ugent.blok2.helpers.date.Day;
@@ -24,6 +26,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -146,23 +151,31 @@ public class TestCascadeInDBLocationDao {
     @After
     public void cleanup() throws SQLException {
         // Remove test objects from database
+        // Note, I am not relying on the cascade because that's
+        // what we are testing here in this class ...
         locationDao.deleteCalendarDays(testLocation.getName(), "1950-01-01T00:00:00",
                 CustomDate.now().toString());
+
         scannerLocationDao.deleteAllScannersOfLocation(testLocation.getName());
+
         penaltyEventsDao.deletePenalty(testPenalty2);
         penaltyEventsDao.deletePenalty(testPenalty1);
         penaltyEventsDao.deletePenaltyEvent(testPenaltyEvent.getCode());
+
         lockerReservationDao.deleteLockerReservation(testLockerReservation2.getLocker().getLocation().getName(),
                 testLockerReservation2.getLocker().getNumber());
         lockerReservationDao.deleteLockerReservation(testLockerReservation1.getLocker().getLocation().getName(),
                 testLockerReservation1.getLocker().getNumber());
+
         locationReservationDao.deleteLocationReservation(testLocationReservation2.getUser().getAugentID(),
                 testLocationReservation2.getDate());
         locationReservationDao.deleteLocationReservation(testLocationReservation1.getUser().getAugentID(),
                 testLocationReservation1.getDate());
-        // ... okay, cascade is assumed to be okay for the lockers here... (but it is)
+
         accountDao.deleteUser(testUser2.getAugentID());
         accountDao.deleteUser(testUser1.getAugentID());
+
+        // ... okay, cascade is assumed to be okay for the lockers here... (but it is)
         locationDao.deleteLocation(testLocation.getName());
 
         // Use regular database
@@ -386,6 +399,9 @@ public class TestCascadeInDBLocationDao {
         List<LockerReservation> lockerReservations = lockerReservationDao
                 .getAllLockerReservationsOfLocation(testLocation.getName());
         Assert.assertEquals("deleteLocation, locker reservations", 0, lockerReservations.size());
+
+        Assert.assertEquals("deleteLocation, descriptions", 0,
+                countDescriptionsOfLocation(testLocation.getName()));
     }
 
     private void updateLocationWithoutChangeInFK(Location location) {
@@ -402,5 +418,17 @@ public class TestCascadeInDBLocationDao {
         location.setImageUrl("Changed URL");
         location.setStartPeriodLockers(new CustomDate(1970, 1, 1));
         location.setEndPeriodLockers(CustomDate.now());
+    }
+
+    private int countDescriptionsOfLocation(String locationName) throws SQLException {
+        try (Connection conn = ADB.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources
+                    .databaseProperties.getString("count_descriptions_of_location"));
+            pstmt.setString(1, locationName);
+
+            ResultSet rs = pstmt.executeQuery();
+            rs.next(); // will always be true, it's a count. If a problem would occur, a SQLException will be thrown
+            return rs.getInt(1);
+        }
     }
 }

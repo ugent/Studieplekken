@@ -153,7 +153,8 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
     public List<Penalty> getPenaltiesByUser(String augentId) throws SQLException {
         try (Connection conn = getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("get_penalties_by_user"));
-            return getPenaltiesByOneParameter(augentId, pstmt);
+            pstmt.setString(1, augentId);
+            return getPenaltiesFromPreparedPstmt(pstmt);
         }
     }
 
@@ -161,12 +162,22 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
     public List<Penalty> getPenaltiesByLocation(String locationName) throws SQLException {
         try (Connection conn = getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("get_penalties_by_location"));
-            return getPenaltiesByOneParameter(locationName, pstmt);
+            pstmt.setString(1, locationName);
+            return getPenaltiesFromPreparedPstmt(pstmt);
         }
     }
 
-    private List<Penalty> getPenaltiesByOneParameter(String param, PreparedStatement pstmt) throws SQLException {
-        pstmt.setString(1, param);
+    @Override
+    public List<Penalty> getPenaltiesByEventCode(int eventCode) throws SQLException {
+        try (Connection conn = getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties
+                    .getString("get_penalties_by_event_code"));
+            pstmt.setInt(1, eventCode);
+            return getPenaltiesFromPreparedPstmt(pstmt);
+        }
+    }
+
+    private List<Penalty> getPenaltiesFromPreparedPstmt(PreparedStatement pstmt) throws SQLException {
         ResultSet rs = pstmt.executeQuery();
 
         List<Penalty> ret = new ArrayList<>();

@@ -55,9 +55,14 @@ public interface IPenaltyEventsDao extends IDao {
     List<Penalty> getPenaltiesByUser(String augentId) throws SQLException;
 
     /**
-     * Get all occurences of a PenaltyEvent within a location
+     * Get all occurrences of a PenaltyEvent within a location
      */
     List<Penalty> getPenaltiesByLocation(String locationName) throws SQLException;
+
+    /**
+     * Get all occurrences of a PenaltyEvent by type of PenaltyEvent
+     */
+    List<Penalty> getPenaltiesByEventCode(int eventCode) throws SQLException;
 
     /**
      * addPenalty() adds a Penalty to the so called Penalty Book (like the Order Book in a stock exchange market)

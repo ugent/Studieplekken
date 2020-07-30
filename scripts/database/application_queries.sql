@@ -469,6 +469,12 @@ select b.user_augentid, b.event_code, b.timestamp, b.reservation_date
 from public.penalty_book b
 where b.reservation_location = ?;
 
+-- $get_penalties_by_event_code
+select b.user_augentid, b.event_code, b.timestamp, b.reservation_date
+     , b.received_points, b.reservation_location
+from public.penalty_book b
+where b.event_code = ?;
+
 -- $insert_penalty_event
 insert into public.penalty_events (code, points, public_accessible)
 values (?, ?, ?);
@@ -535,6 +541,11 @@ where event_code = ?;
 delete
 from public.penalty_book
 where user_augentid = ?;
+
+-- $count_descriptions_of_penalty_events
+select count(1)
+from public.penalty_descriptions
+where event_code = ?;
 
 
 
@@ -624,3 +635,8 @@ where location_name = ?;
 -- $insert_location_descriptions
 insert into public.location_descriptions (location_name, lang_enum, description)
 values (?, ?, ?);
+
+-- $count_descriptions_of_location
+select count(1)
+from public.location_descriptions
+where location_name = ?;

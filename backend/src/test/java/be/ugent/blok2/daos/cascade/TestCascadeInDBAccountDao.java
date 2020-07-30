@@ -107,15 +107,20 @@ public class TestCascadeInDBAccountDao {
 
         // Add test objects to database
         accountDao.directlyAddUser(testUser);
+
         locationDao.addLocation(testLocation1);
         locationDao.addLocation(testLocation2);
+
         locationReservationDao.addLocationReservation(testLocationReservation1);
         locationReservationDao.addLocationReservation(testLocationReservation2);
+
         lockerReservationDao.addLockerReservation(testLockerReservation1);
         lockerReservationDao.addLockerReservation(testLockerReservation2);
+
         penaltyEventsDao.addPenaltyEvent(testPenaltyEvent);
         penaltyEventsDao.addPenalty(testPenalty1);
         penaltyEventsDao.addPenalty(testPenalty2);
+
         scannerLocationDao.addScannerLocation(testLocation1.getName(), testUser.getAugentID());
         scannerLocationDao.addScannerLocation(testLocation2.getName(), testUser.getAugentID());
     }
@@ -126,20 +131,25 @@ public class TestCascadeInDBAccountDao {
         // Note, I am not relying on the cascade because that's
         // what we are testing here in this class ...
         scannerLocationDao.deleteAllLocationsOfScanner(testUser.getAugentID());
+
         penaltyEventsDao.deletePenalty(testPenalty2);
         penaltyEventsDao.deletePenalty(testPenalty1);
         penaltyEventsDao.deletePenaltyEvent(testPenaltyEvent.getCode());
+
         lockerReservationDao.deleteLockerReservation(testLockerReservation2.getLocker().getLocation().getName(),
                 testLockerReservation2.getLocker().getNumber());
         lockerReservationDao.deleteLockerReservation(testLockerReservation1.getLocker().getLocation().getName(),
                 testLockerReservation1.getLocker().getNumber());
+
         locationReservationDao.deleteLocationReservation(testLocationReservation2.getUser().getAugentID(),
                 testLocationReservation2.getDate());
         locationReservationDao.deleteLocationReservation(testLocationReservation1.getUser().getAugentID(),
                 testLocationReservation1.getDate());
+
         // ... okay, cascade is assumed to be okay for the lockers here... (but it is)
         locationDao.deleteLocation(testLocation2.getName());
         locationDao.deleteLocation(testLocation1.getName());
+
         accountDao.deleteUser(testUser.getAugentID());
 
         // Use regular database
