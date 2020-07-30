@@ -3,7 +3,6 @@ package be.ugent.blok2.daos.db;
 import be.ugent.blok2.daos.IScannerLocationDao;
 import be.ugent.blok2.model.reservables.Location;
 import be.ugent.blok2.model.users.User;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
@@ -13,7 +12,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Profile("db")
 @Service
 public class DBScannerLocationDao extends ADB implements IScannerLocationDao {
     @Override
@@ -73,19 +71,27 @@ public class DBScannerLocationDao extends ADB implements IScannerLocationDao {
     @Override
     public boolean deleteAllScannersOfLocation(String locationName) throws SQLException {
         try (Connection conn = getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_scanners_of_location"));
-            pstmt.setString(1, locationName);
-            return pstmt.executeUpdate() > 0;
+            return deleteAllScannersOfLocation(locationName, conn);
         }
+    }
+
+    public static boolean deleteAllScannersOfLocation(String locationName, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_scanners_of_location"));
+        pstmt.setString(1, locationName);
+        return pstmt.executeUpdate() > 0;
     }
 
     @Override
     public boolean deleteAllLocationsOfScanner(String augentid) throws SQLException {
         try (Connection conn = getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_locations_of_scanner"));
-            pstmt.setString(1, augentid);
-            return pstmt.executeUpdate() > 0;
+            return deleteAllLocationsOfScanner(augentid, conn);
         }
+    }
+
+    public static boolean deleteAllLocationsOfScanner(String augentid, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_locations_of_scanner"));
+        pstmt.setString(1, augentid);
+        return pstmt.executeUpdate() > 0;
     }
 
     @Override

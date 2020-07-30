@@ -7,7 +7,6 @@ import org.apache.commons.codec.language.Soundex;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Properties;
 import java.util.ResourceBundle;
 
 /**
@@ -19,15 +18,15 @@ public abstract class ADB implements IDao {
     protected static final ResourceBundle applicationProperties = Resources.applicationProperties;
     protected Soundex soundex = new Soundex();
 
-    private String connectionUrl;
-    private String connectionUser;
-    private String connectionPassword;
+    private static String connectionUrl;
+    private static String connectionUser;
+    private static String connectionPassword;
 
     public ADB() {
         useDefaultDatabaseConnection();
     }
 
-    protected Connection getConnection() throws SQLException {
+    public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
     }
 

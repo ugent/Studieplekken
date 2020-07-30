@@ -12,8 +12,8 @@ public class LocationReservation {
     private Location location;
     private CustomDate date;
     private Boolean attended;
+
     public LocationReservation() {
-        System.out.println("Creating LocationReservation");
     }
 
     public LocationReservation(Location location, User user, CustomDate date) {

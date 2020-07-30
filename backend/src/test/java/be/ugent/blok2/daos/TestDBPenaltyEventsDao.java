@@ -151,7 +151,7 @@ public class TestDBPenaltyEventsDao {
 
         // Add penalty
         penaltyEventsDao.addPenalty(penalty);
-        List<Penalty> penalties = penaltyEventsDao.getPenalties(testUser.getAugentID());
+        List<Penalty> penalties = penaltyEventsDao.getPenaltiesByUser(testUser.getAugentID());
         Assert.assertEquals("penaltyBookTests, added one penalty", 1, penalties.size());
         Assert.assertEquals("penaltyBookTests, added one penalty", penalty, penalties.get(0));
 
@@ -162,7 +162,7 @@ public class TestDBPenaltyEventsDao {
 
         // Delete penalty
         penaltyEventsDao.deletePenalty(penalty);
-        penalties = penaltyEventsDao.getPenalties(testUser.getAugentID());
+        penalties = penaltyEventsDao.getPenaltiesByUser(testUser.getAugentID());
         Assert.assertEquals("penaltyBookTests, deleted penalty", 0, penalties.size());
 
         // Is the corresponding user updated correctly?
@@ -172,7 +172,7 @@ public class TestDBPenaltyEventsDao {
 
         // Add a penalty from last month
         penaltyEventsDao.addPenalty(penaltyLastMonth);
-        penalties = penaltyEventsDao.getPenalties(testUser.getAugentID());
+        penalties = penaltyEventsDao.getPenaltiesByUser(testUser.getAugentID());
         Assert.assertEquals("penaltyBookTests, added penalty from last month", 1, penalties.size());
         Assert.assertEquals("penaltyBookTests, added penalty from last month"
                 , penaltyLastMonth, penalties.get(0));
@@ -187,7 +187,7 @@ public class TestDBPenaltyEventsDao {
 
         // Add a blacklist event from ages ago (blacklist events may not decrease over time)
         penaltyEventsDao.addPenalty(fatalPenalty);
-        penalties = penaltyEventsDao.getPenalties(testUser.getAugentID());
+        penalties = penaltyEventsDao.getPenaltiesByUser(testUser.getAugentID());
         Assert.assertEquals("penaltyBookTests, added blacklist event from ages ago, may not decrease over time"
                 , 1, penalties.size());
         Assert.assertEquals("penaltyBookTests, added blacklist event from ages ago, may not decrease over time"

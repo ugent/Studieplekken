@@ -42,7 +42,7 @@ public class Time implements Cloneable {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || !(o instanceof Time))
+        if (!(o instanceof Time))
             return false;
         
         if (this == o)

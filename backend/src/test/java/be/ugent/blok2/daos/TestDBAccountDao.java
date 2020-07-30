@@ -90,17 +90,19 @@ public class TestDBAccountDao {
         // change the role opposed to testUser1, update should succeed
         expectedChangedUser.setRoles(new Role[]{Role.STUDENT});
 
-        boolean updated = accountDao.updateUser(testUser1.getMail(), expectedChangedUser);
+        boolean updated = accountDao.updateUserByMail(testUser1.getMail(), expectedChangedUser);
         Assert.assertTrue("updateUserTest, updated testUser1's role", updated);
 
         User actualChangedUser = accountDao.getUserById(expectedChangedUser.getAugentID());
         Assert.assertEquals(expectedChangedUser, actualChangedUser);
+    }
 
+    @Test(expected = SQLException.class)
+    public void updateUserToExistingMailTest() throws SQLException {
         // change expectedChangedUser's mail to an existing mail, should fail
-        User expectedChangedUser2 = expectedChangedUser.clone();
-        expectedChangedUser2.setMail(testUser2.getMail());
-        updated = accountDao.updateUser(expectedChangedUser.getMail(), expectedChangedUser2);
-        Assert.assertFalse("updateUserTest, update mail to existing mail", updated);
+        User updated = testUser1.clone();
+        updated.setMail(testUser2.getMail());
+        accountDao.updateUserById(testUser1.getAugentID(), updated);
     }
 
     @Test
@@ -162,19 +164,19 @@ public class TestDBAccountDao {
         // UPC-A
         accountDao.directlyAddUser(user);
         u = accountDao.getUserFromBarcode(user_upca_barcode);
-        accountDao.removeUserById(user.getAugentID());
+        accountDao.deleteUser(user.getAugentID());
         Assert.assertEquals("getUserFromBarcodeTest, UPC-A", user, u);
 
         // EAN13
         accountDao.directlyAddUser(user);
         u = accountDao.getUserFromBarcode(user_ean13_barcode);
-        accountDao.removeUserById(user.getAugentID());
+        accountDao.deleteUser(user.getAugentID());
         Assert.assertEquals("getUserFromBarcodeTest, EAN13", user, u);
 
         // Other?
         accountDao.directlyAddUser(user);
         u = accountDao.getUserFromBarcode(user_other_barcode);
-        accountDao.removeUserById(user.getAugentID());
+        accountDao.deleteUser(user.getAugentID());
         Assert.assertEquals("getUserFromBarcodeTest, Other?", user, u);
     }
 }

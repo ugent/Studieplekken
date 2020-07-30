@@ -5,7 +5,6 @@ import be.ugent.blok2.helpers.Language;
 import be.ugent.blok2.helpers.date.CustomDate;
 import be.ugent.blok2.model.penalty.Penalty;
 import be.ugent.blok2.model.penalty.PenaltyEvent;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
@@ -15,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-@Profile("!dummy")
 public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
 
     @Override
@@ -24,25 +22,13 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(databaseProperties.getString("get_penalty_events"));
 
-            Map<Integer, PenaltyEvent> events = new HashMap<>();
+            List<PenaltyEvent> penaltyEvents = new ArrayList<>();
 
             while (rs.next()) {
-                int code = rs.getInt(databaseProperties.getString("penalty_event_code"));
-                PenaltyEvent e = events.get(code);
-                if (e == null) {
-                    e = new PenaltyEvent();
-                    e.setCode(code);
-                    e.setPoints(rs.getInt(databaseProperties.getString("penalty_event_points")));
-                    e.setPublicAccessible(rs.getBoolean(databaseProperties.getString("penalty_event_public_accessible")));
-                    e.setDescriptions(new HashMap<>());
-                    events.put(code, e);
-                }
-
-                Language lang = Language.valueOf(rs.getString(databaseProperties.getString("penalty_description_lang_enum")));
-                e.getDescriptions().put(lang, rs.getString(databaseProperties.getString("penalty_description_description")));
+                penaltyEvents.add(createPenaltyEvent(rs));
             }
 
-            return new ArrayList<>(events.values());
+            return penaltyEvents;
         }
     }
 
@@ -54,20 +40,7 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                PenaltyEvent ret = new PenaltyEvent();
-                ret.setCode(code);
-                ret.setPoints(rs.getInt(databaseProperties.getString("penalty_event_points")));
-                ret.setPublicAccessible(rs.getBoolean(databaseProperties.getString("penalty_event_public_accessible")));
-                ret.setDescriptions(new HashMap<>());
-
-                Language lang = Language.valueOf(rs.getString(databaseProperties.getString("penalty_description_lang_enum")));
-                ret.getDescriptions().put(lang, rs.getString(databaseProperties.getString("penalty_description_description")));
-                while (rs.next()) {
-                    lang = Language.valueOf(rs.getString(databaseProperties.getString("penalty_description_lang_enum")));
-                    ret.getDescriptions().put(lang, rs.getString(databaseProperties.getString("penalty_description_description")));
-                }
-
-                return ret;
+                return createPenaltyEvent(rs);
             }
 
             return null;
@@ -75,53 +48,11 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
     }
 
     @Override
-    public List<Penalty> getPenalties(String augentId) throws SQLException {
-        try (Connection conn = getConnection()) {
-            List<Penalty> ret = new ArrayList<>();
-
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("get_penalties"));
-            pstmt.setString(1, augentId);
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                Penalty p = new Penalty();
-                p.setAugentID(rs.getString(databaseProperties.getString("penalty_book_user_augentid")));
-                p.setEventCode(rs.getInt(databaseProperties.getString("penalty_book_event_code")));
-                p.setTimestamp(CustomDate.parseString(rs.getString(databaseProperties.getString("penalty_book_timestamp"))));
-                p.setReservationDate(CustomDate.parseString(rs.getString(databaseProperties.getString("penalty_book_reservation_date"))));
-                p.setReservationLocation(rs.getString(databaseProperties.getString("penalty_book_reservation_location")));
-                p.setReceivedPoints(rs.getInt(databaseProperties.getString("penalty_book_received_points")));
-                ret.add(p);
-            }
-
-            return  ret;
-        }
-    }
-
-    @Override
     public void addPenaltyEvent(PenaltyEvent event) throws SQLException {
         try (Connection conn = getConnection()) {
             try {
-                // 1. add penalty_event's record
-                // 2. add the descriptions
                 conn.setAutoCommit(false);
-
-                // add penalty_event's record
-                PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("insert_penalty_event"));
-                pstmt.setInt(1, event.getCode());
-                pstmt.setInt(2, event.getPoints());
-                pstmt.setBoolean(3, event.getPublicAccessible());
-                pstmt.executeUpdate();
-
-                // add the descriptions
-                pstmt = conn.prepareStatement(databaseProperties.getString("insert_penalty_description"));
-                for (Language lang : event.getDescriptions().keySet()) {
-                    pstmt.setString(1, lang.name());
-                    pstmt.setInt(2, event.getCode());
-                    pstmt.setString(3, event.getDescriptions().get(lang));
-                    pstmt.executeUpdate();
-                }
-
+                addPenaltyEvent(event, conn);
                 conn.commit();
             } catch (SQLException e) {
                 conn.rollback();
@@ -132,15 +63,137 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
         }
     }
 
+    private void addPenaltyEvent(PenaltyEvent event, Connection conn) throws SQLException {
+        // add penalty_event's record
+        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("insert_penalty_event"));
+        pstmt.setInt(1, event.getCode());
+        pstmt.setInt(2, event.getPoints());
+        pstmt.setBoolean(3, event.getPublicAccessible());
+        pstmt.executeUpdate();
+
+        // add the descriptions
+        addDescriptions(event.getCode(), event.getDescriptions(), conn);
+    }
+
+    @Override
+    public void updatePenaltyEvent(int code, PenaltyEvent event) throws SQLException {
+        try (Connection conn = getConnection()) {
+            try {
+                conn.setAutoCommit(false);
+
+                if (code != event.getCode()) {
+                    // add new PenaltyEvent
+                    // so, there will be new descriptions
+                    // with a FK to the new PenaltyEvent
+                    addPenaltyEvent(event, conn);
+
+                    // update the remaining table with a
+                    // FK to the old PenaltyEvent: PENALTY_BOOK
+                    updateForeignKeyOfPenaltyBookToPenaltyEvent(code, event.getCode(), conn);
+
+                    // delete remaining event (and its
+                    // descriptions, and in fact the penalty_book
+                    // entries as well but since their FK have been
+                    // updated, none will be removed, as shouldn't)
+                    deletePenaltyEvent(code, conn);
+                } else {
+                    updatePenaltyEvent(event, conn);
+                }
+
+                conn.commit();
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                conn.rollback();
+                throw e;
+            } finally {
+                conn.setAutoCommit(true);
+            }
+        }
+    }
+
+    @Override
+    public void deletePenaltyEvent(int code) throws SQLException {
+        try (Connection conn = getConnection()) {
+            deletePenaltyEvent(code, conn);
+        }
+    }
+
     @Override
     public void addDescription(int code, Language language, String description) throws SQLException {
         try (Connection conn = getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("insert_penalty_description"));
+            addDescription(code, language, description, conn);
+        }
+    }
+
+    private void addDescription(int code, Language language, String description, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("insert_penalty_description"));
+        pstmt.setString(1, language.name());
+        pstmt.setInt(2, code);
+        pstmt.setString(3, description);
+        pstmt.executeUpdate();
+    }
+
+    private void addDescriptions(int code, Map<Language, String> descriptions, Connection conn) throws SQLException {
+        for (Language lang : descriptions.keySet()) {
+            addDescription(code, lang, descriptions.get(lang), conn);
+        }
+    }
+
+    @Override
+    public void deleteDescription(int code, Language language) throws SQLException {
+        try (Connection conn = getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_penalty_description"));
             pstmt.setString(1, language.name());
             pstmt.setInt(2, code);
-            pstmt.setString(3, description);
             pstmt.executeUpdate();
         }
+    }
+
+    @Override
+    public List<Penalty> getPenaltiesByUser(String augentId) throws SQLException {
+        try (Connection conn = getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("get_penalties_by_user"));
+            pstmt.setString(1, augentId);
+            return getPenaltiesFromPreparedPstmt(pstmt);
+        }
+    }
+
+    @Override
+    public List<Penalty> getPenaltiesByLocation(String locationName) throws SQLException {
+        try (Connection conn = getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("get_penalties_by_location"));
+            pstmt.setString(1, locationName);
+            return getPenaltiesFromPreparedPstmt(pstmt);
+        }
+    }
+
+    @Override
+    public List<Penalty> getPenaltiesByEventCode(int eventCode) throws SQLException {
+        try (Connection conn = getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties
+                    .getString("get_penalties_by_event_code"));
+            pstmt.setInt(1, eventCode);
+            return getPenaltiesFromPreparedPstmt(pstmt);
+        }
+    }
+
+    private List<Penalty> getPenaltiesFromPreparedPstmt(PreparedStatement pstmt) throws SQLException {
+        ResultSet rs = pstmt.executeQuery();
+
+        List<Penalty> ret = new ArrayList<>();
+
+        while (rs.next()) {
+            Penalty p = new Penalty();
+            p.setAugentID(rs.getString(databaseProperties.getString("penalty_book_user_augentid")));
+            p.setEventCode(rs.getInt(databaseProperties.getString("penalty_book_event_code")));
+            p.setTimestamp(CustomDate.parseString(rs.getString(databaseProperties.getString("penalty_book_timestamp"))));
+            p.setReservationDate(CustomDate.parseString(rs.getString(databaseProperties.getString("penalty_book_reservation_date"))));
+            p.setReservationLocation(rs.getString(databaseProperties.getString("penalty_book_reservation_location")));
+            p.setReceivedPoints(rs.getInt(databaseProperties.getString("penalty_book_received_points")));
+            ret.add(p);
+        }
+
+        return  ret;
     }
 
     @Override
@@ -149,30 +202,6 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
             PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("insert_penalty"));
             setPreparedStatementWithPenalty(pstmt, penalty);
             pstmt.executeUpdate();
-        }
-    }
-
-    @Override
-    public void updatePenaltyEvent(int code, PenaltyEvent event) throws SQLException {
-        try (Connection conn = getConnection()) {
-            try {
-                // Note: it is better to always update, even if the record' corresponding to 'code' holds
-                // the same data as 'event' (and actually nothing has to be updated) because when you check for equality,
-                // you'll always need 2 queries to update in stead of only one.
-                conn.setAutoCommit(false);
-
-                PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("update_penalty_description"));
-                for (Language lang : event.getDescriptions().keySet())
-                    updatePenaltyEventsDescription(pstmt, event.getCode(), lang, event.getDescriptions().get(lang));
-
-                conn.commit();
-                conn.setAutoCommit(true);
-            } catch (SQLException e) {
-                conn.rollback();
-                throw e;
-            } finally {
-                conn.setAutoCommit(true);
-            }
         }
     }
 
@@ -211,58 +240,6 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
         }
     }
 
-    private void updatePenaltyEventsDescription(PreparedStatement pstmt, int code, Language lang, String description)
-            throws SQLException {
-        pstmt.setString(1, description);
-        pstmt.setString(2, lang.name());
-        pstmt.setInt(3, code);
-        pstmt.executeUpdate();
-    }
-
-    @Override
-    public void deletePenaltyEvent(int code) throws SQLException {
-        // 1. delete all descriptions for this event (FK constraint)
-        // 2. delete all penalty book record using this event (FK constraint) // TODO
-        // 2. delete this event
-        PenaltyEvent event = getPenaltyEvent(code);
-        if (event != null) {
-            try (Connection conn = getConnection()) {
-                try {
-                    conn.setAutoCommit(false);
-
-                    PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_penalty_description"));
-                    for (Language lang : event.getDescriptions().keySet()) {
-                        pstmt.setString(1, lang.name());
-                        pstmt.setInt(2, event.getCode());
-                        pstmt.executeUpdate();
-                    }
-
-                    pstmt = conn.prepareStatement(databaseProperties.getString("delete_penalty_event"));
-                    pstmt.setInt(1, code);
-                    pstmt.executeUpdate();
-
-                    conn.commit();
-                    conn.setAutoCommit(true);
-                } catch (SQLException e) {
-                    conn.rollback();
-                    throw e;
-                } finally {
-                    conn.setAutoCommit(true);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void deleteDescription(int code, Language language) throws SQLException {
-        try (Connection conn = getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_penalty_description"));
-            pstmt.setString(1, language.name());
-            pstmt.setInt(2, code);
-            pstmt.executeUpdate();
-        }
-    }
-
     @Override
     public void deletePenalty(Penalty penalty) throws SQLException {
         try (Connection conn = getConnection()) {
@@ -272,6 +249,78 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
             pstmt.setString(3, penalty.getTimestamp().toString());
             pstmt.executeUpdate();
         }
+    }
+
+    public static PenaltyEvent createPenaltyEvent(ResultSet rs) throws SQLException {
+        PenaltyEvent penaltyEvent = new PenaltyEvent();
+
+        penaltyEvent.setCode(rs.getInt(databaseProperties.getString("penalty_event_code")));
+        penaltyEvent.setPoints(rs.getInt(databaseProperties.getString("penalty_event_points")));
+        penaltyEvent.setPublicAccessible(rs.getBoolean(databaseProperties.getString("penalty_event_public_accessible")));
+
+        Map<Language, String> descriptions = new HashMap<>();
+
+        Language lang = Language.valueOf(rs.getString(databaseProperties.getString("penalty_description_lang_enum")));
+        String description = rs.getString(databaseProperties.getString("penalty_description_description"));
+        descriptions.put(lang, description);
+
+        int i = 1;
+        while (i < Language.values().length && rs.next()) {
+            lang = Language.valueOf(rs.getString(databaseProperties.getString("penalty_description_lang_enum")));
+            description = rs.getString(databaseProperties.getString("penalty_description_description"));
+            descriptions.put(lang, description);
+            i++;
+        }
+
+        penaltyEvent.setDescriptions(descriptions);
+
+        return penaltyEvent;
+    }
+
+    private void updatePenaltyEvent(PenaltyEvent penaltyEvent, Connection conn) throws SQLException {
+        // It is too complex to determine whether two maps are equal, so always remove all descriptions
+        // and add new ones. The amount of work to delete and re-add them is small enough compared to
+        // determining whether two keySets() and values() are equal.
+        deletePenaltyEventDescriptions(penaltyEvent.getCode(), conn);
+        addDescriptions(penaltyEvent.getCode(), penaltyEvent.getDescriptions(), conn);
+
+        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("update_penalty_event"));
+        // set ...
+        pstmt.setInt(1, penaltyEvent.getPoints());
+        pstmt.setBoolean(2, penaltyEvent.getPublicAccessible());
+        // where ...
+        pstmt.setInt(3, penaltyEvent.getCode());
+        pstmt.execute();
+    }
+
+    private void updateForeignKeyOfPenaltyBookToPenaltyEvent(int oldCode, int newCode, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("update_fk_penalty_book_to_penalty_event"));
+        pstmt.setInt(1, newCode);
+        pstmt.setInt(2, oldCode);
+        pstmt.execute();
+    }
+
+    private void deletePenaltyEvent(int code, Connection conn) throws SQLException {
+        deletePenaltyEventDescriptions(code, conn);
+        deletePenaltyBookEntries(code, conn);
+
+        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_penalty_event"));
+        pstmt.setInt(1, code);
+        pstmt.execute();
+    }
+
+    private void deletePenaltyEventDescriptions(int code, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(databaseProperties
+                .getString("delete_penalty_descriptions_by_event_code"));
+        pstmt.setInt(1, code);
+        pstmt.execute();
+    }
+
+    private void deletePenaltyBookEntries(int code, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(databaseProperties
+                .getString("delete_penalties_of_penalty_event"));
+        pstmt.setInt(1, code);
+        pstmt.execute();
     }
 
     /**

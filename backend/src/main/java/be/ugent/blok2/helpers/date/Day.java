@@ -8,9 +8,9 @@ public class Day implements Cloneable {
     private Time closingHour;
     private CustomDate openForReservationDate;
 
-    public Day(){}
+    public Day() {}
 
-    public Day(CustomDate date, Time openingHour, Time closingHour, CustomDate openForReservationDate){
+    public Day(CustomDate date, Time openingHour, Time closingHour, CustomDate openForReservationDate) {
         this.date = date;
         this.openingHour = openingHour;
         this.closingHour = closingHour;

@@ -98,7 +98,7 @@ public class TestSharedMethods {
 
     public static void removeTestUsers(IAccountDao accountDao, User... users) throws SQLException {
         for (User u : users) {
-            accountDao.removeUserById(u.getAugentID());
+            accountDao.deleteUser(u.getAugentID());
             User r = accountDao.getUserById(u.getAugentID());
             Assert.assertNull("removeTestUsers, cleanup test user failed", r);
         }

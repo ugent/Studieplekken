@@ -23,6 +23,9 @@ select *
 from lockers;
 
 select *
+from penalty_book;
+
+select *
 from penalty_descriptions;
 
 select *

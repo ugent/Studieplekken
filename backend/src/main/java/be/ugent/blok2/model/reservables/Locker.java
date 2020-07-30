@@ -8,7 +8,11 @@ public class Locker implements Cloneable {
     private Location location;
 
     public Locker() {
+    }
 
+    public Locker(int number, Location location) {
+        this.number = number;
+        this.location = location;
     }
 
     @Override
@@ -16,7 +20,6 @@ public class Locker implements Cloneable {
         return "Locker{" +
                 ", number=" + number +
                 ", location=" + location +
-                //", id=" + id +
                 '}';
     }
 
@@ -46,14 +49,6 @@ public class Locker implements Cloneable {
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
-
-    /*public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }*/
 
     public void setNumber(int number) {
         this.number = number;

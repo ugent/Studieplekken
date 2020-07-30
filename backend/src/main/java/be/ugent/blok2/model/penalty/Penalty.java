@@ -8,7 +8,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Objects;
 
-public class Penalty {
+public class Penalty implements Cloneable {
     private String augentID;
     private int eventCode;
     private CustomDate timestamp;
@@ -84,9 +84,16 @@ public class Penalty {
                 '}';
     }
 
+    @Override
     public Penalty clone() {
-        return new Penalty(augentID, eventCode, timestamp.clone()
-                , reservationDate.clone(), reservationLocation, receivedPoints);
+        try {
+            Penalty clone = (Penalty) super.clone();
+            clone.setTimestamp(timestamp.clone());
+            clone.setReservationDate(reservationDate.clone());
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            return null;
+        }
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">

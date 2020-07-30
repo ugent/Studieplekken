@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface IAccountDao extends IDao {
 
+    // GETTERS
+
     /**
      * Gets the user associated with the given email.
      */
@@ -42,15 +44,7 @@ public interface IAccountDao extends IDao {
      */
     User getUserFromBarcode(String barcode) throws SQLException;
 
-    /**
-     * Creates a new user that does not need to be verified.
-     */
-    User directlyAddUser(User u) throws SQLException;
-
-    /**
-     * Removes the user with the given AUGentID.
-     */
-    void removeUserById(String AUGentID) throws SQLException;
+    // ADDERS
 
     /**
      * Adds a user to a list of unverified users awaiting their verification.
@@ -63,9 +57,30 @@ public interface IAccountDao extends IDao {
     boolean verifyNewUser(String verificationCode) throws SQLException;
 
     /**
-     * Verifies the user with the given verification code.
+     * Creates a new user that does not need to be verified.
      */
-    boolean updateUser(String email, User u) throws SQLException;
+    User directlyAddUser(User u) throws SQLException;
+
+    // UPDATERS
+
+    /**
+     * Updates the user by id
+     */
+    boolean updateUserById(String augentid, User u) throws SQLException;
+
+    /**
+     * Updates the user by mail
+     */
+    boolean updateUserByMail(String email, User u) throws SQLException;
+
+    // DELETE
+
+    /**
+     * Removes the user with the given AUGentID.
+     */
+    void deleteUser(String AUGentID) throws SQLException;
+
+    // OTHER
 
     /**
      * Checks if their exists a user with the given email.

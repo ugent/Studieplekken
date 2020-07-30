@@ -12,8 +12,9 @@ public final class PenaltyEvent {
     private boolean publicAccessible;
     private Map<Language, String> descriptions;
 
-    public static final int CODE_NO_SHOWUP = 16661;
     public static final int CODE_LATE_CANCEL = 16660;
+    public static final int CODE_NO_SHOWUP = 16661;
+    public static final int CODE_BLACKLIST_EVENT = 16662;
 
     public PenaltyEvent() {
         descriptions = new HashMap<>();

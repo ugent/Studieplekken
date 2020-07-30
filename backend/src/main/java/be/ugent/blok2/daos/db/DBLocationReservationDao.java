@@ -5,13 +5,11 @@ import be.ugent.blok2.helpers.date.CustomDate;
 import be.ugent.blok2.model.users.User;
 import be.ugent.blok2.model.reservables.Location;
 import be.ugent.blok2.model.reservations.LocationReservation;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
 import java.util.*;
 
-@Profile("!dummy")
 @Service
 public class DBLocationReservationDao extends ADB implements ILocationReservationDao {
 

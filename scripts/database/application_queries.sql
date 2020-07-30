@@ -101,11 +101,6 @@ select count(1)
 from public.location_reservations
 where location_name = ? and date = ?;
 
--- $set_all_location_reservations_attended
-update public.location_reservations
-set attended = true
-where location_name = ? and date = ?;
-
 -- $delete_location_reservation
 delete
 from public.location_reservations
@@ -116,14 +111,14 @@ delete
 from public.location_reservations
 where location_name = ?;
 
+-- $delete_location_reservations_of_user
+delete from public.location_reservations
+where user_augentid = ?;
+
 -- $delete_location_reservations_of_location_between_dates
 delete
 from public.location_reservations
 where location_name = ? and cast(substr(date,0,5) as int)*404 + cast(substr(date,6,2) as int)*31 + cast(substr(date,9,2) as int) between ? and ?;
-
--- $delete_location_reservations_of_user_by_id
-delete from public.location_reservations
-where user_augentid = ?;
 
 -- $insert_location_reservation
 insert into public.location_reservations (date, location_name, user_augentid, attended)
@@ -133,6 +128,11 @@ values (?, ?, ?, null);
 update public.location_reservations
 set attended = false
 where date = ? and user_augentid = ?;
+
+-- $set_all_location_reservations_attended
+update public.location_reservations
+set attended = true
+where location_name = ? and date = ?;
 
 -- $set_location_reservation_attended
 update public.location_reservations
@@ -147,7 +147,12 @@ from public.locations l
 group by l.name
 order by l.name;
 
--- $update_location_reservations_of_user
+-- $update_fk_location_reservations_to_location
+update public.location_reservations
+set location_name = ?
+where location_name = ?;
+
+-- $update_fk_location_reservations_to_user
 update public.location_reservations
 set user_augentid = ?
 where user_augentid = ?;
@@ -247,7 +252,7 @@ where TO_TIMESTAMP(created_timestamp, 'YYYY-MM-DD\\THH24:MI:SS') < now() - inter
 
 
 
--- queries for table LOCKER_RESERVATION
+-- queries for table LOCKER_RESERVATIONS
 -- $get_locker_reservations_where_<?>
 with recursive x as (
     select 0 week, 1.0 perc
@@ -319,10 +324,15 @@ delete
 from public.locker_reservations
 where location_name = ? and locker_number = ?;
 
--- $delete_locker_reservations_of_user_by_id
+-- $delete_locker_reservations_of_user
 delete
 from public.locker_reservations
 where user_augentid = ?;
+
+-- $delete_locker_reservations_in_location
+delete
+from public.locker_reservations
+where location_name = ?;
 
 -- $insert_locker_reservation
 insert into public.locker_reservations (location_name, locker_number, user_augentid, key_pickup_date, key_return_date)
@@ -333,18 +343,19 @@ update public.locker_reservations
 set key_pickup_date = ?, key_return_date = ?
 where location_name = ? and locker_number = ?;
 
--- $update_locker_reservations_of_user
-/*
-  This might seem a strange query but is used
-  when a user's augentID might have been changed
-*/
+-- $update_fk_locker_reservations_to_location
+update public.locker_reservations
+set location_name = ?
+where location_name = ?;
+
+-- $update_fk_locker_reservations_to_user
 update public.locker_reservations
 set user_augentid = ?
 where user_augentid = ?;
 
 
 
--- queries for table LOCKER
+-- queries for table LOCKERS
 -- $get_lockers_where_<?>
 select l.location_name, l.number
 	, s.name, s.number_of_seats, s.number_of_lockers, s.maps_frame, s.image_url
@@ -373,10 +384,10 @@ where location_name = ? and number >= ?;
 insert into public.lockers (number, location_name)
 values (?, ?);
 
--- $change_locker_location
-update public.lockers
-set location_name = ?
-where location_name = ?;
+-- $delete_locker
+delete
+from public.lockers
+where location_name = ? and number = ?;
 
 
 
@@ -415,7 +426,7 @@ update public.calendar
 set opening_time = ?, closing_time = ?, open_for_reservation_date = ?
 where location_name = ? and date = ?;
 
--- $update_location_calendar
+-- $update_fk_location_name_in_calendar
 update public.calendar
 set location_name = ?
 where location_name = ?;
@@ -435,7 +446,8 @@ select e.code, e.points, e.public_accessible, d.lang_enum
     , d.description
 from penalty_events e
     join penalty_descriptions d
-        on e.code = d.event_code;
+        on e.code = d.event_code
+order by e.code;
 
 -- $get_penalty_event
 select e.code, e.points, e.public_accessible, d.lang_enum
@@ -445,11 +457,23 @@ from penalty_events e
         on e.code = d.event_code
 where e.code = ?;
 
--- $get_penalties
+-- $get_penalties_by_user
 select b.user_augentid, b.event_code, b.timestamp, b.reservation_date
     , b.received_points, b.reservation_location
 from public.penalty_book b
 where b.user_augentid = ?;
+
+-- $get_penalties_by_location
+select b.user_augentid, b.event_code, b.timestamp, b.reservation_date
+     , b.received_points, b.reservation_location
+from public.penalty_book b
+where b.reservation_location = ?;
+
+-- $get_penalties_by_event_code
+select b.user_augentid, b.event_code, b.timestamp, b.reservation_date
+     , b.received_points, b.reservation_location
+from public.penalty_book b
+where b.event_code = ?;
 
 -- $insert_penalty_event
 insert into public.penalty_events (code, points, public_accessible)
@@ -458,11 +482,6 @@ values (?, ?, ?);
 -- $insert_penalty
 insert into penalty_book (user_augentid, event_code, timestamp, reservation_date, reservation_location, received_points)
 values (?, ?, ?, ?, ?, ?);
-
--- $count_penalty_events_with_code
-select count(1)
-from penalty_events
-where code = ?;
 
 -- $insert_penalty_description
 insert into public.penalty_descriptions (lang_enum, event_code, description)
@@ -473,12 +492,17 @@ update public.penalty_events
 set points = ?, public_accessible = ?
 where code = ?;
 
--- $update_penalty_description
-update public.penalty_descriptions
-set description = ?
-where lang_enum = ? and event_code = ?;
+-- $update_fk_penalty_book_to_locations
+update public.penalty_book
+set reservation_location = ?
+where reservation_location = ?;
 
--- $update_penalties_of_user
+-- $update_fk_penalty_book_to_penalty_event
+update public.penalty_book
+set event_code = ?
+where event_code = ?;
+
+-- $update_fk_penalty_book_to_user
 update public.penalty_book
 set user_augentid = ?
 where user_augentid = ?;
@@ -487,6 +511,11 @@ where user_augentid = ?;
 delete
 from public.penalty_descriptions
 where lang_enum = ? and event_code = ?;
+
+-- $delete_penalty_descriptions_by_event_code
+delete
+from public.penalty_descriptions
+where event_code = ?;
 
 -- $delete_penalty_event
 delete
@@ -498,15 +527,25 @@ delete
 from public.penalty_book b
 where b.user_augentid = ? and b.event_code = ? and b.timestamp = ?;
 
--- $delete_penalties_of_user_by_id
-delete
-from public.penalty_book
-where user_augentid = ?;
-
 -- $delete_penalties_of_location
 delete
 from public.penalty_book
 where reservation_location = ?;
+
+-- $delete_penalties_of_penalty_event
+delete
+from public.penalty_book
+where event_code = ?;
+
+-- $delete_penalties_of_user
+delete
+from public.penalty_book
+where user_augentid = ?;
+
+-- $count_descriptions_of_penalty_events
+select count(1)
+from public.penalty_descriptions
+where event_code = ?;
 
 
 
@@ -575,9 +614,19 @@ select count(1)
 from public.scanners_location
 where user_augentid = ? and location_name = ?;
 
+-- $update_fk_scanners_location_to_locations
+update public.scanners_location
+set location_name = ?
+where location_name = ?;
+
+-- $update_fk_scanners_location_to_user
+update public.scanners_location
+set user_augentid = ?
+where user_augentid = ?;
 
 
--- queries for 'location_descriptions'
+
+-- queries for LOCATION_DESCRIPTIONS
 -- $delete_location_descriptions
 delete
 from public.location_descriptions
@@ -586,3 +635,8 @@ where location_name = ?;
 -- $insert_location_descriptions
 insert into public.location_descriptions (location_name, lang_enum, description)
 values (?, ?, ?);
+
+-- $count_descriptions_of_location
+select count(1)
+from public.location_descriptions
+where location_name = ?;

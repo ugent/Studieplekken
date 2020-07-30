@@ -3,7 +3,6 @@ package be.ugent.blok2.controllers;
 import be.ugent.blok2.daos.IAccountDao;
 import be.ugent.blok2.daos.IScannerLocationDao;
 import be.ugent.blok2.helpers.*;
-import be.ugent.blok2.helpers.date.CustomDate;
 import be.ugent.blok2.helpers.exceptions.*;
 import be.ugent.blok2.model.users.Authority;
 import be.ugent.blok2.model.users.Role;
@@ -19,7 +18,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
@@ -238,7 +236,7 @@ public class AccountController extends AController{
             user.setPassword(encoder.encode(user.getPassword()));
         }
         try{
-            accountDao.updateUser(email, user);
+            accountDao.updateUserByMail(email, user);
             return new ResponseEntity(HttpStatus.OK);
         } catch (NoSuchUserException ex){
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
@@ -279,7 +277,7 @@ public class AccountController extends AController{
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity deleteUser(@PathVariable String id) throws SQLException {
-        accountDao.removeUserById(id);
+        accountDao.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

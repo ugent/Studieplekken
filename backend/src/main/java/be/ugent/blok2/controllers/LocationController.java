@@ -1,6 +1,5 @@
 package be.ugent.blok2.controllers;
 
-import be.ugent.blok2.daos.IAccountDao;
 import be.ugent.blok2.daos.ILocationDao;
 import be.ugent.blok2.daos.ILockerReservationDao;
 import be.ugent.blok2.daos.IScannerLocationDao;
@@ -132,8 +131,7 @@ public class LocationController {
                 if(ongoingReservations == null || ongoingReservations.size() == 0){
 
                     //delete lockers
-                    locationDao.changeLocation(name, location);
-                    locationDao.deleteLockers(location.getName(), location.getNumberOfLockers());
+                    locationDao.updateLocation(name, location);
                 }
                 else{
                     return new ResponseEntity<>(mapper.writeValueAsString("Unable to delete lockers if there are lockers in use"), HttpStatus.BAD_REQUEST);
@@ -141,10 +139,7 @@ public class LocationController {
             }
             else if(previousLockers <= location.getNumberOfLockers()){
                 //lockers toevoegen
-                locationDao.changeLocation(name, location);
-                if(previousLockers != location.getNumberOfLockers()){
-                    locationDao.addLockers(location.getName(), location.getNumberOfLockers()-previousLockers);
-                }
+                locationDao.updateLocation(name, location);
             }
             return new ResponseEntity(HttpStatus.OK);
         }  catch (NoSuchLocationException e){
