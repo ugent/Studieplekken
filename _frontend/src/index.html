@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>BlokAtUGent</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <meta name="_csrf" content="${_csrf.token}"/>
+  <meta name="_csrf_header" content="${_csrf.headerName}"/>
+  <script>
+    // workaround for problem with SockJS module
+    // see https://github.com/sockjs/sockjs-client/issues/439
+      var global = window;
+  </script>
+</head>
+<body class="template-document_view portaltype-document site-nl section-opleidingen subsection-overzicht.htm icons-on userrole-authenticated section-nl section-nl-opleidingen section-nl-opleidingen-overzicht.htm subsite-type-central">
+
+<div class="fluid-container">
+  <app-root></app-root>
+</div>
+
+</body>
+</html>

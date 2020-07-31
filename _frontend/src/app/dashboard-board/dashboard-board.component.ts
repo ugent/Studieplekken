@@ -36,7 +36,7 @@ export class DashboardBoardComponent implements OnInit {
   }
 
   fetchLocations(): void {
-    this.locationService.getAllLocationsWithoutLockersAndCalendar().subscribe(value => {
+    this.locationService.getAllLocations().subscribe(value => {
       this.locations = value;
     });
   }

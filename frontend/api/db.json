@@ -1,0 +1,33 @@
+{
+  "locations": [
+    {
+      "name": "Therminal",
+      "address": "Hoveniersberg 24, 9000 Gent",
+      "numberOfSeats": 200,
+      "numberOfLockers": 100,
+      "mapsFrame": "<frame></frame>",
+      "descriptions": {
+        "DUTCH": "Studeer in het studentenhuis 'De Therminal'",
+        "ENGLISH": "Go and study in the student house 'De Therminal'"
+      },
+      "imageUrl": "/example.png",
+      "startPeriodLockers": null,
+      "endPeriodLockers": null
+    },
+    {
+      "name": "Sterre S5",
+      "address": "Krijgslaan 281, 9000 Gent",
+      "numberOfSeats": 200,
+      "numberOfLockers": 100,
+      "mapsFrame": "<frame></frame>",
+      "descriptions": {
+        "DUTCH": "Studeer in de S5 van de Sterre",
+        "ENGLISH": "Go and study in building S5 of the Sterre"
+      },
+      "imageUrl": "/example.png",
+      "startPeriodLockers": null,
+      "endPeriodLockers": null
+    }
+  ]
+}
+
