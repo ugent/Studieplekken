@@ -7,7 +7,7 @@ import java.util.List;
 public class Calendar {
 
     private List<Day> days;
-    
+
     public Calendar(List<Day> days) {
         this.days = days;
     }
@@ -18,11 +18,11 @@ public class Calendar {
 
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
 
-    public List<Day> getDays(){
+    public List<Day> getDays() {
         return days;
     }
 
-    public void setDays(List<Day> days){
+    public void setDays(List<Day> days) {
         this.days = days;
     }
 

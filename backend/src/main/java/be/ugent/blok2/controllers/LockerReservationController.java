@@ -24,7 +24,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -167,7 +166,7 @@ public class LockerReservationController extends AController {
             if (lockers != null) {
 
                 //get ongoing reservations;
-                List<LockerReservation>  ongoingLockerReservations = iLockerReservationDao.getAllLockerReservationsOfLocationWithoutKeyBroughtBack(locationName);
+                List<LockerReservation> ongoingLockerReservations = iLockerReservationDao.getAllLockerReservationsOfLocationWithoutKeyBroughtBack(locationName);
                 List<Locker> inUseLockers = new ArrayList<>();
 
                 if (ongoingLockerReservations != null) {

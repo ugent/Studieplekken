@@ -127,7 +127,7 @@ public class LocationController {
                 //You can only remove lockers when there are no lockers in use in this location
 
                 List<LockerReservation> ongoingReservations = lockerReservationDao.getAllLockerReservationsOfLocationWithoutKeyBroughtBack(name);
-                if(ongoingReservations == null || ongoingReservations.size() == 0){
+                if (ongoingReservations == null || ongoingReservations.size() == 0) {
                     //delete lockers
                     locationDao.updateLocation(name, location);
                 } else {
