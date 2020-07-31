@@ -197,7 +197,7 @@ public class TestCascadeInDBLocationDao {
         Assert.assertEquals("updateLocationWithoutCascadeNeededTest, location", testLocation, location);
 
         // LOCKERS still available?
-        Collection<Locker> lockers = locationDao.getLockers(testLocation.getName());
+        List<Locker> lockers = locationDao.getLockers(testLocation.getName());
         Assert.assertEquals("updateLocationWithoutCascadeNeededTest, lockers",
                 testLocation.getNumberOfLockers(), lockers.size());
 
@@ -252,8 +252,7 @@ public class TestCascadeInDBLocationDao {
                 expectedScanners, scanners);
 
         // CALENDAR entries still available?
-        Collection<Day> _calendarDays = locationDao.getCalendarDays(testLocation.getName());
-        List<Day> calendarDays = new ArrayList<>(_calendarDays);
+        List<Day> calendarDays = locationDao.getCalendarDays(testLocation.getName());
 
         calendarDays.sort(Comparator.comparing(a -> a.getDate().toString()));
         testCalendarDays.sort(Comparator.comparing(a -> a.getDate().toString()));
@@ -278,7 +277,7 @@ public class TestCascadeInDBLocationDao {
         Assert.assertEquals("updateLocationWithoutCascadeNeededTest, location", testLocation, location);
 
         // LOCKERS updated? (see updateNumberOfLockersTest() for extensive LOCKERS test)
-        Collection<Locker> lockers = locationDao.getLockers(testLocation.getName());
+        List<Locker> lockers = locationDao.getLockers(testLocation.getName());
         Assert.assertEquals("updateLocationWithoutCascadeNeededTest, lockers",
                 testLocation.getNumberOfLockers(), lockers.size());
 
@@ -337,8 +336,7 @@ public class TestCascadeInDBLocationDao {
                 expectedScanners, scanners);
 
         // CALENDAR shouldn't have been updated, but do the test anyway
-        Collection<Day> _calendarDays = locationDao.getCalendarDays(testLocation.getName());
-        List<Day> calendarDays = new ArrayList<>(_calendarDays);
+        List<Day> calendarDays = locationDao.getCalendarDays(testLocation.getName());
 
         calendarDays.sort(Comparator.comparing(a -> a.getDate().toString()));
         testCalendarDays.sort(Comparator.comparing(a -> a.getDate().toString()));
@@ -353,7 +351,7 @@ public class TestCascadeInDBLocationDao {
         testLocation.setNumberOfLockers(testLocation.getNumberOfLockers() / 2);
         locationDao.updateLocation(testLocation.getName(), testLocation);
 
-        Collection<Locker> lockers = locationDao.getLockers(testLocation.getName());
+        List<Locker> lockers = locationDao.getLockers(testLocation.getName());
         Assert.assertEquals("updateNumberOfLockersTest, from > to", testLocation.getNumberOfLockers(),
                 lockers.size());
 
@@ -380,10 +378,10 @@ public class TestCascadeInDBLocationDao {
         Location l = locationDao.getLocation(testLocation.getName());
         Assert.assertNull("deleteLocation, location must be deleted", l);
 
-        Collection<Locker> lockers = locationDao.getLockers(testLocation.getName());
+        List<Locker> lockers = locationDao.getLockers(testLocation.getName());
         Assert.assertEquals("deleteLocation, lockers", 0, lockers.size());
 
-        Collection<Day> calendarDays = locationDao.getCalendarDays(testLocation.getName());
+        List<Day> calendarDays = locationDao.getCalendarDays(testLocation.getName());
         Assert.assertEquals("deleteLocation, calendar days", 0, calendarDays.size());
 
         List<User> scanners = scannerLocationDao.getScannersOnLocation(testLocation.getName());

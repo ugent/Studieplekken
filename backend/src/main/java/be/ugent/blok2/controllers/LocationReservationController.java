@@ -157,7 +157,7 @@ public class LocationReservationController extends AController {
         try {
             Location loc = locationReservations.get(0).getLocation();
 
-            Collection<Day> calendar = iLocationDao.getCalendarDays(loc.getName());
+            List<Day> calendar = iLocationDao.getCalendarDays(loc.getName());
 
             for (LocationReservation locationReservation : locationReservations) {
                 CustomDate date = locationReservation.getDate();

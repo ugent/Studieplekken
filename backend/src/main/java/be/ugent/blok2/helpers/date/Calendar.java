@@ -1,14 +1,14 @@
 package be.ugent.blok2.helpers.date;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 
 public class Calendar {
 
-    private Collection<Day> days;
+    private List<Day> days;
     
-    public Calendar(Collection<Day> days) {
+    public Calendar(List<Day> days) {
         this.days = days;
     }
 
@@ -18,11 +18,11 @@ public class Calendar {
 
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
 
-    public Collection<Day> getDays(){
+    public List<Day> getDays(){
         return days;
     }
 
-    public void setDays(Collection<Day> days){
+    public void setDays(List<Day> days){
         this.days = days;
     }
     
