@@ -1,10 +1,10 @@
 package be.ugent.blok2.security;
 
 import be.ugent.blok2.helpers.Pair;
-import be.ugent.blok2.helpers.generators.IGenerator;
-import be.ugent.blok2.helpers.generators.SessionMappingGenerator;
 import be.ugent.blok2.helpers.exceptions.NoUserLoggedInWithGivenSessionIdMappingException;
 import be.ugent.blok2.helpers.exceptions.UserNotLoggedInException;
+import be.ugent.blok2.helpers.generators.IGenerator;
+import be.ugent.blok2.helpers.generators.SessionMappingGenerator;
 import be.ugent.blok2.model.users.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,9 +43,9 @@ public class UsersCache {
             logout(user);
         } catch (UserNotLoggedInException e) {
         }
-        String mappingCode= sessionMappingGenerator.generate();
+        String mappingCode = sessionMappingGenerator.generate();
         users.put(mappingCode, new Pair<>(sessionId, user));
-        logger.info("User "+ user.getAugentID() +" logged in with session id "+sessionId);
+        logger.info("User " + user.getAugentID() + " logged in with session id " + sessionId);
         return mappingCode;
     }
 
@@ -54,24 +54,24 @@ public class UsersCache {
      */
     public void logout(User user) throws UserNotLoggedInException {
         Iterator<Map.Entry<String, Pair<String, User>>> iterator = this.users.entrySet().iterator();
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             Map.Entry<String, Pair<String, User>> next = iterator.next();
-            if(next.getValue().getSecond().getAugentID().equals(user.getAugentID())){
-                logger.info("Removed user "+user.getAugentID() +" from logged in users");
+            if (next.getValue().getSecond().getAugentID().equals(user.getAugentID())) {
+                logger.info("Removed user " + user.getAugentID() + " from logged in users");
                 iterator.remove();
                 return;
             }
         }
-        throw new UserNotLoggedInException("User with ID: "+user.getAugentID()+" is not logged in.");
+        throw new UserNotLoggedInException("User with ID: " + user.getAugentID() + " is not logged in.");
     }
 
     public User getBySessionIdMapping(String sessionIdMapping) throws NoUserLoggedInWithGivenSessionIdMappingException {
         Pair<String, User> pair = users.get(sessionIdMapping);
-        if(pair == null){
+        if (pair == null) {
             throw new NoUserLoggedInWithGivenSessionIdMappingException("No user is logged in with session id mapping: " + sessionIdMapping);
         }
         User u = pair.getSecond();
-        if(u==null)
+        if (u == null)
             throw new NoUserLoggedInWithGivenSessionIdMappingException("No user is logged in with session id mapping: " + sessionIdMapping);
         return u;
     }
@@ -79,11 +79,10 @@ public class UsersCache {
     /**
      * Check if session id and mapping cookie match and are in the current storage.
      */
-    public boolean isValid(String sessionId, String mapping){
+    public boolean isValid(String sessionId, String mapping) {
         try {
             return this.users.get(mapping).getFirst().equals(sessionId);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
@@ -92,11 +91,11 @@ public class UsersCache {
      * When a session gets destroyed by the back-end then this method wil remove
      * the corresponding entry in the storage.
      */
-    public void sessionDestroyed(String sessionId){
+    public void sessionDestroyed(String sessionId) {
         Iterator<Map.Entry<String, Pair<String, User>>> iterator = this.users.entrySet().iterator();
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             Map.Entry<String, Pair<String, User>> next = iterator.next();
-            if(next.getValue().getFirst().equals(sessionId)){
+            if (next.getValue().getFirst().equals(sessionId)) {
                 iterator.remove();
                 return;
             }

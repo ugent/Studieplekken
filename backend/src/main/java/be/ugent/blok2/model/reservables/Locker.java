@@ -54,7 +54,9 @@ public class Locker implements Cloneable {
         this.number = number;
     }
 
-    public int getNumber() { return number; }
+    public int getNumber() {
+        return number;
+    }
 
     public Location getLocation() {
         return location;

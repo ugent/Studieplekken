@@ -3,7 +3,9 @@ package be.ugent.blok2.model.reservables;
 import be.ugent.blok2.helpers.Language;
 import be.ugent.blok2.helpers.date.CustomDate;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class Location implements Cloneable {
     private String name;
@@ -130,11 +132,11 @@ public class Location implements Cloneable {
         this.imageUrl = url;
     }
 
-    public void setStartPeriodLockers(CustomDate startPeriodLockers){
+    public void setStartPeriodLockers(CustomDate startPeriodLockers) {
         this.startPeriodLockers = startPeriodLockers;
     }
 
-    public void setEndPeriodLockers(CustomDate endPeriodLockers){
+    public void setEndPeriodLockers(CustomDate endPeriodLockers) {
         this.endPeriodLockers = endPeriodLockers;
     }
 

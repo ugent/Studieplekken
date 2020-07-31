@@ -3,14 +3,15 @@ package be.ugent.blok2.controllers;
 import be.ugent.blok2.daos.IAccountDao;
 import be.ugent.blok2.daos.ILocationDao;
 import be.ugent.blok2.daos.ILockerReservationDao;
+import be.ugent.blok2.helpers.date.CustomDate;
 import be.ugent.blok2.helpers.exceptions.NoSuchUserException;
 import be.ugent.blok2.helpers.exceptions.NoUserLoggedInWithGivenSessionIdMappingException;
-import be.ugent.blok2.model.users.Authority;
-import be.ugent.blok2.model.users.Role;
-import be.ugent.blok2.model.users.User;
 import be.ugent.blok2.model.reservables.Location;
 import be.ugent.blok2.model.reservables.Locker;
 import be.ugent.blok2.model.reservations.LockerReservation;
+import be.ugent.blok2.model.users.Authority;
+import be.ugent.blok2.model.users.Role;
+import be.ugent.blok2.model.users.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiOperation;
@@ -18,11 +19,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import be.ugent.blok2.helpers.date.CustomDate;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * This controller handles all requests related to lockerreservations.
@@ -51,9 +54,9 @@ public class LockerReservationController extends AController {
         if (!isTesting() && u.getAuthorities().contains(new Authority(Role.STUDENT)) && u.getAuthorities().size() == 1 && !idString.equals(u.getAugentID())) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        try{
+        try {
             return new ResponseEntity<>(iLockerReservationDao.getAllLockerReservationsOfUser(idString), HttpStatus.OK);
-        } catch (NoSuchUserException ex){
+        } catch (NoSuchUserException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
         }
 
@@ -107,7 +110,7 @@ public class LockerReservationController extends AController {
     @DeleteMapping("/{userID}/{lockerId}/{startDate}/{endDate}")
     @PreAuthorize("hasAnyAuthority('ADMIN','STUDENT','EMPLOYEE')")
     @ApiOperation(value = "Delete the lockerreservation of the given user within the given period")
-    public ResponseEntity<String> deleteLockerReservation(@PathVariable("userID") String idString, @PathVariable("lockerId") int lockerId, @PathVariable("startDate") String startDateString, @PathVariable("endDate") String endDateString, HttpServletRequest request)  throws SQLException, NoUserLoggedInWithGivenSessionIdMappingException {
+    public ResponseEntity<String> deleteLockerReservation(@PathVariable("userID") String idString, @PathVariable("lockerId") int lockerId, @PathVariable("startDate") String startDateString, @PathVariable("endDate") String endDateString, HttpServletRequest request) throws SQLException, NoUserLoggedInWithGivenSessionIdMappingException {
         ObjectMapper mapper = new ObjectMapper();
 
         User u = getCurrentUser(request);
@@ -124,7 +127,7 @@ public class LockerReservationController extends AController {
             LockerReservation reservation = iLockerReservationDao.getLockerReservation(idString, lockerId);
 
             //check if reservation exists
-            if(reservation == null){
+            if (reservation == null) {
                 return new ResponseEntity<>(mapper.writeValueAsString("Locker reservation does not exist"), HttpStatus.BAD_REQUEST);
             }
 
@@ -133,8 +136,7 @@ public class LockerReservationController extends AController {
                 return new ResponseEntity<>(mapper.writeValueAsString("You can't delete a locker reservation if the student still has the key of the locker"), HttpStatus.BAD_REQUEST);
             }
             iLockerReservationDao.deleteLockerReservation(idString, lockerId);
-        }
-        catch (IllegalArgumentException | JsonProcessingException e){
+        } catch (IllegalArgumentException | JsonProcessingException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -152,25 +154,25 @@ public class LockerReservationController extends AController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('ADMIN','STUDENT','EMPLOYEE')")
     @ApiOperation(value = "Reserve a locker")
-    public ResponseEntity<String> addLockerReservation(@PathVariable("location") String locationName, @PathVariable("id") String augentID) throws SQLException  {
+    public ResponseEntity<String> addLockerReservation(@PathVariable("location") String locationName, @PathVariable("id") String augentID) throws SQLException {
 
         ObjectMapper mapper = new ObjectMapper();
         //get lockers of location
         try {
             Location location = iLocationDao.getLocation(locationName);
-            if(location == null){
+            if (location == null) {
                 return new ResponseEntity<>(mapper.writeValueAsString("Location does not exist"), HttpStatus.BAD_REQUEST);
             }
             Collection<Locker> lockers = iLocationDao.getLockers(locationName);
             if (lockers != null) {
 
                 //get ongoing reservations;
-                Collection<LockerReservation>  ongoingLockerReservations = iLockerReservationDao.getAllLockerReservationsOfLocationWithoutKeyBroughtBack(locationName);
+                Collection<LockerReservation> ongoingLockerReservations = iLockerReservationDao.getAllLockerReservationsOfLocationWithoutKeyBroughtBack(locationName);
 
                 Collection<Locker> inUseLockers = new ArrayList<>();
 
-                if(ongoingLockerReservations != null){
-                    for(LockerReservation res : ongoingLockerReservations){
+                if (ongoingLockerReservations != null) {
+                    for (LockerReservation res : ongoingLockerReservations) {
                         inUseLockers.add(res.getLocker());
                     }
                 }
@@ -197,7 +199,7 @@ public class LockerReservationController extends AController {
                         }
 
                         Calendar tdy = Calendar.getInstance();
-                        CustomDate today = new CustomDate(tdy.get(Calendar.YEAR), tdy.get(Calendar.MONTH)+1, tdy.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
+                        CustomDate today = new CustomDate(tdy.get(Calendar.YEAR), tdy.get(Calendar.MONTH) + 1, tdy.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
                         LockerReservation lockerReservation = new LockerReservation(locker, user, today, location.getEndPeriodLockers());
                         iLockerReservationDao.addLockerReservation(lockerReservation);
                         return new ResponseEntity<>(mapper.writeValueAsString("Successfully reserved locker"), HttpStatus.CREATED);
@@ -206,8 +208,7 @@ public class LockerReservationController extends AController {
                 return new ResponseEntity<>(mapper.writeValueAsString("There are no lockers available right now"), HttpStatus.CONFLICT);
             }
             return new ResponseEntity<>(mapper.writeValueAsString("This location has no lockers"), HttpStatus.BAD_REQUEST);
-        }
-        catch(JsonProcessingException e){
+        } catch (JsonProcessingException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

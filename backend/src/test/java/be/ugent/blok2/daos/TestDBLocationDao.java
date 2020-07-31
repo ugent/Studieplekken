@@ -60,8 +60,8 @@ public class TestDBLocationDao {
     }
 
     /*
-    * getCalendarDays(), addCalendarDays() and deleteCalendarDays will be tested
-    * */
+     * getCalendarDays(), addCalendarDays() and deleteCalendarDays will be tested
+     * */
     @Test
     public void calendarDaysTest() throws SQLException {
         Calendar calendar = TestSharedMethods.testCalendar();

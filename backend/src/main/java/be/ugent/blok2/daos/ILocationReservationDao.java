@@ -1,8 +1,7 @@
 package be.ugent.blok2.daos;
 
-import be.ugent.blok2.model.reservations.LocationReservation;
-
 import be.ugent.blok2.helpers.date.CustomDate;
+import be.ugent.blok2.model.reservations.LocationReservation;
 
 import java.sql.SQLException;
 import java.util.List;

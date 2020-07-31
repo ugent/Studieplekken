@@ -1,8 +1,8 @@
 package be.ugent.blok2.model.reservations;
 
 import be.ugent.blok2.helpers.date.CustomDate;
-import be.ugent.blok2.model.users.User;
 import be.ugent.blok2.model.reservables.Location;
+import be.ugent.blok2.model.users.User;
 
 import java.util.Objects;
 
@@ -53,7 +53,7 @@ public class LocationReservation {
     }
 
     public void setAttended(Boolean attended) {
-        this.attended=attended;
+        this.attended = attended;
     }
 
     //</editor-fold>

@@ -17,12 +17,10 @@ import org.springframework.http.converter.BufferedImageHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.security.cas.ServiceProperties;
 import org.springframework.security.cas.authentication.CasAuthenticationProvider;
-import org.springframework.web.client.*;
+import org.springframework.web.client.RestOperations;
+import org.springframework.web.client.RestTemplate;
 
-import javax.naming.Context;
 import java.awt.image.BufferedImage;
-import java.net.URL;
-import java.net.URLClassLoader;
 
 @ServletComponentScan
 @SpringBootApplication

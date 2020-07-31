@@ -1,6 +1,5 @@
 package be.ugent.blok2.helpers.generators;
 
-import be.ugent.blok2.helpers.generators.IGenerator;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,10 +25,10 @@ public class VerificationCodeGenerator implements IGenerator<String> {
                 n = (char) ('0' + (int) (Math.random() * 10));
                 sb.append(n);
             } else if (rand < 50) {
-                n  = (char) ('A' + (int) (Math.random() * 26));
+                n = (char) ('A' + (int) (Math.random() * 26));
                 sb.append(n);
             } else {
-                n  = (char) ('a' + (int) (Math.random() * 26));
+                n = (char) ('a' + (int) (Math.random() * 26));
                 sb.append(n);
             }
         }

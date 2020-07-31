@@ -2,13 +2,18 @@ package be.ugent.blok2.daos.db;
 
 import be.ugent.blok2.daos.ILocationReservationDao;
 import be.ugent.blok2.helpers.date.CustomDate;
-import be.ugent.blok2.model.users.User;
 import be.ugent.blok2.model.reservables.Location;
 import be.ugent.blok2.model.reservations.LocationReservation;
+import be.ugent.blok2.model.users.User;
 import org.springframework.stereotype.Service;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 @Service
 public class DBLocationReservationDao extends ADB implements ILocationReservationDao {
@@ -94,7 +99,7 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
             // find out the CustomDate of today (note: Calendar here is java.util.Calendar,
             // not be.ugent.blok2.helpers.Calendar
             Calendar c = Calendar.getInstance();
-            CustomDate today = new CustomDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH)+1, c.get(Calendar.DATE));
+            CustomDate today = new CustomDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DATE));
 
             // set user attended on location reservation
             PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("set_location_reservation_attended"));
@@ -167,7 +172,7 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
     }
 
     private List<LocationReservation> getAbsentOrPresentStudents(String locationName, CustomDate date
-            , PreparedStatement pstmt) throws  SQLException {
+            , PreparedStatement pstmt) throws SQLException {
         List<LocationReservation> reservations = new ArrayList<>();
 
         pstmt.setString(1, locationName);

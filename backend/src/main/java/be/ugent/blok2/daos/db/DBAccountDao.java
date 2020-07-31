@@ -1,15 +1,18 @@
 package be.ugent.blok2.daos.db;
 
 import be.ugent.blok2.daos.IAccountDao;
+import be.ugent.blok2.helpers.date.CustomDate;
 import be.ugent.blok2.helpers.generators.IGenerator;
 import be.ugent.blok2.helpers.generators.VerificationCodeGenerator;
-import be.ugent.blok2.helpers.date.CustomDate;
 import be.ugent.blok2.model.users.Role;
 import be.ugent.blok2.model.users.User;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -385,7 +388,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
     }
 
     private void equalPreparationForUserAndUserToVerify(User u, PreparedStatement pstmt)
-            throws  SQLException {
+            throws SQLException {
         pstmt.setString(1, u.getMail().toLowerCase());
         pstmt.setString(2, u.getLastName());
         pstmt.setString(3, u.getFirstName());
