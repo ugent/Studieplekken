@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs";
-import {Location} from "./shared/model/Location";
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
@@ -9,12 +7,14 @@ import {Location} from "./shared/model/Location";
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  locations: Observable<Location[]> = this.http.get<Location[]>('/api/locations');
 
-  constructor(private http: HttpClient) {
+  constructor(private translate: TranslateService) {
+    // setup translation
+    const lang = translate.getBrowserLang();
+    translate.use(lang.match(/en|nl/) ? lang : 'nl');
   }
 
-  getKeys(obj: {}) : string[] {
+  getKeys(obj: {}): string[] {
     return Object.keys(obj);
   }
 }

@@ -1,14 +1,3 @@
-<h2>Locations</h2>
-<div *ngFor="let location of locations | async">
-  <h3>{{location.name}}</h3>
-      <table>
-        <tr>
-          <th>Language</th>
-          <th>Description</th>
-        </tr>
-        <tr *ngFor="let lang of getKeys(location.descriptions)">
-          <td>{{lang}}</td>
-          <td>{{location.descriptions[lang]}}</td>
-        </tr>
-      </table>
+<div>
+  {{'home.test1' | translate}}
 </div>
