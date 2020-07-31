@@ -8,9 +8,9 @@ import be.ugent.blok2.helpers.date.Day;
 import be.ugent.blok2.helpers.exceptions.AlreadyExistsException;
 import be.ugent.blok2.helpers.exceptions.DateFormatException;
 import be.ugent.blok2.helpers.exceptions.NoSuchLocationException;
-import be.ugent.blok2.model.users.User;
 import be.ugent.blok2.model.reservables.Location;
 import be.ugent.blok2.model.reservations.LockerReservation;
+import be.ugent.blok2.model.users.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
@@ -31,7 +31,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("api/locations")
-@Api(value="Location management system", description = "Operations pertaining to available locations")
+@Api(value = "Location management system", description = "Operations pertaining to available locations")
 public class LocationController {
 
     private final ILocationDao locationDao;
@@ -101,7 +101,7 @@ public class LocationController {
         try {
             locationDao.deleteLocation(name);
             return new ResponseEntity(HttpStatus.NO_CONTENT);
-        } catch (NoSuchLocationException e){
+        } catch (NoSuchLocationException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
@@ -123,29 +123,26 @@ public class LocationController {
             Location previousLocation = locationDao.getLocation(name);
             int previousLockers = previousLocation.getNumberOfLockers();
 
-            if(previousLockers > location.getNumberOfLockers()){
+            if (previousLockers > location.getNumberOfLockers()) {
                 //You can only remove lockers when there are no lockers in use in this location
 
                 List<LockerReservation> ongoingReservations = lockerReservationDao.getAllLockerReservationsOfLocationWithoutKeyBroughtBack(name);
                 if(ongoingReservations == null || ongoingReservations.size() == 0){
-
                     //delete lockers
                     locationDao.updateLocation(name, location);
-                }
-                else{
+                } else {
                     return new ResponseEntity<>(mapper.writeValueAsString("Unable to delete lockers if there are lockers in use"), HttpStatus.BAD_REQUEST);
                 }
-            }
-            else if(previousLockers <= location.getNumberOfLockers()){
+            } else if (previousLockers <= location.getNumberOfLockers()) {
                 //lockers toevoegen
                 locationDao.updateLocation(name, location);
             }
             return new ResponseEntity(HttpStatus.OK);
-        }  catch (NoSuchLocationException e){
+        } catch (NoSuchLocationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch(JsonProcessingException e){
+        } catch (JsonProcessingException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }  catch (AlreadyExistsException e){
+        } catch (AlreadyExistsException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
@@ -159,7 +156,7 @@ public class LocationController {
             locationDao.addLocation(location);
             Location addedLocation = locationDao.getLocation(location.getName());
             return new ResponseEntity(addedLocation, HttpStatus.CREATED);
-        } catch (AlreadyExistsException e){
+        } catch (AlreadyExistsException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
@@ -168,10 +165,10 @@ public class LocationController {
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @ApiOperation(value = "add calendar days to a location")
     public ResponseEntity addCalendarDays(@PathVariable("name") String name, @RequestBody Calendar calendar) throws SQLException {
-        try{
+        try {
             locationDao.addCalendarDays(name, calendar);
             return new ResponseEntity(HttpStatus.CREATED);
-        } catch (NoSuchLocationException e){
+        } catch (NoSuchLocationException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
@@ -184,7 +181,7 @@ public class LocationController {
         try {
             locationDao.deleteCalendarDays(name, startdate, enddate);
             return new ResponseEntity(HttpStatus.NO_CONTENT);
-        } catch (NoSuchLocationException | DateFormatException e){
+        } catch (NoSuchLocationException | DateFormatException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
@@ -201,7 +198,7 @@ public class LocationController {
     @ApiOperation(value = "give users the permissions to scan at the given location")
     public ResponseEntity postScanners(@PathVariable("name") String name, @RequestBody String[] scanners) throws SQLException {
         List<User> sc = new ArrayList<>();
-        for(String s: scanners){
+        for (String s : scanners) {
             scannerLocationDao.addScannerLocation(name, s);
         }
 

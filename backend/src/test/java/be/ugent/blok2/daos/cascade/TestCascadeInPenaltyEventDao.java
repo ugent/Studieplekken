@@ -115,7 +115,7 @@ public class TestCascadeInPenaltyEventDao {
     }
 
     @Test
-    public void updatePenaltyEventWithoutNeedOfCascade() throws SQLException{
+    public void updatePenaltyEventWithoutNeedOfCascade() throws SQLException {
         updatePenaltyEventWithoutChangeInFK(testPenaltyEvent);
 
         // PENALTY_EVENTS and PENALTY_DESCRIPTIONS updated?
@@ -137,7 +137,7 @@ public class TestCascadeInPenaltyEventDao {
     }
 
     @Test
-    public void updatePenaltyEventWithNeedOfCascade() throws SQLException{
+    public void updatePenaltyEventWithNeedOfCascade() throws SQLException {
         updatePenaltyEventWithoutChangeInFK(testPenaltyEvent);
         int oldCode = testPenaltyEvent.getCode();
         testPenaltyEvent.setCode(999);

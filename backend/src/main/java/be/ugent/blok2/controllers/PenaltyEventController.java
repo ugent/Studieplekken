@@ -26,7 +26,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/penalties")
 @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
-@Api(value="Penalty events system")
+@Api(value = "Penalty events system")
 public class PenaltyEventController {
     private final IPenaltyEventsDao penaltyDao;
 
@@ -48,7 +48,7 @@ public class PenaltyEventController {
     public ResponseEntity<Object> getPenaltyEvent(@PathVariable("code") int code) throws SQLException {
         try {
             return new ResponseEntity<>(penaltyDao.getPenaltyEvent(code), HttpStatus.OK);
-        } catch(NoSuchPenaltyEventException e) {
+        } catch (NoSuchPenaltyEventException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
@@ -83,15 +83,15 @@ public class PenaltyEventController {
         }
     }
 
-    @PostMapping(value="/description")
+    @PostMapping(value = "/description")
     @ApiOperation(value = "Create a new description for a penaltyevent")
     public ResponseEntity addDescription(@RequestParam("code") int code, @RequestParam("language") Language language, @RequestParam("description") String description) throws SQLException {
         try {
             penaltyDao.addDescription(code, language, description);
             return new ResponseEntity(HttpStatus.CREATED);
-        } catch (AlreadyExistsException e  ) {
+        } catch (AlreadyExistsException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (NoSuchPenaltyEventException e){
+        } catch (NoSuchPenaltyEventException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }

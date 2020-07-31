@@ -6,13 +6,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
 
-import java.util.ResourceBundle;
-
 @Configuration
 public class LdapConfig {
     @Bean
     public LdapContextSource contextSource() {
-        LdapContextSource contextSource= new LdapContextSource();
+        LdapContextSource contextSource = new LdapContextSource();
         contextSource.setUrl(Resources.applicationProperties.getString("ldap.url"));
         contextSource.setBase(Resources.applicationProperties.getString("ldap.base"));
         contextSource.setUserDn(Resources.applicationProperties.getString("ldap.userDn"));

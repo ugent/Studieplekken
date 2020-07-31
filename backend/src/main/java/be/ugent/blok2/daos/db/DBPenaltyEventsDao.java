@@ -193,7 +193,7 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
             ret.add(p);
         }
 
-        return  ret;
+        return ret;
     }
 
     @Override

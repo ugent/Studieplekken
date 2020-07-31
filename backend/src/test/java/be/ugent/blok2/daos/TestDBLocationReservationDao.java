@@ -4,9 +4,9 @@ import be.ugent.blok2.TestSharedMethods;
 import be.ugent.blok2.helpers.date.CustomDate;
 import be.ugent.blok2.helpers.date.Day;
 import be.ugent.blok2.helpers.date.Time;
-import be.ugent.blok2.model.users.User;
 import be.ugent.blok2.model.reservables.Location;
 import be.ugent.blok2.model.reservations.LocationReservation;
+import be.ugent.blok2.model.users.User;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -124,7 +124,7 @@ public class TestDBLocationReservationDao {
 
         // Make reservations for users u1 and u2
         LocationReservation lr1 = new LocationReservation(location, u1, today);
-        LocationReservation lr2 = new LocationReservation(location, u2,today);
+        LocationReservation lr2 = new LocationReservation(location, u2, today);
 
         locationReservationDao.addLocationReservation(lr1);
         locationReservationDao.addLocationReservation(lr2);

@@ -25,6 +25,6 @@ public class Calendar {
     public void setDays(List<Day> days){
         this.days = days;
     }
-    
+
     //</editor-fold>
 }

@@ -1,6 +1,6 @@
 package be.ugent.blok2.helpers.exceptions;
 
-public class NoSuchPenaltyEventException extends  RuntimeException {
+public class NoSuchPenaltyEventException extends RuntimeException {
     public NoSuchPenaltyEventException(String msg) {
         super(msg);
     }

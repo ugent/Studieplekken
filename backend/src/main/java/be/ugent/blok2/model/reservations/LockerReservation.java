@@ -1,8 +1,8 @@
 package be.ugent.blok2.model.reservations;
 
 import be.ugent.blok2.helpers.date.CustomDate;
-import be.ugent.blok2.model.users.User;
 import be.ugent.blok2.model.reservables.Locker;
+import be.ugent.blok2.model.users.User;
 
 import java.util.Objects;
 
@@ -22,7 +22,7 @@ public class LockerReservation {
         this.keyPickupDate = keyPickupDate;
         this.keyReturnedDate = keyReturnedDate;
     }
-    
+
     public LockerReservation(Locker locker, User owner) {
         this(locker, owner, null, null);
     }
@@ -57,7 +57,7 @@ public class LockerReservation {
     public Locker getLocker() {
         return locker;
     }
-    
+
     public User getOwner() {
         return owner;
     }

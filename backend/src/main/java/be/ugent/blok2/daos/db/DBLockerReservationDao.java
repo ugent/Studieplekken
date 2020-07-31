@@ -2,13 +2,16 @@ package be.ugent.blok2.daos.db;
 
 import be.ugent.blok2.daos.ILockerReservationDao;
 import be.ugent.blok2.helpers.date.CustomDate;
-import be.ugent.blok2.model.users.User;
 import be.ugent.blok2.model.reservables.Locker;
 import be.ugent.blok2.model.reservations.LockerReservation;
+import be.ugent.blok2.model.users.User;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 

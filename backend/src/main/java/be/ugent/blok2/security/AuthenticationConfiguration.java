@@ -98,7 +98,7 @@ public class AuthenticationConfiguration
         filter.setAuthenticationSuccessHandler((httpServletRequest, httpServletResponse, authentication) -> {
             // set mapping cookie and redirect to the dashboard
             Object principal = authentication.getPrincipal();
-            String mapping = UsersCache.getInstance().login(httpServletRequest.getSession(false).getId(),(User) principal);
+            String mapping = UsersCache.getInstance().login(httpServletRequest.getSession(false).getId(), (User) principal);
             Cookie cookie = new Cookie("mapping", mapping);
             cookie.setHttpOnly(false);
             httpServletResponse.addCookie(cookie);

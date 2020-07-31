@@ -3,7 +3,6 @@ package be.ugent.blok2.helpers.date;
 import be.ugent.blok2.helpers.exceptions.DateFormatException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.Calendar;
 
@@ -46,7 +45,7 @@ public class CustomDate implements Cloneable {
         String[] dateParts = strings[0].split("-");
         String[] timeParts = strings[1].split(":");
 
-        if(dateParts.length != 3){
+        if (dateParts.length != 3) {
             throw new DateFormatException("Date should have a day, a month and a year.");
         }
 
@@ -56,12 +55,12 @@ public class CustomDate implements Cloneable {
     public static CustomDate today() {
         java.util.Calendar juc = java.util.Calendar.getInstance();
         return new CustomDate(juc.get(Calendar.YEAR),
-                juc.get(Calendar.MONTH)+1, juc.get(Calendar.DATE));
+                juc.get(Calendar.MONTH) + 1, juc.get(Calendar.DATE));
     }
 
     public static CustomDate now() {
         java.util.Calendar juc = java.util.Calendar.getInstance();
-        return new CustomDate(juc.get(Calendar.YEAR),juc.get(Calendar.MONTH)+1, juc.get(Calendar.DATE)
+        return new CustomDate(juc.get(Calendar.YEAR), juc.get(Calendar.MONTH) + 1, juc.get(Calendar.DATE)
                 , juc.get(Calendar.HOUR_OF_DAY), juc.get(Calendar.MINUTE), juc.get(Calendar.SECOND));
     }
 
@@ -72,8 +71,8 @@ public class CustomDate implements Cloneable {
     }
 
     @JsonIgnore
-    public boolean isSameDay(CustomDate day){
-        return  day.year == this.year && day.month == this.month && day.day == this.day;
+    public boolean isSameDay(CustomDate day) {
+        return day.year == this.year && day.month == this.month && day.day == this.day;
     }
 
     @Override

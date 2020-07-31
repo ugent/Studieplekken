@@ -29,11 +29,11 @@ public class Penalty implements Cloneable {
         this.receivedPoints = receivedPoints;
     }
 
-    public static int calculateLateCancelPoints(CustomDate date, int points){
+    public static int calculateLateCancelPoints(CustomDate date, int points) {
         LocalDateTime openingHour = LocalDateTime.of(date.getYear(), date.getMonth(), date.getDay(), date.getHrs(), date.getMin(), date.getSec());
 
         Calendar tdy = Calendar.getInstance();
-        LocalDateTime today = LocalDateTime.of(tdy.get(Calendar.YEAR), tdy.get(Calendar.MONTH)+1, tdy.get(Calendar.DAY_OF_MONTH),
+        LocalDateTime today = LocalDateTime.of(tdy.get(Calendar.YEAR), tdy.get(Calendar.MONTH) + 1, tdy.get(Calendar.DAY_OF_MONTH),
                 tdy.get(Calendar.HOUR_OF_DAY), tdy.get(Calendar.MINUTE), tdy.get(Calendar.SECOND));
         int secondsBetween = (int) ChronoUnit.SECONDS.between(today, openingHour);
 
@@ -44,12 +44,11 @@ public class Penalty implements Cloneable {
         maxCancelDate = maxCancelDate.withHour(Variables.maxCancelDate.getHrs());
         maxCancelDate = maxCancelDate.withMinute(Variables.maxCancelDate.getMin());
         maxCancelDate = maxCancelDate.withSecond(Variables.maxCancelDate.getSec());
-        int maxCancelSeconds = (int)ChronoUnit.SECONDS.between(maxCancelDate, openingHour);
+        int maxCancelSeconds = (int) ChronoUnit.SECONDS.between(maxCancelDate, openingHour);
 
-        if(secondsBetween <= maxCancelSeconds){
-            return (int)Math.ceil((((double)(maxCancelSeconds-secondsBetween)/(double)(maxCancelSeconds))*(double)points));
-        }
-        else{
+        if (secondsBetween <= maxCancelSeconds) {
+            return (int) Math.ceil((((double) (maxCancelSeconds - secondsBetween) / (double) (maxCancelSeconds)) * (double) points));
+        } else {
             return 0;
         }
     }

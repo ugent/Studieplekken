@@ -2,10 +2,10 @@ package be.ugent.blok2.daos;
 
 import be.ugent.blok2.TestSharedMethods;
 import be.ugent.blok2.helpers.date.CustomDate;
-import be.ugent.blok2.model.users.User;
 import be.ugent.blok2.model.reservables.Location;
 import be.ugent.blok2.model.reservables.Locker;
 import be.ugent.blok2.model.reservations.LockerReservation;
+import be.ugent.blok2.model.users.User;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,7 +17,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)

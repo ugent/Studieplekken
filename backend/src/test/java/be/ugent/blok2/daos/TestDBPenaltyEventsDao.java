@@ -5,8 +5,8 @@ import be.ugent.blok2.helpers.Language;
 import be.ugent.blok2.helpers.date.CustomDate;
 import be.ugent.blok2.model.penalty.Penalty;
 import be.ugent.blok2.model.penalty.PenaltyEvent;
-import be.ugent.blok2.model.users.User;
 import be.ugent.blok2.model.reservables.Location;
+import be.ugent.blok2.model.users.User;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -186,7 +186,7 @@ public class TestDBPenaltyEventsDao {
         retrievedUser = accountDao.getUserById(testUser.getAugentID());
         Assert.assertTrue("penaltyBookTests, added penalty from last month, points should decrease over time"
                 , retrievedUser.getPenaltyPoints() < penaltyLastMonth.getReceivedPoints() &&
-                retrievedUser.getPenaltyPoints() > 0);
+                        retrievedUser.getPenaltyPoints() > 0);
 
         penaltyEventsDao.deletePenalty(penaltyLastMonth);
 

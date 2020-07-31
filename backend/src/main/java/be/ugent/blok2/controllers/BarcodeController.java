@@ -4,12 +4,18 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.krysalis.barcode4j.impl.upcean.EAN13Bean;
 import org.krysalis.barcode4j.impl.upcean.UPCABean;
-import org. krysalis.barcode4j.output.bitmap.BitmapCanvasProvider;
+import org.krysalis.barcode4j.output.bitmap.BitmapCanvasProvider;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -24,7 +30,7 @@ import java.io.IOException;
 @RestController
 @RequestMapping("api/barcode")
 @PreAuthorize("hasAnyAuthority('ADMIN','STUDENT','EMPLOYEE')")
-@Api(value="Barcode generation system", description = "Operations pertaining to generating barcodes")
+@Api(value = "Barcode generation system", description = "Operations pertaining to generating barcodes")
 public class BarcodeController {
 
     // creates an UPC-A barcode image from a given number
@@ -60,10 +66,9 @@ public class BarcodeController {
     @GetMapping(value = "/{content}", produces = MediaType.IMAGE_PNG_VALUE)
     @ApiOperation(value = "Returns image of barcode with requested content")
     public ResponseEntity<BufferedImage> barbecueBarcode(@PathVariable("content") String content) {
-        if(content.length()==12){
+        if (content.length() == 12) {
             return barbecueUPCABarcode(content);
-        }
-        else{
+        } else {
             return barbecueEAN13Barcode(content);
         }
     }
@@ -83,10 +88,9 @@ public class BarcodeController {
     @GetMapping(value = "/download/{content}")
     @ApiOperation(value = "Download image of barcode with requested content")
     public ResponseEntity<Resource> downloadBarcode(@PathVariable("content") String content) throws IOException {
-        if(content.length()==12){
+        if (content.length() == 12) {
             return downloadUPCABarcode(content);
-        }
-        else{
+        } else {
             return downloadEAN13Barcode(content);
         }
     }
@@ -100,8 +104,8 @@ public class BarcodeController {
         header.add("Expires", "0");
         header.add("Content-Type", "application - download");
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ImageIO.write(image, "jpg", bos );
-        byte [] data = bos.toByteArray();
+        ImageIO.write(image, "jpg", bos);
+        byte[] data = bos.toByteArray();
 
         ByteArrayResource resource = new ByteArrayResource(data);
         return ResponseEntity.ok()
@@ -123,18 +127,17 @@ public class BarcodeController {
         int oddNumberDigits = 0;
         int evenNumberDigits = 0;
         for (int i = 0; i < arr.length; i++) {
-            if(i % 2 == 0) {
-                evenNumberDigits+=Integer.parseInt(arr[i] + "");
-            }
-            else {
-                oddNumberDigits+=Integer.parseInt(arr[i] + "");
+            if (i % 2 == 0) {
+                evenNumberDigits += Integer.parseInt(arr[i] + "");
+            } else {
+                oddNumberDigits += Integer.parseInt(arr[i] + "");
             }
         }
         evenNumberDigits *= 3;
         int sum = evenNumberDigits + oddNumberDigits;
         sum %= 10;
         if (sum != 0) {
-            sum= 10 - sum;
+            sum = 10 - sum;
         }
         return number + sum;
     }

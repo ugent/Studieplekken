@@ -2,7 +2,8 @@ package be.ugent.blok2.controllers;
 
 import be.ugent.blok2.daos.IAccountDao;
 import be.ugent.blok2.daos.IScannerLocationDao;
-import be.ugent.blok2.helpers.*;
+import be.ugent.blok2.helpers.EmailService;
+import be.ugent.blok2.helpers.Resources;
 import be.ugent.blok2.helpers.exceptions.*;
 import be.ugent.blok2.model.users.Authority;
 import be.ugent.blok2.model.users.Role;
@@ -31,7 +32,7 @@ import java.util.ResourceBundle;
 @RestController
 @RequestMapping("api/account")
 @Api(value = "Account login/registration system")
-public class AccountController extends AController{
+public class AccountController extends AController {
     private final String VERIFICATION_SUBJECT;
 
     private final IAccountDao accountDao;
@@ -54,8 +55,8 @@ public class AccountController extends AController{
 
     /**
      * There are two situations for adding a user:
-     *   - New user is created by the student itself: through RegistrationComponent
-     *   - New user is created by an employee: through UserOverviewComponent
+     * - New user is created by the student itself: through RegistrationComponent
+     * - New user is created by an employee: through UserOverviewComponent
      * This implementation is meant for the user
      */
     @PostMapping(value = "/new")
@@ -97,8 +98,8 @@ public class AccountController extends AController{
 
     /**
      * There are two situations for adding a user:
-     *   - New user is created by the student itself: through RegistrationComponent
-     *   - New user is created by an employee: through UserOverviewComponent
+     * - New user is created by the student itself: through RegistrationComponent
+     * - New user is created by an employee: through UserOverviewComponent
      * This implementation is meant for the employee (or admin)
      */
     @PostMapping(value = "/new/by/employee")
@@ -145,9 +146,9 @@ public class AccountController extends AController{
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "View a specific user")
     public ResponseEntity<User> getUserByEmail(@PathVariable String email) throws SQLException {
-            User u = accountDao.getUserByEmail(email);
-            u.setPassword("");
-            return new ResponseEntity<>(u, HttpStatus.OK);
+        User u = accountDao.getUserByEmail(email);
+        u.setPassword("");
+        return new ResponseEntity<>(u, HttpStatus.OK);
     }
 
     @GetMapping(value = "/role/{role}")
@@ -168,7 +169,7 @@ public class AccountController extends AController{
     @PreAuthorize("hasAnyAuthority('ADMIN','STUDENT','EMPLOYEE','SCAN')")
     @ApiOperation(value = "View the logged in user, according to his session id")
     public ResponseEntity<User> getUserFromSession(@PathVariable String mapping, HttpSession session) throws SQLException {
-        if(!this.usersCache.isValid(session.getId(), mapping)){
+        if (!this.usersCache.isValid(session.getId(), mapping)) {
             // in case the cookies don't match, invalidate the session
             session.invalidate();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -187,7 +188,7 @@ public class AccountController extends AController{
     @PreAuthorize("hasAnyAuthority('ADMIN','STUDENT','EMPLOYEE')")
     @ApiOperation(value = "View a specific user")
     public ResponseEntity<User> getUserById(@PathVariable String id, HttpServletRequest request) throws NoUserLoggedInWithGivenSessionIdMappingException, SQLException {
-        User u=getCurrentUser(request);
+        User u = getCurrentUser(request);
         // make sure students can not access other user their details
         if (!isTesting() && u.getAuthorities().contains(new Authority(Role.STUDENT)) &&
                 u.getAuthorities().size() == 1 && !id.equals(u.getAugentID())) {
@@ -235,12 +236,12 @@ public class AccountController extends AController{
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             user.setPassword(encoder.encode(user.getPassword()));
         }
-        try{
+        try {
             accountDao.updateUserByMail(email, user);
             return new ResponseEntity(HttpStatus.OK);
-        } catch (NoSuchUserException ex){
+        } catch (NoSuchUserException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-        } catch( UserAlreadyExistsException e){
+        } catch (UserAlreadyExistsException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
@@ -259,17 +260,17 @@ public class AccountController extends AController{
     public ResponseEntity getScanlocationsNames(@PathVariable String email) throws SQLException {
         boolean flag = false;
         User u = accountDao.getUserByEmail(email);
-        if(u == null){
-            return new ResponseEntity<>("No user with mail = " + email,HttpStatus.NOT_FOUND);
+        if (u == null) {
+            return new ResponseEntity<>("No user with mail = " + email, HttpStatus.NOT_FOUND);
         }
-        for (Role r: u.getRoles()){
-            if(r.equals(Role.EMPLOYEE) || r.equals(Role.ADMIN)) flag = true;
+        for (Role r : u.getRoles()) {
+            if (r.equals(Role.EMPLOYEE) || r.equals(Role.ADMIN)) flag = true;
         }
-        if(!flag){
+        if (!flag) {
             return new ResponseEntity<>("This user isn't an employee or admin so can't have any locations to scan.", HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(scannerLocationDao.getLocationsToScanOfUser(u.getAugentID()),HttpStatus.OK);
+        return new ResponseEntity<>(scannerLocationDao.getLocationsToScanOfUser(u.getAugentID()), HttpStatus.OK);
 
 
     }
