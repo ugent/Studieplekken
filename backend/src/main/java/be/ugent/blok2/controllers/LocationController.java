@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
@@ -111,7 +110,7 @@ public class LocationController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'STUDENT', 'EMPLOYEE')")
     @ApiOperation(value = "Get the calendar days for the specified location")
-    public Collection<Day> getCalendarDays(@PathVariable("locationName") String locationName) throws SQLException {
+    public List<Day> getCalendarDays(@PathVariable("locationName") String locationName) throws SQLException {
         return locationDao.getCalendarDays(locationName);
     }
 
@@ -127,9 +126,8 @@ public class LocationController {
             if (previousLockers > location.getNumberOfLockers()) {
                 //You can only remove lockers when there are no lockers in use in this location
 
-                Collection<LockerReservation> ongoingReservations = lockerReservationDao.getAllLockerReservationsOfLocationWithoutKeyBroughtBack(name);
+                List<LockerReservation> ongoingReservations = lockerReservationDao.getAllLockerReservationsOfLocationWithoutKeyBroughtBack(name);
                 if (ongoingReservations == null || ongoingReservations.size() == 0) {
-
                     //delete lockers
                     locationDao.updateLocation(name, location);
                 } else {

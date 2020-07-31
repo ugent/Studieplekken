@@ -16,7 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.SQLException;
-import java.util.Collection;
+import java.util.List;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -65,11 +65,11 @@ public class TestDBLocationDao {
     @Test
     public void calendarDaysTest() throws SQLException {
         Calendar calendar = TestSharedMethods.testCalendar();
-        Collection<Day> calendarDays = calendar.getDays();
+        List<Day> calendarDays = calendar.getDays();
 
         locationDao.addCalendarDays(testLocation.getName(), calendar);
 
-        Collection<Day> retrievedCalendarDays = locationDao.getCalendarDays(testLocation.getName());
+        List<Day> retrievedCalendarDays = locationDao.getCalendarDays(testLocation.getName());
         Assert.assertArrayEquals("calendarDaysTest, retrieved calendar days", calendarDays.toArray(), retrievedCalendarDays.toArray());
 
         locationDao.deleteCalendarDays(testLocation.getName(), "2020-01-01T00:00:00", "2020-01-05T00:00:00");
@@ -79,7 +79,7 @@ public class TestDBLocationDao {
 
     @Test
     public void lockersTest() throws SQLException {
-        Collection<Locker> lockers = locationDao.getLockers(testLocation.getName());
+        List<Locker> lockers = locationDao.getLockers(testLocation.getName());
         Assert.assertEquals("lockersTest, check size getLockers"
                 , testLocation.getNumberOfLockers(), lockers.size());
 

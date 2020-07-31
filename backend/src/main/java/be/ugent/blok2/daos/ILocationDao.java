@@ -7,7 +7,6 @@ import be.ugent.blok2.model.reservables.Location;
 import be.ugent.blok2.model.reservables.Locker;
 
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -45,12 +44,12 @@ public interface ILocationDao extends IDao {
     /**
      * Get all lockers of the specified location
      */
-    Collection<Locker> getLockers(String locationName) throws SQLException;
+    List<Locker> getLockers(String locationName) throws SQLException;
 
     /**
      * Get all days on which the specified location will be opened to study
      */
-    Collection<Day> getCalendarDays(String locationName) throws SQLException;
+    List<Day> getCalendarDays(String locationName) throws SQLException;
 
     /**
      * Deletes the all the calendar days between the given

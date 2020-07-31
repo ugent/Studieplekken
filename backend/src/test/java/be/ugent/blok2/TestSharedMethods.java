@@ -16,7 +16,7 @@ import org.junit.Assert;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.sql.SQLException;
-import java.util.Collection;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class TestSharedMethods {
@@ -106,7 +106,7 @@ public class TestSharedMethods {
 
     public static Calendar testCalendar() {
         Calendar calendar = new Calendar();
-        Collection<Day> calendarDays = calendar.getDays();
+        List<Day> calendarDays = calendar.getDays();
         for (int i = 1; i <= 5; i++) {
             Day d = new Day();
             d.setDate(CustomDate.parseString("2020-01-0" + i + "T00:00:00"));

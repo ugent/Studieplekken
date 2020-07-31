@@ -24,7 +24,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -163,13 +162,12 @@ public class LockerReservationController extends AController {
             if (location == null) {
                 return new ResponseEntity<>(mapper.writeValueAsString("Location does not exist"), HttpStatus.BAD_REQUEST);
             }
-            Collection<Locker> lockers = iLocationDao.getLockers(locationName);
+            List<Locker> lockers = iLocationDao.getLockers(locationName);
             if (lockers != null) {
 
                 //get ongoing reservations;
-                Collection<LockerReservation> ongoingLockerReservations = iLockerReservationDao.getAllLockerReservationsOfLocationWithoutKeyBroughtBack(locationName);
-
-                Collection<Locker> inUseLockers = new ArrayList<>();
+                List<LockerReservation> ongoingLockerReservations = iLockerReservationDao.getAllLockerReservationsOfLocationWithoutKeyBroughtBack(locationName);
+                List<Locker> inUseLockers = new ArrayList<>();
 
                 if (ongoingLockerReservations != null) {
                     for (LockerReservation res : ongoingLockerReservations) {
@@ -187,7 +185,7 @@ public class LockerReservationController extends AController {
                         }
 
                         //get all locker reservations of user to check if he has no locker already
-                        Collection<LockerReservation> reservations = iLockerReservationDao.getAllLockerReservationsOfUser(augentID);
+                        List<LockerReservation> reservations = iLockerReservationDao.getAllLockerReservationsOfUser(augentID);
                         if (reservations != null) {
                             for (LockerReservation reservation : reservations) {
                                 if (reservation.getKeyReturnedDate() == null) {

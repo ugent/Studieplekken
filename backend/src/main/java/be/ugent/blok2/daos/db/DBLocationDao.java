@@ -14,7 +14,10 @@ import org.springframework.stereotype.Service;
 
 import java.sql.*;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -180,9 +183,9 @@ public class DBLocationDao extends ADB implements ILocationDao {
     }
 
     @Override
-    public Collection<Locker> getLockers(String locationName) throws SQLException {
+    public List<Locker> getLockers(String locationName) throws SQLException {
         try (Connection conn = getConnection()) {
-            Collection<Locker> lockers = new ArrayList<>();
+            List<Locker> lockers = new ArrayList<>();
             String query = databaseProperties.getString("get_lockers_where_<?>");
             query = query.replace("<?>", "l.location_name = ?");
             PreparedStatement st = conn.prepareStatement(query);
@@ -206,13 +209,13 @@ public class DBLocationDao extends ADB implements ILocationDao {
     }
 
     @Override
-    public Collection<Day> getCalendarDays(String locationName) throws SQLException {
+    public List<Day> getCalendarDays(String locationName) throws SQLException {
         try (Connection conn = getConnection()) {
             try {
                 PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("get_calendar_of_location"));
                 pstmt.setString(1, locationName);
                 ResultSet rs = pstmt.executeQuery();
-                Collection<Day> calendar = new ArrayList<>();
+                List<Day> calendar = new ArrayList<>();
                 while (rs.next()) {
                     CustomDate date = CustomDate.parseString(rs.getString(databaseProperties.getString("calendar_date")));
 

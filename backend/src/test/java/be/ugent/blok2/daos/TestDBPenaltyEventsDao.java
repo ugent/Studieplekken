@@ -18,6 +18,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -139,6 +141,9 @@ public class TestDBPenaltyEventsDao {
         // setup some test data
         CustomDate thisDayAMonthEarlier = CustomDate.now();
         thisDayAMonthEarlier.setMonth(thisDayAMonthEarlier.getMonth() == 1 ? 12 : thisDayAMonthEarlier.getMonth() - 1);
+        while (!validateDateTime(thisDayAMonthEarlier)) {
+            thisDayAMonthEarlier.setDay(thisDayAMonthEarlier.getDay() - 1);
+        }
 
         Penalty penalty = new Penalty(testUser.getAugentID(), testEvent.getCode()
                 , CustomDate.now(), CustomDate.today(), testLocation.getName(), testEvent.getPoints());
@@ -202,4 +207,21 @@ public class TestDBPenaltyEventsDao {
         penaltyEventsDao.deletePenalty(fatalPenalty);
     }
 
+    /**
+     * For testing purposes, we need to have a penalty booked at an earlier
+     * date, but within 5 weeks from now. This to be able to test whether
+     * the query actually lowers the amount of penalty points of a user
+     * over time. But, we need to have a valid date, therefore, this method
+     * is introduces
+     */
+    private static boolean validateDateTime(CustomDate customDate) {
+        try {
+            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            f.setLenient(false);
+            f.parse(customDate.toString().replace('T', ' '));
+            return true;
+        } catch (ParseException ignore) {
+            return false;
+        }
+    }
 }
