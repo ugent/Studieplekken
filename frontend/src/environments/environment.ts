@@ -6,6 +6,15 @@ export const environment = {
   production: false
 };
 
+export const api = {
+  locations: '/api/locations',
+  numberOfReservations: '/api/locations/{locationName}/reservations/count'
+};
+
+export const vars = {
+  defaultLocationImage: 'assets/images/default_location.jpg'
+};
+
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.

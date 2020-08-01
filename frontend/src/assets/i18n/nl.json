@@ -1,4 +1,11 @@
 {
+  "dashboard": {
+    "address": "Adres",
+    "details": "Details",
+    "numberOfLockers": "Aantal lockers",
+    "numberOfSeats": "Aantal plaatsen"
+  },
+
   "footer":{
     "feedback": "Feedback",
     "privacy": "Privacy",

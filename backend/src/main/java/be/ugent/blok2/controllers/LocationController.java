@@ -3,6 +3,7 @@ package be.ugent.blok2.controllers;
 import be.ugent.blok2.daos.ILocationDao;
 import be.ugent.blok2.daos.ILockerReservationDao;
 import be.ugent.blok2.daos.IScannerLocationDao;
+import be.ugent.blok2.helpers.Language;
 import be.ugent.blok2.helpers.date.Calendar;
 import be.ugent.blok2.helpers.date.Day;
 import be.ugent.blok2.helpers.exceptions.AlreadyExistsException;
@@ -21,9 +22,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * This controller handles all requests related to locations.
@@ -34,6 +33,55 @@ import java.util.List;
 @Api(value = "Location management system", description = "Operations pertaining to available locations")
 public class LocationController {
 
+    @GetMapping
+    public List<Location> getDummyLocations() {
+        Location therminal = new Location();
+        therminal.setName("Therminal");
+        therminal.setAddress("Hoveniersberg 24, 9000 Gent");
+        therminal.setNumberOfSeats(200);
+        therminal.setNumberOfLockers(100);
+        therminal.setMapsFrame("<frame></frame>");
+
+        Map<Language, String> therminalDescriptions = new HashMap<>();
+        therminalDescriptions.put(Language.ENGLISH, "Studeer in het studentenhuis 'De Therminal'");
+        therminalDescriptions.put(Language.DUTCH, "Go and study in the student house 'De Therminal'");
+        therminal.setDescriptions(therminalDescriptions);
+
+        therminal.setImageUrl("/example.png");
+
+        Location sterre = new Location();
+        sterre.setName("Sterre S5");
+        sterre.setAddress("Krijgslaan 281, 9000 Gent");
+        sterre.setNumberOfSeats(200);
+        sterre.setNumberOfLockers(100);
+        sterre.setMapsFrame("<frame></frame>");
+
+        Map<Language, String> sterreDescriptions = new HashMap<>();
+        sterreDescriptions.put(Language.ENGLISH, "Studeer in de S5 van de Sterre");
+        sterreDescriptions.put(Language.DUTCH, "Go and study in building S5 of the Sterre");
+        therminal.setDescriptions(sterreDescriptions);
+
+        sterre.setImageUrl("/example.png");
+
+        List<Location> locations = new ArrayList<>();
+        locations.add(therminal);
+        locations.add(sterre);
+        return locations;
+    }
+
+    @GetMapping("/{locationName}/reservations/count")
+    public int getReservationCountOfLocationDummy(@PathVariable("locationName") String locationName) {
+        switch (locationName ) {
+            case "Therminal":
+                return 75;
+            case "Sterre S5":
+                return 20;
+            default:
+                return 0;
+        }
+    }
+
+/*
     private final ILocationDao locationDao;
     private final ILockerReservationDao lockerReservationDao;
     private final IScannerLocationDao scannerLocationDao;
@@ -214,5 +262,6 @@ public class LocationController {
     private void sort(List<Location> list) {
         list.sort(Comparator.comparing(Location::getName));
     }
+ */
 }
 

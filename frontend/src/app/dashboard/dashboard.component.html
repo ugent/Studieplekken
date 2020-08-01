@@ -1,0 +1,7 @@
+<ng-container *ngIf="locations | async as locations; else pending">
+  <app-dashboard-item *ngFor="let location of locations" [location]="location"></app-dashboard-item>
+</ng-container>
+
+<ng-template #pending>
+  <div class="loader center-block"></div>
+</ng-template>

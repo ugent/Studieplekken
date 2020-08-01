@@ -13,6 +13,7 @@ import { ScanComponent } from './scan/scan.component';
 import { ManagementComponent } from './management/management.component';
 import { InformationComponent } from './information/information.component';
 import { MarkdownModule} from 'ngx-markdown';
+import { DashboardItemComponent } from './dashboard/dashboard-item/dashboard-item.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -34,7 +35,8 @@ const routes: Routes = [
     ProfileComponent,
     ScanComponent,
     ManagementComponent,
-    InformationComponent
+    InformationComponent,
+    DashboardItemComponent
   ],
   imports: [
     BrowserModule,
