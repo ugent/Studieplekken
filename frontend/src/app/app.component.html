@@ -1,3 +1,126 @@
-<div>
-  {{'home.test1' | translate}}
+<div class="container">
+  <!-- HEADER -->
+  <div class="row">
+    <header class="pageheader col-xs-12">
+      <nav class="navbar navbar-default">
+        <div class="row">
+          <div class="navbar-header col-xs-12 col-sm-2">
+            <div class="page-logo">
+              <a href="https://www.ugent.be/{{currentLanguage()}}" class="link" title="Home UGent">
+                <img class="th-nl" src="assets/images/ugent/logo_ugent_{{currentLanguage()}}.svg"
+                     alt="{{ 'header.imageAlt' | translate }}">
+              </a>
+            </div>
+
+            <!-- If screen is too small, the navigation needs to collapse. When the navbar is
+                 collapsed, show a button "MENU" which will unfold the different navigation items -->
+            <a class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" role="button">
+              <span class="">MENU</span>
+              <div class="block">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </div>
+            </a>
+          </div>
+
+          <div id="navbar" class="navbar-collapse col-sm-10 collapse in" role="navigation" aria-expanded="true">
+            <div class="row menu">
+              <div class="col-xs-12">
+                <div class="bg-primary spacer">
+                  <div class="row">
+                    <div class="col-xs-12">
+                      <ul class="nav-tertiary nav navbar-nav navbar-right">
+                        <li id="logOut" class="last-child">
+                          <a *ngIf="isLoggedIn()" href="#">{{'header.logOut' | translate}}</a>
+                          <a *ngIf="!isLoggedIn()" href="#">{{'header.logIn' | translate}}</a>
+                        </li>
+                        <li>
+                          <a href="#" (click)="changeLanguage()">{{'language.' + otherSupportedLanguage() | translate}}</a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row menu">
+              <div class="col-xs-12">
+                <ul class="nav-primary nav navbar-nav main-top-nav">
+                    <li *ngFor="let item of navigationItems"
+                        id="{{item}}" [ngClass]="isActive('/' + item) ? 'active' : null">
+                      <a routerLink="/{{item}}">
+                        <span>{{'header.navigation.' + item | translate}}</span>
+                      </a>
+                    </li>
+                </ul>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </nav>
+
+    </header>
+  </div>
+
+  <!-- CONTENT -->
+  <router-outlet></router-outlet>
+
+  <!-- FOOTER -->
+  <footer class="page-footer fluid-container">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="bg-primary padding-20">
+          <div class="mbottom-small border-bottom">
+            <div class="row flexbox">
+              <!-- TODO: FLEXBOX CONTENT? NO FLEXBOX CONTENT FOR NOW -->
+            </div>
+          </div>
+
+          <div class="row">
+            <div id="socialbanner" class="container-share col-xs-12 col-sm-4">
+              <ul class="list-inline list-unstyled social">
+                <!-- TODO: SOCIAL BANNERS IN FOOTER? NO SOCIAL BANNERS FOR NOW -->
+              </ul>
+            </div>
+
+            <div class="col-xs-12 col-sm-8">
+              <ul class="list-inline list-unstyled pull-right" id="footeractions">
+                <li id="siteaction-feedback">
+                  <a href="https://www.ugent.be/ea/idlab/en/feedback"
+                     title="{{'footer.feedback' | translate}}">{{'footer.feedback' | translate}}</a>
+                </li>
+
+                <li id="siteaction-privacy">
+                  <a href="https://www.ugent.be/en/privacy"
+                     title="{{'footer.privacy' | translate}}">{{'footer.privacy' | translate}}</a>
+                </li>
+
+                <li id="siteaction-disclaimer">
+                  <a href="https://www.ugent.be/ea/idlab/en/disclaimer"
+                     title="{{'footer.disclaimer' | translate}}">{{'footer.disclaimer' | translate}}</a>
+                </li>
+
+                <li id="siteaction-cookies">
+                  <a href="https://www.ugent.be/en/cookies"
+                     title="{{'footer.cookies' | translate}}">{{'footer.cookies' | translate}}</a>
+                </li>
+
+                <li id="siteaction-accessibility">
+                  <a href="https://www.ugent.be/en/accessibility/accessibility.htm"
+                     title="{{'footer.accessibility' | translate}}">{{'footer.accessibility' | translate}}</a>
+                </li>
+
+                <li>
+                  © 2020 {{'general.ugent' | translate}}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
 </div>
