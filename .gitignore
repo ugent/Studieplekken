@@ -8,3 +8,5 @@ scripts/database/a
 scripts/database/b
 scritps/
 *.lck
+stop
+start
