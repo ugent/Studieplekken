@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import {TranslateService} from '@ngx-translate/core';
 import {Router} from '@angular/router';
+import {LanguageService} from './services/language/language.service';
 
 @Component({
   selector: 'app-root',
@@ -8,37 +8,23 @@ import {Router} from '@angular/router';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  supportedLanguages = ['nl', 'en'];
-  currentLanguageIndex: number;
-
   // every navigationItem should have an entry in assets/i18n/*.json
   navigationItems: string[] = ['dashboard', 'profile', 'scan', 'management', 'information'];
 
-  constructor(private translate: TranslateService,
+  constructor(private languageService: LanguageService,
               private router: Router) {
-    // setup translation
-    this.setupLanguage();
-  }
-
-  setupLanguage(): void {
-    this.currentLanguageIndex = this.supportedLanguages.indexOf(this.translate.getBrowserLang());
-    if (this.currentLanguageIndex < 0) {
-      this.currentLanguageIndex = 0;
-    }
-    this.translate.use(this.supportedLanguages[this.currentLanguageIndex]);
   }
 
   currentLanguage(): string {
-    return this.supportedLanguages[this.currentLanguageIndex];
+    return this.languageService.currentLanguage();
   }
 
   otherSupportedLanguage(): string {
-    return this.supportedLanguages[(this.currentLanguageIndex + 1) % this.supportedLanguages.length];
+    return this.languageService.otherSupportedLanguage();
   }
 
   changeLanguage(): void {
-    this.currentLanguageIndex = (this.currentLanguageIndex + 1) % this.supportedLanguages.length;
-    this.translate.use(this.supportedLanguages[this.currentLanguageIndex]);
+    this.languageService.changeLanguage();
   }
 
   isActive(path: string): boolean {

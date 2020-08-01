@@ -7,6 +7,12 @@ import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {RouterModule, Routes} from '@angular/router';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { ProfileComponent } from './profile/profile.component';
+import { ScanComponent } from './scan/scan.component';
+import { ManagementComponent } from './management/management.component';
+import { InformationComponent } from './information/information.component';
+import { MarkdownModule} from 'ngx-markdown';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -14,16 +20,21 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 }
 
 const routes: Routes = [
-  {path: 'dashboard', component: AppComponent},
-  {path: 'profile', component: AppComponent},
-  {path: 'scan', component: AppComponent},
-  {path: 'management', component: AppComponent},
-  {path: 'information', component: AppComponent}
+  {path: 'dashboard', component: DashboardComponent},
+  {path: 'profile', component: ProfileComponent},
+  {path: 'scan', component: ScanComponent},
+  {path: 'management', component: ManagementComponent},
+  {path: 'information', component: InformationComponent}
 ];
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    DashboardComponent,
+    ProfileComponent,
+    ScanComponent,
+    ManagementComponent,
+    InformationComponent
   ],
   imports: [
     BrowserModule,
@@ -37,7 +48,8 @@ const routes: Routes = [
         useFactory: HttpLoaderFactory,
         deps: [HttpClient]
       }
-    })
+    }),
+    MarkdownModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]
