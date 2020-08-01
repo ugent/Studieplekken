@@ -1,5 +1,32 @@
 {
-  "home": {
-    "test1": "Dit is een test voor vertaling"
+  "footer":{
+    "feedback": "Feedback",
+    "privacy": "Privacy",
+    "disclaimer": "Disclaimer",
+    "cookies": "Cookies",
+    "accessibility": "Toegankelijkheid"
+  },
+
+  "general": {
+    "dsa": "Dienst StudentenActiviteiten",
+    "ugent": "Universiteit Gent"
+  },
+
+  "header": {
+    "imageAlt": "Universiteit Gent",
+    "logIn": "Log in",
+    "logOut": "Log uit",
+    "navigation": {
+      "dashboard": "Dashboard",
+      "profile": "Profiel",
+      "scan": "Scan",
+      "management": "Beheer",
+      "information": "Informatie"
+    }
+  },
+
+  "language": {
+    "en": "Engels",
+    "nl": "Nederlands"
   }
 }

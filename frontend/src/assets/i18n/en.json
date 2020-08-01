@@ -1,5 +1,32 @@
 {
-  "home": {
-    "test1": "this is a test for translation"
+  "footer":{
+    "feedback": "Feedback",
+    "privacy": "Privacy",
+    "disclaimer": "Disclaimer",
+    "cookies": "Cookies",
+    "accessibility": "Accessibility"
+  },
+
+  "general": {
+    "dsa": "Student Activities Office",
+    "ugent": "Ghent University"
+  },
+
+  "header": {
+    "imageAlt": "Ghent University",
+    "logIn": "Log in",
+    "logOut": "Log out",
+    "navigation": {
+      "dashboard": "Dashboard",
+      "profile": "Profile",
+      "scan": "Scan",
+      "management": "Management",
+      "information": "Information"
+    }
+  },
+
+  "language": {
+    "en": "English",
+    "nl": "Dutch"
   }
 }
