@@ -32,9 +32,11 @@ import java.util.*;
 @RequestMapping("api/locations")
 @Api(value = "Location management system", description = "Operations pertaining to available locations")
 public class LocationController {
+    Map<String, Location> testLocations;
 
-    @GetMapping
-    public List<Location> getDummyLocations() {
+    public LocationController() {
+        testLocations = new HashMap<>();
+
         Location therminal = new Location();
         therminal.setName("Therminal");
         therminal.setAddress("Hoveniersberg 24, 9000 Gent");
@@ -63,10 +65,13 @@ public class LocationController {
 
         sterre.setImageUrl("/example.png");
 
-        List<Location> locations = new ArrayList<>();
-        locations.add(therminal);
-        locations.add(sterre);
-        return locations;
+        testLocations.put(therminal.getName(), therminal);
+        testLocations.put(sterre.getName(), sterre);
+    }
+
+    @GetMapping
+    public List<Location> getDummyLocations() {
+        return new ArrayList<>(testLocations.values());
     }
 
     @GetMapping("/{locationName}/reservations/count")
@@ -79,6 +84,11 @@ public class LocationController {
             default:
                 return 0;
         }
+    }
+
+    @GetMapping("/{locationName}")
+    public Location getLocation(@PathVariable("locationName") String locationName) {
+        return testLocations.get(locationName);
     }
 
 /*

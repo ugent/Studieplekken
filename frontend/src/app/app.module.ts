@@ -14,6 +14,11 @@ import { ManagementComponent } from './management/management.component';
 import { InformationComponent } from './information/information.component';
 import { MarkdownModule} from 'ngx-markdown';
 import { DashboardItemComponent } from './dashboard/dashboard-item/dashboard-item.component';
+import { LocationDetailsComponent } from './dashboard/location-details/location-details.component';
+import { CalendarComponent } from './calendar/calendar.component';
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {CalendarModule, DateAdapter} from "angular-calendar";
+import {adapterFactory} from "angular-calendar/date-adapters/date-fns";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -22,6 +27,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 
 const routes: Routes = [
   {path: 'dashboard', component: DashboardComponent},
+  {path: 'dashboard/:locationName', component: LocationDetailsComponent},
   {path: 'profile', component: ProfileComponent},
   {path: 'scan', component: ScanComponent},
   {path: 'management', component: ManagementComponent},
@@ -36,7 +42,9 @@ const routes: Routes = [
     ScanComponent,
     ManagementComponent,
     InformationComponent,
-    DashboardItemComponent
+    DashboardItemComponent,
+    LocationDetailsComponent,
+    CalendarComponent
   ],
   imports: [
     BrowserModule,
@@ -51,7 +59,12 @@ const routes: Routes = [
         deps: [HttpClient]
       }
     }),
-    MarkdownModule.forRoot()
+    MarkdownModule.forRoot(),
+    BrowserAnimationsModule,
+    CalendarModule.forRoot({
+      provide: DateAdapter,
+      useFactory: adapterFactory,
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]

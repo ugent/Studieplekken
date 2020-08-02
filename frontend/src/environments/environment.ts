@@ -8,6 +8,7 @@ export const environment = {
 
 export const api = {
   locations: '/api/locations',
+  location: '/api/locations/{locationName}',
   numberOfReservations: '/api/locations/{locationName}/reservations/count'
 };
 

@@ -11,7 +11,6 @@ import {HttpClientModule} from '@angular/common/http';
 import AuthenticationServiceStub from '../../services/stubs/AuthenticationServiceStub';
 import LocationServiceStub from '../../services/stubs/LocationServiceStub';
 import LocationReservationServiceStub from '../../services/stubs/LocationReservationServiceStub';
-import {CalendarModule, DateAdapter} from 'angular-calendar';
 import {adapterFactory} from 'angular-calendar/date-adapters/date-fns';
 import {LockerReservationService} from '../../services/locker-reservation.service';
 import LockerReservationServiceStub from '../../services/stubs/LockerReservationServiceStub';

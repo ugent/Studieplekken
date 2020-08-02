@@ -26,7 +26,7 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
     });
   }
 
-  handleError(): void {
+  handleImageError(): void {
     this.location.imageUrl = vars.defaultLocationImage;
   }
 }
