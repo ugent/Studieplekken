@@ -2,6 +2,7 @@
   "dashboard": {
     "address": "Address",
     "details": "Details",
+    "gotoDashboard": "Please navigate to the dashboard to select a location's details.",
     "numberOfLockers": "Number of lockers",
     "numberOfSeats": "Number of seats"
   },

@@ -1,0 +1,52 @@
+<div role="grid">
+
+  <!-- Title -->
+  <div class="col-md-4">
+    <h1>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h1>
+  </div>
+
+  <!-- Show buttons to navigate in the calendar -->
+  <div class="row text-center">
+    <div class="col-md-4">
+      <div class="btn-group">
+        <!-- Previous -->
+        <div class="btn btn-primary"
+             mwlCalendarPreviousView
+             [view]="view"
+             [(viewDate)]="viewDate">
+          Previous
+        </div>
+
+        <!-- Today -->
+        <div class="btn btn-outline-secondary"
+             mwlCalendarToday
+             [(viewDate)]="viewDate">
+          Today
+        </div>
+
+        <!-- Next -->
+        <div class="btn btn-primary"
+             mwlCalendarNextView
+             [view]="view"
+             [(viewDate)]="viewDate">
+          Next
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <br>
+
+  <div>
+    <mwl-calendar-month-view
+      [viewDate]="viewDate"
+      [events]="events"
+      [refresh]="refresh"
+      [weekStartsOn]="1"
+      (dayClicked)="dayClicked($event.day)"
+      (eventClicked)="handleEvent('Clicked', $event.event)"
+      (eventTimesChanged)="eventTimesChanged($event)">
+    </mwl-calendar-month-view>
+  </div>
+
+</div>
