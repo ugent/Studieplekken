@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {LanguageService} from '../services/language/language.service';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-information',
@@ -8,13 +8,13 @@ import {LanguageService} from '../services/language/language.service';
 })
 export class InformationComponent implements OnInit {
 
-  constructor(private languageService: LanguageService) { }
+  constructor(private translate: TranslateService) { }
 
   ngOnInit(): void {
     console.log('assets/md/information.{{currentLanguage()}}.md');
   }
 
   currentLanguage(): string {
-    return this.languageService.currentLanguage();
+    return this.translate.currentLang;
   }
 }

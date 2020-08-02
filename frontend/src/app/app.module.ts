@@ -16,9 +16,9 @@ import { MarkdownModule} from 'ngx-markdown';
 import { DashboardItemComponent } from './dashboard/dashboard-item/dashboard-item.component';
 import { LocationDetailsComponent } from './dashboard/location-details/location-details.component';
 import { CalendarComponent } from './calendar/calendar.component';
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {CalendarModule, DateAdapter} from "angular-calendar";
-import {adapterFactory} from "angular-calendar/date-adapters/date-fns";
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {CalendarModule, DateAdapter} from 'angular-calendar';
+import {adapterFactory} from 'angular-calendar/date-adapters/date-fns';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -31,7 +31,8 @@ const routes: Routes = [
   {path: 'profile', component: ProfileComponent},
   {path: 'scan', component: ScanComponent},
   {path: 'management', component: ManagementComponent},
-  {path: 'information', component: InformationComponent}
+  {path: 'information', component: InformationComponent},
+  {path: '', redirectTo: '/dashboard', pathMatch: 'full'}
 ];
 
 @NgModule({

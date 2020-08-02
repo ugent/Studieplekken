@@ -36,7 +36,8 @@
                           <a *ngIf="!isLoggedIn()" href="#">{{'header.logIn' | translate}}</a>
                         </li>
                         <li>
-                          <a href="#" (click)="changeLanguage()">{{'language.' + otherSupportedLanguage() | translate}}</a>
+                          <a href="#" (click)="changeLanguage($event)">
+                            {{'language.' + otherSupportedLanguage() | translate}}</a>
                         </li>
                       </ul>
                     </div>
