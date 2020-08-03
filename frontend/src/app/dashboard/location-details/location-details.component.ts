@@ -1,9 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {Location} from '../../shared/model/Location';
-import {ActivatedRoute} from "@angular/router";
-import {Observable} from "rxjs";
-import {LocationService} from "../../services/api/location.service";
-import {vars} from "../../../environments/environment";
+import {ActivatedRoute} from '@angular/router';
+import {Observable} from 'rxjs';
+import {LocationService} from '../../services/api/location.service';
+import {vars} from '../../../environments/environment';
+import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-location-details',
@@ -14,7 +15,8 @@ export class LocationDetailsComponent implements OnInit {
   location: Observable<Location>;
 
   constructor(private locationService: LocationService,
-              private route: ActivatedRoute) { }
+              private route: ActivatedRoute,
+              private sanitizer: DomSanitizer) { }
 
   ngOnInit(): void {
     const locationName = this.route.snapshot.paramMap.get('locationName');
@@ -23,5 +25,10 @@ export class LocationDetailsComponent implements OnInit {
 
   handleImageError(location: Location): void {
     location.imageUrl = vars.defaultLocationImage;
+  }
+
+  getGoogleMapsUrl(location: Location): SafeResourceUrl {
+    const url = 'https://www.google.com/maps?q=' + location.address + '&output=embed';
+    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 }

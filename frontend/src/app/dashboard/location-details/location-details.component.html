@@ -28,4 +28,20 @@
   <div class="row">
     <app-calendar></app-calendar>
   </div>
+
+  <hr>
+
+  <!-- Google Maps Frame, based on address:
+         - https://developers.google.com/maps/documentation/embed/get-started
+         - https://stackoverflow.com/a/21141399/9356123
+
+       To bypass XSS for a trusted URL:
+          - https://angular.io/guide/security#xss -->
+  <div class="row">
+    <h1>{{'dashboard.location' | translate}}</h1>
+    <iframe
+      width="100%" height="450" style="border:0"
+      [src]="getGoogleMapsUrl(location)" class="e2e-iframe-trusted-src col-md-12 col-sm-12" allowfullscreen>
+    </iframe>
+  </div>
 </div>
