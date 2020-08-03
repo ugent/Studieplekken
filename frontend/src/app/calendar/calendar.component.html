@@ -54,7 +54,11 @@
 
 <!-- Documentation about using a custom template:
          - https://github.com/mattlewis92/angular-calendar#how-do-i-use-a-custom-template
-         - https://angular-calendar.com/#/custom-templates -->
+         - https://angular-calendar.com/#/custom-templates
+         - TODO: if an employee wants to edit a date: do it in a modal view, see the demo
+              kitchen-sink, all the way down in the template.html for modalContent, as well
+              as in the component.ts, the first attribute:
+                 @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any>; -->
 <ng-template
   #customCellTemplate
   let-day="day"
