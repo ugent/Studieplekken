@@ -69,7 +69,6 @@ CREATE TABLE public.locations (
     name text NOT NULL,
     number_of_seats integer NOT NULL,
     number_of_lockers text NOT NULL,
-    maps_frame text NOT NULL,
     image_url text,
     address text NOT NULL,
     start_period_lockers text,

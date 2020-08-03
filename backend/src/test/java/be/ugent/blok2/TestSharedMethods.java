@@ -41,7 +41,6 @@ public class TestSharedMethods {
         testLocation.setAddress("Test street, 10");
         testLocation.setNumberOfSeats(50);
         testLocation.setNumberOfLockers(15);
-        testLocation.setMapsFrame("Test Google Maps frame");
         testLocation.getDescriptions().put(Language.DUTCH, "Dit is een testlocatie.");
         testLocation.getDescriptions().put(Language.ENGLISH, "This is a test location.");
         testLocation.setImageUrl("https://example.com/image.jpg");
@@ -57,7 +56,6 @@ public class TestSharedMethods {
         testLocation2.setAddress("Second Test street, 20");
         testLocation2.setNumberOfSeats(100);
         testLocation2.setNumberOfLockers(10);
-        testLocation2.setMapsFrame("Second Test Google Maps frame");
         testLocation2.getDescriptions().put(Language.DUTCH, "Dit is een tweede testlocatie.");
         testLocation2.getDescriptions().put(Language.ENGLISH, "This is a second test location.");
         testLocation2.setImageUrl("https://example.com/picture.png");

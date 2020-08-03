@@ -384,13 +384,12 @@ public class DBLocationDao extends ADB implements ILocationDao {
         String name = rs.getString(databaseProperties.getString("location_name"));
         int numberOfSeats = rs.getInt(databaseProperties.getString("location_number_of_seats"));
         int numberOfLockers = rs.getInt(databaseProperties.getString("location_number_of_lockers"));
-        String mapsFrame = rs.getString(databaseProperties.getString("location_maps_frame"));
         String imageUrl = rs.getString(databaseProperties.getString("location_image_url"));
         String address = rs.getString(databaseProperties.getString("location_address"));
         CustomDate startPeriodLockers = CustomDate.parseString(rs.getString(databaseProperties.getString("location_start_period_lockers")));
         CustomDate endPeriodLockers = CustomDate.parseString(rs.getString(databaseProperties.getString("location_end_period_lockers")));
 
-        Location location = new Location(name, address, numberOfSeats, numberOfLockers, mapsFrame
+        Location location = new Location(name, address, numberOfSeats, numberOfLockers
                 , new HashMap<>(), imageUrl);
         location.setStartPeriodLockers(startPeriodLockers);
         location.setEndPeriodLockers(endPeriodLockers);
@@ -434,11 +433,10 @@ public class DBLocationDao extends ADB implements ILocationDao {
         pstmt.setString(1, location.getName());
         pstmt.setInt(2, location.getNumberOfSeats());
         pstmt.setInt(3, location.getNumberOfLockers());
-        pstmt.setString(4, location.getMapsFrame());
-        pstmt.setString(5, location.getImageUrl());
-        pstmt.setString(6, location.getAddress());
-        pstmt.setString(7, location.getStartPeriodLockers() == null ? "" : location.getStartPeriodLockers().toString());
-        pstmt.setString(8, location.getEndPeriodLockers() == null ? "" : location.getEndPeriodLockers().toString());
+        pstmt.setString(4, location.getImageUrl());
+        pstmt.setString(5, location.getAddress());
+        pstmt.setString(6, location.getStartPeriodLockers() == null ? "" : location.getStartPeriodLockers().toString());
+        pstmt.setString(7, location.getEndPeriodLockers() == null ? "" : location.getEndPeriodLockers().toString());
     }
 
     private void prepareUpdateOrInsertLocationDescriptionStatement(String locationName, Language lang
@@ -580,7 +578,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
         // set ...
         prepareUpdateOrInsertLocationStatement(location, pstmt);
         // where ...
-        pstmt.setString(9, location.getName());
+        pstmt.setString(8, location.getName());
         pstmt.execute();
     }
 

@@ -12,19 +12,17 @@ public class Location implements Cloneable {
     private String address;
     private int numberOfSeats;
     private int numberOfLockers;
-    private String mapsFrame; // this is the HTML-frame from Google Maps to put into the front-end
     private Map<Language, String> descriptions;
     private String imageUrl;
     private CustomDate startPeriodLockers;
     private CustomDate endPeriodLockers;
 
     public Location(String name, String address, int numberOfSeats, int numberOfLockers
-            , String mapsFrame, Map<Language, String> descriptions, String imageUrl) {
+            , Map<Language, String> descriptions, String imageUrl) {
         this.name = name;
         this.address = address;
         this.numberOfSeats = numberOfSeats;
         this.numberOfLockers = numberOfLockers;
-        this.mapsFrame = mapsFrame;
         this.descriptions = descriptions;
         this.imageUrl = imageUrl;
     }
@@ -43,7 +41,6 @@ public class Location implements Cloneable {
                 numberOfLockers == location.numberOfLockers &&
                 Objects.equals(name, location.name) &&
                 Objects.equals(address, location.address) &&
-                Objects.equals(mapsFrame, location.mapsFrame) &&
                 Objects.equals(descriptions, location.descriptions) &&
                 Objects.equals(imageUrl, location.imageUrl) &&
                 Objects.equals(startPeriodLockers, location.startPeriodLockers) &&
@@ -92,10 +89,6 @@ public class Location implements Cloneable {
         return numberOfLockers;
     }
 
-    public String getMapsFrame() {
-        return mapsFrame;
-    }
-
     public Map<Language, String> getDescriptions() {
         return descriptions;
     }
@@ -118,10 +111,6 @@ public class Location implements Cloneable {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public void setMapsFrame(String mapsFrame) {
-        this.mapsFrame = mapsFrame;
     }
 
     public void setDescriptions(Map<Language, String> descriptions) {

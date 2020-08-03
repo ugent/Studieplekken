@@ -406,7 +406,6 @@ public class TestCascadeInDBLocationDao {
         location.setAddress("Changed Address");
         location.setNumberOfLockers(100);
         location.setNumberOfSeats(200);
-        location.setMapsFrame("Changed frame");
 
         Map<Language, String> descriptions = new HashMap<>();
         descriptions.put(Language.ENGLISH, "This is a changed descriptions for the location");

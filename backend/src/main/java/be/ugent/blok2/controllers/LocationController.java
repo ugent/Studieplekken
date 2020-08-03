@@ -42,7 +42,6 @@ public class LocationController {
         therminal.setAddress("Hoveniersberg 24, 9000 Gent");
         therminal.setNumberOfSeats(200);
         therminal.setNumberOfLockers(100);
-        therminal.setMapsFrame("<frame></frame>");
 
         Map<Language, String> therminalDescriptions = new HashMap<>();
         therminalDescriptions.put(Language.ENGLISH, "Studeer in het studentenhuis 'De Therminal'");
@@ -56,7 +55,6 @@ public class LocationController {
         sterre.setAddress("Krijgslaan 281, 9000 Gent");
         sterre.setNumberOfSeats(200);
         sterre.setNumberOfLockers(100);
-        sterre.setMapsFrame("<frame></frame>");
 
         Map<Language, String> sterreDescriptions = new HashMap<>();
         sterreDescriptions.put(Language.ENGLISH, "Studeer in de S5 van de Sterre");
