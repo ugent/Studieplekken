@@ -1,0 +1,21 @@
+/**
+ * The width and height are set, such that the div spans over the
+ * available width. The height isn't 100% because 90% looked nicer,
+ * 100% was too close to the lower border of the day cell
+ */
+.custom-event-bar {
+  width: 100%;
+  height: 90%;
+  border-radius: 5px;
+}
+
+/**
+ * First solution of https://stackoverflow.com/a/13515693/9356123 works
+ */
+.custom-event-bar-center-text {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+}

@@ -11,11 +11,17 @@ export class CalendarComponent implements OnInit {
   view: CalendarView = CalendarView.Month;
   viewDate: Date = new Date();
 
-  events: CalendarEvent[];
+  events: CalendarEvent[] = [
+    {
+      start: new Date(),
+      title: 'Test calendar event'
+    }
+  ];
 
   refresh: Subject<any> = new Subject();
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit(): void {
   }

@@ -43,6 +43,7 @@
       [events]="events"
       [refresh]="refresh"
       [weekStartsOn]="1"
+      [cellTemplate]="customCellTemplate"
       (dayClicked)="dayClicked($event.day)"
       (eventClicked)="handleEvent('Clicked', $event.event)"
       (eventTimesChanged)="eventTimesChanged($event)">
@@ -50,3 +51,43 @@
   </div>
 
 </div>
+
+<!-- Documentation about using a custom template:
+         - https://github.com/mattlewis92/angular-calendar#how-do-i-use-a-custom-template
+         - https://angular-calendar.com/#/custom-templates -->
+<ng-template
+  #customCellTemplate
+  let-day="day"
+  let-locale="locale"
+  let-tooltipPlacement="tooltipPlacement"
+  let-highlightDay="highlightDay"
+  let-unhighlightDay="unhighlightDay"
+  let-eventClicked="eventClicked"
+  let-tooltipTemplate="tooltipTemplate"
+  let-tooltipAppendToBody="tooltipAppendToBody">
+  <div class="">
+    <span class="cal-day-number">{{ day.date | calendarDate:'monthViewDayNumber':locale }}</span>
+  </div>
+  <div class="cal-events" *ngIf="day.events.length > 0">
+    <div
+      class="cal-event custom-event-bar custom-event-bar-center-text"
+      *ngFor="let event of day.events"
+      [style.backgroundColor]="event.color?.primary"
+      [ngClass]="event?.cssClass"
+      (mouseenter)="highlightDay.emit({event: event})"
+      (mouseleave)="unhighlightDay.emit({event: event})"
+      [mwlCalendarTooltip]="event.title | calendarEventTitle:'monthTooltip':event"
+      [tooltipPlacement]="tooltipPlacement"
+      [tooltipEvent]="event"
+      [tooltipTemplate]="tooltipTemplate"
+      [tooltipAppendToBody]="tooltipAppendToBody"
+      mwlDraggable
+      [class.cal-draggable]="event.draggable"
+      dragActiveClass="cal-drag-active"
+      [dropData]="{event: event, draggedFrom: day}"
+      [dragAxis]="{x: event.draggable, y: event.draggable}"
+      (mwlClick)="eventClicked.emit({ event: event })">
+        {{event.title}}
+    </div>
+  </div>
+</ng-template>
