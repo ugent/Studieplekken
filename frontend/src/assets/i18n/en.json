@@ -40,7 +40,11 @@
   },
 
   "profile": {
-    "asideTitle": "Profile"
+    "asideTitle": "Profile",
+
+    "overview": {
+      "title": "Profile Overview"
+    }
   },
 
   "profileAside": {

@@ -1,6 +1,6 @@
-import {CustomDate} from "./helpers/CustomDate";
+import {CustomDate} from './helpers/CustomDate';
 
-export class Location {
+export interface Location {
   name: string;
   address: string;
   numberOfSeats: number;
