@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {Location} from '../../shared/model/Location';
 import {vars} from '../../../environments/environment';
 import {LocationService} from '../../services/api/location.service';
@@ -11,19 +11,18 @@ import {Observable} from 'rxjs';
 })
 export class DashboardItemComponent implements OnInit, AfterViewInit {
   @Input() location: Location;
-  numberOfReservations: Observable<number>;
+
+  occupation: number;
 
   constructor(private locationService: LocationService) { }
 
   ngOnInit(): void {
-    this.numberOfReservations = this.locationService.getNumberOfReservations(this.location);
+    this.locationService.getNumberOfReservations(this.location).subscribe(next => {
+      this.occupation = Math.round(100 * next / this.location.numberOfSeats);
+    });
   }
 
   ngAfterViewInit(): void {
-    this.numberOfReservations.subscribe(next => {
-      document.getElementById(this.location.name).style.width =
-        (Math.floor((next / this.location.numberOfSeats) * 100)).toString() + '%';
-    });
   }
 
   handleImageError(): void {

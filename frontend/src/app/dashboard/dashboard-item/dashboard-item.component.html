@@ -17,9 +17,11 @@
 
         <!-- Progress bar for reserved seats -->
         <div class="progress">
-          <div class="progress-bar" role="progressbar" *ngIf="numberOfReservations | async as reservations; else none"
-               [id]="location.name">
-            <span>{{reservations}}/{{location.numberOfSeats}}</span>
+          <div class="progress-bar" role="progressbar"
+               [style.width]="occupation + '%'"
+               [attr.aria-valuenow]="occupation"
+               aria-valuemin="0" aria-valuemax="100">
+            <span>{{occupation}}/{{location.numberOfSeats}}</span>
           </div>
         </div>
 

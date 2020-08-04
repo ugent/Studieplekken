@@ -7,9 +7,13 @@ export const environment = {
 };
 
 export const api = {
+  // LOCATIONS
   locations: '/api/locations',
   location: '/api/locations/{locationName}',
-  numberOfReservations: '/api/locations/{locationName}/reservations/count'
+  numberOfReservations: '/api/locations/{locationName}/reservations/count',
+
+  // USERS
+  user_by_mail: '/api/account/{mail}'
 };
 
 export const vars = {
