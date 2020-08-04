@@ -5,16 +5,16 @@
       <nav class="padding-default bg-tertiary">
         <h2>{{'profile.asideTitle' | translate}}</h2>
         <ul class="linklist linklist-dark">
-          <li>{{'profileAside.overview' | translate}}</li>
-          <li>{{'profileAside.reservations' | translate}}</li>
-          <li>{{'profileAside.calendar' | translate}}</li>
-          <li>{{'profileAside.penalties' | translate}}</li>
+          <li><a routerLink="./overview">{{'profileAside.overview' | translate}}</a></li>
+          <li><a routerLink="./reservations">{{'profileAside.reservations' | translate}}</a></li>
+          <li><a routerLink="./calendar">{{'profileAside.calendar' | translate}}</a></li>
+          <li><a routerLink="./penalties">{{'profileAside.penalties' | translate}}</a></li>
         </ul>
       </nav>
     </aside>
 
     <article class="col-sm-12 col-md-10">
-      profile works!
+      <router-outlet></router-outlet>
     </article>
   </div>
 </div>

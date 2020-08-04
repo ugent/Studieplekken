@@ -19,6 +19,10 @@ import { CalendarComponent } from './calendar/calendar.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {CalendarModule, DateAdapter} from 'angular-calendar';
 import {adapterFactory} from 'angular-calendar/date-adapters/date-fns';
+import { ProfileOverviewComponent } from './profile/profile-overview/profile-overview.component';
+import { ProfileReservationsComponent } from './profile/profile-reservations/profile-reservations.component';
+import { ProfileCalendarComponent } from './profile/profile-calendar/profile-calendar.component';
+import { ProfilePenaltiesComponent } from './profile/profile-penalties/profile-penalties.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -28,11 +32,19 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 const routes: Routes = [
   {path: 'dashboard', component: DashboardComponent},
   {path: 'dashboard/:locationName', component: LocationDetailsComponent},
-  {path: 'profile', component: ProfileComponent},
+  {path: 'profile', component: ProfileComponent,
+    children: [
+      {path: '', redirectTo: 'overview', pathMatch: 'full'},
+      {path: 'overview', component: ProfileOverviewComponent},
+      {path: 'reservations', component: ProfileReservationsComponent},
+      {path: 'calendar', component: ProfileCalendarComponent},
+      {path: 'penalties', component: ProfilePenaltiesComponent}
+    ]},
   {path: 'scan', component: ScanComponent},
   {path: 'management', component: ManagementComponent},
   {path: 'information', component: InformationComponent},
   {path: '', redirectTo: '/dashboard', pathMatch: 'full'}
+  // , {path: '**', component: PageNotFoundController} TODO: create PageNotFoundController
 ];
 
 @NgModule({
@@ -45,7 +57,11 @@ const routes: Routes = [
     InformationComponent,
     DashboardItemComponent,
     LocationDetailsComponent,
-    CalendarComponent
+    CalendarComponent,
+    ProfileOverviewComponent,
+    ProfileReservationsComponent,
+    ProfileCalendarComponent,
+    ProfilePenaltiesComponent
   ],
   imports: [
     BrowserModule,
