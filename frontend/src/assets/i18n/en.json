@@ -37,5 +37,16 @@
   "language": {
     "en": "English",
     "nl": "Dutch"
+  },
+
+  "profile": {
+    "asideTitle": "Profile"
+  },
+
+  "profileAside": {
+    "overview": "Overview",
+    "reservations": "Reservations",
+    "calendar": "Personal Calendar",
+    "penalties": "Penalty Points"
   }
 }
