@@ -13,7 +13,10 @@ export const api = {
   numberOfReservations: '/api/locations/{locationName}/reservations/count',
 
   // USERS
-  user_by_mail: '/api/account/{mail}'
+  user_by_mail: '/api/account/{mail}',
+
+  // PENALTY_BOOK
+  penalties_by_user_id: '/api/penalties/{userId}'
 };
 
 export const vars = {

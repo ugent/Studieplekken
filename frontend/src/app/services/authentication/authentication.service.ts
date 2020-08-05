@@ -3,6 +3,7 @@ import {BehaviorSubject, Observable} from 'rxjs';
 import {User} from '../../shared/model/User';
 import {HttpClient} from '@angular/common/http';
 import {api} from '../../../environments/environment';
+import {Penalty} from '../../shared/model/Penalty';
 
 /**
  * The structure of the authentication service has been based on this article:
@@ -49,5 +50,10 @@ export class AuthenticationService {
 
   updatePassword(user: User): void {
     // TODO: update password
+  }
+
+  getPenalties(): Observable<Penalty[]> {
+    return this.http.get<Penalty[]>(api.penalties_by_user_id.replace('{userId}',
+      this.userSubject.value.augentID));
   }
 }

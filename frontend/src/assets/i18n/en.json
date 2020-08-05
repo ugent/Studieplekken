@@ -69,6 +69,37 @@
         "penaltyPoints": "Penalty Points",
         "studentNumber": "Student Number"
       }
+    },
+
+    "penalties": {
+      "title": "Penalty points",
+      "subtitle": "Your amount of penalty points:",
+
+      "information": {
+        "1": "When you have more than 100 penalty points, you are not allowed to make reservations.",
+        "2": "Each week, the weight of received penalty points for misbehaviour decreases by 20% of the original amount of received points",
+        "3": "In other words, the amount of points you receive will influence the total amount of penalty points for a period of 5 weeks.",
+        "4": "Possible events of misbehaviour are:",
+        "li": {
+          "1": "Cancelling a reservation after 7 PM, the night before the date of reservation (starting at 15 points, increasing to 30 points an hour before opening)",
+          "2": "Not showing up when you did make a reservation (50 points)",
+          "3": "Keeping a seat occupied for yourself, or for someone else, by placing a bag/books/... on the seat",
+          "4": "When you would really cross the line, an employee may blacklist you for reservation. You will get 100 points. These points do not decrease over time!"
+        }
+      },
+
+      "table": {
+        "title": "Overview of your penalty points",
+        "header": {
+          "eventCode": "Reason for penalty",
+          "timestamp": "Timestamp",
+          "reservationDate": "Reservation for",
+          "location": "Location",
+          "receivedPoints": "Received points"
+        },
+
+        "noPenalties": "You have had no penalties so far. Very good!"
+      }
     }
   },
 

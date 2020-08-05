@@ -1,6 +1,12 @@
+/*
+ * Setup a test user
+ */
 insert into public.users(augentid, role, augentpreferredgivenname, augentpreferredsn, penalty_points, mail, password, institution)
 values ('001', 'STUDENT', 'Bram', 'Van de Walle', 0, 'bram.vandewalle@ugent.be', 'secret', 'UGent');
 
+/*
+ * Setup two test locations
+ */
 insert into public.locations (name, address, number_of_seats, number_of_lockers, image_url)
 values ('Therminal', 'Hoveniersberg 24, 9000 Gent', 200, 100, 'www.example.png'),
 ('Sterre S5', 'Krijgslaan 281, 9000 Gent', 200, 100, 'www.example.png');
@@ -11,6 +17,18 @@ values ('Therminal', 'ENGLISH', 'Go and study in the student house "De Therminal
 ('Sterre S5', 'ENGLISH', 'Go and study in building S5 of the Sterre'),
 ('Sterre S5', 'DUTCH', 'Studeer in de S5 van de Sterre');
 
+/*
+ * Add some penalties for the test user
+ */
+insert into public.penalty_book(user_augentid, event_code, timestamp, reservation_date, received_points, reservation_location)
+values ('001', 16660, replace(to_char(now() - interval '5 days', 'YYYY-MM-DD HH24:MI:SS'), ' ', 'T'),
+        replace(to_char(now(), 'YYYY-MM-DD HH24:MI:SS'), ' ', 'T'), 30, 'Therminal'),
+       ('001', 16661, replace(to_char(now() - interval '4 days', 'YYYY-MM-DD HH24:MI:SS'), ' ', 'T'),
+        replace(to_char(now(), 'YYYY-MM-DD HH24:MI:SS'), ' ', 'T'), 30, 'Sterre S5');
+
+/*
+ * Setup all the lockers for the test locations
+ */
 insert into public.lockers (location_name, number)
 values ('Therminal', 0),
 ('Therminal', 1),

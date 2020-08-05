@@ -69,6 +69,37 @@
         "penaltyPoints": "Strafpunten",
         "studentNumber": "Studentennummer"
       }
+    },
+
+    "penalties": {
+      "title": "Strafpunten",
+      "subtitle": "Het aantal strafpunten dat je momenteel bezit:",
+
+      "information": {
+        "1": "Wanneer je meer dan 100 strafpunten hebt, kan je geen reservaties meer maken.",
+        "2": "Elke week zal het gewicht van de strafpunten die je kreeg voor een overtreding, dalen met 20% van het oorspronkelijk aantal gekregen strafpunten.",
+        "4": "Met andere woorden zullen het aantal strafpunten voor een overtreding voor 5 weken zichtbaar zijn in je totale aantal strafpunten.",
+        "3": "Mogelijke overtredingen zijn:",
+        "li": {
+          "1": "Een reservatie voor een locatie annuleren vanaf 19u, de avond voorafgaand aan de datum waarvoor werd gereserveerd (start op 15 punten en neemt toe tot 30, een uur voor opening)",
+          "2": "Niet komen opdagen wanneer je reserveerde (50 points)",
+          "3": "Een plek vrijhouden voor jezelf, of voor iemand anders, door de plek te bezetten met een boekentas/boeken/...",
+          "4": "Wanneer je echt over de schreef zou gaan, dan kan je op de blacklist gezet worden. Je krijgt dan onmiddellijk 100 strafpunten, die niet verminderen in de loop der tijd"
+        }
+      },
+
+      "table": {
+        "title": "Overzicht van jou strafpunten",
+        "header": {
+          "eventCode": "Reden voor strafpunten",
+          "timestamp": "Timestamp",
+          "reservationDate": "Reservatie voor",
+          "location": "Locatie",
+          "receivedPoints": "Ontvangen strafpunten"
+        },
+
+        "noPenalties": "Je hebt geen enkele overtreding gemaakt. Goed zo!"
+      }
     }
   },
 
