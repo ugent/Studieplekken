@@ -1,6 +1,6 @@
 import {Role} from './Role';
 
-export interface User {
+export class User {
   augentID: string;
   firstName: string;
   lastName: string;
@@ -9,4 +9,15 @@ export interface User {
   penaltyPoints: number;
   roles: Role[];
   institution: string;
+
+  constructor() {
+    this.augentID = '';
+    this.firstName = '';
+    this.lastName = '';
+    this.mail = '';
+    this.password = '';
+    this.penaltyPoints = 0;
+    this.roles = [];
+    this.institution = '';
+  }
 }

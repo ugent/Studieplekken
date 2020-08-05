@@ -21,15 +21,12 @@ import {api} from '../../../environments/environment';
 export class AuthenticationService {
   // BehaviorSubject to be able to emit on changes
   // private so that only the AuthenticationService can modify the user
-  private userSubject: BehaviorSubject<User>;
+  private userSubject: BehaviorSubject<User> = new BehaviorSubject<User>(new User());
   // and other components can subscribe using the public observable
   // (which comes from the userSubject)
-  public user: Observable<User>;
+  public user: Observable<User> = this.userSubject.asObservable();
 
   constructor(private http: HttpClient) {
-    this.userSubject = new BehaviorSubject<User>(null);
-    this.user = this.userSubject.asObservable();
-
     // TODO: try to obtain a user object based on a HTTP-only session cookie, if provided
     //   this way, if a user was logged in previously, he/she doesn't have to do it again
     http.get<User>(api.user_by_mail.replace('{mail}', 'bram.vandewalle@ugent.be'))
@@ -48,5 +45,9 @@ export class AuthenticationService {
 
   logout(): void {
     // TODO: logout
+  }
+
+  updatePassword(user: User): void {
+    // TODO: update password
   }
 }

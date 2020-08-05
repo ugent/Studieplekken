@@ -23,6 +23,8 @@ import { ProfileOverviewComponent } from './profile/profile-overview/profile-ove
 import { ProfileReservationsComponent } from './profile/profile-reservations/profile-reservations.component';
 import { ProfileCalendarComponent } from './profile/profile-calendar/profile-calendar.component';
 import { ProfilePenaltiesComponent } from './profile/profile-penalties/profile-penalties.component';
+import {ReactiveFormsModule} from '@angular/forms';
+import { ChangePasswordComponent } from './profile/change-password/change-password.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -43,6 +45,7 @@ const routes: Routes = [
   {path: 'scan', component: ScanComponent},
   {path: 'management', component: ManagementComponent},
   {path: 'information', component: InformationComponent},
+  {path: 'password', component: ChangePasswordComponent},
   {path: '', redirectTo: '/dashboard', pathMatch: 'full'}
   // , {path: '**', component: PageNotFoundController} TODO: create PageNotFoundController
 ];
@@ -61,28 +64,30 @@ const routes: Routes = [
     ProfileOverviewComponent,
     ProfileReservationsComponent,
     ProfileCalendarComponent,
-    ProfilePenaltiesComponent
+    ProfilePenaltiesComponent,
+    ChangePasswordComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    RouterModule.forRoot(routes),
-    HttpClientModule,
-    TranslateModule.forRoot({
-      defaultLanguage: 'nl',
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      }
-    }),
-    MarkdownModule.forRoot(),
-    BrowserAnimationsModule,
-    CalendarModule.forRoot({
-      provide: DateAdapter,
-      useFactory: adapterFactory,
-    })
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        RouterModule.forRoot(routes),
+        HttpClientModule,
+        TranslateModule.forRoot({
+            defaultLanguage: 'nl',
+            loader: {
+                provide: TranslateLoader,
+                useFactory: HttpLoaderFactory,
+                deps: [HttpClient]
+            }
+        }),
+        MarkdownModule.forRoot(),
+        BrowserAnimationsModule,
+        CalendarModule.forRoot({
+            provide: DateAdapter,
+            useFactory: adapterFactory,
+        }),
+        ReactiveFormsModule
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

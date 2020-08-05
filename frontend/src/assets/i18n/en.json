@@ -42,8 +42,21 @@
   "profile": {
     "asideTitle": "Profile",
 
+    "changePassword": {
+      "confirmPassword": "Confirm Password",
+      "password": "Password"
+    },
+
     "overview": {
-      "title": "Profile Overview"
+      "title": "Profile Overview",
+      "form": {
+        "firstName": "First Name",
+        "institution": "Institution",
+        "lastName": "Last Name",
+        "mail": "Mail",
+        "penaltyPoints": "Penalty Points",
+        "studentNumber": "Student Number"
+      }
     }
   },
 
@@ -51,6 +64,7 @@
     "overview": "Overview",
     "reservations": "Reservations",
     "calendar": "Personal Calendar",
+    "password": "Change password",
     "penalties": "Penalty Points"
   }
 }

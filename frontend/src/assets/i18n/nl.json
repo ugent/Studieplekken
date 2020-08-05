@@ -40,13 +40,31 @@
   },
 
   "profile": {
-    "asideTitle": "Profiel"
+    "asideTitle": "Profiel",
+
+    "changePassword": {
+      "confirmPassword": "Bevestig wachtwoord",
+      "password": "Wachtwoord"
+    },
+
+    "overview": {
+      "title": "Overzicht van je profiel",
+      "form": {
+        "firstName": "Voornaam",
+        "institution": "Opleidingsinstelling",
+        "lastName": "Achternaam",
+        "mail": "Mail",
+        "penaltyPoints": "Strafpunten",
+        "studentNumber": "Studentennummer"
+      }
+    }
   },
 
   "profileAside": {
     "overview": "Overzicht",
     "reservations": "Reservaties",
     "calendar": "Persoonlijke Kalender",
+    "password": "Wachtwoord veranderen",
     "penalties": "Strafpunten"
   }
 }
