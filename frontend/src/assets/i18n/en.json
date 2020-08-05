@@ -43,8 +43,13 @@
     "asideTitle": "Profile",
 
     "changePassword": {
-      "confirmPassword": "Confirm Password",
-      "password": "Password"
+      "title": "Change password",
+      "form": {
+        "cancelButton": "Cancel",
+        "confirmPassword": "Confirm Password",
+        "confirmButton": "Save changes",
+        "password": "Password"
+      }
     },
 
     "overview": {

@@ -43,8 +43,13 @@
     "asideTitle": "Profiel",
 
     "changePassword": {
-      "confirmPassword": "Bevestig wachtwoord",
-      "password": "Wachtwoord"
+      "title": "Verander je wachtwoord",
+      "form": {
+        "cancelButton": "Annuleer",
+        "confirmPassword": "Bevestig wachtwoord",
+        "confirmButton": "Pas aan",
+        "password": "Wachtwoord"
+      }
     },
 
     "overview": {

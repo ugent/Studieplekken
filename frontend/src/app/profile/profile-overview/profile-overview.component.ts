@@ -1,4 +1,4 @@
-import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AuthenticationService} from '../../services/authentication/authentication.service';
 import {User} from '../../shared/model/User';
 import {FormControl, FormGroup} from '@angular/forms';

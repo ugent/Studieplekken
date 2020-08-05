@@ -24,7 +24,7 @@ import { ProfileReservationsComponent } from './profile/profile-reservations/pro
 import { ProfileCalendarComponent } from './profile/profile-calendar/profile-calendar.component';
 import { ProfilePenaltiesComponent } from './profile/profile-penalties/profile-penalties.component';
 import {ReactiveFormsModule} from '@angular/forms';
-import { ChangePasswordComponent } from './profile/change-password/change-password.component';
+import { ProfileChangePasswordComponent } from './profile/profile-change-password/profile-change-password.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -40,12 +40,12 @@ const routes: Routes = [
       {path: 'overview', component: ProfileOverviewComponent},
       {path: 'reservations', component: ProfileReservationsComponent},
       {path: 'calendar', component: ProfileCalendarComponent},
+      {path: 'password', component: ProfileChangePasswordComponent},
       {path: 'penalties', component: ProfilePenaltiesComponent}
     ]},
   {path: 'scan', component: ScanComponent},
   {path: 'management', component: ManagementComponent},
   {path: 'information', component: InformationComponent},
-  {path: 'password', component: ChangePasswordComponent},
   {path: '', redirectTo: '/dashboard', pathMatch: 'full'}
   // , {path: '**', component: PageNotFoundController} TODO: create PageNotFoundController
 ];
@@ -65,7 +65,7 @@ const routes: Routes = [
     ProfileReservationsComponent,
     ProfileCalendarComponent,
     ProfilePenaltiesComponent,
-    ChangePasswordComponent
+    ProfileChangePasswordComponent
   ],
     imports: [
         BrowserModule,
