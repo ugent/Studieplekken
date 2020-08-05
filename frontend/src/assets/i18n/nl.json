@@ -44,6 +44,13 @@
 
     "changePassword": {
       "title": "Verander je wachtwoord",
+
+      "conditions": {
+        "li1": "Je wachtwoord moet tenminste één hoofdletter bevatten",
+        "li2": "Je wachtwoord moet tenminste één cijfer bevatten",
+        "li3": "Je wachtwoord moet tenminste acht karakters bevatten"
+      },
+
       "form": {
         "cancelButton": "Annuleer",
         "confirmPassword": "Bevestig wachtwoord",

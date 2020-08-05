@@ -44,6 +44,13 @@
 
     "changePassword": {
       "title": "Change password",
+
+      "conditions": {
+        "li1": "Your password must include at least one capital",
+        "li2": "Your password must include at least one number",
+        "li3": "The minimum length of your password is 8 characters"
+      },
+
       "form": {
         "cancelButton": "Cancel",
         "confirmPassword": "Confirm Password",
