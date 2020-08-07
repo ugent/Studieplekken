@@ -1,6 +1,6 @@
-import {Role} from './Role';
+import {Role, RoleConstructor} from './Role';
 
-export class User {
+export interface User {
   augentID: string;
   firstName: string;
   lastName: string;
@@ -9,15 +9,36 @@ export class User {
   penaltyPoints: number;
   roles: Role[];
   institution: string;
+}
 
-  constructor() {
-    this.augentID = '';
-    this.firstName = '';
-    this.lastName = '';
-    this.mail = '';
-    this.password = '';
-    this.penaltyPoints = 0;
-    this.roles = [];
-    this.institution = '';
+export class UserConstructor {
+  static new(): User {
+    return {
+      augentID: '',
+      firstName: '',
+      lastName: '',
+      mail: '',
+      password: '',
+      penaltyPoints: 0,
+      roles: [],
+      institution: ''
+    };
+  }
+
+  static newFromObj(obj: User): User {
+    if (obj === null) {
+      return null;
+    }
+
+    return {
+      augentID: obj.augentID,
+      firstName: obj.firstName,
+      lastName: obj.lastName,
+      mail: obj.mail,
+      password: obj.password,
+      penaltyPoints: obj.penaltyPoints,
+      roles: RoleConstructor.rolesFromStrings(obj.roles),
+      institution: obj.institution
+    };
   }
 }

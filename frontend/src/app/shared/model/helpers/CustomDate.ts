@@ -1,10 +1,40 @@
-export class CustomDate {
+export interface CustomDate {
   year: number;
   month: number;
   day: number;
   hrs: number;
   min: number;
   sec: number;
+}
+export class CustomDateConstructor {
+  static new(): CustomDate {
+    return {
+      year: 0,
+      month: 0,
+      day: 0,
+      hrs: 0,
+      min: 0,
+      sec: 0
+    };
+  }
+
+  static newFromObj(obj: CustomDate): CustomDate {
+    if (obj === null) {
+      return null;
+    }
+
+    console.log('CustomDateConstructor.newFromObj, obj:');
+    console.log(obj);
+
+    return {
+      year: obj.year,
+      month: obj.month,
+      day: obj.day,
+      hrs: obj.hrs,
+      min: obj.min,
+      sec: obj.sec
+    };
+  }
 }
 
 export function compareDates(date1: CustomDate, date2: CustomDate): number {
@@ -15,7 +45,7 @@ export function compareDates(date1: CustomDate, date2: CustomDate): number {
 
 export function nowAsCustomDate(): CustomDate {
   const date = new Date();
-  const customDate = new CustomDate();
+  const customDate = CustomDateConstructor.new();
 
   customDate.year = date.getFullYear();
   customDate.month = date.getMonth() + 1; // months in Date are from 0-11
