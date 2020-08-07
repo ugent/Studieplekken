@@ -24,9 +24,6 @@ export class LockerReservationConstructor {
       return null;
     }
 
-    console.log('LockerReservationConstructor.newFromObj, obj:');
-    console.log(obj);
-
     return {
       owner: UserConstructor.newFromObj(obj.owner),
       locker: LockerConstructor.newFromObj(obj.locker),

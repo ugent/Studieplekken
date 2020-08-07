@@ -23,9 +23,6 @@ export class CustomDateConstructor {
       return null;
     }
 
-    console.log('CustomDateConstructor.newFromObj, obj:');
-    console.log(obj);
-
     return {
       year: obj.year,
       month: obj.month,
@@ -58,7 +55,9 @@ export function nowAsCustomDate(): CustomDate {
 
 export function toDateString(date: CustomDate): string {
   const d = customDateToTypeScriptDate(date);
-  const dateString = d.toLocaleString().split(' ')[0]; // format or dateString: D-M-YYYY or M-D-YYYY
+  const dateString = d.toLocaleDateString();
+
+  // format or dateString: D-M-YYYY or M-D-YYYY
   return formatDateString(dateString);
 }
 

@@ -73,10 +73,7 @@ export class AuthenticationService {
       const reservations: LockerReservation[] = [];
 
       value.forEach(reservation => {
-        console.log('getLockerReservations, in foreach loop');
-        console.log(reservation);
         const obj = LockerReservationConstructor.newFromObj(reservation);
-        console.log(obj);
         reservations.push(obj);
       });
 
