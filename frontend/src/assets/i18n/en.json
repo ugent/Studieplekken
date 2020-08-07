@@ -42,6 +42,10 @@
   "profile": {
     "asideTitle": "Profile",
 
+    "calendar": {
+      "title": "Your personal reservation calendar"
+    },
+
     "changePassword": {
       "title": "Change password",
 

@@ -42,6 +42,10 @@
   "profile": {
     "asideTitle": "Profiel",
 
+    "calendar": {
+      "title": "Jouw persoonlijke reservatiekalender"
+    },
+
     "changePassword": {
       "title": "Verander je wachtwoord",
 
