@@ -134,7 +134,8 @@ public class TestDBLocationReservationDao {
         Assert.assertEquals("scanStudentTest, count reserved seats", 2, c);
 
         // scan the users for the location on date
-        LocationReservation rlr1 = locationReservationDao.scanStudent(testLocation.getName(), u1.getAugentID());
+        locationReservationDao.scanStudent(testLocation.getName(), u1.getAugentID());
+        LocationReservation rlr1 = locationReservationDao.getLocationReservation(u1.getAugentID(), today);
         lr1.setAttended(true);
         Assert.assertEquals("scanStudentTest, u1 scanned", lr1, rlr1);
 

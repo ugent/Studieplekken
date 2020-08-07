@@ -17,10 +17,14 @@ public class LocationReservation {
     }
 
     public LocationReservation(Location location, User user, CustomDate date) {
+        this(location, user, date, null);
+    }
+
+    public LocationReservation(Location location, User user, CustomDate date, Boolean attended) {
         this.location = location;
         this.user = user;
         this.date = date;
-        this.attended = null;
+        this.attended = attended;
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
@@ -65,7 +69,8 @@ public class LocationReservation {
         LocationReservation that = (LocationReservation) o;
         return Objects.equals(user, that.user) &&
                 Objects.equals(location, that.location) &&
-                Objects.equals(date, that.date);
+                Objects.equals(date, that.date) &&
+                Objects.equals(attended, that.attended);
     }
 
     @Override
