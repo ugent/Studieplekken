@@ -25,6 +25,8 @@ import { ProfileCalendarComponent } from './profile/profile-calendar/profile-cal
 import { ProfilePenaltiesComponent } from './profile/profile-penalties/profile-penalties.component';
 import {ReactiveFormsModule} from '@angular/forms';
 import { ProfileChangePasswordComponent } from './profile/profile-change-password/profile-change-password.component';
+import { ProfileLocationReservationsComponent } from './profile/profile-reservations/profile-location-reservations/profile-location-reservations.component';
+import { ProfileLockerReservationsComponent } from './profile/profile-reservations/profile-locker-reservations/profile-locker-reservations.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -65,7 +67,9 @@ const routes: Routes = [
     ProfileReservationsComponent,
     ProfileCalendarComponent,
     ProfilePenaltiesComponent,
-    ProfileChangePasswordComponent
+    ProfileChangePasswordComponent,
+    ProfileLocationReservationsComponent,
+    ProfileLockerReservationsComponent
   ],
     imports: [
         BrowserModule,

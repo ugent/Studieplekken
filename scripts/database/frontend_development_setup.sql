@@ -20,11 +20,26 @@ values ('Therminal', 'ENGLISH', 'Go and study in the student house "De Therminal
 /*
  * Add some penalties for the test user
  */
-insert into public.penalty_book(user_augentid, event_code, timestamp, reservation_date, received_points, reservation_location)
-values ('001', 16660, replace(to_char(now() - interval '5 days', 'YYYY-MM-DD HH24:MI:SS'), ' ', 'T'),
-        replace(to_char(now(), 'YYYY-MM-DD HH24:MI:SS'), ' ', 'T'), 30, 'Therminal'),
-       ('001', 16661, replace(to_char(now() - interval '4 days', 'YYYY-MM-DD HH24:MI:SS'), ' ', 'T'),
-        replace(to_char(now(), 'YYYY-MM-DD HH24:MI:SS'), ' ', 'T'), 30, 'Sterre S5');
+insert into public.location_reservations(date, location_name, attended, user_augentid)
+values
+-- One reservation for over five days
+(replace(to_char(now() + interval '5 days', 'YYYY-MM-DD HH24:MI:SS'), ' ', 'T'), 'Therminal', null, '001'),
+-- One reservation for five days ago, attended to
+(replace(to_char(now() - interval '5 days', 'YYYY-MM-DD HH24:MI:SS'), ' ', 'T'), 'Therminal', true, '001'),
+-- one reservation for four days ago, not attended to
+(replace(to_char(now() - interval '4 days', 'YYYY-MM-DD HH24:MI:SS'), ' ', 'T'), 'Sterre S5', false, '001');
+
+/*
+ * Add some location reservations for the test user
+ */
+insert into public.location_reservations(date, location_name, attended, user_augentid)
+values
+-- One reservation for over five days
+(replace(to_char(now() + interval '5 days', 'YYYY-MM-DD HH24:MI:SS'), ' ', 'T'), 'Therminal', null),
+-- One reservation for five days ago, attended to
+(replace(to_char(now() - interval '5 days', 'YYYY-MM-DD HH24:MI:SS'), ' ', 'T'), 'Therminal', true),
+-- one reservation for four days ago, not attended to
+(replace(to_char(now() - interval '4 days', 'YYYY-MM-DD HH24:MI:SS'), ' ', 'T'), 'Sterre S5', false);
 
 /*
  * Setup all the lockers for the test locations

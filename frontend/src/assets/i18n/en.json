@@ -100,6 +100,32 @@
 
         "noPenalties": "You have had no penalties so far. Very good!"
       }
+    },
+
+    "reservations": {
+      "locations": {
+        "title": "Overview of your location reservations",
+
+        "table": {
+          "header": {
+            "locationName": "Location",
+            "reservationDate": "Reservation for date",
+            "attended": "Did you attend?"
+          },
+
+          "attended": {
+            "yes": "yes",
+            "no": "no",
+            "other": "n/a"
+          }
+        },
+
+        "noReservations": "You have never made any reservations so far."
+      },
+
+      "lockers": {
+        "title": "Overview of your locker reservations"
+      }
     }
   },
 

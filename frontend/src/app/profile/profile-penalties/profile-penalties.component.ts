@@ -27,7 +27,7 @@ export class ProfilePenaltiesComponent implements OnInit {
   constructor(private authenticationService: AuthenticationService) {
     authenticationService.user.subscribe(next => {
       this.user = next;
-      this.penalties = this.authenticationService.getPenalties();
+      this.penalties = authenticationService.getPenalties();
     });
   }
 

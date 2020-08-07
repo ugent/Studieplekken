@@ -100,6 +100,16 @@
 
         "noPenalties": "Je hebt geen enkele overtreding gemaakt. Goed zo!"
       }
+    },
+
+    "reservations": {
+      "locations": {
+        "title": "Overzicht van je locatiereservaties"
+      },
+
+      "lockers": {
+        "title": "Overzicht van je lockerreservaties"
+      }
     }
   },
 

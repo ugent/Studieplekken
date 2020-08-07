@@ -4,6 +4,8 @@ import {User} from '../../shared/model/User';
 import {HttpClient} from '@angular/common/http';
 import {api} from '../../../environments/environment';
 import {Penalty} from '../../shared/model/Penalty';
+import {LocationReservation} from '../../shared/model/LocationReservation';
+import {LockerReservation} from '../../shared/model/LockerReservation';
 
 /**
  * The structure of the authentication service has been based on this article:
@@ -50,6 +52,17 @@ export class AuthenticationService {
 
   updatePassword(user: User): void {
     // TODO: update password
+  }
+
+  getLocationReservations(): Observable<LocationReservation[]> {
+    return this.http.get<LocationReservation[]>(api.locationReservationsByUserId.replace('{userId}',
+      this.userSubject.value.augentID));
+  }
+
+  getLockerReservations(): Observable<LockerReservation[]> {
+    return this.http.get<LockerReservation[]>(api.lockerReservationsByUserId.replace('{userId}',
+      this.userSubject.value.augentID));
+
   }
 
   getPenalties(): Observable<Penalty[]> {

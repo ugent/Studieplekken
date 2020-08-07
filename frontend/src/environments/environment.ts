@@ -12,6 +12,12 @@ export const api = {
   location: '/api/locations/{locationName}',
   numberOfReservations: '/api/locations/{locationName}/reservations/count',
 
+  // LOCATION_RESERVATIONS
+  locationReservationsByUserId: '/api/locations/reservations/{userId}',
+
+  // LOCKER_RESERVATIONS
+  lockerReservationsByUserId: '/api/lockers/reservations/{userId}',
+
   // USERS
   user_by_mail: '/api/account/{mail}',
 
