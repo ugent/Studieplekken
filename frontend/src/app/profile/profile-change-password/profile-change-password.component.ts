@@ -33,4 +33,12 @@ export class ProfileChangePasswordComponent implements OnInit {
   disabledSubmitButton(data: {password: string, confirmPassword: string}): boolean {
     return data.password === '' || data.confirmPassword === '' || !this.formGroup.valid;
   }
+
+  isPasswordValid(): boolean {
+    return validPassword(this.formGroup) === null;
+  }
+
+  confirmPasswordMatches(): boolean {
+    return this.formGroup.get('password').value === this.formGroup.get('confirmPassword').value;
+  }
 }
