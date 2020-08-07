@@ -25,7 +25,14 @@ export class ProfileLocationReservationsComponent implements OnInit {
 
   constructor(private authenticationService: AuthenticationService) {
     authenticationService.user.subscribe(next => {
-      this.locationReservations = authenticationService.getLocationReservations();
+      // only change the locationReservations if the user is logged in.
+      // If you would omit the if-clause, a redudant API call will
+      // be made with {userId} = '' (and thus requesting for all location
+      // reservations stored in the database, this is not something
+      // we want...
+      if (authenticationService.isLoggedIn()) {
+        this.locationReservations = authenticationService.getLocationReservations();
+      }
     });
   }
 

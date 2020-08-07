@@ -120,11 +120,25 @@
           }
         },
 
-        "noReservations": "You have never made any reservations so far."
+        "noReservations": "You have never made any location reservations so far."
       },
 
       "lockers": {
-        "title": "Overview of your locker reservations"
+        "title": "Overview of your locker reservations",
+
+        "table": {
+          "header": {
+            "locationName" :  "Location",
+            "lockerNumber" : "Locker's number",
+            "keyPickupDate" :  "Key picked up on date",
+            "keyReturnedDate" : "Key returned on date"
+          },
+
+          "keyPickupDateNull": "n/a",
+          "keyReturnedDateNull": "n/a"
+        },
+
+        "noReservations": "You have never made any locker reservations so far."
       }
     }
   },

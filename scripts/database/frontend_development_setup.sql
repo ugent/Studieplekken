@@ -246,3 +246,14 @@ values ('Therminal', 0),
 ('Sterre S5', 98),
 ('Sterre S5', 99);
 
+/*
+ * Add some locker reservations for the test user
+ */
+insert into public.locker_reservations(location_name, locker_number, user_augentid, key_pickup_date, key_return_date)
+-- insert a 'fresh' reservation (keyPickup- and keyReturnedDates are null)
+values ('Therminal', 0, '001', null, null),
+-- insert a reservation where the key has just been picked up
+('Therminal', 1, '001', replace(to_char(now(), 'YYYY-MM-DD HH24:MI:SS'), ' ', 'T'), null),
+-- insert a reservation where the key has been picked up and has just been returned
+('Sterre S5', 0, '001', replace(to_char(now() - interval '1 month', 'YYYY-MM-DD HH24:MI:SS'), ' ', 'T'),
+    replace(to_char(now(), 'YYYY-MM-DD HH24:MI:SS'), ' ', 'T'));

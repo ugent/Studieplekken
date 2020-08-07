@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
-import {User} from '../../shared/model/User';
+import {User, UserConstructor} from '../../shared/model/User';
 import {HttpClient} from '@angular/common/http';
 import {api} from '../../../environments/environment';
 import {Penalty} from '../../shared/model/Penalty';
 import {LocationReservation} from '../../shared/model/LocationReservation';
-import {LockerReservation} from '../../shared/model/LockerReservation';
+import {LockerReservation, LockerReservationConstructor} from '../../shared/model/LockerReservation';
+import {map, tap} from 'rxjs/operators';
+import {Locker} from '../../shared/model/Locker';
 
 /**
  * The structure of the authentication service has been based on this article:
@@ -24,7 +26,7 @@ import {LockerReservation} from '../../shared/model/LockerReservation';
 export class AuthenticationService {
   // BehaviorSubject to be able to emit on changes
   // private so that only the AuthenticationService can modify the user
-  private userSubject: BehaviorSubject<User> = new BehaviorSubject<User>(new User());
+  private userSubject: BehaviorSubject<User> = new BehaviorSubject<User>(UserConstructor.new());
   // and other components can subscribe using the public observable
   // (which comes from the userSubject)
   public user: Observable<User> = this.userSubject.asObservable();
@@ -50,6 +52,10 @@ export class AuthenticationService {
     // TODO: logout
   }
 
+  isLoggedIn(): boolean {
+    return this.userSubject.value.augentID !== '';
+  }
+
   updatePassword(user: User): void {
     // TODO: update password
   }
@@ -60,9 +66,22 @@ export class AuthenticationService {
   }
 
   getLockerReservations(): Observable<LockerReservation[]> {
-    return this.http.get<LockerReservation[]>(api.lockerReservationsByUserId.replace('{userId}',
+    const v = this.http.get<LockerReservation[]>(api.lockerReservationsByUserId.replace('{userId}',
       this.userSubject.value.augentID));
 
+    return v.pipe(map<LockerReservation[], LockerReservation[]>((value, index) => {
+      const reservations: LockerReservation[] = [];
+
+      value.forEach(reservation => {
+        console.log('getLockerReservations, in foreach loop');
+        console.log(reservation);
+        const obj = LockerReservationConstructor.newFromObj(reservation);
+        console.log(obj);
+        reservations.push(obj);
+      });
+
+      return reservations;
+    }));
   }
 
   getPenalties(): Observable<Penalty[]> {
