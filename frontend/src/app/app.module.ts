@@ -27,6 +27,11 @@ import {ReactiveFormsModule} from '@angular/forms';
 import { ProfileChangePasswordComponent } from './profile/profile-change-password/profile-change-password.component';
 import { ProfileLocationReservationsComponent } from './profile/profile-reservations/profile-location-reservations/profile-location-reservations.component';
 import { ProfileLockerReservationsComponent } from './profile/profile-reservations/profile-locker-reservations/profile-locker-reservations.component';
+import { LocationsManagementComponent } from './management/locations-management/locations-management.component';
+import { UsersManagementComponent } from './management/users-management/users-management.component';
+import { ReservationsManagementComponent } from './management/reservations-management/reservations-management.component';
+import { CalendarManagementComponent } from './management/calendar-management/calendar-management.component';
+import { PenaltyEventsManagementComponent } from './management/penalty-events-management/penalty-events-management.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -46,7 +51,16 @@ const routes: Routes = [
       {path: 'penalties', component: ProfilePenaltiesComponent}
     ]},
   {path: 'scan', component: ScanComponent},
-  {path: 'management', component: ManagementComponent},
+  {path: 'management', component: ManagementComponent,
+    children: [
+      {path: '', redirectTo: 'locations', pathMatch: 'full'},
+      {path: 'locations', component: LocationsManagementComponent},
+      {path: 'users', component: UsersManagementComponent},
+      {path: 'reservations', component: ReservationsManagementComponent},
+      {path: 'calendar', component: CalendarManagementComponent},
+      {path: 'penalties', component: PenaltyEventsManagementComponent}
+    ]
+  },
   {path: 'information', component: InformationComponent},
   {path: '', redirectTo: '/dashboard', pathMatch: 'full'}
   // , {path: '**', component: PageNotFoundController} TODO: create PageNotFoundController
@@ -69,7 +83,12 @@ const routes: Routes = [
     ProfilePenaltiesComponent,
     ProfileChangePasswordComponent,
     ProfileLocationReservationsComponent,
-    ProfileLockerReservationsComponent
+    ProfileLockerReservationsComponent,
+    LocationsManagementComponent,
+    UsersManagementComponent,
+    ReservationsManagementComponent,
+    CalendarManagementComponent,
+    PenaltyEventsManagementComponent
   ],
     imports: [
         BrowserModule,

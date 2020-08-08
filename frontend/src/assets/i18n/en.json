@@ -39,8 +39,26 @@
     "nl": "Dutch"
   },
 
+  "management": {
+    "aside": {
+      "title": "Management",
+      "locations": "Locations",
+      "users": "Users",
+      "reservations": "Reservations",
+      "calendar": "Calendar",
+      "penalties": "Penalties"
+    }
+  },
+
   "profile": {
-    "asideTitle": "Profile",
+    "aside": {
+      "title": "Profile",
+      "overview": "Overview",
+      "reservations": "Reservations",
+      "calendar": "Personal Calendar",
+      "password": "Change password",
+      "penalties": "Penalty Points"
+    },
 
     "calendar": {
       "title": "Your personal reservation calendar"
@@ -77,7 +95,7 @@
 
     "penalties": {
       "title": "Penalty points",
-      "subtitle": "Your amount of penalty points:",
+      "subtitle": "Current amount of penalty points:",
 
       "information": {
         "1": "When you have more than 100 penalty points, you are not allowed to make reservations.",
@@ -145,13 +163,5 @@
         "noReservations": "You have never made any locker reservations so far."
       }
     }
-  },
-
-  "profileAside": {
-    "overview": "Overview",
-    "reservations": "Reservations",
-    "calendar": "Personal Calendar",
-    "password": "Change password",
-    "penalties": "Penalty Points"
   }
 }

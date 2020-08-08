@@ -39,8 +39,26 @@
     "nl": "Nederlands"
   },
 
+  "management": {
+    "aside": {
+      "title": "Beheer",
+      "locations": "Locaties",
+      "users": "Gebruikers",
+      "reservations": "Reservaties",
+      "calendar": "Kalender",
+      "penalties": "Overtredingen"
+    }
+  },
+
   "profile": {
-    "asideTitle": "Profiel",
+    "aside": {
+      "title": "Profiel",
+      "overview": "Overzicht",
+      "reservations": "Reservaties",
+      "calendar": "Persoonlijke Kalender",
+      "password": "Wachtwoord veranderen",
+      "penalties": "Strafpunten"
+    },
 
     "calendar": {
       "title": "Jouw persoonlijke reservatiekalender"
@@ -145,13 +163,5 @@
         "noReservations": "Je hebt tot nu toe nog nooit een locker gereserveerd."
       }
     }
-  },
-
-  "profileAside": {
-    "overview": "Overzicht",
-    "reservations": "Reservaties",
-    "calendar": "Persoonlijke Kalender",
-    "password": "Wachtwoord veranderen",
-    "penalties": "Strafpunten"
   }
 }

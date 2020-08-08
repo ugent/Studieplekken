@@ -1,1 +1,22 @@
-<p>management works!</p>
+<div class="container-fluid">
+  <div class="row">
+
+    <!-- Menu for /management -->
+    <aside class="col-sm-12 col-md-2 inpage-nav-container">
+      <nav class="padding-default bg-tertiary">
+        <h2>{{'management.aside.title' | translate}}</h2>
+        <ul class="linklist linklist-dark">
+          <li><a routerLink="./locations">{{'management.aside.locations' | translate}}</a></li>
+          <li><a routerLink="./users">{{'management.aside.users' | translate}}</a></li>
+          <li><a routerLink="./reservations">{{'management.aside.reservations' | translate}}</a></li>
+          <li><a routerLink="./calendar">{{'management.aside.calendar' | translate}}</a></li>
+          <li><a routerLink="./penalties">{{'management.aside.penalties' | translate}}</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <article class="col-sm-12 col-md-10">
+      <router-outlet></router-outlet>
+    </article>
+  </div>
+</div>
