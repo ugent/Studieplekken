@@ -191,7 +191,7 @@ public class TestCascadeInDBLocationDao {
     public void updateLocationWithoutCascadeNeededTest() throws SQLException {
         updateLocationWithoutChangeInFK(testLocation);
 
-        // LOCATIONS and LOCATION_DESCRIPTIONS updated?
+        // LOCATIONS updated?
         locationDao.updateLocation(testLocation.getName(), testLocation);
         Location location = locationDao.getLocation(testLocation.getName());
         Assert.assertEquals("updateLocationWithoutCascadeNeededTest, location", testLocation, location);
@@ -397,9 +397,6 @@ public class TestCascadeInDBLocationDao {
         List<LockerReservation> lockerReservations = lockerReservationDao
                 .getAllLockerReservationsOfLocation(testLocation.getName());
         Assert.assertEquals("deleteLocation, locker reservations", 0, lockerReservations.size());
-
-        Assert.assertEquals("deleteLocation, descriptions", 0,
-                countDescriptionsOfLocation(testLocation.getName()));
     }
 
     private void updateLocationWithoutChangeInFK(Location location) {
@@ -407,25 +404,8 @@ public class TestCascadeInDBLocationDao {
         location.setNumberOfLockers(100);
         location.setNumberOfSeats(200);
 
-        Map<Language, String> descriptions = new HashMap<>();
-        descriptions.put(Language.ENGLISH, "This is a changed descriptions for the location");
-        descriptions.put(Language.DUTCH, "Dit is een aangepaste omschrijving van de locatie");
-        location.setDescriptions(descriptions);
-
         location.setImageUrl("Changed URL");
         location.setStartPeriodLockers(new CustomDate(1970, 1, 1));
         location.setEndPeriodLockers(CustomDate.now());
-    }
-
-    private int countDescriptionsOfLocation(String locationName) throws SQLException {
-        try (Connection conn = ADB.getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(Resources
-                    .databaseProperties.getString("count_descriptions_of_location"));
-            pstmt.setString(1, locationName);
-
-            ResultSet rs = pstmt.executeQuery();
-            rs.next(); // will always be true, it's a count. If a problem would occur, a SQLException will be thrown
-            return rs.getInt(1);
-        }
     }
 }

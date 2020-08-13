@@ -131,10 +131,6 @@ public class TestDBAccountDao {
         list = accountDao.getUsersByFirstName("first_name_that_has_no_entry");
         Assert.assertEquals("getUsersByFirstName", 0, list.size());
 
-        list = accountDao.getUsersByNameSoundex(testUser1.getFirstName()
-                + " " + testUser1.getLastName());
-        Assert.assertEquals("getUsersByNameSoundex", 1, list.size());
-
         List<String> names = accountDao.getUserNamesByRole(Role.STUDENT.name());
         Assert.assertEquals("getUserNamesByRole", 2, names.size());
     }

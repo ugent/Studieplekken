@@ -1,6 +1,5 @@
 package be.ugent.blok2.controllers;
 
-
 import be.ugent.blok2.daos.IAccountDao;
 import be.ugent.blok2.model.users.User;
 import org.springframework.web.bind.annotation.GetMapping;

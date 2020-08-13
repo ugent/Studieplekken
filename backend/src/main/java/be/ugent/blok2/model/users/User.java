@@ -1,12 +1,6 @@
 package be.ugent.blok2.model.users;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Objects;
 
 
@@ -15,7 +9,7 @@ import java.util.Objects;
  * This class implements the interface UserDetails so spring can use this
  * class to verify login credentials.
  */
-public class User implements Cloneable, UserDetails {
+public class User implements Cloneable {
     private String lastName;
     private String firstName;
     private String mail;
@@ -72,46 +66,6 @@ public class User implements Cloneable, UserDetails {
         }
     }
 
-    @Override
-    @JsonIgnore
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        ArrayList<Authority> authorities = new ArrayList<>();
-        for (Role role : roles) {
-            authorities.add(new Authority(role));
-        }
-        return authorities;
-    }
-
-    @Override
-    @JsonIgnore
-    public String getUsername() {
-        return mail;
-    }
-
-    @Override
-    @JsonIgnore
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    @JsonIgnore
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    @JsonIgnore
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    @JsonIgnore
-    public boolean isEnabled() {
-        return true;
-    }
-
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
 
     public String getLastName() {
@@ -142,7 +96,6 @@ public class User implements Cloneable, UserDetails {
         return roles;
     }
 
-    @Override
     public String getPassword() {
         return password;
     }

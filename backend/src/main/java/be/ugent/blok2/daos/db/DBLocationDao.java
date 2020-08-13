@@ -3,7 +3,6 @@ package be.ugent.blok2.daos.db;
 import be.ugent.blok2.daos.IAccountDao;
 import be.ugent.blok2.daos.ILocationDao;
 import be.ugent.blok2.daos.IScannerLocationDao;
-import be.ugent.blok2.helpers.Language;
 import be.ugent.blok2.helpers.date.Calendar;
 import be.ugent.blok2.helpers.date.CustomDate;
 import be.ugent.blok2.helpers.date.Day;
@@ -70,21 +69,9 @@ public class DBLocationDao extends ADB implements ILocationDao {
         prepareUpdateOrInsertLocationStatement(location, pstmt);
         pstmt.executeUpdate();
 
-        // insert descriptions corresponding to the location into the database
-        addLocationDescriptions(location.getName(), location.getDescriptions(), conn);
-
         // insert the lockers corresponding to the location into the database
         for (int i = 0; i < location.getNumberOfLockers(); i++) {
             insertLocker(location.getName(), i, conn);
-        }
-    }
-
-    private void addLocationDescriptions(String locationName, Map<Language, String> descriptions, Connection conn)
-            throws SQLException {
-        for (Language lang : descriptions.keySet()) {
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("insert_location_descriptions"));
-            prepareUpdateOrInsertLocationDescriptionStatement(locationName, lang, descriptions.get(lang), pstmt);
-            pstmt.executeUpdate();
         }
     }
 
@@ -112,9 +99,8 @@ public class DBLocationDao extends ADB implements ILocationDao {
                 conn.setAutoCommit(false);
 
                 if (!locationName.equals(location.getName())) {
-                    // add location, descriptions and lockers
-                    // so, we have added the 'updated' location
-                    // and there are new descriptions and lockers
+                    // add location and lockers so, we have added
+                    // the 'updated' location and there are new lockers
                     // with FK to the new location
                     addLocation(location, conn);
 
@@ -123,10 +109,8 @@ public class DBLocationDao extends ADB implements ILocationDao {
                     // locker_reservations and penalty_book
                     updateForeignKeysToLocation(locationName, location.getName(), conn);
 
-                    // delete descriptions and lockers with FK to
-                    // the old location, and eventually delete the
-                    // old location as well
-                    deleteLocationDescriptions(locationName, conn);
+                    // delete lockers with FK to the old location,
+                    // and eventually delete the old location as well
                     deleteLockers(locationName, conn);
                     deleteLocation(locationName, conn);
                 } else {
@@ -158,9 +142,6 @@ public class DBLocationDao extends ADB implements ILocationDao {
 
                 // delete location_reservations
                 deleteLocationReservations(locationName, conn);
-
-                // delete location_descriptions
-                deleteLocationDescriptions(locationName, conn);
 
                 // delete penalty_book entries
                 deletePenaltyBookEntries(locationName, conn);
@@ -389,26 +370,8 @@ public class DBLocationDao extends ADB implements ILocationDao {
         CustomDate startPeriodLockers = CustomDate.parseString(rs.getString(databaseProperties.getString("location_start_period_lockers")));
         CustomDate endPeriodLockers = CustomDate.parseString(rs.getString(databaseProperties.getString("location_end_period_lockers")));
 
-        Location location = new Location(name, address, numberOfSeats, numberOfLockers
-                , new HashMap<>(), imageUrl);
-        location.setStartPeriodLockers(startPeriodLockers);
-        location.setEndPeriodLockers(endPeriodLockers);
-
-        Language lang = Language.valueOf(rs.getString(databaseProperties.getString("location_description_lang_enum")));
-        String desc = rs.getString(databaseProperties.getString("location_description_description"));
-        location.getDescriptions().put(lang, desc);
-
-        // iterator to make sure that only descriptions corresponding to one location
-        // are put into the descriptions' Map
-        int i = 1;
-        while (i < Language.values().length && rs.next()) {
-            lang = Language.valueOf(rs.getString(databaseProperties.getString("location_description_lang_enum")));
-            desc = rs.getString(databaseProperties.getString("location_description_description"));
-            location.getDescriptions().put(lang, desc);
-            i++;
-        }
-
-        return location;
+        return new Location(name, address, numberOfSeats, numberOfLockers, imageUrl,
+                startPeriodLockers, endPeriodLockers);
     }
 
     public static Locker createLocker(ResultSet rs) throws SQLException {
@@ -439,13 +402,6 @@ public class DBLocationDao extends ADB implements ILocationDao {
         pstmt.setString(7, location.getEndPeriodLockers() == null ? "" : location.getEndPeriodLockers().toString());
     }
 
-    private void prepareUpdateOrInsertLocationDescriptionStatement(String locationName, Language lang
-            , String description, PreparedStatement pstmt) throws SQLException {
-        pstmt.setString(1, locationName);
-        pstmt.setString(2, lang.toString());
-        pstmt.setString(3, description);
-    }
-
     private void deleteCalendarDays(String locationName, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_calendar_of_location"));
         pstmt.setString(1, locationName);
@@ -455,12 +411,6 @@ public class DBLocationDao extends ADB implements ILocationDao {
     private void deleteLocationReservations(String locationName, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn
                 .prepareStatement(databaseProperties.getString("delete_location_reservations_of_location"));
-        pstmt.setString(1, locationName);
-        pstmt.execute();
-    }
-
-    private void deleteLocationDescriptions(String locationName, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_location_descriptions"));
         pstmt.setString(1, locationName);
         pstmt.execute();
     }
@@ -569,11 +519,6 @@ public class DBLocationDao extends ADB implements ILocationDao {
                     , location.getNumberOfLockers(), conn);
         }
 
-        // It is too complex to determine whether two maps are equal, so always remove all descriptions
-        // and add new ones. The amount of work to delete and re-add them is small enough compared to
-        // determining whether two keySets() and values() are equal.
-        updateDescriptions(location.getName(), location.getDescriptions(), conn);
-
         PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("update_location"));
         // set ...
         prepareUpdateOrInsertLocationStatement(location, pstmt);
@@ -616,15 +561,6 @@ public class DBLocationDao extends ADB implements ILocationDao {
         pstmt.setString(1, locationName);
         pstmt.setInt(2, number);
         pstmt.execute();
-    }
-
-    // It is too complex to determine whether two maps are equal, so always remove all descriptions
-    // and add new ones. The amount of work to delete and re-add them is small enough compared to
-    // determining whether two keySets() and values() are equal.
-    private void updateDescriptions(String locationName, Map<Language, String> descriptions, Connection conn)
-            throws SQLException {
-        deleteLocationDescriptions(locationName, conn);
-        addLocationDescriptions(locationName, descriptions, conn);
     }
 }
 

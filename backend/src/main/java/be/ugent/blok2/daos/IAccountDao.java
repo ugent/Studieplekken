@@ -30,11 +30,6 @@ public interface IAccountDao extends IDao {
     List<User> getUsersByFirstName(String firstName) throws SQLException;
 
     /**
-     * Gets the users with a similar name.
-     */
-    List<User> getUsersByNameSoundex(String name) throws SQLException;
-
-    /**
      * Gets the user that have the given role.
      */
     List<String> getUserNamesByRole(String role) throws SQLException;

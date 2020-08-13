@@ -4,10 +4,7 @@ import be.ugent.blok2.daos.ILocationDao;
 import be.ugent.blok2.helpers.date.CustomDate;
 import be.ugent.blok2.model.reservables.Location;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -51,6 +48,15 @@ public class LocationController {
             return locationDao.getCountOfReservations(CustomDate.now()).get(locationName);
         } catch (SQLException ignore) {
             return 0;
+        }
+    }
+
+    @PutMapping("/{locationName}")
+    public void updateLocation(@PathVariable("locationName") String locationName,
+                               @RequestBody Location location) {
+        try {
+            locationDao.updateLocation(locationName, location);
+        } catch (SQLException ignore) {
         }
     }
 }

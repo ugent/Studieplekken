@@ -3,7 +3,6 @@ package be.ugent.blok2;
 import be.ugent.blok2.daos.IAccountDao;
 import be.ugent.blok2.daos.IDao;
 import be.ugent.blok2.helpers.Institution;
-import be.ugent.blok2.helpers.Language;
 import be.ugent.blok2.helpers.Resources;
 import be.ugent.blok2.helpers.date.Calendar;
 import be.ugent.blok2.helpers.date.CustomDate;
@@ -13,7 +12,6 @@ import be.ugent.blok2.model.reservables.Location;
 import be.ugent.blok2.model.users.Role;
 import be.ugent.blok2.model.users.User;
 import org.junit.Assert;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -41,8 +39,6 @@ public class TestSharedMethods {
         testLocation.setAddress("Test street, 10");
         testLocation.setNumberOfSeats(50);
         testLocation.setNumberOfLockers(15);
-        testLocation.getDescriptions().put(Language.DUTCH, "Dit is een testlocatie.");
-        testLocation.getDescriptions().put(Language.ENGLISH, "This is a test location.");
         testLocation.setImageUrl("https://example.com/image.jpg");
         testLocation.setStartPeriodLockers(startPeriodLockers);
         testLocation.setEndPeriodLockers(endPeriodLockers);
@@ -56,8 +52,6 @@ public class TestSharedMethods {
         testLocation2.setAddress("Second Test street, 20");
         testLocation2.setNumberOfSeats(100);
         testLocation2.setNumberOfLockers(10);
-        testLocation2.getDescriptions().put(Language.DUTCH, "Dit is een tweede testlocatie.");
-        testLocation2.getDescriptions().put(Language.ENGLISH, "This is a second test location.");
         testLocation2.setImageUrl("https://example.com/picture.png");
         return testLocation2;
     }
@@ -67,7 +61,7 @@ public class TestSharedMethods {
         user.setLastName("Added User");
         user.setFirstName("First");
         user.setMail("First.AddedUser@ugent.be");
-        user.setPassword((new BCryptPasswordEncoder()).encode("first_password"));
+        user.setPassword("first_password");
         user.setInstitution(Institution.UGent);
         user.setAugentID("001");
         user.setRoles(new Role[]{Role.ADMIN, Role.EMPLOYEE});
@@ -79,7 +73,7 @@ public class TestSharedMethods {
         user.setLastName("Added User");
         user.setFirstName("Second");
         user.setMail("Second.AddedUser@ugent.be");
-        user.setPassword((new BCryptPasswordEncoder()).encode("second_password"));
+        user.setPassword("second_password");
         user.setInstitution(Institution.UGent);
         user.setAugentID("002");
         user.setRoles(new Role[]{Role.STUDENT, Role.EMPLOYEE});
