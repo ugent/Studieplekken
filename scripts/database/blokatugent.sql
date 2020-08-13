@@ -79,19 +79,6 @@ CREATE TABLE public.locations (
 ALTER TABLE public.locations OWNER TO postgres;
 
 --
--- Name: location_descriptions; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.location_descriptions (
-    location_name text NOT NULL,
-    lang_enum text NOT NULL,
-    description text NOT NULL
-);
-
-
-ALTER TABLE public.location_descriptions OWNER TO postgres;
-
---
 -- Name: location_reservation; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -301,13 +288,6 @@ primary key (
 	name 
 );
 
-alter table only public.location_descriptions
-add constraint pk_location_descriptions 
-primary key (
-	location_name
-	, lang_enum
-);
-
 alter table only public.location_reservations
 add constraint pk_location_reservations
 primary key (
@@ -393,19 +373,6 @@ alter table only public.calendar
 add constraint fk_calendar_to_locations
 foreign key (location_name)
 references public.locations (name);
-
---
--- location_descriptions to locations, languages
---
-alter table only public.location_descriptions
-add constraint fk_location_descriptions_to_locations
-foreign key (location_name)
-references public.locations (name);
-
-alter table only public.location_descriptions
-add constraint fk_location_descriptions_to_languages
-foreign key (lang_enum)
-references public.languages (enum);
 
 --
 -- location_reservations to locations, users

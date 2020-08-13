@@ -11,12 +11,6 @@ insert into public.locations (name, address, number_of_seats, number_of_lockers,
 values ('Therminal', 'Hoveniersberg 24, 9000 Gent', 200, 100, 'www.example.png'),
 ('Sterre S5', 'Krijgslaan 281, 9000 Gent', 200, 100, 'www.example.png');
 
-insert into public.location_descriptions (location_name, lang_enum, description)
-values ('Therminal', 'ENGLISH', 'Go and study in the student house "De Therminal"'),
-('Therminal', 'DUTCH', 'Studeer in het studentenhuis "De Therminal"'),
-('Sterre S5', 'ENGLISH', 'Go and study in building S5 of the Sterre'),
-('Sterre S5', 'DUTCH', 'Studeer in de S5 van de Sterre');
-
 /*
  * Add some penalties for the test user
  */

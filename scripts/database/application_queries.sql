@@ -2,18 +2,15 @@
 -- $all_locations
 select l.name, l.number_of_seats, l.number_of_lockers
     , l.image_url, l.address, l.start_period_lockers
-    , l.end_period_lockers, ld.lang_enum, ld.description
+    , l.end_period_lockers
 from public.locations l
-    join public.location_descriptions ld
-        on l.name = ld.location_name;
+order by l.name;
 
 -- $get_location
 select l.name, l.number_of_seats, l.number_of_lockers
     , l.image_url, l.address, l.start_period_lockers
-    , l.end_period_lockers, ld.lang_enum, ld.description
+    , l.end_period_lockers
 from public.locations l
-    join public.location_descriptions ld
-        on l.name = ld.location_name
 where l.name = ?;
 
 -- $delete_location
@@ -82,18 +79,14 @@ select y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.in
 	 , y.date, y.location_name, y.attended, y.user_augentid
 	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address
      , l.start_period_lockers, l.end_period_lockers
-     , ld.lang_enum, ld.description
 from y
     join public.locations l
         on l.name = y.location_name
-    join public.location_descriptions ld
-        on ld.location_name = l.name
 group by y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
 	 , y.augentid, y.role, y.penalty_points
 	 , y.date, y.location_name, y.attended, y.user_augentid
 	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address
      , l.start_period_lockers, l.end_period_lockers
-     , ld.lang_enum, ld.description
 order by l.name;
 
 -- $count_location_reservations_of_location_for_date
@@ -197,7 +190,8 @@ from public.users u
     left join x
         on floor(extract(days from (now() - to_timestamp(b.timestamp, 'YYYY-MM-DD HH24\:MI\:SS'))) / 7) = x.week
 where <?>
-group by u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.mail, u.password, u.institution;
+group by u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.mail, u.password, u.institution
+order by u.augentpreferredsn, u.augentpreferredgivenname, u.augentid;
 
 -- $update_user
 update public.users
@@ -296,19 +290,15 @@ select y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.in
      , y.user_augentid, y.key_pickup_date, y.key_return_date
 	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address
      , l.start_period_lockers, l.end_period_lockers
-	 , ld.lang_enum, ld.description
 from y
 	join public.locations l
 		on l.name = y.location_name
-	join public.location_descriptions ld
-		on ld.location_name = l.name
 group by y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
      , y.augentid, y.role, y.penalty_points
      , y.number, y.location_name
      , y.user_augentid, y.key_pickup_date, y.key_return_date
 	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address
      , l.start_period_lockers, l.end_period_lockers
-	 , ld.lang_enum, ld.description
 order by l.name;
 
 -- $count_lockers_in_use_of_location
@@ -360,12 +350,9 @@ where user_augentid = ?;
 select l.location_name, l.number
 	, s.name, s.number_of_seats, s.number_of_lockers, s.image_url
 	, s.address, s.start_period_lockers, s.end_period_lockers
-	, sd.lang_enum, sd.description
 from public.lockers l
 	join public.locations s
 		on s.name = l.location_name
-	join public.location_descriptions sd
-		on sd.location_name = s.name
 where <?>
 order by s.name;
 
@@ -553,12 +540,9 @@ where event_code = ?;
 -- $get_locations_of_scanner
 select l.name, l.number_of_seats, l.number_of_lockers
     , l.image_url, l.address, l.start_period_lockers, l.end_period_lockers
-    , ld.location_name, ld.lang_enum, ld.description
 from public.scanners_location sl
     join public.locations l
         on l.name = sl.location_name
-    join public.location_descriptions ld
-        on ld.location_name = l.name
 where sl.user_augentid = ?
 order by l.name;
 
@@ -623,20 +607,3 @@ where location_name = ?;
 update public.scanners_location
 set user_augentid = ?
 where user_augentid = ?;
-
-
-
--- queries for LOCATION_DESCRIPTIONS
--- $delete_location_descriptions
-delete
-from public.location_descriptions
-where location_name = ?;
-
--- $insert_location_descriptions
-insert into public.location_descriptions (location_name, lang_enum, description)
-values (?, ?, ?);
-
--- $count_descriptions_of_location
-select count(1)
-from public.location_descriptions
-where location_name = ?;

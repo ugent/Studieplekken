@@ -1,10 +1,7 @@
 package be.ugent.blok2.model.reservables;
 
-import be.ugent.blok2.helpers.Language;
 import be.ugent.blok2.helpers.date.CustomDate;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 public class Location implements Cloneable {
@@ -12,24 +9,23 @@ public class Location implements Cloneable {
     private String address;
     private int numberOfSeats;
     private int numberOfLockers;
-    private Map<Language, String> descriptions;
     private String imageUrl;
     private CustomDate startPeriodLockers;
     private CustomDate endPeriodLockers;
 
-    public Location(String name, String address, int numberOfSeats, int numberOfLockers
-            , Map<Language, String> descriptions, String imageUrl) {
+    public Location(String name, String address, int numberOfSeats, int numberOfLockers, String imageUrl,
+                    CustomDate startPeriodLockers, CustomDate endPeriodLockers) {
         this.name = name;
         this.address = address;
         this.numberOfSeats = numberOfSeats;
         this.numberOfLockers = numberOfLockers;
-        this.descriptions = descriptions;
         this.imageUrl = imageUrl;
+        this.startPeriodLockers = startPeriodLockers;
+        this.endPeriodLockers = endPeriodLockers;
     }
 
     // default constructor necessary for testing purposes
     public Location() {
-        this.descriptions = new HashMap<>();
     }
 
     @Override
@@ -41,7 +37,6 @@ public class Location implements Cloneable {
                 numberOfLockers == location.numberOfLockers &&
                 Objects.equals(name, location.name) &&
                 Objects.equals(address, location.address) &&
-                Objects.equals(descriptions, location.descriptions) &&
                 Objects.equals(imageUrl, location.imageUrl) &&
                 Objects.equals(startPeriodLockers, location.startPeriodLockers) &&
                 Objects.equals(endPeriodLockers, location.endPeriodLockers);
@@ -56,11 +51,6 @@ public class Location implements Cloneable {
     public Location clone() {
         try {
             Location l = (Location) super.clone();
-
-            l.setDescriptions(new HashMap<>());
-            for (Language lang : descriptions.keySet()) {
-                l.getDescriptions().put(lang, descriptions.get(lang));
-            }
 
             l.setStartPeriodLockers(startPeriodLockers.clone());
             l.setEndPeriodLockers(endPeriodLockers.clone());
@@ -89,10 +79,6 @@ public class Location implements Cloneable {
         return numberOfLockers;
     }
 
-    public Map<Language, String> getDescriptions() {
-        return descriptions;
-    }
-
     public String getImageUrl() {
         return imageUrl;
     }
@@ -111,10 +97,6 @@ public class Location implements Cloneable {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public void setDescriptions(Map<Language, String> descriptions) {
-        this.descriptions = descriptions;
     }
 
     public void setImageUrl(String url) {
