@@ -12,6 +12,15 @@ values ('Therminal', 'Hoveniersberg 24, 9000 Gent', 200, 100, 'www.example.png')
 ('Sterre S5', 'Krijgslaan 281, 9000 Gent', 200, 100, 'www.example.png');
 
 /*
+ * Add a calendar period
+ */
+insert into public.calendar_periods(location_name, starts_at, ends_at, opening_time, closing_time, reservable_from)
+values ('Therminal', to_char(now() - interval '5 days', 'YYYY-MM-DD'), to_char(now() + interval '5 days', 'YYYY-MM-DD'),
+'09:00', '17:00', to_char(now() - interval '7 days', 'YYYY-MM-DD') || 'T19:00'),
+('Sterre S5', to_char(now() - interval '5 days', 'YYYY-MM-DD'), to_char(now() + interval '5 days', 'YYYY-MM-DD'),
+'09:00', '17:00', to_char(now() - interval '7 days', 'YYYY-MM-DD') || 'T19:00');
+
+/*
  * Add some penalties for the test user
  */
 insert into public.location_reservations(date, location_name, attended, user_augentid)

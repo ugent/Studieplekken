@@ -378,48 +378,6 @@ where location_name = ? and number = ?;
 
 
 
--- queries for table CALENDAR
--- $get_calendar_of_location
-select *
-from public.calendar
-where location_name = ?;
-
--- $get_calendar_day_count
-select count(1)
-from public.calendar
-where date = ? and location_name = ?;
-
--- $insert_calendar_day
-insert into public.calendar (date, location_name, opening_time, closing_time, open_for_reservation_date)
-values (?, ?, ?, ?, ?);
-
--- $delete_calendar_of_location
-delete
-from public.calendar
-where location_name = ?;
-
--- $delete_calendar_day_of_location
-delete
-from public.calendar
-where location_name = ? and date = ?;
-
--- $delete_calendar_days_between_dates
-delete
-from public.calendar
-where location_name = ? and cast(substr(date,0,5) as int)*404 + cast(substr(date,6,2) as int)*31 + cast(substr(date,9,2) as int) between ? and ?;
-
--- $update_calendar_day_of_location
-update public.calendar
-set opening_time = ?, closing_time = ?, open_for_reservation_date = ?
-where location_name = ? and date = ?;
-
--- $update_fk_location_name_in_calendar
-update public.calendar
-set location_name = ?
-where location_name = ?;
-
-
-
 -- queries for table ROLES
 -- $get_roles
 select *
@@ -607,3 +565,39 @@ where location_name = ?;
 update public.scanners_location
 set user_augentid = ?
 where user_augentid = ?;
+
+
+-- queries for CALENDAR_PERIODS
+-- $get_calendar_periods
+select cp.location_name, cp.starts_at, cp.ends_at, cp.opening_time, cp.closing_time, cp.reservable_from
+       , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address
+       , l.start_period_lockers, l.end_period_lockers
+from public.calendar_periods cp
+    join public.locations l
+        on l.name = cp.location_name
+where cp.location_name = ?
+order by to_date(cp.starts_at, 'YYYY-MM-DD');
+
+-- $insert_calendar_period
+insert into public.calendar_periods(location_name, starts_at, ends_at, opening_time, closing_time, reservable_from)
+values (?, ?, ?, ?, ?, ?);
+
+-- $update_calendar_period
+update public.calendar_periods
+set location_name = ?, starts_at = ?, ends_at = ?, opening_time = ?, closing_time = ?, reservable_from = ?
+where location_name = ? and starts_at = ? and ends_at = ? and opening_time = ? and closing_time = ? and reservable_from = ?;
+
+-- $delete_calendar_period
+delete
+from public.calendar_periods
+where location_name = ? and starts_at = ? and ends_at = ? and opening_time = ? and closing_time = ? and reservable_from = ?;
+
+-- $delete_calendar_periods_of_location
+delete
+from public.calendar_periods
+where location_name = ?;
+
+-- $update_fk_location_name_in_calendar_periods
+update public.calendar_periods
+set location_name = ?
+where location_name = ?;

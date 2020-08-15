@@ -19,16 +19,17 @@ CREATE DATABASE blokatugent
 -- Name: calendar; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.calendar (
+CREATE TABLE public.calendar_periods (
     location_name text NOT NULL,
-    opening_time time without time zone NOT NULL,
-    closing_time time without time zone NOT NULL,
-    open_for_reservation_date text NOT NULL,
-    date text NOT NULL
+    starts_at text NOT NULL,
+    ends_at text NOT NULL,
+    opening_time text NOT NULL,
+    closing_time text NOT NULL,
+    reservable_from text NOT NULL
 );
 
 
-ALTER TABLE public.calendar OWNER TO postgres;
+ALTER TABLE public.calendar_periods OWNER TO postgres;
 
 --
 -- Name: institution; Type: TABLE; Schema: public; Owner: postgres
@@ -263,11 +264,15 @@ ALTER TABLE public.users_to_verify OWNER TO postgres;
 ----------------- +----------------------+
 ----------------- |   Set primary keys   |
 ----------------- +----------------------+
-alter table only public.calendar
-add constraint pk_calendar 
+alter table only public.calendar_periods
+add constraint pk_calendar_periods
 primary key (
 	location_name
-	, date
+	, starts_at
+    , ends_at
+    , opening_time
+    , closing_time
+    , reservable_from
 );
 
 alter table only public.institutions
@@ -369,8 +374,8 @@ primary key (
 --
 -- calendar to locations
 --
-alter table only public.calendar
-add constraint fk_calendar_to_locations
+alter table only public.calendar_periods
+add constraint fk_calendar_periods_to_locations
 foreign key (location_name)
 references public.locations (name);
 

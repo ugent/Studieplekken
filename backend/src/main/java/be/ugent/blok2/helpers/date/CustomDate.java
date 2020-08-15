@@ -31,9 +31,21 @@ public class CustomDate implements Cloneable {
 
     @Override
     public String toString() {
+        return this.toDateString() + "T" + toTimeString();
+    }
+
+    public String toDateString() {
         return String.format("%04d", year) + "-" + String.format("%02d", month) + "-"
-                + String.format("%02d", day) + "T" + String.format("%02d", hrs)
-                + ":" + String.format("%02d", min) + ":" + String.format("%02d", sec);
+                + String.format("%02d", day);
+    }
+
+    public String toTimeString() {
+        return String.format("%02d", hrs) + ":" + String.format("%02d", min)
+                + ":" + String.format("%02d", sec);
+    }
+
+    public String toTimeWithoutSecondsString() {
+        return String.format("%02d", hrs) + ":" + String.format("%02d", min);
     }
 
     public static CustomDate parseString(String s) throws DateFormatException {

@@ -96,8 +96,6 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
     @Override
     public LocationReservation scanStudent(String location, String augentId) throws SQLException {
         try (Connection conn = getConnection()) {
-            // find out the CustomDate of today (note: Calendar here is java.util.Calendar,
-            // not be.ugent.blok2.helpers.Calendar
             Calendar c = Calendar.getInstance();
             CustomDate today = new CustomDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DATE));
 

@@ -1,8 +1,6 @@
 package be.ugent.blok2.daos;
 
-import be.ugent.blok2.helpers.date.Calendar;
 import be.ugent.blok2.helpers.date.CustomDate;
-import be.ugent.blok2.helpers.date.Day;
 import be.ugent.blok2.model.reservables.Location;
 import be.ugent.blok2.model.reservables.Locker;
 
@@ -45,22 +43,6 @@ public interface ILocationDao extends IDao {
      * Get all lockers of the specified location
      */
     List<Locker> getLockers(String locationName) throws SQLException;
-
-    /**
-     * Get all days on which the specified location will be opened to study
-     */
-    List<Day> getCalendarDays(String locationName) throws SQLException;
-
-    /**
-     * Deletes the all the calendar days between the given
-     * start and end date for the given location.
-     */
-    void deleteCalendarDays(String name, String startdate, String enddate) throws SQLException;
-
-    /**
-     * Add all the days from the calendar object to the location with the given name.
-     */
-    void addCalendarDays(String name, Calendar calendar) throws SQLException;
 
     /**
      * Get a map that maps location names to the number of reservations on the

@@ -4,16 +4,15 @@ import be.ugent.blok2.daos.IAccountDao;
 import be.ugent.blok2.daos.IDao;
 import be.ugent.blok2.helpers.Institution;
 import be.ugent.blok2.helpers.Resources;
-import be.ugent.blok2.helpers.date.Calendar;
 import be.ugent.blok2.helpers.date.CustomDate;
-import be.ugent.blok2.helpers.date.Day;
-import be.ugent.blok2.helpers.date.Time;
+import be.ugent.blok2.model.calendar.CalendarPeriod;
 import be.ugent.blok2.model.reservables.Location;
 import be.ugent.blok2.model.users.Role;
 import be.ugent.blok2.model.users.User;
 import org.junit.Assert;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -96,17 +95,51 @@ public class TestSharedMethods {
         }
     }
 
-    public static Calendar testCalendar() {
-        Calendar calendar = new Calendar();
-        List<Day> calendarDays = calendar.getDays();
-        for (int i = 1; i <= 5; i++) {
-            Day d = new Day();
-            d.setDate(CustomDate.parseString("2020-01-0" + i + "T00:00:00"));
-            d.setOpeningHour(new Time(9, 0, 0));
-            d.setClosingHour(new Time(17, 0, 0));
-            d.setOpenForReservationDate(CustomDate.parseString("2019-12-31T09:00:00"));
-            calendarDays.add(d);
+    public static List<CalendarPeriod> testCalendarPeriods(Location location) {
+        List<CalendarPeriod> calendarPeriods = new ArrayList<>();
+
+        CustomDate date = CustomDate.now();
+
+        for (int i = 0; i < 2; i++) {
+            CalendarPeriod period = new CalendarPeriod();
+            period.setLocation(location);
+
+            date.setDay(2 + 10 * i);
+            period.setStartsAt(date.toDateString());
+
+            date.setDay(4 + 10 * i);
+            period.setEndsAt(date.toDateString());
+
+            date.setHrs(9);
+            date.setMin(0);
+            period.setOpeningTime(date.toTimeWithoutSecondsString());
+
+            date.setHrs(17);
+            period.setClosingTime(date.toTimeWithoutSecondsString());
+
+            date.setDay(1);
+            period.setReservableFrom(date.toString());
+
+            calendarPeriods.add(period);
         }
-        return calendar;
+
+        return calendarPeriods;
+    }
+
+    public static List<CalendarPeriod> testCalendarPeriodsButUpdated(Location location) {
+        List<CalendarPeriod> updatedPeriods = new ArrayList<>();
+        for (CalendarPeriod calendarPeriod : testCalendarPeriods(location)) {
+            updatedPeriods.add(calendarPeriod.clone());
+        }
+
+        for (int i = 0; i < updatedPeriods.size(); i++) {
+            updatedPeriods.get(i).setStartsAt("1970-01-0" + i);
+            updatedPeriods.get(i).setEndsAt("1970-01-1" + i);
+            updatedPeriods.get(i).setOpeningTime("09:0" + i);
+            updatedPeriods.get(i).setClosingTime("17:0" + i);
+            updatedPeriods.get(i).setReservableFrom("1970-01-0" + i + "T09:00");
+        }
+
+        return updatedPeriods;
     }
 }
