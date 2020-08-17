@@ -50,13 +50,23 @@
       </div>
   </div>
 
-  <!-- Radio buttons to let the user choose between updating a single day, or a series of days -->
-
-  <!-- Form to add a new opening day -->
-
-  <!-- Form to add a series of new opending days -->
-
   <!-- Form to show current/next locker reservation period -->
+  <div class="panel-group">
+    <!-- Heading -->
+    <div class="panel-heading">
+      <h3 class="panel-title">
+        <a data-toggle="collapse" href="#lockerCalendarCollapseBody" aria-expanded="false" class="collapsed">
+          <i class="glyphicon glyphicon-plus"></i>
+          <i class="glyphicon glyphicon-minus"></i>
+          {{'management.locationDetails.lockerCalendar.title' | translate}}</a>
+      </h3>
+    </div>
+
+    <!-- Body -->
+    <div class="panel-collapse collapse" id="lockerCalendarCollapseBody">
+      <app-lockers-calendar [location]="locationObs"></app-lockers-calendar>
+    </div>
+  </div>
 </div>
 
 <ng-template #loading>
