@@ -79,11 +79,6 @@ export class DetailsFormComponent implements OnInit {
     updatedLocation.numberOfLockers = to.numberOfLockers;
     updatedLocation.imageUrl = to.imageUrl;
 
-    // The start/end periods for locker reservations aren't updated in the details form,
-    // but further down the page
-    updatedLocation.startPeriodLockers = from.startPeriodLockers;
-    updatedLocation.endPeriodLockers = from.endPeriodLockers;
-
     this.locationService.updateLocation(from.name, updatedLocation).subscribe(() => {
       if (from.name !== to.name) {
         this.router.navigate(['/management/locations/' + to.name]).catch();

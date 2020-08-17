@@ -24,9 +24,7 @@ export function equalLocations(location1: Location, location2: Location): boolea
     location1.numberOfSeats === location2.numberOfSeats &&
     location1.numberOfLockers === location2.numberOfLockers &&
     location1.address === location2.address &&
-    location1.imageUrl === location2.imageUrl &&
-    equalCustomDates(location1.startPeriodLockers, location2.startPeriodLockers) &&
-    equalCustomDates(location1.endPeriodLockers, location2.endPeriodLockers);
+    location1.imageUrl === location2.imageUrl;
 }
 
 export function equalCalendarPeriods(period1: CalendarPeriod, period2: CalendarPeriod): boolean {

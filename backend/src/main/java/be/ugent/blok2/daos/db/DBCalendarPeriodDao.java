@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 @Service
 public class DBCalendarPeriodDao extends ADB implements ICalendarPeriodDao {
 
-    private final Logger logger = Logger.getLogger(DBCalendarPeriodDao.class.getName());
+    private final Logger logger = Logger.getLogger(DBCalendarPeriodDao.class.getSimpleName());
 
     @Override
     public List<CalendarPeriod> getCalendarPeriodsOfLocation(String locationName) throws SQLException {

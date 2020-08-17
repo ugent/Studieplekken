@@ -5,6 +5,7 @@ import be.ugent.blok2.daos.*;
 import be.ugent.blok2.helpers.Language;
 import be.ugent.blok2.helpers.date.CustomDate;
 import be.ugent.blok2.model.calendar.CalendarPeriod;
+import be.ugent.blok2.model.calendar.CalendarPeriodForLockers;
 import be.ugent.blok2.model.penalty.Penalty;
 import be.ugent.blok2.model.penalty.PenaltyEvent;
 import be.ugent.blok2.model.reservables.Location;
@@ -35,6 +36,9 @@ public class TestCascadeInDBLocationDao {
 
     @Autowired
     private ICalendarPeriodDao calendarPeriodDao;
+
+    @Autowired
+    private ICalendarPeriodForLockersDao calendarPeriodForLockersDao;
 
     @Autowired
     private ILocationDao locationDao;
@@ -76,11 +80,15 @@ public class TestCascadeInDBLocationDao {
     // to test cascade on CALENDAR_PERIODS
     private List<CalendarPeriod> testCalendarPeriods;
 
+    // to test cascade on CALENDAR_PERIODS_FOR_LOCKERS
+    private List<CalendarPeriodForLockers> testCalendarPeriodsForLockers;
+
     @Before
     public void setup() throws SQLException {
         // Use test database
         TestSharedMethods.setupTestDaoDatabaseCredentials(accountDao);
         TestSharedMethods.setupTestDaoDatabaseCredentials(calendarPeriodDao);
+        TestSharedMethods.setupTestDaoDatabaseCredentials(calendarPeriodForLockersDao);
         TestSharedMethods.setupTestDaoDatabaseCredentials(locationDao);
         TestSharedMethods.setupTestDaoDatabaseCredentials(locationReservationDao);
         TestSharedMethods.setupTestDaoDatabaseCredentials(lockerReservationDao);
@@ -112,8 +120,8 @@ public class TestCascadeInDBLocationDao {
         testPenalty1 = new Penalty(testUser1.getAugentID(), testPenaltyEvent.getCode(), CustomDate.now(), CustomDate.now(), testLocation.getName(), 10);
         testPenalty2 = new Penalty(testUser2.getAugentID(), testPenaltyEvent.getCode(), CustomDate.now(), CustomDate.now(), testLocation.getName(), 20);
 
-        // to test cascade on CALENDAR_PERIODS
         testCalendarPeriods = TestSharedMethods.testCalendarPeriods(testLocation);
+        testCalendarPeriodsForLockers = TestSharedMethods.testCalendarPeriodsForLockers(testLocation);
 
         // Add test objects to database
         locationDao.addLocation(testLocation);
@@ -134,6 +142,7 @@ public class TestCascadeInDBLocationDao {
         scannerLocationDao.addScannerLocation(testLocation.getName(), testUser2.getAugentID());
 
         calendarPeriodDao.addCalendarPeriods(testCalendarPeriods);
+        calendarPeriodForLockersDao.addCalendarPeriodsForLockers(testCalendarPeriodsForLockers);
     }
 
     @After
@@ -141,6 +150,7 @@ public class TestCascadeInDBLocationDao {
         // Remove test objects from database
         // Note, I am not relying on the cascade because that's
         // what we are testing here in this class ...
+        calendarPeriodForLockersDao.deleteCalendarPeriodsForLockers(testCalendarPeriodsForLockers);
         calendarPeriodDao.deleteCalendarPeriods(testCalendarPeriods);
 
         scannerLocationDao.deleteAllScannersOfLocation(testLocation.getName());
@@ -167,6 +177,7 @@ public class TestCascadeInDBLocationDao {
 
         // Use regular database
         accountDao.useDefaultDatabaseConnection();
+        calendarPeriodForLockersDao.useDefaultDatabaseConnection();
         calendarPeriodDao.useDefaultDatabaseConnection();
         locationDao.useDefaultDatabaseConnection();
         locationReservationDao.useDefaultDatabaseConnection();
@@ -246,6 +257,14 @@ public class TestCascadeInDBLocationDao {
 
         Assert.assertEquals("updateUserWithoutCascadeNeededTest, calendar periods",
                 testCalendarPeriods, actualPeriods);
+
+        // CALENDAR_PERIODS_FOR_LOCKERS still available?
+        List<CalendarPeriodForLockers> actualPeriodsForLockers = calendarPeriodForLockersDao.getCalendarPeriodsForLockersOfLocation(testLocation.getName());
+        actualPeriodsForLockers.sort(Comparator.comparing(CalendarPeriodForLockers::toString));
+        testCalendarPeriodsForLockers.sort(Comparator.comparing(CalendarPeriodForLockers::toString));
+
+        Assert.assertEquals("updateUserWithoutCascadeNeededTest, calendar periods for lockers",
+                testCalendarPeriodsForLockers, actualPeriodsForLockers);
     }
 
     @Test
@@ -329,6 +348,14 @@ public class TestCascadeInDBLocationDao {
 
         Assert.assertEquals("updateUserWithoutCascadeNeededTest, calendar periods",
                 testCalendarPeriods, actualPeriods);
+
+        // CALENDAR_PERIODS_FOR_LOCKERS still available?
+        List<CalendarPeriodForLockers> actualPeriodsForLockers = calendarPeriodForLockersDao.getCalendarPeriodsForLockersOfLocation(testLocation.getName());
+        actualPeriodsForLockers.sort(Comparator.comparing(CalendarPeriodForLockers::toString));
+        testCalendarPeriodsForLockers.sort(Comparator.comparing(CalendarPeriodForLockers::toString));
+
+        Assert.assertEquals("updateUserWithoutCascadeNeededTest, calendar periods for lockers",
+                testCalendarPeriodsForLockers, actualPeriodsForLockers);
     }
 
     @Test
@@ -370,6 +397,9 @@ public class TestCascadeInDBLocationDao {
         List<CalendarPeriod> calendarPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getName());
         Assert.assertEquals("deleteLocation, calendar periods", 0, calendarPeriods.size());
 
+        List<CalendarPeriodForLockers> calendarPeriodsForLockers = calendarPeriodForLockersDao.getCalendarPeriodsForLockersOfLocation(testLocation.getName());
+        Assert.assertEquals("deleteLocation, calendar periods for lockers", 0, calendarPeriodsForLockers.size());
+
         List<User> scanners = scannerLocationDao.getScannersOnLocation(testLocation.getName());
         Assert.assertEquals("deleteLocation, scanners", 0, scanners.size());
 
@@ -389,9 +419,6 @@ public class TestCascadeInDBLocationDao {
         location.setAddress("Changed Address");
         location.setNumberOfLockers(100);
         location.setNumberOfSeats(200);
-
         location.setImageUrl("Changed URL");
-        location.setStartPeriodLockers(new CustomDate(1970, 1, 1));
-        location.setEndPeriodLockers(CustomDate.now());
     }
 }

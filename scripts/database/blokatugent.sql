@@ -16,7 +16,7 @@ CREATE DATABASE blokatugent
 ----------------- +------------------------------------+
 
 --
--- Name: calendar; Type: TABLE; Schema: public; Owner: postgres
+-- Name: calendar_periods; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.calendar_periods (
@@ -30,6 +30,20 @@ CREATE TABLE public.calendar_periods (
 
 
 ALTER TABLE public.calendar_periods OWNER TO postgres;
+
+--
+-- Name: calendar_periods_for_lockers; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.calendar_periods_for_lockers (
+    location_name text NOT NULL,
+    starts_at text NOT NULL,
+    ends_at text NOT NULL,
+    reservable_from text NOT NULL
+);
+
+
+ALTER TABLE public.calendar_periods_for_lockers OWNER TO postgres;
 
 --
 -- Name: institution; Type: TABLE; Schema: public; Owner: postgres
@@ -71,9 +85,7 @@ CREATE TABLE public.locations (
     number_of_seats integer NOT NULL,
     number_of_lockers text NOT NULL,
     image_url text,
-    address text NOT NULL,
-    start_period_lockers text,
-    end_period_lockers text
+    address text NOT NULL
 );
 
 
@@ -275,6 +287,15 @@ primary key (
     , reservable_from
 );
 
+alter table only public.calendar_periods_for_lockers
+add constraint pk_calendar_periods_for_lockers
+primary key (
+    location_name
+    , starts_at
+    , ends_at
+    , reservable_from
+);
+
 alter table only public.institutions
 add constraint pk_institutions 
 primary key (
@@ -372,10 +393,18 @@ primary key (
 ----------------- +----------------------+
 
 --
--- calendar to locations
+-- calendar_periods to locations
 --
 alter table only public.calendar_periods
 add constraint fk_calendar_periods_to_locations
+foreign key (location_name)
+references public.locations (name);
+
+--
+-- calendar_periods_for_lockers to locations
+--
+alter table only public.calendar_periods_for_lockers
+add constraint fk_calendar_periods_for_lockers_to_locations
 foreign key (location_name)
 references public.locations (name);
 

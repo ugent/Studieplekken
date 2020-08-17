@@ -10,18 +10,13 @@ public class Location implements Cloneable {
     private int numberOfSeats;
     private int numberOfLockers;
     private String imageUrl;
-    private CustomDate startPeriodLockers;
-    private CustomDate endPeriodLockers;
 
-    public Location(String name, String address, int numberOfSeats, int numberOfLockers, String imageUrl,
-                    CustomDate startPeriodLockers, CustomDate endPeriodLockers) {
+    public Location(String name, String address, int numberOfSeats, int numberOfLockers, String imageUrl) {
         this.name = name;
         this.address = address;
         this.numberOfSeats = numberOfSeats;
         this.numberOfLockers = numberOfLockers;
         this.imageUrl = imageUrl;
-        this.startPeriodLockers = startPeriodLockers;
-        this.endPeriodLockers = endPeriodLockers;
     }
 
     // default constructor necessary for testing purposes
@@ -37,9 +32,7 @@ public class Location implements Cloneable {
                 numberOfLockers == location.numberOfLockers &&
                 Objects.equals(name, location.name) &&
                 Objects.equals(address, location.address) &&
-                Objects.equals(imageUrl, location.imageUrl) &&
-                Objects.equals(startPeriodLockers, location.startPeriodLockers) &&
-                Objects.equals(endPeriodLockers, location.endPeriodLockers);
+                Objects.equals(imageUrl, location.imageUrl);
     }
 
     @Override
@@ -51,10 +44,6 @@ public class Location implements Cloneable {
     public Location clone() {
         try {
             Location l = (Location) super.clone();
-
-            l.setStartPeriodLockers(startPeriodLockers.clone());
-            l.setEndPeriodLockers(endPeriodLockers.clone());
-
             return l;
         } catch (CloneNotSupportedException e) {
             return null;
@@ -83,14 +72,6 @@ public class Location implements Cloneable {
         return imageUrl;
     }
 
-    public CustomDate getStartPeriodLockers() {
-        return startPeriodLockers;
-    }
-
-    public CustomDate getEndPeriodLockers() {
-        return endPeriodLockers;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -101,14 +82,6 @@ public class Location implements Cloneable {
 
     public void setImageUrl(String url) {
         this.imageUrl = url;
-    }
-
-    public void setStartPeriodLockers(CustomDate startPeriodLockers) {
-        this.startPeriodLockers = startPeriodLockers;
-    }
-
-    public void setEndPeriodLockers(CustomDate endPeriodLockers) {
-        this.endPeriodLockers = endPeriodLockers;
     }
 
     public void setNumberOfSeats(int numberOfSeats) {

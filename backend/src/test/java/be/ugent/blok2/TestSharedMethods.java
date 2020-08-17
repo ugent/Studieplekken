@@ -6,6 +6,7 @@ import be.ugent.blok2.helpers.Institution;
 import be.ugent.blok2.helpers.Resources;
 import be.ugent.blok2.helpers.date.CustomDate;
 import be.ugent.blok2.model.calendar.CalendarPeriod;
+import be.ugent.blok2.model.calendar.CalendarPeriodForLockers;
 import be.ugent.blok2.model.reservables.Location;
 import be.ugent.blok2.model.users.Role;
 import be.ugent.blok2.model.users.User;
@@ -29,18 +30,12 @@ public class TestSharedMethods {
     }
 
     public static Location testLocation() {
-        // setup test location objects
-        CustomDate startPeriodLockers = new CustomDate(1970, 1, 1, 9, 0, 0);
-        CustomDate endPeriodLockers = new CustomDate(1970, 1, 31, 17, 0, 0);
-
         Location testLocation = new Location();
         testLocation.setName("Test Location");
         testLocation.setAddress("Test street, 10");
         testLocation.setNumberOfSeats(50);
         testLocation.setNumberOfLockers(15);
         testLocation.setImageUrl("https://example.com/image.jpg");
-        testLocation.setStartPeriodLockers(startPeriodLockers);
-        testLocation.setEndPeriodLockers(endPeriodLockers);
 
         return testLocation;
     }
@@ -137,6 +132,45 @@ public class TestSharedMethods {
             updatedPeriods.get(i).setEndsAt("1970-01-1" + i);
             updatedPeriods.get(i).setOpeningTime("09:0" + i);
             updatedPeriods.get(i).setClosingTime("17:0" + i);
+            updatedPeriods.get(i).setReservableFrom("1970-01-0" + i + "T09:00");
+        }
+
+        return updatedPeriods;
+    }
+
+    public static List<CalendarPeriodForLockers> testCalendarPeriodsForLockers(Location location) {
+        List<CalendarPeriodForLockers> calendarPeriods = new ArrayList<>();
+
+        CustomDate date = CustomDate.now();
+
+        for (int i = 0; i < 2; i++) {
+            CalendarPeriodForLockers period = new CalendarPeriodForLockers();
+            period.setLocation(location);
+
+            date.setDay(2 + 10 * i);
+            period.setStartsAt(date.toDateString());
+
+            date.setDay(4 + 10 * i);
+            period.setEndsAt(date.toDateString());
+
+            date.setDay(1);
+            period.setReservableFrom(date.toString());
+
+            calendarPeriods.add(period);
+        }
+
+        return calendarPeriods;
+    }
+
+    public static List<CalendarPeriodForLockers> testCalendarPeriodsForLockersButUpdated(Location location) {
+        List<CalendarPeriodForLockers> updatedPeriods = new ArrayList<>();
+        for (CalendarPeriodForLockers calendarPeriod : testCalendarPeriodsForLockers(location)) {
+            updatedPeriods.add(calendarPeriod.clone());
+        }
+
+        for (int i = 0; i < updatedPeriods.size(); i++) {
+            updatedPeriods.get(i).setStartsAt("1970-01-0" + i);
+            updatedPeriods.get(i).setEndsAt("1970-01-1" + i);
             updatedPeriods.get(i).setReservableFrom("1970-01-0" + i + "T09:00");
         }
 
