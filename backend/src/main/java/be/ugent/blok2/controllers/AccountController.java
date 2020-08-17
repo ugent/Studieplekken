@@ -15,7 +15,7 @@ import java.sql.SQLException;
  */
 @RestController
 @RequestMapping("api/account")
-public class AccountController extends AController {
+public class AccountController {
 
     private final IAccountDao accountDao;
 

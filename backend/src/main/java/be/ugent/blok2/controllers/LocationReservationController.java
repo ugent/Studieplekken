@@ -15,7 +15,7 @@ import java.util.*;
  */
 @RestController
 @RequestMapping("api/locations/reservations")
-public class LocationReservationController extends AController {
+public class LocationReservationController {
     private final ILocationReservationDao locationReservationDao;
 
     @Autowired

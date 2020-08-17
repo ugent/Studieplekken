@@ -14,7 +14,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("api/lockers/reservations")
-public class LockerReservationController extends AController {
+public class LockerReservationController {
 
     private final ILockerReservationDao lockerReservationDao;
 
