@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {CalendarView, CalendarEvent, CalendarEventTimesChangedEvent} from 'angular-calendar';
 import {Subject} from 'rxjs';
 
@@ -11,14 +11,8 @@ export class CalendarComponent implements OnInit {
   view: CalendarView = CalendarView.Month;
   viewDate: Date = new Date();
 
-  events: CalendarEvent[] = [
-    {
-      start: new Date(),
-      title: 'Test calendar event'
-    }
-  ];
-
-  refresh: Subject<any> = new Subject();
+  @Input() events: CalendarEvent[];
+  @Input() refresh: Subject<any>;
 
   constructor() {
   }

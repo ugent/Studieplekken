@@ -2,9 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {Location} from '../../shared/model/Location';
 import {ActivatedRoute} from '@angular/router';
 import {Observable} from 'rxjs';
-import {LocationService} from '../../services/api/location.service';
+import {LocationService} from '../../services/api/locations/location.service';
 import {vars} from '../../../environments/environment';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
+import {CalendarEvent} from "angular-calendar";
 
 @Component({
   selector: 'app-location-details',
@@ -13,6 +14,13 @@ import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 })
 export class LocationDetailsComponent implements OnInit {
   location: Observable<Location>;
+
+  events: CalendarEvent[] = [
+    {
+      start: new Date(),
+      title: 'Test calendar event'
+    }
+  ]
 
   constructor(private locationService: LocationService,
               private route: ActivatedRoute,

@@ -36,7 +36,10 @@
 
   "language": {
     "en": "English",
-    "nl": "Dutch"
+    "nl": "Dutch",
+
+    "ENGLISH": "English",
+    "DUTCH": "Dutch"
   },
 
   "management": {
@@ -47,6 +50,70 @@
       "reservations": "Reservations",
       "calendar": "Calendar",
       "penalties": "Penalties"
+    },
+
+    "general": {
+      "loading": "Loading...",
+      "noLocations": "There are no locations yet, make one using the 'Add Location' button"
+    },
+
+    "locationDetails": {
+      "title": "Details of {locationName}",
+
+      "form": {
+        "name": "Name",
+        "address": "Address",
+        "numberOfSeats": "Number of seats",
+        "numberOfLockers": "Number of lockers",
+        "imageUrl": "Image URL (optional)",
+
+        "edit": "Edit",
+        "cancel": "Cancel",
+        "persist": "Okay"
+      },
+
+      "calendar": {
+        "title": "Calendar with opening days",
+
+        "form": {
+          "title": "Edit opening days",
+
+          "addButton": "Add new",
+          "startsAt": "Starts at",
+          "endsAt": "Ends at",
+          "openingTime": "Opening time",
+          "closingTime": "Closing time",
+          "reservableFrom": "Reservable from",
+          "remove": "Remove",
+
+          "updateButton": "Update",
+          "cancelButton": "Cancel",
+
+          "wrongCalendarPeriodFormatMessage": "Not all periods are filled in correctly",
+          "successMessage": "Successfully updated the calendar",
+          "successButNoChangesMessage": "No changed were required",
+          "errorMessage": "Update was not successful. Something went wrong."
+        }
+      },
+
+      "lockerCalendar": {
+        "title": "Calendar for reservations of lockers"
+      }
+    },
+
+    "locations": {
+      "title": "Management of blok-locations",
+
+      "table": {
+        "header": {
+          "name": "Location",
+          "numberOfSeats": "Seats",
+          "numberOfLockers": "Lockers",
+          "details": "Details"
+        },
+
+        "details": "Details"
+      }
     }
   },
 

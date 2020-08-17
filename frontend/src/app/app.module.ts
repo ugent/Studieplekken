@@ -23,7 +23,7 @@ import { ProfileOverviewComponent } from './profile/profile-overview/profile-ove
 import { ProfileReservationsComponent } from './profile/profile-reservations/profile-reservations.component';
 import { ProfileCalendarComponent } from './profile/profile-calendar/profile-calendar.component';
 import { ProfilePenaltiesComponent } from './profile/profile-penalties/profile-penalties.component';
-import {ReactiveFormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { ProfileChangePasswordComponent } from './profile/profile-change-password/profile-change-password.component';
 import { ProfileLocationReservationsComponent } from './profile/profile-reservations/profile-location-reservations/profile-location-reservations.component';
 import { ProfileLockerReservationsComponent } from './profile/profile-reservations/profile-locker-reservations/profile-locker-reservations.component';
@@ -32,6 +32,11 @@ import { UsersManagementComponent } from './management/users-management/users-ma
 import { ReservationsManagementComponent } from './management/reservations-management/reservations-management.component';
 import { CalendarManagementComponent } from './management/calendar-management/calendar-management.component';
 import { PenaltyEventsManagementComponent } from './management/penalty-events-management/penalty-events-management.component';
+import { LocationDetailsManagementComponent } from './management/locations-management/location-details-management/location-details-management.component';
+import { DetailsFormComponent } from './management/locations-management/location-details-management/details-form/details-form.component';
+import { LocationCalendarComponent } from './management/locations-management/location-details-management/location-calendar/location-calendar.component';
+import {FlatpickrModule} from "angularx-flatpickr";
+import { LockersCalendarComponent } from './management/locations-management/location-details-management/lockers-calendar/lockers-calendar.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -41,7 +46,8 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 const routes: Routes = [
   {path: 'dashboard', component: DashboardComponent},
   {path: 'dashboard/:locationName', component: LocationDetailsComponent},
-  {path: 'profile', component: ProfileComponent,
+  {
+    path: 'profile', component: ProfileComponent,
     children: [
       {path: '', redirectTo: 'overview', pathMatch: 'full'},
       {path: 'overview', component: ProfileOverviewComponent},
@@ -51,10 +57,12 @@ const routes: Routes = [
       {path: 'penalties', component: ProfilePenaltiesComponent}
     ]},
   {path: 'scan', component: ScanComponent},
-  {path: 'management', component: ManagementComponent,
+  {
+    path: 'management', component: ManagementComponent,
     children: [
       {path: '', redirectTo: 'locations', pathMatch: 'full'},
       {path: 'locations', component: LocationsManagementComponent},
+      {path: 'locations/:locationName', component: LocationDetailsManagementComponent},
       {path: 'users', component: UsersManagementComponent},
       {path: 'reservations', component: ReservationsManagementComponent},
       {path: 'calendar', component: CalendarManagementComponent},
@@ -88,7 +96,11 @@ const routes: Routes = [
     UsersManagementComponent,
     ReservationsManagementComponent,
     CalendarManagementComponent,
-    PenaltyEventsManagementComponent
+    PenaltyEventsManagementComponent,
+    LocationDetailsManagementComponent,
+    DetailsFormComponent,
+    LocationCalendarComponent,
+    LockersCalendarComponent
   ],
     imports: [
         BrowserModule,
@@ -109,7 +121,9 @@ const routes: Routes = [
             provide: DateAdapter,
             useFactory: adapterFactory,
         }),
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        FormsModule,
+        FlatpickrModule.forRoot()
     ],
   providers: [],
   bootstrap: [AppComponent]

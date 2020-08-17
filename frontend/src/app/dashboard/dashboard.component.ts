@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {LocationService} from '../services/api/location.service';
+import {LocationService} from '../services/api/locations/location.service';
 import {Observable} from 'rxjs';
 import {Location} from '../shared/model/Location';
 

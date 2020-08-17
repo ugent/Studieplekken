@@ -5,7 +5,6 @@ export interface Location {
   address: string;
   numberOfSeats: number;
   numberOfLockers: number;
-  descriptions: {};
   imageUrl: string;
   startPeriodLockers: CustomDate;
   endPeriodLockers: CustomDate;
@@ -18,7 +17,6 @@ export class LocationConstructor {
       address: '',
       numberOfSeats: 0,
       numberOfLockers: 0,
-      descriptions: {},
       imageUrl: '',
       startPeriodLockers: CustomDateConstructor.new(),
       endPeriodLockers: CustomDateConstructor.new(),
@@ -35,7 +33,6 @@ export class LocationConstructor {
       address: obj.address,
       numberOfSeats: obj.numberOfSeats,
       numberOfLockers: obj.numberOfLockers,
-      descriptions: obj.descriptions,
       imageUrl: obj.imageUrl,
       startPeriodLockers: CustomDateConstructor.newFromObj(obj.startPeriodLockers),
       endPeriodLockers: CustomDateConstructor.newFromObj(obj.endPeriodLockers),

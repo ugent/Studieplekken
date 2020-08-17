@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable, of} from 'rxjs';
-import {api} from '../../../environments/environment';
-import {Location} from '../../shared/model/Location';
-import {tap} from "rxjs/operators";
+import {api} from '../../../../environments/environment';
+import {Location} from '../../../shared/model/Location';
+import {tap} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -19,8 +19,8 @@ export class LocationService {
 
     return this.http.get<Location[]>(api.locations)
       // ... and add the new locations
-      .pipe(tap<Location[]>(_locations => {
-        for (let location of _locations) {
+      .pipe(tap<Location[]>(locations => {
+        for (const location of locations) {
           this.locations.set(location.name, location);
         }
       }));
@@ -35,6 +35,17 @@ export class LocationService {
           this.locations.set(locationName, l);
         }));
     }
+  }
+
+  updateLocation(locationName: string, location: Location): Observable<void> {
+    const ret = this.http.put<void>(api.updateLocation.replace('{locationName}', locationName), location);
+
+    // let an update follow with a getLocations() so that the new information is retrieved
+    ret.subscribe(next => {
+      this.getLocations();
+    });
+
+    return ret;
   }
 
   getNumberOfReservations(location: Location): Observable<number> {

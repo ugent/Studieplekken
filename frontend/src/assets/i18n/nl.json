@@ -36,7 +36,10 @@
 
   "language": {
     "en": "Engels",
-    "nl": "Nederlands"
+    "nl": "Nederlands",
+
+    "ENGLISH": "Engels",
+    "DUTCH": "Nederlands"
   },
 
   "management": {
@@ -47,6 +50,70 @@
       "reservations": "Reservaties",
       "calendar": "Kalender",
       "penalties": "Overtredingen"
+    },
+
+    "general": {
+      "loading": "Aan het laden...",
+      "noLocations": "Er zijn nog geen beschikbare locaties. Maak er een aan met de knop 'Locatie Toevoegen'"
+    },
+
+    "locationDetails": {
+      "title": "Details van {locationName}",
+
+      "form": {
+        "name": "Naam",
+        "address": "Adres",
+        "numberOfSeats": "Aantal plaatsen",
+        "numberOfLockers": "Aantal lockers",
+        "imageUrl": "URL van foto (optioneel)",
+
+        "edit": "Pas aan",
+        "cancel": "Annuleer",
+        "persist": "Oké"
+      },
+
+      "calendar": {
+        "title": "Kalender met openingsdagen",
+
+        "form": {
+          "title": "Wijzig openingsdagen",
+
+          "addButton": "Voeg toe",
+          "startsAt": "Begint op",
+          "endsAt": "Eindigt op",
+          "openingTime": "Openingstijd",
+          "closingTime": "Sluitingstijd",
+          "reservableFrom": "Reserveerbaar vanaf",
+          "remove": "Verwijder",
+
+          "updateButton": "Update",
+          "cancelButton": "Annuleer",
+
+          "wrongCalendarPeriodFormatMessage": "Niet alle periodes zijn correct ingevuld",
+          "successMessage": "Het wijzigen van de kalender is succesvol verlopen",
+          "successButNoChangesMessage": "Er waren geen veranderingen nodig",
+          "errorMessage": "Het aanpassen van de calendar is mislukt. Er is iets misgegaan."
+        }
+      },
+
+      "lockerCalendar": {
+        "title": "Kalender voor reservaties van lockers"
+      }
+    },
+
+    "locations": {
+      "title": "Beheer van bloklocaties",
+
+      "table": {
+        "header": {
+          "name": "Locatie",
+          "numberOfSeats": "Plaatsen",
+          "numberOfLockers": "Lockers",
+          "details": "Details"
+        },
+
+        "details": "Details"
+      }
     }
   },
 

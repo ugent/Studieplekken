@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {Location} from '../../shared/model/Location';
 import {vars} from '../../../environments/environment';
-import {LocationService} from '../../services/api/location.service';
+import {LocationService} from '../../services/api/locations/location.service';
 import {Observable} from 'rxjs';
 
 @Component({

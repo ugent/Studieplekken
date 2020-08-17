@@ -7,9 +7,16 @@ export const environment = {
 };
 
 export const api = {
+  // CALENDAR_PERIODS
+  calendarPeriods: '/api/locations/calendar/{locationName}',
+  addCalendarPeriods: '/api/locations/calendar',
+  updateCalendarPeriods: '/api/locations/calendar',
+  deleteCalendarPeriods: '/api/locations/calendar',
+
   // LOCATIONS
   locations: '/api/locations',
   location: '/api/locations/{locationName}',
+  updateLocation: '/api/locations/{locationName}',
   numberOfReservations: '/api/locations/{locationName}/reservations/count',
 
   // LOCATION_RESERVATIONS

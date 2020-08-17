@@ -5,10 +5,10 @@
   <hr>
 
   <!-- Table to show the locker reservations of the logged in user -->
-  <div class="container-fluid row">
+  <div class="row">
 
-    <div class="container-fluid col-md-11">
-      <div class="container-fluid" *ngIf="lockerReservations | async as reservations">
+    <div class="col-md-11">
+      <div *ngIf="lockerReservations | async as reservations">
         <table style="width: 100%" *ngIf="reservations.length > 0; else noReservations">
           <!-- Table header -->
           <thead>

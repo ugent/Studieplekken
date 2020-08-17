@@ -1,1 +1,46 @@
-<p>locations-management works!</p>
+<div class="container-fluid">
+  <!-- Title -->
+  <h3>{{'management.locations.title' | translate}}</h3>
+
+  <hr>
+
+  <!-- Table with all existing locations, and a button to create a new location -->
+  <div class="row">
+    <div *ngIf="locations | async as locations; else loading">
+      <table style="width: 100%" *ngIf="locations.length > 0; else noLocations">
+        <!-- Table header -->
+        <thead>
+        <tr>
+          <th>{{'management.locations.table.header.name' | translate}}</th>
+          <th>{{'management.locations.table.header.numberOfSeats' | translate}}</th>
+          <th>{{'management.locations.table.header.numberOfLockers' | translate}}</th>
+          <!-- next table header directive is empty, but it is here to make sure the
+               thead its line extends all the way -->
+          <th></th>
+          <!-- TODO: another header to fill for a column with a bucket to tell: "delete the location" -->
+        </tr>
+        </thead>
+
+        <!-- Table body -->
+        <tbody>
+        <tr [@rowsAnimation]="" *ngFor="let location of locations">
+          <td>{{location.name}}</td>
+          <td>{{location.numberOfSeats}}</td>
+          <td>{{location.numberOfLockers}}</td>
+          <td>
+            <a routerLink="./{{location.name}}">{{'management.locations.table.details' | translate}}</a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  {{'management.general.loading' | translate}}
+</ng-template>
+
+<ng-template #noLocations>
+  {{'management.general.noLocations' | translate}}
+</ng-template>
