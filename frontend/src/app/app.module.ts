@@ -30,12 +30,11 @@ import { ProfileLockerReservationsComponent } from './profile/profile-reservatio
 import { LocationsManagementComponent } from './management/locations-management/locations-management.component';
 import { UsersManagementComponent } from './management/users-management/users-management.component';
 import { ReservationsManagementComponent } from './management/reservations-management/reservations-management.component';
-import { CalendarManagementComponent } from './management/calendar-management/calendar-management.component';
 import { PenaltyEventsManagementComponent } from './management/penalty-events-management/penalty-events-management.component';
 import { LocationDetailsManagementComponent } from './management/locations-management/location-details-management/location-details-management.component';
 import { DetailsFormComponent } from './management/locations-management/location-details-management/details-form/details-form.component';
 import { LocationCalendarComponent } from './management/locations-management/location-details-management/location-calendar/location-calendar.component';
-import {FlatpickrModule} from "angularx-flatpickr";
+import {FlatpickrModule} from 'angularx-flatpickr';
 import { LockersCalendarComponent } from './management/locations-management/location-details-management/lockers-calendar/lockers-calendar.component';
 
 // AoT requires an exported function for factories
@@ -65,7 +64,6 @@ const routes: Routes = [
       {path: 'locations/:locationName', component: LocationDetailsManagementComponent},
       {path: 'users', component: UsersManagementComponent},
       {path: 'reservations', component: ReservationsManagementComponent},
-      {path: 'calendar', component: CalendarManagementComponent},
       {path: 'penalties', component: PenaltyEventsManagementComponent}
     ]
   },
@@ -95,7 +93,6 @@ const routes: Routes = [
     LocationsManagementComponent,
     UsersManagementComponent,
     ReservationsManagementComponent,
-    CalendarManagementComponent,
     PenaltyEventsManagementComponent,
     LocationDetailsManagementComponent,
     DetailsFormComponent,
