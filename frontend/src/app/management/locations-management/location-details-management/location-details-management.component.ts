@@ -3,11 +3,6 @@ import {ActivatedRoute} from '@angular/router';
 import {Observable} from 'rxjs';
 import {Location} from '../../../shared/model/Location';
 import {LocationService} from '../../../services/api/locations/location.service';
-import {CalendarEvent} from 'angular-calendar';
-import {
-  CalendarPeriodConstructor,
-  CalendarPeriod
-} from '../../../shared/model/CalendarDay';
 
 @Component({
   selector: 'app-location-details-management',

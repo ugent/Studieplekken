@@ -9,13 +9,13 @@
   <hr>
 
   <!-- Form to edit the calendar -->
-  <!-- Title and "add new" button -->
   <div class="row">
+    <!-- Title and "add new" button -->
     <h3>
       {{'management.locationDetails.calendar.form.title' | translate}}
 
       <div class="pull-right">
-        <button class="btn btn-primary" (click)="addOpeningPeriod()">
+        <button class="btn btn-primary" (click)="addOpeningPeriod(location)">
           {{'management.locationDetails.calendar.form.addButton' | translate}}
         </button>
       </div>
@@ -23,7 +23,7 @@
   </div>
 
   <!-- The form itself -->
-  <div class="row" style="margin-top: 10px">
+  <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
     <div class="table-responsive">
       <table class="table table-bordered">
         <thead>
@@ -39,6 +39,7 @@
 
         <tbody>
         <tr *ngFor="let event of events">
+          <!-- Starts at -->
           <td>
             <label>
               <input
@@ -49,6 +50,8 @@
               />
             </label>
           </td>
+
+          <!-- Ends at -->
           <td>
             <label>
               <input
@@ -59,6 +62,8 @@
               />
             </label>
           </td>
+
+          <!-- Opening time -->
           <td>
             <label>
               <input
@@ -69,6 +74,8 @@
               />
             </label>
           </td>
+
+          <!-- Closing time -->
           <td>
             <label>
               <input
@@ -79,6 +86,8 @@
               />
             </label>
           </td>
+
+          <!-- Reservable from -->
           <td>
             <label>
               <input
@@ -89,6 +98,8 @@
               />
             </label>
           </td>
+
+          <!-- Button with glyphicon to delete period -->
           <td style="align-content: center">
             <button class="btn btn-danger" (click)="deleteOpeningPeriodButtonClick(event)">
               <span class="glyphicon glyphicon-trash hover"></span>
@@ -99,6 +110,7 @@
       </table>
     </div>
 
+    <!-- Row below the table to provide cancel/update buttons -->
     <div class="row">
       <div class="pull-right">
         <button class="btn btn-primary left-button" (click)="updateOpeningPeriodButtonClick()" [disabled]="disableFootButtons">

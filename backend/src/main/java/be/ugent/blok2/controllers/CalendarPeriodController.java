@@ -25,7 +25,7 @@ public class CalendarPeriodController {
     @GetMapping("/{locationName}")
     public List<CalendarPeriod> getCalendarPeriodsOfLocation(@PathVariable("locationName") String locationName) {
         try {
-            return this.calendarPeriodDao.getCalendarPeriodsOfLocation(locationName);
+            return calendarPeriodDao.getCalendarPeriodsOfLocation(locationName);
         } catch (SQLException ignore) {
             return null;
         }
@@ -33,7 +33,7 @@ public class CalendarPeriodController {
 
     @PostMapping
     public void addCalendarPeriods(@RequestBody List<CalendarPeriod> calendarPeriods) throws SQLException {
-        this.calendarPeriodDao.addCalendarPeriods(calendarPeriods);
+        calendarPeriodDao.addCalendarPeriods(calendarPeriods);
     }
 
     @PutMapping
@@ -50,6 +50,6 @@ public class CalendarPeriodController {
 
     @DeleteMapping
     public void deleteCalendarPeriods(@RequestBody List<CalendarPeriod> calendarPeriods) throws SQLException {
-        this.calendarPeriodDao.deleteCalendarPeriods(calendarPeriods);
+        calendarPeriodDao.deleteCalendarPeriods(calendarPeriods);
     }
 }

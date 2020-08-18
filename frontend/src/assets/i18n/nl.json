@@ -92,12 +92,30 @@
           "wrongCalendarPeriodFormatMessage": "Niet alle periodes zijn correct ingevuld",
           "successMessage": "Het wijzigen van de kalender is succesvol verlopen",
           "successButNoChangesMessage": "Er waren geen veranderingen nodig",
-          "errorMessage": "Het aanpassen van de calendar is mislukt. Er is iets misgegaan."
+          "errorMessage": "Het aanpassen van de kalender is mislukt. Er is iets misgegaan."
         }
       },
 
       "lockerCalendar": {
-        "title": "Kalender voor reservaties van lockers"
+        "title": "Kalender voor beschikbaarheid van lockers",
+
+        "form": {
+          "title": "Wijzig periodes voor beschikbaarheid van de lockers",
+
+          "addButton": "Voeg toe",
+          "startsAt": "Begint op",
+          "endsAt": "Eindigt op",
+          "reservableFrom": "Reserveerbaar vanaf",
+          "remove": "Verwijder",
+
+          "updateButton": "Update",
+          "cancelButton": "Annuleer",
+
+          "wrongCalendarPeriodFormatMessage": "Niet alle periodes zijn correct ingevuld",
+          "successMessage": "Het wijzigen van de kalender is succesvol verlopen",
+          "successButNoChangesMessage": "Er waren geen veranderingen nodig",
+          "errorMessage": "Het aanpassen van de kalender is mislukt. Er is iets misgegaan."
+        }
       }
     },
 

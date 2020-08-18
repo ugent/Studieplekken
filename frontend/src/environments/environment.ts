@@ -13,6 +13,12 @@ export const api = {
   updateCalendarPeriods: '/api/locations/calendar',
   deleteCalendarPeriods: '/api/locations/calendar',
 
+  // CALENDAR_PERIODS_FOR_LOCKERS
+  calendarPeriodsForLockers: '/api/locations/lockerCalendar/{locationName}',
+  addCalendarPeriodsForLockers: '/api/locations/lockerCalendar',
+  updateCalendarPeriodsForLockers: '/api/locations/lockerCalendar',
+  deleteCalendarPeriodsForLockers: '/api/locations/lockerCalendar',
+
   // LOCATIONS
   locations: '/api/locations',
   location: '/api/locations/{locationName}',

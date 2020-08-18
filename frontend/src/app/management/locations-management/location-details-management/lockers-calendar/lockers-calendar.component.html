@@ -1,1 +1,121 @@
-<p>lockers-calendar works!</p>
+<div class="container-fluid" *ngIf="location | async as location">
+  <div class="panel-body" style="padding: 20px">
+    <app-calendar
+      [events]="events"
+      [refresh]="refresh">
+    </app-calendar>
+  </div>
+
+  <hr>
+
+  <!-- Form to edit the calendar -->
+  <div class="row">
+    <!-- Title and "add new button -->
+    <h3>
+      {{'management.locationDetails.lockerCalendar.form.title' | translate}}
+
+      <div class="pull-right">
+        <button class="btn btn-primary" (click)="addCalendarPeriodForLockersButtonClick(location)">
+          {{'management.locationDetails.lockerCalendar.form.addButton' | translate}}
+        </button>
+      </div>
+    </h3>
+  </div>
+
+  <!-- The form itself -->
+  <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead>
+        <tr>
+          <th>{{'management.locationDetails.lockerCalendar.form.startsAt' | translate}}</th>
+          <th>{{'management.locationDetails.lockerCalendar.form.endsAt' | translate}}</th>
+          <th>{{'management.locationDetails.lockerCalendar.form.reservableFrom' | translate}}</th>
+          <th>{{'management.locationDetails.lockerCalendar.form.remove' | translate}}</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr *ngFor="let event of events">
+          <!-- Starts at -->
+          <td>
+            <label>
+              <input
+                class="form-control"
+                type="date"
+                [(ngModel)]="event.meta.startsAt"
+                (ngModelChange)="refreshCalendar(event)"
+              />
+            </label>
+          </td>
+
+          <!-- Ends at -->
+          <td>
+            <label>
+              <input
+                class="form-control"
+                type="date"
+                [(ngModel)]="event.meta.endsAt"
+                (ngModelChange)="refreshCalendar(event)"
+              />
+            </label>
+          </td>
+
+          <!-- Reservable from -->
+          <td>
+            <label>
+              <input
+                class="form-control"
+                type="datetime-local"
+                [(ngModel)]="event.meta.reservableFrom"
+                (ngModelChange)="refreshCalendar(event)"
+              />
+            </label>
+          </td>
+
+          <!-- Button with glyphicon to delete period -->
+          <td style="align-content: center">
+            <button class="btn btn-danger" (click)="deleteCalendarPeriodForLockersButtonClick(event)">
+              <span class="glyphicon glyphicon-trash hover"></span>
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Row below the table to provide cancel/update buttons -->
+    <div class="row">
+      <div class="pull-right">
+        <button class="btn btn-primary left-button"
+                (click)="updateCalendarPeriodForLockersButtonClick()"
+                [disabled]="disableFootButtons">
+          {{'management.locationDetails.lockerCalendar.form.updateButton' | translate}}
+        </button>
+
+        <button class="btn btn-primary" (click)="cancelChangesButtonClick()" [disabled]="disableFootButtons">
+          {{'management.locationDetails.lockerCalendar.form.cancelButton' | translate}}
+        </button>
+      </div>
+    </div>
+
+    <!-- If clicked on updateButton, give some feedback -->
+    <div class="row" style="margin-top: 10px">
+      <div class="alert alert-danger" *ngIf="showWrongCalendarPeriodForLockersFormat">
+        {{'management.locationDetails.lockerCalendar.form.wrongCalendarPeriodFormatMessage' | translate}}
+      </div>
+
+      <div class="alert alert-success" *ngIf="showSuccess">
+        {{'management.locationDetails.lockerCalendar.form.successMessage' | translate}}
+      </div>
+
+      <div class="alert alert-success" *ngIf="showSuccessButNoChanges">
+        {{'management.locationDetails.lockerCalendar.form.successButNoChangesMessage' | translate}}
+      </div>
+
+      <div class="alert alert-error" *ngIf="showError">
+        {{'management.locationDetails.lockerCalendar.form.errorMessage' | translate}}
+      </div>
+    </div>
+  </div>
+</div>

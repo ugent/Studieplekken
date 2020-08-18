@@ -50,8 +50,8 @@
       </div>
   </div>
 
-  <!-- Form to show current/next locker reservation period -->
-  <div class="panel-group">
+  <!-- If this period has lockers, show the calendar for lockers -->
+  <div class="panel-group" *ngIf="location.numberOfLockers > 0">
     <!-- Heading -->
     <div class="panel-heading">
       <h3 class="panel-title">

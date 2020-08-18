@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {CalendarPeriod} from '../../shared/model/CalendarDay';
+import {CalendarPeriod} from '../../shared/model/CalendarPeriod';
 import {Observable} from 'rxjs';
 import {api} from '../../../environments/environment';
 
@@ -21,15 +21,13 @@ export class CalendarPeriodsService {
   }
 
   /**
-   * Update the calendar periods.
-   * Note: this function does not require from.length === to.length, as the DAO
-   * method for updating does. The comparison between from and to will happen in
+   * Note: this function does not require from.length === to.length, as opposed to
+   * the corresponding DAO method does. The comparison between from and to will happen in
    * the controller layer, and the correct add/delete/update methods to be called
    * will be invoked.
    */
   updateCalendarPeriods(from: CalendarPeriod[], to: CalendarPeriod[]): Observable<void> {
     const body = [from, to];
-    console.log(body);
     return this.http.put<void>(api.updateCalendarPeriods, body);
   }
 

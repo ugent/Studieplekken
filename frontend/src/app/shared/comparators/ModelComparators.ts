@@ -1,6 +1,7 @@
 import {Location} from '../model/Location';
 import {CustomDate} from '../model/helpers/CustomDate';
-import {CalendarPeriod} from '../model/CalendarDay';
+import {CalendarPeriod} from '../model/CalendarPeriod';
+import {CalendarPeriodForLockers} from '../model/CalendarPeriodForLockers';
 
 export function equalCustomDates(date1: CustomDate, date2: CustomDate): boolean {
   if (date1 === null && date2 == null) {
@@ -37,5 +38,17 @@ export function equalCalendarPeriods(period1: CalendarPeriod, period2: CalendarP
     period1.endsAt === period2.endsAt &&
     period1.openingTime === period2.openingTime &&
     period1.closingTime === period2.closingTime &&
+    period1.reservableFrom === period2.reservableFrom;
+}
+
+export function equalCalendarPeriodsForLockers(period1: CalendarPeriodForLockers,
+                                               period2: CalendarPeriodForLockers): boolean {
+  if (period1 === null && period2 == null) {
+    return true;
+  }
+
+  return equalLocations(period1.location, period2.location) &&
+    period1.startsAt === period2.startsAt &&
+    period1.endsAt === period2.endsAt &&
     period1.reservableFrom === period2.reservableFrom;
 }

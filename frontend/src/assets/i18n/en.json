@@ -97,7 +97,25 @@
       },
 
       "lockerCalendar": {
-        "title": "Calendar for reservations of lockers"
+        "title": "Calendar for availability of lockers",
+
+        "form": {
+          "title": "Edit periods for which the lockers are available for reservation",
+
+          "addButton": "Add new",
+          "startsAt": "Starts at",
+          "endsAt": "Ends at",
+          "reservableFrom": "Reservable from",
+          "remove": "Remove",
+
+          "updateButton": "Update",
+          "cancelButton": "Cancel",
+
+          "wrongCalendarPeriodFormatMessage": "Not all periods are filled in correctly",
+          "successMessage": "Successfully updated the calendar",
+          "successButNoChangesMessage": "No changed were required",
+          "errorMessage": "Update was not successful. Something went wrong."
+        }
       }
     },
 
