@@ -1,0 +1,74 @@
+<div class="container-fluid panel" *ngIf="locationObs | async as location; else loading">
+
+  <!--
+   This page has three functionalities, each put into a collapsable panel-group:
+     - overview of the location + possibility to edit the details of the location
+     - calender to show the opening days and a form to add new/series of new opening days
+     - form to show current/next locker reservation period
+
+   Such a panel-group consists of two parts:
+     - the heading: panel-heading in which the panel-title is put
+     - the collapsable body: panel-body in which a panel-body resides with the actual content of the panel-group
+   -->
+
+  <!-- Overview of the location -->
+  <div class="panel-group">
+    <!-- Heading -->
+    <div class="panel-heading">
+      <h3 class="panel-title">
+        <a data-toggle="collapse" href="#detailsOfLocationBody" aria-expanded="false" class="collapsed">
+          <i class="glyphicon glyphicon-plus"></i>
+          <i class="glyphicon glyphicon-minus"></i>
+          {{('management.locationDetails.title' | translate).replace('{locationName}', location.name)}}
+        </a>
+      </h3>
+    </div>
+
+    <!-- Body -->
+    <div class="panel-collapse collapse" id="detailsOfLocationBody">
+      <div class="panel-body" style="padding: 20px">
+        <app-details-form [location]="locationObs"></app-details-form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Calendar with overview of opening days -->
+  <div class="panel-group">
+    <!-- Heading -->
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          <a data-toggle="collapse" href="#calendarCollapseBody" aria-expanded="false" class="collapsed">
+            <i class="glyphicon glyphicon-plus"></i>
+            <i class="glyphicon glyphicon-minus"></i>
+            {{'management.locationDetails.calendar.title' | translate}}</a>
+        </h3>
+      </div>
+
+      <!-- Body -->
+      <div class="panel-collapse collapse" id="calendarCollapseBody">
+        <app-location-calendar [location]="locationObs"></app-location-calendar>
+      </div>
+  </div>
+
+  <!-- If this period has lockers, show the calendar for lockers -->
+  <div class="panel-group" *ngIf="location.numberOfLockers > 0">
+    <!-- Heading -->
+    <div class="panel-heading">
+      <h3 class="panel-title">
+        <a data-toggle="collapse" href="#lockerCalendarCollapseBody" aria-expanded="false" class="collapsed">
+          <i class="glyphicon glyphicon-plus"></i>
+          <i class="glyphicon glyphicon-minus"></i>
+          {{'management.locationDetails.lockerCalendar.title' | translate}}</a>
+      </h3>
+    </div>
+
+    <!-- Body -->
+    <div class="panel-collapse collapse" id="lockerCalendarCollapseBody">
+      <app-lockers-calendar [location]="locationObs"></app-lockers-calendar>
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  {{'management.general.loading' | translate}}
+</ng-template>

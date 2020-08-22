@@ -2,8 +2,6 @@ package be.ugent.blok2.daos;
 
 import be.ugent.blok2.TestSharedMethods;
 import be.ugent.blok2.helpers.date.CustomDate;
-import be.ugent.blok2.helpers.date.Day;
-import be.ugent.blok2.helpers.date.Time;
 import be.ugent.blok2.model.reservables.Location;
 import be.ugent.blok2.model.reservations.LocationReservation;
 import be.ugent.blok2.model.users.User;
@@ -18,7 +16,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
@@ -112,15 +109,8 @@ public class TestDBLocationReservationDao {
         Assert.assertEquals("scanStudentTest, setup testUser", testUser, u1);
         Assert.assertEquals("scanStudentTest, setup testUser2", testUser2, u2);
 
-        // Open the location
+        // Make reservation for today
         CustomDate today = CustomDate.today();
-        Time openingHour = new Time(9, 0, 0);
-        Time closingHour = new Time(17, 0, 0);
-        Day d = new Day(today, openingHour, closingHour, today);
-        List<Day> days = new ArrayList<>();
-        days.add(d);
-        be.ugent.blok2.helpers.date.Calendar calendar = new be.ugent.blok2.helpers.date.Calendar(days);
-        locationDao.addCalendarDays(testLocation.getName(), calendar);
 
         // Make reservations for users u1 and u2
         LocationReservation lr1 = new LocationReservation(location, u1, today);
@@ -134,7 +124,8 @@ public class TestDBLocationReservationDao {
         Assert.assertEquals("scanStudentTest, count reserved seats", 2, c);
 
         // scan the users for the location on date
-        LocationReservation rlr1 = locationReservationDao.scanStudent(testLocation.getName(), u1.getAugentID());
+        locationReservationDao.scanStudent(testLocation.getName(), u1.getAugentID());
+        LocationReservation rlr1 = locationReservationDao.getLocationReservation(u1.getAugentID(), today);
         lr1.setAttended(true);
         Assert.assertEquals("scanStudentTest, u1 scanned", lr1, rlr1);
 

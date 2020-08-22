@@ -1,19 +1,14 @@
 -- queries for table LOCATIONS
 -- $all_locations
 select l.name, l.number_of_seats, l.number_of_lockers
-    , l.maps_frame, l.image_url, l.address, l.start_period_lockers
-    , l.end_period_lockers, ld.lang_enum, ld.description
+    , l.image_url, l.address
 from public.locations l
-    join public.location_descriptions ld
-        on l.name = ld.location_name;
+order by l.name;
 
 -- $get_location
 select l.name, l.number_of_seats, l.number_of_lockers
-    , l.maps_frame, l.image_url, l.address, l.start_period_lockers
-    , l.end_period_lockers, ld.lang_enum, ld.description
+    , l.image_url, l.address
 from public.locations l
-    join public.location_descriptions ld
-        on l.name = ld.location_name
 where l.name = ?;
 
 -- $delete_location
@@ -22,12 +17,12 @@ from public.locations
 where name = ?;
 
 -- $insert_location
-insert into public.locations (name, number_of_seats, number_of_lockers, maps_frame, image_url, address, start_period_lockers, end_period_lockers)
-values (?, ?, ?, ?, ?, ?, ?, ?);
+insert into public.locations (name, number_of_seats, number_of_lockers, image_url, address)
+values (?, ?, ?, ?, ?);
 
 -- $update_location
 update public.locations
-set name = ?, number_of_seats = ?, number_of_lockers = ?, maps_frame = ?, image_url = ?, address = ?, start_period_lockers = ?, end_period_lockers = ?
+set name = ?, number_of_seats = ?, number_of_lockers = ?, image_url = ?, address = ?
 where name = ?;
 
 
@@ -80,20 +75,14 @@ with recursive x as (
 select y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
 	 , y.augentid, y.role, y.penalty_points
 	 , y.date, y.location_name, y.attended, y.user_augentid
-	 , l.name, l.number_of_seats, l.number_of_lockers, l.maps_frame, l.image_url, l.address
-     , l.start_period_lockers, l.end_period_lockers
-     , ld.lang_enum, ld.description
+	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address
 from y
     join public.locations l
         on l.name = y.location_name
-    join public.location_descriptions ld
-        on ld.location_name = l.name
 group by y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
 	 , y.augentid, y.role, y.penalty_points
 	 , y.date, y.location_name, y.attended, y.user_augentid
-	 , l.name, l.number_of_seats, l.number_of_lockers, l.maps_frame, l.image_url, l.address
-     , l.start_period_lockers, l.end_period_lockers
-     , ld.lang_enum, ld.description
+	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address
 order by l.name;
 
 -- $count_location_reservations_of_location_for_date
@@ -197,7 +186,8 @@ from public.users u
     left join x
         on floor(extract(days from (now() - to_timestamp(b.timestamp, 'YYYY-MM-DD HH24\:MI\:SS'))) / 7) = x.week
 where <?>
-group by u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.mail, u.password, u.institution;
+group by u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.mail, u.password, u.institution
+order by u.augentpreferredsn, u.augentpreferredgivenname, u.augentid;
 
 -- $update_user
 update public.users
@@ -294,21 +284,15 @@ select y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.in
      , y.augentid, y.role, y.penalty_points
      , y.number, y.location_name
      , y.user_augentid, y.key_pickup_date, y.key_return_date
-	 , l.name, l.number_of_seats, l.number_of_lockers, l.maps_frame, l.image_url, l.address
-     , l.start_period_lockers, l.end_period_lockers
-	 , ld.lang_enum, ld.description
+	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address
 from y
 	join public.locations l
 		on l.name = y.location_name
-	join public.location_descriptions ld
-		on ld.location_name = l.name
 group by y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
      , y.augentid, y.role, y.penalty_points
      , y.number, y.location_name
      , y.user_augentid, y.key_pickup_date, y.key_return_date
-	 , l.name, l.number_of_seats, l.number_of_lockers, l.maps_frame, l.image_url, l.address
-     , l.start_period_lockers, l.end_period_lockers
-	 , ld.lang_enum, ld.description
+	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address
 order by l.name;
 
 -- $count_lockers_in_use_of_location
@@ -358,14 +342,10 @@ where user_augentid = ?;
 -- queries for table LOCKERS
 -- $get_lockers_where_<?>
 select l.location_name, l.number
-	, s.name, s.number_of_seats, s.number_of_lockers, s.maps_frame, s.image_url
-	, s.address, s.start_period_lockers, s.end_period_lockers
-	, sd.lang_enum, sd.description
+	, s.name, s.number_of_seats, s.number_of_lockers, s.image_url, s.address
 from public.lockers l
 	join public.locations s
 		on s.name = l.location_name
-	join public.location_descriptions sd
-		on sd.location_name = s.name
 where <?>
 order by s.name;
 
@@ -388,48 +368,6 @@ values (?, ?);
 delete
 from public.lockers
 where location_name = ? and number = ?;
-
-
-
--- queries for table CALENDAR
--- $get_calendar_of_location
-select *
-from public.calendar
-where location_name = ?;
-
--- $get_calendar_day_count
-select count(1)
-from public.calendar
-where date = ? and location_name = ?;
-
--- $insert_calendar_day
-insert into public.calendar (date, location_name, opening_time, closing_time, open_for_reservation_date)
-values (?, ?, ?, ?, ?);
-
--- $delete_calendar_of_location
-delete
-from public.calendar
-where location_name = ?;
-
--- $delete_calendar_day_of_location
-delete
-from public.calendar
-where location_name = ? and date = ?;
-
--- $delete_calendar_days_between_dates
-delete
-from public.calendar
-where location_name = ? and cast(substr(date,0,5) as int)*404 + cast(substr(date,6,2) as int)*31 + cast(substr(date,9,2) as int) between ? and ?;
-
--- $update_calendar_day_of_location
-update public.calendar
-set opening_time = ?, closing_time = ?, open_for_reservation_date = ?
-where location_name = ? and date = ?;
-
--- $update_fk_location_name_in_calendar
-update public.calendar
-set location_name = ?
-where location_name = ?;
 
 
 
@@ -551,14 +489,10 @@ where event_code = ?;
 
 -- queries for SCANNERS_LOCATION
 -- $get_locations_of_scanner
-select l.name, l.number_of_seats, l.number_of_lockers, l.maps_frame
-    , l.image_url, l.address, l.start_period_lockers, l.end_period_lockers
-    , ld.location_name, ld.lang_enum, ld.description
+select l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address
 from public.scanners_location sl
     join public.locations l
         on l.name = sl.location_name
-    join public.location_descriptions ld
-        on ld.location_name = l.name
 where sl.user_augentid = ?
 order by l.name;
 
@@ -625,18 +559,72 @@ set user_augentid = ?
 where user_augentid = ?;
 
 
+-- queries for CALENDAR_PERIODS
+-- $get_calendar_periods
+select cp.location_name, cp.starts_at, cp.ends_at, cp.opening_time, cp.closing_time, cp.reservable_from
+       , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address
+from public.calendar_periods cp
+    join public.locations l
+        on l.name = cp.location_name
+where cp.location_name = ?
+order by to_date(cp.starts_at, 'YYYY-MM-DD');
 
--- queries for LOCATION_DESCRIPTIONS
--- $delete_location_descriptions
+-- $insert_calendar_period
+insert into public.calendar_periods(location_name, starts_at, ends_at, opening_time, closing_time, reservable_from)
+values (?, ?, ?, ?, ?, ?);
+
+-- $update_calendar_period
+update public.calendar_periods
+set location_name = ?, starts_at = ?, ends_at = ?, opening_time = ?, closing_time = ?, reservable_from = ?
+where location_name = ? and starts_at = ? and ends_at = ? and opening_time = ? and closing_time = ? and reservable_from = ?;
+
+-- $delete_calendar_period
 delete
-from public.location_descriptions
+from public.calendar_periods
+where location_name = ? and starts_at = ? and ends_at = ? and opening_time = ? and closing_time = ? and reservable_from = ?;
+
+-- $delete_calendar_periods_of_location
+delete
+from public.calendar_periods
 where location_name = ?;
 
--- $insert_location_descriptions
-insert into public.location_descriptions (location_name, lang_enum, description)
-values (?, ?, ?);
+-- $update_fk_location_name_in_calendar_periods
+update public.calendar_periods
+set location_name = ?
+where location_name = ?;
 
--- $count_descriptions_of_location
-select count(1)
-from public.location_descriptions
+
+
+-- queries for CALENDAR_PERIODS_FOR_LOCKERS
+-- $get_calendar_periods_for_lockers_of_location
+select cp.location_name, cp.starts_at, cp.ends_at, cp.reservable_from
+       , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address
+from public.calendar_periods_for_lockers cp
+    join public.locations l
+        on l.name = cp.location_name
+where cp.location_name = ?
+order by to_date(cp.starts_at, 'YYYY-MM-DD');
+
+-- $insert_calendar_period_for_lockers
+insert into public.calendar_periods_for_lockers (location_name, starts_at, ends_at, reservable_from)
+values (?, ?, ?, ?);
+
+-- $update_calendar_period_for_lockers
+update public.calendar_periods_for_lockers
+set location_name = ?, starts_at = ?, ends_at = ?, reservable_from = ?
+where location_name = ? and starts_at = ? and ends_at = ? and reservable_from = ?;
+
+-- $delete_calendar_period_for_lockers
+delete
+from public.calendar_periods_for_lockers
+where location_name = ? and starts_at = ? and ends_at = ? and reservable_from = ?;
+
+-- $delete_calendar_periods_for_lockers_of_location
+delete
+from public.calendar_periods_for_lockers
+where location_name = ?;
+
+-- $update_fk_location_name_in_calendar_periods_for_lockers
+update public.calendar_periods_for_lockers
+set location_name = ?
 where location_name = ?;

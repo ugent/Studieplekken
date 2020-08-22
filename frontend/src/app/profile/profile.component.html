@@ -1,33 +1,22 @@
-<div class="fluid-container">
-  <aside class="col-sm-12 col-md-2 inpage-nav-container oasis-aside">
-    <div *ngIf="authenticationService.currentUserHasRole(authenticationService.roles.student)"  id="nav-anchor"></div>
-    <nav *ngIf="authenticationService.currentUserHasRole(authenticationService.roles.student)"  role="navigation" data-lockfixed="true" class="padding-default bg-tertiary"><h2 translate>menu.profile</h2>
-      <ul class="linklist linklist-dark">
-        <li>
-          <a aria-current="page" routerLinkActive="nav-active" [routerLink]="[{ outlets: { sub: ['edit'] } }]" translate>menu.profile</a>
-        </li>
-        <li>
-          <a aria-current="page" routerLinkActive="nav-active" [routerLink]="[{ outlets: { sub: ['location'] } }]" translate>overview.locationRes</a>
-        </li>
-        <li>
-          <a aria-current="page" routerLinkActive="nav-active" [routerLink]="[{ outlets: { sub: ['locker'] } }]" translate>overview.lockerRes</a>
-        </li>
-        <li>
-          <a aria-current="page" routerLinkActive="nav-active" [routerLink]="[{ outlets: { sub: ['calendar'] } }]" translate>overview.calendar</a>
-        </li>
-        <li>
-          <a aria-current="page" routerLinkActive="nav-active" [routerLink]="[{ outlets: { sub: ['penalties'] } }]" translate>overview.penalties</a>
-        </li>
-        <li>
-          <a aria-current="page" routerLinkActive="nav-active" [routerLink]="[{ outlets: { sub: ['help'] } }]" translate>Help</a>
-        </li>
-      </ul>
-    </nav>
-  </aside>
+<div class="container-fluid">
+  <div class="row">
+
+    <!-- Menu for /profile/ -->
+    <aside class="col-sm-12 col-md-2 inpage-nav-container">
+      <nav class="padding-default bg-tertiary">
+        <h2>{{'profile.aside.title' | translate}}</h2>
+        <ul class="linklist linklist-dark">
+          <li><a routerLink="./overview">{{'profile.aside.overview' | translate}}</a></li>
+          <li><a routerLink="./reservations">{{'profile.aside.reservations' | translate}}</a></li>
+          <li><a routerLink="./calendar">{{'profile.aside.calendar' | translate}}</a></li>
+          <li><a routerLink="./penalties">{{'profile.aside.penalties' | translate}}</a></li>
+          <li><a routerLink="./password">{{'profile.aside.password' | translate}}</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <article class="col-sm-12 col-md-10">
+      <router-outlet></router-outlet>
+    </article>
+  </div>
 </div>
-
-
-<article class="col-sm-12 col-md-10 ">
-  <router-outlet name="sub"></router-outlet>
-</article>
-

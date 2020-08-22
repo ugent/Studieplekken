@@ -1,405 +1,252 @@
 {
-  "menu": {
-    "statistics": "Statistics",
-    "profile": "Profile",
-    "management": "Management",
-    "differentLanguage": "In het Nederlands",
-    "logout": "Logout",
-    "reservations": "Reservations",
-    "information": "Information",
+  "dashboard": {
+    "address": "Address",
+    "details": "Details",
+    "gotoDashboard": "Please navigate to the dashboard to select a location's details.",
+    "location": "Location",
+    "numberOfLockers": "Number of lockers",
+    "numberOfSeats": "Number of seats"
+  },
+
+  "footer":{
+    "feedback": "Feedback",
+    "privacy": "Privacy",
     "disclaimer": "Disclaimer",
     "cookies": "Cookies",
-    "alt" : "Ghent University",
-    "version" : "Version 0.0.1",
-    "feedback" : "Feedback",
-    "copy" : "2019-2020 Universiteit Gent"
+    "accessibility": "Accessibility"
   },
-  "loginAndRegister": {
-    "email": "Email address",
-    "firstName": "First name",
-    "lastName": "Last name",
-    "login": "Login",
-    "register": "Register",
-    "password": "Password",
-    "confirmPassword": "Confirm password",
-    "institution": "Institution",
-    "studentNumber": "Student number",
-    "CAS": "is the Central Authentication Service for UGent. CAS allows you to log on to secured UGent pages using your UGent account or external account. CAS provides Single Sign-On (SSO) capabilities: you only have to log on once to gain access to several UGent web applications.",
-    "pwdMatch": "Passwords don't match",
-    "errorTitle": "Error: Incorrect email or password",
-    "errorContent": "Either no user with the given email could be found, or the password you gave was wrong. Please check the email and try again.",
-    "userAlreadyExists": "Couldn't register. There already exists an account with this email. Pleas try again with a different email address!",
-    "casWarning": "Students of Ghent University must login using CAS. They cannot register.",
-    "instructionsTitle": "Instructions",
-    "instructions": "Only students connected to the association AUGent can register for this site. To verify that you\nare actually a student, we need access to some basic information. Therefore you need to give\npermission to share your data with Ghent University, prior to registering.",
-    "registrationTitle": "Registration",
-    "emailInstruction": "Use the full, long version of the email address of your institution.",
-    "emailNotRecognizedByLdap": "The server could not verify the given email address ({{email}}). Make sure that you are using the email address of your institution and that your institution is part of the Association UGent.",
-    "emailAlreadyLinkedToAccount": "An account with email address {{email}} already exists.",
-    "ugentUserMustUseCAS": "{{email}} belongs to a UGhent account. You must use CAS instead.",
-    "casLogin": "CAS Login",
-    "loginForNonUGent": "Login for non-UGhent users",
-    "loginForUGent" : "Login for UGhent users",
-    "about": "The digital platform for study locations"
-  },
-  "locationItem": {
-    "numberOfSeats": "Number of seats: {{number}}",
-    "address": "Address: {{address}}",
-    "numberOfLockers": "Number of lockers: {{number}}",
-    "moreInfo": "More info",
-    "edit": "Edit"
-  },
-  "profile": {
-    "editProfile": "Profile",
-    "personalInfo": "Personal info",
-    "firstName": "First name:",
-    "lastName": "Last name:",
-    "institution": "Institution:",
-    "role": "Role:",
-    "roles": "Roles:",
-    "studentNumber": "Student number:",
-    "employeeNumber": "Employee number:",
-    "penaltyPoints": "Penalty points:",
-    "email": "Email:",
-    "password": "Password:",
-    "editPassword": "Edit password",
-    "saveChanges": "Save changes",
-    "cancel": "Cancel",
-    "newPassword": "New password:",
-    "confirmNewPassword": "Confirm new password:",
-    "download": "Download",
-    "editSuccess": "Changes saved successfully.",
-    "editFailed": "Couldn't save changes.",
-    "penalties": "Your amount of penalty points: {{points}}",
-    "noPenalties": "You have had no penalties so far. Very good!"
-  },
-  "scan": {
-    "scan": "Scan your student card",
-    "verify": "Verify",
-    "studentNumber": "Student number",
-    "close": "Close location",
-    "open": "Open location",
-    "absentStudent": "Absent students({{number}})",
-    "sendMails": "Send mails",
-    "cancelScan": "Cancel scanning",
-    "cancel": "Cancel",
-    "noAbsentStudents" : "There are no absent students",
-    "scanManual": "Scan manually: ",
-    "scanByName": "Name student:",
-    "present": "Present",
-    "absent": "Absent",
-    "openForStudents": "Open page for students",
-    "cancelReservations" : "Cancel scanning for today",
-    "cancelScanInfo" : "This will mark all students with a reservations for this location as attended for this day",
-    "setAbsent": "Set student as absent",
-    "setPresent": "Set student as present",
-    "sendMailsHeader": "Send mails to these students",
-    "chooseLocation": "Choose a location",
-    "closeLocationHeader": "Close scanning for {{location}}",
-    "closeLocationBody": "Are you sure you want to end the scanning for this location?",
-    "addPenaltyPoints": "Assign penalty points to absent students",
-    "addPenaltyPointsBody": "Are you sure you want to assign penalty points to these students?\nYou can only undo this by manually removing the events from the user in the users management page",
-    "assignPenaltyPoints": "Assign penaltypoints"
-  },
-  "management": {
-    "name": "Name",
-    "email": "Email",
-    "viewProfile": "View profile",
-    "studentNumber": "Student number",
-    "filter": "Add a filter",
-    "firstName": "First name",
-    "lastName": "Last name",
-    "password": "Password",
-    "institution": "Institution",
-    "confirmPassword": "Confirm password",
-    "penaltypoints": "Penaltypoints",
-    "role": "Role",
-    "addUser": "Add user",
-    "add": "Add",
-    "studentid": "Student ID",
-    "profile": "Profile",
-    "search": "Search",
-    "searching": "Search",
-    "location": "Location",
-    "searchfor": "Search for:",
-    "role2": "Role",
-    "users": "Users",
-    "locations": "Locations",
-    "locationreservations": "Location reservations",
-    "lockerreservations": "Locker reservations",
-    "locationCalendar": "Location calendar",
-    "locationName": "Location name",
-    "date": "Date",
-    "locker": "Locker",
-    "from": "From",
-    "until": "Until",
-    "resultsMessage": "Found {{number}} result(s)",
-    "cancel": "Cancel",
-    "studentName": "Name student",
-    "penalties": "Penalties",
-    "abstract": "We have sent a verification email to",
-    "body": "The new user has to click on the link. The link contains the verification code by which we can verify his or hers account.",
-    "succeededToAddUser": "Successfully added the user with email address {{email}}",
-    "failedToAddUser": "Couldn't add the user. There already exists a user with this email {{email}}.",
-    "fail": "Failed!",
-    "yes": "Yes",
-    "no": "No",
-    "deleteLocation": "Are you sure you want to delete the location with name {{locationName}}?",
-    "deletePenaltyEvent": "Are you sure you want to delete the penalty event with code {{penaltyCode}}?",
-    "deletePenalty": "Are you sure you want to remove the penalty ({{points}} points) given to the user?",
-    "apply": "Apply",
-    "removeFilter": "Remove filter",
-    "edit": "Edit",
-    "add1666Title": "Adding a penalty with reserved code (1666...)",
-    "add1666Description": "Are you sure you want to add a penalty with a reserved code (1666...). You will not be able to delete the penalty. If you want to be able to do so, change the code.",
-    "managePenalties": "Manage penalties",
-    "noPenaltiesForUser": "No penalties for user with id: {{augentID}}",
-    "eventCode": "Event Code",
-    "timestamp": "Timestamp",
-    "forDate": "For date",
-    "at": "Location",
-    "receivedPoints": "Received Points",
-    "addPenalty": "Add Penalty",
-    "addLocationError": "Couldn't add location with name {{nameLocation}}. Probably because there already exists a location with this name, you should update this location.",
-    "lockers": "Lockers",
-    "number": "Number",
-    "selectLocation": "Select Location",
-    "currentPeriod": "Current reservation period",
-    "nextPeriod": "Next reservation period",
-    "warning": "Warning",
-    "lockerReservationPeriodWarning": "If you configure a next reservation period, the current reservation period will end and students will no longer be able to reserve lockers.",
-    "keyPickedUp": "Picked up key",
-    "keyBroughtBack": "Brought back key",
-    "reserved": "Reserved",
-    "available": "Available",
-    "addScanners": "Add employees",
-    "save": "Save changes",
-    "attended": "Attended",
-    "singleDayInfo": "You can set the location to open or closed here and set the corresponding opening hours and opening of reservations",
-    "addPenaltyEventError": "Couldn't add penalty event with code {{code}}. Probably because there already exists a penalty event with this code, you should update this penalty event."
-  },
-  "admin": {
-    "addLocation": "Add location",
-    "name": "Name",
-    "address": "Address",
-    "description": "Description",
-    "imageUrl": "URL of image",
-    "lockers": "Number of lockers",
-    "seats": "Number of seats",
-    "add": "Add",
-    "change": "Edit",
-    "changeLocation": "Change location",
-    "changeProfile": "Change profile",
-    "changePenaltyEvent": "Change penalty event",
-    "code": "Code",
-    "points": "Points",
-    "publicAccessible": "Show",
-    "addPenaltyEvent": "Add penalty event",
-    "mapsFrameUrl": "URL of Google Maps HTML frame"
-  },
-  "calendar": {
-    "next": "next",
-    "previous": "previous",
-    "Februari": "February {{year}}",
-    "Januari": "January {{year}}",
-    "Maart": "March {{year}}",
-    "April": "April {{year}}",
-    "Mei": "May {{year}}",
-    "Juni": "June {{year}}",
-    "Juli": "July {{year}}",
-    "Augustus": "August {{year}}",
-    "September": "September {{year}}",
-    "Oktober": "October {{year}}",
-    "November": "November {{year}}",
-    "December": "December {{year}}",
-    "Ma": "Mo",
-    "Di": "Tu",
-    "Wo": "We",
-    "Do": "Th",
-    "Vr": "Fr",
-    "Za": "Sa",
-    "Zo": "Su",
-    "monday": "Monday",
-    "tuesday": "Tuesday",
-    "wednesday": "Wednesday",
-    "thursday": "Thursday",
-    "friday": "Friday",
-    "saturday": "Saturday",
-    "sunday": "Sunday",
-    "period": "Period",
-    "openingHour": "Opening Hour",
-    "closingHour": "Closing Hour",
-    "startDate": "Start Date",
-    "endDate": "End Date",
-    "open": "Open now",
-    "close": "Close now"
-  },
-  "location": {
-    "openingHours": "Opening Hours",
-    "location": "Location",
-    "reserve": "Reserve",
-    "name": "Name",
-    "from": "From",
-    "to": "To",
-    "cancel": "Cancel",
-    "yes": "Yes",
-    "no": "No",
-    "ok": "Ok",
-    "lockerReservation": "Locker Reservation",
-    "lockersText": "This location has {{lockers}} lockers",
-    "seatsText": "This location has {{seats}} seats",
-    "errorMessage": "Sorry you have to many penalty points to make a reservation",
-    "goto": "Go To",
-    "alreadyReserved": "Already reserved on other location",
-    "closed": "CLOSED",
-    "confirm": "Confirm your reservation",
-    "toManyPointsTitle": "Not allowed",
-    "toManyPointsContent": "You have reached the max penalty points, and are not allowed to reserve for a location",
-    "verifyCancel": "Are you sure you want to cancel your reservation?",
-    "verifyCancelPoints": "If you cancel now, you will get {{points}} penalty point(s) for cancelling to late",
-    "full": "FULL",
-    "lockerConfirmation": "Are you sure? If you reserve a locker, you have 5 days to pick up your key at the location, otherwise your reservation will be cancelled.",
-    "lockersAvailable": "Lockers are available from {{startDate}} to {{endDate}}.",
-    "noPeriodAssigned": "No reservation period has been assigned for this location.",
-    "noLockers": "This location has no lockers.",
-    "scanners": "These are the employees from",
-    "removeScanner": "Remove this employee from this location.",
-    "date": "Date",
-    "confirmReservations": "Confirm reservations",
-    "successfullyReserved": "Successfully reserved for following dates",
-    "responseFull": "Failed to reserve for following dates because location was already full",
-    "yourReservations": "Your reservations",
-    "noAvailableLockers": "All lockers are in use.",
-    "notAllowedToReserveLocker": "You can't reserve a locker if you still have the key of another locker.",
-    "selectedDays": "Selected days for reservations:"
-  },
-  "verification": {
-    "title": "Please verify your email",
-    "abstract": "We have sent a verification email to",
-    "body": "Click on the link we have sent you. The link contains the verification code by which we can verify your account. If you don't see the mail in your inbox, you might have to check your spam folder."
-  },
-  "overview": {
-    "locationRes": "Overview of location reservations",
-    "lockerRes": "Overview of locker reservations",
-    "calendar": "My calendar",
-    "penalties": "My Penalties"
-  },
-  "locationOverview": {
-    "date": "Date",
-    "1": "{{day}} January {{year}}",
-    "2": "{{day}} February {{year}}",
-    "3": "{{day}} March {{year}}",
-    "4": "{{day}} April {{year}}",
-    "5": "{{day}} May {{year}}",
-    "6": "{{day}} June {{year}}",
-    "7": "{{day}} July {{year}}",
-    "8": "{{day}} August {{year}}",
-    "9": "{{day}} September {{year}}",
-    "10": "{{day}} October {{year}}",
-    "11": "{{day}} November {{year}}",
-    "12": "{{day}} December {{year}}",
-    "status": "Status",
-    "keyStatus1": "Not picked up yet",
-    "keyStatus2": "Picked up key",
-    "keyStatus3": "Brought back key",
-    "title": "Overview of Location Reservations",
-    "noLocationReservations": "At the moment, you have no pending location reservations."
-  },
-  "lockerOverview": {
-    "title": "Overview of Locker Reservations",
-    "noLockerReservations": "At the moment, you have no pending locker reservations."
-  },
-  "from": {
-    "required": "Required field",
-    "minLength": "Password must be at least {{num}} characters long.",
-    "unique": "Field must be unique.",
-    "positive": "This field should be a number greater than or equal to zero",
-    "mapsFrame": "This field is required and must be a valid Google Maps HTML frame"
-  },
-  "information": {
-    "lead": "During the study period the Therminal, Kantienberg and S5 are held open as a place to study. Registering is mandatory and happens every Sunday evening for the upcoming week.",
-    "locationsTitle": "Bloklocations",
-    "locationsContent": "Registrations for the Therminal open every Sunday at 7 pm.\n\nRegistrations for S5 open every Sunday at 7.30 pm.\n\nRegistrations for Kantienberg open every Sunday at 8 pm.",
-    "rulesTitle": "House Rules",
-    "rulesContent": "Between 8.30 and 9 am only people with a registration are allowed. From 9 am onwards everyone is welcome.\n\nCommunity college students (Artevelde and HoGent) are only allowed during weekends and holidays.\n\nA readable barcode on your student ID is essential, damaged or unreadable barcodes can not be used. Damaged UGent student cards are eligible for free replacement in the UFO. As a backup, your barcode can be generated and printed on the barcode page that is linked in the reservationform.\n\nIt is prohibited to hold space for other persons. Between 8.50 am and 9.05 am checks may occur. Books occupying spots where no student is seated are considered to be a violation of this rule and will be removed. They can be retrieved from the student administrator by appointment.\nIt is prohibited to have other people use your barcode/reservation.\nAutomating the registration process is strictly forbidden.\nCommunication will happen in the Facebook groups.\n\nBlok@ is organised by volunteers and with materials that Ghent University provides to these volunteers free of charge. Please be respectful for their efforts and the material.\nViolating these house rules can be punished with penalty points up to permanent blacklisting for all involved."
-  },
-  "calendarOverview": {
-    "date": "Date",
-    "0": "{{day}} January {{year}}",
-    "1": "{{day}} February {{year}}",
-    "2": "{{day}} March {{year}}",
-    "3": "{{day}} April {{year}}",
-    "4": "{{day}} May {{year}}",
-    "5": "{{day}} June {{year}}",
-    "6": "{{day}} July {{year}}",
-    "7": "{{day}} August {{year}}",
-    "8": "{{day}} September {{year}}",
-    "9": "{{day}} October {{year}}",
-    "10": "{{day}} November {{year}}",
-    "11": "{{day}} December {{year}}",
-    "managementReservations": "Manage reservation periods",
-    "openingAndClosingReservations": "Opening and closing reservations",
-    "immediateOpenClose": "You can immediatly open or close reservations for the selected day(s) with the following buttons",
-    "reservationOpens": "Reservations open",
-    "selectedDay": "Selected day",
-    "fillInMultipleDays": "Configure multiple days",
-    "pastDaySelected": "You cannot change the opening hours of a day that has already passed. Please select a future date.",
-    "success": "Success!",
-    "successfullySubmitted": "Successfully changed opening hours of selected day(s).",
-    "errorOpeningClosingHour": "Opening hour can't be later than closing hour.",
-    "notATime": "Not a time",
-    "notADate": "Not a date",
-    "errorOpenForReservationDate": "The day the reservations open needs to be before the date of the selected day.",
-    "errorStartDateEndDate": "Start date has te be before end date.",
-    "lblChkSelectedDay": "Configure selected day",
-    "lblChkMultipleDays": "Configure multiple days",
-    "selectTypeOfFormTitle": "Select how to configure {{location}}",
-    "selectTypeOfFormHelp": "Select how you want to manipulate the calendar for {{location}}"
-  },
-  "countdown": {
-    "nextReservation1": "Time until reservation period: ",
-    "nextReservation2": "Next reservation period starts on: ",
-    "nextReservation3": " and will be available on ",
-    "nextReservation4": " at "
-  },
-  "reservation": {
-    "delete": "Are you sure you want to delete the reservation for {{locationName}} on {{reservationDay}}/{{reservationMonth}}/{{reservationYear}}? This can't be undone.",
-    "error": "Couldn't make reservation."
-  },
+
   "general": {
-    "error": "Error",
-    "delete": "Delete",
-    "removeAll": "Remove all",
-    "save": "Save"
+    "dsa": "Student Activities Office",
+    "ugent": "Ghent University"
   },
-  "roles": {
-    "ADMIN" : "Admin",
-    "EMPLOYEE":  "Employee",
-    "STUDENT":  "Student"
+
+  "header": {
+    "imageAlt": "Ghent University",
+    "logIn": "Log in",
+    "logOut": "Log out",
+    "navigation": {
+      "dashboard": "Dashboard",
+      "profile": "Profile",
+      "scan": "Scan",
+      "management": "Management",
+      "information": "Information"
+    }
   },
-  "verify": {
-    "verified": "Verified",
-    "failed": "Did not succeed",
-    "verifiedMessage": "Your account has been succesfully verified. ",
-    "problemMessage": "A problem occurred while verifying your account. \nThis could be because you are trying to verify your account a second time.",
-    "click": "Click here to login"
+
+  "language": {
+    "en": "English",
+    "nl": "Dutch",
+
+    "ENGLISH": "English",
+    "DUTCH": "Dutch"
   },
-  "help": {
-    "managementLead": "Only admins and employees can see the management pages. They can add, delete and change users, locations and lockers. Admins have more possibilities than employees.",
-    "managementUsers" : "Here the employees and admins can search for specific users, based on name, student ID or email and filter them by institution. They can change the student's number when pressing on the 'Edit' button. The student can then download this new barcode on his profile page. By clicking on 'manage penalties' in the 'edit user' pop-up, penalties can be added, deleted or changed. Normally this all happens automatically, the functionality of managing the penalties was added to give some flexibility. When adding a penalty the field 'timestamp', should be the moment the violation was made and the field 'For date' is the date from the reservation which was violated. For instance if I'm canceling my reservation for monday on sunday evening, the 'timestamp' will be sunday and the 'for date' will be monday. \n\nAn admin has more possibility's, he can add a new user and change the roles of an existing user. A user can combine two roles, this way it's possible to be a student and make own reservations while also being an employee. Only the admin can make someone an employee. Click on the + sign to add a second role, and on the - to delete this second role.",
-    "managementLocation": "Here the employees can see an overview of the different locations, but can't do anything with the data. \nAdmins can change the properties of existing locations, delete locations or add a new location. They must also assign employees to the different locations. An employee can only scan at locations he is assigned to. ",
-    "managementLocationreservations": "Here you can find an overview of the different reservations, based on location, student ID or name of a student. The results can be filtered on date, name and location.",
-    "managementLockerreservations": "Here you can find an overview of the different reservations, based on location, student ID or name of a student. The results can be filtered on date, name and location.",
-    "managementLockers": "Here you can see all the lockers on specific locations. You are only able to see the locations you are assigned to. An admin can assign employees to locations in the locations tab of the management page. \nThe lockers have long reservation periods, when a student reserves a locker, it's instantly for a longer period of time. But he is free to stop the reservation any time.",
-    "managementLocationCalendar": "Here the opening times of the specific locations can be configured. When the opening times of consecutive days have the same opening hours, it's easier to use the bottommost form. To set only one day, select this in the calendar.\nThe timing that the reservations open for specific days and locations can also be set in the 'Reservations open' fields. When for instance the reservation for monday-friday must open on sunday, use the lower from.\n\nAgain the employees can only configure locations they are assigned to.",
-    "managementPenalties": "Here the employees can see all the different reasons a student can receive penalty points. Students can see a overview of these events on their help page, when you don't want them to be able to see certain events then you should uncheck the 'show' option.\nAn admin can change the penalty and add a new one. You can't change the code of penalties which have a code starting with 1666.",
-    "scanning": "On the scanpage the employee must first select a location. This must be the location he or she is located at at the moment. When you can't see the location that you need, ask the admin to assign you to that location.\n\nAfter you have selected a location and pressed open location, a new button will appear to open the scanpage for students. This is the page where students can scan their barcode. Open this page visible to the students and make sure it has focus when you want the scanning to start. If this is the case the scanner should read the students barcode and try to mark him/her as attended automatically.\n\nDuring the scanning you can view which students are present or absent and manually change the status of a student ( e.g. put an absent student as present or vice versa ). However please note that this will cause the scanpage for students to lose focus so only do this at a moment where students can't scan or at the end of the scanning session.\n\nIf you decide students can no longer scan, you can press the close location button, after this you will see three new buttons:\n-Cancel scanning : this is used in case scanning has gone wrong and will mark all students as attended.\n-Send mails: this will send a mail to all absent students to tell them they were absent.\n-Assign penaltypoints: this will assign penalty points to all absent students for being absent.",
-    "referToScan": "Go to management -> help -> scan for more info.",
-    "profileLead": "On the profile pages you can manage all your own information and reservations.",
-    "profile": "On the profile tab you can see the information this application has about you. When you can't change anything it's because this information is linked with the information from your institution.",
-    "profileLocationRes": "Here you can see all your reservations, for past and upcoming dates. You can cancel the upcoming ones, when this will add penalty points you will get a warning before cancelling. These points are calculated in function of the time until the reservation. If you cancel several days before the reservation, no points will be assigned. The 'Opening Hours' are from the location on the day of your reservation. You can make location reservations on the 'Dashboard', the reservations open on specific days, these can differ. There will be a countdown visible on the location's page when the opening of the reservations approaches.",
-    "profileLockerRes": "Here you can see the status from your locker reservations. \nLockers aren't present at every location. If there are, then you can reserve them on the specific page of the location, reachable via 'Dashboard'. After making a reservation you must fetch the key.",
-    "profileCalendar": "Here you can see a visual representation of all your location reservations, interesting!",
-    "profilePenalties": "This is an overview of all your actions that caused penalty points being added. The maximum for this is {{points}}, so when you have more, you can't make any reservation. Lucky for you the penalty points aren't forever and decrease over time. \nBelow you see a table with all possible reasons for receiving them.\nNote that the points for canceling too late are a maximum, when canceling at a more reasonable time, less points will be added."
+
+  "management": {
+    "aside": {
+      "title": "Management",
+      "locations": "Locations",
+      "users": "Users",
+      "reservations": "Reservations",
+      "calendar": "Calendar",
+      "penalties": "Penalties"
+    },
+
+    "general": {
+      "loading": "Loading...",
+      "noLocations": "There are no locations yet, make one using the 'Add Location' button"
+    },
+
+    "locationDetails": {
+      "title": "Details of {locationName}",
+
+      "form": {
+        "name": "Name",
+        "address": "Address",
+        "numberOfSeats": "Number of seats",
+        "numberOfLockers": "Number of lockers",
+        "imageUrl": "Image URL (optional)",
+
+        "edit": "Edit",
+        "cancel": "Cancel",
+        "persist": "Okay"
+      },
+
+      "calendar": {
+        "title": "Calendar with opening days",
+
+        "form": {
+          "title": "Edit opening days",
+
+          "addButton": "Add new",
+          "startsAt": "Starts at",
+          "endsAt": "Ends at",
+          "openingTime": "Opening time",
+          "closingTime": "Closing time",
+          "reservableFrom": "Reservable from",
+          "remove": "Remove",
+
+          "updateButton": "Update",
+          "cancelButton": "Cancel",
+
+          "wrongCalendarPeriodFormatMessage": "Not all periods are filled in correctly",
+          "successMessage": "Successfully updated the calendar",
+          "successButNoChangesMessage": "No changed were required",
+          "errorMessage": "Update was not successful. Something went wrong."
+        }
+      },
+
+      "lockerCalendar": {
+        "title": "Calendar for availability of lockers",
+
+        "form": {
+          "title": "Edit periods for which the lockers are available for reservation",
+
+          "addButton": "Add new",
+          "startsAt": "Starts at",
+          "endsAt": "Ends at",
+          "reservableFrom": "Reservable from",
+          "remove": "Remove",
+
+          "updateButton": "Update",
+          "cancelButton": "Cancel",
+
+          "wrongCalendarPeriodFormatMessage": "Not all periods are filled in correctly",
+          "successMessage": "Successfully updated the calendar",
+          "successButNoChangesMessage": "No changed were required",
+          "errorMessage": "Update was not successful. Something went wrong."
+        }
+      }
+    },
+
+    "locations": {
+      "title": "Management of blok-locations",
+
+      "table": {
+        "header": {
+          "name": "Location",
+          "numberOfSeats": "Seats",
+          "numberOfLockers": "Lockers",
+          "details": "Details"
+        },
+
+        "details": "Details"
+      }
+    }
+  },
+
+  "profile": {
+    "aside": {
+      "title": "Profile",
+      "overview": "Overview",
+      "reservations": "Reservations",
+      "calendar": "Personal Calendar",
+      "password": "Change password",
+      "penalties": "Penalty Points"
+    },
+
+    "calendar": {
+      "title": "Your personal reservation calendar"
+    },
+
+    "changePassword": {
+      "title": "Change password",
+
+      "conditions": {
+        "li1": "Your password must include at least one capital",
+        "li2": "Your password must include at least one number",
+        "li3": "The minimum length of your password is 8 characters"
+      },
+
+      "form": {
+        "cancelButton": "Cancel",
+        "confirmPassword": "Confirm Password",
+        "confirmButton": "Save changes",
+        "password": "Password"
+      }
+    },
+
+    "overview": {
+      "title": "Profile Overview",
+      "form": {
+        "firstName": "First Name",
+        "institution": "Institution",
+        "lastName": "Last Name",
+        "mail": "Mail",
+        "penaltyPoints": "Penalty Points",
+        "studentNumber": "Student Number"
+      }
+    },
+
+    "penalties": {
+      "title": "Penalty points",
+      "subtitle": "Current amount of penalty points:",
+
+      "information": {
+        "1": "When you have more than 100 penalty points, you are not allowed to make reservations.",
+        "2": "Each week, the weight of received penalty points for misbehaviour decreases by 20% of the original amount of received points",
+        "3": "In other words, the amount of points you receive will influence the total amount of penalty points for a period of 5 weeks.",
+        "4": "Possible events of misbehaviour are:",
+        "li": {
+          "1": "Cancelling a reservation after 7 PM, the night before the date of reservation (starting at 15 points, increasing to 30 points an hour before opening)",
+          "2": "Not showing up when you did make a reservation (50 points)",
+          "3": "Keeping a seat occupied for yourself, or for someone else, by placing a bag/books/... on the seat",
+          "4": "When you would really cross the line, an employee may blacklist you for reservation. You will get 100 points. These points do not decrease over time!"
+        }
+      },
+
+      "table": {
+        "title": "Overview of your penalty points",
+        "header": {
+          "eventCode": "Reason for penalty",
+          "timestamp": "Timestamp",
+          "reservationDate": "Reservation for",
+          "location": "Location",
+          "receivedPoints": "Received points"
+        },
+
+        "noPenalties": "You have had no penalties so far. Very good!"
+      }
+    },
+
+    "reservations": {
+      "locations": {
+        "title": "Overview of your location reservations",
+
+        "table": {
+          "header": {
+            "locationName": "Location",
+            "reservationDate": "Reservation for date",
+            "attended": "Did you attend?"
+          },
+
+          "attended": {
+            "yes": "yes",
+            "no": "no",
+            "other": "n/a"
+          }
+        },
+
+        "noReservations": "You have never made any location reservations so far."
+      },
+
+      "lockers": {
+        "title": "Overview of your locker reservations",
+
+        "table": {
+          "header": {
+            "locationName" :  "Location",
+            "lockerNumber" : "Locker's number",
+            "keyPickupDate" :  "Key picked up on date",
+            "keyReturnedDate" : "Key returned on date"
+          },
+
+          "keyPickupDateNull": "n/a",
+          "keyReturnedDateNull": "n/a"
+        },
+
+        "noReservations": "You have never made any locker reservations so far."
+      }
+    }
   }
 }

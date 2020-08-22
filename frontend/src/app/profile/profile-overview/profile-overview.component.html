@@ -1,0 +1,75 @@
+<div class="container-fluid">
+  <!-- Page title -->
+  <h3>{{'profile.overview.title' | translate}}</h3>
+
+  <hr>
+
+  <!-- User overview in a form -->
+  <form [formGroup]="formGroup">
+    <!-- First name -->
+    <div class="row form-group">
+      <label class="col-lg-3 control-label" for="firstName">{{'profile.overview.form.firstName' | translate}}</label>
+      <div class="col-lg-8">
+        <input class="form-control" id="firstName" type="text" formControlName="firstName" >
+      </div>
+    </div>
+
+    <!-- Last name -->
+    <div class="row form-group">
+      <label class="col-lg-3 control-label" for="lastName">{{'profile.overview.form.lastName' | translate}}</label>
+      <div class="col-lg-8">
+        <input class="form-control" id="lastName" type="text" formControlName="lastName">
+      </div>
+    </div>
+
+    <!-- Mail -->
+    <div class="row form-group">
+      <label class="col-lg-3 control-label" for="mail">{{'profile.overview.form.mail' | translate}}</label>
+      <div class="col-lg-8">
+        <input class="form-control" id="mail" type="email" formControlName="mail">
+      </div>
+    </div>
+
+    <!-- Penalty Points -->
+    <div class="row form-group">
+      <label class="col-lg-3 control-label" for="penaltyPoints">{{'profile.overview.form.penaltyPoints' | translate}}</label>
+      <div class="col-lg-8">
+        <input class="form-control" id="penaltyPoints" type="number" formControlName="penaltyPoints">
+      </div>
+    </div>
+
+    <!-- Institution -->
+    <div class="row form-group">
+      <label class="col-lg-3 control-label" for="institution">{{'profile.overview.form.institution' | translate}}</label>
+      <div class="col-lg-8">
+        <input class="form-control" id="institution" type="text" formControlName="institution">
+      </div>
+    </div>
+  </form>
+</div>
+
+
+<!-- Modal view if user wants to change his password -->
+<ng-template #modalContent let-close="close">
+
+  <!-- Header: title and close button -->
+  <div class="modal-header">
+    <h5>Change Password</h5> <!-- TODO: translate -->
+    <button type="button" class="close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <!-- Body: TODO: body -->
+  <div class="modal-body">
+    <div>Password</div>
+    <div>Confirm Password</div>
+  </div>
+
+  <!-- Footer -->
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" (click)="close()">
+      OK
+    </button>
+  </div>
+</ng-template>

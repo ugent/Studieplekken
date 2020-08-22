@@ -113,36 +113,6 @@ public class DBAccountDao extends ADB implements IAccountDao {
     }
 
     @Override
-    public List<User> getUsersByNameSoundex(String name) throws SQLException {
-        List<User> _users = new ArrayList<>();
-        String s1 = soundex.encode(name.toLowerCase());
-
-        List<User> users = new ArrayList<>();
-        try (Connection conn = getConnection()) {
-            // note: u.augentid is the PK of USER table, therefore it cannot be null and you'll have all results, as if the where clause wasn't there
-            String query = databaseProperties.getString("get_user_by_<?>").replace("<?>", "u.augentid IS NOT NULL");
-            PreparedStatement pstmt = conn.prepareStatement(query);
-            ResultSet rs = pstmt.executeQuery();
-            while (rs.next()) {
-                users.add(createUser(rs));
-            }
-        }
-
-        for (User u : users) {
-            String s2 = soundex.encode(u.getFirstName() + " " + u.getLastName());
-            if (s2.equals(s1)) {
-                _users.add(u);
-            } else if (s1.equals(soundex.encode(u.getLastName().toLowerCase()))) {
-                _users.add(u);
-            } else if (s1.equals(soundex.encode(u.getFirstName().toLowerCase()))) {
-                _users.add(u);
-            }
-        }
-
-        return _users;
-    }
-
-    @Override
     public List<String> getUserNamesByRole(String role) throws SQLException {
         ArrayList<String> users = new ArrayList<>();
 

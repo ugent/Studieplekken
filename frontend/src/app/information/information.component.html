@@ -1,5 +1,7 @@
-<div class="sg-text-container"><p translate>information.lead</p>
-  <h2 translate>information.locationsTitle</h2>
-  <p translate>information.locationsContent</p>
-  <h2 translate>information.rulesTitle</h2>
-  <p class="my-translated-paragraph" translate>information.rulesContent</p></div>
+<!--
+The information page is provided through Markdown because it is a static
+page. If, at certain points, the page needs to be updated, markdown is easy
+to use for everybody. And we dont have to change any code.
+The markdown files used are provided in `assets/md/information.<lang>.md`
+-->
+<div markdown src="assets/md/information.{{currentLanguage()}}.md"></div>

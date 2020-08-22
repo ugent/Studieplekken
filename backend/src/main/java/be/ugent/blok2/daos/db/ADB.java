@@ -2,7 +2,6 @@ package be.ugent.blok2.daos.db;
 
 import be.ugent.blok2.daos.IDao;
 import be.ugent.blok2.helpers.Resources;
-import org.apache.commons.codec.language.Soundex;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -16,7 +15,6 @@ public abstract class ADB implements IDao {
 
     protected static final ResourceBundle databaseProperties = Resources.databaseProperties;
     protected static final ResourceBundle applicationProperties = Resources.applicationProperties;
-    protected Soundex soundex = new Soundex();
 
     private static String connectionUrl;
     private static String connectionUser;

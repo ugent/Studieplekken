@@ -1,0 +1,97 @@
+<div role="grid">
+
+  <!-- Title -->
+  <div class="col-md-4">
+    <h1>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h1>
+  </div>
+
+  <!-- Show buttons to navigate in the calendar -->
+  <div class="row text-center">
+    <div class="col-md-4">
+      <div class="btn-group">
+        <!-- Previous -->
+        <div class="btn btn-primary"
+             mwlCalendarPreviousView
+             [view]="view"
+             [(viewDate)]="viewDate">
+          Previous
+        </div>
+
+        <!-- Today -->
+        <div class="btn btn-outline-secondary"
+             mwlCalendarToday
+             [(viewDate)]="viewDate">
+          Today
+        </div>
+
+        <!-- Next -->
+        <div class="btn btn-primary"
+             mwlCalendarNextView
+             [view]="view"
+             [(viewDate)]="viewDate">
+          Next
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <br>
+
+  <div>
+    <mwl-calendar-month-view
+      [viewDate]="viewDate"
+      [events]="events"
+      [refresh]="refresh"
+      [weekStartsOn]="1"
+      [cellTemplate]="customCellTemplate"
+      (dayClicked)="dayClicked($event.day)"
+      (eventClicked)="handleEvent('Clicked', $event.event)"
+      (eventTimesChanged)="eventTimesChanged($event)">
+    </mwl-calendar-month-view>
+  </div>
+
+</div>
+
+<!-- Documentation about using a custom template:
+         - https://github.com/mattlewis92/angular-calendar#how-do-i-use-a-custom-template
+         - https://angular-calendar.com/#/custom-templates
+         - TODO: if an employee wants to edit a date: do it in a modal view, see the demo
+              kitchen-sink, all the way down in the template.html for modalContent, as well
+              as in the component.ts, the first attribute:
+                 @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any>; -->
+<ng-template
+  #customCellTemplate
+  let-day="day"
+  let-locale="locale"
+  let-tooltipPlacement="tooltipPlacement"
+  let-highlightDay="highlightDay"
+  let-unhighlightDay="unhighlightDay"
+  let-eventClicked="eventClicked"
+  let-tooltipTemplate="tooltipTemplate"
+  let-tooltipAppendToBody="tooltipAppendToBody">
+  <div class="">
+    <span class="cal-day-number">{{ day.date | calendarDate:'monthViewDayNumber':locale }}</span>
+  </div>
+  <div class="cal-events" *ngIf="day.events.length > 0">
+    <div
+      class="cal-event custom-event-bar custom-event-bar-center-text"
+      *ngFor="let event of day.events"
+      [style.backgroundColor]="event.color?.primary"
+      [ngClass]="event?.cssClass"
+      (mouseenter)="highlightDay.emit({event: event})"
+      (mouseleave)="unhighlightDay.emit({event: event})"
+      [mwlCalendarTooltip]="event.title | calendarEventTitle:'monthTooltip':event"
+      [tooltipPlacement]="tooltipPlacement"
+      [tooltipEvent]="event"
+      [tooltipTemplate]="tooltipTemplate"
+      [tooltipAppendToBody]="tooltipAppendToBody"
+      mwlDraggable
+      [class.cal-draggable]="event.draggable"
+      dragActiveClass="cal-drag-active"
+      [dropData]="{event: event, draggedFrom: day}"
+      [dragAxis]="{x: event.draggable, y: event.draggable}"
+      (mwlClick)="eventClicked.emit({ event: event })">
+        {{event.title}}
+    </div>
+  </div>
+</ng-template>

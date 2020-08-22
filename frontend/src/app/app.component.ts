@@ -1,9 +1,6 @@
-import {Component} from '@angular/core';
+import { Component } from '@angular/core';
+import {Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
-import {AuthenticationService} from '../services/authentication.service';
-import {IRoles} from "../interfaces/IRoles";
-import {roles, urls} from "../environments/environment";
-
 
 @Component({
   selector: 'app-root',
@@ -11,13 +8,11 @@ import {roles, urls} from "../environments/environment";
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'blokAtUGent';
-  roles: IRoles;
+  // every navigationItem should have an entry in assets/i18n/*.json
+  navigationItems: string[] = ['dashboard', 'profile', 'scan', 'management', 'information'];
 
-  iso = 'en';
-  urls = urls;
-
-  constructor(private translate: TranslateService, public authenticationService: AuthenticationService) {
+  constructor(private translate: TranslateService,
+              private router: Router) {
     // if you think about supporting another language, you must change the exported variable 'appLanguages'
     // in environments.ts accordingly. This variable is used in PenaltiesComponent to show the correct description
     translate.setDefaultLang('en');
@@ -25,20 +20,31 @@ export class AppComponent {
     const browserLang = translate.getBrowserLang();
     // add another language? -> add language to regex and read comments at the beginning of this constructor!
     translate.use(browserLang.match(/en|nl/) ? browserLang : 'en');
-    this.iso = translate.currentLang;
-
-    this.roles = roles;
   }
 
-  useLanguage(e: Event) {
-    e.preventDefault();
+  currentLanguage(): string {
+    return this.translate.currentLang;
+  }
+
+  otherSupportedLanguage(): string {
+    return this.translate.currentLang === 'nl' ? 'en' : 'nl';
+  }
+
+  changeLanguage(event: Event): void {
+    event.preventDefault();
     if (this.translate.currentLang === 'nl') {
       this.translate.use('en');
-      this.iso = 'en';
     } else {
       this.translate.use('nl');
-      this.iso = 'nl';
     }
   }
 
+  isActive(path: string): boolean {
+    return this.router.url === path;
+  }
+
+  // TODO
+  isLoggedIn(): boolean {
+    return false;
+  }
 }

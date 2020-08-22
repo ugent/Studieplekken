@@ -1,1 +1,9 @@
-<app-dashboard-board [reloadSubject]="reloadSubject"></app-dashboard-board>
+<div class="container-fluid">
+  <ng-container *ngIf="locations | async as locations; else pending">
+    <app-dashboard-item *ngFor="let location of locations" [location]="location"></app-dashboard-item>
+  </ng-container>
+</div>
+
+<ng-template #pending>
+  <div class="loader center-block"></div>
+</ng-template>

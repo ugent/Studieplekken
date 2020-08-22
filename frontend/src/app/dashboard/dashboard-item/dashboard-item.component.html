@@ -1,0 +1,41 @@
+<div class="col-sm-6 col-md-4 col-xs-12 col-lg-4">
+  <div class="thumbnail wrapper card">
+    <div class="content">
+      <!-- Image -->
+      <img src="{{location.imageUrl}}" class="img" alt="Image for {{location.name}}"
+           (error)="handleImageError()">
+      <div class="location-info">
+        <!-- Title -->
+        <h3>{{ location.name }}</h3>
+
+        <!-- Number of seats, number of lockers and address -->
+        <ul>
+          <li>{{'dashboard.numberOfSeats' | translate}}: {{location.numberOfSeats}}</li>
+          <li>{{'dashboard.numberOfLockers' | translate}}: {{location.numberOfLockers}}</li>
+          <li>{{'dashboard.address' | translate}}: {{location.address}}</li>
+        </ul>
+
+        <!-- Progress bar for reserved seats -->
+        <div class="progress">
+          <div class="progress-bar" role="progressbar"
+               [style.width]="occupation + '%'"
+               [attr.aria-valuenow]="occupation"
+               aria-valuemin="0" aria-valuemax="100">
+            <span>{{occupation}}/{{location.numberOfSeats}}</span>
+          </div>
+        </div>
+
+        <!-- Details button for dashboard item -->
+        <p>
+          <a routerLink="/dashboard/{{location.name}}"
+             class="btn btn-block"
+             role="button">{{'dashboard.details' | translate}}</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #none>
+  <span>0</span>
+</ng-template>

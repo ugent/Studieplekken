@@ -1,9 +1,7 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
-import {Subject} from 'rxjs';
-import {AuthenticationService} from "../../services/authentication.service";
-import {LocationService} from "../../services/location.service";
-import {ILocation} from "../../interfaces/ILocation";
+import { Component, OnInit } from '@angular/core';
+import {LocationService} from '../services/api/locations/location.service';
+import {Observable} from 'rxjs';
+import {Location} from '../shared/model/Location';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,13 +9,12 @@ import {ILocation} from "../../interfaces/ILocation";
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  reloadSubject: Subject<boolean> = new Subject<boolean>();
+  locations: Observable<Location[]>;
 
-  constructor(public authenticationService: AuthenticationService) {
-    this.authenticationService = authenticationService;
-  }
+  constructor(private locationService: LocationService) { }
 
   ngOnInit(): void {
+    this.locations = this.locationService.getLocations();
   }
 
 }

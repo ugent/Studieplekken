@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "test": {
+    "frontend": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "../backend/target/classes/static",
+            "outputPath": "dist/frontend",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -24,25 +24,12 @@
               "src/assets"
             ],
             "styles": [
-              "node_modules/angular-calendar/css/angular-calendar.css",
               "src/styles.css",
-              "styles/static/css/screen.css"
+              "ugent_style/css/screen.css"
             ],
             "scripts": [
-              "node_modules/jquery/dist/jquery.js",
-              "styles/static/js/vendor/jquery-migrate.min.js",
-              "styles/static/js/vendor/jquery.tablesorter.min.js",
-              "styles/static/js/vendor/typeahead.bundle.min.js",
-              "styles/static/js/vendor/jquery.ui.widget.min.js",
-              "styles/static/js/vendor/jquery.tocify.min.js",
-              "styles/static/js/vendor/moment.min.js",
-              "styles/static/js/vendor/bootstrap.min.js",
-              "styles/static/js/vendor/locale/nl.min.js",
-              "styles/static/js/vendor/bootstrap-select.min.js",
-              "styles/static/js/vendor/bootstrap-datetimepicker.min.js",
-              "styles/static/js/vendor/ekko-lightbox.min.js",
-              "styles/static/js/vendor/smooth-scroll.min.js",
-              "styles/static/js/main.min.js"
+              "node_modules/jquery/dist/jquery.min.js",
+              "ugent_style/js/vendor/bootstrap.min.js"
             ]
           },
           "configurations": {
@@ -79,18 +66,19 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "test:build"
+            "browserTarget": "frontend:build",
+            "proxyConfig": "proxy.conf.json"
           },
           "configurations": {
             "production": {
-              "browserTarget": "test:build:production"
+              "browserTarget": "frontend:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "test:build"
+            "browserTarget": "frontend:build"
           }
         },
         "test": {
@@ -105,26 +93,9 @@
               "src/assets"
             ],
             "styles": [
-              "node_modules/angular-calendar/css/angular-calendar.css",
-              "src/styles.css",
-              "styles/static/css/screen.css"
+              "src/styles.css"
             ],
-            "scripts": [
-              "node_modules/jquery/dist/jquery.js",
-              "styles/static/js/vendor/jquery-migrate.min.js",
-              "styles/static/js/vendor/jquery.tablesorter.min.js",
-              "styles/static/js/vendor/typeahead.bundle.min.js",
-              "styles/static/js/vendor/jquery.ui.widget.min.js",
-              "styles/static/js/vendor/jquery.tocify.min.js",
-              "styles/static/js/vendor/moment.min.js",
-              "styles/static/js/vendor/bootstrap.min.js",
-              "styles/static/js/vendor/locale/nl.min.js",
-              "styles/static/js/vendor/bootstrap-select.min.js",
-              "styles/static/js/vendor/bootstrap-datetimepicker.min.js",
-              "styles/static/js/vendor/ekko-lightbox.min.js",
-              "styles/static/js/vendor/smooth-scroll.min.js",
-              "styles/static/js/main.min.js"
-            ]
+            "scripts": []
           }
         },
         "lint": {
@@ -144,16 +115,16 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "test:serve"
+            "devServerTarget": "frontend:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "test:serve:production"
+              "devServerTarget": "frontend:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "test"
+  "defaultProject": "frontend"
 }

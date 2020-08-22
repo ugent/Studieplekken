@@ -8,9 +8,6 @@ select *
 from languages;
 
 select *
-from location_descriptions;
-
-select *
 from location_reservations;
 
 select *

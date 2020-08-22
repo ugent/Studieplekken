@@ -16,19 +16,34 @@ CREATE DATABASE blokatugent
 ----------------- +------------------------------------+
 
 --
--- Name: calendar; Type: TABLE; Schema: public; Owner: postgres
+-- Name: calendar_periods; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.calendar (
+CREATE TABLE public.calendar_periods (
     location_name text NOT NULL,
-    opening_time time without time zone NOT NULL,
-    closing_time time without time zone NOT NULL,
-    open_for_reservation_date text NOT NULL,
-    date text NOT NULL
+    starts_at text NOT NULL,
+    ends_at text NOT NULL,
+    opening_time text NOT NULL,
+    closing_time text NOT NULL,
+    reservable_from text NOT NULL
 );
 
 
-ALTER TABLE public.calendar OWNER TO postgres;
+ALTER TABLE public.calendar_periods OWNER TO postgres;
+
+--
+-- Name: calendar_periods_for_lockers; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.calendar_periods_for_lockers (
+    location_name text NOT NULL,
+    starts_at text NOT NULL,
+    ends_at text NOT NULL,
+    reservable_from text NOT NULL
+);
+
+
+ALTER TABLE public.calendar_periods_for_lockers OWNER TO postgres;
 
 --
 -- Name: institution; Type: TABLE; Schema: public; Owner: postgres
@@ -69,28 +84,12 @@ CREATE TABLE public.locations (
     name text NOT NULL,
     number_of_seats integer NOT NULL,
     number_of_lockers text NOT NULL,
-    maps_frame text NOT NULL,
     image_url text,
-    address text NOT NULL,
-    start_period_lockers text,
-    end_period_lockers text
+    address text NOT NULL
 );
 
 
 ALTER TABLE public.locations OWNER TO postgres;
-
---
--- Name: location_descriptions; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.location_descriptions (
-    location_name text NOT NULL,
-    lang_enum text NOT NULL,
-    description text NOT NULL
-);
-
-
-ALTER TABLE public.location_descriptions OWNER TO postgres;
 
 --
 -- Name: location_reservation; Type: TABLE; Schema: public; Owner: postgres
@@ -277,11 +276,24 @@ ALTER TABLE public.users_to_verify OWNER TO postgres;
 ----------------- +----------------------+
 ----------------- |   Set primary keys   |
 ----------------- +----------------------+
-alter table only public.calendar
-add constraint pk_calendar 
+alter table only public.calendar_periods
+add constraint pk_calendar_periods
 primary key (
 	location_name
-	, date
+	, starts_at
+    , ends_at
+    , opening_time
+    , closing_time
+    , reservable_from
+);
+
+alter table only public.calendar_periods_for_lockers
+add constraint pk_calendar_periods_for_lockers
+primary key (
+    location_name
+    , starts_at
+    , ends_at
+    , reservable_from
 );
 
 alter table only public.institutions
@@ -300,13 +312,6 @@ alter table only public.locations
 add constraint pk_locations 
 primary key (
 	name 
-);
-
-alter table only public.location_descriptions
-add constraint pk_location_descriptions 
-primary key (
-	location_name
-	, lang_enum
 );
 
 alter table only public.location_reservations
@@ -388,25 +393,20 @@ primary key (
 ----------------- +----------------------+
 
 --
--- calendar to locations
+-- calendar_periods to locations
 --
-alter table only public.calendar
-add constraint fk_calendar_to_locations
+alter table only public.calendar_periods
+add constraint fk_calendar_periods_to_locations
 foreign key (location_name)
 references public.locations (name);
 
 --
--- location_descriptions to locations, languages
+-- calendar_periods_for_lockers to locations
 --
-alter table only public.location_descriptions
-add constraint fk_location_descriptions_to_locations
+alter table only public.calendar_periods_for_lockers
+add constraint fk_calendar_periods_for_lockers_to_locations
 foreign key (location_name)
 references public.locations (name);
-
-alter table only public.location_descriptions
-add constraint fk_location_descriptions_to_languages
-foreign key (lang_enum)
-references public.languages (enum);
 
 --
 -- location_reservations to locations, users

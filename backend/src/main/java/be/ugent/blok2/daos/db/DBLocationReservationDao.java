@@ -96,8 +96,6 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
     @Override
     public LocationReservation scanStudent(String location, String augentId) throws SQLException {
         try (Connection conn = getConnection()) {
-            // find out the CustomDate of today (note: Calendar here is java.util.Calendar,
-            // not be.ugent.blok2.helpers.Calendar
             Calendar c = Calendar.getInstance();
             CustomDate today = new CustomDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DATE));
 
@@ -199,6 +197,12 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
 
     public static LocationReservation createLocationReservation(ResultSet rs) throws SQLException {
         CustomDate customDate = CustomDate.parseString(rs.getString(databaseProperties.getString("location_reservation_date")));
+
+        Boolean attended = rs.getBoolean(databaseProperties.getString("location_reservation_attended"));
+        if (rs.wasNull()) {
+            attended = null;
+        }
+
         // Note: it is important that createUser is called before createLocation.
         //  the reason is that within createLocation, the ResultSet is looped
         //  because it needs all descriptions. But if you would use the looped
@@ -206,6 +210,6 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
         //  cant go back. So first call createUser(), then createLocation.
         User user = DBAccountDao.createUser(rs);
         Location location = DBLocationDao.createLocation(rs);
-        return new LocationReservation(location, user, customDate);
+        return new LocationReservation(location, user, customDate, attended);
     }
 }

@@ -1,0 +1,85 @@
+<!-- Form with information about location -->
+<div class="container-fluid" *ngIf="location | async as location">
+  <form [formGroup]="locationForm">
+    <!-- Location name -->
+    <div class="row form-group">
+      <label class="col-lg-3 control-label" for="name">
+        {{'management.locationDetails.form.name' | translate}}
+      </label>
+      <div class="col-lg-8">
+        <input class="form-control" id="name" type="text" formControlName="name" >
+      </div>
+    </div>
+
+    <!-- Address TODO: separate street, number, postal code, city, country -->
+    <div class="row form-group">
+      <label class="col-lg-3 control-label" for="address">
+        {{'management.locationDetails.form.address' | translate}}
+      </label>
+      <div class="col-lg-8">
+        <input class="form-control" id="address" type="text" formControlName="address" >
+      </div>
+    </div>
+
+    <!-- Number of seats -->
+    <div class="row form-group">
+      <label class="col-lg-3 control-label" for="numberOfSeats">
+        {{'management.locationDetails.form.numberOfSeats' | translate}}
+      </label>
+      <div class="col-lg-8">
+        <input class="form-control" id="numberOfSeats" type="number" formControlName="numberOfSeats" >
+      </div>
+    </div>
+
+    <!-- Number of lockers -->
+    <div class="row form-group">
+      <label class="col-lg-3 control-label" for="numberOfLockers">
+        {{'management.locationDetails.form.numberOfLockers' | translate}}
+      </label>
+      <div class="col-lg-8">
+        <input class="form-control" id="numberOfLockers" type="number" formControlName="numberOfLockers" >
+      </div>
+    </div>
+
+    <!-- Image URL -->
+    <div class="row form-group">
+      <label class="col-lg-3 control-label" for="imageUrl">
+        {{'management.locationDetails.form.imageUrl' | translate}}</label>
+      <div class="col-lg-8">
+        <input class="form-control" id="imageUrl" type="text" formControlName="imageUrl" >
+      </div>
+    </div>
+
+    <!-- start- and endPeriodLockers will be handled in another panel -->
+
+    <!-- Buttons to edit/cancel/persist location -->
+    <div class="row form-group">
+      <div class="col-lg-11">
+        <div class="pull-left">
+          <!-- Button to make form editable -->
+          <button type="button" class="btn btn-primary btn-space"
+                  [disabled]="disableEditLocationButton"
+                  (click)="editLocationDetailsButtonClick()">
+            {{'management.locationDetails.form.edit' | translate}}
+          </button>
+        </div>
+
+        <div class="pull-right">
+          <!-- Button to cancel changes -->
+          <button type="button" class="btn btn-primary btn-space left-button"
+                  [disabled]="disableCancelLocationButton"
+                  (click)="cancelLocationDetailsButtonClick(location)">
+            {{'management.locationDetails.form.cancel' | translate}}
+          </button>
+
+          <!-- Button to persist changes -->
+          <button type="button" class="btn btn-primary btn-space"
+                  [disabled]="disablePersistLocationButton"
+                  (click)="persistLocationDetailsButtonClick(location, locationForm.value)">
+            {{'management.locationDetails.form.persist' | translate}}
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

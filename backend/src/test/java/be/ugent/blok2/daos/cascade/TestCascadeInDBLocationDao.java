@@ -2,13 +2,10 @@ package be.ugent.blok2.daos.cascade;
 
 import be.ugent.blok2.TestSharedMethods;
 import be.ugent.blok2.daos.*;
-import be.ugent.blok2.daos.db.ADB;
 import be.ugent.blok2.helpers.Language;
-import be.ugent.blok2.helpers.Resources;
-import be.ugent.blok2.helpers.date.Calendar;
 import be.ugent.blok2.helpers.date.CustomDate;
-import be.ugent.blok2.helpers.date.Day;
-import be.ugent.blok2.helpers.date.Time;
+import be.ugent.blok2.model.calendar.CalendarPeriod;
+import be.ugent.blok2.model.calendar.CalendarPeriodForLockers;
 import be.ugent.blok2.model.penalty.Penalty;
 import be.ugent.blok2.model.penalty.PenaltyEvent;
 import be.ugent.blok2.model.reservables.Location;
@@ -26,9 +23,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -39,6 +33,12 @@ public class TestCascadeInDBLocationDao {
 
     @Autowired
     private IAccountDao accountDao;
+
+    @Autowired
+    private ICalendarPeriodDao calendarPeriodDao;
+
+    @Autowired
+    private ICalendarPeriodForLockersDao calendarPeriodForLockersDao;
 
     @Autowired
     private ILocationDao locationDao;
@@ -77,13 +77,18 @@ public class TestCascadeInDBLocationDao {
     private Penalty testPenalty1;
     private Penalty testPenalty2;
 
-    // to test cascade on CALENDAR
-    private List<Day> testCalendarDays;
+    // to test cascade on CALENDAR_PERIODS
+    private List<CalendarPeriod> testCalendarPeriods;
+
+    // to test cascade on CALENDAR_PERIODS_FOR_LOCKERS
+    private List<CalendarPeriodForLockers> testCalendarPeriodsForLockers;
 
     @Before
     public void setup() throws SQLException {
         // Use test database
         TestSharedMethods.setupTestDaoDatabaseCredentials(accountDao);
+        TestSharedMethods.setupTestDaoDatabaseCredentials(calendarPeriodDao);
+        TestSharedMethods.setupTestDaoDatabaseCredentials(calendarPeriodForLockersDao);
         TestSharedMethods.setupTestDaoDatabaseCredentials(locationDao);
         TestSharedMethods.setupTestDaoDatabaseCredentials(locationReservationDao);
         TestSharedMethods.setupTestDaoDatabaseCredentials(lockerReservationDao);
@@ -115,17 +120,8 @@ public class TestCascadeInDBLocationDao {
         testPenalty1 = new Penalty(testUser1.getAugentID(), testPenaltyEvent.getCode(), CustomDate.now(), CustomDate.now(), testLocation.getName(), 10);
         testPenalty2 = new Penalty(testUser2.getAugentID(), testPenaltyEvent.getCode(), CustomDate.now(), CustomDate.now(), testLocation.getName(), 20);
 
-        // to test cascade on CALENDAR
-        Calendar testCalendar = new Calendar();
-        CustomDate date1 = new CustomDate(1970, 1, 1);
-        CustomDate date2 = new CustomDate(1970, 1, 2);
-        Time open = new Time(9, 0, 0);
-        Time close = new Time(17, 0, 0);
-        Day day1 = new Day(date1, open, close, date1);
-        Day day2 = new Day(date2, open, close, date1);
-
-        testCalendar.setDays(Arrays.asList(day1, day2));
-        testCalendarDays = new ArrayList<>(Arrays.asList(day1, day2));
+        testCalendarPeriods = TestSharedMethods.testCalendarPeriods(testLocation);
+        testCalendarPeriodsForLockers = TestSharedMethods.testCalendarPeriodsForLockers(testLocation);
 
         // Add test objects to database
         locationDao.addLocation(testLocation);
@@ -145,7 +141,8 @@ public class TestCascadeInDBLocationDao {
         scannerLocationDao.addScannerLocation(testLocation.getName(), testUser1.getAugentID());
         scannerLocationDao.addScannerLocation(testLocation.getName(), testUser2.getAugentID());
 
-        locationDao.addCalendarDays(testLocation.getName(), testCalendar);
+        calendarPeriodDao.addCalendarPeriods(testCalendarPeriods);
+        calendarPeriodForLockersDao.addCalendarPeriodsForLockers(testCalendarPeriodsForLockers);
     }
 
     @After
@@ -153,8 +150,8 @@ public class TestCascadeInDBLocationDao {
         // Remove test objects from database
         // Note, I am not relying on the cascade because that's
         // what we are testing here in this class ...
-        locationDao.deleteCalendarDays(testLocation.getName(), "1950-01-01T00:00:00",
-                CustomDate.now().toString());
+        calendarPeriodForLockersDao.deleteCalendarPeriodsForLockers(testCalendarPeriodsForLockers);
+        calendarPeriodDao.deleteCalendarPeriods(testCalendarPeriods);
 
         scannerLocationDao.deleteAllScannersOfLocation(testLocation.getName());
 
@@ -180,6 +177,8 @@ public class TestCascadeInDBLocationDao {
 
         // Use regular database
         accountDao.useDefaultDatabaseConnection();
+        calendarPeriodForLockersDao.useDefaultDatabaseConnection();
+        calendarPeriodDao.useDefaultDatabaseConnection();
         locationDao.useDefaultDatabaseConnection();
         locationReservationDao.useDefaultDatabaseConnection();
         lockerReservationDao.useDefaultDatabaseConnection();
@@ -191,7 +190,7 @@ public class TestCascadeInDBLocationDao {
     public void updateLocationWithoutCascadeNeededTest() throws SQLException {
         updateLocationWithoutChangeInFK(testLocation);
 
-        // LOCATIONS and LOCATION_DESCRIPTIONS updated?
+        // LOCATIONS updated?
         locationDao.updateLocation(testLocation.getName(), testLocation);
         Location location = locationDao.getLocation(testLocation.getName());
         Assert.assertEquals("updateLocationWithoutCascadeNeededTest, location", testLocation, location);
@@ -251,14 +250,21 @@ public class TestCascadeInDBLocationDao {
         Assert.assertEquals("updateUserWithoutCascadeNeededTest, locations to scan with new id",
                 expectedScanners, scanners);
 
-        // CALENDAR entries still available?
-        List<Day> calendarDays = locationDao.getCalendarDays(testLocation.getName());
+        // CALENDAR_PERIODS still available?
+        List<CalendarPeriod> actualPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getName());
+        actualPeriods.sort(Comparator.comparing(CalendarPeriod::toString));
+        testCalendarPeriods.sort(Comparator.comparing(CalendarPeriod::toString));
 
-        calendarDays.sort(Comparator.comparing(a -> a.getDate().toString()));
-        testCalendarDays.sort(Comparator.comparing(a -> a.getDate().toString()));
+        Assert.assertEquals("updateUserWithoutCascadeNeededTest, calendar periods",
+                testCalendarPeriods, actualPeriods);
 
-        Assert.assertEquals("updateUserWithoutCascadeNeededTest, calendar days",
-                testCalendarDays, calendarDays);
+        // CALENDAR_PERIODS_FOR_LOCKERS still available?
+        List<CalendarPeriodForLockers> actualPeriodsForLockers = calendarPeriodForLockersDao.getCalendarPeriodsForLockersOfLocation(testLocation.getName());
+        actualPeriodsForLockers.sort(Comparator.comparing(CalendarPeriodForLockers::toString));
+        testCalendarPeriodsForLockers.sort(Comparator.comparing(CalendarPeriodForLockers::toString));
+
+        Assert.assertEquals("updateUserWithoutCascadeNeededTest, calendar periods for lockers",
+                testCalendarPeriodsForLockers, actualPeriodsForLockers);
     }
 
     @Test
@@ -335,14 +341,21 @@ public class TestCascadeInDBLocationDao {
         Assert.assertEquals("updateUserWithoutCascadeNeededTest, locations to scan with new id",
                 expectedScanners, scanners);
 
-        // CALENDAR shouldn't have been updated, but do the test anyway
-        List<Day> calendarDays = locationDao.getCalendarDays(testLocation.getName());
+        // CALENDAR_PERIODS updated?
+        List<CalendarPeriod> actualPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getName());
+        actualPeriods.sort(Comparator.comparing(CalendarPeriod::toString));
+        testCalendarPeriods.sort(Comparator.comparing(CalendarPeriod::toString));
 
-        calendarDays.sort(Comparator.comparing(a -> a.getDate().toString()));
-        testCalendarDays.sort(Comparator.comparing(a -> a.getDate().toString()));
+        Assert.assertEquals("updateUserWithoutCascadeNeededTest, calendar periods",
+                testCalendarPeriods, actualPeriods);
 
-        Assert.assertEquals("updateUserWithoutCascadeNeededTest, calendar days",
-                testCalendarDays, calendarDays);
+        // CALENDAR_PERIODS_FOR_LOCKERS still available?
+        List<CalendarPeriodForLockers> actualPeriodsForLockers = calendarPeriodForLockersDao.getCalendarPeriodsForLockersOfLocation(testLocation.getName());
+        actualPeriodsForLockers.sort(Comparator.comparing(CalendarPeriodForLockers::toString));
+        testCalendarPeriodsForLockers.sort(Comparator.comparing(CalendarPeriodForLockers::toString));
+
+        Assert.assertEquals("updateUserWithoutCascadeNeededTest, calendar periods for lockers",
+                testCalendarPeriodsForLockers, actualPeriodsForLockers);
     }
 
     @Test
@@ -381,8 +394,11 @@ public class TestCascadeInDBLocationDao {
         List<Locker> lockers = locationDao.getLockers(testLocation.getName());
         Assert.assertEquals("deleteLocation, lockers", 0, lockers.size());
 
-        List<Day> calendarDays = locationDao.getCalendarDays(testLocation.getName());
-        Assert.assertEquals("deleteLocation, calendar days", 0, calendarDays.size());
+        List<CalendarPeriod> calendarPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getName());
+        Assert.assertEquals("deleteLocation, calendar periods", 0, calendarPeriods.size());
+
+        List<CalendarPeriodForLockers> calendarPeriodsForLockers = calendarPeriodForLockersDao.getCalendarPeriodsForLockersOfLocation(testLocation.getName());
+        Assert.assertEquals("deleteLocation, calendar periods for lockers", 0, calendarPeriodsForLockers.size());
 
         List<User> scanners = scannerLocationDao.getScannersOnLocation(testLocation.getName());
         Assert.assertEquals("deleteLocation, scanners", 0, scanners.size());
@@ -397,36 +413,12 @@ public class TestCascadeInDBLocationDao {
         List<LockerReservation> lockerReservations = lockerReservationDao
                 .getAllLockerReservationsOfLocation(testLocation.getName());
         Assert.assertEquals("deleteLocation, locker reservations", 0, lockerReservations.size());
-
-        Assert.assertEquals("deleteLocation, descriptions", 0,
-                countDescriptionsOfLocation(testLocation.getName()));
     }
 
     private void updateLocationWithoutChangeInFK(Location location) {
         location.setAddress("Changed Address");
         location.setNumberOfLockers(100);
         location.setNumberOfSeats(200);
-        location.setMapsFrame("Changed frame");
-
-        Map<Language, String> descriptions = new HashMap<>();
-        descriptions.put(Language.ENGLISH, "This is a changed descriptions for the location");
-        descriptions.put(Language.DUTCH, "Dit is een aangepaste omschrijving van de locatie");
-        location.setDescriptions(descriptions);
-
         location.setImageUrl("Changed URL");
-        location.setStartPeriodLockers(new CustomDate(1970, 1, 1));
-        location.setEndPeriodLockers(CustomDate.now());
-    }
-
-    private int countDescriptionsOfLocation(String locationName) throws SQLException {
-        try (Connection conn = ADB.getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(Resources
-                    .databaseProperties.getString("count_descriptions_of_location"));
-            pstmt.setString(1, locationName);
-
-            ResultSet rs = pstmt.executeQuery();
-            rs.next(); // will always be true, it's a count. If a problem would occur, a SQLException will be thrown
-            return rs.getInt(1);
-        }
     }
 }
