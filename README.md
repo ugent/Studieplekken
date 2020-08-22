@@ -5,14 +5,18 @@ Have a look at our [Wiki](https://github.ugent.be/bravdwal/dsa/wiki)
 
 ### Backend
 **Requirements**
-- java
-- maven
-- postgresql
+- Java 8
+- Maven
+- PostgreSQL 11
 
-**Configure**
+**Configure**  
+1. PostgreSQL
 
-- Install the certificate at `/blokAtUGent/backend/src/main/resources/client.p12`. Do this following the instructions of your browser for custom certificates.
+Make sure that a user `postgres` with password `***REMOVED***` has following databases, running on (<b>default</b>) port 5432:
+- `blokatugent`
+- `blokatugent_test`
 
+For both databases, run the sql queries in `scripts/database/blokatugent.sql`. For the `blokatugent`, run the script `scripts/database/frontend_development_setup.sql` to provide some dummy data.
 
 **Commands**
 ```shell
@@ -23,12 +27,12 @@ mvn spring-boot:run # Start the webserver
 
 ### Frontend
 **Requirements**
-- node
-- angular
+- Node
+- Angular
 
 **Configure**
 **Commands**
 ```shell
 npm install # Install the dependencies
-ng build
+ng serve -o # Compile source files and open project in browser
 ```
