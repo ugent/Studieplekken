@@ -23,7 +23,9 @@ export class LocationsManagementComponent implements OnInit {
   addLocationFormGroup: FormGroup;
   showSuccess = false;
   showError = false;
-  showCloseButton = false;
+
+  currentLocationNameToDelete: string;
+  deletionWasSuccess: boolean = undefined;
 
   constructor(private locationService: LocationService) { }
 
@@ -62,6 +64,22 @@ export class LocationsManagementComponent implements OnInit {
     return this.addLocationFormGroup.valid;
   }
 
+  prepareToDeleteLocation(locationName: string): void {
+    this.deletionWasSuccess = undefined;
+    this.currentLocationNameToDelete = locationName;
+  }
+
+  deleteLocationLinkedToCurrentLocationNameToDelete(): void {
+    this.deletionWasSuccess = null;
+    this.locationService.deleteLocation(this.currentLocationNameToDelete).subscribe(
+      () => {
+        this.successDeletionHandler();
+      }, () => {
+        this.deletionWasSuccess = false;
+      }
+    )
+  }
+
   successHandler(): void {
     this.showSuccess = true;
     setTimeout(() => this.showSuccess = false, msToShowFeedback);
@@ -69,9 +87,18 @@ export class LocationsManagementComponent implements OnInit {
     this.setupForm();
   }
 
+  successDeletionHandler(): void {
+    this.deletionWasSuccess = true;
+    this.locations = this.locationService.getLocations();
+  }
+
   errorHandler(): void {
     this.showError = true;
     setTimeout(() => this.showError = false, msToShowFeedback);
+  }
+
+  setCurrentLocationNameToDelete(locationName: string): void {
+    this.currentLocationNameToDelete = locationName;
   }
 
   get name(): AbstractControl { return this.addLocationFormGroup.get('name'); }

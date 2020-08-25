@@ -42,15 +42,19 @@ export class LocationService {
       .pipe(tap<any>(() => {this.locations.set(location.name, location)}));
   }
 
-  updateLocation(locationName: string, location: Location): Observable<void> {
+  updateLocation(locationName: string, location: Location): Observable<any> {
     const ret = this.http.put<void>(api.updateLocation.replace('{locationName}', locationName), location);
 
     // let an update follow with a getLocations() so that the new information is retrieved
-    ret.subscribe(next => {
+    ret.subscribe(() => {
       this.getLocations();
     });
 
     return ret;
+  }
+
+  deleteLocation(locationName: string): Observable<any> {
+    return this.http.delete(api.deleteLocation.replace('{locationName}', locationName));
   }
 
   getNumberOfReservations(location: Location): Observable<number> {

@@ -51,16 +51,6 @@ public class LocationController {
         }
     }
 
-    @GetMapping("/{locationName}/reservations/count")
-    public int getAmountOfReservationsToday(@PathVariable("locationName") String locationName) {
-        try {
-            return locationDao.getCountOfReservations(CustomDate.now()).get(locationName);
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
-    }
-
     @PostMapping
     public void addLocation(@RequestBody Location location) {
         try {
@@ -75,6 +65,26 @@ public class LocationController {
     public void updateLocation(@PathVariable("locationName") String locationName, @RequestBody Location location) {
         try {
             locationDao.updateLocation(locationName, location);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @DeleteMapping("/{locationName}")
+    public void deleteLocation(@PathVariable("locationName") String locationName) {
+        try {
+            locationDao.deleteLocation(locationName);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @GetMapping("/{locationName}/reservations/count")
+    public int getAmountOfReservationsToday(@PathVariable("locationName") String locationName) {
+        try {
+            return locationDao.getCountOfReservations(CustomDate.now()).get(locationName);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");

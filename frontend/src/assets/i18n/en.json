@@ -158,6 +158,19 @@
 
         "successMessage": "Successfully added the new location",
         "errorMessage": "Something went wrong while adding the new location"
+      },
+
+      "deleteLocationModal": {
+        "title": "Sure to delete location?",
+
+        "body": "Are you sure that you want to delete {locationName}?",
+
+        "loading": "Waiting for response of server...",
+        "success": "Successfully deleted the new location",
+        "error": "Something went wrong while deleting the location",
+
+        "yesButton": "Delete",
+        "noButton": "Cancel"
       }
     }
   },

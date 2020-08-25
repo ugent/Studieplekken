@@ -17,7 +17,7 @@
           <!-- next table header directive is empty, but it is here to make sure the
                thead its line extends all the way -->
           <th></th>
-          <!-- TODO: another header to fill for a column with a bucket to tell: "delete the location" -->
+          <th></th>
         </tr>
         </thead>
 
@@ -30,6 +30,11 @@
           <td>
             <a routerLink="./{{location.name}}">{{'management.locations.table.details' | translate}}</a>
           </td>
+          <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
+              data-toggle="modal" data-target="#deleteLocationModal"
+              (click)="prepareToDeleteLocation(location.name)">
+            <span class="glyphicon glyphicon-trash pointerCursor"></span>
+          </td>
         </tr>
         </tbody>
       </table>
@@ -39,6 +44,7 @@
           {{'management.locations.addNew' | translate}}
         </button>
       </div>
+
     </div>
   </div>
 </div>
@@ -141,17 +147,14 @@
 
         <!-- Modal footer -->
         <div class="modal-footer">
-          <!-- If a location -->
-          <div *ngIf="!showCloseButton else closeButtonAlternative">
-            <button type="button" class="btn btn-secondary"
-                    data-dismiss="modal" (click)="clearForm()">
-              {{'management.locations.addLocationModal.cancelButton' | translate}}
-            </button>
-            <button type="submit" class="btn btn-primary"
-                    [disabled]="!validForm()">
-              {{'management.locations.addLocationModal.addButton' | translate}}
-            </button>
-          </div>
+          <button type="button" class="btn btn-secondary"
+                  data-dismiss="modal" (click)="clearForm()">
+            {{'management.locations.addLocationModal.cancelButton' | translate}}
+          </button>
+          <button type="submit" class="btn btn-primary"
+                  [disabled]="!validForm()">
+            {{'management.locations.addLocationModal.addButton' | translate}}
+          </button>
         </div>
       </form>
 
@@ -170,8 +173,50 @@
   </div>
 </div>
 
-<ng-template #closeButtonAlternative>
-  <button type="button" class="btn btn-primary" (click)="closeModalView()">
-    {{'management.locations.addLocationModal.closeButton' | translate}}
-  </button>
-</ng-template>
+<!-- Modal view to ask whether the user is sure to delete a location -->
+<div class="modal fade" id="deleteLocationModal" tabindex="-1" role="dialog"
+     aria-labelledby="deleteLocationModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <!-- Header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteLocationModalLabel">
+          {{'management.locations.deleteLocationModal.title' | translate}}
+        </h5>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div>
+          {{('management.locations.deleteLocationModal.body' | translate)
+              .replace('{locationName}', currentLocationNameToDelete)}}
+        </div>
+
+        <div *ngIf="deletionWasSuccess === null">
+          {{'management.locations.deleteLocationModal.loading' | translate}}
+        </div>
+
+        <div *ngIf="deletionWasSuccess === true" class="alert alert-success">
+          {{'management.locations.deleteLocationModal.success' | translate}}
+        </div>
+
+        <div *ngIf="deletionWasSuccess === false" class="alert alert-error">
+          {{'management.locations.deleteLocationModal.error' | translate}}
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary"
+                (click)="deleteLocationLinkedToCurrentLocationNameToDelete()">
+          {{'management.locations.deleteLocationModal.yesButton' | translate}}
+        </button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          {{'management.locations.deleteLocationModal.noButton' | translate}}
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
