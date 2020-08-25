@@ -121,6 +121,7 @@
 
     "locations": {
       "title": "Beheer van bloklocaties",
+      "addNew": "Locatie toevoegen",
 
       "table": {
         "header": {
@@ -131,6 +132,38 @@
         },
 
         "details": "Details"
+      },
+
+      "addLocationModal": {
+        "title": "Nieuwe locatie toevoegen",
+
+        "form": {
+          "locationName": "Naam",
+          "address": "Adres",
+          "numberOfSeats": "Aantal zitjes",
+          "numberOfLockers": "Aantal lockers",
+          "imageUrl": "URL van foto (optioneel)"
+        },
+
+        "cancelButton": "Annuleer",
+        "addButton": "Voeg toe",
+        "closeButton": "Sluit",
+
+        "successMessage": "Het toevoegen van de locatie is geslaagd",
+        "errorMessage": "Er is iets misgelopen tijdens het toevoegen van de nieuwe locatie"
+      },
+
+      "deleteLocationModal": {
+        "title": "Locatie verwijderen?",
+
+        "body": "Ben je zeker dat je {locationName} wil verwijderen?",
+
+        "loading": "Wachten op antwoord van de server...",
+        "success": "Het verwijderen van de locatie is geslaagd",
+        "error": "Er is iets misgelopen tijdens het verwijderen van de locatie",
+
+        "yesButton": "Verwijder",
+        "noButton": "Annuleer"
       }
     }
   },

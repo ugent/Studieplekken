@@ -1,7 +1,3 @@
-<div class="alert alert-warning">
-  Working on update, this is not yet working in backend
-</div>
-
 <div class="container-fluid" *ngIf="location | async as location">
   <div class="panel-body" style="padding: 20px">
     <app-calendar
@@ -14,16 +10,17 @@
 
   <!-- Form to edit the calendar -->
   <div class="row">
-    <!-- Title and "add new button -->
+    <!-- Title -->
     <h3>
       {{'management.locationDetails.lockerCalendar.form.title' | translate}}
-
-      <div class="pull-right">
-        <button class="btn btn-primary" (click)="addCalendarPeriodForLockersButtonClick(location)">
-          {{'management.locationDetails.lockerCalendar.form.addButton' | translate}}
-        </button>
-      </div>
     </h3>
+
+    <!-- Button to add new period -->
+    <div class="pull-right">
+      <button class="btn btn-primary" (click)="addCalendarPeriodForLockersButtonClick(location)">
+        {{'management.locationDetails.lockerCalendar.form.addButton' | translate}}
+      </button>
+    </div>
   </div>
 
   <!-- The form itself -->
@@ -92,12 +89,14 @@
     <div class="row">
       <div class="pull-right">
         <button class="btn btn-primary left-button"
-                (click)="updateCalendarPeriodForLockersButtonClick()"
+                (click)="updateCalendarPeriodForLockersButtonClick(location.name)"
                 [disabled]="disableFootButtons">
           {{'management.locationDetails.lockerCalendar.form.updateButton' | translate}}
         </button>
 
-        <button class="btn btn-primary" (click)="cancelChangesButtonClick()" [disabled]="disableFootButtons">
+        <button class="btn btn-primary"
+                (click)="cancelChangesButtonClick()"
+                [disabled]="disableFootButtons">
           {{'management.locationDetails.lockerCalendar.form.cancelButton' | translate}}
         </button>
       </div>

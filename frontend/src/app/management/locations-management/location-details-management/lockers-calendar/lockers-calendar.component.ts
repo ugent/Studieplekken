@@ -135,20 +135,21 @@ export class LockersCalendarComponent implements OnInit {
     ];
   }
 
-  updateCalendarPeriodForLockersButtonClick(): void {
+  updateCalendarPeriodForLockersButtonClick(locationName: string): void {
     this.disableFootButtons = true;
-    this.updateCalendarPeriodForLockers();
+    this.updateCalendarPeriodForLockers(locationName);
+    this.setupEvents(locationName);
   }
 
   /**
    * This is the method that does all the CUD-work of
    * the CRUD operations available for CALENDAR_PERIODS_FOR_LOCKERS
    */
-  updateCalendarPeriodForLockers(): void {
+  updateCalendarPeriodForLockers(locationName: string): void {
     if (this.hasAnyPeriodChanged()) {
       // if this.events.length === 0, delete everything instead of updating
       if (this.events.length === 0) {
-        this.deleteAllPeriodsInDataLayer();
+        this.deleteAllPeriodsInDataLayer(locationName);
         return;
       }
 
@@ -166,7 +167,7 @@ export class LockersCalendarComponent implements OnInit {
 
       // if this.calendarPeriodsForLockersInDataLayer.length === 0, add all events instead of updating
       if (this.calendarPeriodsForLockersInDataLayer.length === 0) {
-        this.addAllPeriodsInEvents();
+        this.addAllPeriodsInEvents(locationName);
         return;
       }
 
@@ -174,21 +175,23 @@ export class LockersCalendarComponent implements OnInit {
       this.calendarPeriodsForLockersService.updateCalendarPeriodsForLockers(
         this.calendarPeriodsForLockersInDataLayer,
         this.events.map<CalendarPeriodForLockers>(n => n.meta)
-      ).subscribe(() => this.successHandler(), () => this.errorHandler());
+      ).subscribe(() => {
+        this.successHandler(locationName)
+      }, () => this.errorHandler());
     } else {
       this.handleNothingHasChangedOnUpdate();
     }
   }
 
-  deleteAllPeriodsInDataLayer(): void {
+  deleteAllPeriodsInDataLayer(locationName: string): void {
     this.calendarPeriodsForLockersService.deleteCalendarPeriodsForLockers(this.calendarPeriodsForLockersInDataLayer)
-      .subscribe(() => this.successHandler(), () => this.errorHandler());
+      .subscribe(() => this.successHandler(locationName), () => this.errorHandler());
   }
 
-  addAllPeriodsInEvents(): void {
+  addAllPeriodsInEvents(locationName: string): void {
     this.calendarPeriodsForLockersService
       .addCalendarPeriodsForLockers(this.events.map<CalendarPeriodForLockers>(n => n.meta))
-      .subscribe(() => this.successHandler(), () => this.errorHandler());
+      .subscribe(() => this.successHandler(locationName), () => this.errorHandler());
   }
 
   handleWrongCalendarPeriodFormatOnUpdate(): void {
@@ -215,14 +218,14 @@ export class LockersCalendarComponent implements OnInit {
     this.disableFootButtons = true;
   }
 
-  successHandler(): void {
-    console.log('successHandler called');
+  successHandler(locationName: string): void {
     this.showSuccess = true;
     setTimeout(() => this.showSuccess = false, this.msToShowFeedback);
+    // Refresh the events in the 'data layer' attribute
+    this.setupEvents(locationName);
   }
 
   errorHandler(): void {
-    console.log('errorHandler called');
     this.showError = true;
     setTimeout(() => this.showError = false, this.msToShowFeedback);
   }

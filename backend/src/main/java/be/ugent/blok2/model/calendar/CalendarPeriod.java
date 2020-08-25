@@ -4,10 +4,8 @@ import be.ugent.blok2.model.reservables.Location;
 
 import java.util.Objects;
 
-public class CalendarPeriod implements Cloneable {
+public class CalendarPeriod extends Period implements Cloneable {
     private Location location;
-    private String startsAt; // date: YYYY-MM-DD
-    private String endsAt; // date: YYYY-MM-DD
     private String openingTime; // time: hh:mm
     private String closingTime; // time: hh:mm
     private String reservableFrom; // datetime: YYYY-MM-DDThh:mm
@@ -20,8 +18,8 @@ public class CalendarPeriod implements Cloneable {
     public String toString() {
         return "CalendarPeriod{" +
                 "location=" + location +
-                ", startsAt='" + startsAt + '\'' +
-                ", endsAt='" + endsAt + '\'' +
+                ", startsAt='" + getStartsAt() + '\'' +
+                ", endsAt='" + getEndsAt() + '\'' +
                 ", openingTime='" + openingTime + '\'' +
                 ", closingTime='" + closingTime + '\'' +
                 ", reservableFrom='" + reservableFrom + '\'' +
@@ -34,8 +32,8 @@ public class CalendarPeriod implements Cloneable {
         if (o == null || getClass() != o.getClass()) return false;
         CalendarPeriod that = (CalendarPeriod) o;
         return Objects.equals(location, that.location) &&
-                Objects.equals(startsAt, that.startsAt) &&
-                Objects.equals(endsAt, that.endsAt) &&
+                Objects.equals(getStartsAt(), that.getStartsAt()) &&
+                Objects.equals(getEndsAt(), that.getEndsAt()) &&
                 Objects.equals(openingTime, that.openingTime) &&
                 Objects.equals(closingTime, that.closingTime) &&
                 Objects.equals(reservableFrom, that.reservableFrom);
@@ -43,7 +41,7 @@ public class CalendarPeriod implements Cloneable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(startsAt, endsAt, openingTime, closingTime, reservableFrom);
+        return Objects.hash(getStartsAt(), getEndsAt(), openingTime, closingTime, reservableFrom);
     }
 
     @Override
@@ -63,22 +61,6 @@ public class CalendarPeriod implements Cloneable {
 
     public void setLocation(Location location) {
         this.location = location;
-    }
-
-    public String getStartsAt() {
-        return startsAt;
-    }
-
-    public void setStartsAt(String startsAt) {
-        this.startsAt = startsAt;
-    }
-
-    public String getEndsAt() {
-        return endsAt;
-    }
-
-    public void setEndsAt(String endsAt) {
-        this.endsAt = endsAt;
     }
 
     public String getOpeningTime() {

@@ -10,7 +10,7 @@ export const api = {
   // CALENDAR_PERIODS
   calendarPeriods: '/api/locations/calendar/{locationName}',
   addCalendarPeriods: '/api/locations/calendar',
-  updateCalendarPeriods: '/api/locations/calendar',
+  updateCalendarPeriods: '/api/locations/calendar/{locationName}',
   deleteCalendarPeriods: '/api/locations/calendar',
 
   // CALENDAR_PERIODS_FOR_LOCKERS
@@ -22,7 +22,9 @@ export const api = {
   // LOCATIONS
   locations: '/api/locations',
   location: '/api/locations/{locationName}',
+  addLocation: '/api/locations',
   updateLocation: '/api/locations/{locationName}',
+  deleteLocation: '/api/locations/{locationName}',
   numberOfReservations: '/api/locations/{locationName}/reservations/count',
 
   // LOCATION_RESERVATIONS
@@ -41,6 +43,11 @@ export const api = {
 export const vars = {
   defaultLocationImage: 'assets/images/default_location.jpg'
 };
+
+/*
+ * The amount of milliseconds that a feedback div should be shown
+ */
+export const msToShowFeedback = 10000;
 
 /*
  * For easier debugging in development mode, you can import the following file

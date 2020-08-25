@@ -40,7 +40,7 @@ export function isCalendarPeriodForLockersValid(period: CalendarPeriodForLockers
 
 export function calendarPeriodForLockersToCalendarEvent(period: CalendarPeriodForLockers): any {
   return {
-    title: 'x',
+    title: '',
     start: new Date(period.startsAt),
     end: new Date(period.endsAt),
     meta: period
