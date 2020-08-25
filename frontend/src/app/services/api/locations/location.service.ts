@@ -37,6 +37,11 @@ export class LocationService {
     }
   }
 
+  addLocation(location: Location): Observable<any> {
+    return this.http.post(api.addLocation, location)
+      .pipe(tap<any>(() => {this.locations.set(location.name, location)}));
+  }
+
   updateLocation(locationName: string, location: Location): Observable<void> {
     const ret = this.http.put<void>(api.updateLocation.replace('{locationName}', locationName), location);
 
