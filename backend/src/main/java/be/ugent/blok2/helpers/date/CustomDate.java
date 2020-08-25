@@ -3,8 +3,11 @@ package be.ugent.blok2.helpers.date;
 import be.ugent.blok2.helpers.exceptions.DateFormatException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * This is a custom class to represent a date.
@@ -85,6 +88,15 @@ public class CustomDate implements Cloneable {
     @JsonIgnore
     public boolean isSameDay(CustomDate day) {
         return day.year == this.year && day.month == this.month && day.day == this.day;
+    }
+
+    public static Date toDate(CustomDate customDate) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        try {
+            return format.parse(customDate.toString().replace('T', ' '));
+        } catch (ParseException e) {
+            return null;
+        }
     }
 
     @Override

@@ -26,9 +26,9 @@ export class CalendarPeriodsService {
    * the controller layer, and the correct add/delete/update methods to be called
    * will be invoked.
    */
-  updateCalendarPeriods(from: CalendarPeriod[], to: CalendarPeriod[]): Observable<void> {
+  updateCalendarPeriods(locationName: string, from: CalendarPeriod[], to: CalendarPeriod[]): Observable<void> {
     const body = [from, to];
-    return this.http.put<void>(api.updateCalendarPeriods, body);
+    return this.http.put<void>(api.updateCalendarPeriods.replace('{locationName}', locationName), body);
   }
 
   deleteCalendarPeriods(periods: CalendarPeriod[]): Observable<void> {

@@ -10,7 +10,7 @@ export const api = {
   // CALENDAR_PERIODS
   calendarPeriods: '/api/locations/calendar/{locationName}',
   addCalendarPeriods: '/api/locations/calendar',
-  updateCalendarPeriods: '/api/locations/calendar',
+  updateCalendarPeriods: '/api/locations/calendar/{locationName}',
   deleteCalendarPeriods: '/api/locations/calendar',
 
   // CALENDAR_PERIODS_FOR_LOCKERS

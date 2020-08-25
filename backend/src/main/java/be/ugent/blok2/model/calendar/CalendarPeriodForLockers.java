@@ -4,10 +4,8 @@ import be.ugent.blok2.model.reservables.Location;
 
 import java.util.Objects;
 
-public class CalendarPeriodForLockers implements Cloneable {
+public class CalendarPeriodForLockers extends Period implements Cloneable {
     private Location location;
-    private String startsAt; // date: YYYY-MM-DD
-    private String endsAt; // date: YYYY-MM-DD
     private String reservableFrom; // datetime: YYYY-MM-DDThh:mm
 
     public CalendarPeriodForLockers() {
@@ -18,8 +16,8 @@ public class CalendarPeriodForLockers implements Cloneable {
     public String toString() {
         return "CalendarPeriodForLockers{" +
                 "location=" + location +
-                ", startsAt='" + startsAt + '\'' +
-                ", endsAt='" + endsAt + '\'' +
+                ", startsAt='" + getStartsAt() + '\'' +
+                ", endsAt='" + getEndsAt() + '\'' +
                 ", reservableFrom='" + reservableFrom + '\'' +
                 '}';
     }
@@ -30,14 +28,14 @@ public class CalendarPeriodForLockers implements Cloneable {
         if (o == null || getClass() != o.getClass()) return false;
         CalendarPeriodForLockers that = (CalendarPeriodForLockers) o;
         return Objects.equals(location, that.location) &&
-                Objects.equals(startsAt, that.startsAt) &&
-                Objects.equals(endsAt, that.endsAt) &&
+                Objects.equals(getStartsAt(), that.getStartsAt()) &&
+                Objects.equals(getEndsAt(), that.getEndsAt()) &&
                 Objects.equals(reservableFrom, that.reservableFrom);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(location, startsAt, endsAt, reservableFrom);
+        return Objects.hash(location, getStartsAt(), getEndsAt(), reservableFrom);
     }
 
     @Override
@@ -57,22 +55,6 @@ public class CalendarPeriodForLockers implements Cloneable {
 
     public void setLocation(Location location) {
         this.location = location;
-    }
-
-    public String getStartsAt() {
-        return startsAt;
-    }
-
-    public void setStartsAt(String startsAt) {
-        this.startsAt = startsAt;
-    }
-
-    public String getEndsAt() {
-        return endsAt;
-    }
-
-    public void setEndsAt(String endsAt) {
-        this.endsAt = endsAt;
     }
 
     public String getReservableFrom() {

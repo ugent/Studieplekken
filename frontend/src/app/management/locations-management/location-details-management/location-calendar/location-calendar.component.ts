@@ -135,20 +135,20 @@ export class LocationCalendarComponent implements OnInit {
     ];
   }
 
-  updateOpeningPeriodButtonClick(): void {
+  updateOpeningPeriodButtonClick(locationName: string): void {
     this.disableFootButtons = true;
-    this.updateOpeningPeriod();
+    this.updateOpeningPeriod(locationName);
   }
 
   /**
    * This is the method that does all the CUD-work of
    * the CRUD operations available for CALENDAR_PERIODS
    */
-  updateOpeningPeriod(): void {
+  updateOpeningPeriod(locationName: string): void {
     if (this.hasAnyPeriodChanged()) {
       // if this.events.length === 0, delete everything instead of updating
       if (this.events.length === 0) {
-        this.deleteAllPeriodsInDataLayer();
+        this.deleteAllPeriodsInDataLayer(locationName);
         return;
       }
 
@@ -166,28 +166,31 @@ export class LocationCalendarComponent implements OnInit {
 
       // if this.eventsInDataLayer.length === 0, add all events instead of updating
       if (this.calendarPeriodsInDataLayer.length === 0) {
-        this.addAllPeriodsInEvents();
+        this.addAllPeriodsInEvents(locationName);
         return;
       }
 
       // this.events is not empty, and all values are valid: persist update(s)
       this.calendarPeriodsService.updateCalendarPeriods(
+        locationName,
         this.calendarPeriodsInDataLayer,
         this.events.map<CalendarPeriod>(n => n.meta)
-      ).subscribe(() => this.successHandler(), () => this.errorHandler());
+      ).subscribe(() => {
+        this.successHandler(locationName);
+      }, () => this.errorHandler());
     } else {
       this.handleNothingHasChangedOnUpdate();
     }
   }
 
-  deleteAllPeriodsInDataLayer(): void {
+  deleteAllPeriodsInDataLayer(locationName: string): void {
     this.calendarPeriodsService.deleteCalendarPeriods(this.calendarPeriodsInDataLayer)
-      .subscribe(() => this.successHandler(), () => this.errorHandler());
+      .subscribe(() => this.successHandler(locationName), () => this.errorHandler());
   }
 
-  addAllPeriodsInEvents(): void{
+  addAllPeriodsInEvents(locationName: string): void{
     this.calendarPeriodsService.addCalendarPeriods(this.events.map<CalendarPeriod>(n => n.meta))
-      .subscribe(() => this.successHandler(), () => this.errorHandler());
+      .subscribe(() => this.successHandler(locationName), () => this.errorHandler());
   }
 
   handleWrongCalendarPeriodFormatOnUpdate(): void {
@@ -214,9 +217,10 @@ export class LocationCalendarComponent implements OnInit {
     this.disableFootButtons = true;
   }
 
-  successHandler(): void {
+  successHandler(locationName: string): void {
     this.showSuccess = true;
     setTimeout(() => this.showSuccess = false, this.msToShowFeedback);
+    this.setupEvents(locationName);
   }
 
   errorHandler(): void {
