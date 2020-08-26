@@ -120,6 +120,10 @@
           "successButNoChangesMessage": "Er waren geen veranderingen nodig",
           "errorMessage": "Het aanpassen van de kalender is mislukt. Er is iets misgegaan."
         }
+      },
+
+      "lockersTable":{
+        "title": "Tabel met overzicht van lockers"
       }
     },
 

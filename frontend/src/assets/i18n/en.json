@@ -120,6 +120,10 @@
           "successButNoChangesMessage": "No changed were required",
           "errorMessage": "Update was not successful. Something went wrong."
         }
+      },
+
+      "lockersTable":{
+        "title": "Table with details of the lockers"
       }
     },
 
