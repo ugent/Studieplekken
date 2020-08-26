@@ -6,8 +6,7 @@ import {api} from '../../../environments/environment';
 import {Penalty} from '../../shared/model/Penalty';
 import {LocationReservation} from '../../shared/model/LocationReservation';
 import {LockerReservation, LockerReservationConstructor} from '../../shared/model/LockerReservation';
-import {map, tap} from 'rxjs/operators';
-import {Locker} from '../../shared/model/Locker';
+import {map} from 'rxjs/operators';
 
 /**
  * The structure of the authentication service has been based on this article:
@@ -36,6 +35,7 @@ export class AuthenticationService {
     //   this way, if a user was logged in previously, he/she doesn't have to do it again
     http.get<User>(api.user_by_mail.replace('{mail}', 'bram.vandewalle@ugent.be'))
       .subscribe(next => {
+        console.log(next);
         this.userSubject.next(next);
     });
   }
@@ -56,8 +56,9 @@ export class AuthenticationService {
     return this.userSubject.value.augentID !== '';
   }
 
-  updatePassword(user: User): void {
-    // TODO: update password
+  updatePassword(from: string, to: string): Observable<any> {
+    const body = { from, to, user: this.userValue() };
+    return this.http.put(api.changePassword, body);
   }
 
   getLocationReservations(): Observable<LocationReservation[]> {

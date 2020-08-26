@@ -35,6 +35,7 @@ export const api = {
 
   // USERS
   user_by_mail: '/api/account/{mail}',
+  changePassword: '/api/account/password',
 
   // PENALTY_BOOK
   penalties_by_user_id: '/api/penalties/{userId}'

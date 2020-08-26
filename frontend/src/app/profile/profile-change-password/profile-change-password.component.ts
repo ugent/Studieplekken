@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {validateConfirmationPassword, validPassword} from '../../shared/validators/PasswordValidators';
+import {AuthenticationService} from '../../services/authentication/authentication.service';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
   selector: 'app-profile-change-password',
@@ -9,29 +11,44 @@ import {validateConfirmationPassword, validPassword} from '../../shared/validato
 })
 export class ProfileChangePasswordComponent implements OnInit {
   formGroup: FormGroup = new FormGroup({
+    oldPassword: new FormControl('', Validators.required),
     password: new FormControl('',
       [Validators.minLength(8)]),
     confirmPassword: new FormControl('')
   }, {validators: [validateConfirmationPassword, validPassword]});
 
-  constructor() { }
+  wrongOldPassword = false;
+  otherErrorOnUpdating = false;
+
+  constructor(private authenticationService: AuthenticationService) { }
 
   ngOnInit(): void {
   }
 
-  submitChangePassword(data: {password: string, confirmPassword: string}): void {
+  submitChangePassword(data: {oldPassword: string, password: string, confirmPassword: string}): void {
+    this.wrongOldPassword = false;
+    this.otherErrorOnUpdating = false;
+
     if (this.formGroup.valid) {
-      // TODO
-      console.log(data);
+      this.authenticationService.updatePassword(data.oldPassword, data.password).subscribe(
+        () => {
+          this.successFullyUpdatedPasswordHandler();
+        }, (error: HttpErrorResponse) => {
+          this.errorOnUpdatingPasswordHandler(error);
+        }
+      );
     }
   }
 
   cancelChangePassword(): void {
-    this.formGroup.setValue({password: '', confirmPassword: ''});
+    this.wrongOldPassword = false;
+    this.otherErrorOnUpdating = false;
+
+    this.formGroup.setValue({oldPassword: '', password: '', confirmPassword: ''});
   }
 
-  disabledSubmitButton(data: {password: string, confirmPassword: string}): boolean {
-    return data.password === '' || data.confirmPassword === '' || !this.formGroup.valid;
+  disabledSubmitButton(data: {oldPassword: string, password: string, confirmPassword: string}): boolean {
+    return data.oldPassword === '' || data.password === '' || data.confirmPassword === '' || !this.formGroup.valid;
   }
 
   isPasswordValid(): boolean {
@@ -40,5 +57,20 @@ export class ProfileChangePasswordComponent implements OnInit {
 
   confirmPasswordMatches(): boolean {
     return this.formGroup.get('password').value === this.formGroup.get('confirmPassword').value;
+  }
+
+  successFullyUpdatedPasswordHandler(): void {
+    console.log('successfully updated password');
+    // reset form
+    this.cancelChangePassword();
+  }
+
+  errorOnUpdatingPasswordHandler(error: HttpErrorResponse): void {
+    // UNAUTHORIZED
+    if (error.status === 401) {
+      this.wrongOldPassword = true;
+    } else {
+      this.otherErrorOnUpdating = true;
+    }
   }
 }
