@@ -4,6 +4,7 @@ import {FormControl, FormGroup} from '@angular/forms';
 import {LocationService} from '../../../../services/api/locations/location.service';
 import {Observable} from 'rxjs';
 import {Router} from '@angular/router';
+import {msToShowFeedback} from "../../../../../environments/environment";
 
 @Component({
   selector: 'app-details-form',
@@ -24,6 +25,8 @@ export class DetailsFormComponent implements OnInit {
   disableEditLocationButton = false;
   disableCancelLocationButton = true;
   disablePersistLocationButton = true;
+
+  successUpdatingLocation: boolean = undefined;
 
   constructor(private locationService: LocationService,
               private router: Router) { }
@@ -79,17 +82,34 @@ export class DetailsFormComponent implements OnInit {
     updatedLocation.numberOfLockers = to.numberOfLockers;
     updatedLocation.imageUrl = to.imageUrl;
 
-    this.locationService.updateLocation(from.name, updatedLocation).subscribe(() => {
-      if (from.name !== to.name) {
-        this.router.navigate(['/management/locations/' + to.name]).catch();
-      }
+    this.successUpdatingLocation = null; // show 'loading' message
+    this.locationService.updateLocation(from.name, updatedLocation).subscribe(
+      () => {
+        this.successHandler();
 
-      // update the location attribute
-      this.location = this.locationService.getLocation(updatedLocation.name);
-    });
+        if (from.name !== to.name) {
+          this.router.navigate(['/management/locations/' + to.name]).catch();
+        }
+
+        // update the location attribute
+        this.location = this.locationService.getLocation(updatedLocation.name);
+      }, () => {
+        this.errorHandler();
+      }
+    );
 
     this.disableFormGroup();
     this.updateFormGroup(updatedLocation);
     this.changeEnableDisableLocationDetailsFormButtons();
+  }
+
+  successHandler(): void {
+    this.successUpdatingLocation = true;
+    setTimeout(() => this.successUpdatingLocation = undefined, msToShowFeedback);
+  }
+
+  errorHandler(): void {
+    this.successUpdatingLocation = false;
+    setTimeout(() => this.successUpdatingLocation = undefined, msToShowFeedback);
   }
 }

@@ -50,8 +50,6 @@
       </div>
     </div>
 
-    <!-- start- and endPeriodLockers will be handled in another panel -->
-
     <!-- Buttons to edit/cancel/persist location -->
     <div class="row form-group">
       <div class="col-lg-11">
@@ -79,6 +77,20 @@
             {{'management.locationDetails.form.persist' | translate}}
           </button>
         </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="alert alert-info" *ngIf="successUpdatingLocation === null">
+        {{'management.locationDetails.form.loading' | translate}}
+      </div>
+
+      <div class="alert alert-success" *ngIf="successUpdatingLocation === true">
+        {{'management.locationDetails.form.success' | translate}}
+      </div>
+
+      <div class="alert alert-error" *ngIf="successUpdatingLocation === false">
+        {{'management.locationDetails.form.error' | translate}}
       </div>
     </div>
   </form>

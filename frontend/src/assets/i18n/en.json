@@ -69,7 +69,11 @@
 
         "edit": "Edit",
         "cancel": "Cancel",
-        "persist": "Okay"
+        "persist": "Okay",
+
+        "loading": "Waiting for response of server...",
+        "success": "Successfully updated the location",
+        "error": "An error occurred while updating the location"
       },
 
       "calendar": {
