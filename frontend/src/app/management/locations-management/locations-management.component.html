@@ -40,7 +40,8 @@
       </table>
 
       <div class="row" style="margin-top: 20px">
-        <button class="btn btn-primary" data-toggle="modal" data-target="#addLocationModal">
+        <button class="btn btn-primary" data-toggle="modal" data-target="#addLocationModal"
+                (click)="prepareToAddLocation()">
           {{'management.locations.addNew' | translate}}
         </button>
       </div>
@@ -70,11 +71,9 @@
         </h5>
       </div>
 
-      <form [formGroup]="addLocationFormGroup"
-            (ngSubmit)="submitNewLocation(addLocationFormGroup.value)">
-        <!-- Modal body -->
-        <div class="modal-body">
-
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form [formGroup]="addLocationFormGroup">
           <!-- Location name -->
           <div class="row form-group">
             <label class="col-lg-3 control-label" for="name">
@@ -85,7 +84,7 @@
 
             <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert alert-danger">
               <div *ngIf="name.errors.required">
-                {{'management.locations.addLocationModal.formErrors.locationName' | translate}}
+                {{'management.locations.addLocationModal.formValidationErrorMessages.locationName' | translate}}
               </div>
             </div>
           </div>
@@ -100,7 +99,7 @@
 
             <div *ngIf="address.invalid && (address.dirty || address.touched)" class="alert alert-danger">
               <div *ngIf="address.errors.required">
-                {{'management.locations.addLocationModal.formErrors.address' | translate}}
+                {{'management.locations.addLocationModal.formValidationErrorMessages.address' | translate}}
               </div>
             </div>
           </div>
@@ -115,7 +114,7 @@
 
             <div *ngIf="numberOfSeats.invalid && (numberOfSeats.dirty || numberOfSeats.touched)" class="alert alert-danger">
               <div *ngIf="numberOfSeats.errors.required">
-                {{'management.locations.addLocationModal.formErrors.numberOfSeats' | translate}}
+                {{'management.locations.addLocationModal.formValidationErrorMessages.numberOfSeats' | translate}}
               </div>
             </div>
           </div>
@@ -130,7 +129,7 @@
 
             <div *ngIf="numberOfLockers.invalid && (numberOfLockers.dirty || numberOfLockers.touched)" class="alert alert-danger">
               <div *ngIf="numberOfLockers.errors.required">
-                {{'management.locations.addLocationModal.formErrors.numberOfLockers' | translate}}
+                {{'management.locations.addLocationModal.formValidationErrorMessages.numberOfLockers' | translate}}
               </div>
             </div>
           </div>
@@ -143,29 +142,34 @@
               <input class="form-control" id="imageUrl" type="text" formControlName="imageUrl" >
             </div>
           </div>
-        </div>
+        </form>
+      </div>
 
-        <!-- Modal footer -->
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary"
-                  data-dismiss="modal" (click)="clearForm()">
-            {{'management.locations.addLocationModal.cancelButton' | translate}}
-          </button>
-          <button type="submit" class="btn btn-primary"
-                  [disabled]="!validForm()">
-            {{'management.locations.addLocationModal.addButton' | translate}}
-          </button>
-        </div>
-      </form>
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary"
+                [disabled]="!validForm()"
+                (click)="addNewLocation(addLocationFormGroup.value)">
+          {{'management.locations.addLocationModal.addButton' | translate}}
+        </button>
+        <button type="button" class="btn btn-secondary"
+                data-dismiss="modal" (click)="clearForm()">
+          {{'management.locations.addLocationModal.cancelButton' | translate}}
+        </button>
+      </div>
 
       <!-- Feedback to the user -->
-      <div class="row">
-        <div class="alert alert-success" *ngIf="showSuccess">
-          {{'management.locations.addLocationModal.successMessage' | translate}}
+      <div class="container-fluid">
+        <div class="alert alert-info" *ngIf="deletionWasSuccess === null">
+          {{'management.locations.addLocationModal.loading' | translate}}
         </div>
 
-        <div class="alert alert-error" *ngIf="showError">
-          {{'management.locations.addLocationModal.errorMessage' | translate}}
+        <div class="alert alert-success" *ngIf="addingWasSuccess === true">
+          {{'management.locations.addLocationModal.success' | translate}}
+        </div>
+
+        <div class="alert alert-error" *ngIf="addingWasSuccess === false">
+          {{'management.locations.addLocationModal.error' | translate}}
         </div>
       </div>
 
@@ -192,18 +196,6 @@
           {{('management.locations.deleteLocationModal.body' | translate)
               .replace('{locationName}', currentLocationNameToDelete)}}
         </div>
-
-        <div *ngIf="deletionWasSuccess === null">
-          {{'management.locations.deleteLocationModal.loading' | translate}}
-        </div>
-
-        <div *ngIf="deletionWasSuccess === true" class="alert alert-success">
-          {{'management.locations.deleteLocationModal.success' | translate}}
-        </div>
-
-        <div *ngIf="deletionWasSuccess === false" class="alert alert-error">
-          {{'management.locations.deleteLocationModal.error' | translate}}
-        </div>
       </div>
 
       <!-- Footer -->
@@ -215,6 +207,20 @@
         <button type="button" class="btn btn-secondary" data-dismiss="modal">
           {{'management.locations.deleteLocationModal.noButton' | translate}}
         </button>
+      </div>
+
+      <div class="container-fluid">
+        <div class="alert alert-info" *ngIf="deletionWasSuccess === null">
+          {{'management.locations.deleteLocationModal.loading' | translate}}
+        </div>
+
+        <div class="alert alert-success" *ngIf="deletionWasSuccess === true">
+          {{'management.locations.deleteLocationModal.success' | translate}}
+        </div>
+
+        <div class="alert alert-error" *ngIf="deletionWasSuccess === false">
+          {{'management.locations.deleteLocationModal.error' | translate}}
+        </div>
       </div>
 
     </div>

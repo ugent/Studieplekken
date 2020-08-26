@@ -145,12 +145,20 @@
           "imageUrl": "URL van foto (optioneel)"
         },
 
+        "formValidationErrorMessages": {
+          "locationName": "Naam is verplicht",
+          "address": "Adres is verplicht",
+          "numberOfSeats": "Een waarde voor 'aantal zitjes' is verplicht",
+          "numberOfLockers": "Een waarde voor 'aantal lockers' is verplicht"
+        },
+
         "cancelButton": "Annuleer",
         "addButton": "Voeg toe",
         "closeButton": "Sluit",
 
-        "successMessage": "Het toevoegen van de locatie is geslaagd",
-        "errorMessage": "Er is iets misgelopen tijdens het toevoegen van de nieuwe locatie"
+        "loading": "Wachten op antwoord van de server...",
+        "success": "Het toevoegen van de locatie is geslaagd",
+        "error": "Er is iets misgelopen tijdens het toevoegen van de nieuwe locatie"
       },
 
       "deleteLocationModal": {

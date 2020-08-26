@@ -145,7 +145,7 @@
           "imageUrl": "URL of image (optional)"
         },
 
-        "formErrors": {
+        "formValidationErrorMessages": {
           "locationName": "Name is required",
           "address": "Address is required",
           "numberOfSeats": "Value for 'number of seats' is required",
@@ -156,8 +156,9 @@
         "addButton": "Add",
         "closeButton": "Close",
 
-        "successMessage": "Successfully added the new location",
-        "errorMessage": "Something went wrong while adding the new location"
+        "loading": "Waiting for response of server...",
+        "success": "Successfully added the new location",
+        "error": "Something went wrong while adding the new location"
       },
 
       "deleteLocationModal": {

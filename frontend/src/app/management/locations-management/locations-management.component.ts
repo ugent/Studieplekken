@@ -5,7 +5,6 @@ import {Observable} from 'rxjs';
 import {Location} from '../../shared/model/Location';
 import {LocationService} from '../../services/api/locations/location.service';
 import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
-import {msToShowFeedback} from "../../../environments/environment";
 
 @Component({
   selector: 'app-locations-management',
@@ -21,8 +20,7 @@ export class LocationsManagementComponent implements OnInit {
   locations: Observable<Location[]>;
 
   addLocationFormGroup: FormGroup;
-  showSuccess = false;
-  showError = false;
+  addingWasSuccess: boolean = undefined;
 
   currentLocationNameToDelete: string;
   deletionWasSuccess: boolean = undefined;
@@ -44,7 +42,12 @@ export class LocationsManagementComponent implements OnInit {
     });
   }
 
-  submitNewLocation(location: Location) {
+  prepareToAddLocation(): void {
+    this.addingWasSuccess = undefined;
+  }
+
+  addNewLocation(location: Location): void {
+    this.addingWasSuccess = null;
     if (this.addLocationFormGroup.valid) {
       this.locationService.addLocation(location).subscribe(
         () => {
@@ -52,7 +55,7 @@ export class LocationsManagementComponent implements OnInit {
         }, () => {
           this.errorHandler();
         }
-      )
+      );
     }
   }
 
@@ -77,12 +80,11 @@ export class LocationsManagementComponent implements OnInit {
       }, () => {
         this.deletionWasSuccess = false;
       }
-    )
+    );
   }
 
   successHandler(): void {
-    this.showSuccess = true;
-    setTimeout(() => this.showSuccess = false, msToShowFeedback);
+    this.addingWasSuccess = true;
     this.locations = this.locationService.getLocations();
     this.setupForm();
   }
@@ -93,8 +95,7 @@ export class LocationsManagementComponent implements OnInit {
   }
 
   errorHandler(): void {
-    this.showError = true;
-    setTimeout(() => this.showError = false, msToShowFeedback);
+    this.addingWasSuccess = false;
   }
 
   setCurrentLocationNameToDelete(locationName: string): void {
