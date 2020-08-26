@@ -69,7 +69,11 @@
 
         "edit": "Pas aan",
         "cancel": "Annuleer",
-        "persist": "Oké"
+        "persist": "Oké",
+
+        "loading": "Wachten op antwoord van de server...",
+        "success": "Het wijzigen van de locatie was succesvol",
+        "error": "Er ging iets mis tijdens het wijzigen van de locatie"
       },
 
       "calendar": {
