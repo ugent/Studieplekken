@@ -120,6 +120,29 @@
           "successButNoChangesMessage": "Er waren geen veranderingen nodig",
           "errorMessage": "Het aanpassen van de kalender is mislukt. Er is iets misgegaan."
         }
+      },
+
+      "lockersTable":{
+        "title": "Tabel met overzicht van lockers",
+
+        "table": {
+          "number": "Nummer",
+          "status": "Status",
+          "occupiedBy": "Bezet door",
+          "keyPickedUp": "Sleutel opgehaald",
+          "action": "Actie",
+
+          "occupiedStatus": "Bezet",
+          "availableStatus": "Vrij",
+          "notYet": "Nog niet",
+
+          "pickupButton": "Sleutel ophalen",
+          "returnButton": "Sleutel terug"
+        },
+
+        "loading": "Wachten op antwoord van de server",
+        "success": "Het wijzigen van de status is gelukt",
+        "error": "Er is iets mis gegaan tijdens het wijzigen van de status"
       }
     },
 

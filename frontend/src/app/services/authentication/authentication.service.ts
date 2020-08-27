@@ -35,7 +35,6 @@ export class AuthenticationService {
     //   this way, if a user was logged in previously, he/she doesn't have to do it again
     http.get<User>(api.user_by_mail.replace('{mail}', 'bram.vandewalle@ugent.be'))
       .subscribe(next => {
-        console.log(next);
         this.userSubject.next(next);
     });
   }

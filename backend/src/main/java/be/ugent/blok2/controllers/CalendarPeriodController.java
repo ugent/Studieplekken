@@ -13,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -37,53 +38,74 @@ public class CalendarPeriodController {
     @GetMapping("/{locationName}")
     public List<CalendarPeriod> getCalendarPeriodsOfLocation(@PathVariable("locationName") String locationName)
             throws SQLException {
-        return calendarPeriodDao.getCalendarPeriodsOfLocation(locationName);
+        try {
+            return calendarPeriodDao.getCalendarPeriodsOfLocation(locationName);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
     }
 
     @PostMapping
-    public void addCalendarPeriods(@RequestBody List<CalendarPeriod> calendarPeriods) throws SQLException {
-        calendarPeriodDao.addCalendarPeriods(calendarPeriods);
+    public void addCalendarPeriods(@RequestBody List<CalendarPeriod> calendarPeriods) {
+        try {
+            calendarPeriodDao.addCalendarPeriods(calendarPeriods);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
     }
 
     @PutMapping("/{locationName}")
     public void updateCalendarPeriods(@PathVariable("locationName") String locationName,
-                                      @RequestBody List<CalendarPeriod>[] fromAndTo)
-            throws SQLException, ParseException {
-        List<CalendarPeriod> from = fromAndTo[0];
-        List<CalendarPeriod> to = fromAndTo[1];
+                                      @RequestBody List<CalendarPeriod>[] fromAndTo) {
+        try {
+            List<CalendarPeriod> from = fromAndTo[0];
+            List<CalendarPeriod> to = fromAndTo[1];
 
-        // check for outdated view (perhaps some other user has changed the calendar periods in the meantime
-        // between querying for the calendar periods for a location, and updating the calendar
-        List<CalendarPeriod> currentView = calendarPeriodDao.getCalendarPeriodsOfLocation(locationName);
+            // check for outdated view (perhaps some other user has changed the calendar periods in the meantime
+            // between querying for the calendar periods for a location, and updating the calendar
+            List<CalendarPeriod> currentView = calendarPeriodDao.getCalendarPeriodsOfLocation(locationName);
 
-        // if the sizes dont match, the view must be different...
-        if (from.size() != currentView.size()) {
-            logger.log(Level.SEVERE, "updateCalendarPeriods, conflict in frontends data view and actual data view");
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT, "Wrong/Old view on data layer");
-        }
+            // if the sizes dont match, the view must be different...
+            if (from.size() != currentView.size()) {
+                logger.log(Level.SEVERE, "updateCalendarPeriods, conflict in frontends data view and actual data view");
+                throw new ResponseStatusException(
+                        HttpStatus.CONFLICT, "Wrong/Old view on data layer");
+            }
 
-        // if the sizes do match, check if the lists are equal
-        // before invoking the 'equals' on a list, sort both lists based on 'starts at'
-        Utility.sortPeriodsBasedOnStartsAt(currentView);
-        Utility.sortPeriodsBasedOnStartsAt(from);
+            // if the sizes do match, check if the lists are equal
+            // before invoking the 'equals' on a list, sort both lists based on 'starts at'
+            Utility.sortPeriodsBasedOnStartsAt(currentView);
+            Utility.sortPeriodsBasedOnStartsAt(from);
 
-        if (!currentView.equals(from)) {
-            logger.log(Level.SEVERE, "updateCalendarPeriods, conflict in frontends data view and actual data view");
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT, "Wrong/Old view on data layer");
-        }
+            if (!currentView.equals(from)) {
+                logger.log(Level.SEVERE, "updateCalendarPeriods, conflict in frontends data view and actual data view");
+                throw new ResponseStatusException(
+                        HttpStatus.CONFLICT, "Wrong/Old view on data layer");
+            }
 
-        // if the 'to' list is empty, all 'from' entries need to be deleted
-        if (to.isEmpty()) {
-            deleteCalendarPeriods(from);
-        }
-        // if the 'from' list is empty, all 'to' entries need to be added
-        else if (from.isEmpty()) {
-            addCalendarPeriods(to);
-        } else {
-            Utility.sortPeriodsBasedOnStartsAt(to);
-            analyzeAndUpdateCalendarPeriods(locationName, from, to);
+            // if the 'to' list is empty, all 'from' entries need to be deleted
+            if (to.isEmpty()) {
+                deleteCalendarPeriods(from);
+            }
+            // if the 'from' list is empty, all 'to' entries need to be added
+            else if (from.isEmpty()) {
+                addCalendarPeriods(to);
+            } else {
+                Utility.sortPeriodsBasedOnStartsAt(to);
+                analyzeAndUpdateCalendarPeriods(locationName, from, to);
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        } catch (ParseException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, "Wrong date format for 'starts at'");
         }
     }
 
@@ -148,7 +170,13 @@ public class CalendarPeriodController {
     }
 
     @DeleteMapping
-    public void deleteCalendarPeriods(@RequestBody List<CalendarPeriod> calendarPeriods) throws SQLException {
-        calendarPeriodDao.deleteCalendarPeriods(calendarPeriods);
+    public void deleteCalendarPeriods(@RequestBody List<CalendarPeriod> calendarPeriods) {
+        try {
+            calendarPeriodDao.deleteCalendarPeriods(calendarPeriods);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
     }
 }

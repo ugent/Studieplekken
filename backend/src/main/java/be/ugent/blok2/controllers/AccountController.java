@@ -33,6 +33,7 @@ public class AccountController {
         try {
             return accountDao.getUserByEmail(mail);
         } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
@@ -62,6 +63,7 @@ public class AccountController {
             accountDao.updateUserById(actualUser.getAugentID(), updatedUser);
 
         } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }

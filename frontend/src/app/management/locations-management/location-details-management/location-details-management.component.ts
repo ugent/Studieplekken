@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import {LocationDetailsService} from '../../../services/location-details/location-details.service';
 import {Observable} from 'rxjs';
 import {Location} from '../../../shared/model/Location';
-import {LocationService} from '../../../services/api/locations/location.service';
 
 @Component({
   selector: 'app-location-details-management',
@@ -10,15 +10,15 @@ import {LocationService} from '../../../services/api/locations/location.service'
   styleUrls: ['./location-details-management.component.css']
 })
 export class LocationDetailsManagementComponent implements OnInit {
-  locationObs: Observable<Location>;
+  locationObs: Observable<Location> = this.locationDetailsService.locationObs;
 
   Object = Object;
 
-  constructor(private locationService: LocationService,
+  constructor(private locationDetailsService: LocationDetailsService,
               private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     const locationName = this.route.snapshot.paramMap.get('locationName');
-    this.locationObs = this.locationService.getLocation(locationName);
+    this.locationDetailsService.loadLocation(locationName);
   }
 }

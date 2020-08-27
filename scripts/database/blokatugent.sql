@@ -83,7 +83,7 @@ COMMENT ON TABLE public.languages IS 'E.g. for the language ''English''
 CREATE TABLE public.locations (
     name text NOT NULL,
     number_of_seats integer NOT NULL,
-    number_of_lockers text NOT NULL,
+    number_of_lockers integer NOT NULL,
     image_url text,
     address text NOT NULL
 );

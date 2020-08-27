@@ -321,6 +321,10 @@ public class DBAccountDao extends ADB implements IAccountDao {
 
     public static User createUser(ResultSet rs) throws SQLException {
         User u = equalPartForCreatingUserOrUserToVerify(rs);
+
+        if (u.getAugentID() == null)
+            return null;
+
         u.setPenaltyPoints(rs.getInt(databaseProperties.getString("user_penalty_points")));
         return u;
     }
@@ -381,6 +385,9 @@ public class DBAccountDao extends ADB implements IAccountDao {
     }
 
     private static Role[] csvToRoles(String csvRoles) {
+        if (csvRoles == null)
+            return null;
+
         String[] split = csvRoles.split(";");
         Role[] roles = new Role[split.length];
         for (int i = 0; i < roles.length; i++) {

@@ -36,6 +36,7 @@ import { DetailsFormComponent } from './management/locations-management/location
 import { LocationCalendarComponent } from './management/locations-management/location-details-management/location-calendar/location-calendar.component';
 import {FlatpickrModule} from 'angularx-flatpickr';
 import { LockersCalendarComponent } from './management/locations-management/location-details-management/lockers-calendar/lockers-calendar.component';
+import { LockersTableComponent } from './management/locations-management/location-details-management/lockers-table/lockers-table.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -97,7 +98,8 @@ const routes: Routes = [
     LocationDetailsManagementComponent,
     DetailsFormComponent,
     LocationCalendarComponent,
-    LockersCalendarComponent
+    LockersCalendarComponent,
+    LockersTableComponent
   ],
     imports: [
         BrowserModule,

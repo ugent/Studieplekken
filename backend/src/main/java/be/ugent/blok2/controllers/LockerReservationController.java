@@ -3,10 +3,15 @@ package be.ugent.blok2.controllers;
 import be.ugent.blok2.daos.ILockerReservationDao;
 import be.ugent.blok2.model.reservations.LockerReservation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This controller handles all requests related to lockerreservations.
@@ -15,6 +20,8 @@ import java.util.List;
 @RestController
 @RequestMapping("api/lockers/reservations")
 public class LockerReservationController {
+
+    private final Logger logger = Logger.getLogger(LockersController.class.getSimpleName());
 
     private final ILockerReservationDao lockerReservationDao;
 
@@ -27,8 +34,21 @@ public class LockerReservationController {
     public List<LockerReservation> getLockerReservationsOfUserById(@PathVariable("userId") String userId) {
         try {
             return lockerReservationDao.getAllLockerReservationsOfUser(userId);
-        } catch (SQLException ignore) {
-            return null;
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @PutMapping
+    public void updateLockerReservation(@RequestBody LockerReservation lockerReservation) {
+        try {
+            lockerReservationDao.changeLockerReservation(lockerReservation);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
 }
