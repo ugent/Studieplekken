@@ -264,10 +264,16 @@ CREATE TABLE public.users_to_verify (
 
 ALTER TABLE public.users_to_verify OWNER TO postgres;
 
+--
+-- Name: authority; Type: TABLE; Schema: public; Owner: postgres
+--
 
+CREATE TABLE public.authority (
+    name text NOT NULL,
+    description text NOT NULL
+);
 
-
-
+ALTER TABLE public.authority OWNER TO postgres;
 
 
 
