@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
 import {Location, LocationConstructor} from '../../shared/model/Location';
-import {LocationService} from "../api/locations/location.service";
+import {LocationService} from '../api/locations/location.service';
 
 /**
  * This class is a service used by the LocationDetailsManagementComponent,
