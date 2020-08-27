@@ -1,1 +1,119 @@
-<p>lockers-table works!</p>
+<div class="container-fluid" *ngIf="location | async as location">
+  <div *ngIf="lockerStatuses | async as lockersStatuses" class="panel-body" style="padding: 20px">
+
+    <!-- Feedback on an error upon updating the locker reservation -->
+    <div class="alert alert-info" *ngIf="successOnUpdatingLockerReservation === null">
+      {{'management.locationDetails.lockersTable.loading' | translate}}
+    </div>
+
+    <div class="alert alert-success" *ngIf="successOnUpdatingLockerReservation === true">
+      {{'management.locationDetails.lockersTable.success' | translate}}
+    </div>
+
+    <div class="alert alert-error" *ngIf="successOnUpdatingLockerReservation === false">
+      {{'management.locationDetails.lockersTable.error' | translate}}
+    </div>
+
+    <!-- Table with an overview of the statuses of the lockers -->
+    <table style="width: 100%">
+      <!-- Table header -->
+      <thead>
+      <tr>
+        <th>{{'management.locationDetails.lockersTable.table.number' | translate}}</th>
+        <th>{{'management.locationDetails.lockersTable.table.status' | translate}}</th>
+        <th>{{'management.locationDetails.lockersTable.table.occupiedBy' | translate}}</th>
+        <th>{{'management.locationDetails.lockersTable.table.keyPickedUp' | translate}}</th>
+        <th>{{'management.locationDetails.lockersTable.table.action' | translate}}</th>
+      </tr>
+      </thead>
+
+      <!--
+        Table body:
+          - only show 20 lockers at the same time: [0..20), [20..40) ...
+          - show some tiles with number so the user is able to navigate between 'pages'
+       -->
+      <tbody>
+      <tr *ngFor="let lockerReservation of lockersStatuses.slice(currentLowerIndexOfSlice, currentUpperIndexOfSlice)">
+        <!-- Number of locker -->
+        <td>
+          {{lockerReservation.locker.number}}
+        </td>
+
+        <!-- Status of locker: AVAILABLE | OCCUPIED -->
+        <td *ngIf="getStatusOfLocker(lockerReservation) === LockerStatus.AVAILABLE">
+          {{'management.locationDetails.lockersTable.table.availableStatus' | translate}}
+        </td>
+        <td *ngIf="getStatusOfLocker(lockerReservation) === LockerStatus.OCCUPIED">
+          {{'management.locationDetails.lockersTable.table.occupiedStatus' | translate}}
+        </td>
+
+        <!-- If status === OCCUPIED, tell by whom (else, show empty string) -->
+        <!-- TODO: if occupied, show user as link to the component linked to /management/users/{augentId} -->
+        <td *ngIf="getStatusOfLocker(lockerReservation) === LockerStatus.OCCUPIED">
+          {{lockerReservation.owner.firstName + ' ' + lockerReservation.owner.lastName}}
+        </td>
+        <td *ngIf="getStatusOfLocker(lockerReservation) === LockerStatus.AVAILABLE">
+          {{' '}}
+        </td>
+
+        <!--
+          - If locker is occupied, and the key has been picked up, show the date
+          - If locker is occupied, but key has not been picked up, show 'not yet'
+          - If locker is available, show ' '
+         -->
+        <td *ngIf="getStatusOfLocker(lockerReservation) === LockerStatus.OCCUPIED &&
+                   lockerReservation.keyPickupDate !== null">
+          {{toDateString(lockerReservation.keyPickupDate)}}
+        </td>
+        <td *ngIf="getStatusOfLocker(lockerReservation) === LockerStatus.OCCUPIED &&
+                   lockerReservation.keyPickupDate === null">
+          {{'management.locationDetails.lockersTable.table.notYet' | translate}}
+        </td>
+        <td *ngIf="getStatusOfLocker(lockerReservation) === LockerStatus.AVAILABLE">
+          <button class="btn btn-default" style="visibility: hidden"></button>
+        </td>
+
+        <!--
+          Depending on the status, certain actions may be available:
+            -> occupied:
+              -> key hasn't been picked up: pick up the key
+              -> key has been picked up: return the key
+            -> available:
+              -> nothing: show empty string
+        -->
+        <td *ngIf="getStatusOfLocker(lockerReservation) === LockerStatus.OCCUPIED &&
+                   lockerReservation.keyPickupDate === null">
+          <button class="btn btn-default" (click)="pickupKeyButtonClick(lockerReservation)">
+            {{'management.locationDetails.lockersTable.table.pickupButton' | translate}}
+          </button>
+        </td>
+        <td *ngIf="getStatusOfLocker(lockerReservation) === LockerStatus.OCCUPIED &&
+                   lockerReservation.keyPickupDate !== null">
+          <button class="btn btn-default" (click)="returnKeyButtonClick(lockerReservation)">
+            {{'management.locationDetails.lockersTable.table.returnButton' | translate}}
+          </button>
+        </td>
+        <td *ngIf="getStatusOfLocker(lockerReservation) === LockerStatus.AVAILABLE">
+          {{' '}}
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <!-- Navigation through the pages -->
+    <div *ngIf="lockersStatuses.length > numberOfLinesOnPage">
+      <!-- Navigation content, if medium sized screen -> center -->
+      <div style="text-align: center">
+        <nav>
+          <ul class="pagination" style="width: 100%;">
+            <li *ngFor="let i of pageIndices" (click)="showPage(i)"
+                [ngClass]="{ 'active selected': isActivePage(i) }"
+                style="cursor: pointer; display: inline-block; margin-right: 5px;">
+              <a>{{i}}</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>

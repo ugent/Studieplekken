@@ -123,7 +123,26 @@
       },
 
       "lockersTable":{
-        "title": "Table with details of the lockers"
+        "title": "Table with details of the lockers",
+
+        "table": {
+          "number": "Number",
+          "status": "Status",
+          "occupiedBy": "Occupied by",
+          "keyPickedUp": "Key picked up",
+          "action": "Action",
+
+          "occupiedStatus": "Occupied",
+          "availableStatus": "Available",
+          "notYet": "Not yet",
+
+          "pickupButton": "Pickup key",
+          "returnButton": "Return key"
+        },
+
+        "loading": "Waiting for response of server",
+        "success": "Successfully updated the locker's status",
+        "error": "Something went wrong while updating the locker's status"
       }
     },
 

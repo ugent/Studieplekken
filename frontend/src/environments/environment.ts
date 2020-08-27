@@ -30,8 +30,12 @@ export const api = {
   // LOCATION_RESERVATIONS
   locationReservationsByUserId: '/api/locations/reservations/{userId}',
 
+  // LOCKERS
+  lockersStatusesOfLocation: '/api/lockers/status/{locationName}',
+
   // LOCKER_RESERVATIONS
   lockerReservationsByUserId: '/api/lockers/reservations/{userId}',
+  updateLockerReservation: '/api/lockers/reservations',
 
   // USERS
   user_by_mail: '/api/account/{mail}',

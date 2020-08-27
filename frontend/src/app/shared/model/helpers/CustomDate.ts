@@ -92,6 +92,17 @@ export function customDateToTypeScriptDate(date: CustomDate): Date {
     date.day, date.hrs, date.min, date.sec);
 }
 
+export function typeScriptDateToCustomDate(date: Date): CustomDate {
+  return {
+    year: date.getFullYear(),
+    month: date.getMonth() + 1,
+    day: date.getDate(),
+    hrs: date.getHours(),
+    min: date.getMinutes(),
+    sec: date.getSeconds()
+  };
+}
+
 /*
  * Make sure that a string formatted as e.g. M-D-YYYY or YYYY-M-D becomes
  * MM-DD-YYYY or YYYY-MM-DD
