@@ -41,6 +41,7 @@ public class CalendarPeriodsForLockersController {
         try {
             return this.calendarPeriodForLockersDao.getCalendarPeriodsForLockersOfLocation(locationName);
         } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
@@ -51,6 +52,7 @@ public class CalendarPeriodsForLockersController {
         try {
             calendarPeriodForLockersDao.addCalendarPeriodsForLockers(calendarPeriodForLockers);
         } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
@@ -58,44 +60,53 @@ public class CalendarPeriodsForLockersController {
 
     @PutMapping("/{locationName}")
     public void updateCalendarPeriodsForLockers(@PathVariable("locationName") String locationName,
-                                                @RequestBody List<CalendarPeriodForLockers>[] fromAndTo)
-            throws SQLException, ParseException {
-        List<CalendarPeriodForLockers> from = fromAndTo[0];
-        List<CalendarPeriodForLockers> to = fromAndTo[1];
+                                                @RequestBody List<CalendarPeriodForLockers>[] fromAndTo) {
+        try {
+            List<CalendarPeriodForLockers> from = fromAndTo[0];
+            List<CalendarPeriodForLockers> to = fromAndTo[1];
 
-        // check for outdated view (perhaps some other user has changed the calendar periods in the meantime
-        // between querying for the calendar periods for a location, and updating the calendar
-        List<CalendarPeriodForLockers> currentView = calendarPeriodForLockersDao
-                .getCalendarPeriodsForLockersOfLocation(locationName);
+            // check for outdated view (perhaps some other user has changed the calendar periods in the meantime
+            // between querying for the calendar periods for a location, and updating the calendar
+            List<CalendarPeriodForLockers> currentView = calendarPeriodForLockersDao
+                    .getCalendarPeriodsForLockersOfLocation(locationName);
 
-        // if the sizes dont match, the view must be different...
-        if (from.size() != currentView.size()) {
-            logger.log(Level.SEVERE, "updateCalendarPeriodsForLockers, conflict in frontends data view and actual data view");
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT, "Wrong/Old view on data layer");
-        }
+            // if the sizes dont match, the view must be different...
+            if (from.size() != currentView.size()) {
+                logger.log(Level.SEVERE, "updateCalendarPeriodsForLockers, conflict in frontends data view and actual data view");
+                throw new ResponseStatusException(
+                        HttpStatus.CONFLICT, "Wrong/Old view on data layer");
+            }
 
-        // if the sizes do match, check if the lists are equal before invoking
-        // the 'equals' on a list, sort both lists based on 'starts at'
-        Utility.sortPeriodsBasedOnStartsAt(currentView);
-        Utility.sortPeriodsBasedOnStartsAt(from);
+            // if the sizes do match, check if the lists are equal before invoking
+            // the 'equals' on a list, sort both lists based on 'starts at'
+            Utility.sortPeriodsBasedOnStartsAt(currentView);
+            Utility.sortPeriodsBasedOnStartsAt(from);
 
-        if (!currentView.equals(from)) {
-            logger.log(Level.SEVERE, "updateCalendarPeriodsForLockers, conflict in frontends data view and actual data view");
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT, "Wrong/Old view on data layer");
-        }
+            if (!currentView.equals(from)) {
+                logger.log(Level.SEVERE, "updateCalendarPeriodsForLockers, conflict in frontends data view and actual data view");
+                throw new ResponseStatusException(
+                        HttpStatus.CONFLICT, "Wrong/Old view on data layer");
+            }
 
-        // if the 'to' list is empty, all 'from' entries need to be deleted
-        if (to.isEmpty()) {
-            deleteCalendarPeriodsForLockers(from);
-        }
-        // if the 'from' list is empty, all 'to' entries need to be added
-        else if (from.isEmpty()) {
-            addCalendarPeriodsForLockers(to);
-        } else {
-            Utility.sortPeriodsBasedOnStartsAt(to);
-            analyzeAndUpdateCalendarPeriodsForLockers(locationName, from, to);
+            // if the 'to' list is empty, all 'from' entries need to be deleted
+            if (to.isEmpty()) {
+                deleteCalendarPeriodsForLockers(from);
+            }
+            // if the 'from' list is empty, all 'to' entries need to be added
+            else if (from.isEmpty()) {
+                addCalendarPeriodsForLockers(to);
+            } else {
+                Utility.sortPeriodsBasedOnStartsAt(to);
+                analyzeAndUpdateCalendarPeriodsForLockers(locationName, from, to);
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        } catch (ParseException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, "Wrong date format for 'starts at'");
         }
     }
 
@@ -165,6 +176,7 @@ public class CalendarPeriodsForLockersController {
         try {
             calendarPeriodForLockersDao.deleteCalendarPeriodsForLockers(calendarPeriodForLockers);
         } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
