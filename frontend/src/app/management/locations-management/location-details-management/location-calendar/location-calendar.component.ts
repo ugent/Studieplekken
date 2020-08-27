@@ -59,6 +59,10 @@ export class LocationCalendarComponent implements OnInit {
   setupEvents(locationName: string): void {
     // retrieve all calendar periods for this location
     this.calendarPeriodsService.getCalendarPeriodsOfLocation(locationName).subscribe(next => {
+      if (next === null) {
+        return;
+      }
+
       // make a deep copy to make sure that can be calculated whether any period has changed
       this.calendarPeriodsInDataLayer = [];
       next.forEach(n => {

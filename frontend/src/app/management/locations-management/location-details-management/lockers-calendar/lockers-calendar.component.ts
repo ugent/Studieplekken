@@ -56,6 +56,10 @@ export class LockersCalendarComponent implements OnInit {
   setupEvents(locationName: string): void {
     // retrieve all calendar periods for the lockers of this location
     this.calendarPeriodsForLockersService.getCalendarPeriodsForLockersOfLocation(locationName).subscribe(next => {
+      if (next === null) {
+        return;
+      }
+
       // make a deep copy to make sure that we can calculate whether or not any changes by the user have been made
       this.calendarPeriodsForLockersInDataLayer = [];
       next.forEach(n => {
@@ -176,7 +180,7 @@ export class LockersCalendarComponent implements OnInit {
         this.calendarPeriodsForLockersInDataLayer,
         this.events.map<CalendarPeriodForLockers>(n => n.meta)
       ).subscribe(() => {
-        this.successHandler(locationName)
+        this.successHandler(locationName);
       }, () => this.errorHandler());
     } else {
       this.handleNothingHasChangedOnUpdate();

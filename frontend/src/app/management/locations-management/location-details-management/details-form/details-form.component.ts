@@ -1,10 +1,10 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Location, LocationConstructor} from '../../../../shared/model/Location';
+import {Location} from '../../../../shared/model/Location';
 import {FormControl, FormGroup} from '@angular/forms';
 import {LocationService} from '../../../../services/api/locations/location.service';
 import {Observable} from 'rxjs';
-import {Router} from '@angular/router';
-import {msToShowFeedback} from "../../../../../environments/environment";
+import {msToShowFeedback} from '../../../../../environments/environment';
+import {LocationDetailsService} from '../../../../services/location-details/location-details.service';
 
 @Component({
   selector: 'app-details-form',
@@ -29,7 +29,7 @@ export class DetailsFormComponent implements OnInit {
   successUpdatingLocation: boolean = undefined;
 
   constructor(private locationService: LocationService,
-              private router: Router) { }
+              private locationDetailsService: LocationDetailsService) { }
 
   ngOnInit(): void {
     // if the location has been retrieved, populate the form group
@@ -73,33 +73,25 @@ export class DetailsFormComponent implements OnInit {
     this.changeEnableDisableLocationDetailsFormButtons();
   }
 
-  persistLocationDetailsButtonClick(from: Location, to: {name: string, address: string, numberOfSeats: number,
-    numberOfLockers: number, imageUrl: string}): void {
-    const updatedLocation: Location = LocationConstructor.new();
-    updatedLocation.name = to.name;
-    updatedLocation.address = to.address;
-    updatedLocation.numberOfSeats = to.numberOfSeats;
-    updatedLocation.numberOfLockers = to.numberOfLockers;
-    updatedLocation.imageUrl = to.imageUrl;
-
+  persistLocationDetailsButtonClick(from: Location, to: Location): void {
     this.successUpdatingLocation = null; // show 'loading' message
-    this.locationService.updateLocation(from.name, updatedLocation).subscribe(
+    this.locationService.updateLocation(from.name, to).subscribe(
       () => {
         this.successHandler();
 
-        if (from.name !== to.name) {
-          this.router.navigate(['/management/locations/' + to.name]).catch();
-        }
-
         // update the location attribute
-        this.location = this.locationService.getLocation(updatedLocation.name);
+        // this, 'loadLocation' function will perform a next() on the
+        // subject behavior, which will trigger a next() on the underlying
+        // observable, to which the HTML is implicitly subscribed
+        this.locationDetailsService.loadLocation(to.name);
       }, () => {
         this.errorHandler();
+        // load to be sure
+        this.locationDetailsService.loadLocation(from.name);
       }
     );
 
     this.disableFormGroup();
-    this.updateFormGroup(updatedLocation);
     this.changeEnableDisableLocationDetailsFormButtons();
   }
 
