@@ -200,6 +200,38 @@
         "yesButton": "Verwijder",
         "noButton": "Annuleer"
       }
+    },
+
+    "users": {
+      "overview": {
+        "title": "Gebruikers beheren",
+
+        "firstName": "Voornaam",
+        "lastName": "Achternaam",
+        "barcode": "Barcode",
+
+        "filterSearchButton": "Zoek",
+        "filterClearButton": "Wis input"
+      },
+
+      "searchResult": {
+        "title": "Resultaat van zoeken",
+
+        "table": {
+          "id": "ID",
+          "firstName": "Voornaam",
+          "lastName": "Achternaam",
+          "penaltyPoints": "Strafpunten",
+          "institution": "Institutie",
+
+          "details": "Details"
+        },
+
+        "neverSearched": "Je hebt nog niet gezocht naar een gebruiker. Vul de voor- en/of achternaam, of enkel de barcode in om te kunnen zoeken naar gebruikers.",
+        "loading": "Wachten op antwoord van de server...",
+        "error": "Er is iets misgelopen tijdens het ophalen van de gebruikers...",
+        "noUserWithBarcodeHasBeenFound": "Er is geen gebruiker gevonden met opgegeven barcode. Probeer misschien met de voor- en/of achternaam."
+      }
     }
   },
 

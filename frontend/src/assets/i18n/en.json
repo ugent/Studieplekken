@@ -200,6 +200,38 @@
         "yesButton": "Delete",
         "noButton": "Cancel"
       }
+    },
+
+    "users": {
+      "overview": {
+        "title": "User management",
+
+        "firstName": "First name",
+        "lastName": "Last name",
+        "barcode": "Barcode",
+
+        "filterSearchButton": "Search",
+        "filterClearButton": "Clear"
+      },
+
+      "searchResult": {
+        "title": "Results of search",
+
+        "table": {
+          "id": "ID",
+          "firstName": "First name",
+          "lastName": "Last name",
+          "penaltyPoints": "Penalty points",
+          "institution": "Institution",
+
+          "details": "Details"
+        },
+
+        "neverSearched": "You haven't searched any users yet. Fill in the first and/or last name, or just the barcode to be able to search users.",
+        "loading": "Waiting on response of server...",
+        "error": "Something went wrong while retrieving the users...",
+        "noUserWithBarcodeHasBeenFound": "No user with given barcode has been found. Please try with first and/or last name."
+      }
     }
   },
 

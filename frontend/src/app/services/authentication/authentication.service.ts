@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {User, UserConstructor} from '../../shared/model/User';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {api} from '../../../environments/environment';
 import {Penalty} from '../../shared/model/Penalty';
 import {LocationReservation} from '../../shared/model/LocationReservation';
@@ -33,7 +33,8 @@ export class AuthenticationService {
   constructor(private http: HttpClient) {
     // TODO: try to obtain a user object based on a HTTP-only session cookie, if provided
     //   this way, if a user was logged in previously, he/she doesn't have to do it again
-    http.get<User>(api.user_by_mail.replace('{mail}', 'bram.vandewalle@ugent.be'))
+    const params = new HttpParams().set('mail', 'bram.vandewalle@ugent.be');
+    http.get<User>(api.userByMail, { params })
       .subscribe(next => {
         this.userSubject.next(next);
     });

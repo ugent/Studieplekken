@@ -9,6 +9,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,10 +29,61 @@ public class AccountController {
         this.accountDao = accountDao;
     }
 
-    @GetMapping("/{mail}")
-    public User getUserByMail(@PathVariable("mail") String mail) {
+    @GetMapping("/mail")
+    public User getUserByMail(@RequestParam String mail) {
         try {
             return accountDao.getUserByEmail(mail);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @GetMapping("/firstName")
+    public List<User> getUsersByFirstName(@RequestParam String firstName) {
+        try {
+            return accountDao.getUsersByFirstName(firstName);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @GetMapping("/lastName")
+    public List<User> getUsersByLastName(@RequestParam String lastName) {
+        try {
+            return accountDao.getUsersByLastName(lastName);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @GetMapping("/firstAndLastName")
+    public List<User> getUsersByLastName(@RequestParam String firstName, @RequestParam String lastName) {
+        try {
+            return accountDao.getUsersByFirstAndLastName(firstName, lastName);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @GetMapping("/barcode")
+    public User getUserByBarcode(@RequestParam String barcode) {
+        try {
+            User userLinkedToBarcode = accountDao.getUserFromBarcode(barcode);
+
+            if (userLinkedToBarcode == null) {
+                throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED,
+                        "No user found with barcode " + barcode);
+            }
+
+            return accountDao.getUserById(userLinkedToBarcode.getAugentID());
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));

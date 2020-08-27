@@ -38,7 +38,11 @@ export const api = {
   updateLockerReservation: '/api/lockers/reservations',
 
   // USERS
-  user_by_mail: '/api/account/{mail}',
+  userByBarcode: '/api/account/barcode',
+  userByMail: '/api/account/mail',
+  usersByFirstName: '/api/account/firstName',
+  usersByLastName: '/api/account/lastName',
+  usersByFirstAndLast: '/api/account/firstAndLastName',
   changePassword: '/api/account/password',
 
   // PENALTY_BOOK
