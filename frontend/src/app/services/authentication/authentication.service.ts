@@ -7,6 +7,7 @@ import {Penalty} from '../../shared/model/Penalty';
 import {LocationReservation} from '../../shared/model/LocationReservation';
 import {LockerReservation, LockerReservationConstructor} from '../../shared/model/LockerReservation';
 import {map} from 'rxjs/operators';
+import {PenaltyService} from '../api/penalties/penalty.service';
 
 /**
  * The structure of the authentication service has been based on this article:
@@ -30,7 +31,8 @@ export class AuthenticationService {
   // (which comes from the userSubject)
   public user: Observable<User> = this.userSubject.asObservable();
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              private penaltyService: PenaltyService) {
     // TODO: try to obtain a user object based on a HTTP-only session cookie, if provided
     //   this way, if a user was logged in previously, he/she doesn't have to do it again
     const params = new HttpParams().set('mail', 'bram.vandewalle@ugent.be');
@@ -83,7 +85,6 @@ export class AuthenticationService {
   }
 
   getPenalties(): Observable<Penalty[]> {
-    return this.http.get<Penalty[]>(api.penalties_by_user_id.replace('{userId}',
-      this.userSubject.value.augentID));
+    return this.penaltyService.getPenaltiesOfUserById(this.userSubject.value.augentID);
   }
 }

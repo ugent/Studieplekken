@@ -11,6 +11,11 @@ export class UserService {
 
   constructor(private http: HttpClient) { }
 
+  getUserByAUGentId(id: string): Observable<User> {
+    const params = new HttpParams().set('id', id);
+    return this.http.get<User>(api.userByAUGentId, { params });
+  }
+
   getUsersByFirstName(firstName: string): Observable<User[]> {
     const params = new HttpParams().set('firstName', firstName.trim());
     return this.http.get<User[]>(api.usersByFirstName, { params });
@@ -31,5 +36,9 @@ export class UserService {
   getUserByBarcode(barcode: string): Observable<User> {
     const params = new HttpParams().set('barcode', barcode.trim());
     return this.http.get<User>(api.userByBarcode, { params });
+  }
+
+  updateUser(id: string, user: User): Observable<void> {
+    return this.http.put<void>(api.updateUser.replace('{id}', id), user);
   }
 }

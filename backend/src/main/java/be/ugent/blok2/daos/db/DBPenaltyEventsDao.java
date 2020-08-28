@@ -331,7 +331,7 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
         pstmt.setString(1, p.getAugentID());
         pstmt.setInt(2, p.getEventCode());
         pstmt.setString(3, p.getTimestamp().toString());
-        pstmt.setString(4, p.getReservationDate().toString());
+        pstmt.setString(4, p.getReservationDate() == null ? "" : p.getReservationDate().toString());
         pstmt.setString(5, p.getReservationLocation());
         pstmt.setInt(6, p.getReceivedPoints());
     }

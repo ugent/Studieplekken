@@ -38,4 +38,26 @@ public class PenaltyEventController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
+
+    @PostMapping
+    public void addPenalty(@RequestBody Penalty penalty) {
+        try {
+            penaltyDao.addPenalty(penalty);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @DeleteMapping
+    public void deletePenalty(@RequestBody Penalty penalty) {
+        try {
+            penaltyDao.deletePenalty(penalty);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
 }

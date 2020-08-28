@@ -18,7 +18,13 @@
 
   "general": {
     "dsa": "Student Activities Office",
-    "ugent": "Ghent University"
+    "ugent": "Ghent University",
+
+    "roles": {
+      "ADMIN": "Admin",
+      "EMPLOYEE": "Employee",
+      "STUDENT": "Student"
+    }
   },
 
   "header": {
@@ -231,6 +237,82 @@
         "loading": "Waiting on response of server...",
         "error": "Something went wrong while retrieving the users...",
         "noUserWithBarcodeHasBeenFound": "No user with given barcode has been found. Please try with first and/or last name."
+      },
+
+      "userDetails": {
+        "errorQuerying": "Something went wrong while querying for the user with id '{id}'",
+
+        "form": {
+          "title": "Details of {name}",
+
+          "id": "ID",
+          "firstName": "First name",
+          "lastName": "Last name",
+          "mail": "Mail",
+          "roles": "Roles",
+          "penaltyPoints": "Penalty points",
+          "institution": "Institution",
+
+          "error": "Something went wrong while retrieving the user..."
+        },
+
+        "roles": {
+          "title": "Roles of {name}",
+
+          "updateButton": "Update",
+          "resetButton": "Reset",
+
+          "loadingUpdatingUser": "Waiting on a response of the server...",
+          "successUpdatingUser": "Successfully updated the roles of the user...",
+          "errorUpdatingUser": "Something went wrong while updating the user..."
+        },
+
+        "penalties": {
+          "title": "Penalties of {name}",
+
+          "table": {
+            "eventCode": "Penalty event code",
+            "timestamp": "Timestamp",
+            "location": "Location",
+            "receivedPoints": "Received points",
+
+            "addNew": "Add penalty",
+
+            "addPenaltyModalView": {
+              "title": "Add new penalty",
+              "addButton": "Add",
+              "cancelButton": "Cancel",
+
+              "timestamp": "Timestamp",
+              "timestampValidation": "Timestamp is required",
+
+              "location": "Location",
+              "locationValidation": "Location is required",
+
+              "points": "Penalty points",
+              "pointsValidation": "Penalty points is required",
+
+              "loading": "Waiting on response of server...",
+              "success": "Successfully added the penalty.",
+              "error": "Something went wrong while adding the penalty..."
+            },
+
+            "deletePenaltyModalView": {
+              "title": "Sure to delete the penalty?",
+              "body": "Penalty about to delete:",
+
+              "yesButton": "Delete",
+              "noButton": "Cancel",
+
+              "loading": "Waiting on response of server...",
+              "success": "Successfully deleted the penalty.",
+              "error": "Something went wrong while deleting the penalty..."
+            }
+          },
+
+          "noPenalties": "The user has made no penalties so far.",
+          "error": "Something went wrong while querying the penalties for the user."
+        }
       }
     }
   },

@@ -29,6 +29,17 @@ public class AccountController {
         this.accountDao = accountDao;
     }
 
+    @GetMapping("/id")
+    public User getUserByAUGentId(@RequestParam String id) {
+        try {
+            return accountDao.getUserById(id);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
     @GetMapping("/mail")
     public User getUserByMail(@RequestParam String mail) {
         try {
@@ -84,6 +95,17 @@ public class AccountController {
             }
 
             return accountDao.getUserById(userLinkedToBarcode.getAugentID());
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @PutMapping("/{id}")
+    public void updateUser(@PathVariable("id") String id, @RequestBody User user) {
+        try {
+            accountDao.updateUserById(id, user);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));

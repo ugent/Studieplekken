@@ -38,15 +38,19 @@ export const api = {
   updateLockerReservation: '/api/lockers/reservations',
 
   // USERS
+  userByAUGentId: '/api/account/id',
   userByBarcode: '/api/account/barcode',
   userByMail: '/api/account/mail',
   usersByFirstName: '/api/account/firstName',
   usersByLastName: '/api/account/lastName',
   usersByFirstAndLast: '/api/account/firstAndLastName',
   changePassword: '/api/account/password',
+  updateUser: '/api/account/{id}',
 
   // PENALTY_BOOK
-  penalties_by_user_id: '/api/penalties/{userId}'
+  penaltiesByUserId: '/api/penalties/{id}',
+  addPenalty: '/api/penalties',
+  deletePenalty: '/api/penalties'
 };
 
 export const vars = {
@@ -57,6 +61,28 @@ export const vars = {
  * The amount of milliseconds that a feedback div should be shown
  */
 export const msToShowFeedback = 10000;
+
+/*
+ * The PenaltyEvent code for a manual entry
+ */
+export const penaltyEventCodeForManualEntry = 16663;
+
+/*
+ * The roles that are available in the application
+ *
+ * Important: make sure that the roles in 'rolesArray'
+ * are put in the 'Role' enum as well!
+ *
+ * And, do not forget to translate the role if you would
+ * be adding a role (<lang>.json -> general.roles)
+ */
+export const rolesArray = ['ADMIN', 'EMPLOYEE', 'STUDENT'];
+
+export enum Role {
+  STUDENT = 'STUDENT',
+  EMPLOYEE = 'EMPLOYEE',
+  ADMIN = 'ADMIN'
+}
 
 /*
  * For easier debugging in development mode, you can import the following file

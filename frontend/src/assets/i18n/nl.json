@@ -18,7 +18,13 @@
 
   "general": {
     "dsa": "Dienst StudentenActiviteiten",
-    "ugent": "Universiteit Gent"
+    "ugent": "Universiteit Gent",
+
+    "roles": {
+      "ADMIN": "Admin",
+      "EMPLOYEE": "Medewerker",
+      "STUDENT": "Student"
+    }
   },
 
   "header": {
@@ -231,6 +237,78 @@
         "loading": "Wachten op antwoord van de server...",
         "error": "Er is iets misgelopen tijdens het ophalen van de gebruikers...",
         "noUserWithBarcodeHasBeenFound": "Er is geen gebruiker gevonden met opgegeven barcode. Probeer misschien met de voor- en/of achternaam."
+      },
+
+      "userDetails": {
+        "errorQuerying": "Er is iets misgelopen tijdens het ophalen van de gebruiker met id '{id}'",
+
+        "form": {
+          "title": "Details of {name}",
+
+          "id": "ID",
+          "firstName": "Voornaam",
+          "lastName": "Achternaam",
+          "mail": "Mail",
+          "roles": "Rollen",
+          "penaltyPoints": "Strafpunten",
+          "institution": "Institutie",
+
+          "error": "Er is iets misgelopen tijdens het ophalen van de gebruiker..."
+        },
+
+        "roles": {
+          "title": "Rollen van {name}",
+
+          "updateButton": "Update",
+          "resetButton": "Herstel",
+
+          "loadingUpdatingUser": "Wachten op het antwoord van de server...",
+          "successUpdatingUser": "Het updaten van de rollen van de gebruiker is gelukt...",
+          "errorUpdatingUser": "Er is iets misgelopen tijdens het updaten van de gebruiker..."
+        },
+
+        "penalties": {
+          "title": "Overtredingen van {name}",
+
+          "table": {
+            "eventCode": "Code van overtreding",
+            "timestamp": "Timestamp",
+            "location": "Locatie",
+            "receivedPoints": "Ontvangen strafpunten",
+
+            "addNew": "Overtreding toevoegen",
+
+            "addPenaltyModalView": {
+              "title": "Niewe overtreding toevoegen",
+              "addButton": "Voeg toe",
+              "cancelButton": "Annuleer",
+
+              "timestamp": "Timestamp",
+              "timestampValidation": "Timestamp is required",
+
+              "location": "Location",
+              "locationValidation": "Location is required",
+
+              "points": "Penalty points",
+              "pointsValidation": "Penalty points is required"
+            },
+
+            "deletePenaltyModalView": {
+              "title": "Zeker om de overtreding te verwijderen?",
+              "body": "De overtreding die verwijderd zal worden:",
+
+              "yesButton": "Verwijder",
+              "noButton": "Annuleer",
+
+              "loading": "Wachten op antwoord van de server...",
+              "success": "Het verwijderen van de overtreding is gelukt.",
+              "error": "Er is iets misgelopen tijdens het verwijderen van de overtreding..."
+            }
+          },
+
+          "noPenalties": "De gebruiker heeft nog geen overtredingen begaan.",
+          "error": "Er is iets misgelopen tijdens het ophalen van de strafpunten van de gebruiker."
+        }
       }
     }
   },

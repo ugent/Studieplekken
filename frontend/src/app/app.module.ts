@@ -37,6 +37,10 @@ import { LocationCalendarComponent } from './management/locations-management/loc
 import {FlatpickrModule} from 'angularx-flatpickr';
 import { LockersCalendarComponent } from './management/locations-management/location-details-management/lockers-calendar/lockers-calendar.component';
 import { LockersTableComponent } from './management/locations-management/location-details-management/lockers-table/lockers-table.component';
+import { UserDetailsManagementComponent } from './management/users-management/user-details-management/user-details-management.component';
+import { UserDetailsFormComponent } from './management/users-management/user-details-management/user-details-form/user-details-form.component';
+import { UserRolesComponent } from './management/users-management/user-details-management/user-roles/user-roles.component';
+import { UserDetailsManagementPenaltiesComponent } from './management/users-management/user-details-management/user-details-management-penalties/user-details-management-penalties.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -64,6 +68,7 @@ const routes: Routes = [
       {path: 'locations', component: LocationsManagementComponent},
       {path: 'locations/:locationName', component: LocationDetailsManagementComponent},
       {path: 'users', component: UsersManagementComponent},
+      {path: 'users/:id', component: UserDetailsManagementComponent},
       {path: 'reservations', component: ReservationsManagementComponent},
       {path: 'penalties', component: PenaltyEventsManagementComponent}
     ]
@@ -99,7 +104,11 @@ const routes: Routes = [
     DetailsFormComponent,
     LocationCalendarComponent,
     LockersCalendarComponent,
-    LockersTableComponent
+    LockersTableComponent,
+    UserDetailsManagementComponent,
+    UserDetailsFormComponent,
+    UserRolesComponent,
+    UserDetailsManagementPenaltiesComponent
   ],
     imports: [
         BrowserModule,
