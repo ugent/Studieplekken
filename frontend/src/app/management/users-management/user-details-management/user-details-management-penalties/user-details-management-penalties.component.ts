@@ -15,7 +15,6 @@ import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/form
 import {LocationService} from '../../../../services/api/locations/location.service';
 import {Location} from '../../../../shared/model/Location';
 import {penaltyEventCodeForManualEntry} from '../../../../../environments/environment';
-import {objectExists} from "../../../../shared/GeneralFunctions";
 
 @Component({
   selector: 'app-user-details-management-penalties',

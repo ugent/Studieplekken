@@ -41,6 +41,8 @@ import { UserDetailsManagementComponent } from './management/users-management/us
 import { UserDetailsFormComponent } from './management/users-management/user-details-management/user-details-form/user-details-form.component';
 import { UserRolesComponent } from './management/users-management/user-details-management/user-roles/user-roles.component';
 import { UserDetailsManagementPenaltiesComponent } from './management/users-management/user-details-management/user-details-management-penalties/user-details-management-penalties.component';
+import { LocationReservationsManagementComponent } from './management/reservations-management/location-reservations-management/location-reservations-management.component';
+import { LockerReservationsManagementComponent } from './management/reservations-management/locker-reservations-management/locker-reservations-management.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -108,7 +110,9 @@ const routes: Routes = [
     UserDetailsManagementComponent,
     UserDetailsFormComponent,
     UserRolesComponent,
-    UserDetailsManagementPenaltiesComponent
+    UserDetailsManagementPenaltiesComponent,
+    LocationReservationsManagementComponent,
+    LockerReservationsManagementComponent
   ],
     imports: [
         BrowserModule,

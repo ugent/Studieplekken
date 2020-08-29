@@ -20,6 +20,9 @@
     "dsa": "Student Activities Office",
     "ugent": "Ghent University",
 
+    "yes": "Yes",
+    "no": "No",
+
     "roles": {
       "ADMIN": "Admin",
       "EMPLOYEE": "Employee",
@@ -318,15 +321,74 @@
 
     "reservations": {
       "title": "Overview of reservations",
-      "locationsPanelTitle": "Search for location reservations",
-      "lockersPanelTitle": "Search for locker reservations",
+      "locationsPanelTitle": "Search location reservations",
+      "lockersPanelTitle": "Search locker reservations",
 
-      "locations": {
+      "location": {
+        "location": "Location",
+        "start": "Reservations from",
+        "end": "Reservations until",
+        "pastReservations": "Include past reservations?",
 
+        "searchButton": "Search",
+        "clearButton": "Clear",
+
+        "neverSearched": "You have not yet searched for any location reservations.",
+        "loading": "Waiting for response of server...",
+
+        "table": {
+          "date": "Date for which reserved",
+          "user": "User",
+          "attended": "User attended?",
+
+          "noLocationReservations": "There are no location reservations for the location."
+        },
+
+        "deleteModal": {
+          "title": "Sure to delete the location reservation?",
+          "body": "Location reservation about to delete:",
+
+          "yesButton": "Delete",
+          "noButton": "Cancel",
+
+          "loading": "Waiting on response of server...",
+          "success": "Successfully deleted the location reservation.",
+          "error": "Something went wrong while deleting the location reservation..."
+        }
       },
 
-      "lockers": {
+      "locker": {
+        "location": "Location",
+        "start": "Reservations from",
+        "end": "Reservations until",
+        "pastReservations": "Include past reservations?",
 
+        "searchButton": "Search",
+        "clearButton": "Clear",
+
+        "neverSearched": "You have not yet searched for any locker reservations.",
+        "loading": "Waiting for response of server...",
+
+        "table": {
+          "lockerNumber": "Locker number",
+          "owner": "User",
+          "keyPickupDate": "Key picked up?",
+          "keyReturnedDate": "Key returned?",
+
+          "noLockerReservations": "There are no locker reservations for the location."
+        },
+
+        "deleteModal": {
+          "title": "Sure to delete the locker reservation?",
+          "body": "Locker reservation about to delete:",
+
+          "yesButton": "Delete",
+          "noButton": "Cancel",
+
+          "loading": "Waiting on response of server...",
+          "success": "Successfully deleted the locker reservation.",
+          "error": "Something went wrong while deleting the locker reservation..."
+        }
       }
     }
   },

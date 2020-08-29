@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This controller handles all requests related to lockerreservations.
+ * This controller handles all requests related to locker reservations.
  * Such as creating reservations, list of reservations, cancelling reservations, ...
  */
 @RestController
@@ -30,10 +30,62 @@ public class LockerReservationController {
         this.lockerReservationDao = lockerReservationDao;
     }
 
-    @GetMapping("/{userId}")
-    public List<LockerReservation> getLockerReservationsOfUserById(@PathVariable("userId") String userId) {
+    @GetMapping("/user")
+    public List<LockerReservation> getLockerReservationsOfUserById(@RequestParam String id) {
         try {
-            return lockerReservationDao.getAllLockerReservationsOfUser(userId);
+            return lockerReservationDao.getAllLockerReservationsOfUser(id);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @GetMapping("/location")
+    public List<LockerReservation> getLocationReservationsOfLocation(@RequestParam String locationName,
+                                                                     @RequestParam boolean pastReservations) {
+        try {
+            return lockerReservationDao.getAllLockerReservationsOfLocation(locationName);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @GetMapping("/from")
+    public List<LockerReservation> getLocationReservationsOfLocationFrom(@RequestParam String locationName,
+                                                                         @RequestParam String start,
+                                                                         @RequestParam boolean pastReservations) {
+        try {
+            return lockerReservationDao.getAllLockerReservationsOfLocation(locationName);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @GetMapping("/until")
+    public List<LockerReservation> getLocationReservationsOfLocationUntil(@RequestParam String locationName,
+                                                                          @RequestParam String end,
+                                                                          @RequestParam boolean pastReservations) {
+        try {
+            return lockerReservationDao.getAllLockerReservationsOfLocation(locationName);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @GetMapping("/fromAndUntil")
+    public List<LockerReservation> getLocationReservationsOfLocationFromAndUntil(@RequestParam String locationName,
+                                                                             @RequestParam String start,
+                                                                             @RequestParam String end,
+                                                                             @RequestParam boolean pastReservations) {
+        try {
+            return lockerReservationDao.getAllLockerReservationsOfLocation(locationName);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
@@ -45,6 +97,18 @@ public class LockerReservationController {
     public void updateLockerReservation(@RequestBody LockerReservation lockerReservation) {
         try {
             lockerReservationDao.changeLockerReservation(lockerReservation);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @DeleteMapping
+    public void deleteLocationReservation(@RequestBody LockerReservation lockerReservation) {
+        try {
+            lockerReservationDao.deleteLockerReservation(lockerReservation.getLocker().getLocation().getName(),
+                    lockerReservation.getLocker().getNumber());
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));

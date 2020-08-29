@@ -28,14 +28,25 @@ export const api = {
   numberOfReservations: '/api/locations/{locationName}/reservations/count',
 
   // LOCATION_RESERVATIONS
-  locationReservationsByUserId: '/api/locations/reservations/{userId}',
+  locationReservationsOfUser: '/api/locations/reservations/user',
+  locationReservationsOfLocation: '/api/locations/reservations/location',
+  locationReservationsOfLocationFrom: '/api/locations/reservations/from',
+  locationReservationsOfLocationUntil: '/api/locations/reservations/until',
+  locationReservationsOfLocationFromAndUntil: '/api/locations/reservations/fromAndUntil',
+  deleteLocationReservation: '/api/locations/reservations',
 
   // LOCKERS
   lockersStatusesOfLocation: '/api/lockers/status/{locationName}',
 
   // LOCKER_RESERVATIONS
-  lockerReservationsByUserId: '/api/lockers/reservations/{userId}',
+  lockerReservationsOfUser: '/api/lockers/reservations/user',
+  lockerReservationsOfLocation: '/api/lockers/reservations/location',
+  lockerReservationsOfLocationFrom: '/api/lockers/reservations/from',
+  lockerReservationsOfLocationUntil: '/api/lockers/reservations/until',
+  lockerReservationsOfLocationFromAndUntil: '/api/lockers/reservations/fromAndUntil',
   updateLockerReservation: '/api/lockers/reservations',
+  deleteLockerReservation: '/api/lockers/reservations',
+  lockerReservationsByUserId: '/api/lockers/reservations/{userId}',
 
   // USERS
   userByAUGentId: '/api/account/id',

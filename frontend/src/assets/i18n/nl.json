@@ -20,6 +20,9 @@
     "dsa": "Dienst StudentenActiviteiten",
     "ugent": "Universiteit Gent",
 
+    "yes": "Ja",
+    "no": "Neen",
+
     "roles": {
       "ADMIN": "Admin",
       "EMPLOYEE": "Medewerker",
@@ -290,7 +293,11 @@
               "locationValidation": "Location is required",
 
               "points": "Penalty points",
-              "pointsValidation": "Penalty points is required"
+              "pointsValidation": "Penalty points is required",
+
+              "loading": "Wachten op antwoord van de server...",
+              "success": "Het toevoegen van de overtreding is gelukt.",
+              "error": "Er is iets misgelopen tijdens het toevoegen van de overtreding..."
             },
 
             "deletePenaltyModalView": {
@@ -317,12 +324,71 @@
       "locationsPanelTitle": "Zoek naar reservaties voor bloklocaties",
       "lockersPanelTitle": "Zoek naar reservaties van lockers",
 
-      "locations": {
+      "location": {
+        "location": "Locatie",
+        "start": "Reservaties vanaf",
+        "end": "Reservaties tot",
+        "pastReservations": "Vroegere reservaties inbegrijpen?",
 
+        "searchButton": "Zoek",
+        "clearButton": "Wis invoer",
+
+        "neverSearched": "Je hebt nog niet gezocht naar bloklocatiereservaties.",
+        "loading": "Wachten op antwoord van de server...",
+
+        "table": {
+          "date": "Datum waarvoor gereserveerd",
+          "user": "Gebruiker",
+          "attended": "Gebruiker was aanwezig?",
+
+          "noLocationReservations": "Er zijn geen locatie reservaties voor de locatie."
+        },
+
+        "deleteModal": {
+          "title": "Zeker om de locatie reservatie te verwijderen?",
+          "body": "De locatie reservatie die verwijderd zal worden:",
+
+          "yesButton": "Verwijder",
+          "noButton": "Annuleer",
+
+          "loading": "Wachten op antwoord van de server...",
+          "success": "Het verwijderen van de locatie reservatie is gelukt.",
+          "error": "Er is iets misgelopen tijdens het verwijderen van de locatie reservatie..."
+        }
       },
 
-      "lockers": {
+      "locker": {
+        "location": "Location",
+        "start": "Reservaties vanaf",
+        "end": "Reservaties tot",
+        "pastReservations": "Vroegere reservaties inbegrijpen?",
 
+        "searchButton": "Zoek",
+        "clearButton": "Wis invoer",
+
+        "neverSearched": "Je hebt nog niet gezocht naar reservaties voor lockers.",
+        "loading": "Wachten op antwoord van de server...",
+
+        "table": {
+          "lockerNumber": "Locker nummer",
+          "owner": "Gebruiker",
+          "keyPickupDate": "Sleutel opgehaald?",
+          "keyReturnedDate": "Sleutel teruggebracht?",
+
+          "noLockerReservations": "Er zijn geen locker reservaties voor de locatie."
+        },
+
+        "deleteModal": {
+          "title": "Zeker om de locker reservatie te verwijderen?",
+          "body": "De locker reservatie die verwijderd zal worden:",
+
+          "yesButton": "Verwijder",
+          "noButton": "Annuleer",
+
+          "loading": "Wachten op antwoord van de server...",
+          "success": "Het verwijderen van de locker reservatie is gelukt.",
+          "error": "Er is iets misgelopen tijdens het verwijderen van de locker reservatie..."
+        }
       }
     }
   },

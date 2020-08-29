@@ -79,7 +79,7 @@
   <hr>
 
   <!-- Show table if user has queried, else show a message instead of an empty table -->
-  <div *ngIf="neverSearched === true">
+  <div *ngIf="neverSearched === true" class="alert alert-info">
     {{'management.users.searchResult.neverSearched' | translate}}
   </div>
 
@@ -96,7 +96,8 @@
     {{'management.users.searchResult.noUserWithBarcodeHasBeenFound' | translate}}
   </div>
 
-  <div *ngIf="neverSearched === false" class="container-fluid">
+  <div *ngIf="neverSearched === false && !errorOnRetrievingFilteredUsers && !noUserWithBarcodeHasBeenFound"
+       class="container-fluid">
     <table style="width: 100%">
       <thead>
       <tr>

@@ -1,0 +1,183 @@
+<div class="container-fluid">
+  <!-- Form to filter locker reservations by
+          - location
+          - reservations from a certain date
+          - reservations until a certain date
+   -->
+  <div class="padding-default bg-tertiary">
+    <div class="padding-default">
+      <div class="">
+        <form [formGroup]="formGroup" (ngSubmit)="submitSearch(formGroup.value)">
+          <!-- Location-->
+          <div class="row form-group" *ngIf="locations | async as locations">
+            <label class="col-lg-3 control-label" for="location">
+              {{'management.reservations.locker.location' | translate}}
+            </label>
+            <div class="col-lg-8">
+              <select class="form-control" id="location" formControlName="location" >
+                <option *ngFor="let location of locations" [value]="location.name">{{location.name}}</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Reservations from -->
+          <div class="row form-group">
+            <label class="col-lg-3 control-label" for="start">
+              {{'management.reservations.locker.start' | translate}}
+            </label>
+            <div class="col-lg-8">
+              <input class="form-control" id="start" type="datetime-local" formControlName="start">
+            </div>
+          </div>
+
+          <!-- Reservations until -->
+          <div class="row form-group">
+            <label class="col-lg-3 control-label" for="end">
+              {{'management.reservations.locker.end' | translate}}
+            </label>
+            <div class="col-lg-8">
+              <input class="form-control" id="end" type="datetime-local" formControlName="end">
+            </div>
+          </div>
+
+          <!-- Checkbox to determine whether past reservations should be included
+               This is useful when no start/end are given -->
+          <div class="row">
+            <input id="pastReservations" type="checkbox" style="margin-right: 5px"
+                   formControlName="includePastReservations">
+            <label class="control-label" for="pastReservations">
+              {{'management.reservations.locker.pastReservations' | translate}}
+            </label>
+          </div>
+
+          <!-- Search and Cancel buttons -->
+          <div class="row">
+            <div class="col-md-11">
+
+              <div class="pull-right">
+                <!-- Search -->
+                <button type="submit" class="btn btn-default left-button"
+                        [disabled]="!enableSearchButton(formGroup.value)">
+                  {{'management.reservations.locker.searchButton' | translate}}
+                </button>
+
+                <!-- Clear input -->
+                <button type="button" class="btn btn-default" (click)="clearFormInput()"
+                        [disabled]="!enableClearButton(formGroup.value)">
+                  {{'management.reservations.locker.clearButton' | translate}}
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <br><br>
+
+  <!-- Show table if user has searched, else show a message instead of an empty table -->
+  <div *ngIf="neverSearched === true" class="alert alert-info"  >
+    {{'management.reservations.locker.neverSearched' | translate}}
+  </div>
+
+  <div *ngIf="neverSearched === null" class="alert alert-info">
+    {{'management.reservations.locker.loading' | translate}}
+  </div>
+
+  <!-- If an error has occurred while fetching the reservations, show the error -->
+  <div *ngIf="errorOnRetrievingReservations" class="alert alert-error">
+    {{'management.reservations.locker.error' | translate}}
+  </div>
+
+  <div *ngIf="neverSearched === false && !errorOnRetrievingReservations" class="container-fluid">
+    <div *ngIf="lockerReservationsObs | async as lockerReservations">
+      <div *ngIf="lockerReservations.length === 0" class="alert alert-info">
+        {{'management.reservations.locker.table.noLockerReservations' | translate}}
+      </div>
+
+      <table style="width: 100%;" *ngIf="lockerReservations.length > 0">
+        <thead>
+        <tr>
+          <th>{{'management.reservations.locker.table.lockerNumber' | translate}}</th>
+          <th>{{'management.reservations.locker.table.owner' | translate}}</th>
+          <th>{{'management.reservations.locker.table.keyPickupDate' | translate}}</th>
+          <th>{{'management.reservations.locker.table.keyReturnedDate' | translate}}</th>
+          <th></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr [@rowsAnimation]="" *ngFor="let reservation of lockerReservations">
+          <td>{{reservation.locker.number}}</td>
+          <td>{{reservation.owner.firstName + ' ' + reservation.owner.lastName}}</td>
+          <td>{{reservation.keyPickupDate === null || reservation.keyPickupDate === undefined ? '-' : toDateString(reservation.keyPickupDate)}}</td>
+          <td>{{reservation.keyReturnedDate === null || reservation.keyReturnedDate === undefined ? '-' : toDateString(reservation.keyReturnedDate)}}</td>
+          <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
+              data-toggle="modal" data-target="#deleteLockerReservationModal"
+              (click)="prepareToDeleteLockerReservation(reservation)">
+            <span class="glyphicon glyphicon-trash pointerCursor"></span>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal view to ask whether the user is sure to delete a lockerReservation -->
+<div class="modal fade" id="deleteLockerReservationModal" tabindex="-1" role="dialog"
+     aria-labelledby="deleteLockerReservationModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <!-- Header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteLockerModalLabel">
+          {{'management.reservations.locker.deleteModal.title' | translate}}
+        </h5>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div>
+          <b>{{'management.reservations.locker.deleteModal.body' | translate}}</b>
+          <br><br>
+          <ul>
+            <li><b style="margin-right: 5px"><i>{{('management.reservations.locker.table.lockerNumber' | translate) + ':   '}}</i></b>{{currentLockerReservationToDelete.locker.number}}</li>
+            <li><b style="margin-right: 5px"><i>{{('management.reservations.locker.table.owner' | translate) + ':   '}}</i></b>{{currentLockerReservationToDelete.owner.firstName + ' ' + currentLockerReservationToDelete.owner.lastName}}</li>
+            <li><b style="margin-right: 5px"><i>{{('management.reservations.locker.table.keyPickupDate' | translate)}}</i></b>{{currentLockerReservationToDelete.keyPickupDate === null || currentLockerReservationToDelete.keyPickupDate === undefined ? '-' : toDateString(currentLockerReservationToDelete.keyPickupDate)}}</li>
+            <li><b style="margin-right: 5px"><i>{{('management.reservations.locker.table.keyReturnedDate' | translate)}}</i></b>{{currentLockerReservationToDelete.keyReturnedDate === null || currentLockerReservationToDelete.keyReturnedDate === undefined ? '-' : toDateString(currentLockerReservationToDelete.keyReturnedDate)}}</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary"
+                (click)="deleteLockerReservationLinkedToCurrentLockerToDelete()">
+          {{'management.reservations.locker.deleteModal.yesButton' | translate}}
+        </button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          {{'management.reservations.locker.deleteModal.noButton' | translate}}
+        </button>
+      </div>
+
+      <div class="container-fluid">
+        <div class="alert alert-info" *ngIf="deletionWasSuccess === null">
+          {{'management.reservations.locker.deleteModal.loading' | translate}}
+        </div>
+
+        <div class="alert alert-success" *ngIf="deletionWasSuccess === true">
+          {{'management.reservations.locker.deleteModal.success' | translate}}
+        </div>
+
+        <div class="alert alert-error" *ngIf="deletionWasSuccess === false">
+          {{'management.reservations.locker.deleteModal.error' | translate}}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
