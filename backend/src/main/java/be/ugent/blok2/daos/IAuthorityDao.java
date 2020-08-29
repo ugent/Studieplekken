@@ -46,4 +46,9 @@ public interface IAuthorityDao extends IDao {
      */
     void updateAuthority(Authority updatedAuthority) throws SQLException;
 
+    /**
+     * delete authority by its id, including user-authority relation and its locations
+     */
+    void deleteAuthority(int authorityId) throws SQLException;
+
 }

@@ -11,10 +11,22 @@ select l.name, l.number_of_seats, l.number_of_lockers
 from public.locations l
 where l.name = ?;
 
+-- $get_locations_from_authority
+select  l.name, l.number_of_seats, l.number_of_lockers
+     , l.image_url, l.address, l.authority_id
+from public.locations l
+where authority_id = ?;
+
 -- $delete_location
 delete
 from public.locations
 where name = ?;
+
+-- $delete_locations_from_authority
+-- #unused
+delete
+from public.locations
+where authority_id = ?;
 
 -- $insert_location
 insert into public.locations (name, number_of_seats, number_of_lockers, image_url, address, authority_id)
@@ -245,6 +257,11 @@ where TO_TIMESTAMP(created_timestamp, 'YYYY-MM-DD\\THH24:MI:SS') < now() - inter
 delete from public.roles_user_authority
 where user_id = ?;
 
+-- $delete_roles_user_authority_of_authority
+delete
+from public.roles_user_authority
+where authority_id = ?;
+
 -- $update_fk_roles_user_authority_to_user
 update public.roles_user_authority
 set user_id = ?
@@ -293,6 +310,11 @@ values (?, ?, ?, ?, ?, ?, ?, ?);
 -- $update_authority
 update public.authority
 set name = ?, description = ?
+where authority_id = ?;
+
+-- $delete_authority
+delete
+from public.authority
 where authority_id = ?;
 
 -- queries for table LOCKER_RESERVATIONS

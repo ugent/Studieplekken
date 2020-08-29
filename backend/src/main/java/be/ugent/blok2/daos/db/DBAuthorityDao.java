@@ -2,6 +2,7 @@ package be.ugent.blok2.daos.db;
 
 import be.ugent.blok2.daos.IAccountDao;
 import be.ugent.blok2.daos.IAuthorityDao;
+import be.ugent.blok2.daos.ILocationDao;
 import be.ugent.blok2.model.Authority;
 import be.ugent.blok2.model.users.User;
 
@@ -11,6 +12,7 @@ import java.util.List;
 
 public class DBAuthorityDao extends ADB implements IAuthorityDao {
     IAccountDao accountDao;
+    ILocationDao locationDao;
 
     public DBAuthorityDao(IAccountDao iAccountDao) {
         this.accountDao = iAccountDao;
@@ -73,7 +75,7 @@ public class DBAuthorityDao extends ADB implements IAuthorityDao {
     public Authority getAuthorityByName(String name) throws SQLException {
         try (Connection conn = getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("authority_from_name"));
-            pstmt.setString(0,name);
+            pstmt.setString(0, name);
             ResultSet rs = pstmt.executeQuery();
             return createAuthority(rs);
         }
@@ -83,7 +85,7 @@ public class DBAuthorityDao extends ADB implements IAuthorityDao {
     public Authority getAuthorityByAuthorityId(int authorityId) throws SQLException {
         try (Connection conn = getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("authority_from_authority_id"));
-            pstmt.setInt(0,authorityId);
+            pstmt.setInt(0, authorityId);
             ResultSet rs = pstmt.executeQuery();
             return createAuthority(rs);
         }
@@ -108,9 +110,54 @@ public class DBAuthorityDao extends ADB implements IAuthorityDao {
         }
     }
 
+    @Override
+    public void deleteAuthority(int authorityId) throws SQLException {
+        try (Connection conn = getConnection()) {
+            try {
+                conn.setAutoCommit(false);
+
+                deleteLocations(authorityId, conn);
+                deleteRolesUserAuthority(authorityId, conn);
+                deleteAuthority(authorityId, conn);
+
+                conn.commit();
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                conn.rollback();
+                throw e;
+            } finally {
+                conn.setAutoCommit(true);
+            }
+        }
+    }
+
     private void preparedAuthorityInsertOrUpdate(Authority authority, PreparedStatement pstmt) throws SQLException {
         pstmt.setString(0, authority.getName());
         pstmt.setString(1, authority.getDescription());
+    }
+
+    private void deleteRolesUserAuthority(int authorityId, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn
+                .prepareStatement(databaseProperties.getString("delete_roles_user_authority_of_authority"));
+        pstmt.setInt(1, authorityId);
+        pstmt.execute();
+    }
+
+    private void deleteLocations(int authorityId, Connection conn) throws SQLException {
+        //location has its own FK to delete, get all locations and use LocationDao to delete
+        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("get_locations_from_authority"));
+        pstmt.setInt(1, authorityId);
+        ResultSet rs = pstmt.executeQuery();
+        while (rs.next()) {
+            locationDao.deleteLocation(rs.getString(databaseProperties.getString("location_name")));
+        }
+    }
+
+    private void deleteAuthority(int authorityId, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn
+                .prepareStatement(databaseProperties.getString("delete_authority"));
+        pstmt.setInt(1, authorityId);
+        pstmt.execute();
     }
 
     public static Authority createAuthority(ResultSet rs) throws SQLException {
