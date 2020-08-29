@@ -68,6 +68,7 @@ public class DBAuthorityDao extends ADB implements IAuthorityDao {
             }
 
             return users;
+
         }
     }
 
@@ -75,7 +76,7 @@ public class DBAuthorityDao extends ADB implements IAuthorityDao {
     public Authority getAuthorityByName(String name) throws SQLException {
         try (Connection conn = getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("authority_from_name"));
-            pstmt.setString(0, name);
+            pstmt.setString(1, name);
             ResultSet rs = pstmt.executeQuery();
             return createAuthority(rs);
         }
@@ -85,7 +86,7 @@ public class DBAuthorityDao extends ADB implements IAuthorityDao {
     public Authority getAuthorityByAuthorityId(int authorityId) throws SQLException {
         try (Connection conn = getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("authority_from_authority_id"));
-            pstmt.setInt(0, authorityId);
+            pstmt.setInt(1, authorityId);
             ResultSet rs = pstmt.executeQuery();
             return createAuthority(rs);
         }
@@ -105,7 +106,7 @@ public class DBAuthorityDao extends ADB implements IAuthorityDao {
         try (Connection conn = getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("update_authority"));
             preparedAuthorityInsertOrUpdate(updatedAuthority, pstmt);
-            pstmt.setInt(2, updatedAuthority.getAuthorityId());
+            pstmt.setInt(3, updatedAuthority.getAuthorityId());
             pstmt.execute();
         }
     }
@@ -132,8 +133,8 @@ public class DBAuthorityDao extends ADB implements IAuthorityDao {
     }
 
     private void preparedAuthorityInsertOrUpdate(Authority authority, PreparedStatement pstmt) throws SQLException {
-        pstmt.setString(0, authority.getName());
-        pstmt.setString(1, authority.getDescription());
+        pstmt.setString(1, authority.getName());
+        pstmt.setString(2, authority.getDescription());
     }
 
     private void deleteRolesUserAuthority(int authorityId, Connection conn) throws SQLException {
