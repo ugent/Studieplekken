@@ -85,7 +85,8 @@ CREATE TABLE public.locations (
     number_of_seats integer NOT NULL,
     number_of_lockers integer NOT NULL,
     image_url text,
-    address text NOT NULL
+    address text NOT NULL,
+    authority_id integer NOT NULL
 );
 
 
@@ -275,8 +276,16 @@ CREATE TABLE public.authority (
 
 ALTER TABLE public.authority OWNER TO postgres;
 
+--
+-- Name: roles_user_authority; Type: TABLE; Schema: public; Owner: postgres
+--
 
+CREATE TABLE public.roles_user_authority (
+    user_id text NOT NULL,
+    authority_id integer NOT NULL
+);
 
+ALTER TABLE public.roles_user_authority OWNER TO postgres;
 
 
 ----------------- +----------------------+
@@ -385,9 +394,8 @@ primary key (
 	augentid
 );
 
-
-
-
+alter table public.authority
+add column authority_id integer primary key generated always as identity;
 
 
 
@@ -413,6 +421,14 @@ alter table only public.calendar_periods_for_lockers
 add constraint fk_calendar_periods_for_lockers_to_locations
 foreign key (location_name)
 references public.locations (name);
+
+--
+-- locations to authority
+--
+alter table only public.locations
+add constraint fk_location_to_authority
+foreign key (authority_id)
+references public.authority(authority_id);
 
 --
 -- location_reservations to locations, users
@@ -509,11 +525,21 @@ add constraint fk_users_to_verify_to_institutions
 foreign key (institution)
 references public.institutions (name);
 
+--
+-- roles_user_authority to user
+--
+alter table only public.roles_user_authority
+add constraint fk_roles_user_authority_to_user
+foreign key (user_id)
+references public.users (augentid);
 
-
-
-
-
+--
+-- roles_user_authority to authority
+--
+alter table only public.roles_user_authority
+add constraint fk_roles_user_authority_to_authority
+foreign key (authority_id)
+references public.authority (authority_id);
 
 
 
@@ -528,6 +554,9 @@ alter table public.users_to_verify
 add constraint uc_users_to_verify
 unique (mail);
 
+alter table public.authority
+add constraint uc_authority_name
+unique (name);
 
 
 ----------------- +-----------------------+

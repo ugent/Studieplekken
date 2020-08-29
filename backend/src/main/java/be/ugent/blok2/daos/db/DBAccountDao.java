@@ -239,6 +239,17 @@ public class DBAccountDao extends ADB implements IAccountDao {
     }
 
     @Override
+    public boolean addUserToAuthority(String augentid, int authorityId) throws SQLException {
+        try (Connection conn = getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("insert_role_user_authority"));
+            pstmt.setString(1, augentid);
+            pstmt.setInt(2, authorityId);
+            pstmt.execute();
+            return true;
+        }
+    }
+
+    @Override
     public boolean updateUserById(String augentid, User u) throws SQLException {
         try (Connection conn = getConnection()) {
             try {
@@ -295,6 +306,9 @@ public class DBAccountDao extends ADB implements IAccountDao {
                 // delete all entries of user in PENALTY_BOOK
                 deletePenaltyBookEntries(augentid, conn);
 
+                // delete all entries of user in ROLES_USER_AUTHORITY
+                deleteRolesUserAuthorityEntries(augentid, conn);
+
                 // and eventually, delete the user in USERS
                 deleteUser(augentid, conn);
 
@@ -319,8 +333,13 @@ public class DBAccountDao extends ADB implements IAccountDao {
         }
     }
 
+
     public static User createUser(ResultSet rs) throws SQLException {
-        User u = equalPartForCreatingUserOrUserToVerify(rs);
+        return createUser(rs, true);
+    }
+
+    public static User createUser(ResultSet rs, boolean password) throws SQLException {
+        User u = equalPartForCreatingUserOrUserToVerify(rs, password);
 
         if (u.getAugentID() == null)
             return null;
@@ -334,11 +353,17 @@ public class DBAccountDao extends ADB implements IAccountDao {
     }
 
     private static User equalPartForCreatingUserOrUserToVerify(ResultSet rs) throws SQLException {
+        return equalPartForCreatingUserOrUserToVerify(rs, true);
+    }
+
+    private static User equalPartForCreatingUserOrUserToVerify(ResultSet rs, boolean password) throws SQLException {
         User u = new User();
         u.setMail(rs.getString(databaseProperties.getString("user_mail")));
         u.setLastName(rs.getString(databaseProperties.getString("user_surname")));
         u.setFirstName(rs.getString(databaseProperties.getString("user_name")));
-        u.setPassword(rs.getString(databaseProperties.getString("user_password")));
+        if (password) {
+            u.setPassword(rs.getString(databaseProperties.getString("user_password")));
+        }
         u.setInstitution(rs.getString(databaseProperties.getString("user_institution")));
         u.setAugentID(rs.getString(databaseProperties.getString("user_augentid")));
         u.setRoles(csvToRoles(rs.getString(databaseProperties.getString("user_role"))));
@@ -408,6 +433,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
         updateForeignKeyOfLocationReservations(oldAugentid, newAugentid, conn);
         updateForeignKeyOfLockerReservations(oldAugentid, newAugentid, conn);
         updateForeignKeyOfPenaltyBook(oldAugentid, newAugentid, conn);
+        updateForeignKeyOfRolesUserAuthorityEntries(oldAugentid, newAugentid, conn);
     }
 
     private void updateForeignKeyOfScannersLocation(String oldAugentid, String newAugentid, Connection conn)
@@ -431,6 +457,11 @@ public class DBAccountDao extends ADB implements IAccountDao {
     private void updateForeignKeyOfPenaltyBook(String oldAugentid, String newAugentid, Connection conn)
             throws SQLException {
         String query = databaseProperties.getString("update_fk_penalty_book_to_user");
+        updateForeignKeyGeneral(oldAugentid, newAugentid, query, conn);
+    }
+
+    private void updateForeignKeyOfRolesUserAuthorityEntries(String oldAugentid, String newAugentid, Connection conn) throws SQLException {
+        String query = databaseProperties.getString("update_fk_roles_user_authority_to_user");
         updateForeignKeyGeneral(oldAugentid, newAugentid, query, conn);
     }
 
@@ -468,6 +499,12 @@ public class DBAccountDao extends ADB implements IAccountDao {
     private void deletePenaltyBookEntries(String augentid, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(databaseProperties
                 .getString("delete_penalties_of_user"));
+        pstmt.setString(1, augentid);
+        pstmt.execute();
+    }
+
+    private void deleteRolesUserAuthorityEntries(String augentid, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_roles_user_authority_of_user"));
         pstmt.setString(1, augentid);
         pstmt.execute();
     }

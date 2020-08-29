@@ -39,3 +39,9 @@ from users;
 
 select *
 from users_to_verify;
+
+select *
+from authority;
+
+select *
+from roles_user_authority;

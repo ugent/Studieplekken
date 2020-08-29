@@ -213,8 +213,9 @@ public class DBLocationDao extends ADB implements ILocationDao {
         int numberOfLockers = rs.getInt(databaseProperties.getString("location_number_of_lockers"));
         String imageUrl = rs.getString(databaseProperties.getString("location_image_url"));
         String address = rs.getString(databaseProperties.getString("location_address"));
+        int authorityId = rs.getInt(databaseProperties.getString("location_authority_id"));
 
-        return new Location(name, address, numberOfSeats, numberOfLockers, imageUrl);
+        return new Location(name, address, numberOfSeats, numberOfLockers, imageUrl, authorityId);
     }
 
     public static Locker createLocker(ResultSet rs) throws SQLException {
@@ -241,6 +242,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
         pstmt.setInt(3, location.getNumberOfLockers());
         pstmt.setString(4, location.getImageUrl());
         pstmt.setString(5, location.getAddress());
+        pstmt.setInt(6, location.getAuthorityId());
     }
 
     private void deleteCalendarPeriods(String locationName, Connection conn) throws SQLException {

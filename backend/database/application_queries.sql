@@ -1,13 +1,13 @@
 -- queries for table LOCATIONS
 -- $all_locations
 select l.name, l.number_of_seats, l.number_of_lockers
-    , l.image_url, l.address
+    , l.image_url, l.address, l.authority_id
 from public.locations l
 order by l.name;
 
 -- $get_location
 select l.name, l.number_of_seats, l.number_of_lockers
-    , l.image_url, l.address
+    , l.image_url, l.address, l.authority_id
 from public.locations l
 where l.name = ?;
 
@@ -17,12 +17,12 @@ from public.locations
 where name = ?;
 
 -- $insert_location
-insert into public.locations (name, number_of_seats, number_of_lockers, image_url, address)
-values (?, ?, ?, ?, ?);
+insert into public.locations (name, number_of_seats, number_of_lockers, image_url, address, authority_id)
+values (?, ?, ?, ?, ?, ?);
 
 -- $update_location
 update public.locations
-set name = ?, number_of_seats = ?, number_of_lockers = ?, image_url = ?, address = ?
+set name = ?, number_of_seats = ?, number_of_lockers = ?, image_url = ?, address = ?, authority_id = ?
 where name = ?;
 
 
@@ -240,7 +240,60 @@ delete
 from public.users_to_verify
 where TO_TIMESTAMP(created_timestamp, 'YYYY-MM-DD\\THH24:MI:SS') < now() - interval '1 days';
 
+-- queries for table ROLES_USER_AUTHORITY
+-- $delete_roles_user_authority_of_user
+delete from public.roles_user_authority
+where user_id = ?;
 
+-- $update_fk_roles_user_authority_to_user
+update public.roles_user_authority
+set user_id = ?
+where user_id = ?;
+
+-- $insert_role_user_authority
+insert into public.roles_user_authority (user_id, authority_id)
+values (?, ?);
+
+-- queries for table AUTHORITY
+-- $all_authorities
+select a.authority_id, a.name, a.description
+from public.authority a
+order by a.name;
+
+-- $authorities_from_user
+select a.authority_id, a.name, a.description
+from public.authority a
+  join public.roles_user_authority roles on a.authority_id = roles.authority_id
+  join public.users u on roles.user_id = u.augentid
+  where u.augentid = ?
+order by a.name;
+
+-- $authority_get_users
+select u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.penalty_points, u.mail, u.institution
+from public.users u
+         join public.roles_user_authority roles on u.augentid = roles.user_id
+         join public.authority a on roles.authority_id = a.authority_id
+where a.authority_id = ?
+order by u.augentid;
+
+-- $authority_from_name
+select a.authority_id, a.name, a.description
+from public.authority a
+where a.name = ?;
+
+-- $authority_from_authority_id
+select a.authority_id, a.name, a.description
+from public.authority a
+where a.authority_id = ?;
+
+-- $insert_authority
+insert into public.users (mail, augentpreferredsn, augentpreferredgivenname, password, institution, augentid, role, penalty_points)
+values (?, ?, ?, ?, ?, ?, ?, ?);
+
+-- $update_authority
+update public.authority
+set name = ?, description = ?
+where authority_id = ?;
 
 -- queries for table LOCKER_RESERVATIONS
 -- $get_locker_reservations_where_<?>

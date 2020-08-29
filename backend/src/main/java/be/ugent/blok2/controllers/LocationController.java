@@ -31,6 +31,7 @@ public class LocationController {
         this.locationDao = locationDao;
     }
 
+    //logged in user
     @GetMapping
     public List<Location> getAllLocations() {
         try {
@@ -42,6 +43,7 @@ public class LocationController {
         }
     }
 
+    //logged in user
     @GetMapping("/{locationName}")
     public Location getLocation(@PathVariable("locationName") String locationName) {
         try {
@@ -53,6 +55,8 @@ public class LocationController {
         }
     }
 
+    //authority user
+    // location should be part of an authority the user is part of.
     @PostMapping
     public void addLocation(@RequestBody Location location) {
         try {
@@ -64,6 +68,8 @@ public class LocationController {
         }
     }
 
+    //authority user
+    //the updated location should be part of an authority the user is part of.
     @PutMapping("/{locationName}")
     public void updateLocation(@PathVariable("locationName") String locationName, @RequestBody Location location) {
         try {
@@ -75,6 +81,8 @@ public class LocationController {
         }
     }
 
+    //authority user
+    //the updated location should be part of an authority the user is part of.
     @DeleteMapping("/{locationName}")
     public void deleteLocation(@PathVariable("locationName") String locationName) {
         try {
@@ -86,6 +94,7 @@ public class LocationController {
         }
     }
 
+    //logged in user (?)
     @GetMapping("/{locationName}/reservations/count")
     public int getAmountOfReservationsToday(@PathVariable("locationName") String locationName) {
         try {
