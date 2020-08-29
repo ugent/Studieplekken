@@ -314,6 +314,20 @@
           "error": "Something went wrong while querying the penalties for the user."
         }
       }
+    },
+
+    "reservations": {
+      "title": "Overview of reservations",
+      "locationsPanelTitle": "Search for location reservations",
+      "lockersPanelTitle": "Search for locker reservations",
+
+      "locations": {
+
+      },
+
+      "lockers": {
+
+      }
     }
   },
 

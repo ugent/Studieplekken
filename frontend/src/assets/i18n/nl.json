@@ -310,6 +310,20 @@
           "error": "Er is iets misgelopen tijdens het ophalen van de strafpunten van de gebruiker."
         }
       }
+    },
+
+    "reservations": {
+      "title": "Overzicht van de reservaties",
+      "locationsPanelTitle": "Zoek naar reservaties voor bloklocaties",
+      "lockersPanelTitle": "Zoek naar reservaties van lockers",
+
+      "locations": {
+
+      },
+
+      "lockers": {
+
+      }
     }
   },
 
