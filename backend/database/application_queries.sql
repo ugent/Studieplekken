@@ -23,7 +23,6 @@ from public.locations
 where name = ?;
 
 -- $delete_locations_from_authority
--- #unused
 delete
 from public.locations
 where authority_id = ?;
@@ -304,8 +303,8 @@ from public.authority a
 where a.authority_id = ?;
 
 -- $insert_authority
-insert into public.users (mail, augentpreferredsn, augentpreferredgivenname, password, institution, augentid, role, penalty_points)
-values (?, ?, ?, ?, ?, ?, ?, ?);
+insert into public.authority (name, description)
+values (?, ?) RETURNING authority_id;
 
 -- $update_authority
 update public.authority
