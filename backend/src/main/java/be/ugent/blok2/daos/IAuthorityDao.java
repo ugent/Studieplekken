@@ -36,8 +36,9 @@ public interface IAuthorityDao extends IDao {
 
     /**
      * Add an authority to the database. AuthorityId is ignored.
+     * @return the added authority with updated authorityId
      */
-    void addAuthority(Authority authority) throws SQLException;
+    Authority addAuthority(Authority authority) throws SQLException;
 
     /**
      *

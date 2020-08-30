@@ -95,11 +95,13 @@ public class DBAuthorityDao extends ADB implements IAuthorityDao {
     }
 
     @Override
-    public void addAuthority(Authority authority) throws SQLException {
+    public Authority addAuthority(Authority authority) throws SQLException {
         try (Connection conn = getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("insert_authority"));
             preparedAuthorityInsertOrUpdate(authority, pstmt);
-            pstmt.execute();
+            ResultSet rs = pstmt.executeQuery();
+            authority.setAuthorityId(rs.getInt(databaseProperties.getString("authority_authority_id")));
+            return authority;
         }
     }
 
