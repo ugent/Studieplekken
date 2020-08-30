@@ -41,9 +41,6 @@ export const api = {
   // LOCKER_RESERVATIONS
   lockerReservationsOfUser: '/api/lockers/reservations/user',
   lockerReservationsOfLocation: '/api/lockers/reservations/location',
-  lockerReservationsOfLocationFrom: '/api/lockers/reservations/from',
-  lockerReservationsOfLocationUntil: '/api/lockers/reservations/until',
-  lockerReservationsOfLocationFromAndUntil: '/api/lockers/reservations/fromAndUntil',
   updateLockerReservation: '/api/lockers/reservations',
   deleteLockerReservation: '/api/lockers/reservations',
   lockerReservationsByUserId: '/api/lockers/reservations/{userId}',

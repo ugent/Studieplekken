@@ -53,6 +53,12 @@ export function nowAsCustomDate(): CustomDate {
   return customDate;
 }
 
+export function toISODateString(date: CustomDate): string {
+  return ('' + date.year).padStart(4, '0') + '-' +
+    ('' + date.month).padStart(2, '0') + '-' +
+    ('' + date.day).padStart(2, '0');
+}
+
 export function toDateString(date: CustomDate): string {
   const d = customDateToTypeScriptDate(date);
   const dateString = d.toLocaleDateString();

@@ -45,7 +45,7 @@ public class LocationReservationController {
     public List<LocationReservation> getLocationReservationsOfLocation(@RequestParam String locationName,
                                                                        @RequestParam boolean pastReservations) {
         try {
-            return locationReservationDao.getAllLocationReservationsOfLocation(locationName);
+            return locationReservationDao.getAllLocationReservationsOfLocation(locationName, pastReservations);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
@@ -58,7 +58,7 @@ public class LocationReservationController {
                                                                            @RequestParam String start,
                                                                            @RequestParam boolean pastReservations) {
         try {
-            return locationReservationDao.getAllLocationReservationsOfLocation(locationName);
+            return locationReservationDao.getAllLocationReservationsOfLocationFrom(locationName, start, pastReservations);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
@@ -71,7 +71,7 @@ public class LocationReservationController {
                                                                             @RequestParam String end,
                                                                             @RequestParam boolean pastReservations) {
         try {
-            return locationReservationDao.getAllLocationReservationsOfLocation(locationName);
+            return locationReservationDao.getAllLocationReservationsOfLocationUntil(locationName, end, pastReservations);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
@@ -85,7 +85,8 @@ public class LocationReservationController {
                                                                             @RequestParam String end,
                                                                             @RequestParam boolean pastReservations) {
         try {
-            return locationReservationDao.getAllLocationReservationsOfLocation(locationName);
+            return locationReservationDao
+                    .getAllLocationReservationsOfLocationFromAndUntil(locationName, start, end, pastReservations);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));

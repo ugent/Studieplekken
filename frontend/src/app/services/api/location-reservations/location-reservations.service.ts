@@ -3,6 +3,7 @@ import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {api} from '../../../../environments/environment';
 import {LocationReservation} from '../../../shared/model/LocationReservation';
 import {Observable} from 'rxjs';
+import {toDateString, toISODateString, typeScriptDateToCustomDate} from "../../../shared/model/helpers/CustomDate";
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +28,7 @@ export class LocationReservationsService {
                                         pastReservations: boolean): Observable<LocationReservation[]> {
     const params = new HttpParams()
       .set('locationName', locationName)
-      .set('start', start.toDateString())
+      .set('start', toISODateString(typeScriptDateToCustomDate(start)))
       .set('pastReservations', String(pastReservations));
     return this.http.get<LocationReservation[]>(api.locationReservationsOfLocationFrom, { params });
   }
@@ -36,7 +37,7 @@ export class LocationReservationsService {
                                          pastReservations: boolean): Observable<LocationReservation[]> {
     const params = new HttpParams()
       .set('locationName', locationName)
-      .set('end', end.toDateString())
+      .set('end', toISODateString(typeScriptDateToCustomDate(end)))
       .set('pastReservations', String(pastReservations));
     return this.http.get<LocationReservation[]>(api.locationReservationsOfLocationUntil, { params });
   }
@@ -45,8 +46,8 @@ export class LocationReservationsService {
                                                 pastReservations: boolean): Observable<LocationReservation[]> {
     const params = new HttpParams()
       .set('locationName', locationName)
-      .set('start', start.toDateString())
-      .set('end', end.toDateString())
+      .set('start', toISODateString(typeScriptDateToCustomDate(start)))
+      .set('end', toISODateString(typeScriptDateToCustomDate(end)))
       .set('pastReservations', String(pastReservations));
     return this.http.get<LocationReservation[]>(api.locationReservationsOfLocationFromAndUntil, { params });
   }

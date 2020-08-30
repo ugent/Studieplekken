@@ -335,6 +335,7 @@
 
         "neverSearched": "You have not yet searched for any location reservations.",
         "loading": "Waiting for response of server...",
+        "error": "Something went wrong while searching for location reservations",
 
         "table": {
           "date": "Date for which reserved",
@@ -361,13 +362,14 @@
         "location": "Location",
         "start": "Reservations from",
         "end": "Reservations until",
-        "pastReservations": "Include past reservations?",
+        "pastReservations": "Include past reservations (i.e. key both picked up and returned)?",
 
         "searchButton": "Search",
         "clearButton": "Clear",
 
         "neverSearched": "You have not yet searched for any locker reservations.",
         "loading": "Waiting for response of server...",
+        "error": "Something went wrong while searching for locker reservations",
 
         "table": {
           "lockerNumber": "Locker number",

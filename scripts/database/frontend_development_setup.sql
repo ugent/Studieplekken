@@ -35,11 +35,11 @@ to_char(now() - interval '25 days', 'YYYY-MM-DD') || 'T19:00');
 insert into public.location_reservations(date, location_name, attended, user_augentid)
 values
 -- One reservation for over five days
-(replace(to_char(now() + interval '5 days', 'YYYY-MM-DD HH24:MI:SS'), ' ', 'T'), 'Therminal', null, '001'),
+(to_char(now() + interval '5 days', 'YYYY-MM-DD'), 'Therminal', null, '001'),
 -- One reservation for five days ago, attended to
-(replace(to_char(now() - interval '5 days', 'YYYY-MM-DD HH24:MI:SS'), ' ', 'T'), 'Therminal', true, '001'),
+(to_char(now() - interval '5 days', 'YYYY-MM-DD'), 'Therminal', true, '001'),
 -- one reservation for four days ago, not attended to
-(replace(to_char(now() - interval '4 days', 'YYYY-MM-DD HH24:MI:SS'), ' ', 'T'), 'Sterre S5', false, '001');
+(to_char(now() - interval '4 days', 'YYYY-MM-DD'), 'Sterre S5', false, '001');
 
 /*
  * Setup all the lockers for the test locations
@@ -253,7 +253,7 @@ insert into public.locker_reservations(location_name, locker_number, user_augent
 -- insert a 'fresh' reservation (keyPickup- and keyReturnedDates are null)
 values ('Therminal', 0, '001', null, null),
 -- insert a reservation where the key has just been picked up
-('Therminal', 1, '001', replace(to_char(now(), 'YYYY-MM-DD HH24:MI:SS'), ' ', 'T'), null),
+('Therminal', 1, '001', to_char(now(), 'YYYY-MM-DD'), null),
 -- insert a reservation where the key has been picked up and has just been returned
-('Sterre S5', 0, '001', replace(to_char(now() - interval '1 month', 'YYYY-MM-DD HH24:MI:SS'), ' ', 'T'),
-    replace(to_char(now(), 'YYYY-MM-DD HH24:MI:SS'), ' ', 'T'));
+('Sterre S5', 0, '001', to_char(now() - interval '1 month', 'YYYY-MM-DD'),
+    to_char(now(), 'YYYY-MM-DD'));

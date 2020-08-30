@@ -335,6 +335,7 @@
 
         "neverSearched": "Je hebt nog niet gezocht naar bloklocatiereservaties.",
         "loading": "Wachten op antwoord van de server...",
+        "error": "Er is iets misgelopen tijdens het ophalen van de locatie reservaties",
 
         "table": {
           "date": "Datum waarvoor gereserveerd",
@@ -361,13 +362,14 @@
         "location": "Location",
         "start": "Reservaties vanaf",
         "end": "Reservaties tot",
-        "pastReservations": "Vroegere reservaties inbegrijpen?",
+        "pastReservations": "Vroegere reservaties inbegrijpen (i.e. sleutel opgehaald én teruggebracht)?",
 
         "searchButton": "Zoek",
         "clearButton": "Wis invoer",
 
         "neverSearched": "Je hebt nog niet gezocht naar reservaties voor lockers.",
         "loading": "Wachten op antwoord van de server...",
+        "error": "Er is iets misgelopen tijdens het ophalen van de locker reservaties",
 
         "table": {
           "lockerNumber": "Locker nummer",

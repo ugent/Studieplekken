@@ -45,47 +45,7 @@ public class LockerReservationController {
     public List<LockerReservation> getLocationReservationsOfLocation(@RequestParam String locationName,
                                                                      @RequestParam boolean pastReservations) {
         try {
-            return lockerReservationDao.getAllLockerReservationsOfLocation(locationName);
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
-    }
-
-    @GetMapping("/from")
-    public List<LockerReservation> getLocationReservationsOfLocationFrom(@RequestParam String locationName,
-                                                                         @RequestParam String start,
-                                                                         @RequestParam boolean pastReservations) {
-        try {
-            return lockerReservationDao.getAllLockerReservationsOfLocation(locationName);
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
-    }
-
-    @GetMapping("/until")
-    public List<LockerReservation> getLocationReservationsOfLocationUntil(@RequestParam String locationName,
-                                                                          @RequestParam String end,
-                                                                          @RequestParam boolean pastReservations) {
-        try {
-            return lockerReservationDao.getAllLockerReservationsOfLocation(locationName);
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
-    }
-
-    @GetMapping("/fromAndUntil")
-    public List<LockerReservation> getLocationReservationsOfLocationFromAndUntil(@RequestParam String locationName,
-                                                                             @RequestParam String start,
-                                                                             @RequestParam String end,
-                                                                             @RequestParam boolean pastReservations) {
-        try {
-            return lockerReservationDao.getAllLockerReservationsOfLocation(locationName);
+            return lockerReservationDao.getAllLockerReservationsOfLocation(locationName, pastReservations);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));

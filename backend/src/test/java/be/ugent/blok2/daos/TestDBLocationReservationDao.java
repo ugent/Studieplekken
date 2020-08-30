@@ -85,7 +85,7 @@ public class TestDBLocationReservationDao {
         LocationReservation rlr = locationReservationDao.getLocationReservation(u.getAugentID(), date); // rlr = retrieved location reservation
         Assert.assertEquals("addLocationReservation, getLocationReservation", lr, rlr);
 
-        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfLocation(testLocation.getName());
+        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfLocation(testLocation.getName(), true);
         Assert.assertEquals("addLocationReservation, getAllLocationReservationsOfLocation", 1, list.size());
 
         list = locationReservationDao.getAllLocationReservationsOfUser(u.getAugentID());

@@ -23,34 +23,6 @@ export class LockerReservationService {
     return this.http.get<LockerReservation[]>(api.lockerReservationsOfLocation, { params });
   }
 
-  getLockerReservationsOfLocationFrom(locationName: string, start: Date,
-                                      pastReservations: boolean): Observable<LockerReservation[]> {
-    const params = new HttpParams()
-      .set('locationName', locationName)
-      .set('start', start.toDateString())
-      .set('pastReservations', String(pastReservations));
-    return this.http.get<LockerReservation[]>(api.lockerReservationsOfLocationFrom, { params });
-  }
-
-  getLockerReservationsOfLocationUntil(locationName: string, end: Date,
-                                       pastReservations: boolean): Observable<LockerReservation[]> {
-    const params = new HttpParams()
-      .set('locationName', locationName)
-      .set('end', end.toDateString())
-      .set('pastReservations', String(pastReservations));
-    return this.http.get<LockerReservation[]>(api.lockerReservationsOfLocationUntil, { params });
-  }
-
-  getLockerReservationsOfLocationFromAndUntil(locationName: string, start: Date, end: Date,
-                                              pastReservations: boolean): Observable<LockerReservation[]> {
-    const params = new HttpParams()
-      .set('locationName', locationName)
-      .set('start', start.toDateString())
-      .set('end', end.toDateString())
-      .set('pastReservations', String(pastReservations));
-    return this.http.get<LockerReservation[]>(api.lockerReservationsOfLocationFromAndUntil, { params });
-  }
-
   deleteLockerReservation(lockerReservation: LockerReservation): Observable<any> {
     const options = {
       headers: new HttpHeaders({
