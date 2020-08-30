@@ -1,0 +1,1 @@
+perl application_queries_formatting.pl application_queries.sql > database.properties
