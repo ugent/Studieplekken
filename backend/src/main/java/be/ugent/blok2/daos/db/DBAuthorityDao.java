@@ -5,11 +5,13 @@ import be.ugent.blok2.daos.IAuthorityDao;
 import be.ugent.blok2.daos.ILocationDao;
 import be.ugent.blok2.model.Authority;
 import be.ugent.blok2.model.users.User;
+import org.springframework.stereotype.Service;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class DBAuthorityDao extends ADB implements IAuthorityDao {
     IAccountDao accountDao;
     ILocationDao locationDao;
