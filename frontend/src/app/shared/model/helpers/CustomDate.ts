@@ -93,7 +93,7 @@ export function toIntegerString(date: CustomDate): string {
 }
 
 export function customDateToTypeScriptDate(date: CustomDate): Date {
-  return new Date(date.year,
+  return date === null ? null : new Date(date.year,
     date.month - 1, // months in Date are from 0-11
     date.day, date.hrs, date.min, date.sec);
 }

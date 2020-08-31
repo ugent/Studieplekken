@@ -190,6 +190,7 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
             p.setReservationDate(CustomDate.parseString(rs.getString(databaseProperties.getString("penalty_book_reservation_date"))));
             p.setReservationLocation(rs.getString(databaseProperties.getString("penalty_book_reservation_location")));
             p.setReceivedPoints(rs.getInt(databaseProperties.getString("penalty_book_received_points")));
+            p.setRemarks(rs.getString(databaseProperties.getString("penalty_book_remarks")));
             ret.add(p);
         }
 
@@ -334,5 +335,6 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
         pstmt.setString(4, p.getReservationDate() == null ? "" : p.getReservationDate().toString());
         pstmt.setString(5, p.getReservationLocation());
         pstmt.setInt(6, p.getReceivedPoints());
+        pstmt.setString(7, p.getRemarks());
     }
 }

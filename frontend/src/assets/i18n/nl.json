@@ -27,7 +27,9 @@
       "ADMIN": "Admin",
       "EMPLOYEE": "Medewerker",
       "STUDENT": "Student"
-    }
+    },
+
+    "optional": "Optioneel"
   },
 
   "header": {
@@ -278,6 +280,7 @@
             "timestamp": "Timestamp",
             "location": "Locatie",
             "receivedPoints": "Ontvangen strafpunten",
+            "remarks": "Opmerking",
 
             "addNew": "Overtreding toevoegen",
 

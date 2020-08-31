@@ -75,11 +75,12 @@ export class UserDetailsManagementPenaltiesComponent implements OnInit {
     this.newPenaltyFormGroup = new FormGroup({
       timestamp: new FormControl('', Validators.required),
       location: new FormControl('', Validators.required),
-      points: new FormControl('', Validators.required)
+      points: new FormControl('', Validators.required),
+      remarks: new FormControl('')
     });
   }
 
-  addPenalty(value: {timestamp: string, location: string, points: number}): void {
+  addPenalty(value: {timestamp: string, location: string, points: number, remarks: string}): void {
     const penalty = PenaltyConstructor.new();
     penalty.augentID = this.userId;
     penalty.eventCode = penaltyEventCodeForManualEntry;
@@ -87,6 +88,7 @@ export class UserDetailsManagementPenaltiesComponent implements OnInit {
     penalty.reservationDate = null;
     penalty.reservationLocation = value.location;
     penalty.receivedPoints = value.points;
+    penalty.remarks = value.remarks;
 
     this.errorOnAddingPenalty = null;
     this.penaltyService.addPenalty(penalty).subscribe(
@@ -139,4 +141,5 @@ export class UserDetailsManagementPenaltiesComponent implements OnInit {
   get timestamp(): AbstractControl { return this.newPenaltyFormGroup.get('timestamp'); }
   get location(): AbstractControl { return this.newPenaltyFormGroup.get('location'); }
   get points(): AbstractControl { return this.newPenaltyFormGroup.get('points'); }
+  get remarks(): AbstractControl { return this.newPenaltyFormGroup.get('remarks'); }
 }

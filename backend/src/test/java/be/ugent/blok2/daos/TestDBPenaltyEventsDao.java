@@ -145,12 +145,14 @@ public class TestDBPenaltyEventsDao {
             thisDayAMonthEarlier.setDay(thisDayAMonthEarlier.getDay() - 1);
         }
 
-        Penalty penalty = new Penalty(testUser.getAugentID(), testEvent.getCode()
-                , CustomDate.now(), CustomDate.today(), testLocation.getName(), testEvent.getPoints());
+        Penalty penalty = new Penalty(testUser.getAugentID(), testEvent.getCode(), CustomDate.now(), CustomDate.today()
+                , testLocation.getName(), testEvent.getPoints(), "regular test penalty");
         Penalty fatalPenalty = new Penalty(testUser.getAugentID(), blacklistEvent.getCode(), CustomDate.now()
-                , new CustomDate(1970, 1, 1), testLocation.getName(), blacklistEvent.getPoints());
+                , new CustomDate(1970, 1, 1), testLocation.getName(), blacklistEvent.getPoints(),
+                "Fatal test penalty");
         Penalty penaltyLastMonth = new Penalty(testUser.getAugentID(), testEvent.getCode()
-                , thisDayAMonthEarlier, thisDayAMonthEarlier, testLocation.getName(), testEvent.getPoints());
+                , thisDayAMonthEarlier, thisDayAMonthEarlier, testLocation.getName(), testEvent.getPoints(),
+                "Fatal test penalty of last month");
 
         User modifiableUser = testUser.clone();
 

@@ -150,7 +150,8 @@ CREATE TABLE public.penalty_book (
     "timestamp" text NOT NULL,
     reservation_date text,
     received_points integer NOT NULL,
-    reservation_location text NOT NULL
+    reservation_location text NOT NULL,
+    remarks text
 );
 
 

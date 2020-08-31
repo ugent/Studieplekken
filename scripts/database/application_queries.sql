@@ -432,19 +432,19 @@ where e.code = ?;
 
 -- $get_penalties_by_user
 select b.user_augentid, b.event_code, b.timestamp, b.reservation_date
-    , b.received_points, b.reservation_location
+    , b.received_points, b.reservation_location, b.remarks
 from public.penalty_book b
 where b.user_augentid = ?;
 
 -- $get_penalties_by_location
 select b.user_augentid, b.event_code, b.timestamp, b.reservation_date
-     , b.received_points, b.reservation_location
+     , b.received_points, b.reservation_location, b.remarks
 from public.penalty_book b
 where b.reservation_location = ?;
 
 -- $get_penalties_by_event_code
 select b.user_augentid, b.event_code, b.timestamp, b.reservation_date
-     , b.received_points, b.reservation_location
+     , b.received_points, b.reservation_location, b.remarks
 from public.penalty_book b
 where b.event_code = ?;
 
@@ -453,8 +453,8 @@ insert into public.penalty_events (code, points, public_accessible)
 values (?, ?, ?);
 
 -- $insert_penalty
-insert into penalty_book (user_augentid, event_code, timestamp, reservation_date, reservation_location, received_points)
-values (?, ?, ?, ?, ?, ?);
+insert into penalty_book (user_augentid, event_code, timestamp, reservation_date, reservation_location, received_points, remarks)
+values (?, ?, ?, ?, ?, ?, ?);
 
 -- $insert_penalty_description
 insert into public.penalty_descriptions (lang_enum, event_code, description)

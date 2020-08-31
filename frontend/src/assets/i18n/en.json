@@ -27,7 +27,9 @@
       "ADMIN": "Admin",
       "EMPLOYEE": "Employee",
       "STUDENT": "Student"
-    }
+    },
+
+    "optional": "Optional"
   },
 
   "header": {
@@ -278,6 +280,7 @@
             "timestamp": "Timestamp",
             "location": "Location",
             "receivedPoints": "Received points",
+            "remarks": "Remark",
 
             "addNew": "Add penalty",
 
