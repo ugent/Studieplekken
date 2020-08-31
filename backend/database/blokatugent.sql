@@ -11,6 +11,9 @@ CREATE DATABASE blokatugent
     CONNECTION LIMIT = -1;
 */
 
+CREATE SCHEMA public
+    AUTHORIZATION postgres;
+
 ----------------- +------------------------------------+
 ----------------- |   Create application data tables   |
 ----------------- +------------------------------------+

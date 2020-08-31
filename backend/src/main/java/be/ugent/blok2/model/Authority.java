@@ -1,6 +1,11 @@
 package be.ugent.blok2.model;
 
-public class Authority implements Cloneable{
+import be.ugent.blok2.model.users.User;
+
+import java.util.Arrays;
+import java.util.Objects;
+
+public class Authority implements Cloneable {
     private int authorityId;
     private String name;
     private String description;
@@ -10,7 +15,19 @@ public class Authority implements Cloneable{
         this.name = name;
         this.description = description;
     }
-    public Authority(){}
+
+    public Authority() {
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Authority authority = (Authority) o;
+        return Objects.equals(authorityId, authority.authorityId) &&
+                Objects.equals(name, authority.name) &&
+                Objects.equals(description, authority.description);
+    }
 
     public String getDescription() {
         return description;

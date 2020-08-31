@@ -86,14 +86,14 @@ with recursive x as (
 select y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
 	 , y.augentid, y.role, y.penalty_points
 	 , y.date, y.location_name, y.attended, y.user_augentid
-	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address
+	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address, l.authority_id
 from y
     join public.locations l
         on l.name = y.location_name
 group by y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
 	 , y.augentid, y.role, y.penalty_points
 	 , y.date, y.location_name, y.attended, y.user_augentid
-	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address
+	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address, l.authority_id
 order by l.name;
 
 -- $count_location_reservations_of_location_for_date
@@ -358,7 +358,7 @@ select y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.in
      , y.augentid, y.role, y.penalty_points
      , y.number, y.location_name
      , y.user_augentid, y.key_pickup_date, y.key_return_date
-	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address
+	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address, l.authority_id
 from y
 	join public.locations l
 		on l.name = y.location_name
@@ -366,7 +366,7 @@ group by y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.
      , y.augentid, y.role, y.penalty_points
      , y.number, y.location_name
      , y.user_augentid, y.key_pickup_date, y.key_return_date
-	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address
+	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address, l.authority_id
 order by l.name;
 
 -- $count_lockers_in_use_of_location
@@ -416,7 +416,7 @@ where user_augentid = ?;
 -- queries for table LOCKERS
 -- $get_lockers_where_<?>
 select l.location_name, l.number
-	, s.name, s.number_of_seats, s.number_of_lockers, s.image_url, s.address
+	, s.name, s.number_of_seats, s.number_of_lockers, s.image_url, s.address, s.authority_id
 from public.lockers l
 	join public.locations s
 		on s.name = l.location_name
@@ -444,7 +444,7 @@ with recursive x as (
     where key_return_date = '' or key_return_date is NULL
 )
 select z.location_name, z.locker_number as number,
-       l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address,
+       l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address, l.authority_id,
        lr.location_name, lr.locker_number, lr.user_augentid, lr.key_pickup_date, lr.key_return_date,
        u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn,
        u.penalty_points, u.mail, u.password, u.institution
@@ -598,7 +598,7 @@ where event_code = ?;
 
 -- queries for SCANNERS_LOCATION
 -- $get_locations_of_scanner
-select l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address
+select l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address, l.authority_id
 from public.scanners_location sl
     join public.locations l
         on l.name = sl.location_name
@@ -671,7 +671,7 @@ where user_augentid = ?;
 -- queries for CALENDAR_PERIODS
 -- $get_calendar_periods
 select cp.location_name, cp.starts_at, cp.ends_at, cp.opening_time, cp.closing_time, cp.reservable_from
-       , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address
+       , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address, l.authority_id
 from public.calendar_periods cp
     join public.locations l
         on l.name = cp.location_name
@@ -707,7 +707,7 @@ where location_name = ?;
 -- queries for CALENDAR_PERIODS_FOR_LOCKERS
 -- $get_calendar_periods_for_lockers_of_location
 select cp.location_name, cp.starts_at, cp.ends_at, cp.reservable_from
-       , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address
+       , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address, l.authority_id
 from public.calendar_periods_for_lockers cp
     join public.locations l
         on l.name = cp.location_name

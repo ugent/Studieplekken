@@ -3,6 +3,7 @@ package be.ugent.blok2.daos;
 import be.ugent.blok2.TestSharedMethods;
 import be.ugent.blok2.helpers.Language;
 import be.ugent.blok2.helpers.date.CustomDate;
+import be.ugent.blok2.model.Authority;
 import be.ugent.blok2.model.penalty.Penalty;
 import be.ugent.blok2.model.penalty.PenaltyEvent;
 import be.ugent.blok2.model.reservables.Location;
@@ -36,6 +37,9 @@ public class TestDBPenaltyEventsDao {
     private ILocationDao locationDao;
 
     @Autowired
+    private IAuthorityDao authorityDao;
+
+    @Autowired
     private IPenaltyEventsDao penaltyEventsDao;
 
     private PenaltyEvent cancellingTooLateEvent;
@@ -44,6 +48,7 @@ public class TestDBPenaltyEventsDao {
     private PenaltyEvent testEvent;
 
     private Location testLocation;
+    private Authority authority;
     private User testUser;
 
     @Before
@@ -52,6 +57,7 @@ public class TestDBPenaltyEventsDao {
         TestSharedMethods.setupTestDaoDatabaseCredentials(accountDao);
         TestSharedMethods.setupTestDaoDatabaseCredentials(locationDao);
         TestSharedMethods.setupTestDaoDatabaseCredentials(penaltyEventsDao);
+        TestSharedMethods.setupTestDaoDatabaseCredentials(authorityDao);
 
         // Setup test objects
         Map<Language, String> cancellingTooLateDescriptions = new HashMap<>();
@@ -74,7 +80,8 @@ public class TestDBPenaltyEventsDao {
         testDescriptions.put(Language.DUTCH, "Test event.");
         testEvent = new PenaltyEvent(1, 10, true, testDescriptions);
 
-        testLocation = TestSharedMethods.testLocation();
+        authority = TestSharedMethods.insertTestAuthority(authorityDao);
+        testLocation = TestSharedMethods.testLocation(authority.getAuthorityId());
         testUser = TestSharedMethods.studentEmployeeTestUser();
 
         // Add test objects to database
@@ -89,9 +96,11 @@ public class TestDBPenaltyEventsDao {
         TestSharedMethods.removeTestUsers(accountDao, testUser);
         penaltyEventsDao.deletePenaltyEvent(testEvent.getCode());
         locationDao.deleteLocation(testLocation.getName());
+        authorityDao.deleteAuthority(authority.getAuthorityId());
 
         // Use regular database
         penaltyEventsDao.useDefaultDatabaseConnection();
+        authorityDao.useDefaultDatabaseConnection();
     }
 
     @Test

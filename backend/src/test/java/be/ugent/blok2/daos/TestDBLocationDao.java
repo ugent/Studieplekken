@@ -1,6 +1,7 @@
 package be.ugent.blok2.daos;
 
 import be.ugent.blok2.TestSharedMethods;
+import be.ugent.blok2.model.Authority;
 import be.ugent.blok2.model.reservables.Location;
 import be.ugent.blok2.model.reservables.Locker;
 import org.junit.After;
@@ -24,7 +25,11 @@ public class TestDBLocationDao {
     @Autowired
     private ILocationDao locationDao;
 
+    @Autowired
+    private IAuthorityDao authorityDao;
+
     private Location testLocation;
+    private Authority authority;
 
     @Before
     public void setup() throws SQLException {
@@ -32,7 +37,8 @@ public class TestDBLocationDao {
         TestSharedMethods.setupTestDaoDatabaseCredentials(locationDao);
 
         // Setup test objects
-        testLocation = TestSharedMethods.testLocation();
+        authority = TestSharedMethods.insertTestAuthority(authorityDao);
+        testLocation = TestSharedMethods.testLocation(authority.getAuthorityId());
 
         // Add test objects to database
         locationDao.addLocation(testLocation);
@@ -42,9 +48,11 @@ public class TestDBLocationDao {
     public void cleanup() throws SQLException {
         // Remove test objects from database
         locationDao.deleteLocation(testLocation.getName());
+        authorityDao.deleteAuthority(authority.getAuthorityId());
 
         // Use regular database
         locationDao.useDefaultDatabaseConnection();
+        authorityDao.useDefaultDatabaseConnection();
     }
 
     @Test

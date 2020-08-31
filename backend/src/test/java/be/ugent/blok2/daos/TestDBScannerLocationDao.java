@@ -1,6 +1,7 @@
 package be.ugent.blok2.daos;
 
 import be.ugent.blok2.TestSharedMethods;
+import be.ugent.blok2.model.Authority;
 import be.ugent.blok2.model.reservables.Location;
 import be.ugent.blok2.model.users.User;
 import org.junit.After;
@@ -30,11 +31,15 @@ public class TestDBScannerLocationDao {
     private ILocationDao locationDao;
 
     @Autowired
+    private IAuthorityDao authorityDao;
+
+    @Autowired
     private IScannerLocationDao scannerLocationDao;
 
     private User testUser1;
     private User testUser2;
 
+    private Authority authority;
     private Location testLocation1;
     private Location testLocation2;
 
@@ -55,8 +60,9 @@ public class TestDBScannerLocationDao {
         testUser1 = TestSharedMethods.employeeAdminTestUser();
         testUser2 = TestSharedMethods.studentEmployeeTestUser();
 
-        testLocation1 = TestSharedMethods.testLocation();
-        testLocation2 = TestSharedMethods.testLocation2();
+        authority = TestSharedMethods.insertTestAuthority(authorityDao);
+        testLocation1 = TestSharedMethods.testLocation(authority.getAuthorityId());
+        testLocation2 = TestSharedMethods.testLocation2(authority.getAuthorityId());
 
         // Add test objects to database
         TestSharedMethods.addTestUsers(accountDao, testUser1, testUser2);
@@ -87,11 +93,13 @@ public class TestDBScannerLocationDao {
         locationDao.deleteLocation(testLocation2.getName());
         locationDao.deleteLocation(testLocation1.getName());
         TestSharedMethods.removeTestUsers(accountDao, testUser2, testUser1);
+        authorityDao.deleteAuthority(authority.getAuthorityId());
 
         // Use regular database
         accountDao.useDefaultDatabaseConnection();
         locationDao.useDefaultDatabaseConnection();
         scannerLocationDao.useDefaultDatabaseConnection();
+        authorityDao.useDefaultDatabaseConnection();
     }
 
     @Test

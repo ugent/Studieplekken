@@ -4,6 +4,7 @@ import be.ugent.blok2.TestSharedMethods;
 import be.ugent.blok2.daos.*;
 import be.ugent.blok2.helpers.Language;
 import be.ugent.blok2.helpers.date.CustomDate;
+import be.ugent.blok2.model.Authority;
 import be.ugent.blok2.model.calendar.CalendarPeriod;
 import be.ugent.blok2.model.calendar.CalendarPeriodForLockers;
 import be.ugent.blok2.model.penalty.Penalty;
@@ -55,6 +56,9 @@ public class TestCascadeInDBLocationDao {
     @Autowired
     private IScannerLocationDao scannerLocationDao;
 
+    @Autowired
+    private IAuthorityDao authorityDao;
+
     // this will be the test user
     private Location testLocation;
 
@@ -63,6 +67,9 @@ public class TestCascadeInDBLocationDao {
     // some Users need to be available
     private User testUser1;
     private User testUser2;
+
+    //to connect a location to an authority
+    private Authority authority;
 
     // to test cascade on LOCATION_RESERVATIONS
     private LocationReservation testLocationReservation1;
@@ -94,9 +101,11 @@ public class TestCascadeInDBLocationDao {
         TestSharedMethods.setupTestDaoDatabaseCredentials(lockerReservationDao);
         TestSharedMethods.setupTestDaoDatabaseCredentials(penaltyEventsDao);
         TestSharedMethods.setupTestDaoDatabaseCredentials(scannerLocationDao);
+        TestSharedMethods.setupTestDaoDatabaseCredentials(authorityDao);
 
         // Setup test objects
-        testLocation = TestSharedMethods.testLocation();
+        authority = TestSharedMethods.insertTestAuthority(authorityDao);
+        testLocation = TestSharedMethods.testLocation(authority.getAuthorityId());
         testUser1 = TestSharedMethods.studentEmployeeTestUser();
         testUser2 = TestSharedMethods.employeeAdminTestUser();
 
@@ -174,6 +183,7 @@ public class TestCascadeInDBLocationDao {
 
         // ... okay, cascade is assumed to be okay for the lockers here... (but it is)
         locationDao.deleteLocation(testLocation.getName());
+        authorityDao.deleteAuthority(authority.getAuthorityId());
 
         // Use regular database
         accountDao.useDefaultDatabaseConnection();
@@ -184,6 +194,7 @@ public class TestCascadeInDBLocationDao {
         lockerReservationDao.useDefaultDatabaseConnection();
         penaltyEventsDao.useDefaultDatabaseConnection();
         scannerLocationDao.useDefaultDatabaseConnection();
+        authorityDao.useDefaultDatabaseConnection();
     }
 
     @Test

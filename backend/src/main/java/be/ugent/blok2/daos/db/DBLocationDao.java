@@ -386,7 +386,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
         // set ...
         prepareUpdateOrInsertLocationStatement(location, pstmt);
         // where ...
-        pstmt.setString(6, location.getName());
+        pstmt.setString(7, location.getName());
         pstmt.execute();
     }
 

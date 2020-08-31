@@ -2,12 +2,14 @@ package be.ugent.blok2.daos.cascade;
 
 import be.ugent.blok2.TestSharedMethods;
 import be.ugent.blok2.daos.IAccountDao;
+import be.ugent.blok2.daos.IAuthorityDao;
 import be.ugent.blok2.daos.ILocationDao;
 import be.ugent.blok2.daos.IPenaltyEventsDao;
 import be.ugent.blok2.daos.db.ADB;
 import be.ugent.blok2.helpers.Language;
 import be.ugent.blok2.helpers.Resources;
 import be.ugent.blok2.helpers.date.CustomDate;
+import be.ugent.blok2.model.Authority;
 import be.ugent.blok2.model.penalty.Penalty;
 import be.ugent.blok2.model.penalty.PenaltyEvent;
 import be.ugent.blok2.model.reservables.Location;
@@ -40,12 +42,17 @@ public class TestCascadeInPenaltyEventDao {
     private ILocationDao locationDao;
 
     @Autowired
+    private IAuthorityDao authorityDao;
+
+    @Autowired
     private IPenaltyEventsDao penaltyEventsDao;
 
     private PenaltyEvent testPenaltyEvent;
 
     private User testUser1;
     private User testUser2;
+
+    private Authority authority;
 
     private Location testLocation1;
     private Location testLocation2;
@@ -59,13 +66,15 @@ public class TestCascadeInPenaltyEventDao {
         TestSharedMethods.setupTestDaoDatabaseCredentials(accountDao);
         TestSharedMethods.setupTestDaoDatabaseCredentials(locationDao);
         TestSharedMethods.setupTestDaoDatabaseCredentials(penaltyEventsDao);
+        TestSharedMethods.setupTestDaoDatabaseCredentials(authorityDao);
 
         // Setup test objects
         testUser1 = TestSharedMethods.studentEmployeeTestUser();
         testUser2 = TestSharedMethods.employeeAdminTestUser();
 
-        testLocation1 = TestSharedMethods.testLocation();
-        testLocation2 = TestSharedMethods.testLocation2();
+        authority = TestSharedMethods.insertTestAuthority(authorityDao);
+        testLocation1 = TestSharedMethods.testLocation(authority.getAuthorityId());
+        testLocation2 = TestSharedMethods.testLocation2(authority.getAuthorityId());
 
         Map<Language, String> descriptions = new HashMap<>();
         descriptions.put(Language.DUTCH, "Dit is een test omschrijving van een penalty event met code 0");
@@ -108,10 +117,13 @@ public class TestCascadeInPenaltyEventDao {
         locationDao.deleteLocation(testLocation2.getName());
         locationDao.deleteLocation(testLocation1.getName());
 
+        authorityDao.deleteAuthority(authority.getAuthorityId());
+
         // Use regular database
         accountDao.useDefaultDatabaseConnection();
         locationDao.useDefaultDatabaseConnection();
         penaltyEventsDao.useDefaultDatabaseConnection();
+        authorityDao.useDefaultDatabaseConnection();
     }
 
     @Test

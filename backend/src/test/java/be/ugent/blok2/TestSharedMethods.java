@@ -1,10 +1,13 @@
 package be.ugent.blok2;
 
 import be.ugent.blok2.daos.IAccountDao;
+import be.ugent.blok2.daos.IAuthorityDao;
 import be.ugent.blok2.daos.IDao;
+import be.ugent.blok2.daos.db.DBAuthorityDao;
 import be.ugent.blok2.helpers.Institution;
 import be.ugent.blok2.helpers.Resources;
 import be.ugent.blok2.helpers.date.CustomDate;
+import be.ugent.blok2.model.Authority;
 import be.ugent.blok2.model.calendar.CalendarPeriod;
 import be.ugent.blok2.model.calendar.CalendarPeriodForLockers;
 import be.ugent.blok2.model.reservables.Location;
@@ -29,25 +32,37 @@ public class TestSharedMethods {
         );
     }
 
-    public static Location testLocation() {
+    public static Location testLocation(int authorityId) {
         Location testLocation = new Location();
         testLocation.setName("Test Location");
         testLocation.setAddress("Test street, 10");
         testLocation.setNumberOfSeats(50);
         testLocation.setNumberOfLockers(15);
         testLocation.setImageUrl("https://example.com/image.jpg");
+        testLocation.setAuthorityId(authorityId);
 
         return testLocation;
     }
 
-    public static Location testLocation2() {
+    public static Location testLocation2(int authorityId) {
         Location testLocation2 = new Location();
         testLocation2.setName("Second Test Location");
         testLocation2.setAddress("Second Test street, 20");
         testLocation2.setNumberOfSeats(100);
         testLocation2.setNumberOfLockers(10);
         testLocation2.setImageUrl("https://example.com/picture.png");
+        testLocation2.setAuthorityId(authorityId);
         return testLocation2;
+    }
+
+    public static Authority insertTestAuthority(IAuthorityDao authorityDao) throws SQLException {
+        Authority authority = new Authority();
+        authority.setName("Test Authority");
+        authority.setDescription("a test description");
+        authority = authorityDao.addAuthority(authority);
+        Authority dbAuthority = authorityDao.getAuthorityByAuthorityId(authority.getAuthorityId());
+        Assert.assertEquals("insertTestAuthority: Failed to insert Test Authority",authority, dbAuthority);
+        return authority;
     }
 
     public static User employeeAdminTestUser() {

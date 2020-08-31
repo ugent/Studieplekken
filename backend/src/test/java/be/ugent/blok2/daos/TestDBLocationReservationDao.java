@@ -2,6 +2,7 @@ package be.ugent.blok2.daos;
 
 import be.ugent.blok2.TestSharedMethods;
 import be.ugent.blok2.helpers.date.CustomDate;
+import be.ugent.blok2.model.Authority;
 import be.ugent.blok2.model.reservables.Location;
 import be.ugent.blok2.model.reservations.LocationReservation;
 import be.ugent.blok2.model.users.User;
@@ -32,7 +33,11 @@ public class TestDBLocationReservationDao {
     @Autowired
     private ILocationDao locationDao;
 
+    @Autowired
+    private IAuthorityDao authorityDao;
+
     private Location testLocation;
+    private Authority authority;
     private User testUser;
     private User testUser2;
 
@@ -42,9 +47,11 @@ public class TestDBLocationReservationDao {
         TestSharedMethods.setupTestDaoDatabaseCredentials(accountDao);
         TestSharedMethods.setupTestDaoDatabaseCredentials(locationDao);
         TestSharedMethods.setupTestDaoDatabaseCredentials(locationReservationDao);
+        TestSharedMethods.setupTestDaoDatabaseCredentials(authorityDao);
 
         // setup test location objects
-        testLocation = TestSharedMethods.testLocation();
+        authority = TestSharedMethods.insertTestAuthority(authorityDao);
+        testLocation = TestSharedMethods.testLocation(authority.getAuthorityId());
 
         testUser = TestSharedMethods.employeeAdminTestUser();
         testUser2 = TestSharedMethods.studentEmployeeTestUser();
@@ -59,9 +66,11 @@ public class TestDBLocationReservationDao {
         // Remove test objects from database
         locationDao.deleteLocation(testLocation.getName());
         TestSharedMethods.removeTestUsers(accountDao, testUser2, testUser);
+        authorityDao.deleteAuthority(authority.getAuthorityId());
 
         // Use regular database
         locationReservationDao.useDefaultDatabaseConnection();
+        authorityDao.useDefaultDatabaseConnection();
     }
 
     @Test

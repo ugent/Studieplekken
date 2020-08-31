@@ -1,6 +1,7 @@
 package be.ugent.blok2.daos;
 
 import be.ugent.blok2.TestSharedMethods;
+import be.ugent.blok2.model.Authority;
 import be.ugent.blok2.model.calendar.CalendarPeriodForLockers;
 import be.ugent.blok2.model.reservables.Location;
 import org.junit.After;
@@ -28,7 +29,10 @@ public class TestDBCalendarPeriodForLockersDao {
     @Autowired
     private ILocationDao locationDao;
 
+    @Autowired IAuthorityDao authorityDao;
+
     private Location testLocation;
+    private Authority authority;
     private List<CalendarPeriodForLockers> calendarPeriodsForLockers;
 
     // the reason for making this an attribute of the class
@@ -41,9 +45,11 @@ public class TestDBCalendarPeriodForLockersDao {
         // Use test database
         TestSharedMethods.setupTestDaoDatabaseCredentials(locationDao);
         TestSharedMethods.setupTestDaoDatabaseCredentials(calendarPeriodForLockersDao);
+        TestSharedMethods.setupTestDaoDatabaseCredentials(authorityDao);
 
         // Setup test objects
-        testLocation = TestSharedMethods.testLocation();
+        authority = TestSharedMethods.insertTestAuthority(authorityDao);
+        testLocation = TestSharedMethods.testLocation(authority.getAuthorityId());
         calendarPeriodsForLockers = TestSharedMethods.testCalendarPeriodsForLockers(testLocation);
         updatedPeriodsForLockers = TestSharedMethods.testCalendarPeriodsForLockersButUpdated(testLocation);
 
@@ -58,10 +64,12 @@ public class TestDBCalendarPeriodForLockersDao {
         calendarPeriodForLockersDao.deleteCalendarPeriodsForLockers(updatedPeriodsForLockers); // in case this would be necessary
         calendarPeriodForLockersDao.deleteCalendarPeriodsForLockers(calendarPeriodsForLockers);
         locationDao.deleteLocation(testLocation.getName());
+        authorityDao.deleteAuthority(authority.getAuthorityId());
 
         // Use regular database
         calendarPeriodForLockersDao.useDefaultDatabaseConnection();
         locationDao.useDefaultDatabaseConnection();
+        authorityDao.useDefaultDatabaseConnection();
     }
 
     @Test

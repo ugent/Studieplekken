@@ -4,6 +4,7 @@ import be.ugent.blok2.TestSharedMethods;
 import be.ugent.blok2.daos.*;
 import be.ugent.blok2.helpers.Language;
 import be.ugent.blok2.helpers.date.CustomDate;
+import be.ugent.blok2.model.Authority;
 import be.ugent.blok2.model.penalty.Penalty;
 import be.ugent.blok2.model.penalty.PenaltyEvent;
 import be.ugent.blok2.model.reservables.Location;
@@ -48,8 +49,14 @@ public class TestCascadeInDBAccountDao {
     @Autowired
     private IScannerLocationDao scannerLocationDao;
 
+    @Autowired
+    private IAuthorityDao authorityDao;
+
     // this will be the test user
     private User testUser;
+
+    //to connect a location to an authority
+    private Authority authority;
 
     // for cascade on SCANNERS_LOCATION, LOCATION_RESERVATIONS
     // and LOCKER_RESERVATIONS, a Location must be available
@@ -78,11 +85,13 @@ public class TestCascadeInDBAccountDao {
         TestSharedMethods.setupTestDaoDatabaseCredentials(lockerReservationDao);
         TestSharedMethods.setupTestDaoDatabaseCredentials(penaltyEventsDao);
         TestSharedMethods.setupTestDaoDatabaseCredentials(scannerLocationDao);
+        TestSharedMethods.setupTestDaoDatabaseCredentials(authorityDao);
 
         // Setup test objects
         testUser = TestSharedMethods.studentEmployeeTestUser();
-        testLocation1 = TestSharedMethods.testLocation();
-        testLocation2 = TestSharedMethods.testLocation2();
+        authority = TestSharedMethods.insertTestAuthority(authorityDao);
+        testLocation1 = TestSharedMethods.testLocation(authority.getAuthorityId());
+        testLocation2 = TestSharedMethods.testLocation2(authority.getAuthorityId());
 
         testLocationReservation1 = new LocationReservation(testLocation1, testUser, CustomDate.now());
         testLocationReservation2 = new LocationReservation(testLocation2, testUser, new CustomDate(1970, 1, 1));
@@ -151,6 +160,7 @@ public class TestCascadeInDBAccountDao {
         locationDao.deleteLocation(testLocation1.getName());
 
         accountDao.deleteUser(testUser.getAugentID());
+        authorityDao.deleteAuthority(authority.getAuthorityId());
 
         // Use regular database
         accountDao.useDefaultDatabaseConnection();
@@ -159,6 +169,7 @@ public class TestCascadeInDBAccountDao {
         lockerReservationDao.useDefaultDatabaseConnection();
         penaltyEventsDao.useDefaultDatabaseConnection();
         scannerLocationDao.useDefaultDatabaseConnection();
+        authorityDao.useDefaultDatabaseConnection();
     }
 
     @Test

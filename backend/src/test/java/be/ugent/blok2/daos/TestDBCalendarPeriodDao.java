@@ -1,6 +1,7 @@
 package be.ugent.blok2.daos;
 
 import be.ugent.blok2.TestSharedMethods;
+import be.ugent.blok2.model.Authority;
 import be.ugent.blok2.model.calendar.CalendarPeriod;
 import be.ugent.blok2.model.reservables.Location;
 import org.junit.After;
@@ -29,7 +30,11 @@ public class TestDBCalendarPeriodDao {
     @Autowired
     private ILocationDao locationDao;
 
+    @Autowired
+    private IAuthorityDao authorityDao;
+
     private Location testLocation;
+    private Authority authority;
     private List<CalendarPeriod> calendarPeriods;
 
     // the reason for making this an attribute of the class
@@ -42,9 +47,11 @@ public class TestDBCalendarPeriodDao {
         // Use test database
         TestSharedMethods.setupTestDaoDatabaseCredentials(locationDao);
         TestSharedMethods.setupTestDaoDatabaseCredentials(calendarPeriodDao);
+        TestSharedMethods.setupTestDaoDatabaseCredentials(authorityDao);
 
         // Setup test objects
-        testLocation = TestSharedMethods.testLocation();
+        authority = TestSharedMethods.insertTestAuthority(authorityDao);
+        testLocation = TestSharedMethods.testLocation(authority.getAuthorityId());
         calendarPeriods = TestSharedMethods.testCalendarPeriods(testLocation);
         updatedPeriods = TestSharedMethods.testCalendarPeriodsButUpdated(testLocation);
 
@@ -59,10 +66,12 @@ public class TestDBCalendarPeriodDao {
         calendarPeriodDao.deleteCalendarPeriods(updatedPeriods); // in case this would be necessary
         calendarPeriodDao.deleteCalendarPeriods(calendarPeriods);
         locationDao.deleteLocation(testLocation.getName());
+        authorityDao.deleteAuthority(authority.getAuthorityId());
 
         // Use regular database
         calendarPeriodDao.useDefaultDatabaseConnection();
         locationDao.useDefaultDatabaseConnection();
+        authorityDao.useDefaultDatabaseConnection();
     }
 
     @Test
