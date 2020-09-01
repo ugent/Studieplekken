@@ -26,7 +26,7 @@ public class AuthorityController {
     }
 
     @GetMapping
-    public List<Authority> getAllAuthorities(){
+    public List<Authority> getAllAuthorities() {
         try {
             return authorityDao.getAllAuthorities();
         } catch (SQLException e) {
@@ -37,7 +37,7 @@ public class AuthorityController {
     }
 
     @GetMapping("/{userId}")
-    public List<Authority> getAuthoritiesFromUser(@PathVariable String userId){
+    public List<Authority> getAuthoritiesFromUser(@PathVariable String userId) {
         try {
             return authorityDao.getAuthoritiesFromUser(userId);
         } catch (SQLException e) {
@@ -48,7 +48,7 @@ public class AuthorityController {
     }
 
     @GetMapping("/{authorityId}/users")
-    public List<User> getUsersFromAuthority(@PathVariable int authorityId){
+    public List<User> getUsersFromAuthority(@PathVariable int authorityId) {
         try {
             return authorityDao.getUsersFromAuthority(authorityId);
         } catch (SQLException e) {
@@ -59,7 +59,7 @@ public class AuthorityController {
     }
 
     @GetMapping("/{authorityId}")
-    public Authority getAuthority(@PathVariable int authorityId){
+    public Authority getAuthority(@PathVariable int authorityId) {
         try {
             return authorityDao.getAuthorityByAuthorityId(authorityId);
         } catch (SQLException e) {
@@ -70,7 +70,7 @@ public class AuthorityController {
     }
 
     @PostMapping
-    public void addAuthority(@RequestBody Authority authority){
+    public void addAuthority(@RequestBody Authority authority) {
         try {
             authorityDao.addAuthority(authority);
         } catch (SQLException e) {
@@ -81,7 +81,7 @@ public class AuthorityController {
     }
 
     @PutMapping("/{authorityId}")
-    public void updateAuthority(@PathVariable int authorityId ,@RequestBody Authority authority){
+    public void updateAuthority(@PathVariable int authorityId, @RequestBody Authority authority) {
         try {
             authority.setAuthorityId(authorityId);
             authorityDao.updateAuthority(authority);
@@ -93,7 +93,7 @@ public class AuthorityController {
     }
 
     @DeleteMapping("/{authorityId}")
-    public void deleteAuthority(@PathVariable int authorityId){
+    public void deleteAuthority(@PathVariable int authorityId) {
         try {
             authorityDao.deleteAuthority(authorityId);
         } catch (SQLException e) {

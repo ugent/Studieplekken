@@ -9,6 +9,7 @@ import java.util.List;
 public interface IAuthorityDao extends IDao {
 
     // GETTERS
+
     /**
      * get all authorities
      */
@@ -36,13 +37,14 @@ public interface IAuthorityDao extends IDao {
 
     /**
      * Add an authority to the database. AuthorityId is ignored.
+     *
      * @return the added authority with updated authorityId
      */
     Authority addAuthority(Authority authority) throws SQLException;
 
     /**
-     *
      * Updates the authority given by the authorityId
+     *
      * @param updatedAuthority Authority with new values, with Authority.authorityId the authority to update
      */
     void updateAuthority(Authority updatedAuthority) throws SQLException;

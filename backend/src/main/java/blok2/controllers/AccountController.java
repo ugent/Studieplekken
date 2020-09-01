@@ -145,9 +145,9 @@ public class AccountController {
 
     /**
      * The password needs to contain at least:
-     *   - 1 capital letter
-     *   - 1 number
-     *   - 8 characters
+     * - 1 capital letter
+     * - 1 number
+     * - 8 characters
      */
     private boolean isValidPassword(String password) {
         if (password.length() < 8)
@@ -172,7 +172,8 @@ public class AccountController {
         private String to;
         private User user;
 
-        public ChangePasswordBody() {}
+        public ChangePasswordBody() {
+        }
 
         public String getFrom() {
             return from;

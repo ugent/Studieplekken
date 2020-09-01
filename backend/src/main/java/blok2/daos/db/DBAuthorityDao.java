@@ -80,7 +80,7 @@ public class DBAuthorityDao extends ADB implements IAuthorityDao {
             PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("authority_from_name"));
             pstmt.setString(1, name);
             ResultSet rs = pstmt.executeQuery();
-            if(rs.next()) {
+            if (rs.next()) {
                 return createAuthority(rs);
             }
             return null;
@@ -93,7 +93,7 @@ public class DBAuthorityDao extends ADB implements IAuthorityDao {
             PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("authority_from_authority_id"));
             pstmt.setInt(1, authorityId);
             ResultSet rs = pstmt.executeQuery();
-            if(rs.next()) {
+            if (rs.next()) {
                 return createAuthority(rs);
             }
             return null;
@@ -106,7 +106,7 @@ public class DBAuthorityDao extends ADB implements IAuthorityDao {
             PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("insert_authority"));
             preparedAuthorityInsertOrUpdate(authority, pstmt);
             ResultSet rs = pstmt.executeQuery();
-            if(rs.next()) {
+            if (rs.next()) {
                 authority.setAuthorityId(rs.getInt(databaseProperties.getString("authority_authority_id")));
                 return authority;
             }

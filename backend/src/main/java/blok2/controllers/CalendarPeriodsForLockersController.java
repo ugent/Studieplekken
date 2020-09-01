@@ -112,21 +112,21 @@ public class CalendarPeriodsForLockersController {
 
     /**
      * Analyzing means:
-     *   - all periods to be updated need to be for the same location
-     *   - no periods in 'to' may overlap
-     *   - all periods need to end after the start
-     *
+     * - all periods to be updated need to be for the same location
+     * - no periods in 'to' may overlap
+     * - all periods need to end after the start
+     * <p>
      * Prerequisites:
-     *   - The parameter 'to' needs to be sorted based on 'startsAt' as date
-     *     (not the comparison of the string 'startsAt', but compare the date)
-     *   - 'to' is not empty
-     *
+     * - The parameter 'to' needs to be sorted based on 'startsAt' as date
+     * (not the comparison of the string 'startsAt', but compare the date)
+     * - 'to' is not empty
+     * <p>
      * Special remarks:
-     *   - If the analysis has been done and all requisites are met, updating
-     *     means: deleting 'from' and adding 'to'. The reason is that it is too
-     *     costly to search for differences between 'from' and 'to'. Therefore,
-     *     the strategy of deleting the 'from' periods and adding new 'to' periods
-     *     was chosen
+     * - If the analysis has been done and all requisites are met, updating
+     * means: deleting 'from' and adding 'to'. The reason is that it is too
+     * costly to search for differences between 'from' and 'to'. Therefore,
+     * the strategy of deleting the 'from' periods and adding new 'to' periods
+     * was chosen
      */
     private void
     analyzeAndUpdateCalendarPeriodsForLockers(String locationName,

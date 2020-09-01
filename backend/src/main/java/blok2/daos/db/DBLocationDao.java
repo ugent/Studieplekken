@@ -327,7 +327,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
     }
 
     private void updateForeignKeyOfCalendarPeriodsForLockers(String oldLocationName, String newLocationName,
-            Connection conn) throws SQLException {
+                                                             Connection conn) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(databaseProperties
                 .getString("update_fk_location_name_in_calendar_periods_for_lockers"));
         pstmt.setString(1, newLocationName);

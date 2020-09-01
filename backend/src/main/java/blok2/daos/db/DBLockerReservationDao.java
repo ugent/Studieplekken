@@ -110,7 +110,7 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
 
         return reservations;
     }
-    
+
     @Override
     public List<LockerReservation> getAllLockerReservationsOfLocationWithoutKeyBroughtBack(String name) throws SQLException {
         String query = databaseProperties.getString("get_locker_reservations_where_<?>");
