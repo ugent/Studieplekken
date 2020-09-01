@@ -1,4 +1,4 @@
-package blok2;
+package blok2.daos;
 
 import blok2.daos.IAccountDao;
 import blok2.daos.IAuthorityDao;

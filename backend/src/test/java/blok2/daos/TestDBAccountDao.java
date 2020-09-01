@@ -1,6 +1,5 @@
 package blok2.daos;
 
-import blok2.TestSharedMethods;
 import blok2.model.users.Role;
 import blok2.model.users.User;
 import org.junit.After;

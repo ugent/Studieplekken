@@ -1,6 +1,6 @@
 package blok2.daos.cascade;
 
-import blok2.TestSharedMethods;
+import blok2.daos.TestSharedMethods;
 import blok2.daos.*;
 import blok2.helpers.Language;
 import blok2.helpers.date.CustomDate;
