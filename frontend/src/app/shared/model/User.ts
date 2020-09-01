@@ -1,4 +1,5 @@
-import {Role, RoleConstructor} from './Role';
+import {RoleConstructor} from './Role';
+import {Role} from '../../../environments/environment';
 
 export interface User {
   augentID: string;

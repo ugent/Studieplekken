@@ -28,21 +28,42 @@ export const api = {
   numberOfReservations: '/api/locations/{locationName}/reservations/count',
 
   // LOCATION_RESERVATIONS
-  locationReservationsByUserId: '/api/locations/reservations/{userId}',
+  locationReservationsOfUser: '/api/locations/reservations/user',
+  locationReservationsOfLocation: '/api/locations/reservations/location',
+  locationReservationsOfLocationFrom: '/api/locations/reservations/from',
+  locationReservationsOfLocationUntil: '/api/locations/reservations/until',
+  locationReservationsOfLocationFromAndUntil: '/api/locations/reservations/fromAndUntil',
+  deleteLocationReservation: '/api/locations/reservations',
 
   // LOCKERS
   lockersStatusesOfLocation: '/api/lockers/status/{locationName}',
 
   // LOCKER_RESERVATIONS
-  lockerReservationsByUserId: '/api/lockers/reservations/{userId}',
+  lockerReservationsOfUser: '/api/lockers/reservations/user',
+  lockerReservationsOfLocation: '/api/lockers/reservations/location',
   updateLockerReservation: '/api/lockers/reservations',
+  deleteLockerReservation: '/api/lockers/reservations',
+  lockerReservationsByUserId: '/api/lockers/reservations/{userId}',
 
   // USERS
-  user_by_mail: '/api/account/{mail}',
+  userByAUGentId: '/api/account/id',
+  userByBarcode: '/api/account/barcode',
+  userByMail: '/api/account/mail',
+  usersByFirstName: '/api/account/firstName',
+  usersByLastName: '/api/account/lastName',
+  usersByFirstAndLast: '/api/account/firstAndLastName',
   changePassword: '/api/account/password',
+  updateUser: '/api/account/{id}',
 
   // PENALTY_BOOK
-  penalties_by_user_id: '/api/penalties/{userId}'
+  penaltiesByUserId: '/api/penalties/{id}',
+  addPenalty: '/api/penalties',
+  deletePenalty: '/api/penalties',
+
+  // PENALTY_EVENTS
+  penaltyEvents: '/api/penalties/events',
+  addPenaltyEvent: '/api/penalties/events',
+  deletePenaltyEvent: '/api/penalties/events'
 };
 
 export const vars = {
@@ -53,6 +74,37 @@ export const vars = {
  * The amount of milliseconds that a feedback div should be shown
  */
 export const msToShowFeedback = 10000;
+
+/*
+ * The PenaltyEvent code for a manual entry
+ */
+export const penaltyEventCodeForManualEntry = 16663;
+
+/*
+ * The roles that are available in the application
+ *
+ * Important: make sure that the roles in 'rolesArray'
+ * are put in the 'Role' enum as well!
+ *
+ * And, do not forget to translate the role if you would
+ * be adding a role (<lang>.json -> general.roles)
+ */
+export const rolesArray = ['ADMIN', 'EMPLOYEE', 'STUDENT'];
+
+export enum Role {
+  STUDENT = 'STUDENT',
+  EMPLOYEE = 'EMPLOYEE',
+  ADMIN = 'ADMIN'
+}
+
+/*
+ * This variable maps all the supported languages to its
+ * database representation (LANGUAGES.enum)
+ */
+export const languageAsEnum = {
+  nl: 'DUTCH',
+  en: 'ENGLISH'
+};
 
 /*
  * For easier debugging in development mode, you can import the following file

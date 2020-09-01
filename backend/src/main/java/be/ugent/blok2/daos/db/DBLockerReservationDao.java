@@ -82,12 +82,35 @@ public class DBLockerReservationDao extends ADB implements ILockerReservationDao
     }
 
     @Override
-    public List<LockerReservation> getAllLockerReservationsOfLocation(String name) throws SQLException {
-        String query = databaseProperties.getString("get_locker_reservations_where_<?>");
-        query = query.replace("<?>", "l.location_name = ?");
-        return getAllLockerReservationsFromQueryWithOneParamter(name, query);
+    public List<LockerReservation> getAllLockerReservationsOfLocation(String locationName, boolean includePastReservations) throws SQLException {
+        try (Connection conn = getConnection()) {
+            String query = databaseProperties.getString("get_locker_reservations_where_<?>");
+
+            String replacementString = "lr.location_name = ?";
+            if (!includePastReservations) {
+                replacementString += " and ((lr.key_pickup_date is null or lr.key_pickup_date = '') or (lr.key_return_date is null or lr.key_return_date = ''))";
+            }
+            query = query.replace("<?>", replacementString);
+
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, locationName);
+
+            return executeQueryForLockerReservations(pstmt);
+        }
     }
 
+    private List<LockerReservation> executeQueryForLockerReservations(PreparedStatement pstmt) throws SQLException {
+        ResultSet rs = pstmt.executeQuery();
+
+        List<LockerReservation> reservations = new ArrayList<>();
+        while (rs.next()) {
+            LockerReservation locationReservation = createLockerReservation(rs);
+            reservations.add(locationReservation);
+        }
+
+        return reservations;
+    }
+    
     @Override
     public List<LockerReservation> getAllLockerReservationsOfLocationWithoutKeyBroughtBack(String name) throws SQLException {
         String query = databaseProperties.getString("get_locker_reservations_where_<?>");

@@ -1,1 +1,91 @@
-<p>penalty-events-management works!</p>
+<div class="container-fluid">
+  <h3>{{'management.penaltyEvents.title' | translate}}</h3>
+
+  <hr>
+
+  <!-- If unable to retrieve penalty events, show error message -->
+  <div *ngIf="errorOnRetrievingPenaltyEvents" class="alert alert-error">
+    {{'management.penaltyEvents.errorOnRetrievingPenaltyEvents' | translate}}
+  </div>
+
+  <div *ngIf="penaltyEventsObs | async as penaltyEvents">
+    <table style="width: 100%;">
+      <thead>
+      <tr>
+        <th>{{'management.penaltyEvents.table.code' | translate}}</th>
+        <th>{{'management.penaltyEvents.table.points' | translate}}</th>
+        <th>{{'management.penaltyEvents.table.description' | translate}}</th>
+        <th></th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr [@rowsAnimation]="" *ngFor="let penaltyEvent of penaltyEvents">
+        <td>{{penaltyEvent.code}}</td>
+        <td>{{penaltyEvent.points}}</td>
+        <td>{{descriptionToShow(penaltyEvent)}}</td>
+        <td *ngIf="isPenaltyEventDeletable(penaltyEvent)" data-toggle="modal" data-target="#deletePenaltyEventModal"
+            class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
+            (click)="prepareToDeletePenaltyEvent(penaltyEvent)">
+          <span class="glyphicon glyphicon-trash pointerCursor"></span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal view to ask whether the user is sure to delete a lockerReservation -->
+<div class="modal fade" id="deletePenaltyEventModal" tabindex="-1" role="dialog"
+     aria-labelledby="deletePenaltyEventModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <!-- Header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteLockerModalLabel">
+          {{'management.penaltyEvents.deletePenaltyEventModal.title' | translate}}
+        </h5>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div>
+          <b>{{'management.penaltyEvents.deletePenaltyEventModal.body' | translate}}</b>
+          <br><br>
+          <ul>
+            <li><b style="margin-right: 5px"><i>{{('management.penaltyEvents.table.code' | translate) + ':   '}}</i></b>{{currentPenaltyEventToDelete.code}}</li>
+            <li><b style="margin-right: 5px"><i>{{('management.penaltyEvents.table.points' | translate) + ':   '}}</i></b>{{currentPenaltyEventToDelete.points}}</li>
+            <li><b style="margin-right: 5px"><i>{{('management.penaltyEvents.table.description' | translate)}}</i></b>{{descriptionToShow(currentPenaltyEventToDelete)}}</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary"
+                (click)="deletePenaltyEventLinkedToCurrentToDelete()">
+          {{'management.penaltyEvents.deletePenaltyEventModal.yesButton' | translate}}
+        </button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          {{'management.penaltyEvents.deletePenaltyEventModal.noButton' | translate}}
+        </button>
+      </div>
+
+      <div class="container-fluid">
+        <div class="alert alert-info" *ngIf="deletionWasSuccess === null">
+          {{'management.penaltyEvents.deletePenaltyEventModal.loading' | translate}}
+        </div>
+
+        <div class="alert alert-success" *ngIf="deletionWasSuccess === true">
+          {{'management.penaltyEvents.deletePenaltyEventModal.success' | translate}}
+        </div>
+
+        <div class="alert alert-error" *ngIf="deletionWasSuccess === false">
+          {{'management.penaltyEvents.deletePenaltyEventModal.error' | translate}}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

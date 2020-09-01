@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {User, UserConstructor} from '../../shared/model/User';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {api} from '../../../environments/environment';
 import {Penalty} from '../../shared/model/Penalty';
 import {LocationReservation} from '../../shared/model/LocationReservation';
 import {LockerReservation, LockerReservationConstructor} from '../../shared/model/LockerReservation';
 import {map} from 'rxjs/operators';
+import {PenaltyService} from '../api/penalties/penalty.service';
+import {LocationReservationsService} from '../api/location-reservations/location-reservations.service';
+import {LockerReservationService} from '../api/locker-reservations/locker-reservation.service';
 
 /**
  * The structure of the authentication service has been based on this article:
@@ -30,10 +33,14 @@ export class AuthenticationService {
   // (which comes from the userSubject)
   public user: Observable<User> = this.userSubject.asObservable();
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              private penaltyService: PenaltyService,
+              private locationReservationService: LocationReservationsService,
+              private lockerReservationService: LockerReservationService) {
     // TODO: try to obtain a user object based on a HTTP-only session cookie, if provided
     //   this way, if a user was logged in previously, he/she doesn't have to do it again
-    http.get<User>(api.user_by_mail.replace('{mail}', 'bram.vandewalle@ugent.be'))
+    const params = new HttpParams().set('mail', 'bram.vandewalle@ugent.be');
+    http.get<User>(api.userByMail, { params })
       .subscribe(next => {
         this.userSubject.next(next);
     });
@@ -61,13 +68,11 @@ export class AuthenticationService {
   }
 
   getLocationReservations(): Observable<LocationReservation[]> {
-    return this.http.get<LocationReservation[]>(api.locationReservationsByUserId.replace('{userId}',
-      this.userSubject.value.augentID));
+    return this.locationReservationService.getLocationReservationsOfUser(this.userSubject.value.augentID);
   }
 
   getLockerReservations(): Observable<LockerReservation[]> {
-    const v = this.http.get<LockerReservation[]>(api.lockerReservationsByUserId.replace('{userId}',
-      this.userSubject.value.augentID));
+    const v = this.lockerReservationService.getLockerReservationsOfUser(this.userSubject.value.augentID);
 
     return v.pipe(map<LockerReservation[], LockerReservation[]>((value, index) => {
       const reservations: LockerReservation[] = [];
@@ -82,7 +87,6 @@ export class AuthenticationService {
   }
 
   getPenalties(): Observable<Penalty[]> {
-    return this.http.get<Penalty[]>(api.penalties_by_user_id.replace('{userId}',
-      this.userSubject.value.augentID));
+    return this.penaltyService.getPenaltiesOfUserById(this.userSubject.value.augentID);
   }
 }

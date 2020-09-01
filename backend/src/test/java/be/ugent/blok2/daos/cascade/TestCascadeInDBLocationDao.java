@@ -111,14 +111,14 @@ public class TestCascadeInDBLocationDao {
         Map<Language, String> descriptions = new HashMap<>();
         descriptions.put(Language.DUTCH, "Dit is een test omschrijving van een penalty event met code 0");
         descriptions.put(Language.ENGLISH, "This is a test description of a penalty event with code 0");
-        testPenaltyEvent = new PenaltyEvent(0, 10, true, descriptions);
+        testPenaltyEvent = new PenaltyEvent(0, 10, descriptions);
 
         // Note: the received amount of points are 10 and 20, not testPenaltyEvent.getCode()
         // because when the penalties are retrieved from the penaltyEventDao, the list will
         // be sorted by received points before asserting, if they would be equal we can't sort
         // on the points and be sure about the equality of the actual and expected list.
-        testPenalty1 = new Penalty(testUser1.getAugentID(), testPenaltyEvent.getCode(), CustomDate.now(), CustomDate.now(), testLocation.getName(), 10);
-        testPenalty2 = new Penalty(testUser2.getAugentID(), testPenaltyEvent.getCode(), CustomDate.now(), CustomDate.now(), testLocation.getName(), 20);
+        testPenalty1 = new Penalty(testUser1.getAugentID(), testPenaltyEvent.getCode(), CustomDate.now(), CustomDate.now(), testLocation.getName(), 10, "First test penalty");
+        testPenalty2 = new Penalty(testUser2.getAugentID(), testPenaltyEvent.getCode(), CustomDate.now(), CustomDate.now(), testLocation.getName(), 20, "Second test penalty");
 
         testCalendarPeriods = TestSharedMethods.testCalendarPeriods(testLocation);
         testCalendarPeriodsForLockers = TestSharedMethods.testCalendarPeriodsForLockers(testLocation);
@@ -407,11 +407,11 @@ public class TestCascadeInDBLocationDao {
         Assert.assertEquals("deleteLocation, penalties", 0, penalties.size());
 
         List<LocationReservation> locationReservations = locationReservationDao
-                .getAllLocationReservationsOfLocation(testLocation.getName());
+                .getAllLocationReservationsOfLocation(testLocation.getName(), true);
         Assert.assertEquals("deleteLocation, location reservations", 0, locationReservations.size());
 
         List<LockerReservation> lockerReservations = lockerReservationDao
-                .getAllLockerReservationsOfLocation(testLocation.getName());
+                .getAllLockerReservationsOfLocation(testLocation.getName(), true);
         Assert.assertEquals("deleteLocation, locker reservations", 0, lockerReservations.size());
     }
 

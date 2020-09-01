@@ -6,11 +6,37 @@ import be.ugent.blok2.model.reservations.LocationReservation;
 import java.sql.SQLException;
 import java.util.List;
 
-
 public interface ILocationReservationDao extends IDao {
-    List<LocationReservation> getAllLocationReservationsOfUser(String augentID) throws SQLException;
+    /**
+     * Get all locations where the name of the location equals 'locationName'.
+     */
+    List<LocationReservation> getAllLocationReservationsOfLocation(String locationName,
+                                                                   boolean includePastReservations) throws SQLException;
 
-    List<LocationReservation> getAllLocationReservationsOfLocation(String name) throws SQLException;
+    /**
+     * start: YYYY-MM-DD
+     */
+    List<LocationReservation> getAllLocationReservationsOfLocationFrom(String locationName,
+                                                                   String start,
+                                                                   boolean includePastReservations) throws SQLException;
+
+    /**
+     * end: YYYY-MM-DD
+     */
+    List<LocationReservation> getAllLocationReservationsOfLocationUntil(String locationName,
+                                                                   String end,
+                                                                   boolean includePastReservations) throws SQLException;
+
+    /**
+     * start: YYYY-MM-DD
+     * end: YYYY-MM-DD
+     */
+    List<LocationReservation> getAllLocationReservationsOfLocationFromAndUntil(String locationName,
+                                                                   String start,
+                                                                   String end,
+                                                                   boolean includePastReservations) throws SQLException;
+
+    List<LocationReservation> getAllLocationReservationsOfUser(String augentID) throws SQLException;
 
     LocationReservation getLocationReservation(String augentID, CustomDate date) throws SQLException;
 

@@ -7,6 +7,7 @@ export interface Penalty {
   reservationDate: CustomDate;
   reservationLocation: string;
   receivedPoints: number;
+  remarks: string;
 }
 
 export class PenaltyConstructor {
@@ -17,7 +18,8 @@ export class PenaltyConstructor {
       timestamp: CustomDateConstructor.new(),
       reservationDate: CustomDateConstructor.new(),
       reservationLocation: '',
-      receivedPoints: 0
+      receivedPoints: 0,
+      remarks: ''
     };
   }
 
@@ -32,7 +34,8 @@ export class PenaltyConstructor {
       timestamp: CustomDateConstructor.newFromObj(obj.timestamp),
       reservationDate: CustomDateConstructor.newFromObj(obj.reservationDate),
       reservationLocation: obj.reservationLocation,
-      receivedPoints: obj.receivedPoints
+      receivedPoints: obj.receivedPoints,
+      remarks: obj.remarks
     };
   }
 }

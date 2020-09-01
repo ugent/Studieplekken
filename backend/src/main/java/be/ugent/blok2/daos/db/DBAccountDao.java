@@ -44,7 +44,8 @@ public class DBAccountDao extends ADB implements IAccountDao {
     @Override
     public User getUserByEmail(String email) throws SQLException {
         try (Connection conn = getConnection()) {
-            String query = databaseProperties.getString("get_user_by_<?>").replace("<?>", "LOWER(u.mail) = LOWER(?)");
+            String query = databaseProperties.getString("get_user_by_<?>")
+                    .replace("<?>", "LOWER(u.mail) = LOWER(?)");
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, email.toLowerCase());
             ResultSet rs = pstmt.executeQuery();
@@ -64,7 +65,8 @@ public class DBAccountDao extends ADB implements IAccountDao {
     }
 
     public static User getUserById(String augentID, Connection conn) throws SQLException {
-        String query = databaseProperties.getString("get_user_by_<?>").replace("<?>", "u.augentid = ?");
+        String query = databaseProperties.getString("get_user_by_<?>")
+                .replace("<?>", "u.augentid = ?");
         PreparedStatement pstmt = conn.prepareStatement(query);
         pstmt.setString(1, augentID);
         ResultSet rs = pstmt.executeQuery();
@@ -81,7 +83,8 @@ public class DBAccountDao extends ADB implements IAccountDao {
         ArrayList<User> users = new ArrayList<>();
 
         try (Connection conn = getConnection()) {
-            String query = databaseProperties.getString("get_user_by_<?>").replace("<?>", "u.augentpreferredsn = ?");
+            String query = databaseProperties.getString("get_user_by_<?>")
+                    .replace("<?>", "LOWER(u.augentpreferredsn) = LOWER(?)");
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, lastName);
             ResultSet rs = pstmt.executeQuery();
@@ -99,9 +102,31 @@ public class DBAccountDao extends ADB implements IAccountDao {
         ArrayList<User> users = new ArrayList<>();
 
         try (Connection conn = getConnection()) {
-            String query = databaseProperties.getString("get_user_by_<?>").replace("<?>", "u.augentpreferredgivenname = ?");
+            String query = databaseProperties.getString("get_user_by_<?>")
+                    .replace("<?>", "LOWER(u.augentpreferredgivenname) = LOWER(?)");
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, firstName);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                users.add(createUser(rs));
+            }
+        }
+
+        return users;
+    }
+
+    @Override
+    public List<User> getUsersByFirstAndLastName(String firstName, String lastName) throws SQLException {
+        ArrayList<User> users = new ArrayList<>();
+
+        try (Connection conn = getConnection()) {
+            String query = databaseProperties.getString("get_user_by_<?>")
+                    .replace("<?>",
+                            "LOWER(u.augentpreferredgivenname) = LOWER(?) and LOWER(u.augentpreferredsn) = LOWER(?)");
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, firstName);
+            pstmt.setString(2, lastName);
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {

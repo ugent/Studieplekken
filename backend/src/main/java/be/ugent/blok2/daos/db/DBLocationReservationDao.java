@@ -5,31 +5,113 @@ import be.ugent.blok2.helpers.date.CustomDate;
 import be.ugent.blok2.model.reservables.Location;
 import be.ugent.blok2.model.reservations.LocationReservation;
 import be.ugent.blok2.model.users.User;
+import be.ugent.blok2.shared.Utility;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Service
 public class DBLocationReservationDao extends ADB implements ILocationReservationDao {
 
     @Override
+    public List<LocationReservation> getAllLocationReservationsOfLocation(String locationName, boolean includePastReservations) throws SQLException {
+        try (Connection conn = getConnection()) {
+            String query = databaseProperties.getString("get_location_reservations_where_<?>");
+
+            String replacementString = "lr.location_name = ?";
+            if (!includePastReservations) {
+                replacementString += " and to_date(lr.date, 'YYYY-MM-DD') >= to_date(?, 'YYYY-MM-DD')";
+            }
+            query = query.replace("<?>", replacementString);
+
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, locationName);
+
+            if (!includePastReservations) {
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                pstmt.setString(2, format.format(new Date()));
+            }
+
+            return executeQueryForLocationReservations(pstmt);
+        }
+    }
+
+    @Override
+    public List<LocationReservation> getAllLocationReservationsOfLocationFrom(String locationName, String start, boolean includePastReservations) throws SQLException {
+        try (Connection conn = getConnection()) {
+            String query = databaseProperties.getString("get_location_reservations_where_<?>");
+
+            String replacementString = "lr.location_name = ? and to_date(lr.date, 'YYYY-MM-DD') >= to_date(?, 'YYYY-MM-DD')";
+            return getLocationReservationsExtractedEqualCode(locationName, start, includePastReservations, conn, query, replacementString);
+        }
+    }
+
+    @Override
+    public List<LocationReservation> getAllLocationReservationsOfLocationUntil(String locationName, String end, boolean includePastReservations) throws SQLException {
+        try (Connection conn = getConnection()) {
+            String query = databaseProperties.getString("get_location_reservations_where_<?>");
+
+            String replacementString = "lr.location_name = ? and to_date(lr.date, 'YYYY-MM-DD') <= to_date(?, 'YYYY-MM-DD')";
+            return getLocationReservationsExtractedEqualCode(locationName, end, includePastReservations, conn, query, replacementString);
+        }
+    }
+
+    private List<LocationReservation> getLocationReservationsExtractedEqualCode(String locationName, String date, boolean includePastReservations, Connection conn, String query, String replacementString) throws SQLException {
+        if (!includePastReservations) {
+            replacementString += " and to_date(lr.date, 'YYYY-MM-DD') >= to_date(?, 'YYYY-MM-DD')";
+        }
+        query = query.replace("<?>", replacementString);
+
+        PreparedStatement pstmt = conn.prepareStatement(query);
+        pstmt.setString(1, locationName);
+        pstmt.setString(2, Utility.formatDate_YYYY_MM_DD(date));
+
+        if (!includePastReservations) {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            pstmt.setString(3, format.format(new Date()));
+        }
+
+        return executeQueryForLocationReservations(pstmt);
+    }
+
+    @Override
+    public List<LocationReservation> getAllLocationReservationsOfLocationFromAndUntil(String locationName, String start, String end, boolean includePastReservations) throws SQLException {
+        try (Connection conn = getConnection()) {
+            String query = databaseProperties.getString("get_location_reservations_where_<?>");
+
+            String replacementString = "lr.location_name = ? and to_date(lr.date, 'YYYY-MM-DD') >= to_date(?, 'YYYY-MM-DD') and to_date(lr.date, 'YYYY-MM-DD') <= to_date(?, 'YYYY-MM-DD')";
+            if (!includePastReservations) {
+                replacementString += " and to_date(lr.date, 'YYYY-MM-DD') >= to_date(?, 'YYYY-MM-DD')";
+            }
+            query = query.replace("<?>", replacementString);
+
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, locationName);
+            pstmt.setString(2, Utility.formatDate_YYYY_MM_DD(start));
+            pstmt.setString(3, Utility.formatDate_YYYY_MM_DD(end));
+
+            if (!includePastReservations) {
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                pstmt.setString(4, format.format(new Date()));
+            }
+
+            return executeQueryForLocationReservations(pstmt);
+        }
+    }
+
+    @Override
     public List<LocationReservation> getAllLocationReservationsOfUser(String augentID) throws SQLException {
         String query = databaseProperties.getString("get_location_reservations_where_<?>");
         query = query.replace("<?>", "u.augentid = ?");
         return getAllLocationsFromQueryWithOneParameter(augentID, query);
-    }
-
-    @Override
-    public List<LocationReservation> getAllLocationReservationsOfLocation(String locationName) throws SQLException {
-        String query = databaseProperties.getString("get_location_reservations_where_<?>");
-        query = query.replace("<?>", "lr.location_name = ?");
-        return getAllLocationsFromQueryWithOneParameter(locationName, query);
     }
 
     private List<LocationReservation> getAllLocationsFromQueryWithOneParameter(String parameterOne, String query)
@@ -42,15 +124,24 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                try {
-                    LocationReservation locationReservation = createLocationReservation(rs);
-                    reservations.add(locationReservation);
-                } catch (Exception ignore) {
-                }
+                LocationReservation locationReservation = createLocationReservation(rs);
+                reservations.add(locationReservation);
             }
 
             return reservations;
         }
+    }
+
+    private List<LocationReservation> executeQueryForLocationReservations(PreparedStatement pstmt) throws SQLException {
+        ResultSet rs = pstmt.executeQuery();
+
+        List<LocationReservation> reservations = new ArrayList<>();
+        while (rs.next()) {
+            LocationReservation locationReservation = createLocationReservation(rs);
+            reservations.add(locationReservation);
+        }
+
+        return reservations;
     }
 
     @Override
