@@ -18,7 +18,18 @@
 
   "general": {
     "dsa": "Student Activities Office",
-    "ugent": "Ghent University"
+    "ugent": "Ghent University",
+
+    "yes": "Yes",
+    "no": "No",
+
+    "roles": {
+      "ADMIN": "Admin",
+      "EMPLOYEE": "Employee",
+      "STUDENT": "Student"
+    },
+
+    "optional": "Optional"
   },
 
   "header": {
@@ -192,6 +203,214 @@
         "title": "Sure to delete location?",
 
         "body": "Are you sure that you want to delete {locationName}?",
+
+        "loading": "Waiting for response of server...",
+        "success": "Successfully deleted the new location",
+        "error": "Something went wrong while deleting the location",
+
+        "yesButton": "Delete",
+        "noButton": "Cancel"
+      }
+    },
+
+    "users": {
+      "overview": {
+        "title": "User management",
+
+        "firstName": "First name",
+        "lastName": "Last name",
+        "barcode": "Barcode",
+
+        "filterSearchButton": "Search",
+        "filterClearButton": "Clear"
+      },
+
+      "searchResult": {
+        "title": "Results of search",
+
+        "table": {
+          "id": "ID",
+          "firstName": "First name",
+          "lastName": "Last name",
+          "penaltyPoints": "Penalty points",
+          "institution": "Institution",
+
+          "details": "Details"
+        },
+
+        "neverSearched": "You haven't searched any users yet. Fill in the first and/or last name, or just the barcode to be able to search users.",
+        "loading": "Waiting on response of server...",
+        "error": "Something went wrong while retrieving the users...",
+        "noUserWithBarcodeHasBeenFound": "No user with given barcode has been found. Please try with first and/or last name."
+      },
+
+      "userDetails": {
+        "errorQuerying": "Something went wrong while querying for the user with id '{id}'",
+
+        "form": {
+          "title": "Details of {name}",
+
+          "id": "ID",
+          "firstName": "First name",
+          "lastName": "Last name",
+          "mail": "Mail",
+          "roles": "Roles",
+          "penaltyPoints": "Penalty points",
+          "institution": "Institution",
+
+          "error": "Something went wrong while retrieving the user..."
+        },
+
+        "roles": {
+          "title": "Roles of {name}",
+
+          "updateButton": "Update",
+          "resetButton": "Reset",
+
+          "loadingUpdatingUser": "Waiting on a response of the server...",
+          "successUpdatingUser": "Successfully updated the roles of the user...",
+          "errorUpdatingUser": "Something went wrong while updating the user..."
+        },
+
+        "penalties": {
+          "title": "Penalties of {name}",
+
+          "table": {
+            "eventCode": "Penalty event code",
+            "timestamp": "Timestamp",
+            "location": "Location",
+            "receivedPoints": "Received points",
+            "remarks": "Remark",
+
+            "addNew": "Add penalty",
+
+            "addPenaltyModalView": {
+              "title": "Add new penalty",
+              "addButton": "Add",
+              "cancelButton": "Cancel",
+
+              "timestamp": "Timestamp",
+              "timestampValidation": "Timestamp is required",
+
+              "location": "Location",
+              "locationValidation": "Location is required",
+
+              "points": "Penalty points",
+              "pointsValidation": "Penalty points is required",
+
+              "loading": "Waiting on response of server...",
+              "success": "Successfully added the penalty.",
+              "error": "Something went wrong while adding the penalty..."
+            },
+
+            "deletePenaltyModalView": {
+              "title": "Sure to delete the penalty?",
+              "body": "Penalty about to delete:",
+
+              "yesButton": "Delete",
+              "noButton": "Cancel",
+
+              "loading": "Waiting on response of server...",
+              "success": "Successfully deleted the penalty.",
+              "error": "Something went wrong while deleting the penalty..."
+            }
+          },
+
+          "noPenalties": "The user has made no penalties so far.",
+          "error": "Something went wrong while querying the penalties for the user."
+        }
+      }
+    },
+
+    "reservations": {
+      "title": "Overview of reservations",
+      "locationsPanelTitle": "Search location reservations",
+      "lockersPanelTitle": "Search locker reservations",
+
+      "location": {
+        "location": "Location",
+        "start": "Reservations from",
+        "end": "Reservations until",
+        "pastReservations": "Include past reservations?",
+
+        "searchButton": "Search",
+        "clearButton": "Clear",
+
+        "neverSearched": "You have not yet searched for any location reservations.",
+        "loading": "Waiting for response of server...",
+        "error": "Something went wrong while searching for location reservations",
+
+        "table": {
+          "date": "Date for which reserved",
+          "user": "User",
+          "attended": "User attended?",
+
+          "noLocationReservations": "There are no location reservations for the location."
+        },
+
+        "deleteModal": {
+          "title": "Sure to delete the location reservation?",
+          "body": "Location reservation about to delete:",
+
+          "yesButton": "Delete",
+          "noButton": "Cancel",
+
+          "loading": "Waiting on response of server...",
+          "success": "Successfully deleted the location reservation.",
+          "error": "Something went wrong while deleting the location reservation..."
+        }
+      },
+
+      "locker": {
+        "location": "Location",
+        "start": "Reservations from",
+        "end": "Reservations until",
+        "pastReservations": "Include past reservations (i.e. key both picked up and returned)?",
+
+        "searchButton": "Search",
+        "clearButton": "Clear",
+
+        "neverSearched": "You have not yet searched for any locker reservations.",
+        "loading": "Waiting for response of server...",
+        "error": "Something went wrong while searching for locker reservations",
+
+        "table": {
+          "lockerNumber": "Locker number",
+          "owner": "User",
+          "keyPickupDate": "Key picked up?",
+          "keyReturnedDate": "Key returned?",
+
+          "noLockerReservations": "There are no locker reservations for the location."
+        },
+
+        "deleteModal": {
+          "title": "Sure to delete the locker reservation?",
+          "body": "Locker reservation about to delete:",
+
+          "yesButton": "Delete",
+          "noButton": "Cancel",
+
+          "loading": "Waiting on response of server...",
+          "success": "Successfully deleted the locker reservation.",
+          "error": "Something went wrong while deleting the locker reservation..."
+        }
+      }
+    },
+
+    "penaltyEvents": {
+      "title": "Overview of the penalty events",
+      "errorOnRetrievingPenaltyEvents": "Something went wrong while retrieving the penalty events.",
+
+      "table": {
+        "code": "Code",
+        "points": "Penalty points",
+        "description": "Description"
+      },
+
+      "deletePenaltyEventModal": {
+        "title": "Sure to delete the penalty event?",
+
+        "body": "Are you sure that you want to delete following penalty event?",
 
         "loading": "Waiting for response of server...",
         "success": "Successfully deleted the new location",

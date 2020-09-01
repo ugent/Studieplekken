@@ -152,9 +152,10 @@ CREATE TABLE public.penalty_book (
     user_augentid text NOT NULL,
     event_code integer NOT NULL,
     "timestamp" text NOT NULL,
-    reservation_date text NOT NULL,
+    reservation_date text,
     received_points integer NOT NULL,
-    reservation_location text NOT NULL
+    reservation_location text NOT NULL,
+    remarks text
 );
 
 
@@ -187,8 +188,7 @@ ALTER TABLE public.penalty_descriptions OWNER TO postgres;
 
 CREATE TABLE public.penalty_events (
     code integer NOT NULL,
-    points integer NOT NULL,
-    public_accessible boolean NOT NULL
+    points integer NOT NULL
 );
 
 
@@ -588,8 +588,8 @@ values ('ENGLISH'), ('DUTCH');
 --
 -- Data for table: penalty_events 
 --
-insert into public.penalty_events (code, points, public_accessible)
-values (16660, 30, true), (16661, 50, true), (16662, 100, true);
+insert into public.penalty_events (code, points)
+values (16660, 30), (16661, 50), (16662, 100), (16663, 0);
 
 --
 -- Data for table: penalty_descriptions
@@ -600,7 +600,9 @@ values ('ENGLISH', 16660, 'Cancelling too late.'),
 ('ENGLISH', 16661, 'Not showing up at all.'),
 ('DUTCH', 16661, 'Niet komen opdagen.'),
 ('ENGLISH', 16662, 'Blacklist event.'),
-('DUTCH', 16662, 'Blacklist event.');
+('DUTCH', 16662, 'Blacklist event.'),
+('ENGLISH', 16663, 'Manual entry.'),
+('DUTCH', 16663, 'Manual entry.');
 
 --
 -- Data for table: roles 

@@ -56,6 +56,13 @@ public class CustomDate implements Cloneable {
             return null;
         }
 
+        if (!s.contains("T")) {
+            String[] dateParts = s.split("-");
+            return new CustomDate(Integer.parseInt(dateParts[0]),
+                    Integer.parseInt(dateParts[1]),
+                    Integer.parseInt(dateParts[2]));
+        }
+
         String[] strings = s.split("T");
         String[] dateParts = strings[0].split("-");
         String[] timeParts = strings[1].split(":");
@@ -64,7 +71,12 @@ public class CustomDate implements Cloneable {
             throw new DateFormatException("Date should have a day, a month and a year.");
         }
 
-        return new CustomDate(Integer.parseInt(dateParts[0]), Integer.parseInt(dateParts[1]), Integer.parseInt(dateParts[2]), Integer.parseInt(timeParts[0]), Integer.parseInt(timeParts[1]), Integer.parseInt((timeParts[2].split("\\."))[0]));
+        return new CustomDate(Integer.parseInt(dateParts[0]),
+                Integer.parseInt(dateParts[1]),
+                Integer.parseInt(dateParts[2]),
+                Integer.parseInt(timeParts[0]),
+                Integer.parseInt(timeParts[1]),
+                Integer.parseInt((timeParts[2].split("\\."))[0]));
     }
 
     public static CustomDate today() {

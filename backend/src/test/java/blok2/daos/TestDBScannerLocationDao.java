@@ -1,5 +1,7 @@
 package blok2.daos;
 
+import blok2.model.reservables.Location;
+import blok2.model.users.User;
 import blok2.model.Authority;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;

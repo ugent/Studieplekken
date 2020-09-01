@@ -1,6 +1,11 @@
 package blok2.daos;
 
 import blok2.helpers.date.CustomDate;
+import blok2.model.reservables.Location;
+import blok2.model.reservables.Locker;
+import blok2.model.reservations.LockerReservation;
+import blok2.model.users.User;
+import blok2.helpers.date.CustomDate;
 import blok2.model.Authority;
 import blok2.model.reservables.Location;
 import blok2.model.reservables.Locker;
@@ -168,7 +173,7 @@ public class TestDBLockerReservationDao {
                 2, reservations.size());
 
         // getAllLockerReservationsOfLocation
-        reservations = lockerReservationDao.getAllLockerReservationsOfLocation(testLocation.getName());
+        reservations = lockerReservationDao.getAllLockerReservationsOfLocation(testLocation.getName(), true);
         Assert.assertEquals("test getters, getAllLockerReservationsOfLocation",
                 testLockerReservations.size(), reservations.size());
 

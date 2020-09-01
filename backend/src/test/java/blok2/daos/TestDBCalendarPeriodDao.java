@@ -1,5 +1,7 @@
 package blok2.daos;
 
+import blok2.model.calendar.CalendarPeriod;
+import blok2.model.reservables.Location;
 import blok2.model.Authority;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.reservables.Location;
@@ -80,7 +82,7 @@ public class TestDBCalendarPeriodDao {
 
         Assert.assertEquals("addCalendarPeriodsTest", calendarPeriods, actualPeriods);
     }
-    
+
     @Test
     public void updateCalendarPeriodsTest() throws SQLException {
         // update the periods

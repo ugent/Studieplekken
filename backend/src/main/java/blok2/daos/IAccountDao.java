@@ -1,6 +1,7 @@
 package blok2.daos;
 
 import blok2.model.users.User;
+import org.springframework.stereotype.Repository;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -28,6 +29,11 @@ public interface IAccountDao extends IDao {
      * Gets the users with the given firstname.
      */
     List<User> getUsersByFirstName(String firstName) throws SQLException;
+
+    /**
+     * Gets the users with the given first and last name
+     */
+    List<User> getUsersByFirstAndLastName(String firstName, String lastName) throws SQLException;
 
     /**
      * Gets the user that have the given role.

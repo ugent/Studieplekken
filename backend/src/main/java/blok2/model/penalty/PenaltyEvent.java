@@ -9,7 +9,6 @@ import java.util.Objects;
 public final class PenaltyEvent {
     private int code;
     private int points;
-    private boolean publicAccessible;
     private Map<Language, String> descriptions;
 
     public static final int CODE_LATE_CANCEL = 16660;
@@ -20,10 +19,9 @@ public final class PenaltyEvent {
         descriptions = new HashMap<>();
     }
 
-    public PenaltyEvent(int code, int points, boolean publicAccessible, Map<Language, String> descriptions) {
+    public PenaltyEvent(int code, int points, Map<Language, String> descriptions) {
         this.code = code;
         this.points = points;
-        this.publicAccessible = publicAccessible;
         this.descriptions = descriptions;
     }
 
@@ -32,7 +30,7 @@ public final class PenaltyEvent {
         Map<Language, String> _descriptions = new HashMap<>();
         for (Language l : descriptions.keySet())
             _descriptions.put(l, descriptions.get(l));
-        return new PenaltyEvent(code, points, publicAccessible, _descriptions);
+        return new PenaltyEvent(code, points, _descriptions);
     }
 
     @Override
@@ -47,7 +45,6 @@ public final class PenaltyEvent {
 
         return that.code == code
                 && that.points == points
-                && that.publicAccessible == publicAccessible
                 && Objects.equals(descriptions, that.descriptions);
     }
 
@@ -56,7 +53,6 @@ public final class PenaltyEvent {
         return "PenaltyEvent{" +
                 "code=" + code +
                 ", points=" + points +
-                ", publicAccessible=" + publicAccessible +
                 ", descriptions=" + descriptions +
                 '}';
     }
@@ -75,10 +71,6 @@ public final class PenaltyEvent {
         return points;
     }
 
-    public boolean getPublicAccessible() {
-        return publicAccessible;
-    }
-
     public Map<Language, String> getDescriptions() {
         return descriptions;
     }
@@ -89,10 +81,6 @@ public final class PenaltyEvent {
 
     public void setPoints(int points) {
         this.points = points;
-    }
-
-    public void setPublicAccessible(boolean publicAccessible) {
-        this.publicAccessible = publicAccessible;
     }
 
     public void setDescriptions(Map<Language, String> descriptions) {

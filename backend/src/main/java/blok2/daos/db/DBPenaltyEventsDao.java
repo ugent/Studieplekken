@@ -68,7 +68,6 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
         PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("insert_penalty_event"));
         pstmt.setInt(1, event.getCode());
         pstmt.setInt(2, event.getPoints());
-        pstmt.setBoolean(3, event.getPublicAccessible());
         pstmt.executeUpdate();
 
         // add the descriptions
@@ -190,6 +189,7 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
             p.setReservationDate(CustomDate.parseString(rs.getString(databaseProperties.getString("penalty_book_reservation_date"))));
             p.setReservationLocation(rs.getString(databaseProperties.getString("penalty_book_reservation_location")));
             p.setReceivedPoints(rs.getInt(databaseProperties.getString("penalty_book_received_points")));
+            p.setRemarks(rs.getString(databaseProperties.getString("penalty_book_remarks")));
             ret.add(p);
         }
 
@@ -256,7 +256,6 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
 
         penaltyEvent.setCode(rs.getInt(databaseProperties.getString("penalty_event_code")));
         penaltyEvent.setPoints(rs.getInt(databaseProperties.getString("penalty_event_points")));
-        penaltyEvent.setPublicAccessible(rs.getBoolean(databaseProperties.getString("penalty_event_public_accessible")));
 
         Map<Language, String> descriptions = new HashMap<>();
 
@@ -287,9 +286,8 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
         PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("update_penalty_event"));
         // set ...
         pstmt.setInt(1, penaltyEvent.getPoints());
-        pstmt.setBoolean(2, penaltyEvent.getPublicAccessible());
         // where ...
-        pstmt.setInt(3, penaltyEvent.getCode());
+        pstmt.setInt(2, penaltyEvent.getCode());
         pstmt.execute();
     }
 
@@ -331,8 +329,9 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
         pstmt.setString(1, p.getAugentID());
         pstmt.setInt(2, p.getEventCode());
         pstmt.setString(3, p.getTimestamp().toString());
-        pstmt.setString(4, p.getReservationDate().toString());
+        pstmt.setString(4, p.getReservationDate() == null ? "" : p.getReservationDate().toString());
         pstmt.setString(5, p.getReservationLocation());
         pstmt.setInt(6, p.getReceivedPoints());
+        pstmt.setString(7, p.getRemarks());
     }
 }

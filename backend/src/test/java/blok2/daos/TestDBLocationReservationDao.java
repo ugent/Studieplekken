@@ -1,6 +1,10 @@
 package blok2.daos;
 
 import blok2.helpers.date.CustomDate;
+import blok2.model.reservables.Location;
+import blok2.model.reservations.LocationReservation;
+import blok2.model.users.User;
+import blok2.helpers.date.CustomDate;
 import blok2.model.Authority;
 import blok2.model.reservables.Location;
 import blok2.model.reservations.LocationReservation;
@@ -93,7 +97,7 @@ public class TestDBLocationReservationDao {
         LocationReservation rlr = locationReservationDao.getLocationReservation(u.getAugentID(), date); // rlr = retrieved location reservation
         Assert.assertEquals("addLocationReservation, getLocationReservation", lr, rlr);
 
-        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfLocation(testLocation.getName());
+        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfLocation(testLocation.getName(), true);
         Assert.assertEquals("addLocationReservation, getAllLocationReservationsOfLocation", 1, list.size());
 
         list = locationReservationDao.getAllLocationReservationsOfUser(u.getAugentID());

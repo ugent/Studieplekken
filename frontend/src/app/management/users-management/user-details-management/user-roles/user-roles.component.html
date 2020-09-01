@@ -1,0 +1,46 @@
+<div class="container-fluid" *ngIf="userObs | async as user">
+  <!-- Management of the roles of the user -->
+  <h3>{{('management.users.userDetails.roles.title' | translate)
+    .replace('{name}', user.firstName + ' ' + user.lastName)}}</h3>
+
+  <hr>
+
+  <!-- Feedback on updating the user's role -->
+  <div class="alert alert-info" *ngIf="userUpdatingSuccess === null">
+    {{'management.users.userDetails.roles.loadingUpdatingUser' | translate}}
+  </div>
+
+  <div class="alert alert-success" *ngIf="userUpdatingSuccess === true">
+    {{'management.users.userDetails.roles.successUpdatingUser' | translate}}
+  </div>
+
+  <div class="alert alert-error" *ngIf="userUpdatingSuccess === false">
+    {{'management.users.userDetails.roles.errorUpdatingUser' | translate}}
+  </div>
+
+  <!-- The form containing the checkboxes of the roles, and an update and reset buttons -->
+  <div class="container-fluid">
+    <form [formGroup]="rolesFormGroup" (ngSubmit)="submitUpdateUser(user, rolesFormArray.value)">
+      <div class="row" *ngFor="let role of rolesFormArray.controls; let i = index">
+        <label formArrayName="roles" >
+          <input type="checkbox" [formControlName]="i">
+          {{'general.roles.' + roles[i] | translate}}
+        </label>
+      </div>
+
+      <div class="row">
+        <div class="pull-right">
+          <button type="submit" class="btn btn-primary left-button"
+                  [disabled]="disableRoleUpdateButton(user, rolesFormArray.value)">
+            {{'management.users.userDetails.roles.updateButton' | translate}}
+          </button>
+
+          <button class="btn btn-secondary" (click)="resetRolesFormArrayButtonClick(user)"
+                  [disabled]="disableRoleUpdateButton(user, rolesFormArray.value, true)">
+            {{'management.users.userDetails.roles.resetButton' | translate}}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

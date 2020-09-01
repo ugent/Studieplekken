@@ -18,7 +18,18 @@
 
   "general": {
     "dsa": "Dienst StudentenActiviteiten",
-    "ugent": "Universiteit Gent"
+    "ugent": "Universiteit Gent",
+
+    "yes": "Ja",
+    "no": "Neen",
+
+    "roles": {
+      "ADMIN": "Admin",
+      "EMPLOYEE": "Medewerker",
+      "STUDENT": "Student"
+    },
+
+    "optional": "Optioneel"
   },
 
   "header": {
@@ -196,6 +207,214 @@
         "loading": "Wachten op antwoord van de server...",
         "success": "Het verwijderen van de locatie is geslaagd",
         "error": "Er is iets misgelopen tijdens het verwijderen van de locatie",
+
+        "yesButton": "Verwijder",
+        "noButton": "Annuleer"
+      }
+    },
+
+    "users": {
+      "overview": {
+        "title": "Gebruikers beheren",
+
+        "firstName": "Voornaam",
+        "lastName": "Achternaam",
+        "barcode": "Barcode",
+
+        "filterSearchButton": "Zoek",
+        "filterClearButton": "Wis input"
+      },
+
+      "searchResult": {
+        "title": "Resultaat van zoeken",
+
+        "table": {
+          "id": "ID",
+          "firstName": "Voornaam",
+          "lastName": "Achternaam",
+          "penaltyPoints": "Strafpunten",
+          "institution": "Institutie",
+
+          "details": "Details"
+        },
+
+        "neverSearched": "Je hebt nog niet gezocht naar een gebruiker. Vul de voor- en/of achternaam, of enkel de barcode in om te kunnen zoeken naar gebruikers.",
+        "loading": "Wachten op antwoord van de server...",
+        "error": "Er is iets misgelopen tijdens het ophalen van de gebruikers...",
+        "noUserWithBarcodeHasBeenFound": "Er is geen gebruiker gevonden met opgegeven barcode. Probeer misschien met de voor- en/of achternaam."
+      },
+
+      "userDetails": {
+        "errorQuerying": "Er is iets misgelopen tijdens het ophalen van de gebruiker met id '{id}'",
+
+        "form": {
+          "title": "Details of {name}",
+
+          "id": "ID",
+          "firstName": "Voornaam",
+          "lastName": "Achternaam",
+          "mail": "Mail",
+          "roles": "Rollen",
+          "penaltyPoints": "Strafpunten",
+          "institution": "Institutie",
+
+          "error": "Er is iets misgelopen tijdens het ophalen van de gebruiker..."
+        },
+
+        "roles": {
+          "title": "Rollen van {name}",
+
+          "updateButton": "Update",
+          "resetButton": "Herstel",
+
+          "loadingUpdatingUser": "Wachten op het antwoord van de server...",
+          "successUpdatingUser": "Het updaten van de rollen van de gebruiker is gelukt...",
+          "errorUpdatingUser": "Er is iets misgelopen tijdens het updaten van de gebruiker..."
+        },
+
+        "penalties": {
+          "title": "Overtredingen van {name}",
+
+          "table": {
+            "eventCode": "Code van overtreding",
+            "timestamp": "Timestamp",
+            "location": "Locatie",
+            "receivedPoints": "Ontvangen strafpunten",
+            "remarks": "Opmerking",
+
+            "addNew": "Overtreding toevoegen",
+
+            "addPenaltyModalView": {
+              "title": "Niewe overtreding toevoegen",
+              "addButton": "Voeg toe",
+              "cancelButton": "Annuleer",
+
+              "timestamp": "Timestamp",
+              "timestampValidation": "Timestamp is required",
+
+              "location": "Location",
+              "locationValidation": "Location is required",
+
+              "points": "Penalty points",
+              "pointsValidation": "Penalty points is required",
+
+              "loading": "Wachten op antwoord van de server...",
+              "success": "Het toevoegen van de overtreding is gelukt.",
+              "error": "Er is iets misgelopen tijdens het toevoegen van de overtreding..."
+            },
+
+            "deletePenaltyModalView": {
+              "title": "Zeker om de overtreding te verwijderen?",
+              "body": "De overtreding die verwijderd zal worden:",
+
+              "yesButton": "Verwijder",
+              "noButton": "Annuleer",
+
+              "loading": "Wachten op antwoord van de server...",
+              "success": "Het verwijderen van de overtreding is gelukt.",
+              "error": "Er is iets misgelopen tijdens het verwijderen van de overtreding..."
+            }
+          },
+
+          "noPenalties": "De gebruiker heeft nog geen overtredingen begaan.",
+          "error": "Er is iets misgelopen tijdens het ophalen van de strafpunten van de gebruiker."
+        }
+      }
+    },
+
+    "reservations": {
+      "title": "Overzicht van de reservaties",
+      "locationsPanelTitle": "Zoek naar reservaties voor bloklocaties",
+      "lockersPanelTitle": "Zoek naar reservaties van lockers",
+
+      "location": {
+        "location": "Locatie",
+        "start": "Reservaties vanaf",
+        "end": "Reservaties tot",
+        "pastReservations": "Vroegere reservaties inbegrijpen?",
+
+        "searchButton": "Zoek",
+        "clearButton": "Wis invoer",
+
+        "neverSearched": "Je hebt nog niet gezocht naar bloklocatiereservaties.",
+        "loading": "Wachten op antwoord van de server...",
+        "error": "Er is iets misgelopen tijdens het ophalen van de locatie reservaties",
+
+        "table": {
+          "date": "Datum waarvoor gereserveerd",
+          "user": "Gebruiker",
+          "attended": "Gebruiker was aanwezig?",
+
+          "noLocationReservations": "Er zijn geen locatie reservaties voor de locatie."
+        },
+
+        "deleteModal": {
+          "title": "Zeker om de locatie reservatie te verwijderen?",
+          "body": "De locatie reservatie die verwijderd zal worden:",
+
+          "yesButton": "Verwijder",
+          "noButton": "Annuleer",
+
+          "loading": "Wachten op antwoord van de server...",
+          "success": "Het verwijderen van de locatie reservatie is gelukt.",
+          "error": "Er is iets misgelopen tijdens het verwijderen van de locatie reservatie..."
+        }
+      },
+
+      "locker": {
+        "location": "Location",
+        "start": "Reservaties vanaf",
+        "end": "Reservaties tot",
+        "pastReservations": "Vroegere reservaties inbegrijpen (i.e. sleutel opgehaald én teruggebracht)?",
+
+        "searchButton": "Zoek",
+        "clearButton": "Wis invoer",
+
+        "neverSearched": "Je hebt nog niet gezocht naar reservaties voor lockers.",
+        "loading": "Wachten op antwoord van de server...",
+        "error": "Er is iets misgelopen tijdens het ophalen van de locker reservaties",
+
+        "table": {
+          "lockerNumber": "Locker nummer",
+          "owner": "Gebruiker",
+          "keyPickupDate": "Sleutel opgehaald?",
+          "keyReturnedDate": "Sleutel teruggebracht?",
+
+          "noLockerReservations": "Er zijn geen locker reservaties voor de locatie."
+        },
+
+        "deleteModal": {
+          "title": "Zeker om de locker reservatie te verwijderen?",
+          "body": "De locker reservatie die verwijderd zal worden:",
+
+          "yesButton": "Verwijder",
+          "noButton": "Annuleer",
+
+          "loading": "Wachten op antwoord van de server...",
+          "success": "Het verwijderen van de locker reservatie is gelukt.",
+          "error": "Er is iets misgelopen tijdens het verwijderen van de locker reservatie..."
+        }
+      }
+    },
+
+    "penaltyEvents": {
+      "title": "Overzicht van mogelijke overtredingen",
+      "errorOnRetrievingPenaltyEvents": "Er is iets misgelopen tijdens het ophalen van de mogelijke overtredingen.",
+
+      "table": {
+        "code": "Code",
+        "points": "Strafpunten",
+        "description": "Omschrijving"
+      },
+
+      "deletePenaltyEventModal": {
+        "title": "Zeker om overtreding te verwijderen?",
+
+        "body": "Ben je zeker dat je de volgende overtreding wil verwijderen?",
+
+        "loading": "Wachten op antwoord van de server...",
+        "success": "De overtreding werd succesvol verwijderd",
+        "error": "Er is iets misgelopen tijdens het verwijderen van de overtreding",
 
         "yesButton": "Verwijder",
         "noButton": "Annuleer"

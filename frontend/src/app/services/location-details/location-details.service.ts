@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
 import {Location, LocationConstructor} from '../../shared/model/Location';
-import {LocationService} from "../api/locations/location.service";
+import {LocationService} from '../api/locations/location.service';
 
 /**
  * This class is a service used by the LocationDetailsManagementComponent,
@@ -39,8 +39,12 @@ export class LocationDetailsService {
   constructor(private locationService: LocationService) { }
 
   loadLocation(locationName: string): void {
-    this.locationService.getLocation(locationName).subscribe(next => {
-      this.locationSubject.next(next);
-    });
+    this.locationService.getLocation(locationName).subscribe(
+      next => {
+        this.locationSubject.next(next);
+      }, error => {
+        this.locationSubject.error(error);
+      }
+    );
   }
 }

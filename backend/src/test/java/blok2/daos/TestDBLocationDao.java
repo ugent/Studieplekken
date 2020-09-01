@@ -1,8 +1,8 @@
 package blok2.daos;
 
-import blok2.model.Authority;
 import blok2.model.reservables.Location;
 import blok2.model.reservables.Locker;
+import blok2.model.Authority;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

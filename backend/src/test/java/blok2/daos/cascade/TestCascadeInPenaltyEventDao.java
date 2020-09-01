@@ -1,5 +1,17 @@
 package blok2.daos.cascade;
 
+import blok2.daos.IAccountDao;
+import blok2.daos.ILocationDao;
+import blok2.daos.IPenaltyEventsDao;
+import blok2.daos.TestSharedMethods;
+import blok2.daos.db.ADB;
+import blok2.helpers.Language;
+import blok2.helpers.Resources;
+import blok2.helpers.date.CustomDate;
+import blok2.model.penalty.Penalty;
+import blok2.model.penalty.PenaltyEvent;
+import blok2.model.reservables.Location;
+import blok2.model.users.User;
 import blok2.daos.TestSharedMethods;
 import blok2.daos.IAccountDao;
 import blok2.daos.IAuthorityDao;
@@ -79,14 +91,14 @@ public class TestCascadeInPenaltyEventDao {
         Map<Language, String> descriptions = new HashMap<>();
         descriptions.put(Language.DUTCH, "Dit is een test omschrijving van een penalty event met code 0");
         descriptions.put(Language.ENGLISH, "This is a test description of a penalty event with code 0");
-        testPenaltyEvent = new PenaltyEvent(0, 10, true, descriptions);
+        testPenaltyEvent = new PenaltyEvent(0, 10, descriptions);
 
         // Note: the received amount of points are 10 and 20, not testPenaltyEvent.getCode()
         // because when the penalties are retrieved from the penaltyEventDao, the list will
         // be sorted by received points before asserting, if they would be equal we can't sort
         // on the points and be sure about the equality of the actual and expected list.
-        testPenalty1 = new Penalty(testUser1.getAugentID(), testPenaltyEvent.getCode(), CustomDate.now(), CustomDate.now(), testLocation1.getName(), 10);
-        testPenalty2 = new Penalty(testUser2.getAugentID(), testPenaltyEvent.getCode(), CustomDate.now(), CustomDate.now(), testLocation2.getName(), 20);
+        testPenalty1 = new Penalty(testUser1.getAugentID(), testPenaltyEvent.getCode(), CustomDate.now(), CustomDate.now(), testLocation1.getName(), 10, "First test penalty");
+        testPenalty2 = new Penalty(testUser2.getAugentID(), testPenaltyEvent.getCode(), CustomDate.now(), CustomDate.now(), testLocation2.getName(), 20, "Second test penalty");
 
 
         // Add test objects to database
@@ -194,7 +206,6 @@ public class TestCascadeInPenaltyEventDao {
 
     private void updatePenaltyEventWithoutChangeInFK(PenaltyEvent penaltyEvent) {
         penaltyEvent.setPoints(penaltyEvent.getPoints() * 2);
-        penaltyEvent.setPublicAccessible(!penaltyEvent.getPublicAccessible());
 
         Map<Language, String> descriptions = new HashMap<>();
         descriptions.put(Language.ENGLISH, "This is a changed descriptions for the penalty event");

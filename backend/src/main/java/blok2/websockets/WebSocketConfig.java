@@ -19,7 +19,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/scanning").withSockJS();
-        /* Not all browsers support websockets or a company proxy server could block it, that's why SockJS is used as a fallback method
+        /* Not all browsers support blokat.websockets or a company proxy server could block it, that's why SockJS is used as a fallback method
          * The goal of SockJS is to let applications use a WebSocket API but fall back to non-WebSocket alternatives when necessary at runtime,
          * i.e. without the need to change application code.
          */

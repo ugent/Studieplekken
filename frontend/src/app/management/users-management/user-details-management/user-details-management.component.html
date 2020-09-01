@@ -1,0 +1,23 @@
+<!-- If querying the user is not successful, show an error -->
+<div class="alert alert-error" *ngIf="userQueryingError">
+  {{('management.users.userDetails.errorQuerying' | translate).replace('{id}', userId)}}
+</div>
+
+<div *ngIf="!userQueryingError">
+  <div class="container-fluid" *ngIf="userObs | async as user">
+    <!-- Form with details of the user -->
+    <app-user-details-form [userObs]="userObs"></app-user-details-form>
+
+    <br><br>
+
+    <!-- The roles of the user as checkboxes -->
+    <app-user-roles [userObs]="userObs"></app-user-roles>
+
+    <br><br>
+
+    <!-- Table with all penalty points and the option to add/delete them manually  -->
+    <app-user-details-management-penalties
+      [userObs]="userObs">
+    </app-user-details-management-penalties>
+  </div>
+</div>

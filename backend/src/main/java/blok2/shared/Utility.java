@@ -21,7 +21,17 @@ public class Utility {
         });
     }
 
-    public static void analyzeConfictsInPeriods(List<? extends Period> periods) {
+    public static String formatDate_YYYY_MM_DD(String date) {
+        String[] splitDate = date.split("-");
 
+        if (splitDate[1].length() == 1) {
+            splitDate[1] = "0" + splitDate[1];
+        }
+
+        if (splitDate[2].length() == 1) {
+            splitDate[2] = "0" + splitDate[2];
+        }
+
+        return splitDate[0] + "-" + splitDate[1] + "-" + splitDate[2];
     }
 }
