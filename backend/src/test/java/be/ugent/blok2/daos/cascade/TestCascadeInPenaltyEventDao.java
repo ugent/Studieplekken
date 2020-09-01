@@ -70,7 +70,7 @@ public class TestCascadeInPenaltyEventDao {
         Map<Language, String> descriptions = new HashMap<>();
         descriptions.put(Language.DUTCH, "Dit is een test omschrijving van een penalty event met code 0");
         descriptions.put(Language.ENGLISH, "This is a test description of a penalty event with code 0");
-        testPenaltyEvent = new PenaltyEvent(0, 10, true, descriptions);
+        testPenaltyEvent = new PenaltyEvent(0, 10, descriptions);
 
         // Note: the received amount of points are 10 and 20, not testPenaltyEvent.getCode()
         // because when the penalties are retrieved from the penaltyEventDao, the list will
@@ -182,7 +182,6 @@ public class TestCascadeInPenaltyEventDao {
 
     private void updatePenaltyEventWithoutChangeInFK(PenaltyEvent penaltyEvent) {
         penaltyEvent.setPoints(penaltyEvent.getPoints() * 2);
-        penaltyEvent.setPublicAccessible(!penaltyEvent.getPublicAccessible());
 
         Map<Language, String> descriptions = new HashMap<>();
         descriptions.put(Language.ENGLISH, "This is a changed descriptions for the penalty event");

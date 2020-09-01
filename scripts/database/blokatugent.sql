@@ -184,8 +184,7 @@ ALTER TABLE public.penalty_descriptions OWNER TO postgres;
 
 CREATE TABLE public.penalty_events (
     code integer NOT NULL,
-    points integer NOT NULL,
-    public_accessible boolean NOT NULL
+    points integer NOT NULL
 );
 
 
@@ -551,8 +550,8 @@ values ('ENGLISH'), ('DUTCH');
 --
 -- Data for table: penalty_events 
 --
-insert into public.penalty_events (code, points, public_accessible)
-values (16660, 30, true), (16661, 50, true), (16662, 100, true), (16663, 0, false);
+insert into public.penalty_events (code, points)
+values (16660, 30), (16661, 50), (16662, 100), (16663, 0);
 
 --
 -- Data for table: penalty_descriptions

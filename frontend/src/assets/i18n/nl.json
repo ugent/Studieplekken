@@ -395,6 +395,30 @@
           "error": "Er is iets misgelopen tijdens het verwijderen van de locker reservatie..."
         }
       }
+    },
+
+    "penaltyEvents": {
+      "title": "Overzicht van mogelijke overtredingen",
+      "errorOnRetrievingPenaltyEvents": "Er is iets misgelopen tijdens het ophalen van de mogelijke overtredingen.",
+
+      "table": {
+        "code": "Code",
+        "points": "Strafpunten",
+        "description": "Omschrijving"
+      },
+
+      "deletePenaltyEventModal": {
+        "title": "Zeker om overtreding te verwijderen?",
+
+        "body": "Ben je zeker dat je de volgende overtreding wil verwijderen?",
+
+        "loading": "Wachten op antwoord van de server...",
+        "success": "De overtreding werd succesvol verwijderd",
+        "error": "Er is iets misgelopen tijdens het verwijderen van de overtreding",
+
+        "yesButton": "Verwijder",
+        "noButton": "Annuleer"
+      }
     }
   },
 

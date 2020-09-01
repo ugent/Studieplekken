@@ -57,22 +57,22 @@ public class TestDBPenaltyEventsDao {
         Map<Language, String> cancellingTooLateDescriptions = new HashMap<>();
         cancellingTooLateDescriptions.put(Language.ENGLISH, "Cancelling too late.");
         cancellingTooLateDescriptions.put(Language.DUTCH, "Te laat annuleren.");
-        cancellingTooLateEvent = new PenaltyEvent(16660, 30, true, cancellingTooLateDescriptions);
+        cancellingTooLateEvent = new PenaltyEvent(16660, 30, cancellingTooLateDescriptions);
 
         Map<Language, String> notShowingUpDescriptions = new HashMap<>();
         notShowingUpDescriptions.put(Language.ENGLISH, "Not showing up at all.");
         notShowingUpDescriptions.put(Language.DUTCH, "Niet komen opdagen.");
-        notShowingUpEvent = new PenaltyEvent(16661, 50, true, notShowingUpDescriptions);
+        notShowingUpEvent = new PenaltyEvent(16661, 50, notShowingUpDescriptions);
 
         Map<Language, String> blacklistDescriptions = new HashMap<>();
         blacklistDescriptions.put(Language.ENGLISH, "Blacklist event.");
         blacklistDescriptions.put(Language.DUTCH, "Blacklist event.");
-        blacklistEvent = new PenaltyEvent(16662, 100, true, blacklistDescriptions);
+        blacklistEvent = new PenaltyEvent(16662, 100, blacklistDescriptions);
 
         Map<Language, String> testDescriptions = new HashMap<>();
         testDescriptions.put(Language.ENGLISH, "Test event.");
         testDescriptions.put(Language.DUTCH, "Test event.");
-        testEvent = new PenaltyEvent(1, 10, true, testDescriptions);
+        testEvent = new PenaltyEvent(1, 10, testDescriptions);
 
         testLocation = TestSharedMethods.testLocation();
         testUser = TestSharedMethods.studentEmployeeTestUser();

@@ -415,16 +415,14 @@ from public.roles;
 
 -- queries for DBPenaltyEventsDao
 -- $get_penalty_events
-select e.code, e.points, e.public_accessible, d.lang_enum
-    , d.description
+select e.code, e.points, d.lang_enum, d.description
 from penalty_events e
     join penalty_descriptions d
         on e.code = d.event_code
 order by e.code;
 
 -- $get_penalty_event
-select e.code, e.points, e.public_accessible, d.lang_enum
-    , d.description
+select e.code, e.points, d.lang_enum, d.description
 from penalty_events e
     join penalty_descriptions d
         on e.code = d.event_code
@@ -449,8 +447,8 @@ from public.penalty_book b
 where b.event_code = ?;
 
 -- $insert_penalty_event
-insert into public.penalty_events (code, points, public_accessible)
-values (?, ?, ?);
+insert into public.penalty_events (code, points)
+values (?, ?);
 
 -- $insert_penalty
 insert into penalty_book (user_augentid, event_code, timestamp, reservation_date, reservation_location, received_points, remarks)
@@ -462,7 +460,7 @@ values (?, ?, ?);
 
 -- $update_penalty_event
 update public.penalty_events
-set points = ?, public_accessible = ?
+set points = ?
 where code = ?;
 
 -- $update_fk_penalty_book_to_locations

@@ -395,6 +395,30 @@
           "error": "Something went wrong while deleting the locker reservation..."
         }
       }
+    },
+
+    "penaltyEvents": {
+      "title": "Overview of the penalty events",
+      "errorOnRetrievingPenaltyEvents": "Something went wrong while retrieving the penalty events.",
+
+      "table": {
+        "code": "Code",
+        "points": "Penalty points",
+        "description": "Description"
+      },
+
+      "deletePenaltyEventModal": {
+        "title": "Sure to delete the penalty event?",
+
+        "body": "Are you sure that you want to delete following penalty event?",
+
+        "loading": "Waiting for response of server...",
+        "success": "Successfully deleted the new location",
+        "error": "Something went wrong while deleting the location",
+
+        "yesButton": "Delete",
+        "noButton": "Cancel"
+      }
     }
   },
 

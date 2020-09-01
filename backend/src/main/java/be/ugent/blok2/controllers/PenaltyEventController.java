@@ -2,6 +2,7 @@ package be.ugent.blok2.controllers;
 
 import be.ugent.blok2.daos.IPenaltyEventsDao;
 import be.ugent.blok2.model.penalty.Penalty;
+import be.ugent.blok2.model.penalty.PenaltyEvent;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -54,6 +55,39 @@ public class PenaltyEventController {
     public void deletePenalty(@RequestBody Penalty penalty) {
         try {
             penaltyDao.deletePenalty(penalty);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @GetMapping("/events")
+    public List<PenaltyEvent> getAllPenaltyEvents() {
+        try {
+            return penaltyDao.getPenaltyEvents();
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @PostMapping("/events")
+    public void addPenaltyEvent(@RequestBody PenaltyEvent penaltyEvent) {
+        try {
+            penaltyDao.addPenaltyEvent(penaltyEvent);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @DeleteMapping("/events")
+    public void deletePenaltyEvent(@RequestBody PenaltyEvent penaltyEvent) {
+        try {
+            penaltyDao.deletePenaltyEvent(penaltyEvent.getCode());
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
