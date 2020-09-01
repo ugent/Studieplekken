@@ -31,6 +31,11 @@ public interface IAccountDao extends IDao {
     List<User> getUsersByFirstName(String firstName) throws SQLException;
 
     /**
+     * Gets the users with the given first and last name
+     */
+    List<User> getUsersByFirstAndLastName(String firstName, String lastName) throws SQLException;
+
+    /**
      * Gets the user that have the given role.
      */
     List<String> getUserNamesByRole(String role) throws SQLException;

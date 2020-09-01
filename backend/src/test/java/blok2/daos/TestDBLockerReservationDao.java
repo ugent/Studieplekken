@@ -159,7 +159,7 @@ public class TestDBLockerReservationDao {
                 2, reservations.size());
 
         // getAllLockerReservationsOfLocation
-        reservations = lockerReservationDao.getAllLockerReservationsOfLocation(testLocation.getName());
+        reservations = lockerReservationDao.getAllLockerReservationsOfLocation(testLocation.getName(), true);
         Assert.assertEquals("test getters, getAllLockerReservationsOfLocation",
                 testLockerReservations.size(), reservations.size());
 

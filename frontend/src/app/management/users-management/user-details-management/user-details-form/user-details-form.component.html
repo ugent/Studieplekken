@@ -1,0 +1,69 @@
+<div class="container-fluid" *ngIf="userObs | async as user">
+  <!-- Overview of the user -->
+  <h3>{{('management.users.userDetails.form.title' | translate)
+    .replace('{name}', user.firstName + ' ' + user.lastName)}}</h3>
+
+  <hr>
+
+  <!-- If there was an error while loading the user, show an error message -->
+  <div class="alert alert-error" *ngIf="userQueryingError">
+    {{'management.users.userDetails.form.error' | translate}}
+  </div>
+
+  <form [formGroup]="formGroup">
+    <!-- AUGent ID -->
+    <div class="row form-group">
+      <label class="col-lg-3 control-label" for="id">
+        {{'management.users.userDetails.form.id' | translate}}</label>
+      <div class="col-lg-8">
+        <input class="form-control" id="id" type="text" formControlName="id" >
+      </div>
+    </div>
+
+    <!-- First name -->
+    <div class="row form-group">
+      <label class="col-lg-3 control-label" for="firstName">
+        {{'management.users.userDetails.form.firstName' | translate}}</label>
+      <div class="col-lg-8">
+        <input class="form-control" id="firstName" type="text" formControlName="firstName" >
+      </div>
+    </div>
+
+    <!-- Last name -->
+    <div class="row form-group">
+      <label class="col-lg-3 control-label" for="lastName">
+        {{'management.users.userDetails.form.lastName' | translate}}</label>
+      <div class="col-lg-8">
+        <input class="form-control" id="lastName" type="text" formControlName="lastName" >
+      </div>
+    </div>
+
+    <!-- Mail -->
+    <div class="row form-group">
+      <label class="col-lg-3 control-label" for="mail">
+        {{'management.users.userDetails.form.mail' | translate}}</label>
+      <div class="col-lg-8">
+        <input class="form-control" id="mail" type="text" formControlName="mail" >
+      </div>
+    </div>
+
+    <!-- Penalty points (calculated) -->
+    <div class="row form-group">
+      <label class="col-lg-3 control-label" for="penaltyPoints">
+        {{'management.users.userDetails.form.penaltyPoints' | translate}}</label>
+      <div class="col-lg-8">
+        <input class="form-control" id="penaltyPoints" type="text" formControlName="penaltyPoints" >
+      </div>
+    </div>
+
+    <!-- Institution -->
+    <div class="row form-group">
+      <label class="col-lg-3 control-label" for="institution">
+        {{'management.users.userDetails.form.institution' | translate}}</label>
+      <div class="col-lg-8">
+        <input class="form-control" id="institution" type="text" formControlName="institution" >
+      </div>
+    </div>
+
+  </form>
+</div>

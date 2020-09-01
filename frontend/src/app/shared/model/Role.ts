@@ -1,8 +1,4 @@
-export enum Role {
-  STUDENT = 'STUDENT',
-  EMPLOYEE = 'EMPLOYEE',
-  ADMIN = 'ADMIN'
-}
+import {Role} from '../../../environments/environment';
 
 export class RoleConstructor {
   static newRoleFromString(value: string): Role {

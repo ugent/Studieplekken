@@ -15,18 +15,20 @@ public class Penalty implements Cloneable {
     private CustomDate reservationDate;
     private String reservationLocation;
     private int receivedPoints;
+    private String remarks;
 
     public Penalty() {
 
     }
 
-    public Penalty(String augentId, int eventCode, CustomDate timestamp, CustomDate reservationDate, String reservationLocation, int receivedPoints) {
+    public Penalty(String augentId, int eventCode, CustomDate timestamp, CustomDate reservationDate, String reservationLocation, int receivedPoints, String remarks) {
         this.augentID = augentId;
         this.eventCode = eventCode;
         this.timestamp = timestamp;
         this.reservationDate = reservationDate;
         this.reservationLocation = reservationLocation;
         this.receivedPoints = receivedPoints;
+        this.remarks = remarks;
     }
 
     public static int calculateLateCancelPoints(CustomDate date, int points) {
@@ -63,12 +65,13 @@ public class Penalty implements Cloneable {
                 timestamp.equals(penalty.timestamp) &&
                 reservationDate.equals(penalty.reservationDate) &&
                 reservationLocation.equals(penalty.reservationLocation) &&
-                receivedPoints == penalty.receivedPoints;
+                receivedPoints == penalty.receivedPoints &&
+                Objects.equals(remarks, penalty.remarks);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(augentID, eventCode, timestamp, reservationDate, reservationLocation, receivedPoints);
+        return Objects.hash(augentID, eventCode, timestamp, reservationDate, reservationLocation, receivedPoints, remarks);
     }
 
     @Override
@@ -80,6 +83,7 @@ public class Penalty implements Cloneable {
                 ", reservationDate=" + reservationDate +
                 ", reservationLocation=" + reservationLocation +
                 ", receivedPoints=" + receivedPoints +
+                ", remarks=" + remarks +
                 '}';
     }
 
@@ -121,6 +125,10 @@ public class Penalty implements Cloneable {
         return receivedPoints;
     }
 
+    public String getRemarks() {
+        return remarks;
+    }
+
     public void setAugentID(String augentID) {
         this.augentID = augentID;
     }
@@ -143,6 +151,10 @@ public class Penalty implements Cloneable {
 
     public void setReceivedPoints(int receivedPoints) {
         this.receivedPoints = receivedPoints;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
     }
 
     //</editor-fold>

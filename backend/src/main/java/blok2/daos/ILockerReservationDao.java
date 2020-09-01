@@ -8,22 +8,23 @@ import java.util.List;
 public interface ILockerReservationDao extends IDao {
 
     /**
-     * Gets a list of all lockerreservations made by the user with the given augentID.
+     * Gets a list of all locker reservations made by the user with the given augentID.
      */
     List<LockerReservation> getAllLockerReservationsOfUser(String augentID) throws SQLException;
 
     /**
-     * Gets a list of all lockerreservations made by the user with the given name.
+     * Gets a list of all locker reservations made by the user with the given name.
      */
     List<LockerReservation> getAllLockerReservationsOfUserByName(String name) throws SQLException;
 
     /**
-     * Gets a list of all lockerreservations of a given location.
+     * Gets a list of all locker reservations of a given location.
      */
-    List<LockerReservation> getAllLockerReservationsOfLocation(String locationName) throws SQLException;
+    List<LockerReservation> getAllLockerReservationsOfLocation(String locationName,
+                                                                   boolean includePastReservations) throws SQLException;
 
     /**
-     * Gets a list of all ongoing lockerreservations of a given location.
+     * Gets a list of all ongoing locker reservations of a given location.
      */
     List<LockerReservation> getAllLockerReservationsOfLocationWithoutKeyBroughtBack(String locationName) throws SQLException;
 
@@ -33,22 +34,22 @@ public interface ILockerReservationDao extends IDao {
     int getNumberOfLockersInUseOfLocation(String locationName) throws SQLException;
 
     /**
-     * Gets the lockerreservation with the given details.
+     * Gets the locker reservation with the given details.
      */
     LockerReservation getLockerReservation(String locationName, int lockerNumber) throws SQLException;
 
     /**
-     * Delete the lockerreservation with the given details.
+     * Delete the locker reservation with the given details.
      */
     void deleteLockerReservation(String locationName, int lockerNumber) throws SQLException;
 
     /**
-     * Add a lockerreservation.
+     * Add a locker reservation.
      */
     void addLockerReservation(LockerReservation lockerReservation) throws SQLException;
 
     /**
-     * Change a lockerreservation.
+     * Change a locker reservation.
      */
     void changeLockerReservation(LockerReservation lockerReservation) throws SQLException;
 
