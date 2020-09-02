@@ -5,11 +5,13 @@
 
 /* -- With pgAdmin, the following SQL code will be executed:
 CREATE DATABASE blokatugent
-    WITH 
+    WITH
     OWNER = postgres
     ENCODING = 'UTF8'
     CONNECTION LIMIT = -1;
 */
+
+drop schema if exists public cascade;
 
 CREATE SCHEMA public
     AUTHORIZATION postgres;
@@ -274,7 +276,10 @@ ALTER TABLE public.users_to_verify OWNER TO postgres;
 
 CREATE TABLE public.authority (
     name text NOT NULL,
-    description text NOT NULL
+    description text NOT NULL,
+    authority_id integer primary key generated always as identity,
+
+    constraint uc_authority_name unique (name)
 );
 
 ALTER TABLE public.authority OWNER TO postgres;
@@ -315,7 +320,7 @@ primary key (
 );
 
 alter table only public.institutions
-add constraint pk_institutions 
+add constraint pk_institutions
 primary key (
 	name
 );
@@ -327,9 +332,9 @@ primary key (
 );
 
 alter table only public.locations
-add constraint pk_locations 
+add constraint pk_locations
 primary key (
-	name 
+	name
 );
 
 alter table only public.location_reservations
@@ -340,11 +345,11 @@ primary key (
 );
 
 alter table only public.lockers
-add constraint pk_lockers 
+add constraint pk_lockers
 primary key (location_name, number);
 
 alter table only public.locker_reservations
-add constraint pk_locker_reservations 
+add constraint pk_locker_reservations
 primary key (
 	location_name
 	, locker_number
@@ -352,7 +357,7 @@ primary key (
 );
 
 alter table only public.penalty_book
-add constraint pk_penalty_book 
+add constraint pk_penalty_book
 primary key (
 	user_augentid
 	, event_code
@@ -360,45 +365,42 @@ primary key (
 );
 
 alter table only public.penalty_descriptions
-add constraint pk_penalty_descriptions 
+add constraint pk_penalty_descriptions
 primary key (
 	lang_enum
 	, event_code
 );
 
 alter table only public.penalty_events
-add constraint pk_penalty_events 
+add constraint pk_penalty_events
 primary key (
 	code
 );
 
 alter table only public.roles
-add constraint pk_roles 
+add constraint pk_roles
 primary key (
 	type
 );
 
 alter table only public.scanners_location
-add constraint pk_scanners_location 
+add constraint pk_scanners_location
 primary key (
 	location_name
 	, user_augentid
 );
 
 alter table only public.users
-add constraint pk_users 
+add constraint pk_users
 primary key (
 	augentid
 );
 
 alter table only public.users_to_verify
-add constraint pk_users_to_verify 
+add constraint pk_users_to_verify
 primary key (
 	augentid
 );
-
-alter table public.authority
-add column authority_id integer primary key generated always as identity;
 
 
 
@@ -435,7 +437,7 @@ references public.authority(authority_id);
 
 --
 -- location_reservations to locations, users
---	
+--
 alter table only public.location_reservations
 add constraint fk_location_reservations_to_location
 foreign key (location_name)
@@ -455,7 +457,7 @@ foreign key (location_name)
 references public.locations (name);
 
 --
--- locker_reservations to lockers, users 
+-- locker_reservations to lockers, users
 --
 alter table only public.locker_reservations
 add constraint fk_locker_reservations_to_lockers
@@ -549,17 +551,13 @@ references public.authority (authority_id);
 ----------------- +----------------------------+
 ----------------- |   Set unique constraints   |
 ----------------- +----------------------------+
-alter table public.users 
+alter table public.users
 add constraint uc_users
 unique (mail);
 
 alter table public.users_to_verify
 add constraint uc_users_to_verify
 unique (mail);
-
-alter table public.authority
-add constraint uc_authority_name
-unique (name);
 
 
 ----------------- +-----------------------+
@@ -586,7 +584,7 @@ insert into public.languages (enum)
 values ('ENGLISH'), ('DUTCH');
 
 --
--- Data for table: penalty_events 
+-- Data for table: penalty_events
 --
 insert into public.penalty_events (code, points)
 values (16660, 30), (16661, 50), (16662, 100), (16663, 0);
@@ -605,7 +603,7 @@ values ('ENGLISH', 16660, 'Cancelling too late.'),
 ('DUTCH', 16663, 'Manual entry.');
 
 --
--- Data for table: roles 
+-- Data for table: roles
 --
 insert into public.roles (type)
 values ('ADMIN'), ('EMPLOYEE'), ('STUDENT');

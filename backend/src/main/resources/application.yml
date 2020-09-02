@@ -1,0 +1,32 @@
+# credentials for database
+db:
+  url: "jdbc:postgresql://localhost:5432/blokatugent"
+  username: postgres
+  password: postgres
+
+# configuration for sending verification mail
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: blok2.bach@gmail.com
+    password: rledkcecrdiehddj
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+# url sent to user for verification
+verification:
+  url: /verify
+  mail:
+    template: "ENGLISH VERSION BELOW\n\nBeste %s\n\nKlik op de volgende link om uw account te verifi�ren: %s\n\n---\n\nDear %s\n\nClick on this link to verify your account: %s"
+    subject: "UGent verificatie nieuw BlokAtUGent-account"
+
+# mail template to send to absent students
+absentStudents:
+  mail:
+    subject: "Afwezigheid voor reservatie/ Absence for reservation"
+    template: "ENGLISH VERSION BELOW\n\nBeste Student,\n\nU was afwezig voor uw reservatie vandaag.\nHiervoor heeft u strafpunten gekregen. Van zodra u te veel strafpunten heeft kan u geen reservaties meer maken\n\n---\n\nDear student,\n\nYou were absent for your reservation today.\nDue to this you have received penalty points. Please note that you can not make a reservation if you have too many penalty points."

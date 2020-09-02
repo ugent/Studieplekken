@@ -6,7 +6,7 @@ import blok2.model.reservations.LocationReservation;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface ILocationReservationDao extends IDao {
+public interface ILocationReservationDao {
     /**
      * Get all locations where the name of the location equals 'locationName'.
      */

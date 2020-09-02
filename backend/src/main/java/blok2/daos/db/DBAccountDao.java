@@ -1,6 +1,7 @@
 package blok2.daos.db;
 
 import blok2.daos.IAccountDao;
+import blok2.helpers.Resources;
 import blok2.helpers.date.CustomDate;
 import blok2.helpers.generators.IGenerator;
 import blok2.helpers.generators.VerificationCodeGenerator;
@@ -19,7 +20,7 @@ import java.util.List;
 
 @Service
 @EnableScheduling
-public class DBAccountDao extends ADB implements IAccountDao {
+public class DBAccountDao extends DAO implements IAccountDao {
 
     private final IGenerator<String> verificationCodeGenerator = new VerificationCodeGenerator();
 
@@ -33,9 +34,9 @@ public class DBAccountDao extends ADB implements IAccountDao {
     //  a one shot systemd service on the production server.
     /*@Scheduled(fixedRate = 1000 * 60 * 60 * 24)
     public void scheduledCleanup() {
-        try (Connection conn = getConnection()) {
+        try (Connection conn = adb.getConnection()) {
             Statement statement = conn.createStatement();
-            statement.executeQuery(databaseProperties.getString("daily_cleanup_user_to_be_verified"));
+            statement.executeQuery(Resources.databaseProperties.getString("daily_cleanup_user_to_be_verified"));
         } catch (SQLException e) {
 
         }
@@ -43,8 +44,8 @@ public class DBAccountDao extends ADB implements IAccountDao {
 
     @Override
     public User getUserByEmail(String email) throws SQLException {
-        try (Connection conn = getConnection()) {
-            String query = databaseProperties.getString("get_user_by_<?>")
+        try (Connection conn = adb.getConnection()) {
+            String query = Resources.databaseProperties.getString("get_user_by_<?>")
                     .replace("<?>", "LOWER(u.mail) = LOWER(?)");
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, email.toLowerCase());
@@ -59,13 +60,13 @@ public class DBAccountDao extends ADB implements IAccountDao {
 
     @Override
     public User getUserById(String augentID) throws SQLException {
-        try (Connection conn = getConnection()) {
+        try (Connection conn = adb.getConnection()) {
             return getUserById(augentID, conn);
         }
     }
 
     public static User getUserById(String augentID, Connection conn) throws SQLException {
-        String query = databaseProperties.getString("get_user_by_<?>")
+        String query = Resources.databaseProperties.getString("get_user_by_<?>")
                 .replace("<?>", "u.augentid = ?");
         PreparedStatement pstmt = conn.prepareStatement(query);
         pstmt.setString(1, augentID);
@@ -82,8 +83,8 @@ public class DBAccountDao extends ADB implements IAccountDao {
     public List<User> getUsersByLastName(String lastName) throws SQLException {
         ArrayList<User> users = new ArrayList<>();
 
-        try (Connection conn = getConnection()) {
-            String query = databaseProperties.getString("get_user_by_<?>")
+        try (Connection conn = adb.getConnection()) {
+            String query = Resources.databaseProperties.getString("get_user_by_<?>")
                     .replace("<?>", "LOWER(u.augentpreferredsn) = LOWER(?)");
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, lastName);
@@ -101,8 +102,8 @@ public class DBAccountDao extends ADB implements IAccountDao {
     public List<User> getUsersByFirstName(String firstName) throws SQLException {
         ArrayList<User> users = new ArrayList<>();
 
-        try (Connection conn = getConnection()) {
-            String query = databaseProperties.getString("get_user_by_<?>")
+        try (Connection conn = adb.getConnection()) {
+            String query = Resources.databaseProperties.getString("get_user_by_<?>")
                     .replace("<?>", "LOWER(u.augentpreferredgivenname) = LOWER(?)");
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, firstName);
@@ -120,8 +121,8 @@ public class DBAccountDao extends ADB implements IAccountDao {
     public List<User> getUsersByFirstAndLastName(String firstName, String lastName) throws SQLException {
         ArrayList<User> users = new ArrayList<>();
 
-        try (Connection conn = getConnection()) {
-            String query = databaseProperties.getString("get_user_by_<?>")
+        try (Connection conn = adb.getConnection()) {
+            String query = Resources.databaseProperties.getString("get_user_by_<?>")
                     .replace("<?>",
                             "LOWER(u.augentpreferredgivenname) = LOWER(?) and LOWER(u.augentpreferredsn) = LOWER(?)");
             PreparedStatement pstmt = conn.prepareStatement(query);
@@ -141,17 +142,17 @@ public class DBAccountDao extends ADB implements IAccountDao {
     public List<String> getUserNamesByRole(String role) throws SQLException {
         ArrayList<String> users = new ArrayList<>();
 
-        try (Connection conn = getConnection()) {
+        try (Connection conn = adb.getConnection()) {
 
-            String query = databaseProperties.getString("get_user_by_<?>").replace("<?>", "u.role LIKE '%'||?||'%'");
+            String query = Resources.databaseProperties.getString("get_user_by_<?>").replace("<?>", "u.role LIKE '%'||?||'%'");
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, role);
             ResultSet resultSet = pstmt.executeQuery();
 
             while (resultSet.next()) {
-                String s1 = resultSet.getString(databaseProperties.getString("user_augentid"));
-                String s2 = resultSet.getString(databaseProperties.getString("user_name"));
-                String s3 = resultSet.getString(databaseProperties.getString("user_surname"));
+                String s1 = resultSet.getString(Resources.databaseProperties.getString("user_augentid"));
+                String s2 = resultSet.getString(Resources.databaseProperties.getString("user_name"));
+                String s3 = resultSet.getString(Resources.databaseProperties.getString("user_surname"));
                 String s = s1 + ' ' + s3 + ' ' + s2;
                 users.add(s);
             }
@@ -162,7 +163,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
 
     @Override
     public User getUserFromBarcode(String barcode) throws SQLException {
-        try (Connection conn = getConnection()) {
+        try (Connection conn = adb.getConnection()) {
             // The student number and barcode match exactly.
             // For example, when scanning the barcode page, the student number is encoded as Code 128.
             User u = getUserById(barcode, conn);
@@ -199,8 +200,8 @@ public class DBAccountDao extends ADB implements IAccountDao {
     @Override
     public String addUserToBeVerified(User u) throws SQLException {
         int count = 0;
-        try (Connection conn = getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("count_user_to_be_verified_by_id"));
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("count_user_to_be_verified_by_id"));
             pstmt.setString(1, u.getAugentID());
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
@@ -213,8 +214,8 @@ public class DBAccountDao extends ADB implements IAccountDao {
         }
 
         String verificationCode = verificationCodeGenerator.generate();
-        try (Connection conn = getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("insert_user_to_be_verified"));
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_user_to_be_verified"));
             prepareInsertUserToVerify(u, verificationCode, pstmt);
             pstmt.executeUpdate();
         }
@@ -227,9 +228,9 @@ public class DBAccountDao extends ADB implements IAccountDao {
         if (verificationCode == null || verificationCode.isEmpty())
             return false;
 
-        try (Connection conn = getConnection()) {
+        try (Connection conn = adb.getConnection()) {
             // get the user in table USERS_TO_VERIFY with given verification code
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("get_user_to_be_verfied_by_verification_code"));
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_user_to_be_verfied_by_verification_code"));
             pstmt.setString(1, verificationCode);
             ResultSet rs = pstmt.executeQuery();
 
@@ -239,12 +240,12 @@ public class DBAccountDao extends ADB implements IAccountDao {
                 User u = createUserFromUsersToVerify(rs);
 
                 // add user to USERS
-                pstmt = conn.prepareStatement(databaseProperties.getString("insert_user"));
+                pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_user"));
                 prepareUpdateOrInsertUser(u, pstmt);
                 pstmt.executeUpdate();
 
                 // delete entry in the table USERS_TO_VERIFY
-                PreparedStatement pstmtDeleteUserToVerify = conn.prepareStatement(databaseProperties.getString("delete_user_to_be_verfied"));
+                PreparedStatement pstmtDeleteUserToVerify = conn.prepareStatement(Resources.databaseProperties.getString("delete_user_to_be_verfied"));
                 pstmtDeleteUserToVerify.setString(1, verificationCode);
                 pstmtDeleteUserToVerify.executeUpdate();
 
@@ -257,7 +258,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
 
     @Override
     public User directlyAddUser(User u) throws SQLException {
-        try (Connection conn = getConnection()) {
+        try (Connection conn = adb.getConnection()) {
             addUser(u, conn);
             return u;
         }
@@ -265,8 +266,8 @@ public class DBAccountDao extends ADB implements IAccountDao {
 
     @Override
     public boolean addUserToAuthority(String augentid, int authorityId) throws SQLException {
-        try (Connection conn = getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("insert_role_user_authority"));
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_role_user_authority"));
             pstmt.setString(1, augentid);
             pstmt.setInt(2, authorityId);
             pstmt.execute();
@@ -276,7 +277,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
 
     @Override
     public boolean updateUserById(String augentid, User u) throws SQLException {
-        try (Connection conn = getConnection()) {
+        try (Connection conn = adb.getConnection()) {
             try {
                 conn.setAutoCommit(false);
 
@@ -315,7 +316,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
 
     @Override
     public void deleteUser(String augentid) throws SQLException {
-        try (Connection conn = getConnection()) {
+        try (Connection conn = adb.getConnection()) {
             try {
                 conn.setAutoCommit(false);
 
@@ -349,8 +350,8 @@ public class DBAccountDao extends ADB implements IAccountDao {
 
     @Override
     public boolean accountExistsByEmail(String email) throws SQLException {
-        try (Connection conn = getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("count_accounts_with_email"));
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("count_accounts_with_email"));
             pstmt.setString(1, email.toLowerCase());
             ResultSet resultSet = pstmt.executeQuery();
             resultSet.next();
@@ -369,7 +370,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
         if (u.getAugentID() == null)
             return null;
 
-        u.setPenaltyPoints(rs.getInt(databaseProperties.getString("user_penalty_points")));
+        u.setPenaltyPoints(rs.getInt(Resources.databaseProperties.getString("user_penalty_points")));
         return u;
     }
 
@@ -383,15 +384,15 @@ public class DBAccountDao extends ADB implements IAccountDao {
 
     private static User equalPartForCreatingUserOrUserToVerify(ResultSet rs, boolean password) throws SQLException {
         User u = new User();
-        u.setMail(rs.getString(databaseProperties.getString("user_mail")));
-        u.setLastName(rs.getString(databaseProperties.getString("user_surname")));
-        u.setFirstName(rs.getString(databaseProperties.getString("user_name")));
+        u.setMail(rs.getString(Resources.databaseProperties.getString("user_mail")));
+        u.setLastName(rs.getString(Resources.databaseProperties.getString("user_surname")));
+        u.setFirstName(rs.getString(Resources.databaseProperties.getString("user_name")));
         if (password) {
-            u.setPassword(rs.getString(databaseProperties.getString("user_password")));
+            u.setPassword(rs.getString(Resources.databaseProperties.getString("user_password")));
         }
-        u.setInstitution(rs.getString(databaseProperties.getString("user_institution")));
-        u.setAugentID(rs.getString(databaseProperties.getString("user_augentid")));
-        u.setRoles(csvToRoles(rs.getString(databaseProperties.getString("user_role"))));
+        u.setInstitution(rs.getString(Resources.databaseProperties.getString("user_institution")));
+        u.setAugentID(rs.getString(Resources.databaseProperties.getString("user_augentid")));
+        u.setRoles(csvToRoles(rs.getString(Resources.databaseProperties.getString("user_role"))));
         return u;
     }
 
@@ -447,7 +448,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
     }
 
     private void addUser(User u, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("insert_user"));
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_user"));
         prepareUpdateOrInsertUser(u, pstmt);
         pstmt.execute();
     }
@@ -463,30 +464,30 @@ public class DBAccountDao extends ADB implements IAccountDao {
 
     private void updateForeignKeyOfScannersLocation(String oldAugentid, String newAugentid, Connection conn)
             throws SQLException {
-        String query = databaseProperties.getString("update_fk_scanners_location_to_user");
+        String query = Resources.databaseProperties.getString("update_fk_scanners_location_to_user");
         updateForeignKeyGeneral(oldAugentid, newAugentid, query, conn);
     }
 
     private void updateForeignKeyOfLocationReservations(String oldAugentid, String newAugentid, Connection conn)
             throws SQLException {
-        String query = databaseProperties.getString("update_fk_location_reservations_to_user");
+        String query = Resources.databaseProperties.getString("update_fk_location_reservations_to_user");
         updateForeignKeyGeneral(oldAugentid, newAugentid, query, conn);
     }
 
     private void updateForeignKeyOfLockerReservations(String oldAugentid, String newAugentid, Connection conn)
             throws SQLException {
-        String query = databaseProperties.getString("update_fk_locker_reservations_to_user");
+        String query = Resources.databaseProperties.getString("update_fk_locker_reservations_to_user");
         updateForeignKeyGeneral(oldAugentid, newAugentid, query, conn);
     }
 
     private void updateForeignKeyOfPenaltyBook(String oldAugentid, String newAugentid, Connection conn)
             throws SQLException {
-        String query = databaseProperties.getString("update_fk_penalty_book_to_user");
+        String query = Resources.databaseProperties.getString("update_fk_penalty_book_to_user");
         updateForeignKeyGeneral(oldAugentid, newAugentid, query, conn);
     }
 
     private void updateForeignKeyOfRolesUserAuthorityEntries(String oldAugentid, String newAugentid, Connection conn) throws SQLException {
-        String query = databaseProperties.getString("update_fk_roles_user_authority_to_user");
+        String query = Resources.databaseProperties.getString("update_fk_roles_user_authority_to_user");
         updateForeignKeyGeneral(oldAugentid, newAugentid, query, conn);
     }
 
@@ -499,7 +500,7 @@ public class DBAccountDao extends ADB implements IAccountDao {
     }
 
     private void updateUserById(User user, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("update_user"));
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("update_user"));
         // set ...
         prepareUpdateOrInsertUser(user, pstmt);
         // where ...
@@ -508,34 +509,34 @@ public class DBAccountDao extends ADB implements IAccountDao {
     }
 
     private void deleteLocationReservations(String augentid, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
                 .getString("delete_location_reservations_of_user"));
         pstmt.setString(1, augentid);
         pstmt.execute();
     }
 
     private void deleteLockerReservations(String augentid, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
                 .getString("delete_locker_reservations_of_user"));
         pstmt.setString(1, augentid);
         pstmt.execute();
     }
 
     private void deletePenaltyBookEntries(String augentid, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
                 .getString("delete_penalties_of_user"));
         pstmt.setString(1, augentid);
         pstmt.execute();
     }
 
     private void deleteRolesUserAuthorityEntries(String augentid, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_roles_user_authority_of_user"));
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_roles_user_authority_of_user"));
         pstmt.setString(1, augentid);
         pstmt.execute();
     }
 
     private void deleteUser(String augentid, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_user"));
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_user"));
         pstmt.setString(1, augentid);
         pstmt.execute();
     }

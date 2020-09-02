@@ -2,6 +2,7 @@ package blok2.daos.cascade;
 
 import blok2.daos.*;
 import blok2.daos.db.ADB;
+import blok2.daos.db.DAO;
 import blok2.helpers.Language;
 import blok2.helpers.Resources;
 import blok2.helpers.date.CustomDate;
@@ -43,6 +44,9 @@ public class TestCascadeInPenaltyEventDao {
     @Autowired
     private IPenaltyEventsDao penaltyEventsDao;
 
+    @Autowired
+    private ADB adb;
+
     private PenaltyEvent testPenaltyEvent;
 
     private User testUser1;
@@ -58,12 +62,6 @@ public class TestCascadeInPenaltyEventDao {
 
     @Before
     public void setup() throws SQLException {
-        // Use test database
-        TestSharedMethods.setupTestDaoDatabaseCredentials(accountDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(locationDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(penaltyEventsDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(authorityDao);
-
         // Setup test objects
         testUser1 = TestSharedMethods.studentEmployeeTestUser();
         testUser2 = TestSharedMethods.employeeAdminTestUser();
@@ -114,12 +112,6 @@ public class TestCascadeInPenaltyEventDao {
         locationDao.deleteLocation(testLocation1.getName());
 
         authorityDao.deleteAuthority(authority.getAuthorityId());
-
-        // Use regular database
-        accountDao.useDefaultDatabaseConnection();
-        locationDao.useDefaultDatabaseConnection();
-        penaltyEventsDao.useDefaultDatabaseConnection();
-        authorityDao.useDefaultDatabaseConnection();
     }
 
     @Test
@@ -198,9 +190,8 @@ public class TestCascadeInPenaltyEventDao {
     }
 
     private int countDescriptionsOfPenaltyEvent(int code) throws SQLException {
-        try (Connection conn = ADB.getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(Resources
-                    .databaseProperties.getString("count_descriptions_of_penalty_events"));
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("count_descriptions_of_penalty_events"));
             pstmt.setInt(1, code);
 
             ResultSet rs = pstmt.executeQuery();

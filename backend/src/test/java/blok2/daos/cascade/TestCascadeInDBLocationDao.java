@@ -91,17 +91,6 @@ public class TestCascadeInDBLocationDao {
 
     @Before
     public void setup() throws SQLException {
-        // Use test database
-        TestSharedMethods.setupTestDaoDatabaseCredentials(accountDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(calendarPeriodDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(calendarPeriodForLockersDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(locationDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(locationReservationDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(lockerReservationDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(penaltyEventsDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(scannerLocationDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(authorityDao);
-
         // Setup test objects
         authority = TestSharedMethods.insertTestAuthority(authorityDao);
         testLocation = TestSharedMethods.testLocation(authority.getAuthorityId());
@@ -183,17 +172,6 @@ public class TestCascadeInDBLocationDao {
         // ... okay, cascade is assumed to be okay for the lockers here... (but it is)
         locationDao.deleteLocation(testLocation.getName());
         authorityDao.deleteAuthority(authority.getAuthorityId());
-
-        // Use regular database
-        accountDao.useDefaultDatabaseConnection();
-        calendarPeriodForLockersDao.useDefaultDatabaseConnection();
-        calendarPeriodDao.useDefaultDatabaseConnection();
-        locationDao.useDefaultDatabaseConnection();
-        locationReservationDao.useDefaultDatabaseConnection();
-        lockerReservationDao.useDefaultDatabaseConnection();
-        penaltyEventsDao.useDefaultDatabaseConnection();
-        scannerLocationDao.useDefaultDatabaseConnection();
-        authorityDao.useDefaultDatabaseConnection();
     }
 
     @Test
