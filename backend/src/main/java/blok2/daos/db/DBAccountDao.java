@@ -264,17 +264,6 @@ public class DBAccountDao extends ADB implements IAccountDao {
     }
 
     @Override
-    public boolean addUserToAuthority(String augentid, int authorityId) throws SQLException {
-        try (Connection conn = getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("insert_role_user_authority"));
-            pstmt.setString(1, augentid);
-            pstmt.setInt(2, authorityId);
-            pstmt.execute();
-            return true;
-        }
-    }
-
-    @Override
     public boolean updateUserById(String augentid, User u) throws SQLException {
         try (Connection conn = getConnection()) {
             try {
