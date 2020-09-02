@@ -52,14 +52,23 @@ public class TestSharedMethods {
     }
 
     public static Authority insertTestAuthority(IAuthorityDao authorityDao) throws SQLException {
+        return insertTestAuthority("Test Authority", "a test description",authorityDao);
+    }
+
+    public static Authority insertTestAuthority2(IAuthorityDao authorityDao) throws SQLException {
+        return insertTestAuthority("Second Test Authority","second test description", authorityDao);
+    }
+
+    public static Authority insertTestAuthority(String name, String description, IAuthorityDao authorityDao) throws SQLException{
         Authority authority = new Authority();
-        authority.setName("Test Authority");
-        authority.setDescription("a test description");
+        authority.setName(name);
+        authority.setDescription(description);
         authority = authorityDao.addAuthority(authority);
         Authority dbAuthority = authorityDao.getAuthorityByAuthorityId(authority.getAuthorityId());
         Assert.assertEquals("insertTestAuthority: Failed to insert Test Authority", authority, dbAuthority);
         return authority;
     }
+
 
     public static User employeeAdminTestUser() {
         User user = new User();
