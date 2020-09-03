@@ -20,7 +20,6 @@ import java.util.List;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-@ActiveProfiles({"db", "test"})
 public class TestDBScannerLocationDao {
 
     @Autowired
@@ -50,11 +49,6 @@ public class TestDBScannerLocationDao {
 
     @Before
     public void setup() throws SQLException {
-        // Use test database
-        TestSharedMethods.setupTestDaoDatabaseCredentials(accountDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(locationDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(scannerLocationDao);
-
         // Setup test objects
         testUser1 = TestSharedMethods.employeeAdminTestUser();
         testUser2 = TestSharedMethods.studentEmployeeTestUser();
@@ -93,12 +87,6 @@ public class TestDBScannerLocationDao {
         locationDao.deleteLocation(testLocation1.getName());
         TestSharedMethods.removeTestUsers(accountDao, testUser2, testUser1);
         authorityDao.deleteAuthority(authority.getAuthorityId());
-
-        // Use regular database
-        accountDao.useDefaultDatabaseConnection();
-        locationDao.useDefaultDatabaseConnection();
-        scannerLocationDao.useDefaultDatabaseConnection();
-        authorityDao.useDefaultDatabaseConnection();
     }
 
     @Test

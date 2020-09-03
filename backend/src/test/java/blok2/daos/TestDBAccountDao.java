@@ -9,7 +9,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.SQLException;
@@ -17,7 +16,6 @@ import java.util.List;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-@ActiveProfiles({"db", "test"})
 public class TestDBAccountDao {
 
     @Autowired
@@ -28,8 +26,6 @@ public class TestDBAccountDao {
 
     @Before
     public void setup() throws SQLException {
-        TestSharedMethods.setupTestDaoDatabaseCredentials(accountDao);
-
         testUser1 = TestSharedMethods.employeeAdminTestUser();
         testUser2 = TestSharedMethods.studentEmployeeTestUser();
 
@@ -39,7 +35,6 @@ public class TestDBAccountDao {
     @After
     public void cleanup() throws SQLException {
         TestSharedMethods.removeTestUsers(accountDao, testUser2, testUser1);
-        accountDao.useDefaultDatabaseConnection();
     }
 
     @Test

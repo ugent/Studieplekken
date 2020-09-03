@@ -1,48 +1,39 @@
 package blok2.daos.db;
 
 import blok2.daos.IDao;
-import blok2.helpers.Resources;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ResourceBundle;
 
 /**
  * Abstract class used for all the database DAOs. Implements universal functionalities.
  */
-public abstract class ADB implements IDao {
+@Service
+@ConfigurationProperties(prefix = "db")
+public class ADB implements IDao {
+    private String url;
+    private String username;
+    private String password;
 
-    protected static final ResourceBundle databaseProperties = Resources.databaseProperties;
-    protected static final ResourceBundle applicationProperties = Resources.applicationProperties;
-
-    private static String connectionUrl;
-    private static String connectionUser;
-    private static String connectionPassword;
-
-    public ADB() {
-        useDefaultDatabaseConnection();
+    private ADB() {
     }
 
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
+    public Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(url, username, password);
     }
 
-    @Override
-    public void setDatabaseConnectionUrl(String url) {
-        connectionUrl = url;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
-    @Override
-    public void setDatabaseCredentials(String user, String password) {
-        connectionUser = user;
-        connectionPassword = password;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    @Override
-    public void useDefaultDatabaseConnection() {
-        connectionUrl = applicationProperties.getString("db_url");
-        connectionUser = applicationProperties.getString("db_user");
-        connectionPassword = applicationProperties.getString("db_password");
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

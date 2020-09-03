@@ -1,7 +1,6 @@
 package blok2.daos;
 
 import blok2.helpers.Institution;
-import blok2.helpers.Resources;
 import blok2.helpers.date.CustomDate;
 import blok2.model.Authority;
 import blok2.model.calendar.CalendarPeriod;
@@ -10,24 +9,13 @@ import blok2.model.reservables.Location;
 import blok2.model.users.Role;
 import blok2.model.users.User;
 import org.junit.Assert;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 
 public class TestSharedMethods {
-
-    private static final ResourceBundle applicationProperties = Resources.applicationProperties;
-
-    public static void setupTestDaoDatabaseCredentials(IDao dao) {
-        dao.setDatabaseConnectionUrl(applicationProperties.getString("test_db_url"));
-        dao.setDatabaseCredentials(
-                applicationProperties.getString("test_db_user"),
-                applicationProperties.getString("test_db_password")
-        );
-    }
-
     public static Location testLocation(int authorityId) {
         Location testLocation = new Location();
         testLocation.setName("Test Location");

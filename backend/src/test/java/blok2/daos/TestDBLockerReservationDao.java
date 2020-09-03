@@ -23,7 +23,6 @@ import java.util.List;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-@ActiveProfiles({"db", "test"})
 public class TestDBLockerReservationDao {
 
     @Autowired
@@ -46,12 +45,6 @@ public class TestDBLockerReservationDao {
 
     @Before
     public void setup() throws SQLException {
-        // Use test database
-        TestSharedMethods.setupTestDaoDatabaseCredentials(accountDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(locationDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(lockerReservationDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(authorityDao);
-
         // Setup test objects
         authority = TestSharedMethods.insertTestAuthority(authorityDao);
         testLocation = TestSharedMethods.testLocation(authority.getAuthorityId());
@@ -88,10 +81,6 @@ public class TestDBLockerReservationDao {
         locationDao.deleteLocation(testLocation.getName());
         TestSharedMethods.removeTestUsers(accountDao, testUser2, testUser1);
         authorityDao.deleteAuthority(authority.getAuthorityId());
-
-        // Use regular database
-        locationDao.useDefaultDatabaseConnection();
-        authorityDao.useDefaultDatabaseConnection();
     }
 
     @Test

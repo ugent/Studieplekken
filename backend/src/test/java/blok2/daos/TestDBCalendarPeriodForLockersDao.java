@@ -10,7 +10,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.SQLException;
@@ -19,7 +18,6 @@ import java.util.List;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-@ActiveProfiles({"db", "test"})
 public class TestDBCalendarPeriodForLockersDao {
 
     @Autowired
@@ -42,11 +40,6 @@ public class TestDBCalendarPeriodForLockersDao {
 
     @Before
     public void setup() throws SQLException {
-        // Use test database
-        TestSharedMethods.setupTestDaoDatabaseCredentials(locationDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(calendarPeriodForLockersDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(authorityDao);
-
         // Setup test objects
         authority = TestSharedMethods.insertTestAuthority(authorityDao);
         testLocation = TestSharedMethods.testLocation(authority.getAuthorityId());
@@ -65,11 +58,6 @@ public class TestDBCalendarPeriodForLockersDao {
         calendarPeriodForLockersDao.deleteCalendarPeriodsForLockers(calendarPeriodsForLockers);
         locationDao.deleteLocation(testLocation.getName());
         authorityDao.deleteAuthority(authority.getAuthorityId());
-
-        // Use regular database
-        calendarPeriodForLockersDao.useDefaultDatabaseConnection();
-        locationDao.useDefaultDatabaseConnection();
-        authorityDao.useDefaultDatabaseConnection();
     }
 
     @Test

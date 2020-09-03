@@ -3,6 +3,7 @@ package blok2.daos.db;
 import blok2.daos.IAccountDao;
 import blok2.daos.ILocationDao;
 import blok2.daos.IScannerLocationDao;
+import blok2.helpers.Resources;
 import blok2.helpers.date.CustomDate;
 import blok2.model.reservables.Location;
 import blok2.model.reservables.Locker;
@@ -16,7 +17,7 @@ import java.util.Map;
 
 
 @Service
-public class DBLocationDao extends ADB implements ILocationDao {
+public class DBLocationDao extends DAO implements ILocationDao {
 
     IAccountDao accountDao;
     IScannerLocationDao scannerLocationDao;
@@ -28,11 +29,11 @@ public class DBLocationDao extends ADB implements ILocationDao {
 
     @Override
     public List<Location> getAllLocations() throws SQLException {
-        try (Connection conn = getConnection()) {
+        try (Connection conn = adb.getConnection()) {
             List<Location> locations = new ArrayList<>();
 
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(databaseProperties.getString("all_locations"));
+            ResultSet rs = stmt.executeQuery(Resources.databaseProperties.getString("all_locations"));
 
             while (rs.next()) {
                 Location location = createLocation(rs);
@@ -45,7 +46,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
 
     @Override
     public void addLocation(Location location) throws SQLException {
-        try (Connection conn = getConnection()) {
+        try (Connection conn = adb.getConnection()) {
             try {
                 conn.setAutoCommit(false);
 
@@ -61,7 +62,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
 
     private void addLocation(Location location, Connection conn) throws SQLException {
         // insert location into the database
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("insert_location"));
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_location"));
         prepareUpdateOrInsertLocationStatement(location, pstmt);
         pstmt.executeUpdate();
 
@@ -73,13 +74,13 @@ public class DBLocationDao extends ADB implements ILocationDao {
 
     @Override
     public Location getLocation(String name) throws SQLException {
-        try (Connection conn = getConnection()) {
+        try (Connection conn = adb.getConnection()) {
             return getLocation(name, conn);
         }
     }
 
     public static Location getLocation(String locationName, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("get_location"));
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_location"));
         pstmt.setString(1, locationName);
         ResultSet rs = pstmt.executeQuery();
         if (rs.next()) {
@@ -90,7 +91,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
 
     @Override
     public void updateLocation(String locationName, Location location) throws SQLException {
-        try (Connection conn = getConnection()) {
+        try (Connection conn = adb.getConnection()) {
             try {
                 conn.setAutoCommit(false);
 
@@ -126,7 +127,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
 
     @Override
     public void deleteLocation(String locationName) throws SQLException {
-        try (Connection conn = getConnection()) {
+        try (Connection conn = adb.getConnection()) {
             try {
                 conn.setAutoCommit(false);
 
@@ -164,16 +165,16 @@ public class DBLocationDao extends ADB implements ILocationDao {
 
     @Override
     public List<Locker> getLockers(String locationName) throws SQLException {
-        try (Connection conn = getConnection()) {
+        try (Connection conn = adb.getConnection()) {
             List<Locker> lockers = new ArrayList<>();
-            String query = databaseProperties.getString("get_lockers_where_<?>");
+            String query = Resources.databaseProperties.getString("get_lockers_where_<?>");
             query = query.replace("<?>", "l.location_name = ?");
             PreparedStatement st = conn.prepareStatement(query);
             st.setString(1, locationName);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
-                //int lockerID = rs.getInt(databaseProperties.getString("locker_id"));
-                int number = rs.getInt(databaseProperties.getString("locker_number"));
+                //int lockerID = rs.getInt(Resources.databaseProperties.getString("locker_id"));
+                int number = rs.getInt(Resources.databaseProperties.getString("locker_number"));
 
                 Locker locker = new Locker();
                 //locker.setId(lockerID);
@@ -192,8 +193,8 @@ public class DBLocationDao extends ADB implements ILocationDao {
     public Map<String, Integer> getCountOfReservations(CustomDate date) throws SQLException {
         HashMap<String, Integer> count = new HashMap<>();
 
-        try (Connection conn = getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("count_location_reservations_on_date"));
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("count_location_reservations_on_date"));
             pstmt.setString(1, date.toString());
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
@@ -208,20 +209,20 @@ public class DBLocationDao extends ADB implements ILocationDao {
 
     // this method prevents a lot of duplicate code by creating a location out of a row in the ResultSet
     public static Location createLocation(ResultSet rs) throws SQLException {
-        String name = rs.getString(databaseProperties.getString("location_name"));
-        int numberOfSeats = rs.getInt(databaseProperties.getString("location_number_of_seats"));
-        int numberOfLockers = rs.getInt(databaseProperties.getString("location_number_of_lockers"));
-        String imageUrl = rs.getString(databaseProperties.getString("location_image_url"));
-        String address = rs.getString(databaseProperties.getString("location_address"));
-        int authorityId = rs.getInt(databaseProperties.getString("location_authority_id"));
+        String name = rs.getString(Resources.databaseProperties.getString("location_name"));
+        int numberOfSeats = rs.getInt(Resources.databaseProperties.getString("location_number_of_seats"));
+        int numberOfLockers = rs.getInt(Resources.databaseProperties.getString("location_number_of_lockers"));
+        String imageUrl = rs.getString(Resources.databaseProperties.getString("location_image_url"));
+        String address = rs.getString(Resources.databaseProperties.getString("location_address"));
+        int authorityId = rs.getInt(Resources.databaseProperties.getString("location_authority_id"));
 
         return new Location(name, address, numberOfSeats, numberOfLockers, imageUrl, authorityId);
     }
 
     public static Locker createLocker(ResultSet rs) throws SQLException {
         Locker l = new Locker();
-        //l.setId(rs.getInt(databaseProperties.getString("locker_id")));
-        l.setNumber(rs.getInt(databaseProperties.getString("locker_number")));
+        //l.setId(rs.getInt(Resources.databaseProperties.getString("locker_id")));
+        l.setNumber(rs.getInt(Resources.databaseProperties.getString("locker_number")));
         Location location = DBLocationDao.createLocation(rs);
         l.setLocation(location);
         return l;
@@ -230,7 +231,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
     // helper method for AddLocation
     // inserts lockers in the locker table
     private void insertLocker(String locationName, int number, Connection conn) throws SQLException {
-        PreparedStatement st = conn.prepareStatement(databaseProperties.getString("insert_locker"));
+        PreparedStatement st = conn.prepareStatement(Resources.databaseProperties.getString("insert_locker"));
         st.setInt(1, number);
         st.setString(2, locationName);
         st.execute();
@@ -246,14 +247,14 @@ public class DBLocationDao extends ADB implements ILocationDao {
     }
 
     private void deleteCalendarPeriods(String locationName, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
                 .getString("delete_calendar_periods_of_location"));
         pstmt.setString(1, locationName);
         pstmt.execute();
     }
 
     private void deleteCalendarPeriodsForLockers(String locationName, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
                 .getString("delete_calendar_periods_for_lockers_of_location"));
         pstmt.setString(1, locationName);
         pstmt.execute();
@@ -261,13 +262,13 @@ public class DBLocationDao extends ADB implements ILocationDao {
 
     private void deleteLocationReservations(String locationName, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn
-                .prepareStatement(databaseProperties.getString("delete_location_reservations_of_location"));
+                .prepareStatement(Resources.databaseProperties.getString("delete_location_reservations_of_location"));
         pstmt.setString(1, locationName);
         pstmt.execute();
     }
 
     private void deletePenaltyBookEntries(String locationName, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_penalties_of_location"));
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_penalties_of_location"));
         pstmt.setString(1, locationName);
         pstmt.execute();
     }
@@ -275,20 +276,20 @@ public class DBLocationDao extends ADB implements ILocationDao {
     private void deleteLockers(String locationName, Connection conn) throws SQLException {
         deleteLockerReservations(locationName, conn);
 
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_lockers_of_location"));
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_lockers_of_location"));
         pstmt.setString(1, locationName);
         pstmt.execute();
     }
 
     private void deleteLockerReservations(String locationName, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn
-                .prepareStatement(databaseProperties.getString("delete_locker_reservations_in_location"));
+                .prepareStatement(Resources.databaseProperties.getString("delete_locker_reservations_in_location"));
         pstmt.setString(1, locationName);
         pstmt.execute();
     }
 
     private void deleteLocation(String locationName, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_location"));
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_location"));
         pstmt.setString(1, locationName);
         pstmt.execute();
     }
@@ -319,7 +320,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
 
     private void updateForeignKeyOfCalendarPeriods(String oldLocationName, String newLocationName, Connection conn)
             throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
                 .getString("update_fk_location_name_in_calendar_periods"));
         pstmt.setString(1, newLocationName);
         pstmt.setString(2, oldLocationName);
@@ -328,7 +329,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
 
     private void updateForeignKeyOfCalendarPeriodsForLockers(String oldLocationName, String newLocationName,
                                                              Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
                 .getString("update_fk_location_name_in_calendar_periods_for_lockers"));
         pstmt.setString(1, newLocationName);
         pstmt.setString(2, oldLocationName);
@@ -337,7 +338,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
 
     private void updateForeignKeyOfScannerLocations(String oldLocationName, String newLocationName, Connection conn)
             throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
                 .getString("update_fk_scanners_location_to_locations"));
         pstmt.setString(1, newLocationName);
         pstmt.setString(2, oldLocationName);
@@ -346,7 +347,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
 
     private void updateForeignKeyOfLocationReservations(String oldLocationName, String newLocationName, Connection conn)
             throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
                 .getString("update_fk_location_reservations_to_location"));
         pstmt.setString(1, newLocationName);
         pstmt.setString(2, oldLocationName);
@@ -355,7 +356,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
 
     private void updateForeignKeyOfLockerReservations(String oldLocationName, String newLocationName, Connection conn)
             throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
                 .getString("update_fk_locker_reservations_to_location"));
         pstmt.setString(1, newLocationName);
         pstmt.setString(2, oldLocationName);
@@ -364,7 +365,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
 
     private void updateForeignKeyOfPenaltyBook(String oldLocationName, String newLocationName, Connection conn)
             throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
                 .getString("update_fk_penalty_book_to_locations"));
         pstmt.setString(1, newLocationName);
         pstmt.setString(2, oldLocationName);
@@ -382,7 +383,7 @@ public class DBLocationDao extends ADB implements ILocationDao {
                     , location.getNumberOfLockers(), conn);
         }
 
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("update_location"));
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("update_location"));
         // set ...
         prepareUpdateOrInsertLocationStatement(location, pstmt);
         // where ...
@@ -413,14 +414,14 @@ public class DBLocationDao extends ADB implements ILocationDao {
     private void deleteLocker(String locationName, int number, Connection conn) throws SQLException {
         deleteLockerReservation(locationName, number, conn);
 
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_locker"));
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_locker"));
         pstmt.setString(1, locationName);
         pstmt.setInt(2, number);
         pstmt.execute();
     }
 
     private void deleteLockerReservation(String locationName, int number, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_locker_reservation"));
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_locker_reservation"));
         pstmt.setString(1, locationName);
         pstmt.setInt(2, number);
         pstmt.execute();

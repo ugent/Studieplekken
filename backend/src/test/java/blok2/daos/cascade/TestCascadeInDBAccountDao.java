@@ -77,15 +77,6 @@ public class TestCascadeInDBAccountDao {
 
     @Before
     public void setup() throws SQLException {
-        // Use test database
-        TestSharedMethods.setupTestDaoDatabaseCredentials(accountDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(locationDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(locationReservationDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(lockerReservationDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(penaltyEventsDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(scannerLocationDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(authorityDao);
-
         // Setup test objects
         testUser = TestSharedMethods.studentEmployeeTestUser();
         authority = TestSharedMethods.insertTestAuthority(authorityDao);
@@ -160,15 +151,6 @@ public class TestCascadeInDBAccountDao {
 
         accountDao.deleteUser(testUser.getAugentID());
         authorityDao.deleteAuthority(authority.getAuthorityId());
-
-        // Use regular database
-        accountDao.useDefaultDatabaseConnection();
-        locationDao.useDefaultDatabaseConnection();
-        locationReservationDao.useDefaultDatabaseConnection();
-        lockerReservationDao.useDefaultDatabaseConnection();
-        penaltyEventsDao.useDefaultDatabaseConnection();
-        scannerLocationDao.useDefaultDatabaseConnection();
-        authorityDao.useDefaultDatabaseConnection();
     }
 
     @Test

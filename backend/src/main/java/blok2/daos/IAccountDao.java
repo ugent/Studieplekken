@@ -5,7 +5,7 @@ import blok2.model.users.User;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface IAccountDao extends IDao {
+public interface IAccountDao {
 
     // GETTERS
 

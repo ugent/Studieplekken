@@ -26,7 +26,6 @@ import java.util.Map;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-@ActiveProfiles({"db", "test"})
 public class TestDBPenaltyEventsDao {
 
     @Autowired
@@ -52,12 +51,6 @@ public class TestDBPenaltyEventsDao {
 
     @Before
     public void setup() throws SQLException {
-        // Use test database
-        TestSharedMethods.setupTestDaoDatabaseCredentials(accountDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(locationDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(penaltyEventsDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(authorityDao);
-
         // Setup test objects
         Map<Language, String> cancellingTooLateDescriptions = new HashMap<>();
         cancellingTooLateDescriptions.put(Language.ENGLISH, "Cancelling too late.");
@@ -96,10 +89,6 @@ public class TestDBPenaltyEventsDao {
         penaltyEventsDao.deletePenaltyEvent(testEvent.getCode());
         locationDao.deleteLocation(testLocation.getName());
         authorityDao.deleteAuthority(authority.getAuthorityId());
-
-        // Use regular database
-        penaltyEventsDao.useDefaultDatabaseConnection();
-        authorityDao.useDefaultDatabaseConnection();
     }
 
     @Test

@@ -12,7 +12,7 @@ import java.util.Map;
  * Note that all add/update/delete operations on lockers will happen in cascade
  * upon add/update/delete operations on a location if the number of lockers change
  */
-public interface ILocationDao extends IDao {
+public interface ILocationDao {
 
     /**
      * Get a list of all available locations.

@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.SQLException;
@@ -20,7 +21,6 @@ import java.util.List;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-@ActiveProfiles({"db", "test"})
 public class TestDBLocationReservationDao {
 
     @Autowired
@@ -42,12 +42,6 @@ public class TestDBLocationReservationDao {
 
     @Before
     public void setup() throws SQLException {
-        // Use test database
-        TestSharedMethods.setupTestDaoDatabaseCredentials(accountDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(locationDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(locationReservationDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(authorityDao);
-
         // setup test location objects
         authority = TestSharedMethods.insertTestAuthority(authorityDao);
         testLocation = TestSharedMethods.testLocation(authority.getAuthorityId());
@@ -66,10 +60,6 @@ public class TestDBLocationReservationDao {
         locationDao.deleteLocation(testLocation.getName());
         TestSharedMethods.removeTestUsers(accountDao, testUser2, testUser);
         authorityDao.deleteAuthority(authority.getAuthorityId());
-
-        // Use regular database
-        locationReservationDao.useDefaultDatabaseConnection();
-        authorityDao.useDefaultDatabaseConnection();
     }
 
     @Test
