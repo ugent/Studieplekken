@@ -1,6 +1,5 @@
 package blok2.daos.db;
 
-import blok2.daos.IDao;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 

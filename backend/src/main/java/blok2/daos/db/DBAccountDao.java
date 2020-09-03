@@ -263,7 +263,7 @@ public class DBAccountDao extends DAO implements IAccountDao {
             return u;
         }
     }
-  
+
     @Override
     public boolean updateUserById(String augentid, User u) throws SQLException {
         try (Connection conn = adb.getConnection()) {
