@@ -41,6 +41,7 @@ public class TestDBCalendarPeriodForLockersDao {
     @Before
     public void setup() throws SQLException {
         // Setup test objects
+        TestSharedMethods.createSchema(authorityDao);
         authority = TestSharedMethods.insertTestAuthority(authorityDao);
         testLocation = TestSharedMethods.testLocation(authority.getAuthorityId());
         calendarPeriodsForLockers = TestSharedMethods.testCalendarPeriodsForLockers(testLocation);
@@ -53,11 +54,7 @@ public class TestDBCalendarPeriodForLockersDao {
 
     @After
     public void cleanup() throws SQLException {
-        // Remove test objects from database
-        calendarPeriodForLockersDao.deleteCalendarPeriodsForLockers(updatedPeriodsForLockers); // in case this would be necessary
-        calendarPeriodForLockersDao.deleteCalendarPeriodsForLockers(calendarPeriodsForLockers);
-        locationDao.deleteLocation(testLocation.getName());
-        authorityDao.deleteAuthority(authority.getAuthorityId());
+        TestSharedMethods.dropSchema(authorityDao);
     }
 
     @Test

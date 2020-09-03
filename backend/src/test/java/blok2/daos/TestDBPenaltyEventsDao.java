@@ -51,6 +51,7 @@ public class TestDBPenaltyEventsDao {
 
     @Before
     public void setup() throws SQLException {
+        TestSharedMethods.createSchema(authorityDao);
         // Setup test objects
         Map<Language, String> cancellingTooLateDescriptions = new HashMap<>();
         cancellingTooLateDescriptions.put(Language.ENGLISH, "Cancelling too late.");
@@ -84,11 +85,7 @@ public class TestDBPenaltyEventsDao {
 
     @After
     public void cleanup() throws SQLException {
-        // Remove test objects from database
-        TestSharedMethods.removeTestUsers(accountDao, testUser);
-        penaltyEventsDao.deletePenaltyEvent(testEvent.getCode());
-        locationDao.deleteLocation(testLocation.getName());
-        authorityDao.deleteAuthority(authority.getAuthorityId());
+        TestSharedMethods.dropSchema(authorityDao);
     }
 
     @Test

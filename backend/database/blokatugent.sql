@@ -615,6 +615,6 @@ values ('ADMIN'), ('EMPLOYEE'), ('STUDENT');
 --		- user: student-scanmedewerker		password: Test1234
 --
 insert into public.users (augentid, role, augentpreferredgivenname, augentpreferredsn, penalty_points, mail, password, institution)
-values ('01', 'ADMIN;EMPLOYEE', 'admin', 'admin', 0, 'admin', '$2a$10$3sAUdBwt2sJhhMl3MVZAv.Pv56XHGo2kTbyS.nFeMmPb3dHA1kkTq', 'UGent'),
+values ('01', 'ADMIN$EMPLOYEE', 'admin', 'admin', 0, 'admin', '$2a$10$3sAUdBwt2sJhhMl3MVZAv.Pv56XHGo2kTbyS.nFeMmPb3dHA1kkTq', 'UGent'),
 ('02', 'EMPLOYEE', 'scanmedewerker', 'scanmedewerker', 0, 'scanmedewerker', '$2a$10$3sAUdBwt2sJhhMl3MVZAv.Pv56XHGo2kTbyS.nFeMmPb3dHA1kkTq', 'UGent'),
-('03', 'STUDENT;EMPLOYEE', 'student-scanmedewerker', 'student-scanmedewerker', 0, 'student-scanmedewerker', '$2a$10$3sAUdBwt2sJhhMl3MVZAv.Pv56XHGo2kTbyS.nFeMmPb3dHA1kkTq', 'UGent');
+('03', 'STUDENT$EMPLOYEE', 'student-scanmedewerker', 'student-scanmedewerker', 0, 'student-scanmedewerker', '$2a$10$3sAUdBwt2sJhhMl3MVZAv.Pv56XHGo2kTbyS.nFeMmPb3dHA1kkTq', 'UGent');

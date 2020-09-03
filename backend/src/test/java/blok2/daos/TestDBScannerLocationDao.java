@@ -49,6 +49,7 @@ public class TestDBScannerLocationDao {
 
     @Before
     public void setup() throws SQLException {
+        TestSharedMethods.createSchema(authorityDao);
         // Setup test objects
         testUser1 = TestSharedMethods.employeeAdminTestUser();
         testUser2 = TestSharedMethods.studentEmployeeTestUser();
@@ -82,11 +83,7 @@ public class TestDBScannerLocationDao {
 
     @After
     public void cleanup() throws SQLException {
-        // Remove test objects from database (ScannerLocations are deleted by cascade)
-        locationDao.deleteLocation(testLocation2.getName());
-        locationDao.deleteLocation(testLocation1.getName());
-        TestSharedMethods.removeTestUsers(accountDao, testUser2, testUser1);
-        authorityDao.deleteAuthority(authority.getAuthorityId());
+        TestSharedMethods.dropSchema(authorityDao);
     }
 
     @Test

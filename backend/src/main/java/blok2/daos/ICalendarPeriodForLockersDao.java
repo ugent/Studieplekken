@@ -5,7 +5,7 @@ import blok2.model.calendar.CalendarPeriodForLockers;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface ICalendarPeriodForLockersDao {
+public interface ICalendarPeriodForLockersDao extends IDao {
     List<CalendarPeriodForLockers> getCalendarPeriodsForLockersOfLocation(String locationName) throws SQLException;
 
     void addCalendarPeriodsForLockers(List<CalendarPeriodForLockers> periods) throws SQLException;

@@ -40,6 +40,7 @@ public class TestDBCalendarPeriodDao {
 
     @Before
     public void setup() throws SQLException {
+        TestSharedMethods.createSchema(authorityDao);
         // Setup test objects
         authority = TestSharedMethods.insertTestAuthority(authorityDao);
         testLocation = TestSharedMethods.testLocation(authority.getAuthorityId());
@@ -53,11 +54,7 @@ public class TestDBCalendarPeriodDao {
 
     @After
     public void cleanup() throws SQLException {
-        // Remove test objects from database
-        calendarPeriodDao.deleteCalendarPeriods(updatedPeriods); // in case this would be necessary
-        calendarPeriodDao.deleteCalendarPeriods(calendarPeriods);
-        locationDao.deleteLocation(testLocation.getName());
-        authorityDao.deleteAuthority(authority.getAuthorityId());
+        TestSharedMethods.dropSchema(authorityDao);
     }
 
     @Test

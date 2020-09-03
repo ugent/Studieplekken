@@ -1,5 +1,6 @@
 package blok2.daos;
 
+import blok2.daos.db.ADB;
 import blok2.model.Authority;
 import org.junit.After;
 import org.junit.Assert;
@@ -27,14 +28,14 @@ public class TestDBAuthorityDaoSolo {
 
     @Before
     public void setup() throws SQLException {
+        TestSharedMethods.createSchema(authorityDao);
         testAuthority = TestSharedMethods.insertTestAuthority(authorityDao);
         testAuthority2 = TestSharedMethods.insertTestAuthority2(authorityDao);
     }
 
     @After
     public void cleanup() throws SQLException {
-        authorityDao.deleteAuthority(testAuthority.getAuthorityId());
-        authorityDao.deleteAuthority(testAuthority2.getAuthorityId());
+        TestSharedMethods.dropSchema(authorityDao);
     }
 
     @Test

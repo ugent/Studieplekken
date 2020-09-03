@@ -13,7 +13,7 @@ import java.sql.SQLException;
  */
 @Service
 @ConfigurationProperties(prefix = "db")
-public class ADB implements IDao {
+public class ADB {
     private String url;
     private String username;
     private String password;

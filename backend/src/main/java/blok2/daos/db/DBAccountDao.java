@@ -418,7 +418,7 @@ public class DBAccountDao extends DAO implements IAccountDao {
         StringBuilder csv = new StringBuilder();
         for (int i = 0; i < roles.length - 1; i++) {
             csv.append(roles[i].toString());
-            csv.append(";");
+            csv.append("$");
         }
         csv.append(roles[roles.length - 1].toString());
         return csv.toString();
@@ -428,7 +428,7 @@ public class DBAccountDao extends DAO implements IAccountDao {
         if (csvRoles == null)
             return null;
 
-        String[] split = csvRoles.split(";");
+        String[] split = csvRoles.split("\\$");
         Role[] roles = new Role[split.length];
         for (int i = 0; i < roles.length; i++) {
             roles[i] = Role.valueOf(split[i]);

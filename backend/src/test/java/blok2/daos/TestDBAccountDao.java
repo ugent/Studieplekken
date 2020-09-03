@@ -26,6 +26,7 @@ public class TestDBAccountDao {
 
     @Before
     public void setup() throws SQLException {
+        TestSharedMethods.createSchema(accountDao);
         testUser1 = TestSharedMethods.employeeAdminTestUser();
         testUser2 = TestSharedMethods.studentEmployeeTestUser();
 
@@ -35,6 +36,7 @@ public class TestDBAccountDao {
     @After
     public void cleanup() throws SQLException {
         TestSharedMethods.removeTestUsers(accountDao, testUser2, testUser1);
+        TestSharedMethods.dropSchema(accountDao);
     }
 
     @Test

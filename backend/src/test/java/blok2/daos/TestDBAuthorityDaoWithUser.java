@@ -32,7 +32,7 @@ public class TestDBAuthorityDaoWithUser {
 
     @Before
     public void setup() throws SQLException {
-
+        TestSharedMethods.createSchema(authorityDao);
         testAuthority = TestSharedMethods.insertTestAuthority(authorityDao);
         testAuthority2 = TestSharedMethods.insertTestAuthority2(authorityDao);
         testUser = TestSharedMethods.employeeAdminTestUser();
@@ -42,9 +42,7 @@ public class TestDBAuthorityDaoWithUser {
 
     @After
     public void cleanup() throws SQLException {
-        authorityDao.deleteAuthority(testAuthority.getAuthorityId());
-        authorityDao.deleteAuthority(testAuthority2.getAuthorityId());
-        accountDao.deleteUser(testUser.getAugentID());
+        TestSharedMethods.dropSchema(authorityDao);
     }
 
     @Test

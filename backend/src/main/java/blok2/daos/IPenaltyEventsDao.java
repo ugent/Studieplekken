@@ -7,7 +7,7 @@ import blok2.model.penalty.PenaltyEvent;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface IPenaltyEventsDao {
+public interface IPenaltyEventsDao extends IDao {
 
     /**
      * Get a list of all provided PenaltyEvents

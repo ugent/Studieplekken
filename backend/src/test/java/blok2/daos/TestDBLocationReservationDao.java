@@ -42,6 +42,7 @@ public class TestDBLocationReservationDao {
 
     @Before
     public void setup() throws SQLException {
+        TestSharedMethods.createSchema(authorityDao);
         // setup test location objects
         authority = TestSharedMethods.insertTestAuthority(authorityDao);
         testLocation = TestSharedMethods.testLocation(authority.getAuthorityId());
@@ -56,10 +57,7 @@ public class TestDBLocationReservationDao {
 
     @After
     public void cleanup() throws SQLException {
-        // Remove test objects from database
-        locationDao.deleteLocation(testLocation.getName());
-        TestSharedMethods.removeTestUsers(accountDao, testUser2, testUser);
-        authorityDao.deleteAuthority(authority.getAuthorityId());
+        TestSharedMethods.dropSchema(authorityDao);
     }
 
     @Test

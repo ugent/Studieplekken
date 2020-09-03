@@ -45,6 +45,7 @@ public class TestDBLockerReservationDao {
 
     @Before
     public void setup() throws SQLException {
+        TestSharedMethods.createSchema(authorityDao);
         // Setup test objects
         authority = TestSharedMethods.insertTestAuthority(authorityDao);
         testLocation = TestSharedMethods.testLocation(authority.getAuthorityId());
@@ -76,11 +77,7 @@ public class TestDBLockerReservationDao {
 
     @After
     public void cleanup() throws SQLException {
-        // Remove test objects from database
-        // Note: due to cascade, the locker reservations will be deleted too
-        locationDao.deleteLocation(testLocation.getName());
-        TestSharedMethods.removeTestUsers(accountDao, testUser2, testUser1);
-        authorityDao.deleteAuthority(authority.getAuthorityId());
+        TestSharedMethods.dropSchema(authorityDao);
     }
 
     @Test

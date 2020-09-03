@@ -5,7 +5,7 @@ import blok2.model.reservations.LockerReservation;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface ILockerReservationDao {
+public interface ILockerReservationDao extends IDao {
 
     /**
      * Gets a list of all locker reservations made by the user with the given augentID.

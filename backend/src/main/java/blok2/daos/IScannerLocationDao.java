@@ -6,7 +6,7 @@ import blok2.model.users.User;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface IScannerLocationDao {
+public interface IScannerLocationDao extends IDao {
     /**
      * Get the Users that are allowed to scan at the given location
      */
