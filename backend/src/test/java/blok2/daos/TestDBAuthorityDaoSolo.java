@@ -27,8 +27,6 @@ public class TestDBAuthorityDaoSolo {
 
     @Before
     public void setup() throws SQLException {
-        TestSharedMethods.setupTestDaoDatabaseCredentials(authorityDao);
-
         testAuthority = TestSharedMethods.insertTestAuthority(authorityDao);
         testAuthority2 = TestSharedMethods.insertTestAuthority2(authorityDao);
     }
@@ -37,7 +35,6 @@ public class TestDBAuthorityDaoSolo {
     public void cleanup() throws SQLException {
         authorityDao.deleteAuthority(testAuthority.getAuthorityId());
         authorityDao.deleteAuthority(testAuthority2.getAuthorityId());
-        authorityDao.useDefaultDatabaseConnection();
     }
 
     @Test
