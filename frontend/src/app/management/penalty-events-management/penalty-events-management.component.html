@@ -24,7 +24,7 @@
         <td>{{penaltyEvent.code}}</td>
         <td>{{penaltyEvent.points}}</td>
         <td>{{descriptionToShow(penaltyEvent)}}</td>
-        <td *ngIf="isPenaltyEventDeletable(penaltyEvent)" data-toggle="modal" data-target="#deletePenaltyEventModal"
+        <td *ngIf="isPenaltyEventDeletable(penaltyEvent.code)" data-toggle="modal" data-target="#deletePenaltyEventModal"
             class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
             (click)="prepareToDeletePenaltyEvent(penaltyEvent)">
           <span class="glyphicon glyphicon-trash pointerCursor"></span>
@@ -32,6 +32,125 @@
       </tr>
       </tbody>
     </table>
+
+    <div class="row" style="margin-top: 20px">
+      <button class="btn btn-primary" data-toggle="modal" data-target="#addPenaltyEventModal"
+              (click)="prepareToAddPenaltyEvent()">
+        {{'management.penaltyEvents.addNewButton' | translate}}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal view to add a new penalty event -->
+<div class="modal fade" id="addPenaltyEventModal" tabindex="-1" role="dialog"
+     aria-labelledby="addPenaltyEventModalTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <!-- Modal header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="addPenaltyEventModalTitle">
+          {{'management.penaltyEvents.addPenaltyEventModal.title' | translate}}
+        </h5>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form [formGroup]="penaltyEventFormGroup">
+          <!-- PenaltyEvent code -->
+          <div class="row form-group">
+            <label class="col-lg-3 control-label" for="code">
+              {{'management.penaltyEvents.table.code' | translate}}<span style="color: red; margin-left: 5px;">*</span>
+            </label>
+            <div class="col-lg-8">
+              <input class="form-control" id="code" type="number" formControlName="code" >
+            </div>
+          </div>
+
+          <div class="row">
+            <div *ngIf="code.invalid && (code.dirty || code.touched)" class="alert alert-danger">
+              <div *ngIf="code.errors.required">
+                {{'management.penaltyEvents.addPenaltyEventModal.formValidationErrorMessages.code' | translate}}
+              </div>
+            </div>
+
+            <div *ngIf="!isPenaltyEventDeletable(code.value)">
+              <div class="alert alert-warning">
+                {{'management.penaltyEvents.addPenaltyEventModal.formValidationErrorMessages.codeWarning1666' | translate}}
+              </div>
+            </div>
+          </div>
+
+          <!-- Penalty points -->
+          <div class="row form-group">
+            <label class="col-lg-3 control-label" for="penaltyPoints">
+              {{'management.penaltyEvents.table.points' | translate}}<span style="color: red; margin-left: 5px;">*</span>
+            </label>
+            <div class="col-lg-8">
+              <input class="form-control" id="penaltyPoints" type="number" formControlName="penaltyPoints" >
+            </div>
+          </div>
+
+          <div class="row">
+            <div *ngIf="penaltyPoints.invalid && (penaltyPoints.dirty || penaltyPoints.touched)" class="alert alert-danger">
+              <div *ngIf="penaltyPoints.errors.required">
+                {{'management.penaltyEvents.addPenaltyEventModal.formValidationErrorMessages.penaltyPoints' | translate}}
+              </div>
+
+              <div *ngIf="penaltyPoints.errors.min">
+                {{'management.penaltyEvents.addPenaltyEventModal.formValidationErrorMessages.penaltyPointsMin' | translate}}
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <!-- Languages that the application supports -->
+        <div class="row form-group" *ngFor="let lang of supportedLanguagesTranslated">
+          <label class="col-lg-3 control-label" for="{{lang}}">
+            {{lang}}<span style="color: red; margin-left: 5px;">*</span>
+          </label>
+          <div class="col-lg-8">
+            <input class="form-control" id="{{lang}}" type="text"
+                   [ngModel]="descriptionsForNewPenaltyEvent.get(lang)"
+                   (ngModelChange)="descriptionsForNewPenaltyEvent.set(lang, $event)">
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary"
+                [disabled]="!validFormToAddPenaltyEvent()"
+                (click)="addNewPenaltyEvent(penaltyEventFormGroup.value)">
+          {{'management.penaltyEvents.addPenaltyEventModal.addButton' | translate}}
+        </button>
+        <button type="button" class="btn btn-secondary"
+                data-dismiss="modal" (click)="prepareToAddPenaltyEvent()">
+          {{'management.penaltyEvents.addPenaltyEventModal.cancelButton' | translate}}
+        </button>
+      </div>
+
+      <!-- Feedback to the user -->
+      <div class="container-fluid">
+        <div class="alert alert-info" *ngIf="additionWasSuccess === null">
+          {{'management.penaltyEvents.addPenaltyEventModal.loading' | translate}}
+        </div>
+
+        <div class="alert alert-success" *ngIf="additionWasSuccess === true">
+          {{'management.penaltyEvents.addPenaltyEventModal.success' | translate}}
+        </div>
+
+        <div class="alert alert-error" *ngIf="additionWasSuccess === false">
+          {{'management.penaltyEvents.addPenaltyEventModal.error' | translate}}
+        </div>
+
+        <div class="alert alert-error" *ngIf="notAllSupportedLanguagesAreFilledInError">
+          {{'management.penaltyEvents.addPenaltyEventModal.notAllLanguagesError' | translate}}
+        </div>
+      </div>
+
+    </div>
   </div>
 </div>
 
