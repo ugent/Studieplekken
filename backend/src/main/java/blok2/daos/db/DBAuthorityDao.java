@@ -151,6 +151,27 @@ public class DBAuthorityDao extends DAO implements IAuthorityDao {
         pstmt.setString(2, authority.getDescription());
     }
 
+    @Override
+    public boolean addUserToAuthority(String augentid, int authorityId) throws SQLException {
+        try (Connection conn = getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("insert_role_user_authority"));
+            pstmt.setString(1, augentid);
+            pstmt.setInt(2, authorityId);
+            pstmt.execute();
+            return true;
+        }
+    }
+
+    @Override
+    public void removeUserFromAuthority(String augentid, int authorityId) throws SQLException {
+        try (Connection conn = getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("remove_role_user_authority"));
+            pstmt.setString(1, augentid);
+            pstmt.setInt(2, authorityId);
+            pstmt.execute();
+        }
+    }
+
     private void deleteRolesUserAuthority(int authorityId, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn
                 .prepareStatement(Resources.databaseProperties.getString("delete_roles_user_authority_of_authority"));

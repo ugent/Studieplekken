@@ -21,6 +21,16 @@ public interface IAuthorityDao {
     List<Authority> getAuthoritiesFromUser(String augentId) throws SQLException;
 
     /**
+     * Adds a user as a member of an authority. Returns if successful
+     */
+    boolean addUserToAuthority(String augentid, int authorityId) throws SQLException;
+
+    /**
+     * remove a user from the given authority
+     */
+    void removeUserFromAuthority(String augentid, int authorityId) throws SQLException;
+
+    /**
      * get list of users that are a member of the given authority.
      */
     List<User> getUsersFromAuthority(int authorityId) throws SQLException;

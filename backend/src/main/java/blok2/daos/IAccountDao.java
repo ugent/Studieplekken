@@ -61,12 +61,6 @@ public interface IAccountDao {
      */
     User directlyAddUser(User u) throws SQLException;
 
-    /**
-     * Adds a user as a member of an authority. Returns if successful todo can only be done by a member of that authority
-     */
-    boolean addUserToAuthority(String augentid, int authorityId) throws SQLException;
-
-
     // UPDATERS
 
     /**

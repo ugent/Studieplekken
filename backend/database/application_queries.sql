@@ -270,6 +270,10 @@ where user_id = ?;
 insert into public.roles_user_authority (user_id, authority_id)
 values (?, ?);
 
+-- $remove_role_user_authority
+delete
+from public.roles_user_authority
+where user_id = ? and authority_id = ?;
 -- queries for table AUTHORITY
 -- $all_authorities
 select a.authority_id, a.name, a.description
