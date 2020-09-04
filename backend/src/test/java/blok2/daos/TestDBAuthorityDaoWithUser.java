@@ -2,23 +2,14 @@ package blok2.daos;
 
 import blok2.model.Authority;
 import blok2.model.users.User;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.SQLException;
 import java.util.List;
 
-@SpringBootTest
-@RunWith(SpringRunner.class)
-@ActiveProfiles({"db", "test"})
-public class TestDBAuthorityDaoWithUser {
+public class TestDBAuthorityDaoWithUser extends TestDao {
 
     @Autowired
     private IAuthorityDao authorityDao;
@@ -30,19 +21,13 @@ public class TestDBAuthorityDaoWithUser {
     private Authority testAuthority2;
     private User testUser;
 
-    @Before
-    public void setup() throws SQLException {
-        TestSharedMethods.createSchema(authorityDao);
+    @Override
+    public void populateDatabase() throws SQLException {
         testAuthority = TestSharedMethods.insertTestAuthority(authorityDao);
         testAuthority2 = TestSharedMethods.insertTestAuthority2(authorityDao);
         testUser = TestSharedMethods.employeeAdminTestUser();
         accountDao.directlyAddUser(testUser);
         authorityDao.addUserToAuthority(testUser.getAugentID(), testAuthority.getAuthorityId());
-    }
-
-    @After
-    public void cleanup() throws SQLException {
-        TestSharedMethods.dropSchema(authorityDao);
     }
 
     @Test

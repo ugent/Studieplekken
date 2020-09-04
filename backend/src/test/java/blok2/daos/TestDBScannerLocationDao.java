@@ -3,24 +3,16 @@ package blok2.daos;
 import blok2.model.Authority;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-@SpringBootTest
-@RunWith(SpringRunner.class)
-public class TestDBScannerLocationDao {
+public class TestDBScannerLocationDao extends TestDao {
 
     @Autowired
     private IAccountDao accountDao;
@@ -47,9 +39,8 @@ public class TestDBScannerLocationDao {
     private List<Location> expectedLocationsOfUser1;
     private List<Location> expectedLocationsOfUser2;
 
-    @Before
-    public void setup() throws SQLException {
-        TestSharedMethods.createSchema(authorityDao);
+    @Override
+    public void populateDatabase() throws SQLException {
         // Setup test objects
         testUser1 = TestSharedMethods.employeeAdminTestUser();
         testUser2 = TestSharedMethods.studentEmployeeTestUser();
@@ -79,11 +70,6 @@ public class TestDBScannerLocationDao {
 
         expectedLocationsOfUser2 = new ArrayList<>();
         expectedLocationsOfUser2.add(testLocation1);
-    }
-
-    @After
-    public void cleanup() throws SQLException {
-        TestSharedMethods.dropSchema(authorityDao);
     }
 
     @Test

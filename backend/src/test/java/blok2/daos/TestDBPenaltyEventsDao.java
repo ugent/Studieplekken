@@ -7,15 +7,9 @@ import blok2.model.penalty.Penalty;
 import blok2.model.penalty.PenaltyEvent;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -24,9 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@SpringBootTest
-@RunWith(SpringRunner.class)
-public class TestDBPenaltyEventsDao {
+public class TestDBPenaltyEventsDao extends TestDao {
 
     @Autowired
     private IAccountDao accountDao;
@@ -49,9 +41,8 @@ public class TestDBPenaltyEventsDao {
     private Authority authority;
     private User testUser;
 
-    @Before
-    public void setup() throws SQLException {
-        TestSharedMethods.createSchema(authorityDao);
+    @Override
+    public void populateDatabase() throws SQLException {
         // Setup test objects
         Map<Language, String> cancellingTooLateDescriptions = new HashMap<>();
         cancellingTooLateDescriptions.put(Language.ENGLISH, "Cancelling too late.");
@@ -81,11 +72,6 @@ public class TestDBPenaltyEventsDao {
         locationDao.addLocation(testLocation);
         penaltyEventsDao.addPenaltyEvent(testEvent);
         TestSharedMethods.addTestUsers(accountDao, testUser);
-    }
-
-    @After
-    public void cleanup() throws SQLException {
-        TestSharedMethods.dropSchema(authorityDao);
     }
 
     @Test

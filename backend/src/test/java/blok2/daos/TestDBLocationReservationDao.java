@@ -5,23 +5,14 @@ import blok2.model.Authority;
 import blok2.model.reservables.Location;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.SQLException;
 import java.util.List;
 
-@SpringBootTest
-@RunWith(SpringRunner.class)
-public class TestDBLocationReservationDao {
+public class TestDBLocationReservationDao extends TestDao {
 
     @Autowired
     private ILocationReservationDao locationReservationDao;
@@ -40,9 +31,8 @@ public class TestDBLocationReservationDao {
     private User testUser;
     private User testUser2;
 
-    @Before
-    public void setup() throws SQLException {
-        TestSharedMethods.createSchema(authorityDao);
+    @Override
+    public void populateDatabase() throws SQLException {
         // setup test location objects
         authority = TestSharedMethods.insertTestAuthority(authorityDao);
         testLocation = TestSharedMethods.testLocation(authority.getAuthorityId());
@@ -53,11 +43,6 @@ public class TestDBLocationReservationDao {
         // Add test objects to database
         TestSharedMethods.addTestUsers(accountDao, testUser, testUser2);
         locationDao.addLocation(testLocation);
-    }
-
-    @After
-    public void cleanup() throws SQLException {
-        TestSharedMethods.dropSchema(authorityDao);
     }
 
     @Test

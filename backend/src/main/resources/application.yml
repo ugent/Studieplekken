@@ -3,10 +3,10 @@ db:
   url: "jdbc:postgresql://localhost:5432/blokatugent"
   username: postgres
   password: postgres
-# paths of scripts todo use this instead in TestSharedMethods
+
 scripts:
-  dropDB: "./database/drop_schema.sql"
-  populateDB: "./database/blokatugent.sql"
+  dropSchema: "./database/drop_schema.sql"
+  createSchema: "./database/create_schema.sql"
 
 # configuration for sending verification mail
 spring:

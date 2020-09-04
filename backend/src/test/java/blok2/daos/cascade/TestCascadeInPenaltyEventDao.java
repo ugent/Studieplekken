@@ -27,10 +27,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-@SpringBootTest
-@RunWith(SpringRunner.class)
-@ActiveProfiles({"db", "test"})
-public class TestCascadeInPenaltyEventDao {
+public class TestCascadeInPenaltyEventDao extends TestDao {
 
     @Autowired
     private IAccountDao accountDao;
@@ -60,8 +57,8 @@ public class TestCascadeInPenaltyEventDao {
     private Penalty testPenalty1;
     private Penalty testPenalty2;
 
-    @Before
-    public void setup() throws SQLException {
+    @Override
+    public void populateDatabase() throws SQLException {
         // Setup test objects
         testUser1 = TestSharedMethods.studentEmployeeTestUser();
         testUser2 = TestSharedMethods.employeeAdminTestUser();
@@ -93,25 +90,6 @@ public class TestCascadeInPenaltyEventDao {
         penaltyEventsDao.addPenaltyEvent(testPenaltyEvent);
         penaltyEventsDao.addPenalty(testPenalty1);
         penaltyEventsDao.addPenalty(testPenalty2);
-    }
-
-    @After
-    public void cleanup() throws SQLException {
-        // Remove test objects from database
-        // Note, I am not relying on the cascade because that's
-        // what we are testing here in this class ...
-        penaltyEventsDao.deletePenalty(testPenalty2);
-        penaltyEventsDao.deletePenalty(testPenalty1);
-        penaltyEventsDao.deletePenaltyEvent(testPenaltyEvent.getCode());
-
-        accountDao.deleteUser(testUser2.getAugentID());
-        accountDao.deleteUser(testUser1.getAugentID());
-
-        // ... okay, cascade is assumed to be okay for the lockers here... (but it is)
-        locationDao.deleteLocation(testLocation2.getName());
-        locationDao.deleteLocation(testLocation1.getName());
-
-        authorityDao.deleteAuthority(authority.getAuthorityId());
     }
 
     @Test

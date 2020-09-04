@@ -2,21 +2,15 @@ package blok2.daos;
 
 import blok2.model.users.Role;
 import blok2.model.users.User;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.SQLException;
 import java.util.List;
 
-@SpringBootTest
-@RunWith(SpringRunner.class)
-public class TestDBAccountDao {
+
+public class TestDBAccountDao extends TestDao {
 
     @Autowired
     private IAccountDao accountDao;
@@ -24,19 +18,19 @@ public class TestDBAccountDao {
     private User testUser1;
     private User testUser2;
 
-    @Before
-    public void setup() throws SQLException {
-        TestSharedMethods.createSchema(accountDao);
+    @Override
+    public void populateDatabase() throws SQLException {
         testUser1 = TestSharedMethods.employeeAdminTestUser();
         testUser2 = TestSharedMethods.studentEmployeeTestUser();
 
         TestSharedMethods.addTestUsers(accountDao, testUser1, testUser2);
     }
 
-    @After
+    @Override
     public void cleanup() throws SQLException {
         TestSharedMethods.removeTestUsers(accountDao, testUser2, testUser1);
-        TestSharedMethods.dropSchema(accountDao);
+
+        super.cleanup();
     }
 
     @Test

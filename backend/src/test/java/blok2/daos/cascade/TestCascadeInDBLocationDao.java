@@ -17,19 +17,12 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.SQLException;
 import java.util.*;
 
-@SpringBootTest
-@RunWith(SpringRunner.class)
-@ActiveProfiles({"db", "test"})
-public class TestCascadeInDBLocationDao {
+public class TestCascadeInDBLocationDao extends TestDao {
 
     @Autowired
     private IAccountDao accountDao;
@@ -89,8 +82,8 @@ public class TestCascadeInDBLocationDao {
     // to test cascade on CALENDAR_PERIODS_FOR_LOCKERS
     private List<CalendarPeriodForLockers> testCalendarPeriodsForLockers;
 
-    @Before
-    public void setup() throws SQLException {
+    @Override
+    public void populateDatabase() throws SQLException {
         // Setup test objects
         authority = TestSharedMethods.insertTestAuthority(authorityDao);
         testLocation = TestSharedMethods.testLocation(authority.getAuthorityId());
@@ -140,38 +133,6 @@ public class TestCascadeInDBLocationDao {
 
         calendarPeriodDao.addCalendarPeriods(testCalendarPeriods);
         calendarPeriodForLockersDao.addCalendarPeriodsForLockers(testCalendarPeriodsForLockers);
-    }
-
-    @After
-    public void cleanup() throws SQLException {
-        // Remove test objects from database
-        // Note, I am not relying on the cascade because that's
-        // what we are testing here in this class ...
-        calendarPeriodForLockersDao.deleteCalendarPeriodsForLockers(testCalendarPeriodsForLockers);
-        calendarPeriodDao.deleteCalendarPeriods(testCalendarPeriods);
-
-        scannerLocationDao.deleteAllScannersOfLocation(testLocation.getName());
-
-        penaltyEventsDao.deletePenalty(testPenalty2);
-        penaltyEventsDao.deletePenalty(testPenalty1);
-        penaltyEventsDao.deletePenaltyEvent(testPenaltyEvent.getCode());
-
-        lockerReservationDao.deleteLockerReservation(testLockerReservation2.getLocker().getLocation().getName(),
-                testLockerReservation2.getLocker().getNumber());
-        lockerReservationDao.deleteLockerReservation(testLockerReservation1.getLocker().getLocation().getName(),
-                testLockerReservation1.getLocker().getNumber());
-
-        locationReservationDao.deleteLocationReservation(testLocationReservation2.getUser().getAugentID(),
-                testLocationReservation2.getDate());
-        locationReservationDao.deleteLocationReservation(testLocationReservation1.getUser().getAugentID(),
-                testLocationReservation1.getDate());
-
-        accountDao.deleteUser(testUser2.getAugentID());
-        accountDao.deleteUser(testUser1.getAugentID());
-
-        // ... okay, cascade is assumed to be okay for the lockers here... (but it is)
-        locationDao.deleteLocation(testLocation.getName());
-        authorityDao.deleteAuthority(authority.getAuthorityId());
     }
 
     @Test
