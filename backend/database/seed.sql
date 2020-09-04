@@ -5,7 +5,13 @@ insert into public.users(augentid, role, augentpreferredgivenname, augentpreferr
 values ('001', 'STUDENT', 'Bram', 'Van de Walle', 0, 'bram.vandewalle@ugent.be', 'secret', 'UGent');
 
 /*
- * Setup two test locations with an authority
+ * setup second test user
+ */
+insert into public.users(augentid, role, augentpreferredgivenname, augentpreferredsn, penalty_points, mail, password, institution)
+values ('002', 'STUDENT$EMPLOYEE', 'Ruben_van_DSA', 'DF', 0, 'rdf@ugent.be', 'secret', 'UGent');
+
+/*
+ * Setup two test locations with an authority and add 2nd test user to the authority
  */
 
 DO $$
@@ -15,6 +21,7 @@ BEGIN
   INSERT INTO public.locations (name, address, number_of_seats, number_of_lockers, image_url, authority_id)
     VALUES ('Therminal', 'Hoveniersberg 24, 9000 Gent', 200, 100, 'www.example.png', tableId),
             ('Sterre S5', 'Krijgslaan 281, 9000 Gent', 200, 100, 'www.example.png', tableId);
+  INSERT INTO public.roles_user_authority (user_id, authority_id) VALUES ('002',tableId);
 END $$;
 
 /*
