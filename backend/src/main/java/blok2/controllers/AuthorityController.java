@@ -36,7 +36,7 @@ public class AuthorityController {
         }
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/{userId}/authorities")
     public List<Authority> getAuthoritiesFromUser(@PathVariable String userId) {
         try {
             return authorityDao.getAuthoritiesFromUser(userId);
