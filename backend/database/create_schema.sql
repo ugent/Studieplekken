@@ -38,16 +38,35 @@ CREATE TABLE public.authority
 
 CREATE TABLE public.locations
 (
-    name              text    NOT NULL primary key,
-    number_of_seats   integer NOT NULL,
-    number_of_lockers integer NOT NULL,
-    image_url         text,
-    address           text    NOT NULL,
-    authority_id      integer NOT NULL,
+    name                text    NOT NULL primary key,
+    number_of_seats     integer NOT NULL,
+    number_of_lockers   integer NOT NULL,
+    image_url           text,
+    address             text    NOT NULL,
+    authority_id        integer NOT NULL,
+    description_dutch   text,
+    description_english text,
 
     constraint fk_location_to_authority
         foreign key (authority_id)
             references public.authority (authority_id)
+);
+
+CREATE TABLE public.tags
+(
+    tag_id  integer NOT NULL primary key,
+    dutch   text    NOT NULL unique,
+    english text    NOT NULL unique
+);
+
+CREATE TABLE public.location_tags
+(
+    location_id integer NOT NULL,
+    tag_id integer NOT NULL,
+    constraint fk_location_tags_to_location
+        foreign key (location_id) references public.locations (name),
+    constraint fk_location_tags_to_tags
+        foreign key (tag_id) references public.tags (tag_id)
 );
 
 --
