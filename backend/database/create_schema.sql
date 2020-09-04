@@ -54,9 +54,10 @@ CREATE TABLE public.locations
 
 CREATE TABLE public.tags
 (
-    tag_id  integer NOT NULL primary key,
+    tag_id  integer NOT NULL primary key generated always as identity,
     dutch   text    NOT NULL unique,
-    english text    NOT NULL unique
+    english text    NOT NULL unique,
+    UNIQUE(dutch, english)
 );
 
 CREATE TABLE public.location_tags

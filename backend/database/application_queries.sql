@@ -1,21 +1,30 @@
 -- queries for table LOCATIONS
 -- $all_locations
 select l.name, l.number_of_seats, l.number_of_lockers
-    , l.image_url, l.address, l.authority_id
+    , l.image_url, l.address, l.authority_id, l.description_dutch, l.description_english
 from public.locations l
 order by l.name;
 
 -- $get_location
 select l.name, l.number_of_seats, l.number_of_lockers
-    , l.image_url, l.address, l.authority_id
+    , l.image_url, l.address, l.authority_id, l.description_dutch, l.description_english
 from public.locations l
 where l.name = ?;
 
 -- $get_locations_from_authority
 select  l.name, l.number_of_seats, l.number_of_lockers
-     , l.image_url, l.address, l.authority_id
+     , l.image_url, l.address, l.authority_id, l.description_dutch, l.description_english
 from public.locations l
 where authority_id = ?;
+
+-- $locations_with_tag
+select l.name, l.number_of_seats, l.number_of_lockers
+     , l.image_url, l.address, l.authority_id, l.description_dutch, l.description_english
+from public.locations l
+    join public.location_tags lt on l.name = lt.location_id
+    join public.tags t on t.tag_id = lt.tag_id
+where t.tag_id = ?
+order by l.name;
 
 -- $delete_location
 delete
@@ -28,14 +37,59 @@ from public.locations
 where authority_id = ?;
 
 -- $insert_location
-insert into public.locations (name, number_of_seats, number_of_lockers, image_url, address, authority_id)
-values (?, ?, ?, ?, ?, ?);
+insert into public.locations (name, number_of_seats, number_of_lockers, image_url, address, authority_id, description_dutch, description_english)
+values (?, ?, ?, ?, ?, ?, ?, ?);
 
 -- $update_location
 update public.locations
-set name = ?, number_of_seats = ?, number_of_lockers = ?, image_url = ?, address = ?, authority_id = ?
+set name = ?, number_of_seats = ?, number_of_lockers = ?, image_url = ?, address = ?, authority_id = ?, description_dutch = ?, description_english = ?
 where name = ?;
 
+-- queries for table location_tags
+-- $add_tag_to_location
+Insert into public.location_tags (location_id, tag_id) values (?,?);
+
+-- $remove_tags_from_location
+delete from public.location_tags
+where location_id = ?;
+
+-- $remove_locations_from_tag
+delete
+from public.location_tags
+where tag_id= ?;
+
+-- $update_fk_location_tags_to_location
+update public.location_tags
+set location_id = ?
+where location_id = ?;
+
+-- $remove_tag_from_location
+delete
+from public.location_tags
+where location_id= ? and tag_id = ?;
+
+
+-- queries for table tags
+-- $all_tags
+select t.tag_id, t.dutch, t.english
+from public.tags t
+order by t.dutch;
+
+-- $tags_from_location
+select t.tag_id, t.dutch, t.english
+from public.tags t
+         join public.location_tags lt on t.tag_id = lt.tag_id
+         join public.locations l on l.name = lt.location_id
+where l.name = ?
+order by t.dutch;
+
+-- $add_tag
+insert into public.tags (dutch, english)
+values (?, ?) RETURNING tag_id;
+
+-- $delete_tag
+delete from tags
+where tag_id = ?;
 
 
 -- queries for table LOCATION_RESERVATION
