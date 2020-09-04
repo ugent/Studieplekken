@@ -1,6 +1,8 @@
 package blok2.controllers;
 
 import blok2.daos.IAccountDao;
+import blok2.daos.IAuthorityDao;
+import blok2.model.Authority;
 import blok2.model.users.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,8 +27,11 @@ public class AccountController {
 
     private final IAccountDao accountDao;
 
-    public AccountController(IAccountDao accountDao) {
+    private final IAuthorityDao authorityDao;
+
+    public AccountController(IAccountDao accountDao, IAuthorityDao authorityDao) {
         this.accountDao = accountDao;
+        this.authorityDao = authorityDao;
     }
 
     @GetMapping("/id")
@@ -102,6 +107,17 @@ public class AccountController {
         }
     }
 
+    @GetMapping("/{userId}/authorities")
+    public List<Authority> getAuthoritiesFromUser(@PathVariable String userId) {
+        try {
+            return authorityDao.getAuthoritiesFromUser(userId);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
     @PutMapping("/{id}")
     public void updateUser(@PathVariable("id") String id, @RequestBody User user) {
         try {
@@ -145,9 +161,9 @@ public class AccountController {
 
     /**
      * The password needs to contain at least:
-     *   - 1 capital letter
-     *   - 1 number
-     *   - 8 characters
+     * - 1 capital letter
+     * - 1 number
+     * - 8 characters
      */
     private boolean isValidPassword(String password) {
         if (password.length() < 8)
@@ -172,7 +188,8 @@ public class AccountController {
         private String to;
         private User user;
 
-        public ChangePasswordBody() {}
+        public ChangePasswordBody() {
+        }
 
         public String getFrom() {
             return from;

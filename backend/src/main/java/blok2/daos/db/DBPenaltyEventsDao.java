@@ -2,6 +2,7 @@ package blok2.daos.db;
 
 import blok2.daos.IPenaltyEventsDao;
 import blok2.helpers.Language;
+import blok2.helpers.Resources;
 import blok2.helpers.date.CustomDate;
 import blok2.model.penalty.Penalty;
 import blok2.model.penalty.PenaltyEvent;
@@ -14,13 +15,13 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
+public class DBPenaltyEventsDao extends DAO implements IPenaltyEventsDao {
 
     @Override
     public List<PenaltyEvent> getPenaltyEvents() throws SQLException {
-        try (Connection conn = getConnection()) {
+        try (Connection conn = adb.getConnection()) {
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(databaseProperties.getString("get_penalty_events"));
+            ResultSet rs = stmt.executeQuery(Resources.databaseProperties.getString("get_penalty_events"));
 
             List<PenaltyEvent> penaltyEvents = new ArrayList<>();
 
@@ -34,8 +35,8 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
 
     @Override
     public PenaltyEvent getPenaltyEvent(int code) throws SQLException {
-        try (Connection conn = getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("get_penalty_event"));
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_penalty_event"));
             pstmt.setInt(1, code);
             ResultSet rs = pstmt.executeQuery();
 
@@ -49,7 +50,7 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
 
     @Override
     public void addPenaltyEvent(PenaltyEvent event) throws SQLException {
-        try (Connection conn = getConnection()) {
+        try (Connection conn = adb.getConnection()) {
             try {
                 conn.setAutoCommit(false);
                 addPenaltyEvent(event, conn);
@@ -65,7 +66,7 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
 
     private void addPenaltyEvent(PenaltyEvent event, Connection conn) throws SQLException {
         // add penalty_event's record
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("insert_penalty_event"));
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_penalty_event"));
         pstmt.setInt(1, event.getCode());
         pstmt.setInt(2, event.getPoints());
         pstmt.executeUpdate();
@@ -76,7 +77,7 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
 
     @Override
     public void updatePenaltyEvent(int code, PenaltyEvent event) throws SQLException {
-        try (Connection conn = getConnection()) {
+        try (Connection conn = adb.getConnection()) {
             try {
                 conn.setAutoCommit(false);
 
@@ -112,20 +113,20 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
 
     @Override
     public void deletePenaltyEvent(int code) throws SQLException {
-        try (Connection conn = getConnection()) {
+        try (Connection conn = adb.getConnection()) {
             deletePenaltyEvent(code, conn);
         }
     }
 
     @Override
     public void addDescription(int code, Language language, String description) throws SQLException {
-        try (Connection conn = getConnection()) {
+        try (Connection conn = adb.getConnection()) {
             addDescription(code, language, description, conn);
         }
     }
 
     private void addDescription(int code, Language language, String description, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("insert_penalty_description"));
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_penalty_description"));
         pstmt.setString(1, language.name());
         pstmt.setInt(2, code);
         pstmt.setString(3, description);
@@ -140,8 +141,8 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
 
     @Override
     public void deleteDescription(int code, Language language) throws SQLException {
-        try (Connection conn = getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_penalty_description"));
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_penalty_description"));
             pstmt.setString(1, language.name());
             pstmt.setInt(2, code);
             pstmt.executeUpdate();
@@ -150,8 +151,8 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
 
     @Override
     public List<Penalty> getPenaltiesByUser(String augentId) throws SQLException {
-        try (Connection conn = getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("get_penalties_by_user"));
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_penalties_by_user"));
             pstmt.setString(1, augentId);
             return getPenaltiesFromPreparedPstmt(pstmt);
         }
@@ -159,8 +160,8 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
 
     @Override
     public List<Penalty> getPenaltiesByLocation(String locationName) throws SQLException {
-        try (Connection conn = getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("get_penalties_by_location"));
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_penalties_by_location"));
             pstmt.setString(1, locationName);
             return getPenaltiesFromPreparedPstmt(pstmt);
         }
@@ -168,8 +169,8 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
 
     @Override
     public List<Penalty> getPenaltiesByEventCode(int eventCode) throws SQLException {
-        try (Connection conn = getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
                     .getString("get_penalties_by_event_code"));
             pstmt.setInt(1, eventCode);
             return getPenaltiesFromPreparedPstmt(pstmt);
@@ -183,13 +184,13 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
 
         while (rs.next()) {
             Penalty p = new Penalty();
-            p.setAugentID(rs.getString(databaseProperties.getString("penalty_book_user_augentid")));
-            p.setEventCode(rs.getInt(databaseProperties.getString("penalty_book_event_code")));
-            p.setTimestamp(CustomDate.parseString(rs.getString(databaseProperties.getString("penalty_book_timestamp"))));
-            p.setReservationDate(CustomDate.parseString(rs.getString(databaseProperties.getString("penalty_book_reservation_date"))));
-            p.setReservationLocation(rs.getString(databaseProperties.getString("penalty_book_reservation_location")));
-            p.setReceivedPoints(rs.getInt(databaseProperties.getString("penalty_book_received_points")));
-            p.setRemarks(rs.getString(databaseProperties.getString("penalty_book_remarks")));
+            p.setAugentID(rs.getString(Resources.databaseProperties.getString("penalty_book_user_augentid")));
+            p.setEventCode(rs.getInt(Resources.databaseProperties.getString("penalty_book_event_code")));
+            p.setTimestamp(CustomDate.parseString(rs.getString(Resources.databaseProperties.getString("penalty_book_timestamp"))));
+            p.setReservationDate(CustomDate.parseString(rs.getString(Resources.databaseProperties.getString("penalty_book_reservation_date"))));
+            p.setReservationLocation(rs.getString(Resources.databaseProperties.getString("penalty_book_reservation_location")));
+            p.setReceivedPoints(rs.getInt(Resources.databaseProperties.getString("penalty_book_received_points")));
+            p.setRemarks(rs.getString(Resources.databaseProperties.getString("penalty_book_remarks")));
             ret.add(p);
         }
 
@@ -198,8 +199,8 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
 
     @Override
     public void addPenalty(Penalty penalty) throws SQLException {
-        try (Connection conn = getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("insert_penalty"));
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_penalty"));
             setPreparedStatementWithPenalty(pstmt, penalty);
             pstmt.executeUpdate();
         }
@@ -207,19 +208,19 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
 
     @Override
     public void updatePenalties(String augentID, List<Penalty> remove, List<Penalty> add) throws SQLException {
-        try (Connection conn = getConnection()) {
+        try (Connection conn = adb.getConnection()) {
             try {
                 conn.setAutoCommit(false);
 
                 // first delete all Penalties in 'remove'
-                PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_penalty"));
+                PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_penalty"));
                 for (Penalty p : remove) {
                     setPreparedStatementWithPenalty(pstmt, p);
                     pstmt.executeUpdate();
                 }
 
                 // then, add all Penalties in 'add'
-                pstmt = conn.prepareStatement(databaseProperties.getString("insert_penalty"));
+                pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_penalty"));
                 for (Penalty p : add) {
                     if (p.getReceivedPoints() < 0) {
                         PenaltyEvent e = getPenaltyEvent(p.getEventCode());
@@ -242,8 +243,8 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
 
     @Override
     public void deletePenalty(Penalty penalty) throws SQLException {
-        try (Connection conn = getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_penalty"));
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_penalty"));
             pstmt.setString(1, penalty.getAugentID());
             pstmt.setInt(2, penalty.getEventCode());
             pstmt.setString(3, penalty.getTimestamp().toString());
@@ -254,19 +255,19 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
     public static PenaltyEvent createPenaltyEvent(ResultSet rs) throws SQLException {
         PenaltyEvent penaltyEvent = new PenaltyEvent();
 
-        penaltyEvent.setCode(rs.getInt(databaseProperties.getString("penalty_event_code")));
-        penaltyEvent.setPoints(rs.getInt(databaseProperties.getString("penalty_event_points")));
+        penaltyEvent.setCode(rs.getInt(Resources.databaseProperties.getString("penalty_event_code")));
+        penaltyEvent.setPoints(rs.getInt(Resources.databaseProperties.getString("penalty_event_points")));
 
         Map<Language, String> descriptions = new HashMap<>();
 
-        Language lang = Language.valueOf(rs.getString(databaseProperties.getString("penalty_description_lang_enum")));
-        String description = rs.getString(databaseProperties.getString("penalty_description_description"));
+        Language lang = Language.valueOf(rs.getString(Resources.databaseProperties.getString("penalty_description_lang_enum")));
+        String description = rs.getString(Resources.databaseProperties.getString("penalty_description_description"));
         descriptions.put(lang, description);
 
         int i = 1;
         while (i < Language.values().length && rs.next()) {
-            lang = Language.valueOf(rs.getString(databaseProperties.getString("penalty_description_lang_enum")));
-            description = rs.getString(databaseProperties.getString("penalty_description_description"));
+            lang = Language.valueOf(rs.getString(Resources.databaseProperties.getString("penalty_description_lang_enum")));
+            description = rs.getString(Resources.databaseProperties.getString("penalty_description_description"));
             descriptions.put(lang, description);
             i++;
         }
@@ -283,7 +284,7 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
         deletePenaltyEventDescriptions(penaltyEvent.getCode(), conn);
         addDescriptions(penaltyEvent.getCode(), penaltyEvent.getDescriptions(), conn);
 
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("update_penalty_event"));
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("update_penalty_event"));
         // set ...
         pstmt.setInt(1, penaltyEvent.getPoints());
         // where ...
@@ -292,7 +293,7 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
     }
 
     private void updateForeignKeyOfPenaltyBookToPenaltyEvent(int oldCode, int newCode, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("update_fk_penalty_book_to_penalty_event"));
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("update_fk_penalty_book_to_penalty_event"));
         pstmt.setInt(1, newCode);
         pstmt.setInt(2, oldCode);
         pstmt.execute();
@@ -302,20 +303,20 @@ public class DBPenaltyEventsDao extends ADB implements IPenaltyEventsDao {
         deletePenaltyEventDescriptions(code, conn);
         deletePenaltyBookEntries(code, conn);
 
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_penalty_event"));
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_penalty_event"));
         pstmt.setInt(1, code);
         pstmt.execute();
     }
 
     private void deletePenaltyEventDescriptions(int code, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
                 .getString("delete_penalty_descriptions_by_event_code"));
         pstmt.setInt(1, code);
         pstmt.execute();
     }
 
     private void deletePenaltyBookEntries(int code, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
                 .getString("delete_penalties_of_penalty_event"));
         pstmt.setInt(1, code);
         pstmt.execute();

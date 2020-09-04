@@ -1,13 +1,12 @@
 package blok2.daos.cascade;
 
-import blok2.daos.IAccountDao;
-import blok2.daos.ILocationDao;
-import blok2.daos.IPenaltyEventsDao;
-import blok2.daos.TestSharedMethods;
+import blok2.daos.*;
 import blok2.daos.db.ADB;
+import blok2.daos.db.DAO;
 import blok2.helpers.Language;
 import blok2.helpers.Resources;
 import blok2.helpers.date.CustomDate;
+import blok2.model.Authority;
 import blok2.model.penalty.Penalty;
 import blok2.model.penalty.PenaltyEvent;
 import blok2.model.reservables.Location;
@@ -28,10 +27,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-@SpringBootTest
-@RunWith(SpringRunner.class)
-@ActiveProfiles({"db", "test"})
-public class TestCascadeInPenaltyEventDao {
+public class TestCascadeInPenaltyEventDao extends TestDao {
 
     @Autowired
     private IAccountDao accountDao;
@@ -40,12 +36,20 @@ public class TestCascadeInPenaltyEventDao {
     private ILocationDao locationDao;
 
     @Autowired
+    private IAuthorityDao authorityDao;
+
+    @Autowired
     private IPenaltyEventsDao penaltyEventsDao;
+
+    @Autowired
+    private ADB adb;
 
     private PenaltyEvent testPenaltyEvent;
 
     private User testUser1;
     private User testUser2;
+
+    private Authority authority;
 
     private Location testLocation1;
     private Location testLocation2;
@@ -53,19 +57,15 @@ public class TestCascadeInPenaltyEventDao {
     private Penalty testPenalty1;
     private Penalty testPenalty2;
 
-    @Before
-    public void setup() throws SQLException {
-        // Use test database
-        TestSharedMethods.setupTestDaoDatabaseCredentials(accountDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(locationDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(penaltyEventsDao);
-
+    @Override
+    public void populateDatabase() throws SQLException {
         // Setup test objects
         testUser1 = TestSharedMethods.studentEmployeeTestUser();
         testUser2 = TestSharedMethods.employeeAdminTestUser();
 
-        testLocation1 = TestSharedMethods.testLocation();
-        testLocation2 = TestSharedMethods.testLocation2();
+        authority = TestSharedMethods.insertTestAuthority(authorityDao);
+        testLocation1 = TestSharedMethods.testLocation(authority.getAuthorityId());
+        testLocation2 = TestSharedMethods.testLocation2(authority.getAuthorityId());
 
         Map<Language, String> descriptions = new HashMap<>();
         descriptions.put(Language.DUTCH, "Dit is een test omschrijving van een penalty event met code 0");
@@ -90,28 +90,6 @@ public class TestCascadeInPenaltyEventDao {
         penaltyEventsDao.addPenaltyEvent(testPenaltyEvent);
         penaltyEventsDao.addPenalty(testPenalty1);
         penaltyEventsDao.addPenalty(testPenalty2);
-    }
-
-    @After
-    public void cleanup() throws SQLException {
-        // Remove test objects from database
-        // Note, I am not relying on the cascade because that's
-        // what we are testing here in this class ...
-        penaltyEventsDao.deletePenalty(testPenalty2);
-        penaltyEventsDao.deletePenalty(testPenalty1);
-        penaltyEventsDao.deletePenaltyEvent(testPenaltyEvent.getCode());
-
-        accountDao.deleteUser(testUser2.getAugentID());
-        accountDao.deleteUser(testUser1.getAugentID());
-
-        // ... okay, cascade is assumed to be okay for the lockers here... (but it is)
-        locationDao.deleteLocation(testLocation2.getName());
-        locationDao.deleteLocation(testLocation1.getName());
-
-        // Use regular database
-        accountDao.useDefaultDatabaseConnection();
-        locationDao.useDefaultDatabaseConnection();
-        penaltyEventsDao.useDefaultDatabaseConnection();
     }
 
     @Test
@@ -190,9 +168,8 @@ public class TestCascadeInPenaltyEventDao {
     }
 
     private int countDescriptionsOfPenaltyEvent(int code) throws SQLException {
-        try (Connection conn = ADB.getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(Resources
-                    .databaseProperties.getString("count_descriptions_of_penalty_events"));
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("count_descriptions_of_penalty_events"));
             pstmt.setInt(1, code);
 
             ResultSet rs = pstmt.executeQuery();

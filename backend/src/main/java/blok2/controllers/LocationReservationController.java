@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -81,9 +82,9 @@ public class LocationReservationController {
 
     @GetMapping("/fromAndUntil")
     public List<LocationReservation> getLocationReservationsOfLocationFromAndUntil(@RequestParam String locationName,
-                                                                            @RequestParam String start,
-                                                                            @RequestParam String end,
-                                                                            @RequestParam boolean pastReservations) {
+                                                                                   @RequestParam String start,
+                                                                                   @RequestParam String end,
+                                                                                   @RequestParam boolean pastReservations) {
         try {
             return locationReservationDao
                     .getAllLocationReservationsOfLocationFromAndUntil(locationName, start, end, pastReservations);

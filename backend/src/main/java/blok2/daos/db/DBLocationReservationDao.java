@@ -1,6 +1,7 @@
 package blok2.daos.db;
 
 import blok2.daos.ILocationReservationDao;
+import blok2.helpers.Resources;
 import blok2.helpers.date.CustomDate;
 import blok2.model.reservables.Location;
 import blok2.model.reservations.LocationReservation;
@@ -19,12 +20,12 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class DBLocationReservationDao extends ADB implements ILocationReservationDao {
+public class DBLocationReservationDao extends DAO implements ILocationReservationDao {
 
     @Override
     public List<LocationReservation> getAllLocationReservationsOfLocation(String locationName, boolean includePastReservations) throws SQLException {
-        try (Connection conn = getConnection()) {
-            String query = databaseProperties.getString("get_location_reservations_where_<?>");
+        try (Connection conn = adb.getConnection()) {
+            String query = Resources.databaseProperties.getString("get_location_reservations_where_<?>");
 
             String replacementString = "lr.location_name = ?";
             if (!includePastReservations) {
@@ -46,8 +47,8 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
 
     @Override
     public List<LocationReservation> getAllLocationReservationsOfLocationFrom(String locationName, String start, boolean includePastReservations) throws SQLException {
-        try (Connection conn = getConnection()) {
-            String query = databaseProperties.getString("get_location_reservations_where_<?>");
+        try (Connection conn = adb.getConnection()) {
+            String query = Resources.databaseProperties.getString("get_location_reservations_where_<?>");
 
             String replacementString = "lr.location_name = ? and to_date(lr.date, 'YYYY-MM-DD') >= to_date(?, 'YYYY-MM-DD')";
             return getLocationReservationsExtractedEqualCode(locationName, start, includePastReservations, conn, query, replacementString);
@@ -56,8 +57,8 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
 
     @Override
     public List<LocationReservation> getAllLocationReservationsOfLocationUntil(String locationName, String end, boolean includePastReservations) throws SQLException {
-        try (Connection conn = getConnection()) {
-            String query = databaseProperties.getString("get_location_reservations_where_<?>");
+        try (Connection conn = adb.getConnection()) {
+            String query = Resources.databaseProperties.getString("get_location_reservations_where_<?>");
 
             String replacementString = "lr.location_name = ? and to_date(lr.date, 'YYYY-MM-DD') <= to_date(?, 'YYYY-MM-DD')";
             return getLocationReservationsExtractedEqualCode(locationName, end, includePastReservations, conn, query, replacementString);
@@ -84,8 +85,8 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
 
     @Override
     public List<LocationReservation> getAllLocationReservationsOfLocationFromAndUntil(String locationName, String start, String end, boolean includePastReservations) throws SQLException {
-        try (Connection conn = getConnection()) {
-            String query = databaseProperties.getString("get_location_reservations_where_<?>");
+        try (Connection conn = adb.getConnection()) {
+            String query = Resources.databaseProperties.getString("get_location_reservations_where_<?>");
 
             String replacementString = "lr.location_name = ? and to_date(lr.date, 'YYYY-MM-DD') >= to_date(?, 'YYYY-MM-DD') and to_date(lr.date, 'YYYY-MM-DD') <= to_date(?, 'YYYY-MM-DD')";
             if (!includePastReservations) {
@@ -109,14 +110,14 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
 
     @Override
     public List<LocationReservation> getAllLocationReservationsOfUser(String augentID) throws SQLException {
-        String query = databaseProperties.getString("get_location_reservations_where_<?>");
+        String query = Resources.databaseProperties.getString("get_location_reservations_where_<?>");
         query = query.replace("<?>", "u.augentid = ?");
         return getAllLocationsFromQueryWithOneParameter(augentID, query);
     }
 
     private List<LocationReservation> getAllLocationsFromQueryWithOneParameter(String parameterOne, String query)
             throws SQLException {
-        try (Connection conn = getConnection()) {
+        try (Connection conn = adb.getConnection()) {
             List<LocationReservation> reservations = new ArrayList<>();
 
             PreparedStatement pstmt = conn.prepareStatement(query);
@@ -146,8 +147,8 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
 
     @Override
     public LocationReservation getLocationReservation(String augentID, CustomDate date) throws SQLException {
-        try (Connection conn = getConnection()) {
-            String query = databaseProperties.getString("get_location_reservations_where_<?>");
+        try (Connection conn = adb.getConnection()) {
+            String query = Resources.databaseProperties.getString("get_location_reservations_where_<?>");
             query = query.replace("<?>", "lr.user_augentid = ? and lr.date = ?");
 
             PreparedStatement pstmt = conn.prepareStatement(query);
@@ -165,8 +166,8 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
 
     @Override
     public void deleteLocationReservation(String augentID, CustomDate date) throws SQLException {
-        try (Connection conn = getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_location_reservation"));
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_location_reservation"));
             pstmt.setString(1, augentID);
             pstmt.setString(2, date.toString());
             pstmt.execute();
@@ -175,8 +176,8 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
 
     @Override
     public void addLocationReservation(LocationReservation locationReservation) throws SQLException {
-        try (Connection conn = getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("insert_location_reservation"));
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_location_reservation"));
             pstmt.setString(1, locationReservation.getDate().toString());
             pstmt.setString(2, locationReservation.getLocation().getName());
             pstmt.setString(3, locationReservation.getUser().getAugentID());
@@ -186,12 +187,12 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
 
     @Override
     public LocationReservation scanStudent(String location, String augentId) throws SQLException {
-        try (Connection conn = getConnection()) {
+        try (Connection conn = adb.getConnection()) {
             Calendar c = Calendar.getInstance();
             CustomDate today = new CustomDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DATE));
 
             // set user attended on location reservation
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("set_location_reservation_attended"));
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("set_location_reservation_attended"));
             pstmt.setString(1, today.toString());
             pstmt.setString(2, augentId);
             int n = pstmt.executeUpdate();
@@ -200,7 +201,7 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
             if (n != 1)
                 return null;
 
-            String query = databaseProperties.getString("get_location_reservations_where_<?>");
+            String query = Resources.databaseProperties.getString("get_location_reservations_where_<?>");
             query = query.replace("<?>", "lr.user_augentid = ? and lr.date = ?");
             pstmt = conn.prepareStatement(query);
             pstmt.setString(1, augentId);
@@ -216,8 +217,8 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
 
     @Override
     public void setAllStudentsOfLocationToAttended(String location, CustomDate date) throws SQLException {
-        try (Connection conn = getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("set_all_location_reservations_attended"));
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("set_all_location_reservations_attended"));
             pstmt.setString(1, location);
             pstmt.setString(2, date.toString());
             pstmt.execute();
@@ -226,8 +227,8 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
 
     @Override
     public int countReservedSeatsOfLocationOnDate(String location, CustomDate date) throws SQLException {
-        try (Connection conn = getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("count_location_reservations_of_location_for_date"));
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("count_location_reservations_of_location_for_date"));
             pstmt.setString(1, location);
             pstmt.setString(2, date.toString());
             ResultSet rs = pstmt.executeQuery();
@@ -242,8 +243,8 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
 
     @Override
     public List<LocationReservation> getAbsentStudents(String locationName, CustomDate date) throws SQLException {
-        try (Connection conn = getConnection()) {
-            String query = databaseProperties.getString("get_location_reservations_where_<?>");
+        try (Connection conn = adb.getConnection()) {
+            String query = Resources.databaseProperties.getString("get_location_reservations_where_<?>");
             query = query.replace("<?>", "lr.location_name = ? and lr.date = ? and (lr.attended = false or lr.attended is null)");
             PreparedStatement pstmt = conn.prepareStatement(query);
             return getAbsentOrPresentStudents(locationName, date, pstmt);
@@ -252,8 +253,8 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
 
     @Override
     public List<LocationReservation> getPresentStudents(String locationName, CustomDate date) throws SQLException {
-        try (Connection conn = getConnection()) {
-            String query = databaseProperties.getString("get_location_reservations_where_<?>");
+        try (Connection conn = adb.getConnection()) {
+            String query = Resources.databaseProperties.getString("get_location_reservations_where_<?>");
             query = query.replace("<?>", "lr.location_name = ? and lr.date = ? and lr.attended = true");
             PreparedStatement pstmt = conn.prepareStatement(query);
             return getAbsentOrPresentStudents(locationName, date, pstmt);
@@ -278,8 +279,8 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
 
     @Override
     public void setReservationToUnAttended(String augentId, CustomDate date) throws SQLException {
-        try (Connection conn = getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("set_location_reservation_unattended"));
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("set_location_reservation_unattended"));
             pstmt.setString(1, date.toString());
             pstmt.setString(2, augentId);
             pstmt.execute();
@@ -287,9 +288,9 @@ public class DBLocationReservationDao extends ADB implements ILocationReservatio
     }
 
     public static LocationReservation createLocationReservation(ResultSet rs) throws SQLException {
-        CustomDate customDate = CustomDate.parseString(rs.getString(databaseProperties.getString("location_reservation_date")));
+        CustomDate customDate = CustomDate.parseString(rs.getString(Resources.databaseProperties.getString("location_reservation_date")));
 
-        Boolean attended = rs.getBoolean(databaseProperties.getString("location_reservation_attended"));
+        Boolean attended = rs.getBoolean(Resources.databaseProperties.getString("location_reservation_attended"));
         if (rs.wasNull()) {
             attended = null;
         }

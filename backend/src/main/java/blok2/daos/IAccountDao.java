@@ -1,7 +1,6 @@
 package blok2.daos;
 
 import blok2.model.users.User;
-import org.springframework.stereotype.Repository;
 
 import java.sql.SQLException;
 import java.util.List;

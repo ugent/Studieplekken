@@ -17,24 +17,24 @@ public interface ILocationReservationDao extends IDao {
      * start: YYYY-MM-DD
      */
     List<LocationReservation> getAllLocationReservationsOfLocationFrom(String locationName,
-                                                                   String start,
-                                                                   boolean includePastReservations) throws SQLException;
+                                                                       String start,
+                                                                       boolean includePastReservations) throws SQLException;
 
     /**
      * end: YYYY-MM-DD
      */
     List<LocationReservation> getAllLocationReservationsOfLocationUntil(String locationName,
-                                                                   String end,
-                                                                   boolean includePastReservations) throws SQLException;
+                                                                        String end,
+                                                                        boolean includePastReservations) throws SQLException;
 
     /**
      * start: YYYY-MM-DD
      * end: YYYY-MM-DD
      */
     List<LocationReservation> getAllLocationReservationsOfLocationFromAndUntil(String locationName,
-                                                                   String start,
-                                                                   String end,
-                                                                   boolean includePastReservations) throws SQLException;
+                                                                               String start,
+                                                                               String end,
+                                                                               boolean includePastReservations) throws SQLException;
 
     List<LocationReservation> getAllLocationReservationsOfUser(String augentID) throws SQLException;
 

@@ -1,9 +1,9 @@
 package blok2.daos.cascade;
 
-import blok2.daos.TestSharedMethods;
 import blok2.daos.*;
 import blok2.helpers.Language;
 import blok2.helpers.date.CustomDate;
+import blok2.model.Authority;
 import blok2.model.penalty.Penalty;
 import blok2.model.penalty.PenaltyEvent;
 import blok2.model.reservables.Location;
@@ -25,10 +25,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.sql.SQLException;
 import java.util.*;
 
-@SpringBootTest
-@RunWith(SpringRunner.class)
-@ActiveProfiles({"db", "test"})
-public class TestCascadeInDBAccountDao {
+public class TestCascadeInDBAccountDao extends TestDao {
 
     @Autowired
     private IAccountDao accountDao;
@@ -48,8 +45,14 @@ public class TestCascadeInDBAccountDao {
     @Autowired
     private IScannerLocationDao scannerLocationDao;
 
+    @Autowired
+    private IAuthorityDao authorityDao;
+
     // this will be the test user
     private User testUser;
+
+    //to connect a location to an authority
+    private Authority authority;
 
     // for cascade on SCANNERS_LOCATION, LOCATION_RESERVATIONS
     // and LOCKER_RESERVATIONS, a Location must be available
@@ -69,20 +72,13 @@ public class TestCascadeInDBAccountDao {
     private Penalty testPenalty1;
     private Penalty testPenalty2;
 
-    @Before
-    public void setup() throws SQLException {
-        // Use test database
-        TestSharedMethods.setupTestDaoDatabaseCredentials(accountDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(locationDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(locationReservationDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(lockerReservationDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(penaltyEventsDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(scannerLocationDao);
-
+    @Override
+    public void populateDatabase() throws SQLException {
         // Setup test objects
         testUser = TestSharedMethods.studentEmployeeTestUser();
-        testLocation1 = TestSharedMethods.testLocation();
-        testLocation2 = TestSharedMethods.testLocation2();
+        authority = TestSharedMethods.insertTestAuthority(authorityDao);
+        testLocation1 = TestSharedMethods.testLocation(authority.getAuthorityId());
+        testLocation2 = TestSharedMethods.testLocation2(authority.getAuthorityId());
 
         testLocationReservation1 = new LocationReservation(testLocation1, testUser, CustomDate.now());
         testLocationReservation2 = new LocationReservation(testLocation2, testUser, new CustomDate(1970, 1, 1));
@@ -123,42 +119,6 @@ public class TestCascadeInDBAccountDao {
 
         scannerLocationDao.addScannerLocation(testLocation1.getName(), testUser.getAugentID());
         scannerLocationDao.addScannerLocation(testLocation2.getName(), testUser.getAugentID());
-    }
-
-    @After
-    public void cleanup() throws SQLException {
-        // Remove test objects from database
-        // Note, I am not relying on the cascade because that's
-        // what we are testing here in this class ...
-        scannerLocationDao.deleteAllLocationsOfScanner(testUser.getAugentID());
-
-        penaltyEventsDao.deletePenalty(testPenalty2);
-        penaltyEventsDao.deletePenalty(testPenalty1);
-        penaltyEventsDao.deletePenaltyEvent(testPenaltyEvent.getCode());
-
-        lockerReservationDao.deleteLockerReservation(testLockerReservation2.getLocker().getLocation().getName(),
-                testLockerReservation2.getLocker().getNumber());
-        lockerReservationDao.deleteLockerReservation(testLockerReservation1.getLocker().getLocation().getName(),
-                testLockerReservation1.getLocker().getNumber());
-
-        locationReservationDao.deleteLocationReservation(testLocationReservation2.getUser().getAugentID(),
-                testLocationReservation2.getDate());
-        locationReservationDao.deleteLocationReservation(testLocationReservation1.getUser().getAugentID(),
-                testLocationReservation1.getDate());
-
-        // ... okay, cascade is assumed to be okay for the lockers here... (but it is)
-        locationDao.deleteLocation(testLocation2.getName());
-        locationDao.deleteLocation(testLocation1.getName());
-
-        accountDao.deleteUser(testUser.getAugentID());
-
-        // Use regular database
-        accountDao.useDefaultDatabaseConnection();
-        locationDao.useDefaultDatabaseConnection();
-        locationReservationDao.useDefaultDatabaseConnection();
-        lockerReservationDao.useDefaultDatabaseConnection();
-        penaltyEventsDao.useDefaultDatabaseConnection();
-        scannerLocationDao.useDefaultDatabaseConnection();
     }
 
     @Test
