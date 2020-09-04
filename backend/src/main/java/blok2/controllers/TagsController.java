@@ -1,0 +1,85 @@
+package blok2.controllers;
+
+import blok2.daos.ITagsDao;
+import blok2.model.LocationTag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+@RestController
+@RequestMapping("/tags")
+public class TagsController {
+
+    private final Logger logger = Logger.getLogger(LocationController.class.getSimpleName());
+
+    private final ITagsDao tagsDao;
+
+    @Autowired
+    public TagsController(ITagsDao tagsDao) {
+        this.tagsDao = tagsDao;
+    }
+
+    @GetMapping
+    public List<LocationTag> getAllTags() {
+        try {
+            return tagsDao.getTags();
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @GetMapping("/{tagId}")
+    public LocationTag getTag(@PathVariable int tagId) {
+        try {
+            return tagsDao.getTag(tagId);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @PostMapping
+    public void addTag(@RequestBody LocationTag tag) {
+        try {
+            tagsDao.addTag(tag);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @PutMapping
+    public void updateTag(@RequestBody LocationTag tag) {
+        try {
+            tagsDao.updateTag(tag);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @DeleteMapping("/{tagId}")
+    public void deleteTag(@PathVariable int tagId) {
+        try {
+            tagsDao.deleteTag(tagId);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+
+}
