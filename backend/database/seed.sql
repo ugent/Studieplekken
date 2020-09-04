@@ -5,11 +5,17 @@ insert into public.users(augentid, role, augentpreferredgivenname, augentpreferr
 values ('001', 'STUDENT', 'Bram', 'Van de Walle', 0, 'bram.vandewalle@ugent.be', 'secret', 'UGent');
 
 /*
- * Setup two test locations
+ * Setup two test locations with an authority
  */
-insert into public.locations (name, address, number_of_seats, number_of_lockers, image_url)
-values ('Therminal', 'Hoveniersberg 24, 9000 Gent', 200, 100, 'www.example.png'),
-('Sterre S5', 'Krijgslaan 281, 9000 Gent', 200, 100, 'www.example.png');
+
+DO $$
+DECLARE tableId integer;
+BEGIN
+  INSERT INTO public.authority (name, description) values ('DSA', 'Dienst StudentenActiviteiten') RETURNING authority_id into tableId;
+  INSERT INTO public.locations (name, address, number_of_seats, number_of_lockers, image_url, authority_id)
+    VALUES ('Therminal', 'Hoveniersberg 24, 9000 Gent', 200, 100, 'www.example.png', tableId),
+            ('Sterre S5', 'Krijgslaan 281, 9000 Gent', 200, 100, 'www.example.png', tableId);
+END $$;
 
 /*
  * Add some calendar periods
