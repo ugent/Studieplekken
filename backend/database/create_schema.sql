@@ -11,7 +11,7 @@ CREATE DATABASE blokatugent
     CONNECTION LIMIT = -1;
 */
 
-drop schema public cascade;
+drop schema IF EXISTS public cascade;
 
 CREATE SCHEMA public
     AUTHORIZATION postgres;
