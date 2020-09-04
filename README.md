@@ -15,7 +15,7 @@ Make sure that a user `postgres` with password `***REMOVED***` has following dat
 - `blokatugent`
 - `blokatugent_test`
 
-For both databases, run the sql queries in `scripts/database/blokatugent.sql`. For the `blokatugent`, run the script `scripts/database/frontend_development_setup.sql` to provide some dummy data.
+For both databases, run the sql queries in `scripts/database/create_schema.sql`. For the `blokatugent`, run the script `scripts/database/seed.sql` to provide some dummy data.
 
 **Commands**
 ```shell script
