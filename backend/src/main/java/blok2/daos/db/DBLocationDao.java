@@ -278,8 +278,10 @@ public class DBLocationDao extends DAO implements ILocationDao {
     }
 
     private void insertTags(String locationName, List<LocationTag> tags, Connection conn) throws SQLException {
-        for (LocationTag tag : tags) {
-            insertTag(locationName, tag, conn);
+        if(tags != null) {
+            for (LocationTag tag : tags) {
+                insertTag(locationName, tag, conn);
+            }
         }
     }
 

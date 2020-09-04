@@ -12,8 +12,8 @@ public class Location implements Cloneable {
     private int numberOfSeats;
     private int numberOfLockers;
     private String imageUrl;
-    private String descriptionDutch;
-    private String descriptionEnglish;
+    private String descriptionDutch = "";
+    private String descriptionEnglish= "";
     private int authorityId;
     private List<LocationTag> tags;
 
@@ -43,7 +43,7 @@ public class Location implements Cloneable {
                 Objects.equals(name, location.name) &&
                 Objects.equals(address, location.address) &&
                 Objects.equals(imageUrl, location.imageUrl) &&
-                tags.equals(location.tags);
+                (tags == null || tags.equals(location.tags));
     }
 
     @Override
