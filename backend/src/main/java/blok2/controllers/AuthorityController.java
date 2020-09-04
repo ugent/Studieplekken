@@ -36,10 +36,10 @@ public class AuthorityController {
         }
     }
 
-    @GetMapping("/{authorityId}/users")
-    public List<User> getUsersFromAuthority(@PathVariable int authorityId) {
+    @GetMapping("/{authorityId}")
+    public Authority getAuthority(@PathVariable int authorityId) {
         try {
-            return authorityDao.getUsersFromAuthority(authorityId);
+            return authorityDao.getAuthorityByAuthorityId(authorityId);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
@@ -47,10 +47,10 @@ public class AuthorityController {
         }
     }
 
-    @GetMapping("/{authorityId}")
-    public Authority getAuthority(@PathVariable int authorityId) {
+    @GetMapping("/{authorityId}/users")
+    public List<User> getUsersFromAuthority(@PathVariable int authorityId) {
         try {
-            return authorityDao.getAuthorityByAuthorityId(authorityId);
+            return authorityDao.getUsersFromAuthority(authorityId);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
@@ -92,7 +92,6 @@ public class AuthorityController {
         }
     }
 
-    //todo is this path handy to use?
     @PostMapping("/{authorityId}/user/{userId}")
     public void addUserToAuthority(@PathVariable int authorityId, @PathVariable String userId) {
         try {
