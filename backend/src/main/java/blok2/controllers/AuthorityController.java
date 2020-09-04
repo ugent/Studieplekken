@@ -36,17 +36,6 @@ public class AuthorityController {
         }
     }
 
-    @GetMapping("/{userId}/authorities")
-    public List<Authority> getAuthoritiesFromUser(@PathVariable String userId) {
-        try {
-            return authorityDao.getAuthoritiesFromUser(userId);
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
-    }
-
     @GetMapping("/{authorityId}/users")
     public List<User> getUsersFromAuthority(@PathVariable int authorityId) {
         try {
@@ -104,7 +93,7 @@ public class AuthorityController {
     }
 
     //todo is this path handy to use?
-    @PostMapping("/{authorityId}/{userId}")
+    @PostMapping("/{authorityId}/user/{userId}")
     public void addUserToAuthority(@PathVariable int authorityId, @PathVariable String userId) {
         try {
             authorityDao.addUserToAuthority(userId, authorityId);
@@ -115,7 +104,7 @@ public class AuthorityController {
         }
     }
 
-    @DeleteMapping("/{authorityId}/{userId}")
+    @DeleteMapping("/{authorityId}/user/{userId}")
     public void removeUserFromAuthority(@PathVariable int authorityId, @PathVariable String userId) {
         try {
             authorityDao.removeUserFromAuthority(userId, authorityId);
