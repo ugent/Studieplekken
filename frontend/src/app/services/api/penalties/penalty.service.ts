@@ -46,6 +46,10 @@ export class PenaltyService {
     return this.http.post(api.addPenaltyEvent, penaltyEvent);
   }
 
+  updatePenaltyEvent(code: number, penaltyEvent: PenaltyEvent): Observable<any> {
+    return this.http.put(api.updatePenaltyEvent.replace('{code}', String(code)), penaltyEvent);
+  }
+
   deletePenaltyEvent(penaltyEvent: PenaltyEvent): Observable<any> {
     const options = {
       headers: new HttpHeaders({

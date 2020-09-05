@@ -429,6 +429,24 @@
         "notAllLanguagesError": "Not all supported languages got a description."
       },
 
+      "updatePenaltyEventModal": {
+        "title": "Update penalty event",
+
+        "formValidationErrorMessages": {
+          "penaltyPoints": "Penalty points is required",
+          "penaltyPointsMin": "Penalty points is a non-negative number",
+          "descriptions": "A description in all supported languages is required"
+        },
+
+        "cancelButton": "Cancel",
+        "updateButton": "Update",
+
+        "loading": "Waiting for response of server...",
+        "success": "Successfully updated the penalty event",
+        "error": "Something went wrong while updating the penalty event",
+        "notAllLanguagesError": "Not all supported languages got a description."
+      },
+
       "deletePenaltyEventModal": {
         "title": "Sure to delete the penalty event?",
 

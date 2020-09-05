@@ -5,7 +5,6 @@ import blok2.helpers.Language;
 import blok2.model.penalty.Penalty;
 import blok2.model.penalty.PenaltyEvent;
 import org.springframework.http.HttpStatus;
-import org.springframework.scripting.config.LangNamespaceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -30,6 +29,10 @@ public class PenaltyEventController {
     public PenaltyEventController(IPenaltyEventsDao penaltyDao) {
         this.penaltyDao = penaltyDao;
     }
+
+    /******************************************
+     *    Controller methods for Penalties    *
+     ******************************************/
 
     @GetMapping("/{userId}")
     public List<Penalty> getPenaltiesOfUserById(@PathVariable("userId") String userId) {
@@ -64,6 +67,10 @@ public class PenaltyEventController {
         }
     }
 
+    /**********************************************
+     *    Controller methods for PenaltyEvents    *
+     **********************************************/
+
     @GetMapping("/events")
     public List<PenaltyEvent> getAllPenaltyEvents() {
         try {
@@ -82,6 +89,20 @@ public class PenaltyEventController {
                 throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, "Not all languages have a description");
             }
             penaltyDao.addPenaltyEvent(penaltyEvent);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @PutMapping("/events/{code}")
+    public void updatePenaltyEvent(@PathVariable("code") int code, @RequestBody PenaltyEvent penaltyEvent) {
+        try {
+            if (penaltyEvent.getDescriptions().size() != Language.values().length) {
+                throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, "Not all languages have a description");
+            }
+            penaltyDao.updatePenaltyEvent(code, penaltyEvent);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
