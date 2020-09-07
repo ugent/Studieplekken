@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
-import {User, UserConstructor} from '../../shared/model/User';
-import {UserService} from '../api/users/user.service';
+import {User, UserConstructor} from '../../../shared/model/User';
+import {UserService} from '../../api/users/user.service';
 
 /**
  * This service is a helper service used in the UsersManagementComponent

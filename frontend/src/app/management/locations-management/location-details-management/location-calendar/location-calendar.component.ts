@@ -8,7 +8,7 @@ import {
 } from '../../../../shared/model/CalendarPeriod';
 import {Observable, Subject} from 'rxjs';
 import {Location} from '../../../../shared/model/Location';
-import {CalendarPeriodsService} from '../../../../services/calendar-periods/calendar-periods.service';
+import {CalendarPeriodsService} from '../../../../services/api/calendar-periods/calendar-periods.service';
 import {equalCalendarPeriods} from '../../../../shared/comparators/ModelComparators';
 
 @Component({

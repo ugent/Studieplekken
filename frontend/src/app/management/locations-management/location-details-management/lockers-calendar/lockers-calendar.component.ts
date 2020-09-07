@@ -2,7 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
 import {Location} from '../../../../shared/model/Location';
 import {CalendarEvent} from 'angular-calendar';
-import {CalendarPeriodsForLockersService} from '../../../../services/calendar-periods-for-lockers/calendar-periods-for-lockers.service';
+import {CalendarPeriodsForLockersService} from '../../../../services/api/calendar-periods-for-lockers/calendar-periods-for-lockers.service';
 import {
   CalendarPeriodForLockers,
   CalendarPeriodForLockersConstructor, calendarPeriodForLockersToCalendarEvent, isCalendarPeriodForLockersValid

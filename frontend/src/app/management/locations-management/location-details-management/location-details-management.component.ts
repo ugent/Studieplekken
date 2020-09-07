@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {LocationDetailsService} from '../../../services/location-details/location-details.service';
+import {LocationDetailsService} from '../../../services/single-point-of-truth/location-details/location-details.service';
 import {Observable} from 'rxjs';
 import {Location} from '../../../shared/model/Location';
 
