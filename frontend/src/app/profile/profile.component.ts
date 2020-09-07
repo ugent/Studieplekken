@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {ApplicationTypeFunctionalityService} from '../services/functionality/application-type/application-type-functionality.service';
 
 @Component({
   selector: 'app-profile',
@@ -6,10 +7,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
+  showPenalties: boolean;
 
-  constructor() { }
+  constructor(private functionalityService: ApplicationTypeFunctionalityService) { }
 
   ngOnInit(): void {
+    this.showPenalties = this.functionalityService.showPenaltyFunctionality();
   }
 
 }

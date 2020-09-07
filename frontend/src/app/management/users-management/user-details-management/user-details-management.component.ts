@@ -3,6 +3,7 @@ import {Observable} from 'rxjs';
 import {User} from '../../../shared/model/User';
 import {UserDetailsService} from '../../../services/single-point-of-truth/user-details/user-details.service';
 import {ActivatedRoute} from '@angular/router';
+import {ApplicationTypeFunctionalityService} from '../../../services/functionality/application-type/application-type-functionality.service';
 
 @Component({
   selector: 'app-user-details-management',
@@ -15,8 +16,11 @@ export class UserDetailsManagementComponent implements OnInit {
   userQueryingError: boolean = undefined;
   userId: string;
 
+  showPenaltyManagement: boolean;
+
   constructor(private userDetailsService: UserDetailsService,
-              private route: ActivatedRoute) { }
+              private route: ActivatedRoute,
+              private functionalityService: ApplicationTypeFunctionalityService) { }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -30,5 +34,7 @@ export class UserDetailsManagementComponent implements OnInit {
         this.userQueryingError = true;
       }
     );
+
+    this.showPenaltyManagement = this.functionalityService.showPenaltyFunctionality();
   }
 }

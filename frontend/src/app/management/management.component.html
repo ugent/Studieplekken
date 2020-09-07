@@ -9,7 +9,7 @@
           <li><a routerLink="./locations">{{'management.aside.locations' | translate}}</a></li>
           <li><a routerLink="./users">{{'management.aside.users' | translate}}</a></li>
           <li><a routerLink="./reservations">{{'management.aside.reservations' | translate}}</a></li>
-          <li><a routerLink="./penalties">{{'management.aside.penalties' | translate}}</a></li>
+          <li *ngIf="showPenalties"><a routerLink="./penalties">{{'management.aside.penalties' | translate}}</a></li>
         </ul>
       </nav>
     </aside>

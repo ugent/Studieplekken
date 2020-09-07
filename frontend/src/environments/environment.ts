@@ -3,7 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 export enum APPLICATION_TYPE {
-  BLOKAT,
+  BLOK_AT,
   MINI_THERMIS
 }
 

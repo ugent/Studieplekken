@@ -17,6 +17,7 @@
 
     <!-- Table with all penalty points and the option to add/delete them manually  -->
     <app-user-details-management-penalties
+      *ngIf="showPenaltyManagement"
       [userObs]="userObs">
     </app-user-details-management-penalties>
   </div>

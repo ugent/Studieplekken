@@ -104,7 +104,7 @@
         <th>{{'management.users.searchResult.table.id' | translate}}</th>
         <th>{{'management.users.searchResult.table.firstName' | translate}}</th>
         <th>{{'management.users.searchResult.table.lastName' | translate}}</th>
-        <th>{{'management.users.searchResult.table.penaltyPoints' | translate}}</th>
+        <th *ngIf="showPenaltyPoints">{{'management.users.searchResult.table.penaltyPoints' | translate}}</th>
         <th>{{'management.users.searchResult.table.institution' | translate}}</th>
         <th></th>
       </tr>
@@ -115,7 +115,7 @@
         <td>{{user.augentID}}</td>
         <td>{{user.firstName}}</td>
         <td>{{user.lastName}}</td>
-        <td>{{user.penaltyPoints}}</td>
+        <td *ngIf="showPenaltyPoints">{{user.penaltyPoints}}</td>
         <td>{{user.institution}}</td>
         <td>
           <a [routerLink]="'./' + user.augentID">

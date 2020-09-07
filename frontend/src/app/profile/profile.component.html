@@ -9,7 +9,7 @@
           <li><a routerLink="./overview">{{'profile.aside.overview' | translate}}</a></li>
           <li><a routerLink="./reservations">{{'profile.aside.reservations' | translate}}</a></li>
           <li><a routerLink="./calendar">{{'profile.aside.calendar' | translate}}</a></li>
-          <li><a routerLink="./penalties">{{'profile.aside.penalties' | translate}}</a></li>
+          <li *ngIf="showPenalties"><a routerLink="./penalties">{{'profile.aside.penalties' | translate}}</a></li>
           <li><a routerLink="./password">{{'profile.aside.password' | translate}}</a></li>
         </ul>
       </nav>
