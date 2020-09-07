@@ -11,7 +11,7 @@ Have a look at our [Wiki](https://github.ugent.be/bravdwal/dsa/wiki)
 **Configure**  
 1. PostgreSQL
 
-Make sure that a user `postgres` with password `***REMOVED***` has following databases, running on (<b>default</b>) port 5432:
+Make sure that a user `postgres` with password `postgres` has following databases, running on (<b>default</b>) port 5432:
 - `blokatugent`
 - `blokatugent_test`
 
