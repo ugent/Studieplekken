@@ -37,7 +37,6 @@ set name = ?, number_of_seats = ?, number_of_lockers = ?, image_url = ?, address
 where name = ?;
 
 
-
 -- queries for table LOCATION_RESERVATION
 -- $get_location_reservations_where_<?>
 /*
@@ -158,7 +157,6 @@ set user_augentid = ?
 where user_augentid = ?;
 
 
-
 -- queries for table USER
 -- $get_user_by_<?>
 /*
@@ -225,7 +223,6 @@ set mail = ?
 where augentid = ?;
 
 
-
 -- queries for table USERS_TO_VERIFY
 -- $count_user_to_be_verified_by_id
 select count(1)
@@ -251,6 +248,7 @@ delete
 from public.users_to_verify
 where TO_TIMESTAMP(created_timestamp, 'YYYY-MM-DD\\THH24:MI:SS') < now() - interval '1 days';
 
+
 -- queries for table ROLES_USER_AUTHORITY
 -- $delete_roles_user_authority_of_user
 delete from public.roles_user_authority
@@ -274,6 +272,8 @@ values (?, ?);
 delete
 from public.roles_user_authority
 where user_id = ? and authority_id = ?;
+
+
 -- queries for table AUTHORITY
 -- $all_authorities
 select a.authority_id, a.name, a.description
@@ -319,6 +319,7 @@ where authority_id = ?;
 delete
 from public.authority
 where authority_id = ?;
+
 
 -- queries for table LOCKER_RESERVATIONS
 -- $get_locker_reservations_where_<?>
@@ -416,7 +417,6 @@ set user_augentid = ?
 where user_augentid = ?;
 
 
-
 -- queries for table LOCKERS
 -- $get_lockers_where_<?>
 select l.location_name, l.number
@@ -483,12 +483,10 @@ from public.lockers
 where location_name = ? and number = ?;
 
 
-
 -- queries for table ROLES
 -- $get_roles
 select *
 from public.roles;
-
 
 
 -- queries for DBPenaltyEventsDao
@@ -597,7 +595,6 @@ from public.penalty_descriptions
 where event_code = ?;
 
 
-
 -- queries for SCANNERS_LOCATION
 -- $get_locations_of_scanner
 select l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address, l.authority_id
@@ -703,7 +700,6 @@ where location_name = ?;
 update public.calendar_periods
 set location_name = ?
 where location_name = ?;
-
 
 
 -- queries for CALENDAR_PERIODS_FOR_LOCKERS

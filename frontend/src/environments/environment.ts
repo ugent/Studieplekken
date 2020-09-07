@@ -63,6 +63,7 @@ export const api = {
   // PENALTY_EVENTS
   penaltyEvents: '/api/penalties/events',
   addPenaltyEvent: '/api/penalties/events',
+  updatePenaltyEvent: '/api/penalties/events/{code}',
   deletePenaltyEvent: '/api/penalties/events'
 };
 
