@@ -1,26 +1,18 @@
 package blok2.daos;
 
+import blok2.model.Authority;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-@SpringBootTest
-@RunWith(SpringRunner.class)
-@ActiveProfiles({"db", "test"})
-public class TestDBScannerLocationDao {
+public class TestDBScannerLocationDao extends TestDao {
 
     @Autowired
     private IAccountDao accountDao;
@@ -29,11 +21,15 @@ public class TestDBScannerLocationDao {
     private ILocationDao locationDao;
 
     @Autowired
+    private IAuthorityDao authorityDao;
+
+    @Autowired
     private IScannerLocationDao scannerLocationDao;
 
     private User testUser1;
     private User testUser2;
 
+    private Authority authority;
     private Location testLocation1;
     private Location testLocation2;
 
@@ -43,19 +39,15 @@ public class TestDBScannerLocationDao {
     private List<Location> expectedLocationsOfUser1;
     private List<Location> expectedLocationsOfUser2;
 
-    @Before
-    public void setup() throws SQLException {
-        // Use test database
-        TestSharedMethods.setupTestDaoDatabaseCredentials(accountDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(locationDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(scannerLocationDao);
-
+    @Override
+    public void populateDatabase() throws SQLException {
         // Setup test objects
         testUser1 = TestSharedMethods.employeeAdminTestUser();
         testUser2 = TestSharedMethods.studentEmployeeTestUser();
 
-        testLocation1 = TestSharedMethods.testLocation();
-        testLocation2 = TestSharedMethods.testLocation2();
+        authority = TestSharedMethods.insertTestAuthority(authorityDao);
+        testLocation1 = TestSharedMethods.testLocation(authority.getAuthorityId());
+        testLocation2 = TestSharedMethods.testLocation2(authority.getAuthorityId());
 
         // Add test objects to database
         TestSharedMethods.addTestUsers(accountDao, testUser1, testUser2);
@@ -78,19 +70,6 @@ public class TestDBScannerLocationDao {
 
         expectedLocationsOfUser2 = new ArrayList<>();
         expectedLocationsOfUser2.add(testLocation1);
-    }
-
-    @After
-    public void cleanup() throws SQLException {
-        // Remove test objects from database (ScannerLocations are deleted by cascade)
-        locationDao.deleteLocation(testLocation2.getName());
-        locationDao.deleteLocation(testLocation1.getName());
-        TestSharedMethods.removeTestUsers(accountDao, testUser2, testUser1);
-
-        // Use regular database
-        accountDao.useDefaultDatabaseConnection();
-        locationDao.useDefaultDatabaseConnection();
-        scannerLocationDao.useDefaultDatabaseConnection();
     }
 
     @Test

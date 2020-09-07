@@ -2,19 +2,14 @@ package blok2.daos;
 
 import blok2.helpers.Language;
 import blok2.helpers.date.CustomDate;
+import blok2.model.Authority;
 import blok2.model.penalty.Penalty;
 import blok2.model.penalty.PenaltyEvent;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -23,16 +18,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@SpringBootTest
-@RunWith(SpringRunner.class)
-@ActiveProfiles({"db", "test"})
-public class TestDBPenaltyEventsDao {
+public class TestDBPenaltyEventsDao extends TestDao {
 
     @Autowired
     private IAccountDao accountDao;
 
     @Autowired
     private ILocationDao locationDao;
+
+    @Autowired
+    private IAuthorityDao authorityDao;
 
     @Autowired
     private IPenaltyEventsDao penaltyEventsDao;
@@ -43,15 +38,11 @@ public class TestDBPenaltyEventsDao {
     private PenaltyEvent testEvent;
 
     private Location testLocation;
+    private Authority authority;
     private User testUser;
 
-    @Before
-    public void setup() throws SQLException {
-        // Use test database
-        TestSharedMethods.setupTestDaoDatabaseCredentials(accountDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(locationDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(penaltyEventsDao);
-
+    @Override
+    public void populateDatabase() throws SQLException {
         // Setup test objects
         Map<Language, String> cancellingTooLateDescriptions = new HashMap<>();
         cancellingTooLateDescriptions.put(Language.ENGLISH, "Cancelling too late.");
@@ -73,24 +64,14 @@ public class TestDBPenaltyEventsDao {
         testDescriptions.put(Language.DUTCH, "Test event.");
         testEvent = new PenaltyEvent(1, 10, testDescriptions);
 
-        testLocation = TestSharedMethods.testLocation();
+        authority = TestSharedMethods.insertTestAuthority(authorityDao);
+        testLocation = TestSharedMethods.testLocation(authority.getAuthorityId());
         testUser = TestSharedMethods.studentEmployeeTestUser();
 
         // Add test objects to database
         locationDao.addLocation(testLocation);
         penaltyEventsDao.addPenaltyEvent(testEvent);
         TestSharedMethods.addTestUsers(accountDao, testUser);
-    }
-
-    @After
-    public void cleanup() throws SQLException {
-        // Remove test objects from database
-        TestSharedMethods.removeTestUsers(accountDao, testUser);
-        penaltyEventsDao.deletePenaltyEvent(testEvent.getCode());
-        locationDao.deleteLocation(testLocation.getName());
-
-        // Use regular database
-        penaltyEventsDao.useDefaultDatabaseConnection();
     }
 
     @Test

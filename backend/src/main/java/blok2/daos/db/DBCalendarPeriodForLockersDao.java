@@ -1,6 +1,7 @@
 package blok2.daos.db;
 
 import blok2.daos.ICalendarPeriodForLockersDao;
+import blok2.helpers.Resources;
 import blok2.model.calendar.CalendarPeriodForLockers;
 import org.springframework.stereotype.Service;
 
@@ -13,14 +14,14 @@ import java.util.List;
 import java.util.logging.Logger;
 
 @Service
-public class DBCalendarPeriodForLockersDao extends ADB implements ICalendarPeriodForLockersDao {
+public class DBCalendarPeriodForLockersDao extends DAO implements ICalendarPeriodForLockersDao {
 
     private final Logger logger = Logger.getLogger(DBCalendarPeriodForLockersDao.class.getSimpleName());
 
     @Override
     public List<CalendarPeriodForLockers> getCalendarPeriodsForLockersOfLocation(String locationName) throws SQLException {
-        try (Connection conn = getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
                     .getString("get_calendar_periods_for_lockers_of_location"));
             pstmt.setString(1, locationName);
             ResultSet rs = pstmt.executeQuery();
@@ -37,7 +38,7 @@ public class DBCalendarPeriodForLockersDao extends ADB implements ICalendarPerio
 
     @Override
     public void addCalendarPeriodsForLockers(List<CalendarPeriodForLockers> periods) throws SQLException {
-        try (Connection conn = getConnection()) {
+        try (Connection conn = adb.getConnection()) {
             try {
                 conn.setAutoCommit(false);
 
@@ -57,7 +58,7 @@ public class DBCalendarPeriodForLockersDao extends ADB implements ICalendarPerio
 
     private void addCalendarPeriodForLockers(CalendarPeriodForLockers calendarPeriodForLockers, Connection conn)
             throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
                 .getString("insert_calendar_period_for_lockers"));
         prepareCalendarPeriodForLockersPstmt(calendarPeriodForLockers, pstmt);
         pstmt.execute();
@@ -71,7 +72,7 @@ public class DBCalendarPeriodForLockersDao extends ADB implements ICalendarPerio
             return;
         }
 
-        try (Connection conn = getConnection()) {
+        try (Connection conn = adb.getConnection()) {
             try {
                 conn.setAutoCommit(false);
 
@@ -91,7 +92,7 @@ public class DBCalendarPeriodForLockersDao extends ADB implements ICalendarPerio
 
     private void updateCalendarPeriodForLockers(CalendarPeriodForLockers from, CalendarPeriodForLockers to
             , Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
                 .getString("update_calendar_period_for_lockers"));
         // set ...
         prepareCalendarPeriodForLockersPstmt(to, pstmt);
@@ -102,7 +103,7 @@ public class DBCalendarPeriodForLockersDao extends ADB implements ICalendarPerio
 
     @Override
     public void deleteCalendarPeriodsForLockers(List<CalendarPeriodForLockers> periods) throws SQLException {
-        try (Connection conn = getConnection()) {
+        try (Connection conn = adb.getConnection()) {
             try {
                 conn.setAutoCommit(false);
 
@@ -122,7 +123,7 @@ public class DBCalendarPeriodForLockersDao extends ADB implements ICalendarPerio
 
     private void deleteCalendarPeriodForLockers(CalendarPeriodForLockers calendarPeriodForLockers, Connection conn)
             throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
                 .getString("delete_calendar_period_for_lockers"));
         prepareCalendarPeriodForLockersPstmt(calendarPeriodForLockers, pstmt);
         pstmt.execute();
@@ -131,11 +132,11 @@ public class DBCalendarPeriodForLockersDao extends ADB implements ICalendarPerio
     private CalendarPeriodForLockers createCalendarPeriod(ResultSet rs) throws SQLException {
         CalendarPeriodForLockers calendarPeriodForLockers = new CalendarPeriodForLockers();
 
-        calendarPeriodForLockers.setStartsAt(rs.getString(databaseProperties
+        calendarPeriodForLockers.setStartsAt(rs.getString(Resources.databaseProperties
                 .getString("calendar_period_for_lockers_starts_at")));
-        calendarPeriodForLockers.setEndsAt(rs.getString(databaseProperties
+        calendarPeriodForLockers.setEndsAt(rs.getString(Resources.databaseProperties
                 .getString("calendar_period_for_lockers_ends_at")));
-        calendarPeriodForLockers.setReservableFrom(rs.getString(databaseProperties
+        calendarPeriodForLockers.setReservableFrom(rs.getString(Resources.databaseProperties
                 .getString("calendar_period_for_lockers_reservable_from")));
 
         calendarPeriodForLockers.setLocation(DBLocationDao.createLocation(rs));

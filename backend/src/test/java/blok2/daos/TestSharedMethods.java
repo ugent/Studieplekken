@@ -1,52 +1,71 @@
 package blok2.daos;
 
+import blok2.daos.db.ADB;
 import blok2.helpers.Institution;
-import blok2.helpers.Resources;
 import blok2.helpers.date.CustomDate;
+import blok2.model.Authority;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.CalendarPeriodForLockers;
 import blok2.model.reservables.Location;
 import blok2.model.users.Role;
 import blok2.model.users.User;
 import org.junit.Assert;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 
 public class TestSharedMethods {
 
-    private static final ResourceBundle applicationProperties = Resources.applicationProperties;
-
-    public static void setupTestDaoDatabaseCredentials(IDao dao) {
-        dao.setDatabaseConnectionUrl(applicationProperties.getString("test_db_url"));
-        dao.setDatabaseCredentials(
-                applicationProperties.getString("test_db_user"),
-                applicationProperties.getString("test_db_password")
-        );
-    }
-
-    public static Location testLocation() {
+    public static Location testLocation(int authorityId) {
         Location testLocation = new Location();
         testLocation.setName("Test Location");
         testLocation.setAddress("Test street, 10");
         testLocation.setNumberOfSeats(50);
         testLocation.setNumberOfLockers(15);
         testLocation.setImageUrl("https://example.com/image.jpg");
+        testLocation.setAuthorityId(authorityId);
 
         return testLocation;
     }
 
-    public static Location testLocation2() {
+    public static Location testLocation2(int authorityId) {
         Location testLocation2 = new Location();
         testLocation2.setName("Second Test Location");
         testLocation2.setAddress("Second Test street, 20");
         testLocation2.setNumberOfSeats(100);
         testLocation2.setNumberOfLockers(10);
         testLocation2.setImageUrl("https://example.com/picture.png");
+        testLocation2.setAuthorityId(authorityId);
         return testLocation2;
     }
+
+    public static Authority insertTestAuthority(IAuthorityDao authorityDao) throws SQLException {
+        return insertTestAuthority("Test Authority", "a test description", authorityDao);
+    }
+
+    public static Authority insertTestAuthority2(IAuthorityDao authorityDao) throws SQLException {
+        return insertTestAuthority("Second Test Authority", "second test description", authorityDao);
+    }
+
+    public static Authority insertTestAuthority(String name, String description, IAuthorityDao authorityDao) throws SQLException {
+        Authority authority = new Authority();
+        authority.setName(name);
+        authority.setDescription(description);
+        authority = authorityDao.addAuthority(authority);
+        Authority dbAuthority = authorityDao.getAuthorityByAuthorityId(authority.getAuthorityId());
+        Assert.assertEquals("insertTestAuthority: Failed to insert Test Authority", authority, dbAuthority);
+        return authority;
+    }
+
 
     public static User employeeAdminTestUser() {
         User user = new User();

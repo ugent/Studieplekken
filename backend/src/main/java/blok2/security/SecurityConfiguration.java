@@ -11,6 +11,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         httpSecurity
                 .csrf().disable() // disable the CSRF protection for now
                 .authorizeRequests() // allow all requests for now
-                    .antMatchers("/").permitAll();
+                .antMatchers("/").permitAll();
     }
 }

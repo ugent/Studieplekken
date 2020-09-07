@@ -21,7 +21,7 @@ public interface ILockerReservationDao extends IDao {
      * Gets a list of all locker reservations of a given location.
      */
     List<LockerReservation> getAllLockerReservationsOfLocation(String locationName,
-                                                                   boolean includePastReservations) throws SQLException;
+                                                               boolean includePastReservations) throws SQLException;
 
     /**
      * Gets a list of all ongoing locker reservations of a given location.

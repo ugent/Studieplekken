@@ -11,7 +11,7 @@ public interface ILockersDao extends IDao {
      * of the lockers. At first, this might seem a bit strange. The reason for returning a
      * list of 'locker reservations' instead of 'lockers' is that the reservation determines
      * the status.
-     *
+     * <p>
      * If the LockerReservation
      */
     List<LockerReservation> getLockerStatusesOfLocation(String locationName) throws SQLException;

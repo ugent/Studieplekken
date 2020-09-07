@@ -1,6 +1,7 @@
 package blok2.daos.db;
 
 import blok2.daos.ICalendarPeriodDao;
+import blok2.helpers.Resources;
 import blok2.model.calendar.CalendarPeriod;
 import org.springframework.stereotype.Service;
 
@@ -13,14 +14,14 @@ import java.util.List;
 import java.util.logging.Logger;
 
 @Service
-public class DBCalendarPeriodDao extends ADB implements ICalendarPeriodDao {
+public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
 
     private final Logger logger = Logger.getLogger(DBCalendarPeriodDao.class.getSimpleName());
 
     @Override
     public List<CalendarPeriod> getCalendarPeriodsOfLocation(String locationName) throws SQLException {
-        try (Connection conn = getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("get_calendar_periods"));
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_calendar_periods"));
             pstmt.setString(1, locationName);
             ResultSet rs = pstmt.executeQuery();
 
@@ -36,7 +37,7 @@ public class DBCalendarPeriodDao extends ADB implements ICalendarPeriodDao {
 
     @Override
     public void addCalendarPeriods(List<CalendarPeriod> periods) throws SQLException {
-        try (Connection conn = getConnection()) {
+        try (Connection conn = adb.getConnection()) {
             try {
                 conn.setAutoCommit(false);
 
@@ -55,7 +56,7 @@ public class DBCalendarPeriodDao extends ADB implements ICalendarPeriodDao {
     }
 
     private void addCalendarPeriod(CalendarPeriod calendarPeriod, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("insert_calendar_period"));
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_calendar_period"));
         prepareCalendarPeriodPstmt(calendarPeriod, pstmt);
         pstmt.execute();
     }
@@ -67,7 +68,7 @@ public class DBCalendarPeriodDao extends ADB implements ICalendarPeriodDao {
             return;
         }
 
-        try (Connection conn = getConnection()) {
+        try (Connection conn = adb.getConnection()) {
             try {
                 conn.setAutoCommit(false);
 
@@ -86,7 +87,7 @@ public class DBCalendarPeriodDao extends ADB implements ICalendarPeriodDao {
     }
 
     private void updateCalendarPeriod(CalendarPeriod from, CalendarPeriod to, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("update_calendar_period"));
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("update_calendar_period"));
         // set ...
         prepareCalendarPeriodPstmt(to, pstmt);
         // where ...
@@ -96,7 +97,7 @@ public class DBCalendarPeriodDao extends ADB implements ICalendarPeriodDao {
 
     @Override
     public void deleteCalendarPeriods(List<CalendarPeriod> periods) throws SQLException {
-        try (Connection conn = getConnection()) {
+        try (Connection conn = adb.getConnection()) {
             try {
                 conn.setAutoCommit(false);
 
@@ -115,7 +116,7 @@ public class DBCalendarPeriodDao extends ADB implements ICalendarPeriodDao {
     }
 
     private void deleteCalendarPeriod(CalendarPeriod calendarPeriod, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(databaseProperties.getString("delete_calendar_period"));
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_calendar_period"));
         prepareCalendarPeriodPstmt(calendarPeriod, pstmt);
         pstmt.execute();
     }
@@ -123,11 +124,11 @@ public class DBCalendarPeriodDao extends ADB implements ICalendarPeriodDao {
     private CalendarPeriod createCalendarPeriod(ResultSet rs) throws SQLException {
         CalendarPeriod calendarPeriod = new CalendarPeriod();
 
-        calendarPeriod.setStartsAt(rs.getString(databaseProperties.getString("calendar_period_starts_at")));
-        calendarPeriod.setEndsAt(rs.getString(databaseProperties.getString("calendar_period_ends_at")));
-        calendarPeriod.setOpeningTime(rs.getString(databaseProperties.getString("calendar_period_opening_time")));
-        calendarPeriod.setClosingTime(rs.getString(databaseProperties.getString("calendar_period_closing_time")));
-        calendarPeriod.setReservableFrom(rs.getString(databaseProperties.getString("calendar_period_reservable_from")));
+        calendarPeriod.setStartsAt(rs.getString(Resources.databaseProperties.getString("calendar_period_starts_at")));
+        calendarPeriod.setEndsAt(rs.getString(Resources.databaseProperties.getString("calendar_period_ends_at")));
+        calendarPeriod.setOpeningTime(rs.getString(Resources.databaseProperties.getString("calendar_period_opening_time")));
+        calendarPeriod.setClosingTime(rs.getString(Resources.databaseProperties.getString("calendar_period_closing_time")));
+        calendarPeriod.setReservableFrom(rs.getString(Resources.databaseProperties.getString("calendar_period_reservable_from")));
 
         calendarPeriod.setLocation(DBLocationDao.createLocation(rs));
 

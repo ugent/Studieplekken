@@ -1,29 +1,21 @@
 package blok2.daos;
 
 import blok2.helpers.date.CustomDate;
+import blok2.model.Authority;
 import blok2.model.reservables.Location;
 import blok2.model.reservables.Locker;
 import blok2.model.reservations.LockerReservation;
 import blok2.model.users.User;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-@SpringBootTest
-@RunWith(SpringRunner.class)
-@ActiveProfiles({"db", "test"})
-public class TestDBLockerReservationDao {
+public class TestDBLockerReservationDao extends TestDao {
 
     @Autowired
     private IAccountDao accountDao;
@@ -34,20 +26,20 @@ public class TestDBLockerReservationDao {
     @Autowired
     private ILockerReservationDao lockerReservationDao;
 
+    @Autowired
+    private IAuthorityDao authorityDao;
+
     private Location testLocation;
+    private Authority authority;
     private User testUser1;
     private User testUser2;
     private List<LockerReservation> testLockerReservations;
 
-    @Before
-    public void setup() throws SQLException {
-        // Use test database
-        TestSharedMethods.setupTestDaoDatabaseCredentials(accountDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(locationDao);
-        TestSharedMethods.setupTestDaoDatabaseCredentials(lockerReservationDao);
-
+    @Override
+    public void populateDatabase() throws SQLException {
         // Setup test objects
-        testLocation = TestSharedMethods.testLocation();
+        authority = TestSharedMethods.insertTestAuthority(authorityDao);
+        testLocation = TestSharedMethods.testLocation(authority.getAuthorityId());
         testUser1 = TestSharedMethods.employeeAdminTestUser();
         testUser2 = TestSharedMethods.studentEmployeeTestUser();
 
@@ -72,17 +64,6 @@ public class TestDBLockerReservationDao {
         lockerReservationDao.addLockerReservation(testLockerReservations.get(0));
         lockerReservationDao.addLockerReservation(testLockerReservations.get(1));
         lockerReservationDao.addLockerReservation(testLockerReservations.get(2));
-    }
-
-    @After
-    public void cleanup() throws SQLException {
-        // Remove test objects from database
-        // Note: due to cascade, the locker reservations will be deleted too
-        locationDao.deleteLocation(testLocation.getName());
-        TestSharedMethods.removeTestUsers(accountDao, testUser2, testUser1);
-
-        // Use regular database
-        locationDao.useDefaultDatabaseConnection();
     }
 
     @Test

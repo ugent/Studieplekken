@@ -6,7 +6,6 @@ Have a look at our [Wiki](https://github.ugent.be/bravdwal/dsa/wiki)
 ### Backend
 **Requirements**
 - Java 8
-- Maven
 - PostgreSQL 11
 
 **Configure**  
@@ -16,14 +15,19 @@ Make sure that a user `postgres` with password `***REMOVED***` has following dat
 - `blokatugent`
 - `blokatugent_test`
 
-For both databases, run the sql queries in `scripts/database/blokatugent.sql`. For the `blokatugent`, run the script `scripts/database/frontend_development_setup.sql` to provide some dummy data.
+For both databases, run the sql queries in `scripts/database/create_schema.sql`. For the `blokatugent`, run the script `scripts/database/seed.sql` to provide some dummy data.
 
 **Commands**
-```shell
-mvn clean # Make sure the project is clean
-mvn install # Install the dependencies
-mvn spring-boot:run # Start the webserver
+```shell script
+./gradlew clean bootRunDev
 ```
+or for windows
+```shell script
+gradlew.bat clean bootRunDev
+```
+
+
+
 
 ### Frontend
 **Requirements**
