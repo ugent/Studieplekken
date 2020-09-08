@@ -9,14 +9,35 @@ export class ApplicationTypeFunctionalityService {
   constructor() { }
 
   showPenaltyFunctionality(): boolean {
-    return environment.applicationType === APPLICATION_TYPE.BLOK_AT;
+    switch (environment.applicationType) {
+      case APPLICATION_TYPE.BLOK_AT:
+        return true;
+      case APPLICATION_TYPE.MINI_THERMIS:
+        return false;
+      default:
+        return true;
+    }
   }
 
   showScanningFunctionality(): boolean {
-    return environment.applicationType === APPLICATION_TYPE.BLOK_AT;
+    switch (environment.applicationType) {
+      case APPLICATION_TYPE.BLOK_AT:
+        return true;
+      case APPLICATION_TYPE.MINI_THERMIS:
+        return false;
+      default:
+        return true;
+    }
   }
 
   showReservationsFunctionality(): boolean {
-    return environment.applicationType === APPLICATION_TYPE.BLOK_AT;
+    switch (environment.applicationType) {
+      case APPLICATION_TYPE.BLOK_AT:
+        return true;
+      case APPLICATION_TYPE.MINI_THERMIS:
+        return false;
+      default:
+        return true;
+    }
   }
 }
