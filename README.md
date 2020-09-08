@@ -26,6 +26,16 @@ or for windows
 gradlew.bat clean bootRunDev
 ```
 
+**Remarks**
+* `database.properties`
+
+This file contains all queries that the application uses, as well as all names of the columns. But, <b>do not change this file</b>. The file will be overwritten if someone executes `update_database_properties.bat` or `update_database_properties.sh`.
+
+For development convenience of SQL queries, the application queries are provided in the file `backend/database/application_queries.sql`. Please do read the explanatory comment before writing any queries.
+
+If a table has been added, or a column name has changed, update the file `backend/database/application_columns.txt`.
+
+When all updates have been made, execute one of the scripts `update_database_properties.bat` or `update_database_properties.sh`, depending on the OS you are using. Now, the `database.properties` file should be updated accordingly.
 
 
 
