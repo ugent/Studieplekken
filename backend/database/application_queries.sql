@@ -75,10 +75,12 @@ where location_id= ? and tag_id = ?;
 select t.tag_id, t.dutch, t.english
 from public.tags t
 order by t.dutch;
+
 -- $get_tag
 select t.tag_id, t.dutch, t.english
 from public.tags t
 where t.tag_id = ?;
+
 -- $tags_from_location
 select t.tag_id, t.dutch, t.english
 from public.tags t
