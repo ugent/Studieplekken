@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {AuthenticationService} from '../../services/authentication/authentication.service';
 import {User} from '../../shared/model/User';
 import {FormControl, FormGroup} from '@angular/forms';
+import {ApplicationTypeFunctionalityService} from '../../services/functionality/application-type/application-type-functionality.service';
 
 @Component({
   selector: 'app-profile-overview',
@@ -12,7 +13,10 @@ export class ProfileOverviewComponent implements OnInit {
   user: User;
   formGroup: FormGroup;
 
-  constructor(private authenticationService: AuthenticationService) {
+  showPenaltyPoints: boolean;
+
+  constructor(private authenticationService: AuthenticationService,
+              private functionalityService: ApplicationTypeFunctionalityService) {
     this.prepareEmptyFormGroup();
     authenticationService.user.subscribe(next => {
       this.setupFormGroup(next);
@@ -20,6 +24,7 @@ export class ProfileOverviewComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.showPenaltyPoints = this.functionalityService.showPenaltyFunctionality();
   }
 
   prepareEmptyFormGroup(): void {

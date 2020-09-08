@@ -407,6 +407,46 @@
         "description": "Omschrijving"
       },
 
+      "addNewButton": "Voeg type overtreding toe",
+
+      "addPenaltyEventModal": {
+        "title": "Nieuw type overtreding toevoegen",
+
+        "formValidationErrorMessages": {
+          "codeWarning1666": "Overtredingen waarvan de code start met '1666' hebben een speciale betekenis: je zal ze niet kunnen verwijderen.",
+          "code": "Verplicht om een code op te geven",
+          "penaltyPoints": "Verplicht om het aantal strafpunten in te vullen",
+          "penaltyPointsMin": "Het aantal strafpunten is niet negatief",
+          "descriptions": "Een omschrijving van het type overtreding is vereist in alle talen."
+        },
+
+        "cancelButton": "Annuleer",
+        "addButton": "Voeg toe",
+
+        "loading": "Wachten op antwoord van de server...",
+        "success": "Het toevoegen van het nieuwe type overtreding is gelukt.",
+        "error": "Er is iets misgelopen tijdens het toevoegen van het nieuwe type overtreding.",
+        "notAllLanguagesError": "Niet alle ondersteunde talen hebben een beschrijving gekregen."
+      },
+
+      "updatePenaltyEventModal": {
+        "title": "Type overtreding wijzigen",
+
+        "formValidationErrorMessages": {
+          "penaltyPoints": "Verplicht om het aantal strafpunten in te vullen",
+          "penaltyPointsMin": "Het aantal strafpunten is niet negatief",
+          "descriptions": "Een omschrijving van het type overtreding is vereist in alle talen."
+        },
+
+        "cancelButton": "Annuleer",
+        "updateButton": "Update",
+
+        "loading": "Wachten op antwoord van de server...",
+        "success": "Het wijzigen van het type overtreding is gelukt.",
+        "error": "Er is iets misgelopen tijdens het wijzigen van het type overtreding.",
+        "notAllLanguagesError": "Niet alle ondersteunde talen hebben een beschrijving gekregen."
+      },
+
       "deletePenaltyEventModal": {
         "title": "Zeker om overtreding te verwijderen?",
 

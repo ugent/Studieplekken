@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
 import {User} from '../../../../shared/model/User';
 import {FormControl, FormGroup} from '@angular/forms';
+import {ApplicationTypeFunctionalityService} from '../../../../services/functionality/application-type/application-type-functionality.service';
 
 @Component({
   selector: 'app-user-details-form',
@@ -22,7 +23,9 @@ export class UserDetailsFormComponent implements OnInit {
     institution: new FormControl('')
   });
 
-  constructor() { }
+  showPenaltyPoints: boolean;
+
+  constructor(private functionalityService: ApplicationTypeFunctionalityService) { }
 
   ngOnInit(): void {
     this.formGroup.disable();
@@ -32,6 +35,8 @@ export class UserDetailsFormComponent implements OnInit {
         this.setup(next);
       }
     );
+
+    this.showPenaltyPoints = this.functionalityService.showPenaltyFunctionality();
   }
 
   setup(user: User): void {

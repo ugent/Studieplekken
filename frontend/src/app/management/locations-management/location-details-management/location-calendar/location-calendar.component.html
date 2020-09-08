@@ -33,7 +33,7 @@
           <th>{{'management.locationDetails.calendar.form.endsAt' | translate}}</th>
           <th>{{'management.locationDetails.calendar.form.openingTime' | translate}}</th>
           <th>{{'management.locationDetails.calendar.form.closingTime' | translate}}</th>
-          <th>{{'management.locationDetails.calendar.form.reservableFrom' | translate}}</th>
+          <th *ngIf="showReservationInformation">{{'management.locationDetails.calendar.form.reservableFrom' | translate}}</th>
           <th>{{'management.locationDetails.calendar.form.remove' | translate}}</th>
         </tr>
         </thead>
@@ -89,7 +89,7 @@
           </td>
 
           <!-- Reservable from -->
-          <td>
+          <td *ngIf="showReservationInformation">
             <label>
               <input
                 class="form-control"

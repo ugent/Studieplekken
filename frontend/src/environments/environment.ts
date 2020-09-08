@@ -2,8 +2,14 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+export enum APPLICATION_TYPE {
+  BLOK_AT,
+  MINI_THERMIS
+}
+
 export const environment = {
-  production: false
+  production: false,
+  applicationType: APPLICATION_TYPE.MINI_THERMIS
 };
 
 export const api = {
@@ -63,6 +69,7 @@ export const api = {
   // PENALTY_EVENTS
   penaltyEvents: '/api/penalties/events',
   addPenaltyEvent: '/api/penalties/events',
+  updatePenaltyEvent: '/api/penalties/events/{code}',
   deletePenaltyEvent: '/api/penalties/events'
 };
 

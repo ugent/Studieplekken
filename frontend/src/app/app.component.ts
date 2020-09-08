@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import {Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
+import {ApplicationTypeFunctionalityService} from './services/functionality/application-type/application-type-functionality.service';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,8 @@ export class AppComponent {
   navigationItems: string[] = ['dashboard', 'profile', 'scan', 'management', 'information'];
 
   constructor(private translate: TranslateService,
-              private router: Router) {
+              private router: Router,
+              private functionalityService: ApplicationTypeFunctionalityService) {
     // if you think about supporting another language, you must change the exported variable 'appLanguages'
     // in environments.ts accordingly. This variable is used in PenaltiesComponent to show the correct description
     translate.setDefaultLang('en');
@@ -20,6 +22,12 @@ export class AppComponent {
     const browserLang = translate.getBrowserLang();
     // add another language? -> add language to regex and read comments at the beginning of this constructor!
     translate.use(browserLang.match(/en|nl/) ? browserLang : 'en');
+
+    const showScan = this.functionalityService.showScanningFunctionality();
+    if (!showScan) {
+      const idx = this.navigationItems.findIndex(v => v === 'scan');
+      this.navigationItems.splice(idx, 1);
+    }
   }
 
   currentLanguage(): string {

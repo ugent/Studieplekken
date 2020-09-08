@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {CalendarPeriod} from '../../shared/model/CalendarPeriod';
+import {CalendarPeriod} from '../../../shared/model/CalendarPeriod';
 import {Observable} from 'rxjs';
-import {api} from '../../../environments/environment';
+import {api} from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'

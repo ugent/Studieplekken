@@ -48,7 +48,7 @@
     </div>
 
     <!-- Penalty points (calculated) -->
-    <div class="row form-group">
+    <div class="row form-group" *ngIf="showPenaltyPoints">
       <label class="col-lg-3 control-label" for="penaltyPoints">
         {{'management.users.userDetails.form.penaltyPoints' | translate}}</label>
       <div class="col-lg-8">

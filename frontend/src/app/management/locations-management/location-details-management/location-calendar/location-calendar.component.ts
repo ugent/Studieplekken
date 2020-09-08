@@ -8,8 +8,10 @@ import {
 } from '../../../../shared/model/CalendarPeriod';
 import {Observable, Subject} from 'rxjs';
 import {Location} from '../../../../shared/model/Location';
-import {CalendarPeriodsService} from '../../../../services/calendar-periods/calendar-periods.service';
+import {CalendarPeriodsService} from '../../../../services/api/calendar-periods/calendar-periods.service';
 import {equalCalendarPeriods} from '../../../../shared/comparators/ModelComparators';
+import {ApplicationTypeFunctionalityService} from "../../../../services/functionality/application-type/application-type-functionality.service";
+import {toDateTimeString, typeScriptDateToCustomDate} from "../../../../shared/model/helpers/CustomDate";
 
 @Component({
   selector: 'app-location-calendar',
@@ -48,12 +50,16 @@ export class LocationCalendarComponent implements OnInit {
   showSuccess = false;
   showError = false;
 
-  constructor(private calendarPeriodsService: CalendarPeriodsService) { }
+  showReservationInformation: boolean;
+
+  constructor(private calendarPeriodsService: CalendarPeriodsService,
+              private functionalityService: ApplicationTypeFunctionalityService) { }
 
   ngOnInit(): void {
     this.location.subscribe(next => {
       this.setupEvents(next.name);
     });
+    this.showReservationInformation = this.functionalityService.showReservationsFunctionality();
   }
 
   setupEvents(locationName: string): void {
@@ -133,6 +139,17 @@ export class LocationCalendarComponent implements OnInit {
   addOpeningPeriod(location: Location): void {
     const period: CalendarPeriod = CalendarPeriodConstructor.new();
     period.location = location;
+
+    // If the information about reservations may not be shown (configured in environments.ts),
+    // then we need to programmatically provide a valid value for 'reservableFrom' because
+    // the user will not be able to set the value manually.
+    // If not set, the period will not be addable. Therefore, we just provide the current date-time.
+    if (!this.showReservationInformation) {
+      let dateTime = toDateTimeString(typeScriptDateToCustomDate(new Date()));
+      // remove the trailing ':ss', to get YYYY-MM-DDThh:mm format
+      dateTime = dateTime.substr(0, dateTime.length - 3);
+      period.reservableFrom = dateTime;
+    }
 
     this.events = [
       ...this.events, calendarPeriodToCalendarEvent(period)

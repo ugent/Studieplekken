@@ -53,6 +53,7 @@ export function nowAsCustomDate(): CustomDate {
   return customDate;
 }
 
+// YYYY-MM-DD
 export function toISODateString(date: CustomDate): string {
   return ('' + date.year).padStart(4, '0') + '-' +
     ('' + date.month).padStart(2, '0') + '-' +
@@ -67,12 +68,14 @@ export function toDateString(date: CustomDate): string {
   return formatDateString(dateString);
 }
 
+// hh:mm:ss
 export function toTimeString(date: CustomDate): string {
   return date.hrs + ':' + date.min + ':' + date.sec;
 }
 
+// YYYY-MM-DDThh:mm:ss
 export function toDateTimeString(date: CustomDate): string {
-  return toDateString(date) + 'T'
+  return toISODateString(date) + 'T'
     + toTimeString(date);
 }
 
