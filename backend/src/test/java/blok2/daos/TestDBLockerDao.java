@@ -100,7 +100,7 @@ public class TestDBLockerDao extends TestDao {
         List<LockerReservation> lockerStatusesOfLocation = lockersDao.getLockerStatusesOfLocation(testLocation.getName());
 
         // SCENARIO 4: unreserved locker, should not have an owner
-        LockerReservation lr3 = lockerStatusesOfLocation.get(random.get(4));
+        LockerReservation lr3 = lockerStatusesOfLocation.get(random.get(3));
         User u3 = lr3.getOwner();
 
         // The first two scenarios should be included in the returned statuses, while the third scenario shouldn't.
