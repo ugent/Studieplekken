@@ -7,11 +7,13 @@ import {ApplicationTypeFunctionalityService} from '../services/functionality/app
   styleUrls: ['./management.component.css']
 })
 export class ManagementComponent implements OnInit {
+  showReservations: boolean;
   showPenalties: boolean;
 
   constructor(private functionalityService: ApplicationTypeFunctionalityService) { }
 
   ngOnInit(): void {
+    this.showReservations = this.functionalityService.showReservationsFunctionality();
     this.showPenalties = this.functionalityService.showPenaltyFunctionality();
   }
 

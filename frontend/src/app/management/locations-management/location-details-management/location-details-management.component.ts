@@ -3,6 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {LocationDetailsService} from '../../../services/single-point-of-truth/location-details/location-details.service';
 import {Observable} from 'rxjs';
 import {Location} from '../../../shared/model/Location';
+import {ApplicationTypeFunctionalityService} from '../../../services/functionality/application-type/application-type-functionality.service';
 
 @Component({
   selector: 'app-location-details-management',
@@ -14,11 +15,15 @@ export class LocationDetailsManagementComponent implements OnInit {
 
   Object = Object;
 
+  showLockersManagement: boolean;
+
   constructor(private locationDetailsService: LocationDetailsService,
-              private route: ActivatedRoute) { }
+              private route: ActivatedRoute,
+              private functionalityService: ApplicationTypeFunctionalityService) { }
 
   ngOnInit(): void {
     const locationName = this.route.snapshot.paramMap.get('locationName');
     this.locationDetailsService.loadLocation(locationName);
+    this.showLockersManagement = this.functionalityService.showLockersManagementFunctionality();
   }
 }

@@ -7,11 +7,13 @@ import {ApplicationTypeFunctionalityService} from '../services/functionality/app
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
+  showReservations: boolean;
   showPenalties: boolean;
 
   constructor(private functionalityService: ApplicationTypeFunctionalityService) { }
 
   ngOnInit(): void {
+    this.showReservations = this.functionalityService.showReservationsFunctionality();
     this.showPenalties = this.functionalityService.showPenaltyFunctionality();
   }
 

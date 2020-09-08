@@ -40,4 +40,15 @@ export class ApplicationTypeFunctionalityService {
         return true;
     }
   }
+
+  showLockersManagementFunctionality(): boolean {
+    switch (environment.applicationType) {
+      case APPLICATION_TYPE.BLOK_AT:
+        return true;
+      case APPLICATION_TYPE.MINI_THERMIS:
+        return false;
+      default:
+        return true;
+    }
+  }
 }

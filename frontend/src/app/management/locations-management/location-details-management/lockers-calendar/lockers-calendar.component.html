@@ -31,7 +31,7 @@
         <tr>
           <th>{{'management.locationDetails.lockerCalendar.form.startsAt' | translate}}</th>
           <th>{{'management.locationDetails.lockerCalendar.form.endsAt' | translate}}</th>
-          <th>{{'management.locationDetails.lockerCalendar.form.reservableFrom' | translate}}</th>
+          <th *ngIf="showReservationInformation">{{'management.locationDetails.lockerCalendar.form.reservableFrom' | translate}}</th>
           <th>{{'management.locationDetails.lockerCalendar.form.remove' | translate}}</th>
         </tr>
         </thead>
@@ -63,7 +63,7 @@
           </td>
 
           <!-- Reservable from -->
-          <td>
+          <td *ngIf="showReservationInformation">
             <label>
               <input
                 class="form-control"

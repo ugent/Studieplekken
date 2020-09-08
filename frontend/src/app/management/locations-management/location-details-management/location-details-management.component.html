@@ -51,7 +51,7 @@
   </div>
 
   <!-- If this period has lockers, show the calendar for lockers -->
-  <div class="panel-group" *ngIf="location.numberOfLockers > 0">
+  <div class="panel-group" *ngIf="showLockersManagement && location.numberOfLockers > 0">
     <!-- Heading -->
     <div class="panel-heading">
       <h3 class="panel-title">
@@ -69,7 +69,7 @@
   </div>
 
   <!-- If this period has lockers, show the table overview of lockers -->
-  <div class="panel-group" *ngIf="location.numberOfLockers > 0">
+  <div class="panel-group" *ngIf="showLockersManagement && location.numberOfLockers > 0">
     <!-- Heading -->
     <div class="panel-heading">
       <h3 class="panel-title">
