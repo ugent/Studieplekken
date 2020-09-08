@@ -1,3 +1,42 @@
+-- This file contains all the queries that are used within the application.
+--
+-- However, this file will not be read by Spring Boot to get the SQL queries.
+-- The Java code uses the file database.properties as a key-value file to
+-- get the queries.
+--
+-- This file is used as it is much easier to read/write/update formatted
+-- queries. But, we need to convert this file into the key-value format.
+-- Converting these queries can be done by:
+--    - Windows: run `backend/scripts/update_database_properties.bat
+--    - Unix: run `backend/scripts/update_database_properties.sh` with bash
+--
+-- Not only the queries in this file will be added to the database.properties
+-- file, but the key-values within application_columns.props will be added
+-- to the file as well.
+--
+-- Do note that it is important that this file is formatted correctly in
+-- order for the formatting script to be able to correctly create the
+-- database.properties file:
+--     +-
+--     | -- Start of a new block of queries, e.g. queries for a TABLE
+--     | -- $name_of_query1.1
+--     | ...
+--     |  formatted query that must end with ';'
+--     | ...;
+--     |
+--     | -- $name_of_query1.2 (after one newline)
+--     | ...
+--     |  formatted query that must end with ';'
+--     | ...;
+--     |
+--     |
+--     | -- Start of a new block of queries, after two \n
+--     | -- $name_of_query2.1
+--     | ...
+--     |  formatted query that must end with ';'
+--     | ...;
+--     +-
+
 -- queries for table LOCATIONS
 -- $all_locations
 select l.name, l.number_of_seats, l.number_of_lockers
