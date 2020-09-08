@@ -1,0 +1,116 @@
+# columns for table CALENDAR
+calendar_location=location_name
+calendar_opening_hour=opening_time
+calendar_closing_hour=closing_time
+calendar_date=date
+calendar_open_reservation_date=open_for_reservation_date
+
+# columns for table INSTITUTIONS
+institution_name=name
+
+# columns for table LOCATIONS
+location_name=name
+location_number_of_seats=number_of_seats
+location_number_of_lockers=number_of_lockers
+location_maps_frame=maps_frame
+location_image_url=image_url
+location_address=address
+location_start_period_lockers=start_period_lockers
+location_end_period_lockers=end_period_lockers
+location_authority_id=authority_id
+
+# columns for table LOCATION_RESERVATIONS
+location_reservation_date=date
+location_reservation_location_name=location_name
+location_reservation_attended=attended
+location_reservation_user_augentid=user_augentid
+
+# columns for table LOCKERS
+locker_location=location_name
+locker_number=number
+locker_id=id
+
+# columns for table LOCKER_RESERVATIONS
+locker_reservation_location_name=location_name
+locker_reservation_locker_number=locker_number
+locker_reservation_user_augentid=user_augentid
+locker_reservation_key_pickup_date=key_pickup_date
+locker_reservation_key_return_date=key_return_date
+
+# columns for table ROLES
+role_type=type
+
+# columns for table ROLES_USER_AUTHORITY
+roles_user_authority_authority_id = authority_id
+roles_user_authority_user_id = user_id
+
+# columns for table AUTHORITY
+authority_authority_id = authority_id
+authority_name = name
+authority_description = description
+
+# columns for table USER
+user_augentid=augentid
+user_role=role
+user_name=augentpreferredgivenname
+user_surname=augentpreferredsn
+user_penalty_points=penalty_points
+user_mail=mail
+user_password=password
+user_institution=institution
+user_barcode=barcode
+
+# columns for table USERS_TO_VERIFY
+utv_augentid=augentid
+utv_role=role
+utv_name=augentpreferredgivenname
+utv_surname=augentpreferredsn
+utv_mail=mail
+utv_password=password
+utv_institution=institution
+utv_barcode=barcode
+utv_verification_code=verification_code
+utv_created_timestamp=created_timestamp
+
+# columns for table LANGUAGES
+language_enum=enum
+
+# columns for table PENALTY_EVENTS
+penalty_event_code=code
+penalty_event_points=points
+
+# columns for table PENALTY_DESCRIPTIONS
+penalty_description_lang_enum=lang_enum
+penalty_description_event_code=event_code
+penalty_description_description=description
+
+# columns for table PENALTY_BOOK
+penalty_book_user_augentid=user_augentid
+penalty_book_event_code=event_code
+penalty_book_timestamp=timestamp
+penalty_book_reservation_date=reservation_date
+penalty_book_received_points=received_points
+penalty_book_reservation_location=reservation_location
+penalty_book_remarks=remarks
+
+# columns for table SCANNERS_LOCATION
+scanners_location_user_augentid=user_augentid
+scanners_location_name=location_name
+
+# columns for LOCATION_DESCRIPTIONS
+location_description_description=description
+location_description_lang_enum=lang_enum
+
+# columns for CALENDAR_PERIODS
+calendar_period_location_name=location_name
+calendar_period_starts_at=starts_at
+calendar_period_ends_at=ends_at
+calendar_period_opening_time=opening_time
+calendar_period_closing_time=closing_time
+calendar_period_reservable_from=reservable_from
+
+# columns for CALENDAR_PERIODS_FOR_LOCKERS
+calendar_period_for_lockers_location_name=location_name
+calendar_period_for_lockers_starts_at=starts_at
+calendar_period_for_lockers_ends_at=ends_at
+calendar_period_for_lockers_reservable_from=reservable_from
