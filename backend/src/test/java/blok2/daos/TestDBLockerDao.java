@@ -70,24 +70,24 @@ public class TestDBLockerDao extends TestDao {
         // Get 3 random numbers of locker to reserve
         HashSet<Integer> set = new HashSet<>();
         Random r = new Random();
-        while (set.size() < 3) {
+        while (set.size() < 4) {
             set.add(r.nextInt(testLocation.getNumberOfLockers()));
         }
         List<Integer> random = new ArrayList<>(set);
 
-        // SCENARIO 1: reserve locker without pickup or returned date, key has not yet been picked up yet
+        // SCENARIO 1: reserved locker without pickup or returned date, key has not yet been picked up yet
         Locker l0 = testLockers.get(random.get(0));
         LockerReservation lr0 = new LockerReservation(l0, testUser);
         lockerReservationDao.addLockerReservation(lr0);
 
-        // SCENARIO 2: reserve locker with pickup but without returned date, locker is still reserved.
+        // SCENARIO 2: reserved locker with pickup but without returned date, locker is still reserved.
         Locker l1 = testLockers.get(random.get(1));
         LockerReservation lr1 = new LockerReservation(l1, testUser);
         CustomDate pud1 = new CustomDate(1970, 1, 1, 9, 0, 0);
         lr1.setKeyPickupDate(pud1);
         lockerReservationDao.addLockerReservation(lr1);
 
-        // SCENARIO 3: reserve locker with pickup and returned date, locker key has been returned
+        // SCENARIO 3: reserved locker with pickup and returned date, locker key has been returned
         Locker l2 = testLockers.get(random.get(2));
         LockerReservation lr2 = new LockerReservation(l2, testUser);
         CustomDate pud2 = new CustomDate(1970, 1, 1, 9, 0, 0);
@@ -99,9 +99,14 @@ public class TestDBLockerDao extends TestDao {
         // Retrieve the locker statuses
         List<LockerReservation> lockerStatusesOfLocation = lockersDao.getLockerStatusesOfLocation(testLocation.getName());
 
+        // SCENARIO 4: unreserved locker, should not have an owner
+        LockerReservation lr3 = lockerStatusesOfLocation.get(random.get(4));
+        User u3 = lr3.getOwner();
+
         // The first two scenarios should be included in the returned statuses, while the third scenario shouldn't.
         Assert.assertTrue("getLockerStatusesOfLocation, scenario 1", lockerStatusesOfLocation.contains(lr0));
         Assert.assertTrue("getLockerStatusesOfLocation, scenario 2", lockerStatusesOfLocation.contains(lr1));
         Assert.assertFalse("getLockerStatusesOfLocation, scenario 3", lockerStatusesOfLocation.contains(lr2));
+        Assert.assertNull("getLockerStatusesOfLocationTest, scenario 4", u3);
     }
 }
