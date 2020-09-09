@@ -51,6 +51,14 @@ public class CustomDate implements Cloneable {
         return String.format("%02d", hrs) + ":" + String.format("%02d", min);
     }
 
+    /**
+     * Parsing following formats into a CustomDate:
+     *   YYYY-MM-DD HH24:MI:SS
+     *   YYYY-MM-DDTHH24:MI:SS
+     *   YYYY-MM-DD
+     *
+     * Note on last format: the values of hrs, min, sec will all be 0.
+     */
     public static CustomDate parseString(String s) throws DateFormatException {
         if (s == null || s.isEmpty()) {
             return null;
