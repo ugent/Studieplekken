@@ -34,7 +34,7 @@ public class CustomDate implements Cloneable {
 
     @Override
     public String toString() {
-        return this.toDateString() + "T" + toTimeString();
+        return this.toDateString() + " " + toTimeString();
     }
 
     public String toDateString() {
@@ -51,19 +51,34 @@ public class CustomDate implements Cloneable {
         return String.format("%02d", hrs) + ":" + String.format("%02d", min);
     }
 
+    /**
+     * Parsing following formats into a CustomDate:
+     *   YYYY-MM-DD HH24:MI:SS
+     *   YYYY-MM-DDTHH24:MI:SS
+     *   YYYY-MM-DD
+     *
+     * Note on last format: the values of hrs, min, sec will all be 0.
+     */
     public static CustomDate parseString(String s) throws DateFormatException {
         if (s == null || s.isEmpty()) {
             return null;
         }
 
-        if (!s.contains("T")) {
-            String[] dateParts = s.split("-");
-            return new CustomDate(Integer.parseInt(dateParts[0]),
-                    Integer.parseInt(dateParts[1]),
-                    Integer.parseInt(dateParts[2]));
+        String[] strings;
+        if (s.contains("T")) {
+            strings = s.split("T");
+        } else if (s.contains(" ")) {
+            strings = s.split(" ");
+        } else {
+            strings = s.split("-");
+            if (strings.length != 3)
+                return null;
+
+            return new CustomDate(Integer.parseInt(strings[0]),
+                    Integer.parseInt(strings[1]),
+                    Integer.parseInt(strings[2]));
         }
 
-        String[] strings = s.split("T");
         String[] dateParts = strings[0].split("-");
         String[] timeParts = strings[1].split(":");
 
