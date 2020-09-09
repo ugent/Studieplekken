@@ -11,3 +11,6 @@ scritps/
 stop
 start
 varia/*.docx
+
+# Mac-specific files
+**.DS_Store**
