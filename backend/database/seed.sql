@@ -19,8 +19,8 @@ DECLARE tableId integer;
 BEGIN
   INSERT INTO public.authority (name, description) values ('DSA', 'Dienst StudentenActiviteiten') RETURNING authority_id into tableId;
   INSERT INTO public.locations (name, address, number_of_seats, number_of_lockers, image_url, authority_id, description_dutch, description_english)
-    VALUES ('Therminal', 'Hoveniersberg 24, 9000 Gent', 200, 100, 'www.example.png', tableId, 'neder', 'engl'),
-            ('Sterre S5', 'Krijgslaan 281, 9000 Gent', 200, 100, 'www.example.png', tableId, 'nederdescr', 'engldescr');
+    VALUES ('Therminal', 'Hoveniersberg 24, 9000 Gent', 200, 100, '', tableId, 'neder', 'engl'),
+            ('Sterre S5', 'Krijgslaan 281, 9000 Gent', 200, 100, '', tableId, 'nederdescr', 'engldescr');
   INSERT INTO public.roles_user_authority (user_id, authority_id) VALUES ('002',tableId);
 END $$;
 /*
