@@ -44,6 +44,8 @@ import { UserDetailsManagementPenaltiesComponent } from './management/users-mana
 import { LocationReservationsManagementComponent } from './management/reservations-management/location-reservations-management/location-reservations-management.component';
 import { LockerReservationsManagementComponent } from './management/reservations-management/locker-reservations-management/locker-reservations-management.component';
 import {ApplicationTypeGuardService} from './services/guard/functionality/application-type-guard/application-type-guard.service';
+import { LocationDescriptionComponent } from './management/locations-management/location-details-management/location-description/location-description.component';
+import {CKEditorModule} from '@ckeditor/ckeditor5-angular';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -148,30 +150,32 @@ const routes: Routes = [
     UserRolesComponent,
     UserDetailsManagementPenaltiesComponent,
     LocationReservationsManagementComponent,
-    LockerReservationsManagementComponent
+    LockerReservationsManagementComponent,
+    LocationDescriptionComponent
   ],
     imports: [
-        BrowserModule,
-        AppRoutingModule,
-        RouterModule.forRoot(routes),
-        HttpClientModule,
-        TranslateModule.forRoot({
-            defaultLanguage: 'nl',
-            loader: {
-                provide: TranslateLoader,
-                useFactory: HttpLoaderFactory,
-                deps: [HttpClient]
-            }
-        }),
-        MarkdownModule.forRoot(),
-        BrowserAnimationsModule,
-        CalendarModule.forRoot({
-            provide: DateAdapter,
-            useFactory: adapterFactory,
-        }),
-        ReactiveFormsModule,
-        FormsModule,
-        FlatpickrModule.forRoot()
+      BrowserModule,
+      AppRoutingModule,
+      RouterModule.forRoot(routes),
+      HttpClientModule,
+      TranslateModule.forRoot({
+          defaultLanguage: 'nl',
+          loader: {
+              provide: TranslateLoader,
+              useFactory: HttpLoaderFactory,
+              deps: [HttpClient]
+          }
+      }),
+      MarkdownModule.forRoot(),
+      BrowserAnimationsModule,
+      CalendarModule.forRoot({
+          provide: DateAdapter,
+          useFactory: adapterFactory,
+      }),
+      ReactiveFormsModule,
+      FormsModule,
+      FlatpickrModule.forRoot(),
+      CKEditorModule
     ],
   providers: [],
   bootstrap: [AppComponent]

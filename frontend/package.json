@@ -19,6 +19,8 @@
     "@angular/platform-browser": "^10.0.12",
     "@angular/platform-browser-dynamic": "^10.0.12",
     "@angular/router": "^10.0.12",
+    "@ckeditor/ckeditor5-angular": "^1.2.3",
+    "@ckeditor/ckeditor5-build-classic": "^22.0.0",
     "@ngx-translate/core": "^13.0.0",
     "@ngx-translate/http-loader": "^6.0.0",
     "angular-calendar": "^0.28.16",

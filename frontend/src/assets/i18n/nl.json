@@ -111,6 +111,10 @@
         }
       },
 
+      "description": {
+        "title": "Beschrijving van de locatie"
+      },
+
       "lockerCalendar": {
         "title": "Kalender voor beschikbaarheid van lockers",
 

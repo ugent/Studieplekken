@@ -111,6 +111,10 @@
         }
       },
 
+      "description": {
+        "title": "Description of the location"
+      },
+
       "lockerCalendar": {
         "title": "Calendar for availability of lockers",
 
