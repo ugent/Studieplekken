@@ -29,7 +29,9 @@
       "STUDENT": "Student"
     },
 
-    "optional": "Optioneel"
+    "optional": "Optioneel",
+
+    "waitingForServer": "Wachten op antwoord van de server..."
   },
 
   "header": {
@@ -112,7 +114,15 @@
       },
 
       "description": {
-        "title": "Beschrijving van de locatie"
+        "title": "Beschrijving van de locatie",
+        "englishDescription": "Omschrijving in het Engels",
+        "dutchDescription": "Omschrijving in het Nederlands",
+
+        "updateButton": "Update",
+        "cancelButton": "Annuleer",
+
+        "errorUpdating": "Er is iets misgelopen tijdens het updaten van de omschrijvingen.",
+        "successUpdating": "Het updaten van de omschrijvingen is geslaagd."
       },
 
       "lockerCalendar": {

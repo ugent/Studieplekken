@@ -4,6 +4,9 @@ export interface Location {
   numberOfSeats: number;
   numberOfLockers: number;
   imageUrl: string;
+  authorityId: number;
+  descriptionDutch: string;
+  descriptionEnglish: string;
 }
 
 export class LocationConstructor {
@@ -13,7 +16,10 @@ export class LocationConstructor {
       address: '',
       numberOfSeats: 0,
       numberOfLockers: 0,
-      imageUrl: ''
+      imageUrl: '',
+      authorityId: 0,
+      descriptionDutch: '',
+      descriptionEnglish: ''
     };
   }
 
@@ -27,7 +33,10 @@ export class LocationConstructor {
       address: obj.address,
       numberOfSeats: obj.numberOfSeats,
       numberOfLockers: obj.numberOfLockers,
-      imageUrl: obj.imageUrl
+      imageUrl: obj.imageUrl,
+      authorityId: obj.authorityId,
+      descriptionDutch: obj.descriptionDutch,
+      descriptionEnglish: obj.descriptionEnglish
     };
   }
 }

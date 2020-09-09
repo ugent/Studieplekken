@@ -77,6 +77,6 @@
  * Class to set margin if two buttons are next to each other.
  * This class should be set on the left button.
  */
-.left-button {
-  margin-right: 20px;
+.btn-left {
+  margin-right: 10px;
 }

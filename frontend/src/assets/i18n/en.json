@@ -29,7 +29,9 @@
       "STUDENT": "Student"
     },
 
-    "optional": "Optional"
+    "optional": "Optional",
+
+    "waitingForServer": "Waiting for response of server..."
   },
 
   "header": {
@@ -112,7 +114,15 @@
       },
 
       "description": {
-        "title": "Description of the location"
+        "title": "Description of the location",
+        "englishDescription": "Description in English",
+        "dutchDescription": "Description in Dutch",
+
+        "updateButton": "Update",
+        "cancelButton": "Cancel",
+
+        "errorUpdating": "Something went wrong while updating the descriptions of the location.",
+        "successUpdating": "Successfully updated the descriptions of the location."
       },
 
       "lockerCalendar": {

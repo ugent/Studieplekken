@@ -1,5 +1,50 @@
-<ckeditor [(ngModel)]="model.description"
-          [editor]="editor"
-          [config]="config">
-</ckeditor>
-<button (click)="buttonClick()">Print</button>
+<div class="container-fluid" *ngIf="location | async as location">
+  <div class="panel-body" style="padding: 20px">
+    <!-- The editor for the dutch description -->
+    <div class="row">
+      <h3>{{'management.locationDetails.description.dutchDescription' | translate}}</h3>
+
+      <ckeditor [(ngModel)]="model.dutch"
+                [editor]="editor"
+                [config]="config">
+      </ckeditor>
+    </div>
+
+    <!-- The editor for the english description -->
+    <div class="row" style="margin-top: 20px;">
+      <h3>{{'management.locationDetails.description.englishDescription' | translate}}</h3>
+
+      <ckeditor [(ngModel)]="model.english"
+                [editor]="editor"
+                [config]="config">
+      </ckeditor>
+    </div>
+
+    <div class="row" style="margin-top: 20px;">
+      <div class="pull-right">
+        <button class="btn btn-primary btn-left" (click)="updateButtonClick()" [disabled]="!isModelUpdatable()">
+          {{'management.locationDetails.description.updateButton' | translate}}
+        </button>
+
+        <button class="btn btn-secondary" (click)="cancelButtonClick()" [disabled]="!isModelUpdatable()">
+          {{'management.locationDetails.description.cancelButton' | translate}}
+        </button>
+      </div>
+    </div>
+
+    <!-- Feedback on updating the descriptions -->
+    <div class="row" style="margin-top: 20px;">
+      <div class="alert alert-info" *ngIf="showUpdateSuccess === null">
+        {{'general.waitingForServer' | translate}}
+      </div>
+
+      <div class="alert alert-success" *ngIf="showUpdateSuccess === true">
+        {{'management.locationDetails.description.successUpdating' | translate}}
+      </div>
+
+      <div class="alert alert-error" *ngIf="showUpdateSuccess === false">
+        {{'management.locationDetails.description.errorUpdating' | translate}}
+      </div>
+    </div>
+  </div>
+</div>

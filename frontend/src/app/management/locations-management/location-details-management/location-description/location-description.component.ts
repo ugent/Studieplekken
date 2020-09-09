@@ -2,6 +2,9 @@ import {Component, Input, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
 import {Location} from '../../../../shared/model/Location';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import {LocationDetailsService} from "../../../../services/single-point-of-truth/location-details/location-details.service";
+import {LocationService} from "../../../../services/api/locations/location.service";
+import {msToShowFeedback} from "../../../../../environments/environment";
 
 @Component({
   selector: 'app-location-description',
@@ -13,35 +16,69 @@ export class LocationDescriptionComponent implements OnInit {
 
   editor = ClassicEditor;
 
+  modelInDataLayer = {
+    dutch: '',
+    english: ''
+  };
+
   model = {
-    description: '<p>Hello, world!</p>'
+    dutch: '',
+    english: ''
   };
 
   config = {
     toolbar: [
-      'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo',
-      'Find', 'Replace', '-', 'SelectAll', '-', 'Scayt',
-      'Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField',
-      '/',
-      'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'CopyFormatting', 'RemoveFormat',
-      'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl', 'Language',
-      'Link', 'Unlink', 'Anchor',
-      'Image', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe',
-      '/',
-      'Styles', 'Format', 'Font', 'FontSize',
-      'TextColor', 'BGColor',
-      'Maximize', 'ShowBlocks',
-      'About'
+      'heading', '|', 'bold', 'italic', '|', 'numberedList', 'bulletedList', '|', 'link', 'blockQuote',
+      'insertTable', '|', 'undo', 'redo'
     ]
   };
 
-  constructor() { }
+  showUpdateSuccess: boolean = undefined;
+
+  constructor(private locationDetailsService: LocationDetailsService,
+              private locationService: LocationService) { }
 
   ngOnInit(): void {
-    this.editor.editorConfig
+    this.location.subscribe(next => {
+      this.modelInDataLayer.dutch = next.descriptionDutch;
+      this.modelInDataLayer.english = next.descriptionEnglish;
+
+      this.model.dutch = next.descriptionDutch;
+      this.model.english = next.descriptionEnglish;
+    });
   }
 
-  buttonClick(): void {
-    console.log(this.model.description);
+  updateButtonClick(): void {
+    // show "loading" alert
+    this.showUpdateSuccess = null;
+
+    // prepare location to update
+    const location = this.locationDetailsService.location;
+    location.descriptionDutch = this.model.dutch;
+    location.descriptionEnglish = this.model.english;
+
+    // update
+    this.locationService.updateLocation(location.name, location).subscribe(
+      () => {
+        this.showUpdateSuccess = true;
+        setTimeout(() => this.showUpdateSuccess = undefined, msToShowFeedback);
+        // make sure to retrieve the updated the location
+        this.locationDetailsService.loadLocation(location.name);
+      }, () => {
+        this.showUpdateSuccess = false;
+        setTimeout(() => this.showUpdateSuccess = undefined, msToShowFeedback);
+      }
+    );
+  }
+
+  cancelButtonClick(): void {
+    this.showUpdateSuccess = undefined;
+    this.model.dutch = this.modelInDataLayer.dutch;
+    this.model.english = this.modelInDataLayer.english;
+  }
+
+  isModelUpdatable(): boolean {
+    return this.modelInDataLayer.dutch !== this.model.dutch ||
+      this.modelInDataLayer.english !== this.model.english;
   }
 }

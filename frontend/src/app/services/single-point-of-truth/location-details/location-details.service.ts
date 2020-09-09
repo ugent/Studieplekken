@@ -47,4 +47,8 @@ export class LocationDetailsService {
       }
     );
   }
+
+  get location(): Location {
+    return this.locationSubject.value;
+  }
 }
