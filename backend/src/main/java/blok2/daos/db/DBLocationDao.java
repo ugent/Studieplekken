@@ -104,20 +104,19 @@ public class DBLocationDao extends DAO implements ILocationDao {
             try {
                 conn.setAutoCommit(false);
                 if (!locationName.equals(location.getName())) {
-                    // add location and lockers so, we have added
+                    // add location and lockers so we have added
                     // the 'updated' location and there are new lockers
                     // with FK to the new location
                     addLocation(location, conn);
 
                     // update the remaining tables with FK to location:
                     // calendar, scanner_locations, location_reservations,
-                    // locker_reservations and penalty_book
+                    // locker_reservations, location_tags and penalty_book
                     updateForeignKeysToLocation(locationName, location.getName(), conn);
 
                     // delete lockers with FK to the old location,
                     // and eventually delete the old location as well
                     deleteLockers(locationName, conn);
-                    deleteTagsFromLocation(locationName, conn);
                     deleteLocation(locationName, conn);
                 } else {
                     updateLocation(location, conn);
@@ -453,9 +452,6 @@ public class DBLocationDao extends DAO implements ILocationDao {
         // where ...
         pstmt.setString(9, location.getName());
         pstmt.execute();
-        //update tags by first removing them and then adding them
-        deleteTagsFromLocation(location.getName(), conn);
-        insertTags(location.getName(), location.getTags(), conn);
     }
 
     private void updateNumberOfLockers(String locationName, int from, int to, Connection conn) throws SQLException {
