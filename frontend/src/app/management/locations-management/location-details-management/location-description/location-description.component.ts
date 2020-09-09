@@ -2,9 +2,9 @@ import {Component, Input, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
 import {Location} from '../../../../shared/model/Location';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import {LocationDetailsService} from "../../../../services/single-point-of-truth/location-details/location-details.service";
-import {LocationService} from "../../../../services/api/locations/location.service";
-import {msToShowFeedback} from "../../../../../environments/environment";
+import {LocationDetailsService} from '../../../../services/single-point-of-truth/location-details/location-details.service';
+import {LocationService} from '../../../../services/api/locations/location.service';
+import {msToShowFeedback} from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-location-description',
