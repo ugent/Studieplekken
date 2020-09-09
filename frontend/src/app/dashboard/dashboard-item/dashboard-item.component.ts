@@ -14,6 +14,8 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
 
   occupation: number;
 
+  altImageUrl = vars.defaultLocationImage;
+
   constructor(private locationService: LocationService) { }
 
   ngOnInit(): void {

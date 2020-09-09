@@ -8,8 +8,10 @@
       <!-- Note that if the original url of the image (received from the
            REST API) resulted in an error in the dashboard-item, the attribute
             will be replaced with a default value. -->
-      <img src="{{location.imageUrl}}" alt="Image of {{location.name}}"
+      <img *ngIf="location.imageUrl !== null"
+           src="{{location.imageUrl}}" alt="Image of {{location.name}}"
            (error)="handleImageError(location)">
+      <img *ngIf="location.imageUrl === null" [src]="altImageUrl" alt="Image of {{location.name}}">
     </div>
 
     <div class="col-md-5 col-sm-12">
@@ -21,6 +23,17 @@
       </ul>
     </div>
   </div>
+
+  <hr>
+
+  <!-- Description of the location, show the description based on the browser language -->
+  <!-- A CKEditor is used, but is put in read-only mode and without a toolbar -->
+  <h2>{{'dashboard.description' | translate}}</h2>
+
+  <ckeditor [(ngModel)]="description.show"
+            [editor]="editor"
+            [disabled]="true" [config]="{toolbar: []}">
+  </ckeditor>
 
   <hr>
 

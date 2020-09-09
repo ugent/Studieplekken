@@ -1,6 +1,7 @@
 {
   "dashboard": {
     "address": "Adres",
+    "description": "Omschrijving",
     "details": "Details",
     "gotoDashboard": "Gelieve naar het dashboard te navigeren en een locatie te selecteren.",
     "location": "Locatie",
