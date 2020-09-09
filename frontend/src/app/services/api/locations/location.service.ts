@@ -43,14 +43,7 @@ export class LocationService {
   }
 
   updateLocation(locationName: string, location: Location): Observable<any> {
-    const ret = this.http.put<void>(api.updateLocation.replace('{locationName}', locationName), location);
-
-    // let an update follow with a getLocations() so that the new information is retrieved
-    ret.subscribe(() => {
-      this.getLocations();
-    });
-
-    return ret;
+    return this.http.put<void>(api.updateLocation.replace('{locationName}', locationName), location);
   }
 
   deleteLocation(locationName: string): Observable<any> {
