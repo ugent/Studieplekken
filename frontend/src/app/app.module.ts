@@ -46,6 +46,7 @@ import { LockerReservationsManagementComponent } from './management/reservations
 import {ApplicationTypeGuardService} from './services/guard/functionality/application-type-guard/application-type-guard.service';
 import { LocationDescriptionComponent } from './management/locations-management/location-details-management/location-description/location-description.component';
 import {CKEditorModule} from '@ckeditor/ckeditor5-angular';
+import { TagsManagementComponent } from './management/tags-management/tags-management.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -93,6 +94,7 @@ const routes: Routes = [
       {path: '', redirectTo: 'locations', pathMatch: 'full'},
       {path: 'locations', component: LocationsManagementComponent},
       {path: 'locations/:locationName', component: LocationDetailsManagementComponent},
+      {path: 'tags', component: TagsManagementComponent},
       {path: 'users', component: UsersManagementComponent},
       {path: 'users/:id', component: UserDetailsManagementComponent},
       {
@@ -151,7 +153,8 @@ const routes: Routes = [
     UserDetailsManagementPenaltiesComponent,
     LocationReservationsManagementComponent,
     LockerReservationsManagementComponent,
-    LocationDescriptionComponent
+    LocationDescriptionComponent,
+    TagsManagementComponent
   ],
     imports: [
       BrowserModule,

@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @RestController
-@RequestMapping("/tags")
+@RequestMapping("/api/tags")
 public class TagsController {
 
     private final Logger logger = Logger.getLogger(LocationController.class.getSimpleName());
@@ -80,6 +80,4 @@ public class TagsController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
-
-
 }

@@ -60,6 +60,7 @@
     "aside": {
       "title": "Management",
       "locations": "Locations",
+      "tags": "Tags",
       "users": "Users",
       "reservations": "Reservations",
       "calendar": "Calendar",
@@ -68,7 +69,8 @@
 
     "general": {
       "loading": "Loading...",
-      "noLocations": "There are no locations yet, make one using the 'Add Location' button"
+      "noLocations": "There are no locations yet, make one using the 'Add Location' button",
+      "noTags": "There are no tags yet, make one using the 'Add Tag' button"
     },
 
     "locationDetails": {
@@ -226,6 +228,18 @@
         "yesButton": "Delete",
         "noButton": "Cancel"
       }
+    },
+
+    "tags": {
+      "title": "Management of tags for locations",
+
+      "table": {
+        "id": "Tag ID",
+        "dutch": "Dutch",
+        "english": "English"
+      },
+
+      "errorOnRetrievingTags": "Something went wrong while retrieving the tags..."
     },
 
     "users": {

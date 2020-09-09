@@ -60,6 +60,7 @@
     "aside": {
       "title": "Beheer",
       "locations": "Locaties",
+      "tags": "Tags",
       "users": "Gebruikers",
       "reservations": "Reservaties",
       "calendar": "Kalender",
@@ -68,7 +69,8 @@
 
     "general": {
       "loading": "Aan het laden...",
-      "noLocations": "Er zijn nog geen beschikbare locaties. Maak er een aan met de knop 'Locatie Toevoegen'"
+      "noLocations": "Er zijn nog geen beschikbare locaties. Maak er een aan met de knop 'Locatie Toevoegen'",
+      "noTags": "Er zijn nog geen tags. Maak er een aan met de knop 'Tag Toevoegen'"
     },
 
     "locationDetails": {
@@ -226,6 +228,18 @@
         "yesButton": "Verwijder",
         "noButton": "Annuleer"
       }
+    },
+
+    "tags": {
+      "title": "Beheer van tags van locaties",
+
+      "table": {
+        "id": "Tag ID",
+        "dutch": "Nederlands",
+        "english": "Engels"
+      },
+
+      "errorOnRetrievingTags": "Er is iets misgelopen tijdens het ophalen van de tags..."
     },
 
     "users": {

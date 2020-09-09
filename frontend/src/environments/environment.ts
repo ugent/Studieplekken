@@ -70,7 +70,13 @@ export const api = {
   penaltyEvents: '/api/penalties/events',
   addPenaltyEvent: '/api/penalties/events',
   updatePenaltyEvent: '/api/penalties/events/{code}',
-  deletePenaltyEvent: '/api/penalties/events'
+  deletePenaltyEvent: '/api/penalties/events',
+
+  // TAGS
+  tags: '/api/tags',
+  addTag: '/api/tags',
+  updateTag: '/api/tags',
+  deleteTag: '/api/tags'
 };
 
 export const vars = {

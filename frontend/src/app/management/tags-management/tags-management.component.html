@@ -1,0 +1,41 @@
+<div class="container-fluid">
+  <!-- Title -->
+  <h3>{{'management.tags.title' | translate}}</h3>
+
+  <hr>
+
+  <!-- Table with all existing tags -->
+  <div class="row" *ngIf="tagsObs | async as tags">
+    <table style="width: 100%;" *ngIf="tags.length > 0; else noTags">
+      <thead>
+      <tr>
+        <th>{{'management.tags.table.id' | translate}}</th>
+        <th>{{'management.tags.table.dutch' | translate}}</th>
+        <th>{{'management.tags.table.english' | translate}}</th>
+        <th></th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr [@rowsAnimation]="" *ngFor="let locationTag of tags">
+        <td>{{locationTag.tagId}}</td>
+        <td>{{locationTag.dutch}}</td>
+        <td>{{locationTag.english}}</td>
+        <td><!-- TODO: delete --></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="row">
+    <div class="alert alert-error" *ngIf="successGettingTags === false">
+      {{'management.tags.errorOnRetrievingTags' | translate}}
+    </div>
+  </div>
+</div>
+
+<ng-template #noTags>
+  <div class="alert alert-info">
+    {{'management.general.noTags' | translate}}
+  </div>
+</ng-template>
