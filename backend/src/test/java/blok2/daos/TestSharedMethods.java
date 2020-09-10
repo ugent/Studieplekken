@@ -4,6 +4,7 @@ import blok2.daos.db.ADB;
 import blok2.helpers.Institution;
 import blok2.helpers.date.CustomDate;
 import blok2.model.Authority;
+import blok2.model.LocationTag;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.CalendarPeriodForLockers;
 import blok2.model.reservables.Location;
@@ -47,6 +48,32 @@ public class TestSharedMethods {
         testLocation2.setAuthorityId(authorityId);
         return testLocation2;
     }
+
+    public static Location testLocation3(int authorityId) {
+        Location testLocation3 = new Location();
+        testLocation3.setName("Third Test Location");
+        testLocation3.setAddress("Third Test street, 30");
+        testLocation3.setNumberOfSeats(25);
+        testLocation3.setNumberOfLockers(5);
+        testLocation3.setImageUrl("https://example.com/picture.png");
+        testLocation3.setAuthorityId(authorityId);
+        return testLocation3;
+    }
+
+    public static LocationTag testTag() {
+        LocationTag testTag = new LocationTag(1,
+                "Stille ruimte",
+                "Silent space");
+        return testTag;
+    }
+
+    public static LocationTag testTag2() {
+        LocationTag testTag = new LocationTag(2,
+                "Geschikt voor vergaderingen",
+                "Suitable for meetings");
+        return testTag;
+    }
+
 
     public static Authority insertTestAuthority(IAuthorityDao authorityDao) throws SQLException {
         return insertTestAuthority("Test Authority", "a test description", authorityDao);
