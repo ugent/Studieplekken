@@ -2,6 +2,8 @@ package blok2.controllers;
 
 import blok2.daos.ILockerReservationDao;
 import blok2.model.reservations.LockerReservation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +13,6 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * This controller handles all requests related to locker reservations.
@@ -21,7 +22,7 @@ import java.util.logging.Logger;
 @RequestMapping("api/lockers/reservations")
 public class LockerReservationController {
 
-    private final Logger logger = Logger.getLogger(LockersController.class.getSimpleName());
+    private final Logger logger = LoggerFactory.getLogger(LockerReservation.class.getSimpleName());
 
     private final ILockerReservationDao lockerReservationDao;
 
@@ -35,8 +36,8 @@ public class LockerReservationController {
         try {
             return lockerReservationDao.getAllLockerReservationsOfUser(id);
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
@@ -47,8 +48,8 @@ public class LockerReservationController {
         try {
             return lockerReservationDao.getAllLockerReservationsOfLocation(locationName, pastReservations);
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
@@ -57,21 +58,23 @@ public class LockerReservationController {
     public void updateLockerReservation(@RequestBody LockerReservation lockerReservation) {
         try {
             lockerReservationDao.changeLockerReservation(lockerReservation);
+            logger.info(String.format("Updating locker reservation by owner %s for locker %d in location %s", lockerReservation.getOwner(), lockerReservation.getLocker().getNumber(), lockerReservation.getLocker().getLocation().getName()));
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
 
     @DeleteMapping
-    public void deleteLocationReservation(@RequestBody LockerReservation lockerReservation) {
+    public void deleteLockerReservation(@RequestBody LockerReservation lockerReservation) {
         try {
             lockerReservationDao.deleteLockerReservation(lockerReservation.getLocker().getLocation().getName(),
                     lockerReservation.getLocker().getNumber());
+            logger.info(String.format("Deleting locker reservation by owner %s for locker %d in location %s", lockerReservation.getOwner(), lockerReservation.getLocker().getNumber(), lockerReservation.getLocker().getLocation().getName()));
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
