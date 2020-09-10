@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class DBTagsDao extends DAO implements ITagsDao {
@@ -94,6 +95,35 @@ public class DBTagsDao extends DAO implements ITagsDao {
                 return createLocationTag(rs);
             }
             return null;
+        }
+    }
+
+    /**
+     * Assigning all LocationTags in the list "tags" to the location.
+     * This is done by removing all tags from the location first, and then
+     * adding the ones in the list.
+     */
+    @Override
+    public void assignTagsToLocation(String locationName, List<LocationTag> tags) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            try {
+                conn.setAutoCommit(false);
+
+                // remove all tags from the location
+                DBLocationDao.deleteTagsFromLocation(locationName, conn);
+
+                // add entries to connect the location with the tags
+                for (LocationTag tag : tags) {
+                    DBLocationDao.insertTag(locationName, tag, conn);
+                }
+
+                conn.commit();
+            } catch (SQLException e) {
+                conn.rollback();
+                throw e;
+            } finally {
+                conn.setAutoCommit(true);
+            }
         }
     }
 

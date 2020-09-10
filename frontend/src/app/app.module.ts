@@ -47,6 +47,8 @@ import {ApplicationTypeGuardService} from './services/guard/functionality/applic
 import { LocationDescriptionComponent } from './management/locations-management/location-details-management/location-description/location-description.component';
 import {CKEditorModule} from '@ckeditor/ckeditor5-angular';
 import { TagsManagementComponent } from './management/tags-management/tags-management.component';
+import { LocationTagsManagementComponent } from './management/locations-management/location-details-management/location-tags-management/location-tags-management.component';
+import { MatSelectModule } from '@angular/material/select';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -154,7 +156,8 @@ const routes: Routes = [
     LocationReservationsManagementComponent,
     LockerReservationsManagementComponent,
     LocationDescriptionComponent,
-    TagsManagementComponent
+    TagsManagementComponent,
+    LocationTagsManagementComponent
   ],
     imports: [
       BrowserModule,
@@ -178,7 +181,8 @@ const routes: Routes = [
       ReactiveFormsModule,
       FormsModule,
       FlatpickrModule.forRoot(),
-      CKEditorModule
+      CKEditorModule,
+      MatSelectModule
     ],
   providers: [],
   bootstrap: [AppComponent]

@@ -76,7 +76,10 @@ export const api = {
   tags: '/api/tags',
   addTag: '/api/tags',
   updateTag: '/api/tags',
-  deleteTag: '/api/tags/{tagId}'
+  deleteTag: '/api/tags/{tagId}',
+
+  // LOCATION_TAGS
+  assignTagsToLocation: '/api/tags/location/{locationName}'
 };
 
 export const vars = {

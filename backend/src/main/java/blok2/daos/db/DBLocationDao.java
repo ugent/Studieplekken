@@ -133,7 +133,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
         }
     }
 
-    private void deleteTagsFromLocation(String locationId, Connection conn) throws SQLException {
+    public static void deleteTagsFromLocation(String locationId, Connection conn) throws SQLException {
         PreparedStatement st = conn.prepareStatement(Resources.databaseProperties.getString("remove_tags_from_location"));
         st.setString(1, locationId);
         st.execute();
@@ -279,7 +279,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
         }
     }
 
-    private void insertTag(String locationName, LocationTag tag, Connection conn) throws SQLException {
+    public static void insertTag(String locationName, LocationTag tag, Connection conn) throws SQLException {
         PreparedStatement st = conn.prepareStatement(Resources.databaseProperties.getString("add_tag_to_location"));
         st.setString(1, locationName);
         st.setInt(2, tag.getTagId());

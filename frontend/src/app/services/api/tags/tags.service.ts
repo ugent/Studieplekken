@@ -11,6 +11,10 @@ export class TagsService {
 
   constructor(private http: HttpClient) { }
 
+  /*****************************************************
+   *   API calls for CRUD operations with public.TAGS  *
+   *****************************************************/
+
   getAllTags(): Observable<LocationTag[]> {
     return this.http.get<LocationTag[]>(api.tags);
   }
@@ -29,5 +33,13 @@ export class TagsService {
 
   deleteTag(locationTag: LocationTag): Observable<any> {
     return this.http.delete(api.deleteTag.replace('{tagId}', String(locationTag.tagId)));
+  }
+
+  /**************************************************************
+   *   API calls for CRUD operations with public.LOCATION_TAGS  *
+   **************************************************************/
+
+  assignTagsToLocation(locationName: string, tags: LocationTag[]): Observable<any> {
+    return this.http.put(api.assignTagsToLocation.replace('{locationName}', locationName), tags);
   }
 }

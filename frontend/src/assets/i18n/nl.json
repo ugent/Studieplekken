@@ -135,6 +135,23 @@
         "successUpdating": "Het updaten van de omschrijvingen is geslaagd."
       },
 
+      "tags": {
+        "title": "Tags van de locatie",
+        "activeTagsInformation": "Hieronder is een lijst gegeven van de tags die momenteel actief zijn voor deze locatie.",
+        "updateTagsInformation": "Om de tags te wijzigen, klik op de knop rechts.",
+
+        "updateTagsButton": "Wijzig de tags",
+
+        "updateTagsConfigurationModal": {
+          "title": "Wijzig de tags van de locatie",
+          "body": "In de dropdown hieronder kan je alle tags selecteren die je wil toekennen aan '{locationName}'.",
+          "comboboxTitle": "Tags van de locatie",
+
+          "success": "Het is gelukt om de tags voor '{locationName}' te wijzigen",
+          "error": "Er is iets misgelopen tijdens het wijzigen van de tags die toegekend zijn aan '{locationName}'."
+        }
+      },
+
       "lockerCalendar": {
         "title": "Kalender voor beschikbaarheid van lockers",
 

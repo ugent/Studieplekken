@@ -1,3 +1,5 @@
+import {LocationTag} from './LocationTag';
+
 export interface Location {
   name: string;
   address: string;
@@ -7,6 +9,8 @@ export interface Location {
   authorityId: number;
   descriptionDutch: string;
   descriptionEnglish: string;
+
+  tags: LocationTag[];
 }
 
 export class LocationConstructor {
@@ -19,7 +23,8 @@ export class LocationConstructor {
       imageUrl: '',
       authorityId: 0,
       descriptionDutch: '',
-      descriptionEnglish: ''
+      descriptionEnglish: '',
+      tags: []
     };
   }
 
@@ -36,7 +41,8 @@ export class LocationConstructor {
       imageUrl: obj.imageUrl,
       authorityId: obj.authorityId,
       descriptionDutch: obj.descriptionDutch,
-      descriptionEnglish: obj.descriptionEnglish
+      descriptionEnglish: obj.descriptionEnglish,
+      tags: obj.tags
     };
   }
 }

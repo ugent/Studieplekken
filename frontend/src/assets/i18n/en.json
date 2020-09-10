@@ -135,6 +135,23 @@
         "successUpdating": "Successfully updated the descriptions of the location."
       },
 
+      "tags": {
+        "title": "Tags of the location",
+        "activeTagsInformation": "Below, a list with the currently active tags for the location is given.",
+        "updateTagsInformation": "To change the tags, click on the button to the right.",
+
+        "updateTagsButton": "Update the tags",
+
+        "updateTagsConfigurationModal": {
+          "title": "Change tags for location",
+          "body": "In the dropdown below, select all the tags you would like to assign to '{locationName}'.",
+          "comboboxTitle": "Tags of location",
+
+          "success": "Successfully updated the tags assigned to '{locationName}'",
+          "error": "Something went wrong while updating the tags assigned to '{locationName}'."
+        }
+      },
+
       "lockerCalendar": {
         "title": "Calendar for availability of lockers",
 

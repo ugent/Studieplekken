@@ -26,6 +26,10 @@ public class TagsController {
         this.tagsDao = tagsDao;
     }
 
+    /*****************************************************
+     *   API calls for CRUD operations with public.TAGS  *
+     *****************************************************/
+
     @GetMapping
     public List<LocationTag> getAllTags() {
         try {
@@ -74,6 +78,22 @@ public class TagsController {
     public void deleteTag(@PathVariable int tagId) {
         try {
             tagsDao.deleteTag(tagId);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    /**************************************************************
+     *   API calls for CRUD operations with public.LOCATION_TAGS  *
+     **************************************************************/
+
+    @PutMapping("/location/{locationName}")
+    public void assignTagsToLocation(@PathVariable("locationName") String locationName,
+                                     @RequestBody List<LocationTag> tags) {
+        try {
+            tagsDao.assignTagsToLocation(locationName, tags);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));

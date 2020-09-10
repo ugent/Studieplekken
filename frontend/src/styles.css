@@ -80,3 +80,12 @@
 .btn-left {
   margin-right: 10px;
 }
+
+/**
+ * Class to make sure that the options of the Material Dropdown inside a
+ * Bootstrap Modal is at the foreground.
+ * Solution found at: https://stackoverflow.com/a/63051872/9356123
+ */
+.cdk-overlay-container {
+  z-index: 9999 !important;
+}
