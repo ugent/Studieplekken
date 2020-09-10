@@ -246,6 +246,15 @@
         "english": "English"
       },
 
+      "addNewTag": "New tag",
+
+      "addTagModal": {
+        "title": "Add new tag",
+        "idSetByBackendMessage": "Set by backend",
+        "success": "Successfully added the new tag.",
+        "error": "Something went wrong while adding the new tag."
+      },
+
       "updateTagModal": {
         "title": "Update tag",
         "success": "Successfully updated the tag.",

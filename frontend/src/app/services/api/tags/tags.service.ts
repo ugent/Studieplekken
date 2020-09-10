@@ -15,6 +15,14 @@ export class TagsService {
     return this.http.get<LocationTag[]>(api.tags);
   }
 
+  /**
+   * Adding a tag. Note that locationTag.tagId will be ignored. The return
+   * value will have set the correct tagId for the added Tag.
+   */
+  addTag(locationTag: LocationTag): Observable<LocationTag> {
+    return this.http.post<LocationTag>(api.addTag, locationTag);
+  }
+
   updateTag(locationTag: LocationTag): Observable<any> {
     return this.http.put(api.updateTag, locationTag);
   }

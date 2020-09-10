@@ -26,6 +26,7 @@ export class TagsManagementComponent implements OnInit {
   });
 
   successGettingTags: boolean = undefined;
+  successAddingTag: boolean = undefined;
   successUpdatingTag: boolean = undefined;
   successDeletingTag: boolean = undefined;
 
@@ -44,10 +45,6 @@ export class TagsManagementComponent implements OnInit {
     );
   }
 
-  validTagFormGroup(): boolean {
-    return !this.tagFormGroup.invalid;
-  }
-
   prepareFormGroup(locationTag: LocationTag): void {
     this.tagFormGroup.setValue({
       tagId: locationTag.tagId,
@@ -56,8 +53,34 @@ export class TagsManagementComponent implements OnInit {
     });
   }
 
+  prepareAdd(): void {
+    // reset the feedback boolean
+    this.successAddingTag = undefined;
+
+    // prepare the tagFormGroup, note that the tagId won't be shown
+    // because this is automatically added by the database
+    this.tagFormGroup.setValue({
+      tagId: '',
+      dutch: '',
+      english: ''
+    });
+  }
+
+  addTag(): void {
+    this.successAddingTag = null;
+    this.tagsService.addTag(this.locationTag).subscribe(
+      () => {
+        this.successAddingTag = true;
+        // and reload the tags
+        this.tagsObs = this.tagsService.getAllTags();
+      }, () => {
+        this.successAddingTag = false;
+      }
+    );
+  }
+
   prepareUpdate(locationTag: LocationTag): void {
-    // restore the feedback boolean
+    // reset the feedback boolean
     this.successUpdatingTag = undefined;
 
     // prepare the tagFormGroup
@@ -78,7 +101,7 @@ export class TagsManagementComponent implements OnInit {
   }
 
   prepareToDelete(locationTag: LocationTag): void {
-    // restore the feedback boolean
+    // reset the feedback boolean
     this.successDeletingTag = undefined;
 
     // prepare the tagFormGroup
@@ -108,5 +131,9 @@ export class TagsManagementComponent implements OnInit {
       dutch: this.dutch.value,
       english: this.english.value
     };
+  }
+
+  validTagFormGroup(): boolean {
+    return !this.tagFormGroup.invalid;
   }
 }

@@ -246,6 +246,15 @@
         "english": "Engels"
       },
 
+      "addNewTag": "Nieuwe tag",
+
+      "addTagModal": {
+        "title": "Nieuwe tag maken",
+        "idSetByBackendMessage": "Ingesteld door backend",
+        "success": "Het aanmaken van de nieuwe tag is gelukt.",
+        "error": "Er is iets misgelopen tijdens het aanmaken van de nieuwe tag."
+      },
+
       "updateTagModal": {
         "title": "Update tag",
         "success": "Het updaten van de tag is geslaagd.",

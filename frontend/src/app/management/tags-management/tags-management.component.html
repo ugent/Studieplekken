@@ -36,6 +36,13 @@
         </td>
       </tr>
       </tbody>
+
+      <div class="row" style="margin-top: 20px">
+        <button class="btn btn-primary" data-toggle="modal" data-target="#addTagModal"
+                (click)="prepareAdd()">
+          {{'management.tags.addNewTag' | translate}}
+        </button>
+      </div>
     </table>
   </div>
 
@@ -51,6 +58,87 @@
     {{'management.general.noTags' | translate}}
   </div>
 </ng-template>
+
+<!-- Modal view to add a new tag -->
+<div class="modal fade" id="addTagModal" tabindex="-1" role="dialog"
+     aria-labelledby="addTagModalTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <!-- Modal header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="addTagModalTitle">
+          {{'management.tags.addTagModal.title' | translate}}
+        </h5>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form [formGroup]="tagFormGroup">
+          <!-- TagID - this will be set by the database -->
+          <div class="row form-group">
+            <label class="col-lg-3 control-label" for="tagIdDelete">
+              {{'management.tags.table.id' | translate}}<br>
+              <span style="color: red;">{{'management.tags.addTagModal.idSetByBackendMessage' | translate}}</span>
+            </label>
+            <div class="col-lg-8">
+              <input class="form-control" id="tagIdDelete" type="number" formControlName="tagId" >
+            </div>
+          </div>
+
+          <!-- Dutch name of tag -->
+          <div class="row form-group">
+            <label class="col-lg-3 control-label" for="dutchDelete">
+              {{'management.tags.table.dutch' | translate}}<span style="color: red; margin-left: 5px;">*</span>
+            </label>
+            <div class="col-lg-8">
+              <input class="form-control" id="dutchDelete" type="text" formControlName="dutch" >
+            </div>
+          </div>
+
+          <!-- English name of tag -->
+          <div class="row form-group">
+            <label class="col-lg-3 control-label" for="englishDelete">
+              {{'management.tags.table.english' | translate}}<span style="color: red; margin-left: 5px;">*</span>
+            </label>
+            <div class="col-lg-8">
+              <input class="form-control" id="englishDelete" type="text" formControlName="english" >
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary"
+                [disabled]="!validTagFormGroup()"
+                (click)="addTag()">
+          {{'general.buttons.add' | translate}}
+        </button>
+        <button type="button" class="btn btn-secondary"
+                data-dismiss="modal">
+          {{'general.buttons.cancel' | translate}}
+        </button>
+      </div>
+
+      <!-- Feedback to the user -->
+      <div class="container-fluid">
+        <div class="alert alert-info" *ngIf="successAddingTag === null">
+          {{'general.waitingForServer' | translate}}
+        </div>
+
+        <div class="alert alert-success" *ngIf="successAddingTag === true">
+          {{'management.tags.addTagModal.success' | translate}}
+        </div>
+
+        <div class="alert alert-error" *ngIf="successAddingTag === false">
+          {{'management.tags.addTagModal.error' | translate}}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
 
 <!-- Modal view to update a tag -->
 <div class="modal fade" id="updateTagModal" tabindex="-1" role="dialog"
