@@ -27,6 +27,7 @@ export class TagsManagementComponent implements OnInit {
 
   successGettingTags: boolean = undefined;
   successUpdatingTag: boolean = undefined;
+  successDeletingTag: boolean = undefined;
 
   constructor(private tagsService: TagsService) { }
 
@@ -47,11 +48,7 @@ export class TagsManagementComponent implements OnInit {
     return !this.tagFormGroup.invalid;
   }
 
-  prepareUpdate(locationTag: LocationTag): void {
-    // restore the feedback boolean
-    this.successUpdatingTag = undefined;
-
-    // prepare the tagFormGroup
+  prepareFormGroup(locationTag: LocationTag): void {
     this.tagFormGroup.setValue({
       tagId: locationTag.tagId,
       dutch: locationTag.dutch,
@@ -59,15 +56,17 @@ export class TagsManagementComponent implements OnInit {
     });
   }
 
-  updateTagInFormGroup(): void {
-    const locationTag = LocationTagConstructor.newFromObj({
-      tagId: this.tagId.value,
-      dutch: this.dutch.value,
-      english: this.english.value
-    });
+  prepareUpdate(locationTag: LocationTag): void {
+    // restore the feedback boolean
+    this.successUpdatingTag = undefined;
 
-    console.log(locationTag);
-    this.tagsService.updateTag(locationTag).subscribe(
+    // prepare the tagFormGroup
+    this.prepareFormGroup(locationTag);
+  }
+
+  updateTagInFormGroup(): void {
+    this.successUpdatingTag = null;
+    this.tagsService.updateTag(this.locationTag).subscribe(
       () => {
         this.successUpdatingTag = true;
         // and reload the tags
@@ -78,7 +77,36 @@ export class TagsManagementComponent implements OnInit {
     );
   }
 
+  prepareToDelete(locationTag: LocationTag): void {
+    // restore the feedback boolean
+    this.successDeletingTag = undefined;
+
+    // prepare the tagFormGroup
+    this.prepareFormGroup(locationTag);
+  }
+
+  deleteTagInFormGroup(): void {
+    this.successDeletingTag = null;
+    this.tagsService.deleteTag(this.locationTag).subscribe(
+      () => {
+        this.successDeletingTag = true;
+        // and reload the tags
+        this.tagsObs = this.tagsService.getAllTags();
+      }, () => {
+        this.successDeletingTag = false;
+      }
+    );
+  }
+
   get tagId(): AbstractControl { return this.tagFormGroup.get('tagId'); }
   get dutch(): AbstractControl { return this.tagFormGroup.get('dutch'); }
   get english(): AbstractControl { return this.tagFormGroup.get('english'); }
+
+  get locationTag(): LocationTag {
+    return {
+      tagId: this.tagId.value,
+      dutch: this.dutch.value,
+      english: this.english.value
+    };
+  }
 }

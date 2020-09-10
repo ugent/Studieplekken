@@ -28,7 +28,12 @@
             (click)="prepareUpdate(locationTag)">
           <span class="glyphicon glyphicon-pencil pointerCursor"></span>
         </td>
-        <td><!-- TODO: delete --></td>
+        <!-- Delete icon -->
+        <td data-toggle="modal" data-target="#deleteTagModal"
+            class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
+            (click)="prepareToDelete(locationTag)">
+          <span class="glyphicon glyphicon-trash pointerCursor"></span>
+        </td>
       </tr>
       </tbody>
     </table>
@@ -120,6 +125,61 @@
 
         <div class="alert alert-error" *ngIf="successUpdatingTag === false">
           {{'management.tags.updateTagModal.error' | translate}}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal view to ask whether the user is sure to delete a tag -->
+<div class="modal fade" id="deleteTagModal" tabindex="-1" role="dialog"
+     aria-labelledby="deleteTagModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <!-- Header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteLockerModalLabel">
+          {{'management.tags.deleteTagModal.title' | translate}}
+        </h5>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div>
+          <b>{{'management.tags.deleteTagModal.body' | translate}}</b>
+          <br><br>
+          <ul>
+            <li><b style="margin-right: 5px"><i>{{('management.tags.table.id' | translate) + ':   '}}</i></b>{{tagId.value}}</li>
+            <li><b style="margin-right: 5px"><i>{{('management.tags.table.dutch' | translate) + ':   '}}</i></b>{{dutch.value}}</li>
+            <li><b style="margin-right: 5px"><i>{{('management.tags.table.english' | translate)}}</i></b>{{english.value}}</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary"
+                (click)="deleteTagInFormGroup()">
+          {{'general.buttons.delete' | translate}}
+        </button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          {{'general.buttons.cancel' | translate}}
+        </button>
+      </div>
+
+      <div class="container-fluid">
+        <div class="alert alert-info" *ngIf="successDeletingTag === null">
+          {{'general.waitingForServer' | translate}}
+        </div>
+
+        <div class="alert alert-success" *ngIf="successDeletingTag === true">
+          {{'management.tags.deleteTagModal.success' | translate}}
+        </div>
+
+        <div class="alert alert-error" *ngIf="successDeletingTag === false">
+          {{'management.tags.deleteTagModal.error' | translate}}
         </div>
       </div>
 

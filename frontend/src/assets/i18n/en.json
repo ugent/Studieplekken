@@ -252,6 +252,13 @@
         "error": "Something went wrong while updating the tag."
       },
 
+      "deleteTagModal": {
+        "title": "Delete tag",
+        "body": "Are you sure that you want to delete following tag?",
+        "success": "Successfully deleted the tag.",
+        "error": "Something went wrong while deleting the tag."
+      },
+
       "errorOnRetrievingTags": "Something went wrong while retrieving the tags..."
     },
 

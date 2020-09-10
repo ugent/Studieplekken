@@ -252,6 +252,13 @@
         "error": "Er is iets misgelopen tijdens het updaten van de tag."
       },
 
+      "deleteTagModal": {
+        "title": "Verwijder tag",
+        "body": "Ben je zeker dat je volgende tag wilt verwijderen?",
+        "success": "Het verwijderen van de tag is gelukt.",
+        "error": "Er is iets misgelopen tijdens het verwijderen van de tag."
+      },
+
       "errorOnRetrievingTags": "Er is iets misgelopen tijdens het ophalen van de tags..."
     },
 

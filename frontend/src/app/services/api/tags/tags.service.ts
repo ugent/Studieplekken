@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {api} from '../../../../environments/environment';
 import {LocationTag} from '../../../shared/model/LocationTag';
@@ -17,5 +17,9 @@ export class TagsService {
 
   updateTag(locationTag: LocationTag): Observable<any> {
     return this.http.put(api.updateTag, locationTag);
+  }
+
+  deleteTag(locationTag: LocationTag): Observable<any> {
+    return this.http.delete(api.deleteTag.replace('{tagId}', String(locationTag.tagId)));
   }
 }
