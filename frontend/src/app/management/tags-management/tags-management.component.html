@@ -12,7 +12,8 @@
         <th>{{'management.tags.table.id' | translate}}</th>
         <th>{{'management.tags.table.dutch' | translate}}</th>
         <th>{{'management.tags.table.english' | translate}}</th>
-        <th></th>
+        <th><!-- update --></th>
+        <th><!-- delete --></th>
       </tr>
       </thead>
 
@@ -21,6 +22,12 @@
         <td>{{locationTag.tagId}}</td>
         <td>{{locationTag.dutch}}</td>
         <td>{{locationTag.english}}</td>
+        <!-- Edit icon -->
+        <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
+            data-toggle="modal" data-target="#updateTagModal"
+            (click)="prepareUpdate(locationTag)">
+          <span class="glyphicon glyphicon-pencil pointerCursor"></span>
+        </td>
         <td><!-- TODO: delete --></td>
       </tr>
       </tbody>
@@ -39,3 +46,83 @@
     {{'management.general.noTags' | translate}}
   </div>
 </ng-template>
+
+<!-- Modal view to update a tag -->
+<div class="modal fade" id="updateTagModal" tabindex="-1" role="dialog"
+     aria-labelledby="updateTagModalTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <!-- Modal header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="updateTagModalTitle">
+          {{'management.tags.updateTagModal.title' | translate}}
+        </h5>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form [formGroup]="tagFormGroup">
+          <!-- Tag ID - not updatable -->
+          <div class="row form-group">
+            <label class="col-lg-3 control-label" for="tagIdUpdate">
+              {{'management.tags.table.id' | translate}}
+            </label>
+            <div class="col-lg-8">
+              <input class="form-control" id="tagIdUpdate" type="number" formControlName="tagId">
+            </div>
+          </div>
+
+          <!-- Dutch tag name -->
+          <div class="row form-group">
+            <label class="col-lg-3 control-label" for="dutchUpdate">
+              {{'management.tags.table.dutch' | translate}}<span style="color: red; margin-left: 5px;">*</span>
+            </label>
+            <div class="col-lg-8">
+              <input class="form-control" id="dutchUpdate" type="text" formControlName="dutch">
+            </div>
+          </div>
+
+          <!-- English tag name -->
+          <div class="row form-group">
+            <label class="col-lg-3 control-label" for="englishUpdate">
+              {{'management.tags.table.english' | translate}}<span style="color: red; margin-left: 5px;">*</span>
+            </label>
+            <div class="col-lg-8">
+              <input class="form-control" id="englishUpdate" type="text" formControlName="english">
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary"
+                [disabled]="!validTagFormGroup()"
+                (click)="updateTagInFormGroup()">
+          {{'general.buttons.update' | translate}}
+        </button>
+        <button type="button" class="btn btn-secondary"
+                data-dismiss="modal">
+          {{'general.buttons.cancel' | translate}}
+        </button>
+      </div>
+
+      <!-- Feedback to the user -->
+      <div class="container-fluid">
+        <div class="alert alert-info" *ngIf="successUpdatingTag === null">
+          {{'general.waitingForServer' | translate}}
+        </div>
+
+        <div class="alert alert-success" *ngIf="successUpdatingTag === true">
+          {{'management.tags.updateTagModal.success' | translate}}
+        </div>
+
+        <div class="alert alert-error" *ngIf="successUpdatingTag === false">
+          {{'management.tags.updateTagModal.error' | translate}}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

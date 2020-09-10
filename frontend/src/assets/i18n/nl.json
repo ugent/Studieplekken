@@ -24,6 +24,13 @@
     "yes": "Ja",
     "no": "Neen",
 
+    "buttons": {
+      "add": "Voeg toe",
+      "update": "Update",
+      "cancel": "Annuleer",
+      "delete": "Verwijder"
+    },
+
     "roles": {
       "ADMIN": "Admin",
       "EMPLOYEE": "Medewerker",
@@ -237,6 +244,12 @@
         "id": "Tag ID",
         "dutch": "Nederlands",
         "english": "Engels"
+      },
+
+      "updateTagModal": {
+        "title": "Update tag",
+        "success": "Het updaten van de tag is geslaagd.",
+        "error": "Er is iets misgelopen tijdens het updaten van de tag."
       },
 
       "errorOnRetrievingTags": "Er is iets misgelopen tijdens het ophalen van de tags..."

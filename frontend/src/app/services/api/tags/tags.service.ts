@@ -14,4 +14,8 @@ export class TagsService {
   getAllTags(): Observable<LocationTag[]> {
     return this.http.get<LocationTag[]>(api.tags);
   }
+
+  updateTag(locationTag: LocationTag): Observable<any> {
+    return this.http.put(api.updateTag, locationTag);
+  }
 }

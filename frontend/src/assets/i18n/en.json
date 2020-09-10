@@ -24,6 +24,13 @@
     "yes": "Yes",
     "no": "No",
 
+    "buttons": {
+      "add": "Add",
+      "update": "Update",
+      "cancel": "Cancel",
+      "delete": "Delete"
+    },
+
     "roles": {
       "ADMIN": "Admin",
       "EMPLOYEE": "Employee",
@@ -237,6 +244,12 @@
         "id": "Tag ID",
         "dutch": "Dutch",
         "english": "English"
+      },
+
+      "updateTagModal": {
+        "title": "Update tag",
+        "success": "Successfully updated the tag.",
+        "error": "Something went wrong while updating the tag."
       },
 
       "errorOnRetrievingTags": "Something went wrong while retrieving the tags..."

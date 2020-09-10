@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import {Observable} from 'rxjs';
-import {LocationTag} from '../../shared/model/LocationTag';
+import {LocationTag, LocationTagConstructor} from '../../shared/model/LocationTag';
 import {TagsService} from '../../services/api/tags/tags.service';
 import {transition, trigger, useAnimation} from '@angular/animations';
 import {rowsAnimation} from '../../shared/animations/RowAnimation';
+import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-tags-management',
@@ -18,7 +19,14 @@ import {rowsAnimation} from '../../shared/animations/RowAnimation';
 export class TagsManagementComponent implements OnInit {
   tagsObs: Observable<LocationTag[]>;
 
+  tagFormGroup = new FormGroup({
+    tagId: new FormControl({value: '', disabled: true}),
+    dutch: new FormControl('', Validators.required),
+    english: new FormControl('', Validators.required)
+  });
+
   successGettingTags: boolean = undefined;
+  successUpdatingTag: boolean = undefined;
 
   constructor(private tagsService: TagsService) { }
 
@@ -35,4 +43,42 @@ export class TagsManagementComponent implements OnInit {
     );
   }
 
+  validTagFormGroup(): boolean {
+    return !this.tagFormGroup.invalid;
+  }
+
+  prepareUpdate(locationTag: LocationTag): void {
+    // restore the feedback boolean
+    this.successUpdatingTag = undefined;
+
+    // prepare the tagFormGroup
+    this.tagFormGroup.setValue({
+      tagId: locationTag.tagId,
+      dutch: locationTag.dutch,
+      english: locationTag.english
+    });
+  }
+
+  updateTagInFormGroup(): void {
+    const locationTag = LocationTagConstructor.newFromObj({
+      tagId: this.tagId.value,
+      dutch: this.dutch.value,
+      english: this.english.value
+    });
+
+    console.log(locationTag);
+    this.tagsService.updateTag(locationTag).subscribe(
+      () => {
+        this.successUpdatingTag = true;
+        // and reload the tags
+        this.tagsObs = this.tagsService.getAllTags();
+      }, () => {
+        this.successUpdatingTag = false;
+      }
+    );
+  }
+
+  get tagId(): AbstractControl { return this.tagFormGroup.get('tagId'); }
+  get dutch(): AbstractControl { return this.tagFormGroup.get('dutch'); }
+  get english(): AbstractControl { return this.tagFormGroup.get('english'); }
 }
