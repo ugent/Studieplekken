@@ -79,5 +79,6 @@ public class TestCascadeInDBTagsDao extends TestDao {
         // Assert that the deletion of the tags cascaded to the locations
         Assert.assertFalse("deleteLocationTagWithCascadeNeeded, cascade delete location tag", locationDao.getLocation(testLocation1.getName()).getTags().contains(testTag));
         Assert.assertFalse("deleteLocationTagWithCascadeNeeded, cascade delete location tag", locationDao.getLocation(testLocation2.getName()).getTags().contains(testTag));
+        Assert.assertTrue("deleteLocationTagWithCascadeNeeded, cascade delete location tag", locationDao.getLocation(testLocation2.getName()).getTags().contains(testTag2));
     }
 }
