@@ -13,7 +13,7 @@
         </div>
       </div>
 
-      <div>
+      <div *ngIf="tagsThatAreSelected && tagsThatAreSelected.length > 0; else noTags">
         <ul>
           <li *ngFor="let tag of tagsThatAreSelected">
             {{currentLang === 'nl' ? tag.dutch : tag.english}}
@@ -23,6 +23,12 @@
     </div>
   </div>
 </div>
+
+<ng-template #noTags>
+  <div class="alert alert-warning">
+    {{'management.locationDetails.tags.noTagsSelected' | translate}}
+  </div>
+</ng-template>
 
 <!-- Modal view to update the tags configuration of the location -->
 <div class="modal fade" id="updateTagsConfigurationModal" tabindex="-1" role="dialog"

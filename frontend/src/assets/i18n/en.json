@@ -154,7 +154,9 @@
 
           "success": "Successfully updated the tags assigned to '{locationName}'",
           "error": "Something went wrong while updating the tags assigned to '{locationName}'."
-        }
+        },
+
+        "noTagsSelected": "At the moment, there are no tags actively selected."
       },
 
       "lockerCalendar": {

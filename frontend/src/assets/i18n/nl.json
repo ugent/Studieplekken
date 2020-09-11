@@ -154,7 +154,9 @@
 
           "success": "Het is gelukt om de tags voor '{locationName}' te wijzigen",
           "error": "Er is iets misgelopen tijdens het wijzigen van de tags die toegekend zijn aan '{locationName}'."
-        }
+        },
+
+        "noTagsSelected": "Op dit moment zijn er geen actieve tags voor deze locaties geselecteerd."
       },
 
       "lockerCalendar": {
