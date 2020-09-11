@@ -79,7 +79,7 @@ export class DetailsFormComponent implements OnInit {
 
     // The management of the authorities and descriptions are done in
     // separate panel-groups. Therefore, we copy these attributes.
-    to.authorityId = from.authorityId;
+    to.authority = from.authority;
     to.descriptionDutch = from.descriptionDutch;
     to.descriptionEnglish = from.descriptionEnglish;
 

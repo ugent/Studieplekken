@@ -76,7 +76,7 @@ public class TestSharedMethods {
 
     public static Authority insertTestAuthority(String name, String description, IAuthorityDao authorityDao) throws SQLException {
         Authority authority = new Authority();
-        authority.setName(name);
+        authority.setAuthorityName(name);
         authority.setDescription(description);
         authority = authorityDao.addAuthority(authority);
         Authority dbAuthority = authorityDao.getAuthorityByAuthorityId(authority.getAuthorityId());
