@@ -1,7 +1,21 @@
-<div class="container-fluid">
-  <ng-container *ngIf="locations | async as locations; else pending">
-    <app-dashboard-item *ngFor="let location of locations" [location]="location"></app-dashboard-item>
-  </ng-container>
+<div class="container-fluid" *ngIf="locations !== undefined; else pending">
+  <div class="row">
+    <mat-form-field *ngIf="tags !== undefined" >
+      <mat-label>{{'management.locationDetails.tags.updateTagsConfigurationModal.comboboxTitle' | translate}}</mat-label>
+      <mat-select multiple
+                  [formControl]="matSelectFormControl"
+                  [compareWith]="compareTagsInSelection"
+                  (selectionChange)="onSelectionChange($event)">
+        <mat-option *ngFor="let tag of tags" [value]="tag">
+          {{currentLang === 'nl' ? tag.dutch : tag.english}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <hr>
+
+  <app-dashboard-item *ngFor="let location of filteredLocations" [location]="location"></app-dashboard-item>
 </div>
 
 <ng-template #pending>
