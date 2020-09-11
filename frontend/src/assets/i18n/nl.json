@@ -6,7 +6,12 @@
     "gotoDashboard": "Gelieve naar het dashboard te navigeren en een locatie te selecteren.",
     "location": "Locatie",
     "numberOfLockers": "Aantal lockers",
-    "numberOfSeats": "Aantal plaatsen"
+    "numberOfSeats": "Aantal plaatsen",
+
+    "locationDetails": {
+      "info": "Algemene informatie over deze locatie:",
+      "tags": "Tags die deze locatie kenmerken:"
+    }
   },
 
   "footer":{

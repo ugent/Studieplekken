@@ -6,7 +6,12 @@
     "gotoDashboard": "Please navigate to the dashboard to select a location's details.",
     "location": "Location",
     "numberOfLockers": "Number of lockers",
-    "numberOfSeats": "Number of seats"
+    "numberOfSeats": "Number of seats",
+
+    "locationDetails": {
+      "info": "General information about this location:",
+      "tags": "Tags that characterize this location:"
+    }
   },
 
   "footer":{
