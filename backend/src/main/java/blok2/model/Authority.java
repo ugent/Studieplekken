@@ -26,6 +26,16 @@ public class Authority implements Cloneable {
                 Objects.equals(description, authority.description);
     }
 
+    @Override
+    public Authority clone() {
+        try {
+            return (Authority) super.clone();
+        } catch (CloneNotSupportedException ignore) {
+            // will never happen (Authority implements Cloneable)
+            return null;
+        }
+    }
+
     public String getDescription() {
         return description;
     }

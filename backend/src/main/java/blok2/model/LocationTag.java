@@ -2,7 +2,7 @@ package blok2.model;
 
 import java.util.Objects;
 
-public class LocationTag {
+public class LocationTag implements Cloneable {
     private int tagId;
     private String dutch;
     private String english;
@@ -47,4 +47,13 @@ public class LocationTag {
                 Objects.equals(english, tag.english);
     }
 
+    @Override
+    public LocationTag clone() {
+        try {
+            return (LocationTag) super.clone();
+        } catch (CloneNotSupportedException ignore) {
+            // will never happen (LocationTag implements Cloneable)
+            return null;
+        }
+    }
 }

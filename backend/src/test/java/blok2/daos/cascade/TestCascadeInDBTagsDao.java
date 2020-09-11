@@ -40,9 +40,9 @@ public class TestCascadeInDBTagsDao extends TestDao {
     public void populateDatabase() throws SQLException {
         // setup test objects
         authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testLocation1 = TestSharedMethods.testLocation(authority.getAuthorityId());
-        testLocation2 = TestSharedMethods.testLocation2(authority.getAuthorityId());
-        testLocation3 = TestSharedMethods.testLocation3(authority.getAuthorityId());
+        testLocation1 = TestSharedMethods.testLocation(authority.clone());
+        testLocation2 = TestSharedMethods.testLocation2(authority.clone());
+        testLocation3 = TestSharedMethods.testLocation3(authority.clone());
 
         testTag = TestSharedMethods.testTag();
         testTag2 = TestSharedMethods.testTag2();

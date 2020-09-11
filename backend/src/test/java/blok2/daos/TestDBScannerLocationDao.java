@@ -46,8 +46,8 @@ public class TestDBScannerLocationDao extends TestDao {
         testUser2 = TestSharedMethods.studentEmployeeTestUser();
 
         authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testLocation1 = TestSharedMethods.testLocation(authority.getAuthorityId());
-        testLocation2 = TestSharedMethods.testLocation2(authority.getAuthorityId());
+        testLocation1 = TestSharedMethods.testLocation(authority.clone());
+        testLocation2 = TestSharedMethods.testLocation2(authority.clone());
 
         // Add test objects to database
         TestSharedMethods.addTestUsers(accountDao, testUser1, testUser2);

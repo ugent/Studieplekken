@@ -1,6 +1,5 @@
 package blok2.daos;
 
-import blok2.daos.db.ADB;
 import blok2.helpers.Institution;
 import blok2.helpers.date.CustomDate;
 import blok2.model.Authority;
@@ -11,52 +10,44 @@ import blok2.model.reservables.Location;
 import blok2.model.users.Role;
 import blok2.model.users.User;
 import org.junit.Assert;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TestSharedMethods {
 
-    public static Location testLocation(int authorityId) {
+    public static Location testLocation(Authority authority) {
         Location testLocation = new Location();
         testLocation.setName("Test Location");
         testLocation.setAddress("Test street, 10");
         testLocation.setNumberOfSeats(50);
         testLocation.setNumberOfLockers(15);
         testLocation.setImageUrl("https://example.com/image.jpg");
-        testLocation.setAuthorityId(authorityId);
+        testLocation.setAuthority(authority);
 
         return testLocation;
     }
 
-    public static Location testLocation2(int authorityId) {
+    public static Location testLocation2(Authority authority) {
         Location testLocation2 = new Location();
         testLocation2.setName("Second Test Location");
         testLocation2.setAddress("Second Test street, 20");
         testLocation2.setNumberOfSeats(100);
         testLocation2.setNumberOfLockers(10);
         testLocation2.setImageUrl("https://example.com/picture.png");
-        testLocation2.setAuthorityId(authorityId);
+        testLocation2.setAuthority(authority);
         return testLocation2;
     }
 
-    public static Location testLocation3(int authorityId) {
+    public static Location testLocation3(Authority authority) {
         Location testLocation3 = new Location();
         testLocation3.setName("Third Test Location");
         testLocation3.setAddress("Third Test street, 30");
         testLocation3.setNumberOfSeats(25);
         testLocation3.setNumberOfLockers(5);
         testLocation3.setImageUrl("https://example.com/picture.png");
-        testLocation3.setAuthorityId(authorityId);
+        testLocation3.setAuthority(authority);
         return testLocation3;
     }
 

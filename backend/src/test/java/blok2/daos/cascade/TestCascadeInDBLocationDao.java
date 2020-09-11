@@ -86,7 +86,7 @@ public class TestCascadeInDBLocationDao extends TestDao {
     public void populateDatabase() throws SQLException {
         // Setup test objects
         authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testLocation = TestSharedMethods.testLocation(authority.getAuthorityId());
+        testLocation = TestSharedMethods.testLocation(authority);
         testUser1 = TestSharedMethods.studentEmployeeTestUser();
         testUser2 = TestSharedMethods.employeeAdminTestUser();
 
