@@ -11,7 +11,12 @@
     "locationDetails": {
       "info": "General information about this location:",
       "tags": "Tags that characterize this location:"
-    }
+    },
+
+    "tagsFilterTitle": "Filter locations on tags",
+    "noMatchesFromFilter": "There are no locations that match your selection or search.",
+
+    "error": "Something went wrong while retrieving the locations."
   },
 
   "footer":{

@@ -21,6 +21,8 @@ export class DashboardComponent implements OnInit {
 
   currentLang: string;
 
+  successOnRetrievingLocations: boolean = undefined;
+
   constructor(private locationService: LocationService,
               private tagsService: TagsService,
               private translate: TranslateService) { }
@@ -33,10 +35,14 @@ export class DashboardComponent implements OnInit {
       }
     );
 
+    this.successOnRetrievingLocations = null;
     this.locationService.getLocations().subscribe(
       (next) => {
         this.locations = next;
         this.filteredLocations = next;
+        this.successOnRetrievingLocations = true;
+      }, () => {
+        this.successOnRetrievingLocations = false;
       }
     );
 
