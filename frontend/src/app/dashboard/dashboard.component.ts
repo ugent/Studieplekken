@@ -16,12 +16,17 @@ export class DashboardComponent implements OnInit {
   locations: Location[];
   filteredLocations: Location[];
 
+  enableClearButton = false;
+  backupFilterForAfterClear: Location[];
+
   tags: LocationTag[];
   matSelectFormControl: FormControl;
 
   currentLang: string;
 
   successOnRetrievingLocations: boolean = undefined;
+
+  locationSearch: string;
 
   constructor(private locationService: LocationService,
               private tagsService: TagsService,
@@ -40,6 +45,7 @@ export class DashboardComponent implements OnInit {
       (next) => {
         this.locations = next;
         this.filteredLocations = next;
+        this.backupFilterForAfterClear = next;
         this.successOnRetrievingLocations = true;
       }, () => {
         this.successOnRetrievingLocations = false;
@@ -70,5 +76,24 @@ export class DashboardComponent implements OnInit {
         }
       }
     });
+
+    this.backupFilterForAfterClear = this.filteredLocations;
+  }
+
+  onSearchEnter(): void {
+    this.filteredLocations = [];
+    for (const location of this.backupFilterForAfterClear) {
+      if (location.name.toUpperCase().includes(this.locationSearch.toUpperCase())) {
+        this.filteredLocations.push(location);
+      }
+    }
+
+    this.enableClearButton = true;
+  }
+
+  onClearSearch(): void {
+    this.filteredLocations = this.backupFilterForAfterClear;
+    this.enableClearButton = false;
+    this.locationSearch = '';
   }
 }

@@ -13,8 +13,12 @@
       "tags": "Tags that characterize this location:"
     },
 
-    "tagsFilterTitle": "Filter locations on tags",
-    "noMatchesFromFilter": "There are no locations that match your selection or search.",
+    "filter": {
+      "title": "Filter",
+      "tagsFilterTitle": "Filter locations on tags",
+      "noMatchesFromFilter": "There are no locations that match your selection or search.",
+      "searchPlaceholder": "search a location by name, taking the tags filter into account"
+    },
 
     "error": "Something went wrong while retrieving the locations."
   },
@@ -38,7 +42,9 @@
       "add": "Add",
       "update": "Update",
       "cancel": "Cancel",
-      "delete": "Delete"
+      "delete": "Delete",
+      "search": "Search",
+      "clear": "Clear"
     },
 
     "roles": {

@@ -1,16 +1,61 @@
 <div class="container-fluid" *ngIf="locations !== undefined && successOnRetrievingLocations === true">
-  <div class="row">
-    <mat-form-field *ngIf="tags !== undefined" >
-      <mat-label>{{'dashboard.tagsFilterTitle' | translate}}</mat-label>
-      <mat-select multiple
-                  [formControl]="matSelectFormControl"
-                  [compareWith]="compareTagsInSelection"
-                  (selectionChange)="onSelectionChange($event)">
-        <mat-option *ngFor="let tag of tags" [value]="tag">
-          {{currentLang === 'nl' ? tag.dutch : tag.english}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+  <!-- Provide a panel group for filter -->
+  <div class="panel-group">
+    <!-- Heading -->
+    <div class="panel-heading">
+      <h3 class="panel-title">
+        <a data-toggle="collapse" href="#filterBody" aria-expanded="false" class="collapsed">
+          <i class="glyphicon glyphicon-plus"></i>
+          <i class="glyphicon glyphicon-minus"></i>
+          {{('dashboard.filter.title' | translate)}}
+        </a>
+      </h3>
+    </div>
+
+    <!-- Body -->
+    <div class="panel-collapse collapse" id="filterBody">
+      <div class="panel-body" style="padding: 20px">
+        <div class="row">
+          <div class="col-sm-4">
+            <mat-form-field *ngIf="tags !== undefined" style="width: 100%" >
+              <mat-label>{{'dashboard.filter.tagsFilterTitle' | translate}}</mat-label>
+              <mat-select multiple
+                          [formControl]="matSelectFormControl"
+                          [compareWith]="compareTagsInSelection"
+                          (selectionChange)="onSelectionChange($event)">
+                <mat-option *ngFor="let tag of tags" [value]="tag">
+                  {{currentLang === 'nl' ? tag.dutch : tag.english}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="col-sm-1"></div>
+
+          <div class="col-sm-5">
+            <div class="form-group">
+              <input [(ngModel)]="locationSearch" (keyup.enter)="onSearchEnter()"
+                     id="search" class="form-control" type="text"
+                     placeholder="{{'dashboard.filter.searchPlaceholder' | translate}}" >
+            </div>
+          </div>
+
+          <div class="col-sm-1">
+            <button class="btn btn-primary" [disabled]="!locationSearch || locationSearch.trim().length === 0"
+                    (click)="onSearchEnter()">
+              {{'general.buttons.search' | translate}}
+            </button>
+          </div>
+
+          <div class="col-sm-1">
+            <button class="btn btn-secondary" [disabled]="!enableClearButton"
+                    (click)="onClearSearch()">
+              {{'general.buttons.clear' | translate}}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <hr>
@@ -34,6 +79,6 @@
 
 <ng-template #noMatchesFromFilter>
   <div class="alert alert-warning">
-    {{'dashboard.noMatchesFromFilter' | translate}}
+    {{'dashboard.filter.noMatchesFromFilter' | translate}}
   </div>
 </ng-template>

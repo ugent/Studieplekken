@@ -13,8 +13,12 @@
       "tags": "Tags die deze locatie kenmerken:"
     },
 
-    "tagsFilterTitle": "Filter locaties op tags",
-    "noMatchesFromFilter": "Er zijn geen locaties die voldoen aan je filtervoorwaarden of aan je zoekterm.",
+    "filter": {
+      "title": "Filter",
+      "tagsFilterTitle": "Filter locaties op tags",
+      "noMatchesFromFilter": "Er zijn geen locaties die voldoen aan je filtervoorwaarden of aan je zoekterm.",
+      "searchPlaceholder": "zoek een locatie op naam, rekening houdend met de filter op tags"
+    },
 
     "error": "Er is iets misgelopen tijdens het ophalen van de locaties."
   },
@@ -38,7 +42,9 @@
       "add": "Voeg toe",
       "update": "Update",
       "cancel": "Annuleer",
-      "delete": "Verwijder"
+      "delete": "Verwijder",
+      "search": "Zoek",
+      "clear": "Annuleer"
     },
 
     "roles": {
