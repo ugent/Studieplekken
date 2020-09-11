@@ -89,6 +89,17 @@ public class TagsController {
      *   API calls for CRUD operations with public.LOCATION_TAGS  *
      **************************************************************/
 
+    @GetMapping("/location/{locationName}")
+    public List<LocationTag> getTagsOfLocation(@PathVariable("locationName") String locationName) {
+        try {
+            return tagsDao.getTagsOfLocation(locationName);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
     @PutMapping("/location/{locationName}")
     public void assignTagsToLocation(@PathVariable("locationName") String locationName,
                                      @RequestBody List<LocationTag> tags) {

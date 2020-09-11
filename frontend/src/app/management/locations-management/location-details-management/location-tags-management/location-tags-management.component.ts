@@ -6,7 +6,7 @@ import {LocationTag} from '../../../../shared/model/LocationTag';
 import {MatSelectChange} from '@angular/material/select';
 import {TagsService} from '../../../../services/api/tags/tags.service';
 import {FormControl} from '@angular/forms';
-import {LocationDetailsService} from "../../../../services/single-point-of-truth/location-details/location-details.service";
+import {LocationDetailsService} from '../../../../services/single-point-of-truth/location-details/location-details.service';
 
 @Component({
   selector: 'app-location-tags-management',

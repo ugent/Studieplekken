@@ -206,7 +206,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
         }
     }
 
-    private static ResultSet getTagsFromLocation(String locationName, Connection conn) throws SQLException {
+    public static ResultSet getTagsFromLocation(String locationName, Connection conn) throws SQLException {
         PreparedStatement pst = conn.prepareStatement(Resources.databaseProperties.getString("tags_from_location"));
         pst.setString(1, locationName);
         return pst.executeQuery();

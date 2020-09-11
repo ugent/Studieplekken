@@ -14,6 +14,11 @@ import java.util.List;
 
 @Service
 public class DBTagsDao extends DAO implements ITagsDao {
+
+    /*****************************************************
+     *   API calls for CRUD operations with public.TAGS  *
+     *****************************************************/
+
     @Override
     public void addTag(LocationTag tag) throws SQLException {
         try (Connection conn = adb.getConnection()) {
@@ -85,6 +90,10 @@ public class DBTagsDao extends DAO implements ITagsDao {
         }
     }
 
+    /**************************************************************
+     *   API calls for CRUD operations with public.LOCATION_TAGS  *
+     **************************************************************/
+
     @Override
     public LocationTag getTag(int tagId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
@@ -95,6 +104,13 @@ public class DBTagsDao extends DAO implements ITagsDao {
                 return createLocationTag(rs);
             }
             return null;
+        }
+    }
+
+    public List<LocationTag> getTagsOfLocation(String locationName) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            ResultSet rs = DBLocationDao.getTagsFromLocation(locationName, conn);
+            return createLocationTagList(rs);
         }
     }
 
