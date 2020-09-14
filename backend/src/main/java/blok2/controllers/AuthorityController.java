@@ -3,6 +3,8 @@ package blok2.controllers;
 import blok2.daos.IAuthorityDao;
 import blok2.model.Authority;
 import blok2.model.users.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -12,12 +14,11 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("api/authority")
 public class AuthorityController {
-    private final Logger logger = Logger.getLogger(AuthorityController.class.getSimpleName());
+    private final Logger logger = LoggerFactory.getLogger(AuthorityController.class.getSimpleName());
     private final IAuthorityDao authorityDao;
 
     @Autowired
@@ -30,8 +31,8 @@ public class AuthorityController {
         try {
             return authorityDao.getAllAuthorities();
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
@@ -41,8 +42,8 @@ public class AuthorityController {
         try {
             return authorityDao.getAuthorityByAuthorityId(authorityId);
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
@@ -52,8 +53,8 @@ public class AuthorityController {
         try {
             return authorityDao.getUsersFromAuthority(authorityId);
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
@@ -62,9 +63,10 @@ public class AuthorityController {
     public void addAuthority(@RequestBody Authority authority) {
         try {
             authorityDao.addAuthority(authority);
+            logger.info(String.format("Adding authority %s", authority.getName()));
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
@@ -74,9 +76,10 @@ public class AuthorityController {
         try {
             authority.setAuthorityId(authorityId);
             authorityDao.updateAuthority(authority);
+            logger.info(String.format("Updating authority %d", authorityId));
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
@@ -85,9 +88,10 @@ public class AuthorityController {
     public void deleteAuthority(@PathVariable int authorityId) {
         try {
             authorityDao.deleteAuthority(authorityId);
+            logger.info(String.format("Removing authority %d", authorityId));
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
@@ -96,9 +100,10 @@ public class AuthorityController {
     public void addUserToAuthority(@PathVariable int authorityId, @PathVariable String userId) {
         try {
             authorityDao.addUserToAuthority(userId, authorityId);
+            logger.info(String.format("Adding user %s to authority %d", userId, authorityId));
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
@@ -107,9 +112,10 @@ public class AuthorityController {
     public void removeUserFromAuthority(@PathVariable int authorityId, @PathVariable String userId) {
         try {
             authorityDao.removeUserFromAuthority(userId, authorityId);
+            logger.info(String.format("Removing user %s from authority %d", userId, authorityId));
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }

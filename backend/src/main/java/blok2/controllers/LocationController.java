@@ -3,6 +3,8 @@ package blok2.controllers;
 import blok2.daos.ILocationDao;
 import blok2.helpers.date.CustomDate;
 import blok2.model.reservables.Location;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +14,6 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * This controller handles all requests related to locations.
@@ -22,7 +23,7 @@ import java.util.logging.Logger;
 @RequestMapping("api/locations")
 public class LocationController {
 
-    private final Logger logger = Logger.getLogger(LocationController.class.getSimpleName());
+    private final Logger logger = LoggerFactory.getLogger(LocationController.class.getSimpleName());
 
     private final ILocationDao locationDao;
 
@@ -37,8 +38,8 @@ public class LocationController {
         try {
             return locationDao.getAllLocations();
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
@@ -49,8 +50,8 @@ public class LocationController {
         try {
             return locationDao.getLocation(locationName);
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
@@ -61,9 +62,10 @@ public class LocationController {
     public void addLocation(@RequestBody Location location) {
         try {
             this.locationDao.addLocation(location);
+            logger.info(String.format("New location %s added", location.getName()));
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
@@ -74,9 +76,10 @@ public class LocationController {
     public void updateLocation(@PathVariable("locationName") String locationName, @RequestBody Location location) {
         try {
             locationDao.updateLocation(locationName, location);
+            logger.info(String.format("Location %s updated", locationName));
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
@@ -87,9 +90,10 @@ public class LocationController {
     public void deleteLocation(@PathVariable("locationName") String locationName) {
         try {
             locationDao.deleteLocation(locationName);
+            logger.info(String.format("Location %s deleted", locationName));
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
@@ -100,8 +104,8 @@ public class LocationController {
         try {
             return locationDao.getCountOfReservations(CustomDate.now()).get(locationName);
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
