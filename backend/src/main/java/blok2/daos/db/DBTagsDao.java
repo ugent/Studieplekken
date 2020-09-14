@@ -3,6 +3,7 @@ package blok2.daos.db;
 import blok2.daos.ITagsDao;
 import blok2.helpers.Resources;
 import blok2.model.LocationTag;
+import blok2.model.reservables.Location;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
@@ -24,6 +25,13 @@ public class DBTagsDao extends DAO implements ITagsDao {
         }
     }
 
+    public static void addTag(LocationTag tag, Connection conn) throws SQLException {
+        PreparedStatement st = conn.prepareStatement(Resources.databaseProperties.getString("add_tag"));
+        st.setString(1, tag.getDutch());
+        st.setString(2, tag.getEnglish());
+        st.execute();
+    }
+
     @Override
     public void deleteTag(int tagId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
@@ -31,7 +39,7 @@ public class DBTagsDao extends DAO implements ITagsDao {
                 conn.setAutoCommit(false);
 
                 // First, delete the entries in LOCATION_TAGS that have a reference to 'tagId'
-                removeTagUsageFromAllLocationsInTransaction(tagId, conn);
+                DBLocationTagDao.deleteTagFromAllLocations(tagId, conn);
 
                 // Then, delete the tag
                 deleteTagInTransaction(tagId, conn);
@@ -61,19 +69,6 @@ public class DBTagsDao extends DAO implements ITagsDao {
             st.setInt(3, tag.getTagId());
             st.execute();
         }
-    }
-
-    @Override
-    public void removeTagUsageFromAllLocations(LocationTag tag) throws SQLException {
-        try (Connection conn = adb.getConnection()) {
-            removeTagUsageFromAllLocationsInTransaction(tag.getTagId(), conn);
-        }
-    }
-
-    private void removeTagUsageFromAllLocationsInTransaction(int tagId, Connection conn) throws SQLException {
-        PreparedStatement st = conn.prepareStatement(Resources.databaseProperties.getString("remove_locations_from_tag"));
-        st.setInt(1, tagId);
-        st.execute();
     }
 
     @Override
@@ -110,11 +105,11 @@ public class DBTagsDao extends DAO implements ITagsDao {
                 conn.setAutoCommit(false);
 
                 // remove all tags from the location
-                DBLocationDao.deleteTagsFromLocation(locationName, conn);
+                DBLocationTagDao.deleteAllTagsFromLocation(locationName, conn);
 
                 // add entries to connect the location with the tags
                 for (LocationTag tag : tags) {
-                    DBLocationDao.insertTag(locationName, tag, conn);
+                    DBLocationTagDao.addTagToLocation(locationName, tag.getTagId(), conn);
                 }
 
                 conn.commit();
