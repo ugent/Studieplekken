@@ -99,7 +99,7 @@ where name = ?;
 
 -- queries for table location_tags
 -- $add_tag_to_location
-Insert into public.location_tags (location_id, tag_id) values (?,?);
+Insert into public.location_tags (location_id, tag_id, assigned) values (?,?,?);
 
 -- $remove_tags_from_location
 delete from public.location_tags
@@ -108,7 +108,7 @@ where location_id = ?;
 -- $remove_locations_from_tag
 delete
 from public.location_tags
-where tag_id= ?;
+where tag_id=?;
 
 -- $update_fk_location_tags_to_location
 update public.location_tags
