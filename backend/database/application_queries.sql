@@ -824,6 +824,42 @@ set user_augentid = ?
 where user_augentid = ?;
 
 
+-- queries for LOCATION_TAG
+-- $get_tags_for_location
+select t.tag_id, t.dutch, t.english
+from public.location_tags lt
+    join public.tags t
+        on t.tag_id = lt.tag_id
+where lt.location_id = ?;
+
+-- $get_locations_for_tag
+select l.name, l.number_of_seats, l.number_of_lockers
+           , l.image_url, l.address, l.authority_id, l.description_dutch, l.description_english
+from public.locations l
+    join public.location_tags lt
+        on l.name = lt.location_id
+where lt.tag_id = ?;
+
+-- $add_tag_to_location
+insert into public.location_tags (location_id, tag_id)
+values (?, ?);
+
+-- $delete_tag_from_location
+delete
+from public.location_tags
+where location_id = ? and tag_id = ?;
+
+-- $delete_all_tags_from_location
+delete
+from public.location_tags
+where location_id = ?;
+
+-- $delete_tag_from_all_locations
+delete
+from public.location_tags
+where tag_id = ?;
+
+
 -- queries for CALENDAR_PERIODS
 -- $get_calendar_periods
 select cp.location_name, cp.starts_at, cp.ends_at, cp.opening_time, cp.closing_time, cp.reservable_from

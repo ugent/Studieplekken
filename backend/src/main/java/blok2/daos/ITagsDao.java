@@ -18,8 +18,6 @@ public interface ITagsDao extends IDao {
 
     void updateTag(LocationTag tag) throws SQLException;
 
-    void removeTagUsageFromAllLocations(LocationTag tag) throws SQLException;
-
     ArrayList<LocationTag> getTags() throws SQLException;
 
     LocationTag getTag(int tagId) throws SQLException;
