@@ -71,8 +71,22 @@ const routes: Routes = [
           applicationPart: 'reservations'
         }
       },
-      {path: 'calendar', component: ProfileCalendarComponent},
-      {path: 'password', component: ProfileChangePasswordComponent},
+      {
+        path: 'calendar',
+        component: ProfileCalendarComponent,
+        canActivate: [ApplicationTypeGuardService],
+        data: {
+          applicationPart: 'profile.personalCalendar'
+        }
+      },
+      {
+        path: 'password',
+        component: ProfileChangePasswordComponent,
+        canActivate: [ApplicationTypeGuardService],
+        data: {
+          applicationPart: 'profile.changePassword'
+        }
+      },
       {
         path: 'penalties',
         component: ProfilePenaltiesComponent,

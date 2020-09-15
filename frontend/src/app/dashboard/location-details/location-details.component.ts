@@ -8,6 +8,8 @@ import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {CalendarEvent} from 'angular-calendar';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import {TranslateService} from '@ngx-translate/core';
+import {LocationTag} from '../../shared/model/LocationTag';
+import {TagsService} from '../../services/api/tags/tags.service';
 
 @Component({
   selector: 'app-location-details',
@@ -16,6 +18,8 @@ import {TranslateService} from '@ngx-translate/core';
 })
 export class LocationDetailsComponent implements OnInit {
   location: Observable<Location>;
+  locationName: string;
+  tags: Observable<LocationTag[]>;
 
   events: CalendarEvent[] = [
     {
@@ -33,26 +37,33 @@ export class LocationDetailsComponent implements OnInit {
 
   altImageUrl = vars.defaultLocationImage;
 
+  currentLang: string;
+
   constructor(private locationService: LocationService,
+              private tagsService: TagsService,
               private route: ActivatedRoute,
               private sanitizer: DomSanitizer,
               private translate: TranslateService) { }
 
   ngOnInit(): void {
-    const locationName = this.route.snapshot.paramMap.get('locationName');
-    this.location = this.locationService.getLocation(locationName);
+    this.locationName = this.route.snapshot.paramMap.get('locationName');
+    this.location = this.locationService.getLocation(this.locationName);
+    this.currentLang = this.translate.currentLang;
 
     // when the location is loaded, setup the descriptions
     this.location.subscribe(next => {
       this.description.dutch = next.descriptionDutch;
       this.description.english = next.descriptionEnglish;
       this.setDescriptionToShow();
+
+      this.tags = this.tagsService.getTagsOfLocation(this.locationName);
     });
 
     // if the browser language would change, the description needs to change
     this.translate.onLangChange.subscribe(
       () => {
         this.setDescriptionToShow();
+        this.currentLang = this.translate.currentLang;
       }
     );
   }

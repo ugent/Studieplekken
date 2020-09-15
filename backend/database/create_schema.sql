@@ -27,9 +27,9 @@ CREATE SCHEMA public
 
 CREATE TABLE public.authority
 (
-    authority_id integer primary key generated always as identity,
-    name         text NOT NULL unique,
-    description  text NOT NULL
+    authority_id    integer primary key generated always as identity,
+    authority_name  text NOT NULL unique,
+    description     text NOT NULL
 );
 
 --

@@ -6,7 +6,21 @@
     "gotoDashboard": "Please navigate to the dashboard to select a location's details.",
     "location": "Location",
     "numberOfLockers": "Number of lockers",
-    "numberOfSeats": "Number of seats"
+    "numberOfSeats": "Number of seats",
+
+    "locationDetails": {
+      "info": "General information about this location:",
+      "tags": "Tags that characterize this location:"
+    },
+
+    "filter": {
+      "title": "Filter",
+      "tagsFilterTitle": "Filter locations on tags",
+      "noMatchesFromFilter": "There are no locations that match your selection or search.",
+      "searchPlaceholder": "search a location by name, taking the tags filter into account"
+    },
+
+    "error": "Something went wrong while retrieving the locations."
   },
 
   "footer":{
@@ -28,7 +42,9 @@
       "add": "Add",
       "update": "Update",
       "cancel": "Cancel",
-      "delete": "Delete"
+      "delete": "Delete",
+      "search": "Search",
+      "clear": "Clear"
     },
 
     "roles": {
@@ -149,7 +165,9 @@
 
           "success": "Successfully updated the tags assigned to '{locationName}'",
           "error": "Something went wrong while updating the tags assigned to '{locationName}'."
-        }
+        },
+
+        "noTagsSelected": "At the moment, there are no tags actively selected."
       },
 
       "lockerCalendar": {

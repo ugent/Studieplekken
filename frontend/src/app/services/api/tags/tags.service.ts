@@ -42,4 +42,8 @@ export class TagsService {
   assignTagsToLocation(locationName: string, tags: LocationTag[]): Observable<any> {
     return this.http.put(api.assignTagsToLocation.replace('{locationName}', locationName), tags);
   }
+
+  getTagsOfLocation(locationName: string): Observable<LocationTag[]> {
+    return this.http.get<LocationTag[]>(api.tagsFromLocation.replace('{locationName}', locationName));
+  }
 }

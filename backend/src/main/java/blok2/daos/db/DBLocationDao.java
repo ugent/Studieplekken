@@ -5,6 +5,7 @@ import blok2.daos.ILocationDao;
 import blok2.daos.IScannerLocationDao;
 import blok2.helpers.Resources;
 import blok2.helpers.date.CustomDate;
+import blok2.model.Authority;
 import blok2.model.LocationTag;
 import blok2.model.reservables.Location;
 import blok2.model.reservables.Locker;
@@ -200,6 +201,12 @@ public class DBLocationDao extends DAO implements ILocationDao {
         }
     }
 
+    public static ResultSet getTagsFromLocation(String locationName, Connection conn) throws SQLException {
+        PreparedStatement pst = conn.prepareStatement(Resources.databaseProperties.getString("tags_from_location"));
+        pst.setString(1, locationName);
+        return pst.executeQuery();
+
+    }
     @Override
     public Map<String, Integer> getCountOfReservations(CustomDate date) throws SQLException {
         HashMap<String, Integer> count = new HashMap<>();
@@ -231,11 +238,11 @@ public class DBLocationDao extends DAO implements ILocationDao {
         int numberOfLockers = rs.getInt(Resources.databaseProperties.getString("location_number_of_lockers"));
         String imageUrl = rs.getString(Resources.databaseProperties.getString("location_image_url"));
         String address = rs.getString(Resources.databaseProperties.getString("location_address"));
-        int authorityId = rs.getInt(Resources.databaseProperties.getString("location_authority_id"));
+        Authority authority = DBAuthorityDao.createAuthority(rs);
         String descriptionDutch = rs.getString(Resources.databaseProperties.getString("location_description_dutch"));
         String descriptionEnglish = rs.getString(Resources.databaseProperties.getString("location_description_english"));
         ArrayList<LocationTag> tags = DBTagsDao.createLocationTagList(rsTags);
-        return new Location(name, address, numberOfSeats, numberOfLockers, imageUrl, authorityId, descriptionDutch, descriptionEnglish, tags);
+        return new Location(name, address, numberOfSeats, numberOfLockers, imageUrl, authority, descriptionDutch, descriptionEnglish, tags);
     }
 
     /**
@@ -279,7 +286,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
         pstmt.setInt(3, location.getNumberOfLockers());
         pstmt.setString(4, location.getImageUrl());
         pstmt.setString(5, location.getAddress());
-        pstmt.setInt(6, location.getAuthorityId());
+        pstmt.setInt(6, location.getAuthority().getAuthorityId());
         pstmt.setString(7, location.getDescriptionDutch());
         pstmt.setString(8, location.getDescriptionEnglish());
     }

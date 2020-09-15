@@ -11,11 +11,12 @@
         <!-- Title -->
         <h3>{{ location.name }}</h3>
 
-        <!-- Number of seats, number of lockers and address -->
+        <!-- Number of seats, number of lockers, address and collection of tags -->
         <ul>
           <li>{{'dashboard.numberOfSeats' | translate}}: {{location.numberOfSeats}}</li>
           <li>{{'dashboard.numberOfLockers' | translate}}: {{location.numberOfLockers}}</li>
           <li>{{'dashboard.address' | translate}}: {{location.address}}</li>
+          <li>{{tagsInCurrentLang}}</li>
         </ul>
 
         <!-- Progress bar for reserved seats -->

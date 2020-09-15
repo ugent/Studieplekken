@@ -32,7 +32,7 @@ public class TestDBAuthorityDaoSolo extends TestDao {
 
     @Test
     public void getAuthorityByName() throws SQLException {
-        Authority authority = authorityDao.getAuthorityByName(testAuthority.getName());
+        Authority authority = authorityDao.getAuthorityByName(testAuthority.getAuthorityName());
         Assert.assertEquals(testAuthority, authority);
     }
 
@@ -52,7 +52,7 @@ public class TestDBAuthorityDaoSolo extends TestDao {
 
     @Test
     public void updateAuthority() throws SQLException {
-        testAuthority.setName("different name");
+        testAuthority.setAuthorityName("different name");
         authorityDao.updateAuthority(testAuthority);
         Authority updatedAuthority = authorityDao.getAuthorityByAuthorityId(testAuthority.getAuthorityId());
         Assert.assertEquals(testAuthority, updatedAuthority);

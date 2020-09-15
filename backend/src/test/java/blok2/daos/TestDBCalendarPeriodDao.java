@@ -35,7 +35,7 @@ public class TestDBCalendarPeriodDao extends TestDao {
     public void populateDatabase() throws SQLException {
         // Setup test objects
         authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testLocation = TestSharedMethods.testLocation(authority.getAuthorityId());
+        testLocation = TestSharedMethods.testLocation(authority);
         calendarPeriods = TestSharedMethods.testCalendarPeriods(testLocation);
         updatedPeriods = TestSharedMethods.testCalendarPeriodsButUpdated(testLocation);
 

@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import {LocationService} from '../services/api/locations/location.service';
-import {Observable} from 'rxjs';
 import {Location} from '../shared/model/Location';
+import {LocationTag} from '../shared/model/LocationTag';
+import {TagsService} from '../services/api/tags/tags.service';
+import {TranslateService} from '@ngx-translate/core';
+import {FormControl} from '@angular/forms';
+import {MatSelectChange} from '@angular/material/select';
 
 @Component({
   selector: 'app-dashboard',
@@ -9,12 +13,87 @@ import {Location} from '../shared/model/Location';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  locations: Observable<Location[]>;
+  locations: Location[];
+  filteredLocations: Location[];
 
-  constructor(private locationService: LocationService) { }
+  enableClearButton = false;
+  backupFilterForAfterClear: Location[];
+
+  tags: LocationTag[];
+  matSelectFormControl: FormControl;
+
+  currentLang: string;
+
+  successOnRetrievingLocations: boolean = undefined;
+
+  locationSearch: string;
+
+  constructor(private locationService: LocationService,
+              private tagsService: TagsService,
+              private translate: TranslateService) { }
 
   ngOnInit(): void {
-    this.locations = this.locationService.getLocations();
+    this.currentLang = this.translate.currentLang;
+    this.translate.onLangChange.subscribe(
+      () => {
+        this.currentLang = this.translate.currentLang;
+      }
+    );
+
+    this.successOnRetrievingLocations = null;
+    this.locationService.getLocations().subscribe(
+      (next) => {
+        this.locations = next;
+        this.filteredLocations = next;
+        this.backupFilterForAfterClear = next;
+        this.successOnRetrievingLocations = true;
+      }, () => {
+        this.successOnRetrievingLocations = false;
+      }
+    );
+
+    this.tagsService.getAllTags().subscribe(
+      (next) => {
+        this.tags = next;
+        this.matSelectFormControl = new FormControl(next);
+      }
+    );
   }
 
+  compareTagsInSelection(tag1: LocationTag, tag2: LocationTag): boolean {
+    return tag1.tagId === tag2.tagId;
+  }
+
+  onSelectionChange(event: MatSelectChange): void {
+    const value: LocationTag[] = event.value;
+    this.filteredLocations = [];
+
+    this.locations.forEach(location => {
+      for (const tag of location.tags) {
+        if (value.find(v => v.tagId === tag.tagId)) {
+          this.filteredLocations.push(location);
+          break;
+        }
+      }
+    });
+
+    this.backupFilterForAfterClear = this.filteredLocations;
+  }
+
+  onSearchEnter(): void {
+    this.filteredLocations = [];
+    for (const location of this.backupFilterForAfterClear) {
+      if (location.name.toUpperCase().includes(this.locationSearch.toUpperCase())) {
+        this.filteredLocations.push(location);
+      }
+    }
+
+    this.enableClearButton = true;
+  }
+
+  onClearSearch(): void {
+    this.filteredLocations = this.backupFilterForAfterClear;
+    this.enableClearButton = false;
+    this.locationSearch = '';
+  }
 }

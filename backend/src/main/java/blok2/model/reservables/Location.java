@@ -1,5 +1,6 @@
 package blok2.model.reservables;
 
+import blok2.model.Authority;
 import blok2.model.LocationTag;
 
 import java.util.ArrayList;
@@ -14,10 +15,10 @@ public class Location implements Cloneable {
     private String imageUrl;
     private String descriptionDutch = "";
     private String descriptionEnglish= "";
-    private int authorityId;
+    private Authority authority;
     private List<LocationTag> tags;
 
-    public Location(String name, String address, int numberOfSeats, int numberOfLockers, String imageUrl, int authorityId, String descriptionDutch, String descriptionEnglish, ArrayList<LocationTag> tags) {
+    public Location(String name, String address, int numberOfSeats, int numberOfLockers, String imageUrl, Authority authority, String descriptionDutch, String descriptionEnglish, ArrayList<LocationTag> tags) {
         this.name = name;
         this.address = address;
         this.numberOfSeats = numberOfSeats;
@@ -25,12 +26,13 @@ public class Location implements Cloneable {
         this.imageUrl = imageUrl;
         this.descriptionDutch = descriptionDutch;
         this.descriptionEnglish = descriptionEnglish;
-        this.authorityId = authorityId;
+        this.authority = authority;
         this.tags = tags;
     }
 
     // default constructor necessary for testing purposes
     public Location() {
+        tags = new ArrayList<>();
     }
 
     @Override
@@ -43,6 +45,9 @@ public class Location implements Cloneable {
                 Objects.equals(name, location.name) &&
                 Objects.equals(address, location.address) &&
                 Objects.equals(imageUrl, location.imageUrl) &&
+                Objects.equals(descriptionDutch, location.descriptionDutch) &&
+                Objects.equals(descriptionEnglish, location.descriptionEnglish) &&
+                Objects.equals(authority, location.authority) &&
                 (tags == null || tags.equals(location.tags));
     }
 
@@ -55,6 +60,15 @@ public class Location implements Cloneable {
     public Location clone() {
         try {
             Location l = (Location) super.clone();
+
+            // deep copy the mutable attributes
+            l.authority = authority.clone();
+            l.tags = new ArrayList<>(tags.size());
+
+            for (int i = 0; i < tags.size(); i++) {
+                l.tags.set(i, tags.get(i).clone());
+            }
+
             return l;
         } catch (CloneNotSupportedException e) {
             return null;
@@ -119,12 +133,12 @@ public class Location implements Cloneable {
         this.descriptionEnglish = descriptionEnglish;
     }
 
-    public int getAuthorityId() {
-        return authorityId;
+    public Authority getAuthority() {
+        return authority;
     }
 
-    public void setAuthorityId(int authorityId) {
-        this.authorityId = authorityId;
+    public void setAuthority(Authority authority) {
+        this.authority = authority;
     }
 
     public List<LocationTag> getTags() {

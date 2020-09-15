@@ -79,7 +79,8 @@ export const api = {
   deleteTag: '/api/tags/{tagId}',
 
   // LOCATION_TAGS
-  assignTagsToLocation: '/api/tags/location/{locationName}'
+  assignTagsToLocation: '/api/tags/location/{locationName}',
+  tagsFromLocation: '/api/tags/location/{locationName}'
 };
 
 export const vars = {

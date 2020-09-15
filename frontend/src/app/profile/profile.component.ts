@@ -9,12 +9,16 @@ import {ApplicationTypeFunctionalityService} from '../services/functionality/app
 export class ProfileComponent implements OnInit {
   showReservations: boolean;
   showPenalties: boolean;
+  showPersonalCalendar: boolean;
+  showChangePassword: boolean;
 
   constructor(private functionalityService: ApplicationTypeFunctionalityService) { }
 
   ngOnInit(): void {
     this.showReservations = this.functionalityService.showReservationsFunctionality();
     this.showPenalties = this.functionalityService.showPenaltyFunctionality();
+    this.showChangePassword = this.functionalityService.showChangePasswordFunctionality();
+    this.showPersonalCalendar = this.functionalityService.showProfilePersonalCalendarFunctionality();
   }
 
 }

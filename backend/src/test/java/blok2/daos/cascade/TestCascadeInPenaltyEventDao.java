@@ -64,8 +64,8 @@ public class TestCascadeInPenaltyEventDao extends TestDao {
         testUser2 = TestSharedMethods.employeeAdminTestUser();
 
         authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testLocation1 = TestSharedMethods.testLocation(authority.getAuthorityId());
-        testLocation2 = TestSharedMethods.testLocation2(authority.getAuthorityId());
+        testLocation1 = TestSharedMethods.testLocation(authority.clone());
+        testLocation2 = TestSharedMethods.testLocation2(authority.clone());
 
         Map<Language, String> descriptions = new HashMap<>();
         descriptions.put(Language.DUTCH, "Dit is een test omschrijving van een penalty event met code 0");
