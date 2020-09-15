@@ -25,6 +25,16 @@ public interface ILocationTagDao extends IDao {
     boolean addTagToLocation(String locationName, int tagId) throws SQLException;
 
     /**
+     * Add tags in bulk to a location
+     */
+    boolean bulkAddTagsToLocation(String locationName, List<Integer> tagIds) throws SQLException;
+
+    /**
+     * Add a tag to multiple locations
+     */
+    boolean bulkAddTagToLocations(List<String> locationNames, int tagId) throws SQLException;
+
+    /**
      * Delete a specific tag from a location
      */
     boolean deleteTagFromLocation(String locationName, int tagId) throws SQLException;

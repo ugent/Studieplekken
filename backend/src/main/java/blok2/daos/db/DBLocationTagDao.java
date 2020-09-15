@@ -2,14 +2,11 @@ package blok2.daos.db;
 
 import blok2.daos.ILocationTagDao;
 import blok2.helpers.Resources;
-import blok2.model.LocationTag;
-import blok2.model.reservables.Location;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class DBLocationTagDao extends DAO implements ILocationTagDao {
@@ -50,6 +47,32 @@ public class DBLocationTagDao extends DAO implements ILocationTagDao {
             pstmt.setString(1, locationName);
             pstmt.setInt(2, tagId);
             return pstmt.executeUpdate() == 1;
+        }
+    }
+
+    @Override
+    public boolean bulkAddTagsToLocation(String locationName, List<Integer> tagIds) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            boolean guard = true;
+            for (int tagId : tagIds) {
+                if (!addTagToLocation(locationName, tagId, conn)) {
+                    guard = false;
+                }
+            }
+            return guard;
+        }
+    }
+
+    @Override
+    public boolean bulkAddTagToLocations(List<String> locationNames, int tagId) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            boolean guard = true;
+            for (String locationName : locationNames) {
+                if (!addTagToLocation(locationName, tagId, conn)) {
+                    guard = false;
+                }
+            }
+            return guard;
         }
     }
 

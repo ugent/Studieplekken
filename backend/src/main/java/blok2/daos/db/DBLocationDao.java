@@ -242,7 +242,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
      * create a location from the resultset, where tags are automatically fetched too
      */
     public static Location createLocation(ResultSet rs, Connection conn) throws SQLException {
-        ResultSet rsTags = DBLocationTagDao.getTagsForLocation(rs.getString("name"), conn);
+        ResultSet rsTags = DBLocationTagDao.getTagsForLocation(rs.getString(Resources.databaseProperties.getString("location_name")), conn);
         return createLocation(rs, rsTags);
     }
 
