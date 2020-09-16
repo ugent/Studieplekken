@@ -9,5 +9,11 @@
     "target": "https://localhost:8080",
     "secure": false,
     "changeOrigin": true
+  },
+
+  "/logout": {
+    "target": "https://localhost:8080",
+    "secure": false,
+    "changeOrigin": true
   }
 }

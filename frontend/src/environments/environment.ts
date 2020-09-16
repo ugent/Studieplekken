@@ -14,6 +14,7 @@ export const environment = {
 
 export const api = {
   whoAmI: '/whoAmI',
+  logout: '/logout',
 
   // CALENDAR_PERIODS
   calendarPeriods: '/api/locations/calendar/{locationName}',

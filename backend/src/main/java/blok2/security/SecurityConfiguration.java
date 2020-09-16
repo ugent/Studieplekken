@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.PortMapper;
 import org.springframework.security.web.PortMapperImpl;
 import org.springframework.security.web.PortResolverImpl;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
@@ -34,12 +35,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final CasAuthenticationProvider casAuthenticationProvider;
     private final CasAuthenticationEntryPoint casAuthenticationEntryPoint;
+    private final LogoutSuccessHandler logoutSuccessHandler;
 
     @Autowired
     public SecurityConfiguration(CasAuthenticationProvider casAuthenticationProvider,
-                                 CasAuthenticationEntryPoint casAuthenticationEntryPoint) {
+                                 CasAuthenticationEntryPoint casAuthenticationEntryPoint,
+                                 LogoutSuccessHandler logoutSuccessHandler) {
         this.casAuthenticationProvider = casAuthenticationProvider;
         this.casAuthenticationEntryPoint = casAuthenticationEntryPoint;
+        this.logoutSuccessHandler = logoutSuccessHandler;
     }
 
     @Override
@@ -63,6 +67,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(casAuthenticationEntryPoint);
 
         http.requestCache().requestCache(requestCache());
+
+        http.logout()
+                .logoutSuccessHandler(logoutSuccessHandler)
+                .logoutUrl("/logout");
     }
 
     /**

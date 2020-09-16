@@ -32,7 +32,7 @@
                     <div class="col-xs-12">
                       <ul class="nav-tertiary nav navbar-nav navbar-right">
                         <li id="logOut" class="last-child">
-                          <a *ngIf="loggedIn" (click)="logout()">{{'header.logOut' | translate}}</a>
+                          <a *ngIf="loggedIn" class="hover" (click)="logout()">{{'header.logOut' | translate}}</a>
                         </li>
                         <li>
                           <a href="#" (click)="changeLanguage($event)">

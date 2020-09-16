@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {User, UserConstructor} from '../../shared/model/User';
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {api} from '../../../environments/environment';
 import {Penalty} from '../../shared/model/Penalty';
 import {LocationReservation} from '../../shared/model/LocationReservation';
@@ -10,6 +10,7 @@ import {map, tap} from 'rxjs/operators';
 import {PenaltyService} from '../api/penalties/penalty.service';
 import {LocationReservationsService} from '../api/location-reservations/location-reservations.service';
 import {LockerReservationService} from '../api/locker-reservations/locker-reservation.service';
+import {Router} from '@angular/router';
 
 /**
  * The structure of the authentication service has been based on this article:
@@ -36,15 +37,31 @@ export class AuthenticationService {
   constructor(private http: HttpClient,
               private penaltyService: PenaltyService,
               private locationReservationService: LocationReservationsService,
-              private lockerReservationService: LockerReservationService) { }
+              private lockerReservationService: LockerReservationService,
+              private router: Router) { }
 
   userValue(): User {
     return this.userSubject.value;
   }
 
+  /**
+   * The flow of a cas logout is as follows:
+   *   1. frontend: send a HTTP POST to <backend-url>/logout
+   *   2. backend: Spring Security CAS will notice that the user wants to log out
+   *   3. backend: communicate with CAS server to log out the user
+   *   4. backend: sends a HTTP 200 response if successfully logged out
+   *   5. frontend: because the user is logged out, the userSubject needs to
+   *      be updated. Therefore, we send a next() signal to all the subscribers
+   *      of the observable connected to the userSubject.
+   *   6. in frontend: redirect the user to the login page
+   */
   logout(): void {
-    // put an empty user in userSubject
-    this.userSubject.next(UserConstructor.new());
+    this.http.post(api.logout, {}).subscribe(
+      () => {
+        this.userSubject.next(UserConstructor.new());
+        this.router.navigate(['/login']).catch(e => console.log(e));
+      }
+    );
   }
 
   isLoggedIn(): boolean {
