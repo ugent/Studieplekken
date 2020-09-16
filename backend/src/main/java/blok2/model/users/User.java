@@ -180,19 +180,4 @@ public class User implements Cloneable, UserDetails {
         return true;
     }
 
-    /*********************************************
-     *    (Temporary) method to create a user    *
-     *********************************************/
-
-    public static User bram() {
-        User user = new User();
-        user.setLastName("Van de Walle");
-        user.setFirstName("Bram");
-        user.setMail("bram.vandewalle@ugent.be");
-        user.setPassword("this_is_a_secret");
-        user.setInstitution(Institution.UGent);
-        user.setAugentID("01707633");
-        user.setRoles(new Role[]{Role.ADMIN, Role.EMPLOYEE, Role.STUDENT});
-        return user;
-    }
 }
