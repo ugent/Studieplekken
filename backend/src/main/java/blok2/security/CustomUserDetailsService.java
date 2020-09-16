@@ -1,10 +1,14 @@
 package blok2.security;
 
 import blok2.daos.IAccountDao;
+import blok2.model.users.Role;
 import blok2.model.users.User;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ldap.core.AttributesMapper;
+import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.security.cas.authentication.CasAssertionAuthenticationToken;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.util.List;
 
 @Service
 public class CustomUserDetailsService implements AuthenticationUserDetailsService<CasAssertionAuthenticationToken> {
@@ -19,9 +24,13 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
     private final Logger logger = LoggerFactory.getLogger(CustomUserDetailsService.class);
 
     private final IAccountDao accountDao;
+    private final LdapTemplate ldapTemplate;
 
-    public CustomUserDetailsService(IAccountDao accountDao) {
+    @Autowired
+    public CustomUserDetailsService(IAccountDao accountDao,
+                                    LdapTemplate ldapTemplate) {
         this.accountDao = accountDao;
+        this.ldapTemplate = ldapTemplate;
     }
 
     /**
@@ -39,6 +48,8 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
 
         User user;
 
+        // Try to find the user with given mail in the application database
+
         try {
             user = this.accountDao.getUserByEmail(mail);
         } catch (SQLException e) {
@@ -50,9 +61,55 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
             return user;
         }
 
-        // TODO: create new user using the UGent LDAP
+        // Create new user using the UGent LDAP
 
-        throw new UsernameNotFoundException("User with mail '" + mail + "' not found");
+        user = getUserFromLdapByMail(mail);
+
+        if (user != null) {
+            try {
+                accountDao.directlyAddUser(user);
+                return user;
+            } catch (SQLException e) {
+                logger.error("SQL exception while adding the new user from LDAP info to the application database", e);
+            }
+        }
+
+        logger.error("Unable to find/add a user with mail '" + mail + "'");
+        throw new UsernameNotFoundException("Unable to find/add a user with mail '" + mail + "'");
+    }
+
+    public User getUserFromLdapByMail(String mail) {
+        try {
+            List<User> users = ldapTemplate.search("ou=people", "mail=" + mail, (AttributesMapper<User>) attrs -> {
+                User user = new User();
+                user.setFirstName(attrs.get("givenName").get().toString());
+                user.setLastName(attrs.get("sn").get().toString());
+                user.setMail(attrs.get("mail").get().toString());
+                user.setPassword("secret");
+                user.setInstitution("UGent");
+
+                if (attrs.get("ugentID") != null) {
+                    user.setAugentID(attrs.get("ugentID").get().toString());
+                } else if (attrs.get("ugentStudentID") != null) {
+                    user.setAugentID(attrs.get("ugentStudentID").get().toString());
+                } else {
+                    // worst case: set mail instead of ugent/student id
+                    user.setAugentID(attrs.get("mail").get().toString());
+                }
+
+                user.setRoles(new Role[]{Role.STUDENT});
+                return user;
+            });
+
+            if (users.size() != 1) {
+                return null;
+            }
+
+            return users.get(0);
+        } catch (Exception e) {
+            logger.error("Exception thrown upon querying LDAP for new user with mail: '" + mail + "'", e);
+            return null;
+        }
     }
 
 }
