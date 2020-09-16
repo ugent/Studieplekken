@@ -6,6 +6,7 @@ import {TagsService} from '../services/api/tags/tags.service';
 import {TranslateService} from '@ngx-translate/core';
 import {FormControl} from '@angular/forms';
 import {MatSelectChange} from '@angular/material/select';
+import {AuthenticationService} from "../services/authentication/authentication.service";
 
 @Component({
   selector: 'app-dashboard',
@@ -30,9 +31,13 @@ export class DashboardComponent implements OnInit {
 
   constructor(private locationService: LocationService,
               private tagsService: TagsService,
-              private translate: TranslateService) { }
+              private translate: TranslateService,
+              private authenticationService: AuthenticationService) { }
 
   ngOnInit(): void {
+    // some
+    this.authenticationService.whoAmI().subscribe();
+
     this.currentLang = this.translate.currentLang;
     this.translate.onLangChange.subscribe(
       () => {

@@ -13,6 +13,8 @@ export const environment = {
 };
 
 export const api = {
+  whoAmI: '/whoAmI',
+
   // CALENDAR_PERIODS
   calendarPeriods: '/api/locations/calendar/{locationName}',
   addCalendarPeriods: '/api/locations/calendar',
@@ -84,7 +86,8 @@ export const api = {
 };
 
 export const vars = {
-  defaultLocationImage: 'assets/images/default_location.jpg'
+  defaultLocationImage: 'assets/images/default_location.jpg',
+  casFlowTriggerUrl: 'https://localhost:8080/login/cas'
 };
 
 /*

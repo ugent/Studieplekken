@@ -63,6 +63,7 @@
     "logIn": "Log in",
     "logOut": "Log uit",
     "navigation": {
+      "login": "Login",
       "dashboard": "Dashboard",
       "profile": "Profiel",
       "scan": "Scan",
@@ -77,6 +78,13 @@
 
     "ENGLISH": "Engels",
     "DUTCH": "Nederlands"
+  },
+
+  "login": {
+    "appTitle": "BlokAtUGent",
+    "title": "Aanmelden",
+    "casLogin": "CAS Login",
+    "about": "Het digitaal platform voor Study-OO's"
   },
 
   "management": {

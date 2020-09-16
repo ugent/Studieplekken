@@ -32,8 +32,7 @@
                     <div class="col-xs-12">
                       <ul class="nav-tertiary nav navbar-nav navbar-right">
                         <li id="logOut" class="last-child">
-                          <a *ngIf="isLoggedIn()" href="#">{{'header.logOut' | translate}}</a>
-                          <a *ngIf="!isLoggedIn()" href="#">{{'header.logIn' | translate}}</a>
+                          <a *ngIf="loggedIn" (click)="logout()">{{'header.logOut' | translate}}</a>
                         </li>
                         <li>
                           <a href="#" (click)="changeLanguage($event)">
@@ -49,12 +48,47 @@
             <div class="row menu">
               <div class="col-xs-12">
                 <ul class="nav-primary nav navbar-nav main-top-nav">
-                    <li *ngFor="let item of navigationItems"
-                        id="{{item}}" [ngClass]="isActive('/' + item) ? 'active' : null">
-                      <a routerLink="/{{item}}">
-                        <span>{{'header.navigation.' + item | translate}}</span>
-                      </a>
-                    </li>
+                  <!-- Login -->
+                  <li *ngIf="showLogin" id="login" [ngClass]="isActive('/login') ? 'active' : null">
+                    <a routerLink="/login">
+                      <span>{{'header.navigation.login' | translate}}</span>
+                    </a>
+                  </li>
+
+                  <!-- Dashboard -->
+                  <li *ngIf="showDashboard" id="dashboard" [ngClass]="isActive('/dashboard') ? 'active' : null">
+                    <a routerLink="/dashboard">
+                      <span>{{'header.navigation.dashboard' | translate}}</span>
+                    </a>
+                  </li>
+
+                  <!-- Profile -->
+                  <li *ngIf="showProfile" id="profile" [ngClass]="isActive('/profile') ? 'active' : null">
+                    <a routerLink="/profile">
+                      <span>{{'header.navigation.profile' | translate}}</span>
+                    </a>
+                  </li>
+
+                  <!-- Scan -->
+                  <li *ngIf="showScan" id="scan" [ngClass]="isActive('/scan') ? 'active' : null">
+                    <a routerLink="/scan">
+                      <span>{{'header.navigation.scan' | translate}}</span>
+                    </a>
+                  </li>
+
+                  <!-- Management -->
+                  <li *ngIf="showManagement" id="management" [ngClass]="isActive('/management') ? 'active' : null">
+                    <a routerLink="/management">
+                      <span>{{'header.navigation.management' | translate}}</span>
+                    </a>
+                  </li>
+
+                  <!-- Information -->
+                  <li *ngIf="showInformation" id="information" [ngClass]="isActive('/information') ? 'active' : null">
+                    <a routerLink="/information">
+                      <span>{{'header.navigation.information' | translate}}</span>
+                    </a>
+                  </li>
                 </ul>
               </div>
             </div>

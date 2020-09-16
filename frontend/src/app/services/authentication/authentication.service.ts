@@ -6,7 +6,7 @@ import {api} from '../../../environments/environment';
 import {Penalty} from '../../shared/model/Penalty';
 import {LocationReservation} from '../../shared/model/LocationReservation';
 import {LockerReservation, LockerReservationConstructor} from '../../shared/model/LockerReservation';
-import {map} from 'rxjs/operators';
+import {map, tap} from 'rxjs/operators';
 import {PenaltyService} from '../api/penalties/penalty.service';
 import {LocationReservationsService} from '../api/location-reservations/location-reservations.service';
 import {LockerReservationService} from '../api/locker-reservations/locker-reservation.service';
@@ -36,26 +36,15 @@ export class AuthenticationService {
   constructor(private http: HttpClient,
               private penaltyService: PenaltyService,
               private locationReservationService: LocationReservationsService,
-              private lockerReservationService: LockerReservationService) {
-    // TODO: try to obtain a user object based on a HTTP-only session cookie, if provided
-    //   this way, if a user was logged in previously, he/she doesn't have to do it again
-    const params = new HttpParams().set('mail', 'bram.vandewalle@ugent.be');
-    http.get<User>(api.userByMail, { params })
-      .subscribe(next => {
-        this.userSubject.next(next);
-    });
-  }
+              private lockerReservationService: LockerReservationService) { }
 
   userValue(): User {
     return this.userSubject.value;
   }
 
-  login(mail: string, password: string): void {
-    // TODO: login
-  }
-
   logout(): void {
-    // TODO: logout
+    // put an empty user in userSubject
+    this.userSubject.next(UserConstructor.new());
   }
 
   isLoggedIn(): boolean {
@@ -67,6 +56,14 @@ export class AuthenticationService {
     return this.http.put(api.changePassword, body);
   }
 
+  /********************************************************
+   *   Getters for information about the logged in user   *
+   ********************************************************/
+
+  whoAmI(): Observable<User> {
+    return this.http.get<User>(api.whoAmI).pipe(tap(next => this.userSubject.next(next)));
+  }
+
   getLocationReservations(): Observable<LocationReservation[]> {
     return this.locationReservationService.getLocationReservationsOfUser(this.userSubject.value.augentID);
   }
@@ -74,7 +71,7 @@ export class AuthenticationService {
   getLockerReservations(): Observable<LockerReservation[]> {
     const v = this.lockerReservationService.getLockerReservationsOfUser(this.userSubject.value.augentID);
 
-    return v.pipe(map<LockerReservation[], LockerReservation[]>((value, index) => {
+    return v.pipe(map<LockerReservation[], LockerReservation[]>((value) => {
       const reservations: LockerReservation[] = [];
 
       value.forEach(reservation => {
