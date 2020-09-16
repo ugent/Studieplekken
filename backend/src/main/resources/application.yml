@@ -1,3 +1,16 @@
+# server configuration
+server:
+  ssl:
+    key-store-type: PKCS12
+    key-store: classpath:keystore/blokat.p12
+    key-store-password: ***REMOVED***
+    key-alias: blokat
+    enabled: true
+  port: 8080
+
+security:
+  sslRedirectPort: 8080
+
 # credentials for database
 db:
   url: "jdbc:postgresql://localhost:5432/blokatugent"
