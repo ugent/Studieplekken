@@ -50,6 +50,7 @@ import { TagsManagementComponent } from './management/tags-management/tags-manag
 import { LocationTagsManagementComponent } from './management/locations-management/location-details-management/location-tags-management/location-tags-management.component';
 import { MatSelectModule } from '@angular/material/select';
 import { LoginComponent } from './login/login.component';
+import {AuthenticationGuardService} from './services/guard/authentication/authentication-guard/authentication-guard.service';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -57,18 +58,41 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 }
 
 const routes: Routes = [
-  {path: 'login', component: LoginComponent},
-  {path: 'dashboard', component: DashboardComponent},
-  {path: 'dashboard/:locationName', component: LocationDetailsComponent},
+  {
+    path: 'login',
+    component: LoginComponent,
+    canActivate: [AuthenticationGuardService]
+  },
+
+  {
+    path: 'dashboard',
+    component: DashboardComponent,
+    canActivate: [AuthenticationGuardService]
+  },
+
+  {
+    path: 'dashboard/:locationName',
+    component: LocationDetailsComponent,
+    canActivate: [AuthenticationGuardService]
+  },
+
   {
     path: 'profile', component: ProfileComponent,
     children: [
-      {path: '', redirectTo: 'overview', pathMatch: 'full'},
-      {path: 'overview', component: ProfileOverviewComponent},
+      {
+        path: '',
+        redirectTo: 'overview',
+        pathMatch: 'full'
+      },
+      {
+        path: 'overview',
+        component: ProfileOverviewComponent,
+        canActivate: [AuthenticationGuardService]
+      },
       {
         path: 'reservations',
         component: ProfileReservationsComponent,
-        canActivate: [ApplicationTypeGuardService],
+        canActivate: [ApplicationTypeGuardService, AuthenticationGuardService],
         data: {
           applicationPart: 'reservations'
         }
@@ -76,7 +100,7 @@ const routes: Routes = [
       {
         path: 'calendar',
         component: ProfileCalendarComponent,
-        canActivate: [ApplicationTypeGuardService],
+        canActivate: [ApplicationTypeGuardService, AuthenticationGuardService],
         data: {
           applicationPart: 'profile.personalCalendar'
         }
@@ -84,7 +108,7 @@ const routes: Routes = [
       {
         path: 'password',
         component: ProfileChangePasswordComponent,
-        canActivate: [ApplicationTypeGuardService],
+        canActivate: [ApplicationTypeGuardService, AuthenticationGuardService],
         data: {
           applicationPart: 'profile.changePassword'
         }
@@ -92,33 +116,60 @@ const routes: Routes = [
       {
         path: 'penalties',
         component: ProfilePenaltiesComponent,
-        canActivate: [ApplicationTypeGuardService],
+        canActivate: [ApplicationTypeGuardService, AuthenticationGuardService],
         data: {
           applicationPart: 'penalties'
         }
       }
-    ]},
+    ]
+  },
+
   {
     path: 'scan',
     component: ScanComponent,
-    canActivate: [ApplicationTypeGuardService],
+    canActivate: [ApplicationTypeGuardService, AuthenticationGuardService],
     data: {
       applicationPart: 'scanning'
     }
   },
+
   {
     path: 'management', component: ManagementComponent,
     children: [
-      {path: '', redirectTo: 'locations', pathMatch: 'full'},
-      {path: 'locations', component: LocationsManagementComponent},
-      {path: 'locations/:locationName', component: LocationDetailsManagementComponent},
-      {path: 'tags', component: TagsManagementComponent},
-      {path: 'users', component: UsersManagementComponent},
-      {path: 'users/:id', component: UserDetailsManagementComponent},
+      {
+        path: '',
+        redirectTo: 'locations',
+        pathMatch: 'full'
+      },
+      {
+        path: 'locations',
+        component: LocationsManagementComponent,
+        canActivate: [AuthenticationGuardService, AuthenticationGuardService]
+      },
+      {
+        path: 'locations/:locationName',
+        component: LocationDetailsManagementComponent,
+        canActivate: [AuthenticationGuardService, AuthenticationGuardService]
+      },
+      {
+        path: 'tags',
+        component: TagsManagementComponent,
+        canActivate: [AuthenticationGuardService]
+      },
+      {
+        path: 'users',
+        component: UsersManagementComponent,
+        canActivate: [AuthenticationGuardService]
+      },
+      {
+        path: 'users/:id',
+        component: UserDetailsManagementComponent,
+        canActivate: [AuthenticationGuardService]
+      },
       {
         path: 'reservations',
         component: ReservationsManagementComponent,
-        canActivate: [ApplicationTypeGuardService],
+        canActivate: [ApplicationTypeGuardService, AuthenticationGuardService],
         data: {
           applicationPart: 'reservations'
         }
@@ -126,15 +177,25 @@ const routes: Routes = [
       {
         path: 'penalties',
         component: PenaltyEventsManagementComponent,
-        canActivate: [ApplicationTypeGuardService],
+        canActivate: [ApplicationTypeGuardService, AuthenticationGuardService],
         data: {
           applicationPart: 'penalties'
         }
       }
     ]
   },
-  {path: 'information', component: InformationComponent},
-  {path: '', redirectTo: '/dashboard', pathMatch: 'full'}
+
+  {
+    path: 'information',
+    component: InformationComponent,
+    canActivate: [AuthenticationGuardService]
+  },
+
+  {
+    path: '',
+    redirectTo: '/dashboard',
+    pathMatch: 'full'
+  }
   // , {path: '**', component: PageNotFoundController} TODO: create PageNotFoundController
 ];
 
