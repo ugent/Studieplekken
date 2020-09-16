@@ -4,9 +4,9 @@ import blok2.helpers.Resources;
 import org.jasig.cas.client.validation.Cas20ServiceTicketValidator;
 import org.jasig.cas.client.validation.TicketValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.cas.ServiceProperties;
@@ -26,6 +26,7 @@ import java.util.Collections;
  *      - https://docs.spring.io/spring-security/site/docs/4.2.x/reference/html/cas.html   *
  *      - https://debbabi-nader.github.io/cas-spring-angular/index.html                    *
  *******************************************************************************************/
+@Profile("!test")
 @Configuration
 public class CASConfiguration {
 
