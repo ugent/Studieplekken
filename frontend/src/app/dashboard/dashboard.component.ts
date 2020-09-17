@@ -69,7 +69,7 @@ export class DashboardComponent implements OnInit {
     this.filteredLocations = [];
 
     this.locations.forEach(location => {
-      for (const tag of location.tags) {
+      for (const tag of location.assignedTags) {
         if (value.find(v => v.tagId === tag.tagId)) {
           this.filteredLocations.push(location);
           break;

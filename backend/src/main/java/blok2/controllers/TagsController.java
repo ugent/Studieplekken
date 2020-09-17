@@ -3,12 +3,14 @@ package blok2.controllers;
 import blok2.daos.ILocationTagDao;
 import blok2.daos.ITagsDao;
 import blok2.model.LocationTag;
+import blok2.model.reservables.Location;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -104,7 +106,26 @@ public class TagsController {
         }
     }
 
-    @GetMapping("/location/assigned/{locationName}")
+    @PutMapping("/location/{locationName}")
+    public void reconfigureAllowedTagsOfLocation(@PathVariable("locationName") String locationName,
+                                                 @RequestBody List<LocationTag> allowedTags) {
+        try {
+            locationTagDao.deleteAllTagsFromLocation(locationName);
+
+            List<Integer> tagIds = new ArrayList<>();
+            for (LocationTag locationTag : allowedTags) {
+                tagIds.add(locationTag.getTagId());
+            }
+
+            locationTagDao.bulkAddTagsToLocation(locationName, tagIds);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @GetMapping("/location/assign/{locationName}")
     public List<LocationTag> getAssignedTagsForLocation(@PathVariable("locationName") String locationName) {
         try {
             return locationTagDao.getAssignedTagsForLocation(locationName);
@@ -115,7 +136,7 @@ public class TagsController {
         }
     }
 
-    @PutMapping("/location/{locationName}")
+    @PutMapping("/location/assign/{locationName}")
     public void assignTagsToLocation(@PathVariable("locationName") String locationName,
                                      @RequestBody List<LocationTag> tags) {
         try {

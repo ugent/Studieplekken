@@ -802,7 +802,7 @@ where user_augentid = ?;
 
 -- queries for LOCATION_TAG
 -- $get_tags_for_location
-select t.tag_id, t.dutch, t.english
+select t.tag_id, t.dutch, t.english, lt.assigned
 from public.location_tags lt
     join public.tags t
         on t.tag_id = lt.tag_id

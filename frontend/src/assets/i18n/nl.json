@@ -151,12 +151,31 @@
         "successUpdating": "Het updaten van de omschrijvingen is geslaagd."
       },
 
+      "allowedTags": {
+        "title": "Toegestane tags van de locatie",
+        "activeTagsInformation": "Hieronder is een lijst gegeven van de tags die mogen worden toegekend aan een locatie.",
+        "updateTagsInformation": "Om de tags te wijzigen, klik op de knop rechts.",
+
+        "updateTagsButton": "Wijzig de tags",
+
+        "updateAllowedTagsConfigurationModal": {
+          "title": "Wijzig de tags die kunnen worden toegekend aan de locatie",
+          "body": "In de dropdown hieronder kan je alle tags selecteren die kunnen worden toegekend aan '{locationName}'.",
+          "comboboxTitle": "Mogelijke tags van de locatie",
+
+          "success": "Het is gelukt om de tags voor '{locationName}' te wijzigen",
+          "error": "Er is iets misgelopen tijdens het wijzigen van de tags voor '{locationName}'."
+        },
+
+        "noTagsSelected": "Op dit moment zijn er geen tags die kunnen worden toegewezen aan deze locatie."
+      },
+
       "tags": {
         "title": "Tags van de locatie",
         "activeTagsInformation": "Hieronder is een lijst gegeven van de tags die momenteel actief zijn voor deze locatie.",
         "updateTagsInformation": "Om de tags te wijzigen, klik op de knop rechts.",
 
-        "updateTagsButton": "Wijzig de tags",
+        "updateTagsButton": "Wijzig de actieve tags",
 
         "updateTagsConfigurationModal": {
           "title": "Wijzig de tags van de locatie",
@@ -167,7 +186,7 @@
           "error": "Er is iets misgelopen tijdens het wijzigen van de tags die toegekend zijn aan '{locationName}'."
         },
 
-        "noTagsSelected": "Op dit moment zijn er geen actieve tags voor deze locaties geselecteerd."
+        "noTagsSelected": "Op dit moment zijn er geen actieve tags voor deze locatie geselecteerd."
       },
 
       "lockerCalendar": {

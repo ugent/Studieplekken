@@ -49,6 +49,7 @@ import {CKEditorModule} from '@ckeditor/ckeditor5-angular';
 import { TagsManagementComponent } from './management/tags-management/tags-management.component';
 import { LocationTagsManagementComponent } from './management/locations-management/location-details-management/location-tags-management/location-tags-management.component';
 import { MatSelectModule } from '@angular/material/select';
+import { LocationAllowedTagsComponent } from './management/locations-management/location-details-management/location-allowed-tags/location-allowed-tags.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -171,7 +172,8 @@ const routes: Routes = [
     LockerReservationsManagementComponent,
     LocationDescriptionComponent,
     TagsManagementComponent,
-    LocationTagsManagementComponent
+    LocationTagsManagementComponent,
+    LocationAllowedTagsComponent
   ],
     imports: [
       BrowserModule,

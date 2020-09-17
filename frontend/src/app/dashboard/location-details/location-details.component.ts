@@ -19,7 +19,7 @@ import {TagsService} from '../../services/api/tags/tags.service';
 export class LocationDetailsComponent implements OnInit {
   location: Observable<Location>;
   locationName: string;
-  tags: Observable<LocationTag[]>;
+  tags: LocationTag[];
 
   events: CalendarEvent[] = [
     {
@@ -56,7 +56,7 @@ export class LocationDetailsComponent implements OnInit {
       this.description.english = next.descriptionEnglish;
       this.setDescriptionToShow();
 
-      this.tags = this.tagsService.getTagsOfLocation(this.locationName);
+      this.tags = next.assignedTags;
     });
 
     // if the browser language would change, the description needs to change

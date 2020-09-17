@@ -60,7 +60,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
         prepareUpdateOrInsertLocationStatement(location, pstmt);
         pstmt.executeUpdate();
 
-        insertTags(location.getName(), location.getTags(), conn);
+        insertTags(location.getName(), location.getAllowedTags(), conn);
 
         // insert the lockers corresponding to the location into the database
         for (int i = 0; i < location.getNumberOfLockers(); i++) {
@@ -73,7 +73,6 @@ public class DBLocationDao extends DAO implements ILocationDao {
             conn.setAutoCommit(false);
             addLocation(location, conn);
             conn.commit();
-            conn.setAutoCommit(true);
         } catch (SQLException e) {
             conn.rollback();
             throw e;
@@ -201,13 +200,6 @@ public class DBLocationDao extends DAO implements ILocationDao {
         }
     }
 
-    public static ResultSet getTagsFromLocation(String locationName, Connection conn) throws SQLException {
-        PreparedStatement pst = conn.prepareStatement(Resources.databaseProperties.getString("tags_from_location"));
-        pst.setString(1, locationName);
-        return pst.executeQuery();
-
-    }
-
     @Override
     public Map<String, Integer> getCountOfReservations(CustomDate date) throws SQLException {
         HashMap<String, Integer> count = new HashMap<>();
@@ -228,10 +220,9 @@ public class DBLocationDao extends DAO implements ILocationDao {
 
     /**
      * Create a location out of a row in the ResultSet (prevent duplication of code)
-     * @param rs the resultset for fetching the location
-     * @param rsTags the resultset for fetching the tags
+     * @param rs the ResultSet for fetching the location
+     * @param rsTags the ResultSet for fetching the tags
      * @return a generated location
-     * @throws SQLException
      */
     public static Location createLocation(ResultSet rs, ResultSet rsTags) throws SQLException {
         String name = rs.getString(Resources.databaseProperties.getString("location_name"));
@@ -242,8 +233,28 @@ public class DBLocationDao extends DAO implements ILocationDao {
         Authority authority = DBAuthorityDao.createAuthority(rs);
         String descriptionDutch = rs.getString(Resources.databaseProperties.getString("location_description_dutch"));
         String descriptionEnglish = rs.getString(Resources.databaseProperties.getString("location_description_english"));
-        ArrayList<LocationTag> tags = DBTagsDao.createLocationTagList(rsTags);
-        return new Location(name, address, numberOfSeats, numberOfLockers, imageUrl, authority, descriptionDutch, descriptionEnglish, tags);
+
+        List<LocationTag> allowedTags = new ArrayList<>();
+        List<LocationTag> assignedTags = new ArrayList<>();
+        fillTagLists(allowedTags, assignedTags, rsTags);
+
+        return new Location(name, address, numberOfSeats, numberOfLockers, imageUrl, authority,
+                descriptionDutch, descriptionEnglish, allowedTags, assignedTags);
+    }
+
+    private static void fillTagLists(List<LocationTag> allowedTags, List<LocationTag> assignedTags, ResultSet rsTags)
+            throws SQLException {
+        while (rsTags.next()) {
+            LocationTag locationTag = DBTagsDao.createLocationTag(rsTags);
+
+            // add the locationTag to allowedTags
+            allowedTags.add(locationTag);
+
+            // and if the 'assigned' column returns 'true', add the locationTag to assignedTags
+            if (rsTags.getBoolean(Resources.databaseProperties.getString("location_tags_assigned"))) {
+                assignedTags.add(locationTag);
+            }
+        }
     }
 
     /**
