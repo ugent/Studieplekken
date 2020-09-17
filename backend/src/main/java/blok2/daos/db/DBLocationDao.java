@@ -207,6 +207,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
         return pst.executeQuery();
 
     }
+
     @Override
     public Map<String, Integer> getCountOfReservations(CustomDate date) throws SQLException {
         HashMap<String, Integer> count = new HashMap<>();
