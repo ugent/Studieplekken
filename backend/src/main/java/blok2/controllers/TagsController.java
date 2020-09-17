@@ -1,5 +1,6 @@
 package blok2.controllers;
 
+import blok2.daos.ILocationTagDao;
 import blok2.daos.ITagsDao;
 import blok2.model.LocationTag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +21,13 @@ public class TagsController {
     private final Logger logger = Logger.getLogger(LocationController.class.getSimpleName());
 
     private final ITagsDao tagsDao;
+    private final ILocationTagDao locationTagDao;
 
     @Autowired
-    public TagsController(ITagsDao tagsDao) {
+    public TagsController(ITagsDao tagsDao,
+                          ILocationTagDao locationTagDao) {
         this.tagsDao = tagsDao;
+        this.locationTagDao = locationTagDao;
     }
 
     /*****************************************************
@@ -92,7 +96,18 @@ public class TagsController {
     @GetMapping("/location/{locationName}")
     public List<LocationTag> getTagsOfLocation(@PathVariable("locationName") String locationName) {
         try {
-            return tagsDao.getTagsOfLocation(locationName);
+            return locationTagDao.getTagsForLocation(locationName);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @GetMapping("/location/assigned/{locationName}")
+    public List<LocationTag> getAssignedTagsForLocation(@PathVariable("locationName") String locationName) {
+        try {
+            return locationTagDao.getAssignedTagsForLocation(locationName);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
@@ -104,7 +119,7 @@ public class TagsController {
     public void assignTagsToLocation(@PathVariable("locationName") String locationName,
                                      @RequestBody List<LocationTag> tags) {
         try {
-            tagsDao.assignTagsToLocation(locationName, tags);
+            locationTagDao.assignTagsToLocation(locationName, tags);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
