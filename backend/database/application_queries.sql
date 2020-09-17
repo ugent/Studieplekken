@@ -97,30 +97,6 @@ set name = ?, number_of_seats = ?, number_of_lockers = ?, image_url = ?, address
 where name = ?;
 
 
--- queries for table location_tags
--- $add_tag_to_location
-Insert into public.location_tags (location_id, tag_id, assigned) values (?,?,?);
-
--- $remove_tags_from_location
-delete from public.location_tags
-where location_id = ?;
-
--- $remove_locations_from_tag
-delete
-from public.location_tags
-where tag_id=?;
-
--- $update_fk_location_tags_to_location
-update public.location_tags
-set location_id = ?
-where location_id = ?;
-
--- $remove_tag_from_location
-delete
-from public.location_tags
-where location_id= ? and tag_id = ?;
-
-
 -- queries for table tags
 -- $all_tags
 select t.tag_id, t.dutch, t.english
@@ -832,17 +808,37 @@ from public.location_tags lt
         on t.tag_id = lt.tag_id
 where lt.location_id = ?;
 
+-- $get_assigned_tags_for_location
+select t.tag_id, t.dutch, t.english
+from public.location_tags lt
+         join public.tags t
+              on t.tag_id = lt.tag_id
+where lt.assigned = true and lt.location_id = ?;
+
 -- $get_locations_for_tag
 select l.name, l.number_of_seats, l.number_of_lockers
-           , l.image_url, l.address, l.authority_id, l.description_dutch, l.description_english
+        , l.image_url, l.address, l.description_dutch, l.description_english
+        , a.authority_id, a.authority_name, a.description
 from public.locations l
     join public.location_tags lt
         on l.name = lt.location_id
+    join public.authority a
+        on a.authority_id = l.authority_id
 where lt.tag_id = ?;
 
 -- $add_tag_to_location
-insert into public.location_tags (location_id, tag_id)
-values (?, ?);
+insert into public.location_tags (location_id, tag_id, assigned)
+values (?, ?, ?);
+
+-- $assign_specified_tag_to_location
+update public.location_tags
+set assigned = true
+where location_id = ? and tag_id = ?;
+
+-- $un_assign_all_tags_of_location
+update public.location_tags
+set assigned = false
+where location_id = ?;
 
 -- $delete_tag_from_location
 delete
@@ -858,6 +854,11 @@ where location_id = ?;
 delete
 from public.location_tags
 where tag_id = ?;
+
+-- $update_fk_location_tags_to_location
+update public.location_tags
+set location_id = ?
+where location_id = ?;
 
 
 -- queries for CALENDAR_PERIODS
