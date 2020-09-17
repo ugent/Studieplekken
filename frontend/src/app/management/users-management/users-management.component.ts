@@ -5,7 +5,8 @@ import {Observable} from 'rxjs';
 import {User} from '../../shared/model/User';
 import {UserService} from '../../services/api/users/user.service';
 import {HttpErrorResponse} from '@angular/common/http';
-import {map} from "rxjs/operators";
+import {map} from 'rxjs/operators';
+import {ApplicationTypeFunctionalityService} from '../../services/functionality/application-type/application-type-functionality.service';
 
 @Component({
   selector: 'app-users-management',
@@ -26,9 +27,13 @@ export class UsersManagementComponent implements OnInit {
   errorOnRetrievingFilteredUsers = false; // booleanId = 0
   noUserWithBarcodeHasBeenFound = false;  // booleanId = 1
 
-  constructor(private userService: UserService) { }
+  showPenaltyPoints: boolean;
+
+  constructor(private userService: UserService,
+              private functionalityService: ApplicationTypeFunctionalityService) { }
 
   ngOnInit(): void {
+    this.showPenaltyPoints = this.functionalityService.showPenaltyFunctionality();
   }
 
   submitSearch(value: {firstName: string, lastName: string, barcode: string}): void {

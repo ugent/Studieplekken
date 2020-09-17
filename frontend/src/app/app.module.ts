@@ -43,6 +43,7 @@ import { UserRolesComponent } from './management/users-management/user-details-m
 import { UserDetailsManagementPenaltiesComponent } from './management/users-management/user-details-management/user-details-management-penalties/user-details-management-penalties.component';
 import { LocationReservationsManagementComponent } from './management/reservations-management/location-reservations-management/location-reservations-management.component';
 import { LockerReservationsManagementComponent } from './management/reservations-management/locker-reservations-management/locker-reservations-management.component';
+import {ApplicationTypeGuardService} from './services/guard/functionality/application-type-guard/application-type-guard.service';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -57,12 +58,33 @@ const routes: Routes = [
     children: [
       {path: '', redirectTo: 'overview', pathMatch: 'full'},
       {path: 'overview', component: ProfileOverviewComponent},
-      {path: 'reservations', component: ProfileReservationsComponent},
+      {
+        path: 'reservations',
+        component: ProfileReservationsComponent,
+        canActivate: [ApplicationTypeGuardService],
+        data: {
+          applicationPart: 'reservations'
+        }
+      },
       {path: 'calendar', component: ProfileCalendarComponent},
       {path: 'password', component: ProfileChangePasswordComponent},
-      {path: 'penalties', component: ProfilePenaltiesComponent}
+      {
+        path: 'penalties',
+        component: ProfilePenaltiesComponent,
+        canActivate: [ApplicationTypeGuardService],
+        data: {
+          applicationPart: 'penalties'
+        }
+      }
     ]},
-  {path: 'scan', component: ScanComponent},
+  {
+    path: 'scan',
+    component: ScanComponent,
+    canActivate: [ApplicationTypeGuardService],
+    data: {
+      applicationPart: 'scanning'
+    }
+  },
   {
     path: 'management', component: ManagementComponent,
     children: [
@@ -71,8 +93,22 @@ const routes: Routes = [
       {path: 'locations/:locationName', component: LocationDetailsManagementComponent},
       {path: 'users', component: UsersManagementComponent},
       {path: 'users/:id', component: UserDetailsManagementComponent},
-      {path: 'reservations', component: ReservationsManagementComponent},
-      {path: 'penalties', component: PenaltyEventsManagementComponent}
+      {
+        path: 'reservations',
+        component: ReservationsManagementComponent,
+        canActivate: [ApplicationTypeGuardService],
+        data: {
+          applicationPart: 'reservations'
+        }
+      },
+      {
+        path: 'penalties',
+        component: PenaltyEventsManagementComponent,
+        canActivate: [ApplicationTypeGuardService],
+        data: {
+          applicationPart: 'penalties'
+        }
+      }
     ]
   },
   {path: 'information', component: InformationComponent},

@@ -10,7 +10,7 @@ import {
   toDateTimeViewString,
   typeScriptDateToCustomDate
 } from '../../../../shared/model/helpers/CustomDate';
-import {UserDetailsService} from '../../../../services/user-details/user-details.service';
+import {UserDetailsService} from '../../../../services/single-point-of-truth/user-details/user-details.service';
 import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
 import {LocationService} from '../../../../services/api/locations/location.service';
 import {Location} from '../../../../shared/model/Location';

@@ -31,7 +31,8 @@
     </div>
 
     <!-- Penalty Points -->
-    <div class="row form-group">
+    <!-- Only to be shown in BlokAt, not in MiniThermis -->
+    <div class="row form-group" *ngIf="showPenaltyPoints">
       <label class="col-lg-3 control-label" for="penaltyPoints">{{'profile.overview.form.penaltyPoints' | translate}}</label>
       <div class="col-lg-8">
         <input class="form-control" id="penaltyPoints" type="number" formControlName="penaltyPoints">

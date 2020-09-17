@@ -4,7 +4,7 @@ import {FormControl, FormGroup} from '@angular/forms';
 import {LocationService} from '../../../../services/api/locations/location.service';
 import {Observable} from 'rxjs';
 import {msToShowFeedback} from '../../../../../environments/environment';
-import {LocationDetailsService} from '../../../../services/location-details/location-details.service';
+import {LocationDetailsService} from '../../../../services/single-point-of-truth/location-details/location-details.service';
 
 @Component({
   selector: 'app-details-form',

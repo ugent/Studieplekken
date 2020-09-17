@@ -2,12 +2,14 @@ import {Component, Input, OnInit} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
 import {Location} from '../../../../shared/model/Location';
 import {CalendarEvent} from 'angular-calendar';
-import {CalendarPeriodsForLockersService} from '../../../../services/calendar-periods-for-lockers/calendar-periods-for-lockers.service';
+import {CalendarPeriodsForLockersService} from '../../../../services/api/calendar-periods-for-lockers/calendar-periods-for-lockers.service';
 import {
   CalendarPeriodForLockers,
   CalendarPeriodForLockersConstructor, calendarPeriodForLockersToCalendarEvent, isCalendarPeriodForLockersValid
 } from '../../../../shared/model/CalendarPeriodForLockers';
 import {equalCalendarPeriodsForLockers} from '../../../../shared/comparators/ModelComparators';
+import {ApplicationTypeFunctionalityService} from '../../../../services/functionality/application-type/application-type-functionality.service';
+import {toDateTimeString, typeScriptDateToCustomDate} from '../../../../shared/model/helpers/CustomDate';
 
 @Component({
   selector: 'app-lockers-calendar',
@@ -45,12 +47,16 @@ export class LockersCalendarComponent implements OnInit {
   showSuccess = false;
   showError = false;
 
-  constructor(private calendarPeriodsForLockersService: CalendarPeriodsForLockersService) { }
+  showReservationInformation: boolean;
+
+  constructor(private calendarPeriodsForLockersService: CalendarPeriodsForLockersService,
+              private functionalityService: ApplicationTypeFunctionalityService) { }
 
   ngOnInit(): void {
     this.location.subscribe(next => {
       this.setupEvents(next.name);
     });
+    this.showReservationInformation = this.functionalityService.showReservationsFunctionality();
   }
 
   setupEvents(locationName: string): void {
@@ -133,6 +139,17 @@ export class LockersCalendarComponent implements OnInit {
   addCalendarPeriodForLockers(location: Location): void {
     const period: CalendarPeriodForLockers = CalendarPeriodForLockersConstructor.new();
     period.location = location;
+
+    // If the information about reservations may not be shown (configured in environments.ts),
+    // then we need to programmatically provide a valid value for 'reservableFrom'.
+    // Otherwise, the period will not be addable. Therefore, we just provide the current date-time.
+    if (!this.showReservationInformation) {
+      let dateTime = toDateTimeString(typeScriptDateToCustomDate(new Date()));
+      // remove the trailing ':ss', to get YYYY-MM-DDThh:mm format
+      dateTime = dateTime.substr(0, dateTime.length - 3);
+      period.reservableFrom = dateTime;
+    }
+
 
     this.events = [
       ...this.events, calendarPeriodForLockersToCalendarEvent(period)

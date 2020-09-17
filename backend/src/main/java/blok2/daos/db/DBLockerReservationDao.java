@@ -39,7 +39,7 @@ public class DBLockerReservationDao extends DAO implements ILockerReservationDao
     public List<LockerReservation> getAllLockerReservationsOfUser(String augentID) throws SQLException {
         String query = Resources.databaseProperties.getString("get_locker_reservations_where_<?>");
         query = query.replace("<?>", "lr.user_augentid = ?");
-        return getAllLockerReservationsFromQueryWithOneParamter(augentID, query);
+        return getAllLockerReservationsFromQueryWithOneParameter(augentID, query);
     }
 
     @Override
@@ -116,10 +116,10 @@ public class DBLockerReservationDao extends DAO implements ILockerReservationDao
     public List<LockerReservation> getAllLockerReservationsOfLocationWithoutKeyBroughtBack(String name) throws SQLException {
         String query = Resources.databaseProperties.getString("get_locker_reservations_where_<?>");
         query = query.replace("<?>", "l.location_name = ? and lr.key_return_date = ''");
-        return getAllLockerReservationsFromQueryWithOneParamter(name, query);
+        return getAllLockerReservationsFromQueryWithOneParameter(name, query);
     }
 
-    private List<LockerReservation> getAllLockerReservationsFromQueryWithOneParamter(String parameter, String query)
+    private List<LockerReservation> getAllLockerReservationsFromQueryWithOneParameter(String parameter, String query)
             throws SQLException {
         try (Connection conn = adb.getConnection()) {
             List<LockerReservation> reservations = new ArrayList<>();
