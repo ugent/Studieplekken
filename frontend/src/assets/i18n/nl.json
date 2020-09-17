@@ -58,6 +58,7 @@
       "title": "Beheer",
       "locations": "Locaties",
       "users": "Gebruikers",
+      "authorities": "Autoriteiten",
       "reservations": "Reservaties",
       "calendar": "Kalender",
       "penalties": "Overtredingen"
@@ -65,6 +66,7 @@
 
     "general": {
       "loading": "Aan het laden...",
+      "noAuthorities": "Er zijn nog geen autoriteiten aangemaakt. Maak er een aan met de knop 'Autoriteit Toevoegen'",
       "noLocations": "Er zijn nog geen beschikbare locaties. Maak er een aan met de knop 'Locatie Toevoegen'"
     },
 
@@ -319,6 +321,41 @@
           "noPenalties": "De gebruiker heeft nog geen overtredingen begaan.",
           "error": "Er is iets misgelopen tijdens het ophalen van de strafpunten van de gebruiker."
         }
+      }
+    },
+
+    "authorities": {
+      "title": "Beheer van autoriteiten",
+
+      "table": {
+        "authorityId": "ID",
+        "authorityName": "Naam van autoriteit",
+        "description": "Omschrijving"
+      },
+
+      "addNewAuthority": "Autoriteit toevoegen",
+
+      "errorOnRetrievingAuthorities": "Er is iets misgelopen tijdens het ophalen van de autoriteiten.",
+
+      "addAuthorityModal": {
+        "title": "Maak een nieuwe autoriteit aan",
+        "idSetByBackendMessage": "Ingesteld door backend",
+        "success": "Het aanmaken van de nieuwe autoriteit is gelukt.",
+        "error": "Er is iets misgelopen tijdens het aanmaken van de nieuwe autoriteit."
+      },
+
+      "updateAuthorityModal": {
+        "title": "De autoriteit updaten",
+        "success": "Het updaten van de autoriteit is gelukt.",
+        "error": "Er is iets misgelopen tijdens het updaten van de autoriteit."
+      },
+
+      "deleteAuthorityModal": {
+        "title": "Verwijder de autoriteit",
+        "body": "Ben je zeker dat je volgende autoriteit wilt verwijderen?",
+        "warning": "Gelieve op te merken dat alle locaties gelinkt aan deze autoriteit ook zullen verwijderd worden!",
+        "success": "Het verwijderen van de autoriteit is gelukt.",
+        "error": "Er is iets misgelopen tijdens het verwijderen van de autoriteit."
       }
     },
 

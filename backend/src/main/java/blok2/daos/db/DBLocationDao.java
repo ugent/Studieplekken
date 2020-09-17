@@ -6,7 +6,6 @@ import blok2.daos.IScannerLocationDao;
 import blok2.helpers.Resources;
 import blok2.helpers.date.CustomDate;
 import blok2.model.Authority;
-import blok2.model.LocationTag;
 import blok2.model.reservables.Location;
 import blok2.model.reservables.Locker;
 import org.springframework.stereotype.Service;
@@ -38,7 +37,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
             ResultSet rs = stmt.executeQuery(Resources.databaseProperties.getString("all_locations"));
 
             while (rs.next()) {
-                Location location = createLocation(rs, conn);
+                Location location = createLocation(rs);
                 locations.add(location);
             }
 
@@ -59,8 +58,6 @@ public class DBLocationDao extends DAO implements ILocationDao {
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_location"));
         prepareUpdateOrInsertLocationStatement(location, pstmt);
         pstmt.executeUpdate();
-
-        insertTags(location.getName(), location.getAllowedTags(), conn);
 
         // insert the lockers corresponding to the location into the database
         for (int i = 0; i < location.getNumberOfLockers(); i++) {
@@ -93,7 +90,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
         pstmt.setString(1, locationName);
         ResultSet rs = pstmt.executeQuery();
         if (rs.next()) {
-            return createLocation(rs, conn);
+            return createLocation(rs);
         }
         return null;
     }
@@ -171,9 +168,6 @@ public class DBLocationDao extends DAO implements ILocationDao {
         // delete locker_reservations
         deleteLockers(locationName, conn);
 
-        // delete tags from location
-        DBLocationTagDao.deleteAllTagsFromLocation(locationName, conn);
-
         // and finally, delete the location
         deleteLocation(locationName, conn);
     }
@@ -195,7 +189,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
                 //locker.setId(lockerID);
                 locker.setNumber(number);
 
-                Location location = DBLocationDao.createLocation(rs, conn);
+                Location location = DBLocationDao.createLocation(rs);
                 locker.setLocation(location);
 
                 lockers.add(locker);
@@ -225,10 +219,9 @@ public class DBLocationDao extends DAO implements ILocationDao {
     /**
      * Create a location out of a row in the ResultSet (prevent duplication of code)
      * @param rs the ResultSet for fetching the location
-     * @param rsTags the ResultSet for fetching the tags
      * @return a generated location
      */
-    public static Location createLocation(ResultSet rs, ResultSet rsTags) throws SQLException {
+    public static Location createLocation(ResultSet rs) throws SQLException {
         String name = rs.getString(Resources.databaseProperties.getString("location_name"));
         int numberOfSeats = rs.getInt(Resources.databaseProperties.getString("location_number_of_seats"));
         int numberOfLockers = rs.getInt(Resources.databaseProperties.getString("location_number_of_lockers"));
@@ -238,42 +231,15 @@ public class DBLocationDao extends DAO implements ILocationDao {
         String descriptionDutch = rs.getString(Resources.databaseProperties.getString("location_description_dutch"));
         String descriptionEnglish = rs.getString(Resources.databaseProperties.getString("location_description_english"));
 
-        List<LocationTag> allowedTags = new ArrayList<>();
-        List<LocationTag> assignedTags = new ArrayList<>();
-        fillTagLists(allowedTags, assignedTags, rsTags);
 
-        return new Location(name, address, numberOfSeats, numberOfLockers, imageUrl, authority,
-                descriptionDutch, descriptionEnglish, allowedTags, assignedTags);
-    }
-
-    private static void fillTagLists(List<LocationTag> allowedTags, List<LocationTag> assignedTags, ResultSet rsTags)
-            throws SQLException {
-        while (rsTags.next()) {
-            LocationTag locationTag = DBTagsDao.createLocationTag(rsTags);
-
-            // add the locationTag to allowedTags
-            allowedTags.add(locationTag);
-
-            // and if the 'assigned' column returns 'true', add the locationTag to assignedTags
-            if (rsTags.getBoolean(Resources.databaseProperties.getString("location_tags_assigned"))) {
-                assignedTags.add(locationTag);
-            }
-        }
-    }
-
-    /**
-     * create a location from the resultset, where tags are automatically fetched too
-     */
-    public static Location createLocation(ResultSet rs, Connection conn) throws SQLException {
-        ResultSet rsTags = DBLocationTagDao.getTagsForLocation(rs.getString(Resources.databaseProperties.getString("location_name")), conn);
-        return createLocation(rs, rsTags);
+        return new Location(name, address, numberOfSeats, numberOfLockers, imageUrl, authority.getAuthorityId());
     }
 
 
     public static Locker createLocker(ResultSet rs, Connection conn) throws SQLException {
         Locker l = new Locker();
         l.setNumber(rs.getInt(Resources.databaseProperties.getString("locker_number")));
-        Location location = DBLocationDao.createLocation(rs, conn);
+        Location location = DBLocationDao.createLocation(rs);
         l.setLocation(location);
         return l;
     }
@@ -287,24 +253,13 @@ public class DBLocationDao extends DAO implements ILocationDao {
         st.execute();
     }
 
-    private void insertTags(String locationName, List<LocationTag> tags, Connection conn) throws SQLException {
-        if (tags != null) {
-            for (LocationTag tag : tags) {
-                DBTagsDao.addTag(tag, conn);
-                DBLocationTagDao.addTagToLocation(locationName, tag.getTagId(), conn);
-            }
-        }
-    }
-
     private void prepareUpdateOrInsertLocationStatement(Location location, PreparedStatement pstmt) throws SQLException {
         pstmt.setString(1, location.getName());
         pstmt.setInt(2, location.getNumberOfSeats());
         pstmt.setInt(3, location.getNumberOfLockers());
         pstmt.setString(4, location.getImageUrl());
         pstmt.setString(5, location.getAddress());
-        pstmt.setInt(6, location.getAuthority().getAuthorityId());
-        pstmt.setString(7, location.getDescriptionDutch());
-        pstmt.setString(8, location.getDescriptionEnglish());
+        pstmt.setInt(6, location.getAuthorityId());
     }
 
     private static void deleteCalendarPeriods(String locationName, Connection conn) throws SQLException {

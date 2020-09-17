@@ -13,6 +13,12 @@ export const environment = {
 };
 
 export const api = {
+  // AUTHORITY
+  authorities: '/api/authority',
+  addAuthority: '/api/authority',
+  updateAuthority: '/api/authority/{authorityId}',
+  deleteAuthority: '/api/authority/{authorityId}',
+
   // CALENDAR_PERIODS
   calendarPeriods: '/api/locations/calendar/{locationName}',
   addCalendarPeriods: '/api/locations/calendar',

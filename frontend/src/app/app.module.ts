@@ -44,6 +44,7 @@ import { UserDetailsManagementPenaltiesComponent } from './management/users-mana
 import { LocationReservationsManagementComponent } from './management/reservations-management/location-reservations-management/location-reservations-management.component';
 import { LockerReservationsManagementComponent } from './management/reservations-management/locker-reservations-management/locker-reservations-management.component';
 import {ApplicationTypeGuardService} from './services/guard/functionality/application-type-guard/application-type-guard.service';
+import { AuthoritiesManagementComponent } from './management/authorities-management/authorities-management.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -92,6 +93,10 @@ const routes: Routes = [
       {path: 'locations', component: LocationsManagementComponent},
       {path: 'locations/:locationName', component: LocationDetailsManagementComponent},
       {path: 'users', component: UsersManagementComponent},
+      {
+        path: 'authorities',
+        component: AuthoritiesManagementComponent
+      },
       {path: 'users/:id', component: UserDetailsManagementComponent},
       {
         path: 'reservations',
@@ -148,7 +153,9 @@ const routes: Routes = [
     UserRolesComponent,
     UserDetailsManagementPenaltiesComponent,
     LocationReservationsManagementComponent,
-    LockerReservationsManagementComponent
+    LockerReservationsManagementComponent,
+    LockerReservationsManagementComponent,
+    AuthoritiesManagementComponent
   ],
     imports: [
         BrowserModule,

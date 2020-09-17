@@ -58,6 +58,7 @@
       "title": "Management",
       "locations": "Locations",
       "users": "Users",
+      "authorities": "Authorities",
       "reservations": "Reservations",
       "calendar": "Calendar",
       "penalties": "Penalties"
@@ -65,6 +66,7 @@
 
     "general": {
       "loading": "Loading...",
+      "noAuthorities": "There are no authorities yet, make on using the 'Add Authority' button",
       "noLocations": "There are no locations yet, make one using the 'Add Location' button"
     },
 
@@ -319,6 +321,41 @@
           "noPenalties": "The user has made no penalties so far.",
           "error": "Something went wrong while querying the penalties for the user."
         }
+      }
+    },
+
+    "authorities": {
+      "title": "Management of authorities",
+
+      "table": {
+        "authorityId": "ID",
+        "authorityName": "Authority name",
+        "description": "Description"
+      },
+
+      "addNewAuthority": "Add Authority",
+
+      "errorOnRetrievingAuthorities": "Something went wrong while retrieving the authorities from the server.",
+
+      "addAuthorityModal": {
+        "title": "Add a new authority",
+        "idSetByBackendMessage": "Set by backend",
+        "success": "Successfully added the new authority.",
+        "error": "Something went wrong while adding the new authority."
+      },
+
+      "updateAuthorityModal": {
+        "title": "Update the authority",
+        "success": "Successfully updated the authority.",
+        "error": "Something went wrong while updating the authority."
+      },
+
+      "deleteAuthorityModal": {
+        "title": "Delete the authority",
+        "body": "Are you sure that you want to delete following authority?",
+        "warning": "Please do note that all locations within this authority will be deleted",
+        "success": "Successfully deleted the authority.",
+        "error": "Something went wrong while deleting the authority."
       }
     },
 
