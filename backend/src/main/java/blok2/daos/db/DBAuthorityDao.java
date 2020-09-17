@@ -180,13 +180,10 @@ public class DBAuthorityDao extends DAO implements IAuthorityDao {
     }
 
     private void deleteLocations(int authorityId, Connection conn) throws SQLException {
-        //location has its own FK to delete, get all locations and use LocationDao to delete
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_locations_from_authority"));
+        // location has its own FK to delete, get all locations and use LocationDao to delete
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_locations_from_authority"));
         pstmt.setInt(1, authorityId);
-        ResultSet rs = pstmt.executeQuery();
-        while (rs.next()) {
-            locationDao.deleteLocation(rs.getString(Resources.databaseProperties.getString("location_name")));
-        }
+        pstmt.execute();
     }
 
     private void deleteAuthority(int authorityId, Connection conn) throws SQLException {
