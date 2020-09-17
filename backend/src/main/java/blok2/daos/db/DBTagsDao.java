@@ -3,7 +3,6 @@ package blok2.daos.db;
 import blok2.daos.ITagsDao;
 import blok2.helpers.Resources;
 import blok2.model.LocationTag;
-import blok2.model.reservables.Location;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
@@ -15,10 +14,6 @@ import java.util.List;
 
 @Service
 public class DBTagsDao extends DAO implements ITagsDao {
-
-    /*****************************************************
-     *   API calls for CRUD operations with public.TAGS  *
-     *****************************************************/
 
     @Override
     public void addTag(LocationTag tag) throws SQLException {
@@ -77,17 +72,13 @@ public class DBTagsDao extends DAO implements ITagsDao {
     }
 
     @Override
-    public ArrayList<LocationTag> getTags() throws SQLException {
+    public List<LocationTag> getTags() throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement st = conn.prepareStatement(Resources.databaseProperties.getString("all_tags"));
             ResultSet rs = st.executeQuery();
             return createLocationTagList(rs);
         }
     }
-
-    /**************************************************************
-     *   API calls for CRUD operations with public.LOCATION_TAGS  *
-     **************************************************************/
 
     @Override
     public LocationTag getTag(int tagId) throws SQLException {
@@ -99,42 +90,6 @@ public class DBTagsDao extends DAO implements ITagsDao {
                 return createLocationTag(rs);
             }
             return null;
-        }
-    }
-
-    public List<LocationTag> getTagsOfLocation(String locationName) throws SQLException {
-        try (Connection conn = adb.getConnection()) {
-            ResultSet rs = DBLocationDao.getTagsFromLocation(locationName, conn);
-            return createLocationTagList(rs);
-        }
-    }
-
-    /**
-     * Assigning all LocationTags in the list "tags" to the location.
-     * This is done by removing all tags from the location first, and then
-     * adding the ones in the list.
-     */
-    @Override
-    public void assignTagsToLocation(String locationName, List<LocationTag> tags) throws SQLException {
-        try (Connection conn = adb.getConnection()) {
-            try {
-                conn.setAutoCommit(false);
-
-                // remove all tags from the location
-                DBLocationTagDao.deleteAllTagsFromLocation(locationName, conn);
-
-                // add entries to connect the location with the tags
-                for (LocationTag tag : tags) {
-                    DBLocationTagDao.addTagToLocation(locationName, tag.getTagId(), conn);
-                }
-
-                conn.commit();
-            } catch (SQLException e) {
-                conn.rollback();
-                throw e;
-            } finally {
-                conn.setAutoCommit(true);
-            }
         }
     }
 
