@@ -23,12 +23,12 @@ export class LockersCalendarComponent implements OnInit {
 
   refresh: Subject<any> = new Subject();
 
-  /*
+  /**
    * 'events' is the object that is used by the frontend to update/add periods.
    */
   events: CalendarEvent<CalendarPeriodForLockers>[] = [];
 
-  /*
+  /**
    * 'eventsInDataLayer' is an object that keeps track of the opening
    * periods that are stored in the data layer. This object is used
    * to be able to get the updated/added periods, so that the backend
@@ -38,7 +38,7 @@ export class LockersCalendarComponent implements OnInit {
 
   disableFootButtons = true;
 
-  /*
+  /**
    * The boolean-attributes below are used to give feedback to the
    * user when he/she has pressed the "Update" button in different
    * scenarios.
@@ -114,6 +114,12 @@ export class LockersCalendarComponent implements OnInit {
   }
 
   refreshCalendar(event: CalendarEvent): void {
+    // this check is quite important for the calendar not to go
+    // crazy when the form is being filled in
+    if (!isCalendarPeriodForLockersValid(event.meta)) {
+      return;
+    }
+
     // find index corresponding to the given event
     const idx = this.events.findIndex(n => event === n);
 
@@ -148,11 +154,11 @@ export class LockersCalendarComponent implements OnInit {
     // Otherwise, the period will not be addable. Therefore, we just provide the current date-time.
     if (!this.showReservationInformation) {
       let dateTime = toDateTimeString(typeScriptDateToCustomDate(new Date()));
-      // remove the trailing ':ss', to get YYYY-MM-DDThh:mm format
-      dateTime = dateTime.substr(0, dateTime.length - 3);
+      // remove the trailing ':ss' and replace 'T' with ' ' to make a valid
+      // dateTimeStr for the database: 'YYYY-MM-DD HH:MI'
+      dateTime = dateTime.substr(0, dateTime.length - 3).replace('T', ' ');
       period.reservableFrom = dateTime;
     }
-
 
     this.events = [
       ...this.events, calendarPeriodForLockersToCalendarEvent(period)
@@ -194,6 +200,8 @@ export class LockersCalendarComponent implements OnInit {
         this.addAllPeriodsInEvents();
         return;
       }
+
+      console.log('updating for locationName: ' + this.locationName);
 
       // if reached here, persist update(s)
       this.calendarPeriodsForLockersService.updateCalendarPeriodsForLockers(
