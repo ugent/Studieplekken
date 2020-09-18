@@ -52,3 +52,10 @@ absentStudents:
 cas:
   loginUrl: https://login.ugent.be
   callbackUrl: https://localhost:8080/login/cas
+
+# LDAP Configuration
+ldap:
+  url: ldaps://ldap.ugent.be
+  base: ***REMOVED***
+  userDn: cn=dsa-bestuursleden,ou=applications,dc=UGent,dc=be
+  password: 5-yuoDssc3Fwd
