@@ -731,7 +731,7 @@ from public.calendar_periods cp
     join public.locations l
         on l.name = cp.location_name
 where cp.location_name = ?
-order by to_date(cp.starts_at, 'YYYY-MM-DD');
+order by to_date(cp.starts_at || ' ' || cp.opening_time, 'YYYY-MM-DD HH24:MI');
 
 -- $insert_calendar_period
 insert into public.calendar_periods(location_name, starts_at, ends_at, opening_time, closing_time, reservable_from)
