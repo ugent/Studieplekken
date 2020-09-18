@@ -76,16 +76,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     /**
      * The class PortMapperImpl will put two values by default in
      * its attribute 'httpsPortMappings':
-     *   - 80 -> 443
-     *   - 8080 -> 8443
-     *
+     * - 80 -> 443
+     * - 8080 -> 8443
+     * <p>
      * This is a problem when the AbstractAuthenticationProcessingFilter
      * calls successHandler.onAuthenticationSuccess(...) in the method
      * AbstractAuthenticationProcessingFilter#successfulAuthentication(...).
-     *
+     * <p>
      * (Note: the successHandler mentioned above by default is an instance of
      * SavedRequestAwareAuthenticationSuccessHandler)
-     *
+     * <p>
      * After validating the ticket, the server needs to redirect the user's
      * browser to the original request-url. But thanks to the default
      * PortMapperImpl, the port 8080 will be redirected to 8443, which is
@@ -94,9 +94,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
      */
     private PortMapper portMapper() {
         PortMapperImpl portMapper = new PortMapperImpl();
-        Map<String, String> mappings = new HashMap<>();
-        mappings.put(Integer.toString(serverPort), Integer.toString(sslRedirectPort));
-        portMapper.setPortMappings(mappings);
+        portMapper.setPortMappings(
+                new HashMap<String, String>() {{
+                    put(Integer.toString(serverPort), Integer.toString(sslRedirectPort));
+                }});
         return portMapper;
     }
 
