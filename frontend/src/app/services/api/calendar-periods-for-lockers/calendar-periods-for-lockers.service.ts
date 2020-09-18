@@ -20,9 +20,11 @@ export class CalendarPeriodsForLockersService {
     return this.http.post<void>(api.addCalendarPeriodsForLockers, calendarPeriodsForLockers);
   }
 
-  updateCalendarPeriodsForLockers(from: CalendarPeriodForLockers[], to: CalendarPeriodForLockers[]): Observable<void> {
+  updateCalendarPeriodsForLockers(locationName: string,
+                                  from: CalendarPeriodForLockers[],
+                                  to: CalendarPeriodForLockers[]): Observable<void> {
     const body = [from, to];
-    return this.http.put<void>(api.updateCalendarPeriodsForLockers, body);
+    return this.http.put<void>(api.updateCalendarPeriodsForLockers.replace('{locationName}', locationName), body);
   }
 
   deleteCalendarPeriodsForLockers(calendarPeriodsForLockers: CalendarPeriodForLockers[]): Observable<void> {
