@@ -1,5 +1,5 @@
 import {Location, LocationConstructor} from './Location';
-import {isStringValidDate} from '../validators/DateValidators';
+import {isStringValidDateForDB} from '../validators/DateValidators';
 
 export interface CalendarPeriodForLockers {
   location: Location;
@@ -33,9 +33,9 @@ export function isCalendarPeriodForLockersValid(period: CalendarPeriodForLockers
     return false;
   }
 
-  return isStringValidDate(period.startsAt) &&
-    isStringValidDate(period.endsAt) &&
-    isStringValidDate(period.reservableFrom);
+  return isStringValidDateForDB(period.startsAt) &&
+    isStringValidDateForDB(period.endsAt) &&
+    isStringValidDateForDB(period.reservableFrom);
 }
 
 export function calendarPeriodForLockersToCalendarEvent(period: CalendarPeriodForLockers): any {
