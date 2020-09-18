@@ -1,5 +1,5 @@
 <div class="container-fluid" *ngIf="location | async as location">
-  <div class="panel-body" style="padding: 20px">
+  <div class="panel-body" style="padding: 20px" >
     <app-calendar
       [events]="events"
       [refresh]="refresh">
@@ -25,7 +25,7 @@
 
   <!-- The form itself -->
   <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
-    <div class="table-responsive">
+    <div class="table-responsive" *ngIf="events.length > 0; else noCalendarPeriodsForLockers">
       <table class="table table-bordered">
         <thead>
         <tr>
@@ -88,8 +88,8 @@
     <!-- Row below the table to provide cancel/update buttons -->
     <div class="row">
       <div class="pull-right">
-        <button class="btn btn-primary left-button"
-                (click)="updateCalendarPeriodForLockersButtonClick(location.name)"
+        <button class="btn btn-primary btn-left"
+                (click)="updateCalendarPeriodForLockersButtonClick()"
                 [disabled]="disableFootButtons">
           {{'management.locationDetails.lockerCalendar.form.updateButton' | translate}}
         </button>
@@ -122,3 +122,11 @@
     </div>
   </div>
 </div>
+
+<ng-template #noCalendarPeriodsForLockers>
+  <div class="row" style="margin-top: 20px">
+    <div class="alert alert-info">
+      {{'management.locationDetails.lockerCalendar.form.noCalendarPeriodsForLockers' | translate}}
+    </div>
+  </div>
+</ng-template>

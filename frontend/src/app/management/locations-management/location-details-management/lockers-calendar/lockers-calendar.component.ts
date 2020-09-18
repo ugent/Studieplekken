@@ -19,6 +19,8 @@ import {toDateTimeString, typeScriptDateToCustomDate} from '../../../../shared/m
 export class LockersCalendarComponent implements OnInit {
   @Input() location: Observable<Location>;
 
+  locationName: string;
+
   refresh: Subject<any> = new Subject();
 
   /*
@@ -54,14 +56,15 @@ export class LockersCalendarComponent implements OnInit {
 
   ngOnInit(): void {
     this.location.subscribe(next => {
-      this.setupEvents(next.name);
+      this.locationName = next.name;
+      this.setupEvents();
     });
     this.showReservationInformation = this.functionalityService.showReservationsFunctionality();
   }
 
-  setupEvents(locationName: string): void {
+  setupEvents(): void {
     // retrieve all calendar periods for the lockers of this location
-    this.calendarPeriodsForLockersService.getCalendarPeriodsForLockersOfLocation(locationName).subscribe(next => {
+    this.calendarPeriodsForLockersService.getCalendarPeriodsForLockersOfLocation(this.locationName).subscribe(next => {
       if (next === null) {
         return;
       }
@@ -156,21 +159,21 @@ export class LockersCalendarComponent implements OnInit {
     ];
   }
 
-  updateCalendarPeriodForLockersButtonClick(locationName: string): void {
+  updateCalendarPeriodForLockersButtonClick(): void {
     this.disableFootButtons = true;
-    this.updateCalendarPeriodForLockers(locationName);
-    this.setupEvents(locationName);
+    this.updateCalendarPeriodForLockers();
+    this.setupEvents();
   }
 
   /**
    * This is the method that does all the CUD-work of
    * the CRUD operations available for CALENDAR_PERIODS_FOR_LOCKERS
    */
-  updateCalendarPeriodForLockers(locationName: string): void {
+  updateCalendarPeriodForLockers(): void {
     if (this.hasAnyPeriodChanged()) {
       // if this.events.length === 0, delete everything instead of updating
       if (this.events.length === 0) {
-        this.deleteAllPeriodsInDataLayer(locationName);
+        this.deleteAllPeriodsInDataLayer();
         return;
       }
 
@@ -188,31 +191,32 @@ export class LockersCalendarComponent implements OnInit {
 
       // if this.calendarPeriodsForLockersInDataLayer.length === 0, add all events instead of updating
       if (this.calendarPeriodsForLockersInDataLayer.length === 0) {
-        this.addAllPeriodsInEvents(locationName);
+        this.addAllPeriodsInEvents();
         return;
       }
 
       // if reached here, persist update(s)
       this.calendarPeriodsForLockersService.updateCalendarPeriodsForLockers(
+        this.locationName,
         this.calendarPeriodsForLockersInDataLayer,
         this.events.map<CalendarPeriodForLockers>(n => n.meta)
       ).subscribe(() => {
-        this.successHandler(locationName);
+        this.successHandler();
       }, () => this.errorHandler());
     } else {
       this.handleNothingHasChangedOnUpdate();
     }
   }
 
-  deleteAllPeriodsInDataLayer(locationName: string): void {
+  deleteAllPeriodsInDataLayer(): void {
     this.calendarPeriodsForLockersService.deleteCalendarPeriodsForLockers(this.calendarPeriodsForLockersInDataLayer)
-      .subscribe(() => this.successHandler(locationName), () => this.errorHandler());
+      .subscribe(() => this.successHandler(), () => this.errorHandler());
   }
 
-  addAllPeriodsInEvents(locationName: string): void {
+  addAllPeriodsInEvents(): void {
     this.calendarPeriodsForLockersService
       .addCalendarPeriodsForLockers(this.events.map<CalendarPeriodForLockers>(n => n.meta))
-      .subscribe(() => this.successHandler(locationName), () => this.errorHandler());
+      .subscribe(() => this.successHandler(), () => this.errorHandler());
   }
 
   handleWrongCalendarPeriodFormatOnUpdate(): void {
@@ -239,11 +243,11 @@ export class LockersCalendarComponent implements OnInit {
     this.disableFootButtons = true;
   }
 
-  successHandler(locationName: string): void {
+  successHandler(): void {
     this.showSuccess = true;
     setTimeout(() => this.showSuccess = false, this.msToShowFeedback);
     // Refresh the events in the 'data layer' attribute
-    this.setupEvents(locationName);
+    this.setupEvents();
   }
 
   errorHandler(): void {

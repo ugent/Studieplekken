@@ -25,7 +25,7 @@
 
   <!-- The form itself -->
   <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
-    <div class="table-responsive">
+    <div class="table-responsive" *ngIf="calendarPeriods.length > 0; else noCalendarPeriodsForLocation">
       <table class="table table-bordered">
         <thead>
         <tr>
@@ -114,8 +114,8 @@
     <!-- Row below the table to provide cancel/update buttons -->
     <div class="row">
       <div class="pull-right">
-        <button class="btn btn-primary left-button"
-                (click)="updateOpeningPeriodButtonClick(location.name)"
+        <button class="btn btn-primary btn-left"
+                (click)="updateOpeningPeriodButtonClick()"
                 [disabled]="disableFootButtons">
           {{'management.locationDetails.calendar.form.updateButton' | translate}}
         </button>
@@ -147,4 +147,10 @@
   </div>
 </div>
 
-
+<ng-template #noCalendarPeriodsForLocation>
+  <div class="row" style="margin-top: 20px">
+    <div class="alert alert-info">
+      {{'management.locationDetails.calendar.form.noCalendarPeriodsForLocation' | translate}}
+    </div>
+  </div>
+</ng-template>
