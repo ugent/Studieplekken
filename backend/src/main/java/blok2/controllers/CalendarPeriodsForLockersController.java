@@ -145,7 +145,7 @@ public class CalendarPeriodsForLockersController {
                         HttpStatus.CONFLICT, "Different locations in request");
             }
 
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             Date startDate = format.parse(period.getStartsAt());
             Date endDate = format.parse(period.getEndsAt());
 
@@ -155,6 +155,10 @@ public class CalendarPeriodsForLockersController {
                 throw new ResponseStatusException(
                         HttpStatus.CONFLICT, "StartsAt must be before EndsAt");
             }
+
+            // check if the reservableFrom is parsable
+            format = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+            format.parse(period.getReservableFrom());
 
             // make sure no periods overlap
             if (lastEnd != null && lastEnd.getTime() > startDate.getTime()) {
