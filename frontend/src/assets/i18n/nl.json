@@ -1,4 +1,14 @@
 {
+  "calendar": {
+    "previous": "Vorige",
+    "today": "Vandaag",
+    "next": "Volgende",
+
+    "month": "Maand",
+    "week": "Week",
+    "day": "Dag"
+  },
+
   "dashboard": {
     "address": "Adres",
     "details": "Details",
