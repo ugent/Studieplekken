@@ -43,9 +43,9 @@ export class CalendarPeriodConstructor {
  * Following checks are performed on the period:
  *
  * 1. Checking the formats of its members
- *   - format of startsAt and endsAt:             new Date(member) != NaN
+ *   - format of startsAt and endsAt:             YYYY-MM-DD
  *   - format of openingTime and openingTime:     HH:MI
- *   - format of reservableFrom:                  new Date(member) != NaN
+ *   - format of reservableFrom:                  YYYY-MM-DD HH-MI
  *
  * 2. endsAt may not be before startsAt
  *

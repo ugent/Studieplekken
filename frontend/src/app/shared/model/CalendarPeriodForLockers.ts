@@ -1,5 +1,5 @@
 import {Location, LocationConstructor} from './Location';
-import {isStringValidDateForDB} from '../validators/DateValidators';
+import {isStringValidDateForDB, isStringValidDateTimeForDB} from '../validators/DateValidators';
 
 export interface CalendarPeriodForLockers {
   location: Location;
@@ -28,14 +28,33 @@ export class CalendarPeriodForLockersConstructor {
   }
 }
 
+/**
+ * Following checks are performed on the period:
+ *
+ * 1. Checking the formats of its members
+ *   - format of startsAt and endsAt:             YYYY-MM-DD
+ *   - format of reservableFrom:                  YYYY-MM-DD HH-MI
+ *
+ * 2. endsAt may not be before startsAt
+ *
+ * 3. closingTime may not be before openingTime
+ */
 export function isCalendarPeriodForLockersValid(period: CalendarPeriodForLockers): boolean {
   if (period === null) {
     return false;
   }
 
-  return isStringValidDateForDB(period.startsAt) &&
-    isStringValidDateForDB(period.endsAt) &&
-    isStringValidDateForDB(period.reservableFrom);
+  if (!(isStringValidDateForDB(period.startsAt) &&
+        isStringValidDateForDB(period.endsAt) &&
+        isStringValidDateTimeForDB(period.reservableFrom))) {
+    return false;
+  }
+
+  // endsAt may not be before startsAt
+  const startDate = new Date(period.startsAt);
+  const endDate = new Date(period.endsAt);
+
+  return endDate >= startDate;
 }
 
 export function calendarPeriodForLockersToCalendarEvent(period: CalendarPeriodForLockers): any {
