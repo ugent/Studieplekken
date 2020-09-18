@@ -3,15 +3,14 @@ import {CalendarEvent} from 'angular-calendar';
 import {
   CalendarPeriodConstructor,
   CalendarPeriod,
-  isCalendarPeriodValid,
-  calendarPeriodToCalendarEvent
+  isCalendarPeriodValid, mapCalendarPeriodsToCalendarEvents
 } from '../../../../shared/model/CalendarPeriod';
 import {Observable, Subject} from 'rxjs';
 import {Location} from '../../../../shared/model/Location';
 import {CalendarPeriodsService} from '../../../../services/api/calendar-periods/calendar-periods.service';
-import {equalCalendarPeriods} from '../../../../shared/comparators/ModelComparators';
-import {ApplicationTypeFunctionalityService} from "../../../../services/functionality/application-type/application-type-functionality.service";
-import {toDateTimeString, typeScriptDateToCustomDate} from "../../../../shared/model/helpers/CustomDate";
+import {ApplicationTypeFunctionalityService} from '../../../../services/functionality/application-type/application-type-functionality.service';
+import {toDateTimeString, typeScriptDateToCustomDate} from '../../../../shared/model/helpers/CustomDate';
+import {msToShowFeedback} from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-location-calendar',
@@ -21,35 +20,46 @@ import {toDateTimeString, typeScriptDateToCustomDate} from "../../../../shared/m
 export class LocationCalendarComponent implements OnInit {
   @Input() location: Observable<Location>;
 
+  locationName: string;
+
   refresh: Subject<any> = new Subject();
 
-  /*
-   * 'events' is the object that is used by the frontend
-   * to update/add periods.
+  /**
+   * 'calendarPeriods' is the list of CalendarPeriods that the user
+   * can modify using the form in the template
+   */
+  calendarPeriods: CalendarPeriod[];
+
+  /**
+   * 'events' is the object that is used by the angular-calendar module
+   * to show the events in the calendar.
    */
   events: CalendarEvent<CalendarPeriod>[] = [];
 
-  /*
+  /**
    * 'eventsInDataLayer' is an object that keeps track of the opening
    * periods, that are stored in the data layer. This object is used
-   * to be able to get the updated/added periods, so that we can inform
-   * the data layer which objects to update
+   * to be able to determine whether or not 'periods' has changed
    */
   calendarPeriodsInDataLayer: CalendarPeriod[] = [];
 
   disableFootButtons = true;
 
-  /*
+  /**
    * The boolean-attributes below are used to give feedback to the
    * user when he/she has pressed the "Update" button in different
    * scenarios.
    */
-  msToShowFeedback = 10000; // 10 sec
   showWrongCalendarPeriodFormat = false;
   showSuccessButNoChanges = false;
   showSuccess = false;
   showError = false;
 
+  /**
+   * Depending on what the ApplicationTypeFunctionalityService returns
+   * for the functionality of reservations, 'showReservationInformation'
+   * will be set.
+   */
   showReservationInformation: boolean;
 
   constructor(private calendarPeriodsService: CalendarPeriodsService,
@@ -57,17 +67,20 @@ export class LocationCalendarComponent implements OnInit {
 
   ngOnInit(): void {
     this.location.subscribe(next => {
-      this.setupEvents(next.name);
+      this.locationName = next.name;
+      this.setupEvents();
     });
     this.showReservationInformation = this.functionalityService.showReservationsFunctionality();
   }
 
-  setupEvents(locationName: string): void {
+  setupEvents(): void {
     // retrieve all calendar periods for this location
-    this.calendarPeriodsService.getCalendarPeriodsOfLocation(locationName).subscribe(next => {
+    this.calendarPeriodsService.getCalendarPeriodsOfLocation(this.locationName).subscribe(next => {
       if (next === null) {
         return;
       }
+
+      this.calendarPeriods = next;
 
       // make a deep copy to make sure that can be calculated whether any period has changed
       this.calendarPeriodsInDataLayer = [];
@@ -76,59 +89,41 @@ export class LocationCalendarComponent implements OnInit {
       });
 
       // fill the events based on the calendar periods
-      this.events = this.mapCalendarPeriodsToCalendarEvents(next);
+      this.events = mapCalendarPeriodsToCalendarEvents(next);
     });
-  }
-
-  mapCalendarPeriodsToCalendarEvents(periods: CalendarPeriod[]): CalendarEvent[] {
-    return periods.map<CalendarEvent>(n => {
-      return calendarPeriodToCalendarEvent(n);
-    });
-  }
-
-  isPeriodInEvents(period: CalendarPeriod): boolean {
-    return this.events.findIndex(next => equalCalendarPeriods(period, next.meta)) < 0;
-  }
-
-  isPeriodInBackend(event: CalendarEvent): boolean {
-    return this.calendarPeriodsInDataLayer.findIndex(next => equalCalendarPeriods(next, event.meta)) < 0;
   }
 
   hasAnyPeriodChanged(): boolean {
     // if the lengths do not match, there must have changed something
-    if (this.events.length !== this.calendarPeriodsInDataLayer.length) {
+    if (this.calendarPeriods.length !== this.calendarPeriodsInDataLayer.length) {
       return true;
     }
 
-    // if the lengths do match, try if all values in this.eventsInDataLayer
-    // have a matching value in this.events
-    this.calendarPeriodsInDataLayer.forEach(n => {
-      if (!this.isPeriodInEvents(n)) {
-        return false;
+    // if the lengths do match, check if all values in this.calendarPeriodsInDataLayer
+    // have a matching value in this.calendarPeriods
+    for (const period of this.calendarPeriodsInDataLayer) {
+      if (!this.calendarPeriods.includes(period)) {
+        return true;
       }
-    });
+    }
 
-    return true;
+    return false;
   }
 
-  refreshCalendar(event: CalendarEvent): void {
-    // find index corresponding to the given event
-    const idx = this.events.findIndex(next => event === next);
-
-    if (idx < 0) {
+  refreshCalendar(period: CalendarPeriod): void {
+    // only refresh the calendar if the period that has changed is valid
+    if (!isCalendarPeriodValid(period)) {
       return;
     }
 
-    this.prepareCalendarEventBasedOnMeta(idx);
+    // set the events
+    this.events = mapCalendarPeriodsToCalendarEvents(this.calendarPeriods);
+
+    // refresh the calendar
     this.refresh.next();
 
     // make sure that the user can update changes
-    this.disableFootButtons = !this.isPeriodInBackend(event);
-  }
-
-  prepareCalendarEventBasedOnMeta(idx: number): void {
-    const period = this.events[idx].meta;
-    this.events[idx] = calendarPeriodToCalendarEvent(period);
+    this.disableFootButtons = !this.hasAnyPeriodChanged();
   }
 
   addOpeningPeriodButtonClick(location: Location): void {
@@ -146,40 +141,39 @@ export class LocationCalendarComponent implements OnInit {
     // If not set, the period will not be addable. Therefore, we just provide the current date-time.
     if (!this.showReservationInformation) {
       let dateTime = toDateTimeString(typeScriptDateToCustomDate(new Date()));
-      // remove the trailing ':ss', to get YYYY-MM-DDThh:mm format
-      dateTime = dateTime.substr(0, dateTime.length - 3);
+      // remove the trailing ':ss' and replace 'T' with ' ' to make a valid
+      // dateTimeStr for the database: 'YYYY-MM-DD HH:MI'
+      dateTime = dateTime.substr(0, dateTime.length - 3).replace('T', ' ');
       period.reservableFrom = dateTime;
     }
 
-    this.events = [
-      ...this.events, calendarPeriodToCalendarEvent(period)
-    ];
+    this.calendarPeriods.push(period);
   }
 
-  updateOpeningPeriodButtonClick(locationName: string): void {
+  updateOpeningPeriodButtonClick(): void {
     this.disableFootButtons = true;
-    this.updateOpeningPeriod(locationName);
+    this.updateOpeningPeriod();
   }
 
   /**
    * This is the method that does all the CUD-work of
    * the CRUD operations available for CALENDAR_PERIODS
    */
-  updateOpeningPeriod(locationName: string): void {
+  updateOpeningPeriod(): void {
     if (this.hasAnyPeriodChanged()) {
       // if this.events.length === 0, delete everything instead of updating
-      if (this.events.length === 0) {
-        this.deleteAllPeriodsInDataLayer(locationName);
+      if (this.calendarPeriods.length === 0) {
+        this.deleteAllPeriodsInDataLayer();
         return;
       }
 
       // before updating or adding anything, check if all periods are valid
-      // Note: do not do this.events.forEach(handler), because the return in the 'handler'
+      // Note: do not do this.calendarPeriods.forEach(handler), because the return
       //   will return from the lambda, but not from the outer function and thus, a
-      //   request will be sent to the backend, which is not wat we want if not all
-      //   the periods are validly filled in
-      for (const n of this.events) {
-        if (!isCalendarPeriodValid(n.meta)) {
+      //   in the 'handler' request will be sent to the backend, which is not wat we
+      //   want if not all the periods are validly filled in
+      for (const n of this.calendarPeriods) {
+        if (!isCalendarPeriodValid(n)) {
           this.handleWrongCalendarPeriodFormatOnUpdate();
           return;
         }
@@ -187,65 +181,72 @@ export class LocationCalendarComponent implements OnInit {
 
       // if this.eventsInDataLayer.length === 0, add all events instead of updating
       if (this.calendarPeriodsInDataLayer.length === 0) {
-        this.addAllPeriodsInEvents(locationName);
+        this.addAllCalendarPeriods();
         return;
       }
 
-      // this.events is not empty, and all values are valid: persist update(s)
+      // this.calendarPeriods is not empty, and all values are valid: persist update(s)
       this.calendarPeriodsService.updateCalendarPeriods(
-        locationName,
+        this.locationName,
         this.calendarPeriodsInDataLayer,
-        this.events.map<CalendarPeriod>(n => n.meta)
+        this.calendarPeriods
       ).subscribe(() => {
-        this.successHandler(locationName);
+        this.successHandler();
       }, () => this.errorHandler());
     } else {
       this.handleNothingHasChangedOnUpdate();
     }
   }
 
-  deleteAllPeriodsInDataLayer(locationName: string): void {
+  deleteAllPeriodsInDataLayer(): void {
     this.calendarPeriodsService.deleteCalendarPeriods(this.calendarPeriodsInDataLayer)
-      .subscribe(() => this.successHandler(locationName), () => this.errorHandler());
+      .subscribe(() => this.successHandler(), () => this.errorHandler());
   }
 
-  addAllPeriodsInEvents(locationName: string): void{
-    this.calendarPeriodsService.addCalendarPeriods(this.events.map<CalendarPeriod>(n => n.meta))
-      .subscribe(() => this.successHandler(locationName), () => this.errorHandler());
+  addAllCalendarPeriods(): void{
+    this.calendarPeriodsService.addCalendarPeriods(this.calendarPeriods)
+      .subscribe(() => this.successHandler(), () => this.errorHandler());
   }
 
   handleWrongCalendarPeriodFormatOnUpdate(): void {
     this.showWrongCalendarPeriodFormat = true;
-    setTimeout(() => this.showWrongCalendarPeriodFormat = false, this.msToShowFeedback);
+    setTimeout(() => this.showWrongCalendarPeriodFormat = false, msToShowFeedback);
   }
 
   handleNothingHasChangedOnUpdate(): void {
     this.showSuccessButNoChanges = true;
-    setTimeout(() => this.showSuccessButNoChanges = false, this.msToShowFeedback);
+    setTimeout(() => this.showSuccessButNoChanges = false, msToShowFeedback);
   }
 
-  deleteOpeningPeriodButtonClick(event: CalendarEvent): void {
-    this.deleteOpeningPeriod(event);
+  deleteOpeningPeriodButtonClick(period: CalendarPeriod): void {
+    this.deleteOpeningPeriod(period);
     this.disableFootButtons = false;
   }
 
-  deleteOpeningPeriod(event: CalendarEvent): void {
-    this.events = this.events.filter((next) => next !== event);
+  deleteOpeningPeriod(period: CalendarPeriod): void {
+    this.calendarPeriods = this.calendarPeriods.filter((next) => next !== period);
+    this.events = mapCalendarPeriodsToCalendarEvents(this.calendarPeriods);
   }
 
   cancelChangesButtonClick(): void {
-    this.events = this.mapCalendarPeriodsToCalendarEvents(this.calendarPeriodsInDataLayer);
+    this.events = mapCalendarPeriodsToCalendarEvents(this.calendarPeriodsInDataLayer);
+
+    // deep copy of this.calendarPeriodsInDataLayer to this.calendarPeriods
+    this.calendarPeriods = [];
+    this.calendarPeriodsInDataLayer
+      .forEach(value => this.calendarPeriods.push(CalendarPeriodConstructor.newFromObj(value)));
+
     this.disableFootButtons = true;
   }
 
-  successHandler(locationName: string): void {
+  successHandler(): void {
     this.showSuccess = true;
-    setTimeout(() => this.showSuccess = false, this.msToShowFeedback);
-    this.setupEvents(locationName);
+    setTimeout(() => this.showSuccess = false, msToShowFeedback);
+    this.setupEvents();
   }
 
   errorHandler(): void {
     this.showError = true;
-    setTimeout(() => this.showError = false, this.msToShowFeedback);
+    setTimeout(() => this.showError = false, msToShowFeedback);
   }
 }
