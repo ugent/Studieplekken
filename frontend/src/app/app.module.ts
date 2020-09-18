@@ -44,11 +44,15 @@ import { UserDetailsManagementPenaltiesComponent } from './management/users-mana
 import { LocationReservationsManagementComponent } from './management/reservations-management/location-reservations-management/location-reservations-management.component';
 import { LockerReservationsManagementComponent } from './management/reservations-management/locker-reservations-management/locker-reservations-management.component';
 import {ApplicationTypeGuardService} from './services/guard/functionality/application-type-guard/application-type-guard.service';
+import {registerLocaleData} from '@angular/common';
+import localeNl from '@angular/common/locales/nl-BE';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http);
 }
+
+registerLocaleData(localeNl, 'nl');
 
 const routes: Routes = [
   {path: 'dashboard', component: DashboardComponent},
