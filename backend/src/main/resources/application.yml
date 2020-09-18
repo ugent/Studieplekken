@@ -47,3 +47,8 @@ absentStudents:
   mail:
     subject: "Afwezigheid voor reservatie/ Absence for reservation"
     template: "ENGLISH VERSION BELOW\n\nBeste Student,\n\nU was afwezig voor uw reservatie vandaag.\nHiervoor heeft u strafpunten gekregen. Van zodra u te veel strafpunten heeft kan u geen reservaties meer maken\n\n---\n\nDear student,\n\nYou were absent for your reservation today.\nDue to this you have received penalty points. Please note that you can not make a reservation if you have too many penalty points."
+
+# CAS Authentication
+cas:
+  loginUrl: https://login.ugent.be
+  callbackUrl: https://localhost:8080/login/cas

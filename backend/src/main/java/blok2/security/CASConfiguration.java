@@ -1,9 +1,9 @@
 package blok2.security;
 
-import blok2.helpers.Resources;
 import org.jasig.cas.client.validation.Cas20ServiceTicketValidator;
 import org.jasig.cas.client.validation.TicketValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -28,7 +28,10 @@ import java.util.Collections;
  *******************************************************************************************/
 @Profile("!test")
 @Configuration
+@ConfigurationProperties(prefix = "cas")
 public class CASConfiguration {
+    private String loginUrl;
+    private String callbackUrl;
 
     private final AuthenticationUserDetailsService<CasAssertionAuthenticationToken> authenticationUserDetailsService;
     private final AuthenticationSuccessHandler authenticationSuccessHandler;
@@ -46,7 +49,7 @@ public class CASConfiguration {
 
         // The 'service' property must equal a URL that will be monitored by the
         // CasAuthenticationFilter. This will be: https://localhost:8080/login/cas
-        serviceProperties.setService(Resources.blokatugentConf.getString("casCallbackUrl"));
+        serviceProperties.setService(callbackUrl);
 
         // Tell the CAS login services that SSO is acceptable, the user will not be
         // forced to fill in his credentials if he is already logged in with CAS on
@@ -59,14 +62,14 @@ public class CASConfiguration {
     @Bean
     public CasAuthenticationEntryPoint casAuthenticationEntryPoint(ServiceProperties serviceProperties) {
         CasAuthenticationEntryPoint entryPoint = new CasAuthenticationEntryPoint();
-        entryPoint.setLoginUrl(Resources.blokatugentConf.getString("casLoginUrl") + "/login");
+        entryPoint.setLoginUrl(loginUrl + "/login");
         entryPoint.setServiceProperties(serviceProperties);
         return entryPoint;
     }
 
     @Bean
     public TicketValidator ticketValidator() {
-        return new Cas20ServiceTicketValidator(Resources.blokatugentConf.getString("casLoginUrl"));
+        return new Cas20ServiceTicketValidator(loginUrl);
     }
 
     @Bean
@@ -97,5 +100,13 @@ public class CASConfiguration {
         filter.setAuthenticationManager(authenticationManager);
 
         return filter;
+    }
+
+    public void setCallbackUrl(String callbackUrl) {
+        this.callbackUrl = callbackUrl;
+    }
+
+    public void setLoginUrl(String loginUrl) {
+        this.loginUrl = loginUrl;
     }
 }
