@@ -16,6 +16,6 @@ services:
   - name: db
     image: circleci/postgres:10.12-ram
     environment:
-      POSTGRES_HOST_AUTH_METHOD: trust # Allow non password connections
       POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
       POSTGRES_DB: blokatugent_test
