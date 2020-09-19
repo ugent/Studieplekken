@@ -8,7 +8,7 @@ steps:
     environment:
       SPRING_PROFILES_ACTIVE: ci
     commands:
-      - sleep 5
+      - ./scripts/wait_for_service localhost 5432
       - cd backend
       - gradle assemble
       - gradle check
