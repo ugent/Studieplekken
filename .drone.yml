@@ -9,7 +9,7 @@ steps:
       SPRING_PROFILES_ACTIVE: ci
     commands:
       - apt-get update -y && apt-get install netcat -y
-      - ./scripts/wait_for_service localhost 5432
+      - ./scripts/wait_for_service 0.0.0.0 5432
       - cd backend
       - gradle assemble
       - gradle check
