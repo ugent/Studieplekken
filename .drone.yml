@@ -6,7 +6,7 @@ steps:
   - name: test-backend
     image: gradle:jdk8
     environment:
-      SPRING_PROFILES_ACTIVE: CI
+      DB_URL: jdbc:postgresql://db:5432/blokatugent_test"
     commands:
       - cd backend
       - gradle assemble
