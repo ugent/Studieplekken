@@ -5,7 +5,7 @@ if [ $# -ne 2 ]; then
 	exit 1
 fi
 
-while ! netcat -z "$1" "$2"; do
+while ! nc -z "$1" "$2"; do
 	echo "$1:$2 not yet available, waiting"
 	sleep 1
 done
