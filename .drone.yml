@@ -9,14 +9,14 @@ steps:
       SPRING_PROFILES_ACTIVE: ci
     commands:
       - apt-get update -y && apt-get install netcat -y
-      - ./scripts/wait_for_service 0.0.0.0 5432
+      - ./scripts/wait_for_service db 5432
       - cd backend
       - gradle assemble
       - gradle check
 
 services:
   - name: db
-    image: circleci/postgres:10.12-ram
+    image: postgres:10-alpine
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
