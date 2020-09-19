@@ -5,8 +5,17 @@ name: default
 steps:
   - name: test-backend
     image: gradle:jdk8
+    environment:
+      SPRING_PROFILES_ACTIVE: CI
     commands:
       - cd backend
       - gradle assemble
       - gradle check
 
+services:
+  - name: db
+    image: circleci/postgres:10.12-ram
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust # Allow non password connections
+      POSTGRES_USER: postgres
+      POSTGRES_DB: blokatugent_test

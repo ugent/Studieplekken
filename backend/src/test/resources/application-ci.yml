@@ -1,0 +1,4 @@
+# credentials for test database
+db:
+  url: "jdbc:db://localhost:5433/blokatugent_test"
+  username: postgres
