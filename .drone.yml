@@ -3,9 +3,10 @@ type: docker
 name: default
 
 steps:
-  - name: test
+  - name: test-backend
     image: gradle:jdk8
     commands:
+      - cd backend
       - gradle assemble
       - gradle check
 
