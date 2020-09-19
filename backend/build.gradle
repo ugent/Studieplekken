@@ -69,6 +69,9 @@ tasks.register("bootRunDev") {
     finalizedBy("bootRun")
 }
 
+test.doFirst {
+    systemProperty('spring.profiles.active', 'test')
+}
 
 gitProperties {
     gitPropertiesName = "git.properties"

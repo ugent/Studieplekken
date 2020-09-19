@@ -1,7 +1,3 @@
-spring:
-  profiles:
-    active: test
-
 # credentials for test database
 db:
   url: "jdbc:postgresql://localhost:5432/blokatugent_test"
