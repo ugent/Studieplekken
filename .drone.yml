@@ -13,7 +13,6 @@ steps:
       - cd backend
       - gradle assemble
       - gradle check
-      - gradle test
 
 services:
   - name: db
