@@ -42,14 +42,6 @@ version = '0.2'
 description = 'BlokAtUGent'
 sourceCompatibility = '1.8'
 
-//publishing {
-//    publications {
-//        maven(MavenPublication) {
-//            from(components.java)
-//        }
-//    }
-//}
-
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
