@@ -4,6 +4,7 @@ export interface Location {
   numberOfSeats: number;
   numberOfLockers: number;
   imageUrl: string;
+  authority: string;
 }
 
 export class LocationConstructor {
@@ -13,7 +14,8 @@ export class LocationConstructor {
       address: '',
       numberOfSeats: 0,
       numberOfLockers: 0,
-      imageUrl: ''
+      imageUrl: '',
+      authority: ''
     };
   }
 
@@ -27,7 +29,8 @@ export class LocationConstructor {
       address: obj.address,
       numberOfSeats: obj.numberOfSeats,
       numberOfLockers: obj.numberOfLockers,
-      imageUrl: obj.imageUrl
+      imageUrl: obj.imageUrl,
+      authority: obj.authority
     };
   }
 }

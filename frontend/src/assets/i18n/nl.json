@@ -75,6 +75,7 @@
 
       "form": {
         "name": "Naam",
+        "authority": "Autoriteit",
         "address": "Adres",
         "numberOfSeats": "Aantal plaatsen",
         "numberOfLockers": "Aantal lockers",
