@@ -5,6 +5,9 @@ import {Observable} from 'rxjs';
 import {Location} from '../../shared/model/Location';
 import {LocationService} from '../../services/api/locations/location.service';
 import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
+import {Authority} from '../../shared/model/Authority';
+import {AuthoritiesService} from '../../services/api/authorities/authorities.service';
+import {tap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-locations-management',
@@ -25,16 +28,30 @@ export class LocationsManagementComponent implements OnInit {
   currentLocationNameToDelete: string;
   deletionWasSuccess: boolean = undefined;
 
-  constructor(private locationService: LocationService) { }
+  authoritiesObs: Observable<Authority[]>;
+  authoritiesMap: Map<string, Authority>;
+
+  constructor(private locationService: LocationService,
+              private authoritiesService: AuthoritiesService) { }
 
   ngOnInit(): void {
     this.locations = this.locationService.getLocations();
     this.setupForm();
+
+    this.authoritiesObs = this.authoritiesService.getAllAuthorities().pipe(tap(
+      next => {
+        this.authoritiesMap = new Map<string, Authority>();
+        next.forEach(value => {
+          this.authoritiesMap.set(value.authorityName, value);
+        });
+      }
+    ));
   }
 
   setupForm(): void {
     this.addLocationFormGroup = new FormGroup({
       name: new FormControl('', Validators.required),
+      authorityName: new FormControl('', Validators.required),
       address: new FormControl('', Validators.required),
       numberOfSeats: new FormControl('', Validators.required),
       numberOfLockers: new FormControl('', Validators.required),
@@ -47,6 +64,8 @@ export class LocationsManagementComponent implements OnInit {
   }
 
   addNewLocation(location: Location): void {
+    location.authority = this.authoritiesMap.get(this.authorityName.value);
+
     this.addingWasSuccess = null;
     if (this.addLocationFormGroup.valid) {
       this.locationService.addLocation(location).subscribe(
@@ -103,6 +122,7 @@ export class LocationsManagementComponent implements OnInit {
   }
 
   get name(): AbstractControl { return this.addLocationFormGroup.get('name'); }
+  get authorityName(): AbstractControl { return this.addLocationFormGroup.get('authorityName'); }
   get address(): AbstractControl { return this.addLocationFormGroup.get('address'); }
   get numberOfSeats(): AbstractControl { return this.addLocationFormGroup.get('numberOfSeats'); }
   get numberOfLockers(): AbstractControl { return this.addLocationFormGroup.get('numberOfLockers'); }

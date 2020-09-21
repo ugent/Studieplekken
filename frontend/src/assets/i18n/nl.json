@@ -188,6 +188,7 @@
 
         "formValidationErrorMessages": {
           "locationName": "Naam is verplicht",
+          "authorityName": "Verplicht om een autoriteit op te geven",
           "address": "Adres is verplicht",
           "numberOfSeats": "Een waarde voor 'aantal zitjes' is verplicht",
           "numberOfLockers": "Een waarde voor 'aantal lockers' is verplicht"
