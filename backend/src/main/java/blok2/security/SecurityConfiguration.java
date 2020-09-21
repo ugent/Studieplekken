@@ -20,7 +20,6 @@ import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 
 import java.util.HashMap;
-import java.util.Map;
 
 @Profile("!test")
 @Configuration
@@ -29,9 +28,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Value("${server.port}")
     private int serverPort;
-
-    @Value("${security.sslRedirectPort}")
-    private int sslRedirectPort;
 
     private final CasAuthenticationProvider casAuthenticationProvider;
     private final CasAuthenticationEntryPoint casAuthenticationEntryPoint;
@@ -96,7 +92,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         PortMapperImpl portMapper = new PortMapperImpl();
         portMapper.setPortMappings(
                 new HashMap<String, String>() {{
-                    put(Integer.toString(serverPort), Integer.toString(sslRedirectPort));
+                    put(Integer.toString(serverPort), Integer.toString(serverPort));
                 }});
         return portMapper;
     }

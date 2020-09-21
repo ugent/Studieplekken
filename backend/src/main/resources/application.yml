@@ -8,9 +8,6 @@ server:
     enabled: true
   port: 8080
 
-security:
-  sslRedirectPort: 8080
-
 # credentials for database
 db:
   url: "jdbc:postgresql://localhost:5432/blokatugent"
