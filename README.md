@@ -23,7 +23,7 @@ To be able to use CAS in development, the callback URL that the UGent CAS Server
 
 Therefore, we need to set up HTTPS within development. This is done by creating a self-signed certificate. The self signed certificate is located in a keystore at `backend/src/main/resources/keystore/blokat.p12`. When the server is started, the self signed certificate should be found by the server.
 
-Not just the backend is secured with HTTPS, but the frontend as well. This is done by setting the `start` script which is defined in `package.json` from `ng start` to `ng start --ssl`. When starting the server, ignore the security warning that the browser will give.
+Not just the backend is secured with HTTPS, but the frontend as well. This is done by setting the `start` script which is defined in `package.json` from `ng serve` to `ng serve --ssl`. When starting the server, ignore the security warning that the browser will give.
 
 You can create a certificate by running following command. Make sure to use `***REMOVED***` as the password for the keystore, or if another password is used, change the file `application.yml`.
 ``` shell script
