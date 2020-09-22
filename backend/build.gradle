@@ -7,7 +7,8 @@ plugins {
     id 'maven-publish'
     id 'org.springframework.boot' version '2.2.4.RELEASE'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-//    id "com.gorylenko.gradle-git-properties" version "2.2.1"
+    id "org.flywaydb.flyway" version "6.5.7"
+    //    id "com.gorylenko.gradle-git-properties" version "2.2.1"
 }
 
 repositories {
@@ -25,16 +26,27 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-mail:2.0.1.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-websocket:2.2.2.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-security:2.2.2.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc:2.3.4.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
     implementation 'org.springframework.boot:spring-boot-configuration-processor:2.2.2.RELEASE'
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
     implementation 'net.sf.barcode4j:barcode4j:2.1'
     implementation 'com.icegreen:greenmail-spring:1.5.13'
     implementation 'postgresql:postgresql:9.1-901-1.jdbc4'
+    implementation "org.flywaydb:flyway-core:6.5.6"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.2.2.RELEASE'
 
+}
+
+// For direct flyway command with gradle
+flyway {
+    url = "jdbc:postgresql://localhost:5433/blokatugent"
+    schemas = ['public']
+    user = ***REMOVED***
+    password = ***REMOVED***
 }
 
 group = 'be.ugent'

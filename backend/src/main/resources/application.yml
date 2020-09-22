@@ -1,6 +1,6 @@
 # credentials for database
 db:
-  url: "jdbc:postgresql://localhost:5432/blokatugent"
+  url: "jdbc:postgresql://localhost:5433/blokatugent"
   username: postgres
   password: postgres
 
@@ -10,6 +10,13 @@ scripts:
 
 # configuration for sending verification mail
 spring:
+  application:
+    name: "BlokAtUGent"
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: "jdbc:postgresql://localhost:5433/blokatugent"
+    username: ***REMOVED***
+    password: ***REMOVED***
   mail:
     host: smtp.gmail.com
     port: 587
@@ -21,6 +28,10 @@ spring:
           auth: true
           starttls:
             enable: true
+  flyway: # For automatic flyway migration integration with spring boot
+    url: "jdbc:postgresql://localhost:5433/blokatugent"
+    user: ***REMOVED***
+    password: ***REMOVED***
 
 # url sent to user for verification
 verification:
