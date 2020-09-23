@@ -105,46 +105,4 @@ public class TagsController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
-
-    @PutMapping("/location/{locationName}")
-    public void reconfigureAllowedTagsOfLocation(@PathVariable("locationName") String locationName,
-                                                 @RequestBody List<LocationTag> allowedTags) {
-        try {
-            locationTagDao.deleteAllTagsFromLocation(locationName);
-
-            List<Integer> tagIds = new ArrayList<>();
-            for (LocationTag locationTag : allowedTags) {
-                tagIds.add(locationTag.getTagId());
-            }
-
-            locationTagDao.bulkAddTagsToLocation(locationName, tagIds);
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
-    }
-
-    @GetMapping("/location/assign/{locationName}")
-    public List<LocationTag> getAssignedTagsForLocation(@PathVariable("locationName") String locationName) {
-        try {
-            return locationTagDao.getAssignedTagsForLocation(locationName);
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
-    }
-
-    @PutMapping("/location/assign/{locationName}")
-    public void assignTagsToLocation(@PathVariable("locationName") String locationName,
-                                     @RequestBody List<LocationTag> tags) {
-        try {
-            locationTagDao.assignTagsToLocation(locationName, tags);
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
-    }
 }

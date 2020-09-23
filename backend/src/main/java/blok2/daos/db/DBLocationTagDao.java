@@ -31,24 +31,6 @@ public class DBLocationTagDao extends DAO implements ILocationTagDao {
         }
     }
 
-    @Override
-    public List<LocationTag> getAssignedTagsForLocation(String locationName) throws SQLException {
-        try (Connection conn = adb.getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
-                    .getString("get_assigned_tags_for_location"));
-            pstmt.setString(1, locationName);
-            ResultSet rs = pstmt.executeQuery();
-
-            List<LocationTag> tags = new ArrayList<>();
-
-            while (rs.next()) {
-                tags.add(DBTagsDao.createLocationTag(rs));
-            }
-
-            return tags;
-        }
-    }
-
     public static ResultSet getTagsForLocation(String locationName, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_tags_for_location"));
         pstmt.setString(1, locationName);
@@ -115,45 +97,6 @@ public class DBLocationTagDao extends DAO implements ILocationTagDao {
         pstmt.setInt(2, tagId);
         pstmt.setBoolean(3, false);
         return pstmt.executeUpdate() == 1;
-    }
-
-    public boolean assignTagsToLocation(String locationName, List<LocationTag> tags) throws SQLException {
-        try (Connection conn = adb.getConnection()) {
-            try {
-                conn.setAutoCommit(false);
-
-                unAssignAllTagsOfLocation(locationName, conn);
-
-                PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
-                        .getString("assign_specified_tag_to_location"));
-                pstmt.setString(1, locationName);
-
-                int count = 0; // counter to check if all tags have been updated
-
-                for (LocationTag tag : tags) {
-                    pstmt.setInt(2, tag.getTagId());
-                    if (pstmt.executeUpdate() == 1) {
-                        count++;
-                    }
-                }
-
-                conn.commit();
-
-                return count == tags.size();
-            } catch (SQLException e) {
-                conn.rollback();
-                throw e;
-            } finally {
-                conn.setAutoCommit(true);
-            }
-        }
-    }
-
-    private void unAssignAllTagsOfLocation(String locationName, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn
-                .prepareStatement(Resources.databaseProperties.getString("un_assign_all_tags_of_location"));
-        pstmt.setString(1, locationName);
-        pstmt.execute();
     }
 
     @Override

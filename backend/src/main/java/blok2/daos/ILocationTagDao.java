@@ -14,11 +14,6 @@ public interface ILocationTagDao extends IDao {
     List<LocationTag> getTagsForLocation(String locationName) throws SQLException;
 
     /**
-     * List all assigned tags for a specific location
-     */
-    List<LocationTag> getAssignedTagsForLocation(String locationName) throws SQLException;
-
-    /**
      * List all the locations that have a specific tag
      */
     List<Location> getLocationsForTag(int tagId) throws SQLException;
@@ -37,12 +32,6 @@ public interface ILocationTagDao extends IDao {
      * Add a tag to multiple locations
      */
     boolean bulkAddTagToLocations(List<String> locationNames, int tagId) throws SQLException;
-
-    /**
-     * Assign all specified tags to a location, and un-assign all tags of that
-     * location that aren't mentioned.
-     */
-    boolean assignTagsToLocation(String locationName, List<LocationTag> tags) throws SQLException;
 
     /**
      * Delete a specific tag from a location
