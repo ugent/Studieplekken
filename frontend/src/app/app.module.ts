@@ -236,7 +236,7 @@ const routes: Routes = [
     LocationDescriptionComponent,
     TagsManagementComponent,
     LocationTagsManagementComponent,
-    LoginComponent
+    LoginComponent,
     LocationAllowedTagsComponent
   ],
     imports: [
