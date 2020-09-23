@@ -1,7 +1,7 @@
 version: "3"
 
 services:
-  web:
+  backend:
     build: backend
     ports:
       - "8080:8080"
@@ -16,3 +16,7 @@ services:
       POSTGRES_DB: blokatugent
       POSTGRES_USER: blokat
       POSTGRES_PASSWORD: "fdskl(§è§èmsdfcvzù)"
+  frontend:
+    build: frontend
+    ports:
+      - "4242:80"
