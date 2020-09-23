@@ -64,6 +64,7 @@ CREATE TABLE public.location_tags
 (
     location_id text    NOT NULL,
     tag_id      integer NOT NULL,
+    UNIQUE(location_id, tag_id),
     constraint fk_location_tags_to_location
         foreign key (location_id) references public.locations (name),
     constraint fk_location_tags_to_tags

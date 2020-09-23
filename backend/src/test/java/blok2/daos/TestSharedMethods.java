@@ -65,6 +65,12 @@ public class TestSharedMethods {
         return testTag;
     }
 
+    public static LocationTag testTag3() {
+        LocationTag testTag = new LocationTag(3,
+                "Geschikt voor invaliden",
+                "Suitable for the less-abled");
+        return testTag;
+    }
 
     public static Authority insertTestAuthority(IAuthorityDao authorityDao) throws SQLException {
         return insertTestAuthority("Test Authority", "a test description", authorityDao);

@@ -821,7 +821,8 @@ where lt.tag_id = ?;
 
 -- $add_tag_to_location
 insert into public.location_tags (location_id, tag_id)
-values (?, ?);
+values (?, ?)
+on conflict(location_id, tag_id) do nothing;
 
 -- $delete_tag_from_location
 delete
