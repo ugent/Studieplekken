@@ -65,6 +65,13 @@ public class DBLocationTagDao extends DAO implements ILocationTagDao {
         }
     }
 
+    public static boolean addTagToLocation(String locationName, int tagId, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("add_tag_to_location"));
+        pstmt.setString(1, locationName);
+        pstmt.setInt(2, tagId);
+        return pstmt.executeUpdate() == 1;
+    }
+
     @Override
     public boolean bulkAddTagsToLocation(String locationName, List<Integer> tagIds) throws SQLException {
         try (Connection conn = adb.getConnection()) {
@@ -89,14 +96,6 @@ public class DBLocationTagDao extends DAO implements ILocationTagDao {
             }
             return guard;
         }
-    }
-
-    public static boolean addTagToLocation(String locationName, int tagId, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("add_tag_to_location"));
-        pstmt.setString(1, locationName);
-        pstmt.setInt(2, tagId);
-        pstmt.setBoolean(3, false);
-        return pstmt.executeUpdate() == 1;
     }
 
     @Override

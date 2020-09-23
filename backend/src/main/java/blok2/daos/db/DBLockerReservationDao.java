@@ -128,7 +128,7 @@ public class DBLockerReservationDao extends DAO implements ILockerReservationDao
             pstmt.setString(1, parameter);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
-                LockerReservation lockerReservation = createLockerReservation(rs);
+                LockerReservation lockerReservation = DBLockerReservationDao.createLockerReservation(rs, conn);
                 reservations.add(lockerReservation);
             }
 

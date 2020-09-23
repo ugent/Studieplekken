@@ -17,12 +17,11 @@ public class Location implements Cloneable {
     private String descriptionEnglish= "";
     private Authority authority;
 
-    private List<LocationTag> allowedTags;
     private List<LocationTag> assignedTags;
 
     public Location(String name, String address, int numberOfSeats, int numberOfLockers, String imageUrl,
                     Authority authority, String descriptionDutch, String descriptionEnglish,
-                    List<LocationTag> allowedTags, List<LocationTag> assignedTags) {
+                    List<LocationTag> assignedTags) {
         this.name = name;
         this.address = address;
         this.numberOfSeats = numberOfSeats;
@@ -31,13 +30,11 @@ public class Location implements Cloneable {
         this.descriptionDutch = descriptionDutch;
         this.descriptionEnglish = descriptionEnglish;
         this.authority = authority;
-        this.allowedTags = allowedTags;
         this.assignedTags = assignedTags;
     }
 
     // default constructor necessary for testing purposes
     public Location() {
-        allowedTags = new ArrayList<>();
         assignedTags = new ArrayList<>();
     }
 
@@ -54,7 +51,6 @@ public class Location implements Cloneable {
                 Objects.equals(descriptionDutch, location.descriptionDutch) &&
                 Objects.equals(descriptionEnglish, location.descriptionEnglish) &&
                 Objects.equals(authority, location.authority) &&
-                (allowedTags == null || allowedTags.equals(location.allowedTags)) &&
                 (assignedTags == null || assignedTags.equals(location.assignedTags));
     }
 
@@ -70,12 +66,7 @@ public class Location implements Cloneable {
 
             // deep copy the mutable attributes
             l.authority = authority.clone();
-            l.allowedTags = new ArrayList<>(allowedTags.size());
             l.assignedTags = new ArrayList<>(assignedTags.size());
-
-            for (int i = 0; i < allowedTags.size(); i++) {
-                l.allowedTags.set(i, allowedTags.get(i).clone());
-            }
 
             for (int i = 0; i < assignedTags.size(); i++) {
                 l.assignedTags.set(i, assignedTags.get(i).clone());
@@ -151,14 +142,6 @@ public class Location implements Cloneable {
 
     public void setAuthority(Authority authority) {
         this.authority = authority;
-    }
-
-    public List<LocationTag> getAllowedTags() {
-        return allowedTags;
-    }
-
-    public void setAllowedTags(List<LocationTag> allowedTags) {
-        this.allowedTags = allowedTags;
     }
 
     public List<LocationTag> getAssignedTags() {

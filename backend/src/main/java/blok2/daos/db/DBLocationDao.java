@@ -60,7 +60,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
         prepareUpdateOrInsertLocationStatement(location, pstmt);
         pstmt.executeUpdate();
 
-        insertTags(location.getName(), location.getAllowedTags(), conn);
+        insertTags(location.getName(), location.getAssignedTags(), conn);
 
         // insert the lockers corresponding to the location into the database
         for (int i = 0; i < location.getNumberOfLockers(); i++) {
@@ -234,26 +234,18 @@ public class DBLocationDao extends DAO implements ILocationDao {
         String descriptionDutch = rs.getString(Resources.databaseProperties.getString("location_description_dutch"));
         String descriptionEnglish = rs.getString(Resources.databaseProperties.getString("location_description_english"));
 
-        List<LocationTag> allowedTags = new ArrayList<>();
         List<LocationTag> assignedTags = new ArrayList<>();
-        fillTagLists(allowedTags, assignedTags, rsTags);
+        fillTagLists(assignedTags, rsTags);
 
         return new Location(name, address, numberOfSeats, numberOfLockers, imageUrl, authority,
-                descriptionDutch, descriptionEnglish, allowedTags, assignedTags);
+                descriptionDutch, descriptionEnglish, assignedTags);
     }
 
-    private static void fillTagLists(List<LocationTag> allowedTags, List<LocationTag> assignedTags, ResultSet rsTags)
+    private static void fillTagLists(List<LocationTag> assignedTags, ResultSet rsTags)
             throws SQLException {
         while (rsTags.next()) {
             LocationTag locationTag = DBTagsDao.createLocationTag(rsTags);
-
-            // add the locationTag to allowedTags
-            allowedTags.add(locationTag);
-
-            // and if the 'assigned' column returns 'true', add the locationTag to assignedTags
-            if (rsTags.getBoolean(Resources.databaseProperties.getString("location_tags_assigned"))) {
-                assignedTags.add(locationTag);
-            }
+            assignedTags.add(locationTag);
         }
     }
 

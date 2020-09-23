@@ -802,18 +802,11 @@ where user_augentid = ?;
 
 -- queries for LOCATION_TAG
 -- $get_tags_for_location
-select t.tag_id, t.dutch, t.english, lt.assigned
+select t.tag_id, t.dutch, t.english
 from public.location_tags lt
     join public.tags t
         on t.tag_id = lt.tag_id
 where lt.location_id = ?;
-
--- $get_assigned_tags_for_location
-select t.tag_id, t.dutch, t.english
-from public.location_tags lt
-         join public.tags t
-              on t.tag_id = lt.tag_id
-where lt.assigned = true and lt.location_id = ?;
 
 -- $get_locations_for_tag
 select l.name, l.number_of_seats, l.number_of_lockers
@@ -827,18 +820,8 @@ from public.locations l
 where lt.tag_id = ?;
 
 -- $add_tag_to_location
-insert into public.location_tags (location_id, tag_id, assigned)
-values (?, ?, ?);
-
--- $assign_specified_tag_to_location
-update public.location_tags
-set assigned = true
-where location_id = ? and tag_id = ?;
-
--- $un_assign_all_tags_of_location
-update public.location_tags
-set assigned = false
-where location_id = ?;
+insert into public.location_tags (location_id, tag_id)
+values (?, ?);
 
 -- $delete_tag_from_location
 delete
