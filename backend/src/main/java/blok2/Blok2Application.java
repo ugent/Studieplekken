@@ -10,7 +10,9 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 @SpringBootApplication
 @EnableConfigurationProperties
 public class Blok2Application extends SpringBootServletInitializer {
+
     public static void main(String[] args) {
         SpringApplication.run(Blok2Application.class, args);
     }
+
 }

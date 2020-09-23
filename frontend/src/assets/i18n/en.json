@@ -63,6 +63,7 @@
     "logIn": "Log in",
     "logOut": "Log out",
     "navigation": {
+      "login": "Login",
       "dashboard": "Dashboard",
       "profile": "Profile",
       "scan": "Scan",
@@ -77,6 +78,13 @@
 
     "ENGLISH": "English",
     "DUTCH": "Dutch"
+  },
+
+  "login": {
+    "appTitle": "BlokAtUGent",
+    "title": "Login",
+    "casLogin": "CAS Login",
+    "about": "The digital platform for study locations"
   },
 
   "management": {
