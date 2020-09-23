@@ -159,12 +159,31 @@
         "successUpdating": "Successfully updated the descriptions of the location."
       },
 
+      "allowedTags": {
+        "title": "Allowed tags of the location",
+        "activeTagsInformation": "Below, a list of all the tags that are allowed to be assigned to the location is given.",
+        "updateTagsInformation": "To change this list, click on the button to the right.",
+
+        "updateTagsButton": "Update the allowed tags",
+
+        "updateAllowedTagsConfigurationModal": {
+          "title": "Change the tags that are allowed to be assigned to the location",
+          "body": "In the dropdown below, select all the tags that are allowed to be assigned to '{locationName}'.",
+          "comboboxTitle": "Allowed tags of location",
+
+          "success": "Successfully updated the allowed tags for '{locationName}'",
+          "error": "Something went wrong while updating the allowed tags for '{locationName}'."
+        },
+
+        "noTagsSelected": "At the moment, there are no tags allowed to be assigned to the location."
+      },
+
       "tags": {
         "title": "Tags of the location",
         "activeTagsInformation": "Below, a list with the currently active tags for the location is given.",
         "updateTagsInformation": "To change the tags, click on the button to the right.",
 
-        "updateTagsButton": "Update the tags",
+        "updateTagsButton": "Update the assigned tags",
 
         "updateTagsConfigurationModal": {
           "title": "Change tags for location",

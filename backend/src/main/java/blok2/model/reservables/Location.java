@@ -16,9 +16,13 @@ public class Location implements Cloneable {
     private String descriptionDutch = "";
     private String descriptionEnglish= "";
     private Authority authority;
-    private List<LocationTag> tags;
 
-    public Location(String name, String address, int numberOfSeats, int numberOfLockers, String imageUrl, Authority authority, String descriptionDutch, String descriptionEnglish, ArrayList<LocationTag> tags) {
+    private List<LocationTag> allowedTags;
+    private List<LocationTag> assignedTags;
+
+    public Location(String name, String address, int numberOfSeats, int numberOfLockers, String imageUrl,
+                    Authority authority, String descriptionDutch, String descriptionEnglish,
+                    List<LocationTag> allowedTags, List<LocationTag> assignedTags) {
         this.name = name;
         this.address = address;
         this.numberOfSeats = numberOfSeats;
@@ -27,12 +31,14 @@ public class Location implements Cloneable {
         this.descriptionDutch = descriptionDutch;
         this.descriptionEnglish = descriptionEnglish;
         this.authority = authority;
-        this.tags = tags;
+        this.allowedTags = allowedTags;
+        this.assignedTags = assignedTags;
     }
 
     // default constructor necessary for testing purposes
     public Location() {
-        tags = new ArrayList<>();
+        allowedTags = new ArrayList<>();
+        assignedTags = new ArrayList<>();
     }
 
     @Override
@@ -48,7 +54,8 @@ public class Location implements Cloneable {
                 Objects.equals(descriptionDutch, location.descriptionDutch) &&
                 Objects.equals(descriptionEnglish, location.descriptionEnglish) &&
                 Objects.equals(authority, location.authority) &&
-                (tags == null || tags.equals(location.tags));
+                (allowedTags == null || allowedTags.equals(location.allowedTags)) &&
+                (assignedTags == null || assignedTags.equals(location.assignedTags));
     }
 
     @Override
@@ -63,10 +70,15 @@ public class Location implements Cloneable {
 
             // deep copy the mutable attributes
             l.authority = authority.clone();
-            l.tags = new ArrayList<>(tags.size());
+            l.allowedTags = new ArrayList<>(allowedTags.size());
+            l.assignedTags = new ArrayList<>(assignedTags.size());
 
-            for (int i = 0; i < tags.size(); i++) {
-                l.tags.set(i, tags.get(i).clone());
+            for (int i = 0; i < allowedTags.size(); i++) {
+                l.allowedTags.set(i, allowedTags.get(i).clone());
+            }
+
+            for (int i = 0; i < assignedTags.size(); i++) {
+                l.assignedTags.set(i, assignedTags.get(i).clone());
             }
 
             return l;
@@ -141,12 +153,21 @@ public class Location implements Cloneable {
         this.authority = authority;
     }
 
-    public List<LocationTag> getTags() {
-        return tags;
+    public List<LocationTag> getAllowedTags() {
+        return allowedTags;
     }
 
-    public void setTags(List<LocationTag> tags) {
-        this.tags = tags;
+    public void setAllowedTags(List<LocationTag> allowedTags) {
+        this.allowedTags = allowedTags;
     }
+
+    public List<LocationTag> getAssignedTags() {
+        return assignedTags;
+    }
+
+    public void setAssignedTags(List<LocationTag> assignedTags) {
+        this.assignedTags = assignedTags;
+    }
+
     //</editor-fold>
 }

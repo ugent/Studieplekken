@@ -30,9 +30,9 @@ DO $$
 DECLARE tableId integer;
 BEGIN
     INSERT INTO public.tags (dutch, english) values ('eetplaats', 'dinner place') RETURNING tag_id into tableId;
-    INSERT INTO public.location_tags (location_id, tag_id) values ('Therminal', tableId);
+    INSERT INTO public.location_tags (location_id, tag_id, assigned) values ('Therminal', tableId, true);
     INSERT INTO public.tags (dutch, english) values ('stilte', 'silencium') RETURNING tag_id into tableId;
-    INSERT INTO public.location_tags (location_id, tag_id) values ('Therminal', tableId);
+    INSERT INTO public.location_tags (location_id, tag_id, assigned) values ('Therminal', tableId, false);
 END $$;
 /*
  * Add some calendar periods

@@ -11,7 +11,8 @@ export interface Location {
   descriptionDutch: string;
   descriptionEnglish: string;
 
-  tags: LocationTag[];
+  allowedTags: LocationTag[];
+  assignedTags: LocationTag[];
 }
 
 export class LocationConstructor {
@@ -25,7 +26,8 @@ export class LocationConstructor {
       authority: AuthorityConstructor.new(),
       descriptionDutch: '',
       descriptionEnglish: '',
-      tags: []
+      allowedTags: [],
+      assignedTags: []
     };
   }
 
@@ -43,7 +45,8 @@ export class LocationConstructor {
       authority: AuthorityConstructor.newFromObj(obj.authority),
       descriptionDutch: obj.descriptionDutch,
       descriptionEnglish: obj.descriptionEnglish,
-      tags: obj.tags
+      allowedTags: obj.allowedTags,
+      assignedTags: obj.assignedTags
     };
   }
 }

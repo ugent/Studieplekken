@@ -36,7 +36,7 @@
         </div>
 
         <!-- List of the tags -->
-        <ul *ngIf="tags | async as tags">
+        <ul *ngIf="tags !== undefined">
           <li *ngFor="let tag of tags">
             {{currentLang === 'nl' ? tag.dutch : tag.english}}
           </li>

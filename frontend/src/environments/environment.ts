@@ -82,8 +82,10 @@ export const api = {
   deleteTag: '/api/tags/{tagId}',
 
   // LOCATION_TAGS
-  assignTagsToLocation: '/api/tags/location/{locationName}',
-  tagsFromLocation: '/api/tags/location/{locationName}'
+  assignTagsToLocation: '/api/tags/location/assign/{locationName}',
+  tagsFromLocation: '/api/tags/location/{locationName}',
+  assignedTagsFromLocation: '/api/tags/location/assign/{locationName}',
+  reconfigureAllowedTags: '/api/tags/location/{locationName}'
 };
 
 export const vars = {

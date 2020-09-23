@@ -1,9 +1,10 @@
-import {AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import {Location} from '../../shared/model/Location';
 import {vars} from '../../../environments/environment';
 import {LocationService} from '../../services/api/locations/location.service';
-import {Observable} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
+import {LocationTag} from '../../shared/model/LocationTag';
+import {TagsService} from '../../services/api/tags/tags.service';
 
 @Component({
   selector: 'app-dashboard-item',
@@ -16,6 +17,8 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
   occupation: number;
 
   altImageUrl = vars.defaultLocationImage;
+
+  assignedTags: LocationTag[];
 
   currentLang: string;
   tagsInCurrentLang: string; // e.g. 'tag1, tag2, tag3', set by auxiliary setupTagsInCurrentLang()
@@ -36,6 +39,7 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
       }
     );
 
+    this.assignedTags = this.location.assignedTags;
     this.setupTagsInCurrentLang();
   }
 
@@ -47,15 +51,18 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
   }
 
   setupTagsInCurrentLang(): void {
-    this.tagsInCurrentLang = '';
-    this.location.tags.forEach(tag => {
-      if (this.currentLang === 'nl') {
-        this.tagsInCurrentLang += tag.dutch + ', ';
-      } else {
-        this.tagsInCurrentLang += tag.english + ', ';
-      }
-    });
+    if (this.assignedTags) {
+      this.tagsInCurrentLang = '';
 
-    this.tagsInCurrentLang = this.tagsInCurrentLang.substr(0, this.tagsInCurrentLang.length - 2);
+      this.assignedTags.forEach(tag => {
+        if (this.currentLang === 'nl') {
+          this.tagsInCurrentLang += tag.dutch + ', ';
+        } else {
+          this.tagsInCurrentLang += tag.english + ', ';
+        }
+      });
+
+      this.tagsInCurrentLang = this.tagsInCurrentLang.substr(0, this.tagsInCurrentLang.length - 2);
+    }
   }
 }

@@ -60,7 +60,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
         prepareUpdateOrInsertLocationStatement(location, pstmt);
         pstmt.executeUpdate();
 
-        insertTags(location.getName(), location.getTags(), conn);
+        insertTags(location.getName(), location.getAllowedTags(), conn);
 
         // insert the lockers corresponding to the location into the database
         for (int i = 0; i < location.getNumberOfLockers(); i++) {
@@ -73,7 +73,6 @@ public class DBLocationDao extends DAO implements ILocationDao {
             conn.setAutoCommit(false);
             addLocation(location, conn);
             conn.commit();
-            conn.setAutoCommit(true);
         } catch (SQLException e) {
             conn.rollback();
             throw e;
@@ -134,12 +133,6 @@ public class DBLocationDao extends DAO implements ILocationDao {
         }
     }
 
-    public static void deleteTagsFromLocation(String locationId, Connection conn) throws SQLException {
-        PreparedStatement st = conn.prepareStatement(Resources.databaseProperties.getString("remove_tags_from_location"));
-        st.setString(1, locationId);
-        st.execute();
-    }
-
     @Override
     public void deleteLocation(String locationName) throws SQLException {
         try (Connection conn = adb.getConnection()) {
@@ -165,7 +158,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
                 deleteLockers(locationName, conn);
 
                 // delete tags from location
-                deleteTagsFromLocation(locationName, conn);
+                DBLocationTagDao.deleteAllTagsFromLocation(locationName, conn);
 
                 // and finally, delete the location
                 deleteLocation(locationName, conn);
@@ -207,13 +200,6 @@ public class DBLocationDao extends DAO implements ILocationDao {
         }
     }
 
-    public static ResultSet getTagsFromLocation(String locationName, Connection conn) throws SQLException {
-        PreparedStatement pst = conn.prepareStatement(Resources.databaseProperties.getString("tags_from_location"));
-        pst.setString(1, locationName);
-        return pst.executeQuery();
-
-    }
-
     @Override
     public Map<String, Integer> getCountOfReservations(CustomDate date) throws SQLException {
         HashMap<String, Integer> count = new HashMap<>();
@@ -232,7 +218,12 @@ public class DBLocationDao extends DAO implements ILocationDao {
         }
     }
 
-    // this method prevents a lot of duplicate code by creating a location out of a row in the ResultSet
+    /**
+     * Create a location out of a row in the ResultSet (prevent duplication of code)
+     * @param rs the ResultSet for fetching the location
+     * @param rsTags the ResultSet for fetching the tags
+     * @return a generated location
+     */
     public static Location createLocation(ResultSet rs, ResultSet rsTags) throws SQLException {
         String name = rs.getString(Resources.databaseProperties.getString("location_name"));
         int numberOfSeats = rs.getInt(Resources.databaseProperties.getString("location_number_of_seats"));
@@ -242,15 +233,35 @@ public class DBLocationDao extends DAO implements ILocationDao {
         Authority authority = DBAuthorityDao.createAuthority(rs);
         String descriptionDutch = rs.getString(Resources.databaseProperties.getString("location_description_dutch"));
         String descriptionEnglish = rs.getString(Resources.databaseProperties.getString("location_description_english"));
-        ArrayList<LocationTag> tags = DBTagsDao.createLocationTagList(rsTags);
-        return new Location(name, address, numberOfSeats, numberOfLockers, imageUrl, authority, descriptionDutch, descriptionEnglish, tags);
+
+        List<LocationTag> allowedTags = new ArrayList<>();
+        List<LocationTag> assignedTags = new ArrayList<>();
+        fillTagLists(allowedTags, assignedTags, rsTags);
+
+        return new Location(name, address, numberOfSeats, numberOfLockers, imageUrl, authority,
+                descriptionDutch, descriptionEnglish, allowedTags, assignedTags);
+    }
+
+    private static void fillTagLists(List<LocationTag> allowedTags, List<LocationTag> assignedTags, ResultSet rsTags)
+            throws SQLException {
+        while (rsTags.next()) {
+            LocationTag locationTag = DBTagsDao.createLocationTag(rsTags);
+
+            // add the locationTag to allowedTags
+            allowedTags.add(locationTag);
+
+            // and if the 'assigned' column returns 'true', add the locationTag to assignedTags
+            if (rsTags.getBoolean(Resources.databaseProperties.getString("location_tags_assigned"))) {
+                assignedTags.add(locationTag);
+            }
+        }
     }
 
     /**
      * create a location from the resultset, where tags are automatically fetched too
      */
     public static Location createLocation(ResultSet rs, Connection conn) throws SQLException {
-        ResultSet rsTags = getTagsFromLocation(rs.getString(Resources.databaseProperties.getString("location_name")), conn);
+        ResultSet rsTags = DBLocationTagDao.getTagsForLocation(rs.getString(Resources.databaseProperties.getString("location_name")), conn);
         return createLocation(rs, rsTags);
     }
 
@@ -275,16 +286,10 @@ public class DBLocationDao extends DAO implements ILocationDao {
     private void insertTags(String locationName, List<LocationTag> tags, Connection conn) throws SQLException {
         if (tags != null) {
             for (LocationTag tag : tags) {
-                insertTag(locationName, tag, conn);
+                DBTagsDao.addTag(tag, conn);
+                DBLocationTagDao.addTagToLocation(locationName, tag.getTagId(), conn);
             }
         }
-    }
-
-    public static void insertTag(String locationName, LocationTag tag, Connection conn) throws SQLException {
-        PreparedStatement st = conn.prepareStatement(Resources.databaseProperties.getString("add_tag_to_location"));
-        st.setString(1, locationName);
-        st.setInt(2, tag.getTagId());
-        st.execute();
     }
 
     private void prepareUpdateOrInsertLocationStatement(Location location, PreparedStatement pstmt) throws SQLException {

@@ -68,6 +68,27 @@
     </div>
   </div>
 
+  <!-- Allowed tags of the location -->
+  <div class="panel-group">
+    <!-- Heading -->
+    <div class="panel-heading">
+      <h3 class="panel-title">
+        <a data-toggle="collapse" href="#allowedTagsCollapseBody" aria-expanded="false" class="collapsed">
+          <i class="glyphicon glyphicon-plus"></i>
+          <i class="glyphicon glyphicon-minus"></i>
+          {{'management.locationDetails.allowedTags.title' | translate}}
+        </a>
+      </h3>
+    </div>
+
+    <!-- Body -->
+    <div class="panel-collapse collapse" id="allowedTagsCollapseBody">
+      <div class="panel-body" style="padding: 20px">
+        <app-location-allowed-tags [location]="locationObs"></app-location-allowed-tags>
+      </div>
+    </div>
+  </div>
+
   <!-- Tags of the location -->
   <div class="panel-group">
     <!-- Heading -->

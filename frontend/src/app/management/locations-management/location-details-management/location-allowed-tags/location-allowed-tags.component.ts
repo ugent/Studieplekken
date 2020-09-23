@@ -1,20 +1,20 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
 import {Location} from '../../../../shared/model/Location';
-import {TranslateService} from '@ngx-translate/core';
-import {LocationTag} from '../../../../shared/model/LocationTag';
-import {MatSelectChange} from '@angular/material/select';
-import {TagsService} from '../../../../services/api/tags/tags.service';
 import {FormControl} from '@angular/forms';
-import {LocationDetailsService} from '../../../../services/single-point-of-truth/location-details/location-details.service';
+import {LocationTag} from '../../../../shared/model/LocationTag';
+import {TranslateService} from '@ngx-translate/core';
+import {TagsService} from '../../../../services/api/tags/tags.service';
+import {MatSelectChange} from '@angular/material/select';
 import {matSelectionChanged} from '../../../../shared/GeneralFunctions';
+import {LocationDetailsService} from '../../../../services/single-point-of-truth/location-details/location-details.service';
 
 @Component({
-  selector: 'app-location-tags-management',
-  templateUrl: './location-tags-management.component.html',
-  styleUrls: ['./location-tags-management.component.css']
+  selector: 'app-location-allowed-tags',
+  templateUrl: './location-allowed-tags.component.html',
+  styleUrls: ['./location-allowed-tags.component.css']
 })
-export class LocationTagsManagementComponent implements OnInit {
+export class LocationAllowedTagsComponent implements OnInit {
   @Input() location: Observable<Location>;
 
   locationName: string;
@@ -22,8 +22,8 @@ export class LocationTagsManagementComponent implements OnInit {
 
   tagsFormControl: FormControl = new FormControl([]);
   matSelectSelection: LocationTag[]; // this set upon a selectionChange() of the mat-selection
+  allPossibleTags: LocationTag[]; // these are all the tags that are in the application
   tagsThatAreAllowed: LocationTag[]; // these tags are assignable to the location (retrieved from backend)
-  tagsThatAreSelected: LocationTag[]; // these tags are actually set on the location (retrieved from backend)
 
   tagsSelectionIsUpdatable = false;
 
@@ -45,25 +45,28 @@ export class LocationTagsManagementComponent implements OnInit {
       (next) => {
         if (next.name !== '') {
           this.locationName = next.name;
-
           this.tagsThatAreAllowed = next.allowedTags;
-          this.tagsThatAreSelected = next.assignedTags;
-
-          this.tagsFormControl = new FormControl(this.tagsThatAreSelected);
+          this.tagsFormControl = new FormControl(next.allowedTags);
         }
+      }
+    );
+
+    this.tagsService.getAllTags().subscribe(
+      next => {
+        this.allPossibleTags = next;
       }
     );
   }
 
   prepareUpdateTheTags(): void {
-    this.tagsFormControl = new FormControl(this.tagsThatAreSelected);
+    this.tagsFormControl = new FormControl(this.tagsThatAreAllowed);
     this.tagsSelectionIsUpdatable = false;
     this.successUpdatingTagsConfiguration = undefined;
   }
 
   updateTags(): void {
     this.successUpdatingTagsConfiguration = null;
-    this.tagsService.assignTagsToLocation(this.locationName, this.matSelectSelection).subscribe(
+    this.tagsService.reconfigureAllowedTagsOfLocation(this.locationName, this.matSelectSelection).subscribe(
       () => {
         this.successUpdatingTagsConfiguration = true;
         // reload the location
@@ -80,7 +83,7 @@ export class LocationTagsManagementComponent implements OnInit {
    */
   selectionChanged(event: MatSelectChange): void {
     this.matSelectSelection = event.value;
-    this.tagsSelectionIsUpdatable = matSelectionChanged(event, this.tagsThatAreSelected);
+    this.tagsSelectionIsUpdatable = matSelectionChanged(event, this.tagsThatAreAllowed);
   }
 
   /**
@@ -93,4 +96,5 @@ export class LocationTagsManagementComponent implements OnInit {
   compareTagsInSelection(tag1: LocationTag, tag2: LocationTag): boolean {
     return tag1.tagId === tag2.tagId;
   }
+
 }
