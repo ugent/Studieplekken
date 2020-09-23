@@ -1,6 +1,6 @@
 # credentials for database
 db:
-  url: "jdbc:postgresql://localhost:5433/blokatugent"
+  url: "jdbc:postgresql://localhost:5432/blokatugent"
   username: postgres
   password: postgres
 
@@ -14,7 +14,7 @@ spring:
     name: "BlokAtUGent"
   datasource:
     driverClassName: org.postgresql.Driver
-    url: "jdbc:postgresql://localhost:5433/blokatugent"
+    url: "jdbc:postgresql://localhost:5432/blokatugent"
     username: ***REMOVED***
     password: ***REMOVED***
   mail:
@@ -29,7 +29,7 @@ spring:
           starttls:
             enable: true
   flyway: # For automatic flyway migration integration with spring boot
-    url: "jdbc:postgresql://localhost:5433/blokatugent"
+    url: "jdbc:postgresql://localhost:5432/blokatugent"
     user: ***REMOVED***
     password: ***REMOVED***
 

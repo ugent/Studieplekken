@@ -3,3 +3,14 @@ db:
   url: "jdbc:postgresql://db:5432/blokatugent"
   username: blokat
   password: "fdskl(§è§èmsdfcvzù)"
+
+spring:
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: "jdbc:postgresql://db:5432/blokatugent"
+    username: blokat
+    password:  "fdskl(§è§èmsdfcvzù)"
+  flyway: # For automatic flyway migration integration with spring boot
+    url: "jdbc:postgresql://db:5432/blokatugent"
+    user: blokat
+    password:  "fdskl(§è§èmsdfcvzù)"

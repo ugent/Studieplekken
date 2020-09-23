@@ -13,6 +13,6 @@ services:
     image: postgres
     restart: always
     environment:
+      POSTGRES_DB: blokatugent
       POSTGRES_USER: blokat
       POSTGRES_PASSWORD: "fdskl(§è§èmsdfcvzù)"
-      POSTGRES_DB: blokatugent_test
