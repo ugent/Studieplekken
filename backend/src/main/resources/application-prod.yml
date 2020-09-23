@@ -1,9 +1,4 @@
 # credentials for production database
-db:
-  url: "jdbc:postgresql://db:5432/blokatugent"
-  username: blokat
-  password: "fdskl(§è§èmsdfcvzù)"
-
 spring:
   datasource:
     driverClassName: org.postgresql.Driver

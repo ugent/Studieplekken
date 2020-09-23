@@ -1,3 +1,6 @@
+
+-- Initial seeding of a database with data
+
 /*
  * Setup a test user
  */

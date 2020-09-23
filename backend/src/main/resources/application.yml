@@ -1,13 +1,3 @@
-# credentials for database
-db:
-  url: "jdbc:postgresql://localhost:5432/blokatugent"
-  username: postgres
-  password: postgres
-
-scripts:
-  dropSchema: "./database/drop_schema.sql"
-  createSchema: "./database/create_schema.sql"
-
 # configuration for sending verification mail
 spring:
   application:
