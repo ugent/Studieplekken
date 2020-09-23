@@ -33,3 +33,5 @@ build/
 ### Gradle ###
 .gradle/
 build/
+
+src/main/resources/application-dev.yml
