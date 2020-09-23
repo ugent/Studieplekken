@@ -43,7 +43,7 @@ dependencies {
 
 // For direct flyway command with gradle
 flyway {
-    url = "jdbc:postgresql://localhost:5433/blokatugent"
+    url = "jdbc:postgresql://localhost:5432/blokatugent"
     schemas = ['public']
     user = ***REMOVED***
     password = ***REMOVED***
