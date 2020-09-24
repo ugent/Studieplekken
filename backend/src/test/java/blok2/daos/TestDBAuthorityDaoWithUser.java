@@ -59,7 +59,7 @@ public class TestDBAuthorityDaoWithUser extends TestDao {
         Assert.assertTrue(users.contains(user));
         users = authorityDao.getUsersFromAuthority(testAuthority2.getAuthorityId());
         Assert.assertTrue(users.isEmpty());
-        authorityDao.removeUserFromAuthority(user.getAugentID(), testAuthority.getAuthorityId());
+        authorityDao.deleteUserFromAuthority(user.getAugentID(), testAuthority.getAuthorityId());
         users = authorityDao.getUsersFromAuthority(testAuthority.getAuthorityId());
         Assert.assertEquals(1, users.size());
         Assert.assertFalse(users.contains(user));
