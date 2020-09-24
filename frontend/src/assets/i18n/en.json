@@ -261,6 +261,7 @@
 
       "userDetails": {
         "errorQuerying": "Something went wrong while querying for the user with id '{id}'",
+        "notAllowedToHaveAuthorities": "The user is not allowed to have authorities. Change the role if you want the user to be able to manage locations in one or more authorities",
 
         "form": {
           "title": "Details of {name}",
@@ -285,6 +286,10 @@
           "loadingUpdatingUser": "Waiting on a response of the server...",
           "successUpdatingUser": "Successfully updated the roles of the user...",
           "errorUpdatingUser": "Something went wrong while updating the user..."
+        },
+
+        "authorities": {
+          "title": "Authorities of {name}"
         },
 
         "penalties": {

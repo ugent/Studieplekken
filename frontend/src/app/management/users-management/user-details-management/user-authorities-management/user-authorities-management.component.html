@@ -1,1 +1,17 @@
-<p>user-authorities-management works!</p>
+<div class="container-fluid" *ngIf="userObs | async as user">
+  <!-- Management of the authorities of the user -->
+  <h3>{{('management.users.userDetails.authorities.title' | translate)
+    .replace('{name}', user.firstName + ' ' + user.lastName)}}</h3>
+
+  <hr>
+
+  <div *ngIf="isUserAllowedToHaveAuthorities(user); else notAllowedToHaveAuthorities">
+    user-authorities-management works!
+  </div>
+</div>
+
+<ng-template #notAllowedToHaveAuthorities>
+  <div class="alert alert-info">
+    {{'management.users.userDetails.notAllowedToHaveAuthorities' | translate}}
+  </div>
+</ng-template>

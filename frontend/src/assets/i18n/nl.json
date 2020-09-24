@@ -261,6 +261,7 @@
 
       "userDetails": {
         "errorQuerying": "Er is iets misgelopen tijdens het ophalen van de gebruiker met id '{id}'",
+        "notAllowedToHaveAuthorities": "De gebruiker is niet gemachtigd om autoriteiten te hebben. Pas de rol van de gebruiker aan indien je wil dat hij/zij beheerder mag zijn van één of meerdere autoriteiten.",
 
         "form": {
           "title": "Details of {name}",
