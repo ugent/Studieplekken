@@ -40,21 +40,30 @@
 -- queries for table LOCATIONS
 -- $all_locations
 select l.name, l.number_of_seats, l.number_of_lockers
-    , l.image_url, l.address, l.authority_id
+    , l.image_url, l.address
+    , a.authority_id, a.authority_name, a.description
 from public.locations l
+    join authority a
+        on a.authority_id = l.authority_id
 order by l.name;
 
 -- $get_location
 select l.name, l.number_of_seats, l.number_of_lockers
-    , l.image_url, l.address, l.authority_id
+    , l.image_url, l.address
+    , a.authority_id, a.authority_name, a.description
 from public.locations l
+     join authority a
+          on a.authority_id = l.authority_id
 where l.name = ?;
 
 -- $get_locations_from_authority
 select  l.name, l.number_of_seats, l.number_of_lockers
-     , l.image_url, l.address, l.authority_id
+     , l.image_url, l.address
+     , a.authority_id, a.authority_name, a.description
 from public.locations l
-where authority_id = ?;
+     join authority a
+          on a.authority_id = l.authority_id
+where l.authority_id = ?;
 
 -- $delete_location
 delete
@@ -124,14 +133,18 @@ with recursive x as (
 select y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
 	 , y.augentid, y.role, y.penalty_points
 	 , y.date, y.location_name, y.attended, y.user_augentid
-	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address, l.authority_id
+	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address
+     , a.authority_id, a.authority_name, a.description
 from y
     join public.locations l
         on l.name = y.location_name
+    join authority a
+         on a.authority_id = l.authority_id
 group by y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
 	 , y.augentid, y.role, y.penalty_points
 	 , y.date, y.location_name, y.attended, y.user_augentid
-	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address, l.authority_id
+	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address
+     , a.authority_id, a.authority_name, a.description
 order by l.name;
 
 -- $count_location_reservations_of_location_for_date
@@ -315,17 +328,17 @@ where user_id = ? and authority_id = ?;
 
 -- queries for table AUTHORITY
 -- $all_authorities
-select a.authority_id, a.name, a.description
+select a.authority_id, a.authority_name, a.description
 from public.authority a
-order by a.name;
+order by a.authority_name;
 
 -- $authorities_from_user
-select a.authority_id, a.name, a.description
+select a.authority_id, a.authority_name, a.description
 from public.authority a
   join public.roles_user_authority roles on a.authority_id = roles.authority_id
   join public.users u on roles.user_id = u.augentid
   where u.augentid = ?
-order by a.name;
+order by a.authority_name;
 
 -- $authority_get_users
 select u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.penalty_points, u.mail, u.institution
@@ -336,22 +349,22 @@ where a.authority_id = ?
 order by u.augentid;
 
 -- $authority_from_name
-select a.authority_id, a.name, a.description
+select a.authority_id, a.authority_name, a.description
 from public.authority a
-where a.name = ?;
+where a.authority_name = ?;
 
 -- $authority_from_authority_id
-select a.authority_id, a.name, a.description
+select a.authority_id, a.authority_name, a.description
 from public.authority a
 where a.authority_id = ?;
 
 -- $insert_authority
-insert into public.authority (name, description)
+insert into public.authority (authority_name, description)
 values (?, ?) RETURNING authority_id;
 
 -- $update_authority
 update public.authority
-set name = ?, description = ?
+set authority_name = ?, description = ?
 where authority_id = ?;
 
 -- $delete_authority
@@ -402,15 +415,19 @@ select y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.in
      , y.augentid, y.role, y.penalty_points
      , y.number, y.location_name
      , y.user_augentid, y.key_pickup_date, y.key_return_date
-	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address, l.authority_id
+	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address
+     , a.authority_id, a.authority_name, a.description
 from y
 	join public.locations l
 		on l.name = y.location_name
+    join authority a
+         on a.authority_id = l.authority_id
 group by y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
      , y.augentid, y.role, y.penalty_points
      , y.number, y.location_name
      , y.user_augentid, y.key_pickup_date, y.key_return_date
-	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address, l.authority_id
+	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address
+     , a.authority_id, a.authority_name, a.description
 order by l.name;
 
 -- $count_lockers_in_use_of_location
@@ -459,17 +476,20 @@ where user_augentid = ?;
 -- queries for table LOCKERS
 -- $get_lockers_where_<?>
 select l.location_name, l.number
-	, s.name, s.number_of_seats, s.number_of_lockers, s.image_url, s.address, s.authority_id
+	, s.name, s.number_of_seats, s.number_of_lockers, s.image_url, s.address
+    , a.authority_id, a.authority_name, a.description
 from public.lockers l
 	join public.locations s
 		on s.name = l.location_name
+    join authority a
+         on a.authority_id = s.authority_id
 where <?>
 order by s.name;
 
 -- $get_lockers_statuses_of_location
 with recursive x as (
     select 0 week, 1.0 perc
-    union all
+        union all
     select week + 1, - 0.2 * (week + 1) + 1
     from x
     where week + 1 <= 5
@@ -479,13 +499,16 @@ with recursive x as (
     where key_return_date = '' or key_return_date is NULL
 ), lockers as (
     select l.location_name, l.number
-         , s.name, s.number_of_seats, s.number_of_lockers, s.image_url, s.address, s.authority_id
+         , s.name, s.number_of_seats, s.number_of_lockers, s.image_url, s.address
+         , a.authority_id, a.authority_name, a.description
          , lr.locker_number, lr.key_pickup_date, lr.key_return_date, lr.user_augentid
          , u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.penalty_points
          , u.mail, u.password, u.institution
     from public.lockers l
              join public.locations s
                   on s.name = l.location_name
+             join authority a
+                  on a.authority_id = s.authority_id
              left join lr
                        on lr.location_name = l.location_name
                            and lr.locker_number = l.number
@@ -494,7 +517,8 @@ with recursive x as (
     where l.location_name = ?
 )
 select r.location_name, r.number
-     , r.name, r.number_of_seats, r.number_of_lockers, r.image_url, r.address, r.authority_id
+     , r.name, r.number_of_seats, r.number_of_lockers, r.image_url, r.address
+     , r.authority_id, r.authority_name, r.description
      , r.locker_number, r.key_pickup_date, r.key_return_date, r.user_augentid
      , r.augentid, r.role, r.augentpreferredgivenname, r.augentpreferredsn, r.mail, r.password
      , r.institution, coalesce(floor(sum(
@@ -512,7 +536,8 @@ from lockers r
          left join x
                    on floor(extract(days from (now() - to_timestamp(pb.timestamp, 'YYYY-MM-DD HH24\:MI\:SS'))) / 7) = x.week
 group by r.location_name, r.number
-        , r.name, r.number_of_seats, r.number_of_lockers, r.image_url, r.address, r.authority_id
+        , r.name, r.number_of_seats, r.number_of_lockers, r.image_url, r.address
+        , r.authority_id, r.authority_name, r.description
         , r.locker_number, r.key_pickup_date, r.key_return_date, r.user_augentid
         , r.augentid, r.role, r.augentpreferredgivenname, r.augentpreferredsn, r.mail, r.password
         , r.institution
@@ -653,17 +678,20 @@ where event_code = ?;
 
 -- queries for SCANNERS_LOCATION
 -- $get_locations_of_scanner
-select l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address, l.authority_id
+select l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address
+     , a.authority_id, a.authority_name, a.description
 from public.scanners_location sl
     join public.locations l
         on l.name = sl.location_name
+    join authority a
+         on a.authority_id = l.authority_id
 where sl.user_augentid = ?
 order by l.name;
 
 -- $get_scanners_of_location
 with recursive x as (
     select 0 week, 1.0 perc
-    union all
+        union all
     select week + 1, - 0.2 * (week + 1) + 1
     from x
     where week + 1 <= 5
@@ -726,10 +754,13 @@ where user_augentid = ?;
 -- queries for CALENDAR_PERIODS
 -- $get_calendar_periods
 select cp.location_name, cp.starts_at, cp.ends_at, cp.opening_time, cp.closing_time, cp.reservable_from
-       , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address, l.authority_id
+       , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address
+       , a.authority_id, a.authority_name, a.description
 from public.calendar_periods cp
     join public.locations l
         on l.name = cp.location_name
+    join authority a
+         on a.authority_id = l.authority_id
 where cp.location_name = ?
 order by to_date(cp.starts_at, 'YYYY-MM-DD');
 
@@ -761,10 +792,13 @@ where location_name = ?;
 -- queries for CALENDAR_PERIODS_FOR_LOCKERS
 -- $get_calendar_periods_for_lockers_of_location
 select cp.location_name, cp.starts_at, cp.ends_at, cp.reservable_from
-       , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address, l.authority_id
+       , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address
+       , a.authority_id, a.authority_name, a.description
 from public.calendar_periods_for_lockers cp
     join public.locations l
         on l.name = cp.location_name
+    join authority a
+         on a.authority_id = l.authority_id
 where cp.location_name = ?
 order by to_date(cp.starts_at, 'YYYY-MM-DD');
 

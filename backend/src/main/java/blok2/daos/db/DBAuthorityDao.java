@@ -139,7 +139,7 @@ public class DBAuthorityDao extends DAO implements IAuthorityDao {
     }
 
     private void preparedAuthorityInsertOrUpdate(Authority authority, PreparedStatement pstmt) throws SQLException {
-        pstmt.setString(1, authority.getName());
+        pstmt.setString(1, authority.getAuthorityName());
         pstmt.setString(2, authority.getDescription());
     }
 

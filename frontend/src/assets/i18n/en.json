@@ -23,13 +23,24 @@
     "yes": "Yes",
     "no": "No",
 
+    "buttons": {
+      "add": "Add",
+      "update": "Update",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "search": "Search",
+      "clear": "Clear"
+    },
+
     "roles": {
       "ADMIN": "Admin",
       "EMPLOYEE": "Employee",
       "STUDENT": "Student"
     },
 
-    "optional": "Optional"
+    "optional": "Optional",
+
+    "waitingForServer": "Waiting for response of server..."
   },
 
   "header": {

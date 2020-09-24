@@ -34,7 +34,7 @@ public class TestDBCalendarPeriodForLockersDao  extends TestDao {
     @Override
     public void populateDatabase() throws SQLException {
         authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testLocation = TestSharedMethods.testLocation(authority.getAuthorityId());
+        testLocation = TestSharedMethods.testLocation(authority.clone());
         calendarPeriodsForLockers = TestSharedMethods.testCalendarPeriodsForLockers(testLocation);
         updatedPeriodsForLockers = TestSharedMethods.testCalendarPeriodsForLockersButUpdated(testLocation);
 

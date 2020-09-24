@@ -29,7 +29,7 @@ export class LocationsManagementComponent implements OnInit {
   deletionWasSuccess: boolean = undefined;
 
   authoritiesObs: Observable<Authority[]>;
-  authoritiesMap: Map<string, Authority>;
+  authoritiesMap: Map<number, Authority>;
 
   constructor(private locationService: LocationService,
               private authoritiesService: AuthoritiesService) { }
@@ -40,9 +40,9 @@ export class LocationsManagementComponent implements OnInit {
 
     this.authoritiesObs = this.authoritiesService.getAllAuthorities().pipe(tap(
       next => {
-        this.authoritiesMap = new Map<string, Authority>();
+        this.authoritiesMap = new Map<number, Authority>();
         next.forEach(value => {
-          this.authoritiesMap.set(value.authorityName, value);
+          this.authoritiesMap.set(value.authorityId, value);
         });
       }
     ));
@@ -51,7 +51,7 @@ export class LocationsManagementComponent implements OnInit {
   setupForm(): void {
     this.addLocationFormGroup = new FormGroup({
       name: new FormControl('', Validators.required),
-      authorityName: new FormControl('', Validators.required),
+      authority: new FormControl('', Validators.required),
       address: new FormControl('', Validators.required),
       numberOfSeats: new FormControl('', Validators.required),
       numberOfLockers: new FormControl('', Validators.required),
@@ -64,7 +64,7 @@ export class LocationsManagementComponent implements OnInit {
   }
 
   addNewLocation(location: Location): void {
-    location.authority = this.authoritiesMap.get(this.authorityName.value);
+    location.authority = this.authoritiesMap.get(Number(this.authority.value));
 
     this.addingWasSuccess = null;
     if (this.addLocationFormGroup.valid) {
@@ -122,7 +122,7 @@ export class LocationsManagementComponent implements OnInit {
   }
 
   get name(): AbstractControl { return this.addLocationFormGroup.get('name'); }
-  get authorityName(): AbstractControl { return this.addLocationFormGroup.get('authorityName'); }
+  get authority(): AbstractControl { return this.addLocationFormGroup.get('authority'); }
   get address(): AbstractControl { return this.addLocationFormGroup.get('address'); }
   get numberOfSeats(): AbstractControl { return this.addLocationFormGroup.get('numberOfSeats'); }
   get numberOfLockers(): AbstractControl { return this.addLocationFormGroup.get('numberOfLockers'); }

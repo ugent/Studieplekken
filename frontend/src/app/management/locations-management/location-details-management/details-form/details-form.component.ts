@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Location} from '../../../../shared/model/Location';
-import {AbstractControl, FormControl, FormGroup} from '@angular/forms';
+import {FormControl, FormGroup} from '@angular/forms';
 import {LocationService} from '../../../../services/api/locations/location.service';
 import {Observable} from 'rxjs';
 import {msToShowFeedback} from '../../../../../environments/environment';
@@ -18,11 +18,11 @@ export class DetailsFormComponent implements OnInit {
   @Input() location: Observable<Location>;
 
   authoritiesObs: Observable<Authority[]>;
-  authoritiesMap: Map<string, Authority>;
+  authoritiesMap: Map<number, Authority>; // map the authorityId to the Authority object
 
   locationForm = new FormGroup({
     name: new FormControl({value: '', disabled: true}),
-    authorityName: new FormControl({value: '', disabled: true}),
+    authority: new FormControl({value: '', disabled: true}),
     address: new FormControl({value: '', disabled: true}),
     numberOfSeats: new FormControl({value: '', disabled: true}),
     numberOfLockers: new FormControl({value: '', disabled: true}),
@@ -50,9 +50,9 @@ export class DetailsFormComponent implements OnInit {
     // when the user wants to change the authority
     this.authoritiesObs = this.authoritiesService.getAllAuthorities().pipe(tap(
       next => {
-        this.authoritiesMap = new Map<string, Authority>();
+        this.authoritiesMap = new Map<number, Authority>();
         next.forEach(value => {
-          this.authoritiesMap.set(value.name, value);
+          this.authoritiesMap.set(value.authorityId, value);
         });
       }
     ));
@@ -61,7 +61,7 @@ export class DetailsFormComponent implements OnInit {
   updateFormGroup(location: Location): void {
     this.locationForm.setValue({
       name: location.name,
-      authorityName: location.authority,
+      authority: location.authority.authorityId,
       address: location.address,
       numberOfSeats: location.numberOfSeats,
       numberOfLockers: location.numberOfLockers,
@@ -92,13 +92,14 @@ export class DetailsFormComponent implements OnInit {
     this.disableFormGroup();
     this.updateFormGroup(location);
     this.changeEnableDisableLocationDetailsFormButtons();
+    this.successUpdatingLocation = undefined;
   }
 
   persistLocationDetailsButtonClick(from: Location, to: Location): void {
     this.successUpdatingLocation = null; // show 'loading' message
 
-    // set the authority object
-    to.authority = this.authoritiesMap.get(this.authorityName.value).name;
+    // set the authority object based on the authorityId that is selected in the form
+    to.authority = this.authorityInLocationForm;
 
     this.locationService.updateLocation(from.name, to).subscribe(
       () => {
@@ -130,5 +131,7 @@ export class DetailsFormComponent implements OnInit {
     setTimeout(() => this.successUpdatingLocation = undefined, msToShowFeedback);
   }
 
-  get authorityName(): AbstractControl { return this.locationForm.get('authorityName'); }
+  get authorityInLocationForm(): Authority {
+    return this.authoritiesMap.get(Number(this.locationForm.get('authority').value));
+  }
 }

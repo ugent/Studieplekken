@@ -13,7 +13,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
 
 @RestController
 @RequestMapping("api/authority")
@@ -63,7 +62,7 @@ public class AuthorityController {
     public void addAuthority(@RequestBody Authority authority) {
         try {
             authorityDao.addAuthority(authority);
-            logger.info(String.format("Adding authority %s", authority.getName()));
+            logger.info(String.format("Adding authority %s", authority.getAuthorityName()));
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));

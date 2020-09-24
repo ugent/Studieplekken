@@ -17,8 +17,8 @@
         {{'management.locationDetails.form.authority' | translate}}
       </label>
       <div class="col-lg-8">
-        <select class="form-control" id="authority" formControlName="authorityName" >
-          <option *ngFor="let authority of authorities" [value]="authority.authorityName">
+        <select class="form-control" id="authority" formControlName="authority" >
+          <option *ngFor="let authority of authorities" [value]="authority.authorityId">
             {{authority.authorityName + ' (' + authority.description + ')'}}
           </option>
         </select>

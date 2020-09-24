@@ -4,12 +4,12 @@ import java.util.Objects;
 
 public class Authority implements Cloneable {
     private int authorityId;
-    private String name;
+    private String authorityName;
     private String description;
 
-    public Authority(int authorityId, String name, String description) {
+    public Authority(int authorityId, String authorityName, String description) {
         this.authorityId = authorityId;
-        this.name = name;
+        this.authorityName = authorityName;
         this.description = description;
     }
 
@@ -22,8 +22,18 @@ public class Authority implements Cloneable {
         if (o == null || getClass() != o.getClass()) return false;
         Authority authority = (Authority) o;
         return Objects.equals(authorityId, authority.authorityId) &&
-                Objects.equals(name, authority.name) &&
+                Objects.equals(authorityName, authority.authorityName) &&
                 Objects.equals(description, authority.description);
+    }
+
+    @Override
+    public Authority clone() {
+        try {
+            return (Authority) super.clone();
+        } catch (CloneNotSupportedException ignore) {
+            // will never happen (Authority implements Cloneable)
+            return null;
+        }
     }
 
     public String getDescription() {
@@ -34,12 +44,12 @@ public class Authority implements Cloneable {
         this.description = description;
     }
 
-    public String getName() {
-        return name;
+    public String getAuthorityName() {
+        return authorityName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setAuthorityName(String authorityName) {
+        this.authorityName = authorityName;
     }
 
     public int getAuthorityId() {

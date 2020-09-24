@@ -25,7 +25,7 @@ public class TestDBLocationDao extends TestDao {
     public void populateDatabase() throws SQLException {
         // Setup test objects
         authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testLocation = TestSharedMethods.testLocation(authority.getAuthorityId());
+        testLocation = TestSharedMethods.testLocation(authority.clone());
 
         // Add test objects to database
         locationDao.addLocation(testLocation);

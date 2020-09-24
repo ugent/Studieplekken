@@ -1,6 +1,6 @@
 export interface Authority {
   authorityId: number;
-  name: string;
+  authorityName: string;
   description: string;
 }
 
@@ -8,7 +8,7 @@ export class AuthorityConstructor {
   static new(): Authority {
     return {
       authorityId: 0,
-      name: '',
+      authorityName: '',
       description: ''
     };
   }
@@ -16,7 +16,7 @@ export class AuthorityConstructor {
   static newFromObj(obj: Authority): Authority {
     return {
       authorityId: obj.authorityId,
-      name: obj.name,
+      authorityName: obj.authorityName,
       description: obj.description
     };
   }

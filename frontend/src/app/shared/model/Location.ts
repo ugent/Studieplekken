@@ -1,10 +1,12 @@
+import {Authority, AuthorityConstructor} from './Authority';
+
 export interface Location {
   name: string;
   address: string;
   numberOfSeats: number;
   numberOfLockers: number;
   imageUrl: string;
-  authority: string;
+  authority: Authority;
 }
 
 export class LocationConstructor {
@@ -15,7 +17,7 @@ export class LocationConstructor {
       numberOfSeats: 0,
       numberOfLockers: 0,
       imageUrl: '',
-      authority: ''
+      authority: AuthorityConstructor.new()
     };
   }
 

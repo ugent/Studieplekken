@@ -228,15 +228,12 @@ public class DBLocationDao extends DAO implements ILocationDao {
         String imageUrl = rs.getString(Resources.databaseProperties.getString("location_image_url"));
         String address = rs.getString(Resources.databaseProperties.getString("location_address"));
         Authority authority = DBAuthorityDao.createAuthority(rs);
-        String descriptionDutch = rs.getString(Resources.databaseProperties.getString("location_description_dutch"));
-        String descriptionEnglish = rs.getString(Resources.databaseProperties.getString("location_description_english"));
 
-
-        return new Location(name, address, numberOfSeats, numberOfLockers, imageUrl, authority.getAuthorityId());
+        return new Location(name, address, numberOfSeats, numberOfLockers, imageUrl, authority);
     }
 
 
-    public static Locker createLocker(ResultSet rs, Connection conn) throws SQLException {
+    public static Locker createLocker(ResultSet rs) throws SQLException {
         Locker l = new Locker();
         l.setNumber(rs.getInt(Resources.databaseProperties.getString("locker_number")));
         Location location = DBLocationDao.createLocation(rs);
@@ -259,7 +256,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
         pstmt.setInt(3, location.getNumberOfLockers());
         pstmt.setString(4, location.getImageUrl());
         pstmt.setString(5, location.getAddress());
-        pstmt.setInt(6, location.getAuthorityId());
+        pstmt.setInt(6, location.getAuthority().getAuthorityId());
     }
 
     private static void deleteCalendarPeriods(String locationName, Connection conn) throws SQLException {
@@ -333,9 +330,6 @@ public class DBLocationDao extends DAO implements ILocationDao {
         // update penalty_book
         updateForeignKeyOfPenaltyBook(oldLocationName, newLocationName, conn);
 
-        //update location_tags
-        updateForeignKeyOfLocationTags(oldLocationName, newLocationName, conn);
-
     }
 
     private void updateForeignKeyOfCalendarPeriods(String oldLocationName, String newLocationName, Connection conn)
@@ -392,14 +386,6 @@ public class DBLocationDao extends DAO implements ILocationDao {
         pstmt.execute();
     }
 
-    private void updateForeignKeyOfLocationTags(String oldLocationName, String newLocationName, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
-                .getString("update_fk_location_tags_to_location"));
-        pstmt.setString(1, newLocationName);
-        pstmt.setString(2, oldLocationName);
-        pstmt.execute();
-    }
-
     private void updateLocation(Location location, Connection conn) throws SQLException {
         Location oldLocation = getLocation(location.getName(), conn);
 
@@ -415,7 +401,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
         // set ...
         prepareUpdateOrInsertLocationStatement(location, pstmt);
         // where ...
-        pstmt.setString(9, location.getName());
+        pstmt.setString(7, location.getName());
         pstmt.execute();
     }
 

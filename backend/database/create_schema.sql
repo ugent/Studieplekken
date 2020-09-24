@@ -1,16 +1,3 @@
---
--- IMPORTANT: The database should be created.
--- In PgAdmin: create database and open query tool, copy this script and run.
---
-
-/* -- With pgAdmin, the following SQL code will be executed:
-CREATE DATABASE blokatugent
-    WITH
-    OWNER = postgres
-    ENCODING = 'UTF8'
-    CONNECTION LIMIT = -1;
-*/
-
 drop schema IF EXISTS public cascade;
 
 CREATE SCHEMA public
@@ -28,7 +15,7 @@ CREATE SCHEMA public
 CREATE TABLE public.authority
 (
     authority_id integer primary key generated always as identity,
-    name         text NOT NULL unique,
+    authority_name text NOT NULL unique,
     description  text NOT NULL
 );
 
