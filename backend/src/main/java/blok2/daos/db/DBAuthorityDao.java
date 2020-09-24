@@ -1,8 +1,6 @@
 package blok2.daos.db;
 
-import blok2.daos.IAccountDao;
 import blok2.daos.IAuthorityDao;
-import blok2.daos.ILocationDao;
 import blok2.helpers.Resources;
 import blok2.model.Authority;
 import blok2.model.users.User;
@@ -14,12 +12,6 @@ import java.util.List;
 
 @Service
 public class DBAuthorityDao extends DAO implements IAuthorityDao {
-    IAccountDao accountDao;
-    ILocationDao locationDao;
-
-    public DBAuthorityDao(IAccountDao iAccountDao) {
-        this.accountDao = iAccountDao;
-    }
 
     @Override
     public List<Authority> getAllAuthorities() throws SQLException {
@@ -181,9 +173,14 @@ public class DBAuthorityDao extends DAO implements IAuthorityDao {
 
     private void deleteLocations(int authorityId, Connection conn) throws SQLException {
         // location has its own FK to delete, get all locations and use LocationDao to delete
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_locations_from_authority"));
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_locations_from_authority"));
         pstmt.setInt(1, authorityId);
-        pstmt.execute();
+        ResultSet rs = pstmt.executeQuery();
+
+        while (rs.next()) {
+            String locationName = rs.getString(Resources.databaseProperties.getString("location_name"));
+            DBLocationDao.deleteLocationWithCascade(locationName, conn);
+        }
     }
 
     private void deleteAuthority(int authorityId, Connection conn) throws SQLException {
