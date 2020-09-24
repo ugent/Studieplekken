@@ -127,7 +127,7 @@ public class AuthorityController {
     }
 
     @DeleteMapping("/{authorityId}/user/{userId}")
-    public void removeUserFromAuthority(@PathVariable int authorityId, @PathVariable String userId) {
+    public void deleteUserFromAuthority(@PathVariable int authorityId, @PathVariable String userId) {
         try {
             authorityDao.deleteUserFromAuthority(userId, authorityId);
             logger.info(String.format("Removing user %s from authority %d", userId, authorityId));
