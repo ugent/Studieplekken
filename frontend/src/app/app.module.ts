@@ -45,6 +45,7 @@ import { LocationReservationsManagementComponent } from './management/reservatio
 import { LockerReservationsManagementComponent } from './management/reservations-management/locker-reservations-management/locker-reservations-management.component';
 import {ApplicationTypeGuardService} from './services/guard/functionality/application-type-guard/application-type-guard.service';
 import { AuthoritiesManagementComponent } from './management/authorities-management/authorities-management.component';
+import { UserAuthoritiesManagementComponent } from './management/users-management/user-details-management/user-authorities-management/user-authorities-management.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -155,7 +156,8 @@ const routes: Routes = [
     LocationReservationsManagementComponent,
     LockerReservationsManagementComponent,
     LockerReservationsManagementComponent,
-    AuthoritiesManagementComponent
+    AuthoritiesManagementComponent,
+    UserAuthoritiesManagementComponent
   ],
     imports: [
         BrowserModule,
