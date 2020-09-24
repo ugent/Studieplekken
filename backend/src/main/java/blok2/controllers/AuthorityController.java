@@ -103,8 +103,8 @@ public class AuthorityController {
         }
     }
 
-    @GetMapping("/users/{id}")
-    public List<Authority> getAuthoritiesFromUser(@PathVariable("id") String id) {
+    @GetMapping("/users/{userId}")
+    public List<Authority> getAuthoritiesFromUser(@PathVariable("userId") String id) {
         try {
             return authorityDao.getAuthoritiesFromUser(id);
         } catch (SQLException e) {
