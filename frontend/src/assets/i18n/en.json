@@ -40,7 +40,8 @@
 
     "optional": "Optional",
 
-    "waitingForServer": "Waiting for response of server..."
+    "waitingForServer": "Waiting for response of server...",
+    "idSetByBackendMessage": "ID set by backend"
   },
 
   "header": {
@@ -261,7 +262,6 @@
 
       "userDetails": {
         "errorQuerying": "Something went wrong while querying for the user with id '{id}'",
-        "notAllowedToHaveAuthorities": "The user is not allowed to have authorities. Change the role if you want the user to be able to manage locations in one or more authorities",
 
         "form": {
           "title": "Details of {name}",
@@ -289,7 +289,31 @@
         },
 
         "authorities": {
-          "title": "Authorities of {name}"
+          "title": "Authorities of {name}",
+          "info": "Below, an overview is given of all authorities in which the user has a managing role. This means that the user can manage the locations within these authorities.",
+          "notAllowedToHaveAuthorities": "The user is not allowed to have authorities. Change the role if you want the user to be able to manage locations in one or more authorities",
+          "noAuthoritiesForUser": "The user is not linked to any authority, which means that he/she is not allowed to manage any location.",
+          "allAuthoritiesAreAssigned": "All authorities are already assigned to the user.",
+          "addNew": "Add authority to user",
+
+          "addAuthorityToUserModal": {
+            "title": "Add authority to the user",
+
+            "body": "Select the authority you would like to add to the user:",
+            "selectAuthority": "Select an authority",
+
+            "success": "Successfully added the authority to the user.",
+            "error": "Something went wrong while adding the authority to the user."
+          },
+
+          "deleteAuthorityFromUserModal": {
+            "title": "Sure to delete the authority from the user?",
+
+            "body": "Are you sure that you want to delete the following authority from {name}:",
+
+            "success": "Successfully deleted the authority from the user.",
+            "error": "Something went wrong while deleting the authority from the user."
+          }
         },
 
         "penalties": {

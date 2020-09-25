@@ -40,19 +40,19 @@ export class AuthoritiesService {
     return this.http.get<User[]>(api.usersInAuthority.replace('{authorityId}', String(authority.authorityId)));
   }
 
-  getAuthoritiesOfUser(user: User): Observable<Authority[]> {
-    return this.http.get<Authority[]>(api.authoritiesOfUser.replace('{userId}', user.augentID));
+  getAuthoritiesOfUser(userId: string): Observable<Authority[]> {
+    return this.http.get<Authority[]>(api.authoritiesOfUser.replace('{userId}', userId));
   }
 
-  addUserToAuthority(user: User, authority: Authority): Observable<any> {
+  addUserToAuthority(userId: string, authorityId: number): Observable<any> {
     return this.http.post(api.addUserToAuthority
-      .replace('{userId}', user.augentID)
-      .replace('{authorityId}', String(authority.authorityId)), {});
+      .replace('{userId}', userId)
+      .replace('{authorityId}', String(authorityId)), {});
   }
 
-  deleteUserFromAuthority(user: User, authority: Authority): Observable<any> {
+  deleteUserFromAuthority(userId: string, authorityId: number): Observable<any> {
     return this.http.delete(api.deleteUserFromAuthority
-      .replace('{userId}', user.augentID)
-      .replace('{authorityId}', String(authority.authorityId)));
+      .replace('{userId}', userId)
+      .replace('{authorityId}', String(authorityId)));
   }
 }

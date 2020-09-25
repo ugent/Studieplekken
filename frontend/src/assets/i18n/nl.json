@@ -40,7 +40,8 @@
 
     "optional": "Optioneel",
 
-    "waitingForServer": "Wachten op antwoord van de server..."
+    "waitingForServer": "Wachten op antwoord van de server...",
+    "idSetByBackend": "ID door backend gezet"
   },
 
   "header": {
@@ -261,7 +262,6 @@
 
       "userDetails": {
         "errorQuerying": "Er is iets misgelopen tijdens het ophalen van de gebruiker met id '{id}'",
-        "notAllowedToHaveAuthorities": "De gebruiker is niet gemachtigd om autoriteiten te hebben. Pas de rol van de gebruiker aan indien je wil dat hij/zij beheerder mag zijn van één of meerdere autoriteiten.",
 
         "form": {
           "title": "Details of {name}",
@@ -286,6 +286,34 @@
           "loadingUpdatingUser": "Wachten op het antwoord van de server...",
           "successUpdatingUser": "Het updaten van de rollen van de gebruiker is gelukt...",
           "errorUpdatingUser": "Er is iets misgelopen tijdens het updaten van de gebruiker..."
+        },
+
+        "authorities": {
+          "title": "Autoriteiten van {name}",
+          "info": "Hieronder is een tabel gegeven met alle autoriteiten waarin de gebruiker een beherende rol heeft. Dit wil zeggen dat hij/zij locaties van deze autoriteiten kan beheren.",
+          "notAllowedToHaveAuthorities": "De gebruiker is niet gemachtigd om autoriteiten te hebben. Pas de rol van de gebruiker aan indien je wil dat hij/zij beheerder mag zijn van één of meerdere autoriteiten.",
+          "noAuthoritiesForUser": "De gebruiker is niet gelinkt aan één of meerdere autoriteiten. Dit wil zeggen dat hij/zij geen enkele locatie kan beheren.",
+          "allAuthoritiesAreAssigned": "Alle autoriteiten zijn al toegekend aan de gebruiker.",
+          "addNew": "Autoriteit aan gebruiker toevoegen",
+
+          "addAuthorityToUserModal": {
+            "title": "Een autoriteit aan de gebruiker toevoegen",
+
+            "body": "Selecteer de autoriteit die je aan de gebruiker wil toekennen:",
+            "selectAuthority": "Selecteer een autoriteit",
+
+            "success": "Het toevoegen van de autoriteit aan de gebruiker is gelukt.",
+            "error": "Er is iets misgelopen tijdens het toevoegen van de autoriteit aan de gebruiker."
+          },
+
+          "deleteAuthorityFromUserModal": {
+            "title": "Autoriteit voor de gebruiker ontnemen?",
+
+            "body": "Ben je zeker dat je volgende autoriteit wilt verwijderen voor {name}:",
+
+            "success": "Het weghalen van de autoriteit voor de gebruiker is gelukt.",
+            "error": "Er is iets misgelopen tijdens het weghalen van de autoriteit voor de gebruiker."
+          }
         },
 
         "penalties": {

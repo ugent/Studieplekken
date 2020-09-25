@@ -6,12 +6,190 @@
   <hr>
 
   <div *ngIf="isUserAllowedToHaveAuthorities(user); else notAllowedToHaveAuthorities">
-    user-authorities-management works!
+    <div class="row">
+      <div class="alert alert-info">
+        {{'management.users.userDetails.authorities.info' | translate}}
+      </div>
+    </div>
+
+    <div class="row" *ngIf="authoritiesOfUser !== undefined">
+      <table *ngIf="authoritiesOfUser.length > 0; else noAuthoritiesForUser" style="width: 100%">
+        <thead>
+        <tr>
+          <th>{{'management.authorities.table.authorityId' | translate}}</th>
+          <th>{{'management.authorities.table.authorityName' | translate}}</th>
+          <th>{{'management.authorities.table.description' | translate}}</th>
+          <th><!-- delete --></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr [@rowsAnimation]="" *ngFor="let authority of authoritiesOfUser">
+          <td>{{authority.authorityId}}</td>
+          <td>{{authority.authorityName}}</td>
+          <td>{{authority.description}}</td>
+          <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
+              data-toggle="modal" data-target="#deleteAuthorityFromUserModal"
+              (click)="prepareToDeleteAuthorityForUser(authority)">
+            <span class="glyphicon glyphicon-trash pointerCursor"></span>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="row" style="margin-top: 20px">
+      <button class="btn btn-primary" data-toggle="modal" data-target="#addAuthorityToUserModal"
+              (click)="prepareToAddAnAuthorityToUser()">
+        {{'management.users.userDetails.authorities.addNew' | translate}}
+      </button>
+    </div>
   </div>
 </div>
 
 <ng-template #notAllowedToHaveAuthorities>
-  <div class="alert alert-info">
-    {{'management.users.userDetails.notAllowedToHaveAuthorities' | translate}}
+  <div class="alert alert-warning">
+    {{'management.users.userDetails.authorities.notAllowedToHaveAuthorities' | translate}}
   </div>
 </ng-template>
+
+<ng-template #noAuthoritiesForUser>
+  <div class="alert alert-warning">
+    {{'management.users.userDetails.authorities.noAuthoritiesForUser' | translate}}
+  </div>
+</ng-template>
+
+<ng-template #allAuthoritiesAreAssigned>
+  <div class="alert alert-info">
+    {{'management.users.userDetails.authorities.allAuthoritiesAreAssigned' | translate}}
+  </div>
+</ng-template>
+
+<!-- Modal view to add a new authority to the user -->
+<div class="modal fade" id="addAuthorityToUserModal" tabindex="-1" role="dialog"
+     aria-labelledby="addAuthorityToUserModalTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <!-- Modal header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="addAuthorityToUserModalTitle">
+          {{'management.users.userDetails.authorities.addAuthorityToUserModal.title' | translate}}
+        </h5>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form>
+          <!-- Info -->
+          <div class="alert alert-info">
+            {{'management.users.userDetails.authorities.addAuthorityToUserModal.body' | translate}}
+          </div>
+
+          <!-- list of authorities to choose from -->
+          <div class="row" *ngIf="authoritiesOfUser !== undefined && allAuthorities !== undefined">
+            <div class="form-group" *ngIf="addableAuthorities.length > 0; else allAuthoritiesAreAssigned">
+              <label class="col-lg-3 control-label" for="authority">
+                {{'management.users.userDetails.authorities.addAuthorityToUserModal.selectAuthority' | translate}}
+              </label>
+              <div class="col-lg-8">
+                <select class="form-control" id="authority" [formControl]="authoritiesFormControl" >
+                  <option *ngFor="let authority of addableAuthorities" [value]="authority.authorityId">
+                    {{authority.authorityName + ' (' + authority.description + ')'}}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary"
+                [disabled]="!validForm()"
+                (click)="addAuthorityFromForm()">
+          {{'general.buttons.add' | translate}}
+        </button>
+        <button type="button" class="btn btn-secondary"
+                data-dismiss="modal" (click)="clearForm()">
+          {{'general.buttons.cancel' | translate}}
+        </button>
+      </div>
+
+      <!-- Feedback to the user -->
+      <div class="container-fluid">
+        <div class="alert alert-info" *ngIf="successOnAddingAuthorityToUser === null">
+          {{'general.waitingForServer' | translate}}
+        </div>
+
+        <div class="alert alert-success" *ngIf="successOnAddingAuthorityToUser === true">
+          {{'management.users.userDetails.authorities.addAuthorityToUserModal.success' | translate}}
+        </div>
+
+        <div class="alert alert-error" *ngIf="successOnAddingAuthorityToUser === false">
+          {{'management.users.userDetails.authorities.addAuthorityToUserModal.error' | translate}}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal to ask whether the manager is sure to remove the authority from the user -->
+<div class="modal fade" id="deleteAuthorityFromUserModal" tabindex="-1" role="dialog"
+     aria-labelledby="deleteAuthorityFromUserModalTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <!-- Header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteAuthorityFromUserModalTitle">
+          {{'management.users.userDetails.authorities.deleteAuthorityFromUserModal.title' | translate}}
+        </h5>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div>
+          <span>{{('management.users.userDetails.authorities.deleteAuthorityFromUserModal.body' | translate)
+            .replace('{name}', userFirstName + ' ' + userLastName)}}</span>
+
+          <br><br>
+
+          <ul *ngIf="authorityPreparedToDelete !== undefined">
+            <li><b style="margin-right: 5px"><i>{{('management.authorities.table.authorityId' | translate) + ':   '}}</i></b>{{authorityPreparedToDelete.authorityId}}</li>
+            <li><b style="margin-right: 5px"><i>{{('management.authorities.table.authorityName' | translate) + ':   '}}</i></b>{{authorityPreparedToDelete.authorityName}}</li>
+            <li><b style="margin-right: 5px"><i>{{('management.authorities.table.description' | translate)}}</i></b>{{authorityPreparedToDelete.description}}</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary"
+                (click)="deleteAuthorityFromUser(userId, authorityPreparedToDelete.authorityId)">
+          {{'general.buttons.delete' | translate}}
+        </button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          {{'general.buttons.cancel' | translate}}
+        </button>
+      </div>
+
+      <div class="container-fluid">
+        <div class="alert alert-info" *ngIf="successOnDeletingAuthorityForUser === null">
+          {{'general.waitingForServer' | translate}}
+        </div>
+
+        <div class="alert alert-success" *ngIf="successOnDeletingAuthorityForUser === true">
+          {{'management.users.userDetails.authorities.deleteAuthorityFromUserModal.success' | translate}}
+        </div>
+
+        <div class="alert alert-error" *ngIf="successOnDeletingAuthorityForUser === false">
+          {{'management.users.userDetails.authorities.deleteAuthorityFromUserModal.error' | translate}}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
