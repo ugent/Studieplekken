@@ -12,12 +12,11 @@
         <thead>
         <tr>
           <th>{{'management.locations.table.header.name' | translate}}</th>
+          <th>{{'management.locations.table.header.authority' | translate}}</th>
           <th>{{'management.locations.table.header.numberOfSeats' | translate}}</th>
           <th>{{'management.locations.table.header.numberOfLockers' | translate}}</th>
-          <!-- next table header directive is empty, but it is here to make sure the
-               thead its line extends all the way -->
-          <th></th>
-          <th></th>
+          <th><!-- Details --></th>
+          <th><!-- Delete --></th>
         </tr>
         </thead>
 
@@ -25,10 +24,13 @@
         <tbody>
         <tr [@rowsAnimation]="" *ngFor="let location of locations">
           <td>{{location.name}}</td>
+          <td>{{location.authority.authorityName}}</td>
           <td>{{location.numberOfSeats}}</td>
           <td>{{location.numberOfLockers}}</td>
-          <td>
-            <a routerLink="./{{location.name}}">{{'management.locations.table.details' | translate}}</a>
+          <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
+            <span routerLink="./{{location.name}}"
+                  class="glyphicon glyphicon-list-alt">
+            </span>
           </td>
           <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
               data-toggle="modal" data-target="#deleteLocationModal"

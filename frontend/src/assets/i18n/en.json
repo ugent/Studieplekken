@@ -179,9 +179,9 @@
       "table": {
         "header": {
           "name": "Location",
+          "authority": "Authority",
           "numberOfSeats": "Seats",
-          "numberOfLockers": "Lockers",
-          "details": "Details"
+          "numberOfLockers": "Lockers"
         },
 
         "details": "Details"

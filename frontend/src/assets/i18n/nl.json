@@ -179,9 +179,9 @@
       "table": {
         "header": {
           "name": "Locatie",
+          "authority": "Autoriteit",
           "numberOfSeats": "Plaatsen",
-          "numberOfLockers": "Lockers",
-          "details": "Details"
+          "numberOfLockers": "Lockers"
         },
 
         "details": "Details"
