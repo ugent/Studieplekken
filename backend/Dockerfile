@@ -13,7 +13,6 @@ COPY gradle gradle
 RUN ./gradlew clean build --no-daemon > /dev/null 2>&1 || true
 
 
-COPY BlokAtUGent.iml .
 COPY src src
 COPY database database
 
