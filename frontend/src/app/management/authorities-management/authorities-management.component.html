@@ -12,6 +12,7 @@
         <th>{{'management.authorities.table.authorityId' | translate}}</th>
         <th>{{'management.authorities.table.authorityName' | translate}}</th>
         <th>{{'management.authorities.table.description' | translate}}</th>
+        <th><!-- user management --></th>
         <th><!-- update --></th>
         <th><!-- delete --></th>
       </tr>
@@ -22,13 +23,18 @@
         <td>{{authority.authorityId}}</td>
         <td>{{authority.authorityName}}</td>
         <td>{{authority.description}}</td>
-        <!-- Edit icon -->
+        <!-- User glyphicon -->
+        <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
+          <span class="glyphicon glyphicon-user pointerCursor"
+                routerLink="#"></span>
+        </td>
+        <!-- Update glyphicon -->
         <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
             data-toggle="modal" data-target="#updateAuthorityModal"
             (click)="prepareUpdate(authority)">
           <span class="glyphicon glyphicon-pencil pointerCursor"></span>
         </td>
-        <!-- Delete icon -->
+        <!-- Delete glyphicon -->
         <td data-toggle="modal" data-target="#deleteAuthorityModal"
             class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
             (click)="prepareToDelete(authority)">
