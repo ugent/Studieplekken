@@ -387,10 +387,21 @@
         "addNewUser": "Gebruiker toevoegen",
         "noUsersInAuthority": "Er zijn geen gebruikers opgenomen in deze autoriteit. Dat wil zeggen dat geen enkele gebruiker locaties van deze autoriteit kan beheren.",
 
+        "addUserToAuthorityModal": {
+          "title": "Voeg gebruiker toe aan autoriteit",
+          "searchInfo": "Zoek een gebruiker op voor- en/of achternaam om aan de autoriteit toe te voegen.",
+          "info": "Selecteer de gebruiker die je wil toevoegen aan de autoriteit.",
+          "selectUser": "Kies gebruiker",
+          "isValidUserToAdd": "De geselecteerde gebruiker heeft niet de rechten om toegevoegd te worden in een autoriteit. Pas zijn/haar rol aan om hem/haar op te kunnen nemen in de autoriteit.",
+          "success": "De gebruiker is met succes toegevoegd aan de autoriteit.",
+          "error": "Er is iets misgelopen tijdens het toevoegen van de gebruiker aan de autoriteit.",
+          "errorSearching": "Er is iets misgelopen tijdens het opzoeken van de gebruikers."
+        },
+
         "deleteUserFromAuthorityModal": {
           "title": "Verwijder gebruiker uit autoriteit",
           "body": "Ben je zeker dat je de volgende gebruiker wilt verwijderen uit de autoriteit '{authorityName}'?",
-          "success": "De gebruiker is succesvol uit de autoriteit verwijderd.",
+          "success": "De gebruiker is met succes uit de autoriteit verwijderd.",
           "error": "Er is iets misgelopen tijdens het verwijderen van de gebruiker uit de autoriteit."
         }
       },

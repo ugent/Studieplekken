@@ -387,6 +387,17 @@
         "addNewUser": "Add user",
         "noUsersInAuthority": "There are no users included in the authority. This means that no user can modify the locations of this authority.",
 
+        "addUserToAuthorityModal": {
+          "title": "Add user to authority",
+          "searchInfo": "Search a user by first and/or last name to add to the authority.",
+          "info": "Select the user you would like to add to the authority.",
+          "selectUser": "Select user",
+          "isValidUserToAdd": "The selected user is not authorized to have authorities. Change his/hers role before assigning him/her to an authority",
+          "success": "Successfully added the user to the authority.",
+          "error": "Something went wrong while deleting the user from the authority.",
+          "errorSearching": "Something went wrong while searching for users."
+        },
+
         "deleteUserFromAuthorityModal": {
           "title": "Delete user from authority",
           "body": "Are you sure that you want to remove following user from the authority '{authorityName}'?",
