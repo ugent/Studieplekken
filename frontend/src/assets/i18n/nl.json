@@ -379,6 +379,14 @@
 
       "errorOnRetrievingAuthorities": "Er is iets misgelopen tijdens het ophalen van de autoriteiten.",
 
+      "users": {
+        "title": "Beheer de gebruikers in de autoriteit {authorityName}",
+        "info": "In onderstaande tabel zijn alle gebruikers gegeven die in de autoriteit {authorityName} zitten. Je kan hier gebruikers toevoegen of verwijderen.",
+        "info2": "De gebruikers die in de tabel zijn opgenomen, hebben beheersrechten op de locaties van de autoriteit.",
+
+        "addNewUser": "Gebruiker toevoegen"
+      },
+
       "addAuthorityModal": {
         "title": "Maak een nieuwe autoriteit aan",
         "idSetByBackendMessage": "Ingesteld door backend",

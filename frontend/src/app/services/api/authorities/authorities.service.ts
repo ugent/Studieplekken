@@ -20,6 +20,10 @@ export class AuthoritiesService {
     return this.http.get<Authority[]>(api.authorities);
   }
 
+  getAuthority(authorityId: number): Observable<Authority> {
+    return this.http.get<Authority>(api.authority.replace('{authorityId}', String(authorityId)));
+  }
+
   addAuthority(authority: Authority): Observable<any> {
     return this.http.post(api.authorities, authority);
   }
@@ -36,8 +40,8 @@ export class AuthoritiesService {
   // *   CRUD operations for ROLES_USER_AUTHORITY   *
   // ************************************************/
 
-  getUsersFromAuthority(authority: Authority): Observable<User[]> {
-    return this.http.get<User[]>(api.usersInAuthority.replace('{authorityId}', String(authority.authorityId)));
+  getUsersFromAuthority(authorityId: number): Observable<User[]> {
+    return this.http.get<User[]>(api.usersInAuthority.replace('{authorityId}', String(authorityId)));
   }
 
   getAuthoritiesOfUser(userId: string): Observable<Authority[]> {

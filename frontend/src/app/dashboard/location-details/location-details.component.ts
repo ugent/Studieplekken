@@ -5,7 +5,7 @@ import {Observable} from 'rxjs';
 import {LocationService} from '../../services/api/locations/location.service';
 import {vars} from '../../../environments/environment';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
-import {CalendarEvent} from "angular-calendar";
+import {CalendarEvent} from 'angular-calendar';
 
 @Component({
   selector: 'app-location-details',

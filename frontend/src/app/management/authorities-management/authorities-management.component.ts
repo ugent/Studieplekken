@@ -5,6 +5,7 @@ import {Observable} from 'rxjs';
 import {Authority} from '../../shared/model/Authority';
 import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
 import {AuthoritiesService} from '../../services/api/authorities/authorities.service';
+import {AuthorityToManageService} from '../../services/single-point-of-truth/authority-to-manage/authority-to-manage.service';
 
 @Component({
   selector: 'app-authorities-management',
@@ -30,7 +31,8 @@ export class AuthoritiesManagementComponent implements OnInit {
   successUpdatingAuthority: boolean = undefined;
   successDeletingAuthority: boolean = undefined;
 
-  constructor(private authoritiesService: AuthoritiesService) { }
+  constructor(private authoritiesService: AuthoritiesService,
+              private authorityToMangeService: AuthorityToManageService) { }
 
   ngOnInit(): void {
     this.authoritiesObs = this.authoritiesService.getAllAuthorities();
@@ -153,5 +155,9 @@ export class AuthoritiesManagementComponent implements OnInit {
 
   validTagFormGroup(): boolean {
     return !this.authorityFormGroup.invalid;
+  }
+
+  setAuthorityToManage(authority: Authority): void {
+    this.authorityToMangeService.authority = authority;
   }
 }

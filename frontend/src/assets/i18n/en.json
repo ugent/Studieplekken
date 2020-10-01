@@ -379,6 +379,14 @@
 
       "errorOnRetrievingAuthorities": "Something went wrong while retrieving the authorities from the server.",
 
+      "users": {
+        "title": "Manage the users of authority {authorityName}",
+        "info": "In the table below, all the users that are included in the authority {authorityName} are given. You can add or delete users here.",
+        "info2": "Users that are mentioned in the table, have managing rights to the locations that are included in the authority.",
+
+        "addNewUser": "Add user"
+      },
+
       "addAuthorityModal": {
         "title": "Add a new authority",
         "idSetByBackendMessage": "Set by backend",

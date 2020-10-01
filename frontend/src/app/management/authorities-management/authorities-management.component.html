@@ -26,7 +26,9 @@
         <!-- User glyphicon -->
         <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
           <span class="glyphicon glyphicon-user pointerCursor"
-                [routerLink]="'./' + authority.authorityId"></span>
+                [routerLink]="'./' + authority.authorityId"
+                (click)="setAuthorityToManage(authority)">
+          </span>
         </td>
         <!-- Update glyphicon -->
         <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"

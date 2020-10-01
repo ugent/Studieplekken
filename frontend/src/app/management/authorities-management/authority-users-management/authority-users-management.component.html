@@ -1,1 +1,57 @@
-<p>authority-users-management works!</p>
+<div class="container-fluid" *ngIf="authority !== undefined; else waitingForServer">
+  <!-- Title -->
+  <h3>{{('management.authorities.users.title' | translate)
+          .replace('{authorityName}', authority.authorityName)}}</h3>
+
+  <hr>
+
+  <div class="row">
+    <div class="alert alert-info">
+      {{('management.authorities.users.info' | translate)
+          .replace('{authorityName}', authority.authorityName)}}
+
+      <br>
+
+      {{'management.authorities.users.info2' | translate}}
+    </div>
+  </div>
+
+  <div class="row">
+    <table style="width: 100%">
+      <thead>
+      <tr>
+        <th>{{'management.users.searchResult.table.id' | translate}}</th>
+        <th>{{'management.users.searchResult.table.firstName' | translate}}</th>
+        <th>{{'management.users.searchResult.table.lastName' | translate}}</th>
+        <th><!-- Delete --></th>
+      </tr>
+      </thead>
+
+      <tbody *ngIf="usersObs | async as users">
+      <tr *ngFor="let user of users">
+        <td>{{user.augentID}}</td>
+        <td>{{user.firstName}}</td>
+        <td>{{user.lastName}}</td>
+        <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
+          <span (click)="prepareToDeleteUserFromAuthority()"
+                class="glyphicon glyphicon-trash">
+          </span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="row" style="margin-top: 20px">
+    <button class="btn btn-primary" data-toggle="modal" data-target="#addUserToAuthorityModal"
+            (click)="prepareToAddUserToAuthority()">
+      {{'management.users.userDetails.authorities.addNew' | translate}}
+    </button>
+  </div>
+</div>
+
+<ng-template #waitingForServer>
+  <div class="alert alert-info">
+    {{'general.waitingForServer' | translate}}
+  </div>
+</ng-template>

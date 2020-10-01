@@ -15,6 +15,7 @@ export const environment = {
 export const api = {
   // AUTHORITY
   authorities: '/api/authority',
+  authority: '/api/authority/{authorityId}',
   addAuthority: '/api/authority',
   updateAuthority: '/api/authority/{authorityId}',
   deleteAuthority: '/api/authority/{authorityId}',
