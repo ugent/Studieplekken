@@ -99,6 +99,10 @@ const routes: Routes = [
         path: 'authorities',
         component: AuthoritiesManagementComponent
       },
+      {
+        path: 'authorities/:authorityId',
+        component: AuthorityUsersManagementComponent
+      },
       {path: 'users/:id', component: UserDetailsManagementComponent},
       {
         path: 'reservations',
