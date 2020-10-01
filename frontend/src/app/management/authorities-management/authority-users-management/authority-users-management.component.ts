@@ -13,7 +13,10 @@ import {ActivatedRoute} from '@angular/router';
 })
 export class AuthorityUsersManagementComponent implements OnInit {
   authority: Authority;
-  usersObs: Observable<User[]>;
+
+  usersInAuthorityObs: Observable<User[]>;
+
+  userPreparedToDelete: User;
 
   successRetrievingAuthority: boolean = undefined;
   successAddingAuthority: boolean = undefined;
@@ -60,13 +63,21 @@ export class AuthorityUsersManagementComponent implements OnInit {
   // *   Delete user from the authority   *
   // **************************************
 
-  prepareToDeleteUserFromAuthority(): void {
+  prepareToDeleteUserFromAuthority(user: User): void {
     this.successDeletingAuthority = undefined;
-    // todo
+    this.userPreparedToDelete = user;
   }
 
-  deleteUserFromAuthority(): void {
-    // todo
+  deleteUserFromAuthority(userId: string, authorityId: number): void {
+    this.successDeletingAuthority = null;
+    this.authoritiesService.deleteUserFromAuthority(userId, authorityId).subscribe(
+      () => {
+        this.successDeletingAuthority = true;
+        this.setUsersObs(authorityId); // reload users data
+      }, () => {
+        this.successDeletingAuthority = false;
+      }
+    );
   }
 
   // *******************
@@ -74,7 +85,7 @@ export class AuthorityUsersManagementComponent implements OnInit {
   // *******************
 
   setUsersObs(authorityId: number): void {
-    this.usersObs = this.authoritiesService.getUsersFromAuthority(authorityId);
+    this.usersInAuthorityObs = this.authoritiesService.getUsersFromAuthority(authorityId);
   }
 
 }

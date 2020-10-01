@@ -16,8 +16,8 @@
     </div>
   </div>
 
-  <div class="row">
-    <table style="width: 100%">
+  <div class="row" *ngIf="usersInAuthorityObs | async as users">
+    <table style="width: 100%" *ngIf="users.length > 0; else noUsersInAuthority">
       <thead>
       <tr>
         <th>{{'management.users.searchResult.table.id' | translate}}</th>
@@ -27,15 +27,15 @@
       </tr>
       </thead>
 
-      <tbody *ngIf="usersObs | async as users">
+      <tbody >
       <tr *ngFor="let user of users">
         <td>{{user.augentID}}</td>
         <td>{{user.firstName}}</td>
         <td>{{user.lastName}}</td>
-        <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
-          <span (click)="prepareToDeleteUserFromAuthority()"
-                class="glyphicon glyphicon-trash">
-          </span>
+        <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
+            data-toggle="modal" data-target="#deleteUserFromAuthorityModal"
+            (click)="prepareToDeleteUserFromAuthority(user)">
+          <span class="glyphicon glyphicon-trash"></span>
         </td>
       </tr>
       </tbody>
@@ -45,7 +45,7 @@
   <div class="row" style="margin-top: 20px">
     <button class="btn btn-primary" data-toggle="modal" data-target="#addUserToAuthorityModal"
             (click)="prepareToAddUserToAuthority()">
-      {{'management.users.userDetails.authorities.addNew' | translate}}
+      {{'management.authorities.users.addNewUser' | translate}}
     </button>
   </div>
 </div>
@@ -55,3 +55,68 @@
     {{'general.waitingForServer' | translate}}
   </div>
 </ng-template>
+
+<ng-template #noUsersInAuthority>
+  <div class="alert alert-warning">
+    {{'management.authorities.users.noUsersInAuthority' | translate}}
+  </div>
+</ng-template>
+
+<!-- Modal to ask whether the manager is sure to remove the user from the authority -->
+<div class="modal fade" id="deleteUserFromAuthorityModal" tabindex="-1" role="dialog"
+     aria-labelledby="deleteUserFromAuthorityModalTitle" aria-hidden="true"
+     *ngIf="authority !== undefined"> <!-- Because authority is used, it may not be undefined -->
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <!-- Header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteUserFromAuthorityModalTitle">
+          {{'management.authorities.users.deleteUserFromAuthorityModal.title' | translate}}
+        </h5>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div>
+          <span>{{('management.authorities.users.deleteUserFromAuthorityModal.body' | translate)
+            .replace('{authorityName}', authority.authorityName)}}</span>
+
+          <br><br>
+
+          <ul *ngIf="userPreparedToDelete !== undefined">
+            <li><b style="margin-right: 5px"><i>{{('management.users.searchResult.table.id' | translate) + ':   '}}</i></b>{{userPreparedToDelete.augentID}}</li>
+            <li><b style="margin-right: 5px"><i>{{('management.users.searchResult.table.firstName' | translate) + ':   '}}</i></b>{{userPreparedToDelete.firstName}}</li>
+            <li><b style="margin-right: 5px"><i>{{('management.users.searchResult.table.lastName' | translate)}}</i></b>{{userPreparedToDelete.lastName}}</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary"
+                (click)="deleteUserFromAuthority(userPreparedToDelete.augentID, authority.authorityId)">
+          {{'general.buttons.delete' | translate}}
+        </button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          {{'general.buttons.cancel' | translate}}
+        </button>
+      </div>
+
+      <div class="container-fluid">
+        <div class="alert alert-info" *ngIf="successDeletingAuthority === null">
+          {{'general.waitingForServer' | translate}}
+        </div>
+
+        <div class="alert alert-success" *ngIf="successDeletingAuthority === true">
+          {{'management.authorities.users.deleteUserFromAuthorityModal.success' | translate}}
+        </div>
+
+        <div class="alert alert-error" *ngIf="successDeletingAuthority === false">
+          {{'management.authorities.users.deleteUserFromAuthorityModal.error' | translate}}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -384,7 +384,15 @@
         "info": "In onderstaande tabel zijn alle gebruikers gegeven die in de autoriteit {authorityName} zitten. Je kan hier gebruikers toevoegen of verwijderen.",
         "info2": "De gebruikers die in de tabel zijn opgenomen, hebben beheersrechten op de locaties van de autoriteit.",
 
-        "addNewUser": "Gebruiker toevoegen"
+        "addNewUser": "Gebruiker toevoegen",
+        "noUsersInAuthority": "Er zijn geen gebruikers opgenomen in deze autoriteit. Dat wil zeggen dat geen enkele gebruiker locaties van deze autoriteit kan beheren.",
+
+        "deleteUserFromAuthorityModal": {
+          "title": "Verwijder gebruiker uit autoriteit",
+          "body": "Ben je zeker dat je de volgende gebruiker wilt verwijderen uit de autoriteit '{authorityName}'?",
+          "success": "De gebruiker is succesvol uit de autoriteit verwijderd.",
+          "error": "Er is iets misgelopen tijdens het verwijderen van de gebruiker uit de autoriteit."
+        }
       },
 
       "addAuthorityModal": {

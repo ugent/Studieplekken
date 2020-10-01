@@ -384,7 +384,15 @@
         "info": "In the table below, all the users that are included in the authority {authorityName} are given. You can add or delete users here.",
         "info2": "Users that are mentioned in the table, have managing rights to the locations that are included in the authority.",
 
-        "addNewUser": "Add user"
+        "addNewUser": "Add user",
+        "noUsersInAuthority": "There are no users included in the authority. This means that no user can modify the locations of this authority.",
+
+        "deleteUserFromAuthorityModal": {
+          "title": "Delete user from authority",
+          "body": "Are you sure that you want to remove following user from the authority '{authorityName}'?",
+          "success": "Successfully deleted the user from the authority.",
+          "error": "Something went wrong while deleting the user from the authority."
+        }
       },
 
       "addAuthorityModal": {
