@@ -28,7 +28,7 @@ export class LocationCalendarComponent implements OnInit {
    * 'calendarPeriods' is the list of CalendarPeriods that the user
    * can modify using the form in the template
    */
-  calendarPeriods: CalendarPeriod[];
+  calendarPeriods: CalendarPeriod[] = [];
 
   /**
    * 'events' is the object that is used by the angular-calendar module

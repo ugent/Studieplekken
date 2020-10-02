@@ -17,12 +17,7 @@ import {mapCalendarPeriodsToCalendarEvents} from '../../shared/model/CalendarPer
 export class LocationDetailsComponent implements OnInit {
   location: Observable<Location>;
 
-  events: CalendarEvent[] = [
-    {
-      start: new Date(),
-      title: 'Test calendar event'
-    }
-  ];
+  events: CalendarEvent[] = [];
 
   constructor(private locationService: LocationService,
               private route: ActivatedRoute,
