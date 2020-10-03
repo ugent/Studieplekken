@@ -7,12 +7,7 @@ import {CalendarEvent} from 'angular-calendar';
   styleUrls: ['./profile-calendar.component.css']
 })
 export class ProfileCalendarComponent implements OnInit {
-  events: CalendarEvent[] = [
-    {
-      start: new Date(),
-      title: 'Test calendar event'
-    }
-  ]
+  events: CalendarEvent[] = [];
 
   constructor() { }
 

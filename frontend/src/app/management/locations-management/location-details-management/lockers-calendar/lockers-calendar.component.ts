@@ -19,14 +19,16 @@ import {toDateTimeString, typeScriptDateToCustomDate} from '../../../../shared/m
 export class LockersCalendarComponent implements OnInit {
   @Input() location: Observable<Location>;
 
+  locationName: string;
+
   refresh: Subject<any> = new Subject();
 
-  /*
+  /**
    * 'events' is the object that is used by the frontend to update/add periods.
    */
   events: CalendarEvent<CalendarPeriodForLockers>[] = [];
 
-  /*
+  /**
    * 'eventsInDataLayer' is an object that keeps track of the opening
    * periods that are stored in the data layer. This object is used
    * to be able to get the updated/added periods, so that the backend
@@ -36,7 +38,7 @@ export class LockersCalendarComponent implements OnInit {
 
   disableFootButtons = true;
 
-  /*
+  /**
    * The boolean-attributes below are used to give feedback to the
    * user when he/she has pressed the "Update" button in different
    * scenarios.
@@ -54,14 +56,15 @@ export class LockersCalendarComponent implements OnInit {
 
   ngOnInit(): void {
     this.location.subscribe(next => {
-      this.setupEvents(next.name);
+      this.locationName = next.name;
+      this.setupEvents();
     });
     this.showReservationInformation = this.functionalityService.showReservationsFunctionality();
   }
 
-  setupEvents(locationName: string): void {
+  setupEvents(): void {
     // retrieve all calendar periods for the lockers of this location
-    this.calendarPeriodsForLockersService.getCalendarPeriodsForLockersOfLocation(locationName).subscribe(next => {
+    this.calendarPeriodsForLockersService.getCalendarPeriodsForLockersOfLocation(this.locationName).subscribe(next => {
       if (next === null) {
         return;
       }
@@ -111,6 +114,12 @@ export class LockersCalendarComponent implements OnInit {
   }
 
   refreshCalendar(event: CalendarEvent): void {
+    // this check is quite important for the calendar not to go
+    // crazy when the form is being filled in
+    if (!isCalendarPeriodForLockersValid(event.meta)) {
+      return;
+    }
+
     // find index corresponding to the given event
     const idx = this.events.findIndex(n => event === n);
 
@@ -145,32 +154,32 @@ export class LockersCalendarComponent implements OnInit {
     // Otherwise, the period will not be addable. Therefore, we just provide the current date-time.
     if (!this.showReservationInformation) {
       let dateTime = toDateTimeString(typeScriptDateToCustomDate(new Date()));
-      // remove the trailing ':ss', to get YYYY-MM-DDThh:mm format
-      dateTime = dateTime.substr(0, dateTime.length - 3);
+      // remove the trailing ':ss' and replace 'T' with ' ' to make a valid
+      // dateTimeStr for the database: 'YYYY-MM-DD HH:MI'
+      dateTime = dateTime.substr(0, dateTime.length - 3).replace('T', ' ');
       period.reservableFrom = dateTime;
     }
-
 
     this.events = [
       ...this.events, calendarPeriodForLockersToCalendarEvent(period)
     ];
   }
 
-  updateCalendarPeriodForLockersButtonClick(locationName: string): void {
+  updateCalendarPeriodForLockersButtonClick(): void {
     this.disableFootButtons = true;
-    this.updateCalendarPeriodForLockers(locationName);
-    this.setupEvents(locationName);
+    this.updateCalendarPeriodForLockers();
+    this.setupEvents();
   }
 
   /**
    * This is the method that does all the CUD-work of
    * the CRUD operations available for CALENDAR_PERIODS_FOR_LOCKERS
    */
-  updateCalendarPeriodForLockers(locationName: string): void {
+  updateCalendarPeriodForLockers(): void {
     if (this.hasAnyPeriodChanged()) {
       // if this.events.length === 0, delete everything instead of updating
       if (this.events.length === 0) {
-        this.deleteAllPeriodsInDataLayer(locationName);
+        this.deleteAllPeriodsInDataLayer();
         return;
       }
 
@@ -188,31 +197,34 @@ export class LockersCalendarComponent implements OnInit {
 
       // if this.calendarPeriodsForLockersInDataLayer.length === 0, add all events instead of updating
       if (this.calendarPeriodsForLockersInDataLayer.length === 0) {
-        this.addAllPeriodsInEvents(locationName);
+        this.addAllPeriodsInEvents();
         return;
       }
 
+      console.log('updating for locationName: ' + this.locationName);
+
       // if reached here, persist update(s)
       this.calendarPeriodsForLockersService.updateCalendarPeriodsForLockers(
+        this.locationName,
         this.calendarPeriodsForLockersInDataLayer,
         this.events.map<CalendarPeriodForLockers>(n => n.meta)
       ).subscribe(() => {
-        this.successHandler(locationName);
+        this.successHandler();
       }, () => this.errorHandler());
     } else {
       this.handleNothingHasChangedOnUpdate();
     }
   }
 
-  deleteAllPeriodsInDataLayer(locationName: string): void {
+  deleteAllPeriodsInDataLayer(): void {
     this.calendarPeriodsForLockersService.deleteCalendarPeriodsForLockers(this.calendarPeriodsForLockersInDataLayer)
-      .subscribe(() => this.successHandler(locationName), () => this.errorHandler());
+      .subscribe(() => this.successHandler(), () => this.errorHandler());
   }
 
-  addAllPeriodsInEvents(locationName: string): void {
+  addAllPeriodsInEvents(): void {
     this.calendarPeriodsForLockersService
       .addCalendarPeriodsForLockers(this.events.map<CalendarPeriodForLockers>(n => n.meta))
-      .subscribe(() => this.successHandler(locationName), () => this.errorHandler());
+      .subscribe(() => this.successHandler(), () => this.errorHandler());
   }
 
   handleWrongCalendarPeriodFormatOnUpdate(): void {
@@ -239,11 +251,11 @@ export class LockersCalendarComponent implements OnInit {
     this.disableFootButtons = true;
   }
 
-  successHandler(locationName: string): void {
+  successHandler(): void {
     this.showSuccess = true;
     setTimeout(() => this.showSuccess = false, this.msToShowFeedback);
     // Refresh the events in the 'data layer' attribute
-    this.setupEvents(locationName);
+    this.setupEvents();
   }
 
   errorHandler(): void {

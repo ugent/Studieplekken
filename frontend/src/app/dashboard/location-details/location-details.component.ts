@@ -5,7 +5,9 @@ import {Observable} from 'rxjs';
 import {LocationService} from '../../services/api/locations/location.service';
 import {vars} from '../../../environments/environment';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
-import {CalendarEvent} from "angular-calendar";
+import {CalendarEvent} from 'angular-calendar';
+import {CalendarPeriodsService} from '../../services/api/calendar-periods/calendar-periods.service';
+import {mapCalendarPeriodsToCalendarEvents} from '../../shared/model/CalendarPeriod';
 
 @Component({
   selector: 'app-location-details',
@@ -15,20 +17,26 @@ import {CalendarEvent} from "angular-calendar";
 export class LocationDetailsComponent implements OnInit {
   location: Observable<Location>;
 
-  events: CalendarEvent[] = [
-    {
-      start: new Date(),
-      title: 'Test calendar event'
-    }
-  ]
+  events: CalendarEvent[] = [];
 
   constructor(private locationService: LocationService,
               private route: ActivatedRoute,
-              private sanitizer: DomSanitizer) { }
+              private sanitizer: DomSanitizer,
+              private calendarPeriodsService: CalendarPeriodsService) { }
 
   ngOnInit(): void {
     const locationName = this.route.snapshot.paramMap.get('locationName');
     this.location = this.locationService.getLocation(locationName);
+
+    this.location.subscribe(next => {
+
+      // retrieve the calendar events
+      this.calendarPeriodsService.getCalendarPeriodsOfLocation(next.name).subscribe(
+        next2 => {
+          this.events = mapCalendarPeriodsToCalendarEvents(next2);
+        }
+      );
+    });
   }
 
   handleImageError(location: Location): void {
