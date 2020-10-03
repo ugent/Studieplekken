@@ -79,6 +79,7 @@
       [viewDate]="viewDate"
       [events]="events"
       [refresh]="refresh"
+      [weekStartsOn]="1"
       (eventClicked)="handleEvent('Clicked', $event.event)"
       (eventTimesChanged)="eventTimesChanged($event)">
     </mwl-calendar-week-view>
