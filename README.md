@@ -6,7 +6,7 @@ Have a look at our [Wiki](https://github.ugent.be/bravdwal/dsa/wiki)
 ### Backend
 **Requirements**
 - Java 8
-- PostgreSQL 11
+- PostgreSQL 12
 
 **Configure**  
 1. PostgreSQL
@@ -15,7 +15,9 @@ Make sure that a user `postgres` with password `postgres` has following database
 - `blokatugent`
 - `blokatugent_test`
 
-For both databases, run the sql queries in `scripts/database/create_schema.sql`. For the `blokatugent`, run the script `scripts/database/seed.sql` to provide some dummy data.
+For the `blokatugent` database, run the script `scripts/database/seed.sql` to provide some dummy data.
+
+Configure your correct database configuration in de `application.yml`properties file in the resources folder.
 
 **Commands**
 ```shell script

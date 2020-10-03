@@ -11,11 +11,6 @@ CREATE DATABASE blokatugent
     CONNECTION LIMIT = -1;
 */
 
-drop schema IF EXISTS public cascade;
-
-CREATE SCHEMA public
-    AUTHORIZATION postgres;
-
 ----------------- +------------------------------------+
 ----------------- |   Create application data tables   |
 ----------------- +------------------------------------+
@@ -357,7 +352,7 @@ CREATE TABLE public.roles_user_authority
 ----------------- +-----------------------+
 ----------------- |   Import extensions   |
 ----------------- +-----------------------+
-create extension fuzzystrmatch;
+-- create extension fuzzystrmatch;
 
 ----------------- +-------------------------------------------+
 ----------------- |   Insert application data into database   |
