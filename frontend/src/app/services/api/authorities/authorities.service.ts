@@ -4,6 +4,7 @@ import {Observable} from 'rxjs';
 import {Authority} from '../../../shared/model/Authority';
 import {api} from '../../../../environments/environment';
 import {User} from '../../../shared/model/User';
+import {Location} from '../../../shared/model/Location';
 
 @Injectable({
   providedIn: 'root'
@@ -46,6 +47,10 @@ export class AuthoritiesService {
 
   getAuthoritiesOfUser(userId: string): Observable<Authority[]> {
     return this.http.get<Authority[]>(api.authoritiesOfUser.replace('{userId}', userId));
+  }
+
+  getLocationsInAuthoritiesOfUser(userId: string): Observable<Location[]> {
+    return this.http.get<Location[]>(api.locationsInAuthoritiesOfUser.replace('{userId}', userId));
   }
 
   addUserToAuthority(userId: string, authorityId: number): Observable<any> {

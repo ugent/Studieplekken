@@ -19,6 +19,7 @@ export const api = {
   addAuthority: '/api/authority',
   updateAuthority: '/api/authority/{authorityId}',
   deleteAuthority: '/api/authority/{authorityId}',
+  locationsInAuthoritiesOfUser: '/api/authority/users/{userId}/locations',
 
   // CALENDAR_PERIODS
   calendarPeriods: '/api/locations/calendar/{locationName}',

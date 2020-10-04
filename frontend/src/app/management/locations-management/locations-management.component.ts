@@ -7,6 +7,7 @@ import {LocationService} from '../../services/api/locations/location.service';
 import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Authority} from '../../shared/model/Authority';
 import {AuthoritiesService} from '../../services/api/authorities/authorities.service';
+import {AuthenticationService} from '../../services/authentication/authentication.service';
 import {tap} from 'rxjs/operators';
 
 @Component({
@@ -32,20 +33,20 @@ export class LocationsManagementComponent implements OnInit {
   authoritiesMap: Map<number, Authority>;
 
   constructor(private locationService: LocationService,
-              private authoritiesService: AuthoritiesService) { }
+              private authoritiesService: AuthoritiesService,
+              private authenticationService: AuthenticationService) { }
 
   ngOnInit(): void {
-    this.locations = this.locationService.getLocations();
     this.setupForm();
 
-    this.authoritiesObs = this.authoritiesService.getAllAuthorities().pipe(tap(
-      next => {
-        this.authoritiesMap = new Map<number, Authority>();
-        next.forEach(value => {
-          this.authoritiesMap.set(value.authorityId, value);
-        });
+    this.authenticationService.user.subscribe(
+      (next) => {
+        // only set the locations and authorities if the user is authenticated
+        if (next.augentID !== '') {
+          this.setupLocationsAndAuthorities();
+        }
       }
-    ));
+    );
   }
 
   setupForm(): void {
@@ -104,13 +105,13 @@ export class LocationsManagementComponent implements OnInit {
 
   successHandler(): void {
     this.addingWasSuccess = true;
-    this.locations = this.locationService.getLocations();
+    this.setupLocationsAndAuthorities();
     this.setupForm();
   }
 
   successDeletionHandler(): void {
     this.deletionWasSuccess = true;
-    this.locations = this.locationService.getLocations();
+    this.setupLocationsAndAuthorities();
   }
 
   errorHandler(): void {
@@ -127,4 +128,51 @@ export class LocationsManagementComponent implements OnInit {
   get numberOfSeats(): AbstractControl { return this.addLocationFormGroup.get('numberOfSeats'); }
   get numberOfLockers(): AbstractControl { return this.addLocationFormGroup.get('numberOfLockers'); }
   get imageUrl(): AbstractControl { return this.addLocationFormGroup.get('imageUrl'); }
+
+  // *******************
+  // *   Auxiliaries   *
+  // *******************
+
+  /**
+   * Setup the locations and authorities depending on whether or not the user is admin
+   */
+  setupLocationsAndAuthorities(): void {
+    if (this.authenticationService.isAdmin()) {
+      this.setupLocationsAndAuthoritiesAsAdmin();
+    } else {
+      this.setupLocationsAndAuthoritiesAsEmployee();
+    }
+  }
+
+  /**
+   * The user may manage all the locations, and create new locations for all authorities.
+   */
+  setupLocationsAndAuthoritiesAsAdmin(): void {
+    this.locations = this.locationService.getLocations();
+    this.authoritiesObs = this.authoritiesService.getAllAuthorities().pipe(tap(
+      next => {
+        this.authoritiesMap = new Map<number, Authority>();
+        next.forEach(value => {
+          this.authoritiesMap.set(value.authorityId, value);
+        });
+      }
+    ));
+  }
+
+  /**
+   * If the user is not admin, he may only manage or add locations that are in his own authorities.
+   */
+  setupLocationsAndAuthoritiesAsEmployee(): void {
+    this.locations = this.authoritiesService
+      .getLocationsInAuthoritiesOfUser(this.authenticationService.userValue().augentID);
+    this.authoritiesObs = this.authoritiesService
+      .getAuthoritiesOfUser(this.authenticationService.userValue().augentID).pipe(tap(
+      next => {
+        this.authoritiesMap = new Map<number, Authority>();
+        next.forEach(value => {
+          this.authoritiesMap.set(value.authorityId, value);
+        });
+      }
+    ));
+  }
 }
