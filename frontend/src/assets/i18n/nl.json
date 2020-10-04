@@ -1,4 +1,14 @@
 {
+  "calendar": {
+    "previous": "Vorige",
+    "today": "Vandaag",
+    "next": "Volgende",
+
+    "month": "Maand",
+    "week": "Week",
+    "day": "Dag"
+  },
+
   "dashboard": {
     "address": "Adres",
     "details": "Details",
@@ -122,7 +132,9 @@
           "wrongCalendarPeriodFormatMessage": "Niet alle periodes zijn correct ingevuld",
           "successMessage": "Het wijzigen van de kalender is succesvol verlopen",
           "successButNoChangesMessage": "Er waren geen veranderingen nodig",
-          "errorMessage": "Het aanpassen van de kalender is mislukt. Er is iets misgegaan."
+          "errorMessage": "Het aanpassen van de kalender is mislukt. Er is iets misgegaan.",
+
+          "noCalendarPeriodsForLocation": "Op dit moment zijn er nog geen periodes voor de locatie beschikbaar."
         }
       },
 
@@ -144,7 +156,9 @@
           "wrongCalendarPeriodFormatMessage": "Niet alle periodes zijn correct ingevuld",
           "successMessage": "Het wijzigen van de kalender is succesvol verlopen",
           "successButNoChangesMessage": "Er waren geen veranderingen nodig",
-          "errorMessage": "Het aanpassen van de kalender is mislukt. Er is iets misgegaan."
+          "errorMessage": "Het aanpassen van de kalender is mislukt. Er is iets misgegaan.",
+
+          "noCalendarPeriodsForLockers": "Op dit moment zijn er nog geen periodes voor lockerreservaties beschikbaar."
         }
       },
 

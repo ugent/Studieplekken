@@ -1,4 +1,14 @@
 {
+  "calendar": {
+    "previous": "Previous",
+    "today": "Today",
+    "next": "Next",
+
+    "month": "Month",
+    "week": "Week",
+    "day": "Day"
+  },
+
   "dashboard": {
     "address": "Address",
     "details": "Details",
@@ -122,7 +132,9 @@
           "wrongCalendarPeriodFormatMessage": "Not all periods are filled in correctly",
           "successMessage": "Successfully updated the calendar",
           "successButNoChangesMessage": "No changed were required",
-          "errorMessage": "Update was not successful. Something went wrong."
+          "errorMessage": "Update was not successful. Something went wrong.",
+
+          "noCalendarPeriodsForLocation": "At the moment, there are no periods for the location."
         }
       },
 
@@ -144,7 +156,9 @@
           "wrongCalendarPeriodFormatMessage": "Not all periods are filled in correctly",
           "successMessage": "Successfully updated the calendar",
           "successButNoChangesMessage": "No changed were required",
-          "errorMessage": "Update was not successful. Something went wrong."
+          "errorMessage": "Update was not successful. Something went wrong.",
+
+          "noCalendarPeriodsForLockers": "At the moment, there are no periods for the lockers."
         }
       },
 

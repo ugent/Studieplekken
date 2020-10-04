@@ -25,7 +25,7 @@
 
   <!-- The form itself -->
   <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
-    <div class="table-responsive">
+    <div class="table-responsive" *ngIf="calendarPeriods.length > 0; else noCalendarPeriodsForLocation">
       <table class="table table-bordered">
         <thead>
         <tr>
@@ -39,15 +39,15 @@
         </thead>
 
         <tbody>
-        <tr *ngFor="let event of events">
+        <tr *ngFor="let period of calendarPeriods">
           <!-- Starts at -->
           <td>
             <label>
               <input
                 class="form-control"
                 type="date"
-                [(ngModel)]="event.meta.startsAt"
-                (ngModelChange)="refreshCalendar(event)"
+                [(ngModel)]="period.startsAt"
+                (ngModelChange)="refreshCalendar(period)"
               />
             </label>
           </td>
@@ -58,8 +58,8 @@
               <input
                 class="form-control"
                 type="date"
-                [(ngModel)]="event.meta.endsAt"
-                (ngModelChange)="refreshCalendar(event)"
+                [(ngModel)]="period.endsAt"
+                (ngModelChange)="refreshCalendar(period)"
               />
             </label>
           </td>
@@ -70,8 +70,8 @@
               <input
                 class="form-control"
                 type="time"
-                [(ngModel)]="event.meta.openingTime"
-                (ngModelChange)="refreshCalendar(event)"
+                [(ngModel)]="period.openingTime"
+                (ngModelChange)="refreshCalendar(period)"
               />
             </label>
           </td>
@@ -82,8 +82,8 @@
               <input
                 class="form-control"
                 type="time"
-                [(ngModel)]="event.meta.closingTime"
-                (ngModelChange)="refreshCalendar(event)"
+                [(ngModel)]="period.closingTime"
+                (ngModelChange)="refreshCalendar(period)"
               />
             </label>
           </td>
@@ -94,15 +94,15 @@
               <input
                 class="form-control"
                 type="datetime-local"
-                [(ngModel)]="event.meta.reservableFrom"
-                (ngModelChange)="refreshCalendar(event)"
+                [(ngModel)]="period.reservableFrom"
+                (ngModelChange)="refreshCalendar(period)"
               />
             </label>
           </td>
 
           <!-- Button with glyphicon to delete period -->
           <td style="align-content: center">
-            <button class="btn btn-danger" (click)="deleteOpeningPeriodButtonClick(event)">
+            <button class="btn btn-danger" (click)="deleteOpeningPeriodButtonClick(period)">
               <span class="glyphicon glyphicon-trash hover"></span>
             </button>
           </td>
@@ -114,8 +114,8 @@
     <!-- Row below the table to provide cancel/update buttons -->
     <div class="row">
       <div class="pull-right">
-        <button class="btn btn-primary left-button"
-                (click)="updateOpeningPeriodButtonClick(location.name)"
+        <button class="btn btn-primary btn-left"
+                (click)="updateOpeningPeriodButtonClick()"
                 [disabled]="disableFootButtons">
           {{'management.locationDetails.calendar.form.updateButton' | translate}}
         </button>
@@ -127,7 +127,7 @@
     </div>
 
     <!-- If clicked on updateButton, give some feedback -->
-    <div class="row" >
+    <div class="row" style="margin-top: 10px">
       <div class="alert alert-danger" *ngIf="showWrongCalendarPeriodFormat">
         {{'management.locationDetails.calendar.form.wrongCalendarPeriodFormatMessage' | translate}}
       </div>
@@ -147,4 +147,10 @@
   </div>
 </div>
 
-
+<ng-template #noCalendarPeriodsForLocation>
+  <div class="row" style="margin-top: 20px">
+    <div class="alert alert-info">
+      {{'management.locationDetails.calendar.form.noCalendarPeriodsForLocation' | translate}}
+    </div>
+  </div>
+</ng-template>

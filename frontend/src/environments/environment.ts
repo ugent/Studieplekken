@@ -29,7 +29,7 @@ export const api = {
   // CALENDAR_PERIODS_FOR_LOCKERS
   calendarPeriodsForLockers: '/api/locations/lockerCalendar/{locationName}',
   addCalendarPeriodsForLockers: '/api/locations/lockerCalendar',
-  updateCalendarPeriodsForLockers: '/api/locations/lockerCalendar',
+  updateCalendarPeriodsForLockers: '/api/locations/lockerCalendar/{locationName}',
   deleteCalendarPeriodsForLockers: '/api/locations/lockerCalendar',
 
   // LOCATION_RESERVATIONS
