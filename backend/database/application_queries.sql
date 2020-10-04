@@ -372,6 +372,18 @@ delete
 from public.authority
 where authority_id = ?;
 
+-- $get_locations_manageable_by_user
+select l.name, l.number_of_seats, l.number_of_lockers
+     , l.image_url, l.address
+     , a.authority_id, a.authority_name, a.description
+from public.locations l
+    join authority a
+        on l.authority_id = a.authority_id
+    join roles_user_authority rua
+        on rua.authority_id = a.authority_id
+where rua.user_id = ?
+order by l.name;
+
 
 -- queries for table LOCKER_RESERVATIONS
 -- $get_locker_reservations_where_<?>

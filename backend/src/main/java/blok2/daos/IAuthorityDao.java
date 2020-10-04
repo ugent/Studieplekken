@@ -1,6 +1,7 @@
 package blok2.daos;
 
 import blok2.model.Authority;
+import blok2.model.reservables.Location;
 import blok2.model.users.User;
 
 import java.sql.SQLException;
@@ -55,6 +56,11 @@ public interface IAuthorityDao extends IDao {
      * get a list of Authorities the user is a member of. Can be empty.
      */
     List<Authority> getAuthoritiesFromUser(String augentId) throws SQLException;
+
+    /**
+     * get a list of Locations that the user can manage
+     */
+    List<Location> getLocationsInAuthoritiesOfUser(String augentId) throws SQLException;
 
     /**
      * get list of users that are a member of the given authority.

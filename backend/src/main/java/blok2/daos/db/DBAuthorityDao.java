@@ -3,6 +3,7 @@ package blok2.daos.db;
 import blok2.daos.IAuthorityDao;
 import blok2.helpers.Resources;
 import blok2.model.Authority;
+import blok2.model.reservables.Location;
 import blok2.model.users.User;
 import org.springframework.stereotype.Service;
 
@@ -124,6 +125,23 @@ public class DBAuthorityDao extends DAO implements IAuthorityDao {
             }
 
             return authorities;
+        }
+    }
+
+    @Override
+    public List<Location> getLocationsInAuthoritiesOfUser(String augentId) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            List<Location> locations = new ArrayList<>();
+
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_locations_manageable_by_user"));
+            pstmt.setString(1, augentId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                locations.add(DBLocationDao.createLocation(rs));
+            }
+
+            return locations;
         }
     }
 
