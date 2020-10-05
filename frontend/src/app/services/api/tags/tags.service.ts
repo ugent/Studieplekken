@@ -35,15 +35,4 @@ export class TagsService {
     return this.http.delete(api.deleteTag.replace('{tagId}', String(locationTag.tagId)));
   }
 
-  /**************************************************************
-   *   API calls for CRUD operations with public.LOCATION_TAGS  *
-   **************************************************************/
-
-  assignTagsToLocation(locationName: string, tags: LocationTag[]): Observable<any> {
-    return this.http.put(api.assignTagsToLocation.replace('{locationName}', locationName), tags);
-  }
-
-  reconfigureAllowedTagsOfLocation(locationName: string, tags: LocationTag[]): Observable<any> {
-    return this.http.put(api.reconfigureAllowedTags.replace('{locationName}', locationName), tags);
-  }
 }

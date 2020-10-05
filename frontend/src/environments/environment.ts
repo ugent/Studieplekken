@@ -35,6 +35,7 @@ export const api = {
   updateLocation: '/api/locations/{locationName}',
   deleteLocation: '/api/locations/{locationName}',
   numberOfReservations: '/api/locations/{locationName}/reservations/count',
+  setupTagsForLocation: '/api/locations/tags/{locationName}',
 
   // LOCATION_RESERVATIONS
   locationReservationsOfUser: '/api/locations/reservations/user',
@@ -52,12 +53,10 @@ export const api = {
   lockerReservationsOfLocation: '/api/lockers/reservations/location',
   updateLockerReservation: '/api/lockers/reservations',
   deleteLockerReservation: '/api/lockers/reservations',
-  lockerReservationsByUserId: '/api/lockers/reservations/{userId}',
 
   // USERS
   userByAUGentId: '/api/account/id',
   userByBarcode: '/api/account/barcode',
-  userByMail: '/api/account/mail',
   usersByFirstName: '/api/account/firstName',
   usersByLastName: '/api/account/lastName',
   usersByFirstAndLast: '/api/account/firstAndLastName',
@@ -79,13 +78,7 @@ export const api = {
   tags: '/api/tags',
   addTag: '/api/tags',
   updateTag: '/api/tags',
-  deleteTag: '/api/tags/{tagId}',
-
-  // LOCATION_TAGS
-  assignTagsToLocation: '/api/tags/location/assign/{locationName}',
-  tagsFromLocation: '/api/tags/location/{locationName}',
-  assignedTagsFromLocation: '/api/tags/location/assign/{locationName}',
-  reconfigureAllowedTags: '/api/tags/location/{locationName}'
+  deleteTag: '/api/tags/{tagId}'
 };
 
 export const vars = {
