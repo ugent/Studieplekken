@@ -23,7 +23,7 @@
                           [formControl]="matSelectFormControl"
                           [compareWith]="compareTagsInSelection"
                           (selectionChange)="onSelectionChange($event)">
-                <mat-option *ngFor="let tag of tags" [value]="tag">
+                <mat-option style="border: 0;" *ngFor="let tag of tags" [value]="tag">
                   {{currentLang === 'nl' ? tag.dutch : tag.english}}
                 </mat-option>
               </mat-select>
@@ -46,9 +46,11 @@
               {{'general.buttons.search' | translate}}
             </button>
           </div>
+        </div>
 
-          <div class="col-sm-1">
-            <button class="btn btn-secondary" [disabled]="!enableClearButton"
+        <div class="row">
+          <div class="pull-right">
+            <button class="btn btn-secondary"
                     (click)="onClearSearch()">
               {{'general.buttons.clear' | translate}}
             </button>
