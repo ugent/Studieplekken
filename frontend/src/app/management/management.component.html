@@ -7,7 +7,7 @@
         <h2>{{'management.aside.title' | translate}}</h2>
         <ul class="linklist linklist-dark">
           <li><a routerLink="./locations">{{'management.aside.locations' | translate}}</a></li>
-          <li><a routerLink="./tags">{{'management.aside.tags' | translate}}</a></li>
+          <li *ngIf="showTagManagement"><a routerLink="./tags">{{'management.aside.tags' | translate}}</a></li>
           <li><a routerLink="./users">{{'management.aside.users' | translate}}</a></li>
           <li *ngIf="showReservations"><a routerLink="./reservations">{{'management.aside.reservations' | translate}}</a></li>
           <li *ngIf="showPenalties"><a routerLink="./penalties">{{'management.aside.penalties' | translate}}</a></li>
