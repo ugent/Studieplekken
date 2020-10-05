@@ -42,8 +42,4 @@ export class TagsService {
   assignTagsToLocation(locationName: string, tags: LocationTag[]): Observable<any> {
     return this.http.put(api.assignTagsToLocation.replace('{locationName}', locationName), tags);
   }
-
-  reconfigureAllowedTagsOfLocation(locationName: string, tags: LocationTag[]): Observable<any> {
-    return this.http.put(api.reconfigureAllowedTags.replace('{locationName}', locationName), tags);
-  }
 }

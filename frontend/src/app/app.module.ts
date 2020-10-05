@@ -51,7 +51,6 @@ import { LocationTagsManagementComponent } from './management/locations-manageme
 import { MatSelectModule } from '@angular/material/select';
 import { LoginComponent } from './login/login.component';
 import {AuthenticationGuardService} from './services/guard/authentication/authentication-guard/authentication-guard.service';
-import { LocationAllowedTagsComponent } from './management/locations-management/location-details-management/location-allowed-tags/location-allowed-tags.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -236,8 +235,7 @@ const routes: Routes = [
     LocationDescriptionComponent,
     TagsManagementComponent,
     LocationTagsManagementComponent,
-    LoginComponent,
-    LocationAllowedTagsComponent
+    LoginComponent
   ],
     imports: [
       BrowserModule,

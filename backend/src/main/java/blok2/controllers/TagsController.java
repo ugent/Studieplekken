@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/tags")
@@ -99,6 +100,20 @@ public class TagsController {
     public List<LocationTag> getTagsOfLocation(@PathVariable("locationName") String locationName) {
         try {
             return locationTagDao.getTagsForLocation(locationName);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @PutMapping("/location/assign/{locationName}")
+    public void assignTagsToLocation(@PathVariable("locationName") String locationName,
+                                     @RequestBody List<LocationTag> tags) {
+        try {
+            List<Integer> lt = tags.stream().map(LocationTag::getTagId).collect(Collectors.toList());
+            locationTagDao.deleteAllTagsFromLocation(locationName);
+            locationTagDao.bulkAddTagsToLocation(locationName, lt);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));

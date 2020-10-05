@@ -22,7 +22,7 @@ export class LocationTagsManagementComponent implements OnInit {
 
   tagsFormControl: FormControl = new FormControl([]);
   matSelectSelection: LocationTag[]; // this set upon a selectionChange() of the mat-selection
-  tagsThatAreAllowed: LocationTag[]; // these tags are assignable to the location (retrieved from backend)
+  tagsThatAreAvailable: LocationTag[]; // these tags are assignable to the location (retrieved from backend)
   tagsThatAreSelected: LocationTag[]; // these tags are actually set on the location (retrieved from backend)
 
   tagsSelectionIsUpdatable = false;
@@ -46,7 +46,10 @@ export class LocationTagsManagementComponent implements OnInit {
         if (next.name !== '') {
           this.locationName = next.name;
 
-          this.tagsThatAreAllowed = next.allowedTags;
+          this.tagsService.getAllTags().subscribe(
+          (next) => {
+            this.tagsThatAreAvailable = next;
+          });
           this.tagsThatAreSelected = next.assignedTags;
 
           this.tagsFormControl = new FormControl(this.tagsThatAreSelected);
