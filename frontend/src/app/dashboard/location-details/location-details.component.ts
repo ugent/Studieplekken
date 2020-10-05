@@ -10,6 +10,8 @@ import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import {TranslateService} from '@ngx-translate/core';
 import {LocationTag} from '../../shared/model/LocationTag';
 import {TagsService} from '../../services/api/tags/tags.service';
+import {CalendarPeriodsService} from '../../services/api/calendar-periods/calendar-periods.service';
+import {mapCalendarPeriodsToCalendarEvents} from '../../shared/model/CalendarPeriod';
 
 @Component({
   selector: 'app-location-details',
@@ -21,12 +23,7 @@ export class LocationDetailsComponent implements OnInit {
   locationName: string;
   tags: LocationTag[];
 
-  events: CalendarEvent[] = [
-    {
-      start: new Date(),
-      title: 'Test calendar event'
-    }
-  ];
+  events: CalendarEvent[] = [];
 
   editor = ClassicEditor;
   description = {
@@ -43,7 +40,8 @@ export class LocationDetailsComponent implements OnInit {
               private tagsService: TagsService,
               private route: ActivatedRoute,
               private sanitizer: DomSanitizer,
-              private translate: TranslateService) { }
+              private translate: TranslateService,
+              private calendarPeriodsService: CalendarPeriodsService) { }
 
   ngOnInit(): void {
     this.locationName = this.route.snapshot.paramMap.get('locationName');
@@ -57,6 +55,13 @@ export class LocationDetailsComponent implements OnInit {
       this.setDescriptionToShow();
 
       this.tags = next.assignedTags;
+
+      // retrieve the calendar periods and map them to calendar events used by Angular Calendar
+      this.calendarPeriodsService.getCalendarPeriodsOfLocation(next.name).subscribe(
+        next2 => {
+          this.events = mapCalendarPeriodsToCalendarEvents(next2);
+        }
+      );
     });
 
     // if the browser language would change, the description needs to change

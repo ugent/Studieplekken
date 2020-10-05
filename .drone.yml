@@ -1,0 +1,23 @@
+kind: pipeline
+type: docker
+name: default
+
+steps:
+  - name: test-backend
+    image: gradle:jdk8
+    environment:
+      SPRING_PROFILES_ACTIVE: ci
+    commands:
+      - apt-get update -y && apt-get install netcat -y
+      - ./scripts/wait_for_service db 5432
+      - cd backend
+      - gradle assemble
+      - gradle check
+
+services:
+  - name: db
+    image: postgres:10-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: blokatugent_test

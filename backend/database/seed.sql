@@ -1,3 +1,6 @@
+
+-- Initial seeding of a database with data
+
 /*
  * Setup a test user
  */
@@ -13,7 +16,6 @@ values ('002', 'STUDENT$EMPLOYEE', 'Ruben_van_DSA', 'DF', 0, 'rdf@ugent.be', 'se
 /*
  * Setup two test locations with an authority and add 2nd test user to the authority
  */
-
 DO $$
 DECLARE tableId integer;
 BEGIN
@@ -39,18 +41,18 @@ END $$;
  */
 insert into public.calendar_periods(location_name, starts_at, ends_at, opening_time, closing_time, reservable_from)
 values ('Therminal', to_char(now() - interval '5 days', 'YYYY-MM-DD'), to_char(now() + interval '5 days', 'YYYY-MM-DD'),
-'09:00', '17:00', to_char(now() - interval '7 days', 'YYYY-MM-DD') || 'T19:00'),
+'09:00', '17:00', to_char(now() - interval '7 days', 'YYYY-MM-DD') || ' 19:00'),
 ('Sterre S5', to_char(now() - interval '5 days', 'YYYY-MM-DD'), to_char(now() + interval '5 days', 'YYYY-MM-DD'),
-'09:00', '17:00', to_char(now() - interval '7 days', 'YYYY-MM-DD') || 'T19:00');
+'09:00', '17:00', to_char(now() - interval '7 days', 'YYYY-MM-DD') || ' 19:00');
 
 /*
  * Add some calendar periods for lockers
  */
 insert into public.calendar_periods_for_lockers(location_name, starts_at, ends_at, reservable_from)
 values ('Therminal', to_char(now() - interval '15 days', 'YYYY-MM-DD'), to_char(now() + interval '5 days', 'YYYY-MM-DD'),
-to_char(now() - interval '25 days', 'YYYY-MM-DD') || 'T19:00'),
+to_char(now() - interval '25 days', 'YYYY-MM-DD') || ' 19:00'),
 ('Sterre S5', to_char(now() - interval '15 days', 'YYYY-MM-DD'), to_char(now() + interval '5 days', 'YYYY-MM-DD'),
-to_char(now() - interval '25 days', 'YYYY-MM-DD') || 'T19:00');
+to_char(now() - interval '25 days', 'YYYY-MM-DD') || ' 19:00');
 
 /*
  * Add some penalties for the test user
@@ -67,7 +69,6 @@ values
 /*
  * Setup all the lockers for the test locations
  */
-
 DO $$
 DECLARE
    i integer := 0 ;

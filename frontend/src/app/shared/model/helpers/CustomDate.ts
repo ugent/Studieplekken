@@ -70,7 +70,9 @@ export function toDateString(date: CustomDate): string {
 
 // hh:mm:ss
 export function toTimeString(date: CustomDate): string {
-  return date.hrs + ':' + date.min + ':' + date.sec;
+  return ('' + date.hrs).padStart(2, '0') + ':' +
+    ('' + date.min).padStart(2, '0') + ':' +
+    ('' + date.sec).padStart(2, '0');
 }
 
 // YYYY-MM-DDThh:mm:ss
