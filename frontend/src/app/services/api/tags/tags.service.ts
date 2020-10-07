@@ -34,5 +34,4 @@ export class TagsService {
   deleteTag(locationTag: LocationTag): Observable<any> {
     return this.http.delete(api.deleteTag.replace('{tagId}', String(locationTag.tagId)));
   }
-
 }

@@ -173,7 +173,7 @@
 
       "tags": {
         "title": "Tags van de locatie",
-        "activeTagsInformation": "Hieronder is een lijst gegeven van de tags die toegekend zijn aan de locatie.",
+        "activeTagsInformation": "Hieronder is een lijst gegeven van de tags die beschikbaar zijn.",
         "updateTagsInformation": "Om de tags te wijzigen, klik op de knop rechts.",
 
         "updateTagsButton": "Wijzig de tags",

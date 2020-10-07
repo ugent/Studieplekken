@@ -173,7 +173,7 @@
 
       "tags": {
         "title": "Tags of the location",
-        "activeTagsInformation": "Below, a list with the tags of the location is given.",
+        "activeTagsInformation": "Below, a list with the available tags is given.",
         "updateTagsInformation": "To change the tags, click on the button to the right.",
 
         "updateTagsButton": "Update the tags",
@@ -187,7 +187,7 @@
           "error": "Something went wrong while updating the tags for '{locationName}'."
         },
 
-        "noTagsSelected": "At the moment, there are no tags selected for the location."
+        "noTagsSelected": "At the moment, there are no tags selected."
       },
 
       "lockerCalendar": {

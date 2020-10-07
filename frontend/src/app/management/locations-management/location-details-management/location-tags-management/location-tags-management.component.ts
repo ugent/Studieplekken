@@ -22,9 +22,9 @@ export class LocationTagsManagementComponent implements OnInit {
   currentLang: string;
 
   tagsFormControl: FormControl = new FormControl([]);
-  matSelectSelection: LocationTag[]; // this set upon a selectionChange() of the mat-selection
-  allTags: LocationTag[]; // these tags are assignable to the location (retrieved from backend)
-  tagsThatAreSelected: LocationTag[]; // these tags are actually set on the location (retrieved from backend)
+  matSelectSelection: LocationTag[];    // this set upon a selectionChange() of the mat-selection
+  allTags: LocationTag[];               // these tags are assignable to the location (retrieved from backend)
+  tagsThatAreSelected: LocationTag[];   // these tags are actually set on the location (retrieved from backend)
 
   tagsSelectionIsUpdatable = false;
 

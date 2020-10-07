@@ -78,7 +78,15 @@ export const api = {
   tags: '/api/tags',
   addTag: '/api/tags',
   updateTag: '/api/tags',
+<<<<<<< HEAD
+  deleteTag: '/api/tags/{tagId}',
+
+  // LOCATION_TAGS
+  assignTagsToLocation: '/api/tags/location/assign/{locationName}',
+  tagsFromLocation: '/api/tags/location/{locationName}'
+=======
   deleteTag: '/api/tags/{tagId}'
+>>>>>>> 74e1ae9af8db38e6577433d904f3787ff39ee606
 };
 
 export const vars = {
