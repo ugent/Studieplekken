@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {api} from '../../../../environments/environment';
 import {Location} from '../../../shared/model/Location';
+import {LocationTag} from '../../../shared/model/LocationTag';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,10 @@ import {Location} from '../../../shared/model/Location';
 export class LocationService {
 
   constructor(private http: HttpClient) { }
+
+  /***********************************************************
+   *   API calls for CRUD operations with public.LOCATIONS   *
+   ***********************************************************/
 
   getLocations(): Observable<Location[]> {
     return this.http.get<Location[]>(api.locations);
@@ -34,4 +39,13 @@ export class LocationService {
   getNumberOfReservations(location: Location): Observable<number> {
     return this.http.get<number>(api.numberOfReservations.replace('{locationName}', location.name));
   }
+
+  /***************************************************************
+   *   API calls for CRUD operations with public.LOCATION_TAGS   *
+   ***************************************************************/
+
+  setupTagsForLocation(locationName: string, tags: LocationTag[]): Observable<any> {
+    return this.http.put(api.setupTagsForLocation.replace('{locationName}', locationName), tags.map(v => v.tagId));
+  }
+
 }

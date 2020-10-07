@@ -4,6 +4,8 @@ import blok2.daos.IAccountDao;
 import blok2.daos.IAuthorityDao;
 import blok2.model.Authority;
 import blok2.model.users.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +15,6 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * This controller handles all requests related to users.
@@ -23,7 +24,7 @@ import java.util.logging.Logger;
 @RequestMapping("api/account")
 public class AccountController {
 
-    private final Logger logger = Logger.getLogger(AccountController.class.getSimpleName());
+    private final Logger logger = LoggerFactory.getLogger(AccountController.class.getSimpleName());
 
     private final IAccountDao accountDao;
 
@@ -39,8 +40,8 @@ public class AccountController {
         try {
             return accountDao.getUserById(id);
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
@@ -50,8 +51,8 @@ public class AccountController {
         try {
             return accountDao.getUserByEmail(mail);
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
@@ -61,8 +62,8 @@ public class AccountController {
         try {
             return accountDao.getUsersByFirstName(firstName);
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
@@ -72,8 +73,8 @@ public class AccountController {
         try {
             return accountDao.getUsersByLastName(lastName);
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
@@ -83,8 +84,8 @@ public class AccountController {
         try {
             return accountDao.getUsersByFirstAndLastName(firstName, lastName);
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
@@ -101,8 +102,8 @@ public class AccountController {
 
             return accountDao.getUserById(userLinkedToBarcode.getAugentID());
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
@@ -112,8 +113,8 @@ public class AccountController {
         try {
             return authorityDao.getAuthoritiesFromUser(userId);
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
@@ -122,9 +123,10 @@ public class AccountController {
     public void updateUser(@PathVariable("id") String id, @RequestBody User user) {
         try {
             accountDao.updateUserById(id, user);
+            logger.info(String.format("Updated user %s", user.getAugentID()));
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
@@ -153,8 +155,8 @@ public class AccountController {
             accountDao.updateUserById(actualUser.getAugentID(), updatedUser);
 
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }

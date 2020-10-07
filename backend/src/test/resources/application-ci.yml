@@ -1,13 +1,11 @@
+# credentials for test database
 spring:
-  profiles:
-    active: test
   datasource:
     driverClassName: org.postgresql.Driver
-    url: "jdbc:postgresql://localhost:5432/blokatugent_test"
+    url: "jdbc:postgresql://db:5432/blokatugent_test"
     username: postgres
     password: postgres
   flyway: # For automatic flyway migration integration with spring boot
-    url: "jdbc:postgresql://localhost:5432/blokatugent_test"
-    baseline-on-migrate: true
+    url: "jdbc:postgresql://db:5432/blokatugent_test"
     user: postgres
     password: postgres

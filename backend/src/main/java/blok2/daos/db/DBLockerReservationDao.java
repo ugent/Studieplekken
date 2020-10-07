@@ -48,11 +48,10 @@ public class DBLockerReservationDao extends DAO implements ILockerReservationDao
             List<LockerReservation> res = new ArrayList<>();
 
             String query = Resources.databaseProperties.getString("get_locker_reservations_where_<?>");
-            query = query.replace("<?>", "metaphone(CONCAT(augentpreferredgivenname, ' ', augentpreferredsn), 10) = metaphone(?, 10) or metaphone(CONCAT(augentpreferredgivenname, ' ', augentpreferredsn), 10) = metaphone(?, 10)");
+            query = query.replace("<?>", "UPPER(CONCAT(augentpreferredgivenname, ' ', augentpreferredsn)) LIKE '%' || UPPER(?) || '%'");
 
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, name);
-            pstmt.setString(2, name);
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
@@ -66,7 +65,7 @@ public class DBLockerReservationDao extends DAO implements ILockerReservationDao
 
             if (res.size() == 0) {
                 query = Resources.databaseProperties.getString("get_locker_reservations_where_<?>");
-                query = query.replace("<?>", "metaphone(augentpreferredgivenname, 10) = metaphone(? , 5) or metaphone(augentpreferredsn, 10) = metaphone(? , 5)");
+                query = query.replace("<?>", "UPPER(augentpreferredgivenname) LIKE UPPER(?) or UPPER(augentpreferredsn) LIKE '%' || UPPER(?) || '%'");
 
                 pstmt = conn.prepareStatement(query);
                 pstmt.setString(1, name);

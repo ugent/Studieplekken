@@ -36,8 +36,7 @@ public class CalendarPeriodController {
     }
 
     @GetMapping("/{locationName}")
-    public List<CalendarPeriod> getCalendarPeriodsOfLocation(@PathVariable("locationName") String locationName)
-            throws SQLException {
+    public List<CalendarPeriod> getCalendarPeriodsOfLocation(@PathVariable("locationName") String locationName) {
         try {
             return calendarPeriodDao.getCalendarPeriodsOfLocation(locationName);
         } catch (SQLException e) {
@@ -112,13 +111,10 @@ public class CalendarPeriodController {
     /**
      * Analyzing means:
      * - all periods to be updated need to be for the same location
-     * - no periods in 'to' may overlap
-     * - all periods need to end after the start
-     * <p>
-     * Prerequisites:
-     * - The parameter 'to' needs to be sorted based on 'startsAt' as date
-     * (not the comparison of the string 'startsAt', but compare the date)
-     * - 'to' is not empty
+     * - some checks on each period are performed:
+     *     1. checking the formats of startsAt/endsAt, openingTime/closingTime and reservableFrom
+     *     2. endsAt may not be before startsAt
+     *     3. closingTime may not be before openingTime
      * <p>
      * Special remarks:
      * - If the analysis has been done and all requisites are met, updating
@@ -132,7 +128,6 @@ public class CalendarPeriodController {
                                                  List<CalendarPeriod> to) throws SQLException, ParseException {
         // setup
         Location expectedLocation = locationDao.getLocation(locationName);
-        Date lastEnd = null;
 
         // analyze the periods
         for (CalendarPeriod period : to) {
@@ -143,9 +138,10 @@ public class CalendarPeriodController {
                         HttpStatus.CONFLICT, "Different locations in request");
             }
 
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-            Date startDate = format.parse(period.getStartsAt() + " " + period.getOpeningTime());
-            Date endDate = format.parse(period.getEndsAt() + " " + period.getClosingTime());
+            // by parsing, we automatically check the string formats
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            Date startDate = format.parse(period.getStartsAt());
+            Date endDate = format.parse(period.getEndsAt());
 
             // check if the ends of all periods are after the start
             if (endDate.getTime() < startDate.getTime()) {
@@ -154,14 +150,20 @@ public class CalendarPeriodController {
                         HttpStatus.CONFLICT, "StartsAt must be before EndsAt");
             }
 
-            // make sure no periods overlap
-            if (lastEnd != null && lastEnd.getTime() > startDate.getTime()) {
-                logger.log(Level.SEVERE, "analyzeAndUpdateCalendarPeriods, overlapping periods");
+            // check if closingTime is not before the openingTime
+            // this is done by using the same date, but different times
+            format = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+            startDate = format.parse(period.getStartsAt() + " " + period.getOpeningTime());
+            endDate = format.parse(period.getStartsAt() + " " + period.getClosingTime());
+
+            if (endDate.getTime() < startDate.getTime()) {
+                logger.log(Level.SEVERE, "analyzeAndUpdateCalendarPeriods, closingTime was before openingTime");
                 throw new ResponseStatusException(
-                        HttpStatus.CONFLICT, "Overlapping periods");
+                        HttpStatus.CONFLICT, "OpeningTime must be before closingTime");
             }
 
-            lastEnd = endDate;
+            // check if reservable from is parsable
+            format.parse(period.getReservableFrom());
         }
 
         // delete all 'from' and add 'to'

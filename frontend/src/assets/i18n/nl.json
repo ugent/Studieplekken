@@ -1,4 +1,14 @@
 {
+  "calendar": {
+    "previous": "Vorige",
+    "today": "Vandaag",
+    "next": "Volgende",
+
+    "month": "Maand",
+    "week": "Week",
+    "day": "Dag"
+  },
+
   "dashboard": {
     "address": "Adres",
     "description": "Omschrijving",
@@ -143,7 +153,9 @@
           "wrongCalendarPeriodFormatMessage": "Niet alle periodes zijn correct ingevuld",
           "successMessage": "Het wijzigen van de kalender is succesvol verlopen",
           "successButNoChangesMessage": "Er waren geen veranderingen nodig",
-          "errorMessage": "Het aanpassen van de kalender is mislukt. Er is iets misgegaan."
+          "errorMessage": "Het aanpassen van de kalender is mislukt. Er is iets misgegaan.",
+
+          "noCalendarPeriodsForLocation": "Op dit moment zijn er nog geen periodes voor de locatie beschikbaar."
         }
       },
 
@@ -164,7 +176,7 @@
         "activeTagsInformation": "Hieronder is een lijst gegeven van de tags die beschikbaar zijn.",
         "updateTagsInformation": "Om de tags te wijzigen, klik op de knop rechts.",
 
-        "updateTagsButton": "Wijzig de actieve tags",
+        "updateTagsButton": "Wijzig de tags",
 
         "updateTagsConfigurationModal": {
           "title": "Wijzig de tags van de locatie",
@@ -172,7 +184,7 @@
           "comboboxTitle": "Tags van de locatie",
 
           "success": "Het is gelukt om de tags voor '{locationName}' te wijzigen",
-          "error": "Er is iets misgelopen tijdens het wijzigen van de tags die toegekend zijn aan '{locationName}'."
+          "error": "Er is iets misgelopen tijdens het wijzigen van de tags van '{locationName}'."
         },
 
         "noTagsSelected": "Op dit moment zijn er geen tags voor deze locatie geselecteerd."
@@ -196,7 +208,9 @@
           "wrongCalendarPeriodFormatMessage": "Niet alle periodes zijn correct ingevuld",
           "successMessage": "Het wijzigen van de kalender is succesvol verlopen",
           "successButNoChangesMessage": "Er waren geen veranderingen nodig",
-          "errorMessage": "Het aanpassen van de kalender is mislukt. Er is iets misgegaan."
+          "errorMessage": "Het aanpassen van de kalender is mislukt. Er is iets misgegaan.",
+
+          "noCalendarPeriodsForLockers": "Op dit moment zijn er nog geen periodes voor lockerreservaties beschikbaar."
         }
       },
 

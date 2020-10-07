@@ -1,4 +1,14 @@
 {
+  "calendar": {
+    "previous": "Previous",
+    "today": "Today",
+    "next": "Next",
+
+    "month": "Month",
+    "week": "Week",
+    "day": "Day"
+  },
+
   "dashboard": {
     "address": "Address",
     "description": "Description",
@@ -143,7 +153,9 @@
           "wrongCalendarPeriodFormatMessage": "Not all periods are filled in correctly",
           "successMessage": "Successfully updated the calendar",
           "successButNoChangesMessage": "No changed were required",
-          "errorMessage": "Update was not successful. Something went wrong."
+          "errorMessage": "Update was not successful. Something went wrong.",
+
+          "noCalendarPeriodsForLocation": "At the moment, there are no periods for the location."
         }
       },
 
@@ -164,15 +176,15 @@
         "activeTagsInformation": "Below, a list with the available tags is given.",
         "updateTagsInformation": "To change the tags, click on the button to the right.",
 
-        "updateTagsButton": "Update the assigned tags",
+        "updateTagsButton": "Update the tags",
 
         "updateTagsConfigurationModal": {
           "title": "Change tags for location",
-          "body": "In the dropdown below, select all the tags you would like to assign to '{locationName}'.",
+          "body": "In the dropdown below, select all the tags you would like to set for '{locationName}'.",
           "comboboxTitle": "Tags of location",
 
-          "success": "Successfully updated the tags assigned to '{locationName}'",
-          "error": "Something went wrong while updating the tags assigned to '{locationName}'."
+          "success": "Successfully updated the tags for '{locationName}'",
+          "error": "Something went wrong while updating the tags for '{locationName}'."
         },
 
         "noTagsSelected": "At the moment, there are no tags selected."
@@ -196,7 +208,9 @@
           "wrongCalendarPeriodFormatMessage": "Not all periods are filled in correctly",
           "successMessage": "Successfully updated the calendar",
           "successButNoChangesMessage": "No changed were required",
-          "errorMessage": "Update was not successful. Something went wrong."
+          "errorMessage": "Update was not successful. Something went wrong.",
+
+          "noCalendarPeriodsForLockers": "At the moment, there are no periods for the lockers."
         }
       },
 

@@ -5,6 +5,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {LocationTag} from '../../../../shared/model/LocationTag';
 import {MatSelectChange} from '@angular/material/select';
 import {TagsService} from '../../../../services/api/tags/tags.service';
+import {LocationService} from '../../../../services/api/locations/location.service';
 import {FormControl} from '@angular/forms';
 import {LocationDetailsService} from '../../../../services/single-point-of-truth/location-details/location-details.service';
 import {matSelectionChanged} from '../../../../shared/GeneralFunctions';
@@ -21,9 +22,9 @@ export class LocationTagsManagementComponent implements OnInit {
   currentLang: string;
 
   tagsFormControl: FormControl = new FormControl([]);
-  matSelectSelection: LocationTag[]; // this set upon a selectionChange() of the mat-selection
-  tagsThatAreAvailable: LocationTag[]; // these tags are assignable to the location (retrieved from backend)
-  tagsThatAreSelected: LocationTag[]; // these tags are actually set on the location (retrieved from backend)
+  matSelectSelection: LocationTag[];    // this set upon a selectionChange() of the mat-selection
+  allTags: LocationTag[];               // these tags are assignable to the location (retrieved from backend)
+  tagsThatAreSelected: LocationTag[];   // these tags are actually set on the location (retrieved from backend)
 
   tagsSelectionIsUpdatable = false;
 
@@ -31,6 +32,7 @@ export class LocationTagsManagementComponent implements OnInit {
 
   constructor(private translate: TranslateService,
               private tagsService: TagsService,
+              private locationService: LocationService,
               private locationDetailsService: LocationDetailsService) { }
 
   ngOnInit(): void {
@@ -41,17 +43,17 @@ export class LocationTagsManagementComponent implements OnInit {
       }
     );
 
+    this.tagsService.getAllTags().subscribe(
+      next => {
+        this.allTags = next;
+      }
+    );
+
     this.location.subscribe(
       (next) => {
         if (next.name !== '') {
           this.locationName = next.name;
-
-          this.tagsService.getAllTags().subscribe(
-          (next) => {
-            this.tagsThatAreAvailable = next;
-          });
           this.tagsThatAreSelected = next.assignedTags;
-
           this.tagsFormControl = new FormControl(this.tagsThatAreSelected);
         }
       }
@@ -66,7 +68,7 @@ export class LocationTagsManagementComponent implements OnInit {
 
   updateTags(): void {
     this.successUpdatingTagsConfiguration = null;
-    this.tagsService.assignTagsToLocation(this.locationName, this.matSelectSelection).subscribe(
+    this.locationService.setupTagsForLocation(this.locationName, this.matSelectSelection).subscribe(
       () => {
         this.successUpdatingTagsConfiguration = true;
         // reload the location

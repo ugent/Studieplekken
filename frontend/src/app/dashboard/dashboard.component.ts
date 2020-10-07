@@ -6,7 +6,7 @@ import {TagsService} from '../services/api/tags/tags.service';
 import {TranslateService} from '@ngx-translate/core';
 import {FormControl} from '@angular/forms';
 import {MatSelectChange} from '@angular/material/select';
-import {AuthenticationService} from "../services/authentication/authentication.service";
+import {AuthenticationService} from '../services/authentication/authentication.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,9 +16,7 @@ import {AuthenticationService} from "../services/authentication/authentication.s
 export class DashboardComponent implements OnInit {
   locations: Location[];
   filteredLocations: Location[];
-
-  enableClearButton = false;
-  backupFilterForAfterClear: Location[];
+  filteredLocationsBackup: Location[];
 
   tags: LocationTag[];
   matSelectFormControl: FormControl;
@@ -50,7 +48,7 @@ export class DashboardComponent implements OnInit {
       (next) => {
         this.locations = next;
         this.filteredLocations = next;
-        this.backupFilterForAfterClear = next;
+        this.filteredLocationsBackup = next;
         this.successOnRetrievingLocations = true;
       }, () => {
         this.successOnRetrievingLocations = false;
@@ -60,7 +58,6 @@ export class DashboardComponent implements OnInit {
     this.tagsService.getAllTags().subscribe(
       (next) => {
         this.tags = next;
-        this.matSelectFormControl = new FormControl(next);
       }
     );
   }
@@ -71,34 +68,41 @@ export class DashboardComponent implements OnInit {
 
   onSelectionChange(event: MatSelectChange): void {
     const value: LocationTag[] = event.value;
-    this.filteredLocations = [];
 
-    this.locations.forEach(location => {
-      for (const tag of location.assignedTags) {
-        if (value.find(v => v.tagId === tag.tagId)) {
-          this.filteredLocations.push(location);
-          break;
+    // If no tags to filter are selected, show all locations
+    if (value.length === 0) {
+      this.filteredLocations = this.locations;
+    } else {
+      this.filteredLocations = [];
+
+      this.locations.forEach(location => {
+        for (const tag of value) {
+          // if the filtered tag is not assigned to a certain location ...
+          if (location.assignedTags.find(v => v.tagId === tag.tagId) === undefined) {
+            return; // ... then check if next location may be added to the filtered locations
+          }
         }
-      }
-    });
+        // if all selected tags in the filter were found in the location, push the location
+        // else, the lambda was already returned and we wouldn't have gotten here.
+        this.filteredLocations.push(location);
+      });
+    }
 
-    this.backupFilterForAfterClear = this.filteredLocations;
+    this.filteredLocationsBackup = this.filteredLocations;
   }
 
   onSearchEnter(): void {
     this.filteredLocations = [];
-    for (const location of this.backupFilterForAfterClear) {
+    for (const location of this.filteredLocationsBackup) {
       if (location.name.toUpperCase().includes(this.locationSearch.toUpperCase())) {
         this.filteredLocations.push(location);
       }
     }
-
-    this.enableClearButton = true;
   }
 
   onClearSearch(): void {
-    this.filteredLocations = this.backupFilterForAfterClear;
-    this.enableClearButton = false;
+    this.filteredLocations = this.locations;
+    this.matSelectFormControl = new FormControl([]);
     this.locationSearch = '';
   }
 }
