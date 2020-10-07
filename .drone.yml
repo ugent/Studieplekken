@@ -11,6 +11,7 @@ steps:
       - apt-get update -y && apt-get install netcat -y
       - ./scripts/wait_for_service db 5432
       - cd backend
+      - gradle flywayRepair
       - gradle assemble
       - gradle check
 
