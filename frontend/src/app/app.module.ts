@@ -148,12 +148,12 @@ const routes: Routes = [
       {
         path: 'locations',
         component: LocationsManagementComponent,
-        canActivate: [AuthenticationGuardService, AuthenticationGuardService]
+        canActivate: [AuthenticationGuardService]
       },
       {
         path: 'locations/:locationName',
         component: LocationDetailsManagementComponent,
-        canActivate: [AuthenticationGuardService, AuthenticationGuardService]
+        canActivate: [AuthenticationGuardService]
       },
       {
         path: 'tags',
