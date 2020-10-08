@@ -17,6 +17,7 @@
     "location": "Locatie",
     "numberOfLockers": "Aantal lockers",
     "numberOfSeats": "Aantal plaatsen",
+    "noLocations": "Helaas zijn er op dit moment geen locaties beschikbaar",
 
     "locationDetails": {
       "info": "Algemene informatie over deze locatie:",
