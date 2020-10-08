@@ -13,6 +13,7 @@
     "address": "Address",
     "description": "Description",
     "details": "Details",
+    "tags": "Tags",
     "gotoDashboard": "Please navigate to the dashboard to select a location's details.",
     "location": "Location",
     "numberOfLockers": "Number of lockers",
@@ -65,6 +66,7 @@
     },
 
     "optional": "Optional",
+    "notAvailableAbbreviation": "n/a",
 
     "waitingForServer": "Waiting for response of server..."
   },
