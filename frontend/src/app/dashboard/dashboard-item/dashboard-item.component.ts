@@ -4,8 +4,7 @@ import {vars} from '../../../environments/environment';
 import {LocationService} from '../../services/api/locations/location.service';
 import {TranslateService} from '@ngx-translate/core';
 import {LocationTag} from '../../shared/model/LocationTag';
-import {TagsService} from '../../services/api/tags/tags.service';
-import {ApplicationTypeFunctionalityService} from "../../services/functionality/application-type/application-type-functionality.service";
+import {ApplicationTypeFunctionalityService} from '../../services/functionality/application-type/application-type-functionality.service';
 
 @Component({
   selector: 'app-dashboard-item',
