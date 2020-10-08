@@ -14,7 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
+
 
 /**
  * This controller handles all requests related to users.
@@ -122,8 +122,9 @@ public class AccountController {
     @PutMapping("/{id}")
     public void updateUser(@PathVariable("id") String id, @RequestBody User user) {
         try {
+            User old = accountDao.getUserById(id);
             accountDao.updateUserById(id, user);
-            logger.info(String.format("Updated user %s", user.getAugentID()));
+            logger.info(String.format("Updated user %s from %s to %s", id, old, user));
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));

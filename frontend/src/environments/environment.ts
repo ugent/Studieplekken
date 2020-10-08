@@ -90,19 +90,10 @@ export const penaltyEventCodeForManualEntry = 16663;
 /*
  * The roles that are available in the application
  *
- * Important: make sure that the roles in 'rolesArray'
- * are put in the 'Role' enum as well!
- *
- * And, do not forget to translate the role if you would
+ * Do not forget to translate the role if you would
  * be adding a role (<lang>.json -> general.roles)
  */
-export const rolesArray = ['ADMIN', 'EMPLOYEE', 'STUDENT'];
-
-export enum Role {
-  STUDENT = 'STUDENT',
-  EMPLOYEE = 'EMPLOYEE',
-  ADMIN = 'ADMIN'
-}
+export const rolesArray = ['ADMIN'];
 
 /*
  * This variable maps all the supported languages to its

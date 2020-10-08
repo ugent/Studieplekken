@@ -4,14 +4,14 @@
 /*
  * Setup a test user
  */
-insert into public.users(augentid, role, augentpreferredgivenname, augentpreferredsn, penalty_points, mail, password, institution)
-values ('001', 'STUDENT', 'Bram', 'Van de Walle', 0, 'bram.vandewalle@ugent.be', 'secret', 'UGent');
+insert into public.users(augentid, augentpreferredgivenname, augentpreferredsn, penalty_points, mail, password, institution, admin)
+values ('001', 'Bram', 'Van de Walle', 0, 'bram.vandewalle@ugent.be', 'secret', 'UGent', true);
 
 /*
  * setup second test user
  */
-insert into public.users(augentid, role, augentpreferredgivenname, augentpreferredsn, penalty_points, mail, password, institution)
-values ('002', 'STUDENT$EMPLOYEE', 'Ruben_van_DSA', 'DF', 0, 'rdf@ugent.be', 'secret', 'UGent');
+insert into public.users(augentid, augentpreferredgivenname, augentpreferredsn, penalty_points, mail, password, institution, admin)
+values ('002', 'Ruben_van_DSA', 'DF', 0, 'rdf@ugent.be', 'secret', 'UGent', true);
 
 /*
  * Setup two test locations with an authority and add 2nd test user to the authority

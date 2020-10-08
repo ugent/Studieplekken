@@ -29,7 +29,6 @@ public class TestDBScannerLocationDao extends TestDao {
     private User testUser1;
     private User testUser2;
 
-    private Authority authority;
     private Location testLocation1;
     private Location testLocation2;
 
@@ -42,10 +41,10 @@ public class TestDBScannerLocationDao extends TestDao {
     @Override
     public void populateDatabase() throws SQLException {
         // Setup test objects
-        testUser1 = TestSharedMethods.employeeAdminTestUser();
-        testUser2 = TestSharedMethods.studentEmployeeTestUser();
+        testUser1 = TestSharedMethods.adminTestUser();
+        testUser2 = TestSharedMethods.studentTestUser();
 
-        authority = TestSharedMethods.insertTestAuthority(authorityDao);
+        Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
         testLocation1 = TestSharedMethods.testLocation(authority.getAuthorityId());
         testLocation2 = TestSharedMethods.testLocation2(authority.getAuthorityId());
 

@@ -1,6 +1,5 @@
 package blok2.model.users;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 
@@ -17,7 +16,7 @@ public class User implements Cloneable {
     private String institution;
     private String augentID;
     private int penaltyPoints;
-    private Role[] roles;
+    private boolean admin;
 
     public User() {
 
@@ -33,7 +32,7 @@ public class User implements Cloneable {
                 Objects.equals(mail.toLowerCase(), user.mail.toLowerCase()) &&
                 Objects.equals(institution, user.institution) &&
                 Objects.equals(augentID, user.augentID) &&
-                Arrays.equals(roles, user.roles);
+                admin == user.admin;
     }
 
     @Override
@@ -43,24 +42,7 @@ public class User implements Cloneable {
 
     public User clone() {
         try {
-            User c = (User) super.clone();
-
-            c.roles = new Role[roles.length];
-            System.arraycopy(roles, 0, c.roles, 0, roles.length);
-
-            return c;
-        } catch (CloneNotSupportedException e) {
-            return null;
-        }
-    }
-
-    public User cloneToSendableUser() {
-        try {
-            User c = (User) super.clone();
-            c.password = "";
-            c.roles = new Role[roles.length];
-            System.arraycopy(roles, 0, c.roles, 0, roles.length);
-            return c;
+            return (User) super.clone();
         } catch (CloneNotSupportedException e) {
             return null;
         }
@@ -92,12 +74,12 @@ public class User implements Cloneable {
         return penaltyPoints;
     }
 
-    public Role[] getRoles() {
-        return roles;
-    }
-
     public String getPassword() {
         return password;
+    }
+
+    public boolean isAdmin() {
+        return admin;
     }
 
     public void setAugentID(String augentID) {
@@ -128,8 +110,8 @@ public class User implements Cloneable {
         this.penaltyPoints = penaltyPoints;
     }
 
-    public void setRoles(Role[] roles) {
-        this.roles = roles;
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
     }
 
 //</editor-fold>
@@ -143,9 +125,8 @@ public class User implements Cloneable {
                 ", password='" + password + '\'' +
                 ", institution='" + institution + '\'' +
                 ", augentID='" + augentID + '\'' +
-                ", penaltyPoints=" + penaltyPoints +
-                //", barcode='" + barcode + '\'' +
-                ", roles=" + Arrays.toString(roles) +
+                ", penaltyPoints='" + penaltyPoints + '\'' +
+                ", admin='" + admin + '\'' +
                 '}';
     }
 

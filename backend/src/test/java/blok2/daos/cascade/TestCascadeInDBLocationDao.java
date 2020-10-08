@@ -13,9 +13,7 @@ import blok2.model.reservables.Locker;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.reservations.LockerReservation;
 import blok2.model.users.User;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -87,8 +85,8 @@ public class TestCascadeInDBLocationDao extends TestDao {
         // Setup test objects
         authority = TestSharedMethods.insertTestAuthority(authorityDao);
         testLocation = TestSharedMethods.testLocation(authority.getAuthorityId());
-        testUser1 = TestSharedMethods.studentEmployeeTestUser();
-        testUser2 = TestSharedMethods.employeeAdminTestUser();
+        testUser1 = TestSharedMethods.studentTestUser();
+        testUser2 = TestSharedMethods.adminTestUser();
 
         testLocationReservation1 = new LocationReservation(testLocation, testUser1, CustomDate.now());
         testLocationReservation2 = new LocationReservation(testLocation, testUser2, CustomDate.now());

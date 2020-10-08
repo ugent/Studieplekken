@@ -98,7 +98,7 @@ with recursive x as (
     where week + 1 <= 5
 ), y as (
 	select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
-		, u.augentid, u.role
+		, u.augentid, u.admin
 		, lr.date, lr.location_name, lr.attended, lr.user_augentid
 		, coalesce(floor(sum(
         	case
@@ -118,18 +118,18 @@ with recursive x as (
 			on floor(extract(days from (now() - to_timestamp(pb.timestamp, 'YYYY-MM-DD HH24\:MI\:SS'))) / 7) = x.week
 	where <?>
 	group by u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
-		, u.augentid, u.role
+		, u.augentid, u.admin
 		, lr.date, lr.location_name, lr.attended, lr.user_augentid
 )
 select y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
-	 , y.augentid, y.role, y.penalty_points
+	 , y.augentid, y.admin, y.penalty_points
 	 , y.date, y.location_name, y.attended, y.user_augentid
 	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address, l.authority_id
 from y
     join public.locations l
         on l.name = y.location_name
 group by y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
-	 , y.augentid, y.role, y.penalty_points
+	 , y.augentid, y.admin, y.penalty_points
 	 , y.date, y.location_name, y.attended, y.user_augentid
 	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address, l.authority_id
 order by l.name;
@@ -217,7 +217,7 @@ with recursive x as (
     from x
     where week + 1 <= 5
 )
-select u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn
+select u.augentid, u.admin, u.augentpreferredgivenname, u.augentpreferredsn
     , u.mail, u.password, u.institution
     , coalesce(floor(sum(
         case
@@ -234,12 +234,12 @@ from public.users u
     left join x
         on floor(extract(days from (now() - to_timestamp(b.timestamp, 'YYYY-MM-DD HH24\:MI\:SS'))) / 7) = x.week
 where <?>
-group by u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.mail, u.password, u.institution
+group by u.augentid, u.admin, u.augentpreferredgivenname, u.augentpreferredsn, u.mail, u.password, u.institution
 order by u.augentpreferredsn, u.augentpreferredgivenname, u.augentid;
 
 -- $update_user
 update public.users
-set mail = ?, augentpreferredsn = ?, augentpreferredgivenname = ?, password = ?, institution = ?, augentid = ?, role = ?, penalty_points = ?
+set mail = ?, augentpreferredsn = ?, augentpreferredgivenname = ?, password = ?, institution = ?, augentid = ?, admin = ?, penalty_points = ?
 where augentid = ?;
 
 -- $count_accounts_with_email
@@ -248,7 +248,7 @@ from public.users
 where LOWER(mail) = LOWER(?);
 
 -- $insert_user
-insert into public.users (mail, augentpreferredsn, augentpreferredgivenname, password, institution, augentid, role, penalty_points)
+insert into public.users (mail, augentpreferredsn, augentpreferredgivenname, password, institution, augentid, admin, penalty_points)
 values (?, ?, ?, ?, ?, ?, ?, ?);
 
 -- $delete_user
@@ -269,7 +269,7 @@ from public.users_to_verify
 where augentid = ?;
 
 -- $insert_user_to_be_verified
-insert into public.users_to_verify (mail, augentpreferredsn, augentpreferredgivenname, password, institution, augentid, role, verification_code, created_timestamp)
+insert into public.users_to_verify (mail, augentpreferredsn, augentpreferredgivenname, password, institution, augentid, admin, verification_code, created_timestamp)
 values (?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 -- $get_user_to_be_verfied_by_verification_code
@@ -328,7 +328,7 @@ from public.authority a
 order by a.name;
 
 -- $authority_get_users
-select u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.penalty_points, u.mail, u.institution
+select u.augentid, u.admin, u.augentpreferredgivenname, u.augentpreferredsn, u.penalty_points, u.mail, u.institution
 from public.users u
          join public.roles_user_authority roles on u.augentid = roles.user_id
          join public.authority a on roles.authority_id = a.authority_id
@@ -370,7 +370,7 @@ with recursive x as (
     where week + 1 <= 5
 ), y as (
 	select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
-		, u.augentid, u.role
+		, u.augentid, u.admin
 		, l.location_name, l.number
 		, lr.user_augentid, lr.key_pickup_date, lr.key_return_date
 		, coalesce(floor(sum(
@@ -394,12 +394,12 @@ with recursive x as (
 			on floor(extract(days from (now() - to_timestamp(pb.timestamp, 'YYYY-MM-DD HH24\:MI\:SS'))) / 7) = x.week
 	where <?>
 	group by u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
-		, u.augentid, u.role
+		, u.augentid, u.admin
 		, l.location_name, l.number
 		, lr.user_augentid, lr.key_pickup_date, lr.key_return_date
 )
 select y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
-     , y.augentid, y.role, y.penalty_points
+     , y.augentid, y.admin, y.penalty_points
      , y.number, y.location_name
      , y.user_augentid, y.key_pickup_date, y.key_return_date
 	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address, l.authority_id
@@ -407,7 +407,7 @@ from y
 	join public.locations l
 		on l.name = y.location_name
 group by y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
-     , y.augentid, y.role, y.penalty_points
+     , y.augentid, y.admin, y.penalty_points
      , y.number, y.location_name
      , y.user_augentid, y.key_pickup_date, y.key_return_date
 	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address, l.authority_id
@@ -481,7 +481,7 @@ with recursive x as (
     select l.location_name, l.number
          , s.name, s.number_of_seats, s.number_of_lockers, s.image_url, s.address, s.authority_id
          , lr.locker_number, lr.key_pickup_date, lr.key_return_date, lr.user_augentid
-         , u.augentid, u.role, u.augentpreferredgivenname, u.augentpreferredsn, u.penalty_points
+         , u.augentid, u.admin, u.augentpreferredgivenname, u.augentpreferredsn, u.penalty_points
          , u.mail, u.password, u.institution
     from public.lockers l
              join public.locations s
@@ -496,7 +496,7 @@ with recursive x as (
 select r.location_name, r.number
      , r.name, r.number_of_seats, r.number_of_lockers, r.image_url, r.address, r.authority_id
      , r.locker_number, r.key_pickup_date, r.key_return_date, r.user_augentid
-     , r.augentid, r.role, r.augentpreferredgivenname, r.augentpreferredsn, r.mail, r.password
+     , r.augentid, r.admin, r.augentpreferredgivenname, r.augentpreferredsn, r.mail, r.password
      , r.institution, coalesce(floor(sum(
         case
             /*
@@ -514,7 +514,7 @@ from lockers r
 group by r.location_name, r.number
         , r.name, r.number_of_seats, r.number_of_lockers, r.image_url, r.address, r.authority_id
         , r.locker_number, r.key_pickup_date, r.key_return_date, r.user_augentid
-        , r.augentid, r.role, r.augentpreferredgivenname, r.augentpreferredsn, r.mail, r.password
+        , r.augentid, r.admin, r.augentpreferredgivenname, r.augentpreferredsn, r.mail, r.password
         , r.institution
 order by r.number;
 
@@ -537,12 +537,6 @@ values (?, ?);
 delete
 from public.lockers
 where location_name = ? and number = ?;
-
-
--- queries for table ROLES
--- $get_roles
-select *
-from public.roles;
 
 
 -- queries for DBPenaltyEventsDao
@@ -668,7 +662,7 @@ with recursive x as (
     from x
     where week + 1 <= 5
 )
-select u.augentid, u.role, u.augentpreferredsn, u.augentpreferredgivenname
+select u.augentid, u.admin, u.augentpreferredsn, u.augentpreferredgivenname
     , u.mail, u.password, u.institution
     , coalesce(floor(sum(
         case
@@ -687,7 +681,7 @@ from public.scanners_location sl
     left join x
               on floor(extract(days from (now() - to_timestamp(pb.timestamp, 'YYYY-MM-DD HH24\:MI\:SS'))) / 7) = x.week
 where sl.location_name = ?
-group by u.augentid, u.role, u.augentpreferredsn, u.augentpreferredgivenname
+group by u.augentid, u.admin, u.augentpreferredsn, u.augentpreferredgivenname
     , u.mail, u.password, u.institution;
 
 -- $delete_scanner_location

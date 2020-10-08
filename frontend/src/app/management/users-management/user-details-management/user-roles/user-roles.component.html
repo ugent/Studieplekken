@@ -20,23 +20,23 @@
 
   <!-- The form containing the checkboxes of the roles, and an update and reset buttons -->
   <div class="container-fluid">
-    <form [formGroup]="rolesFormGroup" (ngSubmit)="submitUpdateUser(user, rolesFormArray.value)">
-      <div class="row" *ngFor="let role of rolesFormArray.controls; let i = index">
+    <form (ngSubmit)="submitUpdateUser()">
+      <div class="row">
         <label formArrayName="roles" >
-          <input type="checkbox" [formControlName]="i">
-          {{'general.roles.' + roles[i] | translate}}
+          <input type="checkbox" [formControl]="admin">
+          {{'general.roles.ADMIN' | translate}}
         </label>
       </div>
 
       <div class="row">
         <div class="pull-right">
           <button type="submit" class="btn btn-primary left-button"
-                  [disabled]="disableRoleUpdateButton(user, rolesFormArray.value)">
+                  [disabled]="disableRoleUpdateButton()">
             {{'management.users.userDetails.roles.updateButton' | translate}}
           </button>
 
-          <button class="btn btn-secondary" (click)="resetRolesFormArrayButtonClick(user)"
-                  [disabled]="disableRoleUpdateButton(user, rolesFormArray.value, true)">
+          <button class="btn btn-secondary" (click)="resetRolesFormArrayButtonClick()"
+                  [disabled]="disableRoleUpdateButton()">
             {{'management.users.userDetails.roles.resetButton' | translate}}
           </button>
         </div>

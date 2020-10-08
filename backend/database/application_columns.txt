@@ -51,14 +51,13 @@ authority_description = description
 
 # columns for table USER
 user_augentid=augentid
-user_role=role
 user_name=augentpreferredgivenname
 user_surname=augentpreferredsn
 user_penalty_points=penalty_points
 user_mail=mail
 user_password=password
 user_institution=institution
-user_barcode=barcode
+user_admin=admin
 
 # columns for table USERS_TO_VERIFY
 utv_augentid=augentid
