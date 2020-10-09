@@ -22,6 +22,7 @@ spring:
     url: "jdbc:postgresql://localhost:5432/blokatugent"
     user: ***REMOVED***
     password: ***REMOVED***
+    baseline-on-migrate: true
 
 # server configuration
 server:
