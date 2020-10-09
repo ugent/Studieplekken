@@ -16,11 +16,11 @@
           <li>{{'dashboard.numberOfSeats' | translate}}: {{location.numberOfSeats}}</li>
           <li>{{'dashboard.numberOfLockers' | translate}}: {{location.numberOfLockers}}</li>
           <li>{{'dashboard.address' | translate}}: {{location.address}}</li>
-          <li>{{tagsInCurrentLang}}</li>
+          <li>{{'dashboard.tags' | translate}}: {{tagsInCurrentLang}}</li>
         </ul>
 
         <!-- Progress bar for reserved seats -->
-        <div class="progress">
+        <div class="progress" *ngIf="showProgressBar">
           <div class="progress-bar" role="progressbar"
                [style.width]="occupation + '%'"
                [attr.aria-valuenow]="occupation"

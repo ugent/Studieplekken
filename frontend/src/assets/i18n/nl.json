@@ -13,10 +13,12 @@
     "address": "Adres",
     "description": "Omschrijving",
     "details": "Details",
+    "tags": "Tags",
     "gotoDashboard": "Gelieve naar het dashboard te navigeren en een locatie te selecteren.",
     "location": "Locatie",
     "numberOfLockers": "Aantal lockers",
     "numberOfSeats": "Aantal plaatsen",
+    "noLocations": "Helaas zijn er op dit moment geen locaties beschikbaar",
 
     "locationDetails": {
       "info": "Algemene informatie over deze locatie:",
@@ -64,6 +66,7 @@
     },
 
     "optional": "Optioneel",
+    "notAvailableAbbreviation": "n.v.t.",
 
     "waitingForServer": "Wachten op antwoord van de server..."
   },

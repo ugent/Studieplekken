@@ -5,6 +5,7 @@ import {LocationService} from '../../services/api/locations/location.service';
 import {TranslateService} from '@ngx-translate/core';
 import {LocationTag} from '../../shared/model/LocationTag';
 import {TagsService} from '../../services/api/tags/tags.service';
+import {ApplicationTypeFunctionalityService} from "../../services/functionality/application-type/application-type-functionality.service";
 
 @Component({
   selector: 'app-dashboard-item',
@@ -23,8 +24,11 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
   currentLang: string;
   tagsInCurrentLang: string; // e.g. 'tag1, tag2, tag3', set by auxiliary setupTagsInCurrentLang()
 
+  showProgressBar: boolean;
+
   constructor(private locationService: LocationService,
-              private translate: TranslateService) { }
+              private translate: TranslateService,
+              private functionalityService: ApplicationTypeFunctionalityService) { }
 
   ngOnInit(): void {
     this.locationService.getNumberOfReservations(this.location).subscribe(next => {
@@ -41,6 +45,8 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
 
     this.assignedTags = this.location.assignedTags;
     this.setupTagsInCurrentLang();
+
+    this.showProgressBar = this.functionalityService.showReservationsFunctionality();
   }
 
   ngAfterViewInit(): void {
@@ -51,7 +57,7 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
   }
 
   setupTagsInCurrentLang(): void {
-    if (this.assignedTags) {
+    if (this.assignedTags && this.assignedTags.length > 0) {
       this.tagsInCurrentLang = '';
 
       this.assignedTags.forEach(tag => {
@@ -63,6 +69,14 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
       });
 
       this.tagsInCurrentLang = this.tagsInCurrentLang.substr(0, this.tagsInCurrentLang.length - 2);
+    } else {
+      this.translate.get('general.notAvailableAbbreviation').subscribe(
+        next => {
+          this.tagsInCurrentLang = next;
+        }, () => {
+          this.tagsInCurrentLang = 'n/a';
+        }
+      );
     }
   }
 }

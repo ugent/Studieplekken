@@ -13,10 +13,12 @@
     "address": "Address",
     "description": "Description",
     "details": "Details",
+    "tags": "Tags",
     "gotoDashboard": "Please navigate to the dashboard to select a location's details.",
     "location": "Location",
     "numberOfLockers": "Number of lockers",
     "numberOfSeats": "Number of seats",
+    "noLocations": "Unfortunately, at this moment there are no locations available.",
 
     "locationDetails": {
       "info": "General information about this location:",
@@ -64,6 +66,7 @@
     },
 
     "optional": "Optional",
+    "notAvailableAbbreviation": "n/a",
 
     "waitingForServer": "Waiting for response of server..."
   },

@@ -17,8 +17,11 @@ export class ManagementComponent implements OnInit {
               private authenticationService: AuthenticationService) { }
 
   ngOnInit(): void {
+    // Show certain functionality depending on type of application
     this.showReservations = this.functionalityService.showReservationsFunctionality();
     this.showPenalties = this.functionalityService.showPenaltyFunctionality();
+
+    // Show certain functionality depending on the role of the user
     this.authenticationService.user.subscribe(
       (next) => {
         this.showTagManagement = next.roles.includes(Role.ADMIN);

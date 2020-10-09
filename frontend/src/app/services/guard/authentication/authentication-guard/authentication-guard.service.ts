@@ -25,14 +25,18 @@ export class AuthenticationGuardService implements CanActivate {
       activate = this.authenticationService.userValue().roles.includes(Role.EMPLOYEE) ||
         this.authenticationService.userValue().roles.includes(Role.ADMIN);
     } else if (url.startsWith('/management')) {
-      activate = this.authenticationService.userValue().roles.includes(Role.EMPLOYEE) ||
-        this.authenticationService.userValue().roles.includes(Role.ADMIN);
+      if (url.includes('/tags')) {
+        activate = this.authenticationService.userValue().roles.includes(Role.ADMIN);
+      } else {
+        activate = this.authenticationService.userValue().roles.includes(Role.EMPLOYEE) ||
+          this.authenticationService.userValue().roles.includes(Role.ADMIN);
+      }
     } else if (url.startsWith('/information')) {
       activate = true;
     }
 
     if (!activate) {
-      this.router.navigate(['/dashboard']).catch(e => console.log);
+      this.router.navigate(['/dashboard']).catch(console.log);
     }
 
     return activate;
