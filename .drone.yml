@@ -12,6 +12,7 @@ steps:
       - ./scripts/wait_for_service db 5432
       - cd backend
       - gradle assemble
+      - gradle flywayRepair
       - gradle check
 
 services:
