@@ -11,8 +11,8 @@ steps:
       - apt-get update -y && apt-get install netcat -y
       - ./scripts/wait_for_service db 5432
       - cd backend
+      - psql -d blokatugent_test -f ./database/reset_schema.sql
       - gradle assemble
-      - gradle flywayRepair
       - gradle check
 
 services:
