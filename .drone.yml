@@ -16,7 +16,7 @@ steps:
 
 services:
   - name: db
-    image: postgres:10-alpine
+    image: postgres:12-alpine
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
