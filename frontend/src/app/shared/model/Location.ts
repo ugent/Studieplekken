@@ -10,7 +10,6 @@ export interface Location {
   authority: Authority;
   descriptionDutch: string;
   descriptionEnglish: string;
-
   assignedTags: LocationTag[];
 }
 

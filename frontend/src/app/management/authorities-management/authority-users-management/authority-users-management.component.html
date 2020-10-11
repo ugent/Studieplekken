@@ -1,0 +1,251 @@
+<div class="container-fluid" *ngIf="authority !== undefined; else waitingForServer">
+  <!-- Title -->
+  <h3>{{('management.authorities.users.title' | translate)
+          .replace('{authorityName}', authority.authorityName)}}</h3>
+
+  <hr>
+
+  <div class="row">
+    <div class="alert alert-info">
+      {{('management.authorities.users.info' | translate)
+          .replace('{authorityName}', authority.authorityName)}}
+
+      <br>
+
+      {{'management.authorities.users.info2' | translate}}
+    </div>
+  </div>
+
+  <div class="row" *ngIf="usersInAuthorityObs | async as users">
+    <table style="width: 100%" *ngIf="users.length > 0; else noUsersInAuthority">
+      <thead>
+      <tr>
+        <th>{{'management.users.searchResult.table.id' | translate}}</th>
+        <th>{{'management.users.searchResult.table.firstName' | translate}}</th>
+        <th>{{'management.users.searchResult.table.lastName' | translate}}</th>
+        <th><!-- Delete --></th>
+      </tr>
+      </thead>
+
+      <tbody >
+      <tr [@rowsAnimation]="" *ngFor="let user of users">
+        <td>{{user.augentID}}</td>
+        <td>{{user.firstName}}</td>
+        <td>{{user.lastName}}</td>
+        <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
+            data-toggle="modal" data-target="#deleteUserFromAuthorityModal"
+            (click)="prepareToDeleteUserFromAuthority(user)">
+          <span class="glyphicon glyphicon-trash"></span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="row" style="margin-top: 20px">
+    <button class="btn btn-primary" data-toggle="modal" data-target="#addUserToAuthorityModal"
+            (click)="prepareToAddUserToAuthority()">
+      {{'management.authorities.users.addNewUser' | translate}}
+    </button>
+  </div>
+</div>
+
+<ng-template #waitingForServer>
+  <div class="alert alert-info">
+    {{'general.waitingForServer' | translate}}
+  </div>
+</ng-template>
+
+<ng-template #noUsersInAuthority>
+  <div class="alert alert-warning">
+    {{'management.authorities.users.noUsersInAuthority' | translate}}
+  </div>
+</ng-template>
+
+<!-- Modal view to add a new user to the authority -->
+<div class="modal fade" id="addUserToAuthorityModal" tabindex="-1" role="dialog"
+     aria-labelledby="addUserToAuthorityModalTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <!-- Modal header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="addUserToAuthorityModalTitle">
+          {{'management.authorities.users.addUserToAuthorityModal.title' | translate}}
+        </h5>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <div class="row">
+          <!-- Info -->
+          <div class="alert alert-info">
+            {{'management.authorities.users.addUserToAuthorityModal.searchInfo' | translate}}
+          </div>
+        </div>
+
+        <div class="container-fluid">
+          <!-- Let the user search by first and last name for a user to add -->
+          <div class="row">
+            <form  [formGroup]="userSearchFormGroup"
+                   (ngSubmit)="searchForUserByFirstAndLastName(firstName.value, lastName.value)">
+
+              <!-- First Name -->
+              <div class="row form-group">
+                <label class="col-lg-3 control-label" for="firstName">
+                  {{'management.users.overview.firstName' | translate}}<span style="color: red; margin-left: 5px;">*</span>
+                </label>
+                <div class="col-lg-8">
+                  <input class="form-control" id="firstName" type="text" formControlName="firstName">
+                </div>
+              </div>
+
+              <!-- First Name -->
+              <div class="row form-group">
+                <label class="col-lg-3 control-label" for="lastName">
+                  {{'management.users.overview.lastName' | translate}}<span style="color: red; margin-left: 5px;">*</span>
+                </label>
+                <div class="col-lg-8">
+                  <input class="form-control" id="lastName" type="text" formControlName="lastName">
+                </div>
+              </div>
+
+              <!-- Search button -->
+              <div class="row">
+                <div class="pull-right">
+                  <!-- Search -->
+                  <button type="submit" class="btn btn-default left-button"
+                          [disabled]="!validForm()">
+                    {{'general.buttons.search' | translate}}
+                  </button>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top: 10px;">
+          <!-- Info -->
+          <div class="alert alert-info">
+            {{'management.authorities.users.addUserToAuthorityModal.info' | translate}}
+          </div>
+        </div>
+
+        <div class="row">
+          <form>
+            <div class="form-group">
+              <label class="col-lg-3 control-label" for="authority">
+                {{'management.authorities.users.addUserToAuthorityModal.selectUser' | translate}}
+              </label>
+              <div class="col-lg-8">
+                <select class="form-control" id="authority" [formControl]="selectedUserFormControl">
+                  <option *ngFor="let user of userSearchResult" [value]="user.augentID">
+                    {{user.firstName + ' ' + user.lastName}}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="row" *ngIf="!selectedUserFormControl.invalid && isValidUserToAdd === false">
+          <p style="color: red">
+            {{'management.authorities.users.addUserToAuthorityModal.isValidUserToAdd' | translate}}
+          </p>
+        </div>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary"
+                [disabled]="!validUserToAdd()"
+                (click)="addUserToAuthority()">
+          {{'general.buttons.add' | translate}}
+        </button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          {{'general.buttons.cancel' | translate}}
+        </button>
+      </div>
+
+      <!-- Feedback to the user -->
+      <div class="container-fluid">
+        <div class="alert alert-info" *ngIf="successAddingAuthority === null || successSearchingUsers === null">
+          {{'general.waitingForServer' | translate}}
+        </div>
+
+        <div class="alert alert-success" *ngIf="successAddingAuthority === true">
+          {{'management.authorities.users.addUserToAuthorityModal.success' | translate}}
+        </div>
+
+        <div class="alert alert-error" *ngIf="successAddingAuthority === false">
+          {{'management.authorities.users.addUserToAuthorityModal.error' | translate}}
+        </div>
+
+        <div class="alert alert-error" *ngIf="successSearchingUsers === false">
+          {{'management.authorities.users.addUserToAuthorityModal.errorSearching' | translate}}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal to ask whether the manager is sure to remove the user from the authority -->
+<div class="modal fade" id="deleteUserFromAuthorityModal" tabindex="-1" role="dialog"
+     aria-labelledby="deleteUserFromAuthorityModalTitle" aria-hidden="true"
+     *ngIf="authority !== undefined"> <!-- Because authority is used, it may not be undefined -->
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <!-- Header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteUserFromAuthorityModalTitle">
+          {{'management.authorities.users.deleteUserFromAuthorityModal.title' | translate}}
+        </h5>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div>
+          <span>{{('management.authorities.users.deleteUserFromAuthorityModal.body' | translate)
+            .replace('{authorityName}', authority.authorityName)}}</span>
+
+          <br><br>
+
+          <ul *ngIf="userPreparedToDelete !== undefined">
+            <li><b style="margin-right: 5px"><i>{{('management.users.searchResult.table.id' | translate) + ':   '}}</i></b>{{userPreparedToDelete.augentID}}</li>
+            <li><b style="margin-right: 5px"><i>{{('management.users.searchResult.table.firstName' | translate) + ':   '}}</i></b>{{userPreparedToDelete.firstName}}</li>
+            <li><b style="margin-right: 5px"><i>{{('management.users.searchResult.table.lastName' | translate)}}</i></b>{{userPreparedToDelete.lastName}}</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary"
+                (click)="deleteUserFromAuthority(userPreparedToDelete.augentID, authority.authorityId)">
+          {{'general.buttons.delete' | translate}}
+        </button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          {{'general.buttons.cancel' | translate}}
+        </button>
+      </div>
+
+      <div class="container-fluid">
+        <div class="alert alert-info" *ngIf="successDeletingAuthority === null">
+          {{'general.waitingForServer' | translate}}
+        </div>
+
+        <div class="alert alert-success" *ngIf="successDeletingAuthority === true">
+          {{'management.authorities.users.deleteUserFromAuthorityModal.success' | translate}}
+        </div>
+
+        <div class="alert alert-error" *ngIf="successDeletingAuthority === false">
+          {{'management.authorities.users.deleteUserFromAuthorityModal.error' | translate}}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

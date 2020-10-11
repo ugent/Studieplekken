@@ -354,7 +354,9 @@ CREATE TABLE public.roles_user_authority
     constraint fk_roles_user_authority_to_authority
         foreign key (authority_id) references public.authority (authority_id),
     constraint fk_roles_user_authority_to_user
-        foreign key (user_id) references public.users (augentid)
+        foreign key (user_id) references public.users (augentid),
+
+    constraint uc_user_authority unique (user_id, authority_id)
 );
 
 ----------------- +-----------------------+

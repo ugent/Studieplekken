@@ -5,6 +5,7 @@ import blok2.model.LocationTag;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import java.util.Objects;
 
 public class Location implements Cloneable {
@@ -84,40 +85,40 @@ public class Location implements Cloneable {
         return name;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public int getNumberOfSeats() {
-        return numberOfSeats;
-    }
-
-    public int getNumberOfLockers() {
-        return numberOfLockers;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAddress() {
+        return address;
     }
 
     public void setAddress(String address) {
         this.address = address;
     }
 
-    public void setImageUrl(String url) {
-        this.imageUrl = url;
+    public int getNumberOfSeats() {
+        return numberOfSeats;
     }
 
     public void setNumberOfSeats(int numberOfSeats) {
         this.numberOfSeats = numberOfSeats;
     }
 
+    public int getNumberOfLockers() {
+        return numberOfLockers;
+    }
+
     public void setNumberOfLockers(int numberOfLockers) {
         this.numberOfLockers = numberOfLockers;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getDescriptionDutch() {
@@ -153,4 +154,5 @@ public class Location implements Cloneable {
     }
 
     //</editor-fold>
+
 }

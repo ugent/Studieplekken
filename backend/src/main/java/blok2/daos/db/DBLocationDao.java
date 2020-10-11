@@ -139,29 +139,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
             try {
                 conn.setAutoCommit(false);
 
-                // delete calendar periods
-                deleteCalendarPeriods(locationName, conn);
-
-                // delete calendar periods for lockers
-                deleteCalendarPeriodsForLockers(locationName, conn);
-
-                // delete scanners_location
-                DBScannerLocationDao.deleteAllScannersOfLocation(locationName, conn);
-
-                // delete location_reservations
-                deleteLocationReservations(locationName, conn);
-
-                // delete penalty_book entries
-                deletePenaltyBookEntries(locationName, conn);
-
-                // delete locker_reservations
-                deleteLockers(locationName, conn);
-
-                // delete tags from location
-                DBLocationTagDao.deleteAllTagsFromLocation(locationName, conn);
-
-                // and finally, delete the location
-                deleteLocation(locationName, conn);
+                deleteLocationWithCascade(locationName, conn);
 
                 conn.commit();
                 conn.setAutoCommit(true);
@@ -172,6 +150,32 @@ public class DBLocationDao extends DAO implements ILocationDao {
                 conn.setAutoCommit(true);
             }
         }
+    }
+
+    public static void deleteLocationWithCascade(String locationName, Connection conn) throws SQLException {
+        // delete calendar periods
+        deleteCalendarPeriods(locationName, conn);
+
+        // delete calendar periods for lockers
+        deleteCalendarPeriodsForLockers(locationName, conn);
+
+        // delete scanners_location
+        DBScannerLocationDao.deleteAllScannersOfLocation(locationName, conn);
+
+        // delete location_reservations
+        deleteLocationReservations(locationName, conn);
+
+        // delete penalty_book entries
+        deletePenaltyBookEntries(locationName, conn);
+
+        // delete locker_reservations
+        deleteLockers(locationName, conn);
+
+        // delete tags from location
+        DBLocationTagDao.deleteAllTagsFromLocation(locationName, conn);
+
+        // and finally, delete the location
+        deleteLocation(locationName, conn);
     }
 
     @Override
@@ -231,6 +235,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
         String imageUrl = rs.getString(Resources.databaseProperties.getString("location_image_url"));
         String address = rs.getString(Resources.databaseProperties.getString("location_address"));
         Authority authority = DBAuthorityDao.createAuthority(rs);
+
         String descriptionDutch = rs.getString(Resources.databaseProperties.getString("location_description_dutch"));
         String descriptionEnglish = rs.getString(Resources.databaseProperties.getString("location_description_english"));
 
@@ -295,34 +300,34 @@ public class DBLocationDao extends DAO implements ILocationDao {
         pstmt.setString(8, location.getDescriptionEnglish());
     }
 
-    private void deleteCalendarPeriods(String locationName, Connection conn) throws SQLException {
+    private static void deleteCalendarPeriods(String locationName, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
                 .getString("delete_calendar_periods_of_location"));
         pstmt.setString(1, locationName);
         pstmt.execute();
     }
 
-    private void deleteCalendarPeriodsForLockers(String locationName, Connection conn) throws SQLException {
+    private static void deleteCalendarPeriodsForLockers(String locationName, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
                 .getString("delete_calendar_periods_for_lockers_of_location"));
         pstmt.setString(1, locationName);
         pstmt.execute();
     }
 
-    private void deleteLocationReservations(String locationName, Connection conn) throws SQLException {
+    private static void deleteLocationReservations(String locationName, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn
                 .prepareStatement(Resources.databaseProperties.getString("delete_location_reservations_of_location"));
         pstmt.setString(1, locationName);
         pstmt.execute();
     }
 
-    private void deletePenaltyBookEntries(String locationName, Connection conn) throws SQLException {
+    private static void deletePenaltyBookEntries(String locationName, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_penalties_of_location"));
         pstmt.setString(1, locationName);
         pstmt.execute();
     }
 
-    private void deleteLockers(String locationName, Connection conn) throws SQLException {
+    private static void deleteLockers(String locationName, Connection conn) throws SQLException {
         deleteLockerReservations(locationName, conn);
 
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_lockers_of_location"));
@@ -330,14 +335,14 @@ public class DBLocationDao extends DAO implements ILocationDao {
         pstmt.execute();
     }
 
-    private void deleteLockerReservations(String locationName, Connection conn) throws SQLException {
+    private static void deleteLockerReservations(String locationName, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn
                 .prepareStatement(Resources.databaseProperties.getString("delete_locker_reservations_in_location"));
         pstmt.setString(1, locationName);
         pstmt.execute();
     }
 
-    private void deleteLocation(String locationName, Connection conn) throws SQLException {
+    private static void deleteLocation(String locationName, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_location"));
         pstmt.setString(1, locationName);
         pstmt.execute();
@@ -366,9 +371,8 @@ public class DBLocationDao extends DAO implements ILocationDao {
         // update penalty_book
         updateForeignKeyOfPenaltyBook(oldLocationName, newLocationName, conn);
 
-        //update location_tags
+        // update location_tags
         updateForeignKeyOfLocationTags(oldLocationName, newLocationName, conn);
-
     }
 
     private void updateForeignKeyOfCalendarPeriods(String oldLocationName, String newLocationName, Connection conn)

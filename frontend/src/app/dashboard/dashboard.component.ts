@@ -63,7 +63,7 @@ export class DashboardComponent implements OnInit {
   }
 
   compareTagsInSelection(tag1: LocationTag, tag2: LocationTag): boolean {
-    return tag1.tagId === tag2.tagId;
+    return !tag1 || !tag2 ? false : tag1.tagId === tag2.tagId;
   }
 
   onSelectionChange(event: MatSelectChange): void {

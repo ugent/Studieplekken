@@ -30,7 +30,6 @@ public class TestDBLockerReservationDao extends TestDao {
     private IAuthorityDao authorityDao;
 
     private Location testLocation;
-    private Authority authority;
     private User testUser1;
     private User testUser2;
     private List<LockerReservation> testLockerReservations;
@@ -38,8 +37,8 @@ public class TestDBLockerReservationDao extends TestDao {
     @Override
     public void populateDatabase() throws SQLException {
         // Setup test objects
-        authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testLocation = TestSharedMethods.testLocation(authority);
+        Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
+        testLocation = TestSharedMethods.testLocation(authority.clone());
         testUser1 = TestSharedMethods.employeeAdminTestUser();
         testUser2 = TestSharedMethods.studentEmployeeTestUser();
 

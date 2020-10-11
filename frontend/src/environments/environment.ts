@@ -16,6 +16,14 @@ export const api = {
   whoAmI: '/whoAmI',
   logout: '/logout',
 
+  // AUTHORITY
+  authorities: '/api/authority',
+  authority: '/api/authority/{authorityId}',
+  addAuthority: '/api/authority',
+  updateAuthority: '/api/authority/{authorityId}',
+  deleteAuthority: '/api/authority/{authorityId}',
+  locationsInAuthoritiesOfUser: '/api/authority/users/{userId}/locations',
+
   // CALENDAR_PERIODS
   calendarPeriods: '/api/locations/calendar/{locationName}',
   addCalendarPeriods: '/api/locations/calendar',
@@ -45,9 +53,6 @@ export const api = {
   locationReservationsOfLocationFromAndUntil: '/api/locations/reservations/fromAndUntil',
   deleteLocationReservation: '/api/locations/reservations',
 
-  // LOCKERS
-  lockersStatusesOfLocation: '/api/lockers/status/{locationName}',
-
   // LOCKER_RESERVATIONS
   lockerReservationsOfUser: '/api/lockers/reservations/user',
   lockerReservationsOfLocation: '/api/lockers/reservations/location',
@@ -62,6 +67,9 @@ export const api = {
   usersByFirstAndLast: '/api/account/firstAndLastName',
   changePassword: '/api/account/password',
   updateUser: '/api/account/{id}',
+
+  // LOCKERS
+  lockersStatusesOfLocation: '/api/lockers/status/{locationName}',
 
   // PENALTY_BOOK
   penaltiesByUserId: '/api/penalties/{id}',
@@ -79,6 +87,12 @@ export const api = {
   addTag: '/api/tags',
   updateTag: '/api/tags',
   deleteTag: '/api/tags/{tagId}',
+
+  // ROLES_USER_AUTHORITY
+  usersInAuthority: '/api/authority/{authorityId}/users',
+  authoritiesOfUser: '/api/authority/users/{userId}',
+  addUserToAuthority: '/api/authority/{authorityId}/user/{userId}',
+  deleteUserFromAuthority: '/api/authority/{authorityId}/user/{userId}'
 };
 
 export const vars = {

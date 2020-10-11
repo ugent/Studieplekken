@@ -2,6 +2,7 @@ package blok2.controllers;
 
 import blok2.daos.IAuthorityDao;
 import blok2.model.Authority;
+import blok2.model.reservables.Location;
 import blok2.model.users.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,10 @@ public class AuthorityController {
         this.authorityDao = authorityDao;
     }
 
+    // *************************************
+    // *   CRUD operations for AUTHORITY   *
+    // *************************************/
+
     @GetMapping
     public List<Authority> getAllAuthorities() {
         try {
@@ -40,17 +45,6 @@ public class AuthorityController {
     public Authority getAuthority(@PathVariable int authorityId) {
         try {
             return authorityDao.getAuthorityByAuthorityId(authorityId);
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
-    }
-
-    @GetMapping("/{authorityId}/users")
-    public List<User> getUsersFromAuthority(@PathVariable int authorityId) {
-        try {
-            return authorityDao.getUsersFromAuthority(authorityId);
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
@@ -95,6 +89,43 @@ public class AuthorityController {
         }
     }
 
+    // ************************************************
+    // *   CRUD operations for ROLES_USER_AUTHORITY   *
+    // ************************************************/
+
+    @GetMapping("/{authorityId}/users")
+    public List<User> getUsersFromAuthority(@PathVariable int authorityId) {
+        try {
+            return authorityDao.getUsersFromAuthority(authorityId);
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @GetMapping("/users/{userId}")
+    public List<Authority> getAuthoritiesFromUser(@PathVariable("userId") String id) {
+        try {
+            return authorityDao.getAuthoritiesFromUser(id);
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @GetMapping("/users/{userId}/locations")
+    public List<Location> getLocationsInAuthoritiesOfUser(@PathVariable("userId") String userId) {
+        try {
+            return authorityDao.getLocationsInAuthoritiesOfUser(userId);
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
     @PostMapping("/{authorityId}/user/{userId}")
     public void addUserToAuthority(@PathVariable int authorityId, @PathVariable String userId) {
         try {
@@ -108,9 +139,9 @@ public class AuthorityController {
     }
 
     @DeleteMapping("/{authorityId}/user/{userId}")
-    public void removeUserFromAuthority(@PathVariable int authorityId, @PathVariable String userId) {
+    public void deleteUserFromAuthority(@PathVariable int authorityId, @PathVariable String userId) {
         try {
-            authorityDao.removeUserFromAuthority(userId, authorityId);
+            authorityDao.deleteUserFromAuthority(userId, authorityId);
             logger.info(String.format("Removing user %s from authority %d", userId, authorityId));
         } catch (SQLException e) {
             logger.error(e.getMessage());

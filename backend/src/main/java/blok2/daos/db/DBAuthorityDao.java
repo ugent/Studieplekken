@@ -1,10 +1,9 @@
 package blok2.daos.db;
 
-import blok2.daos.IAccountDao;
 import blok2.daos.IAuthorityDao;
-import blok2.daos.ILocationDao;
 import blok2.helpers.Resources;
 import blok2.model.Authority;
+import blok2.model.reservables.Location;
 import blok2.model.users.User;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +13,10 @@ import java.util.List;
 
 @Service
 public class DBAuthorityDao extends DAO implements IAuthorityDao {
-    IAccountDao accountDao;
-    ILocationDao locationDao;
 
-    public DBAuthorityDao(IAccountDao iAccountDao) {
-        this.accountDao = iAccountDao;
-    }
+    // *************************************
+    // *   CRUD operations for AUTHORITY   *
+    // *************************************/
 
     @Override
     public List<Authority> getAllAuthorities() throws SQLException {
@@ -35,43 +32,6 @@ public class DBAuthorityDao extends DAO implements IAuthorityDao {
             }
 
             return authorities;
-        }
-    }
-
-    @Override
-    public List<Authority> getAuthoritiesFromUser(String augentId) throws SQLException {
-        try (Connection conn = adb.getConnection()) {
-            List<Authority> authorities = new ArrayList<>();
-
-            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("authorities_from_user"));
-            pstmt.setString(1, augentId);
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                Authority authority = createAuthority(rs);
-                authorities.add(authority);
-            }
-
-            return authorities;
-        }
-    }
-
-    @Override
-    public List<User> getUsersFromAuthority(int authorityId) throws SQLException {
-        try (Connection conn = adb.getConnection()) {
-            List<User> users = new ArrayList<>();
-
-            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("authority_get_users"));
-            pstmt.setInt(1, authorityId);
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                User user = DBAccountDao.createUser(rs, false);
-                users.add(user);
-            }
-
-            return users;
-
         }
     }
 
@@ -146,9 +106,62 @@ public class DBAuthorityDao extends DAO implements IAuthorityDao {
         }
     }
 
-    private void preparedAuthorityInsertOrUpdate(Authority authority, PreparedStatement pstmt) throws SQLException {
-        pstmt.setString(1, authority.getAuthorityName());
-        pstmt.setString(2, authority.getDescription());
+    // ************************************************
+    // *   CRUD operations for ROLES_USER_AUTHORITY   *
+    // ************************************************/
+
+    @Override
+    public List<Authority> getAuthoritiesFromUser(String augentId) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            List<Authority> authorities = new ArrayList<>();
+
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("authorities_from_user"));
+            pstmt.setString(1, augentId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Authority authority = createAuthority(rs);
+                authorities.add(authority);
+            }
+
+            return authorities;
+        }
+    }
+
+    @Override
+    public List<Location> getLocationsInAuthoritiesOfUser(String augentId) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            List<Location> locations = new ArrayList<>();
+
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_locations_manageable_by_user"));
+            pstmt.setString(1, augentId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                locations.add(DBLocationDao.createLocation(rs, conn));
+            }
+
+            return locations;
+        }
+    }
+
+    @Override
+    public List<User> getUsersFromAuthority(int authorityId) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            List<User> users = new ArrayList<>();
+
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("authority_get_users"));
+            pstmt.setInt(1, authorityId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                User user = DBAccountDao.createUser(rs, false);
+                users.add(user);
+            }
+
+            return users;
+
+        }
     }
 
     @Override
@@ -163,13 +176,22 @@ public class DBAuthorityDao extends DAO implements IAuthorityDao {
     }
 
     @Override
-    public void removeUserFromAuthority(String augentid, int authorityId) throws SQLException {
+    public void deleteUserFromAuthority(String augentid, int authorityId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("remove_role_user_authority"));
             pstmt.setString(1, augentid);
             pstmt.setInt(2, authorityId);
             pstmt.execute();
         }
+    }
+
+    // *************************
+    // *   Auxiliary methods   *
+    // *************************/
+
+    private void preparedAuthorityInsertOrUpdate(Authority authority, PreparedStatement pstmt) throws SQLException {
+        pstmt.setString(1, authority.getAuthorityName());
+        pstmt.setString(2, authority.getDescription());
     }
 
     private void deleteRolesUserAuthority(int authorityId, Connection conn) throws SQLException {
@@ -180,12 +202,14 @@ public class DBAuthorityDao extends DAO implements IAuthorityDao {
     }
 
     private void deleteLocations(int authorityId, Connection conn) throws SQLException {
-        //location has its own FK to delete, get all locations and use LocationDao to delete
+        // location has its own FK to delete, get all locations and use LocationDao to delete
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_locations_from_authority"));
         pstmt.setInt(1, authorityId);
         ResultSet rs = pstmt.executeQuery();
+
         while (rs.next()) {
-            locationDao.deleteLocation(rs.getString(Resources.databaseProperties.getString("location_name")));
+            String locationName = rs.getString(Resources.databaseProperties.getString("location_name"));
+            DBLocationDao.deleteLocationWithCascade(locationName, conn);
         }
     }
 

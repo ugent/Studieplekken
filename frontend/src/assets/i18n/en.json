@@ -68,7 +68,8 @@
     "optional": "Optional",
     "notAvailableAbbreviation": "n/a",
 
-    "waitingForServer": "Waiting for response of server..."
+    "waitingForServer": "Waiting for response of server...",
+    "idSetByBackendMessage": "ID set by backend"
   },
 
   "header": {
@@ -106,6 +107,7 @@
       "locations": "Locations",
       "tags": "Tags",
       "users": "Users",
+      "authorities": "Authorities",
       "reservations": "Reservations",
       "calendar": "Calendar",
       "penalties": "Penalties"
@@ -114,7 +116,8 @@
     "general": {
       "loading": "Loading...",
       "noLocations": "There are no locations yet, make one using the 'Add Location' button",
-      "noTags": "There are no tags yet, make one using the 'Add Tag' button"
+      "noTags": "There are no tags yet, make one using the 'Add Tag' button",
+      "noAuthorities": "There are no authorities yet, make on using the 'Add Authority' button"
     },
 
     "locationDetails": {
@@ -122,6 +125,7 @@
 
       "form": {
         "name": "Name",
+        "authority": "Authority",
         "address": "Address",
         "numberOfSeats": "Number of seats",
         "numberOfLockers": "Number of lockers",
@@ -248,9 +252,9 @@
       "table": {
         "header": {
           "name": "Location",
+          "authority": "Authority",
           "numberOfSeats": "Seats",
-          "numberOfLockers": "Lockers",
-          "details": "Details"
+          "numberOfLockers": "Lockers"
         },
 
         "details": "Details"
@@ -269,6 +273,7 @@
 
         "formValidationErrorMessages": {
           "locationName": "Name is required",
+          "authorityName": "Required to select an authority",
           "address": "Address is required",
           "numberOfSeats": "Value for 'number of seats' is required",
           "numberOfLockers": "Value for 'number of lockers' is required"
@@ -390,6 +395,34 @@
           "errorUpdatingUser": "Something went wrong while updating the user..."
         },
 
+        "authorities": {
+          "title": "Authorities of {name}",
+          "info": "Below, an overview is given of all authorities in which the user has a managing role. This means that the user can manage the locations within these authorities.",
+          "notAllowedToHaveAuthorities": "The user is not allowed to have authorities. Change the role if you want the user to be able to manage locations in one or more authorities",
+          "noAuthoritiesForUser": "The user is not linked to any authority, which means that he/she is not allowed to manage any location.",
+          "allAuthoritiesAreAssigned": "All authorities are already assigned to the user.",
+          "addNew": "Add authority to user",
+
+          "addAuthorityToUserModal": {
+            "title": "Add authority to the user",
+
+            "body": "Select the authority you would like to add to the user:",
+            "selectAuthority": "Select an authority",
+
+            "success": "Successfully added the authority to the user.",
+            "error": "Something went wrong while adding the authority to the user."
+          },
+
+          "deleteAuthorityFromUserModal": {
+            "title": "Sure to delete the authority from the user?",
+
+            "body": "Are you sure that you want to delete the following authority from {name}:",
+
+            "success": "Successfully deleted the authority from the user.",
+            "error": "Something went wrong while deleting the authority from the user."
+          }
+        },
+
         "penalties": {
           "title": "Penalties of {name}",
 
@@ -437,6 +470,68 @@
           "noPenalties": "The user has made no penalties so far.",
           "error": "Something went wrong while querying the penalties for the user."
         }
+      }
+    },
+
+    "authorities": {
+      "title": "Management of authorities",
+
+      "table": {
+        "authorityId": "ID",
+        "authorityName": "Authority name",
+        "description": "Description"
+      },
+
+      "addNewAuthority": "Add Authority",
+
+      "errorOnRetrievingAuthorities": "Something went wrong while retrieving the authorities from the server.",
+
+      "users": {
+        "title": "Manage the users of authority {authorityName}",
+        "info": "In the table below, all the users that are included in the authority {authorityName} are given. You can add or delete users here.",
+        "info2": "Users that are mentioned in the table, have managing rights to the locations that are included in the authority.",
+
+        "addNewUser": "Add user",
+        "noUsersInAuthority": "There are no users included in the authority. This means that no user can modify the locations of this authority.",
+
+        "addUserToAuthorityModal": {
+          "title": "Add user to authority",
+          "searchInfo": "Search a user by first and/or last name to add to the authority.",
+          "info": "Select the user you would like to add to the authority.",
+          "selectUser": "Select user",
+          "isValidUserToAdd": "The selected user is not authorized to have authorities. Change his/hers role before assigning him/her to an authority",
+          "success": "Successfully added the user to the authority.",
+          "error": "Something went wrong while deleting the user from the authority.",
+          "errorSearching": "Something went wrong while searching for users."
+        },
+
+        "deleteUserFromAuthorityModal": {
+          "title": "Delete user from authority",
+          "body": "Are you sure that you want to remove following user from the authority '{authorityName}'?",
+          "success": "Successfully deleted the user from the authority.",
+          "error": "Something went wrong while deleting the user from the authority."
+        }
+      },
+
+      "addAuthorityModal": {
+        "title": "Add a new authority",
+        "idSetByBackendMessage": "Set by backend",
+        "success": "Successfully added the new authority.",
+        "error": "Something went wrong while adding the new authority."
+      },
+
+      "updateAuthorityModal": {
+        "title": "Update the authority",
+        "success": "Successfully updated the authority.",
+        "error": "Something went wrong while updating the authority."
+      },
+
+      "deleteAuthorityModal": {
+        "title": "Delete the authority",
+        "body": "Are you sure that you want to delete following authority?",
+        "warning": "Please do note that all locations within this authority will be deleted",
+        "success": "Successfully deleted the authority.",
+        "error": "Something went wrong while deleting the authority."
       }
     },
 
