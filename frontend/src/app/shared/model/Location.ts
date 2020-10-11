@@ -1,9 +1,12 @@
+import {Authority, AuthorityConstructor} from './Authority';
+
 export interface Location {
   name: string;
   address: string;
   numberOfSeats: number;
   numberOfLockers: number;
   imageUrl: string;
+  authority: Authority;
 }
 
 export class LocationConstructor {
@@ -13,7 +16,8 @@ export class LocationConstructor {
       address: '',
       numberOfSeats: 0,
       numberOfLockers: 0,
-      imageUrl: ''
+      imageUrl: '',
+      authority: AuthorityConstructor.new()
     };
   }
 
@@ -27,7 +31,8 @@ export class LocationConstructor {
       address: obj.address,
       numberOfSeats: obj.numberOfSeats,
       numberOfLockers: obj.numberOfLockers,
-      imageUrl: obj.imageUrl
+      imageUrl: obj.imageUrl,
+      authority: obj.authority
     };
   }
 }

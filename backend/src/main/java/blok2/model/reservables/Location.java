@@ -1,5 +1,7 @@
 package blok2.model.reservables;
 
+import blok2.model.Authority;
+
 import java.util.Objects;
 
 public class Location implements Cloneable {
@@ -8,15 +10,15 @@ public class Location implements Cloneable {
     private int numberOfSeats;
     private int numberOfLockers;
     private String imageUrl;
-    private int authorityId;
+    private Authority authority;
 
-    public Location(String name, String address, int numberOfSeats, int numberOfLockers, String imageUrl, int authorityId) {
+    public Location(String name, String address, int numberOfSeats, int numberOfLockers, String imageUrl, Authority authority) {
         this.name = name;
         this.address = address;
         this.numberOfSeats = numberOfSeats;
         this.numberOfLockers = numberOfLockers;
         this.imageUrl = imageUrl;
-        this.authorityId = authorityId;
+        this.authority = authority;
     }
 
     // default constructor necessary for testing purposes
@@ -92,12 +94,12 @@ public class Location implements Cloneable {
         this.numberOfLockers = numberOfLockers;
     }
 
-    public int getAuthorityId() {
-        return authorityId;
+    public Authority getAuthority() {
+        return authority;
     }
 
-    public void setAuthorityId(int authorityId) {
-        this.authorityId = authorityId;
+    public void setAuthority(Authority authority) {
+        this.authority = authority;
     }
 
     //</editor-fold>

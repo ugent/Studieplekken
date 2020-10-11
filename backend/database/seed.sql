@@ -19,7 +19,7 @@ values ('002', 'STUDENT$EMPLOYEE', 'Ruben_van_DSA', 'DF', 0, 'rdf@ugent.be', 'se
 DO $$
 DECLARE tableId integer;
 BEGIN
-  INSERT INTO public.authority (name, description) values ('DSA', 'Dienst StudentenActiviteiten') RETURNING authority_id into tableId;
+  INSERT INTO public.authority (authority_name, description) values ('DSA', 'Dienst StudentenActiviteiten') RETURNING authority_id into tableId;
   INSERT INTO public.locations (name, address, number_of_seats, number_of_lockers, image_url, authority_id)
     VALUES ('Therminal', 'Hoveniersberg 24, 9000 Gent', 200, 100, 'www.example.png', tableId),
             ('Sterre S5', 'Krijgslaan 281, 9000 Gent', 200, 100, 'www.example.png', tableId);

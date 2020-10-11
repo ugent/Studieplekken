@@ -42,7 +42,7 @@ public class TestDBLockerDao extends TestDao {
     public void populateDatabase() throws SQLException {
         // Setup test objects
         authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testLocation = TestSharedMethods.testLocation(authority.getAuthorityId());
+        testLocation = TestSharedMethods.testLocation(authority.clone());
         testUser = TestSharedMethods.employeeAdminTestUser();
         testLockers = new ArrayList<>();
 

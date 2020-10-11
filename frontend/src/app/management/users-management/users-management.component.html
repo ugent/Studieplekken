@@ -63,9 +63,9 @@
                   {{'management.users.overview.filterClearButton' | translate}}
                 </button>
               </div>
-
             </div>
           </div>
+
         </form>
       </div>
     </div>
@@ -106,7 +106,7 @@
         <th>{{'management.users.searchResult.table.lastName' | translate}}</th>
         <th *ngIf="showPenaltyPoints">{{'management.users.searchResult.table.penaltyPoints' | translate}}</th>
         <th>{{'management.users.searchResult.table.institution' | translate}}</th>
-        <th></th>
+        <th><!-- Details --></th>
       </tr>
       </thead>
 
@@ -117,10 +117,10 @@
         <td>{{user.lastName}}</td>
         <td *ngIf="showPenaltyPoints">{{user.penaltyPoints}}</td>
         <td>{{user.institution}}</td>
-        <td>
-          <a [routerLink]="'./' + user.augentID">
-            {{'management.users.searchResult.table.details' | translate}}
-          </a>
+        <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
+          <span [routerLink]="'./' + user.augentID"
+             class="glyphicon glyphicon-list-alt">
+          </span>
         </td>
       </tr>
       </tbody>

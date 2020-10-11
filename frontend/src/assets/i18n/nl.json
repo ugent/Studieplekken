@@ -33,13 +33,25 @@
     "yes": "Ja",
     "no": "Neen",
 
+    "buttons": {
+      "add": "Voeg toe",
+      "update": "Update",
+      "cancel": "Annuleer",
+      "delete": "Verwijder",
+      "search": "Zoek",
+      "clear": "Annuleer"
+    },
+
     "roles": {
       "ADMIN": "Admin",
       "EMPLOYEE": "Medewerker",
       "STUDENT": "Student"
     },
 
-    "optional": "Optioneel"
+    "optional": "Optioneel",
+
+    "waitingForServer": "Wachten op antwoord van de server...",
+    "idSetByBackend": "ID door backend gezet"
   },
 
   "header": {
@@ -68,6 +80,7 @@
       "title": "Beheer",
       "locations": "Locaties",
       "users": "Gebruikers",
+      "authorities": "Autoriteiten",
       "reservations": "Reservaties",
       "calendar": "Kalender",
       "penalties": "Overtredingen"
@@ -75,6 +88,7 @@
 
     "general": {
       "loading": "Aan het laden...",
+      "noAuthorities": "Er zijn nog geen autoriteiten aangemaakt. Maak er een aan met de knop 'Autoriteit Toevoegen'",
       "noLocations": "Er zijn nog geen beschikbare locaties. Maak er een aan met de knop 'Locatie Toevoegen'"
     },
 
@@ -83,6 +97,7 @@
 
       "form": {
         "name": "Naam",
+        "authority": "Autoriteit",
         "address": "Adres",
         "numberOfSeats": "Aantal plaatsen",
         "numberOfLockers": "Aantal lockers",
@@ -178,9 +193,9 @@
       "table": {
         "header": {
           "name": "Locatie",
+          "authority": "Autoriteit",
           "numberOfSeats": "Plaatsen",
-          "numberOfLockers": "Lockers",
-          "details": "Details"
+          "numberOfLockers": "Lockers"
         },
 
         "details": "Details"
@@ -199,6 +214,7 @@
 
         "formValidationErrorMessages": {
           "locationName": "Naam is verplicht",
+          "authorityName": "Verplicht om een autoriteit op te geven",
           "address": "Adres is verplicht",
           "numberOfSeats": "Een waarde voor 'aantal zitjes' is verplicht",
           "numberOfLockers": "Een waarde voor 'aantal lockers' is verplicht"
@@ -286,6 +302,34 @@
           "errorUpdatingUser": "Er is iets misgelopen tijdens het updaten van de gebruiker..."
         },
 
+        "authorities": {
+          "title": "Autoriteiten van {name}",
+          "info": "Hieronder is een tabel gegeven met alle autoriteiten waarin de gebruiker een beherende rol heeft. Dit wil zeggen dat hij/zij locaties van deze autoriteiten kan beheren.",
+          "notAllowedToHaveAuthorities": "De gebruiker is niet gemachtigd om autoriteiten te hebben. Pas de rol van de gebruiker aan indien je wil dat hij/zij beheerder mag zijn van één of meerdere autoriteiten.",
+          "noAuthoritiesForUser": "De gebruiker is niet gelinkt aan één of meerdere autoriteiten. Dit wil zeggen dat hij/zij geen enkele locatie kan beheren.",
+          "allAuthoritiesAreAssigned": "Alle autoriteiten zijn al toegekend aan de gebruiker.",
+          "addNew": "Autoriteit aan gebruiker toevoegen",
+
+          "addAuthorityToUserModal": {
+            "title": "Een autoriteit aan de gebruiker toevoegen",
+
+            "body": "Selecteer de autoriteit die je aan de gebruiker wil toekennen:",
+            "selectAuthority": "Selecteer een autoriteit",
+
+            "success": "Het toevoegen van de autoriteit aan de gebruiker is gelukt.",
+            "error": "Er is iets misgelopen tijdens het toevoegen van de autoriteit aan de gebruiker."
+          },
+
+          "deleteAuthorityFromUserModal": {
+            "title": "Autoriteit voor de gebruiker ontnemen?",
+
+            "body": "Ben je zeker dat je volgende autoriteit wilt verwijderen voor {name}:",
+
+            "success": "Het weghalen van de autoriteit voor de gebruiker is gelukt.",
+            "error": "Er is iets misgelopen tijdens het weghalen van de autoriteit voor de gebruiker."
+          }
+        },
+
         "penalties": {
           "title": "Overtredingen van {name}",
 
@@ -333,6 +377,68 @@
           "noPenalties": "De gebruiker heeft nog geen overtredingen begaan.",
           "error": "Er is iets misgelopen tijdens het ophalen van de strafpunten van de gebruiker."
         }
+      }
+    },
+
+    "authorities": {
+      "title": "Beheer van autoriteiten",
+
+      "table": {
+        "authorityId": "ID",
+        "authorityName": "Naam van autoriteit",
+        "description": "Omschrijving"
+      },
+
+      "addNewAuthority": "Autoriteit toevoegen",
+
+      "errorOnRetrievingAuthorities": "Er is iets misgelopen tijdens het ophalen van de autoriteiten.",
+
+      "users": {
+        "title": "Beheer de gebruikers in de autoriteit {authorityName}",
+        "info": "In onderstaande tabel zijn alle gebruikers gegeven die in de autoriteit {authorityName} zitten. Je kan hier gebruikers toevoegen of verwijderen.",
+        "info2": "De gebruikers die in de tabel zijn opgenomen, hebben beheersrechten op de locaties van de autoriteit.",
+
+        "addNewUser": "Gebruiker toevoegen",
+        "noUsersInAuthority": "Er zijn geen gebruikers opgenomen in deze autoriteit. Dat wil zeggen dat geen enkele gebruiker locaties van deze autoriteit kan beheren.",
+
+        "addUserToAuthorityModal": {
+          "title": "Voeg gebruiker toe aan autoriteit",
+          "searchInfo": "Zoek een gebruiker op voor- en/of achternaam om aan de autoriteit toe te voegen.",
+          "info": "Selecteer de gebruiker die je wil toevoegen aan de autoriteit.",
+          "selectUser": "Kies gebruiker",
+          "isValidUserToAdd": "De geselecteerde gebruiker heeft niet de rechten om toegevoegd te worden in een autoriteit. Pas zijn/haar rol aan om hem/haar op te kunnen nemen in de autoriteit.",
+          "success": "De gebruiker is met succes toegevoegd aan de autoriteit.",
+          "error": "Er is iets misgelopen tijdens het toevoegen van de gebruiker aan de autoriteit.",
+          "errorSearching": "Er is iets misgelopen tijdens het opzoeken van de gebruikers."
+        },
+
+        "deleteUserFromAuthorityModal": {
+          "title": "Verwijder gebruiker uit autoriteit",
+          "body": "Ben je zeker dat je de volgende gebruiker wilt verwijderen uit de autoriteit '{authorityName}'?",
+          "success": "De gebruiker is met succes uit de autoriteit verwijderd.",
+          "error": "Er is iets misgelopen tijdens het verwijderen van de gebruiker uit de autoriteit."
+        }
+      },
+
+      "addAuthorityModal": {
+        "title": "Maak een nieuwe autoriteit aan",
+        "idSetByBackendMessage": "Ingesteld door backend",
+        "success": "Het aanmaken van de nieuwe autoriteit is gelukt.",
+        "error": "Er is iets misgelopen tijdens het aanmaken van de nieuwe autoriteit."
+      },
+
+      "updateAuthorityModal": {
+        "title": "De autoriteit updaten",
+        "success": "Het updaten van de autoriteit is gelukt.",
+        "error": "Er is iets misgelopen tijdens het updaten van de autoriteit."
+      },
+
+      "deleteAuthorityModal": {
+        "title": "Verwijder de autoriteit",
+        "body": "Ben je zeker dat je volgende autoriteit wilt verwijderen?",
+        "warning": "Gelieve op te merken dat alle locaties gelinkt aan deze autoriteit ook zullen verwijderd worden!",
+        "success": "Het verwijderen van de autoriteit is gelukt.",
+        "error": "Er is iets misgelopen tijdens het verwijderen van de autoriteit."
       }
     },
 

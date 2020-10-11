@@ -1,16 +1,3 @@
---
--- IMPORTANT: The database should be created.
--- In PgAdmin: create database and open query tool, copy this script and run.
---
-
-/* -- With pgAdmin, the following SQL code will be executed:
-CREATE DATABASE blokatugent
-    WITH
-    OWNER = postgres
-    ENCODING = 'UTF8'
-    CONNECTION LIMIT = -1;
-*/
-
 ----------------- +------------------------------------+
 ----------------- |   Create application data tables   |
 ----------------- +------------------------------------+
@@ -23,7 +10,7 @@ CREATE DATABASE blokatugent
 CREATE TABLE public.authority
 (
     authority_id integer primary key generated always as identity,
-    name         text NOT NULL unique,
+    authority_name text NOT NULL unique,
     description  text NOT NULL
 );
 
@@ -346,7 +333,9 @@ CREATE TABLE public.roles_user_authority
     constraint fk_roles_user_authority_to_authority
         foreign key (authority_id) references public.authority (authority_id),
     constraint fk_roles_user_authority_to_user
-        foreign key (user_id) references public.users (augentid)
+        foreign key (user_id) references public.users (augentid),
+
+    constraint uc_user_authority unique (user_id, authority_id)
 );
 
 ----------------- +-----------------------+

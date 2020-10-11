@@ -46,7 +46,7 @@ roles_user_authority_user_id = user_id
 
 # columns for table AUTHORITY
 authority_authority_id = authority_id
-authority_name = name
+authority_name = authority_name
 authority_description = description
 
 # columns for table USER

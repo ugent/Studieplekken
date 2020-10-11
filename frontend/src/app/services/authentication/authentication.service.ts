@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {User, UserConstructor} from '../../shared/model/User';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {api} from '../../../environments/environment';
+import {api, Role} from '../../../environments/environment';
 import {Penalty} from '../../shared/model/Penalty';
 import {LocationReservation} from '../../shared/model/LocationReservation';
 import {LockerReservation, LockerReservationConstructor} from '../../shared/model/LockerReservation';
@@ -60,6 +60,10 @@ export class AuthenticationService {
 
   isLoggedIn(): boolean {
     return this.userSubject.value.augentID !== '';
+  }
+
+  isAdmin(): boolean {
+    return this.userSubject.value.roles.includes(Role.ADMIN);
   }
 
   updatePassword(from: string, to: string): Observable<any> {

@@ -1,6 +1,7 @@
 package blok2.daos;
 
 import blok2.model.Authority;
+import blok2.model.reservables.Location;
 import blok2.model.users.User;
 
 import java.sql.SQLException;
@@ -8,32 +9,14 @@ import java.util.List;
 
 public interface IAuthorityDao extends IDao {
 
-    // GETTERS
+    // *************************************
+    // *   CRUD operations for AUTHORITY   *
+    // *************************************/
 
     /**
      * get all authorities
      */
     List<Authority> getAllAuthorities() throws SQLException;
-
-    /**
-     * get a list of Authorities the user is a member of. Can be empty.
-     */
-    List<Authority> getAuthoritiesFromUser(String augentId) throws SQLException;
-
-    /**
-     * Adds a user as a member of an authority. Returns if successful
-     */
-    boolean addUserToAuthority(String augentid, int authorityId) throws SQLException;
-
-    /**
-     * remove a user from the given authority
-     */
-    void removeUserFromAuthority(String augentid, int authorityId) throws SQLException;
-
-    /**
-     * get list of users that are a member of the given authority.
-     */
-    List<User> getUsersFromAuthority(int authorityId) throws SQLException;
 
     /**
      * get authority with the given name.
@@ -64,4 +47,33 @@ public interface IAuthorityDao extends IDao {
      */
     void deleteAuthority(int authorityId) throws SQLException;
 
+
+    // ************************************************
+    // *   CRUD operations for ROLES_USER_AUTHORITY   *
+    // ************************************************/
+
+    /**
+     * get a list of Authorities the user is a member of. Can be empty.
+     */
+    List<Authority> getAuthoritiesFromUser(String augentId) throws SQLException;
+
+    /**
+     * get a list of Locations that the user can manage
+     */
+    List<Location> getLocationsInAuthoritiesOfUser(String augentId) throws SQLException;
+
+    /**
+     * get list of users that are a member of the given authority.
+     */
+    List<User> getUsersFromAuthority(int authorityId) throws SQLException;
+
+    /**
+     * Adds a user as a member of an authority. Returns if successful
+     */
+    boolean addUserToAuthority(String augentid, int authorityId) throws SQLException;
+
+    /**
+     * remove a user from the given authority
+     */
+    void deleteUserFromAuthority(String augentid, int authorityId) throws SQLException;
 }
