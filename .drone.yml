@@ -23,6 +23,4 @@ services:
       POSTGRES_DB: blokatugent_test
     commands:
       - sleep 15
-      - echo *
-      - ls -l
-      - psql -c 'DROP SCHEMA IF EXISTS public cascade; CREATE SCHEMA public AUTHORIZATION postgres;' -d blokatugent_test
+      - psql -d blokatugent_test -h db -f ./backend/database/reset_schema.sql
