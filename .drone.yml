@@ -11,7 +11,6 @@ steps:
       - apt-get update -y && apt-get install netcat -y
       - ./scripts/wait_for_service db 5432
       - cd backend
-      - psql -d blokatugent_test -f ./database/reset_schema.sql
       - gradle assemble
       - gradle check
 
@@ -22,3 +21,6 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: blokatugent_test
+    commands:
+      - sleep 15
+      - psql -d blokatugent_test -f ./backend/database/reset_schema.sql
