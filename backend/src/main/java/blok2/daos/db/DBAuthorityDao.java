@@ -138,7 +138,7 @@ public class DBAuthorityDao extends DAO implements IAuthorityDao {
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                locations.add(DBLocationDao.createLocation(rs));
+                locations.add(DBLocationDao.createLocation(rs, conn));
             }
 
             return locations;

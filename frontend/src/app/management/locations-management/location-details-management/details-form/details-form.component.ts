@@ -4,6 +4,7 @@ import {FormControl, FormGroup} from '@angular/forms';
 import {LocationService} from '../../../../services/api/locations/location.service';
 import {Observable} from 'rxjs';
 import {msToShowFeedback} from '../../../../../environments/environment';
+// @ts-ignore
 import {LocationDetailsService} from '../../../../services/single-point-of-truth/location-details/location-details.service';
 import {Authority} from '../../../../shared/model/Authority';
 import {AuthoritiesService} from '../../../../services/api/authorities/authorities.service';
@@ -98,6 +99,11 @@ export class DetailsFormComponent implements OnInit {
   persistLocationDetailsButtonClick(from: Location, to: Location): void {
     this.successUpdatingLocation = null; // show 'loading' message
 
+    // The management of the descriptions is done in separate panel-groups.
+    // Therefore, we copy these attributes here.
+    to.descriptionDutch = from.descriptionDutch;
+    to.descriptionEnglish = from.descriptionEnglish;
+
     // set the authority object based on the authorityId that is selected in the form
     to.authority = this.authorityInLocationForm;
 
@@ -105,14 +111,14 @@ export class DetailsFormComponent implements OnInit {
       () => {
         this.successHandler();
 
-        // update the location attribute
-        // this, 'loadLocation' function will perform a next() on the
-        // subject behavior, which will trigger a next() on the underlying
-        // observable, to which the HTML is implicitly subscribed
+        // update the location attribute: 'loadLocation' will perform a next()
+        // on the subject behavior, which will trigger a next() on the underlying
+        // observable, to which the HTML is implicitly subscribed through the
+        // *ngIf="location | async as location" in the outer div of the template.
         this.locationDetailsService.loadLocation(to.name);
       }, () => {
         this.errorHandler();
-        // load to be sure
+        // reload the location to be sure
         this.locationDetailsService.loadLocation(from.name);
       }
     );

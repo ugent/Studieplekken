@@ -38,7 +38,6 @@ public class TestDBPenaltyEventsDao extends TestDao {
     private PenaltyEvent testEvent;
 
     private Location testLocation;
-    private Authority authority;
     private User testUser;
 
     @Override
@@ -64,7 +63,7 @@ public class TestDBPenaltyEventsDao extends TestDao {
         testDescriptions.put(Language.DUTCH, "Test event.");
         testEvent = new PenaltyEvent(1, 10, testDescriptions);
 
-        authority = TestSharedMethods.insertTestAuthority(authorityDao);
+        Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
         testLocation = TestSharedMethods.testLocation(authority.clone());
         testUser = TestSharedMethods.studentEmployeeTestUser();
 

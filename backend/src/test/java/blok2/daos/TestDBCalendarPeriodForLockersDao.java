@@ -23,7 +23,6 @@ public class TestDBCalendarPeriodForLockersDao  extends TestDao {
     IAuthorityDao authorityDao;
 
     private Location testLocation;
-    private Authority authority;
     private List<CalendarPeriodForLockers> calendarPeriodsForLockers;
 
     // the reason for making this an attribute of the class
@@ -33,7 +32,7 @@ public class TestDBCalendarPeriodForLockersDao  extends TestDao {
 
     @Override
     public void populateDatabase() throws SQLException {
-        authority = TestSharedMethods.insertTestAuthority(authorityDao);
+        Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
         testLocation = TestSharedMethods.testLocation(authority.clone());
         calendarPeriodsForLockers = TestSharedMethods.testCalendarPeriodsForLockers(testLocation);
         updatedPeriodsForLockers = TestSharedMethods.testCalendarPeriodsForLockersButUpdated(testLocation);

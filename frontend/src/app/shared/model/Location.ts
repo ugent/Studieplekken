@@ -1,3 +1,4 @@
+import {LocationTag} from './LocationTag';
 import {Authority, AuthorityConstructor} from './Authority';
 
 export interface Location {
@@ -7,6 +8,9 @@ export interface Location {
   numberOfLockers: number;
   imageUrl: string;
   authority: Authority;
+  descriptionDutch: string;
+  descriptionEnglish: string;
+  assignedTags: LocationTag[];
 }
 
 export class LocationConstructor {
@@ -17,7 +21,10 @@ export class LocationConstructor {
       numberOfSeats: 0,
       numberOfLockers: 0,
       imageUrl: '',
-      authority: AuthorityConstructor.new()
+      authority: AuthorityConstructor.new(),
+      descriptionDutch: '',
+      descriptionEnglish: '',
+      assignedTags: []
     };
   }
 
@@ -32,7 +39,10 @@ export class LocationConstructor {
       numberOfSeats: obj.numberOfSeats,
       numberOfLockers: obj.numberOfLockers,
       imageUrl: obj.imageUrl,
-      authority: obj.authority
+      authority: AuthorityConstructor.newFromObj(obj.authority),
+      descriptionDutch: obj.descriptionDutch,
+      descriptionEnglish: obj.descriptionEnglish,
+      assignedTags: obj.assignedTags
     };
   }
 }

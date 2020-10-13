@@ -1,0 +1,276 @@
+<div class="container-fluid">
+  <!-- Title -->
+  <h3>{{'management.tags.title' | translate}}</h3>
+
+  <hr>
+
+  <!-- Table with all existing tags -->
+  <div class="row" *ngIf="tagsObs | async as tags">
+    <table style="width: 100%;" *ngIf="tags.length > 0; else noTags">
+      <thead>
+      <tr>
+        <th>{{'management.tags.table.id' | translate}}</th>
+        <th>{{'management.tags.table.dutch' | translate}}</th>
+        <th>{{'management.tags.table.english' | translate}}</th>
+        <th><!-- update --></th>
+        <th><!-- delete --></th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr [@rowsAnimation]="" *ngFor="let locationTag of tags">
+        <td>{{locationTag.tagId}}</td>
+        <td>{{locationTag.dutch}}</td>
+        <td>{{locationTag.english}}</td>
+        <!-- Edit icon -->
+        <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
+            data-toggle="modal" data-target="#updateTagModal"
+            (click)="prepareUpdate(locationTag)">
+          <span class="glyphicon glyphicon-pencil pointerCursor"></span>
+        </td>
+        <!-- Delete icon -->
+        <td data-toggle="modal" data-target="#deleteTagModal"
+            class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
+            (click)="prepareToDelete(locationTag)">
+          <span class="glyphicon glyphicon-trash pointerCursor"></span>
+        </td>
+      </tr>
+      </tbody>
+
+      <div class="row" style="margin-top: 20px">
+        <button class="btn btn-primary" data-toggle="modal" data-target="#addTagModal"
+                (click)="prepareAdd()">
+          {{'management.tags.addNewTag' | translate}}
+        </button>
+      </div>
+    </table>
+  </div>
+
+  <div class="row">
+    <div class="alert alert-error" *ngIf="successGettingTags === false">
+      {{'management.tags.errorOnRetrievingTags' | translate}}
+    </div>
+  </div>
+</div>
+
+<ng-template #noTags>
+  <div class="alert alert-info">
+    {{'management.general.noTags' | translate}}
+  </div>
+</ng-template>
+
+<!-- Modal view to add a new tag -->
+<div class="modal fade" id="addTagModal" tabindex="-1" role="dialog"
+     aria-labelledby="addTagModalTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <!-- Modal header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="addTagModalTitle">
+          {{'management.tags.addTagModal.title' | translate}}
+        </h5>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form [formGroup]="tagFormGroup">
+          <!-- TagID - this will be set by the database -->
+          <div class="row form-group">
+            <label class="col-lg-3 control-label" for="tagIdDelete">
+              {{'management.tags.table.id' | translate}}<br>
+              <span style="color: red;">{{'management.tags.addTagModal.idSetByBackendMessage' | translate}}</span>
+            </label>
+            <div class="col-lg-8">
+              <input class="form-control" id="tagIdDelete" type="number" formControlName="tagId" >
+            </div>
+          </div>
+
+          <!-- Dutch name of tag -->
+          <div class="row form-group">
+            <label class="col-lg-3 control-label" for="dutchDelete">
+              {{'management.tags.table.dutch' | translate}}<span style="color: red; margin-left: 5px;">*</span>
+            </label>
+            <div class="col-lg-8">
+              <input class="form-control" id="dutchDelete" type="text" formControlName="dutch" >
+            </div>
+          </div>
+
+          <!-- English name of tag -->
+          <div class="row form-group">
+            <label class="col-lg-3 control-label" for="englishDelete">
+              {{'management.tags.table.english' | translate}}<span style="color: red; margin-left: 5px;">*</span>
+            </label>
+            <div class="col-lg-8">
+              <input class="form-control" id="englishDelete" type="text" formControlName="english" >
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary"
+                [disabled]="!validTagFormGroup()"
+                (click)="addTag()">
+          {{'general.buttons.add' | translate}}
+        </button>
+        <button type="button" class="btn btn-secondary"
+                data-dismiss="modal">
+          {{'general.buttons.cancel' | translate}}
+        </button>
+      </div>
+
+      <!-- Feedback to the user -->
+      <div class="container-fluid">
+        <div class="alert alert-info" *ngIf="successAddingTag === null">
+          {{'general.waitingForServer' | translate}}
+        </div>
+
+        <div class="alert alert-success" *ngIf="successAddingTag === true">
+          {{'management.tags.addTagModal.success' | translate}}
+        </div>
+
+        <div class="alert alert-error" *ngIf="successAddingTag === false">
+          {{'management.tags.addTagModal.error' | translate}}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal view to update a tag -->
+<div class="modal fade" id="updateTagModal" tabindex="-1" role="dialog"
+     aria-labelledby="updateTagModalTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <!-- Modal header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="updateTagModalTitle">
+          {{'management.tags.updateTagModal.title' | translate}}
+        </h5>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form [formGroup]="tagFormGroup">
+          <!-- Tag ID - not updatable -->
+          <div class="row form-group">
+            <label class="col-lg-3 control-label" for="tagIdUpdate">
+              {{'management.tags.table.id' | translate}}
+            </label>
+            <div class="col-lg-8">
+              <input class="form-control" id="tagIdUpdate" type="number" formControlName="tagId">
+            </div>
+          </div>
+
+          <!-- Dutch tag name -->
+          <div class="row form-group">
+            <label class="col-lg-3 control-label" for="dutchUpdate">
+              {{'management.tags.table.dutch' | translate}}<span style="color: red; margin-left: 5px;">*</span>
+            </label>
+            <div class="col-lg-8">
+              <input class="form-control" id="dutchUpdate" type="text" formControlName="dutch">
+            </div>
+          </div>
+
+          <!-- English tag name -->
+          <div class="row form-group">
+            <label class="col-lg-3 control-label" for="englishUpdate">
+              {{'management.tags.table.english' | translate}}<span style="color: red; margin-left: 5px;">*</span>
+            </label>
+            <div class="col-lg-8">
+              <input class="form-control" id="englishUpdate" type="text" formControlName="english">
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary"
+                [disabled]="!validTagFormGroup()"
+                (click)="updateTagInFormGroup()">
+          {{'general.buttons.update' | translate}}
+        </button>
+        <button type="button" class="btn btn-secondary"
+                data-dismiss="modal">
+          {{'general.buttons.cancel' | translate}}
+        </button>
+      </div>
+
+      <!-- Feedback to the user -->
+      <div class="container-fluid">
+        <div class="alert alert-info" *ngIf="successUpdatingTag === null">
+          {{'general.waitingForServer' | translate}}
+        </div>
+
+        <div class="alert alert-success" *ngIf="successUpdatingTag === true">
+          {{'management.tags.updateTagModal.success' | translate}}
+        </div>
+
+        <div class="alert alert-error" *ngIf="successUpdatingTag === false">
+          {{'management.tags.updateTagModal.error' | translate}}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal view to ask whether the user is sure to delete a tag -->
+<div class="modal fade" id="deleteTagModal" tabindex="-1" role="dialog"
+     aria-labelledby="deleteTagModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <!-- Header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteLockerModalLabel">
+          {{'management.tags.deleteTagModal.title' | translate}}
+        </h5>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div>
+          <b>{{'management.tags.deleteTagModal.body' | translate}}</b>
+          <br><br>
+          <ul>
+            <li><b style="margin-right: 5px"><i>{{('management.tags.table.id' | translate) + ':   '}}</i></b>{{tagId.value}}</li>
+            <li><b style="margin-right: 5px"><i>{{('management.tags.table.dutch' | translate) + ':   '}}</i></b>{{dutch.value}}</li>
+            <li><b style="margin-right: 5px"><i>{{('management.tags.table.english' | translate)}}</i></b>{{english.value}}</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary"
+                (click)="deleteTagInFormGroup()">
+          {{'general.buttons.delete' | translate}}
+        </button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          {{'general.buttons.cancel' | translate}}
+        </button>
+      </div>
+
+      <div class="container-fluid">
+        <div class="alert alert-info" *ngIf="successDeletingTag === null">
+          {{'general.waitingForServer' | translate}}
+        </div>
+
+        <div class="alert alert-success" *ngIf="successDeletingTag === true">
+          {{'management.tags.deleteTagModal.success' | translate}}
+        </div>
+
+        <div class="alert alert-error" *ngIf="successDeletingTag === false">
+          {{'management.tags.deleteTagModal.error' | translate}}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

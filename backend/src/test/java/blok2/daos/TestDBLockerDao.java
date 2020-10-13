@@ -34,14 +34,13 @@ public class TestDBLockerDao extends TestDao {
     private IAuthorityDao authorityDao;
 
     private Location testLocation;
-    private Authority authority;
     private User testUser;
     private List<Locker> testLockers;
 
     @Override
     public void populateDatabase() throws SQLException {
         // Setup test objects
-        authority = TestSharedMethods.insertTestAuthority(authorityDao);
+        Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
         testLocation = TestSharedMethods.testLocation(authority.clone());
         testUser = TestSharedMethods.employeeAdminTestUser();
         testLockers = new ArrayList<>();

@@ -13,6 +13,9 @@ export const environment = {
 };
 
 export const api = {
+  whoAmI: '/whoAmI',
+  logout: '/logout',
+
   // AUTHORITY
   authorities: '/api/authority',
   authority: '/api/authority/{authorityId}',
@@ -33,6 +36,15 @@ export const api = {
   updateCalendarPeriodsForLockers: '/api/locations/lockerCalendar/{locationName}',
   deleteCalendarPeriodsForLockers: '/api/locations/lockerCalendar',
 
+  // LOCATIONS
+  locations: '/api/locations',
+  location: '/api/locations/{locationName}',
+  addLocation: '/api/locations',
+  updateLocation: '/api/locations/{locationName}',
+  deleteLocation: '/api/locations/{locationName}',
+  numberOfReservations: '/api/locations/{locationName}/reservations/count',
+  setupTagsForLocation: '/api/locations/tags/{locationName}',
+
   // LOCATION_RESERVATIONS
   locationReservationsOfUser: '/api/locations/reservations/user',
   locationReservationsOfLocation: '/api/locations/reservations/location',
@@ -41,20 +53,20 @@ export const api = {
   locationReservationsOfLocationFromAndUntil: '/api/locations/reservations/fromAndUntil',
   deleteLocationReservation: '/api/locations/reservations',
 
-  // LOCATIONS
-  locations: '/api/locations',
-  location: '/api/locations/{locationName}',
-  addLocation: '/api/locations',
-  updateLocation: '/api/locations/{locationName}',
-  deleteLocation: '/api/locations/{locationName}',
-  numberOfReservations: '/api/locations/{locationName}/reservations/count',
-
   // LOCKER_RESERVATIONS
   lockerReservationsOfUser: '/api/lockers/reservations/user',
   lockerReservationsOfLocation: '/api/lockers/reservations/location',
   updateLockerReservation: '/api/lockers/reservations',
   deleteLockerReservation: '/api/lockers/reservations',
-  lockerReservationsByUserId: '/api/lockers/reservations/{userId}',
+
+  // USERS
+  userByAUGentId: '/api/account/id',
+  userByBarcode: '/api/account/barcode',
+  usersByFirstName: '/api/account/firstName',
+  usersByLastName: '/api/account/lastName',
+  usersByFirstAndLast: '/api/account/firstAndLastName',
+  changePassword: '/api/account/password',
+  updateUser: '/api/account/{id}',
 
   // LOCKERS
   lockersStatusesOfLocation: '/api/lockers/status/{locationName}',
@@ -70,25 +82,22 @@ export const api = {
   updatePenaltyEvent: '/api/penalties/events/{code}',
   deletePenaltyEvent: '/api/penalties/events',
 
+  // TAGS
+  tags: '/api/tags',
+  addTag: '/api/tags',
+  updateTag: '/api/tags',
+  deleteTag: '/api/tags/{tagId}',
+
   // ROLES_USER_AUTHORITY
   usersInAuthority: '/api/authority/{authorityId}/users',
   authoritiesOfUser: '/api/authority/users/{userId}',
   addUserToAuthority: '/api/authority/{authorityId}/user/{userId}',
-  deleteUserFromAuthority: '/api/authority/{authorityId}/user/{userId}',
-
-  // USERS
-  userByAUGentId: '/api/account/id',
-  userByBarcode: '/api/account/barcode',
-  userByMail: '/api/account/mail',
-  usersByFirstName: '/api/account/firstName',
-  usersByLastName: '/api/account/lastName',
-  usersByFirstAndLast: '/api/account/firstAndLastName',
-  changePassword: '/api/account/password',
-  updateUser: '/api/account/{id}'
+  deleteUserFromAuthority: '/api/authority/{authorityId}/user/{userId}'
 };
 
 export const vars = {
-  defaultLocationImage: 'assets/images/default_location.jpg'
+  defaultLocationImage: 'assets/images/default_location.jpg',
+  casFlowTriggerUrl: 'https://localhost:8080/login/cas'
 };
 
 /*

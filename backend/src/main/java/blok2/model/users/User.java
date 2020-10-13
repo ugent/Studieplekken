@@ -1,7 +1,10 @@
 package blok2.model.users;
 
-import java.util.Arrays;
-import java.util.Objects;
+import blok2.helpers.Institution;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.*;
 
 
 /**
@@ -9,7 +12,7 @@ import java.util.Objects;
  * This class implements the interface UserDetails so spring can use this
  * class to verify login credentials.
  */
-public class User implements Cloneable {
+public class User implements Cloneable, UserDetails {
     private String lastName;
     private String firstName;
     private String mail;
@@ -48,18 +51,6 @@ public class User implements Cloneable {
             c.roles = new Role[roles.length];
             System.arraycopy(roles, 0, c.roles, 0, roles.length);
 
-            return c;
-        } catch (CloneNotSupportedException e) {
-            return null;
-        }
-    }
-
-    public User cloneToSendableUser() {
-        try {
-            User c = (User) super.clone();
-            c.password = "";
-            c.roles = new Role[roles.length];
-            System.arraycopy(roles, 0, c.roles, 0, roles.length);
             return c;
         } catch (CloneNotSupportedException e) {
             return null;
@@ -147,6 +138,46 @@ public class User implements Cloneable {
                 //", barcode='" + barcode + '\'' +
                 ", roles=" + Arrays.toString(roles) +
                 '}';
+    }
+
+    /*********************************************
+     *   Implementation of UserDetails methods   *
+     *********************************************/
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<SBCasAuthority> authorities = new ArrayList<>();
+
+        for (Role role : roles) {
+            authorities.add(new SBCasAuthority(role));
+        }
+
+        return authorities;
+    }
+
+    @Override
+    public String getUsername() {
+        return mail;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
 }

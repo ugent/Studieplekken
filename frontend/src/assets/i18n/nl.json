@@ -11,11 +11,28 @@
 
   "dashboard": {
     "address": "Adres",
+    "description": "Omschrijving",
     "details": "Details",
+    "tags": "Tags",
     "gotoDashboard": "Gelieve naar het dashboard te navigeren en een locatie te selecteren.",
     "location": "Locatie",
     "numberOfLockers": "Aantal lockers",
-    "numberOfSeats": "Aantal plaatsen"
+    "numberOfSeats": "Aantal plaatsen",
+    "noLocations": "Helaas zijn er op dit moment geen locaties beschikbaar",
+
+    "locationDetails": {
+      "info": "Algemene informatie over deze locatie:",
+      "tags": "Tags die deze locatie kenmerken:"
+    },
+
+    "filter": {
+      "title": "Filter",
+      "tagsFilterTitle": "Filter locaties op tags",
+      "noMatchesFromFilter": "Er zijn geen locaties die voldoen aan je filtervoorwaarden of aan je zoekterm.",
+      "searchPlaceholder": "zoek een locatie op naam, rekening houdend met de filter op tags"
+    },
+
+    "error": "Er is iets misgelopen tijdens het ophalen van de locaties."
   },
 
   "footer":{
@@ -49,6 +66,7 @@
     },
 
     "optional": "Optioneel",
+    "notAvailableAbbreviation": "n.v.t.",
 
     "waitingForServer": "Wachten op antwoord van de server...",
     "idSetByBackend": "ID door backend gezet"
@@ -59,6 +77,7 @@
     "logIn": "Log in",
     "logOut": "Log uit",
     "navigation": {
+      "login": "Login",
       "dashboard": "Dashboard",
       "profile": "Profiel",
       "scan": "Scan",
@@ -75,10 +94,18 @@
     "DUTCH": "Nederlands"
   },
 
+  "login": {
+    "appTitle": "BlokAtUGent",
+    "title": "Aanmelden",
+    "casLogin": "CAS Login",
+    "about": "Het digitaal platform voor Study-OO's"
+  },
+
   "management": {
     "aside": {
       "title": "Beheer",
       "locations": "Locaties",
+      "tags": "Tags",
       "users": "Gebruikers",
       "authorities": "Autoriteiten",
       "reservations": "Reservaties",
@@ -88,8 +115,9 @@
 
     "general": {
       "loading": "Aan het laden...",
-      "noAuthorities": "Er zijn nog geen autoriteiten aangemaakt. Maak er een aan met de knop 'Autoriteit Toevoegen'",
-      "noLocations": "Er zijn nog geen beschikbare locaties. Maak er een aan met de knop 'Locatie Toevoegen'"
+      "noLocations": "Er zijn nog geen beschikbare locaties. Maak er een aan met de knop 'Locatie Toevoegen'",
+      "noTags": "Er zijn nog geen tags. Maak er een aan met de knop 'Tag Toevoegen'",
+      "noAuthorities": "Er zijn nog geen autoriteiten aangemaakt. Maak er een aan met de knop 'Autoriteit Toevoegen'"
     },
 
     "locationDetails": {
@@ -136,6 +164,37 @@
 
           "noCalendarPeriodsForLocation": "Op dit moment zijn er nog geen periodes voor de locatie beschikbaar."
         }
+      },
+
+      "description": {
+        "title": "Beschrijving van de locatie",
+        "englishDescription": "Omschrijving in het Engels",
+        "dutchDescription": "Omschrijving in het Nederlands",
+
+        "updateButton": "Update",
+        "cancelButton": "Annuleer",
+
+        "errorUpdating": "Er is iets misgelopen tijdens het updaten van de omschrijvingen.",
+        "successUpdating": "Het updaten van de omschrijvingen is geslaagd."
+      },
+
+      "tags": {
+        "title": "Tags van de locatie",
+        "activeTagsInformation": "Hieronder is een lijst gegeven van de tags die beschikbaar zijn.",
+        "updateTagsInformation": "Om de tags te wijzigen, klik op de knop rechts.",
+
+        "updateTagsButton": "Wijzig de tags",
+
+        "updateTagsConfigurationModal": {
+          "title": "Wijzig de tags van de locatie",
+          "body": "In de dropdown hieronder kan je alle tags selecteren die je wil toekennen aan '{locationName}'.",
+          "comboboxTitle": "Tags van de locatie",
+
+          "success": "Het is gelukt om de tags voor '{locationName}' te wijzigen",
+          "error": "Er is iets misgelopen tijdens het wijzigen van de tags van '{locationName}'."
+        },
+
+        "noTagsSelected": "Op dit moment zijn er geen tags voor deze locatie geselecteerd."
       },
 
       "lockerCalendar": {
@@ -241,6 +300,40 @@
         "yesButton": "Verwijder",
         "noButton": "Annuleer"
       }
+    },
+
+    "tags": {
+      "title": "Beheer van tags van locaties",
+
+      "table": {
+        "id": "Tag ID",
+        "dutch": "Nederlands",
+        "english": "Engels"
+      },
+
+      "addNewTag": "Nieuwe tag",
+
+      "addTagModal": {
+        "title": "Nieuwe tag maken",
+        "idSetByBackendMessage": "Ingesteld door backend",
+        "success": "Het aanmaken van de nieuwe tag is gelukt.",
+        "error": "Er is iets misgelopen tijdens het aanmaken van de nieuwe tag."
+      },
+
+      "updateTagModal": {
+        "title": "Update tag",
+        "success": "Het updaten van de tag is geslaagd.",
+        "error": "Er is iets misgelopen tijdens het updaten van de tag."
+      },
+
+      "deleteTagModal": {
+        "title": "Verwijder tag",
+        "body": "Ben je zeker dat je volgende tag wilt verwijderen?",
+        "success": "Het verwijderen van de tag is gelukt.",
+        "error": "Er is iets misgelopen tijdens het verwijderen van de tag."
+      },
+
+      "errorOnRetrievingTags": "Er is iets misgelopen tijdens het ophalen van de tags..."
     },
 
     "users": {

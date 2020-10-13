@@ -42,7 +42,7 @@ public class DBScannerLocationDao extends DAO implements IScannerLocationDao {
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                locations.add(DBLocationDao.createLocation(rs));
+                locations.add(DBLocationDao.createLocation(rs,conn));
             }
 
             return locations;

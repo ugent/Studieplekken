@@ -24,7 +24,7 @@ public class DBLockersDao extends DAO implements ILockersDao {
 
             List<LockerReservation> statuses = new ArrayList<>();
             while (rs.next()) {
-                statuses.add(DBLockerReservationDao.createLockerReservation(rs));
+                statuses.add(DBLockerReservationDao.createLockerReservation(rs,conn));
             }
 
             return statuses;

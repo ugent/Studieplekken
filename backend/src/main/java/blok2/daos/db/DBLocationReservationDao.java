@@ -41,7 +41,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
                 pstmt.setString(2, format.format(new Date()));
             }
 
-            return executeQueryForLocationReservations(pstmt);
+            return executeQueryForLocationReservations(pstmt, conn);
         }
     }
 
@@ -80,7 +80,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
             pstmt.setString(3, format.format(new Date()));
         }
 
-        return executeQueryForLocationReservations(pstmt);
+        return executeQueryForLocationReservations(pstmt, conn);
     }
 
     @Override
@@ -104,7 +104,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
                 pstmt.setString(4, format.format(new Date()));
             }
 
-            return executeQueryForLocationReservations(pstmt);
+            return executeQueryForLocationReservations(pstmt, conn);
         }
     }
 
@@ -125,7 +125,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                LocationReservation locationReservation = createLocationReservation(rs);
+                LocationReservation locationReservation = createLocationReservation(rs,conn);
                 reservations.add(locationReservation);
             }
 
@@ -133,12 +133,12 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
         }
     }
 
-    private List<LocationReservation> executeQueryForLocationReservations(PreparedStatement pstmt) throws SQLException {
+    private List<LocationReservation> executeQueryForLocationReservations(PreparedStatement pstmt, Connection conn) throws SQLException {
         ResultSet rs = pstmt.executeQuery();
 
         List<LocationReservation> reservations = new ArrayList<>();
         while (rs.next()) {
-            LocationReservation locationReservation = createLocationReservation(rs);
+            LocationReservation locationReservation = createLocationReservation(rs,conn);
             reservations.add(locationReservation);
         }
 
@@ -157,7 +157,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                return createLocationReservation(rs);
+                return createLocationReservation(rs, conn);
             } else {
                 return null;
             }
@@ -209,7 +209,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next())
-                return createLocationReservation(rs);
+                return createLocationReservation(rs, conn);
             else
                 return null;
         }
@@ -247,7 +247,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
             String query = Resources.databaseProperties.getString("get_location_reservations_where_<?>");
             query = query.replace("<?>", "lr.location_name = ? and lr.date = ? and (lr.attended = false or lr.attended is null)");
             PreparedStatement pstmt = conn.prepareStatement(query);
-            return getAbsentOrPresentStudents(locationName, date, pstmt);
+            return getAbsentOrPresentStudents(locationName, date, pstmt, conn);
         }
     }
 
@@ -257,12 +257,12 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
             String query = Resources.databaseProperties.getString("get_location_reservations_where_<?>");
             query = query.replace("<?>", "lr.location_name = ? and lr.date = ? and lr.attended = true");
             PreparedStatement pstmt = conn.prepareStatement(query);
-            return getAbsentOrPresentStudents(locationName, date, pstmt);
+            return getAbsentOrPresentStudents(locationName, date, pstmt, conn);
         }
     }
 
     private List<LocationReservation> getAbsentOrPresentStudents(String locationName, CustomDate date
-            , PreparedStatement pstmt) throws SQLException {
+            , PreparedStatement pstmt, Connection conn) throws SQLException {
         List<LocationReservation> reservations = new ArrayList<>();
 
         pstmt.setString(1, locationName);
@@ -270,7 +270,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
         ResultSet rs = pstmt.executeQuery();
 
         while (rs.next()) {
-            LocationReservation locationReservation = createLocationReservation(rs);
+            LocationReservation locationReservation = createLocationReservation(rs, conn);
             reservations.add(locationReservation);
         }
 
@@ -287,7 +287,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
         }
     }
 
-    public static LocationReservation createLocationReservation(ResultSet rs) throws SQLException {
+    public static LocationReservation createLocationReservation(ResultSet rs,Connection conn) throws SQLException {
         CustomDate customDate = CustomDate.parseString(rs.getString(Resources.databaseProperties.getString("location_reservation_date")));
 
         Boolean attended = rs.getBoolean(Resources.databaseProperties.getString("location_reservation_attended"));
@@ -301,7 +301,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
         //  ResultSet, the internal record pointer is after the last entry and you
         //  cant go back. So first call createUser(), then createLocation.
         User user = DBAccountDao.createUser(rs);
-        Location location = DBLocationDao.createLocation(rs);
+        Location location = DBLocationDao.createLocation(rs,conn);
         return new LocationReservation(location, user, customDate, attended);
     }
 }

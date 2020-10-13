@@ -19,12 +19,11 @@ public class TestDBLocationDao extends TestDao {
     private IAuthorityDao authorityDao;
 
     private Location testLocation;
-    private Authority authority;
 
     @Override
     public void populateDatabase() throws SQLException {
         // Setup test objects
-        authority = TestSharedMethods.insertTestAuthority(authorityDao);
+        Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
         testLocation = TestSharedMethods.testLocation(authority.clone());
 
         // Add test objects to database

@@ -2,21 +2,25 @@
   <div class="thumbnail wrapper card">
     <div class="content">
       <!-- Image -->
-      <img src="{{location.imageUrl}}" class="img" alt="Image for {{location.name}}"
+      <img *ngIf="location.imageUrl !== null"
+           src="{{location.imageUrl}}" class="img" alt="Image for {{location.name}}"
            (error)="handleImageError()">
+      <img *ngIf="location.imageUrl === null" [src]="altImageUrl" alt="Image of {{location.name}}">
+
       <div class="location-info">
         <!-- Title -->
         <h3>{{ location.name }}</h3>
 
-        <!-- Number of seats, number of lockers and address -->
+        <!-- Number of seats, number of lockers, address and collection of tags -->
         <ul>
           <li>{{'dashboard.numberOfSeats' | translate}}: {{location.numberOfSeats}}</li>
           <li>{{'dashboard.numberOfLockers' | translate}}: {{location.numberOfLockers}}</li>
           <li>{{'dashboard.address' | translate}}: {{location.address}}</li>
+          <li>{{'dashboard.tags' | translate}}: {{tagsInCurrentLang}}</li>
         </ul>
 
         <!-- Progress bar for reserved seats -->
-        <div class="progress">
+        <div class="progress" *ngIf="showProgressBar">
           <div class="progress-bar" role="progressbar"
                [style.width]="occupation + '%'"
                [attr.aria-valuenow]="occupation"

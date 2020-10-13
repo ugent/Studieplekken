@@ -29,7 +29,7 @@ public class DBCalendarPeriodForLockersDao extends DAO implements ICalendarPerio
             List<CalendarPeriodForLockers> periods = new ArrayList<>();
 
             while (rs.next()) {
-                periods.add(createCalendarPeriod(rs));
+                periods.add(createCalendarPeriod(rs, conn));
             }
 
             return periods;
@@ -129,7 +129,7 @@ public class DBCalendarPeriodForLockersDao extends DAO implements ICalendarPerio
         pstmt.execute();
     }
 
-    private CalendarPeriodForLockers createCalendarPeriod(ResultSet rs) throws SQLException {
+    private CalendarPeriodForLockers createCalendarPeriod(ResultSet rs, Connection conn) throws SQLException {
         CalendarPeriodForLockers calendarPeriodForLockers = new CalendarPeriodForLockers();
 
         calendarPeriodForLockers.setStartsAt(rs.getString(Resources.databaseProperties
@@ -139,7 +139,7 @@ public class DBCalendarPeriodForLockersDao extends DAO implements ICalendarPerio
         calendarPeriodForLockers.setReservableFrom(rs.getString(Resources.databaseProperties
                 .getString("calendar_period_for_lockers_reservable_from")));
 
-        calendarPeriodForLockers.setLocation(DBLocationDao.createLocation(rs));
+        calendarPeriodForLockers.setLocation(DBLocationDao.createLocation(rs,conn));
 
         return calendarPeriodForLockers;
     }

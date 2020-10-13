@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {ApplicationTypeFunctionalityService} from '../services/functionality/application-type/application-type-functionality.service';
+import {AuthenticationService} from '../services/authentication/authentication.service';
 
 @Component({
   selector: 'app-profile',
@@ -9,12 +10,19 @@ import {ApplicationTypeFunctionalityService} from '../services/functionality/app
 export class ProfileComponent implements OnInit {
   showReservations: boolean;
   showPenalties: boolean;
+  showPersonalCalendar: boolean;
+  showChangePassword: boolean;
 
-  constructor(private functionalityService: ApplicationTypeFunctionalityService) { }
+  constructor(private functionalityService: ApplicationTypeFunctionalityService,
+              private authenticationService: AuthenticationService) { }
 
   ngOnInit(): void {
+    this.authenticationService.whoAmI().subscribe();
+
     this.showReservations = this.functionalityService.showReservationsFunctionality();
     this.showPenalties = this.functionalityService.showPenaltyFunctionality();
+    this.showChangePassword = this.functionalityService.showChangePasswordFunctionality();
+    this.showPersonalCalendar = this.functionalityService.showProfilePersonalCalendarFunctionality();
   }
 
 }

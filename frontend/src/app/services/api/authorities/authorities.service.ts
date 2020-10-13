@@ -26,7 +26,7 @@ export class AuthoritiesService {
   }
 
   addAuthority(authority: Authority): Observable<any> {
-    return this.http.post(api.authorities, authority);
+    return this.http.post(api.addAuthority, authority);
   }
 
   updateAuthority(authorityId: number, authority: Authority): Observable<any> {

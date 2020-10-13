@@ -51,4 +51,26 @@ export class ApplicationTypeFunctionalityService {
         return true;
     }
   }
+
+  showProfilePersonalCalendarFunctionality(): boolean {
+    switch (environment.applicationType) {
+      case APPLICATION_TYPE.BLOK_AT:
+        return true;
+      case APPLICATION_TYPE.MINI_THERMIS:
+        return false;
+      default:
+        return true;
+    }
+  }
+
+  showChangePasswordFunctionality(): boolean {
+    switch (environment.applicationType) {
+      case APPLICATION_TYPE.BLOK_AT:
+        return true;
+      case APPLICATION_TYPE.MINI_THERMIS:
+        return false;
+      default:
+        return true;
+    }
+  }
 }

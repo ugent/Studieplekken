@@ -6,17 +6,17 @@ steps:
   - name: test-backend
     image: gradle:jdk8
     environment:
-      SPRING_PROFILES_ACTIVE: ci
+      SPRING_PROFILES_ACTIVE: ci,test
     commands:
       - apt-get update -y && apt-get install netcat -y
-      - ./scripts/wait_for_service db 5432
+      - bash ./scripts/wait_for_service db 5432
       - cd backend
       - gradle assemble
-      - gradle check
+      - gradle -i check
 
 services:
   - name: db
-    image: postgres:10-alpine
+    image: postgres:12-alpine
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres

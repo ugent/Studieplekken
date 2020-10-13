@@ -4,6 +4,7 @@ import blok2.helpers.date.CustomDate;
 import blok2.model.reservables.Location;
 import blok2.model.reservables.Locker;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;

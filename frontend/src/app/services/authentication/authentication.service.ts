@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {User, UserConstructor} from '../../shared/model/User';
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {api, Role} from '../../../environments/environment';
 import {Penalty} from '../../shared/model/Penalty';
 import {LocationReservation} from '../../shared/model/LocationReservation';
 import {LockerReservation, LockerReservationConstructor} from '../../shared/model/LockerReservation';
-import {map} from 'rxjs/operators';
+import {map, tap} from 'rxjs/operators';
 import {PenaltyService} from '../api/penalties/penalty.service';
 import {LocationReservationsService} from '../api/location-reservations/location-reservations.service';
 import {LockerReservationService} from '../api/locker-reservations/locker-reservation.service';
+import {Router} from '@angular/router';
 
 /**
  * The structure of the authentication service has been based on this article:
@@ -36,26 +37,31 @@ export class AuthenticationService {
   constructor(private http: HttpClient,
               private penaltyService: PenaltyService,
               private locationReservationService: LocationReservationsService,
-              private lockerReservationService: LockerReservationService) {
-    // TODO: try to obtain a user object based on a HTTP-only session cookie, if provided
-    //   this way, if a user was logged in previously, he/she doesn't have to do it again
-    const params = new HttpParams().set('mail', 'bram.vandewalle@ugent.be');
-    http.get<User>(api.userByMail, { params })
-      .subscribe(next => {
-        this.userSubject.next(next);
-    });
-  }
+              private lockerReservationService: LockerReservationService,
+              private router: Router) { }
 
   userValue(): User {
     return this.userSubject.value;
   }
 
-  login(mail: string, password: string): void {
-    // TODO: login
-  }
-
+  /**
+   * The flow of a cas logout is as follows:
+   *   1. frontend: send a HTTP POST to <backend-url>/logout
+   *   2. backend: Spring Security CAS will notice that the user wants to log out
+   *   3. backend: communicate with CAS server to log out the user
+   *   4. backend: sends a HTTP 200 response if successfully logged out
+   *   5. frontend: because the user is logged out, the userSubject needs to
+   *      be updated. Therefore, we send a next() signal to all the subscribers
+   *      of the observable connected to the userSubject.
+   *   6. in frontend: redirect the user to the login page
+   */
   logout(): void {
-    // TODO: logout
+    this.http.post(api.logout, {}).subscribe(
+      () => {
+        this.userSubject.next(UserConstructor.new());
+        this.router.navigate(['/login']).catch(e => console.log(e));
+      }
+    );
   }
 
   isLoggedIn(): boolean {
@@ -71,6 +77,14 @@ export class AuthenticationService {
     return this.http.put(api.changePassword, body);
   }
 
+  /********************************************************
+   *   Getters for information about the logged in user   *
+   ********************************************************/
+
+  whoAmI(): Observable<User> {
+    return this.http.get<User>(api.whoAmI).pipe(tap(next => this.userSubject.next(next)));
+  }
+
   getLocationReservations(): Observable<LocationReservation[]> {
     return this.locationReservationService.getLocationReservationsOfUser(this.userSubject.value.augentID);
   }
@@ -78,7 +92,7 @@ export class AuthenticationService {
   getLockerReservations(): Observable<LockerReservation[]> {
     const v = this.lockerReservationService.getLockerReservationsOfUser(this.userSubject.value.augentID);
 
-    return v.pipe(map<LockerReservation[], LockerReservation[]>((value, index) => {
+    return v.pipe(map<LockerReservation[], LockerReservation[]>((value) => {
       const reservations: LockerReservation[] = [];
 
       value.forEach(reservation => {
