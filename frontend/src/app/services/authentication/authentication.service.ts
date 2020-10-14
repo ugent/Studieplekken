@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {User, UserConstructor} from '../../shared/model/User';
 import {HttpClient} from '@angular/common/http';
-import {api, Role} from '../../../environments/environment';
+import {api} from '../../../environments/environment';
 import {Penalty} from '../../shared/model/Penalty';
 import {LocationReservation} from '../../shared/model/LocationReservation';
 import {LockerReservation, LockerReservationConstructor} from '../../shared/model/LockerReservation';
@@ -11,6 +11,7 @@ import {PenaltyService} from '../api/penalties/penalty.service';
 import {LocationReservationsService} from '../api/location-reservations/location-reservations.service';
 import {LockerReservationService} from '../api/locker-reservations/locker-reservation.service';
 import {Router} from '@angular/router';
+import {UserService} from '../api/users/user.service';
 
 /**
  * The structure of the authentication service has been based on this article:
@@ -34,26 +35,34 @@ export class AuthenticationService {
   // (which comes from the userSubject)
   public user: Observable<User> = this.userSubject.asObservable();
 
+  private hasAuthoritiesSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public hasAuthorities: Observable<boolean> = this.hasAuthoritiesSubject.asObservable();
+
   constructor(private http: HttpClient,
               private penaltyService: PenaltyService,
               private locationReservationService: LocationReservationsService,
               private lockerReservationService: LockerReservationService,
-              private router: Router) { }
+              private router: Router,
+              private userService: UserService) { }
 
   userValue(): User {
     return this.userSubject.value;
+  }
+
+  hasAuthoritiesValue(): boolean {
+    return this.hasAuthoritiesSubject.value;
   }
 
   /**
    * The flow of a cas logout is as follows:
    *   1. frontend: send a HTTP POST to <backend-url>/logout
    *   2. backend: Spring Security CAS will notice that the user wants to log out
-   *   3. backend: communicate with CAS server to log out the user
+   *   3. backend: communicates with CAS server to log out the user
    *   4. backend: sends a HTTP 200 response if successfully logged out
    *   5. frontend: because the user is logged out, the userSubject needs to
    *      be updated. Therefore, we send a next() signal to all the subscribers
    *      of the observable connected to the userSubject.
-   *   6. in frontend: redirect the user to the login page
+   *   6. frontend: redirects the user to the login page
    */
   logout(): void {
     this.http.post(api.logout, {}).subscribe(
@@ -69,7 +78,7 @@ export class AuthenticationService {
   }
 
   isAdmin(): boolean {
-    return this.userSubject.value.roles.includes(Role.ADMIN);
+    return this.userSubject.value.admin;
   }
 
   updatePassword(from: string, to: string): Observable<any> {
@@ -82,7 +91,12 @@ export class AuthenticationService {
    ********************************************************/
 
   whoAmI(): Observable<User> {
-    return this.http.get<User>(api.whoAmI).pipe(tap(next => this.userSubject.next(next)));
+    return this.http.get<User>(api.whoAmI).pipe(tap(
+      next => {
+        this.userSubject.next(next);
+        this.updateHasAuthoritiesSubject(next);
+      }
+    ));
   }
 
   getLocationReservations(): Observable<LocationReservation[]> {
@@ -106,5 +120,16 @@ export class AuthenticationService {
 
   getPenalties(): Observable<Penalty[]> {
     return this.penaltyService.getPenaltiesOfUserById(this.userSubject.value.augentID);
+  }
+
+  /*******************
+   *   Auxiliaries   *
+   *******************/
+  updateHasAuthoritiesSubject(user: User): void {
+    this.userService.hasUserAuthorities(user.augentID).subscribe(
+      next => {
+        this.hasAuthoritiesSubject.next(next);
+      }
+    );
   }
 }

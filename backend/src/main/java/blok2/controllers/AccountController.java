@@ -119,8 +119,19 @@ public class AccountController {
         }
     }
 
-    @PutMapping("/{id}")
-    public void updateUser(@PathVariable("id") String id, @RequestBody User user) {
+    @GetMapping("{userId}/has/authorities")
+    public boolean hasUserAuthorities(@PathVariable("userId") String userId) {
+        try {
+            return authorityDao.getAuthoritiesFromUser(userId).size() > 0;
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @PutMapping("/{userId}")
+    public void updateUser(@PathVariable("userId") String id, @RequestBody User user) {
         try {
             User old = accountDao.getUserById(id);
             accountDao.updateUserById(id, user);

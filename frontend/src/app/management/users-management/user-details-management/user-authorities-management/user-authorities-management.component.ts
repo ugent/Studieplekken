@@ -1,7 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
 import {User} from '../../../../shared/model/User';
-import {Role} from '../../../../../environments/environment';
 import {Authority} from '../../../../shared/model/Authority';
 import {AuthoritiesService} from '../../../../services/api/authorities/authorities.service';
 import {transition, trigger, useAnimation} from '@angular/animations';
@@ -114,11 +113,6 @@ export class UserAuthoritiesManagementComponent implements OnInit {
   // *******************
   // *   Auxiliaries   *
   // *******************
-
-  isUserAllowedToHaveAuthorities(user: User): boolean {
-    return (user.roles.includes(Role.ADMIN) ||
-      user.roles.includes(Role.EMPLOYEE));
-  }
 
   validForm(): boolean {
     return !this.authoritiesFormControl.invalid;

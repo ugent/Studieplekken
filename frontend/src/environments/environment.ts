@@ -66,7 +66,8 @@ export const api = {
   usersByLastName: '/api/account/lastName',
   usersByFirstAndLast: '/api/account/firstAndLastName',
   changePassword: '/api/account/password',
-  updateUser: '/api/account/{id}',
+  updateUser: '/api/account/{userId}',
+  hasUserAuthorities: '/api/account/{userId}/has/authorities',
 
   // LOCKERS
   lockersStatusesOfLocation: '/api/lockers/status/{locationName}',
@@ -111,7 +112,9 @@ export const msToShowFeedback = 10000;
 export const penaltyEventCodeForManualEntry = 16663;
 
 /*
- * The roles that are available in the application
+ * The roles that are available in the application.
+ * This is used for being able to manage the role(s)
+ * of a certain user.
  *
  * Do not forget to translate the role if you would
  * be adding a role (<lang>.json -> general.roles)
