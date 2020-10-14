@@ -3,6 +3,7 @@ package blok2.daos;
 import blok2.helpers.Institution;
 import blok2.helpers.date.CustomDate;
 import blok2.model.Authority;
+import blok2.model.LocationTag;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.CalendarPeriodForLockers;
 import blok2.model.reservables.Location;
@@ -15,27 +16,59 @@ import java.util.List;
 
 public class TestSharedMethods {
 
-    public static Location testLocation(int authorityId) {
+    public static Location testLocation(Authority authority) {
         Location testLocation = new Location();
         testLocation.setName("Test Location");
         testLocation.setAddress("Test street, 10");
         testLocation.setNumberOfSeats(50);
         testLocation.setNumberOfLockers(15);
         testLocation.setImageUrl("https://example.com/image.jpg");
-        testLocation.setAuthorityId(authorityId);
+        testLocation.setAuthority(authority);
 
         return testLocation;
     }
 
-    public static Location testLocation2(int authorityId) {
+    public static Location testLocation2(Authority authority) {
         Location testLocation2 = new Location();
         testLocation2.setName("Second Test Location");
         testLocation2.setAddress("Second Test street, 20");
         testLocation2.setNumberOfSeats(100);
         testLocation2.setNumberOfLockers(10);
         testLocation2.setImageUrl("https://example.com/picture.png");
-        testLocation2.setAuthorityId(authorityId);
+        testLocation2.setAuthority(authority);
         return testLocation2;
+    }
+
+    public static Location testLocation3(Authority authority) {
+        Location testLocation3 = new Location();
+        testLocation3.setName("Third Test Location");
+        testLocation3.setAddress("Third Test street, 30");
+        testLocation3.setNumberOfSeats(25);
+        testLocation3.setNumberOfLockers(5);
+        testLocation3.setImageUrl("https://example.com/picture.png");
+        testLocation3.setAuthority(authority);
+        return testLocation3;
+    }
+
+    public static LocationTag testTag() {
+        LocationTag testTag = new LocationTag(1,
+                "Stille ruimte",
+                "Silent space");
+        return testTag;
+    }
+
+    public static LocationTag testTag2() {
+        LocationTag testTag = new LocationTag(2,
+                "Geschikt voor vergaderingen",
+                "Suitable for meetings");
+        return testTag;
+    }
+
+    public static LocationTag testTag3() {
+        LocationTag testTag = new LocationTag(3,
+                "Geschikt voor invaliden",
+                "Suitable for the less-abled");
+        return testTag;
     }
 
     public static Authority insertTestAuthority(IAuthorityDao authorityDao) throws SQLException {
@@ -48,7 +81,7 @@ public class TestSharedMethods {
 
     public static Authority insertTestAuthority(String name, String description, IAuthorityDao authorityDao) throws SQLException {
         Authority authority = new Authority();
-        authority.setName(name);
+        authority.setAuthorityName(name);
         authority.setDescription(description);
         authority = authorityDao.addAuthority(authority);
         Authority dbAuthority = authorityDao.getAuthorityByAuthorityId(authority.getAuthorityId());

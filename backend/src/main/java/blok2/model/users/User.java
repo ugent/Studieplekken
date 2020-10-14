@@ -1,14 +1,18 @@
 package blok2.model.users;
 
 import java.util.Objects;
+import java.util.*;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * This class is used to represent a registered user or UGhent student.
  * This class implements the interface UserDetails so spring can use this
  * class to verify login credentials.
  */
-public class User implements Cloneable {
+public class User implements Cloneable, UserDetails {
     private String lastName;
     private String firstName;
     private String mail;
@@ -128,6 +132,40 @@ public class User implements Cloneable {
                 ", penaltyPoints='" + penaltyPoints + '\'' +
                 ", admin='" + admin + '\'' +
                 '}';
+    }
+
+    /*********************************************
+     *   Implementation of UserDetails methods   *
+     *********************************************/
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singleton(new SimpleGrantedAuthority(admin ? "admin" : "user"));
+    }
+
+    @Override
+    public String getUsername() {
+        return mail;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
 }

@@ -30,7 +30,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     implementation 'org.springframework.boot:spring-boot-configuration-processor:2.2.2.RELEASE'
+
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+    implementation 'org.springframework.security:spring-security-cas:5.3.4.RELEASE'
+    implementation 'org.springframework.ldap:spring-ldap-core:2.3.3.RELEASE'
 
     implementation 'net.sf.barcode4j:barcode4j:2.1'
     implementation 'com.icegreen:greenmail-spring:1.5.13'
@@ -70,7 +74,6 @@ tasks.register("bootRunDev") {
     }
     finalizedBy("bootRun")
 }
-
 
 /*gitProperties {
     gitPropertiesName = "git.properties"

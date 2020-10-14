@@ -1,0 +1,98 @@
+<div class="container-fluid" *ngIf="location | async as location">
+  <div class="panel-body" style="padding: 20px">
+    <div>
+      <div class="row alert alert-info">
+        <p>{{'management.locationDetails.tags.activeTagsInformation' | translate}}</p>
+        <p>{{'management.locationDetails.tags.updateTagsInformation' | translate}}</p>
+
+        <div class="pull-right">
+          <button class="btn btn-secondary" data-toggle="modal" data-target="#updateTagsConfigurationModal"
+                  (click)="prepareUpdateTheTags()">
+            {{'management.locationDetails.tags.updateTagsButton' | translate}}
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="tagsThatAreSelected && tagsThatAreSelected.length > 0; else noTags">
+        <ul>
+          <li *ngFor="let tag of tagsThatAreSelected">
+            {{currentLang === 'nl' ? tag.dutch : tag.english}}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #noTags>
+  <div class="alert alert-warning">
+    {{'management.locationDetails.tags.noTagsSelected' | translate}}
+  </div>
+</ng-template>
+
+<!-- Modal view to update the tags configuration of the location -->
+<div class="modal fade" id="updateTagsConfigurationModal" tabindex="-1" role="dialog"
+     aria-labelledby="updateTagsConfigurationModalTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <!-- Modal header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="updateTagsConfigurationModalTitle">
+          {{'management.locationDetails.tags.updateTagsConfigurationModal.title' | translate}}
+        </h5>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <div class="container-fluid">
+          <div class="row">
+            <p>{{('management.locationDetails.tags.updateTagsConfigurationModal.body' | translate)
+              .replace('{locationName}', locationName)}}</p>
+          </div>
+
+          <div class="row" style="margin-top: 20px;">
+            <mat-form-field>
+              <mat-label>{{'management.locationDetails.tags.updateTagsConfigurationModal.comboboxTitle' | translate}}</mat-label>
+              <mat-select multiple (selectionChange)="selectionChanged($event)"
+                          [formControl]="tagsFormControl" [compareWith]="compareTagsInSelection">
+                <mat-option *ngFor="let tag of allTags" [value]="tag">
+                  {{currentLang === 'nl' ? tag.dutch : tag.english}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary"
+                [disabled]="!tagsSelectionIsUpdatable"
+                (click)="updateTags()">
+          {{'general.buttons.update' | translate}}
+        </button>
+        <button type="button" class="btn btn-secondary"
+                data-dismiss="modal">
+          {{'general.buttons.cancel' | translate}}
+        </button>
+      </div>
+
+      <!-- Feedback to the user -->
+      <div class="container-fluid">
+        <div class="alert alert-info" *ngIf="successUpdatingTagsConfiguration === null">
+          {{'general.waitingForServer' | translate}}
+        </div>
+
+        <div class="alert alert-success" *ngIf="successUpdatingTagsConfiguration === true">
+          {{('management.locationDetails.tags.updateTagsConfigurationModal.success' | translate).replace('{locationName}', locationName)}}
+        </div>
+
+        <div class="alert alert-error" *ngIf="successUpdatingTagsConfiguration === false">
+          {{('management.locationDetails.tags.updateTagsConfigurationModal.error' | translate).replace('{locationName}', locationName)}}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -9,7 +9,7 @@ Have a look at our [Wiki](https://github.ugent.be/bravdwal/dsa/wiki)
 - PostgreSQL 12
 
 **Configure**  
-1. PostgreSQL
+***PostgreSQL***
 
 Make sure that a user `postgres` with password `postgres` has following databases, running on (<b>default</b>) port 5432:
 - `blokatugent`
@@ -18,6 +18,20 @@ Make sure that a user `postgres` with password `postgres` has following database
 For the `blokatugent` database, run the script `scripts/database/seed.sql` to provide some dummy data.
 
 Configure your correct database configuration in de `application.yml`properties file in the resources folder.
+
+***Self-signed certificate for HTTPS***  
+
+To be able to use CAS in development, the callback URL that the UGent CAS Server uses, <i>has</i> to be `https://localhost:8080/**`.
+
+Therefore, we need to set up HTTPS within development. This is done by creating a self-signed certificate. The self signed certificate is located in a keystore at `backend/src/main/resources/keystore/blokat.p12`. When the server is started, the self signed certificate should be found by the server.
+
+Not just the backend is secured with HTTPS, but the frontend as well. This is done by setting the `start` script which is defined in `package.json` from `ng serve` to `ng serve --ssl`. When starting the server, ignore the security warning that the browser will give.
+
+You can create a certificate by running following command. Make sure to use `***REMOVED***` as the password for the keystore, or if another password is used, change the file `application.yml`.
+``` shell script
+keytool -genkeypair -alias blokat -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore blokat.p12 -validity 3650
+```
+
 
 **Commands**
 ```shell script

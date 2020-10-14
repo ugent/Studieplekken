@@ -58,9 +58,6 @@ public class TestCascadeInDBLocationDao extends TestDao {
     private User testUser1;
     private User testUser2;
 
-    //to connect a location to an authority
-    private Authority authority;
-
     // to test cascade on LOCATION_RESERVATIONS
     private LocationReservation testLocationReservation1;
     private LocationReservation testLocationReservation2;
@@ -69,8 +66,6 @@ public class TestCascadeInDBLocationDao extends TestDao {
     private LockerReservation testLockerReservation1;
     private LockerReservation testLockerReservation2;
 
-    // to test cascade on PENALTY_BOOK
-    private PenaltyEvent testPenaltyEvent;
     private Penalty testPenalty1;
     private Penalty testPenalty2;
 
@@ -83,8 +78,9 @@ public class TestCascadeInDBLocationDao extends TestDao {
     @Override
     public void populateDatabase() throws SQLException {
         // Setup test objects
-        authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testLocation = TestSharedMethods.testLocation(authority.getAuthorityId());
+        Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
+
+        testLocation = TestSharedMethods.testLocation(authority.clone());
         testUser1 = TestSharedMethods.studentTestUser();
         testUser2 = TestSharedMethods.adminTestUser();
 
@@ -99,7 +95,8 @@ public class TestCascadeInDBLocationDao extends TestDao {
         Map<Language, String> descriptions = new HashMap<>();
         descriptions.put(Language.DUTCH, "Dit is een test omschrijving van een penalty event met code 0");
         descriptions.put(Language.ENGLISH, "This is a test description of a penalty event with code 0");
-        testPenaltyEvent = new PenaltyEvent(0, 10, descriptions);
+        // to test cascade on PENALTY_BOOK
+        PenaltyEvent testPenaltyEvent = new PenaltyEvent(0, 10, descriptions);
 
         // Note: the received amount of points are 10 and 20, not testPenaltyEvent.getCode()
         // because when the penalties are retrieved from the penaltyEventDao, the list will

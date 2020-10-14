@@ -3,7 +3,7 @@ import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {api} from '../../../../environments/environment';
 import {LocationReservation} from '../../../shared/model/LocationReservation';
 import {Observable} from 'rxjs';
-import {toDateString, toISODateString, typeScriptDateToCustomDate} from "../../../shared/model/helpers/CustomDate";
+import {toISODateString, typeScriptDateToCustomDate} from '../../../shared/model/helpers/CustomDate';
 
 @Injectable({
   providedIn: 'root'

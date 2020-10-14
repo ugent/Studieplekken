@@ -15,6 +15,11 @@
 
     <br><br>
 
+    <!-- If the user is an EMPLOYEE or ADMIN, show the authorities of the user -->
+    <app-user-authorities-management [userObs]="userObs"></app-user-authorities-management>
+
+    <br><br>
+
     <!-- Table with all penalty points and the option to add/delete them manually  -->
     <app-user-details-management-penalties
       *ngIf="showPenaltyManagement"

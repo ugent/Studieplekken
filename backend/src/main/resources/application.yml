@@ -1,4 +1,4 @@
-# configuration for sending verification mail
+# spring configuration
 spring:
   application:
     name: "BlokAtUGent"
@@ -7,7 +7,7 @@ spring:
     url: "jdbc:postgresql://localhost:5432/blokatugent"
     username: ***REMOVED***
     password: ***REMOVED***
-  mail:
+  mail: # configuration for sending verification mail
     host: smtp.gmail.com
     port: 587
     username: blok2.bach@gmail.com
@@ -22,6 +22,17 @@ spring:
     url: "jdbc:postgresql://localhost:5432/blokatugent"
     user: ***REMOVED***
     password: ***REMOVED***
+    baseline-on-migrate: true
+
+# server configuration
+server:
+  ssl:
+    key-store-type: PKCS12
+    key-store: classpath:keystore/blokat.p12
+    key-store-password: ***REMOVED***
+    key-alias: blokat
+    enabled: true
+  port: 8080
 
 # url sent to user for verification
 verification:
@@ -35,3 +46,15 @@ absentStudents:
   mail:
     subject: "Afwezigheid voor reservatie/ Absence for reservation"
     template: "ENGLISH VERSION BELOW\n\nBeste Student,\n\nU was afwezig voor uw reservatie vandaag.\nHiervoor heeft u strafpunten gekregen. Van zodra u te veel strafpunten heeft kan u geen reservaties meer maken\n\n---\n\nDear student,\n\nYou were absent for your reservation today.\nDue to this you have received penalty points. Please note that you can not make a reservation if you have too many penalty points."
+
+# CAS Authentication
+cas:
+  loginUrl: https://login.ugent.be
+  callbackUrl: https://localhost:8080/login/cas
+
+# LDAP Configuration
+ldap:
+  url: ldaps://ldap.ugent.be
+  base: ***REMOVED***
+  userDn: cn=dsa-bestuursleden,ou=applications,dc=UGent,dc=be
+  password: 5-yuoDssc3Fwd

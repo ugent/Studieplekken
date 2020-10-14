@@ -18,6 +18,14 @@ location_address=address
 location_start_period_lockers=start_period_lockers
 location_end_period_lockers=end_period_lockers
 location_authority_id=authority_id
+location_tags=tags
+location_description_dutch = description_dutch
+location_description_english = description_english
+
+#columns for the table TAGS
+tags_tag_id=tag_id
+tags_dutch=dutch
+tags_english=english
 
 # columns for table LOCATION_RESERVATIONS
 location_reservation_date=date
@@ -46,7 +54,7 @@ roles_user_authority_user_id = user_id
 
 # columns for table AUTHORITY
 authority_authority_id = authority_id
-authority_name = name
+authority_name = authority_name
 authority_description = description
 
 # columns for table USER
@@ -96,10 +104,6 @@ penalty_book_remarks=remarks
 scanners_location_user_augentid=user_augentid
 scanners_location_name=location_name
 
-# columns for LOCATION_DESCRIPTIONS
-location_description_description=description
-location_description_lang_enum=lang_enum
-
 # columns for CALENDAR_PERIODS
 calendar_period_location_name=location_name
 calendar_period_starts_at=starts_at
@@ -113,3 +117,7 @@ calendar_period_for_lockers_location_name=location_name
 calendar_period_for_lockers_starts_at=starts_at
 calendar_period_for_lockers_ends_at=ends_at
 calendar_period_for_lockers_reservable_from=reservable_from
+
+# columns for LOCATION_TAGS
+location_tags_location_id=location_id
+location_tags_tag_id=tag_id

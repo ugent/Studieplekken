@@ -13,6 +13,17 @@ export const environment = {
 };
 
 export const api = {
+  whoAmI: '/whoAmI',
+  logout: '/logout',
+
+  // AUTHORITY
+  authorities: '/api/authority',
+  authority: '/api/authority/{authorityId}',
+  addAuthority: '/api/authority',
+  updateAuthority: '/api/authority/{authorityId}',
+  deleteAuthority: '/api/authority/{authorityId}',
+  locationsInAuthoritiesOfUser: '/api/authority/users/{userId}/locations',
+
   // CALENDAR_PERIODS
   calendarPeriods: '/api/locations/calendar/{locationName}',
   addCalendarPeriods: '/api/locations/calendar',
@@ -32,6 +43,7 @@ export const api = {
   updateLocation: '/api/locations/{locationName}',
   deleteLocation: '/api/locations/{locationName}',
   numberOfReservations: '/api/locations/{locationName}/reservations/count',
+  setupTagsForLocation: '/api/locations/tags/{locationName}',
 
   // LOCATION_RESERVATIONS
   locationReservationsOfUser: '/api/locations/reservations/user',
@@ -41,25 +53,23 @@ export const api = {
   locationReservationsOfLocationFromAndUntil: '/api/locations/reservations/fromAndUntil',
   deleteLocationReservation: '/api/locations/reservations',
 
-  // LOCKERS
-  lockersStatusesOfLocation: '/api/lockers/status/{locationName}',
-
   // LOCKER_RESERVATIONS
   lockerReservationsOfUser: '/api/lockers/reservations/user',
   lockerReservationsOfLocation: '/api/lockers/reservations/location',
   updateLockerReservation: '/api/lockers/reservations',
   deleteLockerReservation: '/api/lockers/reservations',
-  lockerReservationsByUserId: '/api/lockers/reservations/{userId}',
 
   // USERS
   userByAUGentId: '/api/account/id',
   userByBarcode: '/api/account/barcode',
-  userByMail: '/api/account/mail',
   usersByFirstName: '/api/account/firstName',
   usersByLastName: '/api/account/lastName',
   usersByFirstAndLast: '/api/account/firstAndLastName',
   changePassword: '/api/account/password',
   updateUser: '/api/account/{id}',
+
+  // LOCKERS
+  lockersStatusesOfLocation: '/api/lockers/status/{locationName}',
 
   // PENALTY_BOOK
   penaltiesByUserId: '/api/penalties/{id}',
@@ -70,11 +80,24 @@ export const api = {
   penaltyEvents: '/api/penalties/events',
   addPenaltyEvent: '/api/penalties/events',
   updatePenaltyEvent: '/api/penalties/events/{code}',
-  deletePenaltyEvent: '/api/penalties/events'
+  deletePenaltyEvent: '/api/penalties/events',
+
+  // TAGS
+  tags: '/api/tags',
+  addTag: '/api/tags',
+  updateTag: '/api/tags',
+  deleteTag: '/api/tags/{tagId}',
+
+  // ROLES_USER_AUTHORITY
+  usersInAuthority: '/api/authority/{authorityId}/users',
+  authoritiesOfUser: '/api/authority/users/{userId}',
+  addUserToAuthority: '/api/authority/{authorityId}/user/{userId}',
+  deleteUserFromAuthority: '/api/authority/{authorityId}/user/{userId}'
 };
 
 export const vars = {
-  defaultLocationImage: 'assets/images/default_location.jpg'
+  defaultLocationImage: 'assets/images/default_location.jpg',
+  casFlowTriggerUrl: 'https://localhost:8080/login/cas'
 };
 
 /*

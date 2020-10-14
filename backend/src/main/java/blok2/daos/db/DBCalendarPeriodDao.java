@@ -28,7 +28,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
             List<CalendarPeriod> periods = new ArrayList<>();
 
             while (rs.next()) {
-                periods.add(createCalendarPeriod(rs));
+                periods.add(createCalendarPeriod(rs,conn));
             }
 
             return periods;
@@ -121,7 +121,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         pstmt.execute();
     }
 
-    private CalendarPeriod createCalendarPeriod(ResultSet rs) throws SQLException {
+    private CalendarPeriod createCalendarPeriod(ResultSet rs, Connection conn) throws SQLException {
         CalendarPeriod calendarPeriod = new CalendarPeriod();
 
         calendarPeriod.setStartsAt(rs.getString(Resources.databaseProperties.getString("calendar_period_starts_at")));
@@ -130,7 +130,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         calendarPeriod.setClosingTime(rs.getString(Resources.databaseProperties.getString("calendar_period_closing_time")));
         calendarPeriod.setReservableFrom(rs.getString(Resources.databaseProperties.getString("calendar_period_reservable_from")));
 
-        calendarPeriod.setLocation(DBLocationDao.createLocation(rs));
+        calendarPeriod.setLocation(DBLocationDao.createLocation(rs,conn));
 
         return calendarPeriod;
     }

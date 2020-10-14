@@ -2,25 +2,59 @@
   <!-- Title -->
   <h1>{{location.name}}</h1>
 
-  <!-- First layer: image and general info -->
+  <!-- First layer: image, general info and overview of tags -->
   <div class="row">
-    <div class="col-md-7 col-sm-12">
+    <div class="col-md-4 col-sm-12">
       <!-- Note that if the original url of the image (received from the
            REST API) resulted in an error in the dashboard-item, the attribute
             will be replaced with a default value. -->
-      <img src="{{location.imageUrl}}" alt="Image of {{location.name}}"
+      <img *ngIf="location.imageUrl !== null"
+           src="{{location.imageUrl}}" alt="Image of {{location.name}}"
            (error)="handleImageError(location)">
+      <img *ngIf="location.imageUrl === null" [src]="altImageUrl" alt="Image of {{location.name}}">
     </div>
 
-    <div class="col-md-5 col-sm-12">
-      <!-- Number of seats, number of lockers and address -->
-      <ul>
-        <li>{{'dashboard.numberOfSeats' | translate}}: {{location.numberOfSeats}}</li>
-        <li>{{'dashboard.numberOfLockers' | translate}}: {{location.numberOfLockers}}</li>
-        <li>{{'dashboard.address' | translate}}: {{location.address}}</li>
-      </ul>
+    <div class="col-md-4 col-sm-12">
+      <div class="container-fluid row">
+        <div class="alert alert-info">
+          {{'dashboard.locationDetails.info' | translate}}
+        </div>
+
+        <!-- Number of seats, number of lockers and address -->
+        <ul>
+          <li>{{'dashboard.numberOfSeats' | translate}}: {{location.numberOfSeats}}</li>
+          <li>{{'dashboard.numberOfLockers' | translate}}: {{location.numberOfLockers}}</li>
+          <li>{{'dashboard.address' | translate}}: {{location.address}}</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-md-4 col-sm12">
+      <div class="container-fluid row">
+        <div class="alert alert-info">
+          {{'dashboard.locationDetails.tags' | translate}}
+        </div>
+
+        <!-- List of the tags -->
+        <ul *ngIf="tags !== undefined">
+          <li *ngFor="let tag of tags">
+            {{currentLang === 'nl' ? tag.dutch : tag.english}}
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
+
+  <hr>
+
+  <!-- Description of the location, show the description based on the browser language -->
+  <!-- A CKEditor is used, but is put in read-only mode and without a toolbar -->
+  <h2>{{'dashboard.description' | translate}}</h2>
+
+  <ckeditor [(ngModel)]="description.show"
+            [editor]="editor"
+            [disabled]="true" [config]="{toolbar: []}">
+  </ckeditor>
 
   <hr>
 

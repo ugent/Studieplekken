@@ -4,7 +4,11 @@ import {FormControl, FormGroup} from '@angular/forms';
 import {LocationService} from '../../../../services/api/locations/location.service';
 import {Observable} from 'rxjs';
 import {msToShowFeedback} from '../../../../../environments/environment';
+// @ts-ignore
 import {LocationDetailsService} from '../../../../services/single-point-of-truth/location-details/location-details.service';
+import {Authority} from '../../../../shared/model/Authority';
+import {AuthoritiesService} from '../../../../services/api/authorities/authorities.service';
+import {tap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-details-form',
@@ -14,8 +18,12 @@ import {LocationDetailsService} from '../../../../services/single-point-of-truth
 export class DetailsFormComponent implements OnInit {
   @Input() location: Observable<Location>;
 
+  authoritiesObs: Observable<Authority[]>;
+  authoritiesMap: Map<number, Authority>; // map the authorityId to the Authority object
+
   locationForm = new FormGroup({
     name: new FormControl({value: '', disabled: true}),
+    authority: new FormControl({value: '', disabled: true}),
     address: new FormControl({value: '', disabled: true}),
     numberOfSeats: new FormControl({value: '', disabled: true}),
     numberOfLockers: new FormControl({value: '', disabled: true}),
@@ -29,18 +37,32 @@ export class DetailsFormComponent implements OnInit {
   successUpdatingLocation: boolean = undefined;
 
   constructor(private locationService: LocationService,
-              private locationDetailsService: LocationDetailsService) { }
+              private locationDetailsService: LocationDetailsService,
+              private authoritiesService: AuthoritiesService) { }
 
   ngOnInit(): void {
     // if the location has been retrieved, populate the form group
     this.location.subscribe(next => {
       this.updateFormGroup(next);
     });
+
+    // the authoritiesObs is used in the form, asynchronously
+    // the authoritiesMap is used to set the authority object
+    // when the user wants to change the authority
+    this.authoritiesObs = this.authoritiesService.getAllAuthorities().pipe(tap(
+      next => {
+        this.authoritiesMap = new Map<number, Authority>();
+        next.forEach(value => {
+          this.authoritiesMap.set(value.authorityId, value);
+        });
+      }
+    ));
   }
 
   updateFormGroup(location: Location): void {
     this.locationForm.setValue({
       name: location.name,
+      authority: location.authority.authorityId,
       address: location.address,
       numberOfSeats: location.numberOfSeats,
       numberOfLockers: location.numberOfLockers,
@@ -71,22 +93,32 @@ export class DetailsFormComponent implements OnInit {
     this.disableFormGroup();
     this.updateFormGroup(location);
     this.changeEnableDisableLocationDetailsFormButtons();
+    this.successUpdatingLocation = undefined;
   }
 
   persistLocationDetailsButtonClick(from: Location, to: Location): void {
     this.successUpdatingLocation = null; // show 'loading' message
+
+    // The management of the descriptions is done in separate panel-groups.
+    // Therefore, we copy these attributes here.
+    to.descriptionDutch = from.descriptionDutch;
+    to.descriptionEnglish = from.descriptionEnglish;
+
+    // set the authority object based on the authorityId that is selected in the form
+    to.authority = this.authorityInLocationForm;
+
     this.locationService.updateLocation(from.name, to).subscribe(
       () => {
         this.successHandler();
 
-        // update the location attribute
-        // this, 'loadLocation' function will perform a next() on the
-        // subject behavior, which will trigger a next() on the underlying
-        // observable, to which the HTML is implicitly subscribed
+        // update the location attribute: 'loadLocation' will perform a next()
+        // on the subject behavior, which will trigger a next() on the underlying
+        // observable, to which the HTML is implicitly subscribed through the
+        // *ngIf="location | async as location" in the outer div of the template.
         this.locationDetailsService.loadLocation(to.name);
       }, () => {
         this.errorHandler();
-        // load to be sure
+        // reload the location to be sure
         this.locationDetailsService.loadLocation(from.name);
       }
     );
@@ -103,5 +135,9 @@ export class DetailsFormComponent implements OnInit {
   errorHandler(): void {
     this.successUpdatingLocation = false;
     setTimeout(() => this.successUpdatingLocation = undefined, msToShowFeedback);
+  }
+
+  get authorityInLocationForm(): Authority {
+    return this.authoritiesMap.get(Number(this.locationForm.get('authority').value));
   }
 }

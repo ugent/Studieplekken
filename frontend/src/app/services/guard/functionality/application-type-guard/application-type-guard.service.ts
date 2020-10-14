@@ -24,6 +24,12 @@ export class ApplicationTypeGuardService implements CanActivate {
       case 'scanning':
         activate = this.functionalityService.showScanningFunctionality();
         break;
+      case 'profile.personalCalendar':
+        activate = this.functionalityService.showProfilePersonalCalendarFunctionality();
+        break;
+      case 'profile.changePassword':
+        activate = this.functionalityService.showChangePasswordFunctionality();
+        break;
     }
 
     if (!activate) {

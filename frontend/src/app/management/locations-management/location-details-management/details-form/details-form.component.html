@@ -11,6 +11,20 @@
       </div>
     </div>
 
+    <!-- Authority -->
+    <div class="row form-group" *ngIf="authoritiesObs | async as authorities">
+      <label class="col-lg-3 control-label" for="authority">
+        {{'management.locationDetails.form.authority' | translate}}
+      </label>
+      <div class="col-lg-8">
+        <select class="form-control" id="authority" formControlName="authority" >
+          <option *ngFor="let authority of authorities" [value]="authority.authorityId">
+            {{authority.authorityName + ' (' + authority.description + ')'}}
+          </option>
+        </select>
+      </div>
+    </div>
+
     <!-- Address TODO: separate street, number, postal code, city, country -->
     <div class="row form-group">
       <label class="col-lg-3 control-label" for="address">
@@ -64,7 +78,7 @@
 
         <div class="pull-right">
           <!-- Button to cancel changes -->
-          <button type="button" class="btn btn-primary btn-space left-button"
+          <button type="button" class="btn btn-primary btn-space btn-left"
                   [disabled]="disableCancelLocationButton"
                   (click)="cancelLocationDetailsButtonClick(location)">
             {{'management.locationDetails.form.cancel' | translate}}

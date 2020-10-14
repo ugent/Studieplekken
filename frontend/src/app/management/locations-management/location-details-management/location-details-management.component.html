@@ -50,6 +50,42 @@
       </div>
   </div>
 
+  <!-- Description of the location -->
+  <div class="panel-group">
+    <!-- Heading -->
+    <div class="panel-heading">
+      <h3 class="panel-title">
+        <a data-toggle="collapse" href="#descriptionCollapseBody" aria-expanded="false" class="collapsed">
+          <i class="glyphicon glyphicon-plus"></i>
+          <i class="glyphicon glyphicon-minus"></i>
+          {{'management.locationDetails.description.title' | translate}}</a>
+      </h3>
+    </div>
+
+    <!-- Body -->
+    <div class="panel-collapse collapse" id="descriptionCollapseBody">
+      <app-location-description [location]="locationObs"></app-location-description>
+    </div>
+  </div>
+
+  <!-- Tags of the location -->
+  <div class="panel-group">
+    <!-- Heading -->
+    <div class="panel-heading">
+      <h3 class="panel-title">
+        <a data-toggle="collapse" href="#tagsCollapseBody" aria-expanded="false" class="collapsed">
+          <i class="glyphicon glyphicon-plus"></i>
+          <i class="glyphicon glyphicon-minus"></i>
+          {{'management.locationDetails.tags.title' | translate}}</a>
+      </h3>
+    </div>
+
+    <!-- Body -->
+    <div class="panel-collapse collapse" id="tagsCollapseBody">
+      <app-location-tags-management [location]="locationObs"></app-location-tags-management>
+    </div>
+  </div>
+
   <!-- If this period has lockers, show the calendar for lockers -->
   <div class="panel-group" *ngIf="showLockersManagement && location.numberOfLockers > 0">
     <!-- Heading -->

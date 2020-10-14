@@ -28,9 +28,9 @@ export class UserDetailsManagementComponent implements OnInit {
     this.userDetailsService.loadUser(id);
 
     this.userObs.subscribe(
-      (next) => {
+      () => {
         this.userQueryingError = false;
-      }, (error) => {
+      }, () => {
         this.userQueryingError = true;
       }
     );

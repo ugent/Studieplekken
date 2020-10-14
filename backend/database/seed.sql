@@ -19,13 +19,23 @@ values ('002', 'Ruben_van_DSA', 'DF', 0, 'rdf@ugent.be', 'secret', 'UGent', true
 DO $$
 DECLARE tableId integer;
 BEGIN
-  INSERT INTO public.authority (name, description) values ('DSA', 'Dienst StudentenActiviteiten') RETURNING authority_id into tableId;
-  INSERT INTO public.locations (name, address, number_of_seats, number_of_lockers, image_url, authority_id)
-    VALUES ('Therminal', 'Hoveniersberg 24, 9000 Gent', 200, 100, 'www.example.png', tableId),
-            ('Sterre S5', 'Krijgslaan 281, 9000 Gent', 200, 100, 'www.example.png', tableId);
+  INSERT INTO public.authority (authority_name, description) values ('DSA', 'Dienst StudentenActiviteiten') RETURNING authority_id into tableId;
+  INSERT INTO public.locations (name, address, number_of_seats, number_of_lockers, image_url, authority_id, description_dutch, description_english)
+    VALUES ('Therminal', 'Hoveniersberg 24, 9000 Gent', 200, 100, '', tableId, 'neder', 'engl'),
+            ('Sterre S5', 'Krijgslaan 281, 9000 Gent', 200, 100, '', tableId, 'nederdescr', 'engldescr');
   INSERT INTO public.roles_user_authority (user_id, authority_id) VALUES ('002',tableId);
 END $$;
-
+/*
+ * add tags and use them in location Therminal
+ */
+DO $$
+DECLARE tableId integer;
+BEGIN
+    INSERT INTO public.tags (dutch, english) values ('eetplaats', 'dinner place') RETURNING tag_id into tableId;
+    INSERT INTO public.location_tags (location_id, tag_id) values ('Therminal', tableId);
+    INSERT INTO public.tags (dutch, english) values ('stilte', 'silencium') RETURNING tag_id into tableId;
+    INSERT INTO public.location_tags (location_id, tag_id) values ('Therminal', tableId);
+END $$;
 /*
  * Add some calendar periods
  */

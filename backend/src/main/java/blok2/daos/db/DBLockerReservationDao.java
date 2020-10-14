@@ -55,7 +55,7 @@ public class DBLockerReservationDao extends DAO implements ILockerReservationDao
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                LockerReservation lockerReservation = createLockerReservation(rs);
+                LockerReservation lockerReservation = DBLockerReservationDao.createLockerReservation(rs, conn);
                 res.add(lockerReservation);
             }
 
@@ -127,7 +127,7 @@ public class DBLockerReservationDao extends DAO implements ILockerReservationDao
             pstmt.setString(1, parameter);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
-                LockerReservation lockerReservation = createLockerReservation(rs);
+                LockerReservation lockerReservation = DBLockerReservationDao.createLockerReservation(rs, conn);
                 reservations.add(lockerReservation);
             }
 
@@ -199,14 +199,18 @@ public class DBLockerReservationDao extends DAO implements ILockerReservationDao
             pstmt.execute();
         }
     }
+    public LockerReservation createLockerReservation(ResultSet rs) throws SQLException {
+        Connection conn = adb.getConnection();
+        return createLockerReservation(rs, conn);
+    }
 
-    public static LockerReservation createLockerReservation(ResultSet rs) throws SQLException {
+    public static LockerReservation createLockerReservation(ResultSet rs, Connection conn) throws SQLException {
         LockerReservation lr = new LockerReservation();
         lr.setKeyPickupDate(CustomDate.parseString(rs.getString(Resources.databaseProperties.getString("locker_reservation_key_pickup_date"))));
         lr.setKeyReturnedDate(CustomDate.parseString(rs.getString(Resources.databaseProperties.getString("locker_reservation_key_return_date"))));
 
         User u = DBAccountDao.createUser(rs);
-        Locker l = DBLocationDao.createLocker(rs);
+        Locker l = DBLocationDao.createLocker(rs,conn);
 
         lr.setLocker(l);
         lr.setOwner(u);

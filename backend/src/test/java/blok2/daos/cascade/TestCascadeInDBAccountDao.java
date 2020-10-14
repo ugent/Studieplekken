@@ -70,8 +70,8 @@ public class TestCascadeInDBAccountDao extends TestDao {
         // Setup test objects
         testUser = TestSharedMethods.studentTestUser();
         authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testLocation1 = TestSharedMethods.testLocation(authority.getAuthorityId());
-        testLocation2 = TestSharedMethods.testLocation2(authority.getAuthorityId());
+        testLocation1 = TestSharedMethods.testLocation(authority.clone());
+        testLocation2 = TestSharedMethods.testLocation2(authority.clone());
 
         testLocationReservation1 = new LocationReservation(testLocation1, testUser, CustomDate.now());
         testLocationReservation2 = new LocationReservation(testLocation2, testUser, new CustomDate(1970, 1, 1));

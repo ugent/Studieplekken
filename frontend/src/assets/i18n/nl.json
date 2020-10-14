@@ -11,15 +11,31 @@
 
   "dashboard": {
     "address": "Adres",
+    "description": "Omschrijving",
     "details": "Details",
+    "tags": "Tags",
     "gotoDashboard": "Gelieve naar het dashboard te navigeren en een locatie te selecteren.",
     "location": "Locatie",
     "numberOfLockers": "Aantal lockers",
-    "numberOfSeats": "Aantal plaatsen"
+    "numberOfSeats": "Aantal plaatsen",
+    "noLocations": "Helaas zijn er op dit moment geen locaties beschikbaar",
+
+    "locationDetails": {
+      "info": "Algemene informatie over deze locatie:",
+      "tags": "Tags die deze locatie kenmerken:"
+    },
+
+    "filter": {
+      "title": "Filter",
+      "tagsFilterTitle": "Filter locaties op tags",
+      "noMatchesFromFilter": "Er zijn geen locaties die voldoen aan je filtervoorwaarden of aan je zoekterm.",
+      "searchPlaceholder": "zoek een locatie op naam, rekening houdend met de filter op tags"
+    },
+
+    "error": "Er is iets misgelopen tijdens het ophalen van de locaties."
   },
 
   "footer":{
-    "feedback": "Feedback",
     "privacy": "Privacy",
     "disclaimer": "Disclaimer",
     "cookies": "Cookies",
@@ -33,11 +49,24 @@
     "yes": "Ja",
     "no": "Neen",
 
+    "buttons": {
+      "add": "Voeg toe",
+      "update": "Update",
+      "cancel": "Annuleer",
+      "delete": "Verwijder",
+      "search": "Zoek",
+      "clear": "Annuleer"
+    },
+
     "roles": {
       "ADMIN": "Admin"
     },
 
-    "optional": "Optioneel"
+    "optional": "Optioneel",
+    "notAvailableAbbreviation": "n.v.t.",
+
+    "waitingForServer": "Wachten op antwoord van de server...",
+    "idSetByBackend": "ID door backend gezet"
   },
 
   "header": {
@@ -45,6 +74,7 @@
     "logIn": "Log in",
     "logOut": "Log uit",
     "navigation": {
+      "login": "Login",
       "dashboard": "Dashboard",
       "profile": "Profiel",
       "scan": "Scan",
@@ -61,11 +91,20 @@
     "DUTCH": "Nederlands"
   },
 
+  "login": {
+    "appTitle": "BlokAtUGent",
+    "title": "Aanmelden",
+    "casLogin": "CAS Login",
+    "about": "Het digitaal platform voor Study-OO's"
+  },
+
   "management": {
     "aside": {
       "title": "Beheer",
       "locations": "Locaties",
+      "tags": "Tags",
       "users": "Gebruikers",
+      "authorities": "Autoriteiten",
       "reservations": "Reservaties",
       "calendar": "Kalender",
       "penalties": "Overtredingen"
@@ -73,7 +112,9 @@
 
     "general": {
       "loading": "Aan het laden...",
-      "noLocations": "Er zijn nog geen beschikbare locaties. Maak er een aan met de knop 'Locatie Toevoegen'"
+      "noLocations": "Er zijn nog geen beschikbare locaties. Maak er een aan met de knop 'Locatie Toevoegen'",
+      "noTags": "Er zijn nog geen tags. Maak er een aan met de knop 'Tag Toevoegen'",
+      "noAuthorities": "Er zijn nog geen autoriteiten aangemaakt. Maak er een aan met de knop 'Autoriteit Toevoegen'"
     },
 
     "locationDetails": {
@@ -81,6 +122,7 @@
 
       "form": {
         "name": "Naam",
+        "authority": "Autoriteit",
         "address": "Adres",
         "numberOfSeats": "Aantal plaatsen",
         "numberOfLockers": "Aantal lockers",
@@ -119,6 +161,37 @@
 
           "noCalendarPeriodsForLocation": "Op dit moment zijn er nog geen periodes voor de locatie beschikbaar."
         }
+      },
+
+      "description": {
+        "title": "Beschrijving van de locatie",
+        "englishDescription": "Omschrijving in het Engels",
+        "dutchDescription": "Omschrijving in het Nederlands",
+
+        "updateButton": "Update",
+        "cancelButton": "Annuleer",
+
+        "errorUpdating": "Er is iets misgelopen tijdens het updaten van de omschrijvingen.",
+        "successUpdating": "Het updaten van de omschrijvingen is geslaagd."
+      },
+
+      "tags": {
+        "title": "Tags van de locatie",
+        "activeTagsInformation": "Hieronder is een lijst gegeven van de tags die beschikbaar zijn.",
+        "updateTagsInformation": "Om de tags te wijzigen, klik op de knop rechts.",
+
+        "updateTagsButton": "Wijzig de tags",
+
+        "updateTagsConfigurationModal": {
+          "title": "Wijzig de tags van de locatie",
+          "body": "In de dropdown hieronder kan je alle tags selecteren die je wil toekennen aan '{locationName}'.",
+          "comboboxTitle": "Tags van de locatie",
+
+          "success": "Het is gelukt om de tags voor '{locationName}' te wijzigen",
+          "error": "Er is iets misgelopen tijdens het wijzigen van de tags van '{locationName}'."
+        },
+
+        "noTagsSelected": "Op dit moment zijn er geen tags voor deze locatie geselecteerd."
       },
 
       "lockerCalendar": {
@@ -176,9 +249,9 @@
       "table": {
         "header": {
           "name": "Locatie",
+          "authority": "Autoriteit",
           "numberOfSeats": "Plaatsen",
-          "numberOfLockers": "Lockers",
-          "details": "Details"
+          "numberOfLockers": "Lockers"
         },
 
         "details": "Details"
@@ -197,6 +270,7 @@
 
         "formValidationErrorMessages": {
           "locationName": "Naam is verplicht",
+          "authorityName": "Verplicht om een autoriteit op te geven",
           "address": "Adres is verplicht",
           "numberOfSeats": "Een waarde voor 'aantal zitjes' is verplicht",
           "numberOfLockers": "Een waarde voor 'aantal lockers' is verplicht"
@@ -223,6 +297,40 @@
         "yesButton": "Verwijder",
         "noButton": "Annuleer"
       }
+    },
+
+    "tags": {
+      "title": "Beheer van tags van locaties",
+
+      "table": {
+        "id": "Tag ID",
+        "dutch": "Nederlands",
+        "english": "Engels"
+      },
+
+      "addNewTag": "Nieuwe tag",
+
+      "addTagModal": {
+        "title": "Nieuwe tag maken",
+        "idSetByBackendMessage": "Ingesteld door backend",
+        "success": "Het aanmaken van de nieuwe tag is gelukt.",
+        "error": "Er is iets misgelopen tijdens het aanmaken van de nieuwe tag."
+      },
+
+      "updateTagModal": {
+        "title": "Update tag",
+        "success": "Het updaten van de tag is geslaagd.",
+        "error": "Er is iets misgelopen tijdens het updaten van de tag."
+      },
+
+      "deleteTagModal": {
+        "title": "Verwijder tag",
+        "body": "Ben je zeker dat je volgende tag wilt verwijderen?",
+        "success": "Het verwijderen van de tag is gelukt.",
+        "error": "Er is iets misgelopen tijdens het verwijderen van de tag."
+      },
+
+      "errorOnRetrievingTags": "Er is iets misgelopen tijdens het ophalen van de tags..."
     },
 
     "users": {
@@ -284,6 +392,34 @@
           "errorUpdatingUser": "Er is iets misgelopen tijdens het updaten van de gebruiker..."
         },
 
+        "authorities": {
+          "title": "Autoriteiten van {name}",
+          "info": "Hieronder is een tabel gegeven met alle autoriteiten waarin de gebruiker een beherende rol heeft. Dit wil zeggen dat hij/zij locaties van deze autoriteiten kan beheren.",
+          "notAllowedToHaveAuthorities": "De gebruiker is niet gemachtigd om autoriteiten te hebben. Pas de rol van de gebruiker aan indien je wil dat hij/zij beheerder mag zijn van één of meerdere autoriteiten.",
+          "noAuthoritiesForUser": "De gebruiker is niet gelinkt aan één of meerdere autoriteiten. Dit wil zeggen dat hij/zij geen enkele locatie kan beheren.",
+          "allAuthoritiesAreAssigned": "Alle autoriteiten zijn al toegekend aan de gebruiker.",
+          "addNew": "Autoriteit aan gebruiker toevoegen",
+
+          "addAuthorityToUserModal": {
+            "title": "Een autoriteit aan de gebruiker toevoegen",
+
+            "body": "Selecteer de autoriteit die je aan de gebruiker wil toekennen:",
+            "selectAuthority": "Selecteer een autoriteit",
+
+            "success": "Het toevoegen van de autoriteit aan de gebruiker is gelukt.",
+            "error": "Er is iets misgelopen tijdens het toevoegen van de autoriteit aan de gebruiker."
+          },
+
+          "deleteAuthorityFromUserModal": {
+            "title": "Autoriteit voor de gebruiker ontnemen?",
+
+            "body": "Ben je zeker dat je volgende autoriteit wilt verwijderen voor {name}:",
+
+            "success": "Het weghalen van de autoriteit voor de gebruiker is gelukt.",
+            "error": "Er is iets misgelopen tijdens het weghalen van de autoriteit voor de gebruiker."
+          }
+        },
+
         "penalties": {
           "title": "Overtredingen van {name}",
 
@@ -331,6 +467,68 @@
           "noPenalties": "De gebruiker heeft nog geen overtredingen begaan.",
           "error": "Er is iets misgelopen tijdens het ophalen van de strafpunten van de gebruiker."
         }
+      }
+    },
+
+    "authorities": {
+      "title": "Beheer van autoriteiten",
+
+      "table": {
+        "authorityId": "ID",
+        "authorityName": "Naam van autoriteit",
+        "description": "Omschrijving"
+      },
+
+      "addNewAuthority": "Autoriteit toevoegen",
+
+      "errorOnRetrievingAuthorities": "Er is iets misgelopen tijdens het ophalen van de autoriteiten.",
+
+      "users": {
+        "title": "Beheer de gebruikers in de autoriteit {authorityName}",
+        "info": "In onderstaande tabel zijn alle gebruikers gegeven die in de autoriteit {authorityName} zitten. Je kan hier gebruikers toevoegen of verwijderen.",
+        "info2": "De gebruikers die in de tabel zijn opgenomen, hebben beheersrechten op de locaties van de autoriteit.",
+
+        "addNewUser": "Gebruiker toevoegen",
+        "noUsersInAuthority": "Er zijn geen gebruikers opgenomen in deze autoriteit. Dat wil zeggen dat geen enkele gebruiker locaties van deze autoriteit kan beheren.",
+
+        "addUserToAuthorityModal": {
+          "title": "Voeg gebruiker toe aan autoriteit",
+          "searchInfo": "Zoek een gebruiker op voor- en/of achternaam om aan de autoriteit toe te voegen.",
+          "info": "Selecteer de gebruiker die je wil toevoegen aan de autoriteit.",
+          "selectUser": "Kies gebruiker",
+          "isValidUserToAdd": "De geselecteerde gebruiker heeft niet de rechten om toegevoegd te worden in een autoriteit. Pas zijn/haar rol aan om hem/haar op te kunnen nemen in de autoriteit.",
+          "success": "De gebruiker is met succes toegevoegd aan de autoriteit.",
+          "error": "Er is iets misgelopen tijdens het toevoegen van de gebruiker aan de autoriteit.",
+          "errorSearching": "Er is iets misgelopen tijdens het opzoeken van de gebruikers."
+        },
+
+        "deleteUserFromAuthorityModal": {
+          "title": "Verwijder gebruiker uit autoriteit",
+          "body": "Ben je zeker dat je de volgende gebruiker wilt verwijderen uit de autoriteit '{authorityName}'?",
+          "success": "De gebruiker is met succes uit de autoriteit verwijderd.",
+          "error": "Er is iets misgelopen tijdens het verwijderen van de gebruiker uit de autoriteit."
+        }
+      },
+
+      "addAuthorityModal": {
+        "title": "Maak een nieuwe autoriteit aan",
+        "idSetByBackendMessage": "Ingesteld door backend",
+        "success": "Het aanmaken van de nieuwe autoriteit is gelukt.",
+        "error": "Er is iets misgelopen tijdens het aanmaken van de nieuwe autoriteit."
+      },
+
+      "updateAuthorityModal": {
+        "title": "De autoriteit updaten",
+        "success": "Het updaten van de autoriteit is gelukt.",
+        "error": "Er is iets misgelopen tijdens het updaten van de autoriteit."
+      },
+
+      "deleteAuthorityModal": {
+        "title": "Verwijder de autoriteit",
+        "body": "Ben je zeker dat je volgende autoriteit wilt verwijderen?",
+        "warning": "Gelieve op te merken dat alle locaties gelinkt aan deze autoriteit ook zullen verwijderd worden!",
+        "success": "Het verwijderen van de autoriteit is gelukt.",
+        "error": "Er is iets misgelopen tijdens het verwijderen van de autoriteit."
       }
     },
 

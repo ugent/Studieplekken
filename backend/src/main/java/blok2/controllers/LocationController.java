@@ -1,7 +1,9 @@
 package blok2.controllers;
 
 import blok2.daos.ILocationDao;
+import blok2.daos.ILocationTagDao;
 import blok2.helpers.date.CustomDate;
+import blok2.model.LocationTag;
 import blok2.model.reservables.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +16,9 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.joining;
 
 /**
  * This controller handles all requests related to locations.
@@ -26,13 +31,18 @@ public class LocationController {
     private final Logger logger = LoggerFactory.getLogger(LocationController.class.getSimpleName());
 
     private final ILocationDao locationDao;
+    private final ILocationTagDao locationTagDao;
+
+    // *************************************
+    // *   CRUD operations for LOCATIONS   *
+    // *************************************
 
     @Autowired
-    public LocationController(ILocationDao locationDao) {
+    public LocationController(ILocationDao locationDao, ILocationTagDao locationTagDao) {
         this.locationDao = locationDao;
+        this.locationTagDao = locationTagDao;
     }
 
-    //logged in user
     @GetMapping
     public List<Location> getAllLocations() {
         try {
@@ -44,7 +54,6 @@ public class LocationController {
         }
     }
 
-    //logged in user
     @GetMapping("/{locationName}")
     public Location getLocation(@PathVariable("locationName") String locationName) {
         try {
@@ -103,6 +112,30 @@ public class LocationController {
     public int getAmountOfReservationsToday(@PathVariable("locationName") String locationName) {
         try {
             return locationDao.getCountOfReservations(CustomDate.now()).get(locationName);
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    // *****************************************
+    // *   CRUD operations for LOCATION_TAGS   *
+    // *****************************************
+
+    /**
+     * Following endpoint is a one-fits-all method: all tags that are supposed
+     * to be set, must be provided in the body. Upon success only the tags
+     * that have been provided, will be set for the location
+     */
+    @PutMapping("/tags/{locationName}")
+    public void setupTagsForLocation(@PathVariable("locationName") String locationName,
+                                     @RequestBody List<Integer> tagIds) {
+        try {
+            logger.info(String.format("Setting up the tags for location '%s' with ids [%s]",
+                    locationName, tagIds.stream().map(String::valueOf).collect(Collectors.joining(", "))));
+            locationTagDao.deleteAllTagsFromLocation(locationName);
+            locationTagDao.bulkAddTagsToLocation(locationName, tagIds);
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
