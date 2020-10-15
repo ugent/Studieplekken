@@ -98,7 +98,8 @@ export const api = {
 
 export const vars = {
   defaultLocationImage: 'assets/images/default_location.jpg',
-  casFlowTriggerUrl: 'https://localhost:8080/login/cas'
+  casFlowTriggerUrl: 'https://localhost:8080/login/cas',
+  userWantsTLogInLocalStorageKey: 'userWantsTLogIn'
 };
 
 /*

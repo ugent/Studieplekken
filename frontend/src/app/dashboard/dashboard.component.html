@@ -18,10 +18,10 @@
         <div class="panel-body" style="padding: 20px">
           <div class="row">
             <div class="col-sm-4">
-              <mat-form-field *ngIf="tags !== undefined" style="width: 100%" >
+              <mat-form-field *ngIf="tags !== undefined" style="width: 100%" [formGroup]="filterFormGroup" >
                 <mat-label>{{'dashboard.filter.tagsFilterTitle' | translate}}</mat-label>
                 <mat-select multiple
-                            [formControl]="matSelectFormControl"
+                            formControlName="filteredTags"
                             [compareWith]="compareTagsInSelection"
                             (selectionChange)="onSelectionChange($event)">
                   <mat-option style="border: 0;" *ngFor="let tag of tags" [value]="tag">
@@ -35,6 +35,7 @@
 
             <div class="col-sm-5">
               <div class="form-group">
+                <label for="search"></label>
                 <input [(ngModel)]="locationSearch" (keyup.enter)="onSearchEnter()"
                        id="search" class="form-control" type="text"
                        placeholder="{{'dashboard.filter.searchPlaceholder' | translate}}" >

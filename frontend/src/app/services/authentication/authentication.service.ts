@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {User, UserConstructor} from '../../shared/model/User';
 import {HttpClient} from '@angular/common/http';
-import {api} from '../../../environments/environment';
+import {api, vars} from '../../../environments/environment';
 import {Penalty} from '../../shared/model/Penalty';
 import {LocationReservation} from '../../shared/model/LocationReservation';
 import {LockerReservation, LockerReservationConstructor} from '../../shared/model/LockerReservation';
-import {map, tap} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 import {PenaltyService} from '../api/penalties/penalty.service';
 import {LocationReservationsService} from '../api/location-reservations/location-reservations.service';
 import {LockerReservationService} from '../api/locker-reservations/locker-reservation.service';
@@ -45,6 +45,10 @@ export class AuthenticationService {
               private router: Router,
               private userService: UserService) { }
 
+  // **************************************************
+  // *   Getters for values of the BehaviorSubjects   *
+  // **************************************************
+
   userValue(): User {
     return this.userSubject.value;
   }
@@ -54,8 +58,38 @@ export class AuthenticationService {
   }
 
   /**
+   * The flow of a cas login is as follows:
+   *   1. frontend: sends the user to <backend-url>/login/cas
+   *   2. backend: Spring Security CAS will notice that the user wants to log in
+   *   3. backend: redirects the user to the cas login page of the CAS login provider (i.e. UGent)
+   *   4. cas-server: verifies if the user credentials are valid and redirects
+   *                  the user back to the backend server, with a ST ticket to be
+   *                  validated by the backend as query-parameter
+   *   5. backend: verifies the ST ticket with the cas-server
+   *   6. backend: if successfully verified, Spring Security CAS sets a HTTP only
+   *               cookie to be able to identify the user upon further requests to backend.
+   *   7. backend: redirects the user back to /dashboard and asks the browser to set the
+   *               HTTP only cookie.
+   *   8. frontend: ngOnInit of dashboard is called, which asks to login the user
+   *   9. frontend: in the login() method here, a request will only be sent to the backend to
+   *                get information about the logged in user if the variable userWantsToLogIn
+   *                was set to 'true' by the LoginComponent.
+   */
+  login(): void {
+    this.http.get<User>(api.whoAmI).subscribe(
+      next => {
+        this.userSubject.next(next);
+        this.updateHasAuthoritiesSubject(next);
+      }, () => {
+        this.userSubject.next(UserConstructor.new());
+        this.hasAuthoritiesSubject.next(false);
+      }
+    );
+  }
+
+  /**
    * The flow of a cas logout is as follows:
-   *   1. frontend: send a HTTP POST to <backend-url>/logout
+   *   1. frontend: sends a HTTP POST to <backend-url>/logout
    *   2. backend: Spring Security CAS will notice that the user wants to log out
    *   3. backend: communicates with CAS server to log out the user
    *   4. backend: sends a HTTP 200 response if successfully logged out
@@ -71,14 +105,24 @@ export class AuthenticationService {
         this.router.navigate(['/login']).catch(e => console.log(e));
       }
     );
+
+    // to be sure, set the 'userWantsToLogin' variables to false
+    localStorage.setItem(vars.userWantsTLogInLocalStorageKey, 'false');
   }
 
+  /**
+   * Note that the variable '_userHasLoggedIn' is not used. The reason being
+   * that after the user clicked on the login button, the user
+   * is not yet logged in. Clicking on the login button starts the cas flow.
+   * Only if the /whoAmI endpoint sent a HTTP 200 response, and the
+   * userSubject has a valid user as value, we can consider the user as logged in.
+   */
   isLoggedIn(): boolean {
     return this.userSubject.value.augentID !== '';
   }
 
   isAdmin(): boolean {
-    return this.userSubject.value.admin;
+    return this.isLoggedIn() ? this.userSubject.value.admin : false;
   }
 
   updatePassword(from: string, to: string): Observable<any> {
@@ -86,18 +130,9 @@ export class AuthenticationService {
     return this.http.put(api.changePassword, body);
   }
 
-  /********************************************************
-   *   Getters for information about the logged in user   *
-   ********************************************************/
-
-  whoAmI(): Observable<User> {
-    return this.http.get<User>(api.whoAmI).pipe(tap(
-      next => {
-        this.userSubject.next(next);
-        this.updateHasAuthoritiesSubject(next);
-      }
-    ));
-  }
+  // ********************************************************
+  // *   Getters for information about the logged in user   *
+  // ********************************************************
 
   getLocationReservations(): Observable<LocationReservation[]> {
     return this.locationReservationService.getLocationReservationsOfUser(this.userSubject.value.augentID);
@@ -122,9 +157,9 @@ export class AuthenticationService {
     return this.penaltyService.getPenaltiesOfUserById(this.userSubject.value.augentID);
   }
 
-  /*******************
-   *   Auxiliaries   *
-   *******************/
+  // *******************
+  // *   Auxiliaries   *
+  // *******************
   updateHasAuthoritiesSubject(user: User): void {
     this.userService.hasUserAuthorities(user.augentID).subscribe(
       next => {
