@@ -1,8 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
 import {User, UserConstructor} from '../../../../shared/model/User';
-import {msToShowFeedback, rolesArray} from '../../../../../environments/environment';
-import {FormControl} from '@angular/forms';
+import {msToShowFeedback} from '../../../../../environments/environment';
+import {AbstractControl, FormControl, FormGroup} from '@angular/forms';
 import {UserDetailsService} from '../../../../services/single-point-of-truth/user-details/user-details.service';
 import {UserService} from '../../../../services/api/users/user.service';
 
@@ -17,7 +17,9 @@ export class UserRolesComponent implements OnInit {
 
   userUpdatingSuccess: boolean = undefined;
 
-  admin = new FormControl('');
+  roleFormGroup = new FormGroup({
+    admin: new FormControl('')
+  });
 
   constructor(private userDetailsService: UserDetailsService,
               private userService: UserService) { }
@@ -60,5 +62,12 @@ export class UserRolesComponent implements OnInit {
 
   resetRolesFormArrayButtonClick(): void {
     this.admin.setValue(this.user.admin);
+  }
+
+  // ********************************************
+  // *   Getters for roleFormGroup's controls   *
+  // ********************************************
+  get admin(): AbstractControl {
+    return this.roleFormGroup.get('admin');
   }
 }

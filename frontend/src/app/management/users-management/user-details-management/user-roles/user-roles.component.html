@@ -20,10 +20,10 @@
 
   <!-- The form containing the checkboxes of the roles, and an update and reset buttons -->
   <div class="container-fluid">
-    <form (ngSubmit)="submitUpdateUser()">
+    <form (ngSubmit)="submitUpdateUser()" [formGroup]="roleFormGroup">
       <div class="row">
-        <label formArrayName="roles" >
-          <input type="checkbox" [formControl]="admin">
+        <label>
+          <input type="checkbox" formControlName="admin">
           {{'general.roles.ADMIN' | translate}}
         </label>
       </div>
