@@ -99,34 +99,22 @@ const routes: Routes = [
       {
         path: 'reservations',
         component: ProfileReservationsComponent,
-        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService],
-        data: {
-          applicationPart: 'reservations'
-        }
+        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService]
       },
       {
         path: 'calendar',
         component: ProfileCalendarComponent,
-        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService],
-        data: {
-          applicationPart: 'profile.personalCalendar'
-        }
+        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService]
       },
       {
         path: 'password',
         component: ProfileChangePasswordComponent,
-        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService],
-        data: {
-          applicationPart: 'profile.changePassword'
-        }
+        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService]
       },
       {
         path: 'penalties',
         component: ProfilePenaltiesComponent,
-        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService],
-        data: {
-          applicationPart: 'penalties'
-        }
+        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService]
       }
     ]
   },
@@ -134,10 +122,7 @@ const routes: Routes = [
   {
     path: 'scan',
     component: ScanComponent,
-    canActivate: [AuthorizationGuardService, ApplicationTypeGuardService],
-    data: {
-      applicationPart: 'scanning'
-    }
+    canActivate: [AuthorizationGuardService, ApplicationTypeGuardService]
   },
 
   {
@@ -186,18 +171,12 @@ const routes: Routes = [
       {
         path: 'reservations',
         component: ReservationsManagementComponent,
-        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService],
-        data: {
-          applicationPart: 'reservations'
-        }
+        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService]
       },
       {
         path: 'penalties',
         component: PenaltyEventsManagementComponent,
-        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService],
-        data: {
-          applicationPart: 'penalties'
-        }
+        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService]
       }
     ]
   },
