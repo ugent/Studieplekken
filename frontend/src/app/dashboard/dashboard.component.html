@@ -34,12 +34,9 @@
             <div class="col-sm-1"></div>
 
             <div class="col-sm-5">
-              <div class="form-group">
-                <label for="search"></label>
                 <input [(ngModel)]="locationSearch" (keyup.enter)="onSearchEnter()"
                        id="search" class="form-control" type="text"
                        placeholder="{{'dashboard.filter.searchPlaceholder' | translate}}" >
-              </div>
             </div>
 
             <div class="col-sm-1">
@@ -93,3 +90,6 @@
     {{'dashboard.noLocations' | translate}}
   </div>
 </ng-template>
+
+<!-- Label to remove warning, not set -->
+<label for="search"></label>
