@@ -19,6 +19,7 @@
     "numberOfLockers": "Number of lockers",
     "numberOfSeats": "Number of seats",
     "noLocations": "Unfortunately, at this moment there are no locations available.",
+    "status": "Status",
 
     "locationDetails": {
       "info": "General information about this location:",

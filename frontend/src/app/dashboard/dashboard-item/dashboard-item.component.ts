@@ -2,6 +2,7 @@ import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import {Location} from '../../shared/model/Location';
 import {vars} from '../../../environments/environment';
 import {LocationService} from '../../services/api/locations/location.service';
+import {CalendarPeriodsService} from '../../services/api/calendar-periods/calendar-periods.service';
 import {TranslateService} from '@ngx-translate/core';
 import {LocationTag} from '../../shared/model/LocationTag';
 import {ApplicationTypeFunctionalityService} from '../../services/functionality/application-type/application-type-functionality.service';
@@ -25,7 +26,10 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
 
   showProgressBar: boolean;
 
+  status: string;
+
   constructor(private locationService: LocationService,
+              private calendarPeriodsService: CalendarPeriodsService,
               private translate: TranslateService,
               private functionalityService: ApplicationTypeFunctionalityService) { }
 
@@ -41,6 +45,12 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
         this.setupTagsInCurrentLang();
       }
     );
+
+    this.calendarPeriodsService.getStatusOfLocation(this.location.name).subscribe(
+      next => {
+        this.status = next;
+      }
+    )
 
     this.assignedTags = this.location.assignedTags;
     this.setupTagsInCurrentLang();

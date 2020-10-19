@@ -16,6 +16,11 @@ export class CalendarPeriodsService {
       .replace('{locationName}', locationName));
   }
 
+  getStatusOfLocation(locationName: string): Observable<string> {
+    return this.http.get(api.locationStatus
+      .replace('{locationName}', locationName), {responseType: 'text'});
+  }
+
   addCalendarPeriods(calendarPeriods: CalendarPeriod[]): Observable<void> {
     return this.http.post<void>(api.addCalendarPeriods, calendarPeriods);
   }

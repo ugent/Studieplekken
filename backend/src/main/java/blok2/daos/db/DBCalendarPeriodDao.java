@@ -1,6 +1,7 @@
 package blok2.daos.db;
 
 import blok2.daos.ICalendarPeriodDao;
+import blok2.helpers.Pair;
 import blok2.helpers.Resources;
 import blok2.model.calendar.CalendarPeriod;
 import org.springframework.stereotype.Service;
@@ -9,12 +10,17 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Service
 public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
+
 
     private final Logger logger = Logger.getLogger(DBCalendarPeriodDao.class.getSimpleName());
 
@@ -28,7 +34,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
             List<CalendarPeriod> periods = new ArrayList<>();
 
             while (rs.next()) {
-                periods.add(createCalendarPeriod(rs,conn));
+                periods.add(createCalendarPeriod(rs, conn));
             }
 
             return periods;
@@ -115,6 +121,34 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         }
     }
 
+    @Override
+    public String getStatus(String locationName) throws SQLException {
+        List<CalendarPeriod> periods = getCalendarPeriodsOfLocation(locationName);
+
+        List<Pair<LocalDateTime, LocalDateTime>> beginAndEndDates = periods.stream()
+                .map(CalendarPeriod::getBeginAndEndDate)
+                .sorted(Comparator.comparing(Pair::getFirst))
+                .collect(Collectors.toList());
+
+        for (Pair<LocalDateTime, LocalDateTime> pair : beginAndEndDates) {
+            System.out.println(LocalDateTime.now());
+            System.out.println(pair.getFirst());
+            if (pair.getFirst().isAfter(LocalDateTime.now())) {
+                return String.format("GESLOTEN. Opent op %s om %s.", pair.getFirst().toLocalDate(), pair.getFirst().toLocalTime());
+            } else {
+                if (pair.getSecond().isAfter(LocalDateTime.now())) {
+                    if (pair.getFirst().toLocalTime().isBefore(LocalTime.now()) && pair.getSecond().toLocalTime().isAfter(LocalTime.now())) {
+                        return String.format("OPEN. Sluit om %s.", pair.getSecond().toLocalTime());
+                    } else {
+                        return String.format("GESLOTEN. Opent om %s.", pair.getFirst().toLocalTime());
+                    }
+                }
+            }
+        }
+
+        return "GESLOTEN.";
+    }
+
     private void deleteCalendarPeriod(CalendarPeriod calendarPeriod, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_calendar_period"));
         prepareCalendarPeriodPstmt(calendarPeriod, pstmt);
@@ -130,7 +164,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         calendarPeriod.setClosingTime(rs.getString(Resources.databaseProperties.getString("calendar_period_closing_time")));
         calendarPeriod.setReservableFrom(rs.getString(Resources.databaseProperties.getString("calendar_period_reservable_from")));
 
-        calendarPeriod.setLocation(DBLocationDao.createLocation(rs,conn));
+        calendarPeriod.setLocation(DBLocationDao.createLocation(rs, conn));
 
         return calendarPeriod;
     }

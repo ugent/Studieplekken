@@ -243,7 +243,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
         fillTagLists(assignedTags, rsTags);
 
         return new Location(name, address, numberOfSeats, numberOfLockers, imageUrl, authority,
-                descriptionDutch, descriptionEnglish, assignedTags);
+                descriptionDutch, descriptionEnglish, assignedTags, "");
     }
 
     private static void fillTagLists(List<LocationTag> assignedTags, ResultSet rsTags)

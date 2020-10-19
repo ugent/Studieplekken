@@ -7,6 +7,7 @@ import blok2.model.reservables.Location;
 import blok2.shared.Utility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -39,6 +40,17 @@ public class CalendarPeriodController {
     public List<CalendarPeriod> getCalendarPeriodsOfLocation(@PathVariable("locationName") String locationName) {
         try {
             return calendarPeriodDao.getCalendarPeriodsOfLocation(locationName);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @GetMapping("/{locationName}/status")
+    public String getStatusOfLocation(@PathVariable("locationName") String locationName) {
+        try {
+            return calendarPeriodDao.getStatus(locationName);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
