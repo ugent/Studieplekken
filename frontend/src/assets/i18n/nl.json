@@ -59,9 +59,7 @@
     },
 
     "roles": {
-      "ADMIN": "Admin",
-      "EMPLOYEE": "Medewerker",
-      "STUDENT": "Student"
+      "ADMIN": "Admin"
     },
 
     "optional": "Optioneel",

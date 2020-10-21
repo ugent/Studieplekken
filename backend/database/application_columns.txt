@@ -23,9 +23,9 @@ location_description_dutch = description_dutch
 location_description_english = description_english
 
 #columns for the table TAGS
-tags_tag_id= tag_id
-tags_dutch= dutch
-tags_english= english
+tags_tag_id=tag_id
+tags_dutch=dutch
+tags_english=english
 
 # columns for table LOCATION_RESERVATIONS
 location_reservation_date=date
@@ -59,14 +59,13 @@ authority_description = description
 
 # columns for table USER
 user_augentid=augentid
-user_role=role
 user_name=augentpreferredgivenname
 user_surname=augentpreferredsn
 user_penalty_points=penalty_points
 user_mail=mail
 user_password=password
 user_institution=institution
-user_barcode=barcode
+user_admin=admin
 
 # columns for table USERS_TO_VERIFY
 utv_augentid=augentid

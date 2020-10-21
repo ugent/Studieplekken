@@ -158,8 +158,8 @@
 
       <!-- Modal footer -->
       <div class="modal-footer">
+        <!-- TODO: make the button a data-toggle for a new data-target if the user to be added does not yet have any authorities -->
         <button type="submit" class="btn btn-primary"
-                [disabled]="!validUserToAdd()"
                 (click)="addUserToAuthority()">
           {{'general.buttons.add' | translate}}
         </button>

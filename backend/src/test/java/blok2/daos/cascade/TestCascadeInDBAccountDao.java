@@ -10,17 +10,10 @@ import blok2.model.reservables.Location;
 import blok2.model.reservables.Locker;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.reservations.LockerReservation;
-import blok2.model.users.Role;
 import blok2.model.users.User;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -75,7 +68,7 @@ public class TestCascadeInDBAccountDao extends TestDao {
     @Override
     public void populateDatabase() throws SQLException {
         // Setup test objects
-        testUser = TestSharedMethods.studentEmployeeTestUser();
+        testUser = TestSharedMethods.studentTestUser();
         authority = TestSharedMethods.insertTestAuthority(authorityDao);
         testLocation1 = TestSharedMethods.testLocation(authority.clone());
         testLocation2 = TestSharedMethods.testLocation2(authority.clone());
@@ -281,6 +274,6 @@ public class TestCascadeInDBAccountDao extends TestDao {
         user.setMail("Changed.Mail@UGent.be");
         user.setPassword("Changed Password");
         user.setInstitution("UGent");
-        user.setRoles(new Role[]{Role.STUDENT});
+        user.setAdmin(false);
     }
 }

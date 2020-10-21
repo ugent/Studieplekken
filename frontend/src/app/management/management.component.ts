@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {ApplicationTypeFunctionalityService} from '../services/functionality/application-type/application-type-functionality.service';
 import {AuthenticationService} from '../services/authentication/authentication.service';
-import {Role} from '../../environments/environment';
 
 @Component({
   selector: 'app-management',
@@ -24,7 +23,7 @@ export class ManagementComponent implements OnInit {
     // Show certain functionality depending on the role of the user
     this.authenticationService.user.subscribe(
       (next) => {
-        this.showTagManagement = next.roles.includes(Role.ADMIN);
+        this.showTagManagement = next.admin;
       }
     );
   }

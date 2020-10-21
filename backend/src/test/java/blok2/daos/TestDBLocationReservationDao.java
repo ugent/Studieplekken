@@ -35,8 +35,8 @@ public class TestDBLocationReservationDao extends TestDao {
         // setup test location objects
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
         testLocation = TestSharedMethods.testLocation(authority.clone());
-        testUser = TestSharedMethods.employeeAdminTestUser();
-        testUser2 = TestSharedMethods.studentEmployeeTestUser();
+        testUser = TestSharedMethods.adminTestUser();
+        testUser2 = TestSharedMethods.studentTestUser();
 
         // Add test objects to database
         TestSharedMethods.addTestUsers(accountDao, testUser, testUser2);

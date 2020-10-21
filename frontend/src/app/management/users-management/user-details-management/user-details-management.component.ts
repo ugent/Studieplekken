@@ -4,6 +4,7 @@ import {User} from '../../../shared/model/User';
 import {UserDetailsService} from '../../../services/single-point-of-truth/user-details/user-details.service';
 import {ActivatedRoute} from '@angular/router';
 import {ApplicationTypeFunctionalityService} from '../../../services/functionality/application-type/application-type-functionality.service';
+import {AuthenticationService} from '../../../services/authentication/authentication.service';
 
 @Component({
   selector: 'app-user-details-management',
@@ -17,10 +18,12 @@ export class UserDetailsManagementComponent implements OnInit {
   userId: string;
 
   showPenaltyManagement: boolean;
+  showRolesManagement: boolean;
 
   constructor(private userDetailsService: UserDetailsService,
               private route: ActivatedRoute,
-              private functionalityService: ApplicationTypeFunctionalityService) { }
+              private functionalityService: ApplicationTypeFunctionalityService,
+              private authenticationService: AuthenticationService) { }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -35,6 +38,14 @@ export class UserDetailsManagementComponent implements OnInit {
       }
     );
 
+    // set show-variables based on functionality of application
     this.showPenaltyManagement = this.functionalityService.showPenaltyFunctionality();
+
+    // set show-variables based on authorization
+    this.authenticationService.user.subscribe(
+      next => {
+        this.showRolesManagement = next.admin;
+      }
+    );
   }
 }

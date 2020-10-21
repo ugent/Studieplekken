@@ -65,7 +65,7 @@ public class TestDBPenaltyEventsDao extends TestDao {
 
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
         testLocation = TestSharedMethods.testLocation(authority.clone());
-        testUser = TestSharedMethods.studentEmployeeTestUser();
+        testUser = TestSharedMethods.studentTestUser();
 
         // Add test objects to database
         locationDao.addLocation(testLocation);

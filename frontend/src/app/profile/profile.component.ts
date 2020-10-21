@@ -13,12 +13,9 @@ export class ProfileComponent implements OnInit {
   showPersonalCalendar: boolean;
   showChangePassword: boolean;
 
-  constructor(private functionalityService: ApplicationTypeFunctionalityService,
-              private authenticationService: AuthenticationService) { }
+  constructor(private functionalityService: ApplicationTypeFunctionalityService) { }
 
   ngOnInit(): void {
-    this.authenticationService.whoAmI().subscribe();
-
     this.showReservations = this.functionalityService.showReservationsFunctionality();
     this.showPenalties = this.functionalityService.showPenaltyFunctionality();
     this.showChangePassword = this.functionalityService.showChangePasswordFunctionality();
