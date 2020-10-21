@@ -33,6 +33,8 @@
           <th>{{'management.locationDetails.calendar.form.endsAt' | translate}}</th>
           <th>{{'management.locationDetails.calendar.form.openingTime' | translate}}</th>
           <th>{{'management.locationDetails.calendar.form.closingTime' | translate}}</th>
+          <th>{{'management.locationDetails.calendar.form.reservable' | translate}}</th>
+          <th>{{'management.locationDetails.calendar.form.reservableTimeslotSize' | translate}}</th>
           <th *ngIf="showReservationInformation">{{'management.locationDetails.calendar.form.reservableFrom' | translate}}</th>
           <th>{{'management.locationDetails.calendar.form.remove' | translate}}</th>
         </tr>
@@ -85,6 +87,28 @@
                 [(ngModel)]="period.closingTime"
                 (ngModelChange)="refreshCalendar(period)"
               />
+            </label>
+          </td>
+
+          <td>
+            <label>
+              <input
+                class="form-control"
+                type="checkbox"
+                [(ngModel)]="period.reservable"
+                (ngModelChange)="refreshCalendar(period)"
+              />
+            </label>
+          </td>
+
+          <td>
+            <label>
+              <select class="form-control" [disabled]="!period.reservable" [(ngModel)]="period.reservableTimeslotSize" (ngModelChange)="refreshCalendar(period)">
+                  <option value="30" [ngValue]="30">30 minutes</option>
+                  <option value="60" [ngValue]="60">1 hour</option>
+                  <option value="90" [ngValue]="90">1.5 hours</option>
+
+              </select>
             </label>
           </td>
 

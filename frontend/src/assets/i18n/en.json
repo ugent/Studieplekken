@@ -148,6 +148,8 @@
           "endsAt": "Ends at",
           "openingTime": "Opening time",
           "closingTime": "Closing time",
+          "reservable": "Must be reserved",
+          "reservableTimeslotSize": "Reservable timeslot size",
           "reservableFrom": "Reservable from",
           "remove": "Remove",
 
