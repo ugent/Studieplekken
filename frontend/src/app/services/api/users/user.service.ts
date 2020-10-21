@@ -38,7 +38,11 @@ export class UserService {
     return this.http.get<User>(api.userByBarcode, { params });
   }
 
-  updateUser(id: string, user: User): Observable<void> {
-    return this.http.put<void>(api.updateUser.replace('{id}', id), user);
+  updateUser(userId: string, user: User): Observable<void> {
+    return this.http.put<void>(api.updateUser.replace('{userId}', userId), user);
+  }
+
+  hasUserAuthorities(userId: string): Observable<boolean> {
+    return this.http.get<boolean>(api.hasUserAuthorities.replace('{userId}', userId));
   }
 }

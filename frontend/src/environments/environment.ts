@@ -66,7 +66,8 @@ export const api = {
   usersByLastName: '/api/account/lastName',
   usersByFirstAndLast: '/api/account/firstAndLastName',
   changePassword: '/api/account/password',
-  updateUser: '/api/account/{id}',
+  updateUser: '/api/account/{userId}',
+  hasUserAuthorities: '/api/account/{userId}/has/authorities',
 
   // LOCKERS
   lockersStatusesOfLocation: '/api/lockers/status/{locationName}',
@@ -97,7 +98,8 @@ export const api = {
 
 export const vars = {
   defaultLocationImage: 'assets/images/default_location.jpg',
-  casFlowTriggerUrl: 'https://localhost:8080/login/cas'
+  casFlowTriggerUrl: 'https://localhost:8080/login/cas',
+  userWantsTLogInLocalStorageKey: 'userWantsTLogIn'
 };
 
 /*
@@ -111,21 +113,14 @@ export const msToShowFeedback = 10000;
 export const penaltyEventCodeForManualEntry = 16663;
 
 /*
- * The roles that are available in the application
+ * The roles that are available in the application.
+ * This is used for being able to manage the role(s)
+ * of a certain user.
  *
- * Important: make sure that the roles in 'rolesArray'
- * are put in the 'Role' enum as well!
- *
- * And, do not forget to translate the role if you would
+ * Do not forget to translate the role if you would
  * be adding a role (<lang>.json -> general.roles)
  */
-export const rolesArray = ['ADMIN', 'EMPLOYEE', 'STUDENT'];
-
-export enum Role {
-  STUDENT = 'STUDENT',
-  EMPLOYEE = 'EMPLOYEE',
-  ADMIN = 'ADMIN'
-}
+export const rolesArray = ['ADMIN'];
 
 /*
  * This variable maps all the supported languages to its

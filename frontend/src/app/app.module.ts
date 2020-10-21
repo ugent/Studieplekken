@@ -50,7 +50,7 @@ import { TagsManagementComponent } from './management/tags-management/tags-manag
 import { LocationTagsManagementComponent } from './management/locations-management/location-details-management/location-tags-management/location-tags-management.component';
 import { MatSelectModule } from '@angular/material/select';
 import { LoginComponent } from './login/login.component';
-import { AuthenticationGuardService } from './services/guard/authentication/authentication-guard/authentication-guard.service';
+import { AuthorizationGuardService } from './services/guard/authentication/authorization-guard/authorization-guard.service';
 import { AuthoritiesManagementComponent } from './management/authorities-management/authorities-management.component';
 import { UserAuthoritiesManagementComponent } from './management/users-management/user-details-management/user-authorities-management/user-authorities-management.component';
 import { AuthorityUsersManagementComponent } from './management/authorities-management/authority-users-management/authority-users-management.component';
@@ -68,19 +68,19 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
-    canActivate: [AuthenticationGuardService]
+    canActivate: [AuthorizationGuardService]
   },
 
   {
     path: 'dashboard',
     component: DashboardComponent,
-    canActivate: [AuthenticationGuardService]
+    canActivate: [AuthorizationGuardService]
   },
 
   {
     path: 'dashboard/:locationName',
     component: LocationDetailsComponent,
-    canActivate: [AuthenticationGuardService]
+    canActivate: [AuthorizationGuardService]
   },
 
   {
@@ -94,39 +94,27 @@ const routes: Routes = [
       {
         path: 'overview',
         component: ProfileOverviewComponent,
-        canActivate: [AuthenticationGuardService]
+        canActivate: [AuthorizationGuardService]
       },
       {
         path: 'reservations',
         component: ProfileReservationsComponent,
-        canActivate: [ApplicationTypeGuardService, AuthenticationGuardService],
-        data: {
-          applicationPart: 'reservations'
-        }
+        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService]
       },
       {
         path: 'calendar',
         component: ProfileCalendarComponent,
-        canActivate: [ApplicationTypeGuardService, AuthenticationGuardService],
-        data: {
-          applicationPart: 'profile.personalCalendar'
-        }
+        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService]
       },
       {
         path: 'password',
         component: ProfileChangePasswordComponent,
-        canActivate: [ApplicationTypeGuardService, AuthenticationGuardService],
-        data: {
-          applicationPart: 'profile.changePassword'
-        }
+        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService]
       },
       {
         path: 'penalties',
         component: ProfilePenaltiesComponent,
-        canActivate: [ApplicationTypeGuardService, AuthenticationGuardService],
-        data: {
-          applicationPart: 'penalties'
-        }
+        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService]
       }
     ]
   },
@@ -134,10 +122,7 @@ const routes: Routes = [
   {
     path: 'scan',
     component: ScanComponent,
-    canActivate: [ApplicationTypeGuardService, AuthenticationGuardService],
-    data: {
-      applicationPart: 'scanning'
-    }
+    canActivate: [AuthorizationGuardService, ApplicationTypeGuardService]
   },
 
   {
@@ -151,52 +136,47 @@ const routes: Routes = [
       {
         path: 'locations',
         component: LocationsManagementComponent,
-        canActivate: [AuthenticationGuardService]
+        canActivate: [AuthorizationGuardService]
       },
       {
         path: 'locations/:locationName',
         component: LocationDetailsManagementComponent,
-        canActivate: [AuthenticationGuardService]
+        canActivate: [AuthorizationGuardService]
       },
       {
         path: 'tags',
         component: TagsManagementComponent,
-        canActivate: [AuthenticationGuardService]
+        canActivate: [AuthorizationGuardService]
       },
       {
         path: 'users',
         component: UsersManagementComponent,
-        canActivate: [AuthenticationGuardService]
+        canActivate: [AuthorizationGuardService]
       },
       {
         path: 'users/:id',
         component: UserDetailsManagementComponent,
-        canActivate: [AuthenticationGuardService]
+        canActivate: [AuthorizationGuardService]
       },
       {
         path: 'authorities',
-        component: AuthoritiesManagementComponent
+        component: AuthoritiesManagementComponent,
+        canActivate: [AuthorizationGuardService]
       },
       {
         path: 'authorities/:authorityId',
-        component: AuthorityUsersManagementComponent
+        component: AuthorityUsersManagementComponent,
+        canActivate: [AuthorizationGuardService]
       },
-
       {
         path: 'reservations',
         component: ReservationsManagementComponent,
-        canActivate: [ApplicationTypeGuardService, AuthenticationGuardService],
-        data: {
-          applicationPart: 'reservations'
-        }
+        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService]
       },
       {
         path: 'penalties',
         component: PenaltyEventsManagementComponent,
-        canActivate: [ApplicationTypeGuardService, AuthenticationGuardService],
-        data: {
-          applicationPart: 'penalties'
-        }
+        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService]
       }
     ]
   },
@@ -204,7 +184,7 @@ const routes: Routes = [
   {
     path: 'information',
     component: InformationComponent,
-    canActivate: [AuthenticationGuardService]
+    canActivate: [AuthorizationGuardService]
   },
 
   {

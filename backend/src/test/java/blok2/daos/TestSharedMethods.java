@@ -7,7 +7,6 @@ import blok2.model.LocationTag;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.CalendarPeriodForLockers;
 import blok2.model.reservables.Location;
-import blok2.model.users.Role;
 import blok2.model.users.User;
 import org.junit.Assert;
 
@@ -91,7 +90,7 @@ public class TestSharedMethods {
     }
 
 
-    public static User employeeAdminTestUser() {
+    public static User adminTestUser() {
         User user = new User();
         user.setLastName("Added User");
         user.setFirstName("First");
@@ -99,11 +98,11 @@ public class TestSharedMethods {
         user.setPassword("first_password");
         user.setInstitution(Institution.UGent);
         user.setAugentID("001");
-        user.setRoles(new Role[]{Role.ADMIN, Role.EMPLOYEE});
+        user.setAdmin(true);
         return user;
     }
 
-    public static User studentEmployeeTestUser() {
+    public static User studentTestUser() {
         User user = new User();
         user.setLastName("Added User");
         user.setFirstName("Second");
@@ -111,7 +110,7 @@ public class TestSharedMethods {
         user.setPassword("second_password");
         user.setInstitution(Institution.UGent);
         user.setAugentID("002");
-        user.setRoles(new Role[]{Role.STUDENT, Role.EMPLOYEE});
+        user.setAdmin(false);
         return user;
     }
 

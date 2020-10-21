@@ -27,7 +27,6 @@ public abstract class TestDao {
 
     /**
      * Wil be ran before every test to provide a fresh populated database
-     * @throws SQLException
      */
     public abstract void populateDatabase() throws SQLException;
 

@@ -1,18 +1,17 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from '@angular/router';
 import {AuthenticationService} from '../../../authentication/authentication.service';
-import {Role} from '../../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthenticationGuardService implements CanActivate {
+export class AuthorizationGuardService implements CanActivate {
 
   constructor(private router: Router,
               private authenticationService: AuthenticationService) { }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    const url = state.url;
+    const url: string = state.url;
     let activate: boolean;
 
     if (url.startsWith('/login')) {
@@ -22,14 +21,18 @@ export class AuthenticationGuardService implements CanActivate {
     } else if (url.startsWith('/profile')) {
       activate = this.authenticationService.isLoggedIn();
     } else if (url.startsWith('/scan')) {
-      activate = this.authenticationService.userValue().roles.includes(Role.EMPLOYEE) ||
-        this.authenticationService.userValue().roles.includes(Role.ADMIN);
+      activate = this.isLoginAndAdminOrHasAuthorities();
     } else if (url.startsWith('/management')) {
-      if (url.includes('/tags')) {
-        activate = this.authenticationService.userValue().roles.includes(Role.ADMIN);
+      if (this.authenticationService.isLoggedIn()) {
+        if (url.includes('/tags') ||
+            url.includes('/authorities') ||
+            url.includes('/penalties')) {
+          activate = this.authenticationService.isAdmin();
+        } else {
+          activate = this.isAdminOrHasAuthorities();
+        }
       } else {
-        activate = this.authenticationService.userValue().roles.includes(Role.EMPLOYEE) ||
-          this.authenticationService.userValue().roles.includes(Role.ADMIN);
+        activate = false;
       }
     } else if (url.startsWith('/information')) {
       activate = true;
@@ -40,5 +43,14 @@ export class AuthenticationGuardService implements CanActivate {
     }
 
     return activate;
+  }
+
+  isLoginAndAdminOrHasAuthorities(): boolean {
+    return this.authenticationService.isLoggedIn() && this.isAdminOrHasAuthorities();
+  }
+
+  isAdminOrHasAuthorities(): boolean {
+    return this.authenticationService.isAdmin() ||
+      this.authenticationService.hasAuthoritiesValue();
   }
 }

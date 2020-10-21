@@ -5,7 +5,7 @@
 
   <hr>
 
-  <div *ngIf="isUserAllowedToHaveAuthorities(user); else notAllowedToHaveAuthorities">
+  <div>
     <div class="row">
       <div class="alert alert-info">
         {{'management.users.userDetails.authorities.info' | translate}}
@@ -46,12 +46,6 @@
     </div>
   </div>
 </div>
-
-<ng-template #notAllowedToHaveAuthorities>
-  <div class="alert alert-warning">
-    {{'management.users.userDetails.authorities.notAllowedToHaveAuthorities' | translate}}
-  </div>
-</ng-template>
 
 <ng-template #noAuthoritiesForUser>
   <div class="alert alert-warning">

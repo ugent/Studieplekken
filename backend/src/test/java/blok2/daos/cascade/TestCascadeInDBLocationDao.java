@@ -78,12 +78,11 @@ public class TestCascadeInDBLocationDao extends TestDao {
     @Override
     public void populateDatabase() throws SQLException {
         // Setup test objects
-        //to connect a location to an authority
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
 
         testLocation = TestSharedMethods.testLocation(authority.clone());
-        testUser1 = TestSharedMethods.studentEmployeeTestUser();
-        testUser2 = TestSharedMethods.employeeAdminTestUser();
+        testUser1 = TestSharedMethods.studentTestUser();
+        testUser2 = TestSharedMethods.adminTestUser();
 
         testLocationReservation1 = new LocationReservation(testLocation, testUser1, CustomDate.now());
         testLocationReservation2 = new LocationReservation(testLocation, testUser2, CustomDate.now());
