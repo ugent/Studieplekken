@@ -23,7 +23,13 @@
 
     "locationDetails": {
       "info": "General information about this location:",
-      "tags": "Tags that characterize this location:"
+      "tags": "Tags that characterize this location:",
+      "status": {
+        "statusOpen": "OPEN: closes at {}",
+        "statusClosed": "CLOSED",
+        "statusClosedActive": "CLOSED. Opens again at {}",
+        "statusClosedUpcoming": "CLOSED. Opens again {}"
+      }
     },
 
     "filter": {

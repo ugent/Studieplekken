@@ -1,6 +1,7 @@
 package blok2.daos.db;
 
 import blok2.daos.ICalendarPeriodDao;
+import blok2.helpers.LocationStatus;
 import blok2.helpers.Pair;
 import blok2.helpers.Resources;
 import blok2.model.calendar.CalendarPeriod;
@@ -123,7 +124,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
     }
 
     @Override
-    public String getStatus(String locationName) throws SQLException {
+    public Pair<LocationStatus, String> getStatus(String locationName) throws SQLException {
         List<CalendarPeriod> periods = getCalendarPeriodsOfLocation(locationName);
 
         List<Pair<LocalDateTime, LocalDateTime>> beginAndEndDates = periods.stream()
@@ -131,22 +132,23 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
                 .sorted(Comparator.comparing(Pair::getFirst))
                 .collect(Collectors.toList());
 
-        DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
+        DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         for (Pair<LocalDateTime, LocalDateTime> pair : beginAndEndDates) {
             if (pair.getFirst().isAfter(LocalDateTime.now())) {
-                return String.format("GESLOTEN. Opent op %s om %s.", pair.getFirst().toLocalDate(), pair.getFirst().toLocalTime().format(timeFormat));
+                return new Pair<>(LocationStatus.CLOSED_UPCOMING, pair.getFirst().format(outputFormat));
             } else {
                 if (pair.getSecond().isAfter(LocalDateTime.now())) {
                     if (pair.getFirst().toLocalTime().isBefore(LocalTime.now()) && pair.getSecond().toLocalTime().isAfter(LocalTime.now())) {
-                        return String.format("OPEN. Sluit om %s.", pair.getSecond().toLocalTime().format(timeFormat));
+                        return new Pair<>(LocationStatus.OPEN, pair.getSecond().format(outputFormat));
                     } else {
-                        return String.format("GESLOTEN. Opent om %s.", pair.getFirst().toLocalTime().format(timeFormat));
+                        return new Pair<>(LocationStatus.CLOSED_ACTIVE, pair.getFirst().format(outputFormat));
                     }
                 }
             }
         }
 
-        return "GESLOTEN.";
+        // If none of the calendarperiods are upcoming, the location is closed indefinitely
+        return new Pair<>(LocationStatus.CLOSED, "");
     }
 
     private void deleteCalendarPeriod(CalendarPeriod calendarPeriod, Connection conn) throws SQLException {

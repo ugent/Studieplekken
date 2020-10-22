@@ -129,6 +129,19 @@ export enum Role {
 }
 
 /*
+ * The possible statuses of a location.
+ */
+
+export const locationStatusArray = ['OPEN', 'CLOSED', 'CLOSED_UPCOMING', 'CLOSED_ACTIVE'];
+
+export enum LocationStatus {
+  OPEN = 'OPEN',
+  CLOSED = 'CLOSED',
+  CLOSED_UPCOMING = 'CLOSED_UPCOMING',
+  CLOSED_ACTIVE = 'CLOSED_ACTIVE'
+}
+
+/*
  * This variable maps all the supported languages to its
  * database representation (LANGUAGES.enum)
  */
@@ -136,6 +149,8 @@ export const languageAsEnum = {
   nl: 'DUTCH',
   en: 'ENGLISH'
 };
+
+
 
 /*
  * For easier debugging in development mode, you can import the following file

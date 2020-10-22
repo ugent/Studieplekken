@@ -1,6 +1,7 @@
 import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import {Location} from '../../shared/model/Location';
-import {vars} from '../../../environments/environment';
+import {Pair} from '../../shared/model/helpers/Pair';
+import {vars, LocationStatus} from '../../../environments/environment';
 import {LocationService} from '../../services/api/locations/location.service';
 import {CalendarPeriodsService} from '../../services/api/calendar-periods/calendar-periods.service';
 import {TranslateService} from '@ngx-translate/core';
@@ -26,7 +27,8 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
 
   showProgressBar: boolean;
 
-  status: string;
+  status: Pair<LocationStatus, string>;
+  statusInCurrentLang: string;
 
   constructor(private locationService: LocationService,
               private calendarPeriodsService: CalendarPeriodsService,
@@ -43,12 +45,14 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
       () => {
         this.currentLang = this.translate.currentLang;
         this.setupTagsInCurrentLang();
+        this.translateStatus();
       }
     );
 
     this.calendarPeriodsService.getStatusOfLocation(this.location.name).subscribe(
       next => {
         this.status = next;
+        this.translateStatus();
       }
     )
 
@@ -84,6 +88,64 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
           this.tagsInCurrentLang = next;
         }, () => {
           this.tagsInCurrentLang = 'n/a';
+        }
+      );
+    }
+  }
+
+  translateStatus(): void {
+    // status.second format: "dd/MM/yyyy hh:mm"
+    if (this.status) {
+      switch(this.status.first) {
+        case LocationStatus.OPEN: {
+          var closingHour = this.status.second.split(" ")[1];
+          this.translate.get('dashboard.locationDetails.status.statusOpen').subscribe(
+            next => {
+              this.statusInCurrentLang = next.replace("{}", closingHour);
+            }, () => {
+              this.statusInCurrentLang = 'n/a';
+            }
+          );
+          break;
+        }
+        case LocationStatus.CLOSED: {
+          this.translate.get('dashboard.locationDetails.status.statusClosed').subscribe(
+            next => {
+              this.statusInCurrentLang = next;
+            }, () => {
+              this.statusInCurrentLang = 'n/a';
+            }
+          );
+          break;
+        }
+        case LocationStatus.CLOSED_ACTIVE: {
+          var openingHour = this.status.second.split(" ")[1];
+          this.translate.get('dashboard.locationDetails.status.statusClosedActive').subscribe(
+            next => {
+              this.statusInCurrentLang = next.replace("{}", openingHour);
+            }, () => {
+              this.statusInCurrentLang = 'n/a';
+            }
+          );
+          break;
+        }
+        case LocationStatus.CLOSED_UPCOMING: {
+          this.translate.get('dashboard.locationDetails.status.statusClosedUpcoming').subscribe(
+            next => {
+              this.statusInCurrentLang = next.replace("{}", this.status.second);
+            }, () => {
+              this.statusInCurrentLang = 'n/a';
+            }
+          )
+          break;
+        }
+      }
+    } else {
+      this.translate.get('general.notAvailableAbbreviation').subscribe(
+        next => {
+          this.statusInCurrentLang = next;
+        }, () => {
+          this.statusInCurrentLang = 'n/a';
         }
       );
     }

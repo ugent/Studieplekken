@@ -2,6 +2,8 @@ package blok2.controllers;
 
 import blok2.daos.ICalendarPeriodDao;
 import blok2.daos.ILocationDao;
+import blok2.helpers.LocationStatus;
+import blok2.helpers.Pair;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.reservables.Location;
 import blok2.shared.Utility;
@@ -48,7 +50,7 @@ public class CalendarPeriodController {
     }
 
     @GetMapping("/{locationName}/status")
-    public String getStatusOfLocation(@PathVariable("locationName") String locationName) {
+    public Pair<LocationStatus, String> getStatusOfLocation(@PathVariable("locationName") String locationName) {
         try {
             return calendarPeriodDao.getStatus(locationName);
         } catch (SQLException e) {

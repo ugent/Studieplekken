@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {CalendarPeriod} from '../../../shared/model/CalendarPeriod';
+import {Pair} from '../../../shared/model/helpers/Pair';
 import {Observable} from 'rxjs';
-import {api} from '../../../../environments/environment';
+import {api, LocationStatus} from '../../../../environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
@@ -16,9 +18,9 @@ export class CalendarPeriodsService {
       .replace('{locationName}', locationName));
   }
 
-  getStatusOfLocation(locationName: string): Observable<string> {
-    return this.http.get(api.locationStatus
-      .replace('{locationName}', locationName), {responseType: 'text'});
+  getStatusOfLocation(locationName: string): Observable<Pair<LocationStatus, string>> {
+    return this.http.get<Pair<LocationStatus, string>>(api.locationStatus
+      .replace('{locationName}', locationName));
   }
 
   addCalendarPeriods(calendarPeriods: CalendarPeriod[]): Observable<void> {

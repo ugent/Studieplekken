@@ -23,7 +23,13 @@
 
     "locationDetails": {
       "info": "Algemene informatie over deze locatie:",
-      "tags": "Tags die deze locatie kenmerken:"
+      "tags": "Tags die deze locatie kenmerken:",
+      "status": {
+        "statusOpen": "OPEN: sluit om {}",
+        "statusClosed": "GESLOTEN",
+        "statusClosedActive": "GESLOTEN. Opent opnieuw om {}",
+        "statusClosedUpcoming": "GESLOTEN. Opent opnieuw op {}"
+      }
     },
 
     "filter": {
