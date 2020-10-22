@@ -162,74 +162,64 @@ public class TestSharedMethods {
         return calendarPeriods;
     }
 
-    public static List<CalendarPeriod> pastCalendarPeriods(Location location) {
-        List<CalendarPeriod> calendarPeriods = new ArrayList<>();
+    public static CalendarPeriod pastCalendarPeriods(Location location) {
 
         CustomDate date = CustomDate.now();
 
-        for (int i = 1; i < 3; i++) {
-            CalendarPeriod period = new CalendarPeriod();
-            period.setLocation(location);
+        CalendarPeriod period = new CalendarPeriod();
+        period.setLocation(location);
 
-            int nextMonth = date.getMonth() - i;
-            date.setMonth( (nextMonth - 1) % 12 + 1);
-            date.setYear(date.getYear() + (nextMonth - 1) / 12);
-            date.setMin(0);
+        int nextMonth = date.getMonth() - 1;
+        date.setMonth( (nextMonth - 1) % 12 + 1);
+        date.setYear(date.getYear() + (nextMonth - 1) / 12);
+        date.setMin(0);
 
-            date.setDay(5);
-            period.setStartsAt(date.toDateString());
+        date.setDay(5);
+        period.setStartsAt(date.toDateString());
 
-            date.setDay(15);
-            period.setEndsAt(date.toDateString());
+        date.setDay(15);
+        period.setEndsAt(date.toDateString());
 
-            date.setHrs(9);
-            period.setOpeningTime(date.toTimeWithoutSecondsString());
+        date.setHrs(9);
+        period.setOpeningTime(date.toTimeWithoutSecondsString());
 
-            date.setHrs(17);
-            period.setClosingTime(date.toTimeWithoutSecondsString());
+        date.setHrs(17);
+        period.setClosingTime(date.toTimeWithoutSecondsString());
 
-            date.setDay(1);
-            period.setReservableFrom(date.toString());
+        date.setDay(1);
+        period.setReservableFrom(date.toString());
 
-            calendarPeriods.add(period);
-        }
-
-        return calendarPeriods;
+        return period;
     }
 
-    public static List<CalendarPeriod> upcomingCalendarPeriods(Location location) {
-        List<CalendarPeriod> calendarPeriods = new ArrayList<>();
+    public static CalendarPeriod upcomingCalendarPeriods(Location location) {
 
         CustomDate date = CustomDate.now();
 
-        for (int i = 1; i < 3; i++) {
-            CalendarPeriod period = new CalendarPeriod();
-            period.setLocation(location);
+        CalendarPeriod period = new CalendarPeriod();
+        period.setLocation(location);
 
-            int nextMonth = date.getMonth() + i;
-            date.setMonth( (nextMonth - 1) % 12 + 1);
-            date.setYear(date.getYear() + (nextMonth - 1) / 12);
-            date.setMin(0);
+        int nextMonth = date.getMonth() + 1;
+        date.setMonth( (nextMonth - 1) % 12 + 1);
+        date.setYear(date.getYear() + (nextMonth - 1) / 12);
+        date.setMin(0);
 
-            date.setDay(5);
-            period.setStartsAt(date.toDateString());
+        date.setDay(5);
+        period.setStartsAt(date.toDateString());
 
-            date.setDay(15);
-            period.setEndsAt(date.toDateString());
+        date.setDay(15);
+        period.setEndsAt(date.toDateString());
 
-            date.setHrs(9);
-            period.setOpeningTime(date.toTimeWithoutSecondsString());
+        date.setHrs(9);
+        period.setOpeningTime(date.toTimeWithoutSecondsString());
 
-            date.setHrs(17);
-            period.setClosingTime(date.toTimeWithoutSecondsString());
+        date.setHrs(17);
+        period.setClosingTime(date.toTimeWithoutSecondsString());
 
-            date.setDay(1);
-            period.setReservableFrom(date.toString());
+        date.setDay(1);
+        period.setReservableFrom(date.toString());
 
-            calendarPeriods.add(period);
-        }
-
-        return calendarPeriods;
+        return period;
     }
 
     public static CalendarPeriod activeCalendarPeriodsOutsideHours(Location location) {

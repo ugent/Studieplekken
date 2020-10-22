@@ -94,7 +94,7 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
   }
 
   translateStatus(): void {
-    // status.second format: "dd/MM/yyyy hh:mm"
+    // status.second format: "yyyy-MM-dd hh:mm"
     if (this.status) {
       switch(this.status.first) {
         case LocationStatus.OPEN: {

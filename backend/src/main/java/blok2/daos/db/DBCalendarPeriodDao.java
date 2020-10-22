@@ -132,7 +132,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
                 .sorted(Comparator.comparing(Pair::getFirst))
                 .collect(Collectors.toList());
 
-        DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         for (Pair<LocalDateTime, LocalDateTime> pair : beginAndEndDates) {
             if (pair.getFirst().isAfter(LocalDateTime.now())) {
                 return new Pair<>(LocationStatus.CLOSED_UPCOMING, pair.getFirst().format(outputFormat));

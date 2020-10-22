@@ -1,5 +1,6 @@
 package blok2.daos;
 
+import blok2.helpers.LocationStatus;
 import blok2.helpers.Pair;
 import blok2.model.Authority;
 import blok2.model.calendar.CalendarPeriod;
@@ -8,13 +9,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.swing.*;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class TestDBCalendarPeriodDao extends TestDao {
 
@@ -35,10 +33,10 @@ public class TestDBCalendarPeriodDao extends TestDao {
     // goes wrong
     private List<CalendarPeriod> calendarPeriods;
     private List<CalendarPeriod> updatedPeriods;
-    private List<CalendarPeriod> pastPeriods;
-    private List<CalendarPeriod> upcomingPeriods;
-    private CalendarPeriod activePeriodsOutsideHours;
-    private CalendarPeriod activePeriodsInsideHours;
+    private CalendarPeriod pastPeriod;
+    private CalendarPeriod upcomingPeriod;
+    private CalendarPeriod activePeriodOutsideHours;
+    private CalendarPeriod activePeriodInsideHours;
 
     @Override
     public void populateDatabase() throws SQLException {
@@ -47,10 +45,10 @@ public class TestDBCalendarPeriodDao extends TestDao {
         testLocation = TestSharedMethods.testLocation(authority.clone());
         calendarPeriods = TestSharedMethods.testCalendarPeriods(testLocation);
         updatedPeriods = TestSharedMethods.testCalendarPeriodsButUpdated(testLocation);
-        pastPeriods = TestSharedMethods.pastCalendarPeriods(testLocation);
-        upcomingPeriods = TestSharedMethods.upcomingCalendarPeriods(testLocation);
-        activePeriodsOutsideHours = TestSharedMethods.activeCalendarPeriodsOutsideHours(testLocation);
-        activePeriodsInsideHours = TestSharedMethods.activeCalendarPeriodsInsideHours(testLocation);
+        pastPeriod = TestSharedMethods.pastCalendarPeriods(testLocation);
+        upcomingPeriod = TestSharedMethods.upcomingCalendarPeriods(testLocation);
+        activePeriodOutsideHours = TestSharedMethods.activeCalendarPeriodsOutsideHours(testLocation);
+        activePeriodInsideHours = TestSharedMethods.activeCalendarPeriodsInsideHours(testLocation);
 
         // Add test objects to database
         locationDao.addLocation(testLocation);
@@ -72,25 +70,25 @@ public class TestDBCalendarPeriodDao extends TestDao {
     @Test
     public void getStatusTest() throws SQLException {
         // First, add only past calendar periods
+        List<CalendarPeriod> pastPeriods = new ArrayList<>();
+        pastPeriods.add(pastPeriod);
         calendarPeriodDao.addCalendarPeriods(pastPeriods);
 
         Assert.assertEquals("StatusTest, only past calendar periods",
-                "GESLOTEN.",
+                new Pair<>(LocationStatus.CLOSED, ""),
                 calendarPeriodDao.getStatus(testLocation.getName())
         );
 
         // Second, add upcoming calendar periods. The past periods may remain, these do not affect status
+        List<CalendarPeriod> upcomingPeriods = new ArrayList<>();
+        upcomingPeriods.add(upcomingPeriod);
         calendarPeriodDao.addCalendarPeriods(upcomingPeriods);
 
-        List<Pair<LocalDateTime, LocalDateTime>> upcomingBeginAndEndDates = upcomingPeriods.stream()
-                .map(CalendarPeriod::getBeginAndEndDate)
-                .sorted(Comparator.comparing(Pair::getFirst))
-                .collect(Collectors.toList());
-
-        LocalDateTime first = upcomingBeginAndEndDates.get(0).getFirst();
+        Pair<LocationStatus, String> expectedStatus = new Pair<>(LocationStatus.CLOSED_UPCOMING, upcomingPeriod.getStartsAt() + " " + upcomingPeriod.getOpeningTime());
+        Pair<LocationStatus, String> retrievedStatus = calendarPeriodDao.getStatus(testLocation.getName());
         Assert.assertEquals("StatusTest, past and upcoming calendar periods",
-                String.format("GESLOTEN. Opent op %s om %s.", first.toLocalDate(), first.toLocalTime()),
-                calendarPeriodDao.getStatus(testLocation.getName())
+                expectedStatus,
+                retrievedStatus
         );
 
         // Third, add active periods.
@@ -99,11 +97,11 @@ public class TestDBCalendarPeriodDao extends TestDao {
 
         // First: outside hours
         List<CalendarPeriod> outsideHours = new ArrayList<>();
-        outsideHours.add(activePeriodsOutsideHours);
+        outsideHours.add(activePeriodOutsideHours);
         calendarPeriodDao.addCalendarPeriods(outsideHours);
 
         Assert.assertEquals("StatusTest, active period, outside hours",
-                String.format("GESLOTEN. Opent om %s.", activePeriodsOutsideHours.getOpeningTime()),
+                new Pair<>(LocationStatus.CLOSED_ACTIVE, activePeriodOutsideHours.getStartsAt() + " " + activePeriodOutsideHours.getOpeningTime()),
                 calendarPeriodDao.getStatus(testLocation.getName())
         );
 
@@ -112,11 +110,11 @@ public class TestDBCalendarPeriodDao extends TestDao {
 
         // Second: inside hours
         List<CalendarPeriod> insideHours = new ArrayList<>();
-        insideHours.add(activePeriodsInsideHours);
+        insideHours.add(activePeriodInsideHours);
         calendarPeriodDao.addCalendarPeriods(insideHours);
 
         Assert.assertEquals("StatusTest, active period, inside hours",
-                String.format("OPEN. Sluit om %s.", activePeriodsInsideHours.getClosingTime()),
+                new Pair<>(LocationStatus.OPEN, activePeriodInsideHours.getEndsAt() + " " + activePeriodInsideHours.getClosingTime()),
                 calendarPeriodDao.getStatus(testLocation.getName())
         );
 
