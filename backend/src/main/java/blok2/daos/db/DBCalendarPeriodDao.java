@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -130,17 +131,16 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
                 .sorted(Comparator.comparing(Pair::getFirst))
                 .collect(Collectors.toList());
 
+        DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
         for (Pair<LocalDateTime, LocalDateTime> pair : beginAndEndDates) {
-            System.out.println(LocalDateTime.now());
-            System.out.println(pair.getFirst());
             if (pair.getFirst().isAfter(LocalDateTime.now())) {
-                return String.format("GESLOTEN. Opent op %s om %s.", pair.getFirst().toLocalDate(), pair.getFirst().toLocalTime());
+                return String.format("GESLOTEN. Opent op %s om %s.", pair.getFirst().toLocalDate(), pair.getFirst().toLocalTime().format(timeFormat));
             } else {
                 if (pair.getSecond().isAfter(LocalDateTime.now())) {
                     if (pair.getFirst().toLocalTime().isBefore(LocalTime.now()) && pair.getSecond().toLocalTime().isAfter(LocalTime.now())) {
-                        return String.format("OPEN. Sluit om %s.", pair.getSecond().toLocalTime());
+                        return String.format("OPEN. Sluit om %s.", pair.getSecond().toLocalTime().format(timeFormat));
                     } else {
-                        return String.format("GESLOTEN. Opent om %s.", pair.getFirst().toLocalTime());
+                        return String.format("GESLOTEN. Opent om %s.", pair.getFirst().toLocalTime().format(timeFormat));
                     }
                 }
             }

@@ -18,7 +18,6 @@ public class Location implements Cloneable {
     private String descriptionEnglish= "";
 
     private Authority authority;
-    private String status;
 
     private List<LocationTag> assignedTags;
 
@@ -34,7 +33,6 @@ public class Location implements Cloneable {
         this.descriptionEnglish = descriptionEnglish;
         this.authority = authority;
         this.assignedTags = assignedTags;
-        this.status = status;
     }
 
     // default constructor necessary for testing purposes
@@ -55,7 +53,6 @@ public class Location implements Cloneable {
                 Objects.equals(descriptionDutch, location.descriptionDutch) &&
                 Objects.equals(descriptionEnglish, location.descriptionEnglish) &&
                 Objects.equals(authority, location.authority) &&
-                Objects.equals(status, location.status) &&
                 (assignedTags == null || assignedTags.equals(location.assignedTags));
     }
 
@@ -157,13 +154,6 @@ public class Location implements Cloneable {
         this.assignedTags = assignedTags;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
     //</editor-fold>
 
 }
