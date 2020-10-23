@@ -28,6 +28,7 @@ CREATE TABLE public.locations
     authority_id        integer NOT NULL,
     description_dutch   text,
     description_english text,
+    capacity            integer NOT NULL,
 
     constraint fk_location_to_authority
         foreign key (authority_id)
