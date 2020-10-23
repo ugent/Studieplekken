@@ -1,4 +1,5 @@
 import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
+import {DatePipe} from '@angular/common'
 import {Location} from '../../shared/model/Location';
 import {Pair} from '../../shared/model/helpers/Pair';
 import {vars, LocationStatus} from '../../../environments/environment';
@@ -11,7 +12,8 @@ import {ApplicationTypeFunctionalityService} from '../../services/functionality/
 @Component({
   selector: 'app-dashboard-item',
   templateUrl: './dashboard-item.component.html',
-  styleUrls: ['./dashboard-item.component.css']
+  styleUrls: ['./dashboard-item.component.css'],
+  providers: [DatePipe]
 })
 export class DashboardItemComponent implements OnInit, AfterViewInit {
   @Input() location: Location;
@@ -33,7 +35,8 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
   constructor(private locationService: LocationService,
               private calendarPeriodsService: CalendarPeriodsService,
               private translate: TranslateService,
-              private functionalityService: ApplicationTypeFunctionalityService) { }
+              private functionalityService: ApplicationTypeFunctionalityService,
+              private datepipe: DatePipe) { }
 
   ngOnInit(): void {
     this.locationService.getNumberOfReservations(this.location).subscribe(next => {
@@ -98,10 +101,10 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
     if (this.status) {
       switch(this.status.first) {
         case LocationStatus.OPEN: {
-          var closingHour = this.status.second.split(" ")[1];
+          const datetime = new Date(this.status.second);
           this.translate.get('dashboard.locationDetails.status.statusOpen').subscribe(
             next => {
-              this.statusInCurrentLang = next.replace("{}", closingHour);
+              this.statusInCurrentLang = next.replace("{}", this.datepipe.transform(datetime, 'shortTime'));
             }, () => {
               this.statusInCurrentLang = 'n/a';
             }
@@ -119,10 +122,10 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
           break;
         }
         case LocationStatus.CLOSED_ACTIVE: {
-          var openingHour = this.status.second.split(" ")[1];
+          const datetime = new Date(this.status.second);
           this.translate.get('dashboard.locationDetails.status.statusClosedActive').subscribe(
             next => {
-              this.statusInCurrentLang = next.replace("{}", openingHour);
+              this.statusInCurrentLang = next.replace("{}", this.datepipe.transform(datetime, 'shortTime'));
             }, () => {
               this.statusInCurrentLang = 'n/a';
             }
@@ -130,9 +133,10 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
           break;
         }
         case LocationStatus.CLOSED_UPCOMING: {
+          const datetime = new Date(this.status.second).toLocaleString();
           this.translate.get('dashboard.locationDetails.status.statusClosedUpcoming').subscribe(
             next => {
-              this.statusInCurrentLang = next.replace("{}", this.status.second);
+              this.statusInCurrentLang = next.replace("{}", datetime);
             }, () => {
               this.statusInCurrentLang = 'n/a';
             }
