@@ -126,6 +126,7 @@
         "address": "Address",
         "numberOfSeats": "Number of seats",
         "numberOfLockers": "Number of lockers",
+        "capacity": "Capacity",
         "imageUrl": "Image URL (optional)",
 
         "edit": "Edit",
@@ -265,6 +266,7 @@
           "address": "Address",
           "numberOfSeats": "Number of seats",
           "numberOfLockers": "Number of lockers",
+          "capacity": "Capacity",
           "imageUrl": "URL of image (optional)"
         },
 
@@ -273,7 +275,8 @@
           "authorityName": "Required to select an authority",
           "address": "Address is required",
           "numberOfSeats": "Value for 'number of seats' is required",
-          "numberOfLockers": "Value for 'number of lockers' is required"
+          "numberOfLockers": "Value for 'number of lockers' is required",
+          "capacity": "Value for 'capacity' is required"
         },
 
         "cancelButton": "Cancel",

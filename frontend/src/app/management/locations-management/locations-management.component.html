@@ -126,7 +126,7 @@
             </div>
           </div>
 
-          <!-- Number of lockers -->
+          <!-- Number of seats -->
           <div class="row form-group">
             <label class="col-lg-3 control-label" for="numberOfSeats">
               {{'management.locations.addLocationModal.form.numberOfSeats' | translate}}</label>
@@ -152,6 +152,21 @@
             <div *ngIf="numberOfLockers.invalid && (numberOfLockers.dirty || numberOfLockers.touched)" class="alert alert-danger">
               <div *ngIf="numberOfLockers.errors.required">
                 {{'management.locations.addLocationModal.formValidationErrorMessages.numberOfLockers' | translate}}
+              </div>
+            </div>
+          </div>
+
+          <!-- Number of seats -->
+          <div class="row form-group">
+            <label class="col-lg-3 control-label" for="capacity">
+              {{'management.locations.addLocationModal.form.capacity' | translate}}</label>
+            <div class="col-lg-8">
+              <input class="form-control" id="capacity" type="number" formControlName="capacity" >
+            </div>
+
+            <div *ngIf="capacity.invalid && (capacity.dirty || capacity.touched)" class="alert alert-danger">
+              <div *ngIf="capacity.errors.required">
+                {{'management.locations.addLocationModal.formValidationErrorMessages.capacity' | translate}}
               </div>
             </div>
           </div>
