@@ -2,7 +2,12 @@ package blok2.model.calendar;
 
 import blok2.model.reservables.Location;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -129,5 +134,43 @@ public class CalendarPeriod extends Period implements Cloneable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public LocalDate getStartdateAsDate() {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            return format.parse(getStartsAt()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        } catch(ParseException e) {
+            // This really shouldn't happen: it was checked in 'analyze'
+            throw new RuntimeException("The date was unparseable in a place where it should have been checked!");
+        }
+    }
+
+    public LocalDate getEnddateAsDate() {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            return format.parse(getEndsAt()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        } catch(ParseException e) {
+            // This really shouldn't happen: it was checked in 'analyze'
+            throw new RuntimeException("The date was unparseable in a place where it should have been checked!");
+        }
+    }
+
+    /**
+     * The length of time the location is open (in seconds)
+     * @return
+     */
+    public int getOpenHoursDuration() {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        Date startDate = null;
+        try {
+            startDate = format.parse(getStartsAt() + " " + getOpeningTime());
+            Date endDate = format.parse(getStartsAt() + " " + getClosingTime());
+            return Math.toIntExact(endDate.getTime() - startDate.getTime()) / 1000;
+        } catch (ParseException e) {
+            // This really shouldn't happen: it was checked in 'analyze'
+            throw new RuntimeException("The date was unparseable in a place where it should have been checked!");
+        }
+
     }
 }

@@ -88,7 +88,7 @@ CREATE TABLE public.reservation_timeslots
         primary key (calendar_id, timeslot_sequence_number, timeslot_date),
     constraint fk_timeslots_to_calendar_periods
         foreign key (calendar_id)
-            references public.calendar_periods (calendar_id)
+            references public.calendar_periods (calendar_id) ON DELETE CASCADE
 );
 
 
@@ -180,7 +180,7 @@ CREATE TABLE public.location_reservations
         primary key (timeslot_seqnr, timeslot_date, calendar_id, user_augentid),
 
     constraint fk_location_reservations_to_timeslot
-        foreign key (timeslot_seqnr, timeslot_date, calendar_id) references public.reservation_timeslots (timeslot_sequence_number, timeslot_date, calendar_id),
+        foreign key (timeslot_seqnr, timeslot_date, calendar_id) references public.reservation_timeslots (timeslot_sequence_number, timeslot_date, calendar_id) ON DELETE CASCADE,
     constraint fk_location_reservations_to_users
         foreign key (user_augentid) references public.users (augentid)
 );

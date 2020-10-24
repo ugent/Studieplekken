@@ -890,7 +890,7 @@ where location_name = ?;
 
 -- queries for RESERVATION_TIMESLOTS
 -- $get_reservation_timeslots
-select rt.timeslot_sequence_number, rt.timeslot_date
+select rt.timeslot_sequence_number, rt.timeslot_date, rt.calendar_id
 from public.reservation_timeslots rt
 where calendar_id = ? 
 order by rt.timeslot_date, rt.timeslot_sequence_number ASC;

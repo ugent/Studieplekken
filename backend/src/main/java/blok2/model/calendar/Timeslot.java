@@ -3,38 +3,29 @@ package blok2.model.calendar;
 import java.util.Objects;
 
 public class Timeslot implements Cloneable {
-    private int timeslotId;
+    private int calendarId;
     private int timeslotSeqnr;
-
-    private int timeslotLength;
+    private String timeslotDate;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Timeslot timeslot = (Timeslot) o;
-        return timeslotId == timeslot.timeslotId;
+        return calendarId == timeslot.calendarId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(timeslotId, timeslotLength);
+        return Objects.hash(calendarId);
     }
 
-    public int getTimeslotId() {
-        return timeslotId;
+    public int getCalendarId() {
+        return calendarId;
     }
 
-    public void setTimeslotId(int timeslotId) {
-        this.timeslotId = timeslotId;
-    }
-
-    public int getTimeslotLength() {
-        return timeslotLength;
-    }
-
-    public void setTimeslotLength(int timeslotLength) {
-        this.timeslotLength = timeslotLength;
+    public void setCalendarId(int calendarId) {
+        this.calendarId = calendarId;
     }
 
     public int getTimeslotSeqnr() {
@@ -43,5 +34,13 @@ public class Timeslot implements Cloneable {
 
     public void setTimeslotSeqnr(int timeslotSeqnr) {
         this.timeslotSeqnr = timeslotSeqnr;
+    }
+
+    public String getTimeslotDate() {
+        return timeslotDate;
+    }
+
+    public void setTimeslotDate(String timeslotDate) {
+        this.timeslotDate = timeslotDate;
     }
 }

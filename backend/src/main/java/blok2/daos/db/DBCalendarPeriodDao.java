@@ -4,12 +4,15 @@ import blok2.daos.ICalendarPeriodDao;
 import blok2.helpers.Resources;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -63,14 +66,24 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
     }
 
     private void addCalendarPeriod(CalendarPeriod calendarPeriod, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_calendar_period"));
+        String[] generatedColumns = { Resources.databaseProperties.getString("calendar_period_id") };
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_calendar_period"), generatedColumns);
         prepareCalendarPeriodPstmt(calendarPeriod, pstmt);
         pstmt.execute();
 
-        if(calendarPeriod.isReservable()) {
+        ResultSet rs = pstmt.getGeneratedKeys();
+        rs.next();
+        calendarPeriod.setId(rs.getInt(1));
 
-            for(int i = 0; i < 0; i++) {
-                addTimeslotPeriod(i, "", calendarPeriod, conn);
+
+        // Add all relevant timeperiods
+        if(calendarPeriod.isReservable()) {
+            // One per day (end day inclusive)
+            for(LocalDate currDate = calendarPeriod.getStartdateAsDate(); !currDate.isAfter(calendarPeriod.getEnddateAsDate()); currDate=currDate.plusDays(1)) {
+                // One per hour (end hour/rest of hour non inclusive)
+                for(int sequence_nr = 0; sequence_nr < calendarPeriod.getOpenHoursDuration() / (60*calendarPeriod.getReservableTimeslotSize()); sequence_nr+=1) {
+                    addTimeslotPeriod(sequence_nr, currDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), calendarPeriod, conn);
+                }
             }
         }
     }
@@ -174,8 +187,9 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
     private Timeslot createTimeslot(ResultSet rs) throws SQLException {
         Timeslot timeslot = new Timeslot();
 
-        timeslot.setTimeslotId(rs.getInt(Resources.databaseProperties.getString("timeslot_id")));
+        timeslot.setCalendarId(rs.getInt(Resources.databaseProperties.getString("timeslot_calendar_id")));
         timeslot.setTimeslotSeqnr(rs.getInt(Resources.databaseProperties.getString("timeslot_sequence_number")));
+        timeslot.setTimeslotDate(rs.getString(Resources.databaseProperties.getString("timeslot_date")));
 
         return timeslot;
     }
