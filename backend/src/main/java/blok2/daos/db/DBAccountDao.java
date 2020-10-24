@@ -88,7 +88,7 @@ public class DBAccountDao extends DAO implements IAccountDao {
 
         try (Connection conn = adb.getConnection()) {
             String query = Resources.databaseProperties.getString("get_user_by_<?>")
-                    .replace("<?>", "LOWER(u.augentpreferredsn) LIKE CONCAT(LOWER(?), '%')");
+                    .replace("<?>", "LOWER(u.augentpreferredsn) LIKE CONCAT('%', LOWER(?), '%')");
             logger.info(String.format("Gebruikte query: %s", query));
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, lastName);
@@ -108,7 +108,7 @@ public class DBAccountDao extends DAO implements IAccountDao {
 
         try (Connection conn = adb.getConnection()) {
             String query = Resources.databaseProperties.getString("get_user_by_<?>")
-                    .replace("<?>", "LOWER(u.augentpreferredgivenname) LIKE CONCAT(LOWER(?), '%')");
+                    .replace("<?>", "LOWER(u.augentpreferredgivenname) LIKE CONCAT('%', LOWER(?), '%')");
             logger.info(String.format("Gebruikte query: %s", query));
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, firstName);
@@ -129,7 +129,7 @@ public class DBAccountDao extends DAO implements IAccountDao {
         try (Connection conn = adb.getConnection()) {
             String query = Resources.databaseProperties.getString("get_user_by_<?>")
                     .replace("<?>",
-                            "LOWER(u.augentpreferredgivenname) LIKE CONCAT(LOWER(?), '%') and LOWER(u.augentpreferredsn) LIKE CONCAT(LOWER(?), '%')");
+                            "LOWER(u.augentpreferredgivenname) LIKE CONCAT('%', LOWER(?), '%') and LOWER(u.augentpreferredsn) LIKE CONCAT('%', LOWER(?), '%')");
             logger.info(String.format("Gebruikte query: %s", query));
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, firstName);
