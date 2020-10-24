@@ -28,7 +28,7 @@ tags_dutch=dutch
 tags_english=english
 
 # columns for table LOCATION_RESERVATIONS
-location_created_at=created_at
+location_reservation_created_at=created_at
 location_reservation_timeslot=timeslot_id
 location_reservation_attended=attended
 location_reservation_user_augentid=user_augentid

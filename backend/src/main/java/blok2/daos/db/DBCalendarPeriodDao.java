@@ -184,7 +184,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         return calendarPeriod;
     }
 
-    private Timeslot createTimeslot(ResultSet rs) throws SQLException {
+    public static Timeslot createTimeslot(ResultSet rs) throws SQLException {
         Timeslot timeslot = new Timeslot();
 
         timeslot.setCalendarId(rs.getInt(Resources.databaseProperties.getString("timeslot_calendar_id")));

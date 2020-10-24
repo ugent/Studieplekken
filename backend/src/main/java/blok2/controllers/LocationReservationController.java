@@ -1,11 +1,16 @@
 package blok2.controllers;
 
 import blok2.daos.ILocationReservationDao;
+import blok2.helpers.date.CustomDate;
+import blok2.model.calendar.Timeslot;
+import blok2.model.reservables.Location;
 import blok2.model.reservations.LocationReservation;
+import blok2.model.users.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -43,52 +48,22 @@ public class LocationReservationController {
         }
     }
 
-    @GetMapping("/location")
-    public List<LocationReservation> getLocationReservationsOfLocation(@RequestParam String locationName,
-                                                                       @RequestParam boolean pastReservations) {
+    @PostMapping("/new")
+    public LocationReservation createLocationReservation(@AuthenticationPrincipal User user, @RequestBody Timeslot timeslot) {
         try {
-            return locationReservationDao.getAllLocationReservationsOfLocation(locationName, pastReservations);
-        } catch (SQLException e) {
+            LocationReservation reservation = new LocationReservation(user, CustomDate.today().toDateString(), timeslot, null);
+            return locationReservationDao.getLocationReservation(user.getAugentID(), timeslot);
+        }catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
 
-    @GetMapping("/from")
-    public List<LocationReservation> getLocationReservationsOfLocationFrom(@RequestParam String locationName,
-                                                                           @RequestParam String start,
-                                                                           @RequestParam boolean pastReservations) {
+    @GetMapping("/timeslot")
+    public List<LocationReservation> getLocationReservationsByTimeslot(@RequestParam Timeslot timeslot) {
         try {
-            return locationReservationDao.getAllLocationReservationsOfLocationFrom(locationName, start, pastReservations);
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
-    }
-
-    @GetMapping("/until")
-    public List<LocationReservation> getLocationReservationsOfLocationUntil(@RequestParam String locationName,
-                                                                            @RequestParam String end,
-                                                                            @RequestParam boolean pastReservations) {
-        try {
-            return locationReservationDao.getAllLocationReservationsOfLocationUntil(locationName, end, pastReservations);
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
-    }
-
-    @GetMapping("/fromAndUntil")
-    public List<LocationReservation> getLocationReservationsOfLocationFromAndUntil(@RequestParam String locationName,
-                                                                                   @RequestParam String start,
-                                                                                   @RequestParam String end,
-                                                                                   @RequestParam boolean pastReservations) {
-        try {
-            return locationReservationDao
-                    .getAllLocationReservationsOfLocationFromAndUntil(locationName, start, end, pastReservations);
+            return locationReservationDao.getAllLocationReservationsOfTimeslot(timeslot);
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
@@ -100,8 +75,8 @@ public class LocationReservationController {
     public void deleteLocationReservation(@RequestBody LocationReservation locationReservation) {
         try {
             locationReservationDao.deleteLocationReservation(locationReservation.getUser().getAugentID(),
-                    locationReservation.getDate());
-            logger.info(String.format("LocationReservation for user %s at time %s deleted", locationReservation.getUser(), locationReservation.getDate().toString()));
+                    locationReservation.getTimeslot());
+            logger.info(String.format("LocationReservation for user %s at time %s deleted", locationReservation.getUser(), locationReservation.getTimeslot().toString()));
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));

@@ -1,6 +1,7 @@
 package blok2.daos;
 
 import blok2.helpers.date.CustomDate;
+import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
 
 import java.sql.SQLException;
@@ -12,6 +13,8 @@ public interface ILocationReservationDao extends IDao {
      */
     List<LocationReservation> getAllLocationReservationsOfLocation(String locationName,
                                                                    boolean includePastReservations) throws SQLException;
+
+    List<LocationReservation> getAllLocationReservationsOfTimeslot(Timeslot timeslot) throws SQLException;
 
     /**
      * start: YYYY-MM-DD
@@ -38,9 +41,9 @@ public interface ILocationReservationDao extends IDao {
 
     List<LocationReservation> getAllLocationReservationsOfUser(String augentID) throws SQLException;
 
-    LocationReservation getLocationReservation(String augentID, CustomDate date) throws SQLException;
+    LocationReservation getLocationReservation(String augentID, Timeslot timeslot) throws SQLException;
 
-    void deleteLocationReservation(String augentID, CustomDate date) throws SQLException;
+    void deleteLocationReservation(String augentID, Timeslot timeslot) throws SQLException;
 
     void addLocationReservation(LocationReservation locationReservation) throws SQLException;
 

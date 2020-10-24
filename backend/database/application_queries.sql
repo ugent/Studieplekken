@@ -153,7 +153,7 @@ with recursive x as (
 ), y as (
 	select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
 		, u.augentid, u.admin
-		, lr.date, lr.location_name, lr.attended, lr.user_augentid
+		, lr.timeslot_date, lr.timeslot_seqnr as timeslot_sequence_number, lr.calendar_id, lr.attended, lr.user_augentid, lr.created_at
 		, coalesce(floor(sum(
         	case
 				/*
@@ -200,7 +200,7 @@ where location_name = ? and date = ?;
 -- $delete_location_reservation
 delete
 from public.location_reservations
-where user_augentid = ? and date = ?;
+where user_augentid = ? and timeslot_date = ? and timeslot_seqnr = ? and calendar_id = ?;
 
 -- $delete_location_reservations_of_location
 delete
@@ -217,8 +217,8 @@ from public.location_reservations
 where location_name = ? and cast(substr(date,0,5) as int)*404 + cast(substr(date,6,2) as int)*31 + cast(substr(date,9,2) as int) between ? and ?;
 
 -- $insert_location_reservation
-insert into public.location_reservations (timeslot_id, user_augentid, created_at, attended)
-values (?, ?, ?, null);
+insert into public.location_reservations (user_augentid, created_at, timeslot_date, timeslot_seqnr, calendar_id, attended)
+values (?, ?, ?, ?, ?, null);
 
 -- $set_location_reservation_unattended
 update public.location_reservations

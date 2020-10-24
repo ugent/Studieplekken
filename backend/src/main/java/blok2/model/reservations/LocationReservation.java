@@ -1,6 +1,7 @@
 package blok2.model.reservations;
 
 import blok2.helpers.date.CustomDate;
+import blok2.model.calendar.Timeslot;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;
 
@@ -9,21 +10,17 @@ import java.util.Objects;
 
 public class LocationReservation {
     private User user;
-    private Location location;
-    private CustomDate date;
+    private String createdAt;
+    private Timeslot timeslot;
     private Boolean attended;
 
     public LocationReservation() {
     }
 
-    public LocationReservation(Location location, User user, CustomDate date) {
-        this(location, user, date, null);
-    }
-
-    public LocationReservation(Location location, User user, CustomDate date, Boolean attended) {
-        this.location = location;
+    public LocationReservation(User user, String createdAt, Timeslot timeslot, Boolean attended) {
         this.user = user;
-        this.date = date;
+        this.createdAt = createdAt;
+        this.timeslot = timeslot;
         this.attended = attended;
     }
 
@@ -32,25 +29,11 @@ public class LocationReservation {
         return user;
     }
 
-    public Location getLocation() {
-        return location;
-    }
-
-    public CustomDate getDate() {
-        return date;
-    }
 
     public void setUser(User user) {
         this.user = user;
     }
 
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
-    public void setDate(CustomDate date) {
-        this.date = date;
-    }
 
     public Boolean getAttended() {
         return attended;
@@ -60,7 +43,25 @@ public class LocationReservation {
         this.attended = attended;
     }
 
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Timeslot getTimeslot() {
+        return timeslot;
+    }
+
+    public void setTimeslot(Timeslot timeslot) {
+        this.timeslot = timeslot;
+    }
+
     //</editor-fold>
+
+
 
     @Override
     public boolean equals(Object o) {
@@ -68,13 +69,13 @@ public class LocationReservation {
         if (o == null || getClass() != o.getClass()) return false;
         LocationReservation that = (LocationReservation) o;
         return Objects.equals(user, that.user) &&
-                Objects.equals(location, that.location) &&
-                Objects.equals(date, that.date) &&
-                Objects.equals(attended, that.attended);
+                Objects.equals(attended, that.attended) &&
+                Objects.equals(createdAt, that.createdAt) &&
+                Objects.equals(timeslot, that.timeslot);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(user, location, date);
+        return Objects.hash(user, createdAt, timeslot);
     }
 }
