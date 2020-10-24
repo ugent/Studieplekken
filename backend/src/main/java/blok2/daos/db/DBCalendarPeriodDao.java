@@ -85,6 +85,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
                     addTimeslotPeriod(sequence_nr, currDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), calendarPeriod, conn);
                 }
             }
+            fillTimeslotList(calendarPeriod, conn);
         }
     }
 

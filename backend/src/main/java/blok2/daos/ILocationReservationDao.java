@@ -11,9 +11,10 @@ public interface ILocationReservationDao extends IDao {
     /**
      * Get all locations where the name of the location equals 'locationName'.
      */
+    /*
     List<LocationReservation> getAllLocationReservationsOfLocation(String locationName,
                                                                    boolean includePastReservations) throws SQLException;
-
+*/
     List<LocationReservation> getAllLocationReservationsOfTimeslot(Timeslot timeslot) throws SQLException;
 
     /**

@@ -173,24 +173,15 @@ with recursive x as (
 	where <?>
 	group by u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
 		, u.augentid, u.admin
-		, lr.date, lr.location_name, lr.attended, lr.user_augentid
+		, lr.timeslot_seqnr, lr.timeslot_date, lr.calendar_id, lr.created_at, lr.attended, lr.user_augentid
 )
 select y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
 	 , y.augentid, y.admin, y.penalty_points
-	 , y.date, y.location_name, y.attended, y.user_augentid
-	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address, l.description_dutch, l.description_english
-     , a.authority_id, a.authority_name, a.description
+	 , y.timeslot_date, y.timeslot_sequence_number, y.calendar_id, y.created_at, y.attended, y.user_augentid
 from y
-    join public.locations l
-        on l.name = y.location_name
-    join public.authority a
-        on a.authority_id = l.authority_id
 group by y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
 	 , y.augentid, y.admin, y.penalty_points
-	 , y.date, y.location_name, y.attended, y.user_augentid
-	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address, l.description_dutch, l.description_english
-     , a.authority_id, a.authority_name, a.description
-order by l.name;
+	 , y.timeslot_date, y.timeslot_sequence_number, y.calendar_id, y.created_at, y.attended, y.user_augentid;
 
 -- $count_location_reservations_of_location_for_date
 select count(1)
@@ -441,7 +432,6 @@ with recursive x as (
 ), y as (
 	select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
 		, u.augentid, u.admin
-		, l.location_name, l.number
 		, lr.user_augentid, lr.key_pickup_date, lr.key_return_date
 		, coalesce(floor(sum(
         	case
@@ -453,9 +443,6 @@ with recursive x as (
 				else pb.received_points * x.perc
 			end)), 0) as "penalty_points"
 	from public.locker_reservations lr
-		join public.lockers l
-			on l.location_name = lr.location_name
-	        and l.number = lr.locker_number
 		join public.users u
 			on u.augentid = lr.user_augentid
 		left join public.penalty_book pb
@@ -465,7 +452,6 @@ with recursive x as (
 	where <?>
 	group by u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
 		, u.augentid, u.admin
-		, l.location_name, l.number
 		, lr.user_augentid, lr.key_pickup_date, lr.key_return_date
 )
 select y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
