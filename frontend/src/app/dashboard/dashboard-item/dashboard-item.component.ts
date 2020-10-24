@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
-import {DatePipe} from '@angular/common'
+import {DatePipe} from '@angular/common';
 import {Location} from '../../shared/model/Location';
 import {Pair} from '../../shared/model/helpers/Pair';
 import {vars, LocationStatus} from '../../../environments/environment';
@@ -36,7 +36,8 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
               private calendarPeriodsService: CalendarPeriodsService,
               private translate: TranslateService,
               private functionalityService: ApplicationTypeFunctionalityService,
-              private datepipe: DatePipe) { }
+              private datepipe: DatePipe) {
+  }
 
   ngOnInit(): void {
     this.locationService.getNumberOfReservations(this.location).subscribe(next => {
@@ -57,7 +58,7 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
         this.status = next;
         this.translateStatus();
       }
-    )
+    );
 
     this.assignedTags = this.location.assignedTags;
     this.setupTagsInCurrentLang();
@@ -66,6 +67,10 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+  }
+
+  locationStatusColorClass(): string {
+    return this.status.first === LocationStatus.OPEN ? 'open' : 'closed';
   }
 
   handleImageError(): void {
@@ -99,12 +104,12 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
   translateStatus(): void {
     // status.second format: "yyyy-MM-dd hh:mm"
     if (this.status) {
-      switch(this.status.first) {
+      switch (this.status.first) {
         case LocationStatus.OPEN: {
           const datetime = new Date(this.status.second);
           this.translate.get('dashboard.locationDetails.status.statusOpen').subscribe(
             next => {
-              this.statusInCurrentLang = next.replace("{}", this.datepipe.transform(datetime, 'shortTime'));
+              this.statusInCurrentLang = next.replace('{}', this.datepipe.transform(datetime, 'shortTime'));
             }, () => {
               this.statusInCurrentLang = 'n/a';
             }
@@ -125,7 +130,7 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
           const datetime = new Date(this.status.second);
           this.translate.get('dashboard.locationDetails.status.statusClosedActive').subscribe(
             next => {
-              this.statusInCurrentLang = next.replace("{}", this.datepipe.transform(datetime, 'shortTime'));
+              this.statusInCurrentLang = next.replace('{}', this.datepipe.transform(datetime, 'shortTime'));
             }, () => {
               this.statusInCurrentLang = 'n/a';
             }
@@ -136,11 +141,11 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
           const datetime = new Date(this.status.second).toLocaleString();
           this.translate.get('dashboard.locationDetails.status.statusClosedUpcoming').subscribe(
             next => {
-              this.statusInCurrentLang = next.replace("{}", datetime);
+              this.statusInCurrentLang = next.replace('{}', datetime);
             }, () => {
               this.statusInCurrentLang = 'n/a';
             }
-          )
+          );
           break;
         }
       }

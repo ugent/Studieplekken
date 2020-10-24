@@ -2,11 +2,15 @@
   <div class="thumbnail wrapper card">
     <div class="content">
       <!-- Image -->
-      <img *ngIf="location.imageUrl !== null"
-           src="{{location.imageUrl}}" class="img" alt="Image for {{location.name}}"
-           (error)="handleImageError()">
-      <img *ngIf="location.imageUrl === null" [src]="altImageUrl" alt="Image of {{location.name}}">
+      <div>
+        <img *ngIf="location.imageUrl !== null"
+             src="{{location.imageUrl}}" class="img" alt="Image for {{location.name}}"
+             (error)="handleImageError()">
+        <img *ngIf="location.imageUrl === null" [src]="altImageUrl" alt="Image of {{location.name}}">
 
+        <div class="locationStatusBar"
+             [classList]="'locationStatusBar ' + locationStatusColorClass()"></div>
+      </div>
       <div class="location-info">
         <!-- Title -->
         <h3>{{ location.name }}</h3>
