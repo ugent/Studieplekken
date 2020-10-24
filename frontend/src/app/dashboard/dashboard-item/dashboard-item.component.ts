@@ -70,7 +70,9 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
   }
 
   locationStatusColorClass(): string {
-    return this.status.first === LocationStatus.OPEN ? 'open' : 'closed';
+    if(this.status) {
+      return this.status.first === LocationStatus.OPEN ? 'open' : 'closed';
+    }
   }
 
   handleImageError(): void {

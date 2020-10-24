@@ -7,6 +7,8 @@ import {TranslateService} from '@ngx-translate/core';
 import {FormControl} from '@angular/forms';
 import {MatSelectChange} from '@angular/material/select';
 import {AuthenticationService} from '../services/authentication/authentication.service';
+import { CalendarPeriodsService } from '../services/api/calendar-periods/calendar-periods.service';
+import { LocationStatus } from 'src/environments/environment';
 
 @Component({
   selector: 'app-dashboard',
@@ -19,7 +21,7 @@ export class DashboardComponent implements OnInit {
   filteredLocationsBackup: Location[];
 
   tags: LocationTag[];
-  matSelectFormControl: FormControl;
+  matSelectFormControl: FormControl = new FormControl();
 
   currentLang: string;
 
@@ -27,10 +29,13 @@ export class DashboardComponent implements OnInit {
 
   locationSearch: string;
 
+  showOpen: boolean = false;
+
   constructor(private locationService: LocationService,
               private tagsService: TagsService,
               private translate: TranslateService,
-              private authenticationService: AuthenticationService) { }
+              private authenticationService: AuthenticationService,
+              private calendarPeriodService: CalendarPeriodsService) { }
 
   ngOnInit(): void {
     // some
@@ -88,7 +93,32 @@ export class DashboardComponent implements OnInit {
       });
     }
 
+
     this.filteredLocationsBackup = this.filteredLocations;
+
+    this.displayOpen();
+  }
+
+  toggleShowOpen(): void {
+    this.showOpen = !this.showOpen;
+    this.displayOpen();
+  }
+
+  displayOpen(): void {
+    if(this.showOpen){
+      this.filteredLocations = [];
+      this.filteredLocations.forEach(location => {
+        this.calendarPeriodService.getStatusOfLocation(location.name).subscribe(
+          (next) => {
+            if (next.first === LocationStatus.OPEN) {
+              this.filteredLocations.push(location);
+            }
+          }
+        );
+      });
+    } else {
+      this.filteredLocations = this.filteredLocationsBackup;
+    }
   }
 
   onSearchEnter(): void {
@@ -98,11 +128,14 @@ export class DashboardComponent implements OnInit {
         this.filteredLocations.push(location);
       }
     }
+    this.displayOpen();
   }
 
   onClearSearch(): void {
     this.filteredLocations = this.locations;
     this.matSelectFormControl = new FormControl([]);
     this.locationSearch = '';
+    this.showOpen = false;
+    this.displayOpen();
   }
 }

@@ -25,10 +25,10 @@
       "info": "General information about this location:",
       "tags": "Tags that characterize this location:",
       "status": {
-        "statusOpen": "OPEN: closes at {}",
+        "statusOpen": "OPEN: Closes at {}",
         "statusClosed": "CLOSED",
-        "statusClosedActive": "CLOSED. Opens again at {}",
-        "statusClosedUpcoming": "CLOSED. Opens again {}"
+        "statusClosedActive": "CLOSED: Opens again at {}",
+        "statusClosedUpcoming": "CLOSED: Opens again {}"
       }
     },
 
@@ -36,7 +36,9 @@
       "title": "Filter",
       "tagsFilterTitle": "Filter locations on tags",
       "noMatchesFromFilter": "There are no locations that match your selection or search.",
-      "searchPlaceholder": "search a location by name, taking the tags filter into account"
+      "searchPlaceholder": "search a location by name, taking the tags filter into account",
+      "showAll": "Show all locations",
+      "showOpen": "Show open locations"
     },
 
     "error": "Something went wrong while retrieving the locations."
