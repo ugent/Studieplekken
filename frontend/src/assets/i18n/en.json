@@ -45,7 +45,6 @@
   },
 
   "footer":{
-    "feedback": "Feedback",
     "privacy": "Privacy",
     "disclaimer": "Disclaimer",
     "cookies": "Cookies",
@@ -69,9 +68,7 @@
     },
 
     "roles": {
-      "ADMIN": "Admin",
-      "EMPLOYEE": "Employee",
-      "STUDENT": "Student"
+      "ADMIN": "Admin"
     },
 
     "optional": "Optional",

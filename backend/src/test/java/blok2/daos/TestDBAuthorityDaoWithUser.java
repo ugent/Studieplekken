@@ -32,9 +32,12 @@ public class TestDBAuthorityDaoWithUser extends TestDao {
     public void populateDatabase() throws SQLException {
         testAuthority = TestSharedMethods.insertTestAuthority(authorityDao);
         testAuthority2 = TestSharedMethods.insertTestAuthority2(authorityDao);
-        testUser = TestSharedMethods.employeeAdminTestUser();
+
+        testUser = TestSharedMethods.adminTestUser();
+
         testLocation1 = TestSharedMethods.testLocation(testAuthority.clone());
         testLocation2 = TestSharedMethods.testLocation2(testAuthority2.clone());
+
         accountDao.directlyAddUser(testUser);
         authorityDao.addUserToAuthority(testUser.getAugentID(), testAuthority.getAuthorityId());
         locationDao.addLocation(testLocation1);
@@ -60,7 +63,7 @@ public class TestDBAuthorityDaoWithUser extends TestDao {
     @Test
     public void addAndRemoveUserFromAuthority() throws SQLException {
         //todo redo testUsers in TestSharedMethods so they are inserted directly
-        User user = TestSharedMethods.employeeAdminTestUser();
+        User user = TestSharedMethods.adminTestUser();
         user.setAugentID("000010");
         user.setMail("newtestMail@ugent.be");
         accountDao.directlyAddUser(user);

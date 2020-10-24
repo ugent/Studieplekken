@@ -2,14 +2,13 @@ import {Component, OnInit} from '@angular/core';
 import {AuthoritiesService} from '../../../services/api/authorities/authorities.service';
 import {Observable} from 'rxjs';
 import {User} from '../../../shared/model/User';
-import {AuthorityToManageService} from '../../../services/single-point-of-truth/authority-to-manage/authority-to-manage.service';
 import {Authority} from '../../../shared/model/Authority';
 import {ActivatedRoute} from '@angular/router';
 import {transition, trigger, useAnimation} from '@angular/animations';
 import {rowsAnimation} from '../../../shared/animations/RowAnimation';
 import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
 import {UserService} from '../../../services/api/users/user.service';
-import {Role} from '../../../../environments/environment';
+import {AuthorityToManageService} from '../../../services/single-point-of-truth/authority-to-manage/authority-to-manage.service';
 
 @Component({
   selector: 'app-authority-users-management',
@@ -162,17 +161,6 @@ export class AuthorityUsersManagementComponent implements OnInit {
         this.successSearchingUsers = false;
       }
     );
-  }
-
-  validUserToAdd(): boolean {
-    const userId: string = this.selectedUserFormControl.value;
-    const user = this.userSearchResult.find(value => value.augentID === userId);
-
-    // TODO: make a wrapper function for checking the validity for a user to be included in an authority
-    this.isValidUserToAdd = user === undefined ? undefined : user.roles.includes(Role.EMPLOYEE) ||
-      user.roles.includes(Role.ADMIN);
-
-    return this.isValidUserToAdd;
   }
 
   // ****************************

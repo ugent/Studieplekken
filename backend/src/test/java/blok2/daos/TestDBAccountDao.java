@@ -1,6 +1,5 @@
 package blok2.daos;
 
-import blok2.model.users.Role;
 import blok2.model.users.User;
 import org.junit.Assert;
 import org.junit.Test;
@@ -20,8 +19,8 @@ public class TestDBAccountDao extends TestDao {
 
     @Override
     public void populateDatabase() throws SQLException {
-        testUser1 = TestSharedMethods.employeeAdminTestUser();
-        testUser2 = TestSharedMethods.studentEmployeeTestUser();
+        testUser1 = TestSharedMethods.adminTestUser();
+        testUser2 = TestSharedMethods.studentTestUser();
 
         TestSharedMethods.addTestUsers(accountDao, testUser1, testUser2);
     }
@@ -78,7 +77,7 @@ public class TestDBAccountDao extends TestDao {
         User expectedChangedUser = testUser1.clone();
 
         // change the role opposed to testUser1, update should succeed
-        expectedChangedUser.setRoles(new Role[]{Role.STUDENT});
+        expectedChangedUser.setAdmin(false);
 
         boolean updated = accountDao.updateUserByMail(testUser1.getMail(), expectedChangedUser);
         Assert.assertTrue("updateUserTest, updated testUser1's role", updated);
@@ -123,9 +122,6 @@ public class TestDBAccountDao extends TestDao {
 
         list = accountDao.getUsersByFirstAndLastName(testUser1.getFirstName(), testUser1.getLastName());
         Assert.assertEquals("getUsersByFirstAndLastName", 1, list.size());
-
-        List<String> names = accountDao.getUserNamesByRole(Role.STUDENT.name());
-        Assert.assertEquals("getUserNamesByRole", 2, names.size());
     }
 
     @Test

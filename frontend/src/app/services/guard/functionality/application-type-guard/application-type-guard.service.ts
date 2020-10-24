@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {ActivatedRouteSnapshot, CanActivate, Router} from '@angular/router';
+import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from '@angular/router';
 import {ApplicationTypeFunctionalityService} from '../../../functionality/application-type/application-type-functionality.service';
 
 @Injectable({
@@ -10,30 +10,32 @@ export class ApplicationTypeGuardService implements CanActivate {
   constructor(private functionalityService: ApplicationTypeFunctionalityService,
               private router: Router) { }
 
-  canActivate(route: ActivatedRouteSnapshot): boolean {
-    const applicationPart = route.data.applicationPart;
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    const url: string = state.url;
     let activate = false;
 
-    switch (applicationPart) {
-      case 'penalties':
-        activate = this.functionalityService.showPenaltyFunctionality();
-        break;
-      case 'reservations':
+    if (url.startsWith('/profile')) {
+      if (url.includes('/reservations')) {
         activate = this.functionalityService.showReservationsFunctionality();
-        break;
-      case 'scanning':
-        activate = this.functionalityService.showScanningFunctionality();
-        break;
-      case 'profile.personalCalendar':
+      } else if (url.includes('/calendar')) {
         activate = this.functionalityService.showProfilePersonalCalendarFunctionality();
-        break;
-      case 'profile.changePassword':
+      } else if (url.includes('/password')) {
         activate = this.functionalityService.showChangePasswordFunctionality();
-        break;
+      } else if (url.includes('/penalties')) {
+        activate = this.functionalityService.showPenaltyFunctionality();
+      }
+    } else if (url.startsWith('/scan')) {
+      activate = this.functionalityService.showScanningFunctionality();
+    } else if (url.startsWith('/management')) {
+      if (url.includes('/reservations')) {
+        activate = this.functionalityService.showReservationsFunctionality();
+      } else if (url.includes('/penalties')) {
+        activate = this.functionalityService.showPenaltyFunctionality();
+      }
     }
 
     if (!activate) {
-      this.router.navigate(['/']).catch();
+      this.router.navigate(['/']).catch(console.log);
     }
 
     return activate;

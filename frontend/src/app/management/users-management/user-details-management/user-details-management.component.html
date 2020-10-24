@@ -10,10 +10,12 @@
 
     <br><br>
 
-    <!-- The roles of the user as checkboxes -->
-    <app-user-roles [userObs]="userObs"></app-user-roles>
+    <!-- If the user is an ADMIN, then he may change the role of a user -->
+    <div *ngIf="showRolesManagement">
+      <app-user-roles [userObs]="userObs"></app-user-roles>
 
-    <br><br>
+      <br><br>
+    </div>
 
     <!-- If the user is an EMPLOYEE or ADMIN, show the authorities of the user -->
     <app-user-authorities-management [userObs]="userObs"></app-user-authorities-management>

@@ -5,7 +5,6 @@ import blok2.helpers.Resources;
 import blok2.helpers.date.CustomDate;
 import blok2.helpers.generators.IGenerator;
 import blok2.helpers.generators.VerificationCodeGenerator;
-import blok2.model.users.Role;
 import blok2.model.users.User;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
@@ -17,10 +16,13 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 @EnableScheduling
 public class DBAccountDao extends DAO implements IAccountDao {
+
+    private final Logger logger = Logger.getLogger(DBAccountDao.class.getSimpleName());
 
     private final IGenerator<String> verificationCodeGenerator = new VerificationCodeGenerator();
 
@@ -47,6 +49,7 @@ public class DBAccountDao extends DAO implements IAccountDao {
         try (Connection conn = adb.getConnection()) {
             String query = Resources.databaseProperties.getString("get_user_by_<?>")
                     .replace("<?>", "LOWER(u.mail) = LOWER(?)");
+            logger.info(String.format("Gebruikte query: %s", query));
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, email.toLowerCase());
             ResultSet rs = pstmt.executeQuery();
@@ -85,7 +88,8 @@ public class DBAccountDao extends DAO implements IAccountDao {
 
         try (Connection conn = adb.getConnection()) {
             String query = Resources.databaseProperties.getString("get_user_by_<?>")
-                    .replace("<?>", "LOWER(u.augentpreferredsn) = LOWER(?)");
+                    .replace("<?>", "LOWER(u.augentpreferredsn) LIKE CONCAT('%', LOWER(?), '%')");
+            logger.info(String.format("Gebruikte query: %s", query));
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, lastName);
             ResultSet rs = pstmt.executeQuery();
@@ -104,7 +108,8 @@ public class DBAccountDao extends DAO implements IAccountDao {
 
         try (Connection conn = adb.getConnection()) {
             String query = Resources.databaseProperties.getString("get_user_by_<?>")
-                    .replace("<?>", "LOWER(u.augentpreferredgivenname) = LOWER(?)");
+                    .replace("<?>", "LOWER(u.augentpreferredgivenname) LIKE CONCAT('%', LOWER(?), '%')");
+            logger.info(String.format("Gebruikte query: %s", query));
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, firstName);
             ResultSet rs = pstmt.executeQuery();
@@ -124,7 +129,8 @@ public class DBAccountDao extends DAO implements IAccountDao {
         try (Connection conn = adb.getConnection()) {
             String query = Resources.databaseProperties.getString("get_user_by_<?>")
                     .replace("<?>",
-                            "LOWER(u.augentpreferredgivenname) = LOWER(?) and LOWER(u.augentpreferredsn) = LOWER(?)");
+                            "LOWER(u.augentpreferredgivenname) LIKE CONCAT('%', LOWER(?), '%') and LOWER(u.augentpreferredsn) LIKE CONCAT('%', LOWER(?), '%')");
+            logger.info(String.format("Gebruikte query: %s", query));
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, firstName);
             pstmt.setString(2, lastName);
@@ -136,29 +142,6 @@ public class DBAccountDao extends DAO implements IAccountDao {
         }
 
         return users;
-    }
-
-    @Override
-    public List<String> getUserNamesByRole(String role) throws SQLException {
-        ArrayList<String> users = new ArrayList<>();
-
-        try (Connection conn = adb.getConnection()) {
-
-            String query = Resources.databaseProperties.getString("get_user_by_<?>").replace("<?>", "u.role LIKE '%'||?||'%'");
-            PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setString(1, role);
-            ResultSet resultSet = pstmt.executeQuery();
-
-            while (resultSet.next()) {
-                String s1 = resultSet.getString(Resources.databaseProperties.getString("user_augentid"));
-                String s2 = resultSet.getString(Resources.databaseProperties.getString("user_name"));
-                String s3 = resultSet.getString(Resources.databaseProperties.getString("user_surname"));
-                String s = s1 + ' ' + s3 + ' ' + s2;
-                users.add(s);
-            }
-
-            return users;
-        }
     }
 
     @Override
@@ -381,7 +364,7 @@ public class DBAccountDao extends DAO implements IAccountDao {
         }
         u.setInstitution(rs.getString(Resources.databaseProperties.getString("user_institution")));
         u.setAugentID(rs.getString(Resources.databaseProperties.getString("user_augentid")));
-        u.setRoles(csvToRoles(rs.getString(Resources.databaseProperties.getString("user_role"))));
+        u.setAdmin(rs.getBoolean(Resources.databaseProperties.getString("user_admin")));
         return u;
     }
 
@@ -409,31 +392,7 @@ public class DBAccountDao extends DAO implements IAccountDao {
         pstmt.setString(4, u.getPassword());
         pstmt.setString(5, u.getInstitution());
         pstmt.setString(6, u.getAugentID());
-
-        Role[] roles = u.getRoles();
-        pstmt.setString(7, rolesToCsv(roles));
-    }
-
-    private static String rolesToCsv(Role[] roles) {
-        StringBuilder csv = new StringBuilder();
-        for (int i = 0; i < roles.length - 1; i++) {
-            csv.append(roles[i].toString());
-            csv.append("$");
-        }
-        csv.append(roles[roles.length - 1].toString());
-        return csv.toString();
-    }
-
-    private static Role[] csvToRoles(String csvRoles) {
-        if (csvRoles == null)
-            return null;
-
-        String[] split = csvRoles.split("\\$");
-        Role[] roles = new Role[split.length];
-        for (int i = 0; i < roles.length; i++) {
-            roles[i] = Role.valueOf(split[i]);
-        }
-        return roles;
+        pstmt.setBoolean(7, u.isAdmin());
     }
 
     private void addUser(User u, Connection conn) throws SQLException {

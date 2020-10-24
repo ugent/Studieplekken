@@ -1,6 +1,3 @@
-import {RoleConstructor} from './Role';
-import {Role} from '../../../environments/environment';
-
 export interface User {
   augentID: string;
   firstName: string;
@@ -8,8 +5,8 @@ export interface User {
   mail: string;
   password: string;
   penaltyPoints: number;
-  roles: Role[];
   institution: string;
+  admin: boolean;
 }
 
 export class UserConstructor {
@@ -21,8 +18,8 @@ export class UserConstructor {
       mail: '',
       password: '',
       penaltyPoints: 0,
-      roles: [],
-      institution: ''
+      institution: '',
+      admin: false
     };
   }
 
@@ -38,8 +35,8 @@ export class UserConstructor {
       mail: obj.mail,
       password: obj.password,
       penaltyPoints: obj.penaltyPoints,
-      roles: RoleConstructor.rolesFromStrings(obj.roles),
-      institution: obj.institution
+      institution: obj.institution,
+      admin: obj.admin
     };
   }
 }

@@ -1,16 +1,16 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ApplicationTypeFunctionalityService} from './services/functionality/application-type/application-type-functionality.service';
 import {AuthenticationService} from './services/authentication/authentication.service';
-import {Role} from '../environments/environment';
+import {UserService} from './services/api/users/user.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
   showLogin = true;
   showDashboard = true;
@@ -24,7 +24,8 @@ export class AppComponent {
   constructor(private translate: TranslateService,
               private router: Router,
               private functionalityService: ApplicationTypeFunctionalityService,
-              private authenticationService: AuthenticationService) {
+              private authenticationService: AuthenticationService,
+              private userService: UserService) {
     /******************************
      *   Language support setup   *
      ******************************/
@@ -35,12 +36,20 @@ export class AppComponent {
     const browserLang = translate.getBrowserLang();
     // add another language? -> add language to regex and read comments at the beginning of this constructor!
     translate.use(browserLang.match(/en|nl/) ? browserLang : 'en');
+  }
 
-    /******************
-     *   Show setup   *
-     ******************/
+  ngOnInit(): void {
+    // Upon successful login, the backend redirects the user to /dashboard.
+    // Since the user was redirected to the cas-login website, the AppComponent
+    // will be recreated. After the recreation, we try to log in in the frontend.
+    this.authenticationService.login();
+
+    // subscribe to the user observable to make sure that the correct information
+    // is shown in the application.
     this.authenticationService.user.subscribe(
-      (next) => {
+      next => {
+        console.log('app component received a new user:');
+        console.log(next);
         const scanFunc = this.functionalityService.showScanningFunctionality();
 
         // first, check if the user is logged in
@@ -50,9 +59,22 @@ export class AppComponent {
           this.showLogin = false;
           this.showDashboard = true;
           this.showProfile = true;
-          this.showScan = scanFunc && (next.roles.includes(Role.ADMIN) || next.roles.includes(Role.EMPLOYEE));
-          this.showManagement = next.roles.includes(Role.ADMIN) || next.roles.includes(Role.EMPLOYEE);
           this.showInformation = true;
+
+          // if the user is an admin, no extra request to the backend
+          // is required to determine whether or not the user has authorities
+          // and thus can be seen as an employee
+          if (next.admin) {
+            this.showScan = scanFunc && true;
+            this.showManagement = true;
+          } else {
+            this.userService.hasUserAuthorities(next.augentID).subscribe(
+              next2 => {
+                this.showScan = scanFunc && next2;
+                this.showManagement = next2;
+              }
+            );
+          }
 
         } else {
           this.loggedIn = false;

@@ -1,11 +1,11 @@
 package blok2.model.users;
 
-import blok2.helpers.Institution;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
+import java.util.Objects;
 import java.util.*;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * This class is used to represent a registered user or UGhent student.
@@ -20,7 +20,7 @@ public class User implements Cloneable, UserDetails {
     private String institution;
     private String augentID;
     private int penaltyPoints;
-    private Role[] roles;
+    private boolean admin;
 
     public User() {
 
@@ -36,7 +36,7 @@ public class User implements Cloneable, UserDetails {
                 Objects.equals(mail.toLowerCase(), user.mail.toLowerCase()) &&
                 Objects.equals(institution, user.institution) &&
                 Objects.equals(augentID, user.augentID) &&
-                Arrays.equals(roles, user.roles);
+                admin == user.admin;
     }
 
     @Override
@@ -46,12 +46,7 @@ public class User implements Cloneable, UserDetails {
 
     public User clone() {
         try {
-            User c = (User) super.clone();
-
-            c.roles = new Role[roles.length];
-            System.arraycopy(roles, 0, c.roles, 0, roles.length);
-
-            return c;
+            return (User) super.clone();
         } catch (CloneNotSupportedException e) {
             return null;
         }
@@ -83,12 +78,12 @@ public class User implements Cloneable, UserDetails {
         return penaltyPoints;
     }
 
-    public Role[] getRoles() {
-        return roles;
-    }
-
     public String getPassword() {
         return password;
+    }
+
+    public boolean isAdmin() {
+        return admin;
     }
 
     public void setAugentID(String augentID) {
@@ -119,8 +114,8 @@ public class User implements Cloneable, UserDetails {
         this.penaltyPoints = penaltyPoints;
     }
 
-    public void setRoles(Role[] roles) {
-        this.roles = roles;
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
     }
 
 //</editor-fold>
@@ -134,9 +129,8 @@ public class User implements Cloneable, UserDetails {
                 ", password='" + password + '\'' +
                 ", institution='" + institution + '\'' +
                 ", augentID='" + augentID + '\'' +
-                ", penaltyPoints=" + penaltyPoints +
-                //", barcode='" + barcode + '\'' +
-                ", roles=" + Arrays.toString(roles) +
+                ", penaltyPoints='" + penaltyPoints + '\'' +
+                ", admin='" + admin + '\'' +
                 '}';
     }
 
@@ -146,13 +140,7 @@ public class User implements Cloneable, UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<SBCasAuthority> authorities = new ArrayList<>();
-
-        for (Role role : roles) {
-            authorities.add(new SBCasAuthority(role));
-        }
-
-        return authorities;
+        return Collections.singleton(new SimpleGrantedAuthority(admin ? "admin" : "user"));
     }
 
     @Override

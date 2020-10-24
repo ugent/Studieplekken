@@ -2,7 +2,6 @@ package blok2.daos.cascade;
 
 import blok2.daos.*;
 import blok2.daos.db.ADB;
-import blok2.daos.db.DAO;
 import blok2.helpers.Language;
 import blok2.helpers.Resources;
 import blok2.helpers.date.CustomDate;
@@ -11,15 +10,9 @@ import blok2.model.penalty.Penalty;
 import blok2.model.penalty.PenaltyEvent;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -60,8 +53,8 @@ public class TestCascadeInPenaltyEventDao extends TestDao {
     @Override
     public void populateDatabase() throws SQLException {
         // Setup test objects
-        testUser1 = TestSharedMethods.studentEmployeeTestUser();
-        testUser2 = TestSharedMethods.employeeAdminTestUser();
+        testUser1 = TestSharedMethods.studentTestUser();
+        testUser2 = TestSharedMethods.adminTestUser();
 
         authority = TestSharedMethods.insertTestAuthority(authorityDao);
         testLocation1 = TestSharedMethods.testLocation(authority.clone());

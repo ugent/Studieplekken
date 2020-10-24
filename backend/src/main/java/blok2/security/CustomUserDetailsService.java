@@ -1,7 +1,6 @@
 package blok2.security;
 
 import blok2.daos.IAccountDao;
-import blok2.model.users.Role;
 import blok2.model.users.User;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.slf4j.Logger;
@@ -97,7 +96,6 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
                     user.setAugentID(attrs.get("mail").get().toString());
                 }
 
-                user.setRoles(new Role[]{Role.STUDENT});
                 return user;
             });
 
