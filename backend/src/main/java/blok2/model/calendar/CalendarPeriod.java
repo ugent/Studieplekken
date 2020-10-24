@@ -7,15 +7,13 @@ import java.util.List;
 import java.util.Objects;
 
 public class CalendarPeriod extends Period implements Cloneable {
+    private int id;
     private Location location;
     private String openingTime; // time: hh:mm
     private String closingTime; // time: hh:mm
     private String reservableFrom; // datetime: YYYY-MM-DDThh:mm
     private boolean reservable;
-
-    // Helper variables
     private int reservableTimeslotSize;
-    private int length;
 
     private List<Timeslot> timeslots = Collections.emptyList();
 
@@ -117,19 +115,19 @@ public class CalendarPeriod extends Period implements Cloneable {
         this.reservableTimeslotSize = reservableTimeslotSize;
     }
 
-    public int getLength() {
-        return length;
-    }
-
-    public void setLength(int length) {
-        this.length = length;
-    }
-
     public List<Timeslot> getTimeslots() {
         return timeslots;
     }
 
     public void setTimeslots(List<Timeslot> timeslots) {
         this.timeslots = timeslots;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

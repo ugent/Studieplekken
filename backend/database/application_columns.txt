@@ -111,12 +111,13 @@ calendar_period_ends_at=ends_at
 calendar_period_opening_time=opening_time
 calendar_period_closing_time=closing_time
 calendar_period_reservable_from=reservable_from
-calender_period_reservable=reservable
+calendar_period_reservable=reservable
+calendar_period_id=calendar_id
+calendar_period_timeslot_length=timeslot_length
 
 # columns for RESERVATION_TIMESLOTS
 timeslot_id=timeslot_id
 timeslot_sequence_number=timeslot_sequence_number
-timeslot_length=timeslot_length
 
 # columns for CALENDAR_PERIODS_FOR_LOCKERS
 calendar_period_for_lockers_location_name=location_name

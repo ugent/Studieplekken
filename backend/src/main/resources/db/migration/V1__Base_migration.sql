@@ -59,6 +59,7 @@ CREATE TABLE public.location_tags
 
 CREATE TABLE public.calendar_periods
 (
+    calendar_id     integer NOT NULL primary key generated always as identity,
     location_name   text NOT NULL,
     starts_at       text NOT NULL,
     ends_at         text NOT NULL,
@@ -66,11 +67,8 @@ CREATE TABLE public.calendar_periods
     closing_time    text NOT NULL,
     reservable_from text NOT NULL,
     reservable      boolean NOT NULL,
+    timeslot_length SMALLINT NOT NULL,
 
-    constraint pk_calendar_periods
-        primary key (
-                     location_name, starts_at, ends_at, opening_time, closing_time, reservable_from, reservable
-            ),
     constraint fk_calendar_periods_to_locations
         foreign key (location_name)
             references public.locations (name)
@@ -82,22 +80,15 @@ CREATE TABLE public.calendar_periods
 
 CREATE TABLE public.reservation_timeslots
 (
-    timeslot_id  integer NOT NULL primary key generated always as identity,
-    calender_period_location_name   text NOT NULL,
-    calendar_period_starts_at       text NOT NULL,
-    calendar_period_ends_at         text NOT NULL,
-    calendar_period_opening_time    text NOT NULL,
-    calendar_period_closing_time    text NOT NULL,
-    calendar_period_reservable_from text NOT NULL,
-    calendar_period_reservable      boolean NOT NULL,
-
+    calendar_id                     integer NOT NULL,
     timeslot_sequence_number        SMALLINT NOT NULL,
-    timeslot_length                 SMALLINT NOT NULL,
-    UNIQUE (calender_period_location_name, calendar_period_starts_at, calendar_period_ends_at, 
-    calendar_period_opening_time, calendar_period_closing_time, calendar_period_reservable_from, calendar_period_reservable, timeslot_sequence_number),
+    timeslot_date                   text NOT NULL,
+
+    constraint pk_timeslots
+        primary key (calendar_id, timeslot_sequence_number, timeslot_date),
     constraint fk_timeslots_to_calendar_periods
-        foreign key (calender_period_location_name, calendar_period_starts_at, calendar_period_ends_at, calendar_period_opening_time, calendar_period_closing_time, calendar_period_reservable_from, calendar_period_reservable)
-            references public.calendar_periods (location_name, starts_at, ends_at, opening_time, closing_time, reservable_from, reservable)
+        foreign key (calendar_id)
+            references public.calendar_periods (calendar_id)
 );
 
 
@@ -179,15 +170,17 @@ COMMENT ON TABLE public.languages IS 'E.g. for the language ''English''
 CREATE TABLE public.location_reservations
 (
     created_at          text NOT NULL,
-    timeslot_id         integer NOT NULL,
+    timeslot_date       text NOT NULL,
+    timeslot_seqnr      integer NOT NULL,
+    calendar_id         integer NOT NULL,
     attended            boolean,
     user_augentid       text NOT NULL,
 
     constraint pk_location_reservations
-        primary key (timeslot_id, user_augentid),
+        primary key (timeslot_seqnr, timeslot_date, calendar_id, user_augentid),
 
     constraint fk_location_reservations_to_timeslot
-        foreign key (timeslot_id) references public.reservation_timeslots (timeslot_id),
+        foreign key (timeslot_seqnr, timeslot_date, calendar_id) references public.reservation_timeslots (timeslot_sequence_number, timeslot_date, calendar_id),
     constraint fk_location_reservations_to_users
         foreign key (user_augentid) references public.users (augentid)
 );

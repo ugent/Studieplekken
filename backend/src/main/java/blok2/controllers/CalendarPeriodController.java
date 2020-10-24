@@ -163,7 +163,6 @@ public class CalendarPeriodController {
                         HttpStatus.CONFLICT, "OpeningTime must be before closingTime");
             }
 
-            period.setLength(Math.toIntExact(endDate.getTime() - startDate.getTime()) / (1000 * 60));
 
             // check if reservable from is parsable
             format.parse(period.getReservableFrom());
