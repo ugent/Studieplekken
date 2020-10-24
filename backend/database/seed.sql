@@ -15,6 +15,12 @@ VALUES ('003', 'Maxime', 'Bloch', 0, 'maxime.bloch@ugent.be', 'secret', 'UGent',
 
 
 /*
+ * Setup third test user
+ */
+insert into public.users(augentid, augentpreferredgivenname, augentpreferredsn, penalty_points, mail, password, institution, admin)
+values ('01405190', 'Tim', 'Van Erum', 0, 'tim.vanerum@ugent.be', 'secret', 'UGent', true);
+
+/*
  * Setup two test locations with an authority and add 2nd test user to the authority
  */
 DO $$
