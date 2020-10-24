@@ -14,13 +14,17 @@ location_number_of_seats=number_of_seats
 location_number_of_lockers=number_of_lockers
 location_maps_frame=maps_frame
 location_image_url=image_url
-location_address=address
 location_start_period_lockers=start_period_lockers
 location_end_period_lockers=end_period_lockers
 location_authority_id=authority_id
 location_tags=tags
 location_description_dutch = description_dutch
 location_description_english = description_english
+
+#columns for the table BUILDINGS
+buildings_building_id=building_id
+buildings_name=name
+buildings_address=address
 
 #columns for the table TAGS
 tags_tag_id=tag_id

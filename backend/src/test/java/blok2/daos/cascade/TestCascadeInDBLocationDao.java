@@ -360,7 +360,6 @@ public class TestCascadeInDBLocationDao extends TestDao {
     }
 
     private void updateLocationWithoutChangeInFK(Location location) {
-        location.setAddress("Changed Address");
         location.setNumberOfLockers(100);
         location.setNumberOfSeats(200);
         location.setImageUrl("Changed URL");

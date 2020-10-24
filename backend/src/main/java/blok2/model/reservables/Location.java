@@ -1,6 +1,7 @@
 package blok2.model.reservables;
 
 import blok2.model.Authority;
+import blok2.model.Building;
 import blok2.model.LocationTag;
 
 import java.util.ArrayList;
@@ -10,27 +11,27 @@ import java.util.Objects;
 
 public class Location implements Cloneable {
     private String name;
-    private String address;
     private int numberOfSeats;
     private int numberOfLockers;
     private String imageUrl;
     private String descriptionDutch = "";
     private String descriptionEnglish= "";
+    private Building building;
     private Authority authority;
 
     private List<LocationTag> assignedTags;
 
-    public Location(String name, String address, int numberOfSeats, int numberOfLockers, String imageUrl,
-                    Authority authority, String descriptionDutch, String descriptionEnglish,
+    public Location(String name, int numberOfSeats, int numberOfLockers, String imageUrl,
+                    Authority authority, String descriptionDutch, String descriptionEnglish, Building building,
                     List<LocationTag> assignedTags) {
         this.name = name;
-        this.address = address;
         this.numberOfSeats = numberOfSeats;
         this.numberOfLockers = numberOfLockers;
         this.imageUrl = imageUrl;
         this.descriptionDutch = descriptionDutch;
         this.descriptionEnglish = descriptionEnglish;
         this.authority = authority;
+        this.building = building;
         this.assignedTags = assignedTags;
     }
 
@@ -47,7 +48,6 @@ public class Location implements Cloneable {
         return numberOfSeats == location.numberOfSeats &&
                 numberOfLockers == location.numberOfLockers &&
                 Objects.equals(name, location.name) &&
-                Objects.equals(address, location.address) &&
                 Objects.equals(imageUrl, location.imageUrl) &&
                 Objects.equals(descriptionDutch, location.descriptionDutch) &&
                 Objects.equals(descriptionEnglish, location.descriptionEnglish) &&
@@ -57,7 +57,7 @@ public class Location implements Cloneable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, address);
+        return Objects.hash(name, building);
     }
 
     @Override
@@ -87,14 +87,6 @@ public class Location implements Cloneable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public int getNumberOfSeats() {
@@ -151,6 +143,14 @@ public class Location implements Cloneable {
 
     public void setAssignedTags(List<LocationTag> assignedTags) {
         this.assignedTags = assignedTags;
+    }
+
+    public Building getBuilding() {
+        return building;
+    }
+
+    public void setBuilding(Building building) {
+        this.building = building;
     }
 
     //</editor-fold>

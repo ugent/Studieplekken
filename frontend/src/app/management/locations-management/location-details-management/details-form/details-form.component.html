@@ -25,13 +25,17 @@
       </div>
     </div>
 
-    <!-- Address TODO: separate street, number, postal code, city, country -->
-    <div class="row form-group">
-      <label class="col-lg-3 control-label" for="address">
-        {{'management.locationDetails.form.address' | translate}}
+    <!-- Building -->
+    <div class="row form-group" *ngIf="buildingsObs | async as buildings">
+      <label class="col-lg-3 control-label" for="building">
+        {{'management.locationDetails.form.building' | translate}}
       </label>
       <div class="col-lg-8">
-        <input class="form-control" id="address" type="text" formControlName="address" >
+        <select class="form-control" id="building" formControlName="building" >
+          <option *ngFor="let building of buildings" [value]="building.buildingId">
+            {{building.name + ' (' + building.address + ')'}}
+          </option>
+        </select>
       </div>
     </div>
 

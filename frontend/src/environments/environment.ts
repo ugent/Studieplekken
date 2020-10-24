@@ -24,6 +24,13 @@ export const api = {
   deleteAuthority: '/api/authority/{authorityId}',
   locationsInAuthoritiesOfUser: '/api/authority/users/{userId}/locations',
 
+  // AUTHORITY
+  buildings: '/api/building',
+  building: '/api/building/{buildingId}',
+  addBuilding: '/api/building',
+  updateBuilding: '/api/building/{buildingId}',
+  deleteBuilding: '/api/building/{buildingId}',
+
   // CALENDAR_PERIODS
   calendarPeriods: '/api/locations/calendar/{locationName}',
   addCalendarPeriods: '/api/locations/calendar',

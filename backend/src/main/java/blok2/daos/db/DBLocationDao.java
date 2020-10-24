@@ -6,6 +6,7 @@ import blok2.daos.IScannerLocationDao;
 import blok2.helpers.Resources;
 import blok2.helpers.date.CustomDate;
 import blok2.model.Authority;
+import blok2.model.Building;
 import blok2.model.LocationTag;
 import blok2.model.reservables.Location;
 import blok2.model.reservables.Locker;
@@ -233,7 +234,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
         int numberOfSeats = rs.getInt(Resources.databaseProperties.getString("location_number_of_seats"));
         int numberOfLockers = rs.getInt(Resources.databaseProperties.getString("location_number_of_lockers"));
         String imageUrl = rs.getString(Resources.databaseProperties.getString("location_image_url"));
-        String address = rs.getString(Resources.databaseProperties.getString("location_address"));
+        Building building = DBBuildingDao.createBuilding(rs);
         Authority authority = DBAuthorityDao.createAuthority(rs);
 
         String descriptionDutch = rs.getString(Resources.databaseProperties.getString("location_description_dutch"));
@@ -242,8 +243,8 @@ public class DBLocationDao extends DAO implements ILocationDao {
         List<LocationTag> assignedTags = new ArrayList<>();
         fillTagLists(assignedTags, rsTags);
 
-        return new Location(name, address, numberOfSeats, numberOfLockers, imageUrl, authority,
-                descriptionDutch, descriptionEnglish, assignedTags);
+        return new Location(name, numberOfSeats, numberOfLockers, imageUrl, authority,
+                descriptionDutch, descriptionEnglish, building, assignedTags);
     }
 
     private static void fillTagLists(List<LocationTag> assignedTags, ResultSet rsTags)
@@ -294,8 +295,8 @@ public class DBLocationDao extends DAO implements ILocationDao {
         pstmt.setInt(2, location.getNumberOfSeats());
         pstmt.setInt(3, location.getNumberOfLockers());
         pstmt.setString(4, location.getImageUrl());
-        pstmt.setString(5, location.getAddress());
-        pstmt.setInt(6, location.getAuthority().getAuthorityId());
+        pstmt.setInt(5, location.getAuthority().getAuthorityId());
+        pstmt.setInt(6, location.getBuilding().getBuildingId());
         pstmt.setString(7, location.getDescriptionDutch());
         pstmt.setString(8, location.getDescriptionEnglish());
     }

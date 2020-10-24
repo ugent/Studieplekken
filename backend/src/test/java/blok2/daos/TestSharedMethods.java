@@ -19,7 +19,6 @@ public class TestSharedMethods {
     public static Location testLocation(Authority authority) {
         Location testLocation = new Location();
         testLocation.setName("Test Location");
-        testLocation.setAddress("Test street, 10");
         testLocation.setNumberOfSeats(50);
         testLocation.setNumberOfLockers(15);
         testLocation.setImageUrl("https://example.com/image.jpg");
@@ -31,7 +30,6 @@ public class TestSharedMethods {
     public static Location testLocation2(Authority authority) {
         Location testLocation2 = new Location();
         testLocation2.setName("Second Test Location");
-        testLocation2.setAddress("Second Test street, 20");
         testLocation2.setNumberOfSeats(100);
         testLocation2.setNumberOfLockers(10);
         testLocation2.setImageUrl("https://example.com/picture.png");
@@ -42,7 +40,6 @@ public class TestSharedMethods {
     public static Location testLocation3(Authority authority) {
         Location testLocation3 = new Location();
         testLocation3.setName("Third Test Location");
-        testLocation3.setAddress("Third Test street, 30");
         testLocation3.setNumberOfSeats(25);
         testLocation3.setNumberOfLockers(5);
         testLocation3.setImageUrl("https://example.com/picture.png");

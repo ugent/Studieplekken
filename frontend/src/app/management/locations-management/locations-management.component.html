@@ -111,17 +111,22 @@
             </div>
           </div>
 
-          <!-- Address -->
-          <div class="row form-group">
-            <label class="col-lg-3 control-label" for="address">
-              {{'management.locations.addLocationModal.form.address' | translate}}</label>
+          <!-- Building -->
+          <div class="row form-group" *ngIf="buildingsObs | async as buildings">
+            <label class="col-lg-3 control-label" for="building">
+              {{'management.locationDetails.form.building' | translate}}
+            </label>
             <div class="col-lg-8">
-              <input class="form-control" id="address" type="text" formControlName="address" >
+              <select class="form-control" id="building" formControlName="building" >
+                <option *ngFor="let building of buildings" [value]="building.buildingId">
+                  {{building.name + ' (' + building.address + ')'}}
+                </option>
+              </select>
             </div>
 
-            <div *ngIf="address.invalid && (address.dirty || address.touched)" class="alert alert-danger">
-              <div *ngIf="address.errors.required">
-                {{'management.locations.addLocationModal.formValidationErrorMessages.address' | translate}}
+            <div *ngIf="building.invalid && (building.dirty || building.touched)" class="alert alert-danger">
+              <div *ngIf="building.errors.required">
+                {{'management.locations.addLocationModal.formValidationErrorMessages.buildingName' | translate}}
               </div>
             </div>
           </div>

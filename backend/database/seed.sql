@@ -17,13 +17,17 @@ values ('002', 'Ruben_van_DSA', 'DF', 0, 'rdf@ugent.be', 'secret', 'UGent', true
  * Setup two test locations with an authority and add 2nd test user to the authority
  */
 DO $$
-DECLARE tableId integer;
+DECLARE auth_id integer;
+DECLARE build_id_therminal integer;
+DECLARE build_id_sterre integer;
 BEGIN
-  INSERT INTO public.authority (authority_name, description) values ('DSA', 'Dienst StudentenActiviteiten') RETURNING authority_id into tableId;
-  INSERT INTO public.locations (name, address, number_of_seats, number_of_lockers, image_url, authority_id, description_dutch, description_english)
-    VALUES ('Therminal', 'Hoveniersberg 24, 9000 Gent', 200, 100, '', tableId, 'neder', 'engl'),
-            ('Sterre S5', 'Krijgslaan 281, 9000 Gent', 200, 100, '', tableId, 'nederdescr', 'engldescr');
-  INSERT INTO public.roles_user_authority (user_id, authority_id) VALUES ('002',tableId);
+  INSERT INTO public.authority (authority_name, description) values ('DSA', 'Dienst StudentenActiviteiten') RETURNING authority_id into auth_id;
+  INSERT INTO public.buildings (name, address) VALUES ('Therminal', 'Hoveniersberg 24, 9000 Gent') RETURNING building_id into build_id_therminal;
+  INSERT INTO public.buildings (name, address) VALUES ('Sterre S5', 'Krijgslaan 281, 9000 Gent') RETURNING building_id into build_id_sterre;
+  INSERT INTO public.locations (name, building_id, number_of_seats, number_of_lockers, image_url, authority_id, description_dutch, description_english)
+    VALUES ('Therminal', build_id_therminal, 200, 100, '', auth_id, 'neder', 'engl'),
+            ('Sterre S5', build_id_sterre, 200, 100, '', auth_id, 'nederdescr', 'engldescr');
+  INSERT INTO public.roles_user_authority (user_id, authority_id) VALUES ('002', auth_id);
 END $$;
 /*
  * add tags and use them in location Therminal
