@@ -853,7 +853,7 @@ where location_id = ?;
 
 -- queries for CALENDAR_PERIODS
 -- $get_calendar_periods
-select cp.location_name, cp.starts_at, cp.ends_at, cp.opening_time, cp.closing_time, cp.reservable_from
+select cp.location_name, cp.starts_at, cp.ends_at, cp.opening_time, cp.closing_time, cp.reservable_from, cp.reservable
        , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address, l.description_dutch, l.description_english
        , a.authority_id, a.authority_name, a.description
 from public.calendar_periods cp
@@ -865,18 +865,18 @@ where cp.location_name = ?
 order by to_date(cp.starts_at || ' ' || cp.opening_time, 'YYYY-MM-DD HH24:MI');
 
 -- $insert_calendar_period
-insert into public.calendar_periods(location_name, starts_at, ends_at, opening_time, closing_time, reservable_from)
-values (?, ?, ?, ?, ?, ?);
+insert into public.calendar_periods(location_name, starts_at, ends_at, opening_time, closing_time, reservable_from, reservable)
+values (?, ?, ?, ?, ?, ?, ?);
 
 -- $update_calendar_period
 update public.calendar_periods
-set location_name = ?, starts_at = ?, ends_at = ?, opening_time = ?, closing_time = ?, reservable_from = ?
-where location_name = ? and starts_at = ? and ends_at = ? and opening_time = ? and closing_time = ? and reservable_from = ?;
+set location_name = ?, starts_at = ?, ends_at = ?, opening_time = ?, closing_time = ?, reservable_from = ?, reservable = ?
+where location_name = ? and starts_at = ? and ends_at = ? and opening_time = ? and closing_time = ? and reservable_from = ? and reservable = ?;
 
 -- $delete_calendar_period
 delete
 from public.calendar_periods
-where location_name = ? and starts_at = ? and ends_at = ? and opening_time = ? and closing_time = ? and reservable_from = ?;
+where location_name = ? and starts_at = ? and ends_at = ? and opening_time = ? and closing_time = ? and reservable_from = ? and reservable = ?;
 
 -- $delete_calendar_periods_of_location
 delete
@@ -888,6 +888,18 @@ update public.calendar_periods
 set location_name = ?
 where location_name = ?;
 
+-- queries for RESERVATION_TIMESLOTS
+-- $get_reservation_timeslots
+select rt.timeslot_sequence_number, rt.timeslot_length
+from public.reservation_timeslots
+where calender_period_location_name = ? and calendar_period_starts_at = ? and calendar_period_ends_at = ? and calendar_period_opening_time = ?
+      and calendar_period_closing_time = ? and calendar_period_reservable_from = ?
+order by rt.timeslot_sequence_number ASC;
+
+-- $insert_reservation_timeslots
+insert into public.reservation_timeslots(timeslot_sequence_number, timeslot_length, calender_period_location_name, calendar_period_starts_at, calendar_period_ends_at, 
+    calendar_period_opening_time, calendar_period_closing_time, calendar_period_reservable_from)
+values (?, ?, ?, ?, ?, ?, ?);
 
 -- queries for CALENDAR_PERIODS_FOR_LOCKERS
 -- $get_calendar_periods_for_lockers_of_location

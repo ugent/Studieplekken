@@ -129,7 +129,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         calendarPeriod.setOpeningTime(rs.getString(Resources.databaseProperties.getString("calendar_period_opening_time")));
         calendarPeriod.setClosingTime(rs.getString(Resources.databaseProperties.getString("calendar_period_closing_time")));
         calendarPeriod.setReservableFrom(rs.getString(Resources.databaseProperties.getString("calendar_period_reservable_from")));
-
+        calendarPeriod.setReservable(rs.getBoolean(Resources.databaseProperties.getString("calender_period_reservable")));
         calendarPeriod.setLocation(DBLocationDao.createLocation(rs,conn));
 
         return calendarPeriod;
@@ -143,15 +143,18 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         pstmt.setString(4, calendarPeriod.getOpeningTime());
         pstmt.setString(5, calendarPeriod.getClosingTime());
         pstmt.setString(6, calendarPeriod.getReservableFrom());
+        pstmt.setBoolean(7, calendarPeriod.isReservable());
+
     }
 
     private void prepareWhereClauseOfUpdatePstmt(CalendarPeriod calendarPeriod,
                                                  PreparedStatement pstmt) throws SQLException {
-        pstmt.setString(7, calendarPeriod.getLocation().getName());
-        pstmt.setString(8, calendarPeriod.getStartsAt());
-        pstmt.setString(9, calendarPeriod.getEndsAt());
-        pstmt.setString(10, calendarPeriod.getOpeningTime());
-        pstmt.setString(11, calendarPeriod.getClosingTime());
-        pstmt.setString(12, calendarPeriod.getReservableFrom());
+        pstmt.setString(8, calendarPeriod.getLocation().getName());
+        pstmt.setString(9, calendarPeriod.getStartsAt());
+        pstmt.setString(10, calendarPeriod.getEndsAt());
+        pstmt.setString(11, calendarPeriod.getOpeningTime());
+        pstmt.setString(12, calendarPeriod.getClosingTime());
+        pstmt.setString(13, calendarPeriod.getReservableFrom());
+        pstmt.setBoolean(14, calendarPeriod.isReservable());
     }
 }

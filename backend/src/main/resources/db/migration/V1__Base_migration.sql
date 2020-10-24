@@ -65,6 +65,7 @@ CREATE TABLE public.calendar_periods
     opening_time    text NOT NULL,
     closing_time    text NOT NULL,
     reservable_from text NOT NULL,
+    reservable      boolean NOT NULL,
 
     constraint pk_calendar_periods
         primary key (
@@ -74,6 +75,29 @@ CREATE TABLE public.calendar_periods
         foreign key (location_name)
             references public.locations (name)
 );
+
+--
+-- Name: reservation_timeslots; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.reservation_timeslots
+(
+    timeslot_id  integer NOT NULL primary key generated always as identity,
+    calender_period_location_name   text NOT NULL,
+    calendar_period_starts_at       text NOT NULL,
+    calendar_period_ends_at         text NOT NULL,
+    calendar_period_opening_time    text NOT NULL,
+    calendar_period_closing_time    text NOT NULL,
+    calendar_period_reservable_from text NOT NULL,
+    timeslot_sequence_number        SMALLINT NOT NULL,
+    timeslot_length                 SMALLINT NOT NULL,
+    UNIQUE (calender_period_location_name, calendar_period_starts_at, calendar_period_ends_at, 
+    calendar_period_opening_time, calendar_period_closing_time, calendar_period_reservable_from, timeslot_sequence_number),
+    constraint fk_timeslots_to_calendar_periods
+        foreign key (calender_period_location_name, calendar_period_starts_at, calendar_period_ends_at, calendar_period_opening_time, calendar_period_closing_time, calendar_period_reservable_from)
+            references public.calendar_periods (location_name, starts_at, ends_at, opening_time, closing_time, reservable_from)
+);
+
 
 --
 -- Name: calendar_periods_for_lockers; Type: TABLE; Schema: public; Owner: postgres
@@ -152,16 +176,16 @@ COMMENT ON TABLE public.languages IS 'E.g. for the language ''English''
 
 CREATE TABLE public.location_reservations
 (
-    date          text NOT NULL,
-    location_name text NOT NULL,
-    attended      boolean,
-    user_augentid text NOT NULL,
+    created_at          text NOT NULL,
+    timeslot_id         integer NOT NULL,
+    attended            boolean,
+    user_augentid       text NOT NULL,
 
     constraint pk_location_reservations
-        primary key (date, user_augentid),
+        primary key (timeslot_id, user_augentid),
 
-    constraint fk_location_reservations_to_location
-        foreign key (location_name) references public.locations (name),
+    constraint fk_location_reservations_to_timeslot
+        foreign key (timeslot_id) references public.reservation_timeslots (timeslot_id),
     constraint fk_location_reservations_to_users
         foreign key (user_augentid) references public.users (augentid)
 );

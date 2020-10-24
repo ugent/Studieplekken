@@ -9,10 +9,32 @@ public class CalendarPeriod extends Period implements Cloneable {
     private String openingTime; // time: hh:mm
     private String closingTime; // time: hh:mm
     private String reservableFrom; // datetime: YYYY-MM-DDThh:mm
+    private boolean reservable;
+    private int reservableTimeslotSize;
 
     public CalendarPeriod() {
 
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        CalendarPeriod that = (CalendarPeriod) o;
+        return reservable == that.reservable &&
+                reservableTimeslotSize == that.reservableTimeslotSize &&
+                location.equals(that.location) &&
+                openingTime.equals(that.openingTime) &&
+                closingTime.equals(that.closingTime) &&
+                reservableFrom.equals(that.reservableFrom);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), location, openingTime, closingTime, reservableFrom, reservable, reservableTimeslotSize);
+    }
+
 
     @Override
     public String toString() {
@@ -23,25 +45,9 @@ public class CalendarPeriod extends Period implements Cloneable {
                 ", openingTime='" + openingTime + '\'' +
                 ", closingTime='" + closingTime + '\'' +
                 ", reservableFrom='" + reservableFrom + '\'' +
+                ", reservable='" + reservable + '\'' +
+                ", reservableTimeslotSize='" + reservableTimeslotSize + '\'' +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        CalendarPeriod that = (CalendarPeriod) o;
-        return Objects.equals(location, that.location) &&
-                Objects.equals(getStartsAt(), that.getStartsAt()) &&
-                Objects.equals(getEndsAt(), that.getEndsAt()) &&
-                Objects.equals(openingTime, that.openingTime) &&
-                Objects.equals(closingTime, that.closingTime) &&
-                Objects.equals(reservableFrom, that.reservableFrom);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getStartsAt(), getEndsAt(), openingTime, closingTime, reservableFrom);
     }
 
     @Override
@@ -85,5 +91,22 @@ public class CalendarPeriod extends Period implements Cloneable {
 
     public void setReservableFrom(String reservableFrom) {
         this.reservableFrom = reservableFrom;
+    }
+
+
+    public boolean isReservable() {
+        return reservable;
+    }
+
+    public void setReservable(boolean reservable) {
+        this.reservable = reservable;
+    }
+
+    public int getReservableTimeslotSize() {
+        return reservableTimeslotSize;
+    }
+
+    public void setReservableTimeslotSize(int reservableTimeslotSize) {
+        this.reservableTimeslotSize = reservableTimeslotSize;
     }
 }

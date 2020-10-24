@@ -111,6 +111,7 @@ calendar_period_ends_at=ends_at
 calendar_period_opening_time=opening_time
 calendar_period_closing_time=closing_time
 calendar_period_reservable_from=reservable_from
+calender_period_reservable=reservable
 
 # columns for CALENDAR_PERIODS_FOR_LOCKERS
 calendar_period_for_lockers_location_name=location_name

@@ -39,11 +39,11 @@ END $$;
 /*
  * Add some calendar periods
  */
-insert into public.calendar_periods(location_name, starts_at, ends_at, opening_time, closing_time, reservable_from)
+insert into public.calendar_periods(location_name, starts_at, ends_at, opening_time, closing_time, reservable_from, reservable)
 values ('Therminal', to_char(now() - interval '5 days', 'YYYY-MM-DD'), to_char(now() + interval '5 days', 'YYYY-MM-DD'),
-'09:00', '17:00', to_char(now() - interval '7 days', 'YYYY-MM-DD') || ' 19:00'),
+'09:00', '17:00', to_char(now() - interval '7 days', 'YYYY-MM-DD') || ' 19:00', true),
 ('Sterre S5', to_char(now() - interval '5 days', 'YYYY-MM-DD'), to_char(now() + interval '5 days', 'YYYY-MM-DD'),
-'09:00', '17:00', to_char(now() - interval '7 days', 'YYYY-MM-DD') || ' 19:00');
+'09:00', '17:00', to_char(now() - interval '7 days', 'YYYY-MM-DD') || ' 19:00', true);
 
 /*
  * Add some calendar periods for lockers
