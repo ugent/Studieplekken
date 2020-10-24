@@ -3,6 +3,7 @@ package blok2.daos.db;
 import blok2.daos.ICalendarPeriodDao;
 import blok2.helpers.Resources;
 import blok2.model.calendar.CalendarPeriod;
+import blok2.model.calendar.Timeslot;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
@@ -10,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -29,6 +31,11 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
 
             while (rs.next()) {
                 periods.add(createCalendarPeriod(rs,conn));
+            }
+
+            for(CalendarPeriod p : periods) {
+                if(p.isReservable())
+                    fillTimeslotList(p, conn);
             }
 
             return periods;
@@ -58,6 +65,19 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
     private void addCalendarPeriod(CalendarPeriod calendarPeriod, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_calendar_period"));
         prepareCalendarPeriodPstmt(calendarPeriod, pstmt);
+        pstmt.execute();
+
+        if(calendarPeriod.isReservable()) {
+            int amount = calendarPeriod.getLength() / calendarPeriod.getReservableTimeslotSize();
+            for(int i = 0; i < amount; i++) {
+                addTimeslotPeriod(i, calendarPeriod, conn);
+            }
+        }
+    }
+
+    private void addTimeslotPeriod(int seq_id, CalendarPeriod period, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_reservation_timeslots"));
+        prepareTimeslotPeriodPstmt(seq_id, period, pstmt);
         pstmt.execute();
     }
 
@@ -121,6 +141,20 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         pstmt.execute();
     }
 
+    private void fillTimeslotList(CalendarPeriod calendarPeriod, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_reservation_timeslots"));
+        prepareCalendarPeriodPstmt(calendarPeriod, pstmt);
+        ResultSet rs = pstmt.executeQuery();
+
+        List<Timeslot> timeslotList = new ArrayList<>();
+
+        while(rs.next()) {
+            timeslotList.add(createTimeslot(rs));
+        }
+
+        calendarPeriod.setTimeslots(Collections.unmodifiableList(timeslotList));
+    }
+
     private CalendarPeriod createCalendarPeriod(ResultSet rs, Connection conn) throws SQLException {
         CalendarPeriod calendarPeriod = new CalendarPeriod();
 
@@ -133,6 +167,16 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         calendarPeriod.setLocation(DBLocationDao.createLocation(rs,conn));
 
         return calendarPeriod;
+    }
+
+    private Timeslot createTimeslot(ResultSet rs) throws SQLException {
+        Timeslot timeslot = new Timeslot();
+
+        timeslot.setTimeslotId(rs.getInt(Resources.databaseProperties.getString("timeslot_id")));
+        timeslot.setTimeslotSeqnr(rs.getInt(Resources.databaseProperties.getString("timeslot_sequence_number")));
+        timeslot.setTimeslotSeqnr(rs.getInt(Resources.databaseProperties.getString("timeslot_length")));
+
+        return timeslot;
     }
 
     private void prepareCalendarPeriodPstmt(CalendarPeriod calendarPeriod,
@@ -156,5 +200,16 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         pstmt.setString(12, calendarPeriod.getClosingTime());
         pstmt.setString(13, calendarPeriod.getReservableFrom());
         pstmt.setBoolean(14, calendarPeriod.isReservable());
+    }
+
+    private void prepareTimeslotPeriodPstmt(int seq_id, CalendarPeriod period, PreparedStatement pstmt) throws SQLException {
+        pstmt.setInt(1, seq_id);
+        pstmt.setInt(2, period.getLength());
+        pstmt.setString(3, period.getLocation().getName());
+        pstmt.setString(4, period.getStartsAt());
+        pstmt.setString(5, period.getEndsAt());
+        pstmt.setString(6, period.getOpeningTime());
+        pstmt.setString(7, period.getClosingTime());
+        pstmt.setString(8, period.getReservableFrom());
     }
 }

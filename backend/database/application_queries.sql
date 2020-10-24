@@ -217,7 +217,7 @@ from public.location_reservations
 where location_name = ? and cast(substr(date,0,5) as int)*404 + cast(substr(date,6,2) as int)*31 + cast(substr(date,9,2) as int) between ? and ?;
 
 -- $insert_location_reservation
-insert into public.location_reservations (date, location_name, user_augentid, attended)
+insert into public.location_reservations (timeslot_id, user_augentid, created_at, attended)
 values (?, ?, ?, null);
 
 -- $set_location_reservation_unattended
@@ -891,9 +891,9 @@ where location_name = ?;
 -- queries for RESERVATION_TIMESLOTS
 -- $get_reservation_timeslots
 select rt.timeslot_sequence_number, rt.timeslot_length
-from public.reservation_timeslots
+from public.reservation_timeslots rt
 where calender_period_location_name = ? and calendar_period_starts_at = ? and calendar_period_ends_at = ? and calendar_period_opening_time = ?
-      and calendar_period_closing_time = ? and calendar_period_reservable_from = ?
+      and calendar_period_closing_time = ? and calendar_period_reservable_from = ? and calendar_period_reservable = ?
 order by rt.timeslot_sequence_number ASC;
 
 -- $insert_reservation_timeslots

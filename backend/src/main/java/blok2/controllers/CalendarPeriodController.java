@@ -67,7 +67,8 @@ public class CalendarPeriodController {
             // check for outdated view (perhaps some other user has changed the calendar periods in the meantime
             // between querying for the calendar periods for a location, and updating the calendar
             List<CalendarPeriod> currentView = calendarPeriodDao.getCalendarPeriodsOfLocation(locationName);
-
+            System.out.println(currentView);
+            System.out.println(from);
             // if the sizes dont match, the view must be different...
             if (from.size() != currentView.size()) {
                 logger.log(Level.SEVERE, "updateCalendarPeriods, conflict in frontends data view and actual data view");
@@ -161,6 +162,8 @@ public class CalendarPeriodController {
                 throw new ResponseStatusException(
                         HttpStatus.CONFLICT, "OpeningTime must be before closingTime");
             }
+
+            period.setLength(Math.toIntExact(endDate.getTime() - startDate.getTime()) / (1000 * 60));
 
             // check if reservable from is parsable
             format.parse(period.getReservableFrom());

@@ -28,8 +28,8 @@ tags_dutch=dutch
 tags_english=english
 
 # columns for table LOCATION_RESERVATIONS
-location_reservation_date=date
-location_reservation_location_name=location_name
+location_created_at=created_at
+location_reservation_timeslot=timeslot_id
 location_reservation_attended=attended
 location_reservation_user_augentid=user_augentid
 
@@ -112,6 +112,11 @@ calendar_period_opening_time=opening_time
 calendar_period_closing_time=closing_time
 calendar_period_reservable_from=reservable_from
 calender_period_reservable=reservable
+
+# columns for RESERVATION_TIMESLOTS
+timeslot_id=timeslot_id
+timeslot_sequence_number=timeslot_sequence_number
+timeslot_length=timeslot_length
 
 # columns for CALENDAR_PERIODS_FOR_LOCKERS
 calendar_period_for_lockers_location_name=location_name

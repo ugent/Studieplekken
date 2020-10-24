@@ -2,6 +2,8 @@ package blok2.model.calendar;
 
 import blok2.model.reservables.Location;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 public class CalendarPeriod extends Period implements Cloneable {
@@ -10,7 +12,12 @@ public class CalendarPeriod extends Period implements Cloneable {
     private String closingTime; // time: hh:mm
     private String reservableFrom; // datetime: YYYY-MM-DDThh:mm
     private boolean reservable;
+
+    // Helper variables
     private int reservableTimeslotSize;
+    private int length;
+
+    private List<Timeslot> timeslots = Collections.emptyList();
 
     public CalendarPeriod() {
 
@@ -108,5 +115,21 @@ public class CalendarPeriod extends Period implements Cloneable {
 
     public void setReservableTimeslotSize(int reservableTimeslotSize) {
         this.reservableTimeslotSize = reservableTimeslotSize;
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public void setLength(int length) {
+        this.length = length;
+    }
+
+    public List<Timeslot> getTimeslots() {
+        return timeslots;
+    }
+
+    public void setTimeslots(List<Timeslot> timeslots) {
+        this.timeslots = timeslots;
     }
 }

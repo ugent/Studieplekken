@@ -106,19 +106,19 @@ public class LocationController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
-
+/* currently no longer applicable
     //logged in user (?)
     @GetMapping("/{locationName}/reservations/count")
     public int getAmountOfReservationsToday(@PathVariable("locationName") String locationName) {
         try {
-            return locationDao.getCountOfReservations(CustomDate.now()).get(locationName);
+            return 0;//locationDao.getCountOfReservations(CustomDate.now()).get(locationName);
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
-
+*/
     // *****************************************
     // *   CRUD operations for LOCATION_TAGS   *
     // *****************************************
