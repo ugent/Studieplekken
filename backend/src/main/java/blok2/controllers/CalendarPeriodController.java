@@ -165,7 +165,15 @@ public class CalendarPeriodController {
 
 
             // check if reservable from is parsable
-            format.parse(period.getReservableFrom());
+
+            if(period.isReservable()) {
+                format.parse(period.getReservableFrom());
+                if(period.getReservableTimeslotSize() <= 0) {
+                    throw new ResponseStatusException(
+                            HttpStatus.BAD_REQUEST, "Timeslot size must be larger than 0.");
+
+                }
+            }
         }
 
         // delete all 'from' and add 'to'

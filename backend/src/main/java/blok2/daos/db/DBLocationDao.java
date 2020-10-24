@@ -163,7 +163,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
         DBScannerLocationDao.deleteAllScannersOfLocation(locationName, conn);
 
         // delete location_reservations
-        deleteLocationReservations(locationName, conn);
+        // deleteLocationReservations(locationName, conn);
 
         // delete penalty_book entries
         deletePenaltyBookEntries(locationName, conn);

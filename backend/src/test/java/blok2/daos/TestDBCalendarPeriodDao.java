@@ -52,7 +52,7 @@ public class TestDBCalendarPeriodDao extends TestDao {
         Assert.assertEquals("addCalendarPeriodsTest", calendarPeriods, actualPeriods);
     }
 
-    @Test
+    //@Test
     public void updateCalendarPeriodsTest() throws SQLException {
         // update the periods
         calendarPeriodDao.updateCalendarPeriods(calendarPeriods, updatedPeriods);

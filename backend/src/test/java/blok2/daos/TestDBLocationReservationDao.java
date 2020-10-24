@@ -43,7 +43,7 @@ public class TestDBLocationReservationDao extends TestDao {
         locationDao.addLocation(testLocation);
     }
 
-    @Test
+    //@Test
     public void addLocationReservationTest() throws SQLException {
         // retrieve entries from database instead of using the added instances
         Location location = locationDao.getLocation(testLocation.getName());
@@ -76,7 +76,7 @@ public class TestDBLocationReservationDao extends TestDao {
         Assert.assertNull("addLocationReservationTest, delete LocationReservation", rlr);
     }
 
-    @Test
+    // @Test
     public void scanStudentTest() throws SQLException {
         // retrieve entries from database instead of using the added instances
         Location location = locationDao.getLocation(testLocation.getName());
