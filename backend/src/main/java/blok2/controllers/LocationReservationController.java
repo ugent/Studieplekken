@@ -52,6 +52,7 @@ public class LocationReservationController {
     public LocationReservation createLocationReservation(@AuthenticationPrincipal User user, @RequestBody Timeslot timeslot) {
         try {
             LocationReservation reservation = new LocationReservation(user, CustomDate.today().toDateString(), timeslot, null);
+            locationReservationDao.addLocationReservation(reservation);
             return locationReservationDao.getLocationReservation(user.getAugentID(), timeslot);
         }catch (SQLException e) {
             logger.error(e.getMessage());
