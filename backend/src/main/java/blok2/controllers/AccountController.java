@@ -2,15 +2,20 @@ package blok2.controllers;
 
 import blok2.daos.IAccountDao;
 import blok2.daos.IAuthorityDao;
+import blok2.helpers.exceptions.InvalidRequestParametersException;
 import blok2.model.Authority;
 import blok2.model.users.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.ConstraintViolationException;
+import javax.validation.constraints.Pattern;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
@@ -22,6 +27,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("api/account")
+@Validated
 public class AccountController {
 
     private final Logger logger = LoggerFactory.getLogger(AccountController.class.getSimpleName());
@@ -36,7 +42,9 @@ public class AccountController {
     }
 
     @GetMapping("/id")
-    public User getUserByAUGentId(@RequestParam String id) {
+    public User getUserByAUGentId(@RequestParam
+                                  @Pattern(regexp = "^[^%_]*$")
+                                          String id) {
         try {
             return accountDao.getUserById(id);
         } catch (SQLException e) {
@@ -47,7 +55,9 @@ public class AccountController {
     }
 
     @GetMapping("/mail")
-    public User getUserByMail(@RequestParam String mail) {
+    public User getUserByMail(@RequestParam
+                              @Pattern(regexp = "^[^%_]*$")
+                                      String mail) {
         try {
             return accountDao.getUserByEmail(mail);
         } catch (SQLException e) {
@@ -58,7 +68,9 @@ public class AccountController {
     }
 
     @GetMapping("/firstName")
-    public List<User> getUsersByFirstName(@RequestParam String firstName) {
+    public List<User> getUsersByFirstName(@RequestParam("firstName")
+                                          @Pattern(regexp = "^[^%_]*$")
+                                                  String firstName) {
         try {
             return accountDao.getUsersByFirstName(firstName);
         } catch (SQLException e) {
@@ -69,7 +81,9 @@ public class AccountController {
     }
 
     @GetMapping("/lastName")
-    public List<User> getUsersByLastName(@RequestParam String lastName) {
+    public List<User> getUsersByLastName(@RequestParam
+                                         @Pattern(regexp = "^[^%_]*$")
+                                                 String lastName) {
         try {
             return accountDao.getUsersByLastName(lastName);
         } catch (SQLException e) {
@@ -80,7 +94,12 @@ public class AccountController {
     }
 
     @GetMapping("/firstAndLastName")
-    public List<User> getUsersByLastName(@RequestParam String firstName, @RequestParam String lastName) {
+    public List<User> getUsersByLastName(@RequestParam
+                                         @Pattern(regexp = "^[^%_]*$")
+                                                 String firstName,
+                                         @RequestParam
+                                         @Pattern(regexp = "^[^%_]*$")
+                                                 String lastName) {
         try {
             return accountDao.getUsersByFirstAndLastName(firstName, lastName);
         } catch (SQLException e) {
@@ -109,7 +128,9 @@ public class AccountController {
     }
 
     @GetMapping("/{userId}/authorities")
-    public List<Authority> getAuthoritiesFromUser(@PathVariable String userId) {
+    public List<Authority> getAuthoritiesFromUser(@PathVariable
+                                                  @Pattern(regexp = "^[^%_]*$")
+                                                          String userId) {
         try {
             return authorityDao.getAuthoritiesFromUser(userId);
         } catch (SQLException e) {
@@ -120,7 +141,9 @@ public class AccountController {
     }
 
     @GetMapping("{userId}/has/authorities")
-    public boolean hasUserAuthorities(@PathVariable("userId") String userId) {
+    public boolean hasUserAuthorities(@PathVariable("userId")
+                                      @Pattern(regexp = "^[^%_]*$")
+                                              String userId) {
         try {
             return authorityDao.getAuthoritiesFromUser(userId).size() > 0;
         } catch (SQLException e) {
@@ -131,7 +154,9 @@ public class AccountController {
     }
 
     @PutMapping("/{userId}")
-    public void updateUser(@PathVariable("userId") String id, @RequestBody User user) {
+    public void updateUser(@PathVariable("userId")
+                           @Pattern(regexp = "^[^%_]*$")
+                                   String id, @RequestBody User user) {
         try {
             User old = accountDao.getUserById(id);
             accountDao.updateUserById(id, user);
@@ -171,6 +196,12 @@ public class AccountController {
             logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException e) {
+        throw new InvalidRequestParametersException("Not valid due to validation error: " + e.getMessage());
     }
 
     /**
