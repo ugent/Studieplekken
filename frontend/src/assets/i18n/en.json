@@ -126,7 +126,7 @@
         "address": "Address",
         "numberOfSeats": "Number of seats",
         "numberOfLockers": "Number of lockers",
-        "capacity": "Capacity",
+        "forGroup": "Group Reservation",
         "imageUrl": "Image URL (optional)",
 
         "edit": "Edit",
@@ -266,7 +266,7 @@
           "address": "Address",
           "numberOfSeats": "Number of seats",
           "numberOfLockers": "Number of lockers",
-          "capacity": "Capacity",
+          "forGroup": "Group Reservation",
           "imageUrl": "URL of image (optional)"
         },
 
@@ -276,7 +276,7 @@
           "address": "Address is required",
           "numberOfSeats": "Value for 'number of seats' is required",
           "numberOfLockers": "Value for 'number of lockers' is required",
-          "capacity": "Value for 'capacity' is required"
+          "forGroup": "Value for 'group reservation' is required"
         },
 
         "cancelButton": "Cancel",

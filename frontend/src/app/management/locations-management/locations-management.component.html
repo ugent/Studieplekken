@@ -156,17 +156,17 @@
             </div>
           </div>
 
-          <!-- Number of seats -->
+          <!-- forGroup -->
           <div class="row form-group">
-            <label class="col-lg-3 control-label" for="capacity">
-              {{'management.locations.addLocationModal.form.capacity' | translate}}</label>
+            <label class="col-lg-3 control-label" for="forGroup">
+              {{'management.locations.addLocationModal.form.forGroup' | translate}}</label>
             <div class="col-lg-8">
-              <input class="form-control" id="capacity" type="number" formControlName="capacity" >
+              <input id="forGroup" type="checkbox" formControlName="forGroup" >
             </div>
 
-            <div *ngIf="capacity.invalid && (capacity.dirty || capacity.touched)" class="alert alert-danger">
-              <div *ngIf="capacity.errors.required">
-                {{'management.locations.addLocationModal.formValidationErrorMessages.capacity' | translate}}
+            <div *ngIf="forGroup.invalid && (forGroup.dirty || forGroup.touched)" class="alert alert-danger">
+              <div *ngIf="forGroup.errors.required">
+                {{'management.locations.addLocationModal.formValidationErrorMessages.forGroup' | translate}}
               </div>
             </div>
           </div>

@@ -17,12 +17,12 @@ public class Location implements Cloneable {
     private String descriptionDutch = "";
     private String descriptionEnglish = "";
     private Authority authority;
-    private int capacity;
+    private boolean forGroup;
 
     private List<LocationTag> assignedTags;
 
     public Location(String name, String address, int numberOfSeats, int numberOfLockers, String imageUrl,
-                    Authority authority, String descriptionDutch, String descriptionEnglish, int capacity,
+                    Authority authority, String descriptionDutch, String descriptionEnglish, boolean forGroup,
                     List<LocationTag> assignedTags) {
         this.name = name;
         this.address = address;
@@ -32,7 +32,7 @@ public class Location implements Cloneable {
         this.descriptionDutch = descriptionDutch;
         this.descriptionEnglish = descriptionEnglish;
         this.authority = authority;
-        this.capacity = capacity;
+        this.forGroup = forGroup;
         this.assignedTags = assignedTags;
     }
 
@@ -48,7 +48,7 @@ public class Location implements Cloneable {
         Location location = (Location) o;
         return numberOfSeats == location.numberOfSeats &&
                 numberOfLockers == location.numberOfLockers &&
-                capacity == location.capacity &&
+                forGroup == location.forGroup &&
                 Objects.equals(name, location.name) &&
                 Objects.equals(address, location.address) &&
                 Objects.equals(imageUrl, location.imageUrl) &&
@@ -116,12 +116,12 @@ public class Location implements Cloneable {
         this.numberOfLockers = numberOfLockers;
     }
 
-    public int getCapacity() {
-        return capacity;
+    public boolean getForGroup() {
+        return forGroup;
     }
 
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
+    public void setForGroup(boolean forGroup) {
+        this.forGroup = forGroup;
     }
 
     public String getImageUrl() {
