@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.SmartValidator;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -32,6 +33,9 @@ public class LocationReservationController {
     private final Logger logger = LoggerFactory.getLogger(LocationReservationController.class.getSimpleName());
 
     private final ILocationReservationDao locationReservationDao;
+
+    @Autowired
+    SmartValidator validator;
 
     @Autowired
     public LocationReservationController(ILocationReservationDao locationReservationDao) {
@@ -64,8 +68,12 @@ public class LocationReservationController {
         }
     }
 
-    @GetMapping("/timeslot")
-    public List<LocationReservation> getLocationReservationsByTimeslot(@RequestParam @Valid Timeslot timeslot) {
+    @GetMapping("/timeslot/{calendarid}/{date}/{seqnr}")
+    public List<LocationReservation> getLocationReservationsByTimeslot(@PathVariable("calendarid") int calendarId, @PathVariable("date") String date,@PathVariable("seqnr") int seqnr) {
+        Timeslot timeslot = new Timeslot();
+        timeslot.setCalendarId(calendarId);
+        timeslot.setTimeslotSeqnr(seqnr);
+        timeslot.setTimeslotDate(date);
         try {
             return locationReservationDao.getAllLocationReservationsOfTimeslot(timeslot);
         } catch (SQLException e) {
