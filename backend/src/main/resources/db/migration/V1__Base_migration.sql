@@ -18,7 +18,7 @@ CREATE TABLE public.buildings
 (
     building_id  integer NOT NULL primary key generated always as identity,
     name    text    NOT NULL unique,
-    address text    NOT NULL unique,
+    address text    NOT NULL,
     UNIQUE(name, address)
 );
 
