@@ -52,7 +52,9 @@ public class LocationReservationController {
     public LocationReservation createLocationReservation(@AuthenticationPrincipal User user, @RequestBody Timeslot timeslot) {
         try {
             LocationReservation reservation = new LocationReservation(user, CustomDate.today().toDateString(), timeslot, null);
-            locationReservationDao.addLocationReservation(reservation);
+            if(!locationReservationDao.addLocationReservationIfStillRoomAtomically(reservation)) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "There are no more spots left for this location.");
+            }
             return locationReservationDao.getLocationReservation(user.getAugentID(), timeslot);
         }catch (SQLException e) {
             logger.error(e.getMessage());

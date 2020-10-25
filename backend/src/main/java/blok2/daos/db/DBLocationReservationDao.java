@@ -41,7 +41,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
             return executeQueryForLocationReservations(pstmt, conn);
         }
     }
-    */
+
     @Override
     public List<LocationReservation> getAllLocationReservationsOfLocationFrom(String locationName, String start, boolean includePastReservations) throws SQLException {
         try (Connection conn = adb.getConnection()) {
@@ -61,6 +61,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
             return getLocationReservationsExtractedEqualCode(locationName, end, includePastReservations, conn, query, replacementString);
         }
     }
+    */
 
     private List<LocationReservation> getLocationReservationsExtractedEqualCode(String locationName, String date, boolean includePastReservations, Connection conn, String query, String replacementString) throws SQLException {
         if (!includePastReservations) {
@@ -210,6 +211,33 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
     }
 
     @Override
+    public boolean addLocationReservationIfStillRoomAtomically(LocationReservation reservation) throws SQLException {
+        // Open up transaction
+        try (Connection conn = adb.getConnection()) {
+            conn.setAutoCommit(false);
+
+            // Take write lock on the database
+            addLocationReservation(reservation);
+
+
+            // Fetch data we need.
+            long amountOfReservations = getAmountOfReservationsOfTimeslot(reservation.getTimeslot(), conn);
+            long sizeOfLocation = getLocationSizeOfTimeslot(reservation.getTimeslot(), conn);
+
+            if(amountOfReservations < sizeOfLocation) {
+
+                // All is well. Release the lock
+                conn.commit();
+                return true;
+            } else {
+                // The add was illegal. We rollback.
+                conn.rollback();
+                return false;
+            }
+        }
+    }
+
+    @Override
     public LocationReservation scanStudent(String location, String augentId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             Calendar c = Calendar.getInstance();
@@ -250,18 +278,9 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
     }
 
     @Override
-    public int countReservedSeatsOfLocationOnDate(String location, CustomDate date) throws SQLException {
+    public long countReservedSeatsOfTimeslot(Timeslot timeslot) throws SQLException {
         try (Connection conn = adb.getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("count_location_reservations_of_location_for_date"));
-            pstmt.setString(1, location);
-            pstmt.setString(2, date.toString());
-            ResultSet rs = pstmt.executeQuery();
-
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
-
-            return 0;
+            return getAmountOfReservationsOfTimeslot(timeslot, conn);
         }
     }
 
@@ -311,6 +330,34 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
         }
     }
 
+    // Seperated out for use in transaction
+    public long getAmountOfReservationsOfTimeslot(Timeslot timeslot, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("count_location_reservations_of_location_for_timeslot"));
+        pstmt.setInt(1, timeslot.getCalendarId());
+        pstmt.setString(2, timeslot.getTimeslotDate());
+        pstmt.setInt(3, timeslot.getTimeslotSeqnr());
+        ResultSet set = pstmt.executeQuery();
+
+        if(set.next()) {
+            return set.getLong(1);
+        }
+
+        return -1;
+    }
+
+    private long getLocationSizeOfTimeslot(Timeslot timeslot, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_size_of_timeslot_location"));
+        pstmt.setInt(1, timeslot.getCalendarId());
+        ResultSet set = pstmt.executeQuery();
+
+        if(set.next()) {
+            return set.getLong(1);
+        }
+
+        return -1;
+
+    }
+
     public static LocationReservation createLocationReservation(ResultSet rs,Connection conn) throws SQLException {
 
         Boolean attended = rs.getBoolean(Resources.databaseProperties.getString("location_reservation_attended"));
@@ -329,4 +376,6 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
 
         return new LocationReservation(user, createdAt, timeslot, attended);
     }
+
+
 }

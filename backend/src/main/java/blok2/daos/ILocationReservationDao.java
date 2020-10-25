@@ -14,23 +14,22 @@ public interface ILocationReservationDao extends IDao {
     /*
     List<LocationReservation> getAllLocationReservationsOfLocation(String locationName,
                                                                    boolean includePastReservations) throws SQLException;
-*/
-    List<LocationReservation> getAllLocationReservationsOfTimeslot(Timeslot timeslot) throws SQLException;
+
 
     /**
      * start: YYYY-MM-DD
-     */
+     *//*
     List<LocationReservation> getAllLocationReservationsOfLocationFrom(String locationName,
                                                                        String start,
                                                                        boolean includePastReservations) throws SQLException;
 
     /**
      * end: YYYY-MM-DD
-     */
+     *//*
     List<LocationReservation> getAllLocationReservationsOfLocationUntil(String locationName,
                                                                         String end,
                                                                         boolean includePastReservations) throws SQLException;
-
+    */
     /**
      * start: YYYY-MM-DD
      * end: YYYY-MM-DD
@@ -52,11 +51,15 @@ public interface ILocationReservationDao extends IDao {
 
     void setAllStudentsOfLocationToAttended(String location, CustomDate date) throws SQLException;
 
-    int countReservedSeatsOfLocationOnDate(String location, CustomDate date) throws SQLException;
+    long countReservedSeatsOfTimeslot(Timeslot timeslot) throws SQLException;
 
     List<LocationReservation> getAbsentStudents(String location, CustomDate date) throws SQLException;
 
     List<LocationReservation> getPresentStudents(String location, CustomDate date) throws SQLException;
 
     void setReservationToUnAttended(String augentId, CustomDate date) throws SQLException;
+
+    List<LocationReservation> getAllLocationReservationsOfTimeslot(Timeslot timeslot) throws SQLException;
+
+     boolean addLocationReservationIfStillRoomAtomically(LocationReservation reservation) throws SQLException;
 }
