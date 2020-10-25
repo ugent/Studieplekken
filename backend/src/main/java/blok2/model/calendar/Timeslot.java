@@ -1,10 +1,15 @@
 package blok2.model.calendar;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
 import java.util.Objects;
 
 public class Timeslot implements Cloneable {
+    @Min(0)
     private int calendarId;
+    @Min(0)
     private int timeslotSeqnr;
+    @Pattern(regexp = "[0-9]{4}-[0-9]{2}-[0-9]{2}")
     private String timeslotDate;
 
     @Override

@@ -1,17 +1,23 @@
 package blok2.model.reservations;
 
-import blok2.helpers.date.CustomDate;
 import blok2.model.calendar.Timeslot;
-import blok2.model.reservables.Location;
 import blok2.model.users.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 import java.util.Objects;
 
 
 public class LocationReservation {
+    @Valid
     private User user;
+    @Pattern(regexp = "[0-9]{4}-[0-9]{2}-[0-9]{2}")
     private String createdAt;
+    @Valid
     private Timeslot timeslot;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY) // Users can't set this themselves
     private Boolean attended;
 
     public LocationReservation() {
@@ -39,6 +45,7 @@ public class LocationReservation {
         return attended;
     }
 
+    @JsonIgnore
     public void setAttended(Boolean attended) {
         this.attended = attended;
     }

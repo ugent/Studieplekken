@@ -14,6 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
@@ -49,7 +50,7 @@ public class LocationReservationController {
     }
 
     @PostMapping("/new")
-    public LocationReservation createLocationReservation(@AuthenticationPrincipal User user, @RequestBody Timeslot timeslot) {
+    public LocationReservation createLocationReservation(@AuthenticationPrincipal User user, @RequestBody @Valid Timeslot timeslot) {
         try {
             LocationReservation reservation = new LocationReservation(user, CustomDate.today().toDateString(), timeslot, null);
             if(!locationReservationDao.addLocationReservationIfStillRoomAtomically(reservation)) {
@@ -64,7 +65,7 @@ public class LocationReservationController {
     }
 
     @GetMapping("/timeslot")
-    public List<LocationReservation> getLocationReservationsByTimeslot(@RequestParam Timeslot timeslot) {
+    public List<LocationReservation> getLocationReservationsByTimeslot(@RequestParam @Valid Timeslot timeslot) {
         try {
             return locationReservationDao.getAllLocationReservationsOfTimeslot(timeslot);
         } catch (SQLException e) {
@@ -75,7 +76,7 @@ public class LocationReservationController {
     }
 
     @DeleteMapping
-    public void deleteLocationReservation(@RequestBody LocationReservation locationReservation) {
+    public void deleteLocationReservation(@RequestBody @Valid LocationReservation locationReservation) {
         try {
             locationReservationDao.deleteLocationReservation(locationReservation.getUser().getAugentID(),
                     locationReservation.getTimeslot());
