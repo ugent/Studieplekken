@@ -7,6 +7,7 @@ import blok2.model.calendar.Timeslot;
 import blok2.model.reservables.Location;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
+import org.flywaydb.test.annotation.FlywayTest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,23 +34,32 @@ public class TestDBLocationReservationDao extends TestDao {
 
 
     private Location testLocation;
+    private Location testLocation1Seat;
+
     private User testUser;
     private User testUser2;
     private List<CalendarPeriod> calendarPeriods;
+    private CalendarPeriod calendarPeriod1Seat;
 
     @Override
     public void populateDatabase() throws SQLException {
         // setup test location objects
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
         testLocation = TestSharedMethods.testLocation(authority.clone());
+        testLocation1Seat = TestSharedMethods.testLocation1Seat(authority.clone());
+
         testUser = TestSharedMethods.adminTestUser();
         testUser2 = TestSharedMethods.studentTestUser();
         calendarPeriods = TestSharedMethods.testCalendarPeriods(testLocation);
+        calendarPeriod1Seat = TestSharedMethods.testCalendarPeriods(testLocation1Seat).get(0);
 
         // Add test objects to database
         TestSharedMethods.addTestUsers(accountDao, testUser, testUser2);
         locationDao.addLocation(testLocation);
+        locationDao.addLocation(testLocation1Seat);
+
         TestSharedMethods.addCalendarPeriods(calendarPeriodDao, calendarPeriods.get(0));
+        TestSharedMethods.addCalendarPeriods(calendarPeriodDao, calendarPeriod1Seat);
 
     }
 
@@ -65,7 +75,7 @@ public class TestDBLocationReservationDao extends TestDao {
 
         // Create LocationReservation
         CustomDate date = new CustomDate(1970, 1, 1, 9, 0, 0);
-        LocationReservation lr = new LocationReservation(u, CustomDate.today().toDateString(), timeslot, null);
+        LocationReservation lr = new LocationReservation(u, date.toDateString(), timeslot, null);
 
         // add LocationReservation to database
         locationReservationDao.addLocationReservation(lr);
@@ -84,6 +94,29 @@ public class TestDBLocationReservationDao extends TestDao {
         locationReservationDao.deleteLocationReservation(u.getAugentID(), timeslot);
         rlr = locationReservationDao.getLocationReservation(u.getAugentID(), timeslot);
         Assert.assertNull("addLocationReservationTest, delete LocationReservation", rlr);
+    }
+
+    @Test
+    public void addLocationReservationButFullTest() throws SQLException {
+        // retrieve entries from database instead of using the added instances
+        User u = accountDao.getUserById(testUser.getAugentID());
+        User u2 = accountDao.getUserById(testUser2.getAugentID());
+
+        Timeslot timeslot = calendarPeriod1Seat.getTimeslots().get(0);
+
+        LocationReservation lr = new LocationReservation(u, CustomDate.today().toDateString(), timeslot, null);
+        TestSharedMethods.addCalendarPeriods(calendarPeriodDao, calendarPeriods.get(0));
+        Assert.assertTrue(locationReservationDao.addLocationReservationIfStillRoomAtomically(lr));
+        lr = new LocationReservation(u, CustomDate.today().toDateString(), timeslot, null);
+        // This is a duplicate entry into the database. Shouldn't work.
+        Assert.assertFalse(locationReservationDao.addLocationReservationIfStillRoomAtomically(lr));
+        lr = new LocationReservation(u2, CustomDate.today().toDateString(), timeslot, null);
+        // This is a second user. Also shouldn't work.
+        Assert.assertFalse(locationReservationDao.addLocationReservationIfStillRoomAtomically(lr));
+
+        // It really really shouldn't be in the database.
+        List<LocationReservation> reservations = locationReservationDao.getAllLocationReservationsOfUser(u2.getAugentID());
+        Assert.assertEquals(0, reservations.size());
     }
 
     // @Test

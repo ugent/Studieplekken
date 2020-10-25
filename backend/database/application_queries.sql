@@ -187,12 +187,12 @@ group by y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.
 select count(1)
 from public.location_reservations lr 
     INNER JOIN public.calendar_periods cp on lr.calendar_id = cp.calendar_id 
-    INNER JOIN public.locations l on cp.location_name = l.location_name
+    INNER JOIN public.locations l on cp.location_name = l.name
 where lr.calendar_id = ? and lr.timeslot_date = ? and lr.timeslot_seqnr = ?;
 
 -- $get_size_of_timeslot_location
 select l.number_of_seats
-from public.calendar_periods cp INNER JOIN public.locations l on cp.location_name = l.location_name
+from public.calendar_periods cp INNER JOIN public.locations l on cp.location_name = l.name
 where cp.calendar_id = ?;
 
 -- $delete_location_reservation

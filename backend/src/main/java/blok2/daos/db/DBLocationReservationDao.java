@@ -214,25 +214,33 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
     public boolean addLocationReservationIfStillRoomAtomically(LocationReservation reservation) throws SQLException {
         // Open up transaction
         try (Connection conn = adb.getConnection()) {
-            conn.setAutoCommit(false);
+            try {
+                // Take a lock on the database.
+                conn.setAutoCommit(false);
 
-            // Take write lock on the database
-            addLocationReservation(reservation);
+                // Fetch data we need.
+                long amountOfReservations = getAmountOfReservationsOfTimeslot(reservation.getTimeslot(), conn);
+                long sizeOfLocation = getLocationSizeOfTimeslot(reservation.getTimeslot(), conn);
 
+                if (amountOfReservations < sizeOfLocation) {
+                    // All is well. Release the lock
+                    addLocationReservation(reservation);
+                    conn.commit();
+                    return true;
+                }
 
-            // Fetch data we need.
-            long amountOfReservations = getAmountOfReservationsOfTimeslot(reservation.getTimeslot(), conn);
-            long sizeOfLocation = getLocationSizeOfTimeslot(reservation.getTimeslot(), conn);
-
-            if(amountOfReservations < sizeOfLocation) {
-
-                // All is well. Release the lock
-                conn.commit();
-                return true;
-            } else {
-                // The add was illegal. We rollback.
-                conn.rollback();
                 return false;
+
+            } catch (SQLException e) {
+                conn.rollback();
+                // Error codes that start with "23" are constraint violations.
+                // This means that the entry was probably not unique.
+                if (e.getSQLState().startsWith("23")) {
+                    return false;
+                } else {
+                    // This is a real db error. Rethrowing it.
+                    throw e;
+                }
             }
         }
     }
