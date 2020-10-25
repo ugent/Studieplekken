@@ -23,7 +23,7 @@ location_description_english = description_english
 
 #columns for the table BUILDINGS
 buildings_building_id=building_id
-buildings_name=name
+buildings_name=building_name
 buildings_address=address
 
 #columns for the table TAGS

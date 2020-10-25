@@ -41,7 +41,7 @@
 -- $all_locations
 select l.name, l.number_of_seats, l.number_of_lockers
     , l.image_url, l.description_dutch, l.description_english
-    , b.building_id, b.name, b.address
+    , b.building_id, b.building_name, b.address
     , a.authority_id, a.authority_name, a.description
 from public.locations l
     join public.authority a
@@ -53,7 +53,7 @@ order by l.name;
 -- $get_location
 select l.name, l.number_of_seats, l.number_of_lockers
     , l.image_url, l.description_dutch, l.description_english
-    , b.building_id, b.name, b.address
+    , b.building_id, b.building_name, b.address
     , a.authority_id, a.authority_name, a.description
 from public.locations l
     join public.authority a
@@ -65,7 +65,7 @@ where l.name = ?;
 -- $get_locations_from_authority
 select  l.name, l.number_of_seats, l.number_of_lockers
      , l.image_url, l.description_dutch, l.description_english
-     , b.building_id, b.name, b.address
+     , b.building_id, b.building_name, b.address
      , a.authority_id, a.authority_name, a.description
 from public.locations l
     join public.authority a
@@ -77,7 +77,7 @@ where l.authority_id = ?;
 --$ get_locations_in_building
 select  l.name, l.number_of_seats, l.number_of_lockers
      , l.image_url, l.description_dutch, l.description_english
-     , b.building_id, b.name, b.address
+     , b.building_id, b.building_name, b.address
 from public.locations l
     join public.buildings b
         on b.building_id = l.building_id
@@ -87,7 +87,7 @@ where l.building_id = ?;
 select l.name, l.number_of_seats, l.number_of_lockers
      , l.image_url, l.description_dutch, l.description_english
      , a.authority_id, a.authority_name, a.description
-     , b.building_id, b.name, b.address
+     , b.building_id, b.building_name, b.address
 from public.locations l
     join public.authority a
         on a.authority_id = l.authority_id
@@ -120,22 +120,22 @@ where name = ?;
 
 -- queries for table BUILDINGS
 -- $all_buildings
-select b.building_id, b.name, b.address
+select b.building_id, b.building_name, b.address
 from public.buildings b
-order by b.name;
+order by b.building_name;
 
 -- $get_building_by_id
-select b.building_id, b.name, b.address
+select b.building_id, b.building_name, b.address
 from public.buildings b
 where b.building_id = ?;
 
 -- $add_building
-insert into public.buildings (name, address)
+insert into public.buildings (building_name, address)
 values (?, ?) RETURNING building_id;
 
 -- $update_building
 update public.buildings b
-set b.name = ?, b.address = ?
+set b.building_name = ?, b.address = ?
 where b.building_id = ?;
 
 -- $delete_building
@@ -226,7 +226,7 @@ select y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.in
 	 , y.augentid, y.admin, y.penalty_points
 	 , y.date, y.location_name, y.attended, y.user_augentid
 	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch, l.description_english
-	 , b.building_id, b.name, b.address
+	 , b.building_id, b.building_name, b.address
      , a.authority_id, a.authority_name, a.description
 from y
     join public.locations l
@@ -239,7 +239,7 @@ group by y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.
 	 , y.augentid, y.admin, y.penalty_points
 	 , y.date, y.location_name, y.attended, y.user_augentid
 	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch, l.description_english
-	 , b.building_id, b.name, b.address
+	 , b.building_id, b.building_name, b.address
      , a.authority_id, a.authority_name, a.description
 order by l.name;
 
@@ -472,7 +472,7 @@ where authority_id = ?;
 select l.name, l.number_of_seats, l.number_of_lockers
      , l.image_url,  l.description_dutch, l.description_english
      , a.authority_id, a.authority_name, a.description
-     , b.building_id, b.name, b.address
+     , b.building_id, b.building_name, b.address
 from public.locations l
     join authority a
         on l.authority_id = a.authority_id
@@ -527,7 +527,7 @@ select y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.in
      , y.number, y.location_name
      , y.user_augentid, y.key_pickup_date, y.key_return_date
 	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch, l.description_english
-	 , b.building_id, b.name, b.address
+	 , b.building_id, b.building_name, b.address
      , a.authority_id, a.authority_name, a.description
 from y
 	join public.locations l
@@ -542,7 +542,7 @@ group by y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.
      , y.user_augentid, y.key_pickup_date, y.key_return_date
 	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url
      , l.description_dutch, l.description_english
-     , b.building_id, b.name, b.address
+     , b.building_id, b.building_name, b.address
      , a.authority_id, a.authority_name, a.description
 order by l.name;
 
@@ -594,7 +594,7 @@ where user_augentid = ?;
 select l.location_name, l.number
 	, s.name, s.number_of_seats, s.number_of_lockers, s.image_url, s.description_dutch, s.description_english
     , a.authority_id, a.authority_name, a.description
-    , b.building_id, b.name, b.address
+    , b.building_id, b.building_name, b.address
 from public.lockers l
 	join public.locations s
 		on s.name = l.location_name
@@ -621,7 +621,7 @@ with recursive x as (
          , s.name, s.number_of_seats, s.number_of_lockers, s.image_url
          , s.description_dutch, s.description_english
          , a.authority_id, a.authority_name, a.description
-         , b.building_id, b.name, b.address
+         , b.building_id, b.building_name, b.address
          , lr.locker_number, lr.key_pickup_date, lr.key_return_date, lr.user_augentid
          , u.augentid, u.admin, u.augentpreferredgivenname, u.augentpreferredsn, u.penalty_points
          , u.mail, u.password, u.institution
@@ -643,7 +643,7 @@ select r.location_name, r.number
      , r.name, r.number_of_seats, r.number_of_lockers, r.image_url
      , r.description_dutch, r.description_english
      , r.authority_id, r.authority_name, r.description
-     , r.building_id, r.name, r.address
+     , r.building_id, r.building_name, r.address
      , r.locker_number, r.key_pickup_date, r.key_return_date, r.user_augentid
      , r.augentid, r.admin, r.augentpreferredgivenname, r.augentpreferredsn, r.mail, r.password
      , r.institution, coalesce(floor(sum(
@@ -664,7 +664,7 @@ group by r.location_name, r.number
         , r.name, r.number_of_seats, r.number_of_lockers, r.image_url
         , r.description_dutch, r.description_english
         , r.authority_id, r.authority_name, r.description
-        , r.building_id, r.name, r.address
+        , r.building_id, r.building_name, r.address
         , r.locker_number, r.key_pickup_date, r.key_return_date, r.user_augentid
         , r.augentid, r.admin, r.augentpreferredgivenname, r.augentpreferredsn, r.mail, r.password
         , r.institution
@@ -801,7 +801,7 @@ where event_code = ?;
 -- $get_locations_of_scanner
 select l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch, l.description_english
        , a.authority_id, a.authority_name, a.description
-       , b.building_id, b.name, b.address
+       , b.building_id, b.building_name, b.address
 from public.scanners_location sl
     join public.locations l
         on l.name = sl.location_name
@@ -887,7 +887,7 @@ where lt.location_id = ?;
 select l.name, l.number_of_seats, l.number_of_lockers
         , l.image_url, l.description_dutch, l.description_english
         , a.authority_id, a.authority_name, a.description
-        , b.building_id, b.name, b.address
+        , b.building_id, b.building_name, b.address
 from public.locations l
     join public.location_tags lt
         on l.name = lt.location_id
@@ -928,7 +928,7 @@ where location_id = ?;
 select cp.location_name, cp.starts_at, cp.ends_at, cp.opening_time, cp.closing_time, cp.reservable_from
        , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch, l.description_english
        , a.authority_id, a.authority_name, a.description
-       , b.building_id, b.name, b.address
+       , b.building_id, b.building_name, b.address
 from public.calendar_periods cp
     join public.locations l
         on l.name = cp.location_name
@@ -969,7 +969,7 @@ where location_name = ?;
 select cp.location_name, cp.starts_at, cp.ends_at, cp.reservable_from
        , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch, l.description_english
        , a.authority_id, a.authority_name, a.description
-       , b.building_id, b.name, b.address
+       , b.building_id, b.building_name, b.address
 from public.calendar_periods_for_lockers cp
     join public.locations l
         on l.name = cp.location_name

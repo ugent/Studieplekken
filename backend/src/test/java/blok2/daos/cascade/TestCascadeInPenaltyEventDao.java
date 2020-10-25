@@ -6,6 +6,7 @@ import blok2.helpers.Language;
 import blok2.helpers.Resources;
 import blok2.helpers.date.CustomDate;
 import blok2.model.Authority;
+import blok2.model.Building;
 import blok2.model.penalty.Penalty;
 import blok2.model.penalty.PenaltyEvent;
 import blok2.model.reservables.Location;
@@ -35,6 +36,9 @@ public class TestCascadeInPenaltyEventDao extends TestDao {
     private IPenaltyEventsDao penaltyEventsDao;
 
     @Autowired
+    private IBuildingDao buildingDao;
+
+    @Autowired
     private ADB adb;
 
     private PenaltyEvent testPenaltyEvent;
@@ -47,6 +51,8 @@ public class TestCascadeInPenaltyEventDao extends TestDao {
     private Location testLocation1;
     private Location testLocation2;
 
+    private Building testBuilding;
+
     private Penalty testPenalty1;
     private Penalty testPenalty2;
 
@@ -57,8 +63,9 @@ public class TestCascadeInPenaltyEventDao extends TestDao {
         testUser2 = TestSharedMethods.adminTestUser();
 
         authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testLocation1 = TestSharedMethods.testLocation(authority.clone());
-        testLocation2 = TestSharedMethods.testLocation2(authority.clone());
+        testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+        testLocation1 = TestSharedMethods.testLocation(authority.clone(), testBuilding);
+        testLocation2 = TestSharedMethods.testLocation2(authority.clone(), testBuilding);
 
         Map<Language, String> descriptions = new HashMap<>();
         descriptions.put(Language.DUTCH, "Dit is een test omschrijving van een penalty event met code 0");

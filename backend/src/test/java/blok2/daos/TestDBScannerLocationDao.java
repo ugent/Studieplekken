@@ -1,6 +1,7 @@
 package blok2.daos;
 
 import blok2.model.Authority;
+import blok2.model.Building;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;
 import org.junit.Assert;
@@ -26,6 +27,9 @@ public class TestDBScannerLocationDao extends TestDao {
     @Autowired
     private IScannerLocationDao scannerLocationDao;
 
+    @Autowired
+    private IBuildingDao buildingDao;
+
     private User testUser1;
     private User testUser2;
 
@@ -37,6 +41,7 @@ public class TestDBScannerLocationDao extends TestDao {
 
     private List<Location> expectedLocationsOfUser1;
     private List<Location> expectedLocationsOfUser2;
+    private Building testBuilding;
 
     @Override
     public void populateDatabase() throws SQLException {
@@ -45,8 +50,11 @@ public class TestDBScannerLocationDao extends TestDao {
         testUser2 = TestSharedMethods.studentTestUser();
 
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testLocation1 = TestSharedMethods.testLocation(authority.clone());
-        testLocation2 = TestSharedMethods.testLocation2(authority.clone());
+
+        testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+
+        testLocation1 = TestSharedMethods.testLocation(authority.clone(), testBuilding);
+        testLocation2 = TestSharedMethods.testLocation2(authority.clone(), testBuilding);
 
         // Add test objects to database
         TestSharedMethods.addTestUsers(accountDao, testUser1, testUser2);

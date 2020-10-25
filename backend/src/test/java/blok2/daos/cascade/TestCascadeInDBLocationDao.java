@@ -4,6 +4,7 @@ import blok2.daos.*;
 import blok2.helpers.Language;
 import blok2.helpers.date.CustomDate;
 import blok2.model.Authority;
+import blok2.model.Building;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.CalendarPeriodForLockers;
 import blok2.model.penalty.Penalty;
@@ -49,8 +50,12 @@ public class TestCascadeInDBLocationDao extends TestDao {
     @Autowired
     private IAuthorityDao authorityDao;
 
+    @Autowired
+    private IBuildingDao buildingDao;
+
     // this will be the test user
     private Location testLocation;
+    private Building testBuilding;
 
     // for cascade on SCANNERS_LOCATION, LOCATION_RESERVATIONS,
     // LOCKER_RESERVATIONS and PENALTY_BOOK,
@@ -79,8 +84,9 @@ public class TestCascadeInDBLocationDao extends TestDao {
     public void populateDatabase() throws SQLException {
         // Setup test objects
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
+        testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
 
-        testLocation = TestSharedMethods.testLocation(authority.clone());
+        testLocation = TestSharedMethods.testLocation(authority.clone(), testBuilding);
         testUser1 = TestSharedMethods.studentTestUser();
         testUser2 = TestSharedMethods.adminTestUser();
 

@@ -8,6 +8,8 @@ public class Building implements Cloneable {
     private String name;
     private String address;
 
+    public Building() {}
+
     public Building(int buildingId, String name, String address) {
         this.buildingId = buildingId;
         this.name = name;

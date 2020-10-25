@@ -16,10 +16,10 @@ CREATE TABLE public.authority
 
 CREATE TABLE public.buildings
 (
-    building_id  integer NOT NULL primary key generated always as identity,
-    name    text    NOT NULL unique,
-    address text    NOT NULL,
-    UNIQUE(name, address)
+    building_id     integer NOT NULL primary key generated always as identity,
+    building_name   text    NOT NULL unique,
+    address text            NOT NULL,
+    UNIQUE(building_name, address)
 );
 
 --

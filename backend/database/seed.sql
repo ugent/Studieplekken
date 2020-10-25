@@ -29,7 +29,7 @@ DECLARE build_id_therminal integer;
 
 BEGIN
   INSERT INTO public.authority (authority_name, description) values ('DSA', 'Dienst StudentenActiviteiten') RETURNING authority_id into auth_id;
-  INSERT INTO public.buildings (name, address) VALUES ('Therminal', 'Hoveniersberg 24, 9000 Gent') RETURNING building_id into build_id_therminal;
+  INSERT INTO public.buildings (building_name, address) VALUES ('Therminal', 'Hoveniersberg 24, 9000 Gent') RETURNING building_id into build_id_therminal;
   INSERT INTO public.locations (name, building_id, number_of_seats, number_of_lockers, image_url, authority_id, description_dutch, description_english)
     VALUES  ('Turbinezaal', build_id_therminal, 50, 100, '', auth_id, 'neder', 'engl'),
                 ('Plenaire vergaderzaal', build_id_therminal, 30, 0, '', auth_id, '', ''),
@@ -46,8 +46,8 @@ DECLARE build_id_sterreS9 integer;
 
 BEGIN
   INSERT INTO authority (authority_name, description) VALUES ('WE', 'Faculteit wetenschappen') RETURNING authority_id into new_authority_id;
-  INSERT INTO public.buildings (name, address) VALUES ('Sterre S5', 'Krijgslaan 281, 9000 Gent') RETURNING building_id into build_id_sterreS5;
-  INSERT INTO public.buildings (name, address) VALUES ('Sterre S9', 'Krijgslaan 281, 9000 Gent') RETURNING building_id into build_id_sterreS9;
+  INSERT INTO public.buildings (building_name, address) VALUES ('Sterre S5', 'Krijgslaan 281, 9000 Gent') RETURNING building_id into build_id_sterreS5;
+  INSERT INTO public.buildings (building_name, address) VALUES ('Sterre S9', 'Krijgslaan 281, 9000 Gent') RETURNING building_id into build_id_sterreS9;
   INSERT INTO locations (name, building_id, number_of_seats, number_of_lockers, image_url, authority_id, description_dutch, description_english)
     VALUES  ('Sterre S9, PC lokaal 3rd verdiep', build_id_sterreS9, 40, 100, '', new_authority_id, 'Klaslokaal met computers', 'Classroom with computers'),
             ('Sterre S5, Bib', build_id_sterreS5, 100, 100, '', new_authority_id,
