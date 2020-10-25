@@ -110,7 +110,7 @@ public class TestDBLocationReservationDao extends TestDao {
         locationReservationDao.addLocationReservation(lr2);
 
         // count reserved seats
-        int c = locationReservationDao.countReservedSeatsOfLocationOnDate(testLocation.getName(), today);
+        long c = locationReservationDao.countReservedSeatsOfTimeslot(timeslot);
         Assert.assertEquals("scanStudentTest, count reserved seats", 2, c);
 
         // scan the users for the location on date
