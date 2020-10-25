@@ -102,6 +102,7 @@
     "aside": {
       "title": "Beheer",
       "locations": "Locaties",
+      "buildings": "Gebouwen",
       "tags": "Tags",
       "users": "Gebruikers",
       "authorities": "Autoriteiten",
@@ -297,6 +298,33 @@
         "yesButton": "Verwijder",
         "noButton": "Annuleer"
       }
+    },
+
+    "buildings": {
+      "title": "Beheer van gebouwen voor locaties",
+
+      "table": {
+        "id": "Gebouw ID",
+        "name": "Naam",
+        "address": "Adres"
+      },
+
+      "addNewBuilding": "Nieuw gebouw",
+
+      "addBuildingModal": {
+        "title": "Nieuw gebouw maken",
+        "idSetByBackendMessage": "Ingesteld door backend",
+        "success": "Het aanmaken van het nieuwe gebouw is gelukt.",
+        "error": "Er is iets misgelopen tijdens het aanmaken van het nieuw gebouw."
+      },
+
+      "updateBuildingModal": {
+        "title": "Update building",
+        "success": "Successfully updated the building.",
+        "error": "Something went wrong while updating the building."
+      },
+
+      "errorOnRetrievingTags": "Er is iets misgelopen tijdens het ophalen van de gebouwen..."
     },
 
     "tags": {

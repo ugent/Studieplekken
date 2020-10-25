@@ -102,6 +102,7 @@
     "aside": {
       "title": "Management",
       "locations": "Locations",
+      "buildings": "Buildings",
       "tags": "Tags",
       "users": "Users",
       "authorities": "Authorities",
@@ -113,6 +114,7 @@
     "general": {
       "loading": "Loading...",
       "noLocations": "There are no locations yet, make one using the 'Add Location' button",
+      "noBuildings": "There are no buildings yet, make one using the 'Add Building' button",
       "noTags": "There are no tags yet, make one using the 'Add Tag' button",
       "noAuthorities": "There are no authorities yet, make on using the 'Add Authority' button"
     },
@@ -297,6 +299,33 @@
         "yesButton": "Delete",
         "noButton": "Cancel"
       }
+    },
+
+    "buildings": {
+      "title": "Management of buildings for locations",
+
+      "table": {
+        "id": "Building ID",
+        "name": "Name",
+        "address": "Address"
+      },
+
+      "addNewBuilding": "New building",
+
+      "addBuildingModal": {
+        "title": "Add new building",
+        "idSetByBackendMessage": "Set by backend",
+        "success": "Successfully added the new building.",
+        "error": "Something went wrong while adding the new building."
+      },
+
+      "updateBuildingModal": {
+        "title": "Update building",
+        "success": "Successfully updated the building.",
+        "error": "Something went wrong while updating the building."
+      },
+
+      "errorOnRetrievingTags": "Something went wrong while retrieving the buildings..."
     },
 
     "tags": {

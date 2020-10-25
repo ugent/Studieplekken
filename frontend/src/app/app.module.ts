@@ -56,7 +56,7 @@ import { UserAuthoritiesManagementComponent } from './management/users-managemen
 import { AuthorityUsersManagementComponent } from './management/authorities-management/authority-users-management/authority-users-management.component';
 import { registerLocaleData } from '@angular/common';
 import localeNl from '@angular/common/locales/nl-BE';
-import { BuildingManagementComponent } from './management/building-management/building-management/building-management.component';
+import { BuildingManagementComponent } from './management/building-management/building-management.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -142,6 +142,11 @@ const routes: Routes = [
       {
         path: 'locations/:locationName',
         component: LocationDetailsManagementComponent,
+        canActivate: [AuthorizationGuardService]
+      },
+      {
+        path: 'buildings',
+        component: BuildingManagementComponent,
         canActivate: [AuthorizationGuardService]
       },
       {
