@@ -16,10 +16,13 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 @EnableScheduling
 public class DBAccountDao extends DAO implements IAccountDao {
+
+    private final Logger logger = Logger.getLogger(DBAccountDao.class.getSimpleName());
 
     private final IGenerator<String> verificationCodeGenerator = new VerificationCodeGenerator();
 
@@ -46,6 +49,7 @@ public class DBAccountDao extends DAO implements IAccountDao {
         try (Connection conn = adb.getConnection()) {
             String query = Resources.databaseProperties.getString("get_user_by_<?>")
                     .replace("<?>", "LOWER(u.mail) = LOWER(?)");
+            logger.info(String.format("Gebruikte query: %s", query));
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, email.toLowerCase());
             ResultSet rs = pstmt.executeQuery();
@@ -84,7 +88,8 @@ public class DBAccountDao extends DAO implements IAccountDao {
 
         try (Connection conn = adb.getConnection()) {
             String query = Resources.databaseProperties.getString("get_user_by_<?>")
-                    .replace("<?>", "LOWER(u.augentpreferredsn) = LOWER(?)");
+                    .replace("<?>", "LOWER(u.augentpreferredsn) LIKE CONCAT('%', LOWER(?), '%')");
+            logger.info(String.format("Gebruikte query: %s", query));
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, lastName);
             ResultSet rs = pstmt.executeQuery();
@@ -103,7 +108,8 @@ public class DBAccountDao extends DAO implements IAccountDao {
 
         try (Connection conn = adb.getConnection()) {
             String query = Resources.databaseProperties.getString("get_user_by_<?>")
-                    .replace("<?>", "LOWER(u.augentpreferredgivenname) = LOWER(?)");
+                    .replace("<?>", "LOWER(u.augentpreferredgivenname) LIKE CONCAT('%', LOWER(?), '%')");
+            logger.info(String.format("Gebruikte query: %s", query));
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, firstName);
             ResultSet rs = pstmt.executeQuery();
@@ -123,7 +129,8 @@ public class DBAccountDao extends DAO implements IAccountDao {
         try (Connection conn = adb.getConnection()) {
             String query = Resources.databaseProperties.getString("get_user_by_<?>")
                     .replace("<?>",
-                            "LOWER(u.augentpreferredgivenname) = LOWER(?) and LOWER(u.augentpreferredsn) = LOWER(?)");
+                            "LOWER(u.augentpreferredgivenname) LIKE CONCAT('%', LOWER(?), '%') and LOWER(u.augentpreferredsn) LIKE CONCAT('%', LOWER(?), '%')");
+            logger.info(String.format("Gebruikte query: %s", query));
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, firstName);
             pstmt.setString(2, lastName);
