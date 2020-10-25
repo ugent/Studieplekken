@@ -30,6 +30,7 @@
     "date-fns": "^2.15.0",
     "flatpickr": "^4.6.6",
     "jquery": "^3.5.1",
+    "moment": "^2.29.1",
     "ngx-markdown": "^10.1.1",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",

@@ -5,6 +5,7 @@ import {
   isStringValidTimeForDBWithoutSeconds
 } from '../validators/DateValidators';
 import {CalendarEvent} from 'angular-calendar';
+import {Timeslot} from './Timeslot';
 
 export interface CalendarPeriod {
   location: Location;
@@ -15,6 +16,7 @@ export interface CalendarPeriod {
   reservable: boolean;
   reservableFrom: string;
   reservableTimeslotSize: number;
+  timeslots: Timeslot[];
 }
 
 export class CalendarPeriodConstructor {
@@ -27,7 +29,8 @@ export class CalendarPeriodConstructor {
       closingTime: '',
       reservableFrom: '',
       reservable: false,
-      reservableTimeslotSize: 0
+      reservableTimeslotSize: 0,
+      timeslots: []
     };
   }
 
@@ -40,7 +43,8 @@ export class CalendarPeriodConstructor {
       closingTime: obj.closingTime,
       reservableFrom: obj.reservableFrom,
       reservable: obj.reservable,
-      reservableTimeslotSize: obj.reservableTimeslotSize
+      reservableTimeslotSize: obj.reservableTimeslotSize,
+      timeslots: obj.timeslots
     };
   }
 }

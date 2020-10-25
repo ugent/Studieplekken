@@ -2,8 +2,11 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {api} from '../../../../environments/environment';
 import {LocationReservation} from '../../../shared/model/LocationReservation';
-import {Observable} from 'rxjs';
+import {combineLatest, Observable} from 'rxjs';
 import {toISODateString, typeScriptDateToCustomDate} from '../../../shared/model/helpers/CustomDate';
+import { getTimeslotsOnDay, Timeslot } from 'src/app/shared/model/Timeslot';
+import { CalendarPeriod } from 'src/app/shared/model/CalendarPeriod';
+import { map } from 'rxjs/internal/operators/map';
 
 @Injectable({
   providedIn: 'root'
@@ -17,39 +20,17 @@ export class LocationReservationsService {
     return this.http.get<LocationReservation[]>(api.locationReservationsOfUser, { params });
   }
 
-  getLocationReservationsOfLocation(locationName: string, pastReservations: boolean): Observable<LocationReservation[]> {
-    const params = new HttpParams()
-      .set('locationName', locationName)
-      .set('pastReservations', String(pastReservations));
-    return this.http.get<LocationReservation[]>(api.locationReservationsOfLocation, { params });
+  getLocationReservationsOfTimeslot(timeslot: Timeslot): Observable<LocationReservation[]> {
+    return this.http.get<LocationReservation[]>(api.locationReservationsOfLocation
+                                                  .replace('{calendarid}', `${timeslot.calendarId}`)
+                                                  .replace('{date}', timeslot.timeslotDate)
+                                                  .replace('{seqnr}', `${timeslot.timeslotSeqnr}`));
   }
 
-  getLocationReservationsOfLocationFrom(locationName: string, start: Date,
-                                        pastReservations: boolean): Observable<LocationReservation[]> {
-    const params = new HttpParams()
-      .set('locationName', locationName)
-      .set('start', toISODateString(typeScriptDateToCustomDate(start)))
-      .set('pastReservations', String(pastReservations));
-    return this.http.get<LocationReservation[]>(api.locationReservationsOfLocationFrom, { params });
-  }
-
-  getLocationReservationsOfLocationUntil(locationName: string, end: Date,
-                                         pastReservations: boolean): Observable<LocationReservation[]> {
-    const params = new HttpParams()
-      .set('locationName', locationName)
-      .set('end', toISODateString(typeScriptDateToCustomDate(end)))
-      .set('pastReservations', String(pastReservations));
-    return this.http.get<LocationReservation[]>(api.locationReservationsOfLocationUntil, { params });
-  }
-
-  getLocationReservationsOfLocationFromAndUntil(locationName: string, start: Date, end: Date,
-                                                pastReservations: boolean): Observable<LocationReservation[]> {
-    const params = new HttpParams()
-      .set('locationName', locationName)
-      .set('start', toISODateString(typeScriptDateToCustomDate(start)))
-      .set('end', toISODateString(typeScriptDateToCustomDate(end)))
-      .set('pastReservations', String(pastReservations));
-    return this.http.get<LocationReservation[]>(api.locationReservationsOfLocationFromAndUntil, { params });
+  getLocationReservationsOfDay(calendarPeriod: CalendarPeriod, date: string): Observable<LocationReservation[]> {
+    return combineLatest(getTimeslotsOnDay(calendarPeriod, date)
+                .map(p => this.getLocationReservationsOfTimeslot(p)))
+                .pipe(map(s => s.reduce((a, b) => [...a, ...b])));
   }
 
   deleteLocationReservation(locationReservation: LocationReservation): Observable<any> {

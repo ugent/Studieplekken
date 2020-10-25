@@ -1,21 +1,22 @@
 import {User, UserConstructor} from './User';
 import {Location, LocationConstructor} from './Location';
 import {CustomDate, CustomDateConstructor} from './helpers/CustomDate';
+import { Timeslot } from './Timeslot';
 
 export interface LocationReservation {
   user: User;
-  location: Location;
-  date: CustomDate;
+  timeslot: Timeslot;
   attended: boolean;
+  createdAt: string;
 }
 
 export class LocationReservationConstructor {
   static new(): LocationReservation {
     return {
       user: UserConstructor.new(),
-      location: LocationConstructor.new(),
-      date: CustomDateConstructor.new(),
-      attended: false
+      attended: false,
+      createdAt: '',
+      timeslot: null
     };
   }
 
@@ -26,9 +27,9 @@ export class LocationReservationConstructor {
 
     return {
       user: UserConstructor.newFromObj(obj.user),
-      location: LocationConstructor.newFromObj(obj.location),
-      date: CustomDateConstructor.newFromObj(obj.date),
-      attended: obj.attended
+      attended: obj.attended,
+      timeslot: obj.timeslot,
+      createdAt: obj.createdAt
     };
   }
 }
