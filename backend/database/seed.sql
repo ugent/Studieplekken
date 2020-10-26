@@ -67,13 +67,13 @@ END $$;
 /*
  * Add some calendar periods
  */
-insert into calendar_periods(location_name, starts_at, ends_at, opening_time, closing_time, reservable_from, reservable)
+insert into calendar_periods(location_name, starts_at, ends_at, opening_time, closing_time, reservable_from, reservable, timeslot_length)
 values  ('Sterre S5, Eetzaal', to_char(now() - interval '5 days', 'YYYY-MM-DD'), to_char(now() + interval '20 days', 'YYYY-MM-DD'),
-            '8:30', '21:00', to_char(now() - interval '7 days', 'YYYY-MM-DD') || ' 19:00', true),
+            '8:30', '21:00', to_char(now() - interval '7 days', 'YYYY-MM-DD') || ' 19:00', true, 30),
         ('Sterre S5, Bib', to_char(now() - interval '5 days', 'YYYY-MM-DD'), to_char(now() + interval '10 days', 'YYYY-MM-DD'),
-            '09:00', '17:00', to_char(now() - interval '7 days', 'YYYY-MM-DD') || ' 19:00', true),
+            '09:00', '17:00', to_char(now() - interval '7 days', 'YYYY-MM-DD') || ' 19:00', true, 30),
         ('Sterre S9, PC lokaal 3rd verdiep', to_char(now() - interval '5 days', 'YYYY-MM-DD'), to_char(now() + interval '10 days', 'YYYY-MM-DD'),
-            '8:30', '18:30', to_char(now() - interval '7 days', 'YYYY-MM-DD') || ' 19:00', true);
+            '8:30', '18:30', to_char(now() - interval '7 days', 'YYYY-MM-DD') || ' 19:00', true, 30);
 
 /*
  * Add some calendar periods for lockers
