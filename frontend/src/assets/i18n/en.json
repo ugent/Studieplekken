@@ -152,6 +152,11 @@
           "reservableTimeslotSize": "Reservable timeslot size",
           "reservableFrom": "Reservable from",
           "remove": "Remove",
+          "dropdown": {
+            "halfHour": "30 minutes",
+            "hour": "1 hour",
+            "hourAndHalf": "1.5 hours"
+          },
 
           "updateButton": "Update",
           "cancelButton": "Cancel",

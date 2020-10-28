@@ -81,30 +81,6 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
         return executeQueryForLocationReservations(pstmt, conn);
     }
 
-    @Override
-    public List<LocationReservation> getAllLocationReservationsOfLocationFromAndUntil(String locationName, String start, String end, boolean includePastReservations) throws SQLException {
-        try (Connection conn = adb.getConnection()) {
-            String query = Resources.databaseProperties.getString("get_location_reservations_where_<?>");
-
-            String replacementString = "lr.location_name = ? and to_date(lr.date, 'YYYY-MM-DD') >= to_date(?, 'YYYY-MM-DD') and to_date(lr.date, 'YYYY-MM-DD') <= to_date(?, 'YYYY-MM-DD')";
-            if (!includePastReservations) {
-                replacementString += " and to_date(lr.date, 'YYYY-MM-DD') >= to_date(?, 'YYYY-MM-DD')";
-            }
-            query = query.replace("<?>", replacementString);
-
-            PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setString(1, locationName);
-            pstmt.setString(2, Utility.formatDate_YYYY_MM_DD(start));
-            pstmt.setString(3, Utility.formatDate_YYYY_MM_DD(end));
-
-            if (!includePastReservations) {
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                pstmt.setString(4, format.format(new Date()));
-            }
-
-            return executeQueryForLocationReservations(pstmt, conn);
-        }
-    }
 
     @Override
     public List<LocationReservation> getAllLocationReservationsOfUser(String augentID) throws SQLException {
