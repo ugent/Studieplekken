@@ -57,7 +57,7 @@ export class LocationReservationsManagementComponent implements OnInit {
     };
 
     // Depending on different input tags filled or not filled, make the correct HTTP call
-    if (value.start === '' && value.end === '') {
+    /*if (value.start === '' && value.end === '') {
       this.locationReservationsObs = this.locationReservationsService
         .getLocationReservationsOfLocation(value.location, value.includePastReservations);
     } else if (value.end === '') {
@@ -70,7 +70,7 @@ export class LocationReservationsManagementComponent implements OnInit {
       this.locationReservationsObs = this.locationReservationsService
         .getLocationReservationsOfLocationFromAndUntil(value.location, new Date(value.start), new Date(value.end),
           value.includePastReservations);
-    }
+    }*/
 
     this.locationReservationsObs.subscribe(
       () => {

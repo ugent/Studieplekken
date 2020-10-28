@@ -100,7 +100,6 @@
       <table style="width: 100%;" *ngIf="locationReservations.length > 0">
         <thead>
         <tr>
-          <th>{{'management.reservations.location.table.date' | translate}}</th>
           <th>{{'management.reservations.location.table.user' | translate}}</th>
           <th>{{'management.reservations.location.table.attended' | translate}}</th>
           <th></th>
@@ -109,7 +108,6 @@
 
         <tbody>
         <tr [@rowsAnimation]="" *ngFor="let reservation of locationReservations">
-          <td>{{toDateString(reservation.date)}}</td>
           <td>{{reservation.user.firstName + ' ' + reservation.user.lastName}}</td>
           <td>{{(reservation.attended ? 'general.yes' : 'general.no') | translate}}</td>
           <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
@@ -143,7 +141,6 @@
           <b>{{'management.reservations.location.deleteModal.body' | translate}}</b>
           <br><br>
           <ul>
-            <li><b style="margin-right: 5px"><i>{{('management.reservations.location.table.date' | translate) + ':   '}}</i></b>{{toDateString(currentLocationReservationToDelete.date)}}</li>
             <li><b style="margin-right: 5px"><i>{{('management.reservations.location.table.user' | translate) + ':   '}}</i></b>{{currentLocationReservationToDelete.user.firstName + ' ' + currentLocationReservationToDelete.user.lastName}}</li>
             <li><b style="margin-right: 5px"><i>{{('management.reservations.location.table.attended' | translate) + ':   '}}</i></b>{{(currentLocationReservationToDelete.attended ? 'general.yes' : 'general.no') | translate}}</li>
           </ul>

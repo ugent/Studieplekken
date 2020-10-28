@@ -16,7 +16,7 @@ public class CalendarPeriod extends Period implements Cloneable {
     private Location location;
     private String openingTime; // time: hh:mm
     private String closingTime; // time: hh:mm
-    private String reservableFrom; // datetime: YYYY-MM-DDThh:mm
+    private String reservableFrom; // datetime: YYYY-MM-DD hh:mm
     private boolean reservable;
     private int reservableTimeslotSize;
 

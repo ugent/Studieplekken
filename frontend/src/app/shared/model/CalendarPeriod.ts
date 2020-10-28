@@ -94,59 +94,30 @@ export function isCalendarPeriodValid(period: CalendarPeriod): boolean {
 }
 
 /**
- * For each period provided in 'periods', this method will create a CalendarEvent
- * object for every day within the period.
+ * For each Timeslot that is attached to a CalendarPeriod provided in 'periods',
+ * this method will create a CalendarEvent
  *
- * The starting and ending time for all CalendarEvents created from a period, will
- * be 'period.openingTime' and 'period.closingTime' respectively.
- *
- * An example period could be:
- *
- *      const period = {
- *        location: ...,                   // irrelevant for this example
- *        startsAt: '2020-01-01',
- *        endsAt: '2020-01-05',
- *        openingTime: '09:00',
- *        closingTime: '12:00',
- *        reservableFrom: ...              // irrelevant for this example, and not used in MiniThermis
- *      }
- *
- * If the period above would be part of the 'periods' parameter, following
- * CalendarEvent-objects would be created and pushed in the return-array:
- *
- *      1. { title: '09:00 - 12:00', start: new Date('2020-01-01T09:00'), end: new Date('2020-01-01T12:00'), meta: period }
- *      2. { title: '09:00 - 12:00', start: new Date('2020-01-02T09:00'), end: new Date('2020-01-02T12:00'), meta: period }
- *      3. { title: '09:00 - 12:00', start: new Date('2020-01-03T09:00'), end: new Date('2020-01-03T12:00'), meta: period }
- *      4. { title: '09:00 - 12:00', start: new Date('2020-01-04T09:00'), end: new Date('2020-01-04T12:00'), meta: period }
- *      5. { title: '09:00 - 12:00', start: new Date('2020-01-05T09:00'), end: new Date('2020-01-05T12:00'), meta: period }
+ * The starting and ending time for all CalendarEvents created from a timeslot, will
+ * be the beginning and ending of the timeslot, calculated from the sequence number and the
+ * timeslotdate.
  */
-export function mapCalendarPeriodsToCalendarEvents(periods: CalendarPeriod[]): CalendarEvent[] {
+export function mapTimeslotsToCalendarEvents(periods: CalendarPeriod[]): CalendarEvent[] {
   const calendarEvents: CalendarEvent[] = [];
 
   for (const period of periods) {
-    const dateWithOpeningTime = new Date(period.startsAt + 'T' + period.openingTime);
-    const dateWithClosingTime = new Date(period.startsAt + 'T' + period.closingTime);
-    const lastDayWithOpeningTime = (new Date(period.endsAt + 'T' + period.openingTime));
+    for (const timeslot of period.timeslots) {
+      let beginDT = new Date(timeslot.timeslotDate + "T" + period.openingTime);
+      beginDT.setTime(beginDT.getTime() + timeslot.timeslotSeqnr * period.reservableTimeslotSize * 60000);
+      let endDT = new Date(timeslot.timeslotDate + "T" + period.openingTime);
+      endDT.setTime(endDT.getTime() + (timeslot.timeslotSeqnr + 1) * period.reservableTimeslotSize * 60000);
 
-    while (dateWithOpeningTime.toLocaleDateString() !== lastDayWithOpeningTime.toLocaleDateString()) {
       calendarEvents.push({
-        title: period.openingTime + ' - ' + period.closingTime,
-        start: new Date(dateWithOpeningTime),
-        end: new Date(dateWithClosingTime),
-        meta: period
-      });
-
-      dateWithOpeningTime.setDate(dateWithOpeningTime.getDate() + 1);
-      dateWithClosingTime.setDate(dateWithClosingTime.getDate() + 1);
+        title: timeslot.timeslotDate + " (Blok " + timeslot.timeslotSeqnr + ")",
+        start: beginDT,
+        end: endDT,
+        meta: timeslot
+      })
     }
-
-    // add the final day too
-    calendarEvents.push({
-      title: period.openingTime + ' - ' + period.closingTime,
-      start: new Date(dateWithOpeningTime),
-      end: new Date(dateWithClosingTime),
-      meta: period
-    });
   }
 
   return calendarEvents;

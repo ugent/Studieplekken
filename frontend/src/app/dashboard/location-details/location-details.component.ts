@@ -11,7 +11,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {LocationTag} from '../../shared/model/LocationTag';
 import {TagsService} from '../../services/api/tags/tags.service';
 import {CalendarPeriodsService} from '../../services/api/calendar-periods/calendar-periods.service';
-import {mapCalendarPeriodsToCalendarEvents} from '../../shared/model/CalendarPeriod';
+import {mapTimeslotsToCalendarEvents} from '../../shared/model/CalendarPeriod';
 
 @Component({
   selector: 'app-location-details',
@@ -59,7 +59,7 @@ export class LocationDetailsComponent implements OnInit {
       // retrieve the calendar periods and map them to calendar events used by Angular Calendar
       this.calendarPeriodsService.getCalendarPeriodsOfLocation(next.name).subscribe(
         next2 => {
-          this.events = mapCalendarPeriodsToCalendarEvents(next2);
+          this.events = mapTimeslotsToCalendarEvents(next2);
         }
       );
     });
