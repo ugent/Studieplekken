@@ -149,6 +149,8 @@ export class LocationCalendarComponent implements OnInit {
   addOpeningPeriodButtonClick(location: Location): void {
     this.addOpeningPeriod(location);
     this.disableFootButtons = false;
+    console.log(this.disableFootButtons)
+
   }
 
   addOpeningPeriod(location: Location): void {
@@ -193,6 +195,8 @@ export class LocationCalendarComponent implements OnInit {
       //   in the 'handler' request will be sent to the backend, which is not wat we
       //   want if not all the periods are validly filled in
       for (const n of this.calendarPeriods) {
+        n.reservableFrom = n.reservableFrom && n.reservableFrom.toString() + ' 00:00';
+        console.log(n.reservableFrom)
         if (!isCalendarPeriodValid(n)) {
           this.handleWrongCalendarPeriodFormatOnUpdate();
           return;

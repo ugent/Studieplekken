@@ -168,7 +168,8 @@
             <label>
               <input
                 class="form-control"
-                type="datetime-local"
+                type="date"
+                [disabled]="!period.reservable"
                 [(ngModel)]="period.reservableFrom"
                 (ngModelChange)="refreshCalendar(period)"
               />
