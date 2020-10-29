@@ -17,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.sql.SQLException;
+import java.sql.SQLOutput;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -54,14 +55,14 @@ public class LocationReservationController {
     }
 
     @PostMapping("/new")
-    public LocationReservation createLocationReservation(@AuthenticationPrincipal User user, @RequestBody @Valid Timeslot timeslot) {
+    public LocationReservation createLocationReservation(@AuthenticationPrincipal User user, @Valid @RequestBody Timeslot timeslot) {
         try {
             LocationReservation reservation = new LocationReservation(user, CustomDate.today().toDateString(), timeslot, null);
             if(!locationReservationDao.addLocationReservationIfStillRoomAtomically(reservation)) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "There are no more spots left for this location.");
             }
             return locationReservationDao.getLocationReservation(user.getAugentID(), timeslot);
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
