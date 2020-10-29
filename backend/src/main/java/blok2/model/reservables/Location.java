@@ -15,15 +15,15 @@ public class Location implements Cloneable {
     private int numberOfLockers;
     private String imageUrl;
     private String descriptionDutch = "";
-    private String descriptionEnglish= "";
-
+    private String descriptionEnglish = "";
     private Authority authority;
+    private boolean forGroup;
 
     private List<LocationTag> assignedTags;
 
     public Location(String name, String address, int numberOfSeats, int numberOfLockers, String imageUrl,
-                    Authority authority, String descriptionDutch, String descriptionEnglish,
-                    List<LocationTag> assignedTags, String status) {
+                    Authority authority, String descriptionDutch, String descriptionEnglish, boolean forGroup,
+                    List<LocationTag> assignedTags) {
         this.name = name;
         this.address = address;
         this.numberOfSeats = numberOfSeats;
@@ -32,6 +32,7 @@ public class Location implements Cloneable {
         this.descriptionDutch = descriptionDutch;
         this.descriptionEnglish = descriptionEnglish;
         this.authority = authority;
+        this.forGroup = forGroup;
         this.assignedTags = assignedTags;
     }
 
@@ -47,6 +48,7 @@ public class Location implements Cloneable {
         Location location = (Location) o;
         return numberOfSeats == location.numberOfSeats &&
                 numberOfLockers == location.numberOfLockers &&
+                forGroup == location.forGroup &&
                 Objects.equals(name, location.name) &&
                 Objects.equals(address, location.address) &&
                 Objects.equals(imageUrl, location.imageUrl) &&
@@ -112,6 +114,14 @@ public class Location implements Cloneable {
 
     public void setNumberOfLockers(int numberOfLockers) {
         this.numberOfLockers = numberOfLockers;
+    }
+
+    public boolean getForGroup() {
+        return forGroup;
+    }
+
+    public void setForGroup(boolean forGroup) {
+        this.forGroup = forGroup;
     }
 
     public String getImageUrl() {

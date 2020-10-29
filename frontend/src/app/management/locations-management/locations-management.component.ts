@@ -56,6 +56,7 @@ export class LocationsManagementComponent implements OnInit {
       address: new FormControl('', Validators.required),
       numberOfSeats: new FormControl('', Validators.required),
       numberOfLockers: new FormControl('', Validators.required),
+      forGroup: new FormControl(false, Validators.required),
       imageUrl: new FormControl('')
     });
   }
@@ -127,6 +128,7 @@ export class LocationsManagementComponent implements OnInit {
   get address(): AbstractControl { return this.addLocationFormGroup.get('address'); }
   get numberOfSeats(): AbstractControl { return this.addLocationFormGroup.get('numberOfSeats'); }
   get numberOfLockers(): AbstractControl { return this.addLocationFormGroup.get('numberOfLockers'); }
+  get forGroup(): AbstractControl { return this.addLocationFormGroup.get('forGroup'); }
   get imageUrl(): AbstractControl { return this.addLocationFormGroup.get('imageUrl'); }
 
   // *******************

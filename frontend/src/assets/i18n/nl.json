@@ -136,6 +136,7 @@
         "address": "Adres",
         "numberOfSeats": "Aantal plaatsen",
         "numberOfLockers": "Aantal lockers",
+        "forGroup": "Groepsreservatie",
         "imageUrl": "URL van foto (optioneel)",
 
         "edit": "Pas aan",
@@ -275,6 +276,7 @@
           "address": "Adres",
           "numberOfSeats": "Aantal zitjes",
           "numberOfLockers": "Aantal lockers",
+          "forGroup": "Groepsreservatie",
           "imageUrl": "URL van foto (optioneel)"
         },
 
@@ -283,7 +285,8 @@
           "authorityName": "Verplicht om een autoriteit op te geven",
           "address": "Adres is verplicht",
           "numberOfSeats": "Een waarde voor 'aantal zitjes' is verplicht",
-          "numberOfLockers": "Een waarde voor 'aantal lockers' is verplicht"
+          "numberOfLockers": "Een waarde voor 'aantal lockers' is verplicht",
+          "forGroup": "Een waarde voor 'Groepsreservatie' is verplicht"
         },
 
         "cancelButton": "Annuleer",
