@@ -13,7 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
  * is logged in.
  */
 @RestController
-@RequestMapping("/whoAmI")
+@RequestMapping("whoAmI")
 public class WhoAmIController {
 
     @GetMapping

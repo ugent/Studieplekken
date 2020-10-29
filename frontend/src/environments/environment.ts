@@ -13,8 +13,8 @@ export const environment = {
 };
 
 export const api = {
-  whoAmI: '/whoAmI',
-  logout: '/logout',
+  whoAmI: '/api/whoAmI',
+  logout: '/api/logout',
 
   // AUTHORITY
   authorities: '/api/authority',
@@ -98,7 +98,7 @@ export const api = {
 
 export const vars = {
   defaultLocationImage: 'assets/images/default_location.jpg',
-  casFlowTriggerUrl: 'https://localhost:8080/login/cas',
+  casFlowTriggerUrl: 'https://localhost:8080/api/login/cas',
   userWantsTLogInLocalStorageKey: 'userWantsTLogIn'
 };
 
