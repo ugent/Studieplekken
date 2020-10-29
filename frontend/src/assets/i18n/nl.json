@@ -114,6 +114,7 @@
     "general": {
       "loading": "Aan het laden...",
       "noLocations": "Er zijn nog geen beschikbare locaties. Maak er een aan met de knop 'Locatie Toevoegen'",
+      "noBuildings": "Er zijn nog geen beschikbare gebouwen. Maak er een aan met de knop 'Gebouw toevoegen",
       "noTags": "Er zijn nog geen tags. Maak er een aan met de knop 'Tag Toevoegen'",
       "noAuthorities": "Er zijn nog geen autoriteiten aangemaakt. Maak er een aan met de knop 'Autoriteit Toevoegen'"
     },

@@ -125,7 +125,7 @@
       "form": {
         "name": "Name",
         "authority": "Authority",
-        "address": "Address",
+        "building": "Building/Campus",
         "numberOfSeats": "Number of seats",
         "numberOfLockers": "Number of lockers",
         "imageUrl": "Image URL (optional)",
