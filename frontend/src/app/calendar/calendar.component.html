@@ -80,6 +80,9 @@
       [events]="events"
       [refresh]="refresh"
       [weekStartsOn]="1"
+      [hourSegmentHeight]=20
+      [dayStartHour] = 7
+      [dayEndHour] = 22
       (eventClicked)="handleEvent('Clicked', $event.event)"
       (eventTimesChanged)="eventTimesChanged($event)">
     </mwl-calendar-week-view>
@@ -89,6 +92,9 @@
       [viewDate]="viewDate"
       [events]="events"
       [refresh]="refresh"
+      [hourSegmentHeight]=20
+      [dayStartHour] = 7
+      [dayEndHour] = 22
       (eventClicked)="handleEvent('Clicked', $event.event)"
       (eventTimesChanged)="eventTimesChanged($event)">
     </mwl-calendar-day-view>
