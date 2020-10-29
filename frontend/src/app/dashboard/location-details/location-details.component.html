@@ -60,7 +60,7 @@
 
   <!-- Calendar -->
   <div class="row">
-    <app-calendar [events]="events"></app-calendar>
+    <app-calendar [events]="events" (onTimeslotPicked)="timeslotPicked($event)"></app-calendar>
   </div>
 
   <hr>

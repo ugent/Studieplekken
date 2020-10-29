@@ -12,6 +12,7 @@ import {LocationTag} from '../../shared/model/LocationTag';
 import {TagsService} from '../../services/api/tags/tags.service';
 import {CalendarPeriodsService} from '../../services/api/calendar-periods/calendar-periods.service';
 import {mapTimeslotsToCalendarEvents} from '../../shared/model/CalendarPeriod';
+import { Timeslot } from 'src/app/shared/model/Timeslot';
 
 @Component({
   selector: 'app-location-details',
@@ -24,6 +25,9 @@ export class LocationDetailsComponent implements OnInit {
   tags: LocationTag[];
 
   events: CalendarEvent[] = [];
+
+  currentTimeslot: Timeslot;
+  canReserve: boolean = false;
 
   editor = ClassicEditor;
   description = {
@@ -71,6 +75,13 @@ export class LocationDetailsComponent implements OnInit {
         this.currentLang = this.translate.currentLang;
       }
     );
+  }
+
+  timeslotPicked(event: any): void {
+    this.currentTimeslot = event;
+    this.canReserve = true;
+    console.log("Event received in LocationDetailsComponent");
+    console.log(event);
   }
 
   handleImageError(location: Location): void {

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {CalendarView, CalendarEvent, CalendarEventTimesChangedEvent} from 'angular-calendar';
 import {Subject} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
@@ -9,13 +9,14 @@ import {TranslateService} from '@ngx-translate/core';
   styleUrls: ['./calendar.component.css']
 })
 export class CalendarComponent implements OnInit {
-  view: CalendarView = CalendarView.Month;
+  view: CalendarView = CalendarView.Week;
   viewDate: Date = new Date();
 
   CalendarView = CalendarView;
 
   @Input() events: CalendarEvent[];
   @Input() refresh: Subject<any>;
+  @Output() onTimeslotPicked: EventEmitter<any> = new EventEmitter<any>();
 
   currentLang: string;
 
@@ -31,12 +32,13 @@ export class CalendarComponent implements OnInit {
     this.currentLang = this.translate.currentLang;
   }
 
-  dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
+  dayClicked({ date, events }: { date: Date ; events: CalendarEvent[] }): void {
     console.log('Clicked on date ' + date);
+    console.log('Events: ' + events);
   }
 
   handleEvent(action: string, event: CalendarEvent): void {
-    console.log('Event occurred, action: ' + action);
+    this.onTimeslotPicked.emit(event.meta);
   }
 
   eventTimesChanged({event, newStart, newEnd, }: CalendarEventTimesChangedEvent): void {
