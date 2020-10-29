@@ -141,7 +141,6 @@ public class User implements Cloneable, UserDetails {
 
     @JsonIgnore
     @Override
-    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority(admin ? "admin" : "user"));
     }
