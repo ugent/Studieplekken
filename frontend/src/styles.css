@@ -89,3 +89,7 @@
 .cdk-overlay-container {
   z-index: 9999 !important;
 }
+
+.calendar-event-NR * * mwl-calendar-event-title {
+  color: black;
+}

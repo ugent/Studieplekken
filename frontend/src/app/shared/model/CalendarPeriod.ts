@@ -5,7 +5,7 @@ import {
   isStringValidTimeForDBWithoutSeconds
 } from '../validators/DateValidators';
 import {CalendarEvent} from 'angular-calendar';
-import {Timeslot} from './Timeslot';
+import {Timeslot, timeslotEndHour, timeslotStartHour} from './Timeslot';
 
 export interface CalendarPeriod {
   location: Location;
@@ -93,6 +93,56 @@ export function isCalendarPeriodValid(period: CalendarPeriod): boolean {
   return closingTimeDate >= openingTimeDate;
 }
 
+
+
+/**
+ * Convert calendarPeriods to Calendar Events. This detects correctly whether the period is reservable or not.
+ * @param periods The to-convert periods.
+ * 
+ */
+export function mapCalendarPeriodsToCalendarEvents(periods: CalendarPeriod[]): CalendarEvent[] {
+  return periods
+          .map(period => period.reservable ? mapTimeslotsToCalendarEvents(period) : mapNRperiodToCalendarEvents(period))
+          .reduce((a, b) => [...a, ...b]);
+}
+
+/**
+ * Convert NON RESERVABLE calendar period to calendar events.
+ * @param period The to-convert period
+ */
+function mapNRperiodToCalendarEvents(period: CalendarPeriod): CalendarEvent[] {
+  const calendarEvents: CalendarEvent[] = [];
+
+  const dateWithOpeningTime = new Date(period.startsAt + 'T' + period.openingTime);
+  const dateWithClosingTime = new Date(period.startsAt + 'T' + period.closingTime);
+  const lastDayWithOpeningTime = (new Date(period.endsAt + 'T' + period.openingTime));
+
+  while (dateWithOpeningTime.toLocaleDateString() !== lastDayWithOpeningTime.toLocaleDateString()) {
+    calendarEvents.push({
+      title: period.openingTime + ' - ' + period.closingTime,
+      start: new Date(dateWithOpeningTime),
+      end: new Date(dateWithClosingTime),
+      meta: period
+    });
+
+    dateWithOpeningTime.setDate(dateWithOpeningTime.getDate() + 1);
+    dateWithClosingTime.setDate(dateWithClosingTime.getDate() + 1);
+  }
+
+    // add the final day too
+  calendarEvents.push({
+    title: period.openingTime + ' - ' + period.closingTime,
+    start: new Date(dateWithOpeningTime),
+    end: new Date(dateWithClosingTime),
+    meta: period,
+    color: {primary: 'black', secondary: '#BEBEBE'},
+    cssClass: 'calendar-event-NR'
+  });
+
+
+  return calendarEvents;
+}
+
 /**
  * For each Timeslot that is attached to a CalendarPeriod provided in 'periods',
  * this method will create a CalendarEvent
@@ -101,23 +151,20 @@ export function isCalendarPeriodValid(period: CalendarPeriod): boolean {
  * be the beginning and ending of the timeslot, calculated from the sequence number and the
  * timeslotdate.
  */
-export function mapTimeslotsToCalendarEvents(periods: CalendarPeriod[]): CalendarEvent[] {
+function mapTimeslotsToCalendarEvents(period: CalendarPeriod): CalendarEvent[] {
   const calendarEvents: CalendarEvent[] = [];
 
-  for (const period of periods) {
-    for (const timeslot of period.timeslots) {
-      let beginDT = new Date(timeslot.timeslotDate + "T" + period.openingTime);
-      beginDT.setTime(beginDT.getTime() + timeslot.timeslotSeqnr * period.reservableTimeslotSize * 60000);
-      let endDT = new Date(timeslot.timeslotDate + "T" + period.openingTime);
-      endDT.setTime(endDT.getTime() + (timeslot.timeslotSeqnr + 1) * period.reservableTimeslotSize * 60000);
+  for (const timeslot of period.timeslots) {
+      const beginDT = new Date(timeslot.timeslotDate + 'T' + timeslotStartHour(period, timeslot.timeslotSeqnr));
+      const endDT = new Date(timeslot.timeslotDate + 'T' + timeslotEndHour(period, timeslot.timeslotSeqnr));
 
       calendarEvents.push({
-        title: timeslot.timeslotDate + " (Blok " + timeslot.timeslotSeqnr + ")",
+        title: timeslot.timeslotDate + ' (Blok ' + timeslot.timeslotSeqnr + ')',
         start: beginDT,
         end: endDT,
         meta: timeslot
-      })
-    }
+      });
+
   }
 
   return calendarEvents;

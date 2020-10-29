@@ -3,7 +3,7 @@ import {CalendarEvent} from 'angular-calendar';
 import {
   CalendarPeriodConstructor,
   CalendarPeriod,
-  isCalendarPeriodValid, mapTimeslotsToCalendarEvents
+  isCalendarPeriodValid, mapCalendarPeriodsToCalendarEvents
 } from '../../../../shared/model/CalendarPeriod';
 import {Observable, Subject} from 'rxjs';
 import {Location} from '../../../../shared/model/Location';
@@ -89,7 +89,7 @@ export class LocationCalendarComponent implements OnInit {
       });
 
       // fill the events based on the calendar periods
-      this.events = mapTimeslotsToCalendarEvents(next);
+      this.events = mapCalendarPeriodsToCalendarEvents(next);
     });
   }
 
@@ -117,7 +117,7 @@ export class LocationCalendarComponent implements OnInit {
     }
 
     // set the events
-    this.events = mapTimeslotsToCalendarEvents(this.calendarPeriods);
+    this.events = mapCalendarPeriodsToCalendarEvents(this.calendarPeriods);
 
     // refresh the calendar
     this.refresh.next();
@@ -225,11 +225,11 @@ export class LocationCalendarComponent implements OnInit {
 
   deleteOpeningPeriod(period: CalendarPeriod): void {
     this.calendarPeriods = this.calendarPeriods.filter((next) => next !== period);
-    this.events = mapTimeslotsToCalendarEvents(this.calendarPeriods);
+    this.events = mapCalendarPeriodsToCalendarEvents(this.calendarPeriods);
   }
 
   cancelChangesButtonClick(): void {
-    this.events = mapTimeslotsToCalendarEvents(this.calendarPeriodsInDataLayer);
+    this.events = mapCalendarPeriodsToCalendarEvents(this.calendarPeriodsInDataLayer);
 
     // deep copy of this.calendarPeriodsInDataLayer to this.calendarPeriods
     this.calendarPeriods = [];
