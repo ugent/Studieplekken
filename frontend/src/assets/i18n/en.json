@@ -149,7 +149,7 @@
           "loading": "Location reservations are being loaded...",
           "error": "Something went wrong while loading the reservations...",
           "table": {
-            "noLocationReservations":"There are no location reservations for the selected timeslot",
+            "noLocationReservations": "There are no location reservations for the selected timeslot",
             "user": "User",
             "attended": "Was user present?"
           }
@@ -265,7 +265,7 @@
     },
 
     "locations": {
-      "title": "Management of blok-locations",
+      "title": "Management of study locations",
       "addNew": "Add location",
 
       "table": {
