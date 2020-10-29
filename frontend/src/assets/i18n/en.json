@@ -44,7 +44,7 @@
 
   "reservations": {
     "reservationButton": "Update Reservations"
-  },  
+  },
 
   "general": {
     "dsa": "Student Activities Office",
@@ -109,7 +109,6 @@
       "tags": "Tags",
       "users": "Users",
       "authorities": "Authorities",
-      "reservations": "Reservations",
       "calendar": "Calendar",
       "penalties": "Penalties"
     },
@@ -143,6 +142,18 @@
 
       "calendar": {
         "title": "Reservation Management",
+
+        "reservations": {
+          "title": "Reservations for this location",
+          "selectSlot": "Select a (reservable) timeslot to display the reservations",
+          "loading": "Location reservations are being loaded...",
+          "error": "Something went wrong while loading the reservations...",
+          "table": {
+            "noLocationReservations":"There are no location reservations for the selected timeslot",
+            "user": "User",
+            "attended": "Was user present?"
+          }
+        },
 
         "form": {
           "title": "Edit opening days",

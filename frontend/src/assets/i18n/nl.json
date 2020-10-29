@@ -42,6 +42,10 @@
     "accessibility": "Toegankelijkheid"
   },
 
+  "reservations": {
+    "reservationButton": "Update Reservations"
+  },
+
   "general": {
     "dsa": "Dienst StudentenActiviteiten",
     "ugent": "Universiteit Gent",
@@ -105,7 +109,6 @@
       "tags": "Tags",
       "users": "Gebruikers",
       "authorities": "Autoriteiten",
-      "reservations": "Reservaties",
       "calendar": "Kalender",
       "penalties": "Overtredingen"
     },
@@ -160,8 +163,15 @@
           "endsAt": "Eindigt op",
           "openingTime": "Openingstijd",
           "closingTime": "Sluitingstijd",
+          "reservable": "Reserveerbaar",
+          "reservableTimeslotSize": "Lengte Timeslots",
           "reservableFrom": "Reserveerbaar vanaf",
           "remove": "Verwijder",
+          "dropdown": {
+            "halfHour": "30 minuten",
+            "hour": "1 uur",
+            "hourAndHalf": "1.5 uur"
+          },
 
           "updateButton": "Update",
           "cancelButton": "Annuleer",
