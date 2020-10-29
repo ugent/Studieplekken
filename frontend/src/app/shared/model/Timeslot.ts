@@ -9,17 +9,17 @@ export interface Timeslot {
 
 
 export function timeslotStartHour(calendarPeriod: CalendarPeriod, seqnr: number): string {
-    const currentTime = moment(calendarPeriod.openingTime, 'hh:mm');
+    const currentTime = moment(calendarPeriod.openingTime, 'HH:mm');
 
     currentTime.add(calendarPeriod.reservableTimeslotSize * seqnr, 'minutes');
-    return currentTime.format('hh:mm');
+    return currentTime.format('HH:mm');
 }
 
 export function timeslotEndHour(calendarPeriod: CalendarPeriod, seqnr: number): string {
-    const currentTime = moment(calendarPeriod.openingTime, 'hh:mm');
+    const currentTime = moment(calendarPeriod.openingTime, 'HH:mm');
 
     currentTime.add(calendarPeriod.reservableTimeslotSize * (seqnr + 1), 'minutes');
-    return currentTime.format('hh:mm');
+    return currentTime.format('HH:mm');
 }
 
 export const getTimeslotsOnDay: (calendarPeriod: CalendarPeriod, date: string) => Timeslot[] =
