@@ -22,7 +22,7 @@ server:
 debug: true
 
 cas:
-  callbackUrl: https://studieplekken.ugent.be/cas/login/cas
+  callbackUrl: https://studieplekken.ugent.be/api/login/cas
 
 redirect:
   successLoginRedirectUrl: https://studieplekken.ugent.be/dashboard
