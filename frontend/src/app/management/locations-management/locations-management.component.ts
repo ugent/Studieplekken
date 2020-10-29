@@ -56,7 +56,7 @@ export class LocationsManagementComponent implements OnInit {
       address: new FormControl('', Validators.required),
       numberOfSeats: new FormControl('', Validators.required),
       numberOfLockers: new FormControl('', Validators.required),
-      forGroup: new FormControl('', Validators.required),
+      forGroup: new FormControl(false, Validators.required),
       imageUrl: new FormControl('')
     });
   }
