@@ -140,6 +140,18 @@
       "calendar": {
         "title": "Kalender met openingsdagen",
 
+        "reservations": {
+          "title": "Reservaties voor de locatie",
+          "selectSlot": "Selecteer een (reserveerbaar) timeslot om de reservaties te zien",
+          "loading": "Locatiereservaties voor het geselecteerde slot worden geladen",
+          "error": "Er is iets misgelopen tijdens het ophalen van de reservaties...",
+          "table": {
+            "noLocationReservations":"Er zijn geen locatie reservaties voor het geselecteerde timeslot",
+            "user": "Gebruiker",
+            "attended": "Gebruiker was aanwezig?"
+          }
+        },
+
         "form": {
           "title": "Wijzig openingsdagen",
 

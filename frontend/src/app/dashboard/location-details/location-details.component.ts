@@ -27,7 +27,7 @@ export class LocationDetailsComponent implements OnInit {
   events: CalendarEvent[] = [];
 
   currentTimeslot: Timeslot;
-  canReserve: boolean = false;
+  canReserve = false;
 
   editor = ClassicEditor;
   description = {
