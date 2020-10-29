@@ -160,7 +160,7 @@ function mapTimeslotsToCalendarEvents(period: CalendarPeriod, reservedTimeslots:
         end: endDT,
         meta: timeslot,
         color: includesTimeslot(reservedTimeslots.map(s => s.timeslot), timeslot) ?
-                                                         {primary: '#00004d', secondary: '#0f52ba'} : null,
+                                                         {primary: '#00004d', secondary: '#133E7D'} : null,
         cssClass: includesTimeslot(reservedTimeslots.map(s => s.timeslot), timeslot) ? 'calendar-event-reserved' : ''
       });
 
