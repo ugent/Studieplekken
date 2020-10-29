@@ -63,6 +63,18 @@
     <app-calendar [events]="events" (onTimeslotPicked)="timeslotPicked($event)"></app-calendar>
   </div>
 
+  <div class="row">
+    <button
+    class="btn btn-primary float-right"
+    [disabled]="updateReservationIsPossible()"
+    (click)="commitReservations()"
+    >
+    {{'reservations.reservationButton' | translate}}
+  </button>
+  </div>
+
+ 
+
   <hr>
 
   <!-- Google Maps Frame, based on address:

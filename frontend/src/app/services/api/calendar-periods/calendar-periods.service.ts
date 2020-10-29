@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {CalendarPeriod} from '../../../shared/model/CalendarPeriod';
-import {timeslotStartHour} from '../../../shared/model/Timeslot';
 
 import {Observable} from 'rxjs';
 import {api} from '../../../../environments/environment';
-import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'

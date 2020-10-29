@@ -93,3 +93,11 @@
 .calendar-event-NR * * mwl-calendar-event-title {
   color: black;
 }
+.calendar-event-reserved * * mwl-calendar-event-title {
+  color: #00004d; 
+}
+
+.float-right {
+  float: right;
+  margin-right:2.5vw;
+}

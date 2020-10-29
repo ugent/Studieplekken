@@ -5,7 +5,8 @@ import {
   isStringValidTimeForDBWithoutSeconds
 } from '../validators/DateValidators';
 import {CalendarEvent} from 'angular-calendar';
-import {Timeslot, timeslotEndHour, timeslotStartHour} from './Timeslot';
+import {includesTimeslot, Timeslot, timeslotEndHour, timeslotEquals, timeslotStartHour} from './Timeslot';
+import { LocationReservation } from './LocationReservation';
 
 export interface CalendarPeriod {
   location: Location;
@@ -100,9 +101,12 @@ export function isCalendarPeriodValid(period: CalendarPeriod): boolean {
  * @param periods The to-convert periods.
  * 
  */
-export function mapCalendarPeriodsToCalendarEvents(periods: CalendarPeriod[]): CalendarEvent[] {
+export function mapCalendarPeriodsToCalendarEvents(periods: CalendarPeriod[],
+                                                   reservedTimeslots: LocationReservation[] = []
+                                                                                  ): CalendarEvent[]
+{
   return periods
-          .map(period => period.reservable ? mapTimeslotsToCalendarEvents(period) : mapNRperiodToCalendarEvents(period))
+          .map(period => period.reservable ? mapTimeslotsToCalendarEvents(period, reservedTimeslots) : mapNRperiodToCalendarEvents(period))
           .reduce((a, b) => [...a, ...b]);
 }
 
@@ -117,27 +121,19 @@ function mapNRperiodToCalendarEvents(period: CalendarPeriod): CalendarEvent[] {
   const dateWithClosingTime = new Date(period.startsAt + 'T' + period.closingTime);
   const lastDayWithOpeningTime = (new Date(period.endsAt + 'T' + period.openingTime));
 
-  while (dateWithOpeningTime.toLocaleDateString() !== lastDayWithOpeningTime.toLocaleDateString()) {
+  while (dateWithOpeningTime <= lastDayWithOpeningTime) {
     calendarEvents.push({
-      title: period.openingTime + ' - ' + period.closingTime,
+      title: period.openingTime + ' - ' + period.closingTime + '  -  ' + '(open)',
       start: new Date(dateWithOpeningTime),
       end: new Date(dateWithClosingTime),
-      meta: period
+      meta: period,
+      color: {primary: 'black', secondary: '#BEBEBE'},
+      cssClass: 'calendar-event-NR',
     });
 
     dateWithOpeningTime.setDate(dateWithOpeningTime.getDate() + 1);
     dateWithClosingTime.setDate(dateWithClosingTime.getDate() + 1);
   }
-
-    // add the final day too
-  calendarEvents.push({
-    title: period.openingTime + ' - ' + period.closingTime,
-    start: new Date(dateWithOpeningTime),
-    end: new Date(dateWithClosingTime),
-    meta: period,
-    color: {primary: 'black', secondary: '#BEBEBE'},
-    cssClass: 'calendar-event-NR'
-  });
 
 
   return calendarEvents;
@@ -151,7 +147,7 @@ function mapNRperiodToCalendarEvents(period: CalendarPeriod): CalendarEvent[] {
  * be the beginning and ending of the timeslot, calculated from the sequence number and the
  * timeslotdate.
  */
-function mapTimeslotsToCalendarEvents(period: CalendarPeriod): CalendarEvent[] {
+function mapTimeslotsToCalendarEvents(period: CalendarPeriod, reservedTimeslots: LocationReservation[] = []): CalendarEvent[] {
   const calendarEvents: CalendarEvent[] = [];
 
   for (const timeslot of period.timeslots) {
@@ -159,10 +155,13 @@ function mapTimeslotsToCalendarEvents(period: CalendarPeriod): CalendarEvent[] {
       const endDT = new Date(timeslot.timeslotDate + 'T' + timeslotEndHour(period, timeslot.timeslotSeqnr));
 
       calendarEvents.push({
-        title: timeslot.timeslotDate + ' (Blok ' + timeslot.timeslotSeqnr + ')',
+        title: timeslot.timeslotDate + ' (Blok ' + (timeslot.timeslotSeqnr + 1) + ')',
         start: beginDT,
         end: endDT,
-        meta: timeslot
+        meta: timeslot,
+        color: includesTimeslot(reservedTimeslots.map(s => s.timeslot), timeslot) ?
+                                                         {primary: '#00004d', secondary: '#0f52ba'} : null,
+        cssClass: includesTimeslot(reservedTimeslots.map(s => s.timeslot), timeslot) ? 'calendar-event-reserved' : ''
       });
 
   }

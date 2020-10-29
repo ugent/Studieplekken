@@ -7,6 +7,8 @@ import {toISODateString, typeScriptDateToCustomDate} from '../../../shared/model
 import { getTimeslotsOnDay, Timeslot } from 'src/app/shared/model/Timeslot';
 import { CalendarPeriod } from 'src/app/shared/model/CalendarPeriod';
 import { map } from 'rxjs/internal/operators/map';
+import { tap } from 'rxjs/internal/operators/tap';
+import { of } from 'rxjs/internal/observable/of';
 
 @Injectable({
   providedIn: 'root'
@@ -33,6 +35,11 @@ export class LocationReservationsService {
                 .pipe(map(s => s.reduce((a, b) => [...a, ...b])));
   }
 
+
+  deleteLocationReservations(locationReservations: LocationReservation[]): Observable<void[]> {
+    return locationReservations.length > 0 ? combineLatest(locationReservations.map(l => this.deleteLocationReservation(l))) : of([]);
+   }
+
   deleteLocationReservation(locationReservation: LocationReservation): Observable<any> {
     const options = {
       headers: new HttpHeaders({
@@ -41,5 +48,13 @@ export class LocationReservationsService {
       body: locationReservation
     };
     return this.http.delete(api.deleteLocationReservation, options);
+  }
+
+  postLocationReservations(locationReservations: LocationReservation[]): Observable<void[]> {
+    return locationReservations.length > 0 ? combineLatest(locationReservations.map(l => this.postLocationReservation(l))) : of([]);
+   }
+
+  postLocationReservation(locationReservation: LocationReservation): Observable<void> {
+    return this.http.post<void>(api.addLocationReservation, locationReservation.timeslot, {withCredentials: true});
   }
 }

@@ -6,8 +6,8 @@ import { Timeslot } from './Timeslot';
 export interface LocationReservation {
   user: User;
   timeslot: Timeslot;
-  attended: boolean;
-  createdAt: string;
+  attended?: boolean;
+  createdAt?: string;
 }
 
 export class LocationReservationConstructor {
