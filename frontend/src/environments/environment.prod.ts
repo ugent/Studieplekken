@@ -1,7 +1,4 @@
 export const environment = {
-  production: true
-};
-
-export const vars = {
-  casFlowTriggerUrl: 'https://studieplekken.ugent.be/login/cas'
+  production: true,
+  casFlowTriggerUrl: 'https://studieplekken.ugent.be/cas/login/cas'
 };

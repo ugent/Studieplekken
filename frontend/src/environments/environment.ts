@@ -9,7 +9,8 @@ export enum APPLICATION_TYPE {
 
 export const environment = {
   production: false,
-  applicationType: APPLICATION_TYPE.MINI_THERMIS
+  applicationType: APPLICATION_TYPE.MINI_THERMIS,
+  casFlowTriggerUrl: 'https://localhost:8080/api/login/cas'
 };
 
 export const api = {
@@ -98,7 +99,6 @@ export const api = {
 
 export const vars = {
   defaultLocationImage: 'assets/images/default_location.jpg',
-  casFlowTriggerUrl: 'https://localhost:8080/api/login/cas',
   userWantsTLogInLocalStorageKey: 'userWantsTLogIn'
 };
 
