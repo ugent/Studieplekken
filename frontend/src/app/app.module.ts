@@ -29,7 +29,6 @@ import { ProfileLocationReservationsComponent } from './profile/profile-reservat
 import { ProfileLockerReservationsComponent } from './profile/profile-reservations/profile-locker-reservations/profile-locker-reservations.component';
 import { LocationsManagementComponent } from './management/locations-management/locations-management.component';
 import { UsersManagementComponent } from './management/users-management/users-management.component';
-import { ReservationsManagementComponent } from './management/reservations-management/reservations-management.component';
 import { PenaltyEventsManagementComponent } from './management/penalty-events-management/penalty-events-management.component';
 import { LocationDetailsManagementComponent } from './management/locations-management/location-details-management/location-details-management.component';
 import { DetailsFormComponent } from './management/locations-management/location-details-management/details-form/details-form.component';
@@ -41,8 +40,6 @@ import { UserDetailsManagementComponent } from './management/users-management/us
 import { UserDetailsFormComponent } from './management/users-management/user-details-management/user-details-form/user-details-form.component';
 import { UserRolesComponent } from './management/users-management/user-details-management/user-roles/user-roles.component';
 import { UserDetailsManagementPenaltiesComponent } from './management/users-management/user-details-management/user-details-management-penalties/user-details-management-penalties.component';
-import { LocationReservationsManagementComponent } from './management/reservations-management/location-reservations-management/location-reservations-management.component';
-import { LockerReservationsManagementComponent } from './management/reservations-management/locker-reservations-management/locker-reservations-management.component';
 import { ApplicationTypeGuardService } from './services/guard/functionality/application-type-guard/application-type-guard.service';
 import { LocationDescriptionComponent } from './management/locations-management/location-details-management/location-description/location-description.component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
@@ -169,11 +166,6 @@ const routes: Routes = [
         canActivate: [AuthorizationGuardService]
       },
       {
-        path: 'reservations',
-        component: ReservationsManagementComponent,
-        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService]
-      },
-      {
         path: 'penalties',
         component: PenaltyEventsManagementComponent,
         canActivate: [AuthorizationGuardService, ApplicationTypeGuardService]
@@ -215,7 +207,6 @@ const routes: Routes = [
     ProfileLockerReservationsComponent,
     LocationsManagementComponent,
     UsersManagementComponent,
-    ReservationsManagementComponent,
     PenaltyEventsManagementComponent,
     LocationDetailsManagementComponent,
     DetailsFormComponent,
@@ -226,13 +217,10 @@ const routes: Routes = [
     UserDetailsFormComponent,
     UserRolesComponent,
     UserDetailsManagementPenaltiesComponent,
-    LocationReservationsManagementComponent,
-    LockerReservationsManagementComponent,
     LocationDescriptionComponent,
     TagsManagementComponent,
     LocationTagsManagementComponent,
     LoginComponent,
-    LockerReservationsManagementComponent,
     AuthoritiesManagementComponent,
     UserAuthoritiesManagementComponent,
     AuthorityUsersManagementComponent

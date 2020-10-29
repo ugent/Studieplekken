@@ -11,16 +11,31 @@ import {CalendarPeriodsService} from '../../../../services/api/calendar-periods/
 import {ApplicationTypeFunctionalityService} from '../../../../services/functionality/application-type/application-type-functionality.service';
 import {toDateTimeString, typeScriptDateToCustomDate} from '../../../../shared/model/helpers/CustomDate';
 import {msToShowFeedback} from '../../../../../environments/environment';
+import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
+import { LocationReservation, LocationReservationConstructor } from 'src/app/shared/model/LocationReservation';
+import { transition, trigger, useAnimation } from '@angular/animations';
+import { rowsAnimation } from 'src/app/shared/animations/RowAnimation';
+import { Timeslot } from 'src/app/shared/model/Timeslot';
 
 @Component({
   selector: 'app-location-calendar',
   templateUrl: './location-calendar.component.html',
-  styleUrls: ['./location-calendar.component.css']
+  styleUrls: ['./location-calendar.component.css'],
+  animations: [trigger('rowsAnimation', [
+    transition('void => *', [
+      useAnimation(rowsAnimation)
+    ])
+  ])]
 })
 export class LocationCalendarComponent implements OnInit {
   @Input() location: Observable<Location>;
 
   locationName: string;
+
+  locationReservations: LocationReservation[];
+  currentTimeSlot: Timeslot;
+
+  currentLocationReservationToDelete: LocationReservation = LocationReservationConstructor.new();
 
   refresh: Subject<any> = new Subject();
 
@@ -54,6 +69,10 @@ export class LocationCalendarComponent implements OnInit {
   showSuccessButNoChanges = false;
   showSuccess = false;
   showError = false;
+  showReservations = false;
+
+  errorOnRetrievingReservations = false;
+  deletionWasSuccess: boolean = undefined;
 
   /**
    * Depending on what the ApplicationTypeFunctionalityService returns
@@ -63,7 +82,8 @@ export class LocationCalendarComponent implements OnInit {
   showReservationInformation: boolean;
 
   constructor(private calendarPeriodsService: CalendarPeriodsService,
-              private functionalityService: ApplicationTypeFunctionalityService) { }
+              private functionalityService: ApplicationTypeFunctionalityService,
+              private locationReservationService: LocationReservationsService) { }
 
   ngOnInit(): void {
     this.location.subscribe(next => {
@@ -248,5 +268,47 @@ export class LocationCalendarComponent implements OnInit {
   errorHandler(): void {
     this.showError = true;
     setTimeout(() => this.showError = false, msToShowFeedback);
+  }
+
+  timeslotPickedHandler(event: any): void{
+    // event is a non-reservable calendar period.
+    if (!event.hasOwnProperty('timeslotSeqnr')) {
+      this.showReservations = false;
+      this.errorOnRetrievingReservations = false;
+      return;
+    }
+
+    this.currentTimeSlot = event;
+    this.loadReservations();
+  }
+
+  private loadReservations(): void {
+    this.showReservations = null;
+    this.locationReservationService.getLocationReservationsOfTimeslot(this.currentTimeSlot).subscribe((next) => {
+      this.locationReservations = next;
+      this.showReservations = true;
+      this.errorOnRetrievingReservations = false;
+    }, () => {
+      this.showReservations = false;
+      this.errorOnRetrievingReservations = true;
+    });
+  }
+
+  prepareToDeleteLocationReservation(locationReservation: LocationReservation): void {
+    this.deletionWasSuccess = undefined;
+    this.currentLocationReservationToDelete = locationReservation;
+  }
+
+  deleteLocationReservation(): void {
+    console.log('Removing reservation');
+    this.locationReservationService.deleteLocationReservation(this.currentLocationReservationToDelete).subscribe(
+      () => {
+        this.deletionWasSuccess = true;
+        this.loadReservations();
+      }, () => {
+        this.deletionWasSuccess = false;
+        this.loadReservations();
+      }
+    )
   }
 }
