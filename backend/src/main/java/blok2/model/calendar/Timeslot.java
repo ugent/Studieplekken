@@ -1,15 +1,22 @@
 package blok2.model.calendar;
 
+import org.springframework.beans.factory.annotation.Required;
+
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.Objects;
 
 public class Timeslot implements Cloneable {
     @Min(0)
-    private int calendarId;
+    @NotNull
+    private Integer calendarId;
     @Min(0)
-    private int timeslotSeqnr;
+    @NotNull
+    private Integer timeslotSeqnr;
     @Pattern(regexp = "[0-9]{4}-[0-9]{2}-[0-9]{2}")
+    @NotBlank
     private String timeslotDate;
 
     @Override

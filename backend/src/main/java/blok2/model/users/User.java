@@ -139,6 +139,7 @@ public class User implements Cloneable, UserDetails {
      *   Implementation of UserDetails methods   *
      *********************************************/
 
+    @JsonIgnore
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {

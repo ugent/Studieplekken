@@ -50,6 +50,7 @@ export const api = {
   locationReservationsOfLocationFrom: '/api/locations/reservations/from',
   locationReservationsOfLocationUntil: '/api/locations/reservations/until',
   locationReservationsOfLocationFromAndUntil: '/api/locations/reservations/fromAndUntil',
+  addLocationReservation: '/api/locations/reservations/new',
   deleteLocationReservation: '/api/locations/reservations',
 
   // LOCKER_RESERVATIONS

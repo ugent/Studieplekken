@@ -42,6 +42,10 @@
     "accessibility": "Accessibility"
   },
 
+  "reservations": {
+    "reservationButton": "Update Reservations"
+  },  
+
   "general": {
     "dsa": "Student Activities Office",
     "ugent": "Ghent University",
