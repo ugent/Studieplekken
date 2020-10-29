@@ -1,18 +1,23 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, OnChanges, SimpleChanges} from '@angular/core';
 import {CalendarView, CalendarEvent, CalendarEventTimesChangedEvent} from 'angular-calendar';
 import {Subject} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
+import {defaultOpeningHour, defaultClosingHour} from 'src/environments/environment';
+import { getHours } from 'date-fns';
 
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.css']
 })
-export class CalendarComponent implements OnInit {
+export class CalendarComponent implements OnInit, OnChanges {
   view: CalendarView = CalendarView.Week;
   viewDate: Date = new Date();
 
   CalendarView = CalendarView;
+
+  openingHour: number;
+  closingHour: number;
 
   @Input() events: CalendarEvent[];
   @Input() refresh: Subject<any>;
@@ -30,6 +35,19 @@ export class CalendarComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentLang = this.translate.currentLang;
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if(this.events.length) {
+      const endHour = this.events.map(event => event.end?.getHours()).reduce((a, b) => Math.max(a, b));
+      const beginHour = this.events.map(event => event.start.getHours()).reduce((a, b) => Math.min(a, b));
+      this.openingHour = beginHour < defaultOpeningHour ? beginHour : defaultOpeningHour;
+      this.closingHour = endHour - 1 > defaultClosingHour ? endHour - 1 : defaultClosingHour;
+    }
+    else {
+      this.openingHour = defaultOpeningHour;
+      this.closingHour = defaultClosingHour;
+    }
   }
 
   dayClicked({ date, events }: { date: Date ; events: CalendarEvent[] }): void {

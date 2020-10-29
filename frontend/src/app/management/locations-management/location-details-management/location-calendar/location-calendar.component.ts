@@ -12,9 +12,10 @@ import {ApplicationTypeFunctionalityService} from '../../../../services/function
 import {toDateTimeString, typeScriptDateToCustomDate} from '../../../../shared/model/helpers/CustomDate';
 import {msToShowFeedback} from '../../../../../environments/environment';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
-import { LocationReservation } from 'src/app/shared/model/LocationReservation';
+import { LocationReservation, LocationReservationConstructor } from 'src/app/shared/model/LocationReservation';
 import { transition, trigger, useAnimation } from '@angular/animations';
 import { rowsAnimation } from 'src/app/shared/animations/RowAnimation';
+import { Timeslot } from 'src/app/shared/model/Timeslot';
 
 @Component({
   selector: 'app-location-calendar',
@@ -32,6 +33,9 @@ export class LocationCalendarComponent implements OnInit {
   locationName: string;
 
   locationReservations: LocationReservation[];
+  currentTimeSlot: Timeslot;
+
+  currentLocationReservationToDelete: LocationReservation = LocationReservationConstructor.new();
 
   refresh: Subject<any> = new Subject();
 
@@ -68,6 +72,7 @@ export class LocationCalendarComponent implements OnInit {
   showReservations = false;
 
   errorOnRetrievingReservations = false;
+  deletionWasSuccess: boolean = undefined;
 
   /**
    * Depending on what the ApplicationTypeFunctionalityService returns
@@ -273,8 +278,13 @@ export class LocationCalendarComponent implements OnInit {
       return;
     }
 
+    this.currentTimeSlot = event;
+    this.loadReservations();
+  }
+
+  private loadReservations(): void {
     this.showReservations = null;
-    this.locationReservationService.getLocationReservationsOfTimeslot(event).subscribe((next) => {
+    this.locationReservationService.getLocationReservationsOfTimeslot(this.currentTimeSlot).subscribe((next) => {
       this.locationReservations = next;
       this.showReservations = true;
       this.errorOnRetrievingReservations = false;
@@ -284,7 +294,21 @@ export class LocationCalendarComponent implements OnInit {
     });
   }
 
-  prepareToDeleteLocationReservation(reservation: any): void {
-    console.log('Preparing to delete');
+  prepareToDeleteLocationReservation(locationReservation: LocationReservation): void {
+    this.deletionWasSuccess = undefined;
+    this.currentLocationReservationToDelete = locationReservation;
+  }
+
+  deleteLocationReservation(): void {
+    console.log('Removing reservation');
+    this.locationReservationService.deleteLocationReservation(this.currentLocationReservationToDelete).subscribe(
+      () => {
+        this.deletionWasSuccess = true;
+        this.loadReservations();
+      }, () => {
+        this.deletionWasSuccess = false;
+        this.loadReservations();
+      }
+    )
   }
 }

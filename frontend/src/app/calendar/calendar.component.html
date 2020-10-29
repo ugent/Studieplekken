@@ -81,8 +81,8 @@
       [refresh]="refresh"
       [weekStartsOn]="1"
       [hourSegmentHeight]=20
-      [dayStartHour] = 7
-      [dayEndHour] = 22
+      [dayStartHour] = openingHour
+      [dayEndHour] = closingHour
       (eventClicked)="handleEvent('Clicked', $event.event)"
       (eventTimesChanged)="eventTimesChanged($event)">
     </mwl-calendar-week-view>
@@ -93,8 +93,8 @@
       [events]="events"
       [refresh]="refresh"
       [hourSegmentHeight]=20
-      [dayStartHour] = 7
-      [dayEndHour] = 22
+      [dayStartHour] = openingHour
+      [dayEndHour] = closingHour
       (eventClicked)="handleEvent('Clicked', $event.event)"
       (eventTimesChanged)="eventTimesChanged($event)">
     </mwl-calendar-day-view>

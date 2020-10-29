@@ -111,6 +111,9 @@ export const msToShowFeedback = 10000;
  */
 export const penaltyEventCodeForManualEntry = 16663;
 
+export const defaultOpeningHour = 7;
+export const defaultClosingHour = 22;
+
 /*
  * The roles that are available in the application.
  * This is used for being able to manage the role(s)

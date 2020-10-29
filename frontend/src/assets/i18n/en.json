@@ -138,7 +138,7 @@
       },
 
       "calendar": {
-        "title": "Calendar with opening days",
+        "title": "Reservation Management",
 
         "form": {
           "title": "Edit opening days",
