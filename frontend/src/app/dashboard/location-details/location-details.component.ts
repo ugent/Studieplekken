@@ -83,6 +83,10 @@ export class LocationDetailsComponent implements OnInit {
   }
 
   timeslotPicked(event: Timeslot): void {
+    if(!event.hasOwnProperty('timeslotSeqnr')) {
+      return;
+    }
+
     this.isModified = true;
     this.currentTimeslot = event;
     const reservation: LocationReservation = {user: this.authenticationService.userValue(), timeslot: event};
