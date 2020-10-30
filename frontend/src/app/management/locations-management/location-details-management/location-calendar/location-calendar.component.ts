@@ -161,7 +161,7 @@ export class LocationCalendarComponent implements OnInit {
     // then we need to programmatically provide a valid value for 'reservableFrom' because
     // the user will not be able to set the value manually.
     // If not set, the period will not be addable. Therefore, we just provide the current date-time.
-    if (!this.showReservationInformation) {
+    if (true || !this.showReservationInformation) {
       let dateTime = toDateTimeString(typeScriptDateToCustomDate(new Date()));
       // remove the trailing ':ss' and replace 'T' with ' ' to make a valid
       // dateTimeStr for the database: 'YYYY-MM-DD HH:MI'

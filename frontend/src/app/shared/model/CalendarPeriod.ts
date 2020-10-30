@@ -72,8 +72,7 @@ export function isCalendarPeriodValid(period: CalendarPeriod): boolean {
         isStringValidDateForDB(period.endsAt) &&
         isStringValidTimeForDBWithoutSeconds(period.openingTime) &&
         isStringValidTimeForDBWithoutSeconds(period.closingTime) &&
-        (isStringValidDateTimeForDB(period.reservableFrom) || !period.reservableFrom))) {
-    console.log((isStringValidDateTimeForDB(period.reservableFrom) || !period.reservableFrom))
+        (!period.reservable || isStringValidDateTimeForDB(period.reservableFrom) || !period.reservableFrom || true))) {
     return false;
   }
 
