@@ -43,7 +43,7 @@
   },
 
   "reservations": {
-    "reservationButton": "Update Reservations"
+    "reservationButton": "Update Reservaties"
   },
 
   "general": {
@@ -149,7 +149,7 @@
           "loading": "Locatiereservaties voor het geselecteerde slot worden geladen",
           "error": "Er is iets misgelopen tijdens het ophalen van de reservaties...",
           "table": {
-            "noLocationReservations":"Er zijn geen locatie reservaties voor het geselecteerde timeslot",
+            "noLocationReservations": "Er zijn geen locatie reservaties voor het geselecteerde timeslot",
             "user": "Gebruiker",
             "attended": "Gebruiker was aanwezig?"
           }
