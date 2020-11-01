@@ -9,6 +9,7 @@ import {includesTimeslot, Timeslot, timeslotEndHour, timeslotEquals, timeslotSta
 import { LocationReservation } from './LocationReservation';
 
 export interface CalendarPeriod {
+  id: number;
   location: Location;
   startsAt: string;
   endsAt: string;
@@ -23,6 +24,7 @@ export interface CalendarPeriod {
 export class CalendarPeriodConstructor {
   static new(): CalendarPeriod {
     return {
+      id: 0,
       location: LocationConstructor.new(),
       startsAt: '',
       endsAt: '',
@@ -37,6 +39,7 @@ export class CalendarPeriodConstructor {
 
   static newFromObj(obj: CalendarPeriod): CalendarPeriod {
     return {
+      id: obj.id,
       location: LocationConstructor.newFromObj(obj.location),
       startsAt: obj.startsAt,
       endsAt: obj.endsAt,
@@ -100,7 +103,7 @@ export function isCalendarPeriodValid(period: CalendarPeriod): boolean {
 /**
  * Convert calendarPeriods to Calendar Events. This detects correctly whether the period is reservable or not.
  * @param periods The to-convert periods.
- * 
+ *
  */
 export function mapCalendarPeriodsToCalendarEvents(periods: CalendarPeriod[],
                                                    reservedTimeslots: LocationReservation[] = []

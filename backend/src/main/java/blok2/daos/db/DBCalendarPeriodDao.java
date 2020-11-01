@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Service
 public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
@@ -28,6 +29,27 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_calendar_periods"));
             pstmt.setString(1, locationName);
+            ResultSet rs = pstmt.executeQuery();
+
+            List<CalendarPeriod> periods = new ArrayList<>();
+
+            while (rs.next()) {
+                periods.add(createCalendarPeriod(rs,conn));
+            }
+
+            for(CalendarPeriod p : periods) {
+                if(p.isReservable())
+                    fillTimeslotList(p, conn);
+            }
+
+            return periods;
+        }
+    }
+
+    @Override
+    public List<CalendarPeriod> getAllCalendarPeriods() throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_all_calendar_periods"));
             ResultSet rs = pstmt.executeQuery();
 
             List<CalendarPeriod> periods = new ArrayList<>();

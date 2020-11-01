@@ -8,38 +8,49 @@
   <div class="container-fluid row">
 
     <div class="container-fluid col-md-11">
-      <div class="container-fluid" *ngIf="locationReservations | async as reservations">
-        <table style="width: 100%" *ngIf="reservations.length > 0; else noReservations">
-          <!-- Table header -->
-          <thead>
-          <tr>
-            <th>{{'profile.reservations.locations.table.header.locationName' | translate}}</th>
-            <th>{{'profile.reservations.locations.table.header.reservationDate' | translate}}</th>
-            <th>{{'profile.reservations.locations.table.header.attended' | translate}}</th>
-          </tr>
-          </thead>
+      <div *ngIf="showReservations; else noReservations">
+        <div class="container-fluid" *ngIf="locationReservations | async as reservations">
+          <table style="width: 100%" *ngIf="reservations.length > 0; else zeroReservations">
+            <!-- Table header -->
+            <thead>
+            <tr>
+              <th>{{'profile.reservations.locations.table.header.locationName' | translate}}</th>
+              <th>{{'profile.reservations.locations.table.header.reservationDate' | translate}}</th>
+              <th>{{'profile.reservations.locations.table.header.attended' | translate}}</th>
+            </tr>
+            </thead>
 
-          <!-- Table body -->
-          <tbody>
-          <tr [@rowsAnimation]="" *ngFor="let reservation of reservations">
-            <td>{{reservation.location.name}}</td>
-            <td>{{toDateString(reservation.date)}}</td>
-
-            <!-- This column should only be 'yes' or 'no' if the reservationDate is in the past,
-                 otherwise it is not possible to be attended, and it might seem that penalty points will be given -->
-            <td>{{compareDates(nowAsCustomDate(), reservation.date)
-            < 0 ? ('profile.reservations.locations.table.attended.other' | translate) :
-              reservation.attended ?
-                ('profile.reservations.locations.table.attended.yes' | translate) :
-                ('profile.reservations.locations.table.attended.no' | translate)}}</td>
-          </tr>
-          </tbody>
-        </table>
+            <!-- Table body -->
+            <tbody>
+            <tr [@rowsAnimation]="" *ngFor="let reservation of reservations">
+              <td>{{calendarLocationMap.get(reservation.timeslot.calendarId).toString()}}</td>
+              <td>{{reservation.timeslot.timeslotDate}}</td>
+              <!-- This column should only be 'yes' or 'no' if the reservationDate is in the past,
+                    otherwise it is not possible to be attended, and it might seem that penalty points will be given -->
+              <td>{{ reservation.attended ?
+                  ('profile.reservations.locations.table.attended.yes' | translate) :
+                  ('profile.reservations.locations.table.attended.no' | translate)}}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
+<ng-template #zeroReservations>
+  {{'profile.reservations.locations.zeroReservations' | translate}}
+</ng-template>
+
 <ng-template #noReservations>
-  {{'profile.reservations.locations.noReservations' | translate}}
+  <div class="container-fluid" *ngIf="showReservations === undefined; else errorReservations">
+    {{'profile.reservations.locations.loading' | translate}}
+  </div>
+</ng-template>
+
+<ng-template #errorReservations>
+  <div class="container-fluid" *ngIf="showReservations === false">
+    {{'profile.reservations.locations.error' | translate}}
+  </div>
 </ng-template>
