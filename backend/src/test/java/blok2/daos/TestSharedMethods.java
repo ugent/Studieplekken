@@ -8,17 +8,14 @@ import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.CalendarPeriodForLockers;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;
-import jdk.vm.ci.meta.Local;
 import org.junit.Assert;
 
-import java.sql.Array;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class TestSharedMethods {

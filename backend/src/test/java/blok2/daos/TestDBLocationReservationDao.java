@@ -7,8 +7,6 @@ import blok2.model.calendar.Timeslot;
 import blok2.model.reservables.Location;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
-import jdk.vm.ci.meta.Local;
-import org.flywaydb.test.annotation.FlywayTest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
