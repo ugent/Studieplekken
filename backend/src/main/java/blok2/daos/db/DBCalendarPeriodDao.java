@@ -4,7 +4,6 @@ import blok2.daos.ICalendarPeriodDao;
 import blok2.helpers.Resources;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
@@ -79,10 +78,11 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         // Add all relevant timeperiods
         if(calendarPeriod.isReservable()) {
             // One per day (end day inclusive)
-            for(LocalDate currDate = calendarPeriod.getStartdateAsDate(); !currDate.isAfter(calendarPeriod.getEnddateAsDate()); currDate=currDate.plusDays(1)) {
+            for(LocalDate currDate = calendarPeriod.getStartdateAsDate(); !currDate.isAfter(calendarPeriod.getEndDateAsDate()); currDate=currDate.plusDays(1)) {
                 // One per hour (end hour/rest of hour non inclusive)
-                for(int sequence_nr = 0; sequence_nr < calendarPeriod.getOpenHoursDuration() / (60*calendarPeriod.getReservableTimeslotSize()); sequence_nr+=1) {
-                    addTimeslotPeriod(sequence_nr, currDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), calendarPeriod, conn);
+                int timeslotCount = calendarPeriod.getOpenHoursDuration() / (60*calendarPeriod.getReservableTimeslotSize());
+                for(int sequenceNr = 0; sequenceNr < timeslotCount; sequenceNr+=1) {
+                    addTimeslotPeriod(sequenceNr, currDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), calendarPeriod, conn);
                 }
             }
             fillTimeslotList(calendarPeriod, conn);
