@@ -67,24 +67,21 @@ public class TestSharedMethods {
     }
 
     public static LocationTag testTag() {
-        LocationTag testTag = new LocationTag(1,
+        return new LocationTag(1,
                 "Stille ruimte",
                 "Silent space");
-        return testTag;
     }
 
     public static LocationTag testTag2() {
-        LocationTag testTag = new LocationTag(2,
+        return new LocationTag(2,
                 "Geschikt voor vergaderingen",
                 "Suitable for meetings");
-        return testTag;
     }
 
     public static LocationTag testTag3() {
-        LocationTag testTag = new LocationTag(3,
+        return new LocationTag(3,
                 "Geschikt voor invaliden",
                 "Suitable for the less-abled");
-        return testTag;
     }
 
     public static Authority insertTestAuthority(IAuthorityDao authorityDao) throws SQLException {
@@ -150,7 +147,7 @@ public class TestSharedMethods {
         List<CalendarPeriod> calendarPeriods = new ArrayList<>();
 
         LocalDate date = LocalDate.now();
-        LocalTime time = LocalTime.now();
+        LocalTime time;
 
         for (int i = 0; i < 2; i++) {
             CalendarPeriod period = new CalendarPeriod();
