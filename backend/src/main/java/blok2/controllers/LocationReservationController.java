@@ -70,10 +70,7 @@ public class LocationReservationController {
 
     @GetMapping("/timeslot/{calendarid}/{date}/{seqnr}")
     public List<LocationReservation> getLocationReservationsByTimeslot(@PathVariable("calendarid") int calendarId, @PathVariable("date") String date,@PathVariable("seqnr") int seqnr) {
-        Timeslot timeslot = new Timeslot();
-        timeslot.setCalendarId(calendarId);
-        timeslot.setTimeslotSeqnr(seqnr);
-        timeslot.setTimeslotDate(date);
+        Timeslot timeslot = new Timeslot(calendarId, seqnr, date);
         try {
             return locationReservationDao.getAllLocationReservationsOfTimeslot(timeslot);
         } catch (SQLException e) {

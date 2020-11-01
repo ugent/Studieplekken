@@ -146,7 +146,7 @@ public class CalendarPeriod extends Period implements Cloneable {
         }
     }
 
-    public LocalDate getEnddateAsDate() {
+    public LocalDate getEndDateAsDate() {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         try {
             return format.parse(getEndsAt()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();

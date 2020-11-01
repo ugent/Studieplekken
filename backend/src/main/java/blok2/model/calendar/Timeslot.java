@@ -12,6 +12,17 @@ public class Timeslot implements Cloneable {
     @Pattern(regexp = "[0-9]{4}-[0-9]{2}-[0-9]{2}")
     private String timeslotDate;
 
+
+    public Timeslot() {
+
+    }
+
+    public Timeslot(int calendarId, int timeslotSeqnr, String timeslotDate) {
+        this.calendarId = calendarId;
+        this.timeslotSeqnr = timeslotSeqnr;
+        this.timeslotDate = timeslotDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
