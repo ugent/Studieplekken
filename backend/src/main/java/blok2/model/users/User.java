@@ -3,6 +3,7 @@ package blok2.model.users;
 import java.util.Objects;
 import java.util.*;
 
+import blok2.model.Authority;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,8 +23,14 @@ public class User implements Cloneable, UserDetails {
     private int penaltyPoints;
     private boolean admin;
 
-    public User() {
+    // Named 'userAuthorities' instead of 'authorities' because there would be a
+    // conflict with the getter UserDetails#getAuthorities() that is used to return
+    // the GrantedAuthority objects of the user. These GrantedAuthority objects are used
+    // in the controller methods to authorize the user accessing the methods.
+    private List<Authority> userAuthorities;
 
+    public User() {
+        userAuthorities = new ArrayList<>();
     }
 
     @Override
@@ -86,6 +93,11 @@ public class User implements Cloneable, UserDetails {
         return admin;
     }
 
+
+    public List<Authority> getUserAuthorities() {
+        return userAuthorities;
+    }
+
     public void setAugentID(String augentID) {
         this.augentID = augentID;
     }
@@ -118,6 +130,10 @@ public class User implements Cloneable, UserDetails {
         this.admin = admin;
     }
 
+    public void setUserAuthorities(List<Authority> userAuthorities) {
+        this.userAuthorities = userAuthorities;
+    }
+
 //</editor-fold>
 
     @Override
@@ -129,18 +145,41 @@ public class User implements Cloneable, UserDetails {
                 ", password='" + password + '\'' +
                 ", institution='" + institution + '\'' +
                 ", augentID='" + augentID + '\'' +
-                ", penaltyPoints='" + penaltyPoints + '\'' +
-                ", admin='" + admin + '\'' +
+                ", penaltyPoints=" + penaltyPoints +
+                ", admin=" + admin +
+                ", userAuthorities=" + userAuthorities +
                 '}';
     }
 
-    /*********************************************
-     *   Implementation of UserDetails methods   *
-     *********************************************/
+    // *********************************************
+    // *   Implementation of UserDetails methods   *
+    // *********************************************/
 
+    /**
+     *
+     * A user always has the GrantedAuthority "USER". Depending on the attribute User#admin and
+     * whether or not the user is linked to one or more authorities (User#userAuthorities.size() > 0),
+     * respectively the GrantedAuthorities "ADMIN" and "HAS_AUTHORITIES" are added.
+     *
+     * @return list of GrantedAuthority objects
+     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(admin ? "admin" : "user"));
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+
+        // user always gets the GrantedAuthority "USER"
+        grantedAuthorities.add(new SimpleGrantedAuthority("USER"));
+
+        // if the user is admin, the GrantedAuthority "ADMIN" is added too
+        if (admin)
+            grantedAuthorities.add(new SimpleGrantedAuthority("ADMIN"));
+
+        // if the user is linked to one or more authorities, the
+        // GrantedAuthority "HAS_AUTHORITIES" is added too
+        if (userAuthorities.size() > 0)
+            grantedAuthorities.add(new SimpleGrantedAuthority("HAS_AUTHORITIES"));
+
+        return grantedAuthorities;
     }
 
     @Override
