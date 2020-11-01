@@ -34,7 +34,6 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
     }
 
     /**
-     * TODO
      * Flow of loading a user:
      *   1. try to retrieve from the application database
      *        - if the retrieved user is not null, return the retrieved user
