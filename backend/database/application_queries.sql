@@ -550,7 +550,7 @@ with recursive x as (
 ), lr as (
     select location_name, locker_number, user_augentid, key_pickup_date, key_return_date
     from public.locker_reservations
-    where key_return_date = '' or key_return_date is NULL
+    where key_return_date is NULL
 ), lockers as (
     select l.location_name, l.number
          , s.name, s.number_of_seats, s.number_of_lockers, s.image_url, s.address
@@ -858,7 +858,7 @@ from public.calendar_periods cp
     join public.authority a
         on a.authority_id = l.authority_id
 where cp.location_name = ?
-order by to_date(cp.starts_at || ' ' || cp.opening_time, 'YYYY-MM-DD HH24:MI');
+order by cp.starts_at, cp.opening_time;
 
 -- $insert_calendar_period
 insert into public.calendar_periods(location_name, starts_at, ends_at, opening_time, closing_time, reservable_from, reservable, timeslot_length)
@@ -906,7 +906,7 @@ from public.calendar_periods_for_lockers cp
     join public.authority a
         on a.authority_id = l.authority_id
 where cp.location_name = ?
-order by to_date(cp.starts_at, 'YYYY-MM-DD');
+order by cp.starts_at;
 
 -- $insert_calendar_period_for_lockers
 insert into public.calendar_periods_for_lockers (location_name, starts_at, ends_at, reservable_from)

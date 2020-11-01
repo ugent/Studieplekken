@@ -8,10 +8,14 @@ import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.CalendarPeriodForLockers;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;
+import jdk.vm.ci.meta.Local;
 import org.junit.Assert;
 
 import java.sql.Array;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -148,27 +152,27 @@ public class TestSharedMethods {
     public static List<CalendarPeriod> testCalendarPeriods(Location location) {
         List<CalendarPeriod> calendarPeriods = new ArrayList<>();
 
-        CustomDate date = CustomDate.now();
+        LocalDate date = LocalDate.now();
+        LocalTime time = LocalTime.now();
 
         for (int i = 0; i < 2; i++) {
             CalendarPeriod period = new CalendarPeriod();
             period.setLocation(location);
 
-            date.setDay(2 + 10 * i);
-            period.setStartsAt(date.toDateString());
+            date = LocalDate.of(date.getYear(), date.getMonth(), 2 + 10*i);
+            period.setStartsAt(date);
 
-            date.setDay(4 + 10 * i);
-            period.setEndsAt(date.toDateString());
+            date = LocalDate.of(date.getYear(), date.getMonth(), 4 + 10*i);
+            period.setEndsAt(date);
 
-            date.setHrs(9);
-            date.setMin(0);
-            period.setOpeningTime(date.toTimeWithoutSecondsString());
+            time = LocalTime.of(9,0);
+            period.setOpeningTime(time);
 
-            date.setHrs(17);
-            period.setClosingTime(date.toTimeWithoutSecondsString());
+            time = LocalTime.of(17,0);
+            period.setClosingTime(time);
 
-            date.setDay(1);
-            period.setReservableFrom(date.toString());
+            date = LocalDate.of(date.getYear(), date.getMonth(), 1);
+            period.setReservableFrom(LocalDateTime.of(date, time));
 
             period.setReservable(true);
             period.setReservableTimeslotSize(30);
@@ -191,11 +195,11 @@ public class TestSharedMethods {
         }
 
         for (int i = 0; i < updatedPeriods.size(); i++) {
-            updatedPeriods.get(i).setStartsAt("1970-01-0" + i);
-            updatedPeriods.get(i).setEndsAt("1970-01-1" + i);
-            updatedPeriods.get(i).setOpeningTime("09:0" + i);
-            updatedPeriods.get(i).setClosingTime("17:0" + i);
-            updatedPeriods.get(i).setReservableFrom("1970-01-0" + i + "T09:00");
+            updatedPeriods.get(i).setStartsAt(LocalDate.of(1970,1,i+1));
+            updatedPeriods.get(i).setEndsAt(LocalDate.of(1970,1,i + 10));
+            updatedPeriods.get(i).setOpeningTime(LocalTime.of(9, i));
+            updatedPeriods.get(i).setClosingTime(LocalTime.of(17,i));
+            updatedPeriods.get(i).setReservableFrom(LocalDateTime.of(1970,1,i+1,9,0));
         }
 
         return updatedPeriods;
@@ -204,20 +208,21 @@ public class TestSharedMethods {
     public static List<CalendarPeriodForLockers> testCalendarPeriodsForLockers(Location location) {
         List<CalendarPeriodForLockers> calendarPeriods = new ArrayList<>();
 
-        CustomDate date = CustomDate.now();
+        LocalDate date = LocalDate.now();
+        LocalTime time = LocalTime.now();
 
         for (int i = 0; i < 2; i++) {
             CalendarPeriodForLockers period = new CalendarPeriodForLockers();
             period.setLocation(location);
 
-            date.setDay(2 + 10 * i);
-            period.setStartsAt(date.toDateString());
+            date = LocalDate.of(date.getYear(), date.getMonth(), 2 + 10*i);
+            period.setStartsAt(date);
 
-            date.setDay(4 + 10 * i);
-            period.setEndsAt(date.toDateString());
+            date = LocalDate.of(date.getYear(), date.getMonth(), 4 + 10*i);
+            period.setEndsAt(date);
 
-            date.setDay(1);
-            period.setReservableFrom(date.toString());
+            date = LocalDate.of(date.getYear(), date.getMonth(), 1);
+            period.setReservableFrom(LocalDateTime.of(date, time));
 
             calendarPeriods.add(period);
         }
@@ -232,9 +237,9 @@ public class TestSharedMethods {
         }
 
         for (int i = 0; i < updatedPeriods.size(); i++) {
-            updatedPeriods.get(i).setStartsAt("1970-01-0" + i);
-            updatedPeriods.get(i).setEndsAt("1970-01-1" + i);
-            updatedPeriods.get(i).setReservableFrom("1970-01-0" + i + "T09:00");
+            updatedPeriods.get(i).setStartsAt(LocalDate.of(1970,1,i+1));
+            updatedPeriods.get(i).setEndsAt(LocalDate.of(1970,1,i + 10));
+            updatedPeriods.get(i).setReservableFrom(LocalDateTime.of(1970,1,i+1,9,0));
         }
 
         return updatedPeriods;

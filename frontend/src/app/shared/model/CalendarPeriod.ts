@@ -7,6 +7,7 @@ import {
 import {CalendarEvent} from 'angular-calendar';
 import {includesTimeslot, Timeslot, timeslotEndHour, timeslotEquals, timeslotStartHour} from './Timeslot';
 import { LocationReservation } from './LocationReservation';
+import * as moment from 'moment';
 
 export interface CalendarPeriod {
   location: Location;
@@ -123,7 +124,7 @@ function mapNRperiodToCalendarEvents(period: CalendarPeriod): CalendarEvent[] {
 
   while (dateWithOpeningTime <= lastDayWithOpeningTime) {
     calendarEvents.push({
-      title: period.openingTime + ' - ' + period.closingTime + '  -  ' + '(open)',
+      title: moment(period.openingTime, 'HH:mm:ss').format('HH:mm') + ' - ' + moment(period.closingTime, 'HH:mm:ss').format('HH:mm') + '  -  ' + '(open)',
       start: new Date(dateWithOpeningTime),
       end: new Date(dateWithClosingTime),
       meta: period,

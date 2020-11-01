@@ -1,9 +1,7 @@
 package blok2.controllers;
 
 import blok2.daos.ILocationReservationDao;
-import blok2.helpers.date.CustomDate;
 import blok2.model.calendar.Timeslot;
-import blok2.model.reservables.Location;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
 import org.slf4j.Logger;
@@ -17,10 +15,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.sql.SQLException;
-import java.sql.SQLOutput;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
 
 /**
  * This controller handles all requests related to location reservations.
@@ -57,7 +55,7 @@ public class LocationReservationController {
     @PostMapping
     public LocationReservation createLocationReservation(@AuthenticationPrincipal User user, @Valid @RequestBody Timeslot timeslot) {
         try {
-            LocationReservation reservation = new LocationReservation(user, CustomDate.today().toDateString(), timeslot, null);
+            LocationReservation reservation = new LocationReservation(user, LocalDateTime.now(), timeslot, null);
             if(!locationReservationDao.addLocationReservationIfStillRoomAtomically(reservation)) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "There are no more spots left for this location.");
             }
@@ -70,7 +68,7 @@ public class LocationReservationController {
     }
 
     @GetMapping("/timeslot/{calendarid}/{date}/{seqnr}")
-    public List<LocationReservation> getLocationReservationsByTimeslot(@PathVariable("calendarid") int calendarId, @PathVariable("date") String date,@PathVariable("seqnr") int seqnr) {
+    public List<LocationReservation> getLocationReservationsByTimeslot(@PathVariable("calendarid") int calendarId, @PathVariable("date") LocalDate date, @PathVariable("seqnr") int seqnr) {
         Timeslot timeslot = new Timeslot(calendarId, seqnr, date);
         try {
             return locationReservationDao.getAllLocationReservationsOfTimeslot(timeslot);

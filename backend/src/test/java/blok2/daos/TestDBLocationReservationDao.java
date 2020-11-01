@@ -7,12 +7,14 @@ import blok2.model.calendar.Timeslot;
 import blok2.model.reservables.Location;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
+import jdk.vm.ci.meta.Local;
 import org.flywaydb.test.annotation.FlywayTest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class TestDBLocationReservationDao extends TestDao {
@@ -75,7 +77,7 @@ public class TestDBLocationReservationDao extends TestDao {
 
         // Create LocationReservation
         CustomDate date = new CustomDate(1970, 1, 1, 9, 0, 0);
-        LocationReservation lr = new LocationReservation(u, date.toDateString(), timeslot, null);
+        LocationReservation lr = new LocationReservation(u, LocalDateTime.of(1970, 1, 1, 9, 0, 0), timeslot, null);
 
         // add LocationReservation to database
         locationReservationDao.addLocationReservation(lr);
@@ -104,13 +106,13 @@ public class TestDBLocationReservationDao extends TestDao {
 
         Timeslot timeslot = calendarPeriod1Seat.getTimeslots().get(0);
 
-        LocationReservation lr = new LocationReservation(u, CustomDate.today().toDateString(), timeslot, null);
+        LocationReservation lr = new LocationReservation(u, LocalDateTime.now(), timeslot, null);
         TestSharedMethods.addCalendarPeriods(calendarPeriodDao, calendarPeriods.get(0));
         Assert.assertTrue(locationReservationDao.addLocationReservationIfStillRoomAtomically(lr));
-        lr = new LocationReservation(u, CustomDate.today().toDateString(), timeslot, null);
+        lr = new LocationReservation(u, LocalDateTime.now(), timeslot, null);
         // This is a duplicate entry into the database. Shouldn't work.
         Assert.assertFalse(locationReservationDao.addLocationReservationIfStillRoomAtomically(lr));
-        lr = new LocationReservation(u2, CustomDate.today().toDateString(), timeslot, null);
+        lr = new LocationReservation(u2, LocalDateTime.now(), timeslot, null);
         // This is a second user. Also shouldn't work.
         Assert.assertFalse(locationReservationDao.addLocationReservationIfStillRoomAtomically(lr));
 
@@ -136,8 +138,8 @@ public class TestDBLocationReservationDao extends TestDao {
         CustomDate today = CustomDate.today();
 
         // Make reservations for users u1 and u2
-        LocationReservation lr1 = new LocationReservation(u1, CustomDate.today().toDateString(), timeslot, null);
-        LocationReservation lr2 = new LocationReservation(u2, CustomDate.today().toDateString(), timeslot, null);
+        LocationReservation lr1 = new LocationReservation(u1, LocalDateTime.now(), timeslot, null);
+        LocationReservation lr2 = new LocationReservation(u2, LocalDateTime.now(), timeslot, null);
 
         locationReservationDao.addLocationReservation(lr1);
         locationReservationDao.addLocationReservation(lr2);

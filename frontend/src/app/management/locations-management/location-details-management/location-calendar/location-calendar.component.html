@@ -166,13 +166,15 @@
           <!-- Reservable from -->
           <td *ngIf="showReservationInformation">
             <label>
-              <input
-                class="form-control"
-                type="date"
-                [disabled]="!period.reservable"
-                [(ngModel)]="period.reservableFrom"
-                (ngModelChange)="refreshCalendar(period)"
-              />
+              <mat-form-field  floatLabel="never">
+                <input matInput [ngxMatDatetimePicker]="picker" placeholder="Choose a date"
+                  [disabled]="!period.reservable" [(ngModel)]="period.reservableFrom">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <ngx-mat-datetime-picker #picker [showSpinners]="true" [showSeconds]="true"
+                  [stepHour]="1" [stepMinute]="1" [stepSecond]="1" [touchUi]="touchUi"
+                  [color]="blue" [enableMeridian]="true">
+                </ngx-mat-datetime-picker>
+              </mat-form-field>
             </label>
           </td>
 

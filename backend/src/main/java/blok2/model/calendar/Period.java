@@ -1,10 +1,11 @@
 package blok2.model.calendar;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class Period {
-    private String startsAt; // date: YYYY-MM-DD
-    private String endsAt; // date: YYYY-MM-DD
+    private LocalDate startsAt; // date: YYYY-MM-DD
+    private LocalDate endsAt; // date: YYYY-MM-DD
 
     @Override
     public String toString() {
@@ -28,19 +29,19 @@ public class Period {
         return Objects.hash(startsAt, endsAt);
     }
 
-    public String getStartsAt() {
+    public LocalDate getStartsAt() {
         return startsAt;
     }
 
-    public void setStartsAt(String startsAt) {
+    public void setStartsAt(LocalDate startsAt) {
         this.startsAt = startsAt;
     }
 
-    public String getEndsAt() {
+    public LocalDate getEndsAt() {
         return endsAt;
     }
 
-    public void setEndsAt(String endsAt) {
+    public void setEndsAt(LocalDate endsAt) {
         this.endsAt = endsAt;
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.Date;
 
@@ -127,7 +128,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
 
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, augentID);
-            pstmt.setString(2, timeslot.getTimeslotDate());
+            pstmt.setDate(2, java.sql.Date.valueOf(timeslot.getTimeslotDate()));
             pstmt.setInt(3, timeslot.getTimeslotSeqnr());
             pstmt.setInt(4, timeslot.getCalendarId());
             ResultSet rs = pstmt.executeQuery();
@@ -147,7 +148,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
             query = query.replace("<?>", "lr.timeslot_date = ? and lr.timeslot_seqnr = ? and lr.calendar_id = ?");
 
             PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setString(1, timeslot.getTimeslotDate());
+            pstmt.setDate(1, java.sql.Date.valueOf(timeslot.getTimeslotDate()));
             pstmt.setInt(2, timeslot.getTimeslotSeqnr());
             pstmt.setInt(3, timeslot.getCalendarId());
             ResultSet rs = pstmt.executeQuery();
@@ -166,7 +167,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_location_reservation"));
             pstmt.setString(1, augentID);
-            pstmt.setString(2, timeslot.getTimeslotDate());
+            pstmt.setDate(2, java.sql.Date.valueOf(timeslot.getTimeslotDate()));
             pstmt.setInt(3, timeslot.getTimeslotSeqnr());
             pstmt.setInt(4, timeslot.getCalendarId());
             pstmt.execute();
@@ -183,8 +184,8 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
     private void addLocationReservation(LocationReservation locationReservation, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_location_reservation"));
         pstmt.setString(1, locationReservation.getUser().getAugentID());
-        pstmt.setString(2, locationReservation.getCreatedAt());
-        pstmt.setString(3, locationReservation.getTimeslot().getTimeslotDate());
+        pstmt.setTimestamp(2, Timestamp.valueOf(locationReservation.getCreatedAt()));
+        pstmt.setDate(3, java.sql.Date.valueOf(locationReservation.getTimeslot().getTimeslotDate()));
         pstmt.setInt(4, locationReservation.getTimeslot().getTimeslotSeqnr());
         pstmt.setInt(5, locationReservation.getTimeslot().getCalendarId());
         pstmt.execute();
@@ -328,7 +329,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
     public long getAmountOfReservationsOfTimeslot(Timeslot timeslot, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("count_location_reservations_of_location_for_timeslot"));
         pstmt.setInt(1, timeslot.getCalendarId());
-        pstmt.setString(2, timeslot.getTimeslotDate());
+        pstmt.setDate(2, java.sql.Date.valueOf(timeslot.getTimeslotDate()));
         pstmt.setInt(3, timeslot.getTimeslotSeqnr());
         ResultSet set = pstmt.executeQuery();
 
@@ -366,7 +367,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
         //  cant go back. So first call createUser(), then createLocation.
         User user = DBAccountDao.createUser(rs);
         Timeslot timeslot = DBCalendarPeriodDao.createTimeslot(rs);
-        String createdAt = rs.getString(Resources.databaseProperties.getString("location_reservation_created_at"));
+        LocalDateTime createdAt = rs.getTimestamp(Resources.databaseProperties.getString("location_reservation_created_at")).toLocalDateTime();
 
         return new LocationReservation(user, createdAt, timeslot, attended);
     }

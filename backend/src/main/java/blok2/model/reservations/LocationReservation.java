@@ -7,14 +7,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 
 public class LocationReservation {
     @Valid
     private User user;
-    @Pattern(regexp = "[0-9]{4}-[0-9]{2}-[0-9]{2}")
-    private String createdAt;
+    private LocalDateTime createdAt;
     @Valid
     private Timeslot timeslot;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY) // Users can't set this themselves
@@ -23,7 +23,7 @@ public class LocationReservation {
     public LocationReservation() {
     }
 
-    public LocationReservation(User user, String createdAt, Timeslot timeslot, Boolean attended) {
+    public LocationReservation(User user, LocalDateTime createdAt, Timeslot timeslot, Boolean attended) {
         this.user = user;
         this.createdAt = createdAt;
         this.timeslot = timeslot;
@@ -50,11 +50,11 @@ public class LocationReservation {
         this.attended = attended;
     }
 
-    public String getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 

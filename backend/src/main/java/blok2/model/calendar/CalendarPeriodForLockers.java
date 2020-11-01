@@ -2,11 +2,13 @@ package blok2.model.calendar;
 
 import blok2.model.reservables.Location;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class CalendarPeriodForLockers extends Period implements Cloneable {
     private Location location;
-    private String reservableFrom; // datetime: YYYY-MM-DDThh:mm
+    private LocalDateTime reservableFrom; // datetime: YYYY-MM-DDThh:mm
 
     public CalendarPeriodForLockers() {
 
@@ -57,11 +59,11 @@ public class CalendarPeriodForLockers extends Period implements Cloneable {
         this.location = location;
     }
 
-    public String getReservableFrom() {
+    public LocalDateTime getReservableFrom() {
         return reservableFrom;
     }
 
-    public void setReservableFrom(String reservableFrom) {
+    public void setReservableFrom(LocalDateTime reservableFrom) {
         this.reservableFrom = reservableFrom;
     }
 }

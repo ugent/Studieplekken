@@ -53,6 +53,10 @@ import { UserAuthoritiesManagementComponent } from './management/users-managemen
 import { AuthorityUsersManagementComponent } from './management/authorities-management/authority-users-management/authority-users-management.component';
 import { registerLocaleData } from '@angular/common';
 import localeNl from '@angular/common/locales/nl-BE';
+import { NgxMatDatetimePickerModule } from '@angular-material-components/datetime-picker';
+import { NgxMatMomentModule } from '@angular-material-components/moment-adapter';
+import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -248,7 +252,12 @@ const routes: Routes = [
       FormsModule,
       FlatpickrModule.forRoot(),
       CKEditorModule,
-      MatSelectModule
+      MatSelectModule,
+      NgxMatDatetimePickerModule,
+      NgxMatMomentModule,
+      MatDatepickerModule,
+      MatInputModule,
+
     ],
   providers: [],
   bootstrap: [AppComponent]

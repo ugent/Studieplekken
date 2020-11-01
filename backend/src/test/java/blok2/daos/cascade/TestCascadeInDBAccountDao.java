@@ -17,6 +17,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class TestCascadeInDBAccountDao extends TestDao {
@@ -85,8 +86,8 @@ public class TestCascadeInDBAccountDao extends TestDao {
         CalendarPeriod cp2 = TestSharedMethods.testCalendarPeriods(testLocation2).get(0);
         TestSharedMethods.addCalendarPeriods(calendarPeriodDao, cp2);
 
-        testLocationReservation1 = new LocationReservation(testUser, CustomDate.today().toDateString(), cp1.getTimeslots().get(0),  null);
-        testLocationReservation2 = new LocationReservation(testUser, new CustomDate(1970, 1, 1).toDateString(), cp2.getTimeslots().get(0),  null);
+        testLocationReservation1 = new LocationReservation(testUser, LocalDateTime.now(), cp1.getTimeslots().get(0),  null);
+        testLocationReservation2 = new LocationReservation(testUser, LocalDateTime.of(1970,1,1,0,0), cp2.getTimeslots().get(0),  null);
 
         Locker testLocker1 = new Locker(0, testLocation1);
         Locker testLocker2 = new Locker(0, testLocation2);

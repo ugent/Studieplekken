@@ -16,6 +16,7 @@ import { LocationReservation, LocationReservationConstructor } from 'src/app/sha
 import { transition, trigger, useAnimation } from '@angular/animations';
 import { rowsAnimation } from 'src/app/shared/animations/RowAnimation';
 import { Timeslot } from 'src/app/shared/model/Timeslot';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-location-calendar',
@@ -100,6 +101,9 @@ export class LocationCalendarComponent implements OnInit {
         return;
       }
 
+      next.forEach(n => n.openingTime = moment(n.openingTime, 'HH:mm:ss').format('HH:mm'));
+      next.forEach(n => n.closingTime = moment(n.closingTime, 'HH:mm:ss').format('HH:mm'));
+
       this.calendarPeriods = next;
 
       // make a deep copy to make sure that can be calculated whether any period has changed
@@ -157,18 +161,6 @@ export class LocationCalendarComponent implements OnInit {
     const period: CalendarPeriod = CalendarPeriodConstructor.new();
     period.location = location;
 
-    // If the information about reservations may not be shown (configured in environments.ts),
-    // then we need to programmatically provide a valid value for 'reservableFrom' because
-    // the user will not be able to set the value manually.
-    // If not set, the period will not be addable. Therefore, we just provide the current date-time.
-    if (true || !this.showReservationInformation) {
-      let dateTime = toDateTimeString(typeScriptDateToCustomDate(new Date()));
-      // remove the trailing ':ss' and replace 'T' with ' ' to make a valid
-      // dateTimeStr for the database: 'YYYY-MM-DD HH:MI'
-      dateTime = dateTime.substr(0, dateTime.length - 3).replace('T', ' ');
-      period.reservableFrom = dateTime;
-    }
-
     this.calendarPeriods.push(period);
   }
 
@@ -195,8 +187,11 @@ export class LocationCalendarComponent implements OnInit {
       //   in the 'handler' request will be sent to the backend, which is not wat we
       //   want if not all the periods are validly filled in
       for (const n of this.calendarPeriods) {
-        n.reservableFrom = n.reservableFrom && n.reservableFrom.toString() + ' 00:00';
-        console.log(n.reservableFrom)
+        // @ts-ignore
+        n.reservableFrom = n.reservableFrom &&  (n.reservableFrom.format ?
+                  // @ts-ignore
+                                  n.reservableFrom.format('yyyy-MM-DDTHH:mm:ss.SSSZ') : n.reservableFrom);
+        console.log(n.reservableFrom);
         if (!isCalendarPeriodValid(n)) {
           this.handleWrongCalendarPeriodFormatOnUpdate();
           return;

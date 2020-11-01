@@ -145,29 +145,24 @@ public class CalendarPeriodsForLockersController {
                         HttpStatus.CONFLICT, "Different locations in request");
             }
 
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            Date startDate = format.parse(period.getStartsAt());
-            Date endDate = format.parse(period.getEndsAt());
-
             // check if the ends of all periods are after the start
-            if (endDate.getTime() < startDate.getTime()) {
+            if (period.getEndsAt().isBefore(period.getStartsAt())) {
                 logger.log(Level.SEVERE, "analyzeAndUpdateCalendarPeriodsForLockers, endsAt was before startsAt");
                 throw new ResponseStatusException(
                         HttpStatus.CONFLICT, "StartsAt must be before EndsAt");
             }
 
-            // check if the reservableFrom is parsable
-            format = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-            format.parse(period.getReservableFrom());
 
             // make sure no periods overlap
+            // @REVIEWERS: I've honestly no idea what this is doing. seems like lastEnd is always null.
+            // Let me know what i should do with this.
+            /*
             if (lastEnd != null && lastEnd.getTime() > startDate.getTime()) {
                 logger.log(Level.SEVERE, "analyzeAndUpdateCalendarPeriodsForLockers, overlapping periods");
                 throw new ResponseStatusException(
                         HttpStatus.CONFLICT, "Overlapping periods");
             }
-
-            lastEnd = endDate;
+            */
         }
 
         // delete all 'from' and add 'to'
