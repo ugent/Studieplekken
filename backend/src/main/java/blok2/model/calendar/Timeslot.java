@@ -19,6 +19,17 @@ public class Timeslot implements Cloneable {
     @NotBlank
     private String timeslotDate;
 
+
+    public Timeslot() {
+
+    }
+
+    public Timeslot(int calendarId, int timeslotSeqnr, String timeslotDate) {
+        this.calendarId = calendarId;
+        this.timeslotSeqnr = timeslotSeqnr;
+        this.timeslotDate = timeslotDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
