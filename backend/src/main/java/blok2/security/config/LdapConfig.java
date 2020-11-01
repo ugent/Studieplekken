@@ -1,4 +1,4 @@
-package blok2.security;
+package blok2.security.config;
 
 import blok2.helpers.Resources;
 import org.springframework.boot.context.properties.ConfigurationProperties;

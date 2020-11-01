@@ -1,4 +1,4 @@
-package blok2.security;
+package blok2.security.config;
 
 import org.jasig.cas.client.validation.Cas20ServiceTicketValidator;
 import org.jasig.cas.client.validation.TicketValidator;

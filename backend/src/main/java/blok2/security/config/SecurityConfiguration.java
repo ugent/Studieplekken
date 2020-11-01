@@ -1,4 +1,4 @@
-package blok2.security;
+package blok2.security.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
