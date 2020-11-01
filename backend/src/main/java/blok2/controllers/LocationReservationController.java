@@ -54,7 +54,7 @@ public class LocationReservationController {
         }
     }
 
-    @PostMapping("/new")
+    @PostMapping
     public LocationReservation createLocationReservation(@AuthenticationPrincipal User user, @Valid @RequestBody Timeslot timeslot) {
         try {
             LocationReservation reservation = new LocationReservation(user, CustomDate.today().toDateString(), timeslot, null);
