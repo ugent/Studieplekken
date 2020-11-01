@@ -30,6 +30,12 @@ public class User implements Cloneable, UserDetails {
     private List<Authority> userAuthorities;
 
     public User() {
+        lastName = "";
+        firstName = "";
+        mail = "";
+        password = "";
+        institution = "";
+        augentID = "";
         userAuthorities = new ArrayList<>();
     }
 
@@ -156,8 +162,7 @@ public class User implements Cloneable, UserDetails {
     // *********************************************/
 
     /**
-     *
-     * A user always has the GrantedAuthority "USER". Depending on the attribute User#admin and
+     * A logged in user always has the GrantedAuthority "USER". Depending on the attribute User#admin and
      * whether or not the user is linked to one or more authorities (User#userAuthorities.size() > 0),
      * respectively the GrantedAuthorities "ADMIN" and "HAS_AUTHORITIES" are added.
      *
@@ -167,8 +172,9 @@ public class User implements Cloneable, UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
 
-        // user always gets the GrantedAuthority "USER"
-        grantedAuthorities.add(new SimpleGrantedAuthority("USER"));
+        // user always gets the GrantedAuthority "USER" if the user is logged in
+        if (!augentID.isEmpty())
+            grantedAuthorities.add(new SimpleGrantedAuthority("USER"));
 
         // if the user is admin, the GrantedAuthority "ADMIN" is added too
         if (admin)
