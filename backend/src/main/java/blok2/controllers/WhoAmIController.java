@@ -2,6 +2,7 @@ package blok2.controllers;
 
 import blok2.model.users.User;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,14 +17,26 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping("/whoAmI")
 public class WhoAmIController {
 
+    /**
+     * Used by frontend to be able to determine who is logged in, or if
+     * the user is anonymous.
+     *
+     * To avoid errors in the frontend, an empty user is returned.
+     * Note that this will not introduce authorization leaks because
+     * no GrantedAuthority is given to an empty user, only if User#augentId
+     * is not empty.
+     *
+     * @return user object from authenticated user, or an anonymous user
+     */
     @GetMapping
+    @PreAuthorize("permitAll()")
     public User whoAmI() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (principal instanceof User) {
             return (User) principal;
         } else {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User is not logged in");
+            return new User();
         }
     }
 

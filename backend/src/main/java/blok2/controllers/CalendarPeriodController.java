@@ -7,6 +7,7 @@ import blok2.model.reservables.Location;
 import blok2.shared.Utility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -36,6 +37,7 @@ public class CalendarPeriodController {
     }
 
     @GetMapping("/{locationName}")
+    @PreAuthorize("permitAll()")
     public List<CalendarPeriod> getCalendarPeriodsOfLocation(@PathVariable("locationName") String locationName) {
         try {
             return calendarPeriodDao.getCalendarPeriodsOfLocation(locationName);
@@ -47,6 +49,8 @@ public class CalendarPeriodController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    // TODO: if only 'HAS_AUTHORITIES', then adding calendar periods is only allowed for a location in one of the user's authorities
     public void addCalendarPeriods(@RequestBody List<CalendarPeriod> calendarPeriods) {
         try {
             calendarPeriodDao.addCalendarPeriods(calendarPeriods);
@@ -58,6 +62,8 @@ public class CalendarPeriodController {
     }
 
     @PutMapping("/{locationName}")
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    // TODO: if only 'HAS_AUTHORITIES', then updating calendar periods is only allowed for a location in one of the user's authorities
     public void updateCalendarPeriods(@PathVariable("locationName") String locationName,
                                       @RequestBody List<CalendarPeriod>[] fromAndTo) {
         try {
@@ -172,6 +178,8 @@ public class CalendarPeriodController {
     }
 
     @DeleteMapping
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    // TODO: if only 'HAS_AUTHORITIES', then deleting calendar periods is only allowed for a location in one of the user's authorities
     public void deleteCalendarPeriods(@RequestBody List<CalendarPeriod> calendarPeriods) {
         try {
             calendarPeriodDao.deleteCalendarPeriods(calendarPeriods);

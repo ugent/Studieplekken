@@ -3,14 +3,13 @@ package blok2.controllers;
 import blok2.daos.ILocationTagDao;
 import blok2.daos.ITagsDao;
 import blok2.model.LocationTag;
-import blok2.model.reservables.Location;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -38,6 +37,7 @@ public class TagsController {
      *****************************************************/
 
     @GetMapping
+    @PreAuthorize("permitAll()")
     public List<LocationTag> getAllTags() {
         try {
             return tagsDao.getTags();
@@ -49,6 +49,7 @@ public class TagsController {
     }
 
     @GetMapping("/{tagId}")
+    @PreAuthorize("permitAll()")
     public LocationTag getTag(@PathVariable int tagId) {
         try {
             return tagsDao.getTag(tagId);
@@ -60,6 +61,7 @@ public class TagsController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void addTag(@RequestBody LocationTag tag) {
         try {
             tagsDao.addTag(tag);
@@ -71,6 +73,7 @@ public class TagsController {
     }
 
     @PutMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void updateTag(@RequestBody LocationTag tag) {
         try {
             tagsDao.updateTag(tag);
@@ -82,6 +85,7 @@ public class TagsController {
     }
 
     @DeleteMapping("/{tagId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void deleteTag(@PathVariable int tagId) {
         try {
             tagsDao.deleteTag(tagId);
@@ -97,6 +101,7 @@ public class TagsController {
      **************************************************************/
 
     @GetMapping("/location/{locationName}")
+    @PreAuthorize("permitAll()")
     public List<LocationTag> getTagsOfLocation(@PathVariable("locationName") String locationName) {
         try {
             return locationTagDao.getTagsForLocation(locationName);
@@ -108,6 +113,8 @@ public class TagsController {
     }
 
     @PutMapping("/location/assign/{locationName}")
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    // TODO: if only 'HAS_AUTHORITIES', then only allowed to assign tags of a location within one of the user's authorities
     public void assignTagsToLocation(@PathVariable("locationName") String locationName,
                                      @RequestBody List<LocationTag> tags) {
         try {

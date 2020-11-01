@@ -3,22 +3,19 @@ package blok2.controllers;
 import blok2.daos.ILocationDao;
 import blok2.daos.ILocationTagDao;
 import blok2.helpers.date.CustomDate;
-import blok2.model.LocationTag;
 import blok2.model.reservables.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.joining;
 
 /**
  * This controller handles all requests related to locations.
@@ -44,6 +41,7 @@ public class LocationController {
     }
 
     @GetMapping
+    @PreAuthorize("permitAll()")
     public List<Location> getAllLocations() {
         try {
             return locationDao.getAllLocations();
@@ -55,6 +53,7 @@ public class LocationController {
     }
 
     @GetMapping("/{locationName}")
+    @PreAuthorize("permitAll()")
     public Location getLocation(@PathVariable("locationName") String locationName) {
         try {
             return locationDao.getLocation(locationName);
@@ -65,9 +64,9 @@ public class LocationController {
         }
     }
 
-    //authority user
-    // location should be part of an authority the user is part of.
     @PostMapping
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    // TODO: if only 'HAS_AUTHORITIES', then adding a location is only allowed within one of the user's authorities
     public void addLocation(@RequestBody Location location) {
         try {
             this.locationDao.addLocation(location);
@@ -79,9 +78,9 @@ public class LocationController {
         }
     }
 
-    //authority user
-    //the updated location should be part of an authority the user is part of.
     @PutMapping("/{locationName}")
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    // TODO: if only 'HAS_AUTHORITIES', then updating a location is only allowed within one of the user's authorities
     public void updateLocation(@PathVariable("locationName") String locationName, @RequestBody Location location) {
         try {
             locationDao.updateLocation(locationName, location);
@@ -93,9 +92,9 @@ public class LocationController {
         }
     }
 
-    //authority user
-    //the updated location should be part of an authority the user is part of.
     @DeleteMapping("/{locationName}")
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    // TODO: if only 'HAS_AUTHORITIES', then deleting a location is only allowed within one of the user's authorities
     public void deleteLocation(@PathVariable("locationName") String locationName) {
         try {
             locationDao.deleteLocation(locationName);
@@ -107,8 +106,8 @@ public class LocationController {
         }
     }
 
-    //logged in user (?)
     @GetMapping("/{locationName}/reservations/count")
+    @PreAuthorize("permitAll()")
     public int getAmountOfReservationsToday(@PathVariable("locationName") String locationName) {
         try {
             return locationDao.getCountOfReservations(CustomDate.now()).get(locationName);
@@ -129,6 +128,8 @@ public class LocationController {
      * that have been provided, will be set for the location
      */
     @PutMapping("/tags/{locationName}")
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    // TODO: if only 'HAS_AUTHORITIES', then setting up tags is only allowed for a location within one of the user's authorities
     public void setupTagsForLocation(@PathVariable("locationName") String locationName,
                                      @RequestBody List<Integer> tagIds) {
         try {

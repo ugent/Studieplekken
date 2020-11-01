@@ -4,6 +4,7 @@ import blok2.daos.ILockersDao;
 import blok2.model.reservations.LockerReservation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +31,8 @@ public class LockersController {
     }
 
     @GetMapping("/status/{locationName}")
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    // TODO: if only 'HAS_AUTHORITIES', then only allowed to retrieve the statuses of the lockers of a location within one of the user's authorities
     public List<LockerReservation> getLockerStatuses(@PathVariable("locationName") String locationName) {
         try {
             return lockersDao.getLockerStatusesOfLocation(locationName);

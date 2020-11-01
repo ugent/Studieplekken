@@ -7,6 +7,7 @@ import blok2.model.reservables.Location;
 import blok2.shared.Utility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -36,6 +37,7 @@ public class CalendarPeriodsForLockersController {
     }
 
     @GetMapping("/{locationName}")
+    @PreAuthorize("permitAll()")
     public List<CalendarPeriodForLockers>
     getCalendarPeriodsForLockersOfLocation(@PathVariable("locationName") String locationName) {
         try {
@@ -48,6 +50,8 @@ public class CalendarPeriodsForLockersController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    // TODO: if only 'HAS_AUTHORITIES', then adding calendar periods for lockers is only allowed for a location in one of the user's authorities
     public void addCalendarPeriodsForLockers(@RequestBody List<CalendarPeriodForLockers> calendarPeriodForLockers) {
         try {
             calendarPeriodForLockersDao.addCalendarPeriodsForLockers(calendarPeriodForLockers);
@@ -59,6 +63,8 @@ public class CalendarPeriodsForLockersController {
     }
 
     @PutMapping("/{locationName}")
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    // TODO: if only 'HAS_AUTHORITIES', then updating calendar periods for lockers is only allowed for a location in one of the user's authorities
     public void updateCalendarPeriodsForLockers(@PathVariable("locationName") String locationName,
                                                 @RequestBody List<CalendarPeriodForLockers>[] fromAndTo) {
         try {
@@ -176,6 +182,8 @@ public class CalendarPeriodsForLockersController {
     }
 
     @DeleteMapping
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    // TODO: if only 'HAS_AUTHORITIES', then deleting calendar periods for lockers is only allowed for a location in one of the user's authorities
     public void deleteCalendarPeriodsForLockers(@RequestBody List<CalendarPeriodForLockers> calendarPeriodForLockers) {
         try {
             calendarPeriodForLockersDao.deleteCalendarPeriodsForLockers(calendarPeriodForLockers);

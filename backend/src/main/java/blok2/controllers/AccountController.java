@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +43,7 @@ public class AccountController {
     }
 
     @GetMapping("/id")
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public User getUserByAUGentId(@RequestParam
                                   @Pattern(regexp = "^[^%_]*$")
                                           String id) {
@@ -55,6 +57,7 @@ public class AccountController {
     }
 
     @GetMapping("/mail")
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public User getUserByMail(@RequestParam
                               @Pattern(regexp = "^[^%_]*$")
                                       String mail) {
@@ -68,6 +71,7 @@ public class AccountController {
     }
 
     @GetMapping("/firstName")
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public List<User> getUsersByFirstName(@RequestParam("firstName")
                                           @Pattern(regexp = "^[^%_]*$")
                                                   String firstName) {
@@ -81,6 +85,7 @@ public class AccountController {
     }
 
     @GetMapping("/lastName")
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public List<User> getUsersByLastName(@RequestParam
                                          @Pattern(regexp = "^[^%_]*$")
                                                  String lastName) {
@@ -94,6 +99,7 @@ public class AccountController {
     }
 
     @GetMapping("/firstAndLastName")
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public List<User> getUsersByLastName(@RequestParam
                                          @Pattern(regexp = "^[^%_]*$")
                                                  String firstName,
@@ -110,6 +116,7 @@ public class AccountController {
     }
 
     @GetMapping("/barcode")
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public User getUserByBarcode(@RequestParam String barcode) {
         try {
             User userLinkedToBarcode = accountDao.getUserFromBarcode(barcode);
@@ -128,6 +135,7 @@ public class AccountController {
     }
 
     @GetMapping("/{userId}/authorities")
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public List<Authority> getAuthoritiesFromUser(@PathVariable
                                                   @Pattern(regexp = "^[^%_]*$")
                                                           String userId) {
@@ -141,6 +149,7 @@ public class AccountController {
     }
 
     @GetMapping("{userId}/has/authorities")
+    @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public boolean hasUserAuthorities(@PathVariable("userId")
                                       @Pattern(regexp = "^[^%_]*$")
                                               String userId) {
@@ -154,6 +163,7 @@ public class AccountController {
     }
 
     @PutMapping("/{userId}")
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void updateUser(@PathVariable("userId")
                            @Pattern(regexp = "^[^%_]*$")
                                    String id, @RequestBody User user) {
@@ -169,6 +179,7 @@ public class AccountController {
     }
 
     @PutMapping("/password")
+    @PreAuthorize("hasAuthority('USER')")
     public void changePassword(@RequestBody ChangePasswordBody body) {
         try {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
