@@ -9,7 +9,6 @@ import {Observable, Subject} from 'rxjs';
 import {Location} from '../../../../shared/model/Location';
 import {CalendarPeriodsService} from '../../../../services/api/calendar-periods/calendar-periods.service';
 import {ApplicationTypeFunctionalityService} from '../../../../services/functionality/application-type/application-type-functionality.service';
-import {toDateTimeString, typeScriptDateToCustomDate} from '../../../../shared/model/helpers/CustomDate';
 import {msToShowFeedback} from '../../../../../environments/environment';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { LocationReservation, LocationReservationConstructor } from 'src/app/shared/model/LocationReservation';
@@ -153,8 +152,7 @@ export class LocationCalendarComponent implements OnInit {
   addOpeningPeriodButtonClick(location: Location): void {
     this.addOpeningPeriod(location);
     this.disableFootButtons = false;
-    console.log(this.disableFootButtons)
-
+    console.log(this.disableFootButtons);
   }
 
   addOpeningPeriod(location: Location): void {
@@ -187,11 +185,7 @@ export class LocationCalendarComponent implements OnInit {
       //   in the 'handler' request will be sent to the backend, which is not wat we
       //   want if not all the periods are validly filled in
       for (const n of this.calendarPeriods) {
-        // @ts-ignore
-        n.reservableFrom = n.reservableFrom &&  (n.reservableFrom.format ?
-                  // @ts-ignore
-                                  n.reservableFrom.format('yyyy-MM-DDTHH:mm:ss.SSSZ') : n.reservableFrom);
-        console.log(n.reservableFrom);
+        console.log(new Date(n.reservableFrom));
         if (!isCalendarPeriodValid(n)) {
           this.handleWrongCalendarPeriodFormatOnUpdate();
           return;
@@ -308,6 +302,6 @@ export class LocationCalendarComponent implements OnInit {
         this.deletionWasSuccess = false;
         this.loadReservations();
       }
-    )
+    );
   }
 }
