@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/authority")
+@RequestMapping("authority")
 public class AuthorityController {
     private final Logger logger = LoggerFactory.getLogger(AuthorityController.class.getSimpleName());
     private final IAuthorityDao authorityDao;
