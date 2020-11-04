@@ -21,8 +21,10 @@ import { CalendarPeriod } from 'src/app/shared/model/CalendarPeriod';
 export class ProfileLocationReservationsComponent implements OnInit {
   locationReservations: Observable<LocationReservation[]>;
   calendarLocationMap: Map<number, string> = new Map();
+  calendarIdList: number[] = [];
 
   showReservations = false;
+  loadingReservations = false;
 
   toDateString = (date: CustomDate) => toDateString(date);
   compareDates = (date1: CustomDate, date2: CustomDate) => compareDates(date1, date2);
@@ -45,30 +47,34 @@ export class ProfileLocationReservationsComponent implements OnInit {
     }
 
     this.locationReservations.subscribe(next => {
-      this.showReservations = undefined;
+      this.showReservations = false;
+      this.loadingReservations = true;
 
+      this.calendarIdList = [];
       next.forEach(element => {
-        this.calendarLocationMap.set(element.timeslot.calendarId, '');
+        this.calendarIdList.push(element.timeslot.calendarId);
       });
 
       this.fillCalendarLocationMap();
     }, () => {
       this.showReservations = false;
+      this.loadingReservations = false;
     });
   }
 
   fillCalendarLocationMap(): void {
     this.calendarPeriodService.getCalendarPeriods().subscribe(next => {
       next.forEach(element => {
-        if(this.calendarLocationMap.has(element.id)) {
-          console.log('Setting calendarLocationMap');
+        if (this.calendarIdList.includes(element.id)) {
           this.calendarLocationMap.set(element.id, element.location.name);
         }
       });
 
       this.showReservations = true;
+      this.loadingReservations = false;
     }, () => {
       this.showReservations = false;
+      this.loadingReservations = false;
     });
   }
 }

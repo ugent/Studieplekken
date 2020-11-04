@@ -44,13 +44,13 @@
 </ng-template>
 
 <ng-template #noReservations>
-  <div class="container-fluid" *ngIf="showReservations === undefined; else errorReservations">
+  <div class="container-fluid" *ngIf="showReservations === false && loadingReservations === true; else errorReservations">
     {{'profile.reservations.locations.loading' | translate}}
   </div>
 </ng-template>
 
 <ng-template #errorReservations>
-  <div class="container-fluid" *ngIf="showReservations === false">
+  <div class="container-fluid" *ngIf="showReservations === false && loadingReservations === false">
     {{'profile.reservations.locations.error' | translate}}
   </div>
 </ng-template>

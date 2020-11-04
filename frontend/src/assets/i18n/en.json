@@ -790,7 +790,9 @@
           }
         },
 
-        "noReservations": "You have never made any location reservations so far."
+        "zeroReservations": "You have never made any location reservations so far",
+        "loading": "Location reservations are being loaded...",
+        "error": "Error while loading your location reservations"
       },
 
       "lockers": {
