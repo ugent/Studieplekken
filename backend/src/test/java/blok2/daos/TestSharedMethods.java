@@ -25,6 +25,7 @@ public class TestSharedMethods {
         testLocation.setImageUrl("https://example.com/image.jpg");
         testLocation.setAuthority(authority);
         testLocation.setBuilding(building);
+        testLocation.setForGroup(false);
         return testLocation;
     }
 
@@ -36,6 +37,7 @@ public class TestSharedMethods {
         testLocation2.setImageUrl("https://example.com/picture.png");
         testLocation2.setAuthority(authority);
         testLocation2.setBuilding(building);
+        testLocation2.setForGroup(true);
         return testLocation2;
     }
 
@@ -47,6 +49,7 @@ public class TestSharedMethods {
         testLocation3.setImageUrl("https://example.com/picture.png");
         testLocation3.setAuthority(authority);
         testLocation3.setBuilding(building);
+        testLocation3.setForGroup(true);
         return testLocation3;
     }
 
@@ -95,7 +98,6 @@ public class TestSharedMethods {
         Assert.assertEquals("insertTestAuthority: Failed to insert Test Authority", authority, dbAuthority);
         return authority;
     }
-
 
     public static User adminTestUser() {
         User user = new User();

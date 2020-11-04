@@ -32,6 +32,7 @@ export class DetailsFormComponent implements OnInit {
     building: new FormControl({value: '', disabled: true}),
     numberOfSeats: new FormControl({value: '', disabled: true}),
     numberOfLockers: new FormControl({value: '', disabled: true}),
+    forGroup: new FormControl({value: '', disabled: true}),
     imageUrl: new FormControl({value: '', disabled: true})
   });
 
@@ -81,6 +82,7 @@ export class DetailsFormComponent implements OnInit {
       building: location.building.buildingId,
       numberOfSeats: location.numberOfSeats,
       numberOfLockers: location.numberOfLockers,
+      forGroup: location.forGroup,
       imageUrl: location.imageUrl
     });
   }

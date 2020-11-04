@@ -52,6 +52,10 @@ cas:
   loginUrl: https://login.ugent.be
   callbackUrl: https://localhost:8080/login/cas
 
+# Redirect url after successful login
+redirect:
+  successLoginRedirectUrl: https://localhost:4200/dashboard
+
 # LDAP Configuration
 ldap:
   url: ldaps://ldap.ugent.be

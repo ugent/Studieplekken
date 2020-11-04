@@ -36,6 +36,7 @@ CREATE TABLE public.locations
     authority_id        integer NOT NULL,
     description_dutch   text,
     description_english text,
+    forGroup            boolean,
 
     constraint fk_location_to_authority
         foreign key (authority_id)
@@ -424,6 +425,7 @@ values ('ADMIN'),
        ('EMPLOYEE'),
        ('STUDENT');
 
+/*
 --
 -- Dummy user accounts:
 --		- user: admin 						password: Test1234
@@ -438,3 +440,4 @@ values ('01', 'ADMIN$EMPLOYEE', 'admin', 'admin', 0, 'admin',
         '$2a$10$3sAUdBwt2sJhhMl3MVZAv.Pv56XHGo2kTbyS.nFeMmPb3dHA1kkTq', 'UGent'),
        ('03', 'STUDENT$EMPLOYEE', 'student-scanmedewerker', 'student-scanmedewerker', 0, 'student-scanmedewerker',
         '$2a$10$3sAUdBwt2sJhhMl3MVZAv.Pv56XHGo2kTbyS.nFeMmPb3dHA1kkTq', 'UGent');
+*/

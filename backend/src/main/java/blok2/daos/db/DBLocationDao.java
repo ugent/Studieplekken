@@ -233,6 +233,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
         String name = rs.getString(Resources.databaseProperties.getString("location_name"));
         int numberOfSeats = rs.getInt(Resources.databaseProperties.getString("location_number_of_seats"));
         int numberOfLockers = rs.getInt(Resources.databaseProperties.getString("location_number_of_lockers"));
+        boolean forGroup = rs.getBoolean(Resources.databaseProperties.getString("location_forGroup"));
         String imageUrl = rs.getString(Resources.databaseProperties.getString("location_image_url"));
         Building building = DBBuildingDao.createBuilding(rs);
         Authority authority = DBAuthorityDao.createAuthority(rs);
@@ -244,7 +245,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
         fillTagLists(assignedTags, rsTags);
 
         return new Location(name, numberOfSeats, numberOfLockers, imageUrl, authority,
-                descriptionDutch, descriptionEnglish, building, assignedTags);
+                descriptionDutch, descriptionEnglish, building, forGroup, assignedTags);
     }
 
     private static void fillTagLists(List<LocationTag> assignedTags, ResultSet rsTags)
@@ -299,6 +300,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
         pstmt.setInt(6, location.getBuilding().getBuildingId());
         pstmt.setString(7, location.getDescriptionDutch());
         pstmt.setString(8, location.getDescriptionEnglish());
+        pstmt.setBoolean(9, location.getForGroup());
     }
 
     private static void deleteCalendarPeriods(String locationName, Connection conn) throws SQLException {
@@ -453,7 +455,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
         // set ...
         prepareUpdateOrInsertLocationStatement(location, pstmt);
         // where ...
-        pstmt.setString(9, location.getName());
+        pstmt.setString(10, location.getName());
         pstmt.execute();
     }
 
