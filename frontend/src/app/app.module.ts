@@ -55,7 +55,9 @@ import { AuthoritiesManagementComponent } from './management/authorities-managem
 import { UserAuthoritiesManagementComponent } from './management/users-management/user-details-management/user-authorities-management/user-authorities-management.component';
 import { AuthorityUsersManagementComponent } from './management/authorities-management/authority-users-management/authority-users-management.component';
 import { registerLocaleData } from '@angular/common';
+import { MatDialogModule } from '@angular/material/dialog';
 import localeNl from '@angular/common/locales/nl-BE';
+import { LocationOpeningperiodDialogComponent } from './management/locations-management/location-details-management/location-calendar/location-openingperiod-dialog/location-openingperiod-dialog.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -235,33 +237,35 @@ const routes: Routes = [
     LockerReservationsManagementComponent,
     AuthoritiesManagementComponent,
     UserAuthoritiesManagementComponent,
-    AuthorityUsersManagementComponent
+    AuthorityUsersManagementComponent,
+    LocationOpeningperiodDialogComponent
   ],
-    imports: [
-      BrowserModule,
-      AppRoutingModule,
-      RouterModule.forRoot(routes),
-      HttpClientModule,
-      TranslateModule.forRoot({
-          defaultLanguage: 'nl',
-          loader: {
-              provide: TranslateLoader,
-              useFactory: HttpLoaderFactory,
-              deps: [HttpClient]
-          }
-      }),
-      MarkdownModule.forRoot(),
-      BrowserAnimationsModule,
-      CalendarModule.forRoot({
-          provide: DateAdapter,
-          useFactory: adapterFactory,
-      }),
-      ReactiveFormsModule,
-      FormsModule,
-      FlatpickrModule.forRoot(),
-      CKEditorModule,
-      MatSelectModule
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    RouterModule.forRoot(routes),
+    HttpClientModule,
+    TranslateModule.forRoot({
+        defaultLanguage: 'nl',
+        loader: {
+            provide: TranslateLoader,
+            useFactory: HttpLoaderFactory,
+            deps: [HttpClient]
+        }
+    }),
+    MarkdownModule.forRoot(),
+    BrowserAnimationsModule,
+    CalendarModule.forRoot({
+        provide: DateAdapter,
+        useFactory: adapterFactory,
+    }),
+    ReactiveFormsModule,
+    FormsModule,
+    FlatpickrModule.forRoot(),
+    CKEditorModule,
+    MatSelectModule,
+    MatDialogModule
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })
