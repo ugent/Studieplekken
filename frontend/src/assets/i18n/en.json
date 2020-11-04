@@ -55,7 +55,8 @@
       "cancel": "Cancel",
       "delete": "Delete",
       "search": "Search",
-      "clear": "Clear"
+      "clear": "Clear",
+      "close": "Close"
     },
 
     "roles": {
@@ -167,6 +168,11 @@
           "errorMessage": "Update was not successful. Something went wrong.",
 
           "noCalendarPeriodsForLocation": "At the moment, there are no periods for the location."
+        },
+
+        "warningDialog": {
+          "warning": "Warning",
+          "body": "The opening duration of (at least) one of the created calendar periods is not divisable by the Reservable Timeslot-duration. This means that, for these periods, the last (incomplete) timeslot will not be created and as such will also not be reservable. Please make sure to take this into account"
         }
       },
 
