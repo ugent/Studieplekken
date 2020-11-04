@@ -74,7 +74,7 @@ from public.locations l
         on b.building_id = l.building_id
 where l.authority_id = ?;
 
---$ get_locations_in_building
+-- $get_locations_in_building
 select  l.name, l.number_of_seats, l.number_of_lockers
      , l.image_url, l.description_dutch, l.description_english
      , b.building_id, b.building_name, b.address
@@ -112,9 +112,6 @@ where authority_id = ?;
 insert into public.locations (name, number_of_seats, number_of_lockers, image_url, authority_id, building_id, description_dutch, description_english, forGroup)
 values (?, ?, ?, ?, ?, ?, ?, ?, ?);
 
--- $update_location
-update public.locations
-set name = ?, number_of_seats = ?, number_of_lockers = ?, image_url = ?, authority_id = ?, building_id = ?, description_dutch = ?, description_english = ?
 -- $update_location
 update public.locations
 set name = ?, number_of_seats = ?, number_of_lockers = ?, image_url = ?, authority_id = ?, building_id = ?, description_dutch = ?, description_english = ?, forGroup = ?
@@ -543,7 +540,7 @@ group by y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.
      , y.augentid, y.admin, y.penalty_points
      , y.number, y.location_name
      , y.user_augentid, y.key_pickup_date, y.key_return_date
-	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url,
+	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url
      , l.description_dutch, l.description_english, l.forGroup
      , b.building_id, b.building_name, b.address
      , a.authority_id, a.authority_name, a.description
@@ -621,7 +618,7 @@ with recursive x as (
     where key_return_date = '' or key_return_date is NULL
 ), lockers as (
     select l.location_name, l.number
-         , s.name, s.number_of_seats, s.number_of_lockers, s.image_url,
+         , s.name, s.number_of_seats, s.number_of_lockers, s.image_url
          , s.description_dutch, s.description_english, s.forGroup
          , a.authority_id, a.authority_name, a.description
          , b.building_id, b.building_name, b.address
@@ -643,7 +640,7 @@ with recursive x as (
     where l.location_name = ?
 )
 select r.location_name, r.number
-     , r.name, r.number_of_seats, r.number_of_lockers, r.image_url,
+     , r.name, r.number_of_seats, r.number_of_lockers, r.image_url
      , r.description_dutch, r.description_english, r.forGroup
      , r.authority_id, r.authority_name, r.description
      , r.building_id, r.building_name, r.address
@@ -664,7 +661,7 @@ from lockers r
          left join x
                    on floor(extract(days from (now() - to_timestamp(pb.timestamp, 'YYYY-MM-DD HH24\:MI\:SS'))) / 7) = x.week
 group by r.location_name, r.number
-        , r.name, r.number_of_seats, r.number_of_lockers, r.image_url,
+        , r.name, r.number_of_seats, r.number_of_lockers, r.image_url
         , r.description_dutch, r.description_english, r.forGroup
         , r.authority_id, r.authority_name, r.description
         , r.building_id, r.building_name, r.address
