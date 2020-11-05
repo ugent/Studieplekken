@@ -343,23 +343,16 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
     }
 
     public static LocationReservation createLocationReservation(ResultSet rs,Connection conn) throws SQLException {
-
         Boolean attended = rs.getBoolean(Resources.databaseProperties.getString("location_reservation_attended"));
         if (rs.wasNull()) {
             attended = null;
         }
 
-        // Note: it is important that createUser is called before createLocation.
-        //  the reason is that within createLocation, the ResultSet is looped
-        //  because it needs all descriptions. But if you would use the looped
-        //  ResultSet, the internal record pointer is after the last entry and you
-        //  cant go back. So first call createUser(), then createLocation.
         User user = DBAccountDao.createUser(rs);
         Timeslot timeslot = DBCalendarPeriodDao.createTimeslot(rs);
         String createdAt = rs.getString(Resources.databaseProperties.getString("location_reservation_created_at"));
 
         return new LocationReservation(user, createdAt, timeslot, attended);
     }
-
 
 }
