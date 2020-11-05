@@ -7,6 +7,7 @@ import blok2.model.users.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.SmartValidator;
@@ -68,7 +69,7 @@ public class LocationReservationController {
     }
 
     @GetMapping("/timeslot/{calendarid}/{date}/{seqnr}")
-    public List<LocationReservation> getLocationReservationsByTimeslot(@PathVariable("calendarid") int calendarId, @PathVariable("date") LocalDate date, @PathVariable("seqnr") int seqnr) {
+    public List<LocationReservation> getLocationReservationsByTimeslot(@PathVariable("calendarid") int calendarId, @PathVariable("date") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate date, @PathVariable("seqnr") int seqnr) {
         Timeslot timeslot = new Timeslot(calendarId, seqnr, date);
         try {
             return locationReservationDao.getAllLocationReservationsOfTimeslot(timeslot);
