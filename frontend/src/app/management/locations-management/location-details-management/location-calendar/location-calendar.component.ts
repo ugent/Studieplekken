@@ -182,9 +182,8 @@ export class LocationCalendarComponent implements OnInit {
         }
       }
 
-      // TODO: check if the closing time - opening time is divisible by timeslot_size.
+      // Check if the closing time - opening time is divisible by timeslot_size.
       this.checkForWarning();
-
 
       // if this.eventsInDataLayer.length === 0, add all events instead of updating
       if (this.calendarPeriodsInDataLayer.length === 0) {
@@ -208,7 +207,7 @@ export class LocationCalendarComponent implements OnInit {
   checkForWarning(): void {
     let showWarning = false;
     this.calendarPeriods.forEach(element => {
-      if(!element.reservable) {
+      if (!element.reservable) {
         return;
       }
       const begin = new Date(element.startsAt + ' ' + element.openingTime);
