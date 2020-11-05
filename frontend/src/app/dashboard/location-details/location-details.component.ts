@@ -3,7 +3,7 @@ import {Location} from '../../shared/model/Location';
 import {ActivatedRoute} from '@angular/router';
 import {BehaviorSubject, combineLatest, Observable, Subscription} from 'rxjs';
 import {LocationService} from '../../services/api/locations/location.service';
-import {vars} from '../../../environments/environment';
+import {vars, msToShowFeedback} from '../../../environments/environment';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {CalendarEvent} from 'angular-calendar';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -166,10 +166,12 @@ export class LocationDetailsComponent implements OnInit {
           this.updateCalendar();
           this.showSuccess = true;
           this.showError = false;
+          setTimeout(() => this.showSuccess = false, msToShowFeedback);
         }, () => {
           this.isModified = true;
           this.showSuccess = false;
           this.showError = true;
+          setTimeout(() => this.showError = false, msToShowFeedback);
         });
   }
 }
