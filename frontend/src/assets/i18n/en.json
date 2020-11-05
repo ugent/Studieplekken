@@ -11,6 +11,7 @@
 
   "dashboard": {
     "address": "Address",
+    "building": "Building",
     "description": "Description",
     "details": "Details",
     "tags": "Tags",

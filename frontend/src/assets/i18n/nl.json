@@ -11,6 +11,7 @@
 
   "dashboard": {
     "address": "Adres",
+    "building": "Gebouw",
     "description": "Omschrijving",
     "details": "Details",
     "tags": "Tags",
