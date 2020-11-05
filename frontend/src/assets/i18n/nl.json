@@ -309,7 +309,6 @@
       "title": "Beheer van gebouwen voor locaties",
 
       "table": {
-        "id": "Gebouw ID",
         "name": "Naam",
         "address": "Adres"
       },
@@ -336,7 +335,6 @@
       "title": "Beheer van tags van locaties",
 
       "table": {
-        "id": "Tag ID",
         "dutch": "Nederlands",
         "english": "Engels"
       },
@@ -507,7 +505,6 @@
       "title": "Beheer van autoriteiten",
 
       "table": {
-        "authorityId": "ID",
         "authorityName": "Naam van autoriteit",
         "description": "Omschrijving"
       },

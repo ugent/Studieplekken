@@ -309,7 +309,6 @@
       "title": "Management of buildings for locations",
 
       "table": {
-        "id": "Building ID",
         "name": "Name",
         "address": "Address"
       },
@@ -336,7 +335,6 @@
       "title": "Management of tags for locations",
 
       "table": {
-        "id": "Tag ID",
         "dutch": "Dutch",
         "english": "English"
       },
@@ -507,7 +505,6 @@
       "title": "Management of authorities",
 
       "table": {
-        "authorityId": "ID",
         "authorityName": "Authority name",
         "description": "Description"
       },

@@ -9,7 +9,6 @@
     <table style="width: 100%;" *ngIf="buildings.length > 0; else noBuilding">
       <thead>
       <tr>
-        <th>{{'management.buildings.table.id' | translate}}</th>
         <th>{{'management.buildings.table.name' | translate}}</th>
         <th>{{'management.buildings.table.address' | translate}}</th>
         <th><!-- update --></th>
@@ -18,7 +17,6 @@
 
       <tbody>
       <tr [@rowsAnimation]="" *ngFor="let building of buildings">
-        <td>{{building.buildingId}}</td>
         <td>{{building.name}}</td>
         <td>{{building.address}}</td>
         <!-- Edit icon -->
@@ -69,15 +67,6 @@
       <div class="modal-body">
         <form [formGroup]="buildingFormGroup">
           <!-- buildingID - this will be set by the database -->
-          <div class="row form-group">
-            <label class="col-lg-3 control-label" for="buildingIdAdd">
-              {{'management.buildings.table.id' | translate}}<br>
-              <span style="color: red;">{{'management.buildings.addBuildingModal.idSetByBackendMessage' | translate}}</span>
-            </label>
-            <div class="col-lg-8">
-              <input class="form-control" id="buildingIdAdd" type="number" formControlName="buildingId" >
-            </div>
-          </div>
 
           <!-- Name of building -->
           <div class="row form-group">
@@ -149,15 +138,6 @@
       <!-- Modal body -->
       <div class="modal-body">
         <form [formGroup]="buildingFormGroup">
-          <!-- Building ID - not updatable -->
-          <div class="row form-group">
-            <label class="col-lg-3 control-label" for="buildingIdUpdate">
-              {{'management.buildings.table.id' | translate}}
-            </label>
-            <div class="col-lg-8">
-              <input class="form-control" id="buildingIdUpdate" type="number" formControlName="buildingId">
-            </div>
-          </div>
 
           <!-- Building name -->
           <div class="row form-group">
