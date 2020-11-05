@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -14,6 +15,7 @@ import java.util.Objects;
 public class LocationReservation {
     @Valid
     private User user;
+    @NotNull
     private LocalDateTime createdAt;
     @Valid
     private Timeslot timeslot;

@@ -1,21 +1,11 @@
 import {Location, LocationConstructor} from './Location';
-import {
-  isStringValidDateForDB,
-  isStringValidDateTimeForDB,
-  isStringValidTimeForDBWithoutSeconds
-} from '../validators/DateValidators';
 import {CalendarEvent} from 'angular-calendar';
 import {includesTimeslot, Timeslot, timeslotEndHour, timeslotStartHour} from './Timeslot';
 import { LocationReservation } from './LocationReservation';
 import * as moment from 'moment';
 import { Moment } from 'moment';
 
-<<<<<<< HEAD
 export class CalendarPeriod {
-=======
-export interface CalendarPeriod {
-  id: number;
->>>>>>> angular_update_reservations
   location: Location;
   startsAt: Moment;
   endsAt: Moment;

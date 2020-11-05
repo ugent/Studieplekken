@@ -3,13 +3,16 @@ package blok2.model.reservations;
 import blok2.model.reservables.Locker;
 import blok2.model.users.User;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class LockerReservation {
     private User owner;
     private Locker locker;
+    @NotNull
     private LocalDateTime keyPickupDate;
+    @NotNull
     private LocalDateTime keyReturnedDate;
 
     public LockerReservation() {
