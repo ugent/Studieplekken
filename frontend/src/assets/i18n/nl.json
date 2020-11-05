@@ -780,6 +780,7 @@
           "header": {
             "locationName": "Locatie",
             "reservationDate": "Gereserveerd voor datum",
+            "beginHour": "Aanvangsuur reservatie",
             "attended": "Was je aanwezig?"
           },
 

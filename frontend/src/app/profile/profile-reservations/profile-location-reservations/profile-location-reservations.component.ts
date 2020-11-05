@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import {AuthenticationService} from '../../../services/authentication/authentication.service';
-import {Observable} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import {transition, trigger, useAnimation} from '@angular/animations';
 import {rowsAnimation} from '../../../shared/animations/RowAnimation';
-import {LocationReservation} from '../../../shared/model/LocationReservation';
+import {LocationReservation, LocationReservationConstructor} from '../../../shared/model/LocationReservation';
 import {compareDates, CustomDate, nowAsCustomDate, toDateString} from '../../../shared/model/helpers/CustomDate';
 import { CalendarPeriodsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
 import { CalendarPeriod } from 'src/app/shared/model/CalendarPeriod';
+import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
+import { Timeslot } from 'src/app/shared/model/Timeslot';
 
 @Component({
   selector: 'app-profile-location-reservations',
@@ -20,18 +22,23 @@ import { CalendarPeriod } from 'src/app/shared/model/CalendarPeriod';
 })
 export class ProfileLocationReservationsComponent implements OnInit {
   locationReservations: Observable<LocationReservation[]>;
-  calendarLocationMap: Map<number, string> = new Map();
+  calendarMap: Map<number, CalendarPeriod> = new Map();
   calendarIdList: number[] = [];
+  locationReservationToDelete: LocationReservation = LocationReservationConstructor.new();
+  locationReservationSub: Subscription;
 
   showReservations = false;
   loadingReservations = false;
+  deletionWasSuccess: boolean = undefined;
 
   toDateString = (date: CustomDate) => toDateString(date);
   compareDates = (date1: CustomDate, date2: CustomDate) => compareDates(date1, date2);
   nowAsCustomDate = () => nowAsCustomDate();
 
+
   constructor(private authenticationService: AuthenticationService,
-              private calendarPeriodService: CalendarPeriodsService) {
+              private calendarPeriodService: CalendarPeriodsService,
+              private locationReservationService: LocationReservationsService) {
     authenticationService.user.subscribe(next => {
     });
   }
@@ -66,7 +73,7 @@ export class ProfileLocationReservationsComponent implements OnInit {
     this.calendarPeriodService.getCalendarPeriods().subscribe(next => {
       next.forEach(element => {
         if (this.calendarIdList.includes(element.id)) {
-          this.calendarLocationMap.set(element.id, element.location.name);
+          this.calendarMap.set(element.id, element);
         }
       });
 
@@ -76,5 +83,28 @@ export class ProfileLocationReservationsComponent implements OnInit {
       this.showReservations = false;
       this.loadingReservations = false;
     });
+  }
+
+  prepareToDeleteLocationReservation(locationReservation: LocationReservation): void {
+    this.deletionWasSuccess = undefined;
+    this.locationReservationToDelete = locationReservation;
+  }
+
+  deleteLocationReservation(): void {
+    this.locationReservationService.deleteLocationReservation(this.locationReservationToDelete).subscribe(
+      () => {
+        this.locationReservations = this.authenticationService.getLocationReservations();
+        this.deletionWasSuccess = true;
+      }, () => {
+        this.locationReservations = this.authenticationService.getLocationReservations();
+        this.deletionWasSuccess = false;
+      }
+    );
+  }
+
+  getBeginHour(calendarPeriod: CalendarPeriod, timeslot: Timeslot): Date {
+    const d = new Date(calendarPeriod.startsAt + ' ' + calendarPeriod.openingTime);
+    d.setTime(d.getTime() + timeslot.timeslotSeqnr * calendarPeriod.reservableTimeslotSize * 60000);
+    return d;
   }
 }

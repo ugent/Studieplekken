@@ -780,6 +780,7 @@
           "header": {
             "locationName": "Location",
             "reservationDate": "Reservation for date",
+            "beginHour": "Starting time reservation",
             "attended": "Did you attend?"
           },
 
