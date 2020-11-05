@@ -3,17 +3,15 @@ package blok2.daos.db;
 import blok2.daos.IBuildingDao;
 import blok2.helpers.Resources;
 import blok2.model.Building;
+import blok2.model.reservables.Location;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 @Service
 public class DBBuildingDao extends DAO implements IBuildingDao {
-
-    private static final Logger logger = Logger.getLogger(DBBuildingDao.class.getSimpleName());
 
     // *************************************
     // *   CRUD operations for BUILDING   *
@@ -49,6 +47,22 @@ public class DBBuildingDao extends DAO implements IBuildingDao {
     }
 
     @Override
+    public List<Location> getLocationsInBuilding(int buildingId) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_locations_in_building"));
+            pstmt.setInt(1, buildingId);
+            ResultSet rs = pstmt.executeQuery();
+
+            List<Location> locations = new ArrayList<>();
+            while (rs.next()) {
+                locations.add(DBLocationDao.createLocation(rs, conn));
+            }
+
+            return locations;
+        }
+    }
+
+    @Override
     public Building addBuilding(Building building) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("add_building"));
@@ -80,11 +94,8 @@ public class DBBuildingDao extends DAO implements IBuildingDao {
             try {
                 conn.setAutoCommit(false);
 
-                deleteBuildings(buildingId, conn);
-
-                PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_building"));
-                pstmt.setInt(1, buildingId);
-                pstmt.execute();
+                deleteLocationsInBuilding(buildingId, conn);
+                deleteBuilding(buildingId, conn);
 
                 conn.commit();
                 conn.setAutoCommit(true);
@@ -104,7 +115,7 @@ public class DBBuildingDao extends DAO implements IBuildingDao {
         return new Building(buildingId, name, address);
     }
 
-    private void deleteBuildings(int buildingId, Connection conn) throws SQLException {
+    private void deleteLocationsInBuilding(int buildingId, Connection conn) throws SQLException {
         // location has its own FK to delete, get all locations and use LocationDao to delete
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_locations_in_building"));
         pstmt.setInt(1, buildingId);
@@ -114,5 +125,11 @@ public class DBBuildingDao extends DAO implements IBuildingDao {
             String locationName = rs.getString(Resources.databaseProperties.getString("location_name"));
             DBLocationDao.deleteLocationWithCascade(locationName, conn);
         }
+    }
+
+    private void deleteBuilding(int buildingId, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_building"));
+        pstmt.setInt(1, buildingId);
+        pstmt.execute();
     }
 }

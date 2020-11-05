@@ -54,10 +54,6 @@ public class Building implements Cloneable {
         return Objects.hash(buildingId, name);
     }
 
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
 
     @Override
     public String toString() {
@@ -67,5 +63,13 @@ public class Building implements Cloneable {
                 '}';
     }
 
-
+    @Override
+    public Building clone() {
+        try {
+            return (Building) super.clone();
+        } catch (CloneNotSupportedException ignore) {
+            // will never happen (Building implements Cloneable)
+            return null;
+        }
+    }
 }

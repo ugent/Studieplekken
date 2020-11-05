@@ -62,6 +62,22 @@ public class DBAuthorityDao extends DAO implements IAuthorityDao {
     }
 
     @Override
+    public List<Location> getLocationsInAuthority(int authorityId) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_locations_in_authority"));
+            pstmt.setInt(1, authorityId);
+            ResultSet rs = pstmt.executeQuery();
+
+            List<Location> locations = new ArrayList<>();
+            while (rs.next()) {
+                locations.add(DBLocationDao.createLocation(rs, conn));
+            }
+
+            return locations;
+        }
+    }
+
+    @Override
     public Authority addAuthority(Authority authority) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_authority"));

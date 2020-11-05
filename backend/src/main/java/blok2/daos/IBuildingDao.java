@@ -1,6 +1,7 @@
 package blok2.daos;
 
 import blok2.model.Building;
+import blok2.model.reservables.Location;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -20,6 +21,11 @@ public interface IBuildingDao {
      * get building by its id.
      */
     Building getBuildingById(int buildingId) throws SQLException;
+
+    /**
+     * get locations linked to a building
+     */
+    List<Location> getLocationsInBuilding(int buildingId) throws SQLException;
 
     /**
      * Add an Building to the database. BuildingId is ignored.

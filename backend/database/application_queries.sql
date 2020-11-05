@@ -76,11 +76,14 @@ where l.authority_id = ?;
 
 -- $get_locations_in_building
 select  l.name, l.number_of_seats, l.number_of_lockers
-     , l.image_url, l.description_dutch, l.description_english
+     , l.image_url, l.description_dutch, l.description_english, l.forGroup
      , b.building_id, b.building_name, b.address
+     , a.authority_id, a.authority_name, a.description
 from public.locations l
-    join public.buildings b
-        on b.building_id = l.building_id
+         join public.authority a
+              on a.authority_id = l.authority_id
+         join public.buildings b
+              on b.building_id = l.building_id
 where l.building_id = ?;
 
 -- $locations_with_tag
@@ -481,6 +484,19 @@ from public.locations l
     join roles_user_authority rua
         on rua.authority_id = a.authority_id
 where rua.user_id = ?
+order by l.name;
+
+-- $get_locations_in_authority
+select l.name, l.number_of_seats, l.number_of_lockers
+     , l.image_url, l.description_dutch, l.description_english, l.forGroup
+     , a.authority_id, a.authority_name, a.description
+     , b.building_id, b.building_name, b.address
+from public.locations l
+         join authority a
+              on l.authority_id = a.authority_id
+         join buildings b
+              on b.building_id = l.building_id
+where a.authority_id = ?
 order by l.name;
 
 

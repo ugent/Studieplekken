@@ -55,7 +55,6 @@ public class TestCascadeInDBLocationDao extends TestDao {
 
     // this will be the test user
     private Location testLocation;
-    private Building testBuilding;
 
     // for cascade on SCANNERS_LOCATION, LOCATION_RESERVATIONS,
     // LOCKER_RESERVATIONS and PENALTY_BOOK,
@@ -84,7 +83,7 @@ public class TestCascadeInDBLocationDao extends TestDao {
     public void populateDatabase() throws SQLException {
         // Setup test objects
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+        Building testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
 
         testLocation = TestSharedMethods.testLocation(authority.clone(), testBuilding);
         testUser1 = TestSharedMethods.studentTestUser();
