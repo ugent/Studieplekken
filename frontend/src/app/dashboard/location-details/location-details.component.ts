@@ -34,6 +34,9 @@ export class LocationDetailsComponent implements OnInit {
   originalList: LocationReservation[];
   subscription: Subscription;
 
+  showSuccess = false;
+  showError = false;
+
   currentTimeslot: Timeslot;
   isModified = false;
 
@@ -159,6 +162,14 @@ export class LocationDetailsComponent implements OnInit {
     combineLatest([
           this.locationReservationService.postLocationReservations(newReservations),
           this.locationReservationService.deleteLocationReservations(removedReservations)
-        ]).subscribe(() => this.updateCalendar(), () => this.isModified = true);
+        ]).subscribe(() => {
+          this.updateCalendar();
+          this.showSuccess = true;
+          this.showError = false;
+        }, () => {
+          this.isModified = true;
+          this.showSuccess = false;
+          this.showError = true;
+        });
   }
 }
