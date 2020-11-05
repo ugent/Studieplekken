@@ -2,6 +2,7 @@ package blok2.daos.cascade;
 
 import blok2.daos.*;
 import blok2.model.Authority;
+import blok2.model.Building;
 import blok2.model.LocationTag;
 import blok2.model.reservables.Location;
 import org.junit.Assert;
@@ -28,10 +29,15 @@ public class TestCascadeInDBTagsDao extends TestDao {
     @Autowired
     private IAuthorityDao authorityDao;
 
+    @Autowired
+    private IBuildingDao buildingDao;
+
     // these will be the test locations
     private Location testLocation1;
     private Location testLocation2;
     private Location testLocation3;
+
+    private Building testBuilding;
 
     // these will be used as testtags
     private LocationTag testTag;
@@ -44,9 +50,10 @@ public class TestCascadeInDBTagsDao extends TestDao {
     public void populateDatabase() throws SQLException {
         // setup test objects
         authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testLocation1 = TestSharedMethods.testLocation(authority.clone());
-        testLocation2 = TestSharedMethods.testLocation2(authority.clone());
-        testLocation3 = TestSharedMethods.testLocation3(authority.clone());
+        testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+        testLocation1 = TestSharedMethods.testLocation(authority.clone(), testBuilding);
+        testLocation2 = TestSharedMethods.testLocation2(authority.clone(), testBuilding);
+        testLocation3 = TestSharedMethods.testLocation3(authority.clone(), testBuilding);
 
         testTag = TestSharedMethods.testTag();
         testTag2 = TestSharedMethods.testTag2();

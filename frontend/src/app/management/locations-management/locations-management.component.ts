@@ -7,8 +7,10 @@ import {LocationService} from '../../services/api/locations/location.service';
 import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Authority} from '../../shared/model/Authority';
 import {AuthoritiesService} from '../../services/api/authorities/authorities.service';
+import {BuildingService} from '../../services/api/buildings/buildings.service';
 import {AuthenticationService} from '../../services/authentication/authentication.service';
 import {tap} from 'rxjs/operators';
+import { Building } from 'src/app/shared/model/Building';
 
 @Component({
   selector: 'app-locations-management',
@@ -32,9 +34,13 @@ export class LocationsManagementComponent implements OnInit {
   authoritiesObs: Observable<Authority[]>;
   authoritiesMap: Map<number, Authority>;
 
+  buildingsObs: Observable<Building[]>;
+  buildingsMap: Map<number, Building>;
+
   constructor(private locationService: LocationService,
               private authoritiesService: AuthoritiesService,
-              private authenticationService: AuthenticationService) { }
+              private authenticationService: AuthenticationService,
+              private buildingsService: BuildingService) { }
 
   ngOnInit(): void {
     this.setupForm();
@@ -44,6 +50,7 @@ export class LocationsManagementComponent implements OnInit {
         // only set the locations and authorities if the user is authenticated
         if (next.augentID !== '') {
           this.setupLocationsAndAuthorities();
+          this.setupBuildings();
         }
       }
     );
@@ -53,7 +60,7 @@ export class LocationsManagementComponent implements OnInit {
     this.addLocationFormGroup = new FormGroup({
       name: new FormControl('', Validators.required),
       authority: new FormControl('', Validators.required),
-      address: new FormControl('', Validators.required),
+      building: new FormControl('', Validators.required),
       numberOfSeats: new FormControl('', Validators.required),
       numberOfLockers: new FormControl('', Validators.required),
       forGroup: new FormControl(false, Validators.required),
@@ -67,6 +74,7 @@ export class LocationsManagementComponent implements OnInit {
 
   addNewLocation(location: Location): void {
     location.authority = this.authoritiesMap.get(Number(this.authority.value));
+    location.building = this.buildingsMap.get(Number(this.building.value));
 
     this.addingWasSuccess = null;
     if (this.addLocationFormGroup.valid) {
@@ -125,7 +133,7 @@ export class LocationsManagementComponent implements OnInit {
 
   get name(): AbstractControl { return this.addLocationFormGroup.get('name'); }
   get authority(): AbstractControl { return this.addLocationFormGroup.get('authority'); }
-  get address(): AbstractControl { return this.addLocationFormGroup.get('address'); }
+  get building(): AbstractControl { return this.addLocationFormGroup.get('building'); }
   get numberOfSeats(): AbstractControl { return this.addLocationFormGroup.get('numberOfSeats'); }
   get numberOfLockers(): AbstractControl { return this.addLocationFormGroup.get('numberOfLockers'); }
   get forGroup(): AbstractControl { return this.addLocationFormGroup.get('forGroup'); }
@@ -144,6 +152,20 @@ export class LocationsManagementComponent implements OnInit {
     } else {
       this.setupLocationsAndAuthoritiesAsEmployee();
     }
+  }
+
+  /**
+   * The user can always see all buildings.
+   */
+  setupBuildings(): void {
+    this.buildingsObs = this.buildingsService.getAllBuildings().pipe(tap(
+      next => {
+        this.buildingsMap = new Map<number, Building>();
+        next.forEach(value => {
+          this.buildingsMap.set(value.buildingId, value);
+        });
+      }
+    ));
   }
 
   /**

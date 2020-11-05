@@ -4,6 +4,7 @@ import blok2.daos.*;
 import blok2.helpers.Language;
 import blok2.helpers.date.CustomDate;
 import blok2.model.Authority;
+import blok2.model.Building;
 import blok2.model.penalty.Penalty;
 import blok2.model.penalty.PenaltyEvent;
 import blok2.model.reservables.Location;
@@ -41,6 +42,8 @@ public class TestCascadeInDBAccountDao extends TestDao {
     @Autowired
     private IAuthorityDao authorityDao;
 
+    @Autowired IBuildingDao buildingDao;
+
     // this will be the test user
     private User testUser;
 
@@ -66,8 +69,9 @@ public class TestCascadeInDBAccountDao extends TestDao {
         testUser = TestSharedMethods.studentTestUser();
 
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testLocation1 = TestSharedMethods.testLocation(authority.clone());
-        testLocation2 = TestSharedMethods.testLocation2(authority.clone());
+        Building testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+        testLocation1 = TestSharedMethods.testLocation(authority.clone(), testBuilding);
+        testLocation2 = TestSharedMethods.testLocation2(authority.clone(), testBuilding);
 
         testLocationReservation1 = new LocationReservation(testLocation1, testUser, CustomDate.now());
         testLocationReservation2 = new LocationReservation(testLocation2, testUser, new CustomDate(1970, 1, 1));
