@@ -18,70 +18,6 @@ import java.util.Date;
 @Service
 public class DBLocationReservationDao extends DAO implements ILocationReservationDao {
 
-    /*
-    @Override
-    public List<LocationReservation> getAllLocationReservationsOfLocation(String locationName, boolean includePastReservations) throws SQLException {
-        try (Connection conn = adb.getConnection()) {
-            String query = Resources.databaseProperties.getString("get_location_reservations_where_<?>");
-
-            String replacementString = "lr.location_name = ?";
-            if (!includePastReservations) {
-                replacementString += " and to_date(lr.date, 'YYYY-MM-DD') >= to_date(?, 'YYYY-MM-DD')";
-            }
-            query = query.replace("<?>", replacementString);
-
-            PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setString(1, locationName);
-
-            if (!includePastReservations) {
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                pstmt.setString(2, format.format(new Date()));
-            }
-
-            return executeQueryForLocationReservations(pstmt, conn);
-        }
-    }
-
-    @Override
-    public List<LocationReservation> getAllLocationReservationsOfLocationFrom(String locationName, String start, boolean includePastReservations) throws SQLException {
-        try (Connection conn = adb.getConnection()) {
-            String query = Resources.databaseProperties.getString("get_location_reservations_where_<?>");
-
-            String replacementString = "lr.location_name = ? and to_date(lr.date, 'YYYY-MM-DD') >= to_date(?, 'YYYY-MM-DD')";
-            return getLocationReservationsExtractedEqualCode(locationName, start, includePastReservations, conn, query, replacementString);
-        }
-    }
-
-    @Override
-    public List<LocationReservation> getAllLocationReservationsOfLocationUntil(String locationName, String end, boolean includePastReservations) throws SQLException {
-        try (Connection conn = adb.getConnection()) {
-            String query = Resources.databaseProperties.getString("get_location_reservations_where_<?>");
-
-            String replacementString = "lr.location_name = ? and to_date(lr.date, 'YYYY-MM-DD') <= to_date(?, 'YYYY-MM-DD')";
-            return getLocationReservationsExtractedEqualCode(locationName, end, includePastReservations, conn, query, replacementString);
-        }
-    }
-    */
-
-    private List<LocationReservation> getLocationReservationsExtractedEqualCode(String locationName, String date, boolean includePastReservations, Connection conn, String query, String replacementString) throws SQLException {
-        if (!includePastReservations) {
-            replacementString += " and to_date(lr.date, 'YYYY-MM-DD') >= to_date(?, 'YYYY-MM-DD')";
-        }
-        query = query.replace("<?>", replacementString);
-
-        PreparedStatement pstmt = conn.prepareStatement(query);
-        pstmt.setString(1, locationName);
-        pstmt.setString(2, Utility.formatDate_YYYY_MM_DD(date));
-
-        if (!includePastReservations) {
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            pstmt.setString(3, format.format(new Date()));
-        }
-
-        return executeQueryForLocationReservations(pstmt, conn);
-    }
-
-
     @Override
     public List<LocationReservation> getAllLocationReservationsOfUser(String augentID) throws SQLException {
         String query = Resources.databaseProperties.getString("get_location_reservations_where_<?>");
@@ -105,18 +41,6 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
 
             return reservations;
         }
-    }
-
-    private List<LocationReservation> executeQueryForLocationReservations(PreparedStatement pstmt, Connection conn) throws SQLException {
-        ResultSet rs = pstmt.executeQuery();
-
-        List<LocationReservation> reservations = new ArrayList<>();
-        while (rs.next()) {
-            LocationReservation locationReservation = createLocationReservation(rs,conn);
-            reservations.add(locationReservation);
-        }
-
-        return reservations;
     }
 
     @Override

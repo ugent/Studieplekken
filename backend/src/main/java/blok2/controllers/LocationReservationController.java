@@ -32,8 +32,8 @@ public class LocationReservationController {
 
     private final ILocationReservationDao locationReservationDao;
 
-    @Autowired
-    SmartValidator validator;
+    // @Autowired
+    // SmartValidator validator;
 
     @Autowired
     public LocationReservationController(ILocationReservationDao locationReservationDao) {
