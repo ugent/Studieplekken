@@ -16,7 +16,6 @@ import { includesTimeslot, Timeslot, timeslotEquals } from 'src/app/shared/model
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
-import { Subject } from 'rxjs/internal/Subject';
 
 @Component({
   selector: 'app-location-details',
@@ -86,7 +85,7 @@ export class LocationDetailsComponent implements OnInit {
   }
 
   timeslotPicked(event: Timeslot): void {
-    if(!event.hasOwnProperty('timeslotSeqnr')) {
+    if (!event.hasOwnProperty('timeslotSeqnr')) {
       return;
     }
 
