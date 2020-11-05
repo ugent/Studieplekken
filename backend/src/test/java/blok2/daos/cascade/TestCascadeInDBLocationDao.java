@@ -352,11 +352,7 @@ public class TestCascadeInDBLocationDao extends TestDao {
 
         List<Penalty> penalties = penaltyEventsDao.getPenaltiesByLocation(testLocation.getName());
         Assert.assertEquals("deleteLocation, penalties", 0, penalties.size());
-
-        //List<LocationReservation> locationReservations = locationReservationDao
-        //        .getAllLocationReservationsOfLocation(testLocation.getName(), true);
-        //Assert.assertEquals("deleteLocation, location reservations", 0, locationReservations.size());
-
+        
         //List<LockerReservation> lockerReservations = lockerReservationDao
          //       .getAllLockerReservationsOfLocation(testLocation.getName(), true);
        // Assert.assertEquals("deleteLocation, locker reservations", 0, lockerReservations.size());
