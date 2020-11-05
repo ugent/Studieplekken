@@ -20,7 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @RestController
-@RequestMapping("api/locations/calendar")
+@RequestMapping("locations/calendar")
 public class CalendarPeriodController {
 
     private final Logger logger = Logger.getLogger(CalendarPeriodController.class.getSimpleName());
@@ -154,7 +154,7 @@ public class CalendarPeriodController {
             Date startDate = format.parse(period.getStartsAt());
             Date endDate = format.parse(period.getEndsAt());
 
-            // check if the ends of all periods are after the start
+            // check if the end of all periods are after the start
             if (endDate.getTime() < startDate.getTime()) {
                 logger.log(Level.SEVERE, "analyzeAndUpdateCalendarPeriods, endsAt was before startsAt");
                 throw new ResponseStatusException(
@@ -175,13 +175,11 @@ public class CalendarPeriodController {
 
 
             // check if reservable from is parsable
-
-            if(period.isReservable()) {
+            if (period.isReservable()) {
                 format.parse(period.getReservableFrom());
-                if(period.getReservableTimeslotSize() <= 0) {
+                if (period.getReservableTimeslotSize() <= 0) {
                     throw new ResponseStatusException(
                             HttpStatus.BAD_REQUEST, "Timeslot size must be larger than 0.");
-
                 }
             }
         }

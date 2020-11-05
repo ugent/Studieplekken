@@ -3,7 +3,6 @@ package blok2.controllers;
 import blok2.daos.ILocationReservationDao;
 import blok2.helpers.date.CustomDate;
 import blok2.model.calendar.Timeslot;
-import blok2.model.reservables.Location;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
 import org.slf4j.Logger;
@@ -20,7 +19,6 @@ import java.sql.SQLException;
 import java.sql.SQLOutput;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
 
 /**
  * This controller handles all requests related to location reservations.
@@ -28,15 +26,15 @@ import java.util.logging.Level;
  * scanning of users, ...
  */
 @RestController
-@RequestMapping("api/locations/reservations")
+@RequestMapping("locations/reservations")
 public class LocationReservationController {
 
     private final Logger logger = LoggerFactory.getLogger(LocationReservationController.class.getSimpleName());
 
     private final ILocationReservationDao locationReservationDao;
 
-    @Autowired
-    SmartValidator validator;
+    // @Autowired
+    // SmartValidator validator;
 
     @Autowired
     public LocationReservationController(ILocationReservationDao locationReservationDao) {
@@ -70,7 +68,7 @@ public class LocationReservationController {
     }
 
     @GetMapping("/timeslot/{calendarid}/{date}/{seqnr}")
-    public List<LocationReservation> getLocationReservationsByTimeslot(@PathVariable("calendarid") int calendarId, @PathVariable("date") String date,@PathVariable("seqnr") int seqnr) {
+    public List<LocationReservation> getLocationReservationsByTimeslot(@PathVariable("calendarid") int calendarId, @PathVariable("date") String date, @PathVariable("seqnr") int seqnr) {
         Timeslot timeslot = new Timeslot(calendarId, seqnr, date);
         try {
             return locationReservationDao.getAllLocationReservationsOfTimeslot(timeslot);

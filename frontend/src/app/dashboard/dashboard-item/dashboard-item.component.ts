@@ -14,7 +14,7 @@ import {ApplicationTypeFunctionalityService} from '../../services/functionality/
 export class DashboardItemComponent implements OnInit, AfterViewInit {
   @Input() location: Location;
 
-  occupation: number;
+  occupation: number = 0;
 
   altImageUrl = vars.defaultLocationImage;
 

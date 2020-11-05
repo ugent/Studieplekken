@@ -18,3 +18,11 @@ server:
   port: 8080
   ssl:
     enabled: false
+
+debug: true
+
+cas:
+  callbackUrl: https://studieplekken.ugent.be/api/login/cas
+
+redirect:
+  successLoginRedirectUrl: https://studieplekken.ugent.be/dashboard

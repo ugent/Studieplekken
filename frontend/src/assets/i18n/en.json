@@ -65,7 +65,8 @@
       "cancel": "Cancel",
       "delete": "Delete",
       "search": "Search",
-      "clear": "Clear"
+      "clear": "Clear",
+      "close": "Close"
     },
 
     "roles": {
@@ -135,6 +136,7 @@
         "address": "Address",
         "numberOfSeats": "Number of seats",
         "numberOfLockers": "Number of lockers",
+        "forGroup": "Group Reservation",
         "imageUrl": "Image URL (optional)",
 
         "edit": "Edit",
@@ -188,6 +190,11 @@
           "errorMessage": "Update was not successful. Something went wrong.",
 
           "noCalendarPeriodsForLocation": "At the moment, there are no periods for the location."
+        },
+
+        "warningDialog": {
+          "warning": "Warning",
+          "body": "The opening duration of (at least) one of the created calendar periods is not divisable by the Reservable Timeslot-duration. This means that, for these periods, the last (incomplete) timeslot will not be created and as such will also not be reservable. Please make sure to take this into account"
         }
       },
 
@@ -293,6 +300,7 @@
           "address": "Address",
           "numberOfSeats": "Number of seats",
           "numberOfLockers": "Number of lockers",
+          "forGroup": "Group Reservation",
           "imageUrl": "URL of image (optional)"
         },
 
@@ -301,7 +309,8 @@
           "authorityName": "Required to select an authority",
           "address": "Address is required",
           "numberOfSeats": "Value for 'number of seats' is required",
-          "numberOfLockers": "Value for 'number of lockers' is required"
+          "numberOfLockers": "Value for 'number of lockers' is required",
+          "forGroup": "Value for 'group reservation' is required"
         },
 
         "cancelButton": "Cancel",

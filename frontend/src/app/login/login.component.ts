@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {vars} from '../../environments/environment';
+import { environment, vars } from '../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -8,7 +8,7 @@ import {vars} from '../../environments/environment';
 })
 export class LoginComponent implements OnInit {
 
-  casFlowTriggerUrl = vars.casFlowTriggerUrl;
+  casFlowTriggerUrl = environment.casFlowTriggerUrl;
 
   constructor() { }
 
