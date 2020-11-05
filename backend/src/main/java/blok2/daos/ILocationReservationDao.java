@@ -1,10 +1,10 @@
 package blok2.daos;
 
-import blok2.helpers.date.CustomDate;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface ILocationReservationDao extends IDao {
@@ -19,15 +19,15 @@ public interface ILocationReservationDao extends IDao {
 
     LocationReservation scanStudent(String location, String barcode) throws SQLException;
 
-    void setAllStudentsOfLocationToAttended(String location, CustomDate date) throws SQLException;
+    void setAllStudentsOfLocationToAttended(String location, LocalDate date) throws SQLException;
 
     long countReservedSeatsOfTimeslot(Timeslot timeslot) throws SQLException;
 
-    List<LocationReservation> getAbsentStudents(String location, CustomDate date) throws SQLException;
+    List<LocationReservation> getAbsentStudents(String location, LocalDate date) throws SQLException;
 
-    List<LocationReservation> getPresentStudents(String location, CustomDate date) throws SQLException;
+    List<LocationReservation> getPresentStudents(String location, LocalDate date) throws SQLException;
 
-    void setReservationToUnAttended(String augentId, CustomDate date) throws SQLException;
+    void setReservationToUnAttended(String augentId, LocalDate date) throws SQLException;
 
     List<LocationReservation> getAllLocationReservationsOfTimeslot(Timeslot timeslot) throws SQLException;
 

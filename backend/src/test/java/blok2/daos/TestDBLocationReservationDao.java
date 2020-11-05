@@ -1,6 +1,5 @@
 package blok2.daos;
 
-import blok2.helpers.date.CustomDate;
 import blok2.model.Authority;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
@@ -12,6 +11,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -74,7 +74,6 @@ public class TestDBLocationReservationDao extends TestDao {
         Assert.assertEquals("addLocationReservation, setup testUser", testUser, u);
 
         // Create LocationReservation
-        CustomDate date = new CustomDate(1970, 1, 1, 9, 0, 0);
         LocationReservation lr = new LocationReservation(u, LocalDateTime.of(1970, 1, 1, 9, 0, 0), timeslot, null);
 
         // add LocationReservation to database
@@ -133,7 +132,7 @@ public class TestDBLocationReservationDao extends TestDao {
         Assert.assertEquals("scanStudentTest, setup testUser2", testUser2, u2);
 
         // Make reservation for today
-        CustomDate today = CustomDate.today();
+        LocalDate today = LocalDate.now();
 
         // Make reservations for users u1 and u2
         LocationReservation lr1 = new LocationReservation(u1, LocalDateTime.now(), timeslot, null);

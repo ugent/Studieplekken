@@ -1,8 +1,10 @@
 package blok2.helpers;
 
-import blok2.helpers.date.CustomDate;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Variables {
     public static final int thresholdPenaltyPoints = Integer.parseInt(Resources.blokatugentConf.getString("maxAllowedPoints"));
-    public static final CustomDate maxCancelDate = CustomDate.parseString(Resources.blokatugentConf.getString("maxCancelDate"));
+    public static final LocalDateTime maxCancelDate = LocalDateTime.parse(Resources.blokatugentConf.getString("maxCancelDate"));
 }

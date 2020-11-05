@@ -1,7 +1,6 @@
 package blok2.daos;
 
 import blok2.helpers.Institution;
-import blok2.helpers.date.CustomDate;
 import blok2.model.Authority;
 import blok2.model.LocationTag;
 import blok2.model.calendar.CalendarPeriod;

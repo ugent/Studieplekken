@@ -4,7 +4,6 @@ import blok2.daos.IAccountDao;
 import blok2.daos.ILocationDao;
 import blok2.daos.IScannerLocationDao;
 import blok2.helpers.Resources;
-import blok2.helpers.date.CustomDate;
 import blok2.model.Authority;
 import blok2.model.LocationTag;
 import blok2.model.reservables.Location;
@@ -12,6 +11,7 @@ import blok2.model.reservables.Locker;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -205,7 +205,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
     }
 
     @Override
-    public Map<String, Integer> getCountOfReservations(CustomDate date) throws SQLException {
+    public Map<String, Integer> getCountOfReservations(LocalDate date) throws SQLException {
         HashMap<String, Integer> count = new HashMap<>();
 
         try (Connection conn = adb.getConnection()) {

@@ -2,7 +2,6 @@ package blok2.daos.db;
 
 import blok2.daos.ILockerReservationDao;
 import blok2.helpers.Resources;
-import blok2.helpers.date.CustomDate;
 import blok2.model.reservables.Locker;
 import blok2.model.reservations.LockerReservation;
 import blok2.model.users.User;

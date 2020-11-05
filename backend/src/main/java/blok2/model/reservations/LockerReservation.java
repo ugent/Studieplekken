@@ -1,6 +1,5 @@
 package blok2.model.reservations;
 
-import blok2.helpers.date.CustomDate;
 import blok2.model.reservables.Locker;
 import blok2.model.users.User;
 
