@@ -16,8 +16,8 @@ public interface ILocationReservationDao extends IDao {
     void deleteLocationReservation(String augentID, Timeslot timeslot) throws SQLException;
 
     /**
-     * This method is only used in testing, this does not check if there is still room for
-     * reservations. You should use addLocationReservationIfStillRoomAtomically() instead.
+     * This method should only be used for testing purposes, this does not check if there is still
+     * room for reservations. You should use addLocationReservationIfStillRoomAtomically() instead.
      */
     @Deprecated
     void addLocationReservation(LocationReservation locationReservation) throws SQLException;
