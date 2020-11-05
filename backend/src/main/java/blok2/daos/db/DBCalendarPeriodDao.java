@@ -209,13 +209,14 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
 
     private void prepareWhereClauseOfUpdatePstmt(CalendarPeriod calendarPeriod,
                                                  PreparedStatement pstmt) throws SQLException {
-        pstmt.setString(8, calendarPeriod.getLocation().getName());
-        pstmt.setString(9, calendarPeriod.getStartsAt());
-        pstmt.setString(10, calendarPeriod.getEndsAt());
-        pstmt.setString(11, calendarPeriod.getOpeningTime());
-        pstmt.setString(12, calendarPeriod.getClosingTime());
-        pstmt.setString(13, calendarPeriod.getReservableFrom());
-        pstmt.setBoolean(14, calendarPeriod.isReservable());
+        pstmt.setString(9, calendarPeriod.getLocation().getName());
+        pstmt.setString(10, calendarPeriod.getStartsAt());
+        pstmt.setString(11, calendarPeriod.getEndsAt());
+        pstmt.setString(12, calendarPeriod.getOpeningTime());
+        pstmt.setString(13, calendarPeriod.getClosingTime());
+        pstmt.setString(14, calendarPeriod.getReservableFrom());
+        pstmt.setBoolean(15, calendarPeriod.isReservable());
+        pstmt.setInt(16, calendarPeriod.getReservableTimeslotSize());
     }
 
     private void prepareTimeslotPeriodPstmt(int seq_id, String date, CalendarPeriod period, PreparedStatement pstmt) throws SQLException {
