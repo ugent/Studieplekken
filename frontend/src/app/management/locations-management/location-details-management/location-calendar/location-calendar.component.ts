@@ -11,6 +11,8 @@ import {CalendarPeriodsService} from '../../../../services/api/calendar-periods/
 import {ApplicationTypeFunctionalityService} from '../../../../services/functionality/application-type/application-type-functionality.service';
 import {toDateTimeString, typeScriptDateToCustomDate} from '../../../../shared/model/helpers/CustomDate';
 import {msToShowFeedback} from '../../../../../environments/environment';
+import { LocationOpeningperiodDialogComponent } from './location-openingperiod-dialog/location-openingperiod-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-location-calendar',
@@ -63,7 +65,8 @@ export class LocationCalendarComponent implements OnInit {
   showReservationInformation: boolean;
 
   constructor(private calendarPeriodsService: CalendarPeriodsService,
-              private functionalityService: ApplicationTypeFunctionalityService) { }
+              private functionalityService: ApplicationTypeFunctionalityService,
+              private dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.location.subscribe(next => {
@@ -179,6 +182,9 @@ export class LocationCalendarComponent implements OnInit {
         }
       }
 
+      // Check if the closing time - opening time is divisible by timeslot_size.
+      this.checkForWarning();
+
       // if this.eventsInDataLayer.length === 0, add all events instead of updating
       if (this.calendarPeriodsInDataLayer.length === 0) {
         this.addAllCalendarPeriods();
@@ -195,6 +201,25 @@ export class LocationCalendarComponent implements OnInit {
       }, () => this.errorHandler());
     } else {
       this.handleNothingHasChangedOnUpdate();
+    }
+  }
+
+  checkForWarning(): void {
+    let showWarning = false;
+    this.calendarPeriods.forEach(element => {
+      if (!element.reservable) {
+        return;
+      }
+      const begin = new Date(element.startsAt + ' ' + element.openingTime);
+      const end = new Date(element.startsAt + ' ' + element.closingTime);
+      const diffMs = (end.getTime() - begin.getTime()) / 60000;
+      if ((diffMs % element.reservableTimeslotSize) !== 0) {
+        showWarning = true;
+      }
+    });
+
+    if (showWarning) {
+      this.dialog.open(LocationOpeningperiodDialogComponent);
     }
   }
 

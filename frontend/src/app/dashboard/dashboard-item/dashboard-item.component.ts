@@ -14,7 +14,7 @@ import {ApplicationTypeFunctionalityService} from '../../services/functionality/
 export class DashboardItemComponent implements OnInit, AfterViewInit {
   @Input() location: Location;
 
-  occupation: number;
+  occupation: number = 0;
 
   altImageUrl = vars.defaultLocationImage;
 
@@ -30,9 +30,6 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
               private functionalityService: ApplicationTypeFunctionalityService) { }
 
   ngOnInit(): void {
-    this.locationService.getNumberOfReservations(this.location).subscribe(next => {
-      this.occupation = Math.round(100 * next / this.location.numberOfSeats);
-    });
 
     this.currentLang = this.translate.currentLang;
     this.translate.onLangChange.subscribe(

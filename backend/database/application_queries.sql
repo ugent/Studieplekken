@@ -153,7 +153,7 @@ with recursive x as (
 ), y as (
 	select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
 		, u.augentid, u.admin
-		, lr.date, lr.location_name, lr.attended, lr.user_augentid
+		, lr.timeslot_date, lr.timeslot_seqnr as timeslot_sequence_number, lr.calendar_id, lr.attended, lr.user_augentid, lr.created_at
 		, coalesce(floor(sum(
         	case
 				/*
@@ -173,34 +173,32 @@ with recursive x as (
 	where <?>
 	group by u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
 		, u.augentid, u.admin
-		, lr.date, lr.location_name, lr.attended, lr.user_augentid
+		, lr.timeslot_seqnr, lr.timeslot_date, lr.calendar_id, lr.created_at, lr.attended, lr.user_augentid
 )
 select y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
 	 , y.augentid, y.admin, y.penalty_points
-	 , y.date, y.location_name, y.attended, y.user_augentid
-	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address, l.description_dutch, l.description_english, l.forGroup
-     , a.authority_id, a.authority_name, a.description
+	 , y.timeslot_date, y.timeslot_sequence_number, y.calendar_id, y.created_at, y.attended, y.user_augentid
 from y
-    join public.locations l
-        on l.name = y.location_name
-    join public.authority a
-        on a.authority_id = l.authority_id
 group by y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
 	 , y.augentid, y.admin, y.penalty_points
-	 , y.date, y.location_name, y.attended, y.user_augentid
-	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address, l.description_dutch, l.description_english, l.forGroup
-     , a.authority_id, a.authority_name, a.description
-order by l.name;
+	 , y.timeslot_date, y.timeslot_sequence_number, y.calendar_id, y.created_at, y.attended, y.user_augentid;
 
--- $count_location_reservations_of_location_for_date
+-- $count_location_reservations_of_location_for_timeslot
 select count(1)
-from public.location_reservations
-where location_name = ? and date = ?;
+from public.location_reservations lr 
+    INNER JOIN public.calendar_periods cp on lr.calendar_id = cp.calendar_id 
+    INNER JOIN public.locations l on cp.location_name = l.name
+where lr.calendar_id = ? and lr.timeslot_date = ? and lr.timeslot_seqnr = ?;
+
+-- $get_size_of_timeslot_location
+select l.number_of_seats
+from public.calendar_periods cp INNER JOIN public.locations l on cp.location_name = l.name
+where cp.calendar_id = ?;
 
 -- $delete_location_reservation
 delete
 from public.location_reservations
-where user_augentid = ? and date = ?;
+where user_augentid = ? and timeslot_date = ? and timeslot_seqnr = ? and calendar_id = ?;
 
 -- $delete_location_reservations_of_location
 delete
@@ -217,8 +215,8 @@ from public.location_reservations
 where location_name = ? and cast(substr(date,0,5) as int)*404 + cast(substr(date,6,2) as int)*31 + cast(substr(date,9,2) as int) between ? and ?;
 
 -- $insert_location_reservation
-insert into public.location_reservations (date, location_name, user_augentid, attended)
-values (?, ?, ?, null);
+insert into public.location_reservations (user_augentid, created_at, timeslot_date, timeslot_seqnr, calendar_id, attended)
+values (?, ?, ?, ?, ?, null);
 
 -- $set_location_reservation_unattended
 update public.location_reservations
@@ -441,7 +439,6 @@ with recursive x as (
 ), y as (
 	select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
 		, u.augentid, u.admin
-		, l.location_name, l.number
 		, lr.user_augentid, lr.key_pickup_date, lr.key_return_date
 		, coalesce(floor(sum(
         	case
@@ -453,9 +450,6 @@ with recursive x as (
 				else pb.received_points * x.perc
 			end)), 0) as "penalty_points"
 	from public.locker_reservations lr
-		join public.lockers l
-			on l.location_name = lr.location_name
-	        and l.number = lr.locker_number
 		join public.users u
 			on u.augentid = lr.user_augentid
 		left join public.penalty_book pb
@@ -465,7 +459,6 @@ with recursive x as (
 	where <?>
 	group by u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
 		, u.augentid, u.admin
-		, l.location_name, l.number
 		, lr.user_augentid, lr.key_pickup_date, lr.key_return_date
 )
 select y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
@@ -853,7 +846,7 @@ where location_id = ?;
 
 -- queries for CALENDAR_PERIODS
 -- $get_calendar_periods
-select cp.location_name, cp.starts_at, cp.ends_at, cp.opening_time, cp.closing_time, cp.reservable_from
+select cp.calendar_id, cp.location_name, cp.starts_at, cp.ends_at, cp.opening_time, cp.closing_time, cp.reservable_from, cp.reservable, cp.timeslot_length
        , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address, l.description_dutch, l.description_english, l.forGroup
        , a.authority_id, a.authority_name, a.description
 from public.calendar_periods cp
@@ -865,18 +858,18 @@ where cp.location_name = ?
 order by to_date(cp.starts_at || ' ' || cp.opening_time, 'YYYY-MM-DD HH24:MI');
 
 -- $insert_calendar_period
-insert into public.calendar_periods(location_name, starts_at, ends_at, opening_time, closing_time, reservable_from)
-values (?, ?, ?, ?, ?, ?);
+insert into public.calendar_periods(location_name, starts_at, ends_at, opening_time, closing_time, reservable_from, reservable, timeslot_length)
+values (?, ?, ?, ?, ?, ?, ?, ?);
 
 -- $update_calendar_period
 update public.calendar_periods
-set location_name = ?, starts_at = ?, ends_at = ?, opening_time = ?, closing_time = ?, reservable_from = ?
-where location_name = ? and starts_at = ? and ends_at = ? and opening_time = ? and closing_time = ? and reservable_from = ?;
+set location_name = ?, starts_at = ?, ends_at = ?, opening_time = ?, closing_time = ?, reservable_from = ?, reservable = ? and timeslot_length = ?
+where location_name = ? and starts_at = ? and ends_at = ? and opening_time = ? and closing_time = ? and reservable_from = ? and reservable = ? and timeslot_length = ?;
 
 -- $delete_calendar_period
 delete
 from public.calendar_periods
-where location_name = ? and starts_at = ? and ends_at = ? and opening_time = ? and closing_time = ? and reservable_from = ?;
+where location_name = ? and starts_at = ? and ends_at = ? and opening_time = ? and closing_time = ? and reservable_from = ? and reservable = ? and timeslot_length = ?;
 
 -- $delete_calendar_periods_of_location
 delete
@@ -888,6 +881,16 @@ update public.calendar_periods
 set location_name = ?
 where location_name = ?;
 
+-- queries for RESERVATION_TIMESLOTS
+-- $get_reservation_timeslots
+select rt.timeslot_sequence_number, rt.timeslot_date, rt.calendar_id
+from public.reservation_timeslots rt
+where calendar_id = ? 
+order by rt.timeslot_date, rt.timeslot_sequence_number ASC;
+
+-- $insert_reservation_timeslots
+insert into public.reservation_timeslots(calendar_id, timeslot_sequence_number, timeslot_date)
+values (?, ?, ?);
 
 -- queries for CALENDAR_PERIODS_FOR_LOCKERS
 -- $get_calendar_periods_for_lockers_of_location

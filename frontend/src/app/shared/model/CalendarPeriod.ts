@@ -12,7 +12,9 @@ export interface CalendarPeriod {
   endsAt: string;
   openingTime: string;
   closingTime: string;
+  reservable: boolean;
   reservableFrom: string;
+  reservableTimeslotSize: number;
 }
 
 export class CalendarPeriodConstructor {
@@ -23,7 +25,9 @@ export class CalendarPeriodConstructor {
       endsAt: '',
       openingTime: '',
       closingTime: '',
-      reservableFrom: ''
+      reservableFrom: '',
+      reservable: false,
+      reservableTimeslotSize: 0
     };
   }
 
@@ -34,7 +38,9 @@ export class CalendarPeriodConstructor {
       endsAt: obj.endsAt,
       openingTime: obj.openingTime,
       closingTime: obj.closingTime,
-      reservableFrom: obj.reservableFrom
+      reservableFrom: obj.reservableFrom,
+      reservable: obj.reservable,
+      reservableTimeslotSize: obj.reservableTimeslotSize
     };
   }
 }

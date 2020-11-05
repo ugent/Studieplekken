@@ -143,7 +143,7 @@ public class CalendarPeriodController {
             Date startDate = format.parse(period.getStartsAt());
             Date endDate = format.parse(period.getEndsAt());
 
-            // check if the ends of all periods are after the start
+            // check if the end of all periods are after the start
             if (endDate.getTime() < startDate.getTime()) {
                 logger.log(Level.SEVERE, "analyzeAndUpdateCalendarPeriods, endsAt was before startsAt");
                 throw new ResponseStatusException(
@@ -162,8 +162,15 @@ public class CalendarPeriodController {
                         HttpStatus.CONFLICT, "OpeningTime must be before closingTime");
             }
 
+
             // check if reservable from is parsable
-            format.parse(period.getReservableFrom());
+            if (period.isReservable()) {
+                format.parse(period.getReservableFrom());
+                if (period.getReservableTimeslotSize() <= 0) {
+                    throw new ResponseStatusException(
+                            HttpStatus.BAD_REQUEST, "Timeslot size must be larger than 0.");
+                }
+            }
         }
 
         // delete all 'from' and add 'to'

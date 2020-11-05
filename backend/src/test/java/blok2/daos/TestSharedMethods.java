@@ -10,8 +10,11 @@ import blok2.model.reservables.Location;
 import blok2.model.users.User;
 import org.junit.Assert;
 
+import java.sql.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class TestSharedMethods {
@@ -25,6 +28,18 @@ public class TestSharedMethods {
         testLocation.setImageUrl("https://example.com/image.jpg");
         testLocation.setAuthority(authority);
         testLocation.setForGroup(false);
+        return testLocation;
+    }
+
+    public static Location testLocation1Seat(Authority authority) {
+        Location testLocation = new Location();
+        testLocation.setName("Test Location 2");
+        testLocation.setAddress("Test street, 10");
+        testLocation.setNumberOfSeats(1);
+        testLocation.setNumberOfLockers(15);
+        testLocation.setImageUrl("https://example.com/image.jpg");
+        testLocation.setAuthority(authority);
+
         return testLocation;
     }
 
@@ -156,10 +171,18 @@ public class TestSharedMethods {
             date.setDay(1);
             period.setReservableFrom(date.toString());
 
+            period.setReservable(true);
+            period.setReservableTimeslotSize(30);
+
+
             calendarPeriods.add(period);
         }
 
         return calendarPeriods;
+    }
+
+    public static void addCalendarPeriods(ICalendarPeriodDao calendarPeriodDao, CalendarPeriod... periods) throws SQLException {
+        calendarPeriodDao.addCalendarPeriods(Arrays.asList(periods));
     }
 
     public static List<CalendarPeriod> testCalendarPeriodsButUpdated(Location location) {

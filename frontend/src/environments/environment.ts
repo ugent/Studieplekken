@@ -43,7 +43,6 @@ export const api = {
   addLocation: '/api/locations',
   updateLocation: '/api/locations/{locationName}',
   deleteLocation: '/api/locations/{locationName}',
-  numberOfReservations: '/api/locations/{locationName}/reservations/count',
   setupTagsForLocation: '/api/locations/tags/{locationName}',
 
   // LOCATION_RESERVATIONS

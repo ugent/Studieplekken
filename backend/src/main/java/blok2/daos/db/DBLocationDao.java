@@ -163,7 +163,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
         DBScannerLocationDao.deleteAllScannersOfLocation(locationName, conn);
 
         // delete location_reservations
-        deleteLocationReservations(locationName, conn);
+        // deleteLocationReservations(locationName, conn);
 
         // delete penalty_book entries
         deletePenaltyBookEntries(locationName, conn);
@@ -364,9 +364,6 @@ public class DBLocationDao extends DAO implements ILocationDao {
         // update scanner_locations
         updateForeignKeyOfScannerLocations(oldLocationName, newLocationName, conn);
 
-        // update location_reservations
-        updateForeignKeyOfLocationReservations(oldLocationName, newLocationName, conn);
-
         // update locker_reservations
         updateForeignKeyOfLockerReservations(oldLocationName, newLocationName, conn);
 
@@ -399,15 +396,6 @@ public class DBLocationDao extends DAO implements ILocationDao {
             throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
                 .getString("update_fk_scanners_location_to_locations"));
-        pstmt.setString(1, newLocationName);
-        pstmt.setString(2, oldLocationName);
-        pstmt.execute();
-    }
-
-    private void updateForeignKeyOfLocationReservations(String oldLocationName, String newLocationName, Connection conn)
-            throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
-                .getString("update_fk_location_reservations_to_location"));
         pstmt.setString(1, newLocationName);
         pstmt.setString(2, oldLocationName);
         pstmt.execute();
