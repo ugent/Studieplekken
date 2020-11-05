@@ -20,7 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @RestController
-@RequestMapping("api/locations/calendar")
+@RequestMapping("locations/calendar")
 public class CalendarPeriodController {
 
     private final Logger logger = Logger.getLogger(CalendarPeriodController.class.getSimpleName());

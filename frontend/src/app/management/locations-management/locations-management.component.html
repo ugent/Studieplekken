@@ -126,7 +126,7 @@
             </div>
           </div>
 
-          <!-- Number of lockers -->
+          <!-- Number of seats -->
           <div class="row form-group">
             <label class="col-lg-3 control-label" for="numberOfSeats">
               {{'management.locations.addLocationModal.form.numberOfSeats' | translate}}</label>
@@ -152,6 +152,21 @@
             <div *ngIf="numberOfLockers.invalid && (numberOfLockers.dirty || numberOfLockers.touched)" class="alert alert-danger">
               <div *ngIf="numberOfLockers.errors.required">
                 {{'management.locations.addLocationModal.formValidationErrorMessages.numberOfLockers' | translate}}
+              </div>
+            </div>
+          </div>
+
+          <!-- forGroup -->
+          <div class="row form-group">
+            <label class="col-lg-3 control-label" for="forGroup">
+              {{'management.locations.addLocationModal.form.forGroup' | translate}}</label>
+            <div class="col-lg-8">
+              <input id="forGroup" type="checkbox" formControlName="forGroup" >
+            </div>
+
+            <div *ngIf="forGroup.invalid && (forGroup.dirty || forGroup.touched)" class="alert alert-danger">
+              <div *ngIf="forGroup.errors.required">
+                {{'management.locations.addLocationModal.formValidationErrorMessages.forGroup' | translate}}
               </div>
             </div>
           </div>

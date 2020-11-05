@@ -26,7 +26,7 @@ import java.util.List;
  * Such as registration, list of users, specific users, ...
  */
 @RestController
-@RequestMapping("api/account")
+@RequestMapping("account")
 @Validated
 public class AccountController {
 

@@ -6,6 +6,7 @@ export interface Location {
   address: string;
   numberOfSeats: number;
   numberOfLockers: number;
+  forGroup: boolean;
   imageUrl: string;
   authority: Authority;
   descriptionDutch: string;
@@ -20,6 +21,7 @@ export class LocationConstructor {
       address: '',
       numberOfSeats: 0,
       numberOfLockers: 0,
+      forGroup: false,
       imageUrl: '',
       authority: AuthorityConstructor.new(),
       descriptionDutch: '',
@@ -42,7 +44,8 @@ export class LocationConstructor {
       authority: AuthorityConstructor.newFromObj(obj.authority),
       descriptionDutch: obj.descriptionDutch,
       descriptionEnglish: obj.descriptionEnglish,
-      assignedTags: obj.assignedTags
+      assignedTags: obj.assignedTags,
+      forGroup: obj.forGroup,
     };
   }
 }
