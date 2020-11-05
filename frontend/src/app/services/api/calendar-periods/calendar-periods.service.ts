@@ -4,6 +4,8 @@ import {CalendarPeriod} from '../../../shared/model/CalendarPeriod';
 
 import {Observable} from 'rxjs';
 import {api} from '../../../../environments/environment';
+import { map } from 'rxjs/internal/operators/map';
+import { filter } from 'rxjs/internal/operators/filter';
 
 @Injectable({
   providedIn: 'root'
@@ -13,12 +15,13 @@ export class CalendarPeriodsService {
   constructor(private http: HttpClient) { }
 
   getCalendarPeriodsOfLocation(locationName: string): Observable<CalendarPeriod[]> {
-    return this.http.get<CalendarPeriod[]>(api.calendarPeriods
-      .replace('{locationName}', locationName));
+    return this.http.get<any>(api.calendarPeriods
+      .replace('{locationName}', locationName))
+      .pipe(filter(s => !!s), map(ls => ls.map(s => CalendarPeriod.fromJSON(s))));
   }
 
   addCalendarPeriods(calendarPeriods: CalendarPeriod[]): Observable<void> {
-    return this.http.post<void>(api.addCalendarPeriods, calendarPeriods);
+    return this.http.post<void>(api.addCalendarPeriods, calendarPeriods.map(s => s.toJSON()));
   }
 
   /**
@@ -28,7 +31,7 @@ export class CalendarPeriodsService {
    * will be invoked.
    */
   updateCalendarPeriods(locationName: string, from: CalendarPeriod[], to: CalendarPeriod[]): Observable<void> {
-    const body = [from, to];
+    const body = [from.map(s => s.toJSON()), to.map(s => s.toJSON())];
     return this.http.put<void>(api.updateCalendarPeriods.replace('{locationName}', locationName), body);
   }
 
@@ -37,7 +40,7 @@ export class CalendarPeriodsService {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       }),
-      body: periods
+      body: periods.map(s => s.toJSON())
     };
     return this.http.delete<void>(api.deleteCalendarPeriods, options);
   }

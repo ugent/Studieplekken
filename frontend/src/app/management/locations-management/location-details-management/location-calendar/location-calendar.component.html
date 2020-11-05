@@ -95,50 +95,22 @@
         <tr *ngFor="let period of calendarPeriods">
           <!-- Starts at -->
           <td>
-            <label>
-              <input
-                class="form-control"
-                type="date"
-                [(ngModel)]="period.startsAt"
-                (ngModelChange)="refreshCalendar(period)"
-              />
-            </label>
+            <app-moment-date [(model)]="period.startsAt" (modelChange)="refreshCalendar(period)" [type]="'date'"></app-moment-date>
           </td>
 
           <!-- Ends at -->
           <td>
-            <label>
-              <input
-                class="form-control"
-                type="date"
-                [(ngModel)]="period.endsAt"
-                (ngModelChange)="refreshCalendar(period)"
-              />
-            </label>
+            <app-moment-date [(model)]="period.endsAt" (modelChange)="refreshCalendar(period)" [type]="'date'"></app-moment-date>
           </td>
 
           <!-- Opening time -->
           <td>
-            <label>
-              <input
-                class="form-control"
-                type="time"
-                [(ngModel)]="period.openingTime"
-                (ngModelChange)="refreshCalendar(period)"
-              />
-            </label>
+            <app-moment-date [(model)]="period.openingTime" (modelChange)="refreshCalendar(period)" [type]="'time'"></app-moment-date>
           </td>
 
           <!-- Closing time -->
           <td>
-            <label>
-              <input
-                class="form-control"
-                type="time"
-                [(ngModel)]="period.closingTime"
-                (ngModelChange)="refreshCalendar(period)"
-              />
-            </label>
+            <app-moment-date [(model)]="period.closingTime" (modelChange)="refreshCalendar(period)" [type]="'time'"></app-moment-date>
           </td>
 
           <td>
@@ -165,16 +137,15 @@
 
           <!-- Reservable from -->
           <td *ngIf="showReservationInformation">
-            <label>
-              <input
-                class="form-control"
+            
+              <app-moment-datetime
                 type="datetime-local"
                 placeholder="Choose a date"
                 [disabled]="!period.reservable"
-                [(ngModel)]="period.reservableFrom"
-                (ngModelChange)="refreshCalendar(period)"
-              />
-            </label>
+                [(model)]="period.reservableFrom"
+                (modelChange)="refreshCalendar(period)"
+              ></app-moment-datetime>
+            
           </td>
 
           <!-- Button with glyphicon to delete period -->

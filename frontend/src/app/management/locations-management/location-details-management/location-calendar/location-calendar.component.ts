@@ -1,7 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {CalendarEvent} from 'angular-calendar';
 import {
-  CalendarPeriodConstructor,
   CalendarPeriod,
   isCalendarPeriodValid, mapCalendarPeriodsToCalendarEvents
 } from '../../../../shared/model/CalendarPeriod';
@@ -100,15 +99,15 @@ export class LocationCalendarComponent implements OnInit {
         return;
       }
 
-      next.forEach(n => n.openingTime = moment(n.openingTime, 'HH:mm:ss').format('HH:mm'));
-      next.forEach(n => n.closingTime = moment(n.closingTime, 'HH:mm:ss').format('HH:mm'));
+      next.forEach(n => n.openingTime = moment(n.openingTime, 'HH:mm:ss'));
+      next.forEach(n => n.closingTime = moment(n.closingTime, 'HH:mm:ss'));
 
       this.calendarPeriods = next;
 
       // make a deep copy to make sure that can be calculated whether any period has changed
       this.calendarPeriodsInDataLayer = [];
       next.forEach(n => {
-        this.calendarPeriodsInDataLayer.push(CalendarPeriodConstructor.newFromObj(n));
+        this.calendarPeriodsInDataLayer.push(CalendarPeriod.fromJSON(n));
       });
 
       // fill the events based on the calendar periods
@@ -152,12 +151,10 @@ export class LocationCalendarComponent implements OnInit {
   addOpeningPeriodButtonClick(location: Location): void {
     this.addOpeningPeriod(location);
     this.disableFootButtons = false;
-    console.log(this.disableFootButtons);
   }
 
   addOpeningPeriod(location: Location): void {
-    const period: CalendarPeriod = CalendarPeriodConstructor.new();
-    period.location = location;
+    const period: CalendarPeriod = new CalendarPeriod(location, null, null, null, null, false, null, null, null);
 
     this.calendarPeriods.push(period);
   }
@@ -185,7 +182,6 @@ export class LocationCalendarComponent implements OnInit {
       //   in the 'handler' request will be sent to the backend, which is not wat we
       //   want if not all the periods are validly filled in
       for (const n of this.calendarPeriods) {
-        console.log(new Date(n.reservableFrom));
         if (!isCalendarPeriodValid(n)) {
           this.handleWrongCalendarPeriodFormatOnUpdate();
           return;
@@ -247,7 +243,7 @@ export class LocationCalendarComponent implements OnInit {
     // deep copy of this.calendarPeriodsInDataLayer to this.calendarPeriods
     this.calendarPeriods = [];
     this.calendarPeriodsInDataLayer
-      .forEach(value => this.calendarPeriods.push(CalendarPeriodConstructor.newFromObj(value)));
+      .forEach(value => this.calendarPeriods.push(CalendarPeriod.fromJSON(value)));
 
     this.disableFootButtons = true;
   }

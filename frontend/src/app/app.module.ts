@@ -57,6 +57,8 @@ import { NgxMatDatetimePickerModule } from '@angular-material-components/datetim
 import { NgxMatMomentModule } from '@angular-material-components/moment-adapter';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import {MomentDateComponent} from './shared/inputs/moment-date/moment-date.component';
+import { MomentDateTimeComponent } from './shared/inputs/moment-datetime/moment-datetime.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -227,7 +229,9 @@ const routes: Routes = [
     LoginComponent,
     AuthoritiesManagementComponent,
     UserAuthoritiesManagementComponent,
-    AuthorityUsersManagementComponent
+    AuthorityUsersManagementComponent,
+    MomentDateComponent,
+    MomentDateTimeComponent
   ],
     imports: [
       BrowserModule,

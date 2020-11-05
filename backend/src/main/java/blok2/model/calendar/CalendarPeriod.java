@@ -1,15 +1,14 @@
 package blok2.model.calendar;
 
 import blok2.model.reservables.Location;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+
 import static java.time.temporal.ChronoUnit.SECONDS;
 
 public class CalendarPeriod extends Period implements Cloneable {
@@ -38,7 +37,8 @@ public class CalendarPeriod extends Period implements Cloneable {
                 location.equals(that.location) &&
                 openingTime.equals(that.openingTime) &&
                 closingTime.equals(that.closingTime) &&
-                reservableFrom.equals(that.reservableFrom);
+                Duration.between(this.reservableFrom, that.reservableFrom).toMillis() <= 1000;
+                // One second precision is enough.
     }
 
     @Override
