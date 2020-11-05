@@ -2,8 +2,6 @@ package blok2.controllers;
 
 import blok2.daos.ILocationDao;
 import blok2.daos.ILocationTagDao;
-import blok2.helpers.date.CustomDate;
-import blok2.model.LocationTag;
 import blok2.model.reservables.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,10 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.joining;
 
 /**
  * This controller handles all requests related to locations.
