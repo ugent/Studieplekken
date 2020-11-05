@@ -37,20 +37,15 @@ public class TestCascadeInDBTagsDao extends TestDao {
     private Location testLocation2;
     private Location testLocation3;
 
-    private Building testBuilding;
-
     // these will be used as testtags
     private LocationTag testTag;
     private LocationTag testTag2;
 
-    //to connect a location to an authority
-    private Authority authority;
-
     @Override
     public void populateDatabase() throws SQLException {
         // setup test objects
-        authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+        Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
+        Building testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
         testLocation1 = TestSharedMethods.testLocation(authority.clone(), testBuilding);
         testLocation2 = TestSharedMethods.testLocation2(authority.clone(), testBuilding);
         testLocation3 = TestSharedMethods.testLocation3(authority.clone(), testBuilding);
@@ -69,10 +64,6 @@ public class TestCascadeInDBTagsDao extends TestDao {
 
     @Test
     public void deleteLocationTagWithCascadeNeeded() throws SQLException {
-        // Assign tag1 to location1, tag1 and tag2 to location2 and no tags to location3
-        List<LocationTag> tags1 = new ArrayList<>(Collections.singletonList(testTag));
-        List<LocationTag> tags2 = new ArrayList<>(Arrays.asList(testTag, testTag2));
-
         // first add the entries to LOCATION_TAGS
         locationTagDao.addTagToLocation(testLocation1.getName(), testTag.getTagId());
         locationTagDao.addTagToLocation(testLocation2.getName(), testTag.getTagId());
