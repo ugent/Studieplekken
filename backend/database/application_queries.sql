@@ -754,7 +754,7 @@ values (?, ?, ?);
 
 -- $update_penalty_event
 update public.penalty_events
-set points = ?
+set code = ?, points = ?
 where code = ?;
 
 -- $update_fk_penalty_book_to_locations

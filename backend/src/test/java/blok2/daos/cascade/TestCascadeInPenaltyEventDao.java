@@ -43,29 +43,19 @@ public class TestCascadeInPenaltyEventDao extends TestDao {
 
     private PenaltyEvent testPenaltyEvent;
 
-    private User testUser1;
-    private User testUser2;
-
-    private Authority authority;
-
-    private Location testLocation1;
-    private Location testLocation2;
-
-    private Building testBuilding;
-
     private Penalty testPenalty1;
     private Penalty testPenalty2;
 
     @Override
     public void populateDatabase() throws SQLException {
         // Setup test objects
-        testUser1 = TestSharedMethods.studentTestUser();
-        testUser2 = TestSharedMethods.adminTestUser();
+        User testUser1 = TestSharedMethods.studentTestUser();
+        User testUser2 = TestSharedMethods.adminTestUser();
 
-        authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
-        testLocation1 = TestSharedMethods.testLocation(authority.clone(), testBuilding);
-        testLocation2 = TestSharedMethods.testLocation2(authority.clone(), testBuilding);
+        Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
+        Building testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+        Location testLocation1 = TestSharedMethods.testLocation(authority.clone(), testBuilding);
+        Location testLocation2 = TestSharedMethods.testLocation2(authority.clone(), testBuilding);
 
         Map<Language, String> descriptions = new HashMap<>();
         descriptions.put(Language.DUTCH, "Dit is een test omschrijving van een penalty event met code 0");
