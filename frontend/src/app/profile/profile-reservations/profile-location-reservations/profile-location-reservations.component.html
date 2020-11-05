@@ -8,38 +8,112 @@
   <div class="container-fluid row">
 
     <div class="container-fluid col-md-11">
-      <div class="container-fluid" *ngIf="locationReservations | async as reservations">
-        <table style="width: 100%" *ngIf="reservations.length > 0; else noReservations">
-          <!-- Table header -->
-          <thead>
-          <tr>
-            <th>{{'profile.reservations.locations.table.header.locationName' | translate}}</th>
-            <th>{{'profile.reservations.locations.table.header.reservationDate' | translate}}</th>
-            <th>{{'profile.reservations.locations.table.header.attended' | translate}}</th>
-          </tr>
-          </thead>
+      <div *ngIf="showReservations; else noReservations">
+        <div class="container-fluid" *ngIf="locationReservations | async as reservations">
+          <table style="width: 100%" *ngIf="reservations.length > 0; else zeroReservations">
+            <!-- Table header -->
+            <thead>
+            <tr>
+              <th>{{'profile.reservations.locations.table.header.locationName' | translate}}</th>
+              <th>{{'profile.reservations.locations.table.header.reservationDate' | translate}}</th>
+              <th>{{'profile.reservations.locations.table.header.beginHour' | translate}}</th>
+              <!-- <th>{{'profile.reservations.locations.table.header.attended' | translate}}</th> -->
+              <th></th>
+            </tr>
+            </thead>
 
-          <!-- Table body -->
-          <tbody>
-          <tr [@rowsAnimation]="" *ngFor="let reservation of reservations">
-            <td>{{reservation.location.name}}</td>
-            <td>{{toDateString(reservation.date)}}</td>
-
-            <!-- This column should only be 'yes' or 'no' if the reservationDate is in the past,
-                 otherwise it is not possible to be attended, and it might seem that penalty points will be given -->
-            <td>{{compareDates(nowAsCustomDate(), reservation.date)
-            < 0 ? ('profile.reservations.locations.table.attended.other' | translate) :
-              reservation.attended ?
-                ('profile.reservations.locations.table.attended.yes' | translate) :
-                ('profile.reservations.locations.table.attended.no' | translate)}}</td>
-          </tr>
-          </tbody>
-        </table>
+            <!-- Table body -->
+            <tbody>
+            <tr [@rowsAnimation]="" *ngFor="let reservation of reservations">
+              <td>{{calendarMap.get(reservation.timeslot.calendarId).location.name}}</td>
+              <td>{{reservation.timeslot.timeslotDate}}</td>
+              <td>{{getBeginHour(calendarMap.get(reservation.timeslot.calendarId), reservation.timeslot) | date:'HH:mm'}}</td>
+              <!-- This column should only be 'yes' or 'no' if the reservationDate is in the past,
+                    otherwise it is not possible to be attended, and it might seem that penalty points will be given -->
+              <!-- <td>{{ reservation.attended ?
+                  ('profile.reservations.locations.table.attended.yes' | translate) :
+                  ('profile.reservations.locations.table.attended.no' | translate)}}</td> -->
+              <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
+                  data-toggle="modal" data-target="#deleteLocationReservationModal"
+                  (click)="prepareToDeleteLocationReservation(reservation)">
+                <span class="glyphicon glyphicon-trash pointerCursor"></span>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<ng-template #noReservations>
-  {{'profile.reservations.locations.noReservations' | translate}}
+<ng-template #zeroReservations>
+  {{'profile.reservations.locations.zeroReservations' | translate}}
 </ng-template>
+
+<ng-template #noReservations>
+  <div class="container-fluid" *ngIf="showReservations === false && loadingReservations === true; else errorReservations">
+    {{'profile.reservations.locations.loading' | translate}}
+  </div>
+</ng-template>
+
+<ng-template #errorReservations>
+  <div class="container-fluid" *ngIf="showReservations === false && loadingReservations === false">
+    {{'profile.reservations.locations.error' | translate}}
+  </div>
+</ng-template>
+
+<!-- Modal view to ask whether the user is sure to delete a lockerReservation -->
+<div class="modal fade" id="deleteLocationReservationModal" tabindex="-1" role="dialog"
+      aria-labelledby="deleteLocationReservationModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document" *ngIf="locationReservationToDelete.timeslot !== null">
+    <div class="modal-content">
+
+      <!-- Header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteLocationModalLabel">
+          {{'management.reservations.location.deleteModal.title' | translate}}
+        </h5>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div>
+          <b>{{'management.reservations.location.deleteModal.body' | translate}}</b>
+          <br><br>
+          <ul>
+            <li><b style="margin-right: 5px"><i>{{('profile.reservations.locations.table.header.locationName' | translate) + ':   '}}</i></b>{{calendarMap.get(locationReservationToDelete.timeslot.calendarId).location.name}}</li>
+            <li><b style="margin-right: 5px"><i>{{('profile.reservations.locations.table.header.reservationDate' | translate) + ':   '}}</i></b>{{locationReservationToDelete.timeslot.timeslotDate}}</li>
+            <li><b style="margin-right: 5px"><i>{{('profile.reservations.locations.table.header.beginHour' | translate) + ':   '}}</i></b>{{getBeginHour(calendarMap.get(locationReservationToDelete.timeslot.calendarId), locationReservationToDelete.timeslot) | date:'HH:mm'}}</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary"
+                (click)="deleteLocationReservation()">
+          {{'management.reservations.location.deleteModal.yesButton' | translate}}
+        </button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          {{'management.reservations.location.deleteModal.noButton' | translate}}
+        </button>
+      </div>
+
+      <div class="container-fluid">
+        <div class="alert alert-info" *ngIf="deletionWasSuccess === null">
+          {{'management.reservations.location.deleteModal.loading' | translate}}
+        </div>
+
+        <div class="alert alert-success" *ngIf="deletionWasSuccess === true">
+          {{'management.reservations.location.deleteModal.success' | translate}}
+        </div>
+
+        <div class="alert alert-error" *ngIf="deletionWasSuccess === false">
+          {{'management.reservations.location.deleteModal.error' | translate}}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

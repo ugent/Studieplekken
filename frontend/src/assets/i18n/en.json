@@ -780,6 +780,7 @@
           "header": {
             "locationName": "Location",
             "reservationDate": "Reservation for date",
+            "beginHour": "Starting time reservation",
             "attended": "Did you attend?"
           },
 
@@ -790,7 +791,9 @@
           }
         },
 
-        "noReservations": "You have never made any location reservations so far."
+        "zeroReservations": "You have never made any location reservations so far",
+        "loading": "Location reservations are being loaded...",
+        "error": "Error while loading your location reservations"
       },
 
       "lockers": {

@@ -46,6 +46,17 @@ public class CalendarPeriodController {
         }
     }
 
+    @GetMapping("/")
+    public List<CalendarPeriod> getAllCalendarPeriods() {
+        try {
+            return calendarPeriodDao.getAllCalendarPeriods();
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
     @PostMapping
     public void addCalendarPeriods(@RequestBody List<CalendarPeriod> calendarPeriods) {
         try {

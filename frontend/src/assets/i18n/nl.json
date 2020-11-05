@@ -780,6 +780,7 @@
           "header": {
             "locationName": "Locatie",
             "reservationDate": "Gereserveerd voor datum",
+            "beginHour": "Aanvangsuur reservatie",
             "attended": "Was je aanwezig?"
           },
 
@@ -790,7 +791,9 @@
           }
         },
 
-        "noReservations": "Je hebt tot nu toe nog nooit gereserveerd om op een bloklocatie te studeren."
+        "zeroReservations": "Je hebt tot nu toe nog nooit gereserveerd om op een bloklocatie te studeren",
+        "loading": "Locatiereservaties worden geladen...",
+        "error": "Er is iets misgegaan tijdens het laden van uw locatiereservaties"
       },
 
       "lockers": {
