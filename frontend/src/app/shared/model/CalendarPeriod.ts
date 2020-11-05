@@ -6,6 +6,7 @@ import * as moment from 'moment';
 import { Moment } from 'moment';
 
 export class CalendarPeriod {
+  id: number;
   location: Location;
   startsAt: Moment;
   endsAt: Moment;
@@ -16,8 +17,9 @@ export class CalendarPeriod {
   reservableTimeslotSize: number;
   timeslots: Timeslot[];
 
-  constructor(location: Location, startsAt: Moment, endsAt: Moment, openingTime: Moment, closingTime: Moment,
+  constructor(id: number, location: Location, startsAt: Moment, endsAt: Moment, openingTime: Moment, closingTime: Moment,
               reservable: boolean, reservableFrom: Moment, reservableTimeslotSize: number, timeslots: Timeslot[]) {
+    this.id = id;
     this.location = location;
     this.startsAt = startsAt;
     this.endsAt = endsAt;
@@ -31,6 +33,7 @@ export class CalendarPeriod {
 
   static fromJSON(json: any): CalendarPeriod {
     return new CalendarPeriod(
+      json.id,
       json.location,
       moment(json.startsAt),
       moment(json.endsAt),

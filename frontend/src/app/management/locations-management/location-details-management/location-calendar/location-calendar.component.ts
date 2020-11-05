@@ -154,7 +154,7 @@ export class LocationCalendarComponent implements OnInit {
   }
 
   addOpeningPeriod(location: Location): void {
-    const period: CalendarPeriod = new CalendarPeriod(location, null, null, null, null, false, null, null, null);
+    const period: CalendarPeriod = new CalendarPeriod(null, location, null, null, null, null, false, null, null, null);
 
     this.calendarPeriods.push(period);
   }
