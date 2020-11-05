@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output, OnChanges, SimpleChanges} from '@angular/core';
 import {CalendarView, CalendarEvent, CalendarEventTimesChangedEvent} from 'angular-calendar';
-import {Subject} from 'rxjs';
+import {Observable, Subject, from} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 import {defaultOpeningHour, defaultClosingHour} from 'src/environments/environment';
 import { getHours } from 'date-fns';
@@ -23,6 +23,8 @@ export class CalendarComponent implements OnInit, OnChanges {
   @Input() refresh: Subject<any>;
   @Output() onTimeslotPicked: EventEmitter<any> = new EventEmitter<any>();
 
+  eventsSubj = new Subject<CalendarEvent[]>();
+
   currentLang: string;
 
   constructor(private translate: TranslateService) {
@@ -35,16 +37,27 @@ export class CalendarComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.currentLang = this.translate.currentLang;
+    this.eventsSubj.subscribe(next => {
+      this.changeCalendarSize(next);
+    });
+    if (this.events !== undefined) {
+      this.eventsSubj.next(this.events);
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(this.events.length) {
+    if (changes.hasOwnProperty('events')) {
+      this.eventsSubj.next(this.events);
+    }
+  }
+
+  changeCalendarSize(events: CalendarEvent[]): void {
+    if (events.length > 0) {
       const endHour = this.events.map(event => event.end?.getHours()).reduce((a, b) => Math.max(a, b));
       const beginHour = this.events.map(event => event.start.getHours()).reduce((a, b) => Math.min(a, b));
       this.openingHour = beginHour < defaultOpeningHour ? beginHour : defaultOpeningHour;
-      this.closingHour = endHour - 1 > defaultClosingHour ? endHour - 1 : defaultClosingHour;
-    }
-    else {
+      this.closingHour = endHour > defaultClosingHour ? endHour : defaultClosingHour;
+    } else {
       this.openingHour = defaultOpeningHour;
       this.closingHour = defaultClosingHour;
     }
