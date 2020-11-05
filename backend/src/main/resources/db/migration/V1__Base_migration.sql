@@ -14,6 +14,14 @@ CREATE TABLE public.authority
     description     text NOT NULL
 );
 
+CREATE TABLE public.buildings
+(
+    building_id     integer NOT NULL primary key generated always as identity,
+    building_name   text    NOT NULL unique,
+    address text            NOT NULL,
+    UNIQUE(building_name, address)
+);
+
 --
 -- Name: location; Type: TABLE; Schema: public; Owner: postgres
 --
@@ -24,7 +32,7 @@ CREATE TABLE public.locations
     number_of_seats     integer NOT NULL,
     number_of_lockers   integer NOT NULL,
     image_url           text,
-    address             text    NOT NULL,
+    building_id         integer NOT NULL,
     authority_id        integer NOT NULL,
     description_dutch   text,
     description_english text,
@@ -32,7 +40,10 @@ CREATE TABLE public.locations
 
     constraint fk_location_to_authority
         foreign key (authority_id)
-            references public.authority (authority_id)
+            references public.authority (authority_id),
+    constraint fk_location_to_building
+        foreign key (building_id)
+            references public.buildings (building_id)
 );
 
 CREATE TABLE public.tags

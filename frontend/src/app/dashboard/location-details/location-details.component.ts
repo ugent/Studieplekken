@@ -78,7 +78,7 @@ export class LocationDetailsComponent implements OnInit {
   }
 
   getGoogleMapsUrl(location: Location): SafeResourceUrl {
-    const url = 'https://www.google.com/maps?q=' + location.address + '&output=embed';
+    const url = 'https://www.google.com/maps?q=' + location.building.address + '&output=embed';
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 

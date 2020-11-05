@@ -9,7 +9,6 @@
     <table style="width: 100%;" *ngIf="tags.length > 0; else noTags">
       <thead>
       <tr>
-        <th>{{'management.tags.table.id' | translate}}</th>
         <th>{{'management.tags.table.dutch' | translate}}</th>
         <th>{{'management.tags.table.english' | translate}}</th>
         <th><!-- update --></th>
@@ -19,7 +18,6 @@
 
       <tbody>
       <tr [@rowsAnimation]="" *ngFor="let locationTag of tags">
-        <td>{{locationTag.tagId}}</td>
         <td>{{locationTag.dutch}}</td>
         <td>{{locationTag.english}}</td>
         <!-- Edit icon -->
@@ -75,17 +73,6 @@
       <!-- Modal body -->
       <div class="modal-body">
         <form [formGroup]="tagFormGroup">
-          <!-- TagID - this will be set by the database -->
-          <div class="row form-group">
-            <label class="col-lg-3 control-label" for="tagIdDelete">
-              {{'management.tags.table.id' | translate}}<br>
-              <span style="color: red;">{{'management.tags.addTagModal.idSetByBackendMessage' | translate}}</span>
-            </label>
-            <div class="col-lg-8">
-              <input class="form-control" id="tagIdDelete" type="number" formControlName="tagId" >
-            </div>
-          </div>
-
           <!-- Dutch name of tag -->
           <div class="row form-group">
             <label class="col-lg-3 control-label" for="dutchDelete">
@@ -156,16 +143,6 @@
       <!-- Modal body -->
       <div class="modal-body">
         <form [formGroup]="tagFormGroup">
-          <!-- Tag ID - not updatable -->
-          <div class="row form-group">
-            <label class="col-lg-3 control-label" for="tagIdUpdate">
-              {{'management.tags.table.id' | translate}}
-            </label>
-            <div class="col-lg-8">
-              <input class="form-control" id="tagIdUpdate" type="number" formControlName="tagId">
-            </div>
-          </div>
-
           <!-- Dutch tag name -->
           <div class="row form-group">
             <label class="col-lg-3 control-label" for="dutchUpdate">
@@ -239,7 +216,6 @@
           <b>{{'management.tags.deleteTagModal.body' | translate}}</b>
           <br><br>
           <ul>
-            <li><b style="margin-right: 5px"><i>{{('management.tags.table.id' | translate) + ':   '}}</i></b>{{tagId.value}}</li>
             <li><b style="margin-right: 5px"><i>{{('management.tags.table.dutch' | translate) + ':   '}}</i></b>{{dutch.value}}</li>
             <li><b style="margin-right: 5px"><i>{{('management.tags.table.english' | translate)}}</i></b>{{english.value}}</li>
           </ul>

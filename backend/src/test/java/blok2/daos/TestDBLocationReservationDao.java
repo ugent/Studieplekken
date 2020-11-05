@@ -2,6 +2,7 @@ package blok2.daos;
 
 import blok2.helpers.date.CustomDate;
 import blok2.model.Authority;
+import blok2.model.Building;
 import blok2.model.reservables.Location;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
@@ -26,7 +27,11 @@ public class TestDBLocationReservationDao extends TestDao {
     @Autowired
     private IAuthorityDao authorityDao;
 
+    @Autowired
+    private IBuildingDao buildingDao;
+
     private Location testLocation;
+    private Building testBuilding;
     private User testUser;
     private User testUser2;
 
@@ -34,7 +39,9 @@ public class TestDBLocationReservationDao extends TestDao {
     public void populateDatabase() throws SQLException {
         // setup test location objects
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testLocation = TestSharedMethods.testLocation(authority.clone());
+        testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+
+        testLocation = TestSharedMethods.testLocation(authority.clone(), testBuilding);
         testUser = TestSharedMethods.adminTestUser();
         testUser2 = TestSharedMethods.studentTestUser();
 
