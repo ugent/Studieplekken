@@ -101,7 +101,8 @@ public class LocationController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
-/* currently no longer applicable
+
+    /* currently no longer applicable
     //logged in user (?)
     @GetMapping("/{locationName}/reservations/count")
     public int getAmountOfReservationsToday(@PathVariable("locationName") String locationName) {
@@ -113,7 +114,8 @@ public class LocationController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
-*/
+    */
+
     // *****************************************
     // *   CRUD operations for LOCATION_TAGS   *
     // *****************************************
