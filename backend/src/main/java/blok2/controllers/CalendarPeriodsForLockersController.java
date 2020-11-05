@@ -13,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -134,7 +135,7 @@ public class CalendarPeriodsForLockersController {
                                               List<CalendarPeriodForLockers> to) throws SQLException, ParseException {
         // setup
         Location expectedLocation = locationDao.getLocation(locationName);
-        Date lastEnd = null;
+        LocalDate lastEnd = null;
 
         // analyze the periods
         for (CalendarPeriodForLockers period : to) {
@@ -156,13 +157,13 @@ public class CalendarPeriodsForLockersController {
             // make sure no periods overlap
             // @REVIEWERS: I've honestly no idea what this is doing. seems like lastEnd is always null.
             // Let me know what i should do with this.
-            /*
-            if (lastEnd != null && lastEnd.getTime() > startDate.getTime()) {
+
+            if (lastEnd != null && lastEnd.isAfter(period.getStartsAt())) {
                 logger.log(Level.SEVERE, "analyzeAndUpdateCalendarPeriodsForLockers, overlapping periods");
                 throw new ResponseStatusException(
                         HttpStatus.CONFLICT, "Overlapping periods");
             }
-            */
+            lastEnd = period.getEndsAt();
         }
 
         // delete all 'from' and add 'to'
