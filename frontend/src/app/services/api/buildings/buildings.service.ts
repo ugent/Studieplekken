@@ -32,6 +32,6 @@ export class BuildingService {
   }
 
   deleteBuilding(buildingId: number): Observable<any> {
-    return this.http.delete(api.deleteAuthority.replace('{buildingId}', String(buildingId)));
+    return this.http.delete(api.deleteBuilding.replace('{buildingId}', String(buildingId)));
   }
 }

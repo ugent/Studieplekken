@@ -328,6 +328,14 @@
         "error": "Something went wrong while updating the building."
       },
 
+      "deleteBuildingModal": {
+        "title": "Delete the building",
+        "body": "Are you sure that you want to delete following building?",
+        "warning": "Please do note that all locations within this building will be deleted too",
+        "success": "Successfully deleted the building.",
+        "error": "Something went wrong while deleting the building."
+      },
+
       "errorOnRetrievingTags": "Something went wrong while retrieving the buildings..."
     },
 

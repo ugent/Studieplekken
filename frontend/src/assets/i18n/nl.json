@@ -328,6 +328,14 @@
         "error": "Something went wrong while updating the building."
       },
 
+      "deleteBuildingModal": {
+        "title": "Verwijder het gebouw",
+        "body": "Ben je zeker dat je volgend gebouw wilt verwijderen?",
+        "warning": "Gelieve op te merken dat alle locaties in dit gebouw ook zullen verwijderd worden!",
+        "success": "Het verwijderen van het gebouw is gelukt.",
+        "error": "Er is iets misgelopen tijdens het verwijderen van het gebouw."
+      },
+
       "errorOnRetrievingTags": "Er is iets misgelopen tijdens het ophalen van de gebouwen..."
     },
 

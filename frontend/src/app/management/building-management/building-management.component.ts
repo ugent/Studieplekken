@@ -28,6 +28,7 @@ export class BuildingManagementComponent implements OnInit {
   successGettingBuildings: boolean = undefined;
   successAddingBuilding: boolean = undefined;
   successUpdatingBuilding: boolean = undefined;
+  successDeletingBuilding: boolean = undefined;
 
   constructor(private buildingService: BuildingService) { }
 
@@ -49,6 +50,10 @@ export class BuildingManagementComponent implements OnInit {
       address: building.address
     });
   }
+
+  // ********************
+  // *   CRUD: Create   *
+  // ********************/
 
   prepareAdd(): void {
     // reset the feedback boolean
@@ -76,6 +81,10 @@ export class BuildingManagementComponent implements OnInit {
     );
   }
 
+  // ********************
+  // *   CRUD: Update   *
+  // ********************/
+
   prepareUpdate(building: Building): void {
     // reset the feedback boolean
     this.successUpdatingBuilding = undefined;
@@ -96,6 +105,35 @@ export class BuildingManagementComponent implements OnInit {
       }
     );
   }
+
+  // ********************
+  // *   CRUD: Delete   *
+  // ********************/
+
+  prepareToDelete(building: Building): void {
+    // reset the feedback boolean
+    this.successDeletingBuilding = undefined;
+
+    // prepare the tagFormGroup
+    this.prepareFormGroup(building);
+  }
+
+  deleteBuildingInFormGroup(): void {
+    this.successDeletingBuilding = null;
+    this.buildingService.deleteBuilding(this.building.buildingId).subscribe(
+      () => {
+        this.successDeletingBuilding = true;
+        // and reload the tags
+        this.buildingsObs = this.buildingService.getAllBuildings();
+      }, () => {
+        this.successDeletingBuilding = false;
+      }
+    );
+  }
+
+  // *****************
+  // *   Auxiliary   *
+  // *****************/
 
   get buildingId(): AbstractControl { return this.buildingFormGroup.get('buildingId'); }
   get name(): AbstractControl { return this.buildingFormGroup.get('name'); }

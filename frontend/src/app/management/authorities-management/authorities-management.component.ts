@@ -57,9 +57,9 @@ export class AuthoritiesManagementComponent implements OnInit {
     });
   }
 
-  /********************
-   *   CRUD: Create   *
-   ********************/
+  // ********************
+  // *   CRUD: Create   *
+  // ********************/
 
   prepareAdd(): void {
     // reset the feedback boolean
@@ -87,9 +87,9 @@ export class AuthoritiesManagementComponent implements OnInit {
     );
   }
 
-  /********************
-   *   CRUD: Update   *
-   ********************/
+  // ********************
+  // *   CRUD: Update   *
+  // ********************/
 
   prepareUpdate(authority: Authority): void {
     // reset the feedback boolean
@@ -112,9 +112,9 @@ export class AuthoritiesManagementComponent implements OnInit {
     );
   }
 
-  /********************
-   *   CRUD: Delete   *
-   ********************/
+  // ********************
+  // *   CRUD: Delete   *
+  // ********************/
 
   prepareToDelete(authority: Authority): void {
     // reset the feedback boolean
@@ -137,9 +137,9 @@ export class AuthoritiesManagementComponent implements OnInit {
     );
   }
 
-  /*************************
-   *   Auxiliary getters   *
-   *************************/
+  // *****************
+  // *   Auxiliary   *
+  // *****************/
 
   get authorityId(): AbstractControl { return this.authorityFormGroup.get('authorityId'); }
   get authorityName(): AbstractControl { return this.authorityFormGroup.get('authorityName'); }
