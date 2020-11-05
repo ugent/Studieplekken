@@ -22,7 +22,13 @@
 
     "locationDetails": {
       "info": "Algemene informatie over deze locatie:",
-      "tags": "Tags die deze locatie kenmerken:"
+      "tags": "Tags die deze locatie kenmerken:",
+      "calendar": {
+        "reservation": {
+          "successMessage": "Het wijzigen van de reservaties is succesvol verlopen",
+          "errorMessage": "Het aanpassen van de reservaties is mislukt. Er is iets misgegaan."
+        }
+      }
     },
 
     "filter": {
@@ -780,6 +786,7 @@
           "header": {
             "locationName": "Locatie",
             "reservationDate": "Gereserveerd voor datum",
+            "beginHour": "Aanvangsuur reservatie",
             "attended": "Was je aanwezig?"
           },
 
@@ -790,7 +797,9 @@
           }
         },
 
-        "noReservations": "Je hebt tot nu toe nog nooit gereserveerd om op een bloklocatie te studeren."
+        "zeroReservations": "Je hebt tot nu toe nog nooit gereserveerd om op een bloklocatie te studeren",
+        "loading": "Locatiereservaties worden geladen...",
+        "error": "Er is iets misgegaan tijdens het laden van uw locatiereservaties"
       },
 
       "lockers": {

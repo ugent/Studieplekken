@@ -20,6 +20,10 @@ export class CalendarPeriodsService {
       .pipe(filter(s => !!s), map(ls => ls.map(s => CalendarPeriod.fromJSON(s))));
   }
 
+  getCalendarPeriods(): Observable<CalendarPeriod[]> {
+    return this.http.get<CalendarPeriod[]>(api.allCalendarPeriods);
+  }
+
   addCalendarPeriods(calendarPeriods: CalendarPeriod[]): Observable<void> {
     return this.http.post<void>(api.addCalendarPeriods, calendarPeriods.map(s => s.toJSON()));
   }

@@ -10,7 +10,12 @@ import { LocationReservation } from './LocationReservation';
 import * as moment from 'moment';
 import { Moment } from 'moment';
 
+<<<<<<< HEAD
 export class CalendarPeriod {
+=======
+export interface CalendarPeriod {
+  id: number;
+>>>>>>> angular_update_reservations
   location: Location;
   startsAt: Moment;
   endsAt: Moment;
@@ -93,7 +98,7 @@ export function isCalendarPeriodValid(period: CalendarPeriod): boolean {
 /**
  * Convert calendarPeriods to Calendar Events. This detects correctly whether the period is reservable or not.
  * @param periods The to-convert periods.
- * 
+ *
  */
 export function mapCalendarPeriodsToCalendarEvents(periods: CalendarPeriod[],
                                                    reservedTimeslots: LocationReservation[] = []
