@@ -82,9 +82,6 @@ public class TestDBLocationReservationDao extends TestDao {
         LocationReservation rlr = locationReservationDao.getLocationReservation(u.getAugentID(), timeslot); // rlr = retrieved location reservation
         Assert.assertEquals("addLocationReservation, getLocationReservation", lr, rlr);
 
-       // List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfLocation(testLocation.getName(), true);
-        //Assert.assertEquals("addLocationReservation, getAllLocationReservationsOfLocation", 1, list.size());
-
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(u.getAugentID());
         Assert.assertEquals("addLocationReservation, getAllLocationReservationsOfUser", 1, list.size());
 
