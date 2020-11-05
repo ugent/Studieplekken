@@ -176,14 +176,19 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
     @Override
     public void addLocationReservation(LocationReservation locationReservation) throws SQLException {
         try (Connection conn = adb.getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_location_reservation"));
-            pstmt.setString(1, locationReservation.getUser().getAugentID());
-            pstmt.setString(2, locationReservation.getCreatedAt());
-            pstmt.setString(3, locationReservation.getTimeslot().getTimeslotDate());
-            pstmt.setInt(4, locationReservation.getTimeslot().getTimeslotSeqnr());
-            pstmt.setInt(5, locationReservation.getTimeslot().getCalendarId());
-            pstmt.execute();
+            addLocationReservation(locationReservation, conn);
         }
+    }
+
+    private void addLocationReservation(LocationReservation locationReservation, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_location_reservation"));
+        pstmt.setString(1, locationReservation.getUser().getAugentID());
+        pstmt.setString(2, locationReservation.getCreatedAt());
+        pstmt.setString(3, locationReservation.getTimeslot().getTimeslotDate());
+        pstmt.setInt(4, locationReservation.getTimeslot().getTimeslotSeqnr());
+        pstmt.setInt(5, locationReservation.getTimeslot().getCalendarId());
+        pstmt.execute();
+
     }
 
     @Override
@@ -191,19 +196,21 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
         // Open up transaction
         try (Connection conn = adb.getConnection()) {
             try {
+                conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
                 // Take a lock on the database.
                 conn.setAutoCommit(false);
+                conn.prepareStatement(Resources.databaseProperties.getString("lock_location_reservation")).execute();
 
                 // Fetch data we need.
                 long amountOfReservations = getAmountOfReservationsOfTimeslot(reservation.getTimeslot(), conn);
-                System.out.println(amountOfReservations);
 
                 long sizeOfLocation = getLocationSizeOfTimeslot(reservation.getTimeslot(), conn);
 
-                System.out.println(sizeOfLocation);
                 if (amountOfReservations < sizeOfLocation) {
-                    // All is well. Release the lock
-                    addLocationReservation(reservation);
+                    System.out.println(amountOfReservations);
+                    // All is well. Add & then release the lock
+
+                    addLocationReservation(reservation, conn);
                     conn.commit();
                     return true;
                 }

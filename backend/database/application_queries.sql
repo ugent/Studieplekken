@@ -195,6 +195,9 @@ select l.number_of_seats
 from public.calendar_periods cp INNER JOIN public.locations l on cp.location_name = l.name
 where cp.calendar_id = ?;
 
+-- $lock_location_reservation
+LOCK TABLE public.location_reservations IN ACCESS EXCLUSIVE MODE;
+
 -- $delete_location_reservation
 delete
 from public.location_reservations
