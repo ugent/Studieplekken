@@ -22,7 +22,13 @@
 
     "locationDetails": {
       "info": "General information about this location:",
-      "tags": "Tags that characterize this location:"
+      "tags": "Tags that characterize this location:",
+      "calendar": {
+        "reservation": {
+          "successMessage": "Successfully updated the reservations",
+          "errorMessage": "Update was not successful. Something went wrong."
+        }
+      }
     },
 
     "filter": {

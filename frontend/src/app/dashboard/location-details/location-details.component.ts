@@ -3,7 +3,7 @@ import {Location} from '../../shared/model/Location';
 import {ActivatedRoute} from '@angular/router';
 import {BehaviorSubject, combineLatest, Observable, Subscription} from 'rxjs';
 import {LocationService} from '../../services/api/locations/location.service';
-import {vars} from '../../../environments/environment';
+import {vars, msToShowFeedback} from '../../../environments/environment';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {CalendarEvent} from 'angular-calendar';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -16,7 +16,6 @@ import { includesTimeslot, Timeslot, timeslotEquals } from 'src/app/shared/model
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
-import { Subject } from 'rxjs/internal/Subject';
 
 @Component({
   selector: 'app-location-details',
@@ -33,6 +32,9 @@ export class LocationDetailsComponent implements OnInit {
   selectedSubject: BehaviorSubject<LocationReservation[]> = new BehaviorSubject([]);
   originalList: LocationReservation[];
   subscription: Subscription;
+
+  showSuccess = false;
+  showError = false;
 
   currentTimeslot: Timeslot;
   isModified = false;
@@ -83,7 +85,7 @@ export class LocationDetailsComponent implements OnInit {
   }
 
   timeslotPicked(event: Timeslot): void {
-    if(!event.hasOwnProperty('timeslotSeqnr')) {
+    if (!event.hasOwnProperty('timeslotSeqnr')) {
       return;
     }
 
@@ -159,6 +161,16 @@ export class LocationDetailsComponent implements OnInit {
     combineLatest([
           this.locationReservationService.postLocationReservations(newReservations),
           this.locationReservationService.deleteLocationReservations(removedReservations)
-        ]).subscribe(() => this.updateCalendar(), () => this.isModified = true);
+        ]).subscribe(() => {
+          this.updateCalendar();
+          this.showSuccess = true;
+          this.showError = false;
+          setTimeout(() => this.showSuccess = false, msToShowFeedback);
+        }, () => {
+          this.isModified = true;
+          this.showSuccess = false;
+          this.showError = true;
+          setTimeout(() => this.showError = false, msToShowFeedback);
+        });
   }
 }

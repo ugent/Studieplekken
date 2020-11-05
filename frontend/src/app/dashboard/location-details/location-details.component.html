@@ -73,6 +73,17 @@
   </button>
   </div>
 
+  <!-- If clicked on reservationButton, give some feedback -->
+  <div class="row" style="margin-top: 10px">
+    <div class="alert alert-success" *ngIf="showSuccess">
+      {{'dashboard.locationDetails.calendar.reservation.successMessage' | translate}}
+    </div>
+
+    <div class="alert alert-error" *ngIf="showError">
+      {{'dashboard.locationDetails.calendar.reservation.errorMessage' | translate}}
+    </div>
+  </div>
+
 
 
   <hr>
