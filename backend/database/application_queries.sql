@@ -137,9 +137,9 @@ insert into public.buildings (building_name, address)
 values (?, ?) RETURNING building_id;
 
 -- $update_building
-update public.buildings b
-set b.building_name = ?, b.address = ?
-where b.building_id = ?;
+update public.buildings
+set building_name = ?, address = ?
+where building_id = ?;
 
 -- $delete_building
 delete

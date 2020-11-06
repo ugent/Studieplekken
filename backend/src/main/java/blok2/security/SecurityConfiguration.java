@@ -49,8 +49,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.csrf()
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+        // http.csrf()
+        //        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+
+        http.csrf().disable();
+
 
         http.authorizeRequests()
                 .regexMatchers("/login/cas").authenticated() // used to trigger cas flow
