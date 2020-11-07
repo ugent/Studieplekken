@@ -99,14 +99,10 @@ public class TestCascadeInDBAccountDao extends TestDao {
         // because when the penalties are retrieved from the penaltyEventDao, the list will
         // be sorted by received points before asserting, if they would be equal we can't sort
         // on the points and be sure about the equality of the actual and expected list.
-<<<<<<< HEAD
+
+        PenaltyEvent testPenaltyEvent = new PenaltyEvent(0, 10, descriptions);
         testPenalty1 = new Penalty(testUser.getAugentID(), testPenaltyEvent.getCode(), LocalDate.now(), LocalDate.now(), testLocation1.getName(), 10, "First test penalty");
         testPenalty2 = new Penalty(testUser.getAugentID(), testPenaltyEvent.getCode(), LocalDate.of(1970, 1, 1), LocalDate.now(), testLocation2.getName(), 20, "Second test penalty");
-=======
-        PenaltyEvent testPenaltyEvent = new PenaltyEvent(0, 10, descriptions);
-        testPenalty1 = new Penalty(testUser.getAugentID(), testPenaltyEvent.getCode(), CustomDate.now(), CustomDate.now(), testLocation1.getName(), 10, "First test penalty");
-        testPenalty2 = new Penalty(testUser.getAugentID(), testPenaltyEvent.getCode(), new CustomDate(1970, 1, 1), CustomDate.now(), testLocation2.getName(), 20, "Second test penalty");
->>>>>>> angular_update_reservations
 
         // Add test objects to database
         accountDao.directlyAddUser(testUser);
