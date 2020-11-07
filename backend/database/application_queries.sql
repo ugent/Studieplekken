@@ -850,7 +850,7 @@ where location_id = ?;
 -- queries for CALENDAR_PERIODS
 -- $get_all_calendar_periods
 select cp.calendar_id, cp.location_name, cp.starts_at, cp.ends_at, cp.opening_time, cp.closing_time, cp.reservable_from, cp.reservable, cp.timeslot_length
-       , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address, l.description_dutch, l.description_english
+       , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address, l.description_dutch, l.description_english, l.forGroup
        , a.authority_id, a.authority_name, a.description
 from public.calendar_periods cp
     join public.locations l
@@ -877,7 +877,7 @@ values (?, ?, ?, ?, ?, ?, ?, ?);
 
 -- $update_calendar_period
 update public.calendar_periods
-set location_name = ?, starts_at = ?, ends_at = ?, opening_time = ?, closing_time = ?, reservable_from = ?, reservable = ? and timeslot_length = ?
+set location_name = ?, starts_at = ?, ends_at = ?, opening_time = ?, closing_time = ?, reservable_from = ?, reservable = ?, timeslot_length = ?
 where location_name = ? and starts_at = ? and ends_at = ? and opening_time = ? and closing_time = ? and reservable = ? and timeslot_length = ?;
 
 -- $delete_calendar_period

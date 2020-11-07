@@ -1,14 +1,14 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {CalendarEvent} from 'angular-calendar';
+import { Component, Input, OnInit } from '@angular/core';
+import { CalendarEvent } from 'angular-calendar';
 import {
   CalendarPeriod,
   isCalendarPeriodValid, mapCalendarPeriodsToCalendarEvents
 } from '../../../../shared/model/CalendarPeriod';
-import {Observable, Subject} from 'rxjs';
-import {Location} from '../../../../shared/model/Location';
-import {CalendarPeriodsService} from '../../../../services/api/calendar-periods/calendar-periods.service';
-import {ApplicationTypeFunctionalityService} from '../../../../services/functionality/application-type/application-type-functionality.service';
-import {msToShowFeedback} from '../../../../../environments/environment';
+import { Observable, Subject } from 'rxjs';
+import { Location } from '../../../../shared/model/Location';
+import { CalendarPeriodsService } from '../../../../services/api/calendar-periods/calendar-periods.service';
+import { ApplicationTypeFunctionalityService } from '../../../../services/functionality/application-type/application-type-functionality.service';
+import { msToShowFeedback } from '../../../../../environments/environment';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { LocationReservation, LocationReservationConstructor } from 'src/app/shared/model/LocationReservation';
 import { transition, trigger, useAnimation } from '@angular/animations';
@@ -237,7 +237,7 @@ export class LocationCalendarComponent implements OnInit {
       .subscribe(() => this.successHandler(), () => this.errorHandler());
   }
 
-  addAllCalendarPeriods(): void{
+  addAllCalendarPeriods(): void {
     this.calendarPeriodsService.addCalendarPeriods(this.calendarPeriods)
       .subscribe(() => this.successHandler(), () => this.errorHandler());
   }
@@ -284,7 +284,7 @@ export class LocationCalendarComponent implements OnInit {
     setTimeout(() => this.showError = false, msToShowFeedback);
   }
 
-  timeslotPickedHandler(event: any): void{
+  timeslotPickedHandler(event: any): void {
     // event is a non-reservable calendar period.
     if (!event.hasOwnProperty('timeslotSeqnr')) {
       this.showReservations = false;

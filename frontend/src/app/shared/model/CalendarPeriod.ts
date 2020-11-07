@@ -53,7 +53,7 @@ export class CalendarPeriod {
       endsAt: this.endsAt.format('YYYY-MM-DD'),
       openingTime: this.openingTime.format('HH:mm'),
       closingTime: this.closingTime.format('HH:mm'),
-      reservableFrom: this.reservableFrom.format('YYYY-MM-DDTHH:mm:ss'),
+      reservableFrom: this.reservableFrom ? this.reservableFrom.format('YYYY-MM-DDTHH:mm:ss') : null,
       reservableTimeslotSize: this.reservableTimeslotSize,
       timeslots: this.timeslots,
       reservable: this.reservable
@@ -74,15 +74,20 @@ export class CalendarPeriod {
  * 3. closingTime may not be before openingTime
  */
 export function isCalendarPeriodValid(period: CalendarPeriod): boolean {
-  if (period === null) {
+  console.log(period);
+  if (period === null || period.openingTime === null) {
+    console.log('First if');
     return false;
   }
 
 
   if (period.startsAt.isAfter(period.endsAt)) {
+    console.log('Second if');
     return false;
   }
-
+  console.log(period.openingTime);
+  console.log(period.closingTime);
+  console.log(period.openingTime.isBefore(period.closingTime));
   return period.openingTime.isBefore(period.closingTime);
 }
 
@@ -97,6 +102,9 @@ export function mapCalendarPeriodsToCalendarEvents(periods: CalendarPeriod[],
                                                    reservedTimeslots: LocationReservation[] = []
                                                                                   ): CalendarEvent[]
 {
+  if (periods.length === 0) {
+    return [];
+  }
   return periods
           .map(period => period.reservable ? mapTimeslotsToCalendarEvents(period, reservedTimeslots) : mapNRperiodToCalendarEvents(period))
           .reduce((a, b) => [...a, ...b]);
