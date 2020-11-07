@@ -316,13 +316,6 @@ public class DBLocationDao extends DAO implements ILocationDao {
         pstmt.execute();
     }
 
-    private static void deleteLocationReservations(String locationName, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn
-                .prepareStatement(Resources.databaseProperties.getString("delete_location_reservations_of_location"));
-        pstmt.setString(1, locationName);
-        pstmt.execute();
-    }
-
     private static void deletePenaltyBookEntries(String locationName, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_penalties_of_location"));
         pstmt.setString(1, locationName);
