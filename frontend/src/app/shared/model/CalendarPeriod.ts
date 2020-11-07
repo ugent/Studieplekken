@@ -53,7 +53,7 @@ export class CalendarPeriod {
       endsAt: this.endsAt.format('YYYY-MM-DD'),
       openingTime: this.openingTime.format('HH:mm'),
       closingTime: this.closingTime.format('HH:mm'),
-      reservableFrom: this.reservableFrom.format('YYYY-MM-DDTHH:mm:ss'),
+      reservableFrom: this.reservableFrom ? this.reservableFrom.format('YYYY-MM-DDTHH:mm:ss') : null,
       reservableTimeslotSize: this.reservableTimeslotSize,
       timeslots: this.timeslots,
       reservable: this.reservable
@@ -102,7 +102,7 @@ export function mapCalendarPeriodsToCalendarEvents(periods: CalendarPeriod[],
                                                    reservedTimeslots: LocationReservation[] = []
                                                                                   ): CalendarEvent[]
 {
-  if(periods.length === 0) {
+  if (periods.length === 0) {
     return [];
   }
   return periods

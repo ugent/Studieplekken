@@ -31,7 +31,7 @@ export class MomentDateComponent implements OnInit, OnChanges {
   }
 
   onNewDate(): void {
-    this.modelChange.next(moment(this.modelAsString));
+    this.modelChange.next(moment(this.modelAsString, this.type === 'date' ? 'YYYY-MM-DD' : 'HH:mm'));
   }
 
 }
