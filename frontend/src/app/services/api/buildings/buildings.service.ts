@@ -28,7 +28,7 @@ export class BuildingService {
   }
 
   updateBuilding(buildingId: number, building: Building): Observable<any> {
-    return this.http.put(api.updateBuilding.replace('{authorityId}', String(buildingId)), building);
+    return this.http.put(api.updateBuilding.replace('{buildingId}', String(buildingId)), building);
   }
 
   deleteBuilding(buildingId: number): Observable<any> {

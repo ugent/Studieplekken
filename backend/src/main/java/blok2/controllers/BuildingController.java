@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/building")
+@RequestMapping("building")
 public class BuildingController {
     private final Logger logger = LoggerFactory.getLogger(AuthorityController.class.getSimpleName());
     private final IBuildingDao buildingDao;
@@ -64,6 +64,7 @@ public class BuildingController {
 
     @PutMapping("/{buildingId}")
     public void updateBuilding(@PathVariable int buildingId, @RequestBody Building building) {
+        logger.error(buildingId + ": " + building.toString());
         try {
             building.setBuildingId(buildingId);
             buildingDao.updateBuilding(building);

@@ -104,21 +104,10 @@ public class DBAuthorityDao extends DAO implements IAuthorityDao {
     @Override
     public void deleteAuthority(int authorityId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
-            try {
-                conn.setAutoCommit(false);
-
-                deleteLocations(authorityId, conn);
-                deleteRolesUserAuthority(authorityId, conn);
-                deleteAuthority(authorityId, conn);
-
-                conn.commit();
-                conn.setAutoCommit(true);
-            } catch (SQLException e) {
-                conn.rollback();
-                throw e;
-            } finally {
-                conn.setAutoCommit(true);
-            }
+            PreparedStatement pstmt = conn
+                    .prepareStatement(Resources.databaseProperties.getString("delete_authority"));
+            pstmt.setInt(1, authorityId);
+            pstmt.execute();
         }
     }
 
@@ -208,32 +197,6 @@ public class DBAuthorityDao extends DAO implements IAuthorityDao {
     private void preparedAuthorityInsertOrUpdate(Authority authority, PreparedStatement pstmt) throws SQLException {
         pstmt.setString(1, authority.getAuthorityName());
         pstmt.setString(2, authority.getDescription());
-    }
-
-    private void deleteRolesUserAuthority(int authorityId, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn
-                .prepareStatement(Resources.databaseProperties.getString("delete_roles_user_authority_of_authority"));
-        pstmt.setInt(1, authorityId);
-        pstmt.execute();
-    }
-
-    private void deleteLocations(int authorityId, Connection conn) throws SQLException {
-        // location has its own FK to delete, get all locations and use LocationDao to delete
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_locations_from_authority"));
-        pstmt.setInt(1, authorityId);
-        ResultSet rs = pstmt.executeQuery();
-
-        while (rs.next()) {
-            String locationName = rs.getString(Resources.databaseProperties.getString("location_name"));
-            DBLocationDao.deleteLocationWithCascade(locationName, conn);
-        }
-    }
-
-    private void deleteAuthority(int authorityId, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn
-                .prepareStatement(Resources.databaseProperties.getString("delete_authority"));
-        pstmt.setInt(1, authorityId);
-        pstmt.execute();
     }
 
     public static Authority createAuthority(ResultSet rs) throws SQLException {

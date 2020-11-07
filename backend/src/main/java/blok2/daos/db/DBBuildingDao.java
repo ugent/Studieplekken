@@ -91,20 +91,9 @@ public class DBBuildingDao extends DAO implements IBuildingDao {
     @Override
     public void deleteBuilding(int buildingId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
-            try {
-                conn.setAutoCommit(false);
-
-                deleteLocationsInBuilding(buildingId, conn);
-                deleteBuilding(buildingId, conn);
-
-                conn.commit();
-                conn.setAutoCommit(true);
-            } catch (SQLException e) {
-                conn.rollback();
-                throw e;
-            } finally {
-                conn.setAutoCommit(true);
-            }
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_building"));
+            pstmt.setInt(1, buildingId);
+            pstmt.execute();
         }
     }
 
@@ -115,21 +104,4 @@ public class DBBuildingDao extends DAO implements IBuildingDao {
         return new Building(buildingId, name, address);
     }
 
-    private void deleteLocationsInBuilding(int buildingId, Connection conn) throws SQLException {
-        // location has its own FK to delete, get all locations and use LocationDao to delete
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_locations_in_building"));
-        pstmt.setInt(1, buildingId);
-        ResultSet rs = pstmt.executeQuery();
-
-        while (rs.next()) {
-            String locationName = rs.getString(Resources.databaseProperties.getString("location_name"));
-            DBLocationDao.deleteLocationWithCascade(locationName, conn);
-        }
-    }
-
-    private void deleteBuilding(int buildingId, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_building"));
-        pstmt.setInt(1, buildingId);
-        pstmt.execute();
-    }
 }
