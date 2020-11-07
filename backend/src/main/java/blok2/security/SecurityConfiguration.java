@@ -16,6 +16,7 @@ import org.springframework.security.web.PortMapperImpl;
 import org.springframework.security.web.PortResolverImpl;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 
@@ -50,7 +51,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.csrf()
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+                .csrfTokenRepository(csrfTokenRepository());
 
         http.authorizeRequests()
                 .regexMatchers("/login/cas").authenticated() // used to trigger cas flow
@@ -103,5 +104,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         portResolver.setPortMapper(portMapper());
         requestCache.setPortResolver(portResolver);
         return requestCache;
+    }
+
+    private CsrfTokenRepository csrfTokenRepository() {
+        CookieCsrfTokenRepository tokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
+        tokenRepository.setCookiePath("/");
+        return tokenRepository;
     }
 }
