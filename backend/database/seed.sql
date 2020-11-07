@@ -26,14 +26,13 @@ values ('01405190', 'Tim', 'Van Erum', 0, 'tim.vanerum@ugent.be', 'secret', 'UGe
 DO $$
 DECLARE tableId integer;
 BEGIN
-  INSERT INTO authority (authority_name, description)
-    VALUES ('DSA', 'Dienst StudentenActiviteiten') RETURNING authority_id into tableId;
-  INSERT INTO locations (name, address, number_of_seats, number_of_lockers, image_url, authority_id, description_dutch, description_english)
-    VALUES  ('Turbinezaal', 'Hoveniersberg 24, 9000 Gent', 50, 100, '', tableId, 'neder', 'engl'),
-            ('Plenaire vergaderzaal', 'Hoveniersberg 24, 9000 Gent', 30, 0, '', tableId, '', ''),
-            ('Podiumzaal', 'Hoveniersberg 24, 9000 Gent', 100, 0, '', tableId, '', ''),
-            ('Trechterzaal', 'Hoveniersberg 24, 9000 Gent', 80, 0, '', tableId, '', '');
-  INSERT INTO roles_user_authority (user_id, authority_id) VALUES ('002',tableId);
+  INSERT INTO public.authority (authority_name, description) values ('DSA', 'Dienst StudentenActiviteiten') RETURNING authority_id into tableId;
+  INSERT INTO public.locations (name, address, number_of_seats, number_of_lockers, image_url, authority_id, description_dutch, description_english, forGroup)
+    VALUES  ('Turbinezaal', 'Hoveniersberg 24, 9000 Gent', 50, 100, '', tableId, 'neder', 'engl', false),
+                ('Plenaire vergaderzaal', 'Hoveniersberg 24, 9000 Gent', 30, 0, '', tableId, '', '', true),
+                ('Podiumzaal', 'Hoveniersberg 24, 9000 Gent', 100, 0, '', tableId, '', '', false),
+                ('Trechterzaal', 'Hoveniersberg 24, 9000 Gent', 80, 0, '', tableId, '', '', false);
+  INSERT INTO public.roles_user_authority (user_id, authority_id) VALUES ('002',tableId);
 END $$;
 
 
@@ -41,12 +40,12 @@ DO $$
 DECLARE new_authority_id integer;
 BEGIN
   INSERT INTO authority (authority_name, description) VALUES ('WE', 'Faculteit wetenschappen') RETURNING authority_id into new_authority_id;
-  INSERT INTO locations (name, address, number_of_seats, number_of_lockers, image_url, authority_id, description_dutch, description_english)
-    VALUES  ('Sterre S9, PC lokaal 3rd verdiep', 'Krijgslaan 281, 9000 Gent', 40, 100, '', new_authority_id, 'Klaslokaal met computers', 'Classroom with computers'),
+  INSERT INTO locations (name, address, number_of_seats, number_of_lockers, image_url, authority_id, description_dutch, description_english, forGroup)
+    VALUES  ('Sterre S9, PC lokaal 3rd verdiep', 'Krijgslaan 281, 9000 Gent', 40, 100, '', new_authority_id, 'Klaslokaal met computers', 'Classroom with computers', false),
             ('Sterre S5, Bib', 'Krijgslaan 281, 9000 Gent', 100, 100, '', new_authority_id,
                     'Informatie over de bib kan hier gevonden worden: https://lib.ugent.be/nl/libraries/WEBIB.',
-                    'Information about the bib itself can be found here: https://lib.ugent.be/nl/libraries/WEBIB.'),
-            ('Sterre S5, Eetzaal', 'Krijgslaan 281, 9000 Gent', 130, 100, '', new_authority_id, '', '');
+                    'Information about the bib itself can be found here: https://lib.ugent.be/nl/libraries/WEBIB.', false),
+            ('Sterre S5, Eetzaal', 'Krijgslaan 281, 9000 Gent', 130, 100, '', new_authority_id, '', '', false);
   INSERT INTO roles_user_authority (user_id, authority_id) VALUES ('002', new_authority_id);
 END $$;
 /*

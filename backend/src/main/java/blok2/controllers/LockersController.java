@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @RestController
-@RequestMapping("api/lockers")
+@RequestMapping("lockers")
 public class LockersController {
 
     private final Logger logger = Logger.getLogger(LockersController.class.getSimpleName());

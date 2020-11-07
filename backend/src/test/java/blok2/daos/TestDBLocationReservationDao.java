@@ -34,7 +34,6 @@ public class TestDBLocationReservationDao extends TestDao {
 
 
     private Location testLocation;
-    private Location testLocation1Seat;
 
     private User testUser;
     private User testUser2;
@@ -46,7 +45,7 @@ public class TestDBLocationReservationDao extends TestDao {
         // setup test location objects
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
         testLocation = TestSharedMethods.testLocation(authority.clone());
-        testLocation1Seat = TestSharedMethods.testLocation1Seat(authority.clone());
+        Location testLocation1Seat = TestSharedMethods.testLocation1Seat(authority.clone());
 
         testUser = TestSharedMethods.adminTestUser();
         testUser2 = TestSharedMethods.studentTestUser();
@@ -82,9 +81,6 @@ public class TestDBLocationReservationDao extends TestDao {
         // test whether LocationReservation has been added successfully
         LocationReservation rlr = locationReservationDao.getLocationReservation(u.getAugentID(), timeslot); // rlr = retrieved location reservation
         Assert.assertEquals("addLocationReservation, getLocationReservation", lr, rlr);
-
-       // List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfLocation(testLocation.getName(), true);
-        //Assert.assertEquals("addLocationReservation, getAllLocationReservationsOfLocation", 1, list.size());
 
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(u.getAugentID());
         Assert.assertEquals("addLocationReservation, getAllLocationReservationsOfUser", 1, list.size());

@@ -10,7 +10,7 @@ services:
     depends_on:
       - db
   db:
-    image: postgres
+    image: postgres:12-alpine
     restart: always
     environment:
       POSTGRES_DB: blokatugent

@@ -232,6 +232,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
         String name = rs.getString(Resources.databaseProperties.getString("location_name"));
         int numberOfSeats = rs.getInt(Resources.databaseProperties.getString("location_number_of_seats"));
         int numberOfLockers = rs.getInt(Resources.databaseProperties.getString("location_number_of_lockers"));
+        boolean forGroup = rs.getBoolean(Resources.databaseProperties.getString("location_forGroup"));
         String imageUrl = rs.getString(Resources.databaseProperties.getString("location_image_url"));
         String address = rs.getString(Resources.databaseProperties.getString("location_address"));
         Authority authority = DBAuthorityDao.createAuthority(rs);
@@ -243,7 +244,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
         fillTagLists(assignedTags, rsTags);
 
         return new Location(name, address, numberOfSeats, numberOfLockers, imageUrl, authority,
-                descriptionDutch, descriptionEnglish, assignedTags);
+                descriptionDutch, descriptionEnglish, forGroup, assignedTags);
     }
 
     private static void fillTagLists(List<LocationTag> assignedTags, ResultSet rsTags)
@@ -298,6 +299,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
         pstmt.setInt(6, location.getAuthority().getAuthorityId());
         pstmt.setString(7, location.getDescriptionDutch());
         pstmt.setString(8, location.getDescriptionEnglish());
+        pstmt.setBoolean(9, location.getForGroup());
     }
 
     private static void deleteCalendarPeriods(String locationName, Connection conn) throws SQLException {
@@ -362,9 +364,6 @@ public class DBLocationDao extends DAO implements ILocationDao {
         // update scanner_locations
         updateForeignKeyOfScannerLocations(oldLocationName, newLocationName, conn);
 
-        // update location_reservations
-        updateForeignKeyOfLocationReservations(oldLocationName, newLocationName, conn);
-
         // update locker_reservations
         updateForeignKeyOfLockerReservations(oldLocationName, newLocationName, conn);
 
@@ -397,15 +396,6 @@ public class DBLocationDao extends DAO implements ILocationDao {
             throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
                 .getString("update_fk_scanners_location_to_locations"));
-        pstmt.setString(1, newLocationName);
-        pstmt.setString(2, oldLocationName);
-        pstmt.execute();
-    }
-
-    private void updateForeignKeyOfLocationReservations(String oldLocationName, String newLocationName, Connection conn)
-            throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
-                .getString("update_fk_location_reservations_to_location"));
         pstmt.setString(1, newLocationName);
         pstmt.setString(2, oldLocationName);
         pstmt.execute();
@@ -452,7 +442,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
         // set ...
         prepareUpdateOrInsertLocationStatement(location, pstmt);
         // where ...
-        pstmt.setString(9, location.getName());
+        pstmt.setString(10, location.getName());
         pstmt.execute();
     }
 

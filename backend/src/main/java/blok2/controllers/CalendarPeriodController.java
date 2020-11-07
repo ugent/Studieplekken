@@ -20,7 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @RestController
-@RequestMapping("api/locations/calendar")
+@RequestMapping("locations/calendar")
 public class CalendarPeriodController {
 
     private final Logger logger = Logger.getLogger(CalendarPeriodController.class.getSimpleName());
@@ -171,7 +171,6 @@ public class CalendarPeriodController {
                 if(period.getReservableTimeslotSize() <= 0) {
                     throw new ResponseStatusException(
                             HttpStatus.BAD_REQUEST, "Timeslot size must be larger than 0.");
-
                 }
             }
         }

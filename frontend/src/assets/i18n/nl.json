@@ -65,7 +65,8 @@
       "cancel": "Annuleer",
       "delete": "Verwijder",
       "search": "Zoek",
-      "clear": "Annuleer"
+      "clear": "Annuleer",
+      "close": "Sluiten"
     },
 
     "roles": {
@@ -135,6 +136,7 @@
         "address": "Adres",
         "numberOfSeats": "Aantal plaatsen",
         "numberOfLockers": "Aantal lockers",
+        "forGroup": "Groepsreservatie",
         "imageUrl": "URL van foto (optioneel)",
 
         "edit": "Pas aan",
@@ -188,6 +190,11 @@
           "errorMessage": "Het aanpassen van de kalender is mislukt. Er is iets misgegaan.",
 
           "noCalendarPeriodsForLocation": "Op dit moment zijn er nog geen periodes voor de locatie beschikbaar."
+        },
+
+        "warningDialog": {
+          "warning": "Waarschuwing",
+          "body": "De duur van (minstens) één van de aangemaakte periodes (openingstijd-sluitingstijd) is niet deelbaar door de Reserveerbare Timeslot-duur. Dit betekent dat het laatste (onvolledige) timeslot niet zal aangemaakt worden en dus ook niet reserveerbaar zal zijn. Gelieve hier rekening mee te houden."
         }
       },
 
@@ -293,6 +300,7 @@
           "address": "Adres",
           "numberOfSeats": "Aantal zitjes",
           "numberOfLockers": "Aantal lockers",
+          "forGroup": "Groepsreservatie",
           "imageUrl": "URL van foto (optioneel)"
         },
 
@@ -301,7 +309,8 @@
           "authorityName": "Verplicht om een autoriteit op te geven",
           "address": "Adres is verplicht",
           "numberOfSeats": "Een waarde voor 'aantal zitjes' is verplicht",
-          "numberOfLockers": "Een waarde voor 'aantal lockers' is verplicht"
+          "numberOfLockers": "Een waarde voor 'aantal lockers' is verplicht",
+          "forGroup": "Een waarde voor 'Groepsreservatie' is verplicht"
         },
 
         "cancelButton": "Annuleer",

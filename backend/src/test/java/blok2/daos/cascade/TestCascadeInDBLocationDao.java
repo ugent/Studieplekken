@@ -162,7 +162,7 @@ public class TestCascadeInDBLocationDao extends TestDao {
         Assert.assertEquals("updateLocationWithoutCascadeNeededTest, testLocationReservation2",
                 testLocationReservation2, lr2);
 
-        /*
+/*
         // LOCKER_RESERVATIONS still available?
         LockerReservation lor1 = lockerReservationDao.getLockerReservation(
                 testLockerReservation1.getLocker().getLocation().getName(),
@@ -217,7 +217,7 @@ public class TestCascadeInDBLocationDao extends TestDao {
                 testCalendarPeriodsForLockers, actualPeriodsForLockers);
     }
 
-    // @Test
+    @Test
     public void updateLocationWithCascadeNeededTest() throws SQLException {
         updateLocationWithoutChangeInFK(testLocation);
         String oldName = testLocation.getName();
@@ -237,19 +237,17 @@ public class TestCascadeInDBLocationDao extends TestDao {
         Assert.assertEquals("updateLocationWithoutCascadeNeededTest, lockers",
                 testLocation.getNumberOfLockers(), lockers.size());
 
-        // LOCATION_RESERVATIONS updated?
-        LocationReservation lr1 = locationReservationDao.getLocationReservation(
-                testLocationReservation1.getUser().getAugentID(),
+        // CALENDAR_PERIODS updated?
+        LocationReservation lr1 = locationReservationDao.getLocationReservation(testUser1.getAugentID(),
                 testLocationReservation1.getTimeslot());
         Assert.assertEquals("updateLocationWithoutCascadeNeededTest, testLocationReservation1",
                 testLocationReservation1, lr1);
 
-        LocationReservation lr2 = locationReservationDao.getLocationReservation(
-                testLocationReservation2.getUser().getAugentID(),
+        LocationReservation lr2 = locationReservationDao.getLocationReservation(testUser2.getAugentID(),
                 testLocationReservation2.getTimeslot());
         Assert.assertEquals("updateLocationWithoutCascadeNeededTest, testLocationReservation2",
                 testLocationReservation2, lr2);
-
+/*
         // LOCKER_RESERVATIONS updated?
         LockerReservation lor1 = lockerReservationDao.getLockerReservation(
                 testLockerReservation1.getLocker().getLocation().getName(),
@@ -262,7 +260,7 @@ public class TestCascadeInDBLocationDao extends TestDao {
                 testLockerReservation2.getLocker().getNumber());
         Assert.assertEquals("updateLocationWithoutCascadeNeededTest, testLockerReservation2",
                 testLockerReservation2, lor2);
-
+*/
         // PENALTY_BOOK updated?
         List<Penalty> penalties = penaltyEventsDao.getPenaltiesByLocation(testLocation.getName());
         penalties.sort(Comparator.comparing(Penalty::getReceivedPoints));
@@ -355,11 +353,7 @@ public class TestCascadeInDBLocationDao extends TestDao {
 
         List<Penalty> penalties = penaltyEventsDao.getPenaltiesByLocation(testLocation.getName());
         Assert.assertEquals("deleteLocation, penalties", 0, penalties.size());
-
-        //List<LocationReservation> locationReservations = locationReservationDao
-        //        .getAllLocationReservationsOfLocation(testLocation.getName(), true);
-        //Assert.assertEquals("deleteLocation, location reservations", 0, locationReservations.size());
-
+        
         //List<LockerReservation> lockerReservations = lockerReservationDao
          //       .getAllLockerReservationsOfLocation(testLocation.getName(), true);
        // Assert.assertEquals("deleteLocation, locker reservations", 0, lockerReservations.size());

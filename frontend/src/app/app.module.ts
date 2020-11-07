@@ -52,6 +52,7 @@ import { AuthoritiesManagementComponent } from './management/authorities-managem
 import { UserAuthoritiesManagementComponent } from './management/users-management/user-details-management/user-authorities-management/user-authorities-management.component';
 import { AuthorityUsersManagementComponent } from './management/authorities-management/authority-users-management/authority-users-management.component';
 import { registerLocaleData } from '@angular/common';
+import { MatDialogModule } from '@angular/material/dialog';
 import localeNl from '@angular/common/locales/nl-BE';
 import { NgxMatDatetimePickerModule } from '@angular-material-components/datetime-picker';
 import { NgxMatMomentModule } from '@angular-material-components/moment-adapter';
@@ -59,6 +60,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import {MomentDateComponent} from './shared/inputs/moment-date/moment-date.component';
 import { MomentDateTimeComponent } from './shared/inputs/moment-datetime/moment-datetime.component';
+import { LocationOpeningperiodDialogComponent } from './management/locations-management/location-details-management/location-calendar/location-openingperiod-dialog/location-openingperiod-dialog.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -231,7 +233,8 @@ const routes: Routes = [
     UserAuthoritiesManagementComponent,
     AuthorityUsersManagementComponent,
     MomentDateComponent,
-    MomentDateTimeComponent
+    MomentDateTimeComponent,
+    LocationOpeningperiodDialogComponent
   ],
     imports: [
       BrowserModule,
@@ -261,7 +264,7 @@ const routes: Routes = [
       NgxMatMomentModule,
       MatDatepickerModule,
       MatInputModule,
-
+      MatDialogModule
     ],
   providers: [],
   bootstrap: [AppComponent]
