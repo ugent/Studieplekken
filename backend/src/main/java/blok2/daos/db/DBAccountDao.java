@@ -36,7 +36,6 @@ public class DBAccountDao extends DAO implements IAccountDao {
     private User getUserByEmail(String email, Connection conn) throws SQLException {
         String query = Resources.databaseProperties.getString("get_user_by_<?>")
                 .replace("<?>", "LOWER(u.mail) = LOWER(?)");
-        logger.info(String.format("Gebruikte query: %s", query));
         PreparedStatement pstmt = conn.prepareStatement(query);
         pstmt.setString(1, email.toLowerCase());
         ResultSet rs = pstmt.executeQuery();
