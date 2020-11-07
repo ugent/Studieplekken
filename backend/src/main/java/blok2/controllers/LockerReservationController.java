@@ -1,12 +1,15 @@
 package blok2.controllers;
 
 import blok2.daos.ILockerReservationDao;
+import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.model.reservations.LockerReservation;
+import blok2.model.users.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -20,7 +23,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("api/lockers/reservations")
-public class LockerReservationController {
+public class LockerReservationController extends AuthorizedLocationController {
 
     private final Logger logger = LoggerFactory.getLogger(LockerReservation.class.getSimpleName());
 
@@ -47,9 +50,9 @@ public class LockerReservationController {
 
     @GetMapping("/location")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    // TODO: if only 'HAS_AUTHORITIES', then only allowed to retrieve the reservations for a location within one of the user's authorities
     public List<LockerReservation> getLocationReservationsOfLocation(@RequestParam String locationName,
                                                                      @RequestParam boolean pastReservations) {
+        isAuthorized(locationName);
         try {
             return lockerReservationDao.getAllLockerReservationsOfLocation(locationName, pastReservations);
         } catch (SQLException e) {
@@ -61,9 +64,11 @@ public class LockerReservationController {
 
     @PutMapping
     @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    // TODO: if only 'HAS_AUTHORITIES', then only allowed to update a reservation for a location within one of the user's authorities
-    //       if only 'USER', then only allowed to update a reservation that is made by the user
-    public void updateLockerReservation(@RequestBody LockerReservation lockerReservation) {
+    public void updateLockerReservation(@RequestBody LockerReservation lockerReservation, @AuthenticationPrincipal User user) {
+        isAuthorized(
+                lr -> hasAuthority(lr.getLocker().getLocation().getName()) || lr.getOwner().getAugentID().equals(user.getAugentID()),
+                lockerReservation
+        );
         try {
             lockerReservationDao.changeLockerReservation(lockerReservation);
             logger.info(String.format("Updating locker reservation by owner %s for locker %d in location %s", lockerReservation.getOwner(), lockerReservation.getLocker().getNumber(), lockerReservation.getLocker().getLocation().getName()));
@@ -76,9 +81,11 @@ public class LockerReservationController {
 
     @DeleteMapping
     @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    // TODO: if only 'HAS_AUTHORITIES', then only allowed to delete a reservation for a location within one of the user's authorities
-    //       if only 'USER', then only allowed to delete a reservation that is made by the user
-    public void deleteLockerReservation(@RequestBody LockerReservation lockerReservation) {
+    public void deleteLockerReservation(@RequestBody LockerReservation lockerReservation, @AuthenticationPrincipal User user) {
+        isAuthorized(
+                lr -> hasAuthority(lr.getLocker().getLocation().getName()) || lr.getOwner().getAugentID().equals(user.getAugentID()),
+                lockerReservation
+        );
         try {
             lockerReservationDao.deleteLockerReservation(lockerReservation.getLocker().getLocation().getName(),
                     lockerReservation.getLocker().getNumber());

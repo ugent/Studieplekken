@@ -2,6 +2,7 @@ package blok2.controllers;
 
 import blok2.daos.ILocationDao;
 import blok2.daos.ILocationTagDao;
+import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.helpers.date.CustomDate;
 import blok2.model.reservables.Location;
 import org.slf4j.Logger;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("api/locations")
-public class LocationController {
+public class LocationController extends AuthorizedLocationController {
 
     private final Logger logger = LoggerFactory.getLogger(LocationController.class.getSimpleName());
 
@@ -66,8 +67,8 @@ public class LocationController {
 
     @PostMapping
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    // TODO: if only 'HAS_AUTHORITIES', then adding a location is only allowed within one of the user's authorities
     public void addLocation(@RequestBody Location location) {
+        isAuthorized(location.getName());
         try {
             this.locationDao.addLocation(location);
             logger.info(String.format("New location %s added", location.getName()));
@@ -80,8 +81,8 @@ public class LocationController {
 
     @PutMapping("/{locationName}")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    // TODO: if only 'HAS_AUTHORITIES', then updating a location is only allowed within one of the user's authorities
     public void updateLocation(@PathVariable("locationName") String locationName, @RequestBody Location location) {
+        isAuthorized(location.getName());
         try {
             locationDao.updateLocation(locationName, location);
             logger.info(String.format("Location %s updated", locationName));
@@ -94,8 +95,8 @@ public class LocationController {
 
     @DeleteMapping("/{locationName}")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    // TODO: if only 'HAS_AUTHORITIES', then deleting a location is only allowed within one of the user's authorities
     public void deleteLocation(@PathVariable("locationName") String locationName) {
+        isAuthorized(locationName);
         try {
             locationDao.deleteLocation(locationName);
             logger.info(String.format("Location %s deleted", locationName));
@@ -129,9 +130,9 @@ public class LocationController {
      */
     @PutMapping("/tags/{locationName}")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    // TODO: if only 'HAS_AUTHORITIES', then setting up tags is only allowed for a location within one of the user's authorities
     public void setupTagsForLocation(@PathVariable("locationName") String locationName,
                                      @RequestBody List<Integer> tagIds) {
+        isAuthorized(locationName);
         try {
             logger.info(String.format("Setting up the tags for location '%s' with ids [%s]",
                     locationName, tagIds.stream().map(String::valueOf).collect(Collectors.joining(", "))));

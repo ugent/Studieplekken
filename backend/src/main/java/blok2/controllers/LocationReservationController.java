@@ -1,12 +1,15 @@
 package blok2.controllers;
 
 import blok2.daos.ILocationReservationDao;
+import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.model.reservations.LocationReservation;
+import blok2.model.users.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -21,7 +24,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("api/locations/reservations")
-public class LocationReservationController {
+public class LocationReservationController extends AuthorizedLocationController {
 
     private final Logger logger = LoggerFactory.getLogger(LocationReservationController.class.getSimpleName());
 
@@ -36,6 +39,7 @@ public class LocationReservationController {
     @PreAuthorize("(hasAuthority('USER') and #id == authentication.principal.augentID) or " +
                   "hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     // TODO: if only 'HAS_AUTHORITIES', then only allowed to retrieve the reservations for a location within one of the user's authorities
+    // Not sure why you'd be allowed to get a user's reservations if you own a location.
     public List<LocationReservation> getLocationReservationsByUserId(@RequestParam String id) {
         try {
             return locationReservationDao.getAllLocationReservationsOfUser(id);
@@ -48,9 +52,9 @@ public class LocationReservationController {
 
     @GetMapping("/location")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    // TODO: if only 'HAS_AUTHORITIES', then only allowed to retrieve the reservations for a location within one of the user's authorities
     public List<LocationReservation> getLocationReservationsOfLocation(@RequestParam String locationName,
                                                                        @RequestParam boolean pastReservations) {
+        isAuthorized(locationName);
         try {
             return locationReservationDao.getAllLocationReservationsOfLocation(locationName, pastReservations);
         } catch (SQLException e) {
@@ -62,10 +66,10 @@ public class LocationReservationController {
 
     @GetMapping("/from")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    // TODO: if only 'HAS_AUTHORITIES', then only allowed to retrieve the reservations for a location within one of the user's authorities
     public List<LocationReservation> getLocationReservationsOfLocationFrom(@RequestParam String locationName,
                                                                            @RequestParam String start,
                                                                            @RequestParam boolean pastReservations) {
+        isAuthorized(locationName);
         try {
             return locationReservationDao.getAllLocationReservationsOfLocationFrom(locationName, start, pastReservations);
         } catch (SQLException e) {
@@ -77,10 +81,10 @@ public class LocationReservationController {
 
     @GetMapping("/until")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    // TODO: if only 'HAS_AUTHORITIES', then only allowed to retrieve the reservations for a location within one of the user's authorities
     public List<LocationReservation> getLocationReservationsOfLocationUntil(@RequestParam String locationName,
                                                                             @RequestParam String end,
                                                                             @RequestParam boolean pastReservations) {
+        isAuthorized(locationName);
         try {
             return locationReservationDao.getAllLocationReservationsOfLocationUntil(locationName, end, pastReservations);
         } catch (SQLException e) {
@@ -92,11 +96,11 @@ public class LocationReservationController {
 
     @GetMapping("/fromAndUntil")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    // TODO: if only 'HAS_AUTHORITIES', then only allowed to retrieve the reservations for a location within one of the user's authorities
     public List<LocationReservation> getLocationReservationsOfLocationFromAndUntil(@RequestParam String locationName,
                                                                                    @RequestParam String start,
                                                                                    @RequestParam String end,
                                                                                    @RequestParam boolean pastReservations) {
+        isAuthorized(locationName);
         try {
             return locationReservationDao
                     .getAllLocationReservationsOfLocationFromAndUntil(locationName, start, end, pastReservations);
@@ -109,9 +113,11 @@ public class LocationReservationController {
 
     @DeleteMapping
     @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    // TODO: if only 'HAS_AUTHORITIES', then only allowed to delete a reservation for a location within one of the user's authorities
-    //       if only 'USER', then only allowed to delete a reservation that is made by the user
-    public void deleteLocationReservation(@RequestBody LocationReservation locationReservation) {
+    public void deleteLocationReservation(@RequestBody LocationReservation locationReservation, @AuthenticationPrincipal User user) {
+        isAuthorized(
+                lr -> hasAuthority(lr.getLocation().getName()) || lr.getUser().getAugentID().equals(user.getAugentID()),
+                locationReservation
+        );
         try {
             locationReservationDao.deleteLocationReservation(locationReservation.getUser().getAugentID(),
                     locationReservation.getDate());

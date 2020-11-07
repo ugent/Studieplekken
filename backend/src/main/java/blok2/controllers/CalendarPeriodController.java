@@ -2,6 +2,7 @@ package blok2.controllers;
 
 import blok2.daos.ICalendarPeriodDao;
 import blok2.daos.ILocationDao;
+import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.reservables.Location;
 import blok2.shared.Utility;
@@ -22,7 +23,7 @@ import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("api/locations/calendar")
-public class CalendarPeriodController {
+public class CalendarPeriodController extends AuthorizedLocationController {
 
     private final Logger logger = Logger.getLogger(CalendarPeriodController.class.getSimpleName());
 
@@ -50,8 +51,8 @@ public class CalendarPeriodController {
 
     @PostMapping
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    // TODO: if only 'HAS_AUTHORITIES', then adding calendar periods is only allowed for a location in one of the user's authorities
     public void addCalendarPeriods(@RequestBody List<CalendarPeriod> calendarPeriods) {
+        calendarPeriods.forEach(c -> isAuthorized(c.getLocation().getName()));
         try {
             calendarPeriodDao.addCalendarPeriods(calendarPeriods);
         } catch (SQLException e) {
@@ -63,9 +64,9 @@ public class CalendarPeriodController {
 
     @PutMapping("/{locationName}")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    // TODO: if only 'HAS_AUTHORITIES', then updating calendar periods is only allowed for a location in one of the user's authorities
     public void updateCalendarPeriods(@PathVariable("locationName") String locationName,
                                       @RequestBody List<CalendarPeriod>[] fromAndTo) {
+        isAuthorized(locationName);
         try {
             List<CalendarPeriod> from = fromAndTo[0];
             List<CalendarPeriod> to = fromAndTo[1];
@@ -179,8 +180,8 @@ public class CalendarPeriodController {
 
     @DeleteMapping
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    // TODO: if only 'HAS_AUTHORITIES', then deleting calendar periods is only allowed for a location in one of the user's authorities
     public void deleteCalendarPeriods(@RequestBody List<CalendarPeriod> calendarPeriods) {
+        calendarPeriods.forEach(c -> isAuthorized(c.getLocation().getName()));
         try {
             calendarPeriodDao.deleteCalendarPeriods(calendarPeriods);
         } catch (SQLException e) {

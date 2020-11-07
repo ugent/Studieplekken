@@ -2,6 +2,7 @@ package blok2.controllers;
 
 import blok2.daos.ILocationTagDao;
 import blok2.daos.ITagsDao;
+import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.model.LocationTag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/tags")
-public class TagsController {
+public class TagsController extends AuthorizedLocationController {
 
     private final Logger logger = Logger.getLogger(LocationController.class.getSimpleName());
 
@@ -114,9 +115,9 @@ public class TagsController {
 
     @PutMapping("/location/assign/{locationName}")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    // TODO: if only 'HAS_AUTHORITIES', then only allowed to assign tags of a location within one of the user's authorities
     public void assignTagsToLocation(@PathVariable("locationName") String locationName,
                                      @RequestBody List<LocationTag> tags) {
+        isAuthorized(locationName);
         try {
             List<Integer> lt = tags.stream().map(LocationTag::getTagId).collect(Collectors.toList());
             locationTagDao.deleteAllTagsFromLocation(locationName);

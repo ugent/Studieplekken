@@ -2,6 +2,7 @@ package blok2.controllers;
 
 import blok2.daos.ICalendarPeriodForLockersDao;
 import blok2.daos.ILocationDao;
+import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.model.calendar.CalendarPeriodForLockers;
 import blok2.model.reservables.Location;
 import blok2.shared.Utility;
@@ -22,7 +23,7 @@ import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("api/locations/lockerCalendar")
-public class CalendarPeriodsForLockersController {
+public class CalendarPeriodsForLockersController extends AuthorizedLocationController {
 
     private final Logger logger = Logger.getLogger(CalendarPeriodsForLockersController.class.getSimpleName());
 
@@ -51,8 +52,8 @@ public class CalendarPeriodsForLockersController {
 
     @PostMapping
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    // TODO: if only 'HAS_AUTHORITIES', then adding calendar periods for lockers is only allowed for a location in one of the user's authorities
     public void addCalendarPeriodsForLockers(@RequestBody List<CalendarPeriodForLockers> calendarPeriodForLockers) {
+        calendarPeriodForLockers.forEach(c -> isAuthorized(c.getLocation().getName()));
         try {
             calendarPeriodForLockersDao.addCalendarPeriodsForLockers(calendarPeriodForLockers);
         } catch (SQLException e) {
@@ -64,9 +65,9 @@ public class CalendarPeriodsForLockersController {
 
     @PutMapping("/{locationName}")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    // TODO: if only 'HAS_AUTHORITIES', then updating calendar periods for lockers is only allowed for a location in one of the user's authorities
     public void updateCalendarPeriodsForLockers(@PathVariable("locationName") String locationName,
                                                 @RequestBody List<CalendarPeriodForLockers>[] fromAndTo) {
+        isAuthorized(locationName);
         try {
             List<CalendarPeriodForLockers> from = fromAndTo[0];
             List<CalendarPeriodForLockers> to = fromAndTo[1];
@@ -183,8 +184,8 @@ public class CalendarPeriodsForLockersController {
 
     @DeleteMapping
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    // TODO: if only 'HAS_AUTHORITIES', then deleting calendar periods for lockers is only allowed for a location in one of the user's authorities
     public void deleteCalendarPeriodsForLockers(@RequestBody List<CalendarPeriodForLockers> calendarPeriodForLockers) {
+        calendarPeriodForLockers.forEach(cp -> isAuthorized(cp.getLocation().getName()));
         try {
             calendarPeriodForLockersDao.deleteCalendarPeriodsForLockers(calendarPeriodForLockers);
         } catch (SQLException e) {

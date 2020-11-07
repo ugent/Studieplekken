@@ -1,6 +1,7 @@
 package blok2.controllers;
 
 import blok2.daos.ILockersDao;
+import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.model.reservations.LockerReservation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("api/lockers")
-public class LockersController {
+public class LockersController extends AuthorizedLocationController {
 
     private final Logger logger = Logger.getLogger(LockersController.class.getSimpleName());
 
@@ -32,8 +33,8 @@ public class LockersController {
 
     @GetMapping("/status/{locationName}")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    // TODO: if only 'HAS_AUTHORITIES', then only allowed to retrieve the statuses of the lockers of a location within one of the user's authorities
     public List<LockerReservation> getLockerStatuses(@PathVariable("locationName") String locationName) {
+        isAuthorized(locationName);
         try {
             return lockersDao.getLockerStatusesOfLocation(locationName);
         } catch (SQLException e) {
