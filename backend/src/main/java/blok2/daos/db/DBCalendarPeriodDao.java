@@ -245,9 +245,8 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         pstmt.setDate(11, Date.valueOf(calendarPeriod.getEndsAt()));
         pstmt.setTime(12, Time.valueOf(calendarPeriod.getOpeningTime()));
         pstmt.setTime(13, Time.valueOf(calendarPeriod.getClosingTime()));
-        pstmt.setTimestamp(14, Timestamp.valueOf(calendarPeriod.getReservableFrom()));
-        pstmt.setBoolean(15, calendarPeriod.isReservable());
-        pstmt.setInt(16, calendarPeriod.getReservableTimeslotSize());
+        pstmt.setBoolean(14, calendarPeriod.isReservable());
+        pstmt.setInt(15, calendarPeriod.getReservableTimeslotSize());
     }
 
     private void prepareTimeslotPeriodPstmt(int seq_id, LocalDate date, CalendarPeriod period, PreparedStatement pstmt) throws SQLException {

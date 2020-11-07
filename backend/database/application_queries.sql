@@ -878,7 +878,7 @@ values (?, ?, ?, ?, ?, ?, ?, ?);
 -- $update_calendar_period
 update public.calendar_periods
 set location_name = ?, starts_at = ?, ends_at = ?, opening_time = ?, closing_time = ?, reservable_from = ?, reservable = ?, timeslot_length = ?
-where location_name = ? and starts_at = ? and ends_at = ? and opening_time = ? and closing_time = ? and reservable_from = ? and reservable = ? and timeslot_length = ?;
+where location_name = ? and starts_at = ? and ends_at = ? and opening_time = ? and closing_time = ? and reservable = ? and timeslot_length = ?;
 
 -- $delete_calendar_period
 delete
