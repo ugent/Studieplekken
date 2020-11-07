@@ -877,13 +877,8 @@ values (?, ?, ?, ?, ?, ?, ?, ?);
 
 -- $update_calendar_period
 update public.calendar_periods
-<<<<<<< HEAD
-set location_name = ?, starts_at = ?, ends_at = ?, opening_time = ?, closing_time = ?, reservable_from = ?, reservable = ?
-where location_name = ? and starts_at = ? and ends_at = ? and opening_time = ? and closing_time = ? and reservable = ? and timeslot_length = ?;
-=======
 set location_name = ?, starts_at = ?, ends_at = ?, opening_time = ?, closing_time = ?, reservable_from = ?, reservable = ? and timeslot_length = ?
 where location_name = ? and starts_at = ? and ends_at = ? and opening_time = ? and closing_time = ? and reservable_from = ? and reservable = ? and timeslot_length = ?;
->>>>>>> angular_update_reservations
 
 -- $delete_calendar_period
 delete
@@ -910,6 +905,15 @@ order by rt.timeslot_date, rt.timeslot_sequence_number ASC;
 -- $insert_reservation_timeslots
 insert into public.reservation_timeslots(calendar_id, timeslot_sequence_number, timeslot_date)
 values (?, ?, ?);
+
+-- $count_reservations_now
+select count(1)
+from public.locations l 
+inner join public.calendar_periods cp on l.name = cp.location_name
+inner join public.reservation_timeslots ts on ts.calendar_id = cp.calendar_id
+inner join public.location_reservations rs on ts.timeslot_date = rs.timeslot_date and rs.timeslot_seqnr = ts.timeslot_sequence_number
+where
+location_name = ? and ts.timeslot_date = current_date and cp.opening_time <= current_time and cp.closing_time >= current_time;
 
 -- queries for CALENDAR_PERIODS_FOR_LOCKERS
 -- $get_calendar_periods_for_lockers_of_location

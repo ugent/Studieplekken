@@ -5,15 +5,15 @@ import blok2.helpers.Resources;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
-import blok2.shared.Utility;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class DBLocationReservationDao extends DAO implements ILocationReservationDao {
@@ -152,6 +152,19 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
                     throw e;
                 }
             }
+        }
+    }
+
+    @Override
+    public int amountOfReservationsRightNow(String location) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("count_reservations_now"));
+            pstmt.setString(1, location);
+            ResultSet rs = pstmt.executeQuery();
+            rs.next();
+            if(rs.wasNull())
+                return 0;
+            return rs.getInt(1);
         }
     }
 
