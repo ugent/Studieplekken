@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output, OnChanges, SimpleChanges} from '@angular/core';
 import {CalendarView, CalendarEvent, CalendarEventTimesChangedEvent} from 'angular-calendar';
-import {Observable, Subject, from} from 'rxjs';
+import {BehaviorSubject, Subject} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 import {defaultOpeningHour, defaultClosingHour} from 'src/environments/environment';
 import { getHours } from 'date-fns';
@@ -23,16 +23,12 @@ export class CalendarComponent implements OnInit, OnChanges {
   @Input() refresh: Subject<any>;
   @Output() onTimeslotPicked: EventEmitter<any> = new EventEmitter<any>();
 
-  eventsSubj = new Subject<CalendarEvent[]>();
+  eventsSubj: BehaviorSubject<CalendarEvent[]> = new BehaviorSubject<CalendarEvent[]>([]);
 
   currentLang: string;
 
   constructor(private translate: TranslateService) {
-    this.translate.onLangChange.subscribe(
-      () => {
-        this.currentLang = this.translate.currentLang;
-      }
-    );
+    this.translate.onLangChange.subscribe(() => {this.currentLang = this.translate.currentLang;});
   }
 
   ngOnInit(): void {
@@ -40,9 +36,6 @@ export class CalendarComponent implements OnInit, OnChanges {
     this.eventsSubj.subscribe(next => {
       this.changeCalendarSize(next);
     });
-    if (this.events !== undefined) {
-      this.eventsSubj.next(this.events);
-    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
