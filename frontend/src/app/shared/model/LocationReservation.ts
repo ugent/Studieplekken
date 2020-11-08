@@ -1,6 +1,4 @@
 import {User, UserConstructor} from './User';
-import {Location, LocationConstructor} from './Location';
-import {CustomDate, CustomDateConstructor} from './helpers/CustomDate';
 import { Timeslot } from './Timeslot';
 
 export interface LocationReservation {
