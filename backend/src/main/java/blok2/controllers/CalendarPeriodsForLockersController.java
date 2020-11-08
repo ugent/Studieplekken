@@ -146,24 +146,12 @@ public class CalendarPeriodsForLockersController {
                         HttpStatus.CONFLICT, "Different locations in request");
             }
 
-            // check if the ends of all periods are after the start
+            // check if the end of all periods are after the start
             if (period.getEndsAt().isBefore(period.getStartsAt())) {
                 logger.log(Level.SEVERE, "analyzeAndUpdateCalendarPeriodsForLockers, endsAt was before startsAt");
                 throw new ResponseStatusException(
                         HttpStatus.CONFLICT, "StartsAt must be before EndsAt");
             }
-
-
-            // make sure no periods overlap
-            // @REVIEWERS: I've honestly no idea what this is doing. seems like lastEnd is always null.
-            // Let me know what i should do with this.
-
-            if (lastEnd != null && lastEnd.isAfter(period.getStartsAt())) {
-                logger.log(Level.SEVERE, "analyzeAndUpdateCalendarPeriodsForLockers, overlapping periods");
-                throw new ResponseStatusException(
-                        HttpStatus.CONFLICT, "Overlapping periods");
-            }
-            lastEnd = period.getEndsAt();
         }
 
         // delete all 'from' and add 'to'

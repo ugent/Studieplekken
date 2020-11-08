@@ -170,7 +170,7 @@ COMMENT ON TABLE public.languages IS 'E.g. for the language ''English''
 
 CREATE TABLE public.location_reservations
 (
-    created_at          text NOT NULL,
+    created_at          Timestamp NOT NULL,
     timeslot_date       Date NOT NULL,
     timeslot_seqnr      integer NOT NULL,
     calendar_id         integer NOT NULL,

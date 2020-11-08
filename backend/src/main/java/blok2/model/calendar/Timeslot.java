@@ -18,9 +18,6 @@ public class Timeslot implements Cloneable {
     private LocalDate timeslotDate;
 
 
-    public Timeslot() {
-
-    }
 
     public Timeslot(int calendarId, int timeslotSeqnr, LocalDate timeslotDate) {
         this.calendarId = calendarId;

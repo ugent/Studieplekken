@@ -14,9 +14,9 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 public class CalendarPeriod extends Period implements Cloneable {
     private int id;
     private Location location;
-    private LocalTime openingTime; // time: hh:mm
-    private LocalTime closingTime; // time: hh:mm
-    private LocalDateTime reservableFrom; // datetime: YYYY-MM-DD hh:mm
+    private LocalTime openingTime;
+    private LocalTime closingTime;
+    private LocalDateTime reservableFrom;
     private boolean reservable;
     private int reservableTimeslotSize;
 

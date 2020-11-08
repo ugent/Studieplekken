@@ -8,7 +8,7 @@ import java.util.Objects;
 
 public class CalendarPeriodForLockers extends Period implements Cloneable {
     private Location location;
-    private LocalDateTime reservableFrom; // datetime: YYYY-MM-DDThh:mm
+    private LocalDateTime reservableFrom;
 
     public CalendarPeriodForLockers() {
 

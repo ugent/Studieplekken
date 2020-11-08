@@ -217,13 +217,12 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
     }
 
     public static Timeslot createTimeslot(ResultSet rs) throws SQLException {
-        Timeslot timeslot = new Timeslot();
 
-        timeslot.setCalendarId(rs.getInt(Resources.databaseProperties.getString("timeslot_calendar_id")));
-        timeslot.setTimeslotSeqnr(rs.getInt(Resources.databaseProperties.getString("timeslot_sequence_number")));
-        timeslot.setTimeslotDate(rs.getDate(Resources.databaseProperties.getString("timeslot_date")).toLocalDate());
+        Integer calendarId = (rs.getInt(Resources.databaseProperties.getString("timeslot_calendar_id")));
+        Integer seqnr = (rs.getInt(Resources.databaseProperties.getString("timeslot_sequence_number")));
+        LocalDate date = (rs.getDate(Resources.databaseProperties.getString("timeslot_date")).toLocalDate());
 
-        return timeslot;
+        return new Timeslot(calendarId, seqnr, date);
     }
 
     private void prepareCalendarPeriodPstmt(CalendarPeriod calendarPeriod,
