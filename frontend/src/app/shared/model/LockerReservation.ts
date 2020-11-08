@@ -1,12 +1,13 @@
 import {User, UserConstructor} from './User';
 import {Locker, LockerConstructor} from './Locker';
-import {CustomDate, CustomDateConstructor} from './helpers/CustomDate';
+import { Moment } from 'moment';
+import * as moment from 'moment';
 
 export interface LockerReservation {
   owner: User;
   locker: Locker;
-  keyPickupDate: CustomDate;
-  keyReturnedDate: CustomDate;
+  keyPickupDate: Moment;
+  keyReturnedDate: Moment;
 }
 
 export class LockerReservationConstructor {
@@ -14,8 +15,8 @@ export class LockerReservationConstructor {
     return {
       owner: UserConstructor.new(),
       locker: LockerConstructor.new(),
-      keyPickupDate: CustomDateConstructor.new(),
-      keyReturnedDate: CustomDateConstructor.new()
+      keyPickupDate: moment(),
+      keyReturnedDate: moment()
     };
   }
 
@@ -27,8 +28,8 @@ export class LockerReservationConstructor {
     return {
       owner: UserConstructor.newFromObj(obj.owner),
       locker: LockerConstructor.newFromObj(obj.locker),
-      keyPickupDate: CustomDateConstructor.newFromObj(obj.keyPickupDate),
-      keyReturnedDate: CustomDateConstructor.newFromObj(obj.keyReturnedDate)
+      keyPickupDate: moment(obj.keyPickupDate),
+      keyReturnedDate: moment(obj.keyReturnedDate)
     };
   }
 }

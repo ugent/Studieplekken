@@ -3,7 +3,6 @@ import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {api} from '../../../../environments/environment';
 import {LocationReservation} from '../../../shared/model/LocationReservation';
 import {combineLatest, Observable} from 'rxjs';
-import {toISODateString, typeScriptDateToCustomDate} from '../../../shared/model/helpers/CustomDate';
 import { getTimeslotsOnDay, Timeslot } from 'src/app/shared/model/Timeslot';
 import { CalendarPeriod } from 'src/app/shared/model/CalendarPeriod';
 import { map } from 'rxjs/internal/operators/map';
