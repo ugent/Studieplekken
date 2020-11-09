@@ -1,55 +1,63 @@
 import {Location, LocationConstructor} from './Location';
-import {
-  isStringValidDateForDB,
-  isStringValidDateTimeForDB,
-  isStringValidTimeForDBWithoutSeconds
-} from '../validators/DateValidators';
 import {CalendarEvent} from 'angular-calendar';
-import {includesTimeslot, Timeslot, timeslotEndHour, timeslotEquals, timeslotStartHour} from './Timeslot';
+import {includesTimeslot, Timeslot, timeslotEndHour, timeslotStartHour} from './Timeslot';
 import { LocationReservation } from './LocationReservation';
+import * as moment from 'moment';
+import { Moment } from 'moment';
 
-export interface CalendarPeriod {
+export class CalendarPeriod {
   id: number;
   location: Location;
-  startsAt: string;
-  endsAt: string;
-  openingTime: string;
-  closingTime: string;
+  startsAt: Moment;
+  endsAt: Moment;
+  openingTime: Moment;
+  closingTime: Moment;
   reservable: boolean;
-  reservableFrom: string;
+  reservableFrom: Moment;
   reservableTimeslotSize: number;
   timeslots: Timeslot[];
-}
 
-export class CalendarPeriodConstructor {
-  static new(): CalendarPeriod {
-    return {
-      id: 0,
-      location: LocationConstructor.new(),
-      startsAt: '',
-      endsAt: '',
-      openingTime: '',
-      closingTime: '',
-      reservableFrom: '',
-      reservable: false,
-      reservableTimeslotSize: 0,
-      timeslots: []
-    };
+  constructor(id: number, location: Location, startsAt: Moment, endsAt: Moment, openingTime: Moment, closingTime: Moment,
+              reservable: boolean, reservableFrom: Moment, reservableTimeslotSize: number, timeslots: Timeslot[]) {
+    this.id = id;
+    this.location = location;
+    this.startsAt = startsAt;
+    this.endsAt = endsAt;
+    this.openingTime = openingTime;
+    this.closingTime = closingTime;
+    this.reservableFrom = reservableFrom;
+    this.reservable = reservable;
+    this.reservableTimeslotSize = reservableTimeslotSize;
+    this.timeslots = timeslots;
   }
 
-  static newFromObj(obj: CalendarPeriod): CalendarPeriod {
+  static fromJSON(json: any): CalendarPeriod {
+    return new CalendarPeriod(
+      json.id,
+      json.location,
+      moment(json.startsAt),
+      moment(json.endsAt),
+      moment(json.openingTime, 'HH:mm'),
+      moment(json.closingTime, 'HH:mm'),
+      json.reservable,
+      moment(json.reservableFrom, 'YYYY-MM-DDTHH:mm:ss'),
+      json.reservableTimeslotSize,
+      json.timeslots.map(jsonT => Timeslot.fromJSON(jsonT))
+    );
+  }
+
+  toJSON(): object {
     return {
-      id: obj.id,
-      location: LocationConstructor.newFromObj(obj.location),
-      startsAt: obj.startsAt,
-      endsAt: obj.endsAt,
-      openingTime: obj.openingTime,
-      closingTime: obj.closingTime,
-      reservableFrom: obj.reservableFrom,
-      reservable: obj.reservable,
-      reservableTimeslotSize: obj.reservableTimeslotSize,
-      timeslots: obj.timeslots
-    };
+      location: this.location,
+      startsAt: this.startsAt.format('YYYY-MM-DD'),
+      endsAt: this.endsAt.format('YYYY-MM-DD'),
+      openingTime: this.openingTime.format('HH:mm'),
+      closingTime: this.closingTime.format('HH:mm'),
+      reservableFrom: this.reservableFrom ? this.reservableFrom.format('YYYY-MM-DDTHH:mm:ss') : null,
+      reservableTimeslotSize: this.reservableTimeslotSize,
+      timeslots: this.timeslots,
+      reservable: this.reservable
+    }
   }
 }
 
@@ -66,35 +74,21 @@ export class CalendarPeriodConstructor {
  * 3. closingTime may not be before openingTime
  */
 export function isCalendarPeriodValid(period: CalendarPeriod): boolean {
-  if (period === null) {
+  console.log(period);
+  if (period === null || period.openingTime === null) {
+    console.log('First if');
     return false;
   }
 
-  // check if the formats of the strings are as they are supposed to be
-  if (!(isStringValidDateForDB(period.startsAt) &&
-        isStringValidDateForDB(period.endsAt) &&
-        isStringValidTimeForDBWithoutSeconds(period.openingTime) &&
-        isStringValidTimeForDBWithoutSeconds(period.closingTime) &&
-        (!period.reservable || isStringValidDateTimeForDB(period.reservableFrom) || !period.reservableFrom || true))) {
+
+  if (period.startsAt.isAfter(period.endsAt)) {
+    console.log('Second if');
     return false;
   }
-
-  // endsAt may not be before startsAt
-  const startDate = new Date(period.startsAt);
-  const endDate = new Date(period.endsAt);
-
-  if (endDate < startDate) {
-    return false;
-  }
-
-  // closing time may not be before opening time
-  // this will be checked by creating a new Date() with two
-  // times the same date, but with the times set to the values
-  // of opening and closing time
-  const openingTimeDate = new Date(period.startsAt + 'T' + period.openingTime);
-  const closingTimeDate = new Date(period.startsAt + 'T' + period.closingTime);
-
-  return closingTimeDate >= openingTimeDate;
+  console.log(period.openingTime);
+  console.log(period.closingTime);
+  console.log(period.openingTime.isBefore(period.closingTime));
+  return period.openingTime.isBefore(period.closingTime);
 }
 
 
@@ -108,6 +102,9 @@ export function mapCalendarPeriodsToCalendarEvents(periods: CalendarPeriod[],
                                                    reservedTimeslots: LocationReservation[] = []
                                                                                   ): CalendarEvent[]
 {
+  if (periods.length === 0) {
+    return [];
+  }
   return periods
           .map(period => period.reservable ? mapTimeslotsToCalendarEvents(period, reservedTimeslots) : mapNRperiodToCalendarEvents(period))
           .reduce((a, b) => [...a, ...b]);
@@ -120,13 +117,13 @@ export function mapCalendarPeriodsToCalendarEvents(periods: CalendarPeriod[],
 function mapNRperiodToCalendarEvents(period: CalendarPeriod): CalendarEvent[] {
   const calendarEvents: CalendarEvent[] = [];
 
-  const dateWithOpeningTime = new Date(period.startsAt + 'T' + period.openingTime);
-  const dateWithClosingTime = new Date(period.startsAt + 'T' + period.closingTime);
-  const lastDayWithOpeningTime = (new Date(period.endsAt + 'T' + period.openingTime));
+  const dateWithOpeningTime = new Date(period.startsAt.format('YYYY-MM-DD') + 'T' + period.openingTime.format('HH:mm'));
+  const dateWithClosingTime = new Date(period.startsAt.format('YYYY-MM-DD') + 'T' + period.closingTime.format('HH:mm'));
+  const lastDayWithOpeningTime = (new Date(period.endsAt.format('YYYY-MM-DD') + 'T' + period.openingTime.format('HH:mm')));
 
   while (dateWithOpeningTime <= lastDayWithOpeningTime) {
     calendarEvents.push({
-      title: period.openingTime + ' - ' + period.closingTime + '  -  ' + '(open)',
+      title: period.openingTime.format('HH:mm') + ' - ' + period.closingTime.format('HH:mm') + '  -  ' + '(open)',
       start: new Date(dateWithOpeningTime),
       end: new Date(dateWithClosingTime),
       meta: period,
@@ -154,11 +151,11 @@ function mapTimeslotsToCalendarEvents(period: CalendarPeriod, reservedTimeslots:
   const calendarEvents: CalendarEvent[] = [];
 
   for (const timeslot of period.timeslots) {
-      const beginDT = new Date(timeslot.timeslotDate + 'T' + timeslotStartHour(period, timeslot.timeslotSeqnr));
-      const endDT = new Date(timeslot.timeslotDate + 'T' + timeslotEndHour(period, timeslot.timeslotSeqnr));
+      const beginDT = new Date(timeslot.timeslotDate.format('YYYY-MM-DD') + 'T' + timeslotStartHour(period, timeslot.timeslotSeqnr));
+      const endDT = new Date(timeslot.timeslotDate.format('YYYY-MM-DD') + 'T' + timeslotEndHour(period, timeslot.timeslotSeqnr));
 
       calendarEvents.push({
-        title: timeslot.timeslotDate + ' (Blok ' + (timeslot.timeslotSeqnr + 1) + ')',
+        title: timeslot.timeslotDate.format('DD-MM-YYYY') + ' (Blok ' + (timeslot.timeslotSeqnr + 1) + ')',
         start: beginDT,
         end: endDT,
         meta: timeslot,

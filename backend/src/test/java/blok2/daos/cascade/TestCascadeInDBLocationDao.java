@@ -2,7 +2,6 @@ package blok2.daos.cascade;
 
 import blok2.daos.*;
 import blok2.helpers.Language;
-import blok2.helpers.date.CustomDate;
 import blok2.model.Authority;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.CalendarPeriodForLockers;
@@ -18,6 +17,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class TestCascadeInDBLocationDao extends TestDao {
@@ -91,8 +92,8 @@ public class TestCascadeInDBLocationDao extends TestDao {
         TestSharedMethods.addCalendarPeriods(calendarPeriodDao, cp2);
 
         testCalendarPeriods = Arrays.asList(cp1, cp2);
-        testLocationReservation1 = new LocationReservation(testUser1, CustomDate.today().toDateString(), cp1.getTimeslots().get(0),  null);
-        testLocationReservation2 = new LocationReservation(testUser2,  new CustomDate(1970, 1, 1).toDateString(), cp2.getTimeslots().get(0),  null);
+        testLocationReservation1 = new LocationReservation(testUser1, LocalDateTime.now(), cp1.getTimeslots().get(0),  null);
+        testLocationReservation2 = new LocationReservation(testUser2,  LocalDateTime.of(1970,1,1,0,0), cp2.getTimeslots().get(0),  null);
 
         Locker testLocker1 = new Locker(0, testLocation);
         Locker testLocker2 = new Locker(1, testLocation);
@@ -109,8 +110,8 @@ public class TestCascadeInDBLocationDao extends TestDao {
         // because when the penalties are retrieved from the penaltyEventDao, the list will
         // be sorted by received points before asserting, if they would be equal we can't sort
         // on the points and be sure about the equality of the actual and expected list.
-        testPenalty1 = new Penalty(testUser1.getAugentID(), testPenaltyEvent.getCode(), CustomDate.now(), CustomDate.now(), testLocation.getName(), 10, "First test penalty");
-        testPenalty2 = new Penalty(testUser2.getAugentID(), testPenaltyEvent.getCode(), CustomDate.now(), CustomDate.now(), testLocation.getName(), 20, "Second test penalty");
+        testPenalty1 = new Penalty(testUser1.getAugentID(), testPenaltyEvent.getCode(), LocalDate.now(), LocalDate.now(), testLocation.getName(), 10, "First test penalty");
+        testPenalty2 = new Penalty(testUser2.getAugentID(), testPenaltyEvent.getCode(), LocalDate.now(), LocalDate.now(), testLocation.getName(), 20, "Second test penalty");
 
         testCalendarPeriodsForLockers = TestSharedMethods.testCalendarPeriodsForLockers(testLocation);
 

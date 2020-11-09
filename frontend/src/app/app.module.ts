@@ -54,6 +54,12 @@ import { AuthorityUsersManagementComponent } from './management/authorities-mana
 import { registerLocaleData } from '@angular/common';
 import { MatDialogModule } from '@angular/material/dialog';
 import localeNl from '@angular/common/locales/nl-BE';
+import { NgxMatDatetimePickerModule } from '@angular-material-components/datetime-picker';
+import { NgxMatMomentModule } from '@angular-material-components/moment-adapter';
+import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import {MomentDateComponent} from './shared/inputs/moment-date/moment-date.component';
+import { MomentDateTimeComponent } from './shared/inputs/moment-datetime/moment-datetime.component';
 import { LocationOpeningperiodDialogComponent } from './management/locations-management/location-details-management/location-calendar/location-openingperiod-dialog/location-openingperiod-dialog.component';
 
 // AoT requires an exported function for factories
@@ -226,34 +232,40 @@ const routes: Routes = [
     AuthoritiesManagementComponent,
     UserAuthoritiesManagementComponent,
     AuthorityUsersManagementComponent,
+    MomentDateComponent,
+    MomentDateTimeComponent,
     LocationOpeningperiodDialogComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    RouterModule.forRoot(routes),
-    HttpClientModule,
-    TranslateModule.forRoot({
-        defaultLanguage: 'nl',
-        loader: {
-            provide: TranslateLoader,
-            useFactory: HttpLoaderFactory,
-            deps: [HttpClient]
-        }
-    }),
-    MarkdownModule.forRoot(),
-    BrowserAnimationsModule,
-    CalendarModule.forRoot({
-        provide: DateAdapter,
-        useFactory: adapterFactory,
-    }),
-    ReactiveFormsModule,
-    FormsModule,
-    FlatpickrModule.forRoot(),
-    CKEditorModule,
-    MatSelectModule,
-    MatDialogModule
-  ],
+    imports: [
+      BrowserModule,
+      AppRoutingModule,
+      RouterModule.forRoot(routes),
+      HttpClientModule,
+      TranslateModule.forRoot({
+          defaultLanguage: 'nl',
+          loader: {
+              provide: TranslateLoader,
+              useFactory: HttpLoaderFactory,
+              deps: [HttpClient]
+          }
+      }),
+      MarkdownModule.forRoot(),
+      BrowserAnimationsModule,
+      CalendarModule.forRoot({
+          provide: DateAdapter,
+          useFactory: adapterFactory,
+      }),
+      ReactiveFormsModule,
+      FormsModule,
+      FlatpickrModule.forRoot(),
+      CKEditorModule,
+      MatSelectModule,
+      NgxMatDatetimePickerModule,
+      NgxMatMomentModule,
+      MatDatepickerModule,
+      MatInputModule,
+      MatDialogModule
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

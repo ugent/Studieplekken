@@ -1,21 +1,20 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {CalendarEvent} from 'angular-calendar';
+import { Component, Input, OnInit } from '@angular/core';
+import { CalendarEvent } from 'angular-calendar';
 import {
-  CalendarPeriodConstructor,
   CalendarPeriod,
   isCalendarPeriodValid, mapCalendarPeriodsToCalendarEvents
 } from '../../../../shared/model/CalendarPeriod';
-import {Observable, Subject} from 'rxjs';
-import {Location} from '../../../../shared/model/Location';
-import {CalendarPeriodsService} from '../../../../services/api/calendar-periods/calendar-periods.service';
-import {ApplicationTypeFunctionalityService} from '../../../../services/functionality/application-type/application-type-functionality.service';
-import {toDateTimeString, typeScriptDateToCustomDate} from '../../../../shared/model/helpers/CustomDate';
-import {msToShowFeedback} from '../../../../../environments/environment';
+import { Observable, Subject } from 'rxjs';
+import { Location } from '../../../../shared/model/Location';
+import { CalendarPeriodsService } from '../../../../services/api/calendar-periods/calendar-periods.service';
+import { ApplicationTypeFunctionalityService } from '../../../../services/functionality/application-type/application-type-functionality.service';
+import { msToShowFeedback } from '../../../../../environments/environment';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { LocationReservation, LocationReservationConstructor } from 'src/app/shared/model/LocationReservation';
 import { transition, trigger, useAnimation } from '@angular/animations';
 import { rowsAnimation } from 'src/app/shared/animations/RowAnimation';
 import { Timeslot } from 'src/app/shared/model/Timeslot';
+import * as moment from 'moment';
 import { LocationOpeningperiodDialogComponent } from './location-openingperiod-dialog/location-openingperiod-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -103,12 +102,15 @@ export class LocationCalendarComponent implements OnInit {
         return;
       }
 
+      next.forEach(n => n.openingTime = moment(n.openingTime, 'HH:mm:ss'));
+      next.forEach(n => n.closingTime = moment(n.closingTime, 'HH:mm:ss'));
+
       this.calendarPeriods = next;
 
       // make a deep copy to make sure that can be calculated whether any period has changed
       this.calendarPeriodsInDataLayer = [];
       next.forEach(n => {
-        this.calendarPeriodsInDataLayer.push(CalendarPeriodConstructor.newFromObj(n));
+        this.calendarPeriodsInDataLayer.push(CalendarPeriod.fromJSON(n));
       });
 
       // fill the events based on the calendar periods
@@ -152,25 +154,10 @@ export class LocationCalendarComponent implements OnInit {
   addOpeningPeriodButtonClick(location: Location): void {
     this.addOpeningPeriod(location);
     this.disableFootButtons = false;
-    console.log(this.disableFootButtons)
-
   }
 
   addOpeningPeriod(location: Location): void {
-    const period: CalendarPeriod = CalendarPeriodConstructor.new();
-    period.location = location;
-
-    // If the information about reservations may not be shown (configured in environments.ts),
-    // then we need to programmatically provide a valid value for 'reservableFrom' because
-    // the user will not be able to set the value manually.
-    // If not set, the period will not be addable. Therefore, we just provide the current date-time.
-    if (true || !this.showReservationInformation) {
-      let dateTime = toDateTimeString(typeScriptDateToCustomDate(new Date()));
-      // remove the trailing ':ss' and replace 'T' with ' ' to make a valid
-      // dateTimeStr for the database: 'YYYY-MM-DD HH:MI'
-      dateTime = dateTime.substr(0, dateTime.length - 3).replace('T', ' ');
-      period.reservableFrom = dateTime;
-    }
+    const period: CalendarPeriod = new CalendarPeriod(null, location, null, null, null, null, false, null, null, null);
 
     this.calendarPeriods.push(period);
   }
@@ -198,8 +185,6 @@ export class LocationCalendarComponent implements OnInit {
       //   in the 'handler' request will be sent to the backend, which is not wat we
       //   want if not all the periods are validly filled in
       for (const n of this.calendarPeriods) {
-        n.reservableFrom = n.reservableFrom && n.reservableFrom.toString() + ' 00:00';
-        console.log(n.reservableFrom)
         if (!isCalendarPeriodValid(n)) {
           this.handleWrongCalendarPeriodFormatOnUpdate();
           return;
@@ -252,7 +237,7 @@ export class LocationCalendarComponent implements OnInit {
       .subscribe(() => this.successHandler(), () => this.errorHandler());
   }
 
-  addAllCalendarPeriods(): void{
+  addAllCalendarPeriods(): void {
     this.calendarPeriodsService.addCalendarPeriods(this.calendarPeriods)
       .subscribe(() => this.successHandler(), () => this.errorHandler());
   }
@@ -283,7 +268,7 @@ export class LocationCalendarComponent implements OnInit {
     // deep copy of this.calendarPeriodsInDataLayer to this.calendarPeriods
     this.calendarPeriods = [];
     this.calendarPeriodsInDataLayer
-      .forEach(value => this.calendarPeriods.push(CalendarPeriodConstructor.newFromObj(value)));
+      .forEach(value => this.calendarPeriods.push(CalendarPeriod.fromJSON(value)));
 
     this.disableFootButtons = true;
   }
@@ -299,7 +284,7 @@ export class LocationCalendarComponent implements OnInit {
     setTimeout(() => this.showError = false, msToShowFeedback);
   }
 
-  timeslotPickedHandler(event: any): void{
+  timeslotPickedHandler(event: any): void {
     // event is a non-reservable calendar period.
     if (!event.hasOwnProperty('timeslotSeqnr')) {
       this.showReservations = false;
@@ -338,6 +323,6 @@ export class LocationCalendarComponent implements OnInit {
         this.deletionWasSuccess = false;
         this.loadReservations();
       }
-    )
+    );
   }
 }

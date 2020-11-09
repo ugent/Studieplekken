@@ -62,11 +62,11 @@ CREATE TABLE public.calendar_periods
 (
     calendar_id     integer NOT NULL primary key generated always as identity,
     location_name   text NOT NULL,
-    starts_at       text NOT NULL,
-    ends_at         text NOT NULL,
-    opening_time    text NOT NULL,
-    closing_time    text NOT NULL,
-    reservable_from text NOT NULL,
+    starts_at       Date NOT NULL,
+    ends_at         Date NOT NULL,
+    opening_time    Time NOT NULL,
+    closing_time    Time NOT NULL,
+    reservable_from Timestamp NOT NULL,
     reservable      boolean NOT NULL,
     timeslot_length SMALLINT NOT NULL,
 
@@ -83,7 +83,7 @@ CREATE TABLE public.reservation_timeslots
 (
     calendar_id                     integer NOT NULL,
     timeslot_sequence_number        SMALLINT NOT NULL,
-    timeslot_date                   text NOT NULL,
+    timeslot_date                   Date NOT NULL,
 
     constraint pk_timeslots
         primary key (calendar_id, timeslot_sequence_number, timeslot_date),
@@ -100,9 +100,9 @@ CREATE TABLE public.reservation_timeslots
 CREATE TABLE public.calendar_periods_for_lockers
 (
     location_name   text NOT NULL,
-    starts_at       text NOT NULL,
-    ends_at         text NOT NULL,
-    reservable_from text NOT NULL,
+    starts_at       Date NOT NULL,
+    ends_at         Date NOT NULL,
+    reservable_from Timestamp NOT NULL,
 
     constraint pk_calendar_periods_for_lockers
         primary key (
@@ -170,8 +170,8 @@ COMMENT ON TABLE public.languages IS 'E.g. for the language ''English''
 
 CREATE TABLE public.location_reservations
 (
-    created_at          text NOT NULL,
-    timeslot_date       text NOT NULL,
+    created_at          Timestamp NOT NULL,
+    timeslot_date       Date NOT NULL,
     timeslot_seqnr      integer NOT NULL,
     calendar_id         integer NOT NULL,
     attended            boolean,
@@ -221,8 +221,8 @@ CREATE TABLE public.locker_reservations
     location_name   text    NOT NULL,
     locker_number   integer NOT NULL,
     user_augentid   text    NOT NULL,
-    key_pickup_date text,
-    key_return_date text,
+    key_pickup_date Timestamp,
+    key_return_date Timestamp,
 
     constraint pk_locker_reservations
         primary key (location_name, locker_number, user_augentid),

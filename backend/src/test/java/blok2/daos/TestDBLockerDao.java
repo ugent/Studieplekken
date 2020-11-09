@@ -1,6 +1,5 @@
 package blok2.daos;
 
-import blok2.helpers.date.CustomDate;
 import blok2.model.Authority;
 import blok2.model.reservables.Location;
 import blok2.model.reservables.Locker;
@@ -11,6 +10,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -82,17 +82,14 @@ public class TestDBLockerDao extends TestDao {
         // SCENARIO 2: reserved locker with pickup but without returned date, locker is still reserved.
         Locker l1 = testLockers.get(random.get(1));
         LockerReservation lr1 = new LockerReservation(l1, testUser);
-        CustomDate pud1 = new CustomDate(1970, 1, 1, 9, 0, 0);
-        lr1.setKeyPickupDate(pud1);
+        lr1.setKeyPickupDate(LocalDateTime.of(1970, 1, 1, 9, 0, 0));
         lockerReservationDao.addLockerReservation(lr1);
 
         // SCENARIO 3: reserved locker with pickup and returned date, locker key has been returned
         Locker l2 = testLockers.get(random.get(2));
         LockerReservation lr2 = new LockerReservation(l2, testUser);
-        CustomDate pud2 = new CustomDate(1970, 1, 1, 9, 0, 0);
-        CustomDate rd2 = new CustomDate(1970, 1, 1, 9, 0, 1);
-        lr2.setKeyPickupDate(pud2);
-        lr2.setKeyReturnedDate(rd2);
+        lr2.setKeyPickupDate(LocalDateTime.of(1970, 1, 1, 9, 0, 0));
+        lr2.setKeyReturnedDate(LocalDateTime.of(1970, 1, 1, 9, 0, 1));
         lockerReservationDao.addLockerReservation(lr2);
 
         // Retrieve the locker statuses

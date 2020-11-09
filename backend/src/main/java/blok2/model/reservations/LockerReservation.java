@@ -1,22 +1,25 @@
 package blok2.model.reservations;
 
-import blok2.helpers.date.CustomDate;
 import blok2.model.reservables.Locker;
 import blok2.model.users.User;
 
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class LockerReservation {
     private User owner;
     private Locker locker;
-    private CustomDate keyPickupDate;
-    private CustomDate keyReturnedDate;
+    @NotNull
+    private LocalDateTime keyPickupDate;
+    @NotNull
+    private LocalDateTime keyReturnedDate;
 
     public LockerReservation() {
 
     }
 
-    public LockerReservation(Locker locker, User owner, CustomDate keyPickupDate, CustomDate keyReturnedDate) {
+    public LockerReservation(Locker locker, User owner, LocalDateTime keyPickupDate, LocalDateTime keyReturnedDate) {
         this.locker = locker;
         this.owner = owner;
         this.keyPickupDate = keyPickupDate;
@@ -62,11 +65,11 @@ public class LockerReservation {
         return owner;
     }
 
-    public CustomDate getKeyPickupDate() {
+    public LocalDateTime getKeyPickupDate() {
         return keyPickupDate;
     }
 
-    public CustomDate getKeyReturnedDate() {
+    public LocalDateTime getKeyReturnedDate() {
         return keyReturnedDate;
     }
 
@@ -78,11 +81,11 @@ public class LockerReservation {
         this.owner = owner;
     }
 
-    public void setKeyPickupDate(CustomDate keyPickupDate) {
+    public void setKeyPickupDate(LocalDateTime keyPickupDate) {
         this.keyPickupDate = keyPickupDate;
     }
 
-    public void setKeyReturnedDate(CustomDate keyReturnedDate) {
+    public void setKeyReturnedDate(LocalDateTime keyReturnedDate) {
         this.keyReturnedDate = keyReturnedDate;
     }
 

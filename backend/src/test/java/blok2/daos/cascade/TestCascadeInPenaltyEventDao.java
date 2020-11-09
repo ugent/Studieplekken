@@ -4,7 +4,6 @@ import blok2.daos.*;
 import blok2.daos.db.ADB;
 import blok2.helpers.Language;
 import blok2.helpers.Resources;
-import blok2.helpers.date.CustomDate;
 import blok2.model.Authority;
 import blok2.model.penalty.Penalty;
 import blok2.model.penalty.PenaltyEvent;
@@ -18,6 +17,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.*;
 
 public class TestCascadeInPenaltyEventDao extends TestDao {
@@ -69,8 +69,8 @@ public class TestCascadeInPenaltyEventDao extends TestDao {
         // because when the penalties are retrieved from the penaltyEventDao, the list will
         // be sorted by received points before asserting, if they would be equal we can't sort
         // on the points and be sure about the equality of the actual and expected list.
-        testPenalty1 = new Penalty(testUser1.getAugentID(), testPenaltyEvent.getCode(), CustomDate.now(), CustomDate.now(), testLocation1.getName(), 10, "First test penalty");
-        testPenalty2 = new Penalty(testUser2.getAugentID(), testPenaltyEvent.getCode(), CustomDate.now(), CustomDate.now(), testLocation2.getName(), 20, "Second test penalty");
+        testPenalty1 = new Penalty(testUser1.getAugentID(), testPenaltyEvent.getCode(), LocalDate.now(), LocalDate.now(), testLocation1.getName(), 10, "First test penalty");
+        testPenalty2 = new Penalty(testUser2.getAugentID(), testPenaltyEvent.getCode(), LocalDate.now(), LocalDate.now(), testLocation2.getName(), 20, "Second test penalty");
 
 
         // Add test objects to database

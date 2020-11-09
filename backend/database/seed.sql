@@ -67,26 +67,26 @@ END $$;
  * Add some calendar periods
  */
 insert into calendar_periods(location_name, starts_at, ends_at, opening_time, closing_time, reservable_from, reservable, timeslot_length)
-values  ('Sterre S5, Eetzaal', to_char(now() - interval '1 days', 'YYYY-MM-DD'), to_char(now() + interval '3 days', 'YYYY-MM-DD'),
-            '10:00', '12:00', to_char(now() - interval '7 days', 'YYYY-MM-DD') || ' 19:00', true, 60),
-        ('Sterre S5, Bib', to_char(now() - interval '5 days', 'YYYY-MM-DD'), to_char(now() + interval '10 days', 'YYYY-MM-DD'),
-            '09:00', '17:00', to_char(now() - interval '7 days', 'YYYY-MM-DD') || ' 19:00', false, 0),
-        ('Sterre S9, PC lokaal 3rd verdiep', to_char(now() - interval '5 days', 'YYYY-MM-DD'), to_char(now() + interval '10 days', 'YYYY-MM-DD'),
-            '8:30', '18:30', to_char(now() - interval '7 days', 'YYYY-MM-DD') || ' 19:00', false, 0);
+values  ('Sterre S5, Eetzaal', now() - interval '1 days', now() + interval '3 days',
+            '10:00', '12:00', now() - interval '7 days', true, 60),
+        ('Sterre S5, Bib', now() - interval '5 days', now() + interval '10 days',
+            '09:00', '17:00', now() - interval '7 days', false, 0),
+        ('Sterre S9, PC lokaal 3rd verdiep',now() - interval '5 days', now() + interval '10 days',
+            '8:30', '18:30', now() - interval '7 days', false, 0);
 
 
 insert into reservation_timeslots(calendar_id, timeslot_sequence_number, timeslot_date)
 values 
-(1, 0,  to_char(now() - interval '1 days', 'YYYY-MM-DD')),
-(1, 1,  to_char(now() - interval '1 days', 'YYYY-MM-DD')),
-(1, 0,  to_char(now(), 'YYYY-MM-DD')),
-(1, 1,  to_char(now(), 'YYYY-MM-DD')),
-(1, 0,  to_char(now()+ interval '1 days', 'YYYY-MM-DD')),
-(1, 1,  to_char(now()+ interval '1 days', 'YYYY-MM-DD')),
-(1, 0,  to_char(now()+ interval '2 days', 'YYYY-MM-DD')),
-(1, 1,  to_char(now()+ interval '2 days', 'YYYY-MM-DD')),
-(1, 0,  to_char(now()+ interval '3 days', 'YYYY-MM-DD')),
-(1, 1,  to_char(now()+ interval '3 days', 'YYYY-MM-DD'));
+(1, 0,  now() - interval '1 days'),
+(1, 1,  now() - interval '1 days'),
+(1, 0,  now()),
+(1, 1,  now()),
+(1, 0,  now()+ interval '1 days'),
+(1, 1,  now()+ interval '1 days'),
+(1, 0,  now()+ interval '2 days'),
+(1, 1,  now()+ interval '2 days'),
+(1, 0,  now()+ interval '3 days'),
+(1, 1,  now()+ interval '3 days');
 
 
 /*
@@ -95,6 +95,6 @@ values
 insert into location_reservations(created_at, timeslot_date, timeslot_seqnr, calendar_id, user_augentid)
 values
 -- One reservation for over five days
-(to_char(now() + interval '5 days', 'YYYY-MM-DD'),  to_char(now() + interval '1 days', 'YYYY-MM-DD'), 0, 1, '001'),
+(now() + interval '5 days',  now() + interval '1 days', 0, 1, '001'),
 -- One reservation for five days ago, attended to
-(to_char(now() + interval '5 days', 'YYYY-MM-DD'),  to_char(now() + interval '3 days', 'YYYY-MM-DD'), 0, 1, '001');
+(now() + interval '5 days',  now() + interval '3 days', 0, 1, '001');

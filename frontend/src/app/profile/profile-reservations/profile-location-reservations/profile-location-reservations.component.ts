@@ -4,7 +4,6 @@ import {Observable, Subscription} from 'rxjs';
 import {transition, trigger, useAnimation} from '@angular/animations';
 import {rowsAnimation} from '../../../shared/animations/RowAnimation';
 import {LocationReservation, LocationReservationConstructor} from '../../../shared/model/LocationReservation';
-import {compareDates, CustomDate, nowAsCustomDate, toDateString} from '../../../shared/model/helpers/CustomDate';
 import { CalendarPeriodsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
 import { CalendarPeriod } from 'src/app/shared/model/CalendarPeriod';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
@@ -30,10 +29,6 @@ export class ProfileLocationReservationsComponent implements OnInit {
   showReservations = false;
   loadingReservations = false;
   deletionWasSuccess: boolean = undefined;
-
-  toDateString = (date: CustomDate) => toDateString(date);
-  compareDates = (date1: CustomDate, date2: CustomDate) => compareDates(date1, date2);
-  nowAsCustomDate = () => nowAsCustomDate();
 
 
   constructor(private authenticationService: AuthenticationService,
