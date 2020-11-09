@@ -13,8 +13,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.Filter;
 
-@SpringBootTest
-@RunWith(SpringRunner.class)
+//@SpringBootTest
+//@RunWith(SpringRunner.class)
 @ContextConfiguration
 @WebAppConfiguration
 public class TestSecurity {
