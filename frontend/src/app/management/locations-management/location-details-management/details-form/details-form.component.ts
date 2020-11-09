@@ -3,14 +3,14 @@ import {Location} from '../../../../shared/model/Location';
 import {FormControl, FormGroup} from '@angular/forms';
 import {LocationService} from '../../../../services/api/locations/location.service';
 import {Observable} from 'rxjs';
-import {msToShowFeedback} from '../../../../../environments/environment';
 // @ts-ignore
 import {LocationDetailsService} from '../../../../services/single-point-of-truth/location-details/location-details.service';
 import {Authority} from '../../../../shared/model/Authority';
 import {AuthoritiesService} from '../../../../services/api/authorities/authorities.service';
 import {tap} from 'rxjs/operators';
-import { Building } from 'src/app/shared/model/Building';
-import { BuildingService } from 'src/app/services/api/buildings/buildings.service';
+import {Building} from 'src/app/shared/model/Building';
+import {BuildingService} from 'src/app/services/api/buildings/buildings.service';
+import {msToShowFeedback} from '../../../../app.constants';
 
 @Component({
   selector: 'app-details-form',
@@ -45,7 +45,16 @@ export class DetailsFormComponent implements OnInit {
   constructor(private locationService: LocationService,
               private locationDetailsService: LocationDetailsService,
               private authoritiesService: AuthoritiesService,
-              private buildingsService: BuildingService) { }
+              private buildingsService: BuildingService) {
+  }
+
+  get authorityInLocationForm(): Authority {
+    return this.authoritiesMap.get(Number(this.locationForm.get('authority').value));
+  }
+
+  get buildingInLocationForm(): Building {
+    return this.buildingsMap.get(Number(this.locationForm.get('building').value));
+  }
 
   ngOnInit(): void {
     // if the location has been retrieved, populate the form group
@@ -153,13 +162,5 @@ export class DetailsFormComponent implements OnInit {
   errorHandler(): void {
     this.successUpdatingLocation = false;
     setTimeout(() => this.successUpdatingLocation = undefined, msToShowFeedback);
-  }
-
-  get authorityInLocationForm(): Authority {
-    return this.authoritiesMap.get(Number(this.locationForm.get('authority').value));
-  }
-
-  get buildingInLocationForm(): Building {
-    return this.buildingsMap.get(Number(this.locationForm.get('building').value));
   }
 }

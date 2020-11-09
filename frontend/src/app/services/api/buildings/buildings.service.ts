@@ -1,15 +1,16 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Building } from 'src/app/shared/model/Building';
-import { api } from 'src/environments/environment';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {Building} from 'src/app/shared/model/Building';
+import {api} from '../endpoints';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BuildingService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   // *************************************
   // *   CRUD operations for AUTHORITY   *

@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Penalty} from '../../../shared/model/Penalty';
-import {api} from '../../../../environments/environment';
+import {api} from '../endpoints';
 import {Observable} from 'rxjs';
 import {PenaltyEvent} from '../../../shared/model/PenaltyEvent';
 
@@ -10,7 +10,8 @@ import {PenaltyEvent} from '../../../shared/model/PenaltyEvent';
 })
 export class PenaltyService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   /****************************************
    *    API calls concerning Penalties    *
