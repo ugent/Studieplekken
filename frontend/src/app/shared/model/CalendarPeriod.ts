@@ -53,6 +53,10 @@ export class CalendarPeriod {
     return this.lockedFrom && this.lockedFrom.isBefore(moment());
   }
 
+  areReservationsLocked(): boolean {
+    return !this.reservableFrom || this.reservableFrom.isBefore(moment());
+  }
+
   toJSON(): object {
     return {
       location: this.location,
@@ -114,7 +118,8 @@ export function mapCalendarPeriodsToCalendarEvents(periods: CalendarPeriod[],
     return [];
   }
   return periods
-          .map(period => period.reservable ? mapTimeslotsToCalendarEvents(period, reservedTimeslots) : mapNRperiodToCalendarEvents(period))
+          .map(period => period.reservable && !period.areReservationsLocked() ?
+                                mapTimeslotsToCalendarEvents(period, reservedTimeslots) : mapNRperiodToCalendarEvents(period))
           .reduce((a, b) => [...a, ...b]);
 }
 
