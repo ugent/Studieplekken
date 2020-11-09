@@ -46,6 +46,11 @@ public interface ILocationDao extends IDao {
     List<Locker> getLockers(String locationName) throws SQLException;
 
     /**
+     * Delete a locker
+     */
+    void deleteLocker(String locationName, int number) throws SQLException;
+
+    /**
      * Get a map that maps location names to the number of reservations on the
      * given date.
      */

@@ -22,7 +22,7 @@ import java.util.List;
  * Such as creating reservations, list of reservations, cancelling reservations, ...
  */
 @RestController
-@RequestMapping("api/lockers/reservations")
+@RequestMapping("lockers/reservations")
 public class LockerReservationController extends AuthorizedLocationController {
 
     private final Logger logger = LoggerFactory.getLogger(LockerReservation.class.getSimpleName());

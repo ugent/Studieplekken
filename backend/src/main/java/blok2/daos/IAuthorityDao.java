@@ -29,6 +29,11 @@ public interface IAuthorityDao extends IDao {
     Authority getAuthorityByAuthorityId(int authorityId) throws SQLException;
 
     /**
+     * get locations in authority
+     */
+    List<Location> getLocationsInAuthority(int authorityId) throws SQLException;
+
+    /**
      * Add an authority to the database. AuthorityId is ignored.
      *
      * @return the added authority with updated authorityId

@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/tags")
+@RequestMapping("tags")
 public class TagsController extends AuthorizedLocationController {
 
     private final Logger logger = Logger.getLogger(LocationController.class.getSimpleName());

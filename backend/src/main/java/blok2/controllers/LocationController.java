@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  * Such as creating locations, list of locations, edit locations, ...
  */
 @RestController
-@RequestMapping("api/locations")
+@RequestMapping("locations")
 public class LocationController extends AuthorizedLocationController {
 
     private final Logger logger = LoggerFactory.getLogger(LocationController.class.getSimpleName());

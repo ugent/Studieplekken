@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  * Such as adding penalties, removing penalties, ...
  */
 @RestController
-@RequestMapping("api/penalties")
+@RequestMapping("penalties")
 public class PenaltyEventController {
 
     private final Logger logger = Logger.getLogger(PenaltyEventController.class.getSimpleName());

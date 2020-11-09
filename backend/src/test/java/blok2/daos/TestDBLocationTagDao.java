@@ -1,6 +1,7 @@
 package blok2.daos;
 
 import blok2.model.Authority;
+import blok2.model.Building;
 import blok2.model.LocationTag;
 import blok2.model.reservables.Location;
 import org.junit.Assert;
@@ -25,12 +26,17 @@ public class TestDBLocationTagDao extends TestDao {
     private IAuthorityDao authorityDao;
 
     @Autowired
+    private IBuildingDao buildingDao;
+
+    @Autowired
     private ITagsDao tagsDao;
 
     private Location testLocation;
     private Location testLocation2;
 
     private Authority testAuthority;
+
+    private Building testBuilding;
 
     private LocationTag testTag;
     private LocationTag testTag2;
@@ -42,8 +48,10 @@ public class TestDBLocationTagDao extends TestDao {
         // Set up test objects
         testAuthority = TestSharedMethods.insertTestAuthority(authorityDao);
 
-        testLocation = TestSharedMethods.testLocation(testAuthority);
-        testLocation2 = TestSharedMethods.testLocation2(testAuthority.clone());
+        testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+
+        testLocation = TestSharedMethods.testLocation(testAuthority, testBuilding);
+        testLocation2 = TestSharedMethods.testLocation2(testAuthority, testBuilding);
 
         testTag = TestSharedMethods.testTag();
         testTag2 = TestSharedMethods.testTag2();

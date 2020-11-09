@@ -22,8 +22,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @RestController
-@RequestMapping("api/locations/calendar")
-public class CalendarPeriodController extends AuthorizedLocationController {
+@RequestMapping("locations/calendar")
+public class CalendarPeriodController extends  AuthorizedLocationController {
 
     private final Logger logger = Logger.getLogger(CalendarPeriodController.class.getSimpleName());
 

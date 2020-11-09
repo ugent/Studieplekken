@@ -16,7 +16,6 @@
       <table *ngIf="authoritiesOfUser.length > 0; else noAuthoritiesForUser" style="width: 100%">
         <thead>
         <tr>
-          <th>{{'management.authorities.table.authorityId' | translate}}</th>
           <th>{{'management.authorities.table.authorityName' | translate}}</th>
           <th>{{'management.authorities.table.description' | translate}}</th>
           <th><!-- delete --></th>
@@ -25,7 +24,6 @@
 
         <tbody>
         <tr [@rowsAnimation]="" *ngFor="let authority of authoritiesOfUser">
-          <td>{{authority.authorityId}}</td>
           <td>{{authority.authorityName}}</td>
           <td>{{authority.description}}</td>
           <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
@@ -152,7 +150,6 @@
           <br><br>
 
           <ul *ngIf="authorityPreparedToDelete !== undefined">
-            <li><b style="margin-right: 5px"><i>{{('management.authorities.table.authorityId' | translate) + ':   '}}</i></b>{{authorityPreparedToDelete.authorityId}}</li>
             <li><b style="margin-right: 5px"><i>{{('management.authorities.table.authorityName' | translate) + ':   '}}</i></b>{{authorityPreparedToDelete.authorityName}}</li>
             <li><b style="margin-right: 5px"><i>{{('management.authorities.table.description' | translate)}}</i></b>{{authorityPreparedToDelete.description}}</li>
           </ul>

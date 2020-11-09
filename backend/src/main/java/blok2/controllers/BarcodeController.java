@@ -26,7 +26,7 @@ import java.io.IOException;
  * download these images.
  * /
 @RestController
-@RequestMapping("api/barcode")
+@RequestMapping("barcode")
 public class BarcodeController {
 
     // creates an UPC-A barcode image from a given number

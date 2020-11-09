@@ -1,8 +1,10 @@
 package blok2.daos;
 
 import blok2.model.Authority;
+import blok2.model.Building;
 import blok2.model.reservables.Location;
 import blok2.model.reservables.Locker;
+import org.flywaydb.test.annotation.FlywayTest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.sql.SQLException;
 import java.util.List;
 
+@FlywayTest
 public class TestDBLocationDao extends TestDao {
 
     @Autowired
@@ -18,18 +21,25 @@ public class TestDBLocationDao extends TestDao {
     @Autowired
     private IAuthorityDao authorityDao;
 
+    @Autowired
+    private IBuildingDao buildingDao;
+
     private Location testLocation;
+    private Building testBuilding;
 
     @Override
     public void populateDatabase() throws SQLException {
         // Setup test objects
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testLocation = TestSharedMethods.testLocation(authority.clone());
+
+        testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+        testLocation = TestSharedMethods.testLocation(authority.clone(), testBuilding);
 
         // Add test objects to database
         locationDao.addLocation(testLocation);
     }
 
+    @FlywayTest
     @Test
     public void addLocationTest() throws SQLException {
         Location l = locationDao.getLocation(testLocation.getName());
@@ -40,6 +50,7 @@ public class TestDBLocationDao extends TestDao {
         Assert.assertNull("addLocation, remove added test location", l);
     }
 
+    @FlywayTest
     @Test
     public void lockersTest() throws SQLException {
         List<Locker> lockers = locationDao.getLockers(testLocation.getName());

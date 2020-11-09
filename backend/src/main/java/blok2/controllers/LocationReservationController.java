@@ -23,7 +23,7 @@ import java.util.List;
  * scanning of users, ...
  */
 @RestController
-@RequestMapping("api/locations/reservations")
+@RequestMapping("locations/reservations")
 public class LocationReservationController extends AuthorizedLocationController {
 
     private final Logger logger = LoggerFactory.getLogger(LocationReservationController.class.getSimpleName());

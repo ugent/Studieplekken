@@ -22,7 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @RestController
-@RequestMapping("api/locations/lockerCalendar")
+@RequestMapping("locations/lockerCalendar")
 public class CalendarPeriodsForLockersController extends AuthorizedLocationController {
 
     private final Logger logger = Logger.getLogger(CalendarPeriodsForLockersController.class.getSimpleName());

@@ -1,7 +1,10 @@
-export const environment = {
-  production: true
-};
+export enum APPLICATION_TYPE {
+  BLOK_AT,
+  MINI_THERMIS
+}
 
-export const vars = {
-  casFlowTriggerUrl: 'https://studieplekken.ugent.be/login/cas'
+export const environment = {
+  production: true,
+  applicationType: APPLICATION_TYPE.MINI_THERMIS,
+  casFlowTriggerUrl: 'https://studieplekken.ugent.be/api/login/cas'
 };
