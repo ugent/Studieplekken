@@ -1,4 +1,3 @@
-import { isThisISOWeek } from 'date-fns';
 import { ms } from 'date-fns/locale';
 import * as moment from 'moment';
 import { Moment } from 'moment';
@@ -24,7 +23,7 @@ export class Timeslot {
             timeslotSeqnr: this.timeslotSeqnr,
             timeslotDate: this.timeslotDate.format('YYYY-MM-DD'),
             calendarId: this.calendarId
-        }
+        };
     }
 }
 

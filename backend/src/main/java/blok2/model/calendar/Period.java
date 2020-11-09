@@ -4,8 +4,8 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 public class Period {
-    private LocalDate startsAt; // date: YYYY-MM-DD
-    private LocalDate endsAt; // date: YYYY-MM-DD
+    private LocalDate startsAt;
+    private LocalDate endsAt;
 
     @Override
     public String toString() {

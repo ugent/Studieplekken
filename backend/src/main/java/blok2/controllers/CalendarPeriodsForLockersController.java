@@ -11,11 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -104,10 +101,6 @@ public class CalendarPeriodsForLockersController {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        } catch (ParseException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, "Wrong date format for 'starts at'");
         }
     }
 
@@ -132,7 +125,7 @@ public class CalendarPeriodsForLockersController {
     private void
     analyzeAndUpdateCalendarPeriodsForLockers(String locationName,
                                               List<CalendarPeriodForLockers> from,
-                                              List<CalendarPeriodForLockers> to) throws SQLException, ParseException {
+                                              List<CalendarPeriodForLockers> to) throws SQLException {
         // setup
         Location expectedLocation = locationDao.getLocation(locationName);
         LocalDate lastEnd = null;
@@ -146,24 +139,12 @@ public class CalendarPeriodsForLockersController {
                         HttpStatus.CONFLICT, "Different locations in request");
             }
 
-            // check if the ends of all periods are after the start
+            // check if the end of all periods are after the start
             if (period.getEndsAt().isBefore(period.getStartsAt())) {
                 logger.log(Level.SEVERE, "analyzeAndUpdateCalendarPeriodsForLockers, endsAt was before startsAt");
                 throw new ResponseStatusException(
                         HttpStatus.CONFLICT, "StartsAt must be before EndsAt");
             }
-
-
-            // make sure no periods overlap
-            // @REVIEWERS: I've honestly no idea what this is doing. seems like lastEnd is always null.
-            // Let me know what i should do with this.
-
-            if (lastEnd != null && lastEnd.isAfter(period.getStartsAt())) {
-                logger.log(Level.SEVERE, "analyzeAndUpdateCalendarPeriodsForLockers, overlapping periods");
-                throw new ResponseStatusException(
-                        HttpStatus.CONFLICT, "Overlapping periods");
-            }
-            lastEnd = period.getEndsAt();
         }
 
         // delete all 'from' and add 'to'
