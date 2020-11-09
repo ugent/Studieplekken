@@ -113,19 +113,24 @@ public class DBAuthorityDao extends DAO implements IAuthorityDao {
     @Override
     public List<Authority> getAuthoritiesFromUser(String augentId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
-            List<Authority> authorities = new ArrayList<>();
-
-            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("authorities_from_user"));
-            pstmt.setString(1, augentId);
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                Authority authority = createAuthority(rs);
-                authorities.add(authority);
-            }
-
-            return authorities;
+            return getAuthoritiesFromUser(augentId, conn);
         }
+    }
+
+    public static List<Authority> getAuthoritiesFromUser(String augentId, Connection conn) throws SQLException {
+
+        List<Authority> authorities = new ArrayList<>();
+
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("authorities_from_user"));
+        pstmt.setString(1, augentId);
+        ResultSet rs = pstmt.executeQuery();
+
+        while (rs.next()) {
+            Authority authority = createAuthority(rs);
+            authorities.add(authority);
+        }
+
+        return authorities;
     }
 
     @Override
@@ -155,7 +160,7 @@ public class DBAuthorityDao extends DAO implements IAuthorityDao {
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                User user = DBAccountDao.createUser(rs, false);
+                User user = DBAccountDao.createUser(rs, conn,false);
                 users.add(user);
             }
 

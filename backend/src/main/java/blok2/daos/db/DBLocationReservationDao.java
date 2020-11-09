@@ -300,7 +300,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
         //  because it needs all descriptions. But if you would use the looped
         //  ResultSet, the internal record pointer is after the last entry and you
         //  cant go back. So first call createUser(), then createLocation.
-        User user = DBAccountDao.createUser(rs);
+        User user = DBAccountDao.createUser(rs, conn);
         Location location = DBLocationDao.createLocation(rs,conn);
         return new LocationReservation(location, user, customDate, attended);
     }

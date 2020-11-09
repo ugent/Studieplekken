@@ -209,7 +209,7 @@ public class DBLockerReservationDao extends DAO implements ILockerReservationDao
         lr.setKeyPickupDate(CustomDate.parseString(rs.getString(Resources.databaseProperties.getString("locker_reservation_key_pickup_date"))));
         lr.setKeyReturnedDate(CustomDate.parseString(rs.getString(Resources.databaseProperties.getString("locker_reservation_key_return_date"))));
 
-        User u = DBAccountDao.createUser(rs);
+        User u = DBAccountDao.createUser(rs, conn);
         Locker l = DBLocationDao.createLocker(rs,conn);
 
         lr.setLocker(l);

@@ -36,7 +36,7 @@ public class LockerReservationController extends AuthorizedLocationController {
 
     @GetMapping("/user")
     @PreAuthorize("(hasAuthority('USER') and #id == authentication.principal.augentID) or " +
-            "hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+            "hasAuthority('ADMIN')")
     // TODO: if only 'HAS_AUTHORITIES', then only allowed to retrieve the reservations for a location within one of the user's authorities
     public List<LockerReservation> getLockerReservationsOfUserById(@RequestParam String id) {
         try {

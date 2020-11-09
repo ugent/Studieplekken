@@ -36,8 +36,7 @@ public class LocationReservationController extends AuthorizedLocationController 
     }
 
     @GetMapping("/user")
-    @PreAuthorize("(hasAuthority('USER') and #id == authentication.principal.augentID) or " +
-                  "hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    @PreAuthorize("(hasAuthority('USER') and #id == authentication.principal.augentID) or hasAuthority('ADMIN')")
     // TODO: if only 'HAS_AUTHORITIES', then only allowed to retrieve the reservations for a location within one of the user's authorities
     // Not sure why you'd be allowed to get a user's reservations if you own a location.
     public List<LocationReservation> getLocationReservationsByUserId(@RequestParam String id) {
