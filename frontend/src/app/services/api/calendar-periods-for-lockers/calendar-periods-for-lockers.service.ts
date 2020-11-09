@@ -1,15 +1,16 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {CalendarPeriodForLockers} from '../../../shared/model/CalendarPeriodForLockers';
-import {api} from '../../../../environments/environment';
+import {api} from '../endpoints';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CalendarPeriodsForLockersService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   getCalendarPeriodsForLockersOfLocation(locationName: string): Observable<CalendarPeriodForLockers[]> {
     return this.http.get<CalendarPeriodForLockers[]>(api.calendarPeriodsForLockers

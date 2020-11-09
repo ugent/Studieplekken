@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Authority} from '../../../shared/model/Authority';
-import {api} from '../../../../environments/environment';
+import {api} from '../endpoints';
 import {User} from '../../../shared/model/User';
 import {Location} from '../../../shared/model/Location';
 
@@ -11,7 +11,8 @@ import {Location} from '../../../shared/model/Location';
 })
 export class AuthoritiesService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   // *************************************
   // *   CRUD operations for AUTHORITY   *

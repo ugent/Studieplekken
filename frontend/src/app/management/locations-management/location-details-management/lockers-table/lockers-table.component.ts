@@ -4,8 +4,8 @@ import {Location} from '../../../../shared/model/Location';
 import {LockersService} from '../../../../services/api/lockers/lockers.service';
 import {LockerReservation} from '../../../../shared/model/LockerReservation';
 import {CustomDate, toDateString, typeScriptDateToCustomDate} from '../../../../shared/model/helpers/CustomDate';
-import {msToShowFeedback} from '../../../../../environments/environment';
 import {tap} from 'rxjs/operators';
+import {msToShowFeedback} from '../../../../app.constants';
 
 export enum LockerStatus {
   AVAILABLE,
