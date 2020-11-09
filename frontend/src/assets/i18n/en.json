@@ -195,7 +195,10 @@
         "warningDialog": {
           "warning": "Warning",
           "body": "The opening duration of (at least) one of the created calendar periods is not divisable by the Reservable Timeslot-duration. This means that, for these periods, the last (incomplete) timeslot will not be created and as such will also not be reservable. Please make sure to take this into account"
-        }
+        },
+
+        "updateTitle": "Update Calendar Period",
+        "newTitle": "New Calendar Period"
       },
 
       "description": {

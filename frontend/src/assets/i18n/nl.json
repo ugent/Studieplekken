@@ -28,7 +28,8 @@
           "successMessage": "Het wijzigen van de reservaties is succesvol verlopen",
           "errorMessage": "Het aanpassen van de reservaties is mislukt. Er is iets misgegaan."
         }
-      }
+      }, 
+
     },
 
     "filter": {
@@ -195,7 +196,11 @@
         "warningDialog": {
           "warning": "Waarschuwing",
           "body": "De duur van (minstens) één van de aangemaakte periodes (openingstijd-sluitingstijd) is niet deelbaar door de Reserveerbare Timeslot-duur. Dit betekent dat het laatste (onvolledige) timeslot niet zal aangemaakt worden en dus ook niet reserveerbaar zal zijn. Gelieve hier rekening mee te houden."
-        }
+        },
+
+        
+        "updateTitle": "Pas periode aan",
+        "newTitle": "Maak een nieuwe periode"
       },
 
       "description": {

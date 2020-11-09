@@ -66,13 +66,13 @@ END $$;
 /*
  * Add some calendar periods
  */
-insert into calendar_periods(location_name, starts_at, ends_at, opening_time, closing_time, reservable_from, reservable, timeslot_length)
+insert into calendar_periods(location_name, starts_at, ends_at, opening_time, closing_time, reservable_from, reservable, timeslot_length, locked_from)
 values  ('Sterre S5, Eetzaal', now() - interval '1 days', now() + interval '3 days',
-            '10:00', '12:00', now() - interval '7 days', true, 60),
+            '10:00', '12:00', now() - interval '7 days', true, 60, now() + interval '1 week'),
         ('Sterre S5, Bib', now() - interval '5 days', now() + interval '10 days',
-            '09:00', '17:00', now() - interval '7 days', false, 0),
+            '09:00', '17:00', now() - interval '7 days', false, 0, now() + interval '1 week'),
         ('Sterre S9, PC lokaal 3rd verdiep',now() - interval '5 days', now() + interval '10 days',
-            '8:30', '18:30', now() - interval '7 days', false, 0);
+            '8:30', '18:30', now() - interval '7 days', false, 0, now() + interval '1 week');
 
 
 insert into reservation_timeslots(calendar_id, timeslot_sequence_number, timeslot_date)

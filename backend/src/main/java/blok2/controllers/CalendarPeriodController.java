@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -57,6 +58,7 @@ public class CalendarPeriodController {
     @PostMapping
     public void addCalendarPeriods(@RequestBody List<CalendarPeriod> calendarPeriods) {
         try {
+            calendarPeriods.forEach(CalendarPeriod::initializeLockedFrom);
             calendarPeriodDao.addCalendarPeriods(calendarPeriods);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
@@ -71,7 +73,7 @@ public class CalendarPeriodController {
         try {
             List<CalendarPeriod> from = fromAndTo[0];
             List<CalendarPeriod> to = fromAndTo[1];
-
+            to.forEach(CalendarPeriod::initializeLockedFrom);
             // check for outdated view (perhaps some other user has changed the calendar periods in the meantime
             // between querying for the calendar periods for a location, and updating the calendar
             List<CalendarPeriod> currentView = calendarPeriodDao.getCalendarPeriodsOfLocation(locationName);
@@ -92,6 +94,12 @@ public class CalendarPeriodController {
                 logger.log(Level.SEVERE, "updateCalendarPeriods, conflict in frontends data view and actual data view");
                 throw new ResponseStatusException(
                         HttpStatus.CONFLICT, "Wrong/Old view on data layer");
+            }
+
+            if(from.stream().anyMatch(CalendarPeriod::isLocked)) {
+                logger.log(Level.SEVERE, "updateCalendarPeriods, conflict in frontends data view and actual data view");
+                throw new ResponseStatusException(
+                        HttpStatus.CONFLICT, "One of the calendar periods is locked.");
             }
 
             // if the 'to' list is empty, all 'from' entries need to be deleted

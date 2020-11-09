@@ -1,6 +1,8 @@
 package blok2.controllers;
 
+import blok2.daos.ICalendarPeriodDao;
 import blok2.daos.ILocationReservationDao;
+import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
@@ -32,13 +34,15 @@ public class LocationReservationController {
     private final Logger logger = LoggerFactory.getLogger(LocationReservationController.class.getSimpleName());
 
     private final ILocationReservationDao locationReservationDao;
+    private final ICalendarPeriodDao calendarPeriodDao;
 
     // @Autowired
     // SmartValidator validator;
 
     @Autowired
-    public LocationReservationController(ILocationReservationDao locationReservationDao) {
+    public LocationReservationController(ILocationReservationDao locationReservationDao, ICalendarPeriodDao calendarPeriodDao) {
         this.locationReservationDao = locationReservationDao;
+        this.calendarPeriodDao = calendarPeriodDao;
     }
 
     @GetMapping("/user")
@@ -56,6 +60,10 @@ public class LocationReservationController {
     public LocationReservation createLocationReservation(@AuthenticationPrincipal User user, @Valid @RequestBody Timeslot timeslot) {
         try {
             LocationReservation reservation = new LocationReservation(user, LocalDateTime.now(), timeslot, null);
+            CalendarPeriod period = calendarPeriodDao.getById(timeslot.getCalendarId());
+            if(LocalDateTime.now().isBefore(period.getReservableFrom())) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "This calendarperiod can't be reserved anymore.");
+            }
             if(!locationReservationDao.addLocationReservationIfStillRoomAtomically(reservation)) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "There are no more spots left for this location.");
             }

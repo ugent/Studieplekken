@@ -30,6 +30,9 @@ export class MomentDateTimeComponent implements OnInit, OnChanges {
     if (this.model) {
       this.modelDateAsString = this.model.format('YYYY-MM-DD');
       this.modelTimeAsString = this.model.format('HH:mm');
+    } else {
+      this.modelDateAsString = '';
+      this.modelTimeAsString = '';
     }
   }
 
