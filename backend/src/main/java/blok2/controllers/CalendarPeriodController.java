@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("locations/calendar")
@@ -96,11 +97,12 @@ public class CalendarPeriodController {
                         HttpStatus.CONFLICT, "Wrong/Old view on data layer");
             }
 
-            if(from.stream().anyMatch(CalendarPeriod::isLocked)) {
-                logger.log(Level.SEVERE, "updateCalendarPeriods, conflict in frontends data view and actual data view");
-                throw new ResponseStatusException(
-                        HttpStatus.CONFLICT, "One of the calendar periods is locked.");
-            }
+
+            // This is an issue. We can't block if any are locked: non-changed ones would have to be removed and added as well.
+            // This solution prevents locked periods from being removed (which we did want to do, if I recall correctly)
+            // Better suggestions welcome.
+            from.removeIf(CalendarPeriod::isLocked);
+            to.removeIf(CalendarPeriod::isLocked);
 
             // if the 'to' list is empty, all 'from' entries need to be deleted
             if (to.isEmpty()) {
