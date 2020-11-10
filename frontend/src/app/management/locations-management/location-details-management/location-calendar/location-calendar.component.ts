@@ -10,7 +10,7 @@ import { CalendarPeriodsService } from '../../../../services/api/calendar-period
 import { ApplicationTypeFunctionalityService } from '../../../../services/functionality/application-type/application-type-functionality.service';
 import { msToShowFeedback } from '../../../../../environments/environment';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
-import { LocationReservation, LocationReservationConstructor } from 'src/app/shared/model/LocationReservation';
+import { LocationReservation } from 'src/app/shared/model/LocationReservation';
 import { transition, trigger, useAnimation } from '@angular/animations';
 import { rowsAnimation } from 'src/app/shared/animations/RowAnimation';
 import { Timeslot } from 'src/app/shared/model/Timeslot';
@@ -36,7 +36,7 @@ export class LocationCalendarComponent implements OnInit {
   locationReservations: LocationReservation[];
   currentTimeSlot: Timeslot;
 
-  currentLocationReservationToDelete: LocationReservation = LocationReservationConstructor.new();
+  currentLocationReservationToDelete: LocationReservation = new LocationReservation(null, null)
 
   refresh: Subject<any> = new Subject();
 

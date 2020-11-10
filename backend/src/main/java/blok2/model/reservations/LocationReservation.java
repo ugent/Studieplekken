@@ -14,7 +14,6 @@ import java.util.Objects;
 public class LocationReservation {
     @Valid
     private User user;
-    @NotNull
     private LocalDateTime createdAt;
     @Valid
     private Timeslot timeslot;

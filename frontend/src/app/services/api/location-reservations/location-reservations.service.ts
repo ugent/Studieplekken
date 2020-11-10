@@ -19,14 +19,16 @@ export class LocationReservationsService {
 
   getLocationReservationsOfUser(id: string): Observable<LocationReservation[]> {
     const params = new HttpParams().set('id', id);
-    return this.http.get<LocationReservation[]>(api.locationReservationsOfUser, { params });
+    return this.http.get<LocationReservation[]>(api.locationReservationsOfUser, { params })
+                                                          .pipe(map(ls => ls.map(LocationReservation.fromJSON)));
   }
 
   getLocationReservationsOfTimeslot(timeslot: Timeslot): Observable<LocationReservation[]> {
-    return this.http.get<LocationReservation[]>(api.locationReservationsOfLocation
+    return this.http.get<any[]>(api.locationReservationsOfLocation
                                                   .replace('{calendarid}', `${timeslot.calendarId}`)
                                                   .replace('{date}', timeslot.timeslotDate.format('YYYY-MM-DD'))
-                                                  .replace('{seqnr}', `${timeslot.timeslotSeqnr}`));
+                                                  .replace('{seqnr}', `${timeslot.timeslotSeqnr}`))
+                                                  .pipe(map(ls => ls.map(LocationReservation.fromJSON)));
   }
 
   getLocationReservationsOfDay(calendarPeriod: CalendarPeriod, date: Moment): Observable<LocationReservation[]> {

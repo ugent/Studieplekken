@@ -3,7 +3,7 @@ import {AuthenticationService} from '../../../services/authentication/authentica
 import {Observable, Subscription} from 'rxjs';
 import {transition, trigger, useAnimation} from '@angular/animations';
 import {rowsAnimation} from '../../../shared/animations/RowAnimation';
-import {LocationReservation, LocationReservationConstructor} from '../../../shared/model/LocationReservation';
+import {LocationReservation} from '../../../shared/model/LocationReservation';
 import { CalendarPeriodsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
 import { CalendarPeriod } from 'src/app/shared/model/CalendarPeriod';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
@@ -23,7 +23,7 @@ export class ProfileLocationReservationsComponent implements OnInit {
   locationReservations: Observable<LocationReservation[]>;
   calendarMap: Map<number, CalendarPeriod> = new Map();
   calendarIdList: number[] = [];
-  locationReservationToDelete: LocationReservation = LocationReservationConstructor.new();
+  locationReservationToDelete: LocationReservation = new LocationReservation(null, null);
   locationReservationSub: Subscription;
 
   showReservations = false;
