@@ -10,7 +10,7 @@ import { CalendarPeriodsService } from '../../../../services/api/calendar-period
 import { ApplicationTypeFunctionalityService } from '../../../../services/functionality/application-type/application-type-functionality.service';
 import { msToShowFeedback } from '../../../../../environments/environment';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
-import { LocationReservation, LocationReservationConstructor } from 'src/app/shared/model/LocationReservation';
+import { LocationReservation } from 'src/app/shared/model/LocationReservation';
 import { transition, trigger, useAnimation } from '@angular/animations';
 import { rowsAnimation } from 'src/app/shared/animations/RowAnimation';
 import { Timeslot } from 'src/app/shared/model/Timeslot';
@@ -18,6 +18,8 @@ import * as moment from 'moment';
 import { LocationOpeningperiodDialogComponent } from './location-openingperiod-dialog/location-openingperiod-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UserAuthoritiesManagementComponent } from 'src/app/management/users-management/user-details-management/user-authorities-management/user-authorities-management.component';
+import { UserConstructor } from 'src/app/shared/model/User';
 
 @Component({
   selector: 'app-location-calendar',
@@ -38,7 +40,7 @@ export class LocationCalendarComponent implements OnInit {
   locationReservations: LocationReservation[];
   currentTimeSlot: Timeslot;
 
-  currentLocationReservationToDelete: LocationReservation = LocationReservationConstructor.new();
+  currentLocationReservationToDelete: LocationReservation = new LocationReservation(UserConstructor.new(), null)
 
   refresh: Subject<any> = new Subject();
 

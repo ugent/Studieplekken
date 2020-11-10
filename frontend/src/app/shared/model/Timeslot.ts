@@ -48,6 +48,6 @@ export const getTimeslotsOnDay: (calendarPeriod: CalendarPeriod, date: Moment) =
 export const timeslotEquals: (t1: Timeslot, t2: Timeslot) => boolean = (t1, t2) =>
                                              t1.timeslotSeqnr === t2.timeslotSeqnr
                                              && t1.calendarId === t2.calendarId
-                                              && t1.timeslotDate === t2.timeslotDate;
+                                              && t1.timeslotDate.isSame(t2.timeslotDate, 'day');
 
 export const includesTimeslot: (l: Timeslot[], t: Timeslot) => boolean = (l, t) => l.some(lt => timeslotEquals(lt, t));
