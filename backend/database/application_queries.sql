@@ -909,11 +909,15 @@ values (?, ?, ?);
 -- $count_reservations_now
 select count(1)
 from public.locations l 
-inner join public.calendar_periods cp on l.name = cp.location_name
-inner join public.reservation_timeslots ts on ts.calendar_id = cp.calendar_id
-inner join public.location_reservations rs on ts.timeslot_date = rs.timeslot_date and rs.timeslot_seqnr = ts.timeslot_sequence_number
-where
-location_name = ? and ts.timeslot_date = current_date and cp.opening_time <= current_time and cp.closing_time >= current_time;
+    join public.calendar_periods cp
+        on l.name = cp.location_name
+    join public.reservation_timeslots ts
+        on ts.calendar_id = cp.calendar_id
+    join public.location_reservations rs
+        on ts.timeslot_date = rs.timeslot_date
+        and rs.timeslot_seqnr = ts.timeslot_sequence_number
+where location_name = ? and ts.timeslot_date = current_date
+    and cp.opening_time <= current_time and cp.closing_time >= current_time;
 
 -- queries for CALENDAR_PERIODS_FOR_LOCKERS
 -- $get_calendar_periods_for_lockers_of_location
