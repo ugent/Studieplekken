@@ -849,7 +849,7 @@ where location_id = ?;
 
 -- queries for CALENDAR_PERIODS
 -- $get_all_calendar_periods
-select cp.calendar_id, cp.location_name, cp.starts_at, cp.ends_at, cp.opening_time, cp.closing_time, cp.reservable_from, cp.reservable, cp.timeslot_length
+select cp.calendar_id, cp.location_name, cp.starts_at, cp.ends_at, cp.opening_time, cp.closing_time, cp.reservable_from, cp.reservable, cp.timeslot_length, cp.locked_from
        , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address, l.description_dutch, l.description_english, l.forGroup
        , a.authority_id, a.authority_name, a.description
 from public.calendar_periods cp
@@ -860,7 +860,7 @@ from public.calendar_periods cp
 order by to_date(cp.starts_at || ' ' || cp.opening_time, 'YYYY-MM-DD HH24:MI');
 
 -- $get_calendar_periods
-select cp.calendar_id, cp.location_name, cp.starts_at, cp.ends_at, cp.opening_time, cp.closing_time, cp.reservable_from, cp.reservable, cp.timeslot_length
+select cp.calendar_id, cp.location_name, cp.starts_at, cp.ends_at, cp.opening_time, cp.closing_time, cp.reservable_from, cp.reservable, cp.timeslot_length, cp.locked_from
        , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.address, l.description_dutch, l.description_english, l.forGroup
        , a.authority_id, a.authority_name, a.description
 from public.calendar_periods cp
@@ -872,13 +872,18 @@ where cp.location_name = ?
 order by cp.starts_at, cp.opening_time;
 
 -- $insert_calendar_period
-insert into public.calendar_periods(location_name, starts_at, ends_at, opening_time, closing_time, reservable_from, reservable, timeslot_length)
-values (?, ?, ?, ?, ?, ?, ?, ?);
+insert into public.calendar_periods(location_name, starts_at, ends_at, opening_time, closing_time, reservable_from, reservable, timeslot_length, locked_from)
+values (?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 -- $update_calendar_period
 update public.calendar_periods
-set location_name = ?, starts_at = ?, ends_at = ?, opening_time = ?, closing_time = ?, reservable_from = ?, reservable = ?, timeslot_length = ?
+set location_name = ?, starts_at = ?, ends_at = ?, opening_time = ?, closing_time = ?, reservable_from = ?, reservable = ?, timeslot_length = ?, locked_from = ?
 where location_name = ? and starts_at = ? and ends_at = ? and opening_time = ? and closing_time = ? and reservable = ? and timeslot_length = ?;
+
+-- $get_calendar_period_by_id
+select * 
+from public.calendar_periods cp
+where cp.calendar_id = ?;
 
 -- $delete_calendar_period
 delete

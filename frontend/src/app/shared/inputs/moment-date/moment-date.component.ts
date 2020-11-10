@@ -27,6 +27,8 @@ export class MomentDateComponent implements OnInit, OnChanges {
   ngOnChanges(): void {
     if (this.model) {
       this.modelAsString = this.type === 'date' ? this.model.format('YYYY-MM-DD') : this.model.format('HH:mm');
+    } else {
+      this.modelAsString = '';
     }
   }
 

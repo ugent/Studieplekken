@@ -16,14 +16,14 @@ public class CalendarPeriod extends Period implements Cloneable {
     private Location location;
     private LocalTime openingTime;
     private LocalTime closingTime;
-    private LocalDateTime reservableFrom;
+    private LocalDateTime reservableFrom = LocalDateTime.now();
+    private LocalDateTime lockedFrom;
     private boolean reservable;
     private int reservableTimeslotSize;
 
     private List<Timeslot> timeslots = Collections.emptyList();
 
     public CalendarPeriod() {
-
     }
 
     @Override
@@ -101,7 +101,8 @@ public class CalendarPeriod extends Period implements Cloneable {
     }
 
     public void setReservableFrom(LocalDateTime reservableFrom) {
-        this.reservableFrom = reservableFrom;
+        if(reservableFrom != null)
+            this.reservableFrom = reservableFrom;
     }
 
 
@@ -137,7 +138,23 @@ public class CalendarPeriod extends Period implements Cloneable {
         this.id = id;
     }
 
+    public LocalDateTime getLockedFrom() {
+        return lockedFrom;
+    }
 
+    public void setLockedFrom(LocalDateTime lockedFrom) {
+        this.lockedFrom = lockedFrom;
+    }
+
+    public void initializeLockedFrom() {
+        if(lockedFrom == null) {
+            lockedFrom = this.getEndsAt().plusWeeks(3).atTime(LocalTime.now());
+        }
+    }
+
+    public boolean isLocked() {
+        return getLockedFrom().isBefore(LocalDateTime.now());
+    }
     /**
      * The length of time the location is open (in seconds)
      * @return

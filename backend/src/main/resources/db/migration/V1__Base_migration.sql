@@ -67,6 +67,7 @@ CREATE TABLE public.calendar_periods
     opening_time    Time NOT NULL,
     closing_time    Time NOT NULL,
     reservable_from Timestamp NOT NULL,
+    locked_from     Timestamp NOT NULL,
     reservable      boolean NOT NULL,
     timeslot_length SMALLINT NOT NULL,
 

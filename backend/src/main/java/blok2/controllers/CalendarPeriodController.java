@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("locations/calendar")
@@ -57,6 +59,7 @@ public class CalendarPeriodController {
     @PostMapping
     public void addCalendarPeriods(@RequestBody List<CalendarPeriod> calendarPeriods) {
         try {
+            calendarPeriods.forEach(CalendarPeriod::initializeLockedFrom);
             calendarPeriodDao.addCalendarPeriods(calendarPeriods);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
@@ -71,7 +74,7 @@ public class CalendarPeriodController {
         try {
             List<CalendarPeriod> from = fromAndTo[0];
             List<CalendarPeriod> to = fromAndTo[1];
-
+            to.forEach(CalendarPeriod::initializeLockedFrom);
             // check for outdated view (perhaps some other user has changed the calendar periods in the meantime
             // between querying for the calendar periods for a location, and updating the calendar
             List<CalendarPeriod> currentView = calendarPeriodDao.getCalendarPeriodsOfLocation(locationName);
@@ -93,6 +96,13 @@ public class CalendarPeriodController {
                 throw new ResponseStatusException(
                         HttpStatus.CONFLICT, "Wrong/Old view on data layer");
             }
+
+
+            // This is an issue. We can't block if any are locked: non-changed ones would have to be removed and added as well.
+            // This solution prevents locked periods from being removed (which we did want to do, if I recall correctly)
+            // Better suggestions welcome.
+            from.removeIf(CalendarPeriod::isLocked);
+            to.removeIf(CalendarPeriod::isLocked);
 
             // if the 'to' list is empty, all 'from' entries need to be deleted
             if (to.isEmpty()) {

@@ -16,4 +16,6 @@ public interface ICalendarPeriodDao extends IDao {
 
     void deleteCalendarPeriods(List<CalendarPeriod> periods) throws SQLException;
 
+    CalendarPeriod getById(int calendarId) throws SQLException;
+
 }
