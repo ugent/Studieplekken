@@ -26,7 +26,7 @@
             <tbody>
             <tr [@rowsAnimation]="" *ngFor="let reservation of reservations">
               <td>{{calendarMap.get(reservation.timeslot.calendarId).location.name}}</td>
-              <td>{{reservation.timeslot.timeslotDate}}</td>
+              <td>{{reservation.timeslot.timeslotDate.format("DD/MM/YYYY")}}</td>
               <td>{{getBeginHour(calendarMap.get(reservation.timeslot.calendarId), reservation.timeslot) | date:'HH:mm'}}</td>
               <!-- This column should only be 'yes' or 'no' if the reservationDate is in the past,
                     otherwise it is not possible to be attended, and it might seem that penalty points will be given -->
@@ -83,7 +83,7 @@
           <br><br>
           <ul>
             <li><b style="margin-right: 5px"><i>{{('profile.reservations.locations.table.header.locationName' | translate) + ':   '}}</i></b>{{calendarMap.get(locationReservationToDelete.timeslot.calendarId).location.name}}</li>
-            <li><b style="margin-right: 5px"><i>{{('profile.reservations.locations.table.header.reservationDate' | translate) + ':   '}}</i></b>{{locationReservationToDelete.timeslot.timeslotDate}}</li>
+            <li><b style="margin-right: 5px"><i>{{('profile.reservations.locations.table.header.reservationDate' | translate) + ':   '}}</i></b>{{locationReservationToDelete.timeslot.timeslotDate.format("DD/MM/YYYY")}}</li>
             <li><b style="margin-right: 5px"><i>{{('profile.reservations.locations.table.header.beginHour' | translate) + ':   '}}</i></b>{{getBeginHour(calendarMap.get(locationReservationToDelete.timeslot.calendarId), locationReservationToDelete.timeslot) | date:'HH:mm'}}</li>
           </ul>
         </div>
