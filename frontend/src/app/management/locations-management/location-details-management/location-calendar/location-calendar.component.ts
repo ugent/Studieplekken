@@ -17,6 +17,8 @@ import { Timeslot } from 'src/app/shared/model/Timeslot';
 import * as moment from 'moment';
 import { LocationOpeningperiodDialogComponent } from './location-openingperiod-dialog/location-openingperiod-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { UserAuthoritiesManagementComponent } from 'src/app/management/users-management/user-details-management/user-authorities-management/user-authorities-management.component';
+import { UserConstructor } from 'src/app/shared/model/User';
 
 @Component({
   selector: 'app-location-calendar',
@@ -36,7 +38,7 @@ export class LocationCalendarComponent implements OnInit {
   locationReservations: LocationReservation[];
   currentTimeSlot: Timeslot;
 
-  currentLocationReservationToDelete: LocationReservation = new LocationReservation(null, null)
+  currentLocationReservationToDelete: LocationReservation = new LocationReservation(UserConstructor.new(), null)
 
   refresh: Subject<any> = new Subject();
 

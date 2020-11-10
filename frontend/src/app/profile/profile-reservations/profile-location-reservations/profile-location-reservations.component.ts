@@ -8,6 +8,7 @@ import { CalendarPeriodsService } from 'src/app/services/api/calendar-periods/ca
 import { CalendarPeriod } from 'src/app/shared/model/CalendarPeriod';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { Timeslot } from 'src/app/shared/model/Timeslot';
+import { UserConstructor } from 'src/app/shared/model/User';
 
 @Component({
   selector: 'app-profile-location-reservations',
@@ -23,7 +24,7 @@ export class ProfileLocationReservationsComponent implements OnInit {
   locationReservations: Observable<LocationReservation[]>;
   calendarMap: Map<number, CalendarPeriod> = new Map();
   calendarIdList: number[] = [];
-  locationReservationToDelete: LocationReservation = new LocationReservation(null, null);
+  locationReservationToDelete: LocationReservation = new LocationReservation(UserConstructor.new(), null);
   locationReservationSub: Subscription;
 
   showReservations = false;
