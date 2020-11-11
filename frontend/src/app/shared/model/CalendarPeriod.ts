@@ -54,7 +54,7 @@ export class CalendarPeriod {
   }
 
   areReservationsLocked(): boolean {
-    return !this.reservableFrom || this.reservableFrom.isBefore(moment());
+    return !this.reservableFrom || this.reservableFrom.isAfter(moment());
   }
 
   toJSON(): object {

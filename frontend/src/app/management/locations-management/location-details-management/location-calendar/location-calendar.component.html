@@ -101,7 +101,7 @@
             <!-- Delete icon -->
             <td data-toggle="modal" data-target="#deleteTagModal"
                 class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
-                (click)="prepareDelete(calendarPeriod)">
+                (click)="prepareDelete(calendarPeriod)" *ngIf="!calendarPeriod.isLocked()">
               <span class="glyphicon glyphicon-trash pointerCursor"></span>
             </td>
           </tr>
