@@ -508,7 +508,7 @@ with recursive x as (
 ), y as (
 	select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
 		, u.augentid, u.admin
-		, lr.user_augentid, lr.key_pickup_date, lr.key_return_date
+		, lr.user_augentid, lr.key_pickup_date, lr.key_return_date, lr.location_name, lr.locker_number
 		, coalesce(floor(sum(
         	case
 				/*
@@ -528,11 +528,11 @@ with recursive x as (
 	where <?>
 	group by u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
 		, u.augentid, u.admin
-		, lr.user_augentid, lr.key_pickup_date, lr.key_return_date
+		, lr.user_augentid, lr.key_pickup_date, lr.key_return_date, lr.location_name, lr.locker_number
 )
 select y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
      , y.augentid, y.admin, y.penalty_points
-     , y.number, y.location_name
+     , y.locker_number, y.location_name
      , y.user_augentid, y.key_pickup_date, y.key_return_date
 	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch, l.description_english, l.forGroup
 	 , b.building_id, b.building_name, b.address
@@ -546,7 +546,7 @@ from y
         on b.building_id = l.building_id
 group by y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
      , y.augentid, y.admin, y.penalty_points
-     , y.number, y.location_name
+     , y.locker_number, y.location_name
      , y.user_augentid, y.key_pickup_date, y.key_return_date
 	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url
      , l.description_dutch, l.description_english, l.forGroup

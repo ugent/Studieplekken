@@ -134,7 +134,7 @@ public class DBLockerReservationDao extends DAO implements ILockerReservationDao
     public LockerReservation getLockerReservation(String locationName, int lockerNumber) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             String query = Resources.databaseProperties.getString("get_locker_reservations_where_<?>");
-            query = query.replace("<?>", "l.location_name = ? and l.number = ?");
+            query = query.replace("<?>", "lr.location_name = ? and lr.locker_number = ?");
 
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, locationName);

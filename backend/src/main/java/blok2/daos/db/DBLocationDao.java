@@ -262,7 +262,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
 
     public static Locker createLocker(ResultSet rs, Connection conn) throws SQLException {
         Locker l = new Locker();
-        l.setNumber(rs.getInt(Resources.databaseProperties.getString("locker_number")));
+        l.setNumber(rs.getInt(Resources.databaseProperties.getString("locker_reservation_locker_number")));
         Location location = DBLocationDao.createLocation(rs, conn);
         l.setLocation(location);
         return l;
