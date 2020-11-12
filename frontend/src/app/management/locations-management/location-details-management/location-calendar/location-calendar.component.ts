@@ -226,8 +226,8 @@ export class LocationCalendarComponent implements OnInit {
       }
       const begin = new Date(element.startsAt + ' ' + element.openingTime);
       const end = new Date(element.startsAt + ' ' + element.closingTime);
-      const diffMs = (end.getTime() - begin.getTime()) / 60000;
-      if ((diffMs % element.reservableTimeslotSize) !== 0) {
+      const diffMs = Math.round((end.getTime() - begin.getTime()) / 60000);
+      if ((element.openingTime.diff(element.closingTime, 'minutes') % element.reservableTimeslotSize) !== 0) {
         showWarning = true;
       }
     });

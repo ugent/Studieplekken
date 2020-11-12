@@ -934,13 +934,15 @@ where location_id = ?;
 -- queries for CALENDAR_PERIODS
 -- $get_all_calendar_periods
 select cp.calendar_id, cp.location_name, cp.starts_at, cp.ends_at, cp.opening_time, cp.closing_time, cp.reservable_from, cp.reservable, cp.timeslot_length, cp.locked_from
-       , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch, l.description_english, l.forGroup
+       , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch, l.description_english, l.forGroup, b.building_id, b.building_name, b.address
        , a.authority_id, a.authority_name, a.description
 from public.calendar_periods cp
     join public.locations l
         on l.name = cp.location_name
     join public.authority a
         on a.authority_id = l.authority_id
+    join public.buildings b
+        on l.building_id = b.building_id
 order by to_date(cp.starts_at || ' ' || cp.opening_time, 'YYYY-MM-DD HH24:MI');
 
 -- $get_calendar_periods
