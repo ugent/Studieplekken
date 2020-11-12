@@ -214,7 +214,11 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
     private void prepareCalendarPeriodPstmt(CalendarPeriod calendarPeriod,
                                             PreparedStatement pstmt) throws SQLException {
         prepareCommonPartOfCalendarPeriodPstmt(calendarPeriod, pstmt);
-        pstmt.setTimestamp(6, Timestamp.valueOf(calendarPeriod.getReservableFrom()));
+        if(calendarPeriod.getReservableFrom() != null) {
+            pstmt.setTimestamp(6, Timestamp.valueOf(calendarPeriod.getReservableFrom()));
+        } else {
+            pstmt.setNull(6, Types.TIMESTAMP);
+        }
         pstmt.setBoolean(7, calendarPeriod.isReservable());
         pstmt.setInt(8, calendarPeriod.getReservableTimeslotSize());
         pstmt.setTimestamp(9, Timestamp.valueOf(calendarPeriod.getLockedFrom()));

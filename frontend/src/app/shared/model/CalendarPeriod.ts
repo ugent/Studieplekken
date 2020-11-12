@@ -57,6 +57,10 @@ export class CalendarPeriod {
     return !this.reservableFrom || this.reservableFrom.isAfter(moment());
   }
 
+  isValid(): boolean {
+    return isCalendarPeriodValid(this);
+  }
+
   toJSON(): object {
     return {
       location: this.location,
@@ -86,20 +90,23 @@ export class CalendarPeriod {
  * 3. closingTime may not be before openingTime
  */
 export function isCalendarPeriodValid(period: CalendarPeriod): boolean {
-  console.log(period);
   if (period === null || period.openingTime === null) {
-    console.log('First if');
     return false;
   }
 
 
-  if (period.startsAt.isAfter(period.endsAt)) {
-    console.log('Second if');
+  if (!period.startsAt.isValid() || !period.endsAt.isValid() || period.startsAt.isAfter(period.endsAt)) {
     return false;
   }
-  console.log(period.openingTime);
-  console.log(period.closingTime);
-  console.log(period.openingTime.isBefore(period.closingTime));
+
+  if (period.reservable && period.reservableTimeslotSize === 0) {
+    return false;
+  }
+
+  if (period.reservable && !period.reservableFrom.isValid()) {
+    return false;
+  }
+
   return period.openingTime.isBefore(period.closingTime);
 }
 
