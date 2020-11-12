@@ -2,6 +2,7 @@ package blok2.daos;
 
 import blok2.helpers.Institution;
 import blok2.model.Authority;
+import blok2.model.Building;
 import blok2.model.LocationTag;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.CalendarPeriodForLockers;
@@ -19,52 +20,59 @@ import java.util.List;
 
 public class TestSharedMethods {
 
-    public static Location testLocation(Authority authority) {
+    public static Location testLocation(Authority authority, Building building) {
         Location testLocation = new Location();
         testLocation.setName("Test Location");
-        testLocation.setAddress("Test street, 10");
         testLocation.setNumberOfSeats(50);
         testLocation.setNumberOfLockers(15);
         testLocation.setImageUrl("https://example.com/image.jpg");
         testLocation.setAuthority(authority);
+        testLocation.setBuilding(building);
         testLocation.setForGroup(false);
         return testLocation;
     }
 
-    public static Location testLocation1Seat(Authority authority) {
+    public static Location testLocation1Seat(Authority authority, Building building) {
         Location testLocation = new Location();
         testLocation.setName("Test Location 2");
-        testLocation.setAddress("Test street, 10");
         testLocation.setNumberOfSeats(1);
-        testLocation.setNumberOfLockers(15);
+        testLocation.setNumberOfLockers(1);
         testLocation.setImageUrl("https://example.com/image.jpg");
         testLocation.setAuthority(authority);
-
+        testLocation.setBuilding(building);
+        testLocation.setForGroup(false);
         return testLocation;
     }
 
-    public static Location testLocation2(Authority authority) {
+    public static Location testLocation2(Authority authority, Building building) {
         Location testLocation2 = new Location();
         testLocation2.setName("Second Test Location");
-        testLocation2.setAddress("Second Test street, 20");
         testLocation2.setNumberOfSeats(100);
         testLocation2.setNumberOfLockers(10);
         testLocation2.setImageUrl("https://example.com/picture.png");
         testLocation2.setAuthority(authority);
+        testLocation2.setBuilding(building);
         testLocation2.setForGroup(true);
         return testLocation2;
     }
 
-    public static Location testLocation3(Authority authority) {
+    public static Location testLocation3(Authority authority, Building building) {
         Location testLocation3 = new Location();
         testLocation3.setName("Third Test Location");
-        testLocation3.setAddress("Third Test street, 30");
         testLocation3.setNumberOfSeats(25);
         testLocation3.setNumberOfLockers(5);
         testLocation3.setImageUrl("https://example.com/picture.png");
         testLocation3.setAuthority(authority);
+        testLocation3.setBuilding(building);
         testLocation3.setForGroup(true);
         return testLocation3;
+    }
+
+    public static Building testBuilding() {
+        Building testbuilding = new Building();
+        testbuilding.setName("TestBuilding");
+        testbuilding.setAddress("Teststreet 123");
+        return testbuilding;
     }
 
     public static LocationTag testTag() {

@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output, OnChanges, SimpleChanges
 import {CalendarView, CalendarEvent, CalendarEventTimesChangedEvent} from 'angular-calendar';
 import {BehaviorSubject, Subject} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
-import {defaultOpeningHour, defaultClosingHour} from 'src/environments/environment';
+import {defaultOpeningHour, defaultClosingHour} from 'src/app/app.constants';
 import { getHours } from 'date-fns';
 
 @Component({

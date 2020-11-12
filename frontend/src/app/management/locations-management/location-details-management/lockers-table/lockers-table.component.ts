@@ -3,9 +3,9 @@ import {Observable} from 'rxjs';
 import {Location} from '../../../../shared/model/Location';
 import {LockersService} from '../../../../services/api/lockers/lockers.service';
 import {LockerReservation} from '../../../../shared/model/LockerReservation';
-import {msToShowFeedback} from '../../../../../environments/environment';
 import {tap} from 'rxjs/operators';
 import * as moment from 'moment';
+import {msToShowFeedback} from '../../../../app.constants';
 
 export enum LockerStatus {
   AVAILABLE,

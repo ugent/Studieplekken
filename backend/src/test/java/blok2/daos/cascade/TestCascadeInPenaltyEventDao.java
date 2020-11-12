@@ -5,6 +5,7 @@ import blok2.daos.db.ADB;
 import blok2.helpers.Language;
 import blok2.helpers.Resources;
 import blok2.model.Authority;
+import blok2.model.Building;
 import blok2.model.penalty.Penalty;
 import blok2.model.penalty.PenaltyEvent;
 import blok2.model.reservables.Location;
@@ -35,17 +36,12 @@ public class TestCascadeInPenaltyEventDao extends TestDao {
     private IPenaltyEventsDao penaltyEventsDao;
 
     @Autowired
+    private IBuildingDao buildingDao;
+
+    @Autowired
     private ADB adb;
 
     private PenaltyEvent testPenaltyEvent;
-
-    private User testUser1;
-    private User testUser2;
-
-    private Authority authority;
-
-    private Location testLocation1;
-    private Location testLocation2;
 
     private Penalty testPenalty1;
     private Penalty testPenalty2;
@@ -53,12 +49,13 @@ public class TestCascadeInPenaltyEventDao extends TestDao {
     @Override
     public void populateDatabase() throws SQLException {
         // Setup test objects
-        testUser1 = TestSharedMethods.studentTestUser();
-        testUser2 = TestSharedMethods.adminTestUser();
+        User testUser1 = TestSharedMethods.studentTestUser();
+        User testUser2 = TestSharedMethods.adminTestUser();
 
-        authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testLocation1 = TestSharedMethods.testLocation(authority.clone());
-        testLocation2 = TestSharedMethods.testLocation2(authority.clone());
+        Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
+        Building testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+        Location testLocation1 = TestSharedMethods.testLocation(authority.clone(), testBuilding);
+        Location testLocation2 = TestSharedMethods.testLocation2(authority.clone(), testBuilding);
 
         Map<Language, String> descriptions = new HashMap<>();
         descriptions.put(Language.DUTCH, "Dit is een test omschrijving van een penalty event met code 0");

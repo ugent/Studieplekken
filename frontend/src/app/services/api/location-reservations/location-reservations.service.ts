@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {api} from '../../../../environments/environment';
+import {api} from '../endpoints';
 import {LocationReservation} from '../../../shared/model/LocationReservation';
 import {combineLatest, Observable} from 'rxjs';
 import { getTimeslotsOnDay, Timeslot } from 'src/app/shared/model/Timeslot';
@@ -15,7 +15,8 @@ import { Moment } from 'moment';
 })
 export class LocationReservationsService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   getLocationReservationsOfUser(id: string): Observable<LocationReservation[]> {
     const params = new HttpParams().set('id', id);

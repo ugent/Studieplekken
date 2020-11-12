@@ -146,9 +146,9 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
                 PreparedStatement statement = conn.prepareStatement(Resources.databaseProperties.getString("get_calendar_period_by_id"));
                 statement.setInt(1,calendarId);
                 ResultSet set = statement.executeQuery();
+                set.next();
                 return createCalendarPeriod(set, conn);
             } catch (SQLException e) {
-                conn.rollback();
                 throw e;
             }
         }

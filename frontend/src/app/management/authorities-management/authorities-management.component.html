@@ -9,7 +9,6 @@
     <table style="width: 100%;" *ngIf="authorities.length > 0; else noAuthorities">
       <thead>
       <tr>
-        <th>{{'management.authorities.table.authorityId' | translate}}</th>
         <th>{{'management.authorities.table.authorityName' | translate}}</th>
         <th>{{'management.authorities.table.description' | translate}}</th>
         <th><!-- user management --></th>
@@ -20,7 +19,6 @@
 
       <tbody>
       <tr [@rowsAnimation]="" *ngFor="let authority of authorities">
-        <td>{{authority.authorityId}}</td>
         <td>{{authority.authorityName}}</td>
         <td>{{authority.description}}</td>
         <!-- User glyphicon -->
@@ -87,17 +85,6 @@
       <!-- Modal body -->
       <div class="modal-body">
         <form [formGroup]="authorityFormGroup">
-          <!-- AuthorityID - this will be set by the database -->
-          <div class="row form-group">
-            <label class="col-lg-3 control-label" for="authorityIdAdd">
-              {{'management.authorities.table.authorityId' | translate}}<br>
-              <span style="color: red;">{{'management.authorities.addAuthorityModal.idSetByBackendMessage' | translate}}</span>
-            </label>
-            <div class="col-lg-8">
-              <input class="form-control" id="authorityIdAdd" type="number" formControlName="authorityId" >
-            </div>
-          </div>
-
           <!-- Name of the authority -->
           <div class="row form-group">
             <label class="col-lg-3 control-label" for="authorityNameAdd">
@@ -168,16 +155,6 @@
       <!-- Modal body -->
       <div class="modal-body">
         <form [formGroup]="authorityFormGroup">
-          <!-- AuthorityID - this will be set by the database -->
-          <div class="row form-group">
-            <label class="col-lg-3 control-label" for="authorityIdUpdate">
-              {{'management.authorities.table.authorityId' | translate}}
-            </label>
-            <div class="col-lg-8">
-              <input class="form-control" id="authorityIdUpdate" type="number" formControlName="authorityId" >
-            </div>
-          </div>
-
           <!-- Name of the authority -->
           <div class="row form-group">
             <label class="col-lg-3 control-label" for="authorityNameUpdate">
@@ -255,7 +232,6 @@
           </div>
 
           <ul>
-            <li><b style="margin-right: 5px"><i>{{('management.authorities.table.authorityId' | translate) + ':   '}}</i></b>{{authorityId.value}}</li>
             <li><b style="margin-right: 5px"><i>{{('management.authorities.table.authorityName' | translate) + ':   '}}</i></b>{{authorityName.value}}</li>
             <li><b style="margin-right: 5px"><i>{{('management.authorities.table.description' | translate)}}</i></b>{{description.value}}</li>
           </ul>

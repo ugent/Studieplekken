@@ -1,18 +1,19 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {CalendarPeriod} from '../../../shared/model/CalendarPeriod';
 
 import {Observable} from 'rxjs';
-import {api} from '../../../../environments/environment';
 import { map } from 'rxjs/internal/operators/map';
 import { filter } from 'rxjs/internal/operators/filter';
+import {api} from '../endpoints';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CalendarPeriodsService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   getCalendarPeriodsOfLocation(locationName: string): Observable<CalendarPeriod[]> {
     return this.http.get<any>(api.calendarPeriods

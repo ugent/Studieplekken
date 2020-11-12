@@ -1,25 +1,20 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { CalendarEvent } from 'angular-calendar';
-import {
-  CalendarPeriod,
-  isCalendarPeriodValid, mapCalendarPeriodsToCalendarEvents
-} from '../../../../shared/model/CalendarPeriod';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { Location } from '../../../../shared/model/Location';
-import { CalendarPeriodsService } from '../../../../services/api/calendar-periods/calendar-periods.service';
-import { ApplicationTypeFunctionalityService } from '../../../../services/functionality/application-type/application-type-functionality.service';
-import { msToShowFeedback } from '../../../../../environments/environment';
-import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
-import { LocationReservation } from 'src/app/shared/model/LocationReservation';
-import { transition, trigger, useAnimation } from '@angular/animations';
-import { rowsAnimation } from 'src/app/shared/animations/RowAnimation';
-import { Timeslot } from 'src/app/shared/model/Timeslot';
-import * as moment from 'moment';
-import { LocationOpeningperiodDialogComponent } from './location-openingperiod-dialog/location-openingperiod-dialog.component';
+import { trigger, transition, useAnimation } from '@angular/animations';
+import { Component, OnInit, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { UserAuthoritiesManagementComponent } from 'src/app/management/users-management/user-details-management/user-authorities-management/user-authorities-management.component';
+import { CalendarEvent } from 'angular-calendar';
+import * as moment from 'moment';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import { CalendarPeriodsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
+import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
+import { ApplicationTypeFunctionalityService } from 'src/app/services/functionality/application-type/application-type-functionality.service';
+import { rowsAnimation } from 'src/app/shared/animations/RowAnimation';
+import { CalendarPeriod, mapCalendarPeriodsToCalendarEvents, isCalendarPeriodValid } from 'src/app/shared/model/CalendarPeriod';
+import { LocationReservation } from 'src/app/shared/model/LocationReservation';
+import { Timeslot } from 'src/app/shared/model/Timeslot';
 import { UserConstructor } from 'src/app/shared/model/User';
+import { LocationOpeningperiodDialogComponent } from './location-openingperiod-dialog/location-openingperiod-dialog.component';
+import { Location } from 'src/app/shared/model/Location';
+import { msToShowFeedback } from 'src/app/app.constants';
 
 @Component({
   selector: 'app-location-calendar',
@@ -93,7 +88,8 @@ export class LocationCalendarComponent implements OnInit {
   constructor(private calendarPeriodsService: CalendarPeriodsService,
               private functionalityService: ApplicationTypeFunctionalityService,
               private locationReservationService: LocationReservationsService,
-              private dialog: MatDialog) { }
+              private dialog: MatDialog) {
+  }
 
   ngOnInit(): void {
     this.location.subscribe(next => {

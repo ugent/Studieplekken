@@ -61,6 +61,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import {MomentDateComponent} from './shared/inputs/moment-date/moment-date.component';
 import { MomentDateTimeComponent } from './shared/inputs/moment-datetime/moment-datetime.component';
 import { LocationOpeningperiodDialogComponent } from './management/locations-management/location-details-management/location-calendar/location-openingperiod-dialog/location-openingperiod-dialog.component';
+import { BuildingManagementComponent } from './management/building-management/building-management.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -149,6 +150,11 @@ const routes: Routes = [
         canActivate: [AuthorizationGuardService]
       },
       {
+        path: 'buildings',
+        component: BuildingManagementComponent,
+        canActivate: [AuthorizationGuardService]
+      },
+      {
         path: 'tags',
         component: TagsManagementComponent,
         canActivate: [AuthorizationGuardService]
@@ -234,7 +240,8 @@ const routes: Routes = [
     AuthorityUsersManagementComponent,
     MomentDateComponent,
     MomentDateTimeComponent,
-    LocationOpeningperiodDialogComponent
+    LocationOpeningperiodDialogComponent,
+    BuildingManagementComponent
   ],
     imports: [
       BrowserModule,
