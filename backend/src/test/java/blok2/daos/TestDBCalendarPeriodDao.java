@@ -31,7 +31,6 @@ public class TestDBCalendarPeriodDao extends TestDao {
 
     private Location testLocation;
     private Building testBuilding;
-    private List<CalendarPeriod> calendarPeriods;
 
     // the reason for making this an attribute of the class
     // is to make sure the values are deleted when something
