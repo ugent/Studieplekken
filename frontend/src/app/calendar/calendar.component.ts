@@ -56,18 +56,13 @@ export class CalendarComponent implements OnInit, OnChanges {
     }
   }
 
-  dayClicked({ date, events }: { date: Date ; events: CalendarEvent[] }): void {
-    console.log('Clicked on date ' + date);
-    console.log('Events: ' + events);
-  }
+  dayClicked({ date, events }: { date: Date ; events: CalendarEvent[] }): void {}
 
   handleEvent(action: string, event: CalendarEvent): void {
     this.onTimeslotPicked.emit(event.meta);
   }
 
-  eventTimesChanged({event, newStart, newEnd, }: CalendarEventTimesChangedEvent): void {
-    console.log('event times changed to start = ' + newStart + ' end = ' + newEnd);
-  }
+  eventTimesChanged({event, newStart, newEnd, }: CalendarEventTimesChangedEvent): void {}
 
   setView(view: CalendarView): void {
     this.view = view;

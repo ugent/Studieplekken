@@ -199,8 +199,6 @@ export class LockersCalendarComponent implements OnInit {
         return;
       }
 
-      console.log('updating for locationName: ' + this.locationName);
-
       // if reached here, persist update(s)
       this.calendarPeriodsForLockersService.updateCalendarPeriodsForLockers(
         this.locationName,

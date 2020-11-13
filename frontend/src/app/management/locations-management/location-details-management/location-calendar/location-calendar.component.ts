@@ -319,7 +319,6 @@ export class LocationCalendarComponent implements OnInit {
   }
 
   deleteLocationReservation(): void {
-    console.log('Removing reservation');
     this.locationReservationService.deleteLocationReservation(this.currentLocationReservationToDelete).subscribe(
       () => {
         this.deletionWasSuccess = true;
@@ -347,7 +346,6 @@ export class LocationCalendarComponent implements OnInit {
   }
 
   update(): void {
-    console.log(this.calendarPeriodModel.value)
     this.calendarPeriods = this.calendarPeriods.filter(c => !this.currentCalendarPeriod || c.id !== this.currentCalendarPeriod.id);
     if (this.calendarPeriodModel) {
       this.calendarPeriods = [...this.calendarPeriods, this.calendarPeriodModel.value];
