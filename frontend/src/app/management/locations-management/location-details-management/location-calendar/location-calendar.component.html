@@ -301,7 +301,7 @@
 
       <!-- Modal footer -->
       <div class="modal-footer">
-        <button (click)="update()" class="btn btn-primary" data-dismiss="modal"
+        <button (click)="update()" [disabled]="!model.isValid()" class="btn btn-primary" data-dismiss="modal"
                 >
           {{'general.buttons.update' | translate}}
         </button>
