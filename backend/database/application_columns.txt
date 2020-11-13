@@ -18,6 +18,7 @@ location_authority_id=authority_id
 location_description_dutch=description_dutch
 location_description_english=description_english
 location_forGroup=forGroup
+location_image_url=image_url
 
 #columns for the table TAGS
 tags_tag_id=tag_id

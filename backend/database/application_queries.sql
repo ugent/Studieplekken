@@ -271,10 +271,10 @@ where location_name = ? and cast(substr(date,0,5) as int)*404 + cast(substr(date
 insert into public.location_reservations (user_augentid, created_at, timeslot_date, timeslot_seqnr, calendar_id, attended)
 values (?, ?, ?, ?, ?, null);
 
--- $set_location_reservation_unattended
+-- $set_location_reservation_attendance
 update public.location_reservations
 set attended = ?
-where date = ? and user_augentid = ?;
+where calendar_id = ? and timeslot_date = ? and timeslot_seqnr = ? and user_augentid = ?;
 
 -- $set_all_location_reservations_attended
 update public.location_reservations

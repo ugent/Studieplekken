@@ -133,7 +133,7 @@ function mapNRperiodToCalendarEvents(period: CalendarPeriod): CalendarEvent[] {
       title: period.openingTime.format('HH:mm') + ' - ' + period.closingTime.format('HH:mm') + '  -  ' + '(open)',
       start: new Date(dateWithOpeningTime),
       end: new Date(dateWithClosingTime),
-      meta: period,
+      meta: {calendarPeriod: period},
       color: {primary: 'black', secondary: '#BEBEBE'},
       cssClass: 'calendar-event-NR',
     });
@@ -158,14 +158,14 @@ function mapTimeslotsToCalendarEvents(period: CalendarPeriod, reservedTimeslots:
   const calendarEvents: CalendarEvent[] = [];
 
   for (const timeslot of period.timeslots) {
-      const beginDT = new Date(timeslot.timeslotDate.format('YYYY-MM-DD') + 'T' + timeslotStartHour(period, timeslot.timeslotSeqnr));
+      const beginDT = new Date(timeslot.timeslotDate.format('YYYY-MM-DD') + 'T' + timeslotStartHour(period, timeslot).format('HH:mm'));
       const endDT = new Date(timeslot.timeslotDate.format('YYYY-MM-DD') + 'T' + timeslotEndHour(period, timeslot.timeslotSeqnr));
 
       calendarEvents.push({
         title: timeslot.timeslotDate.format('DD-MM-YYYY') + ' (Blok ' + (timeslot.timeslotSeqnr + 1) + ')',
         start: beginDT,
         end: endDT,
-        meta: timeslot,
+        meta: {calendarPeriod: period, timeslot},
         color: includesTimeslot(reservedTimeslots.map(s => s.timeslot), timeslot) ?
                                                          {primary: '#00004d', secondary: '#133E7D'} : null,
         cssClass: includesTimeslot(reservedTimeslots.map(s => s.timeslot), timeslot) ? 'calendar-event-reserved' : ''

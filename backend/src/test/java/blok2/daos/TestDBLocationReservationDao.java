@@ -169,7 +169,7 @@ public class TestDBLocationReservationDao extends TestDao {
         Assert.assertEquals("scanStudentTest, present size after all attended", 2, present.size());
 
         // set u1 to unattended
-        locationReservationDao.setReservationToUnAttended(u1.getAugentID(), today);
+//        locationReservationDao.setReservationToUnAttended(u1.getAugentID(), today);
         present = locationReservationDao.getPresentStudents(testLocation.getName(), today);
         Assert.assertEquals("scanStudentTest, present size after u1 unattended", 1, present.size());
         Assert.assertEquals("scanStudentTest, present user after u1 unattended should be u2", u2, present.get(0).getUser());
