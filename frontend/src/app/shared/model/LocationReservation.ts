@@ -1,34 +1,27 @@
 import {User, UserConstructor} from './User';
-import {Location, LocationConstructor} from './Location';
-import {CustomDate, CustomDateConstructor} from './helpers/CustomDate';
+import { Timeslot } from './Timeslot';
+import { Moment } from 'moment';
+import * as moment from 'moment';
 
-export interface LocationReservation {
+export class LocationReservation {
   user: User;
-  location: Location;
-  date: CustomDate;
-  attended: boolean;
-}
+  timeslot: Timeslot;
+  attended?: boolean;
+  createdAt?: string;
 
-export class LocationReservationConstructor {
-  static new(): LocationReservation {
-    return {
-      user: UserConstructor.new(),
-      location: LocationConstructor.new(),
-      date: CustomDateConstructor.new(),
-      attended: false
-    };
+  constructor(user: User, timeslot: Timeslot, attended?: boolean, ceatedAt?: Moment) {
+    this.user = user;
+    this.timeslot = timeslot;
+    this.attended = attended;
+    this.createdAt = this.createdAt;
   }
 
-  static newFromObj(obj: LocationReservation): LocationReservation {
-    if (obj === null) {
-      return null;
-    }
-
-    return {
-      user: UserConstructor.newFromObj(obj.user),
-      location: LocationConstructor.newFromObj(obj.location),
-      date: CustomDateConstructor.newFromObj(obj.date),
-      attended: obj.attended
-    };
+  static fromJSON(json): LocationReservation {
+    return new LocationReservation(
+      json.user,
+      Timeslot.fromJSON(json.timeslot),
+      json.attended,
+      json.createdAt ? moment(json.createdAt) : null
+    );
   }
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { environment, vars } from '../../environments/environment';
+import { environment } from '../../environments/environment';
+import {userWantsTLogInLocalStorageKey} from '../app.constants';
 
 @Component({
   selector: 'app-login',
@@ -22,6 +23,6 @@ export class LoginComponent implements OnInit {
    * the user can be logged in.
    */
   loginButtonClicked(): void {
-    localStorage.setItem(vars.userWantsTLogInLocalStorageKey, 'true');
+    localStorage.setItem(userWantsTLogInLocalStorageKey, 'true');
   }
 }

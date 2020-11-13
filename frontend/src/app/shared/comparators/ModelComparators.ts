@@ -1,20 +1,7 @@
 import {Location} from '../model/Location';
-import {CustomDate} from '../model/helpers/CustomDate';
 import {CalendarPeriod} from '../model/CalendarPeriod';
 import {CalendarPeriodForLockers} from '../model/CalendarPeriodForLockers';
 
-export function equalCustomDates(date1: CustomDate, date2: CustomDate): boolean {
-  if (date1 === null && date2 == null) {
-    return true;
-  }
-
-  return date1.year === date2.year &&
-    date1.month === date2.month &&
-    date1.day === date2.day &&
-    date1.hrs === date2.hrs &&
-    date1.min === date2.min &&
-    date1.sec === date2.sec;
-}
 
 export function equalLocations(location1: Location, location2: Location): boolean {
   if (location1 === null && location2 == null) {
@@ -24,7 +11,7 @@ export function equalLocations(location1: Location, location2: Location): boolea
   return location1.name === location2.name &&
     location1.numberOfSeats === location2.numberOfSeats &&
     location1.numberOfLockers === location2.numberOfLockers &&
-    location1.address === location2.address &&
+    location1.building.address === location2.building.address &&
     location1.imageUrl === location2.imageUrl;
 }
 

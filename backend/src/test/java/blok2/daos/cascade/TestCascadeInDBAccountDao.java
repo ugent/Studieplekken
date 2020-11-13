@@ -2,9 +2,9 @@ package blok2.daos.cascade;
 
 import blok2.daos.*;
 import blok2.helpers.Language;
-import blok2.helpers.date.CustomDate;
 import blok2.model.Authority;
 import blok2.model.calendar.CalendarPeriod;
+import blok2.model.Building;
 import blok2.model.penalty.Penalty;
 import blok2.model.penalty.PenaltyEvent;
 import blok2.model.reservables.Location;
@@ -17,6 +17,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class TestCascadeInDBAccountDao extends TestDao {
@@ -45,6 +47,7 @@ public class TestCascadeInDBAccountDao extends TestDao {
     @Autowired
     private ICalendarPeriodDao calendarPeriodDao;
 
+    @Autowired IBuildingDao buildingDao;
 
     // this will be the test user
     private User testUser;
@@ -71,18 +74,18 @@ public class TestCascadeInDBAccountDao extends TestDao {
         testUser = TestSharedMethods.studentTestUser();
 
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testLocation1 = TestSharedMethods.testLocation(authority.clone());
-        testLocation2 = TestSharedMethods.testLocation2(authority.clone());
+        Building testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+        testLocation1 = TestSharedMethods.testLocation(authority.clone(), testBuilding);
+        testLocation2 = TestSharedMethods.testLocation2(authority.clone(), testBuilding);
         locationDao.addLocation(testLocation1);
         locationDao.addLocation(testLocation2);
-
         CalendarPeriod cp1 = TestSharedMethods.testCalendarPeriods(testLocation1).get(0);
         TestSharedMethods.addCalendarPeriods(calendarPeriodDao, cp1);
         CalendarPeriod cp2 = TestSharedMethods.testCalendarPeriods(testLocation2).get(0);
         TestSharedMethods.addCalendarPeriods(calendarPeriodDao, cp2);
 
-        testLocationReservation1 = new LocationReservation(testUser, CustomDate.today().toDateString(), cp1.getTimeslots().get(0),  null);
-        testLocationReservation2 = new LocationReservation(testUser, new CustomDate(1970, 1, 1).toDateString(), cp2.getTimeslots().get(0),  null);
+        testLocationReservation1 = new LocationReservation(testUser, LocalDateTime.now(), cp1.getTimeslots().get(0),  null);
+        testLocationReservation2 = new LocationReservation(testUser, LocalDateTime.of(1970,1,1,0,0), cp2.getTimeslots().get(0),  null);
 
         Locker testLocker1 = new Locker(0, testLocation1);
         Locker testLocker2 = new Locker(0, testLocation2);
@@ -98,9 +101,10 @@ public class TestCascadeInDBAccountDao extends TestDao {
         // because when the penalties are retrieved from the penaltyEventDao, the list will
         // be sorted by received points before asserting, if they would be equal we can't sort
         // on the points and be sure about the equality of the actual and expected list.
+
         PenaltyEvent testPenaltyEvent = new PenaltyEvent(0, 10, descriptions);
-        testPenalty1 = new Penalty(testUser.getAugentID(), testPenaltyEvent.getCode(), CustomDate.now(), CustomDate.now(), testLocation1.getName(), 10, "First test penalty");
-        testPenalty2 = new Penalty(testUser.getAugentID(), testPenaltyEvent.getCode(), new CustomDate(1970, 1, 1), CustomDate.now(), testLocation2.getName(), 20, "Second test penalty");
+        testPenalty1 = new Penalty(testUser.getAugentID(), testPenaltyEvent.getCode(), LocalDate.now(), LocalDate.now(), testLocation1.getName(), 10, "First test penalty");
+        testPenalty2 = new Penalty(testUser.getAugentID(), testPenaltyEvent.getCode(), LocalDate.of(1970, 1, 1), LocalDate.now(), testLocation2.getName(), 20, "Second test penalty");
 
         // Add test objects to database
         accountDao.directlyAddUser(testUser);

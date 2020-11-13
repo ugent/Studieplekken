@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {User, UserConstructor} from '../../shared/model/User';
 import {HttpClient} from '@angular/common/http';
-import {api, vars} from '../../../environments/environment';
 import {Penalty} from '../../shared/model/Penalty';
 import {LocationReservation} from '../../shared/model/LocationReservation';
 import {LockerReservation, LockerReservationConstructor} from '../../shared/model/LockerReservation';
@@ -12,6 +11,8 @@ import {LocationReservationsService} from '../api/location-reservations/location
 import {LockerReservationService} from '../api/locker-reservations/locker-reservation.service';
 import {Router} from '@angular/router';
 import {UserService} from '../api/users/user.service';
+import {api} from '../api/endpoints';
+import {userWantsTLogInLocalStorageKey} from '../../app.constants';
 
 /**
  * The structure of the authentication service has been based on this article:
@@ -107,7 +108,7 @@ export class AuthenticationService {
     );
 
     // to be sure, set the 'userWantsToLogin' variables to false
-    localStorage.setItem(vars.userWantsTLogInLocalStorageKey, 'false');
+    localStorage.setItem(userWantsTLogInLocalStorageKey, 'false');
   }
 
   /**

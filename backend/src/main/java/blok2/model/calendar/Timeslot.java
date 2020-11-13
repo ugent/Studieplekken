@@ -1,23 +1,25 @@
 package blok2.model.calendar;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class Timeslot implements Cloneable {
     @Min(0)
-    private int calendarId;
+    @NotNull
+    private Integer calendarId;
     @Min(0)
-    private int timeslotSeqnr;
-    @Pattern(regexp = "[0-9]{4}-[0-9]{2}-[0-9]{2}")
-    private String timeslotDate;
+    @NotNull
+    private Integer timeslotSeqnr;
+    @NotNull
+    private LocalDate timeslotDate;
 
 
-    public Timeslot() {
 
-    }
-
-    public Timeslot(int calendarId, int timeslotSeqnr, String timeslotDate) {
+    public Timeslot(int calendarId, int timeslotSeqnr, LocalDate timeslotDate) {
         this.calendarId = calendarId;
         this.timeslotSeqnr = timeslotSeqnr;
         this.timeslotDate = timeslotDate;
@@ -28,7 +30,7 @@ public class Timeslot implements Cloneable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Timeslot timeslot = (Timeslot) o;
-        return calendarId == timeslot.calendarId;
+        return calendarId.equals(timeslot.calendarId);
     }
 
     @Override
@@ -52,11 +54,11 @@ public class Timeslot implements Cloneable {
         this.timeslotSeqnr = timeslotSeqnr;
     }
 
-    public String getTimeslotDate() {
+    public LocalDate getTimeslotDate() {
         return timeslotDate;
     }
 
-    public void setTimeslotDate(String timeslotDate) {
+    public void setTimeslotDate(LocalDate timeslotDate) {
         this.timeslotDate = timeslotDate;
     }
 }

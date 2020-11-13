@@ -29,7 +29,6 @@ import { ProfileLocationReservationsComponent } from './profile/profile-reservat
 import { ProfileLockerReservationsComponent } from './profile/profile-reservations/profile-locker-reservations/profile-locker-reservations.component';
 import { LocationsManagementComponent } from './management/locations-management/locations-management.component';
 import { UsersManagementComponent } from './management/users-management/users-management.component';
-import { ReservationsManagementComponent } from './management/reservations-management/reservations-management.component';
 import { PenaltyEventsManagementComponent } from './management/penalty-events-management/penalty-events-management.component';
 import { LocationDetailsManagementComponent } from './management/locations-management/location-details-management/location-details-management.component';
 import { DetailsFormComponent } from './management/locations-management/location-details-management/details-form/details-form.component';
@@ -41,8 +40,6 @@ import { UserDetailsManagementComponent } from './management/users-management/us
 import { UserDetailsFormComponent } from './management/users-management/user-details-management/user-details-form/user-details-form.component';
 import { UserRolesComponent } from './management/users-management/user-details-management/user-roles/user-roles.component';
 import { UserDetailsManagementPenaltiesComponent } from './management/users-management/user-details-management/user-details-management-penalties/user-details-management-penalties.component';
-import { LocationReservationsManagementComponent } from './management/reservations-management/location-reservations-management/location-reservations-management.component';
-import { LockerReservationsManagementComponent } from './management/reservations-management/locker-reservations-management/locker-reservations-management.component';
 import { ApplicationTypeGuardService } from './services/guard/functionality/application-type-guard/application-type-guard.service';
 import { LocationDescriptionComponent } from './management/locations-management/location-details-management/location-description/location-description.component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
@@ -57,7 +54,14 @@ import { AuthorityUsersManagementComponent } from './management/authorities-mana
 import { registerLocaleData } from '@angular/common';
 import { MatDialogModule } from '@angular/material/dialog';
 import localeNl from '@angular/common/locales/nl-BE';
+import { NgxMatDatetimePickerModule } from '@angular-material-components/datetime-picker';
+import { NgxMatMomentModule } from '@angular-material-components/moment-adapter';
+import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import {MomentDateComponent} from './shared/inputs/moment-date/moment-date.component';
+import { MomentDateTimeComponent } from './shared/inputs/moment-datetime/moment-datetime.component';
 import { LocationOpeningperiodDialogComponent } from './management/locations-management/location-details-management/location-calendar/location-openingperiod-dialog/location-openingperiod-dialog.component';
+import { BuildingManagementComponent } from './management/building-management/building-management.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -146,6 +150,11 @@ const routes: Routes = [
         canActivate: [AuthorizationGuardService]
       },
       {
+        path: 'buildings',
+        component: BuildingManagementComponent,
+        canActivate: [AuthorizationGuardService]
+      },
+      {
         path: 'tags',
         component: TagsManagementComponent,
         canActivate: [AuthorizationGuardService]
@@ -169,11 +178,6 @@ const routes: Routes = [
         path: 'authorities/:authorityId',
         component: AuthorityUsersManagementComponent,
         canActivate: [AuthorizationGuardService]
-      },
-      {
-        path: 'reservations',
-        component: ReservationsManagementComponent,
-        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService]
       },
       {
         path: 'penalties',
@@ -217,7 +221,6 @@ const routes: Routes = [
     ProfileLockerReservationsComponent,
     LocationsManagementComponent,
     UsersManagementComponent,
-    ReservationsManagementComponent,
     PenaltyEventsManagementComponent,
     LocationDetailsManagementComponent,
     DetailsFormComponent,
@@ -228,44 +231,48 @@ const routes: Routes = [
     UserDetailsFormComponent,
     UserRolesComponent,
     UserDetailsManagementPenaltiesComponent,
-    LocationReservationsManagementComponent,
-    LockerReservationsManagementComponent,
     LocationDescriptionComponent,
     TagsManagementComponent,
     LocationTagsManagementComponent,
     LoginComponent,
-    LockerReservationsManagementComponent,
     AuthoritiesManagementComponent,
     UserAuthoritiesManagementComponent,
     AuthorityUsersManagementComponent,
-    LocationOpeningperiodDialogComponent
+    MomentDateComponent,
+    MomentDateTimeComponent,
+    LocationOpeningperiodDialogComponent,
+    BuildingManagementComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    RouterModule.forRoot(routes),
-    HttpClientModule,
-    TranslateModule.forRoot({
-        defaultLanguage: 'nl',
-        loader: {
-            provide: TranslateLoader,
-            useFactory: HttpLoaderFactory,
-            deps: [HttpClient]
-        }
-    }),
-    MarkdownModule.forRoot(),
-    BrowserAnimationsModule,
-    CalendarModule.forRoot({
-        provide: DateAdapter,
-        useFactory: adapterFactory,
-    }),
-    ReactiveFormsModule,
-    FormsModule,
-    FlatpickrModule.forRoot(),
-    CKEditorModule,
-    MatSelectModule,
-    MatDialogModule
-  ],
+    imports: [
+      BrowserModule,
+      AppRoutingModule,
+      RouterModule.forRoot(routes),
+      HttpClientModule,
+      TranslateModule.forRoot({
+          defaultLanguage: 'nl',
+          loader: {
+              provide: TranslateLoader,
+              useFactory: HttpLoaderFactory,
+              deps: [HttpClient]
+          }
+      }),
+      MarkdownModule.forRoot(),
+      BrowserAnimationsModule,
+      CalendarModule.forRoot({
+          provide: DateAdapter,
+          useFactory: adapterFactory,
+      }),
+      ReactiveFormsModule,
+      FormsModule,
+      FlatpickrModule.forRoot(),
+      CKEditorModule,
+      MatSelectModule,
+      NgxMatDatetimePickerModule,
+      NgxMatMomentModule,
+      MatDatepickerModule,
+      MatInputModule,
+      MatDialogModule
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

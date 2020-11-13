@@ -2,28 +2,28 @@ package blok2.model.calendar;
 
 import blok2.model.reservables.Location;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+
+import static java.time.temporal.ChronoUnit.SECONDS;
 
 public class CalendarPeriod extends Period implements Cloneable {
     private int id;
     private Location location;
-    private String openingTime; // time: hh:mm
-    private String closingTime; // time: hh:mm
-    private String reservableFrom; // datetime: YYYY-MM-DDThh:mm
+    private LocalTime openingTime;
+    private LocalTime closingTime;
+    private LocalDateTime reservableFrom = LocalDateTime.now();
+    private LocalDateTime lockedFrom;
     private boolean reservable;
     private int reservableTimeslotSize;
 
     private List<Timeslot> timeslots = Collections.emptyList();
 
     public CalendarPeriod() {
-
     }
 
     @Override
@@ -37,7 +37,8 @@ public class CalendarPeriod extends Period implements Cloneable {
                 location.equals(that.location) &&
                 openingTime.equals(that.openingTime) &&
                 closingTime.equals(that.closingTime) &&
-                reservableFrom.equals(that.reservableFrom);
+                Duration.between(this.reservableFrom, that.reservableFrom).toMillis() <= 1000;
+                // One second precision is enough.
     }
 
     @Override
@@ -79,28 +80,29 @@ public class CalendarPeriod extends Period implements Cloneable {
         this.location = location;
     }
 
-    public String getOpeningTime() {
+    public LocalTime getOpeningTime() {
         return openingTime;
     }
 
-    public void setOpeningTime(String openingTime) {
+    public void setOpeningTime(LocalTime openingTime) {
         this.openingTime = openingTime;
     }
 
-    public String getClosingTime() {
+    public LocalTime getClosingTime() {
         return closingTime;
     }
 
-    public void setClosingTime(String closingTime) {
+    public void setClosingTime(LocalTime closingTime) {
         this.closingTime = closingTime;
     }
 
-    public String getReservableFrom() {
+    public LocalDateTime getReservableFrom() {
         return reservableFrom;
     }
 
-    public void setReservableFrom(String reservableFrom) {
-        this.reservableFrom = reservableFrom;
+    public void setReservableFrom(LocalDateTime reservableFrom) {
+        if(reservableFrom != null)
+            this.reservableFrom = reservableFrom;
     }
 
 
@@ -136,41 +138,27 @@ public class CalendarPeriod extends Period implements Cloneable {
         this.id = id;
     }
 
-    public LocalDate getStartdateAsDate() {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            return format.parse(getStartsAt()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        } catch(ParseException e) {
-            // This really shouldn't happen: it was checked in 'analyze'
-            throw new RuntimeException("The date was unparseable in a place where it should have been checked!");
+    public LocalDateTime getLockedFrom() {
+        return lockedFrom;
+    }
+
+    public void setLockedFrom(LocalDateTime lockedFrom) {
+        this.lockedFrom = lockedFrom;
+    }
+
+    public void initializeLockedFrom() {
+        if (lockedFrom == null) {
+            lockedFrom = this.getEndsAt().plusWeeks(3).atTime(LocalTime.now());
         }
     }
 
-    public LocalDate getEndDateAsDate() {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            return format.parse(getEndsAt()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        } catch(ParseException e) {
-            // This really shouldn't happen: it was checked in 'analyze'
-            throw new RuntimeException("The date was unparseable in a place where it should have been checked!");
-        }
+    public boolean isLocked() {
+        return getLockedFrom().isBefore(LocalDateTime.now());
     }
-
     /**
      * The length of time the location is open (in seconds)
-     * @return
      */
     public int getOpenHoursDuration() {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-        Date startDate = null;
-        try {
-            startDate = format.parse(getStartsAt() + " " + getOpeningTime());
-            Date endDate = format.parse(getStartsAt() + " " + getClosingTime());
-            return Math.toIntExact(endDate.getTime() - startDate.getTime()) / 1000;
-        } catch (ParseException e) {
-            // This really shouldn't happen: it was checked in 'analyze'
-            throw new RuntimeException("The date was unparseable in a place where it should have been checked!");
-        }
-
+        return Math.toIntExact(SECONDS.between(getOpeningTime(), getClosingTime()));
     }
 }

@@ -1,8 +1,8 @@
 package blok2.model.penalty;
 
 import blok2.helpers.Variables;
-import blok2.helpers.date.CustomDate;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
@@ -11,8 +11,8 @@ import java.util.Objects;
 public class Penalty implements Cloneable {
     private String augentID;
     private int eventCode;
-    private CustomDate timestamp;
-    private CustomDate reservationDate;
+    private LocalDate timestamp;
+    private LocalDate reservationDate;
     private String reservationLocation;
     private int receivedPoints;
     private String remarks;
@@ -21,7 +21,7 @@ public class Penalty implements Cloneable {
 
     }
 
-    public Penalty(String augentId, int eventCode, CustomDate timestamp, CustomDate reservationDate, String reservationLocation, int receivedPoints, String remarks) {
+    public Penalty(String augentId, int eventCode, LocalDate timestamp, LocalDate reservationDate, String reservationLocation, int receivedPoints, String remarks) {
         this.augentID = augentId;
         this.eventCode = eventCode;
         this.timestamp = timestamp;
@@ -31,22 +31,21 @@ public class Penalty implements Cloneable {
         this.remarks = remarks;
     }
 
-    public static int calculateLateCancelPoints(CustomDate date, int points) {
-        LocalDateTime openingHour = LocalDateTime.of(date.getYear(), date.getMonth(), date.getDay(), date.getHrs(), date.getMin(), date.getSec());
+    public static int calculateLateCancelPoints(LocalDateTime date, int points) {
 
         Calendar tdy = Calendar.getInstance();
         LocalDateTime today = LocalDateTime.of(tdy.get(Calendar.YEAR), tdy.get(Calendar.MONTH) + 1, tdy.get(Calendar.DAY_OF_MONTH),
                 tdy.get(Calendar.HOUR_OF_DAY), tdy.get(Calendar.MINUTE), tdy.get(Calendar.SECOND));
-        int secondsBetween = (int) ChronoUnit.SECONDS.between(today, openingHour);
+        int secondsBetween = (int) ChronoUnit.SECONDS.between(today, date);
 
-        LocalDateTime maxCancelDate = LocalDateTime.from(openingHour);
-        maxCancelDate = maxCancelDate.minusDays(Variables.maxCancelDate.getDay());
-        maxCancelDate = maxCancelDate.minusMonths(Variables.maxCancelDate.getMonth());
+        LocalDateTime maxCancelDate = LocalDateTime.from(date);
+        maxCancelDate = maxCancelDate.minusDays(Variables.maxCancelDate.getDayOfMonth());
+        maxCancelDate = maxCancelDate.minusMonths(Variables.maxCancelDate.getMonthValue());
         maxCancelDate = maxCancelDate.minusYears(Variables.maxCancelDate.getYear());
-        maxCancelDate = maxCancelDate.withHour(Variables.maxCancelDate.getHrs());
-        maxCancelDate = maxCancelDate.withMinute(Variables.maxCancelDate.getMin());
-        maxCancelDate = maxCancelDate.withSecond(Variables.maxCancelDate.getSec());
-        int maxCancelSeconds = (int) ChronoUnit.SECONDS.between(maxCancelDate, openingHour);
+        maxCancelDate = maxCancelDate.withHour(Variables.maxCancelDate.getHour());
+        maxCancelDate = maxCancelDate.withMinute(Variables.maxCancelDate.getMinute());
+        maxCancelDate = maxCancelDate.withSecond(Variables.maxCancelDate.getSecond());
+        int maxCancelSeconds = (int) ChronoUnit.SECONDS.between(maxCancelDate, date);
 
         if (secondsBetween <= maxCancelSeconds) {
             return (int) Math.ceil((((double) (maxCancelSeconds - secondsBetween) / (double) (maxCancelSeconds)) * (double) points));
@@ -87,17 +86,6 @@ public class Penalty implements Cloneable {
                 '}';
     }
 
-    @Override
-    public Penalty clone() {
-        try {
-            Penalty clone = (Penalty) super.clone();
-            clone.setTimestamp(timestamp.clone());
-            clone.setReservationDate(reservationDate.clone());
-            return clone;
-        } catch (CloneNotSupportedException e) {
-            return null;
-        }
-    }
 
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
 
@@ -109,11 +97,11 @@ public class Penalty implements Cloneable {
         return eventCode;
     }
 
-    public CustomDate getTimestamp() {
+    public LocalDate getTimestamp() {
         return timestamp;
     }
 
-    public CustomDate getReservationDate() {
+    public LocalDate getReservationDate() {
         return reservationDate;
     }
 
@@ -137,11 +125,11 @@ public class Penalty implements Cloneable {
         this.eventCode = eventCode;
     }
 
-    public void setTimestamp(CustomDate timestamp) {
+    public void setTimestamp(LocalDate timestamp) {
         this.timestamp = timestamp;
     }
 
-    public void setReservationDate(CustomDate reservationDate) {
+    public void setReservationDate(LocalDate reservationDate) {
         this.reservationDate = reservationDate;
     }
 

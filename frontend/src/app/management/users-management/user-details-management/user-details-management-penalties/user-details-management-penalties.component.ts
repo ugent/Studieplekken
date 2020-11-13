@@ -5,16 +5,13 @@ import {Penalty, PenaltyConstructor} from '../../../../shared/model/Penalty';
 import {PenaltyService} from '../../../../services/api/penalties/penalty.service';
 import {transition, trigger, useAnimation} from '@angular/animations';
 import {rowsAnimation} from '../../../../shared/animations/RowAnimation';
-import {
-  CustomDate,
-  toDateTimeViewString,
-  typeScriptDateToCustomDate
-} from '../../../../shared/model/helpers/CustomDate';
 import {UserDetailsService} from '../../../../services/single-point-of-truth/user-details/user-details.service';
 import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
 import {LocationService} from '../../../../services/api/locations/location.service';
 import {Location} from '../../../../shared/model/Location';
-import {penaltyEventCodeForManualEntry} from '../../../../../environments/environment';
+import * as moment from 'moment';
+import { Moment } from 'moment';
+import {penaltyEventCodeForManualEntry} from '../../../../app.constants';
 
 @Component({
   selector: 'app-user-details-management-penalties',
@@ -84,7 +81,7 @@ export class UserDetailsManagementPenaltiesComponent implements OnInit {
     const penalty = PenaltyConstructor.new();
     penalty.augentID = this.userId;
     penalty.eventCode = penaltyEventCodeForManualEntry;
-    penalty.timestamp = typeScriptDateToCustomDate(new Date(value.timestamp));
+    penalty.timestamp = moment(value.timestamp);
     penalty.reservationDate = null;
     penalty.reservationLocation = value.location;
     penalty.receivedPoints = value.points;
@@ -130,8 +127,8 @@ export class UserDetailsManagementPenaltiesComponent implements OnInit {
     this.userDetailsService.loadUser(this.userId);
   }
 
-  toDateTimeViewString(date: CustomDate): string {
-    return toDateTimeViewString(date);
+  toDateTimeViewString(date: Moment): string {
+    return date.format('DD-MM-YYYY HH:mm');
   }
 
   validForm(): boolean {

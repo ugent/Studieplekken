@@ -24,28 +24,36 @@ values ('01405190', 'Tim', 'Van Erum', 0, 'tim.vanerum@ugent.be', 'secret', 'UGe
  * Setup two test locations with an authority and add 2nd test user to the authority
  */
 DO $$
-DECLARE tableId integer;
+DECLARE auth_id integer;
+DECLARE build_id_therminal integer;
+
 BEGIN
-  INSERT INTO public.authority (authority_name, description) values ('DSA', 'Dienst StudentenActiviteiten') RETURNING authority_id into tableId;
-  INSERT INTO public.locations (name, address, number_of_seats, number_of_lockers, image_url, authority_id, description_dutch, description_english, forGroup)
-    VALUES  ('Turbinezaal', 'Hoveniersberg 24, 9000 Gent', 50, 100, '', tableId, 'neder', 'engl', false),
-                ('Plenaire vergaderzaal', 'Hoveniersberg 24, 9000 Gent', 30, 0, '', tableId, '', '', true),
-                ('Podiumzaal', 'Hoveniersberg 24, 9000 Gent', 100, 0, '', tableId, '', '', false),
-                ('Trechterzaal', 'Hoveniersberg 24, 9000 Gent', 80, 0, '', tableId, '', '', false);
-  INSERT INTO public.roles_user_authority (user_id, authority_id) VALUES ('002',tableId);
+  INSERT INTO public.authority (authority_name, description) values ('DSA', 'Dienst StudentenActiviteiten') RETURNING authority_id into auth_id;
+  INSERT INTO public.buildings (building_name, address) VALUES ('Therminal', 'Hoveniersberg 24, 9000 Gent') RETURNING building_id into build_id_therminal;
+  INSERT INTO public.locations (name, building_id, number_of_seats, number_of_lockers, image_url, authority_id, description_dutch, description_english, forGroup)
+    VALUES  ('Turbinezaal', build_id_therminal, 50, 100, '', auth_id, 'neder', 'engl', false),
+                ('Plenaire vergaderzaal', build_id_therminal, 30, 0, '', auth_id, '', '', true),
+                ('Podiumzaal', build_id_therminal, 100, 0, '', auth_id, '', '', false),
+                ('Trechterzaal', build_id_therminal, 80, 0, '', auth_id, '', '', false);
+  INSERT INTO public.roles_user_authority (user_id, authority_id) VALUES ('002', auth_id);
 END $$;
 
 
 DO $$
 DECLARE new_authority_id integer;
+DECLARE build_id_sterreS5 integer;
+DECLARE build_id_sterreS9 integer;
+
 BEGIN
   INSERT INTO authority (authority_name, description) VALUES ('WE', 'Faculteit wetenschappen') RETURNING authority_id into new_authority_id;
-  INSERT INTO locations (name, address, number_of_seats, number_of_lockers, image_url, authority_id, description_dutch, description_english, forGroup)
-    VALUES  ('Sterre S9, PC lokaal 3rd verdiep', 'Krijgslaan 281, 9000 Gent', 40, 100, '', new_authority_id, 'Klaslokaal met computers', 'Classroom with computers', false),
-            ('Sterre S5, Bib', 'Krijgslaan 281, 9000 Gent', 100, 100, '', new_authority_id,
+  INSERT INTO public.buildings (building_name, address) VALUES ('Sterre S5', 'Krijgslaan 281, 9000 Gent') RETURNING building_id into build_id_sterreS5;
+  INSERT INTO public.buildings (building_name, address) VALUES ('Sterre S9', 'Krijgslaan 281, 9000 Gent') RETURNING building_id into build_id_sterreS9;
+  INSERT INTO locations (name, building_id, number_of_seats, number_of_lockers, image_url, authority_id, description_dutch, description_english, forGroup)
+    VALUES  ('Sterre S9, PC lokaal 3rd verdiep', build_id_sterreS9, 40, 100, '', new_authority_id, 'Klaslokaal met computers', 'Classroom with computers', false),
+            ('Sterre S5, Bib', build_id_sterreS5, 100, 100, '', new_authority_id,
                     'Informatie over de bib kan hier gevonden worden: https://lib.ugent.be/nl/libraries/WEBIB.',
                     'Information about the bib itself can be found here: https://lib.ugent.be/nl/libraries/WEBIB.', false),
-            ('Sterre S5, Eetzaal', 'Krijgslaan 281, 9000 Gent', 130, 100, '', new_authority_id, '', '', false);
+            ('Sterre S5, Eetzaal', build_id_sterreS5, 130, 100, '', new_authority_id, '', '', false);
   INSERT INTO roles_user_authority (user_id, authority_id) VALUES ('002', new_authority_id);
 END $$;
 /*
@@ -66,27 +74,27 @@ END $$;
 /*
  * Add some calendar periods
  */
-insert into calendar_periods(location_name, starts_at, ends_at, opening_time, closing_time, reservable_from, reservable, timeslot_length)
-values  ('Sterre S5, Eetzaal', to_char(now() - interval '1 days', 'YYYY-MM-DD'), to_char(now() + interval '3 days', 'YYYY-MM-DD'),
-            '10:00', '12:00', to_char(now() - interval '7 days', 'YYYY-MM-DD') || ' 19:00', true, 60),
-        ('Sterre S5, Bib', to_char(now() - interval '5 days', 'YYYY-MM-DD'), to_char(now() + interval '10 days', 'YYYY-MM-DD'),
-            '09:00', '17:00', to_char(now() - interval '7 days', 'YYYY-MM-DD') || ' 19:00', false, 0),
-        ('Sterre S9, PC lokaal 3rd verdiep', to_char(now() - interval '5 days', 'YYYY-MM-DD'), to_char(now() + interval '10 days', 'YYYY-MM-DD'),
-            '8:30', '18:30', to_char(now() - interval '7 days', 'YYYY-MM-DD') || ' 19:00', false, 0);
+insert into calendar_periods(location_name, starts_at, ends_at, opening_time, closing_time, reservable_from, reservable, timeslot_length, locked_from)
+values  ('Sterre S5, Eetzaal', now() - interval '1 days', now() + interval '3 days',
+            '10:00', '12:00', now() - interval '7 days', true, 60, now() + interval '1 week'),
+        ('Sterre S5, Bib', now() - interval '5 days', now() + interval '10 days',
+            '09:00', '17:00', now() - interval '7 days', false, 0, now() + interval '1 week'),
+        ('Sterre S9, PC lokaal 3rd verdiep',now() - interval '5 days', now() + interval '10 days',
+            '8:30', '18:30', now() - interval '7 days', false, 0, now() + interval '1 week');
 
 
 insert into reservation_timeslots(calendar_id, timeslot_sequence_number, timeslot_date)
 values 
-(1, 0,  to_char(now() - interval '1 days', 'YYYY-MM-DD')),
-(1, 1,  to_char(now() - interval '1 days', 'YYYY-MM-DD')),
-(1, 0,  to_char(now(), 'YYYY-MM-DD')),
-(1, 1,  to_char(now(), 'YYYY-MM-DD')),
-(1, 0,  to_char(now()+ interval '1 days', 'YYYY-MM-DD')),
-(1, 1,  to_char(now()+ interval '1 days', 'YYYY-MM-DD')),
-(1, 0,  to_char(now()+ interval '2 days', 'YYYY-MM-DD')),
-(1, 1,  to_char(now()+ interval '2 days', 'YYYY-MM-DD')),
-(1, 0,  to_char(now()+ interval '3 days', 'YYYY-MM-DD')),
-(1, 1,  to_char(now()+ interval '3 days', 'YYYY-MM-DD'));
+(1, 0,  now() - interval '1 days'),
+(1, 1,  now() - interval '1 days'),
+(1, 0,  now()),
+(1, 1,  now()),
+(1, 0,  now()+ interval '1 days'),
+(1, 1,  now()+ interval '1 days'),
+(1, 0,  now()+ interval '2 days'),
+(1, 1,  now()+ interval '2 days'),
+(1, 0,  now()+ interval '3 days'),
+(1, 1,  now()+ interval '3 days');
 
 
 /*
@@ -95,6 +103,6 @@ values
 insert into location_reservations(created_at, timeslot_date, timeslot_seqnr, calendar_id, user_augentid)
 values
 -- One reservation for over five days
-(to_char(now() + interval '5 days', 'YYYY-MM-DD'),  to_char(now() + interval '1 days', 'YYYY-MM-DD'), 0, 1, '001'),
+(now() + interval '5 days',  now() + interval '1 days', 0, 1, '001'),
 -- One reservation for five days ago, attended to
-(to_char(now() + interval '5 days', 'YYYY-MM-DD'),  to_char(now() + interval '3 days', 'YYYY-MM-DD'), 0, 1, '001');
+(now() + interval '5 days',  now() + interval '3 days', 0, 1, '001');

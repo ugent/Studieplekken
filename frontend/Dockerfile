@@ -2,10 +2,11 @@
 
 FROM node:12.7-alpine AS build
 WORKDIR /app
+RUN npm install -g @angular/cli
 COPY package.json package-lock.json ./
 RUN npm install
 COPY . .
-RUN npm run build --prod
+RUN ng build --prod
 
 
 ### STAGE 2: Run ###

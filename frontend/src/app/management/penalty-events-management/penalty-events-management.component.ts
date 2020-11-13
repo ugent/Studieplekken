@@ -5,9 +5,9 @@ import {PenaltyService} from '../../services/api/penalties/penalty.service';
 import {transition, trigger, useAnimation} from '@angular/animations';
 import {rowsAnimation} from '../../shared/animations/RowAnimation';
 import {TranslateService} from '@ngx-translate/core';
-import {languageAsEnum} from '../../../environments/environment';
 import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
 import {HttpErrorResponse} from '@angular/common/http';
+import {languageAsEnum} from '../../app.constants';
 
 @Component({
   selector: 'app-penalty-events-management',
@@ -207,7 +207,6 @@ export class PenaltyEventsManagementComponent implements OnInit {
 
     if (this.validPenaltyEventForm()) {
       const penaltyEvent = this.penaltyEventFromFormAndDescriptions(value);
-      console.log(penaltyEvent);
 
       this.updateWasSuccess = null;
       this.penaltyService.updatePenaltyEvent(value.code, penaltyEvent).subscribe(

@@ -25,6 +25,9 @@ export function isStringValidTimeForDBWithoutSeconds(timeStr: string): boolean {
  * Is 'dateTimeStr' a valid date?
  */
 export function isStringValidDateTimeForDB(dateTimeStr: string): boolean {
+  if (dateTimeStr == null) {
+    return;
+  }
   const regexp = new RegExp('^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}$');
   if (!regexp.test(dateTimeStr)) {
     return false;

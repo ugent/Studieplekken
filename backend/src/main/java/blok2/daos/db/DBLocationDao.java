@@ -4,14 +4,15 @@ import blok2.daos.IAccountDao;
 import blok2.daos.ILocationDao;
 import blok2.daos.IScannerLocationDao;
 import blok2.helpers.Resources;
-import blok2.helpers.date.CustomDate;
 import blok2.model.Authority;
+import blok2.model.Building;
 import blok2.model.LocationTag;
 import blok2.model.reservables.Location;
 import blok2.model.reservables.Locker;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -103,79 +104,63 @@ public class DBLocationDao extends DAO implements ILocationDao {
         try (Connection conn = adb.getConnection()) {
             try {
                 conn.setAutoCommit(false);
-                if (!locationName.equals(location.getName())) {
-                    // add location and lockers so we have added
-                    // the 'updated' location and there are new lockers
-                    // with FK to the new location
-                    addLocation(location, conn);
 
-                    // update the remaining tables with FK to location:
-                    // calendar, scanner_locations, location_reservations,
-                    // locker_reservations, location_tags and penalty_book
-                    updateForeignKeysToLocation(locationName, location.getName(), conn);
+                Location oldLocation = getLocation(locationName, conn);
 
-                    // delete lockers with FK to the old location,
-                    // and eventually delete the old location as well
-                    deleteLockers(locationName, conn);
-                    deleteLocation(locationName, conn);
-                } else {
-                    updateLocation(location, conn);
+                if (oldLocation == null)
+                    return;
+
+                // Update location
+                PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("update_location"));
+                // set ...
+                prepareUpdateOrInsertLocationStatement(location, pstmt);
+                // where ...
+                pstmt.setString(10, locationName);
+                pstmt.execute();
+
+                // Update lockers if necessary
+                if (oldLocation.getNumberOfLockers() != location.getNumberOfLockers()) {
+                    updateNumberOfLockers(location.getName(), oldLocation.getNumberOfLockers()
+                            , location.getNumberOfLockers(), conn);
                 }
 
                 conn.commit();
-                conn.setAutoCommit(true);
             } catch (SQLException e) {
                 conn.rollback();
                 throw e;
             } finally {
                 conn.setAutoCommit(true);
             }
+        }
+    }
+
+    private void updateNumberOfLockers(String locationName, int from, int to, Connection conn) throws SQLException {
+        if (from > to) {
+            decreaseNumberOfLockers(locationName, from, to, conn);
+        } else {
+            increaseNumberOfLockers(locationName, from, to, conn);
+        }
+    }
+
+    private void increaseNumberOfLockers(String locationName, int from, int to, Connection conn) throws SQLException {
+        for (int i = from; i < to; i++) {
+            insertLocker(locationName, i, conn);
+        }
+    }
+
+    private void decreaseNumberOfLockers(String locationName, int from, int to, Connection conn) throws SQLException {
+        for (int i = from - 1; i >= to; i--) {
+            deleteLocker(locationName, i, conn);
         }
     }
 
     @Override
     public void deleteLocation(String locationName) throws SQLException {
         try (Connection conn = adb.getConnection()) {
-            try {
-                conn.setAutoCommit(false);
-
-                deleteLocationWithCascade(locationName, conn);
-
-                conn.commit();
-                conn.setAutoCommit(true);
-            } catch (SQLException e) {
-                conn.rollback();
-                throw e;
-            } finally {
-                conn.setAutoCommit(true);
-            }
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_location"));
+            pstmt.setString(1, locationName);
+            pstmt.execute();
         }
-    }
-
-    public static void deleteLocationWithCascade(String locationName, Connection conn) throws SQLException {
-        // delete calendar periods
-        deleteCalendarPeriods(locationName, conn);
-
-        // delete calendar periods for lockers
-        deleteCalendarPeriodsForLockers(locationName, conn);
-
-        // delete scanners_location
-        DBScannerLocationDao.deleteAllScannersOfLocation(locationName, conn);
-
-        // delete location_reservations
-        // deleteLocationReservations(locationName, conn);
-
-        // delete penalty_book entries
-        deletePenaltyBookEntries(locationName, conn);
-
-        // delete locker_reservations
-        deleteLockers(locationName, conn);
-
-        // delete tags from location
-        DBLocationTagDao.deleteAllTagsFromLocation(locationName, conn);
-
-        // and finally, delete the location
-        deleteLocation(locationName, conn);
     }
 
     @Override
@@ -205,7 +190,18 @@ public class DBLocationDao extends DAO implements ILocationDao {
     }
 
     @Override
-    public Map<String, Integer> getCountOfReservations(CustomDate date) throws SQLException {
+    public void deleteLocker(String locationName, int number) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_locker"));
+            pstmt.setString(1, locationName);
+            pstmt.setInt(2, number);
+            pstmt.execute();
+        }
+    }
+
+
+    @Override
+    public Map<String, Integer> getCountOfReservations(LocalDate date) throws SQLException {
         HashMap<String, Integer> count = new HashMap<>();
 
         try (Connection conn = adb.getConnection()) {
@@ -234,7 +230,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
         int numberOfLockers = rs.getInt(Resources.databaseProperties.getString("location_number_of_lockers"));
         boolean forGroup = rs.getBoolean(Resources.databaseProperties.getString("location_forGroup"));
         String imageUrl = rs.getString(Resources.databaseProperties.getString("location_image_url"));
-        String address = rs.getString(Resources.databaseProperties.getString("location_address"));
+        Building building = DBBuildingDao.createBuilding(rs);
         Authority authority = DBAuthorityDao.createAuthority(rs);
 
         String descriptionDutch = rs.getString(Resources.databaseProperties.getString("location_description_dutch"));
@@ -243,8 +239,8 @@ public class DBLocationDao extends DAO implements ILocationDao {
         List<LocationTag> assignedTags = new ArrayList<>();
         fillTagLists(assignedTags, rsTags);
 
-        return new Location(name, address, numberOfSeats, numberOfLockers, imageUrl, authority,
-                descriptionDutch, descriptionEnglish, forGroup, assignedTags);
+        return new Location(name, numberOfSeats, numberOfLockers, imageUrl, authority,
+                descriptionDutch, descriptionEnglish, building, forGroup, assignedTags);
     }
 
     private static void fillTagLists(List<LocationTag> assignedTags, ResultSet rsTags)
@@ -266,7 +262,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
 
     public static Locker createLocker(ResultSet rs, Connection conn) throws SQLException {
         Locker l = new Locker();
-        l.setNumber(rs.getInt(Resources.databaseProperties.getString("locker_number")));
+        l.setNumber(rs.getInt(Resources.databaseProperties.getString("locker_reservation_locker_number")));
         Location location = DBLocationDao.createLocation(rs, conn);
         l.setLocation(location);
         return l;
@@ -295,8 +291,8 @@ public class DBLocationDao extends DAO implements ILocationDao {
         pstmt.setInt(2, location.getNumberOfSeats());
         pstmt.setInt(3, location.getNumberOfLockers());
         pstmt.setString(4, location.getImageUrl());
-        pstmt.setString(5, location.getAddress());
-        pstmt.setInt(6, location.getAuthority().getAuthorityId());
+        pstmt.setInt(5, location.getAuthority().getAuthorityId());
+        pstmt.setInt(6, location.getBuilding().getBuildingId());
         pstmt.setString(7, location.getDescriptionDutch());
         pstmt.setString(8, location.getDescriptionEnglish());
         pstmt.setBoolean(9, location.getForGroup());
@@ -312,13 +308,6 @@ public class DBLocationDao extends DAO implements ILocationDao {
     private static void deleteCalendarPeriodsForLockers(String locationName, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
                 .getString("delete_calendar_periods_for_lockers_of_location"));
-        pstmt.setString(1, locationName);
-        pstmt.execute();
-    }
-
-    private static void deleteLocationReservations(String locationName, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn
-                .prepareStatement(Resources.databaseProperties.getString("delete_location_reservations_of_location"));
         pstmt.setString(1, locationName);
         pstmt.execute();
     }
@@ -446,25 +435,6 @@ public class DBLocationDao extends DAO implements ILocationDao {
         pstmt.execute();
     }
 
-    private void updateNumberOfLockers(String locationName, int from, int to, Connection conn) throws SQLException {
-        if (from > to) {
-            decreaseNumberOfLockers(locationName, from, to, conn);
-        } else {
-            increaseNumberOfLockers(locationName, from, to, conn);
-        }
-    }
-
-    private void increaseNumberOfLockers(String locationName, int from, int to, Connection conn) throws SQLException {
-        for (int i = from; i < to; i++) {
-            insertLocker(locationName, i, conn);
-        }
-    }
-
-    private void decreaseNumberOfLockers(String locationName, int from, int to, Connection conn) throws SQLException {
-        for (int i = from - 1; i >= to; i--) {
-            deleteLocker(locationName, i, conn);
-        }
-    }
 
     private void deleteLocker(String locationName, int number, Connection conn) throws SQLException {
         deleteLockerReservation(locationName, number, conn);

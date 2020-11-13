@@ -1,9 +1,9 @@
 package blok2.daos;
 
-import blok2.helpers.date.CustomDate;
 import blok2.model.Authority;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
+import blok2.model.Building;
 import blok2.model.reservables.Location;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
@@ -12,6 +12,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class TestDBLocationReservationDao extends TestDao {
@@ -31,20 +33,25 @@ public class TestDBLocationReservationDao extends TestDao {
     @Autowired
     private ICalendarPeriodDao calendarPeriodDao;
 
+    @Autowired
+    private IBuildingDao buildingDao;
 
     private Location testLocation;
-
+    private Building testBuilding;
     private User testUser;
     private User testUser2;
     private List<CalendarPeriod> calendarPeriods;
     private CalendarPeriod calendarPeriod1Seat;
+    private Location testLocation1Seat;
 
     @Override
     public void populateDatabase() throws SQLException {
         // setup test location objects
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testLocation = TestSharedMethods.testLocation(authority.clone());
-        Location testLocation1Seat = TestSharedMethods.testLocation1Seat(authority.clone());
+        testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+
+        testLocation = TestSharedMethods.testLocation(authority.clone(), testBuilding);
+        testLocation1Seat = TestSharedMethods.testLocation1Seat(authority.clone(), testBuilding);
 
         testUser = TestSharedMethods.adminTestUser();
         testUser2 = TestSharedMethods.studentTestUser();
@@ -72,8 +79,7 @@ public class TestDBLocationReservationDao extends TestDao {
         Assert.assertEquals("addLocationReservation, setup testUser", testUser, u);
 
         // Create LocationReservation
-        CustomDate date = new CustomDate(1970, 1, 1, 9, 0, 0);
-        LocationReservation lr = new LocationReservation(u, date.toDateString(), timeslot, null);
+        LocationReservation lr = new LocationReservation(u, LocalDateTime.of(1970, 1, 1, 9, 0, 0), timeslot, null);
 
         // add LocationReservation to database
         locationReservationDao.addLocationReservation(lr);
@@ -99,13 +105,13 @@ public class TestDBLocationReservationDao extends TestDao {
 
         Timeslot timeslot = calendarPeriod1Seat.getTimeslots().get(0);
 
-        LocationReservation lr = new LocationReservation(u, CustomDate.today().toDateString(), timeslot, null);
+        LocationReservation lr = new LocationReservation(u, LocalDateTime.now(), timeslot, null);
         TestSharedMethods.addCalendarPeriods(calendarPeriodDao, calendarPeriods.get(0));
         Assert.assertTrue(locationReservationDao.addLocationReservationIfStillRoomAtomically(lr));
-        lr = new LocationReservation(u, CustomDate.today().toDateString(), timeslot, null);
+        lr = new LocationReservation(u, LocalDateTime.now(), timeslot, null);
         // This is a duplicate entry into the database. Shouldn't work.
         Assert.assertFalse(locationReservationDao.addLocationReservationIfStillRoomAtomically(lr));
-        lr = new LocationReservation(u2, CustomDate.today().toDateString(), timeslot, null);
+        lr = new LocationReservation(u2, LocalDateTime.now(), timeslot, null);
         // This is a second user. Also shouldn't work.
         Assert.assertFalse(locationReservationDao.addLocationReservationIfStillRoomAtomically(lr));
 
@@ -128,11 +134,11 @@ public class TestDBLocationReservationDao extends TestDao {
         Assert.assertEquals("scanStudentTest, setup testUser2", testUser2, u2);
 
         // Make reservation for today
-        CustomDate today = CustomDate.today();
+        LocalDate today = LocalDate.now();
 
         // Make reservations for users u1 and u2
-        LocationReservation lr1 = new LocationReservation(u1, CustomDate.today().toDateString(), timeslot, null);
-        LocationReservation lr2 = new LocationReservation(u2, CustomDate.today().toDateString(), timeslot, null);
+        LocationReservation lr1 = new LocationReservation(u1, LocalDateTime.now(), timeslot, null);
+        LocationReservation lr2 = new LocationReservation(u2, LocalDateTime.now(), timeslot, null);
 
         locationReservationDao.addLocationReservation(lr1);
         locationReservationDao.addLocationReservation(lr2);

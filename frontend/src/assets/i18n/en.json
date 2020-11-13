@@ -11,6 +11,7 @@
 
   "dashboard": {
     "address": "Address",
+    "building": "Building",
     "description": "Description",
     "details": "Details",
     "tags": "Tags",
@@ -22,7 +23,13 @@
 
     "locationDetails": {
       "info": "General information about this location:",
-      "tags": "Tags that characterize this location:"
+      "tags": "Tags that characterize this location:",
+      "calendar": {
+        "reservation": {
+          "successMessage": "Successfully updated the reservations",
+          "errorMessage": "Update was not successful. Something went wrong."
+        }
+      }
     },
 
     "filter": {
@@ -40,6 +47,10 @@
     "disclaimer": "Disclaimer",
     "cookies": "Cookies",
     "accessibility": "Accessibility"
+  },
+
+  "reservations": {
+    "reservationButton": "Update Reservations"
   },
 
   "general": {
@@ -103,10 +114,10 @@
     "aside": {
       "title": "Management",
       "locations": "Locations",
+      "buildings": "Buildings",
       "tags": "Tags",
       "users": "Users",
       "authorities": "Authorities",
-      "reservations": "Reservations",
       "calendar": "Calendar",
       "penalties": "Penalties"
     },
@@ -114,6 +125,7 @@
     "general": {
       "loading": "Loading...",
       "noLocations": "There are no locations yet, make one using the 'Add Location' button",
+      "noBuildings": "There are no buildings yet, make one using the 'Add Building' button",
       "noTags": "There are no tags yet, make one using the 'Add Tag' button",
       "noAuthorities": "There are no authorities yet, make on using the 'Add Authority' button"
     },
@@ -124,7 +136,7 @@
       "form": {
         "name": "Name",
         "authority": "Authority",
-        "address": "Address",
+        "building": "Building/Campus",
         "numberOfSeats": "Number of seats",
         "numberOfLockers": "Number of lockers",
         "forGroup": "Group Reservation",
@@ -140,7 +152,19 @@
       },
 
       "calendar": {
-        "title": "Calendar with opening days",
+        "title": "Reservation Management",
+
+        "reservations": {
+          "title": "Reservations for this location",
+          "selectSlot": "Select a (reservable) timeslot to display the reservations",
+          "loading": "Location reservations are being loaded...",
+          "error": "Something went wrong while loading the reservations...",
+          "table": {
+            "noLocationReservations": "There are no location reservations for the selected timeslot",
+            "user": "User",
+            "attended": "Was user present?"
+          }
+        },
 
         "form": {
           "title": "Edit opening days",
@@ -174,7 +198,10 @@
         "warningDialog": {
           "warning": "Warning",
           "body": "The opening duration of (at least) one of the created calendar periods is not divisable by the Reservable Timeslot-duration. This means that, for these periods, the last (incomplete) timeslot will not be created and as such will also not be reservable. Please make sure to take this into account"
-        }
+        },
+
+        "updateTitle": "Update Calendar Period",
+        "newTitle": "New Calendar Period"
       },
 
       "description": {
@@ -257,7 +284,7 @@
     },
 
     "locations": {
-      "title": "Management of blok-locations",
+      "title": "Management of study locations",
       "addNew": "Add location",
 
       "table": {
@@ -315,11 +342,44 @@
       }
     },
 
+    "buildings": {
+      "title": "Management of buildings for locations",
+
+      "table": {
+        "name": "Name",
+        "address": "Address"
+      },
+
+      "addNewBuilding": "New building",
+
+      "addBuildingModal": {
+        "title": "Add new building",
+        "idSetByBackendMessage": "Set by backend",
+        "success": "Successfully added the new building.",
+        "error": "Something went wrong while adding the new building."
+      },
+
+      "updateBuildingModal": {
+        "title": "Update building",
+        "success": "Successfully updated the building.",
+        "error": "Something went wrong while updating the building."
+      },
+
+      "deleteBuildingModal": {
+        "title": "Delete the building",
+        "body": "Are you sure that you want to delete following building?",
+        "warning": "Please do note that all locations within this building will be deleted too",
+        "success": "Successfully deleted the building.",
+        "error": "Something went wrong while deleting the building."
+      },
+
+      "errorOnRetrievingTags": "Something went wrong while retrieving the buildings..."
+    },
+
     "tags": {
       "title": "Management of tags for locations",
 
       "table": {
-        "id": "Tag ID",
         "dutch": "Dutch",
         "english": "English"
       },
@@ -490,7 +550,6 @@
       "title": "Management of authorities",
 
       "table": {
-        "authorityId": "ID",
         "authorityName": "Authority name",
         "description": "Description"
       },
@@ -774,6 +833,7 @@
           "header": {
             "locationName": "Location",
             "reservationDate": "Reservation for date",
+            "beginHour": "Starting time reservation",
             "attended": "Did you attend?"
           },
 
@@ -784,7 +844,9 @@
           }
         },
 
-        "noReservations": "You have never made any location reservations so far."
+        "zeroReservations": "You have never made any location reservations so far",
+        "loading": "Location reservations are being loaded...",
+        "error": "Error while loading your location reservations"
       },
 
       "lockers": {

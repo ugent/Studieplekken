@@ -1,19 +1,15 @@
 package blok2.daos;
 
-import blok2.helpers.date.CustomDate;
 import blok2.model.Authority;
+import blok2.model.Building;
 import blok2.model.reservables.Location;
 import blok2.model.reservables.Locker;
 import blok2.model.reservations.LockerReservation;
 import blok2.model.users.User;
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 
 
 public class TestDBLockerReservationDao extends TestDao {
@@ -39,7 +35,11 @@ public class TestDBLockerReservationDao extends TestDao {
     @Autowired
     private IAuthorityDao authorityDao;
 
+    @Autowired
+    private IBuildingDao buildingDao;
+
     private Location testLocation;
+    private Building testBuilding;
     private User testUser1;
     private User testUser2;
     private List<LockerReservation> testLockerReservations;
@@ -48,7 +48,9 @@ public class TestDBLockerReservationDao extends TestDao {
     public void populateDatabase() throws SQLException {
         // Setup test objects
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testLocation = TestSharedMethods.testLocation(authority.clone());
+
+        testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+        testLocation = TestSharedMethods.testLocation(authority.clone(), testBuilding);
         testUser1 = TestSharedMethods.adminTestUser();
         testUser2 = TestSharedMethods.studentTestUser();
 

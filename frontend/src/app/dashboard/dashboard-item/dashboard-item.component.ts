@@ -1,10 +1,10 @@
 import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import {Location} from '../../shared/model/Location';
-import {vars} from '../../../environments/environment';
 import {LocationService} from '../../services/api/locations/location.service';
 import {TranslateService} from '@ngx-translate/core';
 import {LocationTag} from '../../shared/model/LocationTag';
 import {ApplicationTypeFunctionalityService} from '../../services/functionality/application-type/application-type-functionality.service';
+import {defaultLocationImage} from '../../app.constants';
 
 @Component({
   selector: 'app-dashboard-item',
@@ -16,7 +16,7 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
 
   occupation: number = 0;
 
-  altImageUrl = vars.defaultLocationImage;
+  altImageUrl = defaultLocationImage;
 
   assignedTags: LocationTag[];
 
@@ -30,7 +30,6 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
               private functionalityService: ApplicationTypeFunctionalityService) { }
 
   ngOnInit(): void {
-
     this.currentLang = this.translate.currentLang;
     this.translate.onLangChange.subscribe(
       () => {
@@ -49,7 +48,7 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
   }
 
   handleImageError(): void {
-    this.location.imageUrl = vars.defaultLocationImage;
+    this.location.imageUrl = defaultLocationImage;
   }
 
   setupTagsInCurrentLang(): void {

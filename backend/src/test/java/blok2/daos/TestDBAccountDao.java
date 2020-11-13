@@ -79,8 +79,7 @@ public class TestDBAccountDao extends TestDao {
         // change the role opposed to testUser1, update should succeed
         expectedChangedUser.setAdmin(false);
 
-        boolean updated = accountDao.updateUserByMail(testUser1.getMail(), expectedChangedUser);
-        Assert.assertTrue("updateUserTest, updated testUser1's role", updated);
+        accountDao.updateUserByMail(testUser1.getMail(), expectedChangedUser);
 
         User actualChangedUser = accountDao.getUserById(expectedChangedUser.getAugentID());
         Assert.assertEquals(expectedChangedUser, actualChangedUser);

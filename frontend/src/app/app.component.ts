@@ -48,8 +48,6 @@ export class AppComponent implements OnInit {
     // is shown in the application.
     this.authenticationService.user.subscribe(
       next => {
-        console.log('app component received a new user:');
-        console.log(next);
         const scanFunc = this.functionalityService.showScanningFunctionality();
 
         // first, check if the user is logged in

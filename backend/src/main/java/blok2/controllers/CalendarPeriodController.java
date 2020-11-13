@@ -11,10 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,9 +43,21 @@ public class CalendarPeriodController {
         }
     }
 
+    @GetMapping
+    public List<CalendarPeriod> getAllCalendarPeriods() {
+        try {
+            return calendarPeriodDao.getAllCalendarPeriods();
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
     @PostMapping
     public void addCalendarPeriods(@RequestBody List<CalendarPeriod> calendarPeriods) {
         try {
+            calendarPeriods.forEach(CalendarPeriod::initializeLockedFrom);
             calendarPeriodDao.addCalendarPeriods(calendarPeriods);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
@@ -63,7 +72,7 @@ public class CalendarPeriodController {
         try {
             List<CalendarPeriod> from = fromAndTo[0];
             List<CalendarPeriod> to = fromAndTo[1];
-
+            to.forEach(CalendarPeriod::initializeLockedFrom);
             // check for outdated view (perhaps some other user has changed the calendar periods in the meantime
             // between querying for the calendar periods for a location, and updating the calendar
             List<CalendarPeriod> currentView = calendarPeriodDao.getCalendarPeriodsOfLocation(locationName);
@@ -86,6 +95,13 @@ public class CalendarPeriodController {
                         HttpStatus.CONFLICT, "Wrong/Old view on data layer");
             }
 
+
+            // This is an issue. We can't block if any are locked: non-changed ones would have to be removed and added as well.
+            // This solution prevents locked periods from being removed (which we did want to do, if I recall correctly)
+            // Better suggestions welcome.
+            from.removeIf(CalendarPeriod::isLocked);
+            to.removeIf(CalendarPeriod::isLocked);
+
             // if the 'to' list is empty, all 'from' entries need to be deleted
             if (to.isEmpty()) {
                 deleteCalendarPeriods(from);
@@ -101,10 +117,6 @@ public class CalendarPeriodController {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        } catch (ParseException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, "Wrong date format for 'starts at'");
         }
     }
 
@@ -125,7 +137,7 @@ public class CalendarPeriodController {
      */
     private void analyzeAndUpdateCalendarPeriods(String locationName,
                                                  List<CalendarPeriod> from,
-                                                 List<CalendarPeriod> to) throws SQLException, ParseException {
+                                                 List<CalendarPeriod> to) throws SQLException {
         // setup
         Location expectedLocation = locationDao.getLocation(locationName);
 
@@ -138,25 +150,16 @@ public class CalendarPeriodController {
                         HttpStatus.CONFLICT, "Different locations in request");
             }
 
-            // by parsing, we automatically check the string formats
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            Date startDate = format.parse(period.getStartsAt());
-            Date endDate = format.parse(period.getEndsAt());
 
-            // check if the end of all periods are after the start
-            if (endDate.getTime() < startDate.getTime()) {
+            // check if the ends of all periods are after the start
+            if (period.getEndsAt().isBefore(period.getStartsAt())) {
                 logger.log(Level.SEVERE, "analyzeAndUpdateCalendarPeriods, endsAt was before startsAt");
                 throw new ResponseStatusException(
                         HttpStatus.CONFLICT, "StartsAt must be before EndsAt");
             }
 
-            // check if closingTime is not before the openingTime
-            // this is done by using the same date, but different times
-            format = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-            startDate = format.parse(period.getStartsAt() + " " + period.getOpeningTime());
-            endDate = format.parse(period.getStartsAt() + " " + period.getClosingTime());
 
-            if (endDate.getTime() < startDate.getTime()) {
+            if (period.getOpeningTime().isAfter(period.getClosingTime())) {
                 logger.log(Level.SEVERE, "analyzeAndUpdateCalendarPeriods, closingTime was before openingTime");
                 throw new ResponseStatusException(
                         HttpStatus.CONFLICT, "OpeningTime must be before closingTime");
@@ -165,8 +168,7 @@ public class CalendarPeriodController {
 
             // check if reservable from is parsable
             if (period.isReservable()) {
-                format.parse(period.getReservableFrom());
-                if (period.getReservableTimeslotSize() <= 0) {
+                if(period.getReservableTimeslotSize() <= 0) {
                     throw new ResponseStatusException(
                             HttpStatus.BAD_REQUEST, "Timeslot size must be larger than 0.");
                 }

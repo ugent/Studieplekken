@@ -61,12 +61,12 @@ public interface IAccountDao extends IDao {
     /**
      * Updates the user by id
      */
-    boolean updateUserById(String augentid, User u) throws SQLException;
+    void updateUserById(String augentid, User u) throws SQLException;
 
     /**
      * Updates the user by mail
      */
-    boolean updateUserByMail(String email, User u) throws SQLException;
+    void updateUserByMail(String email, User u) throws SQLException;
 
     // DELETE
 

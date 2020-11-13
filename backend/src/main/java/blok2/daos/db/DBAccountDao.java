@@ -2,7 +2,6 @@ package blok2.daos.db;
 
 import blok2.daos.IAccountDao;
 import blok2.helpers.Resources;
-import blok2.helpers.date.CustomDate;
 import blok2.helpers.generators.IGenerator;
 import blok2.helpers.generators.VerificationCodeGenerator;
 import blok2.model.users.User;
@@ -26,39 +25,24 @@ public class DBAccountDao extends DAO implements IAccountDao {
 
     private final IGenerator<String> verificationCodeGenerator = new VerificationCodeGenerator();
 
-    public DBAccountDao() {
-    }
-
-    // executes daily
-    // TODO: should be done in db, have a look at https://stackoverflow.com/a/9490521/9356123
-    //  to track the timestamp of the locker_reservation record insertions. Based on xmin,
-    //  delete certain entries. Probably best to do it as a Perl script which can be put into
-    //  a one shot systemd service on the production server.
-    /*@Scheduled(fixedRate = 1000 * 60 * 60 * 24)
-    public void scheduledCleanup() {
-        try (Connection conn = adb.getConnection()) {
-            Statement statement = conn.createStatement();
-            statement.executeQuery(Resources.databaseProperties.getString("daily_cleanup_user_to_be_verified"));
-        } catch (SQLException e) {
-
-        }
-    }*/
-
     @Override
     public User getUserByEmail(String email) throws SQLException {
         try (Connection conn = adb.getConnection()) {
-            String query = Resources.databaseProperties.getString("get_user_by_<?>")
-                    .replace("<?>", "LOWER(u.mail) = LOWER(?)");
-            logger.info(String.format("Gebruikte query: %s", query));
-            PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setString(1, email.toLowerCase());
-            ResultSet rs = pstmt.executeQuery();
-
-            if (rs.next())
-                return createUser(rs);
-
-            return null;
+            return getUserByEmail(email, conn);
         }
+    }
+
+    private User getUserByEmail(String email, Connection conn) throws SQLException {
+        String query = Resources.databaseProperties.getString("get_user_by_<?>")
+                .replace("<?>", "LOWER(u.mail) = LOWER(?)");
+        PreparedStatement pstmt = conn.prepareStatement(query);
+        pstmt.setString(1, email.toLowerCase());
+        ResultSet rs = pstmt.executeQuery();
+
+        if (rs.next())
+            return createUser(rs);
+
+        return null;
     }
 
     @Override
@@ -248,75 +232,37 @@ public class DBAccountDao extends DAO implements IAccountDao {
     }
 
     @Override
-    public boolean updateUserById(String augentid, User u) throws SQLException {
+    public void updateUserById(String augentid, User u) throws SQLException {
         try (Connection conn = adb.getConnection()) {
-            try {
-                conn.setAutoCommit(false);
-
-                if (!augentid.equals(u.getAugentID())) {
-                    // First, add the new user so that the tables
-                    // with a FK to the old user can be updated
-                    addUser(u, conn);
-
-                    // Now, update the tables with a FK pointing to
-                    // the old user
-                    updateForeignKeysToNewUser(augentid, u.getAugentID(), conn);
-
-                    // Finally, remove the old user
-                    deleteUser(augentid, conn);
-                } else {
-                    updateUserById(u, conn);
-                }
-
-                conn.commit();
-                return true;
-            } catch (SQLException e) {
-                conn.rollback();
-                throw e;
-            } finally {
-                conn.setAutoCommit(true);
-            }
+            updateUserById(augentid, u, conn);
         }
     }
 
+    private void updateUserById(String augentid, User u, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("update_user"));
+        // set ...
+        prepareUpdateOrInsertUser(u, pstmt);
+        // where ...
+        pstmt.setString(9, augentid);
+        pstmt.execute();
+    }
+
     @Override
-    public boolean updateUserByMail(String mail, User u) throws SQLException {
-        User _u = getUserByEmail(mail);
-        // don't use u.getAugentID() because that may be the update!
-        return updateUserById(_u.getAugentID(), u);
+    public void updateUserByMail(String mail, User u) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            User _u = getUserByEmail(mail, conn);
+            // don't use u.getAugentID() because that may be the update!
+            if (_u != null)
+                updateUserById(_u.getAugentID(), u, conn);
+        }
     }
 
     @Override
     public void deleteUser(String augentid) throws SQLException {
         try (Connection conn = adb.getConnection()) {
-            try {
-                conn.setAutoCommit(false);
-
-                // delete all entries of user in SCANNERS_LOCATION
-                DBScannerLocationDao.deleteAllLocationsOfScanner(augentid, conn);
-
-                // delete all entries of user in LOCATION_RESERVATIONS
-                deleteLocationReservations(augentid, conn);
-
-                // delete all entries of user in LOCKER_RESERVATIONS
-                deleteLockerReservations(augentid, conn);
-
-                // delete all entries of user in PENALTY_BOOK
-                deletePenaltyBookEntries(augentid, conn);
-
-                // delete all entries of user in ROLES_USER_AUTHORITY
-                deleteRolesUserAuthorityEntries(augentid, conn);
-
-                // and eventually, delete the user in USERS
-                deleteUser(augentid, conn);
-
-                conn.commit();
-            } catch (SQLException e) {
-                conn.rollback();
-                throw e;
-            } finally {
-                conn.setAutoCommit(true);
-            }
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_user"));
+            pstmt.setString(1, augentid);
+            pstmt.execute();
         }
     }
 
@@ -380,8 +326,7 @@ public class DBAccountDao extends DAO implements IAccountDao {
         pstmt.setString(8, verificationCode);
 
         LocalDateTime localDate = LocalDateTime.now();
-        CustomDate today = new CustomDate(localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth(), localDate.getHour(), localDate.getMinute(), localDate.getSecond());
-        pstmt.setString(9, today.toString());
+        pstmt.setString(9, localDate.toString());
     }
 
     private void equalPreparationForUserAndUserToVerify(User u, PreparedStatement pstmt)
@@ -398,94 +343,6 @@ public class DBAccountDao extends DAO implements IAccountDao {
     private void addUser(User u, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_user"));
         prepareUpdateOrInsertUser(u, pstmt);
-        pstmt.execute();
-    }
-
-    private void updateForeignKeysToNewUser(String oldAugentid, String newAugentid, Connection conn)
-            throws SQLException {
-        updateForeignKeyOfScannersLocation(oldAugentid, newAugentid, conn);
-        updateForeignKeyOfLocationReservations(oldAugentid, newAugentid, conn);
-        updateForeignKeyOfLockerReservations(oldAugentid, newAugentid, conn);
-        updateForeignKeyOfPenaltyBook(oldAugentid, newAugentid, conn);
-        updateForeignKeyOfRolesUserAuthorityEntries(oldAugentid, newAugentid, conn);
-    }
-
-    private void updateForeignKeyOfScannersLocation(String oldAugentid, String newAugentid, Connection conn)
-            throws SQLException {
-        String query = Resources.databaseProperties.getString("update_fk_scanners_location_to_user");
-        updateForeignKeyGeneral(oldAugentid, newAugentid, query, conn);
-    }
-
-    private void updateForeignKeyOfLocationReservations(String oldAugentid, String newAugentid, Connection conn)
-            throws SQLException {
-        String query = Resources.databaseProperties.getString("update_fk_location_reservations_to_user");
-        updateForeignKeyGeneral(oldAugentid, newAugentid, query, conn);
-    }
-
-    private void updateForeignKeyOfLockerReservations(String oldAugentid, String newAugentid, Connection conn)
-            throws SQLException {
-        String query = Resources.databaseProperties.getString("update_fk_locker_reservations_to_user");
-        updateForeignKeyGeneral(oldAugentid, newAugentid, query, conn);
-    }
-
-    private void updateForeignKeyOfPenaltyBook(String oldAugentid, String newAugentid, Connection conn)
-            throws SQLException {
-        String query = Resources.databaseProperties.getString("update_fk_penalty_book_to_user");
-        updateForeignKeyGeneral(oldAugentid, newAugentid, query, conn);
-    }
-
-    private void updateForeignKeyOfRolesUserAuthorityEntries(String oldAugentid, String newAugentid, Connection conn) throws SQLException {
-        String query = Resources.databaseProperties.getString("update_fk_roles_user_authority_to_user");
-        updateForeignKeyGeneral(oldAugentid, newAugentid, query, conn);
-    }
-
-    private void updateForeignKeyGeneral(String oldAugentid, String newAugentid, String query, Connection conn)
-            throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(query);
-        pstmt.setString(1, newAugentid);
-        pstmt.setString(2, oldAugentid);
-        pstmt.execute();
-    }
-
-    private void updateUserById(User user, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("update_user"));
-        // set ...
-        prepareUpdateOrInsertUser(user, pstmt);
-        // where ...
-        pstmt.setString(9, user.getAugentID());
-        pstmt.execute();
-    }
-
-    private void deleteLocationReservations(String augentid, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
-                .getString("delete_location_reservations_of_user"));
-        pstmt.setString(1, augentid);
-        pstmt.execute();
-    }
-
-    private void deleteLockerReservations(String augentid, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
-                .getString("delete_locker_reservations_of_user"));
-        pstmt.setString(1, augentid);
-        pstmt.execute();
-    }
-
-    private void deletePenaltyBookEntries(String augentid, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
-                .getString("delete_penalties_of_user"));
-        pstmt.setString(1, augentid);
-        pstmt.execute();
-    }
-
-    private void deleteRolesUserAuthorityEntries(String augentid, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_roles_user_authority_of_user"));
-        pstmt.setString(1, augentid);
-        pstmt.execute();
-    }
-
-    private void deleteUser(String augentid, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_user"));
-        pstmt.setString(1, augentid);
         pstmt.execute();
     }
 
