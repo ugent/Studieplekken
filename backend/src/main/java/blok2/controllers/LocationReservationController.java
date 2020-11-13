@@ -62,7 +62,7 @@ public class LocationReservationController {
             LocationReservation reservation = new LocationReservation(user, LocalDateTime.now(), timeslot, null);
             CalendarPeriod period = calendarPeriodDao.getById(timeslot.getCalendarId());
             if(LocalDateTime.now().isBefore(period.getReservableFrom())) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "This calendarperiod can't be reserved anymore.");
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "This calendarperiod can't yet be reserved");
             }
             if(!locationReservationDao.addLocationReservationIfStillRoomAtomically(reservation)) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "There are no more spots left for this location.");
