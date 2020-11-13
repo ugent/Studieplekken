@@ -147,7 +147,7 @@ public class CalendarPeriod extends Period implements Cloneable {
     }
 
     public void initializeLockedFrom() {
-        if(lockedFrom == null) {
+        if (lockedFrom == null) {
             lockedFrom = this.getEndsAt().plusWeeks(3).atTime(LocalTime.now());
         }
     }
@@ -157,7 +157,6 @@ public class CalendarPeriod extends Period implements Cloneable {
     }
     /**
      * The length of time the location is open (in seconds)
-     * @return
      */
     public int getOpenHoursDuration() {
         return Math.toIntExact(SECONDS.between(getOpeningTime(), getClosingTime()));

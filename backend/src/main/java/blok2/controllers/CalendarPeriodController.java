@@ -11,12 +11,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("locations/calendar")
@@ -45,7 +43,7 @@ public class CalendarPeriodController {
         }
     }
 
-    @GetMapping("/")
+    @GetMapping
     public List<CalendarPeriod> getAllCalendarPeriods() {
         try {
             return calendarPeriodDao.getAllCalendarPeriods();
