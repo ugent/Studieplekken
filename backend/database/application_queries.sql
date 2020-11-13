@@ -995,7 +995,7 @@ where location_name = ?;
 select rt.timeslot_sequence_number, rt.timeslot_date, rt.calendar_id
 from public.reservation_timeslots rt
 where calendar_id = ? 
-order by rt.timeslot_date, rt.timeslot_sequence_number ASC;
+order by rt.timeslot_date, rt.timeslot_sequence_number;
 
 -- $insert_reservation_timeslots
 insert into public.reservation_timeslots(calendar_id, timeslot_sequence_number, timeslot_date)
