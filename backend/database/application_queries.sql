@@ -979,6 +979,16 @@ update public.calendar_periods
 set location_name = ?
 where location_name = ?;
 
+-- $get_calendar_periods_in_period
+select * 
+from public.calendar_periods cp
+join public.locations l
+    on l.name = cp.location_name
+join public.authority a
+    on a.authority_id = l.authority_id
+join public.buildings b
+    on b.building_id = l.building_id
+where to_date(cp.starts_at, 'YYYY-MM-DD') > ? and to_date(cp.starts_at, 'YYYY-MM-DD') < ?;
 
 -- queries for CALENDAR_PERIODS_FOR_LOCKERS
 -- $get_calendar_periods_for_lockers_of_location
