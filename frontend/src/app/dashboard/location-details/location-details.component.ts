@@ -3,7 +3,6 @@ import {Location} from '../../shared/model/Location';
 import {ActivatedRoute} from '@angular/router';
 import {Observable} from 'rxjs';
 import {LocationService} from '../../services/api/locations/location.service';
-import {LocationStatus, vars} from '../../../environments/environment';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {CalendarEvent} from 'angular-calendar';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -12,8 +11,9 @@ import {LocationTag} from '../../shared/model/LocationTag';
 import {TagsService} from '../../services/api/tags/tags.service';
 import {CalendarPeriodsService} from '../../services/api/calendar-periods/calendar-periods.service';
 import {mapCalendarPeriodsToCalendarEvents} from '../../shared/model/CalendarPeriod';
-import { Pair } from 'src/app/shared/model/helpers/Pair';
-import { DatePipe } from '@angular/common';
+import {DatePipe} from '@angular/common';
+import {defaultLocationImage, LocationStatus} from '../../app.constants';
+import {Pair} from '../../shared/model/helpers/Pair';
 
 @Component({
   selector: 'app-location-details',
@@ -35,10 +35,10 @@ export class LocationDetailsComponent implements OnInit {
     dutch: ''
   };
 
+  altImageUrl = defaultLocationImage;
+
   status: Pair<LocationStatus, string>;
   statusInCurrentLang: string;
-
-  altImageUrl = vars.defaultLocationImage;
 
   currentLang: string;
 
@@ -93,11 +93,11 @@ export class LocationDetailsComponent implements OnInit {
   }
 
   handleImageError(location: Location): void {
-    location.imageUrl = vars.defaultLocationImage;
+    location.imageUrl = defaultLocationImage;
   }
 
   getGoogleMapsUrl(location: Location): SafeResourceUrl {
-    const url = 'https://www.google.com/maps?q=' + location.address + '&output=embed';
+    const url = 'https://www.google.com/maps?q=' + location.building.address + '&output=embed';
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 

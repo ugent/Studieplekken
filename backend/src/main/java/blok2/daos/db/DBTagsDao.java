@@ -35,29 +35,10 @@ public class DBTagsDao extends DAO implements ITagsDao {
     @Override
     public void deleteTag(int tagId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
-            try {
-                conn.setAutoCommit(false);
-
-                // First, delete the entries in LOCATION_TAGS that have a reference to 'tagId'
-                DBLocationTagDao.deleteTagFromAllLocations(tagId, conn);
-
-                // Then, delete the tag
-                deleteTagInTransaction(tagId, conn);
-
-                conn.commit();
-            } catch (SQLException e) {
-                conn.rollback();
-                throw e;
-            } finally {
-                conn.setAutoCommit(true);
-            }
+            PreparedStatement st = conn.prepareStatement(Resources.databaseProperties.getString("delete_tag"));
+            st.setInt(1, tagId);
+            st.execute();
         }
-    }
-
-    private void deleteTagInTransaction(int tagId, Connection conn) throws SQLException {
-        PreparedStatement st = conn.prepareStatement(Resources.databaseProperties.getString("delete_tag"));
-        st.setInt(1, tagId);
-        st.execute();
     }
 
     @Override

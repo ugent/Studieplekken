@@ -11,6 +11,7 @@
 
   "dashboard": {
     "address": "Adres",
+    "building": "Gebouw",
     "description": "Omschrijving",
     "details": "Details",
     "tags": "Tags",
@@ -112,6 +113,7 @@
     "aside": {
       "title": "Beheer",
       "locations": "Locaties",
+      "buildings": "Gebouwen",
       "tags": "Tags",
       "users": "Gebruikers",
       "authorities": "Autoriteiten",
@@ -123,6 +125,7 @@
     "general": {
       "loading": "Aan het laden...",
       "noLocations": "Er zijn nog geen beschikbare locaties. Maak er een aan met de knop 'Locatie Toevoegen'",
+      "noBuildings": "Er zijn nog geen beschikbare gebouwen. Maak er een aan met de knop 'Gebouw toevoegen",
       "noTags": "Er zijn nog geen tags. Maak er een aan met de knop 'Tag Toevoegen'",
       "noAuthorities": "Er zijn nog geen autoriteiten aangemaakt. Maak er een aan met de knop 'Autoriteit Toevoegen'"
     },
@@ -133,7 +136,7 @@
       "form": {
         "name": "Naam",
         "authority": "Autoriteit",
-        "address": "Adres",
+        "building": "Gebouw/Campus",
         "numberOfSeats": "Aantal plaatsen",
         "numberOfLockers": "Aantal lockers",
         "forGroup": "Groepsreservatie",
@@ -312,11 +315,44 @@
       }
     },
 
+    "buildings": {
+      "title": "Beheer van gebouwen voor locaties",
+
+      "table": {
+        "name": "Naam",
+        "address": "Adres"
+      },
+
+      "addNewBuilding": "Nieuw gebouw",
+
+      "addBuildingModal": {
+        "title": "Nieuw gebouw maken",
+        "idSetByBackendMessage": "Ingesteld door backend",
+        "success": "Het aanmaken van het nieuwe gebouw is gelukt.",
+        "error": "Er is iets misgelopen tijdens het aanmaken van het nieuw gebouw."
+      },
+
+      "updateBuildingModal": {
+        "title": "Update building",
+        "success": "Successfully updated the building.",
+        "error": "Something went wrong while updating the building."
+      },
+
+      "deleteBuildingModal": {
+        "title": "Verwijder het gebouw",
+        "body": "Ben je zeker dat je volgend gebouw wilt verwijderen?",
+        "warning": "Gelieve op te merken dat alle locaties in dit gebouw ook zullen verwijderd worden!",
+        "success": "Het verwijderen van het gebouw is gelukt.",
+        "error": "Er is iets misgelopen tijdens het verwijderen van het gebouw."
+      },
+
+      "errorOnRetrievingTags": "Er is iets misgelopen tijdens het ophalen van de gebouwen..."
+    },
+
     "tags": {
       "title": "Beheer van tags van locaties",
 
       "table": {
-        "id": "Tag ID",
         "dutch": "Nederlands",
         "english": "Engels"
       },
@@ -487,7 +523,6 @@
       "title": "Beheer van autoriteiten",
 
       "table": {
-        "authorityId": "ID",
         "authorityName": "Naam van autoriteit",
         "description": "Omschrijving"
       },

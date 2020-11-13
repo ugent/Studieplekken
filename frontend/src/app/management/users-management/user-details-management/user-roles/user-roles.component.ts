@@ -1,10 +1,10 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
 import {User, UserConstructor} from '../../../../shared/model/User';
-import {msToShowFeedback} from '../../../../../environments/environment';
 import {AbstractControl, FormControl, FormGroup} from '@angular/forms';
 import {UserDetailsService} from '../../../../services/single-point-of-truth/user-details/user-details.service';
 import {UserService} from '../../../../services/api/users/user.service';
+import {msToShowFeedback} from '../../../../app.constants';
 
 @Component({
   selector: 'app-user-roles',

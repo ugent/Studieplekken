@@ -14,7 +14,7 @@ import {UserDetailsService} from '../../../../services/single-point-of-truth/use
 import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
 import {LocationService} from '../../../../services/api/locations/location.service';
 import {Location} from '../../../../shared/model/Location';
-import {penaltyEventCodeForManualEntry} from '../../../../../environments/environment';
+import {penaltyEventCodeForManualEntry} from '../../../../app.constants';
 
 @Component({
   selector: 'app-user-details-management-penalties',

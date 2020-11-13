@@ -4,6 +4,7 @@ import blok2.daos.*;
 import blok2.helpers.Language;
 import blok2.helpers.date.CustomDate;
 import blok2.model.Authority;
+import blok2.model.Building;
 import blok2.model.penalty.Penalty;
 import blok2.model.penalty.PenaltyEvent;
 import blok2.model.reservables.Location;
@@ -41,11 +42,10 @@ public class TestCascadeInDBAccountDao extends TestDao {
     @Autowired
     private IAuthorityDao authorityDao;
 
+    @Autowired IBuildingDao buildingDao;
+
     // this will be the test user
     private User testUser;
-
-    //to connect a location to an authority
-    private Authority authority;
 
     // for cascade on SCANNERS_LOCATION, LOCATION_RESERVATIONS
     // and LOCKER_RESERVATIONS, a Location must be available
@@ -60,8 +60,6 @@ public class TestCascadeInDBAccountDao extends TestDao {
     private LockerReservation testLockerReservation1;
     private LockerReservation testLockerReservation2;
 
-    // to test cascade on PENALTY_BOOK
-    private PenaltyEvent testPenaltyEvent;
     private Penalty testPenalty1;
     private Penalty testPenalty2;
 
@@ -69,9 +67,11 @@ public class TestCascadeInDBAccountDao extends TestDao {
     public void populateDatabase() throws SQLException {
         // Setup test objects
         testUser = TestSharedMethods.studentTestUser();
-        authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testLocation1 = TestSharedMethods.testLocation(authority.clone());
-        testLocation2 = TestSharedMethods.testLocation2(authority.clone());
+
+        Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
+        Building testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+        testLocation1 = TestSharedMethods.testLocation(authority.clone(), testBuilding);
+        testLocation2 = TestSharedMethods.testLocation2(authority.clone(), testBuilding);
 
         testLocationReservation1 = new LocationReservation(testLocation1, testUser, CustomDate.now());
         testLocationReservation2 = new LocationReservation(testLocation2, testUser, new CustomDate(1970, 1, 1));
@@ -85,12 +85,12 @@ public class TestCascadeInDBAccountDao extends TestDao {
         Map<Language, String> descriptions = new HashMap<>();
         descriptions.put(Language.DUTCH, "Dit is een test omschrijving van een penalty event met code 0");
         descriptions.put(Language.ENGLISH, "This is a test description of a penalty event with code 0");
-        testPenaltyEvent = new PenaltyEvent(0, 10, descriptions);
 
         // Note: the received amount of points are 10 and 20, not testPenaltyEvent.getCode()
         // because when the penalties are retrieved from the penaltyEventDao, the list will
         // be sorted by received points before asserting, if they would be equal we can't sort
         // on the points and be sure about the equality of the actual and expected list.
+        PenaltyEvent testPenaltyEvent = new PenaltyEvent(0, 10, descriptions);
         testPenalty1 = new Penalty(testUser.getAugentID(), testPenaltyEvent.getCode(), CustomDate.now(), CustomDate.now(), testLocation1.getName(), 10, "First test penalty");
         testPenalty2 = new Penalty(testUser.getAugentID(), testPenaltyEvent.getCode(), new CustomDate(1970, 1, 1), CustomDate.now(), testLocation2.getName(), 20, "Second test penalty");
 

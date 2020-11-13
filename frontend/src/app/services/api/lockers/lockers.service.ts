@@ -1,15 +1,16 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {LockerReservation} from '../../../shared/model/LockerReservation';
-import {api} from '../../../../environments/environment';
+import {api} from '../endpoints';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LockersService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   getLockersStatusesOfLocation(locationName: string): Observable<LockerReservation[]> {
     return this.http.get<LockerReservation[]>(api.lockersStatusesOfLocation

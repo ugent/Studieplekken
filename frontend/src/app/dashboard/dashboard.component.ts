@@ -8,7 +8,7 @@ import {AbstractControl, FormControl, FormGroup} from '@angular/forms';
 import {MatSelectChange} from '@angular/material/select';
 import {AuthenticationService} from '../services/authentication/authentication.service';
 import { CalendarPeriodsService } from '../services/api/calendar-periods/calendar-periods.service';
-import { LocationStatus } from 'src/environments/environment';
+import {LocationStatus} from '../app.constants';
 
 @Component({
   selector: 'app-dashboard',
@@ -32,7 +32,7 @@ export class DashboardComponent implements OnInit {
 
   locationSearch: string;
 
-  showOpen: boolean = false;
+  showOpen = false;
 
   constructor(private locationService: LocationService,
               private tagsService: TagsService,

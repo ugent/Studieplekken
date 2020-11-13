@@ -20,7 +20,7 @@ import java.util.logging.Level;
  * scanning of users, ...
  */
 @RestController
-@RequestMapping("api/locations/reservations")
+@RequestMapping("locations/reservations")
 public class LocationReservationController {
 
     private final Logger logger = LoggerFactory.getLogger(LocationReservationController.class.getSimpleName());

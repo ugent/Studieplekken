@@ -1,16 +1,17 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {CalendarEvent} from 'angular-calendar';
 import {
-  CalendarPeriodConstructor,
   CalendarPeriod,
-  isCalendarPeriodValid, mapCalendarPeriodsToCalendarEvents
+  CalendarPeriodConstructor,
+  isCalendarPeriodValid,
+  mapCalendarPeriodsToCalendarEvents
 } from '../../../../shared/model/CalendarPeriod';
 import {Observable, Subject} from 'rxjs';
 import {Location} from '../../../../shared/model/Location';
 import {CalendarPeriodsService} from '../../../../services/api/calendar-periods/calendar-periods.service';
 import {ApplicationTypeFunctionalityService} from '../../../../services/functionality/application-type/application-type-functionality.service';
 import {toDateTimeString, typeScriptDateToCustomDate} from '../../../../shared/model/helpers/CustomDate';
-import {msToShowFeedback} from '../../../../../environments/environment';
+import {msToShowFeedback} from '../../../../app.constants';
 
 @Component({
   selector: 'app-location-calendar',
@@ -63,7 +64,8 @@ export class LocationCalendarComponent implements OnInit {
   showReservationInformation: boolean;
 
   constructor(private calendarPeriodsService: CalendarPeriodsService,
-              private functionalityService: ApplicationTypeFunctionalityService) { }
+              private functionalityService: ApplicationTypeFunctionalityService) {
+  }
 
   ngOnInit(): void {
     this.location.subscribe(next => {
@@ -203,7 +205,7 @@ export class LocationCalendarComponent implements OnInit {
       .subscribe(() => this.successHandler(), () => this.errorHandler());
   }
 
-  addAllCalendarPeriods(): void{
+  addAllCalendarPeriods(): void {
     this.calendarPeriodsService.addCalendarPeriods(this.calendarPeriods)
       .subscribe(() => this.successHandler(), () => this.errorHandler());
   }

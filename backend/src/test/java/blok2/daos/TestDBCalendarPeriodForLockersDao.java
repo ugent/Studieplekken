@@ -1,6 +1,7 @@
 package blok2.daos;
 
 import blok2.model.Authority;
+import blok2.model.Building;
 import blok2.model.calendar.CalendarPeriodForLockers;
 import blok2.model.reservables.Location;
 import org.junit.Assert;
@@ -22,7 +23,11 @@ public class TestDBCalendarPeriodForLockersDao  extends TestDao {
     @Autowired
     IAuthorityDao authorityDao;
 
+    @Autowired
+    private IBuildingDao buildingDao;
+
     private Location testLocation;
+    private Building testBuilding;
     private List<CalendarPeriodForLockers> calendarPeriodsForLockers;
 
     // the reason for making this an attribute of the class
@@ -32,8 +37,11 @@ public class TestDBCalendarPeriodForLockersDao  extends TestDao {
 
     @Override
     public void populateDatabase() throws SQLException {
+        // setup test objects
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testLocation = TestSharedMethods.testLocation(authority.clone());
+
+        testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+        testLocation = TestSharedMethods.testLocation(authority.clone(), testBuilding);
         calendarPeriodsForLockers = TestSharedMethods.testCalendarPeriodsForLockers(testLocation);
         updatedPeriodsForLockers = TestSharedMethods.testCalendarPeriodsForLockersButUpdated(testLocation);
 

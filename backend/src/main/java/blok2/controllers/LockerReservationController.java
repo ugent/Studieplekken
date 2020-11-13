@@ -19,7 +19,7 @@ import java.util.logging.Level;
  * Such as creating reservations, list of reservations, cancelling reservations, ...
  */
 @RestController
-@RequestMapping("api/lockers/reservations")
+@RequestMapping("lockers/reservations")
 public class LockerReservationController {
 
     private final Logger logger = LoggerFactory.getLogger(LockerReservation.class.getSimpleName());

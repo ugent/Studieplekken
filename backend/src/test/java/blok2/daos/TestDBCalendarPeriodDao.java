@@ -3,6 +3,7 @@ package blok2.daos;
 import blok2.helpers.LocationStatus;
 import blok2.helpers.Pair;
 import blok2.model.Authority;
+import blok2.model.Building;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.reservables.Location;
 import org.junit.Assert;
@@ -25,8 +26,12 @@ public class TestDBCalendarPeriodDao extends TestDao {
     @Autowired
     private IAuthorityDao authorityDao;
 
-    private Location testLocation;
+    @Autowired
+    private IBuildingDao buildingDao;
 
+    private Location testLocation;
+    private Building testBuilding;
+    private List<CalendarPeriod> calendarPeriods;
 
     // the reason for making this an attribute of the class
     // is to make sure the values are deleted when something
@@ -42,7 +47,10 @@ public class TestDBCalendarPeriodDao extends TestDao {
     public void populateDatabase() throws SQLException {
         // Setup test objects
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testLocation = TestSharedMethods.testLocation(authority.clone());
+
+        testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+
+        testLocation = TestSharedMethods.testLocation(authority.clone(), testBuilding);
         calendarPeriods = TestSharedMethods.testCalendarPeriods(testLocation);
         updatedPeriods = TestSharedMethods.testCalendarPeriodsButUpdated(testLocation);
         pastPeriod = TestSharedMethods.pastCalendarPeriods(testLocation);
