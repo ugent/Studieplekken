@@ -232,7 +232,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
     }
 
     @Override
-    public void setReservationToUnAttended(String augentId, LocalDate date) throws SQLException {
+    public void setReservationAttendance(String augentId, Timeslot date, boolean attendance) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("set_location_reservation_unattended"));
             pstmt.setString(1, date.toString());

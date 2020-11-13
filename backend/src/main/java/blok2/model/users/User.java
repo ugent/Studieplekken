@@ -8,6 +8,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * This class is used to represent a registered user or UGhent student.
  * This class implements the interface UserDetails so spring can use this
@@ -19,6 +21,7 @@ public class User implements Cloneable, UserDetails {
     private String mail;
     private String password;
     private String institution;
+    @NotNull
     private String augentID;
     private int penaltyPoints;
     private boolean admin;

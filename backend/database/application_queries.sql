@@ -273,7 +273,7 @@ values (?, ?, ?, ?, ?, null);
 
 -- $set_location_reservation_unattended
 update public.location_reservations
-set attended = false
+set attended = ?
 where date = ? and user_augentid = ?;
 
 -- $set_all_location_reservations_attended
@@ -995,7 +995,7 @@ where location_name = ?;
 select rt.timeslot_sequence_number, rt.timeslot_date, rt.calendar_id
 from public.reservation_timeslots rt
 where calendar_id = ? 
-order by rt.timeslot_date, rt.timeslot_sequence_number;
+order by rt.timeslot_date, rt.timeslot_sequence_number ASC;
 
 -- $insert_reservation_timeslots
 insert into public.reservation_timeslots(calendar_id, timeslot_sequence_number, timeslot_date)
