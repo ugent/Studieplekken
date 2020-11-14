@@ -48,6 +48,23 @@ public class DBLocationDao extends DAO implements ILocationDao {
     }
 
     @Override
+    public List<Location> getAllUnapprovedLocations() throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            List<Location> locations = new ArrayList<>();
+
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(Resources.databaseProperties.getString("all_unapproved_locations"));
+
+            while (rs.next()) {
+                Location location = createLocation(rs, conn);
+                locations.add(location);
+            }
+
+            return locations;
+        }
+    }
+
+    @Override
     public void addLocation(Location location) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             addLocationAsTransaction(location, conn);
@@ -224,6 +241,17 @@ public class DBLocationDao extends DAO implements ILocationDao {
         }
     }
 
+    @Override
+    public void approveLocation(Location location, boolean approval) throws SQLException {
+        this.updateLocation(location.getName(), location);
+
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement statement = conn.prepareStatement(Resources.databaseProperties.getString("approve_location"));
+            statement.setBoolean(1, approval);
+            statement.setString(2, location.getName());
+            statement.execute();
+        }
+    }
     /**
      * Create a location out of a row in the ResultSet (prevent duplication of code)
      * @param rs the ResultSet for fetching the location

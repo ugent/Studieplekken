@@ -24,6 +24,7 @@ import { Building } from 'src/app/shared/model/Building';
 })
 export class LocationsManagementComponent implements OnInit {
   locations: Observable<Location[]>;
+  unapprovedLocations: Observable<Location[]>;
 
   addLocationFormGroup: FormGroup;
   addingWasSuccess: boolean = undefined;
@@ -173,6 +174,7 @@ export class LocationsManagementComponent implements OnInit {
    */
   setupLocationsAndAuthoritiesAsAdmin(): void {
     this.locations = this.locationService.getLocations();
+    this.unapprovedLocations = this.locationService.getUnapprovedLocations();
     this.authoritiesObs = this.authoritiesService.getAllAuthorities().pipe(tap(
       next => {
         this.authoritiesMap = new Map<number, Authority>();

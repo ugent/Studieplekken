@@ -2,6 +2,7 @@ package blok2.controllers;
 
 import blok2.daos.ILocationDao;
 import blok2.daos.ILocationTagDao;
+import blok2.helpers.LocationWithApproval;
 import blok2.helpers.date.CustomDate;
 import blok2.model.LocationTag;
 import blok2.model.reservables.Location;
@@ -54,6 +55,17 @@ public class LocationController {
         }
     }
 
+    @GetMapping("/unapproved")
+    public List<Location> getAllUnapprovedLocations() {
+        try {
+            return locationDao.getAllUnapprovedLocations();
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
     @GetMapping("/{locationName}")
     public Location getLocation(@PathVariable("locationName") String locationName) {
         try {
@@ -85,6 +97,18 @@ public class LocationController {
     public void updateLocation(@PathVariable("locationName") String locationName, @RequestBody Location location) {
         try {
             locationDao.updateLocation(locationName, location);
+            logger.info(String.format("Location %s updated", locationName));
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @PutMapping("/{locationName}/approval")
+    public void approveLocation(@PathVariable("locationName") String locationName, @RequestBody LocationWithApproval landa) {
+        try {
+            locationDao.approveLocation(landa.getLocation(), landa.isApproval());
             logger.info(String.format("Location %s updated", locationName));
         } catch (SQLException e) {
             logger.error(e.getMessage());

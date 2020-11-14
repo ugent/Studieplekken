@@ -248,6 +248,7 @@
 
     "locations": {
       "title": "Management of blok-locations",
+      "unapproved": "Approval of new blok-locations",
       "addNew": "Add location",
 
       "table": {

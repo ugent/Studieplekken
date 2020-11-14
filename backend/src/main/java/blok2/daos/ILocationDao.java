@@ -55,4 +55,9 @@ public interface ILocationDao extends IDao {
      * given date.
      */
     Map<String, Integer> getCountOfReservations(CustomDate date) throws SQLException;
+
+    void approveLocation(Location location, boolean approval) throws SQLException;
+
+    List<Location> getAllUnapprovedLocations() throws SQLException;
+
 }

@@ -21,6 +21,11 @@ export class LocationService {
     return this.http.get<Location[]>(api.locations);
   }
 
+  getUnapprovedLocations(): Observable<Location[]> {
+    return this.http.get<Location[]>(api.locationsUnapproved);
+  }
+
+
   getLocation(locationName: string): Observable<Location> {
     return this.http.get<Location>(api.location.replace('{locationName}', locationName));
   }
@@ -31,6 +36,10 @@ export class LocationService {
 
   updateLocation(locationName: string, location: Location): Observable<any> {
     return this.http.put<void>(api.updateLocation.replace('{locationName}', locationName), location);
+  }
+
+  approveLocation(location: Location, approval: boolean): Observable<any> {
+    return this.http.put<void>(api.approveLocation.replace('{locationName}', location.name), {location, approval});
   }
 
   deleteLocation(locationName: string): Observable<any> {

@@ -248,6 +248,7 @@
 
     "locations": {
       "title": "Beheer van bloklocaties",
+      "unapproved": "Goedkeuring van nieuwe bloklocaties",
       "addNew": "Locatie toevoegen",
 
       "table": {
