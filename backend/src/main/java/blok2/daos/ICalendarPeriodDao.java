@@ -11,11 +11,14 @@ public interface ICalendarPeriodDao extends IDao {
     List<CalendarPeriod> getCalendarPeriodsInWeek(LocalDate firstDayOfWeek) throws SQLException;
     List<CalendarPeriod> getCalendarPeriodsInPeriod(LocalDate start, LocalDate end) throws SQLException;
 
+    List<CalendarPeriod> getAllCalendarPeriods() throws SQLException;
+
     void addCalendarPeriods(List<CalendarPeriod> periods) throws SQLException;
 
     void updateCalendarPeriods(List<CalendarPeriod> from, List<CalendarPeriod> to) throws SQLException;
 
     void deleteCalendarPeriods(List<CalendarPeriod> periods) throws SQLException;
 
+    CalendarPeriod getById(int calendarId) throws SQLException;
 
 }

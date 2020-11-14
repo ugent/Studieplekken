@@ -2,17 +2,50 @@ package blok2.model.calendar;
 
 import blok2.model.reservables.Location;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
+import static java.time.temporal.ChronoUnit.SECONDS;
+
 public class CalendarPeriod extends Period implements Cloneable {
+    private int id;
     private Location location;
-    private String openingTime; // time: hh:mm
-    private String closingTime; // time: hh:mm
-    private String reservableFrom; // datetime: YYYY-MM-DDThh:mm
+    private LocalTime openingTime;
+    private LocalTime closingTime;
+    private LocalDateTime reservableFrom = LocalDateTime.now();
+    private LocalDateTime lockedFrom;
+    private boolean reservable;
+    private int reservableTimeslotSize;
+
+    private List<Timeslot> timeslots = Collections.emptyList();
 
     public CalendarPeriod() {
-
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        CalendarPeriod that = (CalendarPeriod) o;
+        return reservable == that.reservable &&
+                reservableTimeslotSize == that.reservableTimeslotSize &&
+                location.equals(that.location) &&
+                openingTime.equals(that.openingTime) &&
+                closingTime.equals(that.closingTime) &&
+                Duration.between(this.reservableFrom, that.reservableFrom).toMillis() <= 1000;
+                // One second precision is enough.
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), location, openingTime, closingTime, reservableFrom, reservable, reservableTimeslotSize);
+    }
+
 
     @Override
     public String toString() {
@@ -23,25 +56,9 @@ public class CalendarPeriod extends Period implements Cloneable {
                 ", openingTime='" + openingTime + '\'' +
                 ", closingTime='" + closingTime + '\'' +
                 ", reservableFrom='" + reservableFrom + '\'' +
+                ", reservable='" + reservable + '\'' +
+                ", reservableTimeslotSize='" + reservableTimeslotSize + '\'' +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        CalendarPeriod that = (CalendarPeriod) o;
-        return Objects.equals(location, that.location) &&
-                Objects.equals(getStartsAt(), that.getStartsAt()) &&
-                Objects.equals(getEndsAt(), that.getEndsAt()) &&
-                Objects.equals(openingTime, that.openingTime) &&
-                Objects.equals(closingTime, that.closingTime) &&
-                Objects.equals(reservableFrom, that.reservableFrom);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getStartsAt(), getEndsAt(), openingTime, closingTime, reservableFrom);
     }
 
     @Override
@@ -63,27 +80,85 @@ public class CalendarPeriod extends Period implements Cloneable {
         this.location = location;
     }
 
-    public String getOpeningTime() {
+    public LocalTime getOpeningTime() {
         return openingTime;
     }
 
-    public void setOpeningTime(String openingTime) {
+    public void setOpeningTime(LocalTime openingTime) {
         this.openingTime = openingTime;
     }
 
-    public String getClosingTime() {
+    public LocalTime getClosingTime() {
         return closingTime;
     }
 
-    public void setClosingTime(String closingTime) {
+    public void setClosingTime(LocalTime closingTime) {
         this.closingTime = closingTime;
     }
 
-    public String getReservableFrom() {
+    public LocalDateTime getReservableFrom() {
         return reservableFrom;
     }
 
-    public void setReservableFrom(String reservableFrom) {
-        this.reservableFrom = reservableFrom;
+    public void setReservableFrom(LocalDateTime reservableFrom) {
+        if(reservableFrom != null)
+            this.reservableFrom = reservableFrom;
+    }
+
+
+    public boolean isReservable() {
+        return reservable;
+    }
+
+    public void setReservable(boolean reservable) {
+        this.reservable = reservable;
+    }
+
+    public int getReservableTimeslotSize() {
+        return reservableTimeslotSize;
+    }
+
+    public void setReservableTimeslotSize(int reservableTimeslotSize) {
+        this.reservableTimeslotSize = reservableTimeslotSize;
+    }
+
+    public List<Timeslot> getTimeslots() {
+        return timeslots;
+    }
+
+    public void setTimeslots(List<Timeslot> timeslots) {
+        this.timeslots = timeslots;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public LocalDateTime getLockedFrom() {
+        return lockedFrom;
+    }
+
+    public void setLockedFrom(LocalDateTime lockedFrom) {
+        this.lockedFrom = lockedFrom;
+    }
+
+    public void initializeLockedFrom() {
+        if (lockedFrom == null) {
+            lockedFrom = this.getEndsAt().plusWeeks(3).atTime(LocalTime.now());
+        }
+    }
+
+    public boolean isLocked() {
+        return getLockedFrom().isBefore(LocalDateTime.now());
+    }
+    /**
+     * The length of time the location is open (in seconds)
+     */
+    public int getOpenHoursDuration() {
+        return Math.toIntExact(SECONDS.between(getOpeningTime(), getClosingTime()));
     }
 }

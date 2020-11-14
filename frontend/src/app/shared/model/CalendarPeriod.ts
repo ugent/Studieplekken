@@ -1,40 +1,78 @@
 import {Location, LocationConstructor} from './Location';
-import {
-  isStringValidDateForDB,
-  isStringValidDateTimeForDB,
-  isStringValidTimeForDBWithoutSeconds
-} from '../validators/DateValidators';
 import {CalendarEvent} from 'angular-calendar';
+import {includesTimeslot, Timeslot, timeslotEndHour, timeslotStartHour} from './Timeslot';
+import { LocationReservation } from './LocationReservation';
+import * as moment from 'moment';
+import { Moment } from 'moment';
 
-export interface CalendarPeriod {
+export class CalendarPeriod {
+
+  constructor(id: number, location: Location, startsAt: Moment, endsAt: Moment, openingTime: Moment, closingTime: Moment,
+              reservable: boolean, reservableFrom: Moment, reservableTimeslotSize: number, timeslots: Timeslot[], lockedFrom: Moment) {
+    this.id = id;
+    this.location = location;
+    this.startsAt = startsAt;
+    this.endsAt = endsAt;
+    this.openingTime = openingTime;
+    this.closingTime = closingTime;
+    this.reservableFrom = reservableFrom;
+    this.reservable = reservable;
+    this.reservableTimeslotSize = reservableTimeslotSize;
+    this.timeslots = timeslots;
+    this.lockedFrom = lockedFrom;
+  }
+  id: number;
   location: Location;
-  startsAt: string;
-  endsAt: string;
-  openingTime: string;
-  closingTime: string;
-  reservableFrom: string;
-}
+  startsAt: Moment;
+  endsAt: Moment;
+  openingTime: Moment;
+  closingTime: Moment;
+  reservable: boolean;
+  reservableFrom: Moment;
+  reservableTimeslotSize: number;
+  timeslots: Timeslot[];
+  lockedFrom: Moment;
 
-export class CalendarPeriodConstructor {
-  static new(): CalendarPeriod {
-    return {
-      location: LocationConstructor.new(),
-      startsAt: '',
-      endsAt: '',
-      openingTime: '',
-      closingTime: '',
-      reservableFrom: ''
-    };
+  static fromJSON(json: any): CalendarPeriod {
+    return new CalendarPeriod(
+      json.id,
+      json.location,
+      moment(json.startsAt),
+      moment(json.endsAt),
+      moment(json.openingTime, 'HH:mm'),
+      moment(json.closingTime, 'HH:mm'),
+      json.reservable,
+      moment(json.reservableFrom, 'YYYY-MM-DDTHH:mm:ss'),
+      json.reservableTimeslotSize,
+      json.timeslots.map(jsonT => Timeslot.fromJSON(jsonT)),
+      moment(json.lockedFrom)
+    );
   }
 
-  static newFromObj(obj: CalendarPeriod): CalendarPeriod {
+  isLocked(): boolean {
+    return this.lockedFrom && this.lockedFrom.isBefore(moment());
+  }
+
+  areReservationsLocked(): boolean {
+    return !this.reservableFrom || this.reservableFrom.isAfter(moment());
+  }
+
+  isValid(): boolean {
+    return isCalendarPeriodValid(this);
+  }
+
+  toJSON(): object {
     return {
-      location: LocationConstructor.newFromObj(obj.location),
-      startsAt: obj.startsAt,
-      endsAt: obj.endsAt,
-      openingTime: obj.openingTime,
-      closingTime: obj.closingTime,
-      reservableFrom: obj.reservableFrom
+      location: this.location,
+      startsAt: this.startsAt.format('YYYY-MM-DD'),
+      endsAt: this.endsAt.format('YYYY-MM-DD'),
+      openingTime: this.openingTime.format('HH:mm'),
+      closingTime: this.closingTime.format('HH:mm'),
+      reservableFrom: this.reservableFrom ? this.reservableFrom.format('YYYY-MM-DDTHH:mm:ss') : null,
+      reservableTimeslotSize: this.reservableTimeslotSize,
+      timeslots: this.timeslots,
+      reservable: this.reservable,
+      lockedFrom: this.lockedFrom
     };
   }
 }
@@ -52,91 +90,100 @@ export class CalendarPeriodConstructor {
  * 3. closingTime may not be before openingTime
  */
 export function isCalendarPeriodValid(period: CalendarPeriod): boolean {
-  if (period === null) {
+  if (period === null || period.openingTime === null) {
     return false;
   }
 
-  // check if the formats of the strings are as they are supposed to be
-  if (!(isStringValidDateForDB(period.startsAt) &&
-        isStringValidDateForDB(period.endsAt) &&
-        isStringValidTimeForDBWithoutSeconds(period.openingTime) &&
-        isStringValidTimeForDBWithoutSeconds(period.closingTime) &&
-        isStringValidDateTimeForDB(period.reservableFrom))) {
+
+  if (!period.startsAt.isValid() || !period.endsAt.isValid() || period.startsAt.isAfter(period.endsAt)) {
     return false;
   }
 
-  // endsAt may not be before startsAt
-  const startDate = new Date(period.startsAt);
-  const endDate = new Date(period.endsAt);
-
-  if (endDate < startDate) {
+  if (period.reservable && period.reservableTimeslotSize === 0) {
     return false;
   }
 
-  // closing time may not be before opening time
-  // this will be checked by creating a new Date() with two
-  // times the same date, but with the times set to the values
-  // of opening and closing time
-  const openingTimeDate = new Date(period.startsAt + 'T' + period.openingTime);
-  const closingTimeDate = new Date(period.startsAt + 'T' + period.closingTime);
+  if (period.reservable && !period.reservableFrom.isValid()) {
+    return false;
+  }
 
-  return closingTimeDate >= openingTimeDate;
+  return period.openingTime.isBefore(period.closingTime);
+}
+
+
+
+/**
+ * Convert calendarPeriods to Calendar Events. This detects correctly whether the period is reservable or not.
+ * @param periods The to-convert periods.
+ *
+ */
+export function mapCalendarPeriodsToCalendarEvents(periods: CalendarPeriod[],
+                                                   reservedTimeslots: LocationReservation[] = []
+                                                                                  ): CalendarEvent[]
+{
+  if (periods.length === 0) {
+    return [];
+  }
+  return periods
+          .map(period => period.reservable && !period.areReservationsLocked() ?
+                                mapTimeslotsToCalendarEvents(period, reservedTimeslots) : mapNRperiodToCalendarEvents(period))
+          .reduce((a, b) => [...a, ...b]);
 }
 
 /**
- * For each period provided in 'periods', this method will create a CalendarEvent
- * object for every day within the period.
- *
- * The starting and ending time for all CalendarEvents created from a period, will
- * be 'period.openingTime' and 'period.closingTime' respectively.
- *
- * An example period could be:
- *
- *      const period = {
- *        location: ...,                   // irrelevant for this example
- *        startsAt: '2020-01-01',
- *        endsAt: '2020-01-05',
- *        openingTime: '09:00',
- *        closingTime: '12:00',
- *        reservableFrom: ...              // irrelevant for this example, and not used in MiniThermis
- *      }
- *
- * If the period above would be part of the 'periods' parameter, following
- * CalendarEvent-objects would be created and pushed in the return-array:
- *
- *      1. { title: '09:00 - 12:00', start: new Date('2020-01-01T09:00'), end: new Date('2020-01-01T12:00'), meta: period }
- *      2. { title: '09:00 - 12:00', start: new Date('2020-01-02T09:00'), end: new Date('2020-01-02T12:00'), meta: period }
- *      3. { title: '09:00 - 12:00', start: new Date('2020-01-03T09:00'), end: new Date('2020-01-03T12:00'), meta: period }
- *      4. { title: '09:00 - 12:00', start: new Date('2020-01-04T09:00'), end: new Date('2020-01-04T12:00'), meta: period }
- *      5. { title: '09:00 - 12:00', start: new Date('2020-01-05T09:00'), end: new Date('2020-01-05T12:00'), meta: period }
+ * Convert NON RESERVABLE calendar period to calendar events.
+ * @param period The to-convert period
  */
-export function mapCalendarPeriodsToCalendarEvents(periods: CalendarPeriod[]): CalendarEvent[] {
+function mapNRperiodToCalendarEvents(period: CalendarPeriod): CalendarEvent[] {
   const calendarEvents: CalendarEvent[] = [];
 
-  for (const period of periods) {
-    const dateWithOpeningTime = new Date(period.startsAt + 'T' + period.openingTime);
-    const dateWithClosingTime = new Date(period.startsAt + 'T' + period.closingTime);
-    const lastDayWithOpeningTime = (new Date(period.endsAt + 'T' + period.openingTime));
+  const dateWithOpeningTime = new Date(period.startsAt.format('YYYY-MM-DD') + 'T' + period.openingTime.format('HH:mm'));
+  const dateWithClosingTime = new Date(period.startsAt.format('YYYY-MM-DD') + 'T' + period.closingTime.format('HH:mm'));
+  const lastDayWithOpeningTime = (new Date(period.endsAt.format('YYYY-MM-DD') + 'T' + period.openingTime.format('HH:mm')));
 
-    while (dateWithOpeningTime.toLocaleDateString() !== lastDayWithOpeningTime.toLocaleDateString()) {
-      calendarEvents.push({
-        title: period.openingTime + ' - ' + period.closingTime,
-        start: new Date(dateWithOpeningTime),
-        end: new Date(dateWithClosingTime),
-        meta: period
-      });
-
-      dateWithOpeningTime.setDate(dateWithOpeningTime.getDate() + 1);
-      dateWithClosingTime.setDate(dateWithClosingTime.getDate() + 1);
-    }
-
-    // add the final day too
+  while (dateWithOpeningTime <= lastDayWithOpeningTime) {
     calendarEvents.push({
-      title: period.openingTime + ' - ' + period.closingTime,
+      title: period.openingTime.format('HH:mm') + ' - ' + period.closingTime.format('HH:mm') + '  -  ' + '(open)',
       start: new Date(dateWithOpeningTime),
       end: new Date(dateWithClosingTime),
-      meta: period
+      meta: period,
+      color: {primary: 'black', secondary: '#BEBEBE'},
+      cssClass: 'calendar-event-NR',
     });
+
+    dateWithOpeningTime.setDate(dateWithOpeningTime.getDate() + 1);
+    dateWithClosingTime.setDate(dateWithClosingTime.getDate() + 1);
+  }
+
+
+  return calendarEvents;
+}
+
+/**
+ * For each Timeslot that is attached to a CalendarPeriod provided in 'periods',
+ * this method will create a CalendarEvent
+ *
+ * The starting and ending time for all CalendarEvents created from a timeslot, will
+ * be the beginning and ending of the timeslot, calculated from the sequence number and the
+ * timeslotdate.
+ */
+function mapTimeslotsToCalendarEvents(period: CalendarPeriod, reservedTimeslots: LocationReservation[] = []): CalendarEvent[] {
+  const calendarEvents: CalendarEvent[] = [];
+
+  for (const timeslot of period.timeslots) {
+      const beginDT = new Date(timeslot.timeslotDate.format('YYYY-MM-DD') + 'T' + timeslotStartHour(period, timeslot.timeslotSeqnr));
+      const endDT = new Date(timeslot.timeslotDate.format('YYYY-MM-DD') + 'T' + timeslotEndHour(period, timeslot.timeslotSeqnr));
+
+      calendarEvents.push({
+        title: timeslot.timeslotDate.format('DD-MM-YYYY') + ' (Blok ' + (timeslot.timeslotSeqnr + 1) + ')',
+        start: beginDT,
+        end: endDT,
+        meta: timeslot,
+        color: includesTimeslot(reservedTimeslots.map(s => s.timeslot), timeslot) ?
+                                                         {primary: '#00004d', secondary: '#133E7D'} : null,
+        cssClass: includesTimeslot(reservedTimeslots.map(s => s.timeslot), timeslot) ? 'calendar-event-reserved' : ''
+      });
+
   }
 
   return calendarEvents;

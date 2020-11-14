@@ -60,7 +60,6 @@ export class ProfileChangePasswordComponent implements OnInit {
   }
 
   successFullyUpdatedPasswordHandler(): void {
-    console.log('successfully updated password');
     // reset form
     this.cancelChangePassword();
   }

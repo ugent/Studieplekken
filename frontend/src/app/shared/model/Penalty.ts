@@ -1,10 +1,11 @@
-import {CustomDate, CustomDateConstructor} from './helpers/CustomDate';
+import * as moment from 'moment';
+import { Moment } from 'moment';
 
 export interface Penalty {
   augentID: string;
   eventCode: number;
-  timestamp: CustomDate;
-  reservationDate: CustomDate;
+  timestamp: Moment;
+  reservationDate: Moment;
   reservationLocation: string;
   receivedPoints: number;
   remarks: string;
@@ -15,8 +16,8 @@ export class PenaltyConstructor {
     return {
       augentID: '',
       eventCode: 0,
-      timestamp: CustomDateConstructor.new(),
-      reservationDate: CustomDateConstructor.new(),
+      timestamp: moment(),
+      reservationDate: moment(),
       reservationLocation: '',
       receivedPoints: 0,
       remarks: ''
@@ -31,8 +32,8 @@ export class PenaltyConstructor {
     return {
       augentID: obj.augentID,
       eventCode: obj.eventCode,
-      timestamp: CustomDateConstructor.newFromObj(obj.timestamp),
-      reservationDate: CustomDateConstructor.newFromObj(obj.reservationDate),
+      timestamp: moment(obj.timestamp),
+      reservationDate: moment(obj.reservationDate),
       reservationLocation: obj.reservationLocation,
       receivedPoints: obj.receivedPoints,
       remarks: obj.remarks

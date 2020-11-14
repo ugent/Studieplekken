@@ -86,15 +86,16 @@ CREATE TABLE public.location_tags
 
 CREATE TABLE public.calendar_periods
 (
+    calendar_id     integer NOT NULL primary key generated always as identity,
     location_name   text NOT NULL,
-    starts_at       text NOT NULL,
-    ends_at         text NOT NULL,
-    opening_time    text NOT NULL,
-    closing_time    text NOT NULL,
-    reservable_from text NOT NULL,
-
-    constraint pk_calendar_periods
-        primary key (location_name, starts_at, ends_at, opening_time, closing_time, reservable_from),
+    starts_at       Date NOT NULL,
+    ends_at         Date NOT NULL,
+    opening_time    Time NOT NULL,
+    closing_time    Time NOT NULL,
+    reservable_from Timestamp NOT NULL,
+    locked_from     Timestamp NOT NULL,
+    reservable      boolean NOT NULL,
+    timeslot_length SMALLINT NOT NULL,
 
     constraint fk_calendar_periods_to_locations
         foreign key (location_name)
@@ -104,15 +105,33 @@ CREATE TABLE public.calendar_periods
 );
 
 --
+-- Name: reservation_timeslots; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.reservation_timeslots
+(
+    calendar_id                     integer NOT NULL,
+    timeslot_sequence_number        SMALLINT NOT NULL,
+    timeslot_date                   Date NOT NULL,
+
+    constraint pk_timeslots
+        primary key (calendar_id, timeslot_sequence_number, timeslot_date),
+    constraint fk_timeslots_to_calendar_periods
+        foreign key (calendar_id)
+            references public.calendar_periods (calendar_id) ON DELETE CASCADE
+);
+
+
+--
 -- Name: calendar_periods_for_lockers; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.calendar_periods_for_lockers
 (
     location_name   text NOT NULL,
-    starts_at       text NOT NULL,
-    ends_at         text NOT NULL,
-    reservable_from text NOT NULL,
+    starts_at       Date NOT NULL,
+    ends_at         Date NOT NULL,
+    reservable_from Timestamp NOT NULL,
 
     constraint pk_calendar_periods_for_lockers
         primary key (location_name, starts_at, ends_at, reservable_from),
@@ -184,19 +203,18 @@ COMMENT ON TABLE public.languages IS 'E.g. for the language ''English''
 
 CREATE TABLE public.location_reservations
 (
-    date          text NOT NULL,
-    location_name text NOT NULL,
-    attended      boolean,
-    user_augentid text NOT NULL,
+    created_at          Timestamp NOT NULL,
+    timeslot_date       Date NOT NULL,
+    timeslot_seqnr      integer NOT NULL,
+    calendar_id         integer NOT NULL,
+    attended            boolean,
+    user_augentid       text NOT NULL,
 
     constraint pk_location_reservations
-        primary key (date, user_augentid),
+        primary key (timeslot_seqnr, timeslot_date, calendar_id, user_augentid),
 
-    constraint fk_location_reservations_to_location
-        foreign key (location_name)
-            references public.locations (name)
-            on delete cascade
-            on update cascade,
+    constraint fk_location_reservations_to_timeslot
+        foreign key (timeslot_seqnr, timeslot_date, calendar_id) references public.reservation_timeslots (timeslot_sequence_number, timeslot_date, calendar_id) ON DELETE CASCADE,
 
     constraint fk_location_reservations_to_users
         foreign key (user_augentid)
@@ -243,8 +261,8 @@ CREATE TABLE public.locker_reservations
     location_name   text    NOT NULL,
     locker_number   integer NOT NULL,
     user_augentid   text    NOT NULL,
-    key_pickup_date text,
-    key_return_date text,
+    key_pickup_date Timestamp,
+    key_return_date Timestamp,
 
     constraint pk_locker_reservations
         primary key (location_name, locker_number, user_augentid),

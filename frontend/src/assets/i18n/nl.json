@@ -23,7 +23,13 @@
 
     "locationDetails": {
       "info": "Algemene informatie over deze locatie:",
-      "tags": "Tags die deze locatie kenmerken:"
+      "tags": "Tags die deze locatie kenmerken:",
+      "calendar": {
+        "reservation": {
+          "successMessage": "Het wijzigen van de reservaties is succesvol verlopen",
+          "errorMessage": "Het aanpassen van de reservaties is mislukt. Er is iets misgegaan."
+        }
+      }
     },
 
     "filter": {
@@ -43,6 +49,10 @@
     "accessibility": "Toegankelijkheid"
   },
 
+  "reservations": {
+    "reservationButton": "Update Reservaties"
+  },
+
   "general": {
     "dsa": "Dienst StudentenActiviteiten",
     "ugent": "Universiteit Gent",
@@ -56,7 +66,8 @@
       "cancel": "Annuleer",
       "delete": "Verwijder",
       "search": "Zoek",
-      "clear": "Annuleer"
+      "clear": "Annuleer",
+      "close": "Sluiten"
     },
 
     "roles": {
@@ -107,7 +118,6 @@
       "tags": "Tags",
       "users": "Gebruikers",
       "authorities": "Autoriteiten",
-      "reservations": "Reservaties",
       "calendar": "Kalender",
       "penalties": "Overtredingen"
     },
@@ -142,7 +152,19 @@
       },
 
       "calendar": {
-        "title": "Kalender met openingsdagen",
+        "title": "Reservatiebeheer",
+
+        "reservations": {
+          "title": "Reservaties voor de locatie",
+          "selectSlot": "Selecteer een (reserveerbaar) timeslot om de reservaties te zien",
+          "loading": "Locatiereservaties voor het geselecteerde slot worden geladen",
+          "error": "Er is iets misgelopen tijdens het ophalen van de reservaties...",
+          "table": {
+            "noLocationReservations": "Er zijn geen locatie reservaties voor het geselecteerde timeslot",
+            "user": "Gebruiker",
+            "attended": "Gebruiker was aanwezig?"
+          }
+        },
 
         "form": {
           "title": "Wijzig openingsdagen",
@@ -152,8 +174,15 @@
           "endsAt": "Eindigt op",
           "openingTime": "Openingstijd",
           "closingTime": "Sluitingstijd",
+          "reservable": "Reserveerbaar",
+          "reservableTimeslotSize": "Lengte Timeslots",
           "reservableFrom": "Reserveerbaar vanaf",
           "remove": "Verwijder",
+          "dropdown": {
+            "halfHour": "30 minuten",
+            "hour": "1 uur",
+            "hourAndHalf": "1.5 uur"
+          },
 
           "updateButton": "Update",
           "cancelButton": "Annuleer",
@@ -164,7 +193,15 @@
           "errorMessage": "Het aanpassen van de kalender is mislukt. Er is iets misgegaan.",
 
           "noCalendarPeriodsForLocation": "Op dit moment zijn er nog geen periodes voor de locatie beschikbaar."
-        }
+        },
+
+        "warningDialog": {
+          "warning": "Waarschuwing",
+          "body": "De duur van (minstens) één van de aangemaakte periodes (openingstijd-sluitingstijd) is niet deelbaar door de Reserveerbare Timeslot-duur. Dit betekent dat het laatste (onvolledige) timeslot niet zal aangemaakt worden en dus ook niet reserveerbaar zal zijn. Gelieve hier rekening mee te houden."
+        },
+
+        "updateTitle": "Pas periode aan",
+        "newTitle": "Maak een nieuwe periode"
       },
 
       "description": {
@@ -805,6 +842,7 @@
           "header": {
             "locationName": "Locatie",
             "reservationDate": "Gereserveerd voor datum",
+            "beginHour": "Aanvangsuur reservatie",
             "attended": "Was je aanwezig?"
           },
 
@@ -815,7 +853,9 @@
           }
         },
 
-        "noReservations": "Je hebt tot nu toe nog nooit gereserveerd om op een bloklocatie te studeren."
+        "zeroReservations": "Je hebt tot nu toe nog nooit gereserveerd om op een bloklocatie te studeren",
+        "loading": "Locatiereservaties worden geladen...",
+        "error": "Er is iets misgegaan tijdens het laden van uw locatiereservaties"
       },
 
       "lockers": {

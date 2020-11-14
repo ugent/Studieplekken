@@ -54,7 +54,7 @@ public class BuildingController {
     public void addBuilding(@RequestBody Building building) {
         try {
             buildingDao.addBuilding(building);
-            logger.info(String.format("Adding building %s", building.getName()));
+            logger.info(String.format("Added building '%s' as %s", building.getName(), building.toString()));
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
@@ -64,11 +64,10 @@ public class BuildingController {
 
     @PutMapping("/{buildingId}")
     public void updateBuilding(@PathVariable int buildingId, @RequestBody Building building) {
-        logger.error(buildingId + ": " + building.toString());
         try {
             building.setBuildingId(buildingId);
             buildingDao.updateBuilding(building);
-            logger.info(String.format("Updating building %d", buildingId));
+            logger.info(String.format("Updated building with id '%d' to %s", buildingId, building.toString()));
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
@@ -80,7 +79,7 @@ public class BuildingController {
     public void deleteAuthority(@PathVariable int buildingId) {
         try {
             buildingDao.deleteBuilding(buildingId);
-            logger.info(String.format("Removing building %d", buildingId));
+            logger.info(String.format("Removed building with id '%d'", buildingId));
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));

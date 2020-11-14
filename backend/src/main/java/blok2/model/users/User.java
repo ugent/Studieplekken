@@ -3,6 +3,7 @@ package blok2.model.users;
 import java.util.Objects;
 import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -138,6 +139,7 @@ public class User implements Cloneable, UserDetails {
      *   Implementation of UserDetails methods   *
      *********************************************/
 
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority(admin ? "admin" : "user"));

@@ -46,10 +46,6 @@ export class LocationService {
     return this.http.delete(api.deleteLocation.replace('{locationName}', locationName));
   }
 
-  getNumberOfReservations(location: Location): Observable<number> {
-    return this.http.get<number>(api.numberOfReservations.replace('{locationName}', location.name));
-  }
-
   /***************************************************************
    *   API calls for CRUD operations with public.LOCATION_TAGS   *
    ***************************************************************/

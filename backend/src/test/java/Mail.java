@@ -1,5 +1,4 @@
 import blok2.Blok2Application;
-import blok2.controllers.BuildingController;
 import blok2.controllers.LocationController;
 import blok2.daos.IAuthorityDao;
 import blok2.daos.IBuildingDao;
@@ -25,9 +24,9 @@ import javax.mail.MessagingException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collections;
-import java.util.List;
 
 @Import(CustomFlywayConfig.class)
 @RunWith(SpringRunner.class)
@@ -59,11 +58,11 @@ public class Mail {
         locationDao.addLocation(testLocation);
         CalendarPeriod period = new CalendarPeriod();
         period.setLocation(testLocation);
-        period.setStartsAt(LocalDate.now().plusWeeks(3).plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-        period.setEndsAt(LocalDate.now().plusWeeks(3).plusDays(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-        period.setClosingTime("16:00");
-        period.setOpeningTime("08:00");
-        period.setReservableFrom("");
+        period.setStartsAt(LocalDate.now().plusWeeks(3).plusDays(1));
+        period.setEndsAt(LocalDate.now().plusWeeks(3).plusDays(10));
+        period.setClosingTime(LocalTime.of(16, 0));
+        period.setOpeningTime(LocalTime.of(8, 0));
+        period.setReservableFrom(LocalDateTime.now().minusMonths(1));
         calendarPeriodDao.addCalendarPeriods(Collections.singletonList(period));
 
 

@@ -207,7 +207,6 @@ export class PenaltyEventsManagementComponent implements OnInit {
 
     if (this.validPenaltyEventForm()) {
       const penaltyEvent = this.penaltyEventFromFormAndDescriptions(value);
-      console.log(penaltyEvent);
 
       this.updateWasSuccess = null;
       this.penaltyService.updatePenaltyEvent(value.code, penaltyEvent).subscribe(

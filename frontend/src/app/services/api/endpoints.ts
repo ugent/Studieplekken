@@ -10,15 +10,9 @@ export const api = {
   deleteAuthority: '/api/authority/{authorityId}',
   locationsInAuthoritiesOfUser: '/api/authority/users/{userId}/locations',
 
-  // AUTHORITY
-  buildings: '/api/building',
-  building: '/api/building/{buildingId}',
-  addBuilding: '/api/building',
-  updateBuilding: '/api/building/{buildingId}',
-  deleteBuilding: '/api/building/{buildingId}',
-
   // CALENDAR_PERIODS
   calendarPeriods: '/api/locations/calendar/{locationName}',
+  allCalendarPeriods: '/api/locations/calendar/',
   addCalendarPeriods: '/api/locations/calendar',
   updateCalendarPeriods: '/api/locations/calendar/{locationName}',
   deleteCalendarPeriods: '/api/locations/calendar',
@@ -37,16 +31,24 @@ export const api = {
   updateLocation: '/api/locations/{locationName}',
   approveLocation: '/api/locations/{locationName}/approval',
   deleteLocation: '/api/locations/{locationName}',
-  numberOfReservations: '/api/locations/{locationName}/reservations/count',
   setupTagsForLocation: '/api/locations/tags/{locationName}',
 
   // LOCATION_RESERVATIONS
   locationReservationsOfUser: '/api/locations/reservations/user',
-  locationReservationsOfLocation: '/api/locations/reservations/location',
+  locationReservationsOfLocation: '/api/locations/reservations/timeslot/{calendarid}/{date}/{seqnr}',
   locationReservationsOfLocationFrom: '/api/locations/reservations/from',
   locationReservationsOfLocationUntil: '/api/locations/reservations/until',
   locationReservationsOfLocationFromAndUntil: '/api/locations/reservations/fromAndUntil',
+  addLocationReservation: '/api/locations/reservations',
   deleteLocationReservation: '/api/locations/reservations',
+
+
+  // AUTHORITY
+  buildings: '/api/building',
+  building: '/api/building/{buildingId}',
+  addBuilding: '/api/building',
+  updateBuilding: '/api/building/{buildingId}',
+  deleteBuilding: '/api/building/{buildingId}',
 
   // LOCKER_RESERVATIONS
   lockerReservationsOfUser: '/api/lockers/reservations/user',
