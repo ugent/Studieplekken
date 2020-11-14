@@ -3,7 +3,6 @@ import {Location} from '../../shared/model/Location';
 import {ActivatedRoute} from '@angular/router';
 import {BehaviorSubject, combineLatest, Observable, Subscription} from 'rxjs';
 import {LocationService} from '../../services/api/locations/location.service';
-import {vars, msToShowFeedback} from '../../../environments/environment';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {CalendarEvent} from 'angular-calendar';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -11,11 +10,12 @@ import {TranslateService} from '@ngx-translate/core';
 import {LocationTag} from '../../shared/model/LocationTag';
 import {TagsService} from '../../services/api/tags/tags.service';
 import {CalendarPeriodsService} from '../../services/api/calendar-periods/calendar-periods.service';
-import { mapCalendarPeriodsToCalendarEvents } from 'src/app/shared/model/CalendarPeriod';
 import { includesTimeslot, Timeslot, timeslotEquals } from 'src/app/shared/model/Timeslot';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
+import {mapCalendarPeriodsToCalendarEvents} from '../../shared/model/CalendarPeriod';
+import {defaultLocationImage, msToShowFeedback} from '../../app.constants';
 
 @Component({
   selector: 'app-location-details',
@@ -46,7 +46,7 @@ export class LocationDetailsComponent implements OnInit {
     dutch: ''
   };
 
-  altImageUrl = vars.defaultLocationImage;
+  altImageUrl = defaultLocationImage;
 
   currentLang: string;
 
@@ -105,11 +105,11 @@ export class LocationDetailsComponent implements OnInit {
   }
 
   handleImageError(location: Location): void {
-    location.imageUrl = vars.defaultLocationImage;
+    location.imageUrl = defaultLocationImage;
   }
 
   getGoogleMapsUrl(location: Location): SafeResourceUrl {
-    const url = 'https://www.google.com/maps?q=' + location.address + '&output=embed';
+    const url = 'https://www.google.com/maps?q=' + location.building.address + '&output=embed';
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 

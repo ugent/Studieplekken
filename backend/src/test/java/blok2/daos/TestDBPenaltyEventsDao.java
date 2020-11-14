@@ -2,6 +2,7 @@ package blok2.daos;
 
 import blok2.helpers.Language;
 import blok2.model.Authority;
+import blok2.model.Building;
 import blok2.model.penalty.Penalty;
 import blok2.model.penalty.PenaltyEvent;
 import blok2.model.reservables.Location;
@@ -31,6 +32,9 @@ public class TestDBPenaltyEventsDao extends TestDao {
     private IAuthorityDao authorityDao;
 
     @Autowired
+    private IBuildingDao buildingDao;
+
+    @Autowired
     private IPenaltyEventsDao penaltyEventsDao;
 
     private PenaltyEvent cancellingTooLateEvent;
@@ -39,6 +43,7 @@ public class TestDBPenaltyEventsDao extends TestDao {
     private PenaltyEvent testEvent;
 
     private Location testLocation;
+    private Building testBuilding;
     private User testUser;
 
     @Override
@@ -65,7 +70,8 @@ public class TestDBPenaltyEventsDao extends TestDao {
         testEvent = new PenaltyEvent(1, 10, testDescriptions);
 
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testLocation = TestSharedMethods.testLocation(authority.clone());
+        testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+        testLocation = TestSharedMethods.testLocation(authority.clone(), testBuilding);
         testUser = TestSharedMethods.studentTestUser();
 
         // Add test objects to database

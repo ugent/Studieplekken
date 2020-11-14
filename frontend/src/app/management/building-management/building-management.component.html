@@ -1,0 +1,260 @@
+<div class="container-fluid">
+  <!-- Title -->
+  <h3>{{'management.buildings.title' | translate}}</h3>
+
+  <hr>
+
+  <!-- Table with all existing building -->
+  <div class="row" *ngIf="buildingsObs | async as buildings">
+    <table style="width: 100%;" *ngIf="buildings.length > 0; else noBuilding">
+      <thead>
+      <tr>
+        <th>{{'management.buildings.table.name' | translate}}</th>
+        <th>{{'management.buildings.table.address' | translate}}</th>
+        <th><!-- update --></th>
+        <th><!-- delete --></th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr [@rowsAnimation]="" *ngFor="let building of buildings">
+        <td>{{building.name}}</td>
+        <td>{{building.address}}</td>
+        <!-- Edit icon -->
+        <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
+            data-toggle="modal" data-target="#updateBuildingModal"
+            (click)="prepareUpdate(building)">
+          <span class="glyphicon glyphicon-pencil pointerCursor"></span>
+        </td>
+        <!-- Delete glyphicon -->
+        <td data-toggle="modal" data-target="#deleteBuildingModal"
+            class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
+            (click)="prepareToDelete(building)">
+          <span class="glyphicon glyphicon-trash pointerCursor"></span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top: 20px">
+      <button class="btn btn-primary" data-toggle="modal" data-target="#addBuildingModal"
+              (click)="prepareAdd()">
+        {{'management.buildings.addNewBuilding' | translate}}
+      </button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="alert alert-error" *ngIf="successGettingBuildings === false">
+      {{'management.buildings.errorOnRetrievingBuildings' | translate}}
+    </div>
+  </div>
+</div>
+
+<ng-template #noBuilding>
+  <div class="alert alert-info">
+    {{'management.general.noBuildings' | translate}}
+  </div>
+</ng-template>
+
+<!-- Modal view to add a new building -->
+<div class="modal fade" id="addBuildingModal" tabindex="-1" role="dialog"
+     aria-labelledby="addBuildingModalTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <!-- Modal header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="addBuildingModalTitle">
+          {{'management.buildings.addBuildingModal.title' | translate}}
+        </h5>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form [formGroup]="buildingFormGroup">
+          <!-- buildingID - this will be set by the database -->
+
+          <!-- Name of building -->
+          <div class="row form-group">
+            <label class="col-lg-3 control-label" for="nameAdd">
+              {{'management.buildings.table.name' | translate}}<span style="color: red; margin-left: 5px;">*</span>
+            </label>
+            <div class="col-lg-8">
+              <input class="form-control" id="nameAdd" type="text" formControlName="name" >
+            </div>
+          </div>
+
+          <!-- Address of building -->
+          <div class="row form-group">
+            <label class="col-lg-3 control-label" for="addressAdd">
+              {{'management.buildings.table.address' | translate}}<span style="color: red; margin-left: 5px;">*</span>
+            </label>
+            <div class="col-lg-8">
+              <input class="form-control" id="addressAdd" type="text" formControlName="address" >
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary"
+                [disabled]="!validBuildingFormGroup()"
+                (click)="addBuilding()">
+          {{'general.buttons.add' | translate}}
+        </button>
+        <button type="button" class="btn btn-secondary"
+                data-dismiss="modal">
+          {{'general.buttons.cancel' | translate}}
+        </button>
+      </div>
+
+      <!-- Feedback to the user -->
+      <div class="container-fluid">
+        <div class="alert alert-info" *ngIf="successAddingBuilding === null">
+          {{'general.waitingForServer' | translate}}
+        </div>
+
+        <div class="alert alert-success" *ngIf="successAddingBuilding === true">
+          {{'management.buildings.addBuildingModal.success' | translate}}
+        </div>
+
+        <div class="alert alert-error" *ngIf="successAddingBuilding === false">
+          {{'management.buildings.addBuildingModal.error' | translate}}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal view to update a building -->
+<div class="modal fade" id="updateBuildingModal" tabindex="-1" role="dialog"
+     aria-labelledby="updateBuildingModalTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <!-- Modal header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="updateBuildingModalTitle">
+          {{'management.buildings.updateBuildingModal.title' | translate}}
+        </h5>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form [formGroup]="buildingFormGroup">
+
+          <!-- Building name -->
+          <div class="row form-group">
+            <label class="col-lg-3 control-label" for="nameUpdate">
+              {{'management.buildings.table.name' | translate}}<span style="color: red; margin-left: 5px;">*</span>
+            </label>
+            <div class="col-lg-8">
+              <input class="form-control" id="nameUpdate" type="text" formControlName="name">
+            </div>
+          </div>
+
+          <!-- Building address -->
+          <div class="row form-group">
+            <label class="col-lg-3 control-label" for="addressUpdate">
+              {{'management.buildings.table.address' | translate}}<span style="color: red; margin-left: 5px;">*</span>
+            </label>
+            <div class="col-lg-8">
+              <input class="form-control" id="addressUpdate" type="text" formControlName="address">
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary"
+                [disabled]="!validBuildingFormGroup()"
+                (click)="updateBuildingInFormGroup()">
+          {{'general.buttons.update' | translate}}
+        </button>
+        <button type="button" class="btn btn-secondary"
+                data-dismiss="modal">
+          {{'general.buttons.cancel' | translate}}
+        </button>
+      </div>
+
+      <!-- Feedback to the user -->
+      <div class="container-fluid">
+        <div class="alert alert-info" *ngIf="successUpdatingBuilding === null">
+          {{'general.waitingForServer' | translate}}
+        </div>
+
+        <div class="alert alert-success" *ngIf="successUpdatingBuilding === true">
+          {{'management.buildings.updateBuildingModal.success' | translate}}
+        </div>
+
+        <div class="alert alert-error" *ngIf="successUpdatingBuilding === false">
+          {{'management.buildings.updateBuildingModal.error' | translate}}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal view to ask whether the user is sure to delete the building -->
+<div class="modal fade" id="deleteBuildingModal" tabindex="-1" role="dialog"
+     aria-labelledby="deleteBuildingModalTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <!-- Header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteBuildingModalTitle">
+          {{'management.buildings.deleteBuildingModal.title' | translate}}
+        </h5>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div>
+          <b>{{'management.buildings.deleteBuildingModal.body' | translate}}</b>
+
+          <div class="alert alert-warning" style="margin-top: 10px; margin-bottom: 10px;">
+            {{'management.buildings.deleteBuildingModal.warning' | translate}}
+          </div>
+
+          <ul>
+            <li><b style="margin-right: 5px"><i>{{('management.buildings.table.name' | translate) + ':   '}}</i></b>{{building.name}}</li>
+            <li><b style="margin-right: 5px"><i>{{('management.buildings.table.address' | translate)}}</i></b>{{building.address}}</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary"
+                (click)="deleteBuildingInFormGroup()">
+          {{'general.buttons.delete' | translate}}
+        </button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          {{'general.buttons.cancel' | translate}}
+        </button>
+      </div>
+
+      <div class="container-fluid">
+        <div class="alert alert-info" *ngIf="successDeletingBuilding === null">
+          {{'general.waitingForServer' | translate}}
+        </div>
+
+        <div class="alert alert-success" *ngIf="successDeletingBuilding === true">
+          {{'management.buildings.deleteBuildingModal.success' | translate}}
+        </div>
+
+        <div class="alert alert-error" *ngIf="successDeletingBuilding === false">
+          {{'management.buildings.deleteBuildingModal.error' | translate}}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+

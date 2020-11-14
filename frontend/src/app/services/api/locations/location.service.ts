@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {api} from '../../../../environments/environment';
+import {api} from '../endpoints';
 import {Location} from '../../../shared/model/Location';
 import {LocationTag} from '../../../shared/model/LocationTag';
 import { map } from 'rxjs/internal/operators/map';
@@ -11,7 +11,8 @@ import { map } from 'rxjs/internal/operators/map';
 })
 export class LocationService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   /***********************************************************
    *   API calls for CRUD operations with public.LOCATIONS   *

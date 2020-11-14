@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {api} from '../../../../environments/environment';
+import {api} from '../endpoints';
 import {LocationReservation} from '../../../shared/model/LocationReservation';
 import {combineLatest, Observable} from 'rxjs';
 import { getTimeslotsOnDay, Timeslot } from 'src/app/shared/model/Timeslot';
@@ -15,18 +15,21 @@ import { Moment } from 'moment';
 })
 export class LocationReservationsService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   getLocationReservationsOfUser(id: string): Observable<LocationReservation[]> {
     const params = new HttpParams().set('id', id);
-    return this.http.get<LocationReservation[]>(api.locationReservationsOfUser, { params });
+    return this.http.get<LocationReservation[]>(api.locationReservationsOfUser, { params })
+                                                          .pipe(map(ls => ls.map(LocationReservation.fromJSON)));
   }
 
   getLocationReservationsOfTimeslot(timeslot: Timeslot): Observable<LocationReservation[]> {
-    return this.http.get<LocationReservation[]>(api.locationReservationsOfLocation
+    return this.http.get<any[]>(api.locationReservationsOfLocation
                                                   .replace('{calendarid}', `${timeslot.calendarId}`)
                                                   .replace('{date}', timeslot.timeslotDate.format('YYYY-MM-DD'))
-                                                  .replace('{seqnr}', `${timeslot.timeslotSeqnr}`));
+                                                  .replace('{seqnr}', `${timeslot.timeslotSeqnr}`))
+                                                  .pipe(map(ls => ls.map(LocationReservation.fromJSON)));
   }
 
   getLocationReservationsOfDay(calendarPeriod: CalendarPeriod, date: Moment): Observable<LocationReservation[]> {

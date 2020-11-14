@@ -6,19 +6,9 @@ import * as moment from 'moment';
 import { Moment } from 'moment';
 
 export class CalendarPeriod {
-  id: number;
-  location: Location;
-  startsAt: Moment;
-  endsAt: Moment;
-  openingTime: Moment;
-  closingTime: Moment;
-  reservable: boolean;
-  reservableFrom: Moment;
-  reservableTimeslotSize: number;
-  timeslots: Timeslot[];
 
   constructor(id: number, location: Location, startsAt: Moment, endsAt: Moment, openingTime: Moment, closingTime: Moment,
-              reservable: boolean, reservableFrom: Moment, reservableTimeslotSize: number, timeslots: Timeslot[]) {
+              reservable: boolean, reservableFrom: Moment, reservableTimeslotSize: number, timeslots: Timeslot[], lockedFrom: Moment) {
     this.id = id;
     this.location = location;
     this.startsAt = startsAt;
@@ -29,7 +19,19 @@ export class CalendarPeriod {
     this.reservable = reservable;
     this.reservableTimeslotSize = reservableTimeslotSize;
     this.timeslots = timeslots;
+    this.lockedFrom = lockedFrom;
   }
+  id: number;
+  location: Location;
+  startsAt: Moment;
+  endsAt: Moment;
+  openingTime: Moment;
+  closingTime: Moment;
+  reservable: boolean;
+  reservableFrom: Moment;
+  reservableTimeslotSize: number;
+  timeslots: Timeslot[];
+  lockedFrom: Moment;
 
   static fromJSON(json: any): CalendarPeriod {
     return new CalendarPeriod(
@@ -42,8 +44,21 @@ export class CalendarPeriod {
       json.reservable,
       moment(json.reservableFrom, 'YYYY-MM-DDTHH:mm:ss'),
       json.reservableTimeslotSize,
-      json.timeslots.map(jsonT => Timeslot.fromJSON(jsonT))
+      json.timeslots.map(jsonT => Timeslot.fromJSON(jsonT)),
+      moment(json.lockedFrom)
     );
+  }
+
+  isLocked(): boolean {
+    return this.lockedFrom && this.lockedFrom.isBefore(moment());
+  }
+
+  areReservationsLocked(): boolean {
+    return !this.reservableFrom || this.reservableFrom.isAfter(moment());
+  }
+
+  isValid(): boolean {
+    return isCalendarPeriodValid(this);
   }
 
   toJSON(): object {
@@ -56,8 +71,9 @@ export class CalendarPeriod {
       reservableFrom: this.reservableFrom ? this.reservableFrom.format('YYYY-MM-DDTHH:mm:ss') : null,
       reservableTimeslotSize: this.reservableTimeslotSize,
       timeslots: this.timeslots,
-      reservable: this.reservable
-    }
+      reservable: this.reservable,
+      lockedFrom: this.lockedFrom
+    };
   }
 }
 
@@ -74,20 +90,23 @@ export class CalendarPeriod {
  * 3. closingTime may not be before openingTime
  */
 export function isCalendarPeriodValid(period: CalendarPeriod): boolean {
-  console.log(period);
   if (period === null || period.openingTime === null) {
-    console.log('First if');
     return false;
   }
 
 
-  if (period.startsAt.isAfter(period.endsAt)) {
-    console.log('Second if');
+  if (!period.startsAt.isValid() || !period.endsAt.isValid() || period.startsAt.isAfter(period.endsAt)) {
     return false;
   }
-  console.log(period.openingTime);
-  console.log(period.closingTime);
-  console.log(period.openingTime.isBefore(period.closingTime));
+
+  if (period.reservable && period.reservableTimeslotSize === 0) {
+    return false;
+  }
+
+  if (period.reservable && !period.reservableFrom.isValid()) {
+    return false;
+  }
+
   return period.openingTime.isBefore(period.closingTime);
 }
 
@@ -106,7 +125,8 @@ export function mapCalendarPeriodsToCalendarEvents(periods: CalendarPeriod[],
     return [];
   }
   return periods
-          .map(period => period.reservable ? mapTimeslotsToCalendarEvents(period, reservedTimeslots) : mapNRperiodToCalendarEvents(period))
+          .map(period => period.reservable && !period.areReservationsLocked() ?
+                                mapTimeslotsToCalendarEvents(period, reservedTimeslots) : mapNRperiodToCalendarEvents(period))
           .reduce((a, b) => [...a, ...b]);
 }
 

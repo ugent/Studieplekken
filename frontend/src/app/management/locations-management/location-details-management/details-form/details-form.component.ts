@@ -3,12 +3,14 @@ import {Location} from '../../../../shared/model/Location';
 import {FormControl, FormGroup} from '@angular/forms';
 import {LocationService} from '../../../../services/api/locations/location.service';
 import {Observable} from 'rxjs';
-import {msToShowFeedback} from '../../../../../environments/environment';
 // @ts-ignore
 import {LocationDetailsService} from '../../../../services/single-point-of-truth/location-details/location-details.service';
 import {Authority} from '../../../../shared/model/Authority';
 import {AuthoritiesService} from '../../../../services/api/authorities/authorities.service';
 import {tap} from 'rxjs/operators';
+import {Building} from 'src/app/shared/model/Building';
+import {BuildingService} from 'src/app/services/api/buildings/buildings.service';
+import {msToShowFeedback} from '../../../../app.constants';
 
 @Component({
   selector: 'app-details-form',
@@ -21,10 +23,13 @@ export class DetailsFormComponent implements OnInit {
   authoritiesObs: Observable<Authority[]>;
   authoritiesMap: Map<number, Authority>; // map the authorityId to the Authority object
 
+  buildingsObs: Observable<Building[]>;
+  buildingsMap: Map<number, Building>; // map the buildingId to the Building object
+
   locationForm = new FormGroup({
     name: new FormControl({value: '', disabled: true}),
     authority: new FormControl({value: '', disabled: true}),
-    address: new FormControl({value: '', disabled: true}),
+    building: new FormControl({value: '', disabled: true}),
     numberOfSeats: new FormControl({value: '', disabled: true}),
     numberOfLockers: new FormControl({value: '', disabled: true}),
     forGroup: new FormControl({value: '', disabled: true}),
@@ -39,7 +44,17 @@ export class DetailsFormComponent implements OnInit {
 
   constructor(private locationService: LocationService,
               private locationDetailsService: LocationDetailsService,
-              private authoritiesService: AuthoritiesService) { }
+              private authoritiesService: AuthoritiesService,
+              private buildingsService: BuildingService) {
+  }
+
+  get authorityInLocationForm(): Authority {
+    return this.authoritiesMap.get(Number(this.locationForm.get('authority').value));
+  }
+
+  get buildingInLocationForm(): Building {
+    return this.buildingsMap.get(Number(this.locationForm.get('building').value));
+  }
 
   ngOnInit(): void {
     // if the location has been retrieved, populate the form group
@@ -58,13 +73,22 @@ export class DetailsFormComponent implements OnInit {
         });
       }
     ));
+
+    this.buildingsObs = this.buildingsService.getAllBuildings().pipe(tap(
+      next => {
+        this.buildingsMap = new Map<number, Building>();
+        next.forEach(value => {
+          this.buildingsMap.set(value.buildingId, value);
+        });
+      }
+    ));
   }
 
   updateFormGroup(location: Location): void {
     this.locationForm.setValue({
       name: location.name,
       authority: location.authority.authorityId,
-      address: location.address,
+      building: location.building.buildingId,
       numberOfSeats: location.numberOfSeats,
       numberOfLockers: location.numberOfLockers,
       forGroup: location.forGroup,
@@ -108,6 +132,7 @@ export class DetailsFormComponent implements OnInit {
 
     // set the authority object based on the authorityId that is selected in the form
     to.authority = this.authorityInLocationForm;
+    to.building = this.buildingInLocationForm;
 
     this.locationService.updateLocation(from.name, to).subscribe(
       () => {
@@ -137,9 +162,5 @@ export class DetailsFormComponent implements OnInit {
   errorHandler(): void {
     this.successUpdatingLocation = false;
     setTimeout(() => this.successUpdatingLocation = undefined, msToShowFeedback);
-  }
-
-  get authorityInLocationForm(): Authority {
-    return this.authoritiesMap.get(Number(this.locationForm.get('authority').value));
   }
 }

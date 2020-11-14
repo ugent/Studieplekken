@@ -128,7 +128,6 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
                 long sizeOfLocation = getLocationSizeOfTimeslot(reservation.getTimeslot(), conn);
 
                 if (amountOfReservations < sizeOfLocation) {
-                    System.out.println(amountOfReservations);
                     // All is well. Add & then release the lock
 
                     addLocationReservation(reservation, conn);

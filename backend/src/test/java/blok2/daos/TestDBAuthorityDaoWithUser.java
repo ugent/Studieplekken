@@ -1,6 +1,7 @@
 package blok2.daos;
 
 import blok2.model.Authority;
+import blok2.model.Building;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;
 import org.junit.Assert;
@@ -22,11 +23,14 @@ public class TestDBAuthorityDaoWithUser extends TestDao {
 
     @Autowired ILocationDao locationDao;
 
+    @Autowired IBuildingDao buildingDao;
+
     private Authority testAuthority;
     private Authority testAuthority2;
     private User testUser;
     private Location testLocation1;
     private Location testLocation2;
+    private Building testBuilding;
 
     @Override
     public void populateDatabase() throws SQLException {
@@ -35,8 +39,11 @@ public class TestDBAuthorityDaoWithUser extends TestDao {
 
         testUser = TestSharedMethods.adminTestUser();
 
-        testLocation1 = TestSharedMethods.testLocation(testAuthority.clone());
-        testLocation2 = TestSharedMethods.testLocation2(testAuthority2.clone());
+        testBuilding = TestSharedMethods.testBuilding();
+        testBuilding = buildingDao.addBuilding(testBuilding);
+
+        testLocation1 = TestSharedMethods.testLocation(testAuthority.clone(), testBuilding);
+        testLocation2 = TestSharedMethods.testLocation2(testAuthority2.clone(), testBuilding);
 
         accountDao.directlyAddUser(testUser);
         authorityDao.addUserToAuthority(testUser.getAugentID(), testAuthority.getAuthorityId());

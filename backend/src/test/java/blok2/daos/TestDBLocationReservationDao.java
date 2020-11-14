@@ -3,6 +3,7 @@ package blok2.daos;
 import blok2.model.Authority;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
+import blok2.model.Building;
 import blok2.model.reservables.Location;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
@@ -32,20 +33,25 @@ public class TestDBLocationReservationDao extends TestDao {
     @Autowired
     private ICalendarPeriodDao calendarPeriodDao;
 
+    @Autowired
+    private IBuildingDao buildingDao;
 
     private Location testLocation;
-
+    private Building testBuilding;
     private User testUser;
     private User testUser2;
     private List<CalendarPeriod> calendarPeriods;
     private CalendarPeriod calendarPeriod1Seat;
+    private Location testLocation1Seat;
 
     @Override
     public void populateDatabase() throws SQLException {
         // setup test location objects
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testLocation = TestSharedMethods.testLocation(authority.clone());
-        Location testLocation1Seat = TestSharedMethods.testLocation1Seat(authority.clone());
+        testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+
+        testLocation = TestSharedMethods.testLocation(authority.clone(), testBuilding);
+        testLocation1Seat = TestSharedMethods.testLocation1Seat(authority.clone(), testBuilding);
 
         testUser = TestSharedMethods.adminTestUser();
         testUser2 = TestSharedMethods.studentTestUser();

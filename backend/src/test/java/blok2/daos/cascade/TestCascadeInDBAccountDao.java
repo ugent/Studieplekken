@@ -4,6 +4,7 @@ import blok2.daos.*;
 import blok2.helpers.Language;
 import blok2.model.Authority;
 import blok2.model.calendar.CalendarPeriod;
+import blok2.model.Building;
 import blok2.model.penalty.Penalty;
 import blok2.model.penalty.PenaltyEvent;
 import blok2.model.reservables.Location;
@@ -46,6 +47,7 @@ public class TestCascadeInDBAccountDao extends TestDao {
     @Autowired
     private ICalendarPeriodDao calendarPeriodDao;
 
+    @Autowired IBuildingDao buildingDao;
 
     // this will be the test user
     private User testUser;
@@ -72,11 +74,11 @@ public class TestCascadeInDBAccountDao extends TestDao {
         testUser = TestSharedMethods.studentTestUser();
 
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testLocation1 = TestSharedMethods.testLocation(authority.clone());
-        testLocation2 = TestSharedMethods.testLocation2(authority.clone());
+        Building testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+        testLocation1 = TestSharedMethods.testLocation(authority.clone(), testBuilding);
+        testLocation2 = TestSharedMethods.testLocation2(authority.clone(), testBuilding);
         locationDao.addLocation(testLocation1);
         locationDao.addLocation(testLocation2);
-
         CalendarPeriod cp1 = TestSharedMethods.testCalendarPeriods(testLocation1).get(0);
         TestSharedMethods.addCalendarPeriods(calendarPeriodDao, cp1);
         CalendarPeriod cp2 = TestSharedMethods.testCalendarPeriods(testLocation2).get(0);

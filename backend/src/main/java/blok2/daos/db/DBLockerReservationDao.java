@@ -16,21 +16,6 @@ import java.util.List;
 @EnableScheduling
 public class DBLockerReservationDao extends DAO implements ILockerReservationDao {
 
-    // executes daily
-    // TODO: should be done in db, have a look at https://stackoverflow.com/a/9490521/9356123
-    //  to track the timestamp of the locker_reservation record insertions. Based on xmin,
-    //  delete certain entries. Probably best to do it as a Perl script which can be put into
-    //  a one shot systemd service on the production server.
-    /*@Scheduled(fixedRate = 1000*60*60*24)
-    public void scheduledCleanup(){
-        try (Connection connection = adb.getConnection()){
-            Statement statement = connection.createStatement();
-            statement.executeQuery(Resources.databaseProperties.getString("daily_cleanup_reservation_of_locker"));
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }*/
-
     @Override
     public List<LockerReservation> getAllLockerReservationsOfUser(String augentID) throws SQLException {
         String query = Resources.databaseProperties.getString("get_locker_reservations_where_<?>");
@@ -149,7 +134,7 @@ public class DBLockerReservationDao extends DAO implements ILockerReservationDao
     public LockerReservation getLockerReservation(String locationName, int lockerNumber) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             String query = Resources.databaseProperties.getString("get_locker_reservations_where_<?>");
-            query = query.replace("<?>", "l.location_name = ? and l.number = ?");
+            query = query.replace("<?>", "lr.location_name = ? and lr.locker_number = ?");
 
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, locationName);

@@ -1,33 +1,27 @@
 import {User, UserConstructor} from './User';
 import { Timeslot } from './Timeslot';
+import { Moment } from 'moment';
+import * as moment from 'moment';
 
-export interface LocationReservation {
+export class LocationReservation {
   user: User;
   timeslot: Timeslot;
   attended?: boolean;
   createdAt?: string;
-}
 
-export class LocationReservationConstructor {
-  static new(): LocationReservation {
-    return {
-      user: UserConstructor.new(),
-      attended: false,
-      createdAt: '',
-      timeslot: null
-    };
+  constructor(user: User, timeslot: Timeslot, attended?: boolean, ceatedAt?: Moment) {
+    this.user = user;
+    this.timeslot = timeslot;
+    this.attended = attended;
+    this.createdAt = this.createdAt;
   }
 
-  static newFromObj(obj: LocationReservation): LocationReservation {
-    if (obj === null) {
-      return null;
-    }
-
-    return {
-      user: UserConstructor.newFromObj(obj.user),
-      attended: obj.attended,
-      timeslot: obj.timeslot,
-      createdAt: obj.createdAt
-    };
+  static fromJSON(json): LocationReservation {
+    return new LocationReservation(
+      json.user,
+      Timeslot.fromJSON(json.timeslot),
+      json.attended,
+      json.createdAt ? moment(json.createdAt) : null
+    );
   }
 }

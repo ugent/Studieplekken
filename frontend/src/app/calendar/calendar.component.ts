@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output, OnChanges, SimpleChanges
 import {CalendarView, CalendarEvent, CalendarEventTimesChangedEvent} from 'angular-calendar';
 import {BehaviorSubject, Subject} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
-import {defaultOpeningHour, defaultClosingHour} from 'src/environments/environment';
+import {defaultOpeningHour, defaultClosingHour} from 'src/app/app.constants';
 import { getHours } from 'date-fns';
 
 @Component({
@@ -56,18 +56,13 @@ export class CalendarComponent implements OnInit, OnChanges {
     }
   }
 
-  dayClicked({ date, events }: { date: Date ; events: CalendarEvent[] }): void {
-    console.log('Clicked on date ' + date);
-    console.log('Events: ' + events);
-  }
+  dayClicked({ date, events }: { date: Date ; events: CalendarEvent[] }): void {}
 
   handleEvent(action: string, event: CalendarEvent): void {
     this.onTimeslotPicked.emit(event.meta);
   }
 
-  eventTimesChanged({event, newStart, newEnd, }: CalendarEventTimesChangedEvent): void {
-    console.log('event times changed to start = ' + newStart + ' end = ' + newEnd);
-  }
+  eventTimesChanged({event, newStart, newEnd, }: CalendarEventTimesChangedEvent): void {}
 
   setView(view: CalendarView): void {
     this.view = view;

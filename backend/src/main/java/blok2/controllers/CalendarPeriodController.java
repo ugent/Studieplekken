@@ -3,8 +3,8 @@ package blok2.controllers;
 import blok2.daos.ICalendarPeriodDao;
 import blok2.daos.ILocationDao;
 import blok2.model.calendar.CalendarPeriod;
+import blok2.model.calendar.Period;
 import blok2.model.reservables.Location;
-import blok2.shared.Utility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,7 +44,7 @@ public class CalendarPeriodController {
         }
     }
 
-    @GetMapping("/")
+    @GetMapping
     public List<CalendarPeriod> getAllCalendarPeriods() {
         try {
             return calendarPeriodDao.getAllCalendarPeriods();
@@ -57,6 +58,7 @@ public class CalendarPeriodController {
     @PostMapping
     public void addCalendarPeriods(@RequestBody List<CalendarPeriod> calendarPeriods) {
         try {
+            calendarPeriods.forEach(CalendarPeriod::initializeLockedFrom);
             calendarPeriodDao.addCalendarPeriods(calendarPeriods);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
@@ -71,7 +73,7 @@ public class CalendarPeriodController {
         try {
             List<CalendarPeriod> from = fromAndTo[0];
             List<CalendarPeriod> to = fromAndTo[1];
-
+            to.forEach(CalendarPeriod::initializeLockedFrom);
             // check for outdated view (perhaps some other user has changed the calendar periods in the meantime
             // between querying for the calendar periods for a location, and updating the calendar
             List<CalendarPeriod> currentView = calendarPeriodDao.getCalendarPeriodsOfLocation(locationName);
@@ -85,14 +87,21 @@ public class CalendarPeriodController {
 
             // if the sizes do match, check if the lists are equal
             // before invoking the 'equals' on a list, sort both lists based on 'starts at'
-            Utility.sortPeriodsBasedOnStartsAt(currentView);
-            Utility.sortPeriodsBasedOnStartsAt(from);
+            currentView.sort(Comparator.comparing(Period::getStartsAt));
+            from.sort(Comparator.comparing(Period::getStartsAt));
 
             if (!currentView.equals(from)) {
                 logger.log(Level.SEVERE, "updateCalendarPeriods, conflict in frontends data view and actual data view");
                 throw new ResponseStatusException(
                         HttpStatus.CONFLICT, "Wrong/Old view on data layer");
             }
+
+
+            // This is an issue. We can't block if any are locked: non-changed ones would have to be removed and added as well.
+            // This solution prevents locked periods from being removed (which we did want to do, if I recall correctly)
+            // Better suggestions welcome.
+            from.removeIf(CalendarPeriod::isLocked);
+            to.removeIf(CalendarPeriod::isLocked);
 
             // if the 'to' list is empty, all 'from' entries need to be deleted
             if (to.isEmpty()) {
@@ -102,7 +111,7 @@ public class CalendarPeriodController {
             else if (from.isEmpty()) {
                 addCalendarPeriods(to);
             } else {
-                Utility.sortPeriodsBasedOnStartsAt(to);
+                to.sort(Comparator.comparing(Period::getStartsAt));
                 analyzeAndUpdateCalendarPeriods(locationName, from, to);
             }
         } catch (SQLException e) {

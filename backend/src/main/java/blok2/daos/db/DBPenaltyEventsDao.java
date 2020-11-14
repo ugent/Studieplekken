@@ -81,24 +81,20 @@ public class DBPenaltyEventsDao extends DAO implements IPenaltyEventsDao {
             try {
                 conn.setAutoCommit(false);
 
-                if (code != event.getCode()) {
-                    // add new PenaltyEvent
-                    // so, there will be new descriptions
-                    // with a FK to the new PenaltyEvent
-                    addPenaltyEvent(event, conn);
+                // It is too complex to determine whether two maps are equal, so always remove all descriptions
+                // and add new ones. The amount of work to delete and re-add them is small enough compared to
+                // determining whether two keySets() and values() are equal.
+                // Important: working with code, and not event.getCode() because the code itself may have been changed
+                deletePenaltyEventDescriptions(code, conn);
+                addDescriptions(code, event.getDescriptions(), conn);
 
-                    // update the remaining table with a
-                    // FK to the old PenaltyEvent: PENALTY_BOOK
-                    updateForeignKeyOfPenaltyBookToPenaltyEvent(code, event.getCode(), conn);
-
-                    // delete remaining event (and its
-                    // descriptions, and in fact the penalty_book
-                    // entries as well but since their FK have been
-                    // updated, none will be removed, as shouldn't)
-                    deletePenaltyEvent(code, conn);
-                } else {
-                    updatePenaltyEvent(event, conn);
-                }
+                PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("update_penalty_event"));
+                // set ...
+                pstmt.setInt(1, event.getCode());
+                pstmt.setInt(2, event.getPoints());
+                // where ...
+                pstmt.setInt(3, code);
+                pstmt.execute();
 
                 conn.commit();
                 conn.setAutoCommit(true);
@@ -111,10 +107,20 @@ public class DBPenaltyEventsDao extends DAO implements IPenaltyEventsDao {
         }
     }
 
+    private void deletePenaltyEventDescriptions(int code, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
+                .getString("delete_penalty_descriptions_by_event_code"));
+        pstmt.setInt(1, code);
+        pstmt.execute();
+    }
+
     @Override
     public void deletePenaltyEvent(int code) throws SQLException {
         try (Connection conn = adb.getConnection()) {
-            deletePenaltyEvent(code, conn);
+            PreparedStatement pstmt = conn
+                    .prepareStatement(Resources.databaseProperties.getString("delete_penalty_event"));
+            pstmt.setInt(1, code);
+            pstmt.execute();
         }
     }
 
@@ -275,51 +281,6 @@ public class DBPenaltyEventsDao extends DAO implements IPenaltyEventsDao {
         penaltyEvent.setDescriptions(descriptions);
 
         return penaltyEvent;
-    }
-
-    private void updatePenaltyEvent(PenaltyEvent penaltyEvent, Connection conn) throws SQLException {
-        // It is too complex to determine whether two maps are equal, so always remove all descriptions
-        // and add new ones. The amount of work to delete and re-add them is small enough compared to
-        // determining whether two keySets() and values() are equal.
-        deletePenaltyEventDescriptions(penaltyEvent.getCode(), conn);
-        addDescriptions(penaltyEvent.getCode(), penaltyEvent.getDescriptions(), conn);
-
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("update_penalty_event"));
-        // set ...
-        pstmt.setInt(1, penaltyEvent.getPoints());
-        // where ...
-        pstmt.setInt(2, penaltyEvent.getCode());
-        pstmt.execute();
-    }
-
-    private void updateForeignKeyOfPenaltyBookToPenaltyEvent(int oldCode, int newCode, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("update_fk_penalty_book_to_penalty_event"));
-        pstmt.setInt(1, newCode);
-        pstmt.setInt(2, oldCode);
-        pstmt.execute();
-    }
-
-    private void deletePenaltyEvent(int code, Connection conn) throws SQLException {
-        deletePenaltyEventDescriptions(code, conn);
-        deletePenaltyBookEntries(code, conn);
-
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_penalty_event"));
-        pstmt.setInt(1, code);
-        pstmt.execute();
-    }
-
-    private void deletePenaltyEventDescriptions(int code, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
-                .getString("delete_penalty_descriptions_by_event_code"));
-        pstmt.setInt(1, code);
-        pstmt.execute();
-    }
-
-    private void deletePenaltyBookEntries(int code, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
-                .getString("delete_penalties_of_penalty_event"));
-        pstmt.setInt(1, code);
-        pstmt.execute();
     }
 
     /**

@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {api} from '../../../../environments/environment';
+import {api} from '../endpoints';
 import {LocationTag} from '../../../shared/model/LocationTag';
 
 @Injectable({
@@ -9,7 +9,8 @@ import {LocationTag} from '../../../shared/model/LocationTag';
 })
 export class TagsService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   /*****************************************************
    *   API calls for CRUD operations with public.TAGS  *
