@@ -160,6 +160,10 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
             rs.next();
             if(rs.wasNull())
                 return 0;
+            if(rs.getInt(2) == 0) {
+                return -1;
+            }
+
             return rs.getInt(1);
         }
     }

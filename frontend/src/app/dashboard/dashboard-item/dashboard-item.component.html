@@ -21,7 +21,7 @@
         </ul>
 
         <!-- Progress bar for reserved seats -->
-        <div class="progress" *ngIf="showProgressBar && occupation > 0">
+        <div class="progress" *ngIf="showProgressBar && occupation >= 0">
           <div class="progress-bar" role="progressbar"
                [style.width]="occupation + '%'"
                [attr.aria-valuenow]="occupation"
