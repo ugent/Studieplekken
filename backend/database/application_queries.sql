@@ -61,7 +61,7 @@ from public.locations l
         on a.authority_id = l.authority_id
     join public.buildings b
         on b.building_id = l.building_id
-where l.name = ? and l.approved = true;
+where l.name = ?;
 
 -- $get_locations_from_authority
 select  l.name, l.number_of_seats, l.number_of_lockers

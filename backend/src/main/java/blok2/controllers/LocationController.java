@@ -2,7 +2,9 @@ package blok2.controllers;
 
 import blok2.daos.ILocationDao;
 import blok2.daos.ILocationTagDao;
+import blok2.helpers.EmailService;
 import blok2.helpers.LocationWithApproval;
+import blok2.helpers.Resources;
 import blok2.helpers.date.CustomDate;
 import blok2.model.LocationTag;
 import blok2.model.reservables.Location;
@@ -13,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.mail.MessagingException;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
@@ -33,15 +37,17 @@ public class LocationController {
 
     private final ILocationDao locationDao;
     private final ILocationTagDao locationTagDao;
+    private final EmailService emailService;
 
     // *************************************
     // *   CRUD operations for LOCATIONS   *
     // *************************************
 
     @Autowired
-    public LocationController(ILocationDao locationDao, ILocationTagDao locationTagDao) {
+    public LocationController(ILocationDao locationDao, ILocationTagDao locationTagDao, EmailService emailService) {
         this.locationDao = locationDao;
         this.locationTagDao = locationTagDao;
+        this.emailService = emailService;
     }
 
     @GetMapping
@@ -83,11 +89,15 @@ public class LocationController {
     public void addLocation(@RequestBody Location location) {
         try {
             this.locationDao.addLocation(location);
+            this.emailService.sendNewLocationMessage(Resources.blokatugentConf.getString("dfsgMail"), location);
             logger.info(String.format("New location %s added", location.getName()));
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        } catch (MessagingException | IOException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Mail error");
         }
     }
 
