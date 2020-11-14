@@ -153,6 +153,23 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
     }
 
     @Override
+    public int amountOfReservationsRightNow(String location) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("count_reservations_now"));
+            pstmt.setString(1, location);
+            ResultSet rs = pstmt.executeQuery();
+            rs.next();
+            if(rs.wasNull())
+                return 0;
+            if(rs.getInt(2) == 0) {
+                return -1;
+            }
+
+            return rs.getInt(1);
+        }
+    }
+
+    @Override
     public LocationReservation scanStudent(String location, String augentId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             // set user attended on location reservation

@@ -57,6 +57,10 @@ export class CalendarPeriod {
     return !this.reservableFrom || this.reservableFrom.isAfter(moment());
   }
 
+  isValid(): boolean {
+    return isCalendarPeriodValid(this);
+  }
+
   toJSON(): object {
     return {
       location: this.location,
@@ -91,9 +95,18 @@ export function isCalendarPeriodValid(period: CalendarPeriod): boolean {
   }
 
 
-  if (period.startsAt.isAfter(period.endsAt)) {
+  if (!period.startsAt.isValid() || !period.endsAt.isValid() || period.startsAt.isAfter(period.endsAt)) {
     return false;
   }
+
+  if (period.reservable && period.reservableTimeslotSize === 0) {
+    return false;
+  }
+
+  if (period.reservable && !period.reservableFrom.isValid()) {
+    return false;
+  }
+
   return period.openingTime.isBefore(period.closingTime);
 }
 

@@ -40,6 +40,7 @@ export const api = {
   addLocationReservation: '/api/locations/reservations',
   deleteLocationReservation: '/api/locations/reservations',
   updateAttendance: '/api/locations/reservations/{userid}/{calendarid}/{date}/{seqnr}/attendance',
+  locationReservationCount: '/api/locations/reservations/{location}',
 
 
   // AUTHORITY

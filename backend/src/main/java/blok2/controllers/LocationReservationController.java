@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -20,7 +21,9 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This controller handles all requests related to location reservations.
@@ -83,6 +86,16 @@ public class LocationReservationController {
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @GetMapping("/{location}")
+    public Map<String, Integer> getReservationCount(@PathVariable("location") String location) {
+        try {
+            return Collections.singletonMap("amount", locationReservationDao.amountOfReservationsRightNow(location));
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }

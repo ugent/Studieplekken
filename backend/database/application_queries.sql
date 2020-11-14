@@ -990,6 +990,17 @@ update public.calendar_periods
 set location_name = ?
 where location_name = ?;
 
+-- $get_calendar_periods_in_period
+select * 
+from public.calendar_periods cp
+join public.locations l
+    on l.name = cp.location_name
+join public.authority a
+    on a.authority_id = l.authority_id
+join public.buildings b
+    on b.building_id = l.building_id
+where cp.starts_at > ? and cp.starts_at < ?;
+
 -- queries for RESERVATION_TIMESLOTS
 -- $get_reservation_timeslots
 select rt.timeslot_sequence_number, rt.timeslot_date, rt.calendar_id
@@ -1000,6 +1011,26 @@ order by rt.timeslot_date, rt.timeslot_sequence_number ASC;
 -- $insert_reservation_timeslots
 insert into public.reservation_timeslots(calendar_id, timeslot_sequence_number, timeslot_date)
 values (?, ?, ?);
+
+-- $count_reservations_now
+with y as (
+select *
+from public.locations l 
+    join public.calendar_periods cp
+        on l.name = cp.location_name
+    join public.reservation_timeslots ts
+        on ts.calendar_id = cp.calendar_id
+    where cp.location_name = ?
+    and ts.timeslot_date = current_date 
+    and  cp.opening_time + (cp.timeslot_length * ts.timeslot_sequence_number) * INTERVAL '1 minute' <= current_time 
+    and cp.opening_time + (cp.timeslot_length * (ts.timeslot_sequence_number + 1)) * INTERVAL '1 minute' >= current_time
+)
+select count(1) as reservation_count, (select count(1) from y) as timeslot_count
+from y
+    inner join public.location_reservations rs
+        on y.timeslot_date = rs.timeslot_date
+        and rs.timeslot_seqnr = y.timeslot_sequence_number;
+
 
 -- queries for CALENDAR_PERIODS_FOR_LOCKERS
 -- $get_calendar_periods_for_lockers_of_location

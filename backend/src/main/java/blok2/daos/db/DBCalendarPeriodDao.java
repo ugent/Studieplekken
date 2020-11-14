@@ -35,6 +35,29 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         }
     }
 
+    public List<CalendarPeriod> getCalendarPeriodsInWeek(LocalDate firstDayOfWeek) throws SQLException {
+        LocalDate lastDayOfWeek = firstDayOfWeek.plusWeeks(1);
+        return getCalendarPeriodsInPeriod(firstDayOfWeek, lastDayOfWeek);
+    }
+
+    public List<CalendarPeriod> getCalendarPeriodsInPeriod(LocalDate start, LocalDate end) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(Resources.databaseProperties.getString("get_calendar_periods_in_period"));
+            stmt.setDate(1, Date.valueOf(start));
+            stmt.setDate(2, Date.valueOf(end));
+            ResultSet rs = stmt.executeQuery();
+
+            List<CalendarPeriod> periods = new ArrayList<>();
+
+            while (rs.next()) {
+                periods.add(createCalendarPeriod(rs,conn));
+            }
+
+            return periods;
+        }
+
+    }
+
     @Override
     public void addCalendarPeriods(List<CalendarPeriod> periods) throws SQLException {
         try (Connection conn = adb.getConnection()) {
@@ -214,7 +237,11 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
     private void prepareCalendarPeriodPstmt(CalendarPeriod calendarPeriod,
                                             PreparedStatement pstmt) throws SQLException {
         prepareCommonPartOfCalendarPeriodPstmt(calendarPeriod, pstmt);
-        pstmt.setTimestamp(6, Timestamp.valueOf(calendarPeriod.getReservableFrom()));
+        if(calendarPeriod.getReservableFrom() != null) {
+            pstmt.setTimestamp(6, Timestamp.valueOf(calendarPeriod.getReservableFrom()));
+        } else {
+            pstmt.setNull(6, Types.TIMESTAMP);
+        }
         pstmt.setBoolean(7, calendarPeriod.isReservable());
         pstmt.setInt(8, calendarPeriod.getReservableTimeslotSize());
         pstmt.setTimestamp(9, Timestamp.valueOf(calendarPeriod.getLockedFrom()));

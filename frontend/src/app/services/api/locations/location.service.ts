@@ -4,6 +4,7 @@ import {Observable} from 'rxjs';
 import {api} from '../endpoints';
 import {Location} from '../../../shared/model/Location';
 import {LocationTag} from '../../../shared/model/LocationTag';
+import { map } from 'rxjs/internal/operators/map';
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +36,11 @@ export class LocationService {
 
   deleteLocation(locationName: string): Observable<any> {
     return this.http.delete(api.deleteLocation.replace('{locationName}', locationName));
+  }
+
+  getNumberOfReservationsNow(locationName: string): Observable<number> {
+    return this.http.get<any>(api.locationReservationCount.replace('{location}', locationName))
+              .pipe(map(s => s.amount));
   }
 
   /***************************************************************
