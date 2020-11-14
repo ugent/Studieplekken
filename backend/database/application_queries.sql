@@ -990,6 +990,17 @@ update public.calendar_periods
 set location_name = ?
 where location_name = ?;
 
+-- $get_calendar_periods_in_period
+select * 
+from public.calendar_periods cp
+join public.locations l
+    on l.name = cp.location_name
+join public.authority a
+    on a.authority_id = l.authority_id
+join public.buildings b
+    on b.building_id = l.building_id
+where cp.starts_at > ? and cp.starts_at < ?;
+
 -- queries for RESERVATION_TIMESLOTS
 -- $get_reservation_timeslots
 select rt.timeslot_sequence_number, rt.timeslot_date, rt.calendar_id
