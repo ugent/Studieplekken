@@ -75,7 +75,7 @@ public interface IAuthorityDao extends IDao {
     /**
      * Adds a user as a member of an authority. Returns if successful
      */
-    boolean addUserToAuthority(String augentid, int authorityId) throws SQLException;
+    void addUserToAuthority(String augentid, int authorityId) throws SQLException;
 
     /**
      * remove a user from the given authority

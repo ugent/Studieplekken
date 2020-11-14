@@ -1,7 +1,8 @@
 package blok2.daos;
 
-import blok2.helpers.date.CustomDate;
 import blok2.model.Authority;
+import blok2.model.calendar.CalendarPeriod;
+import blok2.model.calendar.Timeslot;
 import blok2.model.Building;
 import blok2.model.reservables.Location;
 import blok2.model.reservations.LocationReservation;
@@ -11,6 +12,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class TestDBLocationReservationDao extends TestDao {
@@ -28,12 +31,18 @@ public class TestDBLocationReservationDao extends TestDao {
     private IAuthorityDao authorityDao;
 
     @Autowired
+    private ICalendarPeriodDao calendarPeriodDao;
+
+    @Autowired
     private IBuildingDao buildingDao;
 
     private Location testLocation;
     private Building testBuilding;
     private User testUser;
     private User testUser2;
+    private List<CalendarPeriod> calendarPeriods;
+    private CalendarPeriod calendarPeriod1Seat;
+    private Location testLocation1Seat;
 
     @Override
     public void populateDatabase() throws SQLException {
@@ -42,12 +51,21 @@ public class TestDBLocationReservationDao extends TestDao {
         testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
 
         testLocation = TestSharedMethods.testLocation(authority.clone(), testBuilding);
+        testLocation1Seat = TestSharedMethods.testLocation1Seat(authority.clone(), testBuilding);
+
         testUser = TestSharedMethods.adminTestUser();
         testUser2 = TestSharedMethods.studentTestUser();
+        calendarPeriods = TestSharedMethods.testCalendarPeriods(testLocation);
+        calendarPeriod1Seat = TestSharedMethods.testCalendarPeriods(testLocation1Seat).get(0);
 
         // Add test objects to database
         TestSharedMethods.addTestUsers(accountDao, testUser, testUser2);
         locationDao.addLocation(testLocation);
+        locationDao.addLocation(testLocation1Seat);
+
+        TestSharedMethods.addCalendarPeriods(calendarPeriodDao, calendarPeriods.get(0));
+        TestSharedMethods.addCalendarPeriods(calendarPeriodDao, calendarPeriod1Seat);
+
     }
 
     @Test
@@ -55,40 +73,60 @@ public class TestDBLocationReservationDao extends TestDao {
         // retrieve entries from database instead of using the added instances
         Location location = locationDao.getLocation(testLocation.getName());
         User u = accountDao.getUserById(testUser.getAugentID());
-
+        Timeslot timeslot = calendarPeriods.get(0).getTimeslots().get(0);
         // check whether all retrieved instances equal to the added instances
         Assert.assertEquals("addLocationReservation, setup testLocation", testLocation, location);
         Assert.assertEquals("addLocationReservation, setup testUser", testUser, u);
 
         // Create LocationReservation
-        CustomDate date = new CustomDate(1970, 1, 1, 9, 0, 0);
-        LocationReservation lr = new LocationReservation(location, u, date);
+        LocationReservation lr = new LocationReservation(u, LocalDateTime.of(1970, 1, 1, 9, 0, 0), timeslot, null);
 
         // add LocationReservation to database
         locationReservationDao.addLocationReservation(lr);
 
         // test whether LocationReservation has been added successfully
-        LocationReservation rlr = locationReservationDao.getLocationReservation(u.getAugentID(), date); // rlr = retrieved location reservation
+        LocationReservation rlr = locationReservationDao.getLocationReservation(u.getAugentID(), timeslot); // rlr = retrieved location reservation
         Assert.assertEquals("addLocationReservation, getLocationReservation", lr, rlr);
 
-        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfLocation(testLocation.getName(), true);
-        Assert.assertEquals("addLocationReservation, getAllLocationReservationsOfLocation", 1, list.size());
-
-        list = locationReservationDao.getAllLocationReservationsOfUser(u.getAugentID());
+        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(u.getAugentID());
         Assert.assertEquals("addLocationReservation, getAllLocationReservationsOfUser", 1, list.size());
 
         // delete LocationReservation from database
-        locationReservationDao.deleteLocationReservation(u.getAugentID(), date);
-        rlr = locationReservationDao.getLocationReservation(u.getAugentID(), date);
+        locationReservationDao.deleteLocationReservation(u.getAugentID(), timeslot);
+        rlr = locationReservationDao.getLocationReservation(u.getAugentID(), timeslot);
         Assert.assertNull("addLocationReservationTest, delete LocationReservation", rlr);
     }
 
     @Test
+    public void addLocationReservationButFullTest() throws SQLException {
+        // retrieve entries from database instead of using the added instances
+        User u = accountDao.getUserById(testUser.getAugentID());
+        User u2 = accountDao.getUserById(testUser2.getAugentID());
+
+        Timeslot timeslot = calendarPeriod1Seat.getTimeslots().get(0);
+
+        LocationReservation lr = new LocationReservation(u, LocalDateTime.now(), timeslot, null);
+        TestSharedMethods.addCalendarPeriods(calendarPeriodDao, calendarPeriods.get(0));
+        Assert.assertTrue(locationReservationDao.addLocationReservationIfStillRoomAtomically(lr));
+        lr = new LocationReservation(u, LocalDateTime.now(), timeslot, null);
+        // This is a duplicate entry into the database. Shouldn't work.
+        Assert.assertFalse(locationReservationDao.addLocationReservationIfStillRoomAtomically(lr));
+        lr = new LocationReservation(u2, LocalDateTime.now(), timeslot, null);
+        // This is a second user. Also shouldn't work.
+        Assert.assertFalse(locationReservationDao.addLocationReservationIfStillRoomAtomically(lr));
+
+        // It really really shouldn't be in the database.
+        List<LocationReservation> reservations = locationReservationDao.getAllLocationReservationsOfUser(u2.getAugentID());
+        Assert.assertEquals(0, reservations.size());
+    }
+
+    // @Test
     public void scanStudentTest() throws SQLException {
         // retrieve entries from database instead of using the added instances
         Location location = locationDao.getLocation(testLocation.getName());
         User u1 = accountDao.getUserById(testUser.getAugentID());
         User u2 = accountDao.getUserById(testUser2.getAugentID());
+        Timeslot timeslot = calendarPeriods.get(0).getTimeslots().get(0);
 
         // check whether all retrieved instances equal to the added instances
         Assert.assertEquals("scanStudentTest, setup testLocation", testLocation, location);
@@ -96,22 +134,22 @@ public class TestDBLocationReservationDao extends TestDao {
         Assert.assertEquals("scanStudentTest, setup testUser2", testUser2, u2);
 
         // Make reservation for today
-        CustomDate today = CustomDate.today();
+        LocalDate today = LocalDate.now();
 
         // Make reservations for users u1 and u2
-        LocationReservation lr1 = new LocationReservation(location, u1, today);
-        LocationReservation lr2 = new LocationReservation(location, u2, today);
+        LocationReservation lr1 = new LocationReservation(u1, LocalDateTime.now(), timeslot, null);
+        LocationReservation lr2 = new LocationReservation(u2, LocalDateTime.now(), timeslot, null);
 
         locationReservationDao.addLocationReservation(lr1);
         locationReservationDao.addLocationReservation(lr2);
 
         // count reserved seats
-        int c = locationReservationDao.countReservedSeatsOfLocationOnDate(testLocation.getName(), today);
+        long c = locationReservationDao.countReservedSeatsOfTimeslot(timeslot);
         Assert.assertEquals("scanStudentTest, count reserved seats", 2, c);
 
         // scan the users for the location on date
         locationReservationDao.scanStudent(testLocation.getName(), u1.getAugentID());
-        LocationReservation rlr1 = locationReservationDao.getLocationReservation(u1.getAugentID(), today);
+        LocationReservation rlr1 = locationReservationDao.getLocationReservation(u1.getAugentID(), timeslot);
         lr1.setAttended(true);
         Assert.assertEquals("scanStudentTest, u1 scanned", lr1, rlr1);
 

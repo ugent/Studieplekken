@@ -5,10 +5,7 @@ import blok2.helpers.Resources;
 import blok2.model.calendar.CalendarPeriodForLockers;
 import org.springframework.stereotype.Service;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -132,12 +129,12 @@ public class DBCalendarPeriodForLockersDao extends DAO implements ICalendarPerio
     private CalendarPeriodForLockers createCalendarPeriod(ResultSet rs, Connection conn) throws SQLException {
         CalendarPeriodForLockers calendarPeriodForLockers = new CalendarPeriodForLockers();
 
-        calendarPeriodForLockers.setStartsAt(rs.getString(Resources.databaseProperties
-                .getString("calendar_period_for_lockers_starts_at")));
-        calendarPeriodForLockers.setEndsAt(rs.getString(Resources.databaseProperties
-                .getString("calendar_period_for_lockers_ends_at")));
-        calendarPeriodForLockers.setReservableFrom(rs.getString(Resources.databaseProperties
-                .getString("calendar_period_for_lockers_reservable_from")));
+        calendarPeriodForLockers.setStartsAt(rs.getDate(Resources.databaseProperties
+                .getString("calendar_period_for_lockers_starts_at")).toLocalDate());
+        calendarPeriodForLockers.setEndsAt(rs.getDate(Resources.databaseProperties
+                .getString("calendar_period_for_lockers_ends_at")).toLocalDate());
+        calendarPeriodForLockers.setReservableFrom(rs.getTimestamp(Resources.databaseProperties
+                .getString("calendar_period_for_lockers_reservable_from")).toLocalDateTime());
 
         calendarPeriodForLockers.setLocation(DBLocationDao.createLocation(rs,conn));
 
@@ -147,16 +144,16 @@ public class DBCalendarPeriodForLockersDao extends DAO implements ICalendarPerio
     private void prepareCalendarPeriodForLockersPstmt(CalendarPeriodForLockers calendarPeriodForLockers,
                                                       PreparedStatement pstmt) throws SQLException {
         pstmt.setString(1, calendarPeriodForLockers.getLocation().getName());
-        pstmt.setString(2, calendarPeriodForLockers.getStartsAt());
-        pstmt.setString(3, calendarPeriodForLockers.getEndsAt());
-        pstmt.setString(4, calendarPeriodForLockers.getReservableFrom());
+        pstmt.setDate(2, Date.valueOf(calendarPeriodForLockers.getStartsAt()));
+        pstmt.setDate(3, Date.valueOf(calendarPeriodForLockers.getEndsAt()));
+        pstmt.setTimestamp(4, Timestamp.valueOf(calendarPeriodForLockers.getReservableFrom()));
     }
 
     private void prepareWhereClauseOfUpdatePstmt(CalendarPeriodForLockers calendarPeriodForLockers,
                                                  PreparedStatement pstmt) throws SQLException {
         pstmt.setString(5, calendarPeriodForLockers.getLocation().getName());
-        pstmt.setString(6, calendarPeriodForLockers.getStartsAt());
-        pstmt.setString(7, calendarPeriodForLockers.getEndsAt());
-        pstmt.setString(8, calendarPeriodForLockers.getReservableFrom());
+        pstmt.setDate(6, Date.valueOf(calendarPeriodForLockers.getStartsAt()));
+        pstmt.setDate(7, Date.valueOf(calendarPeriodForLockers.getEndsAt()));
+        pstmt.setTimestamp(8, Timestamp.valueOf(calendarPeriodForLockers.getReservableFrom()));
     }
 }

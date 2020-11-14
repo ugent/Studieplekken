@@ -1,0 +1,16 @@
+<label>
+    <input [disabled]="disabled"
+      class="form-control"
+      type="date"
+      [(ngModel)]="modelDateAsString"
+      (ngModelChange)="onNewDate()"
+    />
+</label>
+<label>
+    <input [disabled]="disabled"
+      class="form-control"
+      type="time"
+      [(ngModel)]="modelTimeAsString"
+      (ngModelChange)="onNewDate()"
+    />
+</label>
