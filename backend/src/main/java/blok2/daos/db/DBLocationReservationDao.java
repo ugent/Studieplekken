@@ -250,13 +250,13 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
     }
 
     @Override
-    public void setReservationAttendance(String augentId, Timeslot date, boolean attendance) throws SQLException {
+    public void setReservationAttendance(String augentId, Timeslot timeslot, boolean attendance) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("set_location_reservation_attendance"));
             pstmt.setBoolean(1, attendance);
-            pstmt.setInt(2, date.getCalendarId());
-            pstmt.setDate(3, Date.valueOf(date.getTimeslotDate()));
-            pstmt.setInt(4, date.getTimeslotSeqnr());
+            pstmt.setInt(2, timeslot.getCalendarId());
+            pstmt.setDate(3, Date.valueOf(timeslot.getTimeslotDate()));
+            pstmt.setInt(4, timeslot.getTimeslotSeqnr());
             pstmt.setString(5, augentId);
             pstmt.execute();
         }
