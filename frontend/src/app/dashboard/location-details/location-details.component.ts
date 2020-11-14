@@ -84,14 +84,14 @@ export class LocationDetailsComponent implements OnInit {
     );
   }
 
-  timeslotPicked(event: Timeslot): void {
-    if (!event.hasOwnProperty('timeslotSeqnr')) {
+  timeslotPicked(event: any): void {
+    if (!event.hasOwnProperty('timeslot')) {
       return;
     }
 
     this.isModified = true;
-    this.currentTimeslot = event;
-    const reservation: LocationReservation = {user: this.authenticationService.userValue(), timeslot: event};
+    this.currentTimeslot = event.timeslot;
+    const reservation: LocationReservation = {user: this.authenticationService.userValue(), timeslot: this.currentTimeslot};
 
     // If it's already selected, unselect
     if (this.selectedSubject.value.some(r => timeslotEquals(r.timeslot, reservation.timeslot))) {
