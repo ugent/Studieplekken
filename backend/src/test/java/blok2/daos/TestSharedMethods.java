@@ -1,7 +1,6 @@
 package blok2.daos;
 
 import blok2.helpers.Institution;
-import blok2.helpers.date.CustomDate;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.LocationTag;
@@ -12,7 +11,11 @@ import blok2.model.users.User;
 import org.junit.Assert;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class TestSharedMethods {
@@ -22,6 +25,18 @@ public class TestSharedMethods {
         testLocation.setName("Test Location");
         testLocation.setNumberOfSeats(50);
         testLocation.setNumberOfLockers(15);
+        testLocation.setImageUrl("https://example.com/image.jpg");
+        testLocation.setAuthority(authority);
+        testLocation.setBuilding(building);
+        testLocation.setForGroup(false);
+        return testLocation;
+    }
+
+    public static Location testLocation1Seat(Authority authority, Building building) {
+        Location testLocation = new Location();
+        testLocation.setName("Test Location 2");
+        testLocation.setNumberOfSeats(1);
+        testLocation.setNumberOfLockers(1);
         testLocation.setImageUrl("https://example.com/image.jpg");
         testLocation.setAuthority(authority);
         testLocation.setBuilding(building);
@@ -61,24 +76,21 @@ public class TestSharedMethods {
     }
 
     public static LocationTag testTag() {
-        LocationTag testTag = new LocationTag(1,
+        return new LocationTag(1,
                 "Stille ruimte",
                 "Silent space");
-        return testTag;
     }
 
     public static LocationTag testTag2() {
-        LocationTag testTag = new LocationTag(2,
+        return new LocationTag(2,
                 "Geschikt voor vergaderingen",
                 "Suitable for meetings");
-        return testTag;
     }
 
     public static LocationTag testTag3() {
-        LocationTag testTag = new LocationTag(3,
+        return new LocationTag(3,
                 "Geschikt voor invaliden",
                 "Suitable for the less-abled");
-        return testTag;
     }
 
     public static Authority insertTestAuthority(IAuthorityDao authorityDao) throws SQLException {
@@ -142,32 +154,40 @@ public class TestSharedMethods {
     public static List<CalendarPeriod> testCalendarPeriods(Location location) {
         List<CalendarPeriod> calendarPeriods = new ArrayList<>();
 
-        CustomDate date = CustomDate.now();
+        LocalDate date = LocalDate.now();
+        LocalTime time;
 
         for (int i = 0; i < 2; i++) {
             CalendarPeriod period = new CalendarPeriod();
             period.setLocation(location);
 
-            date.setDay(2 + 10 * i);
-            period.setStartsAt(date.toDateString());
+            date = LocalDate.of(date.getYear(), date.getMonth(), 2 + 10*i);
+            period.setStartsAt(date);
 
-            date.setDay(4 + 10 * i);
-            period.setEndsAt(date.toDateString());
+            date = LocalDate.of(date.getYear(), date.getMonth(), 4 + 10*i);
+            period.setEndsAt(date);
 
-            date.setHrs(9);
-            date.setMin(0);
-            period.setOpeningTime(date.toTimeWithoutSecondsString());
+            time = LocalTime.of(9,0);
+            period.setOpeningTime(time);
 
-            date.setHrs(17);
-            period.setClosingTime(date.toTimeWithoutSecondsString());
+            time = LocalTime.of(17,0);
+            period.setClosingTime(time);
 
-            date.setDay(1);
-            period.setReservableFrom(date.toString());
+            date = LocalDate.of(date.getYear(), date.getMonth(), 1);
+            period.setReservableFrom(LocalDateTime.of(date, time));
 
+            period.setReservable(true);
+            period.setReservableTimeslotSize(30);
+
+            period.initializeLockedFrom();
             calendarPeriods.add(period);
         }
 
         return calendarPeriods;
+    }
+
+    public static void addCalendarPeriods(ICalendarPeriodDao calendarPeriodDao, CalendarPeriod... periods) throws SQLException {
+        calendarPeriodDao.addCalendarPeriods(Arrays.asList(periods));
     }
 
     public static List<CalendarPeriod> testCalendarPeriodsButUpdated(Location location) {
@@ -177,11 +197,11 @@ public class TestSharedMethods {
         }
 
         for (int i = 0; i < updatedPeriods.size(); i++) {
-            updatedPeriods.get(i).setStartsAt("1970-01-0" + i);
-            updatedPeriods.get(i).setEndsAt("1970-01-1" + i);
-            updatedPeriods.get(i).setOpeningTime("09:0" + i);
-            updatedPeriods.get(i).setClosingTime("17:0" + i);
-            updatedPeriods.get(i).setReservableFrom("1970-01-0" + i + "T09:00");
+            updatedPeriods.get(i).setStartsAt(LocalDate.of(1970,1,i+1));
+            updatedPeriods.get(i).setEndsAt(LocalDate.of(1970,1,i + 10));
+            updatedPeriods.get(i).setOpeningTime(LocalTime.of(9, i));
+            updatedPeriods.get(i).setClosingTime(LocalTime.of(17,i));
+            updatedPeriods.get(i).setReservableFrom(LocalDateTime.of(1970,1,i+1,9,0));
         }
 
         return updatedPeriods;
@@ -190,20 +210,21 @@ public class TestSharedMethods {
     public static List<CalendarPeriodForLockers> testCalendarPeriodsForLockers(Location location) {
         List<CalendarPeriodForLockers> calendarPeriods = new ArrayList<>();
 
-        CustomDate date = CustomDate.now();
+        LocalDate date = LocalDate.now();
+        LocalTime time = LocalTime.now();
 
         for (int i = 0; i < 2; i++) {
             CalendarPeriodForLockers period = new CalendarPeriodForLockers();
             period.setLocation(location);
 
-            date.setDay(2 + 10 * i);
-            period.setStartsAt(date.toDateString());
+            date = LocalDate.of(date.getYear(), date.getMonth(), 2 + 10*i);
+            period.setStartsAt(date);
 
-            date.setDay(4 + 10 * i);
-            period.setEndsAt(date.toDateString());
+            date = LocalDate.of(date.getYear(), date.getMonth(), 4 + 10*i);
+            period.setEndsAt(date);
 
-            date.setDay(1);
-            period.setReservableFrom(date.toString());
+            date = LocalDate.of(date.getYear(), date.getMonth(), 1);
+            period.setReservableFrom(LocalDateTime.of(date, time));
 
             calendarPeriods.add(period);
         }
@@ -218,9 +239,9 @@ public class TestSharedMethods {
         }
 
         for (int i = 0; i < updatedPeriods.size(); i++) {
-            updatedPeriods.get(i).setStartsAt("1970-01-0" + i);
-            updatedPeriods.get(i).setEndsAt("1970-01-1" + i);
-            updatedPeriods.get(i).setReservableFrom("1970-01-0" + i + "T09:00");
+            updatedPeriods.get(i).setStartsAt(LocalDate.of(1970,1,i+1));
+            updatedPeriods.get(i).setEndsAt(LocalDate.of(1970,1,i + 10));
+            updatedPeriods.get(i).setReservableFrom(LocalDateTime.of(1970,1,i+1,9,0));
         }
 
         return updatedPeriods;

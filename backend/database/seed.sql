@@ -74,62 +74,35 @@ END $$;
 /*
  * Add some calendar periods
  */
-insert into calendar_periods(location_name, starts_at, ends_at, opening_time, closing_time, reservable_from)
-values  ('Sterre S5, Eetzaal', to_char(now() - interval '5 days', 'YYYY-MM-DD'), to_char(now() + interval '20 days', 'YYYY-MM-DD'),
-            '8:30', '21:00', to_char(now() - interval '7 days', 'YYYY-MM-DD') || ' 19:00'),
-        ('Sterre S5, Bib', to_char(now() - interval '5 days', 'YYYY-MM-DD'), to_char(now() + interval '10 days', 'YYYY-MM-DD'),
-            '09:00', '17:00', to_char(now() - interval '7 days', 'YYYY-MM-DD') || ' 19:00'),
-        ('Sterre S9, PC lokaal 3rd verdiep', to_char(now() - interval '5 days', 'YYYY-MM-DD'), to_char(now() + interval '10 days', 'YYYY-MM-DD'),
-            '8:30', '18:30', to_char(now() - interval '7 days', 'YYYY-MM-DD') || ' 19:00');
+insert into calendar_periods(location_name, starts_at, ends_at, opening_time, closing_time, reservable_from, reservable, timeslot_length, locked_from)
+values  ('Sterre S5, Eetzaal', now() - interval '1 days', now() + interval '3 days',
+            '10:00', '12:00', now() - interval '7 days', true, 60, now() + interval '1 week'),
+        ('Sterre S5, Bib', now() - interval '5 days', now() + interval '10 days',
+            '09:00', '17:00', now() - interval '7 days', false, 0, now() + interval '1 week'),
+        ('Sterre S9, PC lokaal 3rd verdiep',now() - interval '5 days', now() + interval '10 days',
+            '8:30', '18:30', now() - interval '7 days', false, 0, now() + interval '1 week');
 
-/*
- * Add some calendar periods for lockers
- */
-insert into calendar_periods_for_lockers(location_name, starts_at, ends_at, reservable_from)
-values ('Sterre S5, Bib', to_char(now() - interval '15 days', 'YYYY-MM-DD'), to_char(now() + interval '5 days', 'YYYY-MM-DD'),
-to_char(now() - interval '25 days', 'YYYY-MM-DD') || ' 19:00');
+
+insert into reservation_timeslots(calendar_id, timeslot_sequence_number, timeslot_date)
+values 
+(1, 0,  now() - interval '1 days'),
+(1, 1,  now() - interval '1 days'),
+(1, 0,  now()),
+(1, 1,  now()),
+(1, 0,  now()+ interval '1 days'),
+(1, 1,  now()+ interval '1 days'),
+(1, 0,  now()+ interval '2 days'),
+(1, 1,  now()+ interval '2 days'),
+(1, 0,  now()+ interval '3 days'),
+(1, 1,  now()+ interval '3 days');
+
 
 /*
  * Add some penalties for the test user
  */
-insert into location_reservations(date, location_name, attended, user_augentid)
+insert into location_reservations(created_at, timeslot_date, timeslot_seqnr, calendar_id, user_augentid)
 values
 -- One reservation for over five days
-(to_char(now() + interval '5 days', 'YYYY-MM-DD'), 'Sterre S5, Bib', null, '001'),
+(now() + interval '5 days',  now() + interval '1 days', 0, 1, '001'),
 -- One reservation for five days ago, attended to
-(to_char(now() - interval '5 days', 'YYYY-MM-DD'), 'Sterre S5, Bib', true, '001'),
--- One reservation for four days ago, not attended to
-(to_char(now() - interval '4 days', 'YYYY-MM-DD'), 'Sterre S5, Eetzaal', false, '001');
-
-/*
- * Setup all the lockers for the test locations
- */
-DO $$
-DECLARE
-   i integer := 0 ;
-   n integer := 99;
-BEGIN
-    loop
-        exit when i = n ;
-
-        insert into lockers (location_name, number)
-        values ('Sterre S5, Bib', i);
-
-        insert into lockers (location_name, number)
-        values ('Sterre S9, PC lokaal 3rd verdiep', i);
-
-        i := i + 1 ;
-    end loop;
-END $$;
-
-/*
- * Add some locker reservations for the test user
- */
-insert into locker_reservations(location_name, locker_number, user_augentid, key_pickup_date, key_return_date)
--- insert a 'fresh' reservation (keyPickup- and keyReturnedDates are null)
-values ('Sterre S9, PC lokaal 3rd verdiep', 0, '001', null, null),
--- insert a reservation where the key has just been picked up
-('Sterre S5, Bib', 1, '001', to_char(now(), 'YYYY-MM-DD'), null),
--- insert a reservation where the key has been picked up and has just been returned
-('Sterre S5, Bib', 0, '001', to_char(now() - interval '1 month', 'YYYY-MM-DD'),
-    to_char(now(), 'YYYY-MM-DD'));
+(now() + interval '5 days',  now() + interval '3 days', 0, 1, '001');

@@ -3,14 +3,12 @@ package blok2.controllers;
 import blok2.daos.ILocationTagDao;
 import blok2.daos.ITagsDao;
 import blok2.model.LocationTag;
-import blok2.model.reservables.Location;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;

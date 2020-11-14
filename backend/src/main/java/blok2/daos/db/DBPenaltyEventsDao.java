@@ -3,12 +3,12 @@ package blok2.daos.db;
 import blok2.daos.IPenaltyEventsDao;
 import blok2.helpers.Language;
 import blok2.helpers.Resources;
-import blok2.helpers.date.CustomDate;
 import blok2.model.penalty.Penalty;
 import blok2.model.penalty.PenaltyEvent;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -192,8 +192,8 @@ public class DBPenaltyEventsDao extends DAO implements IPenaltyEventsDao {
             Penalty p = new Penalty();
             p.setAugentID(rs.getString(Resources.databaseProperties.getString("penalty_book_user_augentid")));
             p.setEventCode(rs.getInt(Resources.databaseProperties.getString("penalty_book_event_code")));
-            p.setTimestamp(CustomDate.parseString(rs.getString(Resources.databaseProperties.getString("penalty_book_timestamp"))));
-            p.setReservationDate(CustomDate.parseString(rs.getString(Resources.databaseProperties.getString("penalty_book_reservation_date"))));
+            p.setTimestamp(LocalDate.parse(rs.getString(Resources.databaseProperties.getString("penalty_book_timestamp"))));
+            p.setReservationDate(LocalDate.parse(rs.getString(Resources.databaseProperties.getString("penalty_book_reservation_date"))));
             p.setReservationLocation(rs.getString(Resources.databaseProperties.getString("penalty_book_reservation_location")));
             p.setReceivedPoints(rs.getInt(Resources.databaseProperties.getString("penalty_book_received_points")));
             p.setRemarks(rs.getString(Resources.databaseProperties.getString("penalty_book_remarks")));
