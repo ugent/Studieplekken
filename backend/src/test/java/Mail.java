@@ -63,6 +63,7 @@ public class Mail {
         period.setClosingTime(LocalTime.of(16, 0));
         period.setOpeningTime(LocalTime.of(8, 0));
         period.setReservableFrom(LocalDateTime.now().minusMonths(1));
+        period.setLockedFrom(LocalDateTime.now().plusMonths(1));
         calendarPeriodDao.addCalendarPeriods(Collections.singletonList(period));
 
 

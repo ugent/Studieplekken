@@ -1017,8 +1017,8 @@ join public.authority a
     on a.authority_id = l.authority_id
 join public.buildings b
     on b.building_id = l.building_id
-where to_date(cp.starts_at, 'YYYY-MM-DD') > ? and to_date(cp.starts_at, 'YYYY-MM-DD') < ?;
--- queries for RESERVATION_TIMESLOTS
+where cp.starts_at > ? and cp.starts_at < ?;
+
 -- $get_reservation_timeslots
 select rt.timeslot_sequence_number, rt.timeslot_date, rt.calendar_id
 from public.reservation_timeslots rt
