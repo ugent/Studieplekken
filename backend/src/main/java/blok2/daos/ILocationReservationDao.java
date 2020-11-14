@@ -37,4 +37,6 @@ public interface ILocationReservationDao extends IDao {
     List<LocationReservation> getAllLocationReservationsOfTimeslot(Timeslot timeslot) throws SQLException;
 
      boolean addLocationReservationIfStillRoomAtomically(LocationReservation reservation) throws SQLException;
+
+     int amountOfReservationsRightNow(String location) throws SQLException;
 }

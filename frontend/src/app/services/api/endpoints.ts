@@ -39,6 +39,7 @@ export const api = {
   locationReservationsOfLocationFromAndUntil: '/api/locations/reservations/fromAndUntil',
   addLocationReservation: '/api/locations/reservations',
   deleteLocationReservation: '/api/locations/reservations',
+  locationReservationCount: '/api/locations/reservations/{location}',
 
 
   // AUTHORITY
