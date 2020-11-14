@@ -3,8 +3,8 @@ package blok2.controllers;
 import blok2.daos.ICalendarPeriodDao;
 import blok2.daos.ILocationDao;
 import blok2.model.calendar.CalendarPeriod;
+import blok2.model.calendar.Period;
 import blok2.model.reservables.Location;
-import blok2.shared.Utility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -86,8 +87,8 @@ public class CalendarPeriodController {
 
             // if the sizes do match, check if the lists are equal
             // before invoking the 'equals' on a list, sort both lists based on 'starts at'
-            Utility.sortPeriodsBasedOnStartsAt(currentView);
-            Utility.sortPeriodsBasedOnStartsAt(from);
+            currentView.sort(Comparator.comparing(Period::getStartsAt));
+            from.sort(Comparator.comparing(Period::getStartsAt));
 
             if (!currentView.equals(from)) {
                 logger.log(Level.SEVERE, "updateCalendarPeriods, conflict in frontends data view and actual data view");
@@ -110,7 +111,7 @@ public class CalendarPeriodController {
             else if (from.isEmpty()) {
                 addCalendarPeriods(to);
             } else {
-                Utility.sortPeriodsBasedOnStartsAt(to);
+                to.sort(Comparator.comparing(Period::getStartsAt));
                 analyzeAndUpdateCalendarPeriods(locationName, from, to);
             }
         } catch (SQLException e) {
