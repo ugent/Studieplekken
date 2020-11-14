@@ -25,6 +25,8 @@ import javax.mail.MessagingException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
@@ -59,14 +61,15 @@ public class Mail {
         locationDao.addLocation(testLocation);
         CalendarPeriod period = new CalendarPeriod();
         period.setLocation(testLocation);
-        period.setStartsAt(LocalDate.now().plusWeeks(3).plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-        period.setEndsAt(LocalDate.now().plusWeeks(3).plusDays(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-        period.setClosingTime("16:00");
-        period.setOpeningTime("08:00");
-        period.setReservableFrom("");
+        period.setStartsAt(LocalDate.now().plusWeeks(3).plusDays(1));
+        period.setEndsAt(LocalDate.now().plusWeeks(3).plusDays(10));
+        period.setClosingTime(LocalTime.of(16, 0));
+        period.setOpeningTime(LocalTime.of(7, 0));
+        period.setReservableFrom(LocalDateTime.of(LocalDate.now().plusWeeks(2).plusDays(1), LocalTime.of(7, 0)));
+        period.setLockedFrom(LocalDateTime.of(period.getStartsAt().minusWeeks(3), LocalTime.of(0, 0)));
         calendarPeriodDao.addCalendarPeriods(Collections.singletonList(period));
 
 
-        service.sendCalendarPeriodsMessage("maxiem@maxiemgeldhof.com");
+        service.sendCalendarPeriodsMessage("vanerum.tim@gmail.com");
     }
 }

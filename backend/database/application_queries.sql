@@ -999,7 +999,7 @@ join public.authority a
     on a.authority_id = l.authority_id
 join public.buildings b
     on b.building_id = l.building_id
-where to_date(cp.starts_at, 'YYYY-MM-DD') > ? and to_date(cp.starts_at, 'YYYY-MM-DD') < ?;
+where cp.starts_at > ? and cp.starts_at < ?;
 
 -- queries for RESERVATION_TIMESLOTS
 -- $get_reservation_timeslots
