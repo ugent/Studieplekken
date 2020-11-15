@@ -13,7 +13,7 @@ fi
 docker-compose rm -f -s -v db
 docker-compose up -d db
 
-./wait-for-postgres.sh localhost
+./wait-for-docker-from-host.sh localhost
 
 cat $1 | docker-compose exec -T db psql -U blokat -d blokatugent
 
