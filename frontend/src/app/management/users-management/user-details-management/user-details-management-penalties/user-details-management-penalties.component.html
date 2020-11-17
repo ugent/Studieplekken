@@ -67,6 +67,9 @@
         <h5 class="modal-title" id="addPenaltyModalTitle">
           {{'management.users.userDetails.penalties.table.addPenaltyModalView.title' | translate}}
         </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
 
       <!-- Modal body -->
@@ -139,8 +142,8 @@
                 (click)="addPenalty(newPenaltyFormGroup.value)">
           {{'management.users.userDetails.penalties.table.addPenaltyModalView.addButton' | translate}}
         </button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">
-          {{'management.users.userDetails.penalties.table.addPenaltyModalView.cancelButton' | translate}}
+        <button type="button" class="btn btn-primary" data-dismiss="modal">
+          {{'general.buttons.close' | translate}}
         </button>
       </div>
 
@@ -174,6 +177,9 @@
         <h5 class="modal-title" id="deleteLocationModalLabel">
           {{'management.users.userDetails.penalties.table.deletePenaltyModalView.title' | translate}}
         </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
 
       <!-- Body -->

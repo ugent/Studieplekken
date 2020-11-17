@@ -68,6 +68,9 @@
         <h5 class="modal-title" id="addBuildingModalTitle">
           {{'management.buildings.addBuildingModal.title' | translate}}
         </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
 
       <!-- Modal body -->
@@ -104,9 +107,8 @@
                 (click)="addBuilding()">
           {{'general.buttons.add' | translate}}
         </button>
-        <button type="button" class="btn btn-secondary"
-                data-dismiss="modal">
-          {{'general.buttons.cancel' | translate}}
+        <button type="button" class="btn btn-primary" data-dismiss="modal">
+          {{'general.buttons.close' | translate}}
         </button>
       </div>
 
@@ -140,6 +142,9 @@
         <h5 class="modal-title" id="updateBuildingModalTitle">
           {{'management.buildings.updateBuildingModal.title' | translate}}
         </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
 
       <!-- Modal body -->
@@ -175,9 +180,8 @@
                 (click)="updateBuildingInFormGroup()">
           {{'general.buttons.update' | translate}}
         </button>
-        <button type="button" class="btn btn-secondary"
-                data-dismiss="modal">
-          {{'general.buttons.cancel' | translate}}
+        <button type="button" class="btn btn-primary" data-dismiss="modal">
+          {{'general.buttons.close' | translate}}
         </button>
       </div>
 
@@ -211,6 +215,9 @@
         <h5 class="modal-title" id="deleteBuildingModalTitle">
           {{'management.buildings.deleteBuildingModal.title' | translate}}
         </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
 
       <!-- Body -->

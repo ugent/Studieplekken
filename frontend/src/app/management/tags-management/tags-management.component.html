@@ -68,6 +68,9 @@
         <h5 class="modal-title" id="addTagModalTitle">
           {{'management.tags.addTagModal.title' | translate}}
         </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
 
       <!-- Modal body -->
@@ -102,9 +105,8 @@
                 (click)="addTag()">
           {{'general.buttons.add' | translate}}
         </button>
-        <button type="button" class="btn btn-secondary"
-                data-dismiss="modal">
-          {{'general.buttons.cancel' | translate}}
+        <button type="button" class="btn btn-primary" data-dismiss="modal">
+          {{'general.buttons.close' | translate}}
         </button>
       </div>
 
@@ -138,6 +140,9 @@
         <h5 class="modal-title" id="updateTagModalTitle">
           {{'management.tags.updateTagModal.title' | translate}}
         </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
 
       <!-- Modal body -->
@@ -172,9 +177,8 @@
                 (click)="updateTagInFormGroup()">
           {{'general.buttons.update' | translate}}
         </button>
-        <button type="button" class="btn btn-secondary"
-                data-dismiss="modal">
-          {{'general.buttons.cancel' | translate}}
+        <button type="button" class="btn btn-primary" data-dismiss="modal">
+          {{'general.buttons.close' | translate}}
         </button>
       </div>
 
@@ -208,6 +212,9 @@
         <h5 class="modal-title" id="deleteLockerModalLabel">
           {{'management.tags.deleteTagModal.title' | translate}}
         </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
 
       <!-- Body -->

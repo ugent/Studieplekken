@@ -71,6 +71,9 @@
         <h5 class="modal-title" id="addLocationModalTitle">
           {{'management.locations.addLocationModal.title' | translate}}
         </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
 
       <!-- Modal body -->
@@ -198,6 +201,9 @@
                 data-dismiss="modal" (click)="clearForm()">
           {{'management.locations.addLocationModal.cancelButton' | translate}}
         </button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal">
+          {{'general.buttons.close' | translate}}
+        </button>
       </div>
 
       <!-- Feedback to the user -->
@@ -230,6 +236,9 @@
         <h5 class="modal-title" id="deleteLocationModalLabel">
           {{'management.locations.deleteLocationModal.title' | translate}}
         </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
 
       <!-- Body -->
