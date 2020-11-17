@@ -1,3 +1,5 @@
+import * as moment from 'moment';
+
 export const defaultLocationImage = 'assets/images/default_location.jpg';
 export const userWantsTLogInLocalStorageKey = 'userWantsTLogIn';
 
@@ -43,3 +45,7 @@ export const languageAsEnum = {
   nl: 'DUTCH',
   en: 'ENGLISH'
 };
+
+export const defaultOpeningHour = 8;
+
+export const defaultClosingHour = 17;

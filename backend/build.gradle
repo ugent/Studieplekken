@@ -28,6 +28,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security:2.2.2.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc:2.3.4.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     implementation 'org.springframework.boot:spring-boot-configuration-processor:2.2.2.RELEASE'
 
@@ -38,7 +39,7 @@ dependencies {
 
     implementation 'net.sf.barcode4j:barcode4j:2.1'
     implementation 'com.icegreen:greenmail-spring:1.5.13'
-    implementation 'postgresql:postgresql:9.1-901-1.jdbc4'
+    implementation 'org.postgresql:postgresql:42.2.0'
     implementation "org.flywaydb:flyway-core:6.5.6"
     implementation 'org.flywaydb.flyway-test-extensions:flyway-test-extensions:6.4.0'
     implementation 'org.flywaydb.flyway-test-extensions:flyway-spring5-test:6.4.0'

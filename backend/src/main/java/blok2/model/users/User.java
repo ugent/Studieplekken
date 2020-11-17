@@ -3,9 +3,12 @@ package blok2.model.users;
 import java.util.Objects;
 import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * This class is used to represent a registered user or UGhent student.
@@ -18,6 +21,7 @@ public class User implements Cloneable, UserDetails {
     private String mail;
     private String password;
     private String institution;
+    @NotNull
     private String augentID;
     private int penaltyPoints;
     private boolean admin;
@@ -138,6 +142,7 @@ public class User implements Cloneable, UserDetails {
      *   Implementation of UserDetails methods   *
      *********************************************/
 
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority(admin ? "admin" : "user"));

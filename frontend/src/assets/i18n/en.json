@@ -30,6 +30,12 @@
         "statusClosed": "CLOSED",
         "statusClosedActive": "CLOSED: Opens again at {}",
         "statusClosedUpcoming": "CLOSED: Opens again {}"
+      },
+      "calendar": {
+        "reservation": {
+          "successMessage": "Successfully updated the reservations",
+          "errorMessage": "Update was not successful. Something went wrong."
+        }
       }
     },
 
@@ -52,6 +58,10 @@
     "accessibility": "Accessibility"
   },
 
+  "reservations": {
+    "reservationButton": "Update Reservations"
+  },
+
   "general": {
     "dsa": "Student Activities Office",
     "ugent": "Ghent University",
@@ -65,7 +75,9 @@
       "cancel": "Cancel",
       "delete": "Delete",
       "search": "Search",
-      "clear": "Clear"
+      "clear": "Clear",
+      "open": "Toon open locaties",
+      "close": "Close"
     },
 
     "roles": {
@@ -116,7 +128,6 @@
       "tags": "Tags",
       "users": "Users",
       "authorities": "Authorities",
-      "reservations": "Reservations",
       "calendar": "Calendar",
       "penalties": "Penalties"
     },
@@ -151,7 +162,19 @@
       },
 
       "calendar": {
-        "title": "Calendar with opening days",
+        "title": "Reservation Management",
+
+        "reservations": {
+          "title": "Reservations for this location",
+          "selectSlot": "Select a (reservable) timeslot to display the reservations",
+          "loading": "Location reservations are being loaded...",
+          "error": "Something went wrong while loading the reservations...",
+          "table": {
+            "noLocationReservations": "There are no location reservations for the selected timeslot",
+            "user": "User",
+            "attended": "Was user present?"
+          }
+        },
 
         "form": {
           "title": "Edit opening days",
@@ -161,8 +184,15 @@
           "endsAt": "Ends at",
           "openingTime": "Opening time",
           "closingTime": "Closing time",
+          "reservable": "Must be reserved",
+          "reservableTimeslotSize": "Reservable timeslot size",
           "reservableFrom": "Reservable from",
           "remove": "Remove",
+          "dropdown": {
+            "halfHour": "30 minutes",
+            "hour": "1 hour",
+            "hourAndHalf": "1.5 hours"
+          },
 
           "updateButton": "Update",
           "cancelButton": "Cancel",
@@ -173,7 +203,15 @@
           "errorMessage": "Update was not successful. Something went wrong.",
 
           "noCalendarPeriodsForLocation": "At the moment, there are no periods for the location."
-        }
+        },
+
+        "warningDialog": {
+          "warning": "Warning",
+          "body": "The opening duration of (at least) one of the created calendar periods is not divisable by the Reservable Timeslot-duration. This means that, for these periods, the last (incomplete) timeslot will not be created and as such will also not be reservable. Please make sure to take this into account"
+        },
+
+        "updateTitle": "Update Calendar Period",
+        "newTitle": "New Calendar Period"
       },
 
       "description": {
@@ -256,7 +294,7 @@
     },
 
     "locations": {
-      "title": "Management of blok-locations",
+      "title": "Management of study locations",
       "addNew": "Add location",
 
       "table": {
@@ -805,6 +843,7 @@
           "header": {
             "locationName": "Location",
             "reservationDate": "Reservation for date",
+            "beginHour": "Starting time reservation",
             "attended": "Did you attend?"
           },
 
@@ -815,7 +854,9 @@
           }
         },
 
-        "noReservations": "You have never made any location reservations so far."
+        "zeroReservations": "You have never made any location reservations so far",
+        "loading": "Location reservations are being loaded...",
+        "error": "Error while loading your location reservations"
       },
 
       "lockers": {

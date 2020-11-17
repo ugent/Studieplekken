@@ -11,6 +11,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -41,6 +43,9 @@ public class TestDBCalendarPeriodDao extends TestDao {
     private CalendarPeriod upcomingPeriod;
     private CalendarPeriod activePeriodOutsideHours;
     private CalendarPeriod activePeriodInsideHours;
+
+    // DateTimeFormatter to format the next opening hour in a consistent manner
+    private DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     @Override
     public void populateDatabase() throws SQLException {
@@ -107,10 +112,12 @@ public class TestDBCalendarPeriodDao extends TestDao {
         outsideHours.add(activePeriodOutsideHours);
         calendarPeriodDao.addCalendarPeriods(outsideHours);
 
-        Assert.assertEquals("StatusTest, active period, outside hours",
-                new Pair<>(LocationStatus.CLOSED_ACTIVE, activePeriodOutsideHours.getStartsAt() + " " + activePeriodOutsideHours.getOpeningTime()),
-                calendarPeriodDao.getStatus(testLocation.getName())
+        Pair<LocationStatus, String> expected = new Pair<>(
+                LocationStatus.CLOSED_ACTIVE,
+                LocalDateTime.of(activePeriodOutsideHours.getStartsAt(), activePeriodOutsideHours.getOpeningTime()).format(this.outputFormat)
         );
+        Pair<LocationStatus, String> actual = calendarPeriodDao.getStatus(testLocation.getName());
+        Assert.assertEquals("StatusTest, active period, outside hours", expected, actual);
 
         // Before the case of active period inside the hours, remove outside hours
         calendarPeriodDao.deleteCalendarPeriods(outsideHours);
@@ -120,9 +127,14 @@ public class TestDBCalendarPeriodDao extends TestDao {
         insideHours.add(activePeriodInsideHours);
         calendarPeriodDao.addCalendarPeriods(insideHours);
 
+        expected = new Pair<>(
+                LocationStatus.OPEN,
+                LocalDateTime.of(activePeriodInsideHours.getEndsAt(), activePeriodInsideHours.getClosingTime()).format(this.outputFormat)
+        );
+        actual = calendarPeriodDao.getStatus(testLocation.getName());
         Assert.assertEquals("StatusTest, active period, inside hours",
-                new Pair<>(LocationStatus.OPEN, activePeriodInsideHours.getEndsAt() + " " + activePeriodInsideHours.getClosingTime()),
-                calendarPeriodDao.getStatus(testLocation.getName())
+                expected,
+                actual
         );
 
     }

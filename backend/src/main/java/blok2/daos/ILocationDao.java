@@ -1,10 +1,10 @@
 package blok2.daos;
 
-import blok2.helpers.date.CustomDate;
 import blok2.model.reservables.Location;
 import blok2.model.reservables.Locker;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -53,5 +53,5 @@ public interface ILocationDao extends IDao {
      * Get a map that maps location names to the number of reservations on the
      * given date.
      */
-    Map<String, Integer> getCountOfReservations(CustomDate date) throws SQLException;
+    Map<String, Integer> getCountOfReservations(LocalDate date) throws SQLException;
 }

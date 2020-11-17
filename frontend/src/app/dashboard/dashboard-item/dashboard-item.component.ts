@@ -18,7 +18,7 @@ import {CalendarPeriodsService} from '../../services/api/calendar-periods/calend
 export class DashboardItemComponent implements OnInit, AfterViewInit {
   @Input() location: Location;
 
-  occupation: number;
+  occupation: number = 0;
 
   altImageUrl = defaultLocationImage;
 
@@ -40,10 +40,6 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.locationService.getNumberOfReservations(this.location).subscribe(next => {
-      this.occupation = Math.round(100 * next / this.location.numberOfSeats);
-    });
-
     this.currentLang = this.translate.currentLang;
     this.translate.onLangChange.subscribe(
       () => {
@@ -59,6 +55,8 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
         this.translateStatus();
       }
     );
+
+    this.locationService.getNumberOfReservationsNow(this.location.name).subscribe(next => this.occupation = next);
 
     this.assignedTags = this.location.assignedTags;
     this.setupTagsInCurrentLang();

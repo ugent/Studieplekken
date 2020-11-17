@@ -3,18 +3,17 @@ package blok2.controllers;
 import blok2.daos.ICalendarPeriodForLockersDao;
 import blok2.daos.ILocationDao;
 import blok2.model.calendar.CalendarPeriodForLockers;
+import blok2.model.calendar.Period;
 import blok2.model.reservables.Location;
-import blok2.shared.Utility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Date;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -79,8 +78,8 @@ public class CalendarPeriodsForLockersController {
 
             // if the sizes do match, check if the lists are equal before invoking
             // the 'equals' on a list, sort both lists based on 'starts at'
-            Utility.sortPeriodsBasedOnStartsAt(currentView);
-            Utility.sortPeriodsBasedOnStartsAt(from);
+            currentView.sort(Comparator.comparing(Period::getStartsAt));
+            from.sort(Comparator.comparing(Period::getStartsAt));
 
             if (!currentView.equals(from)) {
                 logger.log(Level.SEVERE, "updateCalendarPeriodsForLockers, conflict in frontends data view and actual data view");
@@ -96,17 +95,13 @@ public class CalendarPeriodsForLockersController {
             else if (from.isEmpty()) {
                 addCalendarPeriodsForLockers(to);
             } else {
-                Utility.sortPeriodsBasedOnStartsAt(to);
+                to.sort(Comparator.comparing(Period::getStartsAt));
                 analyzeAndUpdateCalendarPeriodsForLockers(locationName, from, to);
             }
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        } catch (ParseException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, "Wrong date format for 'starts at'");
         }
     }
 
@@ -131,10 +126,10 @@ public class CalendarPeriodsForLockersController {
     private void
     analyzeAndUpdateCalendarPeriodsForLockers(String locationName,
                                               List<CalendarPeriodForLockers> from,
-                                              List<CalendarPeriodForLockers> to) throws SQLException, ParseException {
+                                              List<CalendarPeriodForLockers> to) throws SQLException {
         // setup
         Location expectedLocation = locationDao.getLocation(locationName);
-        Date lastEnd = null;
+        LocalDate lastEnd = null;
 
         // analyze the periods
         for (CalendarPeriodForLockers period : to) {
@@ -145,29 +140,12 @@ public class CalendarPeriodsForLockersController {
                         HttpStatus.CONFLICT, "Different locations in request");
             }
 
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            Date startDate = format.parse(period.getStartsAt());
-            Date endDate = format.parse(period.getEndsAt());
-
-            // check if the ends of all periods are after the start
-            if (endDate.getTime() < startDate.getTime()) {
+            // check if the end of all periods are after the start
+            if (period.getEndsAt().isBefore(period.getStartsAt())) {
                 logger.log(Level.SEVERE, "analyzeAndUpdateCalendarPeriodsForLockers, endsAt was before startsAt");
                 throw new ResponseStatusException(
                         HttpStatus.CONFLICT, "StartsAt must be before EndsAt");
             }
-
-            // check if the reservableFrom is parsable
-            format = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-            format.parse(period.getReservableFrom());
-
-            // make sure no periods overlap
-            if (lastEnd != null && lastEnd.getTime() > startDate.getTime()) {
-                logger.log(Level.SEVERE, "analyzeAndUpdateCalendarPeriodsForLockers, overlapping periods");
-                throw new ResponseStatusException(
-                        HttpStatus.CONFLICT, "Overlapping periods");
-            }
-
-            lastEnd = endDate;
         }
 
         // delete all 'from' and add 'to'

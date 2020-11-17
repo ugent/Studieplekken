@@ -1,7 +1,6 @@
 package blok2.daos;
 
 import blok2.helpers.Language;
-import blok2.helpers.date.CustomDate;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.penalty.Penalty;
@@ -15,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -124,16 +125,13 @@ public class TestDBPenaltyEventsDao extends TestDao {
     @Test
     public void penaltyBookTest() throws SQLException {
         // setup some test data
-        CustomDate thisDayAMonthEarlier = CustomDate.now();
-        thisDayAMonthEarlier.setMonth(thisDayAMonthEarlier.getMonth() == 1 ? 12 : thisDayAMonthEarlier.getMonth() - 1);
-        while (!validateDateTime(thisDayAMonthEarlier)) {
-            thisDayAMonthEarlier.setDay(thisDayAMonthEarlier.getDay() - 1);
-        }
 
-        Penalty penalty = new Penalty(testUser.getAugentID(), testEvent.getCode(), CustomDate.now(), CustomDate.today()
+        LocalDate thisDayAMonthEarlier = LocalDate.now().minusMonths(1);
+
+        Penalty penalty = new Penalty(testUser.getAugentID(), testEvent.getCode(), LocalDate.now(), LocalDate.now()
                 , testLocation.getName(), testEvent.getPoints(), "regular test penalty");
-        Penalty fatalPenalty = new Penalty(testUser.getAugentID(), blacklistEvent.getCode(), CustomDate.now()
-                , new CustomDate(1970, 1, 1), testLocation.getName(), blacklistEvent.getPoints(),
+        Penalty fatalPenalty = new Penalty(testUser.getAugentID(), blacklistEvent.getCode(), LocalDate.now()
+                , LocalDate.of(1970, 1, 1), testLocation.getName(), blacklistEvent.getPoints(),
                 "Fatal test penalty");
         Penalty penaltyLastMonth = new Penalty(testUser.getAugentID(), testEvent.getCode()
                 , thisDayAMonthEarlier, thisDayAMonthEarlier, testLocation.getName(), testEvent.getPoints(),
@@ -192,23 +190,5 @@ public class TestDBPenaltyEventsDao extends TestDao {
                 , modifiableUser, retrievedUser);
 
         penaltyEventsDao.deletePenalty(fatalPenalty);
-    }
+    }}
 
-    /**
-     * For testing purposes, we need to have a penalty booked at an earlier
-     * date, but within 5 weeks from now. This to be able to test whether
-     * the query actually lowers the amount of penalty points of a user
-     * over time. But, we need to have a valid date, therefore, this method
-     * is introduces
-     */
-    private static boolean validateDateTime(CustomDate customDate) {
-        try {
-            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            f.setLenient(false);
-            f.parse(customDate.toString().replace('T', ' '));
-            return true;
-        } catch (ParseException ignore) {
-            return false;
-        }
-    }
-}
