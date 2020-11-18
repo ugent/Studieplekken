@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import {transition, trigger, useAnimation} from '@angular/animations';
 import {rowsAnimation} from '../../shared/animations/RowAnimation';
 import { Observable } from 'rxjs';
 import { Building } from 'src/app/shared/model/Building';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BuildingService } from 'src/app/services/api/buildings/buildings.service';
+import { BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-building-management',
@@ -30,7 +31,8 @@ export class BuildingManagementComponent implements OnInit {
   successUpdatingBuilding: boolean = undefined;
   successDeletingBuilding: boolean = undefined;
 
-  constructor(private buildingService: BuildingService) { }
+  constructor(private buildingService: BuildingService,
+              private modalService: BsModalService) { }
 
   ngOnInit(): void {
     this.buildingsObs = this.buildingService.getAllBuildings();
@@ -51,11 +53,15 @@ export class BuildingManagementComponent implements OnInit {
     });
   }
 
+  closeModal(): void {
+    this.modalService.hide();
+  }
+
   // ********************
   // *   CRUD: Create   *
   // ********************/
 
-  prepareAdd(): void {
+  prepareAdd(template: TemplateRef<any>): void {
     // reset the feedback boolean
     this.successAddingBuilding = undefined;
 
@@ -66,6 +72,8 @@ export class BuildingManagementComponent implements OnInit {
       name: '',
       address: ''
     });
+
+    this.modalService.show(template);
   }
 
   addBuilding(): void {
@@ -75,6 +83,7 @@ export class BuildingManagementComponent implements OnInit {
         this.successAddingBuilding = true;
         // reload the buildings
         this.buildingsObs = this.buildingService.getAllBuildings();
+        this.modalService.hide();
       }, () => {
         this.successAddingBuilding = false;
       }
@@ -85,12 +94,14 @@ export class BuildingManagementComponent implements OnInit {
   // *   CRUD: Update   *
   // ********************/
 
-  prepareUpdate(building: Building): void {
+  prepareUpdate(building: Building, template: TemplateRef<any>): void {
     // reset the feedback boolean
     this.successUpdatingBuilding = undefined;
 
     // prepare the tagFormGroup
     this.prepareFormGroup(building);
+
+    this.modalService.show(template);
   }
 
   updateBuildingInFormGroup(): void {
@@ -100,6 +111,7 @@ export class BuildingManagementComponent implements OnInit {
         this.successUpdatingBuilding = true;
         // and reload the tags
         this.buildingsObs = this.buildingService.getAllBuildings();
+        this.modalService.hide();
       }, () => {
         this.successUpdatingBuilding = false;
       }
@@ -110,12 +122,14 @@ export class BuildingManagementComponent implements OnInit {
   // *   CRUD: Delete   *
   // ********************/
 
-  prepareToDelete(building: Building): void {
+  prepareToDelete(building: Building, template: TemplateRef<any>): void {
     // reset the feedback boolean
     this.successDeletingBuilding = undefined;
 
     // prepare the tagFormGroup
     this.prepareFormGroup(building);
+
+    this.modalService.show(template);
   }
 
   deleteBuildingInFormGroup(): void {
@@ -125,6 +139,7 @@ export class BuildingManagementComponent implements OnInit {
         this.successDeletingBuilding = true;
         // and reload the tags
         this.buildingsObs = this.buildingService.getAllBuildings();
+        this.modalService.hide();
       }, () => {
         this.successDeletingBuilding = false;
       }

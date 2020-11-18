@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, TemplateRef} from '@angular/core';
 import {Observable} from 'rxjs';
 import {Location} from '../../../../shared/model/Location';
 import {TranslateService} from '@ngx-translate/core';
@@ -9,6 +9,7 @@ import {LocationService} from '../../../../services/api/locations/location.servi
 import {FormControl} from '@angular/forms';
 import {LocationDetailsService} from '../../../../services/single-point-of-truth/location-details/location-details.service';
 import {matSelectionChanged} from '../../../../shared/GeneralFunctions';
+import { BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-location-tags-management',
@@ -33,7 +34,8 @@ export class LocationTagsManagementComponent implements OnInit {
   constructor(private translate: TranslateService,
               private tagsService: TagsService,
               private locationService: LocationService,
-              private locationDetailsService: LocationDetailsService) { }
+              private locationDetailsService: LocationDetailsService,
+              private modalService: BsModalService) { }
 
   ngOnInit(): void {
     this.currentLang = this.translate.currentLang;
@@ -60,10 +62,11 @@ export class LocationTagsManagementComponent implements OnInit {
     );
   }
 
-  prepareUpdateTheTags(): void {
+  prepareUpdateTheTags(template: TemplateRef<any>): void {
     this.tagsFormControl = new FormControl(this.tagsThatAreSelected);
     this.tagsSelectionIsUpdatable = false;
     this.successUpdatingTagsConfiguration = undefined;
+    this.modalService.show(template);
   }
 
   updateTags(): void {
@@ -73,10 +76,15 @@ export class LocationTagsManagementComponent implements OnInit {
         this.successUpdatingTagsConfiguration = true;
         // reload the location
         this.locationDetailsService.loadLocation(this.locationName);
+        this.modalService.hide();
       }, () => {
         this.successUpdatingTagsConfiguration = false;
       }
     );
+  }
+
+  closeModal(): void {
+    this.modalService.hide();
   }
 
   /**

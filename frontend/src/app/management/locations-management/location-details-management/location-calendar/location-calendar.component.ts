@@ -1,5 +1,5 @@
 import { trigger, transition, useAnimation } from '@angular/animations';
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, TemplateRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CalendarEvent } from 'angular-calendar';
 import * as moment from 'moment';
@@ -16,6 +16,7 @@ import { LocationOpeningperiodDialogComponent } from './location-openingperiod-d
 import { Location } from 'src/app/shared/model/Location';
 import { msToShowFeedback } from 'src/app/app.constants';
 import { tap } from 'rxjs/operators';
+import { BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-location-calendar',
@@ -91,7 +92,8 @@ export class LocationCalendarComponent implements OnInit {
   constructor(private calendarPeriodsService: CalendarPeriodsService,
               private functionalityService: ApplicationTypeFunctionalityService,
               private locationReservationService: LocationReservationsService,
-              private dialog: MatDialog) {
+              private dialog: MatDialog,
+              private modalService: BsModalService) {
   }
 
   ngOnInit(): void {
@@ -215,6 +217,7 @@ export class LocationCalendarComponent implements OnInit {
         this.calendarPeriods
       ).subscribe(() => {
         this.successHandler();
+        this.modalService.hide();
       }, () => this.errorHandler());
     } else {
       this.handleNothingHasChangedOnUpdate();
@@ -318,9 +321,10 @@ export class LocationCalendarComponent implements OnInit {
     });
   }
 
-  prepareToDeleteLocationReservation(locationReservation: LocationReservation): void {
+  prepareToDeleteLocationReservation(locationReservation: LocationReservation, template: TemplateRef<any>): void {
     this.deletionWasSuccess = undefined;
     this.currentLocationReservationToDelete = locationReservation;
+    this.modalService.show(template);
   }
 
   deleteLocationReservation(): void {
@@ -328,6 +332,7 @@ export class LocationCalendarComponent implements OnInit {
       () => {
         this.deletionWasSuccess = true;
         this.loadReservations();
+        this.modalService.hide();
       }, () => {
         this.deletionWasSuccess = false;
         this.loadReservations();
@@ -335,19 +340,22 @@ export class LocationCalendarComponent implements OnInit {
     );
   }
 
-  prepareUpdate(calendarPeriod: CalendarPeriod): void {
+  prepareUpdate(calendarPeriod: CalendarPeriod, template: TemplateRef<any>): void {
     this.prepareToUpdatePeriod = calendarPeriod;
     // Copy
     this.calendarPeriodModel.next(CalendarPeriod.fromJSON(calendarPeriod));
+    this.modalService.show(template);
   }
 
-  prepareDelete(calendarPeriod: CalendarPeriod): void {
+  prepareDelete(calendarPeriod: CalendarPeriod, template: TemplateRef<any>): void {
     this.prepareToUpdatePeriod = calendarPeriod;
+    this.modalService.show(template);
   }
 
-  prepareAdd(): void {
+  prepareAdd(template: TemplateRef<any>): void {
     this.calendarPeriodModel.next(new CalendarPeriod(null, this.locationFlat, null, null, null, null, false, null, 0, [], null));
     this.prepareToUpdatePeriod = null;
+    this.modalService.show(template);
   }
 
   update(): void {
@@ -373,5 +381,9 @@ export class LocationCalendarComponent implements OnInit {
   showCheckbox(): boolean {
     return this.currentCalendarPeriod && this.currentTimeSlot
            && timeslotStartHour(this.currentCalendarPeriod, this.currentTimeSlot).isBefore(moment());
+  }
+
+  closeModal(): void {
+    this.modalService.hide();
   }
 }

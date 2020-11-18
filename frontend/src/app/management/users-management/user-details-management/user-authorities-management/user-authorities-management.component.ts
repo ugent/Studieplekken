@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, TemplateRef} from '@angular/core';
 import {Observable} from 'rxjs';
 import {User} from '../../../../shared/model/User';
 import {Authority} from '../../../../shared/model/Authority';
@@ -7,6 +7,7 @@ import {transition, trigger, useAnimation} from '@angular/animations';
 import {rowsAnimation} from '../../../../shared/animations/RowAnimation';
 import {FormControl, Validators} from '@angular/forms';
 import {UserDetailsService} from '../../../../services/single-point-of-truth/user-details/user-details.service';
+import { BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-user-authorities-management',
@@ -36,7 +37,8 @@ export class UserAuthoritiesManagementComponent implements OnInit {
   successOnDeletingAuthorityForUser: boolean = undefined;
 
   constructor(private authoritiesService: AuthoritiesService,
-              private userDetailsService: UserDetailsService) { }
+              private userDetailsService: UserDetailsService,
+              private modalService: BsModalService) { }
 
   ngOnInit(): void {
     this.userObs.subscribe(
@@ -69,8 +71,9 @@ export class UserAuthoritiesManagementComponent implements OnInit {
   // *   Adding an authority from the user   *
   // *****************************************
 
-  prepareToAddAnAuthorityToUser(): void {
+  prepareToAddAnAuthorityToUser(template: TemplateRef<any>): void {
     this.successOnAddingAuthorityToUser = undefined;
+    this.modalService.show(template);
   }
 
   addAuthorityFromForm(): void {
@@ -83,6 +86,7 @@ export class UserAuthoritiesManagementComponent implements OnInit {
       () => {
         this.successOnAddingAuthorityToUser = true;
         this.userDetailsService.loadUser(userId);
+        this.modalService.hide();
       }, () => {
         this.successOnAddingAuthorityToUser = false;
       }
@@ -93,9 +97,10 @@ export class UserAuthoritiesManagementComponent implements OnInit {
   // *   Deleting an authority from the user   *
   // *******************************************
 
-  prepareToDeleteAuthorityForUser(authority: Authority): void {
+  prepareToDeleteAuthorityForUser(authority: Authority, template: TemplateRef<any>): void {
     this.successOnDeletingAuthorityForUser = undefined;
     this.authorityPreparedToDelete = authority;
+    this.modalService.show(template);
   }
 
   deleteAuthorityFromUser(userId: string, authorityId: number): void {
@@ -104,6 +109,7 @@ export class UserAuthoritiesManagementComponent implements OnInit {
       () => {
         this.successOnDeletingAuthorityForUser = true;
         this.userDetailsService.loadUser(userId);
+        this.modalService.hide();
       }, () => {
         this.successOnDeletingAuthorityForUser = false;
       }
@@ -120,6 +126,10 @@ export class UserAuthoritiesManagementComponent implements OnInit {
 
   clearForm(): void {
     this.authoritiesFormControl.setValue('');
+  }
+
+  closeModal(): void {
+    this.modalService.hide();
   }
 
   /**

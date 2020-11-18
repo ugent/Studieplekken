@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, TemplateRef} from '@angular/core';
 import {transition, trigger, useAnimation} from '@angular/animations';
 import {rowsAnimation} from '../../shared/animations/RowAnimation';
 import {Observable} from 'rxjs';
@@ -11,6 +11,7 @@ import {BuildingService} from '../../services/api/buildings/buildings.service';
 import {AuthenticationService} from '../../services/authentication/authentication.service';
 import {tap} from 'rxjs/operators';
 import { Building } from 'src/app/shared/model/Building';
+import { BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-locations-management',
@@ -40,7 +41,8 @@ export class LocationsManagementComponent implements OnInit {
   constructor(private locationService: LocationService,
               private authoritiesService: AuthoritiesService,
               private authenticationService: AuthenticationService,
-              private buildingsService: BuildingService) { }
+              private buildingsService: BuildingService,
+              private modalService: BsModalService) { }
 
   ngOnInit(): void {
     this.setupForm();
@@ -68,8 +70,9 @@ export class LocationsManagementComponent implements OnInit {
     });
   }
 
-  prepareToAddLocation(): void {
+  prepareToAddLocation(template: TemplateRef<any>): void {
     this.addingWasSuccess = undefined;
+    this.modalService.show(template);
   }
 
   addNewLocation(location: Location): void {
@@ -81,6 +84,7 @@ export class LocationsManagementComponent implements OnInit {
       this.locationService.addLocation(location).subscribe(
         () => {
           this.successHandler();
+          this.modalService.hide();
         }, () => {
           this.errorHandler();
         }
@@ -96,9 +100,10 @@ export class LocationsManagementComponent implements OnInit {
     return this.addLocationFormGroup.valid;
   }
 
-  prepareToDeleteLocation(locationName: string): void {
+  prepareToDeleteLocation(locationName: string, template: TemplateRef<any>): void {
     this.deletionWasSuccess = undefined;
     this.currentLocationNameToDelete = locationName;
+    this.modalService.show(template);
   }
 
   deleteLocationLinkedToCurrentLocationNameToDelete(): void {
@@ -106,6 +111,7 @@ export class LocationsManagementComponent implements OnInit {
     this.locationService.deleteLocation(this.currentLocationNameToDelete).subscribe(
       () => {
         this.successDeletionHandler();
+        this.modalService.hide();
       }, () => {
         this.deletionWasSuccess = false;
       }
@@ -198,5 +204,9 @@ export class LocationsManagementComponent implements OnInit {
         });
       }
     ));
+  }
+
+  closeModal(): void {
+    this.modalService.hide();
   }
 }
