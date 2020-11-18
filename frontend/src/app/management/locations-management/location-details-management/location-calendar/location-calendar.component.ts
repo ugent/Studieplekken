@@ -10,11 +10,12 @@ import { ApplicationTypeFunctionalityService } from 'src/app/services/functional
 import { rowsAnimation } from 'src/app/shared/animations/RowAnimation';
 import { CalendarPeriod, mapCalendarPeriodsToCalendarEvents, isCalendarPeriodValid } from 'src/app/shared/model/CalendarPeriod';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
-import { Timeslot } from 'src/app/shared/model/Timeslot';
+import { Timeslot, timeslotStartHour } from 'src/app/shared/model/Timeslot';
 import { UserConstructor } from 'src/app/shared/model/User';
 import { LocationOpeningperiodDialogComponent } from './location-openingperiod-dialog/location-openingperiod-dialog.component';
 import { Location } from 'src/app/shared/model/Location';
 import { msToShowFeedback } from 'src/app/app.constants';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-location-calendar',
@@ -39,7 +40,9 @@ export class LocationCalendarComponent implements OnInit {
 
   refresh: Subject<any> = new Subject();
 
+  prepareToUpdatePeriod: CalendarPeriod = null;
   currentCalendarPeriod: CalendarPeriod = null;
+
   calendarPeriodModel: BehaviorSubject<CalendarPeriod> =
                                 new BehaviorSubject(new CalendarPeriod(null, null, null, null, null, null, false, null, 0, [], null));
 
@@ -231,13 +234,15 @@ export class LocationCalendarComponent implements OnInit {
 
   timeslotPickedHandler(event: any): void {
     // event is a non-reservable calendar period.
-    if (!event.hasOwnProperty('timeslotSeqnr')) {
+    if (!event.hasOwnProperty('timeslot')) {
       this.showReservations = false;
       this.errorOnRetrievingReservations = false;
       return;
     }
 
-    this.currentTimeSlot = event;
+    this.currentTimeSlot = event.timeslot;
+    this.currentCalendarPeriod = event.calendarPeriod;
+
     this.loadReservations();
   }
 
@@ -271,22 +276,22 @@ export class LocationCalendarComponent implements OnInit {
   }
 
   prepareUpdate(calendarPeriod: CalendarPeriod): void {
-    this.currentCalendarPeriod = calendarPeriod;
+    this.prepareToUpdatePeriod = calendarPeriod;
     // Copy
     this.calendarPeriodModel.next(CalendarPeriod.fromJSON(calendarPeriod));
   }
 
   prepareDelete(calendarPeriod: CalendarPeriod): void {
-    this.currentCalendarPeriod = calendarPeriod;
+    this.prepareToUpdatePeriod = calendarPeriod;
   }
 
   prepareAdd(): void {
     this.calendarPeriodModel.next(new CalendarPeriod(null, this.locationFlat, null, null, null, null, false, null, 0, [], null));
-    this.currentCalendarPeriod = null;
+    this.prepareToUpdatePeriod = null;
   }
 
   update(): void {
-    this.calendarPeriods = this.calendarPeriods.filter(c => !this.currentCalendarPeriod || c.id !== this.currentCalendarPeriod.id);
+    this.calendarPeriods = this.calendarPeriods.filter(c => !this.prepareToUpdatePeriod || c.id !== this.prepareToUpdatePeriod.id);
     if (this.calendarPeriodModel) {
       this.calendarPeriods = [...this.calendarPeriods, this.calendarPeriodModel.value];
     }
@@ -305,10 +310,21 @@ export class LocationCalendarComponent implements OnInit {
   }
 
   delete(): void {
-    this.calendarPeriods = this.calendarPeriods.filter(c => c.id !== this.currentCalendarPeriod.id);
-    this.calendarPeriodsService.deleteCalendarPeriods([this.calendarPeriodsInDataLayer.find(c => c.id !== this.currentCalendarPeriod.id)])
+    this.calendarPeriods = this.calendarPeriods.filter(c => c.id !== this.prepareToUpdatePeriod.id);
+    this.calendarPeriodsService.deleteCalendarPeriods([this.calendarPeriodsInDataLayer.find(c => c.id !== this.prepareToUpdatePeriod.id)])
     .subscribe(() => {
       this.successHandler();
     }, () => this.errorHandler());
+  }
+
+  onCheckboxToggle(reservation, checked): void {
+    this.locationReservationService.postLocationReservationAttendance(reservation, checked)
+                    .pipe(tap(() => this.loadReservations()))
+                    .subscribe();
+  }
+
+  showCheckbox(): boolean {
+    return this.currentCalendarPeriod && this.currentTimeSlot
+           && timeslotStartHour(this.currentCalendarPeriod, this.currentTimeSlot).isBefore(moment());
   }
 }

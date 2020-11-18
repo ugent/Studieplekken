@@ -25,8 +25,7 @@ public class CalendarPeriod extends Period implements Cloneable {
 
     private List<Timeslot> timeslots = Collections.emptyList();
 
-    public CalendarPeriod() {
-    }
+    public CalendarPeriod() { }
 
     @Override
     public boolean equals(Object o) {

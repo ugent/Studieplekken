@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -85,4 +84,17 @@ public class LocationReservation {
     public int hashCode() {
         return Objects.hash(user, createdAt, timeslot);
     }
+
+    public static class AttendedPostBody {
+        boolean attended;
+
+        public void setAttended(boolean attended) {
+            this.attended = attended;
+        }
+
+        public boolean getAttended() {
+            return this.attended;
+        }
+    }
 }
+

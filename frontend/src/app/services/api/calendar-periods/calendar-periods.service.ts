@@ -1,11 +1,12 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {CalendarPeriod} from '../../../shared/model/CalendarPeriod';
-
+import {Pair} from '../../../shared/model/helpers/Pair';
 import {Observable} from 'rxjs';
 import { map } from 'rxjs/internal/operators/map';
 import { filter } from 'rxjs/internal/operators/filter';
 import {api} from '../endpoints';
+import {LocationStatus} from '../../../app.constants';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,11 @@ export class CalendarPeriodsService {
 
   getCalendarPeriods(): Observable<CalendarPeriod[]> {
     return this.http.get<CalendarPeriod[]>(api.allCalendarPeriods);
+  }
+
+  getStatusOfLocation(locationName: string): Observable<Pair<LocationStatus, string>> {
+    return this.http.get<Pair<LocationStatus, string>>(api.locationStatus
+      .replace('{locationName}', locationName));
   }
 
   addCalendarPeriods(calendarPeriods: CalendarPeriod[]): Observable<void> {
