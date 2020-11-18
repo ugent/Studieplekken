@@ -1,4 +1,4 @@
-import {Location, LocationConstructor} from './Location';
+import {Location} from './Location';
 import {CalendarEvent} from 'angular-calendar';
 import {includesTimeslot, Timeslot, timeslotEndHour, timeslotStartHour} from './Timeslot';
 import { LocationReservation } from './LocationReservation';
@@ -91,23 +91,29 @@ export class CalendarPeriod {
  * 3. closingTime may not be before openingTime
  */
 export function isCalendarPeriodValid(period: CalendarPeriod): boolean {
-  if (period === null || period.openingTime === null) {
+  // at least, these attributes may not be null (id may be null for adding a period)
+  if (period === null || period.location === null || period.startsAt === null ||
+      period.endsAt === null || period.openingTime === null || period.closingTime === null) {
     return false;
   }
 
+  // if the period is set to be reservable, reservableTimeslotSize may not be 0, nor
+  // may reservableFrom be null
+  if (period.reservable && (period.reservableTimeslotSize === 0 || period.reservableFrom === null)) {
+    return false;
+  }
 
+  // of course, startsAt, endsAt must be valid and startsAt must be before endsAt
   if (!period.startsAt.isValid() || !period.endsAt.isValid() || period.startsAt.isAfter(period.endsAt)) {
     return false;
   }
 
-  if (period.reservable && period.reservableTimeslotSize === 0) {
-    return false;
-  }
-
+  // if the period is reservable, the reservableFrom must be valid too
   if (period.reservable && !period.reservableFrom.isValid()) {
     return false;
   }
 
+  // and finally, the opening time must be before the closing time
   return period.openingTime.isBefore(period.closingTime);
 }
 

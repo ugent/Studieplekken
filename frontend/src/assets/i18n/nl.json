@@ -194,15 +194,26 @@
             "hourAndHalf": "1.5 uur"
           },
 
-          "updateButton": "Update",
-          "cancelButton": "Annuleer",
-
-          "wrongCalendarPeriodFormatMessage": "Niet alle periodes zijn correct ingevuld",
-          "successMessage": "Het wijzigen van de kalender is succesvol verlopen",
-          "successButNoChangesMessage": "Er waren geen veranderingen nodig",
-          "errorMessage": "Het aanpassen van de kalender is mislukt. Er is iets misgegaan.",
-
           "noCalendarPeriodsForLocation": "Op dit moment zijn er nog geen periodes voor de locatie beschikbaar."
+        },
+
+        "addModalView": {
+          "title": "Nieuwe kalenderperiode toevoegen",
+          "success": "Het toevoegen van de nieuwe kalenderperiode is gelukt.",
+          "error": "Er is iets misgelopen tijdens het toevoegen van de nieuwe kalenderperiode."
+        },
+
+        "updateModalView": {
+          "title": "Wijzigen van een kalenderperiode",
+          "success": "Het wijzigen van de kalenderperiode is gelukt.",
+          "error": "Er is iets misgelopen tijdens het wijzigen van de kalenderperiode."
+        },
+
+        "deleteModalView": {
+          "title": "Wil je kalenderperiode verwijderen?",
+          "body": "Ben je zeker dat je volgende kalenderperiode wilt verwijderen?",
+          "success": "Het verwijderen van de kalenderperiode is gelukt.",
+          "error": "Er is iets misgelopen tijdens het verwijderen van de kalenderperiode."
         },
 
         "warningDialog": {
