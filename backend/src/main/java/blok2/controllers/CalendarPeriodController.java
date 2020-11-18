@@ -100,8 +100,9 @@ public class CalendarPeriodController {
                 else {
                     logger.log(Level.SEVERE, "updateCalendarPeriods, new CalendarPeriod too late");
                     throw new ResponseStatusException(
-                            HttpStatus.CONFLICT, "The original term is locked.");
+                            HttpStatus.CONFLICT, "new calendarperiod too late.");
                 }
+                return;
             }
 
             // Note: if the if-clause above evaluated to true, the method addCalendarPeriods would

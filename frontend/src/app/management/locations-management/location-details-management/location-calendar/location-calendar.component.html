@@ -257,7 +257,7 @@
               {{'management.locationDetails.calendar.form.startsAt' | translate}}
             </label>
             <div class="col-lg-8">
-              <app-moment-date id="startsAtUpdate" [(model)]="model.startsAt" [type]="'date'"></app-moment-date>
+              <app-moment-date id="startsAtUpdate" [(model)]="model.startsAt" [type]="'date'" [min]="getMinStartDate()"></app-moment-date>
             </div>
           </div>
 

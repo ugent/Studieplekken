@@ -14,6 +14,8 @@ import { LocationReservation } from 'src/app/shared/model/LocationReservation';
 import { Timeslot } from 'src/app/shared/model/Timeslot';
 import { LocationOpeningperiodDialogComponent } from './location-openingperiod-dialog/location-openingperiod-dialog.component';
 import { Location } from 'src/app/shared/model/Location';
+import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
+import { Moment } from 'moment';
 
 @Component({
   selector: 'app-location-calendar',
@@ -81,6 +83,7 @@ export class LocationCalendarComponent implements OnInit {
   constructor(private calendarPeriodsService: CalendarPeriodsService,
               private functionalityService: ApplicationTypeFunctionalityService,
               private locationReservationService: LocationReservationsService,
+              private authorizationService: AuthenticationService,
               private dialog: MatDialog) {
   }
 
@@ -258,4 +261,11 @@ export class LocationCalendarComponent implements OnInit {
     });
   }
 
+  getMinStartDate(): Moment {
+    if (!this.authorizationService.isAdmin()) {
+      return null;
+    } else {
+      return moment().add(3, 'weeks').day(8);
+    }
+  }
 }
