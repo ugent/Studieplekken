@@ -1,6 +1,8 @@
 package blok2.daos.db;
 
 import blok2.daos.ICalendarPeriodDao;
+import blok2.helpers.LocationStatus;
+import blok2.helpers.Pair;
 import blok2.helpers.Resources;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
@@ -8,13 +10,18 @@ import org.springframework.stereotype.Service;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 
 @Service
 public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
+
 
     private final Logger logger = Logger.getLogger(DBCalendarPeriodDao.class.getSimpleName());
 
@@ -50,7 +57,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
             List<CalendarPeriod> periods = new ArrayList<>();
 
             while (rs.next()) {
-                periods.add(createCalendarPeriod(rs,conn));
+                periods.add(createCalendarPeriod(rs, conn));
             }
 
             return periods;
@@ -163,17 +170,70 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
     }
 
     @Override
+    public Pair<LocationStatus, String> getStatus(String locationName) throws SQLException {
+        List<CalendarPeriod> periods = getCalendarPeriodsOfLocation(locationName);
+
+        // Sort the periods according to the start date
+        periods.sort(Comparator.comparing(CalendarPeriod::getStartsAt));
+
+        // DateTimeFormatter to format the next opening hour in a consistent manner
+        DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        for (CalendarPeriod period : periods) {
+            // Case 1: No active period, next period is still coming up
+            if (period.getStartsAt().isAfter(LocalDate.now())) {
+                return new Pair<>(
+                        LocationStatus.CLOSED_UPCOMING,
+                        LocalDateTime.of(period.getStartsAt(), period.getOpeningTime()).format(outputFormat)
+                );
+            }
+            // Case 2: Active period, 2 subcases
+            if (period.getEndsAt().isAfter(LocalDate.now())) {
+                // Case 2.a: Active period within hours
+                if (period.getOpeningTime().isBefore(LocalTime.now()) && period.getClosingTime().isAfter(LocalTime.now())) {
+                    return new Pair<>(
+                            LocationStatus.OPEN,
+                            LocalDateTime.of(period.getEndsAt(), period.getClosingTime()).format(outputFormat)
+                    );
+                }
+                // Case 2.b: Active period outside hours
+                else {
+                    return new Pair<>(
+                            LocationStatus.CLOSED_ACTIVE,
+                            LocalDateTime.of(period.getStartsAt(), period.getOpeningTime()).format(outputFormat)
+                    );
+                }
+            }
+            // Case 3: Last day of active period, 2 subcases
+            if (period.getEndsAt().isEqual(LocalDate.now())) {
+                // Case 3.1: Last day has yet to begin
+                if (period.getOpeningTime().isBefore(LocalTime.now())) {
+                    return new Pair<>(
+                            LocationStatus.CLOSED_ACTIVE,
+                            LocalDateTime.of(period.getStartsAt(), period.getOpeningTime()).format(outputFormat)
+                    );
+                }
+                // Case 3.2: Last day is busy
+                if (period.getClosingTime().isAfter(LocalTime.now())) {
+                    return new Pair<>(
+                            LocationStatus.OPEN,
+                            LocalDateTime.of(period.getEndsAt(), period.getClosingTime()).format(outputFormat)
+                    );
+                }
+            }
+        }
+
+        // Case 4: No active or upcoming periods
+        return new Pair<>(LocationStatus.CLOSED, "");
+    }
+
     public CalendarPeriod getById(int calendarId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
-            try {
-                PreparedStatement statement = conn.prepareStatement(Resources.databaseProperties.getString("get_calendar_period_by_id"));
-                statement.setInt(1,calendarId);
-                ResultSet set = statement.executeQuery();
-                set.next();
-                return createCalendarPeriod(set, conn);
-            } catch (SQLException e) {
-                throw e;
-            }
+            PreparedStatement statement = conn.prepareStatement(Resources.databaseProperties.getString("get_calendar_period_by_id"));
+            statement.setInt(1,calendarId);
+            ResultSet set = statement.executeQuery();
+            set.next();
+            return createCalendarPeriod(set, conn);
         }
     }
 
@@ -217,9 +277,8 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
     }
 
     public static Timeslot createTimeslot(ResultSet rs) throws SQLException {
-
-        Integer calendarId = (rs.getInt(Resources.databaseProperties.getString("timeslot_calendar_id")));
-        Integer seqnr = (rs.getInt(Resources.databaseProperties.getString("timeslot_sequence_number")));
+        int calendarId = (rs.getInt(Resources.databaseProperties.getString("timeslot_calendar_id")));
+        int seqnr = (rs.getInt(Resources.databaseProperties.getString("timeslot_sequence_number")));
         LocalDate date = (rs.getDate(Resources.databaseProperties.getString("timeslot_date")).toLocalDate());
 
         return new Timeslot(calendarId, seqnr, date);

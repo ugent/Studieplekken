@@ -12,6 +12,7 @@ export const api = {
 
   // CALENDAR_PERIODS
   calendarPeriods: '/api/locations/calendar/{locationName}',
+  locationStatus: '/api/locations/calendar/{locationName}/status',
   allCalendarPeriods: '/api/locations/calendar/',
   addCalendarPeriods: '/api/locations/calendar',
   updateCalendarPeriods: '/api/locations/calendar/{locationName}',

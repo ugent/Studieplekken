@@ -2,6 +2,8 @@ package blok2.controllers;
 
 import blok2.daos.ICalendarPeriodDao;
 import blok2.daos.ILocationDao;
+import blok2.helpers.LocationStatus;
+import blok2.helpers.Pair;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Period;
 import blok2.model.reservables.Location;
@@ -44,6 +46,16 @@ public class CalendarPeriodController {
         }
     }
 
+    @GetMapping("/{locationName}/status")
+    public Pair<LocationStatus, String> getStatusOfLocation(@PathVariable("locationName") String locationName) {
+        try {
+            return calendarPeriodDao.getStatus(locationName);
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
     @GetMapping
     public List<CalendarPeriod> getAllCalendarPeriods() {
         try {
