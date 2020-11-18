@@ -101,8 +101,9 @@ public class CalendarPeriodController {
                 else {
                     logger.log(Level.SEVERE, "updateCalendarPeriods, new calendarperiod too late");
                     throw new ResponseStatusException(
-                            HttpStatus.CONFLICT, "The original term is locked.");
+                            HttpStatus.CONFLICT, "new calendarperiod too late.");
                 }
+                return;
             }
 
             CalendarPeriod originalTo = calendarPeriodDao.getById(to.getId());

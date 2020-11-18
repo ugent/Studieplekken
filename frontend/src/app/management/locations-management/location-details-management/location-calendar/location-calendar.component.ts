@@ -16,6 +16,10 @@ import { LocationOpeningperiodDialogComponent } from './location-openingperiod-d
 import { Location } from 'src/app/shared/model/Location';
 import { msToShowFeedback } from 'src/app/app.constants';
 import { tap } from 'rxjs/operators';
+import { AuthorizationGuardService } from 'src/app/services/guard/authentication/authorization-guard/authorization-guard.service';
+import { UserService } from 'src/app/services/api/users/user.service';
+import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
+import { Moment } from 'moment';
 
 @Component({
   selector: 'app-location-calendar',
@@ -91,6 +95,7 @@ export class LocationCalendarComponent implements OnInit {
   constructor(private calendarPeriodsService: CalendarPeriodsService,
               private functionalityService: ApplicationTypeFunctionalityService,
               private locationReservationService: LocationReservationsService,
+              private authorizationService: AuthenticationService,
               private dialog: MatDialog) {
   }
 
@@ -326,5 +331,13 @@ export class LocationCalendarComponent implements OnInit {
   showCheckbox(): boolean {
     return this.currentCalendarPeriod && this.currentTimeSlot
            && timeslotStartHour(this.currentCalendarPeriod, this.currentTimeSlot).isBefore(moment());
+  }
+
+  getMinStartDate(): Moment {
+    if (!this.authorizationService.isAdmin()) {
+      return null;
+    } else {
+      return moment().add(3, 'weeks').day(8);
+    }
   }
 }
