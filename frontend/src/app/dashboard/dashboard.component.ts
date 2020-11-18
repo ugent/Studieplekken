@@ -20,7 +20,13 @@ export class DashboardComponent implements OnInit {
   filteredLocations: Location[];
   filteredLocationsBackup: Location[];
 
+  // all tags to select from
   tags: LocationTag[];
+
+  // the tags that were selected to filter on
+  selectedTags: LocationTag[];
+  // the name that should be filtered
+  locationSearch: string;
 
   filterFormGroup = new FormGroup({
     filteredTags: new FormControl('')
@@ -30,7 +36,7 @@ export class DashboardComponent implements OnInit {
 
   successOnRetrievingLocations: boolean = undefined;
 
-  locationSearch: string;
+
 
   showOpen = false;
 
@@ -46,6 +52,8 @@ export class DashboardComponent implements OnInit {
         this.currentLang = this.translate.currentLang;
       }
     );
+
+    this.selectedTags = [];
 
     this.successOnRetrievingLocations = null;
     this.locationService.getLocations().subscribe(
@@ -66,47 +74,56 @@ export class DashboardComponent implements OnInit {
     );
   }
 
+  /**
+   * Used as a comparewith input on the tags-selection field in the filter
+   * Tracks identities when checking for changes
+   */
   compareTagsInSelection(tag1: LocationTag, tag2: LocationTag): boolean {
     return !tag1 || !tag2 ? false : tag1.tagId === tag2.tagId;
   }
 
+  /**
+   * When the selection of tags to filter on is changed
+   */
   onSelectionChange(event: MatSelectChange): void {
-    const value: LocationTag[] = event.value;
-
-    // If no tags to filter are selected, show all locations
-    if (value.length === 0) {
-      this.filteredLocations = this.locations;
-    } else {
-      this.filteredLocations = [];
-
-      this.locations.forEach(location => {
-        for (const tag of value) {
-          // if the filtered tag is not assigned to a certain location ...
-          if (location.assignedTags.find(v => v.tagId === tag.tagId) === undefined) {
-            return; // ... then check if next location may be added to the filtered locations
-          }
-        }
-        // if all selected tags in the filter were found in the location, push the location
-        // else, the lambda was already returned and we wouldn't have gotten here.
-        this.filteredLocations.push(location);
-      });
-    }
-
-
-    this.filteredLocationsBackup = this.filteredLocations;
-
-    this.displayOpen();
+    this.selectedTags = event.value;
+    this.displayFilterLocations();
   }
 
   toggleShowOpen(): void {
     this.showOpen = !this.showOpen;
-    this.displayOpen();
+    this.displayFilterLocations();
   }
 
-  displayOpen(): void {
-    if (this.showOpen){
-      this.filteredLocations = [];
-      this.filteredLocations.forEach(location => {
+  /**
+   * This will take into account:
+   * - selectedTags
+   * - locationSearch
+   * - showOpen
+   *
+   * And filter only those locations that apply to all filters above
+   */
+  displayFilterLocations(): void {
+    this.filteredLocations = [];
+
+    this.locations.forEach(location => {
+      // first check that the location name matches with the search bar
+      if ((this.locationSearch !== undefined) && (!location.name.toLowerCase().includes(this.locationSearch.toLowerCase()))) {
+        return;
+      }
+
+      // only filter on tags when there is at least one selected
+      if (!(this.selectedTags.length === 0)) {
+        // only add when all the tags match
+        for (const tag of this.selectedTags) {
+          // if the filtered tag is not assigned to a certain location ...
+          if (location.assignedTags.filter(t => t.tagId === tag.tagId).length === 0) {
+            return;
+          }
+        }
+      }
+
+      if (this.showOpen) {
         this.calendarPeriodService.getStatusOfLocation(location.name).subscribe(
           (next) => {
             if (next.first === LocationStatus.OPEN) {
@@ -114,20 +131,14 @@ export class DashboardComponent implements OnInit {
             }
           }
         );
-      });
-    } else {
-      this.filteredLocations = this.filteredLocationsBackup;
-    }
+      } else {
+        this.filteredLocations.push(location);
+      }
+    });
   }
 
   onSearchEnter(): void {
-    this.filteredLocations = [];
-    for (const location of this.filteredLocationsBackup) {
-      if (location.name.toUpperCase().includes(this.locationSearch.toUpperCase())) {
-        this.filteredLocations.push(location);
-      }
-    }
-    this.displayOpen();
+    this.displayFilterLocations();
   }
 
   onClearSearch(): void {
@@ -135,7 +146,7 @@ export class DashboardComponent implements OnInit {
     this.filteredTags.setValue([]);
     this.locationSearch = '';
     this.showOpen = false;
-    this.displayOpen();
+    this.displayFilterLocations();
   }
 
   get filteredTags(): AbstractControl {
