@@ -33,7 +33,7 @@
           "updateAddMessage": "De volgende reservaties zullen toegevoegd worden aan jouw profiel:",
           "updateDeleteMessage": "De volgende reservaties zullen verwijderd worden",
           "updateConfirmMessage": "Wilt u deze wijzigingen doorvoeren?",
-          "updateWarningMessage": "WAARSCHUWING: niet opdagen voor een geregistreerde reservatie zal leiden tot strafpunten. Te veel strafpunten leiden tot uitsluiting van het gebruik van de applicatie."
+          "updateWarningMessage": "WAARSCHUWING: niet opdagen voor een geregistreerde reservatie met uw studentenkaart zal leiden tot strafpunten. Te veel strafpunten leiden tot uitsluiting van het gebruik van de applicatie."
         }
       }
     },
