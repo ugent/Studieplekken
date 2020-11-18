@@ -157,22 +157,13 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
     }
 
     @Override
-    public void deleteCalendarPeriods(List<CalendarPeriod> periods) throws SQLException {
+    public void deleteCalendarPeriod(CalendarPeriod calendarPeriod) throws SQLException {
         try (Connection conn = adb.getConnection()) {
-            try {
-                conn.setAutoCommit(false);
-
-                for (CalendarPeriod calendarPeriod : periods) {
-                    deleteCalendarPeriod(calendarPeriod, conn);
-                }
-
-                conn.commit();
-            } catch (SQLException e) {
-                conn.rollback();
-                throw e;
-            } finally {
-                conn.setAutoCommit(true);
-            }
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_calendar_period"));
+            prepareCommonPartOfCalendarPeriodPstmt(calendarPeriod, pstmt);
+            pstmt.setBoolean(6, calendarPeriod.isReservable());
+            pstmt.setInt(7, calendarPeriod.getReservableTimeslotSize());
+            pstmt.execute();
         }
     }
 
@@ -242,14 +233,6 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
             set.next();
             return createCalendarPeriod(set, conn);
         }
-    }
-
-    private void deleteCalendarPeriod(CalendarPeriod calendarPeriod, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_calendar_period"));
-        prepareCommonPartOfCalendarPeriodPstmt(calendarPeriod, pstmt);
-        pstmt.setBoolean(6, calendarPeriod.isReservable());
-        pstmt.setInt(7, calendarPeriod.getReservableTimeslotSize());
-        pstmt.execute();
     }
 
     private void fillTimeslotList(CalendarPeriod calendarPeriod, Connection conn) throws SQLException {
