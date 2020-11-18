@@ -156,67 +156,7 @@ export class LocationCalendarComponent implements OnInit {
     this.disableFootButtons = !this.hasAnyPeriodChanged();
   }
 
-  addOpeningPeriodButtonClick(location: Location): void {
-    this.addOpeningPeriod(location);
-    this.disableFootButtons = false;
-  }
 
-  addOpeningPeriod(location: Location): void {
-    const period: CalendarPeriod = new CalendarPeriod(null, location, null, null, null, null, false, null, 0, null, null);
-
-    this.calendarPeriods.push(period);
-  }
-
-  updateOpeningPeriodButtonClick(): void {
-    this.disableFootButtons = true;
-    this.updateOpeningPeriod();
-  }
-
-  /**
-   * This is the method that does all the CUD-work of
-   * the CRUD operations available for CALENDAR_PERIODS
-   */
-  updateOpeningPeriod(): void {
-    if (this.hasAnyPeriodChanged()) {
-      // if this.events.length === 0, delete everything instead of updating
-      if (this.calendarPeriods.length === 0) {
-        this.deleteAllPeriodsInDataLayer();
-        return;
-      }
-
-      // before updating or adding anything, check if all periods are valid
-      // Note: do not do this.calendarPeriods.forEach(handler), because the return
-      //   will return from the lambda, but not from the outer function and thus, a
-      //   in the 'handler' request will be sent to the backend, which is not wat we
-      //   want if not all the periods are validly filled in
-      for (const n of this.calendarPeriods) {
-        if (!isCalendarPeriodValid(n)) {
-          this.handleWrongCalendarPeriodFormatOnUpdate();
-          return;
-        }
-      }
-
-      // Check if the closing time - opening time is divisible by timeslot_size.
-      this.checkForWarning();
-
-      // if this.eventsInDataLayer.length === 0, add all events instead of updating
-      if (this.calendarPeriodsInDataLayer.length === 0) {
-        this.addAllCalendarPeriods();
-        return;
-      }
-
-      // this.calendarPeriods is not empty, and all values are valid: persist update(s)
-      this.calendarPeriodsService.updateCalendarPeriods(
-        this.locationName,
-        this.calendarPeriodsInDataLayer,
-        this.calendarPeriods
-      ).subscribe(() => {
-        this.successHandler();
-      }, () => this.errorHandler());
-    } else {
-      this.handleNothingHasChangedOnUpdate();
-    }
-  }
 
   checkForWarning(): void {
     let showWarning = false;
@@ -351,11 +291,24 @@ export class LocationCalendarComponent implements OnInit {
       this.calendarPeriods = [...this.calendarPeriods, this.calendarPeriodModel.value];
     }
 
-    this.updateOpeningPeriod();
+    // Check if the closing time - opening time is divisible by timeslot_size.
+    this.checkForWarning();
+
+    // this.calendarPeriods is not empty, and all values are valid: persist update(s)
+    this.calendarPeriodsService.updateCalendarPeriod(
+      this.locationName,
+      this.calendarPeriodsInDataLayer,
+      this.calendarPeriodModel.value
+    ).subscribe(() => {
+      this.successHandler();
+    }, () => this.errorHandler());
   }
 
   delete(): void {
     this.calendarPeriods = this.calendarPeriods.filter(c => c.id !== this.currentCalendarPeriod.id);
-    this.updateOpeningPeriod();
+    this.calendarPeriodsService.deleteCalendarPeriods([this.calendarPeriodsInDataLayer.find(c => c.id !== this.currentCalendarPeriod.id)])
+    .subscribe(() => {
+      this.successHandler();
+    }, () => this.errorHandler());
   }
 }

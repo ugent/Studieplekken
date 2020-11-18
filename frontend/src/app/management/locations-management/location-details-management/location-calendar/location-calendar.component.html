@@ -233,7 +233,7 @@
               {{'management.locationDetails.calendar.form.endsAt' | translate}}
             </label>
             <div class="col-lg-8">
-              <app-moment-date [(model)]="model.endsAt" [type]="'date'"></app-moment-date>
+              <app-moment-date [(model)]="model.endsAt" [type]="'date'" [min]="model.startsAt"></app-moment-date>
             </div>
           </div>
 
@@ -253,7 +253,7 @@
               {{'management.locationDetails.calendar.form.closingTime' | translate}}
             </label>
             <div class="col-lg-8">
-              <app-moment-date [(model)]="model.closingTime" [type]="'time'"></app-moment-date>
+              <app-moment-date [(model)]="model.closingTime" [type]="'time'" [min]="model.openingTime"></app-moment-date>
             </div>
           </div>
 

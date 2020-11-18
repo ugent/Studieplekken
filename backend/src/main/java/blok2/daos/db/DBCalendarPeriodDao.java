@@ -110,6 +110,14 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         }
     }
 
+    @Override
+    public void updateCalendarPeriod(CalendarPeriod to) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+                updateCalendarPeriod(to, to, conn);
+
+        }
+    }
+
     private void updateCalendarPeriod(CalendarPeriod from, CalendarPeriod to, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("update_calendar_period"));
         // set ...
@@ -226,13 +234,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
 
     private void prepareWhereClauseOfUpdatePstmt(CalendarPeriod calendarPeriod,
                                                  PreparedStatement pstmt) throws SQLException {
-        pstmt.setString(10, calendarPeriod.getLocation().getName());
-        pstmt.setDate(11, Date.valueOf(calendarPeriod.getStartsAt()));
-        pstmt.setDate(12, Date.valueOf(calendarPeriod.getEndsAt()));
-        pstmt.setTime(13, Time.valueOf(calendarPeriod.getOpeningTime()));
-        pstmt.setTime(14, Time.valueOf(calendarPeriod.getClosingTime()));
-        pstmt.setBoolean(15, calendarPeriod.isReservable());
-        pstmt.setInt(16, calendarPeriod.getReservableTimeslotSize());
+        pstmt.setInt(10, calendarPeriod.getId());
     }
 
     private void prepareTimeslotPeriodPstmt(int seq_id, LocalDate date, CalendarPeriod period, PreparedStatement pstmt) throws SQLException {

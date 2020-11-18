@@ -63,6 +63,7 @@ export class CalendarPeriod {
 
   toJSON(): object {
     return {
+      id: this.id,
       location: this.location,
       startsAt: this.startsAt.format('YYYY-MM-DD'),
       endsAt: this.endsAt.format('YYYY-MM-DD'),

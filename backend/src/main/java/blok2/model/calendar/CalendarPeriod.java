@@ -1,7 +1,9 @@
 package blok2.model.calendar;
 
+import blok2.helpers.Resources;
 import blok2.model.reservables.Location;
 
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -12,7 +14,7 @@ import java.util.Objects;
 import static java.time.temporal.ChronoUnit.SECONDS;
 
 public class CalendarPeriod extends Period implements Cloneable {
-    private int id;
+    private Integer id;
     private Location location;
     private LocalTime openingTime;
     private LocalTime closingTime;
@@ -130,11 +132,11 @@ public class CalendarPeriod extends Period implements Cloneable {
         this.timeslots = timeslots;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -147,9 +149,9 @@ public class CalendarPeriod extends Period implements Cloneable {
     }
 
     public void initializeLockedFrom() {
-        if (lockedFrom == null) {
-            lockedFrom = this.getEndsAt().plusWeeks(3).atTime(LocalTime.now());
-        }
+        lockedFrom = this.getStartsAt().minusWeeks(3)
+                    .with(DayOfWeek.of(Integer.parseInt(Resources.blokatugentConf.getString("lockedFromDayOfWeek"))))
+                .atTime(LocalTime.now());
     }
 
     public boolean isLocked() {
