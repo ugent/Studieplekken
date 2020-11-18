@@ -118,6 +118,11 @@ public class DBLocationDao extends DAO implements ILocationDao {
 
     @Override
     public void updateLocation(String locationName, Location location) throws SQLException {
+        updateLocation(locationName, location, false);
+    }
+
+    @Override
+    public void updateLocation(String locationName, Location location, boolean changeSeats) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             try {
                 conn.setAutoCommit(false);
@@ -126,6 +131,9 @@ public class DBLocationDao extends DAO implements ILocationDao {
 
                 if (oldLocation == null)
                     return;
+
+                if(!changeSeats)
+                    location.setNumberOfSeats(oldLocation.getNumberOfSeats());
 
                 // Update location
                 PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("update_location"));

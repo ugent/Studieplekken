@@ -101,6 +101,7 @@ public class LocationController {
     @PutMapping("/{locationName}")
     public void updateLocation(@PathVariable("locationName") String locationName, @RequestBody Location location) {
         try {
+            // TODO: if is admin, changeseats = true
             locationDao.updateLocation(locationName, location);
             logger.info(String.format("Location %s updated", locationName));
         } catch (SQLException e) {

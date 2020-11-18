@@ -34,6 +34,8 @@ public interface ILocationDao extends IDao {
      */
     void updateLocation(String locationName, Location location) throws SQLException;
 
+    void updateLocation(String locationName, Location location, boolean changeSeats) throws SQLException;
+
     /**
      * Deletes the location with the given name.
      */
