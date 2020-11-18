@@ -6,7 +6,6 @@ import {TagsService} from '../services/api/tags/tags.service';
 import {TranslateService} from '@ngx-translate/core';
 import {AbstractControl, FormControl, FormGroup} from '@angular/forms';
 import {MatSelectChange} from '@angular/material/select';
-import {AuthenticationService} from '../services/authentication/authentication.service';
 import { CalendarPeriodsService } from '../services/api/calendar-periods/calendar-periods.service';
 import {LocationStatus} from '../app.constants';
 
@@ -17,6 +16,7 @@ import {LocationStatus} from '../app.constants';
 })
 export class DashboardComponent implements OnInit {
   locations: Location[];
+  locationStatuses = new Map<string, LocationStatus>();
   filteredLocations: Location[];
   filteredLocationsBackup: Location[];
 
@@ -35,8 +35,6 @@ export class DashboardComponent implements OnInit {
   currentLang: string;
 
   successOnRetrievingLocations: boolean = undefined;
-
-
 
   showOpen = false;
 
@@ -62,6 +60,15 @@ export class DashboardComponent implements OnInit {
         this.filteredLocations = next;
         this.filteredLocationsBackup = next;
         this.successOnRetrievingLocations = true;
+
+        // retrieve the status for the locations
+        next.forEach(l => {
+          this.calendarPeriodService.getStatusOfLocation(l.name).subscribe(
+            next2 => {
+              this.locationStatuses.set(l.name, next2.first);
+            }
+          );
+        });
       }, () => {
         this.successOnRetrievingLocations = false;
       }
@@ -75,7 +82,7 @@ export class DashboardComponent implements OnInit {
   }
 
   /**
-   * Used as a comparewith input on the tags-selection field in the filter
+   * Used as a compareWith input on the tags-selection field in the filter
    * Tracks identities when checking for changes
    */
   compareTagsInSelection(tag1: LocationTag, tag2: LocationTag): boolean {
@@ -124,13 +131,9 @@ export class DashboardComponent implements OnInit {
       }
 
       if (this.showOpen) {
-        this.calendarPeriodService.getStatusOfLocation(location.name).subscribe(
-          (next) => {
-            if (next.first === LocationStatus.OPEN) {
-              this.filteredLocations.push(location);
-            }
-          }
-        );
+        if (this.locationStatuses.get(location.name) === LocationStatus.OPEN) {
+          this.filteredLocations.push(location);
+        }
       } else {
         this.filteredLocations.push(location);
       }
