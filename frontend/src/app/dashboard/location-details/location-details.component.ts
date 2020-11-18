@@ -87,7 +87,7 @@ export class LocationDetailsComponent implements OnInit {
         this.status = next;
         this.translateStatus();
       }
-    )
+    );
 
     // if the browser language would change, the description needs to change
     this.translate.onLangChange.subscribe(
@@ -144,14 +144,14 @@ export class LocationDetailsComponent implements OnInit {
   translateStatus(): void {
     // status.second format: "yyyy-MM-dd hh:mm"
     if (this.status) {
-      switch(this.status.first) {
+      switch (this.status.first) {
         case LocationStatus.OPEN: {
           const datetime = new Date(this.status.second);
           this.translate.get('dashboard.locationDetails.status.statusOpen').subscribe(
             next => {
-              this.statusInCurrentLang = next.replace("{}", this.datepipe.transform(datetime, 'shortTime'));
+              this.statusInCurrentLang = next.replace('{}', this.datepipe.transform(datetime, 'shortTime'));
             }, () => {
-              this.statusInCurrentLang = 'n/a';
+              this.statusInCurrentLang = 'general.notAvailableAbbreviation';
             }
           );
           break;
@@ -161,7 +161,7 @@ export class LocationDetailsComponent implements OnInit {
             next => {
               this.statusInCurrentLang = next;
             }, () => {
-              this.statusInCurrentLang = 'n/a';
+              this.statusInCurrentLang = 'general.general.notAvailableAbbreviation';
             }
           );
           break;
@@ -172,7 +172,7 @@ export class LocationDetailsComponent implements OnInit {
             next => {
               this.statusInCurrentLang = next.replace('{}', this.datepipe.transform(datetime, 'shortTime'));
             }, () => {
-              this.statusInCurrentLang = 'n/a';
+              this.statusInCurrentLang = 'general.notAvailableAbbreviation';
             }
           );
           break;
@@ -183,9 +183,9 @@ export class LocationDetailsComponent implements OnInit {
             next => {
               this.statusInCurrentLang = next.replace('{}', datetime);
             }, () => {
-              this.statusInCurrentLang = 'n/a';
+              this.statusInCurrentLang = 'general.notAvailableAbbreviation';
             }
-          )
+          );
           break;
         }
       }
@@ -194,7 +194,7 @@ export class LocationDetailsComponent implements OnInit {
         next => {
           this.statusInCurrentLang = next;
         }, () => {
-          this.statusInCurrentLang = 'n/a';
+          this.statusInCurrentLang = 'general.notAvailableAbbreviation';
         }
       );
     }

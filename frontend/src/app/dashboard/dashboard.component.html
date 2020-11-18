@@ -36,6 +36,7 @@
                 <input [(ngModel)]="locationSearch" (keyup.enter)="onSearchEnter()"
                        id="search" class="form-control" type="text"
                        placeholder="{{'dashboard.filter.searchPlaceholder' | translate}}" >
+              </div>
             </div>
 
             <div class="col-sm-2">
@@ -45,7 +46,7 @@
               </button>
             </div>
 
-            <div class="col-sm-2"  class="pull-right">
+            <div class="col-sm-2 pull-right">
               <button class="btn btn-primary"
               (click)="toggleShowOpen()">
                 {{showOpen ? ('dashboard.filter.showAll' | translate) : ('dashboard.filter.showOpen' | translate)}}

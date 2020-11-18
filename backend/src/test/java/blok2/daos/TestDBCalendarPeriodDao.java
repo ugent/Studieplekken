@@ -32,7 +32,6 @@ public class TestDBCalendarPeriodDao extends TestDao {
     private IBuildingDao buildingDao;
 
     private Location testLocation;
-    private Building testBuilding;
 
     // the reason for making this an attribute of the class
     // is to make sure the values are deleted when something
@@ -45,14 +44,14 @@ public class TestDBCalendarPeriodDao extends TestDao {
     private CalendarPeriod activePeriodInsideHours;
 
     // DateTimeFormatter to format the next opening hour in a consistent manner
-    private DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private final DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     @Override
     public void populateDatabase() throws SQLException {
         // Setup test objects
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
 
-        testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+        Building testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
 
         testLocation = TestSharedMethods.testLocation(authority.clone(), testBuilding);
         calendarPeriods = TestSharedMethods.testCalendarPeriods(testLocation);
@@ -105,7 +104,7 @@ public class TestDBCalendarPeriodDao extends TestDao {
 
         // Third, add active periods.
         // There are two cases here: the current time is within or outside the opening hours.
-        // These cases will be handled seperately
+        // These cases will be handled separately
 
         // First: outside hours
         List<CalendarPeriod> outsideHours = new ArrayList<>();

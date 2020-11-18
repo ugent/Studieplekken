@@ -104,7 +104,7 @@ export class DashboardComponent implements OnInit {
   }
 
   displayOpen(): void {
-    if(this.showOpen){
+    if (this.showOpen){
       this.filteredLocations = [];
       this.filteredLocations.forEach(location => {
         this.calendarPeriodService.getStatusOfLocation(location.name).subscribe(

@@ -18,7 +18,7 @@ import {CalendarPeriodsService} from '../../services/api/calendar-periods/calend
 export class DashboardItemComponent implements OnInit, AfterViewInit {
   @Input() location: Location;
 
-  occupation: number = 0;
+  occupation = 0;
 
   altImageUrl = defaultLocationImage;
 
@@ -36,7 +36,7 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
               private calendarPeriodsService: CalendarPeriodsService,
               private translate: TranslateService,
               private functionalityService: ApplicationTypeFunctionalityService,
-              private datepipe: DatePipe) {
+              private datePipe: DatePipe) {
   }
 
   ngOnInit(): void {
@@ -68,7 +68,7 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
   }
 
   locationStatusColorClass(): string {
-    if(this.status) {
+    if (this.status) {
       return this.status.first === LocationStatus.OPEN ? 'open' : 'closed';
     }
   }
@@ -95,7 +95,7 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
         next => {
           this.tagsInCurrentLang = next;
         }, () => {
-          this.tagsInCurrentLang = 'n/a';
+          this.tagsInCurrentLang = 'general.notAvailableAbbreviation';
         }
       );
     }
@@ -109,9 +109,9 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
           const datetime = new Date(this.status.second);
           this.translate.get('dashboard.locationDetails.status.statusOpen').subscribe(
             next => {
-              this.statusInCurrentLang = next.replace('{}', this.datepipe.transform(datetime, 'shortTime'));
+              this.statusInCurrentLang = next.replace('{}', this.datePipe.transform(datetime, 'shortTime'));
             }, () => {
-              this.statusInCurrentLang = 'n/a';
+              this.statusInCurrentLang = 'general.notAvailableAbbreviation';
             }
           );
           break;
@@ -121,7 +121,7 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
             next => {
               this.statusInCurrentLang = next;
             }, () => {
-              this.statusInCurrentLang = 'n/a';
+              this.statusInCurrentLang = 'general.notAvailableAbbreviation';
             }
           );
           break;
@@ -130,9 +130,9 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
           const datetime = new Date(this.status.second);
           this.translate.get('dashboard.locationDetails.status.statusClosedActive').subscribe(
             next => {
-              this.statusInCurrentLang = next.replace('{}', this.datepipe.transform(datetime, 'shortTime'));
+              this.statusInCurrentLang = next.replace('{}', this.datePipe.transform(datetime, 'shortTime'));
             }, () => {
-              this.statusInCurrentLang = 'n/a';
+              this.statusInCurrentLang = 'general.notAvailableAbbreviation';
             }
           );
           break;
@@ -143,7 +143,7 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
             next => {
               this.statusInCurrentLang = next.replace('{}', datetime);
             }, () => {
-              this.statusInCurrentLang = 'n/a';
+              this.statusInCurrentLang = 'general.notAvailableAbbreviation';
             }
           );
           break;
@@ -154,7 +154,7 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
         next => {
           this.statusInCurrentLang = next;
         }, () => {
-          this.statusInCurrentLang = 'n/a';
+          this.statusInCurrentLang = 'general.notAvailableAbbreviation';
         }
       );
     }

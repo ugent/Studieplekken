@@ -8,7 +8,6 @@ import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
 import org.springframework.stereotype.Service;
 
-
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,7 +18,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 @Service
 public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
@@ -207,7 +205,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
                 }
             }
             // Case 3: Last day of active period, 2 subcases
-            if(period.getEndsAt().isEqual(LocalDate.now())) {
+            if (period.getEndsAt().isEqual(LocalDate.now())) {
                 // Case 3.1: Last day has yet to begin
                 if (period.getOpeningTime().isBefore(LocalTime.now())) {
                     return new Pair<>(
@@ -231,15 +229,11 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
 
     public CalendarPeriod getById(int calendarId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
-            try {
-                PreparedStatement statement = conn.prepareStatement(Resources.databaseProperties.getString("get_calendar_period_by_id"));
-                statement.setInt(1,calendarId);
-                ResultSet set = statement.executeQuery();
-                set.next();
-                return createCalendarPeriod(set, conn);
-            } catch (SQLException e) {
-                throw e;
-            }
+            PreparedStatement statement = conn.prepareStatement(Resources.databaseProperties.getString("get_calendar_period_by_id"));
+            statement.setInt(1,calendarId);
+            ResultSet set = statement.executeQuery();
+            set.next();
+            return createCalendarPeriod(set, conn);
         }
     }
 
@@ -283,9 +277,8 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
     }
 
     public static Timeslot createTimeslot(ResultSet rs) throws SQLException {
-
-        Integer calendarId = (rs.getInt(Resources.databaseProperties.getString("timeslot_calendar_id")));
-        Integer seqnr = (rs.getInt(Resources.databaseProperties.getString("timeslot_sequence_number")));
+        int calendarId = (rs.getInt(Resources.databaseProperties.getString("timeslot_calendar_id")));
+        int seqnr = (rs.getInt(Resources.databaseProperties.getString("timeslot_sequence_number")));
         LocalDate date = (rs.getDate(Resources.databaseProperties.getString("timeslot_date")).toLocalDate());
 
         return new Timeslot(calendarId, seqnr, date);

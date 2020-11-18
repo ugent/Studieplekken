@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 public class TestSharedMethods {
@@ -70,10 +69,10 @@ public class TestSharedMethods {
     }
 
     public static Building testBuilding() {
-        Building testbuilding = new Building();
-        testbuilding.setName("TestBuilding");
-        testbuilding.setAddress("Teststreet 123");
-        return testbuilding;
+        Building testBuilding = new Building();
+        testBuilding.setName("TestBuilding");
+        testBuilding.setAddress("TestStreet 123");
+        return testBuilding;
     }
 
     public static LocationTag testTag() {
@@ -188,7 +187,7 @@ public class TestSharedMethods {
     }
 
     /**
-     * Create calendarperiod that is completely in the past
+     * Create CalendarPeriod that is completely in the past
      * @param location the location for which to create the period
      * @return a CalendarPeriod in the past
      */
@@ -210,7 +209,7 @@ public class TestSharedMethods {
     }
 
     /**
-     * Create calendarperiod that is completely in the future
+     * Create CalendarPeriod that is completely in the future
      * @param location the location for which to create the period
      * @return a CalendarPeriod in the future
      */
@@ -232,7 +231,7 @@ public class TestSharedMethods {
     }
 
     /**
-     * Create a calendarperiod that is active (today is between start-and-enddate) but not during the active hours
+     * Create a CalendarPeriod that is active (today is between start and end date) but not during the active hours
      * @param location the location for which to create the period
      * @return a CalendarPeriod that is active, but outside the hours
      */
@@ -254,7 +253,7 @@ public class TestSharedMethods {
     }
 
     /**
-     * Create a calendarperiod that is active (today is between start-and-enddate) and during the active hours
+     * Create a CalendarPeriod that is active (today is between start and end date) and during the active hours
      * @param location the location for which to create the period
      * @return a CalendarPeriod that is active and within hours
      */

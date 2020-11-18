@@ -8,7 +8,6 @@ import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Logger;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 
@@ -23,9 +22,6 @@ public class CalendarPeriod extends Period implements Cloneable {
     private int reservableTimeslotSize;
 
     private List<Timeslot> timeslots = Collections.emptyList();
-
-    private final Logger logger = Logger.getLogger(CalendarPeriod.class.getSimpleName());
-
 
     public CalendarPeriod() { }
 
