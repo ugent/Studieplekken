@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.validation.constraints.Null;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -58,6 +57,7 @@ public class CalendarPeriodController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
+
     @GetMapping
     public List<CalendarPeriod> getAllCalendarPeriods() {
         try {
@@ -68,7 +68,6 @@ public class CalendarPeriodController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
-
 
     @PutMapping("/{locationName}")
     public void updateCalendarPeriods(@PathVariable("locationName") String locationName,
@@ -93,19 +92,21 @@ public class CalendarPeriodController {
             to.initializeLockedFrom();
             analyzeUpdatedCalendarPeriod(locationName, to);
 
-            // If this is a new calendarperiod, add instead
-            if(to.getId() == null) {
+            // If this is a new CalendarPeriod, add instead
+            if (to.getId() == null) {
                 // TODO unless admin
-                if(!to.isLocked())
+                if (!to.isLocked())
                     calendarPeriodDao.addCalendarPeriods(Collections.singletonList(to));
                 else {
-                    logger.log(Level.SEVERE, "updateCalendarPeriods, new calendarperiod too late");
+                    logger.log(Level.SEVERE, "updateCalendarPeriods, new CalendarPeriod too late");
                     throw new ResponseStatusException(
                             HttpStatus.CONFLICT, "new calendarperiod too late.");
                 }
                 return;
             }
 
+            // Note: if the if-clause above evaluated to true, the method addCalendarPeriods would
+            // have set the id of the calendar period. So, this is safe.
             CalendarPeriod originalTo = calendarPeriodDao.getById(to.getId());
 
             // TODO unless admin
@@ -116,7 +117,7 @@ public class CalendarPeriodController {
             }
 
             to.initializeLockedFrom();
-            if(to.isLocked()) {
+            if (to.isLocked()) {
                 logger.log(Level.SEVERE, "updateCalendarPeriods, move to locked space");
                 throw new ResponseStatusException(
                         HttpStatus.CONFLICT, "The time you're moving into is already locked.");
@@ -145,8 +146,8 @@ public class CalendarPeriodController {
      * the strategy of deleting the 'from' periods and adding new 'to' periods
      * was chosen
      */
-    private boolean analyzeUpdatedCalendarPeriod(String locationName,
-                                                 CalendarPeriod to) throws SQLException {
+    private void analyzeUpdatedCalendarPeriod(String locationName,
+                                              CalendarPeriod to) throws SQLException {
         // setup
         Location expectedLocation = locationDao.getLocation(locationName);
 
@@ -183,12 +184,11 @@ public class CalendarPeriodController {
 
             if(!to.getReservableFrom().isAfter(to.getLockedFrom())) {
                 throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, "Reservablefrom must be after locked date. (3 weeks)");
+                        HttpStatus.BAD_REQUEST, "ReservableFrom must be after locked date. (3 weeks)");
 
             }
         }
 
-        return true;
     }
 
     @DeleteMapping
@@ -201,7 +201,7 @@ public class CalendarPeriodController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
-
+    
     private static class UpdateCalendarBody {
         private List<CalendarPeriod> previous;
         private CalendarPeriod toUpdate;
