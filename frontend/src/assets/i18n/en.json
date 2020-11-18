@@ -27,7 +27,13 @@
       "calendar": {
         "reservation": {
           "successMessage": "Successfully updated the reservations",
-          "errorMessage": "Update was not successful. Something went wrong."
+          "errorMessage": "Update was not successful. Something went wrong.",
+          "header": "Change reservations",
+          "updateMessage": "You are about to make changes to your registered reservations.",
+          "updateAddMessage": "The following reservations will be added to your profile",
+          "updateDeleteMessage": "The following reservations will be deleted",
+          "updateConfirmMessage": "Would you like to confirm these changes?",
+          "updateWarningMessage": "WARNING: not showing up for a registered reservations will lead to penalty points attributed to your profile. Too many penalty points will lead to blacklisting from the use of the application"
         }
       }
     },

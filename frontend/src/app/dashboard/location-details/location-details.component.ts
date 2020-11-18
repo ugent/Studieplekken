@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, TemplateRef} from '@angular/core';
 import {Location} from '../../shared/model/Location';
 import {ActivatedRoute} from '@angular/router';
 import {BehaviorSubject, combineLatest, Observable, Subscription} from 'rxjs';
@@ -14,8 +14,10 @@ import { includesTimeslot, Timeslot, timeslotEquals } from 'src/app/shared/model
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
-import {mapCalendarPeriodsToCalendarEvents} from '../../shared/model/CalendarPeriod';
+import {CalendarPeriod, mapCalendarPeriodsToCalendarEvents} from '../../shared/model/CalendarPeriod';
 import {defaultLocationImage, msToShowFeedback} from '../../app.constants';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-location-details',
@@ -50,6 +52,16 @@ export class LocationDetailsComponent implements OnInit {
 
   currentLang: string;
 
+  modalRef: BsModalRef;
+  newReservations: LocationReservation[];
+  removedReservations: LocationReservation[];
+
+  calendarMap: Map<number, CalendarPeriod> = new Map();
+  locationReservations: Observable<LocationReservation[]>;
+  showReservations: boolean;
+  loadingReservations: boolean;
+  calendarIdList: any[];
+
   constructor(private locationService: LocationService,
               private tagsService: TagsService,
               private route: ActivatedRoute,
@@ -57,7 +69,8 @@ export class LocationDetailsComponent implements OnInit {
               private translate: TranslateService,
               private calendarPeriodsService: CalendarPeriodsService,
               private authenticationService: AuthenticationService,
-              private locationReservationService: LocationReservationsService) { }
+              private locationReservationService: LocationReservationsService,
+              private modalService: BsModalService) { }
 
   ngOnInit(): void {
     this.locationName = this.route.snapshot.paramMap.get('locationName');
@@ -74,6 +87,8 @@ export class LocationDetailsComponent implements OnInit {
 
       this.updateCalendar();
     });
+
+    this.fillCalendarLocationMap();
 
     // if the browser language would change, the description needs to change
     this.translate.onLangChange.subscribe(
@@ -142,35 +157,64 @@ export class LocationDetailsComponent implements OnInit {
   }
 
   updateReservationIsPossible(): boolean {
-    return !this.isModified;
+    return !(this.isModified && this.authenticationService.isLoggedIn());
   }
 
-  commitReservations(): void {
-    this.isModified = false;
-
+  commitReservations(template: TemplateRef<any>): void {
     // We need to find out which of the selected boxes need to be removed, and which need to be added.
     // Therefore, we calculate selected \ previous
-    const newReservations = this.selectedSubject.value
+    this.newReservations = this.selectedSubject.value
                     .filter(selected => !includesTimeslot(this.originalList.map(l => l.timeslot), selected.timeslot));
 
     // And we calculate previous \ selected
-    const removedReservations = this.originalList
+    this.removedReservations = this.originalList
                     .filter(selected => !includesTimeslot(this.selectedSubject.value.map(l => l.timeslot), selected.timeslot));
 
+    this.modalRef = this.modalService.show(template);
+  }
 
+  confirmReservationChange(): void {
     combineLatest([
-          this.locationReservationService.postLocationReservations(newReservations),
-          this.locationReservationService.deleteLocationReservations(removedReservations)
-        ]).subscribe(() => {
-          this.updateCalendar();
-          this.showSuccess = true;
-          this.showError = false;
-          setTimeout(() => this.showSuccess = false, msToShowFeedback);
-        }, () => {
-          this.isModified = true;
-          this.showSuccess = false;
-          this.showError = true;
-          setTimeout(() => this.showError = false, msToShowFeedback);
-        });
+      this.locationReservationService.postLocationReservations(this.newReservations),
+      this.locationReservationService.deleteLocationReservations(this.removedReservations)
+    ]).subscribe(() => {
+      this.updateCalendar();
+      this.showSuccess = true;
+      this.showError = false;
+      setTimeout(() => this.showSuccess = false, msToShowFeedback);
+    }, () => {
+      this.isModified = true;
+      this.showSuccess = false;
+      this.showError = true;
+      setTimeout(() => this.showError = false, msToShowFeedback);
+    });
+    this.isModified = false;
+    this.modalRef.hide();
+  }
+
+  declineReservationChange(): void {
+    this.modalRef.hide();
+  }
+
+  fillCalendarLocationMap(): void {
+    this.calendarPeriodsService.getCalendarPeriodsOfLocation(this.locationName).subscribe(next => {
+      next.forEach(element => {
+        this.calendarMap.set(element.id, element);
+      });
+    }, () => {});
+  }
+
+  getBeginHour(calendarPeriod: CalendarPeriod, timeslot: Timeslot): moment.Moment {
+    const d = calendarPeriod.openingTime;
+    d.add(timeslot.timeslotSeqnr * calendarPeriod.reservableTimeslotSize, 'minutes');
+    return d;
+  }
+
+  formatReservation(reservation: LocationReservation): string {
+    const name = this.calendarMap.get(reservation.timeslot.calendarId).location.name;
+    const date = reservation.timeslot.timeslotDate.format('DD/MM/YYYY');
+    const hour = this.getBeginHour(this.calendarMap.get(reservation.timeslot.calendarId), reservation.timeslot).format('HH:mm');
+
+    return name + ' (' + date + ' ' + hour + ')';
   }
 }

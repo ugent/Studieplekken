@@ -27,7 +27,13 @@
       "calendar": {
         "reservation": {
           "successMessage": "Het wijzigen van de reservaties is succesvol verlopen",
-          "errorMessage": "Het aanpassen van de reservaties is mislukt. Er is iets misgegaan."
+          "errorMessage": "Het aanpassen van de reservaties is mislukt. Er is iets misgegaan.",
+          "header": "Wijzig reservaties",
+          "updateMessage": "Je staat op het punt om wijzigingen aan te brengen aan jouw reservaties.",
+          "updateAddMessage": "De volgende reservaties zullen toegevoegd worden aan jouw profiel:",
+          "updateDeleteMessage": "De volgende reservaties zullen verwijderd worden",
+          "updateConfirmMessage": "Wilt u deze wijzigingen doorvoeren?",
+          "updateWarningMessage": "WAARSCHUWING: niet opdagen voor een geregistreerde reservatie zal leiden tot strafpunten. Te veel strafpunten leiden tot uitsluiting van het gebruik van de applicatie."
         }
       }
     },

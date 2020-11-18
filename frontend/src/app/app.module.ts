@@ -64,6 +64,7 @@ import { MomentDateTimeComponent } from './shared/inputs/moment-datetime/moment-
 import { LocationOpeningperiodDialogComponent } from './management/locations-management/location-details-management/location-calendar/location-openingperiod-dialog/location-openingperiod-dialog.component';
 import { BuildingManagementComponent } from './management/building-management/building-management.component';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import {MatChipsModule} from '@angular/material/chips';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -275,6 +276,7 @@ const routes: Routes = [
       MatInputModule,
       MatDialogModule,
       MatCheckboxModule,
+      MatChipsModule,
       ModalModule.forRoot()
     ],
   providers: [],

@@ -69,7 +69,6 @@ export class UserRolesComponent implements OnInit {
   }
 
   onAdminClick(event: any, template: TemplateRef<any>): void {
-    console.log(event);
     event.preventDefault();
     this.modalRef = this.modalService.show(template);
   }
