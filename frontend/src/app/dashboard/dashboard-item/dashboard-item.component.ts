@@ -17,6 +17,7 @@ import {CalendarPeriodsService} from '../../services/api/calendar-periods/calend
 })
 export class DashboardItemComponent implements OnInit, AfterViewInit {
   @Input() location: Location;
+  @Input() status: Pair<LocationStatus, string>;
 
   occupation = 0;
 
@@ -29,7 +30,6 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
 
   showProgressBar: boolean;
 
-  status: Pair<LocationStatus, string>;
   statusInCurrentLang: string;
 
   constructor(private locationService: LocationService,

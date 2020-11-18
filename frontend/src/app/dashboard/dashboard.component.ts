@@ -8,6 +8,7 @@ import {AbstractControl, FormControl, FormGroup} from '@angular/forms';
 import {MatSelectChange} from '@angular/material/select';
 import { CalendarPeriodsService } from '../services/api/calendar-periods/calendar-periods.service';
 import {LocationStatus} from '../app.constants';
+import {Pair} from '../shared/model/helpers/Pair';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,7 +17,7 @@ import {LocationStatus} from '../app.constants';
 })
 export class DashboardComponent implements OnInit {
   locations: Location[];
-  locationStatuses = new Map<string, LocationStatus>();
+  locationStatuses = new Map<string, Pair<LocationStatus, string>>();
   filteredLocations: Location[];
   filteredLocationsBackup: Location[];
 
@@ -65,7 +66,7 @@ export class DashboardComponent implements OnInit {
         next.forEach(l => {
           this.calendarPeriodService.getStatusOfLocation(l.name).subscribe(
             next2 => {
-              this.locationStatuses.set(l.name, next2.first);
+              this.locationStatuses.set(l.name, next2);
             }
           );
         });
@@ -131,7 +132,7 @@ export class DashboardComponent implements OnInit {
       }
 
       if (this.showOpen) {
-        if (this.locationStatuses.get(location.name) === LocationStatus.OPEN) {
+        if (this.locationStatuses.get(location.name).first === LocationStatus.OPEN) {
           this.filteredLocations.push(location);
         }
       } else {

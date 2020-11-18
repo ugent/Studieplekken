@@ -67,7 +67,9 @@
     <hr>
 
     <div class="container-fluid" *ngIf="filteredLocations && filteredLocations.length > 0; else noMatchesFromFilter">
-      <app-dashboard-item *ngFor="let location of filteredLocations" [location]="location"></app-dashboard-item>
+      <app-dashboard-item *ngFor="let location of filteredLocations"
+                          [location]="location" [status]="locationStatuses.get(location.name)">
+      </app-dashboard-item>
     </div>
   </div>
 </div>
