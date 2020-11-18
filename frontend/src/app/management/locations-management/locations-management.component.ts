@@ -64,7 +64,6 @@ export class LocationsManagementComponent implements OnInit {
       authority: new FormControl('', Validators.required),
       building: new FormControl('', Validators.required),
       numberOfSeats: new FormControl('', Validators.required),
-      numberOfLockers: new FormControl('', Validators.required),
       forGroup: new FormControl(false, Validators.required),
       imageUrl: new FormControl('')
     });
@@ -78,6 +77,7 @@ export class LocationsManagementComponent implements OnInit {
   addNewLocation(location: Location): void {
     location.authority = this.authoritiesMap.get(Number(this.authority.value));
     location.building = this.buildingsMap.get(Number(this.building.value));
+    location.numberOfLockers = 0;
 
     this.addingWasSuccess = null;
     if (this.addLocationFormGroup.valid) {

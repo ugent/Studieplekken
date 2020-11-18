@@ -14,7 +14,6 @@
           <th>{{'management.locations.table.header.name' | translate}}</th>
           <th>{{'management.locations.table.header.authority' | translate}}</th>
           <th>{{'management.locations.table.header.numberOfSeats' | translate}}</th>
-          <th>{{'management.locations.table.header.numberOfLockers' | translate}}</th>
           <th><!-- Details --></th>
           <th><!-- Delete --></th>
         </tr>
@@ -26,7 +25,6 @@
           <td>{{location.name}}</td>
           <td>{{location.authority.authorityName}}</td>
           <td>{{location.numberOfSeats}}</td>
-          <td>{{location.numberOfLockers}}</td>
           <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
             <span routerLink="./{{location.name}}"
                   class="glyphicon glyphicon-list-alt">
@@ -79,7 +77,7 @@
         <label class="col-lg-3 control-label" for="name">
           {{'management.locations.addLocationModal.form.locationName' | translate}}</label>
         <div class="col-lg-8">
-          <input class="form-control" id="name" type="text" formControlName="name" >
+          <input class="form-control" id="name" type="text" formControlName="name" required>
         </div>
 
         <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert alert-danger">
@@ -144,27 +142,19 @@
         </div>
       </div>
 
-      <!-- Number of lockers -->
-      <div class="row form-group">
-        <label class="col-lg-3 control-label" for="numberOfLockers">
-          {{'management.locations.addLocationModal.form.numberOfLockers' | translate}}</label>
-        <div class="col-lg-8">
-          <input class="form-control" id="numberOfLockers" type="number" formControlName="numberOfLockers" >
-        </div>
-
-        <div *ngIf="numberOfLockers.invalid && (numberOfLockers.dirty || numberOfLockers.touched)" class="alert alert-danger">
-          <div *ngIf="numberOfLockers.errors.required">
-            {{'management.locations.addLocationModal.formValidationErrorMessages.numberOfLockers' | translate}}
-          </div>
-        </div>
-      </div>
-
       <!-- forGroup -->
       <div class="row form-group">
         <label class="col-lg-3 control-label" for="forGroup">
-          {{'management.locations.addLocationModal.form.forGroup' | translate}}</label>
+          {{'management.locations.addLocationModal.form.forGroup' | translate}}
+        </label>
         <div class="col-lg-8">
-          <input id="forGroup" type="checkbox" formControlName="forGroup" >
+          <input id="forGroup" type="checkbox" formControlName="forGroup">
+        </div>
+
+        <div class="col-lg-12">
+          <small id="forGroupHelp" class="form-text text-muted">
+            {{'management.locations.addLocationModal.form.forGroupHelp' | translate}}
+          </small>
         </div>
 
         <div *ngIf="forGroup.invalid && (forGroup.dirty || forGroup.touched)" class="alert alert-danger">

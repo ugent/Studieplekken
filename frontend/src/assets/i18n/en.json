@@ -302,11 +302,12 @@
         "title": "Add new location",
 
         "form": {
-          "locationName": "Name",
+          "locationName": "Name Space",
           "address": "Address",
           "numberOfSeats": "Number of seats",
           "numberOfLockers": "Number of lockers",
           "forGroup": "Group Reservation",
+          "forGroupHelp": "A location for groups can be reserved by a single person for a group of people. There are no individual reservations possible/necessary.",
           "imageUrl": "URL of image (optional)"
         },
 

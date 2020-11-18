@@ -302,11 +302,12 @@
         "title": "Nieuwe locatie toevoegen",
 
         "form": {
-          "locationName": "Naam",
+          "locationName": "Naam Ruimte",
           "address": "Adres",
           "numberOfSeats": "Aantal zitjes",
           "numberOfLockers": "Aantal lockers",
           "forGroup": "Groepsreservatie",
+          "forGroupHelp": "Een lokaal met groepsreservaties kan door 1 persoon gereserveerd worden voor een groep. Er zijn geen individuele reservaties",
           "imageUrl": "URL van foto (optioneel)"
         },
 
