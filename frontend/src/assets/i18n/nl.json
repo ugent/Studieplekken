@@ -193,6 +193,7 @@
             "hour": "1 uur",
             "hourAndHalf": "1.5 uur"
           },
+          "adminWarning": "Opgepast, deze verandering ligt binnen de vastgelegde termijn. Je zal manueel contact moeten opnemen met dienst permanentie van de UGent.",
 
           "updateButton": "Update",
           "cancelButton": "Annuleer",

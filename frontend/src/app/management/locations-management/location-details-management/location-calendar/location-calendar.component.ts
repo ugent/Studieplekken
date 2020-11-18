@@ -334,10 +334,27 @@ export class LocationCalendarComponent implements OnInit {
   }
 
   getMinStartDate(): Moment {
-    if (!this.authorizationService.isAdmin()) {
+    if (this.authorizationService.isAdmin()) {
       return null;
     } else {
       return moment().add(3, 'weeks').day(8);
     }
+  }
+
+  // If the admin is executing a change on own authority, show warning.
+  showAdminWarnMessage(model): boolean {
+    if (!this.authorizationService.isAdmin()) {
+      return false;
+    }
+
+    if (model.startsAt && model.startsAt.isBefore(moment().add(3, 'weeks').day(8))) {
+      return true;
+    }
+
+    if (this.prepareToUpdatePeriod && this.prepareToUpdatePeriod.startsAt.isBefore(moment().add(3, 'weeks').day(8))) {
+      return true;
+    }
+    
+    return false;
   }
 }
