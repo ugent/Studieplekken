@@ -169,7 +169,7 @@
         "form": {
           "title": "Edit opening days",
 
-          "addButton": "Add new",
+          "addButton": "Add new opening period",
           "startsAt": "Starts at",
           "endsAt": "Ends at",
           "openingTime": "Opening time",

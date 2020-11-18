@@ -100,7 +100,7 @@ export class LocationCalendarComponent implements OnInit {
     this.location.subscribe(next => {
       this.locationName = next.name;
       this.locationFlat = next;
-      this.calendarPeriodModel.subscribe(console.log)
+      this.calendarPeriodModel.subscribe();
       this.setupEvents();
     });
     this.showReservationInformation = this.functionalityService.showReservationsFunctionality();
@@ -352,9 +352,11 @@ export class LocationCalendarComponent implements OnInit {
     this.modalService.show(template);
   }
 
-  prepareAdd(template: TemplateRef<any>): void {
+  prepareAdd(template: TemplateRef<any>, el: HTMLElement): void {
     this.calendarPeriodModel.next(new CalendarPeriod(null, this.locationFlat, null, null, null, null, false, null, 0, [], null));
     this.prepareToUpdatePeriod = null;
+    el.scrollIntoView();
+    console.log(template);
     this.modalService.show(template);
   }
 

@@ -169,7 +169,7 @@
         "form": {
           "title": "Wijzig openingsdagen",
 
-          "addButton": "Voeg toe",
+          "addButton": "Voeg nieuwe openingsperiode toe",
           "startsAt": "Begint op",
           "endsAt": "Eindigt op",
           "openingTime": "Openingstijd",
