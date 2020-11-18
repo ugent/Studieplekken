@@ -143,8 +143,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
     @Override
     public void updateCalendarPeriod(CalendarPeriod to) throws SQLException {
         try (Connection conn = adb.getConnection()) {
-                updateCalendarPeriod(to, to, conn);
-
+            updateCalendarPeriod(to, to, conn);
         }
     }
 
@@ -153,7 +152,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         // set ...
         prepareCalendarPeriodPstmt(to, pstmt);
         // where ...
-        prepareWhereClauseOfUpdatePstmt(from, pstmt);
+        pstmt.setInt(10, from.getId());
         pstmt.execute();
     }
 
@@ -312,11 +311,6 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         pstmt.setBoolean(7, calendarPeriod.isReservable());
         pstmt.setInt(8, calendarPeriod.getReservableTimeslotSize());
         pstmt.setTimestamp(9, Timestamp.valueOf(calendarPeriod.getLockedFrom()));
-    }
-
-    private void prepareWhereClauseOfUpdatePstmt(CalendarPeriod calendarPeriod,
-                                                 PreparedStatement pstmt) throws SQLException {
-        pstmt.setInt(10, calendarPeriod.getId());
     }
 
     private void prepareTimeslotPeriodPstmt(int seq_id, LocalDate date, CalendarPeriod period, PreparedStatement pstmt) throws SQLException {
