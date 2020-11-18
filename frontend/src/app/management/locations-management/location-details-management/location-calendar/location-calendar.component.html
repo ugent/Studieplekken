@@ -339,7 +339,9 @@
 
       <!-- Modal footer -->
       <div class="modal-footer">
-        {{ 'management.locationDetails.calendar.form.adminWarning' | translate }}
+        <div class="alert alert-warning" *ngIf="showAdminWarnMessage(model)">
+          {{ 'management.locationDetails.calendar.form.adminWarning' | translate }}
+        </div>
 
         <button class="btn btn-primary" (click)="update()" [disabled]="!model.isValid()" >
           {{'general.buttons.update' | translate}}
