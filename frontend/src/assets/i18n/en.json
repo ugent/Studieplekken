@@ -438,6 +438,7 @@
         "loading": "Waiting on response of server...",
         "error": "Something went wrong while retrieving the users...",
         "noUserWithBarcodeHasBeenFound": "No user with given barcode has been found. Please try with first and/or last name."
+
       },
 
       "userDetails": {
@@ -465,7 +466,8 @@
 
           "loadingUpdatingUser": "Waiting on a response of the server...",
           "successUpdatingUser": "Successfully updated the roles of the user...",
-          "errorUpdatingUser": "Something went wrong while updating the user..."
+          "errorUpdatingUser": "Something went wrong while updating the user...",
+          "adminConfirmation": "This will change the administrator-status of the user, possibly granting the user with unrestricted access to the platform. Please be careful with this!"
         },
 
         "authorities": {

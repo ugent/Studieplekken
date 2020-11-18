@@ -1,10 +1,11 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, TemplateRef} from '@angular/core';
 import {Observable} from 'rxjs';
 import {User, UserConstructor} from '../../../../shared/model/User';
 import {AbstractControl, FormControl, FormGroup} from '@angular/forms';
 import {UserDetailsService} from '../../../../services/single-point-of-truth/user-details/user-details.service';
 import {UserService} from '../../../../services/api/users/user.service';
 import {msToShowFeedback} from '../../../../app.constants';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-user-roles',
@@ -21,8 +22,11 @@ export class UserRolesComponent implements OnInit {
     admin: new FormControl('')
   });
 
+  modalRef: BsModalRef;
+
   constructor(private userDetailsService: UserDetailsService,
-              private userService: UserService) { }
+              private userService: UserService,
+              private modalService: BsModalService) { }
 
   ngOnInit(): void {
     this.userObs.subscribe(
@@ -62,6 +66,21 @@ export class UserRolesComponent implements OnInit {
 
   resetRolesFormArrayButtonClick(): void {
     this.admin.setValue(this.user.admin);
+  }
+
+  onAdminClick(event: any, template: TemplateRef<any>): void {
+    console.log(event);
+    event.preventDefault();
+    this.modalRef = this.modalService.show(template);
+  }
+
+  confirmAdminChange(): void {
+    this.admin.setValue(!this.admin.value);
+    this.modalRef.hide();
+  }
+
+  declineAdminChange(): void {
+    this.modalRef.hide();
   }
 
   // ********************************************

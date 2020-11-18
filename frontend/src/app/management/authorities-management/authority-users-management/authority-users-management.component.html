@@ -33,7 +33,7 @@
         <td>{{user.firstName}}</td>
         <td>{{user.lastName}}</td>
         <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
-            data-toggle="modal" (click)="prepareToDeleteUserFromAuthority(user, deleteUserFromAuthorityModal)">
+            (click)="prepareToDeleteUserFromAuthority(user, deleteUserFromAuthorityModal)">
           <span class="glyphicon glyphicon-trash"></span>
         </td>
       </tr>
@@ -42,8 +42,7 @@
   </div>
 
   <div class="row" style="margin-top: 20px">
-    <button class="btn btn-primary" data-toggle="modal"
-            (click)="prepareToAddUserToAuthority(addUserToAuthorityModal)">
+    <button class="btn btn-primary" (click)="prepareToAddUserToAuthority(addUserToAuthorityModal)">
       {{'management.authorities.users.addNewUser' | translate}}
     </button>
   </div>
