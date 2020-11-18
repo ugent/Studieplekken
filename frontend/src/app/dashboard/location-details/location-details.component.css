@@ -1,0 +1,11 @@
+.locationStatusBar {
+  height: 8px;
+}
+
+.open {
+  background-color: var(--ck-color-base-action);
+}
+
+.closed {
+  background-color: var(--ck-color-base-error);
+}

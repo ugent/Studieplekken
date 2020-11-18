@@ -8,6 +8,7 @@ import blok2.model.users.User;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -152,6 +153,23 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
     }
 
     @Override
+    public int amountOfReservationsRightNow(String location) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("count_reservations_now"));
+            pstmt.setString(1, location);
+            ResultSet rs = pstmt.executeQuery();
+            rs.next();
+            if(rs.wasNull())
+                return 0;
+            if(rs.getInt(2) == 0) {
+                return -1;
+            }
+
+            return rs.getInt(1);
+        }
+    }
+
+    @Override
     public LocationReservation scanStudent(String location, String augentId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             // set user attended on location reservation
@@ -232,11 +250,14 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
     }
 
     @Override
-    public void setReservationToUnAttended(String augentId, LocalDate date) throws SQLException {
+    public void setReservationAttendance(String augentId, Timeslot timeslot, boolean attendance) throws SQLException {
         try (Connection conn = adb.getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("set_location_reservation_unattended"));
-            pstmt.setString(1, date.toString());
-            pstmt.setString(2, augentId);
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("set_location_reservation_attendance"));
+            pstmt.setBoolean(1, attendance);
+            pstmt.setInt(2, timeslot.getCalendarId());
+            pstmt.setDate(3, Date.valueOf(timeslot.getTimeslotDate()));
+            pstmt.setInt(4, timeslot.getTimeslotSeqnr());
+            pstmt.setString(5, augentId);
             pstmt.execute();
         }
     }

@@ -12,6 +12,7 @@ export const api = {
 
   // CALENDAR_PERIODS
   calendarPeriods: '/api/locations/calendar/{locationName}',
+  locationStatus: '/api/locations/calendar/{locationName}/status',
   allCalendarPeriods: '/api/locations/calendar/',
   addCalendarPeriods: '/api/locations/calendar',
   updateCalendarPeriods: '/api/locations/calendar/{locationName}',
@@ -41,6 +42,8 @@ export const api = {
   locationReservationsOfLocationFromAndUntil: '/api/locations/reservations/fromAndUntil',
   addLocationReservation: '/api/locations/reservations',
   deleteLocationReservation: '/api/locations/reservations',
+  updateAttendance: '/api/locations/reservations/{userid}/{calendarid}/{date}/{seqnr}/attendance',
+  locationReservationCount: '/api/locations/reservations/{location}',
 
 
   // AUTHORITY

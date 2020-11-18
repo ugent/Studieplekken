@@ -20,10 +20,17 @@
     "numberOfLockers": "Aantal lockers",
     "numberOfSeats": "Aantal plaatsen",
     "noLocations": "Helaas zijn er op dit moment geen locaties beschikbaar",
+    "status": "Status",
 
     "locationDetails": {
       "info": "Algemene informatie over deze locatie:",
       "tags": "Tags die deze locatie kenmerken:",
+      "status": {
+        "statusOpen": "OPEN: Sluit om {}",
+        "statusClosed": "GESLOTEN",
+        "statusClosedActive": "GESLOTEN: Opent opnieuw om {}",
+        "statusClosedUpcoming": "GESLOTEN: Opent opnieuw op {}"
+      },
       "calendar": {
         "reservation": {
           "successMessage": "Het wijzigen van de reservaties is succesvol verlopen",
@@ -36,7 +43,9 @@
       "title": "Filter",
       "tagsFilterTitle": "Filter locaties op tags",
       "noMatchesFromFilter": "Er zijn geen locaties die voldoen aan je filtervoorwaarden of aan je zoekterm.",
-      "searchPlaceholder": "zoek een locatie op naam, rekening houdend met de filter op tags"
+      "searchPlaceholder": "zoek een locatie op naam, rekening houdend met de filter op tags",
+      "showAll": "Toon alle locaties",
+      "showOpen": "Toon open locaties"
     },
 
     "error": "Er is iets misgelopen tijdens het ophalen van de locaties."
@@ -67,6 +76,7 @@
       "delete": "Verwijder",
       "search": "Zoek",
       "clear": "Annuleer",
+      "open": "Toon open locaties",
       "close": "Sluiten"
     },
 

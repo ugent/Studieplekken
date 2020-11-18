@@ -60,4 +60,12 @@ export class LocationReservationsService {
   postLocationReservation(locationReservation: LocationReservation): Observable<void> {
     return this.http.post<void>(api.addLocationReservation, locationReservation.timeslot, {withCredentials: true});
   }
+
+  postLocationReservationAttendance(locationReservation: LocationReservation, attended: boolean): Observable<void> {
+    return this.http.post<void>(api.updateAttendance.replace('{userid}', locationReservation.user.augentID)
+                                                          .replace('{calendarid}', `${locationReservation.timeslot.calendarId}`)
+                                                          .replace('{date}', locationReservation.timeslot.timeslotDate.format('YYYY-MM-DD'))
+                                                          .replace('{seqnr}', `${locationReservation.timeslot.timeslotSeqnr}`)
+                                    , {attended}, {withCredentials: true});
+  }
 }

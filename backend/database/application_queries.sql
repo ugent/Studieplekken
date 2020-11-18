@@ -289,10 +289,10 @@ where location_name = ? and cast(substr(date,0,5) as int)*404 + cast(substr(date
 insert into public.location_reservations (user_augentid, created_at, timeslot_date, timeslot_seqnr, calendar_id, attended)
 values (?, ?, ?, ?, ?, null);
 
--- $set_location_reservation_unattended
+-- $set_location_reservation_attendance
 update public.location_reservations
-set attended = false
-where date = ? and user_augentid = ?;
+set attended = ?
+where calendar_id = ? and timeslot_date = ? and timeslot_seqnr = ? and user_augentid = ?;
 
 -- $set_all_location_reservations_attended
 update public.location_reservations
@@ -1023,11 +1023,31 @@ where cp.starts_at > ? and cp.starts_at < ?;
 select rt.timeslot_sequence_number, rt.timeslot_date, rt.calendar_id
 from public.reservation_timeslots rt
 where calendar_id = ? 
-order by rt.timeslot_date, rt.timeslot_sequence_number;
+order by rt.timeslot_date, rt.timeslot_sequence_number ASC;
 
 -- $insert_reservation_timeslots
 insert into public.reservation_timeslots(calendar_id, timeslot_sequence_number, timeslot_date)
 values (?, ?, ?);
+
+-- $count_reservations_now
+with y as (
+select *
+from public.locations l 
+    join public.calendar_periods cp
+        on l.name = cp.location_name
+    join public.reservation_timeslots ts
+        on ts.calendar_id = cp.calendar_id
+    where cp.location_name = ?
+    and ts.timeslot_date = current_date 
+    and  cp.opening_time + (cp.timeslot_length * ts.timeslot_sequence_number) * INTERVAL '1 minute' <= current_time 
+    and cp.opening_time + (cp.timeslot_length * (ts.timeslot_sequence_number + 1)) * INTERVAL '1 minute' >= current_time
+)
+select count(1) as reservation_count, (select count(1) from y) as timeslot_count
+from y
+    inner join public.location_reservations rs
+        on y.timeslot_date = rs.timeslot_date
+        and rs.timeslot_seqnr = y.timeslot_sequence_number;
+
 
 -- queries for CALENDAR_PERIODS_FOR_LOCKERS
 -- $get_calendar_periods_for_lockers_of_location
