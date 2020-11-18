@@ -327,7 +327,7 @@
         "loading": "Wachten op antwoord van de server...",
         "success": "Het toevoegen van de locatie is geslaagd",
         "error": "Er is iets misgelopen tijdens het toevoegen van de nieuwe locatie",
-        "warning": "Ben je zeker dat je deze locatie wilt toevoegen? Een bevestigingsmail zal naar de directie faciliteitenbeheer gestuurd worden voor goedkeuring."
+        "warning": "Ben je zeker dat je een voorstel voor een nieuwe locatie wil toevoegen? Een bevestigingsmail zal naar de directie faciliteitenbeheer gestuurd worden voor goedkeuring. Het aantal zitjes zal worden aangepast.\n"
 
       },
 

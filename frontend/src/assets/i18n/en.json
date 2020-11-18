@@ -327,7 +327,7 @@
         "loading": "Waiting for response of server...",
         "success": "Successfully added the new location",
         "error": "Something went wrong while adding the new location",
-        "warning": "Are you sure you want to add this location? An e-mail will be sent to directie faciliteitenbeheer for approval."
+        "warning": "Are you sure you want to propose this location? An e-mail will be sent to directie faciliteitenbeheer for approval. The amount of seats will be adjusted."
       },
 
       "editLocationModal": {

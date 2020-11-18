@@ -31,7 +31,7 @@ BEGIN
   INSERT INTO public.authority (authority_name, description) values ('DSA', 'Dienst StudentenActiviteiten') RETURNING authority_id into auth_id;
   INSERT INTO public.buildings (building_name, address) VALUES ('Therminal', 'Hoveniersberg 24, 9000 Gent') RETURNING building_id into build_id_therminal;
   INSERT INTO public.locations (name, building_id, number_of_seats, number_of_lockers, image_url, authority_id, description_dutch, description_english, forGroup, approved)
-    VALUES  ('Turbinezaal', build_id_therminal, 50, 100, '', auth_id, 'neder', 'engl', false, true),
+    VALUES  ('Turbinezaal', build_id_therminal, 50, 100, '', auth_id, 'neder', 'engl', false, false),
                 ('Plenaire vergaderzaal', build_id_therminal, 30, 0, '', auth_id, '', '', true, true),
                 ('Podiumzaal', build_id_therminal, 100, 0, '', auth_id, '', '', false, true),
                 ('Trechterzaal', build_id_therminal, 80, 0, '', auth_id, '', '', false, true);
