@@ -269,6 +269,14 @@ export class LocationCalendarComponent implements OnInit {
     }
   }
 
+  getMinReservableFrom(model): Moment {
+    if (!model.startsAt) {
+      return null;
+    } else {
+      return moment(model.startsAt).subtract(3, 'weeks').day(1);
+    }
+  }
+
   // If the admin is executing a change on own authority, show warning.
   showAdminWarnMessage(model): boolean {
     if (!this.authorizationService.isAdmin()) {
@@ -282,7 +290,7 @@ export class LocationCalendarComponent implements OnInit {
     if (this.prepareToUpdatePeriod && this.prepareToUpdatePeriod.startsAt.isBefore(moment().add(3, 'weeks').day(8))) {
       return true;
     }
-    
+
     return false;
   }
 }

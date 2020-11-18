@@ -329,7 +329,7 @@
             </label>
             <div class="col-lg-8">
               <app-moment-datetime id="reservableFromUpdate"
-                                   [(model)]="model.reservableFrom" [disabled]="!model.reservable">
+                                   [(model)]="model.reservableFrom" [disabled]="!model.reservable" [min]="getMinReservableFrom(model)">
               </app-moment-datetime>
             </div>
           </div>
