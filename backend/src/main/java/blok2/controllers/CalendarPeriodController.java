@@ -192,9 +192,9 @@ public class CalendarPeriodController {
     }
 
     @DeleteMapping
-    public void deleteCalendarPeriods(@RequestBody List<CalendarPeriod> calendarPeriods) {
+    public void deleteCalendarPeriods(@RequestBody CalendarPeriod calendarPeriod) {
         try {
-            calendarPeriodDao.deleteCalendarPeriods(calendarPeriods);
+            calendarPeriodDao.deleteCalendarPeriod(calendarPeriod);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));

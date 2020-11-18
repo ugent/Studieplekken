@@ -161,8 +161,7 @@ export class LocationCalendarComponent implements OnInit {
 
   delete(): void {
     this.successDeletingLocationReservation = null;
-    this.calendarPeriods = this.calendarPeriods.filter(c => c.id !== this.prepareToUpdatePeriod.id);
-    this.calendarPeriodsService.deleteCalendarPeriods([this.calendarPeriodsInDataLayer.find(c => c.id !== this.prepareToUpdatePeriod.id)])
+    this.calendarPeriodsService.deleteCalendarPeriods(this.prepareToUpdatePeriod)
     .subscribe(
       () => {
         this.successDeletingLocationReservation = true;

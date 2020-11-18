@@ -119,7 +119,8 @@ public class TestDBCalendarPeriodDao extends TestDao {
         Assert.assertEquals("StatusTest, active period, outside hours", expected, actual);
 
         // Before the case of active period inside the hours, remove outside hours
-        calendarPeriodDao.deleteCalendarPeriods(outsideHours);
+        for (CalendarPeriod cp : outsideHours)
+            calendarPeriodDao.deleteCalendarPeriod(cp);
 
         // Second: inside hours
         List<CalendarPeriod> insideHours = new ArrayList<>();
@@ -159,7 +160,8 @@ public class TestDBCalendarPeriodDao extends TestDao {
         calendarPeriodDao.addCalendarPeriods(calendarPeriods);
 
         // Delete the calendar periods from the database
-        calendarPeriodDao.deleteCalendarPeriods(calendarPeriods);
+        for (CalendarPeriod calendarPeriod : calendarPeriods)
+            calendarPeriodDao.deleteCalendarPeriod(calendarPeriod);
 
         // are the periods deleted?
         List<CalendarPeriod> actualPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getName());
