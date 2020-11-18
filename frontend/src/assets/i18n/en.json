@@ -193,6 +193,7 @@
             "hour": "1 hour",
             "hourAndHalf": "1.5 hours"
           },
+          "adminWarning": "Be careful, this change is within the locked from period. You will have to manually contact the appropriate UGent services.",
 
           "noCalendarPeriodsForLocation": "At the moment, there are no periods for the location."
         },
