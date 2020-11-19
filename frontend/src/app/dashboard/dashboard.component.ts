@@ -97,7 +97,7 @@ export class DashboardComponent implements OnInit {
       (next) => {
         this.buildings = next;
       }
-    )
+    );
   }
 
   /**
@@ -112,7 +112,6 @@ export class DashboardComponent implements OnInit {
    * When the selection of tags to filter on is changed
    */
   onTagsSelectionChange(event: MatSelectChange): void {
-    console.log(event);
     this.selectedTags = event.value;
     this.displayFilterLocations();
   }
@@ -121,7 +120,6 @@ export class DashboardComponent implements OnInit {
    * When the selection of building to filter on is changed
    */
   onBuildingSelectionChange(event: MatSelectChange): void {
-    console.log(event);
     this.selectedBuilding = event.value;
     this.displayFilterLocations();
   }
@@ -148,7 +146,7 @@ export class DashboardComponent implements OnInit {
         return;
       }
 
-      console.log(this.selectedBuilding)
+      // console.log(this.selectedBuilding);
       // check that the location is in the selected building
       if (this.selectedBuilding !== undefined && location.building.buildingId !== this.selectedBuilding.buildingId) {
         return;
@@ -181,8 +179,10 @@ export class DashboardComponent implements OnInit {
 
   onClearSearch(): void {
     this.filteredLocations = this.locations;
+    this.selectedBuilding = undefined;
+    this.selectedTags = [];
     this.filteredTags.setValue([]);
-    this.filteredBuilding.reset();
+    this.filteredBuilding.setValue('');
     this.locationSearch = '';
     this.showOpen = false;
     this.displayFilterLocations();
