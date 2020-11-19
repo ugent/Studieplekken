@@ -209,7 +209,14 @@
             "user": "Gebruiker",
             "attended": "Gebruiker was aanwezig?",
             "futureReservation": "Timeslot is nog niet geweest",
-            "number": "Studentennummer"
+            "number": "Studentennummer",
+            "scan": "Scan",
+
+            "yetToScan": "Nog te scannen",
+            "notScanned": "Niet gescand",
+
+            "startScanning": "Start scannen",
+            "finishScanning": "Beïndig scannen"
           }
         },
 
@@ -702,6 +709,14 @@
           "attended": "Gebruiker was aanwezig?",
 
           "noLocationReservations": "Er zijn geen reservaties voor de ruimte."
+        },
+
+        "finishScanningModal": {
+          "title": "Beëindigen van het scannen",
+          "body": "Na het beëindigen van het scannen zullen de afwezige studenten automatisch 50 strafpunten krijgen.",
+          "body2": "Indien in een vorige scan voor hetzelfde tijdslot een student afwezig was maar in deze scan aanwezig is, dan zullen de eerder verkregen strafpunten verwijderd worden.",
+          "success": "Het beëindigen van het scannen is gelukt.",
+          "error": "Er is iets misgelopen tijdens het beëindigen van het scannen."
         },
 
         "deleteModal": {
