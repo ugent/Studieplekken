@@ -4,6 +4,9 @@ import blok2.daos.ICalendarPeriodDao;
 import blok2.daos.ILocationDao;
 import blok2.daos.ILocationTagDao;
 import blok2.helpers.authorization.AuthorizedLocationController;
+import blok2.helpers.EmailService;
+import blok2.helpers.LocationWithApproval;
+import blok2.helpers.Resources;
 import blok2.model.reservables.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +16,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.mail.MessagingException;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
@@ -30,15 +35,17 @@ public class LocationController extends AuthorizedLocationController {
 
     private final ILocationDao locationDao;
     private final ILocationTagDao locationTagDao;
+    private final EmailService emailService;
 
     // *************************************
     // *   CRUD operations for LOCATIONS   *
     // *************************************
 
     @Autowired
-    public LocationController(ILocationDao locationDao, ILocationTagDao locationTagDao, ICalendarPeriodDao calendarPeriodDao) {
+    public LocationController(ILocationDao locationDao, ILocationTagDao locationTagDao, EmailService emailService) {
         this.locationDao = locationDao;
         this.locationTagDao = locationTagDao;
+        this.emailService = emailService;
     }
 
     @GetMapping
@@ -46,6 +53,17 @@ public class LocationController extends AuthorizedLocationController {
     public List<Location> getAllLocations() {
         try {
             return locationDao.getAllLocations();
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @GetMapping("/unapproved")
+    public List<Location> getAllUnapprovedLocations() {
+        try {
+            return locationDao.getAllUnapprovedLocations();
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
@@ -71,11 +89,15 @@ public class LocationController extends AuthorizedLocationController {
         isAuthorized(location.getName());
         try {
             this.locationDao.addLocation(location);
+            this.emailService.sendNewLocationMessage(Resources.blokatugentConf.getString("dfsgMail"), location);
             logger.info(String.format("New location %s added", location.getName()));
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        } catch (MessagingException | IOException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Mail error");
         }
     }
 
@@ -84,6 +106,7 @@ public class LocationController extends AuthorizedLocationController {
     public void updateLocation(@PathVariable("locationName") String locationName, @RequestBody Location location) {
         isAuthorized(location.getName());
         try {
+            // TODO: if is admin, changeseats = true
             locationDao.updateLocation(locationName, location);
             logger.info(String.format("Location %s updated", locationName));
         } catch (SQLException e) {
@@ -93,6 +116,20 @@ public class LocationController extends AuthorizedLocationController {
         }
     }
 
+    @PutMapping("/{locationName}/approval")
+    public void approveLocation(@PathVariable("locationName") String locationName, @RequestBody LocationWithApproval landa) {
+        try {
+            locationDao.approveLocation(landa.getLocation(), landa.isApproval());
+            logger.info(String.format("Location %s updated", locationName));
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    //authority user
+    //the updated location should be part of an authority the user is part of.
     @DeleteMapping("/{locationName}")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void deleteLocation(@PathVariable("locationName") String locationName) {

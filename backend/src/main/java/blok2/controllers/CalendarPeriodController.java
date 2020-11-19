@@ -108,7 +108,7 @@ public class CalendarPeriodController extends  AuthorizedLocationController {
                 else {
                     logger.log(Level.SEVERE, "updateCalendarPeriods, new CalendarPeriod too late");
                     throw new ResponseStatusException(
-                            HttpStatus.CONFLICT, "new calendarperiod too late.");
+                            HttpStatus.CONFLICT, "CalendarPeriod must be after locked date. (3 weeks)");
                 }
                 return;
             }
@@ -131,7 +131,11 @@ public class CalendarPeriodController extends  AuthorizedLocationController {
                         HttpStatus.CONFLICT, "The time you're moving into is already locked.");
             }
 
-            calendarPeriodDao.updateCalendarPeriod(to);
+            // Only reset the timeslots when anything changes to the reservable periods.
+            boolean resetTimeslots = originalTo.isReservable() != to.isReservable() ||
+                                    originalTo.getReservableTimeslotSize() != to.getReservableTimeslotSize();
+
+            calendarPeriodDao.updateCalendarPeriod(to, resetTimeslots);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));

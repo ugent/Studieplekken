@@ -1,5 +1,4 @@
 import blok2.Blok2Application;
-import blok2.controllers.BuildingController;
 import blok2.controllers.LocationController;
 import blok2.daos.*;
 import blok2.helpers.EmailService;
@@ -26,7 +25,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
-import java.util.List;
 
 @Import(CustomFlywayConfig.class)
 @RunWith(SpringRunner.class)

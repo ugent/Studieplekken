@@ -24,6 +24,7 @@ import { Building } from 'src/app/shared/model/Building';
 })
 export class LocationsManagementComponent implements OnInit {
   locations: Observable<Location[]>;
+  unapprovedLocations: Observable<Location[]>;
 
   addLocationFormGroup: FormGroup;
   addingWasSuccess: boolean = undefined;
@@ -36,6 +37,9 @@ export class LocationsManagementComponent implements OnInit {
 
   buildingsObs: Observable<Building[]>;
   buildingsMap: Map<number, Building>;
+  editMode: boolean;
+  showAddWarning: boolean = false;
+  locationToAdd: Location;
 
   constructor(private locationService: LocationService,
               private authoritiesService: AuthoritiesService,
@@ -56,9 +60,9 @@ export class LocationsManagementComponent implements OnInit {
     );
   }
 
-  setupForm(): void {
+  setupForm(edit: boolean = false): void {
     this.addLocationFormGroup = new FormGroup({
-      name: new FormControl('', Validators.required),
+      name: new FormControl({value: '', disabled: edit}, Validators.required),
       authority: new FormControl('', Validators.required),
       building: new FormControl('', Validators.required),
       numberOfSeats: new FormControl('', Validators.required),
@@ -70,9 +74,17 @@ export class LocationsManagementComponent implements OnInit {
 
   prepareToAddLocation(): void {
     this.addingWasSuccess = undefined;
+    this.editMode = false;
   }
 
   addNewLocation(location: Location): void {
+    if (!this.showAddWarning) {
+      this.showAddWarning = true;
+      return;
+    }
+    this.showAddWarning = false;
+
+    
     location.authority = this.authoritiesMap.get(Number(this.authority.value));
     location.building = this.buildingsMap.get(Number(this.building.value));
 
@@ -173,6 +185,7 @@ export class LocationsManagementComponent implements OnInit {
    */
   setupLocationsAndAuthoritiesAsAdmin(): void {
     this.locations = this.locationService.getLocations();
+    this.unapprovedLocations = this.locationService.getUnapprovedLocations();
     this.authoritiesObs = this.authoritiesService.getAllAuthorities().pipe(tap(
       next => {
         this.authoritiesMap = new Map<number, Authority>();
@@ -198,5 +211,35 @@ export class LocationsManagementComponent implements OnInit {
         });
       }
     ));
+  }
+
+  prepareToApproveLocation(location: Location): void {
+    this.setupForm();
+    this.editMode = true;
+    this.addLocationFormGroup.get('name').setValue(location.name);
+    this.addLocationFormGroup.get('building').setValue(location.building.buildingId);
+    this.addLocationFormGroup.get('authority').setValue(location.authority.authorityId);
+    this.addLocationFormGroup.get('numberOfSeats').setValue(location.numberOfSeats);
+    this.addLocationFormGroup.get('numberOfLockers').setValue(location.numberOfLockers);
+    this.addLocationFormGroup.get('forGroup').setValue(location.forGroup);
+    this.addLocationFormGroup.get('imageUrl').setValue(location.imageUrl);
+
+  }
+
+  approveLocation(location: Location): void {
+    location.authority = this.authoritiesMap.get(Number(this.authority.value));
+    location.building = this.buildingsMap.get(Number(this.building.value));
+
+    this.addingWasSuccess = null;
+    if (this.addLocationFormGroup.valid) {
+      this.locationService.approveLocation(location, true).subscribe(
+        () => {
+          this.successHandler();
+        }, () => {
+          this.errorHandler();
+        }
+      );
+    }
+
   }
 }
