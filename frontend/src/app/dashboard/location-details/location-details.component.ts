@@ -13,16 +13,21 @@ import {CalendarPeriodsService} from '../../services/api/calendar-periods/calend
 import { includesTimeslot, Timeslot, timeslotEquals } from 'src/app/shared/model/Timeslot';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
+
+
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
 import {CalendarPeriod, mapCalendarPeriodsToCalendarEvents} from '../../shared/model/CalendarPeriod';
-import {defaultLocationImage, msToShowFeedback} from '../../app.constants';
+import {defaultLocationImage, LocationStatus, msToShowFeedback} from '../../app.constants';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import * as moment from 'moment';
+import {DatePipe} from '@angular/common';
+import {Pair} from '../../shared/model/helpers/Pair';
 
 @Component({
   selector: 'app-location-details',
   templateUrl: './location-details.component.html',
-  styleUrls: ['./location-details.component.css']
+  styleUrls: ['./location-details.component.css'],
+  providers: [DatePipe]
 })
 export class LocationDetailsComponent implements OnInit {
   location: Observable<Location>;
@@ -50,6 +55,9 @@ export class LocationDetailsComponent implements OnInit {
 
   altImageUrl = defaultLocationImage;
 
+  status: Pair<LocationStatus, string>;
+  statusInCurrentLang: string;
+
   currentLang: string;
 
   modalRef: BsModalRef;
@@ -68,6 +76,7 @@ export class LocationDetailsComponent implements OnInit {
               private sanitizer: DomSanitizer,
               private translate: TranslateService,
               private calendarPeriodsService: CalendarPeriodsService,
+              private datepipe: DatePipe,
               private authenticationService: AuthenticationService,
               private locationReservationService: LocationReservationsService,
               private modalService: BsModalService) { }
@@ -89,14 +98,25 @@ export class LocationDetailsComponent implements OnInit {
     });
 
     this.fillCalendarLocationMap();
+    this.calendarPeriodsService.getStatusOfLocation(this.locationName).subscribe(
+      next => {
+        this.status = next;
+        this.translateStatus();
+      }
+    );
 
     // if the browser language would change, the description needs to change
     this.translate.onLangChange.subscribe(
       () => {
         this.setDescriptionToShow();
         this.currentLang = this.translate.currentLang;
+        this.translateStatus();
       }
     );
+  }
+
+  locationStatusColorClass(): string {
+    return this.status.first === LocationStatus.OPEN ? 'open' : 'closed';
   }
 
   timeslotPicked(event: any): void {
@@ -135,6 +155,65 @@ export class LocationDetailsComponent implements OnInit {
     // Show the dutch description if the browser language is 'nl'.
     // Otherwise, show the english description.
     this.description.show = lang === 'nl' ? this.description.dutch : this.description.english;
+  }
+
+  translateStatus(): void {
+    // status.second format: "yyyy-MM-dd hh:mm"
+    if (this.status) {
+      switch (this.status.first) {
+        case LocationStatus.OPEN: {
+          const datetime = new Date(this.status.second);
+          this.translate.get('dashboard.locationDetails.status.statusOpen').subscribe(
+            next => {
+              this.statusInCurrentLang = next.replace('{}', this.datepipe.transform(datetime, 'shortTime'));
+            }, () => {
+              this.statusInCurrentLang = 'general.notAvailableAbbreviation';
+            }
+          );
+          break;
+        }
+        case LocationStatus.CLOSED: {
+          this.translate.get('dashboard.locationDetails.status.statusClosed').subscribe(
+            next => {
+              this.statusInCurrentLang = next;
+            }, () => {
+              this.statusInCurrentLang = 'general.general.notAvailableAbbreviation';
+            }
+          );
+          break;
+        }
+        case LocationStatus.CLOSED_ACTIVE: {
+          const datetime = new Date(this.status.second);
+          this.translate.get('dashboard.locationDetails.status.statusClosedActive').subscribe(
+            next => {
+              this.statusInCurrentLang = next.replace('{}', this.datepipe.transform(datetime, 'shortTime'));
+            }, () => {
+              this.statusInCurrentLang = 'general.notAvailableAbbreviation';
+            }
+          );
+          break;
+        }
+        case LocationStatus.CLOSED_UPCOMING: {
+          const datetime = new Date(this.status.second).toLocaleString();
+          this.translate.get('dashboard.locationDetails.status.statusClosedUpcoming').subscribe(
+            next => {
+              this.statusInCurrentLang = next.replace('{}', datetime);
+            }, () => {
+              this.statusInCurrentLang = 'general.notAvailableAbbreviation';
+            }
+          );
+          break;
+        }
+      }
+    } else {
+      this.translate.get('general.notAvailableAbbreviation').subscribe(
+        next => {
+          this.statusInCurrentLang = next;
+        }, () => {
+          this.statusInCurrentLang = 'general.notAvailableAbbreviation';
+        }
+      );
+    }
   }
 
   updateCalendar(): void {

@@ -1,5 +1,7 @@
 package blok2.daos;
 
+import blok2.helpers.LocationStatus;
+import blok2.helpers.Pair;
 import blok2.model.calendar.CalendarPeriod;
 
 import java.sql.SQLException;
@@ -15,10 +17,13 @@ public interface ICalendarPeriodDao extends IDao {
 
     void addCalendarPeriods(List<CalendarPeriod> periods) throws SQLException;
 
+    void updateCalendarPeriod(CalendarPeriod period) throws SQLException;
+
     void updateCalendarPeriods(List<CalendarPeriod> from, List<CalendarPeriod> to) throws SQLException;
 
-    void deleteCalendarPeriods(List<CalendarPeriod> periods) throws SQLException;
+    void deleteCalendarPeriod(CalendarPeriod calendarPeriod) throws SQLException;
+
+    Pair<LocationStatus, String> getStatus(String locationName) throws SQLException;
 
     CalendarPeriod getById(int calendarId) throws SQLException;
-
 }

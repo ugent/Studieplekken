@@ -1,11 +1,12 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {CalendarPeriod} from '../../../shared/model/CalendarPeriod';
-
+import {Pair} from '../../../shared/model/helpers/Pair';
 import {Observable} from 'rxjs';
 import { map } from 'rxjs/internal/operators/map';
 import { filter } from 'rxjs/internal/operators/filter';
 import {api} from '../endpoints';
+import {LocationStatus} from '../../../app.constants';
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +26,11 @@ export class CalendarPeriodsService {
     return this.http.get<CalendarPeriod[]>(api.allCalendarPeriods);
   }
 
+  getStatusOfLocation(locationName: string): Observable<Pair<LocationStatus, string>> {
+    return this.http.get<Pair<LocationStatus, string>>(api.locationStatus
+      .replace('{locationName}', locationName));
+  }
+
   addCalendarPeriods(calendarPeriods: CalendarPeriod[]): Observable<void> {
     return this.http.post<void>(api.addCalendarPeriods, calendarPeriods.map(s => s.toJSON()));
   }
@@ -35,17 +41,17 @@ export class CalendarPeriodsService {
    * the controller layer, and the correct add/delete/update methods to be called
    * will be invoked.
    */
-  updateCalendarPeriods(locationName: string, from: CalendarPeriod[], to: CalendarPeriod[]): Observable<void> {
-    const body = [from.map(s => s.toJSON()), to.map(s => s.toJSON())];
+  updateCalendarPeriod(locationName: string, from: CalendarPeriod[], to: CalendarPeriod): Observable<void> {
+    const body = {previous: from, toUpdate: to};
     return this.http.put<void>(api.updateCalendarPeriods.replace('{locationName}', locationName), body);
   }
 
-  deleteCalendarPeriods(periods: CalendarPeriod[]): Observable<void> {
+  deleteCalendarPeriods(period: CalendarPeriod): Observable<void> {
     const options = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       }),
-      body: periods.map(s => s.toJSON())
+      body: period
     };
     return this.http.delete<void>(api.deleteCalendarPeriods, options);
   }

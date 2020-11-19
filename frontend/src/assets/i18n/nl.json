@@ -20,10 +20,17 @@
     "numberOfLockers": "Aantal lockers",
     "numberOfSeats": "Aantal plaatsen",
     "noLocations": "Helaas zijn er op dit moment geen locaties beschikbaar",
+    "status": "Status",
 
     "locationDetails": {
       "info": "Algemene informatie over deze locatie:",
       "tags": "Tags die deze locatie kenmerken:",
+      "status": {
+        "statusOpen": "OPEN: Sluit om {}",
+        "statusClosed": "GESLOTEN",
+        "statusClosedActive": "GESLOTEN: Opent opnieuw om {}",
+        "statusClosedUpcoming": "GESLOTEN: Opent opnieuw op {}"
+      },
       "calendar": {
         "reservation": {
           "successMessage": "Het wijzigen van de reservaties is succesvol verlopen",
@@ -42,7 +49,9 @@
       "title": "Filter",
       "tagsFilterTitle": "Filter locaties op tags",
       "noMatchesFromFilter": "Er zijn geen locaties die voldoen aan je filtervoorwaarden of aan je zoekterm.",
-      "searchPlaceholder": "zoek een locatie op naam, rekening houdend met de filter op tags"
+      "searchPlaceholder": "zoek een locatie op naam, rekening houdend met de filter op tags",
+      "showAll": "Toon alle locaties",
+      "showOpen": "Toon open locaties"
     },
 
     "error": "Er is iets misgelopen tijdens het ophalen van de locaties."
@@ -73,6 +82,7 @@
       "delete": "Verwijder",
       "search": "Zoek",
       "clear": "Annuleer",
+      "open": "Toon open locaties",
       "close": "Sluiten"
     },
 
@@ -189,16 +199,28 @@
             "hour": "1 uur",
             "hourAndHalf": "1.5 uur"
           },
-
-          "updateButton": "Update",
-          "cancelButton": "Annuleer",
-
-          "wrongCalendarPeriodFormatMessage": "Niet alle periodes zijn correct ingevuld",
-          "successMessage": "Het wijzigen van de kalender is succesvol verlopen",
-          "successButNoChangesMessage": "Er waren geen veranderingen nodig",
-          "errorMessage": "Het aanpassen van de kalender is mislukt. Er is iets misgegaan.",
+          "adminWarning": "Opgepast, deze verandering ligt binnen de vastgelegde termijn. Je zal manueel contact moeten opnemen met dienst permanentie van de UGent.",
 
           "noCalendarPeriodsForLocation": "Op dit moment zijn er nog geen periodes voor de locatie beschikbaar."
+        },
+
+        "addModalView": {
+          "title": "Nieuwe kalenderperiode toevoegen",
+          "success": "Het toevoegen van de nieuwe kalenderperiode is gelukt.",
+          "error": "Er is iets misgelopen tijdens het toevoegen van de nieuwe kalenderperiode."
+        },
+
+        "updateModalView": {
+          "title": "Wijzigen van een kalenderperiode",
+          "success": "Het wijzigen van de kalenderperiode is gelukt.",
+          "error": "Er is iets misgelopen tijdens het wijzigen van de kalenderperiode."
+        },
+
+        "deleteModalView": {
+          "title": "Wil je kalenderperiode verwijderen?",
+          "body": "Ben je zeker dat je volgende kalenderperiode wilt verwijderen?",
+          "success": "Het verwijderen van de kalenderperiode is gelukt.",
+          "error": "Er is iets misgelopen tijdens het verwijderen van de kalenderperiode."
         },
 
         "warningDialog": {

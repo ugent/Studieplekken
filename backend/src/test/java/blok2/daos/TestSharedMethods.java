@@ -69,10 +69,10 @@ public class TestSharedMethods {
     }
 
     public static Building testBuilding() {
-        Building testbuilding = new Building();
-        testbuilding.setName("TestBuilding");
-        testbuilding.setAddress("Teststreet 123");
-        return testbuilding;
+        Building testBuilding = new Building();
+        testBuilding.setName("TestBuilding");
+        testBuilding.setAddress("TestStreet 123");
+        return testBuilding;
     }
 
     public static LocationTag testTag() {
@@ -184,6 +184,94 @@ public class TestSharedMethods {
         }
 
         return calendarPeriods;
+    }
+
+    /**
+     * Create CalendarPeriod that is completely in the past
+     * @param location the location for which to create the period
+     * @return a CalendarPeriod in the past
+     */
+    public static CalendarPeriod pastCalendarPeriods(Location location) {
+        LocalDateTime now = LocalDateTime.now();
+
+        CalendarPeriod period = new CalendarPeriod();
+        period.setLocation(location);
+        period.setLockedFrom(now.minusWeeks(3));
+
+        period.setStartsAt(now.minusDays(2).toLocalDate());
+        period.setEndsAt(now.minusDays(1).toLocalDate());
+        period.setOpeningTime(LocalTime.of(9,0));
+        period.setClosingTime(LocalTime.of(17, 0));
+
+        period.setReservableFrom(now.minusDays(3));
+
+        return period;
+    }
+
+    /**
+     * Create CalendarPeriod that is completely in the future
+     * @param location the location for which to create the period
+     * @return a CalendarPeriod in the future
+     */
+    public static CalendarPeriod upcomingCalendarPeriods(Location location) {
+        LocalDateTime now = LocalDateTime.now();
+
+        CalendarPeriod period = new CalendarPeriod();
+        period.setLocation(location);
+        period.setLockedFrom(now.minusWeeks(3));
+
+        period.setStartsAt(now.plusDays(1).toLocalDate());
+        period.setEndsAt(now.plusDays(2).toLocalDate());
+        period.setOpeningTime(LocalTime.of(9,0));
+        period.setClosingTime(LocalTime.of(17, 0));
+
+        period.setReservableFrom(now);
+
+        return period;
+    }
+
+    /**
+     * Create a CalendarPeriod that is active (today is between start and end date) but not during the active hours
+     * @param location the location for which to create the period
+     * @return a CalendarPeriod that is active, but outside the hours
+     */
+    public static CalendarPeriod activeCalendarPeriodsOutsideHours(Location location) {
+        LocalDateTime now = LocalDateTime.now();
+
+        CalendarPeriod period = new CalendarPeriod();
+        period.setLocation(location);
+        period.setLockedFrom(now.minusWeeks(3));
+
+        period.setStartsAt(now.minusDays(1).toLocalDate());
+        period.setEndsAt(now.plusDays(1).toLocalDate());
+        period.setOpeningTime(now.plusHours(1).toLocalTime());
+        period.setClosingTime(now.plusHours(2).toLocalTime());
+
+        period.setReservableFrom(now);
+
+        return period;
+    }
+
+    /**
+     * Create a CalendarPeriod that is active (today is between start and end date) and during the active hours
+     * @param location the location for which to create the period
+     * @return a CalendarPeriod that is active and within hours
+     */
+    public static CalendarPeriod activeCalendarPeriodsInsideHours(Location location) {
+        LocalDateTime now = LocalDateTime.now();
+
+        CalendarPeriod period = new CalendarPeriod();
+        period.setLocation(location);
+        period.setLockedFrom(now.minusWeeks(3));
+
+        period.setStartsAt(now.minusDays(1).toLocalDate());
+        period.setEndsAt(now.plusDays(1).toLocalDate());
+        period.setOpeningTime(now.minusHours(1).toLocalTime());
+        period.setClosingTime(now.plusHours(1).toLocalTime());
+
+        period.setReservableFrom(now);
+
+        return period;
     }
 
     public static void addCalendarPeriods(ICalendarPeriodDao calendarPeriodDao, CalendarPeriod... periods) throws SQLException {

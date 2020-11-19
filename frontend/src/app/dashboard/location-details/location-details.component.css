@@ -3,3 +3,15 @@
   align-items: flex-start;
   margin: 4px;
 }
+
+.locationStatusBar {
+  height: 8px;
+}
+
+.open {
+  background-color: var(--ck-color-base-action);
+}
+
+.closed {
+  background-color: var(--ck-color-base-error);
+}

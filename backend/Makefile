@@ -16,3 +16,5 @@ reset-schemas:
 	psql postgres -h 127.0.0.1 -p 5432 -d blokatugent_test -f database/reset_schema.sql
 seed:
 	psql postgres -h 127.0.0.1 -p 5432 -d blokatugent -f database/seed.sql
+clean-test:
+	./gradlew cleanTest test --no-build-cache
