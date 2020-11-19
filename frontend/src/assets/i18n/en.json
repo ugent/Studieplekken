@@ -19,7 +19,7 @@
     "location": "Room",
     "numberOfLockers": "Number of lockers",
     "numberOfSeats": "Number of seats",
-    "noLocations": "Unfortunately, at this moment there are no Rooms available.",
+    "noLocations": "Unfortunately, at this moment there are no rooms available.",
     "status": "Status",
 
     "locationDetails": {
@@ -40,17 +40,17 @@
           "updateAddMessage": "The following reservations will be added to your profile",
           "updateDeleteMessage": "The following reservations will be deleted",
           "updateConfirmMessage": "Would you like to confirm these changes?",
-          "updateWarningMessage": "WARNING: not showing up for a registered reservations with your student ID will lead to penalty points attributed to your profile. Too many penalty points will lead to blacklisting from the use of the application"
+          "updateWarningMessage": "WARNING: not showing up for a registered reservation with your student ID will lead to penalty points attributed to your profile. Too many penalty points will lead to blacklisting from the application"
         }
       }
     },
 
     "filter": {
       "title": "Filter",
-      "tagsFilterTitle": "Filter Rooms on tags",
+      "tagsFilterTitle": "Filter rooms on tags",
       "buildingsFilterTitle": "Choose building/campus",
-      "noMatchesFromFilter": "There are no Rooms that match your selection or search.",
-      "searchPlaceholder": "search a Room by name",
+      "noMatchesFromFilter": "There are no rooms that match your selection or search.",
+      "searchPlaceholder": "search a room by name",
       "showAll": "Show all rooms",
       "showOpen": "Show open rooms"
     },
@@ -141,7 +141,7 @@
 
     "general": {
       "loading": "Loading...",
-      "noLocations": "There are no Rooms yet, make one using the 'Add Room' button",
+      "noLocations": "There are no rooms yet, make one using the 'Add room' button",
       "noBuildings": "There are no buildings yet, make one using the 'Add Building' button",
       "noTags": "There are no tags yet, make one using the 'Add Tag' button",
       "noAuthorities": "There are no authorities yet, make on using the 'Add Authority' button"
@@ -338,7 +338,7 @@
           "numberOfSeats": "Number of seats",
           "numberOfLockers": "Number of lockers",
           "forGroup": "Group Reservation",
-          "forGroupHelp": "A Room for groups can be reserved by a single person for a group of people. There are no individual reservations possible/necessary.",
+          "forGroupHelp": "A room for groups requires only a single reservation, regardless of room capacity. There are no individual reservations possible or necessary.",
           "imageUrl": "URL of image (optional)"
         },
 
@@ -370,7 +370,7 @@
         "title": "Sure to delete room?",
 
         "body": "Are you sure that you want to delete {locationName}?",
-        "warning": "Deleting this Room will delete the following opening periods (and the corresponding reservations) as well.",
+        "warning": "Deleting this room will delete the following opening periods (and the corresponding reservations) as well.",
 
         "loading": "Waiting for response of server...",
         "success": "Successfully deleted the room",
@@ -407,7 +407,7 @@
       "deleteBuildingModal": {
         "title": "Delete the building",
         "body": "Are you sure that you want to delete following building?",
-        "warning": "Please do note that all Rooms within this building will be deleted too",
+        "warning": "Please do note that all rooms within this building will be deleted too",
         "success": "Successfully deleted the building.",
         "error": "Something went wrong while deleting the building."
       },
@@ -511,8 +511,8 @@
 
         "authorities": {
           "title": "Authorities of {name}",
-          "info": "Below, an overview is given of all authorities in which the user has a managing role. This means that the user can manage the Rooms within these authorities.",
-          "notAllowedToHaveAuthorities": "The user is not allowed to have authorities. Change the role if you want the user to be able to manage Rooms in one or more authorities",
+          "info": "Below, an overview is given of all authorities in which the user has a managing role. This means that the user can manage the rooms within these authorities.",
+          "notAllowedToHaveAuthorities": "The user is not allowed to have authorities. Change the role if you want the user to be able to manage rooms in one or more authorities",
           "noAuthoritiesForUser": "The user is not linked to any authority, which means that he/she is not allowed to manage any room.",
           "allAuthoritiesAreAssigned": "All authorities are already assigned to the user.",
           "addNew": "Add authority to user",
@@ -602,10 +602,10 @@
       "users": {
         "title": "Manage the users of authority {authorityName}",
         "info": "In the table below, all the users that are included in the authority {authorityName} are given. You can add or delete users here.",
-        "info2": "Users that are mentioned in the table, have managing rights to the Rooms that are included in the authority.",
+        "info2": "Users that are mentioned in the table, have managing rights to the rooms that are included in the authority.",
 
         "addNewUser": "Add user",
-        "noUsersInAuthority": "There are no users included in the authority. This means that no user can modify the Rooms of this authority.",
+        "noUsersInAuthority": "There are no users included in the authority. This means that no user can modify the rooms of this authority.",
 
         "addUserToAuthorityModal": {
           "title": "Add user to authority",
@@ -642,7 +642,7 @@
       "deleteAuthorityModal": {
         "title": "Delete the authority",
         "body": "Are you sure that you want to delete following authority?",
-        "warning": "Please do note that all Rooms within this authority will be deleted",
+        "warning": "Please do note that all rooms within this authority will be deleted",
         "success": "Successfully deleted the authority.",
         "error": "Something went wrong while deleting the authority."
       }
@@ -662,9 +662,9 @@
         "searchButton": "Search",
         "clearButton": "Clear",
 
-        "neverSearched": "You have not yet searched for any Room reservations.",
+        "neverSearched": "You have not yet searched for any room reservations.",
         "loading": "Waiting for response of server...",
-        "error": "Something went wrong while searching for Room reservations",
+        "error": "Something went wrong while searching for room reservations",
 
         "table": {
           "date": "Date for which reserved",
@@ -675,15 +675,15 @@
         },
 
         "deleteModal": {
-          "title": "Sure to delete the Room reservation?",
+          "title": "Sure to delete the room reservation?",
           "body": "Room reservation about to delete:",
 
           "yesButton": "Delete",
           "noButton": "Cancel",
 
           "loading": "Waiting on response of server...",
-          "success": "Successfully deleted the Room reservation.",
-          "error": "Something went wrong while deleting the Room reservation..."
+          "success": "Successfully deleted the room reservation.",
+          "error": "Something went wrong while deleting the room reservation..."
         }
       },
 
@@ -868,7 +868,7 @@
 
     "reservations": {
       "locations": {
-        "title": "Overview of your Room reservations",
+        "title": "Overview of your room reservations",
 
         "table": {
           "header": {
@@ -885,9 +885,9 @@
           }
         },
 
-        "zeroReservations": "You have never made any Room reservations so far",
+        "zeroReservations": "You have never made any room reservations so far",
         "loading": "Room reservations are being loaded...",
-        "error": "Error while loading your Room reservations"
+        "error": "Error while loading your room reservations"
       },
 
       "lockers": {
