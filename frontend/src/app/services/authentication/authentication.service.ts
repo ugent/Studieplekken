@@ -31,7 +31,7 @@ import {userWantsTLogInLocalStorageKey} from '../../app.constants';
 export class AuthenticationService {
   // BehaviorSubject to be able to emit on changes
   // private so that only the AuthenticationService can modify the user
-  private userSubject: BehaviorSubject<User> = new BehaviorSubject<User>(UserConstructor.new());
+  private userSubject: BehaviorSubject<User> = new BehaviorSubject<User>(null);
   // and other components can subscribe using the public observable
   // (which comes from the userSubject)
   public user: Observable<User> = this.userSubject.asObservable();
@@ -119,11 +119,11 @@ export class AuthenticationService {
    * userSubject has a valid user as value, we can consider the user as logged in.
    */
   isLoggedIn(): boolean {
-    return this.userSubject.value.augentID !== '';
+    return this.userSubject.value && this.userSubject.value.augentID !== '';
   }
 
   isAdmin(): boolean {
-    return this.isLoggedIn() ? this.userSubject.value.admin : false;
+    return this.userSubject.value && this.isLoggedIn() ? this.userSubject.value.admin : false;
   }
 
   updatePassword(from: string, to: string): Observable<any> {
