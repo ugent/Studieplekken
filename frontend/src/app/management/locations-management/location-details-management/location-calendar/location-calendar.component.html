@@ -379,7 +379,6 @@
       <b>{{'management.locationDetails.calendar.deleteModalView.body' | translate}}</b>
       <br><br>
       <ul *ngIf="prepareToUpdatePeriod !== null">
-
         <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.startsAt' | translate}}</i></b>{{prepareToUpdatePeriod.startsAt.format('DD/MM/YYYY')}}</li>
         <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.endsAt' | translate}}</i></b>{{prepareToUpdatePeriod.endsAt.format('DD/MM/YYYY')}}</li>
         <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.openingTime' | translate}}</i></b>{{prepareToUpdatePeriod.openingTime.format('HH:mm')}}</li>
@@ -391,7 +390,7 @@
 
   <!-- Footer -->
   <div class="modal-footer">
-    <button type="button" class="btn btn-primary" (click)="delete()">
+    <button type="button" class="btn btn-danger" (click)="delete()">
       {{'general.buttons.delete' | translate}}
     </button>
     <button type="button" class="btn btn-secondary" (click)="closeModal()">

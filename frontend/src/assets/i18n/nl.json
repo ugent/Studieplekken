@@ -362,6 +362,7 @@
         "title": "Locatie verwijderen?",
 
         "body": "Ben je zeker dat je {locationName} wil verwijderen?",
+        "warning": "Het verwijderen van deze locatie zal ook al de volgende openingsperiodes (en de eventuele reservaties daarbinnen) verwijderen:",
 
         "loading": "Wachten op antwoord van de server...",
         "success": "Het verwijderen van de locatie is geslaagd",

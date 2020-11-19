@@ -16,7 +16,7 @@
       <td>{{reservation.user.firstName + ' ' + reservation.user.lastName}}</td>
       <td *ngIf="showCheckbox() && reservation.attended == null">
         <span class="glyphicon glyphicon-ok pointerCursor" style="color:#CCFF99" id="firstToggle" (click)="onCheckboxToggle(reservation, true)"></span>
-        <span class="glyphicon glyphicon-remove-sign pointerCursor" style="color:#FF6666" (click)="onCheckboxToggle(reservation, false)"></span>
+        <span class="glyphicon glyphicon-remove-sign pointerCursor" style="color:#CCFF99" (click)="onCheckboxToggle(reservation, false)"></span>
       </td>
 
       <td *ngIf="showCheckbox() && reservation.attended != null">

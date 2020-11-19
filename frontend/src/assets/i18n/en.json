@@ -362,6 +362,7 @@
         "title": "Sure to delete location?",
 
         "body": "Are you sure that you want to delete {locationName}?",
+        "warning": "Deleting this location will delete the following opening periods (and the corresponding reservations) as well:"
 
         "loading": "Waiting for response of server...",
         "success": "Successfully deleted the new location",

@@ -31,7 +31,7 @@
             </span>
           </td>
           <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
-              (click)="prepareToDeleteLocation(location.name, deleteLocationModal)">
+              (click)="prepareToDeleteLocation(location, deleteLocationModal)">
             <span class="glyphicon glyphicon-trash pointerCursor"></span>
           </td>
         </tr>
@@ -222,15 +222,24 @@
   <!-- Body -->
   <div class="modal-body">
     <div>
-      {{('management.locations.deleteLocationModal.body' | translate)
-          .replace('{locationName}', currentLocationNameToDelete)}}
+      <p>
+        {{('management.locations.deleteLocationModal.body' | translate).replace('{locationName}', currentLocationNameToDelete)}}
+      </p>
+    </div>
+    <div class="alert alert-danger">
+      <p>{{'management.locations.deleteLocationModal.warning' | translate}}</p>
+      <ul>
+        <li *ngFor="let cp of currentCalendarPeriodsToDelete">
+          {{cp.startsAt | date}} - {{cp.endsAt | date}} ({{cp.openingTime | date:'shortTime'}}-{{cp.closingTime | date:'shortTime'}})
+        </li>
+      </ul>
     </div>
   </div>
 
   <!-- Footer -->
   <div class="modal-footer">
-    <button type="button" class="btn btn-primary"
-            (click)="deleteLocationLinkedToCurrentLocationNameToDelete()">
+    <button type="button" class="btn btn-danger"
+            (click)="deleteLocation()">
       {{'management.locations.deleteLocationModal.yesButton' | translate}}
     </button>
     <button type="button" class="btn btn-secondary" (click)="closeModal()">
