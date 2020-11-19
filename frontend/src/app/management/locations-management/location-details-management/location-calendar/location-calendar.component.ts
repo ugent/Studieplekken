@@ -6,8 +6,9 @@ import * as moment from 'moment';
 import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { CalendarPeriodsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
-// tslint:disable-next-line:max-line-length
-import { ApplicationTypeFunctionalityService } from 'src/app/services/functionality/application-type/application-type-functionality.service';
+import {
+  ApplicationTypeFunctionalityService
+} from 'src/app/services/functionality/application-type/application-type-functionality.service';
 import { rowsAnimation } from 'src/app/shared/animations/RowAnimation';
 import { CalendarPeriod, mapCalendarPeriodsToCalendarEvents } from 'src/app/shared/model/CalendarPeriod';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
@@ -286,10 +287,7 @@ export class LocationCalendarComponent implements OnInit {
       return true;
     }
 
-    if (this.prepareToUpdatePeriod && this.prepareToUpdatePeriod.startsAt.isBefore(moment().add(3, 'weeks').day(8))) {
-      return true;
-    }
-
-    return false;
+    return this.prepareToUpdatePeriod &&
+      this.prepareToUpdatePeriod.startsAt.isBefore(moment().add(3, 'weeks').day(8));
   }
 }

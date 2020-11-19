@@ -46,12 +46,12 @@ export class CalendarPeriodsService {
     return this.http.put<void>(api.updateCalendarPeriods.replace('{locationName}', locationName), body);
   }
 
-  deleteCalendarPeriods(periods: CalendarPeriod): Observable<void> {
+  deleteCalendarPeriods(period: CalendarPeriod): Observable<void> {
     const options = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       }),
-      body: periods
+      body: period
     };
     return this.http.delete<void>(api.deleteCalendarPeriods, options);
   }

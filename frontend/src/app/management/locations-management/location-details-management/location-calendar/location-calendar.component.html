@@ -124,7 +124,9 @@
               {{'management.locationDetails.calendar.form.startsAt' | translate}}
             </label>
             <div class="col-lg-8">
-              <app-moment-date id="startsAt" [(model)]="model.startsAt" [type]="'date'"></app-moment-date>
+              <app-moment-date id="startsAt"
+                [(model)]="model.startsAt" [type]="'date'" [min]="getMinStartDate()">
+              </app-moment-date>
             </div>
           </div>
 
@@ -196,7 +198,7 @@
             </label>
             <div class="col-lg-8">
               <app-moment-datetime id="reservableFrom"
-                                   [(model)]="model.reservableFrom" [disabled]="!model.reservable">
+                [(model)]="model.reservableFrom" [disabled]="!model.reservable" [min]="getMinReservableFrom(model)">
               </app-moment-datetime>
             </div>
           </div>
@@ -257,7 +259,9 @@
               {{'management.locationDetails.calendar.form.startsAt' | translate}}
             </label>
             <div class="col-lg-8">
-              <app-moment-date id="startsAtUpdate" [(model)]="model.startsAt" [type]="'date'" [min]="getMinStartDate()"></app-moment-date>
+              <app-moment-date id="startsAtUpdate"
+                [(model)]="model.startsAt" [type]="'date'" [min]="getMinStartDate()">
+              </app-moment-date>
             </div>
           </div>
 
@@ -329,7 +333,7 @@
             </label>
             <div class="col-lg-8">
               <app-moment-datetime id="reservableFromUpdate"
-                                   [(model)]="model.reservableFrom" [disabled]="!model.reservable" [min]="getMinReservableFrom(model)">
+                [(model)]="model.reservableFrom" [disabled]="!model.reservable" [min]="getMinReservableFrom(model)">
               </app-moment-datetime>
             </div>
           </div>
