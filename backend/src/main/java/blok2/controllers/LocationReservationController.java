@@ -61,6 +61,7 @@ public class LocationReservationController extends AuthorizedLocationController 
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public LocationReservation createLocationReservation(@AuthenticationPrincipal User user, @Valid @RequestBody Timeslot timeslot) {
         try {
             LocationReservation reservation = new LocationReservation(user, LocalDateTime.now(), timeslot, null);
@@ -80,6 +81,7 @@ public class LocationReservationController extends AuthorizedLocationController 
     }
 
     @GetMapping("/timeslot/{calendarid}/{date}/{seqnr}")
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public List<LocationReservation> getLocationReservationsByTimeslot(@PathVariable("calendarid") int calendarId, @PathVariable("date") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate date, @PathVariable("seqnr") int seqnr) {
         Timeslot timeslot = new Timeslot(calendarId, seqnr, date);
         try {
@@ -92,6 +94,7 @@ public class LocationReservationController extends AuthorizedLocationController 
     }
 
     @GetMapping("/{location}")
+    @PreAuthorize("permitAll()")
     public Map<String, Integer> getReservationCount(@PathVariable("location") String location) {
         try {
             return Collections.singletonMap("amount", locationReservationDao.amountOfReservationsRightNow(location));
@@ -123,10 +126,13 @@ public class LocationReservationController extends AuthorizedLocationController 
     }
 
     @PostMapping("/{userid}/{calendarid}/{date}/{seqnr}/attendance")
+    @PreAuthorize("asAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void setLocationReservationAttendance(@PathVariable("calendarid") int calendarId, @PathVariable("date") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate date,
                                        @PathVariable("seqnr") int seqnr, @PathVariable("userid") String userid, @RequestBody LocationReservation.AttendedPostBody body) {
         Timeslot slot = new Timeslot(calendarId, seqnr, date);
         try {
+            CalendarPeriod parentPeriod = calendarPeriodDao.getById(slot.getCalendarId());
+            isAuthorized(parentPeriod.getLocation().getName());
             locationReservationDao.setReservationAttendance(userid, slot, body.getAttended());
         } catch (SQLException e) {
             logger.error(e.getMessage());

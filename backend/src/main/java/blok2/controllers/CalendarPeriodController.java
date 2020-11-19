@@ -51,6 +51,7 @@ public class CalendarPeriodController extends  AuthorizedLocationController {
     }
 
     @GetMapping("/{locationName}/status")
+    @PreAuthorize("permitAll()")
     public Pair<LocationStatus, String> getStatusOfLocation(@PathVariable("locationName") String locationName) {
         try {
             return calendarPeriodDao.getStatus(locationName);
@@ -62,6 +63,7 @@ public class CalendarPeriodController extends  AuthorizedLocationController {
     }
 
     @GetMapping
+    @PreAuthorize("permitAll()")
     public List<CalendarPeriod> getAllCalendarPeriods() {
         try {
             return calendarPeriodDao.getAllCalendarPeriods();
@@ -200,7 +202,7 @@ public class CalendarPeriodController extends  AuthorizedLocationController {
     @DeleteMapping
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void deleteCalendarPeriods(@RequestBody CalendarPeriod calendarPeriod) {
-        calendarPeriods.forEach(c -> isAuthorized(c.getLocation().getName()));
+        isAuthorized(calendarPeriod.getLocation().getName());
 
         try {
             calendarPeriodDao.deleteCalendarPeriod(calendarPeriod);
