@@ -233,6 +233,11 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
         }
     }
 
+    private int amountOfTimeslotReservations(Timeslot timeslot, Connection conn) {
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("count_location_reservations_of_location_for_timeslot"));
+        
+    }
+
     private List<LocationReservation> getAbsentOrPresentStudents(String locationName, LocalDate date
             , PreparedStatement pstmt) throws SQLException {
         List<LocationReservation> reservations = new ArrayList<>();
