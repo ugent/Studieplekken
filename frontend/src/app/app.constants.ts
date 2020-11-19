@@ -1,3 +1,5 @@
+import * as moment from 'moment';
+
 export const defaultLocationImage = 'assets/images/default_location.jpg';
 export const userWantsTLogInLocalStorageKey = 'userWantsTLogIn';
 
@@ -23,6 +25,19 @@ export const penaltyEventCodeForManualEntry = 16663;
 export const rolesArray = ['ADMIN'];
 
 /*
+ * The possible statuses of a location.
+ */
+
+export const locationStatusArray = ['OPEN', 'CLOSED', 'CLOSED_UPCOMING', 'CLOSED_ACTIVE'];
+
+export enum LocationStatus {
+  OPEN = 'OPEN',
+  CLOSED = 'CLOSED',
+  CLOSED_UPCOMING = 'CLOSED_UPCOMING',
+  CLOSED_ACTIVE = 'CLOSED_ACTIVE'
+}
+
+/*
  * This variable maps all the supported languages to its
  * database representation (LANGUAGES.enum)
  */
@@ -30,3 +45,7 @@ export const languageAsEnum = {
   nl: 'DUTCH',
   en: 'ENGLISH'
 };
+
+export const defaultOpeningHour = 8;
+
+export const defaultClosingHour = 17;

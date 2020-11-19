@@ -15,7 +15,7 @@ public abstract class AuthorizedLocationController extends AuthorizedController 
     IAuthorityDao authorityDao;
 
     public void isAuthorized(String locationName) {
-        isAuthorized(this::hasAuthority, locationName, "You do not hold the correct Authority.");
+        isAuthorized((l, $) -> hasAuthority(l), locationName, "You do not hold the correct Authority.");
     }
 
     protected boolean hasAuthority(String locationName) {

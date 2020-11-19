@@ -4,7 +4,6 @@ import {rowsAnimation} from '../../../shared/animations/RowAnimation';
 import {LockerReservation} from '../../../shared/model/LockerReservation';
 import {Observable} from 'rxjs';
 import {AuthenticationService} from '../../../services/authentication/authentication.service';
-import {CustomDate, toDateString} from '../../../shared/model/helpers/CustomDate';
 
 @Component({
   selector: 'app-profile-locker-reservations',
@@ -19,7 +18,6 @@ import {CustomDate, toDateString} from '../../../shared/model/helpers/CustomDate
 export class ProfileLockerReservationsComponent implements OnInit {
   lockerReservations: Observable<LockerReservation[]>;
 
-  toDateString = (date: CustomDate) => toDateString(date);
 
   constructor(private authenticationService: AuthenticationService) {
     authenticationService.user.subscribe(next => {

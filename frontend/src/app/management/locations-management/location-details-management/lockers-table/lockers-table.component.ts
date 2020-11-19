@@ -3,8 +3,8 @@ import {Observable} from 'rxjs';
 import {Location} from '../../../../shared/model/Location';
 import {LockersService} from '../../../../services/api/lockers/lockers.service';
 import {LockerReservation} from '../../../../shared/model/LockerReservation';
-import {CustomDate, toDateString, typeScriptDateToCustomDate} from '../../../../shared/model/helpers/CustomDate';
 import {tap} from 'rxjs/operators';
+import * as moment from 'moment';
 import {msToShowFeedback} from '../../../../app.constants';
 
 export enum LockerStatus {
@@ -29,7 +29,6 @@ export class LockersTableComponent implements OnInit {
   currentUpperIndexOfSlice = 15;
   pageIndices: number[];
 
-  toDateString = (date: CustomDate) => toDateString(date);
   floor = (x: number) => Math.floor(x);
 
   constructor(private lockersService: LockersService) { }
@@ -57,7 +56,7 @@ export class LockersTableComponent implements OnInit {
   pickupKeyButtonClick(lockerReservation: LockerReservation): void {
     this.successOnUpdatingLockerReservation = null;
 
-    lockerReservation.keyPickupDate = typeScriptDateToCustomDate(new Date());
+    lockerReservation.keyPickupDate = moment();
     this.lockersService.updateLockerReservation(lockerReservation).subscribe(
       () => {
         this.successHandler();
@@ -72,7 +71,7 @@ export class LockersTableComponent implements OnInit {
   returnKeyButtonClick(lockerReservation: LockerReservation): void {
     this.successOnUpdatingLockerReservation = null;
 
-    lockerReservation.keyReturnedDate = typeScriptDateToCustomDate(new Date());
+    lockerReservation.keyReturnedDate = moment();
     this.lockersService.updateLockerReservation(lockerReservation).subscribe(
       () => {
         this.successHandler();

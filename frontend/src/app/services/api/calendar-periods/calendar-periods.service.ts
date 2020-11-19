@@ -1,8 +1,12 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {CalendarPeriod} from '../../../shared/model/CalendarPeriod';
+import {Pair} from '../../../shared/model/helpers/Pair';
 import {Observable} from 'rxjs';
+import { map } from 'rxjs/internal/operators/map';
+import { filter } from 'rxjs/internal/operators/filter';
 import {api} from '../endpoints';
+import {LocationStatus} from '../../../app.constants';
 
 @Injectable({
   providedIn: 'root'
@@ -13,12 +17,22 @@ export class CalendarPeriodsService {
   }
 
   getCalendarPeriodsOfLocation(locationName: string): Observable<CalendarPeriod[]> {
-    return this.http.get<CalendarPeriod[]>(api.calendarPeriods
+    return this.http.get<any>(api.calendarPeriods
+      .replace('{locationName}', locationName))
+      .pipe(filter(s => !!s), map(ls => ls.map(s => CalendarPeriod.fromJSON(s))));
+  }
+
+  getCalendarPeriods(): Observable<CalendarPeriod[]> {
+    return this.http.get<CalendarPeriod[]>(api.allCalendarPeriods);
+  }
+
+  getStatusOfLocation(locationName: string): Observable<Pair<LocationStatus, string>> {
+    return this.http.get<Pair<LocationStatus, string>>(api.locationStatus
       .replace('{locationName}', locationName));
   }
 
   addCalendarPeriods(calendarPeriods: CalendarPeriod[]): Observable<void> {
-    return this.http.post<void>(api.addCalendarPeriods, calendarPeriods);
+    return this.http.post<void>(api.addCalendarPeriods, calendarPeriods.map(s => s.toJSON()));
   }
 
   /**
@@ -28,7 +42,7 @@ export class CalendarPeriodsService {
    * will be invoked.
    */
   updateCalendarPeriods(locationName: string, from: CalendarPeriod[], to: CalendarPeriod[]): Observable<void> {
-    const body = [from, to];
+    const body = [from.map(s => s.toJSON()), to.map(s => s.toJSON())];
     return this.http.put<void>(api.updateCalendarPeriods.replace('{locationName}', locationName), body);
   }
 
@@ -37,7 +51,7 @@ export class CalendarPeriodsService {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       }),
-      body: periods
+      body: periods.map(s => s.toJSON())
     };
     return this.http.delete<void>(api.deleteCalendarPeriods, options);
   }

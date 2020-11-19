@@ -2,17 +2,13 @@ package blok2.daos.db;
 
 import blok2.daos.ILockerReservationDao;
 import blok2.helpers.Resources;
-import blok2.helpers.date.CustomDate;
 import blok2.model.reservables.Locker;
 import blok2.model.reservations.LockerReservation;
 import blok2.model.users.User;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -138,7 +134,7 @@ public class DBLockerReservationDao extends DAO implements ILockerReservationDao
     public LockerReservation getLockerReservation(String locationName, int lockerNumber) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             String query = Resources.databaseProperties.getString("get_locker_reservations_where_<?>");
-            query = query.replace("<?>", "l.location_name = ? and l.number = ?");
+            query = query.replace("<?>", "lr.location_name = ? and lr.locker_number = ?");
 
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, locationName);
@@ -191,8 +187,13 @@ public class DBLockerReservationDao extends DAO implements ILockerReservationDao
 
     public static LockerReservation createLockerReservation(ResultSet rs, Connection conn) throws SQLException {
         LockerReservation lr = new LockerReservation();
-        lr.setKeyPickupDate(CustomDate.parseString(rs.getString(Resources.databaseProperties.getString("locker_reservation_key_pickup_date"))));
-        lr.setKeyReturnedDate(CustomDate.parseString(rs.getString(Resources.databaseProperties.getString("locker_reservation_key_return_date"))));
+
+        Timestamp date = rs.getTimestamp(Resources.databaseProperties.getString("locker_reservation_key_pickup_date"));
+        if(!rs.wasNull())
+            lr.setKeyPickupDate(date.toLocalDateTime());
+        date = rs.getTimestamp(Resources.databaseProperties.getString("locker_reservation_key_return_date"));
+        if(!rs.wasNull())
+            lr.setKeyReturnedDate(date.toLocalDateTime());
 
         User u = DBAccountDao.createUser(rs, conn);
         Locker l = DBLocationDao.createLocker(rs,conn);
@@ -208,12 +209,12 @@ public class DBLockerReservationDao extends DAO implements ILockerReservationDao
         pstmt.setString(1, lr.getLocker().getLocation().getName());
         pstmt.setInt(2, lr.getLocker().getNumber());
         pstmt.setString(3, lr.getOwner().getAugentID());
-        pstmt.setString(4, lr.getKeyPickupDate() == null ? "" : lr.getKeyPickupDate().toString());
-        pstmt.setString(5, lr.getKeyReturnedDate() == null ? "" : lr.getKeyReturnedDate().toString());
+        pstmt.setTimestamp(4, lr.getKeyPickupDate() == null ? null : Timestamp.valueOf(lr.getKeyPickupDate()));
+        pstmt.setTimestamp(5, lr.getKeyReturnedDate() == null ? null : Timestamp.valueOf(lr.getKeyReturnedDate()));
     }
 
     private void setupUpdateLockerReservationPstmt(LockerReservation lr, PreparedStatement pstmt) throws SQLException {
-        pstmt.setString(1, lr.getKeyPickupDate() == null ? "" : lr.getKeyPickupDate().toString());
-        pstmt.setString(2, lr.getKeyReturnedDate() == null ? "" : lr.getKeyReturnedDate().toString());
+        pstmt.setTimestamp(1, lr.getKeyPickupDate() == null ? null : Timestamp.valueOf(lr.getKeyPickupDate()));
+        pstmt.setTimestamp(2, lr.getKeyReturnedDate() == null ? null : Timestamp.valueOf(lr.getKeyReturnedDate()));
     }
 }

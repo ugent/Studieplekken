@@ -64,9 +64,9 @@ public class LockerReservationController extends AuthorizedLocationController {
 
     @PutMapping
     @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public void updateLockerReservation(@RequestBody LockerReservation lockerReservation, @AuthenticationPrincipal User user) {
+    public void updateLockerReservation(@RequestBody LockerReservation lockerReservation) {
         isAuthorized(
-                lr -> hasAuthority(lr.getLocker().getLocation().getName()) || lr.getOwner().getAugentID().equals(user.getAugentID()),
+                (lr, user) -> hasAuthority(lr.getLocker().getLocation().getName()) || lr.getOwner().getAugentID().equals(user.getAugentID()),
                 lockerReservation
         );
         try {
@@ -81,9 +81,9 @@ public class LockerReservationController extends AuthorizedLocationController {
 
     @DeleteMapping
     @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public void deleteLockerReservation(@RequestBody LockerReservation lockerReservation, @AuthenticationPrincipal User user) {
+    public void deleteLockerReservation(@RequestBody LockerReservation lockerReservation) {
         isAuthorized(
-                lr -> hasAuthority(lr.getLocker().getLocation().getName()) || lr.getOwner().getAugentID().equals(user.getAugentID()),
+                (lr, user) -> hasAuthority(lr.getLocker().getLocation().getName()) || lr.getOwner().getAugentID().equals(user.getAugentID()),
                 lockerReservation
         );
         try {

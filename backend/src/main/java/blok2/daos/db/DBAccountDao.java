@@ -2,7 +2,6 @@ package blok2.daos.db;
 
 import blok2.daos.IAccountDao;
 import blok2.helpers.Resources;
-import blok2.helpers.date.CustomDate;
 import blok2.helpers.generators.IGenerator;
 import blok2.helpers.generators.VerificationCodeGenerator;
 import blok2.model.users.User;
@@ -328,8 +327,7 @@ public class DBAccountDao extends DAO implements IAccountDao {
         pstmt.setString(8, verificationCode);
 
         LocalDateTime localDate = LocalDateTime.now();
-        CustomDate today = new CustomDate(localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth(), localDate.getHour(), localDate.getMinute(), localDate.getSecond());
-        pstmt.setString(9, today.toString());
+        pstmt.setString(9, localDate.toString());
     }
 
     private void equalPreparationForUserAndUserToVerify(User u, PreparedStatement pstmt)

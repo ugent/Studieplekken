@@ -6,6 +6,9 @@ import {TagsService} from '../services/api/tags/tags.service';
 import {TranslateService} from '@ngx-translate/core';
 import {AbstractControl, FormControl, FormGroup} from '@angular/forms';
 import {MatSelectChange} from '@angular/material/select';
+import { CalendarPeriodsService } from '../services/api/calendar-periods/calendar-periods.service';
+import {LocationStatus} from '../app.constants';
+import {Pair} from '../shared/model/helpers/Pair';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,10 +17,17 @@ import {MatSelectChange} from '@angular/material/select';
 })
 export class DashboardComponent implements OnInit {
   locations: Location[];
+  locationStatuses = new Map<string, Pair<LocationStatus, string>>();
   filteredLocations: Location[];
   filteredLocationsBackup: Location[];
 
+  // all tags to select from
   tags: LocationTag[];
+
+  // the tags that were selected to filter on
+  selectedTags: LocationTag[];
+  // the name that should be filtered
+  locationSearch: string;
 
   filterFormGroup = new FormGroup({
     filteredTags: new FormControl('')
@@ -27,11 +37,12 @@ export class DashboardComponent implements OnInit {
 
   successOnRetrievingLocations: boolean = undefined;
 
-  locationSearch: string;
+  showOpen = false;
 
   constructor(private locationService: LocationService,
               private tagsService: TagsService,
-              private translate: TranslateService) { }
+              private translate: TranslateService,
+              private calendarPeriodService: CalendarPeriodsService) { }
 
   ngOnInit(): void {
     this.currentLang = this.translate.currentLang;
@@ -41,6 +52,8 @@ export class DashboardComponent implements OnInit {
       }
     );
 
+    this.selectedTags = [];
+
     this.successOnRetrievingLocations = null;
     this.locationService.getLocations().subscribe(
       (next) => {
@@ -48,6 +61,15 @@ export class DashboardComponent implements OnInit {
         this.filteredLocations = next;
         this.filteredLocationsBackup = next;
         this.successOnRetrievingLocations = true;
+
+        // retrieve the status for the locations
+        next.forEach(l => {
+          this.calendarPeriodService.getStatusOfLocation(l.name).subscribe(
+            next2 => {
+              this.locationStatuses.set(l.name, next2);
+            }
+          );
+        });
       }, () => {
         this.successOnRetrievingLocations = false;
       }
@@ -60,48 +82,75 @@ export class DashboardComponent implements OnInit {
     );
   }
 
+  /**
+   * Used as a compareWith input on the tags-selection field in the filter
+   * Tracks identities when checking for changes
+   */
   compareTagsInSelection(tag1: LocationTag, tag2: LocationTag): boolean {
     return !tag1 || !tag2 ? false : tag1.tagId === tag2.tagId;
   }
 
+  /**
+   * When the selection of tags to filter on is changed
+   */
   onSelectionChange(event: MatSelectChange): void {
-    const value: LocationTag[] = event.value;
+    this.selectedTags = event.value;
+    this.displayFilterLocations();
+  }
 
-    // If no tags to filter are selected, show all locations
-    if (value.length === 0) {
-      this.filteredLocations = this.locations;
-    } else {
-      this.filteredLocations = [];
+  toggleShowOpen(): void {
+    this.showOpen = !this.showOpen;
+    this.displayFilterLocations();
+  }
 
-      this.locations.forEach(location => {
-        for (const tag of value) {
+  /**
+   * This will take into account:
+   * - selectedTags
+   * - locationSearch
+   * - showOpen
+   *
+   * And filter only those locations that apply to all filters above
+   */
+  displayFilterLocations(): void {
+    this.filteredLocations = [];
+
+    this.locations.forEach(location => {
+      // first check that the location name matches with the search bar
+      if ((this.locationSearch !== undefined) && (!location.name.toLowerCase().includes(this.locationSearch.toLowerCase()))) {
+        return;
+      }
+
+      // only filter on tags when there is at least one selected
+      if (!(this.selectedTags.length === 0)) {
+        // only add when all the tags match
+        for (const tag of this.selectedTags) {
           // if the filtered tag is not assigned to a certain location ...
-          if (location.assignedTags.find(v => v.tagId === tag.tagId) === undefined) {
-            return; // ... then check if next location may be added to the filtered locations
+          if (location.assignedTags.filter(t => t.tagId === tag.tagId).length === 0) {
+            return;
           }
         }
-        // if all selected tags in the filter were found in the location, push the location
-        // else, the lambda was already returned and we wouldn't have gotten here.
-        this.filteredLocations.push(location);
-      });
-    }
+      }
 
-    this.filteredLocationsBackup = this.filteredLocations;
+      if (this.showOpen) {
+        if (this.locationStatuses.get(location.name).first === LocationStatus.OPEN) {
+          this.filteredLocations.push(location);
+        }
+      } else {
+        this.filteredLocations.push(location);
+      }
+    });
   }
 
   onSearchEnter(): void {
-    this.filteredLocations = [];
-    for (const location of this.filteredLocationsBackup) {
-      if (location.name.toUpperCase().includes(this.locationSearch.toUpperCase())) {
-        this.filteredLocations.push(location);
-      }
-    }
+    this.displayFilterLocations();
   }
 
   onClearSearch(): void {
     this.filteredLocations = this.locations;
     this.filteredTags.setValue([]);
     this.locationSearch = '';
+    this.showOpen = false;
+    this.displayFilterLocations();
   }
 
   get filteredTags(): AbstractControl {

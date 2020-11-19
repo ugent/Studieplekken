@@ -1,9 +1,9 @@
 package blok2.controllers;
 
+import blok2.daos.ICalendarPeriodDao;
 import blok2.daos.ILocationDao;
 import blok2.daos.ILocationTagDao;
 import blok2.helpers.authorization.AuthorizedLocationController;
-import blok2.helpers.date.CustomDate;
 import blok2.model.reservables.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ public class LocationController extends AuthorizedLocationController {
     // *************************************
 
     @Autowired
-    public LocationController(ILocationDao locationDao, ILocationTagDao locationTagDao) {
+    public LocationController(ILocationDao locationDao, ILocationTagDao locationTagDao, ICalendarPeriodDao calendarPeriodDao) {
         this.locationDao = locationDao;
         this.locationTagDao = locationTagDao;
     }
@@ -107,17 +107,22 @@ public class LocationController extends AuthorizedLocationController {
         }
     }
 
+
+    /* currently no longer applicable
+    //logged in user (?)
+>>>>>>> master
     @GetMapping("/{locationName}/reservations/count")
     @PreAuthorize("permitAll()")
     public int getAmountOfReservationsToday(@PathVariable("locationName") String locationName) {
         try {
-            return locationDao.getCountOfReservations(CustomDate.now()).get(locationName);
+            return 0;//locationDao.getCountOfReservations(CustomDate.now()).get(locationName);
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
+    */
 
     // *****************************************
     // *   CRUD operations for LOCATION_TAGS   *

@@ -95,7 +95,6 @@ export class BuildingManagementComponent implements OnInit {
 
   updateBuildingInFormGroup(): void {
     this.successUpdatingBuilding = null;
-    console.log(this.building);
     this.buildingService.updateBuilding(this.building.buildingId, this.building).subscribe(
       () => {
         this.successUpdatingBuilding = true;
