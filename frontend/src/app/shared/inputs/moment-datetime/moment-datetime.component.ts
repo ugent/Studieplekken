@@ -15,10 +15,12 @@ export class MomentDateTimeComponent implements OnInit, OnChanges {
   disabled: boolean;
   @Output()
   modelChange: EventEmitter<Moment> = new EventEmitter();
-
+  @Input()
+  min: Moment;
 
   modelDateAsString: string;
   modelTimeAsString: string;
+  modelMinAsString: string;
 
 
   constructor() { }
@@ -33,6 +35,12 @@ export class MomentDateTimeComponent implements OnInit, OnChanges {
     } else {
       this.modelDateAsString = '';
       this.modelTimeAsString = '';
+    }
+
+    if (this.min) {
+      this.modelMinAsString = this.min.format('YYYY-MM-DD');
+    } else {
+      this.modelMinAsString = '';
     }
   }
 

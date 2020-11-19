@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
@@ -56,6 +57,7 @@ public class CalendarPeriodController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
+
     @GetMapping
     public List<CalendarPeriod> getAllCalendarPeriods() {
         try {
@@ -67,35 +69,14 @@ public class CalendarPeriodController {
         }
     }
 
-    @PostMapping
-    public void addCalendarPeriods(@RequestBody List<CalendarPeriod> calendarPeriods) {
-        try {
-            calendarPeriods.forEach(CalendarPeriod::initializeLockedFrom);
-            calendarPeriodDao.addCalendarPeriods(calendarPeriods);
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
-    }
-
     @PutMapping("/{locationName}")
     public void updateCalendarPeriods(@PathVariable("locationName") String locationName,
-                                      @RequestBody List<CalendarPeriod>[] fromAndTo) {
+                                      @RequestBody UpdateCalendarBody fromAndTo) {
         try {
-            List<CalendarPeriod> from = fromAndTo[0];
-            List<CalendarPeriod> to = fromAndTo[1];
-            to.forEach(CalendarPeriod::initializeLockedFrom);
-            // check for outdated view (perhaps some other user has changed the calendar periods in the meantime
-            // between querying for the calendar periods for a location, and updating the calendar
-            List<CalendarPeriod> currentView = calendarPeriodDao.getCalendarPeriodsOfLocation(locationName);
+            List<CalendarPeriod> from = fromAndTo.getPrevious();
+            CalendarPeriod to = fromAndTo.getToUpdate();
 
-            // if the sizes dont match, the view must be different...
-            if (from.size() != currentView.size()) {
-                logger.log(Level.SEVERE, "updateCalendarPeriods, conflict in frontends data view and actual data view");
-                throw new ResponseStatusException(
-                        HttpStatus.CONFLICT, "Wrong/Old view on data layer");
-            }
+            List<CalendarPeriod> currentView = calendarPeriodDao.getCalendarPeriodsOfLocation(locationName);
 
             // if the sizes do match, check if the lists are equal
             // before invoking the 'equals' on a list, sort both lists based on 'starts at'
@@ -108,24 +89,41 @@ public class CalendarPeriodController {
                         HttpStatus.CONFLICT, "Wrong/Old view on data layer");
             }
 
+            to.initializeLockedFrom();
+            analyzeUpdatedCalendarPeriod(locationName, to);
 
-            // This is an issue. We can't block if any are locked: non-changed ones would have to be removed and added as well.
-            // This solution prevents locked periods from being removed (which we did want to do, if I recall correctly)
-            // Better suggestions welcome.
-            from.removeIf(CalendarPeriod::isLocked);
-            to.removeIf(CalendarPeriod::isLocked);
+            // If this is a new CalendarPeriod, add instead
+            if (to.getId() == null) {
+                // TODO unless admin
+                if (!to.isLocked())
+                    calendarPeriodDao.addCalendarPeriods(Collections.singletonList(to));
+                else {
+                    logger.log(Level.SEVERE, "updateCalendarPeriods, new CalendarPeriod too late");
+                    throw new ResponseStatusException(
+                            HttpStatus.CONFLICT, "new calendarperiod too late.");
+                }
+                return;
+            }
 
-            // if the 'to' list is empty, all 'from' entries need to be deleted
-            if (to.isEmpty()) {
-                deleteCalendarPeriods(from);
+            // Note: if the if-clause above evaluated to true, the method addCalendarPeriods would
+            // have set the id of the calendar period. So, this is safe.
+            CalendarPeriod originalTo = calendarPeriodDao.getById(to.getId());
+
+            // TODO unless admin
+            if (originalTo.isLocked()) {
+                logger.log(Level.SEVERE, "updateCalendarPeriods, already locked");
+                throw new ResponseStatusException(
+                        HttpStatus.CONFLICT, "The original term is locked.");
             }
-            // if the 'from' list is empty, all 'to' entries need to be added
-            else if (from.isEmpty()) {
-                addCalendarPeriods(to);
-            } else {
-                to.sort(Comparator.comparing(Period::getStartsAt));
-                analyzeAndUpdateCalendarPeriods(locationName, from, to);
+
+            to.initializeLockedFrom();
+            if (to.isLocked()) {
+                logger.log(Level.SEVERE, "updateCalendarPeriods, move to locked space");
+                throw new ResponseStatusException(
+                        HttpStatus.CONFLICT, "The time you're moving into is already locked.");
             }
+
+            calendarPeriodDao.updateCalendarPeriod(to);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
@@ -148,59 +146,80 @@ public class CalendarPeriodController {
      * the strategy of deleting the 'from' periods and adding new 'to' periods
      * was chosen
      */
-    private void analyzeAndUpdateCalendarPeriods(String locationName,
-                                                 List<CalendarPeriod> from,
-                                                 List<CalendarPeriod> to) throws SQLException {
+    private void analyzeUpdatedCalendarPeriod(String locationName,
+                                              CalendarPeriod to) throws SQLException {
         // setup
         Location expectedLocation = locationDao.getLocation(locationName);
 
         // analyze the periods
-        for (CalendarPeriod period : to) {
-            // all locations must match the expected location
-            if (!expectedLocation.equals(period.getLocation())) {
-                logger.log(Level.SEVERE, "analyzeAndUpdateCalendarPeriods, conflict in locations");
+        // all locations must match the expected location
+        if (!expectedLocation.equals(to.getLocation())) {
+            logger.log(Level.SEVERE, "analyzeAndUpdateCalendarPeriods, conflict in locations");
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT, "Different locations in request");
+        }
+
+
+        // check if the ends of all periods are after the start
+        if (to.getEndsAt().isBefore(to.getStartsAt())) {
+            logger.log(Level.SEVERE, "analyzeAndUpdateCalendarPeriods, endsAt was before startsAt");
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT, "StartsAt must be before EndsAt");
+        }
+
+
+        if (to.getOpeningTime().isAfter(to.getClosingTime())) {
+            logger.log(Level.SEVERE, "analyzeAndUpdateCalendarPeriods, closingTime was before openingTime");
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT, "OpeningTime must be before closingTime");
+        }
+
+
+        // check if reservable from is parsable
+        if (to.isReservable()) {
+            if(to.getReservableTimeslotSize() <= 0) {
                 throw new ResponseStatusException(
-                        HttpStatus.CONFLICT, "Different locations in request");
+                        HttpStatus.BAD_REQUEST, "Timeslot size must be larger than 0.");
             }
 
-
-            // check if the ends of all periods are after the start
-            if (period.getEndsAt().isBefore(period.getStartsAt())) {
-                logger.log(Level.SEVERE, "analyzeAndUpdateCalendarPeriods, endsAt was before startsAt");
+            if(!to.getReservableFrom().isAfter(to.getLockedFrom())) {
                 throw new ResponseStatusException(
-                        HttpStatus.CONFLICT, "StartsAt must be before EndsAt");
-            }
+                        HttpStatus.BAD_REQUEST, "ReservableFrom must be after locked date. (3 weeks)");
 
-
-            if (period.getOpeningTime().isAfter(period.getClosingTime())) {
-                logger.log(Level.SEVERE, "analyzeAndUpdateCalendarPeriods, closingTime was before openingTime");
-                throw new ResponseStatusException(
-                        HttpStatus.CONFLICT, "OpeningTime must be before closingTime");
-            }
-
-
-            // check if reservable from is parsable
-            if (period.isReservable()) {
-                if(period.getReservableTimeslotSize() <= 0) {
-                    throw new ResponseStatusException(
-                            HttpStatus.BAD_REQUEST, "Timeslot size must be larger than 0.");
-                }
             }
         }
 
-        // delete all 'from' and add 'to'
-        deleteCalendarPeriods(from);
-        addCalendarPeriods(to);
     }
 
     @DeleteMapping
-    public void deleteCalendarPeriods(@RequestBody List<CalendarPeriod> calendarPeriods) {
+    public void deleteCalendarPeriods(@RequestBody CalendarPeriod calendarPeriod) {
         try {
-            calendarPeriodDao.deleteCalendarPeriods(calendarPeriods);
+            calendarPeriodDao.deleteCalendarPeriod(calendarPeriod);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+    
+    private static class UpdateCalendarBody {
+        private List<CalendarPeriod> previous;
+        private CalendarPeriod toUpdate;
+
+        public List<CalendarPeriod> getPrevious() {
+            return previous;
+        }
+
+        public void setPrevious(List<CalendarPeriod> previous) {
+            this.previous = previous;
+        }
+
+        public CalendarPeriod getToUpdate() {
+            return toUpdate;
+        }
+
+        public void setToUpdate(CalendarPeriod toUpdate) {
+            this.toUpdate = toUpdate;
         }
     }
 }

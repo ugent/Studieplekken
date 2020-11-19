@@ -193,16 +193,28 @@
             "hour": "1 hour",
             "hourAndHalf": "1.5 hours"
           },
-
-          "updateButton": "Update",
-          "cancelButton": "Cancel",
-
-          "wrongCalendarPeriodFormatMessage": "Not all periods are filled in correctly",
-          "successMessage": "Successfully updated the calendar",
-          "successButNoChangesMessage": "No changed were required",
-          "errorMessage": "Update was not successful. Something went wrong.",
+          "adminWarning": "Be careful, this change is within the locked from period. You will have to manually contact the appropriate UGent services.",
 
           "noCalendarPeriodsForLocation": "At the moment, there are no periods for the location."
+        },
+
+        "addModalView": {
+          "title": "Add new calendar period",
+          "success": "Successfully added the new calendar period",
+          "error": "Something went wrong while adding the new calendar period"
+        },
+
+        "updateModalView": {
+          "title": "Update a calendar period",
+          "success": "Successfully updated the calendar period",
+          "error": "Something went wrong while updating the calendar period"
+        },
+
+        "deleteModalView": {
+          "title": "Sure to delete the calendar period?",
+          "body": "Are you sure that you want to delete following calendar period?",
+          "success": "Successfully deleted the calendar period",
+          "error": "Something went wrong while deleting the calendar period"
         },
 
         "warningDialog": {

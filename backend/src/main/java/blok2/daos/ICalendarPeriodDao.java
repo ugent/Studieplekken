@@ -17,9 +17,11 @@ public interface ICalendarPeriodDao extends IDao {
 
     void addCalendarPeriods(List<CalendarPeriod> periods) throws SQLException;
 
+    void updateCalendarPeriod(CalendarPeriod period) throws SQLException;
+
     void updateCalendarPeriods(List<CalendarPeriod> from, List<CalendarPeriod> to) throws SQLException;
 
-    void deleteCalendarPeriods(List<CalendarPeriod> periods) throws SQLException;
+    void deleteCalendarPeriod(CalendarPeriod calendarPeriod) throws SQLException;
 
     Pair<LocationStatus, String> getStatus(String locationName) throws SQLException;
 
