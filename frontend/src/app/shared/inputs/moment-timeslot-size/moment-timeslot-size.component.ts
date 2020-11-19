@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
-import * as moment from '';
+import * as moment from 'moment';
+import 'moment-duration-format';
 
 @Component({
   selector: 'app-moment-timeslot-size',
@@ -38,8 +39,7 @@ export class MomentTimeslotSizeComponent implements OnInit, OnChanges {
    */
   ngOnChanges(): void {
     if (this.model !== 0) {
-      console.log(moment.duration(this.model, 'minutes').format('HH:mm'));
-      this.modelAsString = '';
+      this.modelAsString = moment.duration(this.model, 'minutes').format('HH:mm');
     } else {
       this.modelAsString = '';
     }

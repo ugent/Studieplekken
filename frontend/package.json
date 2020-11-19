@@ -33,6 +33,7 @@
     "flatpickr": "^4.6.6",
     "jquery": "^3.5.1",
     "moment": "^2.29.1",
+    "moment-duration-format": "^2.3.2",
     "ngx-bootstrap": "^6.2.0",
     "ngx-markdown": "^10.1.1",
     "rxjs": "~6.5.5",
