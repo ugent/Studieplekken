@@ -8,4 +8,4 @@ psql -U postgres -d blokatugent -a -f ../database/reset_schema.sql
 cd ..
 bash ./gradlew flywayMigrate
 psql -U postgres -d blokatugent -a -f database/seed.sql
-cd $currpath
+cd $currpath 

@@ -37,6 +37,7 @@ CREATE TABLE public.locations
     description_dutch   text,
     description_english text,
     forGroup            boolean,
+    approved            boolean,
 
     constraint fk_location_to_authority
         foreign key (authority_id)

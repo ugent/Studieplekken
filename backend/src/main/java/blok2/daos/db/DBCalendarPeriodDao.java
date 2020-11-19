@@ -9,14 +9,12 @@ import blok2.model.calendar.Timeslot;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 @Service
@@ -97,16 +95,26 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
 
         // Add all relevant time periods
         if(calendarPeriod.isReservable()) {
-            // One per day (end day inclusive)
-            for(LocalDate currDate = calendarPeriod.getStartsAt(); !currDate.isAfter(calendarPeriod.getEndsAt()); currDate=currDate.plusDays(1)) {
-                // One per hour (end hour/rest of hour non inclusive)
-                int timeslotCount = calendarPeriod.getOpenHoursDuration() / (60*calendarPeriod.getReservableTimeslotSize());
-                for(int sequenceNr = 0; sequenceNr < timeslotCount; sequenceNr+=1) {
-                    addTimeslotPeriod(sequenceNr, currDate, calendarPeriod, conn);
-                }
-            }
-            fillTimeslotList(calendarPeriod, conn);
+            addTimeslots(calendarPeriod, conn);
         }
+    }
+
+    private void addTimeslots(CalendarPeriod period, Connection conn) throws SQLException {
+        // One per day (end day inclusive)
+        for(LocalDate currDate = period.getStartsAt(); !currDate.isAfter(period.getEndsAt()); currDate=currDate.plusDays(1)) {
+            // One per hour (end hour/rest of hour non inclusive)
+            int timeslotCount = period.getOpenHoursDuration() / (60*period.getReservableTimeslotSize());
+            for(int sequenceNr = 0; sequenceNr < timeslotCount; sequenceNr+=1) {
+                addTimeslotPeriod(sequenceNr, currDate, period, conn);
+            }
+        }
+        fillTimeslotList(period, conn);
+    }
+
+    private void removeTimeslots(CalendarPeriod period, Connection conn) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_timeslots_of_calendar"));
+        stmt.setInt(1, period.getId());
+        stmt.execute();
     }
 
     private void addTimeslotPeriod(int seq_id, LocalDate date, CalendarPeriod period, Connection conn) throws SQLException {
@@ -127,7 +135,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
                 conn.setAutoCommit(false);
 
                 for (int i = 0; i < from.size(); i++) {
-                    updateCalendarPeriod(from.get(i), to.get(i), conn);
+                    updateCalendarPeriod(from.get(i), to.get(i), false, conn);
                 }
 
                 conn.commit();
@@ -142,18 +150,29 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
 
     @Override
     public void updateCalendarPeriod(CalendarPeriod to) throws SQLException {
+        updateCalendarPeriod(to, false);
+    }
+
+    @Override
+    public void updateCalendarPeriod(CalendarPeriod to, boolean resetTimeslots) throws SQLException {
         try (Connection conn = adb.getConnection()) {
-            updateCalendarPeriod(to, to, conn);
+            updateCalendarPeriod(to, to, resetTimeslots, conn);
         }
     }
 
-    private void updateCalendarPeriod(CalendarPeriod from, CalendarPeriod to, Connection conn) throws SQLException {
+    private void updateCalendarPeriod(CalendarPeriod from, CalendarPeriod to, boolean resetTimeslots, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("update_calendar_period"));
         // set ...
         prepareCalendarPeriodPstmt(to, pstmt);
         // where ...
         pstmt.setInt(10, from.getId());
         pstmt.execute();
+        
+        if(resetTimeslots) {
+            removeTimeslots(to, conn);
+            if(to.isReservable())
+                addTimeslots(to, conn);
+        }
     }
 
     @Override

@@ -40,6 +40,9 @@ public class TestCascadeInDBBuildingsDao extends TestDao {
         // Add test objects to database
         locationDao.addLocation(testLocation1);
         locationDao.addLocation(testLocation2);
+        locationDao.approveLocation(testLocation1, true);
+        locationDao.approveLocation(testLocation2, true);
+
     }
 
     @Test

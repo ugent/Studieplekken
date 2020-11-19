@@ -284,7 +284,7 @@ export class LocationDetailsComponent implements OnInit {
   }
 
   getBeginHour(calendarPeriod: CalendarPeriod, timeslot: Timeslot): moment.Moment {
-    const d = calendarPeriod.openingTime;
+    const d = moment(timeslot.timeslotDate.format('DD-MM-YYYY') + 'T' + calendarPeriod.openingTime.format('HH:mm'), 'DD-MM-YYYYTHH:mm');
     d.add(timeslot.timeslotSeqnr * calendarPeriod.reservableTimeslotSize, 'minutes');
     return d;
   }

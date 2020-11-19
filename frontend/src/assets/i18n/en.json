@@ -316,6 +316,7 @@
     "locations": {
       "title": "Management of study rooms",
       "addNew": "Add room",
+      "unapproved": "Approval of new study rooms",
 
       "table": {
         "header": {
@@ -356,7 +357,13 @@
 
         "loading": "Waiting for response of server...",
         "success": "Successfully added the new room",
-        "error": "Something went wrong while adding the new room"
+        "error": "Something went wrong while adding the new room",
+        "warning": "Are you sure you want to propose this room? An e-mail will be sent to directie faciliteitenbeheer for approval. The amount of seats will be adjusted."
+      },
+
+      "editLocationModal": {
+        "title": "Approve this room",
+        "approveButton": "Approve"
       },
 
       "deleteLocationModal": {
