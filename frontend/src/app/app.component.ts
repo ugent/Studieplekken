@@ -31,11 +31,18 @@ export class AppComponent implements OnInit {
      ******************************/
     // if you think about supporting another language, you must change the exported variable 'appLanguages'
     // in environments.ts accordingly. This variable is used in PenaltiesComponent to show the correct description
+
     translate.setDefaultLang('en');
     // tries to set the language to the default browserlanguage of the user if 'en' or 'nl' (else en)
     const browserLang = translate.getBrowserLang();
-    // add another language? -> add language to regex and read comments at the beginning of this constructor!
-    translate.use(browserLang.match(/en|nl/) ? browserLang : 'en');
+
+    if (localStorage.getItem('selectedLanguage') !== null) {
+      translate.use(localStorage.getItem('selectedLanguage'));
+    } else {
+      // add another language? -> add language to regex and read comments at the beginning of this constructor!
+      translate.use(browserLang.match(/en|nl/) ? browserLang : 'en');
+      localStorage.setItem('selectedLanguage', 'en');
+    }
   }
 
   ngOnInit(): void {
@@ -92,18 +99,20 @@ export class AppComponent implements OnInit {
   }
 
   currentLanguage(): string {
-    return this.translate.currentLang;
+    return localStorage.getItem('selectedLanguage');
   }
 
   otherSupportedLanguage(): string {
-    return this.translate.currentLang === 'nl' ? 'en' : 'nl';
+    return localStorage.getItem('selectedLanguage') === 'nl' ? 'en' : 'nl';
   }
 
   changeLanguage(event: Event): void {
     event.preventDefault();
-    if (this.translate.currentLang === 'nl') {
+    if (localStorage.getItem('selectedLanguage') === 'nl') {
+      localStorage.setItem('selectedLanguage', 'en');
       this.translate.use('en');
     } else {
+      localStorage.setItem('selectedLanguage', 'nl');
       this.translate.use('nl');
     }
   }

@@ -15,8 +15,8 @@
     <tr [@rowsAnimation]="" *ngFor="let reservation of locationReservations">
       <td>{{reservation.user.firstName + ' ' + reservation.user.lastName}}</td>
       <td *ngIf="showCheckbox() && reservation.attended == null">
-        <span class="glyphicon glyphicon-ok pointerCursor" id="firstToggle" (click)="onCheckboxToggle(reservation, true)"></span>
-        <span class="glyphicon glyphicon-remove-sign pointerCursor" (click)="onCheckboxToggle(reservation, false)"></span>
+        <span class="glyphicon glyphicon-ok pointerCursor" style="color:#CCFF99" id="firstToggle" (click)="onCheckboxToggle(reservation, true)"></span>
+        <span class="glyphicon glyphicon-remove-sign pointerCursor" style="color:#FF6666" (click)="onCheckboxToggle(reservation, false)"></span>
       </td>
 
       <td *ngIf="showCheckbox() && reservation.attended != null">
@@ -26,7 +26,6 @@
       </td>
       <td *ngIf="!showCheckbox()">{{(reservation.attended ? 'general.yes' : 'general.no') | translate}}</td>
       <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
-          data-toggle="modal" data-target="#deleteLocationReservationModal"
           (click)="prepareToDeleteLocationReservation(reservation, deleteLocationReservationModal)">
         <span class="glyphicon glyphicon-trash pointerCursor"></span>
       </td>
