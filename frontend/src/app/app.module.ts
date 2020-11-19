@@ -66,6 +66,7 @@ import { BuildingManagementComponent } from './management/building-management/bu
 import { ModalModule } from 'ngx-bootstrap/modal';
 import {MatChipsModule} from '@angular/material/chips';
 import { LocationReservationsComponent } from './management/locations-management/location-details-management/location-calendar/location-reservations/location-reservations/location-reservations.component';
+import { MomentTimeslotSizeComponent } from './shared/inputs/moment-timeslot-size/moment-timeslot-size.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -246,7 +247,8 @@ const routes: Routes = [
     MomentDateTimeComponent,
     LocationOpeningperiodDialogComponent,
     BuildingManagementComponent,
-    LocationReservationsComponent
+    LocationReservationsComponent,
+    MomentTimeslotSizeComponent
   ],
     imports: [
       BrowserModule,
