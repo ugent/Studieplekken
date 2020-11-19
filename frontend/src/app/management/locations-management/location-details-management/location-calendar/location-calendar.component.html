@@ -388,9 +388,14 @@
     </div>
   </div>
 
+  <div class="alert alert-danger">
+    <p>{{'management.locationDetails.calendar.deleteModalView.warning' | translate}}</p>
+  </div>
+
+
   <!-- Footer -->
   <div class="modal-footer">
-    <button type="button" class="btn btn-danger" (click)="delete()">
+    <button type="button" class="btn btn-danger danger" (click)="delete()">
       {{'general.buttons.delete' | translate}}
     </button>
     <button type="button" class="btn btn-secondary" (click)="closeModal()">

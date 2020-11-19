@@ -179,7 +179,8 @@
           "table": {
             "noLocationReservations": "Er zijn geen reservaties voor het geselecteerde timeslot",
             "user": "Gebruiker",
-            "attended": "Gebruiker was aanwezig?"
+            "attended": "Gebruiker was aanwezig?",
+            "futureReservation": "Timeslot is nog niet geweest"
           }
         },
 
@@ -221,7 +222,8 @@
           "title": "Wil je kalenderperiode verwijderen?",
           "body": "Ben je zeker dat je volgende kalenderperiode wilt verwijderen?",
           "success": "Het verwijderen van de kalenderperiode is gelukt.",
-          "error": "Er is iets misgelopen tijdens het verwijderen van de kalenderperiode."
+          "error": "Er is iets misgelopen tijdens het verwijderen van de kalenderperiode.",
+          "warning": "Het verwijderen van de kalenderperiode zal ook alle corresponderende reservaties verwijderen. Wees hier aandachtig voor!"
         },
 
         "warningDialog": {

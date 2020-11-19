@@ -3,9 +3,11 @@ import {LocationReservation} from '../../../../../../shared/model/LocationReserv
 import {Timeslot, timeslotStartHour} from '../../../../../../shared/model/Timeslot';
 import * as moment from 'moment';
 import {CalendarPeriod} from '../../../../../../shared/model/CalendarPeriod';
-import {tap} from 'rxjs/operators';
+import {map, tap} from 'rxjs/operators';
 import {LocationReservationsService} from '../../../../../../services/api/location-reservations/location-reservations.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
+import { CalendarPeriodsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-location-reservations',
@@ -24,6 +26,7 @@ export class LocationReservationsComponent implements OnInit {
   successDeletingLocationReservation: boolean = undefined;
 
   constructor(private locationReservationService: LocationReservationsService,
+              private calendarPeriodService: CalendarPeriodsService,
               private modalService: BsModalService) { }
 
   ngOnInit(): void {

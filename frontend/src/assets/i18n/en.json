@@ -221,7 +221,8 @@
           "title": "Sure to delete the calendar period?",
           "body": "Are you sure that you want to delete following calendar period?",
           "success": "Successfully deleted the calendar period",
-          "error": "Something went wrong while deleting the calendar period"
+          "error": "Something went wrong while deleting the calendar period",
+          "warning": "Deleting the calendarperiod will result in the deletion of the corresponding reservations. Please be careful with this!"
         },
 
         "warningDialog": {
