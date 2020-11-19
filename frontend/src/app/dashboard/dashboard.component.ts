@@ -9,6 +9,8 @@ import {MatSelectChange} from '@angular/material/select';
 import { CalendarPeriodsService } from '../services/api/calendar-periods/calendar-periods.service';
 import {LocationStatus} from '../app.constants';
 import {Pair} from '../shared/model/helpers/Pair';
+import { Building } from '../shared/model/Building';
+import { BuildingService } from '../services/api/buildings/buildings.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -24,13 +26,22 @@ export class DashboardComponent implements OnInit {
   // all tags to select from
   tags: LocationTag[];
 
+  // all buildings to select from
+  buildings: Building[];
+
   // the tags that were selected to filter on
   selectedTags: LocationTag[];
+  // the building that was selected to filter on
+  selectedBuilding: Building;
   // the name that should be filtered
   locationSearch: string;
 
-  filterFormGroup = new FormGroup({
+  tagFilterFormGroup = new FormGroup({
     filteredTags: new FormControl('')
+  });
+
+  buildingFilterFormGroup = new FormGroup({
+    filteredBuilding: new FormControl('')
   });
 
   currentLang: string;
@@ -42,7 +53,8 @@ export class DashboardComponent implements OnInit {
   constructor(private locationService: LocationService,
               private tagsService: TagsService,
               private translate: TranslateService,
-              private calendarPeriodService: CalendarPeriodsService) { }
+              private calendarPeriodService: CalendarPeriodsService,
+              private buildingService: BuildingService) { }
 
   ngOnInit(): void {
     this.currentLang = this.translate.currentLang;
@@ -80,6 +92,12 @@ export class DashboardComponent implements OnInit {
         this.tags = next;
       }
     );
+
+    this.buildingService.getAllBuildings().subscribe(
+      (next) => {
+        this.buildings = next;
+      }
+    )
   }
 
   /**
@@ -93,8 +111,18 @@ export class DashboardComponent implements OnInit {
   /**
    * When the selection of tags to filter on is changed
    */
-  onSelectionChange(event: MatSelectChange): void {
+  onTagsSelectionChange(event: MatSelectChange): void {
+    console.log(event);
     this.selectedTags = event.value;
+    this.displayFilterLocations();
+  }
+
+  /**
+   * When the selection of building to filter on is changed
+   */
+  onBuildingSelectionChange(event: MatSelectChange): void {
+    console.log(event);
+    this.selectedBuilding = event.value;
     this.displayFilterLocations();
   }
 
@@ -120,12 +148,18 @@ export class DashboardComponent implements OnInit {
         return;
       }
 
+      console.log(this.selectedBuilding)
+      // check that the location is in the selected building
+      if (this.selectedBuilding !== undefined && location.building.buildingId !== this.selectedBuilding.buildingId) {
+        return;
+      }
+
       // only filter on tags when there is at least one selected
       if (!(this.selectedTags.length === 0)) {
         // only add when all the tags match
         for (const tag of this.selectedTags) {
           // if the filtered tag is not assigned to a certain location ...
-          if (location.assignedTags.filter(t => t.tagId === tag.tagId).length === 0) {
+          if (!location.assignedTags.some(t => t.tagId === tag.tagId)) {
             return;
           }
         }
@@ -148,12 +182,17 @@ export class DashboardComponent implements OnInit {
   onClearSearch(): void {
     this.filteredLocations = this.locations;
     this.filteredTags.setValue([]);
+    this.filteredBuilding.reset();
     this.locationSearch = '';
     this.showOpen = false;
     this.displayFilterLocations();
   }
 
   get filteredTags(): AbstractControl {
-    return this.filterFormGroup.get('filteredTags');
+    return this.tagFilterFormGroup.get('filteredTags');
+  }
+
+  get filteredBuilding(): AbstractControl {
+    return this.buildingFilterFormGroup.get('filteredBuilding');
   }
 }

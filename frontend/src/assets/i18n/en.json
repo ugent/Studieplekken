@@ -48,8 +48,9 @@
     "filter": {
       "title": "Filter",
       "tagsFilterTitle": "Filter locations on tags",
+      "buildingsFilterTitle": "Choose building/campus",
       "noMatchesFromFilter": "There are no locations that match your selection or search.",
-      "searchPlaceholder": "search a location by name, taking the tags filter into account",
+      "searchPlaceholder": "search a location by name",
       "showAll": "Show all locations",
       "showOpen": "Show open locations"
     },

@@ -48,8 +48,9 @@
     "filter": {
       "title": "Filter",
       "tagsFilterTitle": "Filter locaties op tags",
+      "buildingsFilterTitle": "Kies gebouw/locatie",
       "noMatchesFromFilter": "Er zijn geen locaties die voldoen aan je filtervoorwaarden of aan je zoekterm.",
-      "searchPlaceholder": "zoek een locatie op naam, rekening houdend met de filter op tags",
+      "searchPlaceholder": "zoek een ruimte op naam",
       "showAll": "Toon alle locaties",
       "showOpen": "Toon open locaties"
     },
