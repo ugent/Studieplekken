@@ -34,6 +34,8 @@ public interface ILocationDao extends IDao {
      */
     void updateLocation(String locationName, Location location) throws SQLException;
 
+    void updateLocation(String locationName, Location location, boolean changeSeats) throws SQLException;
+
     /**
      * Deletes the location with the given name.
      */
@@ -53,5 +55,10 @@ public interface ILocationDao extends IDao {
      * Get a map that maps location names to the number of reservations on the
      * given date.
      */
+
+    void approveLocation(Location location, boolean approval) throws SQLException;
+
+    List<Location> getAllUnapprovedLocations() throws SQLException;
+
     Map<String, Integer> getCountOfReservations(LocalDate date) throws SQLException;
 }

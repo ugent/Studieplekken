@@ -29,9 +29,9 @@ export class Timeslot {
 
 
 export function timeslotStartHour(calendarPeriod: CalendarPeriod, timeslot: Timeslot): Moment {
-    const currentTime = timeslot.timeslotDate.add(calendarPeriod.openingTime.get('hours') * 60 + calendarPeriod.openingTime.get('minutes'), 'minutes');
-    currentTime.add(calendarPeriod.reservableTimeslotSize * timeslot.timeslotSeqnr, 'minutes');
-    return currentTime;
+  const currentTime = moment(timeslot.timeslotDate.format('DD-MM-YYYY') + 'T' + calendarPeriod.openingTime.format('HH:mm'), 'DD-MM-YYYYTHH:mm');
+  currentTime.add(calendarPeriod.reservableTimeslotSize * timeslot.timeslotSeqnr, 'minutes');
+  return currentTime;
 }
 
 export function timeslotEndHour(calendarPeriod: CalendarPeriod, seqnr: number): string {

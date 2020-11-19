@@ -317,6 +317,7 @@
     "locations": {
       "title": "Beheer van blokruimtes",
       "addNew": "Ruimte toevoegen",
+      "unapproved": "Goedkeuring van nieuwe blokruimtes",
 
       "table": {
         "header": {
@@ -338,7 +339,7 @@
           "numberOfSeats": "Aantal zitjes",
           "numberOfLockers": "Aantal lockers",
           "forGroup": "Groepsreservatie",
-          "forGroupHelp": "Een lokaal met groepsreservaties kan door 1 persoon gereserveerd worden voor een groep. Er zijn geen individuele reservaties",
+          "forGroupHelp": "Een lokaal met groepsreservaties kan door 1 persoon gereserveerd. Er zijn geen individuele reservaties nodig of mogelijk",
           "imageUrl": "URL van foto (optioneel)"
         },
 
@@ -357,7 +358,13 @@
 
         "loading": "Wachten op antwoord van de server...",
         "success": "Het toevoegen van de ruimte is geslaagd",
-        "error": "Er is iets misgelopen tijdens het toevoegen van de nieuwe ruimte"
+        "error": "Er is iets misgelopen tijdens het toevoegen van de nieuwe ruimte",
+        "warning": "Ben je zeker dat je een voorstel voor een nieuwe room wil toevoegen? Een bevestigingsmail zal naar de directie faciliteitenbeheer gestuurd worden voor goedkeuring. Het aantal zitjes zal worden aangepast.\n"
+      },
+
+      "editLocationModal": {
+        "title":"Keur deze room goed",
+        "approveButton": "Keur goed"
       },
 
       "deleteLocationModal": {

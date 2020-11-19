@@ -26,7 +26,6 @@ export class LocationReservationsComponent implements OnInit {
   successDeletingLocationReservation: boolean = undefined;
 
   constructor(private locationReservationService: LocationReservationsService,
-              private calendarPeriodService: CalendarPeriodsService,
               private modalService: BsModalService) { }
 
   ngOnInit(): void {
