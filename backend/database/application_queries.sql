@@ -1031,6 +1031,10 @@ from y
         on y.timeslot_date = rs.timeslot_date
         and rs.timeslot_seqnr = y.timeslot_sequence_number;
 
+-- $delete_timeslots_of_calendar
+delete
+from public.reservation_timeslots rt
+where rt.calendar_id = ?;
 
 -- queries for CALENDAR_PERIODS_FOR_LOCKERS
 -- $get_calendar_periods_for_lockers_of_location
