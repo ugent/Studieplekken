@@ -100,7 +100,7 @@ public class CalendarPeriodController {
                 else {
                     logger.log(Level.SEVERE, "updateCalendarPeriods, new CalendarPeriod too late");
                     throw new ResponseStatusException(
-                            HttpStatus.CONFLICT, "new calendarperiod too late.");
+                            HttpStatus.CONFLICT, "CalendarPeriod must be after locked date. (3 weeks)");
                 }
                 return;
             }
