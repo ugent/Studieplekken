@@ -6,16 +6,16 @@ import * as moment from 'moment';
 import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { CalendarPeriodsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
+// tslint:disable-next-line:max-line-length
 import { ApplicationTypeFunctionalityService } from 'src/app/services/functionality/application-type/application-type-functionality.service';
 import { rowsAnimation } from 'src/app/shared/animations/RowAnimation';
-import { CalendarPeriod, mapCalendarPeriodsToCalendarEvents, isCalendarPeriodValid } from 'src/app/shared/model/CalendarPeriod';
+import { CalendarPeriod, mapCalendarPeriodsToCalendarEvents } from 'src/app/shared/model/CalendarPeriod';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
-import { Timeslot, timeslotStartHour } from 'src/app/shared/model/Timeslot';
-import { UserConstructor } from 'src/app/shared/model/User';
+import { Timeslot } from 'src/app/shared/model/Timeslot';
 import { LocationOpeningperiodDialogComponent } from './location-openingperiod-dialog/location-openingperiod-dialog.component';
 import { Location } from 'src/app/shared/model/Location';
-import { msToShowFeedback } from 'src/app/app.constants';
-import { tap } from 'rxjs/operators';
+import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
+import { Moment } from 'moment';
 
 @Component({
   selector: 'app-location-calendar',
@@ -35,8 +35,6 @@ export class LocationCalendarComponent implements OnInit {
 
   locationReservations: LocationReservation[];
   currentTimeSlot: Timeslot;
-
-  currentLocationReservationToDelete: LocationReservation = new LocationReservation(UserConstructor.new(), null)
 
   refresh: Subject<any> = new Subject();
 
@@ -67,19 +65,13 @@ export class LocationCalendarComponent implements OnInit {
 
   disableFootButtons = true;
 
-  /**
-   * The boolean-attributes below are used to give feedback to the
-   * user when he/she has pressed the "Update" button in different
-   * scenarios.
-   */
-  showWrongCalendarPeriodFormat = false;
-  showSuccessButNoChanges = false;
-  showSuccess = false;
-  showError = false;
   showReservations = false;
 
   errorOnRetrievingReservations = false;
-  deletionWasSuccess: boolean = undefined;
+
+  successAddingLocationReservation: boolean = undefined;
+  successUpdatingLocationReservation: boolean = undefined;
+  successDeletingLocationReservation: boolean = undefined;
 
   /**
    * Depending on what the ApplicationTypeFunctionalityService returns
@@ -91,6 +83,7 @@ export class LocationCalendarComponent implements OnInit {
   constructor(private calendarPeriodsService: CalendarPeriodsService,
               private functionalityService: ApplicationTypeFunctionalityService,
               private locationReservationService: LocationReservationsService,
+              private authorizationService: AuthenticationService,
               private dialog: MatDialog) {
   }
 
@@ -98,13 +91,93 @@ export class LocationCalendarComponent implements OnInit {
     this.location.subscribe(next => {
       this.locationName = next.name;
       this.locationFlat = next;
-      this.calendarPeriodModel.subscribe(console.log)
-      this.setupEvents();
+      this.calendarPeriodModel.subscribe(console.log);
+      this.setup();
     });
     this.showReservationInformation = this.functionalityService.showReservationsFunctionality();
   }
 
-  setupEvents(): void {
+  // /**********
+  // *   ADD   *
+  // ***********/
+
+  prepareAdd(): void {
+    this.calendarPeriodModel.next(new CalendarPeriod(null, this.locationFlat, null, null, null, null, false, null, 0, [], null));
+    this.prepareToUpdatePeriod = null;
+    this.successAddingLocationReservation = undefined;
+  }
+
+  add(): void {
+    this.update(true);
+  }
+
+  // /*************
+  // *   UPDATE   *
+  // **************/
+
+  prepareUpdate(calendarPeriod: CalendarPeriod): void {
+    this.successUpdatingLocationReservation = undefined;
+    this.prepareToUpdatePeriod = calendarPeriod;
+    // Copy
+    this.calendarPeriodModel.next(CalendarPeriod.fromJSON(calendarPeriod));
+  }
+
+  update(add = false): void {
+    this.successAddingLocationReservation = null;
+    this.successUpdatingLocationReservation = null;
+
+    this.calendarPeriods = this.calendarPeriods.filter(c => !this.prepareToUpdatePeriod || c.id !== this.prepareToUpdatePeriod.id);
+    if (this.calendarPeriodModel) {
+      this.calendarPeriods = [...this.calendarPeriods, this.calendarPeriodModel.value];
+    }
+
+    // Check if the closing time - opening time is divisible by timeslot_size.
+    this.checkForWarning();
+
+    // this.calendarPeriods is not empty, and all values are valid: persist update(s)
+    this.calendarPeriodsService.updateCalendarPeriod(
+      this.locationName,
+      this.calendarPeriodsInDataLayer,
+      this.calendarPeriodModel.value
+    ).subscribe(
+      () => {
+        add ? this.successAddingLocationReservation = true : this.successUpdatingLocationReservation = true;
+        this.setup();
+      }, () => {
+        add ? this.successAddingLocationReservation = false : this.successUpdatingLocationReservation = false;
+        this.rollback();
+      }
+    );
+  }
+
+  // /*************
+  // *   DELETE   *
+  // **************/
+
+  prepareDelete(calendarPeriod: CalendarPeriod): void {
+    this.prepareToUpdatePeriod = calendarPeriod;
+    this.successDeletingLocationReservation = undefined;
+  }
+
+  delete(): void {
+    this.successDeletingLocationReservation = null;
+    this.calendarPeriodsService.deleteCalendarPeriods(this.prepareToUpdatePeriod)
+    .subscribe(
+      () => {
+        this.successDeletingLocationReservation = true;
+        this.setup();
+      }, () => {
+        this.successDeletingLocationReservation = false;
+        this.rollback();
+      }
+    );
+  }
+
+  // /******************
+  // *   AUXILIARIES   *
+  // *******************/
+
+  setup(): void {
     // retrieve all calendar periods for this location
     this.calendarPeriodsService.getCalendarPeriodsOfLocation(this.locationName).subscribe(next => {
       if (next === null) {
@@ -123,173 +196,42 @@ export class LocationCalendarComponent implements OnInit {
 
       // fill the events based on the calendar periods
       this.events = mapCalendarPeriodsToCalendarEvents(next);
+
+      // and update the calendar
+      this.refresh.next(null);
     });
   }
 
-  hasAnyPeriodChanged(): boolean {
-    // if the lengths do not match, there must have changed something
-    if (this.calendarPeriods.length !== this.calendarPeriodsInDataLayer.length) {
-      return true;
-    }
-
-    // if the lengths do match, check if all values in this.calendarPeriodsInDataLayer
-    // have a matching value in this.calendarPeriods
-    for (const period of this.calendarPeriodsInDataLayer) {
-      if (!this.calendarPeriods.includes(period)) {
-        return true;
+  rollback(): void {
+    this.calendarPeriods = [];
+    this.calendarPeriodsInDataLayer.forEach(
+      next => {
+        this.calendarPeriods.push(CalendarPeriod.fromJSON(next));
       }
-    }
-
-    return false;
-  }
-
-  refreshCalendar(period: CalendarPeriod): void {
-    // only refresh the calendar if the period that has changed is valid
-    if (!isCalendarPeriodValid(period)) {
-      return;
-    }
-
-    // set the events
-    this.events = mapCalendarPeriodsToCalendarEvents(this.calendarPeriods);
-
-    // refresh the calendar
-    this.refresh.next();
-
-    // make sure that the user can update changes
-    this.disableFootButtons = !this.hasAnyPeriodChanged();
-  }
-
-  addOpeningPeriodButtonClick(location: Location): void {
-    this.addOpeningPeriod(location);
-    this.disableFootButtons = false;
-  }
-
-  addOpeningPeriod(location: Location): void {
-    const period: CalendarPeriod = new CalendarPeriod(null, location, null, null, null, null, false, null, 0, null, null);
-
-    this.calendarPeriods.push(period);
-  }
-
-  updateOpeningPeriodButtonClick(): void {
-    this.disableFootButtons = true;
-    this.updateOpeningPeriod();
-  }
-
-  /**
-   * This is the method that does all the CUD-work of
-   * the CRUD operations available for CALENDAR_PERIODS
-   */
-  updateOpeningPeriod(): void {
-    if (this.hasAnyPeriodChanged()) {
-      // if this.events.length === 0, delete everything instead of updating
-      if (this.calendarPeriods.length === 0) {
-        this.deleteAllPeriodsInDataLayer();
-        return;
-      }
-
-      // before updating or adding anything, check if all periods are valid
-      // Note: do not do this.calendarPeriods.forEach(handler), because the return
-      //   will return from the lambda, but not from the outer function and thus, a
-      //   in the 'handler' request will be sent to the backend, which is not wat we
-      //   want if not all the periods are validly filled in
-      for (const n of this.calendarPeriods) {
-        if (!isCalendarPeriodValid(n)) {
-          this.handleWrongCalendarPeriodFormatOnUpdate();
-          return;
-        }
-      }
-
-      // Check if the closing time - opening time is divisible by timeslot_size.
-      this.checkForWarning();
-
-      // if this.eventsInDataLayer.length === 0, add all events instead of updating
-      if (this.calendarPeriodsInDataLayer.length === 0) {
-        this.addAllCalendarPeriods();
-        return;
-      }
-
-      // this.calendarPeriods is not empty, and all values are valid: persist update(s)
-      this.calendarPeriodsService.updateCalendarPeriods(
-        this.locationName,
-        this.calendarPeriodsInDataLayer,
-        this.calendarPeriods
-      ).subscribe(() => {
-        this.successHandler();
-      }, () => this.errorHandler());
-    } else {
-      this.handleNothingHasChangedOnUpdate();
-    }
+    );
   }
 
   checkForWarning(): void {
     let showWarning = false;
+
     this.calendarPeriods.forEach(element => {
+      // if the element is not reservable, no timeslot size is assigned to the
+      // calendar period and thus the divisibility does not need to be checked
       if (!element.reservable) {
         return;
       }
-      const begin = new Date(element.startsAt + ' ' + element.openingTime);
-      const end = new Date(element.startsAt + ' ' + element.closingTime);
-      const diffMs = Math.round((end.getTime() - begin.getTime()) / 60000);
+
+      // if the difference between closing time and opening time in minutes is
+      // not divisible by the timeslot size (in minutes), then show the warning
       if ((element.openingTime.diff(element.closingTime, 'minutes') % element.reservableTimeslotSize) !== 0) {
         showWarning = true;
       }
     });
 
+    // if necessary, show the warning
     if (showWarning) {
       this.dialog.open(LocationOpeningperiodDialogComponent);
     }
-  }
-
-  deleteAllPeriodsInDataLayer(): void {
-    this.calendarPeriodsService.deleteCalendarPeriods(this.calendarPeriodsInDataLayer)
-      .subscribe(() => this.successHandler(), () => this.errorHandler());
-  }
-
-  addAllCalendarPeriods(): void {
-    this.calendarPeriodsService.addCalendarPeriods(this.calendarPeriods)
-      .subscribe(() => this.successHandler(), () => this.errorHandler());
-  }
-
-  handleWrongCalendarPeriodFormatOnUpdate(): void {
-    this.showWrongCalendarPeriodFormat = true;
-    setTimeout(() => this.showWrongCalendarPeriodFormat = false, msToShowFeedback);
-  }
-
-  handleNothingHasChangedOnUpdate(): void {
-    this.showSuccessButNoChanges = true;
-    setTimeout(() => this.showSuccessButNoChanges = false, msToShowFeedback);
-  }
-
-  deleteOpeningPeriodButtonClick(period: CalendarPeriod): void {
-    this.deleteOpeningPeriod(period);
-    this.disableFootButtons = false;
-  }
-
-  deleteOpeningPeriod(period: CalendarPeriod): void {
-    this.calendarPeriods = this.calendarPeriods.filter((next) => next !== period);
-    this.events = mapCalendarPeriodsToCalendarEvents(this.calendarPeriods);
-  }
-
-  cancelChangesButtonClick(): void {
-    this.events = mapCalendarPeriodsToCalendarEvents(this.calendarPeriodsInDataLayer);
-
-    // deep copy of this.calendarPeriodsInDataLayer to this.calendarPeriods
-    this.calendarPeriods = [];
-    this.calendarPeriodsInDataLayer
-      .forEach(value => this.calendarPeriods.push(CalendarPeriod.fromJSON(value)));
-
-    this.disableFootButtons = true;
-  }
-
-  successHandler(): void {
-    this.showSuccess = true;
-    setTimeout(() => this.showSuccess = false, msToShowFeedback);
-    this.setupEvents();
-  }
-
-  errorHandler(): void {
-    this.showError = true;
-    setTimeout(() => this.showError = false, msToShowFeedback);
   }
 
   timeslotPickedHandler(event: any): void {
@@ -306,7 +248,7 @@ export class LocationCalendarComponent implements OnInit {
     this.loadReservations();
   }
 
-  private loadReservations(): void {
+  loadReservations(): void {
     this.showReservations = null;
     this.locationReservationService.getLocationReservationsOfTimeslot(this.currentTimeSlot).subscribe((next) => {
       this.locationReservations = next;
@@ -318,60 +260,36 @@ export class LocationCalendarComponent implements OnInit {
     });
   }
 
-  prepareToDeleteLocationReservation(locationReservation: LocationReservation): void {
-    this.deletionWasSuccess = undefined;
-    this.currentLocationReservationToDelete = locationReservation;
+  getMinStartDate(): Moment {
+    if (this.authorizationService.isAdmin()) {
+      return null;
+    } else {
+      return moment().add(3, 'weeks').day(8);
+    }
   }
 
-  deleteLocationReservation(): void {
-    this.locationReservationService.deleteLocationReservation(this.currentLocationReservationToDelete).subscribe(
-      () => {
-        this.deletionWasSuccess = true;
-        this.loadReservations();
-      }, () => {
-        this.deletionWasSuccess = false;
-        this.loadReservations();
-      }
-    );
+  getMinReservableFrom(model): Moment {
+    if (!model.startsAt) {
+      return null;
+    } else {
+      return moment(model.startsAt).subtract(3, 'weeks').day(1);
+    }
   }
 
-  prepareUpdate(calendarPeriod: CalendarPeriod): void {
-    this.prepareToUpdatePeriod = calendarPeriod;
-    // Copy
-    this.calendarPeriodModel.next(CalendarPeriod.fromJSON(calendarPeriod));
-  }
-
-  prepareDelete(calendarPeriod: CalendarPeriod): void {
-    this.prepareToUpdatePeriod = calendarPeriod;
-  }
-
-  prepareAdd(): void {
-    this.calendarPeriodModel.next(new CalendarPeriod(null, this.locationFlat, null, null, null, null, false, null, 0, [], null));
-    this.prepareToUpdatePeriod = null;
-  }
-
-  update(): void {
-    this.calendarPeriods = this.calendarPeriods.filter(c => !this.prepareToUpdatePeriod || c.id !== this.prepareToUpdatePeriod.id);
-    if (this.calendarPeriodModel) {
-      this.calendarPeriods = [...this.calendarPeriods, this.calendarPeriodModel.value];
+  // If the admin is executing a change on own authority, show warning.
+  showAdminWarnMessage(model): boolean {
+    if (!this.authorizationService.isAdmin()) {
+      return false;
     }
 
-    this.updateOpeningPeriod();
-  }
+    if (model.startsAt && model.startsAt.isBefore(moment().add(3, 'weeks').day(8))) {
+      return true;
+    }
 
-  delete(): void {
-    this.calendarPeriods = this.calendarPeriods.filter(c => c.id !== this.prepareToUpdatePeriod.id);
-    this.updateOpeningPeriod();
-  }
+    if (this.prepareToUpdatePeriod && this.prepareToUpdatePeriod.startsAt.isBefore(moment().add(3, 'weeks').day(8))) {
+      return true;
+    }
 
-  onCheckboxToggle(reservation, checked): void {
-    this.locationReservationService.postLocationReservationAttendance(reservation, checked)
-                    .pipe(tap(() => this.loadReservations()))
-                    .subscribe();
-  }
-
-  showCheckbox(): boolean {
-    return this.currentCalendarPeriod && this.currentTimeSlot
-           && timeslotStartHour(this.currentCalendarPeriod, this.currentTimeSlot).isBefore(moment());
+    return false;
   }
 }
