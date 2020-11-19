@@ -11,6 +11,7 @@ export class ManagementComponent implements OnInit {
   showReservations: boolean;
   showPenalties: boolean;
   showTagManagement: boolean;
+  showAdmin: boolean = this.authenticationService.isAdmin();
 
   constructor(private functionalityService: ApplicationTypeFunctionalityService,
               private authenticationService: AuthenticationService) { }

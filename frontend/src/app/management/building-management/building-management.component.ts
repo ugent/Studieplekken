@@ -6,6 +6,7 @@ import { Building } from 'src/app/shared/model/Building';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BuildingService } from 'src/app/services/api/buildings/buildings.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
+import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 
 @Component({
   selector: 'app-building-management',
@@ -30,9 +31,11 @@ export class BuildingManagementComponent implements OnInit {
   successAddingBuilding: boolean = undefined;
   successUpdatingBuilding: boolean = undefined;
   successDeletingBuilding: boolean = undefined;
+  showDelete: boolean = this.authorizationService.isAdmin();
 
   constructor(private buildingService: BuildingService,
-              private modalService: BsModalService) { }
+              private modalService: BsModalService,
+              private authorizationService: AuthenticationService) { }
 
   ngOnInit(): void {
     this.buildingsObs = this.buildingService.getAllBuildings();
