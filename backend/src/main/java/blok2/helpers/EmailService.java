@@ -2,6 +2,7 @@ package blok2.helpers;
 
 import blok2.daos.ICalendarPeriodDao;
 import blok2.model.calendar.CalendarPeriod;
+import blok2.model.reservables.Location;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -40,6 +41,22 @@ public class EmailService {
         List<CalendarPeriod> periods = calendarPeriodDao.getCalendarPeriodsInWeek(LocalDate.now().plusWeeks(3));
         DataSource attachment = new ByteArrayDataSource(helper.calendarPeriodCSV(periods), "text/csv");
         sendAttachmentMessage(target, "Reservations of BlokAt", content, "file.csv", attachment);
+    }
+
+    public void sendNewLocationMessage(String target, Location location) throws IOException, MessagingException {
+        String content = "A new BlokAt study location has been requested. Please validate the usability of this location, and forward this to an admin (dsa@ugent.be)\n\n";
+        content += "Location name: " + location.getName() + "\n";
+        content += "Building: " + location.getBuilding().getName() + "\n";
+        content += "Address: " + location.getBuilding().getAddress() + "\n";
+        content += "Authority: " + location.getAuthority().getAuthorityName() + "\n";
+
+        if(location.getNumberOfSeats() > 0)
+            content += "Proposed number of seats: " + location.getNumberOfSeats() + "\n";
+        if(location.getNumberOfLockers() > 0)
+            content += "Proposed number of lockers: " + location.getNumberOfLockers() + "\n";
+
+
+        sendSimpleMessage(target, "BlokAt: New Location", content);
     }
 
 

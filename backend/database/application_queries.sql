@@ -48,6 +48,7 @@ from public.locations l
         on a.authority_id = l.authority_id
     join public.buildings b
         on b.building_id = l.building_id
+where l.approved = true
 order by l.name;
 
 -- $get_location
@@ -72,7 +73,7 @@ from public.locations l
         on a.authority_id = l.authority_id
     join public.buildings b
         on b.building_id = l.building_id
-where l.authority_id = ?;
+where l.authority_id = ? and l.approved = true;
 
 -- $get_locations_in_building
 select  l.name, l.number_of_seats, l.number_of_lockers
@@ -84,7 +85,7 @@ from public.locations l
               on a.authority_id = l.authority_id
          join public.buildings b
               on b.building_id = l.building_id
-where l.building_id = ?;
+where l.building_id = ? and l.approved = true;
 
 -- $locations_with_tag
 select l.name, l.number_of_seats, l.number_of_lockers
@@ -99,7 +100,7 @@ from public.locations l
     join public.location_tags lt on l.name = lt.location_id
     join public.tags t on t.tag_id = lt.tag_id
 where t.tag_id = ?
-order by l.name;
+order by l.name and l.approved = true;
 
 -- $delete_location
 delete
@@ -112,14 +113,31 @@ from public.locations
 where authority_id = ?;
 
 -- $insert_location
-insert into public.locations (name, number_of_seats, number_of_lockers, image_url, authority_id, building_id, description_dutch, description_english, forGroup)
-values (?, ?, ?, ?, ?, ?, ?, ?, ?);
+insert into public.locations (name, number_of_seats, number_of_lockers, image_url, authority_id, building_id, description_dutch, description_english, forGroup, approved)
+values (?, ?, ?, ?, ?, ?, ?, ?, ?, false);
 
 -- $update_location
 update public.locations
 set name = ?, number_of_seats = ?, number_of_lockers = ?, image_url = ?, authority_id = ?, building_id = ?, description_dutch = ?, description_english = ?, forGroup = ?
 where name = ?;
 
+-- $approve_location
+update public.locations
+set approved = ?
+where name = ?;
+
+-- $all_unapproved_locations
+select l.name, l.number_of_seats, l.number_of_lockers
+    , l.image_url, l.description_dutch, l.description_english, l.forGroup
+    , b.building_id, b.building_name, b.address
+    , a.authority_id, a.authority_name, a.description
+from public.locations l
+    join public.authority a
+        on a.authority_id = l.authority_id
+    join public.buildings b
+        on b.building_id = l.building_id
+where l.approved = false
+order by l.name;
 
 -- queries for table BUILDINGS
 -- $all_buildings
@@ -1001,7 +1019,6 @@ join public.buildings b
     on b.building_id = l.building_id
 where cp.starts_at > ? and cp.starts_at < ?;
 
--- queries for RESERVATION_TIMESLOTS
 -- $get_reservation_timeslots
 select rt.timeslot_sequence_number, rt.timeslot_date, rt.calendar_id
 from public.reservation_timeslots rt
@@ -1031,6 +1048,10 @@ from y
         on y.timeslot_date = rs.timeslot_date
         and rs.timeslot_seqnr = y.timeslot_sequence_number;
 
+-- $delete_timeslots_of_calendar
+delete
+from public.reservation_timeslots rt
+where rt.calendar_id = ?;
 
 -- queries for CALENDAR_PERIODS_FOR_LOCKERS
 -- $get_calendar_periods_for_lockers_of_location

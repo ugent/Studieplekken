@@ -1,5 +1,53 @@
 <div class="container-fluid">
-  <!-- Title -->
+
+  <div *ngIf="unapprovedLocations | async as locations">
+    <div  *ngIf="locations.length> 0">
+      <!-- Title -->
+      <h3>{{'management.locations.unapproved' | translate}}</h3>
+
+      <hr>
+
+
+      <!-- Table with all unapproved locations -->
+      <div class="row">
+        <div >
+          <table style="width: 100%">
+            <!-- Table header -->
+            <thead>
+            <tr>
+              <th>{{'management.locations.table.header.name' | translate}}</th>
+              <th>{{'management.locations.table.header.authority' | translate}}</th>
+              <th>{{'management.locations.table.header.numberOfSeats' | translate}}</th>
+              <th>{{'management.locations.table.header.numberOfLockers' | translate}}</th>
+              <th><!-- Details --></th>
+              <th><!-- Delete --></th>
+            </tr>
+            </thead>
+
+            <!-- Table body -->
+            <tbody>
+            <tr [@rowsAnimation]="" *ngFor="let location of locations">
+              <td>{{location.name}}</td>
+              <td>{{location.authority.authorityName}}</td>
+              <td>{{location.numberOfSeats}}</td>
+              <td>{{location.numberOfLockers}}</td>
+              <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
+                  data-toggle="modal" data-target="#addLocationModal"
+                  (click)="prepareToApproveLocation(location)">
+                <span class="glyphicon glyphicon-list-alt"></span>
+              </td>
+              <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
+                  data-toggle="modal" data-target="#deleteLocationModal"
+                  (click)="prepareToDeleteLocation(location.name)">
+                <span class="glyphicon glyphicon-trash pointerCursor"></span>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
   <h3>{{'management.locations.title' | translate}}</h3>
 
   <hr>
@@ -33,6 +81,7 @@
             </span>
           </td>
           <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
+          data-dismiss="modal"
               data-toggle="modal" data-target="#deleteLocationModal"
               (click)="prepareToDeleteLocation(location.name)">
             <span class="glyphicon glyphicon-trash pointerCursor"></span>
@@ -43,7 +92,7 @@
 
       <div class="row" style="margin-top: 20px">
         <button class="btn btn-primary" data-toggle="modal" data-target="#addLocationModal"
-                (click)="prepareToAddLocation()">
+                (click)="prepareToAddLocation()" data-toggle="modal" data-target="#addLocationModal">
           {{'management.locations.addNew' | translate}}
         </button>
       </div>
@@ -68,8 +117,11 @@
 
       <!-- Modal header -->
       <div class="modal-header">
-        <h5 class="modal-title" id="addLocationModalTitle">
+        <h5 class="modal-title" id="addLocationModalTitle" *ngIf="!editMode">
           {{'management.locations.addLocationModal.title' | translate}}
+        </h5>
+        <h5 class="modal-title" id="addLocationModalTitle" *ngIf="editMode">
+          {{'management.locations.editLocationModal.title' | translate}}
         </h5>
       </div>
 
@@ -189,10 +241,20 @@
 
       <!-- Modal footer -->
       <div class="modal-footer">
+        <div class="alert alert-warning" *ngIf="showAddWarning">
+          {{'management.locations.addLocationModal.warning' | translate}}
+        </div>
         <button type="submit" class="btn btn-primary"
                 [disabled]="!validForm()"
-                (click)="addNewLocation(addLocationFormGroup.value)">
+                (click)="addNewLocation(addLocationFormGroup.value)"
+                *ngIf="!editMode">
           {{'management.locations.addLocationModal.addButton' | translate}}
+        </button>
+        <button type="submit" class="btn btn-primary"
+                [disabled]="!validForm()"
+                (click)="approveLocation(addLocationFormGroup.value)"
+                *ngIf="editMode">
+          {{'management.locations.editLocationModal.approveButton' | translate}}
         </button>
         <button type="button" class="btn btn-secondary"
                 data-dismiss="modal" (click)="clearForm()">
