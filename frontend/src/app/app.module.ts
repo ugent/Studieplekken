@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import {RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProfileComponent } from './profile/profile.component';
 import { ScanComponent } from './scan/scan.component';
@@ -62,6 +62,7 @@ import {MomentDateComponent} from './shared/inputs/moment-date/moment-date.compo
 import { MomentDateTimeComponent } from './shared/inputs/moment-datetime/moment-datetime.component';
 import { LocationOpeningperiodDialogComponent } from './management/locations-management/location-details-management/location-calendar/location-openingperiod-dialog/location-openingperiod-dialog.component';
 import { BuildingManagementComponent } from './management/building-management/building-management.component';
+import { LocationReservationsComponent } from './management/locations-management/location-details-management/location-calendar/location-reservations/location-reservations/location-reservations.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -241,7 +242,8 @@ const routes: Routes = [
     MomentDateComponent,
     MomentDateTimeComponent,
     LocationOpeningperiodDialogComponent,
-    BuildingManagementComponent
+    BuildingManagementComponent,
+    LocationReservationsComponent
   ],
     imports: [
       BrowserModule,

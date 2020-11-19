@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { Building } from 'src/app/shared/model/Building';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BuildingService } from 'src/app/services/api/buildings/buildings.service';
+import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 
 @Component({
   selector: 'app-building-management',
@@ -29,8 +30,10 @@ export class BuildingManagementComponent implements OnInit {
   successAddingBuilding: boolean = undefined;
   successUpdatingBuilding: boolean = undefined;
   successDeletingBuilding: boolean = undefined;
+  showDelete: boolean = this.authorizationService.isAdmin();
 
-  constructor(private buildingService: BuildingService) { }
+  constructor(private buildingService: BuildingService,
+              private authorizationService: AuthenticationService) { }
 
   ngOnInit(): void {
     this.buildingsObs = this.buildingService.getAllBuildings();

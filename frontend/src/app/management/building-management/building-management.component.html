@@ -29,7 +29,8 @@
         <!-- Delete glyphicon -->
         <td data-toggle="modal" data-target="#deleteBuildingModal"
             class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
-            (click)="prepareToDelete(building)">
+            (click)="prepareToDelete(building)"
+            *ngIf="showDelete">
           <span class="glyphicon glyphicon-trash pointerCursor"></span>
         </td>
       </tr>
