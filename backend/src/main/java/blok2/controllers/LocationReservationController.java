@@ -126,7 +126,7 @@ public class LocationReservationController extends AuthorizedLocationController 
     }
 
     @PostMapping("/{userid}/{calendarid}/{date}/{seqnr}/attendance")
-    @PreAuthorize("asAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void setLocationReservationAttendance(@PathVariable("calendarid") int calendarId, @PathVariable("date") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate date,
                                        @PathVariable("seqnr") int seqnr, @PathVariable("userid") String userid, @RequestBody LocationReservation.AttendedPostBody body) {
         Timeslot slot = new Timeslot(calendarId, seqnr, date);
