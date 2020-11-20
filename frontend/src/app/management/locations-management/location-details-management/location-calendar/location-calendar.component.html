@@ -16,52 +16,51 @@
   <hr>
 
   <div class="container-fluid">
-    <!-- Title -->
-    <h3>
-      {{'management.locationDetails.calendar.reservations.title' | translate}}
-    </h3>
+    <div class="row">
+      <!-- Title -->
+      <h3>
+        {{'management.locationDetails.calendar.reservations.title' | translate}}
+      </h3>
 
-    <!-- Show table if user has searched, else show a message instead of an empty table -->
-    <div *ngIf="showReservations === false" class="alert alert-info"  >
-      {{'management.locationDetails.calendar.reservations.selectSlot' | translate}}
-    </div>
-    <div *ngIf="showReservations === null" class="alert alert-info">
-      {{'management.locationDetails.calendar.reservations.loading' | translate}}
-    </div>
-    <!-- If an error has occurred while fetching the reservations, show the error -->
-    <div *ngIf="errorOnRetrievingReservations" class="alert alert-error">
-      {{'management.locationDetails.calendar.reservations.error' | translate}}
-    </div>
+      <!-- Show table if user has searched, else show a message instead of an empty table -->
+      <div *ngIf="showReservations === false" class="alert alert-info"  >
+        {{'management.locationDetails.calendar.reservations.selectSlot' | translate}}
+      </div>
+      <div *ngIf="showReservations === null" class="alert alert-info">
+        {{'management.locationDetails.calendar.reservations.loading' | translate}}
+      </div>
+      <!-- If an error has occurred while fetching the reservations, show the error -->
+      <div *ngIf="errorOnRetrievingReservations" class="alert alert-error">
+        {{'management.locationDetails.calendar.reservations.error' | translate}}
+      </div>
 
 
-    <!-- Component showing the location reservations -->
-    <app-location-reservations
-      *ngIf="showReservations === true && !errorOnRetrievingReservations"
-      [locationReservations]="locationReservations"
-      [currentCalendarPeriod]="currentCalendarPeriod"
-      [currentTimeSlot]="currentTimeSlot"
-      (reservationChange)="loadReservations()">
-    </app-location-reservations>
+      <!-- Component showing the location reservations -->
+      <app-location-reservations
+        *ngIf="showReservations === true && !errorOnRetrievingReservations"
+        [locationReservations]="locationReservations"
+        [currentCalendarPeriod]="currentCalendarPeriod"
+        [currentTimeSlot]="currentTimeSlot"
+        (reservationChange)="loadReservations()">
+      </app-location-reservations>
+    </div>
+
 
     <hr>
 
     <!-- Form to edit the calendar -->
-    <div #CPtable class="container-fluid">
+    <div #CPtable class="row">
       <!-- Title -->
-      <div class="col-md-4">
-        <h3>
-          {{'management.locationDetails.calendar.form.title' | translate}}
-        </h3>
-      </div>
-      <div class="col-md-4 pull-right">
-        <button class="btn btn-primary pull-right" (click)="prepareAdd(addCalendarPeriodModal, CPtable)" >
-          {{'management.locationDetails.calendar.form.addButton' | translate}}
-        </button>
-      </div>
+      <h3 class="inline-block">
+        {{'management.locationDetails.calendar.form.title' | translate}}
+      </h3>
+      <button class="btn btn-primary pull-right" (click)="prepareAdd(addCalendarPeriodModal, CPtable)" >
+        {{'management.locationDetails.calendar.form.addButton' | translate}}
+      </button>
 
 
       <!-- The form itself -->
-      <div style="margin-top: 10px; margin-bottom: 10px;">
+      <div class="container-fluid" style="margin-top: 10px; margin-bottom: 10px;">
         <table style="width: 100%;" *ngIf="calendarPeriods.length > 0; else noCalendarPeriodsForLocation">
           <thead>
           <tr>
