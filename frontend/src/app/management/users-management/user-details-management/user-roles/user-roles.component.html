@@ -23,8 +23,7 @@
     <form (ngSubmit)="submitUpdateUser()" [formGroup]="roleFormGroup">
       <div class="row">
         <label>
-          <input type="checkbox" formControlName="admin">
-          {{'general.roles.ADMIN' | translate}}
+          <mat-checkbox type="checkbox" color='primary' formControlName="admin" (click)="onAdminClick($event, confirm)">{{'general.roles.ADMIN' | translate}}</mat-checkbox>
         </label>
       </div>
 
@@ -44,3 +43,11 @@
     </form>
   </div>
 </div>
+
+<ng-template #confirm>
+  <div class="modal-body text-center">
+    <p>{{'management.users.userDetails.roles.adminConfirmation' | translate }}</p>
+    <button type="button" class="btn btn-default" (click)="confirmAdminChange()" >{{ 'general.yes' | translate }}</button>
+    <button type="button" class="btn btn-primary" (click)="declineAdminChange()" >{{ 'general.no' | translate}}</button>
+  </div>
+</ng-template>

@@ -1,9 +1,9 @@
 package blok2.model.calendar;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -17,7 +17,8 @@ public class Timeslot implements Cloneable {
     @NotNull
     private LocalDate timeslotDate;
 
-
+    @JsonProperty(access= JsonProperty.Access.READ_ONLY)
+    private int amountOfReservations;
 
     public Timeslot(int calendarId, int timeslotSeqnr, LocalDate timeslotDate) {
         this.calendarId = calendarId;
@@ -60,5 +61,13 @@ public class Timeslot implements Cloneable {
 
     public void setTimeslotDate(LocalDate timeslotDate) {
         this.timeslotDate = timeslotDate;
+    }
+
+    public int getAmountOfReservations() {
+        return amountOfReservations;
+    }
+
+    public void setAmountOfReservations(int amountOfReservations) {
+        this.amountOfReservations = amountOfReservations;
     }
 }

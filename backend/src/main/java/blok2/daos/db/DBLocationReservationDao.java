@@ -233,6 +233,16 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
         }
     }
 
+    public static int amountOfTimeslotReservations(Timeslot timeslot, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("count_location_reservations_of_location_for_timeslot"));
+        pstmt.setInt(1, timeslot.getCalendarId());
+        pstmt.setDate(2, Date.valueOf(timeslot.getTimeslotDate()));
+        pstmt.setInt(3, timeslot.getTimeslotSeqnr());
+        ResultSet rs = pstmt.executeQuery();
+        rs.next();
+        return rs.getInt(1);
+    }
+
     private List<LocationReservation> getAbsentOrPresentStudents(String locationName, LocalDate date
             , PreparedStatement pstmt, Connection conn) throws SQLException {
         List<LocationReservation> reservations = new ArrayList<>();
@@ -296,8 +306,8 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
             attended = null;
         }
 
-        User user = DBAccountDao.createUser(rs, conn);
-        Timeslot timeslot = DBCalendarPeriodDao.createTimeslot(rs);
+        User user = DBAccountDao.createUser(rs, connq);
+        Timeslot timeslot = DBCalendarPeriodDao.createTimeslot(rs, conn);
         LocalDateTime createdAt = rs.getTimestamp(Resources.databaseProperties.getString("location_reservation_created_at")).toLocalDateTime();
 
         return new LocationReservation(user, createdAt, timeslot, attended);

@@ -15,16 +15,16 @@
     "description": "Description",
     "details": "Details",
     "tags": "Tags",
-    "gotoDashboard": "Please navigate to the dashboard to select a location's details.",
-    "location": "Location",
+    "gotoDashboard": "Please navigate to the dashboard to select a room's details.",
+    "location": "Room",
     "numberOfLockers": "Number of lockers",
     "numberOfSeats": "Number of seats",
-    "noLocations": "Unfortunately, at this moment there are no locations available.",
+    "noLocations": "Unfortunately, at this moment there are no rooms available.",
     "status": "Status",
 
     "locationDetails": {
-      "info": "General information about this location:",
-      "tags": "Tags that characterize this location:",
+      "info": "General information about this room:",
+      "tags": "Tags that characterize this room:",
       "status": {
         "statusOpen": "OPEN: Closes at {}",
         "statusClosed": "CLOSED",
@@ -34,21 +34,28 @@
       "calendar": {
         "reservation": {
           "successMessage": "Successfully updated the reservations",
-          "errorMessage": "Update was not successful. Something went wrong."
+          "errorMessage": "Update was not successful. Something went wrong.",
+          "header": "Change reservations",
+          "updateMessage": "You are about to make changes to your registered reservations.",
+          "updateAddMessage": "The following reservations will be added to your profile",
+          "updateDeleteMessage": "The following reservations will be deleted",
+          "updateConfirmMessage": "Would you like to confirm these changes?",
+          "updateWarningMessage": "WARNING: not showing up for a registered reservation with your student ID will lead to penalty points attributed to your profile. Too many penalty points will lead to blacklisting from the application"
         }
       }
     },
 
     "filter": {
       "title": "Filter",
-      "tagsFilterTitle": "Filter locations on tags",
-      "noMatchesFromFilter": "There are no locations that match your selection or search.",
-      "searchPlaceholder": "search a location by name, taking the tags filter into account",
-      "showAll": "Show all locations",
-      "showOpen": "Show open locations"
+      "tagsFilterTitle": "Filter rooms on tags",
+      "buildingsFilterTitle": "Choose building/campus",
+      "noMatchesFromFilter": "There are no rooms that match your selection or search.",
+      "searchPlaceholder": "search a room by name",
+      "showAll": "Show all rooms",
+      "showOpen": "Show open rooms"
     },
 
-    "error": "Something went wrong while retrieving the locations."
+    "error": "Something went wrong while retrieving the rooms."
   },
 
   "footer":{
@@ -114,7 +121,7 @@
   },
 
   "login": {
-    "appTitle": "BlokAtUGent",
+    "appTitle": "Study Rooms UGent",
     "title": "Login",
     "casLogin": "CAS Login",
     "about": "The digital platform for study locations"
@@ -123,7 +130,7 @@
   "management": {
     "aside": {
       "title": "Management",
-      "locations": "Locations",
+      "locations": "Room",
       "buildings": "Buildings",
       "tags": "Tags",
       "users": "Users",
@@ -134,7 +141,7 @@
 
     "general": {
       "loading": "Loading...",
-      "noLocations": "There are no locations yet, make one using the 'Add Location' button",
+      "noLocations": "There are no rooms yet, make one using the 'Add room' button",
       "noBuildings": "There are no buildings yet, make one using the 'Add Building' button",
       "noTags": "There are no tags yet, make one using the 'Add Tag' button",
       "noAuthorities": "There are no authorities yet, make on using the 'Add Authority' button"
@@ -157,20 +164,20 @@
         "persist": "Okay",
 
         "loading": "Waiting for response of server...",
-        "success": "Successfully updated the location",
-        "error": "An error occurred while updating the location"
+        "success": "Successfully updated the room",
+        "error": "An error occurred while updating the room"
       },
 
       "calendar": {
         "title": "Reservation Management",
 
         "reservations": {
-          "title": "Reservations for this location",
+          "title": "Reservations for this room",
           "selectSlot": "Select a (reservable) timeslot to display the reservations",
-          "loading": "Location reservations are being loaded...",
+          "loading": "Room reservations are being loaded...",
           "error": "Something went wrong while loading the reservations...",
           "table": {
-            "noLocationReservations": "There are no location reservations for the selected timeslot",
+            "noLocationReservations": "There are no reservations for the selected timeslot",
             "user": "User",
             "attended": "Was user present?"
           }
@@ -179,7 +186,7 @@
         "form": {
           "title": "Edit opening days",
 
-          "addButton": "Add new",
+          "addButton": "Add new opening period",
           "startsAt": "Starts at",
           "endsAt": "Ends at",
           "openingTime": "Opening time",
@@ -195,7 +202,7 @@
           },
           "adminWarning": "Be careful, this change is within the locked from period. You will have to manually contact the appropriate UGent services.",
 
-          "noCalendarPeriodsForLocation": "At the moment, there are no periods for the location."
+          "noCalendarPeriodsForLocation": "At the moment, there are no opening periods for the room."
         },
 
         "addModalView": {
@@ -214,7 +221,8 @@
           "title": "Sure to delete the calendar period?",
           "body": "Are you sure that you want to delete following calendar period?",
           "success": "Successfully deleted the calendar period",
-          "error": "Something went wrong while deleting the calendar period"
+          "error": "Something went wrong while deleting the calendar period",
+          "warning": "Deleting the calendarperiod will result in the deletion of the corresponding reservations. Please be careful with this!"
         },
 
         "warningDialog": {
@@ -227,28 +235,28 @@
       },
 
       "description": {
-        "title": "Description of the location",
+        "title": "Description of the room",
         "englishDescription": "Description in English",
         "dutchDescription": "Description in Dutch",
 
         "updateButton": "Update",
         "cancelButton": "Cancel",
 
-        "errorUpdating": "Something went wrong while updating the descriptions of the location.",
-        "successUpdating": "Successfully updated the descriptions of the location."
+        "errorUpdating": "Something went wrong while updating the descriptions of the room.",
+        "successUpdating": "Successfully updated the descriptions of the room."
       },
 
       "tags": {
-        "title": "Tags of the location",
+        "title": "Tags of the room",
         "activeTagsInformation": "Below, a list with the available tags is given.",
         "updateTagsInformation": "To change the tags, click on the button to the right.",
 
         "updateTagsButton": "Update the tags",
 
         "updateTagsConfigurationModal": {
-          "title": "Change tags for location",
+          "title": "Change tags for room",
           "body": "In the dropdown below, select all the tags you would like to set for '{locationName}'.",
-          "comboboxTitle": "Tags of location",
+          "comboboxTitle": "Tags of room",
 
           "success": "Successfully updated the tags for '{locationName}'",
           "error": "Something went wrong while updating the tags for '{locationName}'."
@@ -306,13 +314,13 @@
     },
 
     "locations": {
-      "unapproved": "Approval of new study locations",
-      "title": "Management of study locations",
-      "addNew": "Add location",
+      "title": "Management of study rooms",
+      "addNew": "Add room",
+      "unapproved": "Approval of new study rooms",
 
       "table": {
         "header": {
-          "name": "Location",
+          "name": "Room",
           "authority": "Authority",
           "numberOfSeats": "Seats",
           "numberOfLockers": "Lockers"
@@ -322,14 +330,15 @@
       },
 
       "addLocationModal": {
-        "title": "Add new location",
+        "title": "Add new room",
 
         "form": {
-          "locationName": "Name",
+          "locationName": "Name Space",
           "address": "Address",
           "numberOfSeats": "Number of seats",
           "numberOfLockers": "Number of lockers",
           "forGroup": "Group Reservation",
+          "forGroupHelp": "A room for groups requires only a single reservation, regardless of room capacity. There are no individual reservations possible or necessary.",
           "imageUrl": "URL of image (optional)"
         },
 
@@ -347,25 +356,25 @@
         "closeButton": "Close",
 
         "loading": "Waiting for response of server...",
-        "success": "Successfully added the new location",
-        "error": "Something went wrong while adding the new location",
-        "warning": "Are you sure you want to propose this location? An e-mail will be sent to directie faciliteitenbeheer for approval. The amount of seats will be adjusted."
+        "success": "Successfully added the new room",
+        "error": "Something went wrong while adding the new room",
+        "warning": "Are you sure you want to propose this room? An e-mail will be sent to directie faciliteitenbeheer for approval. The amount of seats will be adjusted."
       },
 
       "editLocationModal": {
-        "title": "Approve this location",
+        "title": "Approve this room",
         "approveButton": "Approve"
-
       },
 
       "deleteLocationModal": {
-        "title": "Sure to delete location?",
+        "title": "Sure to delete room?",
 
         "body": "Are you sure that you want to delete {locationName}?",
+        "warning": "Deleting this room will delete the following opening periods (and the corresponding reservations) as well.",
 
         "loading": "Waiting for response of server...",
-        "success": "Successfully deleted the new location",
-        "error": "Something went wrong while deleting the location",
+        "success": "Successfully deleted the room",
+        "error": "Something went wrong while deleting the room",
 
         "yesButton": "Delete",
         "noButton": "Cancel"
@@ -373,7 +382,7 @@
     },
 
     "buildings": {
-      "title": "Management of buildings for locations",
+      "title": "Management of buildings for rooms",
 
       "table": {
         "name": "Name",
@@ -398,7 +407,7 @@
       "deleteBuildingModal": {
         "title": "Delete the building",
         "body": "Are you sure that you want to delete following building?",
-        "warning": "Please do note that all locations within this building will be deleted too",
+        "warning": "Please do note that all rooms within this building will be deleted too",
         "success": "Successfully deleted the building.",
         "error": "Something went wrong while deleting the building."
       },
@@ -407,7 +416,7 @@
     },
 
     "tags": {
-      "title": "Management of tags for locations",
+      "title": "Management of tags for rooms",
 
       "table": {
         "dutch": "Dutch",
@@ -468,6 +477,7 @@
         "loading": "Waiting on response of server...",
         "error": "Something went wrong while retrieving the users...",
         "noUserWithBarcodeHasBeenFound": "No user with given barcode has been found. Please try with first and/or last name."
+
       },
 
       "userDetails": {
@@ -495,14 +505,15 @@
 
           "loadingUpdatingUser": "Waiting on a response of the server...",
           "successUpdatingUser": "Successfully updated the roles of the user...",
-          "errorUpdatingUser": "Something went wrong while updating the user..."
+          "errorUpdatingUser": "Something went wrong while updating the user...",
+          "adminConfirmation": "This will change the administrator-status of the user, possibly granting the user with unrestricted access to the platform. Please be careful with this!"
         },
 
         "authorities": {
           "title": "Authorities of {name}",
-          "info": "Below, an overview is given of all authorities in which the user has a managing role. This means that the user can manage the locations within these authorities.",
-          "notAllowedToHaveAuthorities": "The user is not allowed to have authorities. Change the role if you want the user to be able to manage locations in one or more authorities",
-          "noAuthoritiesForUser": "The user is not linked to any authority, which means that he/she is not allowed to manage any location.",
+          "info": "Below, an overview is given of all authorities in which the user has a managing role. This means that the user can manage the rooms within these authorities.",
+          "notAllowedToHaveAuthorities": "The user is not allowed to have authorities. Change the role if you want the user to be able to manage rooms in one or more authorities",
+          "noAuthoritiesForUser": "The user is not linked to any authority, which means that he/she is not allowed to manage any room.",
           "allAuthoritiesAreAssigned": "All authorities are already assigned to the user.",
           "addNew": "Add authority to user",
 
@@ -532,7 +543,7 @@
           "table": {
             "eventCode": "Penalty event code",
             "timestamp": "Timestamp",
-            "location": "Location",
+            "location": "Room",
             "receivedPoints": "Received points",
             "remarks": "Remark",
 
@@ -546,8 +557,8 @@
               "timestamp": "Timestamp",
               "timestampValidation": "Timestamp is required",
 
-              "location": "Location",
-              "locationValidation": "Location is required",
+              "location": "Room",
+              "locationValidation": "Room is required",
 
               "points": "Penalty points",
               "pointsValidation": "Penalty points is required",
@@ -591,10 +602,10 @@
       "users": {
         "title": "Manage the users of authority {authorityName}",
         "info": "In the table below, all the users that are included in the authority {authorityName} are given. You can add or delete users here.",
-        "info2": "Users that are mentioned in the table, have managing rights to the locations that are included in the authority.",
+        "info2": "Users that are mentioned in the table, have managing rights to the rooms that are included in the authority.",
 
         "addNewUser": "Add user",
-        "noUsersInAuthority": "There are no users included in the authority. This means that no user can modify the locations of this authority.",
+        "noUsersInAuthority": "There are no users included in the authority. This means that no user can modify the rooms of this authority.",
 
         "addUserToAuthorityModal": {
           "title": "Add user to authority",
@@ -631,7 +642,7 @@
       "deleteAuthorityModal": {
         "title": "Delete the authority",
         "body": "Are you sure that you want to delete following authority?",
-        "warning": "Please do note that all locations within this authority will be deleted",
+        "warning": "Please do note that all rooms within this authority will be deleted",
         "success": "Successfully deleted the authority.",
         "error": "Something went wrong while deleting the authority."
       }
@@ -639,11 +650,11 @@
 
     "reservations": {
       "title": "Overview of reservations",
-      "locationsPanelTitle": "Search location reservations",
+      "locationsPanelTitle": "Search reservations",
       "lockersPanelTitle": "Search locker reservations",
 
       "location": {
-        "location": "Location",
+        "location": "Room",
         "start": "Reservations from",
         "end": "Reservations until",
         "pastReservations": "Include past reservations?",
@@ -651,33 +662,33 @@
         "searchButton": "Search",
         "clearButton": "Clear",
 
-        "neverSearched": "You have not yet searched for any location reservations.",
+        "neverSearched": "You have not yet searched for any room reservations.",
         "loading": "Waiting for response of server...",
-        "error": "Something went wrong while searching for location reservations",
+        "error": "Something went wrong while searching for room reservations",
 
         "table": {
           "date": "Date for which reserved",
           "user": "User",
           "attended": "User attended?",
 
-          "noLocationReservations": "There are no location reservations for the location."
+          "noLocationReservations": "There are no reservations for the room."
         },
 
         "deleteModal": {
-          "title": "Sure to delete the location reservation?",
-          "body": "Location reservation about to delete:",
+          "title": "Sure to delete the room reservation?",
+          "body": "Room reservation about to delete:",
 
           "yesButton": "Delete",
           "noButton": "Cancel",
 
           "loading": "Waiting on response of server...",
-          "success": "Successfully deleted the location reservation.",
-          "error": "Something went wrong while deleting the location reservation..."
+          "success": "Successfully deleted the room reservation.",
+          "error": "Something went wrong while deleting the room reservation..."
         }
       },
 
       "locker": {
-        "location": "Location",
+        "location": "Room",
         "start": "Reservations from",
         "end": "Reservations until",
         "pastReservations": "Include past reservations (i.e. key both picked up and returned)?",
@@ -695,7 +706,7 @@
           "keyPickupDate": "Key picked up?",
           "keyReturnedDate": "Key returned?",
 
-          "noLockerReservations": "There are no locker reservations for the location."
+          "noLockerReservations": "There are no locker reservations for the room."
         },
 
         "deleteModal": {
@@ -768,8 +779,8 @@
         "body": "Are you sure that you want to delete following penalty event?",
 
         "loading": "Waiting for response of server...",
-        "success": "Successfully deleted the new location",
-        "error": "Something went wrong while deleting the location",
+        "success": "Successfully deleted the penalty event",
+        "error": "Something went wrong while deleting the penalty event",
 
         "yesButton": "Delete",
         "noButton": "Cancel"
@@ -847,7 +858,7 @@
           "eventCode": "Reason for penalty",
           "timestamp": "Timestamp",
           "reservationDate": "Reservation for",
-          "location": "Location",
+          "location": "Room",
           "receivedPoints": "Received points"
         },
 
@@ -857,11 +868,11 @@
 
     "reservations": {
       "locations": {
-        "title": "Overview of your location reservations",
+        "title": "Overview of your room reservations",
 
         "table": {
           "header": {
-            "locationName": "Location",
+            "locationName": "Room",
             "reservationDate": "Reservation for date",
             "beginHour": "Starting time reservation",
             "attended": "Did you attend?"
@@ -874,9 +885,9 @@
           }
         },
 
-        "zeroReservations": "You have never made any location reservations so far",
-        "loading": "Location reservations are being loaded...",
-        "error": "Error while loading your location reservations"
+        "zeroReservations": "You have never made any room reservations so far",
+        "loading": "Room reservations are being loaded...",
+        "error": "Error while loading your room reservations"
       },
 
       "lockers": {
@@ -884,7 +895,7 @@
 
         "table": {
           "header": {
-            "locationName" :  "Location",
+            "locationName" :  "Room",
             "lockerNumber" : "Locker's number",
             "keyPickupDate" :  "Key picked up on date",
             "keyReturnedDate" : "Key returned on date"

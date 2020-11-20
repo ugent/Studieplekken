@@ -15,19 +15,18 @@
     <tr [@rowsAnimation]="" *ngFor="let reservation of locationReservations">
       <td>{{reservation.user.firstName + ' ' + reservation.user.lastName}}</td>
       <td *ngIf="showCheckbox() && reservation.attended == null">
-        <span class="glyphicon glyphicon-ok pointerCursor" id="firstToggle" (click)="onCheckboxToggle(reservation, true)"></span>
-        <span class="glyphicon glyphicon-remove-sign pointerCursor" (click)="onCheckboxToggle(reservation, false)"></span>
+        <span class="glyphicon glyphicon-ok pointerCursor" style="color:#CCFF99" id="firstToggle" (click)="onCheckboxToggle(reservation, true)"></span>
+        <span class="glyphicon glyphicon-remove-sign pointerCursor" style="color:#FF6666" (click)="onCheckboxToggle(reservation, false)"></span>
       </td>
-
       <td *ngIf="showCheckbox() && reservation.attended != null">
         <label>
           <input type="checkbox" [checked]="reservation.attended" (click)="onCheckboxToggle(reservation,$event.target.checked)"/>
         </label>
       </td>
       <td *ngIf="!showCheckbox()">{{(reservation.attended ? 'general.yes' : 'general.no') | translate}}</td>
+
       <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
-          data-toggle="modal" data-target="#deleteLocationReservationModal"
-          (click)="prepareToDeleteLocationReservation(reservation)">
+          (click)="prepareToDeleteLocationReservation(reservation, deleteLocationReservationModal)">
         <span class="glyphicon glyphicon-trash pointerCursor"></span>
       </td>
     </tr>
@@ -36,55 +35,48 @@
 </div>
 
 <!-- Modal view to ask whether the user is sure to delete a lockerReservation -->
-<div class="modal fade" id="deleteLocationReservationModal" tabindex="-1" role="dialog"
-     aria-labelledby="deleteLocationReservationModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
+<ng-template #deleteLocationReservationModal>
+  <!-- Header -->
+  <div class="modal-header">
+    <h5 class="modal-title" id="deleteLocationModalLabel">
+      {{'management.reservations.location.deleteModal.title' | translate}}
+    </h5>
+  </div>
 
-      <!-- Header -->
-      <div class="modal-header">
-        <h5 class="modal-title" id="deleteLocationModalLabel">
-          {{'management.reservations.location.deleteModal.title' | translate}}
-        </h5>
-      </div>
-
-      <!-- Body -->
-      <div class="modal-body">
-        <div>
-          <b>{{'management.reservations.location.deleteModal.body' | translate}}</b>
-          <br><br>
-          <ul *ngIf="locationReservationToDelete !== undefined">
-            <li><b style="margin-right: 5px"><i>{{('management.locationDetails.calendar.reservations.table.user' | translate) + ':   '}}</i></b>{{locationReservationToDelete.user.firstName + ' ' + locationReservationToDelete.user.lastName}}</li>
-            <li><b style="margin-right: 5px"><i>{{('management.locationDetails.calendar.reservations.table.attended' | translate) + ':   '}}</i></b>{{(locationReservationToDelete.attended ? 'general.yes' : 'general.no') | translate}}</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- Footer -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary"
-                (click)="deleteLocationReservation()">
-          {{'management.reservations.location.deleteModal.yesButton' | translate}}
-        </button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">
-          {{'management.reservations.location.deleteModal.noButton' | translate}}
-        </button>
-      </div>
-
-      <div class="container-fluid">
-        <div class="alert alert-info" *ngIf="successDeletingLocationReservation === null">
-          {{'management.reservations.location.deleteModal.loading' | translate}}
-        </div>
-
-        <div class="alert alert-success" *ngIf="successDeletingLocationReservation === true">
-          {{'management.reservations.location.deleteModal.success' | translate}}
-        </div>
-
-        <div class="alert alert-error" *ngIf="successDeletingLocationReservation === false">
-          {{'management.reservations.location.deleteModal.error' | translate}}
-        </div>
-      </div>
-
+  <!-- Body -->
+  <div class="modal-body">
+    <div>
+      <b>{{'management.reservations.location.deleteModal.body' | translate}}</b>
+      <br><br>
+      <ul *ngIf="locationReservationToDelete !== undefined">
+        <li><b style="margin-right: 5px"><i>{{('management.locationDetails.calendar.reservations.table.user' | translate) + ':   '}}</i></b>{{locationReservationToDelete.user.firstName + ' ' + locationReservationToDelete.user.lastName}}</li>
+        <li><b style="margin-right: 5px"><i>{{('management.locationDetails.calendar.reservations.table.attended' | translate) + ':   '}}</i></b>{{(locationReservationToDelete.attended ? 'general.yes' : 'general.no') | translate}}</li>
+      </ul>
     </div>
   </div>
-</div>
+
+  <!-- Footer -->
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary"
+            (click)="deleteLocationReservation()">
+      {{'management.reservations.location.deleteModal.yesButton' | translate}}
+    </button>
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">
+      {{'management.reservations.location.deleteModal.noButton' | translate}}
+    </button>
+  </div>
+
+  <div class="container-fluid">
+    <div class="alert alert-info" *ngIf="successDeletingLocationReservation === null">
+      {{'management.reservations.location.deleteModal.loading' | translate}}
+    </div>
+
+    <div class="alert alert-success" *ngIf="successDeletingLocationReservation === true">
+      {{'management.reservations.location.deleteModal.success' | translate}}
+    </div>
+
+    <div class="alert alert-error" *ngIf="successDeletingLocationReservation === false">
+      {{'management.reservations.location.deleteModal.error' | translate}}
+    </div>
+  </div>
+</ng-template>

@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import {Observable} from 'rxjs';
 import {LocationTag, LocationTagConstructor} from '../../shared/model/LocationTag';
 import {TagsService} from '../../services/api/tags/tags.service';
 import {transition, trigger, useAnimation} from '@angular/animations';
 import {rowsAnimation} from '../../shared/animations/RowAnimation';
 import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
+import { BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-tags-management',
@@ -30,7 +31,8 @@ export class TagsManagementComponent implements OnInit {
   successUpdatingTag: boolean = undefined;
   successDeletingTag: boolean = undefined;
 
-  constructor(private tagsService: TagsService) { }
+  constructor(private tagsService: TagsService,
+              private modalService: BsModalService) { }
 
   ngOnInit(): void {
     this.tagsObs = this.tagsService.getAllTags();
@@ -53,7 +55,11 @@ export class TagsManagementComponent implements OnInit {
     });
   }
 
-  prepareAdd(): void {
+  closeModal(): void {
+    this.modalService.hide();
+  }
+
+  prepareAdd(template: TemplateRef<any>): void {
     // reset the feedback boolean
     this.successAddingTag = undefined;
 
@@ -64,6 +70,8 @@ export class TagsManagementComponent implements OnInit {
       dutch: '',
       english: ''
     });
+
+    this.modalService.show(template);
   }
 
   addTag(): void {
@@ -73,18 +81,21 @@ export class TagsManagementComponent implements OnInit {
         this.successAddingTag = true;
         // and reload the tags
         this.tagsObs = this.tagsService.getAllTags();
+        this.modalService.hide();
       }, () => {
         this.successAddingTag = false;
       }
     );
   }
 
-  prepareUpdate(locationTag: LocationTag): void {
+  prepareUpdate(locationTag: LocationTag, template: TemplateRef<any>): void {
     // reset the feedback boolean
     this.successUpdatingTag = undefined;
 
     // prepare the tagFormGroup
     this.prepareFormGroup(locationTag);
+
+    this.modalService.show(template);
   }
 
   updateTagInFormGroup(): void {
@@ -94,18 +105,21 @@ export class TagsManagementComponent implements OnInit {
         this.successUpdatingTag = true;
         // and reload the tags
         this.tagsObs = this.tagsService.getAllTags();
+        this.modalService.hide();
       }, () => {
         this.successUpdatingTag = false;
       }
     );
   }
 
-  prepareToDelete(locationTag: LocationTag): void {
+  prepareToDelete(locationTag: LocationTag, template: TemplateRef<any>): void {
     // reset the feedback boolean
     this.successDeletingTag = undefined;
 
     // prepare the tagFormGroup
     this.prepareFormGroup(locationTag);
+
+    this.modalService.show(template);
   }
 
   deleteTagInFormGroup(): void {
@@ -115,6 +129,7 @@ export class TagsManagementComponent implements OnInit {
         this.successDeletingTag = true;
         // and reload the tags
         this.tagsObs = this.tagsService.getAllTags();
+        this.modalService.hide();
       }, () => {
         this.successDeletingTag = false;
       }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import {transition, trigger, useAnimation} from '@angular/animations';
 import {rowsAnimation} from '../../shared/animations/RowAnimation';
 import {Observable} from 'rxjs';
@@ -6,6 +6,7 @@ import {Authority} from '../../shared/model/Authority';
 import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
 import {AuthoritiesService} from '../../services/api/authorities/authorities.service';
 import {AuthorityToManageService} from '../../services/single-point-of-truth/authority-to-manage/authority-to-manage.service';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-authorities-management',
@@ -32,7 +33,8 @@ export class AuthoritiesManagementComponent implements OnInit {
   successDeletingAuthority: boolean = undefined;
 
   constructor(private authoritiesService: AuthoritiesService,
-              private authorityToMangeService: AuthorityToManageService) { }
+              private authorityToMangeService: AuthorityToManageService,
+              private modalService: BsModalService) { }
 
   ngOnInit(): void {
     this.authoritiesObs = this.authoritiesService.getAllAuthorities();
@@ -57,11 +59,18 @@ export class AuthoritiesManagementComponent implements OnInit {
     });
   }
 
+  /**
+   * Close whateber modal is opened
+   */
+  closeModal(): void {
+    this.modalService.hide();
+  }
+
   // ********************
   // *   CRUD: Create   *
   // ********************/
 
-  prepareAdd(): void {
+  prepareAdd(template: TemplateRef<any>): void {
     // reset the feedback boolean
     this.successAddingAuthority = undefined;
 
@@ -72,15 +81,18 @@ export class AuthoritiesManagementComponent implements OnInit {
       authorityName: '',
       description: ''
     });
+
+    this.modalService.show(template);
   }
 
-  addTag(): void {
+  addAuthority(): void {
     this.successAddingAuthority = null;
     this.authoritiesService.addAuthority(this.authority).subscribe(
       () => {
         this.successAddingAuthority = true;
         // and reload the tags
         this.authoritiesObs = this.authoritiesService.getAllAuthorities();
+        this.modalService.hide();
       }, () => {
         this.successAddingAuthority = false;
       }
@@ -91,12 +103,13 @@ export class AuthoritiesManagementComponent implements OnInit {
   // *   CRUD: Update   *
   // ********************/
 
-  prepareUpdate(authority: Authority): void {
+  prepareUpdate(authority: Authority, template: TemplateRef<any>): void {
     // reset the feedback boolean
     this.successUpdatingAuthority = undefined;
 
     // prepare the tagFormGroup
     this.prepareFormGroup(authority);
+    this.modalService.show(template);
   }
 
   updateTagInFormGroup(): void {
@@ -106,6 +119,7 @@ export class AuthoritiesManagementComponent implements OnInit {
         this.successUpdatingAuthority = true;
         // and reload the tags
         this.authoritiesObs = this.authoritiesService.getAllAuthorities();
+        this.modalService.hide();
       }, () => {
         this.successUpdatingAuthority = false;
       }
@@ -116,12 +130,13 @@ export class AuthoritiesManagementComponent implements OnInit {
   // *   CRUD: Delete   *
   // ********************/
 
-  prepareToDelete(authority: Authority): void {
+  prepareToDelete(authority: Authority, template: TemplateRef<any>): void {
     // reset the feedback boolean
     this.successDeletingAuthority = undefined;
 
     // prepare the tagFormGroup
     this.prepareFormGroup(authority);
+    this.modalService.show(template);
   }
 
   deleteTagInFormGroup(): void {
@@ -131,6 +146,7 @@ export class AuthoritiesManagementComponent implements OnInit {
         this.successDeletingAuthority = true;
         // and reload the tags
         this.authoritiesObs = this.authoritiesService.getAllAuthorities();
+        this.modalService.hide();
       }, () => {
         this.successDeletingAuthority = false;
       }

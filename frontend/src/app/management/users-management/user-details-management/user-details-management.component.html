@@ -7,7 +7,10 @@
   <div class="container-fluid" *ngIf="userObs | async as user">
     <!-- Form with details of the user -->
     <app-user-details-form [userObs]="userObs"></app-user-details-form>
+    <br><br>
 
+    <!-- If the user is an EMPLOYEE or ADMIN, show the authorities of the user -->
+    <app-user-authorities-management [userObs]="userObs"></app-user-authorities-management>
     <br><br>
 
     <!-- If the user is an ADMIN, then he may change the role of a user -->
@@ -16,11 +19,6 @@
 
       <br><br>
     </div>
-
-    <!-- If the user is an EMPLOYEE or ADMIN, show the authorities of the user -->
-    <app-user-authorities-management [userObs]="userObs"></app-user-authorities-management>
-
-    <br><br>
 
     <!-- Table with all penalty points and the option to add/delete them manually  -->
     <app-user-details-management-penalties

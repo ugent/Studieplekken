@@ -64,6 +64,9 @@
   </ckeditor>
 
   <hr>
+  <div class="alert alert-warning" *ngIf="!this.authenticationService.isLoggedIn()">
+    Voordat er reservaties kunnen geplaatst worden voor deze locatie, dient u ingelogd te zijn.
+  </div>
 
   <!-- Calendar -->
   <div class="row">
@@ -74,7 +77,7 @@
     <button
     class="btn btn-primary float-right"
     [disabled]="updateReservationIsPossible()"
-    (click)="commitReservations()"
+    (click)="commitReservations(confirm)"
     >
     {{'reservations.reservationButton' | translate}}
   </button>
@@ -109,3 +112,41 @@
     </iframe>
   </div>
 </div>
+
+<ng-template #confirm>
+  <div class="modal-header">
+    {{'dashboard.locationDetails.calendar.reservation.header' | translate}}
+  </div>
+  <div class="modal-body text-center">
+    <p>{{'dashboard.locationDetails.calendar.reservation.updateMessage' | translate }}</p>
+    <div *ngIf='newReservations.length !== 0'>
+      <hr>
+      <p>{{'dashboard.locationDetails.calendar.reservation.updateAddMessage' | translate }}</p>
+      <div class="justify-content-center">
+        <mat-chip-list aria-orientation="vertical">
+          <mat-chip class="align-center" *ngFor="let reservation of newReservations" selected>
+            {{formatReservation(reservation)}}
+          </mat-chip>
+        </mat-chip-list>
+      </div>
+    </div>
+    <div *ngIf='removedReservations.length !== 0'>
+      <hr>
+      <p>{{'dashboard.locationDetails.calendar.reservation.updateDeleteMessage' | translate }}</p>
+      <mat-chip-list class="mat-chip-list-wrapper">
+        <mat-chip *ngFor="let reservation of removedReservations" selected color="warn">
+          {{formatReservation(reservation)}}
+        </mat-chip>
+      </mat-chip-list>
+    </div>
+    <hr>
+    <p>{{'dashboard.locationDetails.calendar.reservation.updateConfirmMessage' | translate }}</p>
+    <button type="button" class="btn btn-default" (click)="confirmReservationChange()" >{{ 'general.yes' | translate }}</button>
+    <button type="button" class="btn btn-primary" (click)="declineReservationChange()" >{{ 'general.no' | translate}}</button>
+  </div>
+  <div class="modal-footer">
+    <div class="alert alert-warning text-center">
+      {{'dashboard.locationDetails.calendar.reservation.updateWarningMessage' | translate}}
+    </div>
+  </div>
+</ng-template>

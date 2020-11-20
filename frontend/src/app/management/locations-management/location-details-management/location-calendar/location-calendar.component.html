@@ -1,5 +1,10 @@
 <div class="container-fluid" *ngIf="location | async as location">
   <div class="panel-body" style="padding: 20px">
+    <div class="text-center" style="margin-bottom: 20px">
+      <button class="btn btn-primary pull-center" (click)="prepareAdd(addCalendarPeriodModal, CPtable)" >
+        {{'management.locationDetails.calendar.form.addButton' | translate}}
+      </button>
+    </div>
     <app-calendar
       [events]="events"
       [refresh]="refresh"
@@ -10,429 +15,387 @@
 
   <hr>
 
-  <div class="row">
+  <div class="container-fluid">
     <!-- Title -->
     <h3>
       {{'management.locationDetails.calendar.reservations.title' | translate}}
     </h3>
-  </div>
 
-  <!-- Show table if user has searched, else show a message instead of an empty table -->
-  <div *ngIf="showReservations === false" class="alert alert-info"  >
-    {{'management.locationDetails.calendar.reservations.selectSlot' | translate}}
-  </div>
-  <div *ngIf="showReservations === null" class="alert alert-info">
-    {{'management.locationDetails.calendar.reservations.loading' | translate}}
-  </div>
-
-  <!-- If an error has occurred while fetching the reservations, show the error -->
-  <div *ngIf="errorOnRetrievingReservations" class="alert alert-error">
-    {{'management.locationDetails.calendar.reservations.error' | translate}}
-  </div>
-
-  <!-- Component showing the location reservations -->
-  <app-location-reservations
-    *ngIf="showReservations === true && !errorOnRetrievingReservations"
-    [locationReservations]="locationReservations"
-    [currentCalendarPeriod]="currentCalendarPeriod"
-    [currentTimeSlot]="currentTimeSlot"
-    (reservationChange)="loadReservations()">
-  </app-location-reservations>
-
-  <hr>
-
-  <!-- Form to edit the calendar -->
-  <div class="row">
-    <!-- Title -->
-    <h3>
-      {{'management.locationDetails.calendar.form.title' | translate}}
-    </h3>
-  </div>
-
-  <!-- The form itself -->
-  <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
-    <!-- Table with all existing tags -->
-    <div class="row" *ngIf="calendarPeriods.length > 0; else noCalendarPeriodsForLocation">
-      <table style="width: 100%;">
-        <thead>
-        <tr>
-          <th>{{'management.locationDetails.calendar.form.startsAt' | translate}}</th>
-          <th>{{'management.locationDetails.calendar.form.endsAt' | translate}}</th>
-          <th>{{'management.locationDetails.calendar.form.openingTime' | translate}}</th>
-          <th>{{'management.locationDetails.calendar.form.closingTime' | translate}}</th>
-          <th>{{'management.locationDetails.calendar.form.reservable' | translate}}</th>
-          <th><!-- update --></th>
-          <th><!-- delete --></th>
-        </tr>
-        </thead>
-
-        <tbody>
-        <tr [@rowsAnimation]="" *ngFor="let calendarPeriod of calendarPeriods">
-          <td>{{calendarPeriod.startsAt.format('DD/MM/YYYY')}}</td>
-          <td>{{calendarPeriod.endsAt.format('DD/MM/YYYY')}}</td>
-          <td>{{calendarPeriod.openingTime.format('HH:mm')}}</td>
-          <td>{{calendarPeriod.closingTime.format('HH:mm')}}</td>
-          <td>{{(calendarPeriod.reservable ? 'general.yes' : 'general.no') |translate}}</td>
-
-          <!-- Edit icon -->
-          <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
-              data-toggle="modal" data-target="#updateCalendarPeriodModal"
-              (click)="prepareUpdate(calendarPeriod)" *ngIf="!calendarPeriod.isLocked()">
-            <span class="glyphicon glyphicon-pencil pointerCursor"></span>
-          </td>
-          <!-- Delete icon -->
-          <td data-toggle="modal" data-target="#deleteCalendarPeriodModal"
-              class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
-              (click)="prepareDelete(calendarPeriod)" *ngIf="!calendarPeriod.isLocked()">
-            <span class="glyphicon glyphicon-trash pointerCursor"></span>
-          </td>
-        </tr>
-        </tbody>
-      </table>
+    <!-- Show table if user has searched, else show a message instead of an empty table -->
+    <div *ngIf="showReservations === false" class="alert alert-info"  >
+      {{'management.locationDetails.calendar.reservations.selectSlot' | translate}}
+    </div>
+    <div *ngIf="showReservations === null" class="alert alert-info">
+      {{'management.locationDetails.calendar.reservations.loading' | translate}}
+    </div>
+    <!-- If an error has occurred while fetching the reservations, show the error -->
+    <div *ngIf="errorOnRetrievingReservations" class="alert alert-error">
+      {{'management.locationDetails.calendar.reservations.error' | translate}}
     </div>
 
-    <!-- Button to add a new calendar period -->
-    <div style="margin-top: 20px">
-      <button class="btn btn-primary" data-toggle="modal" data-target="#addCalendarPeriodModal"
-              (click)="prepareAdd()">
-        {{'management.locationDetails.calendar.form.addButton' | translate}}
-      </button>
+
+    <!-- Component showing the location reservations -->
+    <app-location-reservations
+      *ngIf="showReservations === true && !errorOnRetrievingReservations"
+      [locationReservations]="locationReservations"
+      [currentCalendarPeriod]="currentCalendarPeriod"
+      [currentTimeSlot]="currentTimeSlot"
+      (reservationChange)="loadReservations()">
+    </app-location-reservations>
+
+    <hr>
+
+    <!-- Form to edit the calendar -->
+    <div #CPtable class="container-fluid">
+      <!-- Title -->
+      <div class="col-md-4">
+        <h3>
+          {{'management.locationDetails.calendar.form.title' | translate}}
+        </h3>
+      </div>
+      <div class="col-md-4 pull-right">
+        <button class="btn btn-primary pull-right" (click)="prepareAdd(addCalendarPeriodModal, CPtable)" >
+          {{'management.locationDetails.calendar.form.addButton' | translate}}
+        </button>
+      </div>
+
+
+      <!-- The form itself -->
+      <div style="margin-top: 10px; margin-bottom: 10px;">
+        <table style="width: 100%;" *ngIf="calendarPeriods.length > 0; else noCalendarPeriodsForLocation">
+          <thead>
+          <tr>
+            <th>{{'management.locationDetails.calendar.form.startsAt' | translate}}</th>
+            <th>{{'management.locationDetails.calendar.form.endsAt' | translate}}</th>
+            <th>{{'management.locationDetails.calendar.form.openingTime' | translate}}</th>
+            <th>{{'management.locationDetails.calendar.form.closingTime' | translate}}</th>
+            <th>{{'management.locationDetails.calendar.form.reservable' | translate}}</th>
+            <th><!-- update --></th>
+            <th><!-- delete --></th>
+          </tr>
+          </thead>
+
+          <tbody>
+          <tr [@rowsAnimation]="" *ngFor="let calendarPeriod of calendarPeriods">
+            <td>{{calendarPeriod.startsAt.format('DD/MM/YYYY')}}</td>
+            <td>{{calendarPeriod.endsAt.format('DD/MM/YYYY')}}</td>
+            <td>{{calendarPeriod.openingTime.format('HH:mm')}}</td>
+            <td>{{calendarPeriod.closingTime.format('HH:mm')}}</td>
+            <td>{{(calendarPeriod.reservable ? 'general.yes' : 'general.no') |translate}}</td>
+
+            <!-- Edit icon -->
+            <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
+                (click)="prepareUpdate(calendarPeriod, updateCalendarPeriodModal)" *ngIf="!calendarPeriod.isLocked()">
+              <span class="glyphicon glyphicon-pencil pointerCursor"></span>
+            </td>
+            <!-- Delete icon -->
+            <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
+                (click)="prepareDelete(calendarPeriod, deleteCalendarPeriodModal)" *ngIf="!calendarPeriod.isLocked()">
+              <span class="glyphicon glyphicon-trash pointerCursor"></span>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- Modal view to add a calendar period -->
-<div class="modal fade" id="addCalendarPeriodModal" tabindex="-1" role="dialog"
-     aria-labelledby="addCalendarPeriodModalTitle" aria-hidden="true"
-     *ngIf="calendarPeriodModel | async as model">
+<ng-template #addCalendarPeriodModal>
+  <div *ngIf="calendarPeriodModel | async as model">
+    <!-- Modal header -->
+    <div class="modal-header">
+      <h5 class="modal-title" id="addCalendarPeriodModalTitle">
+        {{'management.locationDetails.calendar.addModalView.title' | translate}}
+      </h5>
+    </div>
 
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <!-- Modal header -->
-      <div class="modal-header">
-        <h5 class="modal-title" id="addCalendarPeriodModalTitle">
-          {{'management.locationDetails.calendar.addModalView.title' | translate}}
-        </h5>
-      </div>
-
-      <!-- Modal body -->
-      <div class="modal-body">
-        <form >
-          <!-- Starts at -->
-          <div class="row form-group">
-            <label class="col-lg-3 control-label" for="startsAt">
-              {{'management.locationDetails.calendar.form.startsAt' | translate}}
-            </label>
-            <div class="col-lg-8">
-              <app-moment-date id="startsAt"
-                [(model)]="model.startsAt" [type]="'date'" [min]="getMinStartDate()">
-              </app-moment-date>
-            </div>
+    <!-- Modal body -->
+    <div class="modal-body">
+      <form >
+        <!-- Starts at -->
+        <div class="row form-group">
+          <label class="col-lg-3 control-label" for="startsAt">
+            {{'management.locationDetails.calendar.form.startsAt' | translate}}
+          </label>
+          <div class="col-lg-8">
+            <app-moment-date id="startsAt"
+              [(model)]="model.startsAt" [type]="'date'" [min]="getMinStartDate()">
+            </app-moment-date>
           </div>
-
-          <!-- Ends at -->
-          <div class="row form-group">
-            <label class="col-lg-3 control-label" for="endsAt">
-              {{'management.locationDetails.calendar.form.endsAt' | translate}}
-            </label>
-            <div class="col-lg-8">
-              <app-moment-date id="endsAt" [(model)]="model.endsAt" [type]="'date'" [min]="model.startsAt"></app-moment-date>
-            </div>
-          </div>
-
-          <!-- Opening time -->
-          <div class="row form-group">
-            <label class="col-lg-3 control-label" for="openingTime">
-              {{'management.locationDetails.calendar.form.openingTime' | translate}}
-            </label>
-            <div class="col-lg-8">
-              <app-moment-date id="openingTime" [(model)]="model.openingTime" [type]="'time'"></app-moment-date>
-            </div>
-          </div>
-
-          <!-- Closing time -->
-          <div class="row form-group">
-            <label class="col-lg-3 control-label" for="closingTimeUpdate">
-              {{'management.locationDetails.calendar.form.closingTime' | translate}}
-            </label>
-            <div class="col-lg-8">
-              <app-moment-date id="closingTime" [(model)]="model.closingTime" [type]="'time'" [min]="model.openingTime"></app-moment-date>
-            </div>
-          </div>
-
-          <!-- Reservable -->
-          <div class="row form-group">
-            <label class="col-lg-3 control-label" for="reservable">
-              {{'management.locationDetails.calendar.form.reservable' | translate}}
-            </label>
-            <div class="col-lg-8">
-              <input id="reservable" style="height:40px;" type="checkbox" [(ngModel)]="model.reservable" name="reservable" />
-            </div>
-          </div>
-
-          <!-- timeslot size -->
-          <div class="row form-group">
-            <label class="col-lg-3 control-label" for="timeslot">
-              {{'management.locationDetails.calendar.form.reservableTimeslotSize' | translate}}
-            </label>
-            <div class="col-lg-8">
-              <select class="form-control" id="timeslot"
-                      [disabled]="!model.reservable" [(ngModel)]="model.reservableTimeslotSize" name="timeslotSize">
-                <option value="30" [ngValue]="30" name="halfHour">
-                  {{"management.locationDetails.calendar.form.dropdown.halfHour" | translate}}
-                </option>
-                <option value="60" [ngValue]="60" name="fullHour">
-                  {{ "management.locationDetails.calendar.form.dropdown.hour" | translate}}
-                </option>
-                <option value="90" [ngValue]="90" name="oneAndHalfHour">
-                  {{ "management.locationDetails.calendar.form.dropdown.hourAndHalf" | translate}}
-                </option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Reservable from -->
-          <div class="row form-group">
-            <label class="col-lg-3 control-label" for="reservableFrom">
-              {{'management.locationDetails.calendar.form.reservableFrom' | translate}}
-            </label>
-            <div class="col-lg-8">
-              <app-moment-datetime id="reservableFrom"
-                [(model)]="model.reservableFrom" [disabled]="!model.reservable" [min]="getMinReservableFrom(model)">
-              </app-moment-datetime>
-            </div>
-          </div>
-        </form>
-      </div>
-
-      <!-- Modal footer -->
-      <div class="modal-footer">
-        <button class="btn btn-primary" (click)="add()" [disabled]="!model.isValid()" >
-          {{'general.buttons.add' | translate}}
-        </button>
-
-        <button type="button" class="btn btn-secondary"
-                data-dismiss="modal">
-          {{'general.buttons.cancel' | translate}}
-        </button>
-      </div>
-
-      <!-- Feedback to the user  -->
-      <div class="container-fluid">
-        <div class="alert alert-info" *ngIf="successAddingLocationReservation === null">
-          {{'general.waitingForServer' | translate}}
         </div>
 
-        <div class="alert alert-success" *ngIf="successAddingLocationReservation === true">
-          {{'management.locationDetails.calendar.addModalView.success' | translate}}
+        <!-- Ends at -->
+        <div class="row form-group">
+          <label class="col-lg-3 control-label" for="endsAt">
+            {{'management.locationDetails.calendar.form.endsAt' | translate}}
+          </label>
+          <div class="col-lg-8">
+            <app-moment-date id="endsAt" [(model)]="model.endsAt" [type]="'date'" [min]="model.startsAt"></app-moment-date>
+          </div>
         </div>
 
-        <div class="alert alert-error" *ngIf="successAddingLocationReservation === false">
-          {{'management.locationDetails.calendar.addModalView.error' | translate}}
+        <!-- Opening time -->
+        <div class="row form-group">
+          <label class="col-lg-3 control-label" for="openingTime">
+            {{'management.locationDetails.calendar.form.openingTime' | translate}}
+          </label>
+          <div class="col-lg-8">
+            <app-moment-date id="openingTime" [(model)]="model.openingTime" [type]="'time'"></app-moment-date>
+          </div>
         </div>
+
+        <!-- Closing time -->
+        <div class="row form-group">
+          <label class="col-lg-3 control-label" for="closingTimeUpdate">
+            {{'management.locationDetails.calendar.form.closingTime' | translate}}
+          </label>
+          <div class="col-lg-8">
+            <app-moment-date id="closingTime" [(model)]="model.closingTime" [type]="'time'" [min]="model.openingTime"></app-moment-date>
+          </div>
+        </div>
+
+        <!-- Reservable -->
+        <div class="row form-group">
+          <label class="col-lg-3 control-label" for="reservable">
+            {{'management.locationDetails.calendar.form.reservable' | translate}}
+          </label>
+          <div class="col-lg-8">
+            <input id="reservable" style="height:40px;" type="checkbox" [(ngModel)]="model.reservable" name="reservable" />
+          </div>
+        </div>
+
+        <!-- timeslot size -->
+        <div class="row form-group">
+          <label class="col-lg-3 control-label" for="timeslotUpdate">
+            {{'management.locationDetails.calendar.form.reservableTimeslotSize' | translate}}
+          </label>
+          <div class="col-lg-8">
+            <app-moment-timeslot-size id="openingTimeUpdate" [(model)]="model.reservableTimeslotSize" [type]="'time'"></app-moment-timeslot-size>
+          </div>
+        </div>
+
+        <!-- Reservable from -->
+        <div class="row form-group">
+          <label class="col-lg-3 control-label" for="reservableFrom">
+            {{'management.locationDetails.calendar.form.reservableFrom' | translate}}
+          </label>
+          <div class="col-lg-8">
+            <app-moment-datetime id="reservableFrom"
+              [(model)]="model.reservableFrom" [disabled]="!model.reservable" [min]="getMinReservableFrom(model)">
+            </app-moment-datetime>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Modal footer -->
+    <div class="modal-footer">
+      <button class="btn btn-primary" (click)="add()" [disabled]="!model.isValid()" >
+        {{'general.buttons.add' | translate}}
+      </button>
+
+      <button type="button" class="btn btn-secondary"
+              (click)="closeModal()">
+        {{'general.buttons.cancel' | translate}}
+      </button>
+    </div>
+
+    <!-- Feedback to the user  -->
+    <div class="container-fluid">
+      <div class="alert alert-info" *ngIf="successAddingLocationReservation === null">
+        {{'general.waitingForServer' | translate}}
       </div>
 
+      <div class="alert alert-success" *ngIf="successAddingLocationReservation === true">
+        {{'management.locationDetails.calendar.addModalView.success' | translate}}
+      </div>
+
+      <div class="alert alert-error" *ngIf="successAddingLocationReservation === false">
+        {{'management.locationDetails.calendar.addModalView.error' | translate}}
+      </div>
     </div>
   </div>
-</div>
+</ng-template>
 
 <!-- Modal view to update a calendar period -->
-<div class="modal fade" id="updateCalendarPeriodModal" tabindex="-1" role="dialog"
-     aria-labelledby="updateCalendarPeriodModalTitle" aria-hidden="true"
-     *ngIf="calendarPeriodModel | async as model">
+<ng-template #updateCalendarPeriodModal>
+  <div *ngIf="calendarPeriodModel | async as model">
+    <!-- Modal header -->
+    <div class="modal-header">
+      <h5 class="modal-title" id="updateCalendarPeriodModalTitle">
+        {{'management.locationDetails.calendar.updateModalView.title' | translate}}
+      </h5>
+    </div>
 
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <!-- Modal header -->
-      <div class="modal-header">
-        <h5 class="modal-title" id="updateCalendarPeriodModalTitle">
-          {{'management.locationDetails.calendar.updateModalView.title' | translate}}
-        </h5>
-      </div>
-
-      <!-- Modal body -->
-      <div class="modal-body">
-        <form >
-          <!-- Starts at -->
-          <div class="row form-group">
-            <label class="col-lg-3 control-label" for="startsAtUpdate">
-              {{'management.locationDetails.calendar.form.startsAt' | translate}}
-            </label>
-            <div class="col-lg-8">
-              <app-moment-date id="startsAtUpdate"
-                [(model)]="model.startsAt" [type]="'date'" [min]="getMinStartDate()">
-              </app-moment-date>
-            </div>
+    <!-- Modal body -->
+    <div class="modal-body">
+      <form >
+        <!-- Starts at -->
+        <div class="row form-group">
+          <label class="col-lg-3 control-label" for="startsAtUpdate">
+            {{'management.locationDetails.calendar.form.startsAt' | translate}}
+          </label>
+          <div class="col-lg-8">
+            <app-moment-date id="startsAtUpdate"
+              [(model)]="model.startsAt" [type]="'date'" [min]="getMinStartDate()">
+            </app-moment-date>
           </div>
-
-          <!-- Ends at -->
-          <div class="row form-group">
-            <label class="col-lg-3 control-label" for="endsAtUpdate">
-              {{'management.locationDetails.calendar.form.endsAt' | translate}}
-            </label>
-            <div class="col-lg-8">
-              <app-moment-date id="endsAtUpdate" [(model)]="model.endsAt" [type]="'date'" [min]="model.startsAt"></app-moment-date>
-            </div>
-          </div>
-
-          <!-- Opening time -->
-          <div class="row form-group">
-            <label class="col-lg-3 control-label" for="openingTimeUpdate">
-              {{'management.locationDetails.calendar.form.openingTime' | translate}}
-            </label>
-            <div class="col-lg-8">
-              <app-moment-date id="openingTimeUpdate" [(model)]="model.openingTime" [type]="'time'"></app-moment-date>
-            </div>
-          </div>
-
-          <!-- Closing time -->
-          <div class="row form-group">
-            <label class="col-lg-3 control-label" for="closingTimeUpdate">
-              {{'management.locationDetails.calendar.form.closingTime' | translate}}
-            </label>
-            <div class="col-lg-8">
-              <app-moment-date id="closingTimeUpdate" [(model)]="model.closingTime" [type]="'time'" [min]="model.openingTime"></app-moment-date>
-            </div>
-          </div>
-
-          <!-- Reservable -->
-          <div class="row form-group">
-            <label class="col-lg-3 control-label" for="reservableUpdate">
-              {{'management.locationDetails.calendar.form.reservable' | translate}}
-            </label>
-            <div class="col-lg-8">
-              <input id="reservableUpdate" style="height:40px;" type="checkbox" [(ngModel)]="model.reservable" name="reservable" />
-            </div>
-          </div>
-
-          <!-- timeslot size -->
-          <div class="row form-group">
-            <label class="col-lg-3 control-label" for="timeslotUpdate">
-              {{'management.locationDetails.calendar.form.reservableTimeslotSize' | translate}}
-            </label>
-            <div class="col-lg-8">
-              <select class="form-control" id="timeslotUpdate"
-                      [disabled]="!model.reservable" [(ngModel)]="model.reservableTimeslotSize" name="timeslotSize">
-                <option value="30" [ngValue]="30" name="halfHour">
-                  {{"management.locationDetails.calendar.form.dropdown.halfHour" | translate}}
-                </option>
-                <option value="60" [ngValue]="60" name="fullHour">
-                  {{ "management.locationDetails.calendar.form.dropdown.hour" | translate}}
-                </option>
-                <option value="90" [ngValue]="90" name="oneAndHalfHour">
-                  {{ "management.locationDetails.calendar.form.dropdown.hourAndHalf" | translate}}
-                </option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Reservable from -->
-          <div class="row form-group">
-            <label class="col-lg-3 control-label" for="reservableFromUpdate">
-              {{'management.locationDetails.calendar.form.reservableFrom' | translate}}
-            </label>
-            <div class="col-lg-8">
-              <app-moment-datetime id="reservableFromUpdate"
-                [(model)]="model.reservableFrom" [disabled]="!model.reservable" [min]="getMinReservableFrom(model)">
-              </app-moment-datetime>
-            </div>
-          </div>
-
-        </form>
-      </div>
-
-      <!-- Modal footer -->
-      <div class="modal-footer">
-        <div class="alert alert-warning" *ngIf="showAdminWarnMessage(model)">
-          {{ 'management.locationDetails.calendar.form.adminWarning' | translate }}
         </div>
 
-        <button class="btn btn-primary" (click)="update()" [disabled]="!model.isValid()" >
-          {{'general.buttons.update' | translate}}
-        </button>
+        <!-- Ends at -->
+        <div class="row form-group">
+          <label class="col-lg-3 control-label" for="endsAtUpdate">
+            {{'management.locationDetails.calendar.form.endsAt' | translate}}
+          </label>
+          <div class="col-lg-8">
+            <app-moment-date id="endsAtUpdate" [(model)]="model.endsAt" [type]="'date'" [min]="model.startsAt"></app-moment-date>
+          </div>
+        </div>
 
-        <button type="button" class="btn btn-secondary"
-                data-dismiss="modal">
-          {{'general.buttons.cancel' | translate}}
-        </button>
+        <!-- Opening time -->
+        <div class="row form-group">
+          <label class="col-lg-3 control-label" for="openingTimeUpdate">
+            {{'management.locationDetails.calendar.form.openingTime' | translate}}
+          </label>
+          <div class="col-lg-8">
+            <app-moment-date id="openingTimeUpdate" [(model)]="model.openingTime" [type]="'time'"></app-moment-date>
+          </div>
+        </div>
+
+        <!-- Closing time -->
+        <div class="row form-group">
+          <label class="col-lg-3 control-label" for="closingTimeUpdate">
+            {{'management.locationDetails.calendar.form.closingTime' | translate}}
+          </label>
+          <div class="col-lg-8">
+            <app-moment-date id="closingTimeUpdate" [(model)]="model.closingTime" [type]="'time'" [min]="model.openingTime"></app-moment-date>
+          </div>
+        </div>
+
+        <!-- Reservable -->
+        <div class="row form-group">
+          <label class="col-lg-3 control-label" for="reservableUpdate">
+            {{'management.locationDetails.calendar.form.reservable' | translate}}
+          </label>
+          <div class="col-lg-8">
+            <input id="reservableUpdate" style="height:40px;" type="checkbox" [(ngModel)]="model.reservable" name="reservable" />
+          </div>
+        </div>
+
+        <!-- timeslot size -->
+        <div class="row form-group">
+          <label class="col-lg-3 control-label" for="timeslotUpdate">
+            {{'management.locationDetails.calendar.form.reservableTimeslotSize' | translate}}
+          </label>
+          <div class="col-lg-8">
+            <app-moment-timeslot-size id="openingTimeUpdate" [(model)]="model.reservableTimeslotSize" [type]="'time'"></app-moment-timeslot-size>
+          </div>
+        </div>
+
+        <!-- Reservable from -->
+        <div class="row form-group">
+          <label class="col-lg-3 control-label" for="reservableFromUpdate">
+            {{'management.locationDetails.calendar.form.reservableFrom' | translate}}
+          </label>
+          <div class="col-lg-8">
+            <app-moment-datetime id="reservableFromUpdate"
+              [(model)]="model.reservableFrom" [disabled]="!model.reservable" [min]="getMinReservableFrom(model)">
+            </app-moment-datetime>
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- Modal footer -->
+    <div class="modal-footer">
+      <div class="alert alert-warning" *ngIf="showAdminWarnMessage(model)">
+        {{ 'management.locationDetails.calendar.form.adminWarning' | translate }}
       </div>
 
-      <!-- Feedback to the user -->
-      <div class="container-fluid">
-        <div class="alert alert-info" *ngIf="successUpdatingLocationReservation === null">
-          {{'general.waitingForServer' | translate}}
-        </div>
+      <button class="btn btn-primary" (click)="update()" [disabled]="!model.isValid()" >
+        {{'general.buttons.update' | translate}}
+      </button>
 
-        <div class="alert alert-success" *ngIf="successUpdatingLocationReservation === true">
-          {{'management.locationDetails.calendar.updateModalView.success' | translate}}
-        </div>
+      <button type="button" class="btn btn-secondary"
+              (click)="closeModal()">
+        {{'general.buttons.cancel' | translate}}
+      </button>
+    </div>
 
-        <div class="alert alert-error" *ngIf="successUpdatingLocationReservation === false">
-          {{'management.locationDetails.calendar.updateModalView.error' | translate}}
-        </div>
+    <!-- Feedback to the user -->
+    <div class="container-fluid">
+      <div class="alert alert-info" *ngIf="successUpdatingLocationReservation === null">
+        {{'general.waitingForServer' | translate}}
       </div>
 
+      <div class="alert alert-success" *ngIf="successUpdatingLocationReservation === true">
+        {{'management.locationDetails.calendar.updateModalView.success' | translate}}
+      </div>
+
+      <div class="alert alert-error" *ngIf="successUpdatingLocationReservation === false">
+        {{'management.locationDetails.calendar.updateModalView.error' | translate}}
+      </div>
     </div>
   </div>
-</div>
+</ng-template>
 
 <!-- Modal view to ask whether the user is sure to delete a tag -->
-<div class="modal fade" id="deleteCalendarPeriodModal" tabindex="-1" role="dialog"
-     aria-labelledby="deleteCalendarPeriodModalTitle" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
+<ng-template #deleteCalendarPeriodModal>
+  <!-- Header -->
+  <div class="modal-header">
+    <h5 class="modal-title" id="deleteCalendarPeriodModalTitle">
+      {{'management.locationDetails.calendar.deleteModalView.title' | translate}}
+    </h5>
+  </div>
 
-      <!-- Header -->
-      <div class="modal-header">
-        <h5 class="modal-title" id="deleteCalendarPeriodModalTitle">
-          {{'management.locationDetails.calendar.deleteModalView.title' | translate}}
-        </h5>
-      </div>
-
-      <!-- Body -->
-      <div class="modal-body">
-        <div>
-          <b>{{'management.locationDetails.calendar.deleteModalView.body' | translate}}</b>
-          <br><br>
-          <ul *ngIf="prepareToUpdatePeriod !== null">
-
-            <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.startsAt' | translate}}</i></b>{{prepareToUpdatePeriod.startsAt.format('DD/MM/YYYY')}}</li>
-            <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.endsAt' | translate}}</i></b>{{prepareToUpdatePeriod.endsAt.format('DD/MM/YYYY')}}</li>
-            <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.openingTime' | translate}}</i></b>{{prepareToUpdatePeriod.openingTime.format('HH:mm')}}</li>
-            <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.closingTime' | translate}}</i></b>{{prepareToUpdatePeriod.closingTime.format('HH:mm')}}</li>
-            <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.reservable' | translate}}</i></b>{{(prepareToUpdatePeriod.reservable ? 'general.yes' : 'general.no') |translate}}</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- Footer -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="delete()">
-          {{'general.buttons.delete' | translate}}
-        </button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">
-          {{'general.buttons.cancel' | translate}}
-        </button>
-      </div>
-
-      <!-- Feedback to the user -->
-      <div class="container-fluid">
-        <div class="alert alert-info" *ngIf="successDeletingLocationReservation === null">
-          {{'general.waitingForServer' | translate}}
-        </div>
-
-        <div class="alert alert-success" *ngIf="successDeletingLocationReservation === true">
-          {{'management.locationDetails.calendar.deleteModalView.success' | translate}}
-        </div>
-
-        <div class="alert alert-error" *ngIf="successDeletingLocationReservation === false">
-          {{'management.locationDetails.calendar.deleteModalView.error' | translate}}
-        </div>
-      </div>
-
+  <!-- Body -->
+  <div class="modal-body">
+    <div>
+      <b>{{'management.locationDetails.calendar.deleteModalView.body' | translate}}</b>
+      <br><br>
+      <ul *ngIf="prepareToUpdatePeriod !== null">
+        <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.startsAt' | translate}}</i></b>{{prepareToUpdatePeriod.startsAt.format('DD/MM/YYYY')}}</li>
+        <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.endsAt' | translate}}</i></b>{{prepareToUpdatePeriod.endsAt.format('DD/MM/YYYY')}}</li>
+        <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.openingTime' | translate}}</i></b>{{prepareToUpdatePeriod.openingTime.format('HH:mm')}}</li>
+        <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.closingTime' | translate}}</i></b>{{prepareToUpdatePeriod.closingTime.format('HH:mm')}}</li>
+        <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.reservable' | translate}}</i></b>{{(prepareToUpdatePeriod.reservable ? 'general.yes' : 'general.no') |translate}}</li>
+      </ul>
     </div>
   </div>
-</div>
+
+  <div class="alert alert-danger">
+    <p>{{'management.locationDetails.calendar.deleteModalView.warning' | translate}}</p>
+  </div>
+
+
+  <!-- Footer -->
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger danger" (click)="delete()">
+      {{'general.buttons.delete' | translate}}
+    </button>
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">
+      {{'general.buttons.cancel' | translate}}
+    </button>
+  </div>
+
+  <!-- Feedback to the user -->
+  <div class="container-fluid">
+    <div class="alert alert-info" *ngIf="successDeletingLocationReservation === null">
+      {{'general.waitingForServer' | translate}}
+    </div>
+
+    <div class="alert alert-success" *ngIf="successDeletingLocationReservation === true">
+      {{'management.locationDetails.calendar.deleteModalView.success' | translate}}
+    </div>
+
+    <div class="alert alert-error" *ngIf="successDeletingLocationReservation === false">
+      {{'management.locationDetails.calendar.deleteModalView.error' | translate}}
+    </div>
+  </div>
+</ng-template>
 
 <ng-template #noCalendarPeriodsForLocation>
   <div class="row" style="margin-top: 20px">

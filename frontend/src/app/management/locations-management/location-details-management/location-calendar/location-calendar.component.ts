@@ -1,5 +1,5 @@
 import { trigger, transition, useAnimation } from '@angular/animations';
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, TemplateRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CalendarEvent } from 'angular-calendar';
 import * as moment from 'moment';
@@ -15,6 +15,9 @@ import { LocationReservation } from 'src/app/shared/model/LocationReservation';
 import { Timeslot } from 'src/app/shared/model/Timeslot';
 import { LocationOpeningperiodDialogComponent } from './location-openingperiod-dialog/location-openingperiod-dialog.component';
 import { Location } from 'src/app/shared/model/Location';
+import { msToShowFeedback } from 'src/app/app.constants';
+import { tap } from 'rxjs/operators';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { Moment } from 'moment';
 
@@ -84,8 +87,9 @@ export class LocationCalendarComponent implements OnInit {
   constructor(private calendarPeriodsService: CalendarPeriodsService,
               private functionalityService: ApplicationTypeFunctionalityService,
               private locationReservationService: LocationReservationsService,
-              private authorizationService: AuthenticationService,
-              private dialog: MatDialog) {
+              private dialog: MatDialog,
+              private modalService: BsModalService,
+              private authorizationService: AuthenticationService) {
   }
 
   ngOnInit(): void {
@@ -102,10 +106,12 @@ export class LocationCalendarComponent implements OnInit {
   // *   ADD   *
   // ***********/
 
-  prepareAdd(): void {
+  prepareAdd(template: TemplateRef<any>, el: HTMLElement): void {
     this.calendarPeriodModel.next(new CalendarPeriod(null, this.locationFlat, null, null, null, null, false, null, 0, [], null));
     this.prepareToUpdatePeriod = null;
     this.successAddingLocationReservation = undefined;
+    el.scrollIntoView();
+    this.modalService.show(template);
   }
 
   add(): void {
@@ -116,11 +122,12 @@ export class LocationCalendarComponent implements OnInit {
   // *   UPDATE   *
   // **************/
 
-  prepareUpdate(calendarPeriod: CalendarPeriod): void {
+  prepareUpdate(calendarPeriod: CalendarPeriod, template: TemplateRef<any>): void {
     this.successUpdatingLocationReservation = undefined;
     this.prepareToUpdatePeriod = calendarPeriod;
     // Copy
     this.calendarPeriodModel.next(CalendarPeriod.fromJSON(calendarPeriod));
+    this.modalService.show(template);
   }
 
   update(add = false): void {
@@ -144,6 +151,7 @@ export class LocationCalendarComponent implements OnInit {
       () => {
         add ? this.successAddingLocationReservation = true : this.successUpdatingLocationReservation = true;
         this.setup();
+        this.modalService.hide();
       }, () => {
         add ? this.successAddingLocationReservation = false : this.successUpdatingLocationReservation = false;
         this.rollback();
@@ -155,9 +163,10 @@ export class LocationCalendarComponent implements OnInit {
   // *   DELETE   *
   // **************/
 
-  prepareDelete(calendarPeriod: CalendarPeriod): void {
+  prepareDelete(calendarPeriod: CalendarPeriod, template: TemplateRef<any>): void {
     this.prepareToUpdatePeriod = calendarPeriod;
     this.successDeletingLocationReservation = undefined;
+    this.modalService.show(template);
   }
 
   delete(): void {
@@ -289,5 +298,9 @@ export class LocationCalendarComponent implements OnInit {
 
     return this.prepareToUpdatePeriod &&
       this.prepareToUpdatePeriod.startsAt.isBefore(moment().add(3, 'weeks').day(8));
+  }
+
+  closeModal(): void {
+    this.modalService.hide();
   }
 }

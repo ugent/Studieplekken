@@ -7,15 +7,17 @@ export class Timeslot {
     timeslotSeqnr: number;
     timeslotDate: Moment;
     calendarId: number;
+    amountOfReservations: number;
 
-    constructor(timeslotSeqnr: number, timeslotDate: Moment, calendarId: number) {
+    constructor(timeslotSeqnr: number, timeslotDate: Moment, calendarId: number, amountOfReservations: number) {
         this.timeslotSeqnr = timeslotSeqnr;
         this.timeslotDate = timeslotDate;
         this.calendarId = calendarId;
+        this.amountOfReservations = amountOfReservations;
     }
 
     static fromJSON(json: any): Timeslot {
-        return new Timeslot(json.timeslotSeqnr, moment(json.timeslotDate), json.calendarId);
+        return new Timeslot(json.timeslotSeqnr, moment(json.timeslotDate), json.calendarId, json.amountOfReservations);
     }
 
     toJSON(): object {
@@ -29,10 +31,9 @@ export class Timeslot {
 
 
 export function timeslotStartHour(calendarPeriod: CalendarPeriod, timeslot: Timeslot): Moment {
-    const currentTime = moment(timeslot.timeslotDate.format('DD-MM-YYYY') + 'T' + calendarPeriod.openingTime.format('HH:mm'), 'DD-MM-YYYYTHH:mm');
-
-    currentTime.add(calendarPeriod.reservableTimeslotSize * timeslot.timeslotSeqnr, 'minutes');
-    return currentTime;
+  const currentTime = moment(timeslot.timeslotDate.format('DD-MM-YYYY') + 'T' + calendarPeriod.openingTime.format('HH:mm'), 'DD-MM-YYYYTHH:mm');
+  currentTime.add(calendarPeriod.reservableTimeslotSize * timeslot.timeslotSeqnr, 'minutes');
+  return currentTime;
 }
 
 export function timeslotEndHour(calendarPeriod: CalendarPeriod, seqnr: number): string {

@@ -207,7 +207,9 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
             // Case 2: Active period, 2 subcases
             if (period.getEndsAt().isAfter(LocalDate.now())) {
                 // Case 2.a: Active period within hours
-                if (period.getOpeningTime().isBefore(LocalTime.now()) && period.getClosingTime().isAfter(LocalTime.now())) {
+                if (period.getOpeningTime().isBefore(LocalTime.now()) && period.getClosingTime().isAfter(LocalTime.now()) ||
+                    period.getOpeningTime().isAfter(period.getClosingTime()) && period.getClosingTime().isAfter(LocalTime.now()) ||
+                    period.getOpeningTime().isAfter(period.getClosingTime()) && period.getOpeningTime().isBefore(LocalTime.now())) {
                     return new Pair<>(
                             LocationStatus.OPEN,
                             LocalDateTime.of(period.getEndsAt(), period.getClosingTime()).format(outputFormat)
@@ -262,7 +264,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         List<Timeslot> timeslotList = new ArrayList<>();
 
         while(rs.next()) {
-            timeslotList.add(createTimeslot(rs));
+            timeslotList.add(createTimeslot(rs, conn));
         }
 
         calendarPeriod.setTimeslots(Collections.unmodifiableList(timeslotList));
@@ -285,12 +287,16 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         return calendarPeriod;
     }
 
-    public static Timeslot createTimeslot(ResultSet rs) throws SQLException {
+    public static Timeslot createTimeslot(ResultSet rs, Connection conn) throws SQLException {
         int calendarId = (rs.getInt(Resources.databaseProperties.getString("timeslot_calendar_id")));
         int seqnr = (rs.getInt(Resources.databaseProperties.getString("timeslot_sequence_number")));
         LocalDate date = (rs.getDate(Resources.databaseProperties.getString("timeslot_date")).toLocalDate());
 
-        return new Timeslot(calendarId, seqnr, date);
+        Timeslot timeslot = new Timeslot(calendarId, seqnr, date);
+
+        int count = DBLocationReservationDao.amountOfTimeslotReservations(timeslot, conn);
+        timeslot.setAmountOfReservations(count);
+        return timeslot;
     }
 
     private void prepareCommonPartOfCalendarPeriodPstmt(CalendarPeriod calendarPeriod,
