@@ -2,6 +2,14 @@
 ----------------- |   Create application data tables   |
 ----------------- +------------------------------------+
 
+CREATE OR REPLACE FUNCTION trigger_set_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
 
 --
 -- Name: authority; Type: TABLE; Schema: public
@@ -11,7 +19,9 @@ CREATE TABLE public.authority
 (
     authority_id    integer primary key generated always as identity,
     authority_name  text NOT NULL unique,
-    description     text NOT NULL
+    description     text NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE public.buildings
@@ -19,6 +29,8 @@ CREATE TABLE public.buildings
     building_id     integer NOT NULL primary key generated always as identity,
     building_name   text    NOT NULL unique,
     address text            NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     UNIQUE(building_name, address)
 );
 
@@ -38,6 +50,8 @@ CREATE TABLE public.locations
     description_english text,
     forGroup            boolean,
     approved            boolean DEFAULT false,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     constraint fk_location_to_authority
         foreign key (authority_id)
@@ -57,6 +71,8 @@ CREATE TABLE public.tags
     tag_id  integer NOT NULL primary key generated always as identity,
     dutch   text    NOT NULL unique,
     english text    NOT NULL unique,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     UNIQUE(dutch, english)
 );
 
@@ -64,6 +80,8 @@ CREATE TABLE public.location_tags
 (
     location_id text    NOT NULL,
     tag_id      integer NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     UNIQUE(location_id, tag_id),
 
@@ -96,6 +114,8 @@ CREATE TABLE public.calendar_periods
     locked_from     Timestamp NOT NULL,
     reservable      boolean NOT NULL,
     timeslot_length SMALLINT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     constraint fk_calendar_periods_to_locations
         foreign key (location_name)
@@ -113,6 +133,8 @@ CREATE TABLE public.reservation_timeslots
     calendar_id                     integer NOT NULL,
     timeslot_sequence_number        SMALLINT NOT NULL,
     timeslot_date                   Date NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     constraint pk_timeslots
         primary key (calendar_id, timeslot_sequence_number, timeslot_date),
@@ -132,6 +154,8 @@ CREATE TABLE public.calendar_periods_for_lockers
     starts_at       Date NOT NULL,
     ends_at         Date NOT NULL,
     reservable_from Timestamp NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     constraint pk_calendar_periods_for_lockers
         primary key (location_name, starts_at, ends_at, reservable_from),
@@ -149,7 +173,9 @@ CREATE TABLE public.calendar_periods_for_lockers
 
 CREATE TABLE public.institutions
 (
-    name text NOT NULL primary key
+    name text NOT NULL primary key,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 
@@ -167,6 +193,8 @@ CREATE TABLE public.users
     password                 text,
     institution              text NOT NULL,
     admin                    boolean NOT NULL DEFAULT false,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     constraint uc_users unique (mail),
 
@@ -184,7 +212,9 @@ CREATE TABLE public.users
 
 CREATE TABLE public.languages
 (
-    enum text NOT NULL primary key
+    enum text NOT NULL primary key,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 
@@ -203,12 +233,13 @@ COMMENT ON TABLE public.languages IS 'E.g. for the language ''English''
 
 CREATE TABLE public.location_reservations
 (
-    created_at          Timestamp NOT NULL,
     timeslot_date       Date NOT NULL,
     timeslot_seqnr      integer NOT NULL,
     calendar_id         integer NOT NULL,
     attended            boolean,
     user_augentid       text NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     constraint pk_location_reservations
         primary key (timeslot_seqnr, timeslot_date, calendar_id, user_augentid),
@@ -240,6 +271,8 @@ CREATE TABLE public.lockers
 (
     location_name text    NOT NULL,
     number        integer NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     constraint pk_lockers
         primary key (location_name, number),
@@ -263,6 +296,8 @@ CREATE TABLE public.locker_reservations
     user_augentid   text    NOT NULL,
     key_pickup_date Timestamp,
     key_return_date Timestamp,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     constraint pk_locker_reservations
         primary key (location_name, locker_number, user_augentid),
@@ -288,7 +323,9 @@ CREATE TABLE public.locker_reservations
 CREATE TABLE public.penalty_events
 (
     code   integer NOT NULL primary key,
-    points integer NOT NULL
+    points integer NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 --
@@ -304,6 +341,8 @@ CREATE TABLE public.penalty_book
     received_points      integer NOT NULL,
     reservation_location text    NOT NULL,
     remarks              text,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     constraint pk_penalty_book
         primary key (user_augentid, event_code, timestamp),
@@ -345,6 +384,8 @@ CREATE TABLE public.penalty_descriptions
     lang_enum   text    NOT NULL,
     event_code  integer NOT NULL,
     description text    NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     constraint pk_penalty_descriptions
         primary key (lang_enum, event_code),
@@ -379,6 +420,8 @@ CREATE TABLE public.scanners_location
 (
     location_name text NOT NULL,
     user_augentid text NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     constraint pk_scanners_location
         primary key (location_name, user_augentid),
@@ -418,6 +461,8 @@ CREATE TABLE public.users_to_verify
     verification_code        text NOT NULL,
     created_timestamp        text NOT NULL,
     admin                    boolean NOT NULL DEFAULT false,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     constraint uc_users_to_verify unique (mail),
 
@@ -436,6 +481,8 @@ CREATE TABLE public.roles_user_authority
 (
     user_id      text    NOT NULL,
     authority_id integer NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     constraint fk_roles_user_authority_to_authority
         foreign key (authority_id)
@@ -451,6 +498,110 @@ CREATE TABLE public.roles_user_authority
 
     constraint uc_user_authority unique (user_id, authority_id)
 );
+
+----------------- +------------------+
+----------------- |   Add triggers   |
+----------------- +------------------+
+
+CREATE TRIGGER set_timestamp_user_authority
+BEFORE UPDATE ON public.roles_user_authority
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
+
+CREATE TRIGGER set_timestamp_users_to_verify
+BEFORE UPDATE ON public.users_to_verify
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
+
+CREATE TRIGGER set_timestamp_scanners_location
+BEFORE UPDATE ON public.scanners_location
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
+
+CREATE TRIGGER set_timestamp_penalty_descriptions
+BEFORE UPDATE ON public.penalty_descriptions
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
+
+CREATE TRIGGER set_timestamp_penalty_book
+BEFORE UPDATE ON public.penalty_book
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
+
+CREATE TRIGGER set_timestamp_penalty_events
+BEFORE UPDATE ON public.penalty_events
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
+
+CREATE TRIGGER set_timestamp_locker_reservations
+BEFORE UPDATE ON public.locker_reservations
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
+
+CREATE TRIGGER set_timestamp_lockers
+BEFORE UPDATE ON public.lockers
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
+
+CREATE TRIGGER set_timestamp_location_reservations
+BEFORE UPDATE ON public.location_reservations
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
+
+CREATE TRIGGER set_timestamp_languages
+BEFORE UPDATE ON public.languages
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
+
+CREATE TRIGGER set_timestamp_users
+BEFORE UPDATE ON public.users
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
+
+CREATE TRIGGER set_timestamp_institutions
+BEFORE UPDATE ON public.institutions
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
+
+CREATE TRIGGER set_timestamp_calendar_periods_for_lockers
+BEFORE UPDATE ON public.calendar_periods_for_lockers
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
+
+CREATE TRIGGER set_timestamp_reservation_timeslots
+BEFORE UPDATE ON public.reservation_timeslots
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
+
+CREATE TRIGGER set_timestamp_calendar_periods
+BEFORE UPDATE ON public.calendar_periods
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
+
+CREATE TRIGGER set_timestamp_location_tags
+BEFORE UPDATE ON public.location_tags
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
+
+CREATE TRIGGER set_timestamp_tags
+BEFORE UPDATE ON public.tags
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
+
+CREATE TRIGGER set_timestamp_locations
+BEFORE UPDATE ON public.locations
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
+
+CREATE TRIGGER set_timestamp_buildings
+BEFORE UPDATE ON public.buildings
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
+
+CREATE TRIGGER set_timestamp_authority
+BEFORE UPDATE ON public.authority
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
 
 ----------------- +-----------------------+
 ----------------- |   Import extensions   |
