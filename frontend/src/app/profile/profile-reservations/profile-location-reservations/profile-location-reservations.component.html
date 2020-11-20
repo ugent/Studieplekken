@@ -17,7 +17,7 @@
               <th>{{'profile.reservations.locations.table.header.locationName' | translate}}</th>
               <th>{{'profile.reservations.locations.table.header.reservationDate' | translate}}</th>
               <th>{{'profile.reservations.locations.table.header.beginHour' | translate}}</th>
-              <!-- <th>{{'profile.reservations.locations.table.header.attended' | translate}}</th> -->
+              <th>{{'profile.reservations.locations.table.header.attended' | translate}}</th>
               <th></th>
             </tr>
             </thead>
@@ -30,9 +30,9 @@
               <td>{{getBeginHour(calendarMap.get(reservation.timeslot.calendarId), reservation.timeslot) | date:'HH:mm'}}</td>
               <!-- This column should only be 'yes' or 'no' if the reservationDate is in the past,
                     otherwise it is not possible to be attended, and it might seem that penalty points will be given -->
-              <!-- <td>{{ reservation.attended ?
+              <td>{{ reservation.attended ?
                   ('profile.reservations.locations.table.attended.yes' | translate) :
-                  ('profile.reservations.locations.table.attended.no' | translate)}}</td> -->
+                  ('profile.reservations.locations.table.attended.no' | translate)}}</td>
               <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
                   data-toggle="modal" data-target="#deleteLocationReservationModal"
                   (click)="prepareToDeleteLocationReservation(reservation)">
