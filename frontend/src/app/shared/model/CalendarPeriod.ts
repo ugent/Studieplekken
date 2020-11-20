@@ -182,7 +182,7 @@ function mapTimeslotsToCalendarEvents(period: CalendarPeriod, reservedTimeslots:
       const endDT = new Date(timeslot.timeslotDate.format('YYYY-MM-DD') + 'T' + timeslotEndHour(period, timeslot.timeslotSeqnr));
 
       calendarEvents.push({
-        title: timeslot.timeslotDate.format('DD-MM-YYYY') + ' (Blok ' + (timeslot.timeslotSeqnr + 1) + ')',
+        title: `${timeslot.amountOfReservations} / ${period.location.numberOfSeats}`,
         start: beginDT,
         end: endDT,
         meta: {calendarPeriod: period, timeslot},

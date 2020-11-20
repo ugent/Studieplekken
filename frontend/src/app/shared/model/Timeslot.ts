@@ -7,15 +7,17 @@ export class Timeslot {
     timeslotSeqnr: number;
     timeslotDate: Moment;
     calendarId: number;
+    amountOfReservations: number;
 
-    constructor(timeslotSeqnr: number, timeslotDate: Moment, calendarId: number) {
+    constructor(timeslotSeqnr: number, timeslotDate: Moment, calendarId: number, amountOfReservations: number) {
         this.timeslotSeqnr = timeslotSeqnr;
         this.timeslotDate = timeslotDate;
         this.calendarId = calendarId;
+        this.amountOfReservations = amountOfReservations;
     }
 
     static fromJSON(json: any): Timeslot {
-        return new Timeslot(json.timeslotSeqnr, moment(json.timeslotDate), json.calendarId);
+        return new Timeslot(json.timeslotSeqnr, moment(json.timeslotDate), json.calendarId, json.amountOfReservations);
     }
 
     toJSON(): object {
