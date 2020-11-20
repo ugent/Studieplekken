@@ -208,7 +208,8 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
             if (period.getEndsAt().isAfter(LocalDate.now())) {
                 // Case 2.a: Active period within hours
                 if (period.getOpeningTime().isBefore(LocalTime.now()) && period.getClosingTime().isAfter(LocalTime.now()) ||
-                    period.getOpeningTime().isAfter(period.getClosingTime()) && period.getClosingTime().isAfter(LocalTime.now())) {
+                    period.getOpeningTime().isAfter(period.getClosingTime()) && period.getClosingTime().isAfter(LocalTime.now()) ||
+                    period.getOpeningTime().isAfter(period.getClosingTime()) && period.getOpeningTime().isBefore(LocalTime.now())) {
                     return new Pair<>(
                             LocationStatus.OPEN,
                             LocalDateTime.of(period.getEndsAt(), period.getClosingTime()).format(outputFormat)
