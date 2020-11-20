@@ -18,7 +18,6 @@
               <th>{{'management.locations.table.header.name' | translate}}</th>
               <th>{{'management.locations.table.header.authority' | translate}}</th>
               <th>{{'management.locations.table.header.numberOfSeats' | translate}}</th>
-              <th>{{'management.locations.table.header.numberOfLockers' | translate}}</th>
               <th><!-- Details --></th>
               <th><!-- Delete --></th>
             </tr>
@@ -30,15 +29,12 @@
               <td>{{location.name}}</td>
               <td>{{location.authority.authorityName}}</td>
               <td>{{location.numberOfSeats}}</td>
-              <td>{{location.numberOfLockers}}</td>
               <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
-                  data-toggle="modal" data-target="#addLocationModal"
-                  (click)="prepareToApproveLocation(location)">
+                  (click)="prepareToApproveLocation(location, addLocationModal)">
                 <span class="glyphicon glyphicon-list-alt"></span>
               </td>
               <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
-                  data-toggle="modal" data-target="#deleteLocationModal"
-                  (click)="prepareToDeleteLocation(location.name)">
+                  (click)="prepareToDeleteLocation(location.name, deleteLocationModal)">
                 <span class="glyphicon glyphicon-trash pointerCursor"></span>
               </td>
             </tr>

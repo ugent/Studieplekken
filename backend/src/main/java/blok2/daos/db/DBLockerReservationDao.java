@@ -195,7 +195,7 @@ public class DBLockerReservationDao extends DAO implements ILockerReservationDao
         if(!rs.wasNull())
             lr.setKeyReturnedDate(date.toLocalDateTime());
 
-        User u = DBAccountDao.createUser(rs);
+        User u = DBAccountDao.createUser(rs, conn);
         Locker l = DBLocationDao.createLocker(rs,conn);
 
         lr.setLocker(l);

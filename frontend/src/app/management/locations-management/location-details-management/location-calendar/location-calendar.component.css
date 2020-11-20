@@ -5,3 +5,7 @@ span:hover {
 #firstToggle {
     margin-right: 2%;
 }
+
+h3.inline-block {
+  display: inline-block;
+}

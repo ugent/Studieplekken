@@ -1,9 +1,11 @@
 package blok2.controllers;
 
 import blok2.daos.ILockersDao;
+import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.model.reservations.LockerReservation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +20,7 @@ import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("lockers")
-public class LockersController {
+public class LockersController extends AuthorizedLocationController {
 
     private final Logger logger = Logger.getLogger(LockersController.class.getSimpleName());
 
@@ -30,7 +32,9 @@ public class LockersController {
     }
 
     @GetMapping("/status/{locationName}")
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public List<LockerReservation> getLockerStatuses(@PathVariable("locationName") String locationName) {
+        isAuthorized(locationName);
         try {
             return lockersDao.getLockerStatusesOfLocation(locationName);
         } catch (SQLException e) {

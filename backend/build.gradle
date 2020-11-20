@@ -45,6 +45,7 @@ dependencies {
     implementation 'org.flywaydb.flyway-test-extensions:flyway-spring5-test:6.4.0'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.2.2.RELEASE'
+    testImplementation 'org.springframework.security:spring-security-test'
 
 }
 

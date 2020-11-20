@@ -175,7 +175,6 @@ export class LocationsManagementComponent implements OnInit {
   get authority(): AbstractControl { return this.addLocationFormGroup.get('authority'); }
   get building(): AbstractControl { return this.addLocationFormGroup.get('building'); }
   get numberOfSeats(): AbstractControl { return this.addLocationFormGroup.get('numberOfSeats'); }
-  get numberOfLockers(): AbstractControl { return this.addLocationFormGroup.get('numberOfLockers'); }
   get forGroup(): AbstractControl { return this.addLocationFormGroup.get('forGroup'); }
   get imageUrl(): AbstractControl { return this.addLocationFormGroup.get('imageUrl'); }
 
@@ -245,17 +244,16 @@ export class LocationsManagementComponent implements OnInit {
     this.modalService.hide();
   }
 
-  prepareToApproveLocation(location: Location): void {
+  prepareToApproveLocation(location: Location, template: TemplateRef<any>): void {
     this.setupForm();
     this.editMode = true;
     this.addLocationFormGroup.get('name').setValue(location.name);
     this.addLocationFormGroup.get('building').setValue(location.building.buildingId);
     this.addLocationFormGroup.get('authority').setValue(location.authority.authorityId);
     this.addLocationFormGroup.get('numberOfSeats').setValue(location.numberOfSeats);
-    this.addLocationFormGroup.get('numberOfLockers').setValue(location.numberOfLockers);
     this.addLocationFormGroup.get('forGroup').setValue(location.forGroup);
     this.addLocationFormGroup.get('imageUrl').setValue(location.imageUrl);
-
+    this.modalService.show(template);
   }
 
   approveLocation(location: Location): void {
@@ -267,6 +265,7 @@ export class LocationsManagementComponent implements OnInit {
       this.locationService.approveLocation(location, true).subscribe(
         () => {
           this.successHandler();
+          this.modalService.hide();
         }, () => {
           this.errorHandler();
         }

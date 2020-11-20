@@ -25,7 +25,7 @@ public class DBScannerLocationDao extends DAO implements IScannerLocationDao {
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                users.add(DBAccountDao.createUser(rs));
+                users.add(DBAccountDao.createUser(rs, conn));
             }
 
             return users;

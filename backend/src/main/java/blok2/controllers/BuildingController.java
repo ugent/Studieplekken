@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -29,7 +30,8 @@ public class BuildingController {
     // *************************************/
 
     @GetMapping
-    public List<Building> getAllAuthorities() {
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    public List<Building> getAllBuildings() {
         try {
             return buildingDao.getAllBuildings();
         } catch (SQLException e) {
@@ -40,6 +42,7 @@ public class BuildingController {
     }
 
     @GetMapping("/{buildingId}")
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public Building getBuilding(@PathVariable int buildingId) {
         try {
             return buildingDao.getBuildingById(buildingId);
@@ -51,6 +54,7 @@ public class BuildingController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void addBuilding(@RequestBody Building building) {
         try {
             buildingDao.addBuilding(building);
@@ -63,6 +67,7 @@ public class BuildingController {
     }
 
     @PutMapping("/{buildingId}")
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void updateBuilding(@PathVariable int buildingId, @RequestBody Building building) {
         try {
             building.setBuildingId(buildingId);
@@ -76,6 +81,7 @@ public class BuildingController {
     }
 
     @DeleteMapping("/{buildingId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void deleteAuthority(@PathVariable int buildingId) {
         try {
             buildingDao.deleteBuilding(buildingId);

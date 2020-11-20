@@ -1,3 +1,4 @@
+/*
 package blok2.controllers;
 
 import org.krysalis.barcode4j.impl.upcean.EAN13Bean;
@@ -23,7 +24,7 @@ import java.io.IOException;
  * This controller handles all requests related to barcodes.
  * Such as generating barcodes, responding with images and the ability to
  * download these images.
- */
+ * /
 @RestController
 @RequestMapping("barcode")
 public class BarcodeController {
@@ -131,3 +132,4 @@ public class BarcodeController {
         return number + sum;
     }
 }
+*/

@@ -5,6 +5,7 @@ import blok2.helpers.Language;
 import blok2.model.penalty.Penalty;
 import blok2.model.penalty.PenaltyEvent;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -35,6 +36,8 @@ public class PenaltyEventController {
      ******************************************/
 
     @GetMapping("/{userId}")
+    @PreAuthorize("(hasAuthority('USER') and #userId == authentication.principal.augentID) or " +
+                  "hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public List<Penalty> getPenaltiesOfUserById(@PathVariable("userId") String userId) {
         try {
             return penaltyDao.getPenaltiesByUser(userId);
@@ -46,6 +49,7 @@ public class PenaltyEventController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void addPenalty(@RequestBody Penalty penalty) {
         try {
             penaltyDao.addPenalty(penalty);
@@ -57,6 +61,7 @@ public class PenaltyEventController {
     }
 
     @DeleteMapping
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void deletePenalty(@RequestBody Penalty penalty) {
         try {
             penaltyDao.deletePenalty(penalty);
@@ -72,6 +77,7 @@ public class PenaltyEventController {
      **********************************************/
 
     @GetMapping("/events")
+    @PreAuthorize("permitAll()")
     public List<PenaltyEvent> getAllPenaltyEvents() {
         try {
             return penaltyDao.getPenaltyEvents();
@@ -83,6 +89,7 @@ public class PenaltyEventController {
     }
 
     @PostMapping("/events")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void addPenaltyEvent(@RequestBody PenaltyEvent penaltyEvent) {
         try {
             if (penaltyEvent.getDescriptions().size() != Language.values().length) {
@@ -97,6 +104,7 @@ public class PenaltyEventController {
     }
 
     @PutMapping("/events/{code}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void updatePenaltyEvent(@PathVariable("code") int code, @RequestBody PenaltyEvent penaltyEvent) {
         try {
             if (penaltyEvent.getDescriptions().size() != Language.values().length) {
@@ -111,6 +119,7 @@ public class PenaltyEventController {
     }
 
     @DeleteMapping("/events")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void deletePenaltyEvent(@RequestBody PenaltyEvent penaltyEvent) {
         try {
             penaltyDao.deletePenaltyEvent(penaltyEvent.getCode());

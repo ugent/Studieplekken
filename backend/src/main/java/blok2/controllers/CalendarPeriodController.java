@@ -2,13 +2,15 @@ package blok2.controllers;
 
 import blok2.daos.ICalendarPeriodDao;
 import blok2.daos.ILocationDao;
-import blok2.helpers.LocationStatus;
 import blok2.helpers.Pair;
+import blok2.helpers.authorization.AuthorizedLocationController;
+import blok2.helpers.LocationStatus;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Period;
 import blok2.model.reservables.Location;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -22,7 +24,7 @@ import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("locations/calendar")
-public class CalendarPeriodController {
+public class CalendarPeriodController extends  AuthorizedLocationController {
 
     private final Logger logger = Logger.getLogger(CalendarPeriodController.class.getSimpleName());
 
@@ -37,6 +39,7 @@ public class CalendarPeriodController {
     }
 
     @GetMapping("/{locationName}")
+    @PreAuthorize("permitAll()")
     public List<CalendarPeriod> getCalendarPeriodsOfLocation(@PathVariable("locationName") String locationName) {
         try {
             return calendarPeriodDao.getCalendarPeriodsOfLocation(locationName);
@@ -48,6 +51,7 @@ public class CalendarPeriodController {
     }
 
     @GetMapping("/{locationName}/status")
+    @PreAuthorize("permitAll()")
     public Pair<LocationStatus, String> getStatusOfLocation(@PathVariable("locationName") String locationName) {
         try {
             return calendarPeriodDao.getStatus(locationName);
@@ -59,6 +63,7 @@ public class CalendarPeriodController {
     }
 
     @GetMapping
+    @PreAuthorize("permitAll()")
     public List<CalendarPeriod> getAllCalendarPeriods() {
         try {
             return calendarPeriodDao.getAllCalendarPeriods();
@@ -70,8 +75,11 @@ public class CalendarPeriodController {
     }
 
     @PutMapping("/{locationName}")
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void updateCalendarPeriods(@PathVariable("locationName") String locationName,
                                       @RequestBody UpdateCalendarBody fromAndTo) {
+        isAuthorized(locationName);
+
         try {
             List<CalendarPeriod> from = fromAndTo.getPrevious();
             CalendarPeriod to = fromAndTo.getToUpdate();
@@ -196,7 +204,10 @@ public class CalendarPeriodController {
     }
 
     @DeleteMapping
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void deleteCalendarPeriods(@RequestBody CalendarPeriod calendarPeriod) {
+        isAuthorized(calendarPeriod.getLocation().getName());
+
         try {
             calendarPeriodDao.deleteCalendarPeriod(calendarPeriod);
         } catch (SQLException e) {

@@ -40,7 +40,7 @@ public class DBAccountDao extends DAO implements IAccountDao {
         ResultSet rs = pstmt.executeQuery();
 
         if (rs.next())
-            return createUser(rs);
+            return createUser(rs, conn);
 
         return null;
     }
@@ -60,7 +60,7 @@ public class DBAccountDao extends DAO implements IAccountDao {
         ResultSet rs = pstmt.executeQuery();
 
         if (rs.next()) {
-            return createUser(rs);
+            return createUser(rs, conn);
         }
 
         return null;
@@ -79,7 +79,7 @@ public class DBAccountDao extends DAO implements IAccountDao {
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                users.add(createUser(rs));
+                users.add(createUser(rs, conn));
             }
         }
 
@@ -99,7 +99,7 @@ public class DBAccountDao extends DAO implements IAccountDao {
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                users.add(createUser(rs));
+                users.add(createUser(rs, conn));
             }
         }
 
@@ -121,7 +121,7 @@ public class DBAccountDao extends DAO implements IAccountDao {
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                users.add(createUser(rs));
+                users.add(createUser(rs, conn));
             }
         }
 
@@ -278,17 +278,18 @@ public class DBAccountDao extends DAO implements IAccountDao {
     }
 
 
-    public static User createUser(ResultSet rs) throws SQLException {
-        return createUser(rs, true);
+    public static User createUser(ResultSet rs, Connection conn) throws SQLException {
+        return createUser(rs, conn,true);
     }
 
-    public static User createUser(ResultSet rs, boolean password) throws SQLException {
+    public static User createUser(ResultSet rs, Connection conn, boolean password) throws SQLException {
         User u = equalPartForCreatingUserOrUserToVerify(rs, password);
 
         if (u.getAugentID() == null)
             return null;
 
         u.setPenaltyPoints(rs.getInt(Resources.databaseProperties.getString("user_penalty_points")));
+        u.setUserAuthorities(DBAuthorityDao.getAuthoritiesFromUser(u.getAugentID(), conn));
         return u;
     }
 

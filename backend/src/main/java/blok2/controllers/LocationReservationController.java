@@ -2,6 +2,7 @@ package blok2.controllers;
 
 import blok2.daos.ICalendarPeriodDao;
 import blok2.daos.ILocationReservationDao;
+import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
@@ -20,10 +21,7 @@ import javax.validation.Valid;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This controller handles all requests related to location reservations.
@@ -32,7 +30,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("locations/reservations")
-public class LocationReservationController {
+public class LocationReservationController extends AuthorizedLocationController {
 
     private final Logger logger = LoggerFactory.getLogger(LocationReservationController.class.getSimpleName());
 
@@ -49,6 +47,9 @@ public class LocationReservationController {
     }
 
     @GetMapping("/user")
+    @PreAuthorize("(hasAuthority('USER') and #id == authentication.principal.augentID) or hasAuthority('ADMIN')")
+    // TODO: if only 'HAS_AUTHORITIES', then only allowed to retrieve the reservations for a location within one of the user's authorities
+    // Not sure why you'd be allowed to get a user's reservations if you own a location.
     public List<LocationReservation> getLocationReservationsByUserId(@RequestParam String id) {
         try {
             return locationReservationDao.getAllLocationReservationsOfUser(id);
@@ -60,6 +61,7 @@ public class LocationReservationController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public LocationReservation createLocationReservation(@AuthenticationPrincipal User user, @Valid @RequestBody Timeslot timeslot) {
         try {
             LocationReservation reservation = new LocationReservation(user, LocalDateTime.now(), timeslot, null);
@@ -79,6 +81,7 @@ public class LocationReservationController {
     }
 
     @GetMapping("/timeslot/{calendarid}/{date}/{seqnr}")
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public List<LocationReservation> getLocationReservationsByTimeslot(@PathVariable("calendarid") int calendarId, @PathVariable("date") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate date, @PathVariable("seqnr") int seqnr) {
         Timeslot timeslot = new Timeslot(calendarId, seqnr, date);
         try {
@@ -91,6 +94,7 @@ public class LocationReservationController {
     }
 
     @GetMapping("/{location}")
+    @PreAuthorize("permitAll()")
     public Map<String, Integer> getReservationCount(@PathVariable("location") String location) {
         try {
             return Collections.singletonMap("amount", locationReservationDao.amountOfReservationsRightNow(location));
@@ -101,8 +105,16 @@ public class LocationReservationController {
     }
 
     @DeleteMapping
+    @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void deleteLocationReservation(@RequestBody @Valid LocationReservation locationReservation) {
+
         try {
+            CalendarPeriod parentPeriod = calendarPeriodDao.getById(locationReservation.getTimeslot().getCalendarId());
+            isAuthorized(
+                    (lr, user) -> hasAuthority(parentPeriod.getLocation().getName()) || lr.getUser().getAugentID().equals(user.getAugentID()),
+                    locationReservation
+            );
+
             locationReservationDao.deleteLocationReservation(locationReservation.getUser().getAugentID(),
                     locationReservation.getTimeslot());
             logger.info(String.format("LocationReservation for user %s at time %s deleted", locationReservation.getUser(), locationReservation.getTimeslot().toString()));
@@ -114,10 +126,13 @@ public class LocationReservationController {
     }
 
     @PostMapping("/{userid}/{calendarid}/{date}/{seqnr}/attendance")
+    @PreAuthorize("asAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void setLocationReservationAttendance(@PathVariable("calendarid") int calendarId, @PathVariable("date") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate date,
                                        @PathVariable("seqnr") int seqnr, @PathVariable("userid") String userid, @RequestBody LocationReservation.AttendedPostBody body) {
         Timeslot slot = new Timeslot(calendarId, seqnr, date);
         try {
+            CalendarPeriod parentPeriod = calendarPeriodDao.getById(slot.getCalendarId());
+            isAuthorized(parentPeriod.getLocation().getName());
             locationReservationDao.setReservationAttendance(userid, slot, body.getAttended());
         } catch (SQLException e) {
             logger.error(e.getMessage());

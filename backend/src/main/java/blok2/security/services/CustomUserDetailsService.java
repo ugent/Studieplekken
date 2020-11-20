@@ -1,4 +1,4 @@
-package blok2.security;
+package blok2.security.services;
 
 import blok2.daos.IAccountDao;
 import blok2.model.users.User;
@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -33,7 +34,6 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
     }
 
     /**
-     * TODO
      * Flow of loading a user:
      *   1. try to retrieve from the application database
      *        - if the retrieved user is not null, return the retrieved user
@@ -52,7 +52,8 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
         try {
             user = this.accountDao.getUserByEmail(mail);
         } catch (SQLException e) {
-            logger.error("SQL exception while getting a user to login", e);
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
             throw new UsernameNotFoundException("Database error");
         }
 
@@ -69,7 +70,8 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
                 accountDao.directlyAddUser(user);
                 return user;
             } catch (SQLException e) {
-                logger.error("SQL exception while adding the new user from LDAP info to the application database", e);
+                logger.error(e.getMessage());
+                logger.error(Arrays.toString(e.getStackTrace()));
             }
         }
 
@@ -105,7 +107,8 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
 
             return users.get(0);
         } catch (Exception e) {
-            logger.error("Exception thrown upon querying LDAP for new user with mail: '" + mail + "'", e);
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
             return null;
         }
     }
