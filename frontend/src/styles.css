@@ -94,10 +94,17 @@
   color: black;
 }
 .calendar-event-reserved * * mwl-calendar-event-title {
-  color: #00001d; 
+  color: #00001d;
 }
 
 .float-right {
   float: right;
   margin-right:2.5vw;
 }
+
+.btn-danger.danger {
+  color: #fff;
+  background-color: #d9534f;
+  border-color: #d43f3a;
+}
+

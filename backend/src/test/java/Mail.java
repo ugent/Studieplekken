@@ -1,9 +1,6 @@
 import blok2.Blok2Application;
 import blok2.controllers.LocationController;
-import blok2.daos.IAuthorityDao;
-import blok2.daos.IBuildingDao;
-import blok2.daos.ICalendarPeriodDao;
-import blok2.daos.TestSharedMethods;
+import blok2.daos.*;
 import blok2.helpers.EmailService;
 import blok2.model.Authority;
 import blok2.model.Building;
@@ -45,7 +42,7 @@ public class Mail {
     @Autowired
     private IBuildingDao buildingDao;
     @Autowired
-    private LocationController locationDao;
+    private ILocationDao locationDao;
     @Autowired
     private ICalendarPeriodDao calendarPeriodDao;
 

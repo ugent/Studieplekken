@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, TemplateRef} from '@angular/core';
 import {transition, trigger, useAnimation} from '@angular/animations';
 import {rowsAnimation} from '../../shared/animations/RowAnimation';
 import {Observable} from 'rxjs';
@@ -11,6 +11,10 @@ import {BuildingService} from '../../services/api/buildings/buildings.service';
 import {AuthenticationService} from '../../services/authentication/authentication.service';
 import {tap} from 'rxjs/operators';
 import { Building } from 'src/app/shared/model/Building';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { CalendarPeriodsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
+import { CalendarPeriod } from 'src/app/shared/model/CalendarPeriod';
+import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 
 @Component({
   selector: 'app-locations-management',
@@ -30,6 +34,8 @@ export class LocationsManagementComponent implements OnInit {
   addingWasSuccess: boolean = undefined;
 
   currentLocationNameToDelete: string;
+  currentCalendarPeriodsToDelete: CalendarPeriod[];
+  currentReservationCount: number = undefined;
   deletionWasSuccess: boolean = undefined;
 
   authoritiesObs: Observable<Authority[]>;
@@ -44,7 +50,9 @@ export class LocationsManagementComponent implements OnInit {
   constructor(private locationService: LocationService,
               private authoritiesService: AuthoritiesService,
               private authenticationService: AuthenticationService,
-              private buildingsService: BuildingService) { }
+              private buildingsService: BuildingService,
+              private modalService: BsModalService,
+              private calendarPeriodService: CalendarPeriodsService) { }
 
   ngOnInit(): void {
     this.setupForm();
@@ -66,14 +74,18 @@ export class LocationsManagementComponent implements OnInit {
       authority: new FormControl('', Validators.required),
       building: new FormControl('', Validators.required),
       numberOfSeats: new FormControl('', Validators.required),
-      numberOfLockers: new FormControl('', Validators.required),
       forGroup: new FormControl(false, Validators.required),
       imageUrl: new FormControl('')
     });
   }
 
-  prepareToAddLocation(): void {
+  // ********************
+  // *   CRUD: Create   *
+  // ********************/
+
+  prepareToAddLocation(template: TemplateRef<any>): void {
     this.addingWasSuccess = undefined;
+    this.modalService.show(template);
     this.editMode = false;
   }
 
@@ -84,20 +96,48 @@ export class LocationsManagementComponent implements OnInit {
     }
     this.showAddWarning = false;
 
-    
+
     location.authority = this.authoritiesMap.get(Number(this.authority.value));
     location.building = this.buildingsMap.get(Number(this.building.value));
+    location.numberOfLockers = 0;
 
     this.addingWasSuccess = null;
     if (this.addLocationFormGroup.valid) {
       this.locationService.addLocation(location).subscribe(
         () => {
           this.successHandler();
+          this.modalService.hide();
         }, () => {
           this.errorHandler();
         }
       );
     }
+  }
+
+  // ********************
+  // *   CRUD: Delete   *
+  // ********************/
+
+  prepareToDeleteLocation(location: Location, template: TemplateRef<any>): void {
+    this.deletionWasSuccess = undefined;
+    this.currentLocationNameToDelete = location.name;
+    this.calendarPeriodService.getCalendarPeriodsOfLocation(location.name).subscribe((next) => {
+      this.currentCalendarPeriodsToDelete = next;
+      this.modalService.show(template);
+    });
+  }
+
+  deleteLocation(): void {
+    this.deletionWasSuccess = null;
+    this.locationService.deleteLocation(this.currentLocationNameToDelete).subscribe(
+      () => {
+        this.successDeletionHandler();
+        this.currentCalendarPeriodsToDelete = [];
+        this.modalService.hide();
+      }, () => {
+        this.deletionWasSuccess = false;
+      }
+    );
   }
 
   clearForm(): void {
@@ -106,22 +146,6 @@ export class LocationsManagementComponent implements OnInit {
 
   validForm(): boolean {
     return this.addLocationFormGroup.valid;
-  }
-
-  prepareToDeleteLocation(locationName: string): void {
-    this.deletionWasSuccess = undefined;
-    this.currentLocationNameToDelete = locationName;
-  }
-
-  deleteLocationLinkedToCurrentLocationNameToDelete(): void {
-    this.deletionWasSuccess = null;
-    this.locationService.deleteLocation(this.currentLocationNameToDelete).subscribe(
-      () => {
-        this.successDeletionHandler();
-      }, () => {
-        this.deletionWasSuccess = false;
-      }
-    );
   }
 
   successHandler(): void {
@@ -142,6 +166,10 @@ export class LocationsManagementComponent implements OnInit {
   setCurrentLocationNameToDelete(locationName: string): void {
     this.currentLocationNameToDelete = locationName;
   }
+
+  // *******************
+  // *   Auxiliaries   *
+  // *******************
 
   get name(): AbstractControl { return this.addLocationFormGroup.get('name'); }
   get authority(): AbstractControl { return this.addLocationFormGroup.get('authority'); }
@@ -213,6 +241,10 @@ export class LocationsManagementComponent implements OnInit {
     ));
   }
 
+  closeModal(): void {
+    this.modalService.hide();
+  }
+
   prepareToApproveLocation(location: Location): void {
     this.setupForm();
     this.editMode = true;
@@ -240,6 +272,5 @@ export class LocationsManagementComponent implements OnInit {
         }
       );
     }
-
   }
 }

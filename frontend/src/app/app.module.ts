@@ -58,11 +58,15 @@ import { NgxMatDatetimePickerModule } from '@angular-material-components/datetim
 import { NgxMatMomentModule } from '@angular-material-components/moment-adapter';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MomentDateComponent} from './shared/inputs/moment-date/moment-date.component';
 import { MomentDateTimeComponent } from './shared/inputs/moment-datetime/moment-datetime.component';
 import { LocationOpeningperiodDialogComponent } from './management/locations-management/location-details-management/location-calendar/location-openingperiod-dialog/location-openingperiod-dialog.component';
 import { BuildingManagementComponent } from './management/building-management/building-management.component';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import {MatChipsModule} from '@angular/material/chips';
 import { LocationReservationsComponent } from './management/locations-management/location-details-management/location-calendar/location-reservations/location-reservations/location-reservations.component';
+import { MomentTimeslotSizeComponent } from './shared/inputs/moment-timeslot-size/moment-timeslot-size.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -243,7 +247,8 @@ const routes: Routes = [
     MomentDateTimeComponent,
     LocationOpeningperiodDialogComponent,
     BuildingManagementComponent,
-    LocationReservationsComponent
+    LocationReservationsComponent,
+    MomentTimeslotSizeComponent
   ],
     imports: [
       BrowserModule,
@@ -273,7 +278,10 @@ const routes: Routes = [
       NgxMatMomentModule,
       MatDatepickerModule,
       MatInputModule,
-      MatDialogModule
+      MatDialogModule,
+      MatCheckboxModule,
+      MatChipsModule,
+      ModalModule.forRoot()
     ],
   providers: [],
   bootstrap: [AppComponent]

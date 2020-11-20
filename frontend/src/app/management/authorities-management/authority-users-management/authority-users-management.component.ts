@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {AuthoritiesService} from '../../../services/api/authorities/authorities.service';
 import {Observable} from 'rxjs';
 import {User} from '../../../shared/model/User';
@@ -9,6 +9,7 @@ import {rowsAnimation} from '../../../shared/animations/RowAnimation';
 import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
 import {UserService} from '../../../services/api/users/user.service';
 import {AuthorityToManageService} from '../../../services/single-point-of-truth/authority-to-manage/authority-to-manage.service';
+import {BsModalService, BsModalRef} from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-authority-users-management',
@@ -43,10 +44,14 @@ export class AuthorityUsersManagementComponent implements OnInit {
 
   isValidUserToAdd: boolean = undefined;
 
+  addModal: BsModalRef;
+  deleteModal: BsModalRef;
+
   constructor(private authoritiesService: AuthoritiesService,
               private authorityToManageService: AuthorityToManageService,
               private route: ActivatedRoute,
-              private userService: UserService) { }
+              private userService: UserService,
+              private modalService: BsModalService) { }
 
   ngOnInit(): void {
     this.authority = this.authorityToManageService.authority;
@@ -68,28 +73,29 @@ export class AuthorityUsersManagementComponent implements OnInit {
 
   }
 
+  closeModal(): void {
+    this.modalService.hide();
+  }
+
   // *********************************
   // *   Add user to the authority   *
   // *********************************
 
-  prepareToAddUserToAuthority(clearUserSearchForm = true): void {
+  prepareToAddUserToAuthority(template: TemplateRef<any>): void {
     this.successAddingAuthority = undefined;
     this.successSearchingUsers = undefined;
     this.isValidUserToAdd = undefined;
-    if (clearUserSearchForm) {
-      this.userSearchFormGroup.setValue({
-        firstName: '',
-        lastName: ''
-      });
-    }
+    this.userSearchFormGroup.setValue({
+      firstName: '',
+      lastName: ''
+    });
     this.selectedUserFormControl.setValue('');
     this.userSearchResult = [];
     this.selectedUserFormControl.disable();
+    this.addModal = this.modalService.show(template);
   }
 
   searchForUserByFirstAndLastName(firstName: string, lastName: string): void {
-    this.prepareToAddUserToAuthority(false);
-
     let usersObs: Observable<User[]>;
 
     if (firstName === '') {
@@ -112,6 +118,7 @@ export class AuthorityUsersManagementComponent implements OnInit {
       () => {
         this.successAddingAuthority = true;
         this.setUsersObs(authorityId);
+        this.addModal.hide();
       }, () => {
         this.successAddingAuthority = false;
       }
@@ -122,9 +129,10 @@ export class AuthorityUsersManagementComponent implements OnInit {
   // *   Delete user from the authority   *
   // **************************************
 
-  prepareToDeleteUserFromAuthority(user: User): void {
+  prepareToDeleteUserFromAuthority(user: User, template: TemplateRef<any>): void {
     this.successDeletingAuthority = undefined;
     this.userPreparedToDelete = user;
+    this.deleteModal = this.modalService.show(template);
   }
 
   deleteUserFromAuthority(userId: string, authorityId: number): void {
@@ -133,6 +141,7 @@ export class AuthorityUsersManagementComponent implements OnInit {
       () => {
         this.successDeletingAuthority = true;
         this.setUsersObs(authorityId); // reload users data
+        this.deleteModal.hide();
       }, () => {
         this.successDeletingAuthority = false;
       }
