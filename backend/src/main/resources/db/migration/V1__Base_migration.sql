@@ -8,6 +8,7 @@ BEGIN
   NEW.updated_at = NOW();
   RETURN NEW;
 END;
+$$ LANGUAGE plpgsql;
 
 
 --
@@ -20,7 +21,7 @@ CREATE TABLE public.authority
     authority_name  text NOT NULL unique,
     description     text NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE public.buildings
@@ -174,7 +175,7 @@ CREATE TABLE public.institutions
 (
     name text NOT NULL primary key,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 
@@ -213,7 +214,7 @@ CREATE TABLE public.languages
 (
     enum text NOT NULL primary key,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 
@@ -232,7 +233,6 @@ COMMENT ON TABLE public.languages IS 'E.g. for the language ''English''
 
 CREATE TABLE public.location_reservations
 (
-    created_at          Timestamp NOT NULL,
     timeslot_date       Date NOT NULL,
     timeslot_seqnr      integer NOT NULL,
     calendar_id         integer NOT NULL,
@@ -325,7 +325,7 @@ CREATE TABLE public.penalty_events
     code   integer NOT NULL primary key,
     points integer NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 --
@@ -503,102 +503,102 @@ CREATE TABLE public.roles_user_authority
 ----------------- |   Add triggers   |
 ----------------- +------------------+
 
-CREATE TRIGGER set_timestamp
+CREATE TRIGGER set_timestamp_user_authority
 BEFORE UPDATE ON public.roles_user_authority
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
-CREATE TRIGGER set_timestamp
+CREATE TRIGGER set_timestamp_users_to_verify
 BEFORE UPDATE ON public.users_to_verify
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
-CREATE TRIGGER set_timestamp
+CREATE TRIGGER set_timestamp_scanners_location
 BEFORE UPDATE ON public.scanners_location
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
-CREATE TRIGGER set_timestamp
+CREATE TRIGGER set_timestamp_penalty_descriptions
 BEFORE UPDATE ON public.penalty_descriptions
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
-CREATE TRIGGER set_timestamp
+CREATE TRIGGER set_timestamp_penalty_book
 BEFORE UPDATE ON public.penalty_book
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
-CREATE TRIGGER set_timestamp
+CREATE TRIGGER set_timestamp_penalty_events
 BEFORE UPDATE ON public.penalty_events
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
-CREATE TRIGGER set_timestamp
+CREATE TRIGGER set_timestamp_locker_reservations
 BEFORE UPDATE ON public.locker_reservations
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
-CREATE TRIGGER set_timestamp
+CREATE TRIGGER set_timestamp_lockers
 BEFORE UPDATE ON public.lockers
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
-CREATE TRIGGER set_timestamp
+CREATE TRIGGER set_timestamp_location_reservations
 BEFORE UPDATE ON public.location_reservations
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
-CREATE TRIGGER set_timestamp
+CREATE TRIGGER set_timestamp_languages
 BEFORE UPDATE ON public.languages
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
-CREATE TRIGGER set_timestamp
+CREATE TRIGGER set_timestamp_users
 BEFORE UPDATE ON public.users
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
-CREATE TRIGGER set_timestamp
+CREATE TRIGGER set_timestamp_institutions
 BEFORE UPDATE ON public.institutions
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
-CREATE TRIGGER set_timestamp
+CREATE TRIGGER set_timestamp_calendar_periods_for_lockers
 BEFORE UPDATE ON public.calendar_periods_for_lockers
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
-CREATE TRIGGER set_timestamp
+CREATE TRIGGER set_timestamp_reservation_timeslots
 BEFORE UPDATE ON public.reservation_timeslots
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
-CREATE TRIGGER set_timestamp
+CREATE TRIGGER set_timestamp_calendar_periods
 BEFORE UPDATE ON public.calendar_periods
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
-CREATE TRIGGER set_timestamp
+CREATE TRIGGER set_timestamp_location_tags
 BEFORE UPDATE ON public.location_tags
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
-CREATE TRIGGER set_timestamp
+CREATE TRIGGER set_timestamp_tags
 BEFORE UPDATE ON public.tags
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
-CREATE TRIGGER set_timestamp
+CREATE TRIGGER set_timestamp_locations
 BEFORE UPDATE ON public.locations
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
-CREATE TRIGGER set_timestamp
+CREATE TRIGGER set_timestamp_buildings
 BEFORE UPDATE ON public.buildings
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
-CREATE TRIGGER set_timestamp
+CREATE TRIGGER set_timestamp_authority
 BEFORE UPDATE ON public.authority
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
