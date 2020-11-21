@@ -25,6 +25,9 @@
     "locationDetails": {
       "info": "Algemene informatie over deze ruimte:",
       "tags": "Tags die deze ruimte kenmerken:",
+      "buttons": {
+        "manage": "Beheer"
+      },
       "status": {
         "statusOpen": "OPEN: Sluit om {}",
         "statusClosed": "GESLOTEN",

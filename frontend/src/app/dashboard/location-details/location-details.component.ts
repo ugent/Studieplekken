@@ -69,6 +69,7 @@ export class LocationDetailsComponent implements OnInit {
   showReservations: boolean;
   loadingReservations: boolean;
   calendarIdList: any[];
+  showAdmin: boolean;
 
   constructor(private locationService: LocationService,
               private tagsService: TagsService,
@@ -84,6 +85,7 @@ export class LocationDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.locationName = this.route.snapshot.paramMap.get('locationName');
     this.location = this.locationService.getLocation(this.locationName);
+    this.showAdmin = this.authenticationService.isAdmin()
     this.currentLang = this.translate.currentLang;
 
     // when the location is loaded, setup the descriptions
