@@ -359,7 +359,7 @@
         "loading": "Wachten op antwoord van de server...",
         "success": "Het toevoegen van de ruimte is geslaagd",
         "error": "Er is iets misgelopen tijdens het toevoegen van de nieuwe ruimte",
-        "warning": "Ben je zeker dat je een voorstel voor een nieuwe room wil toevoegen? Een bevestigingsmail zal naar de directie faciliteitenbeheer gestuurd worden voor goedkeuring. Het aantal zitjes zal worden aangepast.\n"
+        "warning": "Ben je zeker dat je een voorstel voor een nieuwe room wil toevoegen? Een bevestigingsmail zal naar DGFB gestuurd worden voor goedkeuring. Het aantal zitjes zal worden aangepast.\n"
       },
 
       "editLocationModal": {
