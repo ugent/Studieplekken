@@ -136,7 +136,8 @@
       "users": "Users",
       "authorities": "Authorities",
       "calendar": "Calendar",
-      "penalties": "Penalties"
+      "penalties": "Penalties",
+      "admins": "Admins"
     },
 
     "general": {

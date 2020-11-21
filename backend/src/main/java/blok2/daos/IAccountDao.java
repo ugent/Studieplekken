@@ -81,4 +81,6 @@ public interface IAccountDao extends IDao {
      * Checks if their exists a user with the given email.
      */
     boolean accountExistsByEmail(String email) throws SQLException;
+
+    List<User> getAdmins() throws SQLException;
 }

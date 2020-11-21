@@ -277,6 +277,22 @@ public class DBAccountDao extends DAO implements IAccountDao {
         }
     }
 
+    @Override
+    public List<User> getAdmins() throws SQLException {
+        ArrayList<User> users = new ArrayList<>();
+
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_admins"));
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                users.add(createUser(rs, conn));
+            }
+        }
+
+        return users;
+    }
+
 
     public static User createUser(ResultSet rs, Connection conn) throws SQLException {
         return createUser(rs, conn,true);
