@@ -1,0 +1,46 @@
+<div class="container-fluid" *ngIf="filteredUsers | async as users">
+  <!-- Title -->
+  <h3>{{'management.users.overview.title' | translate}}</h3>
+
+  <hr>
+
+  <div *ngIf="loading" class="alert alert-info">
+    {{'management.users.searchResult.loading' | translate}}
+  </div>
+
+  <!-- If an error has occurred while fetching the users, show the error -->
+  <div *ngIf="errorOnRetrievingAdmins" class="alert alert-error">
+    {{'management.users.searchResult.error' | translate}}
+  </div>
+
+  <div *ngIf="!loading && !errorOnRetrievingAdmins"
+       class="container-fluid">
+    <table style="width: 100%">
+      <thead>
+      <tr>
+        <th>{{'management.users.searchResult.table.id' | translate}}</th>
+        <th>{{'management.users.searchResult.table.firstName' | translate}}</th>
+        <th>{{'management.users.searchResult.table.lastName' | translate}}</th>
+        <th *ngIf="showPenaltyPoints">{{'management.users.searchResult.table.penaltyPoints' | translate}}</th>
+        <th>{{'management.users.searchResult.table.institution' | translate}}</th>
+        <th><!-- Details --></th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr *ngFor="let user of users">
+        <td>{{user.augentID}}</td>
+        <td>{{user.firstName}}</td>
+        <td>{{user.lastName}}</td>
+        <td *ngIf="showPenaltyPoints">{{user.penaltyPoints}}</td>
+        <td>{{user.institution}}</td>
+        <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
+          <span [routerLink]="'../users/' + user.augentID"
+             class="glyphicon glyphicon-list-alt">
+          </span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

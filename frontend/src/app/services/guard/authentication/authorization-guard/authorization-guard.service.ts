@@ -33,7 +33,8 @@ export class AuthorizationGuardService implements CanActivate {
             if (this.authenticationService.isLoggedIn()) {
               if (url.includes('/tags') ||
                   url.includes('/authorities') ||
-                  url.includes('/penalties')) {
+                  url.includes('/penalties') ||
+                  url.includes('/admins')) {
                 activate = this.authenticationService.isAdmin();
               } else {
                 activate = this.isAdminOrHasAuthorities();
@@ -48,7 +49,6 @@ export class AuthorizationGuardService implements CanActivate {
           if (!activate) {
             this.router.navigate(['/dashboard']).catch(console.log);
           }
-
           return activate;
   }));
   }

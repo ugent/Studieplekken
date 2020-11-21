@@ -46,4 +46,8 @@ export class UserService {
   hasUserAuthorities(userId: string): Observable<boolean> {
     return this.http.get<boolean>(api.hasUserAuthorities.replace('{userId}', userId));
   }
+
+  getAdmins(): Observable<User[]> {
+    return this.http.get<User[]>(api.getAdmins);
+  }
 }

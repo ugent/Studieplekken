@@ -42,6 +42,17 @@ public class AccountController {
         this.authorityDao = authorityDao;
     }
 
+    @GetMapping("/admins")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public List<User> getAdmins() {
+        try {
+            return accountDao.getAdmins();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
     @GetMapping("/id")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public User getUserByAUGentId(@RequestParam

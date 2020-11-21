@@ -369,6 +369,9 @@ update public.users
 set mail = ?, augentpreferredsn = ?, augentpreferredgivenname = ?, password = ?, institution = ?, augentid = ?, admin = ?, penalty_points = ?
 where augentid = ?;
 
+-- $get_admins
+select * from public.users where admin = true;
+
 -- $count_accounts_with_email
 select count(1)
 from public.users
