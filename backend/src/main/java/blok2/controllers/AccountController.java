@@ -43,7 +43,7 @@ public class AccountController {
     }
 
     @GetMapping("/admins")
-    @PreAuthorize("permitAll()")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public List<User> getAdmins() {
         try {
             return accountDao.getAdmins();
