@@ -19,6 +19,9 @@ export class LocationReservationsService {
   }
 
   getLocationReservationsOfUser(id: string): Observable<LocationReservation[]> {
+    if (id == '') {
+      return of([]);
+    }
     const params = new HttpParams().set('id', id);
     return this.http.get<LocationReservation[]>(api.locationReservationsOfUser, { params })
                                                           .pipe(map(ls => ls.map(LocationReservation.fromJSON)));
