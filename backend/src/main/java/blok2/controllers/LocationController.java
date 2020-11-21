@@ -86,7 +86,7 @@ public class LocationController extends AuthorizedLocationController {
     @PostMapping
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void addLocation(@RequestBody Location location) {
-        isAuthorized(location.getName());
+        isAuthorized((l,$) -> hasAuthority(l.getAuthority()), location);
         try {
             this.locationDao.addLocation(location);
             this.emailService.sendNewLocationMessage(Resources.blokatugentConf.getString("dfsgMail"), location);
