@@ -99,7 +99,7 @@ export class LocationsManagementComponent implements OnInit {
 
     location.authority = this.authoritiesMap.get(Number(this.authority.value));
     location.building = this.buildingsMap.get(Number(this.building.value));
-    location.numberOfLockers = 0;
+    // location.numberOfLockers = 0;
 
     this.addingWasSuccess = null;
     if (this.addLocationFormGroup.valid) {

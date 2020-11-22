@@ -10,7 +10,7 @@ export function equalLocations(location1: Location, location2: Location): boolea
 
   return location1.name === location2.name &&
     location1.numberOfSeats === location2.numberOfSeats &&
-    location1.numberOfLockers === location2.numberOfLockers &&
+    // location1.numberOfLockers === location2.numberOfLockers &&
     location1.building.address === location2.building.address &&
     location1.imageUrl === location2.imageUrl;
 }

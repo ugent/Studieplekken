@@ -1,29 +1,22 @@
-Tijdens de blokperiode worden de Therminal en het Kantienberg restaurant opengehouden om te studeren. Aangezien er veel vraag is en de plaatsen beperkt zijn, werken we met een reservatiesysteem. Iedere zondag kan je via onderstaande links plaats reserveren voor de volgende week.
+# Studieplekken UGent
 
-## Bloklocaties
-De registraties van de Therminal voor de volgende week gaan iedere zondag open vanaf 19u.
+Vanaf maandag 30 november 2020 stelt de UGent op verschillende campussen stille studieplekken ter beschikking van **UGent studenten die hier nood aan hebben.**
 
-De registraties van S5 gaan iedere zondag open vanaf 19u30.
+De studieplekken zijn beschikbaar van 30 november 2020 tot 18 december 2020, en tijdens de examens van 4 januari 2021 tot 29 januari 2021.
 
-De registraties van Kantienberg gaan iedere zondag open vanaf 20u.
+## Reservaties
 
-## Huisreglement
-Tussen 8u30 en 9u worden enkel mensen worden binnengelaten die op voorhand hebben geregistreerd. Vanaf 9u en gedurende de rest van de dag mag iedereen binnen zonder te scannen, voor zover er nog plaats is.
+Een studieplek kan wekelijks gereserveerd worden, **telkens op donderdag vanaf 19u voor de volgende week**. Mogen we erop aandringen om **enkel een studieplek te reserveren als je zeker aanwezig zal zijn**. Breng ook altijd je studentenkaart mee (of je identiteitskaart als je je studentenkaart verloren bent) zodat de aanwezigen gecontroleerd kunnen worden. Studenten die verschillende keren een studieplek reserveren en niet komen opdagen, zullen niet meer kunnen reserveren.
 
-Hogeschool studenten kunnen enkel reservaties doen voor het weekend en feestdagen.
+## Binnenkomst
 
-Een werkende barcode op je studentenkaart is essentieel, als de barcode beschadigd of onleesbaar is kan je niet binnen. Beschadigde UGent-studentenkaarten worden gratis vervangen als je langsgaat op de centrale studentenadministratie in het UFO. In afwachting kan je een nieuwe barcode afdrukken via een link op de reservatiepagina.
+Elke studielocatie heeft specifieke openingsuren, zowel het aanvangsuur als het sluitingsuur zijn verschillend. Zorg ervoor dat je deze goed bekijkt. We verwachten dat studenten **gespreid binnenkomen en dat er geen wachtrijen worden gevormd aan de ingang**. Om verspreiding van het virus tegen te gaan is het belangrijk om steeds te zorgen voor een onderlinge afstand van minstens 1,5m op elke locatie en in elke situatie. Mogen we daarom vragen om niet te vroeg of op het aanvangsuur aanwezig te zijn, maar wel **gespreid binnen te komen in een periode van een uur vanaf het aanvangsuur.**
 
-Je mag geen plaats houden voor anderen. Om te vermijden dat mensen plaats houden voor studenten die niet geregistreerd zijn, moet iedereen op zijn plaats zitten tussen 8u50 en 9u05. Op dat moment doen we een controle. Plaatsen waar wel boeken liggen maar geen student zit, worden als gereserveerd beschouwd en dus vrijgemaakt. De boeken kunnen afgehaald worden bij de studentenbeheerder, na afspraak.
+Enkel studenten die gereserveerd hebben kunnen gebruik maken van de studieplek. Er worden geen lege plekken opgevuld op het moment zelf, dit creëert immers wachtrijen en samenscholingen.
+Iemand anders laten reserveren met jouw email adres is niet toegestaan. Elke vorm van automatisatie bij het inschrijven is verboden.
 
-Iemand anders laten scannen met jouw barcode/reservatie is niet toegestaan.
+## Veiligheidsmaatregelen
 
-Elke vorm van automatisatie bij het inschrijven is verboden.
+Op elke studieplek gelden strikte veiligheidsmaatregelen. Handen dienen ontsmet te worden bij het binnenkomen. Het dragen van een mondmasker is verplicht van zodra je het gebouw betreedt. Eens je op je studieplek zit, mag je het mondmasker uitdoen. De tafels en stoelen zijn op een veilige afstand geplaatst en mogen niet verplaatst worden. Physical distancing dient op elk moment gerespecteerd te worden. Blijf zeker thuis indien je ziek bent of symptomen ervaart.
 
-Communicatie verloopt via de Facebookgroepen.
-
-Blok@ wordt georganiseerd door vrijwilligers en materiaal van de Universiteit Gent dat aan deze vrijwilligers ter beschikking gesteld wordt. Ga hier dus respectvol mee om.
-
----
-
-Inbreuken op het huisreglement kunnen bestraft worden met strafpunten tot permanente blacklisting voor alle betrokkenen.
+De studieplekken worden georganiseerd door studenten, medewerkers en vrijwilligers. Ga respectvol met hen en met elkaar om. Op elke studieplek is toezicht aanwezig. Bij problemen of vragen, aarzel niet om deze persoon aan te spreken.
