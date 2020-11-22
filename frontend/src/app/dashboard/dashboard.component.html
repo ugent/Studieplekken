@@ -78,8 +78,14 @@
 
     <hr>
 
-    <div class="container-fluid" *ngIf="filteredLocations && filteredLocations.length > 0; else noMatchesFromFilter">
-      <app-dashboard-item *ngFor="let location of filteredLocations"
+    <div class="dashboard-item-container" 
+    fxLayout="row wrap" fxLayoutGap="32px" fxLayoutAlign="flex-start"
+    *ngIf="filteredLocations && filteredLocations.length > 0; else noMatchesFromFilter">
+      <app-dashboard-item 
+      fxFlex="0 1 calc(33% - 32px);"
+      fxFlex.lt-md="0 1 calc(50% - 32px)"
+      fxFlex.lt-sm="100%"
+      *ngFor="let location of filteredLocations"
                           [location]="location" [status]="locationStatuses.get(location.name)">
       </app-dashboard-item>
     </div>

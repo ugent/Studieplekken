@@ -68,7 +68,7 @@ import {MatChipsModule} from '@angular/material/chips';
 import { LocationReservationsComponent } from './management/locations-management/location-details-management/location-calendar/location-reservations/location-reservations/location-reservations.component';
 import { MomentTimeslotSizeComponent } from './shared/inputs/moment-timeslot-size/moment-timeslot-size.component';
 import { AdminsManagementComponent } from './management/admins-management/admins-management.component';
-
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -289,7 +289,8 @@ const routes: Routes = [
       MatDialogModule,
       MatCheckboxModule,
       MatChipsModule,
-      ModalModule.forRoot()
+      ModalModule.forRoot(),
+      FlexLayoutModule
     ],
   providers: [],
   bootstrap: [AppComponent]
