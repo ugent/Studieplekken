@@ -19,7 +19,7 @@ export class LocationReservationsService {
   }
 
   getLocationReservationsOfUser(id: string): Observable<LocationReservation[]> {
-    if (id == '') {
+    if (id === '') {
       return of([]);
     }
     const params = new HttpParams().set('id', id);

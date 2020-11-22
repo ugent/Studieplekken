@@ -124,6 +124,11 @@ export class LocationDetailsComponent implements OnInit {
       return;
     }
 
+    if (!this.loggedIn()) {
+      // When not logged in, calendar periods are unclickable
+      return;
+    }
+
     this.isModified = true;
     this.currentTimeslot = event.timeslot;
     const reservation: LocationReservation = {user: this.authenticationService.userValue(), timeslot: this.currentTimeslot};
@@ -295,5 +300,9 @@ export class LocationDetailsComponent implements OnInit {
     const hour = this.getBeginHour(this.calendarMap.get(reservation.timeslot.calendarId), reservation.timeslot).format('HH:mm');
 
     return name + ' (' + date + ' ' + hour + ')';
+  }
+
+  loggedIn(): boolean {
+    return this.authenticationService.isLoggedIn();
   }
 }

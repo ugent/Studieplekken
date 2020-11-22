@@ -75,6 +75,7 @@
 
   <div class="row" style="padding-top: 10px;">
     <button
+    *ngIf="loggedIn()"
     class="btn btn-primary float-right"
     [disabled]="updateReservationIsPossible()"
     (click)="commitReservations(confirm)"
