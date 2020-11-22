@@ -18,7 +18,7 @@
         <!-- Number of seats, number of lockers, address and collection of tags -->
         <ul>
           <li>{{'dashboard.numberOfSeats' | translate}}: {{location.numberOfSeats}}</li>
-          <!-- <li>{{'dashboard.numberOfLockers' | translate}}: {{location.numberOfLockers}}</li> -->
+          <li *ngIf="showLockersManagement">{{'dashboard.numberOfLockers' | translate}}: {{location.numberOfLockers}}</li>
           <li>{{'dashboard.building' | translate}}: {{location.building.name}}</li>
           <li>{{'dashboard.address' | translate}}: {{location.building.address}}</li>
           <li>{{'dashboard.tags' | translate}}: {{tagsInCurrentLang}}</li>

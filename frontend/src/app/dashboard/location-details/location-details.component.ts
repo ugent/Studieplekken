@@ -22,6 +22,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import * as moment from 'moment';
 import {DatePipe} from '@angular/common';
 import {Pair} from '../../shared/model/helpers/Pair';
+import { ApplicationTypeFunctionalityService } from 'src/app/services/functionality/application-type/application-type-functionality.service';
 
 @Component({
   selector: 'app-location-details',
@@ -70,6 +71,7 @@ export class LocationDetailsComponent implements OnInit {
   loadingReservations: boolean;
   calendarIdList: any[];
   showAdmin: boolean;
+  showLockersManagement: boolean;
 
   constructor(private locationService: LocationService,
               private tagsService: TagsService,
@@ -80,7 +82,8 @@ export class LocationDetailsComponent implements OnInit {
               private datepipe: DatePipe,
               private authenticationService: AuthenticationService,
               private locationReservationService: LocationReservationsService,
-              private modalService: BsModalService) { }
+              private modalService: BsModalService,
+              private functionalityService: ApplicationTypeFunctionalityService) { }
 
   ngOnInit(): void {
     this.locationName = this.route.snapshot.paramMap.get('locationName');
@@ -115,6 +118,7 @@ export class LocationDetailsComponent implements OnInit {
         this.translateStatus();
       }
     );
+    this.showLockersManagement = this.functionalityService.showLockersManagementFunctionality();
   }
 
   locationStatusColorClass(): string {
