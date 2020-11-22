@@ -13,8 +13,6 @@ import {CalendarPeriodsService} from '../../services/api/calendar-periods/calend
 import { includesTimeslot, Timeslot, timeslotEquals } from 'src/app/shared/model/Timeslot';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
-
-
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
 import {CalendarPeriod, mapCalendarPeriodsToCalendarEvents} from '../../shared/model/CalendarPeriod';
 import {defaultLocationImage, LocationStatus, msToShowFeedback} from '../../app.constants';
@@ -127,6 +125,11 @@ export class LocationDetailsComponent implements OnInit {
 
   timeslotPicked(event: any): void {
     if (!event.hasOwnProperty('timeslot')) {
+      return;
+    }
+
+    if (!this.loggedIn()) {
+      // When not logged in, calendar periods are unclickable
       return;
     }
 
@@ -301,5 +304,9 @@ export class LocationDetailsComponent implements OnInit {
     const hour = this.getBeginHour(this.calendarMap.get(reservation.timeslot.calendarId), reservation.timeslot).format('HH:mm');
 
     return name + ' (' + date + ' ' + hour + ')';
+  }
+
+  loggedIn(): boolean {
+    return this.authenticationService.isLoggedIn();
   }
 }
