@@ -27,4 +27,9 @@ public abstract class AuthorizedController {
         }
     }
 
+    public boolean isAdmin() {
+        Object userO = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userO instanceof User && ((User)userO).isAdmin();
+    }
+
 }

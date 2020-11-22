@@ -17,10 +17,13 @@ export class MomentDateTimeComponent implements OnInit, OnChanges {
   modelChange: EventEmitter<Moment> = new EventEmitter();
   @Input()
   min: Moment;
+  @Input()
+  max: Moment;
 
   modelDateAsString: string;
   modelTimeAsString: string;
   modelMinAsString: string;
+  modelMaxAsString: string;
 
 
   constructor() { }
@@ -41,6 +44,13 @@ export class MomentDateTimeComponent implements OnInit, OnChanges {
       this.modelMinAsString = this.min.format('YYYY-MM-DD');
     } else {
       this.modelMinAsString = '';
+    }
+
+
+    if (this.max) {
+      this.modelMaxAsString = this.max.format('YYYY-MM-DD');
+    } else {
+      this.modelMaxAsString = '';
     }
   }
 

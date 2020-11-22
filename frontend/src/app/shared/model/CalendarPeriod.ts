@@ -99,7 +99,7 @@ export function isCalendarPeriodValid(period: CalendarPeriod): boolean {
 
   // if the period is set to be reservable, reservableTimeslotSize may not be 0, nor
   // may reservableFrom be null
-  if (period.reservable && (period.reservableTimeslotSize === 0 || period.reservableFrom === null)) {
+  if (period.reservable && (period.reservableTimeslotSize <= 0 || period.reservableFrom === null)) {
     return false;
   }
 

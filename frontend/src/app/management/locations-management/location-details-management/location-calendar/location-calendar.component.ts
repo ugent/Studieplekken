@@ -84,19 +84,20 @@ export class LocationCalendarComponent implements OnInit {
    */
   showReservationInformation: boolean;
 
+  isAdmin: boolean = this.authenticationService.isAdmin();
+
   constructor(private calendarPeriodsService: CalendarPeriodsService,
               private functionalityService: ApplicationTypeFunctionalityService,
               private locationReservationService: LocationReservationsService,
               private dialog: MatDialog,
               private modalService: BsModalService,
-              private authorizationService: AuthenticationService) {
+              private authenticationService: AuthenticationService) {
   }
 
   ngOnInit(): void {
     this.location.subscribe(next => {
       this.locationName = next.name;
       this.locationFlat = next;
-      this.calendarPeriodModel.subscribe(console.log);
       this.setup();
     });
     this.showReservationInformation = this.functionalityService.showReservationsFunctionality();
@@ -271,7 +272,7 @@ export class LocationCalendarComponent implements OnInit {
   }
 
   getMinStartDate(): Moment {
-    if (this.authorizationService.isAdmin()) {
+    if (this.authenticationService.isAdmin()) {
       return null;
     } else {
       return moment().add(3, 'weeks').day(8);
@@ -282,13 +283,13 @@ export class LocationCalendarComponent implements OnInit {
     if (!model.startsAt) {
       return null;
     } else {
-      return moment(model.startsAt).subtract(3, 'weeks').day(1);
+      return moment(model.startsAt).subtract(3, 'weeks').day(2);
     }
   }
 
   // If the admin is executing a change on own authority, show warning.
   showAdminWarnMessage(model): boolean {
-    if (!this.authorizationService.isAdmin()) {
+    if (!this.authenticationService.isAdmin()) {
       return false;
     }
 

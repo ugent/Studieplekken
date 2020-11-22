@@ -31,11 +31,11 @@ export class BuildingManagementComponent implements OnInit {
   successAddingBuilding: boolean = undefined;
   successUpdatingBuilding: boolean = undefined;
   successDeletingBuilding: boolean = undefined;
-  showDelete: boolean = this.authorizationService.isAdmin();
+  showDelete: boolean = this.authenticationService.isAdmin();
 
   constructor(private buildingService: BuildingService,
               private modalService: BsModalService,
-              private authorizationService: AuthenticationService) { }
+              private authenticationService: AuthenticationService) { }
 
   ngOnInit(): void {
     this.buildingsObs = this.buildingService.getAllBuildings();
