@@ -84,12 +84,12 @@
 
             <!-- Edit icon -->
             <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
-                (click)="prepareUpdate(calendarPeriod, updateCalendarPeriodModal)" *ngIf="!calendarPeriod.isLocked()">
+                (click)="prepareUpdate(calendarPeriod, updateCalendarPeriodModal)" *ngIf="!calendarPeriod.isLocked() || isAdmin">
               <span class="glyphicon glyphicon-pencil pointerCursor"></span>
             </td>
             <!-- Delete icon -->
             <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
-                (click)="prepareDelete(calendarPeriod, deleteCalendarPeriodModal)" *ngIf="!calendarPeriod.isLocked()">
+                (click)="prepareDelete(calendarPeriod, deleteCalendarPeriodModal)" *ngIf="!calendarPeriod.isLocked() || isAdmin">
               <span class="glyphicon glyphicon-trash pointerCursor"></span>
             </td>
           </tr>
@@ -182,7 +182,7 @@
           </label>
           <div class="col-lg-8">
             <app-moment-datetime id="reservableFrom"
-              [(model)]="model.reservableFrom" [disabled]="!model.reservable" [min]="getMinReservableFrom(model)" [max]="model.startsAt">
+              [(model)]="model.reservableFrom" [disabled]="!model.reservable" [min]="getMinReservableFrom(model)+1" [max]="model.startsAt">
             </app-moment-datetime>
           </div>
         </div>
