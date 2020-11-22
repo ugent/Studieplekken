@@ -283,7 +283,7 @@ export class LocationCalendarComponent implements OnInit {
     if (!model.startsAt) {
       return null;
     } else {
-      return moment(model.startsAt).subtract(3, 'weeks').day(1);
+      return moment(model.startsAt).subtract(3, 'weeks').day(2);
     }
   }
 
