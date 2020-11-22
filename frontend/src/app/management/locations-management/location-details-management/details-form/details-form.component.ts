@@ -90,7 +90,7 @@ export class DetailsFormComponent implements OnInit {
       authority: location.authority.authorityId,
       building: location.building.buildingId,
       numberOfSeats: location.numberOfSeats,
-      // numberOfLockers: location.numberOfLockers,
+      numberOfLockers: 0,
       forGroup: location.forGroup,
       imageUrl: location.imageUrl
     });
