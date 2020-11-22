@@ -123,7 +123,7 @@ public class CalendarPeriodController extends  AuthorizedLocationController {
             }
 
             to.initializeLockedFrom();
-            if (to.isLocked() || isAdmin()) {
+            if (to.isLocked() && !isAdmin()) {
                 logger.log(Level.SEVERE, "updateCalendarPeriods, move to locked space");
                 throw new ResponseStatusException(
                         HttpStatus.CONFLICT, "The time you're moving into is already locked.");
