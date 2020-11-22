@@ -96,7 +96,6 @@ export class LocationCalendarComponent implements OnInit {
     this.location.subscribe(next => {
       this.locationName = next.name;
       this.locationFlat = next;
-      this.calendarPeriodModel.subscribe(console.log);
       this.setup();
     });
     this.showReservationInformation = this.functionalityService.showReservationsFunctionality();

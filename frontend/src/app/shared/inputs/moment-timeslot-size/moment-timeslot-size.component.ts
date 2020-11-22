@@ -18,6 +18,9 @@ export class MomentTimeslotSizeComponent implements OnInit, OnChanges {
   @Input()
   type: 'date'|'time';
 
+  @Input()
+  disabled: boolean;
+
   /**
    * This is the emitter that will emit the eventual size
    */

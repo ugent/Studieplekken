@@ -171,7 +171,7 @@
             {{'management.locationDetails.calendar.form.reservableTimeslotSize' | translate}}
           </label>
           <div class="col-lg-8">
-            <app-moment-timeslot-size id="openingTimeUpdate" [(model)]="model.reservableTimeslotSize" [type]="'time'"></app-moment-timeslot-size>
+            <app-moment-timeslot-size id="openingTimeUpdate" [disabled]="!model.reservable" [(model)]="model.reservableTimeslotSize" [type]="'time'"></app-moment-timeslot-size>
           </div>
         </div>
 
@@ -182,7 +182,7 @@
           </label>
           <div class="col-lg-8">
             <app-moment-datetime id="reservableFrom"
-              [(model)]="model.reservableFrom" [disabled]="!model.reservable" [min]="getMinReservableFrom(model)">
+              [(model)]="model.reservableFrom" [disabled]="!model.reservable" [min]="getMinReservableFrom(model)" [max]="model.startsAt">
             </app-moment-datetime>
           </div>
         </div>
@@ -191,6 +191,10 @@
 
     <!-- Modal footer -->
     <div class="modal-footer">
+      <div class="alert alert-warning" *ngIf="showAdminWarnMessage(model)">
+        {{ 'management.locationDetails.calendar.form.adminWarning' | translate }}
+      </div>
+
       <button class="btn btn-primary" (click)="add()" [disabled]="!model.isValid()" >
         {{'general.buttons.add' | translate}}
       </button>
@@ -289,7 +293,7 @@
             {{'management.locationDetails.calendar.form.reservableTimeslotSize' | translate}}
           </label>
           <div class="col-lg-8">
-            <app-moment-timeslot-size id="openingTimeUpdate" [(model)]="model.reservableTimeslotSize" [type]="'time'"></app-moment-timeslot-size>
+            <app-moment-timeslot-size id="openingTimeUpdate" [disabled]="!model.reservable" [(model)]="model.reservableTimeslotSize" [type]="'time'"></app-moment-timeslot-size>
           </div>
         </div>
 
@@ -300,7 +304,7 @@
           </label>
           <div class="col-lg-8">
             <app-moment-datetime id="reservableFromUpdate"
-              [(model)]="model.reservableFrom" [disabled]="!model.reservable" [min]="getMinReservableFrom(model)">
+              [(model)]="model.reservableFrom" [disabled]="!model.reservable" [min]="getMinReservableFrom(model)" [max]="model.startsAt">
             </app-moment-datetime>
           </div>
         </div>
