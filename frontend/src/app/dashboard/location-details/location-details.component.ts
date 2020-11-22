@@ -13,8 +13,6 @@ import {CalendarPeriodsService} from '../../services/api/calendar-periods/calend
 import { includesTimeslot, Timeslot, timeslotEquals } from 'src/app/shared/model/Timeslot';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
-
-
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
 import {CalendarPeriod, mapCalendarPeriodsToCalendarEvents} from '../../shared/model/CalendarPeriod';
 import {defaultLocationImage, LocationStatus, msToShowFeedback} from '../../app.constants';
@@ -68,7 +66,6 @@ export class LocationDetailsComponent implements OnInit {
   locationReservations: Observable<LocationReservation[]>;
   showReservations: boolean;
   loadingReservations: boolean;
-  calendarIdList: any[];
 
   constructor(private locationService: LocationService,
               private tagsService: TagsService,
