@@ -102,8 +102,7 @@ public class CalendarPeriodController extends  AuthorizedLocationController {
 
             // If this is a new CalendarPeriod, add instead
             if (to.getId() == null) {
-                // TODO unless admin
-                if (!to.isLocked())
+                if (!to.isLocked() || isAdmin())
                     calendarPeriodDao.addCalendarPeriods(Collections.singletonList(to));
                 else {
                     logger.log(Level.SEVERE, "updateCalendarPeriods, new CalendarPeriod too late");
@@ -117,15 +116,14 @@ public class CalendarPeriodController extends  AuthorizedLocationController {
             // have set the id of the calendar period. So, this is safe.
             CalendarPeriod originalTo = calendarPeriodDao.getById(to.getId());
 
-            // TODO unless admin
-            if (originalTo.isLocked()) {
+            if (originalTo.isLocked() || isAdmin()) {
                 logger.log(Level.SEVERE, "updateCalendarPeriods, already locked");
                 throw new ResponseStatusException(
                         HttpStatus.CONFLICT, "The original term is locked.");
             }
 
             to.initializeLockedFrom();
-            if (to.isLocked()) {
+            if (to.isLocked() || isAdmin()) {
                 logger.log(Level.SEVERE, "updateCalendarPeriods, move to locked space");
                 throw new ResponseStatusException(
                         HttpStatus.CONFLICT, "The time you're moving into is already locked.");
