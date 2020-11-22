@@ -25,6 +25,9 @@
     "locationDetails": {
       "info": "General information about this room:",
       "tags": "Tags that characterize this room:",
+      "buttons": {
+        "manage": "Manage"
+      },
       "status": {
         "statusOpen": "OPEN: Closes at {}",
         "statusClosed": "CLOSED",
@@ -360,7 +363,7 @@
         "loading": "Waiting for response of server...",
         "success": "Successfully added the new room",
         "error": "Something went wrong while adding the new room",
-        "warning": "Are you sure you want to propose this room? An e-mail will be sent to directie faciliteitenbeheer for approval. The amount of seats will be adjusted."
+        "warning": "Are you sure you want to propose this room? An e-mail will be sent to DGFB for approval. The amount of seats will be adjusted."
       },
 
       "editLocationModal": {

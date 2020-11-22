@@ -11,6 +11,7 @@ import {tap} from 'rxjs/operators';
 import {Building} from 'src/app/shared/model/Building';
 import {BuildingService} from 'src/app/services/api/buildings/buildings.service';
 import {msToShowFeedback} from '../../../../app.constants';
+import { ApplicationTypeFunctionalityService } from 'src/app/services/functionality/application-type/application-type-functionality.service';
 
 @Component({
   selector: 'app-details-form',
@@ -41,11 +42,13 @@ export class DetailsFormComponent implements OnInit {
   disablePersistLocationButton = true;
 
   successUpdatingLocation: boolean = undefined;
+  showLockersManagement: boolean;
 
   constructor(private locationService: LocationService,
               private locationDetailsService: LocationDetailsService,
               private authoritiesService: AuthoritiesService,
-              private buildingsService: BuildingService) {
+              private buildingsService: BuildingService,
+              private functionalityService: ApplicationTypeFunctionalityService) {
   }
 
   get authorityInLocationForm(): Authority {
@@ -82,6 +85,8 @@ export class DetailsFormComponent implements OnInit {
         });
       }
     ));
+
+    this.showLockersManagement = this.functionalityService.showLockersManagementFunctionality();
   }
 
   updateFormGroup(location: Location): void {
@@ -90,7 +95,7 @@ export class DetailsFormComponent implements OnInit {
       authority: location.authority.authorityId,
       building: location.building.buildingId,
       numberOfSeats: location.numberOfSeats,
-      numberOfLockers: location.numberOfLockers,
+      numberOfLockers: 0,
       forGroup: location.forGroup,
       imageUrl: location.imageUrl
     });
