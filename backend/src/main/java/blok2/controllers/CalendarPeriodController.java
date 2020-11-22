@@ -116,7 +116,7 @@ public class CalendarPeriodController extends  AuthorizedLocationController {
             // have set the id of the calendar period. So, this is safe.
             CalendarPeriod originalTo = calendarPeriodDao.getById(to.getId());
 
-            if (originalTo.isLocked() || isAdmin()) {
+            if (originalTo.isLocked() && !isAdmin()) {
                 logger.log(Level.SEVERE, "updateCalendarPeriods, already locked");
                 throw new ResponseStatusException(
                         HttpStatus.CONFLICT, "The original term is locked.");
