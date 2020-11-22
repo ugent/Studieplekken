@@ -7,6 +7,7 @@ services:
       - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: prod
+      TZ: Europe/Brussels
     depends_on:
       - db
   db:
@@ -16,6 +17,8 @@ services:
       POSTGRES_DB: blokatugent
       POSTGRES_USER: blokat
       POSTGRES_PASSWORD: ***REMOVED***
+      TZ: Europe/Brussels
+      PGTZ: Europe/Brussels
   frontend:
     build: frontend
     ports:
