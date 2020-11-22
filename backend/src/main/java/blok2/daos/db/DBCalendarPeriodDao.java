@@ -205,11 +205,11 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
                 );
             }
             // Case 2: Active period, 2 subcases
-            if (period.getEndsAt().isAfter(LocalDate.now())) {
+            else if (period.getEndsAt().isAfter(LocalDate.now())) {
                 // Case 2.a: Active period within hours
-                if (period.getOpeningTime().isBefore(LocalTime.now()) && period.getClosingTime().isAfter(LocalTime.now()) ||
-                    period.getOpeningTime().isAfter(period.getClosingTime()) && period.getClosingTime().isAfter(LocalTime.now()) ||
-                    period.getOpeningTime().isAfter(period.getClosingTime()) && period.getOpeningTime().isBefore(LocalTime.now())) {
+                if ((period.getOpeningTime().isBefore(LocalTime.now()) && period.getClosingTime().isAfter(LocalTime.now())) ||
+                        (period.getOpeningTime().isAfter(period.getClosingTime()) && period.getClosingTime().isAfter(LocalTime.now())) ||
+                        (period.getOpeningTime().isAfter(period.getClosingTime()) && period.getOpeningTime().isBefore(LocalTime.now()))) {
                     return new Pair<>(
                             LocationStatus.OPEN,
                             LocalDateTime.of(period.getEndsAt(), period.getClosingTime()).format(outputFormat)
@@ -224,16 +224,16 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
                 }
             }
             // Case 3: Last day of active period, 2 subcases
-            if (period.getEndsAt().isEqual(LocalDate.now())) {
+            else if (period.getEndsAt().isEqual(LocalDate.now())) {
                 // Case 3.1: Last day has yet to begin
-                if (period.getOpeningTime().isBefore(LocalTime.now())) {
+                if (period.getOpeningTime().isAfter(LocalTime.now())) {
                     return new Pair<>(
                             LocationStatus.CLOSED_ACTIVE,
                             LocalDateTime.of(period.getStartsAt(), period.getOpeningTime()).format(outputFormat)
                     );
                 }
                 // Case 3.2: Last day is busy
-                if (period.getClosingTime().isAfter(LocalTime.now())) {
+                else if (period.getClosingTime().isAfter(LocalTime.now())) {
                     return new Pair<>(
                             LocationStatus.OPEN,
                             LocalDateTime.of(period.getEndsAt(), period.getClosingTime()).format(outputFormat)
