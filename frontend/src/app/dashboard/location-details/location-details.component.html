@@ -1,22 +1,23 @@
 <div class="container-fluid" *ngIf="location | async as location">
   <!-- Title -->
-  <h1>{{location.name}}</h1>
+  <h1 class="inline-block">{{location.name}}</h1>
+  <button class="btn btn-primary float-right" *ngIf="showAdmin" routerLink="/management/locations/{{location.name}}">{{'dashboard.locationDetails.buttons.manage' | translate}}</button>
 
   <!-- First layer: image, general info and overview of tags -->
   <div class="row">
     <div class="col-md-4 col-sm-12">
       <!-- Note that if the original url of the image (received from the
            REST API) resulted in an error in the dashboard-item, the attribute
-            will be replaced with a default value. -->
+           will be replaced with a default value. -->
       <div>
         <img *ngIf="location.imageUrl !== null"
             src="{{location.imageUrl}}" alt="Image of {{location.name}}"
             (error)="handleImageError(location)">
-       <img *ngIf="location.imageUrl === null" [src]="altImageUrl" alt="Image of {{location.name}}">
-       <div class="locationStatusBar"
-             [classList]="'locationStatusBar ' + locationStatusColorClass()"></div>
+        <img *ngIf="location.imageUrl === null" [src]="altImageUrl" alt="Image of {{location.name}}">
+        <div class="locationStatusBar"
+             [classList]="'locationStatusBar ' + locationStatusColorClass()">
+        </div>
       </div>
-
     </div>
 
     <div class="col-md-4 col-sm-12">
@@ -25,10 +26,10 @@
           {{'dashboard.locationDetails.info' | translate}}
         </div>
 
-        <!-- Number of seats, number of lockers and address -->
+        <!-- General information about the location -->
         <ul>
           <li>{{'dashboard.numberOfSeats' | translate}}: {{location.numberOfSeats}}</li>
-          <li>{{'dashboard.numberOfLockers' | translate}}: {{location.numberOfLockers}}</li>
+          <li *ngIf="showLockersManagement">{{'dashboard.numberOfLockers' | translate}}: {{location.numberOfLockers}}</li>
           <li>{{'dashboard.building' | translate}}: {{location.building.name}}</li>
           <li>{{'dashboard.address' | translate}}: {{location.building.address}}</li>
           <li>{{'dashboard.status' | translate}}: {{statusInCurrentLang | translate}}</li>
@@ -64,8 +65,9 @@
   </ckeditor>
 
   <hr>
-  <div class="alert alert-warning" *ngIf="!this.authenticationService.isLoggedIn()">
-    Voordat er reservaties kunnen geplaatst worden voor deze locatie, dient u ingelogd te zijn.
+
+  <div class="alert alert-warning" *ngIf="!loggedIn()">
+    {{'dashboard.locationDetails.loginWarning' | translate}}
   </div>
 
   <!-- Calendar -->
@@ -74,13 +76,12 @@
   </div>
 
   <div class="row" style="padding-top: 10px;">
-    <button
-    class="btn btn-primary float-right"
-    [disabled]="updateReservationIsPossible()"
-    (click)="commitReservations(confirm)"
-    >
-    {{'reservations.reservationButton' | translate}}
-  </button>
+    <button *ngIf="loggedIn()"
+            class="btn btn-primary float-right"
+            [disabled]="updateReservationIsPossible()"
+            (click)="commitReservations(confirm)">
+      {{'reservations.reservationButton' | translate}}
+    </button>
   </div>
 
   <!-- If clicked on reservationButton, give some feedback -->
@@ -93,8 +94,6 @@
       {{'dashboard.locationDetails.calendar.reservation.errorMessage' | translate}}
     </div>
   </div>
-
-
 
   <hr>
 

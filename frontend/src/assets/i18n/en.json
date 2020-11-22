@@ -25,6 +25,9 @@
     "locationDetails": {
       "info": "General information about this room:",
       "tags": "Tags that characterize this room:",
+      "buttons": {
+        "manage": "Manage"
+      },
       "status": {
         "statusOpen": "OPEN: Closes at {}",
         "statusClosed": "CLOSED",
@@ -42,7 +45,8 @@
           "updateConfirmMessage": "Would you like to confirm these changes?",
           "updateWarningMessage": "WARNING: not showing up for a registered reservation with your student ID will lead to penalty points attributed to your profile. Too many penalty points will lead to blacklisting from the application"
         }
-      }
+      },
+      "loginWarning": "In order to be able to make a reservation for this location, you need to be logged in."
     },
 
     "filter": {
@@ -359,7 +363,7 @@
         "loading": "Waiting for response of server...",
         "success": "Successfully added the new room",
         "error": "Something went wrong while adding the new room",
-        "warning": "Are you sure you want to propose this room? An e-mail will be sent to directie faciliteitenbeheer for approval. The amount of seats will be adjusted."
+        "warning": "Are you sure you want to propose this room? An e-mail will be sent to DGFB for approval. The amount of seats will be adjusted."
       },
 
       "editLocationModal": {

@@ -42,9 +42,15 @@ export class MomentTimeslotSizeComponent implements OnInit, OnChanges {
    */
   ngOnChanges(): void {
     if (this.model !== 0) {
-      this.modelAsString = moment.duration(this.model, 'minutes').format('HH:mm');
+      if (this.model < 60) {
+        this.modelAsString = moment.duration(this.model, 'minutes').format('00:mm');
+        console.log(this.modelAsString);
+      }
+      else {
+        this.modelAsString = moment.duration(this.model, 'minutes').format('HH:mm');
+      }
     } else {
-      this.modelAsString = '';
+      this.modelAsString = '00:00';
     }
   }
 

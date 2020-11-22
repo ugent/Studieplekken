@@ -15,3 +15,7 @@
 .closed {
   background-color: var(--ck-color-base-error);
 }
+
+h1.inline-block {
+  display: inline-block;
+}

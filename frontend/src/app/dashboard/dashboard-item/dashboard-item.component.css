@@ -12,6 +12,7 @@
 
 .location-info {
   padding-top: 5px;
+  height: 100%;
 }
 
 /*
@@ -63,4 +64,16 @@
 
 .closed {
   background-color: var(--ck-color-base-error);
+}
+
+.content {
+  height: 100%;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.mt-auto {
+  margin-top:auto;
 }

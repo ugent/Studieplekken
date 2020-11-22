@@ -32,6 +32,8 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
 
   statusInCurrentLang: string;
 
+  showLockersManagement: boolean;
+
   constructor(private locationService: LocationService,
               private calendarPeriodsService: CalendarPeriodsService,
               private translate: TranslateService,
@@ -62,6 +64,7 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
     this.setupTagsInCurrentLang();
 
     this.showProgressBar = this.functionalityService.showReservationsFunctionality();
+    this.showLockersManagement = this.functionalityService.showLockersManagementFunctionality();
   }
 
   ngAfterViewInit(): void {
