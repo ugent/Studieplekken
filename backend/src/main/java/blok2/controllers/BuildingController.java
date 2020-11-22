@@ -30,7 +30,7 @@ public class BuildingController {
     // *************************************/
 
     @GetMapping
-    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    @PreAuthorize("permitAll()")
     public List<Building> getAllBuildings() {
         try {
             return buildingDao.getAllBuildings();
@@ -42,7 +42,7 @@ public class BuildingController {
     }
 
     @GetMapping("/{buildingId}")
-    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    @PreAuthorize("permitAll()")
     public Building getBuilding(@PathVariable int buildingId) {
         try {
             return buildingDao.getBuildingById(buildingId);
