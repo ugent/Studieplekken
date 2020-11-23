@@ -189,6 +189,9 @@ export class LocationCalendarComponent implements OnInit {
   // *******************/
 
   setup(): void {
+    if(!this.locationName) {
+      return;
+    }
     // retrieve all calendar periods for this location
     this.calendarPeriodsService.getCalendarPeriodsOfLocation(this.locationName).subscribe(next => {
       if (next === null) {
