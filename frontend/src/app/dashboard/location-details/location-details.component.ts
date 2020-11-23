@@ -120,7 +120,7 @@ export class LocationDetailsComponent implements OnInit {
   }
 
   locationStatusColorClass(): string {
-    return this.status.first === LocationStatus.OPEN ? 'open' : 'closed';
+    return (this.status && this.status.first === LocationStatus.OPEN) ? 'open' : 'closed';
   }
 
   timeslotPicked(event: any): void {
