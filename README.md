@@ -73,8 +73,4 @@ So, you want to deploy this app in production? (studieplekken.ugent.be)
 
 1. SSH to root@fireball.ugent.be
 2. `cd blokat`
-3. `git stash`
-4. `git pull origin master` (or `git pull` for short)
-5. `git stash pop`
-6. `docker-compose build`
-7. `docker-compose down && docker-compose up --detach`
+3. `./deploy.sh`
