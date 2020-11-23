@@ -20,7 +20,9 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import * as moment from 'moment';
 import {DatePipe} from '@angular/common';
 import {Pair} from '../../shared/model/helpers/Pair';
-import { ApplicationTypeFunctionalityService } from 'src/app/services/functionality/application-type/application-type-functionality.service';
+import {
+  ApplicationTypeFunctionalityService
+} from 'src/app/services/functionality/application-type/application-type-functionality.service';
 
 @Component({
   selector: 'app-location-details',
@@ -65,9 +67,7 @@ export class LocationDetailsComponent implements OnInit {
 
   calendarMap: Map<number, CalendarPeriod> = new Map();
   locationReservations: Observable<LocationReservation[]>;
-  showReservations: boolean;
   loadingReservations: boolean;
-  calendarIdList: any[];
   showAdmin: boolean;
   showLockersManagement: boolean;
 
@@ -86,7 +86,7 @@ export class LocationDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.locationName = this.route.snapshot.paramMap.get('locationName');
     this.location = this.locationService.getLocation(this.locationName);
-    this.showAdmin = this.authenticationService.isAdmin()
+    this.showAdmin = this.authenticationService.isAdmin();
     this.currentLang = this.translate.currentLang;
 
     // when the location is loaded, setup the descriptions
@@ -308,5 +308,9 @@ export class LocationDetailsComponent implements OnInit {
 
   loggedIn(): boolean {
     return this.authenticationService.isLoggedIn();
+  }
+
+  showDescription(description: string): boolean {
+    return description !== '';
   }
 }
