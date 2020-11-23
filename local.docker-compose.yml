@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  backend:
+    build: backend
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      TZ: Europe/Brussels
+    depends_on:
+      - db
+  db:
+    image: postgres:12-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: blokatugent
+      POSTGRES_USER: blokat
+      POSTGRES_PASSWORD: ***REMOVED***
+      TZ: Europe/Brussels
+      PGTZ: Europe/Brussels
+  frontend:
+    build: frontend
+  nginx-proxy:
+    image: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/blokat.conf:ro
+      - /var/run/docker.sock:/tmp/docker.sock:ro
