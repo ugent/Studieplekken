@@ -19,7 +19,7 @@
         <div class="panel-body" style="padding: 20px">
           <div class="row">
             <div class="col-sm-3">
-              <mat-form-field *ngIf="tags !== undefined" style="width: 100%" [formGroup]="tagFilterFormGroup" >
+              <mat-form-field *ngIf="tags !== undefined" style="width: 100%" [formGroup]="tagFilterFormGroup">
                 <mat-label>{{'dashboard.filter.tagsFilterTitle' | translate}}</mat-label>
                 <mat-select multiple
                             formControlName="filteredTags"
@@ -33,7 +33,7 @@
             </div>
 
             <div class="col-sm-3">
-              <mat-form-field *ngIf="tags !== undefined" style="width: 100%" [formGroup]="buildingFilterFormGroup" >
+              <mat-form-field *ngIf="tags !== undefined" style="width: 100%" [formGroup]="buildingFilterFormGroup">
                 <mat-label>{{'dashboard.filter.buildingsFilterTitle' | translate}}</mat-label>
                 <mat-select formControlName="filteredBuilding"
                             (selectionChange)="onBuildingSelectionChange($event)">
@@ -48,7 +48,7 @@
               <div class="form-group">
                 <input [(ngModel)]="locationSearch" (keyup.enter)="onSearchEnter()"
                        id="search" class="form-control" type="text"
-                       placeholder="{{'dashboard.filter.searchPlaceholder' | translate}}" >
+                       placeholder="{{'dashboard.filter.searchPlaceholder' | translate}}">
               </div>
             </div>
 
@@ -61,7 +61,7 @@
 
             <div class="col-sm-2">
               <button class="btn btn-primary"
-              (click)="toggleShowOpen()">
+                      (click)="toggleShowOpen()">
                 {{showOpen ? ('dashboard.filter.showAll' | translate) : ('dashboard.filter.showOpen' | translate)}}
               </button>
             </div>

@@ -23,8 +23,8 @@
     "status": "Status",
 
     "locationDetails": {
-      "info": "General information about this room:",
-      "tags": "Tags that characterize this room:",
+      "info": "General information about this room",
+      "tags": "Tags that characterize this room",
       "buttons": {
         "manage": "Manage"
       },

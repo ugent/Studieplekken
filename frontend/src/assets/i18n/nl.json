@@ -23,8 +23,8 @@
     "status": "Status",
 
     "locationDetails": {
-      "info": "Algemene informatie over deze ruimte:",
-      "tags": "Tags die deze ruimte kenmerken:",
+      "info": "Algemene informatie over deze ruimte",
+      "tags": "Tags die deze ruimte kenmerken",
       "buttons": {
         "manage": "Beheer"
       },

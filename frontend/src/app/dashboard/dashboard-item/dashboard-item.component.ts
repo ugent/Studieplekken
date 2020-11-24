@@ -12,7 +12,7 @@ import {CalendarPeriodsService} from '../../services/api/calendar-periods/calend
 @Component({
   selector: 'app-dashboard-item',
   templateUrl: './dashboard-item.component.html',
-  styleUrls: ['./dashboard-item.component.css'],
+  styleUrls: ['./dashboard-item.component.css', '../location.css'],
   providers: [DatePipe]
 })
 export class DashboardItemComponent implements OnInit, AfterViewInit {

@@ -10,22 +10,22 @@ import {TranslateService} from '@ngx-translate/core';
 import {LocationTag} from '../../shared/model/LocationTag';
 import {TagsService} from '../../services/api/tags/tags.service';
 import {CalendarPeriodsService} from '../../services/api/calendar-periods/calendar-periods.service';
-import { includesTimeslot, Timeslot, timeslotEquals } from 'src/app/shared/model/Timeslot';
-import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
-import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
-import { LocationReservation } from 'src/app/shared/model/LocationReservation';
+import {includesTimeslot, Timeslot, timeslotEquals} from 'src/app/shared/model/Timeslot';
+import {LocationReservationsService} from 'src/app/services/api/location-reservations/location-reservations.service';
+import {AuthenticationService} from 'src/app/services/authentication/authentication.service';
+import {LocationReservation} from 'src/app/shared/model/LocationReservation';
 import {CalendarPeriod, mapCalendarPeriodsToCalendarEvents} from '../../shared/model/CalendarPeriod';
 import {defaultLocationImage, LocationStatus, msToShowFeedback} from '../../app.constants';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import {BsModalRef, BsModalService} from 'ngx-bootstrap/modal';
 import * as moment from 'moment';
 import {DatePipe} from '@angular/common';
 import {Pair} from '../../shared/model/helpers/Pair';
-import { ApplicationTypeFunctionalityService } from 'src/app/services/functionality/application-type/application-type-functionality.service';
+import {ApplicationTypeFunctionalityService} from 'src/app/services/functionality/application-type/application-type-functionality.service';
 
 @Component({
   selector: 'app-location-details',
   templateUrl: './location-details.component.html',
-  styleUrls: ['./location-details.component.css'],
+  styleUrls: ['./location-details.component.css', '../location.css'],
   providers: [DatePipe]
 })
 export class LocationDetailsComponent implements OnInit {
@@ -81,12 +81,13 @@ export class LocationDetailsComponent implements OnInit {
               private authenticationService: AuthenticationService,
               private locationReservationService: LocationReservationsService,
               private modalService: BsModalService,
-              private functionalityService: ApplicationTypeFunctionalityService) { }
+              private functionalityService: ApplicationTypeFunctionalityService) {
+  }
 
   ngOnInit(): void {
     this.locationName = this.route.snapshot.paramMap.get('locationName');
     this.location = this.locationService.getLocation(this.locationName);
-    this.showAdmin = this.authenticationService.isAdmin()
+    this.showAdmin = this.authenticationService.isAdmin();
     this.currentLang = this.translate.currentLang;
 
     // when the location is loaded, setup the descriptions
@@ -233,14 +234,14 @@ export class LocationDetailsComponent implements OnInit {
 
     combineLatest([
       this.calendarPeriodsService.getCalendarPeriodsOfLocation(this.locationName),
-        this.authenticationService.getLocationReservations(),
-        ])
+      this.authenticationService.getLocationReservations(),
+    ])
       .subscribe(([periods, reservations]) => {
         this.originalList = [...reservations];
         this.selectedSubject.next(reservations);
 
         this.subscription = this.selectedSubject.asObservable().subscribe(proposedReservations =>
-                  this.events = mapCalendarPeriodsToCalendarEvents(periods, [...proposedReservations]));
+          this.events = mapCalendarPeriodsToCalendarEvents(periods, [...proposedReservations]));
       });
   }
 
@@ -252,11 +253,11 @@ export class LocationDetailsComponent implements OnInit {
     // We need to find out which of the selected boxes need to be removed, and which need to be added.
     // Therefore, we calculate selected \ previous
     this.newReservations = this.selectedSubject.value
-                    .filter(selected => !includesTimeslot(this.originalList.map(l => l.timeslot), selected.timeslot));
+      .filter(selected => !includesTimeslot(this.originalList.map(l => l.timeslot), selected.timeslot));
 
     // And we calculate previous \ selected
     this.removedReservations = this.originalList
-                    .filter(selected => !includesTimeslot(this.selectedSubject.value.map(l => l.timeslot), selected.timeslot));
+      .filter(selected => !includesTimeslot(this.selectedSubject.value.map(l => l.timeslot), selected.timeslot));
 
     this.modalRef = this.modalService.show(template);
   }
@@ -289,7 +290,8 @@ export class LocationDetailsComponent implements OnInit {
       next.forEach(element => {
         this.calendarMap.set(element.id, element);
       });
-    }, () => {});
+    }, () => {
+    });
   }
 
   getBeginHour(calendarPeriod: CalendarPeriod, timeslot: Timeslot): moment.Moment {
