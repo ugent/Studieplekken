@@ -140,7 +140,8 @@
       "users": "Gebruikers",
       "authorities": "Autoriteiten",
       "calendar": "Kalender",
-      "penalties": "Overtredingen"
+      "penalties": "Overtredingen",
+      "admins": "Admins"
     },
 
     "general": {
