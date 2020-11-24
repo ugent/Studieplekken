@@ -63,6 +63,7 @@
   },
 
   "footer":{
+    "madeBy": "Made by",
     "privacy": "Privacy",
     "disclaimer": "Disclaimer",
     "cookies": "Cookies",

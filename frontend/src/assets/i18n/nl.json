@@ -63,6 +63,7 @@
   },
 
   "footer":{
+    "madeBy": "Gemaakt door",
     "privacy": "Privacy",
     "disclaimer": "Disclaimer",
     "cookies": "Cookies",
