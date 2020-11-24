@@ -336,7 +336,8 @@ from public.location_reservations lr
         on a.authority_id = l.authority_id
     join users u
         on u.augentid = lr.user_augentid
-where lr.user_augentid = ?;
+where lr.user_augentid = ?
+order by lr.timeslot_date desc, lr.timeslot_seqnr desc;
 
 
 -- queries for table USER
