@@ -29,10 +29,10 @@
         "manage": "Manage"
       },
       "status": {
-        "statusOpen": "OPEN: Closes at {}",
-        "statusClosed": "CLOSED",
-        "statusClosedActive": "CLOSED: Opens again at {}",
-        "statusClosedUpcoming": "CLOSED: Opens again {}"
+        "statusOpen": "Closes at {}",
+        "statusClosed": "Closed",
+        "statusClosedActive": "Opens again at {}",
+        "statusClosedUpcoming": "Opens again {}"
       },
       "calendar": {
         "reservation": {

@@ -29,10 +29,10 @@
         "manage": "Beheer"
       },
       "status": {
-        "statusOpen": "OPEN: Sluit om {}",
-        "statusClosed": "GESLOTEN",
-        "statusClosedActive": "GESLOTEN: Opent opnieuw om {}",
-        "statusClosedUpcoming": "GESLOTEN: Opent opnieuw op {}"
+        "statusOpen": "Sluit om {}",
+        "statusClosed": "Gesloten",
+        "statusClosedActive": "Opent opnieuw om {}",
+        "statusClosedUpcoming": "Opent opnieuw op {}"
       },
       "calendar": {
         "reservation": {

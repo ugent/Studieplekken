@@ -77,3 +77,52 @@
 .mt-auto {
   margin-top:auto;
 }
+
+.tags {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+
+  color: #4a4a4a;
+  font-size: 1em;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.tags:last-child {
+  margin-bottom: -.5rem;
+}
+
+.tags .tag:not(:last-child) {
+  margin-right: .5rem;
+}
+.tags .tag {
+  margin-bottom: .5rem;
+}
+.tag:not(body) {
+  align-items: center;
+  background-color: #eee;
+  color: #666;
+  display: inline-flex;
+
+  /*font-size: 1.2rem;*/
+  font-size: 14px;
+
+  /*min-height: 2em;*/
+  min-height: 30px;
+
+  justify-content: center;
+
+  line-height: 1.5;
+
+  padding: 0.3em .75em;
+
+  /*font-family: BlinkMacSystemFont,-apple-system,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans";*/
+  font-family: "PannoTextLight",Arial,sans-serif;
+}
+
+.borderless td, .borderless th {
+  padding: 4px 2px 4px 4px;
+  border: none;
+}
