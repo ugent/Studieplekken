@@ -57,12 +57,14 @@
 
   <!-- Description of the location, show the description based on the browser language -->
   <!-- A CKEditor is used, but is put in read-only mode and without a toolbar -->
-  <h2>{{'dashboard.description' | translate}}</h2>
+  <div *ngIf="showDescription(description.show)">
+    <h2>{{'dashboard.description' | translate}}</h2>
 
-  <ckeditor [(ngModel)]="description.show"
-            [editor]="editor"
-            [disabled]="true" [config]="{toolbar: []}">
-  </ckeditor>
+    <ckeditor [(ngModel)]="description.show"
+              [editor]="editor"
+              [disabled]="true" [config]="{toolbar: []}">
+    </ckeditor>
+  </div>
 
   <hr>
 
