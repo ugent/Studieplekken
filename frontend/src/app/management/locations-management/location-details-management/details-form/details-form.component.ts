@@ -3,15 +3,18 @@ import {Location} from '../../../../shared/model/Location';
 import {FormControl, FormGroup} from '@angular/forms';
 import {LocationService} from '../../../../services/api/locations/location.service';
 import {Observable} from 'rxjs';
-// @ts-ignore
-import {LocationDetailsService} from '../../../../services/single-point-of-truth/location-details/location-details.service';
+import {
+  LocationDetailsService
+} from '../../../../services/single-point-of-truth/location-details/location-details.service';
 import {Authority} from '../../../../shared/model/Authority';
 import {AuthoritiesService} from '../../../../services/api/authorities/authorities.service';
 import {tap} from 'rxjs/operators';
 import {Building} from 'src/app/shared/model/Building';
 import {BuildingService} from 'src/app/services/api/buildings/buildings.service';
 import {msToShowFeedback} from '../../../../app.constants';
-import { ApplicationTypeFunctionalityService } from 'src/app/services/functionality/application-type/application-type-functionality.service';
+import {
+  ApplicationTypeFunctionalityService
+} from 'src/app/services/functionality/application-type/application-type-functionality.service';
 
 @Component({
   selector: 'app-details-form',

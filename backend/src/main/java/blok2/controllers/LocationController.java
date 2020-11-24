@@ -1,6 +1,5 @@
 package blok2.controllers;
 
-import blok2.daos.ICalendarPeriodDao;
 import blok2.daos.ILocationDao;
 import blok2.daos.ILocationTagDao;
 import blok2.helpers.authorization.AuthorizedLocationController;
@@ -8,11 +7,13 @@ import blok2.helpers.EmailService;
 import blok2.helpers.LocationWithApproval;
 import blok2.helpers.Resources;
 import blok2.model.reservables.Location;
+import blok2.model.users.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -106,7 +107,14 @@ public class LocationController extends AuthorizedLocationController {
     public void updateLocation(@PathVariable("locationName") String locationName, @RequestBody Location location) {
         isAuthorized(location.getName());
         try {
-            // TODO: if is admin, changeseats = true
+            // Get the location that is currently in db
+            Location cl = locationDao.getLocation(locationName);
+
+            // Make sure that only an admin could change the number of seats
+            User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (cl.getNumberOfSeats() != location.getNumberOfSeats() && !user.isAdmin())
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Changing seats can only be done by admins");
+
             locationDao.updateLocation(locationName, location);
             logger.info(String.format("Location %s updated", locationName));
         } catch (SQLException e) {
