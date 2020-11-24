@@ -1,5 +1,6 @@
 package blok2.daos;
 
+import blok2.helpers.Pair;
 import blok2.model.Authority;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
@@ -14,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class TestDBLocationReservationDao extends TestDao {
@@ -37,35 +40,41 @@ public class TestDBLocationReservationDao extends TestDao {
     private IBuildingDao buildingDao;
 
     private Location testLocation;
-    private Building testBuilding;
+    private Location testLocation2;
     private User testUser;
     private User testUser2;
     private List<CalendarPeriod> calendarPeriods;
     private CalendarPeriod calendarPeriod1Seat;
-    private Location testLocation1Seat;
+    private List<CalendarPeriod> calendarPeriodsForLocation2;
 
     @Override
     public void populateDatabase() throws SQLException {
         // setup test location objects
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+        Building testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
 
         testLocation = TestSharedMethods.testLocation(authority.clone(), testBuilding);
-        testLocation1Seat = TestSharedMethods.testLocation1Seat(authority.clone(), testBuilding);
+        Location testLocation1Seat = TestSharedMethods.testLocation1Seat(authority.clone(), testBuilding);
+        testLocation2 = TestSharedMethods.testLocation2(authority.clone(), testBuilding);
 
         testUser = TestSharedMethods.adminTestUser();
         testUser2 = TestSharedMethods.studentTestUser();
         calendarPeriods = TestSharedMethods.testCalendarPeriods(testLocation);
         calendarPeriod1Seat = TestSharedMethods.testCalendarPeriods(testLocation1Seat).get(0);
+        calendarPeriodsForLocation2 = TestSharedMethods.testCalendarPeriods(testLocation2);
 
         // Add test objects to database
         TestSharedMethods.addTestUsers(accountDao, testUser, testUser2);
         locationDao.addLocation(testLocation);
         locationDao.addLocation(testLocation1Seat);
+        locationDao.addLocation(testLocation2);
 
-        TestSharedMethods.addCalendarPeriods(calendarPeriodDao, calendarPeriods.get(0));
+        CalendarPeriod[] cps = new CalendarPeriod[calendarPeriods.size()];
+        cps = calendarPeriods.toArray(cps);
+        TestSharedMethods.addCalendarPeriods(calendarPeriodDao, cps);
         TestSharedMethods.addCalendarPeriods(calendarPeriodDao, calendarPeriod1Seat);
-
+        cps = calendarPeriodsForLocation2.toArray(cps);
+        TestSharedMethods.addCalendarPeriods(calendarPeriodDao, cps);
     }
 
     @Test
@@ -118,6 +127,38 @@ public class TestDBLocationReservationDao extends TestDao {
         // It really really shouldn't be in the database.
         List<LocationReservation> reservations = locationReservationDao.getAllLocationReservationsOfUser(u2.getAugentID());
         Assert.assertEquals(0, reservations.size());
+    }
+
+    @Test
+    public void getLocationReservationsWithLocationOfUserTest() throws SQLException {
+        User u = accountDao.getUserById(testUser.getAugentID()); // test user from db
+        List<Pair<LocationReservation, Location>> elrs = new ArrayList<>(); // expected location reservations
+
+        // Create first location reservation for user in testLocation
+        CalendarPeriod cp0 = calendarPeriods.get(0);
+        Timeslot t0 = cp0.getTimeslots().get(0);
+        LocationReservation lr0 = new LocationReservation(u, LocalDateTime.now(), t0, null);
+        elrs.add(new Pair<>(lr0, testLocation));
+
+        // Create a second location reservation for the user in testLocation2
+        CalendarPeriod cp1 = calendarPeriodsForLocation2.get(1);
+        Timeslot t1 = cp1.getTimeslots().get(1);
+        LocationReservation lr1 = new LocationReservation(u, LocalDateTime.now(), t1, null);
+        elrs.add(new Pair<>(lr1, testLocation2));
+
+        // Add the location reservations to the db
+        Assert.assertTrue(locationReservationDao.addLocationReservationIfStillRoomAtomically(lr0));
+        Assert.assertTrue(locationReservationDao.addLocationReservationIfStillRoomAtomically(lr1));
+
+        // Retrieve location reservations in combination with the locations
+        List<Pair<LocationReservation, Location>> rlrs = locationReservationDao
+                .getAllLocationReservationsWithLocationOfUser(u.getAugentID());
+
+        // Sort expected and retrieved location reservations
+        elrs.sort(Comparator.comparing(Pair::hashCode));
+        rlrs.sort(Comparator.comparing(Pair::hashCode));
+
+        Assert.assertEquals(elrs, rlrs);
     }
 
     // @Test

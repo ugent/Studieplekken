@@ -2,9 +2,11 @@ package blok2.controllers;
 
 import blok2.daos.ICalendarPeriodDao;
 import blok2.daos.ILocationReservationDao;
+import blok2.helpers.Pair;
 import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
+import blok2.model.reservables.Location;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
 import org.slf4j.Logger;
@@ -53,6 +55,19 @@ public class LocationReservationController extends AuthorizedLocationController 
     public List<LocationReservation> getLocationReservationsByUserId(@RequestParam String id) {
         try {
             return locationReservationDao.getAllLocationReservationsOfUser(id);
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @GetMapping("/{userId}")
+    @PreAuthorize("hasAuthority('USER') and #userId == authentication.principal.augentID")
+    public List<Pair<LocationReservation, Location>>
+    getLocationReservationsWithLocationByUserId(@PathVariable("userId") String userId) {
+        try {
+            return locationReservationDao.getAllLocationReservationsWithLocationOfUser(userId);
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));

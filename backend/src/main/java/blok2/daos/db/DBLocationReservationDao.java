@@ -1,8 +1,10 @@
 package blok2.daos.db;
 
 import blok2.daos.ILocationReservationDao;
+import blok2.helpers.Pair;
 import blok2.helpers.Resources;
 import blok2.model.calendar.Timeslot;
+import blok2.model.reservables.Location;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
 import org.springframework.stereotype.Service;
@@ -35,6 +37,27 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
             while (rs.next()) {
                 LocationReservation locationReservation = createLocationReservation(rs, conn);
                 reservations.add(locationReservation);
+            }
+
+            return reservations;
+        }
+    }
+
+    @Override
+    public List<Pair<LocationReservation, Location>> getAllLocationReservationsWithLocationOfUser(String userId)
+            throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            List<Pair<LocationReservation, Location>> reservations = new ArrayList<>();
+
+            PreparedStatement pstmt = conn.prepareStatement(Resources
+                    .databaseProperties.getString("get_location_reservations_with_location_by_user"));
+            pstmt.setString(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                LocationReservation lr = createLocationReservation(rs, conn);
+                Location l = DBLocationDao.createLocation(rs, conn);
+                reservations.add(new Pair<>(lr, l));
             }
 
             return reservations;
