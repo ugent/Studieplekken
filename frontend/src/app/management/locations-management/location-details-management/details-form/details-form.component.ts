@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Location} from '../../../../shared/model/Location';
-import {FormControl, FormGroup} from '@angular/forms';
+import {AbstractControl, FormControl, FormGroup} from '@angular/forms';
 import {LocationService} from '../../../../services/api/locations/location.service';
 import {Observable} from 'rxjs';
 import {
@@ -15,6 +15,7 @@ import {msToShowFeedback} from '../../../../app.constants';
 import {
   ApplicationTypeFunctionalityService
 } from 'src/app/services/functionality/application-type/application-type-functionality.service';
+import {AuthenticationService} from '../../../../services/authentication/authentication.service';
 
 @Component({
   selector: 'app-details-form',
@@ -51,7 +52,8 @@ export class DetailsFormComponent implements OnInit {
               private locationDetailsService: LocationDetailsService,
               private authoritiesService: AuthoritiesService,
               private buildingsService: BuildingService,
-              private functionalityService: ApplicationTypeFunctionalityService) {
+              private functionalityService: ApplicationTypeFunctionalityService,
+              private authenticationService: AuthenticationService) {
   }
 
   get authorityInLocationForm(): Authority {
@@ -120,6 +122,12 @@ export class DetailsFormComponent implements OnInit {
 
   editLocationDetailsButtonClick(): void {
     this.enableFormGroup();
+
+    // only the admin can change the number of seats of a location
+    if (!this.authenticationService.isAdmin()) {
+      this.numberOfSeats.disable();
+    }
+
     this.changeEnableDisableLocationDetailsFormButtons();
   }
 
@@ -161,6 +169,12 @@ export class DetailsFormComponent implements OnInit {
     this.disableFormGroup();
     this.changeEnableDisableLocationDetailsFormButtons();
   }
+
+  // /******************
+  // *   AUXILIARIES   *
+  // *******************/
+
+  get numberOfSeats(): AbstractControl { return this.locationForm.get('numberOfSeats'); }
 
   successHandler(): void {
     this.successUpdatingLocation = true;
