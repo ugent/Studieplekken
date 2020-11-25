@@ -7,13 +7,11 @@ import blok2.helpers.EmailService;
 import blok2.helpers.LocationWithApproval;
 import blok2.helpers.Resources;
 import blok2.model.reservables.Location;
-import blok2.model.users.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -111,8 +109,7 @@ public class LocationController extends AuthorizedLocationController {
             Location cl = locationDao.getLocation(locationName);
 
             // Make sure that only an admin could change the number of seats
-            User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            if (cl.getNumberOfSeats() != location.getNumberOfSeats() && !user.isAdmin())
+            if (cl.getNumberOfSeats() != location.getNumberOfSeats() && !isAdmin())
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Changing seats can only be done by admins");
 
             locationDao.updateLocation(locationName, location);
