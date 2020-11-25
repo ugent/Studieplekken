@@ -63,6 +63,7 @@
   },
 
   "footer":{
+    "madeBy": "Gemaakt door",
     "privacy": "Privacy",
     "disclaimer": "Disclaimer",
     "cookies": "Cookies",
@@ -140,7 +141,8 @@
       "users": "Gebruikers",
       "authorities": "Autoriteiten",
       "calendar": "Kalender",
-      "penalties": "Overtredingen"
+      "penalties": "Overtredingen",
+      "admins": "Admins"
     },
 
     "general": {

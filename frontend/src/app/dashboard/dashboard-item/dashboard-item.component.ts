@@ -81,9 +81,8 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
   }
 
   setupTagsInCurrentLang(): void {
+    this.tagsInCurrentLang = [];
     if (this.assignedTags && this.assignedTags.length > 0) {
-      this.tagsInCurrentLang = new Array();
-
       this.assignedTags.forEach(tag => {
         if (this.currentLang === 'nl') {
           this.tagsInCurrentLang.push(tag.dutch);
@@ -91,16 +90,6 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
           this.tagsInCurrentLang.push(tag.english);
         }
       });
-
-      // this.tagsInCurrentLang = this.tagsInCurrentLang.substr(0, this.tagsInCurrentLang.length - 2);
-    } else {
-      this.translate.get('general.notAvailableAbbreviation').subscribe(
-        next => {
-          this.tagsInCurrentLang = next;
-        }, () => {
-          this.tagsInCurrentLang = [];
-        }
-      );
     }
   }
 
