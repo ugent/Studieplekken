@@ -130,29 +130,29 @@ public class TestDBLocationReservationDao extends TestDao {
     }
 
     @Test
-    public void getLocationReservationsWithLocationOfUserTest() throws SQLException {
+    public void getLocationReservationsAndCalendarPeriodOfUserTest() throws SQLException {
         User u = accountDao.getUserById(testUser.getAugentID()); // test user from db
-        List<Pair<LocationReservation, Location>> elrs = new ArrayList<>(); // expected location reservations
+        List<Pair<LocationReservation, CalendarPeriod>> elrs = new ArrayList<>(); // expected location reservations
 
         // Create first location reservation for user in testLocation
         CalendarPeriod cp0 = calendarPeriods.get(0);
         Timeslot t0 = cp0.getTimeslots().get(0);
         LocationReservation lr0 = new LocationReservation(u, LocalDateTime.now(), t0, null);
-        elrs.add(new Pair<>(lr0, testLocation));
+        elrs.add(new Pair<>(lr0, cp0));
 
         // Create a second location reservation for the user in testLocation2
         CalendarPeriod cp1 = calendarPeriodsForLocation2.get(1);
         Timeslot t1 = cp1.getTimeslots().get(1);
         LocationReservation lr1 = new LocationReservation(u, LocalDateTime.now(), t1, null);
-        elrs.add(new Pair<>(lr1, testLocation2));
+        elrs.add(new Pair<>(lr1, cp1));
 
         // Add the location reservations to the db
         Assert.assertTrue(locationReservationDao.addLocationReservationIfStillRoomAtomically(lr0));
         Assert.assertTrue(locationReservationDao.addLocationReservationIfStillRoomAtomically(lr1));
 
         // Retrieve location reservations in combination with the locations
-        List<Pair<LocationReservation, Location>> rlrs = locationReservationDao
-                .getAllLocationReservationsWithLocationOfUser(u.getAugentID());
+        List<Pair<LocationReservation, CalendarPeriod>> rlrs = locationReservationDao
+                .getAllLocationReservationsAndCalendarPeriodsOfUser(u.getAugentID());
 
         // Sort expected and retrieved location reservations
         elrs.sort(Comparator.comparing(Pair::hashCode));

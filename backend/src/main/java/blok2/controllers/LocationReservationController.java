@@ -6,7 +6,6 @@ import blok2.helpers.Pair;
 import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
-import blok2.model.reservables.Location;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
 import org.slf4j.Logger;
@@ -64,10 +63,10 @@ public class LocationReservationController extends AuthorizedLocationController 
 
     @GetMapping("/{userId}")
     @PreAuthorize("hasAuthority('USER') and #userId == authentication.principal.augentID")
-    public List<Pair<LocationReservation, Location>>
+    public List<Pair<LocationReservation, CalendarPeriod>>
     getLocationReservationsWithLocationByUserId(@PathVariable("userId") String userId) {
         try {
-            return locationReservationDao.getAllLocationReservationsWithLocationOfUser(userId);
+            return locationReservationDao.getAllLocationReservationsAndCalendarPeriodsOfUser(userId);
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));

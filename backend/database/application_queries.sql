@@ -323,7 +323,7 @@ set user_augentid = ?
 where user_augentid = ?;
 
 -- $get_location_reservations_with_location_by_user
-select lr.*, l.*, u.*, b.*, a.*
+select lr.*, cp.*, l.*, b.*, a.*, u.*
      , lr.timeslot_seqnr as "timeslot_sequence_number"
 from public.location_reservations lr
     join public.calendar_periods cp
