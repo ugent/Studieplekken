@@ -59,7 +59,7 @@
         </div>
 
         <!-- List of the tags -->
-        <div *ngIf="tags !== undefined" class="tags" style="flex-direction: column; align-items: flex-start">
+        <div *ngIf="tags !== undefined" class="tags" fxLayout="column" fxLayoutAlign="flex-start flex-start">
           <p class="tag" *ngFor="let tag of tags">
             {{currentLang === 'nl' ? tag.dutch : tag.english}}
           </p>
