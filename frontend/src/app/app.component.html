@@ -14,7 +14,8 @@
 
             <!-- If screen is too small, the navigation needs to collapse. When the navbar is
                  collapsed, show a button "MENU" which will unfold the different navigation items -->
-            <a class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" role="button">
+            <a class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+               aria-controls="navbar" role="button">
               <span class="">MENU</span>
               <div class="block">
                 <span class="icon-bar"></span>
@@ -120,8 +121,15 @@
 
           <div class="row">
             <div id="socialbanner" class="container-share col-xs-12 col-sm-4">
-              <ul class="list-inline list-unstyled social">
+              <ul class="list-inline list-unstyled">
                 <!-- TODO: SOCIAL BANNERS IN FOOTER? NO SOCIAL BANNERS FOR NOW -->
+                <li>
+                  {{ 'footer.madeBy' | translate }}
+                  <a href="https://dsa.ugent.be/about"
+                     title="Dienst StudentenActiviteiten">
+                    Dienst StudentenActiviteiten
+                  </a>
+                </li>
               </ul>
             </div>
 

@@ -26,7 +26,7 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
   assignedTags: LocationTag[];
 
   currentLang: string;
-  tagsInCurrentLang: string; // e.g. 'tag1, tag2, tag3', set by auxiliary setupTagsInCurrentLang()
+  tagsInCurrentLang: string[]; // e.g. 'tag1, tag2, tag3', set by auxiliary setupTagsInCurrentLang()
 
   showProgressBar: boolean;
 
@@ -81,26 +81,15 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
   }
 
   setupTagsInCurrentLang(): void {
+    this.tagsInCurrentLang = [];
     if (this.assignedTags && this.assignedTags.length > 0) {
-      this.tagsInCurrentLang = '';
-
       this.assignedTags.forEach(tag => {
         if (this.currentLang === 'nl') {
-          this.tagsInCurrentLang += tag.dutch + ', ';
+          this.tagsInCurrentLang.push(tag.dutch);
         } else {
-          this.tagsInCurrentLang += tag.english + ', ';
+          this.tagsInCurrentLang.push(tag.english);
         }
       });
-
-      this.tagsInCurrentLang = this.tagsInCurrentLang.substr(0, this.tagsInCurrentLang.length - 2);
-    } else {
-      this.translate.get('general.notAvailableAbbreviation').subscribe(
-        next => {
-          this.tagsInCurrentLang = next;
-        }, () => {
-          this.tagsInCurrentLang = 'general.notAvailableAbbreviation';
-        }
-      );
     }
   }
 

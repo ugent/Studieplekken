@@ -29,10 +29,10 @@
         "manage": "Manage"
       },
       "status": {
-        "statusOpen": "OPEN: Closes at {}",
-        "statusClosed": "CLOSED",
-        "statusClosedActive": "CLOSED: Opens again at {}",
-        "statusClosedUpcoming": "CLOSED: Opens again {}"
+        "statusOpen": "Closes at {}",
+        "statusClosed": "Closed",
+        "statusClosedActive": "Opens again at {}",
+        "statusClosedUpcoming": "Opens again {}"
       },
       "calendar": {
         "reservation": {
@@ -63,6 +63,7 @@
   },
 
   "footer":{
+    "madeBy": "Made by",
     "privacy": "Privacy",
     "disclaimer": "Disclaimer",
     "cookies": "Cookies",
@@ -170,9 +171,7 @@
 
         "loading": "Waiting for response of server...",
         "success": "Successfully updated the room",
-        "error": "An error occurred while updating the room",
-
-        "numberOfSeatsHelp": "Can only be updated by an admin in consultation with DGFB."
+        "error": "An error occurred while updating the room"
       },
 
       "calendar": {
