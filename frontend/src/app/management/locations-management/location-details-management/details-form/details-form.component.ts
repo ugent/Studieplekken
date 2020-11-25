@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Location} from '../../../../shared/model/Location';
+import {Location, LocationConstructor} from '../../../../shared/model/Location';
 import {AbstractControl, FormControl, FormGroup} from '@angular/forms';
 import {LocationService} from '../../../../services/api/locations/location.service';
 import {Observable} from 'rxjs';
@@ -24,6 +24,7 @@ import {AuthenticationService} from '../../../../services/authentication/authent
 })
 export class DetailsFormComponent implements OnInit {
   @Input() location: Observable<Location>;
+  locationObj: Location;
 
   authoritiesObs: Observable<Authority[]>;
   authoritiesMap: Map<number, Authority>; // map the authorityId to the Authority object
@@ -68,6 +69,7 @@ export class DetailsFormComponent implements OnInit {
     // if the location has been retrieved, populate the form group
     this.location.subscribe(next => {
       this.updateFormGroup(next);
+      this.locationObj = next;
     });
 
     // the authoritiesObs is used in the form, asynchronously
@@ -138,17 +140,11 @@ export class DetailsFormComponent implements OnInit {
     this.successUpdatingLocation = undefined;
   }
 
-  persistLocationDetailsButtonClick(from: Location, to: Location): void {
+  persistLocationDetailsButtonClick(): void {
     this.successUpdatingLocation = null; // show 'loading' message
 
-    // The management of the descriptions is done in separate panel-groups.
-    // Therefore, we copy these attributes here.
-    to.descriptionDutch = from.descriptionDutch;
-    to.descriptionEnglish = from.descriptionEnglish;
-
-    // set the authority object based on the authorityId that is selected in the form
-    to.authority = this.authorityInLocationForm;
-    to.building = this.buildingInLocationForm;
+    const from: Location = this.locationObj;
+    const to: Location = this.locationInForm;
 
     this.locationService.updateLocation(from.name, to).subscribe(
       () => {
@@ -174,7 +170,35 @@ export class DetailsFormComponent implements OnInit {
   // *   AUXILIARIES   *
   // *******************/
 
+  get name(): AbstractControl { return this.locationForm.get('name'); }
+  get authority(): AbstractControl { return this.locationForm.get('authority'); }
+  get building(): AbstractControl { return this.locationForm.get('building'); }
   get numberOfSeats(): AbstractControl { return this.locationForm.get('numberOfSeats'); }
+  get numberOfLockers(): AbstractControl { return this.locationForm.get('numberOfLockers'); }
+  get forGroup(): AbstractControl { return this.locationForm.get('forGroup'); }
+  get imageUrl(): AbstractControl { return this.locationForm.get('imageUrl'); }
+
+  get locationInForm(): Location {
+    const location: Location = LocationConstructor.newFromObj(this.locationObj);
+
+    location.name = String(this.name.value);
+    location.authority = this.authorityInLocationForm;
+    location.building = this.buildingInLocationForm;
+
+    // seats must be enabled to read data
+    this.numberOfSeats.enable();
+    location.numberOfSeats = Number(this.numberOfSeats.value);
+    // disable the numberOfSeats again if user is not admin
+    if (!this.authenticationService.isAdmin()) {
+      this.numberOfSeats.disable();
+    }
+
+    location.numberOfLockers = Number(this.numberOfLockers.value);
+    location.forGroup = Boolean(this.forGroup.value);
+    location.imageUrl = String(this.imageUrl.value);
+
+    return location;
+  }
 
   successHandler(): void {
     this.successUpdatingLocation = true;
