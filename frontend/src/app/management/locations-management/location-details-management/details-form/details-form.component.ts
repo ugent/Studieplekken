@@ -131,6 +131,12 @@ export class DetailsFormComponent implements OnInit {
 
   editLocationDetailsButtonClick(): void {
     this.enableFormGroup();
+
+    // only the admin can change the number of seats of a location
+    if (!this.authenticationService.isAdmin()) {
+      this.numberOfSeats.disable();
+    }
+
     this.changeEnableDisableLocationDetailsFormButtons();
   }
 
