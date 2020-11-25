@@ -171,7 +171,9 @@
 
         "loading": "Waiting for response of server...",
         "success": "Successfully updated the room",
-        "error": "An error occurred while updating the room"
+        "error": "An error occurred while updating the room",
+
+        "numberOfSeatsHelp": "Can only be updated by an admin in consultation with DGFB."
       },
 
       "calendar": {
