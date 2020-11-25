@@ -1,6 +1,5 @@
 package blok2.controllers;
 
-import blok2.daos.ICalendarPeriodDao;
 import blok2.daos.ILocationDao;
 import blok2.daos.ILocationTagDao;
 import blok2.helpers.authorization.AuthorizedLocationController;
@@ -106,7 +105,13 @@ public class LocationController extends AuthorizedLocationController {
     public void updateLocation(@PathVariable("locationName") String locationName, @RequestBody Location location) {
         isAuthorized(location.getName());
         try {
-            // TODO: if is admin, changeseats = true
+            // Get the location that is currently in db
+            Location cl = locationDao.getLocation(locationName);
+
+            // Make sure that only an admin could change the number of seats
+            if (cl.getNumberOfSeats() != location.getNumberOfSeats() && !isAdmin())
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Changing seats can only be done by admins");
+
             locationDao.updateLocation(locationName, location);
             logger.info(String.format("Location %s updated", locationName));
         } catch (SQLException e) {
