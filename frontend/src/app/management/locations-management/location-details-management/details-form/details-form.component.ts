@@ -72,17 +72,24 @@ export class DetailsFormComponent implements OnInit {
       this.locationObj = next;
     });
 
+    // make sure that the correct authorities are retrieved
+    if (this.authenticationService.isAdmin()) {
+      this.authoritiesObs = this.authoritiesService.getAllAuthorities();
+    } else {
+      this.authoritiesObs = this.authoritiesService.getAuthoritiesOfUser(this.authenticationService.userValue().augentID);
+    }
+
     // the authoritiesObs is used in the form, asynchronously
     // the authoritiesMap is used to set the authority object
     // when the user wants to change the authority
-    this.authoritiesObs = this.authoritiesService.getAllAuthorities().pipe(tap(
+    this.authoritiesObs.subscribe(
       next => {
         this.authoritiesMap = new Map<number, Authority>();
         next.forEach(value => {
           this.authoritiesMap.set(value.authorityId, value);
         });
       }
-    ));
+    );
 
     this.buildingsObs = this.buildingsService.getAllBuildings().pipe(tap(
       next => {
