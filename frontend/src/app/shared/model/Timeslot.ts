@@ -29,18 +29,16 @@ export class Timeslot {
     }
 }
 
-
 export function timeslotStartHour(calendarPeriod: CalendarPeriod, timeslot: Timeslot): Moment {
-  const currentTime = moment(timeslot.timeslotDate.format('DD-MM-YYYY') + 'T' + calendarPeriod.openingTime.format('HH:mm'), 'DD-MM-YYYYTHH:mm');
-  currentTime.add(calendarPeriod.reservableTimeslotSize * timeslot.timeslotSeqnr, 'minutes');
-  return currentTime;
+  return moment(timeslot.timeslotDate.format('DD-MM-YYYY') + ' ' +
+    calendarPeriod.openingTime.format('HH:mm'), 'DD-MM-YYYY HH:mm')
+    .add(calendarPeriod.reservableTimeslotSize * timeslot.timeslotSeqnr, 'minutes');
 }
 
-export function timeslotEndHour(calendarPeriod: CalendarPeriod, seqnr: number): string {
-    const currentTime = moment(calendarPeriod.openingTime);
-
-    currentTime.add(calendarPeriod.reservableTimeslotSize * (seqnr + 1), 'minutes');
-    return currentTime.format('HH:mm');
+export function timeslotEndHour(calendarPeriod: CalendarPeriod, timeslot: Timeslot): Moment {
+    return moment(timeslot.timeslotDate.format('DD-MM-YYYY') + ' ' +
+      calendarPeriod.openingTime.format('HH:mm'), 'DD-MM-YYYY HH:mm')
+      .add(calendarPeriod.reservableTimeslotSize * (timeslot.timeslotSeqnr + 1), 'minutes');
 }
 
 export const getTimeslotsOnDay: (calendarPeriod: CalendarPeriod, date: Moment) => Timeslot[] =

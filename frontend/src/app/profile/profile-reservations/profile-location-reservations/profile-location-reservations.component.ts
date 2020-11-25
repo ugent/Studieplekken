@@ -5,7 +5,7 @@ import { rowsAnimation } from '../../../shared/animations/RowAnimation';
 import { LocationReservation } from '../../../shared/model/LocationReservation';
 import { CalendarPeriod } from 'src/app/shared/model/CalendarPeriod';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
-import { Timeslot } from 'src/app/shared/model/Timeslot';
+import {Timeslot, timeslotEndHour} from 'src/app/shared/model/Timeslot';
 import { Pair } from '../../../shared/model/helpers/Pair';
 import { isTimeslotInPast } from '../../../shared/GeneralFunctions';
 import * as moment from 'moment';
@@ -102,7 +102,7 @@ export class ProfileLocationReservationsComponent implements OnInit {
   }
 
   isTimeslotInPast(timeslot: Timeslot, calendarPeriod: CalendarPeriod): boolean {
-    return isTimeslotInPast(timeslot, calendarPeriod);
+    return timeslotEndHour(calendarPeriod, timeslot).isBefore(moment());
   }
 
   formatDate(date: any): string {

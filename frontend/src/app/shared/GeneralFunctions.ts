@@ -1,9 +1,5 @@
 import {MatSelectChange} from '@angular/material/select';
 import {LocationTag} from './model/LocationTag';
-import {Timeslot} from './model/Timeslot';
-import {CalendarPeriod} from './model/CalendarPeriod';
-import * as moment from 'moment';
-
 export function objectExists(obj: any): boolean {
   return obj !== null && obj !== undefined;
 }
@@ -20,14 +16,4 @@ export function matSelectionChanged(event: MatSelectChange, currentSelection: Lo
     }
     return false;
   }
-}
-
-export function isTimeslotInPast(timeslot: Timeslot, calendarPeriod: CalendarPeriod): boolean {
-  const timeslotDate = timeslot.timeslotDate.format('YYYY-MM-DD');
-  const timeslotClose = calendarPeriod.openingTime.clone()
-    .add(calendarPeriod.reservableTimeslotSize * (timeslot.timeslotSeqnr + 1), 'minutes')
-    .format('HH:mm:ss');
-
-  const timeslotEndingTimestamp = moment(timeslotDate + ' ' + timeslotClose, 'YYYY-MM-DD HH:mm:ss');
-  return timeslotEndingTimestamp.isBefore(moment());
 }
