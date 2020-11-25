@@ -118,6 +118,11 @@ public class DBLocationDao extends DAO implements ILocationDao {
 
     @Override
     public void updateLocation(String locationName, Location location) throws SQLException {
+        updateLocation(locationName, location, false);
+    }
+
+    @Override
+    public void updateLocation(String locationName, Location location, boolean changeSeats) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             try {
                 conn.setAutoCommit(false);
@@ -126,6 +131,9 @@ public class DBLocationDao extends DAO implements ILocationDao {
 
                 if (oldLocation == null)
                     return;
+
+                if(!changeSeats)
+                    location.setNumberOfSeats(oldLocation.getNumberOfSeats());
 
                 // Update location
                 PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("update_location"));
@@ -325,6 +333,144 @@ public class DBLocationDao extends DAO implements ILocationDao {
         pstmt.setString(8, location.getDescriptionEnglish());
         pstmt.setBoolean(9, location.getForGroup());
     }
+
+    private static void deleteCalendarPeriods(String locationName, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
+                .getString("delete_calendar_periods_of_location"));
+        pstmt.setString(1, locationName);
+        pstmt.execute();
+    }
+
+    private static void deleteCalendarPeriodsForLockers(String locationName, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
+                .getString("delete_calendar_periods_for_lockers_of_location"));
+        pstmt.setString(1, locationName);
+        pstmt.execute();
+    }
+
+    private static void deletePenaltyBookEntries(String locationName, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_penalties_of_location"));
+        pstmt.setString(1, locationName);
+        pstmt.execute();
+    }
+
+    private static void deleteLockers(String locationName, Connection conn) throws SQLException {
+        deleteLockerReservations(locationName, conn);
+
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_lockers_of_location"));
+        pstmt.setString(1, locationName);
+        pstmt.execute();
+    }
+
+    private static void deleteLockerReservations(String locationName, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn
+                .prepareStatement(Resources.databaseProperties.getString("delete_locker_reservations_in_location"));
+        pstmt.setString(1, locationName);
+        pstmt.execute();
+    }
+
+    private static void deleteLocation(String locationName, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_location"));
+        pstmt.setString(1, locationName);
+        pstmt.execute();
+    }
+
+    /**
+     * update the FK of calendar, scanner_locations, location_reservations,
+     * penalty_book and locker_reservations
+     */
+    private void updateForeignKeysToLocation(String oldLocationName, String newLocationName, Connection conn) throws SQLException {
+        // update calendar periods
+        updateForeignKeyOfCalendarPeriods(oldLocationName, newLocationName, conn);
+
+        // update calendar periods for lockers
+        updateForeignKeyOfCalendarPeriodsForLockers(oldLocationName, newLocationName, conn);
+
+        // update scanner_locations
+        updateForeignKeyOfScannerLocations(oldLocationName, newLocationName, conn);
+
+        // update locker_reservations
+        updateForeignKeyOfLockerReservations(oldLocationName, newLocationName, conn);
+
+        // update penalty_book
+        updateForeignKeyOfPenaltyBook(oldLocationName, newLocationName, conn);
+
+        // update location_tags
+        updateForeignKeyOfLocationTags(oldLocationName, newLocationName, conn);
+    }
+
+    private void updateForeignKeyOfCalendarPeriods(String oldLocationName, String newLocationName, Connection conn)
+            throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
+                .getString("update_fk_location_name_in_calendar_periods"));
+        pstmt.setString(1, newLocationName);
+        pstmt.setString(2, oldLocationName);
+        pstmt.execute();
+    }
+
+    private void updateForeignKeyOfCalendarPeriodsForLockers(String oldLocationName, String newLocationName,
+                                                             Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
+                .getString("update_fk_location_name_in_calendar_periods_for_lockers"));
+        pstmt.setString(1, newLocationName);
+        pstmt.setString(2, oldLocationName);
+        pstmt.execute();
+    }
+
+    private void updateForeignKeyOfScannerLocations(String oldLocationName, String newLocationName, Connection conn)
+            throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
+                .getString("update_fk_scanners_location_to_locations"));
+        pstmt.setString(1, newLocationName);
+        pstmt.setString(2, oldLocationName);
+        pstmt.execute();
+    }
+
+    private void updateForeignKeyOfLockerReservations(String oldLocationName, String newLocationName, Connection conn)
+            throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
+                .getString("update_fk_locker_reservations_to_location"));
+        pstmt.setString(1, newLocationName);
+        pstmt.setString(2, oldLocationName);
+        pstmt.execute();
+    }
+
+    private void updateForeignKeyOfPenaltyBook(String oldLocationName, String newLocationName, Connection conn)
+            throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
+                .getString("update_fk_penalty_book_to_locations"));
+        pstmt.setString(1, newLocationName);
+        pstmt.setString(2, oldLocationName);
+        pstmt.execute();
+    }
+
+    private void updateForeignKeyOfLocationTags(String oldLocationName, String newLocationName, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
+                .getString("update_fk_location_tags_to_location"));
+        pstmt.setString(1, newLocationName);
+        pstmt.setString(2, oldLocationName);
+        pstmt.execute();
+    }
+
+    private void updateLocation(Location location, Connection conn) throws SQLException {
+        Location oldLocation = getLocation(location.getName(), conn);
+
+        if (oldLocation == null)
+            return;
+
+        if (oldLocation.getNumberOfLockers() != location.getNumberOfLockers()) {
+            updateNumberOfLockers(location.getName(), oldLocation.getNumberOfLockers()
+                    , location.getNumberOfLockers(), conn);
+        }
+
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("update_location"));
+        // set ...
+        prepareUpdateOrInsertLocationStatement(location, pstmt);
+        // where ...
+        pstmt.setString(10, location.getName());
+        pstmt.execute();
+    }
+
 
     private void deleteLocker(String locationName, int number, Connection conn) throws SQLException {
         deleteLockerReservation(locationName, number, conn);
