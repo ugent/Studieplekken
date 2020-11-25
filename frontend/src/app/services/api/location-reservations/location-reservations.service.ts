@@ -29,20 +29,14 @@ export class LocationReservationsService {
   getLocationReservationsWithCalendarPeriodsOfUser(userId: string): Observable<Pair<LocationReservation, CalendarPeriod>[]> {
     return this.http.get<Pair<LocationReservation, CalendarPeriod>[]>(api.locationReservationsWithLocationOfUser
       .replace('{userId}', userId))
-      .pipe(map(
-        value => {
-          const pairs: Pair<LocationReservation, CalendarPeriod>[] = [];
-          value.forEach(
-            p => {
-              pairs.push({
-                first: LocationReservation.fromJSON(p.first),
-                second: CalendarPeriod.fromJSON(p.second)
-              });
-            }
-          );
-          return pairs;
-        }
-      ));
+      .pipe(map(value => value.map(p => this.createNewPair(p))));
+  }
+
+  createNewPair(pair: Pair<LocationReservation, CalendarPeriod>): Pair<LocationReservation, CalendarPeriod> {
+    return {
+      first: LocationReservation.fromJSON(pair.first),
+      second: CalendarPeriod.fromJSON(pair.second)
+    };
   }
 
   getLocationReservationsOfTimeslot(timeslot: Timeslot): Observable<LocationReservation[]> {
