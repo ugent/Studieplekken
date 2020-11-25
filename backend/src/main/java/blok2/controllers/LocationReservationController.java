@@ -107,7 +107,7 @@ public class LocationReservationController extends AuthorizedLocationController 
         }
     }
 
-    @GetMapping("/{location}")
+    @GetMapping("/count/{location}")
     @PreAuthorize("permitAll()")
     public Map<String, Integer> getReservationCount(@PathVariable("location") String location) {
         try {
