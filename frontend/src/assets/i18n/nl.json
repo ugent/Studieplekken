@@ -63,6 +63,7 @@
   },
 
   "footer":{
+    "madeBy": "Gemaakt door",
     "privacy": "Privacy",
     "disclaimer": "Disclaimer",
     "cookies": "Cookies",
@@ -140,7 +141,8 @@
       "users": "Gebruikers",
       "authorities": "Autoriteiten",
       "calendar": "Kalender",
-      "penalties": "Overtredingen"
+      "penalties": "Overtredingen",
+      "admins": "Admins"
     },
 
     "general": {
@@ -169,7 +171,9 @@
 
         "loading": "Wachten op antwoord van de server...",
         "success": "Het wijzigen van de ruimte was succesvol",
-        "error": "Er ging iets mis tijdens het wijzigen van de ruimte"
+        "error": "Er ging iets mis tijdens het wijzigen van de ruimte",
+
+        "numberOfSeatsHelp": "Kan alleen aangepast worden door een admin in samenspraak met DGFB."
       },
 
       "calendar": {

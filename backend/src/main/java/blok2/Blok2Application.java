@@ -23,6 +23,6 @@ public class Blok2Application extends SpringBootServletInitializer {
 
     @EventListener
     public void requestListener(RequestHandledEvent event) {
-        logger.info(String.format("Incoming request: %s", event.toString()));
+        logger.info(event.toString());
     }
 }
