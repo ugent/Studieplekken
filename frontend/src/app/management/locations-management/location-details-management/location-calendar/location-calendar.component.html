@@ -318,6 +318,10 @@
         {{ 'management.locationDetails.calendar.form.adminWarning' | translate }}
       </div>
 
+      <div class="alert alert-error" *ngIf="showAdminWarnMessage(model)">
+        {{ 'management.locationDetails.calendar.form.updateReservationWarning' | translate }}
+      </div>
+
       <button class="btn btn-primary" (click)="update()" [disabled]="!model.isValid()" >
         {{'general.buttons.update' | translate}}
       </button>
