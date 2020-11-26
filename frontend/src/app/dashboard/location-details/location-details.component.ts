@@ -126,11 +126,18 @@ export class LocationDetailsComponent implements OnInit {
 
   timeslotPicked(event: any): void {
     if (!event.hasOwnProperty('timeslot')) {
+      // the calendar period is not reservable
       return;
     }
 
     if (!this.loggedIn()) {
       // When not logged in, calendar periods are unclickable
+      return;
+    }
+
+    // If the selected timeslot is not yet reservable, don't do anything
+    const calendarPeriod: CalendarPeriod = event.calendarPeriod;
+    if (moment().isBefore(calendarPeriod.reservableFrom)) {
       return;
     }
 
