@@ -4,6 +4,7 @@ import {includesTimeslot, Timeslot, timeslotEndHour, timeslotStartHour} from './
 import { LocationReservation } from './LocationReservation';
 import * as moment from 'moment';
 import { Moment } from 'moment';
+import {calendarEventTitleTemplate} from '../../app.constants';
 
 export class CalendarPeriod {
 
@@ -121,36 +122,51 @@ export function isCalendarPeriodValid(period: CalendarPeriod): boolean {
 
 /**
  * Convert calendarPeriods to Calendar Events. This detects correctly whether the period is reservable or not.
- * @param periods The to-convert periods.
- *
  */
 export function mapCalendarPeriodsToCalendarEvents(periods: CalendarPeriod[],
-                                                   reservedTimeslots: LocationReservation[] = []
-                                                                                  ): CalendarEvent[]
+                                                   currentLang: string,
+                                                   reservedTimeslots: LocationReservation[] = []): CalendarEvent[]
 {
   if (periods.length === 0) {
     return [];
   }
   return periods
           .map(period => period.reservable && !period.areReservationsLocked() ?
-                                mapTimeslotsToCalendarEvents(period, reservedTimeslots) : mapNRperiodToCalendarEvents(period))
+            mapTimeslotsToCalendarEvents(period, reservedTimeslots) :
+            mapCalendarPeriodToCalendarEventAsBlock(period, currentLang))
           .reduce((a, b) => [...a, ...b]);
 }
 
 /**
- * Convert NON RESERVABLE calendar period to calendar events.
- * @param period The to-convert period
+ * Convert a calendar period to calendar events but as a block instead of dividing each day into timeslots.
+ * This has two use cases: either the calendar period is not reservable at all or the calendar period is not
+ * reservable yet.
  */
-function mapNRperiodToCalendarEvents(period: CalendarPeriod): CalendarEvent[] {
+function mapCalendarPeriodToCalendarEventAsBlock(period: CalendarPeriod, currentLang: string): CalendarEvent[] {
   const calendarEvents: CalendarEvent[] = [];
 
   const dateWithOpeningTime = new Date(period.startsAt.format('YYYY-MM-DD') + 'T' + period.openingTime.format('HH:mm'));
   const dateWithClosingTime = new Date(period.startsAt.format('YYYY-MM-DD') + 'T' + period.closingTime.format('HH:mm'));
   const lastDayWithOpeningTime = (new Date(period.endsAt.format('YYYY-MM-DD') + 'T' + period.openingTime.format('HH:mm')));
 
+  let title: string;
+  if (currentLang === 'nl') {
+    if (period.reservable) {
+      title = calendarEventTitleTemplate.reservableFromNL.replace('{datetime}', period.reservableFrom.format('DD/MM/YYYY HH:mm'));
+    } else {
+      title = calendarEventTitleTemplate.notReservableNL;
+    }
+  } else {
+    if (period.reservable) {
+      title = calendarEventTitleTemplate.reservableFromEN.replace('{datetime}', period.reservableFrom.format('DD/MM/YYYY HH:mm'));
+    } else {
+      title = calendarEventTitleTemplate.notReservableEN;
+    }
+  }
+
   while (dateWithOpeningTime <= lastDayWithOpeningTime) {
     calendarEvents.push({
-      title: period.openingTime.format('HH:mm') + ' - ' + period.closingTime.format('HH:mm') + '  -  ' + '(open)',
+      title,
       start: new Date(dateWithOpeningTime),
       end: new Date(dateWithClosingTime),
       meta: {calendarPeriod: period},

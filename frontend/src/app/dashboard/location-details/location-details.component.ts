@@ -113,6 +113,7 @@ export class LocationDetailsComponent implements OnInit {
       () => {
         this.setDescriptionToShow();
         this.currentLang = this.translate.currentLang;
+        this.updateCalendar();
         this.translateStatus();
       }
     );
@@ -240,7 +241,7 @@ export class LocationDetailsComponent implements OnInit {
         this.selectedSubject.next(reservations);
 
         this.subscription = this.selectedSubject.asObservable().subscribe(proposedReservations =>
-                  this.events = mapCalendarPeriodsToCalendarEvents(periods, [...proposedReservations]));
+          this.events = mapCalendarPeriodsToCalendarEvents(periods, this.currentLang, [...proposedReservations]));
       });
   }
 
