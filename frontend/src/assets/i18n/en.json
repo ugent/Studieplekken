@@ -209,6 +209,7 @@
             "hourAndHalf": "1.5 hours"
           },
           "adminWarning": "Be careful, this change is within the locked from period. You will have to manually contact the appropriate UGent services.",
+          "updateReservationWarning": "Changing this period will result in the loss of all reservations already made during the period.",
 
           "noCalendarPeriodsForLocation": "At the moment, there are no opening periods for the room."
         },

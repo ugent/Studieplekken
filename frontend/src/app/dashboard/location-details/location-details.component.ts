@@ -115,6 +115,7 @@ export class LocationDetailsComponent implements OnInit {
       () => {
         this.setDescriptionToShow();
         this.currentLang = this.translate.currentLang;
+        this.updateCalendar();
         this.translateStatus();
       }
     );
@@ -127,6 +128,7 @@ export class LocationDetailsComponent implements OnInit {
 
   timeslotPicked(event: any): void {
     if (!event.hasOwnProperty('timeslot')) {
+      // the calendar period is not reservable
       return;
     }
 
@@ -134,6 +136,15 @@ export class LocationDetailsComponent implements OnInit {
       // When not logged in, calendar periods are unclickable
       return;
     }
+
+
+    // If the selected timeslot is not yet reservable, don't do anything
+    const calendarPeriod: CalendarPeriod = event.calendarPeriod;
+    if (moment().isBefore(calendarPeriod.reservableFrom)) {
+      return;
+    }
+
+    this.isModified = true;
 
     this.currentTimeslot = event.timeslot;
 
@@ -247,7 +258,7 @@ export class LocationDetailsComponent implements OnInit {
         this.selectedSubject.next(reservations);
 
         this.subscription = this.selectedSubject.asObservable().subscribe(proposedReservations =>
-                  this.events = mapCalendarPeriodsToCalendarEvents(periods, [...proposedReservations]));
+          this.events = mapCalendarPeriodsToCalendarEvents(periods, this.currentLang, [...proposedReservations]));
       });
   }
 
