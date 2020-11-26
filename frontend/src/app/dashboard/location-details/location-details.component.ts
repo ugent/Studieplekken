@@ -135,12 +135,12 @@ export class LocationDetailsComponent implements OnInit {
       return;
     }
 
-    this.isModified = true;
     this.currentTimeslot = event.timeslot;
 
     if (this.currentTimeslot.amountOfReservations >= this.capacity) {
       return;
     }
+    this.isModified = true;
 
     const reservation: LocationReservation = {user: this.authenticationService.userValue(), timeslot: this.currentTimeslot};
 
