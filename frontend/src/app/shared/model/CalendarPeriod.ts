@@ -132,8 +132,10 @@ export function mapCalendarPeriodsToCalendarEvents(periods: CalendarPeriod[],
   }
   return periods
           .map(period => period.reservable && !period.areReservationsLocked() ?
-            mapTimeslotsToCalendarEvents(period, reservedTimeslots) :
-            mapCalendarPeriodToCalendarEventAsBlock(period, currentLang))
+              mapReservableTimeslotsToCalendarEvents(period, reservedTimeslots) :
+          period.reservable && period.areReservationsLocked() ?
+              mapNotYetReservableTimeslotsToCalendarEvents(period, currentLang) :
+              mapCalendarPeriodToCalendarEventAsBlock(period, currentLang))
           .reduce((a, b) => [...a, ...b]);
 }
 
@@ -182,6 +184,35 @@ function mapCalendarPeriodToCalendarEventAsBlock(period: CalendarPeriod, current
   return calendarEvents;
 }
 
+function mapNotYetReservableTimeslotsToCalendarEvents(period: CalendarPeriod, currentLang: string): CalendarEvent[] {
+  const calendarEvents: CalendarEvent[] = [];
+
+  for (const timeslot of period.timeslots) {
+    const beginDT = new Date(timeslot.timeslotDate.format('YYYY-MM-DD') + 'T' + timeslotStartHour(period, timeslot).format('HH:mm'));
+    const endDT = new Date(timeslot.timeslotDate.format('YYYY-MM-DD') + 'T' + timeslotEndHour(period, timeslot.timeslotSeqnr));
+
+    let title: string;
+    if (currentLang === 'nl') {
+      title = calendarEventTitleTemplate.reservableFromNL.replace('{datetime}', period.reservableFrom.format('DD/MM/YYYY HH:mm'));
+    } else {
+      title = calendarEventTitleTemplate.reservableFromEN.replace('{datetime}', period.reservableFrom.format('DD/MM/YYYY HH:mm'));
+    }
+
+    calendarEvents.push({
+      title,
+      start: beginDT,
+      end: endDT,
+      meta: {calendarPeriod: period, timeslot},
+      color: {primary: 'black', secondary: '#BEBEBE'},
+      cssClass: 'calendar-event-NR',
+    });
+
+  }
+
+  return calendarEvents;
+}
+
+
 /**
  * For each Timeslot that is attached to a CalendarPeriod provided in 'periods',
  * this method will create a CalendarEvent
@@ -190,7 +221,7 @@ function mapCalendarPeriodToCalendarEventAsBlock(period: CalendarPeriod, current
  * be the beginning and ending of the timeslot, calculated from the sequence number and the
  * timeslotdate.
  */
-function mapTimeslotsToCalendarEvents(period: CalendarPeriod, reservedTimeslots: LocationReservation[] = []): CalendarEvent[] {
+function mapReservableTimeslotsToCalendarEvents(period: CalendarPeriod, reservedTimeslots: LocationReservation[] = []): CalendarEvent[] {
   const calendarEvents: CalendarEvent[] = [];
 
   for (const timeslot of period.timeslots) {
