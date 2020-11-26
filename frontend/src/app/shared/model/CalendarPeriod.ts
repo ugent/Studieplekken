@@ -121,7 +121,7 @@ export function isCalendarPeriodValid(period: CalendarPeriod): boolean {
 
 
 /**
- * Convert calendarPeriods to Calendar Events. This detects correctly whether the period is reservable or not.
+ * Convert calendarPeriods to Calendar Events. This detects correctly whether the period is reservable or not (yet).
  */
 export function mapCalendarPeriodsToCalendarEvents(periods: CalendarPeriod[],
                                                    currentLang: string,
@@ -135,16 +135,14 @@ export function mapCalendarPeriodsToCalendarEvents(periods: CalendarPeriod[],
               mapReservableTimeslotsToCalendarEvents(period, reservedTimeslots) :
           period.reservable && period.areReservationsLocked() ?
               mapNotYetReservableTimeslotsToCalendarEvents(period, currentLang) :
-              mapCalendarPeriodToCalendarEventAsBlock(period, currentLang))
+              mapNotReservableCalendarPeriodToCalendarEvent(period, currentLang))
           .reduce((a, b) => [...a, ...b]);
 }
 
 /**
  * Convert a calendar period to calendar events but as a block instead of dividing each day into timeslots.
- * This has two use cases: either the calendar period is not reservable at all or the calendar period is not
- * reservable yet.
  */
-function mapCalendarPeriodToCalendarEventAsBlock(period: CalendarPeriod, currentLang: string): CalendarEvent[] {
+function mapNotReservableCalendarPeriodToCalendarEvent(period: CalendarPeriod, currentLang: string): CalendarEvent[] {
   const calendarEvents: CalendarEvent[] = [];
 
   const dateWithOpeningTime = new Date(period.startsAt.format('YYYY-MM-DD') + 'T' + period.openingTime.format('HH:mm'));
@@ -153,17 +151,9 @@ function mapCalendarPeriodToCalendarEventAsBlock(period: CalendarPeriod, current
 
   let title: string;
   if (currentLang === 'nl') {
-    if (period.reservable) {
-      title = calendarEventTitleTemplate.reservableFromNL.replace('{datetime}', period.reservableFrom.format('DD/MM/YYYY HH:mm'));
-    } else {
-      title = calendarEventTitleTemplate.notReservableNL;
-    }
+    title = calendarEventTitleTemplate.notReservableNL;
   } else {
-    if (period.reservable) {
-      title = calendarEventTitleTemplate.reservableFromEN.replace('{datetime}', period.reservableFrom.format('DD/MM/YYYY HH:mm'));
-    } else {
-      title = calendarEventTitleTemplate.notReservableEN;
-    }
+    title = calendarEventTitleTemplate.notReservableEN;
   }
 
   while (dateWithOpeningTime <= lastDayWithOpeningTime) {
@@ -184,6 +174,11 @@ function mapCalendarPeriodToCalendarEventAsBlock(period: CalendarPeriod, current
   return calendarEvents;
 }
 
+/**
+ * Convert a CalendarPeriod which is not yet reservable (reservableFrom is in the future), to CalendarEvents.
+ * Every timeslot of the CalendarPeriod will be represented by a CalendarEvent but will be greyed out
+ * and have a title that notifies the user when the timeslot will be reservable.
+ */
 function mapNotYetReservableTimeslotsToCalendarEvents(period: CalendarPeriod, currentLang: string): CalendarEvent[] {
   const calendarEvents: CalendarEvent[] = [];
 
