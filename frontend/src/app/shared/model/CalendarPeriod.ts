@@ -4,6 +4,7 @@ import {includesTimeslot, Timeslot, timeslotEndHour, timeslotStartHour} from './
 import { LocationReservation } from './LocationReservation';
 import * as moment from 'moment';
 import { Moment } from 'moment';
+import {calendarEventTitleTemplate} from '../../app.constants';
 
 export class CalendarPeriod {
 
@@ -120,37 +121,44 @@ export function isCalendarPeriodValid(period: CalendarPeriod): boolean {
 
 
 /**
- * Convert calendarPeriods to Calendar Events. This detects correctly whether the period is reservable or not.
- * @param periods The to-convert periods.
- *
+ * Convert calendarPeriods to Calendar Events. This detects correctly whether the period is reservable or not (yet).
  */
 export function mapCalendarPeriodsToCalendarEvents(periods: CalendarPeriod[],
-                                                   reservedTimeslots: LocationReservation[] = []
-                                                                                  ): CalendarEvent[]
+                                                   currentLang: string,
+                                                   reservedTimeslots: LocationReservation[] = []): CalendarEvent[]
 {
   if (periods.length === 0) {
     return [];
   }
   return periods
           .map(period => period.reservable && !period.areReservationsLocked() ?
-                                mapTimeslotsToCalendarEvents(period, reservedTimeslots) : mapNRperiodToCalendarEvents(period))
+              mapReservableTimeslotsToCalendarEvents(period, reservedTimeslots) :
+          period.reservable && period.areReservationsLocked() ?
+              mapNotYetReservableTimeslotsToCalendarEvents(period, currentLang) :
+              mapNotReservableCalendarPeriodToCalendarEvent(period, currentLang))
           .reduce((a, b) => [...a, ...b]);
 }
 
 /**
- * Convert NON RESERVABLE calendar period to calendar events.
- * @param period The to-convert period
+ * Convert a calendar period to calendar events but as a block instead of dividing each day into timeslots.
  */
-function mapNRperiodToCalendarEvents(period: CalendarPeriod): CalendarEvent[] {
+function mapNotReservableCalendarPeriodToCalendarEvent(period: CalendarPeriod, currentLang: string): CalendarEvent[] {
   const calendarEvents: CalendarEvent[] = [];
 
   const dateWithOpeningTime = new Date(period.startsAt.format('YYYY-MM-DD') + 'T' + period.openingTime.format('HH:mm'));
   const dateWithClosingTime = new Date(period.startsAt.format('YYYY-MM-DD') + 'T' + period.closingTime.format('HH:mm'));
   const lastDayWithOpeningTime = (new Date(period.endsAt.format('YYYY-MM-DD') + 'T' + period.openingTime.format('HH:mm')));
 
+  let title: string;
+  if (currentLang === 'nl') {
+    title = calendarEventTitleTemplate.notReservableNL;
+  } else {
+    title = calendarEventTitleTemplate.notReservableEN;
+  }
+
   while (dateWithOpeningTime <= lastDayWithOpeningTime) {
     calendarEvents.push({
-      title: period.openingTime.format('HH:mm') + ' - ' + period.closingTime.format('HH:mm') + '  -  ' + '(open)',
+      title,
       start: new Date(dateWithOpeningTime),
       end: new Date(dateWithClosingTime),
       meta: {calendarPeriod: period},
@@ -167,6 +175,40 @@ function mapNRperiodToCalendarEvents(period: CalendarPeriod): CalendarEvent[] {
 }
 
 /**
+ * Convert a CalendarPeriod which is not yet reservable (reservableFrom is in the future), to CalendarEvents.
+ * Every timeslot of the CalendarPeriod will be represented by a CalendarEvent but will be greyed out
+ * and have a title that notifies the user when the timeslot will be reservable.
+ */
+function mapNotYetReservableTimeslotsToCalendarEvents(period: CalendarPeriod, currentLang: string): CalendarEvent[] {
+  const calendarEvents: CalendarEvent[] = [];
+
+  for (const timeslot of period.timeslots) {
+    const beginDT = new Date(timeslot.timeslotDate.format('YYYY-MM-DD') + 'T' + timeslotStartHour(period, timeslot).format('HH:mm'));
+    const endDT = new Date(timeslot.timeslotDate.format('YYYY-MM-DD') + 'T' + timeslotEndHour(period, timeslot.timeslotSeqnr));
+
+    let title: string;
+    if (currentLang === 'nl') {
+      title = calendarEventTitleTemplate.reservableFromNL.replace('{datetime}', period.reservableFrom.format('DD/MM/YYYY HH:mm'));
+    } else {
+      title = calendarEventTitleTemplate.reservableFromEN.replace('{datetime}', period.reservableFrom.format('DD/MM/YYYY HH:mm'));
+    }
+
+    calendarEvents.push({
+      title,
+      start: beginDT,
+      end: endDT,
+      meta: {calendarPeriod: period, timeslot},
+      color: {primary: 'black', secondary: '#BEBEBE'},
+      cssClass: 'calendar-event-NR',
+    });
+
+  }
+
+  return calendarEvents;
+}
+
+
+/**
  * For each Timeslot that is attached to a CalendarPeriod provided in 'periods',
  * this method will create a CalendarEvent
  *
@@ -174,7 +216,7 @@ function mapNRperiodToCalendarEvents(period: CalendarPeriod): CalendarEvent[] {
  * be the beginning and ending of the timeslot, calculated from the sequence number and the
  * timeslotdate.
  */
-function mapTimeslotsToCalendarEvents(period: CalendarPeriod, reservedTimeslots: LocationReservation[] = []): CalendarEvent[] {
+function mapReservableTimeslotsToCalendarEvents(period: CalendarPeriod, reservedTimeslots: LocationReservation[] = []): CalendarEvent[] {
   const calendarEvents: CalendarEvent[] = [];
 
   for (const timeslot of period.timeslots) {

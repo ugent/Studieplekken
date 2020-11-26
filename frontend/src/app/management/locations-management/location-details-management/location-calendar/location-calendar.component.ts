@@ -15,11 +15,10 @@ import { LocationReservation } from 'src/app/shared/model/LocationReservation';
 import { Timeslot } from 'src/app/shared/model/Timeslot';
 import { LocationOpeningperiodDialogComponent } from './location-openingperiod-dialog/location-openingperiod-dialog.component';
 import { Location } from 'src/app/shared/model/Location';
-import { msToShowFeedback } from 'src/app/app.constants';
-import { tap } from 'rxjs/operators';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { Moment } from 'moment';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-location-calendar',
@@ -86,15 +85,26 @@ export class LocationCalendarComponent implements OnInit {
 
   isAdmin: boolean = this.authenticationService.isAdmin();
 
+  currentLang: string;
+
   constructor(private calendarPeriodsService: CalendarPeriodsService,
               private functionalityService: ApplicationTypeFunctionalityService,
               private locationReservationService: LocationReservationsService,
               private dialog: MatDialog,
               private modalService: BsModalService,
-              private authenticationService: AuthenticationService) {
+              private authenticationService: AuthenticationService,
+              private translate: TranslateService) {
   }
 
   ngOnInit(): void {
+    this.currentLang = this.translate.currentLang;
+    this.translate.onLangChange.subscribe(
+      () => {
+        this.currentLang = this.translate.currentLang;
+        this.setup();
+      }
+    );
+
     this.location.subscribe(next => {
       this.locationName = next.name;
       this.locationFlat = next;
@@ -189,7 +199,7 @@ export class LocationCalendarComponent implements OnInit {
   // *******************/
 
   setup(): void {
-    if(!this.locationName) {
+    if (!this.locationName) {
       return;
     }
     // retrieve all calendar periods for this location
@@ -209,7 +219,7 @@ export class LocationCalendarComponent implements OnInit {
       });
 
       // fill the events based on the calendar periods
-      this.events = mapCalendarPeriodsToCalendarEvents(next);
+      this.events = mapCalendarPeriodsToCalendarEvents(next, this.currentLang);
 
       // and update the calendar
       this.refresh.next(null);
