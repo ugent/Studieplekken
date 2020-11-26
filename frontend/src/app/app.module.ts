@@ -69,6 +69,9 @@ import { LocationReservationsComponent } from './management/locations-management
 import { MomentTimeslotSizeComponent } from './shared/inputs/moment-timeslot-size/moment-timeslot-size.component';
 import { AdminsManagementComponent } from './management/admins-management/admins-management.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { TimeslotTableComponent } from './management/locations-management/location-details-management/timeslot-table/timeslot-table.component';
+import { Timeslot } from './shared/model/Timeslot';
+import { NgxPrintModule } from 'ngx-print';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -154,6 +157,11 @@ const routes: Routes = [
       {
         path: 'locations/:locationName',
         component: LocationDetailsManagementComponent,
+        canActivate: [AuthorizationGuardService]
+      },
+      {
+        path: 'locations/:locationName/timeslot/:calendarid/:date/:seqnr',
+        component: TimeslotTableComponent,
         canActivate: [AuthorizationGuardService]
       },
       {
@@ -256,7 +264,8 @@ const routes: Routes = [
     BuildingManagementComponent,
     LocationReservationsComponent,
     MomentTimeslotSizeComponent,
-    AdminsManagementComponent
+    AdminsManagementComponent,
+    TimeslotTableComponent,
   ],
     imports: [
       BrowserModule,
@@ -290,7 +299,8 @@ const routes: Routes = [
       MatCheckboxModule,
       MatChipsModule,
       ModalModule.forRoot(),
-      FlexLayoutModule
+      FlexLayoutModule,
+      NgxPrintModule
     ],
   providers: [],
   bootstrap: [AppComponent]
