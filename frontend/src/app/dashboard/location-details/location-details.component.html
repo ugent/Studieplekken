@@ -66,7 +66,7 @@
     </ckeditor>
   </div>
 
-  <hr>
+  <hr *ngIf="showDescription(description.show)">
 
   <div class="alert alert-warning" *ngIf="!loggedIn()">
     {{'dashboard.locationDetails.loginWarning' | translate}}
