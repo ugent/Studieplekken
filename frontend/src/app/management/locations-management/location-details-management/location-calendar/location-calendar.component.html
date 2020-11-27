@@ -43,6 +43,11 @@
         [currentTimeSlot]="currentTimeSlot"
         (reservationChange)="loadReservations()">
       </app-location-reservations>
+      <button
+      *ngIf="showReservations === true && !errorOnRetrievingReservations"
+      [routerLink]="['./timeslot', currentTimeSlot.calendarId, currentTimeSlot.timeslotDate.format('YYYY-MM-DD'), currentTimeSlot.timeslotSeqnr]"
+      class="btn btn-primary"
+      >print</button>
     </div>
 
 

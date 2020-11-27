@@ -1,0 +1,25 @@
+<div id='print-ngx'>
+    <h1>{{locationName}}</h1>
+    <h3 *ngIf="calendarPeriodO | async as cp">{{timestring(timeslot, cp)}}</h3>
+
+    <hr>
+<table *ngIf="locationReservations | async as lrs">
+    <thead>
+        <tr>
+            <th>{{'management.locationDetails.calendar.reservations.table.user' | translate}}</th>
+            <th>{{'management.locationDetails.calendar.reservations.table.number' | translate}}</th>
+        </tr>
+    </thead>
+          
+    <tbody>
+    <tr *ngFor="let reservation of lrs">
+        <td>{{reservation.user.firstName + ' ' + reservation.user.lastName}}</td>
+        <td>{{reservation.user.augentID}}</td>
+    </tr>
+    </tbody>
+</table>
+</div>
+<div fxLayout="row">
+<button (click)="print()" class="btn"> {{'general.print' | translate}}</button>
+<button routerLink="../../../../" class="btn btn-primary">{{'general.back' | translate}}</button>
+</div>

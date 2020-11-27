@@ -80,7 +80,8 @@
 
     "yes": "Ja",
     "no": "Neen",
-
+    "back": "Terug",
+    "print": "Print",
     "buttons": {
       "add": "Voeg toe",
       "update": "Update",
@@ -188,7 +189,8 @@
             "noLocationReservations": "Er zijn geen reservaties voor het geselecteerde timeslot",
             "user": "Gebruiker",
             "attended": "Gebruiker was aanwezig?",
-            "futureReservation": "Timeslot is nog niet geweest"
+            "futureReservation": "Timeslot is nog niet geweest",
+            "number": "Studentennummer"
           }
         },
 

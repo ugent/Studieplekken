@@ -1,0 +1,18 @@
+table {
+    width: 100%;
+}
+
+tr {
+    border: solid;
+    border-width: 1px 0;
+}
+tr:first-child {
+    border-top: none;
+  }
+  tr:last-child {
+    border-bottom: none;
+  }
+
+  h3 {
+    white-space: pre;
+  }
