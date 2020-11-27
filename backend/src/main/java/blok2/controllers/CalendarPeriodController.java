@@ -129,11 +129,7 @@ public class CalendarPeriodController extends  AuthorizedLocationController {
                         HttpStatus.CONFLICT, "The time you're moving into is already locked.");
             }
 
-            // Only reset the timeslots when anything changes to the reservable periods.
-            boolean resetTimeslots = originalTo.isReservable() != to.isReservable() ||
-                                    originalTo.getReservableTimeslotSize() != to.getReservableTimeslotSize();
-
-            calendarPeriodDao.updateCalendarPeriod(to, resetTimeslots);
+            calendarPeriodDao.updateCalendarPeriod(to, originalTo.isReservable() || to.isReservable());
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
