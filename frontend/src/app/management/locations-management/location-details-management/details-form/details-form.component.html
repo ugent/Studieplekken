@@ -45,7 +45,8 @@
         {{'management.locationDetails.form.numberOfSeats' | translate}}
       </label>
       <div class="col-lg-8">
-        <input class="form-control" id="numberOfSeats" type="number" formControlName="numberOfSeats" >
+        <input class="form-control" id="numberOfSeats" type="number" formControlName="numberOfSeats">
+        <span class="help-block">{{'management.locationDetails.form.numberOfSeatsHelp' | translate}}</span>
       </div>
     </div>
 
@@ -101,7 +102,7 @@
           <!-- Button to persist changes -->
           <button type="button" class="btn btn-primary btn-space"
                   [disabled]="disablePersistLocationButton"
-                  (click)="persistLocationDetailsButtonClick(location, locationForm.value)">
+                  (click)="persistLocationDetailsButtonClick()">
             {{'management.locationDetails.form.persist' | translate}}
           </button>
         </div>

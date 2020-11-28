@@ -1,17 +1,21 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Location} from '../../../../shared/model/Location';
-import {FormControl, FormGroup} from '@angular/forms';
+import {Location, LocationConstructor} from '../../../../shared/model/Location';
+import {AbstractControl, FormControl, FormGroup} from '@angular/forms';
 import {LocationService} from '../../../../services/api/locations/location.service';
 import {Observable} from 'rxjs';
-// @ts-ignore
-import {LocationDetailsService} from '../../../../services/single-point-of-truth/location-details/location-details.service';
+import {
+  LocationDetailsService
+} from '../../../../services/single-point-of-truth/location-details/location-details.service';
 import {Authority} from '../../../../shared/model/Authority';
 import {AuthoritiesService} from '../../../../services/api/authorities/authorities.service';
 import {tap} from 'rxjs/operators';
 import {Building} from 'src/app/shared/model/Building';
 import {BuildingService} from 'src/app/services/api/buildings/buildings.service';
 import {msToShowFeedback} from '../../../../app.constants';
-import { ApplicationTypeFunctionalityService } from 'src/app/services/functionality/application-type/application-type-functionality.service';
+import {
+  ApplicationTypeFunctionalityService
+} from 'src/app/services/functionality/application-type/application-type-functionality.service';
+import {AuthenticationService} from '../../../../services/authentication/authentication.service';
 
 @Component({
   selector: 'app-details-form',
@@ -20,6 +24,7 @@ import { ApplicationTypeFunctionalityService } from 'src/app/services/functional
 })
 export class DetailsFormComponent implements OnInit {
   @Input() location: Observable<Location>;
+  locationObj: Location;
 
   authoritiesObs: Observable<Authority[]>;
   authoritiesMap: Map<number, Authority>; // map the authorityId to the Authority object
@@ -48,7 +53,8 @@ export class DetailsFormComponent implements OnInit {
               private locationDetailsService: LocationDetailsService,
               private authoritiesService: AuthoritiesService,
               private buildingsService: BuildingService,
-              private functionalityService: ApplicationTypeFunctionalityService) {
+              private functionalityService: ApplicationTypeFunctionalityService,
+              private authenticationService: AuthenticationService) {
   }
 
   get authorityInLocationForm(): Authority {
@@ -63,19 +69,27 @@ export class DetailsFormComponent implements OnInit {
     // if the location has been retrieved, populate the form group
     this.location.subscribe(next => {
       this.updateFormGroup(next);
+      this.locationObj = next;
     });
+
+    // make sure that the correct authorities are retrieved
+    if (this.authenticationService.isAdmin()) {
+      this.authoritiesObs = this.authoritiesService.getAllAuthorities();
+    } else {
+      this.authoritiesObs = this.authoritiesService.getAuthoritiesOfUser(this.authenticationService.userValue().augentID);
+    }
 
     // the authoritiesObs is used in the form, asynchronously
     // the authoritiesMap is used to set the authority object
     // when the user wants to change the authority
-    this.authoritiesObs = this.authoritiesService.getAllAuthorities().pipe(tap(
+    this.authoritiesObs.subscribe(
       next => {
         this.authoritiesMap = new Map<number, Authority>();
         next.forEach(value => {
           this.authoritiesMap.set(value.authorityId, value);
         });
       }
-    ));
+    );
 
     this.buildingsObs = this.buildingsService.getAllBuildings().pipe(tap(
       next => {
@@ -117,6 +131,12 @@ export class DetailsFormComponent implements OnInit {
 
   editLocationDetailsButtonClick(): void {
     this.enableFormGroup();
+
+    // only the admin can change the number of seats of a location
+    if (!this.authenticationService.isAdmin()) {
+      this.numberOfSeats.disable();
+    }
+
     this.changeEnableDisableLocationDetailsFormButtons();
   }
 
@@ -127,17 +147,11 @@ export class DetailsFormComponent implements OnInit {
     this.successUpdatingLocation = undefined;
   }
 
-  persistLocationDetailsButtonClick(from: Location, to: Location): void {
+  persistLocationDetailsButtonClick(): void {
     this.successUpdatingLocation = null; // show 'loading' message
 
-    // The management of the descriptions is done in separate panel-groups.
-    // Therefore, we copy these attributes here.
-    to.descriptionDutch = from.descriptionDutch;
-    to.descriptionEnglish = from.descriptionEnglish;
-
-    // set the authority object based on the authorityId that is selected in the form
-    to.authority = this.authorityInLocationForm;
-    to.building = this.buildingInLocationForm;
+    const from: Location = this.locationObj;
+    const to: Location = this.locationInForm;
 
     this.locationService.updateLocation(from.name, to).subscribe(
       () => {
@@ -157,6 +171,40 @@ export class DetailsFormComponent implements OnInit {
 
     this.disableFormGroup();
     this.changeEnableDisableLocationDetailsFormButtons();
+  }
+
+  // /******************
+  // *   AUXILIARIES   *
+  // *******************/
+
+  get name(): AbstractControl { return this.locationForm.get('name'); }
+  get authority(): AbstractControl { return this.locationForm.get('authority'); }
+  get building(): AbstractControl { return this.locationForm.get('building'); }
+  get numberOfSeats(): AbstractControl { return this.locationForm.get('numberOfSeats'); }
+  get numberOfLockers(): AbstractControl { return this.locationForm.get('numberOfLockers'); }
+  get forGroup(): AbstractControl { return this.locationForm.get('forGroup'); }
+  get imageUrl(): AbstractControl { return this.locationForm.get('imageUrl'); }
+
+  get locationInForm(): Location {
+    const location: Location = LocationConstructor.newFromObj(this.locationObj);
+
+    location.name = String(this.name.value);
+    location.authority = this.authorityInLocationForm;
+    location.building = this.buildingInLocationForm;
+
+    // seats must be enabled to read data
+    this.numberOfSeats.enable();
+    location.numberOfSeats = Number(this.numberOfSeats.value);
+    // disable the numberOfSeats again if user is not admin
+    if (!this.authenticationService.isAdmin()) {
+      this.numberOfSeats.disable();
+    }
+
+    location.numberOfLockers = Number(this.numberOfLockers.value);
+    location.forGroup = Boolean(this.forGroup.value);
+    location.imageUrl = String(this.imageUrl.value);
+
+    return location;
   }
 
   successHandler(): void {

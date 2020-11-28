@@ -70,6 +70,7 @@ export class LocationDetailsComponent implements OnInit {
   loadingReservations: boolean;
   showAdmin: boolean;
   showLockersManagement: boolean;
+  capacity: number;
 
   constructor(private locationService: LocationService,
               private tagsService: TagsService,
@@ -93,6 +94,7 @@ export class LocationDetailsComponent implements OnInit {
     this.location.subscribe(next => {
       this.description.dutch = next.descriptionDutch;
       this.description.english = next.descriptionEnglish;
+      this.capacity = next.numberOfSeats;
       this.setDescriptionToShow();
 
       this.tags = next.assignedTags;
@@ -113,6 +115,7 @@ export class LocationDetailsComponent implements OnInit {
       () => {
         this.setDescriptionToShow();
         this.currentLang = this.translate.currentLang;
+        this.updateCalendar();
         this.translateStatus();
       }
     );
@@ -125,6 +128,7 @@ export class LocationDetailsComponent implements OnInit {
 
   timeslotPicked(event: any): void {
     if (!event.hasOwnProperty('timeslot')) {
+      // the calendar period is not reservable
       return;
     }
 
@@ -133,8 +137,22 @@ export class LocationDetailsComponent implements OnInit {
       return;
     }
 
+
+    // If the selected timeslot is not yet reservable, don't do anything
+    const calendarPeriod: CalendarPeriod = event.calendarPeriod;
+    if (moment().isBefore(calendarPeriod.reservableFrom)) {
+      return;
+    }
+
     this.isModified = true;
+
     this.currentTimeslot = event.timeslot;
+
+    if (this.currentTimeslot.amountOfReservations >= this.capacity) {
+      return;
+    }
+    this.isModified = true;
+
     const reservation: LocationReservation = {user: this.authenticationService.userValue(), timeslot: this.currentTimeslot};
 
     // If it's already selected, unselect
@@ -240,7 +258,7 @@ export class LocationDetailsComponent implements OnInit {
         this.selectedSubject.next(reservations);
 
         this.subscription = this.selectedSubject.asObservable().subscribe(proposedReservations =>
-                  this.events = mapCalendarPeriodsToCalendarEvents(periods, [...proposedReservations]));
+          this.events = mapCalendarPeriodsToCalendarEvents(periods, this.currentLang, [...proposedReservations]));
       });
   }
 

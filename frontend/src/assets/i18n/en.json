@@ -171,7 +171,9 @@
 
         "loading": "Waiting for response of server...",
         "success": "Successfully updated the room",
-        "error": "An error occurred while updating the room"
+        "error": "An error occurred while updating the room",
+
+        "numberOfSeatsHelp": "Can only be updated by an admin in consultation with DGFB."
       },
 
       "calendar": {
@@ -207,6 +209,7 @@
             "hourAndHalf": "1.5 hours"
           },
           "adminWarning": "Be careful, this change is within the locked from period. You will have to manually contact the appropriate UGent services.",
+          "updateReservationWarning": "Changing this period will result in the loss of all reservations already made during the period.",
 
           "noCalendarPeriodsForLocation": "At the moment, there are no opening periods for the room."
         },

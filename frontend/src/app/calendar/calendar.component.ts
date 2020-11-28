@@ -3,7 +3,6 @@ import {CalendarView, CalendarEvent, CalendarEventTimesChangedEvent} from 'angul
 import {BehaviorSubject, Subject} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 import {defaultOpeningHour, defaultClosingHour} from 'src/app/app.constants';
-import { getHours } from 'date-fns';
 
 @Component({
   selector: 'app-calendar',
@@ -28,7 +27,7 @@ export class CalendarComponent implements OnInit, OnChanges {
   currentLang: string;
 
   constructor(private translate: TranslateService) {
-    this.translate.onLangChange.subscribe(() => {this.currentLang = this.translate.currentLang;});
+    this.translate.onLangChange.subscribe(() => { this.currentLang = this.translate.currentLang; });
   }
 
   ngOnInit(): void {

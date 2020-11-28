@@ -171,7 +171,9 @@
 
         "loading": "Wachten op antwoord van de server...",
         "success": "Het wijzigen van de ruimte was succesvol",
-        "error": "Er ging iets mis tijdens het wijzigen van de ruimte"
+        "error": "Er ging iets mis tijdens het wijzigen van de ruimte",
+
+        "numberOfSeatsHelp": "Kan alleen aangepast worden door een admin in samenspraak met DGFB."
       },
 
       "calendar": {
@@ -208,6 +210,7 @@
             "hourAndHalf": "1.5 uur"
           },
           "adminWarning": "Opgepast, deze verandering ligt binnen de vastgelegde termijn. Je zal manueel contact moeten opnemen met dienst permanentie van de UGent.",
+          "updateReservationWarning": "Het aanpassen van deze periode zal leiden tot de verwijdering van alle reservaties die al gemaakt zijn gedurende deze periode!",
 
           "noCalendarPeriodsForLocation": "Op dit moment zijn er nog geen periodes voor de ruimte beschikbaar."
         },
