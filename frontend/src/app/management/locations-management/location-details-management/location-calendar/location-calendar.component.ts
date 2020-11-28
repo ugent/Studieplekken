@@ -1,4 +1,3 @@
-import { trigger, transition, useAnimation } from '@angular/animations';
 import { Component, OnInit, Input, TemplateRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CalendarEvent } from 'angular-calendar';
@@ -9,7 +8,6 @@ import { LocationReservationsService } from 'src/app/services/api/location-reser
 import {
   ApplicationTypeFunctionalityService
 } from 'src/app/services/functionality/application-type/application-type-functionality.service';
-import { rowsAnimation } from 'src/app/shared/animations/RowAnimation';
 import { CalendarPeriod, mapCalendarPeriodsToCalendarEvents } from 'src/app/shared/model/CalendarPeriod';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
 import { Timeslot } from 'src/app/shared/model/Timeslot';
@@ -23,12 +21,7 @@ import {TranslateService} from '@ngx-translate/core';
 @Component({
   selector: 'app-location-calendar',
   templateUrl: './location-calendar.component.html',
-  styleUrls: ['./location-calendar.component.css'],
-  animations: [trigger('rowsAnimation', [
-    transition('void => *', [
-      useAnimation(rowsAnimation)
-    ])
-  ])]
+  styleUrls: ['./location-calendar.component.css']
 })
 export class LocationCalendarComponent implements OnInit {
   @Input() location: Observable<Location>;

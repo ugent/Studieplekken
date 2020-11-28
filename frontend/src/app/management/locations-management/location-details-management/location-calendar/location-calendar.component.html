@@ -80,7 +80,7 @@
           </thead>
 
           <tbody>
-          <tr [@rowsAnimation]="" *ngFor="let calendarPeriod of calendarPeriods">
+          <tr *ngFor="let calendarPeriod of calendarPeriods">
             <td>{{calendarPeriod.startsAt.format('DD/MM/YYYY')}}</td>
             <td>{{calendarPeriod.endsAt.format('DD/MM/YYYY')}}</td>
             <td>{{calendarPeriod.openingTime.format('HH:mm')}}</td>
