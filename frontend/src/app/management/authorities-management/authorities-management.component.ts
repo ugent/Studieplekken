@@ -30,6 +30,10 @@ export class AuthoritiesManagementComponent implements OnInit {
               private modalService: BsModalService) {
   }
 
+  // *****************
+  // *   Auxiliary   *
+  // *****************/
+
   get authorityId(): AbstractControl {
     return this.authorityFormGroup.get('authorityId');
   }
@@ -41,10 +45,6 @@ export class AuthoritiesManagementComponent implements OnInit {
   get description(): AbstractControl {
     return this.authorityFormGroup.get('description');
   }
-
-  // ********************
-  // *   CRUD: Create   *
-  // ********************/
 
   get authority(): Authority {
     return {
@@ -69,10 +69,6 @@ export class AuthoritiesManagementComponent implements OnInit {
     );
   }
 
-  // ********************
-  // *   CRUD: Update   *
-  // ********************/
-
   prepareFormGroup(authority: Authority): void {
     this.authorityFormGroup.setValue({
       authorityId: authority.authorityId,
@@ -82,14 +78,14 @@ export class AuthoritiesManagementComponent implements OnInit {
   }
 
   /**
-   * Close whateber modal is opened
+   * Close whatever modal is opened
    */
   closeModal(): void {
     this.modalService.hide();
   }
 
   // ********************
-  // *   CRUD: Delete   *
+  // *   CRUD: Create   *
   // ********************/
 
   prepareAdd(template: TemplateRef<any>): void {
@@ -121,9 +117,9 @@ export class AuthoritiesManagementComponent implements OnInit {
     );
   }
 
-  // *****************
-  // *   Auxiliary   *
-  // *****************/
+  // ********************
+  // *   CRUD: Update   *
+  // ********************/
 
   prepareUpdate(authority: Authority, template: TemplateRef<any>): void {
     // reset the feedback boolean
@@ -147,6 +143,10 @@ export class AuthoritiesManagementComponent implements OnInit {
       }
     );
   }
+
+  // ********************
+  // *   CRUD: Delete   *
+  // ********************/
 
   prepareToDelete(authority: Authority, template: TemplateRef<any>): void {
     // reset the feedback boolean
