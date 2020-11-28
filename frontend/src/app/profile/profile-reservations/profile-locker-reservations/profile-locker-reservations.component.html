@@ -22,7 +22,7 @@
 
           <!-- Table body -->
           <tbody>
-          <tr [@rowsAnimation]="" *ngFor="let reservation of reservations">
+          <tr *ngFor="let reservation of reservations">
             <td>{{reservation.locker.location.name}}</td>
             <td>{{reservation.locker.number}}</td>
 

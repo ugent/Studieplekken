@@ -24,7 +24,7 @@
 
             <!-- Table body -->
             <tbody>
-            <tr [@rowsAnimation]="" *ngFor="let reservation of reservations">
+            <tr *ngFor="let reservation of reservations">
               <td>{{calendarMap.get(reservation.timeslot.calendarId).location.name}}</td>
               <td>{{reservation.timeslot.timeslotDate.format("DD/MM/YYYY")}}</td>
               <td>{{getBeginHour(calendarMap.get(reservation.timeslot.calendarId), reservation.timeslot) | date:'HH:mm'}}</td>

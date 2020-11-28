@@ -25,7 +25,7 @@
 
             <!-- Table body -->
             <tbody>
-            <tr [@rowsAnimation]="" *ngFor="let location of locations">
+            <tr *ngFor="let location of locations">
               <td>{{location.name}}</td>
               <td>{{location.authority.authorityName}}</td>
               <td>{{location.numberOfSeats}}</td>
@@ -65,7 +65,7 @@
 
         <!-- Table body -->
         <tbody>
-        <tr [@rowsAnimation]="" *ngFor="let location of locations">
+        <tr *ngFor="let location of locations">
           <td>{{location.name}}</td>
           <td>{{location.authority.authorityName}}</td>
           <td>{{location.numberOfSeats}}</td>

@@ -4,7 +4,6 @@ import {User} from '../../../../shared/model/User';
 import {Authority} from '../../../../shared/model/Authority';
 import {AuthoritiesService} from '../../../../services/api/authorities/authorities.service';
 import {transition, trigger, useAnimation} from '@angular/animations';
-import {rowsAnimation} from '../../../../shared/animations/RowAnimation';
 import {FormControl, Validators} from '@angular/forms';
 import {UserDetailsService} from '../../../../services/single-point-of-truth/user-details/user-details.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
@@ -12,12 +11,7 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 @Component({
   selector: 'app-user-authorities-management',
   templateUrl: './user-authorities-management.component.html',
-  styleUrls: ['./user-authorities-management.component.css'],
-  animations: [trigger('rowsAnimation', [
-    transition('void => *', [
-      useAnimation(rowsAnimation)
-    ])
-  ])]
+  styleUrls: ['./user-authorities-management.component.css']
 })
 export class UserAuthoritiesManagementComponent implements OnInit {
   @Input() userObs: Observable<User>;
