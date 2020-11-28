@@ -1,11 +1,16 @@
 version: "3"
 
+# TO Make this work you have to add a redirect from blokat.local to your computer using /etc/hosts for ex.
+# It uses as much of the production values as possible. Database, frontend compilation, same dockerfiles, nginx, ...
+
 services:
   backend:
     build: backend
     environment:
       SPRING_PROFILES_ACTIVE: prod
       TZ: Europe/Brussels
+      CAS_CALLBACK_URL: https://localhost:8080/api/login/cas
+      REDIRECT_SUCCESS_LOGIN_REDIRECT_URL: https://localhost:8080/dashboard
     depends_on:
       - db
   db:
@@ -18,11 +23,22 @@ services:
       TZ: Europe/Brussels
       PGTZ: Europe/Brussels
   frontend:
-    build: frontend
+    build:
+      context: frontend
+      args:
+        configuration: local-production
   nginx-proxy:
-    image: nginx
+    build: nginx
     ports:
       - "80:80"
+      - "8080:443"
+    depends_on:
+      - backend
+      - frontend
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/blokat.conf:ro
+      # - ./nginx/nginx.conf:/etc/nginx/conf.d/blokat.conf:ro
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/skywalking-nginx-lua:/etc/skywalking-nginx-lua
       - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./nginx/studieplekken.ugent.be.crt:/etc/ssl/certs/studieplekken.ugent.be.crt
+      - ./nginx/studieplekken.ugent.be.key:/etc/ssl/private/studieplekken.ugent.be.key
