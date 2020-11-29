@@ -1,4 +1,3 @@
-import { ms } from 'date-fns/locale';
 import * as moment from 'moment';
 import { Moment } from 'moment';
 import { CalendarPeriod } from './CalendarPeriod';
@@ -40,9 +39,6 @@ export function timeslotEndHour(calendarPeriod: CalendarPeriod, timeslot: Timesl
       calendarPeriod.openingTime.format('HH:mm'), 'DD-MM-YYYY HH:mm')
       .add(calendarPeriod.reservableTimeslotSize * (timeslot.timeslotSeqnr + 1), 'minutes');
 }
-
-export const getTimeslotsOnDay: (calendarPeriod: CalendarPeriod, date: Moment) => Timeslot[] =
-                     (calendarPeriod, date) => calendarPeriod.timeslots.filter(ts => ts.timeslotDate.diff(date) < 1000, ms);
 
 export const timeslotEquals: (t1: Timeslot, t2: Timeslot) => boolean = (t1, t2) =>
                                              t1.timeslotSeqnr === t2.timeslotSeqnr
