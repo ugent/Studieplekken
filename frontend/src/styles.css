@@ -107,6 +107,14 @@
   color: #00001d;
 }
 
+.calendar-event-NR span {
+  white-space: normal !important;
+}
+
+.calendar-event-reserved span {
+  white-space: normal !important;
+}
+
 .float-right {
   float: right;
   margin-right: 2.5vw;

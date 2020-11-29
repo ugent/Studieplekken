@@ -1,24 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AuthenticationService} from '../../../services/authentication/authentication.service';
 import {Observable, Subscription} from 'rxjs';
-import {transition, trigger, useAnimation} from '@angular/animations';
-import {rowsAnimation} from '../../../shared/animations/RowAnimation';
 import {LocationReservation} from '../../../shared/model/LocationReservation';
-import { CalendarPeriodsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
-import { CalendarPeriod } from 'src/app/shared/model/CalendarPeriod';
-import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
-import { Timeslot } from 'src/app/shared/model/Timeslot';
-import { UserConstructor } from 'src/app/shared/model/User';
+import {CalendarPeriodsService} from 'src/app/services/api/calendar-periods/calendar-periods.service';
+import {CalendarPeriod} from 'src/app/shared/model/CalendarPeriod';
+import {LocationReservationsService} from 'src/app/services/api/location-reservations/location-reservations.service';
+import {Timeslot} from 'src/app/shared/model/Timeslot';
+import {UserConstructor} from 'src/app/shared/model/User';
 
 @Component({
   selector: 'app-profile-location-reservations',
   templateUrl: './profile-location-reservations.component.html',
-  styleUrls: ['./profile-location-reservations.component.css'],
-  animations: [trigger('rowsAnimation', [
-    transition('void => *', [
-      useAnimation(rowsAnimation)
-    ])
-  ])]
+  styleUrls: ['./profile-location-reservations.component.css']
 })
 export class ProfileLocationReservationsComponent implements OnInit {
   locationReservations: Observable<LocationReservation[]>;
@@ -40,7 +33,7 @@ export class ProfileLocationReservationsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-  // only change the locationReservations if the user is logged in.
+    // only change the locationReservations if the user is logged in.
     // If you would omit the if-clause, a redudant API call will
     // be made with {userId} = '' (and thus requesting for all location
     // reservations stored in the database, this is not something

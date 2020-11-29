@@ -103,7 +103,7 @@ public class LocationController extends AuthorizedLocationController {
     @PutMapping("/{locationName}")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void updateLocation(@PathVariable("locationName") String locationName, @RequestBody Location location) {
-        isAuthorized(location.getName());
+        isAuthorized(locationName);
         try {
             // Get the location that is currently in db
             Location cl = locationDao.getLocation(locationName);

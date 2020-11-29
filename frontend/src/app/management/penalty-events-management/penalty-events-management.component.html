@@ -21,7 +21,7 @@
       </thead>
 
       <tbody>
-      <tr [@rowsAnimation]="" *ngFor="let penaltyEvent of penaltyEvents">
+      <tr *ngFor="let penaltyEvent of penaltyEvents">
         <td>{{penaltyEvent.code}}</td>
         <td>{{penaltyEvent.points}}</td>
         <td>{{descriptionToShow(penaltyEvent)}}</td>

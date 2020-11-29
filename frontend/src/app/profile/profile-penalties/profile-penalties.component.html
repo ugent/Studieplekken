@@ -47,7 +47,7 @@
 
         <!-- Table body -->
         <tbody *ngIf="penalties | async as penalties">
-        <tr [@rowsAnimation]="" *ngFor="let penalty of penalties">
+        <tr *ngFor="let penalty of penalties">
           <td>{{penalty.eventCode}}</td>
           <td>{{toDateTimeViewString(penalty.timestamp)}}</td>
           <td>{{objectExists(penalty.reservationDate) ? toDateString(penalty.reservationDate) : '-'}}</td>

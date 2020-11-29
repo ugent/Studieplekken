@@ -80,7 +80,8 @@
 
     "yes": "Ja",
     "no": "Neen",
-
+    "back": "Terug",
+    "print": "Print",
     "buttons": {
       "add": "Voeg toe",
       "update": "Update",
@@ -188,7 +189,8 @@
             "noLocationReservations": "Er zijn geen reservaties voor het geselecteerde timeslot",
             "user": "Gebruiker",
             "attended": "Gebruiker was aanwezig?",
-            "futureReservation": "Timeslot is nog niet geweest"
+            "futureReservation": "Timeslot is nog niet geweest",
+            "number": "Studentennummer"
           }
         },
 
@@ -210,6 +212,7 @@
             "hourAndHalf": "1.5 uur"
           },
           "adminWarning": "Opgepast, deze verandering ligt binnen de vastgelegde termijn. Je zal manueel contact moeten opnemen met dienst permanentie van de UGent.",
+          "updateReservationWarning": "Het aanpassen van deze periode zal leiden tot de verwijdering van alle reservaties die al gemaakt zijn gedurende deze periode!",
 
           "noCalendarPeriodsForLocation": "Op dit moment zijn er nog geen periodes voor de ruimte beschikbaar."
         },

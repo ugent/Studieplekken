@@ -1,25 +1,18 @@
-import {Component, ElementRef, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {Component, OnInit, TemplateRef} from '@angular/core';
 import {AuthoritiesService} from '../../../services/api/authorities/authorities.service';
 import {Observable} from 'rxjs';
 import {User} from '../../../shared/model/User';
 import {Authority} from '../../../shared/model/Authority';
 import {ActivatedRoute} from '@angular/router';
-import {transition, trigger, useAnimation} from '@angular/animations';
-import {rowsAnimation} from '../../../shared/animations/RowAnimation';
 import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
 import {UserService} from '../../../services/api/users/user.service';
 import {AuthorityToManageService} from '../../../services/single-point-of-truth/authority-to-manage/authority-to-manage.service';
-import {BsModalService, BsModalRef} from 'ngx-bootstrap/modal';
+import {BsModalRef, BsModalService} from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-authority-users-management',
   templateUrl: './authority-users-management.component.html',
-  styleUrls: ['./authority-users-management.component.css'],
-  animations: [trigger('rowsAnimation', [
-    transition('void => *', [
-      useAnimation(rowsAnimation)
-    ])
-  ])]
+  styleUrls: ['./authority-users-management.component.css']
 })
 export class AuthorityUsersManagementComponent implements OnInit {
   authority: Authority;
@@ -51,7 +44,20 @@ export class AuthorityUsersManagementComponent implements OnInit {
               private authorityToManageService: AuthorityToManageService,
               private route: ActivatedRoute,
               private userService: UserService,
-              private modalService: BsModalService) { }
+              private modalService: BsModalService) {
+  }
+
+  get firstName(): AbstractControl {
+    return this.userSearchFormGroup.get('firstName');
+  }
+
+  get lastName(): AbstractControl {
+    return this.userSearchFormGroup.get('lastName');
+  }
+
+  // *********************************
+  // *   Add user to the authority   *
+  // *********************************
 
   ngOnInit(): void {
     this.authority = this.authorityToManageService.authority;
@@ -77,10 +83,6 @@ export class AuthorityUsersManagementComponent implements OnInit {
     this.modalService.hide();
   }
 
-  // *********************************
-  // *   Add user to the authority   *
-  // *********************************
-
   prepareToAddUserToAuthority(template: TemplateRef<any>): void {
     this.successAddingAuthority = undefined;
     this.successSearchingUsers = undefined;
@@ -94,6 +96,10 @@ export class AuthorityUsersManagementComponent implements OnInit {
     this.selectedUserFormControl.disable();
     this.addModal = this.modalService.show(template);
   }
+
+  // **************************************
+  // *   Delete user from the authority   *
+  // **************************************
 
   searchForUserByFirstAndLastName(firstName: string, lastName: string): void {
     let usersObs: Observable<User[]>;
@@ -125,9 +131,9 @@ export class AuthorityUsersManagementComponent implements OnInit {
     );
   }
 
-  // **************************************
-  // *   Delete user from the authority   *
-  // **************************************
+  // *******************
+  // *   Auxiliaries   *
+  // *******************
 
   prepareToDeleteUserFromAuthority(user: User, template: TemplateRef<any>): void {
     this.successDeletingAuthority = undefined;
@@ -148,13 +154,13 @@ export class AuthorityUsersManagementComponent implements OnInit {
     );
   }
 
-  // *******************
-  // *   Auxiliaries   *
-  // *******************
-
   setUsersObs(authorityId: number): void {
     this.usersInAuthorityObs = this.authoritiesService.getUsersFromAuthority(authorityId);
   }
+
+  // ****************************
+  // *   Form control getters   *
+  // ****************************
 
   validForm(): boolean {
     return !this.firstName.invalid || !this.lastName.invalid;
@@ -170,18 +176,6 @@ export class AuthorityUsersManagementComponent implements OnInit {
         this.successSearchingUsers = false;
       }
     );
-  }
-
-  // ****************************
-  // *   Form control getters   *
-  // ****************************
-
-  get firstName(): AbstractControl {
-    return this.userSearchFormGroup.get('firstName');
-  }
-
-  get lastName(): AbstractControl {
-    return this.userSearchFormGroup.get('lastName');
   }
 
 }

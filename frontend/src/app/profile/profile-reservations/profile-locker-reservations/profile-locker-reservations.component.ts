@@ -1,6 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import {transition, trigger, useAnimation} from '@angular/animations';
-import {rowsAnimation} from '../../../shared/animations/RowAnimation';
+import {Component, OnInit} from '@angular/core';
 import {LockerReservation} from '../../../shared/model/LockerReservation';
 import {Observable} from 'rxjs';
 import {AuthenticationService} from '../../../services/authentication/authentication.service';
@@ -8,12 +6,7 @@ import {AuthenticationService} from '../../../services/authentication/authentica
 @Component({
   selector: 'app-profile-locker-reservations',
   templateUrl: './profile-locker-reservations.component.html',
-  styleUrls: ['./profile-locker-reservations.component.css'],
-  animations: [trigger('rowsAnimation', [
-    transition('void => *', [
-      useAnimation(rowsAnimation)
-    ])
-  ])]
+  styleUrls: ['./profile-locker-reservations.component.css']
 })
 export class ProfileLockerReservationsComponent implements OnInit {
   lockerReservations: Observable<LockerReservation[]>;

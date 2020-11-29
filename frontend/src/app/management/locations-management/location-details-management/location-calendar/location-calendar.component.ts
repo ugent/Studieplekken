@@ -1,4 +1,3 @@
-import { trigger, transition, useAnimation } from '@angular/animations';
 import { Component, OnInit, Input, TemplateRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CalendarEvent } from 'angular-calendar';
@@ -9,27 +8,20 @@ import { LocationReservationsService } from 'src/app/services/api/location-reser
 import {
   ApplicationTypeFunctionalityService
 } from 'src/app/services/functionality/application-type/application-type-functionality.service';
-import { rowsAnimation } from 'src/app/shared/animations/RowAnimation';
 import { CalendarPeriod, mapCalendarPeriodsToCalendarEvents } from 'src/app/shared/model/CalendarPeriod';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
 import { Timeslot } from 'src/app/shared/model/Timeslot';
 import { LocationOpeningperiodDialogComponent } from './location-openingperiod-dialog/location-openingperiod-dialog.component';
 import { Location } from 'src/app/shared/model/Location';
-import { msToShowFeedback } from 'src/app/app.constants';
-import { tap } from 'rxjs/operators';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { Moment } from 'moment';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-location-calendar',
   templateUrl: './location-calendar.component.html',
-  styleUrls: ['./location-calendar.component.css'],
-  animations: [trigger('rowsAnimation', [
-    transition('void => *', [
-      useAnimation(rowsAnimation)
-    ])
-  ])]
+  styleUrls: ['./location-calendar.component.css']
 })
 export class LocationCalendarComponent implements OnInit {
   @Input() location: Observable<Location>;
@@ -86,15 +78,26 @@ export class LocationCalendarComponent implements OnInit {
 
   isAdmin: boolean = this.authenticationService.isAdmin();
 
+  currentLang: string;
+
   constructor(private calendarPeriodsService: CalendarPeriodsService,
               private functionalityService: ApplicationTypeFunctionalityService,
               private locationReservationService: LocationReservationsService,
               private dialog: MatDialog,
               private modalService: BsModalService,
-              private authenticationService: AuthenticationService) {
+              private authenticationService: AuthenticationService,
+              private translate: TranslateService) {
   }
 
   ngOnInit(): void {
+    this.currentLang = this.translate.currentLang;
+    this.translate.onLangChange.subscribe(
+      () => {
+        this.currentLang = this.translate.currentLang;
+        this.setup();
+      }
+    );
+
     this.location.subscribe(next => {
       this.locationName = next.name;
       this.locationFlat = next;
@@ -189,7 +192,7 @@ export class LocationCalendarComponent implements OnInit {
   // *******************/
 
   setup(): void {
-    if(!this.locationName) {
+    if (!this.locationName) {
       return;
     }
     // retrieve all calendar periods for this location
@@ -209,7 +212,7 @@ export class LocationCalendarComponent implements OnInit {
       });
 
       // fill the events based on the calendar periods
-      this.events = mapCalendarPeriodsToCalendarEvents(next);
+      this.events = mapCalendarPeriodsToCalendarEvents(next, this.currentLang);
 
       // and update the calendar
       this.refresh.next(null);

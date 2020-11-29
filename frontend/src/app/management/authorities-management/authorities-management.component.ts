@@ -1,22 +1,15 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
-import {transition, trigger, useAnimation} from '@angular/animations';
-import {rowsAnimation} from '../../shared/animations/RowAnimation';
+import {Component, OnInit, TemplateRef} from '@angular/core';
 import {Observable} from 'rxjs';
 import {Authority} from '../../shared/model/Authority';
 import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
 import {AuthoritiesService} from '../../services/api/authorities/authorities.service';
 import {AuthorityToManageService} from '../../services/single-point-of-truth/authority-to-manage/authority-to-manage.service';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import {BsModalService} from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-authorities-management',
   templateUrl: './authorities-management.component.html',
-  styleUrls: ['./authorities-management.component.css'],
-  animations: [trigger('rowsAnimation', [
-    transition('void => *', [
-      useAnimation(rowsAnimation)
-    ])
-  ])]
+  styleUrls: ['./authorities-management.component.css']
 })
 export class AuthoritiesManagementComponent implements OnInit {
   authoritiesObs: Observable<Authority[]>;
@@ -34,7 +27,32 @@ export class AuthoritiesManagementComponent implements OnInit {
 
   constructor(private authoritiesService: AuthoritiesService,
               private authorityToMangeService: AuthorityToManageService,
-              private modalService: BsModalService) { }
+              private modalService: BsModalService) {
+  }
+
+  // *****************
+  // *   Auxiliary   *
+  // *****************/
+
+  get authorityId(): AbstractControl {
+    return this.authorityFormGroup.get('authorityId');
+  }
+
+  get authorityName(): AbstractControl {
+    return this.authorityFormGroup.get('authorityName');
+  }
+
+  get description(): AbstractControl {
+    return this.authorityFormGroup.get('description');
+  }
+
+  get authority(): Authority {
+    return {
+      authorityId: this.authorityId.value,
+      authorityName: this.authorityName.value,
+      description: this.description.value
+    };
+  }
 
   ngOnInit(): void {
     this.authoritiesObs = this.authoritiesService.getAllAuthorities();
@@ -60,7 +78,7 @@ export class AuthoritiesManagementComponent implements OnInit {
   }
 
   /**
-   * Close whateber modal is opened
+   * Close whatever modal is opened
    */
   closeModal(): void {
     this.modalService.hide();
@@ -151,22 +169,6 @@ export class AuthoritiesManagementComponent implements OnInit {
         this.successDeletingAuthority = false;
       }
     );
-  }
-
-  // *****************
-  // *   Auxiliary   *
-  // *****************/
-
-  get authorityId(): AbstractControl { return this.authorityFormGroup.get('authorityId'); }
-  get authorityName(): AbstractControl { return this.authorityFormGroup.get('authorityName'); }
-  get description(): AbstractControl { return this.authorityFormGroup.get('description'); }
-
-  get authority(): Authority {
-    return {
-      authorityId: this.authorityId.value,
-      authorityName: this.authorityName.value,
-      description: this.description.value
-    };
   }
 
   validTagFormGroup(): boolean {

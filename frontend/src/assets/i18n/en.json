@@ -77,7 +77,8 @@
   "general": {
     "dsa": "Student Activities Office",
     "ugent": "Ghent University",
-
+    "back": "Back",
+    "print": "Print",
     "yes": "Yes",
     "no": "No",
 
@@ -187,7 +188,8 @@
           "table": {
             "noLocationReservations": "There are no reservations for the selected timeslot",
             "user": "User",
-            "attended": "Was user present?"
+            "attended": "Was user present?",
+            "number": "Student number"
           }
         },
 
@@ -209,6 +211,7 @@
             "hourAndHalf": "1.5 hours"
           },
           "adminWarning": "Be careful, this change is within the locked from period. You will have to manually contact the appropriate UGent services.",
+          "updateReservationWarning": "Changing this period will result in the loss of all reservations already made during the period.",
 
           "noCalendarPeriodsForLocation": "At the moment, there are no opening periods for the room."
         },
