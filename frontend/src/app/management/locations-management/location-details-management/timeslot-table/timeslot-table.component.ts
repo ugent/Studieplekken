@@ -46,6 +46,6 @@ export class TimeslotTableComponent implements OnInit {
   }
 
   timestring(timeslot: Timeslot, calendarPeriod: CalendarPeriod): string {
-    return `${timeslotStartHour(calendarPeriod, timeslot).format('DD/MM/YYYY\tHH:mm')}-${timeslotEndHour(calendarPeriod, timeslot).format('DD/MM/YYYY\tHH:mm')}`;
+    return `${timeslotStartHour(calendarPeriod, timeslot).format('DD/MM/YYYY\tHH:mm')}-${timeslotEndHour(calendarPeriod, timeslot).format('HH:mm')}`;
   }
 }
