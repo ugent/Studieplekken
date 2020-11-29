@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {ApplicationTypeFunctionalityService} from '../../services/functionality/application-type/application-type-functionality.service';
 
 @Component({
   selector: 'app-profile-reservations',
@@ -7,7 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ProfileReservationsComponent implements OnInit {
 
-  constructor() { }
+  showLockerReservationFunctionality: boolean;
+
+  constructor(private functionalityService: ApplicationTypeFunctionalityService) {
+    this.showLockerReservationFunctionality = functionalityService.showLockersManagementFunctionality();
+  }
 
   ngOnInit(): void {
   }

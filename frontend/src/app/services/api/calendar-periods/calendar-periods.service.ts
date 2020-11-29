@@ -22,10 +22,6 @@ export class CalendarPeriodsService {
       .pipe(filter(s => !!s), map(ls => ls.map(s => CalendarPeriod.fromJSON(s))));
   }
 
-  getCalendarPeriods(): Observable<CalendarPeriod[]> {
-    return this.http.get<CalendarPeriod[]>(api.allCalendarPeriods);
-  }
-
   getStatusOfLocation(locationName: string): Observable<Pair<LocationStatus, string>> {
     return this.http.get<Pair<LocationStatus, string>>(api.locationStatus
       .replace('{locationName}', locationName));

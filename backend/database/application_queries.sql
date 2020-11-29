@@ -322,6 +322,23 @@ update public.location_reservations
 set user_augentid = ?
 where user_augentid = ?;
 
+-- $get_location_reservations_with_location_by_user
+select lr.*, cp.*, l.*, b.*, a.*, u.*
+     , lr.timeslot_seqnr as "timeslot_sequence_number"
+from public.location_reservations lr
+    join public.calendar_periods cp
+        on cp.calendar_id = lr.calendar_id
+    join public.locations l
+        on l.name = cp.location_name
+    join public.buildings b
+        on b.building_id = l.building_id
+    join public.authority a
+        on a.authority_id = l.authority_id
+    join users u
+        on u.augentid = lr.user_augentid
+where lr.user_augentid = ?
+order by lr.timeslot_date desc, lr.timeslot_seqnr desc;
+
 
 -- queries for table USER
 -- $get_user_by_<?>
