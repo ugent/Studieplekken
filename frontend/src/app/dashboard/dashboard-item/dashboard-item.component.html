@@ -47,6 +47,7 @@
       </div>
 
       <!-- Progress bar for reserved seats -->
+      <div class="mt-auto">
       <div class="progress" [class.hidden]="!(showProgressBar && occupation >= 0)">
         <div class="progress-bar" role="progressbar"
              [style.width]="occupation + '%'"
@@ -57,12 +58,13 @@
       </div>
 
       <!-- Details button for dashboard item -->
-      <p class="mt-auto">
+      <p>
         <a routerLink="/dashboard/{{location.name}}"
            class="btn btn-block"
            role="button">{{'dashboard.details' | translate}}
         </a>
       </p>
+    </div>
     </div>
   </div>
 </div>
