@@ -1,6 +1,4 @@
 import {Component, OnInit, TemplateRef} from '@angular/core';
-import {transition, trigger, useAnimation} from '@angular/animations';
-import {rowsAnimation} from '../../shared/animations/RowAnimation';
 import {Observable} from 'rxjs';
 import {Location} from '../../shared/model/Location';
 import {LocationService} from '../../services/api/locations/location.service';
@@ -14,17 +12,11 @@ import { Building } from 'src/app/shared/model/Building';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { CalendarPeriodsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
 import { CalendarPeriod } from 'src/app/shared/model/CalendarPeriod';
-import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 
 @Component({
   selector: 'app-locations-management',
   templateUrl: './locations-management.component.html',
-  styleUrls: ['./locations-management.component.css'],
-  animations: [trigger('rowsAnimation', [
-    transition('void => *', [
-      useAnimation(rowsAnimation)
-    ])
-  ])]
+  styleUrls: ['./locations-management.component.css']
 })
 export class LocationsManagementComponent implements OnInit {
   locations: Observable<Location[]>;

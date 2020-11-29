@@ -1,21 +1,14 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
+import {Component, OnInit, TemplateRef} from '@angular/core';
 import {Observable} from 'rxjs';
-import {LocationTag, LocationTagConstructor} from '../../shared/model/LocationTag';
+import {LocationTag} from '../../shared/model/LocationTag';
 import {TagsService} from '../../services/api/tags/tags.service';
-import {transition, trigger, useAnimation} from '@angular/animations';
-import {rowsAnimation} from '../../shared/animations/RowAnimation';
 import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
-import { BsModalService } from 'ngx-bootstrap/modal';
+import {BsModalService} from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-tags-management',
   templateUrl: './tags-management.component.html',
   styleUrls: ['./tags-management.component.css'],
-  animations: [trigger('rowsAnimation', [
-    transition('void => *', [
-      useAnimation(rowsAnimation)
-    ])
-  ])]
 })
 export class TagsManagementComponent implements OnInit {
   tagsObs: Observable<LocationTag[]>;
@@ -32,7 +25,28 @@ export class TagsManagementComponent implements OnInit {
   successDeletingTag: boolean = undefined;
 
   constructor(private tagsService: TagsService,
-              private modalService: BsModalService) { }
+              private modalService: BsModalService) {
+  }
+
+  get tagId(): AbstractControl {
+    return this.tagFormGroup.get('tagId');
+  }
+
+  get dutch(): AbstractControl {
+    return this.tagFormGroup.get('dutch');
+  }
+
+  get english(): AbstractControl {
+    return this.tagFormGroup.get('english');
+  }
+
+  get locationTag(): LocationTag {
+    return {
+      tagId: this.tagId.value,
+      dutch: this.dutch.value,
+      english: this.english.value
+    };
+  }
 
   ngOnInit(): void {
     this.tagsObs = this.tagsService.getAllTags();
@@ -134,18 +148,6 @@ export class TagsManagementComponent implements OnInit {
         this.successDeletingTag = false;
       }
     );
-  }
-
-  get tagId(): AbstractControl { return this.tagFormGroup.get('tagId'); }
-  get dutch(): AbstractControl { return this.tagFormGroup.get('dutch'); }
-  get english(): AbstractControl { return this.tagFormGroup.get('english'); }
-
-  get locationTag(): LocationTag {
-    return {
-      tagId: this.tagId.value,
-      dutch: this.dutch.value,
-      english: this.english.value
-    };
   }
 
   validTagFormGroup(): boolean {

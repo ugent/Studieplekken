@@ -30,7 +30,7 @@
 
           <!-- Table body -->
           <tbody>
-          <tr [@rowsAnimation]="" *ngFor="let pair of locationReservations">
+          <tr *ngFor="let pair of locationReservations">
             <td>{{pair.second.location.name}}</td>
             <td>{{pair.first.timeslot.timeslotDate.format("DD/MM/YYYY")}}</td>
             <td>{{getBeginHour(pair.first.timeslot, pair.second)}}</td>

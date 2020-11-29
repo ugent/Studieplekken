@@ -43,6 +43,11 @@
         [currentTimeSlot]="currentTimeSlot"
         (reservationChange)="loadReservations()">
       </app-location-reservations>
+      <button
+      *ngIf="showReservations === true && !errorOnRetrievingReservations"
+      [routerLink]="['./timeslot', currentTimeSlot.calendarId, currentTimeSlot.timeslotDate.format('YYYY-MM-DD'), currentTimeSlot.timeslotSeqnr]"
+      class="btn btn-primary"
+      >print</button>
     </div>
 
 
@@ -75,7 +80,7 @@
           </thead>
 
           <tbody>
-          <tr [@rowsAnimation]="" *ngFor="let calendarPeriod of calendarPeriods">
+          <tr *ngFor="let calendarPeriod of calendarPeriods">
             <td>{{calendarPeriod.startsAt.format('DD/MM/YYYY')}}</td>
             <td>{{calendarPeriod.endsAt.format('DD/MM/YYYY')}}</td>
             <td>{{calendarPeriod.openingTime.format('HH:mm')}}</td>

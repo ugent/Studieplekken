@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
-import { transition, trigger, useAnimation } from '@angular/animations';
-import { rowsAnimation } from '../../../shared/animations/RowAnimation';
 import { LocationReservation } from '../../../shared/model/LocationReservation';
 import { CalendarPeriod } from 'src/app/shared/model/CalendarPeriod';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
@@ -12,12 +10,7 @@ import * as moment from 'moment';
 @Component({
   selector: 'app-profile-location-reservations',
   templateUrl: './profile-location-reservations.component.html',
-  styleUrls: ['./profile-location-reservations.component.css'],
-  animations: [trigger('rowsAnimation', [
-    transition('void => *', [
-      useAnimation(rowsAnimation)
-    ])
-  ])]
+  styleUrls: ['./profile-location-reservations.component.css']
 })
 export class ProfileLocationReservationsComponent implements OnInit {
   locationReservations: Pair<LocationReservation, CalendarPeriod>[] = [];

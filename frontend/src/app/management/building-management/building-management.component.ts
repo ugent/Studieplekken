@@ -1,22 +1,15 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
-import {transition, trigger, useAnimation} from '@angular/animations';
-import {rowsAnimation} from '../../shared/animations/RowAnimation';
-import { Observable } from 'rxjs';
-import { Building } from 'src/app/shared/model/Building';
-import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
-import { BuildingService } from 'src/app/services/api/buildings/buildings.service';
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
+import {Component, OnInit, TemplateRef} from '@angular/core';
+import {Observable} from 'rxjs';
+import {Building} from 'src/app/shared/model/Building';
+import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
+import {BuildingService} from 'src/app/services/api/buildings/buildings.service';
+import {BsModalService} from 'ngx-bootstrap/modal';
+import {AuthenticationService} from 'src/app/services/authentication/authentication.service';
 
 @Component({
   selector: 'app-building-management',
   templateUrl: './building-management.component.html',
-  styleUrls: ['./building-management.component.css'],
-  animations: [trigger('rowsAnimation', [
-    transition('void => *', [
-      useAnimation(rowsAnimation)
-    ])
-  ])]
+  styleUrls: ['./building-management.component.css']
 })
 export class BuildingManagementComponent implements OnInit {
   buildingsObs: Observable<Building[]>;
@@ -35,7 +28,32 @@ export class BuildingManagementComponent implements OnInit {
 
   constructor(private buildingService: BuildingService,
               private modalService: BsModalService,
-              private authenticationService: AuthenticationService) { }
+              private authenticationService: AuthenticationService) {
+  }
+
+  get buildingId(): AbstractControl {
+    return this.buildingFormGroup.get('buildingId');
+  }
+
+  get name(): AbstractControl {
+    return this.buildingFormGroup.get('name');
+  }
+
+  get address(): AbstractControl {
+    return this.buildingFormGroup.get('address');
+  }
+
+  // ********************
+  // *   CRUD: Create   *
+  // ********************/
+
+  get building(): Building {
+    return {
+      buildingId: this.buildingId.value,
+      name: this.name.value,
+      address: this.address.value
+    };
+  }
 
   ngOnInit(): void {
     this.buildingsObs = this.buildingService.getAllBuildings();
@@ -47,6 +65,10 @@ export class BuildingManagementComponent implements OnInit {
       }
     );
   }
+
+  // ********************
+  // *   CRUD: Update   *
+  // ********************/
 
   prepareFormGroup(building: Building): void {
     this.buildingFormGroup.setValue({
@@ -61,7 +83,7 @@ export class BuildingManagementComponent implements OnInit {
   }
 
   // ********************
-  // *   CRUD: Create   *
+  // *   CRUD: Delete   *
   // ********************/
 
   prepareAdd(template: TemplateRef<any>): void {
@@ -93,9 +115,9 @@ export class BuildingManagementComponent implements OnInit {
     );
   }
 
-  // ********************
-  // *   CRUD: Update   *
-  // ********************/
+  // *****************
+  // *   Auxiliary   *
+  // *****************/
 
   prepareUpdate(building: Building, template: TemplateRef<any>): void {
     // reset the feedback boolean
@@ -121,10 +143,6 @@ export class BuildingManagementComponent implements OnInit {
     );
   }
 
-  // ********************
-  // *   CRUD: Delete   *
-  // ********************/
-
   prepareToDelete(building: Building, template: TemplateRef<any>): void {
     // reset the feedback boolean
     this.successDeletingBuilding = undefined;
@@ -147,22 +165,6 @@ export class BuildingManagementComponent implements OnInit {
         this.successDeletingBuilding = false;
       }
     );
-  }
-
-  // *****************
-  // *   Auxiliary   *
-  // *****************/
-
-  get buildingId(): AbstractControl { return this.buildingFormGroup.get('buildingId'); }
-  get name(): AbstractControl { return this.buildingFormGroup.get('name'); }
-  get address(): AbstractControl { return this.buildingFormGroup.get('address'); }
-
-  get building(): Building {
-    return {
-      buildingId: this.buildingId.value,
-      name: this.name.value,
-      address: this.address.value
-    };
   }
 
   validBuildingFormGroup(): boolean {

@@ -1,5 +1,8 @@
 version: "3"
 
+volumes:
+  backend_logs:
+
 services:
   backend:
     build: backend
@@ -10,6 +13,8 @@ services:
       TZ: Europe/Brussels
     depends_on:
       - db
+    volumes:
+      - backend_logs:/app/logs:rw
   db:
     image: postgres:12-alpine
     restart: always

@@ -77,7 +77,8 @@
   "general": {
     "dsa": "Student Activities Office",
     "ugent": "Ghent University",
-
+    "back": "Back",
+    "print": "Print",
     "yes": "Yes",
     "no": "No",
 
@@ -187,7 +188,8 @@
           "table": {
             "noLocationReservations": "There are no reservations for the selected timeslot",
             "user": "User",
-            "attended": "Was user present?"
+            "attended": "Was user present?",
+            "number": "Student number"
           }
         },
 
