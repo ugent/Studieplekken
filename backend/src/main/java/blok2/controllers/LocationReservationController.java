@@ -2,6 +2,7 @@ package blok2.controllers;
 
 import blok2.daos.ICalendarPeriodDao;
 import blok2.daos.ILocationReservationDao;
+import blok2.helpers.Pair;
 import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
@@ -60,6 +61,19 @@ public class LocationReservationController extends AuthorizedLocationController 
         }
     }
 
+    @GetMapping("/{userId}")
+    @PreAuthorize("hasAuthority('USER') and #userId == authentication.principal.augentID")
+    public List<Pair<LocationReservation, CalendarPeriod>>
+    getLocationReservationsWithLocationByUserId(@PathVariable("userId") String userId) {
+        try {
+            return locationReservationDao.getAllLocationReservationsAndCalendarPeriodsOfUser(userId);
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
     @PostMapping
     @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public LocationReservation createLocationReservation(@AuthenticationPrincipal User user, @Valid @RequestBody Timeslot timeslot) {
@@ -93,7 +107,7 @@ public class LocationReservationController extends AuthorizedLocationController 
         }
     }
 
-    @GetMapping("/{location}")
+    @GetMapping("/count/{location}")
     @PreAuthorize("permitAll()")
     public Map<String, Integer> getReservationCount(@PathVariable("location") String location) {
         try {

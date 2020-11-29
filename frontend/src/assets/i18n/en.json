@@ -892,13 +892,13 @@
           "attended": {
             "yes": "yes",
             "no": "no",
-            "other": "n/a"
+            "notScanned": "Not scanned"
           }
         },
 
-        "zeroReservations": "You have never made any room reservations so far",
-        "loading": "Room reservations are being loaded...",
-        "error": "Error while loading your room reservations"
+        "zeroReservations": "You have never made any room reservations so far.",
+        "loading": "Reservations are being loaded...",
+        "error": "Something went wrong while retrieving your reservations."
       },
 
       "lockers": {
