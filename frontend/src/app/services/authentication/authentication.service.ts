@@ -13,6 +13,8 @@ import {Router} from '@angular/router';
 import {UserService} from '../api/users/user.service';
 import {api} from '../api/endpoints';
 import {userWantsTLogInLocalStorageKey} from '../../app.constants';
+import {Pair} from '../../shared/model/helpers/Pair';
+import {CalendarPeriod} from '../../shared/model/CalendarPeriod';
 
 /**
  * The structure of the authentication service has been based on this article:
@@ -37,7 +39,6 @@ export class AuthenticationService {
   public user: Observable<User> = this.userSubject.asObservable();
 
   private hasAuthoritiesSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  public hasAuthorities: Observable<boolean> = this.hasAuthoritiesSubject.asObservable();
 
   constructor(private http: HttpClient,
               private penaltyService: PenaltyService,
@@ -137,6 +138,10 @@ export class AuthenticationService {
 
   getLocationReservations(): Observable<LocationReservation[]> {
     return this.locationReservationService.getLocationReservationsOfUser(this.userSubject.value.augentID);
+  }
+
+  getLocationReservationsAndCalendarPeriods(): Observable<Pair<LocationReservation, CalendarPeriod>[]> {
+    return this.locationReservationService.getLocationReservationsWithCalendarPeriodsOfUser(this.userSubject.value.augentID);
   }
 
   getLockerReservations(): Observable<LockerReservation[]> {

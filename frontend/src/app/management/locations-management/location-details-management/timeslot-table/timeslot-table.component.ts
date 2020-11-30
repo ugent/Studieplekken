@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { CalendarEvent } from 'angular-calendar';
+import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/internal/operators/map';
-import { filter, tap } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { CalendarPeriodsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { CalendarPeriod } from 'src/app/shared/model/CalendarPeriod';
@@ -19,7 +18,7 @@ import { Timeslot, timeslotEndHour, timeslotStartHour } from 'src/app/shared/mod
 export class TimeslotTableComponent implements OnInit {
   timeslot: Timeslot;
   locationReservations: Observable<LocationReservation[]>;
-  locationName: string
+  locationName: string;
   calendarPeriodO: Observable<CalendarPeriod>;
 
   constructor(private route: ActivatedRoute,
@@ -36,7 +35,7 @@ export class TimeslotTableComponent implements OnInit {
     this.locationReservations = this.locationReservationsService.getLocationReservationsOfTimeslot(this.timeslot);
     this.calendarPeriodO = this.calendarPeriodService.getCalendarPeriodsOfLocation(this.locationName)
                                 .pipe(
-                                  map(x => x.filter(c => c.id == calendarId)),
+                                  map(x => x.filter(c => c.id === calendarId)),
                                   filter(x => x.length > 0),
                                   map(x => x[0])
                                 );
@@ -47,6 +46,6 @@ export class TimeslotTableComponent implements OnInit {
   }
 
   timestring(timeslot: Timeslot, calendarPeriod: CalendarPeriod): string {
-    return `${timeslotStartHour(calendarPeriod, timeslot).format('DD/MM/YYYY\tHH:mm')}-${timeslotEndHour(calendarPeriod, timeslot.timeslotSeqnr)}`;
+    return `${timeslotStartHour(calendarPeriod, timeslot).format('DD/MM/YYYY\tHH:mm')}-${timeslotEndHour(calendarPeriod, timeslot).format('HH:mm')}`;
   }
 }

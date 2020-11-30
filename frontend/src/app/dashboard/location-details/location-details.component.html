@@ -1,7 +1,8 @@
 <div class="container-fluid" *ngIf="location | async as location">
   <!-- Title -->
   <h1 class="inline-block">{{location.name}}</h1>
-  <button class="btn btn-primary float-right" *ngIf="showAdmin" routerLink="/management/locations/{{location.name}}">{{'dashboard.locationDetails.buttons.manage' | translate}}</button>
+  <button class="btn btn-primary float-right" *ngIf="showAdmin"
+          routerLink="/management/locations/{{location.name}}">{{'dashboard.locationDetails.buttons.manage' | translate}}</button>
 
   <!-- First layer: image, general info and overview of tags -->
   <div class="row">
@@ -11,8 +12,8 @@
            will be replaced with a default value. -->
       <div>
         <img *ngIf="location.imageUrl !== null"
-            src="{{location.imageUrl}}" alt="Image of {{location.name}}"
-            (error)="handleImageError(location)">
+             src="{{location.imageUrl}}" alt="Image of {{location.name}}"
+             (error)="handleImageError(location)">
         <img *ngIf="location.imageUrl === null" [src]="altImageUrl" alt="Image of {{location.name}}">
         <div class="locationStatusBar"
              [classList]="'locationStatusBar ' + locationStatusColorClass()">
@@ -27,13 +28,27 @@
         </div>
 
         <!-- General information about the location -->
-        <ul>
-          <li>{{'dashboard.numberOfSeats' | translate}}: {{location.numberOfSeats}}</li>
-          <li *ngIf="showLockersManagement">{{'dashboard.numberOfLockers' | translate}}: {{location.numberOfLockers}}</li>
-          <li>{{'dashboard.building' | translate}}: {{location.building.name}}</li>
-          <li>{{'dashboard.address' | translate}}: {{location.building.address}}</li>
-          <li>{{'dashboard.status' | translate}}: {{statusInCurrentLang | translate}}</li>
-        </ul>
+        <table class="table borderless">
+          <tbody>
+          <tr>
+            <td><span class="glyphicon glyphicon-time" aria-hidden="true"></span></td>
+            <td>{{statusInCurrentLang | translate}}</td>
+          </tr>
+          <tr>
+            <td><span class="glyphicon glyphicon-user" aria-hidden="true"></span></td>
+            <td>{{location.numberOfSeats}}</td>
+          </tr>
+          <tr *ngIf="showLockersManagement">
+            <td><span class="glyphicon glyphicon-lock" aria-hidden="true"></span></td>
+            <td>{{location.numberOfLockers}}</td>
+          </tr>
+          <tr>
+            <td><span class="glyphicon glyphicon-home" aria-hidden="true"></span></td>
+            <td>{{location.building.name}}<br/>{{location.building.address}}
+            </td>
+          </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
@@ -44,11 +59,11 @@
         </div>
 
         <!-- List of the tags -->
-        <ul *ngIf="tags !== undefined">
-          <li *ngFor="let tag of tags">
+        <div *ngIf="tags !== undefined" class="tags" fxLayout="column" fxLayoutAlign="flex-start flex-start">
+          <p class="tag" *ngFor="let tag of tags">
             {{currentLang === 'nl' ? tag.dutch : tag.english}}
-          </li>
-        </ul>
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -142,8 +157,10 @@
     </div>
     <hr>
     <p>{{'dashboard.locationDetails.calendar.reservation.updateConfirmMessage' | translate }}</p>
-    <button type="button" class="btn btn-default" (click)="confirmReservationChange()" >{{ 'general.yes' | translate }}</button>
-    <button type="button" class="btn btn-primary" (click)="declineReservationChange()" >{{ 'general.no' | translate}}</button>
+    <button type="button" class="btn btn-default"
+            (click)="confirmReservationChange()">{{ 'general.yes' | translate }}</button>
+    <button type="button" class="btn btn-primary"
+            (click)="declineReservationChange()">{{ 'general.no' | translate}}</button>
   </div>
   <div class="modal-footer">
     <div class="alert alert-warning text-center">
