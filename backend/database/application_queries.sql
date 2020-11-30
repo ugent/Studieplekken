@@ -1034,7 +1034,7 @@ values (?, ?, ?);
 
 -- $count_reservations_now
 with y as (
-select *
+select ts.calendar_id as calendar_id_dist, *
 from public.locations l 
     join public.calendar_periods cp
         on l.name = cp.location_name
@@ -1049,7 +1049,8 @@ select count(1) as reservation_count, (select count(1) from y) as timeslot_count
 from y
     inner join public.location_reservations rs
         on y.timeslot_date = rs.timeslot_date
-        and rs.timeslot_seqnr = y.timeslot_sequence_number;
+        and rs.timeslot_seqnr = y.timeslot_sequence_number
+        and calendar_id_dist = rs.calendar_id;
 
 -- $delete_timeslots_of_calendar
 delete
