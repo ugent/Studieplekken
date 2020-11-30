@@ -270,7 +270,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         calendarPeriod.setTimeslots(Collections.unmodifiableList(timeslotList));
     }
 
-    private CalendarPeriod createCalendarPeriod(ResultSet rs, Connection conn) throws SQLException {
+    public static CalendarPeriod createCalendarPeriod(ResultSet rs, Connection conn) throws SQLException {
         CalendarPeriod calendarPeriod = new CalendarPeriod();
 
         calendarPeriod.setStartsAt(rs.getDate(Resources.databaseProperties.getString("calendar_period_starts_at")).toLocalDate());

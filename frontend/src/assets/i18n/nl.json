@@ -23,8 +23,8 @@
     "status": "Status",
 
     "locationDetails": {
-      "info": "Algemene informatie over deze ruimte:",
-      "tags": "Tags die deze ruimte kenmerken:",
+      "info": "Algemene informatie over deze ruimte",
+      "tags": "Tags die deze ruimte kenmerken",
       "buttons": {
         "manage": "Beheer"
       },
@@ -892,13 +892,13 @@
           "attended": {
             "yes": "ja",
             "no": "neen",
-            "other": "n.v.t."
+            "notScanned": "Niet gescand"
           }
         },
 
-        "zeroReservations": "Je hebt tot nu toe nog nooit gereserveerd",
+        "zeroReservations": "Je hebt tot nu toe nog nooit gereserveerd.",
         "loading": "Reservaties worden geladen...",
-        "error": "Er is iets misgegaan tijdens het laden van uw reservaties"
+        "error": "Er is iets misgegaan tijdens het laden van uw reservaties."
       },
 
       "lockers": {
