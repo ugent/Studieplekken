@@ -74,9 +74,9 @@ export class DashboardComponent implements OnInit {
         this.filteredLocationsBackup = next;
         this.successOnRetrievingLocations = true;
 
-        // retrieve the status for the locations
+        // retrieve the status for the locations, hereby invalidating the cache and forcing a reload.
         next.forEach(l => {
-          this.calendarPeriodService.getStatusOfLocation(l.name).subscribe(
+          this.calendarPeriodService.getStatusOfLocation(l.name, true).subscribe(
             next2 => {
               this.locationStatuses.set(l.name, next2);
             }

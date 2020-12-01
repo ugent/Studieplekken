@@ -2,11 +2,13 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {CalendarPeriod} from '../../../shared/model/CalendarPeriod';
 import {Pair} from '../../../shared/model/helpers/Pair';
-import {Observable} from 'rxjs';
+import {Location} from '../../../shared/model/Location';
+import {Observable, } from 'rxjs';
 import { map } from 'rxjs/internal/operators/map';
 import { filter } from 'rxjs/internal/operators/filter';
 import {api} from '../endpoints';
 import {LocationStatus} from '../../../app.constants';
+import {Cache} from '../../../shared/cache/Cache';
 
 @Injectable({
   providedIn: 'root'
@@ -16,15 +18,21 @@ export class CalendarPeriodsService {
   constructor(private http: HttpClient) {
   }
 
+  // tslint:disable-next-line: max-line-length
+  statusCache: Cache<string, Pair<LocationStatus, string>> = new Cache<string, Pair<LocationStatus, string>>(this.http, (arg: Location) => arg.name);
+
   getCalendarPeriodsOfLocation(locationName: string): Observable<CalendarPeriod[]> {
     return this.http.get<any>(api.calendarPeriods
       .replace('{locationName}', locationName))
-      .pipe(filter(s => !!s), map(ls => ls.map(s => CalendarPeriod.fromJSON(s))));
+      .pipe(filter(s => !!s), map(ls => ls.map((s: any) => CalendarPeriod.fromJSON(s))));
   }
 
-  getStatusOfLocation(locationName: string): Observable<Pair<LocationStatus, string>> {
-    return this.http.get<Pair<LocationStatus, string>>(api.locationStatus
-      .replace('{locationName}', locationName));
+  /**
+   * Retrieve the status of the location
+   */
+  getStatusOfLocation(locationName: string, invalidateCache: boolean = false): Observable<Pair<LocationStatus, string>> {
+    const url = api.locationStatus.replace('{locationName}', locationName);
+    return this.statusCache.getValue(locationName, url, invalidateCache);
   }
 
   addCalendarPeriods(calendarPeriods: CalendarPeriod[]): Observable<void> {

@@ -5,30 +5,34 @@ import {api} from '../endpoints';
 import {Location} from '../../../shared/model/Location';
 import {LocationTag} from '../../../shared/model/LocationTag';
 import { map } from 'rxjs/internal/operators/map';
+import {Cache} from '../../../shared/cache/Cache';
+import { filter } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LocationService {
 
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) { }
+
+  locationCache: Cache<string, Location> = new Cache<string, Location>(this.http, (arg: Location) => arg.name);
 
   /***********************************************************
    *   API calls for CRUD operations with public.LOCATIONS   *
    ***********************************************************/
 
   getLocations(): Observable<Location[]> {
-    return this.http.get<Location[]>(api.locations);
+    return this.locationCache.getAllValues(api.locations);
   }
 
   getUnapprovedLocations(): Observable<Location[]> {
-    return this.http.get<Location[]>(api.locationsUnapproved);
+    return this.locationCache.getAllValues(api.locationsUnapproved);
   }
 
 
-  getLocation(locationName: string): Observable<Location> {
-    return this.http.get<Location>(api.location.replace('{locationName}', locationName));
+  getLocation(locationName: string, invalidateCache: boolean = false): Observable<Location> {
+    const url = api.location.replace('{locationName}', locationName);
+    return this.locationCache.getValue(locationName, url, invalidateCache);
   }
 
   addLocation(location: Location): Observable<any> {
