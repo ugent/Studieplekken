@@ -155,6 +155,11 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
 
                 long sizeOfLocation = getLocationSizeOfTimeslot(reservation.getTimeslot(), conn);
 
+                System.out.println("Times:");
+                System.out.println(amountOfReservations);
+                System.out.println(sizeOfLocation);
+                Thread.sleep(10000);
+
                 if (amountOfReservations < sizeOfLocation) {
                     // All is well. Add & then release the lock
 
@@ -170,11 +175,15 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
                 // Error codes that start with "23" are constraint violations.
                 // This means that the entry was probably not unique.
                 if (e.getSQLState().startsWith("23")) {
+                    System.out.println("nonunique");
                     return false;
                 } else {
                     // This is a real db error. Rethrowing it.
                     throw e;
                 }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                return false;
             }
         }
     }
