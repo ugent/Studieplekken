@@ -142,10 +142,13 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
         // Open up transaction
         try (Connection conn = adb.getConnection()) {
             try {
-                conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
                 // Take a lock on the database.
                 conn.setAutoCommit(false);
-                conn.prepareStatement(Resources.databaseProperties.getString("lock_location_reservation")).execute();
+                PreparedStatement stmt = conn.prepareStatement(Resources.databaseProperties.getString("lock_location_reservation"));
+                stmt.setInt(1, reservation.getTimeslot().getCalendarId());
+                stmt.setDate(2, Date.valueOf(reservation.getTimeslot().getTimeslotDate()));
+                stmt.setInt(3, reservation.getTimeslot().getTimeslotSeqnr());
+                stmt.execute();
 
                 // Fetch data we need.
                 long amountOfReservations = getAmountOfReservationsOfTimeslot(reservation.getTimeslot(), conn);
