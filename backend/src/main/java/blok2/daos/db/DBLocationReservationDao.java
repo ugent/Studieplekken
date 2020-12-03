@@ -139,10 +139,10 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
 
     @Override
     public boolean addLocationReservationIfStillRoomAtomically(LocationReservation reservation) throws SQLException {
-        // Open up transaction
         try (Connection conn = adb.getConnection()) {
             try {
-                // Take a lock on the database.
+                // Try to take a lock (or block) on the database by performing a SELECT FOR UPDATE.
+                // A lock must be taken within a transaction, therefore disabling auto commit.
                 conn.setAutoCommit(false);
                 PreparedStatement stmt = conn.prepareStatement(Resources.databaseProperties.getString("lock_location_reservation"));
                 stmt.setInt(1, reservation.getTimeslot().getCalendarId());
@@ -152,14 +152,11 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
 
                 // Fetch data we need.
                 long amountOfReservations = getAmountOfReservationsOfTimeslot(reservation.getTimeslot(), conn);
-
                 long sizeOfLocation = getLocationSizeOfTimeslot(reservation.getTimeslot(), conn);
 
                 if (amountOfReservations < sizeOfLocation) {
-                    // All is well. Add & then release the lock
-
+                    // All is well. Add & then release the lock (by committing, cfr finally clause).
                     addLocationReservation(reservation, conn);
-                    conn.commit();
                     return true;
                 }
 
@@ -175,6 +172,8 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
                     // This is a real db error. Rethrowing it.
                     throw e;
                 }
+            } finally {
+                conn.commit();;
             }
         }
     }
