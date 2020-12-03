@@ -46,7 +46,8 @@
           "updateWarningMessage": "WAARSCHUWING: Je mag enkel een plek reserveren wanneer je deze nodig hebt. Aanwezigheden kunnen en zullen opgenomen worden."
         }
       },
-      "loginWarning": "Voordat er reservaties kunnen geplaatst worden voor deze locatie, dient u ingelogd te zijn."
+      "loginWarning": "Voordat er reservaties kunnen geplaatst worden voor deze locatie, dient u ingelogd te zijn.",
+      "refreshWarning": "Herladen van de kalendar zal automatisch gebeuren, het is niet nodig om manueel de pagina te herladen."
     },
 
     "filter": {

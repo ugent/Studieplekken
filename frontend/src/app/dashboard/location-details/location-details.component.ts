@@ -72,6 +72,8 @@ export class LocationDetailsComponent implements OnInit {
   showLockersManagement: boolean;
   capacity: number;
 
+  lastCalendarUpdate = moment();
+
   constructor(private locationService: LocationService,
               private tagsService: TagsService,
               private route: ActivatedRoute,
@@ -120,6 +122,11 @@ export class LocationDetailsComponent implements OnInit {
         this.translateStatus();
       }
     );
+
+    setInterval(() => {
+      this.updateCalendar();
+    }, 300000); // 5 minutes
+
     this.showLockersManagement = this.functionalityService.showLockersManagementFunctionality();
   }
 
@@ -307,6 +314,12 @@ export class LocationDetailsComponent implements OnInit {
     this.calendarPeriodsService.getCalendarPeriodsOfLocation(this.locationName).subscribe(next => {
       next.forEach(element => {
         this.calendarMap.set(element.id, element);
+        const duration = element.reservableFrom.valueOf() - moment().valueOf();
+        if (duration > 0) {
+          setTimeout(() => {
+            this.events = mapCalendarPeriodsToCalendarEvents([...this.calendarMap.values()], this.currentLang, []);
+          }, duration);
+        }
       });
     }, () => {
     });
