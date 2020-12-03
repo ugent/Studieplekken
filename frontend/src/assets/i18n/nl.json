@@ -9,6 +9,11 @@
     "day": "Dag"
   },
 
+  "information": {
+    "general": "Algemeen",
+    "manager": "Beheerder"
+  },
+
   "dashboard": {
     "address": "Adres",
     "building": "Gebouw",

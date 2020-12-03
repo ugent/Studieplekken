@@ -1,5 +1,3 @@
-# Studieplekken UGent
-
 Vanaf maandag 30 november 2020 stelt de UGent op verschillende campussen stille studieplekken ter beschikking van **UGent studenten die hier nood aan hebben.**
 
 De studieplekken zijn beschikbaar van 30 november 2020 tot 18 december 2020, en tijdens de examens van 4 januari 2021 tot 29 januari 2021.

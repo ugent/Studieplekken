@@ -9,6 +9,11 @@
     "day": "Day"
   },
 
+  "information": {
+    "general": "General",
+    "manager": "Manager"
+  },
+
   "dashboard": {
     "address": "Address",
     "building": "Building",

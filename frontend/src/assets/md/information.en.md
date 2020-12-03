@@ -1,5 +1,3 @@
-# Study Rooms UGent
-
 From Monday, November 30, 2020, UGent will make quiet study places available on various campuses to **UGent students who need them.**
 
 The study places will be available from 30 November 2020 until 18 December 2020, and during the exams from 4 January 2021 until 29 January 2021.

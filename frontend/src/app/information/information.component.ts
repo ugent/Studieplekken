@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 
 @Component({
@@ -8,7 +8,8 @@ import {TranslateService} from '@ngx-translate/core';
 })
 export class InformationComponent implements OnInit {
 
-  constructor(private translate: TranslateService) { }
+  constructor(private translate: TranslateService) {
+  }
 
   ngOnInit(): void {
     console.log('assets/md/information.{{currentLanguage()}}.md');
