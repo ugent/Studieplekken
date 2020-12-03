@@ -20,3 +20,9 @@ Having someone else make a reservation with your email address is not allowed. A
 Strict security measures apply at every study place. Hands need to be disinfected when entering. Wearing a mouth mask is mandatory as soon as you enter the building. Once you are at your study place, you are allowed to take off your mouth mask. The tables and chairs are placed at a safe distance and may not be moved. Physical distancing must be respected at all times. Be sure to stay at home if you are ill or experiencing symptoms.
 
 The study areas are organized by students, staff and volunteers. Treat them and each other with respect. Every study place is supervised. In case of problems or questions, do not hesitate to speak to this person.
+
+<hr>
+
+For extra questions you can mail to [info@studieplekken.ugent.be](mailto:info@studieplekken.ugent.be).
+
+Employees and volunteers can get more info at [info-medewerkers@studieplekken.ugent.be](mailto:info-medewerkers@studieplekken.ugent.be).

@@ -20,3 +20,9 @@ Iemand anders laten reserveren met jouw email adres is niet toegestaan. Elke vor
 Op elke studieplek gelden strikte veiligheidsmaatregelen. Handen dienen ontsmet te worden bij het binnenkomen. Het dragen van een mondmasker is verplicht van zodra je het gebouw betreedt. Eens je op je studieplek zit, mag je het mondmasker uitdoen. De tafels en stoelen zijn op een veilige afstand geplaatst en mogen niet verplaatst worden. Physical distancing dient op elk moment gerespecteerd te worden. Blijf zeker thuis indien je ziek bent of symptomen ervaart.
 
 De studieplekken worden georganiseerd door studenten, medewerkers en vrijwilligers. Ga respectvol met hen en met elkaar om. Op elke studieplek is toezicht aanwezig. Bij problemen of vragen, aarzel niet om deze persoon aan te spreken.
+
+<hr>
+
+Bij extra vragen kun je contact opnemen met [info@studieplekken.ugent.be](mailto:info@studieplekken.ugent.be).
+
+Medewerkers kunnen voor meer info terecht bij [info-medewerkers@studieplekken.ugent.be](mailto:info-medewerkers@studieplekken.ugent.be).
