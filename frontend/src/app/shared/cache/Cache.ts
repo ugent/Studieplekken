@@ -1,6 +1,6 @@
-import {BehaviorSubject, EMPTY, Observable, of} from 'rxjs';
+import {BehaviorSubject, EMPTY, Observable, of, Subscription} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
-import { catchError, filter, map, tap } from 'rxjs/operators';
+import { catchError, filter, map, take, tap } from 'rxjs/operators';
 
 export class Cache<I, V> {
 
@@ -14,10 +14,10 @@ export class Cache<I, V> {
    * Update the cache from the backend
    * @param url the url to get the resource
    */
-  private updateCache(url: string): void {
+  private updateCache(url: string, id: I): void {
     this.http.get<V>(url)
       .pipe(
-        tap(n => this.cacheMap.set(this.idcallback(n), n)),
+        tap(n => this.cacheMap.set(id, n)),
         tap(() => this.cacheSubject.next(this.cacheMap)),
         catchError(error => {
           this.cacheSubject.error(error);
@@ -38,6 +38,7 @@ export class Cache<I, V> {
         tap(() => this.cacheSubject.next(this.cacheMap)),
         catchError(error => {
           this.cacheSubject.error(error);
+          console.log('Error while reloading subject ' + error.toString());
           return of(EMPTY);
         })
       )
@@ -52,7 +53,7 @@ export class Cache<I, V> {
    */
   getValue(id: I, url: string, invalidateCache: boolean = false): Observable<V> {
     if (invalidateCache || !this.cacheMap.has(id)) {
-      this.updateCache(url);
+      this.updateCache(url, id);
     }
 
     return this.cacheSubject.pipe(
@@ -65,8 +66,10 @@ export class Cache<I, V> {
    * Get all the resources from an url and update the cache
    * @param url the url to fetch the resources from
    */
-  getAllValues(url: string): Observable<V[]> {
-    this.cacheReload(url);
+  getAllValues(url: string, invalidateCache: boolean = true): Observable<V[]> {
+    if (invalidateCache || Object.keys(this.cacheMap).length === 0) {
+      this.cacheReload(url);
+    }
 
     return this.cacheSubject.pipe(
       map(valueMap => [ ...valueMap.values() ])

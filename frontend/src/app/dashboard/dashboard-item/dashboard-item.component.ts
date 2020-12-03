@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
+import {AfterViewInit, Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {DatePipe} from '@angular/common';
 import {Location} from '../../shared/model/Location';
 import {LocationService} from '../../services/api/locations/location.service';
@@ -8,6 +8,7 @@ import {LocationTag} from '../../shared/model/LocationTag';
 import {ApplicationTypeFunctionalityService} from '../../services/functionality/application-type/application-type-functionality.service';
 import {defaultLocationImage, LocationStatus} from '../../app.constants';
 import {CalendarPeriodsService} from '../../services/api/calendar-periods/calendar-periods.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard-item',
@@ -15,7 +16,7 @@ import {CalendarPeriodsService} from '../../services/api/calendar-periods/calend
   styleUrls: ['./dashboard-item.component.css', '../location.css'],
   providers: [DatePipe]
 })
-export class DashboardItemComponent implements OnInit, AfterViewInit {
+export class DashboardItemComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() location: Location;
   @Input() status: Pair<LocationStatus, string>;
 
@@ -34,6 +35,10 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
 
   showLockersManagement: boolean;
 
+  /* Subscriptions */
+  private statusSub: Subscription;
+  private nreservationsSub: Subscription;
+
   constructor(private locationService: LocationService,
               private calendarPeriodsService: CalendarPeriodsService,
               private translate: TranslateService,
@@ -51,14 +56,14 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
       }
     );
 
-    this.calendarPeriodsService.getStatusOfLocation(this.location.name).subscribe(
+    this.statusSub = this.calendarPeriodsService.getStatusOfLocation(this.location.name).subscribe(
       next => {
         this.status = next;
         this.translateStatus();
       }
     );
 
-    this.locationService.getNumberOfReservationsNow(this.location.name).subscribe(next => this.occupation = next);
+    this.nreservationsSub = this.locationService.getNumberOfReservationsNow(this.location.name).subscribe(next => this.occupation = next);
 
     this.assignedTags = this.location.assignedTags;
     this.setupTagsInCurrentLang();
@@ -68,6 +73,11 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+  }
+
+  ngOnDestroy(): void {
+    this.statusSub.unsubscribe();
+    this.nreservationsSub.unsubscribe();
   }
 
   locationStatusColorClass(): string {

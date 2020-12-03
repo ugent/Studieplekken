@@ -22,15 +22,18 @@ export class LocationService {
    ***********************************************************/
 
   getLocations(): Observable<Location[]> {
+    console.log('getLocations');
     return this.locationCache.getAllValues(api.locations);
   }
 
   getUnapprovedLocations(): Observable<Location[]> {
+    console.log('getUnapprovedLocations');
     return this.locationCache.getAllValues(api.locationsUnapproved);
   }
 
 
   getLocation(locationName: string, invalidateCache: boolean = false): Observable<Location> {
+    console.log('getLocation');
     const url = api.location.replace('{locationName}', locationName);
     return this.locationCache.getValue(locationName, url, invalidateCache);
   }
@@ -52,6 +55,7 @@ export class LocationService {
   }
 
   getNumberOfReservationsNow(locationName: string): Observable<number> {
+    console.log('getNumberOfReservationsNow');
     return this.http.get<any>(api.locationReservationCount.replace('{location}', locationName))
               .pipe(map(s => s.amount));
   }
