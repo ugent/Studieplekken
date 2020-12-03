@@ -125,7 +125,7 @@ export class LocationDetailsComponent implements OnInit {
 
     setInterval(() => {
       this.updateCalendar();
-    }, 300000);
+    }, 300000); // 5 minutes
 
     this.showLockersManagement = this.functionalityService.showLockersManagementFunctionality();
   }
