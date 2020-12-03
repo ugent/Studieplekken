@@ -120,6 +120,7 @@ export class LocationDetailsComponent implements OnInit {
         this.translateStatus();
       }
     );
+
     this.showLockersManagement = this.functionalityService.showLockersManagementFunctionality();
   }
 
@@ -307,6 +308,14 @@ export class LocationDetailsComponent implements OnInit {
     this.calendarPeriodsService.getCalendarPeriodsOfLocation(this.locationName).subscribe(next => {
       next.forEach(element => {
         this.calendarMap.set(element.id, element);
+        const duration = element.reservableFrom.valueOf() - moment().valueOf();
+        if (duration > 0 && duration < 3600000) {
+          console.log('Reservable period in less than 1 hour');
+          setTimeout(() => {
+            console.log('Timeout is called');
+            this.updateCalendar();
+          }, duration);
+        }
       });
     }, () => {
     });
