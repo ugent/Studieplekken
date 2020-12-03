@@ -47,7 +47,7 @@
         }
       },
       "loginWarning": "In order to be able to make a reservation for this location, you need to be logged in.",
-      "refreshWarning": "Refreshing the calendar will happen automatically, it is not necessary to refresh manually."
+      "refreshWarning": "Refreshing the calendar will happen automatically, it is not necessary to refresh the page manually."
     },
 
     "filter": {
