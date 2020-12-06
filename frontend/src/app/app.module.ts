@@ -70,6 +70,7 @@ import { MomentTimeslotSizeComponent } from './shared/inputs/moment-timeslot-siz
 import { AdminsManagementComponent } from './management/admins-management/admins-management.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { TimeslotTableComponent } from './management/locations-management/location-details-management/timeslot-table/timeslot-table.component';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -298,6 +299,7 @@ const routes: Routes = [
       MatChipsModule,
       ModalModule.forRoot(),
       FlexLayoutModule,
+      MatTooltipModule
     ],
   providers: [],
   bootstrap: [AppComponent]

@@ -891,9 +891,10 @@
           },
 
           "attended": {
-            "yes": "ja",
-            "no": "neen",
-            "notScanned": "Niet gescand"
+            "yes": "Aanwezig",
+            "no": "Afwezig",
+            "notScanned": "Geen aanwezigheden opgenomen",
+            "notScannedExplanation": "Voor deze reservatie zijn de aanwezigheden niet opgenomen. Je hebt dus ook geen strafpunten verkregen."
           }
         },
 

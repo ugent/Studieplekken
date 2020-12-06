@@ -34,7 +34,14 @@
             <td>{{pair.second.location.name}}</td>
             <td>{{pair.first.timeslot.timeslotDate.format("DD/MM/YYYY")}}</td>
             <td>{{getBeginHour(pair.first.timeslot, pair.second)}}</td>
-            <td>{{getCorrectI18NObject(pair.first, pair.second) | translate}}</td>
+
+            <!-- If not attended, we put some extra explanation, else we don't. -->
+            <td
+            *ngIf="needTooltip(pair.first, pair.second)"
+            #tooltip="matTooltip" matTooltip="{{'profile.reservations.locations.table.attended.notScannedExplanation' | translate}}" matTooltipPosition="above" class="dotted_ul">
+              {{getCorrectI18NObject(pair.first, pair.second) | translate}}</td>
+
+              <td *ngIf="!needTooltip(pair.first, pair.second)">{{getCorrectI18NObject(pair.first, pair.second) | translate}}</td>
             <!-- User should not be able to delete past reservations, otherwise the penalty points
                  could be deleted as well -->
             <td *ngIf="!isTimeslotInPast(pair.first.timeslot, pair.second)" class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
