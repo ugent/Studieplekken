@@ -891,9 +891,9 @@
           },
 
           "attended": {
-            "yes": "ja",
-            "no": "neen",
-            "notScanned": "Niet gescand"
+            "yes": "Aanwezig",
+            "no": "Afwezig",
+            "notScanned": "Geen aanwezigheden opgenomen"
           }
         },
 

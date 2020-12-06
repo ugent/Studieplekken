@@ -891,9 +891,9 @@
           },
 
           "attended": {
-            "yes": "yes",
-            "no": "no",
-            "notScanned": "Not scanned"
+            "yes": "Present",
+            "no": "Absent",
+            "notScanned": "No attendance taken"
           }
         },
 
