@@ -159,7 +159,6 @@ export class LocationDetailsComponent implements OnInit {
     const reservation: LocationReservation = {user: this.authenticationService.userValue(), timeslot: this.currentTimeslot};
     const timeslotIsSelected = this.selectedSubject.value.some(r => timeslotEquals(r.timeslot, reservation.timeslot))
 
-    console.log(timeslotIsSelected)
     if (this.currentTimeslot.amountOfReservations >= this.capacity && !timeslotIsSelected) {
       return;
     }
