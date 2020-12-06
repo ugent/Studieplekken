@@ -893,7 +893,8 @@
           "attended": {
             "yes": "Present",
             "no": "Absent",
-            "notScanned": "No attendance taken"
+            "notScanned": "No attendance taken",
+            "notScannedExplanation": "During this time period attendance wasn't taken, so you haven't gained any penalty points."
           }
         },
 
