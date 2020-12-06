@@ -894,7 +894,7 @@
             "yes": "Aanwezig",
             "no": "Afwezig",
             "notScanned": "Geen aanwezigheden opgenomen",
-            "notScannedExplanation": "Gedurende deze reservatie zijn de aanwezigheden niet opgenomen. Je hebt dus ook geen strafpunten verkregen."
+            "notScannedExplanation": "Voor deze reservatie zijn de aanwezigheden niet opgenomen. Je hebt dus ook geen strafpunten verkregen."
           }
         },
 
