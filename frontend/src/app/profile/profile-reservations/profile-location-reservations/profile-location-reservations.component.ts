@@ -81,6 +81,10 @@ export class ProfileLocationReservationsComponent implements OnInit {
     return openingTime.format('HH:mm');
   }
 
+  needTooltip(reservation: LocationReservation, calendarPeriod: CalendarPeriod): boolean {
+    return this.isTimeslotInPast(reservation.timeslot, calendarPeriod) && reservation.attended === null;
+  }
+
   getCorrectI18NObject(reservation: LocationReservation, calendarPeriod: CalendarPeriod): string {
     if (this.isTimeslotInPast(reservation.timeslot, calendarPeriod)) {
       if (reservation.attended === null) {
