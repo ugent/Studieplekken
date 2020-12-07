@@ -3,8 +3,6 @@ import {Observable} from 'rxjs';
 import {User} from '../../../../shared/model/User';
 import {Penalty, PenaltyConstructor} from '../../../../shared/model/Penalty';
 import {PenaltyService} from '../../../../services/api/penalties/penalty.service';
-import {transition, trigger, useAnimation} from '@angular/animations';
-import {rowsAnimation} from '../../../../shared/animations/RowAnimation';
 import {UserDetailsService} from '../../../../services/single-point-of-truth/user-details/user-details.service';
 import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
 import {LocationService} from '../../../../services/api/locations/location.service';
@@ -17,11 +15,6 @@ import {penaltyEventCodeForManualEntry} from '../../../../app.constants';
   selector: 'app-user-details-management-penalties',
   templateUrl: './user-details-management-penalties.component.html',
   styleUrls: ['./user-details-management-penalties.component.css'],
-  animations: [trigger('rowsAnimation', [
-    transition('void => *', [
-      useAnimation(rowsAnimation)
-    ])
-  ])]
 })
 export class UserDetailsManagementPenaltiesComponent implements OnInit {
   @Input() userObs: Observable<User>;

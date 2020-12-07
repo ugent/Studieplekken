@@ -1,5 +1,7 @@
 package blok2.daos;
 
+import blok2.helpers.Pair;
+import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
 
@@ -10,6 +12,8 @@ import java.util.List;
 public interface ILocationReservationDao extends IDao {
 
     List<LocationReservation> getAllLocationReservationsOfUser(String augentID) throws SQLException;
+
+    List<Pair<LocationReservation, CalendarPeriod>> getAllLocationReservationsAndCalendarPeriodsOfUser(String userId) throws SQLException;
 
     LocationReservation getLocationReservation(String augentID, Timeslot timeslot) throws SQLException;
 

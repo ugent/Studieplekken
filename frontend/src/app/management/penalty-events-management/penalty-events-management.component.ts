@@ -1,9 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
 import {PenaltyEvent, PenaltyEventConstructor} from '../../shared/model/PenaltyEvent';
 import {PenaltyService} from '../../services/api/penalties/penalty.service';
-import {transition, trigger, useAnimation} from '@angular/animations';
-import {rowsAnimation} from '../../shared/animations/RowAnimation';
 import {TranslateService} from '@ngx-translate/core';
 import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
 import {HttpErrorResponse} from '@angular/common/http';
@@ -12,12 +10,7 @@ import {languageAsEnum} from '../../app.constants';
 @Component({
   selector: 'app-penalty-events-management',
   templateUrl: './penalty-events-management.component.html',
-  styleUrls: ['./penalty-events-management.component.css'],
-  animations: [trigger('rowsAnimation', [
-    transition('void => *', [
-      useAnimation(rowsAnimation)
-    ])
-  ])]
+  styleUrls: ['./penalty-events-management.component.css']
 })
 export class PenaltyEventsManagementComponent implements OnInit {
   penaltyEventsObs: Observable<PenaltyEvent[]>;
@@ -44,7 +37,16 @@ export class PenaltyEventsManagementComponent implements OnInit {
   supportedLanguagesTranslated: string[] = [];
 
   constructor(private penaltyService: PenaltyService,
-              private translate: TranslateService) { }
+              private translate: TranslateService) {
+  }
+
+  get code(): AbstractControl {
+    return this.penaltyEventFormGroup.get('code');
+  }
+
+  get penaltyPoints(): AbstractControl {
+    return this.penaltyEventFormGroup.get('penaltyPoints');
+  }
 
   ngOnInit(): void {
     // just to make sure that the getters below are creatable
@@ -72,7 +74,7 @@ export class PenaltyEventsManagementComponent implements OnInit {
 
   descriptionToShow(penaltyEvent: PenaltyEvent): string {
     let idx = Object.keys(penaltyEvent.descriptions)
-      .findIndex(n =>  n === languageAsEnum[this.translate.currentLang]);
+      .findIndex(n => n === languageAsEnum[this.translate.currentLang]);
 
     // if browser language is not supported, return ENGLISH
     if (idx < 0) {
@@ -147,7 +149,7 @@ export class PenaltyEventsManagementComponent implements OnInit {
     return validForm && validDescriptions;
   }
 
-  addNewPenaltyEvent(value: {code: number, penaltyPoints: number}): void {
+  addNewPenaltyEvent(value: { code: number, penaltyPoints: number }): void {
     if (this.validPenaltyEventForm()) {
       const penaltyEvent = this.penaltyEventFromFormAndDescriptions(value);
 
@@ -246,7 +248,7 @@ export class PenaltyEventsManagementComponent implements OnInit {
     return !String(code).startsWith('1666');
   }
 
-  penaltyEventFromFormAndDescriptions(value: {code: number, penaltyPoints: number}): PenaltyEvent {
+  penaltyEventFromFormAndDescriptions(value: { code: number, penaltyPoints: number }): PenaltyEvent {
     const penaltyEvent = PenaltyEventConstructor.new();
     penaltyEvent.code = value.code;
     penaltyEvent.points = value.penaltyPoints;
@@ -258,7 +260,4 @@ export class PenaltyEventsManagementComponent implements OnInit {
     penaltyEvent.descriptions = descriptions;
     return penaltyEvent;
   }
-
-  get code(): AbstractControl { return this.penaltyEventFormGroup.get('code'); }
-  get penaltyPoints(): AbstractControl { return this.penaltyEventFormGroup.get('penaltyPoints'); }
 }

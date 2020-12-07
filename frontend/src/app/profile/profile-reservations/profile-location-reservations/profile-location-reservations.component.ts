@@ -1,106 +1,108 @@
 import { Component, OnInit } from '@angular/core';
-import {AuthenticationService} from '../../../services/authentication/authentication.service';
-import {Observable, Subscription} from 'rxjs';
-import {transition, trigger, useAnimation} from '@angular/animations';
-import {rowsAnimation} from '../../../shared/animations/RowAnimation';
-import {LocationReservation} from '../../../shared/model/LocationReservation';
-import { CalendarPeriodsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
+import { AuthenticationService } from '../../../services/authentication/authentication.service';
+import { LocationReservation } from '../../../shared/model/LocationReservation';
 import { CalendarPeriod } from 'src/app/shared/model/CalendarPeriod';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
-import { Timeslot } from 'src/app/shared/model/Timeslot';
-import { UserConstructor } from 'src/app/shared/model/User';
+import {Timeslot, timeslotEndHour} from 'src/app/shared/model/Timeslot';
+import { Pair } from '../../../shared/model/helpers/Pair';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-profile-location-reservations',
   templateUrl: './profile-location-reservations.component.html',
-  styleUrls: ['./profile-location-reservations.component.css'],
-  animations: [trigger('rowsAnimation', [
-    transition('void => *', [
-      useAnimation(rowsAnimation)
-    ])
-  ])]
+  styleUrls: ['./profile-location-reservations.component.css']
 })
 export class ProfileLocationReservationsComponent implements OnInit {
-  locationReservations: Observable<LocationReservation[]>;
-  calendarMap: Map<number, CalendarPeriod> = new Map();
-  calendarIdList: number[] = [];
-  locationReservationToDelete: LocationReservation = new LocationReservation(UserConstructor.new(), null);
-  locationReservationSub: Subscription;
+  locationReservations: Pair<LocationReservation, CalendarPeriod>[] = [];
 
-  showReservations = false;
-  loadingReservations = false;
-  deletionWasSuccess: boolean = undefined;
+  locationReservationToDelete: LocationReservation = undefined;
+  calendarPeriodForLocationReservationToDelete: CalendarPeriod = undefined;
 
+  successGettingLocationReservations: boolean = undefined;
+  successDeletingLocationReservation: boolean = undefined;
 
   constructor(private authenticationService: AuthenticationService,
-              private calendarPeriodService: CalendarPeriodsService,
               private locationReservationService: LocationReservationsService) {
-    authenticationService.user.subscribe(next => {
-    });
-  }
-
-  ngOnInit(): void {
-  // only change the locationReservations if the user is logged in.
-    // If you would omit the if-clause, a redudant API call will
-    // be made with {userId} = '' (and thus requesting for all location
-    // reservations stored in the database, this is not something
-    // we want...
-    if (this.authenticationService.isLoggedIn()) {
-      this.locationReservations = this.authenticationService.getLocationReservations();
-    }
-
-    this.locationReservations.subscribe(next => {
-      this.showReservations = false;
-      this.loadingReservations = true;
-
-      this.calendarIdList = [];
-      next.forEach(element => {
-        this.calendarIdList.push(element.timeslot.calendarId);
-      });
-
-      this.fillCalendarLocationMap();
-    }, () => {
-      this.showReservations = false;
-      this.loadingReservations = false;
-    });
-  }
-
-  fillCalendarLocationMap(): void {
-    this.calendarPeriodService.getCalendarPeriods().subscribe(next => {
-      next.forEach(element => {
-        if (this.calendarIdList.includes(element.id)) {
-          this.calendarMap.set(element.id, element);
-        }
-      });
-
-      this.showReservations = true;
-      this.loadingReservations = false;
-    }, () => {
-      this.showReservations = false;
-      this.loadingReservations = false;
-    });
-  }
-
-  prepareToDeleteLocationReservation(locationReservation: LocationReservation): void {
-    this.deletionWasSuccess = undefined;
-    this.locationReservationToDelete = locationReservation;
-  }
-
-  deleteLocationReservation(): void {
-    this.locationReservationService.deleteLocationReservation(this.locationReservationToDelete).subscribe(
+    authenticationService.user.subscribe(
       () => {
-        this.locationReservations = this.authenticationService.getLocationReservations();
-        this.deletionWasSuccess = true;
-      }, () => {
-        this.locationReservations = this.authenticationService.getLocationReservations();
-        this.deletionWasSuccess = false;
+        this.setup();
       }
     );
   }
 
-  getBeginHour(calendarPeriod: CalendarPeriod, timeslot: Timeslot): Date {
-    const d = new Date(calendarPeriod.startsAt + ' ' + calendarPeriod.openingTime);
-    d.setTime(d.getTime() + timeslot.timeslotSeqnr * calendarPeriod.reservableTimeslotSize * 60000);
-    return d;
+  ngOnInit(): void {
   }
+
+  setup(): void {
+    // don't setup if user is not logged in (or logged in user isn't loaded yet)
+    if (!this.authenticationService.isLoggedIn()) {
+      return;
+    }
+
+    // let the user know that his/hers location reservations are loading
+    this.successGettingLocationReservations = null;
+
+    // load the location reservations
+    this.authenticationService.getLocationReservationsAndCalendarPeriods().subscribe(
+      next => {
+        this.successGettingLocationReservations = true;
+        this.locationReservations = next;
+      }, () => {
+        this.successGettingLocationReservations = false;
+      }
+    );
+  }
+
+  prepareToDeleteLocationReservation(locationReservation: LocationReservation, calendarPeriod: CalendarPeriod): void {
+    this.successDeletingLocationReservation = undefined;
+    this.locationReservationToDelete = locationReservation;
+    this.calendarPeriodForLocationReservationToDelete = calendarPeriod;
+  }
+
+  deleteLocationReservation(): void {
+    this.successDeletingLocationReservation = null;
+    this.locationReservationService.deleteLocationReservation(this.locationReservationToDelete).subscribe(
+      () => {
+        this.successDeletingLocationReservation = true;
+        this.setup();
+      }, () => {
+        this.successDeletingLocationReservation = false;
+      }
+    );
+  }
+
+  // /******************
+  // *   AUXILIARIES   *
+  // *******************/
+
+  getBeginHour(timeslot: Timeslot, calendarPeriod: CalendarPeriod): string {
+    const openingTime = calendarPeriod.openingTime.clone()
+      .add(timeslot.timeslotSeqnr * calendarPeriod.reservableTimeslotSize, 'minutes');
+    return openingTime.format('HH:mm');
+  }
+
+  needTooltip(reservation: LocationReservation, calendarPeriod: CalendarPeriod): boolean {
+    return this.isTimeslotInPast(reservation.timeslot, calendarPeriod) && reservation.attended === null;
+  }
+
+  getCorrectI18NObject(reservation: LocationReservation, calendarPeriod: CalendarPeriod): string {
+    if (this.isTimeslotInPast(reservation.timeslot, calendarPeriod)) {
+      if (reservation.attended === null) {
+        return 'profile.reservations.locations.table.attended.notScanned';
+      } else {
+        return reservation.attended ? 'profile.reservations.locations.table.attended.yes'
+          : 'profile.reservations.locations.table.attended.no';
+      }
+    }
+    return 'general.notAvailableAbbreviation';
+  }
+
+  isTimeslotInPast(timeslot: Timeslot, calendarPeriod: CalendarPeriod): boolean {
+    return timeslotEndHour(calendarPeriod, timeslot).isBefore(moment());
+  }
+
+  formatDate(date: any): string {
+    return moment(date).format('DD/MM/YYYY');
+  }
+
 }

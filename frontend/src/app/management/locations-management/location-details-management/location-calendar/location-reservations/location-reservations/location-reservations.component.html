@@ -12,7 +12,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr [@rowsAnimation]="" *ngFor="let reservation of locationReservations">
+    <tr *ngFor="let reservation of locationReservations">
       <td>{{reservation.user.firstName + ' ' + reservation.user.lastName}}</td>
       <td *ngIf="showCheckbox() && reservation.attended == null">
         <span class="glyphicon glyphicon-ok pointerCursor" style="color:#CCFF99" id="firstToggle" (click)="onCheckboxToggle(reservation, true)"></span>

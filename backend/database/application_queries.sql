@@ -264,7 +264,7 @@ from public.calendar_periods cp INNER JOIN public.locations l on cp.location_nam
 where cp.calendar_id = ?;
 
 -- $lock_location_reservation
-LOCK TABLE public.location_reservations IN ACCESS EXCLUSIVE MODE;
+SELECT * from public.reservation_timeslots lr where lr.calendar_id = ? and lr.timeslot_date = ? and lr.timeslot_sequence_number= ? for UPDATE; 
 
 -- $delete_location_reservation
 delete
@@ -321,6 +321,23 @@ where location_name = ?;
 update public.location_reservations
 set user_augentid = ?
 where user_augentid = ?;
+
+-- $get_location_reservations_with_location_by_user
+select lr.*, cp.*, l.*, b.*, a.*, u.*
+     , lr.timeslot_seqnr as "timeslot_sequence_number"
+from public.location_reservations lr
+    join public.calendar_periods cp
+        on cp.calendar_id = lr.calendar_id
+    join public.locations l
+        on l.name = cp.location_name
+    join public.buildings b
+        on b.building_id = l.building_id
+    join public.authority a
+        on a.authority_id = l.authority_id
+    join users u
+        on u.augentid = lr.user_augentid
+where lr.user_augentid = ?
+order by lr.timeslot_date desc, lr.timeslot_seqnr desc;
 
 
 -- queries for table USER
@@ -1034,7 +1051,7 @@ values (?, ?, ?);
 
 -- $count_reservations_now
 with y as (
-select *
+select ts.calendar_id as calendar_id_dist, *
 from public.locations l 
     join public.calendar_periods cp
         on l.name = cp.location_name
@@ -1049,7 +1066,8 @@ select count(1) as reservation_count, (select count(1) from y) as timeslot_count
 from y
     inner join public.location_reservations rs
         on y.timeslot_date = rs.timeslot_date
-        and rs.timeslot_seqnr = y.timeslot_sequence_number;
+        and rs.timeslot_seqnr = y.timeslot_sequence_number
+        and calendar_id_dist = rs.calendar_id;
 
 -- $delete_timeslots_of_calendar
 delete

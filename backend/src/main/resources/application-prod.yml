@@ -19,7 +19,7 @@ server:
   ssl:
     enabled: false
 
-debug: true
+debug: false
 
 cas:
   callbackUrl: https://studieplekken.ugent.be/api/login/cas

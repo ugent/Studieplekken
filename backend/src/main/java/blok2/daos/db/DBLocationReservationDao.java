@@ -1,7 +1,9 @@
 package blok2.daos.db;
 
 import blok2.daos.ILocationReservationDao;
+import blok2.helpers.Pair;
 import blok2.helpers.Resources;
+import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
@@ -35,6 +37,28 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
             while (rs.next()) {
                 LocationReservation locationReservation = createLocationReservation(rs, conn);
                 reservations.add(locationReservation);
+            }
+
+            return reservations;
+        }
+    }
+
+    @Override
+    public List<Pair<LocationReservation, CalendarPeriod>>
+    getAllLocationReservationsAndCalendarPeriodsOfUser(String userId)
+            throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            List<Pair<LocationReservation, CalendarPeriod>> reservations = new ArrayList<>();
+
+            PreparedStatement pstmt = conn.prepareStatement(Resources
+                    .databaseProperties.getString("get_location_reservations_with_location_by_user"));
+            pstmt.setString(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                LocationReservation lr = createLocationReservation(rs, conn);
+                CalendarPeriod cp = DBCalendarPeriodDao.createCalendarPeriod(rs, conn);
+                reservations.add(new Pair<>(lr, cp));
             }
 
             return reservations;
@@ -115,24 +139,24 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
 
     @Override
     public boolean addLocationReservationIfStillRoomAtomically(LocationReservation reservation) throws SQLException {
-        // Open up transaction
         try (Connection conn = adb.getConnection()) {
             try {
-                conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-                // Take a lock on the database.
+                // Try to take a lock (or block) on the database by performing a SELECT FOR UPDATE.
+                // A lock must be taken within a transaction, therefore disabling auto commit.
                 conn.setAutoCommit(false);
-                conn.prepareStatement(Resources.databaseProperties.getString("lock_location_reservation")).execute();
+                PreparedStatement stmt = conn.prepareStatement(Resources.databaseProperties.getString("lock_location_reservation"));
+                stmt.setInt(1, reservation.getTimeslot().getCalendarId());
+                stmt.setDate(2, Date.valueOf(reservation.getTimeslot().getTimeslotDate()));
+                stmt.setInt(3, reservation.getTimeslot().getTimeslotSeqnr());
+                stmt.execute();
 
                 // Fetch data we need.
                 long amountOfReservations = getAmountOfReservationsOfTimeslot(reservation.getTimeslot(), conn);
-
                 long sizeOfLocation = getLocationSizeOfTimeslot(reservation.getTimeslot(), conn);
 
                 if (amountOfReservations < sizeOfLocation) {
-                    // All is well. Add & then release the lock
-
+                    // All is well. Add & then release the lock (by committing, cfr finally clause).
                     addLocationReservation(reservation, conn);
-                    conn.commit();
                     return true;
                 }
 
@@ -148,6 +172,8 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
                     // This is a real db error. Rethrowing it.
                     throw e;
                 }
+            } finally {
+                conn.commit();;
             }
         }
     }

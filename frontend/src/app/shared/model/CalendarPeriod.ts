@@ -184,7 +184,7 @@ function mapNotYetReservableTimeslotsToCalendarEvents(period: CalendarPeriod, cu
 
   for (const timeslot of period.timeslots) {
     const beginDT = new Date(timeslot.timeslotDate.format('YYYY-MM-DD') + 'T' + timeslotStartHour(period, timeslot).format('HH:mm'));
-    const endDT = new Date(timeslot.timeslotDate.format('YYYY-MM-DD') + 'T' + timeslotEndHour(period, timeslot.timeslotSeqnr));
+    const endDT = new Date(timeslot.timeslotDate.format('YYYY-MM-DD') + 'T' + timeslotEndHour(period, timeslot).format('HH:mm'));
 
     let title: string;
     if (currentLang === 'nl') {
@@ -221,7 +221,7 @@ function mapReservableTimeslotsToCalendarEvents(period: CalendarPeriod, reserved
 
   for (const timeslot of period.timeslots) {
       const beginDT = new Date(timeslot.timeslotDate.format('YYYY-MM-DD') + 'T' + timeslotStartHour(period, timeslot).format('HH:mm'));
-      const endDT = new Date(timeslot.timeslotDate.format('YYYY-MM-DD') + 'T' + timeslotEndHour(period, timeslot.timeslotSeqnr));
+      const endDT = new Date(timeslot.timeslotDate.format('YYYY-MM-DD') + 'T' + timeslotEndHour(period, timeslot).format('HH:mm'));
 
       calendarEvents.push({
         title: `${timeslot.amountOfReservations} / ${period.location.numberOfSeats}`,

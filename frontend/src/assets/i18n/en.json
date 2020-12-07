@@ -23,8 +23,8 @@
     "status": "Status",
 
     "locationDetails": {
-      "info": "General information about this room:",
-      "tags": "Tags that characterize this room:",
+      "info": "General information about this room",
+      "tags": "Tags that characterize this room",
       "buttons": {
         "manage": "Manage"
       },
@@ -43,10 +43,11 @@
           "updateAddMessage": "The following reservations will be added to your profile",
           "updateDeleteMessage": "The following reservations will be deleted",
           "updateConfirmMessage": "Would you like to confirm these changes?",
-          "updateWarningMessage": "WARNING: not showing up for a registered reservation with your student ID will lead to penalty points attributed to your profile. Too many penalty points will lead to blacklisting from the application"
+          "updateWarningMessage": "WARNING: You are only allowed to make a reservation when you will attend. Attendance can and will be taken."
         }
       },
-      "loginWarning": "In order to be able to make a reservation for this location, you need to be logged in."
+      "loginWarning": "In order to be able to make a reservation for this location, you need to be logged in.",
+      "refreshWarning": "Refreshing the calendar will happen automatically, it is not necessary to refresh the page manually."
     },
 
     "filter": {
@@ -77,7 +78,8 @@
   "general": {
     "dsa": "Student Activities Office",
     "ugent": "Ghent University",
-
+    "back": "Back",
+    "print": "Print",
     "yes": "Yes",
     "no": "No",
 
@@ -187,7 +189,8 @@
           "table": {
             "noLocationReservations": "There are no reservations for the selected timeslot",
             "user": "User",
-            "attended": "Was user present?"
+            "attended": "Was user present?",
+            "number": "Student number"
           }
         },
 
@@ -888,15 +891,16 @@
           },
 
           "attended": {
-            "yes": "yes",
-            "no": "no",
-            "other": "n/a"
+            "yes": "Present",
+            "no": "Absent",
+            "notScanned": "No attendance taken",
+            "notScannedExplanation": "For this reservation attendance wasn't taken, so you haven't gained any penalty points."
           }
         },
 
-        "zeroReservations": "You have never made any room reservations so far",
-        "loading": "Room reservations are being loaded...",
-        "error": "Error while loading your room reservations"
+        "zeroReservations": "You have never made any room reservations so far.",
+        "loading": "Reservations are being loaded...",
+        "error": "Something went wrong while retrieving your reservations."
       },
 
       "lockers": {
