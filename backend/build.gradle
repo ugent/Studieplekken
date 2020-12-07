@@ -56,8 +56,8 @@ dependencies {
 flyway {
     url = "jdbc:postgresql://localhost:5432/blokatugent"
     schemas = ['public']
-    user = "blokat"
-    password = "blokat"
+    user = ***REMOVED***
+    password = ***REMOVED***
 }
 
 group = 'be.ugent'
