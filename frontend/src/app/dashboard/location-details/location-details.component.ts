@@ -76,6 +76,8 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
   calendarSub: Subscription;
   statusSub: Subscription;
 
+  lastCalendarUpdate = moment();
+
   constructor(private locationService: LocationService,
               private route: ActivatedRoute,
               private sanitizer: DomSanitizer,
@@ -122,6 +124,11 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
         this.translateStatus();
       }
     );
+
+    setInterval(() => {
+      this.updateCalendar();
+    }, 300000); // 5 minutes
+
     this.showLockersManagement = this.functionalityService.showLockersManagementFunctionality();
   }
 
@@ -266,7 +273,15 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
         this.originalList = [...reservations];
         this.selectedSubject.next(reservations);
 
-        periods.forEach(element => this.calendarMap.set(element.id, element));
+        periods.forEach(element => {
+          this.calendarMap.set(element.id, element);
+          const duration = element.reservableFrom.valueOf() - moment().valueOf();
+          if (duration > 0) {
+            setTimeout(() => {
+              this.events = mapCalendarPeriodsToCalendarEvents([...this.calendarMap.values()], this.currentLang, []);
+            }, duration);
+          }
+        });
 
         this.subscription = this.selectedSubject.asObservable().subscribe(proposedReservations =>
           this.events = mapCalendarPeriodsToCalendarEvents(periods, this.currentLang, [...proposedReservations]));
