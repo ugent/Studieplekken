@@ -20,7 +20,6 @@ Op elke studieplek gelden strikte veiligheidsmaatregelen. Handen dienen ontsmet 
 
 De studieplekken worden georganiseerd door studenten, medewerkers en vrijwilligers. Ga respectvol met hen en met elkaar om. Op elke studieplek is toezicht aanwezig. Bij problemen of vragen, aarzel niet om deze persoon aan te spreken.
 
-
 ##  Veelgestelde vragen<a class="anchor" id="FAQ"></a>
 
 > Zullen er controles uitgevoerd worden door UGent personeel op de locatie? Indien ja, op welk tijdstip en hoe frequent zal dit gebeuren?
@@ -68,4 +67,8 @@ Uitbreiden van locaties en aantal studieplekken is jammer genoeg niet mogelijk. 
 In het 2e semester zullen we inderdaad opnieuw de studieplekken aanbieden via deze applicatie. De locatie en de openingsuren zullen mogelijks wel aangepast worden.
 
 
-Hopelijk zijn jouw vragen opgelost met bovenstaande antwoorden. Als je toch nog een dringende vraag hebt, kan je deze stellen op info@studieplekken.ugent.be
+<hr>
+
+Bij extra vragen kun je contact opnemen met [info@studieplekken.ugent.be](mailto:info@studieplekken.ugent.be).
+
+

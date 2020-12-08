@@ -67,5 +67,6 @@ Expanding the capacity of the locations is not possible, unfortunately. The capa
 
 Yes, the locations will be provided through this application in the 2nd semester. The locations and opening hours might chance though.
 
+<hr>
 
-We hope your questions are answered with the answers above. If you have any further questions, you can e-mail these to info@studieplekken.ugent.be
+For extra questions you can mail to [info@studieplekken.ugent.be](mailto:info@studieplekken.ugent.be).

@@ -1,3 +1,3 @@
 # Study Locations UGent
 
-For further questions you may contact [Bieke Morlion](mailto:bieke.morlion@ugent.be).
+Employees and volunteers can get more info at [info-medewerkers@studieplekken.ugent.be](mailto:info-medewerkers@studieplekken.ugent.be).

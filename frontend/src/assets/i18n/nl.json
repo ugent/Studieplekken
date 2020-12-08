@@ -48,7 +48,7 @@
           "updateAddMessage": "De volgende reservaties zullen toegevoegd worden aan jouw profiel:",
           "updateDeleteMessage": "De volgende reservaties zullen verwijderd worden",
           "updateConfirmMessage": "Wilt u deze wijzigingen doorvoeren?",
-          "updateWarningMessage": "WAARSCHUWING: niet opdagen voor een geregistreerde reservatie met uw studentenkaart zal leiden tot strafpunten. Te veel strafpunten leiden tot uitsluiting van het gebruik van de applicatie."
+          "updateWarningMessage": "WAARSCHUWING: Je mag enkel een plek reserveren wanneer je deze nodig hebt. Aanwezigheden kunnen en zullen opgenomen worden."
         }
       },
       "loginWarning": "Voordat er reservaties kunnen geplaatst worden voor deze locatie, dient u ingelogd te zijn.",
@@ -896,9 +896,10 @@
           },
 
           "attended": {
-            "yes": "ja",
-            "no": "neen",
-            "notScanned": "Niet gescand"
+            "yes": "Aanwezig",
+            "no": "Afwezig",
+            "notScanned": "Geen aanwezigheden opgenomen",
+            "notScannedExplanation": "Voor deze reservatie zijn de aanwezigheden niet opgenomen. Je hebt dus ook geen strafpunten verkregen."
           }
         },
 
