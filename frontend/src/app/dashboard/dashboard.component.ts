@@ -13,6 +13,7 @@ import { Building } from '../shared/model/Building';
 import { BuildingService } from '../services/api/buildings/buildings.service';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-dashboard',
@@ -76,8 +77,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.successOnRetrievingLocations = null;
 
     this.locationSub = this.locationService.getLocations()
-      .subscribe(
-      (next) => {
+      .subscribe((next) => {
         this.locations = next;
         this.filteredLocations = next;
         this.filteredLocationsBackup = next;
@@ -164,7 +164,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         return;
       }
 
-      // console.log(this.selectedBuilding);
       // check that the location is in the selected building
       if (this.selectedBuilding !== undefined && location.building.buildingId !== this.selectedBuilding.buildingId) {
         return;
