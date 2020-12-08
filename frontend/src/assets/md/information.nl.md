@@ -1,3 +1,4 @@
+# Studieplekken UGent
 Vanaf maandag 30 november 2020 stelt de UGent op verschillende campussen stille studieplekken ter beschikking van **UGent studenten die hier nood aan hebben.**
 
 De studieplekken zijn beschikbaar van 30 november 2020 tot 18 december 2020, en tijdens de examens van 4 januari 2021 tot 29 januari 2021.
@@ -18,3 +19,53 @@ Iemand anders laten reserveren met jouw email adres is niet toegestaan. Elke vor
 Op elke studieplek gelden strikte veiligheidsmaatregelen. Handen dienen ontsmet te worden bij het binnenkomen. Het dragen van een mondmasker is verplicht van zodra je het gebouw betreedt. Eens je op je studieplek zit, mag je het mondmasker uitdoen. De tafels en stoelen zijn op een veilige afstand geplaatst en mogen niet verplaatst worden. Physical distancing dient op elk moment gerespecteerd te worden. Blijf zeker thuis indien je ziek bent of symptomen ervaart.
 
 De studieplekken worden georganiseerd door studenten, medewerkers en vrijwilligers. Ga respectvol met hen en met elkaar om. Op elke studieplek is toezicht aanwezig. Bij problemen of vragen, aarzel niet om deze persoon aan te spreken.
+
+
+##  Veelgestelde vragen<a class="anchor" id="FAQ"></a>
+
+> Zullen er controles uitgevoerd worden door UGent personeel op de locatie? Indien ja, op welk tijdstip en hoe frequent zal dit gebeuren?
+
+Controles worden uitgevoerd als er situaties ontstaan waarbij iemand die gereserveerd heeft geen plaats blijkt te hebben. Op dat moment zal de lijst van studenten die gereserveerd hebben bekeken worden en studenten zonder reservatie zullen de studieplek moeten verlaten. De studieplek is enkel toegankelijk voor studenten die gereserveerd hebben. Er worden geen lege plekken op het moment zelf ingevuld zonder reservatie.
+
+> Tot wanneer kan men zich uitschrijven, en hoe moet dit gebeuren?
+
+Uitschrijven uit een tijdsslot kan tot ten laatste het einde van het tijdslot, dit om de mogelijkheid te bieden aan mensen met eventuele ziektesymptomen om zich uit te schrijven en de plek aan anderen te laten. Uitschrijven kan door in de navigatiebalk naar Profiel -> Reservaties te gaan en met behulp van het vuilbakje reservaties te verwijderen.
+
+> Wat moet ik doen als ik me ziek voel?
+
+Als je je ziek voelt of symptomen hebt, mag je niet naar de studieplek komen. Neem contact op met je arts.
+
+> Mag ik komen als ik in quarantaine moet?
+
+Als je in quarantaine moet of bent mag je absoluut niet naar de studieplek komen. Je volgt strikt de richtlijnen van je arts.
+
+> Hoe wordt de organisatie verwittigd indien iemand positief test die aanwezig was in een studieplek?
+
+Indien je aanwezig was op een studieplek en positief getest hebt op corona, laat je dit weten aan contacttracing@ugent.be. De contact tracers zullen vervolgens een risico-analyse uitvoeren en hier verdere stappen ondernemen.
+
+> Bij wie kan ik terecht met eventuele vragen i.v.m. de organisatie van de studieplekken?
+
+De algemene informatie over de studieplekken kan je vinden op deze pagina. Bij specifieke vragen over één studieplek kan je altijd terecht bij het aanwezige UGent personeel of bij de student-vrijwilligers die er zullen zijn wanneer er geen UGent-personeel is, op deze studieplek.
+
+> Wie moet ik contacteren met vragen i.v.m. verloren voorwerpen?
+
+Bij vragen over verloren voorwerpen informeer je best bij het UGent personeel van de specifieke studieplek waar je het voorwerp bent verloren.
+
+> Kan ik gestraft worden als mijn studentenkaart per ongeluk niet gescand is?
+
+Voorlopig wordt er nog niet systematisch gescand. Er worden dus ook geen aanwezigheden genoteerd. Dit zal in jouw profiel aangeduid staan als "No attendance taken". Enkel studenten die gereserveerd hebben kunnen immers aanwezig zijn op de studieplek.
+
+> Worden er ook studieplekken voorzien tijdens de kerstvakantie?
+
+De studieplekken worden momenteel voorzien van 30 november t.e.m. 18 december 2020, en van 4 januari t.e.m. 29 januari 2021. Er worden geen studieplekken voorzien tijdens de kerstvakantie.
+
+> Ik wil graag nog een studieplek maar alle plekken zijn vol
+
+Uitbreiden van locaties en aantal studieplekken is jammer genoeg niet mogelijk. Het aanbod dat we nu doen voor december en januari is het maximale aanbod dat toegelaten is binnen de huidige corona maatregelen na overleg met de overheid.
+
+> Zullen er in 2e semester ook studieplekken zijn?
+
+In het 2e semester zullen we inderdaad opnieuw de studieplekken aanbieden via deze applicatie. De locatie en de openingsuren zullen mogelijks wel aangepast worden.
+
+
+Hopelijk zijn jouw vragen opgelost met bovenstaande antwoorden. Als je toch nog een dringende vraag hebt, kan je deze stellen op info@studieplekken.ugent.be

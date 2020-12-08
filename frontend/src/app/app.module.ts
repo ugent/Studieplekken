@@ -1,5 +1,5 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
+import {NgModule, SecurityContext} from '@angular/core';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -279,7 +279,9 @@ const routes: Routes = [
         deps: [HttpClient]
       }
     }),
-    MarkdownModule.forRoot(),
+    MarkdownModule.forRoot({
+      sanitize: SecurityContext.NONE
+    }),
     BrowserAnimationsModule,
     CalendarModule.forRoot({
       provide: DateAdapter,
