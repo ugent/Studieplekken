@@ -9,6 +9,13 @@
     "day": "Day"
   },
 
+  "information": {
+    "general": "General",
+    "manager": "Manager",
+    "goto": "Go to",
+    "faq": "FAQ"
+  },
+
   "dashboard": {
     "address": "Address",
     "building": "Building",
@@ -78,10 +85,12 @@
   "general": {
     "dsa": "Student Activities Office",
     "ugent": "Ghent University",
-    "back": "Back",
-    "print": "Print",
+    "appTitle": "Study Rooms UGent",
+
     "yes": "Yes",
     "no": "No",
+    "back": "Back",
+    "print": "Print",
 
     "buttons": {
       "add": "Add",
