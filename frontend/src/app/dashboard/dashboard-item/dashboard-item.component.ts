@@ -8,7 +8,7 @@ import {LocationTag} from '../../shared/model/LocationTag';
 import {ApplicationTypeFunctionalityService} from '../../services/functionality/application-type/application-type-functionality.service';
 import {defaultLocationImage, LocationStatus} from '../../app.constants';
 import {CalendarPeriodsService} from '../../services/api/calendar-periods/calendar-periods.service';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard-item',
@@ -16,7 +16,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./dashboard-item.component.css', '../location.css'],
   providers: [DatePipe]
 })
-export class DashboardItemComponent implements OnInit, AfterViewInit, OnDestroy {
+export class DashboardItemComponent implements OnInit, AfterViewInit {
   @Input() location: Location;
   @Input() status: Pair<LocationStatus, string>;
 
@@ -32,18 +32,14 @@ export class DashboardItemComponent implements OnInit, AfterViewInit, OnDestroy 
   showProgressBar: boolean;
 
   statusInCurrentLang: string;
-
+  occupationObs: Observable<number>;
   showLockersManagement: boolean;
 
   /* Subscriptions */
-  private statusSub: Subscription;
-  private nreservationsSub: Subscription;
-
   constructor(private locationService: LocationService,
               private calendarPeriodsService: CalendarPeriodsService,
               private translate: TranslateService,
-              private functionalityService: ApplicationTypeFunctionalityService,
-              private datePipe: DatePipe) {
+              private functionalityService: ApplicationTypeFunctionalityService) {
   }
 
   ngOnInit(): void {
@@ -52,18 +48,10 @@ export class DashboardItemComponent implements OnInit, AfterViewInit, OnDestroy 
       () => {
         this.currentLang = this.translate.currentLang;
         this.setupTagsInCurrentLang();
-        this.translateStatus();
       }
     );
 
-    this.statusSub = this.calendarPeriodsService.getStatusOfLocation(this.location.name).subscribe(
-      next => {
-        this.status = next;
-        this.translateStatus();
-      }
-    );
-
-    this.nreservationsSub = this.locationService.getNumberOfReservationsNow(this.location.name).subscribe(next => this.occupation = next);
+    this.occupationObs = this.locationService.getNumberOfReservationsNow(this.location.name);
 
     this.assignedTags = this.location.assignedTags;
     this.setupTagsInCurrentLang();
@@ -73,11 +61,6 @@ export class DashboardItemComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   ngAfterViewInit(): void {
-  }
-
-  ngOnDestroy(): void {
-    this.statusSub.unsubscribe();
-    this.nreservationsSub.unsubscribe();
   }
 
   locationStatusColorClass(): string {
@@ -103,62 +86,4 @@ export class DashboardItemComponent implements OnInit, AfterViewInit, OnDestroy 
     }
   }
 
-  translateStatus(): void {
-    // status.second format: "yyyy-MM-dd hh:mm"
-    if (this.status) {
-      switch (this.status.first) {
-        case LocationStatus.OPEN: {
-          const datetime = new Date(this.status.second);
-          this.translate.get('dashboard.locationDetails.status.statusOpen').subscribe(
-            next => {
-              this.statusInCurrentLang = next.replace('{}', this.datePipe.transform(datetime, 'shortTime'));
-            }, () => {
-              this.statusInCurrentLang = 'general.notAvailableAbbreviation';
-            }
-          );
-          break;
-        }
-        case LocationStatus.CLOSED: {
-          this.translate.get('dashboard.locationDetails.status.statusClosed').subscribe(
-            next => {
-              this.statusInCurrentLang = next;
-            }, () => {
-              this.statusInCurrentLang = 'general.notAvailableAbbreviation';
-            }
-          );
-          break;
-        }
-        case LocationStatus.CLOSED_ACTIVE: {
-          const datetime = new Date(this.status.second);
-          this.translate.get('dashboard.locationDetails.status.statusClosedActive').subscribe(
-            next => {
-              this.statusInCurrentLang = next.replace('{}', this.datePipe.transform(datetime, 'shortTime'));
-            }, () => {
-              this.statusInCurrentLang = 'general.notAvailableAbbreviation';
-            }
-          );
-          break;
-        }
-        case LocationStatus.CLOSED_UPCOMING: {
-          const datetime = new Date(this.status.second).toLocaleString();
-          this.translate.get('dashboard.locationDetails.status.statusClosedUpcoming').subscribe(
-            next => {
-              this.statusInCurrentLang = next.replace('{}', datetime);
-            }, () => {
-              this.statusInCurrentLang = 'general.notAvailableAbbreviation';
-            }
-          );
-          break;
-        }
-      }
-    } else {
-      this.translate.get('general.notAvailableAbbreviation').subscribe(
-        next => {
-          this.statusInCurrentLang = next;
-        }, () => {
-          this.statusInCurrentLang = 'general.notAvailableAbbreviation';
-        }
-      );
-    }
-  }
 }
