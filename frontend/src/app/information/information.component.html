@@ -4,4 +4,26 @@ page. If, at certain points, the page needs to be updated, markdown is easy
 to use for everybody. And we dont have to change any code.
 The markdown files used are provided in `assets/md/information.<lang>.md`
 -->
-<div markdown src="assets/md/information.{{currentLanguage()}}.md"></div>
+<mat-tab-group>
+  <mat-tab label="{{'information.general' | translate}}">
+    <div style="padding-top: 10pt;">
+      <aside class="col-sm-3 inpage-nav-container xs-hide">
+        <div id="nav-anchor"></div>
+        <nav role="navigation" data-lockfixed="true" class="padding-default bg-tertiary">
+          <h2>{{'information.goto' | translate}}</h2>
+          <ul class="linklist linklist-dark">
+              <li><a href="information#FAQ">{{'information.faq'}}</a></li>
+          </ul>
+        </nav>
+      </aside>
+      <markdown src="assets/md/information.{{currentLanguage()}}.md"></markdown>
+    </div>
+  </mat-tab>
+  <mat-tab label="{{'information.manager' | translate}}" *ngIf="showManagement">
+    <div style="padding-top: 10pt;">
+      <div markdown src="assets/md/information_manager.{{currentLanguage()}}.md"></div>
+    </div>
+  </mat-tab>
+</mat-tab-group>
+
+
