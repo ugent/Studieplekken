@@ -1,4 +1,4 @@
-# Study Rooms UGent
+# Study Locations UGent
 
 From Monday, November 30, 2020, UGent will make quiet study places available on various campuses to **UGent students who need them.**
 
@@ -21,8 +21,52 @@ Strict security measures apply at every study place. Hands need to be disinfecte
 
 The study areas are organized by students, staff and volunteers. Treat them and each other with respect. Every study place is supervised. In case of problems or questions, do not hesitate to speak to this person.
 
+## Frequently Asked Questions<a class="anchor" id="FAQ"></a>
+
+> Will attendance be checked by the UGent personel on the location? If yes, when and how frequently?
+
+Checks will be executed when situations arise where a person with a reservation does not have a seat. At that point the list of reservations will be looked at and students without a reservation will be asked to leave the location. Locations are exclusively accessible for people who have a reservation. Empty seats will not be assigned on the spot to people without a reservation.
+
+> Up until which point can I unsubscribe, and how can I do this?
+
+Unsubscribing can be done up until the end of a certain timeslot. This was chosen while keeping possible illness symptoms in mind and allowing people to unsubscribe in these situations. Unsubscribing can be done by navigating to Profile -> Reservations and using the trash icon to delete the reservations.
+
+> What should I do when I feel ill?
+
+When you feel ill or you show symptoms of illness, you are not allowed to come to the location. Please contact your doctor.
+
+> Am I allowed to come to the location when I am in quarantaine?
+
+If you are in quarantaine you are absolutely not allowed to come to the location. Please follow the instructions of your doctor.
+
+> How should the organisation be informed when someone tests positive for the corona virus?
+
+When you have studied at a certain location and you test positive for the corona virus thereafter, please contact contacttracing@ugent.be. The contact tracers will perform a risk analysis and take further steps.
+
+> Who might help me with my questions regarding the organisation of the study locations?
+
+General information is provided on this very page. For more specific questions about one location you can always go to the present UGent personel or to the student volunteers who will be present when there is no personel.
+
+> Who should I contact regarding lost-and-found?
+
+With questions regarding lost-and-found you should go to the UGent personel of the specific location where you lost the item.
+
+> Can I be punished when my student card accidentaly has not been scanned?
+
+For the time being, there will be no systematical scanning of the student cards. As such, there will also be no attendance taken. In your profile, this will be indicated with "No attendance taken". Only students that have reserved a spot are allowed on the location.
+
+> Will there be locations provided during the Christmas holidays?
+
+The locations will be provided from the 30th of november until the 18th of december 2020 and from january 4th until january 29th 2021. There will be no locations provided during the Christmas holidays.
+
+> I would like to study at a location but there is no more room.
+
+Expanding the capacity of the locations is not possible, unfortunately. The capacity offered during the months of december and january is the maximum capacity allowed due to the current corona measures after deliberation with the government.
+
+> Will there be any study locations in the 2nd semester?
+
+Yes, the locations will be provided through this application in the 2nd semester. The locations and opening hours might chance though.
+
 <hr>
 
 For extra questions you can mail to [info@studieplekken.ugent.be](mailto:info@studieplekken.ugent.be).
-
-Employees and volunteers can get more info at [info-medewerkers@studieplekken.ugent.be](mailto:info-medewerkers@studieplekken.ugent.be).
