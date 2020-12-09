@@ -58,14 +58,9 @@ import { NgxMatDatetimePickerModule } from '@angular-material-components/datetim
 import { NgxMatMomentModule } from '@angular-material-components/moment-adapter';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-<<<<<<< HEAD
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MomentDateComponent} from './shared/inputs/moment-date/moment-date.component';
 import {FormatStatusPipe} from './shared/pipes/FormatStatusPipe';
-=======
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MomentDateComponent } from './shared/inputs/moment-date/moment-date.component';
->>>>>>> 8bde334c3baded96acdb418d847a99502e22053c
 import { MomentDateTimeComponent } from './shared/inputs/moment-datetime/moment-datetime.component';
 import { LocationOpeningperiodDialogComponent } from './management/locations-management/location-details-management/location-calendar/location-openingperiod-dialog/location-openingperiod-dialog.component';
 import { BuildingManagementComponent } from './management/building-management/building-management.component';
@@ -287,7 +282,6 @@ const routes: Routes = [
               deps: [HttpClient]
           }
       }),
-      MarkdownModule.forRoot(),
       BrowserAnimationsModule,
       CalendarModule.forRoot({
           provide: DateAdapter,
@@ -307,6 +301,11 @@ const routes: Routes = [
       MatChipsModule,
       ModalModule.forRoot(),
       FlexLayoutModule,
+      MarkdownModule.forRoot({
+        sanitize: SecurityContext.NONE
+      }),
+      MatTabsModule,
+      MatTooltipModule
     ],
   providers: [FormatStatusPipe],
   bootstrap: [AppComponent]
