@@ -87,6 +87,10 @@
     {{'dashboard.locationDetails.loginWarning' | translate}}
   </div>
 
+  <div class="alert alert-info" *ngIf="loggedIn()">
+    {{'dashboard.locationDetails.refreshWarning' | translate}}
+  </div>
+
   <!-- Calendar -->
   <div class="row">
     <app-calendar [events]="events" (onTimeslotPicked)="timeslotPicked($event)"></app-calendar>

@@ -9,6 +9,13 @@
     "day": "Day"
   },
 
+  "information": {
+    "general": "General",
+    "manager": "Manager",
+    "goto": "Go to",
+    "faq": "FAQ"
+  },
+
   "dashboard": {
     "address": "Address",
     "building": "Building",
@@ -43,10 +50,11 @@
           "updateAddMessage": "The following reservations will be added to your profile",
           "updateDeleteMessage": "The following reservations will be deleted",
           "updateConfirmMessage": "Would you like to confirm these changes?",
-          "updateWarningMessage": "WARNING: not showing up for a registered reservation with your student ID will lead to penalty points attributed to your profile. Too many penalty points will lead to blacklisting from the application"
+          "updateWarningMessage": "WARNING: You are only allowed to make a reservation when you will attend. Attendance can and will be taken."
         }
       },
-      "loginWarning": "In order to be able to make a reservation for this location, you need to be logged in."
+      "loginWarning": "In order to be able to make a reservation for this location, you need to be logged in.",
+      "refreshWarning": "Refreshing the calendar will happen automatically, it is not necessary to refresh the page manually."
     },
 
     "filter": {
@@ -77,10 +85,12 @@
   "general": {
     "dsa": "Student Activities Office",
     "ugent": "Ghent University",
-    "back": "Back",
-    "print": "Print",
+    "appTitle": "Study Rooms UGent",
+
     "yes": "Yes",
     "no": "No",
+    "back": "Back",
+    "print": "Print",
 
     "buttons": {
       "add": "Add",
@@ -890,9 +900,10 @@
           },
 
           "attended": {
-            "yes": "yes",
-            "no": "no",
-            "notScanned": "Not scanned"
+            "yes": "Present",
+            "no": "Absent",
+            "notScanned": "No attendance taken",
+            "notScannedExplanation": "For this reservation attendance wasn't taken, so you haven't gained any penalty points."
           }
         },
 

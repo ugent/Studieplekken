@@ -264,7 +264,7 @@ from public.calendar_periods cp INNER JOIN public.locations l on cp.location_nam
 where cp.calendar_id = ?;
 
 -- $lock_location_reservation
-LOCK TABLE public.location_reservations IN ACCESS EXCLUSIVE MODE;
+SELECT * from public.reservation_timeslots lr where lr.calendar_id = ? and lr.timeslot_date = ? and lr.timeslot_sequence_number= ? for UPDATE; 
 
 -- $delete_location_reservation
 delete

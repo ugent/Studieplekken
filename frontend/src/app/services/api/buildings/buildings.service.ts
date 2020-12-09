@@ -20,12 +20,10 @@ export class BuildingService {
   // *************************************/
 
   getAllBuildings(): Observable<Building[]> {
-    console.log('getAllBuildings');
     return this.buildingCache.getAllValues(api.buildings);
   }
 
   getBuilding(buildingId: number): Observable<Building> {
-    console.log('getBuilding');
     const url = api.building.replace('{buildingId}', String(buildingId));
     return this.buildingCache.getValue(buildingId, url);
   }

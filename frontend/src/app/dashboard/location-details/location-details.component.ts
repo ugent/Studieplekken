@@ -1,4 +1,4 @@
-import {Component, OnInit, TemplateRef} from '@angular/core';
+import {Component, OnDestroy, OnInit, TemplateRef} from '@angular/core';
 import {Location} from '../../shared/model/Location';
 import {ActivatedRoute} from '@angular/router';
 import {BehaviorSubject, combineLatest, Observable, Subscription} from 'rxjs';
@@ -30,7 +30,7 @@ import {
   styleUrls: ['./location-details.component.css', '../location.css'],
   providers: [DatePipe]
 })
-export class LocationDetailsComponent implements OnInit {
+export class LocationDetailsComponent implements OnInit, OnDestroy {
   location: Observable<Location>;
   locationName: string;
   tags: LocationTag[];
@@ -72,8 +72,13 @@ export class LocationDetailsComponent implements OnInit {
   showLockersManagement: boolean;
   capacity: number;
 
+  locationSub: Subscription;
+  calendarSub: Subscription;
+  statusSub: Subscription;
+
+  lastCalendarUpdate = moment();
+
   constructor(private locationService: LocationService,
-              private tagsService: TagsService,
               private route: ActivatedRoute,
               private sanitizer: DomSanitizer,
               private translate: TranslateService,
@@ -92,7 +97,7 @@ export class LocationDetailsComponent implements OnInit {
     this.currentLang = this.translate.currentLang;
 
     // when the location is loaded, setup the descriptions
-    this.location.subscribe(next => {
+    this.locationSub = this.location.subscribe(next => {
       this.description.dutch = next.descriptionDutch;
       this.description.english = next.descriptionEnglish;
       this.capacity = next.numberOfSeats;
@@ -103,8 +108,7 @@ export class LocationDetailsComponent implements OnInit {
       this.updateCalendar();
     });
 
-    this.fillCalendarLocationMap();
-    this.calendarPeriodsService.getStatusOfLocation(this.locationName).subscribe(
+    this.statusSub = this.calendarPeriodsService.getStatusOfLocation(this.locationName).subscribe(
       next => {
         this.status = next;
         this.translateStatus();
@@ -120,7 +124,18 @@ export class LocationDetailsComponent implements OnInit {
         this.translateStatus();
       }
     );
+
+    setInterval(() => {
+      this.updateCalendar();
+    }, 300000); // 5 minutes
+
     this.showLockersManagement = this.functionalityService.showLockersManagementFunctionality();
+  }
+
+  ngOnDestroy(): void {
+    this.locationSub.unsubscribe();
+    this.calendarSub.unsubscribe();
+    this.statusSub.unsubscribe();
   }
 
   locationStatusColorClass(): string {
@@ -250,13 +265,23 @@ export class LocationDetailsComponent implements OnInit {
       this.subscription.unsubscribe();
     }
 
-    combineLatest([
+    this.calendarSub = combineLatest([
       this.calendarPeriodsService.getCalendarPeriodsOfLocation(this.locationName),
       this.authenticationService.getLocationReservations(),
     ])
       .subscribe(([periods, reservations]) => {
         this.originalList = [...reservations];
         this.selectedSubject.next(reservations);
+
+        periods.forEach(element => {
+          this.calendarMap.set(element.id, element);
+          const duration = element.reservableFrom.valueOf() - moment().valueOf();
+          if (duration > 0) {
+            setTimeout(() => {
+              this.events = mapCalendarPeriodsToCalendarEvents([...this.calendarMap.values()], this.currentLang, []);
+            }, duration);
+          }
+        });
 
         this.subscription = this.selectedSubject.asObservable().subscribe(proposedReservations =>
           this.events = mapCalendarPeriodsToCalendarEvents(periods, this.currentLang, [...proposedReservations]));
@@ -301,15 +326,6 @@ export class LocationDetailsComponent implements OnInit {
 
   declineReservationChange(): void {
     this.modalRef.hide();
-  }
-
-  fillCalendarLocationMap(): void {
-    this.calendarPeriodsService.getCalendarPeriodsOfLocation(this.locationName).subscribe(next => {
-      next.forEach(element => {
-        this.calendarMap.set(element.id, element);
-      });
-    }, () => {
-    });
   }
 
   getBeginHour(calendarPeriod: CalendarPeriod, timeslot: Timeslot): moment.Moment {

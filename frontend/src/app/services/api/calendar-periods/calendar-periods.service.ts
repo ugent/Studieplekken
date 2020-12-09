@@ -22,7 +22,6 @@ export class CalendarPeriodsService {
   statusCache: Cache<string, Pair<LocationStatus, string>> = new Cache<string, Pair<LocationStatus, string>>(this.http, (arg: Location) => arg.name);
 
   getCalendarPeriodsOfLocation(locationName: string): Observable<CalendarPeriod[]> {
-    console.log('getCalendarPeriodsOfLocation');
     return this.http.get<any>(api.calendarPeriods
       .replace('{locationName}', locationName))
       .pipe(filter(s => !!s), map(ls => ls.map((s: any) => CalendarPeriod.fromJSON(s))));
@@ -32,7 +31,6 @@ export class CalendarPeriodsService {
    * Retrieve the status of the location
    */
   getStatusOfLocation(locationName: string, invalidateCache: boolean = false): Observable<Pair<LocationStatus, string>> {
-    console.log('getStatusOfLocation');
     const url = api.locationStatus.replace('{locationName}', locationName);
     return this.statusCache.getValue(locationName, url, invalidateCache);
   }

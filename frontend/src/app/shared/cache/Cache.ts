@@ -1,6 +1,6 @@
 import {BehaviorSubject, EMPTY, Observable, of, Subscription} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
-import { catchError, filter, map, take, tap } from 'rxjs/operators';
+import { catchError, filter, map, skip, take, tap } from 'rxjs/operators';
 
 export class Cache<I, V> {
 
@@ -35,10 +35,11 @@ export class Cache<I, V> {
     this.http.get<V[]>(url)
       .pipe(
         tap(n => n.forEach(element => this.cacheMap.set(this.idcallback(element), element))),
-        tap(() => this.cacheSubject.next(this.cacheMap)),
+        tap(() => {
+          this.cacheSubject.next(this.cacheMap);
+        }),
         catchError(error => {
           this.cacheSubject.error(error);
-          console.log('Error while reloading subject ' + error.toString());
           return of(EMPTY);
         })
       )
@@ -68,11 +69,17 @@ export class Cache<I, V> {
    */
   getAllValues(url: string, invalidateCache: boolean = true): Observable<V[]> {
     if (invalidateCache || Object.keys(this.cacheMap).length === 0) {
+      // if the cache is being reloaded, the current value can be skipped
       this.cacheReload(url);
+      return this.cacheSubject.pipe(
+        map(valueMap => [ ...valueMap.values() ]),
+        skip(1)
+      );
+    } else {
+      // if the cache is not being reloaded, the current value suffices
+      return this.cacheSubject.pipe(
+        map(valueMap => [ ...valueMap.values() ])
+      );
     }
-
-    return this.cacheSubject.pipe(
-      map(valueMap => [ ...valueMap.values() ])
-    );
   }
 }
