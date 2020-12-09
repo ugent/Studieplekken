@@ -13,7 +13,7 @@ export class TagsService {
   constructor(private http: HttpClient) {
   }
 
-  tagCache: Cache<number, LocationTag> = new Cache<number, LocationTag>(this.http, (arg: LocationTag) => arg.tagId);
+  tagCache = new Cache<number, LocationTag>(this.http, (arg: LocationTag) => arg.tagId);
 
   /*****************************************************
    *   API calls for CRUD operations with public.TAGS  *
