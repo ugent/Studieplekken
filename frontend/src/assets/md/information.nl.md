@@ -52,7 +52,7 @@ Bij vragen over verloren voorwerpen informeer je best bij het UGent personeel va
 
 > Kan ik gestraft worden als mijn studentenkaart per ongeluk niet gescand is?
 
-Voorlopig wordt er nog niet systematisch gescand. Er worden dus ook geen aanwezigheden genoteerd. Dit zal in jouw profiel aangeduid staan als "No attendance taken". Enkel studenten die gereserveerd hebben kunnen immers aanwezig zijn op de studieplek.
+Voorlopig wordt er nog niet systematisch gescand. Er worden dus ook geen aanwezigheden genoteerd. Dit zal in jouw profiel (bij het overzicht van de gemaakte reservaties) aangeduid staan als "Geen aanwezigheden opgenomen". Enkel studenten die gereserveerd hebben kunnen immers aanwezig zijn op de studieplek.
 
 > Worden er ook studieplekken voorzien tijdens de kerstvakantie?
 
@@ -64,7 +64,7 @@ Uitbreiden van locaties en aantal studieplekken is jammer genoeg niet mogelijk. 
 
 > Zullen er in 2e semester ook studieplekken zijn?
 
-In het 2e semester zullen we inderdaad opnieuw de studieplekken aanbieden via deze applicatie. De locatie en de openingsuren zullen mogelijks wel aangepast worden.
+Ja, in het 2e semester zullen we inderdaad opnieuw de studieplekken aanbieden via deze applicatie. De locatie en de openingsuren zullen mogelijks wel aangepast worden.
 
 
 <hr>

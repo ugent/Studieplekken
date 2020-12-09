@@ -11,7 +11,9 @@
 
   "information": {
     "general": "Algemeen",
-    "manager": "Beheerder"
+    "manager": "Beheerder",
+    "goto": "Ga naar",
+    "faq": "FAQ"
   },
 
   "dashboard": {
@@ -83,11 +85,13 @@
   "general": {
     "dsa": "Dienst StudentenActiviteiten",
     "ugent": "Universiteit Gent",
+    "appTitle": "Studieplekken UGent",
 
     "yes": "Ja",
     "no": "Neen",
     "back": "Terug",
     "print": "Print",
+
     "buttons": {
       "add": "Voeg toe",
       "update": "Update",

@@ -21,7 +21,7 @@ Strict security measures apply at every study place. Hands need to be disinfecte
 
 The study areas are organized by students, staff and volunteers. Treat them and each other with respect. Every study place is supervised. In case of problems or questions, do not hesitate to speak to this person.
 
-##  Veelgestelde vragen<a class="anchor" id="FAQ"></a>
+## Frequently Asked Questions<a class="anchor" id="FAQ"></a>
 
 > Will attendance be checked by the UGent personel on the location? If yes, when and how frequently?
 
@@ -41,7 +41,7 @@ If you are in quarantaine you are absolutely not allowed to come to the location
 
 > How should the organisation be informed when someone tests positive for the corona virus?
 
-When you have studied at a certain location and you test positive for the corona virus thereafter, please contact contacttracing.ugent.be. The contact tracers will perform a risk analysis and take further steps.
+When you have studied at a certain location and you test positive for the corona virus thereafter, please contact contacttracing@ugent.be. The contact tracers will perform a risk analysis and take further steps.
 
 > Who might help me with my questions regarding the organisation of the study locations?
 
@@ -57,7 +57,7 @@ For the time being, there will be no systematical scanning of the student cards.
 
 > Will there be locations provided during the Christmas holidays?
 
-The locations will be provided from the 30th of november until the 18th of december 2020 and from january 4th until january 20th 2021. There will be no locations provided during the Christmas holidays.
+The locations will be provided from the 30th of november until the 18th of december 2020 and from january 4th until january 29th 2021. There will be no locations provided during the Christmas holidays.
 
 > I would like to study at a location but there is no more room.
 
