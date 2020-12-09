@@ -74,9 +74,9 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
 
   locationSub: Subscription;
   calendarSub: Subscription;
-  statusSub: Subscription;
 
   lastCalendarUpdate = moment();
+  statusObs: Observable<Pair<LocationStatus, string>>;
 
   constructor(private locationService: LocationService,
               private route: ActivatedRoute,
@@ -108,12 +108,7 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
       this.updateCalendar();
     });
 
-    this.statusSub = this.calendarPeriodsService.getStatusOfLocation(this.locationName).subscribe(
-      next => {
-        this.status = next;
-        this.translateStatus();
-      }
-    );
+    this.statusObs = this.calendarPeriodsService.getStatusOfLocation(this.locationName);
 
     // if the browser language would change, the description needs to change
     this.translate.onLangChange.subscribe(
@@ -121,7 +116,6 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
         this.setDescriptionToShow();
         this.currentLang = this.translate.currentLang;
         this.updateCalendar();
-        this.translateStatus();
       }
     );
 
@@ -135,7 +129,6 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.locationSub.unsubscribe();
     this.calendarSub.unsubscribe();
-    this.statusSub.unsubscribe();
   }
 
   locationStatusColorClass(): string {
@@ -198,65 +191,6 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
     // Show the dutch description if the browser language is 'nl'.
     // Otherwise, show the english description.
     this.description.show = lang === 'nl' ? this.description.dutch : this.description.english;
-  }
-
-  translateStatus(): void {
-    // status.second format: "yyyy-MM-dd hh:mm"
-    if (this.status) {
-      switch (this.status.first) {
-        case LocationStatus.OPEN: {
-          const datetime = new Date(this.status.second);
-          this.translate.get('dashboard.locationDetails.status.statusOpen').subscribe(
-            next => {
-              this.statusInCurrentLang = next.replace('{}', this.datepipe.transform(datetime, 'shortTime'));
-            }, () => {
-              this.statusInCurrentLang = 'general.notAvailableAbbreviation';
-            }
-          );
-          break;
-        }
-        case LocationStatus.CLOSED: {
-          this.translate.get('dashboard.locationDetails.status.statusClosed').subscribe(
-            next => {
-              this.statusInCurrentLang = next;
-            }, () => {
-              this.statusInCurrentLang = 'general.general.notAvailableAbbreviation';
-            }
-          );
-          break;
-        }
-        case LocationStatus.CLOSED_ACTIVE: {
-          const datetime = new Date(this.status.second);
-          this.translate.get('dashboard.locationDetails.status.statusClosedActive').subscribe(
-            next => {
-              this.statusInCurrentLang = next.replace('{}', this.datepipe.transform(datetime, 'shortTime'));
-            }, () => {
-              this.statusInCurrentLang = 'general.notAvailableAbbreviation';
-            }
-          );
-          break;
-        }
-        case LocationStatus.CLOSED_UPCOMING: {
-          const datetime = new Date(this.status.second).toLocaleString();
-          this.translate.get('dashboard.locationDetails.status.statusClosedUpcoming').subscribe(
-            next => {
-              this.statusInCurrentLang = next.replace('{}', datetime);
-            }, () => {
-              this.statusInCurrentLang = 'general.notAvailableAbbreviation';
-            }
-          );
-          break;
-        }
-      }
-    } else {
-      this.translate.get('general.notAvailableAbbreviation').subscribe(
-        next => {
-          this.statusInCurrentLang = next;
-        }, () => {
-          this.statusInCurrentLang = 'general.notAvailableAbbreviation';
-        }
-      );
-    }
   }
 
   updateCalendar(): void {
