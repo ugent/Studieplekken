@@ -11,7 +11,7 @@ import { LocationStatus } from '../app.constants';
 import { Pair } from '../shared/model/helpers/Pair';
 import { Building } from '../shared/model/Building';
 import { BuildingService } from '../services/api/buildings/buildings.service';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import * as moment from 'moment';
 
@@ -25,12 +25,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   locationStatuses = new Map<string, Pair<LocationStatus, string>>();
   filteredLocations: Location[];
   filteredLocationsBackup: Location[];
-
-  // all tags to select from
-  tags: LocationTag[];
-
-  // all buildings to select from
-  buildings: Building[];
 
   // the tags that were selected to filter on
   selectedTags: LocationTag[];
@@ -55,8 +49,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private statusSub: Subscription[] = [];
   private locationSub: Subscription;
-  private tagSub: Subscription;
-  private buildingSub: Subscription;
+
+  buildingObs: Observable<Building[]>;
+  tagObs: Observable<LocationTag[]>;
 
   constructor(private locationService: LocationService,
               private tagsService: TagsService,
@@ -98,24 +93,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
     );
 
-    this.tagSub = this.tagsService.getAllTags().subscribe(
-      (next) => {
-        this.tags = next;
-      }
-    );
+    this.tagObs = this.tagsService.getAllTags();
 
-    this.buildingSub = this.buildingService.getAllBuildings().subscribe(
-      (next) => {
-        this.buildings = next;
-      }
-    );
+    this.buildingObs = this.buildingService.getAllBuildings()
   }
 
   ngOnDestroy(): void {
     this.statusSub.forEach(sub => sub.unsubscribe());
     this.locationSub.unsubscribe();
-    this.tagSub.unsubscribe();
-    this.buildingSub.unsubscribe();
   }
 
   /**
