@@ -1,33 +1,30 @@
-import { Component, OnInit } from '@angular/core';
-import {LocationService} from '../services/api/locations/location.service';
-import {Location} from '../shared/model/Location';
-import {LocationTag} from '../shared/model/LocationTag';
-import {TagsService} from '../services/api/tags/tags.service';
-import {TranslateService} from '@ngx-translate/core';
-import {AbstractControl, FormControl, FormGroup} from '@angular/forms';
-import {MatSelectChange} from '@angular/material/select';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { LocationService } from '../services/api/locations/location.service';
+import { Location } from '../shared/model/Location';
+import { LocationTag } from '../shared/model/LocationTag';
+import { TagsService } from '../services/api/tags/tags.service';
+import { TranslateService } from '@ngx-translate/core';
+import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { MatSelectChange } from '@angular/material/select';
 import { CalendarPeriodsService } from '../services/api/calendar-periods/calendar-periods.service';
-import {LocationStatus} from '../app.constants';
-import {Pair} from '../shared/model/helpers/Pair';
+import { LocationStatus } from '../app.constants';
+import { Pair } from '../shared/model/helpers/Pair';
 import { Building } from '../shared/model/Building';
 import { BuildingService } from '../services/api/buildings/buildings.service';
+import { Observable, Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   locations: Location[];
   locationStatuses = new Map<string, Pair<LocationStatus, string>>();
   filteredLocations: Location[];
   filteredLocationsBackup: Location[];
-
-  // all tags to select from
-  tags: LocationTag[];
-
-  // all buildings to select from
-  buildings: Building[];
 
   // the tags that were selected to filter on
   selectedTags: LocationTag[];
@@ -50,6 +47,12 @@ export class DashboardComponent implements OnInit {
 
   showOpen = false;
 
+  private statusSub: Subscription[] = [];
+  private locationSub: Subscription;
+
+  buildingObs: Observable<Building[]>;
+  tagObs: Observable<LocationTag[]>;
+
   constructor(private locationService: LocationService,
               private tagsService: TagsService,
               private translate: TranslateService,
@@ -67,37 +70,37 @@ export class DashboardComponent implements OnInit {
     this.selectedTags = [];
 
     this.successOnRetrievingLocations = null;
-    this.locationService.getLocations().subscribe(
-      (next) => {
+
+    this.locationSub = this.locationService.getLocations()
+      .subscribe((next) => {
         this.locations = next;
         this.filteredLocations = next;
         this.filteredLocationsBackup = next;
         this.successOnRetrievingLocations = true;
 
-        // retrieve the status for the locations
+        // retrieve the status for the locations, hereby invalidating the cache and forcing a reload.
         next.forEach(l => {
-          this.calendarPeriodService.getStatusOfLocation(l.name).subscribe(
-            next2 => {
-              this.locationStatuses.set(l.name, next2);
-            }
-          );
+          this.statusSub.push(this.calendarPeriodService.getStatusOfLocation(l.name, true)
+            .pipe(take(1))
+            .subscribe(
+              next2 => {
+                this.locationStatuses.set(l.name, next2);
+              }
+            ));
         });
       }, () => {
         this.successOnRetrievingLocations = false;
       }
     );
 
-    this.tagsService.getAllTags().subscribe(
-      (next) => {
-        this.tags = next;
-      }
-    );
+    this.tagObs = this.tagsService.getAllTags();
 
-    this.buildingService.getAllBuildings().subscribe(
-      (next) => {
-        this.buildings = next;
-      }
-    );
+    this.buildingObs = this.buildingService.getAllBuildings()
+  }
+
+  ngOnDestroy(): void {
+    this.statusSub.forEach(sub => sub.unsubscribe());
+    this.locationSub.unsubscribe();
   }
 
   /**
@@ -146,7 +149,6 @@ export class DashboardComponent implements OnInit {
         return;
       }
 
-      // console.log(this.selectedBuilding);
       // check that the location is in the selected building
       if (this.selectedBuilding !== undefined && location.building.buildingId !== this.selectedBuilding.buildingId) {
         return;
