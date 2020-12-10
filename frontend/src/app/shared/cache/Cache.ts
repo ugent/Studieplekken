@@ -1,6 +1,6 @@
-import {BehaviorSubject, EMPTY, Observable, of, Subscription} from 'rxjs';
+import {BehaviorSubject, EMPTY, Observable, of} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
-import { catchError, filter, map, skip, take, tap } from 'rxjs/operators';
+import { catchError, filter, map, skip, tap } from 'rxjs/operators';
 
 export class Cache<I, V> {
 
@@ -13,6 +13,7 @@ export class Cache<I, V> {
   /**
    * Update the cache from the backend
    * @param url the url to get the resource
+   * @param id the id of the resource to be updated
    */
   private updateCache(url: string, id: I): void {
     this.http.get<V>(url)
@@ -28,7 +29,7 @@ export class Cache<I, V> {
   }
 
   /**
-   * Perform a cachereload by updating the values in the url
+   * Perform a cache reload by updating the values in the url
    * @param url the url to fetch the resources from
    */
   private cacheReload(url: string): void {
@@ -50,7 +51,7 @@ export class Cache<I, V> {
    * Get the value from the cache
    * @param id the id to identify the resource
    * @param url the url to get the resource
-   * @param invalidateCache should the cacheline for the resouce be invalidated or not
+   * @param invalidateCache should the cache line for the resource be invalidated or not
    */
   getValue(id: I, url: string, invalidateCache: boolean = false): Observable<V> {
     if (invalidateCache || !this.cacheMap.has(id)) {
@@ -66,6 +67,7 @@ export class Cache<I, V> {
   /**
    * Get all the resources from an url and update the cache
    * @param url the url to fetch the resources from
+   * @param invalidateCache should the cache line for the resource be invalidated or not
    */
   getAllValues(url: string, invalidateCache: boolean = true): Observable<V[]> {
     if (invalidateCache || Object.keys(this.cacheMap).length === 0) {
