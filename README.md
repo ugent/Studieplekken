@@ -67,6 +67,21 @@ npm install # Install the dependencies
 ng serve -o # Compile source files and open project in browser
 ```
 
+### Profiling with Skywalking
+**Requirements**
+- Docker
+- docker-compose
+
+**Commands**
+```shell
+cd skywalking
+docker-compose -f skywalking.yml up --build
+```
+
+De backend zal hier automatisch op connecteren aan de hand van een agent. Op poort `:8000` kun je de skywalking ui vinden.
+
+
+
 ## Production
 
 So, you want to deploy this app in production? (studieplekken.ugent.be)

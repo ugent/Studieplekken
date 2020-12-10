@@ -2,6 +2,7 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {Building} from 'src/app/shared/model/Building';
+import {Cache} from '../../../shared/cache/Cache';
 import {api} from '../endpoints';
 
 @Injectable({
@@ -12,16 +13,19 @@ export class BuildingService {
   constructor(private http: HttpClient) {
   }
 
+  buildingCache: Cache<number, Building> = new Cache<number, Building>(this.http, (arg: Building) => arg.buildingId);
+
   // *************************************
   // *   CRUD operations for AUTHORITY   *
   // *************************************/
 
   getAllBuildings(): Observable<Building[]> {
-    return this.http.get<Building[]>(api.buildings);
+    return this.buildingCache.getAllValues(api.buildings);
   }
 
   getBuilding(buildingId: number): Observable<Building> {
-    return this.http.get<Building>(api.building.replace('{buildingId}', String(buildingId)));
+    const url = api.building.replace('{buildingId}', String(buildingId));
+    return this.buildingCache.getValue(buildingId, url);
   }
 
   addBuilding(building: Building): Observable<any> {
