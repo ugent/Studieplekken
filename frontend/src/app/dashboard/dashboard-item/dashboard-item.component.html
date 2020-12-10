@@ -48,24 +48,26 @@
       </div>
 
       <!-- Progress bar for reserved seats -->
-      <div class="mt-auto" *ngIf="occupationObs | async as occupation">
-        <div class="progress" [class.hidden]="!(showProgressBar && occupation >= 0)">
-        <div class="progress-bar" role="progressbar"
-              [style.width]="occupation / location.numberOfSeats * 100 + '%'"
-              [attr.aria-valuenow]="occupation"
-              aria-valuemin="0" aria-valuemax="100">
-          <span>{{occupation}}/{{location.numberOfSeats}}</span>
+      <div class="mt-auto">
+        <div *ngIf="occupationObs | async as occupation">
+          <div class="progress" [class.hidden]="!(showProgressBar && occupation >= 0)">
+            <div class="progress-bar" role="progressbar"
+                 [style.width]="occupation / location.numberOfSeats * 100 + '%'"
+                 [attr.aria-valuenow]="occupation"
+                 aria-valuemin="0" aria-valuemax="100">
+              <span>{{occupation}}/{{location.numberOfSeats}}</span>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <!-- Details button for dashboard item -->
-      <p>
-        <a routerLink="/dashboard/{{location.name}}"
-           class="btn btn-block"
-           role="button">{{'dashboard.details' | translate}}
-        </a>
-      </p>
-    </div>
+        <!-- Details button for dashboard item -->
+        <p>
+          <a routerLink="/dashboard/{{location.name}}"
+             class="btn btn-block"
+             role="button">{{'dashboard.details' | translate}}
+          </a>
+        </p>
+      </div>
     </div>
   </div>
 </div>
