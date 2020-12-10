@@ -200,6 +200,14 @@ where tag_id = ?;
 
 -- queries for table LOCATION_RESERVATION
 -- $get_location_reservations_where_<?>
+select * from public.location_reservations lr
+            join public.users u 
+       			on u.augentid = lr.user_augentid
+            left join public.reservation_timeslots rt
+            on rt.timeslot_date = lr.timeslot_date and rt.timeslot_sequence_number = lr.timeslot_seqnr and rt.calendar_id = lr.calendar_id     
+where <?>;
+
+-- $currently_out_of_use
 /*
     If you want to change the weekly percentage decrease, you must
     change the factor and amount of weeks used in the recursive query.
@@ -221,7 +229,7 @@ with recursive x as (
 ), y as (
 	select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
 		, u.augentid, u.admin
-		, lr.timeslot_date, lr.timeslot_seqnr as timeslot_sequence_number, lr.calendar_id, lr.attended, lr.user_augentid, lr.created_at
+		, lr.timeslot_date, lr.timeslot_seqnr as timeslot_sequence_number, lr.calendar_id, lr.attended, lr.user_augentid, lr.created_at, lr.reservation_count
 		, coalesce(floor(sum(
         	case
 				/*
@@ -245,11 +253,11 @@ with recursive x as (
 )
 select y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
 	 , y.augentid, y.admin, y.penalty_points
-	 , y.timeslot_date, y.timeslot_sequence_number, y.calendar_id, y.created_at, y.attended, y.user_augentid
+	 , y.timeslot_date, y.timeslot_sequence_number, y.calendar_id, y.created_at, y.attended, y.user_augentid, y.reservation_count
 from y
 group by y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
 	 , y.augentid, y.admin, y.penalty_points
-	 , y.timeslot_date, y.timeslot_sequence_number, y.calendar_id, y.created_at, y.attended, y.user_augentid;
+	 , y.timeslot_date, y.timeslot_sequence_number, y.calendar_id, y.created_at, y.attended, y.user_augentid, y.reservation_count;
 
 -- $count_location_reservations_of_location_for_timeslot
 select count(1)
@@ -325,7 +333,7 @@ set user_augentid = ?
 where user_augentid = ?;
 
 -- $get_location_reservations_with_location_by_user
-select lr.*, cp.*, l.*, b.*, a.*, u.*
+select lr.*, cp.*, l.*, b.*, a.*, u.*, rt.reservation_count
      , lr.timeslot_seqnr as "timeslot_sequence_number"
 from public.location_reservations lr
     join public.calendar_periods cp
@@ -338,6 +346,9 @@ from public.location_reservations lr
         on a.authority_id = l.authority_id
     join users u
         on u.augentid = lr.user_augentid
+    join public.reservation_timeslots rt
+        on rt.timeslot_date = lr.timeslot_date and rt.timeslot_sequence_number = lr.timeslot_seqnr and rt.calendar_id = lr.calendar_id     
+
 where lr.user_augentid = ?
 order by lr.timeslot_date desc, lr.timeslot_seqnr desc;
 
