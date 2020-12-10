@@ -58,8 +58,9 @@ import { NgxMatDatetimePickerModule } from '@angular-material-components/datetim
 import { NgxMatMomentModule } from '@angular-material-components/moment-adapter';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MomentDateComponent } from './shared/inputs/moment-date/moment-date.component';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MomentDateComponent} from './shared/inputs/moment-date/moment-date.component';
+import {FormatStatusPipe} from './shared/pipes/FormatStatusPipe';
 import { MomentDateTimeComponent } from './shared/inputs/moment-datetime/moment-datetime.component';
 import { LocationOpeningperiodDialogComponent } from './management/locations-management/location-details-management/location-calendar/location-openingperiod-dialog/location-openingperiod-dialog.component';
 import { BuildingManagementComponent } from './management/building-management/building-management.component';
@@ -266,46 +267,47 @@ const routes: Routes = [
     MomentTimeslotSizeComponent,
     AdminsManagementComponent,
     TimeslotTableComponent,
+    FormatStatusPipe
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    RouterModule.forRoot(routes),
-    HttpClientModule,
-    TranslateModule.forRoot({
-      defaultLanguage: 'nl',
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      }
-    }),
-    MarkdownModule.forRoot({
-      sanitize: SecurityContext.NONE
-    }),
-    BrowserAnimationsModule,
-    CalendarModule.forRoot({
-      provide: DateAdapter,
-      useFactory: adapterFactory,
-    }),
-    ReactiveFormsModule,
-    FormsModule,
-    FlatpickrModule.forRoot(),
-    CKEditorModule,
-    MatSelectModule,
-    NgxMatDatetimePickerModule,
-    NgxMatMomentModule,
-    MatDatepickerModule,
-    MatInputModule,
-    MatDialogModule,
-    MatCheckboxModule,
-    MatChipsModule,
-    MatTabsModule,
-    ModalModule.forRoot(),
-    FlexLayoutModule,
-    MatTooltipModule
-  ],
-  providers: [],
+    imports: [
+      BrowserModule,
+      AppRoutingModule,
+      RouterModule.forRoot(routes),
+      HttpClientModule,
+      TranslateModule.forRoot({
+          defaultLanguage: 'nl',
+          loader: {
+              provide: TranslateLoader,
+              useFactory: HttpLoaderFactory,
+              deps: [HttpClient]
+          }
+      }),
+      BrowserAnimationsModule,
+      CalendarModule.forRoot({
+          provide: DateAdapter,
+          useFactory: adapterFactory,
+      }),
+      ReactiveFormsModule,
+      FormsModule,
+      FlatpickrModule.forRoot(),
+      CKEditorModule,
+      MatSelectModule,
+      NgxMatDatetimePickerModule,
+      NgxMatMomentModule,
+      MatDatepickerModule,
+      MatInputModule,
+      MatDialogModule,
+      MatCheckboxModule,
+      MatChipsModule,
+      ModalModule.forRoot(),
+      FlexLayoutModule,
+      MarkdownModule.forRoot({
+        sanitize: SecurityContext.NONE
+      }),
+      MatTabsModule,
+      MatTooltipModule
+    ],
+  providers: [FormatStatusPipe],
   bootstrap: [AppComponent]
 })
 export class AppModule {

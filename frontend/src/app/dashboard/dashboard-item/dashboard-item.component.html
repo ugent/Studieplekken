@@ -22,7 +22,8 @@
           <tbody>
           <tr>
             <td><span class="glyphicon glyphicon-time" aria-hidden="true"></span></td>
-            <td>{{statusInCurrentLang | translate}}</td>
+            
+            <td>{{status | formatStatus | async }}</td>
           </tr>
           <tr>
             <td><span class="glyphicon glyphicon-user" aria-hidden="true"></span></td>
@@ -47,8 +48,8 @@
       </div>
 
       <!-- Progress bar for reserved seats -->
-      <div class="mt-auto">
-      <div class="progress" [class.hidden]="!(showProgressBar && occupation >= 0)">
+      <div class="mt-auto" *ngIf="occupationObs | async as occupation">
+        <div class="progress" [class.hidden]="!(showProgressBar && occupation >= 0)">
         <div class="progress-bar" role="progressbar"
               [style.width]="occupation / location.numberOfSeats * 100 + '%'"
               [attr.aria-valuenow]="occupation"
