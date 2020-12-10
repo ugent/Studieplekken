@@ -13,7 +13,6 @@ import { Building } from '../shared/model/Building';
 import { BuildingService } from '../services/api/buildings/buildings.service';
 import { Observable, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
-import * as moment from 'moment';
 
 @Component({
   selector: 'app-dashboard',
@@ -95,7 +94,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.tagObs = this.tagsService.getAllTags();
 
-    this.buildingObs = this.buildingService.getAllBuildings()
+    this.buildingObs = this.buildingService.getAllBuildings();
   }
 
   ngOnDestroy(): void {
