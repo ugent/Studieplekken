@@ -2,10 +2,10 @@
   <div class="content" fxLayout="column nowrap" fxLayoutAlign="flex-start">
     <!-- Image -->
     <div>
-      <img *ngIf="location.imageUrl !== null"
+      <img *ngIf="!imageUrlErrorOccurred && location.imageUrl"
            src="{{location.imageUrl}}" class="img" alt="Image for {{location.name}}"
            (error)="handleImageError()">
-      <img *ngIf="location.imageUrl === null" [src]="altImageUrl" alt="Image of {{location.name}}">
+      <img *ngIf="imageUrlErrorOccurred || !location.imageUrl" [src]="altImageUrl" alt="Image of {{location.name}}">
 
       <div class="locationStatusBar"
            [classList]="'locationStatusBar ' + locationStatusColorClass()"></div>
@@ -22,7 +22,7 @@
           <tbody>
           <tr>
             <td><span class="glyphicon glyphicon-time" aria-hidden="true"></span></td>
-            
+
             <td>{{status | formatStatus | async }}</td>
           </tr>
           <tr>
