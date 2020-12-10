@@ -6,6 +6,7 @@ import blok2.helpers.Pair;
 import blok2.helpers.Resources;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
+import blok2.model.reservables.Location;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
@@ -119,7 +120,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
 
     private void addTimeslotPeriod(int seq_id, LocalDate date, CalendarPeriod period, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_reservation_timeslots"));
-        prepareTimeslotPeriodPstmt(seq_id, date, period, pstmt);
+        prepareTimeslotPeriodPstmt(seq_id, date, period, period.getLocation().getNumberOfSeats(), pstmt);
         pstmt.execute();
     }
 
@@ -321,10 +322,11 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         pstmt.setTimestamp(9, Timestamp.valueOf(calendarPeriod.getLockedFrom()));
     }
 
-    private void prepareTimeslotPeriodPstmt(int seq_id, LocalDate date, CalendarPeriod period, PreparedStatement pstmt) throws SQLException {
+    private void prepareTimeslotPeriodPstmt(int seq_id, LocalDate date, CalendarPeriod period, int amountOfSeats, PreparedStatement pstmt) throws SQLException {
         pstmt.setInt(1, period.getId());
         pstmt.setInt(2, seq_id);
         pstmt.setDate(3, Date.valueOf(date));
+        pstmt.setInt(4, amountOfSeats);
     }
 
     private List<CalendarPeriod> getCalendarPeriodsFromPstmt(PreparedStatement pstmt, Connection conn) throws SQLException {

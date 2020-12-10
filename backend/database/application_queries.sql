@@ -263,8 +263,10 @@ select l.number_of_seats
 from public.calendar_periods cp INNER JOIN public.locations l on cp.location_name = l.name
 where cp.calendar_id = ?;
 
--- $lock_location_reservation
-SELECT * from public.reservation_timeslots lr where lr.calendar_id = ? and lr.timeslot_date = ? and lr.timeslot_sequence_number= ? for UPDATE; 
+-- $add_one_to_reservation_count
+update reservation_timeslots
+set reservation_count = reservation_count + 1
+where calendar_id = ? and timeslot_date = ? and timeslot_sequence_number= ?;
 
 -- $delete_location_reservation
 delete
@@ -1046,8 +1048,8 @@ where calendar_id = ?
 order by rt.timeslot_date, rt.timeslot_sequence_number ASC;
 
 -- $insert_reservation_timeslots
-insert into public.reservation_timeslots(calendar_id, timeslot_sequence_number, timeslot_date)
-values (?, ?, ?);
+insert into public.reservation_timeslots(calendar_id, timeslot_sequence_number, timeslot_date, seat_count)
+values (?, ?, ?, ?);
 
 -- $count_reservations_now
 with y as (
