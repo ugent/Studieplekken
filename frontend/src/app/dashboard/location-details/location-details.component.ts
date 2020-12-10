@@ -1,4 +1,4 @@
-import {Component, OnInit, TemplateRef} from '@angular/core';
+import {Component, OnDestroy, OnInit, TemplateRef} from '@angular/core';
 import {Location} from '../../shared/model/Location';
 import {ActivatedRoute} from '@angular/router';
 import {BehaviorSubject, combineLatest, Observable, Subscription} from 'rxjs';
@@ -30,7 +30,7 @@ import {
   styleUrls: ['./location-details.component.css', '../location.css'],
   providers: [DatePipe]
 })
-export class LocationDetailsComponent implements OnInit {
+export class LocationDetailsComponent implements OnInit, OnDestroy {
   location: Observable<Location>;
   locationName: string;
   tags: LocationTag[];
@@ -72,10 +72,13 @@ export class LocationDetailsComponent implements OnInit {
   showLockersManagement: boolean;
   capacity: number;
 
+  locationSub: Subscription;
+  calendarSub: Subscription;
+
   lastCalendarUpdate = moment();
+  statusObs: Observable<Pair<LocationStatus, string>>;
 
   constructor(private locationService: LocationService,
-              private tagsService: TagsService,
               private route: ActivatedRoute,
               private sanitizer: DomSanitizer,
               private translate: TranslateService,
@@ -94,7 +97,7 @@ export class LocationDetailsComponent implements OnInit {
     this.currentLang = this.translate.currentLang;
 
     // when the location is loaded, setup the descriptions
-    this.location.subscribe(next => {
+    this.locationSub = this.location.subscribe(next => {
       this.description.dutch = next.descriptionDutch;
       this.description.english = next.descriptionEnglish;
       this.capacity = next.numberOfSeats;
@@ -105,13 +108,7 @@ export class LocationDetailsComponent implements OnInit {
       this.updateCalendar();
     });
 
-    this.fillCalendarLocationMap();
-    this.calendarPeriodsService.getStatusOfLocation(this.locationName).subscribe(
-      next => {
-        this.status = next;
-        this.translateStatus();
-      }
-    );
+    this.statusObs = this.calendarPeriodsService.getStatusOfLocation(this.locationName);
 
     // if the browser language would change, the description needs to change
     this.translate.onLangChange.subscribe(
@@ -119,7 +116,6 @@ export class LocationDetailsComponent implements OnInit {
         this.setDescriptionToShow();
         this.currentLang = this.translate.currentLang;
         this.updateCalendar();
-        this.translateStatus();
       }
     );
 
@@ -128,6 +124,11 @@ export class LocationDetailsComponent implements OnInit {
     }, 300000); // 5 minutes
 
     this.showLockersManagement = this.functionalityService.showLockersManagementFunctionality();
+  }
+
+  ngOnDestroy(): void {
+    this.locationSub.unsubscribe();
+    this.calendarSub.unsubscribe();
   }
 
   locationStatusColorClass(): string {
@@ -192,78 +193,29 @@ export class LocationDetailsComponent implements OnInit {
     this.description.show = lang === 'nl' ? this.description.dutch : this.description.english;
   }
 
-  translateStatus(): void {
-    // status.second format: "yyyy-MM-dd hh:mm"
-    if (this.status) {
-      switch (this.status.first) {
-        case LocationStatus.OPEN: {
-          const datetime = new Date(this.status.second);
-          this.translate.get('dashboard.locationDetails.status.statusOpen').subscribe(
-            next => {
-              this.statusInCurrentLang = next.replace('{}', this.datepipe.transform(datetime, 'shortTime'));
-            }, () => {
-              this.statusInCurrentLang = 'general.notAvailableAbbreviation';
-            }
-          );
-          break;
-        }
-        case LocationStatus.CLOSED: {
-          this.translate.get('dashboard.locationDetails.status.statusClosed').subscribe(
-            next => {
-              this.statusInCurrentLang = next;
-            }, () => {
-              this.statusInCurrentLang = 'general.general.notAvailableAbbreviation';
-            }
-          );
-          break;
-        }
-        case LocationStatus.CLOSED_ACTIVE: {
-          const datetime = new Date(this.status.second);
-          this.translate.get('dashboard.locationDetails.status.statusClosedActive').subscribe(
-            next => {
-              this.statusInCurrentLang = next.replace('{}', this.datepipe.transform(datetime, 'shortTime'));
-            }, () => {
-              this.statusInCurrentLang = 'general.notAvailableAbbreviation';
-            }
-          );
-          break;
-        }
-        case LocationStatus.CLOSED_UPCOMING: {
-          const datetime = new Date(this.status.second).toLocaleString();
-          this.translate.get('dashboard.locationDetails.status.statusClosedUpcoming').subscribe(
-            next => {
-              this.statusInCurrentLang = next.replace('{}', datetime);
-            }, () => {
-              this.statusInCurrentLang = 'general.notAvailableAbbreviation';
-            }
-          );
-          break;
-        }
-      }
-    } else {
-      this.translate.get('general.notAvailableAbbreviation').subscribe(
-        next => {
-          this.statusInCurrentLang = next;
-        }, () => {
-          this.statusInCurrentLang = 'general.notAvailableAbbreviation';
-        }
-      );
-    }
-  }
-
   updateCalendar(): void {
     // retrieve the calendar periods and map them to calendar events used by Angular Calendar
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
 
-    combineLatest([
+    this.calendarSub = combineLatest([
       this.calendarPeriodsService.getCalendarPeriodsOfLocation(this.locationName),
       this.authenticationService.getLocationReservations(),
     ])
       .subscribe(([periods, reservations]) => {
         this.originalList = [...reservations];
         this.selectedSubject.next(reservations);
+
+        periods.forEach(element => {
+          this.calendarMap.set(element.id, element);
+          const duration = element.reservableFrom.valueOf() - moment().valueOf();
+          if (duration > 0) {
+            setTimeout(() => {
+              this.events = mapCalendarPeriodsToCalendarEvents([...this.calendarMap.values()], this.currentLang, []);
+            }, duration);
+          }
+        });
 
         this.subscription = this.selectedSubject.asObservable().subscribe(proposedReservations =>
           this.events = mapCalendarPeriodsToCalendarEvents(periods, this.currentLang, [...proposedReservations]));
@@ -308,21 +260,6 @@ export class LocationDetailsComponent implements OnInit {
 
   declineReservationChange(): void {
     this.modalRef.hide();
-  }
-
-  fillCalendarLocationMap(): void {
-    this.calendarPeriodsService.getCalendarPeriodsOfLocation(this.locationName).subscribe(next => {
-      next.forEach(element => {
-        this.calendarMap.set(element.id, element);
-        const duration = element.reservableFrom.valueOf() - moment().valueOf();
-        if (duration > 0) {
-          setTimeout(() => {
-            this.events = mapCalendarPeriodsToCalendarEvents([...this.calendarMap.values()], this.currentLang, []);
-          }, duration);
-        }
-      });
-    }, () => {
-    });
   }
 
   getBeginHour(calendarPeriod: CalendarPeriod, timeslot: Timeslot): moment.Moment {
