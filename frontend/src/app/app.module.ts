@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, SecurityContext } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -12,12 +12,12 @@ import { ProfileComponent } from './profile/profile.component';
 import { ScanComponent } from './scan/scan.component';
 import { ManagementComponent } from './management/management.component';
 import { InformationComponent } from './information/information.component';
-import { MarkdownModule} from 'ngx-markdown';
+import { MarkdownModule } from 'ngx-markdown';
 import { DashboardItemComponent } from './dashboard/dashboard-item/dashboard-item.component';
 import { LocationDetailsComponent } from './dashboard/location-details/location-details.component';
 import { CalendarComponent } from './calendar/calendar.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { CalendarModule, DateAdapter} from 'angular-calendar';
+import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { ProfileOverviewComponent } from './profile/profile-overview/profile-overview.component';
 import { ProfileReservationsComponent } from './profile/profile-reservations/profile-reservations.component';
@@ -60,17 +60,19 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MomentDateComponent} from './shared/inputs/moment-date/moment-date.component';
+import {FormatStatusPipe} from './shared/pipes/FormatStatusPipe';
 import { MomentDateTimeComponent } from './shared/inputs/moment-datetime/moment-datetime.component';
 import { LocationOpeningperiodDialogComponent } from './management/locations-management/location-details-management/location-calendar/location-openingperiod-dialog/location-openingperiod-dialog.component';
 import { BuildingManagementComponent } from './management/building-management/building-management.component';
 import { ModalModule } from 'ngx-bootstrap/modal';
-import {MatChipsModule} from '@angular/material/chips';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatTabsModule } from '@angular/material/tabs';
 import { LocationReservationsComponent } from './management/locations-management/location-details-management/location-calendar/location-reservations/location-reservations/location-reservations.component';
 import { MomentTimeslotSizeComponent } from './shared/inputs/moment-timeslot-size/moment-timeslot-size.component';
 import { AdminsManagementComponent } from './management/admins-management/admins-management.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { TimeslotTableComponent } from './management/locations-management/location-details-management/timeslot-table/timeslot-table.component';
-import {MatTooltipModule} from '@angular/material/tooltip';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -265,6 +267,7 @@ const routes: Routes = [
     MomentTimeslotSizeComponent,
     AdminsManagementComponent,
     TimeslotTableComponent,
+    FormatStatusPipe
   ],
     imports: [
       BrowserModule,
@@ -279,7 +282,6 @@ const routes: Routes = [
               deps: [HttpClient]
           }
       }),
-      MarkdownModule.forRoot(),
       BrowserAnimationsModule,
       CalendarModule.forRoot({
           provide: DateAdapter,
@@ -299,9 +301,14 @@ const routes: Routes = [
       MatChipsModule,
       ModalModule.forRoot(),
       FlexLayoutModule,
+      MarkdownModule.forRoot({
+        sanitize: SecurityContext.NONE
+      }),
+      MatTabsModule,
       MatTooltipModule
     ],
-  providers: [],
+  providers: [FormatStatusPipe],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

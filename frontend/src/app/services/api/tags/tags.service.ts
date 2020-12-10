@@ -3,6 +3,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {api} from '../endpoints';
 import {LocationTag} from '../../../shared/model/LocationTag';
+import {Cache} from '../../../shared/cache/Cache';
 
 @Injectable({
   providedIn: 'root'
@@ -12,12 +13,14 @@ export class TagsService {
   constructor(private http: HttpClient) {
   }
 
+  tagCache = new Cache<number, LocationTag>(this.http, (arg: LocationTag) => arg.tagId);
+
   /*****************************************************
    *   API calls for CRUD operations with public.TAGS  *
    *****************************************************/
 
   getAllTags(): Observable<LocationTag[]> {
-    return this.http.get<LocationTag[]>(api.tags);
+    return this.tagCache.getAllValues(api.tags);
   }
 
   /**
