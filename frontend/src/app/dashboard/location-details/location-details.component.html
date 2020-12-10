@@ -32,7 +32,7 @@
           <tbody>
           <tr>
             <td><span class="glyphicon glyphicon-time" aria-hidden="true"></span></td>
-            <td>{{statusInCurrentLang | translate}}</td>
+            <td>{{statusObs | async | formatStatus | async}}</td>
           </tr>
           <tr>
             <td><span class="glyphicon glyphicon-user" aria-hidden="true"></span></td>

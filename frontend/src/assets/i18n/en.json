@@ -9,6 +9,13 @@
     "day": "Day"
   },
 
+  "information": {
+    "general": "General",
+    "manager": "Manager",
+    "goto": "Go to",
+    "faq": "FAQ"
+  },
+
   "dashboard": {
     "address": "Address",
     "building": "Building",
@@ -78,10 +85,12 @@
   "general": {
     "dsa": "Student Activities Office",
     "ugent": "Ghent University",
-    "back": "Back",
-    "print": "Print",
+    "appTitle": "Study Rooms UGent",
+
     "yes": "Yes",
     "no": "No",
+    "back": "Back",
+    "print": "Print",
 
     "buttons": {
       "add": "Add",
@@ -891,9 +900,10 @@
           },
 
           "attended": {
-            "yes": "yes",
-            "no": "no",
-            "notScanned": "Not scanned"
+            "yes": "Present",
+            "no": "Absent",
+            "notScanned": "No attendance taken",
+            "notScannedExplanation": "For this reservation attendance wasn't taken, so you haven't gained any penalty points."
           }
         },
 
