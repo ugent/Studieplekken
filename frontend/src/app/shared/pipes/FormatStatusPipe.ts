@@ -1,13 +1,10 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { LocationStatus } from '../../app.constants';
-import { Pair } from '../../shared/model/helpers/Pair';
+import { Pair } from '../model/helpers/Pair';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { DatePipe } from '@angular/common';
 import { merge, Observable, of } from 'rxjs';
-import { map, mergeAll, mergeMap, switchMap } from 'rxjs/operators';
-
-
-
+import { map, mergeMap } from 'rxjs/operators';
 
 @Pipe({ name: 'formatStatus' })
 export class FormatStatusPipe implements PipeTransform {
@@ -37,25 +34,21 @@ export class FormatStatusPipe implements PipeTransform {
                     .pipe(map(
                         next => next.replace('{}', this.datePipe.transform(datetime, 'shortTime')))
                     );
-                break;
             }
             case LocationStatus.CLOSED: {
                 return this.translate.get('dashboard.locationDetails.status.statusClosed');
-                break;
             }
             case LocationStatus.CLOSED_ACTIVE: {
                 const datetime = new Date(status.second);
                 return this.translate.get('dashboard.locationDetails.status.statusClosedActive').pipe(map(
                     next => next.replace('{}', this.datePipe.transform(datetime, 'shortTime'))
                 ));
-                break;
             }
             case LocationStatus.CLOSED_UPCOMING: {
                 const datetime = new Date(status.second).toLocaleString();
                 return this.translate.get('dashboard.locationDetails.status.statusClosedUpcoming').pipe(map(
                     next => next.replace('{}', datetime)
                 ));
-                break;
             }
         }
     }
