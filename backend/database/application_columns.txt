@@ -45,6 +45,7 @@ calendar_period_timeslot_length=timeslot_length
 timeslot_calendar_id=calendar_id
 timeslot_sequence_number=timeslot_sequence_number
 timeslot_date=timeslot_date
+timeslot_reservation_count=reservation_count
 
 # columns for CALENDAR_PERIODS_FOR_LOCKERS
 calendar_period_for_lockers_location_name=location_name

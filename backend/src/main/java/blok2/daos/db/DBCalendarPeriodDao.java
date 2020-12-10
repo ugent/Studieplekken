@@ -295,7 +295,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
 
         Timeslot timeslot = new Timeslot(calendarId, seqnr, date);
 
-        int count = DBLocationReservationDao.amountOfTimeslotReservations(timeslot, conn);
+        int count = rs.getInt(Resources.databaseProperties.getString("timeslot_reservation_count"));
         timeslot.setAmountOfReservations(count);
         return timeslot;
     }

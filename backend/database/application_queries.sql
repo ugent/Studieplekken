@@ -1042,7 +1042,7 @@ join public.buildings b
 where cp.starts_at > ? and cp.starts_at < ?;
 
 -- $get_reservation_timeslots
-select rt.timeslot_sequence_number, rt.timeslot_date, rt.calendar_id
+select rt.timeslot_sequence_number, rt.timeslot_date, rt.calendar_id, rt.reservation_count
 from public.reservation_timeslots rt
 where calendar_id = ? 
 order by rt.timeslot_date, rt.timeslot_sequence_number ASC;
