@@ -109,6 +109,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.statusSub.forEach(sub => sub.unsubscribe());
     this.locationSub.unsubscribe();
+    this.nextReservableFromSub.unsubscribe();
   }
 
   /**

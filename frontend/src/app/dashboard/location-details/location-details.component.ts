@@ -157,15 +157,17 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
 
     this.currentTimeslot = event.timeslot;
 
-    if (this.currentTimeslot.amountOfReservations >= this.capacity) {
+    const reservation: LocationReservation = {user: this.authenticationService.userValue(), timeslot: this.currentTimeslot};
+    const timeslotIsSelected = this.selectedSubject.value.some(r => timeslotEquals(r.timeslot, reservation.timeslot))
+
+    if (this.currentTimeslot.amountOfReservations >= this.capacity && !timeslotIsSelected) {
       return;
     }
     this.isModified = true;
 
-    const reservation: LocationReservation = {user: this.authenticationService.userValue(), timeslot: this.currentTimeslot};
 
     // If it's already selected, unselect
-    if (this.selectedSubject.value.some(r => timeslotEquals(r.timeslot, reservation.timeslot))) {
+    if (timeslotIsSelected) {
       const nextval = this.selectedSubject.value.filter(r => !timeslotEquals(r.timeslot, reservation.timeslot));
       this.selectedSubject.next(nextval);
       // If it's not yet selected, add to selection
