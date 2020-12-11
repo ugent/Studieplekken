@@ -58,7 +58,7 @@ from public.locations l
         on cp.location_name = l.name
 where cp.reservable_from >= now()
 group by l.name
-order by l.name;;
+order by l.name;
 
 -- $get_location
 select l.name, l.number_of_seats, l.number_of_lockers
