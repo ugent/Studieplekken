@@ -7,7 +7,7 @@
         {{'management.locationDetails.form.name' | translate}}
       </label>
       <div class="col-lg-8">
-        <input class="form-control" id="name" type="text" formControlName="name" >
+        <input class="form-control" id="name" type="text" formControlName="name">
       </div>
     </div>
 
@@ -17,7 +17,7 @@
         {{'management.locationDetails.form.authority' | translate}}
       </label>
       <div class="col-lg-8">
-        <select class="form-control" id="authority" formControlName="authority" >
+        <select class="form-control" id="authority" formControlName="authority">
           <option *ngFor="let authority of authorities" [value]="authority.authorityId">
             {{authority.authorityName + ' (' + authority.description + ')'}}
           </option>
@@ -31,7 +31,7 @@
         {{'management.locationDetails.form.building' | translate}}
       </label>
       <div class="col-lg-8">
-        <select class="form-control" id="building" formControlName="building" >
+        <select class="form-control" id="building" formControlName="building">
           <option *ngFor="let building of buildings" [value]="building.buildingId">
             {{building.name + ' (' + building.address + ')'}}
           </option>
@@ -47,6 +47,9 @@
       <div class="col-lg-8">
         <input class="form-control" id="numberOfSeats" type="number" formControlName="numberOfSeats">
         <span class="help-block">{{'management.locationDetails.form.numberOfSeatsHelp' | translate}}</span>
+        <div class="alert alert-warning" *ngIf="this.canEditLocationSeats">
+          De aangepaste plaatsen worden alleen toegepast op nieuw aangemaakte openingsperiodes.
+        </div>
       </div>
     </div>
 
@@ -56,7 +59,7 @@
         {{'management.locationDetails.form.numberOfLockers' | translate}}
       </label>
       <div class="col-lg-8">
-        <input class="form-control" id="numberOfLockers" type="number" formControlName="numberOfLockers" >
+        <input class="form-control" id="numberOfLockers" type="number" formControlName="numberOfLockers">
       </div>
     </div>
 
@@ -66,7 +69,7 @@
         {{'management.locationDetails.form.forGroup' | translate}}
       </label>
       <div class="col-lg-8">
-        <input id="forGroup" type="checkbox" formControlName="forGroup" >
+        <input id="forGroup" type="checkbox" formControlName="forGroup">
       </div>
     </div>
 
@@ -75,7 +78,7 @@
       <label class="col-lg-3 control-label" for="imageUrl">
         {{'management.locationDetails.form.imageUrl' | translate}}</label>
       <div class="col-lg-8">
-        <input class="form-control" id="imageUrl" type="text" formControlName="imageUrl" >
+        <input class="form-control" id="imageUrl" type="text" formControlName="imageUrl">
       </div>
     </div>
 

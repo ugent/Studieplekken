@@ -200,11 +200,14 @@ where tag_id = ?;
 
 -- queries for table LOCATION_RESERVATION
 -- $get_location_reservations_where_<?>
-select * from public.location_reservations lr
-            join public.users u 
-       			on u.augentid = lr.user_augentid
-            left join public.reservation_timeslots rt
-            on rt.timeslot_date = lr.timeslot_date and rt.timeslot_sequence_number = lr.timeslot_seqnr and rt.calendar_id = lr.calendar_id     
+select lr.*, u.*, rt.*
+from public.location_reservations lr
+    join public.users u
+        on u.augentid = lr.user_augentid
+    left join public.reservation_timeslots rt
+        on rt.timeslot_date = lr.timeslot_date
+        and rt.timeslot_sequence_number = lr.timeslot_seqnr
+        and rt.calendar_id = lr.calendar_id
 where <?>;
 
 -- $currently_out_of_use
