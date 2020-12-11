@@ -116,6 +116,12 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
             pstmt.setInt(3, timeslot.getTimeslotSeqnr());
             pstmt.setInt(4, timeslot.getCalendarId());
             pstmt.execute();
+            pstmt = conn.prepareStatement("subtract_one_to_reservation_count");
+            pstmt.setDate(1, java.sql.Date.valueOf(timeslot.getTimeslotDate()));
+            pstmt.setInt(2, timeslot.getTimeslotSeqnr());
+            pstmt.setInt(3, timeslot.getCalendarId());
+            pstmt.execute();
+
         }
     }
 
