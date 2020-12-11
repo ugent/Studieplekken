@@ -28,7 +28,7 @@ services:
       TZ: Europe/Brussels
       PGTZ: Europe/Brussels
     volumes:
-      - ./my-postgres.conf:/var/lib/postgresql/data/postgresql.conf
+      - ./backend/postgres.conf:/var/lib/postgresql/data/postgresql.conf
     networks:
       - blokat
   frontend:
