@@ -1,5 +1,21 @@
 <div class="container-fluid" *ngIf="locations !== undefined && successOnRetrievingLocations === true">
 
+  <div class="alert alert-info">
+    <!-- [VRIJDAG 11 DECEMBER, RESERVEREN VERSPREIDEN] -->
+    <h3>{{'dashboard.alert.title' | translate}}</h3>
+    <!-- Gisteren hebben we helaas moeten vaststellen dat er problemen waren met onze server. -->
+    <p>{{'dashboard.alert.p1' | translate}}</p>
+    <!-- De interesse voor studieplekken is groter dan voorspeld en onze server kan de grote belasting niet aan. -->
+    <p>{{'dashboard.alert.p2' | translate}}</p>
+    <!-- Om de piekbelasting te verminderen wordt het openen van reservaties verspreid tussen 19u, 19u30 en 20u. -->
+    <p>{{'dashboard.alert.p3' | translate}}</p>
+    <!-- Hier op het dashboard kan je voor elke studieplek nagaan op welk uur de reservaties open zullen gaan. -->
+    <p>{{'dashboard.alert.p4' | translate}}</p>
+    <!-- Je kan dit terugvinden naast het symbool:  -->
+    <span style="margin-top: 15px;">{{'dashboard.alert.p5' | translate}}</span>
+    <span style="margin-left: 15px;" class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+  </div>
+
   <div *ngIf="locations.length > 0; else noLocations">
     <!-- Provide a panel group for filter -->
     <div class="panel-group">
@@ -86,7 +102,8 @@
         fxFlex.lt-md="0 1 calc(50% - 32px)"
         fxFlex.lt-sm="100%"
         *ngFor="let location of filteredLocations"
-        [location]="location" [status]="locationStatuses.get(location.name)">
+        [location]="location" [status]="locationStatuses.get(location.name)"
+        [nextReservableFrom]="locationNextReservableFroms.get(location.name)">
       </app-dashboard-item>
     </div>
   </div>

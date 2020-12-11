@@ -32,6 +32,7 @@ export const api = {
   approveLocation: '/api/locations/{locationName}/approval',
   deleteLocation: '/api/locations/{locationName}',
   setupTagsForLocation: '/api/locations/tags/{locationName}',
+  allReservableFroms: '/api/locations/nextReservableFroms',
 
   // LOCATION_RESERVATIONS
   locationReservationsOfUser: '/api/locations/reservations/user',
