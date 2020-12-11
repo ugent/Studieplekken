@@ -9,7 +9,7 @@ import {calendarEventTitleTemplate} from '../../app.constants';
 export class CalendarPeriod {
 
   constructor(id: number, location: Location, startsAt: Moment, endsAt: Moment, openingTime: Moment, closingTime: Moment,
-              reservable: boolean, reservableFrom: Moment, reservableTimeslotSize: number, timeslots: Timeslot[], lockedFrom: Moment) {
+              reservable: boolean, reservableFrom: Moment, reservableTimeslotSize: number, timeslots: Timeslot[], lockedFrom: Moment, seatCount: number) {
     this.id = id;
     this.location = location;
     this.startsAt = startsAt;
@@ -21,6 +21,7 @@ export class CalendarPeriod {
     this.reservableTimeslotSize = reservableTimeslotSize;
     this.timeslots = timeslots;
     this.lockedFrom = lockedFrom;
+    this.seatCount = seatCount;
   }
   id: number;
   location: Location;
@@ -33,6 +34,7 @@ export class CalendarPeriod {
   reservableTimeslotSize: number;
   timeslots: Timeslot[];
   lockedFrom: Moment;
+  seatCount: number;
 
   static fromJSON(json: any): CalendarPeriod {
     return new CalendarPeriod(
@@ -46,7 +48,8 @@ export class CalendarPeriod {
       moment(json.reservableFrom, 'YYYY-MM-DDTHH:mm:ss'),
       json.reservableTimeslotSize,
       json.timeslots.map(jsonT => Timeslot.fromJSON(jsonT)),
-      moment(json.lockedFrom)
+      moment(json.lockedFrom),
+      json.seatCount
     );
   }
 
@@ -74,7 +77,8 @@ export class CalendarPeriod {
       reservableTimeslotSize: this.reservableTimeslotSize,
       timeslots: this.timeslots,
       reservable: this.reservable,
-      lockedFrom: this.lockedFrom
+      lockedFrom: this.lockedFrom,
+      seatCount: this.seatCount
     };
   }
 }
@@ -222,7 +226,7 @@ function mapReservableTimeslotsToCalendarEvents(period: CalendarPeriod, reserved
   for (const timeslot of period.timeslots) {
       const beginDT = new Date(timeslot.timeslotDate.format('YYYY-MM-DD') + 'T' + timeslotStartHour(period, timeslot).format('HH:mm'));
       const endDT = new Date(timeslot.timeslotDate.format('YYYY-MM-DD') + 'T' + timeslotEndHour(period, timeslot).format('HH:mm'));
-
+      console.log(timeslot)
       calendarEvents.push({
         title: `${timeslot.amountOfReservations} / ${timeslot.seatCount}`,
         start: beginDT,

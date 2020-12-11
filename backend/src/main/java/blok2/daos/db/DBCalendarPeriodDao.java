@@ -88,12 +88,13 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         String[] generatedColumns = { Resources.databaseProperties.getString("calendar_period_id") };
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_calendar_period"), generatedColumns);
         prepareCalendarPeriodPstmt(calendarPeriod, pstmt);
+        pstmt.setInt(10, calendarPeriod.getLocation().getNumberOfSeats());
         pstmt.execute();
 
         ResultSet rs = pstmt.getGeneratedKeys();
         rs.next();
         calendarPeriod.setId(rs.getInt(1));
-        calendarPeriod.setSeatCount(calendarPeriod.getLocation().getNumberOfLockers());
+        calendarPeriod.setSeatCount(calendarPeriod.getLocation().getNumberOfSeats());
         // Add all relevant time periods
         if(calendarPeriod.isReservable()) {
             addTimeslots(calendarPeriod, conn);
@@ -167,7 +168,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         // set ...
         prepareCalendarPeriodPstmt(to, pstmt);
         // where ...
-        pstmt.setInt(11, from.getId());
+        pstmt.setInt(10, from.getId());
         pstmt.execute();
         
         if(resetTimeslots) {
@@ -325,7 +326,6 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         pstmt.setBoolean(7, calendarPeriod.isReservable());
         pstmt.setInt(8, calendarPeriod.getReservableTimeslotSize());
         pstmt.setTimestamp(9, Timestamp.valueOf(calendarPeriod.getLockedFrom()));
-        pstmt.setInt(10, calendarPeriod.getLocation().getNumberOfSeats());
     }
 
     private void prepareTimeslotPeriodPstmt(int seq_id, LocalDate date, CalendarPeriod period, int amountOfSeats, PreparedStatement pstmt) throws SQLException {
