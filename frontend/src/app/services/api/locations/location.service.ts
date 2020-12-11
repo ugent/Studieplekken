@@ -6,7 +6,8 @@ import {Location} from '../../../shared/model/Location';
 import {LocationTag} from '../../../shared/model/LocationTag';
 import { map } from 'rxjs/internal/operators/map';
 import {Cache} from '../../../shared/cache/Cache';
-import { filter } from 'rxjs/operators';
+import {Moment} from 'moment';
+import {Pair} from '../../../shared/model/helpers/Pair';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,7 @@ export class LocationService {
   constructor(private http: HttpClient) { }
 
   locationCache: Cache<string, Location> = new Cache<string, Location>(this.http, (arg: Location) => arg.name);
+  nextReservableFrom: Cache<string, Moment> = new Cache<string, Moment>(this.http, (arg: Location) => arg.name);
 
   /***********************************************************
    *   API calls for CRUD operations with public.LOCATIONS   *
@@ -36,6 +38,10 @@ export class LocationService {
   getLocation(locationName: string, invalidateCache: boolean = false): Observable<Location> {
     const url = api.location.replace('{locationName}', locationName);
     return this.locationCache.getValue(locationName, url, invalidateCache);
+  }
+
+  getAllLocationNextReservableFroms(): Observable<Pair<string, Moment>[]> {
+    return this.http.get<Pair<string, Moment>[]>(api.allReservableFroms);
   }
 
   addLocation(location: Location): Observable<any> {
