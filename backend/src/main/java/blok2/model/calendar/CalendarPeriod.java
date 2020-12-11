@@ -49,18 +49,19 @@ public class CalendarPeriod extends Period implements Cloneable {
         return Objects.hash(super.hashCode(), location, openingTime, closingTime, reservableFrom, reservable, reservableTimeslotSize);
     }
 
-
     @Override
     public String toString() {
         return "CalendarPeriod{" +
-                "location=" + location +
-                ", startsAt='" + getStartsAt() + '\'' +
-                ", endsAt='" + getEndsAt() + '\'' +
-                ", openingTime='" + openingTime + '\'' +
-                ", closingTime='" + closingTime + '\'' +
-                ", reservableFrom='" + reservableFrom + '\'' +
-                ", reservable='" + reservable + '\'' +
-                ", reservableTimeslotSize='" + reservableTimeslotSize + '\'' +
+                "id=" + id +
+                ", location=" + location +
+                ", openingTime=" + openingTime +
+                ", closingTime=" + closingTime +
+                ", reservableFrom=" + reservableFrom +
+                ", lockedFrom=" + lockedFrom +
+                ", reservable=" + reservable +
+                ", reservableTimeslotSize=" + reservableTimeslotSize +
+                ", seatCount=" + seatCount +
+                ", timeslots=" + timeslots +
                 '}';
     }
 

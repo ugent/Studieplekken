@@ -57,5 +57,13 @@ public class LocationTag implements Cloneable {
         }
     }
 
+    @Override
+    public String toString() {
+        return "LocationTag{" +
+                "tagId=" + tagId +
+                ", dutch='" + dutch + '\'' +
+                ", english='" + english + '\'' +
+                '}';
+    }
 
 }

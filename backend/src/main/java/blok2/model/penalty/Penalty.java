@@ -80,12 +80,11 @@ public class Penalty implements Cloneable {
                 ", eventCode=" + eventCode +
                 ", timestamp=" + timestamp +
                 ", reservationDate=" + reservationDate +
-                ", reservationLocation=" + reservationLocation +
+                ", reservationLocation='" + reservationLocation + '\'' +
                 ", receivedPoints=" + receivedPoints +
-                ", remarks=" + remarks +
+                ", remarks='" + remarks + '\'' +
                 '}';
     }
-
 
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
 

@@ -82,6 +82,22 @@ public class Location implements Cloneable {
         }
     }
 
+    @Override
+    public String toString() {
+        return "Location{" +
+                "name='" + name + '\'' +
+                ", numberOfSeats=" + numberOfSeats +
+                ", numberOfLockers=" + numberOfLockers +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", descriptionDutch='" + descriptionDutch + '\'' +
+                ", descriptionEnglish='" + descriptionEnglish + '\'' +
+                ", building=" + building +
+                ", authority=" + authority +
+                ", forGroup=" + forGroup +
+                ", assignedTags=" + assignedTags +
+                '}';
+    }
+
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
 
     public String getName() {

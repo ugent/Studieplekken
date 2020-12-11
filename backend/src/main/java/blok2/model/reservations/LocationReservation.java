@@ -96,5 +96,16 @@ public class LocationReservation {
             return this.attended;
         }
     }
+
+    @Override
+    public String toString() {
+        return "LocationReservation{" +
+                "user=" + user +
+                ", createdAt=" + createdAt +
+                ", timeslot=" + timeslot +
+                ", attended=" + attended +
+                '}';
+    }
+    
 }
 

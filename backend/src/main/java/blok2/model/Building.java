@@ -60,6 +60,7 @@ public class Building implements Cloneable {
         return "Building{" +
                 "buildingId=" + buildingId +
                 ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
                 '}';
     }
 

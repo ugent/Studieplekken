@@ -36,6 +36,15 @@ public class Authority implements Cloneable {
         }
     }
 
+    @Override
+    public String toString() {
+        return "Authority{" +
+                "authorityId=" + authorityId +
+                ", authorityName='" + authorityName + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
+
     public String getDescription() {
         return description;
     }

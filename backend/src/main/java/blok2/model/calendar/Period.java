@@ -10,8 +10,8 @@ public class Period {
     @Override
     public String toString() {
         return "Period{" +
-                "startsAt='" + startsAt + '\'' +
-                ", endsAt='" + endsAt + '\'' +
+                "startsAt=" + startsAt +
+                ", endsAt=" + endsAt +
                 '}';
     }
 

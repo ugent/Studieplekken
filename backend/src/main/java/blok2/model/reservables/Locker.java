@@ -18,7 +18,7 @@ public class Locker implements Cloneable {
     @Override
     public String toString() {
         return "Locker{" +
-                ", number=" + number +
+                "number=" + number +
                 ", location=" + location +
                 '}';
     }

@@ -40,6 +40,17 @@ public class Timeslot implements Cloneable {
     }
 
     @Override
+    public String toString() {
+        return "Timeslot{" +
+                "calendarId=" + calendarId +
+                ", timeslotSeqnr=" + timeslotSeqnr +
+                ", timeslotDate=" + timeslotDate +
+                ", seatCount=" + seatCount +
+                ", amountOfReservations=" + amountOfReservations +
+                '}';
+    }
+
+    @Override
     public int hashCode() {
         return Objects.hash(calendarId);
     }
