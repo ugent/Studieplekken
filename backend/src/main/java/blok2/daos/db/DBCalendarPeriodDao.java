@@ -100,7 +100,6 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         }
     }
 
-    // Count -1 means location count.
     private void addTimeslots(CalendarPeriod period, Connection conn) throws SQLException {
         // One per day (end day inclusive)
         for(LocalDate currDate = period.getStartsAt(); !currDate.isAfter(period.getEndsAt()); currDate=currDate.plusDays(1)) {

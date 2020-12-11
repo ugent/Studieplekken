@@ -281,7 +281,7 @@ where calendar_id = ? and timeslot_date = ? and timeslot_sequence_number= ?;
 
 -- $subtract_one_to_reservation_count
 update reservation_timeslots
-set reservation_count = reservation_count + 1
+set reservation_count = reservation_count - 1
 where calendar_id = ? and timeslot_date = ? and timeslot_sequence_number= ?;
 
 -- $delete_location_reservation
