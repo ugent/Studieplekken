@@ -1,10 +1,12 @@
 package blok2.daos;
 
+import blok2.helpers.Pair;
 import blok2.model.reservables.Location;
 import blok2.model.reservables.Locker;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +20,12 @@ public interface ILocationDao extends IDao {
      * Get a list of all available locations.
      */
     List<Location> getAllLocations() throws SQLException;
+
+    /**
+     * Get a list of pairs which tell for each location what the next reservable from is.
+     * The pair maps the location name to the reservable.
+     */
+    List<Pair<String, LocalDateTime>> getAllLocationNextReservableFroms() throws SQLException;
 
     /**
      * Adds a location

@@ -2,6 +2,7 @@ package blok2.controllers;
 
 import blok2.daos.ILocationDao;
 import blok2.daos.ILocationTagDao;
+import blok2.helpers.Pair;
 import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.helpers.EmailService;
 import blok2.helpers.LocationWithApproval;
@@ -18,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.mail.MessagingException;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -75,6 +77,18 @@ public class LocationController extends AuthorizedLocationController {
     public Location getLocation(@PathVariable("locationName") String locationName) {
         try {
             return locationDao.getLocation(locationName);
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @GetMapping("/nextReservableFroms")
+    @PreAuthorize("permitAll()")
+    public List<Pair<String, LocalDateTime>> getAllNextReservableFroms() {
+        try {
+            return locationDao.getAllLocationNextReservableFroms();
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));

@@ -9,6 +9,7 @@ import {ApplicationTypeFunctionalityService} from '../../services/functionality/
 import {defaultLocationImage, LocationStatus} from '../../app.constants';
 import {CalendarPeriodsService} from '../../services/api/calendar-periods/calendar-periods.service';
 import { Observable, Subscription } from 'rxjs';
+import {Moment} from 'moment';
 
 @Component({
   selector: 'app-dashboard-item',
@@ -19,6 +20,7 @@ import { Observable, Subscription } from 'rxjs';
 export class DashboardItemComponent implements OnInit, AfterViewInit {
   @Input() location: Location;
   @Input() status: Pair<LocationStatus, string>;
+  @Input() nextReservableFrom: Moment;
 
   occupation = 0;
 

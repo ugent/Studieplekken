@@ -11,6 +11,9 @@
     <p>{{'dashboard.alert.p3' | translate}}</p>
     <!-- Hier op het dashboard kan je voor elke studieplek nagaan op welk uur de reservaties open zullen gaan. -->
     <p>{{'dashboard.alert.p4' | translate}}</p>
+    <!-- Je kan dit terugvinden naast het symbool:  -->
+    <p style="margin-top: 15px;">{{'dashboard.alert.p5' | translate}}:</p>
+    <span style="margin-left: 15px;" class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
   </div>
 
   <div *ngIf="locations.length > 0; else noLocations">
@@ -99,7 +102,8 @@
         fxFlex.lt-md="0 1 calc(50% - 32px)"
         fxFlex.lt-sm="100%"
         *ngFor="let location of filteredLocations"
-        [location]="location" [status]="locationStatuses.get(location.name)">
+        [location]="location" [status]="locationStatuses.get(location.name)"
+        [nextReservableFrom]="locationNextReservableFroms.get(location.name)">
       </app-dashboard-item>
     </div>
   </div>

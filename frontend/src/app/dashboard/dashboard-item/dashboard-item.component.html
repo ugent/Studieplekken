@@ -22,7 +22,6 @@
           <tbody>
           <tr>
             <td><span class="glyphicon glyphicon-time" aria-hidden="true"></span></td>
-            
             <td>{{status | formatStatus | async }}</td>
           </tr>
           <tr>
@@ -36,6 +35,11 @@
           <tr>
             <td><span class="glyphicon glyphicon-home" aria-hidden="true"></span></td>
             <td>{{location.building.name}}<br/>{{location.building.address}}</td>
+          </tr>
+          <tr>
+            <td><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></td>
+            <td>{{nextReservableFrom ? (nextReservableFrom | date:'short') :
+              ('general.notAvailableAbbreviation' | translate)}}</td>
           </tr>
           </tbody>
         </table>
