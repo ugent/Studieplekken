@@ -3,10 +3,12 @@ spring:
   application:
     name: "BlokAtUGent"
   datasource:
+    type: "com.zaxxer.hikari.HikariDataSource"
     driverClassName: org.postgresql.Driver
     url: "jdbc:postgresql://localhost:5432/blokatugent"
     username: ***REMOVED***
     password: ***REMOVED***
+    maximumPoolSize: 200
   mail: # configuration for sending verification mail
     host: smtp.gmail.com
     port: 587
@@ -64,3 +66,9 @@ ldap:
   base: ***REMOVED***
   userDn: cn=dsa-bestuursleden,ou=applications,dc=UGent,dc=be
   password: 5-yuoDssc3Fwd
+logging:
+  level:
+      com:
+        zaxxer:
+          hikari:
+            DEBUG
