@@ -129,6 +129,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
                 pstmt.execute();
             } catch (SQLException e) {
                 conn.rollback();
+                throw e;
             } finally {
                 conn.setAutoCommit(true);
             }
