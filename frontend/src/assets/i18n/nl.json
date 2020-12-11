@@ -184,6 +184,7 @@
         "success": "Het wijzigen van de ruimte was succesvol",
         "error": "Er ging iets mis tijdens het wijzigen van de ruimte",
 
+        "numberOfSeatsApplyWarning": "De aangepaste plaatsen worden alleen toegepast op nieuw aangemaakte openingsperiodes.",
         "numberOfSeatsHelp": "Kan alleen aangepast worden door een admin in samenspraak met DGFB."
       },
 

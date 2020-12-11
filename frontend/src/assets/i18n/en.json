@@ -184,6 +184,7 @@
         "success": "Successfully updated the room",
         "error": "An error occurred while updating the room",
 
+        "numberOfSeatsApplyWarning": "The changed seats will only be applied to newly created opening periods",
         "numberOfSeatsHelp": "Can only be updated by an admin in consultation with DGFB."
       },
 

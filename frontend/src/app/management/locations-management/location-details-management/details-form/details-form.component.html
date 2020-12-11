@@ -48,7 +48,7 @@
         <input class="form-control" id="numberOfSeats" type="number" formControlName="numberOfSeats">
         <span class="help-block">{{'management.locationDetails.form.numberOfSeatsHelp' | translate}}</span>
         <div class="alert alert-warning" *ngIf="this.canEditLocationSeats">
-          De aangepaste plaatsen worden alleen toegepast op nieuw aangemaakte openingsperiodes.
+          {{'management.locationDetails.form.numberOfSeatsApplyWarning' | translate}}
         </div>
       </div>
     </div>
