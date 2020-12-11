@@ -7,6 +7,9 @@ ADD seat_count INT default 0;
 Alter table reservation_timeslots
 ADD CONSTRAINT RESERVATION_SEATLIMIT CHECK (reservation_count <= seat_count);
 
+alter table calendar_periods
+ADD seat_count INT default 0;
+
 -- fill in seat count
 update reservation_timeslots
 SET seat_count = ab.number_of_seats
@@ -14,6 +17,14 @@ from(
 SELECT l2.number_of_seats, cp.calendar_id from locations l2 inner join calendar_periods cp on l2.name = cp.location_name
 ) ab
 where ab.calendar_id = reservation_timeslots.calendar_id;
+
+-- fill in seat count
+update calendar_periods
+SET seat_count = ab.number_of_seats
+from(
+SELECT l2.number_of_seats, cp.calendar_id from locations l2 inner join calendar_periods cp on l2.name = cp.location_name
+) ab
+where ab.calendar_id = calendar_periods.calendar_id;
 
 -- Fill in reserved count
 update reservation_timeslots

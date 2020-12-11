@@ -46,13 +46,14 @@ timeslot_calendar_id=calendar_id
 timeslot_sequence_number=timeslot_sequence_number
 timeslot_date=timeslot_date
 timeslot_reservation_count=reservation_count
+timeslot_seat_count=reservation_count
 
 # columns for CALENDAR_PERIODS_FOR_LOCKERS
 calendar_period_for_lockers_location_name=location_name
 calendar_period_for_lockers_starts_at=starts_at
 calendar_period_for_lockers_ends_at=ends_at
 calendar_period_for_lockers_reservable_from=reservable_from
-
+calendar_period_seat_count=seat_count
 # columns for table INSTITUTIONS
 institution_name=name
 

@@ -224,7 +224,7 @@ function mapReservableTimeslotsToCalendarEvents(period: CalendarPeriod, reserved
       const endDT = new Date(timeslot.timeslotDate.format('YYYY-MM-DD') + 'T' + timeslotEndHour(period, timeslot).format('HH:mm'));
 
       calendarEvents.push({
-        title: `${timeslot.amountOfReservations} / ${period.location.numberOfSeats}`,
+        title: `${timeslot.amountOfReservations} / ${timeslot.seatCount}`,
         start: beginDT,
         end: endDT,
         meta: {calendarPeriod: period, timeslot},

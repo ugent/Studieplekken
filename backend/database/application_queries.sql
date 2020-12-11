@@ -333,7 +333,7 @@ set user_augentid = ?
 where user_augentid = ?;
 
 -- $get_location_reservations_with_location_by_user
-select lr.*, cp.*, l.*, b.*, a.*, u.*, rt.reservation_count
+select lr.*, cp.*, l.*, b.*, a.*, u.*, rt.reservation_count, rt.seat_count
      , lr.timeslot_seqnr as "timeslot_sequence_number"
 from public.location_reservations lr
     join public.calendar_periods cp
@@ -997,7 +997,7 @@ from public.calendar_periods cp
 order by to_date(cp.starts_at || ' ' || cp.opening_time, 'YYYY-MM-DD HH24:MI');
 
 -- $get_calendar_periods
-select cp.calendar_id, cp.location_name, cp.starts_at, cp.ends_at, cp.opening_time, cp.closing_time, cp.reservable_from, cp.reservable, cp.timeslot_length, cp.locked_from
+select cp.calendar_id, cp.location_name, cp.starts_at, cp.ends_at, cp.opening_time, cp.closing_time, cp.reservable_from, cp.reservable, cp.timeslot_length, cp.locked_from, cp.seat_count
        , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch, l.description_english, l.forGroup
        , a.authority_id, a.authority_name, a.description
        , b.building_id, b.building_name, b.address
@@ -1012,12 +1012,12 @@ where cp.location_name = ?
 order by cp.starts_at, cp.opening_time;
 
 -- $insert_calendar_period
-insert into public.calendar_periods(location_name, starts_at, ends_at, opening_time, closing_time, reservable_from, reservable, timeslot_length, locked_from)
-values (?, ?, ?, ?, ?, ?, ?, ?, ?);
+insert into public.calendar_periods(location_name, starts_at, ends_at, opening_time, closing_time, reservable_from, reservable, timeslot_length, locked_from, seat_count)
+values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 -- $update_calendar_period
 update public.calendar_periods
-set location_name = ?, starts_at = ?, ends_at = ?, opening_time = ?, closing_time = ?, reservable_from = ?, reservable = ?, timeslot_length = ?, locked_from = ?
+set location_name = ?, starts_at = ?, ends_at = ?, opening_time = ?, closing_time = ?, reservable_from = ?, reservable = ?, timeslot_length = ?, locked_from = ?, seat_count = ?
 where calendar_id = ?;
 
 -- $get_calendar_period_by_id
@@ -1053,7 +1053,7 @@ join public.buildings b
 where cp.starts_at > ? and cp.starts_at < ?;
 
 -- $get_reservation_timeslots
-select rt.timeslot_sequence_number, rt.timeslot_date, rt.calendar_id, rt.reservation_count
+select rt.timeslot_sequence_number, rt.timeslot_date, rt.calendar_id, rt.reservation_count, rt.seat_count
 from public.reservation_timeslots rt
 where calendar_id = ? 
 order by rt.timeslot_date, rt.timeslot_sequence_number ASC;
