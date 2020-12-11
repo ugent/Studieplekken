@@ -3,6 +3,7 @@ spring:
   application:
     name: "BlokAtUGent"
   datasource:
+    type: "com.zaxxer.hikari"
     driverClassName: org.postgresql.Driver
     url: "jdbc:postgresql://localhost:5432/blokatugent"
     username: ***REMOVED***
