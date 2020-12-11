@@ -87,12 +87,13 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         String[] generatedColumns = { Resources.databaseProperties.getString("calendar_period_id") };
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_calendar_period"), generatedColumns);
         prepareCalendarPeriodPstmt(calendarPeriod, pstmt);
+        pstmt.setInt(10, calendarPeriod.getLocation().getNumberOfSeats());
         pstmt.execute();
 
         ResultSet rs = pstmt.getGeneratedKeys();
         rs.next();
         calendarPeriod.setId(rs.getInt(1));
-
+        calendarPeriod.setSeatCount(calendarPeriod.getLocation().getNumberOfSeats());
         // Add all relevant time periods
         if(calendarPeriod.isReservable()) {
             addTimeslots(calendarPeriod, conn);
@@ -119,7 +120,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
 
     private void addTimeslotPeriod(int seq_id, LocalDate date, CalendarPeriod period, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_reservation_timeslots"));
-        prepareTimeslotPeriodPstmt(seq_id, date, period, pstmt);
+        prepareTimeslotPeriodPstmt(seq_id, date, period, period.getSeatCount(), pstmt);
         pstmt.execute();
     }
 
@@ -264,7 +265,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         List<Timeslot> timeslotList = new ArrayList<>();
 
         while(rs.next()) {
-            timeslotList.add(createTimeslot(rs, conn));
+            timeslotList.add(createTimeslot(rs));
         }
 
         calendarPeriod.setTimeslots(Collections.unmodifiableList(timeslotList));
@@ -283,19 +284,23 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         calendarPeriod.setReservableTimeslotSize(rs.getInt(Resources.databaseProperties.getString("calendar_period_timeslot_length")));
         calendarPeriod.setLocation(DBLocationDao.createLocation(rs,conn));
         calendarPeriod.setLockedFrom(rs.getTimestamp(Resources.databaseProperties.getString("calendar_period_locked_from")).toLocalDateTime());
+        calendarPeriod.setSeatCount(rs.getInt(Resources.databaseProperties.getString("calendar_period_seat_count")));
 
         return calendarPeriod;
     }
 
-    public static Timeslot createTimeslot(ResultSet rs, Connection conn) throws SQLException {
+    public static Timeslot createTimeslot(ResultSet rs) throws SQLException {
         int calendarId = (rs.getInt(Resources.databaseProperties.getString("timeslot_calendar_id")));
         int seqnr = (rs.getInt(Resources.databaseProperties.getString("timeslot_sequence_number")));
         LocalDate date = (rs.getDate(Resources.databaseProperties.getString("timeslot_date")).toLocalDate());
 
         Timeslot timeslot = new Timeslot(calendarId, seqnr, date);
 
-        int count = DBLocationReservationDao.amountOfTimeslotReservations(timeslot, conn);
+        int count = rs.getInt(Resources.databaseProperties.getString("timeslot_reservation_count"));
         timeslot.setAmountOfReservations(count);
+        int seatCount = rs.getInt(Resources.databaseProperties.getString("timeslot_seat_count"));
+        timeslot.setSeatCount(seatCount);
+
         return timeslot;
     }
 
@@ -321,10 +326,11 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         pstmt.setTimestamp(9, Timestamp.valueOf(calendarPeriod.getLockedFrom()));
     }
 
-    private void prepareTimeslotPeriodPstmt(int seq_id, LocalDate date, CalendarPeriod period, PreparedStatement pstmt) throws SQLException {
+    private void prepareTimeslotPeriodPstmt(int seq_id, LocalDate date, CalendarPeriod period, int amountOfSeats, PreparedStatement pstmt) throws SQLException {
         pstmt.setInt(1, period.getId());
         pstmt.setInt(2, seq_id);
         pstmt.setDate(3, Date.valueOf(date));
+        pstmt.setInt(4, amountOfSeats);
     }
 
     private List<CalendarPeriod> getCalendarPeriodsFromPstmt(PreparedStatement pstmt, Connection conn) throws SQLException {

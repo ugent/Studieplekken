@@ -22,6 +22,8 @@ public class CalendarPeriod extends Period implements Cloneable {
     private LocalDateTime lockedFrom;
     private boolean reservable;
     private int reservableTimeslotSize;
+    private int seatCount;
+
 
     private List<Timeslot> timeslots = Collections.emptyList();
 
@@ -162,4 +164,13 @@ public class CalendarPeriod extends Period implements Cloneable {
     public int getOpenHoursDuration() {
         return Math.toIntExact(SECONDS.between(getOpeningTime(), getClosingTime()));
     }
+
+    public int getSeatCount() {
+        return seatCount;
+    }
+
+    public void setSeatCount(int seatCount) {
+        this.seatCount = seatCount;
+    }
+
 }

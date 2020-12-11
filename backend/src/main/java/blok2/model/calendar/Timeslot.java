@@ -17,6 +17,11 @@ public class Timeslot implements Cloneable {
     @NotNull
     private LocalDate timeslotDate;
 
+    @NotNull
+    @Min(0)
+    private Integer seatCount;
+
+
     @JsonProperty(access= JsonProperty.Access.READ_ONLY)
     private int amountOfReservations;
 
@@ -69,5 +74,13 @@ public class Timeslot implements Cloneable {
 
     public void setAmountOfReservations(int amountOfReservations) {
         this.amountOfReservations = amountOfReservations;
+    }
+
+    public Integer getSeatCount() {
+        return seatCount;
+    }
+
+    public void setSeatCount(Integer seatCount) {
+        this.seatCount = seatCount;
     }
 }

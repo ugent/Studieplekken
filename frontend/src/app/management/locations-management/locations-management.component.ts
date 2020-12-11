@@ -8,10 +8,10 @@ import {AuthoritiesService} from '../../services/api/authorities/authorities.ser
 import {BuildingService} from '../../services/api/buildings/buildings.service';
 import {AuthenticationService} from '../../services/authentication/authentication.service';
 import {tap} from 'rxjs/operators';
-import { Building } from 'src/app/shared/model/Building';
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { CalendarPeriodsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
-import { CalendarPeriod } from 'src/app/shared/model/CalendarPeriod';
+import {Building} from 'src/app/shared/model/Building';
+import {BsModalService} from 'ngx-bootstrap/modal';
+import {CalendarPeriodsService} from 'src/app/services/api/calendar-periods/calendar-periods.service';
+import {CalendarPeriod} from 'src/app/shared/model/CalendarPeriod';
 
 @Component({
   selector: 'app-locations-management',
@@ -36,7 +36,7 @@ export class LocationsManagementComponent implements OnInit {
   buildingsObs: Observable<Building[]>;
   buildingsMap: Map<number, Building>;
   editMode: boolean;
-  showAddWarning: boolean = false;
+  showAddWarning = false;
   locationToAdd: Location;
 
   constructor(private locationService: LocationService,
@@ -223,13 +223,13 @@ export class LocationsManagementComponent implements OnInit {
       .getLocationsInAuthoritiesOfUser(this.authenticationService.userValue().augentID);
     this.authoritiesObs = this.authoritiesService
       .getAuthoritiesOfUser(this.authenticationService.userValue().augentID).pipe(tap(
-      next => {
-        this.authoritiesMap = new Map<number, Authority>();
-        next.forEach(value => {
-          this.authoritiesMap.set(value.authorityId, value);
-        });
-      }
-    ));
+        next => {
+          this.authoritiesMap = new Map<number, Authority>();
+          next.forEach(value => {
+            this.authoritiesMap.set(value.authorityId, value);
+          });
+        }
+      ));
   }
 
   closeModal(): void {
