@@ -1,5 +1,12 @@
 <div class="container-fluid" *ngIf="locations !== undefined && successOnRetrievingLocations === true">
 
+  <div class="alert alert-info">
+    <h3>[VRIJDAG 11 DECEMBER, RESERVEREN OM 19:00]</h3>
+    <p>Onze excuses.</p>
+    <p>De website wordt blijkbaar zwaarder belast dan we hadden voorzien, onze server blijkt dit niet aan te kunnen.</p>
+    <p>We doen er alles aan om dit zo snel mogelijk op te lossen.</p>
+  </div>
+
   <div *ngIf="locations.length > 0; else noLocations">
     <!-- Provide a panel group for filter -->
     <div class="panel-group">
