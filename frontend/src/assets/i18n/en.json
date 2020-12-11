@@ -18,12 +18,9 @@
 
   "dashboard": {
     "alert": {
-      "title": "[FRIDAY DECEMBER 11th, SPREADING RESERVATIONS]",
-      "p1": "Unfortunately, yesterday we've noticed that there were some problems with our server.",
-      "p2": "The interest for study rooms is higher than we have anticipated. Our server couldn't handle the high load.",
-      "p3": "To diminish the peak load, the times at wich the reservations will be opened tonight are being divided between 19h, 19h30, 20h.",
-      "p4": "You can check at the dashboard at what time each study room will be opened for reservation.",
-      "p5": "You can find the time and date of the next reservation period for each study room next to following symbol:"
+      "title": "[FRIDAY DECEMBER 11th, RESERVATIONS AT DIFFERENT TIMES]",
+      "p1": "Reservations will take place at 19:00, 19:30 and 20:00 depending on the location. Be sure to check in advance when the reservations will open (see symbol).",
+      "p2": "We apologize again for the inconvenience. The interest for study places is bigger than we predicted, our server could not handle this load. We wish everyone the best of luck. If you are looking for support, make sure to check the following website:"
     },
 
     "address": "Address",

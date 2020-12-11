@@ -18,12 +18,9 @@
 
   "dashboard": {
     "alert": {
-      "title": "[VRIJDAG 11 DECEMBER, RESERVEREN VERSPREIDEN]",
-      "p1": "Gisteren hebben we helaas moeten vaststellen dat er problemen waren met onze server.",
-      "p2": "De interesse voor studieplekken is groter dan voorspeld en onze server kan de grote belasting niet aan.",
-      "p3": "Om de piekbelasting te verminderen wordt het openen van reservaties verspreid tussen 19u, 19u30 en 20u.",
-      "p4": "Hier op het dashboard kan je voor elke studieplek nagaan op welk uur de reservaties open zullen gaan.",
-      "p5": "Je kan het volgende reservatiemoment voor elke studieplek terugvinden naast volgend symbool:"
+      "title": "[VRIJDAG 11 DECEMBER, RESERVATIES OP VERSCHILLENDE MOMENTEN]",
+      "p1": "De reservaties zullen plaatsvinden om 19:00, 19:30 en 20:00 afhankelijk van de locatie. Bekijk dus zeker op voorhand wanneer de reservaties zullen openen.",
+      "p2": "We excuseren ons nogmaals voor het ongemak. De interesse voor studieplekken is groter dan we hadden voorspeld, onze server kon deze belasting niet aan. We wensen iedereen enorm veel succes. Indien jullie ondersteuning zoeken voor de blokperiode, kunnen jullie altijd hier terecht:"
     },
 
     "address": "Adres",
