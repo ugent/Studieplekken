@@ -26,6 +26,7 @@ ENV ARTIFACT_NAME=BlokAtUGent-0.2.jar
 
 WORKDIR /app
 COPY --from=build /app/build/libs/$ARTIFACT_NAME .
+COPY agent agent
 
 EXPOSE 8080
-ENTRYPOINT java -jar $ARTIFACT_NAME
+ENTRYPOINT java -Dskywalking.agent.service_name=gateway -javaagent:/app/agent/skywalking-agent.jar -jar $ARTIFACT_NAME
