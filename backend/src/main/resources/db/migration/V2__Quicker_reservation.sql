@@ -7,6 +7,10 @@ ADD seat_count INT default 0;
 Alter table reservation_timeslots
 ADD CONSTRAINT RESERVATION_SEATLIMIT CHECK (reservation_count <= seat_count);
 
+Alter table reservation_timeslots
+ADD CONSTRAINT RESERVATION_COUNT_POS CHECK (reservation_count >= 0);
+
+
 alter table calendar_periods
 ADD seat_count INT default 0;
 
