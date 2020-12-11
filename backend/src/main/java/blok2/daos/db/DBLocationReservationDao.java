@@ -116,6 +116,12 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
             pstmt.setInt(3, timeslot.getTimeslotSeqnr());
             pstmt.setInt(4, timeslot.getCalendarId());
             pstmt.execute();
+            pstmt = conn.prepareStatement(Resources.databaseProperties.getString("subtract_one_to_reservation_count"));
+            pstmt.setDate(2, java.sql.Date.valueOf(timeslot.getTimeslotDate()));
+            pstmt.setInt(3, timeslot.getTimeslotSeqnr());
+            pstmt.setInt(1, timeslot.getCalendarId());
+            pstmt.execute();
+
         }
     }
 
@@ -144,23 +150,16 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
                 // Try to take a lock (or block) on the database by performing a SELECT FOR UPDATE.
                 // A lock must be taken within a transaction, therefore disabling auto commit.
                 conn.setAutoCommit(false);
-                PreparedStatement stmt = conn.prepareStatement(Resources.databaseProperties.getString("lock_location_reservation"));
+                PreparedStatement stmt = conn.prepareStatement(Resources.databaseProperties.getString("add_one_to_reservation_count"));
                 stmt.setInt(1, reservation.getTimeslot().getCalendarId());
                 stmt.setDate(2, Date.valueOf(reservation.getTimeslot().getTimeslotDate()));
                 stmt.setInt(3, reservation.getTimeslot().getTimeslotSeqnr());
                 stmt.execute();
 
-                // Fetch data we need.
-                long amountOfReservations = getAmountOfReservationsOfTimeslot(reservation.getTimeslot(), conn);
-                long sizeOfLocation = getLocationSizeOfTimeslot(reservation.getTimeslot(), conn);
+                // If the count was already max, then the script errors here.
 
-                if (amountOfReservations < sizeOfLocation) {
-                    // All is well. Add & then release the lock (by committing, cfr finally clause).
-                    addLocationReservation(reservation, conn);
-                    return true;
-                }
-
-                return false;
+                addLocationReservation(reservation, conn);
+                return true;
 
             } catch (SQLException e) {
                 conn.rollback();
@@ -333,7 +332,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
         }
 
         User user = DBAccountDao.createUser(rs, conn);
-        Timeslot timeslot = DBCalendarPeriodDao.createTimeslot(rs, conn);
+        Timeslot timeslot = DBCalendarPeriodDao.createTimeslot(rs);
         LocalDateTime createdAt = rs.getTimestamp(Resources.databaseProperties.getString("location_reservation_created_at")).toLocalDateTime();
 
         return new LocationReservation(user, createdAt, timeslot, attended);

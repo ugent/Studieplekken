@@ -31,7 +31,7 @@ export class TimeslotTableComponent implements OnInit {
     const date = moment(this.route.snapshot.paramMap.get('date'), 'YYYY-MM-DD');
     const seqnr = Number(this.route.snapshot.paramMap.get('seqnr'));
 
-    this.timeslot = new Timeslot(seqnr, date, calendarId, null);
+    this.timeslot = new Timeslot(seqnr, date, calendarId, null, 0);
     this.locationReservations = this.locationReservationsService.getLocationReservationsOfTimeslot(this.timeslot);
     this.calendarPeriodO = this.calendarPeriodService.getCalendarPeriodsOfLocation(this.locationName)
                                 .pipe(

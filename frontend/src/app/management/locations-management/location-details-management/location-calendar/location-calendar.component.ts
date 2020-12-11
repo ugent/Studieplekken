@@ -38,7 +38,7 @@ export class LocationCalendarComponent implements OnInit {
   currentCalendarPeriod: CalendarPeriod = null;
 
   calendarPeriodModel: BehaviorSubject<CalendarPeriod> =
-                                new BehaviorSubject(new CalendarPeriod(null, null, null, null, null, null, false, null, 0, [], null));
+                                new BehaviorSubject(new CalendarPeriod(null, null, null, null, null, null, false, null, 0, [], null, 0));
 
   /**
    * 'calendarPeriods' is the list of CalendarPeriods that the user
@@ -111,7 +111,7 @@ export class LocationCalendarComponent implements OnInit {
   // ***********/
 
   prepareAdd(template: TemplateRef<any>, el: HTMLElement): void {
-    this.calendarPeriodModel.next(new CalendarPeriod(null, this.locationFlat, null, null, null, null, false, null, 0, [], null));
+    this.calendarPeriodModel.next(new CalendarPeriod(null, this.locationFlat, null, null, null, null, false, null, 0, [], null, 0));
     this.prepareToUpdatePeriod = null;
     this.successAddingLocationReservation = undefined;
     el.scrollIntoView();
