@@ -1,4 +1,4 @@
-version: "3"
+version: "3.6"
 
 volumes:
   backend_logs:
@@ -10,11 +10,14 @@ services:
       - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: prod
+      SW_AGENT_COLLECTOR_BACKEND_SERVICES: oap:11800
       TZ: Europe/Brussels
     depends_on:
       - db
     volumes:
       - backend_logs:/app/logs:rw
+    networks:
+      - blokat
   db:
     image: postgres:12-alpine
     restart: always
@@ -24,7 +27,17 @@ services:
       POSTGRES_PASSWORD: ***REMOVED***
       TZ: Europe/Brussels
       PGTZ: Europe/Brussels
+    volumes:
+      - ./backend/postgres.conf:/var/lib/postgresql/data/postgresql.conf
+    networks:
+      - blokat
   frontend:
     build: frontend
     ports:
       - "4242:80"
+    networks:
+      - blokat
+
+networks:
+    blokat:
+      name: blokat

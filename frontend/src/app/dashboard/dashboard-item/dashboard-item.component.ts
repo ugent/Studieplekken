@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import {DatePipe} from '@angular/common';
 import {Location} from '../../shared/model/Location';
 import {LocationService} from '../../services/api/locations/location.service';
@@ -8,7 +8,8 @@ import {LocationTag} from '../../shared/model/LocationTag';
 import {ApplicationTypeFunctionalityService} from '../../services/functionality/application-type/application-type-functionality.service';
 import {defaultLocationImage, LocationStatus} from '../../app.constants';
 import {CalendarPeriodsService} from '../../services/api/calendar-periods/calendar-periods.service';
-import { Observable, Subscription } from 'rxjs';
+import {Moment} from 'moment';
+import { Observable} from 'rxjs';
 
 @Component({
   selector: 'app-dashboard-item',
@@ -19,9 +20,11 @@ import { Observable, Subscription } from 'rxjs';
 export class DashboardItemComponent implements OnInit, AfterViewInit {
   @Input() location: Location;
   @Input() status: Pair<LocationStatus, string>;
+  @Input() nextReservableFrom: Moment;
 
   occupation = 0;
 
+  imageUrlErrorOccurred = false;
   altImageUrl = defaultLocationImage;
 
   assignedTags: LocationTag[];
@@ -70,7 +73,7 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
   }
 
   handleImageError(): void {
-    this.location.imageUrl = defaultLocationImage;
+    this.imageUrlErrorOccurred = true;
   }
 
   setupTagsInCurrentLang(): void {

@@ -3,6 +3,7 @@ package blok2.daos.db;
 import blok2.daos.IAccountDao;
 import blok2.daos.ILocationDao;
 import blok2.daos.IScannerLocationDao;
+import blok2.helpers.Pair;
 import blok2.helpers.Resources;
 import blok2.model.Authority;
 import blok2.model.Building;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +46,25 @@ public class DBLocationDao extends DAO implements ILocationDao {
             }
 
             return locations;
+        }
+    }
+
+    @Override
+    public List<Pair<String, LocalDateTime>> getAllLocationNextReservableFroms() throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            List<Pair<String, LocalDateTime>> nextReservableFroms = new ArrayList<>();
+
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(Resources.databaseProperties.getString("all_locations_next_reservable_froms"));
+
+            while (rs.next()) {
+                String locationName = rs.getString(Resources.databaseProperties.getString("location_name"));
+                LocalDateTime nextReservableFrom = rs.getTimestamp(
+                        Resources.databaseProperties.getString("calendar_period_reservable_from")).toLocalDateTime();
+                nextReservableFroms.add(new Pair<>(locationName, nextReservableFrom));
+            }
+
+            return nextReservableFroms;
         }
     }
 

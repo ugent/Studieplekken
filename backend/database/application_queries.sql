@@ -51,6 +51,15 @@ from public.locations l
 where l.approved = true
 order by l.name;
 
+-- $all_locations_next_reservable_froms
+select l.name, min(cp.reservable_from) as reservable_from
+from public.locations l
+    join public.calendar_periods cp
+        on cp.location_name = l.name
+where cp.reservable_from >= now()
+group by l.name
+order by l.name;
+
 -- $get_location
 select l.name, l.number_of_seats, l.number_of_lockers
     , l.image_url, l.description_dutch, l.description_english, l.forgroup

@@ -13,7 +13,7 @@ import { Building } from '../shared/model/Building';
 import { BuildingService } from '../services/api/buildings/buildings.service';
 import { Observable, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
-import * as moment from 'moment';
+import {Moment} from 'moment';
 
 @Component({
   selector: 'app-dashboard',
@@ -23,6 +23,7 @@ import * as moment from 'moment';
 export class DashboardComponent implements OnInit, OnDestroy {
   locations: Location[];
   locationStatuses = new Map<string, Pair<LocationStatus, string>>();
+  locationNextReservableFroms = new Map<string, Moment>();
   filteredLocations: Location[];
   filteredLocationsBackup: Location[];
 
@@ -49,6 +50,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private statusSub: Subscription[] = [];
   private locationSub: Subscription;
+  private nextReservableFromSub: Subscription;
 
   buildingObs: Observable<Building[]>;
   tagObs: Observable<LocationTag[]>;
@@ -93,14 +95,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
     );
 
-    this.tagObs = this.tagsService.getAllTags();
+    this.nextReservableFromSub = this.locationService.getAllLocationNextReservableFroms()
+      .subscribe(next => {
+        next.forEach(pair => {
+          this.locationNextReservableFroms.set(pair.first, pair.second);
+        });
+      });
 
-    this.buildingObs = this.buildingService.getAllBuildings()
+    this.tagObs = this.tagsService.getAllTags();
+    this.buildingObs = this.buildingService.getAllBuildings();
   }
 
   ngOnDestroy(): void {
     this.statusSub.forEach(sub => sub.unsubscribe());
     this.locationSub.unsubscribe();
+    this.nextReservableFromSub.unsubscribe();
   }
 
   /**
