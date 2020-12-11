@@ -1,5 +1,18 @@
 <div class="container-fluid" *ngIf="locations !== undefined && successOnRetrievingLocations === true">
 
+  <div class="alert alert-info">
+    <!-- [VRIJDAG 11 DECEMBER, RESERVEREN VERSPREIDEN] -->
+    <h3>{{'dashboard.alert.title' | translate}}</h3>
+    <!-- Gisteren hebben we helaas moeten vaststellen dat er problemen waren met onze server. -->
+    <p>{{'dashboard.alert.p1' | translate}}</p>
+    <!-- De interesse voor studieplekken is groter dan voorspeld en onze server kan de grote belasting niet aan. -->
+    <p>{{'dashboard.alert.p2' | translate}}</p>
+    <!-- Om de piekbelasting te verminderen wordt het openen van reservaties verspreid tussen 19u, 19u30 en 20u. -->
+    <p>{{'dashboard.alert.p3' | translate}}</p>
+    <!-- Hier op het dashboard kan je voor elke studieplek nagaan op welk uur de reservaties open zullen gaan. -->
+    <p>{{'dashboard.alert.p4' | translate}}</p>
+  </div>
+
   <div *ngIf="locations.length > 0; else noLocations">
     <!-- Provide a panel group for filter -->
     <div class="panel-group">
