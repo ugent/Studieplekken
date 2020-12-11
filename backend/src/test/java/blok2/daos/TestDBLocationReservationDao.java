@@ -91,7 +91,7 @@ public class TestDBLocationReservationDao extends TestDao {
         LocationReservation lr = new LocationReservation(u, LocalDateTime.of(1970, 1, 1, 9, 0, 0), timeslot, null);
 
         // add LocationReservation to database
-        locationReservationDao.addLocationReservation(lr);
+        locationReservationDao.addLocationReservationIfStillRoomAtomically(lr);
 
         // test whether LocationReservation has been added successfully
         LocationReservation rlr = locationReservationDao.getLocationReservation(u.getAugentID(), timeslot); // rlr = retrieved location reservation
