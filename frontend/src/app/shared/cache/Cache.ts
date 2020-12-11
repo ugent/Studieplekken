@@ -49,6 +49,7 @@ export class Cache<I, V> {
 
   /**
    * Get the value from the cache
+   * Important: default behaviour is NOT invalidating the cache!
    * @param id the id to identify the resource
    * @param url the url to get the resource
    * @param invalidateCache should the cache line for the resource be invalidated or not
@@ -65,7 +66,8 @@ export class Cache<I, V> {
   }
 
   /**
-   * Get all the resources from an url and update the cache
+   * Get all the resources from an url and update the cache.
+   * Important: default behaviour is invalidating the cache!
    * @param url the url to fetch the resources from
    * @param invalidateCache should the cache line for the resource be invalidated or not
    */

@@ -1,0 +1,54 @@
+version: '3.6'
+
+volumes:
+  oap_database:
+
+networks:
+  blokat:
+    external: true
+
+services:
+  oap:
+    image: apache/skywalking-oap-server
+    restart: on-failure
+    ports:
+      - 11800:11800
+      - 12800:12800
+    environment:
+      TZ: Europe/Brussels
+#      SW_TELEMETRY_PROMETHEUS_HOST: prom
+#      SW_TELEMETRY_PROMETHEUS_PORT: 9090
+#    volumes:
+#      - ./swconfig:/skywalking/config
+#   volumes:
+#     - oap_database:/var/lib/mysql
+    networks:
+      - blokat
+  ui:
+    image: apache/skywalking-ui
+    depends_on:
+      - oap
+    links:
+      - oap
+    restart: on-failure
+    ports:
+      - 8000:8080
+    environment:
+      - TZ=Europe/Brussels
+      - collector.ribbon.listOfServers=oap:12800
+    networks:
+      - blokat
+  oap-db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ***REMOVED***
+      MYSQL_DATABASE: swtest
+      MYSQL_USER: sw
+      MYSQL_PASSWORD: ***REMOVED***
+    networks:
+      - blokat
+
+#  prom:
+#    image: prom/prometheus

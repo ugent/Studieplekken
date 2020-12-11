@@ -2,10 +2,10 @@
   <div class="content" fxLayout="column nowrap" fxLayoutAlign="flex-start">
     <!-- Image -->
     <div>
-      <img *ngIf="location.imageUrl !== null"
+      <img *ngIf="!imageUrlErrorOccurred && location.imageUrl"
            src="{{location.imageUrl}}" class="img" alt="Image for {{location.name}}"
            (error)="handleImageError()">
-      <img *ngIf="location.imageUrl === null" [src]="altImageUrl" alt="Image of {{location.name}}">
+      <img *ngIf="imageUrlErrorOccurred || !location.imageUrl" [src]="altImageUrl" alt="Image of {{location.name}}">
 
       <div class="locationStatusBar"
            [classList]="'locationStatusBar ' + locationStatusColorClass()"></div>
@@ -22,7 +22,6 @@
           <tbody>
           <tr>
             <td><span class="glyphicon glyphicon-time" aria-hidden="true"></span></td>
-            
             <td>{{status | formatStatus | async }}</td>
           </tr>
           <tr>
@@ -37,6 +36,11 @@
             <td><span class="glyphicon glyphicon-home" aria-hidden="true"></span></td>
             <td>{{location.building.name}}<br/>{{location.building.address}}</td>
           </tr>
+          <tr>
+            <td><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></td>
+            <td>{{nextReservableFrom ? (nextReservableFrom | date:'short') :
+              ('general.notAvailableAbbreviation' | translate)}}</td>
+          </tr>
           </tbody>
         </table>
 
@@ -48,24 +52,26 @@
       </div>
 
       <!-- Progress bar for reserved seats -->
-      <div class="mt-auto" *ngIf="occupationObs | async as occupation">
-        <div class="progress" [class.hidden]="!(showProgressBar && occupation >= 0)">
-        <div class="progress-bar" role="progressbar"
-              [style.width]="occupation / location.numberOfSeats * 100 + '%'"
-              [attr.aria-valuenow]="occupation"
-              aria-valuemin="0" aria-valuemax="100">
-          <span>{{occupation}}/{{location.numberOfSeats}}</span>
+      <div class="mt-auto">
+        <div *ngIf="occupationObs | async as occupation">
+          <div class="progress" [class.hidden]="!(showProgressBar && occupation >= 0)">
+            <div class="progress-bar" role="progressbar"
+                 [style.width]="occupation / location.numberOfSeats * 100 + '%'"
+                 [attr.aria-valuenow]="occupation"
+                 aria-valuemin="0" aria-valuemax="100">
+              <span>{{occupation}}/{{location.numberOfSeats}}</span>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <!-- Details button for dashboard item -->
-      <p>
-        <a routerLink="/dashboard/{{location.name}}"
-           class="btn btn-block"
-           role="button">{{'dashboard.details' | translate}}
-        </a>
-      </p>
-    </div>
+        <!-- Details button for dashboard item -->
+        <p>
+          <a routerLink="/dashboard/{{location.name}}"
+             class="btn btn-block"
+             role="button">{{'dashboard.details' | translate}}
+          </a>
+        </p>
+      </div>
     </div>
   </div>
 </div>
