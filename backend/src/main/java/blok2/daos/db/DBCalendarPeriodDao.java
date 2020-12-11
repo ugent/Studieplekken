@@ -6,7 +6,6 @@ import blok2.helpers.Pair;
 import blok2.helpers.Resources;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
-import blok2.model.reservables.Location;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
@@ -267,7 +266,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         List<Timeslot> timeslotList = new ArrayList<>();
 
         while(rs.next()) {
-            timeslotList.add(createTimeslot(rs, conn));
+            timeslotList.add(createTimeslot(rs));
         }
 
         calendarPeriod.setTimeslots(Collections.unmodifiableList(timeslotList));
@@ -291,7 +290,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         return calendarPeriod;
     }
 
-    public static Timeslot createTimeslot(ResultSet rs, Connection conn) throws SQLException {
+    public static Timeslot createTimeslot(ResultSet rs) throws SQLException {
         int calendarId = (rs.getInt(Resources.databaseProperties.getString("timeslot_calendar_id")));
         int seqnr = (rs.getInt(Resources.databaseProperties.getString("timeslot_sequence_number")));
         LocalDate date = (rs.getDate(Resources.databaseProperties.getString("timeslot_date")).toLocalDate());
