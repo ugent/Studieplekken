@@ -1,10 +1,12 @@
 # credentials for production database
 spring:
   datasource:
+    type: "com.zaxxer.hikari.HikariDataSource"
     driverClassName: org.postgresql.Driver
     url: "jdbc:postgresql://db:5432/blokatugent"
     username: blokat
     password:  ***REMOVED***
+    maximumPoolSize: 200
   flyway: # For automatic flyway migration integration with spring boot
     url: "jdbc:postgresql://db:5432/blokatugent"
     user: blokat
