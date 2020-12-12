@@ -265,7 +265,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         List<Timeslot> timeslotList = new ArrayList<>();
 
         while(rs.next()) {
-            timeslotList.add(createTimeslot(rs));
+            timeslotList.add(createTimeslot(rs, conn));
         }
 
         calendarPeriod.setTimeslots(Collections.unmodifiableList(timeslotList));
@@ -289,7 +289,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         return calendarPeriod;
     }
 
-    public static Timeslot createTimeslot(ResultSet rs) throws SQLException {
+    public static Timeslot createTimeslot(ResultSet rs, Connection conn) throws SQLException {
         int calendarId = (rs.getInt(Resources.databaseProperties.getString("timeslot_calendar_id")));
         int seqnr = (rs.getInt(Resources.databaseProperties.getString("timeslot_sequence_number")));
         LocalDate date = (rs.getDate(Resources.databaseProperties.getString("timeslot_date")).toLocalDate());
@@ -298,8 +298,9 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
 
         int count = rs.getInt(Resources.databaseProperties.getString("timeslot_reservation_count"));
         timeslot.setAmountOfReservations(count);
-        int seatCount = rs.getInt(Resources.databaseProperties.getString("timeslot_seat_count"));
-        timeslot.setSeatCount(seatCount);
+        int seatCount =(int) DBLocationReservationDao.getAmountOfReservationsOfTimeslot(timeslot, conn);
+        // Small hack to display near-as-correct info
+        timeslot.setSeatCount(Math.min(seatCount, count));
 
         return timeslot;
     }

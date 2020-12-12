@@ -326,7 +326,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
     }
 
     // Seperated out for use in transaction
-    public long getAmountOfReservationsOfTimeslot(Timeslot timeslot, Connection conn) throws SQLException {
+    public static long getAmountOfReservationsOfTimeslot(Timeslot timeslot, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("count_location_reservations_of_location_for_timeslot"));
         pstmt.setInt(1, timeslot.getCalendarId());
         pstmt.setDate(2, java.sql.Date.valueOf(timeslot.getTimeslotDate()));
@@ -360,7 +360,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
         }
 
         User user = DBAccountDao.createUser(rs, conn);
-        Timeslot timeslot = DBCalendarPeriodDao.createTimeslot(rs);
+        Timeslot timeslot = DBCalendarPeriodDao.createTimeslot(rs, conn);
         LocalDateTime createdAt = rs.getTimestamp(Resources.databaseProperties.getString("location_reservation_created_at")).toLocalDateTime();
 
         return new LocationReservation(user, createdAt, timeslot, attended);
