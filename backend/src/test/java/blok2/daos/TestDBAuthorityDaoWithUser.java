@@ -104,8 +104,8 @@ public class TestDBAuthorityDaoWithUser extends TestDao {
 
         expected.add(testLocation2);
 
-        actual.sort(Comparator.comparing(Location::toString));
-        expected.sort(Comparator.comparing(Location::toString));
+        actual.sort(Comparator.comparing(Location::getName));
+        expected.sort(Comparator.comparing(Location::getName));
         Assert.assertEquals(expected, actual);
     }
 }

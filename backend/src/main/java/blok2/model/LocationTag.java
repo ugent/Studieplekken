@@ -1,5 +1,7 @@
 package blok2.model;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import java.util.Objects;
 
 public class LocationTag implements Cloneable {
@@ -57,5 +59,9 @@ public class LocationTag implements Cloneable {
         }
     }
 
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
 
 }

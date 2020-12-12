@@ -5,6 +5,7 @@ import java.util.*;
 
 import blok2.model.Authority;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -148,17 +149,7 @@ public class User implements Cloneable, UserDetails {
 
     @Override
     public String toString() {
-        return "User{" +
-                "lastName='" + lastName + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", mail='" + mail + '\'' +
-                ", password='" + password + '\'' +
-                ", institution='" + institution + '\'' +
-                ", augentID='" + augentID + '\'' +
-                ", penaltyPoints=" + penaltyPoints +
-                ", admin=" + admin +
-                ", userAuthorities=" + userAuthorities +
-                '}';
+        return ToStringBuilder.reflectionToString(this);
     }
 
     // *********************************************

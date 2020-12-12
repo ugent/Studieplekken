@@ -3,6 +3,7 @@ package blok2.model.reservables;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.LocationTag;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +81,11 @@ public class Location implements Cloneable {
         } catch (CloneNotSupportedException e) {
             return null;
         }
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
