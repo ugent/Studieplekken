@@ -1,6 +1,7 @@
 package blok2.model.penalty;
 
 import blok2.helpers.Variables;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -75,15 +76,7 @@ public class Penalty implements Cloneable {
 
     @Override
     public String toString() {
-        return "Penalty{" +
-                "augentID='" + augentID + '\'' +
-                ", eventCode=" + eventCode +
-                ", timestamp=" + timestamp +
-                ", reservationDate=" + reservationDate +
-                ", reservationLocation='" + reservationLocation + '\'' +
-                ", receivedPoints=" + receivedPoints +
-                ", remarks='" + remarks + '\'' +
-                '}';
+        return ToStringBuilder.reflectionToString(this);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">

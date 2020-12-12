@@ -4,6 +4,7 @@ import blok2.model.calendar.Timeslot;
 import blok2.model.users.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -99,12 +100,7 @@ public class LocationReservation {
 
     @Override
     public String toString() {
-        return "LocationReservation{" +
-                "user=" + user +
-                ", createdAt=" + createdAt +
-                ", timeslot=" + timeslot +
-                ", attended=" + attended +
-                '}';
+        return ToStringBuilder.reflectionToString(this);
     }
     
 }

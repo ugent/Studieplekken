@@ -2,6 +2,7 @@ package blok2.model.calendar;
 
 import blok2.helpers.Resources;
 import blok2.model.reservables.Location;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 import java.time.DayOfWeek;
 import java.time.Duration;
@@ -51,18 +52,7 @@ public class CalendarPeriod extends Period implements Cloneable {
 
     @Override
     public String toString() {
-        return "CalendarPeriod{" +
-                "id=" + id +
-                ", location=" + location +
-                ", openingTime=" + openingTime +
-                ", closingTime=" + closingTime +
-                ", reservableFrom=" + reservableFrom +
-                ", lockedFrom=" + lockedFrom +
-                ", reservable=" + reservable +
-                ", reservableTimeslotSize=" + reservableTimeslotSize +
-                ", seatCount=" + seatCount +
-                ", timeslots=" + timeslots +
-                '}';
+        return ToStringBuilder.reflectionToString(this);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package blok2.model.calendar;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -22,7 +23,7 @@ public class Timeslot implements Cloneable {
     private Integer seatCount;
 
 
-    @JsonProperty(access= JsonProperty.Access.READ_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private int amountOfReservations;
 
     public Timeslot(int calendarId, int timeslotSeqnr, LocalDate timeslotDate) {
@@ -41,13 +42,7 @@ public class Timeslot implements Cloneable {
 
     @Override
     public String toString() {
-        return "Timeslot{" +
-                "calendarId=" + calendarId +
-                ", timeslotSeqnr=" + timeslotSeqnr +
-                ", timeslotDate=" + timeslotDate +
-                ", seatCount=" + seatCount +
-                ", amountOfReservations=" + amountOfReservations +
-                '}';
+        return ToStringBuilder.reflectionToString(this);
     }
 
     @Override

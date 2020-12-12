@@ -1,5 +1,7 @@
 package blok2.model;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import java.util.Objects;
 
 public class Building implements Cloneable {
@@ -57,11 +59,7 @@ public class Building implements Cloneable {
 
     @Override
     public String toString() {
-        return "Building{" +
-                "buildingId=" + buildingId +
-                ", name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                '}';
+        return ToStringBuilder.reflectionToString(this);
     }
 
     @Override

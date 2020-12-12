@@ -1,5 +1,7 @@
 package blok2.model.reservables;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import java.util.Objects;
 
 public class Locker implements Cloneable {
@@ -17,10 +19,7 @@ public class Locker implements Cloneable {
 
     @Override
     public String toString() {
-        return "Locker{" +
-                "number=" + number +
-                ", location=" + location +
-                '}';
+        return ToStringBuilder.reflectionToString(this);
     }
 
     @Override

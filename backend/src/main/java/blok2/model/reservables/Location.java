@@ -3,6 +3,7 @@ package blok2.model.reservables;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.LocationTag;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,18 +85,7 @@ public class Location implements Cloneable {
 
     @Override
     public String toString() {
-        return "Location{" +
-                "name='" + name + '\'' +
-                ", numberOfSeats=" + numberOfSeats +
-                ", numberOfLockers=" + numberOfLockers +
-                ", imageUrl='" + imageUrl + '\'' +
-                ", descriptionDutch='" + descriptionDutch + '\'' +
-                ", descriptionEnglish='" + descriptionEnglish + '\'' +
-                ", building=" + building +
-                ", authority=" + authority +
-                ", forGroup=" + forGroup +
-                ", assignedTags=" + assignedTags +
-                '}';
+        return ToStringBuilder.reflectionToString(this);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
