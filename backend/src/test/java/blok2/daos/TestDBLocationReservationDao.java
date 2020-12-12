@@ -18,10 +18,10 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static java.util.Collections.*;
 
 public class TestDBLocationReservationDao extends TestDao {
 
@@ -224,11 +224,11 @@ public class TestDBLocationReservationDao extends TestDao {
      *     - let each user make a reservation concurrently
      *     - test whether no constraints have been violated
      */
-    //@Test
+    @Test
     public void concurrentReservationsTest() throws SQLException, InterruptedException {
         // some constants
-        final int N_USERS = 500;
-        final int N_SEATS = 490;
+        final int N_USERS = 50;
+        final int N_SEATS = 46;
 
         // some variables that will be used
         Thread[] threads = new Thread[N_USERS];
@@ -259,7 +259,7 @@ public class TestDBLocationReservationDao extends TestDao {
 
         // Create an upcoming calendar period (timeslots will be created too)
         CalendarPeriod calendarPeriod = TestSharedMethods.upcomingCalendarPeriods(location);
-        calendarPeriodDao.addCalendarPeriods(Collections.singletonList(calendarPeriod));
+        calendarPeriodDao.addCalendarPeriods(singletonList(calendarPeriod));
         logger.info("Calendar period has been created");
 
         Timeslot timeslot = calendarPeriod.getTimeslots().get(0);
@@ -273,15 +273,24 @@ public class TestDBLocationReservationDao extends TestDao {
                 () -> {
                     LocationReservation lr = new LocationReservation(users[_i], LocalDateTime.now(), timeslot, null);
                     try {
-                        locationReservationDao.addLocationReservationIfStillRoomAtomically(lr);
+                        boolean s = locationReservationDao.addLocationReservationIfStillRoomAtomically(lr);
+                        if(!s)
+                            System.out.println("didn't work in thread "+ _i);
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
                 }
             );
-            threads[i].start();
-            logger.info(String.format("thread %3d has been started", i));
+
         }
+
+        List<Thread> threada = Arrays.asList(threads);
+        for (Thread thread: threada) {
+            thread.start();
+            logger.info("thread %3d has been started");
+
+        }
+
 
         // Now, wait for all threads to be finished
         for (int i = 0; i < N_USERS; i++) {
@@ -301,7 +310,7 @@ public class TestDBLocationReservationDao extends TestDao {
      *     - let each user make a reservation concurrently
      *     - test whether no constraints have been violated
      */
-    //@Test
+    @Test
     public void concurrentReservationsMultipleTimeslotsTest() throws SQLException, InterruptedException {
         // some constants
         final int N_USERS = 500;
@@ -339,7 +348,7 @@ public class TestDBLocationReservationDao extends TestDao {
         CalendarPeriod calendarPeriod = TestSharedMethods.upcomingCalendarPeriods(location);
         // Reasoning behind timeslot size: 17h - 9h = 8h = 480 min, twee dagen = 960 min -> 16 min/timeslot -> 60 timeslots
         calendarPeriod.setReservableTimeslotSize(16);
-        calendarPeriodDao.addCalendarPeriods(Collections.singletonList(calendarPeriod));
+        calendarPeriodDao.addCalendarPeriods(singletonList(calendarPeriod));
         logger.info("Calendar period has been created");
 
         Assert.assertEquals(60, calendarPeriod.getTimeslots().size());
@@ -354,14 +363,20 @@ public class TestDBLocationReservationDao extends TestDao {
                     () -> {
                         LocationReservation lr = new LocationReservation(users[_i], LocalDateTime.now(), timeslots[_i], null);
                         try {
-                            locationReservationDao.addLocationReservationIfStillRoomAtomically(lr);
+                            boolean s = locationReservationDao.addLocationReservationIfStillRoomAtomically(lr);
+                            if(!s)
+                                System.out.println("Didn't manage...");
                         } catch (SQLException e) {
                             e.printStackTrace();
                         }
                     }
             );
-            threads[i].start();
-            logger.info(String.format("thread %3d has been started", i));
+        }
+
+        for (Thread thread: threads ) {
+            thread.start();
+            logger.info(String.format("thread %3d has been started"));
+
         }
 
         // Now, wait for all threads to be finished
@@ -369,6 +384,7 @@ public class TestDBLocationReservationDao extends TestDao {
             threads[i].join();
         }
 
+        Thread.sleep(10000);
         // Test whether no constraints have been violated
         long lrsCount = 0;
         for (Timeslot timeslot : calendarPeriod.getTimeslots()) {
@@ -377,7 +393,7 @@ public class TestDBLocationReservationDao extends TestDao {
         Assert.assertEquals(N_USERS, lrsCount);
     }
 
-    //@Test
+    @Test
     public void timingOfReservationTest() throws SQLException {
         // Create a location that has N_SEATS seats
         Building building = TestSharedMethods.testBuilding();
@@ -397,7 +413,7 @@ public class TestDBLocationReservationDao extends TestDao {
         CalendarPeriod calendarPeriod = TestSharedMethods.upcomingCalendarPeriods(location);
         // Reasoning behind timeslot size: 17h - 9h = 8h = 480 min, twee dagen = 960 min -> 16 min/timeslot -> 60 timeslots
         calendarPeriod.setReservableTimeslotSize(16);
-        calendarPeriodDao.addCalendarPeriods(Collections.singletonList(calendarPeriod));
+        calendarPeriodDao.addCalendarPeriods(singletonList(calendarPeriod));
         logger.info("Calendar period has been created");
 
         Timeslot timeslot = calendarPeriod.getTimeslots().get(0);
