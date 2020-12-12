@@ -375,8 +375,7 @@ public class TestDBLocationReservationDao extends TestDao {
 
         for (Thread thread: threads ) {
             thread.start();
-            logger.info(String.format("thread %3d has been started"));
-
+            logger.info("thread has been started");
         }
 
         // Now, wait for all threads to be finished
@@ -384,7 +383,6 @@ public class TestDBLocationReservationDao extends TestDao {
             threads[i].join();
         }
 
-        Thread.sleep(10000);
         // Test whether no constraints have been violated
         long lrsCount = 0;
         for (Timeslot timeslot : calendarPeriod.getTimeslots()) {
