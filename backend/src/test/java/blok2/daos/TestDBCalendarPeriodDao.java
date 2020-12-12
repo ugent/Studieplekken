@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 
 public class TestDBCalendarPeriodDao extends TestDao {
@@ -151,7 +152,7 @@ public class TestDBCalendarPeriodDao extends TestDao {
         List<CalendarPeriod> actualPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getName());
         actualPeriods.sort(Comparator.comparing(CalendarPeriod::toString));
         updatedPeriods.sort(Comparator.comparing(CalendarPeriod::toString));
-        Assert.assertEquals("updateCalendarPeriodsTest", updatedPeriods, actualPeriods);
+        Assert.assertEquals("updateCalendarPeriodsTest", new HashSet(updatedPeriods), new HashSet(actualPeriods));
     }
 
     @Test
