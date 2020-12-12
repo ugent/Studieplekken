@@ -72,8 +72,8 @@ public class TestDBCalendarPeriodDao extends TestDao {
 
         // Check if the addition worked properly
         List<CalendarPeriod> actualPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getName());
-        actualPeriods.sort(Comparator.comparing(CalendarPeriod::toString));
-        calendarPeriods.sort(Comparator.comparing(CalendarPeriod::toString));
+        actualPeriods.sort(Comparator.comparing(CalendarPeriod::getId));
+        calendarPeriods.sort(Comparator.comparing(CalendarPeriod::getId));
 
         Assert.assertEquals("addCalendarPeriodsTest", calendarPeriods, actualPeriods);
     }
