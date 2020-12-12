@@ -150,16 +150,31 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
                 // Try to take a lock (or block) on the database by performing a SELECT FOR UPDATE.
                 // A lock must be taken within a transaction, therefore disabling auto commit.
                 conn.setAutoCommit(false);
-                PreparedStatement stmt = conn.prepareStatement(Resources.databaseProperties.getString("add_one_to_reservation_count"));
+                PreparedStatement stmt = conn.prepareStatement(Resources.databaseProperties.getString("lock_location_reservation"));
                 stmt.setInt(1, reservation.getTimeslot().getCalendarId());
                 stmt.setDate(2, Date.valueOf(reservation.getTimeslot().getTimeslotDate()));
                 stmt.setInt(3, reservation.getTimeslot().getTimeslotSeqnr());
                 stmt.execute();
 
-                // If the count was already max, then the script errors here.
+                // Fetch data we need.
+                long amountOfReservations = getAmountOfReservationsOfTimeslot(reservation.getTimeslot(), conn);
+                long sizeOfLocation = getLocationSizeOfTimeslot(reservation.getTimeslot(), conn);
 
-                addLocationReservation(reservation, conn);
-                return true;
+                if (amountOfReservations < sizeOfLocation) {
+                    // All is well. Add & then release the lock (by committing, cfr finally clause).
+                    addLocationReservation(reservation, conn);
+
+                    // We still add one for keeping consistency, since front end uses this field now.
+                    // What we do with the field, remains to be seen.
+                    stmt = conn.prepareStatement(Resources.databaseProperties.getString("add_one_to_reservation_count"));
+                    stmt.setInt(1, reservation.getTimeslot().getCalendarId());
+                    stmt.setDate(2, Date.valueOf(reservation.getTimeslot().getTimeslotDate()));
+                    stmt.setInt(3, reservation.getTimeslot().getTimeslotSeqnr());
+                    stmt.execute();
+                    return true;
+                }
+
+                return false;
 
             } catch (SQLException e) {
                 conn.rollback();
