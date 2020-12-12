@@ -110,18 +110,31 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
     @Override
     public void deleteLocationReservation(String augentID, Timeslot timeslot) throws SQLException {
         try (Connection conn = adb.getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_location_reservation"));
-            pstmt.setString(1, augentID);
-            pstmt.setDate(2, java.sql.Date.valueOf(timeslot.getTimeslotDate()));
-            pstmt.setInt(3, timeslot.getTimeslotSeqnr());
-            pstmt.setInt(4, timeslot.getCalendarId());
-            pstmt.execute();
-            pstmt = conn.prepareStatement(Resources.databaseProperties.getString("subtract_one_to_reservation_count"));
-            pstmt.setDate(2, java.sql.Date.valueOf(timeslot.getTimeslotDate()));
-            pstmt.setInt(3, timeslot.getTimeslotSeqnr());
-            pstmt.setInt(1, timeslot.getCalendarId());
-            pstmt.execute();
+            try {
+                conn.setAutoCommit(false);
 
+                // delete the location reservation
+                PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_location_reservation"));
+                pstmt.setString(1, augentID);
+                pstmt.setDate(2, java.sql.Date.valueOf(timeslot.getTimeslotDate()));
+                pstmt.setInt(3, timeslot.getTimeslotSeqnr());
+                pstmt.setInt(4, timeslot.getCalendarId());
+                pstmt.execute();
+
+                // and subtract a count from the reservation count
+                pstmt = conn.prepareStatement(Resources.databaseProperties.getString("subtract_one_to_reservation_count"));
+                pstmt.setDate(2, java.sql.Date.valueOf(timeslot.getTimeslotDate()));
+                pstmt.setInt(3, timeslot.getTimeslotSeqnr());
+                pstmt.setInt(1, timeslot.getCalendarId());
+                pstmt.execute();
+
+                conn.commit();
+            } catch (SQLException e) {
+                conn.rollback();
+                throw e;
+            } finally {
+                conn.setAutoCommit(true);
+            }
         }
     }
 
