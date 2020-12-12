@@ -1,6 +1,7 @@
 package blok2.model.penalty;
 
 import blok2.helpers.Language;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,11 +51,7 @@ public final class PenaltyEvent {
 
     @Override
     public String toString() {
-        return "PenaltyEvent{" +
-                "code=" + code +
-                ", points=" + points +
-                ", descriptions=" + descriptions +
-                '}';
+        return ToStringBuilder.reflectionToString(this);
     }
 
     @Override

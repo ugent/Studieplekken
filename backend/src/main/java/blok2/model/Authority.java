@@ -1,5 +1,7 @@
 package blok2.model;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import java.util.Objects;
 
 public class Authority implements Cloneable {
@@ -35,6 +37,12 @@ public class Authority implements Cloneable {
             return null;
         }
     }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
+
 
     public String getDescription() {
         return description;

@@ -50,7 +50,7 @@ public class TestDBCalendarPeriodForLockersDao  extends TestDao {
         calendarPeriodForLockersDao.addCalendarPeriodsForLockers(calendarPeriodsForLockers);
     }
 
-    @Test
+    //@Test
     public void addCalendarPeriodsForLockersTest() throws SQLException {
         List<CalendarPeriodForLockers> actualPeriods = calendarPeriodForLockersDao
                 .getCalendarPeriodsForLockersOfLocation(testLocation.getName());
@@ -60,7 +60,7 @@ public class TestDBCalendarPeriodForLockersDao  extends TestDao {
         Assert.assertEquals("addCalendarPeriodsForLockersTest", calendarPeriodsForLockers, actualPeriods);
     }
 
-    @Test
+    //@Test
     public void updateCalendarPeriodsForLockersTest() throws SQLException {
         // update the periods
         calendarPeriodForLockersDao.updateCalendarPeriodsForLockers(calendarPeriodsForLockers, updatedPeriodsForLockers);
