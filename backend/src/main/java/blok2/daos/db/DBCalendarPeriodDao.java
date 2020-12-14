@@ -119,7 +119,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
     }
 
     private void addTimeslotPeriod(int seq_id, LocalDate date, CalendarPeriod period, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_reservation_timeslots"));
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_timeslots"));
         prepareTimeslotPeriodPstmt(seq_id, date, period, period.getSeatCount(), pstmt);
         pstmt.execute();
     }
@@ -258,7 +258,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
     }
 
     private void fillTimeslotList(CalendarPeriod calendarPeriod, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_reservation_timeslots"));
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_timeslots"));
         pstmt.setInt(1, calendarPeriod.getId());
         ResultSet rs = pstmt.executeQuery();
 

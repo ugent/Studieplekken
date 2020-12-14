@@ -41,7 +41,7 @@ calendar_period_locked_from=locked_from
 calendar_period_reservable=reservable
 calendar_period_timeslot_length=timeslot_length
 
-# columns for RESERVATION_TIMESLOTS
+# columns for TIMESLOTS
 timeslot_calendar_id=calendar_id
 timeslot_sequence_number=timeslot_sequence_number
 timeslot_date=timeslot_date

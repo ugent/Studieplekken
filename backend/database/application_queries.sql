@@ -213,7 +213,7 @@ select lr.*, u.*, rt.*
 from public.location_reservations lr
     join public.users u
         on u.augentid = lr.user_augentid
-    left join public.reservation_timeslots rt
+    left join public.timeslots rt
         on rt.timeslot_date = lr.timeslot_date
         and rt.timeslot_sequence_number = lr.timeslot_seqnr
         and rt.calendar_id = lr.calendar_id
@@ -284,12 +284,12 @@ from public.calendar_periods cp INNER JOIN public.locations l on cp.location_nam
 where cp.calendar_id = ?;
 
 -- $add_one_to_reservation_count
-update reservation_timeslots
+update timeslots
 set reservation_count = reservation_count + 1
 where calendar_id = ? and timeslot_date = ? and timeslot_sequence_number= ?;
 
 -- $subtract_one_to_reservation_count
-update reservation_timeslots
+update timeslots
 set reservation_count = reservation_count - 1
 where calendar_id = ? and timeslot_date = ? and timeslot_sequence_number= ?;
 
@@ -363,7 +363,7 @@ from public.location_reservations lr
         on a.authority_id = l.authority_id
     join users u
         on u.augentid = lr.user_augentid
-    join public.reservation_timeslots rt
+    join public.timeslots rt
         on rt.timeslot_date = lr.timeslot_date and rt.timeslot_sequence_number = lr.timeslot_seqnr and rt.calendar_id = lr.calendar_id     
 
 where lr.user_augentid = ?
@@ -1069,14 +1069,14 @@ join public.buildings b
     on b.building_id = l.building_id
 where cp.starts_at > ? and cp.starts_at < ?;
 
--- $get_reservation_timeslots
+-- $get_timeslots
 select rt.timeslot_sequence_number, rt.timeslot_date, rt.calendar_id, rt.reservation_count, rt.seat_count
-from public.reservation_timeslots rt
+from public.timeslots rt
 where calendar_id = ? 
 order by rt.timeslot_date, rt.timeslot_sequence_number ASC;
 
--- $insert_reservation_timeslots
-insert into public.reservation_timeslots(calendar_id, timeslot_sequence_number, timeslot_date, seat_count)
+-- $insert_timeslots
+insert into public.timeslots(calendar_id, timeslot_sequence_number, timeslot_date, seat_count)
 values (?, ?, ?, ?);
 
 -- $count_reservations_now
@@ -1085,7 +1085,7 @@ select ts.calendar_id as calendar_id_dist, *
 from public.locations l 
     join public.calendar_periods cp
         on l.name = cp.location_name
-    join public.reservation_timeslots ts
+    join public.timeslots ts
         on ts.calendar_id = cp.calendar_id
     where cp.location_name = ?
     and ts.timeslot_date = current_date 
@@ -1101,7 +1101,7 @@ from y
 
 -- $delete_timeslots_of_calendar
 delete
-from public.reservation_timeslots rt
+from public.timeslots rt
 where rt.calendar_id = ?;
 
 -- queries for CALENDAR_PERIODS_FOR_LOCKERS

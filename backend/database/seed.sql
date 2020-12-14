@@ -83,7 +83,7 @@ values  ('Sterre S5, Eetzaal', now() - interval '1 days', now() + interval '3 da
             '8:30', '18:30', now() - interval '7 days', false, 0, now() + interval '1 week');
 
 
-insert into reservation_timeslots(calendar_id, timeslot_sequence_number, timeslot_date)
+insert into timeslots(calendar_id, timeslot_sequence_number, timeslot_date)
 values 
 (1, 0,  now() - interval '1 days'),
 (1, 1,  now() - interval '1 days'),
