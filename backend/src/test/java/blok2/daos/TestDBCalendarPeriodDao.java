@@ -144,6 +144,11 @@ public class TestDBCalendarPeriodDao extends TestDao {
         // Add calendar periods to database
         calendarPeriodDao.addCalendarPeriods(calendarPeriods);
 
+        // Make sure that the calendar periods to be updated get the same ids as set by the db
+        for (int i = 0; i < calendarPeriods.size(); i++) {
+            updatedPeriods.get(i).setId(calendarPeriods.get(i).getId());
+        }
+
         // update the periods
         calendarPeriodDao.updateCalendarPeriods(calendarPeriods, updatedPeriods);
 
