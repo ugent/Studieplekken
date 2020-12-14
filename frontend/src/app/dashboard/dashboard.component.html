@@ -1,15 +1,5 @@
 <div class="container-fluid" *ngIf="locations !== undefined && successOnRetrievingLocations === true">
 
-  <div class="alert alert-info">
-    <!-- [VRIJDAG 11 DECEMBER, RESERVATIES OP VERSCHILLENDE MOMENTEN] -->
-    <h3>{{'dashboard.alert.title' | translate}}</h3>
-    <!-- Gisteren hebben we helaas moeten vaststellen dat er problemen waren met onze server. -->
-    <p>{{'dashboard.alert.p1' | translate}}<span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></p>
-    <!-- De interesse voor studieplekken is groter dan voorspeld en onze server kan de grote belasting niet aan. -->
-    <p>{{'dashboard.alert.p2' | translate}} <a href="https://www.ugent.be/student/nl/meer-dan-studeren/wel-in-je-vel">UGent: Wel in je vel</a></p>
-
-  </div>
-
   <div *ngIf="locations.length > 0; else noLocations">
     <!-- Provide a panel group for filter -->
     <div class="panel-group">

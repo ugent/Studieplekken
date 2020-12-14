@@ -279,6 +279,9 @@ from public.location_reservations lr
     INNER JOIN public.locations l on cp.location_name = l.name
 where lr.calendar_id = ? and lr.timeslot_date = ? and lr.timeslot_seqnr = ?;
 
+-- $lock_location_reservation
+SELECT * from public.reservation_timeslots lr where lr.calendar_id = ? and lr.timeslot_date = ? and lr.timeslot_sequence_number= ? for UPDATE; 
+
 -- $get_size_of_timeslot_location
 select l.number_of_seats
 from public.calendar_periods cp INNER JOIN public.locations l on cp.location_name = l.name

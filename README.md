@@ -78,6 +78,7 @@ cd skywalking
 docker-compose -f skywalking.yml up --build
 ```
 
+
 De backend zal hier automatisch op connecteren aan de hand van een agent. Op poort `:8000` kun je de skywalking ui vinden.
 
 
