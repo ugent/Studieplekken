@@ -1,6 +1,7 @@
 package blok2.daos;
 
 import blok2.helpers.Institution;
+import blok2.helpers.TimeException;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.LocationTag;
@@ -235,7 +236,7 @@ public class TestSharedMethods {
      * @param location the location for which to create the period
      * @return a CalendarPeriod that is active, but outside the hours
      */
-    public static CalendarPeriod activeCalendarPeriodsOutsideHours(Location location) {
+    public static CalendarPeriod activeCalendarPeriodsOutsideHours(Location location) throws TimeException {
         LocalDateTime now = LocalDateTime.now();
 
         CalendarPeriod period = new CalendarPeriod();
@@ -244,8 +245,13 @@ public class TestSharedMethods {
 
         period.setStartsAt(now.minusDays(1).toLocalDate());
         period.setEndsAt(now.plusDays(1).toLocalDate());
-        period.setOpeningTime(now.plusHours(1).toLocalTime());
-        period.setClosingTime(now.plusHours(2).toLocalTime());
+
+        // "Minutes" is the smallest time we can use while minimizing issues with the time at which the test is run.
+        if (LocalTime.now().isAfter(LocalTime.of(23, 59)) || LocalTime.now().isBefore(LocalTime.of(0, 1)))
+            throw new TimeException("Impossible to create active calendar period at this time");
+
+        period.setOpeningTime(now.plusMinutes(1).toLocalTime());
+        period.setClosingTime(now.plusMinutes(1).toLocalTime());
 
         period.setReservableFrom(now);
 
@@ -257,7 +263,7 @@ public class TestSharedMethods {
      * @param location the location for which to create the period
      * @return a CalendarPeriod that is active and within hours
      */
-    public static CalendarPeriod activeCalendarPeriodsInsideHours(Location location) {
+    public static CalendarPeriod activeCalendarPeriodsInsideHours(Location location) throws TimeException {
         LocalDateTime now = LocalDateTime.now();
 
         CalendarPeriod period = new CalendarPeriod();
@@ -266,8 +272,13 @@ public class TestSharedMethods {
 
         period.setStartsAt(now.minusDays(1).toLocalDate());
         period.setEndsAt(now.plusDays(1).toLocalDate());
-        period.setOpeningTime(now.minusHours(1).toLocalTime());
-        period.setClosingTime(now.plusHours(1).toLocalTime());
+
+        // "Minutes" is the smallest time we can use while minimizing issues with the time at which the test is run.
+        if (LocalTime.now().isAfter(LocalTime.of(23, 59)) || LocalTime.now().isBefore(LocalTime.of(0, 1)))
+            throw new TimeException("Impossible to create active calendar period at this time");
+
+        period.setOpeningTime(now.minusMinutes(1).toLocalTime());
+        period.setClosingTime(now.plusMinutes(1).toLocalTime());
 
         period.setReservableFrom(now);
 
