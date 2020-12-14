@@ -183,7 +183,7 @@ public class CalendarPeriodController extends  AuthorizedLocationController {
 
         // check if reservable from is parsable
         if (to.isReservable()) {
-            if(to.getReservableTimeslotSize() <= 0) {
+            if(to.getTimeslotLength() <= 0) {
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST, "Timeslot size must be larger than 0.");
             }

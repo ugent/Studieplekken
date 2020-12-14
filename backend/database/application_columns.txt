@@ -126,3 +126,7 @@ utv_created_timestamp=created_timestamp
 # columns for table ROLES_USER_AUTHORITY
 roles_user_authority_user_id=user_id
 roles_user_authority_authority_id=authority_id
+
+# custom query columns
+timeslot_start_timestamp=timeslot_start
+timeslot_end_timestamp=timeslot_end

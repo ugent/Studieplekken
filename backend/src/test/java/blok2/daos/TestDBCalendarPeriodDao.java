@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -113,7 +114,7 @@ public class TestDBCalendarPeriodDao extends TestDao {
 
         Pair<LocationStatus, String> expected = new Pair<>(
                 LocationStatus.CLOSED_ACTIVE,
-                LocalDateTime.of(activePeriodOutsideHours.getStartsAt(), activePeriodOutsideHours.getOpeningTime()).format(this.outputFormat)
+                LocalDateTime.of(LocalDate.now(), activePeriodOutsideHours.getOpeningTime()).format(outputFormat)
         );
         Pair<LocationStatus, String> actual = calendarPeriodDao.getStatus(testLocation.getName());
         Assert.assertEquals("StatusTest, active period, outside hours", expected, actual);
@@ -129,7 +130,7 @@ public class TestDBCalendarPeriodDao extends TestDao {
 
         expected = new Pair<>(
                 LocationStatus.OPEN,
-                LocalDateTime.of(activePeriodInsideHours.getEndsAt(), activePeriodInsideHours.getClosingTime()).format(this.outputFormat)
+                LocalDateTime.of(LocalDate.now(), activePeriodInsideHours.getClosingTime()).format(this.outputFormat)
         );
         actual = calendarPeriodDao.getStatus(testLocation.getName());
         Assert.assertEquals("StatusTest, active period, inside hours",

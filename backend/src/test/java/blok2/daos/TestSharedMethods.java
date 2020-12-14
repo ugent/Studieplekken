@@ -177,7 +177,7 @@ public class TestSharedMethods {
             period.setReservableFrom(LocalDateTime.of(date, time));
 
             period.setReservable(true);
-            period.setReservableTimeslotSize(30);
+            period.setTimeslotLength(30);
 
             period.initializeLockedFrom();
             calendarPeriods.add(period);

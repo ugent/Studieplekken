@@ -12,7 +12,6 @@ import java.sql.*;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.logging.Logger;
@@ -84,6 +83,11 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
     }
 
     private void addCalendarPeriod(CalendarPeriod calendarPeriod, Connection conn) throws SQLException {
+        // If calendar period is not reservable, make sure to do set the timeslotLength
+        if (!calendarPeriod.isReservable()) {
+            calendarPeriod.setTimeslotLength(calendarPeriod.getOpenHoursDuration() / 60);
+        }
+
         String[] generatedColumns = { Resources.databaseProperties.getString("calendar_period_id") };
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_calendar_period"), generatedColumns);
         prepareCalendarPeriodPstmt(calendarPeriod, pstmt);
@@ -113,7 +117,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         // One per day (end day inclusive)
         for (LocalDate currDate = period.getStartsAt(); !currDate.isAfter(period.getEndsAt()); currDate = currDate.plusDays(1)) {
             // One per hour (end hour/rest of hour non inclusive)
-            int timeslotCount = period.getOpenHoursDuration() / (60*period.getReservableTimeslotSize());
+            int timeslotCount = period.getOpenHoursDuration() / (60*period.getTimeslotLength());
             for (int sequenceNr = 0; sequenceNr < timeslotCount; sequenceNr += 1) {
                 addTimeslotPeriod(sequenceNr, currDate, period, conn);
             }
@@ -199,69 +203,44 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_calendar_period"));
             prepareCommonPartOfCalendarPeriodPstmt(calendarPeriod, pstmt);
             pstmt.setBoolean(6, calendarPeriod.isReservable());
-            pstmt.setInt(7, calendarPeriod.getReservableTimeslotSize());
+            pstmt.setInt(7, calendarPeriod.getTimeslotLength());
             pstmt.execute();
         }
     }
 
+    /**
+     * The status of a location depends on the current or next timeslot:
+     *     - no current or next timeslot? -> LocationStatus.CLOSED
+     *     - now is within timeslot? -> LocationStatus.OPEN, send closing timestamp as string
+     *     - now is before start of timeslot, but the date is today -> LocationStatus.CLOSED_ACTIVE, send opening timestamp as string
+     *     - now is before start of timeslot, and date is not today -> LocationStatus.CLOSED_UPCOMING, send opening timestamp as string
+     */
     @Override
     public Pair<LocationStatus, String> getStatus(String locationName) throws SQLException {
-        List<CalendarPeriod> periods = getCalendarPeriodsOfLocation(locationName);
-
-        // Sort the periods according to the start date
-        periods.sort(Comparator.comparing(CalendarPeriod::getStartsAt));
-
         // DateTimeFormatter to format the next opening hour in a consistent manner
         DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-        for (CalendarPeriod period : periods) {
-            // Case 1: No active period, next period is still coming up
-            if (period.getStartsAt().isAfter(LocalDate.now())) {
-                return new Pair<>(
-                        LocationStatus.CLOSED_UPCOMING,
-                        LocalDateTime.of(period.getStartsAt(), period.getOpeningTime()).format(outputFormat)
-                );
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_current_and_or_next_timeslot"));
+            pstmt.setString(1, locationName);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (!rs.next()) {
+                return new Pair<>(LocationStatus.CLOSED, "");
             }
-            // Case 2: Active period, 2 subcases
-            else if (period.getEndsAt().isAfter(LocalDate.now())) {
-                // Case 2.a: Active period within hours
-                if ((period.getOpeningTime().isBefore(LocalTime.now()) && period.getClosingTime().isAfter(LocalTime.now())) ||
-                        (period.getOpeningTime().isAfter(period.getClosingTime()) && period.getClosingTime().isAfter(LocalTime.now())) ||
-                        (period.getOpeningTime().isAfter(period.getClosingTime()) && period.getOpeningTime().isBefore(LocalTime.now()))) {
-                    return new Pair<>(
-                            LocationStatus.OPEN,
-                            LocalDateTime.of(period.getEndsAt(), period.getClosingTime()).format(outputFormat)
-                    );
-                }
-                // Case 2.b: Active period outside hours
-                else {
-                    return new Pair<>(
-                            LocationStatus.CLOSED_ACTIVE,
-                            LocalDateTime.of(period.getStartsAt(), period.getOpeningTime()).format(outputFormat)
-                    );
-                }
-            }
-            // Case 3: Last day of active period, 2 subcases
-            else if (period.getEndsAt().isEqual(LocalDate.now())) {
-                // Case 3.1: Last day has yet to begin
-                if (period.getOpeningTime().isAfter(LocalTime.now())) {
-                    return new Pair<>(
-                            LocationStatus.CLOSED_ACTIVE,
-                            LocalDateTime.of(period.getStartsAt(), period.getOpeningTime()).format(outputFormat)
-                    );
-                }
-                // Case 3.2: Last day is busy
-                else if (period.getClosingTime().isAfter(LocalTime.now())) {
-                    return new Pair<>(
-                            LocationStatus.OPEN,
-                            LocalDateTime.of(period.getEndsAt(), period.getClosingTime()).format(outputFormat)
-                    );
-                }
+
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime timeslotStart = rs.getTimestamp(Resources.databaseProperties.getString("timeslot_start_timestamp")).toLocalDateTime();
+            LocalDateTime timeslotEnd = rs.getTimestamp(Resources.databaseProperties.getString("timeslot_end_timestamp")).toLocalDateTime();
+
+            if (now.isAfter(timeslotStart) && now.isBefore(timeslotEnd)) {
+                return new Pair<>(LocationStatus.OPEN, timeslotEnd.format(outputFormat));
+            } else if (now.isBefore(timeslotStart) && now.toLocalDate().isEqual(timeslotStart.toLocalDate())) {
+                return new Pair<>(LocationStatus.CLOSED_ACTIVE, timeslotStart.format(outputFormat));
+            } else {
+                return new Pair<>(LocationStatus.CLOSED_UPCOMING, timeslotStart.format(outputFormat));
             }
         }
-
-        // Case 4: No active or upcoming periods
-        return new Pair<>(LocationStatus.CLOSED, "");
     }
 
     public CalendarPeriod getById(int calendarId) throws SQLException {
@@ -298,7 +277,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         calendarPeriod.setReservableFrom(rs.getTimestamp(Resources.databaseProperties.getString("calendar_period_reservable_from")).toLocalDateTime());
         calendarPeriod.setReservable(rs.getBoolean(Resources.databaseProperties.getString("calendar_period_reservable")));
         calendarPeriod.setId(rs.getInt(Resources.databaseProperties.getString("calendar_period_id")));
-        calendarPeriod.setReservableTimeslotSize(rs.getInt(Resources.databaseProperties.getString("calendar_period_timeslot_length")));
+        calendarPeriod.setTimeslotLength(rs.getInt(Resources.databaseProperties.getString("calendar_period_timeslot_length")));
         calendarPeriod.setLocation(DBLocationDao.createLocation(rs,conn));
         calendarPeriod.setLockedFrom(rs.getTimestamp(Resources.databaseProperties.getString("calendar_period_locked_from")).toLocalDateTime());
         calendarPeriod.setSeatCount(rs.getInt(Resources.databaseProperties.getString("calendar_period_seat_count")));
@@ -339,7 +318,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
             pstmt.setNull(6, Types.TIMESTAMP);
         }
         pstmt.setBoolean(7, calendarPeriod.isReservable());
-        pstmt.setInt(8, calendarPeriod.getReservableTimeslotSize());
+        pstmt.setInt(8, calendarPeriod.getTimeslotLength());
         pstmt.setTimestamp(9, Timestamp.valueOf(calendarPeriod.getLockedFrom()));
     }
 
