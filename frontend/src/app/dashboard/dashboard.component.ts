@@ -8,7 +8,6 @@ import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { CalendarPeriodsService } from '../services/api/calendar-periods/calendar-periods.service';
 import { LocationStatus } from '../app.constants';
-import { Pair } from '../shared/model/helpers/Pair';
 import { Building } from '../shared/model/Building';
 import { BuildingService } from '../services/api/buildings/buildings.service';
 import { Observable, Subscription } from 'rxjs';
@@ -21,7 +20,6 @@ import {Moment} from 'moment';
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   locations: Location[];
-  locationStatuses = new Map<string, Pair<LocationStatus, string>>();
   locationNextReservableFroms = new Map<string, Moment>();
   filteredLocations: Location[];
   filteredLocationsBackup: Location[];
@@ -161,7 +159,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
 
       if (this.showOpen) {
-        if (this.locationStatuses.get(location.name).first === LocationStatus.OPEN) {
+        if (location.status.first === LocationStatus.OPEN) {
           this.filteredLocations.push(location);
         }
       } else {
