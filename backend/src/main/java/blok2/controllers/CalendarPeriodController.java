@@ -129,7 +129,7 @@ public class CalendarPeriodController extends  AuthorizedLocationController {
                         HttpStatus.CONFLICT, "The time you're moving into is already locked.");
             }
 
-            calendarPeriodDao.updateCalendarPeriod(to, originalTo.isReservable() || to.isReservable());
+            calendarPeriodDao.updateCalendarPeriod(to);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
