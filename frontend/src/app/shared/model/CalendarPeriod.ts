@@ -9,7 +9,8 @@ import {calendarEventTitleTemplate} from '../../app.constants';
 export class CalendarPeriod {
 
   constructor(id: number, location: Location, startsAt: Moment, endsAt: Moment, openingTime: Moment, closingTime: Moment,
-              reservable: boolean, reservableFrom: Moment, reservableTimeslotSize: number, timeslots: Timeslot[], lockedFrom: Moment, seatCount: number) {
+              reservable: boolean, reservableFrom: Moment, reservableTimeslotSize: number, timeslots: Timeslot[],
+              lockedFrom: Moment, seatCount: number) {
     this.id = id;
     this.location = location;
     this.startsAt = startsAt;
@@ -122,8 +123,6 @@ export function isCalendarPeriodValid(period: CalendarPeriod): boolean {
   return period.openingTime.isBefore(period.closingTime);
 }
 
-
-
 /**
  * Convert calendarPeriods to Calendar Events. This detects correctly whether the period is reservable or not (yet).
  */
@@ -174,7 +173,8 @@ function mapNotReservableCalendarPeriodToCalendarEvent(period: CalendarPeriod, c
     dateWithClosingTime.setDate(dateWithClosingTime.getDate() + 1);
   }
 
-
+  console.log(calendarEvents);
+  console.log('---');
   return calendarEvents;
 }
 
@@ -205,12 +205,12 @@ function mapNotYetReservableTimeslotsToCalendarEvents(period: CalendarPeriod, cu
       color: {primary: 'black', secondary: '#BEBEBE'},
       cssClass: 'calendar-event-NR',
     });
-
   }
 
+  console.log(calendarEvents);
+  console.log('---');
   return calendarEvents;
 }
-
 
 /**
  * For each Timeslot that is attached to a CalendarPeriod provided in 'periods',
@@ -235,8 +235,9 @@ function mapReservableTimeslotsToCalendarEvents(period: CalendarPeriod, reserved
                                                          {primary: '#00004d', secondary: '#133E7D'} : null,
         cssClass: includesTimeslot(reservedTimeslots.map(s => s.timeslot), timeslot) ? 'calendar-event-reserved' : ''
       });
-
   }
 
+  console.log(calendarEvents);
+  console.log('---');
   return calendarEvents;
 }
