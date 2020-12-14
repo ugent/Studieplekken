@@ -1,5 +1,7 @@
 package blok2.model.reservables;
 
+import blok2.helpers.LocationStatus;
+import blok2.helpers.Pair;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.LocationTag;
@@ -21,10 +23,11 @@ public class Location implements Cloneable {
     private boolean forGroup;
 
     private List<LocationTag> assignedTags;
+    private Pair<LocationStatus, String> status;
 
     public Location(String name, int numberOfSeats, int numberOfLockers, String imageUrl,
                     Authority authority, String descriptionDutch, String descriptionEnglish, Building building,
-                    boolean forGroup, List<LocationTag> assignedTags) {
+                    boolean forGroup, List<LocationTag> assignedTags, Pair<LocationStatus, String> status) {
         this.name = name;
         this.numberOfSeats = numberOfSeats;
         this.numberOfLockers = numberOfLockers;
@@ -35,11 +38,13 @@ public class Location implements Cloneable {
         this.building = building;
         this.forGroup = forGroup;
         this.assignedTags = assignedTags;
+        this.status = status;
     }
 
     // default constructor necessary for testing purposes
     public Location() {
         assignedTags = new ArrayList<>();
+        status = new Pair<>(LocationStatus.CLOSED, "");
     }
 
     @Override
@@ -162,6 +167,14 @@ public class Location implements Cloneable {
 
     public void setBuilding(Building building) {
         this.building = building;
+    }
+
+    public Pair<LocationStatus, String> getStatus() {
+        return status;
+    }
+
+    public void setStatus(Pair<LocationStatus, String> status) {
+        this.status = status;
     }
 
     //</editor-fold>

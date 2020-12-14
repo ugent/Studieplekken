@@ -12,7 +12,6 @@ import { Pair } from '../shared/model/helpers/Pair';
 import { Building } from '../shared/model/Building';
 import { BuildingService } from '../services/api/buildings/buildings.service';
 import { Observable, Subscription } from 'rxjs';
-import { take } from 'rxjs/operators';
 import {Moment} from 'moment';
 
 @Component({
@@ -48,7 +47,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   showOpen = false;
 
-  private statusSub: Subscription[] = [];
   private locationSub: Subscription;
   private nextReservableFromSub: Subscription;
 
@@ -79,17 +77,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.filteredLocations = next;
         this.filteredLocationsBackup = next;
         this.successOnRetrievingLocations = true;
-
-        // retrieve the status for the locations, hereby invalidating the cache and forcing a reload.
-        next.forEach(l => {
-          this.statusSub.push(this.calendarPeriodService.getStatusOfLocation(l.name, true)
-            .pipe(take(1))
-            .subscribe(
-              next2 => {
-                this.locationStatuses.set(l.name, next2);
-              }
-            ));
-        });
       }, () => {
         this.successOnRetrievingLocations = false;
       }
@@ -107,7 +94,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.statusSub.forEach(sub => sub.unsubscribe());
     this.locationSub.unsubscribe();
     this.nextReservableFromSub.unsubscribe();
   }

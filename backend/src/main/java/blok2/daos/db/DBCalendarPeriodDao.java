@@ -217,29 +217,33 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
      */
     @Override
     public Pair<LocationStatus, String> getStatus(String locationName) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            return getStatus(locationName, conn);
+        }
+    }
+
+    public static Pair<LocationStatus, String> getStatus(String locationName, Connection conn) throws SQLException {
         // DateTimeFormatter to format the next opening hour in a consistent manner
         DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-        try (Connection conn = adb.getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_current_and_or_next_timeslot"));
-            pstmt.setString(1, locationName);
-            ResultSet rs = pstmt.executeQuery();
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_current_and_or_next_timeslot"));
+        pstmt.setString(1, locationName);
+        ResultSet rs = pstmt.executeQuery();
 
-            if (!rs.next()) {
-                return new Pair<>(LocationStatus.CLOSED, "");
-            }
+        if (!rs.next()) {
+            return new Pair<>(LocationStatus.CLOSED, "");
+        }
 
-            LocalDateTime now = LocalDateTime.now();
-            LocalDateTime timeslotStart = rs.getTimestamp(Resources.databaseProperties.getString("timeslot_start_timestamp")).toLocalDateTime();
-            LocalDateTime timeslotEnd = rs.getTimestamp(Resources.databaseProperties.getString("timeslot_end_timestamp")).toLocalDateTime();
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime timeslotStart = rs.getTimestamp(Resources.databaseProperties.getString("timeslot_start_timestamp")).toLocalDateTime();
+        LocalDateTime timeslotEnd = rs.getTimestamp(Resources.databaseProperties.getString("timeslot_end_timestamp")).toLocalDateTime();
 
-            if (now.isAfter(timeslotStart) && now.isBefore(timeslotEnd)) {
-                return new Pair<>(LocationStatus.OPEN, timeslotEnd.format(outputFormat));
-            } else if (now.isBefore(timeslotStart) && now.toLocalDate().isEqual(timeslotStart.toLocalDate())) {
-                return new Pair<>(LocationStatus.CLOSED_ACTIVE, timeslotStart.format(outputFormat));
-            } else {
-                return new Pair<>(LocationStatus.CLOSED_UPCOMING, timeslotStart.format(outputFormat));
-            }
+        if (now.isAfter(timeslotStart) && now.isBefore(timeslotEnd)) {
+            return new Pair<>(LocationStatus.OPEN, timeslotEnd.format(outputFormat));
+        } else if (now.isBefore(timeslotStart) && now.toLocalDate().isEqual(timeslotStart.toLocalDate())) {
+            return new Pair<>(LocationStatus.CLOSED_ACTIVE, timeslotStart.format(outputFormat));
+        } else {
+            return new Pair<>(LocationStatus.CLOSED_UPCOMING, timeslotStart.format(outputFormat));
         }
     }
 
