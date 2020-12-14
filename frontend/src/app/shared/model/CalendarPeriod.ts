@@ -9,7 +9,7 @@ import {calendarEventTitleTemplate} from '../../app.constants';
 export class CalendarPeriod {
 
   constructor(id: number, location: Location, startsAt: Moment, endsAt: Moment, openingTime: Moment, closingTime: Moment,
-              reservable: boolean, reservableFrom: Moment, reservableTimeslotSize: number, timeslots: Timeslot[],
+              reservable: boolean, reservableFrom: Moment, timeslotLength: number, timeslots: Timeslot[],
               lockedFrom: Moment, seatCount: number) {
     this.id = id;
     this.location = location;
@@ -19,7 +19,7 @@ export class CalendarPeriod {
     this.closingTime = closingTime;
     this.reservableFrom = reservableFrom;
     this.reservable = reservable;
-    this.reservableTimeslotSize = reservableTimeslotSize;
+    this.timeslotLength = timeslotLength;
     this.timeslots = timeslots;
     this.lockedFrom = lockedFrom;
     this.seatCount = seatCount;
@@ -32,7 +32,7 @@ export class CalendarPeriod {
   closingTime: Moment;
   reservable: boolean;
   reservableFrom: Moment;
-  reservableTimeslotSize: number;
+  timeslotLength: number;
   timeslots: Timeslot[];
   lockedFrom: Moment;
   seatCount: number;
@@ -47,7 +47,7 @@ export class CalendarPeriod {
       moment(json.closingTime, 'HH:mm'),
       json.reservable,
       moment(json.reservableFrom, 'YYYY-MM-DDTHH:mm:ss'),
-      json.reservableTimeslotSize,
+      json.timeslotLength,
       json.timeslots.map(jsonT => Timeslot.fromJSON(jsonT)),
       moment(json.lockedFrom),
       json.seatCount
@@ -75,7 +75,7 @@ export class CalendarPeriod {
       openingTime: this.openingTime.format('HH:mm'),
       closingTime: this.closingTime.format('HH:mm'),
       reservableFrom: this.reservableFrom ? this.reservableFrom.format('YYYY-MM-DDTHH:mm:ss') : null,
-      reservableTimeslotSize: this.reservableTimeslotSize,
+      timeslotLength: this.timeslotLength,
       timeslots: this.timeslots,
       reservable: this.reservable,
       lockedFrom: this.lockedFrom,
@@ -103,9 +103,8 @@ export function isCalendarPeriodValid(period: CalendarPeriod): boolean {
     return false;
   }
 
-  // if the period is set to be reservable, reservableTimeslotSize may not be 0, nor
-  // may reservableFrom be null
-  if (period.reservable && (period.reservableTimeslotSize <= 0 || period.reservableFrom === null)) {
+  // if the period is set to be reservable, timeslotLength may not be 0, nor may reservableFrom be null
+  if (period.reservable && (period.timeslotLength <= 0 || period.reservableFrom === null)) {
     return false;
   }
 
@@ -173,8 +172,6 @@ function mapNotReservableCalendarPeriodToCalendarEvent(period: CalendarPeriod, c
     dateWithClosingTime.setDate(dateWithClosingTime.getDate() + 1);
   }
 
-  console.log(calendarEvents);
-  console.log('---');
   return calendarEvents;
 }
 
@@ -207,8 +204,6 @@ function mapNotYetReservableTimeslotsToCalendarEvents(period: CalendarPeriod, cu
     });
   }
 
-  console.log(calendarEvents);
-  console.log('---');
   return calendarEvents;
 }
 
@@ -237,7 +232,5 @@ function mapReservableTimeslotsToCalendarEvents(period: CalendarPeriod, reserved
       });
   }
 
-  console.log(calendarEvents);
-  console.log('---');
   return calendarEvents;
 }
