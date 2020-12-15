@@ -22,9 +22,8 @@ public class CalendarPeriod extends Period implements Cloneable {
     private LocalDateTime reservableFrom = LocalDateTime.now();
     private LocalDateTime lockedFrom;
     private boolean reservable;
-    private int reservableTimeslotSize;
+    private int timeslotLength;
     private int seatCount;
-
 
     private List<Timeslot> timeslots = Collections.emptyList();
 
@@ -37,7 +36,7 @@ public class CalendarPeriod extends Period implements Cloneable {
         if (!super.equals(o)) return false;
         CalendarPeriod that = (CalendarPeriod) o;
         return reservable == that.reservable &&
-                reservableTimeslotSize == that.reservableTimeslotSize &&
+                timeslotLength == that.timeslotLength &&
                 location.equals(that.location) &&
                 openingTime.equals(that.openingTime) &&
                 closingTime.equals(that.closingTime) &&
@@ -47,7 +46,7 @@ public class CalendarPeriod extends Period implements Cloneable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), location, openingTime, closingTime, reservableFrom, reservable, reservableTimeslotSize);
+        return Objects.hash(super.hashCode(), location, openingTime, closingTime, reservableFrom, reservable, timeslotLength);
     }
 
     @Override
@@ -108,12 +107,12 @@ public class CalendarPeriod extends Period implements Cloneable {
         this.reservable = reservable;
     }
 
-    public int getReservableTimeslotSize() {
-        return reservableTimeslotSize;
+    public int getTimeslotLength() {
+        return timeslotLength;
     }
 
-    public void setReservableTimeslotSize(int reservableTimeslotSize) {
-        this.reservableTimeslotSize = reservableTimeslotSize;
+    public void setTimeslotLength(int timeslotLength) {
+        this.timeslotLength = timeslotLength;
     }
 
     public List<Timeslot> getTimeslots() {
@@ -149,6 +148,7 @@ public class CalendarPeriod extends Period implements Cloneable {
     public boolean isLocked() {
         return getLockedFrom().isBefore(LocalDateTime.now());
     }
+
     /**
      * The length of time the location is open (in seconds)
      */

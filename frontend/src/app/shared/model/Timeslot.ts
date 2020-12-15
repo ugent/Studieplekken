@@ -34,13 +34,13 @@ export class Timeslot {
 export function timeslotStartHour(calendarPeriod: CalendarPeriod, timeslot: Timeslot): Moment {
   return moment(timeslot.timeslotDate.format('DD-MM-YYYY') + ' ' +
     calendarPeriod.openingTime.format('HH:mm'), 'DD-MM-YYYY HH:mm')
-    .add(calendarPeriod.reservableTimeslotSize * timeslot.timeslotSeqnr, 'minutes');
+    .add(calendarPeriod.timeslotLength * timeslot.timeslotSeqnr, 'minutes');
 }
 
 export function timeslotEndHour(calendarPeriod: CalendarPeriod, timeslot: Timeslot): Moment {
     return moment(timeslot.timeslotDate.format('DD-MM-YYYY') + ' ' +
       calendarPeriod.openingTime.format('HH:mm'), 'DD-MM-YYYY HH:mm')
-      .add(calendarPeriod.reservableTimeslotSize * (timeslot.timeslotSeqnr + 1), 'minutes');
+      .add(calendarPeriod.timeslotLength * (timeslot.timeslotSeqnr + 1), 'minutes');
 }
 
 export const timeslotEquals: (t1: Timeslot, t2: Timeslot) => boolean = (t1, t2) =>

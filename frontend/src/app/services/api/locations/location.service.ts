@@ -17,7 +17,6 @@ export class LocationService {
   constructor(private http: HttpClient) { }
 
   locationCache: Cache<string, Location> = new Cache<string, Location>(this.http, (arg: Location) => arg.name);
-  nextReservableFrom: Cache<string, Moment> = new Cache<string, Moment>(this.http, (arg: Location) => arg.name);
 
   /***********************************************************
    *   API calls for CRUD operations with public.LOCATIONS   *

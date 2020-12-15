@@ -1,6 +1,8 @@
 import {LocationTag} from './LocationTag';
 import {Authority, AuthorityConstructor} from './Authority';
 import {Building, BuildingConstructor} from './Building';
+import {LocationStatus} from '../../app.constants';
+import {Pair} from './helpers/Pair';
 
 export interface Location {
   name: string;
@@ -13,6 +15,7 @@ export interface Location {
   descriptionDutch: string;
   descriptionEnglish: string;
   assignedTags: LocationTag[];
+  status: Pair<LocationStatus, string>;
 }
 
 export class LocationConstructor {
@@ -27,7 +30,8 @@ export class LocationConstructor {
       building: BuildingConstructor.new(),
       descriptionDutch: '',
       descriptionEnglish: '',
-      assignedTags: []
+      assignedTags: [],
+      status: {first: LocationStatus.CLOSED, second: ""}
     };
   }
 
@@ -47,6 +51,7 @@ export class LocationConstructor {
       descriptionEnglish: obj.descriptionEnglish,
       assignedTags: obj.assignedTags,
       forGroup: obj.forGroup,
+      status: {first: obj.status.first, second: obj.status.second}
     };
   }
 }
