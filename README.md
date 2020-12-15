@@ -1,4 +1,8 @@
 # BlokAtUGent
+
+[![Build Status](https://ci.dsa.ugent.be/api/badges/DSA/BlokAt/status.svg)](https://ci.dsa.ugent.be/DSA/BlokAt)
+
+
 Have a look at our [Wiki](https://github.ugent.be/bravdwal/dsa/wiki)
 
 ## Development
