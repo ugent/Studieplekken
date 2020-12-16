@@ -16,9 +16,9 @@
 
       <!-- Body -->
       <div class="panel-collapse in" id="filterBody" *ngIf="tagObs | async as tags">
-        <div class="panel-body" style="padding: 20px">
+        <div class="panel-body" style="padding: 20px" >
           <div class="row">
-            <div class="col-sm-3">
+            <div class="col-sm-3" >
               <mat-form-field *ngIf="tags !== undefined" style="width: 100%" [formGroup]="tagFilterFormGroup">
                 <mat-label>{{'dashboard.filter.tagsFilterTitle' | translate}}</mat-label>
                 <mat-select multiple

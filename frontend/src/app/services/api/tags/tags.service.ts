@@ -4,6 +4,7 @@ import {Observable} from 'rxjs';
 import {api} from '../endpoints';
 import {LocationTag} from '../../../shared/model/LocationTag';
 import {Cache} from '../../../shared/cache/Cache';
+import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
