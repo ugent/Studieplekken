@@ -1,5 +1,10 @@
-<div class="container-fluid" *ngIf="locations !== undefined && successOnRetrievingLocations === true">
 
+
+<div class="container-fluid">
+    <div class="warning-banner" markdown
+    *ngIf="currentLanguage() | async as currlan"
+    src="assets/md/banner.{{currlan}}.md"></div>
+<div *ngIf="locations !== undefined && successOnRetrievingLocations === true">
   <div *ngIf="locations.length > 0; else noLocations">
     <!-- Provide a panel group for filter -->
     <div class="panel-group">
@@ -90,6 +95,7 @@
       </app-dashboard-item>
     </div>
   </div>
+</div>
 </div>
 
 <!-- Feedback to the user when the locations are loading/can't be retrieved -->

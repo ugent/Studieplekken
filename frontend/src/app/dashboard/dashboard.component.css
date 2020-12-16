@@ -13,3 +13,10 @@
 .dashboard-item-container {
   flex-grow: 1;
 }
+
+.warning-banner {
+  text-align: left;
+  background-color: #e9f0fa;
+  padding: 20px;
+}
+.warning-banner:empty { display: none }

@@ -3,15 +3,16 @@ import { LocationService } from '../services/api/locations/location.service';
 import { Location } from '../shared/model/Location';
 import { LocationTag } from '../shared/model/LocationTag';
 import { TagsService } from '../services/api/tags/tags.service';
-import { TranslateService } from '@ngx-translate/core';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { CalendarPeriodsService } from '../services/api/calendar-periods/calendar-periods.service';
 import { LocationStatus } from '../app.constants';
 import { Building } from '../shared/model/Building';
 import { BuildingService } from '../services/api/buildings/buildings.service';
-import { Observable, Subscription } from 'rxjs';
+import { merge, Observable, of, Subscription } from 'rxjs';
 import {Moment} from 'moment';
+import { map, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-dashboard',
@@ -189,5 +190,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   get filteredBuilding(): AbstractControl {
     return this.buildingFilterFormGroup.get('filteredBuilding');
+  }
+
+  currentLanguage(): Observable<LangChangeEvent> {
+    return merge(of({lang: this.translate.currentLang} as LangChangeEvent), this.translate.onLangChange)
+          .pipe(
+            map((s) => (s as any).lang)
+          )
   }
 }
