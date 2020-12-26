@@ -233,7 +233,7 @@ public class TestSharedMethods {
         long timeslotSize = ChronoUnit.MINUTES.between(openingTime, closingTime);
 
         period.setReservable(true);
-        period.setReservableTimeslotSize((int) timeslotSize);
+        period.setTimeslotLength((int) timeslotSize);
         period.setReservableFrom(now);
 
         return period;

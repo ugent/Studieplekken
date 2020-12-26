@@ -267,7 +267,6 @@ public class TestDBLocationReservationDao extends TestDao {
 
         // Let each user make a reservation concurrently
         for (int i = 0; i < N_USERS; i++) {
-            Thread.sleep(10);
             final int _i = i;
             threads[i] = new Thread(
                 () -> {
@@ -347,7 +346,7 @@ public class TestDBLocationReservationDao extends TestDao {
         // Create an upcoming calendar period with a small timeslot size (timeslots will be created too)
         CalendarPeriod calendarPeriod = TestSharedMethods.upcomingCalendarPeriods(location);
         // Reasoning behind timeslot size: 17h - 9h = 8h = 480 min, twee dagen = 960 min -> 16 min/timeslot -> 60 timeslots
-        calendarPeriod.setReservableTimeslotSize(16);
+        calendarPeriod.setTimeslotLength(16);
         calendarPeriodDao.addCalendarPeriods(singletonList(calendarPeriod));
         logger.info("Calendar period has been created");
 
@@ -410,7 +409,7 @@ public class TestDBLocationReservationDao extends TestDao {
         // Create an upcoming calendar period with a small timeslot size (timeslots will be created too)
         CalendarPeriod calendarPeriod = TestSharedMethods.upcomingCalendarPeriods(location);
         // Reasoning behind timeslot size: 17h - 9h = 8h = 480 min, twee dagen = 960 min -> 16 min/timeslot -> 60 timeslots
-        calendarPeriod.setReservableTimeslotSize(16);
+        calendarPeriod.setTimeslotLength(16);
         calendarPeriodDao.addCalendarPeriods(singletonList(calendarPeriod));
         logger.info("Calendar period has been created");
 
@@ -428,5 +427,8 @@ public class TestDBLocationReservationDao extends TestDao {
             locationReservationDao.deleteLocationReservation(testUser.getAugentID(), timeslot);
         }
         logger.info(String.format("Avg timing = %d", t/1000));
+
+        long count = locationReservationDao.countReservedSeatsOfTimeslot(timeslot);
+        Assert.assertEquals(0, count);
     }
 }
