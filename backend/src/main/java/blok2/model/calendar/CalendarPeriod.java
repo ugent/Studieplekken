@@ -2,6 +2,7 @@ package blok2.model.calendar;
 
 import blok2.helpers.Resources;
 import blok2.model.reservables.Location;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 import java.time.DayOfWeek;
 import java.time.Duration;
@@ -21,9 +22,8 @@ public class CalendarPeriod extends Period implements Cloneable {
     private LocalDateTime reservableFrom = LocalDateTime.now();
     private LocalDateTime lockedFrom;
     private boolean reservable;
-    private int reservableTimeslotSize;
+    private int timeslotLength;
     private int seatCount;
-
 
     private List<Timeslot> timeslots = Collections.emptyList();
 
@@ -36,7 +36,7 @@ public class CalendarPeriod extends Period implements Cloneable {
         if (!super.equals(o)) return false;
         CalendarPeriod that = (CalendarPeriod) o;
         return reservable == that.reservable &&
-                reservableTimeslotSize == that.reservableTimeslotSize &&
+                timeslotLength == that.timeslotLength &&
                 location.equals(that.location) &&
                 openingTime.equals(that.openingTime) &&
                 closingTime.equals(that.closingTime) &&
@@ -46,22 +46,12 @@ public class CalendarPeriod extends Period implements Cloneable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), location, openingTime, closingTime, reservableFrom, reservable, reservableTimeslotSize);
+        return Objects.hash(super.hashCode(), location, openingTime, closingTime, reservableFrom, reservable, timeslotLength);
     }
-
 
     @Override
     public String toString() {
-        return "CalendarPeriod{" +
-                "location=" + location +
-                ", startsAt='" + getStartsAt() + '\'' +
-                ", endsAt='" + getEndsAt() + '\'' +
-                ", openingTime='" + openingTime + '\'' +
-                ", closingTime='" + closingTime + '\'' +
-                ", reservableFrom='" + reservableFrom + '\'' +
-                ", reservable='" + reservable + '\'' +
-                ", reservableTimeslotSize='" + reservableTimeslotSize + '\'' +
-                '}';
+        return ToStringBuilder.reflectionToString(this);
     }
 
     @Override
@@ -117,12 +107,12 @@ public class CalendarPeriod extends Period implements Cloneable {
         this.reservable = reservable;
     }
 
-    public int getReservableTimeslotSize() {
-        return reservableTimeslotSize;
+    public int getTimeslotLength() {
+        return timeslotLength;
     }
 
-    public void setReservableTimeslotSize(int reservableTimeslotSize) {
-        this.reservableTimeslotSize = reservableTimeslotSize;
+    public void setTimeslotLength(int timeslotLength) {
+        this.timeslotLength = timeslotLength;
     }
 
     public List<Timeslot> getTimeslots() {
@@ -158,6 +148,7 @@ public class CalendarPeriod extends Period implements Cloneable {
     public boolean isLocked() {
         return getLockedFrom().isBefore(LocalDateTime.now());
     }
+
     /**
      * The length of time the location is open (in seconds)
      */

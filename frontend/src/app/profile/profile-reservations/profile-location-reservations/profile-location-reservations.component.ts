@@ -77,7 +77,7 @@ export class ProfileLocationReservationsComponent implements OnInit {
 
   getBeginHour(timeslot: Timeslot, calendarPeriod: CalendarPeriod): string {
     const openingTime = calendarPeriod.openingTime.clone()
-      .add(timeslot.timeslotSeqnr * calendarPeriod.reservableTimeslotSize, 'minutes');
+      .add(timeslot.timeslotSeqnr * calendarPeriod.timeslotLength, 'minutes');
     return openingTime.format('HH:mm');
   }
 

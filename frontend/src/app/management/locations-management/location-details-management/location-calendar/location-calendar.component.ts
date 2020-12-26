@@ -240,7 +240,7 @@ export class LocationCalendarComponent implements OnInit {
 
       // if the difference between closing time and opening time in minutes is
       // not divisible by the timeslot size (in minutes), then show the warning
-      if ((element.openingTime.diff(element.closingTime, 'minutes') % element.reservableTimeslotSize) !== 0) {
+      if ((element.openingTime.diff(element.closingTime, 'minutes') % element.timeslotLength) !== 0) {
         showWarning = true;
       }
     });

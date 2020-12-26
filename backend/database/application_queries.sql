@@ -148,6 +148,7 @@ from public.locations l
 where l.approved = false
 order by l.name;
 
+
 -- queries for table BUILDINGS
 -- $all_buildings
 select b.building_id, b.building_name, b.address
@@ -213,7 +214,7 @@ select lr.*, u.*, rt.*
 from public.location_reservations lr
     join public.users u
         on u.augentid = lr.user_augentid
-    left join public.reservation_timeslots rt
+    left join public.timeslots rt
         on rt.timeslot_date = lr.timeslot_date
         and rt.timeslot_sequence_number = lr.timeslot_seqnr
         and rt.calendar_id = lr.calendar_id
@@ -279,7 +280,7 @@ from public.location_reservations lr
 where lr.calendar_id = ? and lr.timeslot_date = ? and lr.timeslot_seqnr = ?;
 
 -- $lock_location_reservation
-SELECT * from public.reservation_timeslots lr where lr.calendar_id = ? and lr.timeslot_date = ? and lr.timeslot_sequence_number= ? for UPDATE; 
+SELECT * from public.timeslots lr where lr.calendar_id = ? and lr.timeslot_date = ? and lr.timeslot_sequence_number= ? for UPDATE;
 
 -- $get_size_of_timeslot_location
 select l.number_of_seats
@@ -287,12 +288,12 @@ from public.calendar_periods cp INNER JOIN public.locations l on cp.location_nam
 where cp.calendar_id = ?;
 
 -- $add_one_to_reservation_count
-update reservation_timeslots
+update timeslots
 set reservation_count = reservation_count + 1
 where calendar_id = ? and timeslot_date = ? and timeslot_sequence_number= ?;
 
 -- $subtract_one_to_reservation_count
-update reservation_timeslots
+update timeslots
 set reservation_count = reservation_count - 1
 where calendar_id = ? and timeslot_date = ? and timeslot_sequence_number= ?;
 
@@ -366,7 +367,7 @@ from public.location_reservations lr
         on a.authority_id = l.authority_id
     join users u
         on u.augentid = lr.user_augentid
-    join public.reservation_timeslots rt
+    join public.timeslots rt
         on rt.timeslot_date = lr.timeslot_date and rt.timeslot_sequence_number = lr.timeslot_seqnr and rt.calendar_id = lr.calendar_id     
 
 where lr.user_augentid = ?
@@ -1072,14 +1073,14 @@ join public.buildings b
     on b.building_id = l.building_id
 where cp.starts_at > ? and cp.starts_at < ?;
 
--- $get_reservation_timeslots
+-- $get_timeslots
 select rt.timeslot_sequence_number, rt.timeslot_date, rt.calendar_id, rt.reservation_count, rt.seat_count
-from public.reservation_timeslots rt
+from public.timeslots rt
 where calendar_id = ? 
 order by rt.timeslot_date, rt.timeslot_sequence_number ASC;
 
--- $insert_reservation_timeslots
-insert into public.reservation_timeslots(calendar_id, timeslot_sequence_number, timeslot_date, seat_count)
+-- $insert_timeslots
+insert into public.timeslots(calendar_id, timeslot_sequence_number, timeslot_date, seat_count)
 values (?, ?, ?, ?);
 
 -- $count_reservations_now
@@ -1088,7 +1089,7 @@ select ts.calendar_id as calendar_id_dist, *
 from public.locations l 
     join public.calendar_periods cp
         on l.name = cp.location_name
-    join public.reservation_timeslots ts
+    join public.timeslots ts
         on ts.calendar_id = cp.calendar_id
     where cp.location_name = ?
     and ts.timeslot_date = current_date 
@@ -1104,8 +1105,29 @@ from y
 
 -- $delete_timeslots_of_calendar
 delete
-from public.reservation_timeslots rt
+from public.timeslots rt
 where rt.calendar_id = ?;
+
+-- $get_current_and_or_next_timeslot
+with x as (
+    select rt.calendar_id, rt.timeslot_sequence_number, rt.timeslot_date, rt.reservation_count, rt.seat_count
+         , cp.location_name, cp.starts_at, cp.ends_at, cp.opening_time, cp.closing_time, cp.reservable_from, cp.locked_from, cp.reservable, cp.timeslot_length, cp.seat_count
+         , (rt.timeslot_date + cp.opening_time)::timestamp + interval '1 minute' * cp.timeslot_length * rt.timeslot_sequence_number as timeslot_start
+         , (rt.timeslot_date + cp.opening_time)::timestamp + interval '1 minute' * cp.timeslot_length * (rt.timeslot_sequence_number + 1) as timeslot_end
+    from timeslots rt
+             join calendar_periods cp
+                  on cp.calendar_id = rt.calendar_id
+    where cp.location_name = ?
+      and (rt.timeslot_date + cp.opening_time)::timestamp + interval '1 minute' * cp.timeslot_length * (rt.timeslot_sequence_number + 1) > now()
+), y as (
+    select x.*, row_number() over(order by timeslot_start) n
+    from x
+)
+select *
+from y
+where n = 1
+order by timeslot_start;
+
 
 -- queries for CALENDAR_PERIODS_FOR_LOCKERS
 -- $get_calendar_periods_for_lockers_of_location

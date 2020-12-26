@@ -1,4 +1,8 @@
 # BlokAtUGent
+
+[![Build Status](https://ci.dsa.ugent.be/api/badges/DSA/BlokAt/status.svg)](https://ci.dsa.ugent.be/DSA/BlokAt)
+
+
 Have a look at our [Wiki](https://github.ugent.be/bravdwal/dsa/wiki)
 
 ## Development
@@ -77,6 +81,7 @@ ng serve -o # Compile source files and open project in browser
 cd skywalking
 docker-compose -f skywalking.yml up --build
 ```
+
 
 De backend zal hier automatisch op connecteren aan de hand van een agent. Op poort `:8000` kun je de skywalking ui vinden.
 

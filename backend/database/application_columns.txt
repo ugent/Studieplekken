@@ -41,7 +41,7 @@ calendar_period_locked_from=locked_from
 calendar_period_reservable=reservable
 calendar_period_timeslot_length=timeslot_length
 
-# columns for RESERVATION_TIMESLOTS
+# columns for TIMESLOTS
 timeslot_calendar_id=calendar_id
 timeslot_sequence_number=timeslot_sequence_number
 timeslot_date=timeslot_date
@@ -126,3 +126,7 @@ utv_created_timestamp=created_timestamp
 # columns for table ROLES_USER_AUTHORITY
 roles_user_authority_user_id=user_id
 roles_user_authority_authority_id=authority_id
+
+# custom query columns
+timeslot_start_timestamp=timeslot_start
+timeslot_end_timestamp=timeslot_end

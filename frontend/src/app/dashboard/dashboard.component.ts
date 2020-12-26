@@ -3,17 +3,16 @@ import { LocationService } from '../services/api/locations/location.service';
 import { Location } from '../shared/model/Location';
 import { LocationTag } from '../shared/model/LocationTag';
 import { TagsService } from '../services/api/tags/tags.service';
-import { TranslateService } from '@ngx-translate/core';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { CalendarPeriodsService } from '../services/api/calendar-periods/calendar-periods.service';
 import { LocationStatus } from '../app.constants';
-import { Pair } from '../shared/model/helpers/Pair';
 import { Building } from '../shared/model/Building';
 import { BuildingService } from '../services/api/buildings/buildings.service';
-import { Observable, Subscription } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { merge, Observable, of, Subscription } from 'rxjs';
 import {Moment} from 'moment';
+import { map, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-dashboard',
@@ -22,7 +21,6 @@ import {Moment} from 'moment';
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   locations: Location[];
-  locationStatuses = new Map<string, Pair<LocationStatus, string>>();
   locationNextReservableFroms = new Map<string, Moment>();
   filteredLocations: Location[];
   filteredLocationsBackup: Location[];
@@ -48,7 +46,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   showOpen = false;
 
-  private statusSub: Subscription[] = [];
   private locationSub: Subscription;
   private nextReservableFromSub: Subscription;
 
@@ -79,17 +76,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.filteredLocations = next;
         this.filteredLocationsBackup = next;
         this.successOnRetrievingLocations = true;
-
-        // retrieve the status for the locations, hereby invalidating the cache and forcing a reload.
-        next.forEach(l => {
-          this.statusSub.push(this.calendarPeriodService.getStatusOfLocation(l.name, true)
-            .pipe(take(1))
-            .subscribe(
-              next2 => {
-                this.locationStatuses.set(l.name, next2);
-              }
-            ));
-        });
       }, () => {
         this.successOnRetrievingLocations = false;
       }
@@ -107,7 +93,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.statusSub.forEach(sub => sub.unsubscribe());
     this.locationSub.unsubscribe();
     this.nextReservableFromSub.unsubscribe();
   }
@@ -175,7 +160,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
 
       if (this.showOpen) {
-        if (this.locationStatuses.get(location.name).first === LocationStatus.OPEN) {
+        if (location.status.first === LocationStatus.OPEN) {
           this.filteredLocations.push(location);
         }
       } else {
@@ -205,5 +190,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   get filteredBuilding(): AbstractControl {
     return this.buildingFilterFormGroup.get('filteredBuilding');
+  }
+
+  currentLanguage(): Observable<LangChangeEvent> {
+    return merge(of({lang: this.translate.currentLang} as LangChangeEvent), this.translate.onLangChange)
+          .pipe(
+            map((s) => (s as any).lang)
+          )
   }
 }

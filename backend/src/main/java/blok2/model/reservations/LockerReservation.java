@@ -2,6 +2,7 @@ package blok2.model.reservations;
 
 import blok2.model.reservables.Locker;
 import blok2.model.users.User;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -48,12 +49,7 @@ public class LockerReservation {
 
     @Override
     public String toString() {
-        return "LockerReservation{" +
-                "owner=" + owner +
-                ", locker=" + locker +
-                ", keyPickupDate=" + keyPickupDate +
-                ", keyReturnedDate=" + keyReturnedDate +
-                '}';
+        return ToStringBuilder.reflectionToString(this);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">

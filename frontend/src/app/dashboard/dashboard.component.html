@@ -1,15 +1,9 @@
-<div class="container-fluid" *ngIf="locations !== undefined && successOnRetrievingLocations === true">
+<div class="warning-banner" markdown
+     *ngIf="currentLanguage() | async as currlan"
+     src="assets/md/banner.{{currlan}}.md">
+</div>
 
-  <div class="alert alert-info">
-    <!-- [VRIJDAG 11 DECEMBER, RESERVATIES OP VERSCHILLENDE MOMENTEN] -->
-    <h3>{{'dashboard.alert.title' | translate}}</h3>
-    <!-- Gisteren hebben we helaas moeten vaststellen dat er problemen waren met onze server. -->
-    <p>{{'dashboard.alert.p1' | translate}}<span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></p>
-    <!-- De interesse voor studieplekken is groter dan voorspeld en onze server kan de grote belasting niet aan. -->
-    <p>{{'dashboard.alert.p2' | translate}} <a href="https://www.ugent.be/student/nl/meer-dan-studeren/wel-in-je-vel">UGent: Wel in je vel</a></p>
-
-  </div>
-
+<div *ngIf="locations !== undefined && successOnRetrievingLocations === true">
   <div *ngIf="locations.length > 0; else noLocations">
     <!-- Provide a panel group for filter -->
     <div class="panel-group">
@@ -26,9 +20,9 @@
 
       <!-- Body -->
       <div class="panel-collapse in" id="filterBody" *ngIf="tagObs | async as tags">
-        <div class="panel-body" style="padding: 20px">
+        <div class="panel-body" style="padding: 20px" >
           <div class="row">
-            <div class="col-sm-3">
+            <div class="col-sm-3" >
               <mat-form-field *ngIf="tags !== undefined" style="width: 100%" [formGroup]="tagFilterFormGroup">
                 <mat-label>{{'dashboard.filter.tagsFilterTitle' | translate}}</mat-label>
                 <mat-select multiple
@@ -96,8 +90,7 @@
         fxFlex.lt-md="0 1 calc(50% - 32px)"
         fxFlex.lt-sm="100%"
         *ngFor="let location of filteredLocations"
-        [location]="location" [status]="locationStatuses.get(location.name)"
-        [nextReservableFrom]="locationNextReservableFroms.get(location.name)">
+        [location]="location" [nextReservableFrom]="locationNextReservableFroms.get(location.name)">
       </app-dashboard-item>
     </div>
   </div>

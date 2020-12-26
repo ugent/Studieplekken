@@ -8,7 +8,6 @@ import {CalendarEvent} from 'angular-calendar';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import {TranslateService} from '@ngx-translate/core';
 import {LocationTag} from '../../shared/model/LocationTag';
-import {TagsService} from '../../services/api/tags/tags.service';
 import {CalendarPeriodsService} from '../../services/api/calendar-periods/calendar-periods.service';
 import {includesTimeslot, Timeslot, timeslotEquals} from 'src/app/shared/model/Timeslot';
 import {LocationReservationsService} from 'src/app/services/api/location-reservations/location-reservations.service';
@@ -67,16 +66,12 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
 
   calendarMap: Map<number, CalendarPeriod> = new Map();
   locationReservations: Observable<LocationReservation[]>;
-  loadingReservations: boolean;
   showAdmin: boolean;
   showLockersManagement: boolean;
   capacity: number;
 
   locationSub: Subscription;
   calendarSub: Subscription;
-
-  lastCalendarUpdate = moment();
-  statusObs: Observable<Pair<LocationStatus, string>>;
 
   constructor(private locationService: LocationService,
               private route: ActivatedRoute,
@@ -107,8 +102,6 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
 
       this.updateCalendar();
     });
-
-    this.statusObs = this.calendarPeriodsService.getStatusOfLocation(this.locationName);
 
     // if the browser language would change, the description needs to change
     this.translate.onLangChange.subscribe(
@@ -158,7 +151,7 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
     this.currentTimeslot = event.timeslot;
 
     const reservation: LocationReservation = {user: this.authenticationService.userValue(), timeslot: this.currentTimeslot};
-    const timeslotIsSelected = this.selectedSubject.value.some(r => timeslotEquals(r.timeslot, reservation.timeslot))
+    const timeslotIsSelected = this.selectedSubject.value.some(r => timeslotEquals(r.timeslot, reservation.timeslot));
 
     if (this.currentTimeslot.amountOfReservations >= this.capacity && !timeslotIsSelected) {
       return;
@@ -266,7 +259,7 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
 
   getBeginHour(calendarPeriod: CalendarPeriod, timeslot: Timeslot): moment.Moment {
     const d = moment(timeslot.timeslotDate.format('DD-MM-YYYY') + 'T' + calendarPeriod.openingTime.format('HH:mm'), 'DD-MM-YYYYTHH:mm');
-    d.add(timeslot.timeslotSeqnr * calendarPeriod.reservableTimeslotSize, 'minutes');
+    d.add(timeslot.timeslotSeqnr * calendarPeriod.timeslotLength, 'minutes');
     return d;
   }
 

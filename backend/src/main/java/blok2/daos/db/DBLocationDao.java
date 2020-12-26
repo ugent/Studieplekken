@@ -3,6 +3,7 @@ package blok2.daos.db;
 import blok2.daos.IAccountDao;
 import blok2.daos.ILocationDao;
 import blok2.daos.IScannerLocationDao;
+import blok2.helpers.LocationStatus;
 import blok2.helpers.Pair;
 import blok2.helpers.Resources;
 import blok2.model.Authority;
@@ -273,7 +274,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
      * @param rsTags the ResultSet for fetching the tags
      * @return a generated location
      */
-    public static Location createLocation(ResultSet rs, ResultSet rsTags) throws SQLException {
+    private static Location createLocation(ResultSet rs, ResultSet rsTags, Pair<LocationStatus, String> status) throws SQLException {
         String name = rs.getString(Resources.databaseProperties.getString("location_name"));
         int numberOfSeats = rs.getInt(Resources.databaseProperties.getString("location_number_of_seats"));
         int numberOfLockers = rs.getInt(Resources.databaseProperties.getString("location_number_of_lockers"));
@@ -289,7 +290,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
         fillTagLists(assignedTags, rsTags);
 
         return new Location(name, numberOfSeats, numberOfLockers, imageUrl, authority,
-                descriptionDutch, descriptionEnglish, building, forGroup, assignedTags);
+                descriptionDutch, descriptionEnglish, building, forGroup, assignedTags, status);
     }
 
     private static void fillTagLists(List<LocationTag> assignedTags, ResultSet rsTags)
@@ -301,13 +302,14 @@ public class DBLocationDao extends DAO implements ILocationDao {
     }
 
     /**
-     * create a location from the resultset, where tags are automatically fetched too
+     * create a location from the resultSet, where tags and status are automatically fetched too
      */
     public static Location createLocation(ResultSet rs, Connection conn) throws SQLException {
         ResultSet rsTags = DBLocationTagDao.getTagsForLocation(rs.getString(Resources.databaseProperties.getString("location_name")), conn);
-        return createLocation(rs, rsTags);
+        String locationName = rs.getString(Resources.databaseProperties.getString("location_name"));
+        Pair<LocationStatus, String> status = DBCalendarPeriodDao.getStatus(locationName, conn);
+        return createLocation(rs, rsTags, status);
     }
-
 
     public static Locker createLocker(ResultSet rs, Connection conn) throws SQLException {
         Locker l = new Locker();

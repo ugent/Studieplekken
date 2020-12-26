@@ -220,7 +220,7 @@
           "openingTime": "Openingstijd",
           "closingTime": "Sluitingstijd",
           "reservable": "Reserveerbaar",
-          "reservableTimeslotSize": "Lengte Timeslots",
+          "timeslotLength": "Lengte Timeslots",
           "reservableFrom": "Reserveerbaar vanaf",
           "remove": "Verwijder",
           "dropdown": {

@@ -2,7 +2,6 @@ import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import {DatePipe} from '@angular/common';
 import {Location} from '../../shared/model/Location';
 import {LocationService} from '../../services/api/locations/location.service';
-import {Pair} from '../../shared/model/helpers/Pair';
 import {TranslateService} from '@ngx-translate/core';
 import {LocationTag} from '../../shared/model/LocationTag';
 import {ApplicationTypeFunctionalityService} from '../../services/functionality/application-type/application-type-functionality.service';
@@ -19,7 +18,6 @@ import { Observable} from 'rxjs';
 })
 export class DashboardItemComponent implements OnInit, AfterViewInit {
   @Input() location: Location;
-  @Input() status: Pair<LocationStatus, string>;
   @Input() nextReservableFrom: Moment;
 
   occupation = 0;
@@ -67,9 +65,7 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
   }
 
   locationStatusColorClass(): string {
-    if (this.status) {
-      return this.status.first === LocationStatus.OPEN ? 'open' : 'closed';
-    }
+    return this.location.status.first === LocationStatus.OPEN ? 'open' : 'closed';
   }
 
   handleImageError(): void {

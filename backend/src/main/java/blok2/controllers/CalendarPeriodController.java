@@ -129,7 +129,7 @@ public class CalendarPeriodController extends  AuthorizedLocationController {
                         HttpStatus.CONFLICT, "The time you're moving into is already locked.");
             }
 
-            calendarPeriodDao.updateCalendarPeriod(to, originalTo.isReservable() || to.isReservable());
+            calendarPeriodDao.updateCalendarPeriod(to);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
@@ -183,7 +183,7 @@ public class CalendarPeriodController extends  AuthorizedLocationController {
 
         // check if reservable from is parsable
         if (to.isReservable()) {
-            if(to.getReservableTimeslotSize() <= 0) {
+            if(to.getTimeslotLength() <= 0) {
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST, "Timeslot size must be larger than 0.");
             }

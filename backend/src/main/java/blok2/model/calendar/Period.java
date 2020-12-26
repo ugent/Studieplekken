@@ -1,5 +1,7 @@
 package blok2.model.calendar;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -9,10 +11,7 @@ public class Period {
 
     @Override
     public String toString() {
-        return "Period{" +
-                "startsAt='" + startsAt + '\'' +
-                ", endsAt='" + endsAt + '\'' +
-                '}';
+        return ToStringBuilder.reflectionToString(this);
     }
 
     @Override

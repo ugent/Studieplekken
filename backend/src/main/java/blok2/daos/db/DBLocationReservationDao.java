@@ -108,20 +108,38 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
     }
 
     @Override
-    public void deleteLocationReservation(String augentID, Timeslot timeslot) throws SQLException {
+    public boolean deleteLocationReservation(String augentID, Timeslot timeslot) throws SQLException {
         try (Connection conn = adb.getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_location_reservation"));
-            pstmt.setString(1, augentID);
-            pstmt.setDate(2, java.sql.Date.valueOf(timeslot.getTimeslotDate()));
-            pstmt.setInt(3, timeslot.getTimeslotSeqnr());
-            pstmt.setInt(4, timeslot.getCalendarId());
-            pstmt.execute();
-            pstmt = conn.prepareStatement(Resources.databaseProperties.getString("subtract_one_to_reservation_count"));
-            pstmt.setDate(2, java.sql.Date.valueOf(timeslot.getTimeslotDate()));
-            pstmt.setInt(3, timeslot.getTimeslotSeqnr());
-            pstmt.setInt(1, timeslot.getCalendarId());
-            pstmt.execute();
+            try {
+                conn.setAutoCommit(false);
 
+                // delete the location reservation
+                PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_location_reservation"));
+                pstmt.setString(1, augentID);
+                pstmt.setDate(2, java.sql.Date.valueOf(timeslot.getTimeslotDate()));
+                pstmt.setInt(3, timeslot.getTimeslotSeqnr());
+                pstmt.setInt(4, timeslot.getCalendarId());
+                int count = pstmt.executeUpdate();
+
+                if(count != 1) {
+                    return false;
+                }
+
+                // and subtract a count from the reservation count
+                pstmt = conn.prepareStatement(Resources.databaseProperties.getString("subtract_one_to_reservation_count"));
+                pstmt.setDate(2, java.sql.Date.valueOf(timeslot.getTimeslotDate()));
+                pstmt.setInt(3, timeslot.getTimeslotSeqnr());
+                pstmt.setInt(1, timeslot.getCalendarId());
+                pstmt.execute();
+
+                conn.commit();
+                return true;
+            } catch (SQLException e) {
+                conn.rollback();
+                throw e;
+            } finally {
+                conn.commit();
+            }
         }
     }
 
@@ -150,31 +168,22 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
                 // Try to take a lock (or block) on the database by performing a SELECT FOR UPDATE.
                 // A lock must be taken within a transaction, therefore disabling auto commit.
                 conn.setAutoCommit(false);
-                PreparedStatement stmt = conn.prepareStatement(Resources.databaseProperties.getString("lock_location_reservation"));
+                PreparedStatement stmt = conn.prepareStatement(Resources.databaseProperties.getString("add_one_to_reservation_count"));
                 stmt.setInt(1, reservation.getTimeslot().getCalendarId());
                 stmt.setDate(2, Date.valueOf(reservation.getTimeslot().getTimeslotDate()));
                 stmt.setInt(3, reservation.getTimeslot().getTimeslotSeqnr());
-                stmt.execute();
+                int change = stmt.executeUpdate();
 
-                // Fetch data we need.
-                long amountOfReservations = getAmountOfReservationsOfTimeslot(reservation.getTimeslot(), conn);
-                long sizeOfLocation = getLocationSizeOfTimeslot(reservation.getTimeslot(), conn);
-
-                if (amountOfReservations < sizeOfLocation) {
-                    // All is well. Add & then release the lock (by committing, cfr finally clause).
-                    addLocationReservation(reservation, conn);
-
-                    // We still add one for keeping consistency, since front end uses this field now.
-                    // What we do with the field, remains to be seen.
-                    stmt = conn.prepareStatement(Resources.databaseProperties.getString("add_one_to_reservation_count"));
-                    stmt.setInt(1, reservation.getTimeslot().getCalendarId());
-                    stmt.setDate(2, Date.valueOf(reservation.getTimeslot().getTimeslotDate()));
-                    stmt.setInt(3, reservation.getTimeslot().getTimeslotSeqnr());
-                    stmt.execute();
-                    return true;
+                // Double checking the change for insurance (and also compiler check)
+                if(change != 1) {
+                    return false;
                 }
 
-                return false;
+                // If this operation succeeds, the reservation can proceed
+
+                addLocationReservation(reservation, conn);
+
+                return true;
 
             } catch (SQLException e) {
                 conn.rollback();
@@ -313,7 +322,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
     }
 
     // Seperated out for use in transaction
-    public long getAmountOfReservationsOfTimeslot(Timeslot timeslot, Connection conn) throws SQLException {
+    public static long getAmountOfReservationsOfTimeslot(Timeslot timeslot, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("count_location_reservations_of_location_for_timeslot"));
         pstmt.setInt(1, timeslot.getCalendarId());
         pstmt.setDate(2, java.sql.Date.valueOf(timeslot.getTimeslotDate()));
@@ -347,7 +356,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
         }
 
         User user = DBAccountDao.createUser(rs, conn);
-        Timeslot timeslot = DBCalendarPeriodDao.createTimeslot(rs);
+        Timeslot timeslot = DBCalendarPeriodDao.createTimeslot(rs, conn);
         LocalDateTime createdAt = rs.getTimestamp(Resources.databaseProperties.getString("location_reservation_created_at")).toLocalDateTime();
 
         return new LocationReservation(user, createdAt, timeslot, attended);
