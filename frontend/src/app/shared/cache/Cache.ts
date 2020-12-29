@@ -75,15 +75,11 @@ export class Cache<I, V> {
     if (invalidateCache || Object.keys(this.cacheMap).length === 0) {
       // if the cache is being reloaded, the current value can be skipped
       this.cacheReload(url);
-      return this.cacheSubject.pipe(
-        map(valueMap => [ ...valueMap.values() ]),
-        skip(1)
-      );
-    } else {
-      // if the cache is not being reloaded, the current value suffices
-      return this.cacheSubject.pipe(
-        map(valueMap => [ ...valueMap.values() ])
-      );
     }
+      // if the cache is not being reloaded, the current value suffices
+    return this.cacheSubject.pipe(
+      map(valueMap => [ ...valueMap.values() ]),
+      filter(v => !(v === null || v === undefined || v.length === 0)),
+    );
   }
 }

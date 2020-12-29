@@ -1,5 +1,9 @@
-<div class="container-fluid" *ngIf="locations !== undefined && successOnRetrievingLocations === true">
+<div class="warning-banner" markdown
+     *ngIf="currentLanguage() | async as currlan"
+     src="assets/md/banner.{{currlan}}.md">
+</div>
 
+<div *ngIf="locations !== undefined && successOnRetrievingLocations === true">
   <div *ngIf="locations.length > 0; else noLocations">
     <!-- Provide a panel group for filter -->
     <div class="panel-group">
@@ -16,9 +20,9 @@
 
       <!-- Body -->
       <div class="panel-collapse in" id="filterBody" *ngIf="tagObs | async as tags">
-        <div class="panel-body" style="padding: 20px">
+        <div class="panel-body" style="padding: 20px" >
           <div class="row">
-            <div class="col-sm-3">
+            <div class="col-sm-3" >
               <mat-form-field *ngIf="tags !== undefined" style="width: 100%" [formGroup]="tagFilterFormGroup">
                 <mat-label>{{'dashboard.filter.tagsFilterTitle' | translate}}</mat-label>
                 <mat-select multiple
