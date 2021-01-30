@@ -1,5 +1,8 @@
-package blok2.daos;
+package blok2;
 
+import blok2.daos.IAccountDao;
+import blok2.daos.IAuthorityDao;
+import blok2.daos.ICalendarPeriodDao;
 import blok2.helpers.Institution;
 import blok2.helpers.TimeException;
 import blok2.model.Authority;
@@ -112,26 +115,34 @@ public class TestSharedMethods {
         return authority;
     }
 
+
     public static User adminTestUser() {
+        return adminTestUser("admin");
+    }
+    public static User adminTestUser(String s) {
         User user = new User();
         user.setLastName("Added User");
         user.setFirstName("First");
-        user.setMail("First.AddedUser@ugent.be");
+        user.setMail(s+"@ugent.be");
         user.setPassword("first_password");
         user.setInstitution(Institution.UGent);
-        user.setAugentID("001");
+        user.setAugentID(s);
         user.setAdmin(true);
         return user;
     }
 
     public static User studentTestUser() {
+        return studentTestUser("002");
+    }
+
+    public static User studentTestUser(String id) {
         User user = new User();
         user.setLastName("Added User");
         user.setFirstName("Second");
-        user.setMail("Second.AddedUser@ugent.be");
+        user.setMail(id + "@ugent.be");
         user.setPassword("second_password");
         user.setInstitution(Institution.UGent);
-        user.setAugentID("002");
+        user.setAugentID(id);
         user.setAdmin(false);
         return user;
     }

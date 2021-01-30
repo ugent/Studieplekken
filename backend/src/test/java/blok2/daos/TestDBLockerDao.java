@@ -1,5 +1,7 @@
 package blok2.daos;
 
+import blok2.BaseTest;
+import blok2.TestSharedMethods;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.reservables.Location;
@@ -17,7 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
-public class TestDBLockerDao extends TestDao {
+public class TestDBLockerDao extends BaseTest {
 
     @Autowired
     private ILocationDao locationDao;

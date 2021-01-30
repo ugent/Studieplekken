@@ -1,20 +1,20 @@
 package blok2.daos;
 
+import blok2.BaseTest;
+import blok2.TestSharedMethods;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.LocationTag;
 import blok2.model.reservables.Location;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.jupiter.api.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-public class TestDBLocationTagDao extends TestDao {
+public class TestDBLocationTagDao extends BaseTest {
 
     @Autowired
     private ILocationTagDao locationTagDao;

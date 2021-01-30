@@ -1,5 +1,5 @@
 import blok2.Blok2Application;
-import blok2.controllers.LocationController;
+import blok2.TestSharedMethods;
 import blok2.daos.*;
 import blok2.helpers.EmailService;
 import blok2.model.Authority;
@@ -23,7 +23,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 
 @Import(CustomFlywayConfig.class)

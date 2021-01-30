@@ -1,5 +1,7 @@
 package blok2.daos;
 
+import blok2.BaseTest;
+import blok2.TestSharedMethods;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.reservables.Location;
@@ -13,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class TestDBScannerLocationDao extends TestDao {
+public class TestDBScannerLocationDao extends BaseTest {
 
     @Autowired
     private IAccountDao accountDao;

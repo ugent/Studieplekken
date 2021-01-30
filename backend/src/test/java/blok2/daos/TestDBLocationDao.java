@@ -1,5 +1,7 @@
 package blok2.daos;
 
+import blok2.BaseTest;
+import blok2.TestSharedMethods;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.reservables.Location;
@@ -13,7 +15,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @FlywayTest
-public class TestDBLocationDao extends TestDao {
+public class TestDBLocationDao extends BaseTest {
 
     @Autowired
     private ILocationDao locationDao;

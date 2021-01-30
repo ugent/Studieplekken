@@ -1,5 +1,7 @@
 package blok2.daos;
 
+import blok2.BaseTest;
+import blok2.TestSharedMethods;
 import blok2.helpers.Language;
 import blok2.model.Authority;
 import blok2.model.Building;
@@ -12,15 +14,12 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TestDBPenaltyEventsDao extends TestDao {
+public class TestDBPenaltyEventsDao extends BaseTest {
 
     @Autowired
     private IAccountDao accountDao;

@@ -1,5 +1,7 @@
 package blok2.daos;
 
+import blok2.BaseTest;
+import blok2.TestSharedMethods;
 import blok2.helpers.Pair;
 import blok2.model.Authority;
 import blok2.model.calendar.CalendarPeriod;
@@ -19,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class TestDBLocationReservationDao extends TestDao {
+public class TestDBLocationReservationDao extends BaseTest {
 
     @Autowired
     private ILocationReservationDao locationReservationDao;

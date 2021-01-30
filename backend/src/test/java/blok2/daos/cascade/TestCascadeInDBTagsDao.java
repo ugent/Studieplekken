@@ -1,5 +1,6 @@
 package blok2.daos.cascade;
 
+import blok2.TestSharedMethods;
 import blok2.daos.*;
 import blok2.model.Authority;
 import blok2.model.Building;
@@ -10,10 +11,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 public class TestCascadeInDBTagsDao extends TestDao {
 
