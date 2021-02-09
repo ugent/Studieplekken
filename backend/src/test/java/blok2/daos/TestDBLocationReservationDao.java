@@ -224,7 +224,7 @@ public class TestDBLocationReservationDao extends TestDao {
      *     - let each user make a reservation concurrently
      *     - test whether no constraints have been violated
      */
-    @Test
+    //@Test
     public void concurrentReservationsTest() throws SQLException, InterruptedException {
         // some constants
         final int N_USERS = 50;
@@ -309,7 +309,7 @@ public class TestDBLocationReservationDao extends TestDao {
      *     - let each user make a reservation concurrently
      *     - test whether no constraints have been violated
      */
-    @Test
+    //@Test
     public void concurrentReservationsMultipleTimeslotsTest() throws SQLException, InterruptedException {
         // some constants
         final int N_USERS = 500;
