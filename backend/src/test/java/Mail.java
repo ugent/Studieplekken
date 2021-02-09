@@ -64,7 +64,6 @@ public class Mail {
         period.setLockedFrom(LocalDateTime.of(period.getStartsAt().minusWeeks(3), LocalTime.of(0, 0)));
         calendarPeriodDao.addCalendarPeriods(Collections.singletonList(period));
 
-
-        service.sendCalendarPeriodsMessage("vanerum.tim@gmail.com");
+        // service.sendCalendarPeriodsMessage("vanerum.tim@gmail.com");
     }
 }
