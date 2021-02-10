@@ -7,7 +7,7 @@ Note that the PSQL-USR, PSQL-PWD, LDAP-USR and LDAP-PWD must be provided as a co
 argument for safety reasons (developers may overlook this file searching for passwords 
 before sharing files or making the project public or partially public in any way...)
 
-USAGE: python[3] migrate_id_to_ugentid.py <PSQL-USR> <PSQL-PWD> <LDAP-USR> <LDAP-PWD>
+USAGE: python[3] migrate_id_to_ugentid.py <PSQL-HOST> <PSQL-DB-NAME> <PSQL-USR> <PSQL-PWD> <LDAP-USR> <LDAP-PWD>
 
 Useful links:
     - https://medium.com/@alpolishchuk/a-little-python-ldap-tutorial-4a6a79676157
@@ -27,6 +27,8 @@ import psycopg2.extras
 ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
 
 # variables that will be set before calling the main, based on sys.argv
+DB_HST = ''
+DB_NME = ''
 DB_USR = ''
 DB_PWD = ''
 LDAP_USR = ''
@@ -38,8 +40,8 @@ def psql_connection():
     Create and return a PostgreSQL connection
     """
     return psql.connect(
-        host='localhost',
-        database='blokatugent',
+        host=DB_HST,
+        database=DB_NME,
         user=DB_USR,
         password=DB_PWD
     )
@@ -180,12 +182,14 @@ def main():
 
 
 if __name__ == '__main__':
-    if len(sys.argv) != 5:
-        print('USAGE: python[3] migrate_id_to_ugentid.py <PSQL-USR> <PSQL-PWD> <LDAP-USR> <LDAP-PWD>')
+    if len(sys.argv) != 7:
+        print('USAGE: python[3] migrate_id_to_ugentid.py <PSQL-HOST> <PSQL-DB-NAME> <PSQL-USR> <PSQL-PWD> <LDAP-USR> <LDAP-PWD>')
         sys.exit(1)
     else:
-        DB_USR = sys.argv[1]
-        DB_PWD = sys.argv[2]
-        LDAP_USR = sys.argv[3]
-        LDAP_PWD = sys.argv[4]
+        DB_HST = sys.argv[1]
+        DB_NME = sys.argv[2]
+        DB_USR = sys.argv[3]
+        DB_PWD = sys.argv[4]
+        LDAP_USR = sys.argv[5]
+        LDAP_PWD = sys.argv[6]
     main()
