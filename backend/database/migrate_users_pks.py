@@ -7,7 +7,7 @@ Note that the PSQL-USR, PSQL-PWD, LDAP-USR and LDAP-PWD must be provided as a co
 argument for safety reasons (developers may overlook this file searching for passwords 
 before sharing files or making the project public or partially public in any way...)
 
-USAGE: python[3] migrate_id_to_ugentid.py <PSQL-HOST> <PSQL-DB-NAME> <PSQL-USR> <PSQL-PWD> <LDAP-USR> <LDAP-PWD>
+USAGE: python[3] migrate_users_pks.py <PSQL-HOST> <PSQL-DB-NAME> <PSQL-USR> <PSQL-PWD> <LDAP-USR> <LDAP-PWD>
 
 Useful links:
     - https://medium.com/@alpolishchuk/a-little-python-ldap-tutorial-4a6a79676157
@@ -184,7 +184,7 @@ def main():
 
 if __name__ == '__main__':
     if len(sys.argv) != 7:
-        print('USAGE: python[3] migrate_id_to_ugentid.py <PSQL-HOST> <PSQL-DB-NAME> <PSQL-USR> <PSQL-PWD> <LDAP-USR> <LDAP-PWD>')
+        print('USAGE: python[3] migrate_users_pks.py <PSQL-HOST> <PSQL-DB-NAME> <PSQL-USR> <PSQL-PWD> <LDAP-USR> <LDAP-PWD>')
         sys.exit(1)
     else:
         DB_HST = sys.argv[1]
