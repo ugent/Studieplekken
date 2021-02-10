@@ -109,7 +109,8 @@ def migrate_ids(migration_ids):
 
         psql.extras.execute_values(cur, update_query, migration_ids)
 
-        print('INFO: updated {} users in database'.format(cur.rowcount))
+        print('INFO: updated {} users in database (note: this is the rowcount of the last batch update of max 100 rows each)'
+              .format(cur.rowcount))
 
         conn.commit()
 
