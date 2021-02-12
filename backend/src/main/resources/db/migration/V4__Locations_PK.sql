@@ -60,7 +60,7 @@ alter table public.LOCATION_TAGS
 drop column location_id;
 
 alter table public.LOCATION_TAGS
-rename column location_id_id to location_id
+rename column location_id_id to location_id;
 
 alter table public.LOCATION_TAGS
 add constraint fk_location_tags_to_locations
@@ -132,7 +132,7 @@ alter table public.LOCKER_RESERVATIONS
 drop column location_name;
 
 alter table public.LOCKER_RESERVATIONS
-add primary key (location_id, locker_number, user_augentid)
+add primary key (location_id, locker_number, user_augentid);
 
 -- Setting up public.LOCKERS
 alter table public.LOCKERS
