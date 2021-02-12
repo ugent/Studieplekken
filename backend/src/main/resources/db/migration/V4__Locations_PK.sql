@@ -32,6 +32,11 @@ add column location_id integer not null default nextval('locations_location_id_s
 alter table public.locations
 add primary key (location_id);
 
+-- add a unique constraint on the location's name
+alter table public.locations
+add constraint location_name_unique
+unique (name);
+
 -- tables with FK to public.LOCATIONS, these must be altered too:
 --     - public.LOCATION_TAGS
 --     - public.CALENDAR_PERIODS
