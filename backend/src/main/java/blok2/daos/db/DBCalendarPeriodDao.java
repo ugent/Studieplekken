@@ -294,7 +294,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         int seqnr = (rs.getInt(Resources.databaseProperties.getString("timeslot_sequence_number")));
         LocalDate date = (rs.getDate(Resources.databaseProperties.getString("timeslot_date")).toLocalDate());
 
-        Timeslot timeslot = new Timeslot(calendarId, seqnr, date);
+        Timeslot timeslot = new Timeslot(calendarId, seqnr, date, 0);
 
         int count = (int) DBLocationReservationDao.getAmountOfReservationsOfTimeslot(timeslot, conn);
         int seatCount = rs.getInt(Resources.databaseProperties.getString("timeslot_seat_count"));

@@ -4,7 +4,7 @@ import blok2.model.reservables.Location;
 
 import javax.validation.Valid;
 
-public class LocationWithApproval {
+public class  LocationWithApproval {
     @Valid
     Location location;
     boolean approval;

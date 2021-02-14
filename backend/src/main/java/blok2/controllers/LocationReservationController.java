@@ -51,6 +51,7 @@ public class LocationReservationController extends AuthorizedLocationController 
     @PreAuthorize("(hasAuthority('USER') and #id == authentication.principal.augentID) or hasAuthority('ADMIN')")
     // TODO: if only 'HAS_AUTHORITIES', then only allowed to retrieve the reservations for a location within one of the user's authorities
     // Not sure why you'd be allowed to get a user's reservations if you own a location.
+    // We suddenly use a request parameter here. Probably better to streamline it with everything else and put it in the url.
     public List<LocationReservation> getLocationReservationsByUserId(@RequestParam String id) {
         try {
             return locationReservationDao.getAllLocationReservationsOfUser(id);
@@ -97,7 +98,7 @@ public class LocationReservationController extends AuthorizedLocationController 
     @GetMapping("/timeslot/{calendarid}/{date}/{seqnr}")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public List<LocationReservation> getLocationReservationsByTimeslot(@PathVariable("calendarid") int calendarId, @PathVariable("date") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate date, @PathVariable("seqnr") int seqnr) {
-        Timeslot timeslot = new Timeslot(calendarId, seqnr, date);
+        Timeslot timeslot = new Timeslot(calendarId, seqnr, date, 0);
         try {
             return locationReservationDao.getAllLocationReservationsOfTimeslot(timeslot);
         } catch (SQLException e) {
@@ -143,7 +144,7 @@ public class LocationReservationController extends AuthorizedLocationController 
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void setLocationReservationAttendance(@PathVariable("calendarid") int calendarId, @PathVariable("date") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate date,
                                        @PathVariable("seqnr") int seqnr, @PathVariable("userid") String userid, @RequestBody LocationReservation.AttendedPostBody body) {
-        Timeslot slot = new Timeslot(calendarId, seqnr, date);
+        Timeslot slot = new Timeslot(calendarId, seqnr, date, 0);
         try {
             CalendarPeriod parentPeriod = calendarPeriodDao.getById(slot.getCalendarId());
             isAuthorized(parentPeriod.getLocation().getName());

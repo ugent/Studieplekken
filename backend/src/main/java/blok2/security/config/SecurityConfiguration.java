@@ -22,13 +22,12 @@ import org.springframework.security.web.savedrequest.RequestCache;
 
 import java.util.HashMap;
 
-@Profile("!test")
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Value("${server.port}")
-    private int serverPort;
+    private int serverPort = 8080;
 
     private final CasAuthenticationProvider casAuthenticationProvider;
     private final CasAuthenticationEntryPoint casAuthenticationEntryPoint;
@@ -50,15 +49,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
+
         http.csrf()
                 .csrfTokenRepository(csrfTokenRepository());
 
         http.authorizeRequests()
-                .regexMatchers("/login/cas").authenticated() // used to trigger cas flow
-                .regexMatchers(HttpMethod.GET, "/api/locations").permitAll() // allow to get the locations
-                .regexMatchers(HttpMethod.GET, "/api/locations/.*").permitAll() // allow to get a specific location
-                .regexMatchers(HttpMethod.GET, "/api/tags").permitAll() // allow to get the tags of a location
-                .regexMatchers("/api.*").authenticated();
+                .anyRequest().permitAll();
+
 
         http.httpBasic()
                 .authenticationEntryPoint(casAuthenticationEntryPoint);
@@ -91,6 +88,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
      */
     private PortMapper portMapper() {
         PortMapperImpl portMapper = new PortMapperImpl();
+        if(serverPort == -1) {
+            serverPort = 8080;
+        }
         portMapper.setPortMappings(
                 new HashMap<String, String>() {{
                     put(Integer.toString(serverPort), Integer.toString(serverPort));
