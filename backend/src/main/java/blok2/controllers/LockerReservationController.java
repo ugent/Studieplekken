@@ -1,15 +1,15 @@
 package blok2.controllers;
 
+import blok2.daos.ILocationDao;
 import blok2.daos.ILockerReservationDao;
 import blok2.helpers.authorization.AuthorizedLocationController;
+import blok2.model.reservables.Location;
 import blok2.model.reservations.LockerReservation;
-import blok2.model.users.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -28,10 +28,12 @@ public class LockerReservationController extends AuthorizedLocationController {
     private final Logger logger = LoggerFactory.getLogger(LockerReservation.class.getSimpleName());
 
     private final ILockerReservationDao lockerReservationDao;
+    private final ILocationDao locationDao;
 
     @Autowired
-    public LockerReservationController(ILockerReservationDao lockerReservationDao) {
+    public LockerReservationController(ILockerReservationDao lockerReservationDao, ILocationDao locationDao) {
         this.lockerReservationDao = lockerReservationDao;
+        this.locationDao = locationDao;
     }
 
     @GetMapping("/user")
@@ -50,11 +52,12 @@ public class LockerReservationController extends AuthorizedLocationController {
 
     @GetMapping("/location")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public List<LockerReservation> getLocationReservationsOfLocation(@RequestParam String locationName,
+    public List<LockerReservation> getLocationReservationsOfLocation(@RequestParam int locationId,
                                                                      @RequestParam boolean pastReservations) {
-        isAuthorized(locationName);
+        isAuthorized(locationId);
         try {
-            return lockerReservationDao.getAllLockerReservationsOfLocation(locationName, pastReservations);
+            Location location = locationDao.getLocationById(locationId);
+            return lockerReservationDao.getAllLockerReservationsOfLocation(location.getName(), pastReservations);
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
@@ -66,7 +69,7 @@ public class LockerReservationController extends AuthorizedLocationController {
     @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void updateLockerReservation(@RequestBody LockerReservation lockerReservation) {
         isAuthorized(
-                (lr, user) -> hasAuthority(lr.getLocker().getLocation().getName()) || lr.getOwner().getAugentID().equals(user.getAugentID()),
+                (lr, user) -> hasAuthority(lr.getLocker().getLocation().getLocationId()) || lr.getOwner().getAugentID().equals(user.getAugentID()),
                 lockerReservation
         );
         try {
@@ -83,7 +86,7 @@ public class LockerReservationController extends AuthorizedLocationController {
     @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void deleteLockerReservation(@RequestBody LockerReservation lockerReservation) {
         isAuthorized(
-                (lr, user) -> hasAuthority(lr.getLocker().getLocation().getName()) || lr.getOwner().getAugentID().equals(user.getAugentID()),
+                (lr, user) -> hasAuthority(lr.getLocker().getLocation().getLocationId()) || lr.getOwner().getAugentID().equals(user.getAugentID()),
                 lockerReservation
         );
         try {

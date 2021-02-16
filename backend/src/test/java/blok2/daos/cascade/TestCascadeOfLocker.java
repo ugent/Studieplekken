@@ -59,16 +59,16 @@ public class TestCascadeOfLocker extends TestDao {
         // are values in db
         Assert.assertEquals(testLocation, locationDao.getLocationByName(testLocation.getName()));
         Assert.assertEquals(testUser, accountDao.getUserById(testUser.getAugentID()));
-        List<Locker> lockers = locationDao.getLockers(testLocation.getName());
+        List<Locker> lockers = locationDao.getLockers(testLocation.getLocationId());
         Assert.assertEquals(testLocation.getNumberOfLockers(), lockers.size());
         Assert.assertEquals(testLockerReservation,
                 lockerReservationDao.getLockerReservation(testLocation.getName(), 0));
 
         // delete locker
-        locationDao.deleteLocker(testLocation.getName(), locker.getNumber());
+        locationDao.deleteLocker(testLocation.getLocationId(), locker.getNumber());
 
         // there should be one locker less
-        Assert.assertEquals(lockers.size() - 1, locationDao.getLockers(testLocation.getName()).size());
+        Assert.assertEquals(lockers.size() - 1, locationDao.getLockers(testLocation.getLocationId()).size());
 
         // and the reservation should be deleted too
         Assert.assertNull(lockerReservationDao.getLockerReservation(testLocation.getName(), 0));

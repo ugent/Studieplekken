@@ -45,7 +45,7 @@ public class TestDBLocationDao extends TestDao {
         Location l = locationDao.getLocationByName(testLocation.getName());
         Assert.assertEquals("addLocation", testLocation, l);
 
-        locationDao.deleteLocation(testLocation.getName());
+        locationDao.deleteLocation(testLocation.getLocationId());
         l = locationDao.getLocationByName(testLocation.getName());
         Assert.assertNull("addLocation, remove added test location", l);
     }
@@ -53,7 +53,7 @@ public class TestDBLocationDao extends TestDao {
     @FlywayTest
     @Test
     public void lockersTest() throws SQLException {
-        List<Locker> lockers = locationDao.getLockers(testLocation.getName());
+        List<Locker> lockers = locationDao.getLockers(testLocation.getLocationId());
         Assert.assertEquals("lockersTest, check size getLockers"
                 , testLocation.getNumberOfLockers(), lockers.size());
 

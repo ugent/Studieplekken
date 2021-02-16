@@ -101,11 +101,11 @@ public class TagsController extends AuthorizedLocationController {
      *   API calls for CRUD operations with public.LOCATION_TAGS  *
      **************************************************************/
 
-    @GetMapping("/location/{locationName}")
+    @GetMapping("/location/{locationId}")
     @PreAuthorize("permitAll()")
-    public List<LocationTag> getTagsOfLocation(@PathVariable("locationName") String locationName) {
+    public List<LocationTag> getTagsOfLocation(@PathVariable("locationId") int locationId) {
         try {
-            return locationTagDao.getTagsForLocation(locationName);
+            return locationTagDao.getTagsForLocation(locationId);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
@@ -113,19 +113,20 @@ public class TagsController extends AuthorizedLocationController {
         }
     }
 
-    @PutMapping("/location/assign/{locationName}")
+    @PutMapping("/location/assign/{locationId}")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public void assignTagsToLocation(@PathVariable("locationName") String locationName,
+    public void assignTagsToLocation(@PathVariable("locationId") int locationId,
                                      @RequestBody List<LocationTag> tags) {
-        isAuthorized(locationName);
+        isAuthorized(locationId);
         try {
             List<Integer> lt = tags.stream().map(LocationTag::getTagId).collect(Collectors.toList());
-            locationTagDao.deleteAllTagsFromLocation(locationName);
-            locationTagDao.bulkAddTagsToLocation(locationName, lt);
+            locationTagDao.deleteAllTagsFromLocation(locationId);
+            locationTagDao.bulkAddTagsToLocation(locationId, lt);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
+
 }

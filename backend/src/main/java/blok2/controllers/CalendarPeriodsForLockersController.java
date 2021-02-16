@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -36,12 +35,13 @@ public class CalendarPeriodsForLockersController extends AuthorizedLocationContr
         this.locationDao = locationDao;
     }
 
-    @GetMapping("/{locationName}")
+    @GetMapping("/{locationId}")
     @PreAuthorize("permitAll()")
     public List<CalendarPeriodForLockers>
-    getCalendarPeriodsForLockersOfLocation(@PathVariable("locationName") String locationName) {
+    getCalendarPeriodsForLockersOfLocation(@PathVariable("locationId") int locationId) {
         try {
-            return this.calendarPeriodForLockersDao.getCalendarPeriodsForLockersOfLocation(locationName);
+            Location location = locationDao.getLocationById(locationId);
+            return this.calendarPeriodForLockersDao.getCalendarPeriodsForLockersOfLocation(location.getName());
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
@@ -52,7 +52,7 @@ public class CalendarPeriodsForLockersController extends AuthorizedLocationContr
     @PostMapping
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void addCalendarPeriodsForLockers(@RequestBody List<CalendarPeriodForLockers> calendarPeriodForLockers) {
-        calendarPeriodForLockers.forEach(c -> isAuthorized(c.getLocation().getName()));
+        calendarPeriodForLockers.forEach(c -> isAuthorized(c.getLocation().getLocationId()));
         try {
             calendarPeriodForLockersDao.addCalendarPeriodsForLockers(calendarPeriodForLockers);
         } catch (SQLException e) {
@@ -62,19 +62,21 @@ public class CalendarPeriodsForLockersController extends AuthorizedLocationContr
         }
     }
 
-    @PutMapping("/{locationName}")
+    @PutMapping("/{locationId}")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public void updateCalendarPeriodsForLockers(@PathVariable("locationName") String locationName,
+    public void updateCalendarPeriodsForLockers(@PathVariable("locationId") int locationId,
                                                 @RequestBody List<CalendarPeriodForLockers>[] fromAndTo) {
-        isAuthorized(locationName);
+        isAuthorized(locationId);
         try {
             List<CalendarPeriodForLockers> from = fromAndTo[0];
             List<CalendarPeriodForLockers> to = fromAndTo[1];
 
+            Location location = locationDao.getLocationById(locationId);
+
             // check for outdated view (perhaps some other user has changed the calendar periods in the meantime
             // between querying for the calendar periods for a location, and updating the calendar
             List<CalendarPeriodForLockers> currentView = calendarPeriodForLockersDao
-                    .getCalendarPeriodsForLockersOfLocation(locationName);
+                    .getCalendarPeriodsForLockersOfLocation(location.getName());
 
             // if the sizes dont match, the view must be different...
             if (from.size() != currentView.size()) {
@@ -103,7 +105,7 @@ public class CalendarPeriodsForLockersController extends AuthorizedLocationContr
                 addCalendarPeriodsForLockers(to);
             } else {
                 to.sort(Comparator.comparing(Period::getStartsAt));
-                analyzeAndUpdateCalendarPeriodsForLockers(locationName, from, to);
+                analyzeAndUpdateCalendarPeriodsForLockers(location.getName(), from, to);
             }
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
@@ -136,7 +138,6 @@ public class CalendarPeriodsForLockersController extends AuthorizedLocationContr
                                               List<CalendarPeriodForLockers> to) throws SQLException {
         // setup
         Location expectedLocation = locationDao.getLocationByName(locationName);
-        LocalDate lastEnd = null;
 
         // analyze the periods
         for (CalendarPeriodForLockers period : to) {
@@ -163,7 +164,7 @@ public class CalendarPeriodsForLockersController extends AuthorizedLocationContr
     @DeleteMapping
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void deleteCalendarPeriodsForLockers(@RequestBody List<CalendarPeriodForLockers> calendarPeriodForLockers) {
-        calendarPeriodForLockers.forEach(cp -> isAuthorized(cp.getLocation().getName()));
+        calendarPeriodForLockers.forEach(cp -> isAuthorized(cp.getLocation().getLocationId()));
         try {
             calendarPeriodForLockersDao.deleteCalendarPeriodsForLockers(calendarPeriodForLockers);
         } catch (SQLException e) {

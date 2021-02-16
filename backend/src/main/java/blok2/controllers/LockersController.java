@@ -1,7 +1,9 @@
 package blok2.controllers;
 
+import blok2.daos.ILocationDao;
 import blok2.daos.ILockersDao;
 import blok2.helpers.authorization.AuthorizedLocationController;
+import blok2.model.reservables.Location;
 import blok2.model.reservations.LockerReservation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,18 +27,21 @@ public class LockersController extends AuthorizedLocationController {
     private final Logger logger = Logger.getLogger(LockersController.class.getSimpleName());
 
     private final ILockersDao lockersDao;
+    private final ILocationDao locationDao;
 
     @Autowired
-    public LockersController(ILockersDao lockersDao) {
+    public LockersController(ILockersDao lockersDao, ILocationDao locationDao) {
         this.lockersDao = lockersDao;
+        this.locationDao = locationDao;
     }
 
-    @GetMapping("/status/{locationName}")
+    @GetMapping("/status/{locationId}")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public List<LockerReservation> getLockerStatuses(@PathVariable("locationName") String locationName) {
-        isAuthorized(locationName);
+    public List<LockerReservation> getLockerStatuses(@PathVariable("locationId") int locationId) {
+        isAuthorized(locationId);
         try {
-            return lockersDao.getLockerStatusesOfLocation(locationName);
+            Location location = locationDao.getLocationById(locationId);
+            return lockersDao.getLockerStatusesOfLocation(location.getName());
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
