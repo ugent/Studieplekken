@@ -115,8 +115,8 @@ public class TestCascadeInDBLocationDao extends TestDao {
         // because when the penalties are retrieved from the penaltyEventDao, the list will
         // be sorted by received points before asserting, if they would be equal we can't sort
         // on the points and be sure about the equality of the actual and expected list.
-        testPenalty1 = new Penalty(testUser1.getAugentID(), testPenaltyEvent.getCode(), LocalDate.now(), LocalDate.now(), testLocation.getName(), 10, "First test penalty");
-        testPenalty2 = new Penalty(testUser2.getAugentID(), testPenaltyEvent.getCode(), LocalDate.now(), LocalDate.now(), testLocation.getName(), 20, "Second test penalty");
+        testPenalty1 = new Penalty(testUser1.getAugentID(), testPenaltyEvent.getCode(), LocalDate.now(), LocalDate.now(), testLocation.getLocationId(), 10, "First test penalty");
+        testPenalty2 = new Penalty(testUser2.getAugentID(), testPenaltyEvent.getCode(), LocalDate.now(), LocalDate.now(), testLocation.getLocationId(), 20, "Second test penalty");
 
         testCalendarPeriodsForLockers = TestSharedMethods.testCalendarPeriodsForLockers(testLocation);
 
@@ -134,8 +134,8 @@ public class TestCascadeInDBLocationDao extends TestDao {
         penaltyEventsDao.addPenalty(testPenalty1);
         penaltyEventsDao.addPenalty(testPenalty2);
 
-        scannerLocationDao.addScannerLocation(testLocation.getName(), testUser1.getAugentID());
-        scannerLocationDao.addScannerLocation(testLocation.getName(), testUser2.getAugentID());
+        scannerLocationDao.addScannerLocation(testLocation.getLocationId(), testUser1.getAugentID());
+        scannerLocationDao.addScannerLocation(testLocation.getLocationId(), testUser2.getAugentID());
 
         calendarPeriodForLockersDao.addCalendarPeriodsForLockers(testCalendarPeriodsForLockers);
     }
@@ -145,12 +145,12 @@ public class TestCascadeInDBLocationDao extends TestDao {
         updateLocationWithoutChangeInFK(testLocation);
 
         // LOCATIONS updated?
-        locationDao.updateLocation(testLocation.getName(), testLocation);
-        Location location = locationDao.getLocation(testLocation.getName());
+        locationDao.updateLocation(testLocation.getLocationId(), testLocation);
+        Location location = locationDao.getLocationByName(testLocation.getName());
         Assert.assertEquals("updateLocationWithoutCascadeNeededTest, location", testLocation, location);
 
         // LOCKERS still available?
-        List<Locker> lockers = locationDao.getLockers(testLocation.getName());
+        List<Locker> lockers = locationDao.getLockers(testLocation.getLocationId());
         Assert.assertEquals("updateLocationWithoutCascadeNeededTest, lockers",
                 testLocation.getNumberOfLockers(), lockers.size());
 
@@ -170,19 +170,19 @@ public class TestCascadeInDBLocationDao extends TestDao {
 /*
         // LOCKER_RESERVATIONS still available?
         LockerReservation lor1 = lockerReservationDao.getLockerReservation(
-                testLockerReservation1.getLocker().getLocation().getName(),
+                testLockerReservation1.getLocker().getLocationByName().getName(),
                 testLockerReservation1.getLocker().getNumber());
         Assert.assertEquals("updateLocationWithoutCascadeNeededTest, testLockerReservation1",
                 testLockerReservation1, lor1);
 
         LockerReservation lor2 = lockerReservationDao.getLockerReservation(
-                testLockerReservation2.getLocker().getLocation().getName(),
+                testLockerReservation2.getLocker().getLocationByName().getName(),
                 testLockerReservation2.getLocker().getNumber());
         Assert.assertEquals("updateLocationWithoutCascadeNeededTest, testLockerReservation2",
                 testLockerReservation2, lor2);
 */
         // PENALTY_BOOK entries still available?
-        List<Penalty> penalties = penaltyEventsDao.getPenaltiesByLocation(testLocation.getName());
+        List<Penalty> penalties = penaltyEventsDao.getPenaltiesByLocation(testLocation.getLocationId());
         penalties.sort(Comparator.comparing(Penalty::getReceivedPoints));
 
         List<Penalty> expectedPenalties = new ArrayList<>();
@@ -194,7 +194,7 @@ public class TestCascadeInDBLocationDao extends TestDao {
                 penalties);
 
         // SCANNERS_LOCATION entries still available?
-        List<User> scanners = scannerLocationDao.getScannersOnLocation(testLocation.getName());
+        List<User> scanners = scannerLocationDao.getScannersOnLocation(testLocation.getLocationId());
         scanners.sort(Comparator.comparing(User::getAugentID));
 
         List<User> expectedScanners = new ArrayList<>();
@@ -206,7 +206,7 @@ public class TestCascadeInDBLocationDao extends TestDao {
                 expectedScanners, scanners);
 
         // CALENDAR_PERIODS still available?
-        List<CalendarPeriod> actualPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getName());
+        List<CalendarPeriod> actualPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getLocationId());
         actualPeriods.sort(Comparator.comparing(CalendarPeriod::getId));
         testCalendarPeriods.sort(Comparator.comparing(CalendarPeriod::getId));
 
@@ -226,20 +226,20 @@ public class TestCascadeInDBLocationDao extends TestDao {
     @Test
     public void updateLocationWithCascadeNeededTest() throws SQLException {
         updateLocationWithoutChangeInFK(testLocation);
-        String oldName = testLocation.getName();
+        int id = testLocation.getLocationId();
         testLocation.setName("Changed name of location");
-        locationDao.updateLocation(oldName, testLocation);
+        locationDao.updateLocation(id, testLocation);
 
         // old location should be deleted ...
-        Location old = locationDao.getLocation(oldName);
+        Location old = locationDao.getLocationById(id);
         Assert.assertNull("updateLocationWithCascadeNeededTest, old location must be deleted", old);
 
         // ... and should be available under its new name
-        Location location = locationDao.getLocation(testLocation.getName());
+        Location location = locationDao.getLocationByName(testLocation.getName());
         Assert.assertEquals("updateLocationWithoutCascadeNeededTest, location", testLocation, location);
 
         // LOCKERS updated? (see updateNumberOfLockersTest() for extensive LOCKERS test)
-        List<Locker> lockers = locationDao.getLockers(testLocation.getName());
+        List<Locker> lockers = locationDao.getLockers(testLocation.getLocationId());
         Assert.assertEquals("updateLocationWithoutCascadeNeededTest, lockers",
                 testLocation.getNumberOfLockers(), lockers.size());
 
@@ -256,24 +256,24 @@ public class TestCascadeInDBLocationDao extends TestDao {
 /*
         // LOCKER_RESERVATIONS updated?
         LockerReservation lor1 = lockerReservationDao.getLockerReservation(
-                testLockerReservation1.getLocker().getLocation().getName(),
+                testLockerReservation1.getLocker().getLocationByName().getName(),
                 testLockerReservation1.getLocker().getNumber());
         Assert.assertEquals("updateLocationWithoutCascadeNeededTest, testLockerReservation1",
                 testLockerReservation1, lor1);
 
         LockerReservation lor2 = lockerReservationDao.getLockerReservation(
-                testLockerReservation2.getLocker().getLocation().getName(),
+                testLockerReservation2.getLocker().getLocationByName().getName(),
                 testLockerReservation2.getLocker().getNumber());
         Assert.assertEquals("updateLocationWithoutCascadeNeededTest, testLockerReservation2",
                 testLockerReservation2, lor2);
 */
         // PENALTY_BOOK updated?
-        List<Penalty> penalties = penaltyEventsDao.getPenaltiesByLocation(testLocation.getName());
+        List<Penalty> penalties = penaltyEventsDao.getPenaltiesByLocation(testLocation.getLocationId());
         penalties.sort(Comparator.comparing(Penalty::getReceivedPoints));
 
         // Penalty objects don't keep a reference to User, but have a String with the augentid
-        testPenalty1.setReservationLocation(testLocation.getName());
-        testPenalty2.setReservationLocation(testLocation.getName());
+        testPenalty1.setReservationLocationId(testLocation.getLocationId());
+        testPenalty2.setReservationLocationId(testLocation.getLocationId());
 
         List<Penalty> expectedPenalties = new ArrayList<>();
         expectedPenalties.add(testPenalty1);
@@ -284,7 +284,7 @@ public class TestCascadeInDBLocationDao extends TestDao {
                 penalties);
 
         // SCANNERS_LOCATION updated?
-        List<User> scanners = scannerLocationDao.getScannersOnLocation(testLocation.getName());
+        List<User> scanners = scannerLocationDao.getScannersOnLocation(testLocation.getLocationId());
         scanners.sort(Comparator.comparing(User::getAugentID));
 
         List<User> expectedScanners = new ArrayList<>();
@@ -296,7 +296,7 @@ public class TestCascadeInDBLocationDao extends TestDao {
                 expectedScanners, scanners);
 
         // CALENDAR_PERIODS updated?
-        List<CalendarPeriod> actualPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getName());
+        List<CalendarPeriod> actualPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getLocationId());
         actualPeriods.sort(Comparator.comparing(CalendarPeriod::toString));
         testCalendarPeriods.sort(Comparator.comparing(CalendarPeriod::toString));
 
@@ -316,48 +316,48 @@ public class TestCascadeInDBLocationDao extends TestDao {
     public void updateNumberOfLockersTest() throws SQLException {
         // from > to
         testLocation.setNumberOfLockers(testLocation.getNumberOfLockers() / 2);
-        locationDao.updateLocation(testLocation.getName(), testLocation);
+        locationDao.updateLocation(testLocation.getLocationId(), testLocation);
 
-        List<Locker> lockers = locationDao.getLockers(testLocation.getName());
+        List<Locker> lockers = locationDao.getLockers(testLocation.getLocationId());
         Assert.assertEquals("updateNumberOfLockersTest, from > to", testLocation.getNumberOfLockers(),
                 lockers.size());
 
         // from < to
         testLocation.setNumberOfLockers(testLocation.getNumberOfLockers() * 4);
-        locationDao.updateLocation(testLocation.getName(), testLocation);
+        locationDao.updateLocation(testLocation.getLocationId(), testLocation);
 
-        lockers = locationDao.getLockers(testLocation.getName());
+        lockers = locationDao.getLockers(testLocation.getLocationId());
         Assert.assertEquals("updateNumberOfLockersTest, from < to", testLocation.getNumberOfLockers(),
                 lockers.size());
 
         // set to 0
         testLocation.setNumberOfLockers(0);
-        locationDao.updateLocation(testLocation.getName(), testLocation);
+        locationDao.updateLocation(testLocation.getLocationId(), testLocation);
 
-        lockers = locationDao.getLockers(testLocation.getName());
+        lockers = locationDao.getLockers(testLocation.getLocationId());
         Assert.assertEquals("updateNumberOfLockersTest, from < to", testLocation.getNumberOfLockers(),
                 lockers.size());
     }
 
     @Test
     public void deleteLocationTest() throws SQLException {
-        locationDao.deleteLocation(testLocation.getName());
-        Location l = locationDao.getLocation(testLocation.getName());
+        locationDao.deleteLocation(testLocation.getLocationId());
+        Location l = locationDao.getLocationByName(testLocation.getName());
         Assert.assertNull("deleteLocation, location must be deleted", l);
 
-        List<Locker> lockers = locationDao.getLockers(testLocation.getName());
+        List<Locker> lockers = locationDao.getLockers(testLocation.getLocationId());
         Assert.assertEquals("deleteLocation, lockers", 0, lockers.size());
 
-        List<CalendarPeriod> calendarPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getName());
+        List<CalendarPeriod> calendarPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getLocationId());
         Assert.assertEquals("deleteLocation, calendar periods", 0, calendarPeriods.size());
 
         List<CalendarPeriodForLockers> calendarPeriodsForLockers = calendarPeriodForLockersDao.getCalendarPeriodsForLockersOfLocation(testLocation.getName());
         Assert.assertEquals("deleteLocation, calendar periods for lockers", 0, calendarPeriodsForLockers.size());
 
-        List<User> scanners = scannerLocationDao.getScannersOnLocation(testLocation.getName());
+        List<User> scanners = scannerLocationDao.getScannersOnLocation(testLocation.getLocationId());
         Assert.assertEquals("deleteLocation, scanners", 0, scanners.size());
 
-        List<Penalty> penalties = penaltyEventsDao.getPenaltiesByLocation(testLocation.getName());
+        List<Penalty> penalties = penaltyEventsDao.getPenaltiesByLocation(testLocation.getLocationId());
         Assert.assertEquals("deleteLocation, penalties", 0, penalties.size());
         
         //List<LockerReservation> lockerReservations = lockerReservationDao

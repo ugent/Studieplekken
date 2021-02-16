@@ -14,7 +14,7 @@ public class Penalty implements Cloneable {
     private int eventCode;
     private LocalDate timestamp;
     private LocalDate reservationDate;
-    private String reservationLocation;
+    private int reservationLocationId;
     private int receivedPoints;
     private String remarks;
 
@@ -22,12 +22,12 @@ public class Penalty implements Cloneable {
 
     }
 
-    public Penalty(String augentId, int eventCode, LocalDate timestamp, LocalDate reservationDate, String reservationLocation, int receivedPoints, String remarks) {
+    public Penalty(String augentId, int eventCode, LocalDate timestamp, LocalDate reservationDate, int reservationLocationId, int receivedPoints, String remarks) {
         this.augentID = augentId;
         this.eventCode = eventCode;
         this.timestamp = timestamp;
         this.reservationDate = reservationDate;
-        this.reservationLocation = reservationLocation;
+        this.reservationLocationId = reservationLocationId;
         this.receivedPoints = receivedPoints;
         this.remarks = remarks;
     }
@@ -64,14 +64,14 @@ public class Penalty implements Cloneable {
                 augentID.equals(penalty.augentID) &&
                 timestamp.equals(penalty.timestamp) &&
                 reservationDate.equals(penalty.reservationDate) &&
-                reservationLocation.equals(penalty.reservationLocation) &&
+                reservationLocationId == penalty.reservationLocationId &&
                 receivedPoints == penalty.receivedPoints &&
                 Objects.equals(remarks, penalty.remarks);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(augentID, eventCode, timestamp, reservationDate, reservationLocation, receivedPoints, remarks);
+        return Objects.hash(augentID, eventCode, timestamp, reservationDate, reservationLocationId, receivedPoints, remarks);
     }
 
     @Override
@@ -97,8 +97,8 @@ public class Penalty implements Cloneable {
         return reservationDate;
     }
 
-    public String getReservationLocation() {
-        return reservationLocation;
+    public int getReservationLocationId() {
+        return reservationLocationId;
     }
 
     public int getReceivedPoints() {
@@ -125,8 +125,8 @@ public class Penalty implements Cloneable {
         this.reservationDate = reservationDate;
     }
 
-    public void setReservationLocation(String reservationLocation) {
-        this.reservationLocation = reservationLocation;
+    public void setReservationLocationId(int reservationLocationId) {
+        this.reservationLocationId = reservationLocationId;
     }
 
     public void setReceivedPoints(int receivedPoints) {

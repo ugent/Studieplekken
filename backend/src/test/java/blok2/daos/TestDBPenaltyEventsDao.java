@@ -129,12 +129,12 @@ public class TestDBPenaltyEventsDao extends TestDao {
         LocalDate thisDayAMonthEarlier = LocalDate.now().minusMonths(1);
 
         Penalty penalty = new Penalty(testUser.getAugentID(), testEvent.getCode(), LocalDate.now(), LocalDate.now()
-                , testLocation.getName(), testEvent.getPoints(), "regular test penalty");
+                , testLocation.getLocationId(), testEvent.getPoints(), "regular test penalty");
         Penalty fatalPenalty = new Penalty(testUser.getAugentID(), blacklistEvent.getCode(), LocalDate.now()
-                , LocalDate.of(1970, 1, 1), testLocation.getName(), blacklistEvent.getPoints(),
+                , LocalDate.of(1970, 1, 1), testLocation.getLocationId(), blacklistEvent.getPoints(),
                 "Fatal test penalty");
         Penalty penaltyLastMonth = new Penalty(testUser.getAugentID(), testEvent.getCode()
-                , thisDayAMonthEarlier, thisDayAMonthEarlier, testLocation.getName(), testEvent.getPoints(),
+                , thisDayAMonthEarlier, thisDayAMonthEarlier, testLocation.getLocationId(), testEvent.getPoints(),
                 "Fatal test penalty of last month");
 
         User modifiableUser = testUser.clone();

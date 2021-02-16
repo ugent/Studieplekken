@@ -9,6 +9,7 @@ buildings_name=building_name
 buildings_address=address
 
 # columns for table LOCATIONS
+location_id=location_id
 location_name=name
 location_number_of_seats=number_of_seats
 location_number_of_lockers=number_of_lockers
@@ -99,7 +100,7 @@ penalty_book_event_code=event_code
 penalty_book_timestamp=timestamp
 penalty_book_reservation_date=reservation_date
 penalty_book_received_points=received_points
-penalty_book_reservation_location=reservation_location
+penalty_book_reservation_location_id=reservation_location_id
 penalty_book_remarks=remarks
 
 # columns for table PENALTY_DESCRIPTIONS

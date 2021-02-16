@@ -42,11 +42,11 @@ public class TestDBLocationDao extends TestDao {
     @FlywayTest
     @Test
     public void addLocationTest() throws SQLException {
-        Location l = locationDao.getLocation(testLocation.getName());
+        Location l = locationDao.getLocationByName(testLocation.getName());
         Assert.assertEquals("addLocation", testLocation, l);
 
         locationDao.deleteLocation(testLocation.getName());
-        l = locationDao.getLocation(testLocation.getName());
+        l = locationDao.getLocationByName(testLocation.getName());
         Assert.assertNull("addLocation, remove added test location", l);
     }
 

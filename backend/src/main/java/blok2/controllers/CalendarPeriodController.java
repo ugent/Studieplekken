@@ -155,7 +155,7 @@ public class CalendarPeriodController extends  AuthorizedLocationController {
     private void analyzeUpdatedCalendarPeriod(String locationName,
                                               CalendarPeriod to) throws SQLException {
         // setup
-        Location expectedLocation = locationDao.getLocation(locationName);
+        Location expectedLocation = locationDao.getLocationByName(locationName);
 
         // analyze the periods
         // all locations must match the expected location

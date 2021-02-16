@@ -57,7 +57,7 @@ public class TestCascadeOfLocker extends TestDao {
     @Test
     public void deleteLockerCascadeTest() throws SQLException {
         // are values in db
-        Assert.assertEquals(testLocation, locationDao.getLocation(testLocation.getName()));
+        Assert.assertEquals(testLocation, locationDao.getLocationByName(testLocation.getName()));
         Assert.assertEquals(testUser, accountDao.getUserById(testUser.getAugentID()));
         List<Locker> lockers = locationDao.getLockers(testLocation.getName());
         Assert.assertEquals(testLocation.getNumberOfLockers(), lockers.size());

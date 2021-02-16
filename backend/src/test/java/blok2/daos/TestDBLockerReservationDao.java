@@ -81,15 +81,15 @@ public class TestDBLockerReservationDao extends TestDao {
     public void addLockerReservationTest() throws SQLException {
         // these three LockerReservations should've been added by @Begin
         LockerReservation lr0 = lockerReservationDao.getLockerReservation(
-                testLockerReservations.get(0).getLocker().getLocation().getName(),
+                testLockerReservations.get(0).getLocker().getLocationByName().getName(),
                 testLockerReservations.get(0).getLocker().getNumber()
         );
         LockerReservation lr1 = lockerReservationDao.getLockerReservation(
-                testLockerReservations.get(1).getLocker().getLocation().getName(),
+                testLockerReservations.get(1).getLocker().getLocationByName().getName(),
                 testLockerReservations.get(1).getLocker().getNumber()
         );
         LockerReservation lr2 = lockerReservationDao.getLockerReservation(
-                testLockerReservations.get(2).getLocker().getLocation().getName(),
+                testLockerReservations.get(2).getLocker().getLocationByName().getName(),
                 testLockerReservations.get(2).getLocker().getNumber()
         );
 
@@ -100,23 +100,23 @@ public class TestDBLockerReservationDao extends TestDao {
 
     @Test
     public void deleteLockerReservationTest() throws SQLException {
-        lockerReservationDao.deleteLockerReservation(testLockerReservations.get(0).getLocker().getLocation().getName(),
+        lockerReservationDao.deleteLockerReservation(testLockerReservations.get(0).getLocker().getLocationByName().getName(),
                 testLockerReservations.get(0).getLocker().getNumber());
-        lockerReservationDao.deleteLockerReservation(testLockerReservations.get(1).getLocker().getLocation().getName(),
+        lockerReservationDao.deleteLockerReservation(testLockerReservations.get(1).getLocker().getLocationByName().getName(),
                 testLockerReservations.get(1).getLocker().getNumber());
-        lockerReservationDao.deleteLockerReservation(testLockerReservations.get(2).getLocker().getLocation().getName(),
+        lockerReservationDao.deleteLockerReservation(testLockerReservations.get(2).getLocker().getLocationByName().getName(),
                 testLockerReservations.get(2).getLocker().getNumber());
 
         LockerReservation lr0 = lockerReservationDao.getLockerReservation(
-                testLockerReservations.get(0).getLocker().getLocation().getName(),
+                testLockerReservations.get(0).getLocker().getLocationByName().getName(),
                 testLockerReservations.get(0).getLocker().getNumber()
         );
         LockerReservation lr1 = lockerReservationDao.getLockerReservation(
-                testLockerReservations.get(1).getLocker().getLocation().getName(),
+                testLockerReservations.get(1).getLocker().getLocationByName().getName(),
                 testLockerReservations.get(1).getLocker().getNumber()
         );
         LockerReservation lr2 = lockerReservationDao.getLockerReservation(
-                testLockerReservations.get(2).getLocker().getLocation().getName(),
+                testLockerReservations.get(2).getLocker().getLocationByName().getName(),
                 testLockerReservations.get(2).getLocker().getNumber()
         );
 

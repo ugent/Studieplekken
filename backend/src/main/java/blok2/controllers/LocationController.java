@@ -76,7 +76,7 @@ public class LocationController extends AuthorizedLocationController {
     @PreAuthorize("permitAll()")
     public Location getLocation(@PathVariable("locationName") String locationName) {
         try {
-            return locationDao.getLocation(locationName);
+            return locationDao.getLocationByName(locationName);
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
@@ -120,7 +120,7 @@ public class LocationController extends AuthorizedLocationController {
         isAuthorized(locationName);
         try {
             // Get the location that is currently in db
-            Location cl = locationDao.getLocation(locationName);
+            Location cl = locationDao.getLocationByName(locationName);
 
             // Make sure that only an admin could change the number of seats
             if (cl.getNumberOfSeats() != location.getNumberOfSeats() && !isAdmin())

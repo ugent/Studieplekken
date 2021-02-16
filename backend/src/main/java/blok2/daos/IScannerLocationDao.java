@@ -7,10 +7,11 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface IScannerLocationDao extends IDao {
+
     /**
      * Get the Users that are allowed to scan at the given location
      */
-    List<User> getScannersOnLocation(String locationName) throws SQLException;
+    List<User> getScannersOnLocation(int locationId) throws SQLException;
 
     /**
      * Get the Locations on which a given User is allowed to scan
@@ -20,17 +21,17 @@ public interface IScannerLocationDao extends IDao {
     /**
      * Add a Location on which a User can scan
      */
-    boolean addScannerLocation(String locationName, String augentid) throws SQLException;
+    boolean addScannerLocation(int locationId, String augentid) throws SQLException;
 
     /**
      * Delete a Location on which a User can scan
      */
-    boolean deleteScannerLocation(String locationName, String augentid) throws SQLException;
+    boolean deleteScannerLocation(int locationId, String augentid) throws SQLException;
 
     /**
      * Remove scan-rights of all Users of a Location
      */
-    boolean deleteAllScannersOfLocation(String locationName) throws SQLException;
+    boolean deleteAllScannersOfLocation(int locationId) throws SQLException;
 
     /**
      * Remove scan-rights on all locations of a User
@@ -40,5 +41,6 @@ public interface IScannerLocationDao extends IDao {
     /**
      * Return whether the given User is allowed to scan at the given Location
      */
-    boolean isUserAllowedToScan(String augentid, String locationName) throws SQLException;
+    boolean isUserAllowedToScan(String augentid, int locationId) throws SQLException;
+
 }

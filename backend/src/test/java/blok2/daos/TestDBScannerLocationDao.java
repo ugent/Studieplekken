@@ -61,13 +61,13 @@ public class TestDBScannerLocationDao extends TestDao {
         locationDao.addLocation(testLocation1);
         locationDao.addLocation(testLocation2);
 
-        scannerLocationDao.addScannerLocation(testLocation1.getName(), testUser1.getAugentID());
-        scannerLocationDao.addScannerLocation(testLocation1.getName(), testUser2.getAugentID());
+        scannerLocationDao.addScannerLocation(testLocation1.getLocationId(), testUser1.getAugentID());
+        scannerLocationDao.addScannerLocation(testLocation1.getLocationId(), testUser2.getAugentID());
         expectedUsersOfLocation1 = new ArrayList<>();
         expectedUsersOfLocation1.add(testUser1);
         expectedUsersOfLocation1.add(testUser2);
 
-        scannerLocationDao.addScannerLocation(testLocation2.getName(), testUser1.getAugentID());
+        scannerLocationDao.addScannerLocation(testLocation2.getLocationId(), testUser1.getAugentID());
         expectedUsersOfLocation2 = new ArrayList<>();
         expectedUsersOfLocation2.add(testUser1);
 
@@ -88,8 +88,8 @@ public class TestDBScannerLocationDao extends TestDao {
         expectedUsersOfLocation2.sort(Comparator.comparing(User::getAugentID));
 
         // get the actual lists
-        List<User> usersOnLocation1 = scannerLocationDao.getScannersOnLocation(testLocation1.getName());
-        List<User> usersOnLocation2 = scannerLocationDao.getScannersOnLocation(testLocation2.getName());
+        List<User> usersOnLocation1 = scannerLocationDao.getScannersOnLocation(testLocation1.getLocationId());
+        List<User> usersOnLocation2 = scannerLocationDao.getScannersOnLocation(testLocation2.getLocationId());
         List<Location> locationsOfUser1 = scannerLocationDao.getLocationsToScanOfUser(testUser1.getAugentID());
         List<Location> locationsOfUser2 = scannerLocationDao.getLocationsToScanOfUser(testUser2.getAugentID());
 
@@ -112,17 +112,17 @@ public class TestDBScannerLocationDao extends TestDao {
 
     @Test
     public void deleteScannerLocationTest() throws SQLException {
-        scannerLocationDao.deleteScannerLocation(testLocation1.getName(), testUser2.getAugentID());
+        scannerLocationDao.deleteScannerLocation(testLocation1.getLocationId(), testUser2.getAugentID());
         List<Location> locationsOfUser = scannerLocationDao.getLocationsToScanOfUser(testUser2.getAugentID());
         Assert.assertEquals("deleteScannerLocationTest, delete location1 of testUser2",
                 0, locationsOfUser.size());
 
-        scannerLocationDao.deleteScannerLocation(testLocation1.getName(), testUser1.getAugentID());
+        scannerLocationDao.deleteScannerLocation(testLocation1.getLocationId(), testUser1.getAugentID());
         locationsOfUser = scannerLocationDao.getLocationsToScanOfUser(testUser1.getAugentID());
         Assert.assertEquals("deleteScannerLocationTest, delete location1 of testUser1",
                 1, locationsOfUser.size());
 
-        scannerLocationDao.deleteScannerLocation(testLocation2.getName(), testUser1.getAugentID());
+        scannerLocationDao.deleteScannerLocation(testLocation2.getLocationId(), testUser1.getAugentID());
         locationsOfUser = scannerLocationDao.getLocationsToScanOfUser(testUser1.getAugentID());
         Assert.assertEquals("deleteScannerLocationTest, delete location1 of testUser1",
                 0, locationsOfUser.size());
@@ -130,13 +130,13 @@ public class TestDBScannerLocationDao extends TestDao {
 
     @Test
     public void deleteAllScannersOfLocationTest() throws SQLException {
-        scannerLocationDao.deleteAllScannersOfLocation(testLocation1.getName());
-        List<User> usersOfLocation = scannerLocationDao.getScannersOnLocation(testLocation1.getName());
+        scannerLocationDao.deleteAllScannersOfLocation(testLocation1.getLocationId());
+        List<User> usersOfLocation = scannerLocationDao.getScannersOnLocation(testLocation1.getLocationId());
         Assert.assertEquals("deleteAllScannersOfLocationTest, delete all from testLocation1",
                 0, usersOfLocation.size());
 
-        scannerLocationDao.deleteAllScannersOfLocation(testLocation2.getName());
-        usersOfLocation = scannerLocationDao.getScannersOnLocation(testLocation2.getName());
+        scannerLocationDao.deleteAllScannersOfLocation(testLocation2.getLocationId());
+        usersOfLocation = scannerLocationDao.getScannersOnLocation(testLocation2.getLocationId());
         Assert.assertEquals("deleteAllScannersOfLocationTest, delete all from testLocation2",
                 0, usersOfLocation.size());
     }
@@ -157,10 +157,10 @@ public class TestDBScannerLocationDao extends TestDao {
     @Test
     public void isUserAllowedToScanTest() throws SQLException {
         Assert.assertTrue("isUserAllowedToScanTest, testUser1 -> testLocation1",
-                scannerLocationDao.isUserAllowedToScan(testUser1.getAugentID(), testLocation1.getName()));
+                scannerLocationDao.isUserAllowedToScan(testUser1.getAugentID(), testLocation1.getLocationId()));
         Assert.assertTrue("isUserAllowedToScanTest, testUser1 -> testLocation2",
-                scannerLocationDao.isUserAllowedToScan(testUser1.getAugentID(), testLocation2.getName()));
+                scannerLocationDao.isUserAllowedToScan(testUser1.getAugentID(), testLocation2.getLocationId()));
         Assert.assertTrue("isUserAllowedToScanTest, testUser2 -> testLocation1",
-                scannerLocationDao.isUserAllowedToScan(testUser2.getAugentID(), testLocation1.getName()));
+                scannerLocationDao.isUserAllowedToScan(testUser2.getAugentID(), testLocation1.getLocationId()));
     }
 }

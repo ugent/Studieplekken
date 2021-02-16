@@ -23,10 +23,10 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
     private final Logger logger = Logger.getLogger(DBCalendarPeriodDao.class.getSimpleName());
 
     @Override
-    public List<CalendarPeriod> getCalendarPeriodsOfLocation(String locationName) throws SQLException {
+    public List<CalendarPeriod> getCalendarPeriodsOfLocation(int locationId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_calendar_periods"));
-            pstmt.setString(1, locationName);
+            pstmt.setInt(1, locationId);
             return getCalendarPeriodsFromPstmt(pstmt, conn);
         }
     }

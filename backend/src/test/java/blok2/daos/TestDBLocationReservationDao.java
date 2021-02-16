@@ -19,7 +19,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.*;
 
@@ -86,7 +85,7 @@ public class TestDBLocationReservationDao extends TestDao {
     @Test
     public void addLocationReservationTest() throws SQLException {
         // retrieve entries from database instead of using the added instances
-        Location location = locationDao.getLocation(testLocation.getName());
+        Location location = locationDao.getLocationByName(testLocation.getName());
         User u = accountDao.getUserById(testUser.getAugentID());
         Timeslot timeslot = calendarPeriods.get(0).getTimeslots().get(0);
         // check whether all retrieved instances equal to the added instances
@@ -165,55 +164,6 @@ public class TestDBLocationReservationDao extends TestDao {
         rlrs.sort(Comparator.comparing(Pair::hashCode));
 
         Assert.assertEquals(elrs, rlrs);
-    }
-
-    // @Test
-    public void scanStudentTest() throws SQLException {
-        // retrieve entries from database instead of using the added instances
-        Location location = locationDao.getLocation(testLocation.getName());
-        User u1 = accountDao.getUserById(testUser.getAugentID());
-        User u2 = accountDao.getUserById(testUser2.getAugentID());
-        Timeslot timeslot = calendarPeriods.get(0).getTimeslots().get(0);
-
-        // check whether all retrieved instances equal to the added instances
-        Assert.assertEquals("scanStudentTest, setup testLocation", testLocation, location);
-        Assert.assertEquals("scanStudentTest, setup testUser", testUser, u1);
-        Assert.assertEquals("scanStudentTest, setup testUser2", testUser2, u2);
-
-        // Make reservation for today
-        LocalDate today = LocalDate.now();
-
-        // Make reservations for users u1 and u2
-        LocationReservation lr1 = new LocationReservation(u1, LocalDateTime.now(), timeslot, null);
-        LocationReservation lr2 = new LocationReservation(u2, LocalDateTime.now(), timeslot, null);
-
-        locationReservationDao.addLocationReservation(lr1);
-        locationReservationDao.addLocationReservation(lr2);
-
-        // count reserved seats
-        long c = locationReservationDao.countReservedSeatsOfTimeslot(timeslot);
-        Assert.assertEquals("scanStudentTest, count reserved seats", 2, c);
-
-        // scan the users for the location on date
-        locationReservationDao.scanStudent(testLocation.getName(), u1.getAugentID());
-        LocationReservation rlr1 = locationReservationDao.getLocationReservation(u1.getAugentID(), timeslot);
-        lr1.setAttended(true);
-        Assert.assertEquals("scanStudentTest, u1 scanned", lr1, rlr1);
-
-        // get present students
-        List<LocationReservation> present = locationReservationDao.getPresentStudents(testLocation.getName(), today);
-        Assert.assertEquals("scanStudentTest, present size", 1, present.size());
-        Assert.assertEquals("scanStudentTest, present user", u1, present.get(0).getUser());
-
-        // get absent students
-        List<LocationReservation> absent = locationReservationDao.getAbsentStudents(testLocation.getName(), today);
-        Assert.assertEquals("scanStudentTest, absent size", 1, absent.size());
-        Assert.assertEquals("scanStudentTest, absent user", u2, absent.get(0).getUser());
-
-        // set all students' attended = true for the date
-        locationReservationDao.setAllStudentsOfLocationToAttended(testLocation.getName(), today);
-        present = locationReservationDao.getPresentStudents(testLocation.getName(), today);
-        Assert.assertEquals("scanStudentTest, present size after all attended", 2, present.size());
     }
 
     /**

@@ -60,8 +60,8 @@ where cp.reservable_from >= now()
 group by l.name
 order by l.name;
 
--- $get_location
-select l.name, l.number_of_seats, l.number_of_lockers
+-- $get_location_by_name
+select l.location_id, l.name, l.number_of_seats, l.number_of_lockers
     , l.image_url, l.description_dutch, l.description_english, l.forgroup
     , b.building_id, b.building_name, b.address
     , a.authority_id, a.authority_name, a.description
@@ -72,8 +72,20 @@ from public.locations l
         on b.building_id = l.building_id
 where l.name = ?;
 
+-- $get_location_by_id
+select l.location_id, l.name, l.number_of_seats, l.number_of_lockers
+     , l.image_url, l.description_dutch, l.description_english, l.forgroup
+     , b.building_id, b.building_name, b.address
+     , a.authority_id, a.authority_name, a.description
+from public.locations l
+     join public.authority a
+          on a.authority_id = l.authority_id
+     join public.buildings b
+          on b.building_id = l.building_id
+where l.location_id = ?;
+
 -- $get_locations_from_authority
-select  l.name, l.number_of_seats, l.number_of_lockers
+select l.location_id, l.name, l.number_of_seats, l.number_of_lockers
      , l.image_url, l.description_dutch, l.description_english, l.forGroup
      , b.building_id, b.building_name, b.address
      , a.authority_id, a.authority_name, a.description
@@ -85,7 +97,7 @@ from public.locations l
 where l.authority_id = ? and l.approved = true;
 
 -- $get_locations_in_building
-select  l.name, l.number_of_seats, l.number_of_lockers
+select l.location_id, l.name, l.number_of_seats, l.number_of_lockers
      , l.image_url, l.description_dutch, l.description_english, l.forGroup
      , b.building_id, b.building_name, b.address
      , a.authority_id, a.authority_name, a.description
@@ -97,7 +109,7 @@ from public.locations l
 where l.building_id = ? and l.approved = true;
 
 -- $locations_with_tag
-select l.name, l.number_of_seats, l.number_of_lockers
+select l.location_id, l.name, l.number_of_seats, l.number_of_lockers
      , l.image_url, l.description_dutch, l.description_english, l.forGroup
      , a.authority_id, a.authority_name, a.description
      , b.building_id, b.building_name, b.address
@@ -114,7 +126,7 @@ order by l.name and l.approved = true;
 -- $delete_location
 delete
 from public.locations
-where name = ?;
+where location_id = ?;
 
 -- $delete_locations_from_authority
 delete
@@ -123,12 +135,12 @@ where authority_id = ?;
 
 -- $insert_location
 insert into public.locations (name, number_of_seats, number_of_lockers, image_url, authority_id, building_id, description_dutch, description_english, forGroup, approved)
-values (?, ?, ?, ?, ?, ?, ?, ?, ?, false);
+values (?, ?, ?, ?, ?, ?, ?, ?, ?, false) returning location_id;
 
 -- $update_location
 update public.locations
 set name = ?, number_of_seats = ?, number_of_lockers = ?, image_url = ?, authority_id = ?, building_id = ?, description_dutch = ?, description_english = ?, forGroup = ?
-where name = ?;
+where location_id = ?;
 
 -- $approve_location
 update public.locations
@@ -136,7 +148,7 @@ set approved = ?
 where name = ?;
 
 -- $all_unapproved_locations
-select l.name, l.number_of_seats, l.number_of_lockers
+select l.location_id, l.name, l.number_of_seats, l.number_of_lockers
     , l.image_url, l.description_dutch, l.description_english, l.forGroup
     , b.building_id, b.building_name, b.address
     , a.authority_id, a.authority_name, a.description
@@ -762,13 +774,13 @@ where location_name = ? and number >= ?;
 
 -- $insert_locker
 /* Note: the column 'id' is a auto-increment primary key */
-insert into public.lockers (number, location_name)
+insert into public.lockers (number, location_id)
 values (?, ?);
 
 -- $delete_locker
 delete
 from public.lockers
-where location_name = ? and number = ?;
+where location_id = ? and number = ?;
 
 
 -- queries for DBPenaltyEventsDao
@@ -788,19 +800,19 @@ where e.code = ?;
 
 -- $get_penalties_by_user
 select b.user_augentid, b.event_code, b.timestamp, b.reservation_date
-    , b.received_points, b.reservation_location, b.remarks
+    , b.received_points, b.reservation_location_id, b.remarks
 from public.penalty_book b
 where b.user_augentid = ?;
 
 -- $get_penalties_by_location
 select b.user_augentid, b.event_code, b.timestamp, b.reservation_date
-     , b.received_points, b.reservation_location, b.remarks
+     , b.received_points, b.reservation_location_id, b.remarks
 from public.penalty_book b
-where b.reservation_location = ?;
+where b.reservation_location_id = ?;
 
 -- $get_penalties_by_event_code
 select b.user_augentid, b.event_code, b.timestamp, b.reservation_date
-     , b.received_points, b.reservation_location, b.remarks
+     , b.received_points, b.reservation_location_id, b.remarks
 from public.penalty_book b
 where b.event_code = ?;
 
@@ -809,7 +821,7 @@ insert into public.penalty_events (code, points)
 values (?, ?);
 
 -- $insert_penalty
-insert into penalty_book (user_augentid, event_code, timestamp, reservation_date, reservation_location, received_points, remarks)
+insert into penalty_book (user_augentid, event_code, timestamp, reservation_date, reservation_location_id, received_points, remarks)
 values (?, ?, ?, ?, ?, ?, ?);
 
 -- $insert_penalty_description
@@ -823,8 +835,8 @@ where code = ?;
 
 -- $update_fk_penalty_book_to_locations
 update public.penalty_book
-set reservation_location = ?
-where reservation_location = ?;
+set reservation_location_id = ?
+where reservation_location_id = ?;
 
 -- $update_fk_penalty_book_to_penalty_event
 update public.penalty_book
@@ -859,7 +871,7 @@ where b.user_augentid = ? and b.event_code = ? and b.timestamp = ?;
 -- $delete_penalties_of_location
 delete
 from public.penalty_book
-where reservation_location = ?;
+where reservation_location_id = ?;
 
 -- $delete_penalties_of_penalty_event
 delete
@@ -918,31 +930,31 @@ from public.scanners_location sl
               on pb.user_augentid = u.augentid
     left join x
               on floor(extract(days from (now() - to_timestamp(pb.timestamp, 'YYYY-MM-DD HH24\:MI\:SS'))) / 7) = x.week
-where sl.location_name = ?
+where sl.location_id = ?
 group by u.augentid, u.admin, u.augentpreferredsn, u.augentpreferredgivenname
     , u.mail, u.password, u.institution;
 
 -- $delete_scanner_location
 delete
 from public.scanners_location
-where location_name = ? and user_augentid = ?;
+where location_id = ? and user_augentid = ?;
 
 -- $delete_scanners_of_location
 delete from public.scanners_location
-where location_name = ?;
+where location_id = ?;
 
 -- $delete_locations_of_scanner
 delete from public.scanners_location
 where user_augentid = ?;
 
 -- $insert_scanner_on_location
-insert into public.scanners_location (location_name, user_augentid)
+insert into public.scanners_location (location_id, user_augentid)
 values (?, ?);
 
 -- $count_scanner_on_location
 select count(1)
 from public.scanners_location
-where user_augentid = ? and location_name = ?;
+where user_augentid = ? and location_id = ?;
 
 -- $update_fk_scanners_location_to_locations
 update public.scanners_location
@@ -1029,7 +1041,7 @@ from public.calendar_periods cp
         on a.authority_id = l.authority_id
     join public.buildings b
         on b.building_id = l.building_id
-where cp.location_name = ?
+where cp.location_id = ?
 order by cp.starts_at, cp.opening_time;
 
 -- $insert_calendar_period
@@ -1088,10 +1100,10 @@ with y as (
 select ts.calendar_id as calendar_id_dist, *
 from public.locations l 
     join public.calendar_periods cp
-        on l.name = cp.location_name
+        on l.location_id = cp.location_id
     join public.timeslots ts
         on ts.calendar_id = cp.calendar_id
-    where cp.location_name = ?
+    where cp.location_id = ?
     and ts.timeslot_date = current_date 
     and  cp.opening_time + (cp.timeslot_length * ts.timeslot_sequence_number) * INTERVAL '1 minute' <= current_time 
     and cp.opening_time + (cp.timeslot_length * (ts.timeslot_sequence_number + 1)) * INTERVAL '1 minute' >= current_time

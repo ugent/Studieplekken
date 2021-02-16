@@ -165,10 +165,10 @@ public class DBPenaltyEventsDao extends DAO implements IPenaltyEventsDao {
     }
 
     @Override
-    public List<Penalty> getPenaltiesByLocation(String locationName) throws SQLException {
+    public List<Penalty> getPenaltiesByLocation(int locationId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_penalties_by_location"));
-            pstmt.setString(1, locationName);
+            pstmt.setInt(1, locationId);
             return getPenaltiesFromPreparedPstmt(pstmt);
         }
     }
@@ -194,7 +194,7 @@ public class DBPenaltyEventsDao extends DAO implements IPenaltyEventsDao {
             p.setEventCode(rs.getInt(Resources.databaseProperties.getString("penalty_book_event_code")));
             p.setTimestamp(LocalDate.parse(rs.getString(Resources.databaseProperties.getString("penalty_book_timestamp"))));
             p.setReservationDate(LocalDate.parse(rs.getString(Resources.databaseProperties.getString("penalty_book_reservation_date"))));
-            p.setReservationLocation(rs.getString(Resources.databaseProperties.getString("penalty_book_reservation_location")));
+            p.setReservationLocationId(rs.getInt(Resources.databaseProperties.getString("penalty_book_reservation_location_id")));
             p.setReceivedPoints(rs.getInt(Resources.databaseProperties.getString("penalty_book_received_points")));
             p.setRemarks(rs.getString(Resources.databaseProperties.getString("penalty_book_remarks")));
             ret.add(p);
@@ -292,7 +292,7 @@ public class DBPenaltyEventsDao extends DAO implements IPenaltyEventsDao {
         pstmt.setInt(2, p.getEventCode());
         pstmt.setString(3, p.getTimestamp().toString());
         pstmt.setString(4, p.getReservationDate() == null ? "" : p.getReservationDate().toString());
-        pstmt.setString(5, p.getReservationLocation());
+        pstmt.setInt(5, p.getReservationLocationId());
         pstmt.setInt(6, p.getReceivedPoints());
         pstmt.setString(7, p.getRemarks());
     }

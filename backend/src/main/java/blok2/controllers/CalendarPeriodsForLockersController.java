@@ -135,7 +135,7 @@ public class CalendarPeriodsForLockersController extends AuthorizedLocationContr
                                               List<CalendarPeriodForLockers> from,
                                               List<CalendarPeriodForLockers> to) throws SQLException {
         // setup
-        Location expectedLocation = locationDao.getLocation(locationName);
+        Location expectedLocation = locationDao.getLocationByName(locationName);
         LocalDate lastEnd = null;
 
         // analyze the periods

@@ -17,9 +17,9 @@ import java.util.List;
 public class DBLocationTagDao extends DAO implements ILocationTagDao {
 
     @Override
-    public List<LocationTag> getTagsForLocation(String locationName) throws SQLException {
+    public List<LocationTag> getTagsForLocation(int locationId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
-            ResultSet rs = getTagsForLocation(locationName, conn);
+            ResultSet rs = getTagsForLocation(locationId, conn);
 
             List<LocationTag> tags = new ArrayList<>();
 
@@ -31,9 +31,9 @@ public class DBLocationTagDao extends DAO implements ILocationTagDao {
         }
     }
 
-    public static ResultSet getTagsForLocation(String locationName, Connection conn) throws SQLException {
+    public static ResultSet getTagsForLocation(int locationId, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_tags_for_location"));
-        pstmt.setString(1, locationName);
+        pstmt.setInt(1, locationId);
         return pstmt.executeQuery();
     }
 
@@ -59,25 +59,25 @@ public class DBLocationTagDao extends DAO implements ILocationTagDao {
     }
 
     @Override
-    public boolean addTagToLocation(String locationName, int tagId) throws SQLException {
+    public boolean addTagToLocation(int locationId, int tagId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
-            return addTagToLocation(locationName, tagId, conn);
+            return addTagToLocation(locationId, tagId, conn);
         }
     }
 
-    public static boolean addTagToLocation(String locationName, int tagId, Connection conn) throws SQLException {
+    public static boolean addTagToLocation(int locationId, int tagId, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("add_tag_to_location"));
-        pstmt.setString(1, locationName);
+        pstmt.setInt(1, locationId);
         pstmt.setInt(2, tagId);
         return pstmt.executeUpdate() == 1;
     }
 
     @Override
-    public boolean bulkAddTagsToLocation(String locationName, List<Integer> tagIds) throws SQLException {
+    public boolean bulkAddTagsToLocation(int locationId, List<Integer> tagIds) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             boolean guard = true;
             for (int tagId : tagIds) {
-                if (!addTagToLocation(locationName, tagId, conn)) {
+                if (!addTagToLocation(locationId, tagId, conn)) {
                     guard = false;
                 }
             }
@@ -86,40 +86,27 @@ public class DBLocationTagDao extends DAO implements ILocationTagDao {
     }
 
     @Override
-    public boolean bulkAddTagToLocations(List<String> locationNames, int tagId) throws SQLException {
-        try (Connection conn = adb.getConnection()) {
-            boolean guard = true;
-            for (String locationName : locationNames) {
-                if (!addTagToLocation(locationName, tagId, conn)) {
-                    guard = false;
-                }
-            }
-            return guard;
-        }
-    }
-
-    @Override
-    public boolean deleteTagFromLocation(String locationName, int tagId) throws SQLException {
+    public boolean deleteTagFromLocation(int locationId, int tagId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_tag_from_location"));
-            pstmt.setString(1, locationName);
+            pstmt.setInt(1, locationId);
             pstmt.setInt(2, tagId);
             return pstmt.executeUpdate() == 1;
         }
     }
 
     @Override
-    public boolean deleteAllTagsFromLocation(String locationName) throws SQLException {
+    public boolean deleteAllTagsFromLocation(int locationId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_all_tags_from_location"));
-            pstmt.setString(1, locationName);
+            pstmt.setInt(1, locationId);
             return pstmt.executeUpdate() > 0;
         }
     }
 
-    public static boolean deleteAllTagsFromLocation(String locationName, Connection conn) throws SQLException {
+    public static boolean deleteAllTagsFromLocation(int locationId, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_all_tags_from_location"));
-        pstmt.setString(1, locationName);
+        pstmt.setInt(1, locationId);
         return pstmt.executeUpdate() > 0;
     }
 

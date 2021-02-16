@@ -67,7 +67,7 @@ public class TestDBCalendarPeriodDao extends TestDao {
         calendarPeriodDao.addCalendarPeriods(calendarPeriods);
 
         // Check if the addition worked properly
-        List<CalendarPeriod> actualPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getName());
+        List<CalendarPeriod> actualPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getLocationId());
         actualPeriods.sort(Comparator.comparing(CalendarPeriod::getId));
         calendarPeriods.sort(Comparator.comparing(CalendarPeriod::getId));
 
@@ -154,7 +154,7 @@ public class TestDBCalendarPeriodDao extends TestDao {
         calendarPeriodDao.updateCalendarPeriods(calendarPeriods, updatedPeriods);
 
         // check whether the periods are successfully updated
-        List<CalendarPeriod> actualPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getName());
+        List<CalendarPeriod> actualPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getLocationId());
         actualPeriods.sort(Comparator.comparing(CalendarPeriod::toString));
         updatedPeriods.sort(Comparator.comparing(CalendarPeriod::toString));
         Assert.assertEquals("updateCalendarPeriodsTest", new HashSet<>(updatedPeriods), new HashSet<>(actualPeriods));
@@ -170,7 +170,7 @@ public class TestDBCalendarPeriodDao extends TestDao {
             calendarPeriodDao.deleteCalendarPeriod(calendarPeriod);
 
         // are the periods deleted?
-        List<CalendarPeriod> actualPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getName());
+        List<CalendarPeriod> actualPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getLocationId());
         Assert.assertEquals("deleteCalendarPeriodsTest", 0, actualPeriods.size());
     }
 }

@@ -11,7 +11,7 @@ public interface ILocationTagDao extends IDao {
     /**
      * List all the tags for a specific location
      */
-    List<LocationTag> getTagsForLocation(String locationName) throws SQLException;
+    List<LocationTag> getTagsForLocation(int locationId) throws SQLException;
 
     /**
      * List all the locations that have a specific tag
@@ -21,27 +21,22 @@ public interface ILocationTagDao extends IDao {
     /**
      * Add a specific tag to a location
      */
-    boolean addTagToLocation(String locationName, int tagId) throws SQLException;
+    boolean addTagToLocation(int locationId, int tagId) throws SQLException;
 
     /**
      * Add tags in bulk to a location
      */
-    boolean bulkAddTagsToLocation(String locationName, List<Integer> tagIds) throws SQLException;
-
-    /**
-     * Add a tag to multiple locations
-     */
-    boolean bulkAddTagToLocations(List<String> locationNames, int tagId) throws SQLException;
+    boolean bulkAddTagsToLocation(int locationId, List<Integer> tagIds) throws SQLException;
 
     /**
      * Delete a specific tag from a location
      */
-    boolean deleteTagFromLocation(String locationName, int tagId) throws SQLException;
+    boolean deleteTagFromLocation(int locationId, int tagId) throws SQLException;
 
     /**
      * Delete all LocationTags for a specific location
      */
-    boolean deleteAllTagsFromLocation(String locationName) throws SQLException;
+    boolean deleteAllTagsFromLocation(int locationId) throws SQLException;
 
     /**
      * Remove a specific LocationTag from all the locations that use it.

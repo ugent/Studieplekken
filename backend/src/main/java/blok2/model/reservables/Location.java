@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class Location implements Cloneable {
+    private int locationId;
     private String name;
     private int numberOfSeats;
     private int numberOfLockers;
@@ -26,9 +27,10 @@ public class Location implements Cloneable {
     private List<LocationTag> assignedTags;
     private Pair<LocationStatus, String> status;
 
-    public Location(String name, int numberOfSeats, int numberOfLockers, String imageUrl,
+    public Location(int locationId, String name, int numberOfSeats, int numberOfLockers, String imageUrl,
                     Authority authority, String descriptionDutch, String descriptionEnglish, Building building,
                     boolean forGroup, List<LocationTag> assignedTags, Pair<LocationStatus, String> status) {
+        this.locationId = locationId;
         this.name = name;
         this.numberOfSeats = numberOfSeats;
         this.numberOfLockers = numberOfLockers;
@@ -56,6 +58,7 @@ public class Location implements Cloneable {
         return numberOfSeats == location.numberOfSeats &&
                 numberOfLockers == location.numberOfLockers &&
                 forGroup == location.forGroup &&
+                Objects.equals(locationId, location.locationId) &&
                 Objects.equals(name, location.name) &&
                 Objects.equals(imageUrl, location.imageUrl) &&
                 Objects.equals(descriptionDutch, location.descriptionDutch) &&
@@ -66,7 +69,7 @@ public class Location implements Cloneable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, building);
+        return Objects.hash(locationId, name, building);
     }
 
     @Override
@@ -94,6 +97,14 @@ public class Location implements Cloneable {
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
+
+    public int getLocationId() {
+        return locationId;
+    }
+
+    public void setLocationId(int locationId) {
+        this.locationId = locationId;
+    }
 
     public String getName() {
         return name;
