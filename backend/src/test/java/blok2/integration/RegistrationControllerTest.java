@@ -9,7 +9,6 @@ import org.springframework.security.test.context.support.WithSecurityContextTest
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 

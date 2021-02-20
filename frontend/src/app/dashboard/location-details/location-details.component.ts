@@ -204,12 +204,15 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
 
         periods.forEach(element => {
           this.calendarMap.set(element.id, element);
-          const duration = element.reservableFrom.valueOf() - moment().valueOf();
-          if (duration > 0) {
-            setTimeout(() => {
-              this.events = mapCalendarPeriodsToCalendarEvents([...this.calendarMap.values()], this.currentLang, []);
-            }, duration);
-          }
+
+          // @Reviewers: I have no idea what the code below actually does. It breaks the highlight of your reserved slots, though.
+
+          // const duration = element.reservableFrom.valueOf() - moment().valueOf();
+          // if (duration > 0) {
+          //   setTimeout(() => {
+          //     this.events = mapCalendarPeriodsToCalendarEvents([...this.calendarMap.values()], this.currentLang, []);
+          //   }, duration);
+          // }
         });
 
         this.subscription = this.selectedSubject.asObservable().subscribe(proposedReservations =>

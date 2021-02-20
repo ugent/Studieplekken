@@ -92,8 +92,6 @@ public class LocationControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "student1", userDetailsServiceBeanName = "testUserDetails")
     public void testDeleteLocationUnauthorized() throws Exception {
-
-
         mockMvc.perform(delete("/locations/"+testLocation.getName()).with(csrf()))
                 .andDo(print()).andExpect(status().isForbidden());
 
@@ -104,8 +102,6 @@ public class LocationControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testDeleteLocation() throws Exception {
-
-
         mockMvc.perform(delete("/locations/"+testLocation.getName()).with(csrf()))
                 .andDo(print()).andExpect(status().isOk());
 
