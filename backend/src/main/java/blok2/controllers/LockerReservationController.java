@@ -1,9 +1,7 @@
 package blok2.controllers;
 
-import blok2.daos.ILocationDao;
 import blok2.daos.ILockerReservationDao;
 import blok2.helpers.authorization.AuthorizedLocationController;
-import blok2.model.reservables.Location;
 import blok2.model.reservations.LockerReservation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,12 +26,10 @@ public class LockerReservationController extends AuthorizedLocationController {
     private final Logger logger = LoggerFactory.getLogger(LockerReservation.class.getSimpleName());
 
     private final ILockerReservationDao lockerReservationDao;
-    private final ILocationDao locationDao;
 
     @Autowired
-    public LockerReservationController(ILockerReservationDao lockerReservationDao, ILocationDao locationDao) {
+    public LockerReservationController(ILockerReservationDao lockerReservationDao) {
         this.lockerReservationDao = lockerReservationDao;
-        this.locationDao = locationDao;
     }
 
     @GetMapping("/user")
@@ -56,8 +52,7 @@ public class LockerReservationController extends AuthorizedLocationController {
                                                                      @RequestParam boolean pastReservations) {
         isAuthorized(locationId);
         try {
-            Location location = locationDao.getLocationById(locationId);
-            return lockerReservationDao.getAllLockerReservationsOfLocation(location.getName(), pastReservations);
+            return lockerReservationDao.getAllLockerReservationsOfLocation(locationId, pastReservations);
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
@@ -90,7 +85,7 @@ public class LockerReservationController extends AuthorizedLocationController {
                 lockerReservation
         );
         try {
-            lockerReservationDao.deleteLockerReservation(lockerReservation.getLocker().getLocation().getName(),
+            lockerReservationDao.deleteLockerReservation(lockerReservation.getLocker().getLocation().getLocationId(),
                     lockerReservation.getLocker().getNumber());
             logger.info(String.format("Deleting locker reservation by owner %s for locker %d in location %s", lockerReservation.getOwner(), lockerReservation.getLocker().getNumber(), lockerReservation.getLocker().getLocation().getName()));
         } catch (SQLException e) {

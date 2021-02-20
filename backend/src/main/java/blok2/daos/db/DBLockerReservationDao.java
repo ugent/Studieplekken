@@ -24,57 +24,18 @@ public class DBLockerReservationDao extends DAO implements ILockerReservationDao
     }
 
     @Override
-    public List<LockerReservation> getAllLockerReservationsOfUserByName(String name) throws SQLException {
-        try (Connection conn = adb.getConnection()) {
-            List<LockerReservation> res = new ArrayList<>();
-
-            String query = Resources.databaseProperties.getString("get_locker_reservations_where_<?>");
-            query = query.replace("<?>", "UPPER(CONCAT(augentpreferredgivenname, ' ', augentpreferredsn)) LIKE '%' || UPPER(?) || '%'");
-
-            PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setString(1, name);
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                LockerReservation lockerReservation = DBLockerReservationDao.createLockerReservation(rs, conn);
-                res.add(lockerReservation);
-            }
-
-            // If there have not been found lockerreservations with owners that have a similar
-            // complete name (first + last name). Then there will be checked if there are
-            // lockerreservations with a owner that have a similar first of last name.
-
-            if (res.size() == 0) {
-                query = Resources.databaseProperties.getString("get_locker_reservations_where_<?>");
-                query = query.replace("<?>", "UPPER(augentpreferredgivenname) LIKE UPPER(?) or UPPER(augentpreferredsn) LIKE '%' || UPPER(?) || '%'");
-
-                pstmt = conn.prepareStatement(query);
-                pstmt.setString(1, name);
-                pstmt.setString(2, name);
-                rs = pstmt.executeQuery();
-
-                while (rs.next()) {
-                    LockerReservation lockerReservation = createLockerReservation(rs);
-                    res.add(lockerReservation);
-                }
-            }
-            return res;
-        }
-    }
-
-    @Override
-    public List<LockerReservation> getAllLockerReservationsOfLocation(String locationName, boolean includePastReservations) throws SQLException {
+    public List<LockerReservation> getAllLockerReservationsOfLocation(int locationId, boolean includePastReservations) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             String query = Resources.databaseProperties.getString("get_locker_reservations_where_<?>");
 
-            String replacementString = "lr.location_name = ?";
+            String replacementString = "lr.location_id = ?";
             if (!includePastReservations) {
                 replacementString += " and ((lr.key_pickup_date is null or lr.key_pickup_date = '') or (lr.key_return_date is null or lr.key_return_date = ''))";
             }
             query = query.replace("<?>", replacementString);
 
             PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setString(1, locationName);
+            pstmt.setInt(1, locationId);
 
             return executeQueryForLockerReservations(pstmt);
         }
@@ -90,13 +51,6 @@ public class DBLockerReservationDao extends DAO implements ILockerReservationDao
         }
 
         return reservations;
-    }
-
-    @Override
-    public List<LockerReservation> getAllLockerReservationsOfLocationWithoutKeyBroughtBack(String name) throws SQLException {
-        String query = Resources.databaseProperties.getString("get_locker_reservations_where_<?>");
-        query = query.replace("<?>", "l.location_name = ? and lr.key_return_date = ''");
-        return getAllLockerReservationsFromQueryWithOneParameter(name, query);
     }
 
     private List<LockerReservation> getAllLockerReservationsFromQueryWithOneParameter(String parameter, String query)
@@ -117,27 +71,13 @@ public class DBLockerReservationDao extends DAO implements ILockerReservationDao
     }
 
     @Override
-    public int getNumberOfLockersInUseOfLocation(String locationName) throws SQLException {
-        try (Connection conn = adb.getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("count_lockers_in_use_of_location"));
-            pstmt.setString(1, locationName);
-            ResultSet rs = pstmt.executeQuery();
-
-            if (rs.next())
-                return rs.getInt(1);
-
-            return 0;
-        }
-    }
-
-    @Override
-    public LockerReservation getLockerReservation(String locationName, int lockerNumber) throws SQLException {
+    public LockerReservation getLockerReservation(int locationId, int lockerNumber) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             String query = Resources.databaseProperties.getString("get_locker_reservations_where_<?>");
-            query = query.replace("<?>", "lr.location_name = ? and lr.locker_number = ?");
+            query = query.replace("<?>", "lr.location_id = ? and lr.locker_number = ?");
 
             PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setString(1, locationName);
+            pstmt.setInt(1, locationId);
             pstmt.setInt(2, lockerNumber);
             ResultSet rs = pstmt.executeQuery();
 
@@ -149,10 +89,10 @@ public class DBLockerReservationDao extends DAO implements ILockerReservationDao
     }
 
     @Override
-    public void deleteLockerReservation(String locationName, int lockerNumber) throws SQLException {
+    public void deleteLockerReservation(int locationId, int lockerNumber) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_locker_reservation"));
-            pstmt.setString(1, locationName);
+            pstmt.setInt(1, locationId);
             pstmt.setInt(2, lockerNumber);
             pstmt.execute();
         }

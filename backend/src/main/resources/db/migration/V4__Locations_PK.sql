@@ -22,7 +22,7 @@ alter table public.locations
 drop constraint locations_pkey;
 
 -- create a sequence for the id on public.LOCATIONS
-create sequence locations_location_id_seq;
+create sequence if not exists locations_location_id_seq;
 
 -- add a column which will be the new PK of public.LOCATIONS
 alter table public.locations

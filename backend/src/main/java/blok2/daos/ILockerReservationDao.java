@@ -13,35 +13,20 @@ public interface ILockerReservationDao extends IDao {
     List<LockerReservation> getAllLockerReservationsOfUser(String augentID) throws SQLException;
 
     /**
-     * Gets a list of all locker reservations made by the user with the given name.
-     */
-    List<LockerReservation> getAllLockerReservationsOfUserByName(String name) throws SQLException;
-
-    /**
      * Gets a list of all locker reservations of a given location.
      */
-    List<LockerReservation> getAllLockerReservationsOfLocation(String locationName,
+    List<LockerReservation> getAllLockerReservationsOfLocation(int locationId,
                                                                boolean includePastReservations) throws SQLException;
-
-    /**
-     * Gets a list of all ongoing locker reservations of a given location.
-     */
-    List<LockerReservation> getAllLockerReservationsOfLocationWithoutKeyBroughtBack(String locationName) throws SQLException;
-
-    /**
-     * Gets the number of lockers that are used at the moment of a given location.
-     */
-    int getNumberOfLockersInUseOfLocation(String locationName) throws SQLException;
 
     /**
      * Gets the locker reservation with the given details.
      */
-    LockerReservation getLockerReservation(String locationName, int lockerNumber) throws SQLException;
+    LockerReservation getLockerReservation(int locationId, int lockerNumber) throws SQLException;
 
     /**
      * Delete the locker reservation with the given details.
      */
-    void deleteLockerReservation(String locationName, int lockerNumber) throws SQLException;
+    void deleteLockerReservation(int locationId, int lockerNumber) throws SQLException;
 
     /**
      * Add a locker reservation.
