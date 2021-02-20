@@ -53,7 +53,7 @@ public interface ICalendarPeriodDao extends IDao {
     /**
      * Get the status of a calendar period
      */
-    Pair<LocationStatus, String> getStatus(String locationName) throws SQLException;
+    Pair<LocationStatus, String> getStatus(int locationId) throws SQLException;
 
     /**
      * Get a calendar period by its id

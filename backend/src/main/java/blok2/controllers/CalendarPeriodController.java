@@ -50,11 +50,11 @@ public class CalendarPeriodController extends  AuthorizedLocationController {
         }
     }
 
-    @GetMapping("/{locationName}/status")
+    @GetMapping("/{locationId}/status")
     @PreAuthorize("permitAll()")
-    public Pair<LocationStatus, String> getStatusOfLocation(@PathVariable("locationName") String locationName) {
+    public Pair<LocationStatus, String> getStatusOfLocation(@PathVariable("locationId") int locationId) {
         try {
-            return calendarPeriodDao.getStatus(locationName);
+            return calendarPeriodDao.getStatus(locationId);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));

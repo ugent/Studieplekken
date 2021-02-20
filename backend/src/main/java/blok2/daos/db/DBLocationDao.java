@@ -265,7 +265,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement statement = conn.prepareStatement(Resources.databaseProperties.getString("approve_location"));
             statement.setBoolean(1, approval);
-            statement.setString(2, location.getName());
+            statement.setInt(2, location.getLocationId());
             statement.execute();
         }
     }
@@ -308,8 +308,8 @@ public class DBLocationDao extends DAO implements ILocationDao {
      */
     public static Location createLocation(ResultSet rs, Connection conn) throws SQLException {
         ResultSet rsTags = DBLocationTagDao.getTagsForLocation(rs.getInt(Resources.databaseProperties.getString("location_id")), conn);
-        String locationName = rs.getString(Resources.databaseProperties.getString("location_name"));
-        Pair<LocationStatus, String> status = DBCalendarPeriodDao.getStatus(locationName, conn);
+        int locationId = rs.getInt(Resources.databaseProperties.getString("location_id"));
+        Pair<LocationStatus, String> status = DBCalendarPeriodDao.getStatus(locationId, conn);
         return createLocation(rs, rsTags, status);
     }
 

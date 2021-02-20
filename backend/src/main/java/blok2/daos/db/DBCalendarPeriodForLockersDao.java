@@ -16,11 +16,11 @@ public class DBCalendarPeriodForLockersDao extends DAO implements ICalendarPerio
     private final Logger logger = Logger.getLogger(DBCalendarPeriodForLockersDao.class.getSimpleName());
 
     @Override
-    public List<CalendarPeriodForLockers> getCalendarPeriodsForLockersOfLocation(String locationName) throws SQLException {
+    public List<CalendarPeriodForLockers> getCalendarPeriodsForLockersOfLocation(int locationId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
                     .getString("get_calendar_periods_for_lockers_of_location"));
-            pstmt.setString(1, locationName);
+            pstmt.setInt(1, locationId);
             ResultSet rs = pstmt.executeQuery();
 
             List<CalendarPeriodForLockers> periods = new ArrayList<>();
@@ -143,7 +143,7 @@ public class DBCalendarPeriodForLockersDao extends DAO implements ICalendarPerio
 
     private void prepareCalendarPeriodForLockersPstmt(CalendarPeriodForLockers calendarPeriodForLockers,
                                                       PreparedStatement pstmt) throws SQLException {
-        pstmt.setString(1, calendarPeriodForLockers.getLocation().getName());
+        pstmt.setInt(1, calendarPeriodForLockers.getLocation().getLocationId());
         pstmt.setDate(2, Date.valueOf(calendarPeriodForLockers.getStartsAt()));
         pstmt.setDate(3, Date.valueOf(calendarPeriodForLockers.getEndsAt()));
         pstmt.setTimestamp(4, Timestamp.valueOf(calendarPeriodForLockers.getReservableFrom()));
@@ -151,7 +151,7 @@ public class DBCalendarPeriodForLockersDao extends DAO implements ICalendarPerio
 
     private void prepareWhereClauseOfUpdatePstmt(CalendarPeriodForLockers calendarPeriodForLockers,
                                                  PreparedStatement pstmt) throws SQLException {
-        pstmt.setString(5, calendarPeriodForLockers.getLocation().getName());
+        pstmt.setInt(5, calendarPeriodForLockers.getLocation().getLocationId());
         pstmt.setDate(6, Date.valueOf(calendarPeriodForLockers.getStartsAt()));
         pstmt.setDate(7, Date.valueOf(calendarPeriodForLockers.getEndsAt()));
         pstmt.setTimestamp(8, Timestamp.valueOf(calendarPeriodForLockers.getReservableFrom()));

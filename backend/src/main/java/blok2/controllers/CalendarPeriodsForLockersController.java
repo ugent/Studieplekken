@@ -40,8 +40,7 @@ public class CalendarPeriodsForLockersController extends AuthorizedLocationContr
     public List<CalendarPeriodForLockers>
     getCalendarPeriodsForLockersOfLocation(@PathVariable("locationId") int locationId) {
         try {
-            Location location = locationDao.getLocationById(locationId);
-            return this.calendarPeriodForLockersDao.getCalendarPeriodsForLockersOfLocation(location.getName());
+            return this.calendarPeriodForLockersDao.getCalendarPeriodsForLockersOfLocation(locationId);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
@@ -71,12 +70,10 @@ public class CalendarPeriodsForLockersController extends AuthorizedLocationContr
             List<CalendarPeriodForLockers> from = fromAndTo[0];
             List<CalendarPeriodForLockers> to = fromAndTo[1];
 
-            Location location = locationDao.getLocationById(locationId);
-
             // check for outdated view (perhaps some other user has changed the calendar periods in the meantime
             // between querying for the calendar periods for a location, and updating the calendar
             List<CalendarPeriodForLockers> currentView = calendarPeriodForLockersDao
-                    .getCalendarPeriodsForLockersOfLocation(location.getName());
+                    .getCalendarPeriodsForLockersOfLocation(locationId);
 
             // if the sizes dont match, the view must be different...
             if (from.size() != currentView.size()) {
@@ -105,7 +102,7 @@ public class CalendarPeriodsForLockersController extends AuthorizedLocationContr
                 addCalendarPeriodsForLockers(to);
             } else {
                 to.sort(Comparator.comparing(Period::getStartsAt));
-                analyzeAndUpdateCalendarPeriodsForLockers(location.getName(), from, to);
+                analyzeAndUpdateCalendarPeriodsForLockers(locationId, from, to);
             }
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
@@ -133,11 +130,11 @@ public class CalendarPeriodsForLockersController extends AuthorizedLocationContr
      * was chosen
      */
     private void
-    analyzeAndUpdateCalendarPeriodsForLockers(String locationName,
+    analyzeAndUpdateCalendarPeriodsForLockers(int locationId,
                                               List<CalendarPeriodForLockers> from,
                                               List<CalendarPeriodForLockers> to) throws SQLException {
         // setup
-        Location expectedLocation = locationDao.getLocationByName(locationName);
+        Location expectedLocation = locationDao.getLocationById(locationId);
 
         // analyze the periods
         for (CalendarPeriodForLockers period : to) {

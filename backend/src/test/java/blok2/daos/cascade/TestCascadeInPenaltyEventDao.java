@@ -74,6 +74,10 @@ public class TestCascadeInPenaltyEventDao extends TestDao {
         locationDao.addLocation(testLocation1);
         locationDao.addLocation(testLocation2);
 
+        // now the location is added to the db, and the ids are set correctly
+        testPenalty1.setReservationLocationId(testLocation1.getLocationId());
+        testPenalty2.setReservationLocationId(testLocation2.getLocationId());
+
         accountDao.directlyAddUser(testUser1);
         accountDao.directlyAddUser(testUser2);
 

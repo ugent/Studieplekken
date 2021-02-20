@@ -146,7 +146,7 @@ public class DBLockerReservationDao extends DAO implements ILockerReservationDao
 
     private void setupInsertLockerReservationPstmt(LockerReservation lr
             , PreparedStatement pstmt) throws SQLException {
-        pstmt.setString(1, lr.getLocker().getLocation().getName());
+        pstmt.setInt(1, lr.getLocker().getLocation().getLocationId());
         pstmt.setInt(2, lr.getLocker().getNumber());
         pstmt.setString(3, lr.getOwner().getAugentID());
         pstmt.setTimestamp(4, lr.getKeyPickupDate() == null ? null : Timestamp.valueOf(lr.getKeyPickupDate()));

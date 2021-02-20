@@ -40,8 +40,7 @@ public class LockersController extends AuthorizedLocationController {
     public List<LockerReservation> getLockerStatuses(@PathVariable("locationId") int locationId) {
         isAuthorized(locationId);
         try {
-            Location location = locationDao.getLocationById(locationId);
-            return lockersDao.getLockerStatusesOfLocation(location.getName());
+            return lockersDao.getLockerStatusesOfLocation(locationId);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));

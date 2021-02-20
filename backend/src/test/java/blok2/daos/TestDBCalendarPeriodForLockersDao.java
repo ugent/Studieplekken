@@ -53,7 +53,7 @@ public class TestDBCalendarPeriodForLockersDao  extends TestDao {
     //@Test
     public void addCalendarPeriodsForLockersTest() throws SQLException {
         List<CalendarPeriodForLockers> actualPeriods = calendarPeriodForLockersDao
-                .getCalendarPeriodsForLockersOfLocation(testLocation.getName());
+                .getCalendarPeriodsForLockersOfLocation(testLocation.getLocationId());
         actualPeriods.sort(Comparator.comparing(CalendarPeriodForLockers::toString));
         calendarPeriodsForLockers.sort(Comparator.comparing(CalendarPeriodForLockers::toString));
 
@@ -67,7 +67,7 @@ public class TestDBCalendarPeriodForLockersDao  extends TestDao {
 
         // check whether the periods are successfully updated
         List<CalendarPeriodForLockers> actualPeriods = calendarPeriodForLockersDao
-                .getCalendarPeriodsForLockersOfLocation(testLocation.getName());
+                .getCalendarPeriodsForLockersOfLocation(testLocation.getLocationId());
         actualPeriods.sort(Comparator.comparing(CalendarPeriodForLockers::toString));
         updatedPeriodsForLockers.sort(Comparator.comparing(CalendarPeriodForLockers::toString));
         Assert.assertEquals("updateCalendarPeriodsForLockersTest", updatedPeriodsForLockers, actualPeriods);
@@ -79,7 +79,7 @@ public class TestDBCalendarPeriodForLockersDao  extends TestDao {
 
         // are the periods deleted?
         List<CalendarPeriodForLockers> actualPeriods = calendarPeriodForLockersDao
-                .getCalendarPeriodsForLockersOfLocation(testLocation.getName());
+                .getCalendarPeriodsForLockersOfLocation(testLocation.getLocationId());
         Assert.assertEquals("deleteCalendarPeriodsForLockersTest", 0, actualPeriods.size());
     }
 }

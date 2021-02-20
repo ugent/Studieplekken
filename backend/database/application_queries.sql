@@ -39,7 +39,7 @@
 
 -- queries for table LOCATIONS
 -- $all_locations
-select l.name, l.number_of_seats, l.number_of_lockers
+select l.location_id, l.name, l.number_of_seats, l.number_of_lockers
     , l.image_url, l.description_dutch, l.description_english, l.forGroup
     , b.building_id, b.building_name, b.address
     , a.authority_id, a.authority_name, a.description
@@ -145,7 +145,7 @@ where location_id = ?;
 -- $approve_location
 update public.locations
 set approved = ?
-where name = ?;
+where location_id = ?;
 
 -- $all_unapproved_locations
 select l.location_id, l.name, l.number_of_seats, l.number_of_lockers
@@ -197,14 +197,6 @@ order by t.dutch;
 select t.tag_id, t.dutch, t.english
 from public.tags t
 where t.tag_id = ?;
-
--- $tags_from_location
-select t.tag_id, t.dutch, t.english
-from public.tags t
-         join public.location_tags lt on t.tag_id = lt.tag_id
-         join public.locations l on l.name = lt.location_id
-where l.name = ?
-order by t.dutch;
 
 -- $add_tag
 insert into public.tags (dutch, english)
@@ -338,8 +330,7 @@ from public.location_reservations lr
     join users u
         on u.augentid = lr.user_augentid
     join public.timeslots rt
-        on rt.timeslot_date = lr.timeslot_date and rt.timeslot_sequence_number = lr.timeslot_seqnr and rt.calendar_id = lr.calendar_id     
-
+        on rt.timeslot_date = lr.timeslot_date and rt.timeslot_sequence_number = lr.timeslot_seqnr and rt.calendar_id = lr.calendar_id
 where lr.user_augentid = ?
 order by lr.timeslot_date desc, lr.timeslot_seqnr desc;
 
@@ -511,10 +502,7 @@ from public.authority
 where authority_id = ?;
 
 -- $get_locations_manageable_by_user
-select l.name, l.number_of_seats, l.number_of_lockers
-     , l.image_url, l.description_dutch, l.description_english, l.forGroup
-     , a.authority_id, a.authority_name, a.description
-     , b.building_id, b.building_name, b.address
+select l.*, a.*, b.*
 from public.locations l
     join authority a
         on l.authority_id = a.authority_id
@@ -526,10 +514,7 @@ where rua.user_id = ?
 order by l.name;
 
 -- $get_locations_in_authority
-select l.name, l.number_of_seats, l.number_of_lockers
-     , l.image_url, l.description_dutch, l.description_english, l.forGroup
-     , a.authority_id, a.authority_name, a.description
-     , b.building_id, b.building_name, b.address
+select l.*, a.*, b.*
 from public.locations l
          join authority a
               on l.authority_id = a.authority_id
@@ -575,7 +560,8 @@ with recursive x as (
 select y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
      , y.augentid, y.admin, y.penalty_points, y.locker_number, y.location_id
      , y.user_augentid, y.key_pickup_date, y.key_return_date
-	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch, l.description_english, l.forGroup
+	 , l.location_id, l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch
+     , l.description_english, l.forGroup
 	 , b.building_id, b.building_name, b.address
      , a.authority_id, a.authority_name, a.description
 from y
@@ -589,7 +575,7 @@ group by y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.
      , y.augentid, y.admin, y.penalty_points
      , y.locker_number, y.location_id
      , y.user_augentid, y.key_pickup_date, y.key_return_date
-	 , l.name, l.number_of_seats, l.number_of_lockers, l.image_url
+	 , l.location_id, l.name, l.number_of_seats, l.number_of_lockers, l.image_url
      , l.description_dutch, l.description_english, l.forGroup
      , b.building_id, b.building_name, b.address
      , a.authority_id, a.authority_name, a.description
@@ -658,8 +644,8 @@ with recursive x as (
     from public.locker_reservations
     where key_return_date is NULL
 ), lockers as (
-    select l.location_id, l.number
-         , s.name, s.number_of_seats, s.number_of_lockers, s.image_url
+    select l.number
+         , s.location_id, s.name, s.number_of_seats, s.number_of_lockers, s.image_url
          , s.description_dutch, s.description_english, s.forGroup
          , a.authority_id, a.authority_name, a.description
          , b.building_id, b.building_name, b.address
@@ -680,8 +666,8 @@ with recursive x as (
             on u.augentid = lr.user_augentid
     where l.location_id = ?
 )
-select r.location_id, r.number
-     , r.name, r.number_of_seats, r.number_of_lockers, r.image_url
+select r.number
+     , r.location_id, r.name, r.number_of_seats, r.number_of_lockers, r.image_url
      , r.description_dutch, r.description_english, r.forGroup
      , r.authority_id, r.authority_name, r.description
      , r.building_id, r.building_name, r.address
@@ -840,7 +826,7 @@ where event_code = ?;
 
 -- queries for SCANNERS_LOCATION
 -- $get_locations_of_scanner
-select l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch, l.description_english, l.forGroup
+select l.location_id, l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch, l.description_english, l.forGroup
        , a.authority_id, a.authority_name, a.description
        , b.building_id, b.building_name, b.address
 from public.scanners_location sl
@@ -915,13 +901,13 @@ from public.location_tags lt
 where lt.location_id = ?;
 
 -- $get_locations_for_tag
-select l.name, l.number_of_seats, l.number_of_lockers
+select l.location_id, l.name, l.number_of_seats, l.number_of_lockers
         , l.image_url, l.description_dutch, l.description_english, l.forGroup
         , a.authority_id, a.authority_name, a.description
         , b.building_id, b.building_name, b.address
 from public.locations l
     join public.location_tags lt
-        on l.name = lt.location_id
+        on l.location_id = lt.location_id
     join public.authority a
         on a.authority_id = l.authority_id
     join public.buildings b
@@ -957,7 +943,7 @@ where location_id = ?;
 -- queries for CALENDAR_PERIODS
 -- $get_all_calendar_periods
 select cp.calendar_id, cp.location_id, cp.starts_at, cp.ends_at, cp.opening_time, cp.closing_time, cp.reservable_from, cp.reservable, cp.timeslot_length, cp.locked_from
-       , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch, l.description_english, l.forGroup, b.building_id, b.building_name, b.address
+       , l.location_id, l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch, l.description_english, l.forGroup, b.building_id, b.building_name, b.address
        , a.authority_id, a.authority_name, a.description
 from public.calendar_periods cp
     join public.locations l
@@ -970,7 +956,7 @@ order by to_date(cp.starts_at || ' ' || cp.opening_time, 'YYYY-MM-DD HH24:MI');
 
 -- $get_calendar_periods
 select cp.calendar_id, cp.location_id, cp.starts_at, cp.ends_at, cp.opening_time, cp.closing_time, cp.reservable_from, cp.reservable, cp.timeslot_length, cp.locked_from, cp.seat_count
-       , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch, l.description_english, l.forGroup
+       , l.location_id, l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch, l.description_english, l.forGroup
        , a.authority_id, a.authority_name, a.description
        , b.building_id, b.building_name, b.address
 from public.calendar_periods cp
@@ -994,7 +980,7 @@ where calendar_id = ?;
 
 -- $get_calendar_period_by_id
 select * 
-from public.calendar_periods cp inner join public.locations l on cp.location_id = l.name inner join public.buildings b on b.building_id = l.building_id
+from public.calendar_periods cp inner join public.locations l on cp.location_id = l.location_id inner join public.buildings b on b.building_id = l.building_id
 inner join public.authority a on a.authority_id = l.authority_id
 where cp.calendar_id = ?;
 
@@ -1083,7 +1069,7 @@ order by timeslot_start;
 -- queries for CALENDAR_PERIODS_FOR_LOCKERS
 -- $get_calendar_periods_for_lockers_of_location
 select cp.location_id, cp.starts_at, cp.ends_at, cp.reservable_from
-       , l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch, l.description_english, l.forGroup
+       , l.location_id, l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch, l.description_english, l.forGroup
        , a.authority_id, a.authority_name, a.description
        , b.building_id, b.building_name, b.address
 from public.calendar_periods_for_lockers cp
