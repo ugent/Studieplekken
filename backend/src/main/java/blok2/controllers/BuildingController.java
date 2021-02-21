@@ -82,7 +82,7 @@ public class BuildingController {
 
     @DeleteMapping("/{buildingId}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public void deleteAuthority(@PathVariable int buildingId) {
+    public void deleteBuilding(@PathVariable int buildingId) {
         try {
             buildingDao.deleteBuilding(buildingId);
             logger.info(String.format("Removed building with id '%d'", buildingId));

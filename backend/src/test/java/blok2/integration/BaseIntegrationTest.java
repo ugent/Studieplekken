@@ -25,17 +25,17 @@ import java.util.List;
 public class BaseIntegrationTest extends BaseTest {
 
     @Autowired
-    private IAccountDao accountDao;
+    protected IAccountDao accountDao;
 
     @Autowired
     protected ILocationDao locationDao;
 
     @Autowired
-    private IAuthorityDao authorityDao;
+    protected IAuthorityDao authorityDao;
     @Autowired
-    private ICalendarPeriodDao calendarPeriodDao;
+    protected ICalendarPeriodDao calendarPeriodDao;
     @Autowired
-    private IBuildingDao buildingDao;
+    protected IBuildingDao buildingDao;
 
     @Autowired
     protected ILocationReservationDao locationReservationDao;
@@ -84,6 +84,7 @@ public class BaseIntegrationTest extends BaseTest {
         admin = accountDao.getUserByEmail("admin@ugent.be");
         student= accountDao.getUserByEmail("student1@ugent.be");
         student2 = accountDao.getUserByEmail("student2@ugent.be");
+        authorityDao.addUserToAuthority(student.getAugentID(), authority.getAuthorityId());
 
 
         Timeslot timeslot = new Timeslot(cps[0], 0, cps[0].getStartsAt().plusDays(1));
