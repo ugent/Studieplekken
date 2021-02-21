@@ -17,7 +17,7 @@ public interface ILocationReservationDao extends IDao {
 
     LocationReservation getLocationReservation(String augentID, Timeslot timeslot) throws SQLException;
 
-    void deleteLocationReservation(String augentID, Timeslot timeslot) throws SQLException;
+    boolean deleteLocationReservation(String augentID, Timeslot timeslot) throws SQLException;
 
     /**
      * This method should only be used for testing purposes, this does not check if there is still

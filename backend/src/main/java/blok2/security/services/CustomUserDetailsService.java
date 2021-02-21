@@ -43,14 +43,14 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
     @Override
     public UserDetails loadUserDetails(CasAssertionAuthenticationToken casAssertionAuthenticationToken) throws UsernameNotFoundException {
         AttributePrincipal principal = casAssertionAuthenticationToken.getAssertion().getPrincipal();
+        String ugentID = (String) principal.getAttributes().get("ugentID");
         String mail = (String) principal.getAttributes().get("mail");
 
         User user;
 
         // Try to find the user with given mail in the application database
-
         try {
-            user = this.accountDao.getUserByEmail(mail);
+            user = this.accountDao.getUserById(ugentID);
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
@@ -62,8 +62,7 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
         }
 
         // Create new user using the UGent LDAP
-
-        user = getUserFromLdapByMail(mail);
+        user = getUserFromLdap(ugentID, mail);
 
         if (user != null) {
             try {
@@ -75,11 +74,12 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
             }
         }
 
-        logger.error("Unable to find/add a user with mail '" + mail + "'");
-        throw new UsernameNotFoundException("Unable to find/add a user with mail '" + mail + "'");
+        logger.error(String.format("Unable to find/add a user with ugentID '%s' and mail '%s'", ugentID, mail));
+        throw new UsernameNotFoundException
+                (String.format("Unable to find/add a user with ugentID '%s' and mail '%s'", ugentID, mail));
     }
 
-    public User getUserFromLdapByMail(String mail) {
+    public User getUserFromLdap(String ugentID, String mail) {
         try {
             List<User> users = ldapTemplate.search("ou=people", "mail=" + mail, (AttributesMapper<User>) attrs -> {
                 User user = new User();
@@ -88,16 +88,7 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
                 user.setMail(attrs.get("mail").get().toString());
                 user.setPassword("secret");
                 user.setInstitution("UGent");
-
-                if (attrs.get("ugentID") != null) {
-                    user.setAugentID(attrs.get("ugentID").get().toString());
-                } else if (attrs.get("ugentStudentID") != null) {
-                    user.setAugentID(attrs.get("ugentStudentID").get().toString());
-                } else {
-                    // worst case: set mail instead of ugent/student id
-                    user.setAugentID(attrs.get("mail").get().toString());
-                }
-
+                user.setAugentID(ugentID);
                 return user;
             });
 

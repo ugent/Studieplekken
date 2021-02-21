@@ -18,6 +18,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -232,11 +233,18 @@ public class TestSharedMethods {
         period.setLocation(location);
         period.setLockedFrom(now.minusWeeks(3));
 
+        LocalTime openingTime = LocalTime.of(9,0);
+        LocalTime closingTime = LocalTime.of(17, 0);
+
         period.setStartsAt(now.plusDays(1).toLocalDate());
         period.setEndsAt(now.plusDays(2).toLocalDate());
-        period.setOpeningTime(LocalTime.of(9,0));
-        period.setClosingTime(LocalTime.of(17, 0));
+        period.setOpeningTime(openingTime);
+        period.setClosingTime(closingTime);
 
+        long timeslotSize = ChronoUnit.MINUTES.between(openingTime, closingTime);
+
+        period.setReservable(true);
+        period.setTimeslotLength((int) timeslotSize);
         period.setReservableFrom(now);
 
         return period;

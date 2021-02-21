@@ -130,8 +130,10 @@ public class LocationReservationController extends AuthorizedLocationController 
                     locationReservation
             );
 
-            locationReservationDao.deleteLocationReservation(locationReservation.getUser().getAugentID(),
-                    locationReservation.getTimeslot());
+            if(!locationReservationDao.deleteLocationReservation(locationReservation.getUser().getAugentID(),
+                    locationReservation.getTimeslot())) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "No such reservation.");
+            }
             logger.info(String.format("LocationReservation for user %s at time %s deleted", locationReservation.getUser(), locationReservation.getTimeslot().toString()));
         } catch (SQLException e) {
             logger.error(e.getMessage());

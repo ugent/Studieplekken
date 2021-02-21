@@ -12,16 +12,22 @@ import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static java.util.Collections.*;
 
 public class TestDBLocationReservationDao extends BaseTest {
+
+    private final static Logger logger = LoggerFactory.getLogger(TestDBLocationReservationDao.class);
 
     @Autowired
     private ILocationReservationDao locationReservationDao;
@@ -210,5 +216,221 @@ public class TestDBLocationReservationDao extends BaseTest {
         locationReservationDao.setAllStudentsOfLocationToAttended(testLocation.getName(), today);
         present = locationReservationDao.getPresentStudents(testLocation.getName(), today);
         Assert.assertEquals("scanStudentTest, present size after all attended", 2, present.size());
+    }
+
+    /**
+     * Steps undertaken in this test:
+     *     - create 500 test users
+     *     - create a location that has 490 seats
+     *     - create an upcoming calendar period
+     *     - let each user make a reservation concurrently
+     *     - test whether no constraints have been violated
+     */
+    //@Test
+    public void concurrentReservationsTest() throws SQLException, InterruptedException {
+        // some constants
+        final int N_USERS = 50;
+        final int N_SEATS = 46;
+
+        // some variables that will be used
+        Thread[] threads = new Thread[N_USERS];
+        User[] users = new User[N_USERS];
+
+        // Create N_USERS test users
+        for (int i = 0; i < N_USERS; i++) {
+            users[i] = TestSharedMethods.studentTestUser();
+            users[i].setAugentID(users[i].getAugentID() + "" + i);
+            users[i].setMail(i + "" + users[i].getMail());
+            accountDao.directlyAddUser(users[i]);
+        }
+        logger.info(String.format("All %d users have been created.", N_USERS));
+
+        // Create a location that has N_SEATS seats
+        Building building = TestSharedMethods.testBuilding();
+        building.setName("Building to test concurrent reservations");
+        buildingDao.addBuilding(building);
+
+        Location location = TestSharedMethods.testLocation(
+                TestSharedMethods.insertTestAuthority("Test concurrent reservations",
+                        "Authority to test concurrent reservations", authorityDao),
+                building);
+        location.setNumberOfSeats(N_SEATS);
+        location.setName("Location to test concurrent reservations");
+        locationDao.addLocation(location);
+        logger.info("Location has been created");
+
+        // Create an upcoming calendar period (timeslots will be created too)
+        CalendarPeriod calendarPeriod = TestSharedMethods.upcomingCalendarPeriods(location);
+        calendarPeriodDao.addCalendarPeriods(singletonList(calendarPeriod));
+        logger.info("Calendar period has been created");
+
+        Timeslot timeslot = calendarPeriod.getTimeslots().get(0);
+        Assert.assertNotNull(timeslot);
+
+        // Let each user make a reservation concurrently
+        for (int i = 0; i < N_USERS; i++) {
+            final int _i = i;
+            threads[i] = new Thread(
+                () -> {
+                    LocationReservation lr = new LocationReservation(users[_i], LocalDateTime.now(), timeslot, null);
+                    try {
+                        boolean s = locationReservationDao.addLocationReservationIfStillRoomAtomically(lr);
+                        if(!s)
+                            System.out.println("didn't work in thread "+ _i);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            );
+
+        }
+
+        List<Thread> threada = Arrays.asList(threads);
+        for (Thread thread: threada) {
+            thread.start();
+            logger.info("thread %3d has been started");
+
+        }
+
+
+        // Now, wait for all threads to be finished
+        for (int i = 0; i < N_USERS; i++) {
+            threads[i].join();
+        }
+
+        // Test whether no constraints have been violated
+        long lrsCount = locationReservationDao.countReservedSeatsOfTimeslot(timeslot);
+        Assert.assertEquals(N_SEATS, lrsCount);
+    }
+
+    /**
+     * Steps undertaken in this test:
+     *     - create 500 test users
+     *     - create a location that has 490 seats
+     *     - create an upcoming calendar period
+     *     - let each user make a reservation concurrently
+     *     - test whether no constraints have been violated
+     */
+    //@Test
+    public void concurrentReservationsMultipleTimeslotsTest() throws SQLException, InterruptedException {
+        // some constants
+        final int N_USERS = 500;
+        final int N_SEATS = 500;
+
+        // some variables that will be used
+        Thread[] threads = new Thread[N_USERS];
+        User[] users = new User[N_USERS];
+        Timeslot[] timeslots = new Timeslot[N_USERS]; // timeslots[i] will be assigned to user[i]
+
+        // Create N_USERS test users
+        for (int i = 0; i < N_USERS; i++) {
+            users[i] = TestSharedMethods.studentTestUser();
+            users[i].setAugentID(users[i].getAugentID() + "" + i);
+            users[i].setMail(i + "" + users[i].getMail());
+            accountDao.directlyAddUser(users[i]);
+        }
+        logger.info(String.format("All %d users have been created.", N_USERS));
+
+        // Create a location that has N_SEATS seats
+        Building building = TestSharedMethods.testBuilding();
+        building.setName("Building to test concurrent reservations");
+        buildingDao.addBuilding(building);
+
+        Location location = TestSharedMethods.testLocation(
+                TestSharedMethods.insertTestAuthority("Test concurrent reservations",
+                        "Authority to test concurrent reservations", authorityDao),
+                building);
+        location.setNumberOfSeats(N_SEATS);
+        location.setName("Location to test concurrent reservations");
+        locationDao.addLocation(location);
+        logger.info("Location has been created");
+
+        // Create an upcoming calendar period with a small timeslot size (timeslots will be created too)
+        CalendarPeriod calendarPeriod = TestSharedMethods.upcomingCalendarPeriods(location);
+        // Reasoning behind timeslot size: 17h - 9h = 8h = 480 min, twee dagen = 960 min -> 16 min/timeslot -> 60 timeslots
+        calendarPeriod.setTimeslotLength(16);
+        calendarPeriodDao.addCalendarPeriods(singletonList(calendarPeriod));
+        logger.info("Calendar period has been created");
+
+        Assert.assertEquals(60, calendarPeriod.getTimeslots().size());
+        for (int i = 0; i < N_USERS; i++) {
+            timeslots[i] = calendarPeriod.getTimeslots().get(i % calendarPeriod.getTimeslots().size());
+        }
+
+        // Let each user make a reservation concurrently
+        for (int i = 0; i < N_USERS; i++) {
+            final int _i = i;
+            threads[i] = new Thread(
+                    () -> {
+                        LocationReservation lr = new LocationReservation(users[_i], LocalDateTime.now(), timeslots[_i], null);
+                        try {
+                            boolean s = locationReservationDao.addLocationReservationIfStillRoomAtomically(lr);
+                            if(!s)
+                                System.out.println("Didn't manage...");
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
+            );
+        }
+
+        for (Thread thread: threads ) {
+            thread.start();
+            logger.info("thread has been started");
+        }
+
+        // Now, wait for all threads to be finished
+        for (int i = 0; i < N_USERS; i++) {
+            threads[i].join();
+        }
+
+        // Test whether no constraints have been violated
+        long lrsCount = 0;
+        for (Timeslot timeslot : calendarPeriod.getTimeslots()) {
+            lrsCount += locationReservationDao.countReservedSeatsOfTimeslot(timeslot);
+        }
+        Assert.assertEquals(N_USERS, lrsCount);
+    }
+
+    //@Test
+    public void timingOfReservationTest() throws SQLException {
+        // Create a location that has N_SEATS seats
+        Building building = TestSharedMethods.testBuilding();
+        building.setName("Building to test concurrent reservations");
+        buildingDao.addBuilding(building);
+
+        Location location = TestSharedMethods.testLocation(
+                TestSharedMethods.insertTestAuthority("Test concurrent reservations",
+                        "Authority to test concurrent reservations", authorityDao),
+                building);
+        location.setNumberOfSeats(10);
+        location.setName("Location to test concurrent reservations");
+        locationDao.addLocation(location);
+        logger.info("Location has been created");
+
+        // Create an upcoming calendar period with a small timeslot size (timeslots will be created too)
+        CalendarPeriod calendarPeriod = TestSharedMethods.upcomingCalendarPeriods(location);
+        // Reasoning behind timeslot size: 17h - 9h = 8h = 480 min, twee dagen = 960 min -> 16 min/timeslot -> 60 timeslots
+        calendarPeriod.setTimeslotLength(16);
+        calendarPeriodDao.addCalendarPeriods(singletonList(calendarPeriod));
+        logger.info("Calendar period has been created");
+
+        Timeslot timeslot = calendarPeriod.getTimeslots().get(0);
+        Assert.assertNotNull(timeslot);
+
+        long t = 0;
+        for (int i = 0; i < 1000; i++) {
+            LocationReservation lr = new LocationReservation(testUser, LocalDateTime.now(), timeslot, null);
+            LocalDateTime start = LocalDateTime.now();
+            locationReservationDao.addLocationReservationIfStillRoomAtomically(lr);
+            LocalDateTime end = LocalDateTime.now();
+
+            t += ChronoUnit.MILLIS.between(start, end);
+            locationReservationDao.deleteLocationReservation(testUser.getAugentID(), timeslot);
+        }
+        logger.info(String.format("Avg timing = %d", t/1000));
+
+        long count = locationReservationDao.countReservedSeatsOfTimeslot(timeslot);
+        Assert.assertEquals(0, count);
     }
 }
