@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 @AutoConfigureMockMvc
 @Import(TestSecurityConfig.class)
-public class BaseIntegrationTest extends BaseTest {
+public abstract class BaseIntegrationTest extends BaseTest {
 
     @Autowired
     protected IAccountDao accountDao;
