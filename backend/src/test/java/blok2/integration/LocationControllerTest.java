@@ -20,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class LocationControllerTest extends BaseIntegrationTest {
 
     @Test
+    @WithUserDetails(value = "student1", userDetailsServiceBeanName = "testUserDetails")
     public void testGetAllLocations() throws Exception {
         mockMvc.perform(get("/locations")).andDo(print())
                                                         .andExpect(status().isOk())
@@ -27,6 +28,7 @@ public class LocationControllerTest extends BaseIntegrationTest {
     }
 
     @Test
+    @WithUserDetails(value = "student1", userDetailsServiceBeanName = "testUserDetails")
     public void testGetAllUnapprovedLocations() throws Exception {
         mockMvc.perform(get("/locations/unapproved")).andDo(print())
                 .andExpect(status().isOk())

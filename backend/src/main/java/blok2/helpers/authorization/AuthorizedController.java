@@ -1,5 +1,6 @@
 package blok2.helpers.authorization;
 
+import blok2.helpers.exceptions.NotAuthorizedException;
 import blok2.model.users.User;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -20,7 +21,7 @@ public abstract class AuthorizedController {
         }
 
         if(!(userO instanceof User) || !p.apply(entity, (User)userO)) {
-            throw new AccessControlException(message);
+            throw new NotAuthorizedException(message);
         }
     }
 

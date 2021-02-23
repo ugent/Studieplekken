@@ -113,7 +113,7 @@ public class AuthorityControllerTest extends BaseIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(value = "student1", userDetailsServiceBeanName = "testUserDetails")
+    @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testGetAuthorityFromUser() throws Exception {
         mockMvc.perform(get("/authority/users/"+student.getAugentID())).andDo(print())
                 .andExpect(status().isOk())
@@ -128,7 +128,7 @@ public class AuthorityControllerTest extends BaseIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(value = "student1", userDetailsServiceBeanName = "testUserDetails")
+    @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testGetAuthorityFromUserMissing() throws Exception {
         mockMvc.perform(get("/authority/users/"+15)).andDo(print())
                 .andExpect(status().isNotFound());
@@ -152,7 +152,7 @@ public class AuthorityControllerTest extends BaseIntegrationTest {
         Assert.assertEquals(1, authorityDao.getUsersFromAuthority(authority.getAuthorityId()).size());
     }
     @Test
-    @WithUserDetails(value = "student1", userDetailsServiceBeanName = "testUserDetails")
+    @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testPostUserToAuthorityMissingAuthority() throws Exception {
         mockMvc.perform(post("/authority/"+"10"+ "/user/" + student2.getAugentID()).with(csrf()))
                 .andDo(print()).andExpect(status().isNotFound());
@@ -161,7 +161,7 @@ public class AuthorityControllerTest extends BaseIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(value = "student1", userDetailsServiceBeanName = "testUserDetails")
+    @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testPostUserToAuthorityMissingUser() throws Exception {
         mockMvc.perform(post("/authority/"+authority.getAuthorityId()+ "/user/" + "10").with(csrf()))
                 .andDo(print()).andExpect(status().isNotFound());
@@ -170,7 +170,7 @@ public class AuthorityControllerTest extends BaseIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(value = "student1", userDetailsServiceBeanName = "testUserDetails")
+    @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testDeleteUserFromAuthority() throws Exception {
         mockMvc.perform(delete("/authority/"+authority.getAuthorityId() + "/user/" + student.getAugentID()).with(csrf()))
                 .andDo(print()).andExpect(status().isOk());
