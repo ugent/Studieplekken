@@ -1,5 +1,5 @@
 <div id='print-ngx'>
-    <h1>{{locationName}}</h1>
+    <h1>{{(getLocation(locationId) | async).name}}</h1>
     <h3 *ngIf="calendarPeriodO | async as cp">{{timestring(timeslot, cp)}}</h3>
 
     <hr>
@@ -10,7 +10,7 @@
             <th>{{'management.locationDetails.calendar.reservations.table.number' | translate}}</th>
         </tr>
     </thead>
-          
+
     <tbody>
     <tr *ngFor="let reservation of lrs">
         <td>{{reservation.user.firstName + ' ' + reservation.user.lastName}}</td>

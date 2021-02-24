@@ -38,8 +38,8 @@ export class LocationDetailsService {
 
   constructor(private locationService: LocationService) { }
 
-  loadLocation(locationName: string): void {
-    this.locationService.getLocation(locationName).subscribe(
+  loadLocation(locationId: number): void {
+    this.locationService.getLocation(locationId).subscribe(
       next => {
         this.locationSubject.next(next);
       }, error => {

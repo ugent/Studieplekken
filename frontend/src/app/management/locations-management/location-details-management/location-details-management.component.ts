@@ -22,8 +22,8 @@ export class LocationDetailsManagementComponent implements OnInit {
               private functionalityService: ApplicationTypeFunctionalityService) { }
 
   ngOnInit(): void {
-    const locationName = this.route.snapshot.paramMap.get('locationName');
-    this.locationDetailsService.loadLocation(locationName);
+    const locationId = Number(this.route.snapshot.paramMap.get('locationId'));
+    this.locationDetailsService.loadLocation(locationId);
     this.showLockersManagement = this.functionalityService.showLockersManagementFunctionality();
   }
 }

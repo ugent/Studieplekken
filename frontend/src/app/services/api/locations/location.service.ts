@@ -16,7 +16,7 @@ export class LocationService {
 
   constructor(private http: HttpClient) { }
 
-  locationCache: Cache<string, Location> = new Cache<string, Location>(this.http, (arg: Location) => arg.name);
+  locationCache: Cache<number, Location> = new Cache<number, Location>(this.http, (arg: Location) => arg.locationId);
 
   /***********************************************************
    *   API calls for CRUD operations with public.LOCATIONS   *
@@ -33,10 +33,9 @@ export class LocationService {
     return this.http.get<Location[]>(api.locationsUnapproved);
   }
 
-
-  getLocation(locationName: string, invalidateCache: boolean = false): Observable<Location> {
-    const url = api.location.replace('{locationName}', locationName);
-    return this.locationCache.getValue(locationName, url, invalidateCache);
+  getLocation(locationId: number, invalidateCache: boolean = false): Observable<Location> {
+    const url = api.location.replace('{locationId}', String(locationId));
+    return this.locationCache.getValue(locationId, url, invalidateCache);
   }
 
   getAllLocationNextReservableFroms(): Observable<Pair<string, Moment>[]> {
@@ -47,20 +46,21 @@ export class LocationService {
     return this.http.post(api.addLocation, location);
   }
 
-  updateLocation(locationName: string, location: Location): Observable<any> {
-    return this.http.put<void>(api.updateLocation.replace('{locationName}', locationName), location);
+  updateLocation(locationId: number, location: Location): Observable<any> {
+    return this.http.put<void>(api.updateLocation.replace('{locationId}', String(locationId)), location);
   }
 
   approveLocation(location: Location, approval: boolean): Observable<any> {
-    return this.http.put<void>(api.approveLocation.replace('{locationName}', location.name), {location, approval});
+    console.log(location);
+    return this.http.put<void>(api.approveLocation.replace('{locationId}', String(location.locationId)), {location, approval});
   }
 
-  deleteLocation(locationName: string): Observable<any> {
-    return this.http.delete(api.deleteLocation.replace('{locationName}', locationName));
+  deleteLocation(locationId: number): Observable<any> {
+    return this.http.delete(api.deleteLocation.replace('{locationId}', String(locationId)));
   }
 
-  getNumberOfReservationsNow(locationName: string): Observable<number> {
-    return this.http.get<any>(api.locationReservationCount.replace('{location}', locationName))
+  getNumberOfReservationsNow(locationId: number): Observable<number> {
+    return this.http.get<any>(api.locationReservationCount.replace('{locationId}', String(locationId)))
               .pipe(map(s => s.amount));
   }
 
@@ -68,8 +68,8 @@ export class LocationService {
    *   API calls for CRUD operations with public.LOCATION_TAGS   *
    ***************************************************************/
 
-  setupTagsForLocation(locationName: string, tags: LocationTag[]): Observable<any> {
-    return this.http.put(api.setupTagsForLocation.replace('{locationName}', locationName), tags.map(v => v.tagId));
+  setupTagsForLocation(locationId: number, tags: LocationTag[]): Observable<any> {
+    return this.http.put(api.setupTagsForLocation.replace('{locationId}', String(locationId)), tags.map(v => v.tagId));
   }
 
 }

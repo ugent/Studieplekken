@@ -52,7 +52,7 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
       }
     );
 
-    this.occupationObs = this.locationService.getNumberOfReservationsNow(this.location.name);
+    this.occupationObs = this.locationService.getNumberOfReservationsNow(this.location.locationId);
 
     this.assignedTags = this.location.assignedTags;
     this.setupTagsInCurrentLang();

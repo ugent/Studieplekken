@@ -58,12 +58,12 @@ export class LocationDescriptionComponent implements OnInit {
     location.descriptionEnglish = this.model.english;
 
     // update
-    this.locationService.updateLocation(location.name, location).subscribe(
+    this.locationService.updateLocation(location.locationId, location).subscribe(
       () => {
         this.showUpdateSuccess = true;
         setTimeout(() => this.showUpdateSuccess = undefined, msToShowFeedback);
         // make sure to retrieve the updated the location
-        this.locationDetailsService.loadLocation(location.name);
+        this.locationDetailsService.loadLocation(location.locationId);
       }, () => {
         this.showUpdateSuccess = false;
         setTimeout(() => this.showUpdateSuccess = undefined, msToShowFeedback);

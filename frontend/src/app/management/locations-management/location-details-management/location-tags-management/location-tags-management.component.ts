@@ -20,6 +20,7 @@ export class LocationTagsManagementComponent implements OnInit {
   @Input() location: Observable<Location>;
 
   locationName: string;
+  locationId: number;
   currentLang: string;
 
   tagsFormControl: FormControl = new FormControl([]);
@@ -54,6 +55,7 @@ export class LocationTagsManagementComponent implements OnInit {
     this.location.subscribe(
       (next) => {
         if (next.name !== '') {
+          this.locationId = next.locationId;
           this.locationName = next.name;
           this.tagsThatAreSelected = next.assignedTags;
           this.tagsFormControl = new FormControl(this.tagsThatAreSelected);
@@ -71,11 +73,11 @@ export class LocationTagsManagementComponent implements OnInit {
 
   updateTags(): void {
     this.successUpdatingTagsConfiguration = null;
-    this.locationService.setupTagsForLocation(this.locationName, this.matSelectSelection).subscribe(
+    this.locationService.setupTagsForLocation(this.locationId, this.matSelectSelection).subscribe(
       () => {
         this.successUpdatingTagsConfiguration = true;
         // reload the location
-        this.locationDetailsService.loadLocation(this.locationName);
+        this.locationDetailsService.loadLocation(this.locationId);
         this.modalService.hide();
       }, () => {
         this.successUpdatingTagsConfiguration = false;

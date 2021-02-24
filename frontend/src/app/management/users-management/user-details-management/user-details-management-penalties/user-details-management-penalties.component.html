@@ -28,7 +28,7 @@
       <tr *ngFor="let penalty of penalties">
         <td>{{penalty.eventCode}}</td>
         <td>{{toDateTimeViewString(penalty.timestamp)}}</td>
-        <td>{{penalty.reservationLocation}}</td>
+        <td>{{(getLocation(penalty.reservationLocationId) | async).name}}</td>
         <td>{{penalty.receivedPoints}}</td>
         <td>{{penalty.remarks}}</td>
         <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
@@ -96,7 +96,7 @@
               {{'management.users.userDetails.penalties.table.addPenaltyModalView.location' | translate}}</label>
             <div class="col-lg-8">
               <select class="form-control" id="location" formControlName="location" >
-                <option *ngFor="let location of locations" [value]="location.name">{{location.name}}</option>
+                <option *ngFor="let location of locations" [value]="location.locationId">{{location.name}}</option>
               </select>
             </div>
 
@@ -190,7 +190,7 @@
           <ul>
             <li><b style="margin-right: 5px"><i>{{('management.users.userDetails.penalties.table.eventCode' | translate) + ':   '}}</i></b>{{currentPenaltyToDelete.eventCode}}</li>
             <li><b style="margin-right: 5px"><i>{{('management.users.userDetails.penalties.table.timestamp' | translate) + ':   '}}</i></b>{{toDateTimeViewString(currentPenaltyToDelete.timestamp)}}</li>
-            <li><b style="margin-right: 5px"><i>{{('management.users.userDetails.penalties.table.location' | translate) + ':   '}}</i></b>{{currentPenaltyToDelete.reservationLocation}}</li>
+            <li><b style="margin-right: 5px"><i>{{('management.users.userDetails.penalties.table.location' | translate) + ':   '}}</i></b>{{(getLocation(currentPenaltyToDelete.reservationLocationId) | async).name}}</li>
             <li><b style="margin-right: 5px"><i>{{('management.users.userDetails.penalties.table.receivedPoints' | translate) + ':   '}}</i></b>{{currentPenaltyToDelete.receivedPoints}}</li>
           </ul>
         </div>

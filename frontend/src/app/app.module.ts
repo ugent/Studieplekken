@@ -95,7 +95,7 @@ const routes: Routes = [
   },
 
   {
-    path: 'dashboard/:locationName',
+    path: 'dashboard/:locationId',
     component: LocationDetailsComponent,
     canActivate: [AuthorizationGuardService]
   },
@@ -156,12 +156,12 @@ const routes: Routes = [
         canActivate: [AuthorizationGuardService]
       },
       {
-        path: 'locations/:locationName',
+        path: 'locations/:locationId',
         component: LocationDetailsManagementComponent,
         canActivate: [AuthorizationGuardService]
       },
       {
-        path: 'locations/:locationName/timeslot/:calendarid/:date/:seqnr',
+        path: 'locations/:locationId/timeslot/:calendarid/:date/:seqnr',
         component: TimeslotTableComponent,
         canActivate: [AuthorizationGuardService]
       },

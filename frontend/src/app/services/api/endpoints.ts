@@ -11,27 +11,27 @@ export const api = {
   locationsInAuthoritiesOfUser: '/api/authority/users/{userId}/locations',
 
   // CALENDAR_PERIODS
-  calendarPeriods: '/api/locations/calendar/{locationName}',
-  locationStatus: '/api/locations/calendar/{locationName}/status',
+  calendarPeriods: '/api/locations/calendar/{locationId}',
+  locationStatus: '/api/locations/calendar/{locationId}/status',
   addCalendarPeriods: '/api/locations/calendar',
-  updateCalendarPeriods: '/api/locations/calendar/{locationName}',
+  updateCalendarPeriods: '/api/locations/calendar/{locationId}',
   deleteCalendarPeriods: '/api/locations/calendar',
 
   // CALENDAR_PERIODS_FOR_LOCKERS
-  calendarPeriodsForLockers: '/api/locations/lockerCalendar/{locationName}',
+  calendarPeriodsForLockers: '/api/locations/lockerCalendar/{locationId}',
   addCalendarPeriodsForLockers: '/api/locations/lockerCalendar',
-  updateCalendarPeriodsForLockers: '/api/locations/lockerCalendar/{locationName}',
+  updateCalendarPeriodsForLockers: '/api/locations/lockerCalendar/{locationId}',
   deleteCalendarPeriodsForLockers: '/api/locations/lockerCalendar',
 
   // LOCATIONS
   locations: '/api/locations',
   locationsUnapproved: '/api/locations/unapproved',
-  location: '/api/locations/{locationName}',
+  location: '/api/locations/{locationId}',
   addLocation: '/api/locations',
-  updateLocation: '/api/locations/{locationName}',
-  approveLocation: '/api/locations/{locationName}/approval',
-  deleteLocation: '/api/locations/{locationName}',
-  setupTagsForLocation: '/api/locations/tags/{locationName}',
+  updateLocation: '/api/locations/{locationId}',
+  approveLocation: '/api/locations/{locationId}/approval',
+  deleteLocation: '/api/locations/{locationId}',
+  setupTagsForLocation: '/api/locations/tags/{locationId}',
   allReservableFroms: '/api/locations/nextReservableFroms',
 
   // LOCATION_RESERVATIONS
@@ -43,7 +43,7 @@ export const api = {
   addLocationReservation: '/api/locations/reservations',
   deleteLocationReservation: '/api/locations/reservations',
   updateAttendance: '/api/locations/reservations/{userid}/{calendarid}/{date}/{seqnr}/attendance',
-  locationReservationCount: '/api/locations/reservations/count/{location}',
+  locationReservationCount: '/api/locations/reservations/count/{locationId}',
   locationReservationsWithLocationOfUser: '/api/locations/reservations/{userId}',
 
 
@@ -72,7 +72,7 @@ export const api = {
   getAdmins: '/api/account/admins',
 
   // LOCKERS
-  lockersStatusesOfLocation: '/api/lockers/status/{locationName}',
+  lockersStatusesOfLocation: '/api/lockers/status/{locationId}',
 
   // PENALTY_BOOK
   penaltiesByUserId: '/api/penalties/{id}',

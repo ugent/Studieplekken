@@ -6,7 +6,7 @@ export interface Penalty {
   eventCode: number;
   timestamp: Moment;
   reservationDate: Moment;
-  reservationLocation: string;
+  reservationLocationId: number;
   receivedPoints: number;
   remarks: string;
 }
@@ -18,7 +18,7 @@ export class PenaltyConstructor {
       eventCode: 0,
       timestamp: moment(),
       reservationDate: moment(),
-      reservationLocation: '',
+      reservationLocationId: -1,
       receivedPoints: 0,
       remarks: ''
     };
@@ -34,7 +34,7 @@ export class PenaltyConstructor {
       eventCode: obj.eventCode,
       timestamp: moment(obj.timestamp),
       reservationDate: moment(obj.reservationDate),
-      reservationLocation: obj.reservationLocation,
+      reservationLocationId: obj.reservationLocationId,
       receivedPoints: obj.receivedPoints,
       remarks: obj.remarks
     };

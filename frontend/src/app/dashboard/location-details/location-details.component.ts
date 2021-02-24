@@ -31,7 +31,7 @@ import {
 })
 export class LocationDetailsComponent implements OnInit, OnDestroy {
   location: Observable<Location>;
-  locationName: string;
+  locationId: number;
   tags: LocationTag[];
 
   events: CalendarEvent[] = [];
@@ -86,8 +86,8 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.locationName = this.route.snapshot.paramMap.get('locationName');
-    this.location = this.locationService.getLocation(this.locationName);
+    this.locationId = Number(this.route.snapshot.paramMap.get('locationId'));
+    this.location = this.locationService.getLocation(this.locationId);
     this.showAdmin = this.authenticationService.isAdmin();
     this.currentLang = this.translate.currentLang;
 
@@ -195,7 +195,7 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
     }
 
     this.calendarSub = combineLatest([
-      this.calendarPeriodsService.getCalendarPeriodsOfLocation(this.locationName),
+      this.calendarPeriodsService.getCalendarPeriodsOfLocation(this.locationId),
       this.authenticationService.getLocationReservations(),
     ])
       .subscribe(([periods, reservations]) => {

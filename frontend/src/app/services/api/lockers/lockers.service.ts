@@ -12,9 +12,9 @@ export class LockersService {
   constructor(private http: HttpClient) {
   }
 
-  getLockersStatusesOfLocation(locationName: string): Observable<LockerReservation[]> {
+  getLockersStatusesOfLocation(locationId: number): Observable<LockerReservation[]> {
     return this.http.get<LockerReservation[]>(api.lockersStatusesOfLocation
-      .replace('{locationName}', locationName));
+      .replace('{locationId}', String(locationId)));
   }
 
   updateLockerReservation(lockerReservation: LockerReservation): Observable<any> {

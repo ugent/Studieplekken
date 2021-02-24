@@ -26,6 +26,7 @@ export class LocationsManagementComponent implements OnInit {
   addingWasSuccess: boolean = undefined;
 
   currentLocationNameToDelete: string;
+  currentLocationIdToDelete: number;
   currentCalendarPeriodsToDelete: CalendarPeriod[];
   currentReservationCount: number = undefined;
   deletionWasSuccess: boolean = undefined;
@@ -37,7 +38,6 @@ export class LocationsManagementComponent implements OnInit {
   buildingsMap: Map<number, Building>;
   editMode: boolean;
   showAddWarning = false;
-  locationToAdd: Location;
 
   constructor(private locationService: LocationService,
               private authoritiesService: AuthoritiesService,
@@ -62,6 +62,7 @@ export class LocationsManagementComponent implements OnInit {
 
   setupForm(edit: boolean = false): void {
     this.addLocationFormGroup = new FormGroup({
+      locationId: new FormControl(-1, Validators.required),
       name: new FormControl({value: '', disabled: edit}, Validators.required),
       authority: new FormControl('', Validators.required),
       building: new FormControl('', Validators.required),
@@ -113,7 +114,8 @@ export class LocationsManagementComponent implements OnInit {
   prepareToDeleteLocation(location: Location, template: TemplateRef<any>): void {
     this.deletionWasSuccess = undefined;
     this.currentLocationNameToDelete = location.name;
-    this.calendarPeriodService.getCalendarPeriodsOfLocation(location.name).subscribe((next) => {
+    this.currentLocationIdToDelete = location.locationId;
+    this.calendarPeriodService.getCalendarPeriodsOfLocation(location.locationId).subscribe((next) => {
       this.currentCalendarPeriodsToDelete = next;
       this.modalService.show(template);
     });
@@ -121,7 +123,7 @@ export class LocationsManagementComponent implements OnInit {
 
   deleteLocation(): void {
     this.deletionWasSuccess = null;
-    this.locationService.deleteLocation(this.currentLocationNameToDelete).subscribe(
+    this.locationService.deleteLocation(this.currentLocationIdToDelete).subscribe(
       () => {
         this.successDeletionHandler();
         this.currentCalendarPeriodsToDelete = [];
@@ -132,7 +134,8 @@ export class LocationsManagementComponent implements OnInit {
     );
   }
 
-  clearForm(): void {
+  closeModal(): void {
+    this.modalService.hide();
     this.setupForm();
   }
 
@@ -153,10 +156,6 @@ export class LocationsManagementComponent implements OnInit {
 
   errorHandler(): void {
     this.addingWasSuccess = false;
-  }
-
-  setCurrentLocationNameToDelete(locationName: string): void {
-    this.currentLocationNameToDelete = locationName;
   }
 
   // *******************
@@ -232,13 +231,10 @@ export class LocationsManagementComponent implements OnInit {
       ));
   }
 
-  closeModal(): void {
-    this.modalService.hide();
-  }
-
   prepareToApproveLocation(location: Location, template: TemplateRef<any>): void {
     this.setupForm();
     this.editMode = true;
+    this.addLocationFormGroup.get('locationId').setValue(location.locationId);
     this.addLocationFormGroup.get('name').setValue(location.name);
     this.addLocationFormGroup.get('building').setValue(location.building.buildingId);
     this.addLocationFormGroup.get('authority').setValue(location.authority.authorityId);

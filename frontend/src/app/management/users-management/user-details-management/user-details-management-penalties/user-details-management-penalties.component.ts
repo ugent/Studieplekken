@@ -70,13 +70,13 @@ export class UserDetailsManagementPenaltiesComponent implements OnInit {
     });
   }
 
-  addPenalty(value: {timestamp: string, location: string, points: number, remarks: string}): void {
+  addPenalty(value: {timestamp: string, location: number, points: number, remarks: string}): void {
     const penalty = PenaltyConstructor.new();
     penalty.augentID = this.userId;
     penalty.eventCode = penaltyEventCodeForManualEntry;
     penalty.timestamp = moment(value.timestamp);
     penalty.reservationDate = null;
-    penalty.reservationLocation = value.location;
+    penalty.reservationLocationId = Number(value.location);
     penalty.receivedPoints = value.points;
     penalty.remarks = value.remarks;
 
@@ -126,6 +126,10 @@ export class UserDetailsManagementPenaltiesComponent implements OnInit {
 
   validForm(): boolean {
     return this.newPenaltyFormGroup.valid;
+  }
+
+  getLocation(locationId: number): Observable<Location> {
+    return this.locationService.getLocation(locationId);
   }
 
   get timestamp(): AbstractControl { return this.newPenaltyFormGroup.get('timestamp'); }

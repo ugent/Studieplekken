@@ -49,9 +49,9 @@
         <tbody *ngIf="penalties | async as penalties">
         <tr *ngFor="let penalty of penalties">
           <td>{{penalty.eventCode}}</td>
-          <td>{{toDateTimeViewString(penalty.timestamp)}}</td>
-          <td>{{objectExists(penalty.reservationDate) ? toDateString(penalty.reservationDate) : '-'}}</td>
-          <td>{{penalty.reservationLocation}}</td>
+          <td>{{penalty.timestamp.format('DD-MM-YYYY HH:mm')}}</td>
+          <td>{{penalty.reservationDate.format('DD-MM-YYYY')}}</td>
+          <td>{{(getLocation(penalty.reservationLocationId) | async).name}}</td>
           <td>{{penalty.receivedPoints}}</td>
         </tr>
         </tbody>
