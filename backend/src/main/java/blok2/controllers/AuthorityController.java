@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.SQLException;
@@ -24,7 +23,9 @@ import java.util.List;
 @RestController
 @RequestMapping("authority")
 public class AuthorityController {
+
     private final Logger logger = LoggerFactory.getLogger(AuthorityController.class.getSimpleName());
+
     private final IAuthorityDao authorityDao;
     private final IAccountDao accountDao;
 
@@ -55,7 +56,7 @@ public class AuthorityController {
     public Authority getAuthority(@PathVariable int authorityId) {
         try {
             Authority authority = authorityDao.getAuthorityByAuthorityId(authorityId);
-            if(authority == null)
+            if (authority == null)
                 throw new NoSuchAuthorityException("Authority not found");
             return authority;
         } catch (SQLException e) {
@@ -69,9 +70,9 @@ public class AuthorityController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public void addAuthority(@RequestBody Authority authority) {
         try {
-            if(authorityDao.getAuthorityByName(authority.getAuthorityName()) != null) {
+            if (authorityDao.getAuthorityByName(authority.getAuthorityName()) != null)
                 throw new AlreadyExistsException("Authority");
-            }
+
             authorityDao.addAuthority(authority);
             logger.info(String.format("Adding authority %s", authority.getAuthorityName()));
         } catch (SQLException e) {
@@ -116,9 +117,8 @@ public class AuthorityController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public List<User> getUsersFromAuthority(@PathVariable int authorityId) {
         try {
-            if(authorityDao.getAuthorityByAuthorityId(authorityId) == null) {
+            if (authorityDao.getAuthorityByAuthorityId(authorityId) == null)
                 throw new NoSuchAuthorityException("Authority not found");
-            }
 
             return authorityDao.getUsersFromAuthority(authorityId);
         } catch (SQLException e) {
@@ -132,9 +132,8 @@ public class AuthorityController {
     @PreAuthorize("(hasAuthority('HAS_AUTHORITIES') and #userId == authentication.principal.augentID) or hasAuthority('ADMIN')")
     public List<Authority> getAuthoritiesFromUser(@PathVariable("userId") String userId) {
         try {
-            if(accountDao.getUserById(userId) == null) {
+            if (accountDao.getUserById(userId) == null)
                 throw new NoSuchUserException("User not found");
-            }
 
             return authorityDao.getAuthoritiesFromUser(userId);
         } catch (SQLException e) {
@@ -160,12 +159,10 @@ public class AuthorityController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public void addUserToAuthority(@PathVariable int authorityId, @PathVariable String userId) {
         try {
-            if(accountDao.getUserById(userId) == null) {
+            if (accountDao.getUserById(userId) == null)
                 throw new NoSuchUserException("User not found");
-            }
-            if(authorityDao.getAuthorityByAuthorityId(authorityId) == null) {
+            if (authorityDao.getAuthorityByAuthorityId(authorityId) == null)
                 throw new NoSuchAuthorityException("Authority not found");
-            }
 
             authorityDao.addUserToAuthority(userId, authorityId);
             logger.info(String.format("Adding user %s to authority %d", userId, authorityId));

@@ -102,9 +102,8 @@ public class LocationController extends AuthorizedLocationController {
     public void addLocation(@RequestBody Location location) {
         isAuthorized((l,$) -> hasAuthority(l.getAuthority()), location);
         try {
-            if(this.locationDao.getLocation(location.getName()) != null) {
+            if (this.locationDao.getLocation(location.getName()) != null)
                 throw new AlreadyExistsException("location name already in use");
-            }
 
             this.locationDao.addLocation(location);
             this.emailService.sendNewLocationMessage(Resources.blokatugentConf.getString("dfsgMail"), location);
