@@ -11,7 +11,6 @@ import blok2.model.reservables.Location;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.bouncycastle.util.Times;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
@@ -20,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
+
 @AutoConfigureMockMvc
 @Import(TestSecurityConfig.class)
 public class BaseIntegrationTest extends BaseTest {
@@ -57,13 +57,13 @@ public class BaseIntegrationTest extends BaseTest {
 
     protected final String baseURI = "";
 
-
     public void populateDatabase() throws SQLException {
         // USERS
         /*
          * Users are added by the TestSecurityConfig
          * For security reasons
          */
+
         // LOCATIONS
         authority = TestSharedMethods.insertTestAuthority(authorityDao);
         testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
@@ -85,7 +85,6 @@ public class BaseIntegrationTest extends BaseTest {
         student= accountDao.getUserByEmail("student1@ugent.be");
         student2 = accountDao.getUserByEmail("student2@ugent.be");
         authorityDao.addUserToAuthority(student.getAugentID(), authority.getAuthorityId());
-
 
         Timeslot timeslot = new Timeslot(cps[0], 0, cps[0].getStartsAt().plusDays(1));
 
