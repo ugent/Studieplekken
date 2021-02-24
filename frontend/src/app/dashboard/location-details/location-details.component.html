@@ -11,10 +11,11 @@
            REST API) resulted in an error in the dashboard-item, the attribute
            will be replaced with a default value. -->
       <div>
-        <img *ngIf="location.imageUrl !== null"
-             src="{{location.imageUrl}}" alt="Image of {{location.name}}"
-             (error)="handleImageError(location)">
-        <img *ngIf="location.imageUrl === null" [src]="altImageUrl" alt="Image of {{location.name}}">
+        <img *ngIf="!imageUrlErrorOccurred && location.imageUrl"
+             src="{{location.imageUrl}}" class="img" alt="Image for {{location.name}}"
+             (error)="handleImageError()">
+        <img *ngIf="imageUrlErrorOccurred || !location.imageUrl" [src]="altImageUrl" alt="Image of {{location.name}}">
+
         <div class="locationStatusBar"
              [classList]="'locationStatusBar ' + locationStatusColorClass()">
         </div>

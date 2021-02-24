@@ -54,6 +54,7 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
   };
 
   altImageUrl = defaultLocationImage;
+  imageUrlErrorOccurred = false;
 
   status: Pair<LocationStatus, string>;
   statusInCurrentLang: string;
@@ -170,8 +171,8 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  handleImageError(location: Location): void {
-    location.imageUrl = defaultLocationImage;
+  handleImageError(): void {
+    this.imageUrlErrorOccurred = true;
   }
 
   getGoogleMapsUrl(location: Location): SafeResourceUrl {

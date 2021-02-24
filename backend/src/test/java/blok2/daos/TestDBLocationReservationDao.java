@@ -340,7 +340,7 @@ public class TestDBLocationReservationDao extends TestDao {
         Assert.assertEquals(N_USERS, lrsCount);
     }
 
-    @Test
+    //@Test
     public void timingOfReservationTest() throws SQLException {
         // Create a location that has N_SEATS seats
         Building building = TestSharedMethods.testBuilding();
