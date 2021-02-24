@@ -43,7 +43,6 @@ public class TestDBScannerLocationDao extends BaseTest {
 
     private List<Location> expectedLocationsOfUser1;
     private List<Location> expectedLocationsOfUser2;
-    private Building testBuilding;
 
     @Override
     public void populateDatabase() throws SQLException {
@@ -53,8 +52,7 @@ public class TestDBScannerLocationDao extends BaseTest {
 
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
 
-        testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
-
+        Building testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
         testLocation1 = TestSharedMethods.testLocation(authority.clone(), testBuilding);
         testLocation2 = TestSharedMethods.testLocation2(authority.clone(), testBuilding);
 

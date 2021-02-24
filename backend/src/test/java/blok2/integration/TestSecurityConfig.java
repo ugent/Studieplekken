@@ -34,10 +34,10 @@ public class TestSecurityConfig {
 
         private void addUsersIfNotExist() throws SQLException {
             try {
-            User admin = TestSharedMethods.adminTestUser("admin");
-            User student = TestSharedMethods.studentTestUser("student1");
-            User student2 = TestSharedMethods.studentTestUser("student2");
-            TestSharedMethods.addTestUsers(accountDao, admin, student, student2);
+                User admin = TestSharedMethods.adminTestUser("admin");
+                User student = TestSharedMethods.studentTestUser("student1");
+                User student2 = TestSharedMethods.studentTestUser("student2");
+                TestSharedMethods.addTestUsers(accountDao, admin, student, student2);
             } catch (Exception ignored) {
 
             }
@@ -47,7 +47,6 @@ public class TestSecurityConfig {
     @Bean(name="testUserDetails")
     @Primary
     public UserDetailsService userDetailsService() {
-
         return new TestUserDetailsService();
     }
 

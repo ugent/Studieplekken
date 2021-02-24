@@ -29,7 +29,6 @@ public class TestDBCalendarPeriodForLockersDao  extends BaseTest {
     private IBuildingDao buildingDao;
 
     private Location testLocation;
-    private Building testBuilding;
     private List<CalendarPeriodForLockers> calendarPeriodsForLockers;
 
     // the reason for making this an attribute of the class
@@ -42,7 +41,7 @@ public class TestDBCalendarPeriodForLockersDao  extends BaseTest {
         // setup test objects
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
 
-        testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+        Building testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
         testLocation = TestSharedMethods.testLocation(authority.clone(), testBuilding);
         calendarPeriodsForLockers = TestSharedMethods.testCalendarPeriodsForLockers(testLocation);
         updatedPeriodsForLockers = TestSharedMethods.testCalendarPeriodsForLockersButUpdated(testLocation);

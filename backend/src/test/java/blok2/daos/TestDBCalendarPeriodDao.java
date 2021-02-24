@@ -23,7 +23,7 @@ import java.util.*;
 
 public class TestDBCalendarPeriodDao extends BaseTest {
 
-    private Logger logger = LoggerFactory.getLogger(TestDBCalendarPeriodDao.class);
+    private final Logger logger = LoggerFactory.getLogger(TestDBCalendarPeriodDao.class);
 
     @Autowired
     private ICalendarPeriodDao calendarPeriodDao;
