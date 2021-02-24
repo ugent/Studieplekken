@@ -42,7 +42,6 @@ public class TestDBPenaltyEventsDao extends BaseTest {
     private PenaltyEvent testEvent;
 
     private Location testLocation;
-    private Building testBuilding;
     private User testUser;
 
     @Override
@@ -69,7 +68,7 @@ public class TestDBPenaltyEventsDao extends BaseTest {
         testEvent = new PenaltyEvent(1, 10, testDescriptions);
 
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
-        testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+        Building testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
         testLocation = TestSharedMethods.testLocation(authority.clone(), testBuilding);
         testUser = TestSharedMethods.studentTestUser();
 

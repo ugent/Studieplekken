@@ -27,14 +27,13 @@ public class TestDBLocationDao extends BaseTest {
     private IBuildingDao buildingDao;
 
     private Location testLocation;
-    private Building testBuilding;
 
     @Override
     public void populateDatabase() throws SQLException {
         // Setup test objects
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
 
-        testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+        Building testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
         testLocation = TestSharedMethods.testLocation(authority.clone(), testBuilding);
 
         // Add test objects to database
