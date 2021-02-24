@@ -39,7 +39,7 @@ export class LocationDetailsService {
   constructor(private locationService: LocationService) { }
 
   loadLocation(locationId: number): void {
-    this.locationService.getLocation(locationId).subscribe(
+    this.locationService.getLocation(locationId, true).subscribe(
       next => {
         this.locationSubject.next(next);
       }, error => {
