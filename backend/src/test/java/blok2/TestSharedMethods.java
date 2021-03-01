@@ -186,6 +186,7 @@ public class TestSharedMethods {
             time = LocalTime.of(17,0);
             period.setClosingTime(time);
 
+            time = LocalTime.of(0,0);
             date = LocalDate.of(date.getYear(), date.getMonth(), 1);
             period.setReservableFrom(LocalDateTime.of(date, time));
 

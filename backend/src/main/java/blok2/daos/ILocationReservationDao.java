@@ -36,7 +36,7 @@ public interface ILocationReservationDao extends IDao {
 
     List<LocationReservation> getPresentStudents(String location, LocalDate date) throws SQLException;
 
-    void setReservationAttendance(String augentId, Timeslot timeslot, boolean attendance) throws SQLException;
+    boolean setReservationAttendance(String augentId, Timeslot timeslot, boolean attendance) throws SQLException;
 
     List<LocationReservation> getAllLocationReservationsOfTimeslot(Timeslot timeslot) throws SQLException;
 

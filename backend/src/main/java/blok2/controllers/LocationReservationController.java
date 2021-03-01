@@ -4,6 +4,7 @@ import blok2.daos.ICalendarPeriodDao;
 import blok2.daos.ILocationReservationDao;
 import blok2.helpers.Pair;
 import blok2.helpers.authorization.AuthorizedLocationController;
+import blok2.helpers.exceptions.NoSuchReservationException;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
@@ -150,7 +151,9 @@ public class LocationReservationController extends AuthorizedLocationController 
         try {
             CalendarPeriod parentPeriod = calendarPeriodDao.getById(slot.getCalendarId());
             isAuthorized(parentPeriod.getLocation().getName());
-            locationReservationDao.setReservationAttendance(userid, slot, body.getAttended());
+            if(!locationReservationDao.setReservationAttendance(userid, slot, body.getAttended())) {
+                throw new NoSuchReservationException("No such reservation");
+            };
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
