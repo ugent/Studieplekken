@@ -136,7 +136,6 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
     }
 
     @Test
-    @Ignore
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testSetAttendanceUnexisting() throws Exception {
 
