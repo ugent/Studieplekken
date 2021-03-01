@@ -52,8 +52,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .csrfTokenRepository(csrfTokenRepository());
 
         http.authorizeRequests()
+                .regexMatchers("/login/cas").authenticated() // used to trigger cas flow
                 .anyRequest().permitAll();
-
         http.httpBasic()
                 .authenticationEntryPoint(casAuthenticationEntryPoint);
 

@@ -55,8 +55,6 @@ public abstract class BaseIntegrationTest extends BaseTest {
     @Autowired
     protected ObjectMapper objectMapper;
 
-    protected final String baseURI = "";
-
     public void populateDatabase() throws SQLException {
         // USERS
         /*
@@ -88,7 +86,6 @@ public abstract class BaseIntegrationTest extends BaseTest {
 
         Timeslot timeslot = new Timeslot(cps[0], 0, cps[0].getStartsAt().plusDays(1));
 
-        System.out.println(student.getAugentID());
         LocationReservation reservation = new LocationReservation(student, LocalDateTime.now(), timeslot, null);
         locationReservationDao.addLocationReservationIfStillRoomAtomically(reservation);
     }
