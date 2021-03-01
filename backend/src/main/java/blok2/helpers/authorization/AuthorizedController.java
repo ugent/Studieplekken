@@ -4,7 +4,6 @@ import blok2.helpers.exceptions.NotAuthorizedException;
 import blok2.model.users.User;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.security.AccessControlException;
 import java.util.function.BiFunction;
 
 public abstract class AuthorizedController {
@@ -15,12 +14,12 @@ public abstract class AuthorizedController {
 
     public <T> void isAuthorized(BiFunction<T, User, Boolean> p, T entity, String message) {
         Object userO = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(userO instanceof User && ((User)userO).isAdmin()) {
+        if (userO instanceof User && ((User)userO).isAdmin()) {
             // Blanket admin permissions. You're authorized.
             return;
         }
 
-        if(!(userO instanceof User) || !p.apply(entity, (User)userO)) {
+        if (!(userO instanceof User) || !p.apply(entity, (User)userO)) {
             throw new NotAuthorizedException(message);
         }
     }

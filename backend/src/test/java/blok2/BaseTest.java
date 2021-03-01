@@ -14,7 +14,6 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import javax.annotation.PostConstruct;
 import java.sql.SQLException;
 
 @Import(CustomFlywayConfig.class)
@@ -25,6 +24,7 @@ import java.sql.SQLException;
         FlywayTestExecutionListener.class
 })
 public abstract class BaseTest {
+
     @Autowired
     protected ADB adb;
 

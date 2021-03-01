@@ -40,7 +40,6 @@ public class TestDBLockerDao extends BaseTest {
     private IBuildingDao buildingDao;
 
     private Location testLocation;
-    private Building testBuilding;
     private User testUser;
     private List<Locker> testLockers;
 
@@ -49,7 +48,7 @@ public class TestDBLockerDao extends BaseTest {
         // Setup test objects
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
 
-        testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+        Building testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
 
         testLocation = TestSharedMethods.testLocation(authority.clone(), testBuilding);
         testUser = TestSharedMethods.adminTestUser();

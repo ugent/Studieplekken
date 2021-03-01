@@ -9,8 +9,6 @@ import org.springframework.security.test.context.support.WithSecurityContextTest
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
-import java.util.List;
-
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -23,8 +21,8 @@ public class LocationControllerTest extends BaseIntegrationTest {
     @WithUserDetails(value = "student1", userDetailsServiceBeanName = "testUserDetails")
     public void testGetAllLocations() throws Exception {
         mockMvc.perform(get("/locations")).andDo(print())
-                                                        .andExpect(status().isOk())
-                                                        .andExpect(jsonPath("$.length()").value(1)); // only approved location
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1)); // only approved location
     }
 
     @Test
@@ -38,14 +36,16 @@ public class LocationControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testPostNewLocationDuplicate() throws Exception {
-        mockMvc.perform(post("/locations").with(csrf()).content(objectMapper.writeValueAsBytes(testLocation)).contentType("application/json"))
+        mockMvc.perform(post("/locations").with(csrf())
+                .content(objectMapper.writeValueAsBytes(testLocation)).contentType("application/json"))
                 .andDo(print()).andExpect(status().isConflict());
     }
 
     @Test
     @WithUserDetails(value = "student1", userDetailsServiceBeanName = "testUserDetails")
     public void testPostNewLocationUnauthorized() throws Exception {
-        mockMvc.perform(post("/locations").with(csrf()).content(objectMapper.writeValueAsBytes(testLocation)).contentType("application/json"))
+        mockMvc.perform(post("/locations").with(csrf())
+                .content(objectMapper.writeValueAsBytes(testLocation)).contentType("application/json"))
                 .andDo(print()).andExpect(status().isForbidden());
     }
 
@@ -53,11 +53,13 @@ public class LocationControllerTest extends BaseIntegrationTest {
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testPostNewLocation() throws Exception {
         Location testlocation3 = TestSharedMethods.testLocation3(authority, testBuilding);
-        mockMvc.perform(post("/locations").with(csrf()).content(objectMapper.writeValueAsBytes(testlocation3)).contentType("application/json"))
+
+        mockMvc.perform(post("/locations").with(csrf())
+                .content(objectMapper.writeValueAsBytes(testlocation3)).contentType("application/json"))
                 .andDo(print()).andExpect(status().isOk());
 
-        List<Location> locationList = locationDao.getAllUnapprovedLocations();
-        Assert.assertEquals(locationList.size(), 2);
+        Assert.assertEquals(2, locationDao.getAllUnapprovedLocations().size());
+        Assert.assertEquals(1, locationDao.getAllLocations().size());
     }
 
     @Test
@@ -65,15 +67,15 @@ public class LocationControllerTest extends BaseIntegrationTest {
     public void testApproveNewLocationUnauthorized() throws Exception {
         String jsonString = new JSONObject()
                 .put("location", new JSONObject(objectMapper.writeValueAsString(testLocationUnapproved)))
-                            .put("approval", "true")
-                            .toString();
+                .put("approval", "true")
+                .toString();
 
-        mockMvc.perform(put("/locations/"+testLocationUnapproved.getName() + "/approval").with(csrf()).content(jsonString).contentType("application/json"))
+        mockMvc.perform(put("/locations/" + testLocationUnapproved.getName() + "/approval")
+                .with(csrf()).content(jsonString).contentType("application/json")).andDo(print())
+                .andExpect(status().isForbidden());
 
-                .andDo(print()).andExpect(status().isForbidden());
-
-        List<Location> locationList = locationDao.getAllUnapprovedLocations();
-        Assert.assertEquals(locationList.size(), 1);
+        Assert.assertEquals(1, locationDao.getAllUnapprovedLocations().size());
+        Assert.assertEquals(1, locationDao.getAllLocations().size());
     }
 
     @Test
@@ -84,31 +86,30 @@ public class LocationControllerTest extends BaseIntegrationTest {
                 .put("approval", true)
                 .toString();
 
-        mockMvc.perform(put("/locations/"+testLocationUnapproved.getName() + "/approval").with(csrf()).content(jsonString).contentType("application/json"))
-                .andDo(print()).andExpect(status().isOk());
+        mockMvc.perform(put("/locations/" + testLocationUnapproved.getName() + "/approval")
+                .with(csrf()).content(jsonString).contentType("application/json")).andDo(print())
+                .andExpect(status().isOk());
 
-        List<Location> locationList = locationDao.getAllUnapprovedLocations();
-        Assert.assertEquals(locationList.size(), 0);
+        Assert.assertEquals(0, locationDao.getAllUnapprovedLocations().size());
+        Assert.assertEquals(2, locationDao.getAllLocations().size());
     }
 
     @Test
     @WithUserDetails(value = "student1", userDetailsServiceBeanName = "testUserDetails")
     public void testDeleteLocationUnauthorized() throws Exception {
-        mockMvc.perform(delete("/locations/"+testLocation.getName()).with(csrf()))
+        mockMvc.perform(delete("/locations/" + testLocation.getName()).with(csrf()))
                 .andDo(print()).andExpect(status().isForbidden());
 
-        List<Location> locationList = locationDao.getAllLocations();
-        Assert.assertEquals(locationList.size(), 1);
+        Assert.assertEquals(1, locationDao.getAllLocations().size());
     }
 
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testDeleteLocation() throws Exception {
-        mockMvc.perform(delete("/locations/"+testLocation.getName()).with(csrf()))
+        mockMvc.perform(delete("/locations/" + testLocation.getName()).with(csrf()))
                 .andDo(print()).andExpect(status().isOk());
 
-        List<Location> locationList = locationDao.getAllLocations();
-        Assert.assertEquals(locationList.size(), 0);
+        Assert.assertEquals(0, locationDao.getAllLocations().size());
     }
 }
 

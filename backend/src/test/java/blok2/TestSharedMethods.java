@@ -116,10 +116,10 @@ public class TestSharedMethods {
         return authority;
     }
 
-
     public static User adminTestUser() {
         return adminTestUser("admin");
     }
+
     public static User adminTestUser(String s) {
         User user = new User();
         user.setLastName("Added User");

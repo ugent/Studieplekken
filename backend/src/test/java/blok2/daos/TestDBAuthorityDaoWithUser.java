@@ -32,7 +32,6 @@ public class TestDBAuthorityDaoWithUser extends BaseTest {
     private User testUser;
     private Location testLocation1;
     private Location testLocation2;
-    private Building testBuilding;
 
     @Override
     public void populateDatabase() throws SQLException {
@@ -41,7 +40,7 @@ public class TestDBAuthorityDaoWithUser extends BaseTest {
 
         testUser = TestSharedMethods.adminTestUser();
 
-        testBuilding = TestSharedMethods.testBuilding();
+        Building testBuilding = TestSharedMethods.testBuilding();
         testBuilding = buildingDao.addBuilding(testBuilding);
 
         testLocation1 = TestSharedMethods.testLocation(testAuthority.clone(), testBuilding);

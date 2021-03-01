@@ -52,7 +52,7 @@ public class LocationReservationController extends AuthorizedLocationController 
     @PreAuthorize("(hasAuthority('USER') and #id == authentication.principal.augentID) or hasAuthority('ADMIN')")
     // TODO: if only 'HAS_AUTHORITIES', then only allowed to retrieve the reservations for a location within one of the user's authorities
     // Not sure why you'd be allowed to get a user's reservations if you own a location.
-    // We suddenly use a request parameter here. Probably better to streamline it with everything else and put it in the url.
+    // TODO: We suddenly use a request parameter here. Probably better to streamline it with everything else and put it in the url.
     public List<LocationReservation> getLocationReservationsByUserId(@RequestParam String id) {
         try {
             return locationReservationDao.getAllLocationReservationsOfUser(id);

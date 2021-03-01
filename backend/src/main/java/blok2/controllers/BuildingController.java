@@ -47,9 +47,8 @@ public class BuildingController {
     public Building getBuilding(@PathVariable int buildingId) {
         try {
             Building building = buildingDao.getBuildingById(buildingId);
-            if(building == null) {
+            if (building == null)
                 throw new NoSuchBuildingException("No such building");
-            }
             return building;
         } catch (SQLException e) {
             logger.error(e.getMessage());

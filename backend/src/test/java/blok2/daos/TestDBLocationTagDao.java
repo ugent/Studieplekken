@@ -34,21 +34,15 @@ public class TestDBLocationTagDao extends BaseTest {
     private Location testLocation;
     private Location testLocation2;
 
-    private Authority testAuthority;
-
-    private Building testBuilding;
-
     private LocationTag testTag;
     private LocationTag testTag2;
     private LocationTag testTag3;
 
-
     @Override
     public void populateDatabase() throws SQLException {
         // Set up test objects
-        testAuthority = TestSharedMethods.insertTestAuthority(authorityDao);
-
-        testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+        Authority testAuthority = TestSharedMethods.insertTestAuthority(authorityDao);
+        Building testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
 
         testLocation = TestSharedMethods.testLocation(testAuthority, testBuilding);
         testLocation2 = TestSharedMethods.testLocation2(testAuthority, testBuilding);
@@ -140,7 +134,7 @@ public class TestDBLocationTagDao extends BaseTest {
         Assert.assertTrue(locationTagDao.getTagsForLocation(testLocation2.getName()).contains(testTag2));
         Assert.assertTrue(locationTagDao.getTagsForLocation(testLocation2.getName()).contains(testTag3));
 
-        boolean delete = locationTagDao.deleteTagFromAllLocations(testTag.getTagId());
+        locationTagDao.deleteTagFromAllLocations(testTag.getTagId());
 
         // Assert that the deletion of tag 1 worked
         Assert.assertFalse(locationTagDao.getTagsForLocation(testLocation.getName()).contains(testTag));
