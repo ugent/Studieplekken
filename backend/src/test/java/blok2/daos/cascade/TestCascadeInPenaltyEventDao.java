@@ -1,5 +1,7 @@
 package blok2.daos.cascade;
 
+import blok2.BaseTest;
+import blok2.TestSharedMethods;
 import blok2.daos.*;
 import blok2.daos.db.ADB;
 import blok2.helpers.Language;
@@ -21,7 +23,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
 
-public class TestCascadeInPenaltyEventDao extends TestDao {
+public class TestCascadeInPenaltyEventDao extends BaseTest {
 
     @Autowired
     private IAccountDao accountDao;

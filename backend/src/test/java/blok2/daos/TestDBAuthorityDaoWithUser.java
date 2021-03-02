@@ -1,5 +1,7 @@
 package blok2.daos;
 
+import blok2.BaseTest;
+import blok2.TestSharedMethods;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.reservables.Location;
@@ -13,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class TestDBAuthorityDaoWithUser extends TestDao {
+public class TestDBAuthorityDaoWithUser extends BaseTest {
 
     @Autowired
     private IAuthorityDao authorityDao;
@@ -30,7 +32,6 @@ public class TestDBAuthorityDaoWithUser extends TestDao {
     private User testUser;
     private Location testLocation1;
     private Location testLocation2;
-    private Building testBuilding;
 
     @Override
     public void populateDatabase() throws SQLException {
@@ -39,7 +40,7 @@ public class TestDBAuthorityDaoWithUser extends TestDao {
 
         testUser = TestSharedMethods.adminTestUser();
 
-        testBuilding = TestSharedMethods.testBuilding();
+        Building testBuilding = TestSharedMethods.testBuilding();
         testBuilding = buildingDao.addBuilding(testBuilding);
 
         testLocation1 = TestSharedMethods.testLocation(testAuthority.clone(), testBuilding);

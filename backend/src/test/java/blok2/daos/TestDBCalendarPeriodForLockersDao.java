@@ -1,5 +1,7 @@
 package blok2.daos;
 
+import blok2.BaseTest;
+import blok2.TestSharedMethods;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.calendar.CalendarPeriodForLockers;
@@ -12,7 +14,7 @@ import java.sql.SQLException;
 import java.util.Comparator;
 import java.util.List;
 
-public class TestDBCalendarPeriodForLockersDao  extends TestDao {
+public class TestDBCalendarPeriodForLockersDao  extends BaseTest {
 
     @Autowired
     private ICalendarPeriodForLockersDao calendarPeriodForLockersDao;
@@ -27,7 +29,6 @@ public class TestDBCalendarPeriodForLockersDao  extends TestDao {
     private IBuildingDao buildingDao;
 
     private Location testLocation;
-    private Building testBuilding;
     private List<CalendarPeriodForLockers> calendarPeriodsForLockers;
 
     // the reason for making this an attribute of the class
@@ -40,7 +41,7 @@ public class TestDBCalendarPeriodForLockersDao  extends TestDao {
         // setup test objects
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
 
-        testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+        Building testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
         testLocation = TestSharedMethods.testLocation(authority.clone(), testBuilding);
         calendarPeriodsForLockers = TestSharedMethods.testCalendarPeriodsForLockers(testLocation);
         updatedPeriodsForLockers = TestSharedMethods.testCalendarPeriodsForLockersButUpdated(testLocation);

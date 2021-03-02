@@ -7,6 +7,7 @@ import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.helpers.EmailService;
 import blok2.helpers.LocationWithApproval;
 import blok2.helpers.Resources;
+import blok2.helpers.exceptions.AlreadyExistsException;
 import blok2.model.reservables.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,6 +102,9 @@ public class LocationController extends AuthorizedLocationController {
     public void addLocation(@RequestBody Location location) {
         isAuthorized((l,$) -> hasAuthority(l.getAuthority()), location);
         try {
+            if (this.locationDao.getLocationByName(location.getName()) != null)
+                throw new AlreadyExistsException("location name already in use");
+
             this.locationDao.addLocation(location);
             this.emailService.sendNewLocationMessage(Resources.blokatugentConf.getString("dfsgMail"), location);
             logger.info(String.format("New location %s added", location.getName()));
@@ -134,8 +138,9 @@ public class LocationController extends AuthorizedLocationController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
-
+    
     @PutMapping("/{locationId}/approval")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void approveLocation(@PathVariable("locationId") int locationId, @RequestBody LocationWithApproval landa) {
         try {
             locationDao.approveLocation(landa.getLocation(), landa.isApproval());

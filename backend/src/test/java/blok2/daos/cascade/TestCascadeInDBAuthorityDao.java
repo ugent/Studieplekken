@@ -1,5 +1,7 @@
 package blok2.daos.cascade;
 
+import blok2.BaseTest;
+import blok2.TestSharedMethods;
 import blok2.daos.*;
 import blok2.model.Authority;
 import blok2.model.Building;
@@ -15,7 +17,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-public class TestCascadeInDBAuthorityDao extends TestDao {
+public class TestCascadeInDBAuthorityDao extends BaseTest {
 
     @Autowired
     private IAuthorityDao authorityDao;

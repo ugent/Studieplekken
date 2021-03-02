@@ -1,5 +1,7 @@
 package blok2.daos.cascade;
 
+import blok2.BaseTest;
+import blok2.TestSharedMethods;
 import blok2.daos.*;
 import blok2.model.Authority;
 import blok2.model.Building;
@@ -11,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
 
-public class TestCascadeInDBTagsDao extends TestDao {
+public class TestCascadeInDBTagsDao extends BaseTest {
 
     @Autowired
     private ILocationDao locationDao;

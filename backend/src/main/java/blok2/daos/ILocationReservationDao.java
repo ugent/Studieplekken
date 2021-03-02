@@ -45,7 +45,8 @@ public interface ILocationReservationDao extends IDao {
     /**
      * Set the attendance for a location reservation of a specified user at a specified timeslot
      */
-    void setReservationAttendance(String augentId, Timeslot timeslot, boolean attendance) throws SQLException;
+    boolean setReservationAttendance(String augentId, Timeslot timeslot, boolean attendance) throws SQLException;
+
 
     /**
      * Get all location reservations at a specified timeslot

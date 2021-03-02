@@ -1,5 +1,6 @@
 package blok2.daos;
 
+import blok2.BaseTest;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.reservables.Location;
@@ -12,7 +13,7 @@ import org.junit.Test;
 import java.sql.SQLException;
 
 
-public class TestDBLockerReservationDao extends TestDao {
+public class TestDBLockerReservationDao extends BaseTest {
     @Override
     public void populateDatabase() throws SQLException {
 

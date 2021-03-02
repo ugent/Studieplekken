@@ -26,10 +26,18 @@ public class Timeslot implements Cloneable {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private int amountOfReservations;
 
-    public Timeslot(int calendarId, int timeslotSeqnr, LocalDate timeslotDate) {
+    // Artefact for framework
+    public Timeslot() {}
+
+    public Timeslot(int calendarId, int timeslotSeqnr, LocalDate timeslotDate, int seatCount) {
         this.calendarId = calendarId;
         this.timeslotSeqnr = timeslotSeqnr;
         this.timeslotDate = timeslotDate;
+        this.seatCount = seatCount;
+    }
+
+    public Timeslot(CalendarPeriod period, int timeslotSeqnr, LocalDate timeslotDate) {
+        this(period.getId(), timeslotSeqnr, timeslotDate, period.getSeatCount());
     }
 
     @Override
