@@ -1,0 +1,32 @@
+<div *ngIf="locationObs | async as location; else catchAllError" class="container-fluid">
+  <h3>{{('scan.locationDetails.title' | translate).replace('{locationName}', location.name)}}</h3>
+
+  <div *ngIf="usersObs | async as users; else loadingOrError">
+    <div *ngIf="users.length > 0; else noUsers">
+      <!-- TODO -->
+    </div>
+  </div>
+</div>
+
+<ng-template #catchAllError>
+  <div class="alert alert-error">
+    {{'general.catchAllError' | translate}}
+  </div>
+</ng-template>
+
+<ng-template #loadingOrError>
+  <div *ngIf="loadingError | async; else loading" class="alert alert-error">
+    {{'scan.locationDetails.errorMessageOnLoadingUsers' | translate}}
+  </div>
+  <ng-template #loading>
+    <div class="alert alert-info">
+      {{'general.waitingForServer' | translate}}
+    </div>
+  </ng-template>
+</ng-template>
+
+<ng-template #noUsers>
+  <div class="alert alert-warning">
+    {{'scan.locationDetails.noUsersToScanWarning' | translate}}
+  </div>
+</ng-template>

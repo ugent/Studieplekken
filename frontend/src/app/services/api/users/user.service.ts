@@ -44,10 +44,17 @@ export class UserService {
   }
 
   hasUserAuthorities(userId: string): Observable<boolean> {
-    if(userId === '') {
+    if (userId === '') {
       return of(false);
     }
     return this.http.get<boolean>(api.hasUserAuthorities.replace('{userId}', userId));
+  }
+
+  hasUserLocationsToScan(userId: string): Observable<boolean> {
+    if (userId === '') {
+      return of(false);
+    }
+    return of(true); // TODO: implement this correctly
   }
 
   getAdmins(): Observable<User[]> {

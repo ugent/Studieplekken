@@ -33,7 +33,7 @@
 
 <ng-template #loadingOrError>
   <div *ngIf="loadingError | async; else loading" class="alert alert-error">
-    {{'scan.errorMessageOnLoadingLocations' | translate}}
+    {{'scan.locations.errorMessageOnLoadingLocations' | translate}}
   </div>
   <ng-template #loading>
     <div class="alert alert-info">
@@ -44,6 +44,6 @@
 
 <ng-template #noLocations>
   <div class="alert alert-warning">
-    {{'scan.noLocationsWarning' | translate}}
+    {{'scan.locations.noLocationsWarning' | translate}}
   </div>
 </ng-template>

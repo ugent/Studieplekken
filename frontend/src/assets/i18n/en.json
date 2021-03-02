@@ -117,7 +117,9 @@
     "notAvailableAbbreviation": "n/a",
 
     "waitingForServer": "Waiting for response of server...",
-    "idSetByBackendMessage": "ID set by backend"
+    "idSetByBackendMessage": "ID set by backend",
+
+    "catchAllError": "Something seems to be wrong, please retry later."
   },
 
   "header": {
@@ -950,10 +952,16 @@
         "name": "Name",
         "building": "Building",
         "numberOfSeats": "Seats"
-      }
+      },
+
+      "noLocationsWarning": "You are currently not assigned to any location where you can scan students.",
+      "errorMessageOnLoadingLocations": "Could not fetch the locations for which you can scan students."
     },
 
-    "noLocationsWarning": "You are currently not assigned to any location where you can scan students.",
-    "errorMessageOnLoadingLocations": "Could not fetch the locations for which you can scan students."
+    "locationDetails": {
+      "title": "Scan students for {locationName}",
+      "errorMessageOnLoadingUsers": "Could not fetch the users that you can scan.",
+      "noUsersToScanWarning": "There are no students to be scanned for this location at this time."
+    }
   }
 }

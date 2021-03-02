@@ -73,10 +73,15 @@ export class AppComponent implements OnInit {
             this.showScan = scanFunc && true;
             this.showManagement = true;
           } else {
+            // todo: use mergeMap (https://www.learnrxjs.io/learn-rxjs/operators/transformation/mergemap)
             this.userService.hasUserAuthorities(next.augentID).subscribe(
               next2 => {
-                this.showScan = scanFunc && next2;
                 this.showManagement = next2;
+              }
+            );
+            this.userService.hasUserLocationsToScan(next.augentID).subscribe(
+              next2 => {
+                this.showScan = scanFunc && next2;
               }
             );
           }

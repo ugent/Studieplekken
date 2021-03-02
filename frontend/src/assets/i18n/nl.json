@@ -117,7 +117,9 @@
     "notAvailableAbbreviation": "n.v.t.",
 
     "waitingForServer": "Wachten op antwoord van de server...",
-    "idSetByBackend": "ID door backend gezet"
+    "idSetByBackend": "ID door backend gezet",
+
+    "catchAllError": "Er is iets misgelopen, gelieve op een later tijdstip opnieuw te proberen."
   },
 
   "header": {
@@ -950,10 +952,16 @@
         "name": "Naam",
         "building": "Gebouw",
         "numberOfSeats": "Plaatsen"
-      }
+      },
+
+      "noLocationsWarning": "Je hebt momenteel geen locaties toegewezen gekregen waar je studenten kan scannen.",
+      "errorMessageOnLoadingLocations": "De locaties waar je studenten kan scannen, kunnen niet opgehaald worden."
     },
 
-    "noLocationsWarning": "Je hebt momenteel geen locaties toegewezen gekregen waar je studenten kan scannen.",
-    "errorMessageOnLoadingLocations": "De locaties waar je studenten kan scannen, kunnen niet opgehaald worden."
+    "locationDetails": {
+      "title": "Studenten scannen voor {locationName}",
+      "errorMessageOnLoadingUsers": "De studenten die je kan scannen, kunnen niet opgehaald worden.",
+      "noUsersToScanWarning": "Op dit moment zijn er geen studenten te scannen voor deze locatie ."
+    }
   }
 }

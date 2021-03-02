@@ -59,6 +59,10 @@ export class AuthenticationService {
     return this.hasAuthoritiesSubject.value;
   }
 
+  hasLocationsToScan(): boolean {
+    return true; // TODO: implement this correctly
+  }
+
   /**
    * The flow of a cas login is as follows:
    *   1. frontend: sends the user to <backend-url>/login/cas

@@ -98,5 +98,6 @@ export const api = {
   deleteUserFromAuthority: '/api/authority/{authorityId}/user/{userId}',
 
   // Scanning functionality
-  scanningLocations: '/api/scan/locations'
+  scanningLocations: '/api/scan/locations',
+  usersToScanAtLocation: '/api/scan/users/{locationId}'
 };
