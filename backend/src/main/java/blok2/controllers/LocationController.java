@@ -138,7 +138,7 @@ public class LocationController extends AuthorizedLocationController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
-    
+
     @PutMapping("/{locationId}/approval")
     @PreAuthorize("hasAuthority('ADMIN')")
     public void approveLocation(@PathVariable("locationId") int locationId, @RequestBody LocationWithApproval landa) {
