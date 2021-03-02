@@ -95,5 +95,8 @@ export const api = {
   usersInAuthority: '/api/authority/{authorityId}/users',
   authoritiesOfUser: '/api/authority/users/{userId}',
   addUserToAuthority: '/api/authority/{authorityId}/user/{userId}',
-  deleteUserFromAuthority: '/api/authority/{authorityId}/user/{userId}'
+  deleteUserFromAuthority: '/api/authority/{authorityId}/user/{userId}',
+
+  // Scanning functionality
+  scanningLocations: '/api/scan/locations'
 };

@@ -937,5 +937,23 @@
         "noReservations": "You have never made any locker reservations so far."
       }
     }
+  },
+
+  "scan": {
+    "aside": {
+      "title": "Scan",
+      "locations": "Locations I can scan"
+    },
+
+    "locations": {
+      "header": {
+        "name": "Name",
+        "building": "Building",
+        "numberOfSeats": "Seats"
+      }
+    },
+
+    "noLocationsWarning": "You are currently not assigned to any location where you can scan students.",
+    "errorMessageOnLoadingLocations": "Could not fetch the locations for which you can scan students."
   }
 }

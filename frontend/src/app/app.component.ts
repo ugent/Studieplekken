@@ -91,9 +91,6 @@ export class AppComponent implements OnInit {
           this.showManagement = false;
           this.showInformation = true;
         }
-
-        // possibly overrule the shows above due to limitations in functionality
-        this.showScan = this.functionalityService.showScanningFunctionality();
       }
     );
   }

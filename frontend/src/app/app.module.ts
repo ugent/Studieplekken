@@ -73,6 +73,7 @@ import { AdminsManagementComponent } from './management/admins-management/admins
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { TimeslotTableComponent } from './management/locations-management/location-details-management/timeslot-table/timeslot-table.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ScanningLocationsComponent } from './scan/scanning-locations/scanning-locations.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -139,7 +140,19 @@ const routes: Routes = [
   {
     path: 'scan',
     component: ScanComponent,
-    canActivate: [AuthorizationGuardService, ApplicationTypeGuardService]
+    canActivate: [AuthorizationGuardService, ApplicationTypeGuardService],
+    children: [
+      {
+        path: '',
+        redirectTo: 'locations',
+        pathMatch: 'full'
+      },
+      {
+        path: 'locations',
+        component: ScanningLocationsComponent,
+        canActivate: [AuthorizationGuardService]
+      }
+    ]
   },
 
   {
@@ -267,7 +280,8 @@ const routes: Routes = [
     MomentTimeslotSizeComponent,
     AdminsManagementComponent,
     TimeslotTableComponent,
-    FormatStatusPipe
+    FormatStatusPipe,
+    ScanningLocationsComponent
   ],
     imports: [
       BrowserModule,
