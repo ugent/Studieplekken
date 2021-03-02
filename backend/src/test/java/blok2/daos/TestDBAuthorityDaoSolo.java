@@ -1,5 +1,7 @@
 package blok2.daos;
 
+import blok2.BaseTest;
+import blok2.TestSharedMethods;
 import blok2.model.Authority;
 import org.junit.Assert;
 import org.junit.Test;
@@ -8,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.sql.SQLException;
 import java.util.List;
 
-public class TestDBAuthorityDaoSolo extends TestDao {
+public class TestDBAuthorityDaoSolo extends BaseTest {
 
     @Autowired
     private IAuthorityDao authorityDao;

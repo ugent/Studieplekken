@@ -1,5 +1,7 @@
 package blok2.daos;
 
+import blok2.BaseTest;
+import blok2.TestSharedMethods;
 import blok2.helpers.LocationStatus;
 import blok2.helpers.Pair;
 import blok2.helpers.TimeException;
@@ -19,9 +21,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class TestDBCalendarPeriodDao extends TestDao {
+public class TestDBCalendarPeriodDao extends BaseTest {
 
-    private Logger logger = LoggerFactory.getLogger(TestDBCalendarPeriodDao.class);
+    private final Logger logger = LoggerFactory.getLogger(TestDBCalendarPeriodDao.class);
 
     @Autowired
     private ICalendarPeriodDao calendarPeriodDao;

@@ -1,5 +1,7 @@
 package blok2.daos;
 
+import blok2.BaseTest;
+import blok2.TestSharedMethods;
 import blok2.model.users.User;
 import org.junit.Assert;
 import org.junit.Test;
@@ -9,7 +11,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 
-public class TestDBAccountDao extends TestDao {
+public class TestDBAccountDao extends BaseTest {
 
     @Autowired
     private IAccountDao accountDao;
@@ -28,8 +30,6 @@ public class TestDBAccountDao extends TestDao {
     @Override
     public void cleanup() throws SQLException {
         TestSharedMethods.removeTestUsers(accountDao, testUser2, testUser1);
-
-        super.cleanup();
     }
 
     @Test

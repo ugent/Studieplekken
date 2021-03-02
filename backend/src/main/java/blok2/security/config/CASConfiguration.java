@@ -26,7 +26,6 @@ import java.util.Collections;
  *      - https://docs.spring.io/spring-security/site/docs/4.2.x/reference/html/cas.html   *
  *      - https://debbabi-nader.github.io/cas-spring-angular/index.html                    *
  *******************************************************************************************/
-@Profile("!test")
 @Configuration
 @ConfigurationProperties(prefix = "cas")
 public class CASConfiguration {

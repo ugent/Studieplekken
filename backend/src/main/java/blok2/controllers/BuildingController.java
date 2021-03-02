@@ -1,6 +1,7 @@
 package blok2.controllers;
 
 import blok2.daos.IBuildingDao;
+import blok2.helpers.exceptions.NoSuchBuildingException;
 import blok2.model.Building;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +46,10 @@ public class BuildingController {
     @PreAuthorize("permitAll()")
     public Building getBuilding(@PathVariable int buildingId) {
         try {
-            return buildingDao.getBuildingById(buildingId);
+            Building building = buildingDao.getBuildingById(buildingId);
+            if (building == null)
+                throw new NoSuchBuildingException("No such building");
+            return building;
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
@@ -82,7 +86,7 @@ public class BuildingController {
 
     @DeleteMapping("/{buildingId}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public void deleteAuthority(@PathVariable int buildingId) {
+    public void deleteBuilding(@PathVariable int buildingId) {
         try {
             buildingDao.deleteBuilding(buildingId);
             logger.info(String.format("Removed building with id '%d'", buildingId));

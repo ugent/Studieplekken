@@ -205,6 +205,7 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
 
         periods.forEach(element => {
           this.calendarMap.set(element.id, element);
+
           const duration = element.reservableFrom.valueOf() - moment().valueOf();
           if (duration > 0) {
             setTimeout(() => {

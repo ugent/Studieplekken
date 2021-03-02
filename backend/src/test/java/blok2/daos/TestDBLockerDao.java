@@ -1,5 +1,7 @@
 package blok2.daos;
 
+import blok2.BaseTest;
+import blok2.TestSharedMethods;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.reservables.Location;
@@ -17,7 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
-public class TestDBLockerDao extends TestDao {
+public class TestDBLockerDao extends BaseTest {
 
     @Autowired
     private ILocationDao locationDao;
@@ -38,7 +40,6 @@ public class TestDBLockerDao extends TestDao {
     private IBuildingDao buildingDao;
 
     private Location testLocation;
-    private Building testBuilding;
     private User testUser;
     private List<Locker> testLockers;
 
@@ -47,7 +48,7 @@ public class TestDBLockerDao extends TestDao {
         // Setup test objects
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
 
-        testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+        Building testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
 
         testLocation = TestSharedMethods.testLocation(authority.clone(), testBuilding);
         testUser = TestSharedMethods.adminTestUser();

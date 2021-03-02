@@ -1,5 +1,8 @@
-package blok2.daos;
+package blok2;
 
+import blok2.daos.IAccountDao;
+import blok2.daos.IAuthorityDao;
+import blok2.daos.ICalendarPeriodDao;
 import blok2.helpers.Institution;
 import blok2.helpers.TimeException;
 import blok2.model.Authority;
@@ -24,7 +27,7 @@ public class TestSharedMethods {
 
     public static Location testLocation(Authority authority, Building building) {
         Location testLocation = new Location();
-        testLocation.setName("Test Location");
+        testLocation.setName("TestLocation");
         testLocation.setNumberOfSeats(50);
         testLocation.setNumberOfLockers(15);
         testLocation.setImageUrl("https://example.com/image.jpg");
@@ -36,7 +39,7 @@ public class TestSharedMethods {
 
     public static Location testLocation1Seat(Authority authority, Building building) {
         Location testLocation = new Location();
-        testLocation.setName("Test Location 2");
+        testLocation.setName("TestLocation2");
         testLocation.setNumberOfSeats(1);
         testLocation.setNumberOfLockers(1);
         testLocation.setImageUrl("https://example.com/image.jpg");
@@ -48,7 +51,7 @@ public class TestSharedMethods {
 
     public static Location testLocation2(Authority authority, Building building) {
         Location testLocation2 = new Location();
-        testLocation2.setName("Second Test Location");
+        testLocation2.setName("SecondTestLocation");
         testLocation2.setNumberOfSeats(100);
         testLocation2.setNumberOfLockers(10);
         testLocation2.setImageUrl("https://example.com/picture.png");
@@ -60,7 +63,7 @@ public class TestSharedMethods {
 
     public static Location testLocation3(Authority authority, Building building) {
         Location testLocation3 = new Location();
-        testLocation3.setName("Third Test Location");
+        testLocation3.setName("ThirdTestLocation");
         testLocation3.setNumberOfSeats(25);
         testLocation3.setNumberOfLockers(5);
         testLocation3.setImageUrl("https://example.com/picture.png");
@@ -114,25 +117,33 @@ public class TestSharedMethods {
     }
 
     public static User adminTestUser() {
+        return adminTestUser("admin");
+    }
+
+    public static User adminTestUser(String s) {
         User user = new User();
         user.setLastName("Added User");
         user.setFirstName("First");
-        user.setMail("First.AddedUser@ugent.be");
+        user.setMail(s+"@ugent.be");
         user.setPassword("first_password");
         user.setInstitution(Institution.UGent);
-        user.setAugentID("001");
+        user.setAugentID(s);
         user.setAdmin(true);
         return user;
     }
 
     public static User studentTestUser() {
+        return studentTestUser("002");
+    }
+
+    public static User studentTestUser(String id) {
         User user = new User();
         user.setLastName("Added User");
         user.setFirstName("Second");
-        user.setMail("Second.AddedUser@ugent.be");
+        user.setMail(id + "@ugent.be");
         user.setPassword("second_password");
         user.setInstitution(Institution.UGent);
-        user.setAugentID("002");
+        user.setAugentID(id);
         user.setAdmin(false);
         return user;
     }
@@ -175,6 +186,7 @@ public class TestSharedMethods {
             time = LocalTime.of(17,0);
             period.setClosingTime(time);
 
+            time = LocalTime.of(0,0);
             date = LocalDate.of(date.getYear(), date.getMonth(), 1);
             period.setReservableFrom(LocalDateTime.of(date, time));
 

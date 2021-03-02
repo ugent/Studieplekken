@@ -1,4 +1,4 @@
-package blok2.daos;
+package blok2;
 
 import blok2.daos.db.ADB;
 import config.CustomFlywayConfig;
@@ -23,7 +23,7 @@ import java.sql.SQLException;
         DependencyInjectionTestExecutionListener.class,
         FlywayTestExecutionListener.class
 })
-public abstract class TestDao {
+public abstract class BaseTest {
 
     @Autowired
     protected ADB adb;
@@ -36,12 +36,10 @@ public abstract class TestDao {
     @Before
     @FlywayTest // Executes for a class or for a method. Combining with 'before' executes before every test.
     public void setup() throws SQLException {
-//        adb.createDatabase();
+        System.out.println("populating");
         populateDatabase();
     }
 
     @After
-    public void cleanup() throws SQLException {
-//        adb.cleanDatabase();
-    }
+    public void cleanup() throws SQLException {}
 }

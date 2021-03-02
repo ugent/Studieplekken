@@ -1,20 +1,20 @@
 package blok2.daos;
 
+import blok2.BaseTest;
+import blok2.TestSharedMethods;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.LocationTag;
 import blok2.model.reservables.Location;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.jupiter.api.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-public class TestDBLocationTagDao extends TestDao {
+public class TestDBLocationTagDao extends BaseTest {
 
     @Autowired
     private ILocationTagDao locationTagDao;
@@ -34,21 +34,15 @@ public class TestDBLocationTagDao extends TestDao {
     private Location testLocation;
     private Location testLocation2;
 
-    private Authority testAuthority;
-
-    private Building testBuilding;
-
     private LocationTag testTag;
     private LocationTag testTag2;
     private LocationTag testTag3;
 
-
     @Override
     public void populateDatabase() throws SQLException {
         // Set up test objects
-        testAuthority = TestSharedMethods.insertTestAuthority(authorityDao);
-
-        testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+        Authority testAuthority = TestSharedMethods.insertTestAuthority(authorityDao);
+        Building testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
 
         testLocation = TestSharedMethods.testLocation(testAuthority, testBuilding);
         testLocation2 = TestSharedMethods.testLocation2(testAuthority, testBuilding);
@@ -140,7 +134,7 @@ public class TestDBLocationTagDao extends TestDao {
         Assert.assertTrue(locationTagDao.getTagsForLocation(testLocation2.getName()).contains(testTag2));
         Assert.assertTrue(locationTagDao.getTagsForLocation(testLocation2.getName()).contains(testTag3));
 
-        boolean delete = locationTagDao.deleteTagFromAllLocations(testTag.getTagId());
+        locationTagDao.deleteTagFromAllLocations(testTag.getTagId());
 
         // Assert that the deletion of tag 1 worked
         Assert.assertFalse(locationTagDao.getTagsForLocation(testLocation.getName()).contains(testTag));

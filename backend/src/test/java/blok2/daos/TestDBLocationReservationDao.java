@@ -1,5 +1,7 @@
 package blok2.daos;
 
+import blok2.BaseTest;
+import blok2.TestSharedMethods;
 import blok2.helpers.Pair;
 import blok2.model.Authority;
 import blok2.model.calendar.CalendarPeriod;
@@ -19,11 +21,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.*;
 
-public class TestDBLocationReservationDao extends TestDao {
+public class TestDBLocationReservationDao extends BaseTest {
 
     private final static Logger logger = LoggerFactory.getLogger(TestDBLocationReservationDao.class);
 
@@ -46,7 +47,6 @@ public class TestDBLocationReservationDao extends TestDao {
     private IBuildingDao buildingDao;
 
     private Location testLocation;
-    private Location testLocation2;
     private User testUser;
     private User testUser2;
     private List<CalendarPeriod> calendarPeriods;
@@ -61,7 +61,7 @@ public class TestDBLocationReservationDao extends TestDao {
 
         testLocation = TestSharedMethods.testLocation(authority.clone(), testBuilding);
         Location testLocation1Seat = TestSharedMethods.testLocation1Seat(authority.clone(), testBuilding);
-        testLocation2 = TestSharedMethods.testLocation2(authority.clone(), testBuilding);
+        Location testLocation2 = TestSharedMethods.testLocation2(authority.clone(), testBuilding);
 
         testUser = TestSharedMethods.adminTestUser();
         testUser2 = TestSharedMethods.studentTestUser();
@@ -283,8 +283,7 @@ public class TestDBLocationReservationDao extends TestDao {
 
         }
 
-        List<Thread> threada = Arrays.asList(threads);
-        for (Thread thread: threada) {
+        for (Thread thread: threads) {
             thread.start();
             logger.info("thread %3d has been started");
 
