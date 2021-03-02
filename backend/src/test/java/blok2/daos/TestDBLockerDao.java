@@ -102,7 +102,7 @@ public class TestDBLockerDao extends BaseTest {
         lockerReservationDao.addLockerReservation(lr2);
 
         // Retrieve the locker statuses
-        List<LockerReservation> lockerStatusesOfLocation = lockersDao.getLockerStatusesOfLocation(testLocation.getName());
+        List<LockerReservation> lockerStatusesOfLocation = lockersDao.getLockerStatusesOfLocation(testLocation.getLocationId());
 
         // SCENARIO 4: unreserved locker, should not have an owner
         LockerReservation lr3 = lockerStatusesOfLocation.get(random.get(3));

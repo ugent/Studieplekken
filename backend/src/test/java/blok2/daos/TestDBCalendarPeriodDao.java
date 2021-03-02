@@ -69,7 +69,7 @@ public class TestDBCalendarPeriodDao extends BaseTest {
         calendarPeriodDao.addCalendarPeriods(calendarPeriods);
 
         // Check if the addition worked properly
-        List<CalendarPeriod> actualPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getName());
+        List<CalendarPeriod> actualPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getLocationId());
         actualPeriods.sort(Comparator.comparing(CalendarPeriod::getId));
         calendarPeriods.sort(Comparator.comparing(CalendarPeriod::getId));
 
@@ -84,7 +84,7 @@ public class TestDBCalendarPeriodDao extends BaseTest {
 
         Assert.assertEquals("StatusTest, only past calendar periods",
                 new Pair<>(LocationStatus.CLOSED, ""),
-                calendarPeriodDao.getStatus(testLocation.getName())
+                calendarPeriodDao.getStatus(testLocation.getLocationId())
         );
 
         // Second, add upcoming calendar periods. The past periods may remain, these do not affect status
@@ -92,7 +92,7 @@ public class TestDBCalendarPeriodDao extends BaseTest {
         calendarPeriodDao.addCalendarPeriods(Collections.singletonList(upcomingPeriod));
 
         Pair<LocationStatus, String> expectedStatus = new Pair<>(LocationStatus.CLOSED_UPCOMING, upcomingPeriod.getStartsAt() + " " + upcomingPeriod.getOpeningTime());
-        Pair<LocationStatus, String> retrievedStatus = calendarPeriodDao.getStatus(testLocation.getName());
+        Pair<LocationStatus, String> retrievedStatus = calendarPeriodDao.getStatus(testLocation.getLocationId());
         Assert.assertEquals("StatusTest, past and upcoming calendar periods",
                 expectedStatus,
                 retrievedStatus
@@ -116,7 +116,7 @@ public class TestDBCalendarPeriodDao extends BaseTest {
                     LocationStatus.CLOSED_ACTIVE,
                     LocalDateTime.of(LocalDate.now(), activePeriodOutsideHours.getOpeningTime()).format(outputFormat)
             );
-            Pair<LocationStatus, String> actual = calendarPeriodDao.getStatus(testLocation.getName());
+            Pair<LocationStatus, String> actual = calendarPeriodDao.getStatus(testLocation.getLocationId());
             Assert.assertEquals("StatusTest, active period, outside hours", expected, actual);
 
             // Before the case of active period inside the hours, remove outside hours
@@ -132,7 +132,7 @@ public class TestDBCalendarPeriodDao extends BaseTest {
                     LocationStatus.OPEN,
                     LocalDateTime.of(LocalDate.now(), activePeriodInsideHours.getClosingTime()).format(this.outputFormat)
             );
-            actual = calendarPeriodDao.getStatus(testLocation.getName());
+            actual = calendarPeriodDao.getStatus(testLocation.getLocationId());
             Assert.assertEquals("StatusTest, active period, inside hours",
                     expected,
                     actual
@@ -150,13 +150,19 @@ public class TestDBCalendarPeriodDao extends BaseTest {
         // Make sure that the calendar periods to be updated get the same ids as set by the db
         for (int i = 0; i < calendarPeriods.size(); i++) {
             updatedPeriods.get(i).setId(calendarPeriods.get(i).getId());
+            // In TestSharedMethods.testCalendarPeriodsButUpdated the location is cloned and the id of the
+            // updated calendar periods are thus not updated when locationDao.addLocation was called.
+            // Therefore the locationIds need to be set correctly here too:
+            updatedPeriods.get(i).getLocation().setLocationId(
+                    calendarPeriods.get(i).getLocation().getLocationId()
+            );
         }
 
         // update the periods
         calendarPeriodDao.updateCalendarPeriods(calendarPeriods, updatedPeriods);
 
         // check whether the periods are successfully updated
-        List<CalendarPeriod> actualPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getName());
+        List<CalendarPeriod> actualPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getLocationId());
         actualPeriods.sort(Comparator.comparing(CalendarPeriod::toString));
         updatedPeriods.sort(Comparator.comparing(CalendarPeriod::toString));
         Assert.assertEquals("updateCalendarPeriodsTest", new HashSet<>(updatedPeriods), new HashSet<>(actualPeriods));
@@ -172,7 +178,7 @@ public class TestDBCalendarPeriodDao extends BaseTest {
             calendarPeriodDao.deleteCalendarPeriod(calendarPeriod);
 
         // are the periods deleted?
-        List<CalendarPeriod> actualPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getName());
+        List<CalendarPeriod> actualPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getLocationId());
         Assert.assertEquals("deleteCalendarPeriodsTest", 0, actualPeriods.size());
     }
 }

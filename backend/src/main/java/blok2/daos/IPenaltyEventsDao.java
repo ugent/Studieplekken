@@ -57,7 +57,7 @@ public interface IPenaltyEventsDao extends IDao {
     /**
      * Get all occurrences of a PenaltyEvent within a location
      */
-    List<Penalty> getPenaltiesByLocation(String locationName) throws SQLException;
+    List<Penalty> getPenaltiesByLocation(int locationId) throws SQLException;
 
     /**
      * Get all occurrences of a PenaltyEvent by type of PenaltyEvent

@@ -14,5 +14,5 @@ public interface ILockersDao extends IDao {
      * <p>
      * If the LockerReservation
      */
-    List<LockerReservation> getLockerStatusesOfLocation(String locationName) throws SQLException;
+    List<LockerReservation> getLockerStatusesOfLocation(int locationId) throws SQLException;
 }

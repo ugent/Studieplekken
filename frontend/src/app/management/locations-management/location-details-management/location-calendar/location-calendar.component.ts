@@ -26,7 +26,7 @@ import {TranslateService} from '@ngx-translate/core';
 export class LocationCalendarComponent implements OnInit {
   @Input() location: Observable<Location>;
 
-  locationName: string;
+  locationId: number;
   locationFlat: Location;
 
   locationReservations: LocationReservation[];
@@ -99,7 +99,7 @@ export class LocationCalendarComponent implements OnInit {
     );
 
     this.location.subscribe(next => {
-      this.locationName = next.name;
+      this.locationId = next.locationId;
       this.locationFlat = next;
       this.setup();
     });
@@ -148,7 +148,7 @@ export class LocationCalendarComponent implements OnInit {
 
     // this.calendarPeriods is not empty, and all values are valid: persist update(s)
     this.calendarPeriodsService.updateCalendarPeriod(
-      this.locationName,
+      this.locationId,
       this.calendarPeriodsInDataLayer,
       this.calendarPeriodModel.value
     ).subscribe(
@@ -192,11 +192,11 @@ export class LocationCalendarComponent implements OnInit {
   // *******************/
 
   setup(): void {
-    if (!this.locationName) {
+    if (!this.locationId) {
       return;
     }
     // retrieve all calendar periods for this location
-    this.calendarPeriodsService.getCalendarPeriodsOfLocation(this.locationName).subscribe(next => {
+    this.calendarPeriodsService.getCalendarPeriodsOfLocation(this.locationId).subscribe(next => {
       if (next === null) {
         return;
       }

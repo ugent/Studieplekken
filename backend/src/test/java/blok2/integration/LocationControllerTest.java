@@ -70,7 +70,7 @@ public class LocationControllerTest extends BaseIntegrationTest {
                 .put("approval", "true")
                 .toString();
 
-        mockMvc.perform(put("/locations/" + testLocationUnapproved.getName() + "/approval")
+        mockMvc.perform(put("/locations/" + testLocationUnapproved.getLocationId() + "/approval")
                 .with(csrf()).content(jsonString).contentType("application/json")).andDo(print())
                 .andExpect(status().isForbidden());
 
@@ -86,7 +86,7 @@ public class LocationControllerTest extends BaseIntegrationTest {
                 .put("approval", true)
                 .toString();
 
-        mockMvc.perform(put("/locations/" + testLocationUnapproved.getName() + "/approval")
+        mockMvc.perform(put("/locations/" + testLocationUnapproved.getLocationId() + "/approval")
                 .with(csrf()).content(jsonString).contentType("application/json")).andDo(print())
                 .andExpect(status().isOk());
 
@@ -97,7 +97,7 @@ public class LocationControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "student1", userDetailsServiceBeanName = "testUserDetails")
     public void testDeleteLocationUnauthorized() throws Exception {
-        mockMvc.perform(delete("/locations/" + testLocation.getName()).with(csrf()))
+        mockMvc.perform(delete("/locations/" + testLocation.getLocationId()).with(csrf()))
                 .andDo(print()).andExpect(status().isForbidden());
 
         Assert.assertEquals(1, locationDao.getAllLocations().size());
@@ -106,7 +106,7 @@ public class LocationControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testDeleteLocation() throws Exception {
-        mockMvc.perform(delete("/locations/" + testLocation.getName()).with(csrf()))
+        mockMvc.perform(delete("/locations/" + testLocation.getLocationId()).with(csrf()))
                 .andDo(print()).andExpect(status().isOk());
 
         Assert.assertEquals(0, locationDao.getAllLocations().size());

@@ -23,10 +23,10 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
     private final Logger logger = Logger.getLogger(DBCalendarPeriodDao.class.getSimpleName());
 
     @Override
-    public List<CalendarPeriod> getCalendarPeriodsOfLocation(String locationName) throws SQLException {
+    public List<CalendarPeriod> getCalendarPeriodsOfLocation(int locationId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_calendar_periods"));
-            pstmt.setString(1, locationName);
+            pstmt.setInt(1, locationId);
             return getCalendarPeriodsFromPstmt(pstmt, conn);
         }
     }
@@ -216,18 +216,18 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
      *     - now is before start of timeslot, and date is not today -> LocationStatus.CLOSED_UPCOMING, send opening timestamp as string
      */
     @Override
-    public Pair<LocationStatus, String> getStatus(String locationName) throws SQLException {
+    public Pair<LocationStatus, String> getStatus(int locationId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
-            return getStatus(locationName, conn);
+            return getStatus(locationId, conn);
         }
     }
 
-    public static Pair<LocationStatus, String> getStatus(String locationName, Connection conn) throws SQLException {
+    public static Pair<LocationStatus, String> getStatus(int locationId, Connection conn) throws SQLException {
         // DateTimeFormatter to format the next opening hour in a consistent manner
         DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_current_and_or_next_timeslot"));
-        pstmt.setString(1, locationName);
+        pstmt.setInt(1, locationId);
         ResultSet rs = pstmt.executeQuery();
 
         if (!rs.next()) {
@@ -308,7 +308,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
 
     private void prepareCommonPartOfCalendarPeriodPstmt(CalendarPeriod calendarPeriod,
                                                         PreparedStatement pstmt) throws SQLException {
-        pstmt.setString(1, calendarPeriod.getLocation().getName());
+        pstmt.setInt(1, calendarPeriod.getLocation().getLocationId());
         pstmt.setDate(2, Date.valueOf(calendarPeriod.getStartsAt()));
         pstmt.setDate(3, Date.valueOf(calendarPeriod.getEndsAt()));
         pstmt.setTime(4, Time.valueOf(calendarPeriod.getOpeningTime()));

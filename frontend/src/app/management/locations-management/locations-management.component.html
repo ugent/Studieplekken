@@ -70,7 +70,7 @@
           <td>{{location.authority.authorityName}}</td>
           <td>{{location.numberOfSeats}}</td>
           <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
-            <span routerLink="./{{location.name}}"
+            <span routerLink="./{{location.locationId}}"
                   class="glyphicon glyphicon-list-alt">
             </span>
           </td>
@@ -237,7 +237,7 @@
       {{'management.locations.editLocationModal.approveButton' | translate}}
     </button>
     <button type="button" class="btn btn-secondary"
-            (click)="closeModal()" (click)="clearForm()">
+            (click)="closeModal()">
       {{'management.locations.addLocationModal.cancelButton' | translate}}
     </button>
   </div>

@@ -38,11 +38,11 @@ public class CalendarPeriodController extends  AuthorizedLocationController {
         this.locationDao = locationDao;
     }
 
-    @GetMapping("/{locationName}")
+    @GetMapping("/{locationId}")
     @PreAuthorize("permitAll()")
-    public List<CalendarPeriod> getCalendarPeriodsOfLocation(@PathVariable("locationName") String locationName) {
+    public List<CalendarPeriod> getCalendarPeriodsOfLocation(@PathVariable("locationId") int locationId) {
         try {
-            return calendarPeriodDao.getCalendarPeriodsOfLocation(locationName);
+            return calendarPeriodDao.getCalendarPeriodsOfLocation(locationId);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
@@ -50,11 +50,11 @@ public class CalendarPeriodController extends  AuthorizedLocationController {
         }
     }
 
-    @GetMapping("/{locationName}/status")
+    @GetMapping("/{locationId}/status")
     @PreAuthorize("permitAll()")
-    public Pair<LocationStatus, String> getStatusOfLocation(@PathVariable("locationName") String locationName) {
+    public Pair<LocationStatus, String> getStatusOfLocation(@PathVariable("locationId") int locationId) {
         try {
-            return calendarPeriodDao.getStatus(locationName);
+            return calendarPeriodDao.getStatus(locationId);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, e.getMessage());
             logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
@@ -74,17 +74,17 @@ public class CalendarPeriodController extends  AuthorizedLocationController {
         }
     }
 
-    @PutMapping("/{locationName}")
+    @PutMapping("/{locationId}")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public void updateCalendarPeriods(@PathVariable("locationName") String locationName,
+    public void updateCalendarPeriods(@PathVariable("locationId") int locationId,
                                       @RequestBody UpdateCalendarBody fromAndTo) {
-        isAuthorized(locationName);
+        isAuthorized(locationId);
 
         try {
             List<CalendarPeriod> from = fromAndTo.getPrevious();
             CalendarPeriod to = fromAndTo.getToUpdate();
 
-            List<CalendarPeriod> currentView = calendarPeriodDao.getCalendarPeriodsOfLocation(locationName);
+            List<CalendarPeriod> currentView = calendarPeriodDao.getCalendarPeriodsOfLocation(locationId);
 
             // if the sizes do match, check if the lists are equal
             // before invoking the 'equals' on a list, sort both lists based on 'starts at'
@@ -98,7 +98,7 @@ public class CalendarPeriodController extends  AuthorizedLocationController {
             }
 
             to.initializeLockedFrom();
-            analyzeUpdatedCalendarPeriod(locationName, to);
+            analyzeUpdatedCalendarPeriod(locationId, to);
 
             // If this is a new CalendarPeriod, add instead
             if (to.getId() == null) {
@@ -152,10 +152,10 @@ public class CalendarPeriodController extends  AuthorizedLocationController {
      * the strategy of deleting the 'from' periods and adding new 'to' periods
      * was chosen
      */
-    private void analyzeUpdatedCalendarPeriod(String locationName,
+    private void analyzeUpdatedCalendarPeriod(int locationId,
                                               CalendarPeriod to) throws SQLException {
         // setup
-        Location expectedLocation = locationDao.getLocation(locationName);
+        Location expectedLocation = locationDao.getLocationById(locationId);
 
         // analyze the periods
         // all locations must match the expected location
@@ -200,7 +200,7 @@ public class CalendarPeriodController extends  AuthorizedLocationController {
     @DeleteMapping
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void deleteCalendarPeriods(@RequestBody CalendarPeriod calendarPeriod) {
-        isAuthorized(calendarPeriod.getLocation().getName());
+        isAuthorized(calendarPeriod.getLocation().getLocationId());
 
         try {
             calendarPeriodDao.deleteCalendarPeriod(calendarPeriod);

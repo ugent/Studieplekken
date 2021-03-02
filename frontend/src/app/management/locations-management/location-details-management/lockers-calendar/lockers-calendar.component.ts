@@ -19,7 +19,7 @@ import * as moment from 'moment';
 export class LockersCalendarComponent implements OnInit {
   @Input() location: Observable<Location>;
 
-  locationName: string;
+  locationId: number;
 
   refresh: Subject<any> = new Subject();
 
@@ -56,7 +56,7 @@ export class LockersCalendarComponent implements OnInit {
 
   ngOnInit(): void {
     this.location.subscribe(next => {
-      this.locationName = next.name;
+      this.locationId = next.locationId;
       this.setupEvents();
     });
     this.showReservationInformation = this.functionalityService.showReservationsFunctionality();
@@ -64,7 +64,7 @@ export class LockersCalendarComponent implements OnInit {
 
   setupEvents(): void {
     // retrieve all calendar periods for the lockers of this location
-    this.calendarPeriodsForLockersService.getCalendarPeriodsForLockersOfLocation(this.locationName).subscribe(next => {
+    this.calendarPeriodsForLockersService.getCalendarPeriodsForLockersOfLocation(this.locationId).subscribe(next => {
       if (next === null) {
         return;
       }
@@ -201,7 +201,7 @@ export class LockersCalendarComponent implements OnInit {
 
       // if reached here, persist update(s)
       this.calendarPeriodsForLockersService.updateCalendarPeriodsForLockers(
-        this.locationName,
+        this.locationId,
         this.calendarPeriodsForLockersInDataLayer,
         this.events.map<CalendarPeriodForLockers>(n => n.meta)
       ).subscribe(() => {

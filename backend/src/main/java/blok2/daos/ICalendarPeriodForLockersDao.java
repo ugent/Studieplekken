@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface ICalendarPeriodForLockersDao extends IDao {
-    List<CalendarPeriodForLockers> getCalendarPeriodsForLockersOfLocation(String locationName) throws SQLException;
+    List<CalendarPeriodForLockers> getCalendarPeriodsForLockersOfLocation(int locationId) throws SQLException;
 
     void addCalendarPeriodsForLockers(List<CalendarPeriodForLockers> periods) throws SQLException;
 

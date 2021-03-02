@@ -68,13 +68,17 @@ public class TestCascadeInPenaltyEventDao extends BaseTest {
         // because when the penalties are retrieved from the penaltyEventDao, the list will
         // be sorted by received points before asserting, if they would be equal we can't sort
         // on the points and be sure about the equality of the actual and expected list.
-        testPenalty1 = new Penalty(testUser1.getAugentID(), testPenaltyEvent.getCode(), LocalDate.now(), LocalDate.now(), testLocation1.getName(), 10, "First test penalty");
-        testPenalty2 = new Penalty(testUser2.getAugentID(), testPenaltyEvent.getCode(), LocalDate.now(), LocalDate.now(), testLocation2.getName(), 20, "Second test penalty");
+        testPenalty1 = new Penalty(testUser1.getAugentID(), testPenaltyEvent.getCode(), LocalDate.now(), LocalDate.now(), testLocation1.getLocationId(), 10, "First test penalty");
+        testPenalty2 = new Penalty(testUser2.getAugentID(), testPenaltyEvent.getCode(), LocalDate.now(), LocalDate.now(), testLocation2.getLocationId(), 20, "Second test penalty");
 
 
         // Add test objects to database
         locationDao.addLocation(testLocation1);
         locationDao.addLocation(testLocation2);
+
+        // now the location is added to the db, and the ids are set correctly
+        testPenalty1.setReservationLocationId(testLocation1.getLocationId());
+        testPenalty2.setReservationLocationId(testLocation2.getLocationId());
 
         accountDao.directlyAddUser(testUser1);
         accountDao.directlyAddUser(testUser2);

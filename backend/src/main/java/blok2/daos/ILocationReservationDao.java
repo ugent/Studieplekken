@@ -6,17 +6,28 @@ import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.List;
 
 public interface ILocationReservationDao extends IDao {
 
+    /**
+     * Get all location reservations of the specified user
+     */
     List<LocationReservation> getAllLocationReservationsOfUser(String augentID) throws SQLException;
 
+    /**
+     * Get all location reservations and calendar periods of the specified user
+     */
     List<Pair<LocationReservation, CalendarPeriod>> getAllLocationReservationsAndCalendarPeriodsOfUser(String userId) throws SQLException;
 
+    /**
+     * Get the location reservation of a specified user at a specified timeslot
+     */
     LocationReservation getLocationReservation(String augentID, Timeslot timeslot) throws SQLException;
 
+    /**
+     * Delete the location reservation of a specified user at a specified timeslot
+     */
     boolean deleteLocationReservation(String augentID, Timeslot timeslot) throws SQLException;
 
     /**
@@ -26,21 +37,29 @@ public interface ILocationReservationDao extends IDao {
     @Deprecated
     void addLocationReservation(LocationReservation locationReservation) throws SQLException;
 
-    LocationReservation scanStudent(String location, String barcode) throws SQLException;
-
-    void setAllStudentsOfLocationToAttended(String location, LocalDate date) throws SQLException;
-
+    /**
+     * Count the number of reserved seats at a specified timeslot
+     */
     long countReservedSeatsOfTimeslot(Timeslot timeslot) throws SQLException;
 
-    List<LocationReservation> getAbsentStudents(String location, LocalDate date) throws SQLException;
-
-    List<LocationReservation> getPresentStudents(String location, LocalDate date) throws SQLException;
-
+    /**
+     * Set the attendance for a location reservation of a specified user at a specified timeslot
+     */
     boolean setReservationAttendance(String augentId, Timeslot timeslot, boolean attendance) throws SQLException;
 
+
+    /**
+     * Get all location reservations at a specified timeslot
+     */
     List<LocationReservation> getAllLocationReservationsOfTimeslot(Timeslot timeslot) throws SQLException;
 
+    /**
+     * Try to make a location reservation while making sure that the maximum capacity of the location is not exceeded
+     */
      boolean addLocationReservationIfStillRoomAtomically(LocationReservation reservation) throws SQLException;
 
-     int amountOfReservationsRightNow(String location) throws SQLException;
+    /**
+     * Get the number of location reservation of a specified location at this moment in time
+     */
+     int amountOfReservationsRightNow(int locationId) throws SQLException;
 }

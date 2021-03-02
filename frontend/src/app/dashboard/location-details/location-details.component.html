@@ -2,7 +2,7 @@
   <!-- Title -->
   <h1 class="inline-block">{{location.name}}</h1>
   <button class="btn btn-primary float-right" *ngIf="showAdmin"
-          routerLink="/management/locations/{{location.name}}">{{'dashboard.locationDetails.buttons.manage' | translate}}</button>
+          routerLink="/management/locations/{{location.locationId}}">{{'dashboard.locationDetails.buttons.manage' | translate}}</button>
 
   <!-- First layer: image, general info and overview of tags -->
   <div class="row">

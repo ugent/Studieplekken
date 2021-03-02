@@ -65,7 +65,7 @@ public class BuildingControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testDeleteBuilding() throws Exception {
-        mockMvc.perform(delete("/building/"+testBuilding.getBuildingId()).with(csrf()))
+        mockMvc.perform(delete("/building/" + testBuilding.getBuildingId()).with(csrf()))
                 .andDo(print()).andExpect(status().isOk());
 
         Assert.assertEquals(0, buildingDao.getAllBuildings().size());

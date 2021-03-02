@@ -63,24 +63,24 @@ public class TestCascadeInDBTagsDao extends BaseTest {
     @Test
     public void deleteLocationTagWithCascadeNeeded() throws SQLException {
         // first add the entries to LOCATION_TAGS
-        locationTagDao.addTagToLocation(testLocation1.getName(), testTag.getTagId());
-        locationTagDao.addTagToLocation(testLocation2.getName(), testTag.getTagId());
-        locationTagDao.addTagToLocation(testLocation2.getName(), testTag2.getTagId());
+        locationTagDao.addTagToLocation(testLocation1.getLocationId(), testTag.getTagId());
+        locationTagDao.addTagToLocation(testLocation2.getLocationId(), testTag.getTagId());
+        locationTagDao.addTagToLocation(testLocation2.getLocationId(), testTag2.getTagId());
 
         // Assert that the assignment of tags to the location properly worked
-        Assert.assertTrue("deleteLocationTagWithCascadeNeeded, add location tag", locationDao.getLocation(testLocation1.getName()).getAssignedTags().contains(testTag));
-        Assert.assertFalse("deleteLocationTagWithCascadeNeeded, add location tag", locationDao.getLocation(testLocation1.getName()).getAssignedTags().contains(testTag2));
-        Assert.assertTrue("deleteLocationTagWithCascadeNeeded, add location tag", locationDao.getLocation(testLocation2.getName()).getAssignedTags().contains(testTag));
-        Assert.assertTrue("deleteLocationTagWithCascadeNeeded, add location tag", locationDao.getLocation(testLocation2.getName()).getAssignedTags().contains(testTag2));
-        Assert.assertFalse("deleteLocationTagWithCascadeNeeded, add location tag", locationDao.getLocation(testLocation3.getName()).getAssignedTags().contains(testTag));
-        Assert.assertFalse("deleteLocationTagWithCascadeNeeded, add location tag", locationDao.getLocation(testLocation3.getName()).getAssignedTags().contains(testTag2));
+        Assert.assertTrue("deleteLocationTagWithCascadeNeeded, add location tag", locationDao.getLocationByName(testLocation1.getName()).getAssignedTags().contains(testTag));
+        Assert.assertFalse("deleteLocationTagWithCascadeNeeded, add location tag", locationDao.getLocationByName(testLocation1.getName()).getAssignedTags().contains(testTag2));
+        Assert.assertTrue("deleteLocationTagWithCascadeNeeded, add location tag", locationDao.getLocationByName(testLocation2.getName()).getAssignedTags().contains(testTag));
+        Assert.assertTrue("deleteLocationTagWithCascadeNeeded, add location tag", locationDao.getLocationByName(testLocation2.getName()).getAssignedTags().contains(testTag2));
+        Assert.assertFalse("deleteLocationTagWithCascadeNeeded, add location tag", locationDao.getLocationByName(testLocation3.getName()).getAssignedTags().contains(testTag));
+        Assert.assertFalse("deleteLocationTagWithCascadeNeeded, add location tag", locationDao.getLocationByName(testLocation3.getName()).getAssignedTags().contains(testTag2));
 
         // Remove tag 1
         tagsDao.deleteTag(testTag.getTagId());
 
         // Assert that the deletion of the tags cascaded to the locations
-        Assert.assertFalse("deleteLocationTagWithCascadeNeeded, cascade delete location tag", locationDao.getLocation(testLocation1.getName()).getAssignedTags().contains(testTag));
-        Assert.assertFalse("deleteLocationTagWithCascadeNeeded, cascade delete location tag", locationDao.getLocation(testLocation2.getName()).getAssignedTags().contains(testTag));
-        Assert.assertTrue("deleteLocationTagWithCascadeNeeded, cascade delete location tag", locationDao.getLocation(testLocation2.getName()).getAssignedTags().contains(testTag2));
+        Assert.assertFalse("deleteLocationTagWithCascadeNeeded, cascade delete location tag", locationDao.getLocationByName(testLocation1.getName()).getAssignedTags().contains(testTag));
+        Assert.assertFalse("deleteLocationTagWithCascadeNeeded, cascade delete location tag", locationDao.getLocationByName(testLocation2.getName()).getAssignedTags().contains(testTag));
+        Assert.assertTrue("deleteLocationTagWithCascadeNeeded, cascade delete location tag", locationDao.getLocationByName(testLocation2.getName()).getAssignedTags().contains(testTag2));
     }
 }

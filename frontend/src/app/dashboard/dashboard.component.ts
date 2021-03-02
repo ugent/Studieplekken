@@ -196,6 +196,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     return merge(of({lang: this.translate.currentLang} as LangChangeEvent), this.translate.onLangChange)
           .pipe(
             map((s) => (s as any).lang)
-          )
+          );
   }
 }

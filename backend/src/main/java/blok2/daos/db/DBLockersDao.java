@@ -15,11 +15,11 @@ import java.util.List;
 @Service
 public class DBLockersDao extends DAO implements ILockersDao {
     @Override
-    public List<LockerReservation> getLockerStatusesOfLocation(String locationName) throws SQLException {
+    public List<LockerReservation> getLockerStatusesOfLocation(int locationId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
                     .getString("get_lockers_statuses_of_location"));
-            pstmt.setString(1, locationName);
+            pstmt.setInt(1, locationId);
             ResultSet rs = pstmt.executeQuery();
 
             List<LockerReservation> statuses = new ArrayList<>();

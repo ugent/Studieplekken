@@ -73,11 +73,11 @@ public class LocationController extends AuthorizedLocationController {
         }
     }
 
-    @GetMapping("/{locationName}")
+    @GetMapping("/{locationId}")
     @PreAuthorize("permitAll()")
-    public Location getLocation(@PathVariable("locationName") String locationName) {
+    public Location getLocation(@PathVariable("locationId") int locationId) {
         try {
-            return locationDao.getLocation(locationName);
+            return locationDao.getLocationById(locationId);
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
@@ -102,7 +102,7 @@ public class LocationController extends AuthorizedLocationController {
     public void addLocation(@RequestBody Location location) {
         isAuthorized((l,$) -> hasAuthority(l.getAuthority()), location);
         try {
-            if (this.locationDao.getLocation(location.getName()) != null)
+            if (this.locationDao.getLocationByName(location.getName()) != null)
                 throw new AlreadyExistsException("location name already in use");
 
             this.locationDao.addLocation(location);
@@ -118,20 +118,20 @@ public class LocationController extends AuthorizedLocationController {
         }
     }
 
-    @PutMapping("/{locationName}")
+    @PutMapping("/{locationId}")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public void updateLocation(@PathVariable("locationName") String locationName, @RequestBody Location location) {
-        isAuthorized(locationName);
+    public void updateLocation(@PathVariable("locationId") int locationId, @RequestBody Location location) {
+        isAuthorized(locationId);
         try {
             // Get the location that is currently in db
-            Location cl = locationDao.getLocation(locationName);
+            Location cl = locationDao.getLocationById(locationId);
 
             // Make sure that only an admin could change the number of seats
             if (cl.getNumberOfSeats() != location.getNumberOfSeats() && !isAdmin())
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Changing seats can only be done by admins");
 
-            locationDao.updateLocation(locationName, location);
-            logger.info(String.format("Location %s updated", locationName));
+            locationDao.updateLocation(locationId, location);
+            logger.info(String.format("Location %d updated", locationId));
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
@@ -139,12 +139,12 @@ public class LocationController extends AuthorizedLocationController {
         }
     }
 
-    @PutMapping("/{locationName}/approval")
+    @PutMapping("/{locationId}/approval")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public void approveLocation(@PathVariable("locationName") String locationName, @RequestBody LocationWithApproval landa) {
+    public void approveLocation(@PathVariable("locationId") int locationId, @RequestBody LocationWithApproval landa) {
         try {
             locationDao.approveLocation(landa.getLocation(), landa.isApproval());
-            logger.info(String.format("Location %s updated", locationName));
+            logger.info(String.format("Location %d updated", locationId));
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
@@ -154,36 +154,19 @@ public class LocationController extends AuthorizedLocationController {
 
     //authority user
     //the updated location should be part of an authority the user is part of.
-    @DeleteMapping("/{locationName}")
+    @DeleteMapping("/{locationId}")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public void deleteLocation(@PathVariable("locationName") String locationName) {
-        isAuthorized(locationName);
+    public void deleteLocation(@PathVariable("locationId") int locationId) {
+        isAuthorized(locationId);
         try {
-            locationDao.deleteLocation(locationName);
-            logger.info(String.format("Location %s deleted", locationName));
+            locationDao.deleteLocation(locationId);
+            logger.info(String.format("Location %d deleted", locationId));
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
-
-
-    /* currently no longer applicable
-    //logged in user (?)
->>>>>>> master
-    @GetMapping("/{locationName}/reservations/count")
-    @PreAuthorize("permitAll()")
-    public int getAmountOfReservationsToday(@PathVariable("locationName") String locationName) {
-        try {
-            return 0;//locationDao.getCountOfReservations(CustomDate.now()).get(locationName);
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
-    }
-    */
 
     // *****************************************
     // *   CRUD operations for LOCATION_TAGS   *
@@ -194,16 +177,16 @@ public class LocationController extends AuthorizedLocationController {
      * to be set, must be provided in the body. Upon success only the tags
      * that have been provided, will be set for the location
      */
-    @PutMapping("/tags/{locationName}")
+    @PutMapping("/tags/{locationId}")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public void setupTagsForLocation(@PathVariable("locationName") String locationName,
+    public void setupTagsForLocation(@PathVariable("locationId") int locationId,
                                      @RequestBody List<Integer> tagIds) {
-        isAuthorized(locationName);
+        isAuthorized(locationId);
         try {
             logger.info(String.format("Setting up the tags for location '%s' with ids [%s]",
-                    locationName, tagIds.stream().map(String::valueOf).collect(Collectors.joining(", "))));
-            locationTagDao.deleteAllTagsFromLocation(locationName);
-            locationTagDao.bulkAddTagsToLocation(locationName, tagIds);
+                    locationId, tagIds.stream().map(String::valueOf).collect(Collectors.joining(", "))));
+            locationTagDao.deleteAllTagsFromLocation(locationId);
+            locationTagDao.bulkAddTagsToLocation(locationId, tagIds);
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));

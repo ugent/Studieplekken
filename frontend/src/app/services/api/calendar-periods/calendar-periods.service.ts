@@ -19,20 +19,20 @@ export class CalendarPeriodsService {
   }
 
   // tslint:disable-next-line: max-line-length
-  statusCache: Cache<string, Pair<LocationStatus, string>> = new Cache<string, Pair<LocationStatus, string>>(this.http, (arg: Location) => arg.name);
+  statusCache: Cache<number, Pair<LocationStatus, string>> = new Cache<number, Pair<LocationStatus, string>>(this.http, (arg: Location) => arg.locationId);
 
-  getCalendarPeriodsOfLocation(locationName: string): Observable<CalendarPeriod[]> {
+  getCalendarPeriodsOfLocation(locationId: number): Observable<CalendarPeriod[]> {
     return this.http.get<any>(api.calendarPeriods
-      .replace('{locationName}', locationName))
+      .replace('{locationId}', String(locationId)))
       .pipe(filter(s => !!s), map(ls => ls.map((s: any) => CalendarPeriod.fromJSON(s))));
   }
 
   /**
    * Retrieve the status of the location
    */
-  getStatusOfLocation(locationName: string, invalidateCache: boolean = false): Observable<Pair<LocationStatus, string>> {
-    const url = api.locationStatus.replace('{locationName}', locationName);
-    return this.statusCache.getValue(locationName, url, invalidateCache);
+  getStatusOfLocation(locationId: number, invalidateCache: boolean = false): Observable<Pair<LocationStatus, string>> {
+    const url = api.locationStatus.replace('{locationId}', String(locationId));
+    return this.statusCache.getValue(locationId, url, invalidateCache);
   }
 
   addCalendarPeriods(calendarPeriods: CalendarPeriod[]): Observable<void> {
@@ -45,9 +45,9 @@ export class CalendarPeriodsService {
    * the controller layer, and the correct add/delete/update methods to be called
    * will be invoked.
    */
-  updateCalendarPeriod(locationName: string, from: CalendarPeriod[], to: CalendarPeriod): Observable<void> {
+  updateCalendarPeriod(locationId: number, from: CalendarPeriod[], to: CalendarPeriod): Observable<void> {
     const body = {previous: from, toUpdate: to};
-    return this.http.put<void>(api.updateCalendarPeriods.replace('{locationName}', locationName), body);
+    return this.http.put<void>(api.updateCalendarPeriods.replace('{locationId}', String(locationId)), body);
   }
 
   deleteCalendarPeriods(period: CalendarPeriod): Observable<void> {

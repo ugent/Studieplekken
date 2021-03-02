@@ -5,10 +5,8 @@ import blok2.model.reservables.Location;
 import blok2.model.reservables.Locker;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Note that all add/update/delete operations on lockers will happen in cascade
@@ -30,41 +28,46 @@ public interface ILocationDao extends IDao {
     /**
      * Adds a location
      */
-    void addLocation(Location location) throws SQLException;
+    Location addLocation(Location location) throws SQLException;
 
     /**
      * Gets a location with the given name.
      */
-    Location getLocation(String name) throws SQLException;
+    Location getLocationByName(String name) throws SQLException;
 
     /**
-     * Updates a location, name is the old name of the location.
+     * Gets a location with the given id
      */
-    void updateLocation(String locationName, Location location) throws SQLException;
+    Location getLocationById(int locationId) throws SQLException;
 
     /**
-     * Deletes the location with the given name.
+     * Updates a location
      */
-    void deleteLocation(String locationName) throws SQLException;
+    void updateLocation(int locationId, Location location) throws SQLException;
+
+    /**
+     * Deletes a location
+     */
+    void deleteLocation(int locationId) throws SQLException;
 
     /**
      * Get all lockers of the specified location
      */
-    List<Locker> getLockers(String locationName) throws SQLException;
+    List<Locker> getLockers(int locationId) throws SQLException;
 
     /**
      * Delete a locker
      */
-    void deleteLocker(String locationName, int number) throws SQLException;
+    void deleteLocker(int locationId, int number) throws SQLException;
 
     /**
-     * Get a map that maps location names to the number of reservations on the
-     * given date.
+     * Approve or deny a new location
      */
-
     void approveLocation(Location location, boolean approval) throws SQLException;
 
+    /**
+     * Return all locations that are yet to be approved/denied
+     */
     List<Location> getAllUnapprovedLocations() throws SQLException;
 
-    Map<String, Integer> getCountOfReservations(LocalDate date) throws SQLException;
 }

@@ -39,9 +39,6 @@ public class LocationReservationController extends AuthorizedLocationController 
     private final ILocationReservationDao locationReservationDao;
     private final ICalendarPeriodDao calendarPeriodDao;
 
-    // @Autowired
-    // SmartValidator validator;
-
     @Autowired
     public LocationReservationController(ILocationReservationDao locationReservationDao, ICalendarPeriodDao calendarPeriodDao) {
         this.locationReservationDao = locationReservationDao;
@@ -109,11 +106,11 @@ public class LocationReservationController extends AuthorizedLocationController 
         }
     }
 
-    @GetMapping("/count/{location}")
+    @GetMapping("/count/{locationId}")
     @PreAuthorize("permitAll()")
-    public Map<String, Integer> getReservationCount(@PathVariable("location") String location) {
+    public Map<String, Integer> getReservationCount(@PathVariable("locationId") int locationId) {
         try {
-            return Collections.singletonMap("amount", locationReservationDao.amountOfReservationsRightNow(location));
+            return Collections.singletonMap("amount", locationReservationDao.amountOfReservationsRightNow(locationId));
         } catch (SQLException throwables) {
             throwables.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
@@ -127,7 +124,7 @@ public class LocationReservationController extends AuthorizedLocationController 
         try {
             CalendarPeriod parentPeriod = calendarPeriodDao.getById(locationReservation.getTimeslot().getCalendarId());
             isAuthorized(
-                    (lr, user) -> hasAuthority(parentPeriod.getLocation().getName()) || lr.getUser().getAugentID().equals(user.getAugentID()),
+                    (lr, user) -> hasAuthority(parentPeriod.getLocation().getLocationId()) || lr.getUser().getAugentID().equals(user.getAugentID()),
                     locationReservation
             );
 
@@ -150,10 +147,9 @@ public class LocationReservationController extends AuthorizedLocationController 
         Timeslot slot = new Timeslot(calendarId, seqnr, date, 0);
         try {
             CalendarPeriod parentPeriod = calendarPeriodDao.getById(slot.getCalendarId());
-            isAuthorized(parentPeriod.getLocation().getName());
-            if(!locationReservationDao.setReservationAttendance(userid, slot, body.getAttended())) {
+            isAuthorized(parentPeriod.getLocation().getLocationId());
+            if (!locationReservationDao.setReservationAttendance(userid, slot, body.getAttended()))
                 throw new NoSuchReservationException("No such reservation");
-            };
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));

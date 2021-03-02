@@ -5,6 +5,7 @@ import {LocationStatus} from '../../app.constants';
 import {Pair} from './helpers/Pair';
 
 export interface Location {
+  locationId: number;
   name: string;
   numberOfSeats: number;
   numberOfLockers: number;
@@ -21,6 +22,7 @@ export interface Location {
 export class LocationConstructor {
   static new(): Location {
     return {
+      locationId: -1,
       name: '',
       numberOfSeats: 0,
       numberOfLockers: 0,
@@ -31,7 +33,7 @@ export class LocationConstructor {
       descriptionDutch: '',
       descriptionEnglish: '',
       assignedTags: [],
-      status: {first: LocationStatus.CLOSED, second: ""}
+      status: {first: LocationStatus.CLOSED, second: ''}
     };
   }
 
@@ -41,6 +43,7 @@ export class LocationConstructor {
     }
 
     return {
+      locationId: obj.locationId,
       name: obj.name,
       numberOfSeats: obj.numberOfSeats,
       numberOfLockers: obj.numberOfLockers,

@@ -15,15 +15,15 @@ public abstract class AuthorizedLocationController extends AuthorizedController 
     @Autowired
     IAuthorityDao authorityDao;
 
-    public void isAuthorized(String locationName) {
-        isAuthorized((l, $) -> hasAuthority(l), locationName, "You do not hold the correct Authority.");
+    public void isAuthorized(int locationId) {
+        isAuthorized((l, $) -> hasAuthority(l), locationId, "You do not hold the correct Authority.");
     }
 
-    protected boolean hasAuthority(String locationName) {
+    protected boolean hasAuthority(int locationId) {
         try {
             User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             List<Location> allLocations = authorityDao.getLocationsInAuthoritiesOfUser(user.getAugentID());
-            return allLocations.stream().anyMatch(l -> l.getName().equals(locationName));
+            return allLocations.stream().anyMatch(l -> l.getLocationId() == locationId);
         } catch (SQLException throwables) {
             return false;
         }

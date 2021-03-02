@@ -155,7 +155,7 @@ export class DetailsFormComponent implements OnInit {
     const from: Location = this.locationObj;
     const to: Location = this.locationInForm;
 
-    this.locationService.updateLocation(from.name, to).subscribe(
+    this.locationService.updateLocation(from.locationId, to).subscribe(
       () => {
         this.successHandler();
 
@@ -163,11 +163,11 @@ export class DetailsFormComponent implements OnInit {
         // on the subject behavior, which will trigger a next() on the underlying
         // observable, to which the HTML is implicitly subscribed through the
         // *ngIf="location | async as location" in the outer div of the template.
-        this.locationDetailsService.loadLocation(to.name);
+        this.locationDetailsService.loadLocation(to.locationId);
       }, () => {
         this.errorHandler();
         // reload the location to be sure
-        this.locationDetailsService.loadLocation(from.name);
+        this.locationDetailsService.loadLocation(from.locationId);
       }
     );
 

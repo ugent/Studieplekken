@@ -35,7 +35,7 @@ export class LockersTableComponent implements OnInit {
 
   ngOnInit(): void {
     this.location.subscribe(next => {
-      this.lockerStatuses = this.lockersService.getLockersStatusesOfLocation(next.name)
+      this.lockerStatuses = this.lockersService.getLockersStatusesOfLocation(next.locationId)
         // fill the the array this.pageIndices with all possible pages, based on the length of
         // the resulted lockersStatusesOfLocation
         .pipe(tap(next2 => {
@@ -43,10 +43,6 @@ export class LockersTableComponent implements OnInit {
             .fill(1).map((ignore, i) => i + 1);
         }));
     });
-  }
-
-  getLockersStatuses(locationName: string): Observable<LockerReservation[]> {
-    return this.lockersService.getLockersStatusesOfLocation(locationName);
   }
 
   getStatusOfLocker(lockerReservation: LockerReservation): LockerStatus {
