@@ -306,6 +306,15 @@ public class DBAccountDao extends DAO implements IAccountDao {
 
         u.setPenaltyPoints(rs.getInt(Resources.databaseProperties.getString("user_penalty_points")));
         u.setUserAuthorities(DBAuthorityDao.getAuthoritiesFromUser(u.getAugentID(), conn));
+
+        PreparedStatement stmt = conn.prepareStatement(Resources.databaseProperties.getString("get_user_volunteer_locations"));
+        stmt.setString(1, u.getAugentID());
+        List<Integer> locationIds = new ArrayList<>();
+        ResultSet set = stmt.executeQuery();
+        while(set.next()) {
+            locationIds.add(set.getInt("location_id"));
+        }
+        u.setUserVolunteer(locationIds);
         return u;
     }
 

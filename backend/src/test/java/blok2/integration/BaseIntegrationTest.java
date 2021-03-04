@@ -88,5 +88,7 @@ public abstract class BaseIntegrationTest extends BaseTest {
 
         LocationReservation reservation = new LocationReservation(student, LocalDateTime.now(), timeslot, null);
         locationReservationDao.addLocationReservationIfStillRoomAtomically(reservation);
+
+        locationDao.addVolunteer(testLocation.getLocationId(), student2.getAugentID());
     }
 }
