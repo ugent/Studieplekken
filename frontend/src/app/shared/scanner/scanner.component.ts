@@ -16,8 +16,8 @@ export class ScannerComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
 
-      const state: QuaggaJSConfigObject = {inputStream:
-        {type: 'LiveStream'},
+      const state: QuaggaJSConfigObject = {
+      inputStream: {type: 'LiveStream'},
       locator: {patchSize: 'medium', halfSample: true},
       frequency: 10,
       decoder: {readers: ['upc_reader']},

@@ -2,7 +2,10 @@ package blok2.controllers;
 
 import blok2.daos.IAccountDao;
 import blok2.daos.ILocationDao;
+import blok2.daos.ILocationReservationDao;
+import blok2.model.calendar.Timeslot;
 import blok2.model.reservables.Location;
+import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -29,11 +33,13 @@ public class ScanController {
 
     private final ILocationDao locationDao;
     private final IAccountDao accountDao;
+    private final ILocationReservationDao reservationDao;
 
     @Autowired
-    public ScanController(ILocationDao locationDao, IAccountDao accountDao) {
+    public ScanController(ILocationDao locationDao, IAccountDao accountDao, ILocationReservationDao reservationDao) {
         this.locationDao = locationDao;
         this.accountDao = accountDao;
+        this.reservationDao = reservationDao;
     }
 
     // TODO: fully implement this endpoint
@@ -54,7 +60,11 @@ public class ScanController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public List<User> getUsersToScanAtLocation(@PathVariable("locationId") int locationId) {
         try {
-            return Stream.concat(accountDao.getUsersByLastName("Van de Walle").stream(), accountDao.getUsersByLastName("Geldhof").stream()).collect(Collectors.toList());
+            Timeslot timeslot = locationDao.getLocationById(locationId).getCurrentTimeslot();
+            if(timeslot == null)
+                return Collections.emptyList();
+
+            return reservationDao.getAllLocationReservationsOfTimeslot(timeslot).stream().map(LocationReservation::getUser).collect(Collectors.toList());
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));

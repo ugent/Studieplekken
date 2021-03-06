@@ -20,7 +20,7 @@ export class ScanningLocationDetailsComponent implements OnInit {
   locationObs: Observable<Location>;
   usersObs: Observable<User[]>;
   loadingError = new Subject<boolean>();
-  user?: User = {augentID: '000170335535', firstName: 'Maxiem', lastName: 'Geldhof'} as User;
+  user?: User;
 
   constructor(private route: ActivatedRoute,
               private locationService: LocationService,
