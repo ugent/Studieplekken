@@ -75,6 +75,7 @@ import { TimeslotTableComponent } from './management/locations-management/locati
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ScanningLocationsComponent } from './scan/scanning-locations/scanning-locations.component';
 import { ScanningLocationDetailsComponent } from './scan/scanning-location-details/scanning-location-details.component';
+import { ScannerComponent } from './shared/scanner/scanner.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -288,7 +289,8 @@ const routes: Routes = [
     TimeslotTableComponent,
     FormatStatusPipe,
     ScanningLocationsComponent,
-    ScanningLocationDetailsComponent
+    ScanningLocationDetailsComponent,
+    ScannerComponent
   ],
     imports: [
       BrowserModule,

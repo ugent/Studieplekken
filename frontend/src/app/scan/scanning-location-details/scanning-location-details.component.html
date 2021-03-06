@@ -3,9 +3,14 @@
 
   <div *ngIf="usersObs | async as users; else loadingOrError">
     <div *ngIf="users.length > 0; else noUsers">
-      <!-- TODO -->
+      <app-scanner *ngIf="!user" [validator]="getValidator(users)" (code)="scanUser(users, $event)"></app-scanner>
+
+      <div *ngIf="user">
+        We got user {{user.firstName}}
+      </div>
     </div>
   </div>
+
 </div>
 
 <ng-template #catchAllError>

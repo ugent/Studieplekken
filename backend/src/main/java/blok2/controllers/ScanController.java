@@ -18,6 +18,8 @@ import org.springframework.web.server.ResponseStatusException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("scan")
@@ -52,7 +54,7 @@ public class ScanController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public List<User> getUsersToScanAtLocation(@PathVariable("locationId") int locationId) {
         try {
-            return accountDao.getUsersByLastName("Van de Walle");
+            return Stream.concat(accountDao.getUsersByLastName("Van de Walle").stream(), accountDao.getUsersByLastName("Geldhof").stream()).collect(Collectors.toList());
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
