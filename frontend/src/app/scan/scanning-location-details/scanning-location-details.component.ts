@@ -7,6 +7,8 @@ import {User} from '../../shared/model/User';
 import {ScanningService} from '../../services/api/scan/scanning.service';
 import {catchError} from 'rxjs/operators';
 import {of} from 'rxjs/internal/observable/of';
+import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
+import { LocationReservation } from 'src/app/shared/model/LocationReservation';
 
 @Component({
   selector: 'app-scanning-location-details',
@@ -18,11 +20,12 @@ export class ScanningLocationDetailsComponent implements OnInit {
   locationObs: Observable<Location>;
   usersObs: Observable<User[]>;
   loadingError = new Subject<boolean>();
-  user?: User;
+  user?: User = {augentID: '000170335535', firstName: 'Maxiem', lastName: 'Geldhof'} as User;
 
   constructor(private route: ActivatedRoute,
               private locationService: LocationService,
-              private scanningService: ScanningService) { }
+              private scanningService: ScanningService,
+              private reservationService: LocationReservationsService) { }
 
   ngOnInit(): void {
     const locationId = Number(this.route.snapshot.paramMap.get('locationId'));
@@ -39,7 +42,7 @@ export class ScanningLocationDetailsComponent implements OnInit {
   }
 
   getValidator(users: User[]): (a: string) => boolean {
-    return (code) => {console.log(code, users); return users.some(u => u.augentID === this.upcEncoded(code))};
+    return (code) => {console.log(code, users); return users.some(u => u.augentID === this.upcEncoded(code)); };
   }
 
   private upcEncoded(code: string): string {
@@ -51,7 +54,14 @@ export class ScanningLocationDetailsComponent implements OnInit {
     this.user = user;
   }
 
-  confirm(): void {
+  confirm(location: Location): void {
+    console.log(location.currentTimeslot)
+    const reservation = new LocationReservation(this.user, location.currentTimeslot);
+    this.reservationService.postLocationReservationAttendance(reservation, true).subscribe();
+    this.user = null;
+  }
 
+  cancel(): void {
+    this.user = null;
   }
 }

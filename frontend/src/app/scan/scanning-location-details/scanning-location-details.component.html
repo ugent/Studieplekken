@@ -6,7 +6,17 @@
       <app-scanner *ngIf="!user" [validator]="getValidator(users)" (code)="scanUser(users, $event)"></app-scanner>
 
       <div *ngIf="user">
-        We got user {{user.firstName}}
+        <p>
+          User: {{user.firstName}} {{user.lastName}} 
+
+        </p>
+        <p>
+          AugentID: {{user.augentID}}
+        </p>
+        <div fxLayout="row">
+          <button class="btn btn-default" (click)="confirm(location)">Confirm</button>
+          <button class="btn btn-primary" (click)="cancel()">Cancel</button>  
+        </div>
       </div>
     </div>
   </div>

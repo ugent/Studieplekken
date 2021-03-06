@@ -41,10 +41,8 @@ export class ScannerComponent implements OnInit, OnDestroy {
 
     private detected(code: QuaggaJSResultObject): void {
       const userCode: string = code.codeResult.code;
-      console.log("Detected!")
 
       if (!this.validator || this.validator(userCode)) {
-        console.log("validated!")
         this.code.next(userCode);
       }
     }

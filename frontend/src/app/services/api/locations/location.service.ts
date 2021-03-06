@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {api} from '../endpoints';
-import {Location} from '../../../shared/model/Location';
+import {Location, LocationConstructor} from '../../../shared/model/Location';
 import {LocationTag} from '../../../shared/model/LocationTag';
 import { map } from 'rxjs/internal/operators/map';
 import {Cache} from '../../../shared/cache/Cache';
@@ -16,7 +16,9 @@ export class LocationService {
 
   constructor(private http: HttpClient) { }
 
-  locationCache: Cache<number, Location> = new Cache<number, Location>(this.http, (arg: Location) => arg.locationId);
+  locationCache: Cache<number, Location> = new Cache<number, Location>(this.http,
+                                                                            (arg: Location) => arg.locationId,
+                                                                            (json: any) => LocationConstructor.newFromObj(json));
 
   /***********************************************************
    *   API calls for CRUD operations with public.LOCATIONS   *

@@ -247,6 +247,29 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         }
     }
 
+    public static Timeslot getCurrentTimeslot(int locationId, Connection conn) throws SQLException {
+        // DateTimeFormatter to format the next opening hour in a consistent manner
+        DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_current_and_or_next_timeslot"));
+        pstmt.setInt(1, locationId);
+        ResultSet rs = pstmt.executeQuery();
+
+        if (!rs.next()) {
+            return null;
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime timeslotStart = rs.getTimestamp(Resources.databaseProperties.getString("timeslot_start_timestamp")).toLocalDateTime();
+        LocalDateTime timeslotEnd = rs.getTimestamp(Resources.databaseProperties.getString("timeslot_end_timestamp")).toLocalDateTime();
+
+        if (now.isAfter(timeslotStart) && now.isBefore(timeslotEnd)) {
+            return createTimeslot(rs, conn);
+        }
+
+        return null;
+    }
+
     public CalendarPeriod getById(int calendarId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement statement = conn.prepareStatement(Resources.databaseProperties.getString("get_calendar_period_by_id"));
