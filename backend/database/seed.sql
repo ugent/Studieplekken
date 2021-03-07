@@ -5,14 +5,16 @@
  * Setup users
  */
 INSERT into users(augentid, augentpreferredgivenname, augentpreferredsn, penalty_points, mail, password, institution, admin)
-VALUES ('001', 'Bram', 'Van de Walle', 0, 'bram.vandewalle@ugent.be', 'secret', 'UGent', true);
+VALUES ('000170763345', 'Bram', 'Van de Walle', 0, 'bram.vandewalle@ugent.be', 'secret', 'UGent', true);
 
 INSERT into users(augentid, augentpreferredgivenname, augentpreferredsn, penalty_points, mail, password, institution, admin)
-VALUES ('002', 'Ruben_van_DSA', 'DF', 0, 'rdf@ugent.be', 'secret', 'UGent', true);
+VALUES ('000150595025', 'Ruben', 'De Facq', 0, 'Ruben.DeFacq@UGent.be ', 'secret', 'UGent', true);
 
 INSERT into users(augentid, augentpreferredgivenname, augentpreferredsn, penalty_points, mail, password, institution, admin)
-VALUES ('003', 'Maxime', 'Bloch', 0, 'maxime.bloch@ugent.be', 'secret', 'UGent', true);
+VALUES ('000160298358', 'Maxime', 'Bloch', 0, 'maxime.bloch@ugent.be', 'secret', 'UGent', true);
 
+INSERT into users(augentid, augentpreferredgivenname, augentpreferredsn, penalty_points, mail, password, institution, admin)
+VALUES ('000170335535', 'Maxiem', 'Geldhof', 0, ' Maxiem.Geldhof@UGent.be ', 'secret', 'UGent', true);
 
 /*
  * Setup third test user
@@ -91,7 +93,7 @@ BEGIN
 END$$;
 
 insert into timeslots(calendar_id, timeslot_sequence_number, timeslot_date)
-values 
+values
 (1, 0,  now() - interval '1 days'),
 (1, 1,  now() - interval '1 days'),
 (1, 0,  now()),
