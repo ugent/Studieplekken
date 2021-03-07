@@ -1128,7 +1128,7 @@ with x as (
          , case when extract(dow from timeslot_date) = 1 then to_char(opening_time, 'HH24:MI') || ' - ' || to_char(closing_time, 'HH24:MI') end as monday
          , case when extract(dow from timeslot_date) = 2 then to_char(opening_time, 'HH24:MI') || ' - ' || to_char(closing_time, 'HH24:MI') end as tuesday
          , case when extract(dow from timeslot_date) = 3 then to_char(opening_time, 'HH24:MI') || ' - ' || to_char(closing_time, 'HH24:MI') end as wednesday
-         , case when extract(dow from timeslot_date) = 4 then to_char(opening_time, 'HH24:MI') || ' - ' || to_char(closing_time, 'HH24:MI') end as thirsday
+         , case when extract(dow from timeslot_date) = 4 then to_char(opening_time, 'HH24:MI') || ' - ' || to_char(closing_time, 'HH24:MI') end as thursday
          , case when extract(dow from timeslot_date) = 5 then to_char(opening_time, 'HH24:MI') || ' - ' || to_char(closing_time, 'HH24:MI') end as friday
          , case when extract(dow from timeslot_date) = 6 then to_char(opening_time, 'HH24:MI') || ' - ' || to_char(closing_time, 'HH24:MI') end as saturday
          , case when extract(dow from timeslot_date) = 0 then to_char(opening_time, 'HH24:MI') || ' - ' || to_char(closing_time, 'HH24:MI') end as sunday
@@ -1138,7 +1138,7 @@ with x as (
          , max(monday) as monday
          , max(tuesday) as tuesday
          , max(wednesday) as wednesday
-         , max(thirsday) as thirsday
+         , max(thursday) as thursday
          , max(friday) as friday
          , max(saturday) as saturday
          , max(sunday) as sunday

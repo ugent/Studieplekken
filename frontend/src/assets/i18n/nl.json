@@ -98,6 +98,14 @@
     "back": "Terug",
     "print": "Print",
 
+    "monday": "Maandag",
+    "tuesday": "Dinsdag",
+    "wednesday": "Woensdag",
+    "thursday": "Donderdag",
+    "friday": "Vrijdag",
+    "saturday": "Zaterdag",
+    "sunday": "Zondag",
+
     "buttons": {
       "add": "Voeg toe",
       "update": "Update",
@@ -937,5 +945,9 @@
         "noReservations": "Je hebt tot nu toe nog nooit een locker gereserveerd."
       }
     }
+  },
+
+  "openingHoursOverview": {
+    "loadingError": "Er is iets misgelopen tijdens het ophalen van de openingsuren in de gewenste week."
   }
 }

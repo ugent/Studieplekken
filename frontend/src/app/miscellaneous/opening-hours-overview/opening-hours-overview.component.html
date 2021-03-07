@@ -1,0 +1,50 @@
+<div class="container-fluid">
+  You want the results of year {{year}} and week {{weekNr}} <!-- TODO: header & navigation arrows -->
+
+  <hr>
+
+  <div *ngIf="overviewObs | async as overview; else loadingOrError">
+    <table>
+      <!-- Table header -->
+      <thead>
+      <tr>
+        <th>{{'openingHoursOverview.table.locationName' | translate}}</th>
+        <th>{{'general.monday' | translate}}</th>
+        <th>{{'general.tuesday' | translate}}</th>
+        <th>{{'general.wednesday' | translate}}</th>
+        <th>{{'general.thursday' | translate}}</th>
+        <th>{{'general.friday' | translate}}</th>
+        <th>{{'general.saturday' | translate}}</th>
+        <th>{{'general.sunday' | translate}}</th>
+      </tr>
+      </thead>
+
+      <!-- Table body -->
+      <tbody>
+      <tr *ngFor="let locationName of overview.keys()">
+        <td>{{locationName}}</td>
+        <td>{{overview.get(locationName)[0]}}</td>
+        <td>{{overview.get(locationName)[1]}}</td>
+        <td>{{overview.get(locationName)[2]}}</td>
+        <td>{{overview.get(locationName)[3]}}</td>
+        <td>{{overview.get(locationName)[4]}}</td>
+        <td>{{overview.get(locationName)[5]}}</td>
+        <td>{{overview.get(locationName)[6]}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<ng-template #loadingOrError>
+  <div class="alert alert-error" *ngIf="errorSubject | async; else loading">
+    {{'openingHoursOverview.loadingError' | translate}}
+  </div>
+
+  <ng-template #loading>
+    <div class="alert alert-info">
+      {{'general.waitingForServer' | translate}}
+    </div>
+  </ng-template>
+</ng-template>

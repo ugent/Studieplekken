@@ -73,6 +73,7 @@ import { AdminsManagementComponent } from './management/admins-management/admins
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { TimeslotTableComponent } from './management/locations-management/location-details-management/timeslot-table/timeslot-table.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { OpeningHoursOverviewComponent } from './miscellaneous/opening-hours-overview/opening-hours-overview.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -215,6 +216,12 @@ const routes: Routes = [
   },
 
   {
+    path: 'opening/overview/:year/:weekNr',
+    component: OpeningHoursOverviewComponent,
+    canActivate: [AuthorizationGuardService]
+  },
+
+  {
     path: '',
     redirectTo: '/dashboard',
     pathMatch: 'full'
@@ -267,7 +274,8 @@ const routes: Routes = [
     MomentTimeslotSizeComponent,
     AdminsManagementComponent,
     TimeslotTableComponent,
-    FormatStatusPipe
+    FormatStatusPipe,
+    OpeningHoursOverviewComponent
   ],
     imports: [
       BrowserModule,

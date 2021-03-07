@@ -98,6 +98,14 @@
     "back": "Back",
     "print": "Print",
 
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday",
+
     "buttons": {
       "add": "Add",
       "update": "Update",
@@ -937,5 +945,13 @@
         "noReservations": "You have never made any locker reservations so far."
       }
     }
+  },
+
+  "openingHoursOverview": {
+    "table": {
+      "locationName": "Location name"
+    },
+
+    "loadingError": "Something went wrong while retrieving the overview of the opening hours of the week you requested for."
   }
 }

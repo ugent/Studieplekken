@@ -72,4 +72,23 @@ export class LocationService {
     return this.http.put(api.setupTagsForLocation.replace('{locationId}', String(locationId)), tags.map(v => v.tagId));
   }
 
+  /**************************************************
+   *   Miscellaneous queries concerning locations   *
+  ***************************************************/
+
+  getOpeningOverviewOfWeek(year: number, weekNr: number): Observable<Map<string, string[]>> {
+    return this.http.get(api.openingHoursOverview
+      .replace('{year}', String(year))
+      .replace('{weekNr}', String(weekNr)))
+      .pipe(
+        map<unknown, Map<string, string[]>>(next => {
+          const overview = new Map<string, string[]>();
+          for (const locationName of Object.keys(next)) {
+            overview.set(locationName, next[locationName]);
+          }
+          return overview;
+        })
+    );
+  }
+
 }
