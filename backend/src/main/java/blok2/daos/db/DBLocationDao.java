@@ -14,9 +14,13 @@ import blok2.model.reservables.Locker;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
+import java.sql.Date;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.temporal.IsoFields;
+import java.time.temporal.TemporalAdjusters;
+import java.util.*;
 
 @Service
 public class DBLocationDao extends DAO implements ILocationDao {
@@ -269,6 +273,39 @@ public class DBLocationDao extends DAO implements ILocationDao {
             statement.execute();
         }
     }
+
+    public Map<String, String[]> getOpeningOverviewOfWeek(int year, int weekNr) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            // source: https://stackoverflow.com/a/32186362/9356123
+            LocalDate mondayDate = LocalDate.ofYearDay(year, 50)
+                    .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, weekNr)
+                    .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+            LocalDate sundayDate = mondayDate.plusDays(6);
+
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
+                    .getString("get_week_overview_with_monday_and_sunday_dates"));
+            pstmt.setDate(1, Date.valueOf(mondayDate));
+            pstmt.setDate(2, Date.valueOf(sundayDate));
+            ResultSet rs = pstmt.executeQuery();
+
+            Map<String, String[]> overview = new TreeMap<>();
+            while (rs.next()) {
+                String locationName = rs.getString(1);
+                String[] week = new String[7];
+                week[0] = rs.getString(2);
+                week[1] = rs.getString(3);
+                week[2] = rs.getString(4);
+                week[3] = rs.getString(5);
+                week[4] = rs.getString(6);
+                week[5] = rs.getString(7);
+                week[6] = rs.getString(8);
+                overview.put(locationName, week);
+            }
+
+            return overview;
+        }
+    }
+
     /**
      * Create a location out of a row in the ResultSet (prevent duplication of code)
      * @param rs the ResultSet for fetching the location

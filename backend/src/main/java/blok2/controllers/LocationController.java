@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -193,4 +194,29 @@ public class LocationController extends AuthorizedLocationController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
+
+    // **************************************************
+    // *   Miscellaneous queries concerning locations   *
+    // **************************************************
+
+    /**
+     * Returns an array of 7 strings for each location that is opened in the week specified by the given
+     * week number in the given year.
+     *
+     * Each string is in the form of 'HH24:MI - HH24:MI' to indicate the opening and closing hour at
+     * monday, tuesday, ..., sunday but can also be null to indicate that the location is not open that day.
+     */
+    @GetMapping("/overview/opening/{year}/{weekNr}")
+    @PreAuthorize("permitAll()")
+    public Map<String, String[]> getOpeningOverviewOfWeek(@PathVariable("year") int year,
+                                                          @PathVariable("weekNr") int weekNr) {
+        try {
+            return locationDao.getOpeningOverviewOfWeek(year, weekNr);
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
 }

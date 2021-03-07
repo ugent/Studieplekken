@@ -7,6 +7,7 @@ import blok2.model.reservables.Locker;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Note that all add/update/delete operations on lockers will happen in cascade
@@ -69,5 +70,14 @@ public interface ILocationDao extends IDao {
      * Return all locations that are yet to be approved/denied
      */
     List<Location> getAllUnapprovedLocations() throws SQLException;
+
+    /**
+     * Returns an array of 7 strings for each location that is opened in the week specified by the given
+     * week number in the given year.
+     *
+     * Each string is in the form of 'HH24:MI - HH24:MI' to indicate the opening and closing hour at
+     * monday, tuesday, ..., sunday but can also be null to indicate that the location is not open that day.
+     */
+    Map<String, String[]> getOpeningOverviewOfWeek(int year, int weekNr) throws SQLException;
 
 }
