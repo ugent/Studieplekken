@@ -43,45 +43,52 @@ DO $$
 DECLARE new_authority_id integer;
 DECLARE build_id_sterreS5 integer;
 DECLARE build_id_sterreS9 integer;
+DECLARE loc_id_S9_PC integer;
+DECLARE loc_id_S5_bib integer;
+DECLARE loc_id_S5_eetzaal integer;
+DECLARE new_tag_id integer;
 
 BEGIN
   INSERT INTO authority (authority_name, description) VALUES ('WE', 'Faculteit wetenschappen') RETURNING authority_id into new_authority_id;
   INSERT INTO public.buildings (building_name, address) VALUES ('Sterre S5', 'Krijgslaan 281, 9000 Gent') RETURNING building_id into build_id_sterreS5;
   INSERT INTO public.buildings (building_name, address) VALUES ('Sterre S9', 'Krijgslaan 281, 9000 Gent') RETURNING building_id into build_id_sterreS9;
   INSERT INTO locations (name, building_id, number_of_seats, number_of_lockers, image_url, authority_id, description_dutch, description_english, forGroup, approved)
-    VALUES  ('Sterre S9, PC lokaal 3rd verdiep', build_id_sterreS9, 40, 100, '', new_authority_id, 'Klaslokaal met computers', 'Classroom with computers', false, true),
-            ('Sterre S5, Bib', build_id_sterreS5, 100, 100, '', new_authority_id,
+    VALUES  ('Sterre S9, PC lokaal 3rd verdiep', build_id_sterreS9, 40, 100, '', new_authority_id, 'Klaslokaal met computers', 'Classroom with computers', false, true) RETURNING location_id INTO loc_id_S9_PC;
+  INSERT INTO locations (name, building_id, number_of_seats, number_of_lockers, image_url, authority_id, description_dutch, description_english, forGroup, approved)
+    VALUES  ('Sterre S5, Bib', build_id_sterreS5, 100, 100, '', new_authority_id,
                     'Informatie over de bib kan hier gevonden worden: https://lib.ugent.be/nl/libraries/WEBIB.',
-                    'Information about the bib itself can be found here: https://lib.ugent.be/nl/libraries/WEBIB.', false, true),
-            ('Sterre S5, Eetzaal', build_id_sterreS5, 130, 100, '', new_authority_id, '', '', false, true);
+                    'Information about the bib itself can be found here: https://lib.ugent.be/nl/libraries/WEBIB.', false, true) RETURNING location_id INTO loc_id_S5_bib;
+  INSERT INTO locations (name, building_id, number_of_seats, number_of_lockers, image_url, authority_id, description_dutch, description_english, forGroup, approved)
+    VALUES  ('Sterre S5, Eetzaal', build_id_sterreS5, 130, 100, '', new_authority_id, '', '', false, true) RETURNING location_id INTO loc_id_S5_eetzaal;
   INSERT INTO roles_user_authority (user_id, authority_id) VALUES ('002', new_authority_id);
-END $$;
-/*
- * add tags and use them in location Therminal
- */
-DO $$
-DECLARE new_tag_id integer;
-BEGIN
-    INSERT INTO tags (dutch, english) values ('eetplaats', 'dinner place') RETURNING tag_id into new_tag_id;
-    INSERT INTO location_tags (location_id, tag_id) values ('Sterre S5, Eetzaal', new_tag_id);
 
-    INSERT INTO tags (dutch, english) values ('stilte', 'silencium') RETURNING tag_id into new_tag_id;
-    INSERT INTO location_tags (location_id, tag_id) values ('Sterre S5, Bib', new_tag_id);
 
-    INSERT INTO tags (dutch, english) values ('computers', 'computers') RETURNING tag_id into new_tag_id;
-    INSERT INTO location_tags (location_id, tag_id) values ('Sterre S9, PC lokaal 3rd verdiep', new_tag_id);
-END $$;
-/*
- * Add some calendar periods
- */
-insert into calendar_periods(location_name, starts_at, ends_at, opening_time, closing_time, reservable_from, reservable, timeslot_length, locked_from)
-values  ('Sterre S5, Eetzaal', now() - interval '1 days', now() + interval '3 days',
-            '10:00', '12:00', now() - interval '7 days', true, 60, now() + interval '1 week'),
-        ('Sterre S5, Bib', now() - interval '5 days', now() + interval '10 days',
-            '09:00', '17:00', now() - interval '7 days', false, 0, now() + interval '1 week'),
-        ('Sterre S9, PC lokaal 3rd verdiep',now() - interval '5 days', now() + interval '10 days',
-            '8:30', '18:30', now() - interval '7 days', false, 0, now() + interval '1 week');
+  /*
+  * add tags and use them in location Therminal
+  */
 
+  INSERT INTO tags (dutch, english) values ('eetplaats', 'dinner place') RETURNING tag_id into new_tag_id;
+  INSERT INTO location_tags (location_id, tag_id) values (loc_id_S5_eetzaal, new_tag_id);
+
+  INSERT INTO tags (dutch, english) values ('stilte', 'silencium') RETURNING tag_id into new_tag_id;
+  INSERT INTO location_tags (location_id, tag_id) values (loc_id_S5_bib, new_tag_id);
+
+  INSERT INTO tags (dutch, english) values ('computers', 'computers') RETURNING tag_id into new_tag_id;
+  INSERT INTO location_tags (location_id, tag_id) values (loc_id_S9_PC, new_tag_id);
+
+
+  /*
+  * Add some calendar periods
+  */
+  insert into calendar_periods(location_id, starts_at, ends_at, opening_time, closing_time, reservable_from, reservable, timeslot_length, locked_from)
+  values  (loc_id_S5_eetzaal, now() - interval '1 days', now() + interval '3 days',
+              '10:00', '12:00', now() - interval '7 days', true, 60, now() + interval '1 week'),
+          (loc_id_S5_bib, now() - interval '5 days', now() + interval '10 days',
+              '09:00', '17:00', now() - interval '7 days', false, 0, now() + interval '1 week'),
+          (loc_id_S9_PC,now() - interval '5 days', now() + interval '10 days',
+              '8:30', '18:30', now() - interval '7 days', false, 0, now() + interval '1 week');
+
+END$$;
 
 insert into timeslots(calendar_id, timeslot_sequence_number, timeslot_date)
 values 
