@@ -17,12 +17,6 @@ INSERT into users(augentid, augentpreferredgivenname, augentpreferredsn, penalty
 VALUES ('000170335535', 'Maxiem', 'Geldhof', 0, ' Maxiem.Geldhof@UGent.be ', 'secret', 'UGent', true);
 
 /*
- * Setup third test user
- */
-insert into public.users(augentid, augentpreferredgivenname, augentpreferredsn, penalty_points, mail, password, institution, admin)
-values ('01405190', 'Tim', 'Van Erum', 0, 'tim.vanerum@ugent.be', 'secret', 'UGent', true);
-
-/*
  * Setup two test locations with an authority and add 2nd test user to the authority
  */
 DO $$
@@ -37,7 +31,7 @@ BEGIN
                 ('Plenaire vergaderzaal', build_id_therminal, 30, 0, '', auth_id, '', '', true, true),
                 ('Podiumzaal', build_id_therminal, 100, 0, '', auth_id, '', '', false, true),
                 ('Trechterzaal', build_id_therminal, 80, 0, '', auth_id, '', '', false, true);
-  INSERT INTO public.roles_user_authority (user_id, authority_id) VALUES ('002', auth_id);
+  INSERT INTO public.roles_user_authority (user_id, authority_id) VALUES ('000170763345', auth_id);
 END $$;
 
 
@@ -62,7 +56,7 @@ BEGIN
                     'Information about the bib itself can be found here: https://lib.ugent.be/nl/libraries/WEBIB.', false, true) RETURNING location_id INTO loc_id_S5_bib;
   INSERT INTO locations (name, building_id, number_of_seats, number_of_lockers, image_url, authority_id, description_dutch, description_english, forGroup, approved)
     VALUES  ('Sterre S5, Eetzaal', build_id_sterreS5, 130, 100, '', new_authority_id, '', '', false, true) RETURNING location_id INTO loc_id_S5_eetzaal;
-  INSERT INTO roles_user_authority (user_id, authority_id) VALUES ('002', new_authority_id);
+  INSERT INTO roles_user_authority (user_id, authority_id) VALUES ('000170763345', new_authority_id);
 
 
   /*
@@ -112,6 +106,6 @@ values
 insert into location_reservations(created_at, timeslot_date, timeslot_seqnr, calendar_id, user_augentid)
 values
 -- One reservation for over five days
-(now() + interval '5 days',  now() + interval '1 days', 0, 1, '001'),
+(now() + interval '5 days',  now() + interval '1 days', 0, 1, '000170763345'),
 -- One reservation for five days ago, attended to
-(now() + interval '5 days',  now() + interval '3 days', 0, 1, '001');
+(now() + interval '5 days',  now() + interval '3 days', 0, 1, '000170763345');
