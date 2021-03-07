@@ -8,13 +8,15 @@ INSERT into users(augentid, augentpreferredgivenname, augentpreferredsn, penalty
 VALUES ('000170763345', 'Bram', 'Van de Walle', 0, 'bram.vandewalle@ugent.be', 'secret', 'UGent', true);
 
 INSERT into users(augentid, augentpreferredgivenname, augentpreferredsn, penalty_points, mail, password, institution, admin)
-VALUES ('000150595025', 'Ruben', 'De Facq', 0, 'Ruben.DeFacq@UGent.be ', 'secret', 'UGent', true);
+VALUES ('000150595025', 'Ruben', 'De Facq', 0, 'ruben.defacq@ugent.be', 'secret', 'UGent', true);
 
 INSERT into users(augentid, augentpreferredgivenname, augentpreferredsn, penalty_points, mail, password, institution, admin)
 VALUES ('000160298358', 'Maxime', 'Bloch', 0, 'maxime.bloch@ugent.be', 'secret', 'UGent', true);
 
 INSERT into users(augentid, augentpreferredgivenname, augentpreferredsn, penalty_points, mail, password, institution, admin)
-VALUES ('000170335535', 'Maxiem', 'Geldhof', 0, ' Maxiem.Geldhof@UGent.be ', 'secret', 'UGent', true);
+VALUES  ('000170335535', 'Maxiem', 'Geldhof', 0, 'maxiem.geldhof@ugent.be', 'secret', 'UGent', true),
+        ('000180022502', 'Hannes', 'Klinckaert', 0, 'hannes.klinckaert@ugent.be', 'secret', 'UGent', true);
+
 
 /*
  * Setup two test locations with an authority and add 2nd test user to the authority
