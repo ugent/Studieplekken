@@ -1,40 +1,57 @@
 <div class="container-fluid">
-  You want the results of year {{year}} and week {{weekNr}} <!-- TODO: header & navigation arrows -->
+  <div class="row" style="margin-bottom: 15px;">
+    <h3>
+      {{('openingHoursOverview.title' | translate)
+      .replace('{mondayDate}', mondayDate(year, weekNr))
+      .replace('{sundayDate}', sundayDate(year, weekNr))}}
+    </h3>
 
-  <hr>
+    <hr>
 
-  <div *ngIf="overviewObs | async as overview; else loadingOrError">
-    <table class="table table-striped" style="table-layout: fixed; width: 100%">
-      <!-- Table header -->
-      <thead>
-      <tr>
-        <th style="width: 30%">{{'openingHoursOverview.table.locationName' | translate}}</th>
-        <th style="text-align: center">{{'general.monday' | translate}}</th>
-        <th style="text-align: center">{{'general.tuesday' | translate}}</th>
-        <th style="text-align: center">{{'general.wednesday' | translate}}</th>
-        <th style="text-align: center">{{'general.thursday' | translate}}</th>
-        <th style="text-align: center">{{'general.friday' | translate}}</th>
-        <th style="text-align: center">{{'general.saturday' | translate}}</th>
-        <th style="text-align: center">{{'general.sunday' | translate}}</th>
-      </tr>
-      </thead>
+    <span class="help-block" style="float: left">
+    <i>{{'openingHoursOverview.navigationInfo' | translate}}</i>
+  </span>
 
-      <!-- Table body -->
-      <tbody>
-      <tr *ngFor="let locationName of Object.keys(overview)">
-        <td style="padding-right: 5em">{{locationName}}</td>
-        <td style="text-align: center">{{stringOrPlaceholder(overview[locationName][0])}}</td>
-        <td style="text-align: center">{{stringOrPlaceholder(overview[locationName][1])}}</td>
-        <td style="text-align: center">{{stringOrPlaceholder(overview[locationName][2])}}</td>
-        <td style="text-align: center">{{stringOrPlaceholder(overview[locationName][3])}}</td>
-        <td style="text-align: center">{{stringOrPlaceholder(overview[locationName][4])}}</td>
-        <td style="text-align: center">{{stringOrPlaceholder(overview[locationName][5])}}</td>
-        <td style="text-align: center">{{stringOrPlaceholder(overview[locationName][6])}}</td>
-      </tr>
-      </tbody>
-    </table>
+    <div class="pull-right" style="float: right">
+      <button class="btn btn-primary btn-left" (click)="previousWeek()">&#8592;</button>
+      <button class="btn btn-primary" (click)="nextWeek()">&#8594;</button>
+    </div>
   </div>
 
+  <div class="row">
+    <div *ngIf="overviewObs | async as overview; else loadingOrError">
+      <table *ngIf="Object.keys(overview).length > 0; else noOpenings"
+             class="table table-striped" style="table-layout: fixed; width: 100%;">
+        <!-- Table header -->
+        <thead>
+        <tr>
+          <th style="width: 30%">{{'openingHoursOverview.table.locationName' | translate}}</th>
+          <th style="text-align: center">{{'general.monday' | translate}}</th>
+          <th style="text-align: center">{{'general.tuesday' | translate}}</th>
+          <th style="text-align: center">{{'general.wednesday' | translate}}</th>
+          <th style="text-align: center">{{'general.thursday' | translate}}</th>
+          <th style="text-align: center">{{'general.friday' | translate}}</th>
+          <th style="text-align: center">{{'general.saturday' | translate}}</th>
+          <th style="text-align: center">{{'general.sunday' | translate}}</th>
+        </tr>
+        </thead>
+
+        <!-- Table body -->
+        <tbody>
+        <tr *ngFor="let locationName of Object.keys(overview)">
+          <td style="padding-right: 5em">{{locationName}}</td>
+          <td style="text-align: center">{{stringOrPlaceholder(overview[locationName][0])}}</td>
+          <td style="text-align: center">{{stringOrPlaceholder(overview[locationName][1])}}</td>
+          <td style="text-align: center">{{stringOrPlaceholder(overview[locationName][2])}}</td>
+          <td style="text-align: center">{{stringOrPlaceholder(overview[locationName][3])}}</td>
+          <td style="text-align: center">{{stringOrPlaceholder(overview[locationName][4])}}</td>
+          <td style="text-align: center">{{stringOrPlaceholder(overview[locationName][5])}}</td>
+          <td style="text-align: center">{{stringOrPlaceholder(overview[locationName][6])}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
 <ng-template #loadingOrError>
@@ -47,4 +64,13 @@
       {{'general.waitingForServer' | translate}}
     </div>
   </ng-template>
+</ng-template>
+
+<ng-template #noOpenings>
+  <div class="alert alert-warning ">
+    {{((isInPast(year, weekNr) ? 'openingHoursOverview.noOpeningsPast' :
+    'openingHoursOverview.noOpeningsFuture') | translate)
+    .replace('{mondayDate}', mondayDate(year, weekNr))
+    .replace('{sundayDate}', sundayDate(year, weekNr))}}
+  </div>
 </ng-template>
