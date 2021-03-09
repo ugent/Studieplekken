@@ -962,6 +962,9 @@
       "title": "Scan students for {locationName}",
       "errorMessageOnLoadingUsers": "Could not fetch the users that you can scan.",
       "noUsersToScanWarning": "There are no students to be scanned for this location at this time."
-    }
+    },
+    "phone": "Scan with phone camera",
+    "handheld": "Scan with handheld scanner",
+    "manual": "Checklist"
   }
 }

@@ -21,6 +21,7 @@ export class ScanningLocationDetailsComponent implements OnInit {
   usersObs: Observable<User[]>;
   loadingError = new Subject<boolean>();
   user?: User;
+  scanningfield: string;
 
   constructor(private route: ActivatedRoute,
               private locationService: LocationService,
@@ -55,7 +56,6 @@ export class ScanningLocationDetailsComponent implements OnInit {
   }
 
   confirm(location: Location): void {
-    console.log(location.currentTimeslot)
     const reservation = new LocationReservation(this.user, location.currentTimeslot);
     this.reservationService.postLocationReservationAttendance(reservation, true).subscribe();
     this.user = null;
@@ -63,5 +63,15 @@ export class ScanningLocationDetailsComponent implements OnInit {
 
   cancel(): void {
     this.user = null;
+  }
+
+  scannedInput(users: User[], location: Location): void {
+    const user = users.find(u => u.augentID === this.scanningfield);
+
+    if (!user) {
+      return;
+    }
+    const reservation = new LocationReservation(user, location.currentTimeslot);
+    this.reservationService.postLocationReservationAttendance(reservation, true).subscribe();
   }
 }
