@@ -3,6 +3,7 @@ package blok2.controllers;
 import blok2.daos.IAccountDao;
 import blok2.daos.ILocationDao;
 import blok2.daos.ILocationReservationDao;
+import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservables.Location;
 import blok2.model.reservations.LocationReservation;
@@ -27,7 +28,7 @@ import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("scan")
-public class ScanController {
+public class ScanController extends AuthorizedLocationController {
 
     private final Logger logger = LoggerFactory.getLogger(ScanController.class);
 
@@ -42,12 +43,14 @@ public class ScanController {
         this.reservationDao = reservationDao;
     }
 
-    // TODO: fully implement this endpoint
     @GetMapping("/locations")
     @PreAuthorize("hasAuthority('ADMIN')")
     public List<Location> getLocationsToScan() {
         try {
-            return locationDao.getAllLocations();
+            return locationDao.getAllLocations().stream()
+                    .filter(f -> f.getCurrentTimeslot() != null)
+                    .filter(f -> true)            // TODO: volunteer statute
+                    .collect(Collectors.toList());
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
@@ -55,7 +58,6 @@ public class ScanController {
         }
     }
 
-    // TODO: fully implement this endpoint
     @GetMapping("/users/{locationId}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public List<User> getUsersToScanAtLocation(@PathVariable("locationId") int locationId) {
