@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Observable, Subject} from 'rxjs';
 import {LocationService} from '../../services/api/locations/location.service';
-import {catchError, tap} from 'rxjs/operators';
+import {catchError} from 'rxjs/operators';
 import {of} from 'rxjs/internal/observable/of';
 
 @Component({
@@ -11,6 +11,8 @@ import {of} from 'rxjs/internal/observable/of';
   styleUrls: ['./opening-hours-overview.component.css']
 })
 export class OpeningHoursOverviewComponent implements OnInit {
+
+  Object = Object;
 
   year: number;
   weekNr: number;
@@ -25,17 +27,16 @@ export class OpeningHoursOverviewComponent implements OnInit {
     this.year = Number(this.route.snapshot.paramMap.get('year'));
     this.weekNr = Number(this.route.snapshot.paramMap.get('weekNr'));
     this.overviewObs = this.locationService.getOpeningOverviewOfWeek(this.year, this.weekNr).pipe(
-      tap(next => {
-        console.log(next);
-        for (const locationName of next.keys()) {
-          console.log(locationName);
-        }
-      }),
-      catchError(() => {
+      catchError(err => {
+        console.error(err);
         this.errorSubject.next(true);
         return of(null);
       })
     );
+  }
+
+  stringOrPlaceholder(str: string): string {
+    return str === null || str === undefined || str.length === 0 ? '-' : str;
   }
 
 }

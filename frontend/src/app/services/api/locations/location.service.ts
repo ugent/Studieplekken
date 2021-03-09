@@ -76,19 +76,10 @@ export class LocationService {
    *   Miscellaneous queries concerning locations   *
   ***************************************************/
 
-  getOpeningOverviewOfWeek(year: number, weekNr: number): Observable<Map<string, string[]>> {
+  getOpeningOverviewOfWeek(year: number, weekNr: number): Observable<any> {
     return this.http.get(api.openingHoursOverview
       .replace('{year}', String(year))
-      .replace('{weekNr}', String(weekNr)))
-      .pipe(
-        map<unknown, Map<string, string[]>>(next => {
-          const overview = new Map<string, string[]>();
-          for (const locationName of Object.keys(next)) {
-            overview.set(locationName, next[locationName]);
-          }
-          return overview;
-        })
-    );
+      .replace('{weekNr}', String(weekNr)));
   }
 
 }

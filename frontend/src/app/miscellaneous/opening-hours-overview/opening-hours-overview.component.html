@@ -4,32 +4,32 @@
   <hr>
 
   <div *ngIf="overviewObs | async as overview; else loadingOrError">
-    <table>
+    <table class="table table-striped" style="table-layout: fixed; width: 100%">
       <!-- Table header -->
       <thead>
       <tr>
-        <th>{{'openingHoursOverview.table.locationName' | translate}}</th>
-        <th>{{'general.monday' | translate}}</th>
-        <th>{{'general.tuesday' | translate}}</th>
-        <th>{{'general.wednesday' | translate}}</th>
-        <th>{{'general.thursday' | translate}}</th>
-        <th>{{'general.friday' | translate}}</th>
-        <th>{{'general.saturday' | translate}}</th>
-        <th>{{'general.sunday' | translate}}</th>
+        <th style="width: 30%">{{'openingHoursOverview.table.locationName' | translate}}</th>
+        <th style="text-align: center">{{'general.monday' | translate}}</th>
+        <th style="text-align: center">{{'general.tuesday' | translate}}</th>
+        <th style="text-align: center">{{'general.wednesday' | translate}}</th>
+        <th style="text-align: center">{{'general.thursday' | translate}}</th>
+        <th style="text-align: center">{{'general.friday' | translate}}</th>
+        <th style="text-align: center">{{'general.saturday' | translate}}</th>
+        <th style="text-align: center">{{'general.sunday' | translate}}</th>
       </tr>
       </thead>
 
       <!-- Table body -->
       <tbody>
-      <tr *ngFor="let locationName of overview.keys()">
-        <td>{{locationName}}</td>
-        <td>{{overview.get(locationName)[0]}}</td>
-        <td>{{overview.get(locationName)[1]}}</td>
-        <td>{{overview.get(locationName)[2]}}</td>
-        <td>{{overview.get(locationName)[3]}}</td>
-        <td>{{overview.get(locationName)[4]}}</td>
-        <td>{{overview.get(locationName)[5]}}</td>
-        <td>{{overview.get(locationName)[6]}}</td>
+      <tr *ngFor="let locationName of Object.keys(overview)">
+        <td style="padding-right: 5em">{{locationName}}</td>
+        <td style="text-align: center">{{stringOrPlaceholder(overview[locationName][0])}}</td>
+        <td style="text-align: center">{{stringOrPlaceholder(overview[locationName][1])}}</td>
+        <td style="text-align: center">{{stringOrPlaceholder(overview[locationName][2])}}</td>
+        <td style="text-align: center">{{stringOrPlaceholder(overview[locationName][3])}}</td>
+        <td style="text-align: center">{{stringOrPlaceholder(overview[locationName][4])}}</td>
+        <td style="text-align: center">{{stringOrPlaceholder(overview[locationName][5])}}</td>
+        <td style="text-align: center">{{stringOrPlaceholder(overview[locationName][6])}}</td>
       </tr>
       </tbody>
     </table>
