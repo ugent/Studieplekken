@@ -5,9 +5,7 @@ import blok2.daos.ILocationTagDao;
 import blok2.helpers.Pair;
 import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.helpers.LocationWithApproval;
-import blok2.helpers.Resources;
 import blok2.helpers.exceptions.AlreadyExistsException;
-import blok2.mail.MailService;
 import blok2.model.reservables.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +15,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.mail.MessagingException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -37,17 +34,15 @@ public class LocationController extends AuthorizedLocationController {
 
     private final ILocationDao locationDao;
     private final ILocationTagDao locationTagDao;
-    private final MailService emailService;
 
     // *************************************
     // *   CRUD operations for LOCATIONS   *
     // *************************************
 
     @Autowired
-    public LocationController(ILocationDao locationDao, ILocationTagDao locationTagDao, MailService emailService) {
+    public LocationController(ILocationDao locationDao, ILocationTagDao locationTagDao) {
         this.locationDao = locationDao;
         this.locationTagDao = locationTagDao;
-        this.emailService = emailService;
     }
 
     @GetMapping
@@ -106,15 +101,11 @@ public class LocationController extends AuthorizedLocationController {
                 throw new AlreadyExistsException("location name already in use");
 
             this.locationDao.addLocation(location);
-            this.emailService.sendNewLocationMessage(Resources.blokatugentConf.getString("dfsgMail"), "Maxiem Geldhof", location);
             logger.info(String.format("New location %s added", location.getName()));
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        } catch (MessagingException e) {
-            e.printStackTrace();
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Mail error");
         }
     }
 
