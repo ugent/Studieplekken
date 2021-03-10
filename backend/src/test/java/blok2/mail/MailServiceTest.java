@@ -2,9 +2,6 @@ package blok2.mail;
 
 import blok2.BaseTest;
 import blok2.TestSharedMethods;
-import blok2.daos.IAuthorityDao;
-import blok2.daos.IBuildingDao;
-import blok2.daos.ILocationDao;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.reservables.Location;
@@ -23,15 +20,6 @@ public class MailServiceTest extends BaseTest {
 
     @Autowired
     private MailService mailService;
-
-    @Autowired
-    private ILocationDao locationDao;
-
-    @Autowired
-    private IAuthorityDao authorityDao;
-
-    @Autowired
-    private IBuildingDao buildingDao;
 
     @Override
     public void populateDatabase() throws SQLException {
@@ -53,7 +41,7 @@ public class MailServiceTest extends BaseTest {
     }
 
     @Test
-    public void exampleLocationCreatedMailTest() throws MessagingException, SQLException {
+    public void exampleLocationCreatedMailTest() throws MessagingException {
         Authority authority = new Authority(1, "Test autoriteit", "Test authority");
         Building building = new Building(1, "Test gebouw", "Test building");
         Location location = TestSharedMethods.testLocation(authority, building);
