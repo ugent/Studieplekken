@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="nl" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title th:text="${title}"></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+        <style>
+            @media all and (max-width: 599px) {
+            }
+
+            main {
+                margin-top: 2em;
+                margin-bottom: 3em;
+            }
+
+            footer {
+                margin-top: 1em;
+                font-family: 'Courier New', monospace;
+                font-size: 0.9em;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h2 th:text="${title}"></h2>
+
+        <main>
+            <p>Beste <span th:text="${adminName}"></span></p>
+            <p>
+                Hierbij wensen we u op de hoogte te brengen dat er een aanvraag is binnengekomen op de Werk- en
+                Studieplekken applicatie (https://www.studieplekken.ugent.be) om een nieuwe locatie aan te maken.
+                Concreet gaat het over een locatie met volgende eigenschappen:
+            </p>
+            <ul>
+                <li>Naam: <span th:text="${locationName}"></span></li>
+                <li>Aantal zitplaatsen: <span th:text="${numberOfSeats}"></span></li>
+                <li>Gebouw: <span th:text="${buildingName}"></span></li>
+                <li>Deel van de autoriteit: <span th:text="${authorityName}"></span></li>
+            </ul>
+            <p>
+                U kan deze locatie goedkeuren door in de Werk- en Studieplekken applicatie te navigeren naar
+                <b>Beheer > Ruimtes > Goedkeuring van nieuwe blokruimtes > Details > Keur goed</b>.
+            </p>
+        </main>
+
+        <p>
+            Met vriendelijke groeten, <br/>
+            <em>Het Werk- en Studieplekken Team</em>
+        </p>
+
+        <footer>
+            <p>
+                Dit is een automatisch bericht. Als je niet de bedoelde ontvanger bent, of je hebt andere vragen of opmerking
+                over dit bericht, gelieve te mailen naar admin@dsa.ugent.be.
+                <br/>
+                This is an automated message. If you are not the intended recipient, or have other concerns with this message,
+                please mail admin@dsa.ugent.be.
+            </p>
+        </footer>
+    </body>
+</html>

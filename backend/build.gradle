@@ -32,7 +32,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jdbc:2.3.4.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
-
+    implementation 'org.springframework.boot:spring-boot-starter-mail:2.0.1.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:2.3.5.RELEASE'
     implementation 'org.springframework.boot:spring-boot-configuration-processor:2.2.2.RELEASE'
 
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
@@ -49,7 +50,6 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.2.2.RELEASE'
     testImplementation 'org.springframework.security:spring-security-test'
-
 }
 
 // For direct flyway command with gradle

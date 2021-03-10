@@ -44,7 +44,7 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
     public UserDetails loadUserDetails(CasAssertionAuthenticationToken casAssertionAuthenticationToken) throws UsernameNotFoundException {
         AttributePrincipal principal = casAssertionAuthenticationToken.getAssertion().getPrincipal();
         String ugentID = (String) principal.getAttributes().get("ugentID");
-        String mail = (String) principal.getAttributes().get("mail");
+        String mail = (String) principal.getAttributes().get("templates/mail");
 
         User user;
 
@@ -85,7 +85,7 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
                 User user = new User();
                 user.setFirstName(attrs.get("givenName").get().toString());
                 user.setLastName(attrs.get("sn").get().toString());
-                user.setMail(attrs.get("mail").get().toString());
+                user.setMail(attrs.get("templates/mail").get().toString());
                 user.setPassword("secret");
                 user.setInstitution("UGent");
                 user.setAugentID(ugentID);
