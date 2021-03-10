@@ -8,11 +8,13 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.context.support.RequestHandledEvent;
 
 @ServletComponentScan
 @SpringBootApplication
 @EnableConfigurationProperties
+@EnableScheduling
 public class Blok2Application extends SpringBootServletInitializer {
 
     private final Logger logger = LoggerFactory.getLogger(Blok2Application.class);

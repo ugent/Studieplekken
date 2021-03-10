@@ -1,20 +1,25 @@
 package blok2.controllers;
 
+import blok2.daos.IAccountDao;
 import blok2.daos.ILocationDao;
 import blok2.daos.ILocationTagDao;
 import blok2.helpers.Pair;
 import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.helpers.LocationWithApproval;
 import blok2.helpers.exceptions.AlreadyExistsException;
+import blok2.mail.MailService;
 import blok2.model.reservables.Location;
+import blok2.model.users.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.mail.MessagingException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -34,15 +39,24 @@ public class LocationController extends AuthorizedLocationController {
 
     private final ILocationDao locationDao;
     private final ILocationTagDao locationTagDao;
+    private final IAccountDao accountDao;
+
+    private final MailService mailService;
+
+    @Value("${spring.profiles.active}")
+    private String activeProfile;
 
     // *************************************
     // *   CRUD operations for LOCATIONS   *
     // *************************************
 
     @Autowired
-    public LocationController(ILocationDao locationDao, ILocationTagDao locationTagDao) {
+    public LocationController(ILocationDao locationDao, ILocationTagDao locationTagDao, IAccountDao accountDao,
+                              MailService mailService) {
         this.locationDao = locationDao;
         this.locationTagDao = locationTagDao;
+        this.accountDao = accountDao;
+        this.mailService = mailService;
     }
 
     @GetMapping
@@ -101,8 +115,20 @@ public class LocationController extends AuthorizedLocationController {
                 throw new AlreadyExistsException("location name already in use");
 
             this.locationDao.addLocation(location);
+
+            // This if statement is really important! Otherwise development mails could be sent to the admins...
+            if (activeProfile.contains("prod")) {
+                List<String> adminList = accountDao.getAdmins().stream().map(User::getMail).collect(Collectors.toList());
+                String[] admins = new String[adminList.size()];
+                adminList.toArray(admins);
+                logger.info(String.format("Sending mail to admins to notify about creation of new location %s. Recipients are: %s", location.toString(), Arrays.toString(admins)));
+                mailService.sendNewLocationMessage(admins, location);
+            } else {
+                logger.info(String.format("NOT Sending mail to admins to notify about creation of new location %s because the active profile does not contain 'prod'", location.toString()));
+            }
+
             logger.info(String.format("New location %s added", location.getName()));
-        } catch (SQLException e) {
+        } catch (SQLException | MessagingException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");

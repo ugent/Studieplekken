@@ -1,5 +1,7 @@
 # spring configuration
 spring:
+  profiles:
+    active: "dev"
   application:
     name: "BlokAtUGent"
   datasource:

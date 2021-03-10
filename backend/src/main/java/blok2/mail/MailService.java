@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import javax.activation.DataSource;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.time.DayOfWeek;
@@ -43,9 +42,23 @@ public class MailService {
         sendMail(target, "[Werk- en Studieplekken] Testmail", ctx, EXAMPLE_MAIL_TEMPLATE_URL);
     }
 
+    // *****************************************************
+    // *  Methods for mailing the opening hours overview   *
+    // *****************************************************/
+
     public void sendOpeningHoursOverviewMail(String target, int year, int week) throws MessagingException {
         Context ctx = new Context();
+        String title = prepareOpeningHoursOverviewMail(ctx, year, week);
+        sendMail(target, title, ctx, OPENING_HOURS_OVERVIEW_TEMPLATE_URL);
+    }
 
+    public void sendOpeningHoursOverviewMail(String[] targets, int year, int week) throws MessagingException {
+        Context ctx = new Context();
+        String title = prepareOpeningHoursOverviewMail(ctx, year, week);
+        sendMail(targets, title, ctx, OPENING_HOURS_OVERVIEW_TEMPLATE_URL);
+    }
+
+    private String prepareOpeningHoursOverviewMail(Context ctx, int year, int week) {
         LocalDate from = LocalDate.ofYearDay(year, 50)
                 .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, week)
                 .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
@@ -63,46 +76,75 @@ public class MailService {
         ctx.setVariable("year", year);
         ctx.setVariable("week", week);
 
-        sendMail(target, title, ctx, OPENING_HOURS_OVERVIEW_TEMPLATE_URL);
+        return title;
     }
+
+    // **********************************************************
+    // *  Methods for mailing that a new location was created   *
+    // **********************************************************/
 
     public void sendNewLocationMessage(String target, String adminName, Location location) throws MessagingException {
         Context ctx = new Context();
+        String title = prepareNewLocationMail(location, ctx);
+        ctx.setVariable("addressing", adminName);
+        sendMail(target, title, ctx, ADMIN_VALIDATION_FOR_NEW_LOCATION_REQUESTED_TEMPLATE_URL);
+    }
+
+    public void sendNewLocationMessage(String[] targets, Location location) throws MessagingException {
+        Context ctx = new Context();
+        String title = prepareNewLocationMail(location, ctx);
+        ctx.setVariable("addressing", "admin van de Werk- en Studieplekken applicatie");
+        sendMail(targets, title, ctx, ADMIN_VALIDATION_FOR_NEW_LOCATION_REQUESTED_TEMPLATE_URL);
+    }
+
+    private String prepareNewLocationMail(Location location, Context ctx) {
         String title = "[Werk- en Studieplekken] Aanvraag voor nieuwe locatie";
 
         ctx.setVariable("title", title);
-        ctx.setVariable("adminName", adminName);
         ctx.setVariable("locationName", location.getName());
         ctx.setVariable("numberOfSeats", location.getNumberOfSeats());
         ctx.setVariable("buildingName", location.getBuilding().getName());
         ctx.setVariable("authorityName", location.getAuthority().getAuthorityName());
 
-        sendMail(target, title, ctx, ADMIN_VALIDATION_FOR_NEW_LOCATION_REQUESTED_TEMPLATE_URL);
+        return title;
     }
 
-    private void sendMail(String target, String subject, Context ctx, String templateFilename) throws MessagingException {
-        sendMail(target, subject, null, null, ctx, templateFilename);
+    // ********************************************
+    // *  Methods for actually sending the mail   *
+    // ********************************************/
+
+    /**
+     * Send a mail for which the content is defined by the templateFileName and the context to one recipient.
+     */
+    private void sendMail(String target, String subject, Context ctx, String templateFileName) throws MessagingException {
+        MimeMessageHelper messageHelper = prepareMimeMessageHelper(subject, templateFileName, ctx);
+        messageHelper.setTo(target);
+        mailSender.send(messageHelper.getMimeMessage());
     }
 
-    private void sendMail(String target, String subject, String attachmentName, DataSource attachment,
-                          Context ctx, String templateFilename) throws MessagingException {
+    /**
+     * Send a mail for which the content is defined by the templateFileName and the context to multiple recipients.
+     */
+    private void sendMail(String[] targets, String subject, Context ctx, String templateFileName) throws MessagingException {
+        MimeMessageHelper messageHelper = prepareMimeMessageHelper(subject, templateFileName, ctx);
+        messageHelper.setTo(targets);
+        mailSender.send(messageHelper.getMimeMessage());
+    }
+
+    private MimeMessageHelper prepareMimeMessageHelper(String subject, String templateFileName, Context ctx)
+            throws MessagingException {
         // Prepare message using a Spring helper
         MimeMessage mimeMessage = mailSender.createMimeMessage();
-        MimeMessageHelper message = new MimeMessageHelper(mimeMessage, attachment != null, "UTF-8");
+        MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
 
-        message.setFrom("no-reply@studieplekken.ugent.be");
-        message.setTo(target);
-        message.setSubject(subject);
+        messageHelper.setFrom("no-reply@studieplekken.ugent.be");
+        messageHelper.setSubject(subject);
 
         // Create the HTML body using Thymeleaf
-        String htmlContent = this.templateEngine.process(templateFilename, ctx);
-        message.setText(htmlContent, true);
+        String htmlContent = this.templateEngine.process(templateFileName, ctx);
+        messageHelper.setText(htmlContent, true);
 
-        if (attachment != null) {
-            message.addAttachment(attachmentName, attachment);
-        }
-
-        mailSender.send(mimeMessage);
+        return messageHelper;
     }
 
 }
