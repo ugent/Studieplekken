@@ -11,6 +11,7 @@ import blok2.helpers.Resources;
 import blok2.helpers.exceptions.AlreadyExistsException;
 import blok2.helpers.exceptions.NoSuchLocationException;
 import blok2.model.reservables.Location;
+import blok2.model.users.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -208,6 +209,21 @@ public class LocationController extends AuthorizedLocationController {
         }
     }
 
+    @DeleteMapping("/{locationId}/volunteers")
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    public List<User> getVolunteers(@PathVariable int locationId) {
+        isAuthorized(locationId);
+        try {
+            if(locationDao.getLocationById(locationId) == null)
+                throw new NoSuchLocationException("No such location");
+
+            return locationDao.getVolunteers(locationId);
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
 
     // *****************************************
     // *   CRUD operations for LOCATION_TAGS   *
