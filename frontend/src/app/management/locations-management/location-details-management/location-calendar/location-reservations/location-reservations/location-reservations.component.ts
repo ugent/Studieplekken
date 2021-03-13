@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output, TemplateRef} from '@angular/core';
 import {LocationReservation} from '../../../../../../shared/model/LocationReservation';
-import {Timeslot} from '../../../../../../shared/model/Timeslot';
+import {Timeslot, timeslotEndHour, timeslotStartHour} from '../../../../../../shared/model/Timeslot';
 import * as moment from 'moment';
 import {CalendarPeriod} from '../../../../../../shared/model/CalendarPeriod';
 import {LocationReservationsService} from '../../../../../../services/api/location-reservations/location-reservations.service';
@@ -13,7 +13,7 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 })
 export class LocationReservationsComponent implements OnInit {
   @Input() locationReservations: LocationReservation[];
-  @Input() currentCalendarPeriod: CalendarPeriod;
+  @Input() currentCalendarPeriod?: CalendarPeriod;
   @Input() currentTimeSlot: Timeslot;
 
   @Output() reservationChange: EventEmitter<any> = new EventEmitter<any>();
@@ -48,15 +48,15 @@ export class LocationReservationsComponent implements OnInit {
 
   finishScanning(): void {
     this.successFinishingScan = null;
-    this.locationReservationService.scanLocationReservations(this.scannedLocationReservations)
-      .subscribe(
-        () => {
-          this.successFinishingScan = true;
-          this.updateLocationReservations();
-        }, () => {
-          this.successFinishingScan = false;
-        }
-      );
+    // this.locationReservationService.scanLocationReservations(this.scannedLocationReservations)
+    //   .subscribe(
+    //     () => {
+    //       this.successFinishingScan = true;
+    //       this.updateLocationReservations();
+    //     }, () => {
+    //       this.successFinishingScan = false;
+    //     }
+    //   );
     this.startedScanning = false;
   }
 
@@ -92,7 +92,8 @@ export class LocationReservationsComponent implements OnInit {
     this.locationReservationService.deleteLocationReservation(this.locationReservationToDelete).subscribe(
       () => {
         this.successDeletingLocationReservation = true;
-        this.reservationChange.emit(null);
+        if(this.reservationChange)
+          this.reservationChange.emit(null);
         this.modalService.hide();
       }
     );
@@ -103,13 +104,13 @@ export class LocationReservationsComponent implements OnInit {
   // *******************/
 
   getCorrectI18NObject(reservation: LocationReservation): string {
-    if (this.isTimeslotInPast()) {
+    if (this.isTimeslotStartInPast()) {
       if (reservation.attended === null) {
         return 'management.locationDetails.calendar.reservations.table.notScanned';
       } else {
         return reservation.attended ? 'general.yes' : 'general.no';
       }
-    } else if (this.isNowWithinTimeslot()) {
+    } else if (this.isTimeslotEndInPast()) {
       if (reservation.attended === null) {
         return 'management.locationDetails.calendar.reservations.table.yetToScan';
       } else {
@@ -120,29 +121,18 @@ export class LocationReservationsComponent implements OnInit {
     }
   }
 
-  isTimeslotInPast(): boolean {
-    const timeslotDate = this.currentTimeSlot.timeslotDate.format('YYYY-MM-DD');
-    const timeslotClose = this.currentCalendarPeriod.openingTime.clone()
-      .add(this.currentCalendarPeriod.reservableTimeslotSize * (this.currentTimeSlot.timeslotSeqnr + 1), 'minutes')
-      .format('HH:mm:ss');
-
-    const timeslotTimestamp = moment(timeslotDate + ' ' + timeslotClose, 'YYYY-MM-DD HH:mm:ss');
-    return timeslotTimestamp.isBefore(moment());
+  isTimeslotEndInPast(): boolean {
+    if(!this.currentCalendarPeriod)
+      return false; // Assume current
+    return timeslotEndHour(this.currentCalendarPeriod, this.currentTimeSlot).isBefore(moment());
   }
 
-  isNowWithinTimeslot(): boolean {
-    const timeslotDate = this.currentTimeSlot.timeslotDate.format('YYYY-MM-DD');
-    const timeslotOpen = this.currentCalendarPeriod.openingTime.clone()
-      .add(this.currentCalendarPeriod.reservableTimeslotSize * this.currentTimeSlot.timeslotSeqnr, 'minutes')
-      .format('HH:mm:ss');
-    const timeslotClose = this.currentCalendarPeriod.openingTime.clone()
-      .add(this.currentCalendarPeriod.reservableTimeslotSize * (this.currentTimeSlot.timeslotSeqnr + 1), 'minutes')
-      .format('HH:mm:ss');
+  isTimeslotStartInPast(): boolean {
+    if(!this.currentCalendarPeriod)
+      return true; // Assume current
 
-    const start = moment(timeslotDate + ' ' + timeslotOpen, 'YYYY-MM-DD HH:mm:ss');
-    const end = moment(timeslotDate + ' ' + timeslotClose, 'YYYY-MM-DD HH:mm:ss');
-
-    return start.isBefore(moment()) && end.isAfter(moment());
+    const start = timeslotStartHour(this.currentCalendarPeriod, this.currentTimeSlot);
+    return start.isBefore(moment());
   }
 
   isButtonDisabled(reservation: LocationReservation, attended: boolean): boolean {
