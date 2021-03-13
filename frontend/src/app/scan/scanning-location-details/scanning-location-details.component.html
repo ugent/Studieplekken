@@ -19,6 +19,8 @@
         <div class="panel-collapse collapse" id="phone">
 
           <div *ngIf="error" class="alert alert-error">{{error | translate}}</div>
+
+          <div *ngIf="!user" class="alert alert-info">{{'scan.help' | translate}}</div>
           <app-scanner *ngIf="!user" [validator]="getValidator(users)" (code)="scanUser(users, $event)"></app-scanner>
 
           <div *ngIf="user" fxLayout="column" fxLayoutAlign="center center">

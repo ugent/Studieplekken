@@ -967,7 +967,7 @@
     "handheld": "Scan met een handscanner",
     "manual": "Checklist",
     "unregistered":"Deze gebruiker is niet geregistreerd.",
-    "error": "Er ging iets fout bij deze actie."
-
+    "error": "Er ging iets fout bij deze actie.",
+    "help": "Scanning werkt best wanneer je de barcode horizontaal plaatst."
   }
 }
