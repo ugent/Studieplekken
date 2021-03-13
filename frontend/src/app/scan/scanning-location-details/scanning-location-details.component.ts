@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {LocationService} from '../../services/api/locations/location.service';
-import {Observable, Subject} from 'rxjs';
+import {combineLatest, Observable, Subject} from 'rxjs';
 import {Location} from '../../shared/model/Location';
 import {User} from '../../shared/model/User';
 import {ScanningService} from '../../services/api/scan/scanning.service';
-import {catchError} from 'rxjs/operators';
+import {catchError, map, switchMap} from 'rxjs/operators';
 import {of} from 'rxjs/internal/observable/of';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
@@ -19,6 +19,8 @@ export class ScanningLocationDetailsComponent implements OnInit {
 
   locationObs: Observable<Location>;
   usersObs: Observable<User[]>;
+  locationReservationObs: Observable<LocationReservation[]>;
+
   loadingError = new Subject<boolean>();
   user?: User;
   scanningfield: string;
@@ -41,6 +43,8 @@ export class ScanningLocationDetailsComponent implements OnInit {
         return of(null);
       })
     );
+
+    this.locationReservationObs = combineLatest([this.usersObs, this.locationObs]).pipe(map(([userarr, loc]) => userarr.map(u => new LocationReservation(u, loc.currentTimeslot))))
   }
 
   getValidator(users: User[]): (a: string) => boolean {
@@ -83,5 +87,9 @@ export class ScanningLocationDetailsComponent implements OnInit {
     this.user = user;
     setTimeout(() => this.user = null, 1500);
     this.scanningfield = "";
+    }
+
+    toLocationReservationList(users: User[], location: Location): LocationReservation[] {
+      return users.map(u => new LocationReservation(u, location.currentTimeslot));
     }
 }

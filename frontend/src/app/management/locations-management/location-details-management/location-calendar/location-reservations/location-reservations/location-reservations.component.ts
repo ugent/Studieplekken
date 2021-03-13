@@ -5,6 +5,7 @@ import * as moment from 'moment';
 import {CalendarPeriod} from '../../../../../../shared/model/CalendarPeriod';
 import {LocationReservationsService} from '../../../../../../services/api/location-reservations/location-reservations.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
+import { User } from 'src/app/shared/model/User';
 
 @Component({
   selector: 'app-location-reservations',
@@ -23,9 +24,10 @@ export class LocationReservationsComponent implements OnInit {
   successDeletingLocationReservation: boolean = undefined;
   successFinishingScan: boolean = undefined;
 
-  startedScanning = false;
+  startedScanning = true;
+  searchTerm: string = "";
 
-  scannedLocationReservations: LocationReservation[];
+  scannedLocationReservations: LocationReservation[] = [];
 
   constructor(private locationReservationService: LocationReservationsService,
               private modalService: BsModalService) { }
@@ -72,8 +74,10 @@ export class LocationReservationsComponent implements OnInit {
       const lr = LocationReservation.fromJSON(reservation);
       lr.attended = attended;
       this.scannedLocationReservations.push(lr);
+      this.locationReservationService.postLocationReservationAttendance(reservation, attended).subscribe();
     } else {
       this.scannedLocationReservations[idx].attended = attended;
+      this.locationReservationService.postLocationReservationAttendance(reservation, attended).subscribe();
     }
   }
 
@@ -82,6 +86,7 @@ export class LocationReservationsComponent implements OnInit {
   // **************/
 
   prepareToDeleteLocationReservation(locationReservation: LocationReservation, template: TemplateRef<any>): void {
+    console.log(locationReservation, template)
     this.successDeletingLocationReservation = undefined;
     this.locationReservationToDelete = locationReservation;
     this.modalService.show(template);
@@ -163,5 +168,26 @@ export class LocationReservationsComponent implements OnInit {
 
   closeModal(): void {
     this.modalService.hide();
+  }
+
+  filter(locationReservations: LocationReservation[]): LocationReservation[] {
+    const userHasSearchTerm = (u: User) => u.augentID.includes(this.searchTerm) || u.firstName.includes(this.searchTerm) || u.lastName.includes(this.searchTerm)
+
+    // Sorting the searchterm hits first. After that, fallback on name sorting (createdAt is not available here)
+    locationReservations.sort((a, b) => {
+
+      if(userHasSearchTerm(a.user) && !userHasSearchTerm(b.user)) {
+        return -1;
+      }
+      if(userHasSearchTerm(b.user) && !userHasSearchTerm(a.user)){
+        return 1
+      }
+
+      return a.user.lastName.localeCompare(b.user.lastName)
+    })
+
+    console.log(locationReservations)
+
+    return locationReservations
   }
 }
