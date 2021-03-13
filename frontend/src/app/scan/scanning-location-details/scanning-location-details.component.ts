@@ -22,6 +22,7 @@ export class ScanningLocationDetailsComponent implements OnInit {
   loadingError = new Subject<boolean>();
   user?: User;
   scanningfield: string;
+  error: string;
 
   constructor(private route: ActivatedRoute,
               private locationService: LocationService,
@@ -51,13 +52,14 @@ export class ScanningLocationDetailsComponent implements OnInit {
   }
 
   scanUser(users: User[], code: string): void {
+    this.error = "";
     const user = users.find(u => u.augentID === this.upcEncoded(code));
     this.user = user;
   }
 
   confirm(location: Location): void {
     const reservation = new LocationReservation(this.user, location.currentTimeslot);
-    this.reservationService.postLocationReservationAttendance(reservation, true).subscribe();
+    this.reservationService.postLocationReservationAttendance(reservation, true).subscribe(() => {}, e => this.error = "scan.error");
     this.user = null;
   }
 
@@ -67,11 +69,19 @@ export class ScanningLocationDetailsComponent implements OnInit {
 
   scannedInput(users: User[], location: Location): void {
     const user = users.find(u => u.augentID === this.scanningfield);
-
     if (!user) {
+      if(this.scanningfield.length >= 12) {
+        this.error = "scan.unregistered"
+      } else {
+        this.error = "";
+      }
+
       return;
     }
     const reservation = new LocationReservation(user, location.currentTimeslot);
-    this.reservationService.postLocationReservationAttendance(reservation, true).subscribe();
-  }
+    this.reservationService.postLocationReservationAttendance(reservation, true).subscribe(() => {}, e => this.error = "scan.error");
+    this.user = user;
+    setTimeout(() => this.user = null, 1500);
+    this.scanningfield = "";
+    }
 }

@@ -965,7 +965,9 @@
     },
     "phone": "Scan met GSM-camera",
     "handheld": "Scan met een handscanner",
-    "manual": "Checklist"
+    "manual": "Checklist",
+    "unregistered":"Deze gebruiker is niet geregistreerd.",
+    "error": "Er ging iets fout bij deze actie."
 
   }
 }

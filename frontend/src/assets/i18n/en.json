@@ -965,6 +965,8 @@
     },
     "phone": "Scan with phone camera",
     "handheld": "Scan with handheld scanner",
-    "manual": "Checklist"
+    "manual": "Checklist",
+    "unregistered": "This user is not registered for this timeslot. Please try another.",
+    "error": "Something went wrong with scanning this user. Please try again."
   }
 }
