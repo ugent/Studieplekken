@@ -20,7 +20,7 @@
 
           <div *ngIf="error" class="alert alert-error">{{error | translate}}</div>
 
-          <div *ngIf="!user" class="alert alert-info">{{'scan.help' | translate}}</div>
+          <div *ngIf="!user" class="alert alert-info">{{'scan.mobile-hint' | translate}}</div>
           <app-scanner *ngIf="!user" [validator]="getValidator(users)" (code)="scanUser(users, $event)"></app-scanner>
 
           <div *ngIf="user" fxLayout="column" fxLayoutAlign="center center">
@@ -51,6 +51,7 @@
           <div class="panel-collapse collapse" id="handheld">
             <div fxLayout="column" fxLayoutAlign="center center">
 
+              <div *ngIf="!user" class="alert alert-info">{{'scan.handheld-hint' | translate}}</div>
 
               <div *ngIf="error" class="alert alert-error"> {{error | translate}}</div>
               <input *ngIf="!user" [(ngModel)]="scanningfield" (ngModelChange)="scannedInput(users, location)"

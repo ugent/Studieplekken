@@ -983,6 +983,7 @@
     "manual": "Checklist",
     "unregistered": "This user is not registered for this timeslot. Please try another.",
     "error": "Something went wrong with scanning this user. Please try again.",
-    "help": "Scanning works best when the barcode is aligned horizontally."
+    "mobile-hint": "Scanning works best when the barcode is aligned horizontally.",
+    "handheld-hint": "Select the input box and use the handheld scanner. On a succesful scan, the name will appear briefly."
   }
 }

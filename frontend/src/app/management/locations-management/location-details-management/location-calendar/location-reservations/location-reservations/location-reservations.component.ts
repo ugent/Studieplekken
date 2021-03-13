@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output, TemplateRef} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, TemplateRef} from '@angular/core';
 import {LocationReservation} from '../../../../../../shared/model/LocationReservation';
 import {Timeslot, timeslotEndHour, timeslotStartHour} from '../../../../../../shared/model/Timeslot';
 import * as moment from 'moment';
@@ -12,7 +12,7 @@ import { User } from 'src/app/shared/model/User';
   templateUrl: './location-reservations.component.html',
   styleUrls: ['./location-reservations.component.css']
 })
-export class LocationReservationsComponent implements OnInit {
+export class LocationReservationsComponent implements OnInit, OnChanges {
   @Input() locationReservations: LocationReservation[];
   @Input() currentCalendarPeriod?: CalendarPeriod;
   @Input() currentTimeSlot: Timeslot;
@@ -28,11 +28,24 @@ export class LocationReservationsComponent implements OnInit {
   searchTerm: string = "";
 
   scannedLocationReservations: LocationReservation[] = [];
+  warning: boolean = false;
+
+  userHasSearchTerm = (u: User) => u.augentID.includes(this.searchTerm) || u.firstName.includes(this.searchTerm) || u.lastName.includes(this.searchTerm);
+
 
   constructor(private locationReservationService: LocationReservationsService,
               private modalService: BsModalService) { }
 
   ngOnInit(): void {
+  }
+
+  ngOnChanges():void {
+    
+    if(this.locationReservations.every(lr => !this.userHasSearchTerm(lr.user)))
+      this.warning = true;
+    else
+      this.warning = false;
+
   }
 
   // /***************
@@ -171,22 +184,20 @@ export class LocationReservationsComponent implements OnInit {
   }
 
   filter(locationReservations: LocationReservation[]): LocationReservation[] {
-    const userHasSearchTerm = (u: User) => u.augentID.includes(this.searchTerm) || u.firstName.includes(this.searchTerm) || u.lastName.includes(this.searchTerm)
 
     // Sorting the searchterm hits first. After that, fallback on name sorting (createdAt is not available here)
     locationReservations.sort((a, b) => {
 
-      if(userHasSearchTerm(a.user) && !userHasSearchTerm(b.user)) {
+      if(this.userHasSearchTerm(a.user) && !this.userHasSearchTerm(b.user)) {
         return -1;
       }
-      if(userHasSearchTerm(b.user) && !userHasSearchTerm(a.user)){
+      if(this.userHasSearchTerm(b.user) && !this.userHasSearchTerm(a.user)){
         return 1
       }
 
       return a.user.lastName.localeCompare(b.user.lastName)
     })
 
-    console.log(locationReservations)
 
     return locationReservations
   }

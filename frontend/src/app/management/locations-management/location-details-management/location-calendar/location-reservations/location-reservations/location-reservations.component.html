@@ -2,7 +2,9 @@
   <div *ngIf="locationReservations.length === 0" class="alert alert-info">
     {{'management.locationDetails.calendar.reservations.table.noLocationReservations' | translate}}
   </div>
-
+  <div *ngIf="warning" class="alert alert-warning">
+    {{'scan.unregistered' | translate}}
+  </div>
 
   <div class="form-group" fxLayout="row">
     <p>
