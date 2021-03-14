@@ -4,6 +4,7 @@ import blok2.daos.IAccountDao;
 import blok2.helpers.Resources;
 import blok2.helpers.generators.IGenerator;
 import blok2.helpers.generators.VerificationCodeGenerator;
+import blok2.model.reservables.Location;
 import blok2.model.users.User;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
@@ -162,6 +163,21 @@ public class DBAccountDao extends DAO implements IAccountDao {
         }
 
         return null;
+    }
+
+    @Override
+    public List<Location> getVolunteeredLocations(String userId) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_locations_of_volunteer"));
+            pstmt.setString(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+
+            List<Location> locations = new ArrayList<>();
+            while (rs.next()) {
+                locations.add(DBLocationDao.createLocation(rs, conn));
+            }
+            return locations;
+        }
     }
 
     @Override

@@ -169,11 +169,19 @@ values (?, ?) RETURNING location_id;
 delete from public.roles_user_volunteer v
 where v.user_id = ? and v.location_id = ?;
 
--- $get_volunteers
+-- $get_volunteers_of_location
 select u.*
 from public.roles_user_volunteer
     INNER JOIN public.users u on user_id = augentid
 where location_id = ?;
+
+-- $get_locations_of_volunteer
+select l.*
+from public.roles_user_volunteer ruv
+    join public.locations l
+        on l.location_id = ruv.location_id
+where ruv.user_id = ?;
+
 
 -- queries for table BUILDINGS
 -- $all_buildings

@@ -2,6 +2,7 @@ package blok2.controllers;
 
 import blok2.daos.IAccountDao;
 import blok2.daos.IAuthorityDao;
+import blok2.daos.ILocationDao;
 import blok2.helpers.exceptions.InvalidRequestParametersException;
 import blok2.model.Authority;
 import blok2.model.users.User;
@@ -34,7 +35,6 @@ public class AccountController {
     private final Logger logger = LoggerFactory.getLogger(AccountController.class.getSimpleName());
 
     private final IAccountDao accountDao;
-
     private final IAuthorityDao authorityDao;
 
     public AccountController(IAccountDao accountDao, IAuthorityDao authorityDao) {
@@ -161,11 +161,21 @@ public class AccountController {
 
     @GetMapping("{userId}/has/authorities")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public boolean hasUserAuthorities(@PathVariable("userId")
-                                      @Pattern(regexp = "^[^%_]*$")
-                                              String userId) {
+    public boolean hasUserAuthorities(@PathVariable("userId") @Pattern(regexp = "^[^%_]*$") String userId) {
         try {
             return authorityDao.getAuthoritiesFromUser(userId).size() > 0;
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @GetMapping("{userId}/has/volunteered")
+    @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    public boolean hasUserVolunteered(@PathVariable("userId") @Pattern(regexp = "^[^%_]*$") String userId) {
+        try {
+            return accountDao.getVolunteeredLocations(userId).size() > 0;
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));

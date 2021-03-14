@@ -51,6 +51,9 @@ public interface ILocationDao extends IDao {
      */
     void deleteLocation(int locationId) throws SQLException;
 
+    /**
+     * Get all users that have volunteered for the specified location
+     */
     List<User> getVolunteers(int locationId) throws SQLException;
 
     /**
