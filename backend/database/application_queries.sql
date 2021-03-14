@@ -176,10 +176,14 @@ from public.roles_user_volunteer
 where location_id = ?;
 
 -- $get_locations_of_volunteer
-select l.*
+select l.*, b.*, a.*
 from public.roles_user_volunteer ruv
     join public.locations l
         on l.location_id = ruv.location_id
+    join public.buildings b
+        on b.building_id = l.building_id
+    join public.authority a
+        on a.authority_id = l.authority_id
 where ruv.user_id = ?;
 
 
