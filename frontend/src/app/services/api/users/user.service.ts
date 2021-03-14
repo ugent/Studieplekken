@@ -44,10 +44,17 @@ export class UserService {
   }
 
   hasUserAuthorities(userId: string): Observable<boolean> {
-    if(userId === '') {
+    if (userId === '') {
       return of(false);
     }
     return this.http.get<boolean>(api.hasUserAuthorities.replace('{userId}', userId));
+  }
+
+  hasUserVolunteered(userId: string): Observable<boolean> {
+    if (userId === '') {
+      return of(false);
+    }
+    return this.http.get<boolean>(api.hasUserVolunteered.replace('{userId}', userId));
   }
 
   getAdmins(): Observable<User[]> {

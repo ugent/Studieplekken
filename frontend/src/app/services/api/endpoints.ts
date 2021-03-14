@@ -69,6 +69,7 @@ export const api = {
   changePassword: '/api/account/password',
   updateUser: '/api/account/{userId}',
   hasUserAuthorities: '/api/account/{userId}/has/authorities',
+  hasUserVolunteered: '/api/account/{userId}/has/volunteered',
   getAdmins: '/api/account/admins',
 
   // LOCKERS
