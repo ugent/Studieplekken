@@ -16,8 +16,10 @@ export class LocationReservationsComponent implements OnInit, OnChanges {
   @Input() locationReservations: LocationReservation[];
   @Input() currentCalendarPeriod?: CalendarPeriod;
   @Input() currentTimeSlot: Timeslot;
+  @Input() lastScanned? : LocationReservation;
 
   @Output() reservationChange: EventEmitter<any> = new EventEmitter<any>();
+
 
   locationReservationToDelete: LocationReservation = undefined;
 
@@ -41,11 +43,6 @@ export class LocationReservationsComponent implements OnInit, OnChanges {
 
   ngOnChanges():void {
     
-    if(this.locationReservations.every(lr => !this.userHasSearchTerm(lr.user)))
-      this.warning = true;
-    else
-      this.warning = false;
-
   }
 
   // /***************
@@ -76,7 +73,6 @@ export class LocationReservationsComponent implements OnInit, OnChanges {
   }
 
   scanLocationReservation(reservation: LocationReservation, attended: boolean): void {
-    console.log(reservation);
     const idx = this.scannedLocationReservations.findIndex(
       r => {
         return r.timeslot.timeslotSeqnr === reservation.timeslot.timeslotSeqnr &&
@@ -84,12 +80,12 @@ export class LocationReservationsComponent implements OnInit, OnChanges {
       });
 
     if (idx < 0) {
-      const lr = LocationReservation.fromJSON(reservation);
-      lr.attended = attended;
-      this.scannedLocationReservations.push(lr);
+      reservation.attended = attended;
+      this.scannedLocationReservations.push(reservation);
       this.locationReservationService.postLocationReservationAttendance(reservation, attended).subscribe();
     } else {
       this.scannedLocationReservations[idx].attended = attended;
+      reservation.attended = attended;
       this.locationReservationService.postLocationReservationAttendance(reservation, attended).subscribe();
     }
   }
@@ -183,16 +179,36 @@ export class LocationReservationsComponent implements OnInit, OnChanges {
     this.modalService.hide();
   }
 
+
+  updateSearchTerm() {
+    if(this.locationReservations.every(lr => !this.userHasSearchTerm(lr.user)))
+      this.warning = true;
+    else
+      this.warning = false;
+
+    const fullyMatchedUser = this.locationReservations.find(lr => lr.user.augentID == this.searchTerm);
+    if(fullyMatchedUser) {
+      this.scanLocationReservation(fullyMatchedUser, true);
+      setTimeout(() => {this.searchTerm = ""; this.lastScanned = fullyMatchedUser;}, 10);
+    }
+
+    this.lastScanned = null;
+  }
+
   filter(locationReservations: LocationReservation[]): LocationReservation[] {
 
     // Sorting the searchterm hits first. After that, fallback on name sorting (createdAt is not available here)
     locationReservations.sort((a, b) => {
 
-      if(this.userHasSearchTerm(a.user) && !this.userHasSearchTerm(b.user)) {
-        return -1;
+      if(a == this.lastScanned || b == this.lastScanned)
+        return a == this.lastScanned ? -1:1;
+
+      if(this.userHasSearchTerm(a.user) != this.userHasSearchTerm(b.user)) {
+        return this.userHasSearchTerm(a.user) ? -1: 1;
       }
-      if(this.userHasSearchTerm(b.user) && !this.userHasSearchTerm(a.user)){
-        return 1
+
+      if(b.attended != a.attended){
+        return a.attended ? 1:-1;
       }
 
       return a.user.lastName.localeCompare(b.user.lastName)

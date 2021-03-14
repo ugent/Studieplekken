@@ -984,6 +984,6 @@
     "unregistered":"Deze gebruiker is niet geregistreerd.",
     "error": "Er ging iets fout bij deze actie.",
     "mobile-hint": "Scanning werkt best wanneer je de barcode horizontaal plaatst.",
-    "handheld-hint": "Selecteer de inputbox, en scan een studentenkaart. Wanneer je iemand scant, zal de naam kort verschijnen op het scherm."
+    "handheld-hint": "Om met de handscanner te scannen selecteer je de inputbox. Wanneer je iemand scant, zal de naam naar boven springen in de lijst."
   }
 }

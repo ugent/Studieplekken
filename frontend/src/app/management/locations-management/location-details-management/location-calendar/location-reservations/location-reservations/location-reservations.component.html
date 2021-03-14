@@ -10,7 +10,7 @@
     <p>
       Search on student name or student ID:
     </p>
-    <input type="text" class="form-control" [(ngModel)]="searchTerm">
+    <input type="text" class="form-control" [(ngModel)]="searchTerm" (ngModelChange)="updateSearchTerm()">
   </div>
   <table style="width: 100%; margin-bottom: 10px;" *ngIf="locationReservations.length > 0">
     <thead>
@@ -24,7 +24,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let reservation of filter(locationReservations)">
+      <tr *ngFor="let reservation of filter(locationReservations)" [class.highlight]="reservation.attended">
         <td>{{reservation.user.firstName + ' ' + reservation.user.lastName}}</td>
         <td>{{getCorrectI18NObject(reservation) | translate}}</td>
         <td>
