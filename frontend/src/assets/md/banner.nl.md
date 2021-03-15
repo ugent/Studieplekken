@@ -1,5 +1,6 @@
-## Reservaties - woensdag 30 december
-### RESERVATIES OP VERSCHILLENDE MOMENTEN
-De reservaties zullen plaatsvinden om 19:00, 19:30 en 20:00 afhankelijk van de locatie. Bekijk dus zeker op voorhand wanneer de reservaties zullen openen.
+## Studieplekken
+Vanaf 22 maart zullen alle studieplekken, ook deze binnen de bibliotheken, enkel nog toegankelijk zijn na reservatie via deze webpagina https://studieplekken.ugent.be.
 
-We wensen iedereen enorm veel succes met de examens.
+Mogen we erop aandringen dat een studieplek enkel gereserveerd wordt als je effectief aanwezig zal zijn. Als je een plek reserveert maar niet komt opdagen zorgt dit voor veel frustratie bij studenten en begeleiders. We vertrouwen erop dat iedereen hier zijn verantwoordelijkheid neemt om de studieplekken optimaal te gebruiken. 
+
+Reservatie kan gebeuren op donderdag voor de volgende week, er zijn verschillende reservatie-uren afhankelijk van de locatie.
