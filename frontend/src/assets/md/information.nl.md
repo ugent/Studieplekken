@@ -6,11 +6,11 @@ De studieplekken zijn beschikbaar tijdens het volledige semester van 8 februari 
 
 ## Reservaties 
 
-Een studieplek kan wekelijks gereserveerd worden, telkens op donderdag voor de volgende week. Mogen we erop aandringen om enkel een studieplek te reserveren als je zeker aanwezig zal zijn. Breng ook altijd je studentenkaart mee (of je identiteitskaart als je je studentenkaart verloren bent) zodat de aanwezigen gecontroleerd kunnen worden. Studenten die verschillende keren een studieplek reserveren en niet komen opdagen, zullen niet meer kunnen reserveren. 
+Een studieplek kan wekelijks gereserveerd worden, **telkens op donderdag voor de volgende week**. Mogen we erop aandringen om **enkel een studieplek te reserveren als je zeker aanwezig zal zijn**. Breng ook altijd je studentenkaart mee (of je identiteitskaart als je je studentenkaart verloren bent) zodat de aanwezigen gecontroleerd kunnen worden. Studenten die verschillende keren een studieplek reserveren en niet komen opdagen, zullen niet meer kunnen reserveren. 
 
 ## Binnenkomst 
 
-Elke studielocatie heeft specifieke openingsuren, zowel het aanvangsuur als het sluitingsuur zijn verschillend. Zorg ervoor dat je deze goed bekijkt. We verwachten dat studenten gespreid binnenkomen en dat er geen wachtrijen worden gevormd aan de ingang. Om verspreiding van het virus tegen te gaan is het belangrijk om steeds te zorgen voor een onderlinge afstand van minstens 1,5m op elke locatie en in elke situatie. Mogen we daarom vragen om niet te vroeg of op het aanvangsuur aanwezig te zijn, maar wel gespreid binnen te komen in een periode van een half uur vanaf het aanvangsuur. 
+Elke studielocatie heeft specifieke openingsuren, zowel het aanvangsuur als het sluitingsuur zijn verschillend. Zorg ervoor dat je deze goed bekijkt. We verwachten dat studenten gespreid binnenkomen en dat er geen wachtrijen worden gevormd aan de ingang. Om verspreiding van het virus tegen te gaan is het belangrijk om steeds te zorgen voor een onderlinge afstand van minstens 1,5m op elke locatie en in elke situatie. Mogen we daarom vragen om niet te vroeg of op het aanvangsuur aanwezig te zijn, maar wel **gespreid binnen te komen in een periode van een half uur vanaf het aanvangsuur**. 
 
 Enkel studenten die gereserveerd hebben kunnen gebruik maken van de studieplek. Er worden geen lege plekken opgevuld op het moment zelf, dit creëert immers wachtrijen en samenscholingen. Iemand anders laten reserveren met jouw email adres is niet toegestaan. Elke vorm van automatisatie bij het inschrijven is verboden. 
 

@@ -1,13 +1,13 @@
 # Study Locations UGent
 
-In the second semester, UGent again makes quiet study places available on various campuses for UGent students who need them.
+In the second semester, UGent again makes quiet study places available on various campuses for **UGent students who need them**.
 The study places are available during the entire semester from February 8, 2021 to June 25, 2021.
 
 ## Reservations
-A study spot can be reserved weekly, each time on Thursday for the following week. May we urge you to reserve a study place only if you will definitely be present. Also, always bring your student ID card (or your ID card if you lost your student ID card) so that attendees can be checked. Students who reserve a study spot several times and do not show up will not be able to make a reservation again.
+A study spot can be reserved weekly, **each time on Thursday for the following week**. May we urge you to **reserve a study place only if you will definitely be present**. Also, always bring your student ID card (or your ID card if you lost your student ID card) so that attendees can be checked. Students who reserve a study spot several times and do not show up will not be able to make a reservation again.
 
 ## Entering
-Each study location has specific opening hours, both the starting hour and the closing hour are different. Be sure to check these out carefully. We expect students to enter staggered and that no queues will form at the entrance. In order to prevent the virus from spreading, it is important to maintain a distance of at least 1.5 m between you at every location and in every situation. May we therefore ask you not to arrive too early or at the starting time, but to enter in a staggered manner within a period of half an hour from the starting time.
+Each study location has specific opening hours, both the starting hour and the closing hour are different. Be sure to check these out carefully. We expect students to **enter staggered and that no queues will form** at the entrance. In order to prevent the virus from spreading, it is important to maintain a distance of at least 1.5 m between you at every location and in every situation. May we therefore ask you not to arrive too early or at the starting time, but to enter in a staggered manner **within a period of half an hour from the starting time**.
 Only students who have made reservations can use the study area. No empty spaces will be filled at the time, as this creates queues and congregations. It is not allowed to let someone else make a reservation with your email address. Any form of automation during registration is prohibited.
 
 ## Safety measures
