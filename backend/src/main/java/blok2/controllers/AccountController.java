@@ -4,7 +4,9 @@ import blok2.daos.IAccountDao;
 import blok2.daos.IAuthorityDao;
 import blok2.daos.ILocationDao;
 import blok2.helpers.exceptions.InvalidRequestParametersException;
+import blok2.helpers.exceptions.NoSuchUserException;
 import blok2.model.Authority;
+import blok2.model.reservables.Location;
 import blok2.model.users.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,10 +38,12 @@ public class AccountController {
 
     private final IAccountDao accountDao;
     private final IAuthorityDao authorityDao;
+    private final ILocationDao locationDao;
 
-    public AccountController(IAccountDao accountDao, IAuthorityDao authorityDao) {
+    public AccountController(IAccountDao accountDao, IAuthorityDao authorityDao, ILocationDao locationDao) {
         this.accountDao = accountDao;
         this.authorityDao = authorityDao;
+        this.locationDao = locationDao;
     }
 
     @GetMapping("/admins")
@@ -152,6 +156,28 @@ public class AccountController {
                                                           String userId) {
         try {
             return authorityDao.getAuthoritiesFromUser(userId);
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @GetMapping("{userId}/manageable/locations")
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    public List<Location> getManageableLocations(@PathVariable("userId") @Pattern(regexp = "^[^%_]*$") String userId) {
+        try {
+            User user = accountDao.getUserById(userId);
+
+            // should never happen due to authentication, but you never know what changes in the future
+            if (user == null)
+                throw new NoSuchUserException("No such user");
+
+            if (user.isAdmin()) {
+                return locationDao.getAllLocations();
+            } else {
+                return authorityDao.getLocationsInAuthoritiesOfUser(userId);
+            }
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));

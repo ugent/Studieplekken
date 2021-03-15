@@ -32,8 +32,6 @@ export class ManagementComponent implements OnInit {
         const authenticatedUser = result[0];
         const hasAuthorities = result[1];
 
-        console.log('authenticatedUser: ' + authenticatedUser + 'hasAuthorities: ' + hasAuthorities);
-
         this.showTagManagement = authenticatedUser.admin;
         this.showVolunteersManagement = authenticatedUser.admin || hasAuthorities;
       });

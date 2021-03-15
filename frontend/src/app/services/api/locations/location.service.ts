@@ -8,6 +8,7 @@ import { map } from 'rxjs/internal/operators/map';
 import {Cache} from '../../../shared/cache/Cache';
 import {Moment} from 'moment';
 import {Pair} from '../../../shared/model/helpers/Pair';
+import {User} from '../../../shared/model/User';
 
 @Injectable({
   providedIn: 'root'
@@ -40,6 +41,11 @@ export class LocationService {
 
   getAllLocationNextReservableFroms(): Observable<Pair<string, Moment>[]> {
     return this.http.get<Pair<string, Moment>[]>(api.allReservableFroms);
+  }
+
+  getVolunteers(locationId: number): Observable<User[]> {
+    const url = api.locationVolunteers.replace('{userId}', String(locationId));
+    return this.http.get<User[]>(url);
   }
 
   addLocation(location: Location): Observable<any> {
