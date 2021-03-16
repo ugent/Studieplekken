@@ -259,7 +259,8 @@
         },
 
         "updateTitle": "Update Calendar Period",
-        "newTitle": "New Calendar Period"
+        "newTitle": "New Calendar Period",
+        "errorLoadingCalendarPeriods": "Could not fetch the calendar periods for this location."
       },
 
       "description": {
