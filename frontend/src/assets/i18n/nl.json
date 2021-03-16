@@ -260,7 +260,8 @@
         },
 
         "updateTitle": "Pas periode aan",
-        "newTitle": "Maak een nieuwe periode"
+        "newTitle": "Maak een nieuwe periode",
+        "errorLoadingCalendarPeriods": "De kalenderperiodes voor deze locatie kunnen niet opgehaald worden."
       },
 
       "description": {
