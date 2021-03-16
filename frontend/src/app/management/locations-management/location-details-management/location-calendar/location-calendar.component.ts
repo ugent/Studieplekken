@@ -18,7 +18,7 @@ import { AuthenticationService } from 'src/app/services/authentication/authentic
 import { Moment } from 'moment';
 import {TranslateService} from '@ngx-translate/core';
 import {ActivatedRoute} from '@angular/router';
-import {catchError} from 'rxjs/operators';
+import {catchError, tap} from 'rxjs/operators';
 import {of} from 'rxjs/internal/observable/of';
 import {map} from 'rxjs/internal/operators/map';
 
@@ -200,23 +200,15 @@ export class LocationCalendarComponent implements OnInit {
     // retrieve all calendar periods for this location
     this.calendarPeriodsObs = this.calendarPeriodsService.getCalendarPeriodsOfLocation(this.locationId)
       .pipe(
-        map(next => {
-          // make sure the opening and closing times are recognized as moment objects
-          next.forEach(n => {
-            n.openingTime = moment(n.openingTime, 'HH:mm:ss');
-            n.closingTime = moment(n.closingTime, 'HH:mm:ss');
-          });
-
+        tap(next => {
+        
           // Remark: due to references, 'this.calendarPeriods' has a reference to the same object
           // as the 'calendarPeriods' variable in the template through the assignation
           // 'calendarPeriodsObs | async as calendarPeriods'.
           this.calendarPeriods = next;
 
           // make a deep copy to make sure that can be calculated whether any period has changed
-          this.calendarPeriodsInDataLayer = [];
-          next.forEach(n => {
-            this.calendarPeriodsInDataLayer.push(CalendarPeriod.fromJSON(n));
-          });
+          this.calendarPeriodsInDataLayer = next.map(CalendarPeriod.fromJSON)
 
           // fill the events based on the calendar periods
           this.events = mapCalendarPeriodsToCalendarEvents(next, this.translate.currentLang);
@@ -224,7 +216,6 @@ export class LocationCalendarComponent implements OnInit {
           // and update the calendar
           this.refresh.next(null);
 
-          return next;
         }),
         catchError(err => {
           console.error(err);
