@@ -2,6 +2,8 @@ version: "3.6"
 
 volumes:
   backend_logs:
+  pgdata:
+
 services:
   backend:
     restart: always
@@ -24,6 +26,7 @@ services:
         max-file: "5"
   db:
     image: postgres:12-alpine
+    command: postgres -c 'max_connections=500' -c 'shared_buffers=1024' -c 'log_min_messages=notice'
     restart: always
     environment:
       POSTGRES_DB: blokatugent
@@ -31,8 +34,10 @@ services:
       POSTGRES_PASSWORD: ***REMOVED***
       TZ: Europe/Brussels
       PGTZ: Europe/Brussels
-    #volumes:
+    volumes:
+      - pgdata:/var/lib/postgresql/data
     #  - ./backend/postgres.conf:/var/lib/postgresql/data/postgresql.conf
+
     networks:
       - blokat
     logging:
