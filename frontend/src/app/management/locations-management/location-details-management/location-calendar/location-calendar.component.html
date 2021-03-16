@@ -73,6 +73,7 @@
             <th>{{'management.locationDetails.calendar.form.openingTime' | translate}}</th>
             <th>{{'management.locationDetails.calendar.form.closingTime' | translate}}</th>
             <th>{{'management.locationDetails.calendar.form.reservable' | translate}}</th>
+            <th>{{'management.locationDetails.calendar.form.numberOfSeats' | translate}}</th>
             <th><!-- update --></th>
             <th><!-- delete --></th>
           </tr>
@@ -84,7 +85,9 @@
             <td>{{calendarPeriod.endsAt.format('DD/MM/YYYY')}}</td>
             <td>{{calendarPeriod.openingTime.format('HH:mm')}}</td>
             <td>{{calendarPeriod.closingTime.format('HH:mm')}}</td>
-            <td>{{(calendarPeriod.reservable ? 'general.yes' : 'general.no') |translate}}</td>
+            <td>{{(calendarPeriod.reservable ? calendarPeriod.reservableFrom.format('DD/MM/YYYY - HH:mm'):
+              'general.notAvailableAbbreviation') | translate}}</td>
+            <td>{{calendarPeriod.seatCount}}</td>
 
             <!-- Edit icon -->
             <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"

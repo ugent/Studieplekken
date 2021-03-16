@@ -206,6 +206,7 @@
             "noLocationReservations": "There are no reservations for the selected timeslot",
             "user": "User",
             "attended": "Was user present?",
+            "futureReservation": "Timeslot is in future",
             "number": "Student number"
           }
         },
@@ -218,7 +219,8 @@
           "endsAt": "Ends at",
           "openingTime": "Opening time",
           "closingTime": "Closing time",
-          "reservable": "Must be reserved",
+          "reservable": "Reservable from",
+          "numberOfSeats": "Seats",
           "timeslotLength": "Reservable timeslot size",
           "reservableFrom": "Reservable from",
           "remove": "Remove",
