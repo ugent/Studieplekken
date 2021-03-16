@@ -93,4 +93,5 @@ So, you want to deploy this app in production? (studieplekken.ugent.be)
 
 1. SSH to root@fireball.ugent.be
 2. `cd blokat`
+3. `git pull` (If there are changes you'll need to stash, then pull, then pop. Possibly fixing any conflicts)
 3. `./deploy.sh`
