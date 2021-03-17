@@ -1,0 +1,20 @@
+<div class="panel-group" *ngIf="volunteerObs | async as volunteers">
+    <!-- Heading -->
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <a data-toggle="collapse" href="#collapse{{location.locationId}}" aria-expanded="false">
+                <i class="glyphicon glyphicon-plus"></i>
+                <i class="glyphicon glyphicon-minus"></i>
+                {{('management.locationDetails.title' | translate).replace('{locationName}',
+                location.name)}}
+            </a>
+        </h3>
+    </div>
+
+    <!-- Body -->
+    <div class="panel-collapse collapse" id="collapse{{location.locationId}}">
+        <div class="panel-body" style="padding: 20px">
+            <app-details-form [location]="locationObs"></app-details-form>
+        </div>
+    </div>
+</div>

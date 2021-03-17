@@ -74,6 +74,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { TimeslotTableComponent } from './management/locations-management/location-details-management/timeslot-table/timeslot-table.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { VolunteersManagementComponent } from './management/volunteers-management/volunteers-management.component';
+import { VolunteerManagementPanelComponent } from './management/volunteers-management/volunteer-management-panel/volunteer-management-panel.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -274,7 +275,8 @@ const routes: Routes = [
     AdminsManagementComponent,
     TimeslotTableComponent,
     FormatStatusPipe,
-    VolunteersManagementComponent
+    VolunteersManagementComponent,
+    VolunteerManagementPanelComponent
   ],
     imports: [
       BrowserModule,

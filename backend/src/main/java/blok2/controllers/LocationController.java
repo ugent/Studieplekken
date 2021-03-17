@@ -209,7 +209,7 @@ public class LocationController extends AuthorizedLocationController {
         }
     }
 
-    @DeleteMapping("/{locationId}/volunteers")
+    @GetMapping("/{locationId}/volunteers")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public List<User> getVolunteers(@PathVariable int locationId) {
         isAuthorized(locationId);

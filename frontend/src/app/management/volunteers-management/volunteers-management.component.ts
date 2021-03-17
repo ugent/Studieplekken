@@ -4,7 +4,7 @@ import {Location} from '../../shared/model/Location';
 import {LocationService} from '../../services/api/locations/location.service';
 import {UserService} from '../../services/api/users/user.service';
 import {AuthenticationService} from '../../services/authentication/authentication.service';
-import {switchMap} from 'rxjs/operators';
+import {map, switchMap} from 'rxjs/operators';
 import {User} from '../../shared/model/User';
 
 @Component({
@@ -22,16 +22,12 @@ export class VolunteersManagementComponent implements OnInit {
               private authenticationService: AuthenticationService) { }
 
   ngOnInit(): void {
+    const getVolunteersForLocation = (location: Location) => this.locationService.getVolunteers(location.locationId)
     const authenticatedUserId = this.authenticationService.userValue().augentID;
     this.manageableLocationsObs = this.userService.getManageableLocations(authenticatedUserId);
-    this.volunteersObs = this.manageableLocationsObs.pipe(
-      switchMap(locations => {
-        const obs = locations.map(location => {
-          return this.locationService.getVolunteers(location.locationId);
-        });
-        return forkJoin(obs);
-      })
-    );
+    this.volunteersObs = this.manageableLocationsObs.pipe(map(vl => vl.map(getVolunteersForLocation)), switchMap(v => forkJoin(v)) )
   }
 
 }
+
+

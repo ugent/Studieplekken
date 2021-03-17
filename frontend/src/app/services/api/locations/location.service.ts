@@ -44,7 +44,7 @@ export class LocationService {
   }
 
   getVolunteers(locationId: number): Observable<User[]> {
-    const url = api.locationVolunteers.replace('{userId}', String(locationId));
+    const url = api.locationVolunteers.replace('{locationId}', String(locationId));
     return this.http.get<User[]>(url);
   }
 

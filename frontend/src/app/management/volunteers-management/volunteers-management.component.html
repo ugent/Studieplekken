@@ -1,1 +1,4 @@
-<p>volunteers-management works!</p>
+<!-- Overview of the location -->
+<div *ngIf="manageableLocationsObs | async as manageableLocations">
+    <app-volunteer-management-panel *ngFor="let mLocation of manageableLocations" [location]="mLocation"></app-volunteer-management-panel>
+</div>
