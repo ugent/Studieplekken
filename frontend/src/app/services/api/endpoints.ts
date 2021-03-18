@@ -34,6 +34,8 @@ export const api = {
   setupTagsForLocation: '/api/locations/tags/{locationId}',
   allReservableFroms: '/api/locations/nextReservableFroms',
   locationVolunteers: '/api/locations/{locationId}/volunteers',
+  addLocationVolunteer: '/api/locations/{locationId}/volunteers/{userId}',
+
 
   // LOCATION_RESERVATIONS
   locationReservationsOfUser: '/api/locations/reservations/user',

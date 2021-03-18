@@ -48,6 +48,17 @@ export class LocationService {
     return this.http.get<User[]>(url);
   }
 
+  addVolunteer(locationId: number, userId: string): Observable<void> {
+    const url = api.addLocationVolunteer.replace('{locationId}', String(locationId)).replace("{userId}", String(userId));
+    return this.http.post<void>(url, {});
+  }
+
+  deleteVolunteer(locationId: number, userId: string): Observable<void> {
+    const url = api.addLocationVolunteer.replace('{locationId}', String(locationId)).replace("{userId}", String(userId));
+    return this.http.delete<void>(url, {});
+  }
+
+
   addLocation(location: Location): Observable<any> {
     return this.http.post(api.addLocation, location);
   }
