@@ -113,7 +113,7 @@ public class LocationControllerTest extends BaseIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
+    @WithUserDetails(value = "authholder", userDetailsServiceBeanName = "testUserDetails")
     public void testAddVolunteer() throws Exception {
         mockMvc.perform(post("/locations/" + testLocation.getLocationId() + "/volunteers/" + student.getAugentID()).with(csrf()))
                 .andDo(print()).andExpect(status().isOk());
@@ -148,6 +148,13 @@ public class LocationControllerTest extends BaseIntegrationTest {
 
         Assert.assertEquals(0, locationDao.getVolunteers(testLocation.getLocationId()).size());
 
+    }
+
+    @Test
+    @WithUserDetails(value = "authholder", userDetailsServiceBeanName = "testUserDetails")
+    public void testGetVolunteers() throws Exception {
+        mockMvc.perform(get("/locations/" + testLocation.getLocationId()+ "/volunteers").with(csrf()))
+                .andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.length()").value(1));
     }
 }
 

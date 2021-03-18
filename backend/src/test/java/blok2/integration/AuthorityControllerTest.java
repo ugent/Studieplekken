@@ -121,7 +121,7 @@ public class AuthorityControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testGetAuthorityFromUser() throws Exception {
-        mockMvc.perform(get("/authority/users/" + student.getAugentID())).andDo(print())
+        mockMvc.perform(get("/authority/users/" + authHolder.getAugentID())).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1));
     }
@@ -185,9 +185,9 @@ public class AuthorityControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testDeleteUserFromAuthority() throws Exception {
-        mockMvc.perform(delete("/authority/" + authority.getAuthorityId() + "/user/" + student.getAugentID())
+        mockMvc.perform(delete("/authority/" + authority.getAuthorityId() + "/user/" + authHolder.getAugentID())
                 .with(csrf())).andDo(print())
-                .andExpect(status().isOk()); // student1 is member of authority: therefore deleting should succeed
+                .andExpect(status().isOk()); // authholder is member of authority: therefore deleting should succeed
 
         Assert.assertEquals(0, authorityDao.getUsersFromAuthority(authority.getAuthorityId()).size());
     }
