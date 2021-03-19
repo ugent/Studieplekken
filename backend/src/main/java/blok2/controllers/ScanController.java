@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,12 +45,13 @@ public class ScanController extends AuthorizedLocationController {
     }
 
     @GetMapping("/locations")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('HAS_VOLUNTEERS')")
     public List<Location> getLocationsToScan() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         try {
             return locationDao.getAllLocations().stream()
-                    .filter(f -> f.getCurrentTimeslot() != null)
-                    .filter(f -> true)            // TODO: volunteer statute
+                    .filter(f -> user.getUserVolunteer().contains(f.getLocationId()) || user.isAdmin())
                     .collect(Collectors.toList());
         } catch (SQLException e) {
             logger.error(e.getMessage());

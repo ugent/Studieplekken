@@ -29,7 +29,7 @@ export class ScannerComponent implements OnInit, OnDestroy {
       },
       locator: {patchSize: 'medium', halfSample: true},
       frequency: 10,
-      decoder: {readers: ['upc_reader', 'upc_e_reader']},
+      decoder: {readers: ['upc_reader', 'upc_e_reader', "ean_reader", "code_128_reader"]},
     };
 
       Quagga.init(state, (err) => {
