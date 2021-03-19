@@ -149,14 +149,8 @@ export class LocationReservationsComponent implements OnInit, OnChanges {
     return start.isBefore(moment());
   }
 
-  isButtonDisabled(reservation: LocationReservation, attended: boolean): boolean {
-    for (const l of this.scannedLocationReservations) {
-      if (l.user === reservation.user && l.timeslot.timeslotSeqnr === reservation.timeslot.timeslotSeqnr &&
-          l.attended === attended) {
-        return true;
-      }
-    }
-    return false;
+  isButtonDisabled(reservation: LocationReservation): boolean {
+    return reservation.attended
   }
 
   /**

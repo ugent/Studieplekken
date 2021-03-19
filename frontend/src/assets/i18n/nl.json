@@ -988,6 +988,7 @@
     "unregistered":"Deze gebruiker is niet geregistreerd.",
     "error": "Er ging iets fout bij deze actie.",
     "mobile-hint": "Scanning werkt best wanneer je de barcode horizontaal plaatst.",
-    "handheld-hint": "Om met de handscanner te scannen selecteer je de inputbox. Wanneer je iemand scant, zal de naam naar boven springen in de lijst."
+    "handheld-hint": "Om met de handscanner te scannen selecteer je de inputbox. Wanneer je iemand scant, zal de naam naar boven springen in de lijst.",
+    "maybe":"Deze gebruiker werd niet gevonden. Zoek in de lijst hieronder of probeer opnieuw."
   }
 }

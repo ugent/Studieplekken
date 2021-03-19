@@ -20,7 +20,7 @@
         <td>{{location.name}}</td>
         <td>{{location.building.name}}</td>
         <td>{{location.numberOfSeats}}</td>
-        <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
+        <td *ngIf="location.currentTimeslot" class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
             <span routerLink="./{{location.locationId}}"
                   class="glyphicon glyphicon-qrcode">
             </span>

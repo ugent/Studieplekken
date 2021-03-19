@@ -8,6 +8,7 @@ import {ScanningService} from '../../services/api/scan/scanning.service';
 import {catchError, map, switchMap} from 'rxjs/operators';
 import {of} from 'rxjs/internal/observable/of';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
+import { BarcodeService } from 'src/app/services/barcode.service';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
 
 @Component({
@@ -30,7 +31,8 @@ export class ScanningLocationDetailsComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private locationService: LocationService,
               private scanningService: ScanningService,
-              private reservationService: LocationReservationsService) { }
+              private reservationService: LocationReservationsService,
+              private barcodeService: BarcodeService) { }
 
   ngOnInit(): void {
     const locationId = Number(this.route.snapshot.paramMap.get('locationId'));
@@ -48,17 +50,17 @@ export class ScanningLocationDetailsComponent implements OnInit {
   }
 
   getValidator(reservations: LocationReservation[]): (a: string) => boolean {
-    return (code) => {console.log(code, reservations); return reservations.some(u => u.user.augentID === this.upcEncoded(code)); };
+    return (code) => code.length > 6; // filter out the most egregious examples
   }
 
-  private upcEncoded(code: string): string {
-    return '0' + code.substr(0, code.length - 1);
-  }
 
   scanUser(reservations: LocationReservation[], code: string): void {
     this.error = "";
-    const res = reservations.find(u => u.user.augentID === this.upcEncoded(code));
-    this.reservation = res;
+    const res = this.barcodeService.getReservation(reservations, code)
+    if(res == null)
+      this.error = "scan.maybe";
+    else
+      this.reservation = res;
   }
 
   confirm(location: Location): void {

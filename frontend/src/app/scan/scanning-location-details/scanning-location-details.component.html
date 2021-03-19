@@ -23,7 +23,7 @@
           <div *ngIf="!reservation" class="alert alert-info">{{'scan.mobile-hint' | translate}}</div>
           <app-scanner *ngIf="!reservation" [validator]="getValidator(lr)" (code)="scanUser(lr, $event)"></app-scanner>
 
-          <div *ngIf="reservation" fxLayout="column" fxLayoutAlign="center center">
+          <div class="usertag" *ngIf="reservation" fxLayout="column" fxLayoutAlign="center center">
             <p>
               User: {{reservation.user.firstName}} {{reservation.user.lastName}}
             </p>
