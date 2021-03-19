@@ -181,15 +181,15 @@ export class LocationReservationsComponent implements OnInit, OnChanges {
 
 
   updateSearchTerm() {
-    if(this.locationReservations.every(lr => !this.userHasSearchTerm(lr.user)))
+    if(this.locationReservations.every(lr => !this.userHasSearchTerm(lr.user)) && this.searchTerm.length > 0)
       this.warning = true;
     else
       this.warning = false;
 
-    const fullyMatchedUser = this.locationReservations.find(lr => lr.user.augentID == this.searchTerm);
+    const fullyMatchedUser = this.locationReservations.find(lr => lr.user.augentID == this.upcEncoded(this.searchTerm));
     if(fullyMatchedUser) {
       this.scanLocationReservation(fullyMatchedUser, true);
-      setTimeout(() => {this.searchTerm = ""; this.lastScanned = fullyMatchedUser;}, 10);
+      setTimeout(() => {this.searchTerm = ""; this.lastScanned = fullyMatchedUser; this.updateSearchTerm()}, 10);
     }
 
     this.lastScanned = null;
@@ -216,5 +216,9 @@ export class LocationReservationsComponent implements OnInit, OnChanges {
 
 
     return locationReservations
+  }
+
+  private upcEncoded(code: string): string {
+    return '0' + code.substr(0, code.length - 1);
   }
 }
