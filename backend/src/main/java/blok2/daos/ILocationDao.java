@@ -3,6 +3,7 @@ package blok2.daos;
 import blok2.helpers.Pair;
 import blok2.model.reservables.Location;
 import blok2.model.reservables.Locker;
+import blok2.model.users.User;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -51,6 +52,11 @@ public interface ILocationDao extends IDao {
     void deleteLocation(int locationId) throws SQLException;
 
     /**
+     * Get all users that have volunteered for the specified location
+     */
+    List<User> getVolunteers(int locationId) throws SQLException;
+
+    /**
      * Get all lockers of the specified location
      */
     List<Locker> getLockers(int locationId) throws SQLException;
@@ -69,5 +75,15 @@ public interface ILocationDao extends IDao {
      * Return all locations that are yet to be approved/denied
      */
     List<Location> getAllUnapprovedLocations() throws SQLException;
+
+    /**
+     * Return all locations that are yet to be approved/denied
+     */
+    void addVolunteer(int locationId, String userId) throws SQLException;
+
+    /**
+     * Return all locations that are yet to be approved/denied
+     */
+    void deleteVolunteer(int locationId, String userId) throws SQLException;
 
 }

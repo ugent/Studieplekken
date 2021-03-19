@@ -76,6 +76,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ScanningLocationsComponent } from './scan/scanning-locations/scanning-locations.component';
 import { ScanningLocationDetailsComponent } from './scan/scanning-location-details/scanning-location-details.component';
 import { ScannerComponent } from './shared/scanner/scanner.component';
+import { VolunteersManagementComponent } from './management/volunteers-management/volunteers-management.component';
+import { VolunteerManagementPanelComponent } from './management/volunteers-management/volunteer-management-panel/volunteer-management-panel.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -224,6 +226,11 @@ const routes: Routes = [
         path: 'admins',
         component: AdminsManagementComponent,
         canActivate: [AuthorizationGuardService]
+      },
+      {
+        path: 'volunteers',
+        component: VolunteersManagementComponent,
+        canActivate: [AuthorizationGuardService]
       }
     ]
   },
@@ -290,7 +297,9 @@ const routes: Routes = [
     FormatStatusPipe,
     ScanningLocationsComponent,
     ScanningLocationDetailsComponent,
-    ScannerComponent
+    ScannerComponent,
+    VolunteersManagementComponent,
+    VolunteerManagementPanelComponent
   ],
     imports: [
       BrowserModule,

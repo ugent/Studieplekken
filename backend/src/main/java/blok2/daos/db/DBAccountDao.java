@@ -4,6 +4,7 @@ import blok2.daos.IAccountDao;
 import blok2.helpers.Resources;
 import blok2.helpers.generators.IGenerator;
 import blok2.helpers.generators.VerificationCodeGenerator;
+import blok2.model.reservables.Location;
 import blok2.model.users.User;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
@@ -165,6 +166,21 @@ public class DBAccountDao extends DAO implements IAccountDao {
     }
 
     @Override
+    public List<Location> getVolunteeredLocations(String userId) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_locations_of_volunteer"));
+            pstmt.setString(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+
+            List<Location> locations = new ArrayList<>();
+            while (rs.next()) {
+                locations.add(DBLocationDao.createLocation(rs, conn));
+            }
+            return locations;
+        }
+    }
+
+    @Override
     public String addUserToBeVerified(User u) throws SQLException {
         int count = 0;
         try (Connection conn = adb.getConnection()) {
@@ -306,6 +322,15 @@ public class DBAccountDao extends DAO implements IAccountDao {
 
         u.setPenaltyPoints(rs.getInt(Resources.databaseProperties.getString("user_penalty_points")));
         u.setUserAuthorities(DBAuthorityDao.getAuthoritiesFromUser(u.getAugentID(), conn));
+
+        PreparedStatement stmt = conn.prepareStatement(Resources.databaseProperties.getString("get_user_volunteer_locations"));
+        stmt.setString(1, u.getAugentID());
+        List<Integer> locationIds = new ArrayList<>();
+        ResultSet set = stmt.executeQuery();
+        while(set.next()) {
+            locationIds.add(set.getInt("location_id"));
+        }
+        u.setUserVolunteer(locationIds);
         return u;
     }
 

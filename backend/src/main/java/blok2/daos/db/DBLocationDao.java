@@ -12,6 +12,7 @@ import blok2.model.LocationTag;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservables.Location;
 import blok2.model.reservables.Locker;
+import blok2.model.users.User;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static blok2.daos.db.DBCalendarPeriodDao.getCurrentTimeslot;
+import static blok2.daos.db.DBAccountDao.createUser;
 
 @Service
 public class DBLocationDao extends DAO implements ILocationDao {
@@ -222,6 +224,38 @@ public class DBLocationDao extends DAO implements ILocationDao {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_location"));
             pstmt.setInt(1, locationId);
             pstmt.execute();
+        }
+    }
+
+    @Override
+    public void addVolunteer(int locationId, String userId) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("add_volunteer"));
+            pstmt.setString(1, userId);
+            pstmt.setInt(2, locationId);
+            pstmt.execute();
+        }
+    }
+    @Override
+    public void deleteVolunteer(int locationId, String userId) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_volunteer"));
+            pstmt.setString(1, userId);
+            pstmt.setInt(2, locationId);
+            pstmt.execute();
+        }
+    }
+
+    @Override
+    public List<User> getVolunteers(int locationId) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_volunteers_of_location"));
+            pstmt.setInt(1, locationId);
+            ResultSet set = pstmt.executeQuery();
+            List<User> users = new ArrayList<>();
+            while(set.next())
+                users.add(createUser(set, conn));
+            return users;
         }
     }
 

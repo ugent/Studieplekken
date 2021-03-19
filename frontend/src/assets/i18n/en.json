@@ -161,7 +161,8 @@
       "authorities": "Authorities",
       "calendar": "Calendar",
       "penalties": "Penalties",
-      "admins": "Admins"
+      "admins": "Admins",
+      "volunteers": "Volunteers"
     },
 
     "general": {
@@ -830,6 +831,9 @@
         "yesButton": "Delete",
         "noButton": "Cancel"
       }
+    },
+    "volunteers": {
+      "no-volunteers": "There are no volunteers for this location yet."
     }
   },
 
@@ -986,4 +990,5 @@
     "mobile-hint": "Scanning works best when the barcode is aligned horizontally.",
     "handheld-hint": "To use the handheld scanner, select the input box below. If scan is succesful, the user will pop to the top of the list."
   }
+
 }

@@ -1,5 +1,6 @@
 package blok2.controllers;
 
+import blok2.daos.IAccountDao;
 import blok2.daos.ILocationDao;
 import blok2.daos.ILocationTagDao;
 import blok2.helpers.Pair;
@@ -8,7 +9,9 @@ import blok2.helpers.EmailService;
 import blok2.helpers.LocationWithApproval;
 import blok2.helpers.Resources;
 import blok2.helpers.exceptions.AlreadyExistsException;
+import blok2.helpers.exceptions.NoSuchLocationException;
 import blok2.model.reservables.Location;
+import blok2.model.users.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,16 +41,18 @@ public class LocationController extends AuthorizedLocationController {
     private final ILocationDao locationDao;
     private final ILocationTagDao locationTagDao;
     private final EmailService emailService;
+    private final IAccountDao accountDao;
 
     // *************************************
     // *   CRUD operations for LOCATIONS   *
     // *************************************
 
     @Autowired
-    public LocationController(ILocationDao locationDao, ILocationTagDao locationTagDao, EmailService emailService) {
+    public LocationController(ILocationDao locationDao, ILocationTagDao locationTagDao, EmailService emailService, IAccountDao accountDao) {
         this.locationDao = locationDao;
         this.locationTagDao = locationTagDao;
         this.emailService = emailService;
+        this.accountDao = accountDao;
     }
 
     @GetMapping
@@ -161,6 +166,58 @@ public class LocationController extends AuthorizedLocationController {
         try {
             locationDao.deleteLocation(locationId);
             logger.info(String.format("Location %d deleted", locationId));
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @PostMapping("/{locationId}/volunteers/{userId}")
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    public void addVolunteer(@PathVariable int locationId, @PathVariable String userId) {
+        isAuthorized(locationId);
+        try {
+            if(locationDao.getLocationById(locationId) == null)
+                throw new NoSuchLocationException("No such location");
+            if(accountDao.getUserById(userId) == null)
+                throw new NoSuchLocationException("No such location");
+
+            locationDao.addVolunteer(locationId, userId);
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @DeleteMapping("/{locationId}/volunteers/{userId}")
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    public void deleteVolunteer(@PathVariable int locationId, @PathVariable String userId) {
+        isAuthorized(locationId);
+        try {
+            if(locationDao.getLocationById(locationId) == null)
+                throw new NoSuchLocationException("No such location");
+            if(accountDao.getUserById(userId) == null)
+                throw new NoSuchLocationException("No such location");
+
+            locationDao.deleteVolunteer(locationId, userId);
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
+    @GetMapping("/{locationId}/volunteers")
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    public List<User> getVolunteers(@PathVariable int locationId) {
+        isAuthorized(locationId);
+        try {
+            if(locationDao.getLocationById(locationId) == null)
+                throw new NoSuchLocationException("No such location");
+
+            return locationDao.getVolunteers(locationId);
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));

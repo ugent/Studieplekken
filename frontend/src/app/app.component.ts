@@ -79,7 +79,7 @@ export class AppComponent implements OnInit {
                 this.showManagement = next2;
               }
             );
-            this.userService.hasUserLocationsToScan(next.augentID).subscribe(
+            this.userService.hasUserVolunteered(next.augentID).subscribe(
               next2 => {
                 this.showScan = scanFunc && next2;
               }

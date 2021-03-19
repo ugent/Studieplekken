@@ -39,6 +39,9 @@ export class AuthenticationService {
   public user: Observable<User> = this.userSubject.asObservable();
 
   private hasAuthoritiesSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public hasAuthoritiesObs: Observable<boolean> = this.hasAuthoritiesSubject.asObservable();
+  private hasVolunteeredSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public hasVolunteeredObs: Observable<boolean> = this.hasVolunteeredSubject.asObservable();
 
   constructor(private http: HttpClient,
               private penaltyService: PenaltyService,
@@ -59,8 +62,8 @@ export class AuthenticationService {
     return this.hasAuthoritiesSubject.value;
   }
 
-  hasLocationsToScan(): boolean {
-    return true; // TODO: implement this correctly
+  hasVolunteeredValue(): boolean {
+    return this.hasVolunteeredSubject.value;
   }
 
   /**
@@ -86,6 +89,7 @@ export class AuthenticationService {
       next => {
         this.userSubject.next(next);
         this.updateHasAuthoritiesSubject(next);
+        this.updateHasVolunteeredSubject(next);
       }, () => {
         this.userSubject.next(UserConstructor.new());
         this.hasAuthoritiesSubject.next(false);
@@ -177,4 +181,13 @@ export class AuthenticationService {
       }
     );
   }
+
+  updateHasVolunteeredSubject(user: User): void {
+    this.userService.hasUserVolunteered(user.augentID).subscribe(
+      next => {
+        this.hasVolunteeredSubject.next(next);
+      }
+    );
+  }
+
 }
