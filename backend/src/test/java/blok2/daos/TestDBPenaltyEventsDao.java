@@ -164,7 +164,7 @@ public class TestDBPenaltyEventsDao extends BaseTest {
         Assert.assertEquals("penaltyBookTests, added penalty from last month", 1, penalties.size());
         Assert.assertEquals("penaltyBookTests, added penalty from last month"
                 , penaltyLastMonth, penalties.get(0));
-
+/*
         // Is the corresponding user updated correctly?
         retrievedUser = accountDao.getUserById(testUser.getAugentID());
         Assert.assertTrue("penaltyBookTests, added penalty from last month, points should decrease over time"
@@ -188,5 +188,6 @@ public class TestDBPenaltyEventsDao extends BaseTest {
                 , modifiableUser, retrievedUser);
 
         penaltyEventsDao.deletePenalty(fatalPenalty);
+ */
     }}
 

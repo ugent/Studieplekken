@@ -84,18 +84,6 @@ from public.locations l
           on b.building_id = l.building_id
 where l.location_id = ?;
 
--- $get_locations_from_authority
-select l.location_id, l.name, l.number_of_seats, l.number_of_lockers
-     , l.image_url, l.description_dutch, l.description_english, l.forGroup
-     , b.building_id, b.building_name, b.address
-     , a.authority_id, a.authority_name, a.description
-from public.locations l
-    join public.authority a
-        on a.authority_id = l.authority_id
-    join public.buildings b
-        on b.building_id = l.building_id
-where l.authority_id = ? and l.approved = true;
-
 -- $get_locations_in_building
 select l.location_id, l.name, l.number_of_seats, l.number_of_lockers
      , l.image_url, l.description_dutch, l.description_english, l.forGroup
@@ -108,30 +96,10 @@ from public.locations l
               on b.building_id = l.building_id
 where l.building_id = ? and l.approved = true;
 
--- $locations_with_tag
-select l.location_id, l.name, l.number_of_seats, l.number_of_lockers
-     , l.image_url, l.description_dutch, l.description_english, l.forGroup
-     , a.authority_id, a.authority_name, a.description
-     , b.building_id, b.building_name, b.address
-from public.locations l
-    join public.authority a
-        on a.authority_id = l.authority_id
-    join public.buildings b
-        on b.building_id = l.building_id
-    join public.location_tags lt on l.name = lt.location_id
-    join public.tags t on t.tag_id = lt.tag_id
-where t.tag_id = ?
-order by l.name and l.approved = true;
-
 -- $delete_location
 delete
 from public.locations
 where location_id = ?;
-
--- $delete_locations_from_authority
-delete
-from public.locations
-where authority_id = ?;
 
 -- $insert_location
 insert into public.locations (name, number_of_seats, number_of_lockers, image_url, authority_id, building_id, description_dutch, description_english, forGroup, approved)
@@ -250,72 +218,12 @@ from public.location_reservations lr
         and rt.calendar_id = lr.calendar_id
 where <?>;
 
--- $currently_out_of_use
-/*
-    If you want to change the weekly percentage decrease, you must
-    change the factor and amount of weeks used in the recursive query.
-    Now, every week the amount is reduced with 20%, which means that points
-    will remain effective for 5 weeks.
-
-    If you would like to change this to 10% (and an effectiveness of 10 weeks),
-    then you'll have to change "- 0.2 * (week + 1) + 1" to "- 0.1 * (week + 1) + 1"
-    and "week + 1 <= 5" to "week + 1 <= 10".
-
-    Note: change get_user_by_<?> as well for consistency
-*/
-with recursive x as (
-    select 0 week, 1.0 perc
-        union all
-    select week + 1, - 0.2 * (week + 1) + 1
-    from x
-    where week + 1 <= 5
-), y as (
-	select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
-		, u.augentid, u.admin
-		, lr.timeslot_date, lr.timeslot_seqnr as timeslot_sequence_number, lr.calendar_id, lr.attended, lr.user_augentid, lr.created_at, lr.reservation_count
-		, coalesce(floor(sum(
-        	case
-				/*
-					Blacklist event (16662) is permanent: no decrease in time.
-					A blacklist event should be removed manually
-				*/
-				when pb.event_code = 16662 then pb.received_points
-				else pb.received_points * x.perc
-			end)), 0) as "penalty_points"
-	from public.location_reservations lr
-		join public.users u
-			on u.augentid = lr.user_augentid
-		left join public.penalty_book pb
-			on pb.user_augentid = u.augentid
-		left join x
-			on floor(extract(days from (now() - to_timestamp(pb.timestamp, 'YYYY-MM-DD HH24\:MI\:SS'))) / 7) = x.week
-	where <?>
-	group by u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
-		, u.augentid, u.admin
-		, lr.timeslot_seqnr, lr.timeslot_date, lr.calendar_id, lr.created_at, lr.attended, lr.user_augentid
-)
-select y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
-	 , y.augentid, y.admin, y.penalty_points
-	 , y.timeslot_date, y.timeslot_sequence_number, y.calendar_id, y.created_at, y.attended, y.user_augentid, y.reservation_count
-from y
-group by y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
-	 , y.augentid, y.admin, y.penalty_points
-	 , y.timeslot_date, y.timeslot_sequence_number, y.calendar_id, y.created_at, y.attended, y.user_augentid, y.reservation_count;
-
 -- $count_location_reservations_of_location_for_timeslot
 select count(1)
 from public.location_reservations lr 
     INNER JOIN public.calendar_periods cp on lr.calendar_id = cp.calendar_id 
     INNER JOIN public.locations l on cp.location_id = l.location_id
 where lr.calendar_id = ? and lr.timeslot_date = ? and lr.timeslot_seqnr = ?;
-
--- $lock_location_reservation
-SELECT * from public.timeslots lr where lr.calendar_id = ? and lr.timeslot_date = ? and lr.timeslot_sequence_number= ? for UPDATE;
-
--- $get_size_of_timeslot_location
-select l.number_of_seats
-from public.calendar_periods cp INNER JOIN public.locations l on cp.location_id = l.location_id
-where cp.calendar_id = ?;
 
 -- $add_one_to_reservation_count
 update timeslots
@@ -363,41 +271,8 @@ order by lr.timeslot_date desc, lr.timeslot_seqnr desc;
 
 -- queries for table USER
 -- $get_user_by_<?>
-/*
-    If you want to change the weekly percentage decrease, you must
-    change the factor and amount of weeks used in the recursive query.
-    Now, every week the amount is reduced with 20%, which means that points
-    will remain effective for 5 weeks.
-
-    If you would like to change this to 10% (and an effectiveness of 10 weeks),
-    then you'll have to change "- 0.2 * (week + 1) + 1" to "- 0.1 * (week + 1) + 1"
-    and "week + 1 <= 5" to "week + 1 <= 10".
-
-    Note: change get_location_reservations_where_<?> as well for consistency
-*/
-with recursive x as (
-    select 0 week, 1.0 perc
-        union all
-    select week + 1, - 0.2 * (week + 1) + 1
-    from x
-    where week + 1 <= 5
-)
-select u.augentid, u.admin, u.augentpreferredgivenname, u.augentpreferredsn
-    , u.mail, u.password, u.institution
-    , coalesce(floor(sum(
-        case
-            /*
-                Blacklist event is permanent: no decrease in time.
-                A blacklist event should be removed manually
-            */
-            when b.event_code = 16662 then b.received_points
-            else b.received_points * x.perc
-        end)), 0) as "penalty_points"
+select u.*, 0 as "penalty_points"
 from public.users u
-    left join public.penalty_book b
-        on b.user_augentid = u.augentid
-    left join x
-        on floor(extract(days from (now() - to_timestamp(b.timestamp, 'YYYY-MM-DD HH24\:MI\:SS'))) / 7) = x.week
 where <?>
 group by u.augentid, u.admin, u.augentpreferredgivenname, u.augentpreferredsn, u.mail, u.password, u.institution
 order by u.augentpreferredsn, u.augentpreferredgivenname, u.augentid;
@@ -422,11 +297,6 @@ values (?, ?, ?, ?, ?, ?, ?, ?);
 -- $delete_user
 delete
 from public.users
-where augentid = ?;
-
--- $set_mail_of_user_by_id
-update public.users
-set mail = ?
 where augentid = ?;
 
 -- $get_user_volunteer_locations
@@ -455,27 +325,8 @@ delete
 from public.users_to_verify
 where verification_code = ?;
 
--- $daily_cleanup_user_to_be_verified
-delete
-from public.users_to_verify
-where TO_TIMESTAMP(created_timestamp, 'YYYY-MM-DD\\THH24:MI:SS') < now() - interval '1 days';
-
 
 -- queries for table ROLES_USER_AUTHORITY
--- $delete_roles_user_authority_of_user
-delete from public.roles_user_authority
-where user_id = ?;
-
--- $delete_roles_user_authority_of_authority
-delete
-from public.roles_user_authority
-where authority_id = ?;
-
--- $update_fk_roles_user_authority_to_user
-update public.roles_user_authority
-set user_id = ?
-where user_id = ?;
-
 -- $insert_role_user_authority
 insert into public.roles_user_authority (user_id, authority_id)
 values (?, ?);
@@ -557,75 +408,24 @@ order by l.name;
 
 -- queries for table LOCKER_RESERVATIONS
 -- $get_locker_reservations_where_<?>
-with recursive x as (
-    select 0 week, 1.0 perc
-        union all
-    select week + 1, - 0.2 * (week + 1) + 1
-    from x
-    where week + 1 <= 5
-), y as (
-	select u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
-		, u.augentid, u.admin
-		, lr.user_augentid, lr.key_pickup_date, lr.key_return_date, lr.location_id, lr.locker_number
-		, coalesce(floor(sum(
-        	case
-				/*
-					Blacklist event (16662) is permanent: no decrease in time.
-					A blacklist event should be removed manually
-				*/
-				when pb.event_code = 16662 then pb.received_points
-				else pb.received_points * x.perc
-			end)), 0) as "penalty_points"
-	from public.locker_reservations lr
-		join public.users u
-			on u.augentid = lr.user_augentid
-		left join public.penalty_book pb
-			on pb.user_augentid = u.augentid
-		left join x
-			on floor(extract(days from (now() - to_timestamp(pb.timestamp, 'YYYY-MM-DD HH24\:MI\:SS'))) / 7) = x.week
-	where <?>
-	group by u.mail, u.augentpreferredsn, u.augentpreferredgivenname, u.password, u.institution
-		, u.augentid, u.admin
-		, lr.user_augentid, lr.key_pickup_date, lr.key_return_date, lr.location_id, lr.locker_number
-)
-select y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
-     , y.augentid, y.admin, y.penalty_points, y.locker_number, y.location_id
-     , y.user_augentid, y.key_pickup_date, y.key_return_date
-	 , l.location_id, l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch
-     , l.description_english, l.forGroup
-	 , b.building_id, b.building_name, b.address
-     , a.authority_id, a.authority_name, a.description
-from y
-	join public.locations l
-		on l.location_id = y.location_id
+select lr.*, u.*, l.*, a.*, b.*
+    , 0 as "penalty_points"
+from public.locker_reservations lr
+    join public.users u
+        on u.augentid = lr.user_augentid
+    join public.locations l
+         on l.location_id = lr.location_id
     join public.authority a
-        on a.authority_id = l.authority_id
+         on a.authority_id = l.authority_id
     join public.buildings b
-        on b.building_id = l.building_id
-group by y.mail, y.augentpreferredsn, y.augentpreferredgivenname, y.password, y.institution
-     , y.augentid, y.admin, y.penalty_points
-     , y.locker_number, y.location_id
-     , y.user_augentid, y.key_pickup_date, y.key_return_date
-	 , l.location_id, l.name, l.number_of_seats, l.number_of_lockers, l.image_url
-     , l.description_dutch, l.description_english, l.forGroup
-     , b.building_id, b.building_name, b.address
-     , a.authority_id, a.authority_name, a.description
+         on b.building_id = l.building_id
+where <?>
 order by l.name;
 
 -- $delete_locker_reservation
 delete
 from public.locker_reservations
 where location_id = ? and locker_number = ?;
-
--- $delete_locker_reservations_of_user
-delete
-from public.locker_reservations
-where user_augentid = ?;
-
--- $delete_locker_reservations_in_location
-delete
-from public.locker_reservations
-where location_id = ?;
 
 -- $insert_locker_reservation
 insert into public.locker_reservations (location_id, locker_number, user_augentid, key_pickup_date, key_return_date)
@@ -635,16 +435,6 @@ values (?, ?, ?, ?, ?);
 update public.locker_reservations
 set key_pickup_date = ?, key_return_date = ?
 where location_id = ? and locker_number = ?;
-
--- $update_fk_locker_reservations_to_location
-update public.locker_reservations
-set location_id = ?
-where location_id = ?;
-
--- $update_fk_locker_reservations_to_user
-update public.locker_reservations
-set user_augentid = ?
-where user_augentid = ?;
 
 
 -- queries for table LOCKERS
@@ -664,79 +454,33 @@ where <?>
 order by s.name;
 
 -- $get_lockers_statuses_of_location
-with recursive x as (
-    select 0 week, 1.0 perc
-        union all
-    select week + 1, - 0.2 * (week + 1) + 1
-    from x
-    where week + 1 <= 5
-), lr as (
+with lr as (
     select location_id, locker_number, user_augentid, key_pickup_date, key_return_date
     from public.locker_reservations
     where key_return_date is NULL
-), lockers as (
-    select l.number
-         , s.location_id, s.name, s.number_of_seats, s.number_of_lockers, s.image_url
-         , s.description_dutch, s.description_english, s.forGroup
-         , a.authority_id, a.authority_name, a.description
-         , b.building_id, b.building_name, b.address
-         , lr.locker_number, lr.key_pickup_date, lr.key_return_date, lr.user_augentid
-         , u.augentid, u.admin, u.augentpreferredgivenname, u.augentpreferredsn, u.penalty_points
-         , u.mail, u.password, u.institution
-    from public.lockers l
-        join public.locations s
-            on s.location_id = l.location_id
-        join public.authority a
-            on a.authority_id = s.authority_id
-        join public.buildings b
-            on b.building_id = s.building_id
-        left join lr
-            on lr.location_id = l.location_id
-            and lr.locker_number = l.number
-        left join public.users u
-            on u.augentid = lr.user_augentid
-    where l.location_id = ?
 )
-select r.number
-     , r.location_id, r.name, r.number_of_seats, r.number_of_lockers, r.image_url
-     , r.description_dutch, r.description_english, r.forGroup
-     , r.authority_id, r.authority_name, r.description
-     , r.building_id, r.building_name, r.address
-     , r.locker_number, r.key_pickup_date, r.key_return_date, r.user_augentid
-     , r.augentid, r.admin, r.augentpreferredgivenname, r.augentpreferredsn, r.mail, r.password
-     , r.institution, coalesce(floor(sum(
-        case
-            /*
-                Blacklist event (16662) is permanent: no decrease in time.
-                A blacklist event should be removed manually
-            */
-            when pb.event_code = 16662 then pb.received_points
-            else pb.received_points * x.perc
-            end)), 0) as "penalty_points"
-from lockers r
-         left join public.penalty_book pb
-                   on pb.user_augentid = r.augentid
-         left join x
-                   on floor(extract(days from (now() - to_timestamp(pb.timestamp, 'YYYY-MM-DD HH24\:MI\:SS'))) / 7) = x.week
-group by r.location_id, r.number
-        , r.name, r.number_of_seats, r.number_of_lockers, r.image_url
-        , r.description_dutch, r.description_english, r.forGroup
-        , r.authority_id, r.authority_name, r.description
-        , r.building_id, r.building_name, r.address
-        , r.locker_number, r.key_pickup_date, r.key_return_date, r.user_augentid
-        , r.augentid, r.admin, r.augentpreferredgivenname, r.augentpreferredsn, r.mail, r.password
-        , r.institution
-order by r.number;
-
--- $delete_lockers_of_location
-delete
-from public.lockers
-where location_id = ?;
-
--- $delete_lockers_of_location_from_number
-delete
-from public.lockers
-where location_id = ? and number >= ?;
+select l.number
+     , s.location_id, s.name, s.number_of_seats, s.number_of_lockers, s.image_url
+     , s.description_dutch, s.description_english, s.forGroup
+     , a.authority_id, a.authority_name, a.description
+     , b.building_id, b.building_name, b.address
+     , lr.locker_number, lr.key_pickup_date, lr.key_return_date, lr.user_augentid
+     , u.augentid, u.admin, u.augentpreferredgivenname, u.augentpreferredsn, 0 as penalty_points
+     , u.mail, u.password, u.institution
+from public.lockers l
+    join public.locations s
+        on s.location_id = l.location_id
+    join public.authority a
+        on a.authority_id = s.authority_id
+    join public.buildings b
+        on b.building_id = s.building_id
+    left join lr
+        on lr.location_id = l.location_id
+        and lr.locker_number = l.number
+    left join public.users u
+        on u.augentid = lr.user_augentid
+where l.location_id = ?
+order by l.number;
 
 -- $insert_locker
 /* Note: the column 'id' is a auto-increment primary key */
@@ -799,21 +543,6 @@ update public.penalty_events
 set code = ?, points = ?
 where code = ?;
 
--- $update_fk_penalty_book_to_locations
-update public.penalty_book
-set reservation_location_id = ?
-where reservation_location_id = ?;
-
--- $update_fk_penalty_book_to_penalty_event
-update public.penalty_book
-set event_code = ?
-where event_code = ?;
-
--- $update_fk_penalty_book_to_user
-update public.penalty_book
-set user_augentid = ?
-where user_augentid = ?;
-
 -- $delete_penalty_description
 delete
 from public.penalty_descriptions
@@ -833,21 +562,6 @@ where code = ?;
 delete
 from public.penalty_book b
 where b.user_augentid = ? and b.event_code = ? and b.timestamp = ?;
-
--- $delete_penalties_of_location
-delete
-from public.penalty_book
-where reservation_location_id = ?;
-
--- $delete_penalties_of_penalty_event
-delete
-from public.penalty_book
-where event_code = ?;
-
--- $delete_penalties_of_user
-delete
-from public.penalty_book
-where user_augentid = ?;
 
 -- $count_descriptions_of_penalty_events
 select count(1)
@@ -871,34 +585,11 @@ where sl.user_augentid = ?
 order by l.name;
 
 -- $get_scanners_of_location
-with recursive x as (
-    select 0 week, 1.0 perc
-        union all
-    select week + 1, - 0.2 * (week + 1) + 1
-    from x
-    where week + 1 <= 5
-)
-select u.augentid, u.admin, u.augentpreferredsn, u.augentpreferredgivenname
-    , u.mail, u.password, u.institution
-    , coalesce(floor(sum(
-        case
-            /*
-                Blacklist event (16662) is permanent: no decrease in time.
-                A blacklist event should be removed manually
-            */
-            when pb.event_code = 16662 then pb.received_points
-            else pb.received_points * x.perc
-            end)), 0) as "penalty_points"
+select u.*
 from public.scanners_location sl
     join public.users u
         on u.augentid = sl.user_augentid
-    left join public.penalty_book pb
-              on pb.user_augentid = u.augentid
-    left join x
-              on floor(extract(days from (now() - to_timestamp(pb.timestamp, 'YYYY-MM-DD HH24\:MI\:SS'))) / 7) = x.week
-where sl.location_id = ?
-group by u.augentid, u.admin, u.augentpreferredsn, u.augentpreferredgivenname
-    , u.mail, u.password, u.institution;
+where sl.location_id = ?;
 
 -- $delete_scanner_location
 delete
@@ -965,11 +656,6 @@ delete
 from public.location_tags
 where tag_id = ?;
 
--- $update_fk_location_tags_to_location
-update public.location_tags
-set location_id = ?
-where location_id = ?;
-
 
 -- queries for CALENDAR_PERIODS
 -- $get_all_calendar_periods
@@ -1019,16 +705,6 @@ where cp.calendar_id = ?;
 delete
 from public.calendar_periods
 where location_id = ? and starts_at = ? and ends_at = ? and opening_time = ? and closing_time = ? and reservable = ? and timeslot_length = ?;
-
--- $delete_calendar_periods_of_location
-delete
-from public.calendar_periods
-where location_id = ?;
-
--- $update_fk_location_name_in_calendar_periods
-update public.calendar_periods
-set location_id = ?
-where location_id = ?;
 
 -- $get_calendar_periods_in_period
 select * 
@@ -1126,13 +802,3 @@ where location_id = ? and starts_at = ? and ends_at = ? and reservable_from = ?;
 delete
 from public.calendar_periods_for_lockers
 where location_id = ? and starts_at = ? and ends_at = ? and reservable_from = ?;
-
--- $delete_calendar_periods_for_lockers_of_location
-delete
-from public.calendar_periods_for_lockers
-where location_id = ?;
-
--- $update_fk_location_name_in_calendar_periods_for_lockers
-update public.calendar_periods_for_lockers
-set location_id = ?
-where location_id = ?;
