@@ -986,6 +986,7 @@
     "locationDetails": {
       "title": "Studenten scannen voor {locationName}",
       "errorMessageOnLoadingUsers": "De studenten die je kan scannen, kunnen niet opgehaald worden.",
+      "errorMessageOnLoadingLocation": "De locatie om te scannen, kan niet opgehaald worden.",
       "noUsersToScanWarning": "Op dit moment zijn er geen studenten te scannen voor deze locatie ."
     },
     "phone": "Scan met GSM-camera",

@@ -19,6 +19,7 @@ export class ScanningLocationDetailsComponent implements OnInit {
 
   locationObs: Observable<Location>;
   locationReservationObs: Observable<LocationReservation[]>;
+  locationLoadingSubject: Subject<boolean> = new Subject();
 
   loadingError = new Subject<boolean>();
   reservation?: LocationReservation;
@@ -35,7 +36,14 @@ export class ScanningLocationDetailsComponent implements OnInit {
   ngOnInit(): void {
     const locationId = Number(this.route.snapshot.paramMap.get('locationId'));
     // thanks to the caching that was implemented, the locationService will just return the cached location
-    this.locationObs = this.locationService.getLocation(locationId);
+    this.locationObs = this.locationService.getLocation(locationId)
+      .pipe(
+        catchError(err => {
+          console.log('Error while fetching the location: ', err);
+          this.locationLoadingSubject.next(true);
+          return of(null);
+        })
+      );
 
     this.locationReservationObs = this.locationObs
                   .pipe(
