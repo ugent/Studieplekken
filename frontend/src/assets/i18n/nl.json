@@ -102,7 +102,9 @@
     "optional": "Optioneel",
     "notAvailableAbbreviation": "n.v.t.",
     "waitingForServer": "Wachten op antwoord van de server...",
-    "idSetByBackend": "ID door backend gezet"
+    "idSetByBackend": "ID door backend gezet",
+
+    "catchAllError": "Er is iets misgelopen, gelieve op een later tijdstip opnieuw te proberen."
   },
   "header": {
     "imageAlt": "Universiteit Gent",
@@ -173,6 +175,7 @@
         "reservations": {
           "title": "Reservaties voor de ruimte",
           "selectSlot": "Selecteer een (reserveerbaar) timeslot om de reservaties te zien",
+          "searchUser": "Zoek naar een gebruiker op voornaam, achternaam of studentennummer:",
           "loading": "Reservaties voor het geselecteerde slot worden geladen",
           "error": "Er is iets misgelopen tijdens het ophalen van de reservaties...",
           "table": {
@@ -180,7 +183,14 @@
             "user": "Gebruiker",
             "attended": "Gebruiker was aanwezig?",
             "futureReservation": "Timeslot is nog niet geweest",
-            "number": "Studentennummer"
+            "number": "Studentennummer",
+            "scan": "Scan",
+
+            "yetToScan": "Nog te scannen",
+            "notScanned": "Niet gescand",
+
+            "startScanning": "Start scannen",
+            "finishScanning": "Beïndig scannen"
           }
         },
         "form": {
@@ -572,6 +582,13 @@
           "attended": "Gebruiker was aanwezig?",
           "noLocationReservations": "Er zijn geen reservaties voor de ruimte."
         },
+        "finishScanningModal": {
+          "title": "Beëindigen van het scannen",
+          "body": "Na het beëindigen van het scannen zullen de afwezige studenten automatisch 50 strafpunten krijgen.",
+          "body2": "Indien in een vorige scan voor hetzelfde tijdslot een student afwezig was maar in deze scan aanwezig is, dan zullen de eerder verkregen strafpunten verwijderd worden.",
+          "success": "Het beëindigen van het scannen is gelukt.",
+          "error": "Er is iets misgelopen tijdens het beëindigen van het scannen."
+        },
         "deleteModal": {
           "title": "Zeker dat je de reservatie wilt verwijderen?",
           "body": "De reservatie die verwijderd zal worden:",
@@ -580,6 +597,11 @@
           "loading": "Wachten op antwoord van de server...",
           "success": "Het verwijderen van de reservatie is gelukt.",
           "error": "Er is iets misgelopen tijdens het verwijderen van de reservatie..."
+        },
+
+        "scanningErrorModal": {
+          "title": "Scannen mislukt",
+          "message": "Er is iets misgelopen tijdens het scannen. De aan-/afwezigheid werd niet goed geregistreerd."
         }
       },
       "locker": {
@@ -768,5 +790,34 @@
         "noReservations": "Je hebt tot nu toe nog nooit een locker gereserveerd."
       }
     }
+  },
+  "scan": {
+    "aside": {
+      "title": "Scan",
+      "locations": "Locaties waar ik kan scannen"
+    },
+    "locations": {
+      "header": {
+        "name": "Naam",
+        "building": "Gebouw",
+        "numberOfSeats": "Plaatsen"
+      },
+      "noLocationsWarning": "Je hebt momenteel geen locaties toegewezen gekregen waar je studenten kan scannen.",
+      "errorMessageOnLoadingLocations": "De locaties waar je studenten kan scannen, kunnen niet opgehaald worden."
+    },
+    "locationDetails": {
+      "title": "Studenten scannen voor {locationName}",
+      "errorMessageOnLoadingUsers": "De studenten die je kan scannen, kunnen niet opgehaald worden.",
+      "errorMessageOnLoadingLocation": "De locatie om te scannen, kan niet opgehaald worden.",
+      "noUsersToScanWarning": "Op dit moment zijn er geen studenten te scannen voor deze locatie ."
+    },
+    "phone": "Scan met GSM-camera",
+    "handheld": "Scan met een handscanner",
+    "manual": "Checklist",
+    "unregistered":"Deze gebruiker is niet geregistreerd.",
+    "error": "Er ging iets fout bij deze actie.",
+    "mobile-hint": "Scanning werkt best wanneer je de barcode horizontaal plaatst.",
+    "handheld-hint": "Om met de handscanner te scannen selecteer je de inputbox. Wanneer je iemand scant, zal de naam naar boven springen in de lijst.",
+    "maybe":"Deze gebruiker werd niet gevonden. Zoek in de lijst hieronder of probeer opnieuw."
   }
 }

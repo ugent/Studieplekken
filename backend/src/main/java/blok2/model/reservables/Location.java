@@ -5,6 +5,8 @@ import blok2.helpers.Pair;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.LocationTag;
+import blok2.model.calendar.Timeslot;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 import java.util.ArrayList;
@@ -26,10 +28,18 @@ public class Location implements Cloneable {
 
     private List<LocationTag> assignedTags;
     private Pair<LocationStatus, String> status;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Timeslot currentTimeslot;
 
     public Location(int locationId, String name, int numberOfSeats, int numberOfLockers, String imageUrl,
                     Authority authority, String descriptionDutch, String descriptionEnglish, Building building,
                     boolean forGroup, List<LocationTag> assignedTags, Pair<LocationStatus, String> status) {
+        this(locationId, name, numberOfSeats,numberOfLockers,imageUrl,authority,descriptionDutch,descriptionEnglish, building, forGroup, assignedTags, status, null);
+    }
+
+    public Location(int locationId, String name, int numberOfSeats, int numberOfLockers, String imageUrl,
+                    Authority authority, String descriptionDutch, String descriptionEnglish, Building building,
+                    boolean forGroup, List<LocationTag> assignedTags, Pair<LocationStatus, String> status, Timeslot timeslot) {
         this.locationId = locationId;
         this.name = name;
         this.numberOfSeats = numberOfSeats;
@@ -42,6 +52,7 @@ public class Location implements Cloneable {
         this.forGroup = forGroup;
         this.assignedTags = assignedTags;
         this.status = status;
+        this.currentTimeslot = timeslot;
     }
 
     // default constructor necessary for testing purposes
@@ -192,6 +203,14 @@ public class Location implements Cloneable {
 
     public void setStatus(Pair<LocationStatus, String> status) {
         this.status = status;
+    }
+
+    public Timeslot getCurrentTimeslot() {
+        return currentTimeslot;
+    }
+
+    public void setCurrentTimeslot(Timeslot currentTimeslot) {
+        this.currentTimeslot = currentTimeslot;
     }
 
     //</editor-fold>

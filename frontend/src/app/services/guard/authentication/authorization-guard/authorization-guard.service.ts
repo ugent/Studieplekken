@@ -28,7 +28,7 @@ export class AuthorizationGuardService implements CanActivate {
           } else if (url.startsWith('/profile')) {
             activate = this.authenticationService.isLoggedIn();
           } else if (url.startsWith('/scan')) {
-            activate = this.isLoginAndAdminOrHasAuthorities();
+            activate = this.isLoginAndAdminOrHasLocationsToScan();
           } else if (url.startsWith('/management')) {
             if (this.authenticationService.isLoggedIn()) {
               if (url.includes('/tags') ||
@@ -50,15 +50,26 @@ export class AuthorizationGuardService implements CanActivate {
             this.router.navigate(['/dashboard']).catch(console.log);
           }
           return activate;
-  }));
+        })
+      );
   }
 
   isLoginAndAdminOrHasAuthorities(): boolean {
     return this.authenticationService.isLoggedIn() && this.isAdminOrHasAuthorities();
   }
 
+  isLoginAndAdminOrHasLocationsToScan(): boolean {
+    return this.authenticationService.isLoggedIn() && this.isAdminOrHasLocationsToScan();
+  }
+
   isAdminOrHasAuthorities(): boolean {
     return this.authenticationService.isAdmin() ||
       this.authenticationService.hasAuthoritiesValue();
   }
+
+  isAdminOrHasLocationsToScan(): boolean {
+    return this.authenticationService.isAdmin() ||
+      this.authenticationService.hasVolunteeredValue();
+  }
+
 }
