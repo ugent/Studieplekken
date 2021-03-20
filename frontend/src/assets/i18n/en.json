@@ -159,7 +159,8 @@
       "authorities": "Authorities",
       "calendar": "Calendar",
       "penalties": "Penalties",
-      "admins": "Admins"
+      "admins": "Admins",
+      "volunteers": "Volunteers"
     },
 
     "general": {
@@ -813,6 +814,9 @@
         "yesButton": "Delete",
         "noButton": "Cancel"
       }
+    },
+    "volunteers": {
+      "no-volunteers": "There are no volunteers for this location yet."
     }
   },
 
@@ -938,4 +942,5 @@
       }
     }
   }
+
 }

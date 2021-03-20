@@ -247,7 +247,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
     @Override
     public List<User> getVolunteers(int locationId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_volunteers"));
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_volunteers_of_location"));
             pstmt.setInt(1, locationId);
             ResultSet set = pstmt.executeQuery();
             List<User> users = new ArrayList<>();

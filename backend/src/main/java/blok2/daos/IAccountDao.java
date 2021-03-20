@@ -1,5 +1,6 @@
 package blok2.daos;
 
+import blok2.model.reservables.Location;
 import blok2.model.users.User;
 
 import java.sql.SQLException;
@@ -38,6 +39,11 @@ public interface IAccountDao extends IDao {
      * Try to resolve user from barcode
      */
     User getUserFromBarcode(String barcode) throws SQLException;
+
+    /**
+     * Get all locations for which the specified user has volunteered
+     */
+    List<Location> getVolunteeredLocations(String userId) throws SQLException;
 
     // ADDERS
 
