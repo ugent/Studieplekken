@@ -519,7 +519,6 @@
         "loading": "Waiting on response of server...",
         "error": "Something went wrong while retrieving the users...",
         "noUserWithBarcodeHasBeenFound": "No user with given barcode has been found. Please try with first and/or last name."
-
       },
 
       "userDetails": {
@@ -1004,5 +1003,4 @@
     "handheld-hint": "To use the handheld scanner, select the input box below. If scan is succesful, the user will pop to the top of the list.",
     "maybe":"This user wasn't found. Search in the list below, or try again."
   }
-
 }
