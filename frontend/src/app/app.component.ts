@@ -85,7 +85,6 @@ export class AppComponent implements OnInit {
             this.userService.hasUserVolunteered(next.augentID).subscribe(
               next2 => {
                 this.showScan = scanFunc && next2;
-                console.log(this.showScan)
               }
             );
           }
