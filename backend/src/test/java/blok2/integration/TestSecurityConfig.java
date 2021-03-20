@@ -2,6 +2,7 @@ package blok2.integration;
 
 import blok2.TestSharedMethods;
 import blok2.daos.IAccountDao;
+import blok2.model.Authority;
 import blok2.model.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -24,8 +25,11 @@ public class TestSecurityConfig {
             System.out.println("called the loadusername");
             try {
                 addUsersIfNotExist();
-                System.out.println(accountDao.getUserByEmail(s + "@ugent.be"));
-                return accountDao.getUserByEmail(s + "@ugent.be");
+                System.out.println();
+                User user = accountDao.getUserByEmail(s + "@ugent.be");
+                if(user.getAugentID().equals("authholder"))
+                    user.getUserAuthorities().add(new Authority()); // kind of hacky but also necessary, its just test code
+                return user;
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
                 throw new UsernameNotFoundException(s);
@@ -37,7 +41,10 @@ public class TestSecurityConfig {
                 User admin = TestSharedMethods.adminTestUser("admin");
                 User student = TestSharedMethods.studentTestUser("student1");
                 User student2 = TestSharedMethods.studentTestUser("student2");
-                TestSharedMethods.addTestUsers(accountDao, admin, student, student2);
+                User authorityHolder = TestSharedMethods.studentTestUser("authholder");
+
+                TestSharedMethods.addTestUsers(accountDao, admin, student, student2, authorityHolder);
+
             } catch (Exception ignored) {
 
             }

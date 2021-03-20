@@ -33,6 +33,9 @@ export const api = {
   deleteLocation: '/api/locations/{locationId}',
   setupTagsForLocation: '/api/locations/tags/{locationId}',
   allReservableFroms: '/api/locations/nextReservableFroms',
+  locationVolunteers: '/api/locations/{locationId}/volunteers',
+  addLocationVolunteer: '/api/locations/{locationId}/volunteers/{userId}',
+
 
   // LOCATION_RESERVATIONS
   locationReservationsOfUser: '/api/locations/reservations/user',
@@ -69,7 +72,9 @@ export const api = {
   changePassword: '/api/account/password',
   updateUser: '/api/account/{userId}',
   hasUserAuthorities: '/api/account/{userId}/has/authorities',
+  hasUserVolunteered: '/api/account/{userId}/has/volunteered',
   getAdmins: '/api/account/admins',
+  getManageableLocations: '/api/account/{userId}/manageable/locations',
 
   // LOCKERS
   lockersStatusesOfLocation: '/api/lockers/status/{locationId}',

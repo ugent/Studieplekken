@@ -1,0 +1,16 @@
+<!-- Overview of the location -->
+<div *ngIf="manageableLocationsObs | async as manageableLocations; else loadingOrError">
+    <app-volunteer-management-panel *ngFor="let mLocation of manageableLocations" [location]="mLocation"></app-volunteer-management-panel>
+</div>
+
+<ng-template #loadingOrError>
+  <div class="alert alert-error" *ngIf="errorSubject | async; else loading">
+    {{'management.volunteers.errorOnLoadingManageableLocations' | translate}}
+  </div>
+
+  <ng-template #loading>
+    <div class="alert alert-info" style="margin-top: 10px;">
+      {{'general.waitingForServer' | translate}}
+    </div>
+  </ng-template>
+</ng-template>
