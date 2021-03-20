@@ -50,7 +50,8 @@ export class AuthorizationGuardService implements CanActivate {
             this.router.navigate(['/dashboard']).catch(console.log);
           }
           return activate;
-  }));
+        })
+      );
   }
 
   isLoginAndAdminOrHasAuthorities(): boolean {
@@ -68,7 +69,7 @@ export class AuthorizationGuardService implements CanActivate {
 
   isAdminOrHasLocationsToScan(): boolean {
     return this.authenticationService.isAdmin() ||
-      this.authenticationService.hasLocationsToScan();
+      this.authenticationService.hasVolunteeredValue();
   }
 
 }
