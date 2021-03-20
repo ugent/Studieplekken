@@ -16,6 +16,9 @@ services:
       - 12800:12800
     environment:
       TZ: Europe/Brussels
+      SW_JDBC_URL: jdbc:mysql://oap-db:3306/swtest
+      SW_DATA_SOURCE_USER: sw
+      SW_DATA_SOURCE_PASSWORD: ***REMOVED***
 #      SW_TELEMETRY_PROMETHEUS_HOST: prom
 #      SW_TELEMETRY_PROMETHEUS_PORT: 9090
 #    volumes:
@@ -24,6 +27,10 @@ services:
 #     - oap_database:/var/lib/mysql
     networks:
       - blokat
+    logging:
+      options:
+        max-size: "100m"
+        max-file: "5"
   ui:
     image: apache/skywalking-ui
     depends_on:

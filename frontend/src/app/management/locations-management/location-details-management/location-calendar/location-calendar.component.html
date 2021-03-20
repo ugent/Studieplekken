@@ -1,4 +1,4 @@
-<div class="container-fluid" *ngIf="location | async as location">
+<div class="container-fluid" *ngIf="calendarPeriodsObs | async as calendarPeriods; else loadingOrError">
   <div class="panel-body" style="padding: 20px">
     <div class="text-center" style="margin-bottom: 20px">
       <button class="btn btn-primary pull-center" (click)="prepareAdd(addCalendarPeriodModal, CPtable)" >
@@ -63,7 +63,6 @@
         {{'management.locationDetails.calendar.form.addButton' | translate}}
       </button>
 
-
       <!-- The form itself -->
       <div class="container-fluid" style="margin-top: 10px; margin-bottom: 10px;">
         <table style="width: 100%;" *ngIf="calendarPeriods.length > 0; else noCalendarPeriodsForLocation">
@@ -74,6 +73,7 @@
             <th>{{'management.locationDetails.calendar.form.openingTime' | translate}}</th>
             <th>{{'management.locationDetails.calendar.form.closingTime' | translate}}</th>
             <th>{{'management.locationDetails.calendar.form.reservable' | translate}}</th>
+            <th>{{'management.locationDetails.calendar.form.numberOfSeats' | translate}}</th>
             <th><!-- update --></th>
             <th><!-- delete --></th>
           </tr>
@@ -85,7 +85,9 @@
             <td>{{calendarPeriod.endsAt.format('DD/MM/YYYY')}}</td>
             <td>{{calendarPeriod.openingTime.format('HH:mm')}}</td>
             <td>{{calendarPeriod.closingTime.format('HH:mm')}}</td>
-            <td>{{(calendarPeriod.reservable ? 'general.yes' : 'general.no') |translate}}</td>
+            <td>{{(calendarPeriod.reservable ? calendarPeriod.reservableFrom.format('DD/MM/YYYY - HH:mm'):
+              'general.notAvailableAbbreviation') | translate}}</td>
+            <td>{{calendarPeriod.seatCount}}</td>
 
             <!-- Edit icon -->
             <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
@@ -415,4 +417,16 @@
       {{'management.locationDetails.calendar.form.noCalendarPeriodsForLocation' | translate}}
     </div>
   </div>
+</ng-template>
+
+<ng-template #loadingOrError>
+  <div class="alert alert-error" *ngIf="errorSubject | async; else loading" style="margin-top: 10px;">
+    {{'management.locationDetails.calendar.errorLoadingCalendarPeriods' | translate}}
+  </div>
+
+  <ng-template #loading>
+    <div class="alert alert-info" style="margin-top: 10px;">
+      {{'general.waitingForServer' | translate}}
+    </div>
+  </ng-template>
 </ng-template>

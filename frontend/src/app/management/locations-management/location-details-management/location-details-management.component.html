@@ -1,9 +1,10 @@
 <div class="container-fluid panel" *ngIf="locationObs | async as location; else loading">
 
   <!--
-   This page has three functionalities, each put into a collapsable panel-group:
+   This page has four functionalities, each put into a collapsable panel-group:
      - overview of the location + possibility to edit the details of the location
      - calender to show the opening days and a form to add new/series of new opening days
+     - ability to manage the description of the location
      - form to show current/next locker reservation period
 
    Such a panel-group consists of two parts:
@@ -46,7 +47,7 @@
 
       <!-- Body -->
       <div class="panel-collapse collapse" id="calendarCollapseBody">
-        <app-location-calendar [location]="locationObs"></app-location-calendar>
+        <app-location-calendar [location]="location"></app-location-calendar>
       </div>
   </div>
 

@@ -12,11 +12,15 @@ import { CalendarPeriod, mapCalendarPeriodsToCalendarEvents } from 'src/app/shar
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
 import { Timeslot } from 'src/app/shared/model/Timeslot';
 import { LocationOpeningperiodDialogComponent } from './location-openingperiod-dialog/location-openingperiod-dialog.component';
-import { Location } from 'src/app/shared/model/Location';
+import {Location} from 'src/app/shared/model/Location';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { Moment } from 'moment';
 import {TranslateService} from '@ngx-translate/core';
+import {ActivatedRoute} from '@angular/router';
+import {catchError, tap} from 'rxjs/operators';
+import {of} from 'rxjs/internal/observable/of';
+import {map} from 'rxjs/internal/operators/map';
 
 @Component({
   selector: 'app-location-calendar',
@@ -24,10 +28,11 @@ import {TranslateService} from '@ngx-translate/core';
   styleUrls: ['./location-calendar.component.css']
 })
 export class LocationCalendarComponent implements OnInit {
-  @Input() location: Observable<Location>;
+  @Input() location: Location; // only use this for creating a CalendarPeriod
+  locationId: number; // will be set based on the url
 
-  locationId: number;
-  locationFlat: Location;
+  calendarPeriodsObs: Observable<CalendarPeriod[]>;
+  errorSubject = new Subject<boolean>();
 
   locationReservations: LocationReservation[];
   currentTimeSlot: Timeslot;
@@ -86,10 +91,13 @@ export class LocationCalendarComponent implements OnInit {
               private dialog: MatDialog,
               private modalService: BsModalService,
               private authenticationService: AuthenticationService,
-              private translate: TranslateService) {
+              private translate: TranslateService,
+              private route: ActivatedRoute) {
   }
 
   ngOnInit(): void {
+    this.locationId = Number(this.route.snapshot.paramMap.get('locationId'));
+
     this.currentLang = this.translate.currentLang;
     this.translate.onLangChange.subscribe(
       () => {
@@ -98,11 +106,8 @@ export class LocationCalendarComponent implements OnInit {
       }
     );
 
-    this.location.subscribe(next => {
-      this.locationId = next.locationId;
-      this.locationFlat = next;
-      this.setup();
-    });
+    this.setup();
+
     this.showReservationInformation = this.functionalityService.showReservationsFunctionality();
   }
 
@@ -111,7 +116,7 @@ export class LocationCalendarComponent implements OnInit {
   // ***********/
 
   prepareAdd(template: TemplateRef<any>, el: HTMLElement): void {
-    this.calendarPeriodModel.next(new CalendarPeriod(null, this.locationFlat, null, null, null, null, false, null, 0, [], null, 0));
+    this.calendarPeriodModel.next(new CalendarPeriod(null, this.location, null, null, null, null, false, null, 0, [], null, 0));
     this.prepareToUpdatePeriod = null;
     this.successAddingLocationReservation = undefined;
     el.scrollIntoView();
@@ -192,31 +197,32 @@ export class LocationCalendarComponent implements OnInit {
   // *******************/
 
   setup(): void {
-    if (!this.locationId) {
-      return;
-    }
     // retrieve all calendar periods for this location
-    this.calendarPeriodsService.getCalendarPeriodsOfLocation(this.locationId).subscribe(next => {
-      if (next === null) {
-        return;
-      }
+    this.calendarPeriodsObs = this.calendarPeriodsService.getCalendarPeriodsOfLocation(this.locationId)
+      .pipe(
+        tap(next => {
+        
+          // Remark: due to references, 'this.calendarPeriods' has a reference to the same object
+          // as the 'calendarPeriods' variable in the template through the assignation
+          // 'calendarPeriodsObs | async as calendarPeriods'.
+          this.calendarPeriods = next;
 
-      next.forEach(n => n.openingTime = moment(n.openingTime, 'HH:mm:ss'));
-      next.forEach(n => n.closingTime = moment(n.closingTime, 'HH:mm:ss'));
-      this.calendarPeriods = next;
+          // make a deep copy to make sure that can be calculated whether any period has changed
+          this.calendarPeriodsInDataLayer = next.map(CalendarPeriod.fromJSON)
 
-      // make a deep copy to make sure that can be calculated whether any period has changed
-      this.calendarPeriodsInDataLayer = [];
-      next.forEach(n => {
-        this.calendarPeriodsInDataLayer.push(CalendarPeriod.fromJSON(n));
-      });
+          // fill the events based on the calendar periods
+          this.events = mapCalendarPeriodsToCalendarEvents(next, this.translate.currentLang);
 
-      // fill the events based on the calendar periods
-      this.events = mapCalendarPeriodsToCalendarEvents(next, this.currentLang);
+          // and update the calendar
+          this.refresh.next(null);
 
-      // and update the calendar
-      this.refresh.next(null);
-    });
+        }),
+        catchError(err => {
+          console.error(err);
+          this.errorSubject.next(true);
+          return of(null);
+        })
+      );
   }
 
   rollback(): void {
@@ -310,4 +316,5 @@ export class LocationCalendarComponent implements OnInit {
   closeModal(): void {
     this.modalService.hide();
   }
+
 }
