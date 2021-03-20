@@ -15,26 +15,26 @@ import { UserService } from 'src/app/services/api/users/user.service';
 })
 export class VolunteerManagementPanelComponent implements OnInit {
 
-  @Input() location: Location
+  @Input() location: Location;
 
-  volunteerObs: Observable<User[]>
+  volunteerObs: Observable<User[]>;
 
   formGroup = new FormGroup({
     firstName: new FormControl(''),
     lastName: new FormControl(''),
   });
-  neverSearched: boolean = true;
+  neverSearched: true;
   filteredUsers: Observable<User[]>;
 
   private modalRef: BsModalRef;
   collapsed = true;
 
   constructor(private locationService: LocationService,
-    private modalService: BsModalService,
-    private userService: UserService) { }
+              private modalService: BsModalService,
+              private userService: UserService) { }
 
   ngOnInit(): void {
-    this.volunteerObs = this.locationService.getVolunteers(this.location.locationId)
+    this.volunteerObs = this.locationService.getVolunteers(this.location.locationId);
   }
 
   showEmpty(volunteers: User[]): boolean {
@@ -85,7 +85,7 @@ export class VolunteerManagementPanelComponent implements OnInit {
 
   addVolunteer(user: User): void {
     this.locationService.addVolunteer(this.location.locationId, user.augentID)
-      .subscribe(() => this.volunteerObs = this.locationService.getVolunteers(this.location.locationId))
+      .subscribe(() => this.volunteerObs = this.locationService.getVolunteers(this.location.locationId));
 
     this.modalRef.hide();
     this.collapsed = false;
@@ -93,7 +93,7 @@ export class VolunteerManagementPanelComponent implements OnInit {
 
   deleteVolunteer(user: User): void {
     this.locationService.deleteVolunteer(this.location.locationId, user.augentID)
-      .subscribe(() => this.volunteerObs = this.locationService.getVolunteers(this.location.locationId))
+      .subscribe(() => this.volunteerObs = this.locationService.getVolunteers(this.location.locationId));
 
     this.collapsed = false;
   }
