@@ -73,6 +73,9 @@ import { AdminsManagementComponent } from './management/admins-management/admins
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { TimeslotTableComponent } from './management/locations-management/location-details-management/timeslot-table/timeslot-table.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ScanningLocationsComponent } from './scan/scanning-locations/scanning-locations.component';
+import { ScanningLocationDetailsComponent } from './scan/scanning-location-details/scanning-location-details.component';
+import { ScannerComponent } from './shared/scanner/scanner.component';
 import { VolunteersManagementComponent } from './management/volunteers-management/volunteers-management.component';
 import { VolunteerManagementPanelComponent } from './management/volunteers-management/volunteer-management-panel/volunteer-management-panel.component';
 
@@ -141,7 +144,24 @@ const routes: Routes = [
   {
     path: 'scan',
     component: ScanComponent,
-    canActivate: [AuthorizationGuardService, ApplicationTypeGuardService]
+    canActivate: [AuthorizationGuardService, ApplicationTypeGuardService],
+    children: [
+      {
+        path: '',
+        redirectTo: 'locations',
+        pathMatch: 'full'
+      },
+      {
+        path: 'locations',
+        component: ScanningLocationsComponent,
+        canActivate: [AuthorizationGuardService]
+      },
+      {
+        path: 'locations/:locationId',
+        component: ScanningLocationDetailsComponent,
+        canActivate: [AuthorizationGuardService]
+      }
+    ]
   },
 
   {
@@ -275,6 +295,9 @@ const routes: Routes = [
     AdminsManagementComponent,
     TimeslotTableComponent,
     FormatStatusPipe,
+    ScanningLocationsComponent,
+    ScanningLocationDetailsComponent,
+    ScannerComponent,
     VolunteersManagementComponent,
     VolunteerManagementPanelComponent
   ],

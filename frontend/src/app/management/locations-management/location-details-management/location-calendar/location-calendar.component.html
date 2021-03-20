@@ -56,15 +56,17 @@
     <!-- Form to edit the calendar -->
     <div #CPtable class="row">
       <!-- Title -->
-      <h3 class="inline-block">
-        {{'management.locationDetails.calendar.form.title' | translate}}
-      </h3>
-      <button class="btn btn-primary pull-right" (click)="prepareAdd(addCalendarPeriodModal, CPtable)" >
-        {{'management.locationDetails.calendar.form.addButton' | translate}}
-      </button>
+      <div class="row">
+        <h3 class="inline-block">
+          {{'management.locationDetails.calendar.form.title' | translate}}
+        </h3>
+        <button class="btn btn-primary pull-right" (click)="prepareAdd(addCalendarPeriodModal, CPtable)" >
+          {{'management.locationDetails.calendar.form.addButton' | translate}}
+        </button>
+      </div>
 
       <!-- The form itself -->
-      <div class="container-fluid" style="margin-top: 10px; margin-bottom: 10px;">
+      <div style="margin-top: 10px; margin-bottom: 10px;">
         <table style="width: 100%;" *ngIf="calendarPeriods.length > 0; else noCalendarPeriodsForLocation">
           <thead>
           <tr>

@@ -1,35 +1,63 @@
-<div class="container-fluid">
+<div>
   <div *ngIf="locationReservations.length === 0" class="alert alert-info">
     {{'management.locationDetails.calendar.reservations.table.noLocationReservations' | translate}}
   </div>
+  <div *ngIf="warning" class="alert alert-warning">
+    {{'scan.unregistered' | translate}}
+  </div>
 
-  <table style="width: 100%;" *ngIf="locationReservations.length > 0">
+  <div class="row form-group">
+    <label class="col-lg-3 control-label" for="search">
+      {{'management.locationDetails.calendar.reservations.searchUser' | translate}}
+    </label>
+    <div class="col-lg-8">
+      <input id="search" type="text" class="form-control"
+             [(ngModel)]="searchTerm" (ngModelChange)="updateSearchTerm(scanningError)">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="alert alert-info" *ngIf="waitingForServer">
+      {{'general.waitingForServer' | translate}}
+    </div>
+  </div>
+
+  <table style="width: 100%; margin-bottom: 10px;" *ngIf="locationReservations.length > 0">
     <thead>
-    <tr>
-      <th>{{'management.locationDetails.calendar.reservations.table.user' | translate}}</th>
-      <th>{{'management.locationDetails.calendar.reservations.table.attended' | translate}}</th>
-      <th></th>
-    </tr>
+      <tr>
+        <th>{{'management.locationDetails.calendar.reservations.table.user' | translate}}</th>
+        <th>{{'management.locationDetails.calendar.reservations.table.attended' | translate}}</th>
+        <th>{{startedScanning ? ('management.locationDetails.calendar.reservations.table.scan' | translate) : ''}}</th>
+        <th>
+          <!-- Delete -->
+        </th>
+      </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let reservation of locationReservations">
-      <td>{{reservation.user.firstName + ' ' + reservation.user.lastName}}</td>
-      <td *ngIf="showCheckbox() && reservation.attended == null">
-        <span class="glyphicon glyphicon-ok pointerCursor" style="color:#CCFF99" id="firstToggle" (click)="onCheckboxToggle(reservation, true)"></span>
-        <span class="glyphicon glyphicon-remove-sign pointerCursor" style="color:#FF6666" (click)="onCheckboxToggle(reservation, false)"></span>
-      </td>
-      <td *ngIf="showCheckbox() && reservation.attended != null">
-        <label>
-          <input type="checkbox" [checked]="reservation.attended" (click)="onCheckboxToggle(reservation,$event.target.checked)"/>
-        </label>
-      </td>
-      <td *ngIf="!showCheckbox()">{{(reservation.attended ? 'general.yes' : 'general.no') | translate}}</td>
-
-      <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
+      <tr *ngFor="let reservation of filter(locationReservations)" [class.highlight]="reservation.attended">
+        <td>{{reservation.user.firstName + ' ' + reservation.user.lastName}}</td>
+        <td>{{getCorrectI18NObject(reservation) | translate}}</td>
+        <td>
+          <!-- Note: don't disable the other button if yes/no is clicked because otherwise the user couldn't
+             change the attendance, e.g. if he/she clicked on the wrong button. Therefore the class
+             of the button should be set as if the button was disabled -->
+          <button *ngIf="startedScanning" class="btn btn-secondary btn-left" style="margin-top: 5px"
+            [ngClass]="isButtonDisabled(reservation) ? 'disabled': '' "
+            (click)="scanLocationReservation(reservation, true, scanningError)">
+            {{'general.yes' | translate}}
+          </button>
+          <button *ngIf="startedScanning" class="btn btn-default" style="margin-top: 5px"
+            [ngClass]="!isButtonDisabled(reservation) ? 'disabled': '' "
+            (click)="scanLocationReservation(reservation, false, scanningError)">
+            {{'general.no' | translate}}
+          </button>
+        </td>
+        <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
+            *ngIf="!hideDeleteIcon"
           (click)="prepareToDeleteLocationReservation(reservation, deleteLocationReservationModal)">
-        <span class="glyphicon glyphicon-trash pointerCursor"></span>
-      </td>
-    </tr>
+          <span class="glyphicon glyphicon-trash pointerCursor"></span>
+        </td>
+      </tr>
     </tbody>
   </table>
 </div>
@@ -78,5 +106,31 @@
     <div class="alert alert-error" *ngIf="successDeletingLocationReservation === false">
       {{'management.reservations.location.deleteModal.error' | translate}}
     </div>
+  </div>
+</ng-template>
+
+<ng-template #scanningError>
+  <!-- Modal header -->
+  <div class="modal-header">
+    <h5 class="modal-title inline-block" id="scanningErrorModalTitle">
+      {{'management.reservations.location.scanningErrorModal.title' | translate}}
+    </h5>
+    <button type="button" class="close" (click)="closeModal()" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <!-- Modal body -->
+  <div class="modal-body">
+    <div class="alert alert-error">
+      {{'management.reservations.location.scanningErrorModal.message' | translate}}
+    </div>
+  </div>
+
+  <!-- Modal footer -->
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="closeModal()">
+      {{'general.buttons.close' | translate}}
+    </button>
   </div>
 </ng-template>

@@ -25,7 +25,7 @@ export class ApplicationTypeFunctionalityService {
       case APPLICATION_TYPE.BLOK_AT:
         return true;
       case APPLICATION_TYPE.MINI_THERMIS:
-        return false;
+        return true;
       default:
         return true;
     }

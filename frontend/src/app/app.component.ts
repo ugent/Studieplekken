@@ -70,13 +70,20 @@ export class AppComponent implements OnInit {
           // is required to determine whether or not the user has authorities
           // and thus can be seen as an employee
           if (next.admin) {
+
             this.showScan = scanFunc && true;
+
             this.showManagement = true;
           } else {
+            // todo: use mergeMap (https://www.learnrxjs.io/learn-rxjs/operators/transformation/mergemap)
             this.userService.hasUserAuthorities(next.augentID).subscribe(
               next2 => {
-                this.showScan = scanFunc && next2;
                 this.showManagement = next2;
+              }
+            );
+            this.userService.hasUserVolunteered(next.augentID).subscribe(
+              next2 => {
+                this.showScan = scanFunc && next2;
               }
             );
           }
@@ -91,9 +98,6 @@ export class AppComponent implements OnInit {
           this.showManagement = false;
           this.showInformation = true;
         }
-
-        // possibly overrule the shows above due to limitations in functionality
-        this.showScan = this.functionalityService.showScanningFunctionality();
       }
     );
   }

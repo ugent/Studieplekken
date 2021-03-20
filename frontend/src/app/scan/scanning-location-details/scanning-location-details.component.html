@@ -1,0 +1,82 @@
+<div *ngIf="locationObs | async as location; else loadingOrErrorForLocation" class="container-fluid">
+  <h3>{{('scan.locationDetails.title' | translate).replace('{locationName}', location.name)}}</h3>
+
+  <div *ngIf="locationReservationObs | async as lr; else loadingOrError">
+    <div *ngIf="lr.length > 0; else noUsers">
+
+      <div class="panel-group">
+        <!--MOBILE SCANNER-->
+        <div class="panel-heading">
+          <h3 class="panel-title">
+            <a data-toggle="collapse" href="#phone" aria-expanded="false" class="collapsed">
+              <i class="glyphicon glyphicon-plus"></i>
+              <i class="glyphicon glyphicon-minus"></i>
+              {{'scan.phone' | translate}}</a>
+          </h3>
+        </div>
+
+        <div class="panel-collapse collapse" id="phone">
+
+          <div *ngIf="error" style="margin-top: 15px;" class="alert alert-error">{{error | translate}}</div>
+
+          <div *ngIf="!reservation" style="margin-top: 15px;" class="alert alert-info">{{'scan.mobile-hint' | translate}}</div>
+          <app-scanner *ngIf="!reservation" [validator]="getValidator(lr)" (code)="scanUser(lr, $event)"></app-scanner>
+
+          <div class="usertag" *ngIf="reservation" fxLayout="column" fxLayoutAlign="center center">
+            <p>
+              User: {{reservation.user.firstName}} {{reservation.user.lastName}}
+            </p>
+            <p>
+              AugentID: {{reservation.user.augentID}}
+            </p>
+            <div fxLayout="row">
+              <button class="btn btn-default" (click)="confirm()">Confirm</button>
+              <button class="btn btn-primary" (click)="cancel()">Cancel</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <br>
+      <div class="alert alert-info">{{"scan.handheld-hint" | translate}}</div>
+      <app-location-reservations
+        [currentTimeSlot]="location.currentTimeslot"
+        [locationReservations]="lr"
+        [lastScanned]="lastScanned"
+        [hideDeleteIcon]="true"
+      >
+      </app-location-reservations>
+    </div>
+  </div>
+
+</div>
+
+<ng-template #loadingOrError>
+  <div *ngIf="loadingError | async; else loading" class="alert alert-error">
+    {{'scan.locationDetails.errorMessageOnLoadingUsers' | translate}}
+  </div>
+  <ng-template #loading>
+    <div class="alert alert-info">
+      {{'general.waitingForServer' | translate}}
+    </div>
+  </ng-template>
+</ng-template>
+
+<ng-template #loadingOrErrorForLocation>
+  <div *ngIf="locationLoadingSubject | async; else loading" class="alert alert-error">
+    {{'scan.locationDetails.errorMessageOnLoadingLocation' | translate}}
+  </div>
+
+  <ng-template #loading>
+    <div class="alert alert-info">
+      {{'general.waitingForServer' | translate}}
+    </div>
+  </ng-template>
+</ng-template>
+
+<ng-template #noUsers>
+  <div class="alert alert-warning">
+    {{'scan.locationDetails.noUsersToScanWarning' | translate}}
+  </div>
+</ng-template>

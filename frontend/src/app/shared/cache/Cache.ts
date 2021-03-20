@@ -1,11 +1,12 @@
 import {BehaviorSubject, EMPTY, Observable, of} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
-import { catchError, filter, map, skip, tap } from 'rxjs/operators';
+import { catchError, filter, map, tap } from 'rxjs/operators';
 
 export class Cache<I, V> {
 
   constructor(private http: HttpClient,
-              private idcallback: (arg: any) => I) { }
+              private idcallback: (arg: any) => I,
+              private mapFunction?: (arg: any) => V) { }
 
   cacheMap: Map<I, V> = new Map<I, V>();
   cacheSubject: BehaviorSubject<Map<I, V>> = new BehaviorSubject<Map<I, V>>(this.cacheMap);
@@ -18,6 +19,7 @@ export class Cache<I, V> {
   private updateCache(url: string, id: I): void {
     this.http.get<V>(url)
       .pipe(
+        map(n => this.mapFunction ? this.mapFunction(n) : n),
         tap(n => this.cacheMap.set(id, n)),
         tap(() => this.cacheSubject.next(this.cacheMap)),
         catchError(error => {
@@ -35,6 +37,7 @@ export class Cache<I, V> {
   private cacheReload(url: string): void {
     this.http.get<V[]>(url)
       .pipe(
+        map(n => n.map(v => this.mapFunction ? this.mapFunction(v) : v)),
         tap(n => n.forEach(element => this.cacheMap.set(this.idcallback(element), element))),
         tap(() => {
           this.cacheSubject.next(this.cacheMap);
