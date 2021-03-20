@@ -47,6 +47,10 @@ export class LocationReservationsComponent implements OnInit, OnChanges {
   ngOnChanges(): void {
   }
 
+  // /***************
+  // *   SCANNING   *
+  // ****************/
+
   scanLocationReservation(reservation: LocationReservation, attended: boolean, errorTemplate: TemplateRef<any>): void {
     const idx = this.scannedLocationReservations.findIndex(
       r => {
