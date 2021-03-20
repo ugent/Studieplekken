@@ -1,4 +1,4 @@
-<div class="panel-group" *ngIf="volunteerObs | async as volunteers">
+<div class="panel-group" *ngIf="volunteerObs | async as volunteers; else loadingOrError">
     <!-- Heading -->
     <div class="panel-heading">
         <h3 class="panel-title">
@@ -20,8 +20,6 @@
                         <th>{{'management.users.searchResult.table.id' | translate}}</th>
                         <th>{{'management.users.searchResult.table.firstName' | translate}}</th>
                         <th>{{'management.users.searchResult.table.lastName' | translate}}</th>
-                        <th *ngIf="showPenaltyPoints">{{'management.users.searchResult.table.penaltyPoints' |
-                            translate}}</th>
                         <th>{{'management.users.searchResult.table.institution' | translate}}</th>
                         <th>
                             <!-- Details -->
@@ -34,7 +32,6 @@
                         <td>{{user.augentID}}</td>
                         <td>{{user.firstName}}</td>
                         <td>{{user.lastName}}</td>
-                        <td *ngIf="showPenaltyPoints">{{user.penaltyPoints}}</td>
                         <td>{{user.institution}}</td>
                         <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
                             <span (click)="deleteVolunteer(user)" class="glyphicon glyphicon-trash">
@@ -146,4 +143,16 @@
         </div>
 
     </div>
+</ng-template>
+
+<ng-template #loadingOrError>
+  <div class="alert alert-error" *ngIf="errorSubject | async; else loading">
+    {{'management.volunteers.errorOnLoadingVolunteers' | translate}}
+  </div>
+
+  <ng-template #loading>
+    <div class="alert alert-info" style="margin-top: 10px;">
+      {{'general.waitingForServer' | translate}}
+    </div>
+  </ng-template>
 </ng-template>

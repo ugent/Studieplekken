@@ -148,6 +148,18 @@ public class TestSharedMethods {
         return user;
     }
 
+    public static User authorityHolderTestUser(String id) {
+        User user = new User();
+        user.setLastName("AutorityMan");
+        user.setFirstName("Authority");
+        user.setMail(id + "@ugent.be");
+        user.setPassword("second_password");
+        user.setInstitution(Institution.UGent);
+        user.setAugentID(id);
+        user.setAdmin(false);
+        return user;
+    }
+
     public static void addTestUsers(IAccountDao accountDao, User... users) throws SQLException {
         for (User u : users) {
             accountDao.directlyAddUser(u);
