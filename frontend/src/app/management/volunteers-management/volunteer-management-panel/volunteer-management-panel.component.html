@@ -1,4 +1,4 @@
-<div class="panel-group" *ngIf="volunteerObs | async as volunteers">
+<div class="panel-group" *ngIf="volunteerObs | async as volunteers; else loadingOrError">
     <!-- Heading -->
     <div class="panel-heading">
         <h3 class="panel-title">
@@ -143,4 +143,16 @@
         </div>
 
     </div>
+</ng-template>
+
+<ng-template #loadingOrError>
+  <div class="alert alert-error" *ngIf="errorSubject | async; else loading">
+    {{'management.volunteers.errorOnLoadingVolunteers' | translate}}
+  </div>
+
+  <ng-template #loading>
+    <div class="alert alert-info" style="margin-top: 10px;">
+      {{'general.waitingForServer' | translate}}
+    </div>
+  </ng-template>
 </ng-template>

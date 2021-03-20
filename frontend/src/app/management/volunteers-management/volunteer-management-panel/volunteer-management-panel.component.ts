@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, TemplateRef } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import {Observable, of, Subject} from 'rxjs';
 import { LocationService } from 'src/app/services/api/locations/location.service';
 import { User } from 'src/app/shared/model/User';
 import { Location } from 'src/app/shared/model/Location';
@@ -7,6 +7,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { FormGroup, FormControl } from '@angular/forms';
 import { objectExists } from 'src/app/shared/GeneralFunctions';
 import { UserService } from 'src/app/services/api/users/user.service';
+import {catchError} from 'rxjs/operators';
 
 @Component({
   selector: 'app-volunteer-management-panel',
@@ -18,6 +19,7 @@ export class VolunteerManagementPanelComponent implements OnInit {
   @Input() location: Location;
 
   volunteerObs: Observable<User[]>;
+  errorSubject: Subject<boolean> = new Subject<boolean>();
 
   formGroup = new FormGroup({
     firstName: new FormControl(''),
@@ -34,7 +36,14 @@ export class VolunteerManagementPanelComponent implements OnInit {
               private userService: UserService) { }
 
   ngOnInit(): void {
-    this.volunteerObs = this.locationService.getVolunteers(this.location.locationId);
+    this.volunteerObs = this.locationService.getVolunteers(this.location.locationId)
+      .pipe(
+        catchError(err => {
+          console.error(err);
+          this.errorSubject.next(true);
+          return of(null);
+        })
+      );
   }
 
   showEmpty(volunteers: User[]): boolean {
