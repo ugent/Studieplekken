@@ -6,6 +6,7 @@ import {CalendarPeriod} from '../../../../../../shared/model/CalendarPeriod';
 import {LocationReservationsService} from '../../../../../../services/api/location-reservations/location-reservations.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { User } from 'src/app/shared/model/User';
+import { BarcodeService } from 'src/app/services/barcode.service';
 
 @Component({
   selector: 'app-location-reservations',
@@ -42,7 +43,7 @@ export class LocationReservationsComponent implements OnInit, OnChanges {
     u.firstName.includes(this.searchTerm) || u.lastName.includes(this.searchTerm)
 
   constructor(private locationReservationService: LocationReservationsService,
-              private modalService: BsModalService) { }
+              private modalService: BsModalService, private barcodeService: BarcodeService) { }
 
   ngOnInit(): void {
   }
@@ -184,8 +185,7 @@ export class LocationReservationsComponent implements OnInit, OnChanges {
   updateSearchTerm(): void {
     this.warning = this.locationReservations.every(lr => !this.userHasSearchTerm(lr.user)) && this.searchTerm.length > 0;
 
-    const fullyMatchedUser = this.locationReservations
-      .find(lr => lr.user.augentID === LocationReservationsComponent.upcEncoded(this.searchTerm));
+    const fullyMatchedUser = this.barcodeService.getReservation(this.locationReservations, this.searchTerm)
 
     if (fullyMatchedUser) {
       this.scanLocationReservation(fullyMatchedUser, true);
