@@ -161,6 +161,32 @@ where l.approved = false
 order by l.name;
 
 
+-- $add_volunteer
+insert into public.roles_user_volunteer (user_id, location_id)
+values (?, ?) RETURNING location_id;
+
+-- $delete_volunteer
+delete from public.roles_user_volunteer v
+where v.user_id = ? and v.location_id = ?;
+
+-- $get_volunteers_of_location
+select u.*
+from public.roles_user_volunteer
+    INNER JOIN public.users u on user_id = augentid
+where location_id = ?;
+
+-- $get_locations_of_volunteer
+select l.*, b.*, a.*
+from public.roles_user_volunteer ruv
+    join public.locations l
+        on l.location_id = ruv.location_id
+    join public.buildings b
+        on b.building_id = l.building_id
+    join public.authority a
+        on a.authority_id = l.authority_id
+where ruv.user_id = ?;
+
+
 -- queries for table BUILDINGS
 -- $all_buildings
 select b.building_id, b.building_name, b.address
@@ -402,6 +428,11 @@ where augentid = ?;
 update public.users
 set mail = ?
 where augentid = ?;
+
+-- $get_user_volunteer_locations
+select l.location_id
+from public.roles_user_volunteer l
+where l.user_id = ?;
 
 
 -- queries for table USERS_TO_VERIFY

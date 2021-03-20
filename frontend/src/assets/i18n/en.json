@@ -159,7 +159,8 @@
       "authorities": "Authorities",
       "calendar": "Calendar",
       "penalties": "Penalties",
-      "admins": "Admins"
+      "admins": "Admins",
+      "volunteers": "Volunteers"
     },
 
     "general": {
@@ -816,6 +817,12 @@
         "yesButton": "Delete",
         "noButton": "Cancel"
       }
+    },
+
+    "volunteers": {
+      "no-volunteers": "There are no volunteers for this location yet.",
+      "errorOnLoadingManageableLocations": "Could not fetch the locations that you can manage.",
+      "errorOnLoadingVolunteers": "Could not fetch the volunteers for this location."
     }
   },
 
@@ -941,4 +948,5 @@
       }
     }
   }
+
 }

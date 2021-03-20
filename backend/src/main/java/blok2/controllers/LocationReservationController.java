@@ -141,13 +141,18 @@ public class LocationReservationController extends AuthorizedLocationController 
     }
 
     @PostMapping("/{userid}/{calendarid}/{date}/{seqnr}/attendance")
-    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public void setLocationReservationAttendance(@PathVariable("calendarid") int calendarId, @PathVariable("date") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate date,
-                                       @PathVariable("seqnr") int seqnr, @PathVariable("userid") String userid, @RequestBody LocationReservation.AttendedPostBody body) {
+    @PreAuthorize("hasAuthority('HAS_VOLUNTEERS') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    public void setLocationReservationAttendance(
+            @PathVariable("calendarid") int calendarId,
+            @PathVariable("date") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate date,
+            @PathVariable("seqnr") int seqnr,
+            @PathVariable("userid") String userid,
+            @RequestBody LocationReservation.AttendedPostBody body
+    ) {
         Timeslot slot = new Timeslot(calendarId, seqnr, date, 0);
         try {
             CalendarPeriod parentPeriod = calendarPeriodDao.getById(slot.getCalendarId());
-            isAuthorized(parentPeriod.getLocation().getLocationId());
+            isVolunteer(parentPeriod.getLocation().getLocationId());
             if (!locationReservationDao.setReservationAttendance(userid, slot, body.getAttended()))
                 throw new NoSuchReservationException("No such reservation");
         } catch (SQLException e) {

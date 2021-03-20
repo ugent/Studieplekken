@@ -8,6 +8,7 @@ import { map } from 'rxjs/internal/operators/map';
 import {Cache} from '../../../shared/cache/Cache';
 import {Moment} from 'moment';
 import {Pair} from '../../../shared/model/helpers/Pair';
+import {User} from '../../../shared/model/User';
 
 @Injectable({
   providedIn: 'root'
@@ -41,6 +42,22 @@ export class LocationService {
   getAllLocationNextReservableFroms(): Observable<Pair<string, Moment>[]> {
     return this.http.get<Pair<string, Moment>[]>(api.allReservableFroms);
   }
+
+  getVolunteers(locationId: number): Observable<User[]> {
+    const url = api.locationVolunteers.replace('{locationId}', String(locationId));
+    return this.http.get<User[]>(url);
+  }
+
+  addVolunteer(locationId: number, userId: string): Observable<void> {
+    const url = api.addLocationVolunteer.replace('{locationId}', String(locationId)).replace("{userId}", String(userId));
+    return this.http.post<void>(url, {});
+  }
+
+  deleteVolunteer(locationId: number, userId: string): Observable<void> {
+    const url = api.addLocationVolunteer.replace('{locationId}', String(locationId)).replace("{userId}", String(userId));
+    return this.http.delete<void>(url, {});
+  }
+
 
   addLocation(location: Location): Observable<any> {
     return this.http.post(api.addLocation, location);

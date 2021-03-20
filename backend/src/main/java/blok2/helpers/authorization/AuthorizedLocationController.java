@@ -19,6 +19,10 @@ public abstract class AuthorizedLocationController extends AuthorizedController 
         isAuthorized((l, $) -> hasAuthority(l), locationId, "You do not hold the correct Authority.");
     }
 
+    public void isVolunteer(int locationId) {
+        isAuthorized((l, $) -> hasAuthority(l) || isVolunteerForLoc(l), locationId, "You do not hold the correct Authority.");
+    }
+
     protected boolean hasAuthority(int locationId) {
         try {
             User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -38,5 +42,10 @@ public abstract class AuthorizedLocationController extends AuthorizedController 
             throwables.printStackTrace();
             return false;
         }
+    }
+
+    protected boolean isVolunteerForLoc(int locationId) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return user.getUserVolunteer().stream().anyMatch(l -> l == locationId);
     }
 }
