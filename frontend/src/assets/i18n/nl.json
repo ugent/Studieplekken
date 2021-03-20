@@ -733,6 +733,11 @@
           "loading": "Wachten op antwoord van de server...",
           "success": "Het verwijderen van de reservatie is gelukt.",
           "error": "Er is iets misgelopen tijdens het verwijderen van de reservatie..."
+        },
+
+        "scanningErrorModal": {
+          "title": "Scannen mislukt",
+          "message": "Er is iets misgelopen tijdens het scannen. De aan-/afwezigheid werd niet goed geregistreerd."
         }
       },
 

@@ -734,6 +734,11 @@
           "loading": "Waiting on response of server...",
           "success": "Successfully deleted the room reservation.",
           "error": "Something went wrong while deleting the room reservation..."
+        },
+
+        "scanningErrorModal": {
+          "title": "Scanning failed",
+          "message": "Something went wrong while scanning. The attendance/absence was not registered correctly."
         }
       },
 
