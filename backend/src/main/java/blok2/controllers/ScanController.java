@@ -1,6 +1,5 @@
 package blok2.controllers;
 
-import blok2.daos.IAccountDao;
 import blok2.daos.ILocationDao;
 import blok2.daos.ILocationReservationDao;
 import blok2.helpers.authorization.AuthorizedLocationController;
@@ -25,7 +24,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("scan")
@@ -34,13 +32,11 @@ public class ScanController extends AuthorizedLocationController {
     private final Logger logger = LoggerFactory.getLogger(ScanController.class);
 
     private final ILocationDao locationDao;
-    private final IAccountDao accountDao;
     private final ILocationReservationDao reservationDao;
 
     @Autowired
-    public ScanController(ILocationDao locationDao, IAccountDao accountDao, ILocationReservationDao reservationDao) {
+    public ScanController(ILocationDao locationDao, ILocationReservationDao reservationDao) {
         this.locationDao = locationDao;
-        this.accountDao = accountDao;
         this.reservationDao = reservationDao;
     }
 
