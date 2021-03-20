@@ -1,74 +1,71 @@
-# Studieplekken UGent
-Vanaf maandag 30 november 2020 stelt de UGent op verschillende campussen stille studieplekken ter beschikking van **UGent studenten die hier nood aan hebben.**
+# Studieplekken UGent 
 
-De studieplekken zijn beschikbaar van 30 november 2020 tot 18 december 2020, en tijdens de examens van 4 januari 2021 tot 29 januari 2021.
+In het tweede semester stelt de UGent opnieuw op verschillende campussen stille studieplekken ter beschikking van **UGent studenten die hier nood aan hebben**. 
 
-## Reservaties
+De studieplekken zijn beschikbaar tijdens het volledige semester van 8 februari 2021 tot 25 juni 2021.  
 
-Een studieplek kan wekelijks gereserveerd worden, **telkens op donderdag vanaf 19u voor de volgende week**. Mogen we erop aandringen om **enkel een studieplek te reserveren als je zeker aanwezig zal zijn**. Breng ook altijd je studentenkaart mee (of je identiteitskaart als je je studentenkaart verloren bent) zodat de aanwezigen gecontroleerd kunnen worden. Studenten die verschillende keren een studieplek reserveren en niet komen opdagen, zullen niet meer kunnen reserveren.
+## Reservaties 
 
-## Binnenkomst
+Een studieplek kan wekelijks gereserveerd worden, **telkens op donderdag voor de volgende week**. Mogen we erop aandringen om **enkel een studieplek te reserveren als je zeker aanwezig zal zijn**. Breng ook altijd je studentenkaart mee (of je identiteitskaart als je je studentenkaart verloren bent) zodat de aanwezigen gecontroleerd kunnen worden. Studenten die verschillende keren een studieplek reserveren en niet komen opdagen, zullen niet meer kunnen reserveren. 
 
-Elke studielocatie heeft specifieke openingsuren, zowel het aanvangsuur als het sluitingsuur zijn verschillend. Zorg ervoor dat je deze goed bekijkt. We verwachten dat studenten **gespreid binnenkomen en dat er geen wachtrijen worden gevormd aan de ingang**. Om verspreiding van het virus tegen te gaan is het belangrijk om steeds te zorgen voor een onderlinge afstand van minstens 1,5m op elke locatie en in elke situatie. Mogen we daarom vragen om niet te vroeg of op het aanvangsuur aanwezig te zijn, maar wel **gespreid binnen te komen in een periode van een uur vanaf het aanvangsuur.**
+## Binnenkomst 
 
-Enkel studenten die gereserveerd hebben kunnen gebruik maken van de studieplek. Er worden geen lege plekken opgevuld op het moment zelf, dit creëert immers wachtrijen en samenscholingen.
-Iemand anders laten reserveren met jouw email adres is niet toegestaan. Elke vorm van automatisatie bij het inschrijven is verboden.
+Elke studielocatie heeft specifieke openingsuren, zowel het aanvangsuur als het sluitingsuur zijn verschillend. Zorg ervoor dat je deze goed bekijkt. We verwachten dat studenten gespreid binnenkomen en dat er geen wachtrijen worden gevormd aan de ingang. Om verspreiding van het virus tegen te gaan is het belangrijk om steeds te zorgen voor een onderlinge afstand van minstens 1,5m op elke locatie en in elke situatie. Mogen we daarom vragen om niet te vroeg of op het aanvangsuur aanwezig te zijn, maar wel **gespreid binnen te komen in een periode van een half uur vanaf het aanvangsuur**. 
 
-## Veiligheidsmaatregelen
+Enkel studenten die gereserveerd hebben kunnen gebruik maken van de studieplek. Er worden geen lege plekken opgevuld op het moment zelf, dit creëert immers wachtrijen en samenscholingen. Iemand anders laten reserveren met jouw email adres is niet toegestaan. Elke vorm van automatisatie bij het inschrijven is verboden. 
 
-Op elke studieplek gelden strikte veiligheidsmaatregelen. Handen dienen ontsmet te worden bij het binnenkomen. Het dragen van een mondmasker is verplicht van zodra je het gebouw betreedt. Eens je op je studieplek zit, mag je het mondmasker uitdoen. De tafels en stoelen zijn op een veilige afstand geplaatst en mogen niet verplaatst worden. Physical distancing dient op elk moment gerespecteerd te worden. Blijf zeker thuis indien je ziek bent of symptomen ervaart.
+## Veiligheidsmaatregelen 
 
-De studieplekken worden georganiseerd door studenten, medewerkers en vrijwilligers. Ga respectvol met hen en met elkaar om. Op elke studieplek is toezicht aanwezig. Bij problemen of vragen, aarzel niet om deze persoon aan te spreken.
+Op elke studieplek gelden strikte veiligheidsmaatregelen. Handen dienen ontsmet te worden bij het binnenkomen. Het dragen van een mondmasker is verplicht van zodra je het gebouw betreedt. Eens je op je studieplek zit, mag je het mondmasker uitdoen. De tafels en stoelen zijn op een veilige afstand geplaatst en mogen niet verplaatst worden. Physical distancing dient op elk moment gerespecteerd te worden. Blijf zeker thuis indien je ziek bent of symptomen ervaart. 
 
-##  Veelgestelde vragen<a class="anchor" id="FAQ"></a>
+De studieplekken worden georganiseerd door studenten, medewerkers en vrijwilligers. Ga respectvol met hen en met elkaar om. Voor de student-toezichters zijn er gemarkeerde studieplekken voorzien, gelieve deze niet in te nemen. Op elke studieplek is toezicht aanwezig. Bij problemen of vragen, aarzel niet om deze persoon aan te spreken. 
 
-> Zullen er controles uitgevoerd worden door UGent personeel op de locatie? Indien ja, op welk tijdstip en hoe frequent zal dit gebeuren?
+ 
 
-Controles worden uitgevoerd als er situaties ontstaan waarbij iemand die gereserveerd heeft geen plaats blijkt te hebben. Op dat moment zal de lijst van studenten die gereserveerd hebben bekeken worden en studenten zonder reservatie zullen de studieplek moeten verlaten. De studieplek is enkel toegankelijk voor studenten die gereserveerd hebben. Er worden geen lege plekken op het moment zelf ingevuld zonder reservatie.
+## Veelgestelde vragen 
 
-> Tot wanneer kan men zich uitschrijven, en hoe moet dit gebeuren?
+> Zullen er controles uitgevoerd worden door UGent personeel op de locatie? Indien ja, op welk tijdstip en hoe frequent zal dit gebeuren? 
 
-Uitschrijven uit een tijdsslot kan tot ten laatste het einde van het tijdslot, dit om de mogelijkheid te bieden aan mensen met eventuele ziektesymptomen om zich uit te schrijven en de plek aan anderen te laten. Uitschrijven kan door in de navigatiebalk naar Profiel -> Reservaties te gaan en met behulp van het vuilbakje reservaties te verwijderen.
+Controles worden uitgevoerd als er situaties ontstaan waarbij iemand die gereserveerd heeft geen plaats blijkt te hebben. Op dat moment zal de lijst van studenten die gereserveerd hebben bekeken worden en studenten zonder reservatie zullen de studieplek moeten verlaten. De studieplek is enkel toegankelijk voor studenten die gereserveerd hebben. Er worden geen lege plekken op het moment zelf ingevuld zonder reservatie. 
 
-> Wat moet ik doen als ik me ziek voel?
+> Tot wanneer kan men zich uitschrijven, en hoe moet dit gebeuren? 
 
-Als je je ziek voelt of symptomen hebt, mag je niet naar de studieplek komen. Neem contact op met je arts.
+Uitschrijven uit een tijdsslot kan tot ten laatste het einde van het tijdslot, dit om de mogelijkheid te bieden aan mensen met eventuele ziektesymptomen om zich uit te schrijven en de plek aan anderen te laten. Uitschrijven kan door in de navigatiebalk naar Profiel -> Reservaties te gaan en met behulp van het vuilbakje reservaties te verwijderen. 
 
-> Mag ik komen als ik in quarantaine moet?
+> Wat moet ik doen als ik me ziek voel? 
 
-Als je in quarantaine moet of bent mag je absoluut niet naar de studieplek komen. Je volgt strikt de richtlijnen van je arts.
+> Als je je ziek voelt of symptomen hebt, mag je niet naar de studieplek komen. Schrijf je uit voor de studieplek en neem contact op met je arts. 
 
-> Hoe wordt de organisatie verwittigd indien iemand positief test die aanwezig was in een studieplek?
+> Mag ik komen als ik in quarantaine moet? 
 
-Indien je aanwezig was op een studieplek en positief getest hebt op corona, laat je dit weten aan contacttracing@ugent.be. De contact tracers zullen vervolgens een risico-analyse uitvoeren en hier verdere stappen ondernemen.
+Als je in quarantaine moet of bent mag je absoluut niet naar de studieplek komen. Schrijf je uit voor de studieplek. Je volgt strikt de richtlijnen van je arts. 
 
-> Bij wie kan ik terecht met eventuele vragen i.v.m. de organisatie van de studieplekken?
+> Hoe wordt de organisatie verwittigd indien iemand positief test die aanwezig was in een studieplek? 
 
-De algemene informatie over de studieplekken kan je vinden op deze pagina. Bij specifieke vragen over één studieplek kan je altijd terecht bij het aanwezige UGent personeel of bij de student-vrijwilligers die er zullen zijn wanneer er geen UGent-personeel is, op deze studieplek.
+Indien je aanwezig was op een studieplek en positief getest hebt op corona, laat je dit weten aan contacttracing@ugent.be. De contact tracers zullen vervolgens een risico-analyse uitvoeren en hier verdere stappen ondernemen. 
 
-> Wie moet ik contacteren met vragen i.v.m. verloren voorwerpen?
+> Bij wie kan ik terecht met eventuele vragen i.v.m. de organisatie van de studieplekken? 
 
-Bij vragen over verloren voorwerpen informeer je best bij het UGent personeel van de specifieke studieplek waar je het voorwerp bent verloren.
+De algemene informatie over de studieplekken kan je vinden op deze pagina. Bij specifieke vragen over één studieplek kan je altijd terecht bij het aanwezige UGent personeel of bij de student-vrijwilligers die er zullen zijn wanneer er geen UGent-personeel is, op deze studieplek. 
 
-> Kan ik gestraft worden als mijn studentenkaart per ongeluk niet gescand is?
+> Wie moet ik contacteren met vragen i.v.m. verloren voorwerpen? 
 
-Voorlopig wordt er nog niet systematisch gescand. Er worden dus ook geen aanwezigheden genoteerd. Dit zal in jouw profiel (bij het overzicht van de gemaakte reservaties) aangeduid staan als "Geen aanwezigheden opgenomen". Enkel studenten die gereserveerd hebben kunnen immers aanwezig zijn op de studieplek.
+Bij vragen over verloren voorwerpen informeer je best bij het UGent personeel van de specifieke studieplek waar je het voorwerp bent verloren. 
 
-> Worden er ook studieplekken voorzien tijdens de kerstvakantie?
+> Kan ik gestraft worden als mijn studentenkaart per ongeluk niet gescand is? 
 
-De studieplekken worden momenteel voorzien van 30 november t.e.m. 18 december 2020, en van 4 januari t.e.m. 29 januari 2021. Er worden geen studieplekken voorzien tijdens de kerstvakantie.
+Voorlopig wordt er nog niet systematisch gescand. Er worden dus ook geen aanwezigheden genoteerd. Dit zal in jouw profiel (bij het overzicht van de gemaakte reservaties) aangeduid staan als "Geen aanwezigheden opgenomen". Enkel studenten die gereserveerd hebben kunnen immers aanwezig zijn op de studieplek. 
 
-> Ik wil graag nog een studieplek maar alle plekken zijn vol
+> Worden er ook studieplekken voorzien tijdens het weekend 
 
-Uitbreiden van locaties en aantal studieplekken is jammer genoeg niet mogelijk. Het aanbod dat we nu doen voor december en januari is het maximale aanbod dat toegelaten is binnen de huidige corona maatregelen na overleg met de overheid.
+Er worden geen studieplekken voorzien tijdens het weekend. 
 
-> Zullen er in 2e semester ook studieplekken zijn?
+> Ik wil graag nog een studieplek maar alle plekken zijn vol 
 
-Ja, in het 2e semester zullen we inderdaad opnieuw de studieplekken aanbieden via deze applicatie. De locatie en de openingsuren zullen mogelijks wel aangepast worden.
+Uitbreiden van locaties en aantal studieplekken is jammer genoeg niet mogelijk. Het aanbod dat we nu doen is het maximale aanbod dat mogelijk is binnen de huidige corona maatregelen. 
 
+> Zullen er tijdens de examenperiode in juni ook studieplekken zijn? 
 
-<hr>
+Ja, in juni 2021 zullen er verder studieplekken aangeboden worden via deze applicatie. De locatie en de openingsuren zijn altijd te vinden in deze applicatie.  
 
-Bij extra vragen kun je contact opnemen met [info@studieplekken.ugent.be](mailto:info@studieplekken.ugent.be).
-
-
+Bij extra vragen kun je contact opnemen met info@studieplekken.ugent.be. 

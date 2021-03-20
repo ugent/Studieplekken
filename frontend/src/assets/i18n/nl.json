@@ -229,7 +229,8 @@
           "endsAt": "Eindigt op",
           "openingTime": "Openingstijd",
           "closingTime": "Sluitingstijd",
-          "reservable": "Reserveerbaar",
+          "reservable": "Reserveerbaar vanaf",
+          "numberOfSeats": "Plaatsen",
           "timeslotLength": "Lengte Timeslots",
           "reservableFrom": "Reserveerbaar vanaf",
           "remove": "Verwijder",
@@ -270,7 +271,8 @@
         },
 
         "updateTitle": "Pas periode aan",
-        "newTitle": "Maak een nieuwe periode"
+        "newTitle": "Maak een nieuwe periode",
+        "errorLoadingCalendarPeriods": "De kalenderperiodes voor deze locatie kunnen niet opgehaald worden."
       },
 
       "description": {
