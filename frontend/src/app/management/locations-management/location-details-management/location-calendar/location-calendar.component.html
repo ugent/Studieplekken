@@ -177,10 +177,10 @@
         <!-- timeslot size -->
         <div class="row form-group">
           <label class="col-lg-3 control-label" for="timeslotSize">
-            {{'management.locationDetails.calendar.form.timeslotLength' | translate}}
+            {{'management.locationDetails.calendar.form.timeslotCount' | translate}}
           </label>
           <div class="col-lg-8">
-            <app-moment-timeslot-size id="timeslotSize" [disabled]="!model.reservable" [(model)]="model.timeslotLength" [type]="'time'"></app-moment-timeslot-size>
+            <app-moment-timeslot-size id="timeslotSize" [disabled]="!model.reservable" [(model)]="model.timeslotLength" [periodDuration]="getCalendarPeriodTimeInMinutes(model)"></app-moment-timeslot-size>
           </div>
         </div>
 
@@ -298,11 +298,11 @@
 
         <!-- timeslot size -->
         <div class="row form-group">
-          <label class="col-lg-3 control-label" for="timeslotSizeUpdate">
-            {{'management.locationDetails.calendar.form.timeslotLength' | translate}}
+          <label class="col-lg-3 control-label" for="timeslotSize">
+            {{'management.locationDetails.calendar.form.timeslotCount' | translate}}
           </label>
           <div class="col-lg-8">
-            <app-moment-timeslot-size id="timeslotSizeUpdate" [disabled]="!model.reservable" [(model)]="model.timeslotLength" [type]="'time'"></app-moment-timeslot-size>
+            <app-moment-timeslot-size id="timeslotSize" [disabled]="!model.reservable" [(model)]="model.timeslotLength" [periodDuration]="getCalendarPeriodTimeInMinutes(model)"></app-moment-timeslot-size>
           </div>
         </div>
 

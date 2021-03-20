@@ -12,15 +12,16 @@ import { CalendarPeriod, mapCalendarPeriodsToCalendarEvents } from 'src/app/shar
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
 import { Timeslot } from 'src/app/shared/model/Timeslot';
 import { LocationOpeningperiodDialogComponent } from './location-openingperiod-dialog/location-openingperiod-dialog.component';
-import {Location} from 'src/app/shared/model/Location';
+import { Location } from 'src/app/shared/model/Location';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { Moment } from 'moment';
-import {TranslateService} from '@ngx-translate/core';
-import {ActivatedRoute} from '@angular/router';
-import {catchError, tap} from 'rxjs/operators';
-import {of} from 'rxjs/internal/observable/of';
-import {map} from 'rxjs/internal/operators/map';
+import { TranslateService } from '@ngx-translate/core';
+import { ActivatedRoute } from '@angular/router';
+import { catchError, tap } from 'rxjs/operators';
+import { of } from 'rxjs/internal/observable/of';
+import { map } from 'rxjs/internal/operators/map';
+import { ca } from 'date-fns/locale';
 
 @Component({
   selector: 'app-location-calendar',
@@ -43,7 +44,7 @@ export class LocationCalendarComponent implements OnInit {
   currentCalendarPeriod: CalendarPeriod = null;
 
   calendarPeriodModel: BehaviorSubject<CalendarPeriod> =
-                                new BehaviorSubject(new CalendarPeriod(null, null, null, null, null, null, false, null, 0, [], null, 0));
+    new BehaviorSubject(new CalendarPeriod(null, null, null, null, null, null, false, null, 0, [], null, 0));
 
   /**
    * 'calendarPeriods' is the list of CalendarPeriods that the user
@@ -86,13 +87,13 @@ export class LocationCalendarComponent implements OnInit {
   currentLang: string;
 
   constructor(private calendarPeriodsService: CalendarPeriodsService,
-              private functionalityService: ApplicationTypeFunctionalityService,
-              private locationReservationService: LocationReservationsService,
-              private dialog: MatDialog,
-              private modalService: BsModalService,
-              private authenticationService: AuthenticationService,
-              private translate: TranslateService,
-              private route: ActivatedRoute) {
+    private functionalityService: ApplicationTypeFunctionalityService,
+    private locationReservationService: LocationReservationsService,
+    private dialog: MatDialog,
+    private modalService: BsModalService,
+    private authenticationService: AuthenticationService,
+    private translate: TranslateService,
+    private route: ActivatedRoute) {
   }
 
   ngOnInit(): void {
@@ -142,14 +143,15 @@ export class LocationCalendarComponent implements OnInit {
   update(add = false): void {
     this.successAddingLocationReservation = null;
     this.successUpdatingLocationReservation = null;
-
     this.calendarPeriods = this.calendarPeriods.filter(c => !this.prepareToUpdatePeriod || c.id !== this.prepareToUpdatePeriod.id);
+    const updatedCalendarPeriod = this.calendarPeriodModel.value;
+    console.log(updatedCalendarPeriod)
     if (this.calendarPeriodModel) {
       this.calendarPeriods = [...this.calendarPeriods, this.calendarPeriodModel.value];
     }
 
     // Check if the closing time - opening time is divisible by timeslot_size.
-    this.checkForWarning();
+    // this.checkForWarning(this.calendarPeriods[this.calendarPeriods.length - 1]);
 
     // this.calendarPeriods is not empty, and all values are valid: persist update(s)
     this.calendarPeriodsService.updateCalendarPeriod(
@@ -181,15 +183,15 @@ export class LocationCalendarComponent implements OnInit {
   delete(): void {
     this.successDeletingLocationReservation = null;
     this.calendarPeriodsService.deleteCalendarPeriods(this.prepareToUpdatePeriod)
-    .subscribe(
-      () => {
-        this.successDeletingLocationReservation = true;
-        this.setup();
-      }, () => {
-        this.successDeletingLocationReservation = false;
-        this.rollback();
-      }
-    );
+      .subscribe(
+        () => {
+          this.successDeletingLocationReservation = true;
+          this.setup();
+        }, () => {
+          this.successDeletingLocationReservation = false;
+          this.rollback();
+        }
+      );
   }
 
   // /******************
@@ -201,7 +203,7 @@ export class LocationCalendarComponent implements OnInit {
     this.calendarPeriodsObs = this.calendarPeriodsService.getCalendarPeriodsOfLocation(this.locationId)
       .pipe(
         tap(next => {
-        
+
           // Remark: due to references, 'this.calendarPeriods' has a reference to the same object
           // as the 'calendarPeriods' variable in the template through the assignation
           // 'calendarPeriodsObs | async as calendarPeriods'.
@@ -234,22 +236,19 @@ export class LocationCalendarComponent implements OnInit {
     );
   }
 
-  checkForWarning(): void {
+  checkForWarning(calendarPeriod: CalendarPeriod): void {
     let showWarning = false;
 
-    this.calendarPeriods.forEach(element => {
-      // if the element is not reservable, no timeslot size is assigned to the
-      // calendar period and thus the divisibility does not need to be checked
-      if (!element.reservable) {
-        return;
-      }
+    const element = calendarPeriod;
+    if (!element.reservable) {
+      return;
+    }
 
-      // if the difference between closing time and opening time in minutes is
-      // not divisible by the timeslot size (in minutes), then show the warning
-      if ((element.openingTime.diff(element.closingTime, 'minutes') % element.timeslotLength) !== 0) {
-        showWarning = true;
-      }
-    });
+    // if the difference between closing time and opening time in minutes is
+    // not divisible by the timeslot size (in minutes), then show the warning
+    if ((element.openingTime.diff(element.closingTime, 'minutes') % element.timeslotLength) !== 0) {
+      showWarning = true;
+    }
 
     // if necessary, show the warning
     if (showWarning) {
@@ -315,6 +314,13 @@ export class LocationCalendarComponent implements OnInit {
 
   closeModal(): void {
     this.modalService.hide();
+  }
+
+  public getCalendarPeriodTimeInMinutes(calendarPeriod: CalendarPeriod) {
+    if(!calendarPeriod.closingTime)
+      return null;
+
+    return calendarPeriod.openingTime?.diff(calendarPeriod.closingTime, "minutes")
   }
 
 }
