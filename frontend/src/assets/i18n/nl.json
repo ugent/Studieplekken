@@ -817,8 +817,10 @@
         "noButton": "Annuleer"
       }
     },
+
     "volunteers": {
-      "no-volunteers": "Er zijn nog geen vrijwilligers voor deze locatie."
+      "no-volunteers": "Er zijn nog geen vrijwilligers voor deze locatie.",
+      "errorOnLoadingManageableLocations": "De locaties die u kan beheren konden niet worden opgehaald."
     }
   },
 

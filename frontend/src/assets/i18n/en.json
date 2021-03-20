@@ -818,8 +818,10 @@
         "noButton": "Cancel"
       }
     },
+
     "volunteers": {
-      "no-volunteers": "There are no volunteers for this location yet."
+      "no-volunteers": "There are no volunteers for this location yet.",
+      "errorOnLoadingManageableLocations": "Could not fetch the locations that you can manage."
     }
   },
 
