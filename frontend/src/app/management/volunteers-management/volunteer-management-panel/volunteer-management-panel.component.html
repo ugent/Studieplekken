@@ -20,8 +20,6 @@
                         <th>{{'management.users.searchResult.table.id' | translate}}</th>
                         <th>{{'management.users.searchResult.table.firstName' | translate}}</th>
                         <th>{{'management.users.searchResult.table.lastName' | translate}}</th>
-                        <th *ngIf="showPenaltyPoints">{{'management.users.searchResult.table.penaltyPoints' |
-                            translate}}</th>
                         <th>{{'management.users.searchResult.table.institution' | translate}}</th>
                         <th>
                             <!-- Details -->
@@ -34,7 +32,6 @@
                         <td>{{user.augentID}}</td>
                         <td>{{user.firstName}}</td>
                         <td>{{user.lastName}}</td>
-                        <td *ngIf="showPenaltyPoints">{{user.penaltyPoints}}</td>
                         <td>{{user.institution}}</td>
                         <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
                             <span (click)="deleteVolunteer(user)" class="glyphicon glyphicon-trash">
