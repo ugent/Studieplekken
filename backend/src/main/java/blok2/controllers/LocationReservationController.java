@@ -94,8 +94,12 @@ public class LocationReservationController extends AuthorizedLocationController 
     }
 
     @GetMapping("/timeslot/{calendarid}/{date}/{seqnr}")
-    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public List<LocationReservation> getLocationReservationsByTimeslot(@PathVariable("calendarid") int calendarId, @PathVariable("date") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate date, @PathVariable("seqnr") int seqnr) {
+    @PreAuthorize("hasAuthority('HAS_VOLUNTEERS') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    public List<LocationReservation> getLocationReservationsByTimeslot(
+            @PathVariable("calendarid") int calendarId,
+            @PathVariable("date") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate date,
+            @PathVariable("seqnr") int seqnr
+    ) {
         Timeslot timeslot = new Timeslot(calendarId, seqnr, date, 0);
         try {
             return locationReservationDao.getAllLocationReservationsOfTimeslot(timeslot);

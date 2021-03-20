@@ -16,6 +16,12 @@
     </div>
   </div>
 
+  <div class="row">
+    <div class="alert alert-info" *ngIf="waitingForServer">
+      {{'general.waitingForServer' | translate}}
+    </div>
+  </div>
+
   <table style="width: 100%; margin-bottom: 10px;" *ngIf="locationReservations.length > 0">
     <thead>
       <tr>

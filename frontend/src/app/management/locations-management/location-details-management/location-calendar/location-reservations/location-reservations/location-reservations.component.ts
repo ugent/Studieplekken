@@ -33,6 +33,7 @@ export class LocationReservationsComponent implements OnInit, OnChanges {
 
   scannedLocationReservations: LocationReservation[] = [];
   warning = false;
+  waitingForServer = false;
 
   userHasSearchTerm = (u: User) => u.augentID.includes(this.searchTerm) ||
     u.firstName.includes(this.searchTerm) || u.lastName.includes(this.searchTerm)
@@ -63,9 +64,11 @@ export class LocationReservationsComponent implements OnInit, OnChanges {
       return;
     }
 
+    this.waitingForServer = true;
     this.locationReservationService.postLocationReservationAttendance(reservation, attended)
       .subscribe(
         () => {
+          this.waitingForServer = false;
           reservation.attended = attended;
 
           if (idx < 0) {
@@ -74,6 +77,7 @@ export class LocationReservationsComponent implements OnInit, OnChanges {
             this.scannedLocationReservations[idx].attended = attended;
           }
         }, err => {
+          this.waitingForServer = false;
           console.error(err);
           this.modalService.show(errorTemplate);
         }
