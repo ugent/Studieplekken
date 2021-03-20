@@ -1,27 +1,25 @@
 <div class="container-fluid">
-  <h3>{{'scan.aside.locations' | translate}}</h3>
-  <hr>
-
   <div *ngIf="locationObs | async as locations; else loadingOrError">
-    <table style="width: 100%" *ngIf="locations.length > 0; else noLocations">
+    <table *ngIf="locations.length > 0; else noLocations"
+           class="table table-striped" style="table-layout: fixed; width: 100%;" >
       <!-- Table header -->
       <thead>
       <tr>
-        <th>{{'scan.locations.header.name' | translate}}</th>
-        <th>{{'scan.locations.header.building' | translate}}</th>
-        <th>{{'scan.locations.header.numberOfSeats' | translate}}</th>
-        <th><!-- Barcode icon --></th>
+        <th style="width: 50%">{{'scan.locations.header.name' | translate}}</th>
+        <th style="width: 30%">{{'scan.locations.header.building' | translate}}</th>
+        <th style="width: 10%">{{'scan.locations.header.numberOfSeats' | translate}}</th>
+        <th style="width: 10%"><!-- Barcode icon --></th>
       </tr>
       </thead>
 
       <!-- Table body -->
       <tbody>
       <tr *ngFor="let location of locations">
-        <td>{{location.name}}</td>
-        <td>{{location.building.name}}</td>
+        <td style="padding-right: 5em;">{{location.name}}</td>
+        <td style="padding-right: 5em;">{{location.building.name}}</td>
         <td>{{location.numberOfSeats}}</td>
-        <td *ngIf="location.currentTimeslot" class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
-            <span routerLink="./{{location.locationId}}"
+        <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
+            <span *ngIf="location.currentTimeslot" routerLink="./{{location.locationId}}"
                   class="glyphicon glyphicon-qrcode">
             </span>
         </td>
