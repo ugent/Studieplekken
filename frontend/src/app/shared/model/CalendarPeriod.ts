@@ -104,7 +104,8 @@ export function isCalendarPeriodValid(period: CalendarPeriod): boolean {
   }
 
   // if the period is set to be reservable, timeslotLength may not be 0, nor may reservableFrom be null
-  if (period.reservable && (period.timeslotLength <= 0 || period.reservableFrom === null)) {
+  console.log(period.timeslotLength)
+  if (period.reservable && (period.timeslotLength <= 0 || period.timeslotLength === null || period.timeslotLength === undefined || period.timeslotLength > Math.abs(period.openingTime.diff(period.closingTime, "minutes"))  || period.reservableFrom === null)) {
     return false;
   }
 

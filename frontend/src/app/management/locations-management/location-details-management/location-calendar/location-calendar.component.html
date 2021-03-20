@@ -178,7 +178,7 @@
             {{'management.locationDetails.calendar.form.timeslotLength' | translate}}
           </label>
           <div class="col-lg-8">
-            <app-moment-timeslot-size id="timeslotSize" [disabled]="!model.reservable" [(model)]="model.timeslotLength" [type]="'time'"></app-moment-timeslot-size>
+            <app-moment-timeslot-size id="timeslotSize" [disabled]="!model.reservable" [(model)]="model.timeslotLength" [periodDuration]="getCalendarPeriodTimeInMinutes(model)"></app-moment-timeslot-size>
           </div>
         </div>
 
@@ -300,7 +300,7 @@
             {{'management.locationDetails.calendar.form.timeslotLength' | translate}}
           </label>
           <div class="col-lg-8">
-            <app-moment-timeslot-size id="timeslotSizeUpdate" [disabled]="!model.reservable" [(model)]="model.timeslotLength" [type]="'time'"></app-moment-timeslot-size>
+            <app-moment-timeslot-size id="timeslotSize" [disabled]="!model.reservable" [(model)]="model.timeslotLength" [periodDuration]="getCalendarPeriodTimeInMinutes(model)"></app-moment-timeslot-size>
           </div>
         </div>
 
