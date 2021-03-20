@@ -203,6 +203,7 @@
         "reservations": {
           "title": "Reservaties voor de ruimte",
           "selectSlot": "Selecteer een (reserveerbaar) timeslot om de reservaties te zien",
+          "searchUser": "Zoek naar een gebruiker op voornaam, achternaam of studentennummer:",
           "loading": "Reservaties voor het geselecteerde slot worden geladen",
           "error": "Er is iets misgelopen tijdens het ophalen van de reservaties...",
           "table": {

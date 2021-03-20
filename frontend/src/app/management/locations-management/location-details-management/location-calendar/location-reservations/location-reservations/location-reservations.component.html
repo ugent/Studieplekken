@@ -6,12 +6,16 @@
     {{'scan.unregistered' | translate}}
   </div>
 
-  <div class="form-group" fxLayout="row">
-    <p>
-      Search on student name or student ID:
-    </p>
-    <input type="text" class="form-control" [(ngModel)]="searchTerm" (ngModelChange)="updateSearchTerm()">
+  <div class="row form-group">
+    <label class="col-lg-3 control-label" for="search">
+      {{'management.locationDetails.calendar.reservations.searchUser' | translate}}
+    </label>
+    <div class="col-lg-8">
+      <input id="search" type="text" class="form-control"
+             [(ngModel)]="searchTerm" (ngModelChange)="updateSearchTerm()">
+    </div>
   </div>
+
   <table style="width: 100%; margin-bottom: 10px;" *ngIf="locationReservations.length > 0">
     <thead>
       <tr>
@@ -43,6 +47,7 @@
           </button>
         </td>
         <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
+            *ngIf="!hideDeleteIcon"
           (click)="prepareToDeleteLocationReservation(reservation, deleteLocationReservationModal)">
           <span class="glyphicon glyphicon-trash pointerCursor"></span>
         </td>
@@ -62,8 +67,6 @@
     </button>
   </div> -->
 </div>
-
-
 
 <!-- Modal view to ask whether the user is sure to delete a lockerReservation -->
 <ng-template #deleteLocationReservationModal>

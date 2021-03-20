@@ -16,7 +16,9 @@ export class LocationReservationsComponent implements OnInit, OnChanges {
   @Input() locationReservations: LocationReservation[];
   @Input() currentCalendarPeriod?: CalendarPeriod;
   @Input() currentTimeSlot: Timeslot;
-  @Input() lastScanned? : LocationReservation;
+  @Input() lastScanned?: LocationReservation;
+
+  @Input() hideDeleteIcon = false; // used by ScanningLocationDetails to disable the "delete" icon for volunteers
 
   @Output() reservationChange: EventEmitter<any> = new EventEmitter<any>();
 
@@ -27,13 +29,17 @@ export class LocationReservationsComponent implements OnInit, OnChanges {
   successFinishingScan: boolean = undefined;
 
   startedScanning = true;
-  searchTerm: string = "";
+  searchTerm = '';
 
   scannedLocationReservations: LocationReservation[] = [];
-  warning: boolean = false;
+  warning = false;
 
-  userHasSearchTerm = (u: User) => u.augentID.includes(this.searchTerm) || u.firstName.includes(this.searchTerm) || u.lastName.includes(this.searchTerm);
+  private static upcEncoded(code: string): string {
+    return '0' + code.substr(0, code.length - 1);
+  }
 
+  userHasSearchTerm = (u: User) => u.augentID.includes(this.searchTerm) ||
+    u.firstName.includes(this.searchTerm) || u.lastName.includes(this.searchTerm)
 
   constructor(private locationReservationService: LocationReservationsService,
               private modalService: BsModalService) { }
@@ -41,8 +47,7 @@ export class LocationReservationsComponent implements OnInit, OnChanges {
   ngOnInit(): void {
   }
 
-  ngOnChanges():void {
-    
+  ngOnChanges(): void {
   }
 
   // /***************
@@ -95,7 +100,7 @@ export class LocationReservationsComponent implements OnInit, OnChanges {
   // **************/
 
   prepareToDeleteLocationReservation(locationReservation: LocationReservation, template: TemplateRef<any>): void {
-    console.log(locationReservation, template)
+    console.log(locationReservation, template);
     this.successDeletingLocationReservation = undefined;
     this.locationReservationToDelete = locationReservation;
     this.modalService.show(template);
@@ -106,8 +111,9 @@ export class LocationReservationsComponent implements OnInit, OnChanges {
     this.locationReservationService.deleteLocationReservation(this.locationReservationToDelete).subscribe(
       () => {
         this.successDeletingLocationReservation = true;
-        if(this.reservationChange)
+        if (this.reservationChange) {
           this.reservationChange.emit(null);
+        }
         this.modalService.hide();
       }
     );
@@ -136,21 +142,23 @@ export class LocationReservationsComponent implements OnInit, OnChanges {
   }
 
   isTimeslotEndInPast(): boolean {
-    if(!this.currentCalendarPeriod)
+    if (!this.currentCalendarPeriod) {
       return false; // Assume current
+    }
     return timeslotEndHour(this.currentCalendarPeriod, this.currentTimeSlot).isBefore(moment());
   }
 
   isTimeslotStartInPast(): boolean {
-    if(!this.currentCalendarPeriod)
+    if (!this.currentCalendarPeriod) {
       return true; // Assume current
+    }
 
     const start = timeslotStartHour(this.currentCalendarPeriod, this.currentTimeSlot);
     return start.isBefore(moment());
   }
 
   isButtonDisabled(reservation: LocationReservation): boolean {
-    return reservation.attended
+    return reservation.attended;
   }
 
   /**
@@ -173,17 +181,20 @@ export class LocationReservationsComponent implements OnInit, OnChanges {
     this.modalService.hide();
   }
 
+  updateSearchTerm(): void {
+    this.warning = this.locationReservations.every(lr => !this.userHasSearchTerm(lr.user)) && this.searchTerm.length > 0;
 
-  updateSearchTerm() {
-    if(this.locationReservations.every(lr => !this.userHasSearchTerm(lr.user)) && this.searchTerm.length > 0)
-      this.warning = true;
-    else
-      this.warning = false;
+    const fullyMatchedUser = this.locationReservations
+      .find(lr => lr.user.augentID === LocationReservationsComponent.upcEncoded(this.searchTerm));
 
-    const fullyMatchedUser = this.locationReservations.find(lr => lr.user.augentID == this.upcEncoded(this.searchTerm));
-    if(fullyMatchedUser) {
+    if (fullyMatchedUser) {
       this.scanLocationReservation(fullyMatchedUser, true);
-      setTimeout(() => {this.searchTerm = ""; this.lastScanned = fullyMatchedUser; this.updateSearchTerm()}, 10);
+      setTimeout(
+        () => {
+          this.searchTerm = '';
+          this.lastScanned = fullyMatchedUser;
+          this.updateSearchTerm();
+        }, 10);
     }
 
     this.lastScanned = null;
@@ -194,25 +205,22 @@ export class LocationReservationsComponent implements OnInit, OnChanges {
     // Sorting the searchterm hits first. After that, fallback on name sorting (createdAt is not available here)
     locationReservations.sort((a, b) => {
 
-      if(a == this.lastScanned || b == this.lastScanned)
-        return a == this.lastScanned ? -1:1;
-
-      if(this.userHasSearchTerm(a.user) != this.userHasSearchTerm(b.user)) {
-        return this.userHasSearchTerm(a.user) ? -1: 1;
+      if (a === this.lastScanned || b === this.lastScanned) {
+        return a === this.lastScanned ? -1 : 1;
       }
 
-      if(b.attended != a.attended){
-        return a.attended ? 1:-1;
+      if (this.userHasSearchTerm(a.user) !== this.userHasSearchTerm(b.user)) {
+        return this.userHasSearchTerm(a.user) ? -1 : 1;
       }
 
-      return a.user.lastName.localeCompare(b.user.lastName)
-    })
+      if (b.attended !== a.attended){
+        return a.attended ? 1 : -1;
+      }
+
+      return a.user.lastName.localeCompare(b.user.lastName);
+    });
 
 
-    return locationReservations
-  }
-
-  private upcEncoded(code: string): string {
-    return '0' + code.substr(0, code.length - 1);
+    return locationReservations;
   }
 }

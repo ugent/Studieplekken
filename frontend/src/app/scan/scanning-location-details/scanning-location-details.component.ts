@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {LocationService} from '../../services/api/locations/location.service';
-import {combineLatest, Observable, Subject} from 'rxjs';
+import {Observable, Subject} from 'rxjs';
 import {Location} from '../../shared/model/Location';
-import {User} from '../../shared/model/User';
 import {ScanningService} from '../../services/api/scan/scanning.service';
-import {catchError, map, switchMap} from 'rxjs/operators';
+import {catchError, switchMap} from 'rxjs/operators';
 import {of} from 'rxjs/internal/observable/of';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { BarcodeService } from 'src/app/services/barcode.service';
@@ -23,7 +22,6 @@ export class ScanningLocationDetailsComponent implements OnInit {
 
   loadingError = new Subject<boolean>();
   reservation?: LocationReservation;
-  scanningfield: string;
   error: string;
 
   lastScanned?: LocationReservation;
@@ -46,7 +44,7 @@ export class ScanningLocationDetailsComponent implements OnInit {
                       console.error('Error while loading the users you could scan.', err);
                       this.loadingError.next(true);
                       return of(null);
-                    }))
+                    }));
   }
 
   getValidator(reservations: LocationReservation[]): (a: string) => boolean {
@@ -55,17 +53,20 @@ export class ScanningLocationDetailsComponent implements OnInit {
 
 
   scanUser(reservations: LocationReservation[], code: string): void {
-    this.error = "";
-    console.log(code)
-    const res = this.barcodeService.getReservation(reservations, code)
-    if(res == null)
-      this.error = "scan.maybe";
-    else
+    this.error = '';
+    console.log(code);
+    const res = this.barcodeService.getReservation(reservations, code);
+    if (res == null) {
+      this.error = 'scan.maybe';
+    }
+    else {
       this.reservation = res;
+    }
   }
 
-  confirm(location: Location): void {
-    this.reservationService.postLocationReservationAttendance(this.reservation, true).subscribe(() => {}, e => this.error = "scan.error");
+  confirm(): void {
+    this.reservationService.postLocationReservationAttendance(this.reservation, true)
+      .subscribe(() => {}, () => this.error = 'scan.error');
     this.reservation.attended = true;
     this.lastScanned = this.reservation;
     this.reservation = null;

@@ -203,6 +203,7 @@
         "reservations": {
           "title": "Reservations for this room",
           "selectSlot": "Select a (reservable) timeslot to display the reservations",
+          "searchUser": "Search a student by first name, last name or student ID:",
           "loading": "Room reservations are being loaded...",
           "error": "Something went wrong while loading the reservations...",
           "table": {

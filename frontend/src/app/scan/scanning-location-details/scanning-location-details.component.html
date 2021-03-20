@@ -18,9 +18,9 @@
 
         <div class="panel-collapse collapse" id="phone">
 
-          <div *ngIf="error" class="alert alert-error">{{error | translate}}</div>
+          <div *ngIf="error" style="margin-top: 15px;" class="alert alert-error">{{error | translate}}</div>
 
-          <div *ngIf="!reservation" class="alert alert-info">{{'scan.mobile-hint' | translate}}</div>
+          <div *ngIf="!reservation" style="margin-top: 15px;" class="alert alert-info">{{'scan.mobile-hint' | translate}}</div>
           <app-scanner *ngIf="!reservation" [validator]="getValidator(lr)" (code)="scanUser(lr, $event)"></app-scanner>
 
           <div class="usertag" *ngIf="reservation" fxLayout="column" fxLayoutAlign="center center">
@@ -31,7 +31,7 @@
               AugentID: {{reservation.user.augentID}}
             </p>
             <div fxLayout="row">
-              <button class="btn btn-default" (click)="confirm(location)">Confirm</button>
+              <button class="btn btn-default" (click)="confirm()">Confirm</button>
               <button class="btn btn-primary" (click)="cancel()">Cancel</button>
             </div>
           </div>
@@ -41,10 +41,13 @@
 
       <br>
       <div class="alert alert-info">{{"scan.handheld-hint" | translate}}</div>
-      <app-location-reservations [currentTimeslot]="location.currentTimeslot" [locationReservations]="lr" [lastScanned]="lastScanned">
+      <app-location-reservations
+        [currentTimeSlot]="location.currentTimeslot"
+        [locationReservations]="lr"
+        [lastScanned]="lastScanned"
+        [hideDeleteIcon]="true"
+      >
       </app-location-reservations>
-
-
     </div>
   </div>
 
