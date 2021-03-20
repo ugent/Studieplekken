@@ -54,6 +54,7 @@ public abstract class BaseIntegrationTest extends BaseTest {
     protected List<CalendarPeriod> calendarPeriods;
     @Autowired
     protected ObjectMapper objectMapper;
+    protected User authHolder;
 
     public void populateDatabase() throws SQLException {
         // USERS
@@ -82,7 +83,10 @@ public abstract class BaseIntegrationTest extends BaseTest {
         admin = accountDao.getUserByEmail("admin@ugent.be");
         student= accountDao.getUserByEmail("student1@ugent.be");
         student2 = accountDao.getUserByEmail("student2@ugent.be");
-        authorityDao.addUserToAuthority(student.getAugentID(), authority.getAuthorityId());
+        authHolder = accountDao.getUserByEmail("authholder@ugent.be");
+
+        authorityDao.addUserToAuthority(authHolder.getAugentID(), authority.getAuthorityId());
+        authHolder = accountDao.getUserByEmail("authholder@ugent.be");
 
         Timeslot timeslot = new Timeslot(cps[0], 0, cps[0].getStartsAt().plusDays(1));
 

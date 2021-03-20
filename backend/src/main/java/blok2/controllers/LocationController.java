@@ -10,6 +10,7 @@ import blok2.helpers.LocationWithApproval;
 import blok2.helpers.Resources;
 import blok2.helpers.exceptions.AlreadyExistsException;
 import blok2.helpers.exceptions.NoSuchLocationException;
+import blok2.helpers.exceptions.NoSuchUserException;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;
 import org.slf4j.Logger;
@@ -181,7 +182,7 @@ public class LocationController extends AuthorizedLocationController {
             if(locationDao.getLocationById(locationId) == null)
                 throw new NoSuchLocationException("No such location");
             if(accountDao.getUserById(userId) == null)
-                throw new NoSuchLocationException("No such location");
+                throw new NoSuchUserException("No such User");
 
             locationDao.addVolunteer(locationId, userId);
         } catch (SQLException e) {
@@ -199,7 +200,7 @@ public class LocationController extends AuthorizedLocationController {
             if(locationDao.getLocationById(locationId) == null)
                 throw new NoSuchLocationException("No such location");
             if(accountDao.getUserById(userId) == null)
-                throw new NoSuchLocationException("No such location");
+                throw new NoSuchUserException("No such User");
 
             locationDao.deleteVolunteer(locationId, userId);
         } catch (SQLException e) {
