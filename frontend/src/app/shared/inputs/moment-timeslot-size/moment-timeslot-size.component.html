@@ -3,7 +3,8 @@
     class="form-control"
     [(ngModel)]="modelAsString"
     (ngModelChange)="onNewDate()"
-    [type]="type"
+    type="number"
     [disabled]="disabled"
+    min="1"
   />
 </label>

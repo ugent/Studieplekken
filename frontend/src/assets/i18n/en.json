@@ -3,26 +3,22 @@
     "previous": "Previous",
     "today": "Today",
     "next": "Next",
-
     "month": "Month",
     "week": "Week",
     "day": "Day"
   },
-
   "information": {
     "general": "General",
     "manager": "Manager",
     "goto": "Go to",
     "faq": "FAQ"
   },
-
   "dashboard": {
     "alert": {
       "title": "[FRIDAY DECEMBER 11th, RESERVATIONS AT DIFFERENT TIMES]",
       "p1": "Reservations will take place at 19:00, 19:30 and 20:00 depending on the location. Be sure to check in advance when the reservations will open (see symbol).",
       "p2": "We apologize again for the inconvenience. The interest for study places is bigger than we predicted, our server could not handle this load. We wish everyone the best of luck. If you are looking for support, make sure to check the following website:"
     },
-
     "address": "Address",
     "building": "Building",
     "description": "Description",
@@ -34,7 +30,6 @@
     "numberOfSeats": "Number of seats",
     "noLocations": "Unfortunately, at this moment there are no rooms available.",
     "status": "Status",
-
     "locationDetails": {
       "info": "General information about this room",
       "tags": "Tags that characterize this room",
@@ -62,7 +57,6 @@
       "loginWarning": "In order to be able to make a reservation for this location, you need to be logged in.",
       "refreshWarning": "Refreshing the calendar will happen automatically, it is not necessary to refresh the page manually."
     },
-
     "filter": {
       "title": "Filter",
       "tagsFilterTitle": "Filter rooms on tags",
@@ -72,32 +66,26 @@
       "showAll": "Show all rooms",
       "showOpen": "Show open rooms"
     },
-
     "error": "Something went wrong while retrieving the rooms."
   },
-
-  "footer":{
+  "footer": {
     "madeBy": "Made by",
     "privacy": "Privacy",
     "disclaimer": "Disclaimer",
     "cookies": "Cookies",
     "accessibility": "Accessibility"
   },
-
   "reservations": {
     "reservationButton": "Update Reservations"
   },
-
   "general": {
     "dsa": "Student Activities Office",
     "ugent": "Ghent University",
     "appTitle": "Study Rooms UGent",
-
     "yes": "Yes",
     "no": "No",
     "back": "Back",
     "print": "Print",
-
     "buttons": {
       "add": "Add",
       "update": "Update",
@@ -108,18 +96,14 @@
       "open": "Toon open locaties",
       "close": "Close"
     },
-
     "roles": {
       "ADMIN": "Admin"
     },
-
     "optional": "Optional",
     "notAvailableAbbreviation": "n/a",
-
     "waitingForServer": "Waiting for response of server...",
     "idSetByBackendMessage": "ID set by backend"
   },
-
   "header": {
     "imageAlt": "Ghent University",
     "logIn": "Log in",
@@ -133,22 +117,18 @@
       "information": "Information"
     }
   },
-
   "language": {
     "en": "English",
     "nl": "Dutch",
-
     "ENGLISH": "English",
     "DUTCH": "Dutch"
   },
-
   "login": {
     "appTitle": "Study Rooms UGent",
     "title": "Login",
     "casLogin": "CAS Login",
     "about": "The digital platform for study locations"
   },
-
   "management": {
     "aside": {
       "title": "Management",
@@ -162,7 +142,6 @@
       "admins": "Admins",
       "volunteers": "Volunteers"
     },
-
     "general": {
       "loading": "Loading...",
       "noLocations": "There are no rooms yet, make one using the 'Add room' button",
@@ -170,10 +149,8 @@
       "noTags": "There are no tags yet, make one using the 'Add Tag' button",
       "noAuthorities": "There are no authorities yet, make on using the 'Add Authority' button"
     },
-
     "locationDetails": {
       "title": "Details of {locationName}",
-
       "form": {
         "name": "Name",
         "authority": "Authority",
@@ -182,22 +159,17 @@
         "numberOfLockers": "Number of lockers",
         "forGroup": "Group Reservation",
         "imageUrl": "Image URL (optional)",
-
         "edit": "Edit",
         "cancel": "Cancel",
         "persist": "Okay",
-
         "loading": "Waiting for response of server...",
         "success": "Successfully updated the room",
         "error": "An error occurred while updating the room",
-
         "numberOfSeatsApplyWarning": "The changed seats will only be applied to newly created opening periods",
         "numberOfSeatsHelp": "Can only be updated by an admin in consultation with DGFB."
       },
-
       "calendar": {
         "title": "Reservation Management",
-
         "reservations": {
           "title": "Reservations for this room",
           "selectSlot": "Select a (reservable) timeslot to display the reservations",
@@ -211,10 +183,8 @@
             "number": "Student number"
           }
         },
-
         "form": {
           "title": "Edit opening days",
-
           "addButton": "Add new opening period",
           "startsAt": "Starts at",
           "endsAt": "Ends at",
@@ -222,7 +192,7 @@
           "closingTime": "Closing time",
           "reservable": "Reservable from",
           "numberOfSeats": "Seats",
-          "timeslotLength": "Reservable timeslot size",
+          "timeslotCount": "Amount of timeslots",
           "reservableFrom": "Reservable from",
           "remove": "Remove",
           "dropdown": {
@@ -232,22 +202,18 @@
           },
           "adminWarning": "Be careful, this change is within the locked from period. You will have to manually contact the appropriate UGent services.",
           "updateReservationWarning": "Changing this period will result in the loss of all reservations already made during the period.",
-
           "noCalendarPeriodsForLocation": "At the moment, there are no opening periods for the room."
         },
-
         "addModalView": {
           "title": "Add new calendar period",
           "success": "Successfully added the new calendar period",
           "error": "Something went wrong while adding the new calendar period"
         },
-
         "updateModalView": {
           "title": "Update a calendar period",
           "success": "Successfully updated the calendar period",
           "error": "Something went wrong while updating the calendar period"
         },
-
         "deleteModalView": {
           "title": "Sure to delete the calendar period?",
           "body": "Are you sure that you want to delete following calendar period?",
@@ -255,101 +221,78 @@
           "error": "Something went wrong while deleting the calendar period",
           "warning": "Deleting the calendarperiod will result in the deletion of the corresponding reservations. Please be careful with this!"
         },
-
         "warningDialog": {
           "warning": "Warning",
           "body": "The opening duration of (at least) one of the created calendar periods is not divisable by the Reservable Timeslot-duration. This means that, for these periods, the last (incomplete) timeslot will not be created and as such will also not be reservable. Please make sure to take this into account"
         },
-
         "updateTitle": "Update Calendar Period",
         "newTitle": "New Calendar Period",
         "errorLoadingCalendarPeriods": "Could not fetch the calendar periods for this location."
       },
-
       "description": {
         "title": "Description of the room",
         "englishDescription": "Description in English",
         "dutchDescription": "Description in Dutch",
-
         "updateButton": "Update",
         "cancelButton": "Cancel",
-
         "errorUpdating": "Something went wrong while updating the descriptions of the room.",
         "successUpdating": "Successfully updated the descriptions of the room."
       },
-
       "tags": {
         "title": "Tags of the room",
         "activeTagsInformation": "Below, a list with the available tags is given.",
         "updateTagsInformation": "To change the tags, click on the button to the right.",
-
         "updateTagsButton": "Update the tags",
-
         "updateTagsConfigurationModal": {
           "title": "Change tags for room",
           "body": "In the dropdown below, select all the tags you would like to set for '{locationName}'.",
           "comboboxTitle": "Tags of room",
-
           "success": "Successfully updated the tags for '{locationName}'",
           "error": "Something went wrong while updating the tags for '{locationName}'."
         },
-
         "noTagsSelected": "At the moment, there are no tags selected."
       },
-
       "lockerCalendar": {
         "title": "Calendar for availability of lockers",
-
         "form": {
           "title": "Edit periods for which the lockers are available for reservation",
-
           "addButton": "Add new",
           "startsAt": "Starts at",
           "endsAt": "Ends at",
           "reservableFrom": "Reservable from",
           "remove": "Remove",
-
           "updateButton": "Update",
           "cancelButton": "Cancel",
-
           "wrongCalendarPeriodFormatMessage": "Not all periods are filled in correctly",
           "successMessage": "Successfully updated the calendar",
           "successButNoChangesMessage": "No changed were required",
           "errorMessage": "Update was not successful. Something went wrong.",
-
           "noCalendarPeriodsForLockers": "At the moment, there are no periods for the lockers."
         }
       },
-
-      "lockersTable":{
+      "lockersTable": {
         "title": "Table with details of the lockers",
-
         "table": {
           "number": "Number",
           "status": "Status",
           "occupiedBy": "Occupied by",
           "keyPickedUp": "Key picked up",
           "action": "Action",
-
           "occupiedStatus": "Occupied",
           "availableStatus": "Available",
           "notYet": "Not yet",
-
           "pickupButton": "Pickup key",
           "returnButton": "Return key"
         },
-
         "loading": "Waiting for response of server",
         "success": "Successfully updated the locker's status",
         "error": "Something went wrong while updating the locker's status"
       }
     },
-
     "locations": {
       "title": "Management of study rooms",
       "addNew": "Add room",
       "unapproved": "Approval of new study rooms",
-
       "table": {
         "header": {
           "name": "Room",
@@ -357,13 +300,10 @@
           "numberOfSeats": "Seats",
           "numberOfLockers": "Lockers"
         },
-
         "details": "Details"
       },
-
       "addLocationModal": {
         "title": "Add new room",
-
         "form": {
           "locationName": "Name Space",
           "address": "Address",
@@ -373,7 +313,6 @@
           "forGroupHelp": "A room for groups requires only a single reservation, regardless of room capacity. There are no individual reservations possible or necessary.",
           "imageUrl": "URL of image (optional)"
         },
-
         "formValidationErrorMessages": {
           "locationName": "Name is required",
           "authorityName": "Required to select an authority",
@@ -382,60 +321,47 @@
           "numberOfLockers": "Value for 'number of lockers' is required",
           "forGroup": "Value for 'group reservation' is required"
         },
-
         "cancelButton": "Cancel",
         "addButton": "Add",
         "closeButton": "Close",
-
         "loading": "Waiting for response of server...",
         "success": "Successfully added the new room",
         "error": "Something went wrong while adding the new room",
         "warning": "Are you sure you want to propose this room? An e-mail will be sent to DGFB for approval. The amount of seats will be adjusted."
       },
-
       "editLocationModal": {
         "title": "Approve this room",
         "approveButton": "Approve"
       },
-
       "deleteLocationModal": {
         "title": "Sure to delete room?",
-
         "body": "Are you sure that you want to delete {locationName}?",
         "warning": "Deleting this room will delete the following opening periods (and the corresponding reservations) as well.",
-
         "loading": "Waiting for response of server...",
         "success": "Successfully deleted the room",
         "error": "Something went wrong while deleting the room",
-
         "yesButton": "Delete",
         "noButton": "Cancel"
       }
     },
-
     "buildings": {
       "title": "Management of buildings for rooms",
-
       "table": {
         "name": "Name",
         "address": "Address"
       },
-
       "addNewBuilding": "New building",
-
       "addBuildingModal": {
         "title": "Add new building",
         "idSetByBackendMessage": "Set by backend",
         "success": "Successfully added the new building.",
         "error": "Something went wrong while adding the new building."
       },
-
       "updateBuildingModal": {
         "title": "Update building",
         "success": "Successfully updated the building.",
         "error": "Something went wrong while updating the building."
       },
-
       "deleteBuildingModal": {
         "title": "Delete the building",
         "body": "Are you sure that you want to delete following building?",
@@ -443,81 +369,62 @@
         "success": "Successfully deleted the building.",
         "error": "Something went wrong while deleting the building."
       },
-
       "errorOnRetrievingTags": "Something went wrong while retrieving the buildings..."
     },
-
     "tags": {
       "title": "Management of tags for rooms",
-
       "table": {
         "dutch": "Dutch",
         "english": "English"
       },
-
       "addNewTag": "New tag",
-
       "addTagModal": {
         "title": "Add new tag",
         "idSetByBackendMessage": "Set by backend",
         "success": "Successfully added the new tag.",
         "error": "Something went wrong while adding the new tag."
       },
-
       "updateTagModal": {
         "title": "Update tag",
         "success": "Successfully updated the tag.",
         "error": "Something went wrong while updating the tag."
       },
-
       "deleteTagModal": {
         "title": "Delete tag",
         "body": "Are you sure that you want to delete following tag?",
         "success": "Successfully deleted the tag.",
         "error": "Something went wrong while deleting the tag."
       },
-
       "errorOnRetrievingTags": "Something went wrong while retrieving the tags..."
     },
-
     "users": {
       "overview": {
         "title": "User management",
-
         "firstName": "First name",
         "lastName": "Last name",
         "barcode": "Barcode",
-
         "filterSearchButton": "Search",
         "filterClearButton": "Clear"
       },
-
       "searchResult": {
         "title": "Results of search",
-
         "table": {
           "id": "ID",
           "firstName": "First name",
           "lastName": "Last name",
           "penaltyPoints": "Penalty points",
           "institution": "Institution",
-
           "details": "Details"
         },
-
         "neverSearched": "You haven't searched any users yet. Fill in the first and/or last name, or just the barcode to be able to search users.",
         "loading": "Waiting on response of server...",
         "error": "Something went wrong while retrieving the users...",
         "noUserWithBarcodeHasBeenFound": "No user with given barcode has been found. Please try with first and/or last name."
-
       },
-
       "userDetails": {
         "errorQuerying": "Something went wrong while querying for the user with id '{id}'",
-
         "form": {
           "title": "Details of {name}",
-
           "id": "ID",
           "firstName": "First name",
           "lastName": "Last name",
@@ -525,22 +432,17 @@
           "roles": "Roles",
           "penaltyPoints": "Penalty points",
           "institution": "Institution",
-
           "error": "Something went wrong while retrieving the user..."
         },
-
         "roles": {
           "title": "Roles of {name}",
-
           "updateButton": "Update",
           "resetButton": "Reset",
-
           "loadingUpdatingUser": "Waiting on a response of the server...",
           "successUpdatingUser": "Successfully updated the roles of the user...",
           "errorUpdatingUser": "Something went wrong while updating the user...",
           "adminConfirmation": "This will change the administrator-status of the user, possibly granting the user with unrestricted access to the platform. Please be careful with this!"
         },
-
         "authorities": {
           "title": "Authorities of {name}",
           "info": "Below, an overview is given of all authorities in which the user has a managing role. This means that the user can manage the rooms within these authorities.",
@@ -548,97 +450,72 @@
           "noAuthoritiesForUser": "The user is not linked to any authority, which means that he/she is not allowed to manage any room.",
           "allAuthoritiesAreAssigned": "All authorities are already assigned to the user.",
           "addNew": "Add authority to user",
-
           "addAuthorityToUserModal": {
             "title": "Add authority to the user",
-
             "body": "Select the authority you would like to add to the user:",
             "selectAuthority": "Select an authority",
-
             "success": "Successfully added the authority to the user.",
             "error": "Something went wrong while adding the authority to the user."
           },
-
           "deleteAuthorityFromUserModal": {
             "title": "Sure to delete the authority from the user?",
-
             "body": "Are you sure that you want to delete the following authority from {name}:",
-
             "success": "Successfully deleted the authority from the user.",
             "error": "Something went wrong while deleting the authority from the user."
           }
         },
-
         "penalties": {
           "title": "Penalties of {name}",
-
           "table": {
             "eventCode": "Penalty event code",
             "timestamp": "Timestamp",
             "location": "Room",
             "receivedPoints": "Received points",
             "remarks": "Remark",
-
             "addNew": "Add penalty",
-
             "addPenaltyModalView": {
               "title": "Add new penalty",
               "addButton": "Add",
               "cancelButton": "Cancel",
-
               "timestamp": "Timestamp",
               "timestampValidation": "Timestamp is required",
-
               "location": "Room",
               "locationValidation": "Room is required",
-
               "points": "Penalty points",
               "pointsValidation": "Penalty points is required",
-
               "loading": "Waiting on response of server...",
               "success": "Successfully added the penalty.",
               "error": "Something went wrong while adding the penalty..."
             },
-
             "deletePenaltyModalView": {
               "title": "Sure to delete the penalty?",
               "body": "Penalty about to delete:",
-
               "yesButton": "Delete",
               "noButton": "Cancel",
-
               "loading": "Waiting on response of server...",
               "success": "Successfully deleted the penalty.",
               "error": "Something went wrong while deleting the penalty..."
             }
           },
-
           "noPenalties": "The user has made no penalties so far.",
           "error": "Something went wrong while querying the penalties for the user."
         }
       }
     },
-
     "authorities": {
       "title": "Management of authorities",
-
       "table": {
         "authorityName": "Authority name",
         "description": "Description"
       },
-
       "addNewAuthority": "Add Authority",
-
       "errorOnRetrievingAuthorities": "Something went wrong while retrieving the authorities from the server.",
-
       "users": {
         "title": "Manage the users of authority {authorityName}",
         "info": "In the table below, all the users that are included in the authority {authorityName} are given. You can add or delete users here.",
         "info2": "Users that are mentioned in the table, have managing rights to the rooms that are included in the authority.",
-
         "addNewUser": "Add user",
         "noUsersInAuthority": "There are no users included in the authority. This means that no user can modify the rooms of this authority.",
-
         "addUserToAuthorityModal": {
           "title": "Add user to authority",
           "searchInfo": "Search a user by first and/or last name to add to the authority.",
@@ -649,7 +526,6 @@
           "error": "Something went wrong while deleting the user from the authority.",
           "errorSearching": "Something went wrong while searching for users."
         },
-
         "deleteUserFromAuthorityModal": {
           "title": "Delete user from authority",
           "body": "Are you sure that you want to remove following user from the authority '{authorityName}'?",
@@ -657,20 +533,17 @@
           "error": "Something went wrong while deleting the user from the authority."
         }
       },
-
       "addAuthorityModal": {
         "title": "Add a new authority",
         "idSetByBackendMessage": "Set by backend",
         "success": "Successfully added the new authority.",
         "error": "Something went wrong while adding the new authority."
       },
-
       "updateAuthorityModal": {
         "title": "Update the authority",
         "success": "Successfully updated the authority.",
         "error": "Something went wrong while updating the authority."
       },
-
       "deleteAuthorityModal": {
         "title": "Delete the authority",
         "body": "Are you sure that you want to delete following authority?",
@@ -679,97 +552,75 @@
         "error": "Something went wrong while deleting the authority."
       }
     },
-
     "reservations": {
       "title": "Overview of reservations",
       "locationsPanelTitle": "Search reservations",
       "lockersPanelTitle": "Search locker reservations",
-
       "location": {
         "location": "Room",
         "start": "Reservations from",
         "end": "Reservations until",
         "pastReservations": "Include past reservations?",
-
         "searchButton": "Search",
         "clearButton": "Clear",
-
         "neverSearched": "You have not yet searched for any room reservations.",
         "loading": "Waiting for response of server...",
         "error": "Something went wrong while searching for room reservations",
-
         "table": {
           "date": "Date for which reserved",
           "user": "User",
           "attended": "User attended?",
-
           "noLocationReservations": "There are no reservations for the room."
         },
-
         "deleteModal": {
           "title": "Sure to delete the room reservation?",
           "body": "Room reservation about to delete:",
-
           "yesButton": "Delete",
           "noButton": "Cancel",
-
           "loading": "Waiting on response of server...",
           "success": "Successfully deleted the room reservation.",
           "error": "Something went wrong while deleting the room reservation..."
         }
       },
-
       "locker": {
         "location": "Room",
         "start": "Reservations from",
         "end": "Reservations until",
         "pastReservations": "Include past reservations (i.e. key both picked up and returned)?",
-
         "searchButton": "Search",
         "clearButton": "Clear",
-
         "neverSearched": "You have not yet searched for any locker reservations.",
         "loading": "Waiting for response of server...",
         "error": "Something went wrong while searching for locker reservations",
-
         "table": {
           "lockerNumber": "Locker number",
           "owner": "User",
           "keyPickupDate": "Key picked up?",
           "keyReturnedDate": "Key returned?",
-
           "noLockerReservations": "There are no locker reservations for the room."
         },
-
         "deleteModal": {
           "title": "Sure to delete the locker reservation?",
           "body": "Locker reservation about to delete:",
-
           "yesButton": "Delete",
           "noButton": "Cancel",
-
           "loading": "Waiting on response of server...",
           "success": "Successfully deleted the locker reservation.",
           "error": "Something went wrong while deleting the locker reservation..."
         }
       }
     },
-
     "penaltyEvents": {
       "title": "Overview of the penalty events",
       "errorOnRetrievingPenaltyEvents": "Something went wrong while retrieving the penalty events.",
-
       "table": {
         "code": "Code",
         "points": "Penalty points",
         "description": "Description"
       },
-
       "addNewButton": "Add penalty event",
-
       "addPenaltyEventModal": {
         "title": "Add new penalty event",
-
         "formValidationErrorMessages": {
           "codeWarning1666": "Events with a code that starts with '1666' have a special meaning: you will not be able to delete them.",
           "code": "Code is required",
@@ -777,55 +628,43 @@
           "penaltyPointsMin": "Penalty points is a non-negative number",
           "descriptions": "A description in all supported languages is required"
         },
-
         "cancelButton": "Cancel",
         "addButton": "Add",
-
         "loading": "Waiting for response of server...",
         "success": "Successfully added the new penalty event",
         "error": "Something went wrong while adding the new penalty event",
         "notAllLanguagesError": "Not all supported languages got a description."
       },
-
       "updatePenaltyEventModal": {
         "title": "Update penalty event",
-
         "formValidationErrorMessages": {
           "penaltyPoints": "Penalty points is required",
           "penaltyPointsMin": "Penalty points is a non-negative number",
           "descriptions": "A description in all supported languages is required"
         },
-
         "cancelButton": "Cancel",
         "updateButton": "Update",
-
         "loading": "Waiting for response of server...",
         "success": "Successfully updated the penalty event",
         "error": "Something went wrong while updating the penalty event",
         "notAllLanguagesError": "Not all supported languages got a description."
       },
-
       "deletePenaltyEventModal": {
         "title": "Sure to delete the penalty event?",
-
         "body": "Are you sure that you want to delete following penalty event?",
-
         "loading": "Waiting for response of server...",
         "success": "Successfully deleted the penalty event",
         "error": "Something went wrong while deleting the penalty event",
-
         "yesButton": "Delete",
         "noButton": "Cancel"
       }
     },
-
     "volunteers": {
       "no-volunteers": "There are no volunteers for this location yet.",
       "errorOnLoadingManageableLocations": "Could not fetch the locations that you can manage.",
       "errorOnLoadingVolunteers": "Could not fetch the volunteers for this location."
     }
   },
-
   "profile": {
     "aside": {
       "title": "Profile",
@@ -835,32 +674,26 @@
       "password": "Change password",
       "penalties": "Penalty Points"
     },
-
     "calendar": {
       "title": "Your personal reservation calendar"
     },
-
     "changePassword": {
       "title": "Change password",
-
       "conditions": {
         "li1": "Your password must include at least one capital",
         "li2": "Your password must include at least one number",
         "li3": "The minimum length of your password is 8 characters"
       },
-
       "form": {
         "cancelButton": "Cancel",
         "confirmPassword": "Confirm Password",
         "confirmButton": "Save changes",
         "oldPassword": "Old password",
         "password": "Password",
-
         "wrongOldPassword": "The given password was wrong",
         "otherErrorOnUpdating": "Something went wrong while updating your new password"
       }
     },
-
     "overview": {
       "title": "Profile Overview",
       "form": {
@@ -872,11 +705,9 @@
         "studentNumber": "Student Number"
       }
     },
-
     "penalties": {
       "title": "Penalty points",
       "subtitle": "Current amount of penalty points:",
-
       "information": {
         "1": "When you have more than 100 penalty points, you are not allowed to make reservations.",
         "2": "Each week, the weight of received penalty points for misbehaviour decreases by 20% of the original amount of received points",
@@ -889,7 +720,6 @@
           "4": "When you would really cross the line, an employee may blacklist you for reservation. You will get 100 points. These points do not decrease over time!"
         }
       },
-
       "table": {
         "title": "Overview of your penalty points",
         "header": {
@@ -899,15 +729,12 @@
           "location": "Room",
           "receivedPoints": "Received points"
         },
-
         "noPenalties": "You have had no penalties so far. Very good!"
       }
     },
-
     "reservations": {
       "locations": {
         "title": "Overview of your room reservations",
-
         "table": {
           "header": {
             "locationName": "Room",
@@ -915,7 +742,6 @@
             "beginHour": "Starting time reservation",
             "attended": "Did you attend?"
           },
-
           "attended": {
             "yes": "Present",
             "no": "Absent",
@@ -923,30 +749,24 @@
             "notScannedExplanation": "For this reservation attendance wasn't taken, so you haven't gained any penalty points."
           }
         },
-
         "zeroReservations": "You have never made any room reservations so far.",
         "loading": "Reservations are being loaded...",
         "error": "Something went wrong while retrieving your reservations."
       },
-
       "lockers": {
         "title": "Overview of your locker reservations",
-
         "table": {
           "header": {
-            "locationName" :  "Room",
-            "lockerNumber" : "Locker's number",
-            "keyPickupDate" :  "Key picked up on date",
-            "keyReturnedDate" : "Key returned on date"
+            "locationName": "Room",
+            "lockerNumber": "Locker's number",
+            "keyPickupDate": "Key picked up on date",
+            "keyReturnedDate": "Key returned on date"
           },
-
           "keyPickupDateNull": "n/a",
           "keyReturnedDateNull": "n/a"
         },
-
         "noReservations": "You have never made any locker reservations so far."
       }
     }
   }
-
 }
