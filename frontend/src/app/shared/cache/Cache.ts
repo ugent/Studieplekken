@@ -1,6 +1,6 @@
 import {BehaviorSubject, EMPTY, Observable, of} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
-import { catchError, filter, map, skip, tap } from 'rxjs/operators';
+import { catchError, filter, map, tap } from 'rxjs/operators';
 
 export class Cache<I, V> {
 

@@ -18,8 +18,9 @@ export class Timeslot {
     }
 
     static fromJSON(json: any): Timeslot {
-        if(!json)
-            return null
+        if (!json) {
+          return null;
+        }
         return new Timeslot(json.timeslotSeqnr, moment(json.timeslotDate), json.calendarId, json.amountOfReservations, json.seatCount);
     }
 

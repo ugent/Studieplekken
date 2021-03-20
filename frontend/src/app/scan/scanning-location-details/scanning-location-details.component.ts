@@ -46,19 +46,19 @@ export class ScanningLocationDetailsComponent implements OnInit {
       );
 
     this.locationReservationObs = this.locationObs
-                  .pipe(
-                    switchMap(l => this.reservationService.getLocationReservationsOfTimeslot(l.currentTimeslot)),
-                    catchError(err => {
-                      console.error('Error while loading the users you could scan.', err);
-                      this.loadingError.next(true);
-                      return of(null);
-                    }));
+      .pipe(
+        switchMap(l => this.reservationService.getLocationReservationsOfTimeslot(l.currentTimeslot)),
+        catchError(err => {
+          console.error('Error while loading the users you could scan.', err);
+          this.loadingError.next(true);
+          return of(null);
+        })
+      );
   }
 
   getValidator(reservations: LocationReservation[]): (a: string) => boolean {
     return (code) => code.length > 6; // filter out the most egregious examples
   }
-
 
   scanUser(reservations: LocationReservation[], code: string): void {
     this.error = '';
