@@ -8,7 +8,7 @@
         <th style="width: 50%">{{'scan.locations.header.name' | translate}}</th>
         <th style="width: 30%">{{'scan.locations.header.building' | translate}}</th>
         <th style="width: 10%">{{'scan.locations.header.numberOfSeats' | translate}}</th>
-        <th style="width: 10%"><!-- Barcode icon --></th>
+        <th style="width: 10%">{{'scan.locations.header.scan' | translate}}</th>
       </tr>
       </thead>
 
@@ -22,6 +22,9 @@
             <span *ngIf="location.currentTimeslot" routerLink="./{{location.locationId}}"
                   class="glyphicon glyphicon-qrcode">
             </span>
+            <div *ngIf="!location.currentTimeslot">
+              {{'scan.locations.empty' | translate}}
+            </div>
         </td>
       </tr>
       </tbody>
