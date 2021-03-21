@@ -24,13 +24,13 @@
             </div>
 
             <ng-template #scannableTemplate>
-              <span *ngIf="location.currentTimeslot" routerLink="./{{location.locationId}}"
+              <span routerLink="./{{location.locationId}}"
                 class="glyphicon glyphicon-qrcode">
               </span>
             </ng-template>
 
             <ng-template #notScannableTemplate>
-              <div *ngIf="!location.currentTimeslot">
+              <div>
                 {{'scan.locations.empty' | translate}}
               </div>
             </ng-template>
