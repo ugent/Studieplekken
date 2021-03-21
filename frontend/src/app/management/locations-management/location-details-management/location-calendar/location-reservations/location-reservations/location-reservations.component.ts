@@ -27,23 +27,20 @@ export class LocationReservationsComponent implements OnInit, OnChanges {
   locationReservationToDelete: LocationReservation = undefined;
 
   successDeletingLocationReservation: boolean = undefined;
-  successFinishingScan: boolean = undefined;
 
   startedScanning = true;
   searchTerm = '';
 
   scannedLocationReservations: LocationReservation[] = [];
   warning = false;
-
-  private static upcEncoded(code: string): string {
-    return '0' + code.substr(0, code.length - 1);
-  }
+  waitingForServer = false;
 
   userHasSearchTerm = (u: User) => u.augentID.includes(this.searchTerm) ||
     u.firstName.includes(this.searchTerm) || u.lastName.includes(this.searchTerm)
 
   constructor(private locationReservationService: LocationReservationsService,
-              private modalService: BsModalService, private barcodeService: BarcodeService) { }
+              private modalService: BsModalService,
+              private barcodeService: BarcodeService) { }
 
   ngOnInit(): void {
   }
@@ -55,45 +52,36 @@ export class LocationReservationsComponent implements OnInit, OnChanges {
   // *   SCANNING   *
   // ****************/
 
-  startScanning(): void {
-    this.scannedLocationReservations = [];
-    this.startedScanning = true;
-  }
-
-  prepareFinishScanning(): void {
-    this.successFinishingScan = undefined;
-  }
-
-  finishScanning(): void {
-    this.successFinishingScan = null;
-    // this.locationReservationService.scanLocationReservations(this.scannedLocationReservations)
-    //   .subscribe(
-    //     () => {
-    //       this.successFinishingScan = true;
-    //       this.updateLocationReservations();
-    //     }, () => {
-    //       this.successFinishingScan = false;
-    //     }
-    //   );
-    this.startedScanning = false;
-  }
-
-  scanLocationReservation(reservation: LocationReservation, attended: boolean): void {
+  scanLocationReservation(reservation: LocationReservation, attended: boolean, errorTemplate: TemplateRef<any>): void {
     const idx = this.scannedLocationReservations.findIndex(
       r => {
         return r.timeslot.timeslotSeqnr === reservation.timeslot.timeslotSeqnr &&
           r.user === reservation.user;
       });
 
-    if (idx < 0) {
-      reservation.attended = attended;
-      this.scannedLocationReservations.push(reservation);
-      this.locationReservationService.postLocationReservationAttendance(reservation, attended).subscribe();
-    } else {
-      this.scannedLocationReservations[idx].attended = attended;
-      reservation.attended = attended;
-      this.locationReservationService.postLocationReservationAttendance(reservation, attended).subscribe();
+    // only perform API call if the attendance/absence changes
+    if (idx >= 0 && attended === this.scannedLocationReservations[idx].attended) {
+      return;
     }
+
+    this.waitingForServer = true;
+    this.locationReservationService.postLocationReservationAttendance(reservation, attended)
+      .subscribe(
+        () => {
+          this.waitingForServer = false;
+          reservation.attended = attended;
+
+          if (idx < 0) {
+            this.scannedLocationReservations.push(reservation);
+          } else {
+            this.scannedLocationReservations[idx].attended = attended;
+          }
+        }, err => {
+          this.waitingForServer = false;
+          console.error(err);
+          this.modalService.show(errorTemplate);
+        }
+      );
   }
 
   // /*************
@@ -182,18 +170,18 @@ export class LocationReservationsComponent implements OnInit, OnChanges {
     this.modalService.hide();
   }
 
-  updateSearchTerm(): void {
+  updateSearchTerm(errorTemplate: TemplateRef<any>): void {
     this.warning = this.locationReservations.every(lr => !this.userHasSearchTerm(lr.user)) && this.searchTerm.length > 0;
 
-    const fullyMatchedUser = this.barcodeService.getReservation(this.locationReservations, this.searchTerm)
+    const fullyMatchedUser = this.barcodeService.getReservation(this.locationReservations, this.searchTerm);
 
     if (fullyMatchedUser) {
-      this.scanLocationReservation(fullyMatchedUser, true);
+      this.scanLocationReservation(fullyMatchedUser, true, errorTemplate);
       setTimeout(
         () => {
           this.searchTerm = '';
           this.lastScanned = fullyMatchedUser;
-          this.updateSearchTerm();
+          this.updateSearchTerm(errorTemplate);
         }, 10);
     }
 
@@ -201,8 +189,7 @@ export class LocationReservationsComponent implements OnInit, OnChanges {
   }
 
   filter(locationReservations: LocationReservation[]): LocationReservation[] {
-
-    // Sorting the searchterm hits first. After that, fallback on name sorting (createdAt is not available here)
+    // Sorting the searchTerm hits first. After that, fallback on name sorting (createdAt is not available here)
     locationReservations.sort((a, b) => {
 
       if (a === this.lastScanned || b === this.lastScanned) {
@@ -219,7 +206,6 @@ export class LocationReservationsComponent implements OnInit, OnChanges {
 
       return a.user.lastName.localeCompare(b.user.lastName);
     });
-
 
     return locationReservations;
   }

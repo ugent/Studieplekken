@@ -12,7 +12,13 @@
     </label>
     <div class="col-lg-8">
       <input id="search" type="text" class="form-control"
-             [(ngModel)]="searchTerm" (ngModelChange)="updateSearchTerm()">
+             [(ngModel)]="searchTerm" (ngModelChange)="updateSearchTerm(scanningError)">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="alert alert-info" *ngIf="waitingForServer">
+      {{'general.waitingForServer' | translate}}
     </div>
   </div>
 
@@ -37,12 +43,12 @@
              of the button should be set as if the button was disabled -->
           <button *ngIf="startedScanning" class="btn btn-secondary btn-left" style="margin-top: 5px"
             [ngClass]="isButtonDisabled(reservation) ? 'disabled': '' "
-            (click)="scanLocationReservation(reservation, true)">
+            (click)="scanLocationReservation(reservation, true, scanningError)">
             {{'general.yes' | translate}}
           </button>
           <button *ngIf="startedScanning" class="btn btn-default" style="margin-top: 5px"
             [ngClass]="!isButtonDisabled(reservation) ? 'disabled': '' "
-            (click)="scanLocationReservation(reservation, false)">
+            (click)="scanLocationReservation(reservation, false, scanningError)">
             {{'general.no' | translate}}
           </button>
         </td>
@@ -54,18 +60,6 @@
       </tr>
     </tbody>
   </table>
-
-  <!-- <div class="pull-right">
-    <button class="btn btn-primary btn-left" [disabled]="locationReservations.length === 0 || startedScanning"
-      (click)="startScanning()">
-      {{'management.locationDetails.calendar.reservations.table.startScanning' | translate}}
-    </button>
-
-    <button class="btn btn-secondary btn-left" data-toggle="modal" data-target="#finishScanningModal"
-      [disabled]="locationReservations.length === 0 || !startedScanning" (click)="prepareFinishScanning()">
-      {{'management.locationDetails.calendar.reservations.table.finishScanning' | translate}}
-    </button>
-  </div> -->
 </div>
 
 <!-- Modal view to ask whether the user is sure to delete a lockerReservation -->
@@ -112,5 +106,31 @@
     <div class="alert alert-error" *ngIf="successDeletingLocationReservation === false">
       {{'management.reservations.location.deleteModal.error' | translate}}
     </div>
+  </div>
+</ng-template>
+
+<ng-template #scanningError>
+  <!-- Modal header -->
+  <div class="modal-header">
+    <h5 class="modal-title inline-block" id="scanningErrorModalTitle">
+      {{'management.reservations.location.scanningErrorModal.title' | translate}}
+    </h5>
+    <button type="button" class="close" (click)="closeModal()" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <!-- Modal body -->
+  <div class="modal-body">
+    <div class="alert alert-error">
+      {{'management.reservations.location.scanningErrorModal.message' | translate}}
+    </div>
+  </div>
+
+  <!-- Modal footer -->
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="closeModal()">
+      {{'general.buttons.close' | translate}}
+    </button>
   </div>
 </ng-template>

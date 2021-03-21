@@ -56,15 +56,17 @@
     <!-- Form to edit the calendar -->
     <div #CPtable class="row">
       <!-- Title -->
-      <h3 class="inline-block">
-        {{'management.locationDetails.calendar.form.title' | translate}}
-      </h3>
-      <button class="btn btn-primary pull-right" (click)="prepareAdd(addCalendarPeriodModal, CPtable)" >
-        {{'management.locationDetails.calendar.form.addButton' | translate}}
-      </button>
+      <div class="row">
+        <h3 class="inline-block">
+          {{'management.locationDetails.calendar.form.title' | translate}}
+        </h3>
+        <button class="btn btn-primary pull-right" (click)="prepareAdd(addCalendarPeriodModal, CPtable)" >
+          {{'management.locationDetails.calendar.form.addButton' | translate}}
+        </button>
+      </div>
 
       <!-- The form itself -->
-      <div class="container-fluid" style="margin-top: 10px; margin-bottom: 10px;">
+      <div style="margin-top: 10px; margin-bottom: 10px;">
         <table style="width: 100%;" *ngIf="calendarPeriods.length > 0; else noCalendarPeriodsForLocation">
           <thead>
           <tr>
@@ -175,10 +177,10 @@
         <!-- timeslot size -->
         <div class="row form-group">
           <label class="col-lg-3 control-label" for="timeslotSize">
-            {{'management.locationDetails.calendar.form.timeslotLength' | translate}}
+            {{'management.locationDetails.calendar.form.timeslotCount' | translate}}
           </label>
           <div class="col-lg-8">
-            <app-moment-timeslot-size id="timeslotSize" [disabled]="!model.reservable" [(model)]="model.timeslotLength" [type]="'time'"></app-moment-timeslot-size>
+            <app-moment-timeslot-size id="timeslotSize" [disabled]="!model.reservable" [(model)]="model.timeslotLength" [periodDuration]="getCalendarPeriodTimeInMinutes(model)"></app-moment-timeslot-size>
           </div>
         </div>
 
@@ -296,11 +298,11 @@
 
         <!-- timeslot size -->
         <div class="row form-group">
-          <label class="col-lg-3 control-label" for="timeslotSizeUpdate">
-            {{'management.locationDetails.calendar.form.timeslotLength' | translate}}
+          <label class="col-lg-3 control-label" for="timeslotSize">
+            {{'management.locationDetails.calendar.form.timeslotCount' | translate}}
           </label>
           <div class="col-lg-8">
-            <app-moment-timeslot-size id="timeslotSizeUpdate" [disabled]="!model.reservable" [(model)]="model.timeslotLength" [type]="'time'"></app-moment-timeslot-size>
+            <app-moment-timeslot-size id="timeslotSize" [disabled]="!model.reservable" [(model)]="model.timeslotLength" [periodDuration]="getCalendarPeriodTimeInMinutes(model)"></app-moment-timeslot-size>
           </div>
         </div>
 

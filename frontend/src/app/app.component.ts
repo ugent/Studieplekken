@@ -72,7 +72,6 @@ export class AppComponent implements OnInit {
           if (next.admin) {
 
             this.showScan = scanFunc && true;
-            console.log(this.showScan)
 
             this.showManagement = true;
           } else {

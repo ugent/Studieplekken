@@ -74,12 +74,14 @@ export class CalendarPeriod {
       endsAt: this.endsAt.format('YYYY-MM-DD'),
       openingTime: this.openingTime.format('HH:mm'),
       closingTime: this.closingTime.format('HH:mm'),
-      reservableFrom: this.reservableFrom ? this.reservableFrom.format('YYYY-MM-DDTHH:mm:ss') : null,
+      reservableFrom: this.reservableFrom
+        ? this.reservableFrom.format('YYYY-MM-DDTHH:mm:ss')
+        : null,
       timeslotLength: this.timeslotLength,
       timeslots: this.timeslots,
       reservable: this.reservable,
       lockedFrom: this.lockedFrom,
-      seatCount: this.seatCount
+      seatCount: this.seatCount,
     };
   }
 }
@@ -104,12 +106,24 @@ export function isCalendarPeriodValid(period: CalendarPeriod): boolean {
   }
 
   // if the period is set to be reservable, timeslotLength may not be 0, nor may reservableFrom be null
-  if (period.reservable && (period.timeslotLength <= 0 || period.reservableFrom === null)) {
+  if (
+    period.reservable &&
+    (period.timeslotLength <= 0 ||
+      period.timeslotLength === null ||
+      period.timeslotLength === undefined ||
+      period.timeslotLength >
+      Math.abs(period.openingTime.diff(period.closingTime, 'minutes')) ||
+      period.reservableFrom === null)
+  ) {
     return false;
   }
 
   // of course, startsAt, endsAt must be valid and startsAt must be before endsAt
-  if (!period.startsAt.isValid() || !period.endsAt.isValid() || period.startsAt.isAfter(period.endsAt)) {
+  if (
+    !period.startsAt.isValid() ||
+    !period.endsAt.isValid() ||
+    period.startsAt.isAfter(period.endsAt)
+  ) {
     return false;
   }
 
@@ -141,15 +155,19 @@ export function mapCalendarPeriodsToCalendarEvents(periods: CalendarPeriod[],
           .reduce((a, b) => [...a, ...b]);
 }
 
+function dateWithTime(date: Moment, time: Moment): Date {
+  return new Date(date.format('YYYY-MM-DD') + 'T' + time.format('HH:mm'));
+}
+
 /**
  * Convert a calendar period to calendar events but as a block instead of dividing each day into timeslots.
  */
 function mapNotReservableCalendarPeriodToCalendarEvent(period: CalendarPeriod, currentLang: string): CalendarEvent[] {
   const calendarEvents: CalendarEvent[] = [];
 
-  const dateWithOpeningTime = new Date(period.startsAt.format('YYYY-MM-DD') + 'T' + period.openingTime.format('HH:mm'));
-  const dateWithClosingTime = new Date(period.startsAt.format('YYYY-MM-DD') + 'T' + period.closingTime.format('HH:mm'));
-  const lastDayWithOpeningTime = (new Date(period.endsAt.format('YYYY-MM-DD') + 'T' + period.openingTime.format('HH:mm')));
+  const dateWithOpeningTime = dateWithTime(period.startsAt, period.openingTime);
+  const dateWithClosingTime = dateWithTime(period.startsAt, period.closingTime);
+  const lastDayWithOpeningTime = dateWithTime(period.endsAt, period.openingTime);
 
   let title: string;
   if (currentLang === 'nl') {
@@ -184,8 +202,8 @@ function mapNotYetReservableTimeslotsToCalendarEvents(period: CalendarPeriod, cu
   const calendarEvents: CalendarEvent[] = [];
 
   for (const timeslot of period.timeslots) {
-    const beginDT = new Date(timeslot.timeslotDate.format('YYYY-MM-DD') + 'T' + timeslotStartHour(period, timeslot).format('HH:mm'));
-    const endDT = new Date(timeslot.timeslotDate.format('YYYY-MM-DD') + 'T' + timeslotEndHour(period, timeslot).format('HH:mm'));
+    const beginDT = dateWithTime(timeslot.timeslotDate, timeslotStartHour(period, timeslot));
+    const endDT = dateWithTime(timeslot.timeslotDate, timeslotEndHour(period, timeslot));
 
     let title: string;
     if (currentLang === 'nl') {
@@ -219,17 +237,27 @@ function mapReservableTimeslotsToCalendarEvents(period: CalendarPeriod, reserved
   const calendarEvents: CalendarEvent[] = [];
 
   for (const timeslot of period.timeslots) {
-      const beginDT = new Date(timeslot.timeslotDate.format('YYYY-MM-DD') + 'T' + timeslotStartHour(period, timeslot).format('HH:mm'));
-      const endDT = new Date(timeslot.timeslotDate.format('YYYY-MM-DD') + 'T' + timeslotEndHour(period, timeslot).format('HH:mm'));
-      calendarEvents.push({
-        title: `${timeslot.amountOfReservations} / ${timeslot.seatCount}`,
-        start: beginDT,
-        end: endDT,
-        meta: {calendarPeriod: period, timeslot},
-        color: includesTimeslot(reservedTimeslots.map(s => s.timeslot), timeslot) ?
-                                                         {primary: '#00004d', secondary: '#133E7D'} : null,
-        cssClass: includesTimeslot(reservedTimeslots.map(s => s.timeslot), timeslot) ? 'calendar-event-reserved' : ''
-      });
+    const beginDT = dateWithTime(timeslot.timeslotDate, timeslotStartHour(period, timeslot));
+    const endDT = dateWithTime(timeslot.timeslotDate, timeslotEndHour(period, timeslot));
+
+    calendarEvents.push({
+      title: `${timeslot.amountOfReservations} / ${timeslot.seatCount}`,
+      start: beginDT,
+      end: endDT,
+      meta: {calendarPeriod: period, timeslot},
+      color: includesTimeslot(
+        reservedTimeslots.map((s) => s.timeslot),
+        timeslot
+      )
+        ? {primary: '#00004d', secondary: '#133E7D'}
+        : null,
+      cssClass: includesTimeslot(
+        reservedTimeslots.map((s) => s.timeslot),
+        timeslot
+      )
+        ? 'calendar-event-reserved'
+        : '',
+    });
   }
 
   return calendarEvents;
