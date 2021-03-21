@@ -800,10 +800,12 @@
       "header": {
         "name": "Name",
         "building": "Building",
-        "numberOfSeats": "Seats"
+        "numberOfSeats": "Seats",
+        "scan": "Scan"
       },
       "noLocationsWarning": "You are currently not assigned to any location where you can scan students.",
-      "errorMessageOnLoadingLocations": "Could not fetch the locations for which you can scan students."
+      "errorMessageOnLoadingLocations": "Could not fetch the locations for which you can scan students.",
+      "empty": "Closed"
     },
     "locationDetails": {
       "title": "Scan students for {locationName}",
