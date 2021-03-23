@@ -154,7 +154,7 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
     const reservation: LocationReservation = {user: this.authenticationService.userValue(), timeslot: this.currentTimeslot};
     const timeslotIsSelected = this.selectedSubject.value.some(r => timeslotEquals(r.timeslot, reservation.timeslot));
 
-    if (this.currentTimeslot.amountOfReservations >= this.capacity && !timeslotIsSelected) {
+    if (this.currentTimeslot.amountOfReservations >= this.currentTimeslot.seatCount && !timeslotIsSelected) {
       return;
     }
     this.isModified = true;
