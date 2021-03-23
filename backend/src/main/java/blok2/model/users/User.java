@@ -45,6 +45,7 @@ public class User implements Cloneable, UserDetails {
         institution = "";
         augentID = "";
         userAuthorities = new ArrayList<>();
+        userVolunteer = new ArrayList<>();
     }
 
     @Override
@@ -191,7 +192,7 @@ public class User implements Cloneable, UserDetails {
         if (userAuthorities.size() > 0)
             grantedAuthorities.add(new SimpleGrantedAuthority("HAS_AUTHORITIES"));
 
-        if(userVolunteer.size() > 0)
+        if (userVolunteer.size() > 0)
             grantedAuthorities.add(new SimpleGrantedAuthority("HAS_VOLUNTEERS"));
 
         return grantedAuthorities;

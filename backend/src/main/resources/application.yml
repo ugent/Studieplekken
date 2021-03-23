@@ -64,8 +64,10 @@ redirect:
 ldap:
   url: ldaps://ldap.ugent.be
   base: ***REMOVED***
-  userDn: cn=dsa-bestuursleden,ou=applications,dc=UGent,dc=be
-  password: 5-yuoDssc3Fwd
+  userDn: ***REMOVED***
+  password: ***REMOVED***
+
+# Logging config
 logging:
   level:
       com:
