@@ -83,8 +83,21 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
         try {
             List<User> users = ldapTemplate.search("ou=people", "mail=" + mail, (AttributesMapper<User>) attrs -> {
                 User user = new User();
-                user.setFirstName(attrs.get("givenName").get().toString());
-                user.setLastName(attrs.get("sn").get().toString());
+
+                // try to use 'ugentPreferredGivenName' and use 'givenName' as fallback
+                try {
+                    user.setFirstName(attrs.get("ugentPreferredGivenName").get().toString());
+                } catch (NullPointerException ignore) {
+                    user.setFirstName(attrs.get("givenName").get().toString());
+                }
+
+                // try to use 'ugentPreferredSn' and use 'sn' as fallback
+                try {
+                    user.setLastName(attrs.get("ugentPreferredSn").get().toString());
+                } catch (NullPointerException ignore) {
+                    user.setLastName(attrs.get("sn").get().toString());
+                }
+
                 user.setMail(attrs.get("mail").get().toString());
                 user.setPassword("secret");
                 user.setInstitution("UGent");
