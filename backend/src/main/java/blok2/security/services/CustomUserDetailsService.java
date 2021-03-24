@@ -14,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.Null;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
