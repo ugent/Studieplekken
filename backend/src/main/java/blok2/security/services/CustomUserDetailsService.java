@@ -62,7 +62,7 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
         }
 
         // Create new user using the UGent LDAP
-        user = getUserFromLdap(ugentID, mail);
+        user = getUserFromLdap(ugentID);
 
         if (user != null) {
             try {
@@ -79,9 +79,10 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
                 (String.format("Unable to find/add a user with ugentID '%s' and mail '%s'", ugentID, mail));
     }
 
-    public User getUserFromLdap(String ugentID, String mail) {
+    public User getUserFromLdap(String ugentID) {
         try {
-            List<User> users = ldapTemplate.search("ou=people", "mail=" + mail, (AttributesMapper<User>) attrs -> {
+            List<User> users = ldapTemplate.search(String.format("ugentID=%s,ou=people", ugentID),
+                    "objectClass=*", (AttributesMapper<User>) attrs -> {
                 User user = new User();
 
                 // try to use 'ugentPreferredGivenName' and use 'givenName' as fallback
