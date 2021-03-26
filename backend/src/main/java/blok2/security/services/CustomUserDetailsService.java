@@ -62,7 +62,7 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
         }
 
         // Create new user using the UGent LDAP
-        user = getUserFromLdap(ugentID, mail);
+        user = getUserFromLdap(ugentID);
 
         if (user != null) {
             try {
@@ -79,16 +79,33 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
                 (String.format("Unable to find/add a user with ugentID '%s' and mail '%s'", ugentID, mail));
     }
 
-    public User getUserFromLdap(String ugentID, String mail) {
+    public User getUserFromLdap(String ugentID) {
         try {
-            List<User> users = ldapTemplate.search("ou=people", "mail=" + mail, (AttributesMapper<User>) attrs -> {
+             List<User> users = ldapTemplate.search(String.format("ugentID=%s,ou=people", ugentID),
+                     "objectClass=*", (AttributesMapper<User>) attrs -> {
                 User user = new User();
 
                 // try to use 'ugentPreferredGivenName' and use 'givenName' as fallback
                 try {
                     user.setFirstName(attrs.get("ugentPreferredGivenName").get().toString());
                 } catch (NullPointerException ignore) {
-                    user.setFirstName(attrs.get("givenName").get().toString());
+                    // but: givenName is not a mandatory attribute in the UGent LDAP, so this again needs a fallback
+                    try {
+                        user.setFirstName(attrs.get("givenName").get().toString());
+                    } catch (NullPointerException ignore2) {
+                        // luckily, both sn and cn are mandatory attributes
+                        String sn = attrs.get("sn").get().toString(); // surname
+                        String cn = attrs.get("cn").get().toString(); // common name (mostly: first name + surname)
+                        // so we can try to get the first name by replacing the sn in cn with ""
+
+                        // however, you never guess it: sometimes cn == sn (and replacing sn in cn with "" would give
+                        // an empty givenName). So we need to provide a fallback for the fallback of the fallback!
+                        // This by using the cn as the givenName just to get something...
+                        if (cn.contains(sn) && cn.replace(sn, "").trim().length() > 0)
+                            user.setFirstName(cn.replace(sn, "").trim());
+                        else
+                            user.setFirstName(cn);
+                    }
                 }
 
                 // try to use 'ugentPreferredSn' and use 'sn' as fallback
