@@ -7,10 +7,9 @@ describe('VolunteersManagementComponent', () => {
   let fixture: ComponentFixture<VolunteersManagementComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ VolunteersManagementComponent ]
-    })
-    .compileComponents();
+    void TestBed.configureTestingModule({
+      declarations: [VolunteersManagementComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

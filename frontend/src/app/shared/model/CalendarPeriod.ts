@@ -1,16 +1,31 @@
-import {Location} from './Location';
-import {CalendarEvent} from 'angular-calendar';
-import {includesTimeslot, Timeslot, timeslotEndHour, timeslotStartHour} from './Timeslot';
+import { Location, LocationConstructor } from './Location';
+import { CalendarEvent } from 'angular-calendar';
+import {
+  includesTimeslot,
+  Timeslot,
+  timeslotEndHour,
+  timeslotStartHour,
+} from './Timeslot';
 import { LocationReservation } from './LocationReservation';
 import * as moment from 'moment';
 import { Moment } from 'moment';
-import {calendarEventTitleTemplate} from '../../app.constants';
+import { calendarEventTitleTemplate } from '../../app.constants';
 
 export class CalendarPeriod {
-
-  constructor(id: number, location: Location, startsAt: Moment, endsAt: Moment, openingTime: Moment, closingTime: Moment,
-              reservable: boolean, reservableFrom: Moment, timeslotLength: number, timeslots: Timeslot[],
-              lockedFrom: Moment, seatCount: number) {
+  constructor(
+    id: number,
+    location: Location,
+    startsAt: Moment,
+    endsAt: Moment,
+    openingTime: Moment,
+    closingTime: Moment,
+    reservable: boolean,
+    reservableFrom: Moment,
+    timeslotLength: number,
+    timeslots: Timeslot[],
+    lockedFrom: Moment,
+    seatCount: number
+  ) {
     this.id = id;
     this.location = location;
     this.startsAt = startsAt;
@@ -37,10 +52,10 @@ export class CalendarPeriod {
   lockedFrom: Moment;
   seatCount: number;
 
-  static fromJSON(json: any): CalendarPeriod {
+  static fromJSON(json: CalendarPeriod): CalendarPeriod {
     return new CalendarPeriod(
-      json.id,
-      json.location,
+      +json.id,
+      LocationConstructor.newFromObj(json.location),
       moment(json.startsAt),
       moment(json.endsAt),
       moment(json.openingTime, 'HH:mm'),
@@ -48,7 +63,7 @@ export class CalendarPeriod {
       json.reservable,
       moment(json.reservableFrom, 'YYYY-MM-DDTHH:mm:ss'),
       json.timeslotLength,
-      json.timeslots.map(jsonT => Timeslot.fromJSON(jsonT)),
+      json.timeslots.map((jsonT) => Timeslot.fromJSON(jsonT)),
       moment(json.lockedFrom),
       json.seatCount
     );
@@ -66,7 +81,7 @@ export class CalendarPeriod {
     return isCalendarPeriodValid(this);
   }
 
-  toJSON(): object {
+  toJSON(): Record<string, unknown> {
     return {
       id: this.id,
       location: this.location,
@@ -100,8 +115,14 @@ export class CalendarPeriod {
  */
 export function isCalendarPeriodValid(period: CalendarPeriod): boolean {
   // at least, these attributes may not be null (id may be null for adding a period)
-  if (period === null || period.location === null || period.startsAt === null ||
-      period.endsAt === null || period.openingTime === null || period.closingTime === null) {
+  if (
+    period === null ||
+    period.location === null ||
+    period.startsAt === null ||
+    period.endsAt === null ||
+    period.openingTime === null ||
+    period.closingTime === null
+  ) {
     return false;
   }
 
@@ -112,7 +133,7 @@ export function isCalendarPeriodValid(period: CalendarPeriod): boolean {
       period.timeslotLength === null ||
       period.timeslotLength === undefined ||
       period.timeslotLength >
-      Math.abs(period.openingTime.diff(period.closingTime, 'minutes')) ||
+        Math.abs(period.openingTime.diff(period.closingTime, 'minutes')) ||
       period.reservableFrom === null)
   ) {
     return false;
@@ -139,20 +160,23 @@ export function isCalendarPeriodValid(period: CalendarPeriod): boolean {
 /**
  * Convert calendarPeriods to Calendar Events. This detects correctly whether the period is reservable or not (yet).
  */
-export function mapCalendarPeriodsToCalendarEvents(periods: CalendarPeriod[],
-                                                   currentLang: string,
-                                                   reservedTimeslots: LocationReservation[] = []): CalendarEvent[]
-{
+export function mapCalendarPeriodsToCalendarEvents(
+  periods: CalendarPeriod[],
+  currentLang: string,
+  reservedTimeslots: LocationReservation[] = []
+): CalendarEvent<{ calendarPeriod: CalendarPeriod; timeslot?: Timeslot }>[] {
   if (periods.length === 0) {
     return [];
   }
   return periods
-          .map(period => period.reservable && !period.areReservationsLocked() ?
-              mapReservableTimeslotsToCalendarEvents(period, reservedTimeslots) :
-          period.reservable && period.areReservationsLocked() ?
-              mapNotYetReservableTimeslotsToCalendarEvents(period, currentLang) :
-              mapNotReservableCalendarPeriodToCalendarEvent(period, currentLang))
-          .reduce((a, b) => [...a, ...b]);
+    .map((period) =>
+      period.reservable && !period.areReservationsLocked()
+        ? mapReservableTimeslotsToCalendarEvents(period, reservedTimeslots)
+        : period.reservable && period.areReservationsLocked()
+        ? mapNotYetReservableTimeslotsToCalendarEvents(period, currentLang)
+        : mapNotReservableCalendarPeriodToCalendarEvent(period, currentLang)
+    )
+    .reduce((a, b) => [...a, ...b]);
 }
 
 function dateWithTime(date: Moment, time: Moment): Date {
@@ -162,12 +186,20 @@ function dateWithTime(date: Moment, time: Moment): Date {
 /**
  * Convert a calendar period to calendar events but as a block instead of dividing each day into timeslots.
  */
-function mapNotReservableCalendarPeriodToCalendarEvent(period: CalendarPeriod, currentLang: string): CalendarEvent[] {
-  const calendarEvents: CalendarEvent[] = [];
+function mapNotReservableCalendarPeriodToCalendarEvent(
+  period: CalendarPeriod,
+  currentLang: string
+): CalendarEvent<{ calendarPeriod: CalendarPeriod; timeslot?: Timeslot }>[] {
+  const calendarEvents: CalendarEvent<{
+    calendarPeriod: CalendarPeriod;
+  }>[] = [];
 
   const dateWithOpeningTime = dateWithTime(period.startsAt, period.openingTime);
   const dateWithClosingTime = dateWithTime(period.startsAt, period.closingTime);
-  const lastDayWithOpeningTime = dateWithTime(period.endsAt, period.openingTime);
+  const lastDayWithOpeningTime = dateWithTime(
+    period.endsAt,
+    period.openingTime
+  );
 
   let title: string;
   if (currentLang === 'nl') {
@@ -181,8 +213,8 @@ function mapNotReservableCalendarPeriodToCalendarEvent(period: CalendarPeriod, c
       title,
       start: new Date(dateWithOpeningTime),
       end: new Date(dateWithClosingTime),
-      meta: {calendarPeriod: period},
-      color: {primary: 'black', secondary: '#BEBEBE'},
+      meta: { calendarPeriod: period },
+      color: { primary: 'black', secondary: '#BEBEBE' },
       cssClass: 'calendar-event-NR',
     });
 
@@ -198,26 +230,44 @@ function mapNotReservableCalendarPeriodToCalendarEvent(period: CalendarPeriod, c
  * Every timeslot of the CalendarPeriod will be represented by a CalendarEvent but will be greyed out
  * and have a title that notifies the user when the timeslot will be reservable.
  */
-function mapNotYetReservableTimeslotsToCalendarEvents(period: CalendarPeriod, currentLang: string): CalendarEvent[] {
-  const calendarEvents: CalendarEvent[] = [];
+function mapNotYetReservableTimeslotsToCalendarEvents(
+  period: CalendarPeriod,
+  currentLang: string
+): CalendarEvent<{ calendarPeriod: CalendarPeriod; timeslot: Timeslot }>[] {
+  const calendarEvents: CalendarEvent<{
+    calendarPeriod: CalendarPeriod;
+    timeslot: Timeslot;
+  }>[] = [];
 
   for (const timeslot of period.timeslots) {
-    const beginDT = dateWithTime(timeslot.timeslotDate, timeslotStartHour(period, timeslot));
-    const endDT = dateWithTime(timeslot.timeslotDate, timeslotEndHour(period, timeslot));
+    const beginDT = dateWithTime(
+      timeslot.timeslotDate,
+      timeslotStartHour(period, timeslot)
+    );
+    const endDT = dateWithTime(
+      timeslot.timeslotDate,
+      timeslotEndHour(period, timeslot)
+    );
 
     let title: string;
     if (currentLang === 'nl') {
-      title = calendarEventTitleTemplate.reservableFromNL.replace('{datetime}', period.reservableFrom.format('DD/MM/YYYY HH:mm'));
+      title = calendarEventTitleTemplate.reservableFromNL.replace(
+        '{datetime}',
+        period.reservableFrom.format('DD/MM/YYYY HH:mm')
+      );
     } else {
-      title = calendarEventTitleTemplate.reservableFromEN.replace('{datetime}', period.reservableFrom.format('DD/MM/YYYY HH:mm'));
+      title = calendarEventTitleTemplate.reservableFromEN.replace(
+        '{datetime}',
+        period.reservableFrom.format('DD/MM/YYYY HH:mm')
+      );
     }
 
     calendarEvents.push({
       title,
       start: beginDT,
       end: endDT,
-      meta: {calendarPeriod: period, timeslot},
-      color: {primary: 'black', secondary: '#BEBEBE'},
+      meta: { calendarPeriod: period, timeslot },
+      color: { primary: 'black', secondary: '#BEBEBE' },
       cssClass: 'calendar-event-NR',
     });
   }
@@ -233,23 +283,35 @@ function mapNotYetReservableTimeslotsToCalendarEvents(period: CalendarPeriod, cu
  * be the beginning and ending of the timeslot, calculated from the sequence number and the
  * timeslotdate.
  */
-function mapReservableTimeslotsToCalendarEvents(period: CalendarPeriod, reservedTimeslots: LocationReservation[] = []): CalendarEvent[] {
-  const calendarEvents: CalendarEvent[] = [];
+function mapReservableTimeslotsToCalendarEvents(
+  period: CalendarPeriod,
+  reservedTimeslots: LocationReservation[] = []
+): CalendarEvent<{ calendarPeriod: CalendarPeriod; timeslot: Timeslot }>[] {
+  const calendarEvents: CalendarEvent<{
+    calendarPeriod: CalendarPeriod;
+    timeslot: Timeslot;
+  }>[] = [];
 
   for (const timeslot of period.timeslots) {
-    const beginDT = dateWithTime(timeslot.timeslotDate, timeslotStartHour(period, timeslot));
-    const endDT = dateWithTime(timeslot.timeslotDate, timeslotEndHour(period, timeslot));
+    const beginDT = dateWithTime(
+      timeslot.timeslotDate,
+      timeslotStartHour(period, timeslot)
+    );
+    const endDT = dateWithTime(
+      timeslot.timeslotDate,
+      timeslotEndHour(period, timeslot)
+    );
 
     calendarEvents.push({
       title: `${timeslot.amountOfReservations} / ${timeslot.seatCount}`,
       start: beginDT,
       end: endDT,
-      meta: {calendarPeriod: period, timeslot},
+      meta: { calendarPeriod: period, timeslot },
       color: includesTimeslot(
         reservedTimeslots.map((s) => s.timeslot),
         timeslot
       )
-        ? {primary: '#00004d', secondary: '#133E7D'}
+        ? { primary: '#00004d', secondary: '#133E7D' }
         : null,
       cssClass: includesTimeslot(
         reservedTimeslots.map((s) => s.timeslot),

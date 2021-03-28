@@ -2,7 +2,7 @@ export interface PenaltyEvent {
   code: number;
   points: number;
   publicAccessible: boolean;
-  descriptions: {};
+  descriptions: Record<string, string>;
 }
 
 export class PenaltyEventConstructor {
@@ -11,7 +11,7 @@ export class PenaltyEventConstructor {
       code: 0,
       points: 0,
       publicAccessible: true,
-      descriptions: {}
+      descriptions: {},
     };
   }
 
@@ -20,7 +20,7 @@ export class PenaltyEventConstructor {
       code: obj.code,
       points: obj.points,
       publicAccessible: obj.publicAccessible,
-      descriptions: obj.descriptions
+      descriptions: obj.descriptions,
     };
   }
 }

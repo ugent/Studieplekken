@@ -7,10 +7,9 @@ describe('ProfileChangePasswordComponent', () => {
   let fixture: ComponentFixture<ProfileChangePasswordComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ProfileChangePasswordComponent ]
-    })
-    .compileComponents();
+    void TestBed.configureTestingModule({
+      declarations: [ProfileChangePasswordComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

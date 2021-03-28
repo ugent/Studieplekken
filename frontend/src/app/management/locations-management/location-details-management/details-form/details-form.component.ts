@@ -1,26 +1,25 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Location, LocationConstructor} from '../../../../shared/model/Location';
-import {AbstractControl, FormControl, FormGroup} from '@angular/forms';
-import {LocationService} from '../../../../services/api/locations/location.service';
-import {Observable} from 'rxjs';
+import { Component, Input, OnInit } from '@angular/core';
 import {
-  LocationDetailsService
-} from '../../../../services/single-point-of-truth/location-details/location-details.service';
-import {Authority} from '../../../../shared/model/Authority';
-import {AuthoritiesService} from '../../../../services/api/authorities/authorities.service';
-import {tap} from 'rxjs/operators';
-import {Building} from 'src/app/shared/model/Building';
-import {BuildingService} from 'src/app/services/api/buildings/buildings.service';
-import {msToShowFeedback} from '../../../../app.constants';
-import {
-  ApplicationTypeFunctionalityService
-} from 'src/app/services/functionality/application-type/application-type-functionality.service';
-import {AuthenticationService} from '../../../../services/authentication/authentication.service';
+  Location,
+  LocationConstructor,
+} from '../../../../shared/model/Location';
+import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { LocationService } from '../../../../services/api/locations/location.service';
+import { Observable } from 'rxjs';
+import { LocationDetailsService } from '../../../../services/single-point-of-truth/location-details/location-details.service';
+import { Authority } from '../../../../shared/model/Authority';
+import { AuthoritiesService } from '../../../../services/api/authorities/authorities.service';
+import { tap } from 'rxjs/operators';
+import { Building } from 'src/app/shared/model/Building';
+import { BuildingService } from 'src/app/services/api/buildings/buildings.service';
+import { msToShowFeedback } from '../../../../app.constants';
+import { ApplicationTypeFunctionalityService } from 'src/app/services/functionality/application-type/application-type-functionality.service';
+import { AuthenticationService } from '../../../../services/authentication/authentication.service';
 
 @Component({
   selector: 'app-details-form',
   templateUrl: './details-form.component.html',
-  styleUrls: ['./details-form.component.css']
+  styleUrls: ['./details-form.component.css'],
 })
 export class DetailsFormComponent implements OnInit {
   @Input() location: Observable<Location>;
@@ -33,13 +32,13 @@ export class DetailsFormComponent implements OnInit {
   buildingsMap: Map<number, Building>; // map the buildingId to the Building object
 
   locationForm = new FormGroup({
-    name: new FormControl({value: '', disabled: true}),
-    authority: new FormControl({value: '', disabled: true}),
-    building: new FormControl({value: '', disabled: true}),
-    numberOfSeats: new FormControl({value: '', disabled: true}),
-    numberOfLockers: new FormControl({value: '', disabled: true}),
-    forGroup: new FormControl({value: '', disabled: true}),
-    imageUrl: new FormControl({value: '', disabled: true})
+    name: new FormControl({ value: '', disabled: true }),
+    authority: new FormControl({ value: '', disabled: true }),
+    building: new FormControl({ value: '', disabled: true }),
+    numberOfSeats: new FormControl({ value: '', disabled: true }),
+    numberOfLockers: new FormControl({ value: '', disabled: true }),
+    forGroup: new FormControl({ value: '', disabled: true }),
+    imageUrl: new FormControl({ value: '', disabled: true }),
   });
 
   disableEditLocationButton = false;
@@ -51,25 +50,30 @@ export class DetailsFormComponent implements OnInit {
 
   canEditLocationSeats = this.authenticationService.isAdmin();
 
-  constructor(private locationService: LocationService,
-              private locationDetailsService: LocationDetailsService,
-              private authoritiesService: AuthoritiesService,
-              private buildingsService: BuildingService,
-              private functionalityService: ApplicationTypeFunctionalityService,
-              private authenticationService: AuthenticationService) {
-  }
+  constructor(
+    private locationService: LocationService,
+    private locationDetailsService: LocationDetailsService,
+    private authoritiesService: AuthoritiesService,
+    private buildingsService: BuildingService,
+    private functionalityService: ApplicationTypeFunctionalityService,
+    private authenticationService: AuthenticationService
+  ) {}
 
   get authorityInLocationForm(): Authority {
-    return this.authoritiesMap.get(Number(this.locationForm.get('authority').value));
+    return this.authoritiesMap.get(
+      Number(this.locationForm.get('authority').value)
+    );
   }
 
   get buildingInLocationForm(): Building {
-    return this.buildingsMap.get(Number(this.locationForm.get('building').value));
+    return this.buildingsMap.get(
+      Number(this.locationForm.get('building').value)
+    );
   }
 
   ngOnInit(): void {
     // if the location has been retrieved, populate the form group
-    this.location.subscribe(next => {
+    this.location.subscribe((next) => {
       this.updateFormGroup(next);
       this.locationObj = next;
     });
@@ -78,29 +82,29 @@ export class DetailsFormComponent implements OnInit {
     if (this.authenticationService.isAdmin()) {
       this.authoritiesObs = this.authoritiesService.getAllAuthorities();
     } else {
-      this.authoritiesObs = this.authoritiesService.getAuthoritiesOfUser(this.authenticationService.userValue().augentID);
+      this.authoritiesObs = this.authoritiesService.getAuthoritiesOfUser(
+        this.authenticationService.userValue().augentID
+      );
     }
 
     // the authoritiesObs is used in the form, asynchronously
     // the authoritiesMap is used to set the authority object
     // when the user wants to change the authority
-    this.authoritiesObs.subscribe(
-      next => {
-        this.authoritiesMap = new Map<number, Authority>();
-        next.forEach(value => {
-          this.authoritiesMap.set(value.authorityId, value);
-        });
-      }
-    );
+    this.authoritiesObs.subscribe((next) => {
+      this.authoritiesMap = new Map<number, Authority>();
+      next.forEach((value) => {
+        this.authoritiesMap.set(value.authorityId, value);
+      });
+    });
 
-    this.buildingsObs = this.buildingsService.getAllBuildings().pipe(tap(
-      next => {
+    this.buildingsObs = this.buildingsService.getAllBuildings().pipe(
+      tap((next) => {
         this.buildingsMap = new Map<number, Building>();
-        next.forEach(value => {
+        next.forEach((value) => {
           this.buildingsMap.set(value.buildingId, value);
         });
-      }
-    ));
+      })
+    );
 
     this.showLockersManagement = this.functionalityService.showLockersManagementFunctionality();
   }
@@ -113,7 +117,7 @@ export class DetailsFormComponent implements OnInit {
       numberOfSeats: location.numberOfSeats,
       numberOfLockers: 0,
       forGroup: location.forGroup,
-      imageUrl: location.imageUrl
+      imageUrl: location.imageUrl,
     });
   }
 
@@ -164,7 +168,8 @@ export class DetailsFormComponent implements OnInit {
         // observable, to which the HTML is implicitly subscribed through the
         // *ngIf="location | async as location" in the outer div of the template.
         this.locationDetailsService.loadLocation(to.locationId);
-      }, () => {
+      },
+      () => {
         this.errorHandler();
         // reload the location to be sure
         this.locationDetailsService.loadLocation(from.locationId);
@@ -179,13 +184,27 @@ export class DetailsFormComponent implements OnInit {
   // *   AUXILIARIES   *
   // *******************/
 
-  get name(): AbstractControl { return this.locationForm.get('name'); }
-  get authority(): AbstractControl { return this.locationForm.get('authority'); }
-  get building(): AbstractControl { return this.locationForm.get('building'); }
-  get numberOfSeats(): AbstractControl { return this.locationForm.get('numberOfSeats'); }
-  get numberOfLockers(): AbstractControl { return this.locationForm.get('numberOfLockers'); }
-  get forGroup(): AbstractControl { return this.locationForm.get('forGroup'); }
-  get imageUrl(): AbstractControl { return this.locationForm.get('imageUrl'); }
+  get name(): AbstractControl {
+    return this.locationForm.get('name');
+  }
+  get authority(): AbstractControl {
+    return this.locationForm.get('authority');
+  }
+  get building(): AbstractControl {
+    return this.locationForm.get('building');
+  }
+  get numberOfSeats(): AbstractControl {
+    return this.locationForm.get('numberOfSeats');
+  }
+  get numberOfLockers(): AbstractControl {
+    return this.locationForm.get('numberOfLockers');
+  }
+  get forGroup(): AbstractControl {
+    return this.locationForm.get('forGroup');
+  }
+  get imageUrl(): AbstractControl {
+    return this.locationForm.get('imageUrl');
+  }
 
   get locationInForm(): Location {
     const location: Location = LocationConstructor.newFromObj(this.locationObj);
@@ -211,11 +230,17 @@ export class DetailsFormComponent implements OnInit {
 
   successHandler(): void {
     this.successUpdatingLocation = true;
-    setTimeout(() => this.successUpdatingLocation = undefined, msToShowFeedback);
+    setTimeout(
+      () => (this.successUpdatingLocation = undefined),
+      msToShowFeedback
+    );
   }
 
   errorHandler(): void {
     this.successUpdatingLocation = false;
-    setTimeout(() => this.successUpdatingLocation = undefined, msToShowFeedback);
+    setTimeout(
+      () => (this.successUpdatingLocation = undefined),
+      msToShowFeedback
+    );
   }
 }

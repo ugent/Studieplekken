@@ -7,10 +7,9 @@ describe('ProfileOverviewComponent', () => {
   let fixture: ComponentFixture<ProfileOverviewComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ProfileOverviewComponent ]
-    })
-    .compileComponents();
+    void TestBed.configureTestingModule({
+      declarations: [ProfileOverviewComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

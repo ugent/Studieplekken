@@ -1,20 +1,20 @@
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {api} from '../endpoints';
-import {LocationTag} from '../../../shared/model/LocationTag';
-import {Cache} from '../../../shared/cache/Cache';
-import { tap } from 'rxjs/operators';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { api } from '../endpoints';
+import { LocationTag } from '../../../shared/model/LocationTag';
+import { Cache } from '../../../shared/cache/Cache';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TagsService {
+  constructor(private http: HttpClient) {}
 
-  constructor(private http: HttpClient) {
-  }
-
-  tagCache = new Cache<number, LocationTag>(this.http, (arg: LocationTag) => arg.tagId);
+  tagCache = new Cache<number, LocationTag>(
+    this.http,
+    (arg: LocationTag) => arg.tagId
+  );
 
   /*****************************************************
    *   API calls for CRUD operations with public.TAGS  *
@@ -32,11 +32,13 @@ export class TagsService {
     return this.http.post<LocationTag>(api.addTag, locationTag);
   }
 
-  updateTag(locationTag: LocationTag): Observable<any> {
-    return this.http.put(api.updateTag, locationTag);
+  updateTag(locationTag: LocationTag): Observable<void> {
+    return this.http.put<void>(api.updateTag, locationTag);
   }
 
-  deleteTag(locationTag: LocationTag): Observable<any> {
-    return this.http.delete(api.deleteTag.replace('{tagId}', String(locationTag.tagId)));
+  deleteTag(locationTag: LocationTag): Observable<void> {
+    return this.http.delete<void>(
+      api.deleteTag.replace('{tagId}', String(locationTag.tagId))
+    );
   }
 }

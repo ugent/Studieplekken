@@ -9,7 +9,7 @@ export class BuildingConstructor {
     return {
       buildingId: 0,
       name: '',
-      address: ''
+      address: '',
     };
   }
 
@@ -17,7 +17,7 @@ export class BuildingConstructor {
     return {
       buildingId: obj.buildingId,
       name: obj.name,
-      address: obj.address
+      address: obj.address,
     };
   }
 }

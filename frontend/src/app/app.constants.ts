@@ -1,7 +1,6 @@
 export const defaultLocationImage = 'assets/images/default_location.jpg';
 export const userWantsTLogInLocalStorageKey = 'userWantsTLogIn';
 
-
 /*
  * The amount of milliseconds that a feedback div should be shown
  */
@@ -26,13 +25,18 @@ export const rolesArray = ['ADMIN'];
  * The possible statuses of a location.
  */
 
-export const locationStatusArray = ['OPEN', 'CLOSED', 'CLOSED_UPCOMING', 'CLOSED_ACTIVE'];
+export const locationStatusArray = [
+  'OPEN',
+  'CLOSED',
+  'CLOSED_UPCOMING',
+  'CLOSED_ACTIVE',
+];
 
 export enum LocationStatus {
   OPEN = 'OPEN',
   CLOSED = 'CLOSED',
   CLOSED_UPCOMING = 'CLOSED_UPCOMING',
-  CLOSED_ACTIVE = 'CLOSED_ACTIVE'
+  CLOSED_ACTIVE = 'CLOSED_ACTIVE',
 }
 
 /*
@@ -41,7 +45,7 @@ export enum LocationStatus {
  */
 export const languageAsEnum = {
   nl: 'DUTCH',
-  en: 'ENGLISH'
+  en: 'ENGLISH',
 };
 
 export const defaultOpeningHour = 8;
@@ -55,5 +59,5 @@ export const calendarEventTitleTemplate = {
   reservableFromNL: 'Reserveren vanaf {datetime}',
   reservableFromEN: 'Reservable from {datetime}',
   notReservableNL: 'Geen reservatie nodig',
-  notReservableEN: 'No reservation required'
+  notReservableEN: 'No reservation required',
 };

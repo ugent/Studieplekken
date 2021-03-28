@@ -7,10 +7,9 @@ describe('LockersTableComponent', () => {
   let fixture: ComponentFixture<LockersTableComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ LockersTableComponent ]
-    })
-    .compileComponents();
+    void TestBed.configureTestingModule({
+      declarations: [LockersTableComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

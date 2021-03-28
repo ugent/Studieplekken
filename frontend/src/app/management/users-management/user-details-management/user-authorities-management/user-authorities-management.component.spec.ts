@@ -7,10 +7,9 @@ describe('UserAuthoritiesManagementComponent', () => {
   let fixture: ComponentFixture<UserAuthoritiesManagementComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ UserAuthoritiesManagementComponent ]
-    })
-    .compileComponents();
+    void TestBed.configureTestingModule({
+      declarations: [UserAuthoritiesManagementComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

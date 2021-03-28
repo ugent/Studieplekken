@@ -7,10 +7,9 @@ describe('VolunteerManagementPanelComponent', () => {
   let fixture: ComponentFixture<VolunteerManagementPanelComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ VolunteerManagementPanelComponent ]
-    })
-    .compileComponents();
+    void TestBed.configureTestingModule({
+      declarations: [VolunteerManagementPanelComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -1,16 +1,16 @@
-import {Component, Input, OnInit, TemplateRef} from '@angular/core';
-import {Observable} from 'rxjs';
-import {User, UserConstructor} from '../../../../shared/model/User';
-import {AbstractControl, FormControl, FormGroup} from '@angular/forms';
-import {UserDetailsService} from '../../../../services/single-point-of-truth/user-details/user-details.service';
-import {UserService} from '../../../../services/api/users/user.service';
-import {msToShowFeedback} from '../../../../app.constants';
+import { Component, Input, OnInit, TemplateRef } from '@angular/core';
+import { Observable } from 'rxjs';
+import { User, UserConstructor } from '../../../../shared/model/User';
+import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { UserDetailsService } from '../../../../services/single-point-of-truth/user-details/user-details.service';
+import { UserService } from '../../../../services/api/users/user.service';
+import { msToShowFeedback } from '../../../../app.constants';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-user-roles',
   templateUrl: './user-roles.component.html',
-  styleUrls: ['./user-roles.component.css']
+  styleUrls: ['./user-roles.component.css'],
 })
 export class UserRolesComponent implements OnInit {
   @Input() userObs: Observable<User>;
@@ -19,31 +19,32 @@ export class UserRolesComponent implements OnInit {
   userUpdatingSuccess: boolean = undefined;
 
   roleFormGroup = new FormGroup({
-    admin: new FormControl('')
+    admin: new FormControl(''),
   });
 
   modalRef: BsModalRef;
 
-  constructor(private userDetailsService: UserDetailsService,
-              private userService: UserService,
-              private modalService: BsModalService) { }
+  constructor(
+    private userDetailsService: UserDetailsService,
+    private userService: UserService,
+    private modalService: BsModalService
+  ) {}
 
   ngOnInit(): void {
-    this.userObs.subscribe(
-      (next) => {
-        this.user = next;
-        this.admin.setValue(this.user.admin);
-      }
-    );
+    this.userObs.subscribe((next) => {
+      this.user = next;
+      this.admin.setValue(this.user.admin);
+    });
   }
 
   submitUpdateUser(): void {
     const clone = UserConstructor.newFromObj(this.user);
-    clone.admin = this.admin.value;
+    clone.admin = this.admin.value as boolean;
     this.userService.updateUser(this.user.augentID, clone).subscribe(
       () => {
         this.successUpdatingUserHandler();
-      }, () => {
+      },
+      () => {
         this.errorUpdatingUserHandler();
       }
     );
@@ -52,12 +53,12 @@ export class UserRolesComponent implements OnInit {
   successUpdatingUserHandler(): void {
     this.userDetailsService.loadUser(this.user.augentID);
     this.userUpdatingSuccess = true;
-    setTimeout(() => this.userUpdatingSuccess = undefined, msToShowFeedback);
+    setTimeout(() => (this.userUpdatingSuccess = undefined), msToShowFeedback);
   }
 
   errorUpdatingUserHandler(): void {
     this.userUpdatingSuccess = false;
-    setTimeout(() => this.userUpdatingSuccess = undefined, msToShowFeedback);
+    setTimeout(() => (this.userUpdatingSuccess = undefined), msToShowFeedback);
   }
 
   disableRoleUpdateButton(): boolean {
@@ -68,7 +69,7 @@ export class UserRolesComponent implements OnInit {
     this.admin.setValue(this.user.admin);
   }
 
-  onAdminClick(event: any, template: TemplateRef<any>): void {
+  onAdminClick(event: Event, template: TemplateRef<unknown>): void {
     event.preventDefault();
     this.modalRef = this.modalService.show(template);
   }

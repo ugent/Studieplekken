@@ -7,10 +7,9 @@ describe('UserRolesComponent', () => {
   let fixture: ComponentFixture<UserRolesComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ UserRolesComponent ]
-    })
-    .compileComponents();
+    void TestBed.configureTestingModule({
+      declarations: [UserRolesComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

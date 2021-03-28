@@ -1,16 +1,24 @@
-import {Component, OnInit} from '@angular/core';
-import {Observable} from 'rxjs';
-import {PenaltyEvent, PenaltyEventConstructor} from '../../shared/model/PenaltyEvent';
-import {PenaltyService} from '../../services/api/penalties/penalty.service';
-import {TranslateService} from '@ngx-translate/core';
-import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
-import {HttpErrorResponse} from '@angular/common/http';
-import {languageAsEnum} from '../../app.constants';
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import {
+  PenaltyEvent,
+  PenaltyEventConstructor,
+} from '../../shared/model/PenaltyEvent';
+import { PenaltyService } from '../../services/api/penalties/penalty.service';
+import { TranslateService } from '@ngx-translate/core';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
+import { languageAsEnum } from '../../app.constants';
 
 @Component({
   selector: 'app-penalty-events-management',
   templateUrl: './penalty-events-management.component.html',
-  styleUrls: ['./penalty-events-management.component.css']
+  styleUrls: ['./penalty-events-management.component.css'],
 })
 export class PenaltyEventsManagementComponent implements OnInit {
   penaltyEventsObs: Observable<PenaltyEvent[]>;
@@ -20,9 +28,11 @@ export class PenaltyEventsManagementComponent implements OnInit {
   deletionWasSuccess: boolean = undefined;
 
   penaltyEventFormGroup = new FormGroup({
-    code: new FormControl('', Validators.required),
-    penaltyPoints: new FormControl('',
-      Validators.compose([Validators.required, Validators.min(0)]))
+    code: new FormControl('', Validators.required.bind(this)),
+    penaltyPoints: new FormControl(
+      '',
+      Validators.compose([Validators.required.bind(this), Validators.min(0)])
+    ),
   });
 
   descriptionsForNewPenaltyEvent: Map<string, string>;
@@ -36,9 +46,10 @@ export class PenaltyEventsManagementComponent implements OnInit {
 
   supportedLanguagesTranslated: string[] = [];
 
-  constructor(private penaltyService: PenaltyService,
-              private translate: TranslateService) {
-  }
+  constructor(
+    private penaltyService: PenaltyService,
+    private translate: TranslateService
+  ) {}
 
   get code(): AbstractControl {
     return this.penaltyEventFormGroup.get('code');
@@ -56,13 +67,14 @@ export class PenaltyEventsManagementComponent implements OnInit {
     this.penaltyEventsObs.subscribe(
       () => {
         this.errorOnRetrievingPenaltyEvents = false;
-      }, () => {
+      },
+      () => {
         this.errorOnRetrievingPenaltyEvents = true;
       }
     );
 
-    Object.keys(languageAsEnum).forEach(key => {
-      this.translate.get('language.' + key).subscribe(lang => {
+    Object.keys(languageAsEnum).forEach((key) => {
+      this.translate.get('language.' + key).subscribe((lang) => {
         // push the new language to the supported languages
         this.supportedLanguagesTranslated.push(lang);
         // and make sure that there is a description entry in the map
@@ -73,33 +85,41 @@ export class PenaltyEventsManagementComponent implements OnInit {
   }
 
   descriptionToShow(penaltyEvent: PenaltyEvent): string {
-    let idx = Object.keys(penaltyEvent.descriptions)
-      .findIndex(n => n === languageAsEnum[this.translate.currentLang]);
+    let idx = Object.keys(penaltyEvent.descriptions).findIndex(
+      (n) => n === languageAsEnum[this.translate.currentLang]
+    );
 
     // if browser language is not supported, return ENGLISH
     if (idx < 0) {
-      idx = Object.keys(penaltyEvent.descriptions)
-        .findIndex(n => n === languageAsEnum.en);
+      idx = Object.keys(penaltyEvent.descriptions).findIndex(
+        (n) => n === languageAsEnum.en
+      );
     } else {
-      return penaltyEvent.descriptions[languageAsEnum[this.translate.currentLang]];
+      return penaltyEvent.descriptions[
+        languageAsEnum[this.translate.currentLang as 'en' | 'nl']
+      ];
     }
 
     // if ENGLISH is not found, try to return the first supported language
     if (idx < 0) {
       if (Object.keys(penaltyEvent.descriptions).length > 0) {
-        return penaltyEvent.descriptions[Object.keys(penaltyEvent.descriptions)[0]];
+        return penaltyEvent.descriptions[
+          Object.keys(penaltyEvent.descriptions)[0]
+        ];
       } else {
         return '';
       }
     } else {
-      return penaltyEvent.descriptions[languageAsEnum[this.translate.currentLang]];
+      return penaltyEvent.descriptions[
+        languageAsEnum[this.translate.currentLang as 'en' | 'nl']
+      ];
     }
   }
 
   setupDescriptionsForNewPenaltyEvent(): void {
     // prepare descriptions
     this.descriptionsForNewPenaltyEvent = new Map<string, string>();
-    this.supportedLanguagesTranslated.forEach(key => {
+    this.supportedLanguagesTranslated.forEach((key) => {
       this.descriptionsForNewPenaltyEvent.set(key, this.emptyDescription);
     });
   }
@@ -121,7 +141,7 @@ export class PenaltyEventsManagementComponent implements OnInit {
     // set the penaltyEventFormGroup
     this.penaltyEventFormGroup.setValue({
       code: '',
-      penaltyPoints: ''
+      penaltyPoints: '',
     });
     this.code.enable();
     this.penaltyPoints.enable();
@@ -140,8 +160,11 @@ export class PenaltyEventsManagementComponent implements OnInit {
     const validForm = !this.penaltyEventFormGroup.invalid;
 
     let validDescriptions = true;
-    this.supportedLanguagesTranslated.forEach(lang => {
-      if (this.descriptionsForNewPenaltyEvent.get(lang).trim() === this.emptyDescription) {
+    this.supportedLanguagesTranslated.forEach((lang) => {
+      if (
+        this.descriptionsForNewPenaltyEvent.get(lang).trim() ===
+        this.emptyDescription
+      ) {
         validDescriptions = false;
       }
     });
@@ -149,7 +172,7 @@ export class PenaltyEventsManagementComponent implements OnInit {
     return validForm && validDescriptions;
   }
 
-  addNewPenaltyEvent(value: { code: number, penaltyPoints: number }): void {
+  addNewPenaltyEvent(value: { code: number; penaltyPoints: number }): void {
     if (this.validPenaltyEventForm()) {
       const penaltyEvent = this.penaltyEventFromFormAndDescriptions(value);
 
@@ -158,7 +181,8 @@ export class PenaltyEventsManagementComponent implements OnInit {
         () => {
           this.additionWasSuccess = true;
           this.penaltyEventsObs = this.penaltyService.getPenaltyEvents();
-        }, (error: HttpErrorResponse) => {
+        },
+        (error: HttpErrorResponse) => {
           if (error.status === 417) {
             this.additionWasSuccess = undefined; // otherwise, two divs will show
             this.notAllSupportedLanguagesAreFilledInError = true;
@@ -181,7 +205,7 @@ export class PenaltyEventsManagementComponent implements OnInit {
     // set the penaltyEventFormGroup
     this.penaltyEventFormGroup.setValue({
       code: penaltyEvent.code,
-      penaltyPoints: penaltyEvent.points
+      penaltyPoints: penaltyEvent.points,
     });
     this.code.disable();
 
@@ -196,34 +220,40 @@ export class PenaltyEventsManagementComponent implements OnInit {
 
   setupDescriptionsForUpdate(penaltyEvent: PenaltyEvent): void {
     this.descriptionsForNewPenaltyEvent = new Map<string, string>();
-    this.supportedLanguagesTranslated.forEach(key => {
-      this.descriptionsForNewPenaltyEvent.set(key, penaltyEvent.descriptions[key.toUpperCase()]);
+    this.supportedLanguagesTranslated.forEach((key) => {
+      this.descriptionsForNewPenaltyEvent.set(
+        key,
+        penaltyEvent.descriptions[key.toUpperCase()]
+      );
     });
   }
 
   updatePenaltyEvent(): void {
     const value = {
-      code: this.code.value,
-      penaltyPoints: this.penaltyPoints.value
+      code: this.code.value as number,
+      penaltyPoints: this.penaltyPoints.value as number,
     };
 
     if (this.validPenaltyEventForm()) {
       const penaltyEvent = this.penaltyEventFromFormAndDescriptions(value);
 
       this.updateWasSuccess = null;
-      this.penaltyService.updatePenaltyEvent(value.code, penaltyEvent).subscribe(
-        () => {
-          this.updateWasSuccess = true;
-          this.penaltyEventsObs = this.penaltyService.getPenaltyEvents();
-        }, (error: HttpErrorResponse) => {
-          if (error.status === 417) {
-            this.updateWasSuccess = undefined; // otherwise, two divs will show
-            this.notAllSupportedLanguagesAreFilledInError = true;
-          } else {
-            this.updateWasSuccess = false;
+      this.penaltyService
+        .updatePenaltyEvent(value.code, penaltyEvent)
+        .subscribe(
+          () => {
+            this.updateWasSuccess = true;
+            this.penaltyEventsObs = this.penaltyService.getPenaltyEvents();
+          },
+          (error: HttpErrorResponse) => {
+            if (error.status === 417) {
+              this.updateWasSuccess = undefined; // otherwise, two divs will show
+              this.notAllSupportedLanguagesAreFilledInError = true;
+            } else {
+              this.updateWasSuccess = false;
+            }
           }
-        }
-      );
+        );
     }
   }
 
@@ -234,21 +264,27 @@ export class PenaltyEventsManagementComponent implements OnInit {
 
   deletePenaltyEventLinkedToCurrentToDelete(): void {
     this.deletionWasSuccess = null;
-    this.penaltyService.deletePenaltyEvent(this.currentPenaltyEventToDelete).subscribe(
-      () => {
-        this.deletionWasSuccess = true;
-        this.penaltyEventsObs = this.penaltyService.getPenaltyEvents();
-      }, () => {
-        this.deletionWasSuccess = false;
-      }
-    );
+    this.penaltyService
+      .deletePenaltyEvent(this.currentPenaltyEventToDelete)
+      .subscribe(
+        () => {
+          this.deletionWasSuccess = true;
+          this.penaltyEventsObs = this.penaltyService.getPenaltyEvents();
+        },
+        () => {
+          this.deletionWasSuccess = false;
+        }
+      );
   }
 
   isPenaltyEventUpdatableOrDeletable(code: number): boolean {
     return !String(code).startsWith('1666');
   }
 
-  penaltyEventFromFormAndDescriptions(value: { code: number, penaltyPoints: number }): PenaltyEvent {
+  penaltyEventFromFormAndDescriptions(value: {
+    code: number;
+    penaltyPoints: number;
+  }): PenaltyEvent {
     const penaltyEvent = PenaltyEventConstructor.new();
     penaltyEvent.code = value.code;
     penaltyEvent.points = value.penaltyPoints;

@@ -36,19 +36,21 @@ export const api = {
   locationVolunteers: '/api/locations/{locationId}/volunteers',
   addLocationVolunteer: '/api/locations/{locationId}/volunteers/{userId}',
 
-
   // LOCATION_RESERVATIONS
   locationReservationsOfUser: '/api/locations/reservations/user',
-  locationReservationsOfLocation: '/api/locations/reservations/timeslot/{calendarid}/{date}/{seqnr}',
+  locationReservationsOfLocation:
+    '/api/locations/reservations/timeslot/{calendarid}/{date}/{seqnr}',
   locationReservationsOfLocationFrom: '/api/locations/reservations/from',
   locationReservationsOfLocationUntil: '/api/locations/reservations/until',
-  locationReservationsOfLocationFromAndUntil: '/api/locations/reservations/fromAndUntil',
+  locationReservationsOfLocationFromAndUntil:
+    '/api/locations/reservations/fromAndUntil',
   addLocationReservation: '/api/locations/reservations',
   deleteLocationReservation: '/api/locations/reservations',
-  updateAttendance: '/api/locations/reservations/{userid}/{calendarid}/{date}/{seqnr}/attendance',
+  updateAttendance:
+    '/api/locations/reservations/{userid}/{calendarid}/{date}/{seqnr}/attendance',
   locationReservationCount: '/api/locations/reservations/count/{locationId}',
-  locationReservationsWithLocationOfUser: '/api/locations/reservations/{userId}',
-
+  locationReservationsWithLocationOfUser:
+    '/api/locations/reservations/{userId}',
 
   // AUTHORITY
   buildings: '/api/building',
@@ -104,5 +106,5 @@ export const api = {
 
   // Scanning functionality
   scanningLocations: '/api/scan/locations',
-  usersToScanAtLocation: '/api/scan/users/{locationId}'
+  usersToScanAtLocation: '/api/scan/users/{locationId}',
 };

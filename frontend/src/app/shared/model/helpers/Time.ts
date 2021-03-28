@@ -9,7 +9,7 @@ export class TimeConstructor {
     return {
       hrs: 0,
       min: 0,
-      sec: 0
+      sec: 0,
     };
   }
 
@@ -17,7 +17,7 @@ export class TimeConstructor {
     return {
       hrs: obj.hrs,
       min: obj.min,
-      sec: obj.sec
+      sec: obj.sec,
     };
   }
 }

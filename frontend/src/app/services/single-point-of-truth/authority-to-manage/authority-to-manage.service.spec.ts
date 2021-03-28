@@ -6,7 +6,7 @@ describe('AuthorityToManageService', () => {
   let service: AuthorityToManageService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    void TestBed.configureTestingModule({});
     service = TestBed.inject(AuthorityToManageService);
   });
 

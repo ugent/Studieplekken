@@ -7,10 +7,9 @@ describe('MomentDateComponent', () => {
   let fixture: ComponentFixture<MomentDateComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ MomentDateComponent ]
-    })
-    .compileComponents();
+    void TestBed.configureTestingModule({
+      declarations: [MomentDateComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

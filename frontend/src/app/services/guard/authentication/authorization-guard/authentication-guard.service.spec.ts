@@ -6,7 +6,7 @@ describe('AuthenticationGuardService', () => {
   let service: AuthorizationGuardService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    void TestBed.configureTestingModule({});
     service = TestBed.inject(AuthorizationGuardService);
   });
 

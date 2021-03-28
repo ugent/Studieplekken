@@ -1,20 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { environment } from '../../environments/environment';
-import {userWantsTLogInLocalStorageKey} from '../app.constants';
+import { userWantsTLogInLocalStorageKey } from '../app.constants';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
 })
-export class LoginComponent implements OnInit {
-
+export class LoginComponent {
   casFlowTriggerUrl = environment.casFlowTriggerUrl;
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
 
   /**
    * When the user clicked on the login button, we set the localStorage's
