@@ -174,7 +174,8 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
     );
 
     if (
-      this.currentTimeslot.amountOfReservations >= this.capacity &&
+      this.currentTimeslot.amountOfReservations >=
+        this.currentTimeslot.seatCount &&
       !timeslotIsSelected
     ) {
       return;

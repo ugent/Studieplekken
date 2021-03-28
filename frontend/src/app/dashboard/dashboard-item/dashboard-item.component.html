@@ -53,13 +53,13 @@
 
       <!-- Progress bar for reserved seats -->
       <div class="mt-auto">
-        <div *ngIf="occupationObs | async as occupation">
+        <div *ngIf="location.currentTimeslot as timeslot">
           <div class="progress" [class.hidden]="!(showProgressBar && occupation >= 0)">
             <div class="progress-bar" role="progressbar"
-                 [style.width]="occupation / location.numberOfSeats * 100 + '%'"
-                 [attr.aria-valuenow]="occupation"
+                 [style.width]="(timeslot.amountOfReservations / timeslot.seatCount) * 100 + '%'"
+                 [attr.aria-valuenow]="timeslot.amountOfReservations"
                  aria-valuemin="0" aria-valuemax="100">
-              <span>{{occupation}}/{{location.numberOfSeats}}</span>
+              <span>{{timeslot.amountOfReservations}}/{{timeslot.seatCount}}</span>
             </div>
           </div>
         </div>

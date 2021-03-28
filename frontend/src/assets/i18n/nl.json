@@ -800,8 +800,10 @@
       "header": {
         "name": "Naam",
         "building": "Gebouw",
-        "numberOfSeats": "Plaatsen"
+        "numberOfSeats": "Plaatsen",
+        "scan":"Scan"
       },
+      "empty": "Gesloten",
       "noLocationsWarning": "Je hebt momenteel geen locaties toegewezen gekregen waar je studenten kan scannen.",
       "errorMessageOnLoadingLocations": "De locaties waar je studenten kan scannen, kunnen niet opgehaald worden."
     },

@@ -7,8 +7,12 @@
                 <i class="glyphicon glyphicon-minus"></i>
                 {{('management.locationDetails.title' | translate).replace('{locationName}',
                 location.name)}}
+                <span style="float: right">
+                  {{volunteers.length}} {{('management.aside.volunteers' | translate).toLowerCase()}}
+                </span>
             </a>
         </h3>
+
     </div>
 
     <!-- Body -->
