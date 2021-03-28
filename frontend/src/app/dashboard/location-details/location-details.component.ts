@@ -30,6 +30,7 @@ import * as moment from 'moment';
 import { DatePipe } from '@angular/common';
 import { Pair } from '../../shared/model/helpers/Pair';
 import { ApplicationTypeFunctionalityService } from 'src/app/services/functionality/application-type/application-type-functionality.service';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 @Component({
   selector: 'app-location-details',
@@ -43,6 +44,8 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
   tags: LocationTag[];
 
   events: CalendarEvent[] = [];
+
+  editor: unknown = ClassicEditor;
 
   selectedSubject: BehaviorSubject<LocationReservation[]> = new BehaviorSubject<
     LocationReservation[]
