@@ -102,7 +102,9 @@
     "optional": "Optional",
     "notAvailableAbbreviation": "n/a",
     "waitingForServer": "Waiting for response of server...",
-    "idSetByBackendMessage": "ID set by backend"
+    "idSetByBackendMessage": "ID set by backend",
+
+    "catchAllError": "Something seems to be wrong, please retry later."
   },
   "header": {
     "imageAlt": "Ghent University",
@@ -173,6 +175,7 @@
         "reservations": {
           "title": "Reservations for this room",
           "selectSlot": "Select a (reservable) timeslot to display the reservations",
+          "searchUser": "Search a student by first name, last name or student ID:",
           "loading": "Room reservations are being loaded...",
           "error": "Something went wrong while loading the reservations...",
           "table": {
@@ -180,7 +183,14 @@
             "user": "User",
             "attended": "Was user present?",
             "futureReservation": "Timeslot is in future",
-            "number": "Student number"
+            "number": "Student number",
+            "scan": "Scan",
+
+            "yetToScan": "Yet to scan",
+            "notScanned": "Not scanned",
+
+            "startScanning": "Start scanning",
+            "finishScanning": "Finish scanning"
           }
         },
         "form": {
@@ -572,6 +582,13 @@
           "attended": "User attended?",
           "noLocationReservations": "There are no reservations for the room."
         },
+        "finishScanningModal": {
+          "title": "Finish scanning",
+          "body": "After finishing with scanning, all absent students will automatically gain 50 penalty points.",
+          "body2": "If a student was absent in a previous scan for this timeslot and is now present, the earlier given penalty points will be removed.",
+          "success": "Successfully finished with scanning.",
+          "error": "Something went wrong while finishing with scanning."
+        },
         "deleteModal": {
           "title": "Sure to delete the room reservation?",
           "body": "Room reservation about to delete:",
@@ -580,6 +597,11 @@
           "loading": "Waiting on response of server...",
           "success": "Successfully deleted the room reservation.",
           "error": "Something went wrong while deleting the room reservation..."
+        },
+
+        "scanningErrorModal": {
+          "title": "Scanning failed",
+          "message": "Something went wrong while scanning. The attendance/absence was not registered correctly."
         }
       },
       "locker": {
@@ -768,5 +790,34 @@
         "noReservations": "You have never made any locker reservations so far."
       }
     }
+  },
+  "scan": {
+    "aside": {
+      "title": "Scan",
+      "locations": "Locations I can scan"
+    },
+    "locations": {
+      "header": {
+        "name": "Name",
+        "building": "Building",
+        "numberOfSeats": "Seats"
+      },
+      "noLocationsWarning": "You are currently not assigned to any location where you can scan students.",
+      "errorMessageOnLoadingLocations": "Could not fetch the locations for which you can scan students."
+    },
+    "locationDetails": {
+      "title": "Scan students for {locationName}",
+      "errorMessageOnLoadingUsers": "Could not fetch the users that you can scan.",
+      "errorMessageOnLoadingLocation": "Could not fetch the location to scan.",
+      "noUsersToScanWarning": "There are no students to be scanned for this location at this time."
+    },
+    "phone": "Scan with phone camera",
+    "handheld": "Scan with handheld scanner",
+    "manual": "Checklist",
+    "unregistered": "This user is not registered for this timeslot. Please try another.",
+    "error": "Something went wrong with scanning this user. Please try again.",
+    "mobile-hint": "Scanning works best when the barcode is aligned horizontally.",
+    "handheld-hint": "To use the handheld scanner, select the input box below. If scan is succesful, the user will pop to the top of the list.",
+    "maybe":"This user wasn't found. Search in the list below, or try again."
   }
 }

@@ -76,7 +76,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.filteredLocations = next;
         this.filteredLocationsBackup = next;
         this.successOnRetrievingLocations = true;
-      }, () => {
+      }, err => {
+        console.error(err);
         this.successOnRetrievingLocations = false;
       }
     );
