@@ -152,12 +152,15 @@ export class UserDetailsManagementPenaltiesComponent implements OnInit {
   get timestamp(): AbstractControl {
     return this.newPenaltyFormGroup.get('timestamp');
   }
+
   get location(): AbstractControl {
     return this.newPenaltyFormGroup.get('location');
   }
+
   get points(): AbstractControl {
     return this.newPenaltyFormGroup.get('points');
   }
+
   get remarks(): AbstractControl {
     return this.newPenaltyFormGroup.get('remarks');
   }

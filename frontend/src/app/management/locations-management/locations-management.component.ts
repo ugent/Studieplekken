@@ -181,18 +181,23 @@ export class LocationsManagementComponent implements OnInit {
   get name(): AbstractControl {
     return this.addLocationFormGroup.get('name');
   }
+
   get authority(): AbstractControl {
     return this.addLocationFormGroup.get('authority');
   }
+
   get building(): AbstractControl {
     return this.addLocationFormGroup.get('building');
   }
+
   get numberOfSeats(): AbstractControl {
     return this.addLocationFormGroup.get('numberOfSeats');
   }
+
   get forGroup(): AbstractControl {
     return this.addLocationFormGroup.get('forGroup');
   }
+
   get imageUrl(): AbstractControl {
     return this.addLocationFormGroup.get('imageUrl');
   }

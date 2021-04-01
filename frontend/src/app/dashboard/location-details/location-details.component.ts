@@ -29,7 +29,9 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import * as moment from 'moment';
 import { DatePipe } from '@angular/common';
 import { Pair } from '../../shared/model/helpers/Pair';
-import { ApplicationTypeFunctionalityService } from 'src/app/services/functionality/application-type/application-type-functionality.service';
+import {
+  ApplicationTypeFunctionalityService,
+} from 'src/app/services/functionality/application-type/application-type-functionality.service';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 @Component({

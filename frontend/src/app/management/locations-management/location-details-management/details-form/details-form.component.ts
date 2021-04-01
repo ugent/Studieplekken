@@ -187,21 +187,27 @@ export class DetailsFormComponent implements OnInit {
   get name(): AbstractControl {
     return this.locationForm.get('name');
   }
+
   get authority(): AbstractControl {
     return this.locationForm.get('authority');
   }
+
   get building(): AbstractControl {
     return this.locationForm.get('building');
   }
+
   get numberOfSeats(): AbstractControl {
     return this.locationForm.get('numberOfSeats');
   }
+
   get numberOfLockers(): AbstractControl {
     return this.locationForm.get('numberOfLockers');
   }
+
   get forGroup(): AbstractControl {
     return this.locationForm.get('forGroup');
   }
+
   get imageUrl(): AbstractControl {
     return this.locationForm.get('imageUrl');
   }

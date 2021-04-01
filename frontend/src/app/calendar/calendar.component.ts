@@ -7,7 +7,7 @@ import {
   OnChanges,
   SimpleChanges,
 } from '@angular/core';
-import { CalendarView, CalendarEvent } from 'angular-calendar';
+import {CalendarView, CalendarEvent, CalendarEventTimesChangedEvent} from 'angular-calendar';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { defaultOpeningHour, defaultClosingHour } from 'src/app/app.constants';
@@ -28,10 +28,9 @@ export class CalendarComponent implements OnInit, OnChanges {
 
   @Input() events: CalendarEvent[];
   @Input() refresh: Subject<unknown>;
-  // This is too precarious to fix. Ignoring.
-  // eslint-disable-next-line @angular-eslint/no-output-on-prefix
+
   @Output()
-  onTimeslotPicked: EventEmitter<unknown> = new EventEmitter<unknown>();
+  timeslotPickedEvent: EventEmitter<any> = new EventEmitter<any>();
 
   eventsSubj: BehaviorSubject<CalendarEvent[]> = new BehaviorSubject<
     CalendarEvent[]
@@ -53,7 +52,7 @@ export class CalendarComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['events']) {
+    if (changes.events) {
       this.eventsSubj.next(this.events);
     }
   }
@@ -77,7 +76,7 @@ export class CalendarComponent implements OnInit, OnChanges {
   }
 
   handleEvent(action: string, event: CalendarEvent): void {
-    this.onTimeslotPicked.emit(event.meta);
+    this.timeslotPickedEvent.emit(event.meta);
   }
 
   setView(view: CalendarView): void {

@@ -69,9 +69,7 @@
       [events]="events"
       [refresh]="refresh"
       [weekStartsOn]="1"
-      (dayClicked)="dayClicked($event.day)"
-      (eventClicked)="handleEvent('Clicked', $event.event)"
-      (eventTimesChanged)="eventTimesChanged($event)">
+      (eventClicked)="handleEvent('Clicked', $event.event)">
     </mwl-calendar-month-view>
 
     <mwl-calendar-week-view
@@ -83,8 +81,7 @@
       [hourSegmentHeight]=20
       [dayStartHour] = openingHour
       [dayEndHour] = closingHour
-      (eventClicked)="handleEvent('Clicked', $event.event)"
-      (eventTimesChanged)="eventTimesChanged($event)">
+      (eventClicked)="handleEvent('Clicked', $event.event)">
     </mwl-calendar-week-view>
 
     <mwl-calendar-day-view
@@ -95,8 +92,7 @@
       [hourSegmentHeight]=20
       [dayStartHour] = openingHour
       [dayEndHour] = closingHour
-      (eventClicked)="handleEvent('Clicked', $event.event)"
-      (eventTimesChanged)="eventTimesChanged($event)">
+      (eventClicked)="handleEvent('Clicked', $event.event)">
     </mwl-calendar-day-view>
   </div>
 
