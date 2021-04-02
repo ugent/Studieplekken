@@ -1,8 +1,8 @@
-import {LocationTag} from './LocationTag';
-import {Authority, AuthorityConstructor} from './Authority';
-import {Building, BuildingConstructor} from './Building';
-import {LocationStatus} from '../../app.constants';
-import {Pair} from './helpers/Pair';
+import { LocationTag } from './LocationTag';
+import { Authority, AuthorityConstructor } from './Authority';
+import { Building, BuildingConstructor } from './Building';
+import { LocationStatus } from '../../app.constants';
+import { Pair } from './helpers/Pair';
 import { Timeslot } from './Timeslot';
 
 export interface Location {
@@ -35,7 +35,7 @@ export class LocationConstructor {
       descriptionDutch: '',
       descriptionEnglish: '',
       assignedTags: [],
-      status: {first: LocationStatus.CLOSED, second: ''}
+      status: { first: LocationStatus.CLOSED, second: '' },
     };
   }
 
@@ -56,8 +56,8 @@ export class LocationConstructor {
       descriptionEnglish: obj.descriptionEnglish,
       assignedTags: obj.assignedTags,
       forGroup: obj.forGroup,
-      status: {first: obj.status.first, second: obj.status.second},
-      currentTimeslot: Timeslot.fromJSON(obj.currentTimeslot)
+      status: { first: obj.status.first, second: obj.status.second },
+      currentTimeslot: Timeslot.fromJSON(obj.currentTimeslot),
     };
   }
 }

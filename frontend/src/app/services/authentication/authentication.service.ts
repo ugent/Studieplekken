@@ -1,20 +1,23 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject, Observable} from 'rxjs';
-import {User, UserConstructor} from '../../shared/model/User';
-import {HttpClient} from '@angular/common/http';
-import {Penalty} from '../../shared/model/Penalty';
-import {LocationReservation} from '../../shared/model/LocationReservation';
-import {LockerReservation, LockerReservationConstructor} from '../../shared/model/LockerReservation';
-import {map} from 'rxjs/operators';
-import {PenaltyService} from '../api/penalties/penalty.service';
-import {LocationReservationsService} from '../api/location-reservations/location-reservations.service';
-import {LockerReservationService} from '../api/locker-reservations/locker-reservation.service';
-import {Router} from '@angular/router';
-import {UserService} from '../api/users/user.service';
-import {api} from '../api/endpoints';
-import {userWantsTLogInLocalStorageKey} from '../../app.constants';
-import {Pair} from '../../shared/model/helpers/Pair';
-import {CalendarPeriod} from '../../shared/model/CalendarPeriod';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { User, UserConstructor } from '../../shared/model/User';
+import { HttpClient } from '@angular/common/http';
+import { Penalty } from '../../shared/model/Penalty';
+import { LocationReservation } from '../../shared/model/LocationReservation';
+import {
+  LockerReservation,
+  LockerReservationConstructor,
+} from '../../shared/model/LockerReservation';
+import { map } from 'rxjs/operators';
+import { PenaltyService } from '../api/penalties/penalty.service';
+import { LocationReservationsService } from '../api/location-reservations/location-reservations.service';
+import { LockerReservationService } from '../api/locker-reservations/locker-reservation.service';
+import { Router } from '@angular/router';
+import { UserService } from '../api/users/user.service';
+import { api } from '../api/endpoints';
+import { userWantsTLogInLocalStorageKey } from '../../app.constants';
+import { Pair } from '../../shared/model/helpers/Pair';
+import { CalendarPeriod } from '../../shared/model/CalendarPeriod';
 
 /**
  * The structure of the authentication service has been based on this article:
@@ -28,7 +31,7 @@ import {CalendarPeriod} from '../../shared/model/CalendarPeriod';
  * Importance of HTTP-only cookies: https://blog.codinghorror.com/protecting-your-cookies-httponly/
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthenticationService {
   // BehaviorSubject to be able to emit on changes
@@ -38,17 +41,23 @@ export class AuthenticationService {
   // (which comes from the userSubject)
   public user: Observable<User> = this.userSubject.asObservable();
 
-  private hasAuthoritiesSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  private hasAuthoritiesSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+    false
+  );
   public hasAuthoritiesObs: Observable<boolean> = this.hasAuthoritiesSubject.asObservable();
-  private hasVolunteeredSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  private hasVolunteeredSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+    false
+  );
   public hasVolunteeredObs: Observable<boolean> = this.hasVolunteeredSubject.asObservable();
 
-  constructor(private http: HttpClient,
-              private penaltyService: PenaltyService,
-              private locationReservationService: LocationReservationsService,
-              private lockerReservationService: LockerReservationService,
-              private router: Router,
-              private userService: UserService) { }
+  constructor(
+    private http: HttpClient,
+    private penaltyService: PenaltyService,
+    private locationReservationService: LocationReservationsService,
+    private lockerReservationService: LockerReservationService,
+    private router: Router,
+    private userService: UserService
+  ) {}
 
   // **************************************************
   // *   Getters for values of the BehaviorSubjects   *
@@ -86,11 +95,12 @@ export class AuthenticationService {
    */
   login(): void {
     this.http.get<User>(api.whoAmI).subscribe(
-      next => {
+      (next) => {
         this.userSubject.next(next);
         this.updateHasAuthoritiesSubject(next);
         this.updateHasVolunteeredSubject(next);
-      }, () => {
+      },
+      () => {
         this.userSubject.next(UserConstructor.new());
         this.hasAuthoritiesSubject.next(false);
       }
@@ -109,12 +119,10 @@ export class AuthenticationService {
    *   6. frontend: redirects the user to the login page
    */
   logout(): void {
-    this.http.post(api.logout, {}).subscribe(
-      () => {
-        this.userSubject.next(UserConstructor.new());
-        this.router.navigate(['/login']).catch(e => console.log(e));
-      }
-    );
+    this.http.post(api.logout, {}).subscribe(() => {
+      this.userSubject.next(UserConstructor.new());
+      this.router.navigate(['/login']).catch((e) => console.log(e));
+    });
 
     // to be sure, set the 'userWantsToLogin' variables to false
     localStorage.setItem(userWantsTLogInLocalStorageKey, 'false');
@@ -132,12 +140,14 @@ export class AuthenticationService {
   }
 
   isAdmin(): boolean {
-    return this.userSubject.value && this.isLoggedIn() ? this.userSubject.value.admin : false;
+    return this.userSubject.value && this.isLoggedIn()
+      ? this.userSubject.value.admin
+      : false;
   }
 
-  updatePassword(from: string, to: string): Observable<any> {
+  updatePassword(from: string, to: string): Observable<void> {
     const body = { from, to, user: this.userValue() };
-    return this.http.put(api.changePassword, body);
+    return this.http.put<void>(api.changePassword, body);
   }
 
   // ********************************************************
@@ -145,49 +155,56 @@ export class AuthenticationService {
   // ********************************************************
 
   getLocationReservations(): Observable<LocationReservation[]> {
-    return this.locationReservationService.getLocationReservationsOfUser(this.userSubject.value.augentID);
+    return this.locationReservationService.getLocationReservationsOfUser(
+      this.userSubject.value.augentID
+    );
   }
 
-  getLocationReservationsAndCalendarPeriods(): Observable<Pair<LocationReservation, CalendarPeriod>[]> {
-    return this.locationReservationService.getLocationReservationsWithCalendarPeriodsOfUser(this.userSubject.value.augentID);
+  getLocationReservationsAndCalendarPeriods(): Observable<
+    Pair<LocationReservation, CalendarPeriod>[]
+  > {
+    return this.locationReservationService.getLocationReservationsWithCalendarPeriodsOfUser(
+      this.userSubject.value.augentID
+    );
   }
 
   getLockerReservations(): Observable<LockerReservation[]> {
-    const v = this.lockerReservationService.getLockerReservationsOfUser(this.userSubject.value.augentID);
+    const v = this.lockerReservationService.getLockerReservationsOfUser(
+      this.userSubject.value.augentID
+    );
 
-    return v.pipe(map<LockerReservation[], LockerReservation[]>((value) => {
-      const reservations: LockerReservation[] = [];
+    return v.pipe(
+      map<LockerReservation[], LockerReservation[]>((value) => {
+        const reservations: LockerReservation[] = [];
 
-      value.forEach(reservation => {
-        const obj = LockerReservationConstructor.newFromObj(reservation);
-        reservations.push(obj);
-      });
+        value.forEach((reservation) => {
+          const obj = LockerReservationConstructor.newFromObj(reservation);
+          reservations.push(obj);
+        });
 
-      return reservations;
-    }));
+        return reservations;
+      })
+    );
   }
 
   getPenalties(): Observable<Penalty[]> {
-    return this.penaltyService.getPenaltiesOfUserById(this.userSubject.value.augentID);
+    return this.penaltyService.getPenaltiesOfUserById(
+      this.userSubject.value.augentID
+    );
   }
 
   // *******************
   // *   Auxiliaries   *
   // *******************
   updateHasAuthoritiesSubject(user: User): void {
-    this.userService.hasUserAuthorities(user.augentID).subscribe(
-      next => {
-        this.hasAuthoritiesSubject.next(next);
-      }
-    );
+    this.userService.hasUserAuthorities(user.augentID).subscribe((next) => {
+      this.hasAuthoritiesSubject.next(next);
+    });
   }
 
   updateHasVolunteeredSubject(user: User): void {
-    this.userService.hasUserVolunteered(user.augentID).subscribe(
-      next => {
-        this.hasVolunteeredSubject.next(next);
-      }
-    );
+    this.userService.hasUserVolunteered(user.augentID).subscribe((next) => {
+      this.hasVolunteeredSubject.next(next);
+    });
   }
-
 }

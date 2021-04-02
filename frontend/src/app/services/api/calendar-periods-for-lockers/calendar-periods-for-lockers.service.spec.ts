@@ -1,12 +1,12 @@
-import {TestBed} from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
-import {CalendarPeriodsForLockersService} from './calendar-periods-for-lockers.service';
+import { CalendarPeriodsForLockersService } from './calendar-periods-for-lockers.service';
 
 describe('CalendarPeriodsForLockersService', () => {
   let service: CalendarPeriodsForLockersService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    void TestBed.configureTestingModule({});
     service = TestBed.inject(CalendarPeriodsForLockersService);
   });
 

@@ -1,14 +1,14 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 
-import { APPLICATION_TYPE, environment } from '../../../../environments/environment';
+import {
+  APPLICATION_TYPE,
+  environment,
+} from '../../../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ApplicationTypeFunctionalityService {
-
-  constructor() { }
-
   showPenaltyFunctionality(): boolean {
     switch (environment.applicationType) {
       case APPLICATION_TYPE.BLOK_AT:

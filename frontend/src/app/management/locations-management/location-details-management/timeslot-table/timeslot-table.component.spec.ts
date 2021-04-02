@@ -7,10 +7,9 @@ describe('TimeslotTableComponent', () => {
   let fixture: ComponentFixture<TimeslotTableComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ TimeslotTableComponent ]
-    })
-    .compileComponents();
+    void TestBed.configureTestingModule({
+      declarations: [TimeslotTableComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

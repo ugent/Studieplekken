@@ -1,15 +1,18 @@
-import {BehaviorSubject, EMPTY, Observable, of} from 'rxjs';
-import {HttpClient} from '@angular/common/http';
+import { BehaviorSubject, EMPTY, Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { catchError, filter, map, tap } from 'rxjs/operators';
 
 export class Cache<I, V> {
-
-  constructor(private http: HttpClient,
-              private idcallback: (arg: any) => I,
-              private mapFunction?: (arg: any) => V) { }
+  constructor(
+    private http: HttpClient,
+    private idcallback: (arg: unknown) => I,
+    private mapFunction?: (arg: unknown) => V
+  ) {}
 
   cacheMap: Map<I, V> = new Map<I, V>();
-  cacheSubject: BehaviorSubject<Map<I, V>> = new BehaviorSubject<Map<I, V>>(this.cacheMap);
+  cacheSubject: BehaviorSubject<Map<I, V>> = new BehaviorSubject<Map<I, V>>(
+    this.cacheMap
+  );
 
   /**
    * Update the cache from the backend
@@ -17,12 +20,13 @@ export class Cache<I, V> {
    * @param id the id of the resource to be updated
    */
   private updateCache(url: string, id: I): void {
-    this.http.get<V>(url)
+    this.http
+      .get<V>(url)
       .pipe(
-        map(n => this.mapFunction ? this.mapFunction(n) : n),
-        tap(n => this.cacheMap.set(id, n)),
+        map((n) => (this.mapFunction ? this.mapFunction(n) : n)),
+        tap((n) => this.cacheMap.set(id, n)),
         tap(() => this.cacheSubject.next(this.cacheMap)),
-        catchError(error => {
+        catchError((error) => {
           this.cacheSubject.error(error);
           return of(EMPTY);
         })
@@ -35,14 +39,19 @@ export class Cache<I, V> {
    * @param url the url to fetch the resources from
    */
   private cacheReload(url: string): void {
-    this.http.get<V[]>(url)
+    this.http
+      .get<V[]>(url)
       .pipe(
-        map(n => n.map(v => this.mapFunction ? this.mapFunction(v) : v)),
-        tap(n => n.forEach(element => this.cacheMap.set(this.idcallback(element), element))),
+        map((n) => n.map((v) => (this.mapFunction ? this.mapFunction(v) : v))),
+        tap((n) =>
+          n.forEach((element) =>
+            this.cacheMap.set(this.idcallback(element), element)
+          )
+        ),
         tap(() => {
           this.cacheSubject.next(this.cacheMap);
         }),
-        catchError(error => {
+        catchError((error) => {
           this.cacheSubject.error(error);
           return of(EMPTY);
         })
@@ -57,14 +66,18 @@ export class Cache<I, V> {
    * @param url the url to get the resource
    * @param invalidateCache should the cache line for the resource be invalidated or not
    */
-  getValue(id: I, url: string, invalidateCache: boolean = false): Observable<V> {
+  getValue(
+    id: I,
+    url: string,
+    invalidateCache: boolean = false
+  ): Observable<V> {
     if (invalidateCache || !this.cacheMap.has(id)) {
       this.updateCache(url, id);
     }
 
     return this.cacheSubject.pipe(
-      map(valueMap => valueMap.get(id)),
-      filter(value => !!value)
+      map((valueMap) => valueMap.get(id)),
+      filter((value) => !!value)
     );
   }
 
@@ -79,10 +92,10 @@ export class Cache<I, V> {
       // if the cache is being reloaded, the current value can be skipped
       this.cacheReload(url);
     }
-      // if the cache is not being reloaded, the current value suffices
+    // if the cache is not being reloaded, the current value suffices
     return this.cacheSubject.pipe(
-      map(valueMap => [ ...valueMap.values() ]),
-      filter(v => !(v === null || v === undefined || v.length === 0)),
+      map((valueMap) => [...valueMap.values()]),
+      filter((v) => !(v === null || v === undefined || v.length === 0))
     );
   }
 }

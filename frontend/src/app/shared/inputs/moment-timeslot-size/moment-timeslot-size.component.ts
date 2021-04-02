@@ -1,4 +1,10 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+} from '@angular/core';
 import 'moment-duration-format';
 
 @Component({
@@ -6,7 +12,7 @@ import 'moment-duration-format';
   templateUrl: './moment-timeslot-size.component.html',
   styleUrls: ['./moment-timeslot-size.component.css'],
 })
-export class MomentTimeslotSizeComponent implements OnInit, OnChanges {
+export class MomentTimeslotSizeComponent implements OnChanges {
   /**
    * This is the value that will eventually be emitted
    */
@@ -23,23 +29,17 @@ export class MomentTimeslotSizeComponent implements OnInit, OnChanges {
    * This is the emitter that will emit the eventual size
    */
   @Output()
-  modelChange: EventEmitter<number> = new EventEmitter();
+  modelChange: EventEmitter<number> = new EventEmitter<number>();
 
   /**
    * This is the string that will be shown in the frontend
    */
   modelAsString: string;
 
-  constructor() {
-  }
-
-  ngOnInit(): void {
-  }
-
   /**
    * This is called whenever the value is changed by the application (e.g. loaded from server)
    */
-  ngOnChanges(changes): void {
+  ngOnChanges(): void {
     const newValue = this.periodDuration
       ? Math.abs(Math.round(this.periodDuration / this.model))
       : 0;

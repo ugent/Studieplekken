@@ -6,7 +6,7 @@ describe('ApplicationTypeFunctionalityService', () => {
   let service: ApplicationTypeFunctionalityService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    void TestBed.configureTestingModule({});
     service = TestBed.inject(ApplicationTypeFunctionalityService);
   });
 

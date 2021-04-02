@@ -7,10 +7,9 @@ describe('LocationDetailsComponent', () => {
   let fixture: ComponentFixture<LocationDetailsComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ LocationDetailsComponent ]
-    })
-    .compileComponents();
+    void TestBed.configureTestingModule({
+      declarations: [LocationDetailsComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

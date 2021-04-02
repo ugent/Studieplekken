@@ -1,20 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MomentDatetimeComponent } from './moment-datetime.component';
+import { MomentDateTimeComponent } from './moment-datetime.component';
 
-describe('MomentDatetimeComponent', () => {
-  let component: MomentDatetimeComponent;
-  let fixture: ComponentFixture<MomentDatetimeComponent>;
+describe('MomentDateTimeComponent', () => {
+  let component: MomentDateTimeComponent;
+  let fixture: ComponentFixture<MomentDateTimeComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ MomentDatetimeComponent ]
-    })
-    .compileComponents();
+    void TestBed.configureTestingModule({
+      declarations: [MomentDateTimeComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MomentDatetimeComponent);
+    fixture = TestBed.createComponent(MomentDateTimeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

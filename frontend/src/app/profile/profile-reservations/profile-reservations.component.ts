@@ -1,20 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import {ApplicationTypeFunctionalityService} from '../../services/functionality/application-type/application-type-functionality.service';
+import { Component } from '@angular/core';
+import { ApplicationTypeFunctionalityService } from '../../services/functionality/application-type/application-type-functionality.service';
 
 @Component({
   selector: 'app-profile-reservations',
   templateUrl: './profile-reservations.component.html',
-  styleUrls: ['./profile-reservations.component.css']
+  styleUrls: ['./profile-reservations.component.css'],
 })
-export class ProfileReservationsComponent implements OnInit {
-
+export class ProfileReservationsComponent {
   showLockerReservationFunctionality: boolean;
 
-  constructor(private functionalityService: ApplicationTypeFunctionalityService) {
+  constructor(functionalityService: ApplicationTypeFunctionalityService) {
     this.showLockerReservationFunctionality = functionalityService.showLockersManagementFunctionality();
   }
-
-  ngOnInit(): void {
-  }
-
 }

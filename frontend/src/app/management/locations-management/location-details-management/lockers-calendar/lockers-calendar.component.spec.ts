@@ -7,10 +7,9 @@ describe('LockersCalendarComponent', () => {
   let fixture: ComponentFixture<LockersCalendarComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ LockersCalendarComponent ]
-    })
-    .compileComponents();
+    void TestBed.configureTestingModule({
+      declarations: [LockersCalendarComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

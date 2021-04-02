@@ -1,12 +1,12 @@
-import {TestBed} from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
-import {LockersService} from './lockers.service';
+import { LockersService } from './lockers.service';
 
 describe('LockersService', () => {
   let service: LockersService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    void TestBed.configureTestingModule({});
     service = TestBed.inject(LockersService);
   });
 

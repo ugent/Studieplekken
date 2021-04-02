@@ -4,11 +4,11 @@
 
 export enum APPLICATION_TYPE {
   BLOK_AT,
-  MINI_THERMIS
+  MINI_THERMIS,
 }
 
 export const environment = {
   production: false,
   applicationType: APPLICATION_TYPE.MINI_THERMIS,
-  casFlowTriggerUrl: 'https://localhost:8080/api/login/cas'
+  casFlowTriggerUrl: 'https://localhost:8080/api/login/cas',
 };

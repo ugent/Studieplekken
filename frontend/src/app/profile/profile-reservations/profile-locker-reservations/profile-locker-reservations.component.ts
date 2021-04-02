@@ -1,19 +1,18 @@
-import {Component, OnInit} from '@angular/core';
-import {LockerReservation} from '../../../shared/model/LockerReservation';
-import {Observable} from 'rxjs';
-import {AuthenticationService} from '../../../services/authentication/authentication.service';
+import { Component } from '@angular/core';
+import { LockerReservation } from '../../../shared/model/LockerReservation';
+import { Observable } from 'rxjs';
+import { AuthenticationService } from '../../../services/authentication/authentication.service';
 
 @Component({
   selector: 'app-profile-locker-reservations',
   templateUrl: './profile-locker-reservations.component.html',
-  styleUrls: ['./profile-locker-reservations.component.css']
+  styleUrls: ['./profile-locker-reservations.component.css'],
 })
-export class ProfileLockerReservationsComponent implements OnInit {
+export class ProfileLockerReservationsComponent {
   lockerReservations: Observable<LockerReservation[]>;
 
-
-  constructor(private authenticationService: AuthenticationService) {
-    authenticationService.user.subscribe(next => {
+  constructor(authenticationService: AuthenticationService) {
+    authenticationService.user.subscribe(() => {
       // only change the lockerReservations if the user is logged in.
       // If you would omit the if-clause, a redudant API call will
       // be made with {userId} = '' (and thus requesting for all locker
@@ -24,8 +23,4 @@ export class ProfileLockerReservationsComponent implements OnInit {
       }
     });
   }
-
-  ngOnInit(): void {
-  }
-
 }

@@ -9,7 +9,7 @@ export class AuthorityConstructor {
     return {
       authorityId: 0,
       authorityName: '',
-      description: ''
+      description: '',
     };
   }
 
@@ -17,7 +17,7 @@ export class AuthorityConstructor {
     return {
       authorityId: obj.authorityId,
       authorityName: obj.authorityName,
-      description: obj.description
+      description: obj.description,
     };
   }
 }

@@ -7,10 +7,9 @@ describe('ScannerComponent', () => {
   let fixture: ComponentFixture<ScannerComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ScannerComponent ]
-    })
-    .compileComponents();
+    void TestBed.configureTestingModule({
+      declarations: [ScannerComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

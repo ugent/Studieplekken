@@ -1,5 +1,5 @@
-import {User, UserConstructor} from './User';
-import {Locker, LockerConstructor} from './Locker';
+import { User, UserConstructor } from './User';
+import { Locker, LockerConstructor } from './Locker';
 import { Moment } from 'moment';
 import * as moment from 'moment';
 
@@ -16,7 +16,7 @@ export class LockerReservationConstructor {
       owner: UserConstructor.new(),
       locker: LockerConstructor.new(),
       keyPickupDate: moment(),
-      keyReturnedDate: moment()
+      keyReturnedDate: moment(),
     };
   }
 
@@ -29,7 +29,7 @@ export class LockerReservationConstructor {
       owner: UserConstructor.newFromObj(obj.owner),
       locker: LockerConstructor.newFromObj(obj.locker),
       keyPickupDate: moment(obj.keyPickupDate),
-      keyReturnedDate: moment(obj.keyReturnedDate)
+      keyReturnedDate: moment(obj.keyReturnedDate),
     };
   }
 }

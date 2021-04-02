@@ -7,14 +7,15 @@ describe('LocationOpeningperiodDialogComponent', () => {
   let fixture: ComponentFixture<LocationOpeningperiodDialogComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ LocationOpeningperiodDialogComponent ]
-    })
-    .compileComponents();
+    void TestBed.configureTestingModule({
+      declarations: [LocationOpeningperiodDialogComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LocationOpeningperiodDialogComponent);
+    fixture = void TestBed.createComponent(
+      LocationOpeningperiodDialogComponent
+    );
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

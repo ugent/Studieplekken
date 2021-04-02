@@ -20,7 +20,7 @@ export class PenaltyConstructor {
       reservationDate: moment(),
       reservationLocationId: -1,
       receivedPoints: 0,
-      remarks: ''
+      remarks: '',
     };
   }
 
@@ -36,7 +36,7 @@ export class PenaltyConstructor {
       reservationDate: moment(obj.reservationDate),
       reservationLocationId: obj.reservationLocationId,
       receivedPoints: obj.receivedPoints,
-      remarks: obj.remarks
+      remarks: obj.remarks,
     };
   }
 }
