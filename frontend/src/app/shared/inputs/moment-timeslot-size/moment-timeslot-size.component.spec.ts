@@ -7,10 +7,9 @@ describe('MomentTimeslotSizeComponent', () => {
   let fixture: ComponentFixture<MomentTimeslotSizeComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ MomentTimeslotSizeComponent ]
-    })
-    .compileComponents();
+    void TestBed.configureTestingModule({
+      declarations: [MomentTimeslotSizeComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

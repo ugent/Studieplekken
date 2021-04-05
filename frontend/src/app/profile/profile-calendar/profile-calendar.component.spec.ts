@@ -7,10 +7,9 @@ describe('ProfileCalendarComponent', () => {
   let fixture: ComponentFixture<ProfileCalendarComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ProfileCalendarComponent ]
-    })
-    .compileComponents();
+    void TestBed.configureTestingModule({
+      declarations: [ProfileCalendarComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

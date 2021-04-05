@@ -33,19 +33,24 @@ export const api = {
   deleteLocation: '/api/locations/{locationId}',
   setupTagsForLocation: '/api/locations/tags/{locationId}',
   allReservableFroms: '/api/locations/nextReservableFroms',
+  locationVolunteers: '/api/locations/{locationId}/volunteers',
+  addLocationVolunteer: '/api/locations/{locationId}/volunteers/{userId}',
 
   // LOCATION_RESERVATIONS
   locationReservationsOfUser: '/api/locations/reservations/user',
-  locationReservationsOfLocation: '/api/locations/reservations/timeslot/{calendarid}/{date}/{seqnr}',
+  locationReservationsOfLocation:
+    '/api/locations/reservations/timeslot/{calendarid}/{date}/{seqnr}',
   locationReservationsOfLocationFrom: '/api/locations/reservations/from',
   locationReservationsOfLocationUntil: '/api/locations/reservations/until',
-  locationReservationsOfLocationFromAndUntil: '/api/locations/reservations/fromAndUntil',
+  locationReservationsOfLocationFromAndUntil:
+    '/api/locations/reservations/fromAndUntil',
   addLocationReservation: '/api/locations/reservations',
   deleteLocationReservation: '/api/locations/reservations',
-  updateAttendance: '/api/locations/reservations/{userid}/{calendarid}/{date}/{seqnr}/attendance',
+  updateAttendance:
+    '/api/locations/reservations/{userid}/{calendarid}/{date}/{seqnr}/attendance',
   locationReservationCount: '/api/locations/reservations/count/{locationId}',
-  locationReservationsWithLocationOfUser: '/api/locations/reservations/{userId}',
-
+  locationReservationsWithLocationOfUser:
+    '/api/locations/reservations/{userId}',
 
   // AUTHORITY
   buildings: '/api/building',
@@ -69,7 +74,9 @@ export const api = {
   changePassword: '/api/account/password',
   updateUser: '/api/account/{userId}',
   hasUserAuthorities: '/api/account/{userId}/has/authorities',
+  hasUserVolunteered: '/api/account/{userId}/has/volunteered',
   getAdmins: '/api/account/admins',
+  getManageableLocations: '/api/account/{userId}/manageable/locations',
 
   // LOCKERS
   lockersStatusesOfLocation: '/api/lockers/status/{locationId}',
@@ -98,5 +105,9 @@ export const api = {
   deleteUserFromAuthority: '/api/authority/{authorityId}/user/{userId}',
 
   // MISCELLANEOUS QUERIES
-  openingHoursOverview: '/api/locations/overview/opening/{year}/{weekNr}'
+  openingHoursOverview: '/api/locations/overview/opening/{year}/{weekNr}',
+
+  // Scanning functionality
+  scanningLocations: '/api/scan/locations',
+  usersToScanAtLocation: '/api/scan/users/{locationId}',
 };

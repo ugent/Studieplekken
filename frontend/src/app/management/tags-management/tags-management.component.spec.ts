@@ -7,10 +7,9 @@ describe('TagsManagementComponent', () => {
   let fixture: ComponentFixture<TagsManagementComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ TagsManagementComponent ]
-    })
-    .compileComponents();
+    void TestBed.configureTestingModule({
+      declarations: [TagsManagementComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

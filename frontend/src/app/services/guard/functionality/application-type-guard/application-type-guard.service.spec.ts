@@ -6,7 +6,7 @@ describe('ApplicationTypeGuardService', () => {
   let service: ApplicationTypeGuardService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    void TestBed.configureTestingModule({});
     service = TestBed.inject(ApplicationTypeGuardService);
   });
 

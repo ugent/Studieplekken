@@ -3,6 +3,7 @@ package blok2.daos;
 import blok2.helpers.Pair;
 import blok2.model.reservables.Location;
 import blok2.model.reservables.Locker;
+import blok2.model.users.User;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -52,6 +53,11 @@ public interface ILocationDao extends IDao {
     void deleteLocation(int locationId) throws SQLException;
 
     /**
+     * Get all users that have volunteered for the specified location
+     */
+    List<User> getVolunteers(int locationId) throws SQLException;
+
+    /**
      * Get all lockers of the specified location
      */
     List<Locker> getLockers(int locationId) throws SQLException;
@@ -79,5 +85,15 @@ public interface ILocationDao extends IDao {
      * monday, tuesday, ..., sunday but can also be null to indicate that the location is not open that day.
      */
     Map<String, String[]> getOpeningOverviewOfWeek(int year, int weekNr) throws SQLException;
+
+     /**
+     * Add a volunteer to a given location
+     */
+    void addVolunteer(int locationId, String userId) throws SQLException;
+
+    /**
+     * Delete a volunteer from a given location
+     */
+    void deleteVolunteer(int locationId, String userId) throws SQLException;
 
 }

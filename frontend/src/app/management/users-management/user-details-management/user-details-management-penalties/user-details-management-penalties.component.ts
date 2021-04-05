@@ -1,15 +1,20 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Observable} from 'rxjs';
-import {User} from '../../../../shared/model/User';
-import {Penalty, PenaltyConstructor} from '../../../../shared/model/Penalty';
-import {PenaltyService} from '../../../../services/api/penalties/penalty.service';
-import {UserDetailsService} from '../../../../services/single-point-of-truth/user-details/user-details.service';
-import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
-import {LocationService} from '../../../../services/api/locations/location.service';
-import {Location} from '../../../../shared/model/Location';
+import { Component, Input, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { User } from '../../../../shared/model/User';
+import { Penalty, PenaltyConstructor } from '../../../../shared/model/Penalty';
+import { PenaltyService } from '../../../../services/api/penalties/penalty.service';
+import { UserDetailsService } from '../../../../services/single-point-of-truth/user-details/user-details.service';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
+import { LocationService } from '../../../../services/api/locations/location.service';
+import { Location } from '../../../../shared/model/Location';
 import * as moment from 'moment';
 import { Moment } from 'moment';
-import {penaltyEventCodeForManualEntry} from '../../../../app.constants';
+import { penaltyEventCodeForManualEntry } from '../../../../app.constants';
 
 @Component({
   selector: 'app-user-details-management-penalties',
@@ -31,20 +36,25 @@ export class UserDetailsManagementPenaltiesComponent implements OnInit {
 
   locationObs: Observable<Location[]>;
 
-  constructor(private penaltyService: PenaltyService,
-              private userDetailsService: UserDetailsService,
-              private locationService: LocationService) { }
+  constructor(
+    private penaltyService: PenaltyService,
+    private userDetailsService: UserDetailsService,
+    private locationService: LocationService
+  ) {}
 
   ngOnInit(): void {
     this.userObs.subscribe(
-      next => {
+      (next) => {
         if (next.augentID === '') {
           return;
         }
 
-        this.penaltiesObs = this.penaltyService.getPenaltiesOfUserById(next.augentID);
+        this.penaltiesObs = this.penaltyService.getPenaltiesOfUserById(
+          next.augentID
+        );
         this.userId = next.augentID;
-      }, () => {
+      },
+      () => {
         this.queryingPenaltiesError = true;
       }
     );
@@ -63,14 +73,19 @@ export class UserDetailsManagementPenaltiesComponent implements OnInit {
 
   setupFormToAddPenalty(): void {
     this.newPenaltyFormGroup = new FormGroup({
-      timestamp: new FormControl('', Validators.required),
-      location: new FormControl('', Validators.required),
-      points: new FormControl('', Validators.required),
-      remarks: new FormControl('')
+      timestamp: new FormControl('', Validators.required.bind(this)),
+      location: new FormControl('', Validators.required.bind(this)),
+      points: new FormControl('', Validators.required.bind(this)),
+      remarks: new FormControl(''),
     });
   }
 
-  addPenalty(value: {timestamp: string, location: number, points: number, remarks: string}): void {
+  addPenalty(value: {
+    timestamp: string;
+    location: number;
+    points: number;
+    remarks: string;
+  }): void {
     const penalty = PenaltyConstructor.new();
     penalty.augentID = this.userId;
     penalty.eventCode = penaltyEventCodeForManualEntry;
@@ -84,7 +99,8 @@ export class UserDetailsManagementPenaltiesComponent implements OnInit {
     this.penaltyService.addPenalty(penalty).subscribe(
       () => {
         this.successAdditionHandler();
-      }, () => {
+      },
+      () => {
         this.errorAdditionHandler();
       }
     );
@@ -109,7 +125,8 @@ export class UserDetailsManagementPenaltiesComponent implements OnInit {
     this.penaltyService.deletePenalty(this.currentPenaltyToDelete).subscribe(
       () => {
         this.successDeletionHandler();
-      }, () => {
+      },
+      () => {
         this.errorOnDeletingPenalty = true;
       }
     );
@@ -132,8 +149,19 @@ export class UserDetailsManagementPenaltiesComponent implements OnInit {
     return this.locationService.getLocation(locationId);
   }
 
-  get timestamp(): AbstractControl { return this.newPenaltyFormGroup.get('timestamp'); }
-  get location(): AbstractControl { return this.newPenaltyFormGroup.get('location'); }
-  get points(): AbstractControl { return this.newPenaltyFormGroup.get('points'); }
-  get remarks(): AbstractControl { return this.newPenaltyFormGroup.get('remarks'); }
+  get timestamp(): AbstractControl {
+    return this.newPenaltyFormGroup.get('timestamp');
+  }
+
+  get location(): AbstractControl {
+    return this.newPenaltyFormGroup.get('location');
+  }
+
+  get points(): AbstractControl {
+    return this.newPenaltyFormGroup.get('points');
+  }
+
+  get remarks(): AbstractControl {
+    return this.newPenaltyFormGroup.get('remarks');
+  }
 }

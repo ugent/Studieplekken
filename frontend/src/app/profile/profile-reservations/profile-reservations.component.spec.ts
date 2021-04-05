@@ -7,10 +7,9 @@ describe('ProfileReservationsComponent', () => {
   let fixture: ComponentFixture<ProfileReservationsComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ProfileReservationsComponent ]
-    })
-    .compileComponents();
+    void TestBed.configureTestingModule({
+      declarations: [ProfileReservationsComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -1,53 +1,84 @@
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpParams} from '@angular/common/http';
-import {Observable, of} from 'rxjs';
-import {User} from '../../../shared/model/User';
-import {api} from '../endpoints';
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { User } from '../../../shared/model/User';
+import { api } from '../endpoints';
+import { Location, LocationConstructor } from '../../../shared/model/Location';
+import { map } from 'rxjs/internal/operators/map';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
-
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) {}
 
   getUserByAUGentId(id: string): Observable<User> {
     const params = new HttpParams().set('id', id);
-    return this.http.get<User>(api.userByAUGentId, {params});
+    return this.http.get<User>(api.userByAUGentId, { params });
   }
 
   getUsersByFirstName(firstName: string): Observable<User[]> {
     const params = new HttpParams().set('firstName', firstName.trim());
-    return this.http.get<User[]>(api.usersByFirstName, {params});
+    return this.http.get<User[]>(api.usersByFirstName, { params });
   }
 
   getUsersByLastName(lastName: string): Observable<User[]> {
     const params = new HttpParams().set('lastName', lastName.trim());
-    return this.http.get<User[]>(api.usersByLastName, {params});
+    return this.http.get<User[]>(api.usersByLastName, { params });
   }
 
-  getUsersByFirstAndLastName(firstName: string, lastName: string): Observable<User[]> {
+  getUsersByFirstAndLastName(
+    firstName: string,
+    lastName: string
+  ): Observable<User[]> {
     const params = new HttpParams()
       .set('firstName', firstName.trim())
       .set('lastName', lastName.trim());
-    return this.http.get<User[]>(api.usersByFirstAndLast, {params});
+    return this.http.get<User[]>(api.usersByFirstAndLast, { params });
   }
 
   getUserByBarcode(barcode: string): Observable<User> {
     const params = new HttpParams().set('barcode', barcode.trim());
-    return this.http.get<User>(api.userByBarcode, {params});
+    return this.http.get<User>(api.userByBarcode, { params });
+  }
+
+  getManageableLocations(userId: string): Observable<Location[]> {
+    return this.http
+      .get<Location[]>(api.getManageableLocations.replace('{userId}', userId))
+      .pipe(
+        map<Location[], Location[]>((value) => {
+          const locations: Location[] = [];
+          for (const location of value) {
+            locations.push(LocationConstructor.newFromObj(location));
+          }
+          return locations;
+        })
+      );
   }
 
   updateUser(userId: string, user: User): Observable<void> {
-    return this.http.put<void>(api.updateUser.replace('{userId}', userId), user);
+    return this.http.put<void>(
+      api.updateUser.replace('{userId}', userId),
+      user
+    );
   }
 
   hasUserAuthorities(userId: string): Observable<boolean> {
-    if(userId === '') {
+    if (userId === '') {
       return of(false);
     }
-    return this.http.get<boolean>(api.hasUserAuthorities.replace('{userId}', userId));
+    return this.http.get<boolean>(
+      api.hasUserAuthorities.replace('{userId}', userId)
+    );
+  }
+
+  hasUserVolunteered(userId: string): Observable<boolean> {
+    if (userId === '') {
+      return of(false);
+    }
+    return this.http.get<boolean>(
+      api.hasUserVolunteered.replace('{userId}', userId)
+    );
   }
 
   getAdmins(): Observable<User[]> {

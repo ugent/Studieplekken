@@ -11,13 +11,13 @@ import { LocationStatus } from '../app.constants';
 import { Building } from '../shared/model/Building';
 import { BuildingService } from '../services/api/buildings/buildings.service';
 import { merge, Observable, of, Subscription } from 'rxjs';
-import {Moment} from 'moment';
-import { map, tap } from 'rxjs/operators';
+import { Moment } from 'moment';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   locations: Location[];
@@ -33,11 +33,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   locationSearch: string;
 
   tagFilterFormGroup = new FormGroup({
-    filteredTags: new FormControl('')
+    filteredTags: new FormControl(''),
   });
 
   buildingFilterFormGroup = new FormGroup({
-    filteredBuilding: new FormControl('')
+    filteredBuilding: new FormControl(''),
   });
 
   currentLang: string;
@@ -52,38 +52,41 @@ export class DashboardComponent implements OnInit, OnDestroy {
   buildingObs: Observable<Building[]>;
   tagObs: Observable<LocationTag[]>;
 
-  constructor(private locationService: LocationService,
-              private tagsService: TagsService,
-              private translate: TranslateService,
-              private calendarPeriodService: CalendarPeriodsService,
-              private buildingService: BuildingService) { }
+  constructor(
+    private locationService: LocationService,
+    private tagsService: TagsService,
+    private translate: TranslateService,
+    private calendarPeriodService: CalendarPeriodsService,
+    private buildingService: BuildingService
+  ) {}
 
   ngOnInit(): void {
     this.currentLang = this.translate.currentLang;
-    this.translate.onLangChange.subscribe(
-      () => {
-        this.currentLang = this.translate.currentLang;
-      }
-    );
+    this.translate.onLangChange.subscribe(() => {
+      this.currentLang = this.translate.currentLang;
+    });
 
     this.selectedTags = [];
 
     this.successOnRetrievingLocations = null;
 
-    this.locationSub = this.locationService.getLocations()
-      .subscribe((next) => {
+    this.locationSub = this.locationService.getLocations().subscribe(
+      (next) => {
         this.locations = next;
         this.filteredLocations = next;
         this.filteredLocationsBackup = next;
         this.successOnRetrievingLocations = true;
-      }, () => {
+      },
+      (err) => {
+        console.error(err);
         this.successOnRetrievingLocations = false;
       }
     );
 
-    this.nextReservableFromSub = this.locationService.getAllLocationNextReservableFroms()
-      .subscribe(next => {
-        next.forEach(pair => {
+    this.nextReservableFromSub = this.locationService
+      .getAllLocationNextReservableFroms()
+      .subscribe((next) => {
+        next.forEach((pair) => {
           this.locationNextReservableFroms.set(pair.first, pair.second);
         });
       });
@@ -109,7 +112,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * When the selection of tags to filter on is changed
    */
   onTagsSelectionChange(event: MatSelectChange): void {
-    this.selectedTags = event.value;
+    this.selectedTags = event.value as LocationTag[];
     this.displayFilterLocations();
   }
 
@@ -117,7 +120,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * When the selection of building to filter on is changed
    */
   onBuildingSelectionChange(event: MatSelectChange): void {
-    this.selectedBuilding = event.value;
+    this.selectedBuilding = event.value as Building;
     this.displayFilterLocations();
   }
 
@@ -137,14 +140,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
   displayFilterLocations(): void {
     this.filteredLocations = [];
 
-    this.locations.forEach(location => {
+    this.locations.forEach((location) => {
       // first check that the location name matches with the search bar
-      if ((this.locationSearch !== undefined) && (!location.name.toLowerCase().includes(this.locationSearch.toLowerCase()))) {
+      if (
+        this.locationSearch !== undefined &&
+        !location.name.toLowerCase().includes(this.locationSearch.toLowerCase())
+      ) {
         return;
       }
 
       // check that the location is in the selected building
-      if (this.selectedBuilding !== undefined && location.building.buildingId !== this.selectedBuilding.buildingId) {
+      if (
+        this.selectedBuilding !== undefined &&
+        location.building.buildingId !== this.selectedBuilding.buildingId
+      ) {
         return;
       }
 
@@ -153,7 +162,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         // only add when all the tags match
         for (const tag of this.selectedTags) {
           // if the filtered tag is not assigned to a certain location ...
-          if (!location.assignedTags.some(t => t.tagId === tag.tagId)) {
+          if (!location.assignedTags.some((t) => t.tagId === tag.tagId)) {
             return;
           }
         }
@@ -192,10 +201,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     return this.buildingFilterFormGroup.get('filteredBuilding');
   }
 
-  currentLanguage(): Observable<LangChangeEvent> {
-    return merge(of({lang: this.translate.currentLang} as LangChangeEvent), this.translate.onLangChange)
-          .pipe(
-            map((s) => (s as any).lang)
-          );
+  currentLanguage(): Observable<string> {
+    return merge<LangChangeEvent, LangChangeEvent>(
+      of<LangChangeEvent>({
+        lang: this.translate.currentLang,
+      } as LangChangeEvent),
+      this.translate.onLangChange
+    ).pipe(map((s) => s.lang));
   }
 }

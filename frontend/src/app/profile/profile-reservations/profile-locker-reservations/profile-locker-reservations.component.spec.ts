@@ -7,10 +7,9 @@ describe('ProfileLockerReservationsComponent', () => {
   let fixture: ComponentFixture<ProfileLockerReservationsComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ProfileLockerReservationsComponent ]
-    })
-    .compileComponents();
+    void TestBed.configureTestingModule({
+      declarations: [ProfileLockerReservationsComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

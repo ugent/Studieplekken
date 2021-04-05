@@ -1,5 +1,9 @@
-import {Location, LocationConstructor} from './Location';
-import {isStringValidDateForDB, isStringValidDateTimeForDB} from '../validators/DateValidators';
+import { Location, LocationConstructor } from './Location';
+import {
+  isStringValidDateForDB,
+  isStringValidDateTimeForDB,
+} from '../validators/DateValidators';
+import { CalendarEvent } from 'calendar-utils';
 
 export interface CalendarPeriodForLockers {
   location: Location;
@@ -14,7 +18,7 @@ export class CalendarPeriodForLockersConstructor {
       location: LocationConstructor.new(),
       startsAt: '',
       endsAt: '',
-      reservableFrom: ''
+      reservableFrom: '',
     };
   }
 
@@ -23,7 +27,7 @@ export class CalendarPeriodForLockersConstructor {
       location: LocationConstructor.newFromObj(obj.location),
       startsAt: obj.startsAt,
       endsAt: obj.endsAt,
-      reservableFrom: obj.reservableFrom
+      reservableFrom: obj.reservableFrom,
     };
   }
 }
@@ -39,14 +43,20 @@ export class CalendarPeriodForLockersConstructor {
  *
  * 3. closingTime may not be before openingTime
  */
-export function isCalendarPeriodForLockersValid(period: CalendarPeriodForLockers): boolean {
+export function isCalendarPeriodForLockersValid(
+  period: CalendarPeriodForLockers
+): boolean {
   if (period === null) {
     return false;
   }
 
-  if (!(isStringValidDateForDB(period.startsAt) &&
-        isStringValidDateForDB(period.endsAt) &&
-        isStringValidDateTimeForDB(period.reservableFrom))) {
+  if (
+    !(
+      isStringValidDateForDB(period.startsAt) &&
+      isStringValidDateForDB(period.endsAt) &&
+      isStringValidDateTimeForDB(period.reservableFrom)
+    )
+  ) {
     return false;
   }
 
@@ -57,11 +67,13 @@ export function isCalendarPeriodForLockersValid(period: CalendarPeriodForLockers
   return endDate >= startDate;
 }
 
-export function calendarPeriodForLockersToCalendarEvent(period: CalendarPeriodForLockers): any {
+export function calendarPeriodForLockersToCalendarEvent(
+  period: CalendarPeriodForLockers
+): CalendarEvent<CalendarPeriodForLockers> {
   return {
     title: '',
     start: new Date(period.startsAt),
     end: new Date(period.endsAt),
-    meta: period
+    meta: period,
   };
 }

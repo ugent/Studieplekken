@@ -1,20 +1,25 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+} from '@angular/core';
 import * as moment from 'moment';
 import { Moment } from 'moment';
 
 @Component({
   selector: 'app-moment-datetime',
   templateUrl: './moment-datetime.component.html',
-  styleUrls: ['./moment-datetime.component.css']
+  styleUrls: ['./moment-datetime.component.css'],
 })
-export class MomentDateTimeComponent implements OnInit, OnChanges {
-
+export class MomentDateTimeComponent implements OnChanges {
   @Input()
   model: Moment;
   @Input()
   disabled: boolean;
   @Output()
-  modelChange: EventEmitter<Moment> = new EventEmitter();
+  modelChange: EventEmitter<Moment> = new EventEmitter<Moment>();
   @Input()
   min: Moment;
   @Input()
@@ -24,12 +29,6 @@ export class MomentDateTimeComponent implements OnInit, OnChanges {
   modelTimeAsString: string;
   modelMinAsString: string;
   modelMaxAsString: string;
-
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
 
   ngOnChanges(): void {
     if (this.model) {
@@ -46,7 +45,6 @@ export class MomentDateTimeComponent implements OnInit, OnChanges {
       this.modelMinAsString = '';
     }
 
-
     if (this.max) {
       this.modelMaxAsString = this.max.format('YYYY-MM-DD');
     } else {
@@ -55,7 +53,11 @@ export class MomentDateTimeComponent implements OnInit, OnChanges {
   }
 
   onNewDate(): void {
-    this.modelChange.next(moment(this.modelDateAsString + 'T' + this.modelTimeAsString, 'YYYY-MM-DDTHH:mm'));
+    this.modelChange.next(
+      moment(
+        this.modelDateAsString + 'T' + this.modelTimeAsString,
+        'YYYY-MM-DDTHH:mm'
+      )
+    );
   }
-
 }

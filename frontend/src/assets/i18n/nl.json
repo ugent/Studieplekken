@@ -3,26 +3,22 @@
     "previous": "Vorige",
     "today": "Vandaag",
     "next": "Volgende",
-
     "month": "Maand",
     "week": "Week",
     "day": "Dag"
   },
-
   "information": {
     "general": "Algemeen",
     "manager": "Beheerder",
     "goto": "Ga naar",
     "faq": "FAQ"
   },
-
   "dashboard": {
     "alert": {
       "title": "[VRIJDAG 11 DECEMBER, RESERVATIES OP VERSCHILLENDE MOMENTEN]",
       "p1": "De reservaties zullen plaatsvinden om 19:00, 19:30 en 20:00 afhankelijk van de locatie. Bekijk dus zeker op voorhand wanneer de reservaties zullen openen.",
       "p2": "We excuseren ons nogmaals voor het ongemak. De interesse voor studieplekken is groter dan we hadden voorspeld, onze server kon deze belasting niet aan. We wensen iedereen enorm veel succes. Indien jullie ondersteuning zoeken voor de blokperiode, kunnen jullie altijd hier terecht:"
     },
-
     "address": "Adres",
     "building": "Gebouw",
     "description": "Omschrijving",
@@ -34,7 +30,6 @@
     "numberOfSeats": "Aantal plaatsen",
     "noLocations": "Helaas zijn er op dit moment geen ruimtes beschikbaar",
     "status": "Status",
-
     "locationDetails": {
       "info": "Algemene informatie over deze ruimte",
       "tags": "Tags die deze ruimte kenmerken",
@@ -62,7 +57,6 @@
       "loginWarning": "Voordat er reservaties kunnen geplaatst worden voor deze locatie, dient u ingelogd te zijn.",
       "refreshWarning": "Herladen van de kalendar zal automatisch gebeuren, het is niet nodig om manueel de pagina te herladen."
     },
-
     "filter": {
       "title": "Filter",
       "tagsFilterTitle": "Filter ruimtes op tags",
@@ -72,32 +66,26 @@
       "showAll": "Toon alle ruimtes",
       "showOpen": "Toon open ruimtes"
     },
-
     "error": "Er is iets misgelopen tijdens het ophalen van de ruimtes."
   },
-
-  "footer":{
+  "footer": {
     "madeBy": "Gemaakt door",
     "privacy": "Privacy",
     "disclaimer": "Disclaimer",
     "cookies": "Cookies",
     "accessibility": "Toegankelijkheid"
   },
-
   "reservations": {
     "reservationButton": "Update Reservaties"
   },
-
   "general": {
     "dsa": "Dienst StudentenActiviteiten",
     "ugent": "Universiteit Gent",
     "appTitle": "Studieplekken UGent",
-
     "yes": "Ja",
     "no": "Neen",
     "back": "Terug",
     "print": "Print",
-
     "monday": "Maandag",
     "tuesday": "Dinsdag",
     "wednesday": "Woensdag",
@@ -105,7 +93,6 @@
     "friday": "Vrijdag",
     "saturday": "Zaterdag",
     "sunday": "Zondag",
-
     "buttons": {
       "add": "Voeg toe",
       "update": "Update",
@@ -116,18 +103,16 @@
       "open": "Toon open locaties",
       "close": "Sluiten"
     },
-
     "roles": {
       "ADMIN": "Admin"
     },
-
     "optional": "Optioneel",
     "notAvailableAbbreviation": "n.v.t.",
-
     "waitingForServer": "Wachten op antwoord van de server...",
-    "idSetByBackend": "ID door backend gezet"
-  },
+    "idSetByBackend": "ID door backend gezet",
 
+    "catchAllError": "Er is iets misgelopen, gelieve op een later tijdstip opnieuw te proberen."
+  },
   "header": {
     "imageAlt": "Universiteit Gent",
     "logIn": "Log in",
@@ -141,22 +126,18 @@
       "information": "Informatie"
     }
   },
-
   "language": {
     "en": "Engels",
     "nl": "Nederlands",
-
     "ENGLISH": "Engels",
     "DUTCH": "Nederlands"
   },
-
   "login": {
     "appTitle": "Studieplekken UGent",
     "title": "Aanmelden",
     "casLogin": "CAS Login",
     "about": "Het digitaal platform voor Study-OO's"
   },
-
   "management": {
     "aside": {
       "title": "Beheer",
@@ -167,9 +148,9 @@
       "authorities": "Autoriteiten",
       "calendar": "Kalender",
       "penalties": "Overtredingen",
-      "admins": "Admins"
+      "admins": "Admins",
+      "volunteers": "Vrijwilligers"
     },
-
     "general": {
       "loading": "Aan het laden...",
       "noLocations": "Er zijn nog geen beschikbare ruimtes. Maak er een aan met de knop 'Ruimte Toevoegen'",
@@ -177,10 +158,8 @@
       "noTags": "Er zijn nog geen tags. Maak er een aan met de knop 'Tag Toevoegen'",
       "noAuthorities": "Er zijn nog geen autoriteiten aangemaakt. Maak er een aan met de knop 'Autoriteit Toevoegen'"
     },
-
     "locationDetails": {
       "title": "Details van {locationName}",
-
       "form": {
         "name": "Naam",
         "authority": "Autoriteit",
@@ -189,25 +168,21 @@
         "numberOfLockers": "Aantal lockers",
         "forGroup": "Groepsreservatie",
         "imageUrl": "URL van foto (optioneel)",
-
         "edit": "Pas aan",
         "cancel": "Annuleer",
         "persist": "Oké",
-
         "loading": "Wachten op antwoord van de server...",
         "success": "Het wijzigen van de ruimte was succesvol",
         "error": "Er ging iets mis tijdens het wijzigen van de ruimte",
-
         "numberOfSeatsApplyWarning": "De aangepaste plaatsen worden alleen toegepast op nieuw aangemaakte openingsperiodes.",
         "numberOfSeatsHelp": "Kan alleen aangepast worden door een admin in samenspraak met DGFB."
       },
-
       "calendar": {
         "title": "Reservatiebeheer",
-
         "reservations": {
           "title": "Reservaties voor de ruimte",
           "selectSlot": "Selecteer een (reserveerbaar) timeslot om de reservaties te zien",
+          "searchUser": "Zoek naar een gebruiker op voornaam, achternaam of studentennummer:",
           "loading": "Reservaties voor het geselecteerde slot worden geladen",
           "error": "Er is iets misgelopen tijdens het ophalen van de reservaties...",
           "table": {
@@ -215,20 +190,26 @@
             "user": "Gebruiker",
             "attended": "Gebruiker was aanwezig?",
             "futureReservation": "Timeslot is nog niet geweest",
-            "number": "Studentennummer"
+            "number": "Studentennummer",
+            "scan": "Scan",
+
+            "yetToScan": "Nog te scannen",
+            "notScanned": "Niet gescand",
+
+            "startScanning": "Start scannen",
+            "finishScanning": "Beïndig scannen"
           }
         },
-
         "form": {
           "title": "Wijzig openingsdagen",
-
           "addButton": "Voeg nieuwe openingsperiode toe",
           "startsAt": "Begint op",
           "endsAt": "Eindigt op",
           "openingTime": "Openingstijd",
           "closingTime": "Sluitingstijd",
-          "reservable": "Reserveerbaar",
-          "timeslotLength": "Lengte Timeslots",
+          "reservable": "Reserveerbaar vanaf",
+          "numberOfSeats": "Plaatsen",
+          "timeslotCount": "Aantal timeslots",
           "reservableFrom": "Reserveerbaar vanaf",
           "remove": "Verwijder",
           "dropdown": {
@@ -238,22 +219,18 @@
           },
           "adminWarning": "Opgepast, deze verandering ligt binnen de vastgelegde termijn. Je zal manueel contact moeten opnemen met dienst permanentie van de UGent.",
           "updateReservationWarning": "Het aanpassen van deze periode zal leiden tot de verwijdering van alle reservaties die al gemaakt zijn gedurende deze periode!",
-
           "noCalendarPeriodsForLocation": "Op dit moment zijn er nog geen periodes voor de ruimte beschikbaar."
         },
-
         "addModalView": {
           "title": "Nieuwe kalenderperiode toevoegen",
           "success": "Het toevoegen van de nieuwe kalenderperiode is gelukt.",
           "error": "Er is iets misgelopen tijdens het toevoegen van de nieuwe kalenderperiode."
         },
-
         "updateModalView": {
           "title": "Wijzigen van een kalenderperiode",
           "success": "Het wijzigen van de kalenderperiode is gelukt.",
           "error": "Er is iets misgelopen tijdens het wijzigen van de kalenderperiode."
         },
-
         "deleteModalView": {
           "title": "Wil je kalenderperiode verwijderen?",
           "body": "Ben je zeker dat je volgende kalenderperiode wilt verwijderen?",
@@ -261,100 +238,78 @@
           "error": "Er is iets misgelopen tijdens het verwijderen van de kalenderperiode.",
           "warning": "Het verwijderen van de kalenderperiode zal ook alle corresponderende reservaties verwijderen. Wees hier aandachtig voor!"
         },
-
         "warningDialog": {
           "warning": "Waarschuwing",
           "body": "De duur van (minstens) één van de aangemaakte periodes (openingstijd-sluitingstijd) is niet deelbaar door de Reserveerbare Timeslot-duur. Dit betekent dat het laatste (onvolledige) timeslot niet zal aangemaakt worden en dus ook niet reserveerbaar zal zijn. Gelieve hier rekening mee te houden."
         },
-
         "updateTitle": "Pas periode aan",
-        "newTitle": "Maak een nieuwe periode"
+        "newTitle": "Maak een nieuwe periode",
+        "errorLoadingCalendarPeriods": "De kalenderperiodes voor deze locatie kunnen niet opgehaald worden."
       },
-
       "description": {
         "title": "Beschrijving van de ruimte",
         "englishDescription": "Omschrijving in het Engels",
         "dutchDescription": "Omschrijving in het Nederlands",
-
         "updateButton": "Update",
         "cancelButton": "Annuleer",
-
         "errorUpdating": "Er is iets misgelopen tijdens het updaten van de omschrijvingen.",
         "successUpdating": "Het updaten van de omschrijvingen is geslaagd."
       },
-
       "tags": {
         "title": "Tags van de ruimte",
         "activeTagsInformation": "Hieronder is een lijst gegeven van de tags die beschikbaar zijn.",
         "updateTagsInformation": "Om de tags te wijzigen, klik op de knop rechts.",
-
         "updateTagsButton": "Wijzig de tags",
-
         "updateTagsConfigurationModal": {
           "title": "Wijzig de tags van de ruimte",
           "body": "In de dropdown hieronder kan je alle tags selecteren die je wil toekennen aan '{locationName}'.",
           "comboboxTitle": "Tags van de ruimte",
-
           "success": "Het is gelukt om de tags voor '{locationName}' te wijzigen",
           "error": "Er is iets misgelopen tijdens het wijzigen van de tags van '{locationName}'."
         },
-
         "noTagsSelected": "Op dit moment zijn er geen tags voor deze ruimte geselecteerd."
       },
-
       "lockerCalendar": {
         "title": "Kalender voor beschikbaarheid van lockers",
-
         "form": {
           "title": "Wijzig periodes voor beschikbaarheid van de lockers",
-
           "addButton": "Voeg toe",
           "startsAt": "Begint op",
           "endsAt": "Eindigt op",
           "reservableFrom": "Reserveerbaar vanaf",
           "remove": "Verwijder",
-
           "updateButton": "Update",
           "cancelButton": "Annuleer",
-
           "wrongCalendarPeriodFormatMessage": "Niet alle periodes zijn correct ingevuld",
           "successMessage": "Het wijzigen van de kalender is succesvol verlopen",
           "successButNoChangesMessage": "Er waren geen veranderingen nodig",
           "errorMessage": "Het aanpassen van de kalender is mislukt. Er is iets misgegaan.",
-
           "noCalendarPeriodsForLockers": "Op dit moment zijn er nog geen periodes voor lockerreservaties beschikbaar."
         }
       },
-
-      "lockersTable":{
+      "lockersTable": {
         "title": "Tabel met overzicht van lockers",
-
         "table": {
           "number": "Nummer",
           "status": "Status",
           "occupiedBy": "Bezet door",
           "keyPickedUp": "Sleutel opgehaald",
           "action": "Actie",
-
           "occupiedStatus": "Bezet",
           "availableStatus": "Vrij",
           "notYet": "Nog niet",
-
           "pickupButton": "Sleutel ophalen",
           "returnButton": "Sleutel terug"
         },
-
         "loading": "Wachten op antwoord van de server",
         "success": "Het wijzigen van de status is gelukt",
         "error": "Er is iets mis gegaan tijdens het wijzigen van de status"
       }
     },
-
     "locations": {
       "title": "Beheer van blokruimtes",
       "addNew": "Ruimte toevoegen",
       "unapproved": "Goedkeuring van nieuwe blokruimtes",
-
       "table": {
         "header": {
           "name": "Ruimte",
@@ -362,13 +317,10 @@
           "numberOfSeats": "Plaatsen",
           "numberOfLockers": "Lockers"
         },
-
         "details": "Details"
       },
-
       "addLocationModal": {
         "title": "Nieuwe ruimte toevoegen",
-
         "form": {
           "locationName": "Naam Ruimte",
           "address": "Adres",
@@ -378,7 +330,6 @@
           "forGroupHelp": "Een lokaal met groepsreservaties kan door 1 persoon gereserveerd. Er zijn geen individuele reservaties nodig of mogelijk",
           "imageUrl": "URL van foto (optioneel)"
         },
-
         "formValidationErrorMessages": {
           "locationName": "Naam is verplicht",
           "authorityName": "Verplicht om een autoriteit op te geven",
@@ -387,60 +338,47 @@
           "numberOfLockers": "Een waarde voor 'aantal lockers' is verplicht",
           "forGroup": "Een waarde voor 'Groepsreservatie' is verplicht"
         },
-
         "cancelButton": "Annuleer",
         "addButton": "Voeg toe",
         "closeButton": "Sluit",
-
         "loading": "Wachten op antwoord van de server...",
         "success": "Het toevoegen van de ruimte is geslaagd",
         "error": "Er is iets misgelopen tijdens het toevoegen van de nieuwe ruimte",
         "warning": "Ben je zeker dat je een voorstel voor een nieuwe room wil toevoegen? Een bevestigingsmail zal naar DGFB gestuurd worden voor goedkeuring. Het aantal zitjes zal worden aangepast.\n"
       },
-
       "editLocationModal": {
-        "title":"Keur deze room goed",
+        "title": "Keur deze room goed",
         "approveButton": "Keur goed"
       },
-
       "deleteLocationModal": {
         "title": "Ruimte verwijderen?",
-
         "body": "Ben je zeker dat je {locationName} wil verwijderen?",
         "warning": "Het verwijderen van deze ruimte zal ook al de volgende openingsperiodes (en de eventuele reservaties daarbinnen) verwijderen:",
-
         "loading": "Wachten op antwoord van de server...",
         "success": "Het verwijderen van de ruimte is geslaagd",
         "error": "Er is iets misgelopen tijdens het verwijderen van de ruimte",
-
         "yesButton": "Verwijder",
         "noButton": "Annuleer"
       }
     },
-
     "buildings": {
       "title": "Beheer van gebouwen voor ruimtes",
-
       "table": {
         "name": "Naam",
         "address": "Adres"
       },
-
       "addNewBuilding": "Nieuw gebouw",
-
       "addBuildingModal": {
         "title": "Nieuw gebouw maken",
         "idSetByBackendMessage": "Ingesteld door backend",
         "success": "Het aanmaken van het nieuwe gebouw is gelukt.",
         "error": "Er is iets misgelopen tijdens het aanmaken van het nieuw gebouw."
       },
-
       "updateBuildingModal": {
         "title": "Update building",
         "success": "Successfully updated the building.",
         "error": "Something went wrong while updating the building."
       },
-
       "deleteBuildingModal": {
         "title": "Verwijder het gebouw",
         "body": "Ben je zeker dat je volgend gebouw wilt verwijderen?",
@@ -448,80 +386,62 @@
         "success": "Het verwijderen van het gebouw is gelukt.",
         "error": "Er is iets misgelopen tijdens het verwijderen van het gebouw."
       },
-
       "errorOnRetrievingTags": "Er is iets misgelopen tijdens het ophalen van de gebouwen..."
     },
-
     "tags": {
       "title": "Beheer van tags van ruimte",
-
       "table": {
         "dutch": "Nederlands",
         "english": "Engels"
       },
-
       "addNewTag": "Nieuwe tag",
-
       "addTagModal": {
         "title": "Nieuwe tag maken",
         "idSetByBackendMessage": "Ingesteld door backend",
         "success": "Het aanmaken van de nieuwe tag is gelukt.",
         "error": "Er is iets misgelopen tijdens het aanmaken van de nieuwe tag."
       },
-
       "updateTagModal": {
         "title": "Update tag",
         "success": "Het updaten van de tag is geslaagd.",
         "error": "Er is iets misgelopen tijdens het updaten van de tag."
       },
-
       "deleteTagModal": {
         "title": "Verwijder tag",
         "body": "Ben je zeker dat je volgende tag wilt verwijderen?",
         "success": "Het verwijderen van de tag is gelukt.",
         "error": "Er is iets misgelopen tijdens het verwijderen van de tag."
       },
-
       "errorOnRetrievingTags": "Er is iets misgelopen tijdens het ophalen van de tags..."
     },
-
     "users": {
       "overview": {
         "title": "Gebruikers beheren",
-
         "firstName": "Voornaam",
         "lastName": "Achternaam",
         "barcode": "Barcode",
-
         "filterSearchButton": "Zoek",
         "filterClearButton": "Wis input"
       },
-
       "searchResult": {
         "title": "Resultaat van zoeken",
-
         "table": {
           "id": "ID",
           "firstName": "Voornaam",
           "lastName": "Achternaam",
           "penaltyPoints": "Strafpunten",
           "institution": "Institutie",
-
           "details": "Details"
         },
-
         "neverSearched": "Je hebt nog niet gezocht naar een gebruiker. Vul de voor- en/of achternaam, of enkel de barcode in om te kunnen zoeken naar gebruikers.",
         "loading": "Wachten op antwoord van de server...",
         "error": "Er is iets misgelopen tijdens het ophalen van de gebruikers...",
         "noUserWithBarcodeHasBeenFound": "Er is geen gebruiker gevonden met opgegeven barcode. Probeer misschien met de voor- en/of achternaam."
       },
-
       "userDetails": {
         "errorQuerying": "Er is iets misgelopen tijdens het ophalen van de gebruiker met id '{id}'",
-
         "form": {
           "title": "Details of {name}",
-
           "id": "ID",
           "firstName": "Voornaam",
           "lastName": "Achternaam",
@@ -529,22 +449,17 @@
           "roles": "Rollen",
           "penaltyPoints": "Strafpunten",
           "institution": "Institutie",
-
           "error": "Er is iets misgelopen tijdens het ophalen van de gebruiker..."
         },
-
         "roles": {
           "title": "Rollen van {name}",
-
           "updateButton": "Update",
           "resetButton": "Herstel",
-
           "loadingUpdatingUser": "Wachten op het antwoord van de server...",
           "successUpdatingUser": "Het updaten van de rollen van de gebruiker is gelukt...",
           "errorUpdatingUser": "Er is iets misgelopen tijdens het updaten van de gebruiker...",
           "adminConfirmation": "Hiermee verandert u de administrator-status van de gebruiker, waardoor deze mogelijks onbeperkte toegang krijgt tot het platform. Spring hier voorzichtig mee om!"
         },
-
         "authorities": {
           "title": "Autoriteiten van {name}",
           "info": "Hieronder is een tabel gegeven met alle autoriteiten waarin de gebruiker een beherende rol heeft. Dit wil zeggen dat hij/zij ruimtes van deze autoriteiten kan beheren.",
@@ -552,97 +467,72 @@
           "noAuthoritiesForUser": "De gebruiker is niet gelinkt aan één of meerdere autoriteiten. Dit wil zeggen dat hij/zij geen enkele ruimte kan beheren.",
           "allAuthoritiesAreAssigned": "Alle autoriteiten zijn al toegekend aan de gebruiker.",
           "addNew": "Autoriteit aan gebruiker toevoegen",
-
           "addAuthorityToUserModal": {
             "title": "Een autoriteit aan de gebruiker toevoegen",
-
             "body": "Selecteer de autoriteit die je aan de gebruiker wil toekennen:",
             "selectAuthority": "Selecteer een autoriteit",
-
             "success": "Het toevoegen van de autoriteit aan de gebruiker is gelukt.",
             "error": "Er is iets misgelopen tijdens het toevoegen van de autoriteit aan de gebruiker."
           },
-
           "deleteAuthorityFromUserModal": {
             "title": "Autoriteit voor de gebruiker ontnemen?",
-
             "body": "Ben je zeker dat je volgende autoriteit wilt verwijderen voor {name}:",
-
             "success": "Het weghalen van de autoriteit voor de gebruiker is gelukt.",
             "error": "Er is iets misgelopen tijdens het weghalen van de autoriteit voor de gebruiker."
           }
         },
-
         "penalties": {
           "title": "Overtredingen van {name}",
-
           "table": {
             "eventCode": "Code van overtreding",
             "timestamp": "Timestamp",
             "location": "Ruimte",
             "receivedPoints": "Ontvangen strafpunten",
             "remarks": "Opmerking",
-
             "addNew": "Overtreding toevoegen",
-
             "addPenaltyModalView": {
               "title": "Niewe overtreding toevoegen",
               "addButton": "Voeg toe",
               "cancelButton": "Annuleer",
-
               "timestamp": "Timestamp",
               "timestampValidation": "Timestamp is required",
-
               "location": "Location",
               "locationValidation": "Location is required",
-
               "points": "Penalty points",
               "pointsValidation": "Penalty points is required",
-
               "loading": "Wachten op antwoord van de server...",
               "success": "Het toevoegen van de overtreding is gelukt.",
               "error": "Er is iets misgelopen tijdens het toevoegen van de overtreding..."
             },
-
             "deletePenaltyModalView": {
               "title": "Zeker om de overtreding te verwijderen?",
               "body": "De overtreding die verwijderd zal worden:",
-
               "yesButton": "Verwijder",
               "noButton": "Annuleer",
-
               "loading": "Wachten op antwoord van de server...",
               "success": "Het verwijderen van de overtreding is gelukt.",
               "error": "Er is iets misgelopen tijdens het verwijderen van de overtreding..."
             }
           },
-
           "noPenalties": "De gebruiker heeft nog geen overtredingen begaan.",
           "error": "Er is iets misgelopen tijdens het ophalen van de strafpunten van de gebruiker."
         }
       }
     },
-
     "authorities": {
       "title": "Beheer van autoriteiten",
-
       "table": {
         "authorityName": "Naam van autoriteit",
         "description": "Omschrijving"
       },
-
       "addNewAuthority": "Autoriteit toevoegen",
-
       "errorOnRetrievingAuthorities": "Er is iets misgelopen tijdens het ophalen van de autoriteiten.",
-
       "users": {
         "title": "Beheer de gebruikers in de autoriteit {authorityName}",
         "info": "In onderstaande tabel zijn alle gebruikers gegeven die in de autoriteit {authorityName} zitten. Je kan hier gebruikers toevoegen of verwijderen.",
         "info2": "De gebruikers die in de tabel zijn opgenomen, hebben beheersrechten op de ruimtes van de autoriteit.",
-
         "addNewUser": "Gebruiker toevoegen",
         "noUsersInAuthority": "Er zijn geen gebruikers opgenomen in deze autoriteit. Dat wil zeggen dat geen enkele gebruiker ruimtes van deze autoriteit kan beheren.",
-
         "addUserToAuthorityModal": {
           "title": "Voeg gebruiker toe aan autoriteit",
           "searchInfo": "Zoek een gebruiker op voor- en/of achternaam om aan de autoriteit toe te voegen.",
@@ -653,7 +543,6 @@
           "error": "Er is iets misgelopen tijdens het toevoegen van de gebruiker aan de autoriteit.",
           "errorSearching": "Er is iets misgelopen tijdens het opzoeken van de gebruikers."
         },
-
         "deleteUserFromAuthorityModal": {
           "title": "Verwijder gebruiker uit autoriteit",
           "body": "Ben je zeker dat je de volgende gebruiker wilt verwijderen uit de autoriteit '{authorityName}'?",
@@ -661,20 +550,17 @@
           "error": "Er is iets misgelopen tijdens het verwijderen van de gebruiker uit de autoriteit."
         }
       },
-
       "addAuthorityModal": {
         "title": "Maak een nieuwe autoriteit aan",
         "idSetByBackendMessage": "Ingesteld door backend",
         "success": "Het aanmaken van de nieuwe autoriteit is gelukt.",
         "error": "Er is iets misgelopen tijdens het aanmaken van de nieuwe autoriteit."
       },
-
       "updateAuthorityModal": {
         "title": "De autoriteit updaten",
         "success": "Het updaten van de autoriteit is gelukt.",
         "error": "Er is iets misgelopen tijdens het updaten van de autoriteit."
       },
-
       "deleteAuthorityModal": {
         "title": "Verwijder de autoriteit",
         "body": "Ben je zeker dat je volgende autoriteit wilt verwijderen?",
@@ -683,97 +569,87 @@
         "error": "Er is iets misgelopen tijdens het verwijderen van de autoriteit."
       }
     },
-
     "reservations": {
       "title": "Overzicht van de reservaties",
       "locationsPanelTitle": "Zoek naar reservaties voor blokruimtes",
       "lockersPanelTitle": "Zoek naar reservaties van lockers",
-
       "location": {
         "location": "Ruimtes",
         "start": "Reservaties vanaf",
         "end": "Reservaties tot",
         "pastReservations": "Vroegere reservaties inbegrijpen?",
-
         "searchButton": "Zoek",
         "clearButton": "Wis invoer",
-
         "neverSearched": "Je hebt nog niet gezocht naar reservaties.",
         "loading": "Wachten op antwoord van de server...",
         "error": "Er is iets misgelopen tijdens het ophalen van de reservaties",
-
         "table": {
           "date": "Datum waarvoor gereserveerd",
           "user": "Gebruiker",
           "attended": "Gebruiker was aanwezig?",
-
           "noLocationReservations": "Er zijn geen reservaties voor de ruimte."
         },
-
+        "finishScanningModal": {
+          "title": "Beëindigen van het scannen",
+          "body": "Na het beëindigen van het scannen zullen de afwezige studenten automatisch 50 strafpunten krijgen.",
+          "body2": "Indien in een vorige scan voor hetzelfde tijdslot een student afwezig was maar in deze scan aanwezig is, dan zullen de eerder verkregen strafpunten verwijderd worden.",
+          "success": "Het beëindigen van het scannen is gelukt.",
+          "error": "Er is iets misgelopen tijdens het beëindigen van het scannen."
+        },
         "deleteModal": {
           "title": "Zeker dat je de reservatie wilt verwijderen?",
           "body": "De reservatie die verwijderd zal worden:",
-
           "yesButton": "Verwijder",
           "noButton": "Annuleer",
-
           "loading": "Wachten op antwoord van de server...",
           "success": "Het verwijderen van de reservatie is gelukt.",
           "error": "Er is iets misgelopen tijdens het verwijderen van de reservatie..."
+        },
+
+        "scanningErrorModal": {
+          "title": "Scannen mislukt",
+          "message": "Er is iets misgelopen tijdens het scannen. De aan-/afwezigheid werd niet goed geregistreerd."
         }
       },
-
       "locker": {
         "location": "Location",
         "start": "Reservaties vanaf",
         "end": "Reservaties tot",
         "pastReservations": "Vroegere reservaties inbegrijpen (i.e. sleutel opgehaald én teruggebracht)?",
-
         "searchButton": "Zoek",
         "clearButton": "Wis invoer",
-
         "neverSearched": "Je hebt nog niet gezocht naar reservaties voor lockers.",
         "loading": "Wachten op antwoord van de server...",
         "error": "Er is iets misgelopen tijdens het ophalen van de locker reservaties",
-
         "table": {
           "lockerNumber": "Locker nummer",
           "owner": "Gebruiker",
           "keyPickupDate": "Sleutel opgehaald?",
           "keyReturnedDate": "Sleutel teruggebracht?",
-
           "noLockerReservations": "Er zijn geen locker reservaties voor de ruimte."
         },
-
         "deleteModal": {
           "title": "Zeker om de locker reservatie te verwijderen?",
           "body": "De locker reservatie die verwijderd zal worden:",
-
           "yesButton": "Verwijder",
           "noButton": "Annuleer",
-
           "loading": "Wachten op antwoord van de server...",
           "success": "Het verwijderen van de locker reservatie is gelukt.",
           "error": "Er is iets misgelopen tijdens het verwijderen van de locker reservatie..."
         }
       }
     },
-
     "penaltyEvents": {
       "title": "Overzicht van mogelijke overtredingen",
       "errorOnRetrievingPenaltyEvents": "Er is iets misgelopen tijdens het ophalen van de mogelijke overtredingen.",
-
       "table": {
         "code": "Code",
         "points": "Strafpunten",
         "description": "Omschrijving"
       },
-
       "addNewButton": "Voeg type overtreding toe",
-
       "addPenaltyEventModal": {
         "title": "Nieuw type overtreding toevoegen",
-
         "formValidationErrorMessages": {
           "codeWarning1666": "Overtredingen waarvan de code start met '1666' hebben een speciale betekenis: je zal ze niet kunnen verwijderen.",
           "code": "Verplicht om een code op te geven",
@@ -781,49 +657,43 @@
           "penaltyPointsMin": "Het aantal strafpunten is niet negatief",
           "descriptions": "Een omschrijving van het type overtreding is vereist in alle talen."
         },
-
         "cancelButton": "Annuleer",
         "addButton": "Voeg toe",
-
         "loading": "Wachten op antwoord van de server...",
         "success": "Het toevoegen van het nieuwe type overtreding is gelukt.",
         "error": "Er is iets misgelopen tijdens het toevoegen van het nieuwe type overtreding.",
         "notAllLanguagesError": "Niet alle ondersteunde talen hebben een beschrijving gekregen."
       },
-
       "updatePenaltyEventModal": {
         "title": "Type overtreding wijzigen",
-
         "formValidationErrorMessages": {
           "penaltyPoints": "Verplicht om het aantal strafpunten in te vullen",
           "penaltyPointsMin": "Het aantal strafpunten is niet negatief",
           "descriptions": "Een omschrijving van het type overtreding is vereist in alle talen."
         },
-
         "cancelButton": "Annuleer",
         "updateButton": "Update",
-
         "loading": "Wachten op antwoord van de server...",
         "success": "Het wijzigen van het type overtreding is gelukt.",
         "error": "Er is iets misgelopen tijdens het wijzigen van het type overtreding.",
         "notAllLanguagesError": "Niet alle ondersteunde talen hebben een beschrijving gekregen."
       },
-
       "deletePenaltyEventModal": {
         "title": "Zeker om overtreding te verwijderen?",
-
         "body": "Ben je zeker dat je de volgende overtreding wil verwijderen?",
-
         "loading": "Wachten op antwoord van de server...",
         "success": "De overtreding werd succesvol verwijderd",
         "error": "Er is iets misgelopen tijdens het verwijderen van de overtreding",
-
         "yesButton": "Verwijder",
         "noButton": "Annuleer"
       }
+    },
+    "volunteers": {
+      "no-volunteers": "Er zijn nog geen vrijwilligers voor deze locatie.",
+      "errorOnLoadingManageableLocations": "De locaties die u kan beheren konden niet worden opgehaald.",
+      "errorOnLoadingVolunteers": "De vrijwilligers van deze locatie konden niet opgehaald worden."
     }
   },
-
   "profile": {
     "aside": {
       "title": "Profiel",
@@ -833,32 +703,26 @@
       "password": "Wachtwoord veranderen",
       "penalties": "Strafpunten"
     },
-
     "calendar": {
       "title": "Jouw persoonlijke reservatiekalender"
     },
-
     "changePassword": {
       "title": "Verander je wachtwoord",
-
       "conditions": {
         "li1": "Je wachtwoord moet tenminste één hoofdletter bevatten",
         "li2": "Je wachtwoord moet tenminste één cijfer bevatten",
         "li3": "Je wachtwoord moet tenminste acht karakters bevatten"
       },
-
       "form": {
         "cancelButton": "Annuleer",
         "confirmPassword": "Bevestig wachtwoord",
         "confirmButton": "Pas aan",
         "oldPassword": "Oud wachtwoord",
         "password": "Wachtwoord",
-
         "wrongOldPassword": "Het ingegeven wachtwoord is fout",
         "otherErrorOnUpdating": "Er ging iets mis tijdens het wijzigen van je wachtwoord"
       }
     },
-
     "overview": {
       "title": "Overzicht van je profiel",
       "form": {
@@ -870,11 +734,9 @@
         "studentNumber": "Studentennummer"
       }
     },
-
     "penalties": {
       "title": "Strafpunten",
       "subtitle": "Het aantal strafpunten dat je momenteel bezit:",
-
       "information": {
         "1": "Wanneer je meer dan 100 strafpunten hebt, kan je geen reservaties meer maken.",
         "2": "Elke week zal het gewicht van de strafpunten die je kreeg voor een overtreding, dalen met 20% van het oorspronkelijk aantal gekregen strafpunten.",
@@ -887,7 +749,6 @@
           "4": "Wanneer je echt over de schreef zou gaan, dan kan je op de blacklist gezet worden. Je krijgt dan onmiddellijk 100 strafpunten, die niet verminderen in de loop der tijd"
         }
       },
-
       "table": {
         "title": "Overzicht van jou strafpunten",
         "header": {
@@ -897,15 +758,12 @@
           "location": "Ruimte",
           "receivedPoints": "Ontvangen strafpunten"
         },
-
         "noPenalties": "Je hebt geen enkele overtreding gemaakt. Goed zo!"
       }
     },
-
     "reservations": {
       "locations": {
         "title": "Overzicht van je reservaties",
-
         "table": {
           "header": {
             "locationName": "Ruimte",
@@ -913,7 +771,6 @@
             "beginHour": "Aanvangsuur reservatie",
             "attended": "Was je aanwezig?"
           },
-
           "attended": {
             "yes": "Aanwezig",
             "no": "Afwezig",
@@ -921,42 +778,65 @@
             "notScannedExplanation": "Voor deze reservatie zijn de aanwezigheden niet opgenomen. Je hebt dus ook geen strafpunten verkregen."
           }
         },
-
         "zeroReservations": "Je hebt tot nu toe nog nooit gereserveerd.",
         "loading": "Reservaties worden geladen...",
         "error": "Er is iets misgegaan tijdens het laden van uw reservaties."
       },
-
       "lockers": {
         "title": "Overzicht van je lockerreservaties",
-
         "table": {
           "header": {
-            "locationName" :  "Ruimte",
-            "lockerNumber" : "Nummer van locker",
-            "keyPickupDate" :  "Datum waarop sleutel opgehaald",
-            "keyReturnedDate" : "Datum waarop sleutel teruggebracht"
+            "locationName": "Ruimte",
+            "lockerNumber": "Nummer van locker",
+            "keyPickupDate": "Datum waarop sleutel opgehaald",
+            "keyReturnedDate": "Datum waarop sleutel teruggebracht"
           },
-
           "keyPickupDateNull": "n.v.t.",
           "keyReturnedDateNull": "n.v.t."
         },
-
         "noReservations": "Je hebt tot nu toe nog nooit een locker gereserveerd."
       }
     }
   },
-
   "openingHoursOverview": {
-    "title":  "Openingsuren van studieplekken tussen maandag {mondayDate} en zondag {sundayDate}",
+    "title": "Openingsuren van studieplekken tussen maandag {mondayDate} en zondag {sundayDate}",
     "navigationInfo": "Met de navigatieknoppen kan je kiezen voor welke week een overzicht getoond wordt.",
-
     "table": {
       "locationName": "Locatie"
     },
-
     "noOpeningsFuture": "Er zullen geen studieplekken geopend worden tussen maandag {mondayDate} en zondag {sundayDate}.",
     "noOpeningsPast": "Er waren geen studieplekken geopend tussen maandag {mondayDate} en zondag {sundayDate}.",
     "loadingError": "Er is iets misgelopen tijdens het ophalen van de openingsuren in de gewenste week."
+  },
+  "scan": {
+    "aside": {
+      "title": "Scan",
+      "locations": "Locaties waar ik kan scannen"
+    },
+    "locations": {
+      "header": {
+        "name": "Naam",
+        "building": "Gebouw",
+        "numberOfSeats": "Plaatsen",
+        "scan":"Scan"
+      },
+      "empty": "Gesloten",
+      "noLocationsWarning": "Je hebt momenteel geen locaties toegewezen gekregen waar je studenten kan scannen.",
+      "errorMessageOnLoadingLocations": "De locaties waar je studenten kan scannen, kunnen niet opgehaald worden."
+    },
+    "locationDetails": {
+      "title": "Studenten scannen voor {locationName}",
+      "errorMessageOnLoadingUsers": "De studenten die je kan scannen, kunnen niet opgehaald worden.",
+      "errorMessageOnLoadingLocation": "De locatie om te scannen, kan niet opgehaald worden.",
+      "noUsersToScanWarning": "Op dit moment zijn er geen studenten te scannen voor deze locatie ."
+    },
+    "phone": "Scan met GSM-camera",
+    "handheld": "Scan met een handscanner",
+    "manual": "Checklist",
+    "unregistered":"Deze gebruiker is niet geregistreerd.",
+    "error": "Er ging iets fout bij deze actie.",
+    "mobile-hint": "Scanning werkt best wanneer je de barcode horizontaal plaatst.",
+    "handheld-hint": "Om met de handscanner te scannen selecteer je de inputbox. Wanneer je iemand scant, zal de naam naar boven springen in de lijst.",
+    "maybe":"Deze gebruiker werd niet gevonden. Zoek in de lijst hieronder of probeer opnieuw."
   }
 }

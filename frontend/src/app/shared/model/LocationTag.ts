@@ -9,7 +9,7 @@ export class LocationTagConstructor {
     return {
       tagId: 0,
       dutch: '',
-      english: ''
+      english: '',
     };
   }
 
@@ -17,7 +17,7 @@ export class LocationTagConstructor {
     return {
       tagId: obj.tagId,
       dutch: obj.dutch,
-      english: obj.english
+      english: obj.english,
     };
   }
 }

@@ -1,20 +1,20 @@
-import {Component, Input, OnInit, TemplateRef} from '@angular/core';
-import {Observable} from 'rxjs';
-import {Location} from '../../../../shared/model/Location';
-import {TranslateService} from '@ngx-translate/core';
-import {LocationTag} from '../../../../shared/model/LocationTag';
-import {MatSelectChange} from '@angular/material/select';
-import {TagsService} from '../../../../services/api/tags/tags.service';
-import {LocationService} from '../../../../services/api/locations/location.service';
-import {FormControl} from '@angular/forms';
-import {LocationDetailsService} from '../../../../services/single-point-of-truth/location-details/location-details.service';
-import {matSelectionChanged} from '../../../../shared/GeneralFunctions';
+import { Component, Input, OnInit, TemplateRef } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Location } from '../../../../shared/model/Location';
+import { TranslateService } from '@ngx-translate/core';
+import { LocationTag } from '../../../../shared/model/LocationTag';
+import { MatSelectChange } from '@angular/material/select';
+import { TagsService } from '../../../../services/api/tags/tags.service';
+import { LocationService } from '../../../../services/api/locations/location.service';
+import { FormControl } from '@angular/forms';
+import { LocationDetailsService } from '../../../../services/single-point-of-truth/location-details/location-details.service';
+import { matSelectionChanged } from '../../../../shared/GeneralFunctions';
 import { BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-location-tags-management',
   templateUrl: './location-tags-management.component.html',
-  styleUrls: ['./location-tags-management.component.css']
+  styleUrls: ['./location-tags-management.component.css'],
 })
 export class LocationTagsManagementComponent implements OnInit {
   @Input() location: Observable<Location>;
@@ -24,47 +24,43 @@ export class LocationTagsManagementComponent implements OnInit {
   currentLang: string;
 
   tagsFormControl: FormControl = new FormControl([]);
-  matSelectSelection: LocationTag[];    // this set upon a selectionChange() of the mat-selection
-  allTags: LocationTag[];               // these tags are assignable to the location (retrieved from backend)
-  tagsThatAreSelected: LocationTag[];   // these tags are actually set on the location (retrieved from backend)
+  matSelectSelection: LocationTag[]; // this set upon a selectionChange() of the mat-selection
+  allTags: LocationTag[]; // these tags are assignable to the location (retrieved from backend)
+  tagsThatAreSelected: LocationTag[]; // these tags are actually set on the location (retrieved from backend)
 
   tagsSelectionIsUpdatable = false;
 
   successUpdatingTagsConfiguration: boolean = undefined;
 
-  constructor(private translate: TranslateService,
-              private tagsService: TagsService,
-              private locationService: LocationService,
-              private locationDetailsService: LocationDetailsService,
-              private modalService: BsModalService) { }
+  constructor(
+    private translate: TranslateService,
+    private tagsService: TagsService,
+    private locationService: LocationService,
+    private locationDetailsService: LocationDetailsService,
+    private modalService: BsModalService
+  ) {}
 
   ngOnInit(): void {
     this.currentLang = this.translate.currentLang;
-    this.translate.onLangChange.subscribe(
-      () => {
-        this.currentLang = this.translate.currentLang;
-      }
-    );
+    this.translate.onLangChange.subscribe(() => {
+      this.currentLang = this.translate.currentLang;
+    });
 
-    this.tagsService.getAllTags().subscribe(
-      next => {
-        this.allTags = next;
-      }
-    );
+    this.tagsService.getAllTags().subscribe((next) => {
+      this.allTags = next;
+    });
 
-    this.location.subscribe(
-      (next) => {
-        if (next.name !== '') {
-          this.locationId = next.locationId;
-          this.locationName = next.name;
-          this.tagsThatAreSelected = next.assignedTags;
-          this.tagsFormControl = new FormControl(this.tagsThatAreSelected);
-        }
+    this.location.subscribe((next) => {
+      if (next.name !== '') {
+        this.locationId = next.locationId;
+        this.locationName = next.name;
+        this.tagsThatAreSelected = next.assignedTags;
+        this.tagsFormControl = new FormControl(this.tagsThatAreSelected);
       }
-    );
+    });
   }
 
-  prepareUpdateTheTags(template: TemplateRef<any>): void {
+  prepareUpdateTheTags(template: TemplateRef<unknown>): void {
     this.tagsFormControl = new FormControl(this.tagsThatAreSelected);
     this.tagsSelectionIsUpdatable = false;
     this.successUpdatingTagsConfiguration = undefined;
@@ -73,16 +69,19 @@ export class LocationTagsManagementComponent implements OnInit {
 
   updateTags(): void {
     this.successUpdatingTagsConfiguration = null;
-    this.locationService.setupTagsForLocation(this.locationId, this.matSelectSelection).subscribe(
-      () => {
-        this.successUpdatingTagsConfiguration = true;
-        // reload the location
-        this.locationDetailsService.loadLocation(this.locationId);
-        this.modalService.hide();
-      }, () => {
-        this.successUpdatingTagsConfiguration = false;
-      }
-    );
+    this.locationService
+      .setupTagsForLocation(this.locationId, this.matSelectSelection)
+      .subscribe(
+        () => {
+          this.successUpdatingTagsConfiguration = true;
+          // reload the location
+          this.locationDetailsService.loadLocation(this.locationId);
+          this.modalService.hide();
+        },
+        () => {
+          this.successUpdatingTagsConfiguration = false;
+        }
+      );
   }
 
   closeModal(): void {
@@ -94,8 +93,11 @@ export class LocationTagsManagementComponent implements OnInit {
    * the selection has changed opposed to the selection of tags that are selected.
    */
   selectionChanged(event: MatSelectChange): void {
-    this.matSelectSelection = event.value;
-    this.tagsSelectionIsUpdatable = matSelectionChanged(event, this.tagsThatAreSelected);
+    this.matSelectSelection = event.value as LocationTag[];
+    this.tagsSelectionIsUpdatable = matSelectionChanged(
+      event,
+      this.tagsThatAreSelected
+    );
   }
 
   /**

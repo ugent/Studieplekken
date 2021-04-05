@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject} from 'rxjs';
-import {Location, LocationConstructor} from '../../../shared/model/Location';
-import {LocationService} from '../../api/locations/location.service';
+import { BehaviorSubject } from 'rxjs';
+import { Location } from '../../../shared/model/Location';
+import { LocationService } from '../../api/locations/location.service';
 
 /**
  * This class is a service used by the LocationDetailsManagementComponent,
@@ -22,27 +22,33 @@ import {LocationService} from '../../api/locations/location.service';
  *     <div *ngIf="locationObs | async as location">...</div>
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LocationDetailsService {
   /*
    * 'locationSubject' is the BehaviorSubject that keeps track of the location
    * that is now viewed in details by the user
    */
-  private locationSubject: BehaviorSubject<Location> = new BehaviorSubject<Location>(LocationConstructor.new());
+  private locationSubject: BehaviorSubject<Location> = new BehaviorSubject<Location>(
+    undefined
+  );
   /*
    * 'locationObs' is the observable that all subcomponents will listen to to get
    * the information to view
    */
   public locationObs = this.locationSubject.asObservable();
 
-  constructor(private locationService: LocationService) { }
+  constructor(private locationService: LocationService) {}
 
   loadLocation(locationId: number): void {
+    // Make sure that the 'loading' content is shown
+    this.locationSubject.next(undefined);
+    // Now actually load the location
     this.locationService.getLocation(locationId, true).subscribe(
-      next => {
+      (next) => {
         this.locationSubject.next(next);
-      }, error => {
+      },
+      (error) => {
         this.locationSubject.error(error);
       }
     );

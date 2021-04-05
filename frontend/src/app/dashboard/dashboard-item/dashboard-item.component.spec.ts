@@ -7,10 +7,9 @@ describe('DashboardItemComponent', () => {
   let fixture: ComponentFixture<DashboardItemComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ DashboardItemComponent ]
-    })
-    .compileComponents();
+    void TestBed.configureTestingModule({
+      declarations: [DashboardItemComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

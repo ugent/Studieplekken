@@ -9,8 +9,10 @@ import blok2.helpers.Resources;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.LocationTag;
+import blok2.model.calendar.Timeslot;
 import blok2.model.reservables.Location;
 import blok2.model.reservables.Locker;
+import blok2.model.users.User;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
@@ -21,6 +23,9 @@ import java.time.LocalDateTime;
 import java.time.temporal.IsoFields;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
+
+import static blok2.daos.db.DBCalendarPeriodDao.getCurrentTimeslot;
+import static blok2.daos.db.DBAccountDao.createUser;
 
 @Service
 public class DBLocationDao extends DAO implements ILocationDao {
@@ -227,6 +232,38 @@ public class DBLocationDao extends DAO implements ILocationDao {
     }
 
     @Override
+    public void addVolunteer(int locationId, String userId) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("add_volunteer"));
+            pstmt.setString(1, userId);
+            pstmt.setInt(2, locationId);
+            pstmt.execute();
+        }
+    }
+    @Override
+    public void deleteVolunteer(int locationId, String userId) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_volunteer"));
+            pstmt.setString(1, userId);
+            pstmt.setInt(2, locationId);
+            pstmt.execute();
+        }
+    }
+
+    @Override
+    public List<User> getVolunteers(int locationId) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_volunteers_of_location"));
+            pstmt.setInt(1, locationId);
+            ResultSet set = pstmt.executeQuery();
+            List<User> users = new ArrayList<>();
+            while(set.next())
+                users.add(createUser(set, conn));
+            return users;
+        }
+    }
+
+    @Override
     public List<Locker> getLockers(int locationId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             List<Locker> lockers = new ArrayList<>();
@@ -312,7 +349,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
      * @param rsTags the ResultSet for fetching the tags
      * @return a generated location
      */
-    private static Location createLocation(ResultSet rs, ResultSet rsTags, Pair<LocationStatus, String> status) throws SQLException {
+    private static Location createLocation(ResultSet rs, ResultSet rsTags, Pair<LocationStatus, String> status, Timeslot timeslot) throws SQLException {
         int locationId = rs.getInt(Resources.databaseProperties.getString("location_id"));
         String name = rs.getString(Resources.databaseProperties.getString("location_name"));
         int numberOfSeats = rs.getInt(Resources.databaseProperties.getString("location_number_of_seats"));
@@ -329,7 +366,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
         fillTagLists(assignedTags, rsTags);
 
         return new Location(locationId, name, numberOfSeats, numberOfLockers, imageUrl, authority,
-                descriptionDutch, descriptionEnglish, building, forGroup, assignedTags, status);
+                descriptionDutch, descriptionEnglish, building, forGroup, assignedTags, status, timeslot);
     }
 
     private static void fillTagLists(List<LocationTag> assignedTags, ResultSet rsTags)
@@ -347,7 +384,9 @@ public class DBLocationDao extends DAO implements ILocationDao {
         ResultSet rsTags = DBLocationTagDao.getTagsForLocation(rs.getInt(Resources.databaseProperties.getString("location_id")), conn);
         int locationId = rs.getInt(Resources.databaseProperties.getString("location_id"));
         Pair<LocationStatus, String> status = DBCalendarPeriodDao.getStatus(locationId, conn);
-        return createLocation(rs, rsTags, status);
+        Timeslot timeslot = getCurrentTimeslot(locationId, conn);
+
+        return createLocation(rs, rsTags, status, timeslot);
     }
 
     public static Locker createLocker(ResultSet rs, Connection conn) throws SQLException {

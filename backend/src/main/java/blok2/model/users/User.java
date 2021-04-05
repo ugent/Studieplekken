@@ -34,6 +34,9 @@ public class User implements Cloneable, UserDetails {
     // in the controller methods to authorize the user accessing the methods.
     private List<Authority> userAuthorities;
 
+    // List of location IDs the user is volunteer for
+    private List<Integer> userVolunteer;
+
     public User() {
         lastName = "";
         firstName = "";
@@ -42,6 +45,7 @@ public class User implements Cloneable, UserDetails {
         institution = "";
         augentID = "";
         userAuthorities = new ArrayList<>();
+        userVolunteer = new ArrayList<>();
     }
 
     @Override
@@ -108,6 +112,9 @@ public class User implements Cloneable, UserDetails {
     public List<Authority> getUserAuthorities() {
         return userAuthorities;
     }
+    public List<Integer> getUserVolunteer() {
+        return userVolunteer;
+    }
 
     public void setAugentID(String augentID) {
         this.augentID = augentID;
@@ -145,6 +152,10 @@ public class User implements Cloneable, UserDetails {
         this.userAuthorities = userAuthorities;
     }
 
+    public void setUserVolunteer(List<Integer> userVolunteer) {
+        this.userVolunteer = userVolunteer;
+    }
+
 //</editor-fold>
 
     @Override
@@ -180,6 +191,9 @@ public class User implements Cloneable, UserDetails {
         // GrantedAuthority "HAS_AUTHORITIES" is added too
         if (userAuthorities.size() > 0)
             grantedAuthorities.add(new SimpleGrantedAuthority("HAS_AUTHORITIES"));
+
+        if (userVolunteer.size() > 0)
+            grantedAuthorities.add(new SimpleGrantedAuthority("HAS_VOLUNTEERS"));
 
         return grantedAuthorities;
     }

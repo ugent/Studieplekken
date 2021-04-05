@@ -58,9 +58,9 @@ import { NgxMatDatetimePickerModule } from '@angular-material-components/datetim
 import { NgxMatMomentModule } from '@angular-material-components/moment-adapter';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import {MatCheckboxModule} from '@angular/material/checkbox';
-import {MomentDateComponent} from './shared/inputs/moment-date/moment-date.component';
-import {FormatStatusPipe} from './shared/pipes/FormatStatusPipe';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MomentDateComponent } from './shared/inputs/moment-date/moment-date.component';
+import { FormatStatusPipe } from './shared/pipes/FormatStatusPipe';
 import { MomentDateTimeComponent } from './shared/inputs/moment-datetime/moment-datetime.component';
 import { LocationOpeningperiodDialogComponent } from './management/locations-management/location-details-management/location-calendar/location-openingperiod-dialog/location-openingperiod-dialog.component';
 import { BuildingManagementComponent } from './management/building-management/building-management.component';
@@ -74,6 +74,12 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { TimeslotTableComponent } from './management/locations-management/location-details-management/timeslot-table/timeslot-table.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { OpeningHoursOverviewComponent } from './miscellaneous/opening-hours-overview/opening-hours-overview.component';
+import { ScanningLocationsComponent } from './scan/scanning-locations/scanning-locations.component';
+import { ScanningLocationDetailsComponent } from './scan/scanning-location-details/scanning-location-details.component';
+import { ScannerComponent } from './shared/scanner/scanner.component';
+import { VolunteersManagementComponent } from './management/volunteers-management/volunteers-management.component';
+import { VolunteerManagementPanelComponent } from './management/volunteers-management/volunteer-management-panel/volunteer-management-panel.component';
+
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -86,133 +92,157 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
-    canActivate: [AuthorizationGuardService]
+    canActivate: [AuthorizationGuardService],
   },
 
   {
     path: 'dashboard',
     component: DashboardComponent,
-    canActivate: [AuthorizationGuardService]
+    canActivate: [AuthorizationGuardService],
   },
 
   {
     path: 'dashboard/:locationId',
     component: LocationDetailsComponent,
-    canActivate: [AuthorizationGuardService]
+    canActivate: [AuthorizationGuardService],
   },
 
   {
-    path: 'profile', component: ProfileComponent,
+    path: 'profile',
+    component: ProfileComponent,
     children: [
       {
         path: '',
         redirectTo: 'overview',
-        pathMatch: 'full'
+        pathMatch: 'full',
       },
       {
         path: 'overview',
         component: ProfileOverviewComponent,
-        canActivate: [AuthorizationGuardService]
+        canActivate: [AuthorizationGuardService],
       },
       {
         path: 'reservations',
         component: ProfileReservationsComponent,
-        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService]
+        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService],
       },
       {
         path: 'calendar',
         component: ProfileCalendarComponent,
-        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService]
+        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService],
       },
       {
         path: 'password',
         component: ProfileChangePasswordComponent,
-        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService]
+        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService],
       },
       {
         path: 'penalties',
         component: ProfilePenaltiesComponent,
-        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService]
-      }
-    ]
+        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService],
+      },
+    ],
   },
 
   {
     path: 'scan',
     component: ScanComponent,
-    canActivate: [AuthorizationGuardService, ApplicationTypeGuardService]
-  },
-
-  {
-    path: 'management', component: ManagementComponent,
+    canActivate: [AuthorizationGuardService, ApplicationTypeGuardService],
     children: [
       {
         path: '',
         redirectTo: 'locations',
-        pathMatch: 'full'
+        pathMatch: 'full',
+      },
+      {
+        path: 'locations',
+        component: ScanningLocationsComponent,
+        canActivate: [AuthorizationGuardService],
+      },
+      {
+        path: 'locations/:locationId',
+        component: ScanningLocationDetailsComponent,
+        canActivate: [AuthorizationGuardService],
+      },
+    ],
+  },
+
+  {
+    path: 'management',
+    component: ManagementComponent,
+    children: [
+      {
+        path: '',
+        redirectTo: 'locations',
+        pathMatch: 'full',
       },
       {
         path: 'locations',
         component: LocationsManagementComponent,
-        canActivate: [AuthorizationGuardService]
+        canActivate: [AuthorizationGuardService],
       },
       {
         path: 'locations/:locationId',
         component: LocationDetailsManagementComponent,
-        canActivate: [AuthorizationGuardService]
+        canActivate: [AuthorizationGuardService],
       },
       {
         path: 'locations/:locationId/timeslot/:calendarid/:date/:seqnr',
         component: TimeslotTableComponent,
-        canActivate: [AuthorizationGuardService]
+        canActivate: [AuthorizationGuardService],
       },
       {
         path: 'buildings',
         component: BuildingManagementComponent,
-        canActivate: [AuthorizationGuardService]
+        canActivate: [AuthorizationGuardService],
       },
       {
         path: 'tags',
         component: TagsManagementComponent,
-        canActivate: [AuthorizationGuardService]
+        canActivate: [AuthorizationGuardService],
       },
       {
         path: 'users',
         component: UsersManagementComponent,
-        canActivate: [AuthorizationGuardService]
+        canActivate: [AuthorizationGuardService],
       },
       {
         path: 'users/:id',
         component: UserDetailsManagementComponent,
-        canActivate: [AuthorizationGuardService]
+        canActivate: [AuthorizationGuardService],
       },
       {
         path: 'authorities',
         component: AuthoritiesManagementComponent,
-        canActivate: [AuthorizationGuardService]
+        canActivate: [AuthorizationGuardService],
       },
       {
         path: 'authorities/:authorityId',
         component: AuthorityUsersManagementComponent,
-        canActivate: [AuthorizationGuardService]
+        canActivate: [AuthorizationGuardService],
       },
       {
         path: 'penalties',
         component: PenaltyEventsManagementComponent,
-        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService]
+        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService],
       },
       {
         path: 'admins',
         component: AdminsManagementComponent,
-        canActivate: [AuthorizationGuardService]
-      }
-    ]
+        canActivate: [AuthorizationGuardService],
+      },
+      {
+        path: 'volunteers',
+        component: VolunteersManagementComponent,
+        canActivate: [AuthorizationGuardService],
+      },
+    ],
   },
 
   {
     path: 'information',
     component: InformationComponent,
-    canActivate: [AuthorizationGuardService]
+    canActivate: [AuthorizationGuardService],
   },
 
   {
@@ -224,8 +254,8 @@ const routes: Routes = [
   {
     path: '',
     redirectTo: '/dashboard',
-    pathMatch: 'full'
-  }
+    pathMatch: 'full',
+  },
   // , {path: '**', component: PageNotFoundController} TODO: create PageNotFoundController
 ];
 
@@ -275,48 +305,52 @@ const routes: Routes = [
     AdminsManagementComponent,
     TimeslotTableComponent,
     FormatStatusPipe,
-    OpeningHoursOverviewComponent
+    OpeningHoursOverviewComponent,
+    ScanningLocationsComponent,
+    ScanningLocationDetailsComponent,
+    ScannerComponent,
+    VolunteersManagementComponent,
+    VolunteerManagementPanelComponent,
   ],
-    imports: [
-      BrowserModule,
-      AppRoutingModule,
-      RouterModule.forRoot(routes),
-      HttpClientModule,
-      TranslateModule.forRoot({
-          defaultLanguage: 'nl',
-          loader: {
-              provide: TranslateLoader,
-              useFactory: HttpLoaderFactory,
-              deps: [HttpClient]
-          }
-      }),
-      BrowserAnimationsModule,
-      CalendarModule.forRoot({
-          provide: DateAdapter,
-          useFactory: adapterFactory,
-      }),
-      ReactiveFormsModule,
-      FormsModule,
-      FlatpickrModule.forRoot(),
-      CKEditorModule,
-      MatSelectModule,
-      NgxMatDatetimePickerModule,
-      NgxMatMomentModule,
-      MatDatepickerModule,
-      MatInputModule,
-      MatDialogModule,
-      MatCheckboxModule,
-      MatChipsModule,
-      ModalModule.forRoot(),
-      FlexLayoutModule,
-      MarkdownModule.forRoot({
-        sanitize: SecurityContext.NONE
-      }),
-      MatTabsModule,
-      MatTooltipModule
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    RouterModule.forRoot(routes),
+    HttpClientModule,
+    TranslateModule.forRoot({
+      defaultLanguage: 'nl',
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient],
+      },
+    }),
+    BrowserAnimationsModule,
+    CalendarModule.forRoot({
+      provide: DateAdapter,
+      useFactory: adapterFactory,
+    }),
+    ReactiveFormsModule,
+    FormsModule,
+    FlatpickrModule.forRoot(),
+    CKEditorModule,
+    MatSelectModule,
+    NgxMatDatetimePickerModule,
+    NgxMatMomentModule,
+    MatDatepickerModule,
+    MatInputModule,
+    MatDialogModule,
+    MatCheckboxModule,
+    MatChipsModule,
+    ModalModule.forRoot(),
+    FlexLayoutModule,
+    MarkdownModule.forRoot({
+      sanitize: SecurityContext.NONE,
+    }),
+    MatTabsModule,
+    MatTooltipModule,
+  ],
   providers: [FormatStatusPipe],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule {
-}
+export class AppModule {}

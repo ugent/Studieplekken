@@ -1,0 +1,162 @@
+<div class="panel-group" *ngIf="volunteerObs | async as volunteers; else loadingOrError">
+    <!-- Heading -->
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <a data-toggle="collapse" href="#collapse{{location.locationId}}" [attr.aria-expanded]="!collapsed">
+                <i class="glyphicon glyphicon-plus"></i>
+                <i class="glyphicon glyphicon-minus"></i>
+                {{('management.locationDetails.title' | translate).replace('{locationName}',
+                location.name)}}
+                <span style="float: right">
+                  {{volunteers.length}} {{('management.aside.volunteers' | translate).toLowerCase()}}
+                </span>
+            </a>
+        </h3>
+
+    </div>
+
+    <!-- Body -->
+    <div class="panel-collapse" [class.collapse]="collapsed" id="collapse{{location.locationId}}">
+        <div class="panel-body" style="padding: 20px">
+            <table style="width: 100%" *ngIf="!showEmpty(volunteers)">
+                <thead>
+                    <tr>
+                        <th>{{'management.users.searchResult.table.id' | translate}}</th>
+                        <th>{{'management.users.searchResult.table.firstName' | translate}}</th>
+                        <th>{{'management.users.searchResult.table.lastName' | translate}}</th>
+                        <th>{{'management.users.searchResult.table.institution' | translate}}</th>
+                        <th>
+                            <!-- Details -->
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let user of volunteers">
+                        <td>{{user.augentID}}</td>
+                        <td>{{user.firstName}}</td>
+                        <td>{{user.lastName}}</td>
+                        <td>{{user.institution}}</td>
+                        <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
+                            <span (click)="deleteVolunteer(user)" class="glyphicon glyphicon-trash">
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div *ngIf="showEmpty(volunteers)">
+                <div class="alert alert-info">
+                    {{'management.volunteers.no-volunteers' | translate}}
+                </div>
+            </div>
+
+            <button class='btn btn-default' (click)="showAdd(confirm)">Add volunteer</button>
+        </div>
+    </div>
+</div>
+
+<ng-template #confirm>
+    <div class="modal-header">
+        {{'dashboard.locationDetails.calendar.reservation.header' | translate}}
+    </div>
+    <div class="modal-body text-center">
+        <!-- Form to filter users by
+          - first name
+          - last name
+          - barcode
+   -->
+        <div class="padding-default bg-tertiary">
+            <div class="padding-default">
+                <div class="">
+                    <form [formGroup]="formGroup" (ngSubmit)="submitSearch(formGroup.value)">
+                        <!-- First Name -->
+                        <div class="row form-group">
+                            <label class="col-lg-3 control-label" for="firstName">
+                                {{'management.users.overview.firstName' | translate}}
+                            </label>
+                            <div class="col-lg-8">
+                                <input class="form-control" id="firstName" type="text" formControlName="firstName">
+                            </div>
+                        </div>
+
+                        <!-- Last Name -->
+                        <div class="row form-group">
+                            <label class="col-lg-3 control-label" for="lastName">
+                                {{'management.users.overview.lastName' | translate}}
+                            </label>
+                            <div class="col-lg-8">
+                                <input class="form-control" id="lastName" type="text" formControlName="lastName">
+                            </div>
+                        </div>
+
+                        <!-- Search and Cancel buttons -->
+                        <div class="row">
+                            <div class="col-md-11">
+
+                                <div class="pull-right">
+                                    <!-- Search -->
+                                    <button type="submit" class="btn btn-default btn-left"
+                                        [disabled]="!enableSearchButton(formGroup.value)">
+                                        {{'management.users.overview.filterSearchButton' | translate}}
+                                    </button>
+
+                                    <!-- Clear input -->
+                                    <button type="button" class="btn btn-default" (click)="clearFilterInput()"
+                                        [disabled]="!enableClearButton(formGroup.value)">
+                                        {{'management.users.overview.filterClearButton' | translate}}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <table style="width: 100%" *ngIf="neverSearched != true">
+            <thead>
+                <tr>
+                    <th>{{'management.users.searchResult.table.id' | translate}}</th>
+                    <th>{{'management.users.searchResult.table.firstName' | translate}}</th>
+                    <th>{{'management.users.searchResult.table.lastName' | translate}}</th>
+                    <th>{{'management.users.searchResult.table.institution' | translate}}</th>
+                    <th>
+                        <!-- Details -->
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody *ngIf="filteredUsers | async as users">
+                <tr *ngFor="let user of users" class="text-left">
+                    <td>{{user.augentID}}</td>
+                    <td>{{user.firstName}}</td>
+                    <td>{{user.lastName}}</td>
+                    <td>{{user.institution}}</td>
+                    <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
+                        <span (click)="addVolunteer(user)" class="glyphicon glyphicon-plus">
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div *ngIf="neverSearched == true" class="alert alert-info">
+            {{'management.users.searchResult.neverSearched' | translate}}
+        </div>
+
+    </div>
+</ng-template>
+
+<ng-template #loadingOrError>
+  <div class="alert alert-error" *ngIf="errorSubject | async; else loading">
+    {{'management.volunteers.errorOnLoadingVolunteers' | translate}}
+  </div>
+
+  <ng-template #loading>
+    <div class="alert alert-info" style="margin-top: 10px;">
+      {{'general.waitingForServer' | translate}}
+    </div>
+  </ng-template>
+</ng-template>

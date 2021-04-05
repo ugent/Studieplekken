@@ -1,18 +1,23 @@
-import {Component, OnInit, TemplateRef} from '@angular/core';
-import {AuthoritiesService} from '../../../services/api/authorities/authorities.service';
-import {Observable} from 'rxjs';
-import {User} from '../../../shared/model/User';
-import {Authority} from '../../../shared/model/Authority';
-import {ActivatedRoute} from '@angular/router';
-import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
-import {UserService} from '../../../services/api/users/user.service';
-import {AuthorityToManageService} from '../../../services/single-point-of-truth/authority-to-manage/authority-to-manage.service';
-import {BsModalRef, BsModalService} from 'ngx-bootstrap/modal';
+import { Component, OnInit, TemplateRef } from '@angular/core';
+import { AuthoritiesService } from '../../../services/api/authorities/authorities.service';
+import { Observable } from 'rxjs';
+import { User } from '../../../shared/model/User';
+import { Authority } from '../../../shared/model/Authority';
+import { ActivatedRoute } from '@angular/router';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
+import { UserService } from '../../../services/api/users/user.service';
+import { AuthorityToManageService } from '../../../services/single-point-of-truth/authority-to-manage/authority-to-manage.service';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-authority-users-management',
   templateUrl: './authority-users-management.component.html',
-  styleUrls: ['./authority-users-management.component.css']
+  styleUrls: ['./authority-users-management.component.css'],
 })
 export class AuthorityUsersManagementComponent implements OnInit {
   authority: Authority;
@@ -20,11 +25,11 @@ export class AuthorityUsersManagementComponent implements OnInit {
   usersInAuthorityObs: Observable<User[]>;
 
   userSearchFormGroup = new FormGroup({
-    firstName: new FormControl('', Validators.required),
-    lastName: new FormControl('', Validators.required)
+    firstName: new FormControl('', Validators.required.bind(this)),
+    lastName: new FormControl('', Validators.required.bind(this)),
   });
 
-  selectedUserFormControl = new FormControl('', Validators.required);
+  selectedUserFormControl = new FormControl('', Validators.required.bind(this));
 
   userSearchResult: User[] = [];
 
@@ -40,12 +45,13 @@ export class AuthorityUsersManagementComponent implements OnInit {
   addModal: BsModalRef;
   deleteModal: BsModalRef;
 
-  constructor(private authoritiesService: AuthoritiesService,
-              private authorityToManageService: AuthorityToManageService,
-              private route: ActivatedRoute,
-              private userService: UserService,
-              private modalService: BsModalService) {
-  }
+  constructor(
+    private authoritiesService: AuthoritiesService,
+    private authorityToManageService: AuthorityToManageService,
+    private route: ActivatedRoute,
+    private userService: UserService,
+    private modalService: BsModalService
+  ) {}
 
   get firstName(): AbstractControl {
     return this.userSearchFormGroup.get('firstName');
@@ -67,29 +73,26 @@ export class AuthorityUsersManagementComponent implements OnInit {
     // or directly used the url to go to this page
     if (this.authority === undefined) {
       const id = this.route.snapshot.paramMap.get('authorityId');
-      this.authoritiesService.getAuthority(Number(id)).subscribe(
-        next => {
-          this.authority = next;
-          this.setUsersObs(this.authority.authorityId);
-        }
-      );
+      this.authoritiesService.getAuthority(Number(id)).subscribe((next) => {
+        this.authority = next;
+        this.setUsersObs(this.authority.authorityId);
+      });
     } else {
       this.setUsersObs(this.authority.authorityId);
     }
-
   }
 
   closeModal(): void {
     this.modalService.hide();
   }
 
-  prepareToAddUserToAuthority(template: TemplateRef<any>): void {
+  prepareToAddUserToAuthority(template: TemplateRef<unknown>): void {
     this.successAddingAuthority = undefined;
     this.successSearchingUsers = undefined;
     this.isValidUserToAdd = undefined;
     this.userSearchFormGroup.setValue({
       firstName: '',
-      lastName: ''
+      lastName: '',
     });
     this.selectedUserFormControl.setValue('');
     this.userSearchResult = [];
@@ -109,14 +112,17 @@ export class AuthorityUsersManagementComponent implements OnInit {
     } else if (lastName === '') {
       usersObs = this.userService.getUsersByFirstName(firstName);
     } else {
-      usersObs = this.userService.getUsersByFirstAndLastName(firstName, lastName);
+      usersObs = this.userService.getUsersByFirstAndLastName(
+        firstName,
+        lastName
+      );
     }
 
     this.subscribeOnSearchedUsers(usersObs);
   }
 
   addUserToAuthority(): void {
-    const userId: string = this.selectedUserFormControl.value;
+    const userId: string = this.selectedUserFormControl.value as string;
     const authorityId = this.authority.authorityId;
     this.successAddingAuthority = null;
 
@@ -125,7 +131,8 @@ export class AuthorityUsersManagementComponent implements OnInit {
         this.successAddingAuthority = true;
         this.setUsersObs(authorityId);
         this.addModal.hide();
-      }, () => {
+      },
+      () => {
         this.successAddingAuthority = false;
       }
     );
@@ -135,7 +142,10 @@ export class AuthorityUsersManagementComponent implements OnInit {
   // *   Auxiliaries   *
   // *******************
 
-  prepareToDeleteUserFromAuthority(user: User, template: TemplateRef<any>): void {
+  prepareToDeleteUserFromAuthority(
+    user: User,
+    template: TemplateRef<unknown>
+  ): void {
     this.successDeletingAuthority = undefined;
     this.userPreparedToDelete = user;
     this.deleteModal = this.modalService.show(template);
@@ -143,19 +153,24 @@ export class AuthorityUsersManagementComponent implements OnInit {
 
   deleteUserFromAuthority(userId: string, authorityId: number): void {
     this.successDeletingAuthority = null;
-    this.authoritiesService.deleteUserFromAuthority(userId, authorityId).subscribe(
-      () => {
-        this.successDeletingAuthority = true;
-        this.setUsersObs(authorityId); // reload users data
-        this.deleteModal.hide();
-      }, () => {
-        this.successDeletingAuthority = false;
-      }
-    );
+    this.authoritiesService
+      .deleteUserFromAuthority(userId, authorityId)
+      .subscribe(
+        () => {
+          this.successDeletingAuthority = true;
+          this.setUsersObs(authorityId); // reload users data
+          this.deleteModal.hide();
+        },
+        () => {
+          this.successDeletingAuthority = false;
+        }
+      );
   }
 
   setUsersObs(authorityId: number): void {
-    this.usersInAuthorityObs = this.authoritiesService.getUsersFromAuthority(authorityId);
+    this.usersInAuthorityObs = this.authoritiesService.getUsersFromAuthority(
+      authorityId
+    );
   }
 
   // ****************************
@@ -168,14 +183,14 @@ export class AuthorityUsersManagementComponent implements OnInit {
 
   subscribeOnSearchedUsers(usersObs: Observable<User[]>): void {
     usersObs.subscribe(
-      next => {
+      (next) => {
         this.successSearchingUsers = true;
         this.userSearchResult = next;
         this.selectedUserFormControl.enable();
-      }, () => {
+      },
+      () => {
         this.successSearchingUsers = false;
       }
     );
   }
-
 }

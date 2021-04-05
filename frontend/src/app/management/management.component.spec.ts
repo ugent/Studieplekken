@@ -7,10 +7,9 @@ describe('ManagementComponent', () => {
   let fixture: ComponentFixture<ManagementComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ManagementComponent ]
-    })
-    .compileComponents();
+    void TestBed.configureTestingModule({
+      declarations: [ManagementComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

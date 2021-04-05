@@ -7,10 +7,9 @@ describe('UserDetailsFormComponent', () => {
   let fixture: ComponentFixture<UserDetailsFormComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ UserDetailsFormComponent ]
-    })
-    .compileComponents();
+    void TestBed.configureTestingModule({
+      declarations: [UserDetailsFormComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

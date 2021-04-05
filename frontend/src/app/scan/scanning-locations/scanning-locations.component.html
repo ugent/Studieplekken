@@ -1,0 +1,61 @@
+<div class="container-fluid">
+  <div *ngIf="locationObs | async as locations; else loadingOrError">
+    <table *ngIf="locations.length > 0; else noLocations" class="table table-striped"
+      style="table-layout: fixed; width: 100%;">
+      <!-- Table header -->
+      <thead>
+        <tr>
+          <th style="width: 50%">{{'scan.locations.header.name' | translate}}</th>
+          <th style="width: 30%">{{'scan.locations.header.building' | translate}}</th>
+          <th style="width: 10%">{{'scan.locations.header.numberOfSeats' | translate}}</th>
+          <th style="width: 10%">{{'scan.locations.header.scan' | translate}}</th>
+        </tr>
+      </thead>
+
+      <!-- Table body -->
+      <tbody>
+        <tr *ngFor="let location of locations">
+          <td style="padding-right: 5em;">{{location.name}}</td>
+          <td style="padding-right: 5em;">{{location.building.name}}</td>
+          <td>{{location.numberOfSeats}}</td>
+          <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
+
+            <div *ngIf="location.currentTimeslot; then scannableTemplate else notScannableTemplate">
+            </div>
+
+            <ng-template #scannableTemplate>
+              <span routerLink="./{{location.locationId}}"
+                class="glyphicon glyphicon-qrcode">
+              </span>
+            </ng-template>
+
+            <ng-template #notScannableTemplate>
+              <div>
+                {{'scan.locations.empty' | translate}}
+              </div>
+            </ng-template>
+
+
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<ng-template #loadingOrError>
+  <div *ngIf="loadingError | async; else loading" class="alert alert-error">
+    {{'scan.locations.errorMessageOnLoadingLocations' | translate}}
+  </div>
+  <ng-template #loading>
+    <div class="alert alert-info">
+      {{'general.waitingForServer' | translate}}
+    </div>
+  </ng-template>
+</ng-template>
+
+<ng-template #noLocations>
+  <div class="alert alert-warning">
+    {{'scan.locations.noLocationsWarning' | translate}}
+  </div>
+</ng-template>

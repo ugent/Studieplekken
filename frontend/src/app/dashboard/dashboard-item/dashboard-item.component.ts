@@ -1,22 +1,21 @@
-import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
-import {DatePipe} from '@angular/common';
-import {Location} from '../../shared/model/Location';
-import {LocationService} from '../../services/api/locations/location.service';
-import {TranslateService} from '@ngx-translate/core';
-import {LocationTag} from '../../shared/model/LocationTag';
-import {ApplicationTypeFunctionalityService} from '../../services/functionality/application-type/application-type-functionality.service';
-import {defaultLocationImage, LocationStatus} from '../../app.constants';
-import {CalendarPeriodsService} from '../../services/api/calendar-periods/calendar-periods.service';
-import {Moment} from 'moment';
-import { Observable} from 'rxjs';
+import { Component, Input, OnInit } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { Location } from '../../shared/model/Location';
+import { LocationService } from '../../services/api/locations/location.service';
+import { TranslateService } from '@ngx-translate/core';
+import { LocationTag } from '../../shared/model/LocationTag';
+import { ApplicationTypeFunctionalityService } from '../../services/functionality/application-type/application-type-functionality.service';
+import { defaultLocationImage, LocationStatus } from '../../app.constants';
+import { Moment } from 'moment';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard-item',
   templateUrl: './dashboard-item.component.html',
   styleUrls: ['./dashboard-item.component.css', '../location.css'],
-  providers: [DatePipe]
+  providers: [DatePipe],
 })
-export class DashboardItemComponent implements OnInit, AfterViewInit {
+export class DashboardItemComponent implements OnInit {
   @Input() location: Location;
   @Input() nextReservableFrom: Moment;
 
@@ -37,22 +36,22 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
   showLockersManagement: boolean;
 
   /* Subscriptions */
-  constructor(private locationService: LocationService,
-              private calendarPeriodsService: CalendarPeriodsService,
-              private translate: TranslateService,
-              private functionalityService: ApplicationTypeFunctionalityService) {
-  }
+  constructor(
+    private locationService: LocationService,
+    private translate: TranslateService,
+    private functionalityService: ApplicationTypeFunctionalityService
+  ) {}
 
   ngOnInit(): void {
     this.currentLang = this.translate.currentLang;
-    this.translate.onLangChange.subscribe(
-      () => {
-        this.currentLang = this.translate.currentLang;
-        this.setupTagsInCurrentLang();
-      }
-    );
+    this.translate.onLangChange.subscribe(() => {
+      this.currentLang = this.translate.currentLang;
+      this.setupTagsInCurrentLang();
+    });
 
-    this.occupationObs = this.locationService.getNumberOfReservationsNow(this.location.locationId);
+    this.occupationObs = this.locationService.getNumberOfReservationsNow(
+      this.location.locationId
+    );
 
     this.assignedTags = this.location.assignedTags;
     this.setupTagsInCurrentLang();
@@ -61,11 +60,10 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
     this.showLockersManagement = this.functionalityService.showLockersManagementFunctionality();
   }
 
-  ngAfterViewInit(): void {
-  }
-
   locationStatusColorClass(): string {
-    return this.location.status.first === LocationStatus.OPEN ? 'open' : 'closed';
+    return this.location.status.first === LocationStatus.OPEN
+      ? 'open'
+      : 'closed';
   }
 
   handleImageError(): void {
@@ -75,7 +73,7 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
   setupTagsInCurrentLang(): void {
     this.tagsInCurrentLang = [];
     if (this.assignedTags && this.assignedTags.length > 0) {
-      this.assignedTags.forEach(tag => {
+      this.assignedTags.forEach((tag) => {
         if (this.currentLang === 'nl') {
           this.tagsInCurrentLang.push(tag.dutch);
         } else {
@@ -84,5 +82,4 @@ export class DashboardItemComponent implements OnInit, AfterViewInit {
       });
     }
   }
-
 }

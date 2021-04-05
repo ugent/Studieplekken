@@ -1,27 +1,29 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Observable, Subject} from 'rxjs';
-import {Location} from '../../../../shared/model/Location';
-import {CalendarEvent} from 'angular-calendar';
-import {CalendarPeriodsForLockersService} from '../../../../services/api/calendar-periods-for-lockers/calendar-periods-for-lockers.service';
+import { Component, Input, OnInit } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
+import { Location } from '../../../../shared/model/Location';
+import { CalendarEvent } from 'angular-calendar';
+import { CalendarPeriodsForLockersService } from '../../../../services/api/calendar-periods-for-lockers/calendar-periods-for-lockers.service';
 import {
   CalendarPeriodForLockers,
-  CalendarPeriodForLockersConstructor, calendarPeriodForLockersToCalendarEvent, isCalendarPeriodForLockersValid
+  CalendarPeriodForLockersConstructor,
+  calendarPeriodForLockersToCalendarEvent,
+  isCalendarPeriodForLockersValid,
 } from '../../../../shared/model/CalendarPeriodForLockers';
-import {equalCalendarPeriodsForLockers} from '../../../../shared/comparators/ModelComparators';
-import {ApplicationTypeFunctionalityService} from '../../../../services/functionality/application-type/application-type-functionality.service';
+import { equalCalendarPeriodsForLockers } from '../../../../shared/comparators/ModelComparators';
+import { ApplicationTypeFunctionalityService } from '../../../../services/functionality/application-type/application-type-functionality.service';
 import * as moment from 'moment';
 
 @Component({
   selector: 'app-lockers-calendar',
   templateUrl: './lockers-calendar.component.html',
-  styleUrls: ['./lockers-calendar.component.css']
+  styleUrls: ['./lockers-calendar.component.css'],
 })
 export class LockersCalendarComponent implements OnInit {
   @Input() location: Observable<Location>;
 
   locationId: number;
 
-  refresh: Subject<any> = new Subject();
+  refresh: Subject<unknown> = new Subject();
 
   /**
    * 'events' is the object that is used by the frontend to update/add periods.
@@ -51,11 +53,13 @@ export class LockersCalendarComponent implements OnInit {
 
   showReservationInformation: boolean;
 
-  constructor(private calendarPeriodsForLockersService: CalendarPeriodsForLockersService,
-              private functionalityService: ApplicationTypeFunctionalityService) { }
+  constructor(
+    private calendarPeriodsForLockersService: CalendarPeriodsForLockersService,
+    private functionalityService: ApplicationTypeFunctionalityService
+  ) {}
 
   ngOnInit(): void {
-    this.location.subscribe(next => {
+    this.location.subscribe((next) => {
       this.locationId = next.locationId;
       this.setupEvents();
     });
@@ -64,47 +68,59 @@ export class LockersCalendarComponent implements OnInit {
 
   setupEvents(): void {
     // retrieve all calendar periods for the lockers of this location
-    this.calendarPeriodsForLockersService.getCalendarPeriodsForLockersOfLocation(this.locationId).subscribe(next => {
-      if (next === null) {
-        return;
-      }
+    this.calendarPeriodsForLockersService
+      .getCalendarPeriodsForLockersOfLocation(this.locationId)
+      .subscribe((next) => {
+        if (next === null) {
+          return;
+        }
 
-      // make a deep copy to make sure that we can calculate whether or not any changes by the user have been made
-      this.calendarPeriodsForLockersInDataLayer = [];
-      next.forEach(n => {
-        this.calendarPeriodsForLockersInDataLayer.push(CalendarPeriodForLockersConstructor.newFromObj(n));
+        // make a deep copy to make sure that we can calculate whether or not any changes by the user have been made
+        this.calendarPeriodsForLockersInDataLayer = [];
+        next.forEach((n) => {
+          this.calendarPeriodsForLockersInDataLayer.push(
+            CalendarPeriodForLockersConstructor.newFromObj(n)
+          );
+        });
+
+        // fill the events based on the calendar periods for lockers
+        this.events = this.mapCalendarPeriodsForLockersToCalendarEvents(next);
       });
-
-      // fill the events based on the calendar periods for lockers
-      this.events = this.mapCalendarPeriodsForLockersToCalendarEvents(next);
-    });
   }
 
-  mapCalendarPeriodsForLockersToCalendarEvents(periods: CalendarPeriodForLockers[]): CalendarEvent[] {
-    return periods.map<CalendarEvent>(n => {
-      return calendarPeriodForLockersToCalendarEvent(n);
-    });
+  mapCalendarPeriodsForLockersToCalendarEvents(
+    periods: CalendarPeriodForLockers[]
+  ): CalendarEvent<CalendarPeriodForLockers>[] {
+    return periods.map((n) => calendarPeriodForLockersToCalendarEvent(n));
   }
 
   isPeriodInEvents(period: CalendarPeriodForLockers): boolean {
-    return this.events.findIndex(n => equalCalendarPeriodsForLockers(period, n.meta)) < 0;
+    return (
+      this.events.findIndex((n) =>
+        equalCalendarPeriodsForLockers(period, n.meta)
+      ) < 0
+    );
   }
 
   isPeriodInBackend(event: CalendarEvent): boolean {
-    return this.calendarPeriodsForLockersInDataLayer.findIndex(
-      n => equalCalendarPeriodsForLockers(n, event.meta
-      )) < 0;
+    return (
+      this.calendarPeriodsForLockersInDataLayer.findIndex((n) =>
+        equalCalendarPeriodsForLockers(n, event.meta)
+      ) < 0
+    );
   }
 
   hasAnyPeriodChanged(): boolean {
     // if the lengths do not match, there must have changed something
-    if (this.events.length !== this.calendarPeriodsForLockersInDataLayer.length) {
+    if (
+      this.events.length !== this.calendarPeriodsForLockersInDataLayer.length
+    ) {
       return true;
     }
 
     // if the lengths do match, try to find all values in this.calendarPeriodsForLockersInDataLayer
     // in this.events
-    this.calendarPeriodsForLockersInDataLayer.forEach(n => {
+    this.calendarPeriodsForLockersInDataLayer.forEach((n) => {
       if (!this.isPeriodInEvents(n)) {
         return false;
       }
@@ -121,7 +137,7 @@ export class LockersCalendarComponent implements OnInit {
     }
 
     // find index corresponding to the given event
-    const idx = this.events.findIndex(n => event === n);
+    const idx = this.events.findIndex((n) => event === n);
 
     if (idx < 0) {
       return;
@@ -159,7 +175,8 @@ export class LockersCalendarComponent implements OnInit {
     }
 
     this.events = [
-      ...this.events, calendarPeriodForLockersToCalendarEvent(period)
+      ...this.events,
+      calendarPeriodForLockersToCalendarEvent(period),
     ];
   }
 
@@ -200,37 +217,59 @@ export class LockersCalendarComponent implements OnInit {
       }
 
       // if reached here, persist update(s)
-      this.calendarPeriodsForLockersService.updateCalendarPeriodsForLockers(
-        this.locationId,
-        this.calendarPeriodsForLockersInDataLayer,
-        this.events.map<CalendarPeriodForLockers>(n => n.meta)
-      ).subscribe(() => {
-        this.successHandler();
-      }, () => this.errorHandler());
+      this.calendarPeriodsForLockersService
+        .updateCalendarPeriodsForLockers(
+          this.locationId,
+          this.calendarPeriodsForLockersInDataLayer,
+          this.events.map<CalendarPeriodForLockers>((n) => n.meta)
+        )
+        .subscribe(
+          () => {
+            this.successHandler();
+          },
+          () => this.errorHandler()
+        );
     } else {
       this.handleNothingHasChangedOnUpdate();
     }
   }
 
   deleteAllPeriodsInDataLayer(): void {
-    this.calendarPeriodsForLockersService.deleteCalendarPeriodsForLockers(this.calendarPeriodsForLockersInDataLayer)
-      .subscribe(() => this.successHandler(), () => this.errorHandler());
+    this.calendarPeriodsForLockersService
+      .deleteCalendarPeriodsForLockers(
+        this.calendarPeriodsForLockersInDataLayer
+      )
+      .subscribe(
+        () => this.successHandler(),
+        () => this.errorHandler()
+      );
   }
 
   addAllPeriodsInEvents(): void {
     this.calendarPeriodsForLockersService
-      .addCalendarPeriodsForLockers(this.events.map<CalendarPeriodForLockers>(n => n.meta))
-      .subscribe(() => this.successHandler(), () => this.errorHandler());
+      .addCalendarPeriodsForLockers(
+        this.events.map<CalendarPeriodForLockers>((n) => n.meta)
+      )
+      .subscribe(
+        () => this.successHandler(),
+        () => this.errorHandler()
+      );
   }
 
   handleWrongCalendarPeriodFormatOnUpdate(): void {
     this.showWrongCalendarPeriodForLockersFormat = true;
-    setTimeout(() => this.showWrongCalendarPeriodForLockersFormat = false, this.msToShowFeedback);
+    setTimeout(
+      () => (this.showWrongCalendarPeriodForLockersFormat = false),
+      this.msToShowFeedback
+    );
   }
 
   handleNothingHasChangedOnUpdate(): void {
     this.showSuccessButNoChanges = true;
-    setTimeout(() => this.showSuccessButNoChanges = false, this.msToShowFeedback);
+    setTimeout(
+      () => (this.showSuccessButNoChanges = false),
+      this.msToShowFeedback
+    );
   }
 
   deleteCalendarPeriodForLockersButtonClick(event: CalendarEvent): void {
@@ -239,23 +278,25 @@ export class LockersCalendarComponent implements OnInit {
   }
 
   deleteCalendarPeriodForLockers(period: CalendarPeriodForLockers): void {
-    this.events = this.events.filter(n => n.meta !== period);
+    this.events = this.events.filter((n) => n.meta !== period);
   }
 
   cancelChangesButtonClick(): void {
-    this.events = this.mapCalendarPeriodsForLockersToCalendarEvents(this.calendarPeriodsForLockersInDataLayer);
+    this.events = this.mapCalendarPeriodsForLockersToCalendarEvents(
+      this.calendarPeriodsForLockersInDataLayer
+    );
     this.disableFootButtons = true;
   }
 
   successHandler(): void {
     this.showSuccess = true;
-    setTimeout(() => this.showSuccess = false, this.msToShowFeedback);
+    setTimeout(() => (this.showSuccess = false), this.msToShowFeedback);
     // Refresh the events in the 'data layer' attribute
     this.setupEvents();
   }
 
   errorHandler(): void {
     this.showError = true;
-    setTimeout(() => this.showError = false, this.msToShowFeedback);
+    setTimeout(() => (this.showError = false), this.msToShowFeedback);
   }
 }

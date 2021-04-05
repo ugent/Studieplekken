@@ -19,7 +19,7 @@ export class UserConstructor {
       password: '',
       penaltyPoints: 0,
       institution: '',
-      admin: false
+      admin: false,
     };
   }
 
@@ -36,7 +36,7 @@ export class UserConstructor {
       password: obj.password,
       penaltyPoints: obj.penaltyPoints,
       institution: obj.institution,
-      admin: obj.admin
+      admin: obj.admin,
     };
   }
 }
