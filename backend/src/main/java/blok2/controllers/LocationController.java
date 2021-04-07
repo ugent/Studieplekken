@@ -15,7 +15,6 @@ import blok2.model.users.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -44,9 +43,6 @@ public class LocationController extends AuthorizedLocationController {
     private final IAccountDao accountDao;
 
     private final MailService mailService;
-
-    @Value("${spring.profiles.active}")
-    private String activeProfile;
 
     // *************************************
     // *   CRUD operations for LOCATIONS   *
@@ -118,16 +114,14 @@ public class LocationController extends AuthorizedLocationController {
 
             this.locationDao.addLocation(location);
 
-            // This if statement is really important! Otherwise development mails could be sent to the admins...
-            if (activeProfile.contains("prod")) {
-                List<String> adminList = accountDao.getAdmins().stream().map(User::getMail).collect(Collectors.toList());
-                String[] admins = new String[adminList.size()];
-                adminList.toArray(admins);
-                logger.info(String.format("Sending mail to admins to notify about creation of new location %s. Recipients are: %s", location.toString(), Arrays.toString(admins)));
-                mailService.sendNewLocationMessage(admins, location);
-            } else {
-                logger.info(String.format("NOT Sending mail to admins to notify about creation of new location %s because the active profile does not contain 'prod'", location.toString()));
-            }
+            // Send a mail to the admins to notify them about the creation of a new location.
+            // Note: this mail is not sent in development or while testing (see implementation,
+            // of the sendMail() methods in MailServer)
+            List<String> adminList = accountDao.getAdmins().stream().map(User::getMail).collect(Collectors.toList());
+            String[] admins = new String[adminList.size()];
+            adminList.toArray(admins);
+            logger.info(String.format("Sending mail to admins to notify about creation of new location %s. Recipients are: %s", location.toString(), Arrays.toString(admins)));
+            mailService.sendNewLocationMessage(admins, location);
 
             logger.info(String.format("New location %s added", location.getName()));
         } catch (SQLException | MessagingException e) {

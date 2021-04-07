@@ -1,7 +1,10 @@
 package blok2.mail;
 
 import blok2.model.reservables.Location;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -15,23 +18,38 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.IsoFields;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Collections;
+import java.util.Set;
+import java.util.TreeSet;
 
 @Service
 public class MailService {
+
+    public static final Logger logger = LoggerFactory.getLogger(MailService.class);
 
     private final TemplateEngine templateEngine;
     private final JavaMailSender mailSender;
 
     public static final String EXAMPLE_MAIL_TEMPLATE_URL = "mail/example_mail";
     public static final String OPENING_HOURS_OVERVIEW_TEMPLATE_URL = "mail/opening_hours_overview";
-    public static final String ADMIN_VALIDATION_FOR_NEW_LOCATION_REQUESTED_TEMPLATE_URL = "mail/location_created_validation";
+    public static final String ADMIN_VALIDATION_FOR_NEW_LOCATION_REQUESTED_TEMPLATE_URL = "mail/location_created";
+
+    private final Set<String> springProfilesActive;
 
     @Autowired
-    public MailService(TemplateEngine templateEngine, JavaMailSender mailSender) {
+    public MailService(TemplateEngine templateEngine, JavaMailSender mailSender, Environment env) {
         this.templateEngine = templateEngine;
         this.mailSender = mailSender;
+
+        springProfilesActive = new TreeSet<>();
+        Collections.addAll(springProfilesActive, env.getActiveProfiles());
     }
 
+    /**
+     * Only use this method in test environments because the production/development
+     * environment is not checked.
+     */
+    @Deprecated
     public void sendTestMail(String target) throws MessagingException {
         Context ctx = new Context();
         String title = "[Werk- en Studieplekken] Testmail";
@@ -117,18 +135,34 @@ public class MailService {
      * Send a mail for which the content is defined by the templateFileName and the context to one recipient.
      */
     private void sendMail(String target, String subject, Context ctx, String templateFileName) throws MessagingException {
+        if (!allowedToSendMailByEnvironment(target, templateFileName, subject))
+            return;
+
+        logger.info(String.format("Sending mail with template file name '%s' to '%s' with subject '%s'",
+                templateFileName, target, subject));
+
         MimeMessageHelper messageHelper = prepareMimeMessageHelper(subject, templateFileName, ctx);
         messageHelper.setTo(target);
-        mailSender.send(messageHelper.getMimeMessage());
+
+        Thread thread = new Thread(() -> mailSender.send(messageHelper.getMimeMessage()));
+        thread.start();
     }
 
     /**
      * Send a mail for which the content is defined by the templateFileName and the context to multiple recipients.
      */
     private void sendMail(String[] targets, String subject, Context ctx, String templateFileName) throws MessagingException {
+        if (!allowedToSendMailByEnvironment(targets, templateFileName, subject))
+            return;
+
+        logger.info(String.format("Sending mail with template file name '%s' to '%s' with subject '%s'",
+                templateFileName, stringify(targets), subject));
+
         MimeMessageHelper messageHelper = prepareMimeMessageHelper(subject, templateFileName, ctx);
         messageHelper.setTo(targets);
-        mailSender.send(messageHelper.getMimeMessage());
+
+        Thread thread = new Thread(() -> mailSender.send(messageHelper.getMimeMessage()));
+        thread.start();
     }
 
     private MimeMessageHelper prepareMimeMessageHelper(String subject, String templateFileName, Context ctx)
@@ -137,7 +171,7 @@ public class MailService {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
 
-        messageHelper.setFrom("no-reply@studieplekken.ugent.be");
+        messageHelper.setFrom("no-reply@dsa.ugent.be");
         messageHelper.setSubject(subject);
 
         // Create the HTML body using Thymeleaf
@@ -145,6 +179,39 @@ public class MailService {
         messageHelper.setText(htmlContent, true);
 
         return messageHelper;
+    }
+
+    // ************************
+    // *  Auxiliary methods   *
+    // ************************/
+
+    /**
+     * If the spring.profiles.active contains either "dev" or "test", then no mails are allowed to be sent.
+     * The only exception is if the profile "mail" is set. This is to easily overrule the blockage of sending
+     * mails if someone would like to test mailing in development. This can be done by adding the profile "mail".
+     */
+    private boolean allowedToSendMailByEnvironment(String target, String templateFileName, String subject) {
+        if ((springProfilesActive.contains("dev") || springProfilesActive.contains("test")) &&
+                !springProfilesActive.contains("mail")) {
+            logger.info(String.format("Blocked sending mail with template file name '%s' to target(s) '%s', with subject '%s' due to development or test environment",
+                    target, templateFileName, subject));
+            return false;
+        }
+        return true;
+    }
+
+    private boolean allowedToSendMailByEnvironment(String[] targets, String templateUrl, String subject) {
+        return allowedToSendMailByEnvironment(stringify(targets), templateUrl, subject);
+    }
+
+    private String stringify(String[] arr) {
+        StringBuilder sb = new StringBuilder();
+        sb.append('[');
+        for (String str : arr)
+            sb.append(String.format("%s,", str));
+        sb.replace(sb.length()-1, sb.length(), "");
+        sb.append(']');
+        return sb.toString();
     }
 
 }

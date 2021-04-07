@@ -11,17 +11,10 @@ spring:
     username: ***REMOVED***
     password: ***REMOVED***
     maximumPoolSize: 200
-  mail: # configuration for sending verification mail
-    host: smtp.gmail.com
-    port: 587
-    username: blok2.bach@gmail.com
-    password: rledkcecrdiehddj
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
+  mail:
+    host: smtp.ugent.be
+    protocol: smtp
+    port: 25
   flyway: # For automatic flyway migration integration with spring boot
     url: "jdbc:postgresql://localhost:5432/blokatugent"
     user: ***REMOVED***

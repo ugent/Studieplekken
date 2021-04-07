@@ -5,7 +5,6 @@ import blok2.mail.MailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -22,9 +21,6 @@ public class ScheduledTasks {
     private final ILocationDao locationDao;
     private final MailService mailService;
 
-    @Value("${spring.profiles.active}")
-    private String activeProfile;
-
     @Autowired
     public ScheduledTasks(ILocationDao locationDao, MailService mailService) {
         this.locationDao = locationDao;
@@ -32,7 +28,7 @@ public class ScheduledTasks {
     }
 
     /**
-     * Schedule this task to be run every monday at 2 AM. The task is responsible for sending
+     * Schedule this task to be run every monday at 6 AM. The task is responsible for sending
      * an email to following UGent services:
      *     - Alarmbeheer - alarmbeheer@ugent.be
      *     - Permanentie - permanentiecentrum@ugent.be
@@ -45,21 +41,18 @@ public class ScheduledTasks {
      * here is to notify the UGent services about all those locations that had been locked for updates
      * during last week. Therefore we need to get the overview of opening hours for locations 2 weeks
      * from now.
+     *
+     * For testing purposes, you can change the cron-value to "0 * * * * *" to trigger the scheduled task
+     * every minute. Make sure to change the recipients as well to just include your own email address.
      */
-    @Scheduled(cron = "0 0 2 * * MON")
+    @Scheduled(cron = "0 0 6 * * MON")
     public void weeklyOpeningHoursMailing() {
-        String[] recipients = new String[]{
+        String[] recipients = new String[] {
                 "alarmbeheer@ugent.be",
                 "permanentie@ugent.be",
                 "schoonmaak@ugent.be",
                 "veiligheid@ugent.be"
         };
-
-        // This is really important! Otherwise development mails could be sent to the recipients...
-        if (activeProfile.contains("dev")) {
-            logger.info("Not executing scheduled task weeklyOpeningHoursMailing() due to development profile.");
-            return;
-        }
 
         logger.info(String.format("Running scheduled task weeklyOpeningHoursMailing() with recipients %s", Arrays.toString(recipients)));
         try {
@@ -71,12 +64,16 @@ public class ScheduledTasks {
             week = week > 50 ? (week + 2) % 52 : week + 2;
 
             Map<String, String[]> openingHours = locationDao.getOpeningOverviewOfWeek(year, week);
-            System.out.println(openingHours.size() + " week " + week + " year" + year);
             if (openingHours.size() > 0) {
-                logger.info(String.format("Sending mail for scheduled tast weeklyOpeningHoursMailing() because in week %d of year %d, there are %d locations that have to be opened.", week, year, openingHours.size()));
+                logger.info(String.format("Sending mail for scheduled tast weeklyOpeningHoursMailing() because in " +
+                        "week %d of year %d, there are %d locations that have to be opened. Current week number is %d " +
+                        "in year %d.", week, year, openingHours.size(), now.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR),
+                        now.getYear()));
                 mailService.sendOpeningHoursOverviewMail(recipients, year, week);
             } else {
-                logger.info(String.format("No mail is sent for scheduled task weeklyOpeningHoursMailing() because in week %d of year %d, there will be no locations opened.", week, year));
+                logger.info(String.format("No mail is sent for scheduled task weeklyOpeningHoursMailing() because in " +
+                        "week %d of year %d, there will be no locations opened. Current week number is %d in year %d.",
+                        week, year, now.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR), now.getYear()));
             }
         } catch (Exception e) {
             logger.error(String.format("The scheduled task weeklyOpeningHoursMailing() could " +

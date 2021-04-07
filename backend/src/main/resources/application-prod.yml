@@ -13,9 +13,6 @@ spring:
     url: "jdbc:postgresql://db:5432/blokatugent"
     user: blokat
     password:  ***REMOVED***
-  mail:
-    host: smtp.ugent.be
-    port: 25
 
 # disable ssl for production for backend (proxied)
 server:
