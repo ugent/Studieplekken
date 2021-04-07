@@ -44,6 +44,9 @@ public class ScheduledTasks {
      *
      * For testing purposes, you can change the cron-value to "0 * * * * *" to trigger the scheduled task
      * every minute. Make sure to change the recipients as well to just include your own email address.
+     * Extra note: if you want to test the mailing with the smtp.ugent.be mail server (as configured in
+     * applications.properties), then you'll need to be connected with an UGent network. Either directly or
+     * with VPN.
      */
     @Scheduled(cron = "0 0 6 * * MON")
     public void weeklyOpeningHoursMailing() {
