@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, TemplateRef} from '@angular/core';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
 import { LocationReservation } from '../../../shared/model/LocationReservation';
 import { CalendarPeriod } from 'src/app/shared/model/CalendarPeriod';
@@ -6,6 +6,7 @@ import { LocationReservationsService } from 'src/app/services/api/location-reser
 import { Timeslot, timeslotEndHour } from 'src/app/shared/model/Timeslot';
 import { Pair } from '../../../shared/model/helpers/Pair';
 import * as moment from 'moment';
+import { BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-profile-location-reservations',
@@ -23,7 +24,8 @@ export class ProfileLocationReservationsComponent {
 
   constructor(
     private authenticationService: AuthenticationService,
-    private locationReservationService: LocationReservationsService
+    private locationReservationService: LocationReservationsService,
+    private modalService: BsModalService
   ) {
     authenticationService.user.subscribe(() => {
       this.setup();
@@ -55,11 +57,13 @@ export class ProfileLocationReservationsComponent {
 
   prepareToDeleteLocationReservation(
     locationReservation: LocationReservation,
-    calendarPeriod: CalendarPeriod
+    calendarPeriod: CalendarPeriod,
+    template: TemplateRef<any>
   ): void {
     this.successDeletingLocationReservation = undefined;
     this.locationReservationToDelete = locationReservation;
     this.calendarPeriodForLocationReservationToDelete = calendarPeriod;
+    this.modalService.show(template);
   }
 
   deleteLocationReservation(): void {
@@ -70,6 +74,7 @@ export class ProfileLocationReservationsComponent {
         () => {
           this.successDeletingLocationReservation = true;
           this.setup();
+          this.modalService.hide();
         },
         () => {
           this.successDeletingLocationReservation = false;
@@ -124,4 +129,9 @@ export class ProfileLocationReservationsComponent {
   formatDate(date: unknown): string {
     return moment(date).format('DD/MM/YYYY');
   }
+
+  closeModal(): void {
+    this.modalService.hide();
+  }
+
 }
