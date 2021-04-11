@@ -45,8 +45,7 @@
             <!-- User should not be able to delete past reservations, otherwise the penalty points
                  could be deleted as well -->
             <td *ngIf="!isTimeslotInPast(pair.first.timeslot, pair.second)" class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
-                data-toggle="modal" data-target="#deleteLocationReservationModal"
-                (click)="prepareToDeleteLocationReservation(pair.first, pair.second)">
+                (click)="prepareToDeleteLocationReservation(pair.first, pair.second, deleteLocationReservationModal)">
               <span class="glyphicon glyphicon-trash pointerCursor"></span>
             </td>
           </tr>
@@ -64,60 +63,52 @@
 </ng-template>
 
 <!-- Modal view to ask whether the user is sure to delete a lockerReservation -->
-<div class="modal fade" id="deleteLocationReservationModal" tabindex="-1" role="dialog"
-      aria-labelledby="deleteLocationReservationModalLabel" aria-hidden="true"
-     *ngIf="locationReservationToDelete !== undefined && calendarPeriodForLocationReservationToDelete !== undefined">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
+<ng-template #deleteLocationReservationModal>
+  <!-- Header -->
+  <div class="modal-header">
+    <h5 class="modal-title" id="deleteLocationReservationModalLabel">
+      {{'management.reservations.location.deleteModal.title' | translate}}
+    </h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
 
-      <!-- Header -->
-      <div class="modal-header">
-        <h5 class="modal-title" id="deleteLocationReservationModalLabel">
-          {{'management.reservations.location.deleteModal.title' | translate}}
-        </h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-
-      <!-- Body -->
-      <div class="modal-body">
-        <div>
-          <b>{{'management.reservations.location.deleteModal.body' | translate}}</b>
-          <br><br>
-          <ul>
-            <li><b style="margin-right: 5px"><i>{{('profile.reservations.locations.table.header.locationName' | translate) + ':   '}}</i></b>{{calendarPeriodForLocationReservationToDelete.location.name}}</li>
-            <li><b style="margin-right: 5px"><i>{{('profile.reservations.locations.table.header.reservationDate' | translate) + ':   '}}</i></b>{{locationReservationToDelete.timeslot.timeslotDate.format("DD/MM/YYYY")}}</li>
-            <li><b style="margin-right: 5px"><i>{{('profile.reservations.locations.table.header.beginHour' | translate) + ':   '}}</i></b>{{getBeginHour(locationReservationToDelete.timeslot, calendarPeriodForLocationReservationToDelete)}}</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- Footer -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary"
-                (click)="deleteLocationReservation()">
-          {{'management.reservations.location.deleteModal.yesButton' | translate}}
-        </button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">
-          {{'management.reservations.location.deleteModal.noButton' | translate}}
-        </button>
-      </div>
-
-      <div class="container-fluid">
-        <div class="alert alert-info" *ngIf="successDeletingLocationReservation === null">
-          {{'general.waitingForServer' | translate}}
-        </div>
-
-        <div class="alert alert-success" *ngIf="successDeletingLocationReservation === true">
-          {{'management.reservations.location.deleteModal.success' | translate}}
-        </div>
-
-        <div class="alert alert-error" *ngIf="successDeletingLocationReservation === false">
-          {{'management.reservations.location.deleteModal.error' | translate}}
-        </div>
-      </div>
-
+  <!-- Body -->
+  <div class="modal-body">
+    <div>
+      <b>{{'management.reservations.location.deleteModal.body' | translate}}</b>
+      <br><br>
+      <ul>
+        <li><b style="margin-right: 5px"><i>{{('profile.reservations.locations.table.header.locationName' | translate) + ':   '}}</i></b>{{calendarPeriodForLocationReservationToDelete.location.name}}</li>
+        <li><b style="margin-right: 5px"><i>{{('profile.reservations.locations.table.header.reservationDate' | translate) + ':   '}}</i></b>{{locationReservationToDelete.timeslot.timeslotDate.format("DD/MM/YYYY")}}</li>
+        <li><b style="margin-right: 5px"><i>{{('profile.reservations.locations.table.header.beginHour' | translate) + ':   '}}</i></b>{{getBeginHour(locationReservationToDelete.timeslot, calendarPeriodForLocationReservationToDelete)}}</li>
+      </ul>
     </div>
   </div>
-</div>
+
+  <!-- Footer -->
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary"
+            (click)="deleteLocationReservation()">
+      {{'management.reservations.location.deleteModal.yesButton' | translate}}
+    </button>
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">
+      {{'management.reservations.location.deleteModal.noButton' | translate}}
+    </button>
+  </div>
+
+  <div class="container-fluid">
+    <div class="alert alert-info" *ngIf="successDeletingLocationReservation === null">
+      {{'general.waitingForServer' | translate}}
+    </div>
+
+    <div class="alert alert-success" *ngIf="successDeletingLocationReservation === true">
+      {{'management.reservations.location.deleteModal.success' | translate}}
+    </div>
+
+    <div class="alert alert-error" *ngIf="successDeletingLocationReservation === false">
+      {{'management.reservations.location.deleteModal.error' | translate}}
+    </div>
+  </div>
+</ng-template>
