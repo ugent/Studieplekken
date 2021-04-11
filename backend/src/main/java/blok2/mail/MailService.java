@@ -211,7 +211,8 @@ public class MailService {
         sb.append('[');
         for (String str : arr)
             sb.append(String.format("%s,", str));
-        sb.replace(sb.length()-1, sb.length(), "");
+        if (arr.length > 0)
+            sb.replace(sb.length()-1, sb.length(), "");
         sb.append(']');
         return sb.toString();
     }
