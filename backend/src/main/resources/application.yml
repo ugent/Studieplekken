@@ -69,3 +69,8 @@ logging:
         zaxxer:
           hikari:
             DEBUG
+
+# setting custom configuration
+custom:
+  mailing:
+    recipientsOpeningHoursOverview: ""

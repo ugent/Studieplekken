@@ -27,3 +27,8 @@ cas:
 
 redirect:
   successLoginRedirectUrl: https://studieplekken.ugent.be/dashboard
+
+# setting custom configuration
+custom:
+  mailing:
+    recipientsOpeningHoursOverview: "alarmbeheer@ugent.be,permanentie@ugent.be,schoonmaak@ugent.be,veiligheid@ugent.be"
