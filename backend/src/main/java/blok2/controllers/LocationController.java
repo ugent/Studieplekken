@@ -117,9 +117,7 @@ public class LocationController extends AuthorizedLocationController {
             // Send a mail to the admins to notify them about the creation of a new location.
             // Note: this mail is not sent in development or while testing (see implementation,
             // of the sendMail() methods in MailServer)
-            List<String> adminList = accountDao.getAdmins().stream().map(User::getMail).collect(Collectors.toList());
-            String[] admins = new String[adminList.size()];
-            adminList.toArray(admins);
+            String[] admins = accountDao.getAdmins().stream().map(User::getMail).toArray(String[]::new);
             logger.info(String.format("Sending mail to admins to notify about creation of new location %s. Recipients are: %s", location.toString(), Arrays.toString(admins)));
             mailService.sendNewLocationMessage(admins, location);
 
