@@ -1,4 +1,4 @@
-# Study Spaces UGent
+# Study Rooms UGent
 
 In the second semester, UGent organises study places on various campuses for **UGent students who need them**. The study places are available during the entire semester from February 8, 2021 to June 25, 2021.
 
