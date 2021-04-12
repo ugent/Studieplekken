@@ -1,7 +1,7 @@
 # credentials for production database
 spring:
   profiles:
-    active: "prod"
+    active: "prod,mail" # if profile "mail" is added, mails are allowed to be sent, otherwise not
   datasource:
     type: "com.zaxxer.hikari.HikariDataSource"
     driverClassName: org.postgresql.Driver
@@ -27,3 +27,8 @@ cas:
 
 redirect:
   successLoginRedirectUrl: https://studieplekken.ugent.be/dashboard
+
+# setting custom configuration
+custom:
+  mailing:
+    recipientsOpeningHoursOverview: "alarmbeheer@ugent.be,permanentie@ugent.be,schoonmaak@ugent.be,veiligheid@ugent.be"

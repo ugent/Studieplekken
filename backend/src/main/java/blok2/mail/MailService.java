@@ -85,7 +85,10 @@ public class MailService {
         String fromFormatted = from.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         String toFormatted = to.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         String title = String.format("[Werk- en Studieplekken] Openingsuren %s tot %s", fromFormatted, toFormatted);
-        String overviewURL = String.format("https://studieplekken.ugent.be/opening/overview/%d/%d", year, week);
+        String baseURL = springProfilesActive.contains("dev")
+                ? "https://localhost:4200"
+                : "https://studieplekken.ugent.be";
+        String overviewURL = String.format("%s/opening/overview/%d/%d", baseURL, year, week);
 
         ctx.setVariable("title", title);
         ctx.setVariable("fromFormatted", fromFormatted);
@@ -186,14 +189,13 @@ public class MailService {
     // ************************/
 
     /**
-     * If the spring.profiles.active contains either "dev" or "test", then no mails are allowed to be sent.
-     * The only exception is if the profile "mail" is set. This is to easily overrule the blockage of sending
-     * mails if someone would like to test mailing in development. This can be done by adding the profile "mail".
+     * Only if the profile 'mail' is included in spring.profiles.active, mails are allowed
+     * to be sent. Otherwise they are blocked.
      */
     private boolean allowedToSendMailByEnvironment(String target, String templateFileName, String subject) {
-        if ((springProfilesActive.contains("dev") || springProfilesActive.contains("test")) &&
-                !springProfilesActive.contains("mail")) {
-            logger.info(String.format("Blocked sending mail with template file name '%s' to target(s) '%s', with subject '%s' due to development or test environment",
+        if (!springProfilesActive.contains("mail")) {
+            logger.info(String.format("Blocked sending mail to '%s' with template file name '%s' and " +
+                            "subject '%s' because 'mail' is not an active profile.",
                     target, templateFileName, subject));
             return false;
         }
@@ -209,7 +211,8 @@ public class MailService {
         sb.append('[');
         for (String str : arr)
             sb.append(String.format("%s,", str));
-        sb.replace(sb.length()-1, sb.length(), "");
+        if (arr.length > 0)
+            sb.replace(sb.length()-1, sb.length(), "");
         sb.append(']');
         return sb.toString();
     }

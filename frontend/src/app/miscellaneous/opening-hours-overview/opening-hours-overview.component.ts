@@ -5,6 +5,7 @@ import { LocationService } from '../../services/api/locations/location.service';
 import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs/internal/observable/of';
 import * as moment from 'moment';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-opening-hours-overview',
@@ -22,7 +23,8 @@ export class OpeningHoursOverviewComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private locationService: LocationService
+    private locationService: LocationService,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -85,6 +87,7 @@ export class OpeningHoursOverviewComponent implements OnInit {
         tap(() => {
           this.year = year;
           this.weekNr = week;
+          this.location.replaceState('/opening/overview/' + year + '/' + week);
         })
       );
   }

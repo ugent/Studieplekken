@@ -5,6 +5,7 @@ import blok2.mail.MailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -21,15 +22,19 @@ public class ScheduledTasks {
     private final ILocationDao locationDao;
     private final MailService mailService;
 
+    private final String[] recipients;
+
     @Autowired
-    public ScheduledTasks(ILocationDao locationDao, MailService mailService) {
+    public ScheduledTasks(ILocationDao locationDao, MailService mailService, Environment env) {
         this.locationDao = locationDao;
         this.mailService = mailService;
+        recipients = env.getProperty("custom.mailing.recipientsOpeningHoursOverview", String[].class);
     }
 
     /**
      * Schedule this task to be run every monday at 6 AM. The task is responsible for sending
-     * an email to following UGent services:
+     * an email to following UGent services (see recipients in application-prod.yml in the property
+     * custom.mailing.recipientsOpeningHoursOverview):
      *     - Alarmbeheer - alarmbeheer@ugent.be
      *     - Permanentie - permanentiecentrum@ugent.be
      *     - Schoonmaak - schoonmaak@ugent.be
@@ -50,14 +55,8 @@ public class ScheduledTasks {
      */
     @Scheduled(cron = "0 0 6 * * MON")
     public void weeklyOpeningHoursMailing() {
-        String[] recipients = new String[] {
-                "alarmbeheer@ugent.be",
-                "permanentie@ugent.be",
-                "schoonmaak@ugent.be",
-                "veiligheid@ugent.be"
-        };
-
-        logger.info(String.format("Running scheduled task weeklyOpeningHoursMailing() with recipients %s", Arrays.toString(recipients)));
+        logger.info(String.format("Running scheduled task weeklyOpeningHoursMailing() with recipients %s",
+                Arrays.toString(recipients)));
         try {
             LocalDate now = LocalDate.now();
             int year = now.getYear();

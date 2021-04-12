@@ -1,7 +1,7 @@
 # spring configuration
 spring:
   profiles:
-    active: "dev"
+    active: "dev" # if profile "mail" is added, mails are allowed to be sent, otherwise not
   application:
     name: "BlokAtUGent"
   datasource:
@@ -69,3 +69,8 @@ logging:
         zaxxer:
           hikari:
             DEBUG
+
+# setting custom configuration
+custom:
+  mailing:
+    recipientsOpeningHoursOverview: ""
