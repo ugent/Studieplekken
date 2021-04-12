@@ -10,6 +10,7 @@ import { Moment } from 'moment';
 import { Pair } from '../../../shared/model/helpers/Pair';
 import { User } from '../../../shared/model/User';
 
+type locationOverview = { [locationName: string]: string[] };
 @Injectable({
   providedIn: 'root',
 })
@@ -120,12 +121,16 @@ export class LocationService {
 
   /**************************************************
    *   Miscellaneous queries concerning locations   *
-  ***************************************************/
+   ***************************************************/
 
-  getOpeningOverviewOfWeek(year: number, weekNr: number): Observable<any> {
-    return this.http.get(api.openingHoursOverview
-      .replace('{year}', String(year))
-      .replace('{weekNr}', String(weekNr)));
+  getOpeningOverviewOfWeek(
+    year: number,
+    weekNr: number
+  ): Observable<locationOverview> {
+    return this.http.get<locationOverview>(
+      api.openingHoursOverview
+        .replace('{year}', String(year))
+        .replace('{weekNr}', String(weekNr))
+    );
   }
-
 }
