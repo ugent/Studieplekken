@@ -63,7 +63,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity webSecurity) {
         if (springProfilesActive.contains("dev"))
-            webSecurity.ignoring().antMatchers("/dev/*");
+            webSecurity.ignoring().antMatchers("/dev/**");
     }
 
     @Override
