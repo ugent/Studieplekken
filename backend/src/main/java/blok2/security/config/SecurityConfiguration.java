@@ -3,10 +3,12 @@ package blok2.security.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.cas.authentication.CasAuthenticationProvider;
 import org.springframework.security.cas.web.CasAuthenticationEntryPoint;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.PortMapper;
@@ -18,7 +20,10 @@ import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Set;
+import java.util.TreeSet;
 
 @Configuration
 @EnableWebSecurity
@@ -31,13 +36,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final CasAuthenticationEntryPoint casAuthenticationEntryPoint;
     private final LogoutSuccessHandler logoutSuccessHandler;
 
+    private final Set<String> springProfilesActive;
+
     @Autowired
     public SecurityConfiguration(CasAuthenticationProvider casAuthenticationProvider,
                                  CasAuthenticationEntryPoint casAuthenticationEntryPoint,
-                                 LogoutSuccessHandler logoutSuccessHandler) {
+                                 LogoutSuccessHandler logoutSuccessHandler,
+                                 Environment env) {
         this.casAuthenticationProvider = casAuthenticationProvider;
         this.casAuthenticationEntryPoint = casAuthenticationEntryPoint;
         this.logoutSuccessHandler = logoutSuccessHandler;
+
+        this.springProfilesActive = new TreeSet<>();
+        Collections.addAll(springProfilesActive, env.getActiveProfiles());
     }
 
     @Override
@@ -45,15 +56,25 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         auth.authenticationProvider(this.casAuthenticationProvider);
     }
 
+    /**
+     * Disable the Spring Security chain all together for the endpoints "/dev/*"
+     * if the spring.profiles.active environment variable contains "dev".
+     */
+    @Override
+    public void configure(WebSecurity webSecurity) {
+        if (springProfilesActive.contains("dev"))
+            webSecurity.ignoring().antMatchers("/dev/*");
+    }
+
     @Override
     public void configure(HttpSecurity http) throws Exception {
-
         http.csrf()
                 .csrfTokenRepository(csrfTokenRepository());
 
         http.authorizeRequests()
                 .regexMatchers("/login/cas").authenticated() // used to trigger cas flow
                 .anyRequest().permitAll();
+
         http.httpBasic()
                 .authenticationEntryPoint(casAuthenticationEntryPoint);
 
