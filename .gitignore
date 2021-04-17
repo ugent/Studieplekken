@@ -14,3 +14,6 @@ varia/*.docx
 
 # Mac-specific files
 .DS_Store
+bin/
+backup**
+.gradle/
