@@ -48,7 +48,6 @@ public class CalendarPeriod implements Cloneable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
         CalendarPeriod that = (CalendarPeriod) o;
         return this.id.equals(((CalendarPeriod) o).getId());
     }

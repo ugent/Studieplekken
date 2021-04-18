@@ -208,13 +208,21 @@ where tag_id = ?;
 
 -- queries for table LOCATION_RESERVATION
 -- $get_location_reservations_where_<?>
-select lr.*, u.*, rt.*
+select *
 from public.location_reservations lr
     join public.users u
         on u.augentid = lr.user_augentid
     left join public.timeslots rt
-        and rt.timeslot_sequence_number = lr.timeslot_seqnr
+        on rt.sequence_number = lr.timeslot_sequence_number
         and rt.calendar_id = lr.calendar_id
+    inner join calendar_periods cp
+        on lr.calendar_id=cp.calendar_id
+    inner join locations
+        on cp.location_id=locations.location_id
+    inner join buildings
+        on locations.building_id=buildings.building_id
+    inner join authority
+        on locations.authority_id=authority.authority_id
 where <?>;
 
 -- $count_location_reservations_of_location_for_timeslot
@@ -222,35 +230,35 @@ select count(1)
 from public.location_reservations lr 
     INNER JOIN public.calendar_periods cp on lr.calendar_id = cp.calendar_id 
     INNER JOIN public.locations l on cp.location_id = l.location_id
-where lr.calendar_id = ? and lr.timeslot_seqnr = ?;
+where lr.calendar_id = ? and lr.timeslot_sequence_number = ?;
 
 -- $add_one_to_reservation_count
 update timeslots
 set reservation_count = reservation_count + 1
-where calendar_id = ? and timeslot_sequence_number= ?;
+where calendar_id = ? and sequence_number= ?;
 
 -- $subtract_one_to_reservation_count
 update timeslots
 set reservation_count = reservation_count - 1
-where calendar_id = ? and timeslot_sequence_number= ?;
+where calendar_id = ? and sequence_number= ?;
 
 -- $delete_location_reservation
 delete
 from public.location_reservations
-where user_augentid = ? and timeslot_seqnr = ? and calendar_id = ?;
+where user_augentid = ? and timeslot_sequence_number = ? and calendar_id = ?;
 
 -- $insert_location_reservation
-insert into public.location_reservations (user_augentid, created_at, timeslot_seqnr, calendar_id, attended)
-values (?, ?, ?, ?, ?, null);
+insert into public.location_reservations (user_augentid, created_at, timeslot_sequence_number, calendar_id, attended)
+values (?, ?, ?, ?, null);
 
 -- $set_location_reservation_attendance
 update public.location_reservations
 set attended = ?
-where calendar_id = ? and timeslot_seqnr = ? and user_augentid = ?;
+where calendar_id = ? and timeslot_sequence_number = ? and user_augentid = ?;
 
 -- $get_location_reservations_with_location_by_user
 select lr.*, cp.*, l.*, b.*, a.*, u.*, rt.reservation_count, rt.seat_count
-     , lr.timeslot_seqnr as "timeslot_sequence_number"
+     , rt.*
 from public.location_reservations lr
     join public.calendar_periods cp
         on cp.calendar_id = lr.calendar_id
@@ -263,9 +271,9 @@ from public.location_reservations lr
     join users u
         on u.augentid = lr.user_augentid
     join public.timeslots rt
-        on rt.timeslot_date = lr.timeslot_date and rt.timeslot_sequence_number = lr.timeslot_seqnr and rt.calendar_id = lr.calendar_id
+        on rt.sequence_number = lr.timeslot_sequence_number and rt.calendar_id = lr.calendar_id
 where lr.user_augentid = ?
-order by lr.timeslot_date desc, lr.timeslot_seqnr desc;
+order by lr.timeslot_sequence_number desc;
 
 
 -- queries for table USER
@@ -686,7 +694,7 @@ where cp.location_id = ?
 order by cp.starts_at, cp.opening_time;
 
 -- $insert_calendar_period
-insert into public.calendar_periods(isoyear, isoweek, parent_id, group_number, resevable_from, repeat_period, location_id)
+insert into public.calendar_periods(isoyear, isoweek, parent_id, group_number, reservable_from, repeat_period, location_id)
 values (?, ?, ?, ?, ?, ?, ?);
 
 -- $update_calendar_period
@@ -743,7 +751,7 @@ select count(1) as reservation_count, (select count(1) from y) as timeslot_count
 from y
     inner join public.location_reservations rs
         on y.timeslot_date = rs.timeslot_date
-        and rs.timeslot_seqnr = y.timeslot_sequence_number
+        and rs.timeslot_sequence_number = y.timeslot_sequence_number
         and calendar_id_dist = rs.calendar_id;
 
 -- $delete_timeslots_of_calendar

@@ -45,11 +45,12 @@ calendar_period_isoyear=isoyear
 timeslot_calendar_id=calendar_id
 timeslot_sequence_number=sequence_number
 timeslot_reservable=reservable
-timeslot_day_of_week=isoday_of_week
+timeslot_isoday_of_week=isoday_of_week
 timeslot_reservation_count=reservation_count
 timeslot_seat_count=seat_count
 timeslot_start_time=start_time
 timeslot_end_time=end_time
+
 
 # columns for CALENDAR_PERIODS_FOR_LOCKERS
 calendar_period_for_lockers_location_name=location_name

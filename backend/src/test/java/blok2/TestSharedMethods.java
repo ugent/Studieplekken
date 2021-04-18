@@ -194,12 +194,12 @@ public class TestSharedMethods {
 
             LocalTime mondayStartTime = LocalTime.of(8,0);
             LocalTime mondayEndTime = LocalTime.of(16,30);
-            Timeslot timeslotMonday = new Timeslot(period, 0, DayOfWeek.MONDAY.getValue(), mondayStartTime, mondayEndTime, true, 10, 0);
+            Timeslot timeslotMonday = new Timeslot(period, 0, DayOfWeek.MONDAY.getValue(), mondayStartTime, mondayEndTime, true, period.getLocation().getNumberOfSeats(), 0);
 
 
             LocalTime fridayStartTime = LocalTime.of(12,0);
             LocalTime fridayEndTime = LocalTime.of(20, 0);
-            Timeslot timeslotFriday = new Timeslot(period, 1, DayOfWeek.FRIDAY.getValue(), fridayStartTime, fridayEndTime, false, 10, 0);
+            Timeslot timeslotFriday = new Timeslot(period, 1, DayOfWeek.FRIDAY.getValue(), fridayStartTime, fridayEndTime, false, period.getLocation().getNumberOfSeats(), 0);
 
 
             calendarPeriods.add(new Pair<>(period, Arrays.asList(timeslotMonday, timeslotFriday)));
@@ -222,7 +222,7 @@ public class TestSharedMethods {
 
         LocalTime startTime = now.toLocalTime().plusMinutes(1);
         LocalTime endTime = now.toLocalTime().plusMinutes(2);
-        Timeslot timeslot = new Timeslot(calendarPeriod, 0, now.getDayOfWeek().getValue(), startTime, endTime, true, 10, 0);
+        Timeslot timeslot = new Timeslot(calendarPeriod, 0, now.getDayOfWeek().getValue(), startTime, endTime, true, calendarPeriod.getLocation().getNumberOfSeats(), 0);
 
         return new Pair<>(calendarPeriod, Collections.singletonList(timeslot));
     }
@@ -240,7 +240,7 @@ public class TestSharedMethods {
 
         LocalTime startTime = now.toLocalTime().plusMinutes(1);
         LocalTime endTime = now.toLocalTime().plusMinutes(2);
-        Timeslot timeslot = new Timeslot(calendarPeriod, 0, now.getDayOfWeek().getValue(), startTime, endTime, true, 10, 0);
+        Timeslot timeslot = new Timeslot(calendarPeriod, 0, now.getDayOfWeek().getValue(), startTime, endTime, true, calendarPeriod.getLocation().getNumberOfSeats(), 0);
 
         return new Pair<>(calendarPeriod, Collections.singletonList(timeslot));
 
@@ -264,7 +264,7 @@ public class TestSharedMethods {
 
         LocalTime startTime = now.toLocalTime().plusMinutes(1);
         LocalTime endTime = now.toLocalTime().plusMinutes(2);
-        Timeslot timeslot = new Timeslot(period, 0, now.getDayOfWeek().getValue(), startTime, endTime, true, 10, 0);
+        Timeslot timeslot = new Timeslot(period, 0, now.getDayOfWeek().getValue(), startTime, endTime, true, period.getLocation().getNumberOfSeats(), 0);
 
 
 
@@ -290,7 +290,7 @@ public class TestSharedMethods {
 
         LocalTime startTime = now.toLocalTime().minusMinutes(1);
         LocalTime endTime = now.toLocalTime().plusMinutes(1);
-        Timeslot timeslot = new Timeslot(period, 0, now.getDayOfWeek().getValue(), startTime, endTime, true, 10, 0);
+        Timeslot timeslot = new Timeslot(period, 0, now.getDayOfWeek().getValue(), startTime, endTime, true, period.getLocation().getNumberOfSeats(), 0);
 
 
 
@@ -344,6 +344,7 @@ public class TestSharedMethods {
 
     public static Pair<CalendarPeriod, List<Timeslot>>  addPair(ICalendarPeriodDao calendarPeriodDao, Pair<CalendarPeriod, List<Timeslot>> pair) throws SQLException {
         List<CalendarPeriod> p = calendarPeriodDao.addCalendarPeriods(Collections.singletonList(pair.getFirst()));
+        pair.getSecond().forEach(t -> t.setPeriod(p.get(0)));
         List<Timeslot> tslist = calendarPeriodDao.addTimeslots(pair.getSecond());
         return new Pair<>(p.get(0), tslist);
     }

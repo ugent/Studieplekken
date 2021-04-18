@@ -127,7 +127,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         int id = rs.getInt(1);
 
         // Returning a copy of the calendarperiod to preserve immutability.
-        return new CalendarPeriod(id, calendarPeriod.getWeek().getYear(), calendarPeriod.getWeek().getYear(), calendarPeriod.getParentId(),
+        return new CalendarPeriod(id, calendarPeriod.getWeek().getYear(), calendarPeriod.getWeek().getWeek(), calendarPeriod.getParentId(),
                     calendarPeriod.getGroupId(), calendarPeriod.getReservableFrom(), calendarPeriod.isRepeated(), calendarPeriod.getLocation());
     }
 
@@ -227,7 +227,10 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
     public void prepareCalendarPeriodPstmt(CalendarPeriod calendarPeriod, PreparedStatement pstmt, int offset) throws SQLException {
         pstmt.setInt(offset + 1, calendarPeriod.getWeek().getYear());
         pstmt.setInt(offset + 2, calendarPeriod.getWeek().getWeek());
-        pstmt.setInt(offset + 3, calendarPeriod.getParentId());
+        if(calendarPeriod.getParentId() == null)
+            pstmt.setNull(offset + 3, Types.INTEGER);
+        else
+            pstmt.setInt(offset + 3, calendarPeriod.getParentId());
         pstmt.setInt(offset + 4, calendarPeriod.getGroupId());
         pstmt.setTimestamp(offset + 5, Timestamp.valueOf(calendarPeriod.getReservableFrom()));
         pstmt.setBoolean(offset + 6, calendarPeriod.isRepeated());

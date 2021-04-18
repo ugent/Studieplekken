@@ -60,19 +60,6 @@ public class LocationReservationController extends AuthorizedLocationController 
         }
     }
 
-    @GetMapping("/{userId}")
-    @PreAuthorize("hasAuthority('USER') and #userId == authentication.principal.augentID")
-    public List<Pair<LocationReservation, CalendarPeriod>>
-    getLocationReservationsWithLocationByUserId(@PathVariable("userId") String userId) {
-        try {
-            return locationReservationDao.getAllLocationReservationsAndCalendarPeriodsOfUser(userId);
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
-    }
-
     @PostMapping
     @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public LocationReservation createLocationReservation(@AuthenticationPrincipal User user, @Valid @RequestBody Timeslot timeslot) {

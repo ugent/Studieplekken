@@ -1,5 +1,7 @@
 package blok2.helpers;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import java.util.Objects;
 
 /**
@@ -42,5 +44,9 @@ public class Pair<S extends Object, T extends Object> {
     @Override
     public int hashCode() {
         return Objects.hash(first, second);
+    }
+
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 }

@@ -138,37 +138,6 @@ public class TestDBLocationReservationDao extends BaseTest {
         Assert.assertEquals(0, reservations.size());
     }
 
-    @Test
-    public void getLocationReservationsAndCalendarPeriodOfUserTest() throws SQLException {
-        User u = accountDao.getUserById(testUser.getAugentID()); // test user from db
-        List<Pair<LocationReservation, CalendarPeriod>> elrs = new ArrayList<>(); // expected location reservations
-
-        // Create first location reservation for user in testLocation
-        CalendarPeriod cp0 = calendarPeriods.get(0).getFirst();
-        Timeslot t0 = calendarPeriods.get(0).getSecond().get(0);
-        LocationReservation lr0 = new LocationReservation(u, LocalDateTime.now(), t0, null);
-        elrs.add(new Pair<>(lr0, cp0));
-
-        // Create a second location reservation for the user in testLocation2
-        CalendarPeriod cp1 = calendarPeriodsForLocation2.get(1).getFirst();
-        Timeslot t1 = calendarPeriodsForLocation2.get(1).getSecond().get(0);
-        LocationReservation lr1 = new LocationReservation(u, LocalDateTime.now(), t1, null);
-        elrs.add(new Pair<>(lr1, cp1));
-
-        // Add the location reservations to the db
-        Assert.assertTrue(locationReservationDao.addLocationReservationIfStillRoomAtomically(lr0));
-        Assert.assertTrue(locationReservationDao.addLocationReservationIfStillRoomAtomically(lr1));
-
-        // Retrieve location reservations in combination with the locations
-        List<Pair<LocationReservation, CalendarPeriod>> rlrs = locationReservationDao
-                .getAllLocationReservationsAndCalendarPeriodsOfUser(u.getAugentID());
-
-        // Sort expected and retrieved location reservations
-        elrs.sort(Comparator.comparing(Pair::hashCode));
-        rlrs.sort(Comparator.comparing(Pair::hashCode));
-
-        Assert.assertEquals(elrs, rlrs);
-    }
 
     /**
      * Steps undertaken in this test:

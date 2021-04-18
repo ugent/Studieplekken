@@ -124,12 +124,19 @@ drop constraint fk_location_reservations_to_timeslot;
 alter table timeslots
 drop constraint pk_timeslots;
 
+alter table location_reservations
+drop constraint pk_location_reservations;
+
+
 -- Adding start_time as primary key
 alter table timeslots
 add constraint pk_timeslots PRIMARY KEY (calendar_id, sequence_number);
 
 alter table location_reservations
-add constraint fk_location_reservations_to_timeslot FOREIGN KEY (calendar_id, timeslot_seqnr) references timeslots(calendar_id, sequence_number);
+add constraint fk_location_reservations_to_timeslot FOREIGN KEY (calendar_id, timeslot_sequence_number) references timeslots(calendar_id, sequence_number);
+
+alter table location_reservations
+add constraint pk_location_reservations PRIMARY KEY (calendar_id, timeslot_sequence_number, user_augentid);
 
 
 -- CLEANUP OF NOW UNUSED COLUMNS
@@ -143,4 +150,4 @@ drop timeslot_seqnr,
 drop timeslot_date;
 
 alter table calendar_periods
-drop timeslot_length, drop reservable, drop starts_at, drop ends_at, drop opening_time, drop closing_time;
+drop timeslot_length, drop reservable, drop starts_at, drop ends_at, drop opening_time, drop closing_time, drop locked_from;

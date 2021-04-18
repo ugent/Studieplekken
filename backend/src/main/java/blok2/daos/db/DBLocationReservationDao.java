@@ -42,33 +42,12 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
         }
     }
 
-    @Override
-    public List<Pair<LocationReservation, CalendarPeriod>>
-    getAllLocationReservationsAndCalendarPeriodsOfUser(String userId)
-            throws SQLException {
-        try (Connection conn = adb.getConnection()) {
-            List<Pair<LocationReservation, CalendarPeriod>> reservations = new ArrayList<>();
-
-            PreparedStatement pstmt = conn.prepareStatement(Resources
-                    .databaseProperties.getString("get_location_reservations_with_location_by_user"));
-            pstmt.setString(1, userId);
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                LocationReservation lr = createLocationReservation(rs, conn);
-                CalendarPeriod cp = DBCalendarPeriodDao.createCalendarPeriod(rs, conn);
-                reservations.add(new Pair<>(lr, cp));
-            }
-
-            return reservations;
-        }
-    }
 
     @Override
     public LocationReservation getLocationReservation(String augentID, Timeslot timeslot) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             String query = Resources.databaseProperties.getString("get_location_reservations_where_<?>");
-            query = query.replace("<?>", "lr.user_augentid = ? lr.timeslot_seqnr = ? and lr.calendar_id = ?");
+            query = query.replace("<?>", "lr.user_augentid = ? and lr.timeslot_sequence_number = ? and lr.calendar_id = ?");
 
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, augentID);
@@ -88,7 +67,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
     public List<LocationReservation> getAllLocationReservationsOfTimeslot(Timeslot timeslot) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             String query = Resources.databaseProperties.getString("get_location_reservations_where_<?>");
-            query = query.replace("<?>", "lr.timeslot_seqnr = ? and lr.calendar_id = ?");
+            query = query.replace("<?>", "lr.timeslot_sequence_number = ? and lr.calendar_id = ?");
 
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setInt(1, timeslot.getTimeslotSeqnr());

@@ -16,11 +16,6 @@ public interface ILocationReservationDao extends IDao {
     List<LocationReservation> getAllLocationReservationsOfUser(String augentID) throws SQLException;
 
     /**
-     * Get all location reservations and calendar periods of the specified user
-     */
-    List<Pair<LocationReservation, CalendarPeriod>> getAllLocationReservationsAndCalendarPeriodsOfUser(String userId) throws SQLException;
-
-    /**
      * Get the location reservation of a specified user at a specified timeslot
      */
     LocationReservation getLocationReservation(String augentID, Timeslot timeslot) throws SQLException;
