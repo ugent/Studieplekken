@@ -8,6 +8,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.threeten.extra.YearWeek;
 
 import javax.activation.DataSource;
 import javax.mail.MessagingException;
@@ -16,6 +17,8 @@ import javax.mail.util.ByteArrayDataSource;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.temporal.IsoFields;
+import java.time.temporal.TemporalField;
 import java.util.List;
 
 @Service
@@ -38,7 +41,7 @@ public class EmailService {
         String content = "A CSV of future building reservations is attached for approval.\n\n";
         content += "This is an automated message. If you are not the intended recipient, or have other concerns in this message, please mail dsa@ugent.be";
 
-        List<CalendarPeriod> periods = calendarPeriodDao.getCalendarPeriodsInWeek(LocalDate.now().plusWeeks(3));
+        List<CalendarPeriod> periods = calendarPeriodDao.getCalendarPeriodsInWeek(YearWeek.from(LocalDate.now().plusWeeks(3)));
         DataSource attachment = new ByteArrayDataSource(helper.calendarPeriodCSV(periods), "text/csv");
         sendAttachmentMessage(target, "Reservations of BlokAt", content, "file.csv", attachment);
     }

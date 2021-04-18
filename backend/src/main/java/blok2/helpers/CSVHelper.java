@@ -20,8 +20,7 @@ public class CSVHelper {
 
     private String calendarPeriodRow(CalendarPeriod period) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/YYYY");
-        return period.getLocation().getName() + "," + period.getLocation().getBuilding().getAddress() + "," + period.getStartsAt() + ","
-                + period.getEndsAt() + "," + period.getOpeningTime() + "," + period.getClosingTime() + "\n";
+        return period.getLocation().getName() + "," + period.getLocation().getBuilding().getAddress();
     }
 
     private String calendarPeriodRows(List<CalendarPeriod> periodList) {

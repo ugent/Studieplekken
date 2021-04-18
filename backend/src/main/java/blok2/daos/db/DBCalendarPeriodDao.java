@@ -8,6 +8,7 @@ import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservables.Location;
 import org.springframework.stereotype.Service;
+import org.threeten.extra.YearWeek;
 
 import java.sql.*;
 import java.sql.Date;
@@ -41,6 +42,9 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         }
     }
 
+    public List<CalendarPeriod> getCalendarPeriodsInWeek(YearWeek week) throws SQLException {
+        return getCalendarPeriodsInWeek(week.getYear(), week.getWeek());
+    }
     public List<CalendarPeriod> getCalendarPeriodsInWeek(int isoyear, int isoweek) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_all_calendar_periods_in_week"));
@@ -70,6 +74,24 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         }
     }
 
+    public Timeslot getTimeslot(int calendarid, int timeslotSeqNr) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_timeslot_by_id"));
+            pstmt.setInt(1, calendarid);
+            pstmt.setInt(2, timeslotSeqNr);
+            ResultSet rs = pstmt.executeQuery();
+
+            if(!rs.next())
+                return null;
+
+            return createTimeslot(rs, conn);
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw throwables;
+        }
+    }
+
     private CalendarPeriod addCalendarPeriod(CalendarPeriod calendarPeriod, Connection conn) throws SQLException {
 
         String[] generatedColumns = {Resources.databaseProperties.getString("calendar_period_id")};
@@ -83,7 +105,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         int id = rs.getInt(1);
 
         // Returning a copy of the calendarperiod to preserve immutability.
-        return new CalendarPeriod(id, calendarPeriod.getIsoyear(), calendarPeriod.getIsoweek(), calendarPeriod.getParentId(),
+        return new CalendarPeriod(id, calendarPeriod.getWeek().getYear(), calendarPeriod.getWeek().getYear(), calendarPeriod.getParentId(),
                     calendarPeriod.getGroupId(), calendarPeriod.getReservableFrom(), calendarPeriod.isRepeated(), calendarPeriod.getLocation());
     }
 
@@ -148,8 +170,8 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
     }
 
     public void prepareCalendarPeriodPstmt(CalendarPeriod calendarPeriod, PreparedStatement pstmt, int offset) throws SQLException {
-        pstmt.setInt(offset + 1, calendarPeriod.getIsoyear());
-        pstmt.setInt(offset + 2, calendarPeriod.getIsoweek());
+        pstmt.setInt(offset + 1, calendarPeriod.getWeek().getYear());
+        pstmt.setInt(offset + 2, calendarPeriod.getWeek().getWeek());
         pstmt.setInt(offset + 3, calendarPeriod.getParentId());
         pstmt.setInt(offset + 4, calendarPeriod.getGroupId());
         pstmt.setTimestamp(offset + 5, Timestamp.valueOf(calendarPeriod.getReservableFrom()));

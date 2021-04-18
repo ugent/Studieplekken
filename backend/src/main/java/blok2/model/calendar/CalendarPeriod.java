@@ -29,6 +29,11 @@ public class CalendarPeriod implements Cloneable {
 
     public CalendarPeriod() { }
 
+    // This is enough to identify
+    public CalendarPeriod(Integer id) {
+        this.id = id;
+    }
+
     public CalendarPeriod(Integer id, int isoyear, int isoweek, Integer parentId, int groupId, LocalDateTime reservableFrom, boolean isRepeated, Location location) {
         this.id = id;
         this.location = location;

@@ -68,13 +68,12 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
     public LocationReservation getLocationReservation(String augentID, Timeslot timeslot) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             String query = Resources.databaseProperties.getString("get_location_reservations_where_<?>");
-            query = query.replace("<?>", "lr.user_augentid = ? and lr.timeslot_date = ? and lr.timeslot_seqnr = ? and lr.calendar_id = ?");
+            query = query.replace("<?>", "lr.user_augentid = ? lr.timeslot_seqnr = ? and lr.calendar_id = ?");
 
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, augentID);
-            pstmt.setDate(2, java.sql.Date.valueOf(timeslot.getTimeslotDate()));
-            pstmt.setInt(3, timeslot.getTimeslotSeqnr());
-            pstmt.setInt(4, timeslot.getCalendarId());
+            pstmt.setInt(2, timeslot.getTimeslotSeqnr());
+            pstmt.setInt(3, timeslot.getPeriod().getId());
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
@@ -89,12 +88,11 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
     public List<LocationReservation> getAllLocationReservationsOfTimeslot(Timeslot timeslot) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             String query = Resources.databaseProperties.getString("get_location_reservations_where_<?>");
-            query = query.replace("<?>", "lr.timeslot_date = ? and lr.timeslot_seqnr = ? and lr.calendar_id = ?");
+            query = query.replace("<?>", "lr.timeslot_seqnr = ? and lr.calendar_id = ?");
 
             PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setDate(1, java.sql.Date.valueOf(timeslot.getTimeslotDate()));
-            pstmt.setInt(2, timeslot.getTimeslotSeqnr());
-            pstmt.setInt(3, timeslot.getCalendarId());
+            pstmt.setInt(1, timeslot.getTimeslotSeqnr());
+            pstmt.setInt(2, timeslot.getPeriod().getId());
             ResultSet rs = pstmt.executeQuery();
 
             List<LocationReservation> rlist = new ArrayList<>();
@@ -115,9 +113,8 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
                 // delete the location reservation
                 PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_location_reservation"));
                 pstmt.setString(1, augentID);
-                pstmt.setDate(2, java.sql.Date.valueOf(timeslot.getTimeslotDate()));
-                pstmt.setInt(3, timeslot.getTimeslotSeqnr());
-                pstmt.setInt(4, timeslot.getCalendarId());
+                pstmt.setInt(2, timeslot.getTimeslotSeqnr());
+                pstmt.setInt(3, timeslot.getPeriod().getId());
                 int count = pstmt.executeUpdate();
 
                 if(count != 1) {
@@ -126,9 +123,8 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
 
                 // and subtract a count from the reservation count
                 pstmt = conn.prepareStatement(Resources.databaseProperties.getString("subtract_one_to_reservation_count"));
-                pstmt.setDate(2, java.sql.Date.valueOf(timeslot.getTimeslotDate()));
-                pstmt.setInt(3, timeslot.getTimeslotSeqnr());
-                pstmt.setInt(1, timeslot.getCalendarId());
+                pstmt.setInt(1, timeslot.getPeriod().getId());
+                pstmt.setInt(2, timeslot.getTimeslotSeqnr());
                 pstmt.execute();
 
                 conn.commit();
@@ -153,11 +149,9 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_location_reservation"));
         pstmt.setString(1, locationReservation.getUser().getAugentID());
         pstmt.setTimestamp(2, Timestamp.valueOf(locationReservation.getCreatedAt()));
-        pstmt.setDate(3, java.sql.Date.valueOf(locationReservation.getTimeslot().getTimeslotDate()));
-        pstmt.setInt(4, locationReservation.getTimeslot().getTimeslotSeqnr());
-        pstmt.setInt(5, locationReservation.getTimeslot().getCalendarId());
+        pstmt.setInt(3, locationReservation.getTimeslot().getTimeslotSeqnr());
+        pstmt.setInt(4, locationReservation.getTimeslot().getPeriod().getId());
         pstmt.execute();
-
     }
 
     @Override
@@ -168,9 +162,8 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
                 // A lock must be taken within a transaction, therefore disabling auto commit.
                 conn.setAutoCommit(false);
                 PreparedStatement stmt = conn.prepareStatement(Resources.databaseProperties.getString("add_one_to_reservation_count"));
-                stmt.setInt(1, reservation.getTimeslot().getCalendarId());
-                stmt.setDate(2, Date.valueOf(reservation.getTimeslot().getTimeslotDate()));
-                stmt.setInt(3, reservation.getTimeslot().getTimeslotSeqnr());
+                stmt.setInt(1, reservation.getTimeslot().getPeriod().getId());
+                stmt.setInt(2, reservation.getTimeslot().getTimeslotSeqnr());
                 int change = stmt.executeUpdate();
 
                 // Double checking the change for insurance (and also compiler check)
@@ -234,10 +227,9 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
 
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("set_location_reservation_attendance"));
             pstmt.setBoolean(1, attendance);
-            pstmt.setInt(2, timeslot.getCalendarId());
-            pstmt.setDate(3, Date.valueOf(timeslot.getTimeslotDate()));
-            pstmt.setInt(4, timeslot.getTimeslotSeqnr());
-            pstmt.setString(5, augentId);
+            pstmt.setInt(2, timeslot.getPeriod().getId());
+            pstmt.setInt(3, timeslot.getTimeslotSeqnr());
+            pstmt.setString(4, augentId);
             pstmt.execute();
         }
         return true;
@@ -246,9 +238,8 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
     // Seperated out for use in transaction
     public static long getAmountOfReservationsOfTimeslot(Timeslot timeslot, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("count_location_reservations_of_location_for_timeslot"));
-        pstmt.setInt(1, timeslot.getCalendarId());
-        pstmt.setDate(2, java.sql.Date.valueOf(timeslot.getTimeslotDate()));
-        pstmt.setInt(3, timeslot.getTimeslotSeqnr());
+        pstmt.setInt(1, timeslot.getPeriod().getId());
+        pstmt.setInt(2, timeslot.getTimeslotSeqnr());
         ResultSet set = pstmt.executeQuery();
 
         if(set.next()) {

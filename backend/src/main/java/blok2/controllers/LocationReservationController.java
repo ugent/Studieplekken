@@ -78,7 +78,7 @@ public class LocationReservationController extends AuthorizedLocationController 
     public LocationReservation createLocationReservation(@AuthenticationPrincipal User user, @Valid @RequestBody Timeslot timeslot) {
         try {
             LocationReservation reservation = new LocationReservation(user, LocalDateTime.now(), timeslot, null);
-            CalendarPeriod period = calendarPeriodDao.getById(timeslot.getCalendarId());
+            CalendarPeriod period = calendarPeriodDao.getById(timeslot.getPeriod().getId());
             if(LocalDateTime.now().isBefore(period.getReservableFrom())) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "This calendarperiod can't yet be reserved");
             }
@@ -93,15 +93,14 @@ public class LocationReservationController extends AuthorizedLocationController 
         }
     }
 
-    @GetMapping("/timeslot/{calendarid}/{date}/{seqnr}")
+    @GetMapping("/timeslot/{calendarid}/{seqnr}")
     @PreAuthorize("hasAuthority('HAS_VOLUNTEERS') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public List<LocationReservation> getLocationReservationsByTimeslot(
             @PathVariable("calendarid") int calendarId,
-            @PathVariable("date") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate date,
             @PathVariable("seqnr") int seqnr
     ) {
-        Timeslot timeslot = new Timeslot(calendarId, seqnr, date, 0);
         try {
+            Timeslot timeslot = calendarPeriodDao.getTimeslot(calendarId, seqnr);
             return locationReservationDao.getAllLocationReservationsOfTimeslot(timeslot);
         } catch (SQLException e) {
             logger.error(e.getMessage());
@@ -126,7 +125,7 @@ public class LocationReservationController extends AuthorizedLocationController 
     public void deleteLocationReservation(@RequestBody @Valid LocationReservation locationReservation) {
 
         try {
-            CalendarPeriod parentPeriod = calendarPeriodDao.getById(locationReservation.getTimeslot().getCalendarId());
+            CalendarPeriod parentPeriod = calendarPeriodDao.getById(locationReservation.getTimeslot().getPeriod().getId());
             isAuthorized(
                     (lr, user) -> hasAuthority(parentPeriod.getLocation().getLocationId()) || lr.getUser().getAugentID().equals(user.getAugentID()),
                     locationReservation
@@ -148,14 +147,13 @@ public class LocationReservationController extends AuthorizedLocationController 
     @PreAuthorize("hasAuthority('HAS_VOLUNTEERS') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void setLocationReservationAttendance(
             @PathVariable("calendarid") int calendarId,
-            @PathVariable("date") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate date,
             @PathVariable("seqnr") int seqnr,
             @PathVariable("userid") String userid,
             @RequestBody LocationReservation.AttendedPostBody body
     ) {
-        Timeslot slot = new Timeslot(calendarId, seqnr, date, 0);
         try {
-            CalendarPeriod parentPeriod = calendarPeriodDao.getById(slot.getCalendarId());
+            Timeslot slot = calendarPeriodDao.getTimeslot(calendarId, seqnr);
+            CalendarPeriod parentPeriod = slot.getPeriod();
             isVolunteer(parentPeriod.getLocation().getLocationId());
             if (!locationReservationDao.setReservationAttendance(userid, slot, body.getAttended()))
                 throw new NoSuchReservationException("No such reservation");

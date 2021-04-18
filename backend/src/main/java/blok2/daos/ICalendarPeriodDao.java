@@ -3,6 +3,8 @@ package blok2.daos;
 import blok2.helpers.LocationStatus;
 import blok2.helpers.Pair;
 import blok2.model.calendar.CalendarPeriod;
+import blok2.model.calendar.Timeslot;
+import org.threeten.extra.YearWeek;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -14,6 +16,12 @@ public interface ICalendarPeriodDao extends IDao {
      * Get all calendar periods of a specific location
      */
     List<CalendarPeriod> getCalendarPeriodsOfLocation(int getLocationId) throws SQLException;
+
+    /**
+     * Get all calendar periods within the week that starts with the specified date
+     */
+    List<CalendarPeriod> getCalendarPeriodsInWeek(YearWeek week) throws SQLException;
+
 
     /**
      * Get all calendar periods within the week that starts with the specified date
@@ -49,5 +57,7 @@ public interface ICalendarPeriodDao extends IDao {
      * Get a calendar period by its id
      */
     CalendarPeriod getById(int calendarId) throws SQLException;
+
+    Timeslot getTimeslot(int calendarid, int timeslotSeqNr) throws SQLException;
 
 }

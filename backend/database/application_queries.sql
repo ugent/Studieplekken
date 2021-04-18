@@ -213,7 +213,6 @@ from public.location_reservations lr
     join public.users u
         on u.augentid = lr.user_augentid
     left join public.timeslots rt
-        on rt.timeslot_date = lr.timeslot_date
         and rt.timeslot_sequence_number = lr.timeslot_seqnr
         and rt.calendar_id = lr.calendar_id
 where <?>;
@@ -223,31 +222,31 @@ select count(1)
 from public.location_reservations lr 
     INNER JOIN public.calendar_periods cp on lr.calendar_id = cp.calendar_id 
     INNER JOIN public.locations l on cp.location_id = l.location_id
-where lr.calendar_id = ? and lr.timeslot_date = ? and lr.timeslot_seqnr = ?;
+where lr.calendar_id = ? and lr.timeslot_seqnr = ?;
 
 -- $add_one_to_reservation_count
 update timeslots
 set reservation_count = reservation_count + 1
-where calendar_id = ? and timeslot_date = ? and timeslot_sequence_number= ?;
+where calendar_id = ? and timeslot_sequence_number= ?;
 
 -- $subtract_one_to_reservation_count
 update timeslots
 set reservation_count = reservation_count - 1
-where calendar_id = ? and timeslot_date = ? and timeslot_sequence_number= ?;
+where calendar_id = ? and timeslot_sequence_number= ?;
 
 -- $delete_location_reservation
 delete
 from public.location_reservations
-where user_augentid = ? and timeslot_date = ? and timeslot_seqnr = ? and calendar_id = ?;
+where user_augentid = ? and timeslot_seqnr = ? and calendar_id = ?;
 
 -- $insert_location_reservation
-insert into public.location_reservations (user_augentid, created_at, timeslot_date, timeslot_seqnr, calendar_id, attended)
+insert into public.location_reservations (user_augentid, created_at, timeslot_seqnr, calendar_id, attended)
 values (?, ?, ?, ?, ?, null);
 
 -- $set_location_reservation_attendance
 update public.location_reservations
 set attended = ?
-where calendar_id = ? and timeslot_date = ? and timeslot_seqnr = ? and user_augentid = ?;
+where calendar_id = ? and timeslot_seqnr = ? and user_augentid = ?;
 
 -- $get_location_reservations_with_location_by_user
 select lr.*, cp.*, l.*, b.*, a.*, u.*, rt.reservation_count, rt.seat_count
@@ -771,3 +770,11 @@ select *
 from y
 where n = 1
 order by timeslot_start;
+
+-- $get_timeslot_by_id
+select * 
+from public.timeslots rt 
+inner join calendar_periods cp on calendar_id
+inner join public.location on location_id
+inner join building on building_id
+where rt.calendar_id = ? and rt.sequence_number = ?;
