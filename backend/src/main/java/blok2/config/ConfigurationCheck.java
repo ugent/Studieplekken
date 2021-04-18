@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+
 @Component
 public class ConfigurationCheck {
 
@@ -14,15 +16,13 @@ public class ConfigurationCheck {
     @Autowired
     public ConfigurationCheck(Environment env) {
         String[] activeProfiles = env.getActiveProfiles();
+        String[] recipientsOpeningHours = env
+                .getProperty("custom.mailing.recipientsOpeningHoursOverview", String[].class);
 
-        StringBuilder sb = new StringBuilder();
-        sb.append('[');
-        for (String profile : activeProfiles)
-            sb.append(String.format("'%s',", profile));
-        sb.replace(sb.length()-1, sb.length(), "");
-        sb.append(']');
-
-        logger.info(String.format("Spring Boot started with spring.profiles.active = %s", sb.toString()));
+        logger.info(String.format("Spring Boot started with spring.profiles.active = %s",
+                Arrays.toString(activeProfiles)));
+        logger.info(String.format("Spring Boot started with custom.mailing.recipientsOpeningHoursOverview = %s",
+                Arrays.toString(recipientsOpeningHours)));
     }
 
 }

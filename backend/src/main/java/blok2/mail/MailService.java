@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.IsoFields;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
@@ -33,6 +34,11 @@ public class MailService {
     public static final String EXAMPLE_MAIL_TEMPLATE_URL = "mail/example_mail";
     public static final String OPENING_HOURS_OVERVIEW_TEMPLATE_URL = "mail/opening_hours_overview";
     public static final String ADMIN_VALIDATION_FOR_NEW_LOCATION_REQUESTED_TEMPLATE_URL = "mail/location_created";
+
+    public static final String NO_REPLY_SENDER = "no-reply@dsa.ugent.be";
+
+    public static final String URL_DEVELOPMENT = "https://localhost:4200";
+    public static final String URL_PRODUCTION = "https://studieplekken.ugent.be";
 
     private final Set<String> springProfilesActive;
 
@@ -86,8 +92,8 @@ public class MailService {
         String toFormatted = to.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         String title = String.format("[Werk- en Studieplekken] Openingsuren %s tot %s", fromFormatted, toFormatted);
         String baseURL = springProfilesActive.contains("dev")
-                ? "https://localhost:4200"
-                : "https://studieplekken.ugent.be";
+                ? URL_DEVELOPMENT
+                : URL_PRODUCTION;
         String overviewURL = String.format("%s/opening/overview/%d/%d", baseURL, year, week);
 
         ctx.setVariable("title", title);
@@ -159,7 +165,7 @@ public class MailService {
             return;
 
         logger.info(String.format("Sending mail with template file name '%s' to '%s' with subject '%s'",
-                templateFileName, stringify(targets), subject));
+                templateFileName, Arrays.toString(targets), subject));
 
         MimeMessageHelper messageHelper = prepareMimeMessageHelper(subject, templateFileName, ctx);
         messageHelper.setTo(targets);
@@ -174,7 +180,7 @@ public class MailService {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
 
-        messageHelper.setFrom("no-reply@dsa.ugent.be");
+        messageHelper.setFrom(NO_REPLY_SENDER);
         messageHelper.setSubject(subject);
 
         // Create the HTML body using Thymeleaf
@@ -203,18 +209,7 @@ public class MailService {
     }
 
     private boolean allowedToSendMailByEnvironment(String[] targets, String templateUrl, String subject) {
-        return allowedToSendMailByEnvironment(stringify(targets), templateUrl, subject);
-    }
-
-    private String stringify(String[] arr) {
-        StringBuilder sb = new StringBuilder();
-        sb.append('[');
-        for (String str : arr)
-            sb.append(String.format("%s,", str));
-        if (arr.length > 0)
-            sb.replace(sb.length()-1, sb.length(), "");
-        sb.append(']');
-        return sb.toString();
+        return allowedToSendMailByEnvironment(Arrays.toString(targets), templateUrl, subject);
     }
 
 }
