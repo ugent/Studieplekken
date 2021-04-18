@@ -7,6 +7,7 @@ import blok2.helpers.Resources;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservables.Location;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.threeten.extra.YearWeek;
 
@@ -18,6 +19,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Service
 public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
@@ -55,16 +57,20 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
     }
 
     @Override
-    public void addCalendarPeriods(List<CalendarPeriod> periods) throws SQLException {
+    public List<CalendarPeriod> addCalendarPeriods(List<CalendarPeriod> periods) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             try {
                 conn.setAutoCommit(false);
 
-                for (CalendarPeriod calendarPeriod : periods) {
-                    addCalendarPeriod(calendarPeriod, conn);
+                List<CalendarPeriod> calendarPeriods = new ArrayList<>();
+                for (CalendarPeriod c : periods) {
+                    CalendarPeriod period = addCalendarPeriod(c, conn);
+                    calendarPeriods.add(period);
                 }
 
+
                 conn.commit();
+                return calendarPeriods;
             } catch (SQLException e) {
                 conn.rollback();
                 throw e;
@@ -92,6 +98,22 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         }
     }
 
+    public List<Timeslot> getTimeslotsByCalendarPeriod(CalendarPeriod p) throws SQLException {
+        try(Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_timeslots"));
+            pstmt.setInt(1, p.getId());
+            ResultSet rs = pstmt.executeQuery();
+
+            List<Timeslot> periods = new ArrayList<>();
+
+            while (rs.next()) {
+                periods.add(createTimeslot(p, rs, conn));
+            }
+
+            return periods;
+        }
+    }
+
     private CalendarPeriod addCalendarPeriod(CalendarPeriod calendarPeriod, Connection conn) throws SQLException {
 
         String[] generatedColumns = {Resources.databaseProperties.getString("calendar_period_id")};
@@ -107,6 +129,39 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         // Returning a copy of the calendarperiod to preserve immutability.
         return new CalendarPeriod(id, calendarPeriod.getWeek().getYear(), calendarPeriod.getWeek().getYear(), calendarPeriod.getParentId(),
                     calendarPeriod.getGroupId(), calendarPeriod.getReservableFrom(), calendarPeriod.isRepeated(), calendarPeriod.getLocation());
+    }
+
+    @Override
+    public List<Timeslot> addTimeslots(List<Timeslot> timeslots) throws SQLException {
+        try(Connection conn = adb.getConnection()) {
+            List<Timeslot> list = new ArrayList<>();
+            for (Timeslot t : timeslots) {
+                Timeslot timeslot = addTimeslot(t, conn);
+                list.add(timeslot);
+            }
+            return list;
+        }
+    }
+
+
+    @Override
+    public Timeslot addTimeslot(Timeslot timeslot) throws SQLException {
+        try(Connection conn = adb.getConnection()) {
+           return addTimeslot(timeslot, conn);
+        }
+    }
+
+    private Timeslot addTimeslot(Timeslot timeslot, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_timeslots"));
+        pstmt.setInt(1, timeslot.getPeriod().getId());
+        pstmt.setInt(2, timeslot.getTimeslotSeqnr());
+        pstmt.setInt(3, timeslot.getDayOfWeek());
+        pstmt.setTime(4, Time.valueOf(timeslot.getStartTime()));
+        pstmt.setTime(5, Time.valueOf(timeslot.getEndTime()));
+        pstmt.setBoolean(6, timeslot.isReservable());
+        pstmt.setInt(7, timeslot.getSeatCount());
+        pstmt.execute();
+        return timeslot;
     }
 
 
@@ -226,6 +281,10 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
 
     public static Timeslot createTimeslot(ResultSet rs, Connection conn) throws SQLException {
         CalendarPeriod period = createCalendarPeriod(rs, conn);
+        return createTimeslot(period, rs, conn);
+    }
+
+    private static Timeslot createTimeslot(CalendarPeriod period, ResultSet rs, Connection conn) throws SQLException {
         int seqnr = (rs.getInt(Resources.databaseProperties.getString("timeslot_sequence_number")));
         int isodayOfWeek = (rs.getInt(Resources.databaseProperties.getString("timeslot_isoday_of_week")));
         boolean reservable = (rs.getBoolean(Resources.databaseProperties.getString("timeslot_reservable")));
@@ -235,6 +294,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         LocalTime endTime = rs.getTime(Resources.databaseProperties.getString("timeslot_end_time")).toLocalTime();
 
         return new Timeslot(period, seqnr, isodayOfWeek, startTime, endTime, reservable, seatCount, count);
+
     }
 
     private List<CalendarPeriod> getCalendarPeriodsFromPstmt(PreparedStatement pstmt, Connection conn) throws SQLException {
@@ -248,4 +308,6 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
 
         return periods;
     }
+
+
 }

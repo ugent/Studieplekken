@@ -4,10 +4,12 @@ import blok2.BaseTest;
 import blok2.TestSharedMethods;
 import blok2.daos.*;
 import blok2.helpers.Language;
+import blok2.helpers.Pair;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.CalendarPeriodForLockers;
+import blok2.model.calendar.Timeslot;
 import blok2.model.penalty.Penalty;
 import blok2.model.penalty.PenaltyEvent;
 import blok2.model.reservables.Location;
@@ -23,6 +25,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TestCascadeInDBLocationDao extends BaseTest {
 
@@ -77,7 +80,7 @@ public class TestCascadeInDBLocationDao extends BaseTest {
     private Penalty testPenalty2;
 
     // to test cascade on CALENDAR_PERIODS
-    private List<CalendarPeriod> testCalendarPeriods;
+    private List<Pair<CalendarPeriod, List<Timeslot>>> testCalendarPeriods;
 
     // to test cascade on CALENDAR_PERIODS_FOR_LOCKERS
     private List<CalendarPeriodForLockers> testCalendarPeriodsForLockers;
@@ -93,14 +96,14 @@ public class TestCascadeInDBLocationDao extends BaseTest {
         testUser2 = TestSharedMethods.adminTestUser();
         locationDao.addLocation(testLocation);
 
-        CalendarPeriod cp1 = TestSharedMethods.testCalendarPeriods(testLocation).get(0);
-        TestSharedMethods.addCalendarPeriods(calendarPeriodDao, cp1);
-        CalendarPeriod cp2 = TestSharedMethods.testCalendarPeriods(testLocation).get(0);
-        TestSharedMethods.addCalendarPeriods(calendarPeriodDao, cp2);
+        Pair<CalendarPeriod, List<Timeslot>> cp1 = TestSharedMethods.testCalendarPeriods(testLocation).get(0);
+        TestSharedMethods.addPair(calendarPeriodDao, cp1);
+        Pair<CalendarPeriod, List<Timeslot>> cp2 = TestSharedMethods.testCalendarPeriods(testLocation).get(0);
+        TestSharedMethods.addPair(calendarPeriodDao, cp2);
 
         testCalendarPeriods = Arrays.asList(cp1, cp2);
-        testLocationReservation1 = new LocationReservation(testUser1, LocalDateTime.now(), cp1.getTimeslots().get(0),  null);
-        testLocationReservation2 = new LocationReservation(testUser2,  LocalDateTime.of(1970,1,1,0,0), cp2.getTimeslots().get(0),  null);
+        testLocationReservation1 = new LocationReservation(testUser1, LocalDateTime.now(), cp1.getSecond().get(0),  null);
+        testLocationReservation2 = new LocationReservation(testUser2,  LocalDateTime.of(1970,1,1,0,0), cp2.getSecond().get(0),  null);
 
         Locker testLocker1 = new Locker(0, testLocation);
         Locker testLocker2 = new Locker(1, testLocation);
@@ -210,10 +213,10 @@ public class TestCascadeInDBLocationDao extends BaseTest {
         // CALENDAR_PERIODS still available?
         List<CalendarPeriod> actualPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getLocationId());
         actualPeriods.sort(Comparator.comparing(CalendarPeriod::getId));
-        testCalendarPeriods.sort(Comparator.comparing(CalendarPeriod::getId));
+        List<CalendarPeriod> test = testCalendarPeriods.stream().map(Pair::getFirst).sorted(Comparator.comparing(CalendarPeriod::getId)).collect(Collectors.toList());
 
         Assert.assertEquals("updateUserWithoutCascadeNeededTest, calendar periods",
-                testCalendarPeriods, actualPeriods);
+                test, actualPeriods);
 
         // CALENDAR_PERIODS_FOR_LOCKERS still available?
         /*
@@ -299,11 +302,11 @@ public class TestCascadeInDBLocationDao extends BaseTest {
 
         // CALENDAR_PERIODS updated?
         List<CalendarPeriod> actualPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getLocationId());
-        actualPeriods.sort(Comparator.comparing(CalendarPeriod::toString));
-        testCalendarPeriods.sort(Comparator.comparing(CalendarPeriod::toString));
+        actualPeriods.sort(Comparator.comparing(CalendarPeriod::getId));
+        List<CalendarPeriod> test = testCalendarPeriods.stream().map(Pair::getFirst).sorted(Comparator.comparing(CalendarPeriod::getId)).collect(Collectors.toList());
 
         Assert.assertEquals("updateUserWithoutCascadeNeededTest, calendar periods",
-                testCalendarPeriods, actualPeriods);
+                test, actualPeriods);
 
         // CALENDAR_PERIODS_FOR_LOCKERS still available?
         List<CalendarPeriodForLockers> actualPeriodsForLockers = calendarPeriodForLockersDao.getCalendarPeriodsForLockersOfLocation(testLocation.getLocationId());

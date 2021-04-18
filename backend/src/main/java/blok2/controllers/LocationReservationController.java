@@ -143,7 +143,7 @@ public class LocationReservationController extends AuthorizedLocationController 
         }
     }
 
-    @PostMapping("/{userid}/{calendarid}/{date}/{seqnr}/attendance")
+    @PostMapping("/{userid}/{calendarid}/{seqnr}/attendance")
     @PreAuthorize("hasAuthority('HAS_VOLUNTEERS') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void setLocationReservationAttendance(
             @PathVariable("calendarid") int calendarId,

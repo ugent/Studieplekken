@@ -3,6 +3,7 @@ package blok2.integration;
 import blok2.BaseTest;
 import blok2.TestSharedMethods;
 import blok2.daos.*;
+import blok2.helpers.Pair;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.calendar.CalendarPeriod;
@@ -51,7 +52,7 @@ public abstract class BaseIntegrationTest extends BaseTest {
     protected User admin;
     protected User student;
     protected User student2;
-    protected List<CalendarPeriod> calendarPeriods;
+    protected List<Pair<CalendarPeriod, List<Timeslot>>> calendarPeriods;
     @Autowired
     protected ObjectMapper objectMapper;
     protected User authHolder;
@@ -76,9 +77,9 @@ public abstract class BaseIntegrationTest extends BaseTest {
         // CALENDAR PERIOD
         calendarPeriods = TestSharedMethods.testCalendarPeriods(testLocation);
 
-        CalendarPeriod[] cps = new CalendarPeriod[calendarPeriods.size()];
-        cps = calendarPeriods.toArray(cps);
-        TestSharedMethods.addCalendarPeriods(calendarPeriodDao, cps);
+        for (Pair<CalendarPeriod, List<Timeslot>> c : calendarPeriods) {
+            TestSharedMethods.addPair(calendarPeriodDao, c);
+        }
 
         admin = accountDao.getUserByEmail("admin@ugent.be");
         student= accountDao.getUserByEmail("student1@ugent.be");
@@ -88,9 +89,8 @@ public abstract class BaseIntegrationTest extends BaseTest {
         authorityDao.addUserToAuthority(authHolder.getAugentID(), authority.getAuthorityId());
         authHolder = accountDao.getUserByEmail("authholder@ugent.be");
 
-        Timeslot timeslot = new Timeslot(cps[0], 0, cps[0].getStartsAt().plusDays(1));
 
-        LocationReservation reservation = new LocationReservation(student, LocalDateTime.now(), timeslot, null);
+        LocationReservation reservation = new LocationReservation(student, LocalDateTime.now(), calendarPeriods.get(0).getSecond().get(0), null);
         locationReservationDao.addLocationReservationIfStillRoomAtomically(reservation);
 
         locationDao.addVolunteer(testLocation.getLocationId(), student2.getAugentID());

@@ -720,11 +720,11 @@ where cp.isoyear = ? and cp.isoweek = ?;
 select rt.timeslot_sequence_number, rt.timeslot_date, rt.calendar_id, rt.reservation_count, rt.seat_count
 from public.timeslots rt
 where calendar_id = ? 
-order by rt.timeslot_date, rt.timeslot_sequence_number;
+order by rt.sequence_number;
 
 -- $insert_timeslots
-insert into public.timeslots(calendar_id, timeslot_sequence_number, timeslot_date, seat_count)
-values (?, ?, ?, ?);
+insert into public.timeslots(calendar_id, sequence_number, isoday_of_week, start_time, end_time, reservable, seat_count)
+values (?, ?, ?, ?, ?, ?, ?);
 
 -- $count_reservations_now
 with y as (

@@ -49,9 +49,9 @@ public class TestDBLocationReservationDao extends BaseTest {
     private Location testLocation;
     private User testUser;
     private User testUser2;
-    private List<CalendarPeriod> calendarPeriods;
-    private CalendarPeriod calendarPeriod1Seat;
-    private List<CalendarPeriod> calendarPeriodsForLocation2;
+    private List<Pair<CalendarPeriod, List<Timeslot>>> calendarPeriods;
+    private Pair<CalendarPeriod, List<Timeslot>> calendarPeriod1Seat;
+    private List<Pair<CalendarPeriod, List<Timeslot>>> calendarPeriodsForLocation2;
 
     @Override
     public void populateDatabase() throws SQLException {
@@ -75,12 +75,15 @@ public class TestDBLocationReservationDao extends BaseTest {
         locationDao.addLocation(testLocation1Seat);
         locationDao.addLocation(testLocation2);
 
-        CalendarPeriod[] cps = new CalendarPeriod[calendarPeriods.size()];
-        cps = calendarPeriods.toArray(cps);
-        TestSharedMethods.addCalendarPeriods(calendarPeriodDao, cps);
-        TestSharedMethods.addCalendarPeriods(calendarPeriodDao, calendarPeriod1Seat);
-        cps = calendarPeriodsForLocation2.toArray(cps);
-        TestSharedMethods.addCalendarPeriods(calendarPeriodDao, cps);
+
+        for (Pair<CalendarPeriod, List<Timeslot>> c : calendarPeriods) {
+            TestSharedMethods.addPair(calendarPeriodDao, c);
+        }
+        for (Pair<CalendarPeriod, List<Timeslot>> c : calendarPeriodsForLocation2) {
+            TestSharedMethods.addPair(calendarPeriodDao, c);
+        }
+
+        TestSharedMethods.addPair(calendarPeriodDao, calendarPeriod1Seat);
     }
 
     @Test
@@ -88,7 +91,7 @@ public class TestDBLocationReservationDao extends BaseTest {
         // retrieve entries from database instead of using the added instances
         Location location = locationDao.getLocationByName(testLocation.getName());
         User u = accountDao.getUserById(testUser.getAugentID());
-        Timeslot timeslot = calendarPeriods.get(0).getTimeslots().get(0);
+        Timeslot timeslot = calendarPeriods.get(0).getSecond().get(0);
         // check whether all retrieved instances equal to the added instances
         Assert.assertEquals("addLocationReservation, setup testLocation", testLocation, location);
         Assert.assertEquals("addLocationReservation, setup testUser", testUser, u);
@@ -118,10 +121,10 @@ public class TestDBLocationReservationDao extends BaseTest {
         User u = accountDao.getUserById(testUser.getAugentID());
         User u2 = accountDao.getUserById(testUser2.getAugentID());
 
-        Timeslot timeslot = calendarPeriod1Seat.getTimeslots().get(0);
+        Timeslot timeslot = calendarPeriod1Seat.getSecond().get(0);
 
         LocationReservation lr = new LocationReservation(u, LocalDateTime.now(), timeslot, null);
-        TestSharedMethods.addCalendarPeriods(calendarPeriodDao, calendarPeriods.get(0));
+        TestSharedMethods.addPair(calendarPeriodDao, calendarPeriods.get(0));
         Assert.assertTrue(locationReservationDao.addLocationReservationIfStillRoomAtomically(lr));
         lr = new LocationReservation(u, LocalDateTime.now(), timeslot, null);
         // This is a duplicate entry into the database. Shouldn't work.
@@ -141,14 +144,14 @@ public class TestDBLocationReservationDao extends BaseTest {
         List<Pair<LocationReservation, CalendarPeriod>> elrs = new ArrayList<>(); // expected location reservations
 
         // Create first location reservation for user in testLocation
-        CalendarPeriod cp0 = calendarPeriods.get(0);
-        Timeslot t0 = cp0.getTimeslots().get(0);
+        CalendarPeriod cp0 = calendarPeriods.get(0).getFirst();
+        Timeslot t0 = calendarPeriods.get(0).getSecond().get(0);
         LocationReservation lr0 = new LocationReservation(u, LocalDateTime.now(), t0, null);
         elrs.add(new Pair<>(lr0, cp0));
 
         // Create a second location reservation for the user in testLocation2
-        CalendarPeriod cp1 = calendarPeriodsForLocation2.get(1);
-        Timeslot t1 = cp1.getTimeslots().get(1);
+        CalendarPeriod cp1 = calendarPeriodsForLocation2.get(1).getFirst();
+        Timeslot t1 = calendarPeriodsForLocation2.get(1).getSecond().get(0);
         LocationReservation lr1 = new LocationReservation(u, LocalDateTime.now(), t1, null);
         elrs.add(new Pair<>(lr1, cp1));
 
@@ -209,11 +212,11 @@ public class TestDBLocationReservationDao extends BaseTest {
         logger.info("Location has been created");
 
         // Create an upcoming calendar period (timeslots will be created too)
-        CalendarPeriod calendarPeriod = TestSharedMethods.upcomingCalendarPeriods(location);
-        calendarPeriodDao.addCalendarPeriods(singletonList(calendarPeriod));
+        Pair<CalendarPeriod, List<Timeslot>> calendarPeriod = TestSharedMethods.upcomingCalendarPeriods(location);
+        TestSharedMethods.addPair(calendarPeriodDao, calendarPeriod);
         logger.info("Calendar period has been created");
 
-        Timeslot timeslot = calendarPeriod.getTimeslots().get(0);
+        Timeslot timeslot = calendarPeriod.getSecond().get(0);
         Assert.assertNotNull(timeslot);
 
         // Let each user make a reservation concurrently
@@ -249,136 +252,5 @@ public class TestDBLocationReservationDao extends BaseTest {
         // Test whether no constraints have been violated
         long lrsCount = locationReservationDao.countReservedSeatsOfTimeslot(timeslot);
         Assert.assertEquals(N_SEATS, lrsCount);
-    }
-
-    /**
-     * Steps undertaken in this test:
-     *     - create 500 test users
-     *     - create a location that has 490 seats
-     *     - create an upcoming calendar period
-     *     - let each user make a reservation concurrently
-     *     - test whether no constraints have been violated
-     */
-    //@Test
-    public void concurrentReservationsMultipleTimeslotsTest() throws SQLException, InterruptedException {
-        // some constants
-        final int N_USERS = 500;
-        final int N_SEATS = 500;
-
-        // some variables that will be used
-        Thread[] threads = new Thread[N_USERS];
-        User[] users = new User[N_USERS];
-        Timeslot[] timeslots = new Timeslot[N_USERS]; // timeslots[i] will be assigned to user[i]
-
-        // Create N_USERS test users
-        for (int i = 0; i < N_USERS; i++) {
-            users[i] = TestSharedMethods.studentTestUser();
-            users[i].setAugentID(users[i].getAugentID() + "" + i);
-            users[i].setMail(i + "" + users[i].getMail());
-            accountDao.directlyAddUser(users[i]);
-        }
-        logger.info(String.format("All %d users have been created.", N_USERS));
-
-        // Create a location that has N_SEATS seats
-        Building building = TestSharedMethods.testBuilding();
-        building.setName("Building to test concurrent reservations");
-        buildingDao.addBuilding(building);
-
-        Location location = TestSharedMethods.testLocation(
-                TestSharedMethods.insertTestAuthority("Test concurrent reservations",
-                        "Authority to test concurrent reservations", authorityDao),
-                building);
-        location.setNumberOfSeats(N_SEATS);
-        location.setName("Location to test concurrent reservations");
-        locationDao.addLocation(location);
-        logger.info("Location has been created");
-
-        // Create an upcoming calendar period with a small timeslot size (timeslots will be created too)
-        CalendarPeriod calendarPeriod = TestSharedMethods.upcomingCalendarPeriods(location);
-        // Reasoning behind timeslot size: 17h - 9h = 8h = 480 min, twee dagen = 960 min -> 16 min/timeslot -> 60 timeslots
-        calendarPeriod.setTimeslotLength(16);
-        calendarPeriodDao.addCalendarPeriods(singletonList(calendarPeriod));
-        logger.info("Calendar period has been created");
-
-        Assert.assertEquals(60, calendarPeriod.getTimeslots().size());
-        for (int i = 0; i < N_USERS; i++) {
-            timeslots[i] = calendarPeriod.getTimeslots().get(i % calendarPeriod.getTimeslots().size());
-        }
-
-        // Let each user make a reservation concurrently
-        for (int i = 0; i < N_USERS; i++) {
-            final int _i = i;
-            threads[i] = new Thread(
-                    () -> {
-                        LocationReservation lr = new LocationReservation(users[_i], LocalDateTime.now(), timeslots[_i], null);
-                        try {
-                            boolean s = locationReservationDao.addLocationReservationIfStillRoomAtomically(lr);
-                            if(!s)
-                                System.out.println("Didn't manage...");
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
-                    }
-            );
-        }
-
-        for (Thread thread: threads ) {
-            thread.start();
-            logger.info("thread has been started");
-        }
-
-        // Now, wait for all threads to be finished
-        for (int i = 0; i < N_USERS; i++) {
-            threads[i].join();
-        }
-
-        // Test whether no constraints have been violated
-        long lrsCount = 0;
-        for (Timeslot timeslot : calendarPeriod.getTimeslots()) {
-            lrsCount += locationReservationDao.countReservedSeatsOfTimeslot(timeslot);
-        }
-        Assert.assertEquals(N_USERS, lrsCount);
-    }
-
-    //@Test
-    public void timingOfReservationTest() throws SQLException {
-        // Create a location that has N_SEATS seats
-        Building building = TestSharedMethods.testBuilding();
-        building.setName("Building to test concurrent reservations");
-        buildingDao.addBuilding(building);
-
-        Location location = TestSharedMethods.testLocation(
-                TestSharedMethods.insertTestAuthority("Test concurrent reservations",
-                        "Authority to test concurrent reservations", authorityDao),
-                building);
-        location.setNumberOfSeats(10);
-        location.setName("Location to test concurrent reservations");
-        locationDao.addLocation(location);
-        logger.info("Location has been created");
-
-        // Create an upcoming calendar period with a small timeslot size (timeslots will be created too)
-        CalendarPeriod calendarPeriod = TestSharedMethods.upcomingCalendarPeriods(location);
-        // Reasoning behind timeslot size: 17h - 9h = 8h = 480 min, twee dagen = 960 min -> 16 min/timeslot -> 60 timeslots
-        calendarPeriod.setTimeslotLength(16);
-        calendarPeriodDao.addCalendarPeriods(singletonList(calendarPeriod));
-        logger.info("Calendar period has been created");
-
-        Timeslot timeslot = calendarPeriod.getTimeslots().get(0);
-        Assert.assertNotNull(timeslot);
-
-        long t = 0;
-        for (int i = 0; i < 1000; i++) {
-            LocationReservation lr = new LocationReservation(testUser, LocalDateTime.now(), timeslot, null);
-            LocalDateTime start = LocalDateTime.now();
-            locationReservationDao.addLocationReservationIfStillRoomAtomically(lr);
-            LocalDateTime end = LocalDateTime.now();
-
-            t += ChronoUnit.MILLIS.between(start, end);
-            locationReservationDao.deleteLocationReservation(testUser.getAugentID(), timeslot);
-        }
-        logger.info(String.format("Avg timing = %d", t/1000));
-
-        long count = locationReservationDao.countReservedSeatsOfTimeslot(timeslot);
-        Assert.assertEquals(0, count);
     }
 }

@@ -36,7 +36,7 @@ public interface ICalendarPeriodDao extends IDao {
     /**
      * Add a calendar period
      */
-    void addCalendarPeriods(List<CalendarPeriod> periods) throws SQLException;
+    List<CalendarPeriod> addCalendarPeriods(List<CalendarPeriod> periods) throws SQLException;
 
     /**
      * Update a calendar period
@@ -59,5 +59,11 @@ public interface ICalendarPeriodDao extends IDao {
     CalendarPeriod getById(int calendarId) throws SQLException;
 
     Timeslot getTimeslot(int calendarid, int timeslotSeqNr) throws SQLException;
+
+    List<Timeslot> addTimeslots(List<Timeslot> timeslot) throws SQLException;
+
+    Timeslot addTimeslot(Timeslot timeslot) throws SQLException;
+
+    List<Timeslot> getTimeslotsByCalendarPeriod(CalendarPeriod cp) throws SQLException;
 
 }

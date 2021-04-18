@@ -1,5 +1,7 @@
 package blok2.integration;
 
+import blok2.helpers.Pair;
+import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
 import org.json.JSONObject;
@@ -51,10 +53,8 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "student1", userDetailsServiceBeanName = "testUserDetails")
     public void testCreateReservation() throws Exception {
-        Timeslot timeslot = new Timeslot(
-                calendarPeriods.get(0), 1,
-                calendarPeriods.get(0).getStartsAt().plusDays(1)
-        );
+        Pair<CalendarPeriod, List<Timeslot>> cp = calendarPeriods.get(0);
+        Timeslot timeslot = cp.getSecond().get(0);
 
         mockMvc.perform(post("/locations/reservations").with(csrf())
                 .content(objectMapper.writeValueAsString(timeslot)).contentType("application/json")).andDo(print())
@@ -68,10 +68,8 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
     @WithUserDetails(value = "student1", userDetailsServiceBeanName = "testUserDetails")
     public void testCreateReservationDuplicate() throws Exception {
 
-        Timeslot timeslot = new Timeslot(
-                calendarPeriods.get(0), 0,
-                calendarPeriods.get(0).getStartsAt().plusDays(1)
-        );
+        Pair<CalendarPeriod, List<Timeslot>> cp = calendarPeriods.get(0);
+        Timeslot timeslot = cp.getSecond().get(0);
 
         mockMvc.perform(post("/locations/reservations").with(csrf())
                 .content(objectMapper.writeValueAsString(timeslot)).contentType("application/json")).andDo(print())
@@ -86,10 +84,8 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "student1", userDetailsServiceBeanName = "testUserDetails")
     public void testDeleteReservation() throws Exception {
-        Timeslot timeslot = new Timeslot(
-                calendarPeriods.get(0), 0,
-                calendarPeriods.get(0).getStartsAt().plusDays(1)
-        );
+        Pair<CalendarPeriod, List<Timeslot>> cp = calendarPeriods.get(0);
+        Timeslot timeslot = cp.getSecond().get(0);
 
         LocationReservation reservation = new LocationReservation(student, null, timeslot, false);
 
@@ -104,10 +100,8 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testDeleteReservationAsAdmin() throws Exception {
-        Timeslot timeslot = new Timeslot(
-                calendarPeriods.get(0), 0,
-                calendarPeriods.get(0).getStartsAt().plusDays(1)
-        );
+        Pair<CalendarPeriod, List<Timeslot>> cp = calendarPeriods.get(0);
+        Timeslot timeslot = cp.getSecond().get(0);
 
         LocationReservation reservation = new LocationReservation(student, null, timeslot, false);
 
@@ -122,10 +116,8 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "student2", userDetailsServiceBeanName = "testUserDetails")
     public void testDeleteReservationAsOther() throws Exception {
-        Timeslot timeslot = new Timeslot(
-                calendarPeriods.get(0), 0,
-                calendarPeriods.get(0).getStartsAt().plusDays(1)
-        );
+        Pair<CalendarPeriod, List<Timeslot>> cp = calendarPeriods.get(0);
+        Timeslot timeslot = cp.getSecond().get(0);
 
         LocationReservation reservation = new LocationReservation(student, null, timeslot, false);
 
@@ -140,14 +132,11 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testSetAttendance() throws Exception {
-        Timeslot timeslot = new Timeslot(
-                calendarPeriods.get(0), 0,
-                calendarPeriods.get(0).getStartsAt().plusDays(1)
-        );
+        Pair<CalendarPeriod, List<Timeslot>> cp = calendarPeriods.get(0);
+        Timeslot timeslot = cp.getSecond().get(0);
 
-        String url = String.format("/locations/reservations/%s/%d/%s/%d/attendance",
-                student.getAugentID(), timeslot.getCalendarId(),
-                timeslot.getTimeslotDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+        String url = String.format("/locations/reservations/%s/%d/%d/attendance",
+                student.getAugentID(), timeslot.getPeriod().getId(),
                 timeslot.getTimeslotSeqnr());
 
         JSONObject obj = new JSONObject().put("attended", true);
@@ -162,14 +151,12 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testSetAttendanceNonExisting() throws Exception {
-        Timeslot timeslot = new Timeslot(
-                calendarPeriods.get(0), 0,
-                calendarPeriods.get(0).getStartsAt().plusDays(1)
-        );
+        Pair<CalendarPeriod, List<Timeslot>> cp = calendarPeriods.get(0);
+        Timeslot timeslot = cp.getSecond().get(0);
 
-        String url = String.format("/locations/reservations/%s/%d/%s/%d/attendance",
-                student2.getAugentID(), timeslot.getCalendarId(),
-                timeslot.getTimeslotDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+
+        String url = String.format("/locations/reservations/%s/%d/%d/attendance",
+                student2.getAugentID(), timeslot.getPeriod().getId(),
                 timeslot.getTimeslotSeqnr());
 
         JSONObject obj = new JSONObject().put("attended", true);
