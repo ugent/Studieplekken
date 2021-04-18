@@ -679,7 +679,7 @@ from public.calendar_periods cp
 order by to_date(cp.starts_at || ' ' || cp.opening_time, 'YYYY-MM-DD HH24:MI');
 
 -- $get_calendar_periods_by_location
-select cp.calendar_id, cp.isoyear, cp.isoweek, cp.repeat_period, cp.parent_id, cp.group_number, cp.reservable_from, cp.location_id,
+select cp.*
        , l.location_id, l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch, l.description_english, l.forGroup
        , a.authority_id, a.authority_name, a.description
        , b.building_id, b.building_name, b.address
@@ -691,7 +691,7 @@ from public.calendar_periods cp
     join public.buildings b
         on b.building_id = l.building_id
 where cp.location_id = ?
-order by cp.starts_at, cp.opening_time;
+order by cp.isoyear, cp.isoweek;
 
 -- $insert_calendar_period
 insert into public.calendar_periods(isoyear, isoweek, parent_id, group_number, reservable_from, repeat_period, location_id)
@@ -725,7 +725,7 @@ join public.buildings b
 where cp.isoyear = ? and cp.isoweek = ?;
 
 -- $get_timeslots
-select rt.timeslot_sequence_number, rt.timeslot_date, rt.calendar_id, rt.reservation_count, rt.seat_count
+select *
 from public.timeslots rt
 where calendar_id = ? 
 order by rt.sequence_number;
@@ -761,7 +761,7 @@ where rt.calendar_id = ?;
 
 -- $get_current_and_or_next_timeslot
 with x as (
-    select rt.calendar_id, rt.sequence_number, rt.reservation_count, rt.seat_count,
+    select rt.*,
          cp.calendar_id, cp.isoyear, cp.isoweek, cp.repeat_period, cp.parent_id, cp.group_number, cp.reservable_from, cp.location_id
          , to_timestamp(concat(to_char(cp.isoyear, '9999'), '-', to_char(cp.isoweek, '99'), '-',rt.isoday_of_week), 'IYYY-IW-ID') + rt.start_time as timeslot_start
          , to_timestamp(concat(to_char(cp.isoyear, '9999'), '-', to_char(cp.isoweek, '99'), '-',rt.isoday_of_week), 'IYYY-IW-ID') + rt.end_time as timeslot_end
@@ -782,7 +782,5 @@ order by timeslot_start;
 -- $get_timeslot_by_id
 select * 
 from public.timeslots rt 
-inner join calendar_periods cp on calendar_id
-inner join public.location on location_id
-inner join building on building_id
+inner join calendar_periods cp on rt.calendar_id=cp.calendar_id
 where rt.calendar_id = ? and rt.sequence_number = ?;
