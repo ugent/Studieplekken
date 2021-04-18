@@ -6,13 +6,11 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Objects;
 
 public class Timeslot implements Cloneable {
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @NotNull
     private CalendarPeriod period;
 
     private LocalTime startTime;

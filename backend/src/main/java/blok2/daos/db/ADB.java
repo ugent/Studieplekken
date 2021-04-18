@@ -1,6 +1,5 @@
 package blok2.daos.db;
 
-import blok2.controllers.CalendarPeriodsForLockersController;
 import org.flywaydb.core.Flyway;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,7 @@ public class ADB {
     private String username;
     private String password;
 
-    private final Logger logger = Logger.getLogger(CalendarPeriodsForLockersController.class.getSimpleName());
+    private final Logger logger = Logger.getLogger(ADB.class.getSimpleName());
 
     public Connection getConnection() throws SQLException {
         return DriverManager.getConnection(url, username, password);

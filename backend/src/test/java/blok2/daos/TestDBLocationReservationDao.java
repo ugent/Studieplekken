@@ -62,18 +62,19 @@ public class TestDBLocationReservationDao extends BaseTest {
         testLocation = TestSharedMethods.testLocation(authority.clone(), testBuilding);
         Location testLocation1Seat = TestSharedMethods.testLocation1Seat(authority.clone(), testBuilding);
         Location testLocation2 = TestSharedMethods.testLocation2(authority.clone(), testBuilding);
+        locationDao.addLocation(testLocation1Seat);
+        locationDao.addLocation(testLocation2);
+        locationDao.addLocation(testLocation);
 
         testUser = TestSharedMethods.adminTestUser();
         testUser2 = TestSharedMethods.studentTestUser();
+
         calendarPeriods = TestSharedMethods.testCalendarPeriods(testLocation);
         calendarPeriod1Seat = TestSharedMethods.testCalendarPeriods(testLocation1Seat).get(0);
         calendarPeriodsForLocation2 = TestSharedMethods.testCalendarPeriods(testLocation2);
 
         // Add test objects to database
         TestSharedMethods.addTestUsers(accountDao, testUser, testUser2);
-        locationDao.addLocation(testLocation);
-        locationDao.addLocation(testLocation1Seat);
-        locationDao.addLocation(testLocation2);
 
 
         for (Pair<CalendarPeriod, List<Timeslot>> c : calendarPeriods) {

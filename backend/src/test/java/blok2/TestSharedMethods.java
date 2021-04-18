@@ -189,17 +189,16 @@ public class TestSharedMethods {
         for (int i = -1; i < 1; i++) {
             LocalDateTime reservableFrom = LocalDateTime.now().withDayOfMonth(1);
 
-            CalendarPeriod period = new CalendarPeriod(null, date.getYear(), date.getWeek(), null, 0, reservableFrom, false, location);
-            period.setLocation(location);
+            CalendarPeriod period = new CalendarPeriod(null, date.getYear(), date.getWeek(), null, 0, reservableFrom, false, location.getLocationId());
 
             LocalTime mondayStartTime = LocalTime.of(8,0);
             LocalTime mondayEndTime = LocalTime.of(16,30);
-            Timeslot timeslotMonday = new Timeslot(period, 0, DayOfWeek.MONDAY.getValue(), mondayStartTime, mondayEndTime, true, period.getLocation().getNumberOfSeats(), 0);
+            Timeslot timeslotMonday = new Timeslot(period, 0, DayOfWeek.MONDAY.getValue(), mondayStartTime, mondayEndTime, true, location.getNumberOfSeats(), 0);
 
 
             LocalTime fridayStartTime = LocalTime.of(12,0);
             LocalTime fridayEndTime = LocalTime.of(20, 0);
-            Timeslot timeslotFriday = new Timeslot(period, 1, DayOfWeek.FRIDAY.getValue(), fridayStartTime, fridayEndTime, false, period.getLocation().getNumberOfSeats(), 0);
+            Timeslot timeslotFriday = new Timeslot(period, 1, DayOfWeek.FRIDAY.getValue(), fridayStartTime, fridayEndTime, false, location.getNumberOfSeats(), 0);
 
 
             calendarPeriods.add(new Pair<>(period, Arrays.asList(timeslotMonday, timeslotFriday)));
@@ -218,11 +217,11 @@ public class TestSharedMethods {
         LocalDateTime now = LocalDateTime.now();
 
 
-        CalendarPeriod calendarPeriod = new CalendarPeriod(null, past.getYear(), past.getWeek(), null, 0, now.minusDays(3), false, location);
+        CalendarPeriod calendarPeriod = new CalendarPeriod(null, past.getYear(), past.getWeek(), null, 0, now.minusDays(3), false, location.getLocationId());
 
         LocalTime startTime = now.toLocalTime().plusMinutes(1);
         LocalTime endTime = now.toLocalTime().plusMinutes(2);
-        Timeslot timeslot = new Timeslot(calendarPeriod, 0, now.getDayOfWeek().getValue(), startTime, endTime, true, calendarPeriod.getLocation().getNumberOfSeats(), 0);
+        Timeslot timeslot = new Timeslot(calendarPeriod, 0, now.getDayOfWeek().getValue(), startTime, endTime, true, location.getNumberOfSeats(), 0);
 
         return new Pair<>(calendarPeriod, Collections.singletonList(timeslot));
     }
@@ -236,11 +235,11 @@ public class TestSharedMethods {
         YearWeek past = YearWeek.now().plusWeeks(3);
         LocalDateTime now = LocalDateTime.now();
 
-        CalendarPeriod calendarPeriod = new CalendarPeriod(null, past.getYear(), past.getWeek(), null, 0, now.minusDays(3), false, location);
+        CalendarPeriod calendarPeriod = new CalendarPeriod(null, past.getYear(), past.getWeek(), null, 0, now.minusDays(3), false, location.getLocationId());
 
         LocalTime startTime = now.toLocalTime().plusMinutes(1);
         LocalTime endTime = now.toLocalTime().plusMinutes(2);
-        Timeslot timeslot = new Timeslot(calendarPeriod, 0, now.getDayOfWeek().getValue(), startTime, endTime, true, calendarPeriod.getLocation().getNumberOfSeats(), 0);
+        Timeslot timeslot = new Timeslot(calendarPeriod, 0, now.getDayOfWeek().getValue(), startTime, endTime, true, location.getNumberOfSeats(), 0);
 
         return new Pair<>(calendarPeriod, Collections.singletonList(timeslot));
 
@@ -256,7 +255,7 @@ public class TestSharedMethods {
 
         YearWeek past = YearWeek.now();
 
-        CalendarPeriod period = new CalendarPeriod(null, past.getYear(), past.getWeek(), null, 0, now.minusDays(3), false, location);
+        CalendarPeriod period = new CalendarPeriod(null, past.getYear(), past.getWeek(), null, 0, now.minusDays(3), false, location.getLocationId());
 
         if (LocalTime.now().isAfter(LocalTime.of(23, 59)) || LocalTime.now().isBefore(LocalTime.of(0, 1)))
             throw new TimeException("Impossible to create active calendar period at this time");
@@ -264,7 +263,7 @@ public class TestSharedMethods {
 
         LocalTime startTime = now.toLocalTime().plusMinutes(1);
         LocalTime endTime = now.toLocalTime().plusMinutes(2);
-        Timeslot timeslot = new Timeslot(period, 0, now.getDayOfWeek().getValue(), startTime, endTime, true, period.getLocation().getNumberOfSeats(), 0);
+        Timeslot timeslot = new Timeslot(period, 0, now.getDayOfWeek().getValue(), startTime, endTime, true, location.getNumberOfSeats(), 0);
 
 
 
@@ -282,7 +281,7 @@ public class TestSharedMethods {
 
         YearWeek past = YearWeek.now();
 
-        CalendarPeriod period = new CalendarPeriod(null, past.getYear(), past.getWeek(), null, 0, now.minusDays(3), false, location);
+        CalendarPeriod period = new CalendarPeriod(null, past.getYear(), past.getWeek(), null, 0, now.minusDays(3), false, location.getLocationId());
 
         if (LocalTime.now().isAfter(LocalTime.of(23, 59)) || LocalTime.now().isBefore(LocalTime.of(0, 1)))
             throw new TimeException("Impossible to create active calendar period at this time");
@@ -290,7 +289,7 @@ public class TestSharedMethods {
 
         LocalTime startTime = now.toLocalTime().minusMinutes(1);
         LocalTime endTime = now.toLocalTime().plusMinutes(1);
-        Timeslot timeslot = new Timeslot(period, 0, now.getDayOfWeek().getValue(), startTime, endTime, true, period.getLocation().getNumberOfSeats(), 0);
+        Timeslot timeslot = new Timeslot(period, 0, now.getDayOfWeek().getValue(), startTime, endTime, true, location.getNumberOfSeats(), 0);
 
 
 

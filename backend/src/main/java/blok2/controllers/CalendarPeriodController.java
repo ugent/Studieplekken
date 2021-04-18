@@ -86,7 +86,7 @@ public class CalendarPeriodController extends  AuthorizedLocationController {
     @DeleteMapping
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void deleteCalendarPeriods(@RequestBody CalendarPeriod calendarPeriod) {
-        isAuthorized(calendarPeriod.getLocation().getLocationId());
+        isAuthorized(calendarPeriod.getLocationId());
 
         try {
             calendarPeriodDao.deleteCalendarPeriod(calendarPeriod);

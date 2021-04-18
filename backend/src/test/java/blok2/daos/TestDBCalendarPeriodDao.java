@@ -57,29 +57,34 @@ public class TestDBCalendarPeriodDao extends BaseTest {
         Building testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
 
         testLocation = TestSharedMethods.testLocation(authority.clone(), testBuilding);
+        locationDao.addLocation(testLocation);
+
         calendarPeriods = TestSharedMethods.testCalendarPeriods(testLocation);
 
         // Add test objects to database
-        locationDao.addLocation(testLocation);
     }
 
     @Test
     public void addCalendarPeriodsTest() throws SQLException {
         // Add calendar periods to database
-        calendarPeriodDao.addCalendarPeriods(calendarPeriods.stream().map(Pair::getFirst).collect(Collectors.toList()));
-        calendarPeriodDao.addTimeslots(calendarPeriods.stream().map(Pair::getSecond).flatMap(Collection::stream).collect(Collectors.toList()));
+
+        List<Pair<CalendarPeriod, List<Timeslot>>> addedList = new ArrayList<>();
+        for (Pair<CalendarPeriod, List<Timeslot>> calendarPeriod : calendarPeriods) {
+            Pair<CalendarPeriod, List<Timeslot>> calendarPeriodListPair = TestSharedMethods.addPair(calendarPeriodDao, calendarPeriod);
+            addedList.add(calendarPeriodListPair);
+        }
 
         // Check if the addition worked properly
         List<CalendarPeriod> actualPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getLocationId());
         actualPeriods.sort(Comparator.comparing(CalendarPeriod::getId));
-        List<CalendarPeriod> sorted = calendarPeriods.stream().map(Pair::getFirst).sorted(Comparator.comparing(CalendarPeriod::getId)).collect(Collectors.toList());
+        List<CalendarPeriod> sorted = addedList.stream().map(Pair::getFirst).sorted(Comparator.comparing(CalendarPeriod::getId)).collect(Collectors.toList());
 
         Assert.assertEquals("addCalendarPeriodsTest", sorted, actualPeriods);
 
 
         for (CalendarPeriod p : sorted) {
             List<Timeslot> dbTimeslots = calendarPeriodDao.getTimeslotsByCalendarPeriod(p);
-            List<Timeslot> toAddTimeslots = calendarPeriods.stream().filter(c -> c.getFirst().getId().equals(p.getId()))
+            List<Timeslot> toAddTimeslots = addedList.stream().filter(c -> c.getFirst().getId().equals(p.getId()))
                                             .flatMap(s -> s.getSecond().stream())
                                             .sorted(Comparator.comparingInt(Timeslot::getTimeslotSeqnr))
                                         .collect(Collectors.toList());
@@ -121,7 +126,7 @@ public class TestDBCalendarPeriodDao extends BaseTest {
             Pair<CalendarPeriod, List<Timeslot>> activePeriodInsideHours = TestSharedMethods.activeCalendarPeriodsInsideHours(testLocation);
 
             // First: outside hours
-            TestSharedMethods.addPair(calendarPeriodDao, activePeriodOutsideHours);
+            activePeriodOutsideHours = TestSharedMethods.addPair(calendarPeriodDao, activePeriodOutsideHours);
 
             Pair<LocationStatus, String> expected = new Pair<>(
                     LocationStatus.CLOSED_ACTIVE,
@@ -131,10 +136,10 @@ public class TestDBCalendarPeriodDao extends BaseTest {
             Assert.assertEquals("StatusTest, active period, outside hours", expected, location.getStatus());
 
             // Before the case of active period inside the hours, remove outside hours
-            calendarPeriodDao.deleteCalendarPeriod(activePeriodInsideHours.getFirst());
+            calendarPeriodDao.deleteCalendarPeriod(activePeriodOutsideHours.getFirst());
 
             // Second: inside hours
-            TestSharedMethods.addPair(calendarPeriodDao, activePeriodInsideHours);
+            activePeriodInsideHours = TestSharedMethods.addPair(calendarPeriodDao, activePeriodInsideHours);
             location = locationDao.getLocationById(testLocation.getLocationId());
 
             expected = new Pair<>(
@@ -154,12 +159,13 @@ public class TestDBCalendarPeriodDao extends BaseTest {
     @Test
     public void deleteCalendarPeriodsTest() throws SQLException {
         // Add calendar periods to database
+        List<Pair<CalendarPeriod, List<Timeslot>>> addedList = new ArrayList<>();
         for (Pair<CalendarPeriod, List<Timeslot>> calendarPeriodListPair : calendarPeriods) {
-            TestSharedMethods.addPair(calendarPeriodDao, calendarPeriodListPair);
+            addedList.add(TestSharedMethods.addPair(calendarPeriodDao, calendarPeriodListPair));
         }
 
         // Delete the calendar periods from the database
-        for (Pair<CalendarPeriod, List<Timeslot>> p : calendarPeriods)
+        for (Pair<CalendarPeriod, List<Timeslot>> p : addedList)
             calendarPeriodDao.deleteCalendarPeriod(p.getFirst());
 
         // are the periods deleted?

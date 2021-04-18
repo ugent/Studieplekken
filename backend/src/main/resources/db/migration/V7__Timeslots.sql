@@ -133,7 +133,10 @@ alter table timeslots
 add constraint pk_timeslots PRIMARY KEY (calendar_id, sequence_number);
 
 alter table location_reservations
-add constraint fk_location_reservations_to_timeslot FOREIGN KEY (calendar_id, timeslot_sequence_number) references timeslots(calendar_id, sequence_number);
+add constraint fk_location_reservations_to_timeslot FOREIGN KEY (calendar_id, timeslot_sequence_number) references timeslots(calendar_id, sequence_number)       
+        on update cascade
+        on delete cascade;
+
 
 alter table location_reservations
 add constraint pk_location_reservations PRIMARY KEY (calendar_id, timeslot_sequence_number, user_augentid);

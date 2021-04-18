@@ -114,7 +114,7 @@ public class LocationReservationController extends AuthorizedLocationController 
         try {
             CalendarPeriod parentPeriod = calendarPeriodDao.getById(locationReservation.getTimeslot().getPeriod().getId());
             isAuthorized(
-                    (lr, user) -> hasAuthority(parentPeriod.getLocation().getLocationId()) || lr.getUser().getAugentID().equals(user.getAugentID()),
+                    (lr, user) -> hasAuthority(parentPeriod.getLocationId()) || lr.getUser().getAugentID().equals(user.getAugentID()),
                     locationReservation
             );
 
@@ -141,7 +141,7 @@ public class LocationReservationController extends AuthorizedLocationController 
         try {
             Timeslot slot = calendarPeriodDao.getTimeslot(calendarId, seqnr);
             CalendarPeriod parentPeriod = slot.getPeriod();
-            isVolunteer(parentPeriod.getLocation().getLocationId());
+            isVolunteer(parentPeriod.getLocationId());
             if (!locationReservationDao.setReservationAttendance(userid, slot, body.getAttended()))
                 throw new NoSuchReservationException("No such reservation");
         } catch (SQLException e) {

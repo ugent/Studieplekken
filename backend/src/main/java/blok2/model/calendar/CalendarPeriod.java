@@ -1,7 +1,10 @@
 package blok2.model.calendar;
 
 import blok2.helpers.Resources;
+import blok2.helpers.YearWeekDeserializer;
 import blok2.model.reservables.Location;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.threeten.extra.YearWeek;
 
@@ -17,9 +20,10 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 
 public class CalendarPeriod implements Cloneable {
     private Integer id;
-    private Location location;
+    private int locationId;
     private LocalDateTime reservableFrom = LocalDateTime.now();
 
+    @JsonDeserialize(using = YearWeekDeserializer.class)
     private YearWeek week;
     private Integer parentId;
     private int groupId;
@@ -34,9 +38,9 @@ public class CalendarPeriod implements Cloneable {
         this.id = id;
     }
 
-    public CalendarPeriod(Integer id, int isoyear, int isoweek, Integer parentId, int groupId, LocalDateTime reservableFrom, boolean isRepeated, Location location) {
+    public CalendarPeriod(Integer id, int isoyear, int isoweek, Integer parentId, int groupId, LocalDateTime reservableFrom, boolean isRepeated, int locationId) {
         this.id = id;
-        this.location = location;
+        this.locationId = locationId;
         this.reservableFrom = reservableFrom;
         this.week = YearWeek.of(isoyear, isoweek);
         this.parentId = parentId;
@@ -60,20 +64,18 @@ public class CalendarPeriod implements Cloneable {
     @Override
     public CalendarPeriod clone() {
         try {
-            CalendarPeriod clone = (CalendarPeriod) super.clone();
-            clone.location = location.clone();
-            return clone;
+            return (CalendarPeriod) super.clone();
         } catch (CloneNotSupportedException e) {
             return null;
         }
     }
 
-    public Location getLocation() {
-        return location;
+    public int getLocationId() {
+        return locationId;
     }
 
-    public void setLocation(Location location) {
-        this.location = location;
+    public void setLocationId(int locationId) {
+        this.locationId = locationId;
     }
 
     public LocalDateTime getReservableFrom() {

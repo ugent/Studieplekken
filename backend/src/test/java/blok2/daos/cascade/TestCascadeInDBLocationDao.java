@@ -36,9 +36,6 @@ public class TestCascadeInDBLocationDao extends BaseTest {
     private ICalendarPeriodDao calendarPeriodDao;
 
     @Autowired
-    private ICalendarPeriodForLockersDao calendarPeriodForLockersDao;
-
-    @Autowired
     private ILocationDao locationDao;
 
     @Autowired
@@ -97,9 +94,9 @@ public class TestCascadeInDBLocationDao extends BaseTest {
         locationDao.addLocation(testLocation);
 
         Pair<CalendarPeriod, List<Timeslot>> cp1 = TestSharedMethods.testCalendarPeriods(testLocation).get(0);
-        TestSharedMethods.addPair(calendarPeriodDao, cp1);
+        cp1 = TestSharedMethods.addPair(calendarPeriodDao, cp1);
         Pair<CalendarPeriod, List<Timeslot>> cp2 = TestSharedMethods.testCalendarPeriods(testLocation).get(0);
-        TestSharedMethods.addPair(calendarPeriodDao, cp2);
+        cp2 = TestSharedMethods.addPair(calendarPeriodDao, cp2);
 
         testCalendarPeriods = Arrays.asList(cp1, cp2);
         testLocationReservation1 = new LocationReservation(testUser1, LocalDateTime.now(), cp1.getSecond().get(0),  null);
@@ -141,8 +138,6 @@ public class TestCascadeInDBLocationDao extends BaseTest {
 
         scannerLocationDao.addScannerLocation(testLocation.getLocationId(), testUser1.getAugentID());
         scannerLocationDao.addScannerLocation(testLocation.getLocationId(), testUser2.getAugentID());
-
-        calendarPeriodForLockersDao.addCalendarPeriodsForLockers(testCalendarPeriodsForLockers);
     }
 
     @Test
@@ -308,13 +303,6 @@ public class TestCascadeInDBLocationDao extends BaseTest {
         Assert.assertEquals("updateUserWithoutCascadeNeededTest, calendar periods",
                 test, actualPeriods);
 
-        // CALENDAR_PERIODS_FOR_LOCKERS still available?
-        List<CalendarPeriodForLockers> actualPeriodsForLockers = calendarPeriodForLockersDao.getCalendarPeriodsForLockersOfLocation(testLocation.getLocationId());
-        actualPeriodsForLockers.sort(Comparator.comparing(CalendarPeriodForLockers::toString));
-        testCalendarPeriodsForLockers.sort(Comparator.comparing(CalendarPeriodForLockers::toString));
-
-        Assert.assertEquals("updateUserWithoutCascadeNeededTest, calendar periods for lockers",
-                new HashSet(testCalendarPeriodsForLockers), new HashSet(actualPeriodsForLockers));
     }
 
     @Test
@@ -355,9 +343,6 @@ public class TestCascadeInDBLocationDao extends BaseTest {
 
         List<CalendarPeriod> calendarPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getLocationId());
         Assert.assertEquals("deleteLocation, calendar periods", 0, calendarPeriods.size());
-
-        List<CalendarPeriodForLockers> calendarPeriodsForLockers = calendarPeriodForLockersDao.getCalendarPeriodsForLockersOfLocation(testLocation.getLocationId());
-        Assert.assertEquals("deleteLocation, calendar periods for lockers", 0, calendarPeriodsForLockers.size());
 
         List<User> scanners = scannerLocationDao.getScannersOnLocation(testLocation.getLocationId());
         Assert.assertEquals("deleteLocation, scanners", 0, scanners.size());

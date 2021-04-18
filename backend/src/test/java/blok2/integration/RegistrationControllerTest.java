@@ -54,7 +54,7 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
     @WithUserDetails(value = "student1", userDetailsServiceBeanName = "testUserDetails")
     public void testCreateReservation() throws Exception {
         Pair<CalendarPeriod, List<Timeslot>> cp = calendarPeriods.get(0);
-        Timeslot timeslot = cp.getSecond().get(0);
+        Timeslot timeslot = cp.getSecond().get(1);
 
         mockMvc.perform(post("/locations/reservations").with(csrf())
                 .content(objectMapper.writeValueAsString(timeslot)).contentType("application/json")).andDo(print())

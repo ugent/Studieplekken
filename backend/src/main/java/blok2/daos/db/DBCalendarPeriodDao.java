@@ -128,7 +128,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
 
         // Returning a copy of the calendarperiod to preserve immutability.
         return new CalendarPeriod(id, calendarPeriod.getWeek().getYear(), calendarPeriod.getWeek().getWeek(), calendarPeriod.getParentId(),
-                    calendarPeriod.getGroupId(), calendarPeriod.getReservableFrom(), calendarPeriod.isRepeated(), calendarPeriod.getLocation());
+                    calendarPeriod.getGroupId(), calendarPeriod.getReservableFrom(), calendarPeriod.isRepeated(), calendarPeriod.getLocationId());
     }
 
     @Override
@@ -234,7 +234,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         pstmt.setInt(offset + 4, calendarPeriod.getGroupId());
         pstmt.setTimestamp(offset + 5, Timestamp.valueOf(calendarPeriod.getReservableFrom()));
         pstmt.setBoolean(offset + 6, calendarPeriod.isRepeated());
-        pstmt.setInt(offset + 7, calendarPeriod.getLocation().getLocationId());
+        pstmt.setInt(offset + 7, calendarPeriod.getLocationId());
     }
 
 
@@ -247,15 +247,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
             return null;
         }
 
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime timeslotStart = rs.getTimestamp(Resources.databaseProperties.getString("timeslot_start_timestamp")).toLocalDateTime();
-        LocalDateTime timeslotEnd = rs.getTimestamp(Resources.databaseProperties.getString("timeslot_end_timestamp")).toLocalDateTime();
-
-        if (now.isAfter(timeslotStart) && now.isBefore(timeslotEnd)) {
-            return createTimeslot(rs, conn);
-        }
-
-        return null;
+        return createTimeslot(rs, conn);
     }
 
     public CalendarPeriod getById(int calendarId) throws SQLException {
@@ -270,7 +262,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
 
     public static CalendarPeriod createCalendarPeriod(ResultSet rs, Connection conn) throws SQLException {
         int id = rs.getInt(Resources.databaseProperties.getString("calendar_period_id"));
-        Location location = DBLocationDao.createLocation(rs, conn);
+        int locationId = rs.getInt(Resources.databaseProperties.getString("calendar_period_location_id"));
         LocalDateTime reservableFrom = rs.getTimestamp(Resources.databaseProperties.getString("calendar_period_reservable_from")).toLocalDateTime();
         boolean repeatPeriod = rs.getBoolean(Resources.databaseProperties.getString("calendar_period_repeat_period"));
         int groupId = rs.getInt(Resources.databaseProperties.getString("calendar_period_group_number"));
@@ -279,7 +271,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         int isoyear = rs.getInt(Resources.databaseProperties.getString("calendar_period_isoyear"));
 
         return new CalendarPeriod(id, isoyear, isoweek, parentId,
-                groupId, reservableFrom, repeatPeriod, location);
+                groupId, reservableFrom, repeatPeriod, locationId);
     }
 
     public static Timeslot createTimeslot(ResultSet rs, Connection conn) throws SQLException {
