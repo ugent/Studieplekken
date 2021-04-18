@@ -46,6 +46,7 @@ dependencies {
     implementation "org.flywaydb:flyway-core:6.5.6"
     implementation 'org.flywaydb.flyway-test-extensions:flyway-test-extensions:6.4.0'
     implementation 'org.flywaydb.flyway-test-extensions:flyway-spring5-test:6.4.0'
+    implementation "org.threeten:threeten-extra:1.6.0"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.2.2.RELEASE'
     testImplementation 'org.springframework.security:spring-security-test'

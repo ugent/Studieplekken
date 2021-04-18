@@ -3,6 +3,7 @@ package blok2.model.calendar;
 import blok2.helpers.Resources;
 import blok2.model.reservables.Location;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.threeten.extra.YearWeek;
 
 import java.time.DayOfWeek;
 import java.time.Duration;
@@ -14,20 +15,29 @@ import java.util.Objects;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 
-public class CalendarPeriod extends Period implements Cloneable {
+public class CalendarPeriod implements Cloneable {
     private Integer id;
     private Location location;
-    private LocalTime openingTime;
-    private LocalTime closingTime;
     private LocalDateTime reservableFrom = LocalDateTime.now();
-    private LocalDateTime lockedFrom;
-    private boolean reservable;
-    private int timeslotLength;
-    private int seatCount;
 
-    private List<Timeslot> timeslots = Collections.emptyList();
+    private YearWeek week;
+    private Integer parentId;
+    private int groupId;
+
+    private boolean isRepeated;
+
 
     public CalendarPeriod() { }
+
+    public CalendarPeriod(Integer id, int isoyear, int isoweek, Integer parentId, int groupId, LocalDateTime reservableFrom, boolean isRepeated, Location location) {
+        this.id = id;
+        this.location = location;
+        this.reservableFrom = reservableFrom;
+        this.week = YearWeek.of(isoyear, isoweek);
+        this.parentId = parentId;
+        this.groupId = groupId;
+        this.isRepeated = isRepeated;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -35,18 +45,7 @@ public class CalendarPeriod extends Period implements Cloneable {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         CalendarPeriod that = (CalendarPeriod) o;
-        return reservable == that.reservable &&
-                timeslotLength == that.timeslotLength &&
-                location.equals(that.location) &&
-                openingTime.equals(that.openingTime) &&
-                closingTime.equals(that.closingTime) &&
-                Duration.between(this.reservableFrom, that.reservableFrom).toMillis() <= 1000;
-                // One second precision is enough.
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), location, openingTime, closingTime, reservableFrom, reservable, timeslotLength);
+        return this.id.equals(((CalendarPeriod) o).getId());
     }
 
     @Override
@@ -73,22 +72,6 @@ public class CalendarPeriod extends Period implements Cloneable {
         this.location = location;
     }
 
-    public LocalTime getOpeningTime() {
-        return openingTime;
-    }
-
-    public void setOpeningTime(LocalTime openingTime) {
-        this.openingTime = openingTime;
-    }
-
-    public LocalTime getClosingTime() {
-        return closingTime;
-    }
-
-    public void setClosingTime(LocalTime closingTime) {
-        this.closingTime = closingTime;
-    }
-
     public LocalDateTime getReservableFrom() {
         return reservableFrom;
     }
@@ -96,31 +79,6 @@ public class CalendarPeriod extends Period implements Cloneable {
     public void setReservableFrom(LocalDateTime reservableFrom) {
         if(reservableFrom != null)
             this.reservableFrom = reservableFrom;
-    }
-
-
-    public boolean isReservable() {
-        return reservable;
-    }
-
-    public void setReservable(boolean reservable) {
-        this.reservable = reservable;
-    }
-
-    public int getTimeslotLength() {
-        return timeslotLength;
-    }
-
-    public void setTimeslotLength(int timeslotLength) {
-        this.timeslotLength = timeslotLength;
-    }
-
-    public List<Timeslot> getTimeslots() {
-        return timeslots;
-    }
-
-    public void setTimeslots(List<Timeslot> timeslots) {
-        this.timeslots = timeslots;
     }
 
     public Integer getId() {
@@ -131,37 +89,35 @@ public class CalendarPeriod extends Period implements Cloneable {
         this.id = id;
     }
 
-    public LocalDateTime getLockedFrom() {
-        return lockedFrom;
+    public YearWeek getWeek() {
+        return week;
     }
 
-    public void setLockedFrom(LocalDateTime lockedFrom) {
-        this.lockedFrom = lockedFrom;
+    public void setWeek(YearWeek week) {
+        this.week = week;
     }
 
-    public void initializeLockedFrom() {
-        lockedFrom = this.getStartsAt().minusWeeks(3)
-                    .with(DayOfWeek.of(Integer.parseInt(Resources.blokatugentConf.getString("lockedFromDayOfWeek"))))
-                .atTime(LocalTime.now());
+    public Integer getParentId() {
+        return parentId;
     }
 
-    public boolean isLocked() {
-        return getLockedFrom().isBefore(LocalDateTime.now());
+    public void setParentId(int parentId) {
+        this.parentId = parentId;
     }
 
-    /**
-     * The length of time the location is open (in seconds)
-     */
-    public int getOpenHoursDuration() {
-        return Math.toIntExact(SECONDS.between(getOpeningTime(), getClosingTime()));
+    public int getGroupId() {
+        return groupId;
     }
 
-    public int getSeatCount() {
-        return seatCount;
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
     }
 
-    public void setSeatCount(int seatCount) {
-        this.seatCount = seatCount;
+    public boolean isRepeated() {
+        return isRepeated;
     }
 
+    public void setRepeated(boolean reservable) {
+        isRepeated = reservable;
+    }
 }

@@ -5,22 +5,30 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Objects;
 
 public class Timeslot implements Cloneable {
-    @Min(0)
-    @NotNull
-    private Integer calendarId;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private CalendarPeriod period;
+
+    private LocalTime startTime;
+
+    private LocalTime endTime;
+
     @Min(0)
     @NotNull
     private Integer timeslotSeqnr;
-    @NotNull
-    private LocalDate timeslotDate;
 
     @NotNull
     @Min(0)
     private Integer seatCount;
+
+    private Integer dayOfWeek;
+    private boolean reservable;
 
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -29,15 +37,20 @@ public class Timeslot implements Cloneable {
     // Artefact for framework
     public Timeslot() {}
 
-    public Timeslot(int calendarId, int timeslotSeqnr, LocalDate timeslotDate, int seatCount) {
-        this.calendarId = calendarId;
-        this.timeslotSeqnr = timeslotSeqnr;
-        this.timeslotDate = timeslotDate;
-        this.seatCount = seatCount;
+    public Timeslot(CalendarPeriod period, int timeslotSeqnr) {
+        setPeriod(period);
+        setTimeslotSeqnr(timeslotSeqnr);
     }
 
-    public Timeslot(CalendarPeriod period, int timeslotSeqnr, LocalDate timeslotDate) {
-        this(period.getId(), timeslotSeqnr, timeslotDate, period.getSeatCount());
+    public Timeslot(CalendarPeriod period, @Min(0) @NotNull Integer timeslotSeqnr, Integer dayOfWeek, LocalTime startTime,  LocalTime endTime, boolean reservable, @NotNull @Min(0) Integer seatCount, int amountOfReservations) {
+        this.period = period;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.timeslotSeqnr = timeslotSeqnr;
+        this.seatCount = seatCount;
+        this.dayOfWeek = dayOfWeek;
+        this.reservable = reservable;
+        this.amountOfReservations = amountOfReservations;
     }
 
     @Override
@@ -45,25 +58,12 @@ public class Timeslot implements Cloneable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Timeslot timeslot = (Timeslot) o;
-        return calendarId.equals(timeslot.calendarId);
+        return getPeriod().equals(timeslot.getPeriod()) && getTimeslotSeqnr() == timeslot.getTimeslotSeqnr();
     }
 
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(calendarId);
-    }
-
-    public int getCalendarId() {
-        return calendarId;
-    }
-
-    public void setCalendarId(int calendarId) {
-        this.calendarId = calendarId;
     }
 
     public int getTimeslotSeqnr() {
@@ -72,14 +72,6 @@ public class Timeslot implements Cloneable {
 
     public void setTimeslotSeqnr(int timeslotSeqnr) {
         this.timeslotSeqnr = timeslotSeqnr;
-    }
-
-    public LocalDate getTimeslotDate() {
-        return timeslotDate;
-    }
-
-    public void setTimeslotDate(LocalDate timeslotDate) {
-        this.timeslotDate = timeslotDate;
     }
 
     public int getAmountOfReservations() {
@@ -97,4 +89,53 @@ public class Timeslot implements Cloneable {
     public void setSeatCount(Integer seatCount) {
         this.seatCount = seatCount;
     }
+
+    public LocalTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalTime endTime) {
+        this.endTime = endTime;
+    }
+
+    public Integer getDayOfWeek() {
+        return dayOfWeek;
+    }
+
+    public void setDayOfWeek(Integer dayOfWeek) {
+        this.dayOfWeek = dayOfWeek;
+    }
+
+    public CalendarPeriod getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(CalendarPeriod period) {
+        this.period = period;
+    }
+
+    public boolean isReservable() {
+        return reservable;
+    }
+
+    public void setReservable(boolean reservable) {
+        this.reservable = reservable;
+    }
+
+    public LocalDateTime getStartDate() {
+        return period.getWeek().atDay(DayOfWeek.of(dayOfWeek)).atTime(startTime);
+    }
+
+    public LocalDateTime getEndDate() {
+        return period.getWeek().atDay(DayOfWeek.of(dayOfWeek)).atTime(endTime);
+    }
+
 }

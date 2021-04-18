@@ -18,12 +18,7 @@ public interface ICalendarPeriodDao extends IDao {
     /**
      * Get all calendar periods within the week that starts with the specified date
      */
-    List<CalendarPeriod> getCalendarPeriodsInWeek(LocalDate firstDayOfWeek) throws SQLException;
-
-    /**
-     * Get all calendar periods in the period that starts and ends with the specified dates
-     */
-    List<CalendarPeriod> getCalendarPeriodsInPeriod(LocalDate start, LocalDate end) throws SQLException;
+    List<CalendarPeriod> getCalendarPeriodsInWeek(int isoyear, int isoweek) throws SQLException;
 
     /**
      * Get all calendar periods
@@ -49,11 +44,6 @@ public interface ICalendarPeriodDao extends IDao {
      * Delete a calendar period
      */
     void deleteCalendarPeriod(CalendarPeriod calendarPeriod) throws SQLException;
-
-    /**
-     * Get the status of a calendar period
-     */
-    Pair<LocationStatus, String> getStatus(int locationId) throws SQLException;
 
     /**
      * Get a calendar period by its id

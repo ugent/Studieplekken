@@ -16,7 +16,9 @@ import blok2.model.users.User;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -346,10 +348,37 @@ public class DBLocationDao extends DAO implements ILocationDao {
     public static Location createLocation(ResultSet rs, Connection conn) throws SQLException {
         ResultSet rsTags = DBLocationTagDao.getTagsForLocation(rs.getInt(Resources.databaseProperties.getString("location_id")), conn);
         int locationId = rs.getInt(Resources.databaseProperties.getString("location_id"));
-        Pair<LocationStatus, String> status = DBCalendarPeriodDao.getStatus(locationId, conn);
         Timeslot timeslot = getCurrentTimeslot(locationId, conn);
 
+
+        Pair<LocationStatus, String> status = getStatus(timeslot);
+
         return createLocation(rs, rsTags, status, timeslot);
+    }
+
+    private static Pair<LocationStatus, String> getStatus(Timeslot timeslot) {
+
+        if(timeslot == null) {
+            return new Pair<>(LocationStatus.CLOSED, "");
+        }
+
+        LocalDateTime start = timeslot.getStartDate();
+        LocalDateTime end = timeslot.getEndDate();
+        DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        if(start.isBefore(LocalDateTime.now()) && end.isAfter(LocalDateTime.now())) {
+            return new Pair<>(LocationStatus.OPEN, end.format(outputFormat));
+        }
+
+        if(start.isAfter(LocalDateTime.now()) && start.toLocalDate().equals(LocalDate.now())) {
+            return new Pair<>(LocationStatus.CLOSED_ACTIVE, start.format(outputFormat));
+        }
+
+        if(start.isAfter(LocalDateTime.now()) && !start.toLocalDate().equals(LocalDate.now())) {
+            return new Pair<>(LocationStatus.CLOSED_UPCOMING, start.format(outputFormat));
+        }
+
+        throw new RuntimeException("The current timeslot is actually already past. This should never happen.");
     }
 
     public static Locker createLocker(ResultSet rs, Connection conn) throws SQLException {

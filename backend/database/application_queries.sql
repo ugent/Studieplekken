@@ -659,7 +659,7 @@ where tag_id = ?;
 
 -- queries for CALENDAR_PERIODS
 -- $get_all_calendar_periods
-select cp.calendar_id, cp.location_id, cp.starts_at, cp.ends_at, cp.opening_time, cp.closing_time, cp.reservable_from, cp.reservable, cp.timeslot_length, cp.locked_from
+select cp.calendar_id, cp.isoyear, cp.isoweek, cp.repeat_period, cp.parent_id, cp.group_number, cp.reservable_from, cp.location_id,
        , l.location_id, l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch, l.description_english, l.forGroup, b.building_id, b.building_name, b.address
        , a.authority_id, a.authority_name, a.description
 from public.calendar_periods cp
@@ -671,8 +671,8 @@ from public.calendar_periods cp
         on l.building_id = b.building_id
 order by to_date(cp.starts_at || ' ' || cp.opening_time, 'YYYY-MM-DD HH24:MI');
 
--- $get_calendar_periods
-select cp.calendar_id, cp.location_id, cp.starts_at, cp.ends_at, cp.opening_time, cp.closing_time, cp.reservable_from, cp.reservable, cp.timeslot_length, cp.locked_from, cp.seat_count
+-- $get_calendar_periods_by_location
+select cp.calendar_id, cp.isoyear, cp.isoweek, cp.repeat_period, cp.parent_id, cp.group_number, cp.reservable_from, cp.location_id,
        , l.location_id, l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch, l.description_english, l.forGroup
        , a.authority_id, a.authority_name, a.description
        , b.building_id, b.building_name, b.address
@@ -687,12 +687,12 @@ where cp.location_id = ?
 order by cp.starts_at, cp.opening_time;
 
 -- $insert_calendar_period
-insert into public.calendar_periods(location_id, starts_at, ends_at, opening_time, closing_time, reservable_from, reservable, timeslot_length, locked_from, seat_count)
-values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+insert into public.calendar_periods(isoyear, isoweek, parent_id, group_number, resevable_from, repeat_period, location_id)
+values (?, ?, ?, ?, ?, ?, ?);
 
 -- $update_calendar_period
 update public.calendar_periods
-set location_id = ?, starts_at = ?, ends_at = ?, opening_time = ?, closing_time = ?, reservable_from = ?, reservable = ?, timeslot_length = ?, locked_from = ?
+set isoyear = ?, isoweek = ?, parent_id = ?, group_number = ?, resevable_from = ?, repeat_period = ?, location_id = ?
 where calendar_id = ?;
 
 -- $get_calendar_period_by_id
@@ -704,9 +704,9 @@ where cp.calendar_id = ?;
 -- $delete_calendar_period
 delete
 from public.calendar_periods
-where location_id = ? and starts_at = ? and ends_at = ? and opening_time = ? and closing_time = ? and reservable = ? and timeslot_length = ?;
+where calendar_id = ?;
 
--- $get_calendar_periods_in_period
+-- $get_calendar_periods_in_week
 select * 
 from public.calendar_periods cp
 join public.locations l
@@ -715,7 +715,7 @@ join public.authority a
     on a.authority_id = l.authority_id
 join public.buildings b
     on b.building_id = l.building_id
-where cp.starts_at > ? and cp.starts_at < ?;
+where cp.isoyear = ? and cp.isoweek = ?;
 
 -- $get_timeslots
 select rt.timeslot_sequence_number, rt.timeslot_date, rt.calendar_id, rt.reservation_count, rt.seat_count
@@ -754,51 +754,20 @@ where rt.calendar_id = ?;
 
 -- $get_current_and_or_next_timeslot
 with x as (
-    select rt.calendar_id, rt.timeslot_sequence_number, rt.timeslot_date, rt.reservation_count, rt.seat_count
-         , cp.location_id, cp.starts_at, cp.ends_at, cp.opening_time, cp.closing_time, cp.reservable_from, cp.locked_from, cp.reservable, cp.timeslot_length, cp.seat_count
-         , (rt.timeslot_date + cp.opening_time)::timestamp + interval '1 minute' * cp.timeslot_length * rt.timeslot_sequence_number as timeslot_start
-         , (rt.timeslot_date + cp.opening_time)::timestamp + interval '1 minute' * cp.timeslot_length * (rt.timeslot_sequence_number + 1) as timeslot_end
+    select rt.calendar_id, rt.sequence_number, rt.reservation_count, rt.seat_count,
+         cp.calendar_id, cp.isoyear, cp.isoweek, cp.repeat_period, cp.parent_id, cp.group_number, cp.reservable_from, cp.location_id
+         , to_timestamp(concat(to_char(cp.isoyear, '9999'), '-', to_char(cp.isoweek, '99'), '-',rt.isoday_of_week), 'IYYY-IW-ID') + rt.start_time as timeslot_start
+         , to_timestamp(concat(to_char(cp.isoyear, '9999'), '-', to_char(cp.isoweek, '99'), '-',rt.isoday_of_week), 'IYYY-IW-ID') + rt.end_time as timeslot_end
     from timeslots rt
              join calendar_periods cp
                   on cp.calendar_id = rt.calendar_id
     where cp.location_id = ?
-      and (rt.timeslot_date + cp.opening_time)::timestamp + interval '1 minute' * cp.timeslot_length * (rt.timeslot_sequence_number + 1) > now()
-), y as (
+    ), y as (
     select x.*, row_number() over(order by timeslot_start) n
     from x
+    where x.timeslot_end > now()
 )
 select *
 from y
 where n = 1
 order by timeslot_start;
-
-
--- queries for CALENDAR_PERIODS_FOR_LOCKERS
--- $get_calendar_periods_for_lockers_of_location
-select cp.location_id, cp.starts_at, cp.ends_at, cp.reservable_from
-       , l.location_id, l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch, l.description_english, l.forGroup
-       , a.authority_id, a.authority_name, a.description
-       , b.building_id, b.building_name, b.address
-from public.calendar_periods_for_lockers cp
-    join public.locations l
-        on l.location_id = cp.location_id
-    join public.authority a
-        on a.authority_id = l.authority_id
-    join public.buildings b
-        on b.building_id = l.building_id
-where cp.location_id = ?
-order by cp.starts_at;
-
--- $insert_calendar_period_for_lockers
-insert into public.calendar_periods_for_lockers (location_id, starts_at, ends_at, reservable_from)
-values (?, ?, ?, ?);
-
--- $update_calendar_period_for_lockers
-update public.calendar_periods_for_lockers
-set location_id = ?, starts_at = ?, ends_at = ?, reservable_from = ?
-where location_id = ? and starts_at = ? and ends_at = ? and reservable_from = ?;
-
--- $delete_calendar_period_for_lockers
-delete
-from public.calendar_periods_for_lockers
-where location_id = ? and starts_at = ? and ends_at = ? and reservable_from = ?;
