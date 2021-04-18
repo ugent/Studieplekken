@@ -1,5 +1,7 @@
 # credentials for production database
 spring:
+  profiles:
+    active: "prod"
   datasource:
     type: "com.zaxxer.hikari.HikariDataSource"
     driverClassName: org.postgresql.Driver
