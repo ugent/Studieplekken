@@ -802,3 +802,46 @@ where location_id = ? and starts_at = ? and ends_at = ? and reservable_from = ?;
 delete
 from public.calendar_periods_for_lockers
 where location_id = ? and starts_at = ? and ends_at = ? and reservable_from = ?;
+
+
+-- miscellaneous queries
+-- $get_week_overview_with_monday_and_sunday_dates
+with x as (
+    select t.timeslot_date, cp.opening_time, cp.closing_time, l.name as location_name
+    from public.timeslots t
+             join public.calendar_periods cp
+                  on cp.calendar_id = t.calendar_id
+             join public.locations l
+                  on l.location_id = cp.location_id
+    where t.timeslot_date >= ? and t.timeslot_date <= ?
+), y as (
+    select timeslot_date, location_name
+         , min(opening_time) as opening_time
+         , max(closing_time) as closing_time
+    from x
+    group by timeslot_date, location_name
+), z as (
+    select timeslot_date, location_name
+         , case when extract(dow from timeslot_date) = 1 then to_char(opening_time, 'HH24:MI') || ' - ' || to_char(closing_time, 'HH24:MI') end as monday
+         , case when extract(dow from timeslot_date) = 2 then to_char(opening_time, 'HH24:MI') || ' - ' || to_char(closing_time, 'HH24:MI') end as tuesday
+         , case when extract(dow from timeslot_date) = 3 then to_char(opening_time, 'HH24:MI') || ' - ' || to_char(closing_time, 'HH24:MI') end as wednesday
+         , case when extract(dow from timeslot_date) = 4 then to_char(opening_time, 'HH24:MI') || ' - ' || to_char(closing_time, 'HH24:MI') end as thursday
+         , case when extract(dow from timeslot_date) = 5 then to_char(opening_time, 'HH24:MI') || ' - ' || to_char(closing_time, 'HH24:MI') end as friday
+         , case when extract(dow from timeslot_date) = 6 then to_char(opening_time, 'HH24:MI') || ' - ' || to_char(closing_time, 'HH24:MI') end as saturday
+         , case when extract(dow from timeslot_date) = 0 then to_char(opening_time, 'HH24:MI') || ' - ' || to_char(closing_time, 'HH24:MI') end as sunday
+    from y
+), p as (
+    select location_name
+         , max(monday) as monday
+         , max(tuesday) as tuesday
+         , max(wednesday) as wednesday
+         , max(thursday) as thursday
+         , max(friday) as friday
+         , max(saturday) as saturday
+         , max(sunday) as sunday
+    from z
+    group by location_name
+)
+select *
+from p
+order by location_name;

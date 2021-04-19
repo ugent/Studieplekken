@@ -104,6 +104,9 @@ export const api = {
   addUserToAuthority: '/api/authority/{authorityId}/user/{userId}',
   deleteUserFromAuthority: '/api/authority/{authorityId}/user/{userId}',
 
+  // MISCELLANEOUS QUERIES
+  openingHoursOverview: '/api/locations/overview/opening/{year}/{weekNr}',
+
   // Scanning functionality
   scanningLocations: '/api/scan/locations',
   usersToScanAtLocation: '/api/scan/users/{locationId}',

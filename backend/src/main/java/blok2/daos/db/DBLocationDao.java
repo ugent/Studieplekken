@@ -16,9 +16,13 @@ import blok2.model.users.User;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
+import java.sql.Date;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.temporal.IsoFields;
+import java.time.temporal.TemporalAdjusters;
+import java.util.*;
 
 import static blok2.daos.db.DBCalendarPeriodDao.getCurrentTimeslot;
 import static blok2.daos.db.DBAccountDao.createUser;
@@ -306,6 +310,57 @@ public class DBLocationDao extends DAO implements ILocationDao {
             statement.execute();
         }
     }
+
+    public Map<String, String[]> getOpeningOverviewOfWeek(int year, int weekNr) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            // The SQL query that will be used requires the dates of a monday and following sunday
+            // of a week for which the opening hours will be calculated. However, the week number
+            // (according to the ISO 8601 standard) in a year are given as parameters.
+            // Therefore, the dates of the monday and sunday of the corresponding week need to be
+            // calculated.
+            //
+            // This can be done using the with() method of LocalDate. This method gives an adjusted
+            // copy of a LocalDate object. By adjusting the week number of a LocalDate object, followed
+            // by another with() to adjust the week day to a "monday", we can obtain the date of
+            // the monday corresponding to the week given by the parameter `weekNr`.
+            //
+            // This methodology needs a base LocalDate object that can be adjusted. This LocalDate
+            // object's year must be determined by the 'year' parameter. The exact day of the year
+            // is of no importance since it will be adjusted later to be the monday of the week
+            // given by `weekNr`. However, the day of the year may not be before the first monday
+            // of the year. Therefore, the 50th day of the week is chosen.
+            //
+            // source: https://stackoverflow.com/a/32186362/9356123
+            LocalDate mondayDate = LocalDate.ofYearDay(year, 50)
+                    .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, weekNr)
+                    .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+            LocalDate sundayDate = mondayDate.plusDays(6);
+
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
+                    .getString("get_week_overview_with_monday_and_sunday_dates"));
+            pstmt.setDate(1, Date.valueOf(mondayDate));
+            pstmt.setDate(2, Date.valueOf(sundayDate));
+            ResultSet rs = pstmt.executeQuery();
+
+            // Use a TreeMap to order the keys, this results in a user friendly overview.
+            Map<String, String[]> overview = new TreeMap<>();
+            while (rs.next()) {
+                String locationName = rs.getString(1);
+                String[] week = new String[7];
+                week[0] = rs.getString(2);
+                week[1] = rs.getString(3);
+                week[2] = rs.getString(4);
+                week[3] = rs.getString(5);
+                week[4] = rs.getString(6);
+                week[5] = rs.getString(7);
+                week[6] = rs.getString(8);
+                overview.put(locationName, week);
+            }
+
+            return overview;
+        }
+    }
+
     /**
      * Create a location out of a row in the ResultSet (prevent duplication of code)
      * @param rs the ResultSet for fetching the location

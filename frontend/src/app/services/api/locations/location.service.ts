@@ -10,6 +10,7 @@ import { Moment } from 'moment';
 import { Pair } from '../../../shared/model/helpers/Pair';
 import { User } from '../../../shared/model/User';
 
+type locationOverview = { [locationName: string]: string[] };
 @Injectable({
   providedIn: 'root',
 })
@@ -115,6 +116,21 @@ export class LocationService {
     return this.http.put<void>(
       api.setupTagsForLocation.replace('{locationId}', String(locationId)),
       tags.map((v) => v.tagId)
+    );
+  }
+
+  /**************************************************
+   *   Miscellaneous queries concerning locations   *
+   ***************************************************/
+
+  getOpeningOverviewOfWeek(
+    year: number,
+    weekNr: number
+  ): Observable<locationOverview> {
+    return this.http.get<locationOverview>(
+      api.openingHoursOverview
+        .replace('{year}', String(year))
+        .replace('{weekNr}', String(weekNr))
     );
   }
 }

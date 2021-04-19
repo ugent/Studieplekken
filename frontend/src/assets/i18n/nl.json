@@ -86,6 +86,13 @@
     "no": "Neen",
     "back": "Terug",
     "print": "Print",
+    "monday": "Maandag",
+    "tuesday": "Dinsdag",
+    "wednesday": "Woensdag",
+    "thursday": "Donderdag",
+    "friday": "Vrijdag",
+    "saturday": "Zaterdag",
+    "sunday": "Zondag",
     "buttons": {
       "add": "Voeg toe",
       "update": "Update",
@@ -790,6 +797,16 @@
         "noReservations": "Je hebt tot nu toe nog nooit een locker gereserveerd."
       }
     }
+  },
+  "openingHoursOverview": {
+    "title": "Openingsuren van studieplekken tussen maandag {mondayDate} en zondag {sundayDate}",
+    "navigationInfo": "Met de navigatieknoppen kan je kiezen voor welke week een overzicht getoond wordt.",
+    "table": {
+      "locationName": "Locatie"
+    },
+    "noOpeningsFuture": "Er zullen geen studieplekken geopend worden tussen maandag {mondayDate} en zondag {sundayDate}.",
+    "noOpeningsPast": "Er waren geen studieplekken geopend tussen maandag {mondayDate} en zondag {sundayDate}.",
+    "loadingError": "Er is iets misgelopen tijdens het ophalen van de openingsuren in de gewenste week."
   },
   "scan": {
     "aside": {

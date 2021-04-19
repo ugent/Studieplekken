@@ -5,10 +5,9 @@ import blok2.daos.ILocationDao;
 import blok2.daos.ILocationTagDao;
 import blok2.helpers.Pair;
 import blok2.helpers.authorization.AuthorizedLocationController;
-import blok2.helpers.EmailService;
 import blok2.helpers.LocationWithApproval;
-import blok2.helpers.Resources;
 import blok2.helpers.exceptions.AlreadyExistsException;
+import blok2.mail.MailService;
 import blok2.helpers.exceptions.NoSuchLocationException;
 import blok2.helpers.exceptions.NoSuchUserException;
 import blok2.model.reservables.Location;
@@ -22,11 +21,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.mail.MessagingException;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -41,19 +40,21 @@ public class LocationController extends AuthorizedLocationController {
 
     private final ILocationDao locationDao;
     private final ILocationTagDao locationTagDao;
-    private final EmailService emailService;
     private final IAccountDao accountDao;
+
+    private final MailService mailService;
 
     // *************************************
     // *   CRUD operations for LOCATIONS   *
     // *************************************
 
     @Autowired
-    public LocationController(ILocationDao locationDao, ILocationTagDao locationTagDao, EmailService emailService, IAccountDao accountDao) {
+    public LocationController(ILocationDao locationDao, ILocationTagDao locationTagDao, IAccountDao accountDao,
+                              MailService mailService) {
         this.locationDao = locationDao;
         this.locationTagDao = locationTagDao;
-        this.emailService = emailService;
         this.accountDao = accountDao;
+        this.mailService = mailService;
     }
 
     @GetMapping
@@ -112,15 +113,19 @@ public class LocationController extends AuthorizedLocationController {
                 throw new AlreadyExistsException("location name already in use");
 
             this.locationDao.addLocation(location);
-            this.emailService.sendNewLocationMessage(Resources.blokatugentConf.getString("dfsgMail"), location);
+
+            // Send a mail to the admins to notify them about the creation of a new location.
+            // Note: this mail is not sent in development or while testing (see implementation,
+            // of the sendMail() methods in MailServer)
+            String[] admins = accountDao.getAdmins().stream().map(User::getMail).toArray(String[]::new);
+            logger.info(String.format("Sending mail to admins to notify about creation of new location %s. Recipients are: %s", location.toString(), Arrays.toString(admins)));
+            mailService.sendNewLocationMessage(admins, location);
+
             logger.info(String.format("New location %s added", location.getName()));
-        } catch (SQLException e) {
+        } catch (SQLException | MessagingException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        } catch (MessagingException | IOException e) {
-            e.printStackTrace();
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Mail error");
         }
     }
 
@@ -251,4 +256,29 @@ public class LocationController extends AuthorizedLocationController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
+
+    // **************************************************
+    // *   Miscellaneous queries concerning locations   *
+    // **************************************************
+
+    /**
+     * Returns an array of 7 strings for each location that is opened in the week specified by the given
+     * week number in the given year.
+     *
+     * Each string is in the form of 'HH24:MI - HH24:MI' to indicate the opening and closing hour at
+     * monday, tuesday, ..., sunday but can also be null to indicate that the location is not open that day.
+     */
+    @GetMapping("/overview/opening/{year}/{weekNr}")
+    @PreAuthorize("permitAll()")
+    public Map<String, String[]> getOpeningOverviewOfWeek(@PathVariable("year") int year,
+                                                          @PathVariable("weekNr") int weekNr) {
+        try {
+            return locationDao.getOpeningOverviewOfWeek(year, weekNr);
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
 }

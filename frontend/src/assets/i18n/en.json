@@ -86,6 +86,13 @@
     "no": "No",
     "back": "Back",
     "print": "Print",
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday",
     "buttons": {
       "add": "Add",
       "update": "Update",
@@ -790,6 +797,16 @@
         "noReservations": "You have never made any locker reservations so far."
       }
     }
+  },
+  "openingHoursOverview": {
+    "title": "Opening hours of all study rooms between monday {mondayDate} and sunday {sundayDate}",
+    "navigationInfo": "With the navigation buttons, you can change the week for which the overview is shown.",
+    "table": {
+      "locationName": "Location"
+    },
+    "noOpeningsFuture": "No  study rooms will be opened between monday {mondayDate} and sunday {sundayDate}.",
+    "noOpeningsPast": "No  study rooms were opened between monday {mondayDate} and sunday {sundayDate}.",
+    "loadingError": "Something went wrong while retrieving the overview of the opening hours of the week you requested for."
   },
   "scan": {
     "aside": {
