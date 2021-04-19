@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class CustomUserDetailsService implements AuthenticationUserDetailsService<CasAssertionAuthenticationToken> {
@@ -44,7 +46,6 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
     public UserDetails loadUserDetails(CasAssertionAuthenticationToken casAssertionAuthenticationToken) throws UsernameNotFoundException {
         AttributePrincipal principal = casAssertionAuthenticationToken.getAssertion().getPrincipal();
         String ugentID = (String) principal.getAttributes().get("ugentID");
-        String mail = (String) principal.getAttributes().get("templates/mail");
 
         User user;
 
@@ -74,9 +75,10 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
             }
         }
 
-        logger.error(String.format("Unable to find/add a user with ugentID '%s' and mail '%s'", ugentID, mail));
-        throw new UsernameNotFoundException
-                (String.format("Unable to find/add a user with ugentID '%s' and mail '%s'", ugentID, mail));
+        logger.error(String.format("Unable to find/add a user with attributes %s",
+                stringifyAttributes(principal.getAttributes())));
+        throw new UsernameNotFoundException(String.format("Unable to find/add a user with attributes %s",
+                stringifyAttributes(principal.getAttributes())));
     }
 
     public User getUserFromLdap(String ugentID) {
@@ -132,6 +134,12 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
             logger.error(Arrays.toString(e.getStackTrace()));
             return null;
         }
+    }
+
+    private String stringifyAttributes(Map<String, Object> attributes) {
+        return attributes.keySet().stream()
+                .map(attribute -> String.format("%s: \"%s\"", attribute, attributes.get(attribute)))
+                .collect(Collectors.joining(", ", "{", "}"));
     }
 
 }
