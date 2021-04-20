@@ -9,12 +9,16 @@ import blok2.model.calendar.Timeslot;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import java.util.Objects;
 
+@Entity
+@Table(name = "locations")
 public class Location implements Cloneable {
+    @Id
     private int locationId;
     private String name;
     private int numberOfSeats;
@@ -22,13 +26,18 @@ public class Location implements Cloneable {
     private String imageUrl;
     private String descriptionDutch = "";
     private String descriptionEnglish= "";
+    @OneToOne
     private Building building;
+    @OneToOne
     private Authority authority;
     private boolean forGroup;
 
+    @OneToMany
     private List<LocationTag> assignedTags;
+    @Transient // TODO: maybe this is not the appropriate thing to do: ignoring the field
     private Pair<LocationStatus, String> status;
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Transient // TODO: maybe this is not the appropriate thing to do: ignoring the field
     private Timeslot currentTimeslot;
 
     public Location(int locationId, String name, int numberOfSeats, int numberOfLockers, String imageUrl,

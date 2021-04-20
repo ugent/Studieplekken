@@ -3,6 +3,7 @@ package blok2.daos.db;
 import blok2.daos.IAccountDao;
 import blok2.daos.ILocationDao;
 import blok2.daos.IScannerLocationDao;
+import blok2.daos.orm.LocationRepository;
 import blok2.helpers.LocationStatus;
 import blok2.helpers.Pair;
 import blok2.helpers.Resources;
@@ -13,10 +14,10 @@ import blok2.model.calendar.Timeslot;
 import blok2.model.reservables.Location;
 import blok2.model.reservables.Locker;
 import blok2.model.users.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
-import java.sql.Date;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -32,10 +33,13 @@ public class DBLocationDao extends DAO implements ILocationDao {
 
     IAccountDao accountDao;
     IScannerLocationDao scannerLocationDao;
+    LocationRepository locationRepository;
 
-    public DBLocationDao(IAccountDao accountDao, IScannerLocationDao scannerLocationDao) {
+    @Autowired
+    public DBLocationDao(IAccountDao accountDao, IScannerLocationDao scannerLocationDao, LocationRepository locationRepository) {
         this.accountDao = accountDao;
         this.scannerLocationDao = scannerLocationDao;
+        this.locationRepository = locationRepository;
     }
 
     @Override
@@ -311,54 +315,39 @@ public class DBLocationDao extends DAO implements ILocationDao {
         }
     }
 
-    public Map<String, String[]> getOpeningOverviewOfWeek(int year, int weekNr) throws SQLException {
-        try (Connection conn = adb.getConnection()) {
-            // The SQL query that will be used requires the dates of a monday and following sunday
-            // of a week for which the opening hours will be calculated. However, the week number
-            // (according to the ISO 8601 standard) in a year are given as parameters.
-            // Therefore, the dates of the monday and sunday of the corresponding week need to be
-            // calculated.
-            //
-            // This can be done using the with() method of LocalDate. This method gives an adjusted
-            // copy of a LocalDate object. By adjusting the week number of a LocalDate object, followed
-            // by another with() to adjust the week day to a "monday", we can obtain the date of
-            // the monday corresponding to the week given by the parameter `weekNr`.
-            //
-            // This methodology needs a base LocalDate object that can be adjusted. This LocalDate
-            // object's year must be determined by the 'year' parameter. The exact day of the year
-            // is of no importance since it will be adjusted later to be the monday of the week
-            // given by `weekNr`. However, the day of the year may not be before the first monday
-            // of the year. Therefore, the 50th day of the week is chosen.
-            //
-            // source: https://stackoverflow.com/a/32186362/9356123
-            LocalDate mondayDate = LocalDate.ofYearDay(year, 50)
-                    .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, weekNr)
-                    .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-            LocalDate sundayDate = mondayDate.plusDays(6);
+    public Map<String, String[]> getOpeningOverviewOfWeek(int year, int weekNr) {
+        // The SQL query that will be used requires the dates of a monday and following sunday
+        // of a week for which the opening hours will be calculated. However, the week number
+        // (according to the ISO 8601 standard) in a year are given as parameters.
+        // Therefore, the dates of the monday and sunday of the corresponding week need to be
+        // calculated.
+        //
+        // This can be done using the with() method of LocalDate. This method gives an adjusted
+        // copy of a LocalDate object. By adjusting the week number of a LocalDate object, followed
+        // by another with() to adjust the week day to a "monday", we can obtain the date of
+        // the monday corresponding to the week given by the parameter `weekNr`.
+        //
+        // This methodology needs a base LocalDate object that can be adjusted. This LocalDate
+        // object's year must be determined by the 'year' parameter. The exact day of the year
+        // is of no importance since it will be adjusted later to be the monday of the week
+        // given by `weekNr`. However, the day of the year may not be before the first monday
+        // of the year. Therefore, the 50th day of the week is chosen.
+        //
+        // source: https://stackoverflow.com/a/32186362/9356123
+        LocalDate mondayDate = LocalDate.ofYearDay(year, 50)
+                .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, weekNr)
+                .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        LocalDate sundayDate = mondayDate.plusDays(6);
 
-            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
-                    .getString("get_week_overview_with_monday_and_sunday_dates"));
-            pstmt.setDate(1, Date.valueOf(mondayDate));
-            pstmt.setDate(2, Date.valueOf(sundayDate));
-            ResultSet rs = pstmt.executeQuery();
+        List<String[]> retval = locationRepository.getOpeningHoursOverview(mondayDate, sundayDate);
 
-            // Use a TreeMap to order the keys, this results in a user friendly overview.
-            Map<String, String[]> overview = new TreeMap<>();
-            while (rs.next()) {
-                String locationName = rs.getString(1);
-                String[] week = new String[7];
-                week[0] = rs.getString(2);
-                week[1] = rs.getString(3);
-                week[2] = rs.getString(4);
-                week[3] = rs.getString(5);
-                week[4] = rs.getString(6);
-                week[5] = rs.getString(7);
-                week[6] = rs.getString(8);
-                overview.put(locationName, week);
-            }
-
-            return overview;
+        // Use a TreeMap to order the keys, this results in a user friendly overview.
+        Map<String, String[]> overview = new TreeMap<>();
+        for (String[] row : retval) {
+            overview.put(row[0], Arrays.copyOfRange(row, 1, row.length));
         }
+
+        return overview;
     }
 
     /**

@@ -2,9 +2,15 @@ package blok2.model;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Objects;
 
+@Entity
+@Table(name = "location_tags")
 public class LocationTag implements Cloneable {
+    @Id
     private int tagId;
     private String dutch;
     private String english;
@@ -13,6 +19,9 @@ public class LocationTag implements Cloneable {
         this.tagId = tagId;
         this.dutch = dutch;
         this.english = english;
+    }
+
+    public LocationTag() {
     }
 
     public int getTagId() {

@@ -2,9 +2,15 @@ package blok2.model;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Objects;
 
+@Entity
+@Table(name = "authority")
 public class Authority implements Cloneable {
+    @Id
     private int authorityId;
     private String authorityName;
     private String description;
