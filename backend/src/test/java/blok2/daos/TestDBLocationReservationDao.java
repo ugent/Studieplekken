@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -165,6 +164,22 @@ public class TestDBLocationReservationDao extends BaseTest {
         rlrs.sort(Comparator.comparing(Pair::hashCode));
 
         Assert.assertEquals(elrs, rlrs);
+
+        // Set first location reservation to unattended
+        elrs.clear();
+        lr0.setAttended(false);
+
+        // not yet scanned: no unattended location reservations expected
+        List<Pair<LocationReservation, CalendarPeriod>> unattendedReservations =
+                locationReservationDao.getUnattendedLocationReservations(t0.getTimeslotDate());
+        Assert.assertEquals(Collections.emptyList(), unattendedReservations);
+
+        // scan first location reservation as unattended
+        locationReservationDao.setReservationAttendance(u.getAugentID(), lr0.getTimeslot(), false);
+        unattendedReservations = locationReservationDao.getUnattendedLocationReservations(t0.getTimeslotDate());
+        elrs.add(new Pair<>(lr0, cp0));
+
+        Assert.assertEquals(elrs, unattendedReservations);
     }
 
     /**
