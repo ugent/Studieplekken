@@ -183,6 +183,8 @@
           "title": "Reservations for this room",
           "selectSlot": "Select a (reservable) timeslot to display the reservations",
           "searchUser": "Search a student by first name, last name or student ID:",
+          "finishScanning": "Finish scanning",
+          "finishScanningTooltip": "Set all students that are not scanned yet to unattended. Note that you will still be able to set these students to attended later on if needed.",
           "loading": "Room reservations are being loaded...",
           "error": "Something went wrong while loading the reservations...",
           "table": {

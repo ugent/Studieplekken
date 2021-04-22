@@ -8,6 +8,7 @@ import { map } from 'rxjs/internal/operators/map';
 import { of } from 'rxjs/internal/observable/of';
 import { Pair } from '../../../shared/model/helpers/Pair';
 import { CalendarPeriod } from '../../../shared/model/CalendarPeriod';
+import {Location} from '../../../shared/model/Location';
 
 @Injectable({
   providedIn: 'root',
@@ -114,6 +115,15 @@ export class LocationReservationsService {
         .replace('{seqnr}', `${locationReservation.timeslot.timeslotSeqnr}`),
       { attended },
       { withCredentials: true }
+    );
+  }
+
+  setAllNotScannedAsUnattended(
+    location: Location
+  ): Observable<void> {
+    return this.http.put<void>(
+      api.locationReservationsOfNotScannedUsers,
+      location
     );
   }
 }

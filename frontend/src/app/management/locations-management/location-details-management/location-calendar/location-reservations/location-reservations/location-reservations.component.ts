@@ -48,7 +48,7 @@ export class LocationReservationsComponent {
   userHasSearchTerm: (u: User) => boolean = (u: User) =>
     u.augentID.includes(this.searchTerm) ||
     u.firstName.includes(this.searchTerm) ||
-    u.lastName.includes(this.searchTerm);
+    u.lastName.includes(this.searchTerm)
 
   constructor(
     private locationReservationService: LocationReservationsService,
@@ -100,6 +100,20 @@ export class LocationReservationsComponent {
           this.modalService.show(errorTemplate);
         }
       );
+  }
+
+  finishScanning(): void {
+    this.locationReservations.forEach(
+      (reservation) => {
+        if (reservation.attended !== true) {
+          reservation.attended = false;
+        }
+      }
+    );
+
+    this.locationReservationService
+      .setAllNotScannedAsUnattended(this.currentCalendarPeriod.location)
+      .subscribe();
   }
 
   // /*************

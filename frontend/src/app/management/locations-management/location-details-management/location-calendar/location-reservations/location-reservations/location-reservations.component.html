@@ -7,12 +7,19 @@
   </div>
 
   <div class="row form-group">
-    <label class="col-lg-3 control-label" for="search">
+    <label class="col-md-3 control-label" for="search">
       {{'management.locationDetails.calendar.reservations.searchUser' | translate}}
     </label>
-    <div class="col-lg-8">
+    <div class="col-sm-10 col-md-7">
       <input id="search" type="text" class="form-control"
              [(ngModel)]="searchTerm" (ngModelChange)="updateSearchTerm(scanningError)">
+    </div>
+    <div class="col-sm-2 col-md-2 pull-right">
+      <button id="finish" class="btn btn-secondary" (click)="finishScanning()"
+              data-toggle="tooltip" data-placement="top"
+              title="{{'management.locationDetails.calendar.reservations.finishScanningTooltip' | translate}}">
+        {{'management.locationDetails.calendar.reservations.finishScanning' | translate}}
+      </button>
     </div>
   </div>
 
@@ -22,13 +29,13 @@
     </div>
   </div>
 
-  <table style="width: 100%; margin-bottom: 10px;" *ngIf="locationReservations.length > 0">
+  <table class="table table-striped" style="width: 100%; margin-bottom: 10px;" *ngIf="locationReservations.length > 0">
     <thead>
       <tr>
         <th>{{'management.locationDetails.calendar.reservations.table.user' | translate}}</th>
         <th>{{'management.locationDetails.calendar.reservations.table.attended' | translate}}</th>
         <th>{{startedScanning ? ('management.locationDetails.calendar.reservations.table.scan' | translate) : ''}}</th>
-        <th>
+        <th *ngIf="!hideDeleteIcon">
           <!-- Delete -->
         </th>
       </tr>
@@ -41,12 +48,12 @@
           <!-- Note: don't disable the other button if yes/no is clicked because otherwise the user couldn't
              change the attendance, e.g. if he/she clicked on the wrong button. Therefore the class
              of the button should be set as if the button was disabled -->
-          <button *ngIf="startedScanning" class="btn btn-secondary btn-left" style="margin-top: 5px"
+          <button *ngIf="startedScanning" class="btn btn-secondary btn-left"
             [ngClass]="isButtonDisabled(reservation) ? 'disabled': '' "
             (click)="scanLocationReservation(reservation, true, scanningError)">
             {{'general.yes' | translate}}
           </button>
-          <button *ngIf="startedScanning" class="btn btn-default" style="margin-top: 5px"
+          <button *ngIf="startedScanning" class="btn btn-default"
             [ngClass]="!isButtonDisabled(reservation) ? 'disabled': '' "
             (click)="scanLocationReservation(reservation, false, scanningError)">
             {{'general.no' | translate}}
