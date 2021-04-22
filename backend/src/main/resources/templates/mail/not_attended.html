@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="nl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${title}"></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+    <style>
+        @media all and (max-width: 599px) {
+        }
+
+        main {
+            margin-top: 2em;
+            margin-bottom: 3em;
+        }
+
+        footer {
+            margin-top: 1em;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+
+<body>
+<h2 th:text="${title}"></h2>
+
+<main>
+    <p><i>English version below.</i></p>
+    <p>Beste <span th:text="${addressing}"></span></p>
+    <p>
+        Je had voor gisteren een reservatie gemaakt op de studieplekkenapplicatie <a>https://studieplekken.ugent.be</a>
+        voor de locatie <b><span th:text="${studieplek}"></span></b> voor het tijdslot <span th:text="${startTime}"></span>
+        - <span th:text="${endTime}"></span> maar was je was niet aanwezig. Mogen wij vragen om in het vervolg je
+        reservatie te annuleren als je niet afkomt door te navigeren naar <b>Profiel > Reservaties</b>
+        en de reservatie te verwijderen door op het vuilbakje te klikken. Gelieve dat ook te doen wanneer je vroegtijdig
+        zou vertrekken. Op die manier geef je de kans aan andere studenten die wel willen komen of die de rest van
+        het tijdslot willen gebruiken daartoe de kans.
+    </p>
+    <p>
+        Alvast bedankt en met vriendelijke groeten, <br/>
+        <em>Het Werk- en Studieplekken Team</em>
+    </p>
+
+    <hr>
+
+    <p>Dear <span th:text="${addressing}"></span></p>
+    <p>
+        You have made a reservation for yesterday on the application <a>https://studieplekken.ugent.be</a> for the location
+        <b><span th:text="${studieplek}"></span></b> for the timeslot <span th:text="${startTime}"></span> -
+        <span th:text="${endTime}"></span> but you did not attend. May we ask you to cancel a reservation for
+        which you will not attend by navigating to <b>Profile > Reservations</b> and delete the reservation by
+        clicking on the trash can icon. Please do this too if you decide to leave the study room before the end.
+        This way, you give the opportunity to other students who do want to come or who want to come for the
+        remainder of the timeslot the chance to do so.
+    </p>
+    <p>
+        Thank you in advance and with kind regards, <br>
+        <em>Team Study Rooms</em>
+    </p>
+</main>
+
+<footer>
+    <p>
+        Dit is een automatisch bericht. Als je niet de bedoelde ontvanger bent, of je hebt andere vragen of opmerking
+        over dit bericht, gelieve te mailen naar admin@dsa.ugent.be.
+        <br/>
+        This is an automated message. If you are not the intended recipient, or have other concerns with this message,
+        please mail admin@dsa.ugent.be.
+    </p>
+</footer>
+</body>
+</html>

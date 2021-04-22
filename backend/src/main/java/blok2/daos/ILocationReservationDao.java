@@ -6,6 +6,7 @@ import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface ILocationReservationDao extends IDao {
@@ -24,6 +25,11 @@ public interface ILocationReservationDao extends IDao {
      * Get the location reservation of a specified user at a specified timeslot
      */
     LocationReservation getLocationReservation(String augentID, Timeslot timeslot) throws SQLException;
+
+    /**
+     * Get all LocationReservations and corresponding CalendarPeriods of unattended reservations
+     */
+    List<Pair<LocationReservation, CalendarPeriod>> getUnattendedLocationReservations(LocalDate date)  throws SQLException;
 
     /**
      * Delete the location reservation of a specified user at a specified timeslot

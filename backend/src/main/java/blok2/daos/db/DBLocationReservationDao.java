@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.*;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -103,6 +104,24 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
             }
 
             return Collections.unmodifiableList(rlist);
+        }
+    }
+
+    @Override
+    public List<Pair<LocationReservation, CalendarPeriod>> getUnattendedLocationReservations(LocalDate date) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_unattended_reservations_on_date"));
+            pstmt.setDate(1, Date.valueOf(date));
+            ResultSet rs = pstmt.executeQuery();
+
+            List<Pair<LocationReservation, CalendarPeriod>> reservations = new ArrayList<>();
+            while (rs.next()) {
+                LocationReservation locationReservation = DBLocationReservationDao.createLocationReservation(rs, conn);
+                CalendarPeriod calendarPeriod = DBCalendarPeriodDao.createCalendarPeriod(rs, conn);
+                reservations.add(new Pair<>(locationReservation, calendarPeriod));
+            }
+
+            return reservations;
         }
     }
 
