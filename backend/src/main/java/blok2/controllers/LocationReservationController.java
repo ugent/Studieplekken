@@ -4,6 +4,7 @@ import blok2.daos.ICalendarPeriodDao;
 import blok2.daos.ILocationReservationDao;
 import blok2.helpers.Pair;
 import blok2.helpers.authorization.AuthorizedLocationController;
+import blok2.helpers.exceptions.LocationIdConflictException;
 import blok2.helpers.exceptions.NoSuchReservationException;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
@@ -166,10 +167,22 @@ public class LocationReservationController extends AuthorizedLocationController 
         }
     }
 
-    @PutMapping("/not-scanned")
+    @PutMapping("/not-scanned/{locationId}")
     @PreAuthorize("hasAuthority('HAS_VOLUNTEERS') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public void setAllNotScannedStudentsToUnattendedForTimeslot(@RequestBody Timeslot timeslot) {
+    public void setAllNotScannedStudentsToUnattendedForTimeslot(@PathVariable("locationId") int locationId,
+                                                                @RequestBody Timeslot timeslot) {
         try {
+            // check if user is allowed by role
+            isVolunteer(locationId);
+
+            // if so, check if the given locationId actually matches the timeslot to be altered
+            // (necessary in case a user is volunteer but uses e.g. Postman to alter another location for which
+            // he is not volunteer)
+            CalendarPeriod calendarPeriod = calendarPeriodDao.getById(timeslot.getCalendarId());
+            if (calendarPeriod.getLocation().getLocationId() != locationId)
+                throw new LocationIdConflictException("LocationId on path does not match the locationId of the " +
+                        "CalendarPeriod corresponding to given Timeslot");
+
             logger.info(String.format("Setting all students who were not scanned to unattended for timeslot %s", timeslot));
             locationReservationDao.setNotScannedStudentsToUnattended(timeslot);
         } catch (SQLException e) {

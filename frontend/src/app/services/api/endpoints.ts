@@ -52,7 +52,7 @@ export const api = {
   locationReservationsWithLocationOfUser:
     '/api/locations/reservations/{userId}',
   locationReservationsOfNotScannedUsers:
-    '/api/locations/reservations/not-scanned',
+    '/api/locations/reservations/not-scanned/{locationId}',
 
   // AUTHORITY
   buildings: '/api/building',
