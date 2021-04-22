@@ -122,9 +122,7 @@ export class LocationReservationsService {
   ): Observable<void> {
     return this.http.put<void>(
       api.locationReservationsOfNotScannedUsers,
-      {
-        timeslot
-      }
+      timeslot
     );
   }
 }

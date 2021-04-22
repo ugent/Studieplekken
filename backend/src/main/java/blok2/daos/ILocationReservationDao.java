@@ -53,7 +53,6 @@ public interface ILocationReservationDao extends IDao {
      */
     boolean setReservationAttendance(String augentId, Timeslot timeslot, boolean attendance) throws SQLException;
 
-
     /**
      * Get all location reservations at a specified timeslot
      */
@@ -68,4 +67,11 @@ public interface ILocationReservationDao extends IDao {
      * Get the number of location reservation of a specified location at this moment in time
      */
      int amountOfReservationsRightNow(int locationId) throws SQLException;
+
+    /**
+     * Set all LocationReservations corresponding to the given Timeslot for which the field attended is null
+     * to false. This sets the not scanned students to unattended for the given timeslot.
+     */
+     void setNotScannedStudentsToUnattended(Timeslot timeslot) throws SQLException;
+
 }

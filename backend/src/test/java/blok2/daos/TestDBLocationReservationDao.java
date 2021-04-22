@@ -182,6 +182,34 @@ public class TestDBLocationReservationDao extends BaseTest {
         Assert.assertEquals(elrs, unattendedReservations);
     }
 
+    @Test
+    public void setAllNotScannedStudentsToUnattendedTest() throws SQLException {
+        User u = accountDao.getUserById(testUser.getAugentID()); // test user from db
+        List<Pair<LocationReservation, CalendarPeriod>> elrs = new ArrayList<>(); // expected location reservations
+
+        // Create location reservation
+        CalendarPeriod cp0 = calendarPeriods.get(0);
+        Timeslot t0 = cp0.getTimeslots().get(0);
+        LocationReservation lr0 = new LocationReservation(u, LocalDateTime.now(), t0, null);
+
+        // Add the location reservations to the db
+        Assert.assertTrue(locationReservationDao.addLocationReservationIfStillRoomAtomically(lr0));
+        elrs.add(new Pair<>(lr0, cp0));
+
+        // No unattended students expected yet
+        List<Pair<LocationReservation, CalendarPeriod>> unattendedReservations =
+                locationReservationDao.getUnattendedLocationReservations(t0.getTimeslotDate());
+        Assert.assertEquals(Collections.emptyList(), unattendedReservations);
+
+        // Set all students for the timeslot to unattended
+        locationReservationDao.setNotScannedStudentsToUnattended(t0);
+
+        // Now there should be one unattended student
+        lr0.setAttended(false);
+        unattendedReservations = locationReservationDao.getUnattendedLocationReservations(t0.getTimeslotDate());
+        Assert.assertEquals(elrs, unattendedReservations);
+    }
+
     /**
      * Steps undertaken in this test:
      *     - create 500 test users

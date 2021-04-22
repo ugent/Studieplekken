@@ -287,6 +287,11 @@ from public.location_reservations lr
          on a.authority_id = l.authority_id
 where lr.attended = false and lr.timeslot_date = ?;
 
+-- $set_not_scanned_students_as_not_attended
+update public.location_reservations lr
+set attended = False
+where lr.calendar_id = ? and lr.timeslot_seqnr = ? and lr.timeslot_date = ? and lr.attended is null;
+
 
 -- queries for table USER
 -- $get_user_by_<?>

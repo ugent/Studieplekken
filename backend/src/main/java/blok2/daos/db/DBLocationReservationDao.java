@@ -262,6 +262,18 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
         return true;
     }
 
+    @Override
+    public void setNotScannedStudentsToUnattended(Timeslot timeslot) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(
+                    Resources.databaseProperties.getString("set_not_scanned_students_as_not_attended"));
+            pstmt.setInt(1, timeslot.getCalendarId());
+            pstmt.setInt(2, timeslot.getTimeslotSeqnr());
+            pstmt.setDate(3, Date.valueOf(timeslot.getTimeslotDate()));
+            pstmt.executeUpdate();
+        }
+    }
+
     // Seperated out for use in transaction
     public static long getAmountOfReservationsOfTimeslot(Timeslot timeslot, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("count_location_reservations_of_location_for_timeslot"));

@@ -165,4 +165,18 @@ public class LocationReservationController extends AuthorizedLocationController 
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
+
+    @PutMapping("/not-scanned")
+    @PreAuthorize("hasAuthority('HAS_VOLUNTEERS') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    public void setAllNotScannedStudentsToUnattendedForTimeslot(@RequestBody Timeslot timeslot) {
+        try {
+            logger.info(String.format("Setting all students who were not scanned to unattended for timeslot %s", timeslot));
+            locationReservationDao.setNotScannedStudentsToUnattended(timeslot);
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
+    }
+
 }
