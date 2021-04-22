@@ -15,7 +15,7 @@
              [(ngModel)]="searchTerm" (ngModelChange)="updateSearchTerm(scanningError)">
     </div>
     <div class="col-sm-2 col-md-2 pull-right">
-      <button id="finish" class="btn btn-secondary" (click)="finishScanning()"
+      <button id="finish" class="btn btn-secondary" (click)="setAllNotScannedToUnattended(scanningError)"
               data-toggle="tooltip" data-placement="top"
               title="{{'management.locationDetails.calendar.reservations.finishScanningTooltip' | translate}}">
         {{'management.locationDetails.calendar.reservations.finishScanning' | translate}}

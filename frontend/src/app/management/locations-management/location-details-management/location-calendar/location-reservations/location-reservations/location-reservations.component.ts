@@ -102,18 +102,36 @@ export class LocationReservationsComponent {
       );
   }
 
-  finishScanning(): void {
+  setAllNotScannedToUnattended(errorTemplate: TemplateRef<unknown>): void {
+    // if the update is not successful, rollback UI changes
+    const rollback: LocationReservation[] = [];
+
+    // set all reservations where attended is null to false
     this.locationReservations.forEach(
       (reservation) => {
         if (reservation.attended !== true) {
           reservation.attended = false;
+          rollback.push(reservation);
         }
       }
     );
 
+    // update server side
     this.locationReservationService
-      .setAllNotScannedAsUnattended(this.currentCalendarPeriod.location)
-      .subscribe();
+      .setAllNotScannedAsUnattended(
+        this.currentTimeSlot
+      ).subscribe(
+      () => {},
+      () => {
+          // on error, rollback UI changes
+          rollback.forEach(
+            reservation => {
+              reservation.attended = null;
+            }
+          );
+          this.modalService.show(errorTemplate);
+        }
+    );
   }
 
   // /*************
