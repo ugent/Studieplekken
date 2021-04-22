@@ -206,8 +206,16 @@ export class LocationReservationsComponent {
     return start.isBefore(moment());
   }
 
-  isButtonDisabled(reservation: LocationReservation): boolean {
-    return reservation.attended;
+  isTimeslotStartInFuture(): boolean {
+    return !this.isTimeslotStartInPast();
+  }
+
+  disableYesButton(reservation: LocationReservation): boolean {
+    return this.isTimeslotStartInFuture() || (reservation.attended !== null && reservation.attended === true);
+  }
+
+  disableNoButton(reservation: LocationReservation): boolean {
+    return this.isTimeslotStartInFuture() || (reservation.attended !== null && reservation.attended === false);
   }
 
   /**

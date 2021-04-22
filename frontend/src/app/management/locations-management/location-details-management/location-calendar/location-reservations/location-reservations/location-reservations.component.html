@@ -15,7 +15,9 @@
              [(ngModel)]="searchTerm" (ngModelChange)="updateSearchTerm(scanningError)">
     </div>
     <div class="col-sm-2 col-md-2 pull-right">
-      <button id="finish" class="btn btn-secondary" (click)="setAllNotScannedToUnattended(scanningError)"
+      <button id="finish" class="btn btn-secondary"
+              [disabled]="isTimeslotStartInFuture()"
+              (click)="setAllNotScannedToUnattended(scanningError)"
               data-toggle="tooltip" data-placement="top"
               title="{{'management.locationDetails.calendar.reservations.finishScanningTooltip' | translate}}">
         {{'management.locationDetails.calendar.reservations.finishScanning' | translate}}
@@ -45,16 +47,13 @@
         <td>{{reservation.user.firstName + ' ' + reservation.user.lastName}}</td>
         <td>{{getCorrectI18NObject(reservation) | translate}}</td>
         <td>
-          <!-- Note: don't disable the other button if yes/no is clicked because otherwise the user couldn't
-             change the attendance, e.g. if he/she clicked on the wrong button. Therefore the class
-             of the button should be set as if the button was disabled -->
           <button *ngIf="startedScanning" class="btn btn-secondary btn-left"
-            [ngClass]="isButtonDisabled(reservation) ? 'disabled': '' "
-            (click)="scanLocationReservation(reservation, true, scanningError)">
+                  [disabled]="disableYesButton(reservation)"
+                  (click)="scanLocationReservation(reservation, true, scanningError)">
             {{'general.yes' | translate}}
           </button>
           <button *ngIf="startedScanning" class="btn btn-default"
-            [ngClass]="!isButtonDisabled(reservation) ? 'disabled': '' "
+                  [disabled]="disableNoButton(reservation)"
             (click)="scanLocationReservation(reservation, false, scanningError)">
             {{'general.no' | translate}}
           </button>
