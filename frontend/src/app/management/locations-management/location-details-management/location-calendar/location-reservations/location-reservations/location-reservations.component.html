@@ -1,71 +1,87 @@
 <div>
-  <div *ngIf="locationReservations.length === 0" class="alert alert-info">
-    {{'management.locationDetails.calendar.reservations.table.noLocationReservations' | translate}}
-  </div>
-  <div *ngIf="warning" class="alert alert-warning">
-    {{'scan.unregistered' | translate}}
-  </div>
-
-  <div class="row form-group">
-    <label class="col-md-3 control-label" for="search">
-      {{'management.locationDetails.calendar.reservations.searchUser' | translate}}
-    </label>
-    <div class="col-sm-10 col-md-7">
-      <input id="search" type="text" class="form-control"
-             [(ngModel)]="searchTerm" (ngModelChange)="updateSearchTerm(scanningError)">
-    </div>
-    <div class="col-sm-2 col-md-2 pull-right">
-      <button id="finish" class="btn btn-secondary"
-              [disabled]="isTimeslotStartInFuture()"
-              (click)="setAllNotScannedToUnattended(scanningError)"
-              data-toggle="tooltip" data-placement="top"
-              title="{{'management.locationDetails.calendar.reservations.startScanningTooltip' | translate}}">
-        {{'management.locationDetails.calendar.reservations.startScanning' | translate}}
-      </button>
+  <div *ngIf="locationReservations.length === 0" class="row">
+    <div class="alert alert-info">
+      {{'management.locationDetails.calendar.reservations.table.noLocationReservations' | translate}}
     </div>
   </div>
 
-  <div class="row">
-    <div class="alert alert-info" *ngIf="waitingForServer">
+  <div *ngIf="waitingForServer" class="row">
+    <div class="alert alert-info">
       {{'general.waitingForServer' | translate}}
     </div>
   </div>
 
-  <table class="table table-striped" style="width: 100%; margin-bottom: 10px;" *ngIf="locationReservations.length > 0">
-    <thead>
+  <div *ngIf="locationReservations.length > 0" class="row">
+    <div *ngIf="noSuchUserFoundWarning" class="alert alert-warning">
+      {{'scan.unregistered' | translate}}
+    </div>
+
+    <div class="row form-group">
+      <label class="col-md-3 control-label" for="search">
+        {{'management.locationDetails.calendar.reservations.searchUser' | translate}}
+      </label>
+      <div class="col-sm-10 col-md-7">
+        <input id="search" type="text" class="form-control"
+               [(ngModel)]="searchTerm" (ngModelChange)="updateSearchTerm(scanningError)">
+      </div>
+      <div class="col-sm-2 col-md-2 pull-right">
+        <button id="finish" class="btn btn-secondary"
+                [disabled]="isTimeslotStartInFuture()"
+                (click)="setAllNotScannedToUnattended(scanningError)"
+                data-toggle="tooltip" data-placement="top"
+                title="{{'management.locationDetails.calendar.reservations.startScanningTooltip' | translate}}">
+          {{'management.locationDetails.calendar.reservations.startScanning' | translate}}
+        </button>
+      </div>
+    </div>
+
+    <div class="alert alert-info" *ngIf="!isManagement && !startedScanning">
+      {{'management.locationDetails.calendar.reservations.startScanningMessage' | translate}}
+    </div>
+
+    <table *ngIf="isManagement || startedScanning"
+           class="table table-striped"  style="width: 100%; margin-bottom: 10px;">
+      <thead>
       <tr>
         <th>{{'management.locationDetails.calendar.reservations.table.user' | translate}}</th>
         <th>{{'management.locationDetails.calendar.reservations.table.attended' | translate}}</th>
-        <th>{{startedScanning ? ('management.locationDetails.calendar.reservations.table.scan' | translate) : ''}}</th>
-        <th *ngIf="!hideDeleteIcon">
+        <th>{{'management.locationDetails.calendar.reservations.table.scan' | translate}}</th>
+        <th *ngIf="isManagement">
           <!-- Delete -->
         </th>
       </tr>
-    </thead>
-    <tbody>
+      </thead>
+      <tbody>
       <tr *ngFor="let reservation of filter(locationReservations)" [class.highlight]="reservation.attended">
         <td>{{reservation.user.firstName + ' ' + reservation.user.lastName}}</td>
         <td>{{getCorrectI18NObject(reservation) | translate}}</td>
         <td>
-          <button *ngIf="startedScanning" class="btn btn-secondary btn-left"
+          <button class="btn btn-secondary btn-left"
                   [disabled]="disableYesButton(reservation)"
                   (click)="scanLocationReservation(reservation, true, scanningError)">
             {{'general.yes' | translate}}
           </button>
-          <button *ngIf="startedScanning" class="btn btn-default"
+          <button class="btn btn-default"
                   [disabled]="disableNoButton(reservation)"
-            (click)="scanLocationReservation(reservation, false, scanningError)">
+                  (click)="scanLocationReservation(reservation, false, scanningError)">
             {{'general.no' | translate}}
           </button>
         </td>
         <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
-            *ngIf="!hideDeleteIcon"
-          (click)="prepareToDeleteLocationReservation(reservation, deleteLocationReservationModal)">
+            *ngIf="isManagement"
+            (click)="prepareToDeleteLocationReservation(reservation, deleteLocationReservationModal)">
           <span class="glyphicon glyphicon-trash pointerCursor"></span>
         </td>
       </tr>
-    </tbody>
-  </table>
+      </tbody>
+    </table>
+
+    <button *ngIf="isManagement"
+            [routerLink]="['./timeslot', currentTimeSlot.calendarId, currentTimeSlot.timeslotDate.format('YYYY-MM-DD'), currentTimeSlot.timeslotSeqnr]"
+            class="btn btn-primary">
+      {{'general.buttons.print' | translate}}
+    </button>
+  </div>
 </div>
 
 <!-- Modal view to ask whether the user is sure to delete a lockerReservation -->

@@ -29,7 +29,7 @@ export class LocationReservationsComponent {
   @Input() currentTimeSlot: Timeslot;
   @Input() lastScanned?: LocationReservation;
 
-  @Input() hideDeleteIcon = false; // used by ScanningLocationDetails to disable the "delete" icon for volunteers
+  @Input() isManagement = true; // disable some functionality
 
   @Output()
   reservationChange: EventEmitter<unknown> = new EventEmitter<unknown>();
@@ -38,11 +38,11 @@ export class LocationReservationsComponent {
 
   successDeletingLocationReservation: boolean = undefined;
 
-  startedScanning = true;
+  startedScanning = false; // if isManagement == false, force volunteer to press 'Start scanning' button
   searchTerm = '';
 
   scannedLocationReservations: LocationReservation[] = [];
-  warning = false;
+  noSuchUserFoundWarning = false;
   waitingForServer = false;
 
   userHasSearchTerm: (u: User) => boolean = (u: User) =>
@@ -103,6 +103,13 @@ export class LocationReservationsComponent {
   }
 
   setAllNotScannedToUnattended(errorTemplate: TemplateRef<unknown>): void {
+    // Set startScanning to true. Note that this.startScanning is not rolled back
+    // in the onError clause of the subscription for the HTTP request to set
+    // all not scanned students as unattended. The reason is that the error could
+    // just be for this HTTP request only while scanning just one reservation could
+    // still be successful.
+    this.startedScanning = true;
+
     // if the update is not successful, rollback UI changes
     const rollback: LocationReservation[] = [];
 
@@ -240,10 +247,10 @@ export class LocationReservationsComponent {
   }
 
   updateSearchTerm(errorTemplate: TemplateRef<unknown>): void {
-    this.warning =
+    this.noSuchUserFoundWarning = this.searchTerm.length > 0 &&
       this.locationReservations.every(
         (lr) => !this.userHasSearchTerm(lr.user)
-      ) && this.searchTerm.length > 0;
+      );
 
     const fullyMatchedUser = this.barcodeService.getReservation(
       this.locationReservations,
