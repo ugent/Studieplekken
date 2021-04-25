@@ -29,7 +29,7 @@ export class LocationReservationsComponent {
   @Input() currentTimeSlot: Timeslot;
   @Input() lastScanned?: LocationReservation;
 
-  @Input() isManagement = true; // disable some functionality
+  @Input() isManagement = true; // enable some functionality that should not be enabled for volunteers in the Scan page
 
   @Output()
   reservationChange: EventEmitter<unknown> = new EventEmitter<unknown>();
