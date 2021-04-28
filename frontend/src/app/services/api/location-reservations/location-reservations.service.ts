@@ -119,12 +119,10 @@ export class LocationReservationsService {
   }
 
   setAllNotScannedAsUnattended(
-    location: Location,
     timeslot: Timeslot
   ): Observable<void> {
     return this.http.put<void>(
-      api.locationReservationsOfNotScannedUsers
-        .replace('{locationId}', `${location.locationId}`),
+      api.locationReservationsOfNotScannedUsers,
       timeslot
     );
   }

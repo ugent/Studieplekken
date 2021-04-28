@@ -120,7 +120,6 @@ export class LocationReservationsComponent {
     // update server side
     this.locationReservationService
       .setAllNotScannedAsUnattended(
-        this.currentCalendarPeriod.location,
         this.currentTimeSlot
       ).subscribe(
       () => {},
