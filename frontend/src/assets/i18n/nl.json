@@ -184,9 +184,8 @@
           "title": "Reservaties voor de ruimte",
           "selectSlot": "Selecteer een (reserveerbaar) timeslot om de reservaties te zien",
           "searchUser": "Zoek naar een gebruiker op voornaam, achternaam of studentennummer:",
-          "startScanning": "Start scannen",
-          "startScanningTooltip": "Zet alle niet gescande studenten als afwezig. Merk op dat je die eventueel later nog op aanwezig kan zetten.",
-          "startScanningMessage": "Gelieve op de knop 'Start scannen' te drukken om te beginnen met scannen.",
+          "startScanning": "Einde scannen",
+          "startScanningTooltip": "Zet alle niet gescande studenten als afwezig.",
           "loading": "Reservaties voor het geselecteerde slot worden geladen",
           "error": "Er is iets misgelopen tijdens het ophalen van de reservaties...",
           "table": {

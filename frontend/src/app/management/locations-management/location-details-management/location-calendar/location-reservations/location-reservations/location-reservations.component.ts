@@ -38,7 +38,6 @@ export class LocationReservationsComponent {
 
   successDeletingLocationReservation: boolean = undefined;
 
-  startedScanning = false; // if isManagement == false, force volunteer to press 'Start scanning' button
   searchTerm = '';
 
   scannedLocationReservations: LocationReservation[] = [];
@@ -103,13 +102,6 @@ export class LocationReservationsComponent {
   }
 
   setAllNotScannedToUnattended(errorTemplate: TemplateRef<unknown>): void {
-    // Set startScanning to true. Note that this.startScanning is not rolled back
-    // in the onError clause of the subscription for the HTTP request to set
-    // all not scanned students as unattended. The reason is that the error could
-    // just be for this HTTP request only while scanning just one reservation could
-    // still be successful.
-    this.startedScanning = true;
-
     // if the update is not successful, rollback UI changes
     const rollback: LocationReservation[] = [];
 
@@ -122,6 +114,8 @@ export class LocationReservationsComponent {
         }
       }
     );
+
+    console.log('Finishing up');
 
     // update server side
     this.locationReservationService
