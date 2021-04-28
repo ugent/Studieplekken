@@ -1,0 +1,30 @@
+# credentials for production database
+spring:
+  datasource:
+    type: "com.zaxxer.hikari.HikariDataSource"
+    driverClassName: org.postgresql.Driver
+    url: "jdbc:postgresql://db:5432/blokatugent"
+    username: blokat
+    password:  ***REMOVED***
+    maximumPoolSize: 200
+  flyway: # For automatic flyway migration integration with spring boot
+    url: "jdbc:postgresql://db:5432/blokatugent"
+    user: blokat
+    password:  ***REMOVED***
+  mail:
+    host: smtp.ugent.be
+    port: 25
+
+# disable ssl for production for backend (proxied)
+server:
+  port: 8080
+  ssl:
+    enabled: false
+
+debug: false
+
+cas:
+  callbackUrl: https://studieplekken.ugent.be/api/login/cas
+
+redirect:
+  successLoginRedirectUrl: https://studieplekken.ugent.be/dashboard

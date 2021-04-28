@@ -608,7 +608,7 @@
 
         "scanningErrorModal": {
           "title": "Scanning failed",
-          "message": "Something went wrong while scanning. The attendance/absence was not registered correctly."
+          "message": "Something went wrong while scanning. The attendance/absence was not registered correctly. Are you trying to change someone to present in a full timeslot?"
         }
       },
       "locker": {

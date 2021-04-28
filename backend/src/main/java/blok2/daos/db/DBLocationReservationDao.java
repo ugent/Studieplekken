@@ -111,6 +111,8 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
         try (Connection conn = adb.getConnection()) {
             try {
                 conn.setAutoCommit(false);
+                LocationReservation lr = getLocationReservation(augentID, timeslot);
+
 
                 // delete the location reservation
                 PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_location_reservation"));
@@ -124,12 +126,15 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
                     return false;
                 }
 
-                // and subtract a count from the reservation count
-                pstmt = conn.prepareStatement(Resources.databaseProperties.getString("subtract_one_to_reservation_count"));
-                pstmt.setDate(2, java.sql.Date.valueOf(timeslot.getTimeslotDate()));
-                pstmt.setInt(3, timeslot.getTimeslotSeqnr());
-                pstmt.setInt(1, timeslot.getCalendarId());
-                pstmt.execute();
+                // and subtract a count from the reservation count, if the attendance is not false
+                if(lr.getAttended() == null || lr.getAttended()) {
+                    pstmt = conn.prepareStatement(Resources.databaseProperties.getString("subtract_one_to_reservation_count"));
+                    pstmt.setDate(2, java.sql.Date.valueOf(timeslot.getTimeslotDate()));
+                    pstmt.setInt(3, timeslot.getTimeslotSeqnr());
+                    pstmt.setInt(1, timeslot.getCalendarId());
+                    pstmt.execute();
+
+                }
 
                 conn.commit();
                 return true;
@@ -231,6 +236,30 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
             if(lr == null) {
                 return false;
             }
+
+            if(!attendance && (lr.getAttended() == null || lr.getAttended())) {
+                // This seat needs to be freed, since this user is not present. We double check that this value wasn't already false (and therefore already removed)
+                PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("subtract_one_to_reservation_count"));
+                pstmt.setDate(2, java.sql.Date.valueOf(timeslot.getTimeslotDate()));
+                pstmt.setInt(3, timeslot.getTimeslotSeqnr());
+                pstmt.setInt(1, timeslot.getCalendarId());
+                pstmt.execute();
+            }
+
+            // If we go from false to true, increment the current seat count since this person is here now
+            if(attendance && (lr.getAttended() != null && !lr.getAttended())) {
+                PreparedStatement stmt = conn.prepareStatement(Resources.databaseProperties.getString("add_one_to_reservation_count"));
+                stmt.setInt(1, timeslot.getCalendarId());
+                stmt.setDate(2, Date.valueOf(timeslot.getTimeslotDate()));
+                stmt.setInt(3, timeslot.getTimeslotSeqnr());
+                int change = stmt.executeUpdate();
+
+                if(change != 1) {
+                    return false;
+                }
+
+            }
+
 
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("set_location_reservation_attendance"));
             pstmt.setBoolean(1, attendance);
