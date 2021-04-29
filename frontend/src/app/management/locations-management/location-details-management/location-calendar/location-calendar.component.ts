@@ -2,13 +2,13 @@ import { Component, OnInit, Input, TemplateRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CalendarEvent } from 'angular-calendar';
 import * as moment from 'moment';
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import { Observable, Subject, BehaviorSubject, timer } from 'rxjs';
 import { CalendarPeriodsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { ApplicationTypeFunctionalityService } from 'src/app/services/functionality/application-type/application-type-functionality.service';
 import {
   CalendarPeriod,
-  mapCalendarPeriodsToCalendarEvents,
+  mapCalendarPeriodsToCalendarEvents
 } from 'src/app/shared/model/CalendarPeriod';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
 import { Timeslot } from 'src/app/shared/model/Timeslot';
@@ -19,13 +19,13 @@ import { AuthenticationService } from 'src/app/services/authentication/authentic
 import { Moment } from 'moment';
 import { TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute } from '@angular/router';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, switchMap, tap } from 'rxjs/operators';
 import { of } from 'rxjs/internal/observable/of';
 
 @Component({
   selector: 'app-location-calendar',
   templateUrl: './location-calendar.component.html',
-  styleUrls: ['./location-calendar.component.css'],
+  styleUrls: ['./location-calendar.component.css']
 })
 export class LocationCalendarComponent implements OnInit {
   @Input() location: Location; // only use this for creating a CalendarPeriod
@@ -185,7 +185,7 @@ export class LocationCalendarComponent implements OnInit {
     if (this.calendarPeriodModel) {
       this.calendarPeriods = [
         ...this.calendarPeriods,
-        this.calendarPeriodModel.value,
+        this.calendarPeriodModel.value
       ];
     }
 
@@ -329,8 +329,14 @@ export class LocationCalendarComponent implements OnInit {
 
   loadReservations(): void {
     this.showReservations = null;
-    this.locationReservationService
-      .getLocationReservationsOfTimeslot(this.currentTimeSlot)
+    timer(0, 60 * 1000)
+      .pipe(
+        switchMap(() =>
+          this.locationReservationService.getLocationReservationsOfTimeslot(
+            this.currentTimeSlot
+          )
+        )
+      )
       .subscribe(
         (next) => {
           this.locationReservations = next;
