@@ -170,6 +170,10 @@ public class LocationReservationController extends AuthorizedLocationController 
     @PreAuthorize("hasAuthority('HAS_VOLUNTEERS') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void setAllNotScannedStudentsToUnattendedForTimeslot(@RequestBody Timeslot timeslot) {
         try {
+            // check if user is allowed by role
+            CalendarPeriod calendarPeriod = calendarPeriodDao.getById(timeslot.getCalendarId());
+            isVolunteer(calendarPeriod.getLocation().getLocationId());
+
             logger.info(String.format("Setting all students who were not scanned to unattended for timeslot %s", timeslot));
             locationReservationDao.setNotScannedStudentsToUnattended(timeslot);
         } catch (SQLException e) {
