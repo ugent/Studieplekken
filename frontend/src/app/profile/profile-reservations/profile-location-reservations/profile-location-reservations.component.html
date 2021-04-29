@@ -36,9 +36,9 @@
             <td>{{getBeginHour(pair.first.timeslot, pair.second)}}</td>
 
             <!-- If not attended, we put some extra explanation, else we don't. -->
-            <td
-            *ngIf="needTooltip(pair.first, pair.second)"
-            #tooltip="matTooltip" matTooltip="{{'profile.reservations.locations.table.attended.notScannedExplanation' | translate}}" matTooltipPosition="above" class="dotted_ul">
+            <td *ngIf="needTooltip(pair.first, pair.second)" class="dotted_ul"
+                data-toggle="tooltip" data-placement="top"
+                title="{{'profile.reservations.locations.table.attended.notScannedExplanation' | translate}}">
               {{getCorrectI18NObject(pair.first, pair.second) | translate}}</td>
 
               <td *ngIf="!needTooltip(pair.first, pair.second)">{{getCorrectI18NObject(pair.first, pair.second) | translate}}</td>
