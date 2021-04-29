@@ -608,7 +608,7 @@
 
         "scanningErrorModal": {
           "title": "Scannen mislukt",
-          "message": "Er is iets misgelopen tijdens het scannen. De aan-/afwezigheid werd niet goed geregistreerd. Probeer je iemand als aanwezig aan te duiden in een volle ruimte?"
+          "message": "Er is iets misgelopen tijdens het scannen. De aan-/afwezigheid werd niet goed geregistreerd. Probeer je een afwezige als aanwezig aan te duiden in een volle ruimte? Deze reservatie was verwijderd en het zitje intussen gereserveerd door iemand anders."
         }
       },
       "locker": {

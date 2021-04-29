@@ -232,6 +232,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
     @Override
     public boolean setReservationAttendance(String augentId, Timeslot timeslot, boolean attendance) throws SQLException {
         try (Connection conn = adb.getConnection()) {
+            conn.setAutoCommit(false);
             LocationReservation lr = getLocationReservation(augentId, timeslot);
             if(lr == null) {
                 return false;
@@ -268,6 +269,8 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
             pstmt.setInt(4, timeslot.getTimeslotSeqnr());
             pstmt.setString(5, augentId);
             pstmt.execute();
+            conn.commit();
+            conn.setAutoCommit(true);
         }
         return true;
     }
