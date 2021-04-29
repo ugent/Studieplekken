@@ -41,14 +41,16 @@ public class ScanController extends AuthorizedLocationController {
     }
 
     @GetMapping("/locations")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('HAS_VOLUNTEERS')")
+    @PreAuthorize("hasAuthority('HAS_VOLUNTEERS') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public List<Location> getLocationsToScan() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         try {
-            return locationDao.getAllLocations().stream()
-                    .filter(f -> user.getUserVolunteer().contains(f.getLocationId()) || user.isAdmin())
-                    .collect(Collectors.toList());
+            return locationDao.getAllLocations().stream().filter(f ->
+                    user.isAdmin() ||
+                    user.getUserAuthorities().contains(f.getAuthority()) ||
+                    user.getUserVolunteer().contains(f.getLocationId())
+            ).collect(Collectors.toList());
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));

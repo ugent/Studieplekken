@@ -88,7 +88,7 @@ export class AuthorizationGuardService implements CanActivate {
 
   isAdminOrHasLocationsToScan(): boolean {
     return (
-      this.authenticationService.isAdmin() ||
+      this.isAdminOrHasAuthorities() ||
       this.authenticationService.hasVolunteeredValue()
     );
   }
