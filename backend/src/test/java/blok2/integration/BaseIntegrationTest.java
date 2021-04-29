@@ -90,7 +90,6 @@ public abstract class BaseIntegrationTest extends BaseTest {
 
         Timeslot timeslot = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
 
-
         LocationReservation reservation = new LocationReservation(student, LocalDateTime.now(), timeslot, null);
         locationReservationDao.addLocationReservationIfStillRoomAtomically(reservation);
 
