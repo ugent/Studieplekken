@@ -113,7 +113,6 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
                 conn.setAutoCommit(false);
                 LocationReservation lr = getLocationReservation(augentID, timeslot);
 
-
                 // delete the location reservation
                 PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_location_reservation"));
                 pstmt.setString(1, augentID);
@@ -237,6 +236,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
                 return false;
             }
 
+            // attendance goes from null or true to false -> decrement reservation count
             if(!attendance && (lr.getAttended() == null || lr.getAttended())) {
                 // This seat needs to be freed, since this user is not present. We double check that this value wasn't already false (and therefore already removed)
                 PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("subtract_one_to_reservation_count"));
@@ -259,7 +259,6 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
                 }
 
             }
-
 
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("set_location_reservation_attendance"));
             pstmt.setBoolean(1, attendance);

@@ -4,7 +4,6 @@ import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
 import org.json.JSONObject;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
 import org.springframework.security.test.context.support.WithUserDetails;
@@ -54,7 +53,6 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
     public void testCreateReservation() throws Exception {
         Timeslot timeslot = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(1);
 
-
         mockMvc.perform(post("/locations/reservations").with(csrf())
                 .content(objectMapper.writeValueAsString(timeslot)).contentType("application/json")).andDo(print())
                 .andExpect(status().isOk());
@@ -66,9 +64,7 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "student1", userDetailsServiceBeanName = "testUserDetails")
     public void testCreateReservationDuplicate() throws Exception {
-
         Timeslot timeslot = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
-
 
         mockMvc.perform(post("/locations/reservations").with(csrf())
                 .content(objectMapper.writeValueAsString(timeslot)).contentType("application/json")).andDo(print())
@@ -100,7 +96,6 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
     public void testDeleteReservationAsAdmin() throws Exception {
         Timeslot timeslot = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
 
-
         LocationReservation reservation = new LocationReservation(student, null, timeslot, false);
 
         mockMvc.perform(delete("/locations/reservations").with(csrf())
@@ -116,7 +111,6 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
     public void testDeleteReservationAsOther() throws Exception {
         Timeslot timeslot = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
 
-
         LocationReservation reservation = new LocationReservation(student, null, timeslot, false);
 
         mockMvc.perform(delete("/locations/reservations").with(csrf())
@@ -131,7 +125,6 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testSetAttendance() throws Exception {
         Timeslot timeslot = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
-
 
         String url = String.format("/locations/reservations/%s/%d/%s/%d/attendance",
                 student.getAugentID(), timeslot.getCalendarId(),
@@ -176,15 +169,12 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
                 timeslot.getTimeslotDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
                 timeslot.getTimeslotSeqnr());
 
-
-
         JSONObject obj = new JSONObject().put("attended", true);
 
         mockMvc.perform(post(url).with(csrf()).content(obj.toString()).contentType("application/json")).andDo(print())
                 .andExpect(status().isOk());
 
         Timeslot timeslotAfterUpdate = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
-
 
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getAugentID());
         Assert.assertEquals(true, list.get(0).getAttended());
@@ -202,15 +192,12 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
                 timeslot.getTimeslotDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
                 timeslot.getTimeslotSeqnr());
 
-
-
         JSONObject obj = new JSONObject().put("attended", false);
 
         mockMvc.perform(post(url).with(csrf()).content(obj.toString()).contentType("application/json")).andDo(print())
                 .andExpect(status().isOk());
 
         Timeslot timeslotAfterUpdate = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
-
 
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getAugentID());
         Assert.assertEquals(false, list.get(0).getAttended());
@@ -227,8 +214,6 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
                 student.getAugentID(), timeslot.getCalendarId(),
                 timeslot.getTimeslotDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
                 timeslot.getTimeslotSeqnr());
-
-
 
         JSONObject obj = new JSONObject().put("attended", false);
 
@@ -256,8 +241,6 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
                 timeslot.getTimeslotDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
                 timeslot.getTimeslotSeqnr());
 
-
-
         JSONObject obj = new JSONObject().put("attended", false);
 
         mockMvc.perform(post(url).with(csrf()).content(obj.toString()).contentType("application/json")).andDo(print())
@@ -273,6 +256,6 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
 
         timeslotAfterUpdate = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
         Assert.assertEquals(timeslot.getAmountOfReservations() - 1, timeslotAfterUpdate.getAmountOfReservations());
-
     }
+    
 }
