@@ -94,14 +94,14 @@ public class ScheduledTasks {
     }
 
     /**
-     * Scheduled task to be run every day at 10h00. This task fetches all unattended reservations for the day before
+     * Scheduled task to be run every day at 21h00. This task fetches all unattended reservations for that day
      * and sends a mail to all unattended students (cfr. resources/templates/mail/not_attended.html for the mail).
      */
-    @Scheduled(cron = "0 0 10 * * *")
+    @Scheduled(cron = "0 0 21 * * *")
     public void mailToUnattendedStudents() {
         try {
             List<Pair<LocationReservation, CalendarPeriod>> reservations =
-                    locationReservationDao.getUnattendedLocationReservations(LocalDate.now().minusDays(1));
+                    locationReservationDao.getUnattendedLocationReservations(LocalDate.now());
 
             logger.info(String.format("Running scheduled task mailToUnattendedStudents() for %d reservations: %s",
                     reservations.size(), reservations));
