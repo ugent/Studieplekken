@@ -161,7 +161,7 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
 
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
-    public void testSetAttendanceNoSeatIncrease() throws Exception {
+    public void testSetAttendanceNoAmountReservationDecrease() throws Exception {
         Timeslot timeslot = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
 
         String url = String.format("/locations/reservations/%s/%d/%s/%d/attendance",
@@ -184,7 +184,7 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
 
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
-    public void testSetAttendanceSeatIncrease() throws Exception {
+    public void testSetAttendanceAmountReservationsDecrease() throws Exception {
         Timeslot timeslot = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
 
         String url = String.format("/locations/reservations/%s/%d/%s/%d/attendance",
@@ -207,7 +207,7 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
 
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
-    public void testSetAttendanceSeatIncreaseOnlyOnce() throws Exception {
+    public void testSetAttendanceAmountReservationsDecreaseOnlyOnce() throws Exception {
         Timeslot timeslot = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
 
         String url = String.format("/locations/reservations/%s/%d/%s/%d/attendance",
