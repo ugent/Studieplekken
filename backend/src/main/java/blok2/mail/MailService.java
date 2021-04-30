@@ -1,6 +1,8 @@
 package blok2.mail;
 
+import blok2.model.calendar.CalendarPeriod;
 import blok2.model.reservables.Location;
+import blok2.model.reservations.LocationReservation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.IsoFields;
 import java.time.temporal.TemporalAdjusters;
@@ -34,6 +37,7 @@ public class MailService {
     public static final String EXAMPLE_MAIL_TEMPLATE_URL = "mail/example_mail";
     public static final String OPENING_HOURS_OVERVIEW_TEMPLATE_URL = "mail/opening_hours_overview";
     public static final String ADMIN_VALIDATION_FOR_NEW_LOCATION_REQUESTED_TEMPLATE_URL = "mail/location_created";
+    public static final String STUDENT_DID_NOT_ATTEND = "mail/not_attended";
 
     public static final String NO_REPLY_SENDER = "no-reply@dsa.ugent.be";
 
@@ -136,6 +140,37 @@ public class MailService {
         return title;
     }
 
+    // *************************************************
+    // *  Methods for mailing to unattended students   *
+    // *************************************************/
+
+    public void sendMailToUnattendedStudent(String target, LocationReservation locationReservation,
+                                            CalendarPeriod calendarPeriod) throws MessagingException {
+        Context ctx = new Context();
+        String title = prepareMailToUnattendedStudent(locationReservation, calendarPeriod, ctx);
+        ctx.setVariable("addressing", locationReservation.getUser().getFirstName());
+        sendMail(target, title, ctx, STUDENT_DID_NOT_ATTEND);
+    }
+
+    private String prepareMailToUnattendedStudent(LocationReservation locationReservation,
+                                                  CalendarPeriod calendarPeriod, Context ctx) {
+        String title = "[Werk- en Studieplekken] Afwezigheid op gereserveerd tijdslot";
+
+        ctx.setVariable("title", title);
+        ctx.setVariable("studieplek", calendarPeriod.getLocation().getName());
+
+        LocalTime startTime = calendarPeriod
+                .getOpeningTime()
+                .plusMinutes((long) calendarPeriod.getTimeslotLength() * locationReservation.getTimeslot().getTimeslotSeqnr());
+
+        LocalTime endTime = startTime.plusMinutes(calendarPeriod.getTimeslotLength());
+
+        ctx.setVariable("startTime", startTime.format(DateTimeFormatter.ISO_TIME));
+        ctx.setVariable("endTime", endTime.format(DateTimeFormatter.ISO_TIME));
+
+        return title;
+    }
+
     // ********************************************
     // *  Methods for actually sending the mail   *
     // ********************************************/
@@ -199,13 +234,13 @@ public class MailService {
      * to be sent. Otherwise they are blocked.
      */
     private boolean allowedToSendMailByEnvironment(String target, String templateFileName, String subject) {
-        if (!springProfilesActive.contains("mail")) {
-            logger.info(String.format("Blocked sending mail to '%s' with template file name '%s' and " +
-                            "subject '%s' because 'mail' is not an active profile.",
-                    target, templateFileName, subject));
-            return false;
-        }
-        return true;
+        if (springProfilesActive.contains("mail"))
+            return true;
+
+        logger.info(String.format("Blocked sending mail to '%s' with template file name '%s' and " +
+                        "subject '%s' because 'mail' is not an active profile.", target, templateFileName, subject));
+
+        return false;
     }
 
     private boolean allowedToSendMailByEnvironment(String[] targets, String templateUrl, String subject) {
