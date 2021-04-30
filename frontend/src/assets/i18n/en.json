@@ -840,6 +840,7 @@
     "error": "Something went wrong with scanning this user. Please try again.",
     "mobile-hint": "Scanning works best when the barcode is aligned horizontally.",
     "handheld-hint": "To use the handheld scanner, select the input box below. If scan is succesful, the user will pop to the top of the list.",
-    "maybe":"This user wasn't found. Search in the list below, or try again."
+    "maybe":"This user wasn't found. Search in the list below, or try again.",
+    "warn-unattended": "Marking someone as unattended opens up the seat for reservation."
   }
 }
