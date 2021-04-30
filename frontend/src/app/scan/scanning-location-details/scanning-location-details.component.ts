@@ -9,6 +9,7 @@ import { of } from 'rxjs/internal/observable/of';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { BarcodeService } from 'src/app/services/barcode.service';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
+import { timer } from 'rxjs';
 
 @Component({
   selector: 'app-scanning-location-details',
@@ -45,7 +46,8 @@ export class ScanningLocationDetailsComponent implements OnInit {
       })
     );
 
-    this.locationReservationObs = this.locationObs.pipe(
+    this.locationReservationObs = timer(0, 60 * 1000).pipe(
+      switchMap(() => this.locationObs),
       switchMap((l) =>
         this.reservationService.getLocationReservationsOfTimeslot(
           l.currentTimeslot
