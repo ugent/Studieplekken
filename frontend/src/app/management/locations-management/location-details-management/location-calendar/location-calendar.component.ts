@@ -5,7 +5,9 @@ import * as moment from 'moment';
 import { Observable, Subject, BehaviorSubject, timer } from 'rxjs';
 import { CalendarPeriodsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
-import { ApplicationTypeFunctionalityService } from 'src/app/services/functionality/application-type/application-type-functionality.service';
+import {
+  ApplicationTypeFunctionalityService
+} from 'src/app/services/functionality/application-type/application-type-functionality.service';
 import {
   CalendarPeriod,
   mapCalendarPeriodsToCalendarEvents
@@ -313,16 +315,16 @@ export class LocationCalendarComponent implements OnInit {
     }
   }
 
-  timeslotPickedHandler(event: Event): void {
+  timeslotPickedHandler(event: any): void {
     // event is a non-reservable calendar period.
-    if (!event['timeslot']) {
+    if (!event.timeslot) {
       this.showReservations = false;
       this.errorOnRetrievingReservations = false;
       return;
     }
 
-    this.currentTimeSlot = event['timeslot'] as Timeslot;
-    this.currentCalendarPeriod = event['calendarPeriod'] as CalendarPeriod;
+    this.currentTimeSlot = event.timeslot as Timeslot;
+    this.currentCalendarPeriod = event.calendarPeriod as CalendarPeriod;
 
     this.loadReservations();
   }
@@ -394,7 +396,7 @@ export class LocationCalendarComponent implements OnInit {
   public getCalendarPeriodTimeInMinutes(
     calendarPeriod: CalendarPeriod
   ): number {
-    if (!calendarPeriod.closingTime) return null;
+    if (!calendarPeriod.closingTime) { return null; }
 
     return calendarPeriod.openingTime?.diff(
       calendarPeriod.closingTime,
