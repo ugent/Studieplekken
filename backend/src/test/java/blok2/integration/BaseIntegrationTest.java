@@ -88,7 +88,7 @@ public abstract class BaseIntegrationTest extends BaseTest {
         authorityDao.addUserToAuthority(authHolder.getAugentID(), authority.getAuthorityId());
         authHolder = accountDao.getUserByEmail("authholder@ugent.be");
 
-        Timeslot timeslot = new Timeslot(cps[0], 0, cps[0].getStartsAt().plusDays(1));
+        Timeslot timeslot = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
 
         LocationReservation reservation = new LocationReservation(student, LocalDateTime.now(), timeslot, null);
         locationReservationDao.addLocationReservationIfStillRoomAtomically(reservation);
