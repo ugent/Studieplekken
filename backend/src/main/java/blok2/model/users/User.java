@@ -108,10 +108,10 @@ public class User implements Cloneable, UserDetails {
         return admin;
     }
 
-
     public List<Authority> getUserAuthorities() {
         return userAuthorities;
     }
+
     public List<Integer> getUserVolunteer() {
         return userVolunteer;
     }

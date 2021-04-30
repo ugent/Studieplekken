@@ -51,6 +51,8 @@ export const api = {
   locationReservationCount: '/api/locations/reservations/count/{locationId}',
   locationReservationsWithLocationOfUser:
     '/api/locations/reservations/{userId}',
+  locationReservationsOfNotScannedUsers:
+    '/api/locations/reservations/not-scanned',
 
   // AUTHORITY
   buildings: '/api/building',

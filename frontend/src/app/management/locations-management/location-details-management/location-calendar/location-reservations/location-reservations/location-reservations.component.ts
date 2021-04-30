@@ -29,7 +29,7 @@ export class LocationReservationsComponent {
   @Input() currentTimeSlot: Timeslot;
   @Input() lastScanned?: LocationReservation;
 
-  @Input() hideDeleteIcon = false; // used by ScanningLocationDetails to disable the "delete" icon for volunteers
+  @Input() isManagement = true; // enable some functionality that should not be enabled for volunteers in the Scan page
 
   @Output()
   reservationChange: EventEmitter<unknown> = new EventEmitter<unknown>();
@@ -38,17 +38,16 @@ export class LocationReservationsComponent {
 
   successDeletingLocationReservation: boolean = undefined;
 
-  startedScanning = true;
   searchTerm = '';
 
   scannedLocationReservations: LocationReservation[] = [];
-  warning = false;
+  noSuchUserFoundWarning = false;
   waitingForServer = false;
 
   userHasSearchTerm: (u: User) => boolean = (u: User) =>
     u.augentID.includes(this.searchTerm) ||
     u.firstName.includes(this.searchTerm) ||
-    u.lastName.includes(this.searchTerm);
+    u.lastName.includes(this.searchTerm)
 
   constructor(
     private locationReservationService: LocationReservationsService,
@@ -100,6 +99,40 @@ export class LocationReservationsComponent {
           this.modalService.show(errorTemplate);
         }
       );
+  }
+
+  setAllNotScannedToUnattended(errorTemplate: TemplateRef<unknown>): void {
+    // if the update is not successful, rollback UI changes
+    const rollback: LocationReservation[] = [];
+
+    // set all reservations where attended is null to false
+    this.locationReservations.forEach(
+      (reservation) => {
+        if (reservation.attended !== true) {
+          reservation.attended = false;
+          rollback.push(reservation);
+        }
+      }
+    );
+
+    console.log('Finishing up');
+
+    // update server side
+    this.locationReservationService
+      .setAllNotScannedAsUnattended(
+        this.currentTimeSlot
+      ).subscribe(
+      () => {},
+      () => {
+          // on error, rollback UI changes
+          rollback.forEach(
+            reservation => {
+              reservation.attended = null;
+            }
+          );
+          this.modalService.show(errorTemplate);
+        }
+    );
   }
 
   // /*************
@@ -173,8 +206,16 @@ export class LocationReservationsComponent {
     return start.isBefore(moment());
   }
 
-  isButtonDisabled(reservation: LocationReservation): boolean {
-    return reservation.attended;
+  isTimeslotStartInFuture(): boolean {
+    return !this.isTimeslotStartInPast();
+  }
+
+  disableYesButton(reservation: LocationReservation): boolean {
+    return this.isTimeslotStartInFuture() || (reservation.attended !== null && reservation.attended === true);
+  }
+
+  disableNoButton(reservation: LocationReservation): boolean {
+    return this.isTimeslotStartInFuture() || (reservation.attended !== null && reservation.attended === false);
   }
 
   /**
@@ -199,10 +240,10 @@ export class LocationReservationsComponent {
   }
 
   updateSearchTerm(errorTemplate: TemplateRef<unknown>): void {
-    this.warning =
+    this.noSuchUserFoundWarning = this.searchTerm.length > 0 &&
       this.locationReservations.every(
         (lr) => !this.userHasSearchTerm(lr.user)
-      ) && this.searchTerm.length > 0;
+      );
 
     const fullyMatchedUser = this.barcodeService.getReservation(
       this.locationReservations,

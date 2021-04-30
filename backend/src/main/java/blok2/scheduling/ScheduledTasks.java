@@ -1,7 +1,11 @@
 package blok2.scheduling;
 
 import blok2.daos.ILocationDao;
+import blok2.daos.ILocationReservationDao;
+import blok2.helpers.Pair;
 import blok2.mail.MailService;
+import blok2.model.calendar.CalendarPeriod;
+import blok2.model.reservations.LocationReservation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +13,12 @@ import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import javax.mail.MessagingException;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.temporal.IsoFields;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -20,13 +27,16 @@ public class ScheduledTasks {
     private static final Logger logger = LoggerFactory.getLogger(ScheduledTasks.class);
 
     private final ILocationDao locationDao;
+    private final ILocationReservationDao locationReservationDao;
     private final MailService mailService;
 
     private final String[] recipients;
 
     @Autowired
-    public ScheduledTasks(ILocationDao locationDao, MailService mailService, Environment env) {
+    public ScheduledTasks(ILocationDao locationDao, ILocationReservationDao locationReservationDao,
+                          MailService mailService, Environment env) {
         this.locationDao = locationDao;
+        this.locationReservationDao = locationReservationDao;
         this.mailService = mailService;
         recipients = env.getProperty("custom.mailing.recipientsOpeningHoursOverview", String[].class);
     }
@@ -80,6 +90,33 @@ public class ScheduledTasks {
         } catch (Exception e) {
             logger.error(String.format("The scheduled task weeklyOpeningHoursMailing() could " +
                     "not be executed due to an exception that was thrown: %s", e.getMessage()));
+        }
+    }
+
+    /**
+     * Scheduled task to be run every day at 21h00. This task fetches all unattended reservations for that day
+     * and sends a mail to all unattended students (cfr. resources/templates/mail/not_attended.html for the mail).
+     */
+    @Scheduled(cron = "0 0 21 * * *")
+    public void mailToUnattendedStudents() {
+        try {
+            List<Pair<LocationReservation, CalendarPeriod>> reservations =
+                    locationReservationDao.getUnattendedLocationReservations(LocalDate.now());
+
+            logger.info(String.format("Running scheduled task mailToUnattendedStudents() for %d reservations: %s",
+                    reservations.size(), reservations));
+
+            for (Pair<LocationReservation, CalendarPeriod> pair : reservations) {
+                try {
+                    mailService.sendMailToUnattendedStudent(pair.getFirst().getUser().getMail(),
+                            pair.getFirst(), pair.getSecond());
+                } catch (MessagingException e) {
+                    logger.error(String.format("Could not send mail to unattended student for %s", pair));
+                }
+            }
+
+        } catch (SQLException e) {
+            logger.error(String.format("Could not fetch unattended location reservations: %s", e.getMessage()));
         }
     }
 

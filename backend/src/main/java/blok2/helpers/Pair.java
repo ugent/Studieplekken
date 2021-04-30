@@ -1,11 +1,13 @@
 package blok2.helpers;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import java.util.Objects;
 
 /**
  * A helper class to represent a pair. This is the java variant of a pair in C++.
  */
-public class Pair<S extends Object, T extends Object> {
+public class Pair<S, T> {
     private S first;
     private T second;
 
@@ -37,6 +39,11 @@ public class Pair<S extends Object, T extends Object> {
         Pair<?, ?> pair = (Pair<?, ?>) o;
         return Objects.equals(first, pair.first) &&
                 Objects.equals(second, pair.second);
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 
     @Override

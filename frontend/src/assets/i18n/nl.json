@@ -101,7 +101,8 @@
       "search": "Zoek",
       "clear": "Annuleer",
       "open": "Toon open locaties",
-      "close": "Sluiten"
+      "close": "Sluiten",
+      "print": "Print"
     },
     "roles": {
       "ADMIN": "Admin"
@@ -183,6 +184,8 @@
           "title": "Reservaties voor de ruimte",
           "selectSlot": "Selecteer een (reserveerbaar) timeslot om de reservaties te zien",
           "searchUser": "Zoek naar een gebruiker op voornaam, achternaam of studentennummer:",
+          "startScanning": "Einde scannen",
+          "startScanningTooltip": "Zet alle niet gescande studenten als afwezig.",
           "loading": "Reservaties voor het geselecteerde slot worden geladen",
           "error": "Er is iets misgelopen tijdens het ophalen van de reservaties...",
           "table": {
