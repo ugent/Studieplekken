@@ -2,6 +2,7 @@ package blok2.integration;
 
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -256,6 +257,34 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
 
         timeslotAfterUpdate = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
         Assert.assertEquals(timeslot.getAmountOfReservations() - 1, timeslotAfterUpdate.getAmountOfReservations());
+    }
+
+    @Test
+    @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
+    public void testSetAllUnknownUnattended() throws Exception {
+        Timeslot timeslot = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
+
+        // Adding one extra reservation which doesn't get discounted
+        locationReservationDao.addLocationReservationIfStillRoomAtomically(new LocationReservation(student2, LocalDateTime.now(), timeslot, null));
+        locationReservationDao.setReservationAttendance(student2.getAugentID(), timeslot, true);
+        timeslot = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
+        Assert.assertEquals(2, timeslot.getAmountOfReservations());
+
+
+        mockMvc.perform(put("/locations/reservations/not-scanned").with(csrf()).content(objectMapper.writeValueAsString(timeslot)).contentType("application/json")).andDo(print())
+                .andExpect(status().isOk());
+
+        Timeslot timeslotAfterUpdate = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
+        Assert.assertEquals(1, timeslotAfterUpdate.getAmountOfReservations());
+
+
+
+        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getAugentID());
+        System.out.println(list);
+        Assert.assertEquals(false, list.get(0).getAttended());
+        list = locationReservationDao.getAllLocationReservationsOfUser(student2.getAugentID());
+        Assert.assertEquals(true, list.get(0).getAttended());
+
     }
     
 }

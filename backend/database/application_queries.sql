@@ -235,6 +235,12 @@ update timeslots
 set reservation_count = reservation_count - 1
 where calendar_id = ? and timeslot_date = ? and timeslot_sequence_number= ?;
 
+-- $subtract_x_to_reservation_count
+update timeslots
+set reservation_count = reservation_count - ?
+where calendar_id = ? and timeslot_date = ? and timeslot_sequence_number= ?;
+
+
 -- $delete_location_reservation
 delete
 from public.location_reservations
