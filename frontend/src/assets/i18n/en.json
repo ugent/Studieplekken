@@ -594,10 +594,9 @@
         },
         "finishScanningModal": {
           "title": "Finish scanning",
-          "body": "After finishing with scanning, all absent students will automatically gain 50 penalty points.",
-          "body2": "If a student was absent in a previous scan for this timeslot and is now present, the earlier given penalty points will be removed.",
-          "success": "Successfully finished with scanning.",
-          "error": "Something went wrong while finishing with scanning."
+          "message1": "If you finish scanning this study room, all reservations that were not explicitly scanned as attended/absent will be set as absent.",
+          "message2": "This means that all students that were not scanned, lose their spot for this timeslot.",
+          "message3": "If an absent student later this timeslot does show up, and there are still spots free, you can still set the student as attended by scanning him/her."
         },
         "deleteModal": {
           "title": "Sure to delete the room reservation?",
