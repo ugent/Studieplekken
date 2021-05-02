@@ -11,7 +11,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_PROFILES_ACTIVE: prod
+      SPRING_PROFILES_ACTIVE: prod,mail
       SW_AGENT_COLLECTOR_BACKEND_SERVICES: oap:11800
       TZ: Europe/Brussels
     depends_on:
