@@ -594,10 +594,9 @@
         },
         "finishScanningModal": {
           "title": "Beëindigen van het scannen",
-          "body": "Na het beëindigen van het scannen zullen de afwezige studenten automatisch 50 strafpunten krijgen.",
-          "body2": "Indien in een vorige scan voor hetzelfde tijdslot een student afwezig was maar in deze scan aanwezig is, dan zullen de eerder verkregen strafpunten verwijderd worden.",
-          "success": "Het beëindigen van het scannen is gelukt.",
-          "error": "Er is iets misgelopen tijdens het beëindigen van het scannen."
+          "message1": "Als je het scannen beëindigt, worden alle reservaties die niet expliciet als aanwezig/afwezig gescand zijn als afwezig opgenomen.",
+          "message2": "Dat zorgt ervoor dat alle niet-gescande studenten ook hun plaats verliezen voor dit tijdslot.",
+          "message3": "Als een afwezige student later toch nog komt opdagen, kan je die alsnog op aanwezig zetten door die te scannen als er nog voldoende plaatsen zijn op de studieplek.."
         },
         "deleteModal": {
           "title": "Zeker dat je de reservatie wilt verwijderen?",

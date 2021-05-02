@@ -101,7 +101,14 @@ export class LocationReservationsComponent {
       );
   }
 
+  onFinishScanningClick(modalTemplate: TemplateRef<unknown>): void {
+    this.modalService.show(modalTemplate);
+  }
+
   setAllNotScannedToUnattended(errorTemplate: TemplateRef<unknown>): void {
+    // hide finishScanningModal
+    this.modalService.hide();
+
     // if the update is not successful, rollback UI changes
     const rollback: LocationReservation[] = [];
 
@@ -114,8 +121,6 @@ export class LocationReservationsComponent {
         }
       }
     );
-
-    console.log('Finishing up');
 
     // update server side
     this.locationReservationService

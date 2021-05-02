@@ -27,7 +27,7 @@
       <div class="col-sm-2 col-md-2 pull-right">
         <button id="finish" class="btn btn-secondary"
                 [disabled]="isTimeslotStartInFuture()"
-                (click)="setAllNotScannedToUnattended(scanningError)"
+                (click)="onFinishScanningClick(finishScanningModal)"
                 data-toggle="tooltip" data-placement="top"
                 title="{{'management.locationDetails.calendar.reservations.startScanningTooltip' | translate}}">
           {{'management.locationDetails.calendar.reservations.startScanning' | translate}}
@@ -51,12 +51,12 @@
         <td>{{reservation.user.firstName + ' ' + reservation.user.lastName}}</td>
         <td>{{getCorrectI18NObject(reservation) | translate}}</td>
         <td>
-          <button class="btn btn-secondary btn-left"
+          <button class="btn btn-primary btn-left"
                   [disabled]="disableYesButton(reservation)"
                   (click)="scanLocationReservation(reservation, true, scanningError)">
             {{'general.yes' | translate}}
           </button>
-          <button class="btn btn-default"
+          <button class="btn btn-secondary"
                   [disabled]="disableNoButton(reservation)"
                   (click)="scanLocationReservation(reservation, false, scanningError)">
             {{'general.no' | translate}}
@@ -125,6 +125,39 @@
     </div>
   </div>
 </ng-template>
+
+<ng-template #finishScanningModal>
+  <!-- Modal header -->
+  <div class="modal-header">
+    <h5 class="modal-title inline-block" id="finishScanningModalTitle">
+      {{'management.reservations.location.finishScanningModal.title' | translate}}
+    </h5>
+    <button type="button" class="close" (click)="closeModal()" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <!-- Modal body -->
+  <div class="modal-body">
+    <div class="alert alert-warning">
+      <p>{{'management.reservations.location.finishScanningModal.message1' | translate}}</p>
+      <p>{{'management.reservations.location.finishScanningModal.message2' | translate}}</p>
+      <p>{{'management.reservations.location.finishScanningModal.message3' | translate}}</p>
+    </div>
+  </div>
+
+  <!-- Modal footer -->
+  <div class="modal-footer">
+    <button class="btn btn-primary" (click)="setAllNotScannedToUnattended(scanningError)">
+      {{'general.yes' | translate}}
+    </button>
+
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">
+      {{'general.no' | translate}}
+    </button>
+  </div>
+</ng-template>
+
 
 <ng-template #scanningError>
   <!-- Modal header -->
