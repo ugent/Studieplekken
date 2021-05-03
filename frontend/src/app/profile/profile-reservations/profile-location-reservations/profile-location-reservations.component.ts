@@ -3,7 +3,7 @@ import { AuthenticationService } from '../../../services/authentication/authenti
 import { LocationReservation } from '../../../shared/model/LocationReservation';
 import { CalendarPeriod } from 'src/app/shared/model/CalendarPeriod';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
-import { Timeslot, timeslotEndHour } from 'src/app/shared/model/Timeslot';
+import {Timeslot, timeslotEndHour, timeslotStartHour} from 'src/app/shared/model/Timeslot';
 import { Pair } from '../../../shared/model/helpers/Pair';
 import * as moment from 'moment';
 import { BsModalService } from 'ngx-bootstrap/modal';
@@ -107,7 +107,7 @@ export class ProfileLocationReservationsComponent {
     reservation: LocationReservation,
     calendarPeriod: CalendarPeriod
   ): string {
-    if (this.isTimeslotInPast(reservation.timeslot, calendarPeriod)) {
+    if (timeslotStartHour(calendarPeriod, reservation.timeslot).isBefore(moment())) {
       if (reservation.attended === null) {
         return 'profile.reservations.locations.table.attended.notScanned';
       } else {
