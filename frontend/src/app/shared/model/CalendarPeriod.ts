@@ -301,8 +301,10 @@ function mapReservableTimeslotsToCalendarEvents(
       timeslotEndHour(period, timeslot)
     );
 
-    const currentLR = locationReservations.find(value => timeslotEquals(value.timeslot, timeslot));
-    let color = null;
+    const currentLR = locationReservations.find((value) =>
+      timeslotEquals(value.timeslot, timeslot)
+    );
+    let color: { primary: string; secondary: string } = null;
     if (currentLR) {
       if (currentLR.attended === false) {
         color = { primary: '#880000', secondary: '#880000' };
@@ -319,9 +321,7 @@ function mapReservableTimeslotsToCalendarEvents(
       end: endDT,
       meta: { calendarPeriod: period, timeslot },
       color,
-      cssClass: currentLR
-        ? 'calendar-event-reserved'
-        : '',
+      cssClass: currentLR ? 'calendar-event-reserved' : '',
     });
   }
 
