@@ -44,7 +44,8 @@
               <td *ngIf="!needTooltip(pair.first, pair.second)">{{getCorrectI18NObject(pair.first, pair.second) | translate}}</td>
             <!-- User should not be able to delete past reservations, otherwise the penalty points
                  could be deleted as well -->
-            <td *ngIf="!isTimeslotInPast(pair.first.timeslot, pair.second)" class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
+            <td *ngIf="!isTimeslotInPast(pair.first.timeslot, pair.second) && pair.first.attended !== false"
+                class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
                 (click)="prepareToDeleteLocationReservation(pair.first, pair.second, deleteLocationReservationModal)">
               <span class="glyphicon glyphicon-trash pointerCursor"></span>
             </td>
