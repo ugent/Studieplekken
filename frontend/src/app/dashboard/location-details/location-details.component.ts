@@ -132,7 +132,7 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
 
     setInterval(() => {
       this.updateCalendar();
-    }, 300000); // 5 minutes
+    }, 60 * 1000); // 1 minute
 
     this.showLockersManagement = this.functionalityService.showLockersManagementFunctionality();
   }
