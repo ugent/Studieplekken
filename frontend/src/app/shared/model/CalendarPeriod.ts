@@ -2,7 +2,8 @@ import { Location, LocationConstructor } from './Location';
 import { CalendarEvent } from 'angular-calendar';
 import {
   Timeslot,
-  timeslotEndHour, timeslotEquals,
+  timeslotEndHour,
+  timeslotEquals,
   timeslotStartHour,
 } from './Timeslot';
 import { LocationReservation } from './LocationReservation';
@@ -315,15 +316,60 @@ function mapReservableTimeslotsToCalendarEvents(
       }
     }
 
+    const cssClass = clickableBasedOnTime(
+      {
+        calendarPeriod: period,
+        timeslot: timeslot,
+      },
+      locationReservations
+    )
+      ? ''
+      : 'unclickable';
+
     calendarEvents.push({
       title: `${timeslot.amountOfReservations} / ${timeslot.seatCount}`,
       start: beginDT,
       end: endDT,
       meta: { calendarPeriod: period, timeslot },
       color,
-      cssClass: currentLR ? 'calendar-event-reserved' : '',
+      cssClass: currentLR ? cssClass + ' calendar-event-reserved' : cssClass,
     });
   }
 
   return calendarEvents;
+}
+
+/**
+ * If the selected timeslot is completely in the past (i.e. startHour and endHour are in the past),
+ * then the user should not be allowed to click on the timeslot.
+ *
+ * If the the now() is within [startHour, endHour] (taking the timeslot date into account), then
+ * in two occasions should the timeslot be clickable:
+ *     - the user has not made a reservation (currentRL will be undefined)
+ *     - the user was scanned as absent, then he shouldn't be able to delete this violation
+ * Note that the timeslot also shouldn't be clickable if the timeslot is full, but that is checked elsewhere
+ *
+ * If now() is before both startHour and endHour, the timeslot must always be clickable
+ */
+export function clickableBasedOnTime(
+  event: any,
+  locationReservations: LocationReservation[]
+): boolean {
+  const calendarPeriod = event.calendarPeriod as CalendarPeriod;
+  const timeslot = event.timeslot as Timeslot;
+  const now = moment();
+
+  const currentLR = locationReservations.find((value) =>
+    timeslotEquals(value.timeslot, timeslot)
+  );
+  const startIsPast = timeslotStartHour(calendarPeriod, timeslot).isBefore(now);
+  const endIsPast = timeslotEndHour(calendarPeriod, timeslot).isBefore(now);
+
+  if (startIsPast && endIsPast) {
+    return false;
+  } else if (startIsPast) {
+    return currentLR === undefined || currentLR.attended !== false;
+  } else {
+    return true;
+  }
 }
