@@ -10,8 +10,8 @@ import { LocationTag } from '../../shared/model/LocationTag';
 import { CalendarPeriodsService } from '../../services/api/calendar-periods/calendar-periods.service';
 import {
   includesTimeslot,
-  Timeslot,
-  timeslotEquals,
+  Timeslot, timeslotEndHour,
+  timeslotEquals, timeslotStartHour,
 } from 'src/app/shared/model/Timeslot';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
@@ -80,7 +80,7 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
   removedReservations: LocationReservation[];
 
   calendarMap: Map<number, CalendarPeriod> = new Map<number, CalendarPeriod>();
-  locationReservations: Observable<LocationReservation[]>;
+  locationReservations: LocationReservation[] = [];
   showAdmin: boolean;
   showLockersManagement: boolean;
   capacity: number;
@@ -105,6 +105,8 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
     this.locationId = Number(this.route.snapshot.paramMap.get('locationId'));
     this.location = this.locationService.getLocation(this.locationId);
     this.showAdmin = this.authenticationService.isAdmin();
+    this.authenticationService.getLocationReservations()
+      .subscribe(next => this.locationReservations = next);
     this.currentLang = this.translate.currentLang;
 
     // when the location is loaded, setup the descriptions
@@ -144,28 +146,23 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
       : 'closed';
   }
 
-  timeslotPicked(event: Event): void {
-    if (!event['timeslot']) {
-      // the calendar period is not reservable
-      return;
-    }
-
-    if (!this.loggedIn()) {
-      // When not logged in, calendar periods are unclickable
+  timeslotPicked(event: any): void {
+    if (
+      !event.timeslot || // the calendar period is not reservable
+      !this.loggedIn() || // when not logged in, calendar periods are unclickable
+      !this.clickableBasedOnTime(event, this.locationReservations)
+    ) {
       return;
     }
 
     // If the selected timeslot is not yet reservable, don't do anything
-    const calendarPeriod: CalendarPeriod = event[
-      'calendarPeriod'
-    ] as CalendarPeriod;
+    const calendarPeriod: CalendarPeriod = event.calendarPeriod as CalendarPeriod;
     if (moment().isBefore(calendarPeriod.reservableFrom)) {
       return;
     }
 
     this.isModified = true;
-
-    this.currentTimeslot = event['timeslot'] as Timeslot;
+    this.currentTimeslot = event.timeslot as Timeslot;
 
     const reservation: LocationReservation = {
       user: this.authenticationService.userValue(),
@@ -350,4 +347,35 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
   showDescription(description: string): boolean {
     return description !== '';
   }
+
+  /**
+   * If the selected timeslot is completely in the past (i.e. startHour and endHour are in the past),
+   * then the user should not be allowed to click on the timeslot.
+   *
+   * If the the now() is within [startHour, endHour] (taking the timeslot date into account), then
+   * in two occasions should the timeslot be clickable:
+   *     - the user has not made a reservation (currentRL will be undefined)
+   *     - the user was scanned as absent, then he shouldn't be able to delete this violation
+   * Note that the timeslot also shouldn't be clickable if the timeslot is full, but that is checked elsewhere
+   *
+   * If now() is before both startHour and endHour, the timeslot must always be clickable
+   */
+  clickableBasedOnTime(event: any, locationReservations: LocationReservation[]): boolean {
+    const calendarPeriod = event.calendarPeriod as CalendarPeriod;
+    const timeslot = event.timeslot as Timeslot;
+    const now = moment();
+
+    const currentLR = locationReservations.find(value => timeslotEquals(value.timeslot, timeslot));
+    const startIsPast = timeslotStartHour(calendarPeriod, timeslot).isBefore(now);
+    const endIsPast = timeslotEndHour(calendarPeriod, timeslot).isBefore(now);
+
+    if (startIsPast && endIsPast) {
+      return false;
+    } else if (startIsPast) {
+      return currentLR === undefined || currentLR.attended !== false;
+    } else {
+      return true;
+    }
+  }
+
 }
