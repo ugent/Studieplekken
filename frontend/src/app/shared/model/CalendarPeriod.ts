@@ -305,9 +305,11 @@ function mapReservableTimeslotsToCalendarEvents(
     let color = null;
     if (currentLR) {
       if (currentLR.attended === false) {
-        color = { primary: '', secondary: '#880000' };
+        color = { primary: '#880000', secondary: '#880000' };
+      } else if (currentLR.attended === true) {
+        color = { primary: '#007700', secondary: '#007700' };
       } else {
-        color = { primary: '', secondary: '#133E7D' };
+        color = { primary: '#133E7D', secondary: '#133E7D' };
       }
     }
 
