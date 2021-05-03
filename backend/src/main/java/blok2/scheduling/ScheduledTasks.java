@@ -32,6 +32,8 @@ public class ScheduledTasks {
 
     private final String[] recipients;
 
+    private static final int N_CONCURRENT_CONNECTIONS = 5;
+
     @Autowired
     public ScheduledTasks(ILocationDao locationDao, ILocationReservationDao locationReservationDao,
                           MailService mailService, Environment env) {
@@ -106,17 +108,41 @@ public class ScheduledTasks {
             logger.info(String.format("Running scheduled task mailToUnattendedStudents() for %d reservations: %s",
                     reservations.size(), reservations));
 
-            for (Pair<LocationReservation, CalendarPeriod> pair : reservations) {
-                try {
-                    mailService.sendMailToUnattendedStudent(pair.getFirst().getUser().getMail(),
-                            pair.getFirst(), pair.getSecond());
-                } catch (MessagingException e) {
-                    logger.error(String.format("Could not send mail to unattended student for %s", pair));
-                }
+            // Send 5 mails concurrently n times. For the n+1-th time, send the remainder of the mails
+            int n = reservations.size() / N_CONCURRENT_CONNECTIONS;
+            for (int i = 0; i < n; i++) {
+                mailToUnattendedStudentsInRange(reservations, i*N_CONCURRENT_CONNECTIONS,
+                        i*N_CONCURRENT_CONNECTIONS + N_CONCURRENT_CONNECTIONS);
             }
+            mailToUnattendedStudentsInRange(reservations, n*N_CONCURRENT_CONNECTIONS, reservations.size());
 
         } catch (SQLException e) {
             logger.error(String.format("Could not fetch unattended location reservations: %s", e.getMessage()));
+        }
+    }
+
+    private void mailToUnattendedStudentsInRange(List<Pair<LocationReservation, CalendarPeriod>> reservations,
+                                                 int start, int end) {
+        Thread[] threads = new Thread[end - start];
+
+        for (int i = start; i < end; i++) {
+            Pair<LocationReservation, CalendarPeriod> pair = reservations.get(i);
+
+            try {
+                threads[i - start] = mailService.sendMailToUnattendedStudent(pair.getFirst().getUser().getMail(),
+                        pair.getFirst(), pair.getSecond());
+            } catch (MessagingException e) {
+                logger.error(String.format("Could not send mail to unattended student for %s", pair));
+            }
+        }
+
+        for (int i = 0; i < end - start; i++) {
+            try {
+                threads[i].join();
+            } catch (InterruptedException e) {
+                logger.error(String.format("Could not join on thread while sending mail to unattended student:" +
+                        " %s", e.getMessage()));
+            }
         }
     }
 
