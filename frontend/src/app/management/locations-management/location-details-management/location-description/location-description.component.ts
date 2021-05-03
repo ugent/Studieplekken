@@ -72,7 +72,6 @@ export class LocationDescriptionComponent implements OnInit {
     this.location.pipe(
       switchMap(
         location => {
-          console.log('blablabla');
           // prepare location to update
           location.descriptionDutch = this.model.dutch;
           location.descriptionEnglish = this.model.english;
