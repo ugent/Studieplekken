@@ -5,6 +5,7 @@ import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { LocationDetailsService } from '../../../../services/single-point-of-truth/location-details/location-details.service';
 import { LocationService } from '../../../../services/api/locations/location.service';
 import { msToShowFeedback } from '../../../../app.constants';
+import {switchMap, take} from 'rxjs/operators';
 
 @Component({
   selector: 'app-location-description',
@@ -66,32 +67,37 @@ export class LocationDescriptionComponent implements OnInit {
     // show "loading" alert
     this.showUpdateSuccess = null;
 
-    // prepare location to update
-    const location = this.locationDetailsService.location;
-    location.descriptionDutch = this.model.dutch;
-    location.descriptionEnglish = this.model.english;
+    let loc: Location;
 
-    // update
-    this.locationService
-      .updateLocation(location.locationId, location)
-      .subscribe(
-        () => {
-          this.showUpdateSuccess = true;
-          setTimeout(
-            () => (this.showUpdateSuccess = undefined),
-            msToShowFeedback
-          );
-          // make sure to retrieve the updated the location
-          this.locationDetailsService.loadLocation(location.locationId);
-        },
-        () => {
-          this.showUpdateSuccess = false;
-          setTimeout(
-            () => (this.showUpdateSuccess = undefined),
-            msToShowFeedback
-          );
+    this.location.pipe(
+      switchMap(
+        location => {
+          console.log('blablabla');
+          // prepare location to update
+          location.descriptionDutch = this.model.dutch;
+          location.descriptionEnglish = this.model.english;
+          loc = location;
+          return this.locationService
+            .updateLocation(location.locationId, location);
         }
-      );
+      ),
+      take(1) // unsubscribe from this.location
+    ).subscribe(
+      () => {
+        this.showUpdateSuccess = true;
+        setTimeout(
+          () => (this.showUpdateSuccess = undefined),
+          msToShowFeedback
+        );
+      },
+      () => {
+        this.showUpdateSuccess = false;
+        setTimeout(
+          () => (this.showUpdateSuccess = undefined),
+          msToShowFeedback
+        );
+      }
+    );
   }
 
   cancelButtonClick(): void {
