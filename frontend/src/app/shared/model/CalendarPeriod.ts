@@ -1,9 +1,8 @@
 import { Location, LocationConstructor } from './Location';
 import { CalendarEvent } from 'angular-calendar';
 import {
-  includesTimeslot,
   Timeslot,
-  timeslotEndHour,
+  timeslotEndHour, timeslotEquals,
   timeslotStartHour,
 } from './Timeslot';
 import { LocationReservation } from './LocationReservation';
@@ -163,7 +162,7 @@ export function isCalendarPeriodValid(period: CalendarPeriod): boolean {
 export function mapCalendarPeriodsToCalendarEvents(
   periods: CalendarPeriod[],
   currentLang: string,
-  reservedTimeslots: LocationReservation[] = []
+  locationReservations: LocationReservation[] = []
 ): CalendarEvent<{ calendarPeriod: CalendarPeriod; timeslot?: Timeslot }>[] {
   if (periods.length === 0) {
     return [];
@@ -171,7 +170,7 @@ export function mapCalendarPeriodsToCalendarEvents(
   return periods
     .map((period) =>
       period.reservable && !period.areReservationsLocked()
-        ? mapReservableTimeslotsToCalendarEvents(period, reservedTimeslots)
+        ? mapReservableTimeslotsToCalendarEvents(period, locationReservations)
         : period.reservable && period.areReservationsLocked()
         ? mapNotYetReservableTimeslotsToCalendarEvents(period, currentLang)
         : mapNotReservableCalendarPeriodToCalendarEvent(period, currentLang)
@@ -285,7 +284,7 @@ function mapNotYetReservableTimeslotsToCalendarEvents(
  */
 function mapReservableTimeslotsToCalendarEvents(
   period: CalendarPeriod,
-  reservedTimeslots: LocationReservation[] = []
+  locationReservations: LocationReservation[] = []
 ): CalendarEvent<{ calendarPeriod: CalendarPeriod; timeslot: Timeslot }>[] {
   const calendarEvents: CalendarEvent<{
     calendarPeriod: CalendarPeriod;
@@ -302,21 +301,23 @@ function mapReservableTimeslotsToCalendarEvents(
       timeslotEndHour(period, timeslot)
     );
 
+    const currentLR = locationReservations.find(value => timeslotEquals(value.timeslot, timeslot));
+    let color = null;
+    if (currentLR) {
+      if (currentLR.attended === false) {
+        color = { primary: '', secondary: '#880000' };
+      } else {
+        color = { primary: '', secondary: '#133E7D' };
+      }
+    }
+
     calendarEvents.push({
       title: `${timeslot.amountOfReservations} / ${timeslot.seatCount}`,
       start: beginDT,
       end: endDT,
       meta: { calendarPeriod: period, timeslot },
-      color: includesTimeslot(
-        reservedTimeslots.map((s) => s.timeslot),
-        timeslot
-      )
-        ? { primary: '#00004d', secondary: '#133E7D' }
-        : null,
-      cssClass: includesTimeslot(
-        reservedTimeslots.map((s) => s.timeslot),
-        timeslot
-      )
+      color,
+      cssClass: currentLR
         ? 'calendar-event-reserved'
         : '',
     });
