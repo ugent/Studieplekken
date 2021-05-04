@@ -275,23 +275,28 @@ where lr.user_augentid = ?
 order by lr.timeslot_date desc, lr.timeslot_seqnr desc;
 
 -- $get_unattended_reservations_on_date
-select lr.*, rt.*, u.*, cp.*, l.*, b.*, a.*
-from public.location_reservations lr
-    join public.users u
-        on u.augentid = lr.user_augentid
-    join public.timeslots rt
-         on rt.timeslot_date = lr.timeslot_date
-         and rt.timeslot_sequence_number = lr.timeslot_seqnr
-         and rt.calendar_id = lr.calendar_id
-    join public.calendar_periods cp
-        on cp.calendar_id = lr.calendar_id
-    join public.locations l
-         on l.location_id = cp.location_id
-    join public.buildings b
-         on b.building_id = l.building_id
-    join public.authority a
-         on a.authority_id = l.authority_id
-where lr.attended = false and lr.timeslot_date = ?;
+with x as (
+    select lr.*, rt.*, u.*, cp.*, l.*, b.*, a.*, row_number() over (partition by u.augentid) as rn
+    from public.location_reservations lr
+        join public.users u
+            on u.augentid = lr.user_augentid
+        join public.timeslots rt
+             on rt.timeslot_date = lr.timeslot_date
+             and rt.timeslot_sequence_number = lr.timeslot_seqnr
+             and rt.calendar_id = lr.calendar_id
+        join public.calendar_periods cp
+            on cp.calendar_id = lr.calendar_id
+        join public.locations l
+             on l.location_id = cp.location_id
+        join public.buildings b
+             on b.building_id = l.building_id
+        join public.authority a
+             on a.authority_id = l.authority_id
+    where lr.attended = false and lr.timeslot_date = ?
+)
+select *
+from x where
+rn = 1;
 
 -- $set_not_scanned_students_as_not_attended
 update public.location_reservations lr
