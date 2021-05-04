@@ -144,12 +144,12 @@ public class MailService {
     // *  Methods for mailing to unattended students   *
     // *************************************************/
 
-    public void sendMailToUnattendedStudent(String target, LocationReservation locationReservation,
+    public Thread sendMailToUnattendedStudent(String target, LocationReservation locationReservation,
                                             CalendarPeriod calendarPeriod) throws MessagingException {
         Context ctx = new Context();
         String title = prepareMailToUnattendedStudent(locationReservation, calendarPeriod, ctx);
         ctx.setVariable("addressing", locationReservation.getUser().getFirstName());
-        sendMail(target, title, ctx, STUDENT_DID_NOT_ATTEND);
+        return sendMail(target, title, ctx, STUDENT_DID_NOT_ATTEND);
     }
 
     private String prepareMailToUnattendedStudent(LocationReservation locationReservation,
@@ -178,9 +178,9 @@ public class MailService {
     /**
      * Send a mail for which the content is defined by the templateFileName and the context to one recipient.
      */
-    private void sendMail(String target, String subject, Context ctx, String templateFileName) throws MessagingException {
+    private Thread sendMail(String target, String subject, Context ctx, String templateFileName) throws MessagingException {
         if (!allowedToSendMailByEnvironment(target, templateFileName, subject))
-            return;
+            return new Thread(this::nop);
 
         logger.info(String.format("Sending mail with template file name '%s' to '%s' with subject '%s'",
                 templateFileName, target, subject));
@@ -190,6 +190,7 @@ public class MailService {
 
         Thread thread = new Thread(() -> mailSender.send(messageHelper.getMimeMessage()));
         thread.start();
+        return thread;
     }
 
     /**
@@ -245,6 +246,10 @@ public class MailService {
 
     private boolean allowedToSendMailByEnvironment(String[] targets, String templateUrl, String subject) {
         return allowedToSendMailByEnvironment(Arrays.toString(targets), templateUrl, subject);
+    }
+
+    private void nop() {
+
     }
 
 }
