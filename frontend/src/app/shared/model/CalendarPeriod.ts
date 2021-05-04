@@ -319,7 +319,7 @@ function mapReservableTimeslotsToCalendarEvents(
     const cssClass = clickableBasedOnTime(
       {
         calendarPeriod: period,
-        timeslot: timeslot,
+        timeslot,
       },
       locationReservations
     )
@@ -352,11 +352,14 @@ function mapReservableTimeslotsToCalendarEvents(
  * If now() is before both startHour and endHour, the timeslot must always be clickable
  */
 export function clickableBasedOnTime(
-  event: any,
+  event: {
+    calendarPeriod: CalendarPeriod,
+    timeslot: Timeslot
+  },
   locationReservations: LocationReservation[]
 ): boolean {
-  const calendarPeriod = event.calendarPeriod as CalendarPeriod;
-  const timeslot = event.timeslot as Timeslot;
+  const calendarPeriod = event.calendarPeriod;
+  const timeslot = event.timeslot;
   const now = moment();
 
   const currentLR = locationReservations.find((value) =>
