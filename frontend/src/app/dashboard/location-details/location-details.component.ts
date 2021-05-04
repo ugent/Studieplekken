@@ -11,17 +11,13 @@ import { CalendarPeriodsService } from '../../services/api/calendar-periods/cale
 import {
   includesTimeslot,
   Timeslot,
-  timeslotEndHour,
   timeslotEquals,
-  timeslotStartHour,
 } from 'src/app/shared/model/Timeslot';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
 import {
-  CalendarPeriod,
-  clickableBasedOnTime,
-  mapCalendarPeriodsToCalendarEvents,
+  CalendarPeriod
 } from '../../shared/model/CalendarPeriod';
 import {
   defaultLocationImage,
@@ -32,8 +28,13 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import * as moment from 'moment';
 import { DatePipe } from '@angular/common';
 import { Pair } from '../../shared/model/helpers/Pair';
-import { ApplicationTypeFunctionalityService } from 'src/app/services/functionality/application-type/application-type-functionality.service';
+import {
+  ApplicationTypeFunctionalityService
+} from 'src/app/services/functionality/application-type/application-type-functionality.service';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import {
+  ConversionToCalendarEventService
+} from '../../services/styling/CalendarEvent/conversion-to-calendar-event.service';
 
 @Component({
   selector: 'app-location-details',
@@ -99,7 +100,8 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
     private authenticationService: AuthenticationService,
     private locationReservationService: LocationReservationsService,
     private modalService: BsModalService,
-    private functionalityService: ApplicationTypeFunctionalityService
+    private functionalityService: ApplicationTypeFunctionalityService,
+    private conversionService: ConversionToCalendarEventService
   ) {}
 
   ngOnInit(): void {
@@ -155,7 +157,10 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
     if (
       !event.timeslot || // the calendar period is not reservable
       !this.loggedIn() || // when not logged in, calendar periods are unclickable
-      !clickableBasedOnTime(event, this.locationReservations)
+      !this.conversionService.clickableBasedOnTime(
+        event,
+        this.locationReservations
+      )
     ) {
       return;
     }
@@ -240,7 +245,7 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
         const duration = element.reservableFrom.valueOf() - moment().valueOf();
         if (duration > 0) {
           setTimeout(() => {
-            this.events = mapCalendarPeriodsToCalendarEvents(
+            this.events = this.conversionService.mapCalendarPeriodsToCalendarEvents(
               [...this.calendarMap.values()],
               this.currentLang,
               []
@@ -253,7 +258,7 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
         .asObservable()
         .subscribe(
           (proposedReservations) =>
-            (this.events = mapCalendarPeriodsToCalendarEvents(
+            (this.events = this.conversionService.mapCalendarPeriodsToCalendarEvents(
               periods,
               this.currentLang,
               [...proposedReservations]
