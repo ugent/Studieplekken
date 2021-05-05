@@ -9,8 +9,7 @@ import {
   ApplicationTypeFunctionalityService
 } from 'src/app/services/functionality/application-type/application-type-functionality.service';
 import {
-  CalendarPeriod,
-  mapCalendarPeriodsToCalendarEvents
+  CalendarPeriod
 } from 'src/app/shared/model/CalendarPeriod';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
 import { Timeslot } from 'src/app/shared/model/Timeslot';
@@ -23,6 +22,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute } from '@angular/router';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 import { of } from 'rxjs/internal/observable/of';
+import {
+  ConversionToCalendarEventService
+} from '../../../../services/styling/CalendarEvent/conversion-to-calendar-event.service';
 
 @Component({
   selector: 'app-location-calendar',
@@ -112,7 +114,8 @@ export class LocationCalendarComponent implements OnInit {
     private modalService: BsModalService,
     private authenticationService: AuthenticationService,
     private translate: TranslateService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private conversionService: ConversionToCalendarEventService
   ) {}
 
   ngOnInit(): void {
@@ -268,7 +271,7 @@ export class LocationCalendarComponent implements OnInit {
           );
 
           // fill the events based on the calendar periods
-          this.events = mapCalendarPeriodsToCalendarEvents(
+          this.events = this.conversionService.mapCalendarPeriodsToCalendarEvents(
             next,
             this.translate.currentLang
           );
