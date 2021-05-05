@@ -267,8 +267,8 @@ export class LocationReservationsComponent {
       }
 
       if (b.attended !== a.attended) {
-        return a.attended === null ? -1 // if a not scanned -> before everything else
-          : b.attended === null ? 1 // if b not scanned -> before everything else
+        return a.attended === null ? -1 // not scanned before everything else
+          : b.attended === null ? 1 // everything else after not scanned
           : a.attended && !b.attended ? 1 // attended after absent
           : -1; // absent before attended
       }
