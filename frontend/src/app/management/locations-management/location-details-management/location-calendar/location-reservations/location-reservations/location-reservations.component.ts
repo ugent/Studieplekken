@@ -47,7 +47,7 @@ export class LocationReservationsComponent {
   userHasSearchTerm: (u: User) => boolean = (u: User) =>
     u.augentID.includes(this.searchTerm) ||
     u.firstName.includes(this.searchTerm) ||
-    u.lastName.includes(this.searchTerm);
+    u.lastName.includes(this.searchTerm)
 
   constructor(
     private locationReservationService: LocationReservationsService,
@@ -169,7 +169,7 @@ export class LocationReservationsComponent {
   getCorrectI18NObject(reservation: LocationReservation): string {
     if (reservation.attended === null) {
       if (this.isTimeslotStartInFuture()) {
-        return 'general.notAvailableAbbreviation'
+        return 'general.notAvailableAbbreviation';
       } else {
         return 'management.locationDetails.calendar.reservations.table.notScanned';
       }
@@ -267,10 +267,14 @@ export class LocationReservationsComponent {
       }
 
       if (b.attended !== a.attended) {
-        return a.attended ? 1 : -1;
+        return a.attended === null ? -1 // if a not scanned -> before everything else
+          : b.attended === null ? 1 // if b not scanned -> before everything else
+          : a.attended && !b.attended ? 1 // attended after absent
+          : -1; // absent before attended
       }
 
-      return a.user.lastName.localeCompare(b.user.lastName);
+      return a.user.firstName.localeCompare(b.user.firstName) ||
+        a.user.lastName.localeCompare(b.user.lastName);
     });
 
     return locationReservations;

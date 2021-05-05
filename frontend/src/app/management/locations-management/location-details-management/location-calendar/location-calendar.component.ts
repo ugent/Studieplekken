@@ -396,7 +396,7 @@ export class LocationCalendarComponent implements OnInit {
     this.modalService.hide();
   }
 
-  public getCalendarPeriodTimeInMinutes(
+  getCalendarPeriodTimeInMinutes(
     calendarPeriod: CalendarPeriod
   ): number {
     if (!calendarPeriod.closingTime) { return null; }
