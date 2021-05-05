@@ -17,8 +17,7 @@ import { LocationReservationsService } from 'src/app/services/api/location-reser
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
 import {
-  CalendarPeriod,
-  mapCalendarPeriodsToCalendarEvents,
+  CalendarPeriod
 } from '../../shared/model/CalendarPeriod';
 import {
   defaultLocationImage,
@@ -30,9 +29,12 @@ import * as moment from 'moment';
 import { DatePipe } from '@angular/common';
 import { Pair } from '../../shared/model/helpers/Pair';
 import {
-  ApplicationTypeFunctionalityService,
+  ApplicationTypeFunctionalityService
 } from 'src/app/services/functionality/application-type/application-type-functionality.service';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import {
+  ConversionToCalendarEventService
+} from '../../services/styling/CalendarEvent/conversion-to-calendar-event.service';
 
 @Component({
   selector: 'app-location-details',
@@ -80,7 +82,7 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
   removedReservations: LocationReservation[];
 
   calendarMap: Map<number, CalendarPeriod> = new Map<number, CalendarPeriod>();
-  locationReservations: Observable<LocationReservation[]>;
+  locationReservations: LocationReservation[] = [];
   showAdmin: boolean;
   showLockersManagement: boolean;
   capacity: number;
@@ -98,13 +100,17 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
     private authenticationService: AuthenticationService,
     private locationReservationService: LocationReservationsService,
     private modalService: BsModalService,
-    private functionalityService: ApplicationTypeFunctionalityService
+    private functionalityService: ApplicationTypeFunctionalityService,
+    private conversionService: ConversionToCalendarEventService
   ) {}
 
   ngOnInit(): void {
     this.locationId = Number(this.route.snapshot.paramMap.get('locationId'));
     this.location = this.locationService.getLocation(this.locationId);
     this.showAdmin = this.authenticationService.isAdmin();
+    this.authenticationService
+      .getLocationReservations()
+      .subscribe((next) => (this.locationReservations = next));
     this.currentLang = this.translate.currentLang;
 
     // when the location is loaded, setup the descriptions
@@ -128,7 +134,7 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
 
     setInterval(() => {
       this.updateCalendar();
-    }, 300000); // 5 minutes
+    }, 60 * 1000); // 1 minute
 
     this.showLockersManagement = this.functionalityService.showLockersManagementFunctionality();
   }
@@ -144,28 +150,29 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
       : 'closed';
   }
 
-  timeslotPicked(event: Event): void {
-    if (!event['timeslot']) {
-      // the calendar period is not reservable
-      return;
-    }
-
-    if (!this.loggedIn()) {
-      // When not logged in, calendar periods are unclickable
+  timeslotPicked(event: {
+    timeslot: Timeslot;
+    calendarPeriod: CalendarPeriod;
+  }): void {
+    if (
+      !event.timeslot || // the calendar period is not reservable
+      !this.loggedIn() || // when not logged in, calendar periods are unclickable
+      !this.conversionService.clickableBasedOnTime(
+        event,
+        this.locationReservations
+      )
+    ) {
       return;
     }
 
     // If the selected timeslot is not yet reservable, don't do anything
-    const calendarPeriod: CalendarPeriod = event[
-      'calendarPeriod'
-    ] as CalendarPeriod;
+    const calendarPeriod: CalendarPeriod = event.calendarPeriod;
     if (moment().isBefore(calendarPeriod.reservableFrom)) {
       return;
     }
 
     this.isModified = true;
-
-    this.currentTimeslot = event['timeslot'] as Timeslot;
+    this.currentTimeslot = event.timeslot;
 
     const reservation: LocationReservation = {
       user: this.authenticationService.userValue(),
@@ -238,7 +245,7 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
         const duration = element.reservableFrom.valueOf() - moment().valueOf();
         if (duration > 0) {
           setTimeout(() => {
-            this.events = mapCalendarPeriodsToCalendarEvents(
+            this.events = this.conversionService.mapCalendarPeriodsToCalendarEvents(
               [...this.calendarMap.values()],
               this.currentLang,
               []
@@ -251,7 +258,7 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
         .asObservable()
         .subscribe(
           (proposedReservations) =>
-            (this.events = mapCalendarPeriodsToCalendarEvents(
+            (this.events = this.conversionService.mapCalendarPeriodsToCalendarEvents(
               periods,
               this.currentLang,
               [...proposedReservations]
