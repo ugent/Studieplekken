@@ -110,7 +110,8 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
     @Override
     public List<Pair<LocationReservation, CalendarPeriod>> getUnattendedLocationReservations(LocalDate date) throws SQLException {
         try (Connection conn = adb.getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_unattended_reservations_on_date"));
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
+                    .getString("get_unattended_reservations_on_date"));
             pstmt.setDate(1, Date.valueOf(date));
             ResultSet rs = pstmt.executeQuery();
 
@@ -122,6 +123,28 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
             }
 
             return reservations;
+        }
+    }
+
+    @Override
+    public List<User> getUsersWithReservationForWindowOfTime(LocalDate start, LocalDate end) throws SQLException {
+        if (end.isBefore(start))
+            throw new RuntimeException("End may not be before start");
+
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
+                    .getString("get_users_with_reservation_in_window_of_time"));
+            pstmt.setDate(1, Date.valueOf(start));
+            pstmt.setDate(2, Date.valueOf(end));
+            ResultSet rs = pstmt.executeQuery();
+
+            List<User> users = new ArrayList<>();
+            while (rs.next()) {
+                User user = DBAccountDao.createUser(rs, conn);
+                users.add(user);
+            }
+
+            return users;
         }
     }
 

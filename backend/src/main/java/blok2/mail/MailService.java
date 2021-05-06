@@ -1,8 +1,6 @@
 package blok2.mail;
 
-import blok2.model.calendar.CalendarPeriod;
 import blok2.model.reservables.Location;
-import blok2.model.reservations.LocationReservation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +15,6 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.IsoFields;
 import java.time.temporal.TemporalAdjusters;
@@ -37,7 +34,8 @@ public class MailService {
     public static final String EXAMPLE_MAIL_TEMPLATE_URL = "mail/example_mail";
     public static final String OPENING_HOURS_OVERVIEW_TEMPLATE_URL = "mail/opening_hours_overview";
     public static final String ADMIN_VALIDATION_FOR_NEW_LOCATION_REQUESTED_TEMPLATE_URL = "mail/location_created";
-    public static final String STUDENT_DID_NOT_ATTEND = "mail/not_attended";
+    public static final String STUDENT_DID_NOT_ATTEND_TEMPLATE_URL = "mail/not_attended";
+    public static final String RESERVATION_NOTIFICATION_TEMPLATE_URL = "mail/reservation_notification.html";
 
     public static final String NO_REPLY_SENDER = "info@studieplekken.ugent.be";
 
@@ -144,32 +142,24 @@ public class MailService {
     // *  Methods for mailing to unattended students   *
     // *************************************************/
 
-    public Thread sendMailToUnattendedStudent(String target, LocationReservation locationReservation,
-                                            CalendarPeriod calendarPeriod) throws MessagingException {
+    public Thread sendMailToUnattendedStudent(String target) throws MessagingException {
         Context ctx = new Context();
-        String title = prepareMailToUnattendedStudent(locationReservation, calendarPeriod, ctx);
-        ctx.setVariable("addressing", locationReservation.getUser().getFirstName());
-        return sendMail(target, title, ctx, STUDENT_DID_NOT_ATTEND);
-    }
-
-    private String prepareMailToUnattendedStudent(LocationReservation locationReservation,
-                                                  CalendarPeriod calendarPeriod, Context ctx) {
         String title = "[Werk- en Studieplekken] Afwezigheid op gereserveerd tijdslot";
-
         ctx.setVariable("title", title);
-        ctx.setVariable("studieplek", calendarPeriod.getLocation().getName());
-
-        LocalTime startTime = calendarPeriod
-                .getOpeningTime()
-                .plusMinutes((long) calendarPeriod.getTimeslotLength() * locationReservation.getTimeslot().getTimeslotSeqnr());
-
-        LocalTime endTime = startTime.plusMinutes(calendarPeriod.getTimeslotLength());
-
-        ctx.setVariable("startTime", startTime.format(DateTimeFormatter.ISO_TIME));
-        ctx.setVariable("endTime", endTime.format(DateTimeFormatter.ISO_TIME));
-
-        return title;
+        return sendMail(target, title, ctx, STUDENT_DID_NOT_ATTEND_TEMPLATE_URL);
     }
+
+    // ************************************************************************************************
+    // *  Methods for mailing a notification to students that have made a reservation for next week   *
+    // ************************************************************************************************/
+
+    public Thread sendReminderToStudentsAboutReservation(String target) throws MessagingException {
+        Context ctx = new Context();
+        String title = "[Werk- en Studieplekken] Herinnering reservatie(s) studieplek(ken) volgende week";
+        ctx.setVariable("title", title);
+        return sendMail(target, title, ctx, RESERVATION_NOTIFICATION_TEMPLATE_URL);
+    }
+
 
     // ********************************************
     // *  Methods for actually sending the mail   *
