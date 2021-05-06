@@ -1,4 +1,4 @@
-## Study Rooms - Update 28/04/2021
+## Study Rooms - Update 06/05/2021
 As of March 22, all study spots, including those within the libraries, will only be accessible after reservation through this webpage https://studieplekken.ugent.be.
 
 May we insist that a study place is only reserved if you will actually attend. If you reserve a place but do not show up, this causes a lot of frustration for students and supervisors. We trust that everyone here will take their responsibility to use the study places optimally. **There will also be an attendance check every day, both in the morning slots and in the afternoon slots. Places that are not taken at 10am and 3pm will be released to be reserved by other students. It is your own responsibility to make sure your student card gets scanned.**
