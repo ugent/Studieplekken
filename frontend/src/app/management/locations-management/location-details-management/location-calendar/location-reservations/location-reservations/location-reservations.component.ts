@@ -273,6 +273,10 @@ export class LocationReservationsComponent {
           : -1; // absent before attended
       }
 
+      // If a.user.firstName equals b.user.firstName, the first localeCompare returns 0 (= false)
+      // and thus the second localeCompare is executed. If they are not equal, the first localeCompare
+      // returns either -1 or 1 (both equivalent to 'true' in a boolean expression) and thus the second
+      // localeCompare is not executed.
       return a.user.firstName.localeCompare(b.user.firstName) ||
         a.user.lastName.localeCompare(b.user.lastName);
     });
