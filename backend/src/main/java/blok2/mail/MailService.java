@@ -35,7 +35,7 @@ public class MailService {
     public static final String OPENING_HOURS_OVERVIEW_TEMPLATE_URL = "mail/opening_hours_overview";
     public static final String ADMIN_VALIDATION_FOR_NEW_LOCATION_REQUESTED_TEMPLATE_URL = "mail/location_created";
     public static final String STUDENT_DID_NOT_ATTEND_TEMPLATE_URL = "mail/not_attended";
-    public static final String RESERVATION_NOTIFICATION_TEMPLATE_URL = "mail/reservation_notification.html";
+    public static final String RESERVATION_NOTIFICATION_TEMPLATE_URL = "mail/reservation_notification";
 
     public static final String NO_REPLY_SENDER = "info@studieplekken.ugent.be";
 
