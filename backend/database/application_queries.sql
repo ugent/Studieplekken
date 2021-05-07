@@ -299,6 +299,18 @@ select *
 from x where
 rn = 1;
 
+-- $get_users_with_reservation_in_window_of_time
+with x as (
+    select u.*, row_number() over (partition by u.augentid) as rn
+    from public.location_reservations lr
+        join public.users u
+            on u.augentid = lr.user_augentid
+    where lr.timeslot_date >= ? and lr.timeslot_date < ?
+)
+select *
+from x where
+rn = 1;
+
 -- $set_not_scanned_students_as_not_attended
 update public.location_reservations lr
 set attended = False
