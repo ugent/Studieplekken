@@ -85,7 +85,7 @@
       <tbody>
         <tr
           *ngFor="let reservation of filter(locationReservations)"
-          [class.highlight]="reservation.attended"
+          style="{{reservation.attended !== null ? 'background-color: #E9F0FA': ''}}"
         >
           <td>
             {{ reservation.user.firstName + " " + reservation.user.lastName }}
