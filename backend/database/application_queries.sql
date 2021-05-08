@@ -216,7 +216,8 @@ from public.location_reservations lr
         on rt.timeslot_date = lr.timeslot_date
         and rt.timeslot_sequence_number = lr.timeslot_seqnr
         and rt.calendar_id = lr.calendar_id
-where <?>;
+where <?>
+order by u.augentpreferredgivenname, u.augentpreferredsn, u.augentid;
 
 -- $count_location_reservations_of_location_for_timeslot
 select count(1)

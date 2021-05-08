@@ -47,7 +47,7 @@ export class LocationReservationsComponent {
   userHasSearchTerm: (u: User) => boolean = (u: User) =>
     u.augentID.includes(this.searchTerm) ||
     u.firstName.includes(this.searchTerm) ||
-    u.lastName.includes(this.searchTerm);
+    u.lastName.includes(this.searchTerm)
 
   constructor(
     private locationReservationService: LocationReservationsService,
@@ -169,7 +169,7 @@ export class LocationReservationsComponent {
   getCorrectI18NObject(reservation: LocationReservation): string {
     if (reservation.attended === null) {
       if (this.isTimeslotStartInFuture()) {
-        return 'general.notAvailableAbbreviation'
+        return 'general.notAvailableAbbreviation';
       } else {
         return 'management.locationDetails.calendar.reservations.table.notScanned';
       }
@@ -267,10 +267,18 @@ export class LocationReservationsComponent {
       }
 
       if (b.attended !== a.attended) {
-        return a.attended ? 1 : -1;
+        return a.attended === null ? -1 // not scanned before everything else
+          : b.attended === null ? 1 // everything else after not scanned
+          : a.attended && !b.attended ? 1 // attended after absent
+          : -1; // absent before attended
       }
 
-      return a.user.lastName.localeCompare(b.user.lastName);
+      // If a.user.firstName equals b.user.firstName, the first localeCompare returns 0 (= false)
+      // and thus the second localeCompare is executed. If they are not equal, the first localeCompare
+      // returns either -1 or 1 (both equivalent to 'true' in a boolean expression) and thus the second
+      // localeCompare is not executed.
+      return a.user.firstName.localeCompare(b.user.firstName) ||
+        a.user.lastName.localeCompare(b.user.lastName);
     });
 
     return locationReservations;
