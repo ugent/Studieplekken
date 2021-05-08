@@ -3,6 +3,7 @@ version: "3.6"
 volumes:
   backend_logs:
   pgdata:
+  postfix_spool:
 
 services:
   backend:
@@ -56,6 +57,20 @@ services:
       options:
         max-size: "100m"
         max-file: "5"
+  mailrelay:
+    restart: always
+    image: juanluisbaptiste/postfix:latest
+    networks:
+      - blokat
+    expose:
+      - "25"
+    environment:
+      SMTP_SERVER: "smtp.ugent.be"
+      SMTP_PORT: "25"
+      SERVER_HOSTNAME: "fireball.ugent.be"
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+      - postfix_spool:/var/spool/postfix
 
 
 
