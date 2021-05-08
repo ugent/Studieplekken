@@ -15,9 +15,10 @@ import { LockerReservationService } from '../api/locker-reservations/locker-rese
 import { Router } from '@angular/router';
 import { UserService } from '../api/users/user.service';
 import { api } from '../api/endpoints';
-import { userWantsTLogInLocalStorageKey } from '../../app.constants';
+import { authenticationWasExpiredUrlLSKey, userWantsTLogInLocalStorageKey } from '../../app.constants';
 import { Pair } from '../../shared/model/helpers/Pair';
 import { CalendarPeriod } from '../../shared/model/CalendarPeriod';
+import { environment } from 'src/environments/environment';
 
 /**
  * The structure of the authentication service has been based on this article:
@@ -99,6 +100,13 @@ export class AuthenticationService {
         this.userSubject.next(next);
         this.updateHasAuthoritiesSubject(next);
         this.updateHasVolunteeredSubject(next);
+
+        const getPreviouslyAuthenticatedUrl = localStorage.getItem(authenticationWasExpiredUrlLSKey)
+        if(getPreviouslyAuthenticatedUrl) {
+          console.log(getPreviouslyAuthenticatedUrl)
+          localStorage.setItem(authenticationWasExpiredUrlLSKey, '');
+          this.router.navigateByUrl(getPreviouslyAuthenticatedUrl)
+        }
       },
       () => {
         this.userSubject.next(UserConstructor.new());
@@ -137,6 +145,23 @@ export class AuthenticationService {
    */
   isLoggedIn(): boolean {
     return this.userSubject.value && this.userSubject.value.augentID !== '';
+  }
+
+  /**
+   * This function immedeately logs out the person and redirects it to the UGent login page.
+   * If their login is still valid on the ugent login page, login will be resolved immedeately.
+   * If URL is given, then you will be redirected to your previous page on login. In the ideal case,
+   * you were still logged in in CAS, the redirect back to the app gets resolved instantly and you are back where your authentication expired.
+   * @param url url to redirect to after refresh.
+   */
+  authExpired(url?: string): void {
+    this.userSubject.next(UserConstructor.new());
+
+    if(url)
+      localStorage.setItem(authenticationWasExpiredUrlLSKey, url);
+
+    // Jump to login.ugent.be immedeately. Chances are that this will instantly resolve any issues.
+    window.location.href = environment.casFlowTriggerUrl;
   }
 
   isAdmin(): boolean {
