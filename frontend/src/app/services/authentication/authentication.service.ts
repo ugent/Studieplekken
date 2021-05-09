@@ -107,10 +107,10 @@ export class AuthenticationService {
          * To avoid this, the AuthenticationInterceptor intercepts unknown exceptions and calls this.authExpired() so that a new authentication session is started in Spring. 
          * Since this.authExpired() saves the last visited url, we can redirect the user to the last visited url instead of to the dashboard.
          */
-        const getPreviouslyAuthenticatedUrl = localStorage.getItem(authenticationWasExpiredUrlLSKey)
-        if(getPreviouslyAuthenticatedUrl) {
+        const getPreviouslyAuthenticatedUrl = localStorage.getItem(authenticationWasExpiredUrlLSKey);
+        if (getPreviouslyAuthenticatedUrl) {
           localStorage.setItem(authenticationWasExpiredUrlLSKey, '');
-          this.router.navigateByUrl(getPreviouslyAuthenticatedUrl)
+          this.router.navigateByUrl(getPreviouslyAuthenticatedUrl).then();
         }
       },
       () => {
@@ -134,7 +134,7 @@ export class AuthenticationService {
   logout(): void {
     this.http.post(api.logout, {}).subscribe(() => {
       this.userSubject.next(UserConstructor.new());
-      this.router.navigate(['/login']);
+      this.router.navigate(['/login']).then();
     });
 
     // to be sure, set the 'userWantsToLogin' variables to false
@@ -153,19 +153,21 @@ export class AuthenticationService {
   }
 
   /**
-   * This function immedeately logs out the person and redirects it to the UGent login page.
-   * If their login is still valid on the ugent login page, login will be resolved immedeately.
+   * This function immediately logs out the person and redirects it to the UGent login page.
+   * If their login is still valid on the UGent login page, login will be resolved immediately.
    * If URL is given, then you will be redirected to your previous page on login. In the ideal case,
-   * you were still logged in in CAS, the redirect back to the app gets resolved instantly and you are back where your authentication expired.
+   * you were still logged in in CAS, the redirect back to the app gets resolved instantly and you
+   * are back where your authentication expired.
    * @param url url to redirect to after refresh.
    */
-  authExpired(url?: string): void {
+  authExpired(url: string): void {
     this.userSubject.next(UserConstructor.new());
 
-    if(url)
+    if (url) {
       localStorage.setItem(authenticationWasExpiredUrlLSKey, url);
+    }
 
-    // Jump to login.ugent.be immedeately. Chances are that this will instantly resolve any issues.
+    // Jump to login.ugent.be immediately. Chances are that this will instantly resolve any issues.
     window.location.href = environment.casFlowTriggerUrl;
   }
 
