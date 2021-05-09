@@ -3,7 +3,7 @@ import { NgModule, SecurityContext } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { RouterModule, Routes } from '@angular/router';
@@ -79,6 +79,7 @@ import { ScanningLocationDetailsComponent } from './scan/scanning-location-detai
 import { ScannerComponent } from './shared/scanner/scanner.component';
 import { VolunteersManagementComponent } from './management/volunteers-management/volunteers-management.component';
 import { VolunteerManagementPanelComponent } from './management/volunteers-management/volunteer-management-panel/volunteer-management-panel.component';
+import { AuthenticationInterceptor } from './services/authentication/authentication.interceptor'
 
 
 // AoT requires an exported function for factories
@@ -350,7 +351,7 @@ const routes: Routes = [
     MatTabsModule,
     MatTooltipModule,
   ],
-  providers: [FormatStatusPipe],
+  providers: [FormatStatusPipe, { provide: HTTP_INTERCEPTORS, useClass: AuthenticationInterceptor, multi: true }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
