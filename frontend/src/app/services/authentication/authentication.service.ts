@@ -101,6 +101,12 @@ export class AuthenticationService {
         this.updateHasAuthoritiesSubject(next);
         this.updateHasVolunteeredSubject(next);
 
+        /**
+         *  Spring's authentication ticket of a logged in user expires before the CAS authentication has expired. 
+         * This results in a lot of 302 HTTP responses triggering the Netdata monitoring tool in production. 
+         * To avoid this, the AuthenticationInterceptor intercepts unknown exceptions and calls this.authExpired() so that a new authentication session is started in Spring. 
+         * Since this.authExpired() saves the last visited url, we can redirect the user to the last visited url instead of to the dashboard.
+         */
         const getPreviouslyAuthenticatedUrl = localStorage.getItem(authenticationWasExpiredUrlLSKey)
         if(getPreviouslyAuthenticatedUrl) {
           localStorage.setItem(authenticationWasExpiredUrlLSKey, '');
