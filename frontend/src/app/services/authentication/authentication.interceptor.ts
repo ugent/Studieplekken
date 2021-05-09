@@ -13,7 +13,7 @@ export class AuthenticationInterceptor implements HttpInterceptor {
         const startingUrl = req.url;
         const s = next.handle(req);
 
-        const handleUnauthorized = (e) => {
+        const handleUnauthorized = (e: { ok: any; status: number; }) => {
             if (!e.ok && e.status == 0) {
                 // This is an unknown error. I'm assuming it was CORS blocking the redirect to login.ugent.be due to expiring ticket times.
                 // I'm going to log out the user and redirect to login page.
