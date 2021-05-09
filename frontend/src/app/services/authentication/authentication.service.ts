@@ -128,7 +128,7 @@ export class AuthenticationService {
   logout(): void {
     this.http.post(api.logout, {}).subscribe(() => {
       this.userSubject.next(UserConstructor.new());
-      this.router.navigate(['/login']).catch((e) => console.log(e));
+      this.router.navigate(['/login']);
     });
 
     // to be sure, set the 'userWantsToLogin' variables to false
