@@ -49,8 +49,7 @@ export class ProfileLocationReservationsComponent {
           this.successGettingLocationReservations = true;
           this.locationReservations = next;
         },
-        (e) => {
-          console.log(e)
+        () => {
           this.successGettingLocationReservations = false;
         }
       );

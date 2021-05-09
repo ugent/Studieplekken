@@ -103,7 +103,6 @@ export class AuthenticationService {
 
         const getPreviouslyAuthenticatedUrl = localStorage.getItem(authenticationWasExpiredUrlLSKey)
         if(getPreviouslyAuthenticatedUrl) {
-          console.log(getPreviouslyAuthenticatedUrl)
           localStorage.setItem(authenticationWasExpiredUrlLSKey, '');
           this.router.navigateByUrl(getPreviouslyAuthenticatedUrl)
         }
