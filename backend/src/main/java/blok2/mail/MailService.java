@@ -34,8 +34,10 @@ public class MailService {
     public static final String EXAMPLE_MAIL_TEMPLATE_URL = "mail/example_mail";
     public static final String OPENING_HOURS_OVERVIEW_TEMPLATE_URL = "mail/opening_hours_overview";
     public static final String ADMIN_VALIDATION_FOR_NEW_LOCATION_REQUESTED_TEMPLATE_URL = "mail/location_created";
+    public static final String STUDENT_DID_NOT_ATTEND_TEMPLATE_URL = "mail/not_attended";
+    public static final String RESERVATION_NOTIFICATION_TEMPLATE_URL = "mail/reservation_notification";
 
-    public static final String NO_REPLY_SENDER = "no-reply@dsa.ugent.be";
+    public static final String NO_REPLY_SENDER = "info@studieplekken.ugent.be";
 
     public static final String URL_DEVELOPMENT = "https://localhost:4200";
     public static final String URL_PRODUCTION = "https://studieplekken.ugent.be";
@@ -136,6 +138,29 @@ public class MailService {
         return title;
     }
 
+    // *************************************************
+    // *  Methods for mailing to unattended students   *
+    // *************************************************/
+
+    public Thread sendMailToUnattendedStudent(String target) throws MessagingException {
+        Context ctx = new Context();
+        String title = "[Werk- en Studieplekken] Afwezigheid op gereserveerd tijdslot";
+        ctx.setVariable("title", title);
+        return sendMail(target, title, ctx, STUDENT_DID_NOT_ATTEND_TEMPLATE_URL);
+    }
+
+    // ************************************************************************************************
+    // *  Methods for mailing a notification to students that have made a reservation for next week   *
+    // ************************************************************************************************/
+
+    public Thread sendReminderToStudentsAboutReservation(String target) throws MessagingException {
+        Context ctx = new Context();
+        String title = "[Werk- en Studieplekken] Herinnering reservatie(s) studieplek(ken) volgende week";
+        ctx.setVariable("title", title);
+        return sendMail(target, title, ctx, RESERVATION_NOTIFICATION_TEMPLATE_URL);
+    }
+
+
     // ********************************************
     // *  Methods for actually sending the mail   *
     // ********************************************/
@@ -143,9 +168,9 @@ public class MailService {
     /**
      * Send a mail for which the content is defined by the templateFileName and the context to one recipient.
      */
-    private void sendMail(String target, String subject, Context ctx, String templateFileName) throws MessagingException {
+    private Thread sendMail(String target, String subject, Context ctx, String templateFileName) throws MessagingException {
         if (!allowedToSendMailByEnvironment(target, templateFileName, subject))
-            return;
+            return new Thread(this::nop);
 
         logger.info(String.format("Sending mail with template file name '%s' to '%s' with subject '%s'",
                 templateFileName, target, subject));
@@ -155,6 +180,7 @@ public class MailService {
 
         Thread thread = new Thread(() -> mailSender.send(messageHelper.getMimeMessage()));
         thread.start();
+        return thread;
     }
 
     /**
@@ -199,17 +225,21 @@ public class MailService {
      * to be sent. Otherwise they are blocked.
      */
     private boolean allowedToSendMailByEnvironment(String target, String templateFileName, String subject) {
-        if (!springProfilesActive.contains("mail")) {
-            logger.info(String.format("Blocked sending mail to '%s' with template file name '%s' and " +
-                            "subject '%s' because 'mail' is not an active profile.",
-                    target, templateFileName, subject));
-            return false;
-        }
-        return true;
+        if (springProfilesActive.contains("mail"))
+            return true;
+
+        logger.info(String.format("Blocked sending mail to '%s' with template file name '%s' and " +
+                        "subject '%s' because 'mail' is not an active profile.", target, templateFileName, subject));
+
+        return false;
     }
 
     private boolean allowedToSendMailByEnvironment(String[] targets, String templateUrl, String subject) {
         return allowedToSendMailByEnvironment(Arrays.toString(targets), templateUrl, subject);
+    }
+
+    private void nop() {
+
     }
 
 }

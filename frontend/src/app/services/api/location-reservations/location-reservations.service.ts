@@ -116,4 +116,13 @@ export class LocationReservationsService {
       { withCredentials: true }
     );
   }
+
+  setAllNotScannedAsUnattended(
+    timeslot: Timeslot
+  ): Observable<void> {
+    return this.http.put<void>(
+      api.locationReservationsOfNotScannedUsers,
+      timeslot
+    );
+  }
 }

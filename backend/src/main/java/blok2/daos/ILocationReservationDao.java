@@ -4,8 +4,10 @@ import blok2.helpers.Pair;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
+import blok2.model.users.User;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface ILocationReservationDao extends IDao {
@@ -24,6 +26,17 @@ public interface ILocationReservationDao extends IDao {
      * Get the location reservation of a specified user at a specified timeslot
      */
     LocationReservation getLocationReservation(String augentID, Timeslot timeslot) throws SQLException;
+
+    /**
+     * Get all LocationReservations and corresponding CalendarPeriods of unattended reservations
+     */
+    List<Pair<LocationReservation, CalendarPeriod>> getUnattendedLocationReservations(LocalDate date)  throws SQLException;
+
+    /**
+     * Get all users that have made a reservation within the window of time that is provided through the parameters.
+     * Note: the window includes 'start' but does not include 'end': window = [start, end)
+     */
+    List<User> getUsersWithReservationForWindowOfTime(LocalDate start, LocalDate end) throws SQLException;
 
     /**
      * Delete the location reservation of a specified user at a specified timeslot
@@ -47,7 +60,6 @@ public interface ILocationReservationDao extends IDao {
      */
     boolean setReservationAttendance(String augentId, Timeslot timeslot, boolean attendance) throws SQLException;
 
-
     /**
      * Get all location reservations at a specified timeslot
      */
@@ -62,4 +74,11 @@ public interface ILocationReservationDao extends IDao {
      * Get the number of location reservation of a specified location at this moment in time
      */
      int amountOfReservationsRightNow(int locationId) throws SQLException;
+
+    /**
+     * Set all LocationReservations corresponding to the given Timeslot for which the field attended is null
+     * to false. This sets the not scanned students to unattended for the given timeslot.
+     */
+     void setNotScannedStudentsToUnattended(Timeslot timeslot) throws SQLException;
+
 }

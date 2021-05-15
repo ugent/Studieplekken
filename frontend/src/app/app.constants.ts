@@ -1,6 +1,6 @@
 export const defaultLocationImage = 'assets/images/default_location.jpg';
 export const userWantsTLogInLocalStorageKey = 'userWantsTLogIn';
-
+export const authenticationWasExpiredUrlLSKey = 'authenticationWasExpiredUrl'
 /*
  * The amount of milliseconds that a feedback div should be shown
  */

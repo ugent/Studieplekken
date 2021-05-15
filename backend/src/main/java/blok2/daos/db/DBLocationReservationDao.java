@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.*;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -107,10 +108,52 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
     }
 
     @Override
+    public List<Pair<LocationReservation, CalendarPeriod>> getUnattendedLocationReservations(LocalDate date) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
+                    .getString("get_unattended_reservations_on_date"));
+            pstmt.setDate(1, Date.valueOf(date));
+            ResultSet rs = pstmt.executeQuery();
+
+            List<Pair<LocationReservation, CalendarPeriod>> reservations = new ArrayList<>();
+            while (rs.next()) {
+                LocationReservation locationReservation = DBLocationReservationDao.createLocationReservation(rs, conn);
+                CalendarPeriod calendarPeriod = DBCalendarPeriodDao.createCalendarPeriod(rs, conn);
+                reservations.add(new Pair<>(locationReservation, calendarPeriod));
+            }
+
+            return reservations;
+        }
+    }
+
+    @Override
+    public List<User> getUsersWithReservationForWindowOfTime(LocalDate start, LocalDate end) throws SQLException {
+        if (end.isBefore(start))
+            throw new RuntimeException("End may not be before start");
+
+        try (Connection conn = adb.getConnection()) {
+            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties
+                    .getString("get_users_with_reservation_in_window_of_time"));
+            pstmt.setDate(1, Date.valueOf(start));
+            pstmt.setDate(2, Date.valueOf(end));
+            ResultSet rs = pstmt.executeQuery();
+
+            List<User> users = new ArrayList<>();
+            while (rs.next()) {
+                User user = DBAccountDao.createUser(rs, conn);
+                users.add(user);
+            }
+
+            return users;
+        }
+    }
+
+    @Override
     public boolean deleteLocationReservation(String augentID, Timeslot timeslot) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             try {
                 conn.setAutoCommit(false);
+                LocationReservation lr = getLocationReservation(augentID, timeslot);
 
                 // delete the location reservation
                 PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_location_reservation"));
@@ -124,12 +167,15 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
                     return false;
                 }
 
-                // and subtract a count from the reservation count
-                pstmt = conn.prepareStatement(Resources.databaseProperties.getString("subtract_one_to_reservation_count"));
-                pstmt.setDate(2, java.sql.Date.valueOf(timeslot.getTimeslotDate()));
-                pstmt.setInt(3, timeslot.getTimeslotSeqnr());
-                pstmt.setInt(1, timeslot.getCalendarId());
-                pstmt.execute();
+                // and subtract a count from the reservation count, if the attendance is not false
+                if(lr.getAttended() == null || lr.getAttended()) {
+                    pstmt = conn.prepareStatement(Resources.databaseProperties.getString("subtract_one_to_reservation_count"));
+                    pstmt.setDate(2, java.sql.Date.valueOf(timeslot.getTimeslotDate()));
+                    pstmt.setInt(3, timeslot.getTimeslotSeqnr());
+                    pstmt.setInt(1, timeslot.getCalendarId());
+                    pstmt.execute();
+
+                }
 
                 conn.commit();
                 return true;
@@ -227,9 +273,34 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
     @Override
     public boolean setReservationAttendance(String augentId, Timeslot timeslot, boolean attendance) throws SQLException {
         try (Connection conn = adb.getConnection()) {
+            conn.setAutoCommit(false);
             LocationReservation lr = getLocationReservation(augentId, timeslot);
             if(lr == null) {
                 return false;
+            }
+
+            // attendance goes from null or true to false -> decrement reservation count
+            if(!attendance && (lr.getAttended() == null || lr.getAttended())) {
+                // This seat needs to be freed, since this user is not present. We double check that this value wasn't already false (and therefore already removed)
+                PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("subtract_one_to_reservation_count"));
+                pstmt.setDate(2, java.sql.Date.valueOf(timeslot.getTimeslotDate()));
+                pstmt.setInt(3, timeslot.getTimeslotSeqnr());
+                pstmt.setInt(1, timeslot.getCalendarId());
+                pstmt.execute();
+            }
+
+            // If we go from false to true, increment the current seat count since this person is here now
+            if(attendance && (lr.getAttended() != null && !lr.getAttended())) {
+                PreparedStatement stmt = conn.prepareStatement(Resources.databaseProperties.getString("add_one_to_reservation_count"));
+                stmt.setInt(1, timeslot.getCalendarId());
+                stmt.setDate(2, Date.valueOf(timeslot.getTimeslotDate()));
+                stmt.setInt(3, timeslot.getTimeslotSeqnr());
+                int change = stmt.executeUpdate();
+
+                if(change != 1) {
+                    return false;
+                }
+
             }
 
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("set_location_reservation_attendance"));
@@ -239,8 +310,36 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
             pstmt.setInt(4, timeslot.getTimeslotSeqnr());
             pstmt.setString(5, augentId);
             pstmt.execute();
+            conn.commit();
+            conn.setAutoCommit(true);
         }
         return true;
+    }
+
+    @Override
+    public void setNotScannedStudentsToUnattended(Timeslot timeslot) throws SQLException {
+        try (Connection conn = adb.getConnection()) {
+            try {
+                conn.setAutoCommit(false);
+                PreparedStatement pstmt = conn.prepareStatement(
+                        Resources.databaseProperties.getString("set_not_scanned_students_as_not_attended"));
+                pstmt.setInt(1, timeslot.getCalendarId());
+                pstmt.setInt(2, timeslot.getTimeslotSeqnr());
+                pstmt.setDate(3, Date.valueOf(timeslot.getTimeslotDate()));
+                int changed = pstmt.executeUpdate();
+                pstmt = conn.prepareStatement(Resources.databaseProperties.getString("subtract_x_to_reservation_count"));
+                pstmt.setInt(1, changed);
+                pstmt.setDate(3, java.sql.Date.valueOf(timeslot.getTimeslotDate()));
+                pstmt.setInt(4, timeslot.getTimeslotSeqnr());
+                pstmt.setInt(2, timeslot.getCalendarId());
+                pstmt.execute();
+                conn.commit();
+                conn.setAutoCommit(true);
+            } catch(SQLException e) {
+                conn.rollback();
+                throw e;
+            }
+        }
     }
 
     // Seperated out for use in transaction

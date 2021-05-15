@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -165,6 +164,50 @@ public class TestDBLocationReservationDao extends BaseTest {
         rlrs.sort(Comparator.comparing(Pair::hashCode));
 
         Assert.assertEquals(elrs, rlrs);
+
+        // Set first location reservation to unattended
+        elrs.clear();
+        lr0.setAttended(false);
+
+        // not yet scanned: no unattended location reservations expected
+        List<Pair<LocationReservation, CalendarPeriod>> unattendedReservations =
+                locationReservationDao.getUnattendedLocationReservations(t0.getTimeslotDate());
+        Assert.assertEquals(Collections.emptyList(), unattendedReservations);
+
+        // scan first location reservation as unattended
+        locationReservationDao.setReservationAttendance(u.getAugentID(), lr0.getTimeslot(), false);
+        unattendedReservations = locationReservationDao.getUnattendedLocationReservations(t0.getTimeslotDate());
+        elrs.add(new Pair<>(lr0, cp0));
+
+        Assert.assertEquals(elrs, unattendedReservations);
+    }
+
+    @Test
+    public void setAllNotScannedStudentsToUnattendedTest() throws SQLException {
+        User u = accountDao.getUserById(testUser.getAugentID()); // test user from db
+        List<Pair<LocationReservation, CalendarPeriod>> elrs = new ArrayList<>(); // expected location reservations
+
+        // Create location reservation
+        CalendarPeriod cp0 = calendarPeriods.get(0);
+        Timeslot t0 = cp0.getTimeslots().get(0);
+        LocationReservation lr0 = new LocationReservation(u, LocalDateTime.now(), t0, null);
+
+        // Add the location reservations to the db
+        Assert.assertTrue(locationReservationDao.addLocationReservationIfStillRoomAtomically(lr0));
+        elrs.add(new Pair<>(lr0, cp0));
+
+        // No unattended students expected yet
+        List<Pair<LocationReservation, CalendarPeriod>> unattendedReservations =
+                locationReservationDao.getUnattendedLocationReservations(t0.getTimeslotDate());
+        Assert.assertEquals(Collections.emptyList(), unattendedReservations);
+
+        // Set all students for the timeslot to unattended
+        locationReservationDao.setNotScannedStudentsToUnattended(t0);
+
+        // Now there should be one unattended student
+        lr0.setAttended(false);
+        unattendedReservations = locationReservationDao.getUnattendedLocationReservations(t0.getTimeslotDate());
+        Assert.assertEquals(elrs, unattendedReservations);
     }
 
     /**

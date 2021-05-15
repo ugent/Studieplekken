@@ -39,12 +39,15 @@
       </div>
 
       <br>
+      <div class="alert alert-warning">{{"scan.warn-unattended" | translate}}</div>
+
       <div class="alert alert-info">{{"scan.handheld-hint" | translate}}</div>
+
       <app-location-reservations
         [currentTimeSlot]="location.currentTimeslot"
         [locationReservations]="lr"
         [lastScanned]="lastScanned"
-        [hideDeleteIcon]="true"
+        [isManagement]="false"
       >
       </app-location-reservations>
     </div>

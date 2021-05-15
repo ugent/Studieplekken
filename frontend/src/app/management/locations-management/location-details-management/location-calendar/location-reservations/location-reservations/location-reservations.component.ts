@@ -29,7 +29,7 @@ export class LocationReservationsComponent {
   @Input() currentTimeSlot: Timeslot;
   @Input() lastScanned?: LocationReservation;
 
-  @Input() hideDeleteIcon = false; // used by ScanningLocationDetails to disable the "delete" icon for volunteers
+  @Input() isManagement = true; // enable some functionality that should not be enabled for volunteers in the Scan page
 
   @Output()
   reservationChange: EventEmitter<unknown> = new EventEmitter<unknown>();
@@ -38,17 +38,16 @@ export class LocationReservationsComponent {
 
   successDeletingLocationReservation: boolean = undefined;
 
-  startedScanning = true;
   searchTerm = '';
 
   scannedLocationReservations: LocationReservation[] = [];
-  warning = false;
+  noSuchUserFoundWarning = false;
   waitingForServer = false;
 
   userHasSearchTerm: (u: User) => boolean = (u: User) =>
     u.augentID.includes(this.searchTerm) ||
     u.firstName.includes(this.searchTerm) ||
-    u.lastName.includes(this.searchTerm);
+    u.lastName.includes(this.searchTerm)
 
   constructor(
     private locationReservationService: LocationReservationsService,
@@ -102,6 +101,40 @@ export class LocationReservationsComponent {
       );
   }
 
+  onFinishScanningClick(modalTemplate: TemplateRef<unknown>): void {
+    this.modalService.show(modalTemplate);
+  }
+
+  setAllNotScannedToUnattended(errorTemplate: TemplateRef<unknown>): void {
+    // hide finishScanningModal
+    this.modalService.hide();
+
+    // if the update is not successful, rollback UI changes
+    const rollback: LocationReservation[] = [];
+
+    // set all reservations where attended is null to false
+    this.locationReservations.forEach((reservation) => {
+      if (reservation.attended !== true) {
+        reservation.attended = false;
+        rollback.push(reservation);
+      }
+    });
+
+    // update server side
+    this.locationReservationService
+      .setAllNotScannedAsUnattended(this.currentTimeSlot)
+      .subscribe(
+        () => {},
+        () => {
+          // on error, rollback UI changes
+          rollback.forEach((reservation) => {
+            reservation.attended = null;
+          });
+          this.modalService.show(errorTemplate);
+        }
+      );
+  }
+
   // /*************
   // *   DELETE   *
   // **************/
@@ -134,20 +167,14 @@ export class LocationReservationsComponent {
   // *******************/
 
   getCorrectI18NObject(reservation: LocationReservation): string {
-    if (this.isTimeslotStartInPast()) {
-      if (reservation.attended === null) {
+    if (reservation.attended === null) {
+      if (this.isTimeslotStartInFuture()) {
+        return 'general.notAvailableAbbreviation';
+      } else {
         return 'management.locationDetails.calendar.reservations.table.notScanned';
-      } else {
-        return reservation.attended ? 'general.yes' : 'general.no';
-      }
-    } else if (this.isTimeslotEndInPast()) {
-      if (reservation.attended === null) {
-        return 'management.locationDetails.calendar.reservations.table.yetToScan';
-      } else {
-        return reservation.attended ? 'general.yes' : 'general.no';
       }
     } else {
-      return 'general.notAvailableAbbreviation';
+      return reservation.attended ? 'general.yes' : 'general.no';
     }
   }
 
@@ -173,8 +200,16 @@ export class LocationReservationsComponent {
     return start.isBefore(moment());
   }
 
-  isButtonDisabled(reservation: LocationReservation): boolean {
-    return reservation.attended;
+  isTimeslotStartInFuture(): boolean {
+    return !this.isTimeslotStartInPast();
+  }
+
+  disableYesButton(reservation: LocationReservation): boolean {
+    return reservation.attended !== null && reservation.attended === true;
+  }
+
+  disableNoButton(reservation: LocationReservation): boolean {
+    return reservation.attended !== null && reservation.attended === false;
   }
 
   /**
@@ -199,10 +234,9 @@ export class LocationReservationsComponent {
   }
 
   updateSearchTerm(errorTemplate: TemplateRef<unknown>): void {
-    this.warning =
-      this.locationReservations.every(
-        (lr) => !this.userHasSearchTerm(lr.user)
-      ) && this.searchTerm.length > 0;
+    this.noSuchUserFoundWarning =
+      this.searchTerm.length > 0 &&
+      this.locationReservations.every((lr) => !this.userHasSearchTerm(lr.user));
 
     const fullyMatchedUser = this.barcodeService.getReservation(
       this.locationReservations,
@@ -233,10 +267,18 @@ export class LocationReservationsComponent {
       }
 
       if (b.attended !== a.attended) {
-        return a.attended ? 1 : -1;
+        return a.attended === null ? -1 // not scanned before everything else
+          : b.attended === null ? 1 // everything else after not scanned
+          : a.attended && !b.attended ? 1 // attended after absent
+          : -1; // absent before attended
       }
 
-      return a.user.lastName.localeCompare(b.user.lastName);
+      // If a.user.firstName equals b.user.firstName, the first localeCompare returns 0 (= false)
+      // and thus the second localeCompare is executed. If they are not equal, the first localeCompare
+      // returns either -1 or 1 (both equivalent to 'true' in a boolean expression) and thus the second
+      // localeCompare is not executed.
+      return a.user.firstName.localeCompare(b.user.firstName) ||
+        a.user.lastName.localeCompare(b.user.lastName);
     });
 
     return locationReservations;
