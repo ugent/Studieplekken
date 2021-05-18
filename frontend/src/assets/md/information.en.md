@@ -20,7 +20,7 @@ The study areas are organized by students, staff and volunteers. Please treat th
 
 > Will there be checks by UGent staff at the study space? If yes, at what time and how frequently will this happen?
 
-Checks will be made if situations arise where someone who has made a reservation does not appear to have a seat. At that moment, the list of students who have made reservations will be checked and students without reservations will have to leave the study place. The study spot is only accessible to students who have reserved. No empty spots will be filled at the time without a reservation.
+Checks will be done daily at 10 AM and 3 PM. Study spots that are not taken by then will be made available for reservation again. The study spot is only accessible to students who have reserved. After releasing the emtpy study spots, other students can occupy these seats.
 
 > Until when can I cancel my reservation, and how should this be done?
 
@@ -48,7 +48,7 @@ If you have questions about lost items, you should contact the UGent staff at th
 
 > Can I be punished if my student card is accidentally not scanned?
 
-For the time being, scanning is not yet systematic. Thus, no attendance will be noted. This will be indicated in your profile (in the overview of the reservations made) as "No presences recorded". Only students who have made a reservation can be present at the study place.
+There will be scanned consistently in the study rooms. It is your own responsibility as a student to make sure that your student card is scanned. It is recommended that you put your student card on your table. If on exceptional occasions no supervisor is present, then your absence will not be registered and no study spots will be released. This will be indicated in your profile (in the overview of the reservations made) as "No presences recorded".
 
 > Will there be study spots provided during the weekend
 
@@ -56,11 +56,11 @@ No study spots are provided during the weekend.
 
 > I would like to have another study place but all places are full
 
-Expanding the spaces and number of study places is unfortunately not possible. The offer we are making now is the maximum offer possible within the current corona measures. Other students can however cancel their reservations at which point you can reserve the spot through this website.
+Expanding the spaces and number of study places is unfortunately not possible. The offer we are making now is the maximum offer possible within the current corona measures. Other students can however cancel their reservations as well as study spots may be released if they are not taken after scanning. In both occasions you can reserve the spot through this website and still make use of the freed study spot.
 
 > Will there also be study spaces during the exam period in June?
 
-Yes, in June 2021 study places will continue to be offered through this application. The space and opening hours can always be found in this application. 
+Yes, up to and including June 25, 2021, study places will continue to be offered through this application (for GUSB up to and including June 23, 2021). The space and opening hours can always be found in this application. 
 
 ---
 
