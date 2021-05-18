@@ -24,7 +24,7 @@ De studieplekken worden georganiseerd door studenten, medewerkers en vrijwillige
 
 > Zullen er controles uitgevoerd worden door UGent personeel op de locatie? Indien ja, op welk tijdstip en hoe frequent zal dit gebeuren? 
 
-Controles worden uitgevoerd als er situaties ontstaan waarbij iemand die gereserveerd heeft geen plaats blijkt te hebben. Op dat moment zal de lijst van studenten die gereserveerd hebben bekeken worden en studenten zonder reservatie zullen de studieplek moeten verlaten. De studieplek is enkel toegankelijk voor studenten die gereserveerd hebben. Er worden geen lege plekken op het moment zelf ingevuld zonder reservatie. 
+Controles worden dagelijks systematisch uitgevoerd om 10u en om 15u. Studieplekken die dan niet ingenomen zijn, worden opnieuw vrijgegeven. De studieplek is enkel toegankelijk voor studenten die gereserveerd hebben. Na het vrijgeven van de lege studieplekken, kunnen deze door andere studenten ingenomen worden.
 
 > Tot wanneer kan men zich uitschrijven, en hoe moet dit gebeuren?
 
@@ -52,7 +52,7 @@ Bij vragen over verloren voorwerpen informeer je best bij het UGent personeel va
 
 > Kan ik gestraft worden als mijn studentenkaart per ongeluk niet gescand is?
 
-Voorlopig wordt er nog niet systematisch gescand. Er worden dus ook geen aanwezigheden genoteerd. Dit zal in jouw profiel (bij het overzicht van de gemaakte reservaties) aangeduid staan als "Geen aanwezigheden opgenomen". Enkel studenten die gereserveerd hebben kunnen immers aanwezig zijn op de studieplek. 
+Er wordt maximaal gescand op de studieplekken en het is je verantwoordelijkheid als student om ervoor te zorgen dat je studentenkaart gescand wordt. Er wordt aangeraden om hiervoor je studentenkaart op je tafel te leggen. Wanneer er uitzonderlijk geen toezichter aanwezig zou zijn en er dus niet kan gescand worden, dan worden de studieplekken ook niet opnieuw vrijgegeven worden en zullen er ook geen sancties zijn. Dit zal in jouw profiel (bij het overzicht van de gemaakte reservaties) aangeduid staan als "Geen aanwezigheden opgenomen".
 
 > Worden er ook studieplekken voorzien tijdens het weekend?
 
@@ -60,11 +60,11 @@ Er worden geen studieplekken voorzien tijdens het weekend.
 
 > Ik wil graag nog een studieplek maar alle plekken zijn vol
 
-Uitbreiden van locaties en aantal studieplekken is jammer genoeg niet mogelijk. Het aanbod dat we nu doen is het maximale aanbod dat mogelijk is binnen de huidige corona maatregelen. Het kan voorkomen dat studenten hun plaats weer vrijgeven door hun reservatie te annuleren. Als dat het geval is kan je je op dat moment zelf nog inschrijven via het platform.
+Uitbreiden van locaties en aantal studieplekken is jammer genoeg niet mogelijk. Het aanbod dat we nu doen is het maximale aanbod dat mogelijk is binnen de huidige corona maatregelen. Het kan voorkomen dat studenten hun plaats weer vrijgeven door hun reservatie te annuleren alsook komen er dagelijks opnieuw plekken vrij die niet ingenomen zijn op moment dat de aanwezigheden gescand worden. Als dat het geval is kan je je op dat moment zelf nog inschrijven via het platform en alsnog van een studieplek gebruik maken.
 
 > Zullen er tijdens de examenperiode in juni ook studieplekken zijn?
 
-Ja, in juni 2021 zullen er verder studieplekken aangeboden worden via deze applicatie. De locatie en de openingsuren zijn altijd te vinden in deze applicatie.  
+Ja, tot en met 25 juni 2021 zullen er verder studieplekken aangeboden worden via deze applicatie (in GUSB tot en met 23/6). De locatie en de openingsuren zijn altijd te vinden in deze applicatie.  
 
 ---
 
