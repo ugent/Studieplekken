@@ -15,9 +15,10 @@ import { LockerReservationService } from '../api/locker-reservations/locker-rese
 import { Router } from '@angular/router';
 import { UserService } from '../api/users/user.service';
 import { api } from '../api/endpoints';
-import { userWantsTLogInLocalStorageKey } from '../../app.constants';
+import { authenticationWasExpiredUrlLSKey, userWantsTLogInLocalStorageKey } from '../../app.constants';
 import { Pair } from '../../shared/model/helpers/Pair';
 import { CalendarPeriod } from '../../shared/model/CalendarPeriod';
+import { environment } from 'src/environments/environment';
 
 /**
  * The structure of the authentication service has been based on this article:
@@ -99,6 +100,18 @@ export class AuthenticationService {
         this.userSubject.next(next);
         this.updateHasAuthoritiesSubject(next);
         this.updateHasVolunteeredSubject(next);
+
+        /**
+         *  Spring's authentication ticket of a logged in user expires before the CAS authentication has expired. 
+         * This results in a lot of 302 HTTP responses triggering the Netdata monitoring tool in production. 
+         * To avoid this, the AuthenticationInterceptor intercepts unknown exceptions and calls this.authExpired() so that a new authentication session is started in Spring. 
+         * Since this.authExpired() saves the last visited url, we can redirect the user to the last visited url instead of to the dashboard.
+         */
+        const getPreviouslyAuthenticatedUrl = localStorage.getItem(authenticationWasExpiredUrlLSKey);
+        if (getPreviouslyAuthenticatedUrl) {
+          localStorage.setItem(authenticationWasExpiredUrlLSKey, '');
+          this.router.navigateByUrl(getPreviouslyAuthenticatedUrl).then();
+        }
       },
       () => {
         this.userSubject.next(UserConstructor.new());
@@ -121,7 +134,7 @@ export class AuthenticationService {
   logout(): void {
     this.http.post(api.logout, {}).subscribe(() => {
       this.userSubject.next(UserConstructor.new());
-      this.router.navigate(['/login']).catch((e) => console.log(e));
+      this.router.navigate(['/login']).then();
     });
 
     // to be sure, set the 'userWantsToLogin' variables to false
@@ -137,6 +150,25 @@ export class AuthenticationService {
    */
   isLoggedIn(): boolean {
     return this.userSubject.value && this.userSubject.value.augentID !== '';
+  }
+
+  /**
+   * This function immediately logs out the person and redirects it to the UGent login page.
+   * If their login is still valid on the UGent login page, login will be resolved immediately.
+   * If URL is given, then you will be redirected to your previous page on login. In the ideal case,
+   * you were still logged in in CAS, the redirect back to the app gets resolved instantly and you
+   * are back where your authentication expired.
+   * @param url url to redirect to after refresh.
+   */
+  authExpired(url: string): void {
+    this.userSubject.next(UserConstructor.new());
+
+    if (url) {
+      localStorage.setItem(authenticationWasExpiredUrlLSKey, url);
+    }
+
+    // Jump to login.ugent.be immediately. Chances are that this will instantly resolve any issues.
+    window.location.href = environment.casFlowTriggerUrl;
   }
 
   isAdmin(): boolean {
