@@ -248,7 +248,7 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
             this.events = this.conversionService.mapCalendarPeriodsToCalendarEvents(
               [...this.calendarMap.values()],
               this.currentLang,
-              []
+              [...this.selectedSubject.value]
             );
           }, duration);
         }
