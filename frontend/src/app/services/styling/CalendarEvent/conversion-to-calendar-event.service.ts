@@ -3,7 +3,6 @@ import {LocationReservation} from '../../../shared/model/LocationReservation';
 import {CalendarEvent} from 'angular-calendar';
 import {Timeslot, timeslotEndHour, timeslotEquals, timeslotStartHour} from '../../../shared/model/Timeslot';
 import {CalendarPeriod} from '../../../shared/model/CalendarPeriod';
-import {calendarEventTitleTemplate} from '../../../app.constants';
 import * as moment from 'moment';
 import {Moment} from 'moment';
 
@@ -56,9 +55,9 @@ export class ConversionToCalendarEventService {
 
     let title: string;
     if (currentLang === 'nl') {
-      title = calendarEventTitleTemplate.notReservableNL;
+      title = `Geen reservatie nodig <br> ${period.openingTime.format('HH:mm')} - ${period.closingTime.format('HH:mm')}`;
     } else {
-      title = calendarEventTitleTemplate.notReservableEN;
+      title = `Requires no reservation <br> ${period.openingTime.format('HH:mm')} - ${period.closingTime.format('HH:mm')}`;
     }
 
     while (dateWithOpeningTime <= lastDayWithOpeningTime) {
@@ -93,26 +92,23 @@ export class ConversionToCalendarEventService {
     }>[] = [];
 
     for (const timeslot of period.timeslots) {
+      const startHour = timeslotStartHour(period, timeslot);
+      const endHour = timeslotEndHour(period, timeslot);
+
       const beginDT = this.dateWithTime(
         timeslot.timeslotDate,
-        timeslotStartHour(period, timeslot)
+        startHour
       );
       const endDT = this.dateWithTime(
         timeslot.timeslotDate,
-        timeslotEndHour(period, timeslot)
+        endHour
       );
 
       let title: string;
       if (currentLang === 'nl') {
-        title = calendarEventTitleTemplate.reservableFromNL.replace(
-          '{datetime}',
-          period.reservableFrom.format('DD/MM/YYYY HH:mm')
-        );
+        title = `${startHour.format('HH:mm')} - ${endHour.format('HH:mm')} <br> Reserveren vanaf ${period.reservableFrom.format('DD/MM/YYYY HH:mm')}`;
       } else {
-        title = calendarEventTitleTemplate.reservableFromEN.replace(
-          '{datetime}',
-          period.reservableFrom.format('DD/MM/YYYY HH:mm')
-        );
+        title = `${startHour.format('HH:mm')} - ${endHour.format('HH:mm')} <br> Reservable from ${period.reservableFrom.format('DD/MM/YYYY HH:mm')}`;
       }
 
       calendarEvents.push({
@@ -146,13 +142,16 @@ export class ConversionToCalendarEventService {
     }>[] = [];
 
     for (const timeslot of period.timeslots) {
+      const startHour = timeslotStartHour(period, timeslot);
+      const endHour = timeslotEndHour(period, timeslot);
+
       const beginDT = this.dateWithTime(
         timeslot.timeslotDate,
-        timeslotStartHour(period, timeslot)
+        startHour
       );
       const endDT = this.dateWithTime(
         timeslot.timeslotDate,
-        timeslotEndHour(period, timeslot)
+        endHour
       );
 
       const currentLR = locationReservations.find((value) =>
@@ -179,8 +178,10 @@ export class ConversionToCalendarEventService {
         ? ''
         : 'unclickable';
 
+      const title = `${timeslot.amountOfReservations} / ${timeslot.seatCount} <br> ${startHour.format('HH:mm')} - ${endHour.format('HH:mm')}`;
+
       calendarEvents.push({
-        title: `${timeslot.amountOfReservations} / ${timeslot.seatCount}`,
+        title,
         start: beginDT,
         end: endDT,
         meta: { calendarPeriod: period, timeslot },
