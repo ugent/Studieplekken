@@ -4,6 +4,7 @@ import blok2.helpers.YearWeekDeserializer;
 import blok2.model.reservables.Location;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.threeten.extra.YearWeek;
@@ -143,7 +144,7 @@ public class Timeslot implements Cloneable {
         this.week = week;
     }
 
-
+    @JsonProperty
     public LocalDate timeslotDate() {
         return week.atDay(dayOfWeek);
     }

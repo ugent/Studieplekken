@@ -42,14 +42,17 @@ calendar_period_isoyear=isoyear
 
 
 # columns for TIMESLOTS
-timeslot_calendar_id=calendar_id
 timeslot_sequence_number=sequence_number
 timeslot_reservable=reservable
+timeslot_reservable_from=reservable_from
 timeslot_isoday_of_week=isoday_of_week
+timeslot_isoweek=iso_week
+timeslot_isoyear=iso_year
 timeslot_reservation_count=reservation_count
 timeslot_seat_count=seat_count
-timeslot_start_time=start_time
-timeslot_end_time=end_time
+timeslot_opening_hour=opening_hour
+timeslot_closing_hour=closing_hour
+timeslot_location_id=location_id
 
 
 # columns for CALENDAR_PERIODS_FOR_LOCKERS

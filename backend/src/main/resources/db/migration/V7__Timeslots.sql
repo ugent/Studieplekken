@@ -23,7 +23,7 @@ ADD opening_hour Time NOT NULL default now();
 alter table timeslots
 ADD closing_hour Time NOT NULL default now();
 
-CREATE SEQUENCE timeslot_id_seq;
+CREATE SEQUENCE if not exists timeslot_id_seq;
 SELECT setval('timeslot_id_seq',  (SELECT count(*)+1 FROM timeslots));
 alter table timeslots
 add sequence_number int NOT NULL default nextval('timeslot_id_seq');

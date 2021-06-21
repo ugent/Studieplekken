@@ -52,11 +52,11 @@ where l.approved = true
 order by l.name;
 
 -- $all_locations_next_reservable_froms
-select l.name, min(cp.reservable_from) as reservable_from
+select distinct l.name, min(rt.reservable_from) as reservable_from
 from public.locations l
-    join public.calendar_periods cp
-        on cp.location_id = l.location_id
-where cp.reservable_from >= now()
+    join public.timeslots rt
+        on rt.location_id = l.location_id
+where rt.reservable_from >= now()
 group by l.name
 order by l.name;
 
@@ -214,11 +214,8 @@ from public.location_reservations lr
         on u.augentid = lr.user_augentid
     left join public.timeslots rt
         on rt.sequence_number = lr.timeslot_sequence_number
-        and rt.calendar_id = lr.calendar_id
-    inner join calendar_periods cp
-        on lr.calendar_id=cp.calendar_id
     inner join locations
-        on cp.location_id=locations.location_id
+        on rt.location_id=locations.location_id
     inner join buildings
         on locations.building_id=buildings.building_id
     inner join authority
@@ -230,31 +227,31 @@ select count(1)
 from public.location_reservations lr 
     INNER JOIN public.calendar_periods cp on lr.calendar_id = cp.calendar_id 
     INNER JOIN public.locations l on cp.location_id = l.location_id
-where lr.calendar_id = ? and lr.timeslot_sequence_number = ?;
+where lr.timeslot_sequence_number = ?;
 
 -- $add_one_to_reservation_count
 update timeslots
 set reservation_count = reservation_count + 1
-where calendar_id = ? and sequence_number= ?;
+where sequence_number= ?;
 
 -- $subtract_one_to_reservation_count
 update timeslots
 set reservation_count = reservation_count - 1
-where calendar_id = ? and sequence_number= ?;
+where sequence_number= ?;
 
 -- $delete_location_reservation
 delete
 from public.location_reservations
-where user_augentid = ? and timeslot_sequence_number = ? and calendar_id = ?;
+where user_augentid = ? and timeslot_sequence_number = ?;
 
 -- $insert_location_reservation
-insert into public.location_reservations (user_augentid, created_at, timeslot_sequence_number, calendar_id, attended)
-values (?, ?, ?, ?, null);
+insert into public.location_reservations (user_augentid, created_at, timeslot_sequence_number, attended)
+values (?, ?, ?,  null);
 
 -- $set_location_reservation_attendance
 update public.location_reservations
 set attended = ?
-where calendar_id = ? and timeslot_sequence_number = ? and user_augentid = ?;
+where timeslot_sequence_number = ? and user_augentid = ?;
 
 -- $get_location_reservations_with_location_by_user
 select lr.*, cp.*, l.*, b.*, a.*, u.*, rt.reservation_count, rt.seat_count
@@ -731,8 +728,8 @@ where calendar_id = ?
 order by rt.sequence_number;
 
 -- $insert_timeslots
-insert into public.timeslots(calendar_id, sequence_number, isoday_of_week, start_time, end_time, reservable, seat_count)
-values (?, ?, ?, ?, ?, ?, ?);
+insert into public.timeslots(iso_year, iso_week, isoday_of_week, opening_hour, closing_hour, reservable, reservable_from, location_id, seat_count)
+values (?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 -- $count_reservations_now
 with y as (
@@ -760,27 +757,28 @@ from public.timeslots rt
 where rt.calendar_id = ?;
 
 -- $get_current_and_or_next_timeslot
-with x as (
-    select rt.*,
-         cp.calendar_id, cp.isoyear, cp.isoweek, cp.repeat_period, cp.parent_id, cp.group_number, cp.reservable_from, cp.location_id
-         , to_timestamp(concat(to_char(cp.isoyear, '9999'), '-', to_char(cp.isoweek, '99'), '-',rt.isoday_of_week), 'IYYY-IW-ID') + rt.start_time as timeslot_start
-         , to_timestamp(concat(to_char(cp.isoyear, '9999'), '-', to_char(cp.isoweek, '99'), '-',rt.isoday_of_week), 'IYYY-IW-ID') + rt.end_time as timeslot_end
+with y as (
+    select rt.*, row_number() over(order by opening_hour) n
     from timeslots rt
-             join calendar_periods cp
-                  on cp.calendar_id = rt.calendar_id
-    where cp.location_id = ?
-    ), y as (
-    select x.*, row_number() over(order by timeslot_start) n
-    from x
-    where x.timeslot_end > now()
+    where to_timestamp(to_char(rt.iso_year, '9999') || '-' || to_char(rt.iso_week, '99') || '-' || to_char(rt.isoday_of_week, '9') || ' ' || to_char(rt.opening_hour, 'HH:MI'), 'IYYY-IW-ID HH:MI') > now()
+            and rt.location_id = ?
 )
 select *
 from y
 where n = 1
-order by timeslot_start;
+order by opening_hour;
 
 -- $get_timeslot_by_id
 select * 
 from public.timeslots rt 
-inner join calendar_periods cp on rt.calendar_id=cp.calendar_id
-where rt.calendar_id = ? and rt.sequence_number = ?;
+where rt.sequence_number = ?;
+
+-- $get_timeslots_by_location
+select *
+from public.timeslots rt
+where rt.location_id = ?;
+
+-- $delete_timeslot
+delete
+from timeslots rt
+where sequence_number = ?;
