@@ -519,6 +519,9 @@
           },
           "noPenalties": "De gebruiker heeft nog geen overtredingen begaan.",
           "error": "Er is iets misgelopen tijdens het ophalen van de strafpunten van de gebruiker."
+        },
+        "reservations": {
+          "title": "Reservaties van {name}"
         }
       }
     },

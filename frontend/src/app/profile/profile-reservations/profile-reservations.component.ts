@@ -1,4 +1,4 @@
-import {Component, TemplateRef} from '@angular/core';
+import {Component, Input, OnInit, TemplateRef} from '@angular/core';
 import {AuthenticationService} from '../../services/authentication/authentication.service';
 import {LocationReservationsService} from '../../services/api/location-reservations/location-reservations.service';
 import {BsModalService} from 'ngx-bootstrap/modal';
@@ -7,13 +7,17 @@ import {LocationReservation} from '../../shared/model/LocationReservation';
 import {CalendarPeriod} from '../../shared/model/CalendarPeriod';
 import {Timeslot, timeslotEndHour, timeslotStartHour} from '../../shared/model/Timeslot';
 import * as moment from 'moment';
+import {User} from '../../shared/model/User';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-profile-reservations',
   templateUrl: './profile-reservations.component.html',
   styleUrls: ['./profile-reservations.component.css'],
 })
-export class ProfileReservationsComponent {
+export class ProfileReservationsComponent implements OnInit {
+  @Input() userObj?: User;
+
   locationReservations: Pair<LocationReservation, CalendarPeriod>[] = [];
 
   locationReservationToDelete: LocationReservation = undefined;
@@ -32,27 +36,28 @@ export class ProfileReservationsComponent {
     });
   }
 
+  ngOnInit(): void {
+  }
+
   setup(): void {
     // don't setup if user is not logged in (or logged in user isn't loaded yet)
     if (!this.authenticationService.isLoggedIn()) {
       return;
     }
 
-    // let the user know that his/hers location reservations are loading
+    // let the user know that the location reservations are loading
     this.successGettingLocationReservations = null;
 
     // load the location reservations
-    this.authenticationService
-      .getLocationReservationsAndCalendarPeriods()
+    this.locationReservationsAndCalendarPeriodsObservable()
       .subscribe(
         (next) => {
           this.successGettingLocationReservations = true;
           this.locationReservations = next;
-        },
+          },
         () => {
           this.successGettingLocationReservations = false;
-        }
-      );
+        });
   }
 
   prepareToDeleteLocationReservation(
@@ -132,6 +137,17 @@ export class ProfileReservationsComponent {
 
   closeModal(): void {
     this.modalService.hide();
+  }
+
+  locationReservationsAndCalendarPeriodsObservable(
+  ): Observable<Pair<LocationReservation, CalendarPeriod>[]> {
+    if (this.userObj === undefined) {
+      return this.authenticationService
+        .getLocationReservationsAndCalendarPeriods();
+    } else {
+      return this.locationReservationService
+        .getLocationReservationsWithCalendarPeriodsOfUser(this.userObj.augentID);
+    }
   }
 
 }

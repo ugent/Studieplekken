@@ -519,6 +519,9 @@
           },
           "noPenalties": "The user has made no penalties so far.",
           "error": "Something went wrong while querying the penalties for the user."
+        },
+        "reservations": {
+          "title": "Reservations of {name}"
         }
       }
     },

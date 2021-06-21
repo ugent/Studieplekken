@@ -1,6 +1,8 @@
 <div class="container-fluid">
   <!-- Title -->
-  <h3>{{'profile.reservations.locations.title' | translate}}</h3>
+  <h3 *ngIf="userObj === undefined; else managementTitle">
+    {{'profile.reservations.locations.title' | translate}}
+  </h3>
 
   <hr>
 
@@ -112,4 +114,9 @@
       {{'management.reservations.location.deleteModal.error' | translate}}
     </div>
   </div>
+</ng-template>
+
+<ng-template #managementTitle>
+  <h3>{{('management.users.userDetails.reservations.title' | translate)
+    .replace('{name}', userObj.firstName + ' ' + userObj.lastName)}}</h3>
 </ng-template>
