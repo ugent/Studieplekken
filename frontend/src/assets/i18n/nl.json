@@ -771,6 +771,7 @@
         "title": "Overzicht van je reservaties",
         "table": {
           "header": {
+            "user": "Gebruiker",
             "locationName": "Ruimte",
             "reservationDate": "Gereserveerd voor datum",
             "beginHour": "Aanvangsuur reservatie",

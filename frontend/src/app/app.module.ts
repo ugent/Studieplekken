@@ -78,6 +78,7 @@ import { ScannerComponent } from './shared/scanner/scanner.component';
 import { VolunteersManagementComponent } from './management/volunteers-management/volunteers-management.component';
 import { VolunteerManagementPanelComponent } from './management/volunteers-management/volunteer-management-panel/volunteer-management-panel.component';
 import { AuthenticationInterceptor } from './services/authentication/authentication.interceptor';
+import { UserReservationsComponent } from './management/users-management/user-details-management/user-reservations/user-reservations.component';
 
 
 // AoT requires an exported function for factories
@@ -308,6 +309,7 @@ const routes: Routes = [
     ScannerComponent,
     VolunteersManagementComponent,
     VolunteerManagementPanelComponent,
+    UserReservationsComponent,
   ],
   imports: [
     BrowserModule,

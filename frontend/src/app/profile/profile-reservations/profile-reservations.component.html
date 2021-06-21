@@ -46,7 +46,7 @@
             <td *ngIf="!needTooltip(pair.first, pair.second)">{{getCorrectI18NObject(pair.first, pair.second) | translate}}</td>
             <!-- User should not be able to delete past reservations, otherwise the penalty points
                  could be deleted as well -->
-            <td *ngIf="!isTimeslotInPast(pair.first.timeslot, pair.second) && pair.first.attended !== false"
+            <td *ngIf="!isTimeslotInPast(pair.first.timeslot, pair.second) && pair.first.attended !== false; else emptyTableData"
                 class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
                 (click)="prepareToDeleteLocationReservation(pair.first, pair.second, deleteLocationReservationModal)">
               <span class="glyphicon glyphicon-trash pointerCursor"></span>
@@ -83,6 +83,9 @@
       <b>{{'management.reservations.location.deleteModal.body' | translate}}</b>
       <br><br>
       <ul>
+        <!-- If ProfileReservationsComponent is used in the UserDetailsManagementComponent, you also want the name
+             of the user of which you are deleting the LocationReservation -->
+        <li *ngIf="userObj"><b style="margin-right: 5px"><i>{{('profile.reservations.locations.table.header.user' | translate) + ':   '}}</i></b>{{userObj.firstName + ' ' + userObj.lastName}}</li>
         <li><b style="margin-right: 5px"><i>{{('profile.reservations.locations.table.header.locationName' | translate) + ':   '}}</i></b>{{calendarPeriodForLocationReservationToDelete.location.name}}</li>
         <li><b style="margin-right: 5px"><i>{{('profile.reservations.locations.table.header.reservationDate' | translate) + ':   '}}</i></b>{{locationReservationToDelete.timeslot.timeslotDate.format("DD/MM/YYYY")}}</li>
         <li><b style="margin-right: 5px"><i>{{('profile.reservations.locations.table.header.beginHour' | translate) + ':   '}}</i></b>{{getBeginHour(locationReservationToDelete.timeslot, calendarPeriodForLocationReservationToDelete)}}</li>
@@ -119,4 +122,10 @@
 <ng-template #managementTitle>
   <h3>{{('management.users.userDetails.reservations.title' | translate)
     .replace('{name}', userObj.firstName + ' ' + userObj.lastName)}}</h3>
+</ng-template>
+
+<ng-template #emptyTableData>
+  <td>
+    <span></span>
+  </td>
 </ng-template>

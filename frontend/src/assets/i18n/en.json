@@ -771,6 +771,7 @@
         "title": "Overview of your room reservations",
         "table": {
           "header": {
+            "user": "User",
             "locationName": "Room",
             "reservationDate": "Reservation for date",
             "beginHour": "Starting time reservation",
