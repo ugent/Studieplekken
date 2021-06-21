@@ -25,8 +25,6 @@ import { ProfileCalendarComponent } from './profile/profile-calendar/profile-cal
 import { ProfilePenaltiesComponent } from './profile/profile-penalties/profile-penalties.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProfileChangePasswordComponent } from './profile/profile-change-password/profile-change-password.component';
-import { ProfileLocationReservationsComponent } from './profile/profile-reservations/profile-location-reservations/profile-location-reservations.component';
-import { ProfileLockerReservationsComponent } from './profile/profile-reservations/profile-locker-reservations/profile-locker-reservations.component';
 import { LocationsManagementComponent } from './management/locations-management/locations-management.component';
 import { UsersManagementComponent } from './management/users-management/users-management.component';
 import { PenaltyEventsManagementComponent } from './management/penalty-events-management/penalty-events-management.component';
@@ -79,7 +77,7 @@ import { ScanningLocationDetailsComponent } from './scan/scanning-location-detai
 import { ScannerComponent } from './shared/scanner/scanner.component';
 import { VolunteersManagementComponent } from './management/volunteers-management/volunteers-management.component';
 import { VolunteerManagementPanelComponent } from './management/volunteers-management/volunteer-management-panel/volunteer-management-panel.component';
-import { AuthenticationInterceptor } from './services/authentication/authentication.interceptor'
+import { AuthenticationInterceptor } from './services/authentication/authentication.interceptor';
 
 
 // AoT requires an exported function for factories
@@ -276,8 +274,6 @@ const routes: Routes = [
     ProfileCalendarComponent,
     ProfilePenaltiesComponent,
     ProfileChangePasswordComponent,
-    ProfileLocationReservationsComponent,
-    ProfileLockerReservationsComponent,
     LocationsManagementComponent,
     UsersManagementComponent,
     PenaltyEventsManagementComponent,
