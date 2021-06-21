@@ -17,12 +17,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
-
-import static java.util.Collections.*;
 
 public class TestDBLocationReservationDao extends BaseTest {
 
@@ -41,7 +37,7 @@ public class TestDBLocationReservationDao extends BaseTest {
     private IAuthorityDao authorityDao;
 
     @Autowired
-    private ICalendarPeriodDao calendarPeriodDao;
+    private ITimeslotDAO timeslotDAO;
 
     @Autowired
     private IBuildingDao buildingDao;
@@ -78,13 +74,13 @@ public class TestDBLocationReservationDao extends BaseTest {
 
 
         for (Pair<CalendarPeriod, List<Timeslot>> c : calendarPeriods) {
-            TestSharedMethods.addPair(calendarPeriodDao, c);
+            TestSharedMethods.addPair(timeslotDAO, c);
         }
         for (Pair<CalendarPeriod, List<Timeslot>> c : calendarPeriodsForLocation2) {
-            TestSharedMethods.addPair(calendarPeriodDao, c);
+            TestSharedMethods.addPair(timeslotDAO, c);
         }
 
-        TestSharedMethods.addPair(calendarPeriodDao, calendarPeriod1Seat);
+        TestSharedMethods.addPair(timeslotDAO, calendarPeriod1Seat);
     }
 
     @Test
@@ -125,7 +121,7 @@ public class TestDBLocationReservationDao extends BaseTest {
         Timeslot timeslot = calendarPeriod1Seat.getSecond().get(0);
 
         LocationReservation lr = new LocationReservation(u, LocalDateTime.now(), timeslot, null);
-        TestSharedMethods.addPair(calendarPeriodDao, calendarPeriods.get(0));
+        TestSharedMethods.addPair(timeslotDAO, calendarPeriods.get(0));
         Assert.assertTrue(locationReservationDao.addLocationReservationIfStillRoomAtomically(lr));
         lr = new LocationReservation(u, LocalDateTime.now(), timeslot, null);
         // This is a duplicate entry into the database. Shouldn't work.
@@ -183,7 +179,7 @@ public class TestDBLocationReservationDao extends BaseTest {
 
         // Create an upcoming calendar period (timeslots will be created too)
         Pair<CalendarPeriod, List<Timeslot>> calendarPeriod = TestSharedMethods.upcomingCalendarPeriods(location);
-        TestSharedMethods.addPair(calendarPeriodDao, calendarPeriod);
+        TestSharedMethods.addPair(timeslotDAO, calendarPeriod);
         logger.info("Calendar period has been created");
 
         Timeslot timeslot = calendarPeriod.getSecond().get(0);

@@ -34,7 +34,7 @@ public abstract class BaseIntegrationTest extends BaseTest {
     @Autowired
     protected IAuthorityDao authorityDao;
     @Autowired
-    protected ICalendarPeriodDao calendarPeriodDao;
+    protected ITimeslotDAO timeslotDAO;
     @Autowired
     protected IBuildingDao buildingDao;
 
@@ -78,7 +78,7 @@ public abstract class BaseIntegrationTest extends BaseTest {
         calendarPeriods = TestSharedMethods.testCalendarPeriods(testLocation);
 
         for (Pair<CalendarPeriod, List<Timeslot>> c : calendarPeriods) {
-            TestSharedMethods.addPair(calendarPeriodDao, c);
+            TestSharedMethods.addPair(timeslotDAO, c);
         }
 
         admin = accountDao.getUserByEmail("admin@ugent.be");

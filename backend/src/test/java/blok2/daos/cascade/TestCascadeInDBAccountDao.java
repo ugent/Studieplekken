@@ -49,7 +49,7 @@ public class TestCascadeInDBAccountDao extends BaseTest {
     private IAuthorityDao authorityDao;
 
     @Autowired
-    private ICalendarPeriodDao calendarPeriodDao;
+    private ITimeslotDAO timeslotDAO;
 
     @Autowired IBuildingDao buildingDao;
 
@@ -84,9 +84,9 @@ public class TestCascadeInDBAccountDao extends BaseTest {
         locationDao.addLocation(testLocation1);
         locationDao.addLocation(testLocation2);
         Pair<CalendarPeriod, List<Timeslot>> cp1 = TestSharedMethods.testCalendarPeriods(testLocation1).get(0);
-        TestSharedMethods.addPair(calendarPeriodDao, cp1);
+        TestSharedMethods.addPair(timeslotDAO, cp1);
         Pair<CalendarPeriod, List<Timeslot>> cp2 = TestSharedMethods.testCalendarPeriods(testLocation2).get(0);
-        TestSharedMethods.addPair(calendarPeriodDao, cp2);
+        TestSharedMethods.addPair(timeslotDAO, cp2);
 
         testLocationReservation1 = new LocationReservation(testUser, LocalDateTime.now(), cp1.getSecond().get(0),  null);
         testLocationReservation2 = new LocationReservation(testUser, LocalDateTime.of(1970,1,1,0,0), cp2.getSecond().get(0),  null);

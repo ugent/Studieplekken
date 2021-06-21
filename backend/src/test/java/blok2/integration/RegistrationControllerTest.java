@@ -6,13 +6,11 @@ import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
 import org.json.JSONObject;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -135,9 +133,9 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
         Pair<CalendarPeriod, List<Timeslot>> cp = calendarPeriods.get(0);
         Timeslot timeslot = cp.getSecond().get(0);
 
-        String url = String.format("/locations/reservations/%s/%d/%d/attendance",
-                student.getAugentID(), timeslot.getPeriod().getId(),
-                timeslot.getTimeslotSeqnr());
+        String url = String.format("/locations/reservations/%s/%d/attendance",
+                student.getAugentID(),
+                timeslot.getTimeslotSequenceNumber());
 
         JSONObject obj = new JSONObject().put("attended", true);
 
@@ -155,9 +153,9 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
         Timeslot timeslot = cp.getSecond().get(0);
 
 
-        String url = String.format("/locations/reservations/%s/%d/%d/attendance",
-                student2.getAugentID(), timeslot.getPeriod().getId(),
-                timeslot.getTimeslotSeqnr());
+        String url = String.format("/locations/reservations/%s/%d/attendance",
+                student2.getAugentID(),
+                timeslot.getTimeslotSequenceNumber());
 
         JSONObject obj = new JSONObject().put("attended", true);
 

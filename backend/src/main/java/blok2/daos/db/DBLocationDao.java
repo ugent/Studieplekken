@@ -22,8 +22,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static blok2.daos.db.DBCalendarPeriodDao.getCurrentTimeslot;
 import static blok2.daos.db.DBAccountDao.createUser;
+import static blok2.daos.db.DBTimeslotDao.getCurrentTimeslot;
 
 @Service
 public class DBLocationDao extends DAO implements ILocationDao {
@@ -347,13 +347,13 @@ public class DBLocationDao extends DAO implements ILocationDao {
      */
     public static Location createLocation(ResultSet rs, Connection conn) throws SQLException {
         ResultSet rsTags = DBLocationTagDao.getTagsForLocation(rs.getInt(Resources.databaseProperties.getString("location_id")), conn);
-        int locationId = rs.getInt(Resources.databaseProperties.getString("location_id"));
-        Timeslot timeslot = getCurrentTimeslot(locationId, conn);
-
+        Location location = createLocation(rs, rsTags, null, null);
+        Timeslot timeslot = getCurrentTimeslot(location, conn);
 
         Pair<LocationStatus, String> status = getStatus(timeslot);
-
-        return createLocation(rs, rsTags, status, timeslot);
+        location.setCurrentTimeslot(timeslot);
+        location.setStatus(status);
+        return location;
     }
 
     private static Pair<LocationStatus, String> getStatus(Timeslot timeslot) {
@@ -362,8 +362,8 @@ public class DBLocationDao extends DAO implements ILocationDao {
             return new Pair<>(LocationStatus.CLOSED, "");
         }
 
-        LocalDateTime start = timeslot.getStartDate();
-        LocalDateTime end = timeslot.getEndDate();
+        LocalDateTime start = LocalDateTime.of(timeslot.timeslotDate(), timeslot.getOpeningHour());
+        LocalDateTime end = LocalDateTime.of(timeslot.timeslotDate(), timeslot.getClosingHour());
         DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
         if(start.isBefore(LocalDateTime.now()) && end.isAfter(LocalDateTime.now())) {

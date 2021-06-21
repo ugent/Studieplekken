@@ -1,18 +1,15 @@
 package blok2.controllers;
 
-import blok2.daos.ICalendarPeriodDao;
 import blok2.daos.ILocationReservationDao;
-import blok2.helpers.Pair;
+import blok2.daos.ITimeslotDAO;
 import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.helpers.exceptions.NoSuchReservationException;
-import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,9 +18,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This controller handles all requests related to location reservations.
@@ -37,12 +36,12 @@ public class LocationReservationController extends AuthorizedLocationController 
     private final Logger logger = LoggerFactory.getLogger(LocationReservationController.class.getSimpleName());
 
     private final ILocationReservationDao locationReservationDao;
-    private final ICalendarPeriodDao calendarPeriodDao;
+    private final ITimeslotDAO timeslotDao;
 
     @Autowired
-    public LocationReservationController(ILocationReservationDao locationReservationDao, ICalendarPeriodDao calendarPeriodDao) {
+    public LocationReservationController(ILocationReservationDao locationReservationDao, ITimeslotDAO timeslotDao) {
         this.locationReservationDao = locationReservationDao;
-        this.calendarPeriodDao = calendarPeriodDao;
+        this.timeslotDao = timeslotDao;
     }
 
     @GetMapping("/user")
@@ -65,8 +64,7 @@ public class LocationReservationController extends AuthorizedLocationController 
     public LocationReservation createLocationReservation(@AuthenticationPrincipal User user, @Valid @RequestBody Timeslot timeslot) {
         try {
             LocationReservation reservation = new LocationReservation(user, LocalDateTime.now(), timeslot, null);
-            CalendarPeriod period = calendarPeriodDao.getById(timeslot.getPeriod().getId());
-            if(LocalDateTime.now().isBefore(period.getReservableFrom())) {
+            if(LocalDateTime.now().isBefore(timeslot.getReservableFrom())) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "This calendarperiod can't yet be reserved");
             }
             if(!locationReservationDao.addLocationReservationIfStillRoomAtomically(reservation)) {
@@ -80,14 +78,13 @@ public class LocationReservationController extends AuthorizedLocationController 
         }
     }
 
-    @GetMapping("/timeslot/{calendarid}/{seqnr}")
+    @GetMapping("/timeslot/{seqnr}")
     @PreAuthorize("hasAuthority('HAS_VOLUNTEERS') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public List<LocationReservation> getLocationReservationsByTimeslot(
-            @PathVariable("calendarid") int calendarId,
             @PathVariable("seqnr") int seqnr
     ) {
         try {
-            Timeslot timeslot = calendarPeriodDao.getTimeslot(calendarId, seqnr);
+            Timeslot timeslot = timeslotDao.getTimeslot(seqnr);
             return locationReservationDao.getAllLocationReservationsOfTimeslot(timeslot);
         } catch (SQLException e) {
             logger.error(e.getMessage());
@@ -112,9 +109,8 @@ public class LocationReservationController extends AuthorizedLocationController 
     public void deleteLocationReservation(@RequestBody @Valid LocationReservation locationReservation) {
 
         try {
-            CalendarPeriod parentPeriod = calendarPeriodDao.getById(locationReservation.getTimeslot().getPeriod().getId());
             isAuthorized(
-                    (lr, user) -> hasAuthority(parentPeriod.getLocationId()) || lr.getUser().getAugentID().equals(user.getAugentID()),
+                    (lr, user) -> hasAuthority(locationReservation.getTimeslot().getLocationId()) || lr.getUser().getAugentID().equals(user.getAugentID()),
                     locationReservation
             );
 
@@ -130,18 +126,16 @@ public class LocationReservationController extends AuthorizedLocationController 
         }
     }
 
-    @PostMapping("/{userid}/{calendarid}/{seqnr}/attendance")
+    @PostMapping("/{userid}/{seqnr}/attendance")
     @PreAuthorize("hasAuthority('HAS_VOLUNTEERS') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void setLocationReservationAttendance(
-            @PathVariable("calendarid") int calendarId,
             @PathVariable("seqnr") int seqnr,
             @PathVariable("userid") String userid,
             @RequestBody LocationReservation.AttendedPostBody body
     ) {
         try {
-            Timeslot slot = calendarPeriodDao.getTimeslot(calendarId, seqnr);
-            CalendarPeriod parentPeriod = slot.getPeriod();
-            isVolunteer(parentPeriod.getLocationId());
+            Timeslot slot = timeslotDao.getTimeslot( seqnr);
+            isVolunteer(slot.getLocationId());
             if (!locationReservationDao.setReservationAttendance(userid, slot, body.getAttended()))
                 throw new NoSuchReservationException("No such reservation");
         } catch (SQLException e) {
