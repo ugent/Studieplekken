@@ -4,7 +4,7 @@ import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/internal/operators/map';
 import { filter } from 'rxjs/operators';
-import { CalendarPeriodsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
+import { TimeslotsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { CalendarPeriod } from 'src/app/shared/model/CalendarPeriod';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
@@ -30,7 +30,7 @@ export class TimeslotTableComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private locationReservationsService: LocationReservationsService,
-    private calendarPeriodService: CalendarPeriodsService,
+    private calendarPeriodService: TimeslotsService,
     private locationService: LocationService
   ) {}
 

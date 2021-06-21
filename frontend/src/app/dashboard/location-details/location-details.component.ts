@@ -7,7 +7,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { CalendarEvent } from 'angular-calendar';
 import { TranslateService } from '@ngx-translate/core';
 import { LocationTag } from '../../shared/model/LocationTag';
-import { CalendarPeriodsService } from '../../services/api/calendar-periods/calendar-periods.service';
+import { TimeslotsService } from '../../services/api/calendar-periods/calendar-periods.service';
 import {
   includesTimeslot,
   Timeslot,
@@ -58,7 +58,6 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
   showSuccess = false;
   showError = false;
 
-  currentTimeslot: Timeslot;
   isModified = false;
 
   description = {
@@ -79,7 +78,7 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
   newReservations: LocationReservation[];
   removedReservations: LocationReservation[];
 
-  calendarMap: Map<number, CalendarPeriod> = new Map<number, CalendarPeriod>();
+  private timeouts: number[];
   locationReservations: Observable<LocationReservation[]>;
   showAdmin: boolean;
   showLockersManagement: boolean;
@@ -93,7 +92,7 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private sanitizer: DomSanitizer,
     private translate: TranslateService,
-    private calendarPeriodsService: CalendarPeriodsService,
+    private calendarPeriodsService: TimeslotsService,
     private datepipe: DatePipe,
     private authenticationService: AuthenticationService,
     private locationReservationService: LocationReservationsService,
@@ -149,6 +148,7 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
       // the calendar period is not reservable
       return;
     }
+    const currentTimeslot = event['timeslot'] as Timeslot;
 
     if (!this.loggedIn()) {
       // When not logged in, calendar periods are unclickable
@@ -163,26 +163,26 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.isModified = true;
-
-    this.currentTimeslot = event['timeslot'] as Timeslot;
-
-    const reservation: LocationReservation = {
-      user: this.authenticationService.userValue(),
-      timeslot: this.currentTimeslot,
-    };
     const timeslotIsSelected = this.selectedSubject.value.some((r) =>
       timeslotEquals(r.timeslot, reservation.timeslot)
     );
 
-    if (
-      this.currentTimeslot.amountOfReservations >=
-        this.currentTimeslot.seatCount &&
-      !timeslotIsSelected
-    ) {
-      return;
-    }
+    // if it is full and you don't have this reservation yet, unselect
+  if (
+    currentTimeslot.amountOfReservations >=
+      currentTimeslot.seatCount &&
+    !timeslotIsSelected
+  ) {
+    return;
+  }
+
     this.isModified = true;
+
+    const reservation: LocationReservation = {
+      user: this.authenticationService.userValue(),
+      timeslot: currentTimeslot,
+    };
+
 
     // If it's already selected, unselect
     if (timeslotIsSelected) {
@@ -226,39 +226,33 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
     }
 
     this.calendarSub = combineLatest([
-      this.calendarPeriodsService.getCalendarPeriodsOfLocation(this.locationId),
+      this.calendarPeriodsService.getTimeslotsOfLocation(this.locationId),
       this.authenticationService.getLocationReservations(),
-    ]).subscribe(([periods, reservations]) => {
+      this.selectedSubject,
+      this.location
+    ]).subscribe(([timeslots, reservations, proposedReservations, location]) => {
       this.originalList = [...reservations];
       this.selectedSubject.next(reservations);
 
-      periods.forEach((element) => {
-        this.calendarMap.set(element.id, element);
+      // don't add timeouts more than once.
+      this.timeouts.forEach(t => clearTimeout(t))
 
-        const duration = element.reservableFrom.valueOf() - moment().valueOf();
-        if (duration > 0) {
-          setTimeout(() => {
-            this.events = mapCalendarPeriodsToCalendarEvents(
-              [...this.calendarMap.values()],
-              this.currentLang,
-              []
-            );
-          }, duration);
-        }
-      });
+      this.timeouts = timeslots
+                          .map(e => (e.reservableFrom.valueOf() - moment().valueOf()))
+                          .filter(d => d > 0)
+                          .filter(d => d < 1000 * 60 * 60 * 2) // don't set more than two days in advance (weird bugs if you do)
+                          .map(d => setTimeout(() => this.draw(timeslots, proposedReservations), d));
+    this.draw(timeslots, proposedReservations);
+  })
+}
 
-      this.subscription = this.selectedSubject
-        .asObservable()
-        .subscribe(
-          (proposedReservations) =>
-            (this.events = mapCalendarPeriodsToCalendarEvents(
-              periods,
-              this.currentLang,
-              [...proposedReservations]
-            ))
-        );
-    });
-  }
+draw(timeslots, proposedReservations):void {
+  this.events = mapCalendarPeriodsToCalendarEvents(
+    periods,
+    this.currentLang,
+    [...proposedReservations]
+  )   
+}
 
   updateReservationIsPossible(): boolean {
     return !(this.isModified && this.authenticationService.isLoggedIn());

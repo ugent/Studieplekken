@@ -3,24 +3,36 @@ import { Moment } from 'moment';
 import { CalendarPeriod } from './CalendarPeriod';
 
 export class Timeslot {
-  timeslotSeqnr: number;
+  timeslotSequenceNumber: number;
   timeslotDate: Moment;
-  calendarId: number;
   amountOfReservations: number;
   seatCount: number;
+  reservable: boolean;
+  reservableFrom: Moment;
+  locationId: number;
+  openingHour: Moment;
+  closingHour: Moment;
 
   constructor(
-    timeslotSeqnr: number,
+    timeslotSequenceNumber: number,
     timeslotDate: Moment,
-    calendarId: number,
     amountOfReservations: number,
-    seatCount: number
+    seatCount: number,
+    reservable: boolean,
+    reservableFrom: Moment,
+    locationId: number,
+    openingHour: Moment,
+    closingHour: Moment
   ) {
-    this.timeslotSeqnr = timeslotSeqnr;
+    this.timeslotSequenceNumber = timeslotSequenceNumber;
     this.timeslotDate = timeslotDate;
-    this.calendarId = calendarId;
     this.amountOfReservations = amountOfReservations;
     this.seatCount = seatCount;
+    this.reservable = reservable;
+    this.reservableFrom = reservableFrom;
+    this.locationId = locationId;
+    this.openingHour = openingHour;
+    this.closingHour = closingHour;
   }
 
   static fromJSON(json: Timeslot): Timeslot {
@@ -28,58 +40,37 @@ export class Timeslot {
       return null;
     }
     return new Timeslot(
-      json.timeslotSeqnr,
+      json.timeslotSequenceNumber,
       moment(json.timeslotDate),
-      json.calendarId,
       json.amountOfReservations,
-      json.seatCount
+      json.seatCount,
+      json.reservable,
+      moment(json.reservableFrom),
+      json.locationId,
+      moment(json.openingHour, "HH:mm:ss"),
+      moment(json.closingHour, "HH:mm:ss")
     );
   }
 
   toJSON(): Record<string, unknown> {
     return {
-      timeslotSeqnr: this.timeslotSeqnr,
+      timeslotSequenceNumber: this.timeslotSequenceNumber,
       timeslotDate: this.timeslotDate.format('YYYY-MM-DD'),
-      calendarId: this.calendarId,
       seatCount: this.seatCount,
     };
   }
+
+  areReservationsLocked(): boolean {
+    return !this.reservableFrom || this.reservableFrom.isAfter(moment());
+  }
 }
 
-export function timeslotStartHour(
-  calendarPeriod: CalendarPeriod,
-  timeslot: Timeslot
-): Moment {
-  return moment(
-    timeslot.timeslotDate.format('DD-MM-YYYY') +
-      ' ' +
-      calendarPeriod.openingTime.format('HH:mm'),
-    'DD-MM-YYYY HH:mm'
-  ).add(calendarPeriod.timeslotLength * timeslot.timeslotSeqnr, 'minutes');
-}
-
-export function timeslotEndHour(
-  calendarPeriod: CalendarPeriod,
-  timeslot: Timeslot
-): Moment {
-  return moment(
-    timeslot.timeslotDate.format('DD-MM-YYYY') +
-      ' ' +
-      calendarPeriod.openingTime.format('HH:mm'),
-    'DD-MM-YYYY HH:mm'
-  ).add(
-    calendarPeriod.timeslotLength * (timeslot.timeslotSeqnr + 1),
-    'minutes'
-  );
-}
 
 export const timeslotEquals: (t1: Timeslot, t2: Timeslot) => boolean = (
   t1,
   t2
 ) =>
-  t1.timeslotSeqnr === t2.timeslotSeqnr &&
-  t1.calendarId === t2.calendarId &&
-  t1.timeslotDate.isSame(t2.timeslotDate, 'day');
+  t1.timeslotSequenceNumber === t2.timeslotSequenceNumber
 
 export const includesTimeslot: (l: Timeslot[], t: Timeslot) => boolean = (
   l,

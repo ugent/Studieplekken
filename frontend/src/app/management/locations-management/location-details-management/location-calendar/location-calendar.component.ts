@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { CalendarEvent } from 'angular-calendar';
 import * as moment from 'moment';
 import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import { CalendarPeriodsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
+import { TimeslotsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { ApplicationTypeFunctionalityService } from 'src/app/services/functionality/application-type/application-type-functionality.service';
 import {
@@ -103,7 +103,7 @@ export class LocationCalendarComponent implements OnInit {
   currentLang: string;
 
   constructor(
-    private calendarPeriodsService: CalendarPeriodsService,
+    private calendarPeriodsService: TimeslotsService,
     private functionalityService: ApplicationTypeFunctionalityService,
     private locationReservationService: LocationReservationsService,
     private dialog: MatDialog,

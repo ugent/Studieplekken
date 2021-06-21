@@ -3,8 +3,6 @@ import { CalendarEvent } from 'angular-calendar';
 import {
   includesTimeslot,
   Timeslot,
-  timeslotEndHour,
-  timeslotStartHour,
 } from './Timeslot';
 import { LocationReservation } from './LocationReservation';
 import * as moment from 'moment';

@@ -17,6 +17,9 @@ export const api = {
   updateCalendarPeriods: '/api/locations/calendar/{locationId}',
   deleteCalendarPeriods: '/api/locations/calendar',
 
+  // TIMESLOTS
+  timeslots: '/api/locations/timeslots/{locationId}',
+
   // CALENDAR_PERIODS_FOR_LOCKERS
   calendarPeriodsForLockers: '/api/locations/lockerCalendar/{locationId}',
   addCalendarPeriodsForLockers: '/api/locations/lockerCalendar',

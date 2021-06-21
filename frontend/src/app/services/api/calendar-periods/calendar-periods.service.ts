@@ -9,11 +9,12 @@ import { filter } from 'rxjs/internal/operators/filter';
 import { api } from '../endpoints';
 import { LocationStatus } from '../../../app.constants';
 import { Cache } from '../../../shared/cache/Cache';
+import { Timeslot } from 'src/app/shared/model/Timeslot';
 
 @Injectable({
   providedIn: 'root',
 })
-export class CalendarPeriodsService {
+export class TimeslotsService {
   constructor(private http: HttpClient) {}
 
   // tslint:disable-next-line: max-line-length
@@ -22,16 +23,16 @@ export class CalendarPeriodsService {
     Pair<LocationStatus, string>
   >(this.http, (arg: Location) => arg.locationId);
 
-  getCalendarPeriodsOfLocation(
+  getTimeslotsOfLocation(
     locationId: number
-  ): Observable<CalendarPeriod[]> {
+  ): Observable<Timeslot[]> {
     return this.http
-      .get<CalendarPeriod[]>(
-        api.calendarPeriods.replace('{locationId}', String(locationId))
+      .get<Timeslot[]>(
+        api.timeslots.replace('{locationId}', String(locationId))
       )
       .pipe(
         filter((s) => !!s),
-        map((ls) => ls.map((s) => CalendarPeriod.fromJSON(s)))
+        map((ls) => ls.map((s) => Timeslot.fromJSON(s)))
       );
   }
 

@@ -15,7 +15,7 @@ import { AuthenticationService } from '../../services/authentication/authenticat
 import { tap } from 'rxjs/operators';
 import { Building } from 'src/app/shared/model/Building';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { CalendarPeriodsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
+import { TimeslotsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
 import { CalendarPeriod } from 'src/app/shared/model/CalendarPeriod';
 
 @Component({
@@ -50,7 +50,7 @@ export class LocationsManagementComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private buildingsService: BuildingService,
     private modalService: BsModalService,
-    private calendarPeriodService: CalendarPeriodsService
+    private calendarPeriodService: TimeslotsService
   ) {}
 
   ngOnInit(): void {

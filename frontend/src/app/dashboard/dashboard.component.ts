@@ -6,7 +6,7 @@ import { TagsService } from '../services/api/tags/tags.service';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
-import { CalendarPeriodsService } from '../services/api/calendar-periods/calendar-periods.service';
+import { TimeslotsService } from '../services/api/calendar-periods/calendar-periods.service';
 import { LocationStatus } from '../app.constants';
 import { Building } from '../shared/model/Building';
 import { BuildingService } from '../services/api/buildings/buildings.service';
@@ -56,7 +56,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private locationService: LocationService,
     private tagsService: TagsService,
     private translate: TranslateService,
-    private calendarPeriodService: CalendarPeriodsService,
+    private calendarPeriodService: TimeslotsService,
     private buildingService: BuildingService
   ) {}
 
