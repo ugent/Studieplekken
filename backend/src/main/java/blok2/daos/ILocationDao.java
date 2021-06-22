@@ -2,7 +2,6 @@ package blok2.daos;
 
 import blok2.helpers.Pair;
 import blok2.model.reservables.Location;
-import blok2.model.reservables.Locker;
 import blok2.model.users.User;
 
 import java.sql.SQLException;
@@ -10,10 +9,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Note that all add/update/delete operations on lockers will happen in cascade
- * upon add/update/delete operations on a location if the number of lockers change
- */
 public interface ILocationDao extends IDao {
 
     /**
@@ -56,16 +51,6 @@ public interface ILocationDao extends IDao {
      * Get all users that have volunteered for the specified location
      */
     List<User> getVolunteers(int locationId) throws SQLException;
-
-    /**
-     * Get all lockers of the specified location
-     */
-    List<Locker> getLockers(int locationId) throws SQLException;
-
-    /**
-     * Delete a locker
-     */
-    void deleteLocker(int locationId, int number) throws SQLException;
 
     /**
      * Approve or deny a new location

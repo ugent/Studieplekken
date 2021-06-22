@@ -9,7 +9,6 @@ import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.LocationTag;
 import blok2.model.calendar.CalendarPeriod;
-import blok2.model.calendar.CalendarPeriodForLockers;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;
 import org.junit.Assert;
@@ -338,43 +337,4 @@ public class TestSharedMethods {
         return updatedPeriods;
     }
 
-    public static List<CalendarPeriodForLockers> testCalendarPeriodsForLockers(Location location) {
-        List<CalendarPeriodForLockers> calendarPeriods = new ArrayList<>();
-
-        LocalDate date = LocalDate.now();
-        LocalTime time = LocalTime.now();
-
-        for (int i = 0; i < 2; i++) {
-            CalendarPeriodForLockers period = new CalendarPeriodForLockers();
-            period.setLocation(location);
-
-            date = LocalDate.of(date.getYear(), date.getMonth(), 2 + 10*i);
-            period.setStartsAt(date);
-
-            date = LocalDate.of(date.getYear(), date.getMonth(), 4 + 10*i);
-            period.setEndsAt(date);
-
-            date = LocalDate.of(date.getYear(), date.getMonth(), 1);
-            period.setReservableFrom(LocalDateTime.of(date, time));
-
-            calendarPeriods.add(period);
-        }
-
-        return calendarPeriods;
-    }
-
-    public static List<CalendarPeriodForLockers> testCalendarPeriodsForLockersButUpdated(Location location) {
-        List<CalendarPeriodForLockers> updatedPeriods = new ArrayList<>();
-        for (CalendarPeriodForLockers calendarPeriod : testCalendarPeriodsForLockers(location)) {
-            updatedPeriods.add(calendarPeriod.clone());
-        }
-
-        for (int i = 0; i < updatedPeriods.size(); i++) {
-            updatedPeriods.get(i).setStartsAt(LocalDate.of(1970,1,i+1));
-            updatedPeriods.get(i).setEndsAt(LocalDate.of(1970,1,i + 10));
-            updatedPeriods.get(i).setReservableFrom(LocalDateTime.of(1970,1,i+1,9,0));
-        }
-
-        return updatedPeriods;
-    }
 }

@@ -5,14 +5,12 @@ import blok2.TestSharedMethods;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.reservables.Location;
-import blok2.model.reservables.Locker;
 import org.flywaydb.test.annotation.FlywayTest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
-import java.util.List;
 
 @FlywayTest
 public class TestDBLocationDao extends BaseTest {
@@ -51,18 +49,4 @@ public class TestDBLocationDao extends BaseTest {
         Assert.assertNull("addLocation, remove added test location", l);
     }
 
-    @FlywayTest
-    @Test
-    public void lockersTest() throws SQLException {
-        List<Locker> lockers = locationDao.getLockers(testLocation.getLocationId());
-        Assert.assertEquals("lockersTest, check size getLockers"
-                , testLocation.getNumberOfLockers(), lockers.size());
-
-        if (testLocation.getNumberOfLockers() > 0) {
-            for (Locker l : lockers) {
-                Assert.assertEquals("lockersTest, check location of each locker"
-                        , testLocation, l.getLocation());
-            }
-        }
-    }
 }

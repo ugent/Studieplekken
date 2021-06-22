@@ -12,7 +12,6 @@ import blok2.model.Building;
 import blok2.model.LocationTag;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservables.Location;
-import blok2.model.reservables.Locker;
 import blok2.model.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -113,11 +112,6 @@ public class DBLocationDao extends DAO implements ILocationDao {
             location.setLocationId(locationId);
 
             insertTags(locationId, location.getAssignedTags(), conn);
-
-            // insert the lockers corresponding to the location into the database
-            for (int i = 0; i < location.getNumberOfLockers(); i++) {
-                insertLocker(locationId, i, conn);
-            }
         }
 
         return null;
@@ -190,12 +184,6 @@ public class DBLocationDao extends DAO implements ILocationDao {
                 pstmt.setInt(10, locationId);
                 pstmt.execute();
 
-                // Update lockers if necessary
-                if (oldLocation.getNumberOfLockers() != location.getNumberOfLockers()) {
-                    updateNumberOfLockers(locationId, oldLocation.getNumberOfLockers()
-                            , location.getNumberOfLockers(), conn);
-                }
-
                 conn.commit();
             } catch (SQLException e) {
                 conn.rollback();
@@ -203,26 +191,6 @@ public class DBLocationDao extends DAO implements ILocationDao {
             } finally {
                 conn.setAutoCommit(true);
             }
-        }
-    }
-
-    private void updateNumberOfLockers(int locationId, int from, int to, Connection conn) throws SQLException {
-        if (from > to) {
-            decreaseNumberOfLockers(locationId, from, to, conn);
-        } else {
-            increaseNumberOfLockers(locationId, from, to, conn);
-        }
-    }
-
-    private void increaseNumberOfLockers(int locationId, int from, int to, Connection conn) throws SQLException {
-        for (int i = from; i < to; i++) {
-            insertLocker(locationId, i, conn);
-        }
-    }
-
-    private void decreaseNumberOfLockers(int locationId, int from, int to, Connection conn) throws SQLException {
-        for (int i = from - 1; i >= to; i--) {
-            deleteLocker(locationId, i, conn);
         }
     }
 
@@ -264,42 +232,6 @@ public class DBLocationDao extends DAO implements ILocationDao {
             while(set.next())
                 users.add(createUser(set, conn));
             return users;
-        }
-    }
-
-    @Override
-    public List<Locker> getLockers(int locationId) throws SQLException {
-        try (Connection conn = adb.getConnection()) {
-            List<Locker> lockers = new ArrayList<>();
-            String query = Resources.databaseProperties.getString("get_lockers_where_<?>");
-            query = query.replace("<?>", "l.location_id = ?");
-            PreparedStatement st = conn.prepareStatement(query);
-            st.setInt(1, locationId);
-            ResultSet rs = st.executeQuery();
-            while (rs.next()) {
-                //int lockerID = rs.getInt(Resources.databaseProperties.getString("locker_id"));
-                int number = rs.getInt(Resources.databaseProperties.getString("locker_number"));
-
-                Locker locker = new Locker();
-                //locker.setId(lockerID);
-                locker.setNumber(number);
-
-                Location location = DBLocationDao.createLocation(rs, conn);
-                locker.setLocation(location);
-
-                lockers.add(locker);
-            }
-            return lockers;
-        }
-    }
-
-    @Override
-    public void deleteLocker(int locationId, int number) throws SQLException {
-        try (Connection conn = adb.getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_locker"));
-            pstmt.setInt(1, locationId);
-            pstmt.setInt(2, number);
-            pstmt.execute();
         }
     }
 
@@ -396,23 +328,6 @@ public class DBLocationDao extends DAO implements ILocationDao {
         return createLocation(rs, rsTags, status, timeslot);
     }
 
-    public static Locker createLocker(ResultSet rs, Connection conn) throws SQLException {
-        Locker l = new Locker();
-        l.setNumber(rs.getInt(Resources.databaseProperties.getString("locker_reservation_locker_number")));
-        Location location = DBLocationDao.createLocation(rs, conn);
-        l.setLocation(location);
-        return l;
-    }
-
-    // helper method for AddLocation
-    // inserts lockers in the locker table
-    private void insertLocker(int locationId, int number, Connection conn) throws SQLException {
-        PreparedStatement st = conn.prepareStatement(Resources.databaseProperties.getString("insert_locker"));
-        st.setInt(1, number);
-        st.setInt(2, locationId);
-        st.execute();
-    }
-
     private void insertTags(int locationId, List<LocationTag> tags, Connection conn) throws SQLException {
         if (tags != null) {
             for (LocationTag tag : tags) {
@@ -434,20 +349,5 @@ public class DBLocationDao extends DAO implements ILocationDao {
         pstmt.setBoolean(9, location.getForGroup());
     }
 
-    private void deleteLocker(int locationId, int number, Connection conn) throws SQLException {
-        deleteLockerReservation(locationId, number, conn);
-
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_locker"));
-        pstmt.setInt(1, locationId);
-        pstmt.setInt(2, number);
-        pstmt.execute();
-    }
-
-    private void deleteLockerReservation(int locationId, int number, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_locker_reservation"));
-        pstmt.setInt(1, locationId);
-        pstmt.setInt(2, number);
-        pstmt.execute();
-    }
 }
 

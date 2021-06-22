@@ -10,9 +10,7 @@ import blok2.model.Building;
 import blok2.model.penalty.Penalty;
 import blok2.model.penalty.PenaltyEvent;
 import blok2.model.reservables.Location;
-import blok2.model.reservables.Locker;
 import blok2.model.reservations.LocationReservation;
-import blok2.model.reservations.LockerReservation;
 import blok2.model.users.User;
 import org.junit.Assert;
 import org.junit.Test;
@@ -35,9 +33,6 @@ public class TestCascadeInDBAccountDao extends BaseTest {
     private ILocationReservationDao locationReservationDao;
 
     @Autowired
-    private ILockerReservationDao lockerReservationDao;
-
-    @Autowired
     private IPenaltyEventsDao penaltyEventsDao;
 
     @Autowired
@@ -54,18 +49,14 @@ public class TestCascadeInDBAccountDao extends BaseTest {
     // this will be the test user
     private User testUser;
 
-    // for cascade on SCANNERS_LOCATION, LOCATION_RESERVATIONS
-    // and LOCKER_RESERVATIONS, a Location must be available
+    // for cascade on SCANNERS_LOCATION and LOCATION_RESERVATIONS,
+    // a Location must be available
     private Location testLocation1;
     private Location testLocation2;
 
     // to test cascade on LOCATION_RESERVATIONS
     private LocationReservation testLocationReservation1;
     private LocationReservation testLocationReservation2;
-
-    // to test cascade on LOCKER_RESERVATIONS
-    private LockerReservation testLockerReservation1;
-    private LockerReservation testLockerReservation2;
 
     private Penalty testPenalty1;
     private Penalty testPenalty2;
@@ -89,12 +80,6 @@ public class TestCascadeInDBAccountDao extends BaseTest {
         testLocationReservation1 = new LocationReservation(testUser, LocalDateTime.now(), cp1.getTimeslots().get(0),  null);
         testLocationReservation2 = new LocationReservation(testUser, LocalDateTime.of(1970,1,1,0,0), cp2.getTimeslots().get(0),  null);
 
-        Locker testLocker1 = new Locker(0, testLocation1);
-        Locker testLocker2 = new Locker(0, testLocation2);
-
-        testLockerReservation1 = new LockerReservation(testLocker1, testUser);
-        testLockerReservation2 = new LockerReservation(testLocker2, testUser);
-
         Map<Language, String> descriptions = new HashMap<>();
         descriptions.put(Language.DUTCH, "Dit is een test omschrijving van een penalty event met code 0");
         descriptions.put(Language.ENGLISH, "This is a test description of a penalty event with code 0");
@@ -114,9 +99,6 @@ public class TestCascadeInDBAccountDao extends BaseTest {
 
         locationReservationDao.addLocationReservation(testLocationReservation1);
         locationReservationDao.addLocationReservation(testLocationReservation2);
-
-        lockerReservationDao.addLockerReservation(testLockerReservation1);
-        lockerReservationDao.addLockerReservation(testLockerReservation2);
 
         penaltyEventsDao.addPenaltyEvent(testPenaltyEvent);
         penaltyEventsDao.addPenalty(testPenalty1);
@@ -144,19 +126,7 @@ public class TestCascadeInDBAccountDao extends BaseTest {
                 testLocationReservation2.getTimeslot());
         Assert.assertEquals("updateUserWithoutCascadeNeededTest, testLocationReservation2",
                 testLocationReservation2, lr2);
-/*
-        LockerReservation lor1 = lockerReservationDao.getLockerReservation(
-                testLockerReservation1.getLocker().getLocationByName().getName(),
-                testLockerReservation1.getLocker().getNumber());
-        Assert.assertEquals("updateUserWithoutCascadeNeededTest, testLockerReservation1",
-                testLockerReservation1, lor1);
 
-        LockerReservation lor2 = lockerReservationDao.getLockerReservation(
-                testLockerReservation2.getLocker().getLocationByName().getName(),
-                testLockerReservation2.getLocker().getNumber());
-        Assert.assertEquals("updateUserWithoutCascadeNeededTest, testLockerReservation2",
-                testLockerReservation2, lor2);
-*/
         List<Penalty> penalties = penaltyEventsDao.getPenaltiesByUser(testUser.getAugentID());
         penalties.sort(Comparator.comparing(Penalty::getReceivedPoints));
 
@@ -209,20 +179,7 @@ public class TestCascadeInDBAccountDao extends BaseTest {
                 testLocationReservation2.getTimeslot());
         Assert.assertEquals("updateUserWithCascadeNeededTest, testLocationReservation2",
                 testLocationReservation2, lr2);
-/*
-        // check whether the entries in LOCKER_RESERVATIONS have been updated in cascade
-        LockerReservation lor1 = lockerReservationDao.getLockerReservation(
-                testLockerReservation1.getLocker().getLocationByName().getName(),
-                testLockerReservation1.getLocker().getNumber());
-        Assert.assertEquals("updateUserWithCascadeNeededTest, testLockerReservation1",
-                testLockerReservation1, lor1);
 
-        LockerReservation lor2 = lockerReservationDao.getLockerReservation(
-                testLockerReservation2.getLocker().getLocationByName().getName(),
-                testLockerReservation2.getLocker().getNumber());
-        Assert.assertEquals("updateUserWithCascadeNeededTest, testLockerReservation2",
-                testLockerReservation2, lor2);
-*/
         // check whether the entries in PENALTY_BOOK have been updated in cascade
         List<Penalty> penalties = penaltyEventsDao.getPenaltiesByUser(testUser.getAugentID());
         penalties.sort(Comparator.comparing(Penalty::getReceivedPoints));
@@ -273,12 +230,6 @@ public class TestCascadeInDBAccountDao extends BaseTest {
                 .getAllLocationReservationsOfUser(testUser.getAugentID());
         Assert.assertEquals("deleteUserTest, location reservations", 0,
                 locationReservations.size());
-/*
-        List<LockerReservation> lockerReservations = lockerReservationDao
-                .getAllLockerReservationsOfUser(testUser.getAugentID());
-        Assert.assertEquals("deleteUserTest, locker reservations", 0,
-                lockerReservations.size());
-    */
     }
 
 
