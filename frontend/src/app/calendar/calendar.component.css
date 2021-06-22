@@ -19,3 +19,11 @@
   align-content: center;
   flex-direction: column;
 }
+
+/**
+ * /deep/ is required to overwrite the line-height attribute in the sub-components
+ * (cfr. https://stackoverflow.com/a/40178390/9356123)
+ */
+/deep/ .cal-week-view .cal-time-events .cal-event {
+  line-height: 20px;
+}

@@ -242,13 +242,22 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
       periods.forEach((element) => {
         this.calendarMap.set(element.id, element);
 
+        // To avoid that users all refresh the page together when the calendar
+        // period is open for reservation, a timeout is set that refreshes the
+        // timeslots in the calendar. This makes them clickable without the
+        // need for refreshing the page which saves a lot of requests to the server.
+        // But, to avoid that a lot of timers are initialized, only those calendar
+        // periods that are reservable within one day are actually initialized.
+        // Another pitfall is that if the duration is too big for an uint32, the
+        // timer is triggered immediately: https://catonmat.net/settimeout-setinterval.
         const duration = element.reservableFrom.valueOf() - moment().valueOf();
-        if (duration > 0) {
+        const oneDay = 24 * 3600 * 1000;
+        if (duration > 0 && duration < oneDay) {
           setTimeout(() => {
             this.events = this.conversionService.mapCalendarPeriodsToCalendarEvents(
               [...this.calendarMap.values()],
               this.currentLang,
-              []
+              [...this.selectedSubject.value]
             );
           }, duration);
         }

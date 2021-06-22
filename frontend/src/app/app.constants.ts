@@ -51,13 +51,3 @@ export const languageAsEnum = {
 export const defaultOpeningHour = 8;
 
 export const defaultClosingHour = 17;
-
-/*
- * These are templates used to translate the title of a Calendar Event used by Angular Calendar
- */
-export const calendarEventTitleTemplate = {
-  reservableFromNL: 'Reserveren vanaf {datetime}',
-  reservableFromEN: 'Reservable from {datetime}',
-  notReservableNL: 'Geen reservatie nodig',
-  notReservableEN: 'No reservation required',
-};
