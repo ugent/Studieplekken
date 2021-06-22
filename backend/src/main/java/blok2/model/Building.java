@@ -2,6 +2,7 @@ package blok2.model;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -12,8 +13,13 @@ import java.util.Objects;
 public class Building implements Cloneable {
 
     @Id
+    @Column(name = "building_id")
     private int buildingId;
+
+    @Column(name = "building_name")
     private String name;
+
+    @Column(name = "address")
     private String address;
 
     public Building() {}

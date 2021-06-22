@@ -141,7 +141,7 @@ public class AccountController {
                         "No user found with barcode " + barcode);
             }
 
-            return accountDao.getUserById(userLinkedToBarcode.getAugentID());
+            return accountDao.getUserById(userLinkedToBarcode.getUserId());
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
@@ -232,7 +232,7 @@ public class AccountController {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
             // check if 'from' is the correct current password
-            User actualUser = accountDao.getUserById(body.user.getAugentID());
+            User actualUser = accountDao.getUserById(body.user.getUserId());
 
             if (!encoder.matches(body.from, actualUser.getPassword())) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong password");
@@ -247,7 +247,7 @@ public class AccountController {
             String encryptedTo = encoder.encode(body.to);
             User updatedUser = actualUser.clone();
             updatedUser.setPassword(encryptedTo);
-            accountDao.updateUserById(actualUser.getAugentID(), updatedUser);
+            accountDao.updateUserById(actualUser.getUserId(), updatedUser);
 
         } catch (SQLException e) {
             logger.error(e.getMessage());

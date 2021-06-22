@@ -73,14 +73,14 @@ public class TestCascadeInDBAuthorityDao extends BaseTest {
         Assert.assertEquals(expectedLocations, locations);
 
         // Test adding users to authority
-        authorityDao.addUserToAuthority(testUserStudent.getAugentID(), testAuthority.getAuthorityId());
-        authorityDao.addUserToAuthority(testUserAdmin.getAugentID(), testAuthority.getAuthorityId());
+        authorityDao.addUserToAuthority(testUserStudent.getUserId(), testAuthority.getAuthorityId());
+        authorityDao.addUserToAuthority(testUserAdmin.getUserId(), testAuthority.getAuthorityId());
 
         List<User> users = authorityDao.getUsersFromAuthority(testAuthority.getAuthorityId());
         List<User> expectedUsers = new ArrayList<>(Arrays.asList(testUserAdmin, testUserStudent));
 
-        users.sort(Comparator.comparing(User::getAugentID));
-        expectedUsers.sort(Comparator.comparing(User::getAugentID));
+        users.sort(Comparator.comparing(User::getUserId));
+        expectedUsers.sort(Comparator.comparing(User::getUserId));
 
         Assert.assertEquals(expectedUsers, users);
 
@@ -95,7 +95,7 @@ public class TestCascadeInDBAuthorityDao extends BaseTest {
         Assert.assertEquals(0, authorityDao.getLocationsInAuthority(testAuthority.getAuthorityId()).size());
 
         // And the authorities should have been removed from the users
-        Assert.assertEquals(0, authorityDao.getAuthoritiesFromUser(testUserAdmin.getAugentID()).size());
-        Assert.assertEquals(0, authorityDao.getAuthoritiesFromUser(testUserStudent.getAugentID()).size());
+        Assert.assertEquals(0, authorityDao.getAuthoritiesFromUser(testUserAdmin.getUserId()).size());
+        Assert.assertEquals(0, authorityDao.getAuthoritiesFromUser(testUserStudent.getUserId()).size());
     }
 }

@@ -129,7 +129,7 @@ public class AuthorityController {
     }
 
     @GetMapping("/users/{userId}")
-    @PreAuthorize("(hasAuthority('HAS_AUTHORITIES') and #userId == authentication.principal.augentID) or hasAuthority('ADMIN')")
+    @PreAuthorize("(hasAuthority('HAS_AUTHORITIES') and #userId == authentication.principal.userId) or hasAuthority('ADMIN')")
     public List<Authority> getAuthoritiesFromUser(@PathVariable("userId") String userId) {
         try {
             if (accountDao.getUserById(userId) == null)
@@ -144,7 +144,7 @@ public class AuthorityController {
     }
 
     @GetMapping("/users/{userId}/locations")
-    @PreAuthorize("(hasAuthority('HAS_AUTHORITIES') and #userId == authentication.principal.augentID) or hasAuthority('ADMIN')")
+    @PreAuthorize("(hasAuthority('HAS_AUTHORITIES') and #userId == authentication.principal.userId) or hasAuthority('ADMIN')")
     public List<Location> getLocationsInAuthoritiesOfUser(@PathVariable("userId") String userId) {
         try {
             return authorityDao.getLocationsInAuthoritiesOfUser(userId);

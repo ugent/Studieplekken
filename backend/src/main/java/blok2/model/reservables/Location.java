@@ -18,20 +18,49 @@ import java.util.Objects;
 @Entity
 @Table(name = "locations")
 public class Location implements Cloneable {
+
     @Id
+    @Column(name = "location_id")
     private int locationId;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "number_of_seats")
     private int numberOfSeats;
+
+    @Column(name = "number_of_lockers")
     private int numberOfLockers;
+
+    @Column(name = "image_url")
     private String imageUrl;
+
+    @Column(name = "description_dutch")
     private String descriptionDutch = "";
+
+    @Column(name = "description_english")
     private String descriptionEnglish= "";
+
     @OneToOne
+    @JoinColumn(name = "building_id", referencedColumnName = "building_id")
     private Building building;
+
     @OneToOne
+    @JoinColumn(name = "authority_id", referencedColumnName = "authority_id")
     private Authority authority;
+
+    @Column(name = "for_group")
     private boolean forGroup;
-    @OneToMany
+
+    @Column(name = "approved")
+    private boolean approved;
+
+    @ManyToMany
+    @JoinTable(
+        name = "location_tags",
+        joinColumns = @JoinColumn(name = "location_id"),
+        inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
     private List<LocationTag> assignedTags;
 
     @Transient
@@ -221,6 +250,18 @@ public class Location implements Cloneable {
 
     public void setCurrentTimeslot(Timeslot currentTimeslot) {
         this.currentTimeslot = currentTimeslot;
+    }
+
+    public boolean isForGroup() {
+        return forGroup;
+    }
+
+    public boolean isApproved() {
+        return approved;
+    }
+
+    public void setApproved(boolean approved) {
+        this.approved = approved;
     }
 
     //</editor-fold>

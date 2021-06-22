@@ -126,7 +126,7 @@ public class TestSharedMethods {
         user.setMail(s+"@ugent.be");
         user.setPassword("first_password");
         user.setInstitution(Institution.UGent);
-        user.setAugentID(s);
+        user.setUserId(s);
         user.setAdmin(true);
         return user;
     }
@@ -142,7 +142,7 @@ public class TestSharedMethods {
         user.setMail(id + "@ugent.be");
         user.setPassword("second_password");
         user.setInstitution(Institution.UGent);
-        user.setAugentID(id);
+        user.setUserId(id);
         user.setAdmin(false);
         return user;
     }
@@ -154,7 +154,7 @@ public class TestSharedMethods {
         user.setMail(id + "@ugent.be");
         user.setPassword("second_password");
         user.setInstitution(Institution.UGent);
-        user.setAugentID(id);
+        user.setUserId(id);
         user.setAdmin(false);
         return user;
     }
@@ -162,15 +162,15 @@ public class TestSharedMethods {
     public static void addTestUsers(IAccountDao accountDao, User... users) throws SQLException {
         for (User u : users) {
             accountDao.directlyAddUser(u);
-            User r = accountDao.getUserById(u.getAugentID()); // retrieved user
+            User r = accountDao.getUserById(u.getUserId()); // retrieved user
             Assert.assertEquals("addTestUsers, setup test user failed", u, r);
         }
     }
 
     public static void removeTestUsers(IAccountDao accountDao, User... users) throws SQLException {
         for (User u : users) {
-            accountDao.deleteUser(u.getAugentID());
-            User r = accountDao.getUserById(u.getAugentID());
+            accountDao.deleteUser(u.getUserId());
+            User r = accountDao.getUserById(u.getUserId());
             Assert.assertNull("removeTestUsers, cleanup test user failed", r);
         }
     }

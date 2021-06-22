@@ -120,7 +120,7 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
                 user.setMail(attrs.get("mail").get().toString());
                 user.setPassword("secret");
                 user.setInstitution("UGent");
-                user.setAugentID(ugentID);
+                user.setUserId(ugentID);
                 return user;
             });
 

@@ -36,7 +36,7 @@ public class PenaltyEventController {
      ******************************************/
 
     @GetMapping("/{userId}")
-    @PreAuthorize("(hasAuthority('USER') and #userId == authentication.principal.augentID) or " +
+    @PreAuthorize("(hasAuthority('USER') and #userId == authentication.principal.userId) or " +
                   "hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public List<Penalty> getPenaltiesOfUserById(@PathVariable("userId") String userId) {
         try {

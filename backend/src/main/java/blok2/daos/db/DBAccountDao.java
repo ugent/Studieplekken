@@ -55,7 +55,7 @@ public class DBAccountDao extends DAO implements IAccountDao {
 
     public static User getUserById(String augentID, Connection conn) throws SQLException {
         String query = Resources.databaseProperties.getString("get_user_by_<?>")
-                .replace("<?>", "u.augentid = ?");
+                .replace("<?>", "u.user_id = ?");
         PreparedStatement pstmt = conn.prepareStatement(query);
         pstmt.setString(1, augentID);
         ResultSet rs = pstmt.executeQuery();
@@ -73,7 +73,7 @@ public class DBAccountDao extends DAO implements IAccountDao {
 
         try (Connection conn = adb.getConnection()) {
             String query = Resources.databaseProperties.getString("get_user_by_<?>")
-                    .replace("<?>", "LOWER(u.augentpreferredsn) LIKE CONCAT('%', LOWER(?), '%')");
+                    .replace("<?>", "LOWER(u.last_name) LIKE CONCAT('%', LOWER(?), '%')");
             logger.info(String.format("Gebruikte query: %s", query));
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, lastName);
@@ -93,7 +93,7 @@ public class DBAccountDao extends DAO implements IAccountDao {
 
         try (Connection conn = adb.getConnection()) {
             String query = Resources.databaseProperties.getString("get_user_by_<?>")
-                    .replace("<?>", "LOWER(u.augentpreferredgivenname) LIKE CONCAT('%', LOWER(?), '%')");
+                    .replace("<?>", "LOWER(u.first_name) LIKE CONCAT('%', LOWER(?), '%')");
             logger.info(String.format("Gebruikte query: %s", query));
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, firstName);
@@ -114,7 +114,7 @@ public class DBAccountDao extends DAO implements IAccountDao {
         try (Connection conn = adb.getConnection()) {
             String query = Resources.databaseProperties.getString("get_user_by_<?>")
                     .replace("<?>",
-                            "LOWER(u.augentpreferredgivenname) LIKE CONCAT('%', LOWER(?), '%') and LOWER(u.augentpreferredsn) LIKE CONCAT('%', LOWER(?), '%')");
+                            "LOWER(u.first_name) LIKE CONCAT('%', LOWER(?), '%') and LOWER(u.last_name) LIKE CONCAT('%', LOWER(?), '%')");
             logger.info(String.format("Gebruikte query: %s", query));
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, firstName);
@@ -168,15 +168,7 @@ public class DBAccountDao extends DAO implements IAccountDao {
     @Override
     public List<Location> getVolunteeredLocations(String userId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_locations_of_volunteer"));
-            pstmt.setString(1, userId);
-            ResultSet rs = pstmt.executeQuery();
-
-            List<Location> locations = new ArrayList<>();
-            while (rs.next()) {
-                locations.add(DBLocationDao.createLocation(rs, conn));
-            }
-            return locations;
+            return getLocationsOfVolunteer(userId, conn);
         }
     }
 
@@ -185,7 +177,7 @@ public class DBAccountDao extends DAO implements IAccountDao {
         int count = 0;
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("count_user_to_be_verified_by_id"));
-            pstmt.setString(1, u.getAugentID());
+            pstmt.setString(1, u.getUserId());
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 count = rs.getInt(1);
@@ -269,7 +261,7 @@ public class DBAccountDao extends DAO implements IAccountDao {
             User _u = getUserByEmail(mail, conn);
             // don't use u.getAugentID() because that may be the update!
             if (_u != null)
-                updateUserById(_u.getAugentID(), u, conn);
+                updateUserById(_u.getUserId(), u, conn);
         }
     }
 
@@ -317,12 +309,12 @@ public class DBAccountDao extends DAO implements IAccountDao {
     public static User createUser(ResultSet rs, Connection conn, boolean password) throws SQLException {
         User u = equalPartForCreatingUserOrUserToVerify(rs, password);
 
-        if (u.getAugentID() == null)
+        if (u.getUserId() == null)
             return null;
 
         u.setPenaltyPoints(rs.getInt(Resources.databaseProperties.getString("user_penalty_points")));
-        u.setUserAuthorities(DBAuthorityDao.getAuthoritiesFromUser(u.getAugentID(), conn));
-        u.setUserVolunteer(getLocationIdsOfVolunteer(u.getAugentID(), conn));
+        u.setUserAuthorities(DBAuthorityDao.getAuthoritiesFromUser(u.getUserId(), conn));
+        u.setUserVolunteer(getLocationsOfVolunteer(u.getUserId(), conn));
 
         return u;
     }
@@ -344,7 +336,7 @@ public class DBAccountDao extends DAO implements IAccountDao {
             u.setPassword(rs.getString(Resources.databaseProperties.getString("user_password")));
         }
         u.setInstitution(rs.getString(Resources.databaseProperties.getString("user_institution")));
-        u.setAugentID(rs.getString(Resources.databaseProperties.getString("user_augentid")));
+        u.setUserId(rs.getString(Resources.databaseProperties.getString("user_augentid")));
         u.setAdmin(rs.getBoolean(Resources.databaseProperties.getString("user_admin")));
         return u;
     }
@@ -371,7 +363,7 @@ public class DBAccountDao extends DAO implements IAccountDao {
         pstmt.setString(3, u.getFirstName());
         pstmt.setString(4, u.getPassword());
         pstmt.setString(5, u.getInstitution());
-        pstmt.setString(6, u.getAugentID());
+        pstmt.setString(6, u.getUserId());
         pstmt.setBoolean(7, u.isAdmin());
     }
 
@@ -381,18 +373,17 @@ public class DBAccountDao extends DAO implements IAccountDao {
         pstmt.execute();
     }
 
-    private static List<Integer> getLocationIdsOfVolunteer(String userId, Connection conn) throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement(Resources.databaseProperties
-                .getString("get_user_volunteer_locations"));
-        stmt.setString(1, userId);
-        ResultSet set = stmt.executeQuery();
+    private static List<Location> getLocationsOfVolunteer(String userId, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(
+                Resources.databaseProperties.getString("get_locations_of_volunteer"));
+        pstmt.setString(1, userId);
+        ResultSet rs = pstmt.executeQuery();
 
-        List<Integer> locationIds = new ArrayList<>();
-        while(set.next()) {
-            locationIds.add(set.getInt("location_id"));
+        List<Location> locations = new ArrayList<>();
+        while (rs.next()) {
+            locations.add(DBLocationDao.createLocation(rs, conn));
         }
-
-        return locationIds;
+        return locations;
     }
 
 }

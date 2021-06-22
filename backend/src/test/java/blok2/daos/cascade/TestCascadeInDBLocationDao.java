@@ -95,8 +95,8 @@ public class TestCascadeInDBLocationDao extends BaseTest {
         // because when the penalties are retrieved from the penaltyEventDao, the list will
         // be sorted by received points before asserting, if they would be equal we can't sort
         // on the points and be sure about the equality of the actual and expected list.
-        testPenalty1 = new Penalty(testUser1.getAugentID(), testPenaltyEvent.getCode(), LocalDate.now(), LocalDate.now(), testLocation.getLocationId(), 10, "First test penalty");
-        testPenalty2 = new Penalty(testUser2.getAugentID(), testPenaltyEvent.getCode(), LocalDate.now(), LocalDate.now(), testLocation.getLocationId(), 20, "Second test penalty");
+        testPenalty1 = new Penalty(testUser1.getUserId(), testPenaltyEvent.getCode(), LocalDate.now(), LocalDate.now(), testLocation.getLocationId(), 10, "First test penalty");
+        testPenalty2 = new Penalty(testUser2.getUserId(), testPenaltyEvent.getCode(), LocalDate.now(), LocalDate.now(), testLocation.getLocationId(), 20, "Second test penalty");
 
         // Add test objects to database
         accountDao.directlyAddUser(testUser1);
@@ -109,8 +109,8 @@ public class TestCascadeInDBLocationDao extends BaseTest {
         penaltyEventsDao.addPenalty(testPenalty1);
         penaltyEventsDao.addPenalty(testPenalty2);
 
-        scannerLocationDao.addScannerLocation(testLocation.getLocationId(), testUser1.getAugentID());
-        scannerLocationDao.addScannerLocation(testLocation.getLocationId(), testUser2.getAugentID());
+        scannerLocationDao.addScannerLocation(testLocation.getLocationId(), testUser1.getUserId());
+        scannerLocationDao.addScannerLocation(testLocation.getLocationId(), testUser2.getUserId());
     }
 
     @Test
@@ -124,13 +124,13 @@ public class TestCascadeInDBLocationDao extends BaseTest {
 
         // LOCATION_RESERVATIONS still available?
         LocationReservation lr1 = locationReservationDao.getLocationReservation(
-                testLocationReservation1.getUser().getAugentID(),
+                testLocationReservation1.getUser().getUserId(),
                 testLocationReservation1.getTimeslot());
         Assert.assertEquals("updateLocationWithoutCascadeNeededTest, testLocationReservation1",
                 testLocationReservation1, lr1);
 
         LocationReservation lr2 = locationReservationDao.getLocationReservation(
-                testLocationReservation2.getUser().getAugentID(),
+                testLocationReservation2.getUser().getUserId(),
                 testLocationReservation2.getTimeslot());
         Assert.assertEquals("updateLocationWithoutCascadeNeededTest, testLocationReservation2",
                 testLocationReservation2, lr2);
@@ -149,12 +149,12 @@ public class TestCascadeInDBLocationDao extends BaseTest {
 
         // SCANNERS_LOCATION entries still available?
         List<User> scanners = scannerLocationDao.getScannersOnLocation(testLocation.getLocationId());
-        scanners.sort(Comparator.comparing(User::getAugentID));
+        scanners.sort(Comparator.comparing(User::getUserId));
 
         List<User> expectedScanners = new ArrayList<>();
         expectedScanners.add(testUser1);
         expectedScanners.add(testUser2);
-        expectedScanners.sort(Comparator.comparing(User::getAugentID));
+        expectedScanners.sort(Comparator.comparing(User::getUserId));
 
         Assert.assertEquals("updateUserWithoutCascadeNeededTest, locations to scan with new id",
                 expectedScanners, scanners);
@@ -184,12 +184,12 @@ public class TestCascadeInDBLocationDao extends BaseTest {
         Assert.assertEquals("updateLocationWithoutCascadeNeededTest, location", testLocation, location);
 
         // CALENDAR_PERIODS updated?
-        LocationReservation lr1 = locationReservationDao.getLocationReservation(testUser1.getAugentID(),
+        LocationReservation lr1 = locationReservationDao.getLocationReservation(testUser1.getUserId(),
                 testLocationReservation1.getTimeslot());
         Assert.assertEquals("updateLocationWithoutCascadeNeededTest, testLocationReservation1",
                 testLocationReservation1, lr1);
 
-        LocationReservation lr2 = locationReservationDao.getLocationReservation(testUser2.getAugentID(),
+        LocationReservation lr2 = locationReservationDao.getLocationReservation(testUser2.getUserId(),
                 testLocationReservation2.getTimeslot());
         Assert.assertEquals("updateLocationWithoutCascadeNeededTest, testLocationReservation2",
                 testLocationReservation2, lr2);
@@ -212,12 +212,12 @@ public class TestCascadeInDBLocationDao extends BaseTest {
 
         // SCANNERS_LOCATION updated?
         List<User> scanners = scannerLocationDao.getScannersOnLocation(testLocation.getLocationId());
-        scanners.sort(Comparator.comparing(User::getAugentID));
+        scanners.sort(Comparator.comparing(User::getUserId));
 
         List<User> expectedScanners = new ArrayList<>();
         expectedScanners.add(testUser1);
         expectedScanners.add(testUser2);
-        expectedScanners.sort(Comparator.comparing(User::getAugentID));
+        expectedScanners.sort(Comparator.comparing(User::getUserId));
 
         Assert.assertEquals("updateUserWithoutCascadeNeededTest, locations to scan with new id",
                 expectedScanners, scanners);

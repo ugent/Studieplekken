@@ -2,18 +2,24 @@ package blok2.model;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Objects;
 
 @Entity
-@Table(name = "location_tags")
+@Table(name = "tags")
 public class LocationTag implements Cloneable {
 
     @Id
+    @Column(name = "tag_id")
     private int tagId;
+
+    @Column(name = "dutch")
     private String dutch;
+
+    @Column(name = "english")
     private String english;
 
     public LocationTag(int tagId, String dutch, String english) {

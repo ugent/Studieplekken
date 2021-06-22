@@ -126,12 +126,12 @@ public class TestDBPenaltyEventsDao extends BaseTest {
 
         LocalDate thisDayAMonthEarlier = LocalDate.now().minusMonths(1);
 
-        Penalty penalty = new Penalty(testUser.getAugentID(), testEvent.getCode(), LocalDate.now(), LocalDate.now()
+        Penalty penalty = new Penalty(testUser.getUserId(), testEvent.getCode(), LocalDate.now(), LocalDate.now()
                 , testLocation.getLocationId(), testEvent.getPoints(), "regular test penalty");
-        Penalty fatalPenalty = new Penalty(testUser.getAugentID(), blacklistEvent.getCode(), LocalDate.now()
+        Penalty fatalPenalty = new Penalty(testUser.getUserId(), blacklistEvent.getCode(), LocalDate.now()
                 , LocalDate.of(1970, 1, 1), testLocation.getLocationId(), blacklistEvent.getPoints(),
                 "Fatal test penalty");
-        Penalty penaltyLastMonth = new Penalty(testUser.getAugentID(), testEvent.getCode()
+        Penalty penaltyLastMonth = new Penalty(testUser.getUserId(), testEvent.getCode()
                 , thisDayAMonthEarlier, thisDayAMonthEarlier, testLocation.getLocationId(), testEvent.getPoints(),
                 "Fatal test penalty of last month");
 
@@ -139,28 +139,28 @@ public class TestDBPenaltyEventsDao extends BaseTest {
 
         // Add penalty
         penaltyEventsDao.addPenalty(penalty);
-        List<Penalty> penalties = penaltyEventsDao.getPenaltiesByUser(testUser.getAugentID());
+        List<Penalty> penalties = penaltyEventsDao.getPenaltiesByUser(testUser.getUserId());
         Assert.assertEquals("penaltyBookTests, added one penalty", 1, penalties.size());
         Assert.assertEquals("penaltyBookTests, added one penalty", penalty, penalties.get(0));
 
         // Is the corresponding user updated correctly?
         modifiableUser.setPenaltyPoints(penalty.getReceivedPoints());
-        User retrievedUser = accountDao.getUserById(testUser.getAugentID());
+        User retrievedUser = accountDao.getUserById(testUser.getUserId());
         Assert.assertEquals("penaltyBookTests, added one penalty", modifiableUser, retrievedUser);
 
         // Delete penalty
         penaltyEventsDao.deletePenalty(penalty);
-        penalties = penaltyEventsDao.getPenaltiesByUser(testUser.getAugentID());
+        penalties = penaltyEventsDao.getPenaltiesByUser(testUser.getUserId());
         Assert.assertEquals("penaltyBookTests, deleted penalty", 0, penalties.size());
 
         // Is the corresponding user updated correctly?
         modifiableUser.setPenaltyPoints(0);
-        retrievedUser = accountDao.getUserById(testUser.getAugentID());
+        retrievedUser = accountDao.getUserById(testUser.getUserId());
         Assert.assertEquals("penaltyBookTests, deleted penalty", modifiableUser, retrievedUser);
 
         // Add a penalty from last month
         penaltyEventsDao.addPenalty(penaltyLastMonth);
-        penalties = penaltyEventsDao.getPenaltiesByUser(testUser.getAugentID());
+        penalties = penaltyEventsDao.getPenaltiesByUser(testUser.getUserId());
         Assert.assertEquals("penaltyBookTests, added penalty from last month", 1, penalties.size());
         Assert.assertEquals("penaltyBookTests, added penalty from last month"
                 , penaltyLastMonth, penalties.get(0));

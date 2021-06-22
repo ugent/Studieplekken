@@ -19,14 +19,18 @@ public abstract class AuthorizedLocationController extends AuthorizedController 
         isAuthorized((l, $) -> hasAuthority(l), locationId, "You do not hold the correct Authority.");
     }
 
-    public void isVolunteer(int locationId) {
-        isAuthorized((l, $) -> hasAuthority(l) || isVolunteerForLoc(l), locationId, "You do not hold the correct Authority.");
+    public void isVolunteer(Location location) {
+        isAuthorized(
+            (l, $) -> hasAuthority(location.getLocationId()) || isVolunteerForLoc(location),
+            location.getLocationId(),
+            "You do not hold the correct Authority."
+        );
     }
 
     protected boolean hasAuthority(int locationId) {
         try {
             User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            List<Location> allLocations = authorityDao.getLocationsInAuthoritiesOfUser(user.getAugentID());
+            List<Location> allLocations = authorityDao.getLocationsInAuthoritiesOfUser(user.getUserId());
             return allLocations.stream().anyMatch(l -> l.getLocationId() == locationId);
         } catch (SQLException throwables) {
             return false;
@@ -36,7 +40,7 @@ public abstract class AuthorizedLocationController extends AuthorizedController 
     protected boolean hasAuthority(Authority authority) {
         try {
             User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            List<Authority> allAuthorities = authorityDao.getAuthoritiesFromUser(user.getAugentID());
+            List<Authority> allAuthorities = authorityDao.getAuthoritiesFromUser(user.getUserId());
             return allAuthorities.contains(authority);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -44,8 +48,8 @@ public abstract class AuthorizedLocationController extends AuthorizedController 
         }
     }
 
-    protected boolean isVolunteerForLoc(int locationId) {
+    protected boolean isVolunteerForLoc(Location location) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return user.getUserVolunteer().stream().anyMatch(l -> l == locationId);
+        return user.getUserVolunteer().stream().anyMatch(l -> l.equals(location));
     }
 }

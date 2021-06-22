@@ -46,7 +46,7 @@ public class LocationReservationController extends AuthorizedLocationController 
     }
 
     @GetMapping("/user")
-    @PreAuthorize("(hasAuthority('USER') and #id == authentication.principal.augentID) or hasAuthority('ADMIN')")
+    @PreAuthorize("(hasAuthority('USER') and #id == authentication.principal.userId) or hasAuthority('ADMIN')")
     // TODO: if only 'HAS_AUTHORITIES', then only allowed to retrieve the reservations for a location within one of the user's authorities
     // Not sure why you'd be allowed to get a user's reservations if you own a location.
     // TODO: We suddenly use a request parameter here. Probably better to streamline it with everything else and put it in the url.
@@ -61,7 +61,7 @@ public class LocationReservationController extends AuthorizedLocationController 
     }
 
     @GetMapping("/{userId}")
-    @PreAuthorize("hasAuthority('USER') and #userId == authentication.principal.augentID")
+    @PreAuthorize("hasAuthority('USER') and #userId == authentication.principal.userId")
     public List<Pair<LocationReservation, CalendarPeriod>>
     getLocationReservationsWithLocationByUserId(@PathVariable("userId") String userId) {
         try {
@@ -85,7 +85,7 @@ public class LocationReservationController extends AuthorizedLocationController 
             if(!locationReservationDao.addLocationReservationIfStillRoomAtomically(reservation)) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "There are no more spots left for this location.");
             }
-            return locationReservationDao.getLocationReservation(user.getAugentID(), timeslot);
+            return locationReservationDao.getLocationReservation(user.getUserId(), timeslot);
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
@@ -128,11 +128,11 @@ public class LocationReservationController extends AuthorizedLocationController 
         try {
             CalendarPeriod parentPeriod = calendarPeriodDao.getById(locationReservation.getTimeslot().getCalendarId());
             isAuthorized(
-                    (lr, user) -> hasAuthority(parentPeriod.getLocation().getLocationId()) || lr.getUser().getAugentID().equals(user.getAugentID()),
+                    (lr, user) -> hasAuthority(parentPeriod.getLocation().getLocationId()) || lr.getUser().getUserId().equals(user.getUserId()),
                     locationReservation
             );
 
-            if(!locationReservationDao.deleteLocationReservation(locationReservation.getUser().getAugentID(),
+            if(!locationReservationDao.deleteLocationReservation(locationReservation.getUser().getUserId(),
                     locationReservation.getTimeslot())) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "No such reservation.");
             }
@@ -156,7 +156,7 @@ public class LocationReservationController extends AuthorizedLocationController 
         Timeslot slot = new Timeslot(calendarId, seqnr, date, 0);
         try {
             CalendarPeriod parentPeriod = calendarPeriodDao.getById(slot.getCalendarId());
-            isVolunteer(parentPeriod.getLocation().getLocationId());
+            isVolunteer(parentPeriod.getLocation());
             if (!locationReservationDao.setReservationAttendance(userid, slot, body.getAttended()))
                 throw new NoSuchReservationException("No such reservation");
         } catch (SQLException e) {
@@ -172,7 +172,7 @@ public class LocationReservationController extends AuthorizedLocationController 
         try {
             // check if user is allowed by role
             CalendarPeriod calendarPeriod = calendarPeriodDao.getById(timeslot.getCalendarId());
-            isVolunteer(calendarPeriod.getLocation().getLocationId());
+            isVolunteer(calendarPeriod.getLocation());
 
             logger.info(String.format("Setting all students who were not scanned to unattended for timeslot %s", timeslot));
             locationReservationDao.setNotScannedStudentsToUnattended(timeslot);

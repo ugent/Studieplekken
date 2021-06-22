@@ -4,38 +4,68 @@ import java.util.Objects;
 import java.util.*;
 
 import blok2.model.Authority;
+import blok2.model.reservables.Location;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.validation.constraints.NotNull;
+import javax.persistence.*;
 
 /**
  * This class is used to represent a registered user or UGhent student.
  * This class implements the interface UserDetails so spring can use this
  * class to verify login credentials.
  */
+@Entity
+@Table(name = "users")
 public class User implements Cloneable, UserDetails {
-    private String lastName;
+
+    @Id
+    @Column(name = "user_id")
+    private String userId;
+
+    @Column(name = "first_name")
     private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "mail")
     private String mail;
+
+    @Column(name = "password")
     private String password;
+
+    @Column(name = "institution")
     private String institution;
-    @NotNull
-    private String augentID;
-    private int penaltyPoints;
+
+    private int penaltyPoints = 0; // currently not used
+
+    @Column(name = "admin")
     private boolean admin;
 
     // Named 'userAuthorities' instead of 'authorities' because there would be a
     // conflict with the getter UserDetails#getAuthorities() that is used to return
     // the GrantedAuthority objects of the user. These GrantedAuthority objects are used
     // in the controller methods to authorize the user accessing the methods.
+    @ManyToMany
+    @JoinTable(
+        name = "roles_user_authority",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "authority_id")
+    )
     private List<Authority> userAuthorities;
 
     // List of location IDs the user is volunteer for
-    private List<Integer> userVolunteer;
+    @ManyToMany
+    @JoinTable(
+            name = "roles_user_volunteer",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "location_id")
+    )
+    private List<Location> userVolunteer;
 
     public User() {
         lastName = "";
@@ -43,7 +73,7 @@ public class User implements Cloneable, UserDetails {
         mail = "";
         password = "";
         institution = "";
-        augentID = "";
+        userId = "";
         userAuthorities = new ArrayList<>();
         userVolunteer = new ArrayList<>();
     }
@@ -57,13 +87,13 @@ public class User implements Cloneable, UserDetails {
                 Objects.equals(firstName, user.firstName) &&
                 Objects.equals(mail.toLowerCase(), user.mail.toLowerCase()) &&
                 Objects.equals(institution, user.institution) &&
-                Objects.equals(augentID, user.augentID) &&
+                Objects.equals(userId, user.userId) &&
                 admin == user.admin;
     }
 
     @Override
     public int hashCode() {
-        return (augentID).hashCode();
+        return (userId).hashCode();
     }
 
     public User clone() {
@@ -92,8 +122,8 @@ public class User implements Cloneable, UserDetails {
         return institution;
     }
 
-    public String getAugentID() {
-        return augentID;
+    public String getUserId() {
+        return userId;
     }
 
     public int getPenaltyPoints() {
@@ -112,12 +142,12 @@ public class User implements Cloneable, UserDetails {
         return userAuthorities;
     }
 
-    public List<Integer> getUserVolunteer() {
+    public List<Location> getUserVolunteer() {
         return userVolunteer;
     }
 
-    public void setAugentID(String augentID) {
-        this.augentID = augentID;
+    public void setUserId(String augentID) {
+        this.userId = augentID;
     }
 
     public void setLastName(String lastName) {
@@ -152,7 +182,7 @@ public class User implements Cloneable, UserDetails {
         this.userAuthorities = userAuthorities;
     }
 
-    public void setUserVolunteer(List<Integer> userVolunteer) {
+    public void setUserVolunteer(List<Location> userVolunteer) {
         this.userVolunteer = userVolunteer;
     }
 
@@ -180,7 +210,7 @@ public class User implements Cloneable, UserDetails {
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
 
         // user always gets the GrantedAuthority "USER" if the user is logged in
-        if (!augentID.isEmpty())
+        if (!userId.isEmpty())
             grantedAuthorities.add(new SimpleGrantedAuthority("USER"));
 
         // if the user is admin, the GrantedAuthority "ADMIN" is added too

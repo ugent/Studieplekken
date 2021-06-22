@@ -18,7 +18,7 @@ location_building_id=building_id
 location_authority_id=authority_id
 location_description_dutch=description_dutch
 location_description_english=description_english
-location_forGroup=forGroup
+location_forGroup=for_group
 location_image_url=image_url
 
 #columns for the table TAGS
@@ -59,9 +59,9 @@ calendar_period_seat_count=seat_count
 institution_name=name
 
 # columns for table USERS
-user_augentid=augentid
-user_name=augentpreferredgivenname
-user_surname=augentpreferredsn
+user_augentid=user_id
+user_name=first_name
+user_surname=last_name
 user_penalty_points=penalty_points
 user_mail=mail
 user_password=password
@@ -77,7 +77,7 @@ location_reservation_timeslot=timeslot_id
 location_reservation_timeslot_sequence_nr=timeslot_seqnr
 location_reservation_calendar_id=calendar_id
 location_reservation_attended=attended
-location_reservation_user_augentid=user_augentid
+location_reservation_user_augentid=user_id
 
 # columns for table LOCKERS
 locker_location=location_name
@@ -86,7 +86,7 @@ locker_number=number
 # columns for table LOCKER_RESERVATIONS
 locker_reservation_location_name=location_name
 locker_reservation_locker_number=locker_number
-locker_reservation_user_augentid=user_augentid
+locker_reservation_user_augentid=user_id
 locker_reservation_key_pickup_date=key_pickup_date
 locker_reservation_key_return_date=key_return_date
 
@@ -95,7 +95,7 @@ penalty_event_code=code
 penalty_event_points=points
 
 # columns for table PENALTY_BOOK
-penalty_book_user_augentid=user_augentid
+penalty_book_user_augentid=user_id
 penalty_book_event_code=event_code
 penalty_book_timestamp=timestamp
 penalty_book_reservation_date=reservation_date
@@ -110,13 +110,13 @@ penalty_description_description=description
 
 # columns for table SCANNERS_LOCATION
 scanners_location_name=location_name
-scanners_location_user_augentid=user_augentid
+scanners_location_user_augentid=user_id
 
 # columns for table USERS_TO_VERIFY
-utv_augentid=augentid
+utv_augentid=user_id
 utv_role=role
-utv_name=augentpreferredgivenname
-utv_surname=augentpreferredsn
+utv_name=first_name
+utv_surname=last_name
 utv_mail=mail
 utv_password=password
 utv_institution=institution

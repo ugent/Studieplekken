@@ -47,14 +47,14 @@ public class TestDBAuthorityDaoWithUser extends BaseTest {
         testLocation2 = TestSharedMethods.testLocation2(testAuthority2.clone(), testBuilding);
 
         accountDao.directlyAddUser(testUser);
-        authorityDao.addUserToAuthority(testUser.getAugentID(), testAuthority.getAuthorityId());
+        authorityDao.addUserToAuthority(testUser.getUserId(), testAuthority.getAuthorityId());
         locationDao.addLocation(testLocation1);
         locationDao.addLocation(testLocation2);
     }
 
     @Test
     public void getAuthoritiesFromUser() throws SQLException {
-        List<Authority> authorities = authorityDao.getAuthoritiesFromUser(testUser.getAugentID());
+        List<Authority> authorities = authorityDao.getAuthoritiesFromUser(testUser.getUserId());
         Assert.assertEquals(1, authorities.size());
         Assert.assertTrue(authorities.contains(testAuthority));
     }
@@ -72,16 +72,16 @@ public class TestDBAuthorityDaoWithUser extends BaseTest {
     public void addAndRemoveUserFromAuthority() throws SQLException {
         //todo redo testUsers in TestSharedMethods so they are inserted directly
         User user = TestSharedMethods.adminTestUser();
-        user.setAugentID("000010");
+        user.setUserId("000010");
         user.setMail("newtestMail@ugent.be");
         accountDao.directlyAddUser(user);
-        authorityDao.addUserToAuthority(user.getAugentID(), testAuthority.getAuthorityId());
+        authorityDao.addUserToAuthority(user.getUserId(), testAuthority.getAuthorityId());
         List<User> users = authorityDao.getUsersFromAuthority(testAuthority.getAuthorityId());
         Assert.assertEquals(2, users.size());
         Assert.assertTrue(users.contains(user));
         users = authorityDao.getUsersFromAuthority(testAuthority2.getAuthorityId());
         Assert.assertTrue(users.isEmpty());
-        authorityDao.deleteUserFromAuthority(user.getAugentID(), testAuthority.getAuthorityId());
+        authorityDao.deleteUserFromAuthority(user.getUserId(), testAuthority.getAuthorityId());
         users = authorityDao.getUsersFromAuthority(testAuthority.getAuthorityId());
         Assert.assertEquals(1, users.size());
         Assert.assertFalse(users.contains(user));
@@ -92,7 +92,7 @@ public class TestDBAuthorityDaoWithUser extends BaseTest {
     @Test
     public void getLocationsInAuthoritiesOfUser() throws SQLException {
         // testUser was added to testAuthority in populateDatabase() so expect testLocation1 to be manageable
-        List<Location> actual = authorityDao.getLocationsInAuthoritiesOfUser(testUser.getAugentID());
+        List<Location> actual = authorityDao.getLocationsInAuthoritiesOfUser(testUser.getUserId());
 
         List<Location> expected = new ArrayList<>();
         expected.add(testLocation1);
@@ -100,8 +100,8 @@ public class TestDBAuthorityDaoWithUser extends BaseTest {
         Assert.assertEquals(expected, actual);
 
         // Add testUser to testAuthority2 and expect testLocation2 to be manageable as well
-        authorityDao.addUserToAuthority(testUser.getAugentID(), testAuthority2.getAuthorityId());
-        actual = authorityDao.getLocationsInAuthoritiesOfUser(testUser.getAugentID());
+        authorityDao.addUserToAuthority(testUser.getUserId(), testAuthority2.getAuthorityId());
+        actual = authorityDao.getLocationsInAuthoritiesOfUser(testUser.getUserId());
 
         expected.add(testLocation2);
 

@@ -27,7 +27,7 @@ public class TestSecurityConfig {
                 addUsersIfNotExist();
                 System.out.println();
                 User user = accountDao.getUserByEmail(s + "@ugent.be");
-                if(user.getAugentID().equals("authholder"))
+                if(user.getUserId().equals("authholder"))
                     user.getUserAuthorities().add(new Authority()); // kind of hacky but also necessary, its just test code
                 return user;
             } catch (SQLException throwables) {

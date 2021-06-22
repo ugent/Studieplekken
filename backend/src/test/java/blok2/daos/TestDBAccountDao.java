@@ -35,41 +35,15 @@ public class TestDBAccountDao extends BaseTest {
     @Test
     public void directlyAddUserTest() throws SQLException {
         User directlyAddedUser = testUser1.clone();
-        directlyAddedUser.setAugentID("1" + testUser1.getAugentID());
+        directlyAddedUser.setUserId("1" + testUser1.getUserId());
         directlyAddedUser.setMail("directly.addeduser@ugent.be");
 
         accountDao.directlyAddUser(directlyAddedUser);
-        User u = accountDao.getUserById(directlyAddedUser.getAugentID());
+        User u = accountDao.getUserById(directlyAddedUser.getUserId());
         Assert.assertEquals(directlyAddedUser, u);
 
         // remove added user
         TestSharedMethods.removeTestUsers(accountDao, directlyAddedUser);
-    }
-
-    @Test
-    public void addUserToBeVerifiedTest() throws SQLException {
-        User verifiedAddedUser = testUser1.clone();
-        verifiedAddedUser.setAugentID("1" + testUser1.getAugentID());
-        verifiedAddedUser.setMail("Verified.AddedUser@UGent.be");
-
-        String verificationCode = accountDao.addUserToBeVerified(verifiedAddedUser);
-
-        // add the user a second time
-        String shouldBeNull = accountDao.addUserToBeVerified(verifiedAddedUser);
-        Assert.assertNull("addUserToBeVerifiedTest, add user a second time", shouldBeNull);
-
-        boolean added = accountDao.verifyNewUser(verificationCode);
-        Assert.assertTrue("addUserToBeVerifiedTest, verify user", added);
-
-        added = accountDao.verifyNewUser("Verification that does not exist.");
-        Assert.assertFalse("addUserToBeVerified, verify user with false verification code"
-                , added);
-
-        User u = accountDao.getUserById(verifiedAddedUser.getAugentID());
-        Assert.assertEquals(verifiedAddedUser, u);
-
-        // remove added user
-        TestSharedMethods.removeTestUsers(accountDao, verifiedAddedUser);
     }
 
     @Test
@@ -81,7 +55,7 @@ public class TestDBAccountDao extends BaseTest {
 
         accountDao.updateUserByMail(testUser1.getMail(), expectedChangedUser);
 
-        User actualChangedUser = accountDao.getUserById(expectedChangedUser.getAugentID());
+        User actualChangedUser = accountDao.getUserById(expectedChangedUser.getUserId());
         Assert.assertEquals(expectedChangedUser, actualChangedUser);
     }
 
@@ -90,7 +64,7 @@ public class TestDBAccountDao extends BaseTest {
         // change expectedChangedUser's mail to an existing mail, should fail
         User updated = testUser1.clone();
         updated.setMail(testUser2.getMail());
-        accountDao.updateUserById(testUser1.getAugentID(), updated);
+        accountDao.updateUserById(testUser1.getUserId(), updated);
     }
 
     @Test
@@ -104,7 +78,7 @@ public class TestDBAccountDao extends BaseTest {
         User u = accountDao.getUserByEmail(testUser1.getMail());
         Assert.assertEquals("getUserByEmail", testUser1, u);
 
-        u = accountDao.getUserById(testUser1.getAugentID());
+        u = accountDao.getUserById(testUser1.getUserId());
         Assert.assertEquals("getUserById", testUser1, u);
 
         List<User> list = accountDao.getUsersByLastName(testUser1.getLastName());
@@ -126,7 +100,7 @@ public class TestDBAccountDao extends BaseTest {
     @Test
     public void getUserFromBarcodeTest() throws SQLException {
         // Code 128
-        String barcode = testUser1.getAugentID();
+        String barcode = testUser1.getUserId();
         User u = accountDao.getUserFromBarcode(barcode);
         Assert.assertEquals("getUserFromBarcodeTest, code 128", testUser1, u);
 
@@ -138,7 +112,7 @@ public class TestDBAccountDao extends BaseTest {
         String user_ean13_barcode = "0001404620603";
         String user_other_barcode = "0000140462060";
 
-        user.setAugentID(user_student_number);
+        user.setUserId(user_student_number);
         user.setMail("other_mail_due_to_unique_constraint@ugent.be");
 
         // Before every following assertion, the user is added, queried with the corresponding
@@ -148,19 +122,19 @@ public class TestDBAccountDao extends BaseTest {
         // UPC-A
         accountDao.directlyAddUser(user);
         u = accountDao.getUserFromBarcode(user_upca_barcode);
-        accountDao.deleteUser(user.getAugentID());
+        accountDao.deleteUser(user.getUserId());
         Assert.assertEquals("getUserFromBarcodeTest, UPC-A", user, u);
 
         // EAN13
         accountDao.directlyAddUser(user);
         u = accountDao.getUserFromBarcode(user_ean13_barcode);
-        accountDao.deleteUser(user.getAugentID());
+        accountDao.deleteUser(user.getUserId());
         Assert.assertEquals("getUserFromBarcodeTest, EAN13", user, u);
 
         // Other?
         accountDao.directlyAddUser(user);
         u = accountDao.getUserFromBarcode(user_other_barcode);
-        accountDao.deleteUser(user.getAugentID());
+        accountDao.deleteUser(user.getUserId());
         Assert.assertEquals("getUserFromBarcodeTest, Other?", user, u);
     }
 }

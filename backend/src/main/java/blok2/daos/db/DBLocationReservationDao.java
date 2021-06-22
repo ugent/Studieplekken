@@ -21,7 +21,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
     @Override
     public List<LocationReservation> getAllLocationReservationsOfUser(String augentID) throws SQLException {
         String query = Resources.databaseProperties.getString("get_location_reservations_where_<?>");
-        query = query.replace("<?>", "u.augentid = ?");
+        query = query.replace("<?>", "u.user_id = ?");
         return getAllLocationsFromQueryWithOneParameter(augentID, query);
     }
 
@@ -69,7 +69,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
     public LocationReservation getLocationReservation(String augentID, Timeslot timeslot) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             String query = Resources.databaseProperties.getString("get_location_reservations_where_<?>");
-            query = query.replace("<?>", "lr.user_augentid = ? and lr.timeslot_date = ? and lr.timeslot_seqnr = ? and lr.calendar_id = ?");
+            query = query.replace("<?>", "lr.user_id = ? and lr.timeslot_date = ? and lr.timeslot_seqnr = ? and lr.calendar_id = ?");
 
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, augentID);
@@ -197,7 +197,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
 
     private void addLocationReservation(LocationReservation locationReservation, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_location_reservation"));
-        pstmt.setString(1, locationReservation.getUser().getAugentID());
+        pstmt.setString(1, locationReservation.getUser().getUserId());
         pstmt.setTimestamp(2, Timestamp.valueOf(locationReservation.getCreatedAt()));
         pstmt.setDate(3, java.sql.Date.valueOf(locationReservation.getTimeslot().getTimeslotDate()));
         pstmt.setInt(4, locationReservation.getTimeslot().getTimeslotSeqnr());

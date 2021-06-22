@@ -40,7 +40,7 @@
 -- queries for table LOCATIONS
 -- $all_locations
 select l.location_id, l.name, l.number_of_seats, l.number_of_lockers
-    , l.image_url, l.description_dutch, l.description_english, l.forGroup
+    , l.image_url, l.description_dutch, l.description_english, l.for_group
     , b.building_id, b.building_name, b.address
     , a.authority_id, a.authority_name, a.description
 from public.locations l
@@ -62,7 +62,7 @@ order by l.name;
 
 -- $get_location_by_name
 select l.location_id, l.name, l.number_of_seats, l.number_of_lockers
-    , l.image_url, l.description_dutch, l.description_english, l.forgroup
+    , l.image_url, l.description_dutch, l.description_english, l.for_group
     , b.building_id, b.building_name, b.address
     , a.authority_id, a.authority_name, a.description
 from public.locations l
@@ -74,7 +74,7 @@ where l.name = ?;
 
 -- $get_location_by_id
 select l.location_id, l.name, l.number_of_seats, l.number_of_lockers
-     , l.image_url, l.description_dutch, l.description_english, l.forgroup
+     , l.image_url, l.description_dutch, l.description_english, l.for_group
      , b.building_id, b.building_name, b.address
      , a.authority_id, a.authority_name, a.description
 from public.locations l
@@ -86,7 +86,7 @@ where l.location_id = ?;
 
 -- $get_locations_in_building
 select l.location_id, l.name, l.number_of_seats, l.number_of_lockers
-     , l.image_url, l.description_dutch, l.description_english, l.forGroup
+     , l.image_url, l.description_dutch, l.description_english, l.for_group
      , b.building_id, b.building_name, b.address
      , a.authority_id, a.authority_name, a.description
 from public.locations l
@@ -102,12 +102,12 @@ from public.locations
 where location_id = ?;
 
 -- $insert_location
-insert into public.locations (name, number_of_seats, number_of_lockers, image_url, authority_id, building_id, description_dutch, description_english, forGroup, approved)
+insert into public.locations (name, number_of_seats, number_of_lockers, image_url, authority_id, building_id, description_dutch, description_english, for_group, approved)
 values (?, ?, ?, ?, ?, ?, ?, ?, ?, false) returning location_id;
 
 -- $update_location
 update public.locations
-set name = ?, number_of_seats = ?, number_of_lockers = ?, image_url = ?, authority_id = ?, building_id = ?, description_dutch = ?, description_english = ?, forGroup = ?
+set name = ?, number_of_seats = ?, number_of_lockers = ?, image_url = ?, authority_id = ?, building_id = ?, description_dutch = ?, description_english = ?, for_group = ?
 where location_id = ?;
 
 -- $approve_location
@@ -117,7 +117,7 @@ where location_id = ?;
 
 -- $all_unapproved_locations
 select l.location_id, l.name, l.number_of_seats, l.number_of_lockers
-    , l.image_url, l.description_dutch, l.description_english, l.forGroup
+    , l.image_url, l.description_dutch, l.description_english, l.for_group
     , b.building_id, b.building_name, b.address
     , a.authority_id, a.authority_name, a.description
 from public.locations l
@@ -139,8 +139,8 @@ where v.user_id = ? and v.location_id = ?;
 
 -- $get_volunteers_of_location
 select u.*
-from public.roles_user_volunteer
-    INNER JOIN public.users u on user_id = augentid
+from public.roles_user_volunteer ruv
+    INNER JOIN public.users u on u.user_id = ruv.user_id
 where location_id = ?;
 
 -- $get_locations_of_volunteer
@@ -211,13 +211,13 @@ where tag_id = ?;
 select lr.*, u.*, rt.*
 from public.location_reservations lr
     join public.users u
-        on u.augentid = lr.user_augentid
+        on u.user_id = lr.user_id
     left join public.timeslots rt
         on rt.timeslot_date = lr.timeslot_date
         and rt.timeslot_sequence_number = lr.timeslot_seqnr
         and rt.calendar_id = lr.calendar_id
 where <?>
-order by u.augentpreferredgivenname, u.augentpreferredsn, u.augentid;
+order by u.first_name, u.last_name, u.user_id;
 
 -- $count_location_reservations_of_location_for_timeslot
 select count(1)
@@ -245,16 +245,16 @@ where calendar_id = ? and timeslot_date = ? and timeslot_sequence_number= ?;
 -- $delete_location_reservation
 delete
 from public.location_reservations
-where user_augentid = ? and timeslot_date = ? and timeslot_seqnr = ? and calendar_id = ?;
+where user_id = ? and timeslot_date = ? and timeslot_seqnr = ? and calendar_id = ?;
 
 -- $insert_location_reservation
-insert into public.location_reservations (user_augentid, created_at, timeslot_date, timeslot_seqnr, calendar_id, attended)
+insert into public.location_reservations (user_id, created_at, timeslot_date, timeslot_seqnr, calendar_id, attended)
 values (?, ?, ?, ?, ?, null);
 
 -- $set_location_reservation_attendance
 update public.location_reservations
 set attended = ?
-where calendar_id = ? and timeslot_date = ? and timeslot_seqnr = ? and user_augentid = ?;
+where calendar_id = ? and timeslot_date = ? and timeslot_seqnr = ? and user_id = ?;
 
 -- $get_location_reservations_with_location_by_user
 select lr.*, cp.*, l.*, b.*, a.*, u.*, rt.reservation_count, rt.seat_count
@@ -269,18 +269,18 @@ from public.location_reservations lr
     join public.authority a
         on a.authority_id = l.authority_id
     join users u
-        on u.augentid = lr.user_augentid
+        on u.user_id = lr.user_id
     join public.timeslots rt
         on rt.timeslot_date = lr.timeslot_date and rt.timeslot_sequence_number = lr.timeslot_seqnr and rt.calendar_id = lr.calendar_id
-where lr.user_augentid = ?
+where lr.user_id = ?
 order by lr.timeslot_date desc, lr.timeslot_seqnr desc;
 
 -- $get_unattended_reservations_on_date
 with x as (
-    select lr.*, rt.*, u.*, cp.*, l.*, b.*, a.*, row_number() over (partition by u.augentid) as rn
+    select lr.*, rt.*, u.*, cp.*, l.*, b.*, a.*, row_number() over (partition by u.user_id) as rn
     from public.location_reservations lr
         join public.users u
-            on u.augentid = lr.user_augentid
+            on u.user_id = lr.user_id
         join public.timeslots rt
              on rt.timeslot_date = lr.timeslot_date
              and rt.timeslot_sequence_number = lr.timeslot_seqnr
@@ -301,10 +301,10 @@ rn = 1;
 
 -- $get_users_with_reservation_in_window_of_time
 with x as (
-    select u.*, row_number() over (partition by u.augentid) as rn
+    select u.*, row_number() over (partition by u.user_id) as rn
     from public.location_reservations lr
         join public.users u
-            on u.augentid = lr.user_augentid
+            on u.user_id = lr.user_id
     where lr.timeslot_date >= ? and lr.timeslot_date < ?
 )
 select *
@@ -322,13 +322,13 @@ where lr.calendar_id = ? and lr.timeslot_seqnr = ? and lr.timeslot_date = ? and 
 select u.*, 0 as "penalty_points"
 from public.users u
 where <?>
-group by u.augentid, u.admin, u.augentpreferredgivenname, u.augentpreferredsn, u.mail, u.password, u.institution
-order by u.augentpreferredsn, u.augentpreferredgivenname, u.augentid;
+group by u.user_id, u.admin, u.first_name, u.last_name, u.mail, u.password, u.institution
+order by u.last_name, u.first_name, u.user_id;
 
 -- $update_user
 update public.users
-set mail = ?, augentpreferredsn = ?, augentpreferredgivenname = ?, password = ?, institution = ?, augentid = ?, admin = ?, penalty_points = ?
-where augentid = ?;
+set mail = ?, last_name = ?, first_name = ?, password = ?, institution = ?, user_id = ?, admin = ?, penalty_points = ?
+where user_id = ?;
 
 -- $get_admins
 select * from public.users where admin = true;
@@ -339,39 +339,13 @@ from public.users
 where LOWER(mail) = LOWER(?);
 
 -- $insert_user
-insert into public.users (mail, augentpreferredsn, augentpreferredgivenname, password, institution, augentid, admin, penalty_points)
+insert into public.users (mail, last_name, first_name, password, institution, user_id, admin, penalty_points)
 values (?, ?, ?, ?, ?, ?, ?, ?);
 
 -- $delete_user
 delete
 from public.users
-where augentid = ?;
-
--- $get_user_volunteer_locations
-select l.location_id
-from public.roles_user_volunteer l
-where l.user_id = ?;
-
-
--- queries for table USERS_TO_VERIFY
--- $count_user_to_be_verified_by_id
-select count(1)
-from public.users_to_verify
-where augentid = ?;
-
--- $insert_user_to_be_verified
-insert into public.users_to_verify (mail, augentpreferredsn, augentpreferredgivenname, password, institution, augentid, admin, verification_code, created_timestamp)
-values (?, ?, ?, ?, ?, ?, ?, ?, ?);
-
--- $get_user_to_be_verfied_by_verification_code
-select *
-from public.users_to_verify
-where verification_code = ?;
-
--- $delete_user_to_be_verfied
-delete
-from public.users_to_verify
-where verification_code = ?;
+where user_id = ?;
 
 
 -- queries for table ROLES_USER_AUTHORITY
@@ -395,17 +369,17 @@ order by a.authority_name;
 select a.authority_id, a.authority_name, a.description
 from public.authority a
   join public.roles_user_authority roles on a.authority_id = roles.authority_id
-  join public.users u on roles.user_id = u.augentid
-  where u.augentid = ?
+  join public.users u on roles.user_id = u.user_id
+  where u.user_id = ?
 order by a.authority_name;
 
 -- $authority_get_users
-select u.augentid, u.admin, u.augentpreferredgivenname, u.augentpreferredsn, u.penalty_points, u.mail, u.institution
+select u.user_id, u.admin, u.first_name, u.last_name, u.penalty_points, u.mail, u.institution
 from public.users u
-         join public.roles_user_authority roles on u.augentid = roles.user_id
+         join public.roles_user_authority roles on u.user_id = roles.user_id
          join public.authority a on roles.authority_id = a.authority_id
 where a.authority_id = ?
-order by u.augentid;
+order by u.user_id;
 
 -- $authority_from_name
 select a.authority_id, a.authority_name, a.description
@@ -454,93 +428,6 @@ where a.authority_id = ?
 order by l.name;
 
 
--- queries for table LOCKER_RESERVATIONS
--- $get_locker_reservations_where_<?>
-select lr.*, u.*, l.*, a.*, b.*
-    , 0 as "penalty_points"
-from public.locker_reservations lr
-    join public.users u
-        on u.augentid = lr.user_augentid
-    join public.locations l
-         on l.location_id = lr.location_id
-    join public.authority a
-         on a.authority_id = l.authority_id
-    join public.buildings b
-         on b.building_id = l.building_id
-where <?>
-order by l.name;
-
--- $delete_locker_reservation
-delete
-from public.locker_reservations
-where location_id = ? and locker_number = ?;
-
--- $insert_locker_reservation
-insert into public.locker_reservations (location_id, locker_number, user_augentid, key_pickup_date, key_return_date)
-values (?, ?, ?, ?, ?);
-
--- $update_locker_reservation
-update public.locker_reservations
-set key_pickup_date = ?, key_return_date = ?
-where location_id = ? and locker_number = ?;
-
-
--- queries for table LOCKERS
--- $get_lockers_where_<?>
-select l.location_id, l.number
-	, s.name, s.number_of_seats, s.number_of_lockers, s.image_url, s.description_dutch, s.description_english, s.forGroup
-    , a.authority_id, a.authority_name, a.description
-    , b.building_id, b.building_name, b.address
-from public.lockers l
-	join public.locations s
-		on s.location_id = l.location_id
-    join public.authority a
-        on a.authority_id = s.authority_id
-    join public.buildings b
-        on b.building_id = s.building_id
-where <?>
-order by s.name;
-
--- $get_lockers_statuses_of_location
-with lr as (
-    select location_id, locker_number, user_augentid, key_pickup_date, key_return_date
-    from public.locker_reservations
-    where key_return_date is NULL
-)
-select l.number
-     , s.location_id, s.name, s.number_of_seats, s.number_of_lockers, s.image_url
-     , s.description_dutch, s.description_english, s.forGroup
-     , a.authority_id, a.authority_name, a.description
-     , b.building_id, b.building_name, b.address
-     , lr.locker_number, lr.key_pickup_date, lr.key_return_date, lr.user_augentid
-     , u.augentid, u.admin, u.augentpreferredgivenname, u.augentpreferredsn, 0 as penalty_points
-     , u.mail, u.password, u.institution
-from public.lockers l
-    join public.locations s
-        on s.location_id = l.location_id
-    join public.authority a
-        on a.authority_id = s.authority_id
-    join public.buildings b
-        on b.building_id = s.building_id
-    left join lr
-        on lr.location_id = l.location_id
-        and lr.locker_number = l.number
-    left join public.users u
-        on u.augentid = lr.user_augentid
-where l.location_id = ?
-order by l.number;
-
--- $insert_locker
-/* Note: the column 'id' is a auto-increment primary key */
-insert into public.lockers (number, location_id)
-values (?, ?);
-
--- $delete_locker
-delete
-from public.lockers
-where location_id = ? and number = ?;
-
-
 -- queries for DBPenaltyEventsDao
 -- $get_penalty_events
 select e.code, e.points, d.lang_enum, d.description
@@ -557,19 +444,19 @@ from penalty_events e
 where e.code = ?;
 
 -- $get_penalties_by_user
-select b.user_augentid, b.event_code, b.timestamp, b.reservation_date
+select b.user_id, b.event_code, b.timestamp, b.reservation_date
     , b.received_points, b.reservation_location_id, b.remarks
 from public.penalty_book b
-where b.user_augentid = ?;
+where b.user_id = ?;
 
 -- $get_penalties_by_location
-select b.user_augentid, b.event_code, b.timestamp, b.reservation_date
+select b.user_id, b.event_code, b.timestamp, b.reservation_date
      , b.received_points, b.reservation_location_id, b.remarks
 from public.penalty_book b
 where b.reservation_location_id = ?;
 
 -- $get_penalties_by_event_code
-select b.user_augentid, b.event_code, b.timestamp, b.reservation_date
+select b.user_id, b.event_code, b.timestamp, b.reservation_date
      , b.received_points, b.reservation_location_id, b.remarks
 from public.penalty_book b
 where b.event_code = ?;
@@ -579,7 +466,7 @@ insert into public.penalty_events (code, points)
 values (?, ?);
 
 -- $insert_penalty
-insert into penalty_book (user_augentid, event_code, timestamp, reservation_date, reservation_location_id, received_points, remarks)
+insert into penalty_book (user_id, event_code, timestamp, reservation_date, reservation_location_id, received_points, remarks)
 values (?, ?, ?, ?, ?, ?, ?);
 
 -- $insert_penalty_description
@@ -609,7 +496,7 @@ where code = ?;
 -- $delete_penalty
 delete
 from public.penalty_book b
-where b.user_augentid = ? and b.event_code = ? and b.timestamp = ?;
+where b.user_id = ? and b.event_code = ? and b.timestamp = ?;
 
 -- $count_descriptions_of_penalty_events
 select count(1)
@@ -619,7 +506,7 @@ where event_code = ?;
 
 -- queries for SCANNERS_LOCATION
 -- $get_locations_of_scanner
-select l.location_id, l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch, l.description_english, l.forGroup
+select l.location_id, l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch, l.description_english, l.for_group
        , a.authority_id, a.authority_name, a.description
        , b.building_id, b.building_name, b.address
 from public.scanners_location sl
@@ -629,20 +516,20 @@ from public.scanners_location sl
         on a.authority_id = l.authority_id
     join public.buildings b
         on b.building_id = l.building_id
-where sl.user_augentid = ?
+where sl.user_id = ?
 order by l.name;
 
 -- $get_scanners_of_location
 select u.*
 from public.scanners_location sl
     join public.users u
-        on u.augentid = sl.user_augentid
+        on u.user_id = sl.user_id
 where sl.location_id = ?;
 
 -- $delete_scanner_location
 delete
 from public.scanners_location
-where location_id = ? and user_augentid = ?;
+where location_id = ? and user_id = ?;
 
 -- $delete_scanners_of_location
 delete from public.scanners_location
@@ -650,16 +537,16 @@ where location_id = ?;
 
 -- $delete_locations_of_scanner
 delete from public.scanners_location
-where user_augentid = ?;
+where user_id = ?;
 
 -- $insert_scanner_on_location
-insert into public.scanners_location (location_id, user_augentid)
+insert into public.scanners_location (location_id, user_id)
 values (?, ?);
 
 -- $count_scanner_on_location
 select count(1)
 from public.scanners_location
-where user_augentid = ? and location_id = ?;
+where user_id = ? and location_id = ?;
 
 
 -- queries for LOCATION_TAG
@@ -672,7 +559,7 @@ where lt.location_id = ?;
 
 -- $get_locations_for_tag
 select l.location_id, l.name, l.number_of_seats, l.number_of_lockers
-        , l.image_url, l.description_dutch, l.description_english, l.forGroup
+        , l.image_url, l.description_dutch, l.description_english, l.for_group
         , a.authority_id, a.authority_name, a.description
         , b.building_id, b.building_name, b.address
 from public.locations l
@@ -708,7 +595,7 @@ where tag_id = ?;
 -- queries for CALENDAR_PERIODS
 -- $get_all_calendar_periods
 select cp.calendar_id, cp.location_id, cp.starts_at, cp.ends_at, cp.opening_time, cp.closing_time, cp.reservable_from, cp.reservable, cp.timeslot_length, cp.locked_from
-       , l.location_id, l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch, l.description_english, l.forGroup, b.building_id, b.building_name, b.address
+       , l.location_id, l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch, l.description_english, l.for_group, b.building_id, b.building_name, b.address
        , a.authority_id, a.authority_name, a.description
 from public.calendar_periods cp
     join public.locations l
@@ -721,7 +608,7 @@ order by to_date(cp.starts_at || ' ' || cp.opening_time, 'YYYY-MM-DD HH24:MI');
 
 -- $get_calendar_periods
 select cp.calendar_id, cp.location_id, cp.starts_at, cp.ends_at, cp.opening_time, cp.closing_time, cp.reservable_from, cp.reservable, cp.timeslot_length, cp.locked_from, cp.seat_count
-       , l.location_id, l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch, l.description_english, l.forGroup
+       , l.location_id, l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch, l.description_english, l.for_group
        , a.authority_id, a.authority_name, a.description
        , b.building_id, b.building_name, b.address
 from public.calendar_periods cp
@@ -819,37 +706,6 @@ select *
 from y
 where n = 1
 order by timeslot_start;
-
-
--- queries for CALENDAR_PERIODS_FOR_LOCKERS
--- $get_calendar_periods_for_lockers_of_location
-select cp.location_id, cp.starts_at, cp.ends_at, cp.reservable_from
-       , l.location_id, l.name, l.number_of_seats, l.number_of_lockers, l.image_url, l.description_dutch, l.description_english, l.forGroup
-       , a.authority_id, a.authority_name, a.description
-       , b.building_id, b.building_name, b.address
-from public.calendar_periods_for_lockers cp
-    join public.locations l
-        on l.location_id = cp.location_id
-    join public.authority a
-        on a.authority_id = l.authority_id
-    join public.buildings b
-        on b.building_id = l.building_id
-where cp.location_id = ?
-order by cp.starts_at;
-
--- $insert_calendar_period_for_lockers
-insert into public.calendar_periods_for_lockers (location_id, starts_at, ends_at, reservable_from)
-values (?, ?, ?, ?);
-
--- $update_calendar_period_for_lockers
-update public.calendar_periods_for_lockers
-set location_id = ?, starts_at = ?, ends_at = ?, reservable_from = ?
-where location_id = ? and starts_at = ? and ends_at = ? and reservable_from = ?;
-
--- $delete_calendar_period_for_lockers
-delete
-from public.calendar_periods_for_lockers
-where location_id = ? and starts_at = ? and ends_at = ? and reservable_from = ?;
 
 
 -- miscellaneous queries
