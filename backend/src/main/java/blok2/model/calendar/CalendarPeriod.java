@@ -4,6 +4,7 @@ import blok2.helpers.Resources;
 import blok2.model.reservables.Location;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import javax.persistence.*;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -14,8 +15,14 @@ import java.util.Objects;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 
+@Entity
+@Table(name = "calendar_periods")
 public class CalendarPeriod extends Period implements Cloneable {
+
+    @Id
+    @Column(name = "calendar_id")
     private Integer id;
+    @OneToOne
     private Location location;
     private LocalTime openingTime;
     private LocalTime closingTime;
@@ -25,6 +32,7 @@ public class CalendarPeriod extends Period implements Cloneable {
     private int timeslotLength;
     private int seatCount;
 
+    @OneToMany
     private List<Timeslot> timeslots = Collections.emptyList();
 
     public CalendarPeriod() { }

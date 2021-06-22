@@ -10,6 +10,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "location_tags")
 public class LocationTag implements Cloneable {
+
     @Id
     private int tagId;
     private String dutch;

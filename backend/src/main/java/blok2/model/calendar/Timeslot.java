@@ -3,20 +3,22 @@ package blok2.model.calendar;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
+@Entity
+@Table(name = "timeslots")
 public class Timeslot implements Cloneable {
+    @EmbeddedId
+    private final TimeslotId timeslotId;
+
+    @NotNull
     @Min(0)
-    @NotNull
-    private Integer calendarId;
-    @Min(0)
-    @NotNull
-    private Integer timeslotSeqnr;
-    @NotNull
-    private LocalDate timeslotDate;
+    private Integer reservationCount;
 
     @NotNull
     @Min(0)
@@ -27,12 +29,15 @@ public class Timeslot implements Cloneable {
     private int amountOfReservations;
 
     // Artefact for framework
-    public Timeslot() {}
+    public Timeslot() {
+        this.timeslotId = new TimeslotId();
+        this.reservationCount = 0;
+        this.seatCount = 0;
+    }
 
     public Timeslot(int calendarId, int timeslotSeqnr, LocalDate timeslotDate, int seatCount) {
-        this.calendarId = calendarId;
-        this.timeslotSeqnr = timeslotSeqnr;
-        this.timeslotDate = timeslotDate;
+        this.timeslotId = new TimeslotId(calendarId, timeslotSeqnr, timeslotDate);
+        this.reservationCount = 0;
         this.seatCount = seatCount;
     }
 
@@ -45,7 +50,7 @@ public class Timeslot implements Cloneable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Timeslot timeslot = (Timeslot) o;
-        return calendarId.equals(timeslot.calendarId);
+        return timeslotId.calendarId.equals(timeslot.timeslotId.calendarId);
     }
 
     @Override
@@ -55,31 +60,31 @@ public class Timeslot implements Cloneable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(calendarId);
+        return Objects.hash(timeslotId.calendarId);
     }
 
     public int getCalendarId() {
-        return calendarId;
+        return timeslotId.calendarId;
     }
 
     public void setCalendarId(int calendarId) {
-        this.calendarId = calendarId;
+        timeslotId.calendarId = calendarId;
     }
 
     public int getTimeslotSeqnr() {
-        return timeslotSeqnr;
+        return timeslotId.timeslotSequenceNumber;
     }
 
     public void setTimeslotSeqnr(int timeslotSeqnr) {
-        this.timeslotSeqnr = timeslotSeqnr;
+        timeslotId.timeslotSequenceNumber = timeslotSeqnr;
     }
 
     public LocalDate getTimeslotDate() {
-        return timeslotDate;
+        return timeslotId.timeslotDate;
     }
 
     public void setTimeslotDate(LocalDate timeslotDate) {
-        this.timeslotDate = timeslotDate;
+        timeslotId.timeslotDate = timeslotDate;
     }
 
     public int getAmountOfReservations() {
@@ -90,6 +95,14 @@ public class Timeslot implements Cloneable {
         this.amountOfReservations = amountOfReservations;
     }
 
+    public int getReservationCount() {
+        return reservationCount;
+    }
+
+    public void setReservationCount(int reservationCount) {
+        this.reservationCount = reservationCount;
+    }
+
     public Integer getSeatCount() {
         return seatCount;
     }
@@ -97,4 +110,20 @@ public class Timeslot implements Cloneable {
     public void setSeatCount(Integer seatCount) {
         this.seatCount = seatCount;
     }
+
+    @Embeddable
+    public static class TimeslotId implements Serializable {
+        Integer calendarId;
+        Integer timeslotSequenceNumber;
+        LocalDate timeslotDate;
+
+        public TimeslotId() {}
+
+        public TimeslotId(int calendarId, int timeslotSequenceNumber, LocalDate timeslotDate) {
+            this.calendarId = calendarId;
+            this.timeslotSequenceNumber = timeslotSequenceNumber;
+            this.timeslotDate = timeslotDate;
+        }
+    }
+
 }

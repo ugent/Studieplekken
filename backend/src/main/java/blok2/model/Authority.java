@@ -10,6 +10,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "authority")
 public class Authority implements Cloneable {
+
     @Id
     private int authorityId;
     private String authorityName;
@@ -73,4 +74,5 @@ public class Authority implements Cloneable {
     public void setAuthorityId(int authorityId) {
         this.authorityId = authorityId;
     }
+
 }
