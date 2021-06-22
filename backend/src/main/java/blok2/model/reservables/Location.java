@@ -31,13 +31,14 @@ public class Location implements Cloneable {
     @OneToOne
     private Authority authority;
     private boolean forGroup;
-
     @OneToMany
     private List<LocationTag> assignedTags;
-    @Transient // TODO: maybe this is not the appropriate thing to do: ignoring the field
+
+    @Transient
     private Pair<LocationStatus, String> status;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Transient // TODO: maybe this is not the appropriate thing to do: ignoring the field
+    @Transient
     private Timeslot currentTimeslot;
 
     public Location(int locationId, String name, int numberOfSeats, int numberOfLockers, String imageUrl,
