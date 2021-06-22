@@ -43,4 +43,16 @@
             order by location_name;
         </query>
     </named-native-query>
+
+    <named-native-query name="Location.getNextReservationMomentsOfAllLocations">
+        <query>
+            select l.name as locationName, min(cp.reservable_from) as nextReservableFrom
+            from public.locations l
+                     join public.calendar_periods cp
+                          on cp.location_id = l.location_id
+            where cp.reservable_from >= now()
+            group by l.name
+            order by l.name;
+        </query>
+    </named-native-query>
 </entity-mappings>

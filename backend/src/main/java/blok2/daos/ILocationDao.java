@@ -1,26 +1,12 @@
 package blok2.daos;
 
-import blok2.helpers.Pair;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;
 
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 public interface ILocationDao extends IDao {
-
-    /**
-     * Get a list of all available locations.
-     */
-    List<Location> getAllLocations() throws SQLException;
-
-    /**
-     * Get a list of pairs which tell for each location what the next reservable from is.
-     * The pair maps the location name to the reservable.
-     */
-    List<Pair<String, LocalDateTime>> getAllLocationNextReservableFroms() throws SQLException;
 
     /**
      * Adds a location
@@ -61,15 +47,6 @@ public interface ILocationDao extends IDao {
      * Return all locations that are yet to be approved/denied
      */
     List<Location> getAllUnapprovedLocations() throws SQLException;
-
-    /**
-     * Returns an array of 7 strings for each location that is opened in the week specified by the given
-     * week number in the given year.
-     *
-     * Each string is in the form of 'HH24:MI - HH24:MI' to indicate the opening and closing hour at
-     * monday, tuesday, ..., sunday but can also be null to indicate that the location is not open that day.
-     */
-    Map<String, String[]> getOpeningOverviewOfWeek(int year, int weekNr) throws SQLException;
 
      /**
      * Add a volunteer to a given location

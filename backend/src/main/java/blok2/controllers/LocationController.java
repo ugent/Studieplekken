@@ -3,10 +3,12 @@ package blok2.controllers;
 import blok2.daos.IAccountDao;
 import blok2.daos.ILocationDao;
 import blok2.daos.ILocationTagDao;
-import blok2.helpers.Pair;
+import blok2.daos.LocationService;
+import blok2.daos.orm.LocationRepository;
 import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.helpers.LocationWithApproval;
 import blok2.helpers.exceptions.AlreadyExistsException;
+import blok2.helpers.orm.LocationNameAndNextReservableFrom;
 import blok2.mail.MailService;
 import blok2.helpers.exceptions.NoSuchLocationException;
 import blok2.helpers.exceptions.NoSuchUserException;
@@ -22,7 +24,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.mail.MessagingException;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,8 @@ public class LocationController extends AuthorizedLocationController {
     private final ILocationDao locationDao;
     private final ILocationTagDao locationTagDao;
     private final IAccountDao accountDao;
+    private final LocationRepository locationRepository;
+    private final LocationService locationService;
 
     private final MailService mailService;
 
@@ -50,23 +53,20 @@ public class LocationController extends AuthorizedLocationController {
 
     @Autowired
     public LocationController(ILocationDao locationDao, ILocationTagDao locationTagDao, IAccountDao accountDao,
+                              LocationRepository locationRepository, LocationService locationService,
                               MailService mailService) {
         this.locationDao = locationDao;
         this.locationTagDao = locationTagDao;
         this.accountDao = accountDao;
+        this.locationRepository = locationRepository;
+        this.locationService = locationService;
         this.mailService = mailService;
     }
 
     @GetMapping
     @PreAuthorize("permitAll()")
     public List<Location> getAllLocations() {
-        try {
-            return locationDao.getAllLocations();
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        return locationRepository.findAllActiveLocations();
     }
 
     @GetMapping("/unapproved")
@@ -94,14 +94,8 @@ public class LocationController extends AuthorizedLocationController {
 
     @GetMapping("/nextReservableFroms")
     @PreAuthorize("permitAll()")
-    public List<Pair<String, LocalDateTime>> getAllNextReservableFroms() {
-        try {
-            return locationDao.getAllLocationNextReservableFroms();
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+    public List<LocationNameAndNextReservableFrom> getAllNextReservableFroms() {
+        return locationRepository.getNextReservationMomentsOfAllLocations();
     }
 
     @PostMapping
@@ -118,7 +112,7 @@ public class LocationController extends AuthorizedLocationController {
             // Note: this mail is not sent in development or while testing (see implementation,
             // of the sendMail() methods in MailServer)
             String[] admins = accountDao.getAdmins().stream().map(User::getMail).toArray(String[]::new);
-            logger.info(String.format("Sending mail to admins to notify about creation of new location %s. Recipients are: %s", location.toString(), Arrays.toString(admins)));
+            logger.info(String.format("Sending mail to admins to notify about creation of new location %s. Recipients are: %s", location, Arrays.toString(admins)));
             mailService.sendNewLocationMessage(admins, location);
 
             logger.info(String.format("New location %s added", location.getName()));
@@ -272,13 +266,7 @@ public class LocationController extends AuthorizedLocationController {
     @PreAuthorize("permitAll()")
     public Map<String, String[]> getOpeningOverviewOfWeek(@PathVariable("year") int year,
                                                           @PathVariable("weekNr") int weekNr) {
-        try {
-            return locationDao.getOpeningOverviewOfWeek(year, weekNr);
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        return locationService.getOpeningHoursOverview(year, weekNr);
     }
 
 }

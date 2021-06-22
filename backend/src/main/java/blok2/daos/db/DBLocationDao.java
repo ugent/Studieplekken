@@ -17,11 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.temporal.IsoFields;
-import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
 import static blok2.daos.db.DBCalendarPeriodDao.getCurrentTimeslot;
@@ -39,42 +34,6 @@ public class DBLocationDao extends DAO implements ILocationDao {
         this.accountDao = accountDao;
         this.scannerLocationDao = scannerLocationDao;
         this.locationRepository = locationRepository;
-    }
-
-    @Override
-    public List<Location> getAllLocations() throws SQLException {
-        try (Connection conn = adb.getConnection()) {
-            List<Location> locations = new ArrayList<>();
-
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(Resources.databaseProperties.getString("all_locations"));
-
-            while (rs.next()) {
-                Location location = createLocation(rs, conn);
-                locations.add(location);
-            }
-
-            return locations;
-        }
-    }
-
-    @Override
-    public List<Pair<String, LocalDateTime>> getAllLocationNextReservableFroms() throws SQLException {
-        try (Connection conn = adb.getConnection()) {
-            List<Pair<String, LocalDateTime>> nextReservableFroms = new ArrayList<>();
-
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(Resources.databaseProperties.getString("all_locations_next_reservable_froms"));
-
-            while (rs.next()) {
-                String locationName = rs.getString(Resources.databaseProperties.getString("location_name"));
-                LocalDateTime nextReservableFrom = rs.getTimestamp(
-                        Resources.databaseProperties.getString("calendar_period_reservable_from")).toLocalDateTime();
-                nextReservableFroms.add(new Pair<>(locationName, nextReservableFrom));
-            }
-
-            return nextReservableFroms;
-        }
     }
 
     @Override
@@ -245,41 +204,6 @@ public class DBLocationDao extends DAO implements ILocationDao {
             statement.setInt(2, location.getLocationId());
             statement.execute();
         }
-    }
-
-    public Map<String, String[]> getOpeningOverviewOfWeek(int year, int weekNr) {
-        // The SQL query that will be used requires the dates of a monday and following sunday
-        // of a week for which the opening hours will be calculated. However, the week number
-        // (according to the ISO 8601 standard) in a year are given as parameters.
-        // Therefore, the dates of the monday and sunday of the corresponding week need to be
-        // calculated.
-        //
-        // This can be done using the with() method of LocalDate. This method gives an adjusted
-        // copy of a LocalDate object. By adjusting the week number of a LocalDate object, followed
-        // by another with() to adjust the week day to a "monday", we can obtain the date of
-        // the monday corresponding to the week given by the parameter `weekNr`.
-        //
-        // This methodology needs a base LocalDate object that can be adjusted. This LocalDate
-        // object's year must be determined by the 'year' parameter. The exact day of the year
-        // is of no importance since it will be adjusted later to be the monday of the week
-        // given by `weekNr`. However, the day of the year may not be before the first monday
-        // of the year. Therefore, the 50th day of the week is chosen.
-        //
-        // source: https://stackoverflow.com/a/32186362/9356123
-        LocalDate mondayDate = LocalDate.ofYearDay(year, 50)
-                .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, weekNr)
-                .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-        LocalDate sundayDate = mondayDate.plusDays(6);
-
-        List<String[]> retval = locationRepository.getOpeningHoursOverview(mondayDate, sundayDate);
-
-        // Use a TreeMap to order the keys, this results in a user friendly overview.
-        Map<String, String[]> overview = new TreeMap<>();
-        for (String[] row : retval) {
-            overview.put(row[0], Arrays.copyOfRange(row, 1, row.length));
-        }
-
-        return overview;
     }
 
     /**
