@@ -785,6 +785,7 @@
           }
         },
         "zeroReservations": "Je hebt tot nu toe nog nooit gereserveerd.",
+        "zeroReservationsInManagement": "{name} heeft tot nu toe nog nooit gereserveerd.",
         "loading": "Reservaties worden geladen...",
         "error": "Er is iets misgegaan tijdens het laden van uw reservaties."
       },

@@ -60,8 +60,15 @@
 </div>
 
 <ng-template #noReservations>
-  <div class="alert alert-info">
+  <div *ngIf="userObj === undefined; else noReservationsInManagement" class="alert alert-info">
     {{'profile.reservations.locations.zeroReservations' | translate}}
+  </div>
+</ng-template>
+
+<ng-template #noReservationsInManagement>
+  <div class="alert alert-info">
+    {{('profile.reservations.locations.zeroReservationsInManagement' | translate)
+    .replace('{name}', userObj.firstName + ' ' + userObj.lastName)}}
   </div>
 </ng-template>
 
