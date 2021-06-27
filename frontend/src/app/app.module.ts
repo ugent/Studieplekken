@@ -1,6 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, SecurityContext } from '@angular/core';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -78,8 +77,6 @@ import { ScannerComponent } from './shared/scanner/scanner.component';
 import { VolunteersManagementComponent } from './management/volunteers-management/volunteers-management.component';
 import { VolunteerManagementPanelComponent } from './management/volunteers-management/volunteer-management-panel/volunteer-management-panel.component';
 import { AuthenticationInterceptor } from './services/authentication/authentication.interceptor';
-import { UserReservationsComponent } from './management/users-management/user-details-management/user-reservations/user-reservations.component';
-
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -309,7 +306,6 @@ const routes: Routes = [
     ScannerComponent,
     VolunteersManagementComponent,
     VolunteerManagementPanelComponent,
-    UserReservationsComponent,
   ],
   imports: [
     BrowserModule,
