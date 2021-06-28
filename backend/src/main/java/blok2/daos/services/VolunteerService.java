@@ -1,65 +1,80 @@
 package blok2.daos.services;
 
 import blok2.daos.IVolunteerDao;
-import blok2.daos.db.DAO;
-import blok2.daos.db.DBLocationDao;
 import blok2.daos.orm.LocationRepository;
-import blok2.helpers.Resources;
+import blok2.daos.orm.UserRepository;
+import blok2.helpers.exceptions.NoSuchLocationException;
+import blok2.helpers.exceptions.NoSuchUserException;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class VolunteerService extends DAO implements IVolunteerDao {
+public class VolunteerService implements IVolunteerDao {
 
     private final LocationRepository locationRepository;
-    private final DBLocationDao dbLocationDao; // TODO: delete after all implementation
+    private final UserRepository userRepository;
 
-    public VolunteerService(LocationRepository locationRepository, DBLocationDao dbLocationDao) {
+    public VolunteerService(LocationRepository locationRepository, UserRepository userRepository) {
         this.locationRepository = locationRepository;
-        this.dbLocationDao = dbLocationDao;
+        this.userRepository = userRepository;
     }
 
     @Override
-    public List<User> getVolunteers(int locationId) throws SQLException {
-        return dbLocationDao.getVolunteers(locationId);
+    @Transactional
+    public List<User> getVolunteers(int locationId) {
+        Location location = locationRepository.findById(locationId)
+                .orElseThrow(() -> new NoSuchLocationException(
+                        String.format("No location found with locationId '%d'", locationId)));
+
+        List<User> volunteers = location.getVolunteers();
+        // trigger hibernate to load the users by calling size() on the volunteers list
+        // (hence the @Transactional annotation because the persistent context must remain open)
+        volunteers.size();
+
+        return volunteers;
     }
 
     @Override
-    public List<Location> getVolunteeredLocations(String userId) throws SQLException {
-        try (Connection conn = adb.getConnection()) {
-            return getLocationsOfVolunteer(userId, conn);
-        }
-    }
-
-    public static List<Location> getLocationsOfVolunteer(String userId, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(
-                Resources.databaseProperties.getString("get_locations_of_volunteer"));
-        pstmt.setString(1, userId);
-        ResultSet rs = pstmt.executeQuery();
-
-        List<Location> locations = new ArrayList<>();
-        while (rs.next()) {
-            locations.add(DBLocationDao.createLocation(rs, conn));
-        }
-        return locations;
+    public List<Location> getVolunteeredLocations(String userId) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new NoSuchUserException(
+                        String.format("No user found with userId '%s'", userId)));
+        return new ArrayList<>(user.getUserVolunteer());
     }
 
     @Override
-    public void addVolunteer(int locationId, String userId) throws SQLException {
-        dbLocationDao.addVolunteer(locationId, userId);
+    public void addVolunteer(int locationId, String userId) {
+        Location location = locationRepository.findById(locationId)
+                .orElseThrow(() -> new NoSuchLocationException(
+                        String.format("No location found with locationId '%d'", locationId)));
+
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new NoSuchUserException(
+                        String.format("No user found with userId '%s'", userId)));
+
+        user.getUserVolunteer().add(location);
+
+        userRepository.save(user);
     }
 
     @Override
-    public void deleteVolunteer(int locationId, String userId) throws SQLException {
-        dbLocationDao.deleteVolunteer(locationId, userId);
+    public void deleteVolunteer(int locationId, String userId) {
+        Location location = locationRepository.findById(locationId)
+                .orElseThrow(() -> new NoSuchLocationException(
+                        String.format("No location found with locationId '%d'", locationId)));
+
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new NoSuchUserException(
+                        String.format("No user found with userId '%s'", userId)));
+
+        user.getUserVolunteer().remove(location);
+
+        userRepository.save(user);
     }
 
 }

@@ -6,7 +6,7 @@ import blok2.model.users.User;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface IVolunteerDao extends IDao {
+public interface IVolunteerDao {
     
     /**
      * Get all users that have volunteered for the specified location

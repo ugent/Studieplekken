@@ -7,6 +7,8 @@ import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.LocationTag;
 import blok2.model.calendar.Timeslot;
+import blok2.model.users.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
@@ -64,6 +66,15 @@ public class Location implements Cloneable {
         inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private List<LocationTag> assignedTags;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "roles_user_volunteer",
+        joinColumns = @JoinColumn(name = "location_id"),
+        inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    @JsonIgnore
+    private List<User> volunteers;
 
     @Transient
     private Pair<LocationStatus, String> status;
@@ -266,6 +277,14 @@ public class Location implements Cloneable {
 
     public void setApproved(boolean approved) {
         this.approved = approved;
+    }
+
+    public List<User> getVolunteers() {
+        return volunteers;
+    }
+
+    public void setVolunteers(List<User> volunteers) {
+        this.volunteers = volunteers;
     }
 
     //</editor-fold>
