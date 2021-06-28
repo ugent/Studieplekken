@@ -1,7 +1,7 @@
 package blok2.scheduling;
 
+import blok2.daos.ILocationDao;
 import blok2.daos.ILocationReservationDao;
-import blok2.daos.LocationService;
 import blok2.helpers.Pair;
 import blok2.mail.MailService;
 import blok2.model.calendar.CalendarPeriod;
@@ -29,18 +29,18 @@ public class ScheduledTasks {
 
     private final ILocationReservationDao locationReservationDao;
     private final MailService mailService;
-    private final LocationService locationService;
+    private final ILocationDao locationDao;
 
     private final String[] recipients;
 
     private static final int N_CONCURRENT_CONNECTIONS = 5;
 
     @Autowired
-    public ScheduledTasks(ILocationReservationDao locationReservationDao, LocationService locationService,
+    public ScheduledTasks(ILocationReservationDao locationReservationDao, ILocationDao locationDao,
                           MailService mailService, Environment env) {
         this.locationReservationDao = locationReservationDao;
         this.mailService = mailService;
-        this.locationService = locationService;
+        this.locationDao = locationDao;
         recipients = env.getProperty("custom.mailing.recipientsOpeningHoursOverview", String[].class);
     }
 
@@ -78,7 +78,7 @@ public class ScheduledTasks {
             year = week > 50 ? year + 1 : year;
             week = week > 50 ? (week + 2) % 52 : week + 2;
 
-            Map<String, String[]> openingHours = locationService.getOpeningHoursOverview(year, week);
+            Map<String, String[]> openingHours = locationDao.getOpeningOverviewOfWeek(year, week);
             if (openingHours.size() > 0) {
                 logger.info(String.format("Sending mail for scheduled tast weeklyOpeningHoursMailing() because in " +
                         "week %d of year %d, there are %d locations that have to be opened. Current week number is %d " +

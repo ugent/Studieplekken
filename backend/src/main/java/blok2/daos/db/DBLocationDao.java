@@ -1,7 +1,6 @@
 package blok2.daos.db;
 
 import blok2.daos.IAccountDao;
-import blok2.daos.ILocationDao;
 import blok2.daos.IScannerLocationDao;
 import blok2.daos.orm.LocationRepository;
 import blok2.helpers.LocationStatus;
@@ -23,7 +22,7 @@ import static blok2.daos.db.DBCalendarPeriodDao.getCurrentTimeslot;
 import static blok2.daos.db.DBAccountDao.createUser;
 
 @Service
-public class DBLocationDao extends DAO implements ILocationDao {
+public class DBLocationDao extends DAO {
 
     IAccountDao accountDao;
     IScannerLocationDao scannerLocationDao;
@@ -36,133 +35,6 @@ public class DBLocationDao extends DAO implements ILocationDao {
         this.locationRepository = locationRepository;
     }
 
-    @Override
-    public List<Location> getAllUnapprovedLocations() throws SQLException {
-        try (Connection conn = adb.getConnection()) {
-            List<Location> locations = new ArrayList<>();
-
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(Resources.databaseProperties.getString("all_unapproved_locations"));
-
-            while (rs.next()) {
-                Location location = createLocation(rs, conn);
-                locations.add(location);
-            }
-
-            return locations;
-        }
-    }
-
-    @Override
-    public Location addLocation(Location location) throws SQLException {
-        try (Connection conn = adb.getConnection()) {
-            return addLocationAsTransaction(location, conn);
-        }
-    }
-
-    private Location addLocation(Location location, Connection conn) throws SQLException {
-        // insert location into the database
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_location"));
-        prepareUpdateOrInsertLocationStatement(location, pstmt);
-        ResultSet rs = pstmt.executeQuery();
-
-        if (rs.next()) {
-            int locationId = rs.getInt(1);
-            location.setLocationId(locationId);
-
-            insertTags(locationId, location.getAssignedTags(), conn);
-        }
-
-        return null;
-    }
-
-    private Location addLocationAsTransaction(Location location, Connection conn) throws SQLException {
-        try {
-            conn.setAutoCommit(false);
-            Location l = addLocation(location, conn);
-            conn.commit();
-            return l;
-        } catch (SQLException e) {
-            conn.rollback();
-            throw e;
-        } finally {
-            conn.setAutoCommit(true);
-        }
-    }
-
-    @Override
-    public Location getLocationByName(String name) throws SQLException {
-        try (Connection conn = adb.getConnection()) {
-            return getLocationByName(name, conn);
-        }
-    }
-
-    public static Location getLocationByName(String locationName, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_location_by_name"));
-        pstmt.setString(1, locationName);
-        ResultSet rs = pstmt.executeQuery();
-        if (rs.next()) {
-            return createLocation(rs, conn);
-        }
-        return null;
-    }
-
-    @Override
-    public Location getLocationById(int locationId) throws SQLException {
-        try (Connection conn = adb.getConnection()) {
-            return getLocationById(locationId, conn);
-        }
-    }
-
-    public static Location getLocationById(int locationId, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_location_by_id"));
-        pstmt.setInt(1, locationId);
-        ResultSet rs = pstmt.executeQuery();
-        if (rs.next()) {
-            return createLocation(rs, conn);
-        }
-        return null;
-    }
-
-    @Override
-    public void updateLocation(int locationId, Location location) throws SQLException {
-        try (Connection conn = adb.getConnection()) {
-            try {
-                conn.setAutoCommit(false);
-
-                Location oldLocation = getLocationById(locationId, conn);
-
-                if (oldLocation == null)
-                    return;
-
-                // Update location
-                PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("update_location"));
-                // set ...
-                prepareUpdateOrInsertLocationStatement(location, pstmt);
-                // where ...
-                pstmt.setInt(10, locationId);
-                pstmt.execute();
-
-                conn.commit();
-            } catch (SQLException e) {
-                conn.rollback();
-                throw e;
-            } finally {
-                conn.setAutoCommit(true);
-            }
-        }
-    }
-
-    @Override
-    public void deleteLocation(int locationId) throws SQLException {
-        try (Connection conn = adb.getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_location"));
-            pstmt.setInt(1, locationId);
-            pstmt.execute();
-        }
-    }
-
-    @Override
     public void addVolunteer(int locationId, String userId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("add_volunteer"));
@@ -171,7 +43,7 @@ public class DBLocationDao extends DAO implements ILocationDao {
             pstmt.execute();
         }
     }
-    @Override
+
     public void deleteVolunteer(int locationId, String userId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_volunteer"));
@@ -181,7 +53,6 @@ public class DBLocationDao extends DAO implements ILocationDao {
         }
     }
 
-    @Override
     public List<User> getVolunteers(int locationId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_volunteers_of_location"));
@@ -191,18 +62,6 @@ public class DBLocationDao extends DAO implements ILocationDao {
             while(set.next())
                 users.add(createUser(set, conn));
             return users;
-        }
-    }
-
-    @Override
-    public void approveLocation(Location location, boolean approval) throws SQLException {
-        this.updateLocation(location.getLocationId(), location);
-
-        try (Connection conn = adb.getConnection()) {
-            PreparedStatement statement = conn.prepareStatement(Resources.databaseProperties.getString("approve_location"));
-            statement.setBoolean(1, approval);
-            statement.setInt(2, location.getLocationId());
-            statement.execute();
         }
     }
 
@@ -250,27 +109,6 @@ public class DBLocationDao extends DAO implements ILocationDao {
         Timeslot timeslot = getCurrentTimeslot(locationId, conn);
 
         return createLocation(rs, rsTags, status, timeslot);
-    }
-
-    private void insertTags(int locationId, List<LocationTag> tags, Connection conn) throws SQLException {
-        if (tags != null) {
-            for (LocationTag tag : tags) {
-                DBTagsDao.addTag(tag, conn);
-                DBLocationTagDao.addTagToLocation(locationId, tag.getTagId(), conn);
-            }
-        }
-    }
-
-    private void prepareUpdateOrInsertLocationStatement(Location location, PreparedStatement pstmt) throws SQLException {
-        pstmt.setString(1, location.getName());
-        pstmt.setInt(2, location.getNumberOfSeats());
-        pstmt.setInt(3, location.getNumberOfLockers());
-        pstmt.setString(4, location.getImageUrl());
-        pstmt.setInt(5, location.getAuthority().getAuthorityId());
-        pstmt.setInt(6, location.getBuilding().getBuildingId());
-        pstmt.setString(7, location.getDescriptionDutch());
-        pstmt.setString(8, location.getDescriptionEnglish());
-        pstmt.setBoolean(9, location.getForGroup());
     }
 
 }

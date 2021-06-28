@@ -2,6 +2,7 @@ package blok2.daos;
 
 import blok2.BaseTest;
 import blok2.TestSharedMethods;
+import blok2.helpers.exceptions.NoSuchLocationException;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.reservables.Location;
@@ -45,8 +46,11 @@ public class TestDBLocationDao extends BaseTest {
         Assert.assertEquals("addLocation", testLocation, l);
 
         locationDao.deleteLocation(testLocation.getLocationId());
-        l = locationDao.getLocationByName(testLocation.getName());
-        Assert.assertNull("addLocation, remove added test location", l);
+        try {
+            locationDao.getLocationByName(testLocation.getName());
+        } catch (NoSuchLocationException ignore) {
+            Assert.assertTrue("Location must be deleted and thus a NoSuchLocationException should have been thrown.", true);
+        }
     }
 
 }

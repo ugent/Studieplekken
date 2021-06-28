@@ -43,16 +43,12 @@ public class TestCascadeInDBAuthorityDao extends BaseTest {
         testAuthority = TestSharedMethods.insertTestAuthority(authorityDao);
         Building testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
 
-        testLocation1 = TestSharedMethods.testLocation(testAuthority.clone(), testBuilding.clone());
-        testLocation2 = TestSharedMethods.testLocation2(testAuthority.clone(), testBuilding.clone());
-
         testUserStudent = TestSharedMethods.studentTestUser();
         testUserAdmin = TestSharedMethods.adminTestUser();
 
-
         // Add test objects to database
-        locationDao.addLocation(testLocation1);
-        locationDao.addLocation(testLocation2);
+        testLocation1 = locationDao.addLocation(TestSharedMethods.testLocation(testAuthority.clone(), testBuilding.clone()));
+        testLocation2 = locationDao.addLocation(TestSharedMethods.testLocation2(testAuthority.clone(), testBuilding.clone()));
 
         accountDao.directlyAddUser(testUserStudent);
         accountDao.directlyAddUser(testUserAdmin);

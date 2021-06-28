@@ -1,6 +1,11 @@
-package blok2.daos;
+package blok2.daos.services;
 
+import blok2.daos.ILocationDao;
+import blok2.daos.db.DAO;
 import blok2.daos.orm.LocationRepository;
+import blok2.helpers.exceptions.NoSuchLocationException;
+import blok2.helpers.orm.LocationNameAndNextReservableFrom;
+import blok2.model.reservables.Location;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +19,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 @Service
-public class LocationService {
+public class LocationService extends DAO implements ILocationDao {
 
     private final LocationRepository locationRepository;
 
@@ -23,7 +28,58 @@ public class LocationService {
         this.locationRepository = locationRepository;
     }
 
-    public Map<String, String[]> getOpeningHoursOverview(int year, int isoWeek) {
+    @Override
+    public Location getLocationById(int locationId) {
+        return locationRepository.findById(locationId)
+                .orElseThrow(() -> new NoSuchLocationException(
+                        String.format("Location with locationId '%d' does not exist.", locationId)));
+    }
+
+    @Override
+    public Location getLocationByName(String locationName) {
+        return locationRepository.findLocationByName(locationName)
+                .orElseThrow(() -> new NoSuchLocationException(
+                        String.format("Location with locationName '%s' does not exist.", locationName)));
+    }
+
+    @Override
+    public List<Location> getAllActiveLocations() {
+        return locationRepository.findAllActiveLocations();
+    }
+
+    @Override
+    public List<Location> getAllUnapprovedLocations() {
+        return locationRepository.findAllByApprovedFalse();
+    }
+
+    @Override
+    public List<LocationNameAndNextReservableFrom> getNextReservationMomentsOfAllLocations() {
+        return locationRepository.getNextReservationMomentsOfAllLocations();
+    }
+
+    @Override
+    public Location addLocation(Location location) {
+        return locationRepository.save(location);
+    }
+
+    @Override
+    public void updateLocation(Location location) {
+        locationRepository.save(location);
+    }
+
+    @Override
+    public void deleteLocation(int locationId) {
+        locationRepository.deleteById(locationId);
+    }
+
+    @Override
+    public void approveLocation(Location location, boolean approval) {
+        location.setApproved(approval);
+        locationRepository.save(location);
+    }
+
+    @Override
+    public Map<String, String[]> getOpeningOverviewOfWeek(int year, int isoWeek) {
         // The SQL query that will be used requires the dates of a monday and following sunday
         // of a week for which the opening hours will be calculated. However, the week number
         // (according to the ISO 8601 standard) in a year are given as parameters.

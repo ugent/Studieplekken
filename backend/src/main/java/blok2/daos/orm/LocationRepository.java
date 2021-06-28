@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface LocationRepository extends JpaRepository<Location, Integer> {
 
@@ -15,6 +16,16 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
      */
     @Query("select l from Location l where l.approved = true")
     List<Location> findAllActiveLocations();
+
+    /**
+     * Gets a location with the given name.
+     */
+    Optional<Location> findLocationByName(String locationName);
+
+    /**
+     * Return all locations that are yet to be approved
+     */
+    List<Location> findAllByApprovedFalse();
 
     /**
      * Note: this is a named query (cfr. orm.xml)

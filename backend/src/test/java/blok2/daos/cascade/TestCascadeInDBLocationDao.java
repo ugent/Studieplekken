@@ -4,6 +4,7 @@ import blok2.BaseTest;
 import blok2.TestSharedMethods;
 import blok2.daos.*;
 import blok2.helpers.Language;
+import blok2.helpers.exceptions.NoSuchLocationException;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.calendar.CalendarPeriod;
@@ -118,7 +119,7 @@ public class TestCascadeInDBLocationDao extends BaseTest {
         updateLocationWithoutChangeInFK(testLocation);
 
         // LOCATIONS updated?
-        locationDao.updateLocation(testLocation.getLocationId(), testLocation);
+        locationDao.updateLocation(testLocation);
         Location location = locationDao.getLocationByName(testLocation.getName());
         Assert.assertEquals("updateLocationWithoutCascadeNeededTest, location", testLocation, location);
 
@@ -173,11 +174,14 @@ public class TestCascadeInDBLocationDao extends BaseTest {
         updateLocationWithoutChangeInFK(testLocation);
         String oldName = testLocation.getName();
         testLocation.setName("Changed name of location");
-        locationDao.updateLocation(testLocation.getLocationId(), testLocation);
+        locationDao.updateLocation(testLocation);
 
         // old location should be deleted ...
-        Location old = locationDao.getLocationByName(oldName);
-        Assert.assertNull("updateLocationWithCascadeNeededTest, old location must be deleted", old);
+        try {
+            locationDao.getLocationByName(oldName);
+        } catch (NoSuchLocationException ignore) {
+            Assert.assertTrue("Old location must be deleted and thus a NoSuchLocationException should have been thrown.", true);
+        }
 
         // ... and should be available under its new name
         Location location = locationDao.getLocationByName(testLocation.getName());
@@ -234,8 +238,11 @@ public class TestCascadeInDBLocationDao extends BaseTest {
     @Test
     public void deleteLocationTest() throws SQLException {
         locationDao.deleteLocation(testLocation.getLocationId());
-        Location l = locationDao.getLocationByName(testLocation.getName());
-        Assert.assertNull("deleteLocation, location must be deleted", l);
+        try {
+            locationDao.getLocationByName(testLocation.getName());
+        } catch (NoSuchLocationException ignore) {
+            Assert.assertTrue("Location must be deleted", true);
+        }
 
         List<CalendarPeriod> calendarPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getLocationId());
         Assert.assertEquals("deleteLocation, calendar periods", 0, calendarPeriods.size());

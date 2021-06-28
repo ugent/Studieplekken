@@ -1,6 +1,6 @@
 package blok2.controllers;
 
-import blok2.daos.orm.LocationRepository;
+import blok2.daos.ILocationDao;
 import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;
@@ -18,11 +18,11 @@ import java.util.stream.Collectors;
 @RequestMapping("scan")
 public class ScanController extends AuthorizedLocationController {
 
-    private final LocationRepository locationRepository;
+    private final ILocationDao locationDao;
 
     @Autowired
-    public ScanController(LocationRepository locationRepository) {
-        this.locationRepository = locationRepository;
+    public ScanController(ILocationDao locationDao) {
+        this.locationDao = locationDao;
     }
 
     @GetMapping("/locations")
@@ -30,7 +30,7 @@ public class ScanController extends AuthorizedLocationController {
     public List<Location> getLocationsToScan() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        return locationRepository.findAllActiveLocations().stream().filter(l ->
+        return locationDao.getAllActiveLocations().stream().filter(l ->
                 user.isAdmin() ||
                 user.getUserAuthorities().contains(l.getAuthority()) ||
                 user.getUserVolunteer().contains(l)

@@ -1,5 +1,6 @@
 package blok2.model.reservables;
 
+import blok2.helpers.Equality;
 import blok2.helpers.LocationStatus;
 import blok2.helpers.Pair;
 import blok2.model.Authority;
@@ -20,6 +21,7 @@ import java.util.Objects;
 public class Location implements Cloneable {
 
     @Id
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
     @Column(name = "location_id")
     private int locationId;
 
@@ -55,7 +57,7 @@ public class Location implements Cloneable {
     @Column(name = "approved")
     private boolean approved;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "location_tags",
         joinColumns = @JoinColumn(name = "location_id"),
@@ -114,7 +116,7 @@ public class Location implements Cloneable {
                 Objects.equals(descriptionDutch, location.descriptionDutch) &&
                 Objects.equals(descriptionEnglish, location.descriptionEnglish) &&
                 Objects.equals(authority, location.authority) &&
-                (assignedTags == null || assignedTags.equals(location.assignedTags));
+                Equality.listEqualsIgnoreOrder(assignedTags, location.assignedTags);
     }
 
     @Override

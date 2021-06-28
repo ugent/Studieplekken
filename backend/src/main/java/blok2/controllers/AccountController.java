@@ -2,7 +2,7 @@ package blok2.controllers;
 
 import blok2.daos.IAccountDao;
 import blok2.daos.IAuthorityDao;
-import blok2.daos.orm.LocationRepository;
+import blok2.daos.ILocationDao;
 import blok2.helpers.exceptions.InvalidRequestParametersException;
 import blok2.helpers.exceptions.NoSuchUserException;
 import blok2.model.Authority;
@@ -38,12 +38,12 @@ public class AccountController {
 
     private final IAccountDao accountDao;
     private final IAuthorityDao authorityDao;
-    private final LocationRepository locationRepository;
+    private final ILocationDao locationDao;
 
-    public AccountController(IAccountDao accountDao, IAuthorityDao authorityDao, LocationRepository locationRepository) {
+    public AccountController(IAccountDao accountDao, IAuthorityDao authorityDao, ILocationDao locationDao) {
         this.accountDao = accountDao;
         this.authorityDao = authorityDao;
-        this.locationRepository = locationRepository;
+        this.locationDao = locationDao;
     }
 
     @GetMapping("/admins")
@@ -174,7 +174,7 @@ public class AccountController {
                 throw new NoSuchUserException("No such user");
 
             if (user.isAdmin()) {
-                return locationRepository.findAllActiveLocations();
+                return locationDao.getAllActiveLocations();
             } else {
                 return authorityDao.getLocationsInAuthoritiesOfUser(userId);
             }

@@ -66,6 +66,11 @@ public class LocationTag implements Cloneable {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(tagId, dutch, english);
+    }
+
+    @Override
     public LocationTag clone() {
         try {
             return (LocationTag) super.clone();

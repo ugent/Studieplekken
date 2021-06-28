@@ -32,13 +32,19 @@ public abstract class BaseIntegrationTest extends BaseTest {
 
     @Autowired
     protected IAuthorityDao authorityDao;
+
     @Autowired
     protected ICalendarPeriodDao calendarPeriodDao;
+
     @Autowired
     protected IBuildingDao buildingDao;
 
     @Autowired
     protected ILocationReservationDao locationReservationDao;
+
+    @Autowired
+    protected IVolunteerDao volunteerDao;
+
     @Autowired
     protected MockMvc mockMvc;
 
@@ -93,6 +99,6 @@ public abstract class BaseIntegrationTest extends BaseTest {
         LocationReservation reservation = new LocationReservation(student, LocalDateTime.now(), timeslot, null);
         locationReservationDao.addLocationReservationIfStillRoomAtomically(reservation);
 
-        locationDao.addVolunteer(testLocation.getLocationId(), student2.getUserId());
+        volunteerDao.addVolunteer(testLocation.getLocationId(), student2.getUserId());
     }
 }

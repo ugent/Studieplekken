@@ -3,8 +3,7 @@ package blok2.controllers;
 import blok2.daos.IAccountDao;
 import blok2.daos.ILocationDao;
 import blok2.daos.ILocationTagDao;
-import blok2.daos.LocationService;
-import blok2.daos.orm.LocationRepository;
+import blok2.daos.IVolunteerDao;
 import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.helpers.LocationWithApproval;
 import blok2.helpers.exceptions.AlreadyExistsException;
@@ -42,8 +41,7 @@ public class LocationController extends AuthorizedLocationController {
     private final ILocationDao locationDao;
     private final ILocationTagDao locationTagDao;
     private final IAccountDao accountDao;
-    private final LocationRepository locationRepository;
-    private final LocationService locationService;
+    private final IVolunteerDao volunteerDao;
 
     private final MailService mailService;
 
@@ -53,49 +51,35 @@ public class LocationController extends AuthorizedLocationController {
 
     @Autowired
     public LocationController(ILocationDao locationDao, ILocationTagDao locationTagDao, IAccountDao accountDao,
-                              LocationRepository locationRepository, LocationService locationService,
-                              MailService mailService) {
+                              IVolunteerDao volunteerDao, MailService mailService) {
         this.locationDao = locationDao;
         this.locationTagDao = locationTagDao;
         this.accountDao = accountDao;
-        this.locationRepository = locationRepository;
-        this.locationService = locationService;
         this.mailService = mailService;
+        this.volunteerDao = volunteerDao;
     }
 
     @GetMapping
     @PreAuthorize("permitAll()")
     public List<Location> getAllLocations() {
-        return locationRepository.findAllActiveLocations();
+        return locationDao.getAllActiveLocations();
     }
 
     @GetMapping("/unapproved")
     public List<Location> getAllUnapprovedLocations() {
-        try {
-            return locationDao.getAllUnapprovedLocations();
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        return locationDao.getAllUnapprovedLocations();
     }
 
     @GetMapping("/{locationId}")
     @PreAuthorize("permitAll()")
     public Location getLocation(@PathVariable("locationId") int locationId) {
-        try {
-            return locationDao.getLocationById(locationId);
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        return locationDao.getLocationById(locationId);
     }
 
     @GetMapping("/nextReservableFroms")
     @PreAuthorize("permitAll()")
     public List<LocationNameAndNextReservableFrom> getAllNextReservableFroms() {
-        return locationRepository.getNextReservationMomentsOfAllLocations();
+        return locationDao.getNextReservationMomentsOfAllLocations();
     }
 
     @PostMapping
@@ -103,8 +87,12 @@ public class LocationController extends AuthorizedLocationController {
     public void addLocation(@RequestBody Location location) {
         isAuthorized((l,$) -> hasAuthority(l.getAuthority()), location);
         try {
-            if (this.locationDao.getLocationByName(location.getName()) != null)
+            try {
+                locationDao.getLocationByName(location.getName());
                 throw new AlreadyExistsException("location name already in use");
+            } catch (NoSuchLocationException ignore) {
+                // good to go
+            }
 
             this.locationDao.addLocation(location);
 
@@ -127,34 +115,23 @@ public class LocationController extends AuthorizedLocationController {
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void updateLocation(@PathVariable("locationId") int locationId, @RequestBody Location location) {
         isAuthorized(locationId);
-        try {
-            // Get the location that is currently in db
-            Location cl = locationDao.getLocationById(locationId);
 
-            // Make sure that only an admin could change the number of seats
-            if (cl.getNumberOfSeats() != location.getNumberOfSeats() && !isAdmin())
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Changing seats can only be done by admins");
+        // Get the location that is currently in db
+        Location cl = locationDao.getLocationById(locationId);
 
-            locationDao.updateLocation(locationId, location);
-            logger.info(String.format("Location %d updated", locationId));
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        // Make sure that only an admin could change the number of seats
+        if (cl.getNumberOfSeats() != location.getNumberOfSeats() && !isAdmin())
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Changing seats can only be done by admins");
+
+        locationDao.updateLocation(location);
+        logger.info(String.format("Location %d updated", locationId));
     }
 
     @PutMapping("/{locationId}/approval")
     @PreAuthorize("hasAuthority('ADMIN')")
     public void approveLocation(@PathVariable("locationId") int locationId, @RequestBody LocationWithApproval landa) {
-        try {
-            locationDao.approveLocation(landa.getLocation(), landa.isApproval());
-            logger.info(String.format("Location %d updated", locationId));
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        locationDao.approveLocation(landa.getLocation(), landa.isApproval());
+        logger.info(String.format("Location %d approved", locationId));
     }
 
     //authority user
@@ -163,14 +140,8 @@ public class LocationController extends AuthorizedLocationController {
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void deleteLocation(@PathVariable("locationId") int locationId) {
         isAuthorized(locationId);
-        try {
-            locationDao.deleteLocation(locationId);
-            logger.info(String.format("Location %d deleted", locationId));
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        locationDao.deleteLocation(locationId);
+        logger.info(String.format("Location %d deleted", locationId));
     }
 
     @PostMapping("/{locationId}/volunteers/{userId}")
@@ -183,7 +154,7 @@ public class LocationController extends AuthorizedLocationController {
             if(accountDao.getUserById(userId) == null)
                 throw new NoSuchUserException("No such User");
 
-            locationDao.addVolunteer(locationId, userId);
+            volunteerDao.addVolunteer(locationId, userId);
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
@@ -201,7 +172,7 @@ public class LocationController extends AuthorizedLocationController {
             if(accountDao.getUserById(userId) == null)
                 throw new NoSuchUserException("No such User");
 
-            locationDao.deleteVolunteer(locationId, userId);
+            volunteerDao.deleteVolunteer(locationId, userId);
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
@@ -217,7 +188,7 @@ public class LocationController extends AuthorizedLocationController {
             if(locationDao.getLocationById(locationId) == null)
                 throw new NoSuchLocationException("No such location");
 
-            return locationDao.getVolunteers(locationId);
+            return volunteerDao.getVolunteers(locationId);
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
@@ -252,7 +223,7 @@ public class LocationController extends AuthorizedLocationController {
     }
 
     // **************************************************
-    // *   Miscellaneous queries concerning locations   *
+    // *   Equality queries concerning locations   *
     // **************************************************
 
     /**
@@ -266,7 +237,7 @@ public class LocationController extends AuthorizedLocationController {
     @PreAuthorize("permitAll()")
     public Map<String, String[]> getOpeningOverviewOfWeek(@PathVariable("year") int year,
                                                           @PathVariable("weekNr") int weekNr) {
-        return locationService.getOpeningHoursOverview(year, weekNr);
+        return locationDao.getOpeningOverviewOfWeek(year, weekNr);
     }
 
 }

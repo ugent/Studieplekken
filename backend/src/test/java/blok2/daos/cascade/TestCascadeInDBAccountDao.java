@@ -68,10 +68,9 @@ public class TestCascadeInDBAccountDao extends BaseTest {
 
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
         Building testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
-        testLocation1 = TestSharedMethods.testLocation(authority.clone(), testBuilding);
-        testLocation2 = TestSharedMethods.testLocation2(authority.clone(), testBuilding);
-        locationDao.addLocation(testLocation1);
-        locationDao.addLocation(testLocation2);
+        testLocation1 = locationDao.addLocation(TestSharedMethods.testLocation(authority.clone(), testBuilding));
+        testLocation2 = locationDao.addLocation(TestSharedMethods.testLocation2(authority.clone(), testBuilding));
+
         CalendarPeriod cp1 = TestSharedMethods.testCalendarPeriods(testLocation1).get(0);
         TestSharedMethods.addCalendarPeriods(calendarPeriodDao, cp1);
         CalendarPeriod cp2 = TestSharedMethods.testCalendarPeriods(testLocation2).get(0);
@@ -88,14 +87,12 @@ public class TestCascadeInDBAccountDao extends BaseTest {
         // because when the penalties are retrieved from the penaltyEventDao, the list will
         // be sorted by received points before asserting, if they would be equal we can't sort
         // on the points and be sure about the equality of the actual and expected list.
-
         PenaltyEvent testPenaltyEvent = new PenaltyEvent(0, 10, descriptions);
         testPenalty1 = new Penalty(testUser.getUserId(), testPenaltyEvent.getCode(), LocalDate.now(), LocalDate.now(), testLocation1.getLocationId(), 10, "First test penalty");
         testPenalty2 = new Penalty(testUser.getUserId(), testPenaltyEvent.getCode(), LocalDate.of(1970, 1, 1), LocalDate.now(), testLocation2.getLocationId(), 20, "Second test penalty");
 
         // Add test objects to database
         accountDao.directlyAddUser(testUser);
-
 
         locationReservationDao.addLocationReservation(testLocationReservation1);
         locationReservationDao.addLocationReservation(testLocationReservation2);
