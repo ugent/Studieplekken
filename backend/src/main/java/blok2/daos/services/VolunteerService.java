@@ -41,7 +41,7 @@ public class VolunteerService implements IVolunteerDao {
 
     @Override
     public List<Location> getVolunteeredLocations(String userId) {
-        User user = userRepository.findByUserId(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchUserException(
                         String.format("No user found with userId '%s'", userId)));
         return new ArrayList<>(user.getUserVolunteer());
@@ -53,7 +53,7 @@ public class VolunteerService implements IVolunteerDao {
                 .orElseThrow(() -> new NoSuchLocationException(
                         String.format("No location found with locationId '%d'", locationId)));
 
-        User user = userRepository.findByUserId(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchUserException(
                         String.format("No user found with userId '%s'", userId)));
 
@@ -68,7 +68,7 @@ public class VolunteerService implements IVolunteerDao {
                 .orElseThrow(() -> new NoSuchLocationException(
                         String.format("No location found with locationId '%d'", locationId)));
 
-        User user = userRepository.findByUserId(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchUserException(
                         String.format("No user found with userId '%s'", userId)));
 

@@ -29,7 +29,7 @@ public class UserService implements IUserDao {
 
     @Override
     public User getUserById(String userId) {
-        return userRepository.findByUserId(userId)
+        return userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchUserException(
                         String.format("No user found with userId '%s'", userId)));
     }
@@ -58,7 +58,7 @@ public class UserService implements IUserDao {
     public User getUserFromBarcode(String barcode) {
         // Case 1: the student number and barcode match exactly.
         // For example, when scanning the barcode page, the student number is encoded as Code 128.
-        Optional<User> optionalUser = userRepository.findByUserId(barcode);
+        Optional<User> optionalUser = userRepository.findById(barcode);
         if (optionalUser.isPresent())
             return optionalUser.get();
 
@@ -66,7 +66,7 @@ public class UserService implements IUserDao {
         // Example student number: 000140462060
         // Example barcode:        001404620603
         String alternative = "0" + barcode.substring(0, barcode.length() - 1);
-        optionalUser = userRepository.findByUserId(alternative);
+        optionalUser = userRepository.findById(alternative);
         if (optionalUser.isPresent())
             return optionalUser.get();
 
@@ -74,7 +74,7 @@ public class UserService implements IUserDao {
         // Example student number: 114637753611
         // Example barcode:        1146377536113
         alternative = barcode.substring(0, barcode.length() - 1);
-        optionalUser = userRepository.findByUserId(alternative);
+        optionalUser = userRepository.findById(alternative);
         if (optionalUser.isPresent())
             return optionalUser.get();
 
@@ -82,7 +82,7 @@ public class UserService implements IUserDao {
         // Example student number: 000140462060
         // Example barcode:        0000140462060
         alternative = barcode.substring(1);
-        optionalUser = userRepository.findByUserId(alternative);
+        optionalUser = userRepository.findById(alternative);
 
         return optionalUser.orElseThrow(
                 () -> new NoSuchUserException(
