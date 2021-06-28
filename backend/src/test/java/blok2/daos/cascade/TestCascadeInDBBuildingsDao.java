@@ -3,6 +3,7 @@ package blok2.daos.cascade;
 import blok2.BaseTest;
 import blok2.TestSharedMethods;
 import blok2.daos.*;
+import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.reservables.Location;
@@ -48,7 +49,7 @@ public class TestCascadeInDBBuildingsDao extends BaseTest {
     }
 
     @Test
-    public void deleteBuildingCascadeTest() throws SQLException {
+    public void deleteBuildingCascadeTest() {
         // Test locations are present in db
         List<Location> locations = buildingDao.getLocationsInBuilding(testBuilding.getBuildingId());
 
@@ -65,7 +66,12 @@ public class TestCascadeInDBBuildingsDao extends BaseTest {
         buildingDao.deleteBuilding(testBuilding.getBuildingId());
 
         // Building must be deleted
-        Assert.assertNull(buildingDao.getBuildingById(testBuilding.getBuildingId()));
+        try {
+            Assert.assertNull(buildingDao.getBuildingById(testBuilding.getBuildingId()));
+            Assert.fail("Building should have been deleted");
+        } catch (NoSuchDatabaseObjectException ignore) {
+            Assert.assertTrue(true);
+        }
 
         // And the locations must have been deleted on cascade
         Assert.assertEquals(0, buildingDao.getLocationsInBuilding(testBuilding.getBuildingId()).size());

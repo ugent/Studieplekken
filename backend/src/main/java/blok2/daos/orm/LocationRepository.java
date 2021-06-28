@@ -34,6 +34,12 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
     List<Location> findAllByAuthorityId(int authorityId);
 
     /**
+     * Return all locations that are within a building
+     */
+    @Query("select l from Location l where l.building.buildingId = ?1")
+    List<Location> findAllByBuildingId(int buildingId);
+
+    /**
      * Note: this is a named query (cfr. orm.xml)
      *
      * Returns an array of 7 strings for each location that is opened in the week specified by the given
