@@ -233,7 +233,7 @@ public class TestDBLocationReservationDao extends BaseTest {
             users[i] = TestSharedMethods.studentTestUser();
             users[i].setUserId(users[i].getUserId() + "" + i);
             users[i].setMail(i + "" + users[i].getMail());
-            userDao.directlyAddUser(users[i]);
+            userDao.addUser(users[i]);
         }
         logger.info(String.format("All %d users have been created.", N_USERS));
 
@@ -318,7 +318,7 @@ public class TestDBLocationReservationDao extends BaseTest {
             users[i] = TestSharedMethods.studentTestUser();
             users[i].setUserId(users[i].getUserId() + "" + i);
             users[i].setMail(i + "" + users[i].getMail());
-            userDao.directlyAddUser(users[i]);
+            userDao.addUser(users[i]);
         }
         logger.info(String.format("All %d users have been created.", N_USERS));
 

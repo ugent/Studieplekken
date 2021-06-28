@@ -68,8 +68,6 @@ public class LocationReservation {
 
     //</editor-fold>
 
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -83,7 +81,7 @@ public class LocationReservation {
 
     @Override
     public int hashCode() {
-        return Objects.hash(user, createdAt, timeslot);
+        return Objects.hash(user, timeslot, attended);
     }
 
     public static class AttendedPostBody {

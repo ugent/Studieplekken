@@ -6,6 +6,8 @@ import blok2.model.users.User;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -38,7 +40,7 @@ public class TestDBAccountDao extends BaseTest {
         directlyAddedUser.setUserId("1" + testUser1.getUserId());
         directlyAddedUser.setMail("directly.addeduser@ugent.be");
 
-        userDao.directlyAddUser(directlyAddedUser);
+        userDao.addUser(directlyAddedUser);
         User u = userDao.getUserById(directlyAddedUser.getUserId());
         Assert.assertEquals(directlyAddedUser, u);
 
@@ -53,18 +55,18 @@ public class TestDBAccountDao extends BaseTest {
         // change the role opposed to testUser1, update should succeed
         expectedChangedUser.setAdmin(false);
 
-        userDao.updateUserByMail(testUser1.getMail(), expectedChangedUser);
+        userDao.updateUser(expectedChangedUser);
 
         User actualChangedUser = userDao.getUserById(expectedChangedUser.getUserId());
         Assert.assertEquals(expectedChangedUser, actualChangedUser);
     }
 
-    @Test(expected = SQLException.class)
-    public void updateUserToExistingMailTest() throws SQLException {
+    @Test(expected = DataAccessException.class)
+    public void updateUserToExistingMailTest() {
         // change expectedChangedUser's mail to an existing mail, should fail
         User updated = testUser1.clone();
         updated.setMail(testUser2.getMail());
-        userDao.updateUserById(testUser1.getUserId(), updated);
+        userDao.updateUser(updated);
     }
 
     @Test
@@ -120,19 +122,19 @@ public class TestDBAccountDao extends BaseTest {
         // included because if assertion fails, the state of the test database wouldn't be reset
 
         // UPC-A
-        userDao.directlyAddUser(user);
+        userDao.addUser(user);
         u = userDao.getUserFromBarcode(user_upca_barcode);
         userDao.deleteUser(user.getUserId());
         Assert.assertEquals("getUserFromBarcodeTest, UPC-A", user, u);
 
         // EAN13
-        userDao.directlyAddUser(user);
+        userDao.addUser(user);
         u = userDao.getUserFromBarcode(user_ean13_barcode);
         userDao.deleteUser(user.getUserId());
         Assert.assertEquals("getUserFromBarcodeTest, EAN13", user, u);
 
         // Other?
-        userDao.directlyAddUser(user);
+        userDao.addUser(user);
         u = userDao.getUserFromBarcode(user_other_barcode);
         userDao.deleteUser(user.getUserId());
         Assert.assertEquals("getUserFromBarcodeTest, Other?", user, u);

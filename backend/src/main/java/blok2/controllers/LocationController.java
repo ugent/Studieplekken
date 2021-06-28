@@ -104,10 +104,10 @@ public class LocationController extends AuthorizedLocationController {
             mailService.sendNewLocationMessage(admins, location);
 
             logger.info(String.format("New location %s added", location.getName()));
-        } catch (SQLException | MessagingException e) {
+        } catch (MessagingException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Mailing error");
         }
     }
 

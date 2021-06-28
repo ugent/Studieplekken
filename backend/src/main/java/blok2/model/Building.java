@@ -68,7 +68,6 @@ public class Building implements Cloneable {
         return Objects.hash(buildingId, name);
     }
 
-
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);

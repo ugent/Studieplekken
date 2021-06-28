@@ -5,6 +5,7 @@ import blok2.daos.IAuthorityDao;
 import blok2.daos.ICalendarPeriodDao;
 import blok2.helpers.Institution;
 import blok2.helpers.TimeException;
+import blok2.helpers.exceptions.NoSuchUserException;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.LocationTag;
@@ -147,31 +148,23 @@ public class TestSharedMethods {
         return user;
     }
 
-    public static User authorityHolderTestUser(String id) {
-        User user = new User();
-        user.setLastName("AutorityMan");
-        user.setFirstName("Authority");
-        user.setMail(id + "@ugent.be");
-        user.setPassword("second_password");
-        user.setInstitution(Institution.UGent);
-        user.setUserId(id);
-        user.setAdmin(false);
-        return user;
-    }
-
-    public static void addTestUsers(IUserDao userDao, User... users) throws SQLException {
+    public static void addTestUsers(IUserDao userDao, User... users) {
         for (User u : users) {
-            userDao.directlyAddUser(u);
+            userDao.addUser(u);
             User r = userDao.getUserById(u.getUserId()); // retrieved user
             Assert.assertEquals("addTestUsers, setup test user failed", u, r);
         }
     }
 
-    public static void removeTestUsers(IUserDao userDao, User... users) throws SQLException {
+    public static void removeTestUsers(IUserDao userDao, User... users) {
         for (User u : users) {
             userDao.deleteUser(u.getUserId());
-            User r = userDao.getUserById(u.getUserId());
-            Assert.assertNull("removeTestUsers, cleanup test user failed", r);
+            try {
+                userDao.getUserById(u.getUserId());
+                Assert.fail("cleanup test user should throw NoSuchUserException after deletion");
+            } catch (NoSuchUserException e) {
+                Assert.assertTrue(true);
+            }
         }
     }
 

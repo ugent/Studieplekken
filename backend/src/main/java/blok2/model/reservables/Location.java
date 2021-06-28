@@ -121,7 +121,9 @@ public class Location implements Cloneable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(locationId, name, building);
+        return Objects.hash(
+                locationId, name, numberOfSeats, numberOfLockers, imageUrl,
+                descriptionDutch, descriptionEnglish);
     }
 
     @Override

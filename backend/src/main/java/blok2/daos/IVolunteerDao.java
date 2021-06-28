@@ -1,5 +1,6 @@
 package blok2.daos;
 
+import blok2.model.reservables.Location;
 import blok2.model.users.User;
 
 import java.sql.SQLException;
@@ -11,6 +12,11 @@ public interface IVolunteerDao extends IDao {
      * Get all users that have volunteered for the specified location
      */
     List<User> getVolunteers(int locationId) throws SQLException;
+
+    /**
+     * Get all locations for which the specified user has volunteered
+     */
+    List<Location> getVolunteeredLocations(String userId) throws SQLException;
 
     /**
      * Add a volunteer to a given location

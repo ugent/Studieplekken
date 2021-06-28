@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 @Service
-public class LocationService extends DAO implements ILocationDao {
+public class LocationService implements ILocationDao {
 
     private final LocationRepository locationRepository;
 

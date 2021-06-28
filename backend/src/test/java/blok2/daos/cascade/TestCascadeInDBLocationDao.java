@@ -100,8 +100,8 @@ public class TestCascadeInDBLocationDao extends BaseTest {
         testPenalty2 = new Penalty(testUser2.getUserId(), testPenaltyEvent.getCode(), LocalDate.now(), LocalDate.now(), testLocation.getLocationId(), 20, "Second test penalty");
 
         // Add test objects to database
-        userDao.directlyAddUser(testUser1);
-        userDao.directlyAddUser(testUser2);
+        userDao.addUser(testUser1);
+        userDao.addUser(testUser2);
 
         locationReservationDao.addLocationReservation(testLocationReservation1);
         locationReservationDao.addLocationReservation(testLocationReservation2);

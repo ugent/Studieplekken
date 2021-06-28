@@ -50,22 +50,22 @@ public class User implements Cloneable, UserDetails {
     // conflict with the getter UserDetails#getAuthorities() that is used to return
     // the GrantedAuthority objects of the user. These GrantedAuthority objects are used
     // in the controller methods to authorize the user accessing the methods.
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "roles_user_authority",
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "authority_id")
     )
-    private List<Authority> userAuthorities;
+    private Set<Authority> userAuthorities;
 
     // List of location IDs the user is volunteer for
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "roles_user_volunteer",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "location_id")
     )
-    private List<Location> userVolunteer;
+    private Set<Location> userVolunteer;
 
     public User() {
         lastName = "";
@@ -74,8 +74,8 @@ public class User implements Cloneable, UserDetails {
         password = "";
         institution = "";
         userId = "";
-        userAuthorities = new ArrayList<>();
-        userVolunteer = new ArrayList<>();
+        userAuthorities = new HashSet<>();
+        userVolunteer = new HashSet<>();
     }
 
     @Override
@@ -138,11 +138,11 @@ public class User implements Cloneable, UserDetails {
         return admin;
     }
 
-    public List<Authority> getUserAuthorities() {
+    public Set<Authority> getUserAuthorities() {
         return userAuthorities;
     }
 
-    public List<Location> getUserVolunteer() {
+    public Set<Location> getUserVolunteer() {
         return userVolunteer;
     }
 
@@ -178,11 +178,11 @@ public class User implements Cloneable, UserDetails {
         this.admin = admin;
     }
 
-    public void setUserAuthorities(List<Authority> userAuthorities) {
+    public void setUserAuthorities(Set<Authority> userAuthorities) {
         this.userAuthorities = userAuthorities;
     }
 
-    public void setUserVolunteer(List<Location> userVolunteer) {
+    public void setUserVolunteer(Set<Location> userVolunteer) {
         this.userVolunteer = userVolunteer;
     }
 

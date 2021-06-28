@@ -46,7 +46,7 @@ public class TestDBAuthorityDaoWithUser extends BaseTest {
         testLocation1 = TestSharedMethods.testLocation(testAuthority.clone(), testBuilding);
         testLocation2 = TestSharedMethods.testLocation2(testAuthority2.clone(), testBuilding);
 
-        userDao.directlyAddUser(testUser);
+        userDao.addUser(testUser);
         authorityDao.addUserToAuthority(testUser.getUserId(), testAuthority.getAuthorityId());
         locationDao.addLocation(testLocation1);
         locationDao.addLocation(testLocation2);
@@ -74,7 +74,7 @@ public class TestDBAuthorityDaoWithUser extends BaseTest {
         User user = TestSharedMethods.adminTestUser();
         user.setUserId("000010");
         user.setMail("newtestMail@ugent.be");
-        userDao.directlyAddUser(user);
+        userDao.addUser(user);
         authorityDao.addUserToAuthority(user.getUserId(), testAuthority.getAuthorityId());
         List<User> users = authorityDao.getUsersFromAuthority(testAuthority.getAuthorityId());
         Assert.assertEquals(2, users.size());

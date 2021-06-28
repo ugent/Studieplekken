@@ -42,6 +42,11 @@ public class Authority implements Cloneable {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(authorityId, authorityName, description);
+    }
+
+    @Override
     public Authority clone() {
         try {
             return (Authority) super.clone();

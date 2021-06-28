@@ -80,8 +80,8 @@ public class TestCascadeInPenaltyEventDao extends BaseTest {
         testPenalty1.setReservationLocationId(testLocation1.getLocationId());
         testPenalty2.setReservationLocationId(testLocation2.getLocationId());
 
-        userDao.directlyAddUser(testUser1);
-        userDao.directlyAddUser(testUser2);
+        userDao.addUser(testUser1);
+        userDao.addUser(testUser2);
 
         penaltyEventsDao.addPenaltyEvent(testPenaltyEvent);
         penaltyEventsDao.addPenalty(testPenalty1);
