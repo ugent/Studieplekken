@@ -116,18 +116,18 @@ public class DBAuthorityDao extends DAO implements IAuthorityDao {
     // ************************************************/
 
     @Override
-    public List<Authority> getAuthoritiesFromUser(String augentId) throws SQLException {
+    public List<Authority> getAuthoritiesFromUser(String userId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
-            return getAuthoritiesFromUser(augentId, conn);
+            return getAuthoritiesFromUser(userId, conn);
         }
     }
 
-    public static List<Authority> getAuthoritiesFromUser(String augentId, Connection conn) throws SQLException {
+    public static List<Authority> getAuthoritiesFromUser(String userId, Connection conn) throws SQLException {
 
         List<Authority> authorities = new ArrayList<>();
 
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("authorities_from_user"));
-        pstmt.setString(1, augentId);
+        pstmt.setString(1, userId);
         ResultSet rs = pstmt.executeQuery();
 
         while (rs.next()) {
@@ -139,12 +139,12 @@ public class DBAuthorityDao extends DAO implements IAuthorityDao {
     }
 
     @Override
-    public List<Location> getLocationsInAuthoritiesOfUser(String augentId) throws SQLException {
+    public List<Location> getLocationsInAuthoritiesOfUser(String userId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             List<Location> locations = new ArrayList<>();
 
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_locations_manageable_by_user"));
-            pstmt.setString(1, augentId);
+            pstmt.setString(1, userId);
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
@@ -175,20 +175,20 @@ public class DBAuthorityDao extends DAO implements IAuthorityDao {
     }
 
     @Override
-    public void addUserToAuthority(String augentid, int authorityId) throws SQLException {
+    public void addUserToAuthority(String userId, int authorityId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_role_user_authority"));
-            pstmt.setString(1, augentid);
+            pstmt.setString(1, userId);
             pstmt.setInt(2, authorityId);
             pstmt.execute();
         }
     }
 
     @Override
-    public void deleteUserFromAuthority(String augentid, int authorityId) throws SQLException {
+    public void deleteUserFromAuthority(String userId, int authorityId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("remove_role_user_authority"));
-            pstmt.setString(1, augentid);
+            pstmt.setString(1, userId);
             pstmt.setInt(2, authorityId);
             pstmt.execute();
         }

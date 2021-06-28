@@ -52,7 +52,7 @@ public interface IPenaltyEventsDao extends IDao {
     /**
      * Get the actual occurrence of a PenaltyEvent: e.g. someone has cancelled after 17:00 the day before opening
      */
-    List<Penalty> getPenaltiesByUser(String augentId) throws SQLException;
+    List<Penalty> getPenaltiesByUser(String userId) throws SQLException;
 
     /**
      * Get all occurrences of a PenaltyEvent within a location
@@ -70,9 +70,9 @@ public interface IPenaltyEventsDao extends IDao {
     void addPenalty(Penalty penalty) throws SQLException;
 
     /**
-     * updatePenalty() removes the Penalties 'remove' and adds the Penalties 'add' for the user identified by augentID
+     * updatePenalty() removes the Penalties 'remove' and adds the Penalties 'add' for the user identified by userId
      */
-    void updatePenalties(String augentID, List<Penalty> remove, List<Penalty> add) throws SQLException;
+    void updatePenalties(String userId, List<Penalty> remove, List<Penalty> add) throws SQLException;
 
     /**
      * deleteEvent() deletes a Penalty

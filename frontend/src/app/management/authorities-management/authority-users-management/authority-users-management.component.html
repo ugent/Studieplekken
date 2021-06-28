@@ -29,7 +29,7 @@
 
       <tbody >
       <tr *ngFor="let user of users">
-        <td>{{user.augentID}}</td>
+        <td>{{user.userId}}</td>
         <td>{{user.firstName}}</td>
         <td>{{user.lastName}}</td>
         <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
@@ -137,7 +137,7 @@
           </label>
           <div class="col-lg-8">
             <select class="form-control" id="authority" [formControl]="selectedUserFormControl">
-              <option *ngFor="let user of userSearchResult" [value]="user.augentID">
+              <option *ngFor="let user of userSearchResult" [value]="user.userId">
                 {{user.firstName + ' ' + user.lastName}}
               </option>
             </select>
@@ -207,7 +207,7 @@
       <br><br>
 
       <ul *ngIf="userPreparedToDelete !== undefined">
-        <li><b style="margin-right: 5px"><i>{{('management.users.searchResult.table.id' | translate) + ':   '}}</i></b>{{userPreparedToDelete.augentID}}</li>
+        <li><b style="margin-right: 5px"><i>{{('management.users.searchResult.table.id' | translate) + ':   '}}</i></b>{{userPreparedToDelete.userId}}</li>
         <li><b style="margin-right: 5px"><i>{{('management.users.searchResult.table.firstName' | translate) + ':   '}}</i></b>{{userPreparedToDelete.firstName}}</li>
         <li><b style="margin-right: 5px"><i>{{('management.users.searchResult.table.lastName' | translate)}}</i></b>{{userPreparedToDelete.lastName}}</li>
       </ul>
@@ -217,7 +217,7 @@
   <!-- Footer -->
   <div class="modal-footer">
     <button type="button" class="btn btn-primary"
-            (click)="deleteUserFromAuthority(userPreparedToDelete.augentID, authority.authorityId)">
+            (click)="deleteUserFromAuthority(userPreparedToDelete.userId, authority.authorityId)">
       {{'general.buttons.delete' | translate}}
     </button>
     <button type="button" class="btn btn-secondary" (click)="closeModal()">

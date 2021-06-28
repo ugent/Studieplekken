@@ -26,7 +26,7 @@ export class BarcodeService {
     code: string
   ): LocationReservation {
     const match = (f: (code: string) => string, r: LocationReservation) =>
-      r.user.augentID === f(code);
+      r.user.userId === f(code);
     return (
       rlist.find(
         (r) =>

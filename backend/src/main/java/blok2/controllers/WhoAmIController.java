@@ -21,7 +21,7 @@ public class WhoAmIController {
      *
      * To avoid errors in the frontend, an empty user is returned.
      * Note that this will not introduce authorization leaks because
-     * no GrantedAuthority is given to an empty user, only if User#augentId
+     * no GrantedAuthority is given to an empty user, only if User#userId
      * is not empty.
      *
      * @return user object from authenticated user, or an anonymous user

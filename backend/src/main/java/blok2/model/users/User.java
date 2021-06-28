@@ -146,8 +146,8 @@ public class User implements Cloneable, UserDetails {
         return userVolunteer;
     }
 
-    public void setUserId(String augentID) {
-        this.userId = augentID;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public void setLastName(String lastName) {

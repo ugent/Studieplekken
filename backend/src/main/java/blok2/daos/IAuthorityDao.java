@@ -60,12 +60,12 @@ public interface IAuthorityDao extends IDao {
     /**
      * get a list of Authorities the user is a member of. Can be empty.
      */
-    List<Authority> getAuthoritiesFromUser(String augentId) throws SQLException;
+    List<Authority> getAuthoritiesFromUser(String userId) throws SQLException;
 
     /**
      * get a list of Locations that the user can manage
      */
-    List<Location> getLocationsInAuthoritiesOfUser(String augentId) throws SQLException;
+    List<Location> getLocationsInAuthoritiesOfUser(String userId) throws SQLException;
 
     /**
      * get list of users that are a member of the given authority.
@@ -75,10 +75,10 @@ public interface IAuthorityDao extends IDao {
     /**
      * Adds a user as a member of an authority. Returns if successful
      */
-    void addUserToAuthority(String augentid, int authorityId) throws SQLException;
+    void addUserToAuthority(String userId, int authorityId) throws SQLException;
 
     /**
      * remove a user from the given authority
      */
-    void deleteUserFromAuthority(String augentid, int authorityId) throws SQLException;
+    void deleteUserFromAuthority(String userId, int authorityId) throws SQLException;
 }

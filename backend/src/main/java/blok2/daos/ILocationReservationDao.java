@@ -15,7 +15,7 @@ public interface ILocationReservationDao extends IDao {
     /**
      * Get all location reservations of the specified user
      */
-    List<LocationReservation> getAllLocationReservationsOfUser(String augentID) throws SQLException;
+    List<LocationReservation> getAllLocationReservationsOfUser(String userId) throws SQLException;
 
     /**
      * Get all location reservations and calendar periods of the specified user
@@ -25,7 +25,7 @@ public interface ILocationReservationDao extends IDao {
     /**
      * Get the location reservation of a specified user at a specified timeslot
      */
-    LocationReservation getLocationReservation(String augentID, Timeslot timeslot) throws SQLException;
+    LocationReservation getLocationReservation(String userId, Timeslot timeslot) throws SQLException;
 
     /**
      * Get all LocationReservations and corresponding CalendarPeriods of unattended reservations
@@ -41,7 +41,7 @@ public interface ILocationReservationDao extends IDao {
     /**
      * Delete the location reservation of a specified user at a specified timeslot
      */
-    boolean deleteLocationReservation(String augentID, Timeslot timeslot) throws SQLException;
+    boolean deleteLocationReservation(String userId, Timeslot timeslot) throws SQLException;
 
     /**
      * This method should only be used for testing purposes, this does not check if there is still
@@ -58,7 +58,7 @@ public interface ILocationReservationDao extends IDao {
     /**
      * Set the attendance for a location reservation of a specified user at a specified timeslot
      */
-    boolean setReservationAttendance(String augentId, Timeslot timeslot, boolean attendance) throws SQLException;
+    boolean setReservationAttendance(String userId, Timeslot timeslot, boolean attendance) throws SQLException;
 
     /**
      * Get all location reservations at a specified timeslot

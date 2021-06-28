@@ -202,7 +202,7 @@ public class TestCascadeInDBLocationDao extends BaseTest {
         List<Penalty> penalties = penaltyEventsDao.getPenaltiesByLocation(testLocation.getLocationId());
         penalties.sort(Comparator.comparing(Penalty::getReceivedPoints));
 
-        // Penalty objects don't keep a reference to User, but have a String with the augentid
+        // Penalty objects don't keep a reference to User, but have a String with the userId
         testPenalty1.setReservationLocationId(testLocation.getLocationId());
         testPenalty2.setReservationLocationId(testLocation.getLocationId());
 

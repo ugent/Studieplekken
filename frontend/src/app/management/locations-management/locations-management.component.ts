@@ -58,7 +58,7 @@ export class LocationsManagementComponent implements OnInit {
 
     this.authenticationService.user.subscribe((next) => {
       // only set the locations and authorities if the user is authenticated
-      if (next.augentID !== '') {
+      if (next.userId !== '') {
         this.setupLocationsAndAuthorities();
         this.setupBuildings();
       }
@@ -252,10 +252,10 @@ export class LocationsManagementComponent implements OnInit {
    */
   setupLocationsAndAuthoritiesAsEmployee(): void {
     this.locations = this.authoritiesService.getLocationsInAuthoritiesOfUser(
-      this.authenticationService.userValue().augentID
+      this.authenticationService.userValue().userId
     );
     this.authoritiesObs = this.authoritiesService
-      .getAuthoritiesOfUser(this.authenticationService.userValue().augentID)
+      .getAuthoritiesOfUser(this.authenticationService.userValue().userId)
       .pipe(
         tap((next) => {
           this.authoritiesMap = new Map<number, Authority>();

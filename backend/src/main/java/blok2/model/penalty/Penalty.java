@@ -10,7 +10,7 @@ import java.util.Calendar;
 import java.util.Objects;
 
 public class Penalty implements Cloneable {
-    private String augentID;
+    private String userId;
     private int eventCode;
     private LocalDate timestamp;
     private LocalDate reservationDate;
@@ -22,8 +22,8 @@ public class Penalty implements Cloneable {
 
     }
 
-    public Penalty(String augentId, int eventCode, LocalDate timestamp, LocalDate reservationDate, int reservationLocationId, int receivedPoints, String remarks) {
-        this.augentID = augentId;
+    public Penalty(String userId, int eventCode, LocalDate timestamp, LocalDate reservationDate, int reservationLocationId, int receivedPoints, String remarks) {
+        this.userId = userId;
         this.eventCode = eventCode;
         this.timestamp = timestamp;
         this.reservationDate = reservationDate;
@@ -61,7 +61,7 @@ public class Penalty implements Cloneable {
         if (o == null || getClass() != o.getClass()) return false;
         Penalty penalty = (Penalty) o;
         return eventCode == penalty.eventCode &&
-                augentID.equals(penalty.augentID) &&
+                userId.equals(penalty.userId) &&
                 timestamp.equals(penalty.timestamp) &&
                 reservationDate.equals(penalty.reservationDate) &&
                 reservationLocationId == penalty.reservationLocationId &&
@@ -71,7 +71,7 @@ public class Penalty implements Cloneable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(augentID, eventCode, timestamp, reservationDate, reservationLocationId, receivedPoints, remarks);
+        return Objects.hash(userId, eventCode, timestamp, reservationDate, reservationLocationId, receivedPoints, remarks);
     }
 
     @Override
@@ -81,8 +81,8 @@ public class Penalty implements Cloneable {
 
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
 
-    public String getAugentID() {
-        return augentID;
+    public String getUserId() {
+        return userId;
     }
 
     public int getEventCode() {
@@ -109,8 +109,8 @@ public class Penalty implements Cloneable {
         return remarks;
     }
 
-    public void setAugentID(String augentID) {
-        this.augentID = augentID;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public void setEventCode(int eventCode) {

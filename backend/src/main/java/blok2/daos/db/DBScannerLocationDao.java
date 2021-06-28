@@ -34,12 +34,12 @@ public class DBScannerLocationDao extends DAO implements IScannerLocationDao {
     }
 
     @Override
-    public List<Location> getLocationsToScanOfUser(String augentid) throws SQLException {
+    public List<Location> getLocationsToScanOfUser(String userId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             List<Location> locations = new ArrayList<>();
 
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_locations_of_scanner"));
-            pstmt.setString(1, augentid);
+            pstmt.setString(1, userId);
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
@@ -51,21 +51,21 @@ public class DBScannerLocationDao extends DAO implements IScannerLocationDao {
     }
 
     @Override
-    public boolean addScannerLocation(int locationId, String augentid) throws SQLException {
+    public boolean addScannerLocation(int locationId, String userId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_scanner_on_location"));
             pstmt.setInt(1, locationId);
-            pstmt.setString(2, augentid);
+            pstmt.setString(2, userId);
             return pstmt.executeUpdate() == 1;
         }
     }
 
     @Override
-    public boolean deleteScannerLocation(int locationId, String augentid) throws SQLException {
+    public boolean deleteScannerLocation(int locationId, String userId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_scanner_location"));
             pstmt.setInt(1, locationId);
-            pstmt.setString(2, augentid);
+            pstmt.setString(2, userId);
             return pstmt.executeUpdate() == 1;
         }
     }
@@ -84,23 +84,23 @@ public class DBScannerLocationDao extends DAO implements IScannerLocationDao {
     }
 
     @Override
-    public boolean deleteAllLocationsOfScanner(String augentid) throws SQLException {
+    public boolean deleteAllLocationsOfScanner(String userId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
-            return deleteAllLocationsOfScanner(augentid, conn);
+            return deleteAllLocationsOfScanner(userId, conn);
         }
     }
 
-    public static boolean deleteAllLocationsOfScanner(String augentid, Connection conn) throws SQLException {
+    public static boolean deleteAllLocationsOfScanner(String userId, Connection conn) throws SQLException {
         PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_locations_of_scanner"));
-        pstmt.setString(1, augentid);
+        pstmt.setString(1, userId);
         return pstmt.executeUpdate() > 0;
     }
 
     @Override
-    public boolean isUserAllowedToScan(String augentid, int locationId) throws SQLException {
+    public boolean isUserAllowedToScan(String userId, int locationId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("count_scanner_on_location"));
-            pstmt.setString(1, augentid);
+            pstmt.setString(1, userId);
             pstmt.setInt(2, locationId);
 
             ResultSet rs = pstmt.executeQuery();

@@ -156,10 +156,10 @@ public class DBPenaltyEventsDao extends DAO implements IPenaltyEventsDao {
     }
 
     @Override
-    public List<Penalty> getPenaltiesByUser(String augentId) throws SQLException {
+    public List<Penalty> getPenaltiesByUser(String userId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_penalties_by_user"));
-            pstmt.setString(1, augentId);
+            pstmt.setString(1, userId);
             return getPenaltiesFromPreparedPstmt(pstmt);
         }
     }
@@ -190,7 +190,7 @@ public class DBPenaltyEventsDao extends DAO implements IPenaltyEventsDao {
 
         while (rs.next()) {
             Penalty p = new Penalty();
-            p.setAugentID(rs.getString(Resources.databaseProperties.getString("penalty_book_user_augentid")));
+            p.setUserId(rs.getString(Resources.databaseProperties.getString("penalty_book_user_augentid")));
             p.setEventCode(rs.getInt(Resources.databaseProperties.getString("penalty_book_event_code")));
             p.setTimestamp(LocalDate.parse(rs.getString(Resources.databaseProperties.getString("penalty_book_timestamp"))));
             p.setReservationDate(LocalDate.parse(rs.getString(Resources.databaseProperties.getString("penalty_book_reservation_date"))));
@@ -213,7 +213,7 @@ public class DBPenaltyEventsDao extends DAO implements IPenaltyEventsDao {
     }
 
     @Override
-    public void updatePenalties(String augentID, List<Penalty> remove, List<Penalty> add) throws SQLException {
+    public void updatePenalties(String userId, List<Penalty> remove, List<Penalty> add) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             try {
                 conn.setAutoCommit(false);
@@ -251,7 +251,7 @@ public class DBPenaltyEventsDao extends DAO implements IPenaltyEventsDao {
     public void deletePenalty(Penalty penalty) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_penalty"));
-            pstmt.setString(1, penalty.getAugentID());
+            pstmt.setString(1, penalty.getUserId());
             pstmt.setInt(2, penalty.getEventCode());
             pstmt.setString(3, penalty.getTimestamp().toString());
             pstmt.executeUpdate();
@@ -288,7 +288,7 @@ public class DBPenaltyEventsDao extends DAO implements IPenaltyEventsDao {
      * columns as is used here in the auxiliary method
      */
     private void setPreparedStatementWithPenalty(PreparedStatement pstmt, Penalty p) throws SQLException {
-        pstmt.setString(1, p.getAugentID());
+        pstmt.setString(1, p.getUserId());
         pstmt.setInt(2, p.getEventCode());
         pstmt.setString(3, p.getTimestamp().toString());
         pstmt.setString(4, p.getReservationDate() == null ? "" : p.getReservationDate().toString());
