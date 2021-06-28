@@ -140,7 +140,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
 
             List<User> users = new ArrayList<>();
             while (rs.next()) {
-                User user = DBAccountDao.createUser(rs, conn);
+                User user = DBUserDao.createUser(rs, conn);
                 users.add(user);
             }
 
@@ -363,7 +363,7 @@ public class DBLocationReservationDao extends DAO implements ILocationReservatio
             attended = null;
         }
 
-        User user = DBAccountDao.createUser(rs, conn);
+        User user = DBUserDao.createUser(rs, conn);
         Timeslot timeslot = DBCalendarPeriodDao.createTimeslot(rs, conn);
         LocalDateTime createdAt = rs.getTimestamp(Resources.databaseProperties.getString("location_reservation_created_at")).toLocalDateTime();
 

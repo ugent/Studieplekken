@@ -1,6 +1,6 @@
 package blok2;
 
-import blok2.daos.IAccountDao;
+import blok2.daos.IUserDao;
 import blok2.daos.IAuthorityDao;
 import blok2.daos.ICalendarPeriodDao;
 import blok2.helpers.Institution;
@@ -159,18 +159,18 @@ public class TestSharedMethods {
         return user;
     }
 
-    public static void addTestUsers(IAccountDao accountDao, User... users) throws SQLException {
+    public static void addTestUsers(IUserDao userDao, User... users) throws SQLException {
         for (User u : users) {
-            accountDao.directlyAddUser(u);
-            User r = accountDao.getUserById(u.getUserId()); // retrieved user
+            userDao.directlyAddUser(u);
+            User r = userDao.getUserById(u.getUserId()); // retrieved user
             Assert.assertEquals("addTestUsers, setup test user failed", u, r);
         }
     }
 
-    public static void removeTestUsers(IAccountDao accountDao, User... users) throws SQLException {
+    public static void removeTestUsers(IUserDao userDao, User... users) throws SQLException {
         for (User u : users) {
-            accountDao.deleteUser(u.getUserId());
-            User r = accountDao.getUserById(u.getUserId());
+            userDao.deleteUser(u.getUserId());
+            User r = userDao.getUserById(u.getUserId());
             Assert.assertNull("removeTestUsers, cleanup test user failed", r);
         }
     }

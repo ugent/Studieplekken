@@ -1,6 +1,6 @@
 package blok2.daos.db;
 
-import blok2.daos.IAccountDao;
+import blok2.daos.IUserDao;
 import blok2.daos.IScannerLocationDao;
 import blok2.daos.orm.LocationRepository;
 import blok2.helpers.LocationStatus;
@@ -19,18 +19,18 @@ import java.sql.*;
 import java.util.*;
 
 import static blok2.daos.db.DBCalendarPeriodDao.getCurrentTimeslot;
-import static blok2.daos.db.DBAccountDao.createUser;
+import static blok2.daos.db.DBUserDao.createUser;
 
 @Service
 public class DBLocationDao extends DAO {
 
-    IAccountDao accountDao;
+    IUserDao userDao;
     IScannerLocationDao scannerLocationDao;
     LocationRepository locationRepository;
 
     @Autowired
-    public DBLocationDao(IAccountDao accountDao, IScannerLocationDao scannerLocationDao, LocationRepository locationRepository) {
-        this.accountDao = accountDao;
+    public DBLocationDao(IUserDao userDao, IScannerLocationDao scannerLocationDao, LocationRepository locationRepository) {
+        this.userDao = userDao;
         this.scannerLocationDao = scannerLocationDao;
         this.locationRepository = locationRepository;
     }

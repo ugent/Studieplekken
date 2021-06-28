@@ -18,7 +18,7 @@ import java.util.List;
 public class TestDBScannerLocationDao extends BaseTest {
 
     @Autowired
-    private IAccountDao accountDao;
+    private IUserDao userDao;
 
     @Autowired
     private ILocationDao locationDao;
@@ -57,7 +57,7 @@ public class TestDBScannerLocationDao extends BaseTest {
         testLocation2 = TestSharedMethods.testLocation2(authority.clone(), testBuilding);
 
         // Add test objects to database
-        TestSharedMethods.addTestUsers(accountDao, testUser1, testUser2);
+        TestSharedMethods.addTestUsers(userDao, testUser1, testUser2);
         locationDao.addLocation(testLocation1);
         locationDao.addLocation(testLocation2);
 

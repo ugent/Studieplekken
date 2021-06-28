@@ -26,7 +26,7 @@ import java.util.*;
 public class TestCascadeInPenaltyEventDao extends BaseTest {
 
     @Autowired
-    private IAccountDao accountDao;
+    private IUserDao userDao;
 
     @Autowired
     private ILocationDao locationDao;
@@ -80,8 +80,8 @@ public class TestCascadeInPenaltyEventDao extends BaseTest {
         testPenalty1.setReservationLocationId(testLocation1.getLocationId());
         testPenalty2.setReservationLocationId(testLocation2.getLocationId());
 
-        accountDao.directlyAddUser(testUser1);
-        accountDao.directlyAddUser(testUser2);
+        userDao.directlyAddUser(testUser1);
+        userDao.directlyAddUser(testUser2);
 
         penaltyEventsDao.addPenaltyEvent(testPenaltyEvent);
         penaltyEventsDao.addPenalty(testPenalty1);

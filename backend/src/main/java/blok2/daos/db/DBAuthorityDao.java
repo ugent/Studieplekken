@@ -165,7 +165,7 @@ public class DBAuthorityDao extends DAO implements IAuthorityDao {
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                User user = DBAccountDao.createUser(rs, conn,false);
+                User user = DBUserDao.createUser(rs, conn,false);
                 users.add(user);
             }
 

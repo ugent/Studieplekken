@@ -1,6 +1,6 @@
 package blok2.controllers;
 
-import blok2.daos.IAccountDao;
+import blok2.daos.IUserDao;
 import blok2.daos.ILocationDao;
 import blok2.daos.ILocationTagDao;
 import blok2.daos.IVolunteerDao;
@@ -40,7 +40,7 @@ public class LocationController extends AuthorizedLocationController {
 
     private final ILocationDao locationDao;
     private final ILocationTagDao locationTagDao;
-    private final IAccountDao accountDao;
+    private final IUserDao userDao;
     private final IVolunteerDao volunteerDao;
 
     private final MailService mailService;
@@ -50,11 +50,11 @@ public class LocationController extends AuthorizedLocationController {
     // *************************************
 
     @Autowired
-    public LocationController(ILocationDao locationDao, ILocationTagDao locationTagDao, IAccountDao accountDao,
+    public LocationController(ILocationDao locationDao, ILocationTagDao locationTagDao, IUserDao userDao,
                               IVolunteerDao volunteerDao, MailService mailService) {
         this.locationDao = locationDao;
         this.locationTagDao = locationTagDao;
-        this.accountDao = accountDao;
+        this.userDao = userDao;
         this.mailService = mailService;
         this.volunteerDao = volunteerDao;
     }
@@ -99,7 +99,7 @@ public class LocationController extends AuthorizedLocationController {
             // Send a mail to the admins to notify them about the creation of a new location.
             // Note: this mail is not sent in development or while testing (see implementation,
             // of the sendMail() methods in MailServer)
-            String[] admins = accountDao.getAdmins().stream().map(User::getMail).toArray(String[]::new);
+            String[] admins = userDao.getAdmins().stream().map(User::getMail).toArray(String[]::new);
             logger.info(String.format("Sending mail to admins to notify about creation of new location %s. Recipients are: %s", location, Arrays.toString(admins)));
             mailService.sendNewLocationMessage(admins, location);
 
@@ -151,7 +151,7 @@ public class LocationController extends AuthorizedLocationController {
         try {
             if(locationDao.getLocationById(locationId) == null)
                 throw new NoSuchLocationException("No such location");
-            if(accountDao.getUserById(userId) == null)
+            if(userDao.getUserById(userId) == null)
                 throw new NoSuchUserException("No such User");
 
             volunteerDao.addVolunteer(locationId, userId);
@@ -169,7 +169,7 @@ public class LocationController extends AuthorizedLocationController {
         try {
             if(locationDao.getLocationById(locationId) == null)
                 throw new NoSuchLocationException("No such location");
-            if(accountDao.getUserById(userId) == null)
+            if(userDao.getUserById(userId) == null)
                 throw new NoSuchUserException("No such User");
 
             volunteerDao.deleteVolunteer(locationId, userId);

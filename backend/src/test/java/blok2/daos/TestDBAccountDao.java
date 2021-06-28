@@ -14,7 +14,7 @@ import java.util.List;
 public class TestDBAccountDao extends BaseTest {
 
     @Autowired
-    private IAccountDao accountDao;
+    private IUserDao userDao;
 
     private User testUser1;
     private User testUser2;
@@ -24,12 +24,12 @@ public class TestDBAccountDao extends BaseTest {
         testUser1 = TestSharedMethods.adminTestUser();
         testUser2 = TestSharedMethods.studentTestUser();
 
-        TestSharedMethods.addTestUsers(accountDao, testUser1, testUser2);
+        TestSharedMethods.addTestUsers(userDao, testUser1, testUser2);
     }
 
     @Override
     public void cleanup() throws SQLException {
-        TestSharedMethods.removeTestUsers(accountDao, testUser2, testUser1);
+        TestSharedMethods.removeTestUsers(userDao, testUser2, testUser1);
     }
 
     @Test
@@ -38,12 +38,12 @@ public class TestDBAccountDao extends BaseTest {
         directlyAddedUser.setUserId("1" + testUser1.getUserId());
         directlyAddedUser.setMail("directly.addeduser@ugent.be");
 
-        accountDao.directlyAddUser(directlyAddedUser);
-        User u = accountDao.getUserById(directlyAddedUser.getUserId());
+        userDao.directlyAddUser(directlyAddedUser);
+        User u = userDao.getUserById(directlyAddedUser.getUserId());
         Assert.assertEquals(directlyAddedUser, u);
 
         // remove added user
-        TestSharedMethods.removeTestUsers(accountDao, directlyAddedUser);
+        TestSharedMethods.removeTestUsers(userDao, directlyAddedUser);
     }
 
     @Test
@@ -53,9 +53,9 @@ public class TestDBAccountDao extends BaseTest {
         // change the role opposed to testUser1, update should succeed
         expectedChangedUser.setAdmin(false);
 
-        accountDao.updateUserByMail(testUser1.getMail(), expectedChangedUser);
+        userDao.updateUserByMail(testUser1.getMail(), expectedChangedUser);
 
-        User actualChangedUser = accountDao.getUserById(expectedChangedUser.getUserId());
+        User actualChangedUser = userDao.getUserById(expectedChangedUser.getUserId());
         Assert.assertEquals(expectedChangedUser, actualChangedUser);
     }
 
@@ -64,36 +64,36 @@ public class TestDBAccountDao extends BaseTest {
         // change expectedChangedUser's mail to an existing mail, should fail
         User updated = testUser1.clone();
         updated.setMail(testUser2.getMail());
-        accountDao.updateUserById(testUser1.getUserId(), updated);
+        userDao.updateUserById(testUser1.getUserId(), updated);
     }
 
     @Test
     public void accountExistsByEmailTest() throws SQLException {
-        boolean exists = accountDao.accountExistsByEmail(testUser1.getMail());
+        boolean exists = userDao.accountExistsByEmail(testUser1.getMail());
         Assert.assertTrue(exists);
     }
 
     @Test
     public void testGetters() throws SQLException {
-        User u = accountDao.getUserByEmail(testUser1.getMail());
+        User u = userDao.getUserByEmail(testUser1.getMail());
         Assert.assertEquals("getUserByEmail", testUser1, u);
 
-        u = accountDao.getUserById(testUser1.getUserId());
+        u = userDao.getUserById(testUser1.getUserId());
         Assert.assertEquals("getUserById", testUser1, u);
 
-        List<User> list = accountDao.getUsersByLastName(testUser1.getLastName());
+        List<User> list = userDao.getUsersByLastName(testUser1.getLastName());
         Assert.assertEquals("getUsersByLastName", 2, list.size());
 
-        list = accountDao.getUsersByLastName("last_name_that_has_no_entry");
+        list = userDao.getUsersByLastName("last_name_that_has_no_entry");
         Assert.assertEquals("getUsersByLastName" + list.size(), 0, list.size());
 
-        list = accountDao.getUsersByFirstName(testUser1.getFirstName());
+        list = userDao.getUsersByFirstName(testUser1.getFirstName());
         Assert.assertEquals("getUsersByFirstName", 1, list.size());
 
-        list = accountDao.getUsersByFirstName("first_name_that_has_no_entry");
+        list = userDao.getUsersByFirstName("first_name_that_has_no_entry");
         Assert.assertEquals("getUsersByFirstName", 0, list.size());
 
-        list = accountDao.getUsersByFirstAndLastName(testUser1.getFirstName(), testUser1.getLastName());
+        list = userDao.getUsersByFirstAndLastName(testUser1.getFirstName(), testUser1.getLastName());
         Assert.assertEquals("getUsersByFirstAndLastName", 1, list.size());
     }
 
@@ -101,7 +101,7 @@ public class TestDBAccountDao extends BaseTest {
     public void getUserFromBarcodeTest() throws SQLException {
         // Code 128
         String barcode = testUser1.getUserId();
-        User u = accountDao.getUserFromBarcode(barcode);
+        User u = userDao.getUserFromBarcode(barcode);
         Assert.assertEquals("getUserFromBarcodeTest, code 128", testUser1, u);
 
         // For the other codes, add another user
@@ -120,21 +120,21 @@ public class TestDBAccountDao extends BaseTest {
         // included because if assertion fails, the state of the test database wouldn't be reset
 
         // UPC-A
-        accountDao.directlyAddUser(user);
-        u = accountDao.getUserFromBarcode(user_upca_barcode);
-        accountDao.deleteUser(user.getUserId());
+        userDao.directlyAddUser(user);
+        u = userDao.getUserFromBarcode(user_upca_barcode);
+        userDao.deleteUser(user.getUserId());
         Assert.assertEquals("getUserFromBarcodeTest, UPC-A", user, u);
 
         // EAN13
-        accountDao.directlyAddUser(user);
-        u = accountDao.getUserFromBarcode(user_ean13_barcode);
-        accountDao.deleteUser(user.getUserId());
+        userDao.directlyAddUser(user);
+        u = userDao.getUserFromBarcode(user_ean13_barcode);
+        userDao.deleteUser(user.getUserId());
         Assert.assertEquals("getUserFromBarcodeTest, EAN13", user, u);
 
         // Other?
-        accountDao.directlyAddUser(user);
-        u = accountDao.getUserFromBarcode(user_other_barcode);
-        accountDao.deleteUser(user.getUserId());
+        userDao.directlyAddUser(user);
+        u = userDao.getUserFromBarcode(user_other_barcode);
+        userDao.deleteUser(user.getUserId());
         Assert.assertEquals("getUserFromBarcodeTest, Other?", user, u);
     }
 }

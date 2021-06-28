@@ -24,7 +24,7 @@ import java.util.*;
 public class TestCascadeInDBAccountDao extends BaseTest {
 
     @Autowired
-    private IAccountDao accountDao;
+    private IUserDao userDao;
 
     @Autowired
     private ILocationDao locationDao;
@@ -92,7 +92,7 @@ public class TestCascadeInDBAccountDao extends BaseTest {
         testPenalty2 = new Penalty(testUser.getUserId(), testPenaltyEvent.getCode(), LocalDate.of(1970, 1, 1), LocalDate.now(), testLocation2.getLocationId(), 20, "Second test penalty");
 
         // Add test objects to database
-        accountDao.directlyAddUser(testUser);
+        userDao.directlyAddUser(testUser);
 
         locationReservationDao.addLocationReservation(testLocationReservation1);
         locationReservationDao.addLocationReservation(testLocationReservation2);
@@ -108,8 +108,8 @@ public class TestCascadeInDBAccountDao extends BaseTest {
     @Test
     public void updateUserWithoutCascadeNeededTest() throws SQLException {
         updateUserFieldWithoutAUGentID(testUser);
-        accountDao.updateUserById(testUser.getUserId(), testUser);
-        User u = accountDao.getUserById(testUser.getUserId());
+        userDao.updateUserById(testUser.getUserId(), testUser);
+        User u = userDao.getUserById(testUser.getUserId());
         Assert.assertEquals("updateUserWithoutCascadeNeededTest", testUser, u);
 
         LocationReservation lr1 = locationReservationDao.getLocationReservation(
@@ -152,14 +152,14 @@ public class TestCascadeInDBAccountDao extends BaseTest {
         updateUserFieldWithoutAUGentID(testUser);
         String oldAUGentID = testUser.getUserId();
         testUser.setUserId(testUser.getUserId() + "Iets in een test");
-        accountDao.updateUserById(oldAUGentID, testUser);
+        userDao.updateUserById(oldAUGentID, testUser);
 
         // the User needs to be updated in the first place
-        User u = accountDao.getUserById(testUser.getUserId());
+        User u = userDao.getUserById(testUser.getUserId());
         Assert.assertEquals("updateUserWithCascadeNeededTest, user", testUser, u);
 
         // the User with the old augentid needs to be removed
-        u = accountDao.getUserById(oldAUGentID);
+        u = userDao.getUserById(oldAUGentID);
         Assert.assertNull("updateUserWithCascadeNeededTest, old user needs to be removed", u);
 
         // check whether the entries in LOCATION_RESERVATIONS have been updated in cascade
@@ -212,8 +212,8 @@ public class TestCascadeInDBAccountDao extends BaseTest {
 
     @Test
     public void deleteUserTest() throws SQLException {
-        accountDao.deleteUser(testUser.getUserId());
-        User u = accountDao.getUserById(testUser.getUserId());
+        userDao.deleteUser(testUser.getUserId());
+        User u = userDao.getUserById(testUser.getUserId());
         Assert.assertNull("deleteUserTest, user must be deleted", u);
 
         List<Location> scannerLocations = scannerLocationDao.getLocationsToScanOfUser(testUser.getUserId());

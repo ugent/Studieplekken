@@ -22,7 +22,7 @@ import java.util.Map;
 public class TestDBPenaltyEventsDao extends BaseTest {
 
     @Autowired
-    private IAccountDao accountDao;
+    private IUserDao userDao;
 
     @Autowired
     private ILocationDao locationDao;
@@ -75,7 +75,7 @@ public class TestDBPenaltyEventsDao extends BaseTest {
         // Add test objects to database
         locationDao.addLocation(testLocation);
         penaltyEventsDao.addPenaltyEvent(testEvent);
-        TestSharedMethods.addTestUsers(accountDao, testUser);
+        TestSharedMethods.addTestUsers(userDao, testUser);
     }
 
     @Test
@@ -145,7 +145,7 @@ public class TestDBPenaltyEventsDao extends BaseTest {
 
         // Is the corresponding user updated correctly?
         modifiableUser.setPenaltyPoints(penalty.getReceivedPoints());
-        User retrievedUser = accountDao.getUserById(testUser.getUserId());
+        User retrievedUser = userDao.getUserById(testUser.getUserId());
         Assert.assertEquals("penaltyBookTests, added one penalty", modifiableUser, retrievedUser);
 
         // Delete penalty
@@ -155,7 +155,7 @@ public class TestDBPenaltyEventsDao extends BaseTest {
 
         // Is the corresponding user updated correctly?
         modifiableUser.setPenaltyPoints(0);
-        retrievedUser = accountDao.getUserById(testUser.getUserId());
+        retrievedUser = userDao.getUserById(testUser.getUserId());
         Assert.assertEquals("penaltyBookTests, deleted penalty", modifiableUser, retrievedUser);
 
         // Add a penalty from last month
@@ -166,7 +166,7 @@ public class TestDBPenaltyEventsDao extends BaseTest {
                 , penaltyLastMonth, penalties.get(0));
 /*
         // Is the corresponding user updated correctly?
-        retrievedUser = accountDao.getUserById(testUser.getAugentID());
+        retrievedUser = userDao.getUserById(testUser.getAugentID());
         Assert.assertTrue("penaltyBookTests, added penalty from last month, points should decrease over time"
                 , retrievedUser.getPenaltyPoints() < penaltyLastMonth.getReceivedPoints() &&
                         retrievedUser.getPenaltyPoints() > 0);
@@ -182,7 +182,7 @@ public class TestDBPenaltyEventsDao extends BaseTest {
                 , fatalPenalty, penalties.get(0));
 
         // Is the corresponding user updated correctly?
-        retrievedUser = accountDao.getUserById(testUser.getAugentID());
+        retrievedUser = userDao.getUserById(testUser.getAugentID());
         modifiableUser.setPenaltyPoints(fatalPenalty.getReceivedPoints());
         Assert.assertEquals("penaltyBookTests, added penalty from last month, points should decrease over time"
                 , modifiableUser, retrievedUser);

@@ -1,6 +1,6 @@
 package blok2.controllers;
 
-import blok2.daos.IAccountDao;
+import blok2.daos.IUserDao;
 import blok2.daos.IAuthorityDao;
 import blok2.helpers.exceptions.AlreadyExistsException;
 import blok2.helpers.exceptions.NoSuchAuthorityException;
@@ -27,12 +27,12 @@ public class AuthorityController {
     private final Logger logger = LoggerFactory.getLogger(AuthorityController.class.getSimpleName());
 
     private final IAuthorityDao authorityDao;
-    private final IAccountDao accountDao;
+    private final IUserDao userDao;
 
     @Autowired
-    public AuthorityController(IAuthorityDao authorityDao, IAccountDao accountDao) {
+    public AuthorityController(IAuthorityDao authorityDao, IUserDao userDao) {
         this.authorityDao = authorityDao;
-        this.accountDao = accountDao;
+        this.userDao = userDao;
     }
 
     // *************************************
@@ -132,7 +132,7 @@ public class AuthorityController {
     @PreAuthorize("(hasAuthority('HAS_AUTHORITIES') and #userId == authentication.principal.userId) or hasAuthority('ADMIN')")
     public List<Authority> getAuthoritiesFromUser(@PathVariable("userId") String userId) {
         try {
-            if (accountDao.getUserById(userId) == null)
+            if (userDao.getUserById(userId) == null)
                 throw new NoSuchUserException("User not found");
 
             return authorityDao.getAuthoritiesFromUser(userId);
@@ -159,7 +159,7 @@ public class AuthorityController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public void addUserToAuthority(@PathVariable int authorityId, @PathVariable String userId) {
         try {
-            if (accountDao.getUserById(userId) == null)
+            if (userDao.getUserById(userId) == null)
                 throw new NoSuchUserException("User not found");
             if (authorityDao.getAuthorityByAuthorityId(authorityId) == null)
                 throw new NoSuchAuthorityException("Authority not found");

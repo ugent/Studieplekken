@@ -31,7 +31,7 @@ public class TestDBLocationReservationDao extends BaseTest {
     private ILocationReservationDao locationReservationDao;
 
     @Autowired
-    private IAccountDao accountDao;
+    private IUserDao userDao;
 
     @Autowired
     private ILocationDao locationDao;
@@ -69,7 +69,7 @@ public class TestDBLocationReservationDao extends BaseTest {
         calendarPeriodsForLocation2 = TestSharedMethods.testCalendarPeriods(testLocation2);
 
         // Add test objects to database
-        TestSharedMethods.addTestUsers(accountDao, testUser, testUser2);
+        TestSharedMethods.addTestUsers(userDao, testUser, testUser2);
         locationDao.addLocation(testLocation);
         locationDao.addLocation(testLocation1Seat);
         locationDao.addLocation(testLocation2);
@@ -86,7 +86,7 @@ public class TestDBLocationReservationDao extends BaseTest {
     public void addLocationReservationTest() throws SQLException {
         // retrieve entries from database instead of using the added instances
         Location location = locationDao.getLocationByName(testLocation.getName());
-        User u = accountDao.getUserById(testUser.getUserId());
+        User u = userDao.getUserById(testUser.getUserId());
         Timeslot timeslot = calendarPeriods.get(0).getTimeslots().get(0);
         // check whether all retrieved instances equal to the added instances
         Assert.assertEquals("addLocationReservation, setup testLocation", testLocation, location);
@@ -114,8 +114,8 @@ public class TestDBLocationReservationDao extends BaseTest {
     @Test
     public void addLocationReservationButFullTest() throws SQLException {
         // retrieve entries from database instead of using the added instances
-        User u = accountDao.getUserById(testUser.getUserId());
-        User u2 = accountDao.getUserById(testUser2.getUserId());
+        User u = userDao.getUserById(testUser.getUserId());
+        User u2 = userDao.getUserById(testUser2.getUserId());
 
         Timeslot timeslot = calendarPeriod1Seat.getTimeslots().get(0);
 
@@ -136,7 +136,7 @@ public class TestDBLocationReservationDao extends BaseTest {
 
     @Test
     public void getLocationReservationsAndCalendarPeriodOfUserTest() throws SQLException {
-        User u = accountDao.getUserById(testUser.getUserId()); // test user from db
+        User u = userDao.getUserById(testUser.getUserId()); // test user from db
         List<Pair<LocationReservation, CalendarPeriod>> elrs = new ArrayList<>(); // expected location reservations
 
         // Create first location reservation for user in testLocation
@@ -184,7 +184,7 @@ public class TestDBLocationReservationDao extends BaseTest {
 
     @Test
     public void setAllNotScannedStudentsToUnattendedTest() throws SQLException {
-        User u = accountDao.getUserById(testUser.getUserId()); // test user from db
+        User u = userDao.getUserById(testUser.getUserId()); // test user from db
         List<Pair<LocationReservation, CalendarPeriod>> elrs = new ArrayList<>(); // expected location reservations
 
         // Create location reservation
@@ -233,7 +233,7 @@ public class TestDBLocationReservationDao extends BaseTest {
             users[i] = TestSharedMethods.studentTestUser();
             users[i].setUserId(users[i].getUserId() + "" + i);
             users[i].setMail(i + "" + users[i].getMail());
-            accountDao.directlyAddUser(users[i]);
+            userDao.directlyAddUser(users[i]);
         }
         logger.info(String.format("All %d users have been created.", N_USERS));
 
@@ -318,7 +318,7 @@ public class TestDBLocationReservationDao extends BaseTest {
             users[i] = TestSharedMethods.studentTestUser();
             users[i].setUserId(users[i].getUserId() + "" + i);
             users[i].setMail(i + "" + users[i].getMail());
-            accountDao.directlyAddUser(users[i]);
+            userDao.directlyAddUser(users[i]);
         }
         logger.info(String.format("All %d users have been created.", N_USERS));
 

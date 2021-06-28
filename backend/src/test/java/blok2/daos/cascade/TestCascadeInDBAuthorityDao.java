@@ -29,7 +29,7 @@ public class TestCascadeInDBAuthorityDao extends BaseTest {
     private ILocationDao locationDao;
 
     @Autowired
-    private IAccountDao accountDao;
+    private IUserDao userDao;
 
     private Authority testAuthority;
     private Location testLocation1;
@@ -50,8 +50,8 @@ public class TestCascadeInDBAuthorityDao extends BaseTest {
         testLocation1 = locationDao.addLocation(TestSharedMethods.testLocation(testAuthority.clone(), testBuilding.clone()));
         testLocation2 = locationDao.addLocation(TestSharedMethods.testLocation2(testAuthority.clone(), testBuilding.clone()));
 
-        accountDao.directlyAddUser(testUserStudent);
-        accountDao.directlyAddUser(testUserAdmin);
+        userDao.directlyAddUser(testUserStudent);
+        userDao.directlyAddUser(testUserAdmin);
     }
 
     @Test

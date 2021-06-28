@@ -1,7 +1,7 @@
 package blok2.integration;
 
 import blok2.TestSharedMethods;
-import blok2.daos.IAccountDao;
+import blok2.daos.IUserDao;
 import blok2.model.Authority;
 import blok2.model.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import java.sql.SQLException;
 public class TestSecurityConfig {
     private static class TestUserDetailsService implements UserDetailsService {
         @Autowired
-        private IAccountDao accountDao;
+        private IUserDao userDao;
 
         @Override
         public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
@@ -26,7 +26,7 @@ public class TestSecurityConfig {
             try {
                 addUsersIfNotExist();
                 System.out.println();
-                User user = accountDao.getUserByEmail(s + "@ugent.be");
+                User user = userDao.getUserByEmail(s + "@ugent.be");
                 if(user.getUserId().equals("authholder"))
                     user.getUserAuthorities().add(new Authority()); // kind of hacky but also necessary, its just test code
                 return user;
@@ -43,7 +43,7 @@ public class TestSecurityConfig {
                 User student2 = TestSharedMethods.studentTestUser("student2");
                 User authorityHolder = TestSharedMethods.studentTestUser("authholder");
 
-                TestSharedMethods.addTestUsers(accountDao, admin, student, student2, authorityHolder);
+                TestSharedMethods.addTestUsers(userDao, admin, student, student2, authorityHolder);
 
             } catch (Exception ignored) {
 

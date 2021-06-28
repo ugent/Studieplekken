@@ -25,7 +25,7 @@ import java.util.*;
 public class TestCascadeInDBLocationDao extends BaseTest {
 
     @Autowired
-    private IAccountDao accountDao;
+    private IUserDao userDao;
 
     @Autowired
     private ICalendarPeriodDao calendarPeriodDao;
@@ -100,8 +100,8 @@ public class TestCascadeInDBLocationDao extends BaseTest {
         testPenalty2 = new Penalty(testUser2.getUserId(), testPenaltyEvent.getCode(), LocalDate.now(), LocalDate.now(), testLocation.getLocationId(), 20, "Second test penalty");
 
         // Add test objects to database
-        accountDao.directlyAddUser(testUser1);
-        accountDao.directlyAddUser(testUser2);
+        userDao.directlyAddUser(testUser1);
+        userDao.directlyAddUser(testUser2);
 
         locationReservationDao.addLocationReservation(testLocationReservation1);
         locationReservationDao.addLocationReservation(testLocationReservation2);

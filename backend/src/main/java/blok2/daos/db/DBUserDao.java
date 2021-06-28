@@ -1,6 +1,6 @@
 package blok2.daos.db;
 
-import blok2.daos.IAccountDao;
+import blok2.daos.IUserDao;
 import blok2.helpers.Resources;
 import blok2.helpers.generators.IGenerator;
 import blok2.helpers.generators.VerificationCodeGenerator;
@@ -20,9 +20,9 @@ import java.util.logging.Logger;
 
 @Service
 @EnableScheduling
-public class DBAccountDao extends DAO implements IAccountDao {
+public class DBUserDao extends DAO implements IUserDao {
 
-    private final Logger logger = Logger.getLogger(DBAccountDao.class.getSimpleName());
+    private final Logger logger = Logger.getLogger(DBUserDao.class.getSimpleName());
 
     private final IGenerator<String> verificationCodeGenerator = new VerificationCodeGenerator();
 

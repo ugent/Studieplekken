@@ -1,6 +1,6 @@
 package blok2.security.services;
 
-import blok2.daos.IAccountDao;
+import blok2.daos.IUserDao;
 import blok2.model.users.User;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.slf4j.Logger;
@@ -25,13 +25,13 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
 
     private final Logger logger = LoggerFactory.getLogger(CustomUserDetailsService.class);
 
-    private final IAccountDao accountDao;
+    private final IUserDao userDao;
     private final LdapTemplate ldapTemplate;
 
     @Autowired
-    public CustomUserDetailsService(IAccountDao accountDao,
+    public CustomUserDetailsService(IUserDao userDao,
                                     LdapTemplate ldapTemplate) {
-        this.accountDao = accountDao;
+        this.userDao = userDao;
         this.ldapTemplate = ldapTemplate;
     }
 
@@ -51,7 +51,7 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
 
         // Try to find the user with given mail in the application database
         try {
-            user = this.accountDao.getUserById(ugentID);
+            user = this.userDao.getUserById(ugentID);
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
@@ -67,7 +67,7 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
 
         if (user != null) {
             try {
-                accountDao.directlyAddUser(user);
+                userDao.directlyAddUser(user);
                 return user;
             } catch (SQLException e) {
                 logger.error(e.getMessage());

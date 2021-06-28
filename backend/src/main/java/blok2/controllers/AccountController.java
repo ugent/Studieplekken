@@ -1,6 +1,6 @@
 package blok2.controllers;
 
-import blok2.daos.IAccountDao;
+import blok2.daos.IUserDao;
 import blok2.daos.IAuthorityDao;
 import blok2.daos.ILocationDao;
 import blok2.helpers.exceptions.InvalidRequestParametersException;
@@ -36,12 +36,12 @@ public class AccountController {
 
     private final Logger logger = LoggerFactory.getLogger(AccountController.class.getSimpleName());
 
-    private final IAccountDao accountDao;
+    private final IUserDao userDao;
     private final IAuthorityDao authorityDao;
     private final ILocationDao locationDao;
 
-    public AccountController(IAccountDao accountDao, IAuthorityDao authorityDao, ILocationDao locationDao) {
-        this.accountDao = accountDao;
+    public AccountController(IUserDao userDao, IAuthorityDao authorityDao, ILocationDao locationDao) {
+        this.userDao = userDao;
         this.authorityDao = authorityDao;
         this.locationDao = locationDao;
     }
@@ -50,7 +50,7 @@ public class AccountController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public List<User> getAdmins() {
         try {
-            return accountDao.getAdmins();
+            return userDao.getAdmins();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
@@ -63,7 +63,7 @@ public class AccountController {
                                   @Pattern(regexp = "^[^%_]*$")
                                           String id) {
         try {
-            return accountDao.getUserById(id);
+            return userDao.getUserById(id);
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
@@ -77,7 +77,7 @@ public class AccountController {
                               @Pattern(regexp = "^[^%_]*$")
                                       String mail) {
         try {
-            return accountDao.getUserByEmail(mail);
+            return userDao.getUserByEmail(mail);
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
@@ -91,7 +91,7 @@ public class AccountController {
                                           @Pattern(regexp = "^[^%_]*$")
                                                   String firstName) {
         try {
-            return accountDao.getUsersByFirstName(firstName);
+            return userDao.getUsersByFirstName(firstName);
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
@@ -105,7 +105,7 @@ public class AccountController {
                                          @Pattern(regexp = "^[^%_]*$")
                                                  String lastName) {
         try {
-            return accountDao.getUsersByLastName(lastName);
+            return userDao.getUsersByLastName(lastName);
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
@@ -122,7 +122,7 @@ public class AccountController {
                                          @Pattern(regexp = "^[^%_]*$")
                                                  String lastName) {
         try {
-            return accountDao.getUsersByFirstAndLastName(firstName, lastName);
+            return userDao.getUsersByFirstAndLastName(firstName, lastName);
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
@@ -134,14 +134,14 @@ public class AccountController {
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public User getUserByBarcode(@RequestParam String barcode) {
         try {
-            User userLinkedToBarcode = accountDao.getUserFromBarcode(barcode);
+            User userLinkedToBarcode = userDao.getUserFromBarcode(barcode);
 
             if (userLinkedToBarcode == null) {
                 throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED,
                         "No user found with barcode " + barcode);
             }
 
-            return accountDao.getUserById(userLinkedToBarcode.getUserId());
+            return userDao.getUserById(userLinkedToBarcode.getUserId());
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
@@ -167,7 +167,7 @@ public class AccountController {
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public List<Location> getManageableLocations(@PathVariable("userId") @Pattern(regexp = "^[^%_]*$") String userId) {
         try {
-            User user = accountDao.getUserById(userId);
+            User user = userDao.getUserById(userId);
 
             // should never happen due to authentication, but you never know what changes in the future
             if (user == null)
@@ -201,7 +201,7 @@ public class AccountController {
     @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public boolean hasUserVolunteered(@PathVariable("userId") @Pattern(regexp = "^[^%_]*$") String userId) {
         try {
-            return accountDao.getVolunteeredLocations(userId).size() > 0;
+            return userDao.getVolunteeredLocations(userId).size() > 0;
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
@@ -215,8 +215,8 @@ public class AccountController {
                            @Pattern(regexp = "^[^%_]*$")
                                    String id, @RequestBody User user) {
         try {
-            User old = accountDao.getUserById(id);
-            accountDao.updateUserById(id, user);
+            User old = userDao.getUserById(id);
+            userDao.updateUserById(id, user);
             logger.info(String.format("Updated user %s from %s to %s", id, old, user));
         } catch (SQLException e) {
             logger.error(e.getMessage());
@@ -232,7 +232,7 @@ public class AccountController {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
             // check if 'from' is the correct current password
-            User actualUser = accountDao.getUserById(body.user.getUserId());
+            User actualUser = userDao.getUserById(body.user.getUserId());
 
             if (!encoder.matches(body.from, actualUser.getPassword())) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong password");
@@ -247,7 +247,7 @@ public class AccountController {
             String encryptedTo = encoder.encode(body.to);
             User updatedUser = actualUser.clone();
             updatedUser.setPassword(encryptedTo);
-            accountDao.updateUserById(actualUser.getUserId(), updatedUser);
+            userDao.updateUserById(actualUser.getUserId(), updatedUser);
 
         } catch (SQLException e) {
             logger.error(e.getMessage());

@@ -25,7 +25,7 @@ import java.util.List;
 public abstract class BaseIntegrationTest extends BaseTest {
 
     @Autowired
-    protected IAccountDao accountDao;
+    protected IUserDao userDao;
 
     @Autowired
     protected ILocationDao locationDao;
@@ -86,13 +86,13 @@ public abstract class BaseIntegrationTest extends BaseTest {
         cps = calendarPeriods.toArray(cps);
         TestSharedMethods.addCalendarPeriods(calendarPeriodDao, cps);
 
-        admin = accountDao.getUserByEmail("admin@ugent.be");
-        student= accountDao.getUserByEmail("student1@ugent.be");
-        student2 = accountDao.getUserByEmail("student2@ugent.be");
-        authHolder = accountDao.getUserByEmail("authholder@ugent.be");
+        admin = userDao.getUserByEmail("admin@ugent.be");
+        student= userDao.getUserByEmail("student1@ugent.be");
+        student2 = userDao.getUserByEmail("student2@ugent.be");
+        authHolder = userDao.getUserByEmail("authholder@ugent.be");
 
         authorityDao.addUserToAuthority(authHolder.getUserId(), authority.getAuthorityId());
-        authHolder = accountDao.getUserByEmail("authholder@ugent.be");
+        authHolder = userDao.getUserByEmail("authholder@ugent.be");
 
         Timeslot timeslot = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
 
