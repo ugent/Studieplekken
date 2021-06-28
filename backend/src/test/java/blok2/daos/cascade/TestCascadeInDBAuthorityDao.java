@@ -3,6 +3,7 @@ package blok2.daos.cascade;
 import blok2.BaseTest;
 import blok2.TestSharedMethods;
 import blok2.daos.*;
+import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.reservables.Location;
@@ -54,7 +55,7 @@ public class TestCascadeInDBAuthorityDao extends BaseTest {
         userDao.addUser(testUserAdmin);
     }
 
-    @Test
+    @Test(expected = NoSuchDatabaseObjectException.class)
     public void deleteAuthorityCascadeTest() throws SQLException {
         // Test locations are present in db
         List<Location> locations = authorityDao.getLocationsInAuthority(testAuthority.getAuthorityId());
@@ -84,14 +85,14 @@ public class TestCascadeInDBAuthorityDao extends BaseTest {
         // Delete the authority
         authorityDao.deleteAuthority(testAuthority.getAuthorityId());
 
-        // Authority must be deleted
-        Assert.assertNull(authorityDao.getAuthorityByAuthorityId(testAuthority.getAuthorityId()));
-
         // And the locations must have been deleted on cascade
         Assert.assertEquals(0, authorityDao.getLocationsInAuthority(testAuthority.getAuthorityId()).size());
 
         // And the authorities should have been removed from the users
         Assert.assertEquals(0, authorityDao.getAuthoritiesFromUser(testUserAdmin.getUserId()).size());
         Assert.assertEquals(0, authorityDao.getAuthoritiesFromUser(testUserStudent.getUserId()).size());
+
+        // Authority must be deleted
+        authorityDao.getAuthorityByAuthorityId(testAuthority.getAuthorityId()); // excpected to throw NoSuchDatabaseObjectException
     }
 }

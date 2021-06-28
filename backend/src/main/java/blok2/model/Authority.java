@@ -1,11 +1,11 @@
 package blok2.model;
 
+import blok2.model.users.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -13,6 +13,7 @@ import java.util.Objects;
 public class Authority implements Cloneable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "authority_id")
     private int authorityId;
 
@@ -21,6 +22,15 @@ public class Authority implements Cloneable {
 
     @Column(name = "description")
     private String description;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "roles_user_authority",
+        joinColumns = @JoinColumn(name = "authority_id"),
+        inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    @JsonIgnore
+    List<User> users;
 
     public Authority(int authorityId, String authorityName, String description) {
         this.authorityId = authorityId;
@@ -86,4 +96,11 @@ public class Authority implements Cloneable {
         this.authorityId = authorityId;
     }
 
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
 }

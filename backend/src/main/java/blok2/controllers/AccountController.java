@@ -5,7 +5,6 @@ import blok2.daos.IAuthorityDao;
 import blok2.daos.ILocationDao;
 import blok2.daos.IVolunteerDao;
 import blok2.helpers.exceptions.InvalidRequestParametersException;
-import blok2.helpers.exceptions.NoSuchUserException;
 import blok2.model.Authority;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;
@@ -21,8 +20,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.constraints.Pattern;
-import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -110,59 +107,31 @@ public class AccountController {
     public List<Authority> getAuthoritiesFromUser(@PathVariable
                                                   @Pattern(regexp = "^[^%_]*$")
                                                           String userId) {
-        try {
-            return authorityDao.getAuthoritiesFromUser(userId);
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        return authorityDao.getAuthoritiesFromUser(userId);
     }
 
     @GetMapping("{userId}/manageable/locations")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public List<Location> getManageableLocations(@PathVariable("userId") @Pattern(regexp = "^[^%_]*$") String userId) {
-        try {
-            User user = userDao.getUserById(userId);
+        User user = userDao.getUserById(userId);
 
-            // should never happen due to authentication, but you never know what changes in the future
-            if (user == null)
-                throw new NoSuchUserException("No such user");
-
-            if (user.isAdmin()) {
-                return locationDao.getAllActiveLocations();
-            } else {
-                return authorityDao.getLocationsInAuthoritiesOfUser(userId);
-            }
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        if (user.isAdmin()) {
+            return locationDao.getAllActiveLocations();
+        } else {
+            return authorityDao.getLocationsInAuthoritiesOfUser(userId);
         }
     }
 
     @GetMapping("{userId}/has/authorities")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public boolean hasUserAuthorities(@PathVariable("userId") @Pattern(regexp = "^[^%_]*$") String userId) {
-        try {
-            return authorityDao.getAuthoritiesFromUser(userId).size() > 0;
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        return authorityDao.getAuthoritiesFromUser(userId).size() > 0;
     }
 
     @GetMapping("{userId}/has/volunteered")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public boolean hasUserVolunteered(@PathVariable("userId") @Pattern(regexp = "^[^%_]*$") String userId) {
-        try {
-            return volunteerDao.getVolunteeredLocations(userId).size() > 0;
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        return volunteerDao.getVolunteeredLocations(userId).size() > 0;
     }
 
     @PutMapping("/{userId}")

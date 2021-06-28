@@ -1,6 +1,5 @@
 package blok2.daos.db;
 
-import blok2.daos.IAuthorityDao;
 import blok2.helpers.Resources;
 import blok2.model.Authority;
 import blok2.model.reservables.Location;
@@ -12,13 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class DBAuthorityDao extends DAO implements IAuthorityDao {
+public class DBAuthorityDao extends DAO {
 
     // *************************************
     // *   CRUD operations for AUTHORITY   *
     // *************************************/
 
-    @Override
+    
     public List<Authority> getAllAuthorities() throws SQLException {
         try (Connection conn = adb.getConnection()) {
             List<Authority> authorities = new ArrayList<>();
@@ -35,7 +34,7 @@ public class DBAuthorityDao extends DAO implements IAuthorityDao {
         }
     }
 
-    @Override
+    
     public Authority getAuthorityByName(String name) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("authority_from_name"));
@@ -48,7 +47,7 @@ public class DBAuthorityDao extends DAO implements IAuthorityDao {
         }
     }
 
-    @Override
+    
     public Authority getAuthorityByAuthorityId(int authorityId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("authority_from_authority_id"));
@@ -61,7 +60,7 @@ public class DBAuthorityDao extends DAO implements IAuthorityDao {
         }
     }
 
-    @Override
+    
     public List<Location> getLocationsInAuthority(int authorityId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_locations_in_authority"));
@@ -77,7 +76,7 @@ public class DBAuthorityDao extends DAO implements IAuthorityDao {
         }
     }
 
-    @Override
+    
     public Authority addAuthority(Authority authority) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_authority"));
@@ -91,7 +90,7 @@ public class DBAuthorityDao extends DAO implements IAuthorityDao {
         }
     }
 
-    @Override
+    
     public void updateAuthority(Authority updatedAuthority) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("update_authority"));
@@ -101,7 +100,7 @@ public class DBAuthorityDao extends DAO implements IAuthorityDao {
         }
     }
 
-    @Override
+    
     public void deleteAuthority(int authorityId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn
@@ -115,7 +114,7 @@ public class DBAuthorityDao extends DAO implements IAuthorityDao {
     // *   CRUD operations for ROLES_USER_AUTHORITY   *
     // ************************************************/
 
-    @Override
+    
     public List<Authority> getAuthoritiesFromUser(String userId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             return getAuthoritiesFromUser(userId, conn);
@@ -138,7 +137,7 @@ public class DBAuthorityDao extends DAO implements IAuthorityDao {
         return authorities;
     }
 
-    @Override
+    
     public List<Location> getLocationsInAuthoritiesOfUser(String userId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             List<Location> locations = new ArrayList<>();
@@ -155,7 +154,7 @@ public class DBAuthorityDao extends DAO implements IAuthorityDao {
         }
     }
 
-    @Override
+    
     public List<User> getUsersFromAuthority(int authorityId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             List<User> users = new ArrayList<>();
@@ -174,7 +173,7 @@ public class DBAuthorityDao extends DAO implements IAuthorityDao {
         }
     }
 
-    @Override
+    
     public void addUserToAuthority(String userId, int authorityId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_role_user_authority"));
@@ -184,7 +183,7 @@ public class DBAuthorityDao extends DAO implements IAuthorityDao {
         }
     }
 
-    @Override
+    
     public void deleteUserFromAuthority(String userId, int authorityId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("remove_role_user_authority"));

@@ -2,6 +2,7 @@ package blok2.daos;
 
 import blok2.BaseTest;
 import blok2.TestSharedMethods;
+import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.Authority;
 import org.junit.Assert;
 import org.junit.Test;
@@ -44,7 +45,7 @@ public class TestDBAuthorityDaoSolo extends BaseTest {
         Assert.assertEquals(testAuthority, authority);
     }
 
-    @Test
+    @Test(expected = NoSuchDatabaseObjectException.class)
     public void addAndDeleteAuthority() throws SQLException {
         Authority authority = TestSharedMethods.insertTestAuthority("extra test authority", "testdescr", authorityDao);
         authorityDao.deleteAuthority(authority.getAuthorityId());

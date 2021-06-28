@@ -10,7 +10,6 @@ import blok2.helpers.exceptions.AlreadyExistsException;
 import blok2.helpers.orm.LocationNameAndNextReservableFrom;
 import blok2.mail.MailService;
 import blok2.helpers.exceptions.NoSuchLocationException;
-import blok2.helpers.exceptions.NoSuchUserException;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;
 import org.slf4j.Logger;
@@ -148,52 +147,21 @@ public class LocationController extends AuthorizedLocationController {
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void addVolunteer(@PathVariable int locationId, @PathVariable String userId) {
         isAuthorized(locationId);
-        try {
-            if(locationDao.getLocationById(locationId) == null)
-                throw new NoSuchLocationException("No such location");
-            if(userDao.getUserById(userId) == null)
-                throw new NoSuchUserException("No such User");
-
-            volunteerDao.addVolunteer(locationId, userId);
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        volunteerDao.addVolunteer(locationId, userId);
     }
 
     @DeleteMapping("/{locationId}/volunteers/{userId}")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void deleteVolunteer(@PathVariable int locationId, @PathVariable String userId) {
         isAuthorized(locationId);
-        try {
-            if(locationDao.getLocationById(locationId) == null)
-                throw new NoSuchLocationException("No such location");
-            if(userDao.getUserById(userId) == null)
-                throw new NoSuchUserException("No such User");
-
-            volunteerDao.deleteVolunteer(locationId, userId);
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        volunteerDao.deleteVolunteer(locationId, userId);
     }
 
     @GetMapping("/{locationId}/volunteers")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public List<User> getVolunteers(@PathVariable int locationId) {
         isAuthorized(locationId);
-        try {
-            if(locationDao.getLocationById(locationId) == null)
-                throw new NoSuchLocationException("No such location");
-
-            return volunteerDao.getVolunteers(locationId);
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        return volunteerDao.getVolunteers(locationId);
     }
 
     // *****************************************
