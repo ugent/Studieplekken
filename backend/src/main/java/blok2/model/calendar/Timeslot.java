@@ -118,6 +118,14 @@ public class Timeslot implements Cloneable {
         return amountOfReservations;
     }
 
+    public void decrementAmountOfReservations() {
+        amountOfReservations--;
+    }
+
+    public void incrementAmountOfReservations() {
+        amountOfReservations++;
+    }
+
     public void setAmountOfReservations(int amountOfReservations) {
         this.amountOfReservations = amountOfReservations;
     }

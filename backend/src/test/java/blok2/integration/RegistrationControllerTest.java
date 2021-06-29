@@ -9,7 +9,6 @@ import org.springframework.security.test.context.support.WithSecurityContextTest
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -202,6 +201,7 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
         Assert.assertEquals(false, list.get(0).getAttended());
 
+        // when a user is set to unattended, the spot must be released so that others can make a reservation
         Assert.assertEquals(timeslot.getAmountOfReservations()-1, timeslotAfterUpdate.getAmountOfReservations());
     }
 
@@ -275,8 +275,6 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
 
         Timeslot timeslotAfterUpdate = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
         Assert.assertEquals(1, timeslotAfterUpdate.getAmountOfReservations());
-
-
 
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
         System.out.println(list);
