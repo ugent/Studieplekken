@@ -519,6 +519,9 @@
           },
           "noPenalties": "The user has made no penalties so far.",
           "error": "Something went wrong while querying the penalties for the user."
+        },
+        "reservations": {
+          "title": "Reservations of {name}"
         }
       }
     },
@@ -768,6 +771,7 @@
         "title": "Overview of your room reservations",
         "table": {
           "header": {
+            "user": "User",
             "locationName": "Room",
             "reservationDate": "Reservation for date",
             "beginHour": "Starting time reservation",
@@ -780,7 +784,8 @@
             "notScannedExplanation": "For this reservation attendance wasn't taken, so you haven't gained any penalty points."
           }
         },
-        "zeroReservations": "You have never made any room reservations so far.",
+        "zeroReservations": "You have never made any reservations so far.",
+        "zeroReservationsInManagement": "{name} has never made any reservations so far.",
         "loading": "Reservations are being loaded...",
         "error": "Something went wrong while retrieving your reservations."
       },
