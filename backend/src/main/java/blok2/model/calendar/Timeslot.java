@@ -13,36 +13,63 @@ import java.util.Objects;
 @Entity
 @Table(name = "timeslots")
 public class Timeslot implements Cloneable {
+
     @EmbeddedId
+    @AttributeOverrides({
+            @AttributeOverride(
+                    name = "calendarId",
+                    column = @Column(name = "calendar_id")
+            ),
+            @AttributeOverride(
+                    name = "timeslotSequenceNumber",
+                    column = @Column(name = "timeslot_sequence_number")
+            ),
+            @AttributeOverride(
+                    name = "timeslotDate",
+                    column = @Column(name = "timeslot_date")
+            ),
+    })
     private final TimeslotId timeslotId;
 
-    @NotNull
-    @Min(0)
-    private Integer reservationCount;
-
+    @Column(name = "seat_count")
     @NotNull
     @Min(0)
     private Integer seatCount;
 
-
+    @Column(name = "reservation_count")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private int amountOfReservations;
 
     // Artefact for framework
     public Timeslot() {
-        this.timeslotId = new TimeslotId();
-        this.reservationCount = 0;
-        this.seatCount = 0;
+        this(0, 0, null, 0, 0);
+    }
+
+    public Timeslot(int calendarId,
+                    int timeslotSequenceNumber,
+                    LocalDate timeslotDate,
+                    int seatCount,
+                    int amountOfReservations) {
+        this.timeslotId = new TimeslotId(calendarId, timeslotSequenceNumber, timeslotDate);
+        this.seatCount = seatCount;
+        this.amountOfReservations = amountOfReservations;
     }
 
     public Timeslot(int calendarId, int timeslotSeqnr, LocalDate timeslotDate, int seatCount) {
         this.timeslotId = new TimeslotId(calendarId, timeslotSeqnr, timeslotDate);
-        this.reservationCount = 0;
         this.seatCount = seatCount;
     }
 
     public Timeslot(CalendarPeriod period, int timeslotSeqnr, LocalDate timeslotDate) {
         this(period.getId(), timeslotSeqnr, timeslotDate, period.getSeatCount());
+    }
+
+    public static int compareTo(Timeslot var1, Timeslot var2) {
+        if (var1.timeslotId.timeslotDate.equals(var2.timeslotId.timeslotDate)) {
+            return Integer.compare(var1.timeslotId.timeslotSequenceNumber, var2.timeslotId.timeslotSequenceNumber);
+        } else {
+            return var1.timeslotId.timeslotDate.compareTo(var2.timeslotId.timeslotDate);
+        }
     }
 
     @Override
@@ -93,14 +120,6 @@ public class Timeslot implements Cloneable {
 
     public void setAmountOfReservations(int amountOfReservations) {
         this.amountOfReservations = amountOfReservations;
-    }
-
-    public int getReservationCount() {
-        return reservationCount;
-    }
-
-    public void setReservationCount(int reservationCount) {
-        this.reservationCount = reservationCount;
     }
 
     public Integer getSeatCount() {

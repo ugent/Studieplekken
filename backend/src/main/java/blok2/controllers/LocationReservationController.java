@@ -77,7 +77,7 @@ public class LocationReservationController extends AuthorizedLocationController 
     @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public LocationReservation createLocationReservation(@AuthenticationPrincipal User user, @Valid @RequestBody Timeslot timeslot) {
         try {
-            LocationReservation reservation = new LocationReservation(user, LocalDateTime.now(), timeslot, null);
+            LocationReservation reservation = new LocationReservation(user, timeslot, null);
             CalendarPeriod period = calendarPeriodDao.getById(timeslot.getCalendarId());
             if(LocalDateTime.now().isBefore(period.getReservableFrom())) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "This calendarperiod can't yet be reserved");
@@ -132,10 +132,8 @@ public class LocationReservationController extends AuthorizedLocationController 
                     locationReservation
             );
 
-            if(!locationReservationDao.deleteLocationReservation(locationReservation.getUser().getUserId(),
-                    locationReservation.getTimeslot())) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "No such reservation.");
-            }
+            locationReservationDao.deleteLocationReservation(locationReservation.getUser().getUserId(),
+                    locationReservation.getTimeslot());
             logger.info(String.format("LocationReservation for user %s at time %s deleted", locationReservation.getUser(), locationReservation.getTimeslot().toString()));
         } catch (SQLException e) {
             logger.error(e.getMessage());

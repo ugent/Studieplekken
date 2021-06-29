@@ -248,8 +248,8 @@ from public.location_reservations
 where user_id = ? and timeslot_date = ? and timeslot_seqnr = ? and calendar_id = ?;
 
 -- $insert_location_reservation
-insert into public.location_reservations (user_id, created_at, timeslot_date, timeslot_seqnr, calendar_id, attended)
-values (?, ?, ?, ?, ?, null);
+insert into public.location_reservations (user_id, timeslot_date, timeslot_seqnr, calendar_id, attended)
+values (?, ?, ?, ?, null);
 
 -- $set_location_reservation_attendance
 update public.location_reservations

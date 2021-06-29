@@ -3,6 +3,7 @@ package blok2.daos;
 import blok2.BaseTest;
 import blok2.TestSharedMethods;
 import blok2.helpers.Pair;
+import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.Authority;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
@@ -93,7 +94,7 @@ public class TestDBLocationReservationDao extends BaseTest {
         Assert.assertEquals("addLocationReservation, setup testUser", testUser, u);
 
         // Create LocationReservation
-        LocationReservation lr = new LocationReservation(u, LocalDateTime.of(1970, 1, 1, 9, 0, 0), timeslot, null);
+        LocationReservation lr = new LocationReservation(u, timeslot, null);
 
         // add LocationReservation to database
         locationReservationDao.addLocationReservationIfStillRoomAtomically(lr);
@@ -107,8 +108,12 @@ public class TestDBLocationReservationDao extends BaseTest {
 
         // delete LocationReservation from database
         locationReservationDao.deleteLocationReservation(u.getUserId(), timeslot);
-        rlr = locationReservationDao.getLocationReservation(u.getUserId(), timeslot);
-        Assert.assertNull("addLocationReservationTest, delete LocationReservation", rlr);
+        try {
+            locationReservationDao.getLocationReservation(u.getUserId(), timeslot);
+            Assert.fail("Location reservation was not deleted");
+        } catch (NoSuchDatabaseObjectException ignore) {
+            Assert.assertTrue(true);
+        }
     }
 
     @Test
@@ -119,13 +124,13 @@ public class TestDBLocationReservationDao extends BaseTest {
 
         Timeslot timeslot = calendarPeriod1Seat.getTimeslots().get(0);
 
-        LocationReservation lr = new LocationReservation(u, LocalDateTime.now(), timeslot, null);
+        LocationReservation lr = new LocationReservation(u, timeslot, null);
         TestSharedMethods.addCalendarPeriods(calendarPeriodDao, calendarPeriods.get(0));
         Assert.assertTrue(locationReservationDao.addLocationReservationIfStillRoomAtomically(lr));
-        lr = new LocationReservation(u, LocalDateTime.now(), timeslot, null);
+        lr = new LocationReservation(u, timeslot, null);
         // This is a duplicate entry into the database. Shouldn't work.
         Assert.assertFalse(locationReservationDao.addLocationReservationIfStillRoomAtomically(lr));
-        lr = new LocationReservation(u2, LocalDateTime.now(), timeslot, null);
+        lr = new LocationReservation(u2, timeslot, null);
         // This is a second user. Also shouldn't work.
         Assert.assertFalse(locationReservationDao.addLocationReservationIfStillRoomAtomically(lr));
 
@@ -142,13 +147,13 @@ public class TestDBLocationReservationDao extends BaseTest {
         // Create first location reservation for user in testLocation
         CalendarPeriod cp0 = calendarPeriods.get(0);
         Timeslot t0 = cp0.getTimeslots().get(0);
-        LocationReservation lr0 = new LocationReservation(u, LocalDateTime.now(), t0, null);
+        LocationReservation lr0 = new LocationReservation(u, t0, null);
         elrs.add(new Pair<>(lr0, cp0));
 
         // Create a second location reservation for the user in testLocation2
         CalendarPeriod cp1 = calendarPeriodsForLocation2.get(1);
         Timeslot t1 = cp1.getTimeslots().get(1);
-        LocationReservation lr1 = new LocationReservation(u, LocalDateTime.now(), t1, null);
+        LocationReservation lr1 = new LocationReservation(u, t1, null);
         elrs.add(new Pair<>(lr1, cp1));
 
         // Add the location reservations to the db
@@ -190,7 +195,7 @@ public class TestDBLocationReservationDao extends BaseTest {
         // Create location reservation
         CalendarPeriod cp0 = calendarPeriods.get(0);
         Timeslot t0 = cp0.getTimeslots().get(0);
-        LocationReservation lr0 = new LocationReservation(u, LocalDateTime.now(), t0, null);
+        LocationReservation lr0 = new LocationReservation(u, t0, null);
 
         // Add the location reservations to the db
         Assert.assertTrue(locationReservationDao.addLocationReservationIfStillRoomAtomically(lr0));
@@ -264,7 +269,7 @@ public class TestDBLocationReservationDao extends BaseTest {
             final int _i = i;
             threads[i] = new Thread(
                 () -> {
-                    LocationReservation lr = new LocationReservation(users[_i], LocalDateTime.now(), timeslot, null);
+                    LocationReservation lr = new LocationReservation(users[_i], timeslot, null);
                     try {
                         boolean s = locationReservationDao.addLocationReservationIfStillRoomAtomically(lr);
                         if(!s)
@@ -353,7 +358,7 @@ public class TestDBLocationReservationDao extends BaseTest {
             final int _i = i;
             threads[i] = new Thread(
                     () -> {
-                        LocationReservation lr = new LocationReservation(users[_i], LocalDateTime.now(), timeslots[_i], null);
+                        LocationReservation lr = new LocationReservation(users[_i], timeslots[_i], null);
                         try {
                             boolean s = locationReservationDao.addLocationReservationIfStillRoomAtomically(lr);
                             if(!s)
@@ -411,7 +416,7 @@ public class TestDBLocationReservationDao extends BaseTest {
 
         long t = 0;
         for (int i = 0; i < 1000; i++) {
-            LocationReservation lr = new LocationReservation(testUser, LocalDateTime.now(), timeslot, null);
+            LocationReservation lr = new LocationReservation(testUser, timeslot, null);
             LocalDateTime start = LocalDateTime.now();
             locationReservationDao.addLocationReservationIfStillRoomAtomically(lr);
             LocalDateTime end = LocalDateTime.now();

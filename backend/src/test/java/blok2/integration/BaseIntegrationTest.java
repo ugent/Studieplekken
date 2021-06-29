@@ -17,7 +17,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @AutoConfigureMockMvc
@@ -96,7 +95,7 @@ public abstract class BaseIntegrationTest extends BaseTest {
 
         Timeslot timeslot = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
 
-        LocationReservation reservation = new LocationReservation(student, LocalDateTime.now(), timeslot, null);
+        LocationReservation reservation = new LocationReservation(student, timeslot, null);
         locationReservationDao.addLocationReservationIfStillRoomAtomically(reservation);
 
         volunteerDao.addVolunteer(testLocation.getLocationId(), student2.getUserId());

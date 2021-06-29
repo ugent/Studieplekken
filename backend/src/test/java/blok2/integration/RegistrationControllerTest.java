@@ -81,7 +81,7 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
     public void testDeleteReservation() throws Exception {
         Timeslot timeslot = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
 
-        LocationReservation reservation = new LocationReservation(student, null, timeslot, false);
+        LocationReservation reservation = new LocationReservation(student, timeslot, false);
 
         mockMvc.perform(delete("/locations/reservations").with(csrf())
                 .content(objectMapper.writeValueAsString(reservation)).contentType("application/json")).andDo(print())
@@ -96,7 +96,7 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
     public void testDeleteReservationAsAdmin() throws Exception {
         Timeslot timeslot = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
 
-        LocationReservation reservation = new LocationReservation(student, null, timeslot, false);
+        LocationReservation reservation = new LocationReservation(student, timeslot, false);
 
         mockMvc.perform(delete("/locations/reservations").with(csrf())
                 .content(objectMapper.writeValueAsString(reservation)).contentType("application/json")).andDo(print())
@@ -111,7 +111,7 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
     public void testDeleteReservationAsOther() throws Exception {
         Timeslot timeslot = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
 
-        LocationReservation reservation = new LocationReservation(student, null, timeslot, false);
+        LocationReservation reservation = new LocationReservation(student, timeslot, false);
 
         mockMvc.perform(delete("/locations/reservations").with(csrf())
                 .content(objectMapper.writeValueAsString(reservation)).contentType("application/json")).andDo(print())
@@ -249,7 +249,7 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
         Timeslot timeslotAfterUpdate = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
         Assert.assertEquals(timeslot.getAmountOfReservations() - 1, timeslotAfterUpdate.getAmountOfReservations());
 
-        LocationReservation lr = new LocationReservation(student, LocalDateTime.now(), timeslot, false);
+        LocationReservation lr = new LocationReservation(student, timeslot, false);
         mockMvc.perform(delete("/locations/reservations").with(csrf())
                 .content(objectMapper.writeValueAsString(lr)).contentType("application/json")).andDo(print())
                 .andExpect(status().isOk());
@@ -264,7 +264,7 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
         Timeslot timeslot = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
 
         // Adding one extra reservation which doesn't get discounted
-        locationReservationDao.addLocationReservationIfStillRoomAtomically(new LocationReservation(student2, LocalDateTime.now(), timeslot, null));
+        locationReservationDao.addLocationReservationIfStillRoomAtomically(new LocationReservation(student2, timeslot, null));
         locationReservationDao.setReservationAttendance(student2.getUserId(), timeslot, true);
         timeslot = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
         Assert.assertEquals(2, timeslot.getAmountOfReservations());

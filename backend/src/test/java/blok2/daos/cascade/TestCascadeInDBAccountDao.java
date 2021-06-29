@@ -77,8 +77,8 @@ public class TestCascadeInDBAccountDao extends BaseTest {
         CalendarPeriod cp2 = TestSharedMethods.testCalendarPeriods(testLocation2).get(0);
         TestSharedMethods.addCalendarPeriods(calendarPeriodDao, cp2);
 
-        testLocationReservation1 = new LocationReservation(testUser, LocalDateTime.now(), cp1.getTimeslots().get(0),  null);
-        testLocationReservation2 = new LocationReservation(testUser, LocalDateTime.of(1970,1,1,0,0), cp2.getTimeslots().get(0),  null);
+        testLocationReservation1 = new LocationReservation(testUser, cp1.getTimeslots().get(0),  null);
+        testLocationReservation2 = new LocationReservation(testUser, cp2.getTimeslots().get(0),  null);
 
         Map<Language, String> descriptions = new HashMap<>();
         descriptions.put(Language.DUTCH, "Dit is een test omschrijving van een penalty event met code 0");

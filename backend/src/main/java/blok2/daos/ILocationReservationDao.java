@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface ILocationReservationDao extends IDao {
+public interface ILocationReservationDao {
 
     /**
      * Get all location reservations of the specified user
@@ -39,16 +39,9 @@ public interface ILocationReservationDao extends IDao {
     List<User> getUsersWithReservationForWindowOfTime(LocalDate start, LocalDate end) throws SQLException;
 
     /**
-     * Delete the location reservation of a specified user at a specified timeslot
+     * Get all location reservations at a specified timeslot
      */
-    boolean deleteLocationReservation(String userId, Timeslot timeslot) throws SQLException;
-
-    /**
-     * This method should only be used for testing purposes, this does not check if there is still
-     * room for reservations. You should use addLocationReservationIfStillRoomAtomically() instead.
-     */
-    @Deprecated
-    void addLocationReservation(LocationReservation locationReservation) throws SQLException;
+    List<LocationReservation> getAllLocationReservationsOfTimeslot(Timeslot timeslot) throws SQLException;
 
     /**
      * Count the number of reserved seats at a specified timeslot
@@ -56,24 +49,31 @@ public interface ILocationReservationDao extends IDao {
     long countReservedSeatsOfTimeslot(Timeslot timeslot) throws SQLException;
 
     /**
+     * Get the number of location reservation of a specified location at this moment in time
+     */
+    int amountOfReservationsRightNow(int locationId) throws SQLException;
+
+    /**
+     * Delete the location reservation of a specified user at a specified timeslot
+     */
+    void deleteLocationReservation(String userId, Timeslot timeslot) throws SQLException;
+
+    /**
+     * This method should only be used for testing purposes, this does not check if there is still
+     * room for reservations. You should use addLocationReservationIfStillRoomAtomically() instead.
+     */
+    @Deprecated
+    LocationReservation addLocationReservation(LocationReservation locationReservation) throws SQLException;
+
+    /**
      * Set the attendance for a location reservation of a specified user at a specified timeslot
      */
     boolean setReservationAttendance(String userId, Timeslot timeslot, boolean attendance) throws SQLException;
 
     /**
-     * Get all location reservations at a specified timeslot
-     */
-    List<LocationReservation> getAllLocationReservationsOfTimeslot(Timeslot timeslot) throws SQLException;
-
-    /**
      * Try to make a location reservation while making sure that the maximum capacity of the location is not exceeded
      */
      boolean addLocationReservationIfStillRoomAtomically(LocationReservation reservation) throws SQLException;
-
-    /**
-     * Get the number of location reservation of a specified location at this moment in time
-     */
-     int amountOfReservationsRightNow(int locationId) throws SQLException;
 
     /**
      * Set all LocationReservations corresponding to the given Timeslot for which the field attended is null
