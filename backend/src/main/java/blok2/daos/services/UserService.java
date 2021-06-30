@@ -1,7 +1,7 @@
 package blok2.daos.services;
 
 import blok2.daos.IUserDao;
-import blok2.daos.orm.UserRepository;
+import blok2.daos.repositories.UserRepository;
 import blok2.helpers.exceptions.NoSuchUserException;
 import blok2.model.users.User;
 import org.springframework.beans.factory.annotation.Autowired;

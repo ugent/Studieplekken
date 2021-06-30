@@ -1,8 +1,8 @@
 package blok2.daos.services;
 
 import blok2.daos.IVolunteerDao;
-import blok2.daos.orm.LocationRepository;
-import blok2.daos.orm.UserRepository;
+import blok2.daos.repositories.LocationRepository;
+import blok2.daos.repositories.UserRepository;
 import blok2.helpers.exceptions.NoSuchLocationException;
 import blok2.helpers.exceptions.NoSuchUserException;
 import blok2.model.reservables.Location;

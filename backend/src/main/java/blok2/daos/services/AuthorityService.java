@@ -1,9 +1,9 @@
 package blok2.daos.services;
 
 import blok2.daos.IAuthorityDao;
-import blok2.daos.orm.AuthorityRepository;
-import blok2.daos.orm.LocationRepository;
-import blok2.daos.orm.UserRepository;
+import blok2.daos.repositories.AuthorityRepository;
+import blok2.daos.repositories.LocationRepository;
+import blok2.daos.repositories.UserRepository;
 import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.Authority;
 import blok2.model.reservables.Location;

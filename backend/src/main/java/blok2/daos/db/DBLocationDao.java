@@ -2,7 +2,7 @@ package blok2.daos.db;
 
 import blok2.daos.IUserDao;
 import blok2.daos.IScannerLocationDao;
-import blok2.daos.orm.LocationRepository;
+import blok2.daos.repositories.LocationRepository;
 import blok2.helpers.LocationStatus;
 import blok2.helpers.Pair;
 import blok2.helpers.Resources;

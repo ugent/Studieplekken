@@ -1,4 +1,4 @@
-package blok2.daos.orm;
+package blok2.daos.repositories;
 
 import blok2.helpers.orm.LocationNameAndNextReservableFrom;
 import blok2.model.reservables.Location;

@@ -1,4 +1,4 @@
-package blok2.daos.orm;
+package blok2.daos.repositories;
 
 import blok2.model.users.User;
 import org.springframework.data.jpa.repository.JpaRepository;

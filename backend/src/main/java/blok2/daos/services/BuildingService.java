@@ -1,8 +1,8 @@
 package blok2.daos.services;
 
 import blok2.daos.IBuildingDao;
-import blok2.daos.orm.BuildingRepository;
-import blok2.daos.orm.LocationRepository;
+import blok2.daos.repositories.BuildingRepository;
+import blok2.daos.repositories.LocationRepository;
 import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.Building;
 import blok2.model.reservables.Location;
