@@ -11,7 +11,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.SQLException;
 
 @FlywayTest
 public class TestDBLocationDao extends BaseTest {
@@ -28,7 +27,7 @@ public class TestDBLocationDao extends BaseTest {
     private Location testLocation;
 
     @Override
-    public void populateDatabase() throws SQLException {
+    public void populateDatabase() {
         // Setup test objects
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
 
@@ -41,7 +40,7 @@ public class TestDBLocationDao extends BaseTest {
 
     @FlywayTest
     @Test
-    public void addLocationTest() throws SQLException {
+    public void addLocationTest() {
         Location l = locationDao.getLocationByName(testLocation.getName());
         Assert.assertEquals("addLocation", testLocation, l);
 

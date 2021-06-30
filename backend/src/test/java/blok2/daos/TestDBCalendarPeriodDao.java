@@ -49,7 +49,7 @@ public class TestDBCalendarPeriodDao extends BaseTest {
     private final DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     @Override
-    public void populateDatabase() throws SQLException {
+    public void populateDatabase() {
         // Setup test objects
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
 

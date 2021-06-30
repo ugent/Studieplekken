@@ -12,7 +12,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -46,13 +45,13 @@ public class TestDBPenaltyEventsDao extends BaseTest {
     private User testUser;
 
     @Override
-    public void populateDatabase() throws SQLException {
+    public void populateDatabase() {
         // Setup test objects
         cancellingTooLateEvent = new PenaltyEvent(16660, 30, "Te laat annuleren.", "Cancelling too late.");
         notShowingUpEvent = new PenaltyEvent(16661, 50, "Niet komen opdagen.", "Not showing up at all.");
         blacklistEvent = new PenaltyEvent(16662, 100, "Blacklist event.", "Blacklist event.");
         testEvent = penaltyEventsDao.addPenaltyEvent(new PenaltyEvent(null, 10,
-                "Test event.", "Test event."));;
+                "Test event.", "Test event."));
 
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
         Building testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
@@ -65,7 +64,7 @@ public class TestDBPenaltyEventsDao extends BaseTest {
     }
 
     @Test
-    public void permanentPenaltyEventsTest() throws SQLException {
+    public void permanentPenaltyEventsTest() {
         // These tests are supposed to be in the database
         PenaltyEvent test16660 = penaltyEventsDao.getPenaltyEventByCode(cancellingTooLateEvent.getCode());
         PenaltyEvent test16661 = penaltyEventsDao.getPenaltyEventByCode(notShowingUpEvent.getCode());
@@ -77,13 +76,13 @@ public class TestDBPenaltyEventsDao extends BaseTest {
     }
 
     @Test
-    public void addPenaltyEventTest() throws SQLException {
+    public void addPenaltyEventTest() {
         PenaltyEvent retrievedTestEvent = penaltyEventsDao.getPenaltyEventByCode(testEvent.getCode());
         Assert.assertEquals("addPenaltyEventTest", testEvent, retrievedTestEvent);
     }
 
     @Test
-    public void penaltyBookTest() throws SQLException {
+    public void penaltyBookTest() {
         // setup some test data
 
         LocalDateTime thisDayAMonthEarlier = LocalDateTime.now().minusMonths(1);

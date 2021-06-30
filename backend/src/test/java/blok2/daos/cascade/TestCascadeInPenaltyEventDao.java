@@ -14,7 +14,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -45,7 +44,7 @@ public class TestCascadeInPenaltyEventDao extends BaseTest {
     private Penalty testPenalty2;
 
     @Override
-    public void populateDatabase() throws SQLException {
+    public void populateDatabase() {
         // Setup test objects
         User testUser1 = TestSharedMethods.studentTestUser();
         User testUser2 = TestSharedMethods.adminTestUser();

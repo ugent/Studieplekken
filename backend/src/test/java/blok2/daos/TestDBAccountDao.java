@@ -7,9 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataIntegrityViolationException;
 
-import java.sql.SQLException;
 import java.util.List;
 
 
@@ -22,7 +20,7 @@ public class TestDBAccountDao extends BaseTest {
     private User testUser2;
 
     @Override
-    public void populateDatabase() throws SQLException {
+    public void populateDatabase() {
         testUser1 = TestSharedMethods.adminTestUser();
         testUser2 = TestSharedMethods.studentTestUser();
 
@@ -30,12 +28,12 @@ public class TestDBAccountDao extends BaseTest {
     }
 
     @Override
-    public void cleanup() throws SQLException {
+    public void cleanup() {
         TestSharedMethods.removeTestUsers(userDao, testUser2, testUser1);
     }
 
     @Test
-    public void directlyAddUserTest() throws SQLException {
+    public void directlyAddUserTest() {
         User directlyAddedUser = testUser1.clone();
         directlyAddedUser.setUserId("1" + testUser1.getUserId());
         directlyAddedUser.setMail("directly.addeduser@ugent.be");
@@ -49,7 +47,7 @@ public class TestDBAccountDao extends BaseTest {
     }
 
     @Test
-    public void updateUserTest() throws SQLException {
+    public void updateUserTest() {
         User expectedChangedUser = testUser1.clone();
 
         // change the role opposed to testUser1, update should succeed
@@ -70,13 +68,13 @@ public class TestDBAccountDao extends BaseTest {
     }
 
     @Test
-    public void accountExistsByEmailTest() throws SQLException {
+    public void accountExistsByEmailTest() {
         boolean exists = userDao.accountExistsByEmail(testUser1.getMail());
         Assert.assertTrue(exists);
     }
 
     @Test
-    public void testGetters() throws SQLException {
+    public void testGetters() {
         User u = userDao.getUserByEmail(testUser1.getMail());
         Assert.assertEquals("getUserByEmail", testUser1, u);
 
@@ -100,7 +98,7 @@ public class TestDBAccountDao extends BaseTest {
     }
 
     @Test
-    public void getUserFromBarcodeTest() throws SQLException {
+    public void getUserFromBarcodeTest() {
         // Code 128
         String barcode = testUser1.getUserId();
         User u = userDao.getUserFromBarcode(barcode);

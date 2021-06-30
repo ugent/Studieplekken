@@ -9,7 +9,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.mail.MessagingException;
-import java.sql.SQLException;
 
 public class MailServiceTest extends BaseTest {
 
@@ -22,7 +21,7 @@ public class MailServiceTest extends BaseTest {
     private MailService mailService;
 
     @Override
-    public void populateDatabase() throws SQLException {
+    public void populateDatabase() {
 
     }
 

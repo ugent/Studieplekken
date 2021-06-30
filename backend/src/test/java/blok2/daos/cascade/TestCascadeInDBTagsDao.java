@@ -11,8 +11,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.SQLException;
-
 public class TestCascadeInDBTagsDao extends BaseTest {
 
     @Autowired
@@ -37,7 +35,7 @@ public class TestCascadeInDBTagsDao extends BaseTest {
     private LocationTag testTag2;
 
     @Override
-    public void populateDatabase() throws SQLException {
+    public void populateDatabase() {
         // setup test objects
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
         Building testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
@@ -54,7 +52,7 @@ public class TestCascadeInDBTagsDao extends BaseTest {
     }
 
     @Test
-    public void deleteLocationTagWithCascadeNeeded() throws SQLException {
+    public void deleteLocationTagWithCascadeNeeded() {
         // first add the entries to LOCATION_TAGS
         locationTagDao.addTagToLocation(testLocation1.getLocationId(), testTag.getTagId());
         locationTagDao.addTagToLocation(testLocation2.getLocationId(), testTag.getTagId());

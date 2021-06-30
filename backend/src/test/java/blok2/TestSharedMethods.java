@@ -98,15 +98,15 @@ public class TestSharedMethods {
                 "Suitable for the less-abled");
     }
 
-    public static Authority insertTestAuthority(IAuthorityDao authorityDao) throws SQLException {
+    public static Authority insertTestAuthority(IAuthorityDao authorityDao) {
         return insertTestAuthority("Test Authority", "a test description", authorityDao);
     }
 
-    public static Authority insertTestAuthority2(IAuthorityDao authorityDao) throws SQLException {
+    public static Authority insertTestAuthority2(IAuthorityDao authorityDao) {
         return insertTestAuthority("Second Test Authority", "second test description", authorityDao);
     }
 
-    public static Authority insertTestAuthority(String name, String description, IAuthorityDao authorityDao) throws SQLException {
+    public static Authority insertTestAuthority(String name, String description, IAuthorityDao authorityDao) {
         Authority authority = new Authority();
         authority.setAuthorityName(name);
         authority.setDescription(description);

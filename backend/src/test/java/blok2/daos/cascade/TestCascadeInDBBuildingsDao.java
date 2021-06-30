@@ -11,7 +11,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -32,7 +31,7 @@ public class TestCascadeInDBBuildingsDao extends BaseTest {
     private Location testLocation2;
 
     @Override
-    public void populateDatabase() throws SQLException {
+    public void populateDatabase() {
         // Setup test objects
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
         testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());

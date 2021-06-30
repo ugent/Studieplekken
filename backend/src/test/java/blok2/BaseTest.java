@@ -41,5 +41,6 @@ public abstract class BaseTest {
     }
 
     @After
-    public void cleanup() throws SQLException {}
+    public void cleanup() {}
+
 }

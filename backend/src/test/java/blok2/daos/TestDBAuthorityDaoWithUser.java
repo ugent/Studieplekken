@@ -10,7 +10,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -34,7 +33,7 @@ public class TestDBAuthorityDaoWithUser extends BaseTest {
     private Location testLocation2;
 
     @Override
-    public void populateDatabase() throws SQLException {
+    public void populateDatabase() {
         testAuthority = TestSharedMethods.insertTestAuthority(authorityDao);
         testAuthority2 = TestSharedMethods.insertTestAuthority2(authorityDao);
 
@@ -53,14 +52,14 @@ public class TestDBAuthorityDaoWithUser extends BaseTest {
     }
 
     @Test
-    public void getAuthoritiesFromUser() throws SQLException {
+    public void getAuthoritiesFromUser() {
         List<Authority> authorities = authorityDao.getAuthoritiesFromUser(testUser.getUserId());
         Assert.assertEquals(1, authorities.size());
         Assert.assertTrue(authorities.contains(testAuthority));
     }
 
     @Test
-    public void getUsersFromAuthority() throws SQLException {
+    public void getUsersFromAuthority() {
         List<User> users = authorityDao.getUsersFromAuthority(testAuthority.getAuthorityId());
         Assert.assertEquals(1, users.size());
         Assert.assertTrue(users.contains(testUser));
@@ -69,7 +68,7 @@ public class TestDBAuthorityDaoWithUser extends BaseTest {
     }
 
     @Test
-    public void addAndRemoveUserFromAuthority() throws SQLException {
+    public void addAndRemoveUserFromAuthority() {
         //todo redo testUsers in TestSharedMethods so they are inserted directly
         User user = TestSharedMethods.adminTestUser();
         user.setUserId("000010");
@@ -90,7 +89,7 @@ public class TestDBAuthorityDaoWithUser extends BaseTest {
     }
 
     @Test
-    public void getLocationsInAuthoritiesOfUser() throws SQLException {
+    public void getLocationsInAuthoritiesOfUser() {
         // testUser was added to testAuthority in populateDatabase() so expect testLocation1 to be manageable
         List<Location> actual = authorityDao.getLocationsInAuthoritiesOfUser(testUser.getUserId());
 

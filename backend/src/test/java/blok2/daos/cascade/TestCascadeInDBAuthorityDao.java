@@ -56,7 +56,7 @@ public class TestCascadeInDBAuthorityDao extends BaseTest {
     }
 
     @Test(expected = NoSuchDatabaseObjectException.class)
-    public void deleteAuthorityCascadeTest() throws SQLException {
+    public void deleteAuthorityCascadeTest() {
         // Test locations are present in db
         List<Location> locations = authorityDao.getLocationsInAuthority(testAuthority.getAuthorityId());
 
