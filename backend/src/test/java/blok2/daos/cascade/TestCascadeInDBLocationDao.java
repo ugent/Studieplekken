@@ -43,9 +43,6 @@ public class TestCascadeInDBLocationDao extends BaseTest {
     private IPenaltyDao penaltyDao;
 
     @Autowired
-    private IScannerLocationDao scannerLocationDao;
-
-    @Autowired
     private IAuthorityDao authorityDao;
 
     @Autowired
@@ -112,9 +109,6 @@ public class TestCascadeInDBLocationDao extends BaseTest {
         penaltyEventsDao.addPenaltyEvent(testPenaltyEvent);
         penaltyDao.addPenalty(testPenalty1);
         penaltyDao.addPenalty(testPenalty2);
-
-        scannerLocationDao.addScannerLocation(testLocation.getLocationId(), testUser1.getUserId());
-        scannerLocationDao.addScannerLocation(testLocation.getLocationId(), testUser2.getUserId());
     }
 
     @Test
@@ -150,18 +144,6 @@ public class TestCascadeInDBLocationDao extends BaseTest {
 
         Assert.assertEquals("updateLocationWithoutCascadeNeededTest, penalties", expectedPenalties,
                 penalties);
-
-        // SCANNERS_LOCATION entries still available?
-        List<User> scanners = scannerLocationDao.getScannersOnLocation(testLocation.getLocationId());
-        scanners.sort(Comparator.comparing(User::getUserId));
-
-        List<User> expectedScanners = new ArrayList<>();
-        expectedScanners.add(testUser1);
-        expectedScanners.add(testUser2);
-        expectedScanners.sort(Comparator.comparing(User::getUserId));
-
-        Assert.assertEquals("updateUserWithoutCascadeNeededTest, locations to scan with new id",
-                expectedScanners, scanners);
 
         // CALENDAR_PERIODS still available?
         List<CalendarPeriod> actualPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getLocationId());
@@ -217,18 +199,6 @@ public class TestCascadeInDBLocationDao extends BaseTest {
         Assert.assertEquals("updateLocationWithoutCascadeNeededTest, penalties", expectedPenalties,
                 penalties);
 
-        // SCANNERS_LOCATION updated?
-        List<User> scanners = scannerLocationDao.getScannersOnLocation(testLocation.getLocationId());
-        scanners.sort(Comparator.comparing(User::getUserId));
-
-        List<User> expectedScanners = new ArrayList<>();
-        expectedScanners.add(testUser1);
-        expectedScanners.add(testUser2);
-        expectedScanners.sort(Comparator.comparing(User::getUserId));
-
-        Assert.assertEquals("updateUserWithoutCascadeNeededTest, locations to scan with new id",
-                expectedScanners, scanners);
-
         // CALENDAR_PERIODS updated?
         List<CalendarPeriod> actualPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getLocationId());
         actualPeriods.sort(Comparator.comparing(CalendarPeriod::toString));
@@ -249,9 +219,6 @@ public class TestCascadeInDBLocationDao extends BaseTest {
 
         List<CalendarPeriod> calendarPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getLocationId());
         Assert.assertEquals("deleteLocation, calendar periods", 0, calendarPeriods.size());
-
-        List<User> scanners = scannerLocationDao.getScannersOnLocation(testLocation.getLocationId());
-        Assert.assertEquals("deleteLocation, scanners", 0, scanners.size());
 
         List<Penalty> penalties = penaltyDao.getPenaltiesByLocation(testLocation.getLocationId());
         Assert.assertEquals("deleteLocation, penalties", 0, penalties.size());

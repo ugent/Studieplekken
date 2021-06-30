@@ -40,9 +40,6 @@ public class TestCascadeInDBAccountDao extends BaseTest {
     private IPenaltyDao penaltyDao;
 
     @Autowired
-    private IScannerLocationDao scannerLocationDao;
-
-    @Autowired
     private IAuthorityDao authorityDao;
 
     @Autowired
@@ -52,11 +49,6 @@ public class TestCascadeInDBAccountDao extends BaseTest {
 
     // this will be the test user
     private User testUser;
-
-    // for cascade on SCANNERS_LOCATION and LOCATION_RESERVATIONS,
-    // a Location must be available
-    private Location testLocation1;
-    private Location testLocation2;
 
     // to test cascade on LOCATION_RESERVATIONS
     private LocationReservation testLocationReservation1;
@@ -72,8 +64,10 @@ public class TestCascadeInDBAccountDao extends BaseTest {
 
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
         Building testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
-        testLocation1 = locationDao.addLocation(TestSharedMethods.testLocation(authority.clone(), testBuilding));
-        testLocation2 = locationDao.addLocation(TestSharedMethods.testLocation2(authority.clone(), testBuilding));
+
+        // for cascade on LOCATION_RESERVATIONS, a Location must be available
+        Location testLocation1 = locationDao.addLocation(TestSharedMethods.testLocation(authority.clone(), testBuilding));
+        Location testLocation2 = locationDao.addLocation(TestSharedMethods.testLocation2(authority.clone(), testBuilding));
 
         CalendarPeriod cp1 = TestSharedMethods.testCalendarPeriods(testLocation1).get(0);
         TestSharedMethods.addCalendarPeriods(calendarPeriodDao, cp1);
@@ -104,9 +98,6 @@ public class TestCascadeInDBAccountDao extends BaseTest {
         penaltyEventsDao.addPenaltyEvent(testPenaltyEvent);
         penaltyDao.addPenalty(testPenalty1);
         penaltyDao.addPenalty(testPenalty2);
-
-        scannerLocationDao.addScannerLocation(testLocation1.getLocationId(), testUser.getUserId());
-        scannerLocationDao.addScannerLocation(testLocation2.getLocationId(), testUser.getUserId());
     }
 
     @Test
@@ -138,17 +129,6 @@ public class TestCascadeInDBAccountDao extends BaseTest {
 
         Assert.assertEquals("updateUserWithoutCascadeNeededTest, penalties", expectedPenalties,
                 penalties);
-
-        List<Location> scannerLocations = scannerLocationDao.getLocationsToScanOfUser(testUser.getUserId());
-        scannerLocations.sort(Comparator.comparing(Location::getName));
-
-        List<Location> expectedLocations = new ArrayList<>();
-        expectedLocations.add(testLocation1);
-        expectedLocations.add(testLocation2);
-        expectedLocations.sort(Comparator.comparing(Location::getName));
-
-        Assert.assertEquals("updateUserWithoutCascadeNeededTest, locations to scan with new id",
-                expectedLocations, scannerLocations);
     }
 
     @Test
@@ -160,10 +140,6 @@ public class TestCascadeInDBAccountDao extends BaseTest {
         } catch (NoSuchUserException e) {
             Assert.assertTrue(true);
         }
-
-        List<Location> scannerLocations = scannerLocationDao.getLocationsToScanOfUser(testUser.getUserId());
-        Assert.assertEquals("deleteUserTest, scannerLocations", 0,
-                scannerLocations.size());
 
         List<Penalty> penalties = penaltyDao.getPenaltiesByUser(testUser.getUserId());
         Assert.assertEquals("deleteUserTest, penalties", 0, penalties.size());
