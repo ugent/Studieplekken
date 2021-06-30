@@ -3,7 +3,6 @@ package blok2.daos.cascade;
 import blok2.BaseTest;
 import blok2.TestSharedMethods;
 import blok2.daos.*;
-import blok2.helpers.Language;
 import blok2.helpers.exceptions.NoSuchLocationException;
 import blok2.model.Authority;
 import blok2.model.Building;
@@ -86,11 +85,10 @@ public class TestCascadeInDBLocationDao extends BaseTest {
         testLocationReservation1 = new LocationReservation(testUser1, cp1.getTimeslots().get(0),  null);
         testLocationReservation2 = new LocationReservation(testUser2, cp2.getTimeslots().get(0),  null);
 
-        Map<Language, String> descriptions = new HashMap<>();
-        descriptions.put(Language.DUTCH, "Dit is een test omschrijving van een penalty event met code 0");
-        descriptions.put(Language.ENGLISH, "This is a test description of a penalty event with code 0");
         // to test cascade on PENALTY_BOOK
-        PenaltyEvent testPenaltyEvent = new PenaltyEvent(0, 10, descriptions);
+        PenaltyEvent testPenaltyEvent = penaltyEventsDao.addPenaltyEvent(new PenaltyEvent(null, 10,
+                "Dit is een test omschrijving van een penalty event",
+                "This is a test description of a penalty event"));
 
         // Note: the received amount of points are 10 and 20, not testPenaltyEvent.getCode()
         // because when the penalties are retrieved from the penaltyEventDao, the list will
@@ -106,7 +104,6 @@ public class TestCascadeInDBLocationDao extends BaseTest {
         locationReservationDao.addLocationReservation(testLocationReservation1);
         locationReservationDao.addLocationReservation(testLocationReservation2);
 
-        penaltyEventsDao.addPenaltyEvent(testPenaltyEvent);
         penaltyDao.addPenalty(testPenalty1);
         penaltyDao.addPenalty(testPenalty2);
     }

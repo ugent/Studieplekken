@@ -2,7 +2,6 @@ package blok2.controllers;
 
 import blok2.daos.IPenaltyDao;
 import blok2.daos.IPenaltyEventsDao;
-import blok2.helpers.Language;
 import blok2.model.penalty.Penalty;
 import blok2.model.penalty.PenaltyEvent;
 import org.springframework.http.HttpStatus;
@@ -65,54 +64,24 @@ public class PenaltyEventController {
     @GetMapping("/events")
     @PreAuthorize("permitAll()")
     public List<PenaltyEvent> getAllPenaltyEvents() {
-        try {
-            return penaltyEventsDao.getPenaltyEvents();
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        return penaltyEventsDao.getPenaltyEvents();
     }
 
     @PostMapping("/events")
     @PreAuthorize("hasAuthority('ADMIN')")
     public void addPenaltyEvent(@RequestBody PenaltyEvent penaltyEvent) {
-        try {
-            if (penaltyEvent.getDescriptions().size() != Language.values().length) {
-                throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, "Not all languages have a description");
-            }
-            penaltyEventsDao.addPenaltyEvent(penaltyEvent);
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        penaltyEventsDao.addPenaltyEvent(penaltyEvent);
     }
 
     @PutMapping("/events/{code}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public void updatePenaltyEvent(@PathVariable("code") int code, @RequestBody PenaltyEvent penaltyEvent) {
-        try {
-            if (penaltyEvent.getDescriptions().size() != Language.values().length) {
-                throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, "Not all languages have a description");
-            }
-            penaltyEventsDao.updatePenaltyEvent(code, penaltyEvent);
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        penaltyEventsDao.updatePenaltyEvent(penaltyEvent);
     }
 
     @DeleteMapping("/events")
     @PreAuthorize("hasAuthority('ADMIN')")
     public void deletePenaltyEvent(@RequestBody PenaltyEvent penaltyEvent) {
-        try {
-            penaltyEventsDao.deletePenaltyEvent(penaltyEvent.getCode());
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        penaltyEventsDao.deletePenaltyEvent(penaltyEvent.getCode());
     }
 }

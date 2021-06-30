@@ -3,7 +3,6 @@ package blok2.daos.cascade;
 import blok2.BaseTest;
 import blok2.TestSharedMethods;
 import blok2.daos.*;
-import blok2.helpers.Language;
 import blok2.helpers.exceptions.NoSuchUserException;
 import blok2.model.Authority;
 import blok2.model.calendar.CalendarPeriod;
@@ -77,15 +76,13 @@ public class TestCascadeInDBAccountDao extends BaseTest {
         testLocationReservation1 = new LocationReservation(testUser, cp1.getTimeslots().get(0),  null);
         testLocationReservation2 = new LocationReservation(testUser, cp2.getTimeslots().get(0),  null);
 
-        Map<Language, String> descriptions = new HashMap<>();
-        descriptions.put(Language.DUTCH, "Dit is een test omschrijving van een penalty event met code 0");
-        descriptions.put(Language.ENGLISH, "This is a test description of a penalty event with code 0");
-
         // Note: the received amount of points are 10 and 20, not testPenaltyEvent.getCode()
         // because when the penalties are retrieved from the penaltyEventDao, the list will
         // be sorted by received points before asserting, if they would be equal we can't sort
         // on the points and be sure about the equality of the actual and expected list.
-        PenaltyEvent testPenaltyEvent = new PenaltyEvent(0, 10, descriptions);
+        PenaltyEvent testPenaltyEvent = penaltyEventsDao.addPenaltyEvent(new PenaltyEvent(null, 10,
+                "Dit is een test omschrijving van een penalty event",
+                "This is a test description of a penalty event"));
         testPenalty1 = new Penalty(testUser.getUserId(), testPenaltyEvent.getCode(), LocalDateTime.now(), LocalDate.now(), testLocation1, 10, "First test penalty");
         testPenalty2 = new Penalty(testUser.getUserId(), testPenaltyEvent.getCode(), LocalDateTime.of(1970, 1, 1, 0, 0, 0), LocalDate.now(), testLocation2, 20, "Second test penalty");
 
@@ -95,13 +92,12 @@ public class TestCascadeInDBAccountDao extends BaseTest {
         locationReservationDao.addLocationReservation(testLocationReservation1);
         locationReservationDao.addLocationReservation(testLocationReservation2);
 
-        penaltyEventsDao.addPenaltyEvent(testPenaltyEvent);
         penaltyDao.addPenalty(testPenalty1);
         penaltyDao.addPenalty(testPenalty2);
     }
 
     @Test
-    public void updateUserTest() throws SQLException {
+    public void updateUserTest() {
         updateUserFieldWithoutAUGentID(testUser);
         userDao.updateUser(testUser);
         User u = userDao.getUserById(testUser.getUserId());
@@ -132,7 +128,7 @@ public class TestCascadeInDBAccountDao extends BaseTest {
     }
 
     @Test
-    public void deleteUserTest() throws SQLException {
+    public void deleteUserTest() {
         userDao.deleteUser(testUser.getUserId());
         try {
             userDao.getUserById(testUser.getUserId());

@@ -2,7 +2,6 @@ package blok2.daos;
 
 import blok2.BaseTest;
 import blok2.TestSharedMethods;
-import blok2.helpers.Language;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.penalty.Penalty;
@@ -16,9 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class TestDBPenaltyEventsDao extends BaseTest {
 
@@ -51,25 +48,11 @@ public class TestDBPenaltyEventsDao extends BaseTest {
     @Override
     public void populateDatabase() throws SQLException {
         // Setup test objects
-        Map<Language, String> cancellingTooLateDescriptions = new HashMap<>();
-        cancellingTooLateDescriptions.put(Language.ENGLISH, "Cancelling too late.");
-        cancellingTooLateDescriptions.put(Language.DUTCH, "Te laat annuleren.");
-        cancellingTooLateEvent = new PenaltyEvent(16660, 30, cancellingTooLateDescriptions);
-
-        Map<Language, String> notShowingUpDescriptions = new HashMap<>();
-        notShowingUpDescriptions.put(Language.ENGLISH, "Not showing up at all.");
-        notShowingUpDescriptions.put(Language.DUTCH, "Niet komen opdagen.");
-        notShowingUpEvent = new PenaltyEvent(16661, 50, notShowingUpDescriptions);
-
-        Map<Language, String> blacklistDescriptions = new HashMap<>();
-        blacklistDescriptions.put(Language.ENGLISH, "Blacklist event.");
-        blacklistDescriptions.put(Language.DUTCH, "Blacklist event.");
-        blacklistEvent = new PenaltyEvent(16662, 100, blacklistDescriptions);
-
-        Map<Language, String> testDescriptions = new HashMap<>();
-        testDescriptions.put(Language.ENGLISH, "Test event.");
-        testDescriptions.put(Language.DUTCH, "Test event.");
-        testEvent = new PenaltyEvent(1, 10, testDescriptions);
+        cancellingTooLateEvent = new PenaltyEvent(16660, 30, "Te laat annuleren.", "Cancelling too late.");
+        notShowingUpEvent = new PenaltyEvent(16661, 50, "Niet komen opdagen.", "Not showing up at all.");
+        blacklistEvent = new PenaltyEvent(16662, 100, "Blacklist event.", "Blacklist event.");
+        testEvent = penaltyEventsDao.addPenaltyEvent(new PenaltyEvent(null, 10,
+                "Test event.", "Test event."));;
 
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
         Building testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
@@ -78,16 +61,15 @@ public class TestDBPenaltyEventsDao extends BaseTest {
 
         // Add test objects to database
         locationDao.addLocation(testLocation);
-        penaltyEventsDao.addPenaltyEvent(testEvent);
         TestSharedMethods.addTestUsers(userDao, testUser);
     }
 
     @Test
     public void permanentPenaltyEventsTest() throws SQLException {
         // These tests are supposed to be in the database
-        PenaltyEvent test16660 = penaltyEventsDao.getPenaltyEvent(cancellingTooLateEvent.getCode());
-        PenaltyEvent test16661 = penaltyEventsDao.getPenaltyEvent(notShowingUpEvent.getCode());
-        PenaltyEvent test16662 = penaltyEventsDao.getPenaltyEvent(blacklistEvent.getCode());
+        PenaltyEvent test16660 = penaltyEventsDao.getPenaltyEventByCode(cancellingTooLateEvent.getCode());
+        PenaltyEvent test16661 = penaltyEventsDao.getPenaltyEventByCode(notShowingUpEvent.getCode());
+        PenaltyEvent test16662 = penaltyEventsDao.getPenaltyEventByCode(blacklistEvent.getCode());
 
         Assert.assertEquals("permanentEventsTest, 16660", cancellingTooLateEvent, test16660);
         Assert.assertEquals("permanentEventsTest, 16661", notShowingUpEvent, test16661);
@@ -96,32 +78,8 @@ public class TestDBPenaltyEventsDao extends BaseTest {
 
     @Test
     public void addPenaltyEventTest() throws SQLException {
-        PenaltyEvent retrievedTestEvent = penaltyEventsDao.getPenaltyEvent(testEvent.getCode());
+        PenaltyEvent retrievedTestEvent = penaltyEventsDao.getPenaltyEventByCode(testEvent.getCode());
         Assert.assertEquals("addPenaltyEventTest", testEvent, retrievedTestEvent);
-    }
-
-    @Test
-    public void deleteAndAddPenaltyEventDescriptionTest() throws SQLException {
-        // Not changing testEvent (although you could change it because the @Before creates a new testEvent for the next @Test)
-        PenaltyEvent modifiablePenaltyEvent = testEvent.clone();
-
-        // Delete the English description
-        modifiablePenaltyEvent.getDescriptions().remove(Language.ENGLISH);
-        penaltyEventsDao.deleteDescription(modifiablePenaltyEvent.getCode(), Language.ENGLISH);
-
-        // Check whether the description has been deleted correctly
-        PenaltyEvent retrievedModifiedTestEvent = penaltyEventsDao.getPenaltyEvent(modifiablePenaltyEvent.getCode());
-        Assert.assertEquals("deleteAndAddPenaltyEventDescriptionsTest, remove description",
-                modifiablePenaltyEvent, retrievedModifiedTestEvent);
-
-        // Add the English description again
-        penaltyEventsDao.addDescription(testEvent.getCode(), Language.ENGLISH,
-                testEvent.getDescriptions().get(Language.ENGLISH));
-
-        // Check whether the description has been added correctly
-        retrievedModifiedTestEvent = penaltyEventsDao.getPenaltyEvent(modifiablePenaltyEvent.getCode());
-        Assert.assertEquals("deleteAndAddPenaltyEventDescriptionsTest, add description",
-                testEvent, retrievedModifiedTestEvent);
     }
 
     @Test
