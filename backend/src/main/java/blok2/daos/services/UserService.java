@@ -2,7 +2,7 @@ package blok2.daos.services;
 
 import blok2.daos.IUserDao;
 import blok2.daos.repositories.UserRepository;
-import blok2.helpers.exceptions.NoSuchUserException;
+import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,14 +23,14 @@ public class UserService implements IUserDao {
     @Override
     public User getUserByEmail(String email) {
         return userRepository.findByMail(email)
-                .orElseThrow(() -> new NoSuchUserException(
+                .orElseThrow(() -> new NoSuchDatabaseObjectException(
                         String.format("No user found with email '%s'", email)));
     }
 
     @Override
     public User getUserById(String userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchUserException(
+                .orElseThrow(() -> new NoSuchDatabaseObjectException(
                         String.format("No user found with userId '%s'", userId)));
     }
 
@@ -85,7 +85,7 @@ public class UserService implements IUserDao {
         optionalUser = userRepository.findById(alternative);
 
         return optionalUser.orElseThrow(
-                () -> new NoSuchUserException(
+                () -> new NoSuchDatabaseObjectException(
                         String.format("No user found with barcode '%s'.", barcode)));
     }
 

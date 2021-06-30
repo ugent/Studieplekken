@@ -2,7 +2,6 @@ package blok2.controllers;
 
 import blok2.daos.IAuthorityDao;
 import blok2.helpers.exceptions.AlreadyExistsException;
-import blok2.helpers.exceptions.NoSuchAuthorityException;
 import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.Authority;
 import blok2.model.reservables.Location;
@@ -41,10 +40,7 @@ public class AuthorityController {
     @GetMapping("/{authorityId}")
     @PreAuthorize("permitAll()")
     public Authority getAuthority(@PathVariable int authorityId) {
-        Authority authority = authorityDao.getAuthorityByAuthorityId(authorityId);
-        if (authority == null)
-            throw new NoSuchAuthorityException("Authority not found");
-        return authority;
+        return authorityDao.getAuthorityByAuthorityId(authorityId);
     }
 
     @PostMapping

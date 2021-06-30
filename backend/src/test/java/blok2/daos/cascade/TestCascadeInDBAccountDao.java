@@ -3,7 +3,7 @@ package blok2.daos.cascade;
 import blok2.BaseTest;
 import blok2.TestSharedMethods;
 import blok2.daos.*;
-import blok2.helpers.exceptions.NoSuchUserException;
+import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.Authority;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.Building;
@@ -133,7 +133,7 @@ public class TestCascadeInDBAccountDao extends BaseTest {
         try {
             userDao.getUserById(testUser.getUserId());
             Assert.fail("user must be deleted");
-        } catch (NoSuchUserException e) {
+        } catch (NoSuchDatabaseObjectException e) {
             Assert.assertTrue(true);
         }
 

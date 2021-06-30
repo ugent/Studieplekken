@@ -2,7 +2,7 @@ package blok2.daos.services;
 
 import blok2.daos.ILocationDao;
 import blok2.daos.repositories.LocationRepository;
-import blok2.helpers.exceptions.NoSuchLocationException;
+import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.helpers.orm.LocationNameAndNextReservableFrom;
 import blok2.model.reservables.Location;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,14 +30,14 @@ public class LocationService implements ILocationDao {
     @Override
     public Location getLocationById(int locationId) {
         return locationRepository.findById(locationId)
-                .orElseThrow(() -> new NoSuchLocationException(
+                .orElseThrow(() -> new NoSuchDatabaseObjectException(
                         String.format("Location with locationId '%d' does not exist.", locationId)));
     }
 
     @Override
     public Location getLocationByName(String locationName) {
         return locationRepository.findLocationByName(locationName)
-                .orElseThrow(() -> new NoSuchLocationException(
+                .orElseThrow(() -> new NoSuchDatabaseObjectException(
                         String.format("Location with locationName '%s' does not exist.", locationName)));
     }
 

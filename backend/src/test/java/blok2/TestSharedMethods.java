@@ -5,7 +5,7 @@ import blok2.daos.IAuthorityDao;
 import blok2.daos.ICalendarPeriodDao;
 import blok2.helpers.Institution;
 import blok2.helpers.TimeException;
-import blok2.helpers.exceptions.NoSuchUserException;
+import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.LocationTag;
@@ -161,8 +161,8 @@ public class TestSharedMethods {
             userDao.deleteUser(u.getUserId());
             try {
                 userDao.getUserById(u.getUserId());
-                Assert.fail("cleanup test user should throw NoSuchUserException after deletion");
-            } catch (NoSuchUserException e) {
+                Assert.fail("cleanup test user should throw NoSuchDatabaseObjectException after deletion");
+            } catch (NoSuchDatabaseObjectException e) {
                 Assert.assertTrue(true);
             }
         }

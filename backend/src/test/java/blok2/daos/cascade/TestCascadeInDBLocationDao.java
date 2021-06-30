@@ -3,7 +3,7 @@ package blok2.daos.cascade;
 import blok2.BaseTest;
 import blok2.TestSharedMethods;
 import blok2.daos.*;
-import blok2.helpers.exceptions.NoSuchLocationException;
+import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.calendar.CalendarPeriod;
@@ -161,8 +161,8 @@ public class TestCascadeInDBLocationDao extends BaseTest {
         // old location should be deleted ...
         try {
             locationDao.getLocationByName(oldName);
-        } catch (NoSuchLocationException ignore) {
-            Assert.assertTrue("Old location must be deleted and thus a NoSuchLocationException should have been thrown.", true);
+        } catch (NoSuchDatabaseObjectException ignore) {
+            Assert.assertTrue("Old location must be deleted and thus a NoSuchDatabaseObjectException should have been thrown.", true);
         }
 
         // ... and should be available under its new name
@@ -210,7 +210,7 @@ public class TestCascadeInDBLocationDao extends BaseTest {
         locationDao.deleteLocation(testLocation.getLocationId());
         try {
             locationDao.getLocationByName(testLocation.getName());
-        } catch (NoSuchLocationException ignore) {
+        } catch (NoSuchDatabaseObjectException ignore) {
             Assert.assertTrue("Location must be deleted", true);
         }
 

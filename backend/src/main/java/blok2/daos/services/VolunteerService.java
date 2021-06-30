@@ -3,8 +3,7 @@ package blok2.daos.services;
 import blok2.daos.IVolunteerDao;
 import blok2.daos.repositories.LocationRepository;
 import blok2.daos.repositories.UserRepository;
-import blok2.helpers.exceptions.NoSuchLocationException;
-import blok2.helpers.exceptions.NoSuchUserException;
+import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;
 import org.springframework.stereotype.Service;
@@ -28,7 +27,7 @@ public class VolunteerService implements IVolunteerDao {
     @Transactional
     public List<User> getVolunteers(int locationId) {
         Location location = locationRepository.findById(locationId)
-                .orElseThrow(() -> new NoSuchLocationException(
+                .orElseThrow(() -> new NoSuchDatabaseObjectException(
                         String.format("No location found with locationId '%d'", locationId)));
 
         List<User> volunteers = location.getVolunteers();
@@ -42,7 +41,7 @@ public class VolunteerService implements IVolunteerDao {
     @Override
     public List<Location> getVolunteeredLocations(String userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchUserException(
+                .orElseThrow(() -> new NoSuchDatabaseObjectException(
                         String.format("No user found with userId '%s'", userId)));
         return new ArrayList<>(user.getUserVolunteer());
     }
@@ -50,11 +49,11 @@ public class VolunteerService implements IVolunteerDao {
     @Override
     public void addVolunteer(int locationId, String userId) {
         Location location = locationRepository.findById(locationId)
-                .orElseThrow(() -> new NoSuchLocationException(
+                .orElseThrow(() -> new NoSuchDatabaseObjectException(
                         String.format("No location found with locationId '%d'", locationId)));
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchUserException(
+                .orElseThrow(() -> new NoSuchDatabaseObjectException(
                         String.format("No user found with userId '%s'", userId)));
 
         user.getUserVolunteer().add(location);
@@ -65,11 +64,11 @@ public class VolunteerService implements IVolunteerDao {
     @Override
     public void deleteVolunteer(int locationId, String userId) {
         Location location = locationRepository.findById(locationId)
-                .orElseThrow(() -> new NoSuchLocationException(
+                .orElseThrow(() -> new NoSuchDatabaseObjectException(
                         String.format("No location found with locationId '%d'", locationId)));
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchUserException(
+                .orElseThrow(() -> new NoSuchDatabaseObjectException(
                         String.format("No user found with userId '%s'", userId)));
 
         user.getUserVolunteer().remove(location);

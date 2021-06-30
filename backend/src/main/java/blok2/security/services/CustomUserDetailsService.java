@@ -1,7 +1,7 @@
 package blok2.security.services;
 
 import blok2.daos.IUserDao;
-import blok2.helpers.exceptions.NoSuchUserException;
+import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.users.User;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.slf4j.Logger;
@@ -53,7 +53,7 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
         try {
             user = this.userDao.getUserById(ugentID);
             return user;
-        } catch (NoSuchUserException e) {
+        } catch (NoSuchDatabaseObjectException e) {
             // Create new user using the UGent LDAP
             user = getUserFromLdap(ugentID);
 

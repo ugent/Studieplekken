@@ -283,7 +283,7 @@ public class DBCalendarPeriodDao implements ICalendarPeriodDao {
                 "    from timeslots rt " +
                 "             join calendar_periods cp " +
                 "                  on cp.calendar_id = rt.calendar_id " +
-                "    where cp.location_id = ?1 " +
+                "    where cp.location_id = ? " +
                 "      and (rt.timeslot_date + cp.opening_time)::timestamp + interval '1 minute' * cp.timeslot_length * (rt.timeslot_sequence_number + 1) > now() " +
                 "), y as ( " +
                 "    select x.*, row_number() over(order by timeslot_start) n " +

@@ -7,9 +7,9 @@ import blok2.daos.IVolunteerDao;
 import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.helpers.LocationWithApproval;
 import blok2.helpers.exceptions.AlreadyExistsException;
+import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.helpers.orm.LocationNameAndNextReservableFrom;
 import blok2.mail.MailService;
-import blok2.helpers.exceptions.NoSuchLocationException;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;
 import org.slf4j.Logger;
@@ -88,7 +88,7 @@ public class LocationController extends AuthorizedLocationController {
             try {
                 locationDao.getLocationByName(location.getName());
                 throw new AlreadyExistsException("location name already in use");
-            } catch (NoSuchLocationException ignore) {
+            } catch (NoSuchDatabaseObjectException ignore) {
                 // good to go
             }
 
