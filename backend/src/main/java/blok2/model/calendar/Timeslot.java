@@ -151,6 +151,21 @@ public class Timeslot implements Cloneable {
             this.timeslotSequenceNumber = timeslotSequenceNumber;
             this.timeslotDate = timeslotDate;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            TimeslotId that = (TimeslotId) o;
+            return Objects.equals(calendarId, that.calendarId) &&
+                    Objects.equals(timeslotSequenceNumber, that.timeslotSequenceNumber) &&
+                    Objects.equals(timeslotDate, that.timeslotDate);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(calendarId, timeslotSequenceNumber, timeslotDate);
+        }
     }
 
 }

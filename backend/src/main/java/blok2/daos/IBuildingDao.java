@@ -36,7 +36,7 @@ public interface IBuildingDao {
     /**
      * Updates the building given by the buildingId
      *
-     * @param updatedBuilding Building with new values, with Building.buildingId the building to update
+     * @param building Building with new values, with Building.buildingId the building to update
      */
     void updateBuilding(Building building);
 

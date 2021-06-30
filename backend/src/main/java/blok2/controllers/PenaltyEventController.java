@@ -4,16 +4,11 @@ import blok2.daos.IPenaltyDao;
 import blok2.daos.IPenaltyEventsDao;
 import blok2.model.penalty.Penalty;
 import blok2.model.penalty.PenaltyEvent;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  * This controller handles all requests related to penalties.
@@ -22,8 +17,6 @@ import java.util.logging.Logger;
 @RestController
 @RequestMapping("penalties")
 public class PenaltyEventController {
-
-    private final Logger logger = Logger.getLogger(PenaltyEventController.class.getSimpleName());
 
     private final IPenaltyEventsDao penaltyEventsDao;
     private final IPenaltyDao penaltyDao;

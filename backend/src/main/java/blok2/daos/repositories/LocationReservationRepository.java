@@ -15,9 +15,6 @@ public interface LocationReservationRepository extends JpaRepository<LocationRes
     @Query("select lr from LocationReservation lr where lr.id.timeslotSequenceNumber = ?1 and lr.id.timeslotDate = ?2 and lr.id.calendarId = ?3")
     List<LocationReservation> findAllByTimeslot(int sequenceNumber, LocalDate date, int calendarId);
 
-    @Query("select lr from LocationReservation lr where lr.id.userId = ?1")
-    List<LocationReservation> findAllByUser(String userId);
-
     @Query("select lr from LocationReservation lr where lr.id.timeslotDate = ?1 and lr.attended = false")
     List<LocationReservation> findAllUnattendedByDate(LocalDate date);
 

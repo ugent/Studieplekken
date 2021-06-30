@@ -69,38 +69,6 @@ public class DBCalendarPeriodDao implements ICalendarPeriodDao {
         }
     }
 
-    public List<CalendarPeriod> getCalendarPeriodsInWeek(LocalDate firstDayOfWeek) throws SQLException {
-        LocalDate lastDayOfWeek = firstDayOfWeek.plusWeeks(1);
-        return getCalendarPeriodsInPeriod(firstDayOfWeek, lastDayOfWeek);
-    }
-
-    public List<CalendarPeriod> getCalendarPeriodsInPeriod(LocalDate start, LocalDate end) throws SQLException {
-        try (Connection conn = connectionProvider.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("" +
-                    "select * " +
-                    "from public.calendar_periods cp " +
-                    "   join public.locations l " +
-                    "       on l.location_id = cp.location_id " +
-                    "   join public.authority a " +
-                    "       on a.authority_id = l.authority_id " +
-                    "   join public.buildings b " +
-                    "       on b.building_id = l.building_id " +
-                    "where cp.starts_at > ? and cp.starts_at < ?;");
-            stmt.setDate(1, Date.valueOf(start));
-            stmt.setDate(2, Date.valueOf(end));
-            ResultSet rs = stmt.executeQuery();
-
-            List<CalendarPeriod> periods = new ArrayList<>();
-
-            while (rs.next()) {
-                periods.add(createCalendarPeriod(rs));
-            }
-
-            return periods;
-        }
-
-    }
-
     @Override
     public void addCalendarPeriods(List<CalendarPeriod> periods) throws SQLException {
         try (Connection conn = connectionProvider.getConnection()) {

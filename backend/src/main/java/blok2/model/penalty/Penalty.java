@@ -163,6 +163,21 @@ public class Penalty implements Cloneable {
             this.eventCode = eventCode;
             this.timestamp = timestamp;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            PenaltyId penaltyId = (PenaltyId) o;
+            return Objects.equals(userId, penaltyId.userId) &&
+                    Objects.equals(eventCode, penaltyId.eventCode) &&
+                    Objects.equals(timestamp, penaltyId.timestamp);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(userId, eventCode, timestamp);
+        }
     }
 
 }

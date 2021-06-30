@@ -170,6 +170,21 @@ public class LocationReservation {
                     timeslotSequenceNumber, timeslotDate.format(DateTimeFormatter.ISO_DATE), calendarId, userId);
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            LocationReservationId that = (LocationReservationId) o;
+            return Objects.equals(timeslotSequenceNumber, that.timeslotSequenceNumber) &&
+                    Objects.equals(timeslotDate, that.timeslotDate) &&
+                    Objects.equals(calendarId, that.calendarId) &&
+                    Objects.equals(userId, that.userId);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(timeslotSequenceNumber, timeslotDate, calendarId, userId);
+        }
     }
     
 }

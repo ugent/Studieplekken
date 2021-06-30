@@ -88,10 +88,8 @@ public class AuthorityService implements IAuthorityDao {
         Set<Authority> authorities = user.getUserAuthorities();
 
         Set<Location> locations = new HashSet<>();
-        authorities.forEach(authority -> {
-            locations.addAll(locationRepository
-                    .findAllByAuthorityId(authority.getAuthorityId()));
-        });
+        authorities.forEach(authority -> locations.addAll(locationRepository
+                .findAllByAuthorityId(authority.getAuthorityId())));
 
         return new ArrayList<>(locations);
     }

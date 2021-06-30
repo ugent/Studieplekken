@@ -89,9 +89,9 @@ public class TestDBPenaltyEventsDao extends BaseTest {
 
         Penalty penalty = new Penalty(testUser.getUserId(), testEvent.getCode(), LocalDateTime.now(), LocalDate.now()
                 , testLocation, testEvent.getPoints(), "regular test penalty");
-        Penalty fatalPenalty = new Penalty(testUser.getUserId(), blacklistEvent.getCode(), LocalDateTime.now()
-                , LocalDate.of(1970, 1, 1), testLocation, blacklistEvent.getPoints(),
-                "Fatal test penalty");
+        //Penalty fatalPenalty = new Penalty(testUser.getUserId(), blacklistEvent.getCode(), LocalDateTime.now()
+        //        , LocalDate.of(1970, 1, 1), testLocation, blacklistEvent.getPoints(),
+        //        "Fatal test penalty");
         Penalty penaltyLastMonth = new Penalty(testUser.getUserId(), testEvent.getCode()
                 , thisDayAMonthEarlier, thisDayAMonthEarlier.toLocalDate(), testLocation, testEvent.getPoints(),
                 "Fatal test penalty of last month");
