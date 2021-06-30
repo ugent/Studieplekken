@@ -96,9 +96,14 @@ public class LocationTag implements Cloneable {
         }
     }
 
+    // Note: don't use ToStringBuilder since locations are fetched lazily and that may cause problems
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this);
+        return "LocationTag{" +
+                "tagId=" + tagId +
+                ", dutch='" + dutch + '\'' +
+                ", english='" + english + '\'' +
+                '}';
     }
 
 }

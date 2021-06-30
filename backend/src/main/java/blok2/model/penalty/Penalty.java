@@ -85,11 +85,11 @@ public class Penalty implements Cloneable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Penalty penalty = (Penalty) o;
-        return penaltyId.eventCode.equals(penalty.penaltyId.eventCode) &&
-                penaltyId.userId.equals(penalty.penaltyId.userId) &&
-                penaltyId.timestamp.equals(penalty.penaltyId.timestamp) &&
-                reservationDate.equals(penalty.reservationDate) &&
-                reservationLocation == penalty.reservationLocation &&
+        return Objects.equals(penaltyId.eventCode, penalty.penaltyId.eventCode) &&
+                Objects.equals(penaltyId.userId, penalty.penaltyId.userId) &&
+                Objects.equals(penaltyId.timestamp, penalty.penaltyId.timestamp) &&
+                Objects.equals(reservationDate, penalty.reservationDate) &&
+                Objects.equals(reservationLocation, penalty.reservationLocation) &&
                 receivedPoints == penalty.receivedPoints &&
                 Objects.equals(remarks, penalty.remarks);
     }

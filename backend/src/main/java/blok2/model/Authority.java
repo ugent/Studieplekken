@@ -66,11 +66,15 @@ public class Authority implements Cloneable {
         }
     }
 
+    // Note: don't use ToStringBuilder since users are fetched lazily and that may cause problems
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this);
+        return "Authority{" +
+                "authorityId=" + authorityId +
+                ", authorityName='" + authorityName + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
-
 
     public String getDescription() {
         return description;

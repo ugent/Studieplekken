@@ -172,9 +172,26 @@ public class Location implements Cloneable {
         }
     }
 
+    // Note: don't use ToStringBuilder since volunteers are fetched lazily and that may cause problems
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this);
+        return "Location{" +
+                "locationId=" + locationId +
+                ", name='" + name + '\'' +
+                ", numberOfSeats=" + numberOfSeats +
+                ", numberOfLockers=" + numberOfLockers +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", descriptionDutch='" + descriptionDutch + '\'' +
+                ", descriptionEnglish='" + descriptionEnglish + '\'' +
+                ", building=" + building +
+                ", authority=" + authority +
+                ", forGroup=" + forGroup +
+                ", approved=" + approved +
+                ", assignedTags=" + assignedTags +
+                // ", volunteers=" + volunteers + // ignore due to lazy loading
+                ", status=" + status +
+                ", currentTimeslot=" + currentTimeslot +
+                '}';
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
