@@ -9,6 +9,7 @@ import blok2.model.reservables.Location;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -155,12 +156,17 @@ public class TestDBLocationTagDao extends BaseTest {
 
         // Assert that all the tags have been assigned
         Assert.assertEquals(locationTagDao.getTagsForLocation(testLocation.getLocationId()).size(), tagIds.size());
-        Assert.assertEquals(locationTagDao.getLocationsForTag(testTag.getTagId()).size(), 1);
-        Assert.assertEquals(locationTagDao.getLocationsForTag(testTag2.getTagId()).size(), 1);
-        Assert.assertEquals(locationTagDao.getLocationsForTag(testTag3.getTagId()).size(), 1);
+        Assert.assertEquals(1, locationTagDao.getLocationsForTag(testTag.getTagId()).size());
+        Assert.assertEquals(1, locationTagDao.getLocationsForTag(testTag2.getTagId()).size());
+        Assert.assertEquals(1, locationTagDao.getLocationsForTag(testTag3.getTagId()).size());
 
         // Now try to add an already added tag to a location
-        locationTagDao.addTagToLocation(testLocation.getLocationId(), testTag.getTagId());
+        try {
+            locationTagDao.addTagToLocation(testLocation.getLocationId(), testTag.getTagId());
+            Assert.fail("Violation should be thrown on unique constraint");
+        } catch (DataIntegrityViolationException ignore) {
+            Assert.assertTrue(true);
+        }
 
         // Assert that this tag is not added anymore
         Assert.assertEquals(locationTagDao.getTagsForLocation(testLocation.getLocationId()).size(), tagIds.size());

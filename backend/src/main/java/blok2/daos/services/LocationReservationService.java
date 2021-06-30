@@ -109,7 +109,7 @@ public class LocationReservationService implements ILocationReservationDao {
 
     @Override
     public LocationReservation addLocationReservation(LocationReservation locationReservation) {
-        return locationReservationRepository.save(locationReservation);
+        return locationReservationRepository.saveAndFlush(locationReservation);
     }
 
     @Override
@@ -133,7 +133,7 @@ public class LocationReservationService implements ILocationReservationDao {
             locationReservation.getTimeslot().incrementAmountOfReservations();
 
         locationReservation.setAttended(attendance);
-        locationReservation = locationReservationRepository.save(locationReservation);
+        locationReservation = locationReservationRepository.saveAndFlush(locationReservation);
 
         return locationReservation.getAttended() == attendance;
     }

@@ -113,6 +113,22 @@ public class Location implements Cloneable {
         status = new Pair<>(LocationStatus.CLOSED, "");
     }
 
+    public void addLocationTag(LocationTag tag) {
+        assignedTags.add(tag);
+    }
+
+    public void addAllLocationTags(List<LocationTag> tags) {
+        assignedTags.addAll(tags);
+    }
+
+    public void removeLocationTag(LocationTag tag) {
+        assignedTags.remove(tag);
+    }
+
+    public void clearAllLocationTags() {
+        assignedTags.clear();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

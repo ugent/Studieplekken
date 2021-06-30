@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.mail.MessagingException;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -178,16 +177,10 @@ public class LocationController extends AuthorizedLocationController {
     public void setupTagsForLocation(@PathVariable("locationId") int locationId,
                                      @RequestBody List<Integer> tagIds) {
         isAuthorized(locationId);
-        try {
-            logger.info(String.format("Setting up the tags for location '%s' with ids [%s]",
-                    locationId, tagIds.stream().map(String::valueOf).collect(Collectors.joining(", "))));
-            locationTagDao.deleteAllTagsFromLocation(locationId);
-            locationTagDao.bulkAddTagsToLocation(locationId, tagIds);
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        logger.info(String.format("Setting up the tags for location '%s' with ids [%s]",
+                locationId, tagIds.stream().map(String::valueOf).collect(Collectors.joining(", "))));
+        locationTagDao.deleteAllTagsFromLocation(locationId);
+        locationTagDao.bulkAddTagsToLocation(locationId, tagIds);
     }
 
     // **************************************************

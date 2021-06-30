@@ -104,13 +104,7 @@ public class TagsController extends AuthorizedLocationController {
     @GetMapping("/location/{locationId}")
     @PreAuthorize("permitAll()")
     public List<LocationTag> getTagsOfLocation(@PathVariable("locationId") int locationId) {
-        try {
-            return locationTagDao.getTagsForLocation(locationId);
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        return locationTagDao.getTagsForLocation(locationId);
     }
 
     @PutMapping("/location/assign/{locationId}")
@@ -118,15 +112,9 @@ public class TagsController extends AuthorizedLocationController {
     public void assignTagsToLocation(@PathVariable("locationId") int locationId,
                                      @RequestBody List<LocationTag> tags) {
         isAuthorized(locationId);
-        try {
-            List<Integer> lt = tags.stream().map(LocationTag::getTagId).collect(Collectors.toList());
-            locationTagDao.deleteAllTagsFromLocation(locationId);
-            locationTagDao.bulkAddTagsToLocation(locationId, lt);
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        List<Integer> lt = tags.stream().map(LocationTag::getTagId).collect(Collectors.toList());
+        locationTagDao.deleteAllTagsFromLocation(locationId);
+        locationTagDao.bulkAddTagsToLocation(locationId, lt);
     }
 
 }

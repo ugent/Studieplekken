@@ -1,12 +1,10 @@
 package blok2.model;
 
+import blok2.model.reservables.Location;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.util.Objects;
+import javax.persistence.*;
+import java.util.*;
 
 @Entity
 @Table(name = "tags")
@@ -14,7 +12,7 @@ public class LocationTag implements Cloneable {
 
     @Id
     @Column(name = "tag_id")
-    private int tagId;
+    private Integer tagId;
 
     @Column(name = "dutch")
     private String dutch;
@@ -22,20 +20,30 @@ public class LocationTag implements Cloneable {
     @Column(name = "english")
     private String english;
 
+    @ManyToMany(fetch = FetchType.LAZY) // in Location, the tags are fetched eagerly
+    @JoinTable(
+        name = "location_tags",
+        joinColumns = @JoinColumn(name = "tag_id"),
+        inverseJoinColumns = @JoinColumn(name = "location_id")
+    )
+    private List<Location> locations;
+
     public LocationTag(int tagId, String dutch, String english) {
         this.tagId = tagId;
         this.dutch = dutch;
         this.english = english;
+        locations = new ArrayList<>();
     }
 
     public LocationTag() {
+        locations = new ArrayList<>();
     }
 
     public int getTagId() {
         return tagId;
     }
 
-    public void setTagId(int tagId) {
+    public void setTagId(Integer tagId) {
         this.tagId = tagId;
     }
 
@@ -53,6 +61,14 @@ public class LocationTag implements Cloneable {
 
     public void setEnglish(String english) {
         this.english = english;
+    }
+
+    public List<Location> getLocations() {
+        return locations;
+    }
+
+    public void setLocations(List<Location> locations) {
+        this.locations = locations;
     }
 
     @Override

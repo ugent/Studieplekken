@@ -6,41 +6,41 @@ import blok2.model.reservables.Location;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface ILocationTagDao extends IDao {
+public interface ILocationTagDao {
 
     /**
      * List all the tags for a specific location
      */
-    List<LocationTag> getTagsForLocation(int locationId) throws SQLException;
+    List<LocationTag> getTagsForLocation(int locationId);
 
     /**
      * List all the locations that have a specific tag
      */
-    List<Location> getLocationsForTag(int tagId) throws SQLException;
+    List<Location> getLocationsForTag(int tagId);
 
     /**
      * Add a specific tag to a location
      */
-    boolean addTagToLocation(int locationId, int tagId) throws SQLException;
+    boolean addTagToLocation(int locationId, int tagId);
 
     /**
      * Add tags in bulk to a location
      */
-    boolean bulkAddTagsToLocation(int locationId, List<Integer> tagIds) throws SQLException;
+    boolean bulkAddTagsToLocation(int locationId, List<Integer> tagIds);
 
     /**
      * Delete a specific tag from a location
      */
-    boolean deleteTagFromLocation(int locationId, int tagId) throws SQLException;
+    boolean deleteTagFromLocation(int locationId, int tagId);
 
     /**
      * Delete all LocationTags for a specific location
      */
-    boolean deleteAllTagsFromLocation(int locationId) throws SQLException;
+    boolean deleteAllTagsFromLocation(int locationId);
 
     /**
      * Remove a specific LocationTag from all the locations that use it.
      */
-    boolean deleteTagFromAllLocations(int tagId) throws SQLException;
+    boolean deleteTagFromAllLocations(int tagId);
 
 }
