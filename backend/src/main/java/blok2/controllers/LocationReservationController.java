@@ -51,26 +51,14 @@ public class LocationReservationController extends AuthorizedLocationController 
     // Not sure why you'd be allowed to get a user's reservations if you own a location.
     // TODO: We suddenly use a request parameter here. Probably better to streamline it with everything else and put it in the url.
     public List<LocationReservation> getLocationReservationsByUserId(@RequestParam String id) {
-        try {
-            return locationReservationDao.getAllLocationReservationsOfUser(id);
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        return locationReservationDao.getAllLocationReservationsOfUser(id);
     }
 
     @GetMapping("/{userId}")
     @PreAuthorize("hasAuthority('USER') and #userId == authentication.principal.userId")
     public List<Pair<LocationReservation, CalendarPeriod>>
     getLocationReservationsWithLocationByUserId(@PathVariable("userId") String userId) {
-        try {
-            return locationReservationDao.getAllLocationReservationsAndCalendarPeriodsOfUser(userId);
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        return locationReservationDao.getAllLocationReservationsAndCalendarPeriodsOfUser(userId);
     }
 
     @PostMapping
@@ -101,24 +89,13 @@ public class LocationReservationController extends AuthorizedLocationController 
             @PathVariable("seqnr") int seqnr
     ) {
         Timeslot timeslot = new Timeslot(calendarId, seqnr, date, 0);
-        try {
-            return locationReservationDao.getAllLocationReservationsOfTimeslot(timeslot);
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        return locationReservationDao.getAllLocationReservationsOfTimeslot(timeslot);
     }
 
     @GetMapping("/count/{locationId}")
     @PreAuthorize("permitAll()")
     public Map<String, Integer> getReservationCount(@PathVariable("locationId") int locationId) {
-        try {
-            return Collections.singletonMap("amount", locationReservationDao.amountOfReservationsRightNow(locationId));
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        return Collections.singletonMap("amount", locationReservationDao.amountOfReservationsRightNow(locationId));
     }
 
     @DeleteMapping

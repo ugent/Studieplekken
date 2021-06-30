@@ -96,10 +96,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if(this.locationSub)
+    if (this.locationSub) {
       this.locationSub.unsubscribe();
-    if(this.nextReservableFromSub)
+    }
+    if (this.nextReservableFromSub) {
       this.nextReservableFromSub.unsubscribe();
+    }
   }
 
   /**

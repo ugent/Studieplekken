@@ -13,6 +13,7 @@ import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -112,6 +113,7 @@ public class LocationReservationService implements ILocationReservationDao {
     }
 
     @Override
+    @Transactional
     public boolean setReservationAttendance(String userId, Timeslot timeslot, boolean attendance) {
         LocationReservation.LocationReservationId id = new LocationReservation.LocationReservationId(
                 timeslot.getTimeslotSeqnr(), timeslot.getTimeslotDate(), timeslot.getCalendarId(), userId
@@ -120,6 +122,15 @@ public class LocationReservationService implements ILocationReservationDao {
         LocationReservation locationReservation = locationReservationRepository.findById(id)
                 .orElseThrow(() -> new NoSuchDatabaseObjectException(
                         String.format("No location reservation found with id '%s'", id)));
+        Boolean currentAttendance = locationReservation.getAttended();
+
+        // if attendance goes from null or true to false, decrement reservation count
+        if (!attendance && (currentAttendance == null || currentAttendance))
+            locationReservation.getTimeslot().decrementAmountOfReservations();
+
+        // if attendance goes from false to true, increment the current reservation count since this person is here now
+        if (attendance && (currentAttendance != null && !currentAttendance))
+            locationReservation.getTimeslot().incrementAmountOfReservations();
 
         locationReservation.setAttended(attendance);
         locationReservation = locationReservationRepository.save(locationReservation);
@@ -138,7 +149,12 @@ public class LocationReservationService implements ILocationReservationDao {
                 timeslot.getTimeslotSeqnr(), timeslot.getTimeslotDate(), timeslot.getCalendarId()
         );
 
-        locationReservations.forEach((LocationReservation lr) -> lr.setAttended(false));
+        // for each unattended reservation, set the attendance to false and decrement the reservation count
+        // so that other students are able to make use of the freed spot
+        locationReservations.forEach((LocationReservation lr) -> {
+            lr.setAttended(false);
+            lr.getTimeslot().decrementAmountOfReservations();
+        });
 
         locationReservationRepository.saveAll(locationReservations);
     }

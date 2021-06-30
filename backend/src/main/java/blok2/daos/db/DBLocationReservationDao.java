@@ -37,6 +37,7 @@ public class DBLocationReservationDao extends DAO {
                 // If this operation succeeds, the reservation can proceed
                 query = "insert into public.location_reservations (user_id, timeslot_date, timeslot_seqnr, calendar_id, attended) " +
                         "values (?, ?, ?, ?, null);";
+                
                 PreparedStatement pstmt = conn.prepareStatement(query);
                 pstmt.setString(1, reservation.getUser().getUserId());
                 pstmt.setDate(2, java.sql.Date.valueOf(reservation.getTimeslot().getTimeslotDate()));
