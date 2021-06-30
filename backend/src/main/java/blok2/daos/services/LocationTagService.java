@@ -27,6 +27,18 @@ public class LocationTagService implements ILocationTagDao {
     }
 
     @Override
+    public List<LocationTag> getAllLocationTags() {
+        return locationTagRepository.findAll();
+    }
+
+    @Override
+    public LocationTag getLocationTagById(int tagId) {
+        return locationTagRepository.findById(tagId)
+                .orElseThrow(() -> new NoSuchDatabaseObjectException(
+                        String.format("No location tag found with locationTagId '%d'", tagId)));
+    }
+
+    @Override
     public List<LocationTag> getTagsForLocation(int locationId) {
         Location location = locationRepository.findById(locationId)
                 .orElseThrow(() -> new NoSuchDatabaseObjectException(
@@ -48,7 +60,22 @@ public class LocationTagService implements ILocationTagDao {
     }
 
     @Override
-    public boolean addTagToLocation(int locationId, int tagId) {
+    public LocationTag addLocationTag(LocationTag tag) {
+        return locationTagRepository.save(tag);
+    }
+
+    @Override
+    public void updateLocationTag(LocationTag tag) {
+        locationTagRepository.save(tag);
+    }
+
+    @Override
+    public void deleteLocationTag(int tagId) {
+        locationTagRepository.deleteById(tagId);
+    }
+
+    @Override
+    public void addTagToLocation(int locationId, int tagId) {
         Location location = locationRepository.findById(locationId)
                 .orElseThrow(() -> new NoSuchDatabaseObjectException(
                         String.format("No location found with locationId '%d'", locationId)));
@@ -58,13 +85,11 @@ public class LocationTagService implements ILocationTagDao {
                         String.format("No location tag found with locationTagId '%d'", tagId)));
 
         location.getAssignedTags().add(tag);
-        location = locationRepository.saveAndFlush(location);
-
-        return location.getAssignedTags().contains(tag);
+        locationRepository.saveAndFlush(location);
     }
 
     @Override
-    public boolean bulkAddTagsToLocation(int locationId, List<Integer> tagIds) {
+    public void bulkAddTagsToLocation(int locationId, List<Integer> tagIds) {
         Location location = locationRepository.findById(locationId)
                 .orElseThrow(() -> new NoSuchDatabaseObjectException(
                         String.format("No location found with locationId '%d'", locationId)));
@@ -72,13 +97,11 @@ public class LocationTagService implements ILocationTagDao {
         List<LocationTag> tags = locationTagRepository.findAllById(tagIds);
 
         location.addAllLocationTags(tags);
-        location = locationRepository.saveAndFlush(location);
-
-        return location.getAssignedTags().containsAll(tags);
+        locationRepository.saveAndFlush(location);
     }
 
     @Override
-    public boolean deleteTagFromLocation(int locationId, int tagId) {
+    public void deleteTagFromLocation(int locationId, int tagId) {
         Location location = locationRepository.findById(locationId)
                 .orElseThrow(() -> new NoSuchDatabaseObjectException(
                         String.format("No location found with locationId '%d'", locationId)));
@@ -88,26 +111,22 @@ public class LocationTagService implements ILocationTagDao {
                         String.format("No location tag found with locationTagId '%d'", tagId)));
 
         location.removeLocationTag(tag);
-        location = locationRepository.saveAndFlush(location);
-
-        return !location.getAssignedTags().contains(tag);
+        locationRepository.saveAndFlush(location);
     }
 
     @Override
-    public boolean deleteAllTagsFromLocation(int locationId) {
+    public void deleteAllTagsFromLocation(int locationId) {
         Location location = locationRepository.findById(locationId)
                 .orElseThrow(() -> new NoSuchDatabaseObjectException(
                         String.format("No location found with locationId '%d'", locationId)));
 
         location.clearAllLocationTags();
-        location = locationRepository.saveAndFlush(location);
-
-        return location.getAssignedTags().isEmpty();
+        locationRepository.saveAndFlush(location);
     }
 
     @Override
     @Transactional // to lazily fetch the locations of the location tag
-    public boolean deleteTagFromAllLocations(int tagId) {
+    public void deleteTagFromAllLocations(int tagId) {
         LocationTag tag = locationTagRepository.findById(tagId)
                 .orElseThrow(() -> new NoSuchDatabaseObjectException(
                         String.format("No location tag found with locationTagId '%d'", tagId)));
@@ -115,11 +134,7 @@ public class LocationTagService implements ILocationTagDao {
         List<Location> locations = tag.getLocations();
         locations.forEach((Location location) -> location.removeLocationTag(tag));
 
-        locations = locationRepository.saveAll(locations);
-        boolean match = locations.stream()
-                .anyMatch((Location location) -> location.getAssignedTags().contains(tag));
-
-        return !match;
+        locationRepository.saveAll(locations);
     }
 
 }

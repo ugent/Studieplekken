@@ -11,6 +11,7 @@ import java.util.*;
 public class LocationTag implements Cloneable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tag_id")
     private Integer tagId;
 

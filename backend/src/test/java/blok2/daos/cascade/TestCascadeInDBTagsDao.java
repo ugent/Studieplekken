@@ -19,9 +19,6 @@ public class TestCascadeInDBTagsDao extends BaseTest {
     private ILocationDao locationDao;
 
     @Autowired
-    private ITagsDao tagsDao;
-
-    @Autowired
     private ILocationTagDao locationTagDao;
 
     @Autowired
@@ -48,16 +45,12 @@ public class TestCascadeInDBTagsDao extends BaseTest {
         testLocation2 = TestSharedMethods.testLocation2(authority.clone(), testBuilding);
         testLocation3 = TestSharedMethods.testLocation3(authority.clone(), testBuilding);
 
-        testTag = TestSharedMethods.testTag();
-        testTag2 = TestSharedMethods.testTag2();
+        testTag = locationTagDao.addLocationTag(TestSharedMethods.testTag());
+        testTag2 = locationTagDao.addLocationTag(TestSharedMethods.testTag2());
 
-        // add test objects to the database
         locationDao.addLocation(testLocation1);
         locationDao.addLocation(testLocation2);
         locationDao.addLocation(testLocation3);
-
-        tagsDao.addTag(testTag);
-        tagsDao.addTag(testTag2);
     }
 
     @Test
@@ -76,7 +69,7 @@ public class TestCascadeInDBTagsDao extends BaseTest {
         Assert.assertFalse("deleteLocationTagWithCascadeNeeded, add location tag", locationDao.getLocationByName(testLocation3.getName()).getAssignedTags().contains(testTag2));
 
         // Remove tag 1
-        tagsDao.deleteTag(testTag.getTagId());
+        locationTagDao.deleteLocationTag(testTag.getTagId());
 
         // Assert that the deletion of the tags cascaded to the locations
         Assert.assertFalse("deleteLocationTagWithCascadeNeeded, cascade delete location tag", locationDao.getLocationByName(testLocation1.getName()).getAssignedTags().contains(testTag));

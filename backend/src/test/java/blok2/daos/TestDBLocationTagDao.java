@@ -29,9 +29,6 @@ public class TestDBLocationTagDao extends BaseTest {
     @Autowired
     private IBuildingDao buildingDao;
 
-    @Autowired
-    private ITagsDao tagsDao;
-
     private Location testLocation;
     private Location testLocation2;
 
@@ -48,17 +45,13 @@ public class TestDBLocationTagDao extends BaseTest {
         testLocation = TestSharedMethods.testLocation(testAuthority, testBuilding);
         testLocation2 = TestSharedMethods.testLocation2(testAuthority, testBuilding);
 
-        testTag = TestSharedMethods.testTag();
-        testTag2 = TestSharedMethods.testTag2();
-        testTag3 = TestSharedMethods.testTag3();
+        testTag = locationTagDao.addLocationTag(TestSharedMethods.testTag());
+        testTag2 = locationTagDao.addLocationTag(TestSharedMethods.testTag2());
+        testTag3 = locationTagDao.addLocationTag(TestSharedMethods.testTag3());
 
         // Save objects in database
         locationDao.addLocation(testLocation);
         locationDao.addLocation(testLocation2);
-
-        tagsDao.addTag(testTag);
-        tagsDao.addTag(testTag2);
-        tagsDao.addTag(testTag3);
     }
 
     // addTagToLocation, getTagsForLocation, deleteTagFromLocation

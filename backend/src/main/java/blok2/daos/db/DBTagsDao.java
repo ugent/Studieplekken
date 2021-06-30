@@ -1,6 +1,5 @@
 package blok2.daos.db;
 
-import blok2.daos.ITagsDao;
 import blok2.helpers.Resources;
 import blok2.model.LocationTag;
 import org.springframework.stereotype.Service;
@@ -13,9 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class DBTagsDao extends DAO implements ITagsDao {
+public class DBTagsDao extends DAO {
 
-    @Override
+    
     public void addTag(LocationTag tag) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement st = conn.prepareStatement(Resources.databaseProperties.getString("add_tag"));
@@ -32,7 +31,7 @@ public class DBTagsDao extends DAO implements ITagsDao {
         st.execute();
     }
 
-    @Override
+    
     public void deleteTag(int tagId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement st = conn.prepareStatement(Resources.databaseProperties.getString("delete_tag"));
@@ -41,7 +40,7 @@ public class DBTagsDao extends DAO implements ITagsDao {
         }
     }
 
-    @Override
+    
     public void updateTag(LocationTag tag) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement st = conn.prepareStatement(Resources.databaseProperties.getString("update_tag"));
@@ -52,7 +51,7 @@ public class DBTagsDao extends DAO implements ITagsDao {
         }
     }
 
-    @Override
+    
     public List<LocationTag> getTags() throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement st = conn.prepareStatement(Resources.databaseProperties.getString("all_tags"));
@@ -61,7 +60,7 @@ public class DBTagsDao extends DAO implements ITagsDao {
         }
     }
 
-    @Override
+    
     public LocationTag getTag(int tagId) throws SQLException {
         try (Connection conn = adb.getConnection()) {
             PreparedStatement st = conn.prepareStatement(Resources.databaseProperties.getString("get_tag"));
