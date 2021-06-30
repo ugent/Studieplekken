@@ -1,15 +1,11 @@
 package blok2.daos.db;
 
 import blok2.daos.ICalendarPeriodDao;
+import blok2.daos.ILocationDao;
 import blok2.helpers.LocationStatus;
 import blok2.helpers.Pair;
-import blok2.helpers.Resources;
-import blok2.model.Authority;
-import blok2.model.Building;
-import blok2.model.LocationTag;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
-import blok2.model.reservables.Location;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,16 +23,29 @@ public class DBCalendarPeriodDao implements ICalendarPeriodDao {
     private final Logger logger = Logger.getLogger(DBCalendarPeriodDao.class.getSimpleName());
 
     private final ConnectionProvider connectionProvider;
+    private final ILocationDao locationDao;
 
     @Autowired
-    public DBCalendarPeriodDao(ConnectionProvider connectionProvider) {
+    public DBCalendarPeriodDao(ConnectionProvider connectionProvider,
+                               ILocationDao locationDao) {
         this.connectionProvider = connectionProvider;
+        this.locationDao = locationDao;
     }
 
     @Override
     public List<CalendarPeriod> getCalendarPeriodsOfLocation(int locationId) throws SQLException {
         try (Connection conn = connectionProvider.getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_calendar_periods"));
+            PreparedStatement pstmt = conn.prepareStatement("" +
+                    "select cp.*, l.*, a.*, b.*" +
+                    "from public.calendar_periods cp " +
+                    "   join public.locations l " +
+                    "       on l.location_id = cp.location_id " +
+                    "   join public.authority a " +
+                    "       on a.authority_id = l.authority_id " +
+                    "   join public.buildings b " +
+                    "       on b.building_id = l.building_id " +
+                    "where cp.location_id = ? " +
+                    "order by cp.starts_at, cp.opening_time;");
             pstmt.setInt(1, locationId);
             return getCalendarPeriodsFromPstmt(pstmt, conn);
         }
@@ -45,7 +54,17 @@ public class DBCalendarPeriodDao implements ICalendarPeriodDao {
     @Override
     public List<CalendarPeriod> getAllCalendarPeriods() throws SQLException {
         try (Connection conn = connectionProvider.getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_all_calendar_periods"));
+            PreparedStatement pstmt = conn.prepareStatement("" +
+                    "select cp.*, l.*, b.*, a.*" +
+                    "from public.calendar_periods cp " +
+                    "   join public.locations l " +
+                    "       on l.location_id = cp.location_id " +
+                    "   join public.authority a " +
+                    "       on a.authority_id = l.authority_id " +
+                    "   join public.buildings b " +
+                    "       on l.building_id = b.building_id " +
+                    "order by to_date(cp.starts_at || ' ' || cp.opening_time, 'YYYY-MM-DD HH24:MI');"
+            );
             return getCalendarPeriodsFromPstmt(pstmt, conn);
         }
     }
@@ -57,7 +76,16 @@ public class DBCalendarPeriodDao implements ICalendarPeriodDao {
 
     public List<CalendarPeriod> getCalendarPeriodsInPeriod(LocalDate start, LocalDate end) throws SQLException {
         try (Connection conn = connectionProvider.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement(Resources.databaseProperties.getString("get_calendar_periods_in_period"));
+            PreparedStatement stmt = conn.prepareStatement("" +
+                    "select * " +
+                    "from public.calendar_periods cp " +
+                    "   join public.locations l " +
+                    "       on l.location_id = cp.location_id " +
+                    "   join public.authority a " +
+                    "       on a.authority_id = l.authority_id " +
+                    "   join public.buildings b " +
+                    "       on b.building_id = l.building_id " +
+                    "where cp.starts_at > ? and cp.starts_at < ?;");
             stmt.setDate(1, Date.valueOf(start));
             stmt.setDate(2, Date.valueOf(end));
             ResultSet rs = stmt.executeQuery();
@@ -65,7 +93,7 @@ public class DBCalendarPeriodDao implements ICalendarPeriodDao {
             List<CalendarPeriod> periods = new ArrayList<>();
 
             while (rs.next()) {
-                periods.add(createCalendarPeriod(rs, conn));
+                periods.add(createCalendarPeriod(rs));
             }
 
             return periods;
@@ -99,8 +127,10 @@ public class DBCalendarPeriodDao implements ICalendarPeriodDao {
             calendarPeriod.setTimeslotLength(calendarPeriod.getOpenHoursDuration() / 60);
         }
 
-        String[] generatedColumns = { Resources.databaseProperties.getString("calendar_period_id") };
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_calendar_period"), generatedColumns);
+        String[] generatedColumns = { "calendar_id" };
+        PreparedStatement pstmt = conn.prepareStatement("" +
+                "insert into public.calendar_periods(location_id, starts_at, ends_at, opening_time, closing_time, reservable_from, reservable, timeslot_length, locked_from, seat_count) " +
+                "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", generatedColumns);
         prepareCalendarPeriodPstmt(calendarPeriod, pstmt);
         pstmt.setInt(10, calendarPeriod.getLocation().getNumberOfSeats());
         pstmt.execute();
@@ -143,13 +173,15 @@ public class DBCalendarPeriodDao implements ICalendarPeriodDao {
     }
 
     private void removeTimeslots(CalendarPeriod period, Connection conn) throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_timeslots_of_calendar"));
+        PreparedStatement stmt = conn.prepareStatement("delete from public.timeslots rt where rt.calendar_id = ?;");
         stmt.setInt(1, period.getId());
         stmt.execute();
     }
 
     private void addTimeslotPeriod(int seq_id, LocalDate date, CalendarPeriod period, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("insert_timeslots"));
+        PreparedStatement pstmt = conn.prepareStatement("" +
+                "insert into public.timeslots(calendar_id, timeslot_sequence_number, timeslot_date, seat_count) " +
+                "values (?, ?, ?, ?);");
         prepareTimeslotPeriodPstmt(seq_id, date, period, period.getSeatCount(), pstmt);
         pstmt.execute();
     }
@@ -196,7 +228,10 @@ public class DBCalendarPeriodDao implements ICalendarPeriodDao {
     }
 
     private void updateCalendarPeriod(int calendarId, CalendarPeriod to, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("update_calendar_period"));
+        PreparedStatement pstmt = conn.prepareStatement("" +
+                "update public.calendar_periods " +
+                "set location_id = ?, starts_at = ?, ends_at = ?, opening_time = ?, closing_time = ?, reservable_from = ?, reservable = ?, timeslot_length = ?, locked_from = ? " +
+                "where calendar_id = ?;");
         // set ...
         prepareCalendarPeriodPstmt(to, pstmt);
         // where ...
@@ -211,7 +246,9 @@ public class DBCalendarPeriodDao implements ICalendarPeriodDao {
     @Override
     public void deleteCalendarPeriod(CalendarPeriod calendarPeriod) throws SQLException {
         try (Connection conn = connectionProvider.getConnection()) {
-            PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_calendar_period"));
+            PreparedStatement pstmt = conn.prepareStatement("" +
+                    "delete from public.calendar_periods " +
+                    "where location_id = ? and starts_at = ? and ends_at = ? and opening_time = ? and closing_time = ? and reservable = ? and timeslot_length = ?;");
             prepareCommonPartOfCalendarPeriodPstmt(calendarPeriod, pstmt);
             pstmt.setBoolean(6, calendarPeriod.isReservable());
             pstmt.setInt(7, calendarPeriod.getTimeslotLength());
@@ -237,7 +274,25 @@ public class DBCalendarPeriodDao implements ICalendarPeriodDao {
         // DateTimeFormatter to format the next opening hour in a consistent manner
         DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_current_and_or_next_timeslot"));
+        PreparedStatement pstmt = conn.prepareStatement("" +
+                "with x as ( " +
+                "    select rt.calendar_id, rt.timeslot_sequence_number, rt.timeslot_date, rt.reservation_count, rt.seat_count " +
+                "         , cp.location_id, cp.starts_at, cp.ends_at, cp.opening_time, cp.closing_time, cp.reservable_from, cp.locked_from, cp.reservable, cp.timeslot_length, cp.seat_count " +
+                "         , (rt.timeslot_date + cp.opening_time)::timestamp + interval '1 minute' * cp.timeslot_length * rt.timeslot_sequence_number as timeslot_start " +
+                "         , (rt.timeslot_date + cp.opening_time)::timestamp + interval '1 minute' * cp.timeslot_length * (rt.timeslot_sequence_number + 1) as timeslot_end " +
+                "    from timeslots rt " +
+                "             join calendar_periods cp " +
+                "                  on cp.calendar_id = rt.calendar_id " +
+                "    where cp.location_id = ?1 " +
+                "      and (rt.timeslot_date + cp.opening_time)::timestamp + interval '1 minute' * cp.timeslot_length * (rt.timeslot_sequence_number + 1) > now() " +
+                "), y as ( " +
+                "    select x.*, row_number() over(order by timeslot_start) n " +
+                "    from x " +
+                ") " +
+                "select * " +
+                "from y " +
+                "where n = 1 " +
+                "order by timeslot_start;");
         pstmt.setInt(1, locationId);
         ResultSet rs = pstmt.executeQuery();
 
@@ -246,8 +301,8 @@ public class DBCalendarPeriodDao implements ICalendarPeriodDao {
         }
 
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime timeslotStart = rs.getTimestamp(Resources.databaseProperties.getString("timeslot_start_timestamp")).toLocalDateTime();
-        LocalDateTime timeslotEnd = rs.getTimestamp(Resources.databaseProperties.getString("timeslot_end_timestamp")).toLocalDateTime();
+        LocalDateTime timeslotStart = rs.getTimestamp("timeslot_start").toLocalDateTime();
+        LocalDateTime timeslotEnd = rs.getTimestamp("timeslot_end").toLocalDateTime();
 
         if (now.isAfter(timeslotStart) && now.isBefore(timeslotEnd)) {
             return new Pair<>(LocationStatus.OPEN, timeslotEnd.format(outputFormat));
@@ -258,40 +313,33 @@ public class DBCalendarPeriodDao implements ICalendarPeriodDao {
         }
     }
 
-    public static Timeslot getCurrentTimeslot(int locationId, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_current_and_or_next_timeslot"));
-        pstmt.setInt(1, locationId);
-        ResultSet rs = pstmt.executeQuery();
-
-        if (!rs.next()) {
-            return null;
-        }
-
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime timeslotStart = rs.getTimestamp(Resources.databaseProperties.getString("timeslot_start_timestamp")).toLocalDateTime();
-        LocalDateTime timeslotEnd = rs.getTimestamp(Resources.databaseProperties.getString("timeslot_end_timestamp")).toLocalDateTime();
-
-        if (now.isAfter(timeslotStart) && now.isBefore(timeslotEnd)) {
-            return createTimeslot(rs);
-        }
-
-        return null;
-    }
-
     public CalendarPeriod getById(int calendarId) throws SQLException {
         try (Connection conn = connectionProvider.getConnection()) {
-            PreparedStatement statement = conn.prepareStatement(Resources.databaseProperties.getString("get_calendar_period_by_id"));
+            PreparedStatement statement = conn.prepareStatement("" +
+                    "select * " +
+                    "from public.calendar_periods cp " +
+                    "   join public.locations l " +
+                    "       on cp.location_id = l.location_id " +
+                    "   join public.buildings b " +
+                    "       on b.building_id = l.building_id " +
+                    "   join public.authority a " +
+                    "       on a.authority_id = l.authority_id " +
+                    "where cp.calendar_id = ?;");
             statement.setInt(1,calendarId);
             ResultSet set = statement.executeQuery();
             set.next();
-            CalendarPeriod p = createCalendarPeriod(set, conn);
+            CalendarPeriod p = createCalendarPeriod(set);
             fillTimeslotList(p, conn);
             return p;
         }
     }
 
     private void fillTimeslotList(CalendarPeriod calendarPeriod, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_timeslots"));
+        PreparedStatement pstmt = conn.prepareStatement("" +
+                "select rt.timeslot_sequence_number, rt.timeslot_date, rt.calendar_id, rt.reservation_count, rt.seat_count " +
+                "from public.timeslots rt " +
+                "where calendar_id = ? " +
+                "order by rt.timeslot_date, rt.timeslot_sequence_number;");
         pstmt.setInt(1, calendarPeriod.getId());
         ResultSet rs = pstmt.executeQuery();
 
@@ -304,33 +352,34 @@ public class DBCalendarPeriodDao implements ICalendarPeriodDao {
         calendarPeriod.setTimeslots(Collections.unmodifiableList(timeslotList));
     }
 
-    public static CalendarPeriod createCalendarPeriod(ResultSet rs, Connection conn) throws SQLException {
+    public CalendarPeriod createCalendarPeriod(ResultSet rs) throws SQLException {
         CalendarPeriod calendarPeriod = new CalendarPeriod();
 
-        calendarPeriod.setStartsAt(rs.getDate(Resources.databaseProperties.getString("calendar_period_starts_at")).toLocalDate());
-        calendarPeriod.setEndsAt(rs.getDate(Resources.databaseProperties.getString("calendar_period_ends_at")).toLocalDate());
-        calendarPeriod.setOpeningTime(rs.getTime(Resources.databaseProperties.getString("calendar_period_opening_time")).toLocalTime());
-        calendarPeriod.setClosingTime(rs.getTime(Resources.databaseProperties.getString("calendar_period_closing_time")).toLocalTime());
-        calendarPeriod.setReservableFrom(rs.getTimestamp(Resources.databaseProperties.getString("calendar_period_reservable_from")).toLocalDateTime());
-        calendarPeriod.setReservable(rs.getBoolean(Resources.databaseProperties.getString("calendar_period_reservable")));
-        calendarPeriod.setId(rs.getInt(Resources.databaseProperties.getString("calendar_period_id")));
-        calendarPeriod.setTimeslotLength(rs.getInt(Resources.databaseProperties.getString("calendar_period_timeslot_length")));
-        calendarPeriod.setLocation(createLocation(rs,conn));
-        calendarPeriod.setLockedFrom(rs.getTimestamp(Resources.databaseProperties.getString("calendar_period_locked_from")).toLocalDateTime());
-        calendarPeriod.setSeatCount(rs.getInt(Resources.databaseProperties.getString("calendar_period_seat_count")));
+        calendarPeriod.setStartsAt(rs.getDate("starts_at").toLocalDate());
+        calendarPeriod.setEndsAt(rs.getDate("ends_at").toLocalDate());
+        calendarPeriod.setOpeningTime(rs.getTime("opening_time").toLocalTime());
+        calendarPeriod.setClosingTime(rs.getTime("closing_time").toLocalTime());
+        calendarPeriod.setReservableFrom(rs.getTimestamp("reservable_from").toLocalDateTime());
+        calendarPeriod.setReservable(rs.getBoolean("reservable"));
+        calendarPeriod.setId(rs.getInt("calendar_id"));
+        calendarPeriod.setTimeslotLength(rs.getInt("timeslot_length"));
+        int locationId = rs.getInt("location_id");
+        calendarPeriod.setLocation(locationDao.getLocationById(locationId));
+        calendarPeriod.setLockedFrom(rs.getTimestamp("locked_from").toLocalDateTime());
+        calendarPeriod.setSeatCount(rs.getInt("seat_count"));
 
         return calendarPeriod;
     }
 
     public static Timeslot createTimeslot(ResultSet rs) throws SQLException {
-        int calendarId = (rs.getInt(Resources.databaseProperties.getString("timeslot_calendar_id")));
-        int seqnr = (rs.getInt(Resources.databaseProperties.getString("timeslot_sequence_number")));
-        LocalDate date = (rs.getDate(Resources.databaseProperties.getString("timeslot_date")).toLocalDate());
+        int calendarId = (rs.getInt("calendar_id"));
+        int seqnr = (rs.getInt("timeslot_sequence_number"));
+        LocalDate date = (rs.getDate("timeslot_date").toLocalDate());
 
         Timeslot timeslot = new Timeslot(calendarId, seqnr, date, 0);
 
-        int count = rs.getInt(Resources.databaseProperties.getString("timeslot_reservation_count"));
-        int seatCount = rs.getInt(Resources.databaseProperties.getString("timeslot_seat_count"));
+        int count = rs.getInt("reservation_count");
+        int seatCount = rs.getInt("seat_count");
 
         timeslot.setAmountOfReservations(Math.min(count, seatCount));
         // Small hack to display near-as-correct info
@@ -374,7 +423,7 @@ public class DBCalendarPeriodDao implements ICalendarPeriodDao {
         List<CalendarPeriod> periods = new ArrayList<>();
 
         while (rs.next()) {
-            periods.add(createCalendarPeriod(rs, conn));
+            periods.add(createCalendarPeriod(rs));
         }
 
         for (CalendarPeriod p : periods) {
@@ -383,59 +432,6 @@ public class DBCalendarPeriodDao implements ICalendarPeriodDao {
         }
 
         return periods;
-    }
-
-    public static Location createLocation(ResultSet rs, Connection conn) throws SQLException {
-        ResultSet rsTags = getTagsForLocation(rs.getInt(Resources.databaseProperties.getString("location_id")), conn);
-        int locationId = rs.getInt(Resources.databaseProperties.getString("location_id"));
-        Pair<LocationStatus, String> status = DBCalendarPeriodDao.getStatus(locationId, conn);
-        Timeslot timeslot = getCurrentTimeslot(locationId, conn);
-        String name = rs.getString(Resources.databaseProperties.getString("location_name"));
-        int numberOfSeats = rs.getInt(Resources.databaseProperties.getString("location_number_of_seats"));
-        int numberOfLockers = rs.getInt(Resources.databaseProperties.getString("location_number_of_lockers"));
-        boolean forGroup = rs.getBoolean(Resources.databaseProperties.getString("location_forGroup"));
-        String imageUrl = rs.getString(Resources.databaseProperties.getString("location_image_url"));
-        Building building = createBuilding(rs);
-        Authority authority = createAuthority(rs);
-
-        String descriptionDutch = rs.getString(Resources.databaseProperties.getString("location_description_dutch"));
-        String descriptionEnglish = rs.getString(Resources.databaseProperties.getString("location_description_english"));
-
-        List<LocationTag> assignedTags = new ArrayList<>();
-        while (rsTags.next()) {
-            LocationTag locationTag = createLocationTag(rsTags);
-            assignedTags.add(locationTag);
-        }
-
-        return new Location(locationId, name, numberOfSeats, numberOfLockers, imageUrl, authority,
-                descriptionDutch, descriptionEnglish, building, forGroup, assignedTags, status, timeslot);
-    }
-
-    public static ResultSet getTagsForLocation(int locationId, Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_tags_for_location"));
-        pstmt.setInt(1, locationId);
-        return pstmt.executeQuery();
-    }
-
-    public static Building createBuilding(ResultSet rs) throws SQLException {
-        int buildingId = rs.getInt(Resources.databaseProperties.getString("buildings_building_id"));
-        String name = rs.getString(Resources.databaseProperties.getString("buildings_name"));
-        String address = rs.getString(Resources.databaseProperties.getString("buildings_address"));
-        return new Building(buildingId, name, address);
-    }
-
-    public static Authority createAuthority(ResultSet rs) throws SQLException {
-        int authorityId = rs.getInt(Resources.databaseProperties.getString("authority_authority_id"));
-        String name = rs.getString(Resources.databaseProperties.getString("authority_name"));
-        String description = rs.getString(Resources.databaseProperties.getString("authority_description"));
-        return new Authority(authorityId, name, description);
-    }
-
-    public static LocationTag createLocationTag(ResultSet rs) throws SQLException {
-        return new LocationTag(
-                rs.getInt(Resources.databaseProperties.getString("tags_tag_id")),
-                rs.getString(Resources.databaseProperties.getString("tags_dutch")),
-                rs.getString(Resources.databaseProperties.getString("tags_english")));
     }
 
 }
