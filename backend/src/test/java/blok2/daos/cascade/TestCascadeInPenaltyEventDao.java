@@ -21,6 +21,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class TestCascadeInPenaltyEventDao extends BaseTest {
@@ -36,6 +37,9 @@ public class TestCascadeInPenaltyEventDao extends BaseTest {
 
     @Autowired
     private IPenaltyEventsDao penaltyEventsDao;
+
+    @Autowired
+    private IPenaltyDao penaltyDao;
 
     @Autowired
     private IBuildingDao buildingDao;
@@ -68,8 +72,8 @@ public class TestCascadeInPenaltyEventDao extends BaseTest {
         // because when the penalties are retrieved from the penaltyEventDao, the list will
         // be sorted by received points before asserting, if they would be equal we can't sort
         // on the points and be sure about the equality of the actual and expected list.
-        testPenalty1 = new Penalty(testUser1.getUserId(), testPenaltyEvent.getCode(), LocalDate.now(), LocalDate.now(), testLocation1.getLocationId(), 10, "First test penalty");
-        testPenalty2 = new Penalty(testUser2.getUserId(), testPenaltyEvent.getCode(), LocalDate.now(), LocalDate.now(), testLocation2.getLocationId(), 20, "Second test penalty");
+        testPenalty1 = new Penalty(testUser1.getUserId(), testPenaltyEvent.getCode(), LocalDateTime.now(), LocalDate.now(), testLocation1, 10, "First test penalty");
+        testPenalty2 = new Penalty(testUser2.getUserId(), testPenaltyEvent.getCode(), LocalDateTime.now(), LocalDate.now(), testLocation2, 20, "Second test penalty");
 
 
         // Add test objects to database
@@ -77,15 +81,15 @@ public class TestCascadeInPenaltyEventDao extends BaseTest {
         locationDao.addLocation(testLocation2);
 
         // now the location is added to the db, and the ids are set correctly
-        testPenalty1.setReservationLocationId(testLocation1.getLocationId());
-        testPenalty2.setReservationLocationId(testLocation2.getLocationId());
+        testPenalty1.setReservationLocation(testLocation1);
+        testPenalty2.setReservationLocation(testLocation2);
 
         userDao.addUser(testUser1);
         userDao.addUser(testUser2);
 
         penaltyEventsDao.addPenaltyEvent(testPenaltyEvent);
-        penaltyEventsDao.addPenalty(testPenalty1);
-        penaltyEventsDao.addPenalty(testPenalty2);
+        penaltyDao.addPenalty(testPenalty1);
+        penaltyDao.addPenalty(testPenalty2);
     }
 
     @Test
@@ -98,7 +102,7 @@ public class TestCascadeInPenaltyEventDao extends BaseTest {
         Assert.assertEquals("updatePenaltyEventWithoutNeedOfCascade, penalty event", testPenaltyEvent, p);
 
         // PENALTY_BOOK updated?
-        List<Penalty> penalties = penaltyEventsDao.getPenaltiesByEventCode(testPenaltyEvent.getCode());
+        List<Penalty> penalties = penaltyDao.getPenaltiesByEventCode(testPenaltyEvent.getCode());
         penalties.sort(Comparator.comparing(Penalty::getReceivedPoints));
 
         List<Penalty> expectedPenalties = new ArrayList<>();
@@ -126,11 +130,11 @@ public class TestCascadeInPenaltyEventDao extends BaseTest {
         Assert.assertEquals("updatePenaltyEventWithoutNeedOfCascade, penalty event", testPenaltyEvent, p);
 
         // PENALTY_BOOK updated?
-        List<Penalty> penalties = penaltyEventsDao.getPenaltiesByEventCode(testPenaltyEvent.getCode());
+        List<Penalty> penalties = penaltyDao.getPenaltiesByEventCode(testPenaltyEvent.getCode());
         penalties.sort(Comparator.comparing(Penalty::getReceivedPoints));
 
-        testPenalty1.setEventCode(testPenaltyEvent.getCode());
-        testPenalty2.setEventCode(testPenaltyEvent.getCode());
+        testPenalty1.getPenaltyId().eventCode = testPenaltyEvent.getCode();
+        testPenalty2.getPenaltyId().eventCode = testPenaltyEvent.getCode();
 
         List<Penalty> expectedPenalties = new ArrayList<>();
         expectedPenalties.add(testPenalty1);
@@ -150,7 +154,7 @@ public class TestCascadeInPenaltyEventDao extends BaseTest {
         Assert.assertEquals("deletePenaltyEventTest, descriptions need to be removed",
                 0, countDescriptionsOfPenaltyEvent(testPenaltyEvent.getCode()));
 
-        List<Penalty> penalties = penaltyEventsDao.getPenaltiesByEventCode(testPenaltyEvent.getCode());
+        List<Penalty> penalties = penaltyDao.getPenaltiesByEventCode(testPenaltyEvent.getCode());
         Assert.assertEquals("deletePenaltyEventTest, penalties", 0, penalties.size());
     }
 

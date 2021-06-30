@@ -40,6 +40,9 @@ public class TestCascadeInDBLocationDao extends BaseTest {
     private IPenaltyEventsDao penaltyEventsDao;
 
     @Autowired
+    private IPenaltyDao penaltyDao;
+
+    @Autowired
     private IScannerLocationDao scannerLocationDao;
 
     @Autowired
@@ -96,8 +99,8 @@ public class TestCascadeInDBLocationDao extends BaseTest {
         // because when the penalties are retrieved from the penaltyEventDao, the list will
         // be sorted by received points before asserting, if they would be equal we can't sort
         // on the points and be sure about the equality of the actual and expected list.
-        testPenalty1 = new Penalty(testUser1.getUserId(), testPenaltyEvent.getCode(), LocalDate.now(), LocalDate.now(), testLocation.getLocationId(), 10, "First test penalty");
-        testPenalty2 = new Penalty(testUser2.getUserId(), testPenaltyEvent.getCode(), LocalDate.now(), LocalDate.now(), testLocation.getLocationId(), 20, "Second test penalty");
+        testPenalty1 = new Penalty(testUser1.getUserId(), testPenaltyEvent.getCode(), LocalDateTime.now(), LocalDate.now(), testLocation, 10, "First test penalty");
+        testPenalty2 = new Penalty(testUser2.getUserId(), testPenaltyEvent.getCode(), LocalDateTime.now(), LocalDate.now(), testLocation, 20, "Second test penalty");
 
         // Add test objects to database
         userDao.addUser(testUser1);
@@ -107,8 +110,8 @@ public class TestCascadeInDBLocationDao extends BaseTest {
         locationReservationDao.addLocationReservation(testLocationReservation2);
 
         penaltyEventsDao.addPenaltyEvent(testPenaltyEvent);
-        penaltyEventsDao.addPenalty(testPenalty1);
-        penaltyEventsDao.addPenalty(testPenalty2);
+        penaltyDao.addPenalty(testPenalty1);
+        penaltyDao.addPenalty(testPenalty2);
 
         scannerLocationDao.addScannerLocation(testLocation.getLocationId(), testUser1.getUserId());
         scannerLocationDao.addScannerLocation(testLocation.getLocationId(), testUser2.getUserId());
@@ -137,7 +140,7 @@ public class TestCascadeInDBLocationDao extends BaseTest {
                 testLocationReservation2, lr2);
 
         // PENALTY_BOOK entries still available?
-        List<Penalty> penalties = penaltyEventsDao.getPenaltiesByLocation(testLocation.getLocationId());
+        List<Penalty> penalties = penaltyDao.getPenaltiesByLocation(testLocation.getLocationId());
         penalties.sort(Comparator.comparing(Penalty::getReceivedPoints));
 
         List<Penalty> expectedPenalties = new ArrayList<>();
@@ -199,12 +202,12 @@ public class TestCascadeInDBLocationDao extends BaseTest {
                 testLocationReservation2, lr2);
 
         // PENALTY_BOOK updated?
-        List<Penalty> penalties = penaltyEventsDao.getPenaltiesByLocation(testLocation.getLocationId());
+        List<Penalty> penalties = penaltyDao.getPenaltiesByLocation(testLocation.getLocationId());
         penalties.sort(Comparator.comparing(Penalty::getReceivedPoints));
 
         // Penalty objects don't keep a reference to User, but have a String with the userId
-        testPenalty1.setReservationLocationId(testLocation.getLocationId());
-        testPenalty2.setReservationLocationId(testLocation.getLocationId());
+        testPenalty1.setReservationLocation(testLocation);
+        testPenalty2.setReservationLocation(testLocation);
 
         List<Penalty> expectedPenalties = new ArrayList<>();
         expectedPenalties.add(testPenalty1);
@@ -250,7 +253,7 @@ public class TestCascadeInDBLocationDao extends BaseTest {
         List<User> scanners = scannerLocationDao.getScannersOnLocation(testLocation.getLocationId());
         Assert.assertEquals("deleteLocation, scanners", 0, scanners.size());
 
-        List<Penalty> penalties = penaltyEventsDao.getPenaltiesByLocation(testLocation.getLocationId());
+        List<Penalty> penalties = penaltyDao.getPenaltiesByLocation(testLocation.getLocationId());
         Assert.assertEquals("deleteLocation, penalties", 0, penalties.size());
     }
 

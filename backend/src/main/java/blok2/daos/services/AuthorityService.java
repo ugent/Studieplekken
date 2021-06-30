@@ -58,12 +58,12 @@ public class AuthorityService implements IAuthorityDao {
 
     @Override
     public Authority addAuthority(Authority authority) {
-        return authorityRepository.save(authority);
+        return authorityRepository.saveAndFlush(authority);
     }
 
     @Override
     public void updateAuthority(Authority authority) {
-        authorityRepository.save(authority);
+        authorityRepository.saveAndFlush(authority);
     }
 
     @Override
@@ -121,7 +121,7 @@ public class AuthorityService implements IAuthorityDao {
 
         user.getUserAuthorities().add(authority);
 
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
     }
 
     @Override
@@ -136,7 +136,7 @@ public class AuthorityService implements IAuthorityDao {
 
         user.getUserAuthorities().remove(authority);
 
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
     }
 
 }

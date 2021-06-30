@@ -91,12 +91,12 @@ public class UserService implements IUserDao {
 
     @Override
     public User addUser(User user) {
-        return userRepository.save(user);
+        return userRepository.saveAndFlush(user);
     }
 
     @Override
     public void updateUser(User user) {
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
     }
 
     @Override

@@ -7,7 +7,7 @@ import blok2.model.penalty.PenaltyEvent;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface IPenaltyEventsDao extends IDao {
+public interface IPenaltyEventsDao {
 
     /**
      * Get a list of all provided PenaltyEvents
@@ -48,35 +48,5 @@ public interface IPenaltyEventsDao extends IDao {
      * deleteDescription() deletes a description for given PenaltyEvent in given language
      */
     void deleteDescription(int code, Language language) throws SQLException;
-
-    /**
-     * Get the actual occurrence of a PenaltyEvent: e.g. someone has cancelled after 17:00 the day before opening
-     */
-    List<Penalty> getPenaltiesByUser(String userId) throws SQLException;
-
-    /**
-     * Get all occurrences of a PenaltyEvent within a location
-     */
-    List<Penalty> getPenaltiesByLocation(int locationId) throws SQLException;
-
-    /**
-     * Get all occurrences of a PenaltyEvent by type of PenaltyEvent
-     */
-    List<Penalty> getPenaltiesByEventCode(int eventCode) throws SQLException;
-
-    /**
-     * addPenalty() adds a Penalty to the so called Penalty Book (like the Order Book in a stock exchange market)
-     */
-    void addPenalty(Penalty penalty) throws SQLException;
-
-    /**
-     * updatePenalty() removes the Penalties 'remove' and adds the Penalties 'add' for the user identified by userId
-     */
-    void updatePenalties(String userId, List<Penalty> remove, List<Penalty> add) throws SQLException;
-
-    /**
-     * deleteEvent() deletes a Penalty
-     */
-    void deletePenalty(Penalty penalty) throws SQLException;
 
 }

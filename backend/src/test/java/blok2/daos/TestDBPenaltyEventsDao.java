@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,9 @@ public class TestDBPenaltyEventsDao extends BaseTest {
 
     @Autowired
     private IPenaltyEventsDao penaltyEventsDao;
+
+    @Autowired
+    private IPenaltyDao penaltyDao;
 
     private PenaltyEvent cancellingTooLateEvent;
     private PenaltyEvent notShowingUpEvent;
@@ -124,22 +128,22 @@ public class TestDBPenaltyEventsDao extends BaseTest {
     public void penaltyBookTest() throws SQLException {
         // setup some test data
 
-        LocalDate thisDayAMonthEarlier = LocalDate.now().minusMonths(1);
+        LocalDateTime thisDayAMonthEarlier = LocalDateTime.now().minusMonths(1);
 
-        Penalty penalty = new Penalty(testUser.getUserId(), testEvent.getCode(), LocalDate.now(), LocalDate.now()
-                , testLocation.getLocationId(), testEvent.getPoints(), "regular test penalty");
-        Penalty fatalPenalty = new Penalty(testUser.getUserId(), blacklistEvent.getCode(), LocalDate.now()
-                , LocalDate.of(1970, 1, 1), testLocation.getLocationId(), blacklistEvent.getPoints(),
+        Penalty penalty = new Penalty(testUser.getUserId(), testEvent.getCode(), LocalDateTime.now(), LocalDate.now()
+                , testLocation, testEvent.getPoints(), "regular test penalty");
+        Penalty fatalPenalty = new Penalty(testUser.getUserId(), blacklistEvent.getCode(), LocalDateTime.now()
+                , LocalDate.of(1970, 1, 1), testLocation, blacklistEvent.getPoints(),
                 "Fatal test penalty");
         Penalty penaltyLastMonth = new Penalty(testUser.getUserId(), testEvent.getCode()
-                , thisDayAMonthEarlier, thisDayAMonthEarlier, testLocation.getLocationId(), testEvent.getPoints(),
+                , thisDayAMonthEarlier, thisDayAMonthEarlier.toLocalDate(), testLocation, testEvent.getPoints(),
                 "Fatal test penalty of last month");
 
         User modifiableUser = testUser.clone();
 
         // Add penalty
-        penaltyEventsDao.addPenalty(penalty);
-        List<Penalty> penalties = penaltyEventsDao.getPenaltiesByUser(testUser.getUserId());
+        penaltyDao.addPenalty(penalty);
+        List<Penalty> penalties = penaltyDao.getPenaltiesByUser(testUser.getUserId());
         Assert.assertEquals("penaltyBookTests, added one penalty", 1, penalties.size());
         Assert.assertEquals("penaltyBookTests, added one penalty", penalty, penalties.get(0));
 
@@ -149,8 +153,8 @@ public class TestDBPenaltyEventsDao extends BaseTest {
         Assert.assertEquals("penaltyBookTests, added one penalty", modifiableUser, retrievedUser);
 
         // Delete penalty
-        penaltyEventsDao.deletePenalty(penalty);
-        penalties = penaltyEventsDao.getPenaltiesByUser(testUser.getUserId());
+        penaltyDao.deletePenalty(penalty);
+        penalties = penaltyDao.getPenaltiesByUser(testUser.getUserId());
         Assert.assertEquals("penaltyBookTests, deleted penalty", 0, penalties.size());
 
         // Is the corresponding user updated correctly?
@@ -159,8 +163,8 @@ public class TestDBPenaltyEventsDao extends BaseTest {
         Assert.assertEquals("penaltyBookTests, deleted penalty", modifiableUser, retrievedUser);
 
         // Add a penalty from last month
-        penaltyEventsDao.addPenalty(penaltyLastMonth);
-        penalties = penaltyEventsDao.getPenaltiesByUser(testUser.getUserId());
+        penaltyDao.addPenalty(penaltyLastMonth);
+        penalties = penaltyDao.getPenaltiesByUser(testUser.getUserId());
         Assert.assertEquals("penaltyBookTests, added penalty from last month", 1, penalties.size());
         Assert.assertEquals("penaltyBookTests, added penalty from last month"
                 , penaltyLastMonth, penalties.get(0));
