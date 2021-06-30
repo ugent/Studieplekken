@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface ICalendarPeriodDao extends IDao {
+public interface ICalendarPeriodDao {
 
     /**
      * Get all calendar periods of a specific location

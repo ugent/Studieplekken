@@ -1,6 +1,6 @@
 package blok2;
 
-import blok2.daos.db.ADB;
+import blok2.daos.db.ConnectionProvider;
 import config.CustomFlywayConfig;
 import org.flywaydb.test.FlywayTestExecutionListener;
 import org.flywaydb.test.annotation.FlywayTest;
@@ -26,7 +26,7 @@ import java.sql.SQLException;
 public abstract class BaseTest {
 
     @Autowired
-    protected ADB adb;
+    protected ConnectionProvider connectionProvider;
 
     /**
      * Wil be ran before every test to provide a fresh populated database

@@ -4,8 +4,13 @@ import blok2.daos.ICalendarPeriodDao;
 import blok2.helpers.LocationStatus;
 import blok2.helpers.Pair;
 import blok2.helpers.Resources;
+import blok2.model.Authority;
+import blok2.model.Building;
+import blok2.model.LocationTag;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
+import blok2.model.reservables.Location;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
@@ -17,14 +22,20 @@ import java.util.*;
 import java.util.logging.Logger;
 
 @Service
-public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
-
+public class DBCalendarPeriodDao implements ICalendarPeriodDao {
 
     private final Logger logger = Logger.getLogger(DBCalendarPeriodDao.class.getSimpleName());
 
+    private final ConnectionProvider connectionProvider;
+
+    @Autowired
+    public DBCalendarPeriodDao(ConnectionProvider connectionProvider) {
+        this.connectionProvider = connectionProvider;
+    }
+
     @Override
     public List<CalendarPeriod> getCalendarPeriodsOfLocation(int locationId) throws SQLException {
-        try (Connection conn = adb.getConnection()) {
+        try (Connection conn = connectionProvider.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_calendar_periods"));
             pstmt.setInt(1, locationId);
             return getCalendarPeriodsFromPstmt(pstmt, conn);
@@ -33,7 +44,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
 
     @Override
     public List<CalendarPeriod> getAllCalendarPeriods() throws SQLException {
-        try (Connection conn = adb.getConnection()) {
+        try (Connection conn = connectionProvider.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_all_calendar_periods"));
             return getCalendarPeriodsFromPstmt(pstmt, conn);
         }
@@ -45,7 +56,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
     }
 
     public List<CalendarPeriod> getCalendarPeriodsInPeriod(LocalDate start, LocalDate end) throws SQLException {
-        try (Connection conn = adb.getConnection()) {
+        try (Connection conn = connectionProvider.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(Resources.databaseProperties.getString("get_calendar_periods_in_period"));
             stmt.setDate(1, Date.valueOf(start));
             stmt.setDate(2, Date.valueOf(end));
@@ -64,7 +75,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
 
     @Override
     public void addCalendarPeriods(List<CalendarPeriod> periods) throws SQLException {
-        try (Connection conn = adb.getConnection()) {
+        try (Connection conn = connectionProvider.getConnection()) {
             try {
                 conn.setAutoCommit(false);
 
@@ -150,7 +161,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
             return;
         }
 
-        try (Connection conn = adb.getConnection()) {
+        try (Connection conn = connectionProvider.getConnection()) {
             try {
                 conn.setAutoCommit(false);
 
@@ -170,7 +181,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
 
     @Override
     public void updateCalendarPeriod(CalendarPeriod to) throws SQLException {
-        try (Connection conn = adb.getConnection()) {
+        try (Connection conn = connectionProvider.getConnection()) {
             try {
                 conn.setAutoCommit(false);
                 updateCalendarPeriod(to.getId(), to, conn);
@@ -199,7 +210,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
 
     @Override
     public void deleteCalendarPeriod(CalendarPeriod calendarPeriod) throws SQLException {
-        try (Connection conn = adb.getConnection()) {
+        try (Connection conn = connectionProvider.getConnection()) {
             PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("delete_calendar_period"));
             prepareCommonPartOfCalendarPeriodPstmt(calendarPeriod, pstmt);
             pstmt.setBoolean(6, calendarPeriod.isReservable());
@@ -217,7 +228,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
      */
     @Override
     public Pair<LocationStatus, String> getStatus(int locationId) throws SQLException {
-        try (Connection conn = adb.getConnection()) {
+        try (Connection conn = connectionProvider.getConnection()) {
             return getStatus(locationId, conn);
         }
     }
@@ -261,14 +272,14 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         LocalDateTime timeslotEnd = rs.getTimestamp(Resources.databaseProperties.getString("timeslot_end_timestamp")).toLocalDateTime();
 
         if (now.isAfter(timeslotStart) && now.isBefore(timeslotEnd)) {
-            return createTimeslot(rs, conn);
+            return createTimeslot(rs);
         }
 
         return null;
     }
 
     public CalendarPeriod getById(int calendarId) throws SQLException {
-        try (Connection conn = adb.getConnection()) {
+        try (Connection conn = connectionProvider.getConnection()) {
             PreparedStatement statement = conn.prepareStatement(Resources.databaseProperties.getString("get_calendar_period_by_id"));
             statement.setInt(1,calendarId);
             ResultSet set = statement.executeQuery();
@@ -287,7 +298,7 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         List<Timeslot> timeslotList = new ArrayList<>();
 
         while(rs.next()) {
-            timeslotList.add(createTimeslot(rs, conn));
+            timeslotList.add(createTimeslot(rs));
         }
 
         calendarPeriod.setTimeslots(Collections.unmodifiableList(timeslotList));
@@ -304,14 +315,14 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
         calendarPeriod.setReservable(rs.getBoolean(Resources.databaseProperties.getString("calendar_period_reservable")));
         calendarPeriod.setId(rs.getInt(Resources.databaseProperties.getString("calendar_period_id")));
         calendarPeriod.setTimeslotLength(rs.getInt(Resources.databaseProperties.getString("calendar_period_timeslot_length")));
-        calendarPeriod.setLocation(DBLocationDao.createLocation(rs,conn));
+        calendarPeriod.setLocation(createLocation(rs,conn));
         calendarPeriod.setLockedFrom(rs.getTimestamp(Resources.databaseProperties.getString("calendar_period_locked_from")).toLocalDateTime());
         calendarPeriod.setSeatCount(rs.getInt(Resources.databaseProperties.getString("calendar_period_seat_count")));
 
         return calendarPeriod;
     }
 
-    public static Timeslot createTimeslot(ResultSet rs, Connection conn) throws SQLException {
+    public static Timeslot createTimeslot(ResultSet rs) throws SQLException {
         int calendarId = (rs.getInt(Resources.databaseProperties.getString("timeslot_calendar_id")));
         int seqnr = (rs.getInt(Resources.databaseProperties.getString("timeslot_sequence_number")));
         LocalDate date = (rs.getDate(Resources.databaseProperties.getString("timeslot_date")).toLocalDate());
@@ -373,4 +384,58 @@ public class DBCalendarPeriodDao extends DAO implements ICalendarPeriodDao {
 
         return periods;
     }
+
+    public static Location createLocation(ResultSet rs, Connection conn) throws SQLException {
+        ResultSet rsTags = getTagsForLocation(rs.getInt(Resources.databaseProperties.getString("location_id")), conn);
+        int locationId = rs.getInt(Resources.databaseProperties.getString("location_id"));
+        Pair<LocationStatus, String> status = DBCalendarPeriodDao.getStatus(locationId, conn);
+        Timeslot timeslot = getCurrentTimeslot(locationId, conn);
+        String name = rs.getString(Resources.databaseProperties.getString("location_name"));
+        int numberOfSeats = rs.getInt(Resources.databaseProperties.getString("location_number_of_seats"));
+        int numberOfLockers = rs.getInt(Resources.databaseProperties.getString("location_number_of_lockers"));
+        boolean forGroup = rs.getBoolean(Resources.databaseProperties.getString("location_forGroup"));
+        String imageUrl = rs.getString(Resources.databaseProperties.getString("location_image_url"));
+        Building building = createBuilding(rs);
+        Authority authority = createAuthority(rs);
+
+        String descriptionDutch = rs.getString(Resources.databaseProperties.getString("location_description_dutch"));
+        String descriptionEnglish = rs.getString(Resources.databaseProperties.getString("location_description_english"));
+
+        List<LocationTag> assignedTags = new ArrayList<>();
+        while (rsTags.next()) {
+            LocationTag locationTag = createLocationTag(rsTags);
+            assignedTags.add(locationTag);
+        }
+
+        return new Location(locationId, name, numberOfSeats, numberOfLockers, imageUrl, authority,
+                descriptionDutch, descriptionEnglish, building, forGroup, assignedTags, status, timeslot);
+    }
+
+    public static ResultSet getTagsForLocation(int locationId, Connection conn) throws SQLException {
+        PreparedStatement pstmt = conn.prepareStatement(Resources.databaseProperties.getString("get_tags_for_location"));
+        pstmt.setInt(1, locationId);
+        return pstmt.executeQuery();
+    }
+
+    public static Building createBuilding(ResultSet rs) throws SQLException {
+        int buildingId = rs.getInt(Resources.databaseProperties.getString("buildings_building_id"));
+        String name = rs.getString(Resources.databaseProperties.getString("buildings_name"));
+        String address = rs.getString(Resources.databaseProperties.getString("buildings_address"));
+        return new Building(buildingId, name, address);
+    }
+
+    public static Authority createAuthority(ResultSet rs) throws SQLException {
+        int authorityId = rs.getInt(Resources.databaseProperties.getString("authority_authority_id"));
+        String name = rs.getString(Resources.databaseProperties.getString("authority_name"));
+        String description = rs.getString(Resources.databaseProperties.getString("authority_description"));
+        return new Authority(authorityId, name, description);
+    }
+
+    public static LocationTag createLocationTag(ResultSet rs) throws SQLException {
+        return new LocationTag(
+                rs.getInt(Resources.databaseProperties.getString("tags_tag_id")),
+                rs.getString(Resources.databaseProperties.getString("tags_dutch")),
+                rs.getString(Resources.databaseProperties.getString("tags_english")));
+    }
+
 }
