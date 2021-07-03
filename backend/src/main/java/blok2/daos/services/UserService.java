@@ -96,7 +96,7 @@ public class UserService implements IUserDao {
 
     @Override
     public void updateUser(User user) {
-        userRepository.saveAndFlush(user);
+        userRepository.save(user);
     }
 
     @Override

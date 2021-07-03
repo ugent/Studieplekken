@@ -58,7 +58,7 @@ public class VolunteerService implements IVolunteerDao {
 
         user.getUserVolunteer().add(location);
 
-        userRepository.saveAndFlush(user);
+        userRepository.save(user);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class VolunteerService implements IVolunteerDao {
 
         user.getUserVolunteer().remove(location);
 
-        userRepository.saveAndFlush(user);
+        userRepository.save(user);
     }
 
 }

@@ -48,7 +48,7 @@ public class BuildingService implements IBuildingDao {
 
     @Override
     public void updateBuilding(Building building) {
-        buildingRepository.saveAndFlush(building);
+        buildingRepository.save(building);
     }
 
     @Override

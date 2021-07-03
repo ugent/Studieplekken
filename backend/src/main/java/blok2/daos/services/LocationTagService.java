@@ -85,7 +85,7 @@ public class LocationTagService implements ILocationTagDao {
                         String.format("No location tag found with locationTagId '%d'", tagId)));
 
         location.getAssignedTags().add(tag);
-        locationRepository.saveAndFlush(location);
+        locationRepository.save(location);
     }
 
     @Override
@@ -97,7 +97,7 @@ public class LocationTagService implements ILocationTagDao {
         List<LocationTag> tags = locationTagRepository.findAllById(tagIds);
 
         location.addAllLocationTags(tags);
-        locationRepository.saveAndFlush(location);
+        locationRepository.save(location);
     }
 
     @Override
@@ -111,7 +111,7 @@ public class LocationTagService implements ILocationTagDao {
                         String.format("No location tag found with locationTagId '%d'", tagId)));
 
         location.removeLocationTag(tag);
-        locationRepository.saveAndFlush(location);
+        locationRepository.save(location);
     }
 
     @Override
@@ -121,7 +121,7 @@ public class LocationTagService implements ILocationTagDao {
                         String.format("No location found with locationId '%d'", locationId)));
 
         location.clearAllLocationTags();
-        locationRepository.saveAndFlush(location);
+        locationRepository.save(location);
     }
 
     @Override

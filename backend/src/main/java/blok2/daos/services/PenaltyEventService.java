@@ -38,7 +38,7 @@ public class PenaltyEventService implements IPenaltyEventsDao {
 
     @Override
     public void updatePenaltyEvent(PenaltyEvent event) {
-        penaltyEventRepository.saveAndFlush(event);
+        penaltyEventRepository.save(event);
     }
 
     @Override

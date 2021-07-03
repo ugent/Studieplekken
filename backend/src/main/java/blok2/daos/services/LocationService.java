@@ -63,7 +63,7 @@ public class LocationService implements ILocationDao {
 
     @Override
     public void updateLocation(Location location) {
-        locationRepository.saveAndFlush(location);
+        locationRepository.save(location);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class LocationService implements ILocationDao {
     @Override
     public void approveLocation(Location location, boolean approval) {
         location.setApproved(approval);
-        locationRepository.saveAndFlush(location);
+        locationRepository.save(location);
     }
 
     @Override
