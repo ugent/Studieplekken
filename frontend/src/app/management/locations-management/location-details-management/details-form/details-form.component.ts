@@ -83,7 +83,7 @@ export class DetailsFormComponent implements OnInit {
       this.authoritiesObs = this.authoritiesService.getAllAuthorities();
     } else {
       this.authoritiesObs = this.authoritiesService.getAuthoritiesOfUser(
-        this.authenticationService.userValue().augentID
+        this.authenticationService.userValue().userId
       );
     }
 

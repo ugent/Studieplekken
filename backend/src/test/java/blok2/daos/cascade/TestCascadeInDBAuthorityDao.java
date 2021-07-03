@@ -3,6 +3,7 @@ package blok2.daos.cascade;
 import blok2.BaseTest;
 import blok2.TestSharedMethods;
 import blok2.daos.*;
+import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.reservables.Location;
@@ -29,7 +30,7 @@ public class TestCascadeInDBAuthorityDao extends BaseTest {
     private ILocationDao locationDao;
 
     @Autowired
-    private IAccountDao accountDao;
+    private IUserDao userDao;
 
     private Authority testAuthority;
     private Location testLocation1;
@@ -43,23 +44,19 @@ public class TestCascadeInDBAuthorityDao extends BaseTest {
         testAuthority = TestSharedMethods.insertTestAuthority(authorityDao);
         Building testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
 
-        testLocation1 = TestSharedMethods.testLocation(testAuthority.clone(), testBuilding.clone());
-        testLocation2 = TestSharedMethods.testLocation2(testAuthority.clone(), testBuilding.clone());
-
         testUserStudent = TestSharedMethods.studentTestUser();
         testUserAdmin = TestSharedMethods.adminTestUser();
 
-
         // Add test objects to database
-        locationDao.addLocation(testLocation1);
-        locationDao.addLocation(testLocation2);
+        testLocation1 = locationDao.addLocation(TestSharedMethods.testLocation(testAuthority.clone(), testBuilding.clone()));
+        testLocation2 = locationDao.addLocation(TestSharedMethods.testLocation2(testAuthority.clone(), testBuilding.clone()));
 
-        accountDao.directlyAddUser(testUserStudent);
-        accountDao.directlyAddUser(testUserAdmin);
+        userDao.addUser(testUserStudent);
+        userDao.addUser(testUserAdmin);
     }
 
-    @Test
-    public void deleteAuthorityCascadeTest() throws SQLException {
+    @Test(expected = NoSuchDatabaseObjectException.class)
+    public void deleteAuthorityCascadeTest() {
         // Test locations are present in db
         List<Location> locations = authorityDao.getLocationsInAuthority(testAuthority.getAuthorityId());
 
@@ -73,14 +70,14 @@ public class TestCascadeInDBAuthorityDao extends BaseTest {
         Assert.assertEquals(expectedLocations, locations);
 
         // Test adding users to authority
-        authorityDao.addUserToAuthority(testUserStudent.getAugentID(), testAuthority.getAuthorityId());
-        authorityDao.addUserToAuthority(testUserAdmin.getAugentID(), testAuthority.getAuthorityId());
+        authorityDao.addUserToAuthority(testUserStudent.getUserId(), testAuthority.getAuthorityId());
+        authorityDao.addUserToAuthority(testUserAdmin.getUserId(), testAuthority.getAuthorityId());
 
         List<User> users = authorityDao.getUsersFromAuthority(testAuthority.getAuthorityId());
         List<User> expectedUsers = new ArrayList<>(Arrays.asList(testUserAdmin, testUserStudent));
 
-        users.sort(Comparator.comparing(User::getAugentID));
-        expectedUsers.sort(Comparator.comparing(User::getAugentID));
+        users.sort(Comparator.comparing(User::getUserId));
+        expectedUsers.sort(Comparator.comparing(User::getUserId));
 
         Assert.assertEquals(expectedUsers, users);
 
@@ -88,14 +85,14 @@ public class TestCascadeInDBAuthorityDao extends BaseTest {
         // Delete the authority
         authorityDao.deleteAuthority(testAuthority.getAuthorityId());
 
-        // Authority must be deleted
-        Assert.assertNull(authorityDao.getAuthorityByAuthorityId(testAuthority.getAuthorityId()));
-
         // And the locations must have been deleted on cascade
         Assert.assertEquals(0, authorityDao.getLocationsInAuthority(testAuthority.getAuthorityId()).size());
 
         // And the authorities should have been removed from the users
-        Assert.assertEquals(0, authorityDao.getAuthoritiesFromUser(testUserAdmin.getAugentID()).size());
-        Assert.assertEquals(0, authorityDao.getAuthoritiesFromUser(testUserStudent.getAugentID()).size());
+        Assert.assertEquals(0, authorityDao.getAuthoritiesFromUser(testUserAdmin.getUserId()).size());
+        Assert.assertEquals(0, authorityDao.getAuthoritiesFromUser(testUserStudent.getUserId()).size());
+
+        // Authority must be deleted
+        authorityDao.getAuthorityByAuthorityId(testAuthority.getAuthorityId()); // excpected to throw NoSuchDatabaseObjectException
     }
 }

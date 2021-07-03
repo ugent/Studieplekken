@@ -45,7 +45,7 @@ export class LocationReservationsComponent {
   waitingForServer = false;
 
   userHasSearchTerm: (u: User) => boolean = (u: User) =>
-    u.augentID.includes(this.searchTerm) ||
+    u.userId.includes(this.searchTerm) ||
     u.firstName.includes(this.searchTerm) ||
     u.lastName.includes(this.searchTerm)
 

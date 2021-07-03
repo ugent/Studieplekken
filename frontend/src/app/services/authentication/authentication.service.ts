@@ -102,9 +102,9 @@ export class AuthenticationService {
         this.updateHasVolunteeredSubject(next);
 
         /**
-         *  Spring's authentication ticket of a logged in user expires before the CAS authentication has expired. 
-         * This results in a lot of 302 HTTP responses triggering the Netdata monitoring tool in production. 
-         * To avoid this, the AuthenticationInterceptor intercepts unknown exceptions and calls this.authExpired() so that a new authentication session is started in Spring. 
+         *  Spring's authentication ticket of a logged in user expires before the CAS authentication has expired.
+         * This results in a lot of 302 HTTP responses triggering the Netdata monitoring tool in production.
+         * To avoid this, the AuthenticationInterceptor intercepts unknown exceptions and calls this.authExpired() so that a new authentication session is started in Spring.
          * Since this.authExpired() saves the last visited url, we can redirect the user to the last visited url instead of to the dashboard.
          */
         const getPreviouslyAuthenticatedUrl = localStorage.getItem(authenticationWasExpiredUrlLSKey);
@@ -149,7 +149,7 @@ export class AuthenticationService {
    * userSubject has a valid user as value, we can consider the user as logged in.
    */
   isLoggedIn(): boolean {
-    return this.userSubject.value && this.userSubject.value.augentID !== '';
+    return this.userSubject.value && this.userSubject.value.userId !== '';
   }
 
   /**
@@ -188,7 +188,7 @@ export class AuthenticationService {
 
   getLocationReservations(): Observable<LocationReservation[]> {
     return this.locationReservationService.getLocationReservationsOfUser(
-      this.userSubject.value.augentID
+      this.userSubject.value.userId
     );
   }
 
@@ -196,13 +196,13 @@ export class AuthenticationService {
     Pair<LocationReservation, CalendarPeriod>[]
   > {
     return this.locationReservationService.getLocationReservationsWithCalendarPeriodsOfUser(
-      this.userSubject.value.augentID
+      this.userSubject.value.userId
     );
   }
 
   getLockerReservations(): Observable<LockerReservation[]> {
     const v = this.lockerReservationService.getLockerReservationsOfUser(
-      this.userSubject.value.augentID
+      this.userSubject.value.userId
     );
 
     return v.pipe(
@@ -221,7 +221,7 @@ export class AuthenticationService {
 
   getPenalties(): Observable<Penalty[]> {
     return this.penaltyService.getPenaltiesOfUserById(
-      this.userSubject.value.augentID
+      this.userSubject.value.userId
     );
   }
 
@@ -229,13 +229,13 @@ export class AuthenticationService {
   // *   Auxiliaries   *
   // *******************
   updateHasAuthoritiesSubject(user: User): void {
-    this.userService.hasUserAuthorities(user.augentID).subscribe((next) => {
+    this.userService.hasUserAuthorities(user.userId).subscribe((next) => {
       this.hasAuthoritiesSubject.next(next);
     });
   }
 
   updateHasVolunteeredSubject(user: User): void {
-    this.userService.hasUserVolunteered(user.augentID).subscribe((next) => {
+    this.userService.hasUserVolunteered(user.userId).subscribe((next) => {
       this.hasVolunteeredSubject.next(next);
     });
   }

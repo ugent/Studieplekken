@@ -1,5 +1,5 @@
 export interface User {
-  augentID: string;
+  userId: string;
   firstName: string;
   lastName: string;
   mail: string;
@@ -12,7 +12,7 @@ export interface User {
 export class UserConstructor {
   static new(): User {
     return {
-      augentID: '',
+      userId: '',
       firstName: '',
       lastName: '',
       mail: '',
@@ -29,7 +29,7 @@ export class UserConstructor {
     }
 
     return {
-      augentID: obj.augentID,
+      userId: obj.userId,
       firstName: obj.firstName,
       lastName: obj.lastName,
       mail: obj.mail,

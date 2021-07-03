@@ -1,25 +1,50 @@
 package blok2.model;
 
+import blok2.model.reservables.Location;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-import java.util.Objects;
+import javax.persistence.*;
+import java.util.*;
 
+@Entity
+@Table(name = "tags")
 public class LocationTag implements Cloneable {
-    private int tagId;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "tag_id")
+    private Integer tagId;
+
+    @Column(name = "dutch")
     private String dutch;
+
+    @Column(name = "english")
     private String english;
+
+    @ManyToMany(fetch = FetchType.LAZY) // in Location, the tags are fetched eagerly
+    @JoinTable(
+        name = "location_tags",
+        joinColumns = @JoinColumn(name = "tag_id"),
+        inverseJoinColumns = @JoinColumn(name = "location_id")
+    )
+    private List<Location> locations;
 
     public LocationTag(int tagId, String dutch, String english) {
         this.tagId = tagId;
         this.dutch = dutch;
         this.english = english;
+        locations = new ArrayList<>();
+    }
+
+    public LocationTag() {
+        locations = new ArrayList<>();
     }
 
     public int getTagId() {
         return tagId;
     }
 
-    public void setTagId(int tagId) {
+    public void setTagId(Integer tagId) {
         this.tagId = tagId;
     }
 
@@ -39,6 +64,14 @@ public class LocationTag implements Cloneable {
         this.english = english;
     }
 
+    public List<Location> getLocations() {
+        return locations;
+    }
+
+    public void setLocations(List<Location> locations) {
+        this.locations = locations;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -47,6 +80,11 @@ public class LocationTag implements Cloneable {
         return Objects.equals(tagId, tag.tagId) &&
                 Objects.equals(dutch, tag.dutch) &&
                 Objects.equals(english, tag.english);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(tagId, dutch, english);
     }
 
     @Override
@@ -59,9 +97,14 @@ public class LocationTag implements Cloneable {
         }
     }
 
+    // Note: don't use ToStringBuilder since locations are fetched lazily and that may cause problems
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this);
+        return "LocationTag{" +
+                "tagId=" + tagId +
+                ", dutch='" + dutch + '\'' +
+                ", english='" + english + '\'' +
+                '}';
     }
 
 }

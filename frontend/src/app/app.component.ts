@@ -76,8 +76,8 @@ export class AppComponent implements OnInit {
           this.showManagement = true;
         } else {
           const obs = {
-            hasAuthorities: this.userService.hasUserAuthorities(next.augentID),
-            hasVolunteered: this.userService.hasUserVolunteered(next.augentID)
+            hasAuthorities: this.userService.hasUserAuthorities(next.userId),
+            hasVolunteered: this.userService.hasUserVolunteered(next.userId)
           };
 
           forkJoin(obs)

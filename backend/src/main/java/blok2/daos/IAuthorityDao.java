@@ -4,10 +4,9 @@ import blok2.model.Authority;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;
 
-import java.sql.SQLException;
 import java.util.List;
 
-public interface IAuthorityDao extends IDao {
+public interface IAuthorityDao {
 
     // *************************************
     // *   CRUD operations for AUTHORITY   *
@@ -16,41 +15,41 @@ public interface IAuthorityDao extends IDao {
     /**
      * get all authorities
      */
-    List<Authority> getAllAuthorities() throws SQLException;
+    List<Authority> getAllAuthorities();
 
     /**
      * get authority with the given name.
      */
-    Authority getAuthorityByName(String name) throws SQLException;
+    Authority getAuthorityByName(String name);
 
     /**
      * get authority by its id.
      */
-    Authority getAuthorityByAuthorityId(int authorityId) throws SQLException;
+    Authority getAuthorityByAuthorityId(int authorityId);
 
     /**
      * get locations in authority
      */
-    List<Location> getLocationsInAuthority(int authorityId) throws SQLException;
+    List<Location> getLocationsInAuthority(int authorityId);
 
     /**
      * Add an authority to the database. AuthorityId is ignored.
      *
      * @return the added authority with updated authorityId
      */
-    Authority addAuthority(Authority authority) throws SQLException;
+    Authority addAuthority(Authority authority);
 
     /**
      * Updates the authority given by the authorityId
      *
-     * @param updatedAuthority Authority with new values, with Authority.authorityId the authority to update
+     * @param authority Authority with new values, with Authority.authorityId the authority to update
      */
-    void updateAuthority(Authority updatedAuthority) throws SQLException;
+    void updateAuthority(Authority authority);
 
     /**
      * delete authority by its id, including user-authority relation and its locations
      */
-    void deleteAuthority(int authorityId) throws SQLException;
+    void deleteAuthority(int authorityId);
 
 
     // ************************************************
@@ -60,25 +59,25 @@ public interface IAuthorityDao extends IDao {
     /**
      * get a list of Authorities the user is a member of. Can be empty.
      */
-    List<Authority> getAuthoritiesFromUser(String augentId) throws SQLException;
+    List<Authority> getAuthoritiesFromUser(String userId);
 
     /**
      * get a list of Locations that the user can manage
      */
-    List<Location> getLocationsInAuthoritiesOfUser(String augentId) throws SQLException;
+    List<Location> getLocationsInAuthoritiesOfUser(String userId);
 
     /**
      * get list of users that are a member of the given authority.
      */
-    List<User> getUsersFromAuthority(int authorityId) throws SQLException;
+    List<User> getUsersFromAuthority(int authorityId);
 
     /**
      * Adds a user as a member of an authority. Returns if successful
      */
-    void addUserToAuthority(String augentid, int authorityId) throws SQLException;
+    void addUserToAuthority(String userId, int authorityId);
 
     /**
      * remove a user from the given authority
      */
-    void deleteUserFromAuthority(String augentid, int authorityId) throws SQLException;
+    void deleteUserFromAuthority(String userId, int authorityId);
 }

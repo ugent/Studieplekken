@@ -1,34 +1,86 @@
 package blok2.model.reservables;
 
+import blok2.helpers.Equality;
 import blok2.helpers.LocationStatus;
 import blok2.helpers.Pair;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.LocationTag;
 import blok2.model.calendar.Timeslot;
+import blok2.model.users.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import java.util.Objects;
 
+@Entity
+@Table(name = "locations")
 public class Location implements Cloneable {
+
+    @Id
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @Column(name = "location_id")
     private int locationId;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "number_of_seats")
     private int numberOfSeats;
+
+    @Column(name = "number_of_lockers")
     private int numberOfLockers;
+
+    @Column(name = "image_url")
     private String imageUrl;
+
+    @Column(name = "description_dutch")
     private String descriptionDutch = "";
+
+    @Column(name = "description_english")
     private String descriptionEnglish= "";
+
+    @OneToOne
+    @JoinColumn(name = "building_id", referencedColumnName = "building_id")
     private Building building;
+
+    @OneToOne
+    @JoinColumn(name = "authority_id", referencedColumnName = "authority_id")
     private Authority authority;
+
+    @Column(name = "for_group")
     private boolean forGroup;
 
+    @Column(name = "approved")
+    private boolean approved;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "location_tags",
+        joinColumns = @JoinColumn(name = "location_id"),
+        inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
     private List<LocationTag> assignedTags;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "roles_user_volunteer",
+        joinColumns = @JoinColumn(name = "location_id"),
+        inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    @JsonIgnore
+    private List<User> volunteers;
+
+    @Transient
     private Pair<LocationStatus, String> status;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Transient
     private Timeslot currentTimeslot;
 
     public Location(int locationId, String name, int numberOfSeats, int numberOfLockers, String imageUrl,
@@ -61,6 +113,22 @@ public class Location implements Cloneable {
         status = new Pair<>(LocationStatus.CLOSED, "");
     }
 
+    public void addLocationTag(LocationTag tag) {
+        assignedTags.add(tag);
+    }
+
+    public void addAllLocationTags(List<LocationTag> tags) {
+        assignedTags.addAll(tags);
+    }
+
+    public void removeLocationTag(LocationTag tag) {
+        assignedTags.remove(tag);
+    }
+
+    public void clearAllLocationTags() {
+        assignedTags.clear();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -75,12 +143,14 @@ public class Location implements Cloneable {
                 Objects.equals(descriptionDutch, location.descriptionDutch) &&
                 Objects.equals(descriptionEnglish, location.descriptionEnglish) &&
                 Objects.equals(authority, location.authority) &&
-                (assignedTags == null || assignedTags.equals(location.assignedTags));
+                Equality.listEqualsIgnoreOrder(assignedTags, location.assignedTags);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(locationId, name, building);
+        return Objects.hash(
+                locationId, name, numberOfSeats, numberOfLockers, imageUrl,
+                descriptionDutch, descriptionEnglish);
     }
 
     @Override
@@ -102,9 +172,26 @@ public class Location implements Cloneable {
         }
     }
 
+    // Note: don't use ToStringBuilder since volunteers are fetched lazily and that may cause problems
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this);
+        return "Location{" +
+                "locationId=" + locationId +
+                ", name='" + name + '\'' +
+                ", numberOfSeats=" + numberOfSeats +
+                ", numberOfLockers=" + numberOfLockers +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", descriptionDutch='" + descriptionDutch + '\'' +
+                ", descriptionEnglish='" + descriptionEnglish + '\'' +
+                ", building=" + building +
+                ", authority=" + authority +
+                ", forGroup=" + forGroup +
+                ", approved=" + approved +
+                ", assignedTags=" + assignedTags +
+                // ", volunteers=" + volunteers + // ignore due to lazy loading
+                ", status=" + status +
+                ", currentTimeslot=" + currentTimeslot +
+                '}';
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
@@ -211,6 +298,26 @@ public class Location implements Cloneable {
 
     public void setCurrentTimeslot(Timeslot currentTimeslot) {
         this.currentTimeslot = currentTimeslot;
+    }
+
+    public boolean isForGroup() {
+        return forGroup;
+    }
+
+    public boolean isApproved() {
+        return approved;
+    }
+
+    public void setApproved(boolean approved) {
+        this.approved = approved;
+    }
+
+    public List<User> getVolunteers() {
+        return volunteers;
+    }
+
+    public void setVolunteers(List<User> volunteers) {
+        this.volunteers = volunteers;
     }
 
     //</editor-fold>

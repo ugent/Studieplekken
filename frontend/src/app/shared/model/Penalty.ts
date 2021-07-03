@@ -2,7 +2,7 @@ import * as moment from 'moment';
 import { Moment } from 'moment';
 
 export interface Penalty {
-  augentID: string;
+  userId: string;
   eventCode: number;
   timestamp: Moment;
   reservationDate: Moment;
@@ -14,7 +14,7 @@ export interface Penalty {
 export class PenaltyConstructor {
   static new(): Penalty {
     return {
-      augentID: '',
+      userId: '',
       eventCode: 0,
       timestamp: moment(),
       reservationDate: moment(),
@@ -30,7 +30,7 @@ export class PenaltyConstructor {
     }
 
     return {
-      augentID: obj.augentID,
+      userId: obj.userId,
       eventCode: obj.eventCode,
       timestamp: moment(obj.timestamp),
       reservationDate: moment(obj.reservationDate),

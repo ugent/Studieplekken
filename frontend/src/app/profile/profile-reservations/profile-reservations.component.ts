@@ -146,7 +146,7 @@ export class ProfileReservationsComponent implements OnInit {
         .getLocationReservationsAndCalendarPeriods();
     } else {
       return this.locationReservationService
-        .getLocationReservationsWithCalendarPeriodsOfUser(this.userObj.augentID);
+        .getLocationReservationsWithCalendarPeriodsOfUser(this.userObj.userId);
     }
   }
 

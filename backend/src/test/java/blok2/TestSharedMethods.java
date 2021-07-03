@@ -1,15 +1,15 @@
 package blok2;
 
-import blok2.daos.IAccountDao;
+import blok2.daos.IUserDao;
 import blok2.daos.IAuthorityDao;
 import blok2.daos.ICalendarPeriodDao;
 import blok2.helpers.Institution;
 import blok2.helpers.TimeException;
+import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.LocationTag;
 import blok2.model.calendar.CalendarPeriod;
-import blok2.model.calendar.CalendarPeriodForLockers;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;
 import org.junit.Assert;
@@ -98,15 +98,15 @@ public class TestSharedMethods {
                 "Suitable for the less-abled");
     }
 
-    public static Authority insertTestAuthority(IAuthorityDao authorityDao) throws SQLException {
+    public static Authority insertTestAuthority(IAuthorityDao authorityDao) {
         return insertTestAuthority("Test Authority", "a test description", authorityDao);
     }
 
-    public static Authority insertTestAuthority2(IAuthorityDao authorityDao) throws SQLException {
+    public static Authority insertTestAuthority2(IAuthorityDao authorityDao) {
         return insertTestAuthority("Second Test Authority", "second test description", authorityDao);
     }
 
-    public static Authority insertTestAuthority(String name, String description, IAuthorityDao authorityDao) throws SQLException {
+    public static Authority insertTestAuthority(String name, String description, IAuthorityDao authorityDao) {
         Authority authority = new Authority();
         authority.setAuthorityName(name);
         authority.setDescription(description);
@@ -127,7 +127,7 @@ public class TestSharedMethods {
         user.setMail(s+"@ugent.be");
         user.setPassword("first_password");
         user.setInstitution(Institution.UGent);
-        user.setAugentID(s);
+        user.setUserId(s);
         user.setAdmin(true);
         return user;
     }
@@ -143,36 +143,28 @@ public class TestSharedMethods {
         user.setMail(id + "@ugent.be");
         user.setPassword("second_password");
         user.setInstitution(Institution.UGent);
-        user.setAugentID(id);
+        user.setUserId(id);
         user.setAdmin(false);
         return user;
     }
 
-    public static User authorityHolderTestUser(String id) {
-        User user = new User();
-        user.setLastName("AutorityMan");
-        user.setFirstName("Authority");
-        user.setMail(id + "@ugent.be");
-        user.setPassword("second_password");
-        user.setInstitution(Institution.UGent);
-        user.setAugentID(id);
-        user.setAdmin(false);
-        return user;
-    }
-
-    public static void addTestUsers(IAccountDao accountDao, User... users) throws SQLException {
+    public static void addTestUsers(IUserDao userDao, User... users) {
         for (User u : users) {
-            accountDao.directlyAddUser(u);
-            User r = accountDao.getUserById(u.getAugentID()); // retrieved user
+            userDao.addUser(u);
+            User r = userDao.getUserById(u.getUserId()); // retrieved user
             Assert.assertEquals("addTestUsers, setup test user failed", u, r);
         }
     }
 
-    public static void removeTestUsers(IAccountDao accountDao, User... users) throws SQLException {
+    public static void removeTestUsers(IUserDao userDao, User... users) {
         for (User u : users) {
-            accountDao.deleteUser(u.getAugentID());
-            User r = accountDao.getUserById(u.getAugentID());
-            Assert.assertNull("removeTestUsers, cleanup test user failed", r);
+            userDao.deleteUser(u.getUserId());
+            try {
+                userDao.getUserById(u.getUserId());
+                Assert.fail("cleanup test user should throw NoSuchDatabaseObjectException after deletion");
+            } catch (NoSuchDatabaseObjectException e) {
+                Assert.assertTrue(true);
+            }
         }
     }
 
@@ -338,43 +330,4 @@ public class TestSharedMethods {
         return updatedPeriods;
     }
 
-    public static List<CalendarPeriodForLockers> testCalendarPeriodsForLockers(Location location) {
-        List<CalendarPeriodForLockers> calendarPeriods = new ArrayList<>();
-
-        LocalDate date = LocalDate.now();
-        LocalTime time = LocalTime.now();
-
-        for (int i = 0; i < 2; i++) {
-            CalendarPeriodForLockers period = new CalendarPeriodForLockers();
-            period.setLocation(location);
-
-            date = LocalDate.of(date.getYear(), date.getMonth(), 2 + 10*i);
-            period.setStartsAt(date);
-
-            date = LocalDate.of(date.getYear(), date.getMonth(), 4 + 10*i);
-            period.setEndsAt(date);
-
-            date = LocalDate.of(date.getYear(), date.getMonth(), 1);
-            period.setReservableFrom(LocalDateTime.of(date, time));
-
-            calendarPeriods.add(period);
-        }
-
-        return calendarPeriods;
-    }
-
-    public static List<CalendarPeriodForLockers> testCalendarPeriodsForLockersButUpdated(Location location) {
-        List<CalendarPeriodForLockers> updatedPeriods = new ArrayList<>();
-        for (CalendarPeriodForLockers calendarPeriod : testCalendarPeriodsForLockers(location)) {
-            updatedPeriods.add(calendarPeriod.clone());
-        }
-
-        for (int i = 0; i < updatedPeriods.size(); i++) {
-            updatedPeriods.get(i).setStartsAt(LocalDate.of(1970,1,i+1));
-            updatedPeriods.get(i).setEndsAt(LocalDate.of(1970,1,i + 10));
-            updatedPeriods.get(i).setReservableFrom(LocalDateTime.of(1970,1,i+1,9,0));
-        }
-
-        return updatedPeriods;
-    }
 }

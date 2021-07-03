@@ -46,8 +46,14 @@ export class LocationService {
     return this.locationCache.getValue(locationId, url, invalidateCache);
   }
 
-  getAllLocationNextReservableFroms(): Observable<Pair<string, Moment>[]> {
-    return this.http.get<Pair<string, Moment>[]>(api.allReservableFroms);
+  getAllLocationNextReservableFroms(): Observable<{
+    locationName: string,
+    nextReservableFrom: Moment
+  }[]> {
+    return this.http.get<{
+      locationName: string,
+      nextReservableFrom: Moment
+    }[]>(api.allReservableFroms);
   }
 
   getVolunteers(locationId: number): Observable<User[]> {

@@ -17,7 +17,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @AutoConfigureMockMvc
@@ -25,20 +24,26 @@ import java.util.List;
 public abstract class BaseIntegrationTest extends BaseTest {
 
     @Autowired
-    protected IAccountDao accountDao;
+    protected IUserDao userDao;
 
     @Autowired
     protected ILocationDao locationDao;
 
     @Autowired
     protected IAuthorityDao authorityDao;
+
     @Autowired
     protected ICalendarPeriodDao calendarPeriodDao;
+
     @Autowired
     protected IBuildingDao buildingDao;
 
     @Autowired
     protected ILocationReservationDao locationReservationDao;
+
+    @Autowired
+    protected IVolunteerDao volunteerDao;
+
     @Autowired
     protected MockMvc mockMvc;
 
@@ -80,19 +85,19 @@ public abstract class BaseIntegrationTest extends BaseTest {
         cps = calendarPeriods.toArray(cps);
         TestSharedMethods.addCalendarPeriods(calendarPeriodDao, cps);
 
-        admin = accountDao.getUserByEmail("admin@ugent.be");
-        student= accountDao.getUserByEmail("student1@ugent.be");
-        student2 = accountDao.getUserByEmail("student2@ugent.be");
-        authHolder = accountDao.getUserByEmail("authholder@ugent.be");
+        admin = userDao.getUserByEmail("admin@ugent.be");
+        student= userDao.getUserByEmail("student1@ugent.be");
+        student2 = userDao.getUserByEmail("student2@ugent.be");
+        authHolder = userDao.getUserByEmail("authholder@ugent.be");
 
-        authorityDao.addUserToAuthority(authHolder.getAugentID(), authority.getAuthorityId());
-        authHolder = accountDao.getUserByEmail("authholder@ugent.be");
+        authorityDao.addUserToAuthority(authHolder.getUserId(), authority.getAuthorityId());
+        authHolder = userDao.getUserByEmail("authholder@ugent.be");
 
         Timeslot timeslot = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
 
-        LocationReservation reservation = new LocationReservation(student, LocalDateTime.now(), timeslot, null);
+        LocationReservation reservation = new LocationReservation(student, timeslot, null);
         locationReservationDao.addLocationReservationIfStillRoomAtomically(reservation);
 
-        locationDao.addVolunteer(testLocation.getLocationId(), student2.getAugentID());
+        volunteerDao.addVolunteer(testLocation.getLocationId(), student2.getUserId());
     }
 }

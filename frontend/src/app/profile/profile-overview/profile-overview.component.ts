@@ -31,7 +31,7 @@ export class ProfileOverviewComponent implements OnInit {
 
   prepareEmptyFormGroup(): void {
     this.formGroup = new FormGroup({
-      augentID: new FormControl({ value: '', disabled: true }),
+      userId: new FormControl({ value: '', disabled: true }),
       firstName: new FormControl({ value: '', disabled: true }),
       lastName: new FormControl({ value: '', disabled: true }),
       mail: new FormControl({ value: '', disabled: true }),
@@ -44,7 +44,7 @@ export class ProfileOverviewComponent implements OnInit {
 
   setupFormGroup(user: User): void {
     this.formGroup.setValue({
-      augentID: user.augentID,
+      userId: user.userId,
       firstName: user.firstName,
       lastName: user.lastName,
       mail: user.mail,

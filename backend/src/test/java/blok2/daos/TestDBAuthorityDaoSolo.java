@@ -2,12 +2,12 @@ package blok2.daos;
 
 import blok2.BaseTest;
 import blok2.TestSharedMethods;
+import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.Authority;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class TestDBAuthorityDaoSolo extends BaseTest {
@@ -19,13 +19,13 @@ public class TestDBAuthorityDaoSolo extends BaseTest {
     private Authority testAuthority2;
 
     @Override
-    public void populateDatabase() throws SQLException {
+    public void populateDatabase() {
         testAuthority = TestSharedMethods.insertTestAuthority(authorityDao);
         testAuthority2 = TestSharedMethods.insertTestAuthority2(authorityDao);
     }
 
     @Test
-    public void getAllAuthorities() throws SQLException {
+    public void getAllAuthorities() {
         List<Authority> authorities = authorityDao.getAllAuthorities();
         Assert.assertEquals(2, authorities.size());
         Assert.assertTrue(authorities.contains(testAuthority));
@@ -33,19 +33,19 @@ public class TestDBAuthorityDaoSolo extends BaseTest {
     }
 
     @Test
-    public void getAuthorityByName() throws SQLException {
+    public void getAuthorityByName() {
         Authority authority = authorityDao.getAuthorityByName(testAuthority.getAuthorityName());
         Assert.assertEquals(testAuthority, authority);
     }
 
     @Test
-    public void getAuthorityByAuthorityId() throws SQLException {
+    public void getAuthorityByAuthorityId() {
         Authority authority = authorityDao.getAuthorityByAuthorityId(testAuthority.getAuthorityId());
         Assert.assertEquals(testAuthority, authority);
     }
 
-    @Test
-    public void addAndDeleteAuthority() throws SQLException {
+    @Test(expected = NoSuchDatabaseObjectException.class)
+    public void addAndDeleteAuthority() {
         Authority authority = TestSharedMethods.insertTestAuthority("extra test authority", "testdescr", authorityDao);
         authorityDao.deleteAuthority(authority.getAuthorityId());
         authority = authorityDao.getAuthorityByAuthorityId(authority.getAuthorityId());
@@ -53,7 +53,7 @@ public class TestDBAuthorityDaoSolo extends BaseTest {
     }
 
     @Test
-    public void updateAuthority() throws SQLException {
+    public void updateAuthority() {
         testAuthority.setAuthorityName("different name");
         authorityDao.updateAuthority(testAuthority);
         Authority updatedAuthority = authorityDao.getAuthorityByAuthorityId(testAuthority.getAuthorityId());

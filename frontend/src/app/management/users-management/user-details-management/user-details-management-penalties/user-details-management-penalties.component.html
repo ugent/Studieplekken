@@ -7,7 +7,7 @@
 
   <!-- When querying for the penalty evens failed, show an error message -->
   <div *ngIf="queryingPenaltiesError" class="alert alert-error">
-    {{('management.users.userDetails.penalties.error' | translate).replace('{id}', user.augentID)}}
+    {{('management.users.userDetails.penalties.error' | translate).replace('{id}', user.userId)}}
   </div>
 
   <!-- Table with an overview of the penalty points of the user -->

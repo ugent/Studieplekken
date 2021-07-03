@@ -15,7 +15,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.temporal.IsoFields;
 import java.util.Arrays;
@@ -27,20 +26,20 @@ public class ScheduledTasks {
 
     private static final Logger logger = LoggerFactory.getLogger(ScheduledTasks.class);
 
-    private final ILocationDao locationDao;
     private final ILocationReservationDao locationReservationDao;
     private final MailService mailService;
+    private final ILocationDao locationDao;
 
     private final String[] recipients;
 
     private static final int N_CONCURRENT_CONNECTIONS = 5;
 
     @Autowired
-    public ScheduledTasks(ILocationDao locationDao, ILocationReservationDao locationReservationDao,
+    public ScheduledTasks(ILocationReservationDao locationReservationDao, ILocationDao locationDao,
                           MailService mailService, Environment env) {
-        this.locationDao = locationDao;
         this.locationReservationDao = locationReservationDao;
         this.mailService = mailService;
+        this.locationDao = locationDao;
         recipients = env.getProperty("custom.mailing.recipientsOpeningHoursOverview", String[].class);
     }
 
@@ -102,25 +101,19 @@ public class ScheduledTasks {
      */
     @Scheduled(cron = "0 0 21 * * *")
     public void mailToUnattendedStudents() {
-        try {
-            List<Pair<LocationReservation, CalendarPeriod>> reservations =
-                    locationReservationDao.getUnattendedLocationReservations(LocalDate.now());
+        List<Pair<LocationReservation, CalendarPeriod>> reservations =
+                locationReservationDao.getUnattendedLocationReservations(LocalDate.now());
 
-            logger.info(String.format("Running scheduled task mailToUnattendedStudents() for %d recipients.",
-                    reservations.size()));
+        logger.info(String.format("Running scheduled task mailToUnattendedStudents() for %d recipients.",
+                reservations.size()));
 
-            // Send 5 mails concurrently n times. For the n+1-th time, send the remainder of the mails
-            int n = reservations.size() / N_CONCURRENT_CONNECTIONS;
-            for (int i = 0; i < n; i++) {
-                mailToUnattendedStudentsInRange(reservations, i*N_CONCURRENT_CONNECTIONS,
-                        i*N_CONCURRENT_CONNECTIONS + N_CONCURRENT_CONNECTIONS);
-            }
-            mailToUnattendedStudentsInRange(reservations, n*N_CONCURRENT_CONNECTIONS, reservations.size());
-
-        } catch (SQLException e) {
-            logger.error(String.format("Running scheduled task mailToUnattendedStudents() encountered " +
-                    "an error: %s", e.getMessage()));
+        // Send 5 mails concurrently n times. For the n+1-th time, send the remainder of the mails
+        int n = reservations.size() / N_CONCURRENT_CONNECTIONS;
+        for (int i = 0; i < n; i++) {
+            mailToUnattendedStudentsInRange(reservations, i*N_CONCURRENT_CONNECTIONS,
+                    i*N_CONCURRENT_CONNECTIONS + N_CONCURRENT_CONNECTIONS);
         }
+        mailToUnattendedStudentsInRange(reservations, n*N_CONCURRENT_CONNECTIONS, reservations.size());
     }
 
     private void mailToUnattendedStudentsInRange(List<Pair<LocationReservation, CalendarPeriod>> reservations,
@@ -153,26 +146,20 @@ public class ScheduledTasks {
      */
     @Scheduled(cron = "0 0 10 * * SUN")
     public void mailReminderToStudentsWithReservation() {
-        try {
-            LocalDate tomorrow = LocalDate.now().plusDays(1);
-            LocalDate tomorrowPlus7 = tomorrow.plusDays(7);
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
+        LocalDate tomorrowPlus7 = tomorrow.plusDays(7);
 
-            List<User> users = locationReservationDao.getUsersWithReservationForWindowOfTime(tomorrow, tomorrowPlus7);
-            logger.info(String.format("Running scheduled task mailReminderToStudentsWithReservation() for %d recipients.",
-                    users.size()));
+        List<User> users = locationReservationDao.getUsersWithReservationForWindowOfTime(tomorrow, tomorrowPlus7);
+        logger.info(String.format("Running scheduled task mailReminderToStudentsWithReservation() for %d recipients.",
+                users.size()));
 
-            // Send 5 mails concurrently n times. For the n+1-th time, send the remainder of the mails
-            int n = users.size() / N_CONCURRENT_CONNECTIONS;
-            for (int i = 0; i < n; i++) {
-                mailReminderToStudentsWithReservationInRange(users, i*N_CONCURRENT_CONNECTIONS,
-                        i*N_CONCURRENT_CONNECTIONS + N_CONCURRENT_CONNECTIONS);
-            }
-            mailReminderToStudentsWithReservationInRange(users, n*N_CONCURRENT_CONNECTIONS, users.size());
-
-        } catch (SQLException e) {
-            logger.error(String.format("Running scheduled task mailReminderToStudentsWithReservation() encountered " +
-                    "an error: %s", e.getMessage()));
+        // Send 5 mails concurrently n times. For the n+1-th time, send the remainder of the mails
+        int n = users.size() / N_CONCURRENT_CONNECTIONS;
+        for (int i = 0; i < n; i++) {
+            mailReminderToStudentsWithReservationInRange(users, i*N_CONCURRENT_CONNECTIONS,
+                    i*N_CONCURRENT_CONNECTIONS + N_CONCURRENT_CONNECTIONS);
         }
+        mailReminderToStudentsWithReservationInRange(users, n*N_CONCURRENT_CONNECTIONS, users.size());
     }
 
     private void mailReminderToStudentsWithReservationInRange(List<User> users, int start, int end) {

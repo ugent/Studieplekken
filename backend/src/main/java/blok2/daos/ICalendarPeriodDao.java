@@ -5,25 +5,14 @@ import blok2.helpers.Pair;
 import blok2.model.calendar.CalendarPeriod;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.List;
 
-public interface ICalendarPeriodDao extends IDao {
+public interface ICalendarPeriodDao {
 
     /**
      * Get all calendar periods of a specific location
      */
     List<CalendarPeriod> getCalendarPeriodsOfLocation(int getLocationId) throws SQLException;
-
-    /**
-     * Get all calendar periods within the week that starts with the specified date
-     */
-    List<CalendarPeriod> getCalendarPeriodsInWeek(LocalDate firstDayOfWeek) throws SQLException;
-
-    /**
-     * Get all calendar periods in the period that starts and ends with the specified dates
-     */
-    List<CalendarPeriod> getCalendarPeriodsInPeriod(LocalDate start, LocalDate end) throws SQLException;
 
     /**
      * Get all calendar periods

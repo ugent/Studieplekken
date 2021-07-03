@@ -1,6 +1,7 @@
 package blok2.security.services;
 
-import blok2.daos.IAccountDao;
+import blok2.daos.IUserDao;
+import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.users.User;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.slf4j.Logger;
@@ -14,7 +15,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -25,13 +25,13 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
 
     private final Logger logger = LoggerFactory.getLogger(CustomUserDetailsService.class);
 
-    private final IAccountDao accountDao;
+    private final IUserDao userDao;
     private final LdapTemplate ldapTemplate;
 
     @Autowired
-    public CustomUserDetailsService(IAccountDao accountDao,
+    public CustomUserDetailsService(IUserDao userDao,
                                     LdapTemplate ldapTemplate) {
-        this.accountDao = accountDao;
+        this.userDao = userDao;
         this.ldapTemplate = ldapTemplate;
     }
 
@@ -49,41 +49,29 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
 
         User user;
 
-        // Try to find the user with given mail in the application database
+        // Try to find the user with given id in the application database
         try {
-            user = this.accountDao.getUserById(ugentID);
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new UsernameNotFoundException("Database error");
-        }
-
-        if (user != null) {
+            user = this.userDao.getUserById(ugentID);
             return user;
-        }
+        } catch (NoSuchDatabaseObjectException e) {
+            // Create new user using the UGent LDAP
+            user = getUserFromLdap(ugentID);
 
-        // Create new user using the UGent LDAP
-        user = getUserFromLdap(ugentID);
-
-        if (user != null) {
-            try {
-                accountDao.directlyAddUser(user);
+            if (user != null) {
+                user = userDao.addUser(user);
                 return user;
-            } catch (SQLException e) {
-                logger.error(e.getMessage());
-                logger.error(Arrays.toString(e.getStackTrace()));
             }
-        }
 
-        logger.error(String.format("Unable to find/add a user with attributes %s",
-                stringifyAttributes(principal.getAttributes())));
-        throw new UsernameNotFoundException(String.format("Unable to find/add a user with attributes %s",
-                stringifyAttributes(principal.getAttributes())));
+            logger.error(String.format("Unable to find/add a user with attributes %s",
+                    stringifyAttributes(principal.getAttributes())));
+            throw new UsernameNotFoundException(String.format("Unable to find/add a user with attributes %s",
+                    stringifyAttributes(principal.getAttributes())));
+        }
     }
 
-    public User getUserFromLdap(String ugentID) {
+    public User getUserFromLdap(String userId) {
         try {
-             List<User> users = ldapTemplate.search(String.format("ugentID=%s,ou=people", ugentID),
+             List<User> users = ldapTemplate.search(String.format("ugentID=%s,ou=people", userId),
                      "objectClass=*", (AttributesMapper<User>) attrs -> {
                 User user = new User();
 
@@ -120,7 +108,7 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
                 user.setMail(attrs.get("mail").get().toString());
                 user.setPassword("secret");
                 user.setInstitution("UGent");
-                user.setAugentID(ugentID);
+                user.setUserId(userId);
                 return user;
             });
 

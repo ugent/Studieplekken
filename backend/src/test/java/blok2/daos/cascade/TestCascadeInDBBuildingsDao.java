@@ -3,6 +3,7 @@ package blok2.daos.cascade;
 import blok2.BaseTest;
 import blok2.TestSharedMethods;
 import blok2.daos.*;
+import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.reservables.Location;
@@ -10,7 +11,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -31,7 +31,7 @@ public class TestCascadeInDBBuildingsDao extends BaseTest {
     private Location testLocation2;
 
     @Override
-    public void populateDatabase() throws SQLException {
+    public void populateDatabase() {
         // Setup test objects
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
         testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
@@ -48,7 +48,7 @@ public class TestCascadeInDBBuildingsDao extends BaseTest {
     }
 
     @Test
-    public void deleteBuildingCascadeTest() throws SQLException {
+    public void deleteBuildingCascadeTest() {
         // Test locations are present in db
         List<Location> locations = buildingDao.getLocationsInBuilding(testBuilding.getBuildingId());
 
@@ -65,7 +65,12 @@ public class TestCascadeInDBBuildingsDao extends BaseTest {
         buildingDao.deleteBuilding(testBuilding.getBuildingId());
 
         // Building must be deleted
-        Assert.assertNull(buildingDao.getBuildingById(testBuilding.getBuildingId()));
+        try {
+            Assert.assertNull(buildingDao.getBuildingById(testBuilding.getBuildingId()));
+            Assert.fail("Building should have been deleted");
+        } catch (NoSuchDatabaseObjectException ignore) {
+            Assert.assertTrue(true);
+        }
 
         // And the locations must have been deleted on cascade
         Assert.assertEquals(0, buildingDao.getLocationsInBuilding(testBuilding.getBuildingId()).size());

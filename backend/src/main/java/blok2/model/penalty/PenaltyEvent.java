@@ -1,37 +1,46 @@
 package blok2.model.penalty;
 
-import blok2.helpers.Language;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.persistence.*;
 import java.util.Objects;
 
-public final class PenaltyEvent {
-    private int code;
-    private int points;
-    private Map<Language, String> descriptions;
+@Entity
+@Table(name = "penalty_events")
+public final class PenaltyEvent implements Cloneable {
 
-    public static final int CODE_LATE_CANCEL = 16660;
-    public static final int CODE_NO_SHOWUP = 16661;
-    public static final int CODE_BLACKLIST_EVENT = 16662;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "code")
+    private Integer code;
+
+    @Column(name = "points")
+    private int points;
+
+    @Column(name = "description_dutch")
+    private String descriptionDutch;
+
+    @Column(name = "description_english")
+    private String descriptionEnglish;
 
     public PenaltyEvent() {
-        descriptions = new HashMap<>();
+
     }
 
-    public PenaltyEvent(int code, int points, Map<Language, String> descriptions) {
+    public PenaltyEvent(Integer code, int points, String descriptionDutch, String descriptionEnglish) {
         this.code = code;
         this.points = points;
-        this.descriptions = descriptions;
+        this.descriptionDutch = descriptionDutch;
+        this.descriptionEnglish = descriptionEnglish;
     }
 
     @Override
     public PenaltyEvent clone() {
-        Map<Language, String> _descriptions = new HashMap<>();
-        for (Language l : descriptions.keySet())
-            _descriptions.put(l, descriptions.get(l));
-        return new PenaltyEvent(code, points, _descriptions);
+        try {
+            return (PenaltyEvent) super.clone();
+        } catch (CloneNotSupportedException ignore) {
+            return null;
+        }
     }
 
     @Override
@@ -44,9 +53,10 @@ public final class PenaltyEvent {
 
         PenaltyEvent that = (PenaltyEvent) o;
 
-        return that.code == code
-                && that.points == points
-                && Objects.equals(descriptions, that.descriptions);
+        return Objects.equals(code, that.code) &&
+                that.points == points &&
+                Objects.equals(descriptionDutch, that.descriptionDutch) &&
+                Objects.equals(descriptionEnglish, that.descriptionEnglish);
     }
 
     @Override
@@ -60,29 +70,39 @@ public final class PenaltyEvent {
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
-    public int getCode() {
+
+    public Integer getCode() {
         return code;
+    }
+
+    public void setCode(Integer code) {
+        this.code = code;
     }
 
     public int getPoints() {
         return points;
     }
 
-    public Map<Language, String> getDescriptions() {
-        return descriptions;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
-
     public void setPoints(int points) {
         this.points = points;
     }
 
-    public void setDescriptions(Map<Language, String> descriptions) {
-        this.descriptions = descriptions;
+    public String getDescriptionDutch() {
+        return descriptionDutch;
+    }
+
+    public void setDescriptionDutch(String descriptionDutch) {
+        this.descriptionDutch = descriptionDutch;
+    }
+
+    public String getDescriptionEnglish() {
+        return descriptionEnglish;
+    }
+
+    public void setDescriptionEnglish(String descriptionEnglish) {
+        this.descriptionEnglish = descriptionEnglish;
     }
 
     //</editor-fold>
+
 }

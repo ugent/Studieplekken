@@ -1,6 +1,5 @@
 package blok2.security.config;
 
-import blok2.helpers.Resources;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
