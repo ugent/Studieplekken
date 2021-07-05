@@ -1,6 +1,7 @@
 package blok2.model;
 
 import blok2.model.reservables.Location;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 import javax.persistence.*;
@@ -27,6 +28,7 @@ public class LocationTag implements Cloneable {
         joinColumns = @JoinColumn(name = "tag_id"),
         inverseJoinColumns = @JoinColumn(name = "location_id")
     )
+    @JsonIgnore
     private List<Location> locations;
 
     public LocationTag(int tagId, String dutch, String english) {

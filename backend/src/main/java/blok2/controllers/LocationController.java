@@ -22,6 +22,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.mail.MessagingException;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -60,7 +61,9 @@ public class LocationController extends AuthorizedLocationController {
     @GetMapping
     @PreAuthorize("permitAll()")
     public List<Location> getAllLocations() {
-        return locationDao.getAllActiveLocations();
+        List<Location> locations = locationDao.getAllActiveLocations();
+        locations.sort(Comparator.comparing(Location::getName));
+        return locations;
     }
 
     @GetMapping("/unapproved")
