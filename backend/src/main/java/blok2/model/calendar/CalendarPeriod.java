@@ -5,13 +5,8 @@ import blok2.model.reservables.Location;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 import javax.persistence.*;
-import java.time.DayOfWeek;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.time.*;
+import java.util.*;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 
@@ -20,41 +15,66 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 public class CalendarPeriod extends Period implements Cloneable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "calendar_id")
     private Integer id;
+
     @OneToOne
+    @JoinColumn(name = "location_id", referencedColumnName = "location_id")
     private Location location;
+
+    @Column(name = "opening_time")
     private LocalTime openingTime;
+
+    @Column(name = "closing_time")
     private LocalTime closingTime;
+
+    @Column(name = "reservable_from")
     private LocalDateTime reservableFrom = LocalDateTime.now();
+
+    @Column(name = "locked_from")
     private LocalDateTime lockedFrom;
+
+    @Column(name = "reservable")
     private boolean reservable;
+
+    @Column(name = "timeslot_length")
     private int timeslotLength;
+
+    @Column(name = "seat_count")
     private int seatCount;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "calendar_id", referencedColumnName = "calendar_id")
     private List<Timeslot> timeslots = Collections.emptyList();
 
-    public CalendarPeriod() { }
+    public CalendarPeriod() {
+
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
         CalendarPeriod that = (CalendarPeriod) o;
         return reservable == that.reservable &&
                 timeslotLength == that.timeslotLength &&
-                location.equals(that.location) &&
-                openingTime.equals(that.openingTime) &&
-                closingTime.equals(that.closingTime) &&
-                Duration.between(this.reservableFrom, that.reservableFrom).toMillis() <= 1000;
-                // One second precision is enough.
+                seatCount == that.seatCount &&
+                Objects.equals(id, that.id) &&
+                Objects.equals(location, that.location) &&
+                Objects.equals(getStartsAt(), that.getStartsAt()) &&
+                Objects.equals(getEndsAt(), that.getEndsAt()) &&
+                Objects.equals(openingTime, that.openingTime) &&
+                Objects.equals(closingTime, that.closingTime) &&
+                Duration.between(this.reservableFrom, that.reservableFrom).toMillis() <= 1000 && // One second precision is enough.
+                Objects.equals(lockedFrom, that.lockedFrom) &&
+                Objects.equals(timeslots, that.timeslots);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), location, openingTime, closingTime, reservableFrom, reservable, timeslotLength);
+        return Objects.hash(id, location, getStartsAt(), getEndsAt(), openingTime, closingTime,
+                reservableFrom, lockedFrom, reservable, timeslotLength, seatCount, timeslots);
     }
 
     @Override
@@ -102,10 +122,9 @@ public class CalendarPeriod extends Period implements Cloneable {
     }
 
     public void setReservableFrom(LocalDateTime reservableFrom) {
-        if(reservableFrom != null)
+        if (reservableFrom != null)
             this.reservableFrom = reservableFrom;
     }
-
 
     public boolean isReservable() {
         return reservable;

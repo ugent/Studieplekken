@@ -163,9 +163,9 @@ public class TestDBCalendarPeriodDao extends BaseTest {
 
         // check whether the periods are successfully updated
         List<CalendarPeriod> actualPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getLocationId());
-        actualPeriods.sort(Comparator.comparing(CalendarPeriod::toString));
-        updatedPeriods.sort(Comparator.comparing(CalendarPeriod::toString));
-        Assert.assertEquals("updateCalendarPeriodsTest", new HashSet<>(updatedPeriods), new HashSet<>(actualPeriods));
+        actualPeriods.sort(Comparator.comparing(CalendarPeriod::getId));
+        updatedPeriods.sort(Comparator.comparing(CalendarPeriod::getId));
+        Assert.assertEquals("updateCalendarPeriodsTest", updatedPeriods, actualPeriods);
     }
 
     @Test
