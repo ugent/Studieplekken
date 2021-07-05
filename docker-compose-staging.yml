@@ -9,5 +9,5 @@ services:
     frontend:
         build:
             args:
-                - configuration: staging
+                configuration: "staging"
       
