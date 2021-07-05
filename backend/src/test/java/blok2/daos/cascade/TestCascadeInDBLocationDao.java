@@ -198,8 +198,8 @@ public class TestCascadeInDBLocationDao extends BaseTest {
 
         // CALENDAR_PERIODS updated?
         List<CalendarPeriod> actualPeriods = calendarPeriodDao.getCalendarPeriodsOfLocation(testLocation.getLocationId());
-        actualPeriods.sort(Comparator.comparing(CalendarPeriod::toString));
-        testCalendarPeriods.sort(Comparator.comparing(CalendarPeriod::toString));
+        actualPeriods.sort(Comparator.comparing(CalendarPeriod::getId));
+        testCalendarPeriods.sort(Comparator.comparing(CalendarPeriod::getId));
 
         Assert.assertEquals("updateUserWithoutCascadeNeededTest, calendar periods",
                 testCalendarPeriods, actualPeriods);

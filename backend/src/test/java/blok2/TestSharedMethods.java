@@ -197,6 +197,8 @@ public class TestSharedMethods {
             period.setReservable(true);
             period.setTimeslotLength(30);
 
+            period.setSeatCount(location.getNumberOfSeats());
+
             period.initializeLockedFrom();
             calendarPeriods.add(period);
         }

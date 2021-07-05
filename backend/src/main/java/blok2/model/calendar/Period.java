@@ -2,11 +2,18 @@ package blok2.model.calendar;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
 import java.time.LocalDate;
 import java.util.Objects;
 
+@MappedSuperclass
 public class Period {
+
+    @Column(name = "starts_at")
     private LocalDate startsAt;
+
+    @Column(name = "ends_at")
     private LocalDate endsAt;
 
     @Override
