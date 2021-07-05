@@ -150,7 +150,7 @@
       "calendar": "Calendar",
       "penalties": "Penalties",
       "admins": "Admins",
-      "volunteers": "Volunteers"
+      "volunteers": "Supervisors"
     },
     "general": {
       "loading": "Loading...",
@@ -694,9 +694,9 @@
       }
     },
     "volunteers": {
-      "no-volunteers": "There are no volunteers for this location yet.",
+      "no-volunteers": "There are no supervisors for this location yet.",
       "errorOnLoadingManageableLocations": "Could not fetch the locations that you can manage.",
-      "errorOnLoadingVolunteers": "Could not fetch the volunteers for this location."
+      "errorOnLoadingVolunteers": "Could not fetch the supervisors for this location."
     }
   },
   "profile": {
