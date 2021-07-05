@@ -1,0 +1,9 @@
+version: "3.6"
+
+services:
+    backend:
+        environment:
+            SPRING_PROFILES_ACTIVE: stag
+            SW_AGENT_COLLECTOR_BACKEND_SERVICES: oap:11800
+            TZ: Europe/Brussels
+      
