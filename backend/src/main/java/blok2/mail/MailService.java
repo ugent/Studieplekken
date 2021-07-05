@@ -1,5 +1,6 @@
 package blok2.mail;
 
+import blok2.model.calendar.Timeslot;
 import blok2.model.reservables.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +37,7 @@ public class MailService {
     public static final String ADMIN_VALIDATION_FOR_NEW_LOCATION_REQUESTED_TEMPLATE_URL = "mail/location_created";
     public static final String STUDENT_DID_NOT_ATTEND_TEMPLATE_URL = "mail/not_attended";
     public static final String RESERVATION_NOTIFICATION_TEMPLATE_URL = "mail/reservation_notification";
+    public static final String RESERVATION_SLOT_DELETED_TEMPLATE_URL = "mail/reservation_slot_deleted";
 
     public static final String NO_REPLY_SENDER = "info@studieplekken.ugent.be";
 
@@ -158,6 +160,18 @@ public class MailService {
         String title = "[Werk- en Studieplekken] Herinnering reservatie(s) studieplek(ken) volgende week";
         ctx.setVariable("title", title);
         return sendMail(target, title, ctx, RESERVATION_NOTIFICATION_TEMPLATE_URL);
+    }
+
+    // *************************************************
+    // *  Methods for mailing to unattended students   *
+    // *************************************************/
+
+    public Thread sendReservationSlotDeletedMessage(String target, Timeslot timeslot) throws MessagingException {
+        Context ctx = new Context();
+        String title = "[Werk- en Studieplekken] Uw gereserveerd tijdslot werd verwijderd";
+        ctx.setVariable("title", title);
+        ctx.setVariable("date", timeslot.getTimeslotDate());
+        return sendMail(target, title, ctx, RESERVATION_SLOT_DELETED_TEMPLATE_URL);
     }
 
 

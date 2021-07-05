@@ -94,9 +94,12 @@ public abstract class BaseIntegrationTest extends BaseTest {
         authHolder = userDao.getUserByEmail("authholder@ugent.be");
 
         Timeslot timeslot = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
+        Timeslot timeslot2 = calendarPeriodDao.getById(calendarPeriods.get(calendarPeriods.size() - 1).getId()).getTimeslots().get(calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().size() - 1);
 
         LocationReservation reservation = new LocationReservation(student, timeslot, null);
+        LocationReservation reservation2 = new LocationReservation(student, timeslot2, null);
         locationReservationDao.addLocationReservationIfStillRoomAtomically(reservation);
+        locationReservationDao.addLocationReservationIfStillRoomAtomically(reservation2);
 
         volunteerDao.addVolunteer(testLocation.getLocationId(), student2.getUserId());
     }

@@ -81,4 +81,9 @@ public interface ILocationReservationDao {
      */
      void setNotScannedStudentsToUnattended(Timeslot timeslot);
 
+    /**
+     * Get all location reservations of the specified location
+     */
+    List<LocationReservation> getAllFutureLocationReservationsOfLocation(int locationId);
+
 }

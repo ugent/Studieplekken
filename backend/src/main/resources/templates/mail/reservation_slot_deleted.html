@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="nl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${title}"></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+    <style>
+        @media all and (max-width: 599px) {
+        }
+
+        main {
+            margin-top: 2em;
+            margin-bottom: 3em;
+        }
+
+        footer {
+            margin-top: 1em;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+
+<body>
+<main>
+    <p><i>English version below.</i></p>
+    <p>Beste student</p>
+    <p>
+        Je hebt op <span th:text="${#dates.format(date, 'dd-MM-yyyy')}"></span> een studieplek gereserveerd.
+    </p>
+    <p>
+        We willen je graag op de hoogte brengen dat deze reservatie is geannuleerd. Indien gewenst kan je een nieuwe studieplek reserveren via <a href="https://studieplekken.ugent.be">studieplekken.ugent.be</a>.
+    </p>
+    <p>
+        Met vriendelijke groeten
+    </p>
+    <p>
+        Het Werk- en Studieplekken Team
+    </p>
+    <p>
+        Dit is een automatisch bericht. Als je niet de bedoelde ontvanger bent, of je hebt andere vragen of opmerking over dit bericht, gelieve te mailen naar info@studieplekken.ugent.be.
+    </p>
+
+    <hr>
+
+    <p>
+        Dear student
+    </p>
+    <p>
+        You have reserved a study place on <span th:text="${#dates.format(date, 'dd-MM-yyyy')}"></span>.
+    </p>
+    <p>
+        We would like to inform you that this reservation has been cancelled. If desired, you can make a new reservation via <a href="https://studieplekken.ugent.be">studieplekken.ugent.be</a>
+    </p>
+    <p>
+        With kind regards
+    </p>
+    <p>
+        The Work and Study Rooms Team
+    </p>
+    <p>
+        This is an automated message. If you are not the intended recipient, or have other concerns with this message, please mail info@studieplekken.ugent.be.
+    </p>
+</main>
+
+</body>
+</html>
