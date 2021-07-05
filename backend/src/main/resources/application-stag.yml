@@ -1,7 +1,7 @@
 # credentials for production database
 spring:
   profiles:
-    active: "prod,mail" # if profile "mail" is added, mails are allowed to be sent, otherwise not
+    active: "stag" # if profile "mail" is added, mails are allowed to be sent, otherwise not
   datasource:
     type: "com.zaxxer.hikari.HikariDataSource"
     driverClassName: org.postgresql.Driver

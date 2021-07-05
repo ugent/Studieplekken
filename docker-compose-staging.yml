@@ -4,6 +4,9 @@ services:
     backend:
         environment:
             SPRING_PROFILES_ACTIVE: stag
-            SW_AGENT_COLLECTOR_BACKEND_SERVICES: oap:11800
+            SW_AGENT_COLLECTOR_BACKEND_SERVICES:
             TZ: Europe/Brussels
+    frontend:
+        args:
+            - configuration: staging
       
