@@ -67,7 +67,6 @@ public class CalendarPeriod extends Period implements Cloneable {
                 Objects.equals(openingTime, that.openingTime) &&
                 Objects.equals(closingTime, that.closingTime) &&
                 Duration.between(this.reservableFrom, that.reservableFrom).toMillis() <= 1000 && // One second precision is enough.
-                Objects.equals(lockedFrom, that.lockedFrom) &&
                 Objects.equals(timeslots, that.timeslots);
     }
 
