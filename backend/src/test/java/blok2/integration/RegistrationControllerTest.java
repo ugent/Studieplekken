@@ -26,7 +26,7 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
     public void testGetReservationsOfStudentAsAdmin() throws Exception {
         mockMvc.perform(get("/locations/reservations/user?id=" + student.getUserId()).with(csrf()))
                 .andDo(print())
-                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(status().isOk());
     }
 
@@ -35,7 +35,7 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
     public void testGetReservationsOfStudentAsSelf() throws Exception {
         mockMvc.perform(get("/locations/reservations/user?id=" + student.getUserId()).with(csrf()))
                 .andDo(print())
-                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(status().isOk());
     }
 
@@ -57,7 +57,7 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
                 .andExpect(status().isOk());
 
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
-        Assert.assertEquals(2, list.size());
+        Assert.assertEquals(3, list.size());
     }
 
     @Test
@@ -70,7 +70,7 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
                 .andExpect(status().isConflict());
 
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
-        Assert.assertEquals(1, list.size());
+        Assert.assertEquals(2, list.size());
     }
 
     // todo more tests for more specific calendar periods
@@ -87,7 +87,7 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
                 .andExpect(status().isOk());
 
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
-        Assert.assertEquals(0, list.size());
+        Assert.assertEquals(1, list.size());
     }
 
     @Test
@@ -102,7 +102,10 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
                 .andExpect(status().isOk());
 
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
-        Assert.assertEquals(0, list.size());
+        Assert.assertEquals(1, list.size());
+
+        // You can manually check in the logs if the mail was sent by looking for
+        // Blocked sending mail to 'student1@ugent.be' with template file name 'mail/reservation_slot_deleted' and subject '[Werk- en Studieplekken] Uw gereserveerd tijdslot werd verwijderd' because 'mail' is not an active profile.
     }
 
     @Test
@@ -117,7 +120,7 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
                 .andExpect(status().isForbidden());
 
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
-        Assert.assertEquals(1, list.size());
+        Assert.assertEquals(2, list.size());
     }
 
     @Test
@@ -136,7 +139,7 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
                 .andExpect(status().isOk());
 
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
-        Assert.assertEquals(true, list.get(0).getAttended());
+        Assert.assertEquals(true, list.get(1).getAttended());
     }
 
     @Test
@@ -176,7 +179,7 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
         Timeslot timeslotAfterUpdate = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
 
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
-        Assert.assertEquals(true, list.get(0).getAttended());
+        Assert.assertEquals(true, list.get(1).getAttended());
 
         Assert.assertEquals(timeslot.getAmountOfReservations(), timeslotAfterUpdate.getAmountOfReservations());
     }
@@ -199,7 +202,7 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
         Timeslot timeslotAfterUpdate = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
 
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
-        Assert.assertEquals(false, list.get(0).getAttended());
+        Assert.assertEquals(false, list.get(1).getAttended());
 
         // when a user is set to unattended, the spot must be released so that others can make a reservation
         Assert.assertEquals(timeslot.getAmountOfReservations()-1, timeslotAfterUpdate.getAmountOfReservations());
@@ -226,7 +229,7 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
 
 
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
-        Assert.assertEquals(false, list.get(0).getAttended());
+        Assert.assertEquals(false, list.get(1).getAttended());
 
         Assert.assertEquals(timeslot.getAmountOfReservations() - 1, timeslotAfterUpdate.getAmountOfReservations());
     }
@@ -278,7 +281,7 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
 
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
         System.out.println(list);
-        Assert.assertEquals(false, list.get(0).getAttended());
+        Assert.assertEquals(false, list.get(1).getAttended());
         list = locationReservationDao.getAllLocationReservationsOfUser(student2.getUserId());
         Assert.assertEquals(true, list.get(0).getAttended());
 

@@ -1,16 +1,14 @@
 package blok2.controllers;
 
-import blok2.daos.IUserDao;
-import blok2.daos.ILocationDao;
-import blok2.daos.ILocationTagDao;
-import blok2.daos.IVolunteerDao;
-import blok2.helpers.authorization.AuthorizedLocationController;
+import blok2.daos.*;
 import blok2.helpers.LocationWithApproval;
+import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.helpers.exceptions.AlreadyExistsException;
 import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.helpers.orm.LocationNameAndNextReservableFrom;
 import blok2.mail.MailService;
 import blok2.model.reservables.Location;
+import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +39,7 @@ public class LocationController extends AuthorizedLocationController {
     private final ILocationTagDao locationTagDao;
     private final IUserDao userDao;
     private final IVolunteerDao volunteerDao;
+    private final ILocationReservationDao locationReservationDao;
 
     private final MailService mailService;
 
@@ -50,12 +49,13 @@ public class LocationController extends AuthorizedLocationController {
 
     @Autowired
     public LocationController(ILocationDao locationDao, ILocationTagDao locationTagDao, IUserDao userDao,
-                              IVolunteerDao volunteerDao, MailService mailService) {
+                              IVolunteerDao volunteerDao, MailService mailService, ILocationReservationDao locationReservationDao) {
         this.locationDao = locationDao;
         this.locationTagDao = locationTagDao;
         this.userDao = userDao;
         this.mailService = mailService;
         this.volunteerDao = volunteerDao;
+        this.locationReservationDao = locationReservationDao;
     }
 
     @GetMapping
@@ -86,7 +86,7 @@ public class LocationController extends AuthorizedLocationController {
     @PostMapping
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void addLocation(@RequestBody Location location) {
-        isAuthorized((l,$) -> hasAuthority(l.getAuthority()), location);
+        isAuthorized((l, $) -> hasAuthority(l.getAuthority()), location);
         try {
             try {
                 locationDao.getLocationByName(location.getName());
@@ -141,6 +141,17 @@ public class LocationController extends AuthorizedLocationController {
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void deleteLocation(@PathVariable("locationId") int locationId) {
         isAuthorized(locationId);
+
+        // Send email to all users who has a reservation for this location.
+        List<LocationReservation> locationReservations = locationReservationDao.getAllFutureLocationReservationsOfLocation(locationId);
+        for (LocationReservation locationReservation : locationReservations) {
+            try {
+                mailService.sendReservationSlotDeletedMessage(locationReservation.getUser().getMail(), locationReservation.getTimeslot());
+            } catch (MessagingException e) {
+                logger.error(String.format("Could not send mail to student %s about deleted reservation slot %s", locationReservation.getUser().getUsername(), locationReservation.getTimeslot().toString()));
+            }
+        }
+
         locationDao.deleteLocation(locationId);
         logger.info(String.format("Location %d deleted", locationId));
     }
@@ -193,7 +204,7 @@ public class LocationController extends AuthorizedLocationController {
     /**
      * Returns an array of 7 strings for each location that is opened in the week specified by the given
      * week number in the given year.
-     *
+     * <p>
      * Each string is in the form of 'HH24:MI - HH24:MI' to indicate the opening and closing hour at
      * monday, tuesday, ..., sunday but can also be null to indicate that the location is not open that day.
      */

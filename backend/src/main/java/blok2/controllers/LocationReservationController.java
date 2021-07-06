@@ -5,6 +5,7 @@ import blok2.daos.ILocationReservationDao;
 import blok2.helpers.Pair;
 import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
+import blok2.mail.MailService;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
@@ -19,6 +20,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -39,10 +41,13 @@ public class LocationReservationController extends AuthorizedLocationController 
     private final ILocationReservationDao locationReservationDao;
     private final ICalendarPeriodDao calendarPeriodDao;
 
+    private final MailService mailService;
+
     @Autowired
-    public LocationReservationController(ILocationReservationDao locationReservationDao, ICalendarPeriodDao calendarPeriodDao) {
+    public LocationReservationController(ILocationReservationDao locationReservationDao, ICalendarPeriodDao calendarPeriodDao, MailService mailService) {
         this.locationReservationDao = locationReservationDao;
         this.calendarPeriodDao = calendarPeriodDao;
+        this.mailService = mailService;
     }
 
     @GetMapping("/user")
@@ -67,10 +72,10 @@ public class LocationReservationController extends AuthorizedLocationController 
         try {
             LocationReservation reservation = new LocationReservation(user, timeslot, null);
             CalendarPeriod period = calendarPeriodDao.getById(timeslot.getCalendarId());
-            if(LocalDateTime.now().isBefore(period.getReservableFrom())) {
+            if (LocalDateTime.now().isBefore(period.getReservableFrom())) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "This calendarperiod can't yet be reserved");
             }
-            if(!locationReservationDao.addLocationReservationIfStillRoomAtomically(reservation)) {
+            if (!locationReservationDao.addLocationReservationIfStillRoomAtomically(reservation)) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "There are no more spots left for this location.");
             }
             return locationReservationDao.getLocationReservation(user.getUserId(), timeslot);
@@ -85,7 +90,7 @@ public class LocationReservationController extends AuthorizedLocationController 
     @PreAuthorize("hasAuthority('HAS_VOLUNTEERS') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public List<LocationReservation> getLocationReservationsByTimeslot(
             @PathVariable("calendarid") int calendarId,
-            @PathVariable("date") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate date,
+            @PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             @PathVariable("seqnr") int seqnr
     ) {
         Timeslot timeslot = new Timeslot(calendarId, seqnr, date, 0);
@@ -100,18 +105,27 @@ public class LocationReservationController extends AuthorizedLocationController 
 
     @DeleteMapping
     @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public void deleteLocationReservation(@RequestBody @Valid LocationReservation locationReservation) {
+    public void deleteLocationReservation(@AuthenticationPrincipal User user, @RequestBody @Valid LocationReservation locationReservation) {
 
         try {
             CalendarPeriod parentPeriod = calendarPeriodDao.getById(locationReservation.getTimeslot().getCalendarId());
             isAuthorized(
-                    (lr, user) -> hasAuthority(parentPeriod.getLocation().getLocationId()) || lr.getUser().getUserId().equals(user.getUserId()),
+                    (lr, u) -> hasAuthority(parentPeriod.getLocation().getLocationId()) || lr.getUser().getUserId().equals(u.getUserId()),
                     locationReservation
             );
 
             locationReservationDao.deleteLocationReservation(locationReservation.getUser().getUserId(),
                     locationReservation.getTimeslot());
             logger.info(String.format("LocationReservation for user %s at time %s deleted", locationReservation.getUser(), locationReservation.getTimeslot().toString()));
+
+            // Send email to student if student is not the user who requested the deletion.
+            if (!locationReservation.getUser().getUserId().equals(user.getUserId())) {
+                try {
+                    mailService.sendReservationSlotDeletedMessage(locationReservation.getUser().getMail(), locationReservation.getTimeslot());
+                } catch (MessagingException e) {
+                    logger.error(String.format("Could not send mail to student %s about deleted reservation slot %s", user.getUsername(), locationReservation.getTimeslot().toString()));
+                }
+            }
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
@@ -123,7 +137,7 @@ public class LocationReservationController extends AuthorizedLocationController 
     @PreAuthorize("hasAuthority('HAS_VOLUNTEERS') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void setLocationReservationAttendance(
             @PathVariable("calendarid") int calendarId,
-            @PathVariable("date") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate date,
+            @PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             @PathVariable("seqnr") int seqnr,
             @PathVariable("userid") String userid,
             @RequestBody LocationReservation.AttendedPostBody body

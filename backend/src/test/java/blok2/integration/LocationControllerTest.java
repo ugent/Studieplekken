@@ -119,6 +119,9 @@ public class LocationControllerTest extends BaseIntegrationTest {
                 .andDo(print()).andExpect(status().isOk());
 
         Assert.assertEquals(0, locationDao.getAllActiveLocations().size());
+
+        // You can manually check in the logs if the mail was sent by looking for
+        // Blocked sending mail to 'student1@ugent.be' with template file name 'mail/reservation_slot_deleted' and subject '[Werk- en Studieplekken] Uw gereserveerd tijdslot werd verwijderd' because 'mail' is not an active profile.
     }
 
     @Test

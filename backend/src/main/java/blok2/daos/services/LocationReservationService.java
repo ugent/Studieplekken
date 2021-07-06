@@ -175,4 +175,9 @@ public class LocationReservationService implements ILocationReservationDao {
         return ret;
     }
 
+    @Override
+    public List<LocationReservation> getAllFutureLocationReservationsOfLocation(int locationId) {
+        return locationReservationRepository.findAllByLocationIdAndDateAfter(locationId, LocalDate.now());
+    }
+
 }

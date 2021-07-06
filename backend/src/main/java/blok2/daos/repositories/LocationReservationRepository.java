@@ -33,4 +33,10 @@ public interface LocationReservationRepository extends JpaRepository<LocationRes
             "where l.locationId = ?1")
     List<LocationReservation> getLocationReservationsAtLocationAtThisMoment(int locationId);
 
+    @Query("select lr from LocationReservation lr " +
+            "   join CalendarPeriod cp on cp.id = lr.id.calendarId " +
+            "   join Location l on l.locationId = cp.location.locationId " +
+            "where l.locationId = ?1 and lr.id.timeslotDate >= ?2")
+    List<LocationReservation> findAllByLocationIdAndDateAfter(int locationId, LocalDate date);
+
 }
