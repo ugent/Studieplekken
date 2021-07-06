@@ -150,7 +150,7 @@
       "calendar": "Kalender",
       "penalties": "Overtredingen",
       "admins": "Admins",
-      "volunteers": "Vrijwilligers"
+      "volunteers": "Toezichthouders"
     },
     "general": {
       "loading": "Aan het laden...",
@@ -694,9 +694,10 @@
       }
     },
     "volunteers": {
-      "no-volunteers": "Er zijn nog geen vrijwilligers voor deze locatie.",
+      "no-volunteers": "Er zijn nog geen toezichthouders voor deze locatie.",
       "errorOnLoadingManageableLocations": "De locaties die u kan beheren konden niet worden opgehaald.",
-      "errorOnLoadingVolunteers": "De vrijwilligers van deze locatie konden niet opgehaald worden."
+      "errorOnLoadingVolunteers": "De toezichthouders van deze locatie konden niet opgehaald worden.",
+      "addNewButton": "Toezichter toevoegen"
     }
   },
   "profile": {
