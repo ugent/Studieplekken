@@ -19,7 +19,7 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { Moment } from 'moment';
 import { TranslateService } from '@ngx-translate/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 import { of } from 'rxjs/internal/observable/of';
 import {
@@ -115,11 +115,18 @@ export class LocationCalendarComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private translate: TranslateService,
     private route: ActivatedRoute,
-    private conversionService: ConversionToCalendarEventService
+    private conversionService: ConversionToCalendarEventService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.locationId = Number(this.route.snapshot.paramMap.get('locationId'));
+
+    // Check if locationId is a Number before proceeding. If NaN, redirect to management locations.
+    if (isNaN(this.locationId)) {
+      this.router.navigate(['/management/locations']).catch(console.log);
+      return;
+    }
 
     this.currentLang = this.translate.currentLang;
     this.translate.onLangChange.subscribe(() => {

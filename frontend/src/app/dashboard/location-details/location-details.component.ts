@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, TemplateRef } from '@angular/core';
 import { Location } from '../../shared/model/Location';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { LocationService } from '../../services/api/locations/location.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -101,11 +101,19 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
     private locationReservationService: LocationReservationsService,
     private modalService: BsModalService,
     private functionalityService: ApplicationTypeFunctionalityService,
-    private conversionService: ConversionToCalendarEventService
+    private conversionService: ConversionToCalendarEventService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.locationId = Number(this.route.snapshot.paramMap.get('locationId'));
+
+    // Check if locationId is a Number before proceeding. If NaN, redirect to dashboard.
+    if (isNaN(this.locationId)) {
+      this.router.navigate(['/dashboard']).catch(console.log);
+      return;
+    }
+
     this.location = this.locationService.getLocation(this.locationId);
     this.showAdmin = this.authenticationService.isAdmin();
     this.authenticationService
@@ -140,8 +148,8 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.locationSub.unsubscribe();
-    this.calendarSub.unsubscribe();
+    this.locationSub?.unsubscribe();
+    this.calendarSub?.unsubscribe();
   }
 
   locationStatusColorClass(): string {
