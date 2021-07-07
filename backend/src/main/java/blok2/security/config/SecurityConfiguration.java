@@ -1,7 +1,9 @@
 package blok2.security.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.security.cas.authentication.CasAuthenticationProvider;
@@ -11,19 +13,25 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.PortMapper;
-import org.springframework.security.web.PortMapperImpl;
-import org.springframework.security.web.PortResolverImpl;
+import org.springframework.security.saml.*;
+import org.springframework.security.saml.key.KeyManager;
+import org.springframework.security.saml.metadata.ExtendedMetadata;
+import org.springframework.security.saml.metadata.MetadataGenerator;
+import org.springframework.security.saml.metadata.MetadataGeneratorFilter;
+import org.springframework.security.web.*;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 @Configuration
 @EnableWebSecurity
@@ -32,28 +40,62 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Value("${server.port}")
     private int serverPort = 8080;
 
+    @Value("${saml.sp}")
+    private String samlAudience;
+
     private final CasAuthenticationProvider casAuthenticationProvider;
     private final CasAuthenticationEntryPoint casAuthenticationEntryPoint;
     private final LogoutSuccessHandler logoutSuccessHandler;
 
     private final Set<String> springProfilesActive;
 
+    private final SAMLAuthenticationProvider samlAuthenticationProvider;
+    private final SAMLEntryPoint samlEntryPoint;
+    private final SAMLLogoutFilter samlLogoutFilter;
+    private final SAMLLogoutProcessingFilter samlLogoutProcessingFilter;
+    private final ExtendedMetadata extendedMetadata;
+    private final KeyManager keyManager;
+
+    @Qualifier("saml")
+    private final SavedRequestAwareAuthenticationSuccessHandler samlAuthSuccessHandler;
+    @Qualifier("saml")
+    private final SimpleUrlAuthenticationFailureHandler samlAuthFailureHandler;
+
+
     @Autowired
     public SecurityConfiguration(CasAuthenticationProvider casAuthenticationProvider,
                                  CasAuthenticationEntryPoint casAuthenticationEntryPoint,
-                                 LogoutSuccessHandler logoutSuccessHandler,
-                                 Environment env) {
+                                 @Qualifier("customLogoutSuccessHandler") LogoutSuccessHandler logoutSuccessHandler,
+                                 Environment env,
+                                 SAMLAuthenticationProvider samlAuthenticationProvider,
+                                 SAMLEntryPoint samlEntryPoint,
+                                 SAMLLogoutFilter samlLogoutFilter,
+                                 SAMLLogoutProcessingFilter samlLogoutProcessingFilter,
+                                 @Qualifier("successRedirectHandler") SavedRequestAwareAuthenticationSuccessHandler samlAuthSuccessHandler,
+                                 SimpleUrlAuthenticationFailureHandler samlAuthFailureHandler,
+                                 ExtendedMetadata extendedMetadata,
+                                 KeyManager keyManager) {
         this.casAuthenticationProvider = casAuthenticationProvider;
         this.casAuthenticationEntryPoint = casAuthenticationEntryPoint;
         this.logoutSuccessHandler = logoutSuccessHandler;
 
         this.springProfilesActive = new TreeSet<>();
         Collections.addAll(springProfilesActive, env.getActiveProfiles());
+
+        this.samlAuthenticationProvider = samlAuthenticationProvider;
+        this.samlEntryPoint = samlEntryPoint;
+        this.samlLogoutFilter = samlLogoutFilter;
+        this.samlLogoutProcessingFilter = samlLogoutProcessingFilter;
+        this.samlAuthSuccessHandler = samlAuthSuccessHandler;
+        this.samlAuthFailureHandler = samlAuthFailureHandler;
+        this.extendedMetadata = extendedMetadata;
+        this.keyManager = keyManager;
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(this.casAuthenticationProvider);
+        auth.authenticationProvider(this.samlAuthenticationProvider);
     }
 
     /**
@@ -69,14 +111,34 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.csrf()
-                .csrfTokenRepository(csrfTokenRepository());
+                .disable();
+        //.csrfTokenRepository(csrfTokenRepository());
 
         http.authorizeRequests()
-                .regexMatchers("/login/cas").authenticated() // used to trigger cas flow
+                .regexMatchers("/login/cas", "/login/saml", "/SSO/saml", "/discovery/saml", "/api/logout/saml", "/SingleLogout/saml", "/api/SSO/saml").authenticated() // used to trigger cas flow
                 .anyRequest().permitAll();
 
-        http.httpBasic()
-                .authenticationEntryPoint(casAuthenticationEntryPoint);
+        /*http.exceptionHandling()
+                .defaultAuthenticationEntryPointFor(
+                        casAuthenticationEntryPoint,
+                        new AntPathRequestMatcher("/login/cas"))
+                .defaultAuthenticationEntryPointFor(
+                        samlEntryPoint,
+                        new AntPathRequestMatcher("/login/saml"));*/
+        http
+                .httpBasic()
+                .authenticationEntryPoint((request, response, authException) -> {
+                    if (request.getRequestURI().endsWith("/login/saml")) {
+                        samlEntryPoint.commence(request, response, authException);
+                    } else {
+                        casAuthenticationEntryPoint.commence(request, response, authException);
+                    }
+                });
+
+        http
+                .addFilterBefore(metadataGeneratorFilter(), ChannelProcessingFilter.class)
+                .addFilterAfter(samlFilter(), BasicAuthenticationFilter.class)
+                .addFilterBefore(samlFilter(), CsrfFilter.class);
 
         http.requestCache().requestCache(requestCache());
 
@@ -112,9 +174,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         }
 
         portMapper.setPortMappings(
-            new HashMap<String, String>() {{
-                put(Integer.toString(serverPort), Integer.toString(serverPort));
-            }}
+                new HashMap<String, String>() {{
+                    put(Integer.toString(serverPort), Integer.toString(serverPort));
+                }}
         );
 
         return portMapper;
@@ -132,5 +194,56 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         CookieCsrfTokenRepository tokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
         tokenRepository.setCookiePath("/");
         return tokenRepository;
+    }
+
+    @Bean
+    public FilterChainProxy samlFilter() throws Exception {
+        List<SecurityFilterChain> chains = new ArrayList<>();
+        chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/api/SSO/saml/**"),
+                samlWebSSOProcessingFilter()));
+        chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/api/discovery/saml/**"),
+                samlDiscovery()));
+        chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/api/login/saml/**"),
+                samlEntryPoint));
+        chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/api/logout/saml/**"),
+                samlLogoutFilter));
+        chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/api/SingleLogout/saml/**"),
+                samlLogoutProcessingFilter));
+        return new FilterChainProxy(chains);
+    }
+
+    /**
+     * Will authenticate the associated auth token when the user logs in and the IdP redirects the SAML response to the
+     * /SSO/saml URI for processing.
+     */
+    @Bean
+    public SAMLProcessingFilter samlWebSSOProcessingFilter() throws Exception {
+        SAMLProcessingFilter samlWebSSOProcessingFilter = new SAMLProcessingFilter();
+        samlWebSSOProcessingFilter.setAuthenticationManager(authenticationManager());
+        samlWebSSOProcessingFilter.setAuthenticationSuccessHandler(samlAuthSuccessHandler);
+        samlWebSSOProcessingFilter.setAuthenticationFailureHandler(samlAuthFailureHandler);
+        return samlWebSSOProcessingFilter;
+    }
+
+    /**
+     * Will discover the IdP to contact for authentication after that samlEntryPoint handled the entry request.
+     */
+    @Bean
+    public SAMLDiscovery samlDiscovery() {
+        return new SAMLDiscovery();
+    }
+
+    public MetadataGenerator metadataGenerator() {
+        MetadataGenerator metadataGenerator = new MetadataGenerator();
+        metadataGenerator.setEntityId(samlAudience);
+        metadataGenerator.setExtendedMetadata(extendedMetadata);
+        metadataGenerator.setIncludeDiscoveryExtension(false);
+        metadataGenerator.setKeyManager(keyManager);
+        return metadataGenerator;
+    }
+
+    @Bean
+    public MetadataGeneratorFilter metadataGeneratorFilter() {
+        return new MetadataGeneratorFilter(metadataGenerator());
     }
 }

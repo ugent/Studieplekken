@@ -74,3 +74,12 @@ logging:
 custom:
   mailing:
     recipientsOpeningHoursOverview: ""
+
+# SAML
+saml:
+  keystore:
+    location: classpath:/keystore/samlKeystore.jks
+    password: ***REMOVED***
+    alias: blokat
+  idp: http://www.okta.com/exk15hzmbtaSjzq1E5d7
+  sp: https://localhost:8080/api/metadata/saml
