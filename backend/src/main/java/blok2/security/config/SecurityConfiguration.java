@@ -1,5 +1,6 @@
 package blok2.security.config;
 
+import blok2.security.handlers.AuthSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,6 +57,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final ExtendedMetadata extendedMetadata;
     private final KeyManager keyManager;
 
+    private final AuthSuccessHandler authSuccessHandler;
+
     @Qualifier("saml")
     private final SavedRequestAwareAuthenticationSuccessHandler samlAuthSuccessHandler;
     @Qualifier("saml")
@@ -74,7 +77,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                                  @Qualifier("successRedirectHandler") SavedRequestAwareAuthenticationSuccessHandler samlAuthSuccessHandler,
                                  SimpleUrlAuthenticationFailureHandler samlAuthFailureHandler,
                                  ExtendedMetadata extendedMetadata,
-                                 KeyManager keyManager) {
+                                 KeyManager keyManager,
+                                 AuthSuccessHandler authSuccessHandler) {
         this.casAuthenticationProvider = casAuthenticationProvider;
         this.casAuthenticationEntryPoint = casAuthenticationEntryPoint;
         this.logoutSuccessHandler = logoutSuccessHandler;
@@ -84,12 +88,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         this.samlAuthenticationProvider = samlAuthenticationProvider;
         this.samlEntryPoint = samlEntryPoint;
+        this.samlEntryPoint.setFilterProcessesUrl("/login/saml");
         this.samlLogoutFilter = samlLogoutFilter;
+        this.samlLogoutFilter.setFilterProcessesUrl("/logout/saml");
         this.samlLogoutProcessingFilter = samlLogoutProcessingFilter;
+        this.samlLogoutProcessingFilter.setFilterProcessesUrl("/SingleLogout/saml");
         this.samlAuthSuccessHandler = samlAuthSuccessHandler;
         this.samlAuthFailureHandler = samlAuthFailureHandler;
         this.extendedMetadata = extendedMetadata;
         this.keyManager = keyManager;
+
+        this.authSuccessHandler = authSuccessHandler;
     }
 
     @Override
@@ -115,25 +124,29 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         //.csrfTokenRepository(csrfTokenRepository());
 
         http.authorizeRequests()
-                .regexMatchers("/login/cas", "/login/saml", "/SSO/saml", "/discovery/saml", "/api/logout/saml", "/SingleLogout/saml", "/api/SSO/saml").authenticated() // used to trigger cas flow
+                .regexMatchers("/login/cas", "/login/saml", "/SSO/saml", "/discovery/saml").authenticated()// used to trigger cas flow
                 .anyRequest().permitAll();
 
-        /*http.exceptionHandling()
+        http.exceptionHandling()
                 .defaultAuthenticationEntryPointFor(
                         casAuthenticationEntryPoint,
                         new AntPathRequestMatcher("/login/cas"))
                 .defaultAuthenticationEntryPointFor(
                         samlEntryPoint,
-                        new AntPathRequestMatcher("/login/saml"));*/
-        http
+                        new AntPathRequestMatcher("/login/saml"));
+        /*http
                 .httpBasic()
                 .authenticationEntryPoint((request, response, authException) -> {
-                    if (request.getRequestURI().endsWith("/login/saml")) {
+                    if (request.getRequestURI().endsWith("/saml")) {
                         samlEntryPoint.commence(request, response, authException);
-                    } else {
+                        System.out.println("here 1: " + request.getRequestURI());
+                    } else if (request.getRequestURI().endsWith("/login/cas")){
                         casAuthenticationEntryPoint.commence(request, response, authException);
+                        System.out.println("here 2: " + request.getRequestURI());
+                    } else {
+                        System.out.println("here 3: " + request.getRequestURI());
                     }
-                });
+                });*/
 
         http
                 .addFilterBefore(metadataGeneratorFilter(), ChannelProcessingFilter.class)
@@ -199,15 +212,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public FilterChainProxy samlFilter() throws Exception {
         List<SecurityFilterChain> chains = new ArrayList<>();
-        chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/api/SSO/saml/**"),
+        chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/SSO/saml/**"),
                 samlWebSSOProcessingFilter()));
-        chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/api/discovery/saml/**"),
+        chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/discovery/saml/**"),
                 samlDiscovery()));
-        chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/api/login/saml/**"),
+        chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/login/saml/**"),
                 samlEntryPoint));
-        chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/api/logout/saml/**"),
+        chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/logout/saml/**"),
                 samlLogoutFilter));
-        chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/api/SingleLogout/saml/**"),
+        chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/SingleLogout/saml/**"),
                 samlLogoutProcessingFilter));
         return new FilterChainProxy(chains);
     }
@@ -219,6 +232,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public SAMLProcessingFilter samlWebSSOProcessingFilter() throws Exception {
         SAMLProcessingFilter samlWebSSOProcessingFilter = new SAMLProcessingFilter();
+        samlWebSSOProcessingFilter.setFilterProcessesUrl("/SSO/saml");
         samlWebSSOProcessingFilter.setAuthenticationManager(authenticationManager());
         samlWebSSOProcessingFilter.setAuthenticationSuccessHandler(samlAuthSuccessHandler);
         samlWebSSOProcessingFilter.setAuthenticationFailureHandler(samlAuthFailureHandler);
@@ -230,20 +244,24 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
      */
     @Bean
     public SAMLDiscovery samlDiscovery() {
-        return new SAMLDiscovery();
+        SAMLDiscovery samlDiscovery = new SAMLDiscovery();
+        samlDiscovery.setFilterProcessesUrl("/discovery/saml");
+        return samlDiscovery;
     }
 
-    public MetadataGenerator metadataGenerator() {
+    public MetadataGenerator metadataGenerator() throws Exception {
         MetadataGenerator metadataGenerator = new MetadataGenerator();
         metadataGenerator.setEntityId(samlAudience);
         metadataGenerator.setExtendedMetadata(extendedMetadata);
         metadataGenerator.setIncludeDiscoveryExtension(false);
         metadataGenerator.setKeyManager(keyManager);
+        metadataGenerator.setSamlWebSSOFilter(samlWebSSOProcessingFilter());
+        metadataGenerator.setSamlLogoutProcessingFilter(samlLogoutProcessingFilter);
         return metadataGenerator;
     }
 
     @Bean
-    public MetadataGeneratorFilter metadataGeneratorFilter() {
+    public MetadataGeneratorFilter metadataGeneratorFilter() throws Exception {
         return new MetadataGeneratorFilter(metadataGenerator());
     }
 }
