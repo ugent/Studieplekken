@@ -49,6 +49,7 @@ public class CustomUserDetailsService implements AuthenticationUserDetailsServic
 
         User user;
 
+        System.out.println("finding user!");
         // Try to find the user with given id in the application database
         try {
             user = this.userDao.getUserById(ugentID);
