@@ -17,6 +17,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.saml.*;
 import org.springframework.security.saml.key.KeyManager;
 import org.springframework.security.saml.metadata.ExtendedMetadata;
+import org.springframework.security.saml.metadata.MetadataDisplayFilter;
 import org.springframework.security.saml.metadata.MetadataGenerator;
 import org.springframework.security.saml.metadata.MetadataGeneratorFilter;
 import org.springframework.security.web.*;
@@ -44,6 +45,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Value("${saml.sp}")
     private String samlAudience;
 
+    private final MetadataDisplayFilter metadataDisplayFilter;
+
     private final CasAuthenticationProvider casAuthenticationProvider;
     private final CasAuthenticationEntryPoint casAuthenticationEntryPoint;
     private final LogoutSuccessHandler logoutSuccessHandler;
@@ -56,8 +59,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final SAMLLogoutProcessingFilter samlLogoutProcessingFilter;
     private final ExtendedMetadata extendedMetadata;
     private final KeyManager keyManager;
-
-    private final AuthSuccessHandler authSuccessHandler;
 
     @Qualifier("saml")
     private final SavedRequestAwareAuthenticationSuccessHandler samlAuthSuccessHandler;
@@ -78,7 +79,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                                  SimpleUrlAuthenticationFailureHandler samlAuthFailureHandler,
                                  ExtendedMetadata extendedMetadata,
                                  KeyManager keyManager,
-                                 AuthSuccessHandler authSuccessHandler) {
+                                 MetadataDisplayFilter metadataDisplayFilter) {
         this.casAuthenticationProvider = casAuthenticationProvider;
         this.casAuthenticationEntryPoint = casAuthenticationEntryPoint;
         this.logoutSuccessHandler = logoutSuccessHandler;
@@ -98,7 +99,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         this.extendedMetadata = extendedMetadata;
         this.keyManager = keyManager;
 
-        this.authSuccessHandler = authSuccessHandler;
+        this.metadataDisplayFilter = metadataDisplayFilter;
+        this.metadataDisplayFilter.setFilterProcessesUrl("/metadata/saml");
     }
 
     @Override
@@ -222,6 +224,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 samlLogoutFilter));
         chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/SingleLogout/saml/**"),
                 samlLogoutProcessingFilter));
+        chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/metadata/saml/**"),
+                metadataDisplayFilter));
         return new FilterChainProxy(chains);
     }
 

@@ -83,3 +83,6 @@ saml:
     alias: blokat
   idp: http://www.okta.com/exk15hzmbtaSjzq1E5d7
   sp: https://localhost:8080/api/metadata/saml
+  idps:
+    okta: http://www.okta.com/exk15hzmbtaSjzq1E5d7
+    ssoCircle: https://idp.ssocircle.com

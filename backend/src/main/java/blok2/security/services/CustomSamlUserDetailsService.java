@@ -1,29 +1,42 @@
 package blok2.security.services;
 
 import blok2.daos.IUserDao;
+import blok2.helpers.exceptions.InvalidRequestParametersException;
 import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.users.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ldap.core.LdapTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.saml.SAMLCredential;
 import org.springframework.security.saml.userdetails.SAMLUserDetailsService;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
 public class CustomSamlUserDetailsService implements SAMLUserDetailsService {
+
+    private final Map<String, String> idpToInstitution;
 
     private final Logger logger = LoggerFactory.getLogger(CustomUserDetailsService.class);
 
     private final IUserDao userDao;
 
     @Autowired
-    public CustomSamlUserDetailsService(IUserDao userDao) {
+    public CustomSamlUserDetailsService(IUserDao userDao,
+                                        @Value("${saml.idps.okta}") String oktaIdp,
+                                        @Value("${saml.idps.ssoCircle}") String ssoCircleIdp) {
         this.userDao = userDao;
+
+        // Register IDP -> Institution mapping. IDP should match with the EntityID in the SAML metadata file.
+        // Institution should match with the entry in the database.
+        this.idpToInstitution = new HashMap<>();
+        this.idpToInstitution.put(oktaIdp, "Artevelde Hogeschool");
+        this.idpToInstitution.put(ssoCircleIdp, "HoGent");
     }
 
 
@@ -33,10 +46,18 @@ public class CustomSamlUserDetailsService implements SAMLUserDetailsService {
         User user;
         try {
             user = this.userDao.getUserByEmail(credential.getNameID().getValue());
-        } catch(NoSuchDatabaseObjectException e) {
+        } catch (NoSuchDatabaseObjectException e) {
+            // Determine institution depending on the remote entity ID.
+            if (!this.idpToInstitution.containsKey(credential.getRemoteEntityID())) {
+                throw new InvalidRequestParametersException("User with email '" + credential.getNameID().getValue() + "' trying to login for the first time with unknown IDP '" + credential.getRemoteEntityID() + "'. Did an institution their EntityID change?");
+            }
+            String institution = this.idpToInstitution.get(credential.getRemoteEntityID());
+
             user = new User();
             user.setMail(credential.getNameID().getValue());
-            user.setInstitution("UGent");
+            user.setPassword("secret");
+            user.setInstitution(institution);
+            // TODO: set firstname and lastname.
             user.setUserId(UUID.randomUUID().toString());
             userDao.addUser(user);
         }

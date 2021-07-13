@@ -20,6 +20,7 @@ import org.springframework.security.saml.log.SAMLDefaultLogger;
 import org.springframework.security.saml.metadata.CachingMetadataManager;
 import org.springframework.security.saml.metadata.ExtendedMetadata;
 import org.springframework.security.saml.metadata.ExtendedMetadataDelegate;
+import org.springframework.security.saml.metadata.MetadataDisplayFilter;
 import org.springframework.security.saml.parser.ParserPoolHolder;
 import org.springframework.security.saml.processor.HTTPPostBinding;
 import org.springframework.security.saml.processor.HTTPRedirectDeflateBinding;
@@ -109,7 +110,21 @@ public class SAMLConfiguration {
     public ExtendedMetadataDelegate oktaExtendedMetadataProvider() throws MetadataProviderException {
         File metadata = null;
         try {
-            metadata = new File("./src/main/resources/saml/metadata/sso.xml");
+            metadata = new File("./src/main/resources/saml/metadata/sso-okta.xml");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        FilesystemMetadataProvider provider = new FilesystemMetadataProvider(metadata);
+        provider.setParserPool(parserPool());
+        return new ExtendedMetadataDelegate(provider, extendedMetadata());
+    }
+
+    @Bean
+    @Qualifier("ssoCircle")
+    public ExtendedMetadataDelegate ssoCircleExtendedMetadataProvider() throws MetadataProviderException {
+        File metadata = null;
+        try {
+            metadata = new File("./src/main/resources/saml/metadata/sso-ssocircle.xml");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -123,6 +138,7 @@ public class SAMLConfiguration {
     public CachingMetadataManager metadata() throws MetadataProviderException, ResourceException {
         List<MetadataProvider> providers = new ArrayList<>();
         providers.add(oktaExtendedMetadataProvider());
+        providers.add(ssoCircleExtendedMetadataProvider());
         CachingMetadataManager metadataManager = new CachingMetadataManager(providers);
         metadataManager.setDefaultIDP(defaultIdp);
         return metadataManager;
@@ -249,5 +265,10 @@ public class SAMLConfiguration {
         return new SAMLLogoutFilter(successLogoutHandler(),
                 new LogoutHandler[]{logoutHandler()},
                 new LogoutHandler[]{logoutHandler()});
+    }
+
+    @Bean
+    public MetadataDisplayFilter metadataDisplayFilter() {
+        return new MetadataDisplayFilter();
     }
 }
