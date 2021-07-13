@@ -1,6 +1,5 @@
 package blok2.security.config;
 
-import blok2.security.handlers.AuthSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,7 +53,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final Set<String> springProfilesActive;
 
     private final SAMLAuthenticationProvider samlAuthenticationProvider;
-    private final SAMLEntryPoint samlEntryPoint;
+    private SAMLEntryPoint samlEntryPoint;
     private final SAMLLogoutFilter samlLogoutFilter;
     private final SAMLLogoutProcessingFilter samlLogoutProcessingFilter;
     private final ExtendedMetadata extendedMetadata;
@@ -72,7 +71,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                                  @Qualifier("customLogoutSuccessHandler") LogoutSuccessHandler logoutSuccessHandler,
                                  Environment env,
                                  SAMLAuthenticationProvider samlAuthenticationProvider,
-                                 SAMLEntryPoint samlEntryPoint,
                                  SAMLLogoutFilter samlLogoutFilter,
                                  SAMLLogoutProcessingFilter samlLogoutProcessingFilter,
                                  @Qualifier("successRedirectHandler") SavedRequestAwareAuthenticationSuccessHandler samlAuthSuccessHandler,
@@ -88,8 +86,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         Collections.addAll(springProfilesActive, env.getActiveProfiles());
 
         this.samlAuthenticationProvider = samlAuthenticationProvider;
-        this.samlEntryPoint = samlEntryPoint;
-        this.samlEntryPoint.setFilterProcessesUrl("/login/saml");
         this.samlLogoutFilter = samlLogoutFilter;
         this.samlLogoutFilter.setFilterProcessesUrl("/logout/saml");
         this.samlLogoutProcessingFilter = samlLogoutProcessingFilter;
@@ -101,6 +97,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         this.metadataDisplayFilter = metadataDisplayFilter;
         this.metadataDisplayFilter.setFilterProcessesUrl("/metadata/saml");
+    }
+
+    @Autowired
+    public void setSamlEntryPoint(SAMLEntryPoint samlEntryPoint) {
+        // A setter is used instead of initialising it via the constructor to prevent circular dependency.
+        this.samlEntryPoint = samlEntryPoint;
+        this.samlEntryPoint.setFilterProcessesUrl("/login/saml");
     }
 
     @Override
