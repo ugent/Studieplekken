@@ -33,6 +33,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
+import org.springframework.util.ResourceUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -110,7 +111,7 @@ public class SAMLConfiguration {
     public ExtendedMetadataDelegate oktaExtendedMetadataProvider() throws MetadataProviderException {
         File metadata = null;
         try {
-            metadata = new File("./src/main/resources/saml/metadata/sso-okta.xml");
+            metadata = ResourceUtils.getFile("classpath:saml/metadata/sso-okta.xml");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -124,7 +125,7 @@ public class SAMLConfiguration {
     public ExtendedMetadataDelegate ssoCircleExtendedMetadataProvider() throws MetadataProviderException {
         File metadata = null;
         try {
-            metadata = new File("./src/main/resources/saml/metadata/sso-ssocircle.xml");
+            metadata = ResourceUtils.getFile("classpath:saml/metadata/sso-ssocircle.xml");
         } catch (Exception e) {
             e.printStackTrace();
         }
