@@ -14,6 +14,7 @@ import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.security.saml.*;
 import org.springframework.security.saml.context.SAMLContextProviderImpl;
+import org.springframework.security.saml.context.SAMLContextProviderLB;
 import org.springframework.security.saml.key.JKSKeyManager;
 import org.springframework.security.saml.key.KeyManager;
 import org.springframework.security.saml.log.SAMLDefaultLogger;
@@ -63,6 +64,12 @@ public class SAMLConfiguration {
 
     @Value("${redirect.successLoginRedirectUrl}")
     private String successLoginRedirectUrl;
+
+    @Value("${server.servlet.context-path}")
+    private String contextPath;
+
+    @Value("${saml.server-name}")
+    private String serverName;
 
 
     @Bean
@@ -179,7 +186,11 @@ public class SAMLConfiguration {
 
     @Bean
     public SAMLContextProviderImpl contextProvider() {
-        return new SAMLContextProviderImpl();
+        SAMLContextProviderLB samlContextProviderLB = new SAMLContextProviderLB();
+        samlContextProviderLB.setScheme("https");
+        samlContextProviderLB.setServerName(serverName);
+        samlContextProviderLB.setContextPath(contextPath);
+        return samlContextProviderLB;
     }
 
     @Bean
@@ -235,7 +246,7 @@ public class SAMLConfiguration {
     public SimpleUrlAuthenticationFailureHandler authenticationFailureHandler() {
         SimpleUrlAuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler();
         failureHandler.setUseForward(true);
-        failureHandler.setDefaultFailureUrl("/error"); // TODO: configure existing URL
+        failureHandler.setDefaultFailureUrl("/error");
         return failureHandler;
     }
 

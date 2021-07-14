@@ -40,3 +40,5 @@ custom:
 # SAML
 saml:
   sp: https://studieplekken-dev.ugent.be/api/metadata/saml
+  server-name: studieplekken-dev.ugent.be
+  entity-base-url: https://studieplekken-dev.ugent.be/api

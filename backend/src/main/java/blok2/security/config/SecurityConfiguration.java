@@ -44,6 +44,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Value("${saml.sp}")
     private String samlAudience;
 
+    @Value("${saml.entity-base-url}")
+    private String entityBaseUrl;
+
     private final MetadataDisplayFilter metadataDisplayFilter;
 
     private final CasAuthenticationProvider casAuthenticationProvider;
@@ -264,6 +267,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         metadataGenerator.setKeyManager(keyManager);
         metadataGenerator.setSamlWebSSOFilter(samlWebSSOProcessingFilter());
         metadataGenerator.setSamlLogoutProcessingFilter(samlLogoutProcessingFilter);
+        metadataGenerator.setEntityBaseURL(entityBaseUrl);
         return metadataGenerator;
     }
 
