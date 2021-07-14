@@ -1,15 +1,15 @@
 package blok2.security.config;
 
 import blok2.security.providers.CustomSAMLAuthenticationProvider;
-import org.opensaml.saml2.metadata.provider.FilesystemMetadataProvider;
+import blok2.security.providers.InputStreamMetadataProvider;
 import org.opensaml.saml2.metadata.provider.MetadataProvider;
 import org.opensaml.saml2.metadata.provider.MetadataProviderException;
-import org.opensaml.util.resource.ResourceException;
 import org.opensaml.xml.parse.StaticBasicParserPool;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.security.saml.*;
@@ -33,9 +33,8 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
-import org.springframework.util.ResourceUtils;
 
-import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -108,35 +107,35 @@ public class SAMLConfiguration {
 
     @Bean
     @Qualifier("okta")
-    public ExtendedMetadataDelegate oktaExtendedMetadataProvider() throws MetadataProviderException {
-        File metadata = null;
+    public ExtendedMetadataDelegate oktaExtendedMetadataProvider() {
+        InputStream metadata = null;
         try {
-            metadata = ResourceUtils.getFile("classpath:saml/metadata/sso-okta.xml");
+            metadata = new ClassPathResource("saml/metadata/sso-okta.xml").getInputStream();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        FilesystemMetadataProvider provider = new FilesystemMetadataProvider(metadata);
+        InputStreamMetadataProvider provider = new InputStreamMetadataProvider(metadata);
         provider.setParserPool(parserPool());
         return new ExtendedMetadataDelegate(provider, extendedMetadata());
     }
 
     @Bean
     @Qualifier("ssoCircle")
-    public ExtendedMetadataDelegate ssoCircleExtendedMetadataProvider() throws MetadataProviderException {
-        File metadata = null;
+    public ExtendedMetadataDelegate ssoCircleExtendedMetadataProvider() {
+        InputStream metadata = null;
         try {
-            metadata = ResourceUtils.getFile("classpath:saml/metadata/sso-ssocircle.xml");
+            metadata = new ClassPathResource("saml/metadata/sso-ssocircle.xml").getInputStream();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        FilesystemMetadataProvider provider = new FilesystemMetadataProvider(metadata);
+        InputStreamMetadataProvider provider = new InputStreamMetadataProvider(metadata);
         provider.setParserPool(parserPool());
         return new ExtendedMetadataDelegate(provider, extendedMetadata());
     }
 
     @Bean
     @Qualifier("metadata")
-    public CachingMetadataManager metadata() throws MetadataProviderException, ResourceException {
+    public CachingMetadataManager metadata() throws MetadataProviderException {
         List<MetadataProvider> providers = new ArrayList<>();
         providers.add(oktaExtendedMetadataProvider());
         providers.add(ssoCircleExtendedMetadataProvider());
