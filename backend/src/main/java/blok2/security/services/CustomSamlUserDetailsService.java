@@ -21,6 +21,7 @@ import java.util.UUID;
 public class CustomSamlUserDetailsService implements SAMLUserDetailsService {
 
     private final Map<String, String> idpToInstitution;
+    private final String hoGentIdp;
 
     private final Logger logger = LoggerFactory.getLogger(CustomUserDetailsService.class);
 
@@ -39,6 +40,8 @@ public class CustomSamlUserDetailsService implements SAMLUserDetailsService {
         this.idpToInstitution.put(oktaIdp, "Artevelde Hogeschool");
         this.idpToInstitution.put(ssoCircleIdp, "HoGent");
         this.idpToInstitution.put(hoGentIdp, "HoGent");
+
+        this.hoGentIdp = hoGentIdp;
     }
 
 
@@ -59,8 +62,15 @@ public class CustomSamlUserDetailsService implements SAMLUserDetailsService {
             user.setMail(credential.getNameID().getValue());
             user.setPassword("secret");
             user.setInstitution(institution);
-            // TODO: set firstname and lastname.
-            user.setUserId(UUID.randomUUID().toString());
+
+            // Attributes are institution dependant so fill in firstname, lastname and ID depending on institution.
+            if (credential.getRemoteEntityID().equals(hoGentIdp)) {
+                user.setFirstName(credential.getAttributeAsString("first_name"));
+                user.setLastName(credential.getAttributeAsString("last_name"));
+                user.setUserId(credential.getAttributeAsString("user_name"));
+            } else {
+                user.setUserId(UUID.randomUUID().toString());
+            }
             userDao.addUser(user);
         }
         return user;
