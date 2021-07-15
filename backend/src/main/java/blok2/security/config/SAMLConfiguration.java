@@ -155,12 +155,27 @@ public class SAMLConfiguration {
     }
 
     @Bean
+    @Qualifier("arteveldeHS")
+    public ExtendedMetadataDelegate arteveldeHSExtendedMetadataProvider() {
+        InputStream metadata = null;
+        try {
+            metadata = new ClassPathResource("saml/metadata/sso-artevelde.xml").getInputStream();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        InputStreamMetadataProvider provider = new InputStreamMetadataProvider(metadata);
+        provider.setParserPool(parserPool());
+        return new ExtendedMetadataDelegate(provider, extendedMetadata());
+    }
+
+    @Bean
     @Qualifier("metadata")
     public CachingMetadataManager metadata() throws MetadataProviderException {
         List<MetadataProvider> providers = new ArrayList<>();
         providers.add(oktaExtendedMetadataProvider());
         providers.add(ssoCircleExtendedMetadataProvider());
         providers.add(hoGentExtendedMetadataProvider());
+        providers.add(arteveldeHSExtendedMetadataProvider());
         CachingMetadataManager metadataManager = new CachingMetadataManager(providers);
         metadataManager.setDefaultIDP(defaultIdp);
         return metadataManager;

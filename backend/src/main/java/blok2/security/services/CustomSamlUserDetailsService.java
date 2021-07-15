@@ -22,6 +22,7 @@ public class CustomSamlUserDetailsService implements SAMLUserDetailsService {
 
     private final Map<String, String> idpToInstitution;
     private final String hoGentIdp;
+    private final String arteveldeHSIdp;
 
     private final Logger logger = LoggerFactory.getLogger(CustomUserDetailsService.class);
 
@@ -31,7 +32,8 @@ public class CustomSamlUserDetailsService implements SAMLUserDetailsService {
     public CustomSamlUserDetailsService(IUserDao userDao,
                                         @Value("${saml.idps.okta}") String oktaIdp,
                                         @Value("${saml.idps.ssoCircle}") String ssoCircleIdp,
-                                        @Value("${saml.idps.hoGent}") String hoGentIdp) {
+                                        @Value("${saml.idps.hoGent}") String hoGentIdp,
+                                        @Value("${saml.idps.arteveldeHS}") String arteveldeHSIdp) {
         this.userDao = userDao;
 
         // Register IDP -> Institution mapping. IDP should match with the EntityID in the SAML metadata file.
@@ -40,18 +42,23 @@ public class CustomSamlUserDetailsService implements SAMLUserDetailsService {
         this.idpToInstitution.put(oktaIdp, "Artevelde Hogeschool");
         this.idpToInstitution.put(ssoCircleIdp, "HoGent");
         this.idpToInstitution.put(hoGentIdp, "HoGent");
+        this.idpToInstitution.put(arteveldeHSIdp, "Artevelde Hogeschool");
 
         this.hoGentIdp = hoGentIdp;
+        this.arteveldeHSIdp = arteveldeHSIdp;
     }
 
 
     @Override
     public User loadUserBySAML(SAMLCredential credential) throws UsernameNotFoundException {
 
+        // Try to find the user with given id (email) in the application database.
         User user;
         try {
             user = this.userDao.getUserByEmail(credential.getNameID().getValue());
         } catch (NoSuchDatabaseObjectException e) {
+            // If it is the first time that this user is logging in, create a new user using the attributes defined by SAML.
+
             // Determine institution depending on the remote entity ID.
             if (!this.idpToInstitution.containsKey(credential.getRemoteEntityID())) {
                 throw new InvalidRequestParametersException("User with email '" + credential.getNameID().getValue() + "' trying to login for the first time with unknown IDP '" + credential.getRemoteEntityID() + "'. Did an institution their EntityID change?");

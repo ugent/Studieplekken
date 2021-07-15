@@ -10,6 +10,7 @@ import { userWantsTLogInLocalStorageKey } from '../app.constants';
 export class LoginComponent {
   casFlowTriggerUrl = environment.casFlowTriggerUrl;
   hoGentFlowTriggerUrl = environment.hoGentFlowTriggerUrl;
+  arteveldeHSFlowTriggerUrl = environment.arteveldeHSFlowTriggerUrl;
   oktaFlowTriggerUrl = environment.oktaFlowTriggerUrl;
 
   /**
