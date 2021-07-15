@@ -88,3 +88,4 @@ saml:
   idps:
     okta: http://www.okta.com/exk15hzmbtaSjzq1E5d7
     ssoCircle: https://idp.ssocircle.com
+    hoGent: https://idp.hogent.be/idp

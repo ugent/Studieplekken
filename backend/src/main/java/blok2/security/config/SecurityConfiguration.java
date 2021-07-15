@@ -89,10 +89,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         Collections.addAll(springProfilesActive, env.getActiveProfiles());
 
         this.samlAuthenticationProvider = samlAuthenticationProvider;
+
+        // These endpoints are not actually being used, but are implemented for completeness.
+        // Logout is universally handled by the CustomLogoutSuccessHandler which overwrites the cookies to logout.
         this.samlLogoutFilter = samlLogoutFilter;
         this.samlLogoutFilter.setFilterProcessesUrl("/logout/saml");
         this.samlLogoutProcessingFilter = samlLogoutProcessingFilter;
         this.samlLogoutProcessingFilter.setFilterProcessesUrl("/SingleLogout/saml");
+
         this.samlAuthSuccessHandler = samlAuthSuccessHandler;
         this.samlAuthFailureHandler = samlAuthFailureHandler;
         this.extendedMetadata = extendedMetadata;

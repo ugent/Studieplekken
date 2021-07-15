@@ -29,7 +29,8 @@ public class CustomSamlUserDetailsService implements SAMLUserDetailsService {
     @Autowired
     public CustomSamlUserDetailsService(IUserDao userDao,
                                         @Value("${saml.idps.okta}") String oktaIdp,
-                                        @Value("${saml.idps.ssoCircle}") String ssoCircleIdp) {
+                                        @Value("${saml.idps.ssoCircle}") String ssoCircleIdp,
+                                        @Value("${saml.idps.hoGent}") String hoGentIdp) {
         this.userDao = userDao;
 
         // Register IDP -> Institution mapping. IDP should match with the EntityID in the SAML metadata file.
@@ -37,6 +38,7 @@ public class CustomSamlUserDetailsService implements SAMLUserDetailsService {
         this.idpToInstitution = new HashMap<>();
         this.idpToInstitution.put(oktaIdp, "Artevelde Hogeschool");
         this.idpToInstitution.put(ssoCircleIdp, "HoGent");
+        this.idpToInstitution.put(hoGentIdp, "HoGent");
     }
 
 

@@ -13,6 +13,18 @@
                   (click)="loginButtonClicked()">
             {{'login.casLogin' | translate}}
           </a>
+          <br>
+          <br>
+          <a href="{{hoGentFlowTriggerUrl}}" class="btn btn-secondary"
+             (click)="loginButtonClicked()">
+            {{'login.hoGentLogin' | translate}}
+          </a>
+          <br>
+          <br>
+          <a href="{{oktaFlowTriggerUrl}}" class="btn btn-secondary"
+             (click)="loginButtonClicked()">
+            Okta Login
+          </a>
         </div>
         <div class="col-xs-12 col-sm-8" id="image-container" style="background-image: url(assets/images/welcome/welcome.jpg)">
           <div id="display">

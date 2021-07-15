@@ -137,6 +137,7 @@
     "appTitle": "Study Rooms UGent",
     "title": "Login",
     "casLogin": "CAS Login",
+    "hoGentLogin": "HoGent Login",
     "about": "The digital platform for study locations"
   },
   "management": {
