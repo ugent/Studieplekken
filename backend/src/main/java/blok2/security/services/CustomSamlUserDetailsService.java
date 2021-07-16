@@ -1,6 +1,7 @@
 package blok2.security.services;
 
 import blok2.daos.IUserDao;
+import blok2.helpers.Institution;
 import blok2.helpers.exceptions.InvalidRequestParametersException;
 import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.users.User;
@@ -39,10 +40,10 @@ public class CustomSamlUserDetailsService implements SAMLUserDetailsService {
         // Register IDP -> Institution mapping. IDP should match with the EntityID in the SAML metadata file.
         // Institution should match with the entry in the database.
         this.idpToInstitution = new HashMap<>();
-        this.idpToInstitution.put(oktaIdp, "Artevelde Hogeschool");
-        this.idpToInstitution.put(ssoCircleIdp, "HoGent");
-        this.idpToInstitution.put(hoGentIdp, "HoGent");
-        this.idpToInstitution.put(arteveldeHSIdp, "Artevelde Hogeschool");
+        this.idpToInstitution.put(oktaIdp, Institution.ArteveldeHogeschool);
+        this.idpToInstitution.put(ssoCircleIdp, Institution.HoGent);
+        this.idpToInstitution.put(hoGentIdp, Institution.HoGent);
+        this.idpToInstitution.put(arteveldeHSIdp, Institution.ArteveldeHogeschool);
 
         this.hoGentIdp = hoGentIdp;
         this.arteveldeHSIdp = arteveldeHSIdp;
@@ -75,6 +76,10 @@ public class CustomSamlUserDetailsService implements SAMLUserDetailsService {
                 user.setFirstName(credential.getAttributeAsString("first_name"));
                 user.setLastName(credential.getAttributeAsString("last_name"));
                 user.setUserId(credential.getAttributeAsString("user_name"));
+            } else if (credential.getRemoteEntityID().equals(arteveldeHSIdp)) {
+                user.setFirstName(credential.getAttributeAsString("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname"));
+                user.setLastName(credential.getAttributeAsString("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname"));
+                user.setUserId(credential.getAttributeAsString("http://schemas.microsoft.com/identity/claims/objectidentifier"));
             } else {
                 user.setUserId(UUID.randomUUID().toString());
             }
