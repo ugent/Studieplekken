@@ -79,7 +79,7 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
   newReservations: LocationReservation[];
   removedReservations: LocationReservation[];
 
-  private timeouts: number[];
+  private timeouts: number[] = [];
   locationReservations: Observable<LocationReservation[]>;
   showAdmin: boolean;
   showLockersManagement: boolean;
@@ -230,10 +230,9 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
       this.calendarPeriodsService.getTimeslotsOfLocation(this.locationId),
       this.authenticationService.getLocationReservations(),
       this.selectedSubject,
-      this.location
-    ]).subscribe(([timeslots, reservations, proposedReservations, location]) => {
+    ]).subscribe(([timeslots, reservations, proposedReservations]) => {
       this.originalList = [...reservations];
-      this.selectedSubject.next(reservations);
+      //this.selectedSubject.next(reservations);
 
       // don't add timeouts more than once.
       this.timeouts.forEach(t => clearTimeout(t))

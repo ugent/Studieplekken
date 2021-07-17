@@ -7,6 +7,9 @@ import { Timeslot } from 'src/app/shared/model/Timeslot';
 import { Pair } from '../../../shared/model/helpers/Pair';
 import * as moment from 'moment';
 import { BsModalService } from 'ngx-bootstrap/modal';
+import { LocationService } from 'src/app/services/api/locations/location.service';
+import { Observable } from 'rxjs';
+import { Location } from 'src/app/shared/model/Location'
 
 @Component({
   selector: 'app-profile-location-reservations',
@@ -14,7 +17,7 @@ import { BsModalService } from 'ngx-bootstrap/modal';
   styleUrls: ['./profile-location-reservations.component.css'],
 })
 export class ProfileLocationReservationsComponent {
-  locationReservations: Pair<LocationReservation, CalendarPeriod>[] = [];
+  locationReservations: LocationReservation[] = [];
 
   locationReservationToDelete: LocationReservation = undefined;
   calendarPeriodForLocationReservationToDelete: CalendarPeriod = undefined;
@@ -25,7 +28,8 @@ export class ProfileLocationReservationsComponent {
   constructor(
     private authenticationService: AuthenticationService,
     private locationReservationService: LocationReservationsService,
-    private modalService: BsModalService
+    private modalService: BsModalService,
+    private locationService: LocationService
   ) {
     authenticationService.user.subscribe(() => {
       this.setup();
@@ -57,12 +61,10 @@ export class ProfileLocationReservationsComponent {
 
   prepareToDeleteLocationReservation(
     locationReservation: LocationReservation,
-    calendarPeriod: CalendarPeriod,
     template: TemplateRef<any>
   ): void {
     this.successDeletingLocationReservation = undefined;
     this.locationReservationToDelete = locationReservation;
-    this.calendarPeriodForLocationReservationToDelete = calendarPeriod;
     this.modalService.show(template);
   }
 
@@ -95,19 +97,17 @@ export class ProfileLocationReservationsComponent {
 
   needTooltip(
     reservation: LocationReservation,
-    calendarPeriod: CalendarPeriod
   ): boolean {
     return (
-      this.isTimeslotInPast(reservation.timeslot, calendarPeriod) &&
+      this.isTimeslotInPast(reservation.timeslot) &&
       reservation.attended === null
     );
   }
 
   getCorrectI18NObject(
     reservation: LocationReservation,
-    calendarPeriod: CalendarPeriod
   ): string {
-    if (this.isTimeslotInPast(reservation.timeslot, calendarPeriod)) {
+    if (this.isTimeslotInPast(reservation.timeslot)) {
       if (reservation.attended === null) {
         return 'profile.reservations.locations.table.attended.notScanned';
       } else {
@@ -121,7 +121,6 @@ export class ProfileLocationReservationsComponent {
 
   isTimeslotInPast(
     timeslot: Timeslot,
-    calendarPeriod: CalendarPeriod
   ): boolean {
     return timeslot.getEndMoment().isBefore(moment());
   }
@@ -134,4 +133,7 @@ export class ProfileLocationReservationsComponent {
     this.modalService.hide();
   }
 
+  getLocation(id: number): Observable<Location> {
+    return this.locationService.getLocation(id)
+  }
 }

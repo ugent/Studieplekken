@@ -104,7 +104,7 @@ export const includesTimeslot: (l: Timeslot[], t: Timeslot) => boolean = (
 export const timeslotToCalendarEvent = (timeslot: Timeslot, currentLang: string, locationReservations: LocationReservation[] = []) =>
   !timeslot.reservable ? nonReservableToCalendarEvent(timeslot, currentLang) :
     timeslot.areReservationsLocked() ? notYetReservableTimeslotToCalendarEvent(timeslot, currentLang) :
-      null;
+      reservableTimeslotToCalendarEvent(timeslot, currentLang, locationReservations);
 
 
 const nonReservableToCalendarEvent: (timeslot: Timeslot, currentLang: string) => CalendarEvent<{ timeslot: Timeslot }> =

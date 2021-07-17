@@ -25,16 +25,6 @@ export class LocationReservationsService {
       .pipe(map((ls) => ls.map(LocationReservation.fromJSON.bind(this))));
   }
 
-  getLocationReservationsWithCalendarPeriodsOfUser(
-    userId: string
-  ): Observable<Pair<LocationReservation, CalendarPeriod>[]> {
-    return this.http
-      .get<Pair<LocationReservation, CalendarPeriod>[]>(
-        api.locationReservationsWithLocationOfUser.replace('{userId}', userId)
-      )
-      .pipe(map((value) => value.map((p) => this.createNewPair(p))));
-  }
-
   createNewPair(
     pair: Pair<LocationReservation, CalendarPeriod>
   ): Pair<LocationReservation, CalendarPeriod> {

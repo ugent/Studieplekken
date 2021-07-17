@@ -30,22 +30,22 @@
 
           <!-- Table body -->
           <tbody>
-          <tr *ngFor="let pair of locationReservations">
-            <td>{{pair.second.location.name}}</td>
-            <td>{{pair.first.timeslot.timeslotDate.format("DD/MM/YYYY")}}</td>
-            <td>{{getBeginHour(pair.first.timeslot, pair.second)}}</td>
+          <tr *ngFor="let lr of locationReservations">
+            <td *ngIf="getLocation(lr.timeslot.locationId) | async as loc">{{loc.name}}</td>
+            <td>{{lr.timeslot.timeslotDate.format("DD/MM/YYYY")}}</td>
+            <td>{{lr.timeslot.getStartMoment().format("HH:mm")}}</td>
 
             <!-- If not attended, we put some extra explanation, else we don't. -->
             <td
-            *ngIf="needTooltip(pair.first, pair.second)"
+            *ngIf="needTooltip(lr)"
             #tooltip="matTooltip" matTooltip="{{'profile.reservations.locations.table.attended.notScannedExplanation' | translate}}" matTooltipPosition="above" class="dotted_ul">
-              {{getCorrectI18NObject(pair.first, pair.second) | translate}}</td>
+              {{getCorrectI18NObject(lr) | translate}}</td>
 
-              <td *ngIf="!needTooltip(pair.first, pair.second)">{{getCorrectI18NObject(pair.first, pair.second) | translate}}</td>
+              <td *ngIf="!needTooltip(lr)">{{getCorrectI18NObject(lr) | translate}}</td>
             <!-- User should not be able to delete past reservations, otherwise the penalty points
                  could be deleted as well -->
-            <td *ngIf="!isTimeslotInPast(pair.first.timeslot, pair.second)" class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
-                (click)="prepareToDeleteLocationReservation(pair.first, pair.second, deleteLocationReservationModal)">
+            <td *ngIf="!isTimeslotInPast(lr.timeslot)" class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
+                (click)="prepareToDeleteLocationReservation(lr, deleteLocationReservationModal)">
               <span class="glyphicon glyphicon-trash pointerCursor"></span>
             </td>
           </tr>
@@ -80,7 +80,7 @@
       <b>{{'management.reservations.location.deleteModal.body' | translate}}</b>
       <br><br>
       <ul>
-        <li><b style="margin-right: 5px"><i>{{('profile.reservations.locations.table.header.locationName' | translate) + ':   '}}</i></b>{{calendarPeriodForLocationReservationToDelete.location.name}}</li>
+        <li *ngIf="getLocation(locationReservationToDelete.timeslot.locationId) | async as loc"><b style="margin-right: 5px"><i>{{('profile.reservations.locations.table.header.locationName' | translate) + ':   '}}</i></b>{{loc.name}}</li>
         <li><b style="margin-right: 5px"><i>{{('profile.reservations.locations.table.header.reservationDate' | translate) + ':   '}}</i></b>{{locationReservationToDelete.timeslot.timeslotDate.format("DD/MM/YYYY")}}</li>
         <li><b style="margin-right: 5px"><i>{{('profile.reservations.locations.table.header.beginHour' | translate) + ':   '}}</i></b>{{getBeginHour(locationReservationToDelete.timeslot, calendarPeriodForLocationReservationToDelete)}}</li>
       </ul>
