@@ -1,6 +1,10 @@
+import { Time } from '@angular/common';
+import { CalendarEvent } from 'angular-calendar';
 import * as moment from 'moment';
 import { Moment } from 'moment';
+import { calendarEventTitleTemplate } from 'src/app/app.constants';
 import { CalendarPeriod } from './CalendarPeriod';
+import { LocationReservation } from './LocationReservation';
 
 export class Timeslot {
   timeslotSequenceNumber: number;
@@ -63,6 +67,25 @@ export class Timeslot {
   areReservationsLocked(): boolean {
     return !this.reservableFrom || this.reservableFrom.isAfter(moment());
   }
+
+  getStartMoment() {
+    return moment(
+      this.timeslotDate.format('DD-MM-YYYY') +
+      ' ' +
+      this.openingHour.format('HH:mm'),
+      'DD-MM-YYYY HH:mm'
+    )
+  }
+
+  getEndMoment() {
+    return moment(
+      this.timeslotDate.format('DD-MM-YYYY') +
+      ' ' +
+      this.closingHour.format('HH:mm'),
+      'DD-MM-YYYY HH:mm'
+    )
+  }
+
 }
 
 
@@ -76,3 +99,53 @@ export const includesTimeslot: (l: Timeslot[], t: Timeslot) => boolean = (
   l,
   t
 ) => l.some((lt) => timeslotEquals(lt, t));
+
+
+export const timeslotToCalendarEvent = (timeslot: Timeslot, currentLang: string, locationReservations: LocationReservation[] = []) =>
+  !timeslot.reservable ? nonReservableToCalendarEvent(timeslot, currentLang) :
+    timeslot.areReservationsLocked() ? notYetReservableTimeslotToCalendarEvent(timeslot, currentLang) :
+      null;
+
+
+const nonReservableToCalendarEvent: (timeslot: Timeslot, currentLang: string) => CalendarEvent<{ timeslot: Timeslot }> =
+  (timeslot, currentLang) =>
+  ({
+    title: currentLang == "nl" ? calendarEventTitleTemplate.notReservableNL : calendarEventTitleTemplate.notReservableEN,
+    start: timeslot.getStartMoment().toDate(),
+    end: timeslot.getEndMoment().toDate(),
+    meta: { timeslot },
+    color: { primary: 'black', secondary: '#BEBEBE' },
+    cssClass: 'calendar-event-NR',
+  })
+
+const notYetReservableTimeslotToCalendarEvent: (timeslot: Timeslot, currentLang: string) => CalendarEvent<{ timeslot: Timeslot }> =
+  (timeslot, currentLang) =>
+  ({
+    title: currentLang == "nl" ? calendarEventTitleTemplate.notReservableNL : calendarEventTitleTemplate.notReservableEN,
+    start: timeslot.getStartMoment().toDate(),
+    end: timeslot.getEndMoment().toDate(),
+    meta: { timeslot },
+    color: { primary: 'black', secondary: '#BEBEBE' },
+    cssClass: 'calendar-event-NR',
+  });
+
+const reservableTimeslotToCalendarEvent: (timeslot: Timeslot, currentLang: string, reservedTimeslots: LocationReservation[]) => CalendarEvent<{ timeslot: Timeslot }> =
+  (timeslot, currentLang, reservedTimeslots) =>
+  ({
+    title: `${timeslot.amountOfReservations} / ${timeslot.seatCount}`,
+    start: timeslot.getStartMoment().toDate(),
+    end: timeslot.getEndMoment().toDate(),
+    meta: { timeslot },
+    color: includesTimeslot(
+      reservedTimeslots.map((s) => s.timeslot),
+      timeslot
+    )
+      ? { primary: '#00004d', secondary: '#133E7D' }
+      : null,
+    cssClass: includesTimeslot(
+      reservedTimeslots.map((s) => s.timeslot),
+      timeslot
+    )
+      ? 'calendar-event-reserved'
+      : '',
+  });

@@ -12,13 +12,13 @@ import {
   includesTimeslot,
   Timeslot,
   timeslotEquals,
+  timeslotToCalendarEvent,
 } from 'src/app/shared/model/Timeslot';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
 import {
   CalendarPeriod,
-  mapCalendarPeriodsToCalendarEvents,
 } from '../../shared/model/CalendarPeriod';
 import {
   defaultLocationImage,
@@ -33,6 +33,7 @@ import {
   ApplicationTypeFunctionalityService,
 } from 'src/app/services/functionality/application-type/application-type-functionality.service';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { map } from 'rxjs/internal/operators/map';
 
 @Component({
   selector: 'app-location-details',
@@ -45,7 +46,7 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
   locationId: number;
   tags: LocationTag[];
 
-  events: CalendarEvent[] = [];
+  events: Timeslot[] = [];
 
   editor: unknown = ClassicEditor;
 
@@ -98,7 +99,7 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
     private locationReservationService: LocationReservationsService,
     private modalService: BsModalService,
     private functionalityService: ApplicationTypeFunctionalityService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.locationId = Number(this.route.snapshot.paramMap.get('locationId'));
@@ -168,13 +169,13 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
     );
 
     // if it is full and you don't have this reservation yet, unselect
-  if (
-    currentTimeslot.amountOfReservations >=
+    if (
+      currentTimeslot.amountOfReservations >=
       currentTimeslot.seatCount &&
-    !timeslotIsSelected
-  ) {
-    return;
-  }
+      !timeslotIsSelected
+    ) {
+      return;
+    }
 
     this.isModified = true;
 
@@ -238,21 +239,19 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
       this.timeouts.forEach(t => clearTimeout(t))
 
       this.timeouts = timeslots
-                          .map(e => (e.reservableFrom.valueOf() - moment().valueOf()))
-                          .filter(d => d > 0)
-                          .filter(d => d < 1000 * 60 * 60 * 2) // don't set more than two days in advance (weird bugs if you do)
-                          .map(d => setTimeout(() => this.draw(timeslots, proposedReservations), d));
-    this.draw(timeslots, proposedReservations);
-  })
-}
+        .map(e => (e.reservableFrom.valueOf() - moment().valueOf()))
+        .filter(d => d > 0)
+        .filter(d => d < 1000 * 60 * 60 * 2) // don't set more than two days in advance (weird bugs if you do)
+        .map(d => setTimeout(() => this.draw(timeslots, proposedReservations), d));
+      this.draw(timeslots, proposedReservations);
+    })
+  }
 
-draw(timeslots, proposedReservations):void {
-  this.events = mapCalendarPeriodsToCalendarEvents(
-    periods,
-    this.currentLang,
-    [...proposedReservations]
-  )   
-}
+  draw(timeslots, proposedReservations): void {
+    this.events = timeslots.map(t => timeslotToCalendarEvent(
+      t, this.currentLang, [...proposedReservations]
+    ))
+  }
 
   updateReservationIsPossible(): boolean {
     return !(this.isModified && this.authenticationService.isLoggedIn());
@@ -317,24 +316,23 @@ draw(timeslots, proposedReservations):void {
   ): moment.Moment {
     const d = moment(
       timeslot.timeslotDate.format('DD-MM-YYYY') +
-        'T' +
-        calendarPeriod.openingTime.format('HH:mm'),
+      'T' +
+      calendarPeriod.openingTime.format('HH:mm'),
       'DD-MM-YYYYTHH:mm'
     );
-    d.add(timeslot.timeslotSeqnr * calendarPeriod.timeslotLength, 'minutes');
+    d.add(timeslot.timeslotSequenceNumber * calendarPeriod.timeslotLength, 'minutes');
     return d;
   }
 
-  formatReservation(reservation: LocationReservation): string {
-    const name = this.calendarMap.get(reservation.timeslot.calendarId).location
-      .name;
-    const date = reservation.timeslot.timeslotDate.format('DD/MM/YYYY');
-    const hour = this.getBeginHour(
-      this.calendarMap.get(reservation.timeslot.calendarId),
-      reservation.timeslot
-    ).format('HH:mm');
+  formatReservation(reservation: LocationReservation): Observable<string> {
+    return this.locationService.getLocation(reservation.timeslot.locationId)
+      .pipe(map(location => {
+        const date = reservation.timeslot.timeslotDate.format('DD/MM/YYYY');
+        const hour = reservation.timeslot.openingHour.format('HH:mm');
 
-    return name + ' (' + date + ' ' + hour + ')';
+        return location.name + ' (' + date + ' ' + hour + ')';
+      }
+      ))
   }
 
   loggedIn(): boolean {

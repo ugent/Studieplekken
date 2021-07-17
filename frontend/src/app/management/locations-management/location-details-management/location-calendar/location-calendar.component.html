@@ -1,7 +1,7 @@
-<div class="container-fluid" *ngIf="calendarPeriodsObs | async as calendarPeriods; else loadingOrError">
+<div class="container-fluid">
   <div class="panel-body" style="padding: 20px">
     <div class="text-center" style="margin-bottom: 20px">
-      <button class="btn btn-primary pull-center" (click)="prepareAdd(addCalendarPeriodModal, CPtable)" >
+      <button class="btn btn-primary pull-center" >
         {{'management.locationDetails.calendar.form.addButton' | translate}}
       </button>
     </div>
@@ -60,7 +60,7 @@
         <h3 class="inline-block">
           {{'management.locationDetails.calendar.form.title' | translate}}
         </h3>
-        <button class="btn btn-primary pull-right" (click)="prepareAdd(addCalendarPeriodModal, CPtable)" >
+        <button class="btn btn-primary pull-right" >
           {{'management.locationDetails.calendar.form.addButton' | translate}}
         </button>
       </div>

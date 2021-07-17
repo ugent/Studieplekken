@@ -8,10 +8,9 @@ import { LocationReservationsService } from 'src/app/services/api/location-reser
 import { ApplicationTypeFunctionalityService } from 'src/app/services/functionality/application-type/application-type-functionality.service';
 import {
   CalendarPeriod,
-  mapCalendarPeriodsToCalendarEvents,
 } from 'src/app/shared/model/CalendarPeriod';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
-import { Timeslot } from 'src/app/shared/model/Timeslot';
+import { Timeslot, timeslotToCalendarEvent } from 'src/app/shared/model/Timeslot';
 import { LocationOpeningperiodDialogComponent } from './location-openingperiod-dialog/location-openingperiod-dialog.component';
 import { Location } from 'src/app/shared/model/Location';
 import { BsModalService } from 'ngx-bootstrap/modal';
@@ -31,33 +30,13 @@ export class LocationCalendarComponent implements OnInit {
   @Input() location: Location; // only use this for creating a CalendarPeriod
   locationId: number; // will be set based on the url
 
-  calendarPeriodsObs: Observable<CalendarPeriod[]>;
+  timeslotObs: Observable<Timeslot[]>;
   errorSubject = new Subject<boolean>();
 
   locationReservations: LocationReservation[];
   currentTimeSlot: Timeslot;
 
   refresh: Subject<unknown> = new Subject<unknown>();
-
-  prepareToUpdatePeriod: CalendarPeriod = null;
-  currentCalendarPeriod: CalendarPeriod = null;
-
-  calendarPeriodModel: BehaviorSubject<CalendarPeriod> = new BehaviorSubject(
-    new CalendarPeriod(
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      false,
-      null,
-      0,
-      [],
-      null,
-      0
-    )
-  );
 
   /**
    * 'calendarPeriods' is the list of CalendarPeriods that the user
@@ -70,7 +49,6 @@ export class LocationCalendarComponent implements OnInit {
    * to show the events in the calendar.
    */
   events: CalendarEvent<{
-    calendarPeriod: CalendarPeriod;
     timeslot?: Timeslot;
   }>[] = [];
 
@@ -127,123 +105,6 @@ export class LocationCalendarComponent implements OnInit {
     this.showReservationInformation = this.functionalityService.showReservationsFunctionality();
   }
 
-  // /**********
-  // *   ADD   *
-  // ***********/
-
-  prepareAdd(template: TemplateRef<unknown>, el: HTMLElement): void {
-    this.calendarPeriodModel.next(
-      new CalendarPeriod(
-        null,
-        this.location,
-        null,
-        null,
-        null,
-        null,
-        false,
-        null,
-        0,
-        [],
-        null,
-        0
-      )
-    );
-    this.prepareToUpdatePeriod = null;
-    this.successAddingLocationReservation = undefined;
-    el.scrollIntoView();
-    this.modalService.show(template);
-  }
-
-  add(): void {
-    this.update(true);
-  }
-
-  // /*************
-  // *   UPDATE   *
-  // **************/
-
-  prepareUpdate(
-    calendarPeriod: CalendarPeriod,
-    template: TemplateRef<unknown>
-  ): void {
-    this.successUpdatingLocationReservation = undefined;
-    this.prepareToUpdatePeriod = calendarPeriod;
-    // Copy
-    this.calendarPeriodModel.next(CalendarPeriod.fromJSON(calendarPeriod));
-    this.modalService.show(template);
-  }
-
-  update(add = false): void {
-    this.successAddingLocationReservation = null;
-    this.successUpdatingLocationReservation = null;
-    this.calendarPeriods = this.calendarPeriods.filter(
-      (c) =>
-        !this.prepareToUpdatePeriod || c.id !== this.prepareToUpdatePeriod.id
-    );
-    const updatedCalendarPeriod = this.calendarPeriodModel.value;
-    console.log(updatedCalendarPeriod);
-    if (this.calendarPeriodModel) {
-      this.calendarPeriods = [
-        ...this.calendarPeriods,
-        this.calendarPeriodModel.value,
-      ];
-    }
-
-    // Check if the closing time - opening time is divisible by timeslot_size.
-    // this.checkForWarning(this.calendarPeriods[this.calendarPeriods.length - 1]);
-
-    // this.calendarPeriods is not empty, and all values are valid: persist update(s)
-    this.calendarPeriodsService
-      .updateCalendarPeriod(
-        this.locationId,
-        this.calendarPeriodsInDataLayer,
-        this.calendarPeriodModel.value
-      )
-      .subscribe(
-        () => {
-          add
-            ? (this.successAddingLocationReservation = true)
-            : (this.successUpdatingLocationReservation = true);
-          this.setup();
-          this.modalService.hide();
-        },
-        () => {
-          add
-            ? (this.successAddingLocationReservation = false)
-            : (this.successUpdatingLocationReservation = false);
-          this.rollback();
-        }
-      );
-  }
-
-  // /*************
-  // *   DELETE   *
-  // **************/
-
-  prepareDelete(
-    calendarPeriod: CalendarPeriod,
-    template: TemplateRef<unknown>
-  ): void {
-    this.prepareToUpdatePeriod = calendarPeriod;
-    this.successDeletingLocationReservation = undefined;
-    this.modalService.show(template);
-  }
-
-  delete(): void {
-    this.successDeletingLocationReservation = null;
-    this.calendarPeriodsService
-      .deleteCalendarPeriods(this.prepareToUpdatePeriod)
-      .subscribe(
-        () => {
-          this.successDeletingLocationReservation = true;
-          this.setup();
-        },
-        () => {
-          this.successDeletingLocationReservation = false;
-          this.rollback();
-        }
-      );
-  }
 
   // /******************
   // *   AUXILIARIES   *
@@ -251,25 +112,12 @@ export class LocationCalendarComponent implements OnInit {
 
   setup(): void {
     // retrieve all calendar periods for this location
-    this.calendarPeriodsObs = this.calendarPeriodsService
-      .getCalendarPeriodsOfLocation(this.locationId)
+    this.timeslotObs = this.calendarPeriodsService
+      .getTimeslotsOfLocation(this.locationId)
       .pipe(
         tap((next) => {
-          // Remark: due to references, 'this.calendarPeriods' has a reference to the same object
-          // as the 'calendarPeriods' variable in the template through the assignation
-          // 'calendarPeriodsObs | async as calendarPeriods'.
-          this.calendarPeriods = next;
-
-          // make a deep copy to make sure that can be calculated whether any period has changed
-          this.calendarPeriodsInDataLayer = next.map(
-            CalendarPeriod.fromJSON.bind(this)
-          );
-
           // fill the events based on the calendar periods
-          this.events = mapCalendarPeriodsToCalendarEvents(
-            next,
-            this.translate.currentLang
-          );
+          this.events = next.map(t => timeslotToCalendarEvent(t, this.translate.currentLang))
 
           // and update the calendar
           this.refresh.next(null);
@@ -277,7 +125,7 @@ export class LocationCalendarComponent implements OnInit {
         catchError((err) => {
           console.error(err);
           this.errorSubject.next(true);
-          return of<CalendarPeriod[]>(null);
+          return of<Timeslot[]>(null);
         })
       );
   }
@@ -322,7 +170,6 @@ export class LocationCalendarComponent implements OnInit {
     }
 
     this.currentTimeSlot = event['timeslot'] as Timeslot;
-    this.currentCalendarPeriod = event['calendarPeriod'] as CalendarPeriod;
 
     this.loadReservations();
   }
@@ -374,10 +221,7 @@ export class LocationCalendarComponent implements OnInit {
     }
 
     return (
-      this.prepareToUpdatePeriod &&
-      this.prepareToUpdatePeriod.startsAt.isBefore(
-        moment().add(3, 'weeks').day(8)
-      )
+     true
     );
   }
 

@@ -8,8 +8,6 @@ import {
 import { LocationReservation } from '../../../../../../shared/model/LocationReservation';
 import {
   Timeslot,
-  timeslotEndHour,
-  timeslotStartHour,
 } from '../../../../../../shared/model/Timeslot';
 import * as moment from 'moment';
 import { CalendarPeriod } from '../../../../../../shared/model/CalendarPeriod';
@@ -67,7 +65,7 @@ export class LocationReservationsComponent {
   ): void {
     const idx = this.scannedLocationReservations.findIndex((r) => {
       return (
-        r.timeslot.timeslotSeqnr === reservation.timeslot.timeslotSeqnr &&
+        r.timeslot.timeslotSequenceNumber === reservation.timeslot.timeslotSequenceNumber &&
         r.user === reservation.user
       );
     });
@@ -155,10 +153,7 @@ export class LocationReservationsComponent {
     if (!this.currentCalendarPeriod) {
       return false; // Assume current
     }
-    return timeslotEndHour(
-      this.currentCalendarPeriod,
-      this.currentTimeSlot
-    ).isBefore(moment());
+    return this.currentTimeSlot.getEndMoment().isBefore(moment());
   }
 
   isTimeslotStartInPast(): boolean {
@@ -166,10 +161,7 @@ export class LocationReservationsComponent {
       return true; // Assume current
     }
 
-    const start = timeslotStartHour(
-      this.currentCalendarPeriod,
-      this.currentTimeSlot
-    );
+    const start = this.currentTimeSlot.getStartMoment()
     return start.isBefore(moment());
   }
 
@@ -185,7 +177,7 @@ export class LocationReservationsComponent {
       const idx = this.locationReservations.findIndex(
         (lr) =>
           lr.user === slr.user &&
-          lr.timeslot.timeslotSeqnr === slr.timeslot.timeslotSeqnr
+          lr.timeslot.timeslotSequenceNumber === slr.timeslot.timeslotSequenceNumber
       );
 
       if (idx >= 0) {

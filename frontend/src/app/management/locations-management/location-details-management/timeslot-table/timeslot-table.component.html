@@ -1,6 +1,6 @@
 <div id='print-ngx'>
     <h1>{{(getLocation(locationId) | async).name}}</h1>
-    <h3 *ngIf="calendarPeriodO | async as cp">{{timestring(timeslot, cp)}}</h3>
+    <h3>{{timestring(timeslot)}}</h3>
 
     <hr>
 <table *ngIf="locationReservations | async as lrs">

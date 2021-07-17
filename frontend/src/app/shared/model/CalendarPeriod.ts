@@ -240,11 +240,11 @@ function mapNotYetReservableTimeslotsToCalendarEvents(
   for (const timeslot of period.timeslots) {
     const beginDT = dateWithTime(
       timeslot.timeslotDate,
-      timeslotStartHour(period, timeslot)
+      timeslot.getStartMoment()
     );
     const endDT = dateWithTime(
       timeslot.timeslotDate,
-      timeslotEndHour(period, timeslot)
+      timeslot.getEndMoment()
     );
 
     let title: string;
@@ -293,11 +293,11 @@ function mapReservableTimeslotsToCalendarEvents(
   for (const timeslot of period.timeslots) {
     const beginDT = dateWithTime(
       timeslot.timeslotDate,
-      timeslotStartHour(period, timeslot)
+      timeslot.getStartMoment()
     );
     const endDT = dateWithTime(
       timeslot.timeslotDate,
-      timeslotEndHour(period, timeslot)
+      timeslot.getEndMoment()
     );
 
     calendarEvents.push({

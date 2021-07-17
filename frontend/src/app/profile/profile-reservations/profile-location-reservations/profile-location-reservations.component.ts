@@ -3,7 +3,7 @@ import { AuthenticationService } from '../../../services/authentication/authenti
 import { LocationReservation } from '../../../shared/model/LocationReservation';
 import { CalendarPeriod } from 'src/app/shared/model/CalendarPeriod';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
-import { Timeslot, timeslotEndHour } from 'src/app/shared/model/Timeslot';
+import { Timeslot } from 'src/app/shared/model/Timeslot';
 import { Pair } from '../../../shared/model/helpers/Pair';
 import * as moment from 'moment';
 import { BsModalService } from 'ngx-bootstrap/modal';
@@ -89,7 +89,7 @@ export class ProfileLocationReservationsComponent {
   getBeginHour(timeslot: Timeslot, calendarPeriod: CalendarPeriod): string {
     const openingTime = calendarPeriod.openingTime
       .clone()
-      .add(timeslot.timeslotSeqnr * calendarPeriod.timeslotLength, 'minutes');
+      .add(timeslot.timeslotSequenceNumber * calendarPeriod.timeslotLength, 'minutes');
     return openingTime.format('HH:mm');
   }
 
@@ -123,7 +123,7 @@ export class ProfileLocationReservationsComponent {
     timeslot: Timeslot,
     calendarPeriod: CalendarPeriod
   ): boolean {
-    return timeslotEndHour(calendarPeriod, timeslot).isBefore(moment());
+    return timeslot.getEndMoment().isBefore(moment());
   }
 
   formatDate(date: unknown): string {

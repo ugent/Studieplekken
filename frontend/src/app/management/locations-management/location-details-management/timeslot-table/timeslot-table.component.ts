@@ -10,8 +10,6 @@ import { CalendarPeriod } from 'src/app/shared/model/CalendarPeriod';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
 import {
   Timeslot,
-  timeslotEndHour,
-  timeslotStartHour,
 } from 'src/app/shared/model/Timeslot';
 import { LocationService } from '../../../../services/api/locations/location.service';
 import { Location } from '../../../../shared/model/Location';
@@ -25,45 +23,37 @@ export class TimeslotTableComponent implements OnInit {
   timeslot: Timeslot;
   locationReservations: Observable<LocationReservation[]>;
   locationId: number;
-  calendarPeriodO: Observable<CalendarPeriod>;
 
   constructor(
     private route: ActivatedRoute,
     private locationReservationsService: LocationReservationsService,
-    private calendarPeriodService: TimeslotsService,
     private locationService: LocationService
   ) {}
 
   ngOnInit(): void {
     this.locationId = Number(this.route.snapshot.paramMap.get('locationId'));
-    const calendarId = Number(this.route.snapshot.paramMap.get('calendarid'));
     const date = moment(this.route.snapshot.paramMap.get('date'), 'YYYY-MM-DD');
     const seqnr = Number(this.route.snapshot.paramMap.get('seqnr'));
 
-    this.timeslot = new Timeslot(seqnr, date, calendarId, null, 0);
+    this.timeslot = new Timeslot(seqnr, date, null, 0, null, null, null, null, null);
     this.locationReservations = this.locationReservationsService.getLocationReservationsOfTimeslot(
       this.timeslot
     );
-    this.calendarPeriodO = this.calendarPeriodService
-      .getCalendarPeriodsOfLocation(this.locationId)
-      .pipe(
-        map((x) => x.filter((c) => c.id === calendarId)),
-        filter((x) => x.length > 0),
-        map((x) => x[0])
-      );
   }
 
   print(): void {
     window.print();
   }
 
-  timestring(timeslot: Timeslot, calendarPeriod: CalendarPeriod): string {
-    return `${timeslotStartHour(calendarPeriod, timeslot).format(
+  timestring(timeslot: Timeslot): string {
+    return `${timeslot.getStartMoment().format(
       'DD/MM/YYYY\tHH:mm'
-    )}-${timeslotEndHour(calendarPeriod, timeslot).format('HH:mm')}`;
+    )}-${timeslot.getEndMoment().format('HH:mm')}`;
   }
 
   getLocation(locationId: number): Observable<Location> {
     return this.locationService.getLocation(locationId);
   }
+
+
 }

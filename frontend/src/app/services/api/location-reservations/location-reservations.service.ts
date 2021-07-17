@@ -50,9 +50,8 @@ export class LocationReservationsService {
     return this.http
       .get<unknown[]>(
         api.locationReservationsOfLocation
-          .replace('{calendarid}', `${timeslot.calendarId}`)
           .replace('{date}', timeslot.timeslotDate.format('YYYY-MM-DD'))
-          .replace('{seqnr}', `${timeslot.timeslotSeqnr}`)
+          .replace('{seqnr}', `${timeslot.timeslotSequenceNumber}`)
       )
       .pipe(map((ls) => ls.map(LocationReservation.fromJSON.bind(this))));
   }
@@ -106,12 +105,11 @@ export class LocationReservationsService {
     return this.http.post<void>(
       api.updateAttendance
         .replace('{userid}', locationReservation.user.augentID)
-        .replace('{calendarid}', `${locationReservation.timeslot.calendarId}`)
         .replace(
           '{date}',
           locationReservation.timeslot.timeslotDate.format('YYYY-MM-DD')
         )
-        .replace('{seqnr}', `${locationReservation.timeslot.timeslotSeqnr}`),
+        .replace('{seqnr}', `${locationReservation.timeslot.timeslotSequenceNumber}`),
       { attended },
       { withCredentials: true }
     );

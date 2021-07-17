@@ -17,6 +17,7 @@ import { Building } from 'src/app/shared/model/Building';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { TimeslotsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
 import { CalendarPeriod } from 'src/app/shared/model/CalendarPeriod';
+import { Timeslot } from 'src/app/shared/model/Timeslot';
 
 @Component({
   selector: 'app-locations-management',
@@ -32,7 +33,7 @@ export class LocationsManagementComponent implements OnInit {
 
   currentLocationNameToDelete: string;
   currentLocationIdToDelete: number;
-  currentCalendarPeriodsToDelete: CalendarPeriod[];
+  currentTimeslotsToDelete: Timeslot[];
   currentReservationCount: number = undefined;
   deletionWasSuccess: boolean = undefined;
 
@@ -127,9 +128,9 @@ export class LocationsManagementComponent implements OnInit {
     this.currentLocationNameToDelete = location.name;
     this.currentLocationIdToDelete = location.locationId;
     this.calendarPeriodService
-      .getCalendarPeriodsOfLocation(location.locationId)
+      .getTimeslotsOfLocation(location.locationId)
       .subscribe((next) => {
-        this.currentCalendarPeriodsToDelete = next;
+        this.currentTimeslotsToDelete = next;
         this.modalService.show(template);
       });
   }
@@ -141,7 +142,7 @@ export class LocationsManagementComponent implements OnInit {
       .subscribe(
         () => {
           this.successDeletionHandler();
-          this.currentCalendarPeriodsToDelete = [];
+          this.currentTimeslotsToDelete = [];
           this.modalService.hide();
         },
         () => {
