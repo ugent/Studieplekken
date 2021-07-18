@@ -121,7 +121,7 @@ public class AuthorityControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testGetAuthorityFromUser() throws Exception {
-        mockMvc.perform(get("/authority/users/" + authHolder.getAugentID())).andDo(print())
+        mockMvc.perform(get("/authority/users/" + authHolder.getUserId())).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1));
     }
@@ -129,7 +129,7 @@ public class AuthorityControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "student2", userDetailsServiceBeanName = "testUserDetails")
     public void testGetAuthorityFromUserForbidden() throws Exception {
-        mockMvc.perform(get("/authority/users/" + student.getAugentID())).andDo(print())
+        mockMvc.perform(get("/authority/users/" + student.getUserId())).andDo(print())
                 .andExpect(status().isForbidden());
     }
 
@@ -143,7 +143,7 @@ public class AuthorityControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testPostUserToAuthority() throws Exception {
-        mockMvc.perform(post("/authority/" + authority.getAuthorityId() + "/user/" + student2.getAugentID())
+        mockMvc.perform(post("/authority/" + authority.getAuthorityId() + "/user/" + student2.getUserId())
                 .with(csrf())).andDo(print())
                 .andExpect(status().isOk());
 
@@ -153,11 +153,11 @@ public class AuthorityControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "student1", userDetailsServiceBeanName = "testUserDetails")
     public void testPostUserToAuthorityForbidden() throws Exception {
-        mockMvc.perform(post("/authority/" + authority.getAuthorityId() + "/user/" + student.getAugentID())
+        mockMvc.perform(post("/authority/" + authority.getAuthorityId() + "/user/" + student.getUserId())
                 .with(csrf())).andDo(print())
                 .andExpect(status().isForbidden());
 
-        mockMvc.perform(post("/authority/" + authority.getAuthorityId() + "/user/" + student2.getAugentID())
+        mockMvc.perform(post("/authority/" + authority.getAuthorityId() + "/user/" + student2.getUserId())
                 .with(csrf())).andDo(print())
                 .andExpect(status().isForbidden());
 
@@ -167,7 +167,7 @@ public class AuthorityControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testPostUserToAuthorityMissingAuthority() throws Exception {
-        mockMvc.perform(post("/authority/" + "10" + "/user/" + student2.getAugentID()).with(csrf()))
+        mockMvc.perform(post("/authority/" + "10" + "/user/" + student2.getUserId()).with(csrf()))
                 .andDo(print()).andExpect(status().isNotFound());
 
         Assert.assertEquals(1, authorityDao.getUsersFromAuthority(authority.getAuthorityId()).size());
@@ -185,7 +185,7 @@ public class AuthorityControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testDeleteUserFromAuthority() throws Exception {
-        mockMvc.perform(delete("/authority/" + authority.getAuthorityId() + "/user/" + authHolder.getAugentID())
+        mockMvc.perform(delete("/authority/" + authority.getAuthorityId() + "/user/" + authHolder.getUserId())
                 .with(csrf())).andDo(print())
                 .andExpect(status().isOk()); // authholder is member of authority: therefore deleting should succeed
 
@@ -195,7 +195,7 @@ public class AuthorityControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "student2", userDetailsServiceBeanName = "testUserDetails")
     public void testDeleteUserFromAuthorityFail() throws Exception {
-        mockMvc.perform(delete("/authority/" + authority.getAuthorityId() + "/user/" + student.getAugentID())
+        mockMvc.perform(delete("/authority/" + authority.getAuthorityId() + "/user/" + student.getUserId())
                 .with(csrf())).andDo(print())
                 .andExpect(status().isForbidden());
 

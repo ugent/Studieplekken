@@ -1,13 +1,36 @@
 package blok2.model;
 
+import blok2.model.users.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
+@Entity
+@Table(name = "authority")
 public class Authority implements Cloneable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "authority_id")
     private int authorityId;
+
+    @Column(name = "authority_name")
     private String authorityName;
+
+    @Column(name = "description")
     private String description;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "roles_user_authority",
+        joinColumns = @JoinColumn(name = "authority_id"),
+        inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    @JsonIgnore
+    List<User> users;
 
     public Authority(int authorityId, String authorityName, String description) {
         this.authorityId = authorityId;
@@ -29,6 +52,11 @@ public class Authority implements Cloneable {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(authorityId, authorityName, description);
+    }
+
+    @Override
     public Authority clone() {
         try {
             return (Authority) super.clone();
@@ -38,11 +66,15 @@ public class Authority implements Cloneable {
         }
     }
 
+    // Note: don't use ToStringBuilder since users are fetched lazily and that may cause problems
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this);
+        return "Authority{" +
+                "authorityId=" + authorityId +
+                ", authorityName='" + authorityName + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
-
 
     public String getDescription() {
         return description;
@@ -66,5 +98,13 @@ public class Authority implements Cloneable {
 
     public void setAuthorityId(int authorityId) {
         this.authorityId = authorityId;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 }

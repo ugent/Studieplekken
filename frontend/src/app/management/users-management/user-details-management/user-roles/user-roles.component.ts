@@ -40,7 +40,7 @@ export class UserRolesComponent implements OnInit {
   submitUpdateUser(): void {
     const clone = UserConstructor.newFromObj(this.user);
     clone.admin = this.admin.value as boolean;
-    this.userService.updateUser(this.user.augentID, clone).subscribe(
+    this.userService.updateUser(this.user.userId, clone).subscribe(
       () => {
         this.successUpdatingUserHandler();
       },
@@ -51,7 +51,7 @@ export class UserRolesComponent implements OnInit {
   }
 
   successUpdatingUserHandler(): void {
-    this.userDetailsService.loadUser(this.user.augentID);
+    this.userDetailsService.loadUser(this.user.userId);
     this.userUpdatingSuccess = true;
     setTimeout(() => (this.userUpdatingSuccess = undefined), msToShowFeedback);
   }

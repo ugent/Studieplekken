@@ -1,89 +1,70 @@
 package blok2.daos;
 
-import blok2.helpers.Pair;
+import blok2.helpers.orm.LocationNameAndNextReservableFrom;
 import blok2.model.reservables.Location;
-import blok2.model.reservables.Locker;
-import blok2.model.users.User;
 
-import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Note that all add/update/delete operations on lockers will happen in cascade
  * upon add/update/delete operations on a location if the number of lockers change
  */
-public interface ILocationDao extends IDao {
+public interface ILocationDao {
+
+    /**
+     * Gets a location with the given id
+     */
+    Location getLocationById(int locationId);
+
+    /**
+     * Gets a location with the given name.
+     */
+    Location getLocationByName(String locationName);
 
     /**
      * Get a list of all available locations.
      */
-    List<Location> getAllLocations() throws SQLException;
+    List<Location> getAllActiveLocations();
+
+    /**
+     * Return all locations that are yet to be approved/denied
+     */
+    List<Location> getAllUnapprovedLocations();
 
     /**
      * Get a list of pairs which tell for each location what the next reservable from is.
      * The pair maps the location name to the reservable.
      */
-    List<Pair<String, LocalDateTime>> getAllLocationNextReservableFroms() throws SQLException;
+    List<LocationNameAndNextReservableFrom> getNextReservationMomentsOfAllLocations();
 
     /**
      * Adds a location
      */
-    Location addLocation(Location location) throws SQLException;
-
-    /**
-     * Gets a location with the given name.
-     */
-    Location getLocationByName(String name) throws SQLException;
-
-    /**
-     * Gets a location with the given id
-     */
-    Location getLocationById(int locationId) throws SQLException;
+    Location addLocation(Location location);
 
     /**
      * Updates a location
      */
-    void updateLocation(int locationId, Location location) throws SQLException;
-
-    /**
-     * Deletes a location
-     */
-    void deleteLocation(int locationId) throws SQLException;
-
-    /**
-     * Get all users that have volunteered for the specified location
-     */
-    List<User> getVolunteers(int locationId) throws SQLException;
-
-    /**
-     * Get all lockers of the specified location
-     */
-    List<Locker> getLockers(int locationId) throws SQLException;
-
-    /**
-     * Delete a locker
-     */
-    void deleteLocker(int locationId, int number) throws SQLException;
+    void updateLocation(Location location);
 
     /**
      * Approve or deny a new location
      */
-    void approveLocation(Location location, boolean approval) throws SQLException;
+    void approveLocation(Location location, boolean approval);
 
     /**
-     * Return all locations that are yet to be approved/denied
+     * Deletes a location
      */
-    List<Location> getAllUnapprovedLocations() throws SQLException;
+    void deleteLocation(int locationId);
 
     /**
-     * Return all locations that are yet to be approved/denied
+     * Returns an array of 7 strings for each location that is opened in the week specified by the given
+     * week number in the given year.
+     *
+     * Each string is in the form of 'HH24:MI - HH24:MI' to indicate the opening and closing hour at
+     * monday, tuesday, ..., sunday but can also be null to indicate that the location is not open that day.
      */
-    void addVolunteer(int locationId, String userId) throws SQLException;
-
-    /**
-     * Return all locations that are yet to be approved/denied
-     */
-    void deleteVolunteer(int locationId, String userId) throws SQLException;
+    Map<String, String[]> getOpeningOverviewOfWeek(int year, int weekNr);
 
 }

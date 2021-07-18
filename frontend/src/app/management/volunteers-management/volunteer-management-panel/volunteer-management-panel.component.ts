@@ -122,7 +122,7 @@ export class VolunteerManagementPanelComponent implements OnInit {
 
   addVolunteer(user: User): void {
     this.locationService
-      .addVolunteer(this.location.locationId, user.augentID)
+      .addVolunteer(this.location.locationId, user.userId)
       .subscribe(
         () =>
           (this.volunteerObs = this.locationService.getVolunteers(
@@ -136,7 +136,7 @@ export class VolunteerManagementPanelComponent implements OnInit {
 
   deleteVolunteer(user: User): void {
     this.locationService
-      .deleteVolunteer(this.location.locationId, user.augentID)
+      .deleteVolunteer(this.location.locationId, user.userId)
       .subscribe(
         () =>
           (this.volunteerObs = this.locationService.getVolunteers(

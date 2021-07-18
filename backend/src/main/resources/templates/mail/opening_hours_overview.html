@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="nl" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title th:text="${title}"></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+        <style>
+            @media all and (max-width: 599px) {
+            }
+
+            main {
+                margin-top: 2em;
+                margin-bottom: 3em;
+            }
+
+            footer {
+                margin-top: 1em;
+                font-family: 'Courier New', monospace;
+                font-size: 0.9em;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h2 th:text="${title}"></h2>
+
+        <main>
+            <p>Beste dienst van de UGent</p>
+            <p>
+                Hierbij wensen we u op de hoogte te brengen van de openingsuren van de Werk- en Studieplekken
+                tussen maandag <span th:text="${fromFormatted}"></span> en zondag <span th:text="${toFormatted}"></span>.
+                (i.e. week <span th:text="${week}"></span> van jaargang <span th:text="${year}"></span>.)
+            </p>
+            <p>Het overzicht is terug te vinden op <span th:text="${overviewURL}"></span>.</p>
+        </main>
+
+        <p>
+            Met vriendelijke groeten, <br/>
+            <em>Het Werk- en Studieplekken Team</em>
+        </p>
+
+        <footer>
+            <p>
+                Dit is een automatisch bericht. Als je niet de bedoelde ontvanger bent, of je hebt andere vragen of opmerking
+                over dit bericht, gelieve te mailen naar admin@student.ugent.be.
+                <br/>
+                This is an automated message. If you are not the intended recipient, or have other concerns about this message,
+                please mail admin@student.ugent.be.
+            </p>
+        </footer>
+    </body>
+</html>

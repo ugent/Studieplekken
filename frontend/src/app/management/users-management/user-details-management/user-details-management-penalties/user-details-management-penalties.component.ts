@@ -45,14 +45,14 @@ export class UserDetailsManagementPenaltiesComponent implements OnInit {
   ngOnInit(): void {
     this.userObs.subscribe(
       (next) => {
-        if (next.augentID === '') {
+        if (next.userId === '') {
           return;
         }
 
         this.penaltiesObs = this.penaltyService.getPenaltiesOfUserById(
-          next.augentID
+          next.userId
         );
-        this.userId = next.augentID;
+        this.userId = next.userId;
       },
       () => {
         this.queryingPenaltiesError = true;
@@ -87,7 +87,7 @@ export class UserDetailsManagementPenaltiesComponent implements OnInit {
     remarks: string;
   }): void {
     const penalty = PenaltyConstructor.new();
-    penalty.augentID = this.userId;
+    penalty.userId = this.userId;
     penalty.eventCode = penaltyEventCodeForManualEntry;
     penalty.timestamp = moment(value.timestamp);
     penalty.reservationDate = null;

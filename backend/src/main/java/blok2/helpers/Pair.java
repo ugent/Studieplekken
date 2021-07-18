@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * A helper class to represent a pair. This is the java variant of a pair in C++.
  */
-public class Pair<S extends Object, T extends Object> {
+public class Pair<S, T> {
     private S first;
     private T second;
 
@@ -42,11 +42,12 @@ public class Pair<S extends Object, T extends Object> {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(first, second);
-    }
-
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(first, second);
     }
 }

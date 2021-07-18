@@ -1,7 +1,6 @@
 package blok2.integration;
 
 import blok2.helpers.Pair;
-import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
 import org.json.JSONObject;
@@ -25,25 +24,25 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testGetReservationsOfStudentAsAdmin() throws Exception {
-        mockMvc.perform(get("/locations/reservations/user?id=" + student.getAugentID()).with(csrf()))
+        mockMvc.perform(get("/locations/reservations/user?id=" + student.getUserId()).with(csrf()))
                 .andDo(print())
-                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(status().isOk());
     }
 
     @Test
     @WithUserDetails(value = "student1", userDetailsServiceBeanName = "testUserDetails")
     public void testGetReservationsOfStudentAsSelf() throws Exception {
-        mockMvc.perform(get("/locations/reservations/user?id=" + student.getAugentID()).with(csrf()))
+        mockMvc.perform(get("/locations/reservations/user?id=" + student.getUserId()).with(csrf()))
                 .andDo(print())
-                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(status().isOk());
     }
 
     @Test
     @WithUserDetails(value = "student2", userDetailsServiceBeanName = "testUserDetails")
     public void testGetReservationsOfStudentAsForbidden() throws Exception {
-        mockMvc.perform(get("/locations/reservations/user?id=" + student.getAugentID()).with(csrf()))
+        mockMvc.perform(get("/locations/reservations/user?id=" + student.getUserId()).with(csrf()))
                 .andDo(print())
                 .andExpect(status().isForbidden());
     }
@@ -51,30 +50,27 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "student1", userDetailsServiceBeanName = "testUserDetails")
     public void testCreateReservation() throws Exception {
-        Pair<CalendarPeriod, List<Timeslot>> cp = calendarPeriods.get(0);
-        Timeslot timeslot = cp.getSecond().get(1);
+        Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
 
         mockMvc.perform(post("/locations/reservations").with(csrf())
                 .content(objectMapper.writeValueAsString(timeslot)).contentType("application/json")).andDo(print())
                 .andExpect(status().isOk());
 
-        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getAugentID());
-        Assert.assertEquals(2, list.size());
+        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
+        Assert.assertEquals(3, list.size());
     }
 
     @Test
     @WithUserDetails(value = "student1", userDetailsServiceBeanName = "testUserDetails")
     public void testCreateReservationDuplicate() throws Exception {
-
-        Pair<CalendarPeriod, List<Timeslot>> cp = calendarPeriods.get(0);
-        Timeslot timeslot = cp.getSecond().get(0);
+        Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
 
         mockMvc.perform(post("/locations/reservations").with(csrf())
                 .content(objectMapper.writeValueAsString(timeslot)).contentType("application/json")).andDo(print())
                 .andExpect(status().isConflict());
 
-        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getAugentID());
-        Assert.assertEquals(1, list.size());
+        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
+        Assert.assertEquals(2, list.size());
     }
 
     // todo more tests for more specific calendar periods
@@ -82,87 +78,213 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "student1", userDetailsServiceBeanName = "testUserDetails")
     public void testDeleteReservation() throws Exception {
-        Pair<CalendarPeriod, List<Timeslot>> cp = calendarPeriods.get(0);
-        Timeslot timeslot = cp.getSecond().get(0);
+        Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
 
-        LocationReservation reservation = new LocationReservation(student, null, timeslot, false);
-
-        mockMvc.perform(delete("/locations/reservations").with(csrf())
-                .content(objectMapper.writeValueAsString(reservation)).contentType("application/json")).andDo(print())
-                .andExpect(status().isOk());
-
-        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getAugentID());
-        Assert.assertEquals(0, list.size());
-    }
-
-    @Test
-    @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
-    public void testDeleteReservationAsAdmin() throws Exception {
-        Pair<CalendarPeriod, List<Timeslot>> cp = calendarPeriods.get(0);
-        Timeslot timeslot = cp.getSecond().get(0);
-
-        LocationReservation reservation = new LocationReservation(student, null, timeslot, false);
+        LocationReservation reservation = new LocationReservation(student, timeslot, false);
 
         mockMvc.perform(delete("/locations/reservations").with(csrf())
                 .content(objectMapper.writeValueAsString(reservation)).contentType("application/json")).andDo(print())
                 .andExpect(status().isOk());
 
-        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getAugentID());
-        Assert.assertEquals(0, list.size());
-    }
-
-    @Test
-    @WithUserDetails(value = "student2", userDetailsServiceBeanName = "testUserDetails")
-    public void testDeleteReservationAsOther() throws Exception {
-        Pair<CalendarPeriod, List<Timeslot>> cp = calendarPeriods.get(0);
-        Timeslot timeslot = cp.getSecond().get(0);
-
-        LocationReservation reservation = new LocationReservation(student, null, timeslot, false);
-
-        mockMvc.perform(delete("/locations/reservations").with(csrf())
-                .content(objectMapper.writeValueAsString(reservation)).contentType("application/json")).andDo(print())
-                .andExpect(status().isForbidden());
-
-        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getAugentID());
+        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
         Assert.assertEquals(1, list.size());
     }
 
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
+    public void testDeleteReservationAsAdmin() throws Exception {
+        Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
+
+        LocationReservation reservation = new LocationReservation(student, timeslot, false);
+
+        mockMvc.perform(delete("/locations/reservations").with(csrf())
+                .content(objectMapper.writeValueAsString(reservation)).contentType("application/json")).andDo(print())
+                .andExpect(status().isOk());
+
+        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
+        Assert.assertEquals(1, list.size());
+
+        // You can manually check in the logs if the mail was sent by looking for
+        // Blocked sending mail to 'student1@ugent.be' with template file name 'mail/reservation_slot_deleted' and subject '[Werk- en Studieplekken] Uw gereserveerd tijdslot werd verwijderd' because 'mail' is not an active profile.
+    }
+
+    @Test
+    @WithUserDetails(value = "student2", userDetailsServiceBeanName = "testUserDetails")
+    public void testDeleteReservationAsOther() throws Exception {
+        Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
+
+        LocationReservation reservation = new LocationReservation(student, timeslot, false);
+
+        mockMvc.perform(delete("/locations/reservations").with(csrf())
+                .content(objectMapper.writeValueAsString(reservation)).contentType("application/json")).andDo(print())
+                .andExpect(status().isForbidden());
+
+        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
+        Assert.assertEquals(2, list.size());
+    }
+
+    @Test
+    @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testSetAttendance() throws Exception {
-        Pair<CalendarPeriod, List<Timeslot>> cp = calendarPeriods.get(0);
-        Timeslot timeslot = cp.getSecond().get(0);
+        Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
 
         String url = String.format("/locations/reservations/%s/%d/attendance",
-                student.getAugentID(),
-                timeslot.getTimeslotSequenceNumber());
+                student.getUserId(), 
+                
+                timeslot.getTimeslotSeqnr());
 
         JSONObject obj = new JSONObject().put("attended", true);
 
         mockMvc.perform(post(url).with(csrf()).content(obj.toString()).contentType("application/json")).andDo(print())
                 .andExpect(status().isOk());
 
-        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getAugentID());
-        Assert.assertEquals(true, list.get(0).getAttended());
+        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
+        Assert.assertEquals(true, list.get(1).getAttended());
     }
 
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testSetAttendanceNonExisting() throws Exception {
-        Pair<CalendarPeriod, List<Timeslot>> cp = calendarPeriods.get(0);
-        Timeslot timeslot = cp.getSecond().get(0);
-
+        Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
 
         String url = String.format("/locations/reservations/%s/%d/attendance",
-                student2.getAugentID(),
-                timeslot.getTimeslotSequenceNumber());
+                student2.getUserId(), 
+                
+                timeslot.getTimeslotSeqnr());
 
         JSONObject obj = new JSONObject().put("attended", true);
 
         mockMvc.perform(post(url).with(csrf()).content(obj.toString()).contentType("application/json")).andDo(print())
                 .andExpect(status().isNotFound());
 
-        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getAugentID());
+        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
         Assert.assertNull(list.get(0).getAttended());
     }
+
+    @Test
+    @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
+    public void testSetAttendanceNoAmountReservationDecrease() throws Exception {
+        Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
+
+        String url = String.format("/locations/reservations/%s/%d/attendance",
+                student.getUserId(), 
+                
+                timeslot.getTimeslotSeqnr());
+
+        JSONObject obj = new JSONObject().put("attended", true);
+
+        mockMvc.perform(post(url).with(csrf()).content(obj.toString()).contentType("application/json")).andDo(print())
+                .andExpect(status().isOk());
+
+        Timeslot timeslotAfterUpdate = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
+
+        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
+        Assert.assertEquals(true, list.get(1).getAttended());
+
+        Assert.assertEquals(timeslot.getAmountOfReservations(), timeslotAfterUpdate.getAmountOfReservations());
+    }
+
+    @Test
+    @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
+    public void testSetAttendanceAmountReservationsDecrease() throws Exception {
+        Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
+
+        String url = String.format("/locations/reservations/%s/%d/attendance",
+                student.getUserId(), 
+                
+                timeslot.getTimeslotSeqnr());
+
+        JSONObject obj = new JSONObject().put("attended", false);
+
+        mockMvc.perform(post(url).with(csrf()).content(obj.toString()).contentType("application/json")).andDo(print())
+                .andExpect(status().isOk());
+
+        Timeslot timeslotAfterUpdate = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
+
+        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
+        Assert.assertEquals(false, list.get(1).getAttended());
+
+        // when a user is set to unattended, the spot must be released so that others can make a reservation
+        Assert.assertEquals(timeslot.getAmountOfReservations()-1, timeslotAfterUpdate.getAmountOfReservations());
+    }
+
+    @Test
+    @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
+    public void testSetAttendanceAmountReservationsDecreaseOnlyOnce() throws Exception {
+        Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
+
+        String url = String.format("/locations/reservations/%s/%d/attendance",
+                student.getUserId(), 
+                
+                timeslot.getTimeslotSeqnr());
+
+        JSONObject obj = new JSONObject().put("attended", false);
+
+        mockMvc.perform(post(url).with(csrf()).content(obj.toString()).contentType("application/json")).andDo(print())
+                .andExpect(status().isOk());
+        mockMvc.perform(post(url).with(csrf()).content(obj.toString()).contentType("application/json")).andDo(print())
+                .andExpect(status().isOk());
+
+        Timeslot timeslotAfterUpdate = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
+
+
+        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
+        Assert.assertEquals(false, list.get(1).getAttended());
+
+        Assert.assertEquals(timeslot.getAmountOfReservations() - 1, timeslotAfterUpdate.getAmountOfReservations());
+    }
+
+    @Test
+    @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
+    public void testSetAttendanceThenDelete() throws Exception {
+        Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
+
+        String url = String.format("/locations/reservations/%s/%d/attendance",
+                student.getUserId(), 
+                
+                timeslot.getTimeslotSeqnr());
+
+        JSONObject obj = new JSONObject().put("attended", false);
+
+        mockMvc.perform(post(url).with(csrf()).content(obj.toString()).contentType("application/json")).andDo(print())
+                .andExpect(status().isOk());
+
+        Timeslot timeslotAfterUpdate = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
+        Assert.assertEquals(timeslot.getAmountOfReservations() - 1, timeslotAfterUpdate.getAmountOfReservations());
+
+        LocationReservation lr = new LocationReservation(student, timeslot, false);
+        mockMvc.perform(delete("/locations/reservations").with(csrf())
+                .content(objectMapper.writeValueAsString(lr)).contentType("application/json")).andDo(print())
+                .andExpect(status().isOk());
+
+        timeslotAfterUpdate = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
+        Assert.assertEquals(timeslot.getAmountOfReservations() - 1, timeslotAfterUpdate.getAmountOfReservations());
+    }
+
+    @Test
+    @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
+    public void testSetAllUnknownUnattended() throws Exception {
+        Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
+
+        // Adding one extra reservation which doesn't get discounted
+        locationReservationDao.addLocationReservationIfStillRoomAtomically(new LocationReservation(student2, timeslot, null));
+        locationReservationDao.setReservationAttendance(student2.getUserId(), timeslot, true);
+        timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
+        Assert.assertEquals(2, timeslot.getAmountOfReservations());
+
+
+        mockMvc.perform(put("/locations/reservations/not-scanned").with(csrf()).content(objectMapper.writeValueAsString(timeslot)).contentType("application/json")).andDo(print())
+                .andExpect(status().isOk());
+
+        Timeslot timeslotAfterUpdate = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
+        Assert.assertEquals(1, timeslotAfterUpdate.getAmountOfReservations());
+
+        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
+        System.out.println(list);
+        Assert.assertEquals(false, list.get(1).getAttended());
+        list = locationReservationDao.getAllLocationReservationsOfUser(student2.getUserId());
+        Assert.assertEquals(true, list.get(0).getAttended());
+
+    }
+    
 }

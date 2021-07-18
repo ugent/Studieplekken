@@ -112,13 +112,13 @@
 
       <tbody *ngIf="filteredUsers | async as users">
       <tr *ngFor="let user of users">
-        <td>{{user.augentID}}</td>
+        <td>{{user.userId}}</td>
         <td>{{user.firstName}}</td>
         <td>{{user.lastName}}</td>
         <td *ngIf="showPenaltyPoints">{{user.penaltyPoints}}</td>
         <td>{{user.institution}}</td>
         <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
-          <span [routerLink]="'./' + user.augentID"
+          <span [routerLink]="'./' + user.userId"
              class="glyphicon glyphicon-list-alt">
           </span>
         </td>

@@ -1,16 +1,15 @@
 package blok2;
 
-import blok2.daos.IAccountDao;
+import blok2.daos.IUserDao;
 import blok2.daos.IAuthorityDao;
 import blok2.daos.ITimeslotDAO;
 import blok2.helpers.Institution;
 import blok2.helpers.Pair;
 import blok2.helpers.TimeException;
+import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.LocationTag;
-import blok2.model.calendar.CalendarPeriod;
-import blok2.model.calendar.CalendarPeriodForLockers;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;
@@ -102,15 +101,15 @@ public class TestSharedMethods {
                 "Suitable for the less-abled");
     }
 
-    public static Authority insertTestAuthority(IAuthorityDao authorityDao) throws SQLException {
+    public static Authority insertTestAuthority(IAuthorityDao authorityDao) {
         return insertTestAuthority("Test Authority", "a test description", authorityDao);
     }
 
-    public static Authority insertTestAuthority2(IAuthorityDao authorityDao) throws SQLException {
+    public static Authority insertTestAuthority2(IAuthorityDao authorityDao) {
         return insertTestAuthority("Second Test Authority", "second test description", authorityDao);
     }
 
-    public static Authority insertTestAuthority(String name, String description, IAuthorityDao authorityDao) throws SQLException {
+    public static Authority insertTestAuthority(String name, String description, IAuthorityDao authorityDao) {
         Authority authority = new Authority();
         authority.setAuthorityName(name);
         authority.setDescription(description);
@@ -131,7 +130,7 @@ public class TestSharedMethods {
         user.setMail(s+"@ugent.be");
         user.setPassword("first_password");
         user.setInstitution(Institution.UGent);
-        user.setAugentID(s);
+        user.setUserId(s);
         user.setAdmin(true);
         return user;
     }
@@ -147,63 +146,53 @@ public class TestSharedMethods {
         user.setMail(id + "@ugent.be");
         user.setPassword("second_password");
         user.setInstitution(Institution.UGent);
-        user.setAugentID(id);
+        user.setUserId(id);
         user.setAdmin(false);
         return user;
     }
 
-    public static User authorityHolderTestUser(String id) {
-        User user = new User();
-        user.setLastName("AutorityMan");
-        user.setFirstName("Authority");
-        user.setMail(id + "@ugent.be");
-        user.setPassword("second_password");
-        user.setInstitution(Institution.UGent);
-        user.setAugentID(id);
-        user.setAdmin(false);
-        return user;
-    }
-
-    public static void addTestUsers(IAccountDao accountDao, User... users) throws SQLException {
+    public static void addTestUsers(IUserDao userDao, User... users) {
         for (User u : users) {
-            accountDao.directlyAddUser(u);
-            User r = accountDao.getUserById(u.getAugentID()); // retrieved user
+            userDao.addUser(u);
+            User r = userDao.getUserById(u.getUserId()); // retrieved user
             Assert.assertEquals("addTestUsers, setup test user failed", u, r);
         }
     }
 
-    public static void removeTestUsers(IAccountDao accountDao, User... users) throws SQLException {
+    public static void removeTestUsers(IUserDao userDao, User... users) {
         for (User u : users) {
-            accountDao.deleteUser(u.getAugentID());
-            User r = accountDao.getUserById(u.getAugentID());
-            Assert.assertNull("removeTestUsers, cleanup test user failed", r);
+            userDao.deleteUser(u.getUserId());
+            try {
+                userDao.getUserById(u.getUserId());
+                Assert.fail("cleanup test user should throw NoSuchDatabaseObjectException after deletion");
+            } catch (NoSuchDatabaseObjectException e) {
+                Assert.assertTrue(true);
+            }
         }
     }
 
-    public static List<Pair<CalendarPeriod, List<Timeslot>>> testCalendarPeriods(Location location) {
-        List<Pair<CalendarPeriod, List<Timeslot>>> calendarPeriods = new ArrayList<>();
+    public static  List<Timeslot> testCalendarPeriods(Location location) {
 
+        List<Timeslot> timeslots = new ArrayList<>();
         YearWeek date = YearWeek.now();
 
         for (int i = -1; i < 1; i++) {
             LocalDateTime reservableFrom = LocalDateTime.now().withDayOfMonth(1);
 
-            CalendarPeriod period = new CalendarPeriod(null, date.getYear(), date.getWeek(), null, 0, reservableFrom, false, location.getLocationId());
 
             LocalTime mondayStartTime = LocalTime.of(8,0);
             LocalTime mondayEndTime = LocalTime.of(16,30);
-            Timeslot timeslotMonday = new Timeslot(0, DayOfWeek.MONDAY, date, mondayStartTime, mondayEndTime, true, reservableFrom, location.getNumberOfSeats(), 0, location.getLocationId());
+            Timeslot timeslotMonday = new Timeslot((int) Math.random(), date.atDay(DayOfWeek.MONDAY), mondayStartTime, mondayEndTime, true, reservableFrom, 10, location.getLocationId());
 
 
             LocalTime fridayStartTime = LocalTime.of(12,0);
             LocalTime fridayEndTime = LocalTime.of(20, 0);
-            Timeslot timeslotFriday = new Timeslot( 1, DayOfWeek.FRIDAY, date, fridayStartTime, fridayEndTime, false, reservableFrom, location.getNumberOfSeats(), 0, location.getLocationId());
+            Timeslot timeslotFriday = new Timeslot((int) Math.random(), date.atDay(DayOfWeek.FRIDAY), fridayStartTime, fridayEndTime, true, reservableFrom, 10, location.getLocationId());
 
-
-            calendarPeriods.add(new Pair<>(period, Arrays.asList(timeslotMonday, timeslotFriday)));
+            timeslots.add(timeslotMonday);
+            timeslots.add(timeslotFriday);
         }
-
-        return calendarPeriods;
+        return timeslots;
     }
 
     /**
@@ -211,18 +200,17 @@ public class TestSharedMethods {
      * @param location the location for which to create the period
      * @return a CalendarPeriod in the past
      */
-    public static Pair<CalendarPeriod, List<Timeslot>> pastCalendarPeriods(Location location) {
+    public static List<Timeslot> pastCalendarPeriods(Location location) {
         YearWeek past = YearWeek.now().minusWeeks(1);
         LocalDateTime now = LocalDateTime.now();
 
 
-        CalendarPeriod calendarPeriod = new CalendarPeriod(null, past.getYear(), past.getWeek(), null, 0, now.minusDays(3), false, location.getLocationId());
 
         LocalTime startTime = now.toLocalTime().plusMinutes(1);
         LocalTime endTime = now.toLocalTime().plusMinutes(2);
-        Timeslot timeslot = new Timeslot(0, now.getDayOfWeek(), past, startTime, endTime, true, now.minusDays(3), location.getNumberOfSeats(), 0, location.getLocationId());
+        Timeslot timeslot = new Timeslot((int) Math.random(), past.atDay(DayOfWeek.MONDAY), startTime, endTime, true, now.minusDays(3), 10, location.getLocationId());
 
-        return new Pair<>(calendarPeriod, Collections.singletonList(timeslot));
+        return Collections.singletonList(timeslot);
     }
 
     /**
@@ -230,17 +218,16 @@ public class TestSharedMethods {
      * @param location the location for which to create the period
      * @return a CalendarPeriod in the future
      */
-    public static Pair<CalendarPeriod, List<Timeslot>> upcomingCalendarPeriods(Location location) {
+    public static List<Timeslot> upcomingCalendarPeriods(Location location) {
         YearWeek past = YearWeek.now().plusWeeks(3);
         LocalDateTime now = LocalDateTime.now();
 
-        CalendarPeriod calendarPeriod = new CalendarPeriod(null, past.getYear(), past.getWeek(), null, 0, now.minusDays(3), false, location.getLocationId());
 
         LocalTime startTime = now.toLocalTime().plusMinutes(1);
         LocalTime endTime = now.toLocalTime().plusMinutes(2);
-        Timeslot timeslot = new Timeslot(0, now.getDayOfWeek(), past, startTime, endTime, true, now.minusDays(3), location.getNumberOfSeats(), 0, location.getLocationId());
+        Timeslot timeslot = new Timeslot((int) Math.random(), past.atDay(now.getDayOfWeek()), startTime, endTime, true, now.minusDays(3), 10, location.getLocationId());
 
-        return new Pair<>(calendarPeriod, Collections.singletonList(timeslot));
+        return Collections.singletonList(timeslot);
 
     }
 
@@ -249,12 +236,10 @@ public class TestSharedMethods {
      * @param location the location for which to create the period
      * @return a CalendarPeriod that is active, but outside the hours
      */
-    public static Pair<CalendarPeriod, List<Timeslot>> activeCalendarPeriodsOutsideHours(Location location) throws TimeException {
+    public static List<Timeslot> activeCalendarPeriodsOutsideHours(Location location) throws TimeException {
         LocalDateTime now = LocalDateTime.now();
 
         YearWeek past = YearWeek.now();
-
-        CalendarPeriod period = new CalendarPeriod(null, past.getYear(), past.getWeek(), null, 0, now.minusDays(3), false, location.getLocationId());
 
         if (LocalTime.now().isAfter(LocalTime.of(23, 59)) || LocalTime.now().isBefore(LocalTime.of(0, 1)))
             throw new TimeException("Impossible to create active calendar period at this time");
@@ -262,11 +247,12 @@ public class TestSharedMethods {
 
         LocalTime startTime = now.toLocalTime().plusMinutes(1);
         LocalTime endTime = now.toLocalTime().plusMinutes(2);
-        Timeslot timeslot = new Timeslot(0, now.getDayOfWeek(), past, startTime, endTime, true, now.minusDays(3), location.getNumberOfSeats(), 0, location.getLocationId());
+        Timeslot timeslot = new Timeslot((int) Math.random(), past.atDay(now.getDayOfWeek()), startTime, endTime, true, now.minusDays(3), 10, location.getLocationId());
 
 
 
-        return new Pair<>(period, Collections.singletonList(timeslot));
+
+        return Collections.singletonList(timeslot);
     }
 
     /**
@@ -274,13 +260,11 @@ public class TestSharedMethods {
      * @param location the location for which to create the period
      * @return a CalendarPeriod that is active and within hours
      */
-    public static Pair<CalendarPeriod, List<Timeslot>> activeCalendarPeriodsInsideHours(Location location) throws TimeException {
+    public static List<Timeslot> activeCalendarPeriodsInsideHours(Location location) throws TimeException {
 
         LocalDateTime now = LocalDateTime.now();
 
         YearWeek past = YearWeek.now();
-
-        CalendarPeriod period = new CalendarPeriod(null, past.getYear(), past.getWeek(), null, 0, now.minusDays(3), false, location.getLocationId());
 
         if (LocalTime.now().isAfter(LocalTime.of(23, 59)) || LocalTime.now().isBefore(LocalTime.of(0, 1)))
             throw new TimeException("Impossible to create active calendar period at this time");
@@ -288,56 +272,11 @@ public class TestSharedMethods {
 
         LocalTime startTime = now.toLocalTime().minusMinutes(1);
         LocalTime endTime = now.toLocalTime().plusMinutes(1);
-        Timeslot timeslot = new Timeslot(0, now.getDayOfWeek(), past, startTime, endTime, true, now.minusDays(3), location.getNumberOfSeats(), 0, location.getLocationId());
+        Timeslot timeslot = new Timeslot((int) Math.random(), past.atDay(now.getDayOfWeek()), startTime, endTime, true, now.minusDays(3), 10, location.getLocationId());
 
 
 
-        return new Pair<>(period, Collections.singletonList(timeslot));
+        return Collections.singletonList(timeslot);
     }
 
-
-    public static List<CalendarPeriodForLockers> testCalendarPeriodsForLockers(Location location) {
-        List<CalendarPeriodForLockers> calendarPeriods = new ArrayList<>();
-
-        LocalDate date = LocalDate.now();
-        LocalTime time = LocalTime.now();
-
-        for (int i = 0; i < 2; i++) {
-            CalendarPeriodForLockers period = new CalendarPeriodForLockers();
-            period.setLocation(location);
-
-            date = LocalDate.of(date.getYear(), date.getMonth(), 2 + 10*i);
-            period.setStartsAt(date);
-
-            date = LocalDate.of(date.getYear(), date.getMonth(), 4 + 10*i);
-            period.setEndsAt(date);
-
-            date = LocalDate.of(date.getYear(), date.getMonth(), 1);
-            period.setReservableFrom(LocalDateTime.of(date, time));
-
-            calendarPeriods.add(period);
-        }
-
-        return calendarPeriods;
-    }
-
-    public static List<CalendarPeriodForLockers> testCalendarPeriodsForLockersButUpdated(Location location) {
-        List<CalendarPeriodForLockers> updatedPeriods = new ArrayList<>();
-        for (CalendarPeriodForLockers calendarPeriod : testCalendarPeriodsForLockers(location)) {
-            updatedPeriods.add(calendarPeriod.clone());
-        }
-
-        for (int i = 0; i < updatedPeriods.size(); i++) {
-            updatedPeriods.get(i).setStartsAt(LocalDate.of(1970,1,i+1));
-            updatedPeriods.get(i).setEndsAt(LocalDate.of(1970,1,i + 10));
-            updatedPeriods.get(i).setReservableFrom(LocalDateTime.of(1970,1,i+1,9,0));
-        }
-
-        return updatedPeriods;
-    }
-
-    public static List<Timeslot>  addPair(ITimeslotDAO calendarPeriodDao, Pair<CalendarPeriod, List<Timeslot>> pair) throws SQLException {
-        List<Timeslot> tslist = calendarPeriodDao.addTimeslots(pair.getSecond());
-        return tslist;
-    }
 }

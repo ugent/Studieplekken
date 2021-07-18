@@ -54,6 +54,8 @@ export class AuthorizationGuardService implements CanActivate {
           }
         } else if (url.startsWith('/information')) {
           activate = true;
+        } else if (url.startsWith('/opening/overview')) {
+          activate = true; // everybody is allowed to see this overview
         }
 
         if (!activate) {
@@ -86,7 +88,7 @@ export class AuthorizationGuardService implements CanActivate {
 
   isAdminOrHasLocationsToScan(): boolean {
     return (
-      this.authenticationService.isAdmin() ||
+      this.isAdminOrHasAuthorities() ||
       this.authenticationService.hasVolunteeredValue()
     );
   }

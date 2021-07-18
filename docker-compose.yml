@@ -3,6 +3,7 @@ version: "3.6"
 volumes:
   backend_logs:
   pgdata:
+  postfix_spool:
 
 services:
   backend:
@@ -11,7 +12,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_PROFILES_ACTIVE: prod
+      SPRING_PROFILES_ACTIVE: prod,mail
       SW_AGENT_COLLECTOR_BACKEND_SERVICES: oap:11800
       TZ: Europe/Brussels
     depends_on:
@@ -56,6 +57,20 @@ services:
       options:
         max-size: "100m"
         max-file: "5"
+  mailrelay:
+    restart: always
+    image: juanluisbaptiste/postfix:latest
+    networks:
+      - blokat
+    expose:
+      - "25"
+    environment:
+      SMTP_SERVER: "smtp.ugent.be"
+      SMTP_PORT: "25"
+      SERVER_HOSTNAME: "fireball.ugent.be"
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+      - postfix_spool:/var/spool/postfix
 
 
 

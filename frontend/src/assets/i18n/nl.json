@@ -86,6 +86,13 @@
     "no": "Neen",
     "back": "Terug",
     "print": "Print",
+    "monday": "Maandag",
+    "tuesday": "Dinsdag",
+    "wednesday": "Woensdag",
+    "thursday": "Donderdag",
+    "friday": "Vrijdag",
+    "saturday": "Zaterdag",
+    "sunday": "Zondag",
     "buttons": {
       "add": "Voeg toe",
       "update": "Update",
@@ -94,7 +101,8 @@
       "search": "Zoek",
       "clear": "Annuleer",
       "open": "Toon open locaties",
-      "close": "Sluiten"
+      "close": "Sluiten",
+      "print": "Print"
     },
     "roles": {
       "ADMIN": "Admin"
@@ -142,7 +150,7 @@
       "calendar": "Kalender",
       "penalties": "Overtredingen",
       "admins": "Admins",
-      "volunteers": "Vrijwilligers"
+      "volunteers": "Toezichthouders"
     },
     "general": {
       "loading": "Aan het laden...",
@@ -176,6 +184,8 @@
           "title": "Reservaties voor de ruimte",
           "selectSlot": "Selecteer een (reserveerbaar) timeslot om de reservaties te zien",
           "searchUser": "Zoek naar een gebruiker op voornaam, achternaam of studentennummer:",
+          "startScanning": "Einde scannen",
+          "startScanningTooltip": "Zet alle niet gescande studenten als afwezig.",
           "loading": "Reservaties voor het geselecteerde slot worden geladen",
           "error": "Er is iets misgelopen tijdens het ophalen van de reservaties...",
           "table": {
@@ -509,6 +519,9 @@
           },
           "noPenalties": "De gebruiker heeft nog geen overtredingen begaan.",
           "error": "Er is iets misgelopen tijdens het ophalen van de strafpunten van de gebruiker."
+        },
+        "reservations": {
+          "title": "Reservaties van {name}"
         }
       }
     },
@@ -584,10 +597,9 @@
         },
         "finishScanningModal": {
           "title": "Beëindigen van het scannen",
-          "body": "Na het beëindigen van het scannen zullen de afwezige studenten automatisch 50 strafpunten krijgen.",
-          "body2": "Indien in een vorige scan voor hetzelfde tijdslot een student afwezig was maar in deze scan aanwezig is, dan zullen de eerder verkregen strafpunten verwijderd worden.",
-          "success": "Het beëindigen van het scannen is gelukt.",
-          "error": "Er is iets misgelopen tijdens het beëindigen van het scannen."
+          "message1": "Als je het scannen beëindigt, worden alle reservaties die niet expliciet als aanwezig/afwezig gescand zijn als afwezig opgenomen.",
+          "message2": "Dat zorgt ervoor dat alle niet-gescande studenten ook hun plaats verliezen voor dit tijdslot.",
+          "message3": "Als een afwezige student later toch nog komt opdagen, kan je die alsnog op aanwezig zetten door die te scannen als er nog voldoende plaatsen zijn op de studieplek.."
         },
         "deleteModal": {
           "title": "Zeker dat je de reservatie wilt verwijderen?",
@@ -601,7 +613,7 @@
 
         "scanningErrorModal": {
           "title": "Scannen mislukt",
-          "message": "Er is iets misgelopen tijdens het scannen. De aan-/afwezigheid werd niet goed geregistreerd."
+          "message": "Er is iets misgelopen tijdens het scannen. De aan-/afwezigheid werd niet goed geregistreerd. Probeer je een afwezige als aanwezig aan te duiden in een volle ruimte? Deze reservatie was verwijderd en het zitje is intussen gereserveerd door iemand anders."
         }
       },
       "locker": {
@@ -682,9 +694,10 @@
       }
     },
     "volunteers": {
-      "no-volunteers": "Er zijn nog geen vrijwilligers voor deze locatie.",
+      "no-volunteers": "Er zijn nog geen toezichthouders voor deze locatie.",
       "errorOnLoadingManageableLocations": "De locaties die u kan beheren konden niet worden opgehaald.",
-      "errorOnLoadingVolunteers": "De vrijwilligers van deze locatie konden niet opgehaald worden."
+      "errorOnLoadingVolunteers": "De toezichthouders van deze locatie konden niet opgehaald worden.",
+      "addNewButton": "Toezichter toevoegen"
     }
   },
   "profile": {
@@ -759,6 +772,7 @@
         "title": "Overzicht van je reservaties",
         "table": {
           "header": {
+            "user": "Gebruiker",
             "locationName": "Ruimte",
             "reservationDate": "Gereserveerd voor datum",
             "beginHour": "Aanvangsuur reservatie",
@@ -772,6 +786,7 @@
           }
         },
         "zeroReservations": "Je hebt tot nu toe nog nooit gereserveerd.",
+        "zeroReservationsInManagement": "{name} heeft tot nu toe nog nooit gereserveerd.",
         "loading": "Reservaties worden geladen...",
         "error": "Er is iets misgegaan tijdens het laden van uw reservaties."
       },
@@ -790,6 +805,16 @@
         "noReservations": "Je hebt tot nu toe nog nooit een locker gereserveerd."
       }
     }
+  },
+  "openingHoursOverview": {
+    "title": "Openingsuren van studieplekken tussen maandag {mondayDate} en zondag {sundayDate}",
+    "navigationInfo": "Met de navigatieknoppen kan je kiezen voor welke week een overzicht getoond wordt.",
+    "table": {
+      "locationName": "Locatie"
+    },
+    "noOpeningsFuture": "Er zullen geen studieplekken geopend worden tussen maandag {mondayDate} en zondag {sundayDate}.",
+    "noOpeningsPast": "Er waren geen studieplekken geopend tussen maandag {mondayDate} en zondag {sundayDate}.",
+    "loadingError": "Er is iets misgelopen tijdens het ophalen van de openingsuren in de gewenste week."
   },
   "scan": {
     "aside": {
@@ -820,6 +845,7 @@
     "error": "Er ging iets fout bij deze actie.",
     "mobile-hint": "Scanning werkt best wanneer je de barcode horizontaal plaatst.",
     "handheld-hint": "Om met de handscanner te scannen selecteer je de inputbox. Wanneer je iemand scant, zal de naam naar boven springen in de lijst.",
-    "maybe":"Deze gebruiker werd niet gevonden. Zoek in de lijst hieronder of probeer opnieuw."
+    "maybe":"Deze gebruiker werd niet gevonden. Zoek in de lijst hieronder of probeer opnieuw.",
+    "warn-unattended":"Als je iemand op afwezig zet, wordt de plek opengesteld voor anderen om te reserveren."
   }
 }

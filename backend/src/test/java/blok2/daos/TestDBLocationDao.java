@@ -2,17 +2,15 @@ package blok2.daos;
 
 import blok2.BaseTest;
 import blok2.TestSharedMethods;
+import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.reservables.Location;
-import blok2.model.reservables.Locker;
 import org.flywaydb.test.annotation.FlywayTest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.SQLException;
-import java.util.List;
 
 @FlywayTest
 public class TestDBLocationDao extends BaseTest {
@@ -29,7 +27,7 @@ public class TestDBLocationDao extends BaseTest {
     private Location testLocation;
 
     @Override
-    public void populateDatabase() throws SQLException {
+    public void populateDatabase() {
         // Setup test objects
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
 
@@ -42,27 +40,16 @@ public class TestDBLocationDao extends BaseTest {
 
     @FlywayTest
     @Test
-    public void addLocationTest() throws SQLException {
+    public void addLocationTest() {
         Location l = locationDao.getLocationByName(testLocation.getName());
         Assert.assertEquals("addLocation", testLocation, l);
 
         locationDao.deleteLocation(testLocation.getLocationId());
-        l = locationDao.getLocationByName(testLocation.getName());
-        Assert.assertNull("addLocation, remove added test location", l);
-    }
-
-    @FlywayTest
-    @Test
-    public void lockersTest() throws SQLException {
-        List<Locker> lockers = locationDao.getLockers(testLocation.getLocationId());
-        Assert.assertEquals("lockersTest, check size getLockers"
-                , testLocation.getNumberOfLockers(), lockers.size());
-
-        if (testLocation.getNumberOfLockers() > 0) {
-            for (Locker l : lockers) {
-                Assert.assertEquals("lockersTest, check location of each locker"
-                        , testLocation, l.getLocation());
-            }
+        try {
+            locationDao.getLocationByName(testLocation.getName());
+        } catch (NoSuchDatabaseObjectException ignore) {
+            Assert.assertTrue("Location must be deleted and thus a NoSuchDatabaseObjectException should have been thrown.", true);
         }
     }
+
 }

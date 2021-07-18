@@ -2,12 +2,23 @@ import { Component, OnInit, Input, TemplateRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CalendarEvent } from 'angular-calendar';
 import * as moment from 'moment';
+<<<<<<< HEAD
 import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { TimeslotsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
+=======
+import { Observable, Subject, BehaviorSubject, timer } from 'rxjs';
+import { CalendarPeriodsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
+>>>>>>> master
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
-import { ApplicationTypeFunctionalityService } from 'src/app/services/functionality/application-type/application-type-functionality.service';
 import {
+<<<<<<< HEAD
   CalendarPeriod,
+=======
+  ApplicationTypeFunctionalityService
+} from 'src/app/services/functionality/application-type/application-type-functionality.service';
+import {
+  CalendarPeriod
+>>>>>>> master
 } from 'src/app/shared/model/CalendarPeriod';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
 import { Timeslot, timeslotToCalendarEvent } from 'src/app/shared/model/Timeslot';
@@ -17,14 +28,17 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { Moment } from 'moment';
 import { TranslateService } from '@ngx-translate/core';
-import { ActivatedRoute } from '@angular/router';
-import { catchError, tap } from 'rxjs/operators';
+import { ActivatedRoute, Router } from '@angular/router';
+import { catchError, switchMap, tap } from 'rxjs/operators';
 import { of } from 'rxjs/internal/observable/of';
+import {
+  ConversionToCalendarEventService
+} from '../../../../services/styling/CalendarEvent/conversion-to-calendar-event.service';
 
 @Component({
   selector: 'app-location-calendar',
   templateUrl: './location-calendar.component.html',
-  styleUrls: ['./location-calendar.component.css'],
+  styleUrls: ['./location-calendar.component.css']
 })
 export class LocationCalendarComponent implements OnInit {
   @Input() location: Location; // only use this for creating a CalendarPeriod
@@ -88,11 +102,19 @@ export class LocationCalendarComponent implements OnInit {
     private modalService: BsModalService,
     private authenticationService: AuthenticationService,
     private translate: TranslateService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private conversionService: ConversionToCalendarEventService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.locationId = Number(this.route.snapshot.paramMap.get('locationId'));
+
+    // Check if locationId is a Number before proceeding. If NaN, redirect to management locations.
+    if (isNaN(this.locationId)) {
+      this.router.navigate(['/management/locations']).catch(console.log);
+      return;
+    }
 
     this.currentLang = this.translate.currentLang;
     this.translate.onLangChange.subscribe(() => {
@@ -105,6 +127,126 @@ export class LocationCalendarComponent implements OnInit {
     this.showReservationInformation = this.functionalityService.showReservationsFunctionality();
   }
 
+<<<<<<< HEAD
+=======
+  // /**********
+  // *   ADD   *
+  // ***********/
+
+  prepareAdd(template: TemplateRef<unknown>, el: HTMLElement): void {
+    this.calendarPeriodModel.next(
+      new CalendarPeriod(
+        null,
+        this.location,
+        null,
+        null,
+        null,
+        null,
+        false,
+        null,
+        0,
+        [],
+        null,
+        0
+      )
+    );
+    this.prepareToUpdatePeriod = null;
+    this.successAddingLocationReservation = undefined;
+    el.scrollIntoView();
+    this.modalService.show(template);
+  }
+
+  add(): void {
+    this.update(true);
+  }
+
+  // /*************
+  // *   UPDATE   *
+  // **************/
+
+  prepareUpdate(
+    calendarPeriod: CalendarPeriod,
+    template: TemplateRef<unknown>
+  ): void {
+    this.successUpdatingLocationReservation = undefined;
+    this.prepareToUpdatePeriod = calendarPeriod;
+    // Copy
+    this.calendarPeriodModel.next(CalendarPeriod.fromJSON(calendarPeriod));
+    this.modalService.show(template);
+  }
+
+  update(add = false): void {
+    this.successAddingLocationReservation = null;
+    this.successUpdatingLocationReservation = null;
+    this.calendarPeriods = this.calendarPeriods.filter(
+      (c) =>
+        !this.prepareToUpdatePeriod || c.id !== this.prepareToUpdatePeriod.id
+    );
+    const updatedCalendarPeriod = this.calendarPeriodModel.value;
+    console.log(updatedCalendarPeriod);
+    if (this.calendarPeriodModel) {
+      this.calendarPeriods = [
+        ...this.calendarPeriods,
+        this.calendarPeriodModel.value
+      ];
+    }
+
+    // Check if the closing time - opening time is divisible by timeslot_size.
+    // this.checkForWarning(this.calendarPeriods[this.calendarPeriods.length - 1]);
+
+    // this.calendarPeriods is not empty, and all values are valid: persist update(s)
+    this.calendarPeriodsService
+      .updateCalendarPeriod(
+        this.locationId,
+        this.calendarPeriodsInDataLayer,
+        this.calendarPeriodModel.value
+      )
+      .subscribe(
+        () => {
+          add
+            ? (this.successAddingLocationReservation = true)
+            : (this.successUpdatingLocationReservation = true);
+          this.setup();
+          this.modalService.hide();
+        },
+        () => {
+          add
+            ? (this.successAddingLocationReservation = false)
+            : (this.successUpdatingLocationReservation = false);
+          this.rollback();
+        }
+      );
+  }
+
+  // /*************
+  // *   DELETE   *
+  // **************/
+
+  prepareDelete(
+    calendarPeriod: CalendarPeriod,
+    template: TemplateRef<unknown>
+  ): void {
+    this.prepareToUpdatePeriod = calendarPeriod;
+    this.successDeletingLocationReservation = undefined;
+    this.modalService.show(template);
+  }
+
+  delete(): void {
+    this.successDeletingLocationReservation = null;
+    this.calendarPeriodsService
+      .deleteCalendarPeriods(this.prepareToUpdatePeriod)
+      .subscribe(
+        () => {
+          this.successDeletingLocationReservation = true;
+          this.setup();
+        },
+        () => {
+          this.successDeletingLocationReservation = false;
+          this.rollback();
+        }
+      );
+  }
+>>>>>>> master
 
   // /******************
   // *   AUXILIARIES   *
@@ -117,7 +259,14 @@ export class LocationCalendarComponent implements OnInit {
       .pipe(
         tap((next) => {
           // fill the events based on the calendar periods
+<<<<<<< HEAD
           this.events = next.map(t => timeslotToCalendarEvent(t, this.translate.currentLang))
+=======
+          this.events = this.conversionService.mapCalendarPeriodsToCalendarEvents(
+            next,
+            this.translate.currentLang
+          );
+>>>>>>> master
 
           // and update the calendar
           this.refresh.next(null);
@@ -161,23 +310,34 @@ export class LocationCalendarComponent implements OnInit {
     }
   }
 
-  timeslotPickedHandler(event: Event): void {
+  timeslotPickedHandler(event: any): void {
     // event is a non-reservable calendar period.
-    if (!event['timeslot']) {
+    if (!event.timeslot) {
       this.showReservations = false;
       this.errorOnRetrievingReservations = false;
       return;
     }
 
+<<<<<<< HEAD
     this.currentTimeSlot = event['timeslot'] as Timeslot;
+=======
+    this.currentTimeSlot = event.timeslot as Timeslot;
+    this.currentCalendarPeriod = event.calendarPeriod as CalendarPeriod;
+>>>>>>> master
 
     this.loadReservations();
   }
 
   loadReservations(): void {
     this.showReservations = null;
-    this.locationReservationService
-      .getLocationReservationsOfTimeslot(this.currentTimeSlot)
+    timer(0, 60 * 1000)
+      .pipe(
+        switchMap(() =>
+          this.locationReservationService.getLocationReservationsOfTimeslot(
+            this.currentTimeSlot
+          )
+        )
+      )
       .subscribe(
         (next) => {
           this.locationReservations = next;
@@ -229,10 +389,10 @@ export class LocationCalendarComponent implements OnInit {
     this.modalService.hide();
   }
 
-  public getCalendarPeriodTimeInMinutes(
+  getCalendarPeriodTimeInMinutes(
     calendarPeriod: CalendarPeriod
   ): number {
-    if (!calendarPeriod.closingTime) return null;
+    if (!calendarPeriod.closingTime) { return null; }
 
     return calendarPeriod.openingTime?.diff(
       calendarPeriod.closingTime,

@@ -33,7 +33,7 @@
 
                 <tbody>
                     <tr *ngFor="let user of volunteers">
-                        <td>{{user.augentID}}</td>
+                        <td>{{user.userId}}</td>
                         <td>{{user.firstName}}</td>
                         <td>{{user.lastName}}</td>
                         <td>{{user.institution}}</td>
@@ -51,7 +51,7 @@
                 </div>
             </div>
 
-            <button class='btn btn-default' (click)="showAdd(confirm)">Add volunteer</button>
+            <button class='btn btn-default' (click)="showAdd(confirm)">{{'management.volunteers.addNewButton' | translate}}</button>
         </div>
     </div>
 </div>
@@ -130,7 +130,7 @@
 
             <tbody *ngIf="filteredUsers | async as users">
                 <tr *ngFor="let user of users" class="text-left">
-                    <td>{{user.augentID}}</td>
+                    <td>{{user.userId}}</td>
                     <td>{{user.firstName}}</td>
                     <td>{{user.lastName}}</td>
                     <td>{{user.institution}}</td>

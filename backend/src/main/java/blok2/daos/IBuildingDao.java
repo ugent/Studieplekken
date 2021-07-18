@@ -3,7 +3,6 @@ package blok2.daos;
 import blok2.model.Building;
 import blok2.model.reservables.Location;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public interface IBuildingDao {
@@ -15,34 +14,34 @@ public interface IBuildingDao {
     /**
      * get all authorities
      */
-    List<Building> getAllBuildings() throws SQLException;
+    List<Building> getAllBuildings();
 
     /**
      * get building by its id.
      */
-    Building getBuildingById(int buildingId) throws SQLException;
+    Building getBuildingById(int buildingId);
 
     /**
      * get locations linked to a building
      */
-    List<Location> getLocationsInBuilding(int buildingId) throws SQLException;
+    List<Location> getLocationsInBuilding(int buildingId);
 
     /**
      * Add an Building to the database. BuildingId is ignored.
      *
      * @return the added building with updated buildingId
      */
-    Building addBuilding(Building buildingId) throws SQLException;
+    Building addBuilding(Building building);
 
     /**
      * Updates the building given by the buildingId
      *
-     * @param updatedBuilding Building with new values, with Building.buildingId the building to update
+     * @param building Building with new values, with Building.buildingId the building to update
      */
-    void updateBuilding(Building updatedBuilding) throws SQLException;
+    void updateBuilding(Building building);
 
     /**
      * delete building by its id, including Locations that are located in this building
      */
-    void deleteBuilding(int buildingId) throws SQLException;
+    void deleteBuilding(int buildingId);
 }

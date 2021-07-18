@@ -42,7 +42,7 @@ export class UserDetailsFormComponent implements OnInit {
   setup(user: User): void {
     // setup formGroup for details of user
     this.formGroup.setValue({
-      id: user.augentID,
+      id: user.userId,
       firstName: user.firstName,
       lastName: user.lastName,
       mail: user.mail,

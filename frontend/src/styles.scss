@@ -145,7 +145,7 @@
 }
 
 .calendar-event-reserved * * mwl-calendar-event-title {
-  color: #00001d;
+  color: #FFFFFF;
 }
 
 .calendar-event-NR span {
@@ -154,6 +154,10 @@
 
 .calendar-event-reserved span {
   white-space: normal !important;
+}
+
+.unclickable {
+  opacity: 0.6;
 }
 
 .float-right {

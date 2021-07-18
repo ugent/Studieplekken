@@ -54,6 +54,8 @@ export const api = {
   locationReservationCount: '/api/locations/reservations/count/{locationId}',
   locationReservationsWithLocationOfUser:
     '/api/locations/reservations/{userId}',
+  locationReservationsOfNotScannedUsers:
+    '/api/locations/reservations/not-scanned',
 
   // AUTHORITY
   buildings: '/api/building',
@@ -106,6 +108,9 @@ export const api = {
   authoritiesOfUser: '/api/authority/users/{userId}',
   addUserToAuthority: '/api/authority/{authorityId}/user/{userId}',
   deleteUserFromAuthority: '/api/authority/{authorityId}/user/{userId}',
+
+  // MISCELLANEOUS QUERIES
+  openingHoursOverview: '/api/locations/overview/opening/{year}/{weekNr}',
 
   // Scanning functionality
   scanningLocations: '/api/scan/locations',

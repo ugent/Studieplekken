@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LocationService } from '../../services/api/locations/location.service';
 import { Observable, Subject } from 'rxjs';
 import { Location } from '../../shared/model/Location';
@@ -9,6 +9,7 @@ import { of } from 'rxjs/internal/observable/of';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { BarcodeService } from 'src/app/services/barcode.service';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
+import { timer } from 'rxjs';
 
 @Component({
   selector: 'app-scanning-location-details',
@@ -31,11 +32,19 @@ export class ScanningLocationDetailsComponent implements OnInit {
     private locationService: LocationService,
     private scanningService: ScanningService,
     private reservationService: LocationReservationsService,
-    private barcodeService: BarcodeService
+    private barcodeService: BarcodeService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     const locationId = Number(this.route.snapshot.paramMap.get('locationId'));
+
+    // Check if locationId is a Number before proceeding. If NaN, redirect to scan locations.
+    if (isNaN(locationId)) {
+      this.router.navigate(['/scan/locations']).catch(console.log);
+      return;
+    }
+
     // thanks to the caching that was implemented, the locationService will just return the cached location
     this.locationObs = this.locationService.getLocation(locationId).pipe(
       catchError((err) => {
@@ -45,7 +54,8 @@ export class ScanningLocationDetailsComponent implements OnInit {
       })
     );
 
-    this.locationReservationObs = this.locationObs.pipe(
+    this.locationReservationObs = timer(0, 60 * 1000).pipe(
+      switchMap(() => this.locationObs),
       switchMap((l) =>
         this.reservationService.getLocationReservationsOfTimeslot(
           l.currentTimeslot

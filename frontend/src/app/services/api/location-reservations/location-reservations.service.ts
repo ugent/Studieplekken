@@ -94,7 +94,12 @@ export class LocationReservationsService {
   ): Observable<void> {
     return this.http.post<void>(
       api.updateAttendance
+<<<<<<< HEAD
         .replace('{userid}', locationReservation.user.augentID)
+=======
+        .replace('{userid}', locationReservation.user.userId)
+        .replace('{calendarid}', `${locationReservation.timeslot.calendarId}`)
+>>>>>>> master
         .replace(
           '{date}',
           locationReservation.timeslot.timeslotDate.format('YYYY-MM-DD')
@@ -102,6 +107,15 @@ export class LocationReservationsService {
         .replace('{seqnr}', `${locationReservation.timeslot.timeslotSequenceNumber}`),
       { attended },
       { withCredentials: true }
+    );
+  }
+
+  setAllNotScannedAsUnattended(
+    timeslot: Timeslot
+  ): Observable<void> {
+    return this.http.put<void>(
+      api.locationReservationsOfNotScannedUsers,
+      timeslot
     );
   }
 }

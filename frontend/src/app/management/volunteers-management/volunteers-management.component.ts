@@ -21,7 +21,7 @@ export class VolunteersManagementComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const authenticatedUserId = this.authenticationService.userValue().augentID;
+    const authenticatedUserId = this.authenticationService.userValue().userId;
     this.manageableLocationsObs = this.userService
       .getManageableLocations(authenticatedUserId)
       .pipe(

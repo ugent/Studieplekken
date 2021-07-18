@@ -86,8 +86,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.nextReservableFromSub = this.locationService
       .getAllLocationNextReservableFroms()
       .subscribe((next) => {
-        next.forEach((pair) => {
-          this.locationNextReservableFroms.set(pair.first, pair.second);
+        next.forEach((next2) => {
+          this.locationNextReservableFroms.set(next2.locationName, next2.nextReservableFrom);
         });
       });
 
@@ -96,8 +96,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.locationSub.unsubscribe();
-    this.nextReservableFromSub.unsubscribe();
+    if (this.locationSub) {
+      this.locationSub.unsubscribe();
+    }
+    if (this.nextReservableFromSub) {
+      this.nextReservableFromSub.unsubscribe();
+    }
   }
 
   /**

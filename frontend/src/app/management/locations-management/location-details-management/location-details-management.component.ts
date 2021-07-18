@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Location } from '../../../shared/model/Location';
 import { ApplicationTypeFunctionalityService } from '../../../services/functionality/application-type/application-type-functionality.service';
@@ -20,11 +20,19 @@ export class LocationDetailsManagementComponent implements OnInit {
   constructor(
     private locationService: LocationService,
     private route: ActivatedRoute,
-    private functionalityService: ApplicationTypeFunctionalityService
+    private functionalityService: ApplicationTypeFunctionalityService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     const locationId = Number(this.route.snapshot.paramMap.get('locationId'));
+
+    // Check if locationId is a Number before proceeding. If NaN, redirect to management locations.
+    if (isNaN(locationId)) {
+      this.router.navigate(['/management/locations']).catch(console.log);
+      return;
+    }
+
     // Note: invalidating cache in management
     this.locationObs = this.locationService.getLocation(locationId, true);
     this.showLockersManagement = this.functionalityService.showLockersManagementFunctionality();

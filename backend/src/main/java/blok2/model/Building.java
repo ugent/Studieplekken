@@ -2,12 +2,22 @@ package blok2.model;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
+@Table(name = "buildings")
 public class Building implements Cloneable {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "building_id")
     private int buildingId;
+
+    @Column(name = "building_name")
     private String name;
+
+    @Column(name = "address")
     private String address;
 
     public Building() {}
@@ -56,7 +66,6 @@ public class Building implements Cloneable {
         return Objects.hash(buildingId, name);
     }
 
-
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
@@ -71,4 +80,5 @@ public class Building implements Cloneable {
             return null;
         }
     }
+
 }

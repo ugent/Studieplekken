@@ -1,13 +1,9 @@
 import { Location, LocationConstructor } from './Location';
-import { CalendarEvent } from 'angular-calendar';
 import {
-  includesTimeslot,
   Timeslot,
 } from './Timeslot';
-import { LocationReservation } from './LocationReservation';
 import * as moment from 'moment';
 import { Moment } from 'moment';
-import { calendarEventTitleTemplate } from '../../app.constants';
 
 export class CalendarPeriod {
   constructor(
@@ -154,6 +150,7 @@ export function isCalendarPeriodValid(period: CalendarPeriod): boolean {
   // and finally, the opening time must be before the closing time
   return period.openingTime.isBefore(period.closingTime);
 }
+<<<<<<< HEAD
 
 /**
  * Convert calendarPeriods to Calendar Events. This detects correctly whether the period is reservable or not (yet).
@@ -322,3 +319,5 @@ function mapReservableTimeslotsToCalendarEvents(
 
   return calendarEvents;
 }
+=======
+>>>>>>> master

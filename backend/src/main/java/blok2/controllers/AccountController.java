@@ -1,10 +1,10 @@
 package blok2.controllers;
 
-import blok2.daos.IAccountDao;
+import blok2.daos.IUserDao;
 import blok2.daos.IAuthorityDao;
 import blok2.daos.ILocationDao;
+import blok2.daos.IVolunteerDao;
 import blok2.helpers.exceptions.InvalidRequestParametersException;
-import blok2.helpers.exceptions.NoSuchUserException;
 import blok2.model.Authority;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;
@@ -20,8 +20,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.constraints.Pattern;
-import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -36,25 +34,22 @@ public class AccountController {
 
     private final Logger logger = LoggerFactory.getLogger(AccountController.class.getSimpleName());
 
-    private final IAccountDao accountDao;
+    private final IUserDao userDao;
     private final IAuthorityDao authorityDao;
     private final ILocationDao locationDao;
+    private final IVolunteerDao volunteerDao;
 
-    public AccountController(IAccountDao accountDao, IAuthorityDao authorityDao, ILocationDao locationDao) {
-        this.accountDao = accountDao;
+    public AccountController(IUserDao userDao, IAuthorityDao authorityDao, ILocationDao locationDao, IVolunteerDao volunteerDao) {
+        this.userDao = userDao;
         this.authorityDao = authorityDao;
         this.locationDao = locationDao;
+        this.volunteerDao = volunteerDao;
     }
 
     @GetMapping("/admins")
     @PreAuthorize("hasAuthority('ADMIN')")
     public List<User> getAdmins() {
-        try {
-            return accountDao.getAdmins();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        return userDao.getAdmins();
     }
 
     @GetMapping("/id")
@@ -62,13 +57,7 @@ public class AccountController {
     public User getUserByAUGentId(@RequestParam
                                   @Pattern(regexp = "^[^%_]*$")
                                           String id) {
-        try {
-            return accountDao.getUserById(id);
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        return userDao.getUserById(id);
     }
 
     @GetMapping("/mail")
@@ -76,13 +65,7 @@ public class AccountController {
     public User getUserByMail(@RequestParam
                               @Pattern(regexp = "^[^%_]*$")
                                       String mail) {
-        try {
-            return accountDao.getUserByEmail(mail);
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        return userDao.getUserByEmail(mail);
     }
 
     @GetMapping("/firstName")
@@ -90,13 +73,7 @@ public class AccountController {
     public List<User> getUsersByFirstName(@RequestParam("firstName")
                                           @Pattern(regexp = "^[^%_]*$")
                                                   String firstName) {
-        try {
-            return accountDao.getUsersByFirstName(firstName);
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        return userDao.getUsersByFirstName(firstName);
     }
 
     @GetMapping("/lastName")
@@ -104,13 +81,7 @@ public class AccountController {
     public List<User> getUsersByLastName(@RequestParam
                                          @Pattern(regexp = "^[^%_]*$")
                                                  String lastName) {
-        try {
-            return accountDao.getUsersByLastName(lastName);
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        return userDao.getUsersByLastName(lastName);
     }
 
     @GetMapping("/firstAndLastName")
@@ -121,32 +92,14 @@ public class AccountController {
                                          @RequestParam
                                          @Pattern(regexp = "^[^%_]*$")
                                                  String lastName) {
-        try {
-            return accountDao.getUsersByFirstAndLastName(firstName, lastName);
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        return userDao.getUsersByFirstAndLastName(firstName, lastName);
     }
 
     @GetMapping("/barcode")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public User getUserByBarcode(@RequestParam String barcode) {
-        try {
-            User userLinkedToBarcode = accountDao.getUserFromBarcode(barcode);
-
-            if (userLinkedToBarcode == null) {
-                throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED,
-                        "No user found with barcode " + barcode);
-            }
-
-            return accountDao.getUserById(userLinkedToBarcode.getAugentID());
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        User userLinkedToBarcode = userDao.getUserFromBarcode(barcode);
+        return userDao.getUserById(userLinkedToBarcode.getUserId());
     }
 
     @GetMapping("/{userId}/authorities")
@@ -154,59 +107,31 @@ public class AccountController {
     public List<Authority> getAuthoritiesFromUser(@PathVariable
                                                   @Pattern(regexp = "^[^%_]*$")
                                                           String userId) {
-        try {
-            return authorityDao.getAuthoritiesFromUser(userId);
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        return authorityDao.getAuthoritiesFromUser(userId);
     }
 
     @GetMapping("{userId}/manageable/locations")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public List<Location> getManageableLocations(@PathVariable("userId") @Pattern(regexp = "^[^%_]*$") String userId) {
-        try {
-            User user = accountDao.getUserById(userId);
+        User user = userDao.getUserById(userId);
 
-            // should never happen due to authentication, but you never know what changes in the future
-            if (user == null)
-                throw new NoSuchUserException("No such user");
-
-            if (user.isAdmin()) {
-                return locationDao.getAllLocations();
-            } else {
-                return authorityDao.getLocationsInAuthoritiesOfUser(userId);
-            }
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        if (user.isAdmin()) {
+            return locationDao.getAllActiveLocations();
+        } else {
+            return authorityDao.getLocationsInAuthoritiesOfUser(userId);
         }
     }
 
     @GetMapping("{userId}/has/authorities")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public boolean hasUserAuthorities(@PathVariable("userId") @Pattern(regexp = "^[^%_]*$") String userId) {
-        try {
-            return authorityDao.getAuthoritiesFromUser(userId).size() > 0;
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        return authorityDao.getAuthoritiesFromUser(userId).size() > 0;
     }
 
     @GetMapping("{userId}/has/volunteered")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public boolean hasUserVolunteered(@PathVariable("userId") @Pattern(regexp = "^[^%_]*$") String userId) {
-        try {
-            return accountDao.getVolunteeredLocations(userId).size() > 0;
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        return volunteerDao.getVolunteeredLocations(userId).size() > 0;
     }
 
     @PutMapping("/{userId}")
@@ -214,46 +139,33 @@ public class AccountController {
     public void updateUser(@PathVariable("userId")
                            @Pattern(regexp = "^[^%_]*$")
                                    String id, @RequestBody User user) {
-        try {
-            User old = accountDao.getUserById(id);
-            accountDao.updateUserById(id, user);
-            logger.info(String.format("Updated user %s from %s to %s", id, old, user));
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        User old = userDao.getUserById(id);
+        userDao.updateUser(user);
+        logger.info(String.format("Updated user %s from %s to %s", id, old, user));
     }
 
     @PutMapping("/password")
     @PreAuthorize("hasAuthority('USER')")
     public void changePassword(@RequestBody ChangePasswordBody body) {
-        try {
-            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-            // check if 'from' is the correct current password
-            User actualUser = accountDao.getUserById(body.user.getAugentID());
+        // check if 'from' is the correct current password
+        User actualUser = userDao.getUserById(body.user.getUserId());
 
-            if (!encoder.matches(body.from, actualUser.getPassword())) {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong password");
-            }
-
-            // check if 'to' is valid
-            if (!isValidPassword(body.to)) {
-                throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED, "Wrong format of new password");
-            }
-
-            // change user's password
-            String encryptedTo = encoder.encode(body.to);
-            User updatedUser = actualUser.clone();
-            updatedUser.setPassword(encryptedTo);
-            accountDao.updateUserById(actualUser.getAugentID(), updatedUser);
-
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        if (!encoder.matches(body.from, actualUser.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong password");
         }
+
+        // check if 'to' is valid
+        if (!isValidPassword(body.to)) {
+            throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED, "Wrong format of new password");
+        }
+
+        // change user's password
+        String encryptedTo = encoder.encode(body.to);
+        User updatedUser = actualUser.clone();
+        updatedUser.setPassword(encryptedTo);
+        userDao.updateUser(updatedUser);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)

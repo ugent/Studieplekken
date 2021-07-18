@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/internal/operators/map';
@@ -27,7 +27,13 @@ export class TimeslotTableComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private locationReservationsService: LocationReservationsService,
+<<<<<<< HEAD
     private locationService: LocationService
+=======
+    private calendarPeriodService: CalendarPeriodsService,
+    private locationService: LocationService,
+    private router: Router
+>>>>>>> master
   ) {}
 
   ngOnInit(): void {
@@ -35,7 +41,17 @@ export class TimeslotTableComponent implements OnInit {
     const date = moment(this.route.snapshot.paramMap.get('date'), 'YYYY-MM-DD');
     const seqnr = Number(this.route.snapshot.paramMap.get('seqnr'));
 
+<<<<<<< HEAD
     this.timeslot = new Timeslot(seqnr, date, null, 0, null, null, null, null, null);
+=======
+    // Check if locationId, calendarId and seqnr are a Number before proceeding. If NaN, redirect to management locations.
+    if (isNaN(this.locationId) || isNaN(calendarId) || isNaN(seqnr)) {
+      this.router.navigate(['/management/locations']).catch(console.log);
+      return;
+    }
+
+    this.timeslot = new Timeslot(seqnr, date, calendarId, null, 0);
+>>>>>>> master
     this.locationReservations = this.locationReservationsService.getLocationReservationsOfTimeslot(
       this.timeslot
     );

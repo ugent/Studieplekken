@@ -1,9 +1,11 @@
 package blok2.controllers;
 
+import blok2.daos.ILocationDao;
 import blok2.daos.ILocationReservationDao;
 import blok2.daos.ITimeslotDAO;
 import blok2.helpers.authorization.AuthorizedLocationController;
-import blok2.helpers.exceptions.NoSuchReservationException;
+import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
+import blok2.mail.MailService;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
@@ -16,6 +18,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -38,39 +41,39 @@ public class LocationReservationController extends AuthorizedLocationController 
     private final ILocationReservationDao locationReservationDao;
     private final ITimeslotDAO timeslotDao;
 
+    private final MailService mailService;
+    private final ILocationDao locationDao;
+
     @Autowired
-    public LocationReservationController(ILocationReservationDao locationReservationDao, ITimeslotDAO timeslotDao) {
+    public LocationReservationController(ILocationReservationDao locationReservationDao, ITimeslotDAO timeslotDao, MailService ms
+                                                ,ILocationDao locDao) {
         this.locationReservationDao = locationReservationDao;
         this.timeslotDao = timeslotDao;
+        this.mailService = ms;
+        this.locationDao = locDao;
     }
 
     @GetMapping("/user")
-    @PreAuthorize("(hasAuthority('USER') and #id == authentication.principal.augentID) or hasAuthority('ADMIN')")
+    @PreAuthorize("(hasAuthority('USER') and #id == authentication.principal.userId) or hasAuthority('ADMIN')")
     // TODO: if only 'HAS_AUTHORITIES', then only allowed to retrieve the reservations for a location within one of the user's authorities
     // Not sure why you'd be allowed to get a user's reservations if you own a location.
     // TODO: We suddenly use a request parameter here. Probably better to streamline it with everything else and put it in the url.
     public List<LocationReservation> getLocationReservationsByUserId(@RequestParam String id) {
-        try {
-            return locationReservationDao.getAllLocationReservationsOfUser(id);
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        return locationReservationDao.getAllLocationReservationsOfUser(id);
     }
 
     @PostMapping
     @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public LocationReservation createLocationReservation(@AuthenticationPrincipal User user, @Valid @RequestBody Timeslot timeslot) {
         try {
-            LocationReservation reservation = new LocationReservation(user, LocalDateTime.now(), timeslot, null);
-            if(LocalDateTime.now().isBefore(timeslot.getReservableFrom())) {
+            LocationReservation reservation = new LocationReservation(user, timeslot, null);
+            if (LocalDateTime.now().isBefore(reservation.getTimeslot().getReservableFrom())) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "This calendarperiod can't yet be reserved");
             }
-            if(!locationReservationDao.addLocationReservationIfStillRoomAtomically(reservation)) {
+            if (!locationReservationDao.addLocationReservationIfStillRoomAtomically(reservation)) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "There are no more spots left for this location.");
             }
-            return locationReservationDao.getLocationReservation(user.getAugentID(), timeslot);
+            return locationReservationDao.getLocationReservation(user.getUserId(), timeslot);
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
@@ -83,46 +86,36 @@ public class LocationReservationController extends AuthorizedLocationController 
     public List<LocationReservation> getLocationReservationsByTimeslot(
             @PathVariable("seqnr") int seqnr
     ) {
-        try {
-            Timeslot timeslot = timeslotDao.getTimeslot(seqnr);
-            return locationReservationDao.getAllLocationReservationsOfTimeslot(timeslot);
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        Timeslot timeslot = timeslotDao.getTimeslot(seqnr);
+        return locationReservationDao.getAllLocationReservationsOfTimeslot(timeslot);
     }
 
     @GetMapping("/count/{locationId}")
     @PreAuthorize("permitAll()")
     public Map<String, Integer> getReservationCount(@PathVariable("locationId") int locationId) {
-        try {
-            return Collections.singletonMap("amount", locationReservationDao.amountOfReservationsRightNow(locationId));
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        return Collections.singletonMap("amount", locationReservationDao.amountOfReservationsRightNow(locationId));
     }
 
     @DeleteMapping
     @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public void deleteLocationReservation(@RequestBody @Valid LocationReservation locationReservation) {
+    public void deleteLocationReservation(@AuthenticationPrincipal User user, @RequestBody @Valid LocationReservation locationReservation) {
 
-        try {
-            isAuthorized(
-                    (lr, user) -> hasAuthority(locationReservation.getTimeslot().getLocationId()) || lr.getUser().getAugentID().equals(user.getAugentID()),
-                    locationReservation
-            );
+        isAuthorized(
+                (lr, u) -> hasAuthority(locationReservation.getTimeslot().getLocationId()) || lr.getUser().getUserId().equals(u.getUserId()),
+                locationReservation
+        );
 
-            if(!locationReservationDao.deleteLocationReservation(locationReservation.getUser().getAugentID(),
-                    locationReservation.getTimeslot())) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "No such reservation.");
+        locationReservationDao.deleteLocationReservation(locationReservation.getUser().getUserId(),
+                locationReservation.getTimeslot());
+        logger.info(String.format("LocationReservation for user %s at time %s deleted", locationReservation.getUser(), locationReservation.getTimeslot().toString()));
+
+        // Send email to student if student is not the user who requested the deletion.
+        if (!locationReservation.getUser().getUserId().equals(user.getUserId())) {
+            try {
+                mailService.sendReservationSlotDeletedMessage(locationReservation.getUser().getMail(), locationReservation.getTimeslot());
+            } catch (MessagingException e) {
+                logger.error(String.format("Could not send mail to student %s about deleted reservation slot %s", user.getUsername(), locationReservation.getTimeslot().toString()));
             }
-            logger.info(String.format("LocationReservation for user %s at time %s deleted", locationReservation.getUser(), locationReservation.getTimeslot().toString()));
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
 
@@ -133,15 +126,20 @@ public class LocationReservationController extends AuthorizedLocationController 
             @PathVariable("userid") String userid,
             @RequestBody LocationReservation.AttendedPostBody body
     ) {
-        try {
-            Timeslot slot = timeslotDao.getTimeslot( seqnr);
-            isVolunteer(slot.getLocationId());
-            if (!locationReservationDao.setReservationAttendance(userid, slot, body.getAttended()))
-                throw new NoSuchReservationException("No such reservation");
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        Timeslot slot = timeslotDao.getTimeslot( seqnr);
+        isVolunteer(locationDao.getLocationById(slot.getLocationId()));
+        if (!locationReservationDao.setReservationAttendance(userid, slot, body.getAttended()))
+            throw new NoSuchDatabaseObjectException("No such reservation");
     }
+
+    @PutMapping("/not-scanned")
+    @PreAuthorize("hasAuthority('HAS_VOLUNTEERS') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    public void setAllNotScannedStudentsToUnattendedForTimeslot(@RequestBody Timeslot timeslot) {
+        // check if user is allowed by role
+        isVolunteer(locationDao.getLocationById(timeslot.getLocationId()));
+
+        logger.info(String.format("Setting all students who were not scanned to unattended for timeslot %s", timeslot));
+        locationReservationDao.setNotScannedStudentsToUnattended(timeslot);
+    }
+
 }

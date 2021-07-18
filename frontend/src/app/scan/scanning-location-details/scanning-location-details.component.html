@@ -27,7 +27,7 @@
               User: {{reservation.user.firstName}} {{reservation.user.lastName}}
             </p>
             <p>
-              AugentID: {{reservation.user.augentID}}
+              AugentID: {{reservation.user.userId}}
             </p>
             <div fxLayout="row">
               <button class="btn btn-default" (click)="confirm()">Confirm</button>
@@ -39,12 +39,15 @@
       </div>
 
       <br>
+      <div class="alert alert-warning">{{"scan.warn-unattended" | translate}}</div>
+
       <div class="alert alert-info">{{"scan.handheld-hint" | translate}}</div>
+
       <app-location-reservations
         [currentTimeSlot]="location.currentTimeslot"
         [locationReservations]="lr"
         [lastScanned]="lastScanned"
-        [hideDeleteIcon]="true"
+        [isManagement]="false"
       >
       </app-location-reservations>
     </div>

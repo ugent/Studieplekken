@@ -38,13 +38,13 @@ export class UserAuthoritiesManagementComponent implements OnInit {
   ngOnInit(): void {
     this.userObs.subscribe((next) => {
       // make sure that a request is only sent if the user is valid
-      if (next.augentID !== '') {
-        this.userId = next.augentID;
+      if (next.userId !== '') {
+        this.userId = next.userId;
         this.userFirstName = next.firstName;
         this.userLastName = next.lastName;
 
         this.authoritiesService
-          .getAuthoritiesOfUser(next.augentID)
+          .getAuthoritiesOfUser(next.userId)
           .subscribe((next2) => {
             this.authoritiesOfUser = next2;
             this.addableAuthorities = this.calculateAddableAuthorities(

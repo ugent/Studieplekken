@@ -1,6 +1,138 @@
 <div class="container-fluid">
-  <app-profile-location-reservations></app-profile-location-reservations>
+  <!-- Title -->
+  <h3 *ngIf="userObj === undefined; else managementTitle">
+    {{'profile.reservations.locations.title' | translate}}
+  </h3>
 
-  <hr *ngIf="showLockerReservationFunctionality">
-  <app-profile-locker-reservations *ngIf="showLockerReservationFunctionality"></app-profile-locker-reservations>
+  <hr>
+
+  <!-- Table to show the location reservations of the logged in user -->
+  <div class="container-fluid">
+    <div class="alert alert-info" *ngIf="successGettingLocationReservations === null">
+      {{'profile.reservations.locations.loading' | translate}}
+    </div>
+
+    <div class="alert alert-error" *ngIf="successGettingLocationReservations === false">
+      {{'profile.reservations.locations.error' | translate}}
+    </div>
+
+    <div *ngIf="successGettingLocationReservations === true">
+      <div *ngIf="locationReservations.length > 0; else noReservations">
+        <table class="table table-striped" style="width: 100%">
+          <!-- Table header -->
+          <thead>
+          <tr>
+            <th>{{'profile.reservations.locations.table.header.locationName' | translate}}</th>
+            <th>{{'profile.reservations.locations.table.header.reservationDate' | translate}}</th>
+            <th>{{'profile.reservations.locations.table.header.beginHour' | translate}}</th>
+            <th>{{'profile.reservations.locations.table.header.attended' | translate}}</th>
+            <th></th>
+          </tr>
+          </thead>
+
+          <!-- Table body -->
+          <tbody>
+          <tr *ngFor="let pair of locationReservations">
+            <td>{{pair.second.location.name}}</td>
+            <td>{{pair.first.timeslot.timeslotDate.format("DD/MM/YYYY")}}</td>
+            <td>{{getBeginHour(pair.first.timeslot, pair.second)}}</td>
+
+            <!-- If not attended, we put some extra explanation, else we don't. -->
+            <td *ngIf="needTooltip(pair.first, pair.second)" class="dotted_ul"
+                data-toggle="tooltip" data-placement="top"
+                title="{{'profile.reservations.locations.table.attended.notScannedExplanation' | translate}}">
+              {{getCorrectI18NObject(pair.first, pair.second) | translate}}</td>
+
+            <td *ngIf="!needTooltip(pair.first, pair.second)">{{getCorrectI18NObject(pair.first, pair.second) | translate}}</td>
+            <!-- User should not be able to delete past reservations, otherwise the penalty points
+                 could be deleted as well -->
+            <td *ngIf="!isTimeslotInPast(pair.first.timeslot, pair.second) && pair.first.attended !== false; else emptyTableData"
+                class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
+                (click)="prepareToDeleteLocationReservation(pair.first, pair.second, deleteLocationReservationModal)">
+              <span class="glyphicon glyphicon-trash pointerCursor"></span>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>
+
+<ng-template #noReservations>
+  <div *ngIf="userObj === undefined; else noReservationsInManagement" class="alert alert-info">
+    {{'profile.reservations.locations.zeroReservations' | translate}}
+  </div>
+</ng-template>
+
+<ng-template #noReservationsInManagement>
+  <div class="alert alert-info">
+    {{('profile.reservations.locations.zeroReservationsInManagement' | translate)
+    .replace('{name}', userObj.firstName + ' ' + userObj.lastName)}}
+  </div>
+</ng-template>
+
+<!-- Modal view to ask whether the user is sure to delete a lockerReservation -->
+<ng-template #deleteLocationReservationModal>
+  <!-- Header -->
+  <div class="modal-header">
+    <h5 class="modal-title" id="deleteLocationReservationModalLabel">
+      {{'management.reservations.location.deleteModal.title' | translate}}
+    </h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <!-- Body -->
+  <div class="modal-body">
+    <div>
+      <b>{{'management.reservations.location.deleteModal.body' | translate}}</b>
+      <br><br>
+      <ul>
+        <!-- If ProfileReservationsComponent is used in the UserDetailsManagementComponent, you also want the name
+             of the user of which you are deleting the LocationReservation -->
+        <li *ngIf="userObj"><b style="margin-right: 5px"><i>{{('profile.reservations.locations.table.header.user' | translate) + ':   '}}</i></b>{{userObj.firstName + ' ' + userObj.lastName}}</li>
+        <li><b style="margin-right: 5px"><i>{{('profile.reservations.locations.table.header.locationName' | translate) + ':   '}}</i></b>{{calendarPeriodForLocationReservationToDelete.location.name}}</li>
+        <li><b style="margin-right: 5px"><i>{{('profile.reservations.locations.table.header.reservationDate' | translate) + ':   '}}</i></b>{{locationReservationToDelete.timeslot.timeslotDate.format("DD/MM/YYYY")}}</li>
+        <li><b style="margin-right: 5px"><i>{{('profile.reservations.locations.table.header.beginHour' | translate) + ':   '}}</i></b>{{getBeginHour(locationReservationToDelete.timeslot, calendarPeriodForLocationReservationToDelete)}}</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary"
+            (click)="deleteLocationReservation()">
+      {{'management.reservations.location.deleteModal.yesButton' | translate}}
+    </button>
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">
+      {{'management.reservations.location.deleteModal.noButton' | translate}}
+    </button>
+  </div>
+
+  <div class="container-fluid">
+    <div class="alert alert-info" *ngIf="successDeletingLocationReservation === null">
+      {{'general.waitingForServer' | translate}}
+    </div>
+
+    <div class="alert alert-success" *ngIf="successDeletingLocationReservation === true">
+      {{'management.reservations.location.deleteModal.success' | translate}}
+    </div>
+
+    <div class="alert alert-error" *ngIf="successDeletingLocationReservation === false">
+      {{'management.reservations.location.deleteModal.error' | translate}}
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #managementTitle>
+  <h3>{{('management.users.userDetails.reservations.title' | translate)
+    .replace('{name}', userObj.firstName + ' ' + userObj.lastName)}}</h3>
+</ng-template>
+
+<ng-template #emptyTableData>
+  <td>
+    <span></span>
+  </td>
+</ng-template>

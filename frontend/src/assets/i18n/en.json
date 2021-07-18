@@ -86,6 +86,13 @@
     "no": "No",
     "back": "Back",
     "print": "Print",
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday",
     "buttons": {
       "add": "Add",
       "update": "Update",
@@ -94,7 +101,8 @@
       "search": "Search",
       "clear": "Clear",
       "open": "Toon open locaties",
-      "close": "Close"
+      "close": "Close",
+      "print": "Print"
     },
     "roles": {
       "ADMIN": "Admin"
@@ -142,7 +150,7 @@
       "calendar": "Calendar",
       "penalties": "Penalties",
       "admins": "Admins",
-      "volunteers": "Volunteers"
+      "volunteers": "Supervisors"
     },
     "general": {
       "loading": "Loading...",
@@ -176,6 +184,8 @@
           "title": "Reservations for this room",
           "selectSlot": "Select a (reservable) timeslot to display the reservations",
           "searchUser": "Search a student by first name, last name or student ID:",
+          "startScanning": "Finish scanning",
+          "startScanningTooltip": "Set all students that are not scanned to unattended.",
           "loading": "Room reservations are being loaded...",
           "error": "Something went wrong while loading the reservations...",
           "table": {
@@ -509,6 +519,9 @@
           },
           "noPenalties": "The user has made no penalties so far.",
           "error": "Something went wrong while querying the penalties for the user."
+        },
+        "reservations": {
+          "title": "Reservations of {name}"
         }
       }
     },
@@ -584,10 +597,9 @@
         },
         "finishScanningModal": {
           "title": "Finish scanning",
-          "body": "After finishing with scanning, all absent students will automatically gain 50 penalty points.",
-          "body2": "If a student was absent in a previous scan for this timeslot and is now present, the earlier given penalty points will be removed.",
-          "success": "Successfully finished with scanning.",
-          "error": "Something went wrong while finishing with scanning."
+          "message1": "If you finish scanning this study room, all reservations that were not explicitly scanned as attended/absent will be set as absent.",
+          "message2": "This means that all students that were not scanned, lose their spot for this timeslot.",
+          "message3": "If an absent student later this timeslot does show up, and there are still spots free, you can still set the student as attended by scanning him/her."
         },
         "deleteModal": {
           "title": "Sure to delete the room reservation?",
@@ -601,7 +613,7 @@
 
         "scanningErrorModal": {
           "title": "Scanning failed",
-          "message": "Something went wrong while scanning. The attendance/absence was not registered correctly."
+          "message": "Something went wrong while scanning. The attendance/absence was not registered correctly. Are you trying to change attendance from absent to present in a full timeslot? This reservation was removed and the seat is now reserved by someone else."
         }
       },
       "locker": {
@@ -682,9 +694,10 @@
       }
     },
     "volunteers": {
-      "no-volunteers": "There are no volunteers for this location yet.",
+      "no-volunteers": "There are no supervisors for this location yet.",
       "errorOnLoadingManageableLocations": "Could not fetch the locations that you can manage.",
-      "errorOnLoadingVolunteers": "Could not fetch the volunteers for this location."
+      "errorOnLoadingVolunteers": "Could not fetch the supervisors for this location.",
+      "addNewButton": "Add supervisor"
     }
   },
   "profile": {
@@ -759,6 +772,7 @@
         "title": "Overview of your room reservations",
         "table": {
           "header": {
+            "user": "User",
             "locationName": "Room",
             "reservationDate": "Reservation for date",
             "beginHour": "Starting time reservation",
@@ -771,7 +785,8 @@
             "notScannedExplanation": "For this reservation attendance wasn't taken, so you haven't gained any penalty points."
           }
         },
-        "zeroReservations": "You have never made any room reservations so far.",
+        "zeroReservations": "You have never made any reservations so far.",
+        "zeroReservationsInManagement": "{name} has never made any reservations so far.",
         "loading": "Reservations are being loaded...",
         "error": "Something went wrong while retrieving your reservations."
       },
@@ -790,6 +805,16 @@
         "noReservations": "You have never made any locker reservations so far."
       }
     }
+  },
+  "openingHoursOverview": {
+    "title": "Opening hours of all study rooms between monday {mondayDate} and sunday {sundayDate}",
+    "navigationInfo": "With the navigation buttons, you can change the week for which the overview is shown.",
+    "table": {
+      "locationName": "Location"
+    },
+    "noOpeningsFuture": "No  study rooms will be opened between monday {mondayDate} and sunday {sundayDate}.",
+    "noOpeningsPast": "No  study rooms were opened between monday {mondayDate} and sunday {sundayDate}.",
+    "loadingError": "Something went wrong while retrieving the overview of the opening hours of the week you requested for."
   },
   "scan": {
     "aside": {
@@ -820,6 +845,7 @@
     "error": "Something went wrong with scanning this user. Please try again.",
     "mobile-hint": "Scanning works best when the barcode is aligned horizontally.",
     "handheld-hint": "To use the handheld scanner, select the input box below. If scan is succesful, the user will pop to the top of the list.",
-    "maybe":"This user wasn't found. Search in the list below, or try again."
+    "maybe":"This user wasn't found. Search in the list below, or try again.",
+    "warn-unattended": "Marking someone as unattended opens up the seat for reservation."
   }
 }

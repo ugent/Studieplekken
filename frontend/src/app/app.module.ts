@@ -1,9 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, SecurityContext } from '@angular/core';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { RouterModule, Routes } from '@angular/router';
@@ -25,8 +24,6 @@ import { ProfileCalendarComponent } from './profile/profile-calendar/profile-cal
 import { ProfilePenaltiesComponent } from './profile/profile-penalties/profile-penalties.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProfileChangePasswordComponent } from './profile/profile-change-password/profile-change-password.component';
-import { ProfileLocationReservationsComponent } from './profile/profile-reservations/profile-location-reservations/profile-location-reservations.component';
-import { ProfileLockerReservationsComponent } from './profile/profile-reservations/profile-locker-reservations/profile-locker-reservations.component';
 import { LocationsManagementComponent } from './management/locations-management/locations-management.component';
 import { UsersManagementComponent } from './management/users-management/users-management.component';
 import { PenaltyEventsManagementComponent } from './management/penalty-events-management/penalty-events-management.component';
@@ -73,11 +70,13 @@ import { AdminsManagementComponent } from './management/admins-management/admins
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { TimeslotTableComponent } from './management/locations-management/location-details-management/timeslot-table/timeslot-table.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { OpeningHoursOverviewComponent } from './miscellaneous/opening-hours-overview/opening-hours-overview.component';
 import { ScanningLocationsComponent } from './scan/scanning-locations/scanning-locations.component';
 import { ScanningLocationDetailsComponent } from './scan/scanning-location-details/scanning-location-details.component';
 import { ScannerComponent } from './shared/scanner/scanner.component';
 import { VolunteersManagementComponent } from './management/volunteers-management/volunteers-management.component';
 import { VolunteerManagementPanelComponent } from './management/volunteers-management/volunteer-management-panel/volunteer-management-panel.component';
+import { AuthenticationInterceptor } from './services/authentication/authentication.interceptor';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -244,6 +243,12 @@ const routes: Routes = [
   },
 
   {
+    path: 'opening/overview/:year/:weekNr',
+    component: OpeningHoursOverviewComponent,
+    canActivate: [AuthorizationGuardService]
+  },
+
+  {
     path: '',
     redirectTo: '/dashboard',
     pathMatch: 'full',
@@ -267,8 +272,6 @@ const routes: Routes = [
     ProfileCalendarComponent,
     ProfilePenaltiesComponent,
     ProfileChangePasswordComponent,
-    ProfileLocationReservationsComponent,
-    ProfileLockerReservationsComponent,
     LocationsManagementComponent,
     UsersManagementComponent,
     PenaltyEventsManagementComponent,
@@ -297,6 +300,7 @@ const routes: Routes = [
     AdminsManagementComponent,
     TimeslotTableComponent,
     FormatStatusPipe,
+    OpeningHoursOverviewComponent,
     ScanningLocationsComponent,
     ScanningLocationDetailsComponent,
     ScannerComponent,
@@ -341,7 +345,7 @@ const routes: Routes = [
     MatTabsModule,
     MatTooltipModule,
   ],
-  providers: [FormatStatusPipe],
+  providers: [FormatStatusPipe, { provide: HTTP_INTERCEPTORS, useClass: AuthenticationInterceptor, multi: true }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

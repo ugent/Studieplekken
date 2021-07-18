@@ -3,19 +3,12 @@ package blok2.controllers;
 import blok2.daos.ILocationDao;
 import blok2.daos.ITimeslotDAO;
 import blok2.helpers.authorization.AuthorizedLocationController;
-import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @RestController
@@ -37,13 +30,7 @@ public class TimeslotController extends  AuthorizedLocationController {
     @GetMapping("/{locationId}")
     @PreAuthorize("permitAll()")
     public List<Timeslot> getTimeslotsOfLocation(@PathVariable("locationId") int locationId) {
-        try {
-            return timeslotDAO.getTimeslotsOfLocation(locationId);
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        return timeslotDAO.getTimeslotsOfLocation(locationId);
     }
 
     @PutMapping("/{locationId}")
@@ -61,12 +48,6 @@ public class TimeslotController extends  AuthorizedLocationController {
     public void deleteTimeslot(@RequestBody Timeslot timeslot) {
         isAuthorized(timeslot.getLocationId());
 
-        try {
-            timeslotDAO.deleteTimeslot(timeslot);
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
-            logger.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        timeslotDAO.deleteTimeslot(timeslot);
     }
 }

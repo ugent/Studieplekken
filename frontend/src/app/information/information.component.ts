@@ -27,7 +27,7 @@ export class InformationComponent implements OnInit {
           this.showManagement = true;
         } else {
           this.userService
-            .hasUserAuthorities(next.augentID)
+            .hasUserAuthorities(next.userId)
             .subscribe((next2) => {
               this.showManagement = next2;
             });

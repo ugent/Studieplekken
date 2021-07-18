@@ -4,6 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ApplicationTypeFunctionalityService } from './services/functionality/application-type/application-type-functionality.service';
 import { AuthenticationService } from './services/authentication/authentication.service';
 import { UserService } from './services/api/users/user.service';
+import {forkJoin} from "rxjs";
 
 @Component({
   selector: 'app-root',
@@ -74,17 +75,22 @@ export class AppComponent implements OnInit {
 
           this.showManagement = true;
         } else {
-          // todo: use mergeMap (https://www.learnrxjs.io/learn-rxjs/operators/transformation/mergemap)
-          this.userService
-            .hasUserAuthorities(next.augentID)
-            .subscribe((next2) => {
-              this.showManagement = next2;
-            });
-          this.userService
-            .hasUserVolunteered(next.augentID)
-            .subscribe((next2) => {
-              this.showScan = scanFunc && next2;
-            });
+          const obs = {
+            hasAuthorities: this.userService.hasUserAuthorities(next.userId),
+            hasVolunteered: this.userService.hasUserVolunteered(next.userId)
+          };
+
+          forkJoin(obs)
+            .subscribe(
+              ({hasAuthorities, hasVolunteered}) => {
+                if (hasAuthorities) {
+                  this.showManagement = true;
+                }
+                if (hasAuthorities || hasVolunteered) {
+                  this.showScan = scanFunc && true;
+                }
+              }
+            );
         }
       } else {
         this.loggedIn = false;
