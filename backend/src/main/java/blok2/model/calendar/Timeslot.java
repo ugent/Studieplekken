@@ -77,7 +77,8 @@ public class Timeslot implements Cloneable {
                     int seatCount,
                     int locationId) {
         this.timeslotId = new TimeslotId(timeslotSequenceNumber);
-        this.setTimeslotDate(timeslotDate);
+        if(timeslotDate != null)
+            this.setTimeslotDate(timeslotDate);
         this.openingHour = openingHour;
         this.closingHour = closingHour;
         this.reservable = reservable;
@@ -176,10 +177,12 @@ public class Timeslot implements Cloneable {
     }
 
     @JsonProperty
+    @Transient
     public LocalDate timeslotDate() {
         return getWeek().atDay(dayOfWeek);
     }
 
+    @Transient
     public void setTimeslotDate(LocalDate date) {
         this.setWeek(YearWeek.from(date));
         this.dayOfWeek = DayOfWeek.from(date);

@@ -128,8 +128,6 @@ public class LocationReservation {
     @Embeddable
     public static class LocationReservationId implements Serializable {
         public Integer timeslotSequenceNumber;
-        public LocalDate timeslotDate;
-        public Integer calendarId;
         public String userId;
 
         public LocationReservationId() {
@@ -144,8 +142,8 @@ public class LocationReservation {
 
         @Override
         public String toString() {
-            return String.format("[seq = '%d', date = '%s', calendarId = '%d', userId = '%s']",
-                    timeslotSequenceNumber, timeslotDate.format(DateTimeFormatter.ISO_DATE), calendarId, userId);
+            return String.format("[seq = '%d', userId = '%s']",
+                    timeslotSequenceNumber, userId);
         }
 
         @Override
@@ -154,14 +152,12 @@ public class LocationReservation {
             if (o == null || getClass() != o.getClass()) return false;
             LocationReservationId that = (LocationReservationId) o;
             return Objects.equals(timeslotSequenceNumber, that.timeslotSequenceNumber) &&
-                    Objects.equals(timeslotDate, that.timeslotDate) &&
-                    Objects.equals(calendarId, that.calendarId) &&
                     Objects.equals(userId, that.userId);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(timeslotSequenceNumber, timeslotDate, calendarId, userId);
+            return Objects.hash(timeslotSequenceNumber,  userId);
         }
     }
     

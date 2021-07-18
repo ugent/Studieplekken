@@ -38,7 +38,7 @@ public class DBLocationReservationDao {
                 }
 
                 // If this operation succeeds, the reservation can proceed
-                query = "insert into public.location_reservations (user_id, timeslot_sequence_nubmer, attended) " +
+                query = "insert into public.location_reservations (user_id, timeslot_sequence_number, attended) " +
                         "values (?, ?, null);";
 
                 PreparedStatement pstmt = conn.prepareStatement(query);

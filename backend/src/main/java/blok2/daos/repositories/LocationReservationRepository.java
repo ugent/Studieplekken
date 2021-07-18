@@ -4,6 +4,7 @@ import blok2.model.reservations.LocationReservation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -15,8 +16,10 @@ public interface LocationReservationRepository extends JpaRepository<LocationRes
     @Query("select lr from LocationReservation lr where lr.id.timeslotSequenceNumber = ?1")
     List<LocationReservation> findAllByTimeslot(int sequenceNumber);
 
-    @Query("select lr from LocationReservation lr where lr.id.timeslotDate = ?1 and lr.attended = false")
-    List<LocationReservation> findAllUnattendedByDate(LocalDate date);
+    @Query("select lr from LocationReservation lr " +
+            "join Timeslot t on lr.id.timeslotSequenceNumber = t.timeslotId.timeslotSequenceNumber " +
+            "where t.year = ?1 and t.week = ?2 and t.dayOfWeek = ?3 and lr.attended = false")
+    List<LocationReservation> findAllUnattendedByDate(int year, int week, DayOfWeek value);
 
     @Query("select lr from LocationReservation lr where lr.id.timeslotSequenceNumber = ?1 and lr.attended is null")
     List<LocationReservation> findAllUnknownAttendanceByTimeslot(int sequenceNumber);
