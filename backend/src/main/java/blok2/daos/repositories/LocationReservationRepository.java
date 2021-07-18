@@ -36,10 +36,10 @@ public interface LocationReservationRepository extends JpaRepository<LocationRes
     @Query("select lr from LocationReservation lr " +
             "   join Timeslot t on lr.id.timeslotSequenceNumber = t.timeslotId.timeslotSequenceNumber " +
             "where t.locationId = ?1 " +
-            "and t.year > ?1 " +
-            "or (t.year = ?1 and t.week > ?2)" +
-            " or (t.year = ?2 and t.week = ?2 and t.dayOfWeek > ?3)")
-    List<LocationReservation> findAllByLocationIdAndDateAfter(int locationId, int year, int week, int value);
+            "and t.year > ?2 " +
+            "or (t.year = ?2 and t.week > ?3)" +
+            " or (t.year = ?2 and t.week = ?3 and t.dayOfWeek > ?4)")
+    List<LocationReservation> findAllByLocationIdAndDateAfter(int locationId, int year, int week, DayOfWeek value);
 
 
     // TODO fix this method

@@ -148,7 +148,7 @@ public class LocationReservationService implements ILocationReservationDao {
     @Override
     public List<LocationReservation> getAllFutureLocationReservationsOfLocation(int locationId) {
         YearWeek n = YearWeek.now();
-        return locationReservationRepository.findAllByLocationIdAndDateAfter(locationId, n.getYear(), n.getWeek(), LocalDate.now().getDayOfWeek().getValue());
+        return locationReservationRepository.findAllByLocationIdAndDateAfter(locationId, n.getYear(), n.getWeek(), LocalDate.now().getDayOfWeek());
     }
 
 }

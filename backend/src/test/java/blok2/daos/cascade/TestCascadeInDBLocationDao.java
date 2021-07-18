@@ -63,6 +63,9 @@ public class TestCascadeInDBLocationDao extends BaseTest {
     private Penalty testPenalty1;
     private Penalty testPenalty2;
 
+    @Test
+    public void dummy() {}
+
     @Override
     public void populateDatabase() throws SQLException {
         // Setup test objects
