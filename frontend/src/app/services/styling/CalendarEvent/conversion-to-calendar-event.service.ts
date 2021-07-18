@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {LocationReservation} from '../../../shared/model/LocationReservation';
 import {CalendarEvent} from 'angular-calendar';
-import {Timeslot, timeslotEndHour, timeslotEquals, timeslotStartHour} from '../../../shared/model/Timeslot';
+import {Timeslot,  timeslotEquals} from '../../../shared/model/Timeslot';
 import {CalendarPeriod} from '../../../shared/model/CalendarPeriod';
 import * as moment from 'moment';
 import {Moment} from 'moment';
@@ -92,8 +92,8 @@ export class ConversionToCalendarEventService {
     }>[] = [];
 
     for (const timeslot of period.timeslots) {
-      const startHour = timeslotStartHour(period, timeslot);
-      const endHour = timeslotEndHour(period, timeslot);
+      const startHour = timeslot.getStartMoment()
+      const endHour = timeslot.getEndMoment()
 
       const beginDT = this.dateWithTime(
         timeslot.timeslotDate,
@@ -142,8 +142,8 @@ export class ConversionToCalendarEventService {
     }>[] = [];
 
     for (const timeslot of period.timeslots) {
-      const startHour = timeslotStartHour(period, timeslot);
-      const endHour = timeslotEndHour(period, timeslot);
+      const startHour = timeslot.getStartMoment()
+      const endHour = timeslot.getEndMoment()
 
       const beginDT = this.dateWithTime(
         timeslot.timeslotDate,
@@ -219,8 +219,8 @@ export class ConversionToCalendarEventService {
     const currentLR = locationReservations.find((value) =>
       timeslotEquals(value.timeslot, timeslot)
     );
-    const startIsPast = timeslotStartHour(calendarPeriod, timeslot).isBefore(now);
-    const endIsPast = timeslotEndHour(calendarPeriod, timeslot).isBefore(now);
+    const startIsPast = timeslot.getStartMoment().isBefore(now);
+    const endIsPast = timeslot.getEndMoment().isBefore(now);
 
     if (startIsPast && endIsPast) {
       return false;

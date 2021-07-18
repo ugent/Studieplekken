@@ -4,6 +4,8 @@ import {
 } from './Timeslot';
 import * as moment from 'moment';
 import { Moment } from 'moment';
+import { LocationReservation } from './LocationReservation';
+import { CalendarEvent } from 'angular-calendar';
 
 export class CalendarPeriod {
   constructor(
@@ -150,7 +152,6 @@ export function isCalendarPeriodValid(period: CalendarPeriod): boolean {
   // and finally, the opening time must be before the closing time
   return period.openingTime.isBefore(period.closingTime);
 }
-<<<<<<< HEAD
 
 /**
  * Convert calendarPeriods to Calendar Events. This detects correctly whether the period is reservable or not (yet).
@@ -163,161 +164,10 @@ export function mapCalendarPeriodsToCalendarEvents(
   if (periods.length === 0) {
     return [];
   }
-  return periods
-    .map((period) =>
-      period.reservable && !period.areReservationsLocked()
-        ? mapReservableTimeslotsToCalendarEvents(period, reservedTimeslots)
-        : period.reservable && period.areReservationsLocked()
-        ? mapNotYetReservableTimeslotsToCalendarEvents(period, currentLang)
-        : mapNotReservableCalendarPeriodToCalendarEvent(period, currentLang)
-    )
-    .reduce((a, b) => [...a, ...b]);
+  return []
 }
 
 function dateWithTime(date: Moment, time: Moment): Date {
   return new Date(date.format('YYYY-MM-DD') + 'T' + time.format('HH:mm'));
 }
 
-/**
- * Convert a calendar period to calendar events but as a block instead of dividing each day into timeslots.
- */
-function mapNotReservableCalendarPeriodToCalendarEvent(
-  period: CalendarPeriod,
-  currentLang: string
-): CalendarEvent<{ calendarPeriod: CalendarPeriod; timeslot?: Timeslot }>[] {
-  const calendarEvents: CalendarEvent<{
-    calendarPeriod: CalendarPeriod;
-  }>[] = [];
-
-  const dateWithOpeningTime = dateWithTime(period.startsAt, period.openingTime);
-  const dateWithClosingTime = dateWithTime(period.startsAt, period.closingTime);
-  const lastDayWithOpeningTime = dateWithTime(
-    period.endsAt,
-    period.openingTime
-  );
-
-  let title: string;
-  if (currentLang === 'nl') {
-    title = calendarEventTitleTemplate.notReservableNL;
-  } else {
-    title = calendarEventTitleTemplate.notReservableEN;
-  }
-
-  while (dateWithOpeningTime <= lastDayWithOpeningTime) {
-    calendarEvents.push({
-      title,
-      start: new Date(dateWithOpeningTime),
-      end: new Date(dateWithClosingTime),
-      meta: { calendarPeriod: period },
-      color: { primary: 'black', secondary: '#BEBEBE' },
-      cssClass: 'calendar-event-NR',
-    });
-
-    dateWithOpeningTime.setDate(dateWithOpeningTime.getDate() + 1);
-    dateWithClosingTime.setDate(dateWithClosingTime.getDate() + 1);
-  }
-
-  return calendarEvents;
-}
-
-/**
- * Convert a CalendarPeriod which is not yet reservable (reservableFrom is in the future), to CalendarEvents.
- * Every timeslot of the CalendarPeriod will be represented by a CalendarEvent but will be greyed out
- * and have a title that notifies the user when the timeslot will be reservable.
- */
-function mapNotYetReservableTimeslotsToCalendarEvents(
-  period: CalendarPeriod,
-  currentLang: string
-): CalendarEvent<{ calendarPeriod: CalendarPeriod; timeslot: Timeslot }>[] {
-  const calendarEvents: CalendarEvent<{
-    calendarPeriod: CalendarPeriod;
-    timeslot: Timeslot;
-  }>[] = [];
-
-  for (const timeslot of period.timeslots) {
-    const beginDT = dateWithTime(
-      timeslot.timeslotDate,
-      timeslot.getStartMoment()
-    );
-    const endDT = dateWithTime(
-      timeslot.timeslotDate,
-      timeslot.getEndMoment()
-    );
-
-    let title: string;
-    if (currentLang === 'nl') {
-      title = calendarEventTitleTemplate.reservableFromNL.replace(
-        '{datetime}',
-        period.reservableFrom.format('DD/MM/YYYY HH:mm')
-      );
-    } else {
-      title = calendarEventTitleTemplate.reservableFromEN.replace(
-        '{datetime}',
-        period.reservableFrom.format('DD/MM/YYYY HH:mm')
-      );
-    }
-
-    calendarEvents.push({
-      title,
-      start: beginDT,
-      end: endDT,
-      meta: { calendarPeriod: period, timeslot },
-      color: { primary: 'black', secondary: '#BEBEBE' },
-      cssClass: 'calendar-event-NR',
-    });
-  }
-
-  return calendarEvents;
-}
-
-/**
- * For each Timeslot that is attached to a CalendarPeriod provided in 'periods',
- * this method will create a CalendarEvent
- *
- * The starting and ending time for all CalendarEvents created from a timeslot, will
- * be the beginning and ending of the timeslot, calculated from the sequence number and the
- * timeslotdate.
- */
-function mapReservableTimeslotsToCalendarEvents(
-  period: CalendarPeriod,
-  reservedTimeslots: LocationReservation[] = []
-): CalendarEvent<{ calendarPeriod: CalendarPeriod; timeslot: Timeslot }>[] {
-  const calendarEvents: CalendarEvent<{
-    calendarPeriod: CalendarPeriod;
-    timeslot: Timeslot;
-  }>[] = [];
-
-  for (const timeslot of period.timeslots) {
-    const beginDT = dateWithTime(
-      timeslot.timeslotDate,
-      timeslot.getStartMoment()
-    );
-    const endDT = dateWithTime(
-      timeslot.timeslotDate,
-      timeslot.getEndMoment()
-    );
-
-    calendarEvents.push({
-      title: `${timeslot.amountOfReservations} / ${timeslot.seatCount}`,
-      start: beginDT,
-      end: endDT,
-      meta: { calendarPeriod: period, timeslot },
-      color: includesTimeslot(
-        reservedTimeslots.map((s) => s.timeslot),
-        timeslot
-      )
-        ? { primary: '#00004d', secondary: '#133E7D' }
-        : null,
-      cssClass: includesTimeslot(
-        reservedTimeslots.map((s) => s.timeslot),
-        timeslot
-      )
-        ? 'calendar-event-reserved'
-        : '',
-    });
-  }
-
-  return calendarEvents;
-}
-=======
->>>>>>> master

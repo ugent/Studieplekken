@@ -2,7 +2,6 @@ import { Time } from '@angular/common';
 import { CalendarEvent } from 'angular-calendar';
 import * as moment from 'moment';
 import { Moment } from 'moment';
-import { calendarEventTitleTemplate } from 'src/app/app.constants';
 import { CalendarPeriod } from './CalendarPeriod';
 import { LocationReservation } from './LocationReservation';
 
@@ -110,7 +109,7 @@ export const timeslotToCalendarEvent = (timeslot: Timeslot, currentLang: string,
 const nonReservableToCalendarEvent: (timeslot: Timeslot, currentLang: string) => CalendarEvent<{ timeslot: Timeslot }> =
   (timeslot, currentLang) =>
   ({
-    title: currentLang == "nl" ? calendarEventTitleTemplate.notReservableNL : calendarEventTitleTemplate.notReservableEN,
+    title: currentLang == "nl" ? "Geen reservatie nodig" : "No reservation needed",
     start: timeslot.getStartMoment().toDate(),
     end: timeslot.getEndMoment().toDate(),
     meta: { timeslot },
@@ -121,7 +120,7 @@ const nonReservableToCalendarEvent: (timeslot: Timeslot, currentLang: string) =>
 const notYetReservableTimeslotToCalendarEvent: (timeslot: Timeslot, currentLang: string) => CalendarEvent<{ timeslot: Timeslot }> =
   (timeslot, currentLang) =>
   ({
-    title: currentLang == "nl" ? calendarEventTitleTemplate.notReservableNL : calendarEventTitleTemplate.notReservableEN,
+    title: currentLang == "nl" ? "Nog niet reserveerbaar" : "Not yet reservable",
     start: timeslot.getStartMoment().toDate(),
     end: timeslot.getEndMoment().toDate(),
     meta: { timeslot },

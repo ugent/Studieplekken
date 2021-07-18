@@ -18,11 +18,7 @@ import { LocationReservationsService } from 'src/app/services/api/location-reser
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
 import {
-<<<<<<< HEAD
-  CalendarPeriod,
-=======
   CalendarPeriod
->>>>>>> master
 } from '../../shared/model/CalendarPeriod';
 import {
   defaultLocationImage,
@@ -37,13 +33,10 @@ import {
   ApplicationTypeFunctionalityService
 } from 'src/app/services/functionality/application-type/application-type-functionality.service';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-<<<<<<< HEAD
 import { map } from 'rxjs/internal/operators/map';
-=======
 import {
   ConversionToCalendarEventService
 } from '../../services/styling/CalendarEvent/conversion-to-calendar-event.service';
->>>>>>> master
 
 @Component({
   selector: 'app-location-details',
@@ -89,13 +82,8 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
   newReservations: LocationReservation[];
   removedReservations: LocationReservation[];
 
-<<<<<<< HEAD
   private timeouts: number[] = [];
-  locationReservations: Observable<LocationReservation[]>;
-=======
-  calendarMap: Map<number, CalendarPeriod> = new Map<number, CalendarPeriod>();
-  locationReservations: LocationReservation[] = [];
->>>>>>> master
+  locationReservations: LocationReservation[];
   showAdmin: boolean;
   showLockersManagement: boolean;
   capacity: number;
@@ -113,15 +101,10 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
     private authenticationService: AuthenticationService,
     private locationReservationService: LocationReservationsService,
     private modalService: BsModalService,
-<<<<<<< HEAD
-    private functionalityService: ApplicationTypeFunctionalityService
-  ) { }
-=======
     private functionalityService: ApplicationTypeFunctionalityService,
     private conversionService: ConversionToCalendarEventService,
     private router: Router
   ) {}
->>>>>>> master
 
   ngOnInit(): void {
     this.locationId = Number(this.route.snapshot.paramMap.get('locationId'));
@@ -176,7 +159,6 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
       : 'closed';
   }
 
-<<<<<<< HEAD
   timeslotPicked(event: Event): void {
     if (!event['timeslot']) {
       // the calendar period is not reservable
@@ -186,39 +168,14 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
 
     if (!this.loggedIn()) {
       // When not logged in, calendar periods are unclickable
-=======
-  timeslotPicked(event: {
-    timeslot: Timeslot;
-    calendarPeriod: CalendarPeriod;
-  }): void {
-    if (
-      !event.timeslot || // the calendar period is not reservable
-      !this.loggedIn() || // when not logged in, calendar periods are unclickable
-      !this.conversionService.clickableBasedOnTime(
-        event,
-        this.locationReservations
-      )
-    ) {
->>>>>>> master
       return;
     }
 
     // If the selected timeslot is not yet reservable, don't do anything
-    const calendarPeriod: CalendarPeriod = event.calendarPeriod;
-    if (moment().isBefore(calendarPeriod.reservableFrom)) {
+    if (moment().isBefore(currentTimeslot.reservableFrom)) {
       return;
     }
 
-<<<<<<< HEAD
-=======
-    this.isModified = true;
-    this.currentTimeslot = event.timeslot;
-
-    const reservation: LocationReservation = {
-      user: this.authenticationService.userValue(),
-      timeslot: this.currentTimeslot,
-    };
->>>>>>> master
     const timeslotIsSelected = this.selectedSubject.value.some((r) =>
       timeslotEquals(r.timeslot, reservation.timeslot)
     );
@@ -287,10 +244,6 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
       this.selectedSubject,
     ]).subscribe(([timeslots, reservations, proposedReservations]) => {
       this.originalList = [...reservations];
-<<<<<<< HEAD
-      //this.selectedSubject.next(reservations);
-
-      // don't add timeouts more than once.
       this.timeouts.forEach(t => clearTimeout(t))
 
       this.timeouts = timeslots
@@ -306,45 +259,6 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
     this.events = timeslots.map(t => timeslotToCalendarEvent(
       t, this.currentLang, [...proposedReservations]
     ))
-=======
-      this.selectedSubject.next(reservations);
-
-      periods.forEach((element) => {
-        this.calendarMap.set(element.id, element);
-
-        // To avoid that users all refresh the page together when the calendar
-        // period is open for reservation, a timeout is set that refreshes the
-        // timeslots in the calendar. This makes them clickable without the
-        // need for refreshing the page which saves a lot of requests to the server.
-        // But, to avoid that a lot of timers are initialized, only those calendar
-        // periods that are reservable within one day are actually initialized.
-        // Another pitfall is that if the duration is too big for an uint32, the
-        // timer is triggered immediately: https://catonmat.net/settimeout-setinterval.
-        const duration = element.reservableFrom.valueOf() - moment().valueOf();
-        const oneDay = 24 * 3600 * 1000;
-        if (duration > 0 && duration < oneDay) {
-          setTimeout(() => {
-            this.events = this.conversionService.mapCalendarPeriodsToCalendarEvents(
-              [...this.calendarMap.values()],
-              this.currentLang,
-              [...this.selectedSubject.value]
-            );
-          }, duration);
-        }
-      });
-
-      this.subscription = this.selectedSubject
-        .asObservable()
-        .subscribe(
-          (proposedReservations) =>
-            (this.events = this.conversionService.mapCalendarPeriodsToCalendarEvents(
-              periods,
-              this.currentLang,
-              [...proposedReservations]
-            ))
-        );
-    });
->>>>>>> master
   }
 
   updateReservationIsPossible(): boolean {

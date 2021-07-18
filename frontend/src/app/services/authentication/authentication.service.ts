@@ -192,17 +192,9 @@ export class AuthenticationService {
     );
   }
 
-<<<<<<< HEAD
   getLocationReservationsAndCalendarPeriods(): Observable<LocationReservation[]> {
     return this.locationReservationService.getLocationReservationsOfUser(
-      this.userSubject.value.augentID
-=======
-  getLocationReservationsAndCalendarPeriods(): Observable<
-    Pair<LocationReservation, CalendarPeriod>[]
-  > {
-    return this.locationReservationService.getLocationReservationsWithCalendarPeriodsOfUser(
       this.userSubject.value.userId
->>>>>>> master
     );
   }
 

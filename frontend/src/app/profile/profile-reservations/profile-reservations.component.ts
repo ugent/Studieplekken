@@ -5,7 +5,7 @@ import {BsModalService} from 'ngx-bootstrap/modal';
 import {Pair} from '../../shared/model/helpers/Pair';
 import {LocationReservation} from '../../shared/model/LocationReservation';
 import {CalendarPeriod} from '../../shared/model/CalendarPeriod';
-import {Timeslot, timeslotEndHour, timeslotStartHour} from '../../shared/model/Timeslot';
+import {Timeslot} from '../../shared/model/Timeslot';
 import * as moment from 'moment';
 import {User} from '../../shared/model/User';
 import {Observable} from 'rxjs';
@@ -18,7 +18,7 @@ import {Observable} from 'rxjs';
 export class ProfileReservationsComponent implements OnInit {
   @Input() userObj?: User;
 
-  locationReservations: Pair<LocationReservation, CalendarPeriod>[] = [];
+  locationReservations: LocationReservation[] = [];
 
   locationReservationToDelete: LocationReservation = undefined;
   calendarPeriodForLocationReservationToDelete: CalendarPeriod = undefined;
@@ -94,7 +94,7 @@ export class ProfileReservationsComponent implements OnInit {
   getBeginHour(timeslot: Timeslot, calendarPeriod: CalendarPeriod): string {
     const openingTime = calendarPeriod.openingTime
       .clone()
-      .add(timeslot.timeslotSeqnr * calendarPeriod.timeslotLength, 'minutes');
+      .add(timeslot.timeslotSequenceNumber * calendarPeriod.timeslotLength, 'minutes');
     return openingTime.format('HH:mm');
   }
 
@@ -112,7 +112,7 @@ export class ProfileReservationsComponent implements OnInit {
     reservation: LocationReservation,
     calendarPeriod: CalendarPeriod
   ): string {
-    if (timeslotStartHour(calendarPeriod, reservation.timeslot).isBefore(moment())) {
+    if (reservation.timeslot.getStartMoment().isBefore(moment())) {
       if (reservation.attended === null) {
         return 'profile.reservations.locations.table.attended.notScanned';
       } else {
@@ -128,7 +128,7 @@ export class ProfileReservationsComponent implements OnInit {
     timeslot: Timeslot,
     calendarPeriod: CalendarPeriod
   ): boolean {
-    return timeslotEndHour(calendarPeriod, timeslot).isBefore(moment());
+    return timeslot.getEndMoment().isBefore(moment());
   }
 
   formatDate(date: unknown): string {
@@ -140,13 +140,13 @@ export class ProfileReservationsComponent implements OnInit {
   }
 
   locationReservationsAndCalendarPeriodsObservable(
-  ): Observable<Pair<LocationReservation, CalendarPeriod>[]> {
+  ): Observable<LocationReservation[]> {
     if (this.userObj === undefined) {
       return this.authenticationService
-        .getLocationReservationsAndCalendarPeriods();
+        .getLocationReservations()
     } else {
       return this.locationReservationService
-        .getLocationReservationsWithCalendarPeriodsOfUser(this.userObj.userId);
+        .getLocationReservationsOfUser(this.userObj.userId);
     }
   }
 
