@@ -87,7 +87,5 @@ saml:
   server-name: localhost:8080
   entity-base-url: https://localhost:8080/api
   idps:
-    okta: http://www.okta.com/exk15hzmbtaSjzq1E5d7
-    ssoCircle: https://idp.ssocircle.com
     hoGent: https://idp.hogent.be/idp
     arteveldeHS: https://sts.windows.net/b6e080ea-adb9-4c79-9303-6dcf826fb854/

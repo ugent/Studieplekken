@@ -113,34 +113,6 @@ public class SAMLConfiguration {
     }
 
     @Bean
-    @Qualifier("okta")
-    public ExtendedMetadataDelegate oktaExtendedMetadataProvider() {
-        InputStream metadata = null;
-        try {
-            metadata = new ClassPathResource("saml/metadata/sso-okta.xml").getInputStream();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        InputStreamMetadataProvider provider = new InputStreamMetadataProvider(metadata);
-        provider.setParserPool(parserPool());
-        return new ExtendedMetadataDelegate(provider, extendedMetadata());
-    }
-
-    @Bean
-    @Qualifier("ssoCircle")
-    public ExtendedMetadataDelegate ssoCircleExtendedMetadataProvider() {
-        InputStream metadata = null;
-        try {
-            metadata = new ClassPathResource("saml/metadata/sso-ssocircle.xml").getInputStream();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        InputStreamMetadataProvider provider = new InputStreamMetadataProvider(metadata);
-        provider.setParserPool(parserPool());
-        return new ExtendedMetadataDelegate(provider, extendedMetadata());
-    }
-
-    @Bean
     @Qualifier("hoGent")
     public ExtendedMetadataDelegate hoGentExtendedMetadataProvider() {
         InputStream metadata = null;
@@ -172,8 +144,6 @@ public class SAMLConfiguration {
     @Qualifier("metadata")
     public CachingMetadataManager metadata() throws MetadataProviderException {
         List<MetadataProvider> providers = new ArrayList<>();
-        providers.add(oktaExtendedMetadataProvider());
-        providers.add(ssoCircleExtendedMetadataProvider());
         providers.add(hoGentExtendedMetadataProvider());
         providers.add(arteveldeHSExtendedMetadataProvider());
         CachingMetadataManager metadataManager = new CachingMetadataManager(providers);

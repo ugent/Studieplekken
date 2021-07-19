@@ -11,7 +11,6 @@ export class LoginComponent {
   casFlowTriggerUrl = environment.casFlowTriggerUrl;
   hoGentFlowTriggerUrl = environment.hoGentFlowTriggerUrl;
   arteveldeHSFlowTriggerUrl = environment.arteveldeHSFlowTriggerUrl;
-  oktaFlowTriggerUrl = environment.oktaFlowTriggerUrl;
 
   /**
    * When the user clicked on the login button, we set the localStorage's
