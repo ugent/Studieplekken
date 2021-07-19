@@ -20,7 +20,6 @@ import org.springframework.security.saml.metadata.MetadataDisplayFilter;
 import org.springframework.security.saml.metadata.MetadataGenerator;
 import org.springframework.security.saml.metadata.MetadataGeneratorFilter;
 import org.springframework.security.web.*;
-import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
@@ -61,10 +60,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final SAMLLogoutProcessingFilter samlLogoutProcessingFilter;
     private final ExtendedMetadata extendedMetadata;
     private final KeyManager keyManager;
-
-    @Qualifier("saml")
     private final SavedRequestAwareAuthenticationSuccessHandler samlAuthSuccessHandler;
-    @Qualifier("saml")
     private final SimpleUrlAuthenticationFailureHandler samlAuthFailureHandler;
 
 
@@ -132,11 +128,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.csrf()
-                .disable();
-        //.csrfTokenRepository(csrfTokenRepository());
+                .csrfTokenRepository(csrfTokenRepository());
 
         http.authorizeRequests()
-                .regexMatchers("/login/cas", "/login/saml", "/SSO/saml", "/discovery/saml").authenticated()// used to trigger cas flow
+                .regexMatchers("/login/cas", "/login/saml").authenticated() // used to trigger cas or saml flow
                 .anyRequest().permitAll();
 
         http.exceptionHandling()
@@ -146,22 +141,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .defaultAuthenticationEntryPointFor(
                         samlEntryPoint,
                         new AntPathRequestMatcher("/login/saml"));
-        /*http
-                .httpBasic()
-                .authenticationEntryPoint((request, response, authException) -> {
-                    if (request.getRequestURI().endsWith("/saml")) {
-                        samlEntryPoint.commence(request, response, authException);
-                        System.out.println("here 1: " + request.getRequestURI());
-                    } else if (request.getRequestURI().endsWith("/login/cas")){
-                        casAuthenticationEntryPoint.commence(request, response, authException);
-                        System.out.println("here 2: " + request.getRequestURI());
-                    } else {
-                        System.out.println("here 3: " + request.getRequestURI());
-                    }
-                });*/
 
         http
-                .addFilterBefore(metadataGeneratorFilter(), ChannelProcessingFilter.class)
+                // Uncomment following line to enable automatic metadata generation. This is useful in case you want to generate the metadata to pre-configure for a new environment.
+                // .addFilterBefore(metadataGeneratorFilter(), ChannelProcessingFilter.class)
                 .addFilterAfter(samlFilter(), BasicAuthenticationFilter.class)
                 .addFilterBefore(samlFilter(), CsrfFilter.class);
 
@@ -234,6 +217,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 samlLogoutFilter));
         chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/SingleLogout/saml/**"),
                 samlLogoutProcessingFilter));
+
+        // This enables the ability to access and download the metadata from the /api/metadata/saml URL.
         chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/metadata/saml/**"),
                 metadataDisplayFilter));
         return new FilterChainProxy(chains);
@@ -263,6 +248,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return samlDiscovery;
     }
 
+    /**
+     * Used for automatic metadata generation.
+     * This is useful in case you want to generate the metadata to pre-configure for a new environment.
+     */
     public MetadataGenerator metadataGenerator() throws Exception {
         MetadataGenerator metadataGenerator = new MetadataGenerator();
         metadataGenerator.setEntityId(samlAudience);

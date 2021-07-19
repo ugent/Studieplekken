@@ -1,5 +1,6 @@
 package blok2.security.providers;
 
+import blok2.model.users.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.providers.ExpiringUsernameAuthenticationToken;
@@ -19,16 +20,16 @@ public class CustomSAMLAuthenticationProvider extends SAMLAuthenticationProvider
 
     @Override
     public Authentication authenticate(Authentication authentication) {
-        System.out.println("AUTHENTICATING");
         return super.authenticate(authentication);
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getEntitlements(SAMLCredential credential, Object userDetail) {
         if (userDetail instanceof ExpiringUsernameAuthenticationToken) {
-            System.out.println("GET UUUUUU");
-            System.out.println(((ExpiringUsernameAuthenticationToken) userDetail).getTokenExpiration());
             return new ArrayList<>(((ExpiringUsernameAuthenticationToken) userDetail).getAuthorities());
+        } else if (userDetail instanceof User) {
+            User user = (User) userDetail;
+            return user.getAuthorities();
         } else {
             return Collections.emptyList();
         }

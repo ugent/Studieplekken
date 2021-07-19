@@ -280,11 +280,10 @@ public class SAMLConfiguration {
         return failureHandler;
     }
 
-    // denk dat dit niet langer nodig is, eerdere success logout handler kan dit ook afhandelen.
     @Bean
     public SimpleUrlLogoutSuccessHandler successLogoutHandler() {
         SimpleUrlLogoutSuccessHandler successLogoutHandler = new SimpleUrlLogoutSuccessHandler();
-        successLogoutHandler.setDefaultTargetUrl("/welcome");
+        successLogoutHandler.setDefaultTargetUrl(this.successLoginRedirectUrl);
         return successLogoutHandler;
     }
 
@@ -298,6 +297,8 @@ public class SAMLConfiguration {
 
     @Bean
     public SAMLLogoutProcessingFilter samlLogoutProcessingFilter() {
+        // These methods are not actually being used, but are implemented for completeness.
+        // Logout is universally handled by the CustomLogoutSuccessHandler which overwrites the cookies to logout.
         return new SAMLLogoutProcessingFilter(successLogoutHandler(), logoutHandler());
     }
 
@@ -308,6 +309,9 @@ public class SAMLConfiguration {
                 new LogoutHandler[]{logoutHandler()});
     }
 
+    /**
+     * This enables the ability to access and download the metadata from the /api/metadata/saml URL.
+     */
     @Bean
     public MetadataDisplayFilter metadataDisplayFilter() {
         return new MetadataDisplayFilter();

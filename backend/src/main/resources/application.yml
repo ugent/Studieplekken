@@ -83,6 +83,7 @@ saml:
     alias: blokat
   idp: http://www.okta.com/exk15hzmbtaSjzq1E5d7
   sp: https://localhost:8080/api/metadata/saml
+  sp-metadata: classpath:/saml/metadata/spring_saml_metadata.xml
   server-name: localhost:8080
   entity-base-url: https://localhost:8080/api
   idps:

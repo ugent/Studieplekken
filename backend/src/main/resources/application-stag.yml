@@ -40,5 +40,6 @@ custom:
 # SAML
 saml:
   sp: https://studieplekken-dev.ugent.be/api/metadata/saml
+  sp-metadata: classpath:/saml/metadata/studieplekken_dev_saml_metadata.xml
   server-name: studieplekken-dev.ugent.be
   entity-base-url: https://studieplekken-dev.ugent.be/api
