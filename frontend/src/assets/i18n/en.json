@@ -338,6 +338,7 @@
         "formValidationErrorMessages": {
           "locationName": "Name is required",
           "authorityName": "Required to select an authority",
+          "buildingName": "Required to select a building",
           "address": "Address is required",
           "numberOfSeats": "Value for 'number of seats' is required",
           "numberOfLockers": "Value for 'number of lockers' is required",

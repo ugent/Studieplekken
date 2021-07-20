@@ -338,6 +338,7 @@
         "formValidationErrorMessages": {
           "locationName": "Naam is verplicht",
           "authorityName": "Verplicht om een autoriteit op te geven",
+          "buildingName": "Verplicht om een gebouw op te geven",
           "address": "Adres is verplicht",
           "numberOfSeats": "Een waarde voor 'aantal zitjes' is verplicht",
           "numberOfLockers": "Een waarde voor 'aantal lockers' is verplicht",
@@ -380,9 +381,9 @@
         "error": "Er is iets misgelopen tijdens het aanmaken van het nieuw gebouw."
       },
       "updateBuildingModal": {
-        "title": "Update building",
-        "success": "Successfully updated the building.",
-        "error": "Something went wrong while updating the building."
+        "title": "Gebouw bijwerken",
+        "success": "Het bijwerken van het gebouw is gelukt.",
+        "error": "Er is iets misgelopen tijdens het bijwerken van het gebouw."
       },
       "deleteBuildingModal": {
         "title": "Verwijder het gebouw",
