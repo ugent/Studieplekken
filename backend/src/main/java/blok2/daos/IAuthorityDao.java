@@ -62,9 +62,20 @@ public interface IAuthorityDao {
     List<Authority> getAuthoritiesFromUser(String userId);
 
     /**
+     * get a list of Authorities the user is a member of. Can be empty.
+     * The user should belong to the given institution.
+     */
+    List<Authority> getAuthoritiesFromUserAndInstitution(String userId, String institution);
+
+    /**
      * get a list of Locations that the user can manage
      */
     List<Location> getLocationsInAuthoritiesOfUser(String userId);
+
+    /**
+     * get a list of Locations that the user can manage
+     */
+    List<Location> getLocationsInAuthoritiesOfUserAndInstitution(String userId, String institution);
 
     /**
      * get list of users that are a member of the given authority.

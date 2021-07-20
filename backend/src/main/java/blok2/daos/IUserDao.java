@@ -14,9 +14,19 @@ public interface IUserDao {
     User getUserByEmail(String email);
 
     /**
+     * Gets the user associated with the given email and institution.
+     */
+    User getUserByEmailAndInstitution(String email, String institution);
+
+    /**
      * Gets the user associated with the given id.
      */
     User getUserById(String userId);
+
+    /**
+     * Gets the user associated with the given id and institution.
+     */
+    User getUserByIdAndInstitution(String userId, String institution);
 
     /**
      * Gets the users with the given lastname.
@@ -24,14 +34,29 @@ public interface IUserDao {
     List<User> getUsersByLastName(String lastName);
 
     /**
+     * Gets the users with the given lastname and institution.
+     */
+    List<User> getUsersByLastNameAndInstitution(String lastName, String institution);
+
+    /**
      * Gets the users with the given firstname.
      */
     List<User> getUsersByFirstName(String firstName);
 
     /**
-     * Gets the users with the given first and last name
+     * Gets the users with the given firstname and institution.
+     */
+    List<User> getUsersByFirstNameAndInstitution(String firstName, String institution);
+
+    /**
+     * Gets the users with the given first and last name.
      */
     List<User> getUsersByFirstAndLastName(String firstName, String lastName);
+
+    /**
+     * Gets the users with the given first and last name and institution.
+     */
+    List<User> getUsersByFirstAndLastNameAndInstitution(String firstName, String lastName, String institution);
 
     /**
      * Get a list of admins
@@ -39,9 +64,14 @@ public interface IUserDao {
     List<User> getAdmins();
 
     /**
-     * Try to resolve user from barcode
+     * Try to resolve user from barcode.
      */
     User getUserFromBarcode(String barcode);
+
+    /**
+     * Try to resolve user from barcode and institution.
+     */
+    User getUserFromBarcodeAndInstitution(String barcode, String institution);
 
     // ADDERS
 

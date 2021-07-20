@@ -66,7 +66,7 @@ public class TagsController extends AuthorizedLocationController {
     }
 
     @PutMapping("/location/assign/{locationId}")
-    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    @PreAuthorize("@authorizedInstitutionController.hasAuthorityLocation(authentication.principal, #locationId)")
     public void assignTagsToLocation(@PathVariable("locationId") int locationId,
                                      @RequestBody List<LocationTag> tags) {
         isAuthorized(locationId);

@@ -28,10 +28,24 @@ public class UserService implements IUserDao {
     }
 
     @Override
+    public User getUserByEmailAndInstitution(String email, String institution) {
+        return userRepository.findByMailAndInstitution(email, institution)
+                .orElseThrow(() -> new NoSuchDatabaseObjectException(
+                        String.format("No user found with email '%s' and institution '%s'", email, institution)));
+    }
+
+    @Override
     public User getUserById(String userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchDatabaseObjectException(
                         String.format("No user found with userId '%s'", userId)));
+    }
+
+    @Override
+    public User getUserByIdAndInstitution(String userId, String institution) {
+        return userRepository.findByUserIdAndInstitution(userId, institution)
+                .orElseThrow(() -> new NoSuchDatabaseObjectException(
+                        String.format("No user found with userId '%s' and institution '%s'", userId, institution)));
     }
 
     @Override
@@ -40,13 +54,28 @@ public class UserService implements IUserDao {
     }
 
     @Override
+    public List<User> getUsersByLastNameAndInstitution(String lastName, String institution) {
+        return userRepository.findAllByLastNameAndInstitution(lastName, institution);
+    }
+
+    @Override
     public List<User> getUsersByFirstName(String firstName) {
         return userRepository.findAllByFirstName(firstName);
     }
 
     @Override
+    public List<User> getUsersByFirstNameAndInstitution(String firstName, String institution) {
+        return userRepository.findAllByFirstNameAndInstitution(firstName, institution);
+    }
+
+    @Override
     public List<User> getUsersByFirstAndLastName(String firstName, String lastName) {
         return userRepository.findAllByFirstNameAndLastName(firstName, lastName);
+    }
+
+    @Override
+    public List<User> getUsersByFirstAndLastNameAndInstitution(String firstName, String lastName, String institution) {
+        return userRepository.findAllByFirstNameAndLastNameAndInstitution(firstName, lastName, institution);
     }
 
     @Override
@@ -87,6 +116,16 @@ public class UserService implements IUserDao {
         return optionalUser.orElseThrow(
                 () -> new NoSuchDatabaseObjectException(
                         String.format("No user found with barcode '%s'.", barcode)));
+    }
+
+    @Override
+    public User getUserFromBarcodeAndInstitution(String barcode, String institution) {
+        User user = getUserFromBarcode(barcode);
+        if (!user.getInstitution().equals(institution)) {
+            throw new NoSuchDatabaseObjectException(
+                    String.format("No user found with barcode '%s' and institution '%s'.", barcode, institution));
+        }
+        return user;
     }
 
     @Override

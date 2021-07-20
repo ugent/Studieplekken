@@ -48,10 +48,12 @@ public abstract class BaseIntegrationTest extends BaseTest {
     protected MockMvc mockMvc;
 
     protected Location testLocation;
+    protected Location testLocationHoGent;
     protected Location testLocationUnapproved;
 
     protected Authority authority;
     protected Building testBuilding;
+    protected Building testBuildingHoGent;
 
     protected User admin;
     protected User student;
@@ -60,6 +62,7 @@ public abstract class BaseIntegrationTest extends BaseTest {
     @Autowired
     protected ObjectMapper objectMapper;
     protected User authHolder;
+    protected User authHolderHoGent;
 
     public void populateDatabase() throws SQLException {
         // USERS
@@ -71,12 +74,18 @@ public abstract class BaseIntegrationTest extends BaseTest {
         // LOCATIONS
         authority = TestSharedMethods.insertTestAuthority(authorityDao);
         testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+        testBuildingHoGent = buildingDao.addBuilding(TestSharedMethods.testBuildingHoGent());
 
         testLocation = TestSharedMethods.testLocation(authority.clone(), testBuilding);
         locationDao.addLocation(testLocation);
         locationDao.approveLocation(testLocation, true);
         testLocationUnapproved = TestSharedMethods.testLocation2(authority.clone(), testBuilding);
         locationDao.addLocation(testLocationUnapproved);
+
+        testLocationHoGent = TestSharedMethods.testLocation(authority.clone(), testBuildingHoGent);
+        testLocationHoGent.setName("TestLocation HoGent");
+        locationDao.addLocation(testLocationHoGent);
+        locationDao.approveLocation(testLocationHoGent, true);
 
         // CALENDAR PERIOD
         calendarPeriods = TestSharedMethods.testCalendarPeriods(testLocation);
@@ -86,9 +95,10 @@ public abstract class BaseIntegrationTest extends BaseTest {
         TestSharedMethods.addCalendarPeriods(calendarPeriodDao, cps);
 
         admin = userDao.getUserByEmail("admin@ugent.be");
-        student= userDao.getUserByEmail("student1@ugent.be");
+        student = userDao.getUserByEmail("student1@ugent.be");
         student2 = userDao.getUserByEmail("student2@ugent.be");
         authHolder = userDao.getUserByEmail("authholder@ugent.be");
+        authHolderHoGent = userDao.getUserByEmail("authholderHoGent@hogent.be");
 
         authorityDao.addUserToAuthority(authHolder.getUserId(), authority.getAuthorityId());
         authHolder = userDao.getUserByEmail("authholder@ugent.be");

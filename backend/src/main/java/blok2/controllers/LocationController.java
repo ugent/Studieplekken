@@ -5,6 +5,7 @@ import blok2.helpers.LocationWithApproval;
 import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.helpers.exceptions.AlreadyExistsException;
 import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
+import blok2.helpers.exceptions.NotAuthorizedException;
 import blok2.helpers.orm.LocationNameAndNextReservableFrom;
 import blok2.mail.MailService;
 import blok2.model.reservables.Location;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -85,7 +87,7 @@ public class LocationController extends AuthorizedLocationController {
 
     @PostMapping
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public void addLocation(@RequestBody Location location) {
+    public void addLocation(@AuthenticationPrincipal User user, @RequestBody Location location) {
         isAuthorized((l, $) -> hasAuthority(l.getAuthority()), location);
         try {
             try {
@@ -93,6 +95,11 @@ public class LocationController extends AuthorizedLocationController {
                 throw new AlreadyExistsException("location name already in use");
             } catch (NoSuchDatabaseObjectException ignore) {
                 // good to go
+            }
+
+            // Check if the user is an admin or is in the same institution that he is adding a location to.
+            if (!user.isAdmin() && !user.getInstitution().equals(location.getBuilding().getInstitution())) {
+                throw new NotAuthorizedException("You are not authorized to add a new location for this institution.");
             }
 
             this.locationDao.addLocation(location);
@@ -113,9 +120,15 @@ public class LocationController extends AuthorizedLocationController {
     }
 
     @PutMapping("/{locationId}")
-    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public void updateLocation(@PathVariable("locationId") int locationId, @RequestBody Location location) {
+    @PreAuthorize("@authorizedInstitutionController.hasAuthorityLocation(authentication.principal, #locationId)")
+    public void updateLocation(@AuthenticationPrincipal User user, @PathVariable("locationId") int locationId, @RequestBody Location location) {
         isAuthorized(locationId);
+
+        if (!user.isAdmin()) {
+            if (!location.getBuilding().getInstitution().equals(user.getInstitution())) {
+                throw new NotAuthorizedException("You are not authorized to update a location to an institution other than the one you belong to.");
+            }
+        }
 
         // Get the location that is currently in db
         Location cl = locationDao.getLocationById(locationId);
@@ -138,7 +151,7 @@ public class LocationController extends AuthorizedLocationController {
     //authority user
     //the updated location should be part of an authority the user is part of.
     @DeleteMapping("/{locationId}")
-    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    @PreAuthorize("@authorizedInstitutionController.hasAuthorityLocation(authentication.principal, #locationId)")
     public void deleteLocation(@PathVariable("locationId") int locationId) {
         isAuthorized(locationId);
 
@@ -157,21 +170,21 @@ public class LocationController extends AuthorizedLocationController {
     }
 
     @PostMapping("/{locationId}/volunteers/{userId}")
-    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    @PreAuthorize("@authorizedInstitutionController.hasAuthorityLocation(authentication.principal, #locationId)")
     public void addVolunteer(@PathVariable int locationId, @PathVariable String userId) {
         isAuthorized(locationId);
         volunteerDao.addVolunteer(locationId, userId);
     }
 
     @DeleteMapping("/{locationId}/volunteers/{userId}")
-    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    @PreAuthorize("@authorizedInstitutionController.hasAuthorityLocation(authentication.principal, #locationId)")
     public void deleteVolunteer(@PathVariable int locationId, @PathVariable String userId) {
         isAuthorized(locationId);
         volunteerDao.deleteVolunteer(locationId, userId);
     }
 
     @GetMapping("/{locationId}/volunteers")
-    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    @PreAuthorize("@authorizedInstitutionController.hasAuthorityLocation(authentication.principal, #locationId)")
     public List<User> getVolunteers(@PathVariable int locationId) {
         isAuthorized(locationId);
         return volunteerDao.getVolunteers(locationId);
@@ -187,7 +200,7 @@ public class LocationController extends AuthorizedLocationController {
      * that have been provided, will be set for the location
      */
     @PutMapping("/tags/{locationId}")
-    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    @PreAuthorize("@authorizedInstitutionController.hasAuthorityLocation(authentication.principal, #locationId)")
     public void setupTagsForLocation(@PathVariable("locationId") int locationId,
                                      @RequestBody List<Integer> tagIds) {
         isAuthorized(locationId);
