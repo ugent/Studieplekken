@@ -21,7 +21,7 @@ export class AdminsManagementComponent implements OnInit {
     firstName: new FormControl(''),
     lastName: new FormControl(''),
   });
-  neverSearched: true;
+  neverSearched = true;
   filteredUsers: Observable<User[]>;
 
   errorOnRetrievingAdmins = false; // booleanId = 0
