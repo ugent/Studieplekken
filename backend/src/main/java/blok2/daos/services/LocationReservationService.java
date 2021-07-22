@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -68,6 +70,16 @@ public class LocationReservationService implements ILocationReservationDao {
     // TODO: update this method after timeslot redesign
     public List<Pair<LocationReservation, CalendarPeriod>> getUnattendedLocationReservations(LocalDate date) {
         List<LocationReservation> locationReservations = locationReservationRepository.findAllUnattendedByDate(date);
+        return getLrAndCp(locationReservations);
+    }
+
+    @Override
+    // TODO: update this method after timeslot redesign
+    public List<Pair<LocationReservation, CalendarPeriod>> getUnattendedLocationReservationsWith21PMRestriction(LocalDate date) {
+        LocalDate dayBefore = date.minusDays(1);
+        LocalDateTime yesterday21PM = LocalDateTime.of(dayBefore, LocalTime.of(21, 0)); // dateTime since previous mailing batch.
+        LocalDateTime today21PM = LocalDateTime.of(date, LocalTime.of(21, 0)); // dateTime of this mailing batch.
+        List<LocationReservation> locationReservations = locationReservationRepository.findAllUnattendedByDateAnd21PMRestriction(date, dayBefore, yesterday21PM, today21PM);
         return getLrAndCp(locationReservations);
     }
 

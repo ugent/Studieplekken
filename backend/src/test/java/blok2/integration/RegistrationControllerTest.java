@@ -1,5 +1,7 @@
 package blok2.integration;
 
+import blok2.helpers.Pair;
+import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
 import org.json.JSONObject;
@@ -9,7 +11,11 @@ import org.springframework.security.test.context.support.WithSecurityContextTest
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -205,7 +211,7 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
         Assert.assertEquals(false, list.get(1).getAttended());
 
         // when a user is set to unattended, the spot must be released so that others can make a reservation
-        Assert.assertEquals(timeslot.getAmountOfReservations()-1, timeslotAfterUpdate.getAmountOfReservations());
+        Assert.assertEquals(timeslot.getAmountOfReservations() - 1, timeslotAfterUpdate.getAmountOfReservations());
     }
 
     @Test
@@ -286,5 +292,50 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
         Assert.assertEquals(true, list.get(0).getAttended());
 
     }
-    
+
+    @Test
+    @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
+    public void testGetUnattendedLocationReservations() throws Exception {
+        // Add a calendar period and a reservation for it with the date of yesterday.
+        List<CalendarPeriod> calendarPeriods = new ArrayList<>();
+        CalendarPeriod period = new CalendarPeriod();
+        period.setLocation(testLocation);
+
+        LocalDate date = LocalDate.now();
+        if (LocalTime.now().isAfter(LocalTime.of(21, 0))) {
+            // Running tests after 21PM so we should get unattended reservations for the next day otherwise we would not send any mails in our test.
+            // This is needed because we cannot manipulate LastModifiedDate in our tests.
+            date = date.plusDays(1);
+        }
+
+        period.setStartsAt(date.minusDays(1));
+        period.setEndsAt(date.minusDays(1));
+        period.setOpeningTime(LocalTime.of(9, 0));
+        period.setClosingTime(LocalTime.of(17, 0));
+        period.setReservableFrom(LocalDateTime.of(date.minusDays(1), LocalTime.of(0, 0)));
+        period.setReservable(true);
+        period.setTimeslotLength(30);
+        period.setSeatCount(testLocation.getNumberOfSeats());
+        period.initializeLockedFrom();
+        calendarPeriods.add(period);
+        calendarPeriodDao.addCalendarPeriods(calendarPeriods);
+
+        Timeslot timeslot = calendarPeriodDao.getById(period.getId()).getTimeslots().get(0);
+        locationReservationDao.addLocationReservationIfStillRoomAtomically(new LocationReservation(student2, timeslot, null));
+        // Set the attendance to false now, so it is changed less than 24 hours ago which is when the previous unattendance mails were sent.
+        locationReservationDao.setReservationAttendance(student2.getUserId(), timeslot, false);
+
+        // Attendance for student is true so should not send mail for this reservation.
+        locationReservationDao.addLocationReservationIfStillRoomAtomically(new LocationReservation(student, timeslot, null));
+        locationReservationDao.setReservationAttendance(student.getUserId(), timeslot, true);
+
+        // Attendance for admin is still null so should not send mail for this reservation.
+        locationReservationDao.addLocationReservationIfStillRoomAtomically(new LocationReservation(admin, timeslot, null));
+
+        List<Pair<LocationReservation, CalendarPeriod>> reservations =
+                locationReservationDao.getUnattendedLocationReservationsWith21PMRestriction(date);
+
+        Assert.assertEquals(1, reservations.size());
+    }
+
 }
