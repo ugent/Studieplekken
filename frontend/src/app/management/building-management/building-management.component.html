@@ -90,6 +90,39 @@
           <input class="form-control" id="addressAdd" type="text" formControlName="address" >
         </div>
       </div>
+
+      <!-- Coordinates of building -->
+      <div class="row">
+        <div class="col-lg-11">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="row form-group">
+                <label class="col-lg-5 control-label" for="latitudeAdd">
+                  {{'management.buildings.table.latitude' | translate}}<span
+                  style="color: red; margin-left: 5px;">*</span>
+                </label>
+                <div class="col-lg-7">
+                  <input class="form-control" id="latitudeAdd" type="number" formControlName="latitude">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="row form-group">
+                <label class="col-lg-5 control-label" for="longitudeAdd">
+                  {{'management.buildings.table.longitude' | translate}}<span
+                  style="color: red; margin-left: 5px;">*</span>
+                </label>
+                <div class="col-lg-7">
+                  <input class="form-control" id="longitudeAdd" type="number" formControlName="longitude">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-11">
+          <div #leafletMapElementAdding></div>
+        </div>
+      </div>
     </form>
   </div>
 
@@ -154,6 +187,39 @@
         </label>
         <div class="col-lg-8">
           <input class="form-control" id="addressUpdate" type="text" formControlName="address">
+        </div>
+      </div>
+
+      <!-- Coordinates of building -->
+      <div class="row">
+        <div class="col-lg-11">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="row form-group">
+                <label class="col-lg-5 control-label" for="latitudeUpdate">
+                  {{'management.buildings.table.latitude' | translate}}<span
+                  style="color: red; margin-left: 5px;">*</span>
+                </label>
+                <div class="col-lg-7">
+                  <input class="form-control" id="latitudeUpdate" type="number" formControlName="latitude">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="row form-group">
+                <label class="col-lg-5 control-label" for="longitudeUpdate">
+                  {{'management.buildings.table.longitude' | translate}}<span
+                  style="color: red; margin-left: 5px;">*</span>
+                </label>
+                <div class="col-lg-7">
+                  <input class="form-control" id="longitudeUpdate" type="number" formControlName="longitude">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-11">
+          <div #leafletMapElementUpdating></div>
         </div>
       </div>
     </form>

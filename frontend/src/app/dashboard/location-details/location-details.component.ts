@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, TemplateRef } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef } from '@angular/core';
 import { Location } from '../../shared/model/Location';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
@@ -8,22 +8,12 @@ import { CalendarEvent } from 'angular-calendar';
 import { TranslateService } from '@ngx-translate/core';
 import { LocationTag } from '../../shared/model/LocationTag';
 import { CalendarPeriodsService } from '../../services/api/calendar-periods/calendar-periods.service';
-import {
-  includesTimeslot,
-  Timeslot,
-  timeslotEquals,
-} from 'src/app/shared/model/Timeslot';
+import { includesTimeslot, Timeslot, timeslotEquals, } from 'src/app/shared/model/Timeslot';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
-import {
-  CalendarPeriod
-} from '../../shared/model/CalendarPeriod';
-import {
-  defaultLocationImage,
-  LocationStatus,
-  msToShowFeedback,
-} from '../../app.constants';
+import { CalendarPeriod } from '../../shared/model/CalendarPeriod';
+import { defaultLocationImage, LocationStatus, msToShowFeedback, } from '../../app.constants';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import * as moment from 'moment';
 import { DatePipe } from '@angular/common';
@@ -32,9 +22,24 @@ import {
   ApplicationTypeFunctionalityService
 } from 'src/app/services/functionality/application-type/application-type-functionality.service';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import {
-  ConversionToCalendarEventService
-} from '../../services/styling/CalendarEvent/conversion-to-calendar-event.service';
+import { ConversionToCalendarEventService } from '../../services/styling/CalendarEvent/conversion-to-calendar-event.service';
+import * as Leaf from 'leaflet';
+
+// Leaflet stuff.
+const iconRetinaUrl = './assets/marker-icon-2x.png';
+const iconUrl = './assets/marker-icon.png';
+const shadowUrl = './assets/marker-shadow.png';
+const iconDefault = Leaf.icon({
+  iconRetinaUrl,
+  iconUrl,
+  shadowUrl,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  tooltipAnchor: [16, -28],
+  shadowSize: [41, 41]
+});
+Leaf.Marker.prototype.options.icon = iconDefault;
 
 @Component({
   selector: 'app-location-details',
@@ -42,7 +47,7 @@ import {
   styleUrls: ['./location-details.component.css', '../location.css'],
   providers: [DatePipe],
 })
-export class LocationDetailsComponent implements OnInit, OnDestroy {
+export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
   location: Observable<Location>;
   locationId: number;
   tags: LocationTag[];
@@ -89,6 +94,8 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
 
   locationSub: Subscription;
   calendarSub: Subscription;
+
+  leafletMap: Leaf.Map;
 
   constructor(
     private locationService: LocationService,
@@ -147,9 +154,24 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
     this.showLockersManagement = this.functionalityService.showLockersManagementFunctionality();
   }
 
+  ngAfterViewInit(): void {
+    if (this.leafletMap) {
+      this.leafletMap.off();
+      this.leafletMap.remove();
+    }
+    // when the location is loaded, setup the Leaflet map
+    this.locationSub = this.location.subscribe((next) => {
+      this.setupLeafletMap(next);
+    });
+  }
+
   ngOnDestroy(): void {
     this.locationSub?.unsubscribe();
     this.calendarSub?.unsubscribe();
+    if (this.leafletMap) {
+      this.leafletMap.off();
+      this.leafletMap.remove();
+    }
   }
 
   locationStatusColorClass(): string {
@@ -373,5 +395,25 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
 
   showDescription(description: string): boolean {
     return description !== '';
+  }
+
+  setupLeafletMap(location: Location): void {
+    const originalTile = Leaf.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+      id: 'mapbox/streets-v11',
+      tileSize: 512,
+      zoomOffset: -1,
+      // Token has restriction to only work with https://studieplekken.ugent.be, https://studieplekken-dev.ugent.be and
+      // https://localhost:4200. Token created by Ieben Smessaert (iesmessa).
+      accessToken: 'pk.eyJ1Ijoic21lc3NpZSIsImEiOiJja3JnMzR2ZXEwZG82MnVrd3l5NHFnYTk1In0.jER8bBqoIeiNrKX-HGlrZQ',
+      maxZoom: 25
+    });
+
+    const coordinates = new Leaf.LatLng(location.building.latitude, location.building.longitude);
+    this.leafletMap = new Leaf.Map('leafletMap', {
+      center: coordinates,
+      zoom: 18,
+      layers: [originalTile]
+    });
+    new Leaf.Marker(coordinates).addTo(this.leafletMap);
   }
 }

@@ -368,7 +368,9 @@
       "title": "Beheer van gebouwen voor ruimtes",
       "table": {
         "name": "Naam",
-        "address": "Adres"
+        "address": "Adres",
+        "latitude": "Breedtegraad",
+        "longitude": "Lengtegraad"
       },
       "addNewBuilding": "Nieuw gebouw",
       "addBuildingModal": {

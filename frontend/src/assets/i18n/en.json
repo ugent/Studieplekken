@@ -368,7 +368,9 @@
       "title": "Management of buildings for rooms",
       "table": {
         "name": "Name",
-        "address": "Address"
+        "address": "Address",
+        "latitude": "Latitude",
+        "longitude": "Longitude"
       },
       "addNewBuilding": "New building",
       "addBuildingModal": {

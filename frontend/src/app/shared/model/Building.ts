@@ -2,6 +2,8 @@ export interface Building {
   buildingId: number;
   name: string;
   address: string;
+  latitude: number;
+  longitude: number;
 }
 
 export class BuildingConstructor {
@@ -10,6 +12,8 @@ export class BuildingConstructor {
       buildingId: 0,
       name: '',
       address: '',
+      latitude: 0,
+      longitude: 0,
     };
   }
 
@@ -18,6 +22,8 @@ export class BuildingConstructor {
       buildingId: obj.buildingId,
       name: obj.name,
       address: obj.address,
+      latitude: obj.latitude,
+      longitude: obj.longitude,
     };
   }
 }

@@ -19,6 +19,9 @@
 /* angular-cli file: src/styles.css */
 @import "../node_modules/angular-calendar/css/angular-calendar.css";
 
+// import leaflet styling
+@import "../node_modules/leaflet/dist/leaflet.css";
+
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
