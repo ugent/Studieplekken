@@ -9,6 +9,8 @@ import { userWantsTLogInLocalStorageKey } from '../app.constants';
 })
 export class LoginComponent {
   casFlowTriggerUrl = environment.casFlowTriggerUrl;
+  hoGentFlowTriggerUrl = environment.hoGentFlowTriggerUrl;
+  arteveldeHSFlowTriggerUrl = environment.arteveldeHSFlowTriggerUrl;
 
   /**
    * When the user clicked on the login button, we set the localStorage's

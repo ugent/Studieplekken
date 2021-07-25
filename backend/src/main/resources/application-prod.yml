@@ -36,3 +36,10 @@ redirect:
 custom:
   mailing:
     recipientsOpeningHoursOverview: "alarmbeheer@ugent.be,permanentie@ugent.be,schoonmaak@ugent.be,veiligheid@ugent.be"
+
+# SAML
+saml:
+  sp: https://studieplekken.ugent.be/api/metadata/saml
+  sp-metadata: classpath:/saml/metadata/studieplekken_prod_saml_metadata.xml
+  server-name: studieplekken.ugent.be
+  entity-base-url: https://studieplekken.ugent.be/api

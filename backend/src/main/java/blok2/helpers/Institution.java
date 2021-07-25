@@ -7,5 +7,5 @@ package blok2.helpers;
 public class Institution {
     public static final String UGent = "UGent";
     public static final String HoGent = "HoGent";
-    public static final String ArteveldeHogeschool = "Artevelde Hogeschool";
+    public static final String ArteveldeHogeschool = "Arteveldehogeschool";
 }
