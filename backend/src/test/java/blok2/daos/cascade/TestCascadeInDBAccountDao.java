@@ -75,9 +75,9 @@ public class TestCascadeInDBAccountDao extends BaseTest {
         locationDao.addLocation(testLocation1);
         locationDao.addLocation(testLocation2);
         List<Timeslot> cp1 = TestSharedMethods.testCalendarPeriods(testLocation1);
-        timeslotDAO.addTimeslots(cp1);
+        cp1 = timeslotDAO.addTimeslots(cp1);
         List<Timeslot> cp2 = TestSharedMethods.testCalendarPeriods(testLocation2);
-        timeslotDAO.addTimeslots(cp2);
+        cp2 = timeslotDAO.addTimeslots(cp2);
 
         testLocationReservation1 = new LocationReservation(testUser, cp1.get(0),  null);
         testLocationReservation2 = new LocationReservation(testUser, cp2.get(0),  null);

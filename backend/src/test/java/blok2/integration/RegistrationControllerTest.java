@@ -26,16 +26,18 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
     public void testGetReservationsOfStudentAsAdmin() throws Exception {
         mockMvc.perform(get("/locations/reservations/user?id=" + student.getUserId()).with(csrf()))
                 .andDo(print())
-                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(status().isOk());
     }
 
     @Test
     @WithUserDetails(value = "student1", userDetailsServiceBeanName = "testUserDetails")
     public void testGetReservationsOfStudentAsSelf() throws Exception {
+        int currentAmount = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId()).size();
+
         mockMvc.perform(get("/locations/reservations/user?id=" + student.getUserId()).with(csrf()))
                 .andDo(print())
-                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$.length()").value(currentAmount))
                 .andExpect(status().isOk());
     }
 
@@ -65,12 +67,13 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
     public void testCreateReservationDuplicate() throws Exception {
         Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
 
+        int currentAmount = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId()).size();
         mockMvc.perform(post("/locations/reservations").with(csrf())
                 .content(objectMapper.writeValueAsString(timeslot)).contentType("application/json")).andDo(print())
                 .andExpect(status().isConflict());
 
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
-        Assert.assertEquals(1, list.size());
+        Assert.assertEquals(currentAmount, list.size());
     }
 
     // todo more tests for more specific calendar periods
@@ -82,12 +85,14 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
 
         LocationReservation reservation = new LocationReservation(student, timeslot, false);
 
+        int currentAmount = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId()).size();
+
         mockMvc.perform(delete("/locations/reservations").with(csrf())
                 .content(objectMapper.writeValueAsString(reservation)).contentType("application/json")).andDo(print())
                 .andExpect(status().isOk());
 
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
-        Assert.assertEquals(0, list.size());
+        Assert.assertEquals(currentAmount - 1, list.size());
     }
 
     @Test
@@ -97,12 +102,13 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
 
         LocationReservation reservation = new LocationReservation(student, timeslot, false);
 
+        int currentAmount = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId()).size();
         mockMvc.perform(delete("/locations/reservations").with(csrf())
                 .content(objectMapper.writeValueAsString(reservation)).contentType("application/json")).andDo(print())
                 .andExpect(status().isOk());
 
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
-        Assert.assertEquals(0, list.size());
+        Assert.assertEquals(currentAmount-1, list.size());
 
         // You can manually check in the logs if the mail was sent by looking for
         // Blocked sending mail to 'student1@ugent.be' with template file name 'mail/reservation_slot_deleted' and subject '[Werk- en Studieplekken] Uw gereserveerd tijdslot werd verwijderd' because 'mail' is not an active profile.
@@ -115,12 +121,13 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
 
         LocationReservation reservation = new LocationReservation(student, timeslot, false);
 
+        int currentAmount = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId()).size();
         mockMvc.perform(delete("/locations/reservations").with(csrf())
                 .content(objectMapper.writeValueAsString(reservation)).contentType("application/json")).andDo(print())
                 .andExpect(status().isForbidden());
 
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
-        Assert.assertEquals(1, list.size());
+        Assert.assertEquals(currentAmount, list.size());
     }
 
     @Test
@@ -283,11 +290,13 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
         Timeslot timeslotAfterUpdate = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
         Assert.assertEquals(1, timeslotAfterUpdate.getAmountOfReservations());
 
-        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
-        System.out.println(list);
-        Assert.assertEquals(false, list.get(0).getAttended());
-        list = locationReservationDao.getAllLocationReservationsOfUser(student2.getUserId());
-        Assert.assertEquals(true, list.get(0).getAttended());
+        Timeslot finalTimeslot1 = timeslot;
+        LocationReservation lr = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId())
+                                .stream().filter(l -> l.getTimeslot().getTimeslotSeqnr() == finalTimeslot1.getTimeslotSeqnr()).findFirst().get();
+        System.out.println(lr);
+        Assert.assertEquals(false, lr.getAttended());
+        lr = locationReservationDao.getAllLocationReservationsOfUser(student2.getUserId()).stream().filter(l -> l.getTimeslot().getTimeslotSeqnr() == finalTimeslot1.getTimeslotSeqnr()).findFirst().get();
+        Assert.assertEquals(true, lr.getAttended());
 
     }
     
