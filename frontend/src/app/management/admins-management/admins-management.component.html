@@ -1,4 +1,4 @@
-<div class="container-fluid" *ngIf="filteredUsers | async as users">
+<div class="container-fluid" *ngIf="adminsObs | async as users">
   <!-- Title -->
   <h3>{{'management.users.overview.title' | translate}}</h3>
 
@@ -42,5 +42,99 @@
       </tr>
       </tbody>
     </table>
+
+    <button class='btn btn-default' (click)="showAdd(confirm)">{{'management.users.admins.addNewButton' | translate}}</button>
   </div>
 </div>
+
+<ng-template #confirm>
+  <div class="modal-header">
+    {{'management.users.admins.addNewHeader' | translate}}
+  </div>
+  <div class="modal-body text-center">
+    <!-- Form to filter users by
+      - first name
+      - last name
+-->
+    <div class="padding-default bg-tertiary">
+      <div class="padding-default">
+        <div class="">
+          <form [formGroup]="formGroup" (ngSubmit)="submitSearch(formGroup.value)">
+            <!-- First Name -->
+            <div class="row form-group">
+              <label class="col-lg-3 control-label" for="firstName">
+                {{'management.users.overview.firstName' | translate}}
+              </label>
+              <div class="col-lg-8">
+                <input class="form-control" id="firstName" type="text" formControlName="firstName">
+              </div>
+            </div>
+
+            <!-- Last Name -->
+            <div class="row form-group">
+              <label class="col-lg-3 control-label" for="lastName">
+                {{'management.users.overview.lastName' | translate}}
+              </label>
+              <div class="col-lg-8">
+                <input class="form-control" id="lastName" type="text" formControlName="lastName">
+              </div>
+            </div>
+
+            <!-- Search and Cancel buttons -->
+            <div class="row">
+              <div class="col-md-11">
+
+                <div class="pull-right">
+                  <!-- Search -->
+                  <button type="submit" class="btn btn-default btn-left"
+                          [disabled]="!enableSearchButton(formGroup.value)">
+                    {{'management.users.overview.filterSearchButton' | translate}}
+                  </button>
+
+                  <!-- Clear input -->
+                  <button type="button" class="btn btn-default" (click)="clearFilterInput()"
+                          [disabled]="!enableClearButton(formGroup.value)">
+                    {{'management.users.overview.filterClearButton' | translate}}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <table style="width: 100%" *ngIf="neverSearched != true">
+      <thead>
+      <tr>
+        <th>{{'management.users.searchResult.table.id' | translate}}</th>
+        <th>{{'management.users.searchResult.table.firstName' | translate}}</th>
+        <th>{{'management.users.searchResult.table.lastName' | translate}}</th>
+        <th>{{'management.users.searchResult.table.institution' | translate}}</th>
+        <th>
+          <!-- Details -->
+        </th>
+      </tr>
+      </thead>
+
+      <tbody *ngIf="filteredUsers | async as users">
+      <tr *ngFor="let user of users" class="text-left">
+        <td>{{user.userId}}</td>
+        <td>{{user.firstName}}</td>
+        <td>{{user.lastName}}</td>
+        <td>{{user.institution}}</td>
+        <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
+                        <span (click)="addAdmin(user)" class="glyphicon glyphicon-plus">
+                        </span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="neverSearched == true" class="alert alert-info">
+      {{'management.users.searchResult.neverSearched' | translate}}
+    </div>
+
+  </div>
+</ng-template>

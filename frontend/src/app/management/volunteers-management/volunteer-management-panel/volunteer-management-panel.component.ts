@@ -24,7 +24,7 @@ export class VolunteerManagementPanelComponent implements OnInit {
     firstName: new FormControl(''),
     lastName: new FormControl(''),
   });
-  neverSearched: true;
+  neverSearched = true;
   filteredUsers: Observable<User[]>;
 
   private modalRef: BsModalRef;
