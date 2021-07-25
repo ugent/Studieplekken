@@ -3,6 +3,7 @@ package blok2.security.config;
 import org.jasig.cas.client.validation.Cas20ServiceTicketValidator;
 import org.jasig.cas.client.validation.TicketValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,7 +37,7 @@ public class CASConfiguration {
 
     @Autowired
     public CASConfiguration(AuthenticationUserDetailsService<CasAssertionAuthenticationToken> authenticationUserDetailsService,
-                            AuthenticationSuccessHandler authenticationSuccessHandler) {
+                            @Qualifier("authSuccessHandler") AuthenticationSuccessHandler authenticationSuccessHandler) {
         this.authenticationUserDetailsService = authenticationUserDetailsService;
         this.authenticationSuccessHandler = authenticationSuccessHandler;
     }

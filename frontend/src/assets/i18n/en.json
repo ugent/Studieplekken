@@ -136,7 +136,9 @@
   "login": {
     "appTitle": "Study Rooms UGent",
     "title": "Login",
-    "casLogin": "CAS Login",
+    "casLogin": "UGent Login",
+    "hoGentLogin": "HoGent Login",
+    "arteveldeHSLogin": "Artevelde HS Login",
     "about": "The digital platform for study locations"
   },
   "management": {

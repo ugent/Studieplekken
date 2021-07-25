@@ -30,7 +30,6 @@ public class WhoAmIController {
     @PreAuthorize("permitAll()")
     public User whoAmI() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
         if (principal instanceof User) {
             return (User) principal;
         } else {
