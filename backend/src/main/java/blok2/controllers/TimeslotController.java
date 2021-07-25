@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -33,11 +34,16 @@ public class TimeslotController extends  AuthorizedLocationController {
         return timeslotDAO.getTimeslotsOfLocation(locationId);
     }
 
-    @PutMapping("/{locationId}")
+    @PutMapping()
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public void updateTimeslot(@PathVariable("locationId") int locationId,
-                                      @RequestBody Timeslot timeslot) {
-        isAuthorized(locationId);
+    public void updateTimeslot(@Valid @RequestBody  Timeslot timeslot) {
+        Timeslot original = timeslotDAO.getTimeslot(timeslot.getTimeslotSeqnr());
+        // Validate original location
+        isAuthorized(original.getLocationId());
+        // Validate future location
+        isAuthorized(timeslot.getLocationId());
+
+        // Execute update
         timeslotDAO.updateTimeslot(timeslot);
     }
 

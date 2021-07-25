@@ -20,14 +20,11 @@ import java.util.Objects;
 @Table(name = "timeslots")
 public class Timeslot implements Cloneable {
 
-    @EmbeddedId
-    @AttributeOverrides({
-            @AttributeOverride(
-                    name = "timeslotSequenceNumber",
-                    column = @Column(name = "sequence_number")
-            ),
-    })
-    private final TimeslotId timeslotId;
+    @Id
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @Column(name = "sequence_number")
+    @NotNull
+    private Integer timeslotSequenceNumber;
 
     @Column(name= "opening_hour")
     private LocalTime openingHour;
@@ -57,6 +54,7 @@ public class Timeslot implements Cloneable {
     private LocalDateTime reservableFrom;
 
     @Column(name="location_id")
+    @NotNull
     private Integer locationId;
 
     @Column(name = "reservation_count")
@@ -65,10 +63,10 @@ public class Timeslot implements Cloneable {
 
     // Artefact for framework
     public Timeslot() {
-        this(0, null, null, null, false, null, 0, 0);
+        this(null, null, null, null, false, null, 0, 0);
     }
 
-    public Timeslot(int timeslotSequenceNumber,
+    public Timeslot(Integer timeslotSequenceNumber,
                     LocalDate timeslotDate,
                     LocalTime openingHour,
                     LocalTime closingHour,
@@ -76,7 +74,7 @@ public class Timeslot implements Cloneable {
                     LocalDateTime reservableFrom,
                     int seatCount,
                     int locationId) {
-        this.timeslotId = new TimeslotId(timeslotSequenceNumber);
+        this.timeslotSequenceNumber = timeslotSequenceNumber;
         if(timeslotDate != null)
             this.setTimeslotDate(timeslotDate);
         this.openingHour = openingHour;
@@ -92,7 +90,7 @@ public class Timeslot implements Cloneable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Timeslot timeslot = (Timeslot) o;
-        return timeslotId.equals(timeslot.timeslotId);
+        return timeslotSequenceNumber == (timeslot.timeslotSequenceNumber);
     }
 
     @Override
@@ -121,13 +119,14 @@ public class Timeslot implements Cloneable {
         return openingHour;
     }
 
-    public int getTimeslotSeqnr() {
-        return timeslotId.timeslotSequenceNumber;
+    public Integer getTimeslotSeqnr() {
+        return timeslotSequenceNumber;
     }
 
-    public void setTimeslotSeqnr(int timeslotSeqnr) {
-        timeslotId.timeslotSequenceNumber = timeslotSeqnr;
+    public void setTimeslotSeqnr(Integer i) {
+        timeslotSequenceNumber = i;
     }
+
 
     public void setOpeningHour(LocalTime openingHour) {
         this.openingHour = openingHour;

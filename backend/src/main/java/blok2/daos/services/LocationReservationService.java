@@ -55,7 +55,6 @@ public class LocationReservationService implements ILocationReservationDao {
     }
 
     @Override
-    // TODO: update this method after timeslot redesign
     public List<LocationReservation> getUnattendedLocationReservations(LocalDate date) {
         return locationReservationRepository.findAllUnattendedByDate(YearWeek.from(date).getYear(), YearWeek.from(date).getWeek(), DayOfWeek.from(date));
     }

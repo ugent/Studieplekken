@@ -10,9 +10,9 @@ import java.util.List;
 public interface TimeslotRepository extends JpaRepository<Timeslot, Timeslot.TimeslotId> {
     List<Timeslot> getAllByLocationId(Integer locationId);
 
-    @Query("SELECT t FROM Timeslot t where t.timeslotId.timeslotSequenceNumber = ?1")
+    @Query("SELECT t FROM Timeslot t where t.timeslotSequenceNumber = ?1")
     Timeslot getByTimeslotSeqnr(int sequence_number);
 
-    @Query("delete FROM Timeslot t where t.timeslotId.timeslotSequenceNumber = ?1")
+    @Query("delete FROM Timeslot t where t.timeslotSequenceNumber = ?1")
     void deleteTimeslotByTimeslotSeqnr(int sequence_number);
 }

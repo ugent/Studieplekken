@@ -17,7 +17,7 @@ public interface LocationReservationRepository extends JpaRepository<LocationRes
     List<LocationReservation> findAllByTimeslot(int sequenceNumber);
 
     @Query("select lr from LocationReservation lr " +
-            "join Timeslot t on lr.id.timeslotSequenceNumber = t.timeslotId.timeslotSequenceNumber " +
+            "join Timeslot t on lr.id.timeslotSequenceNumber = t.timeslotSequenceNumber " +
             "where t.year = ?1 and t.week = ?2 and t.dayOfWeek = ?3 and lr.attended = false")
     List<LocationReservation> findAllUnattendedByDate(int year, int week, DayOfWeek value);
 
@@ -28,13 +28,13 @@ public interface LocationReservationRepository extends JpaRepository<LocationRes
     int countReservedSeatsOfTimeslot(int sequenceNumber);
 
     @Query("select lr from LocationReservation lr " +
-            "   join Timeslot t on lr.id.timeslotSequenceNumber = t.timeslotId.timeslotSequenceNumber " +
+            "   join Timeslot t on lr.id.timeslotSequenceNumber = t.timeslotSequenceNumber " +
             "where t.locationId = ?1")
     List<LocationReservation> getLocationReservationsAtLocationAtThisMoment(int locationId);
 
 
     @Query("select lr from LocationReservation lr " +
-            "   join Timeslot t on lr.id.timeslotSequenceNumber = t.timeslotId.timeslotSequenceNumber " +
+            "   join Timeslot t on lr.id.timeslotSequenceNumber = t.timeslotSequenceNumber " +
             "where t.locationId = ?1 " +
             "and t.year > ?2 " +
             "or (t.year = ?2 and t.week > ?3)" +
@@ -42,9 +42,4 @@ public interface LocationReservationRepository extends JpaRepository<LocationRes
     List<LocationReservation> findAllByLocationIdAndDateAfter(int locationId, int year, int week, DayOfWeek value);
 
 
-    // TODO fix this method
-    @Query("select lr from LocationReservation lr " +
-            "   join Timeslot t on lr.id.timeslotSequenceNumber = t.timeslotId.timeslotSequenceNumber " +
-            "where t.locationId = ?1 and t.year = ?1 and t.week = ?2 and t.dayOfWeek = ?3")
-    List<LocationReservation> findAllInWindowOfTime(int startYear, int startWeek, int startDay, int endYear, int endWeek, int endDay);
 }

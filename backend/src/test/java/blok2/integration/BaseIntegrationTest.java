@@ -80,7 +80,7 @@ public abstract class BaseIntegrationTest extends BaseTest {
         // CALENDAR PERIOD
         calendarPeriods = TestSharedMethods.testCalendarPeriods(testLocation);
 
-        timeslotDAO.addTimeslots(calendarPeriods);
+        calendarPeriods = timeslotDAO.addTimeslots(calendarPeriods);
 
         admin = userDao.getUserByEmail("admin@ugent.be");
         student= userDao.getUserByEmail("student1@ugent.be");
