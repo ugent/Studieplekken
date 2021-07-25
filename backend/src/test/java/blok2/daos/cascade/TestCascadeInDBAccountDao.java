@@ -84,12 +84,6 @@ public class TestCascadeInDBAccountDao extends BaseTest {
 
 
 
-        /*
-        Map<Language, String> descriptions = new HashMap<>();
-        descriptions.put(Language.DUTCH, "Dit is een test omschrijving van een penalty event met code 0");
-        descriptions.put(Language.ENGLISH, "This is a test description of a penalty event with code 0");
-        */
-
         // Note: the received amount of points are 10 and 20, not testPenaltyEvent.getCode()
         // because when the penalties are retrieved from the penaltyEventDao, the list will
         // be sorted by received points before asserting, if they would be equal we can't sort

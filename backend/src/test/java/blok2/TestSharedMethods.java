@@ -196,9 +196,9 @@ public class TestSharedMethods {
     }
 
     /**
-     * Create CalendarPeriod that is completely in the past
-     * @param location the location for which to create the period
-     * @return a CalendarPeriod in the past
+     * Create timeslots that are completely in the past
+     * @param location the location for which to create the timeslots
+     * @return a timeslots in the past
      */
     public static List<Timeslot> pastCalendarPeriods(Location location) {
         YearWeek past = YearWeek.now().minusWeeks(1);
@@ -214,9 +214,9 @@ public class TestSharedMethods {
     }
 
     /**
-     * Create CalendarPeriod that is completely in the future
-     * @param location the location for which to create the period
-     * @return a CalendarPeriod in the future
+     * Create timeslots that is completely in the future
+     * @param location the location for which to create the timeslots
+     * @return a list of timeslots in the future
      */
     public static List<Timeslot> upcomingCalendarPeriods(Location location) {
         YearWeek past = YearWeek.now().plusWeeks(3);
@@ -232,9 +232,9 @@ public class TestSharedMethods {
     }
 
     /**
-     * Create a CalendarPeriod that is active (today is between start and end date) but not during the active hours
+     * Create a timeslots that is active (today is between start and end date) but not during the active hours
      * @param location the location for which to create the period
-     * @return a CalendarPeriod that is active, but outside the hours
+     * @return a list of timeslots that are active, but outside the hours
      */
     public static List<Timeslot> activeCalendarPeriodsOutsideHours(Location location) throws TimeException {
         LocalDateTime now = LocalDateTime.now();
@@ -256,9 +256,9 @@ public class TestSharedMethods {
     }
 
     /**
-     * Create a CalendarPeriod that is active (today is between start and end date) and during the active hours
+     * Create a list of timeslots that is active (today is between start and end date) and during the active hours
      * @param location the location for which to create the period
-     * @return a CalendarPeriod that is active and within hours
+     * @return a list of timeslots that is active and within hours
      */
     public static List<Timeslot> activeCalendarPeriodsInsideHours(Location location) throws TimeException {
 

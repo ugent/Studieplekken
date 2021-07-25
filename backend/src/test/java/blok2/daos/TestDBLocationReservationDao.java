@@ -75,9 +75,9 @@ public class TestDBLocationReservationDao extends BaseTest {
         locationDao.addLocation(testLocation1Seat);
         locationDao.addLocation(testLocation2);
 
-        timeslotDAO.addTimeslots(calendarPeriods);
-        timeslotDAO.addTimeslots(calendarPeriodsForLocation2);
-        timeslotDAO.addTimeslot(calendarPeriod1Seat);
+        calendarPeriods = timeslotDAO.addTimeslots(calendarPeriods);
+        calendarPeriodsForLocation2 = timeslotDAO.addTimeslots(calendarPeriodsForLocation2);
+        calendarPeriod1Seat = timeslotDAO.addTimeslot(calendarPeriod1Seat);
     }
 
     @Test
@@ -137,10 +137,8 @@ public class TestDBLocationReservationDao extends BaseTest {
         Assert.assertEquals(0, reservations.size());
     }
 
-    // TODO: fix test
     @Test
-    public void getLocationReservationsAndCalendarPeriodOfUserTest() throws SQLException {
-        /*
+    public void getLocationReservationsOfUserTest() throws SQLException {
         User u = userDao.getUserById(testUser.getUserId()); // test user from db
         List<LocationReservation> elrs = new ArrayList<>(); // expected location reservations
 
@@ -150,22 +148,21 @@ public class TestDBLocationReservationDao extends BaseTest {
         elrs.add(lr0);
 
         // Create a second location reservation for the user in testLocation2
-        CalendarPeriod cp1 = calendarPeriodsForLocation2.get(1);
-        Timeslot t1 = cp1.getTimeslots().get(1);
+        Timeslot t1 = calendarPeriodsForLocation2.get(1);
         LocationReservation lr1 = new LocationReservation(u, t1, null);
-        elrs.add(new Pair<>(lr1, cp1));
+        elrs.add(lr1);
 
         // Add the location reservations to the db
         Assert.assertTrue(locationReservationDao.addLocationReservationIfStillRoomAtomically(lr0));
         Assert.assertTrue(locationReservationDao.addLocationReservationIfStillRoomAtomically(lr1));
 
         // Retrieve location reservations in combination with the locations
-        List<Pair<LocationReservation, CalendarPeriod>> rlrs = locationReservationDao
-                .getAllLocationReservationsAndCalendarPeriodsOfUser(u.getUserId());
+        List<LocationReservation> rlrs = locationReservationDao
+                .getAllLocationReservationsOfUser(u.getUserId());
 
         // Sort expected and retrieved location reservations
-        elrs.sort(Comparator.comparing(Pair::hashCode));
-        rlrs.sort(Comparator.comparing(Pair::hashCode));
+        elrs.sort(Comparator.comparing(loc -> loc.getTimeslot().getTimeslotSeqnr()));
+        rlrs.sort(Comparator.comparing(loc -> loc.getTimeslot().getTimeslotSeqnr()));
 
         Assert.assertEquals(elrs, rlrs);
 
@@ -174,40 +171,33 @@ public class TestDBLocationReservationDao extends BaseTest {
         lr0.setAttended(false);
 
         // not yet scanned: no unattended location reservations expected
-        List<Pair<LocationReservation, CalendarPeriod>> unattendedReservations =
-                locationReservationDao.getUnattendedLocationReservations(t0.getTimeslotDate());
+        List<LocationReservation> unattendedReservations =
+                locationReservationDao.getUnattendedLocationReservations(t0.timeslotDate());
         Assert.assertEquals(Collections.emptyList(), unattendedReservations);
 
         // scan first location reservation as unattended
         locationReservationDao.setReservationAttendance(u.getUserId(), lr0.getTimeslot(), false);
-        unattendedReservations = locationReservationDao.getUnattendedLocationReservations(t0.getTimeslotDate());
-        elrs.add(new Pair<>(lr0, cp0));
+        unattendedReservations = locationReservationDao.getUnattendedLocationReservations(t0.timeslotDate());
+        elrs.add(lr0);
 
         Assert.assertEquals(elrs, unattendedReservations);
-        */
-
     }
-
-    // TODO: fix test
 
     @Test
     public void setAllNotScannedStudentsToUnattendedTest() throws SQLException {
-        /*
         User u = userDao.getUserById(testUser.getUserId()); // test user from db
-        List<Pair<LocationReservation, CalendarPeriod>> elrs = new ArrayList<>(); // expected location reservations
+        List<LocationReservation> elrs = new ArrayList<>(); // expected location reservations
 
         // Create location reservation
-        CalendarPeriod cp0 = calendarPeriods.get(0);
-        Timeslot t0 = cp0.getTimeslots().get(0);
+        Timeslot t0 = calendarPeriods.get(0);
         LocationReservation lr0 = new LocationReservation(u, t0, null);
 
         // Add the location reservations to the db
         Assert.assertTrue(locationReservationDao.addLocationReservationIfStillRoomAtomically(lr0));
-        elrs.add(new Pair<>(lr0, cp0));
-
+        elrs.add(lr0);
         // No unattended students expected yet
-        List<Pair<LocationReservation, CalendarPeriod>> unattendedReservations =
-                locationReservationDao.getUnattendedLocationReservations(t0.getTimeslotDate());
+        List<LocationReservation> unattendedReservations =
+                locationReservationDao.getUnattendedLocationReservations(t0.timeslotDate());
         Assert.assertEquals(Collections.emptyList(), unattendedReservations);
 
         // Set all students for the timeslot to unattended
@@ -215,9 +205,9 @@ public class TestDBLocationReservationDao extends BaseTest {
 
         // Now there should be one unattended student
         lr0.setAttended(false);
-        unattendedReservations = locationReservationDao.getUnattendedLocationReservations(t0.getTimeslotDate());
+        unattendedReservations = locationReservationDao.getUnattendedLocationReservations(t0.timeslotDate());
         Assert.assertEquals(elrs, unattendedReservations);
-        */
+
     }
 
     /**
@@ -304,7 +294,7 @@ public class TestDBLocationReservationDao extends BaseTest {
         Assert.assertEquals(N_SEATS, lrsCount);
     }
 
-    // TODO fix test
+    // Test currently not worth fixing - maybe later after queue?
     /**
      * Steps undertaken in this test:
      *     - create 500 test users
