@@ -38,8 +38,7 @@ public class TimeslotController extends  AuthorizedLocationController {
     public void updateTimeslot(@PathVariable("locationId") int locationId,
                                       @RequestBody Timeslot timeslot) {
         isAuthorized(locationId);
-
-
+        timeslotDAO.updateTimeslot(timeslot);
     }
 
 

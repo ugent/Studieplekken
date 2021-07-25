@@ -15,4 +15,6 @@ public interface ITimeslotDAO {
     Timeslot addTimeslot(Timeslot timeslot);
 
     void deleteTimeslot(Timeslot timeslot);
+
+    void updateTimeslot(Timeslot timeslot);
 }

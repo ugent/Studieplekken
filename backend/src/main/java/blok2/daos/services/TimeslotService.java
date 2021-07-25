@@ -42,4 +42,17 @@ public class TimeslotService implements ITimeslotDAO {
     public void deleteTimeslot(Timeslot timeslot) {
         timeslotRepository.deleteTimeslotByTimeslotSeqnr(timeslot.getTimeslotSeqnr());
     }
+
+    @Override
+    public void updateTimeslot(Timeslot timeslot) {
+        Timeslot original = timeslotRepository.getByTimeslotSeqnr(timeslot.getTimeslotSeqnr());
+
+        original.setWeek(timeslot.getWeek());
+        original.setOpeningHour(timeslot.getOpeningHour());
+        original.setClosingHour(timeslot.getClosingHour());
+        original.setSeatCount(timeslot.getSeatCount());
+        original.setLocation(timeslot.getLocationId());
+
+        timeslotRepository.save(original);
+    }
 }

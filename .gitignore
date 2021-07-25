@@ -14,10 +14,6 @@ varia/*.docx
 
 # Mac-specific files
 .DS_Store
-<<<<<<< HEAD
-bin/
 backup**
 .gradle/
-=======
 bin/**
->>>>>>> master
