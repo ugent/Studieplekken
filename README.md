@@ -37,6 +37,27 @@ keytool -genkeypair -alias blokat -keyalg RSA -keysize 2048 -storetype PKCS12 -k
 ```
 
 
+***Keystore for SAML***
+
+The SAML 2.0 protocol requires a keystore. There already is one at `backend/src/main/resources/keystore/samlKeystore.jks`. 
+
+In case you would need to re-generate this keystore, following commands were used to generate it. The same credentials were used as the other keystore above.
+
+```
+keytool -genkeypair -alias blokat -keyalg RSA -keysize 2048 -storetype JKS -keystore samlKeystore.jks -validity 3650
+```
+
+**Attention!** Arteveldehogeschool uses signed metadata for their SAML endpoint. Therefore, we have to add the certificate to our keystore to be able to validate their metadata file.
+It is important that you do not reformat their metadata file (`backend/src/main/resources/saml/metadata/sso-artevelde.xml`) because when you do, the checksum will no longer match and the application will be unable to validate the metadata resulting in not being able to use their IdP.
+
+To add their certificate to our keystore `samlKeystore.jks` we run following command (this is already done for the current file but you will have to redo this in case you re-generate the keystore).
+Before we are able to run following command, we should extract their certificate and place it in a separate file between begin/end certificate tags. This is already done in `backend/src/main/resources/keystore/arteveldeSignature.cer`. The value in `Signature.KeyInfo.X509Data.X509Certificate` from their metadata file is used.
+
+```
+keytool -import -alias adfscert -file arteveldeSignature.cer -keystore samlKeystore.jks
+```
+
+
 **Commands**
 ```shell script
 ./gradlew clean bootRunDev
