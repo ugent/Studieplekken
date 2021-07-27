@@ -54,14 +54,15 @@ public class CalendarPeriod extends Period implements Cloneable {
 
     }
 
-    public boolean isEmployeeAllowedToEdit(User user) {
-        Authority authority = location.getAuthority();
+    public boolean isAllowedToEdit(User user) {
+        if (user.isAdmin())
+            return true;
 
+        Authority authority = location.getAuthority();
         if (!user.getUserAuthorities().contains(authority))
             return false;
 
         String institution = location.getInstitution();
-
         return Objects.equals(institution, user.getInstitution());
     }
 

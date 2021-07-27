@@ -98,16 +98,14 @@ public class LocationReservationController extends AuthorizedLocationController 
             @PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             @PathVariable("seqnr") int seqnr
     ) {
-        if (!user.isAdmin()) {
-            try {
-                if (!calendarPeriodDao.getById(calendarId).isEmployeeAllowedToEdit(user)) {
-                    throw new NotAuthorizedException("You are not authorized to retrieve information for this calendar period.");
-                }
-            } catch (SQLException e) {
-                logger.error(e.getMessage());
-                logger.error(Arrays.toString(e.getStackTrace()));
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        try {
+            if (!calendarPeriodDao.getById(calendarId).isAllowedToEdit(user)) {
+                throw new NotAuthorizedException("You are not authorized to retrieve information for this calendar period.");
             }
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
         Timeslot timeslot = new Timeslot(calendarId, seqnr, date, 0);
         return locationReservationDao.getAllLocationReservationsOfTimeslot(timeslot);
