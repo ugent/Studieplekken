@@ -123,11 +123,10 @@ public class LocationReservationController extends AuthorizedLocationController 
 
         try {
             CalendarPeriod parentPeriod = calendarPeriodDao.getById(locationReservation.getTimeslot().getCalendarId());
-            isAuthorized(
-                    (lr, u) -> (hasAuthority(parentPeriod.getLocation().getLocationId()) && (user.isAdmin() || parentPeriod.getLocation().getBuilding().getInstitution().equals(user.getInstitution())))
-                            || lr.getUser().getUserId().equals(u.getUserId()),
-                    locationReservation
-            );
+            if (!parentPeriod.isAllowedToEdit(user) &&
+                    !locationReservation.getUser().getUserId().equals(user.getUserId())) {
+                throw new NotAuthorizedException("You are not authorized to retrieve information for this calendar period.");
+            }
 
             locationReservationDao.deleteLocationReservation(locationReservation.getUser().getUserId(),
                     locationReservation.getTimeslot());
