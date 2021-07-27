@@ -100,7 +100,7 @@ public class LocationReservationController extends AuthorizedLocationController 
     ) {
         if (!user.isAdmin()) {
             try {
-                if (!calendarPeriodDao.getById(calendarId).getLocation().getBuilding().getInstitution().equals(user.getInstitution())) {
+                if (!calendarPeriodDao.getById(calendarId).isEmployeeAllowedToEdit(user)) {
                     throw new NotAuthorizedException("You are not authorized to retrieve information for this calendar period.");
                 }
             } catch (SQLException e) {

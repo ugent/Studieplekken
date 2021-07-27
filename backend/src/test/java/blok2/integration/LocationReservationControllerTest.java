@@ -9,6 +9,7 @@ import org.springframework.security.test.context.support.WithSecurityContextTest
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -19,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @TestExecutionListeners(WithSecurityContextTestExecutionListener.class)
-public class RegistrationControllerTest extends BaseIntegrationTest {
+public class LocationReservationControllerTest extends BaseIntegrationTest {
 
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
@@ -285,6 +286,20 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
         list = locationReservationDao.getAllLocationReservationsOfUser(student2.getUserId());
         Assert.assertEquals(true, list.get(0).getAttended());
 
+    }
+
+    @Test
+    @WithUserDetails(value = "authholderHoGent", userDetailsServiceBeanName = "testUserDetails")
+    public void testGetReservationsOfTimeslotOfOtherInstitutionForbidden() throws Exception {
+        int calendarPeriodId = calendarPeriods.get(0).getId();
+        Timeslot timeslot = calendarPeriodDao.getById(calendarPeriodId).getTimeslots().get(0);
+        LocalDate date = timeslot.getTimeslotDate();
+
+        mockMvc.perform(get(String.format("/locations/reservations/timeslot/%d/%s/%d", calendarPeriodId,
+                    date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                    timeslot.getTimeslotSeqnr())).with(csrf()))
+                .andDo(print())
+                .andExpect(status().isForbidden());
     }
 
     @Test
