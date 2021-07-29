@@ -19,7 +19,7 @@ import { Location } from '../../../../shared/model/Location';
 @Component({
   selector: 'app-timeslot-table',
   templateUrl: './timeslot-table.component.html',
-  styleUrls: ['./timeslot-table.component.css'],
+  styleUrls: ['./timeslot-table.component.scss'],
 })
 export class TimeslotTableComponent implements OnInit {
   timeslot: Timeslot;

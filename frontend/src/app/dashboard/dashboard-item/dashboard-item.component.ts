@@ -12,7 +12,7 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'app-dashboard-item',
   templateUrl: './dashboard-item.component.html',
-  styleUrls: ['./dashboard-item.component.css', '../location.css'],
+  styleUrls: ['./dashboard-item.component.scss', '../location.css'],
   providers: [DatePipe],
 })
 export class DashboardItemComponent implements OnInit {

@@ -9,7 +9,7 @@ import { LocationService } from '../../services/api/locations/location.service';
 @Component({
   selector: 'app-profile-penalties',
   templateUrl: './profile-penalties.component.html',
-  styleUrls: ['./profile-penalties.component.css'],
+  styleUrls: ['./profile-penalties.component.scss'],
 })
 export class ProfilePenaltiesComponent {
   user: User;

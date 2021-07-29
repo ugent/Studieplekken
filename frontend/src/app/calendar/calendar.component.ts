@@ -15,7 +15,7 @@ import { defaultOpeningHour, defaultClosingHour } from 'src/app/app.constants';
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
-  styleUrls: ['./calendar.component.css'],
+  styleUrls: ['./calendar.component.scss'],
 })
 export class CalendarComponent implements OnInit, OnChanges {
   view: CalendarView = CalendarView.Week;

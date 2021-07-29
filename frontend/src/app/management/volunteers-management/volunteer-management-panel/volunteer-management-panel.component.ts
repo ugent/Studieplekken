@@ -12,7 +12,7 @@ import { catchError } from 'rxjs/operators';
 @Component({
   selector: 'app-volunteer-management-panel',
   templateUrl: './volunteer-management-panel.component.html',
-  styleUrls: ['./volunteer-management-panel.component.css'],
+  styleUrls: ['./volunteer-management-panel.component.scss'],
 })
 export class VolunteerManagementPanelComponent implements OnInit {
   @Input() location: Location;

@@ -13,7 +13,7 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 @Component({
   selector: 'app-tags-management',
   templateUrl: './tags-management.component.html',
-  styleUrls: ['./tags-management.component.css'],
+  styleUrls: ['./tags-management.component.scss'],
 })
 export class TagsManagementComponent implements OnInit {
   tagsObs: Observable<LocationTag[]>;

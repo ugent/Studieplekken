@@ -19,7 +19,7 @@ import { penaltyEventCodeForManualEntry } from '../../../../app.constants';
 @Component({
   selector: 'app-user-details-management-penalties',
   templateUrl: './user-details-management-penalties.component.html',
-  styleUrls: ['./user-details-management-penalties.component.css'],
+  styleUrls: ['./user-details-management-penalties.component.scss'],
 })
 export class UserDetailsManagementPenaltiesComponent implements OnInit {
   @Input() userObs: Observable<User>;

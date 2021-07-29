@@ -14,7 +14,7 @@ import { AuthenticationService } from 'src/app/services/authentication/authentic
 @Component({
   selector: 'app-building-management',
   templateUrl: './building-management.component.html',
-  styleUrls: ['./building-management.component.css'],
+  styleUrls: ['./building-management.component.scss'],
 })
 export class BuildingManagementComponent implements OnInit {
   buildingsObs: Observable<Building[]>;

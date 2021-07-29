@@ -14,7 +14,7 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 @Component({
   selector: 'app-location-tags-management',
   templateUrl: './location-tags-management.component.html',
-  styleUrls: ['./location-tags-management.component.css'],
+  styleUrls: ['./location-tags-management.component.scss'],
 })
 export class LocationTagsManagementComponent implements OnInit {
   @Input() location: Observable<Location>;

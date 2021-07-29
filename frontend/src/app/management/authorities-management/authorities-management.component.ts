@@ -14,7 +14,7 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 @Component({
   selector: 'app-authorities-management',
   templateUrl: './authorities-management.component.html',
-  styleUrls: ['./authorities-management.component.css'],
+  styleUrls: ['./authorities-management.component.scss'],
 })
 export class AuthoritiesManagementComponent implements OnInit {
   authoritiesObs: Observable<Authority[]>;

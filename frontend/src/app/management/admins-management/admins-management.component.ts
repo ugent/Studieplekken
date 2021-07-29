@@ -11,7 +11,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 @Component({
   selector: 'app-admins-management',
   templateUrl: './admins-management.component.html',
-  styleUrls: ['./admins-management.component.css'],
+  styleUrls: ['./admins-management.component.scss'],
 })
 export class AdminsManagementComponent implements OnInit {
   loading = true;

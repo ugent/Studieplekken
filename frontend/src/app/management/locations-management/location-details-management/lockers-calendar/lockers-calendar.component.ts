@@ -16,7 +16,7 @@ import * as moment from 'moment';
 @Component({
   selector: 'app-lockers-calendar',
   templateUrl: './lockers-calendar.component.html',
-  styleUrls: ['./lockers-calendar.component.css'],
+  styleUrls: ['./lockers-calendar.component.scss'],
 })
 export class LockersCalendarComponent implements OnInit {
   @Input() location: Observable<Location>;

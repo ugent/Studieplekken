@@ -14,7 +14,7 @@ import { timer } from 'rxjs';
 @Component({
   selector: 'app-scanning-location-details',
   templateUrl: './scanning-location-details.component.html',
-  styleUrls: ['./scanning-location-details.component.css'],
+  styleUrls: ['./scanning-location-details.component.scss'],
 })
 export class ScanningLocationDetailsComponent implements OnInit {
   locationObs: Observable<Location>;

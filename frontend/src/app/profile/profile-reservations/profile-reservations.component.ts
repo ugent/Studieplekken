@@ -13,7 +13,7 @@ import {Observable} from 'rxjs';
 @Component({
   selector: 'app-profile-reservations',
   templateUrl: './profile-reservations.component.html',
-  styleUrls: ['./profile-reservations.component.css'],
+  styleUrls: ['./profile-reservations.component.scss'],
 })
 export class ProfileReservationsComponent implements OnInit {
   @Input() userObj?: User;

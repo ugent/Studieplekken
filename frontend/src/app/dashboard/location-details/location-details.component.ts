@@ -39,7 +39,7 @@ import {
 @Component({
   selector: 'app-location-details',
   templateUrl: './location-details.component.html',
-  styleUrls: ['./location-details.component.css', '../location.css'],
+  styleUrls: ['./location-details.component.scss', '../location.css'],
   providers: [DatePipe],
 })
 export class LocationDetailsComponent implements OnInit, OnDestroy {

@@ -10,7 +10,7 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 @Component({
   selector: 'app-user-authorities-management',
   templateUrl: './user-authorities-management.component.html',
-  styleUrls: ['./user-authorities-management.component.css'],
+  styleUrls: ['./user-authorities-management.component.scss'],
 })
 export class UserAuthoritiesManagementComponent implements OnInit {
   @Input() userObs: Observable<User>;

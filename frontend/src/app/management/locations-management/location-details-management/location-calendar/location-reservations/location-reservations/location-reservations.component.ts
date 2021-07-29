@@ -21,7 +21,7 @@ import { BarcodeService } from 'src/app/services/barcode.service';
 @Component({
   selector: 'app-location-reservations',
   templateUrl: './location-reservations.component.html',
-  styleUrls: ['./location-reservations.component.css'],
+  styleUrls: ['./location-reservations.component.scss'],
 })
 export class LocationReservationsComponent {
   @Input() locationReservations: LocationReservation[];

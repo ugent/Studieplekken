@@ -21,7 +21,7 @@ import { CalendarPeriod } from 'src/app/shared/model/CalendarPeriod';
 @Component({
   selector: 'app-locations-management',
   templateUrl: './locations-management.component.html',
-  styleUrls: ['./locations-management.component.css'],
+  styleUrls: ['./locations-management.component.scss'],
 })
 export class LocationsManagementComponent implements OnInit {
   locations: Observable<Location[]>;

@@ -18,7 +18,7 @@ import { languageAsEnum } from '../../app.constants';
 @Component({
   selector: 'app-penalty-events-management',
   templateUrl: './penalty-events-management.component.html',
-  styleUrls: ['./penalty-events-management.component.css'],
+  styleUrls: ['./penalty-events-management.component.scss'],
 })
 export class PenaltyEventsManagementComponent implements OnInit {
   penaltyEventsObs: Observable<PenaltyEvent[]>;

@@ -6,7 +6,7 @@ import { combineLatest } from 'rxjs';
 @Component({
   selector: 'app-management',
   templateUrl: './management.component.html',
-  styleUrls: ['./management.component.css'],
+  styleUrls: ['./management.component.scss'],
 })
 export class ManagementComponent implements OnInit {
   showReservations: boolean;

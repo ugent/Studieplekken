@@ -10,7 +10,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 @Component({
   selector: 'app-user-roles',
   templateUrl: './user-roles.component.html',
-  styleUrls: ['./user-roles.component.css'],
+  styleUrls: ['./user-roles.component.scss'],
 })
 export class UserRolesComponent implements OnInit {
   @Input() userObs: Observable<User>;

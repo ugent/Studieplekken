@@ -17,7 +17,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 @Component({
   selector: 'app-authority-users-management',
   templateUrl: './authority-users-management.component.html',
-  styleUrls: ['./authority-users-management.component.css'],
+  styleUrls: ['./authority-users-management.component.scss'],
 })
 export class AuthorityUsersManagementComponent implements OnInit {
   authority: Authority;

@@ -29,7 +29,7 @@ import {
 @Component({
   selector: 'app-location-calendar',
   templateUrl: './location-calendar.component.html',
-  styleUrls: ['./location-calendar.component.css']
+  styleUrls: ['./location-calendar.component.scss']
 })
 export class LocationCalendarComponent implements OnInit {
   @Input() location: Location; // only use this for creating a CalendarPeriod

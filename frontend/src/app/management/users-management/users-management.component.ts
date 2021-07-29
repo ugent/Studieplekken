@@ -11,7 +11,7 @@ import { ApplicationTypeFunctionalityService } from '../../services/functionalit
 @Component({
   selector: 'app-users-management',
   templateUrl: './users-management.component.html',
-  styleUrls: ['./users-management.component.css'],
+  styleUrls: ['./users-management.component.scss'],
 })
 export class UsersManagementComponent implements OnInit {
   formGroup = new FormGroup({
