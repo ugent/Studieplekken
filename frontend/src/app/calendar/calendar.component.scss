@@ -21,9 +21,20 @@
 }
 
 /**
- * /deep/ is required to overwrite the line-height attribute in the sub-components
- * (cfr. https://stackoverflow.com/a/40178390/9356123)
+ * We want the line-height of the title in the week view of the Angular Calendar
+ * to be 20px instead of the 25px provided by default (cfr. link1 below).
+ * To overwrite this styling, we need to deeply change the style (cfr. link2 below)
+ *
+ *     - link1: https://github.com/mattlewis92/angular-calendar/blob/master/projects/angular-calendar/src/modules/week/calendar-week-view.scss#L253
+ *     - link2: https://stackoverflow.com/a/59530894/9356123
  */
-/deep/ .cal-week-view .cal-time-events .cal-event {
-  line-height: 20px;
+mwl-calendar-week-view::ng-deep {
+  .cal-week-view {
+    .cal-time-events {
+      .cal-event {
+        line-height: 20px !important;
+      }
+    }
+  }
 }
+

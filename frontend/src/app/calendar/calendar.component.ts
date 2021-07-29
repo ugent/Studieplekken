@@ -7,7 +7,7 @@ import {
   OnChanges,
   SimpleChanges,
 } from '@angular/core';
-import {CalendarView, CalendarEvent, CalendarEventTimesChangedEvent} from 'angular-calendar';
+import {CalendarView, CalendarEvent} from 'angular-calendar';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { defaultOpeningHour, defaultClosingHour } from 'src/app/app.constants';
