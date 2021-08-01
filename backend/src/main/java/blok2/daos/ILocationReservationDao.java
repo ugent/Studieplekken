@@ -26,6 +26,12 @@ public interface ILocationReservationDao {
     List<LocationReservation> getUnattendedLocationReservations(LocalDate date) ;
 
     /**
+     * Get all LocationReservations and corresponding CalendarPeriods of unattended reservations
+     * It starts at 21PM of the previous day until 21PM of the given date.
+     */
+    List<LocationReservation> getUnattendedLocationReservationsWith21PMRestriction(LocalDate date);
+
+    /**
      * Get all users that have made a reservation within the window of time that is provided through the parameters.
      * Note: the window includes 'start' but does not include 'end': window = [start, end)
      */
@@ -66,13 +72,13 @@ public interface ILocationReservationDao {
     /**
      * Try to make a location reservation while making sure that the maximum capacity of the location is not exceeded
      */
-     boolean addLocationReservationIfStillRoomAtomically(LocationReservation reservation) throws SQLException;
+    boolean addLocationReservationIfStillRoomAtomically(LocationReservation reservation) throws SQLException;
 
     /**
      * Set all LocationReservations corresponding to the given Timeslot for which the field attended is null
      * to false. This sets the not scanned students to unattended for the given timeslot.
      */
-     void setNotScannedStudentsToUnattended(Timeslot timeslot);
+    void setNotScannedStudentsToUnattended(Timeslot timeslot);
 
     /**
      * Get all location reservations of the specified location

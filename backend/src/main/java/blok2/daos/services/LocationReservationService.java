@@ -16,8 +16,10 @@ import org.threeten.extra.YearWeek;
 import java.sql.SQLException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.Year;
 import java.util.Collections;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,7 +62,16 @@ public class LocationReservationService implements ILocationReservationDao {
     }
 
 
-    // TODO: Fix this method
+    @Override
+    public List<LocationReservation> getUnattendedLocationReservationsWith21PMRestriction(LocalDate date) {
+        LocalDate dayBefore = date.minusDays(1);
+        LocalDateTime yesterday21PM = LocalDateTime.of(dayBefore, LocalTime.of(21, 0)); // dateTime since previous mailing batch.
+        LocalDateTime today21PM = LocalDateTime.of(date, LocalTime.of(21, 0)); // dateTime of this mailing batch.
+        List<LocationReservation> locationReservations = locationReservationRepository.findAllUnattendedByDateAnd21PMRestriction(date.getYear(), YearWeek.from(date).getWeek(),
+                date.getDayOfWeek(),  dayBefore.getYear(), YearWeek.from(dayBefore).getWeek(), dayBefore.getDayOfWeek(), yesterday21PM, today21PM);
+        return locationReservations;
+    }
+
     @Override
     public List<User> getUsersWithReservationForWindowOfTime(LocalDate start, LocalDate end) {
 
