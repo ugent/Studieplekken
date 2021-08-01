@@ -37,6 +37,7 @@ import { map } from 'rxjs/internal/operators/map';
 import {
   ConversionToCalendarEventService
 } from '../../services/styling/CalendarEvent/conversion-to-calendar-event.service';
+import { distinctUntilChanged, distinctUntilKeyChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-location-details',
@@ -176,6 +177,12 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
       return;
     }
 
+    
+    const reservation: LocationReservation = {
+      user: this.authenticationService.userValue(),
+      timeslot: currentTimeslot,
+    };
+
     const timeslotIsSelected = this.selectedSubject.value.some((r) =>
       timeslotEquals(r.timeslot, reservation.timeslot)
     );
@@ -191,10 +198,6 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
 
     this.isModified = true;
 
-    const reservation: LocationReservation = {
-      user: this.authenticationService.userValue(),
-      timeslot: currentTimeslot,
-    };
 
 
     // If it's already selected, unselect
@@ -241,10 +244,16 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
     this.calendarSub = combineLatest([
       this.calendarPeriodsService.getTimeslotsOfLocation(this.locationId),
       this.authenticationService.getLocationReservations(),
-      this.selectedSubject,
-    ]).subscribe(([timeslots, reservations, proposedReservations]) => {
-      this.originalList = [...reservations];
+      this.selectedSubject.pipe(distinctUntilChanged((a, b) => a.length == b.length)),
+    ])
+    .subscribe(([timeslots, reservations, proposedReservations]) => {
+      this.originalList = [...reservations.filter(r => r.timeslot.locationId == this.locationId)];
+      console.log(proposedReservations)
       this.timeouts.forEach(t => clearTimeout(t))
+
+      // Only do this once, when selectedSubject isn't initialized yet.
+      if(this.selectedSubject.value.length == 0)
+        this.selectedSubject.next([...this.originalList])
 
       this.timeouts = timeslots
         .map(e => (e.reservableFrom.valueOf() - moment().valueOf()))
@@ -259,6 +268,7 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
     this.events = timeslots.map(t => timeslotToCalendarEvent(
       t, this.currentLang, [...proposedReservations]
     ))
+    console.log(this.events)
   }
 
   updateReservationIsPossible(): boolean {

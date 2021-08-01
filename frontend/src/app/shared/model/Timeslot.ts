@@ -38,12 +38,12 @@ export class Timeslot {
     this.closingHour = closingHour;
   }
 
-  static fromJSON(json: Timeslot): Timeslot {
+  static fromJSON(json: Record<string, any>): Timeslot {
     if (!json) {
       return null;
     }
     return new Timeslot(
-      json.timeslotSequenceNumber,
+      json.timeslotSeqnr,
       moment(json.timeslotDate),
       json.amountOfReservations,
       json.seatCount,
@@ -57,7 +57,7 @@ export class Timeslot {
 
   toJSON(): Record<string, unknown> {
     return {
-      timeslotSequenceNumber: this.timeslotSequenceNumber,
+      timeslotSeqnr: this.timeslotSequenceNumber,
       timeslotDate: this.timeslotDate.format('YYYY-MM-DD'),
       seatCount: this.seatCount,
     };

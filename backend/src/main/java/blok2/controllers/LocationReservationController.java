@@ -67,7 +67,8 @@ public class LocationReservationController extends AuthorizedLocationController 
     public LocationReservation createLocationReservation(@AuthenticationPrincipal User user, @Valid @RequestBody Timeslot timeslot) {
         try {
             LocationReservation reservation = new LocationReservation(user, timeslot, null);
-            if (LocalDateTime.now().isBefore(reservation.getTimeslot().getReservableFrom())) {
+            Timeslot dbTimeslot = timeslotDao.getTimeslot(timeslot.getTimeslotSeqnr());
+            if (LocalDateTime.now().isBefore(dbTimeslot.getReservableFrom())) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "This calendarperiod can't yet be reserved");
             }
             if (!locationReservationDao.addLocationReservationIfStillRoomAtomically(reservation)) {
