@@ -55,4 +55,12 @@ public class TimeslotController extends  AuthorizedLocationController {
 
         timeslotDAO.deleteTimeslot(timeslot);
     }
+
+    @PostMapping
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    public Timeslot addTimeslot(@RequestBody Timeslot timeslot) {
+        isAuthorized(timeslot.getLocationId());
+
+        return timeslotDAO.addTimeslot(timeslot);
+    }
 }
