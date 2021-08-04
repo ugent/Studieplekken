@@ -29,13 +29,16 @@
 						],
 						"styles": [
 							"src/styles.scss",
-							"ugent_style/css/screen.css",
 							"src/development.scss"
 						],
 						"scripts": [
-							"node_modules/jquery/dist/jquery.min.js",
-							"ugent_style/js/vendor/bootstrap.min.js"
-						]
+						],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "node_modules/breakpoint-sass/stylesheets",
+                "node_modules/susy/sass"
+              ]
+            }
 					},
 					"configurations": {
 						"production": {
