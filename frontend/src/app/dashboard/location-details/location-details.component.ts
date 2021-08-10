@@ -65,6 +65,8 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
 
   isModified = false;
 
+  isFirst = true;
+
   description = {
     show: '',
     english: '',
@@ -244,16 +246,18 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
     this.calendarSub = combineLatest([
       this.calendarPeriodsService.getTimeslotsOfLocation(this.locationId),
       this.authenticationService.getLocationReservations(),
-      this.selectedSubject.pipe(distinctUntilChanged((a, b) => a.length == b.length)),
+      this.selectedSubject,
     ])
     .subscribe(([timeslots, reservations, proposedReservations]) => {
       this.originalList = [...reservations.filter(r => r.timeslot.locationId == this.locationId)];
-      console.log(proposedReservations)
       this.timeouts.forEach(t => clearTimeout(t))
 
       // Only do this once, when selectedSubject isn't initialized yet.
-      if(this.selectedSubject.value.length == 0)
+      if(this.isFirst) {
+        this.isFirst = false;
         this.selectedSubject.next([...this.originalList])
+        return;
+      }
 
       this.timeouts = timeslots
         .map(e => (e.reservableFrom.valueOf() - moment().valueOf()))
@@ -268,7 +272,7 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
     this.events = timeslots.map(t => timeslotToCalendarEvent(
       t, this.currentLang, [...proposedReservations]
     ))
-    console.log(this.events)
+    console.log(proposedReservations)
   }
 
   updateReservationIsPossible(): boolean {

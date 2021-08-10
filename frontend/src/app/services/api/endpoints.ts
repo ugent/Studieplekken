@@ -42,7 +42,7 @@ export const api = {
   // LOCATION_RESERVATIONS
   locationReservationsOfUser: '/api/locations/reservations/user',
   locationReservationsOfLocation:
-    '/api/locations/reservations/timeslot/{calendarid}/{date}/{seqnr}',
+    '/api/locations/reservations/timeslot/{seqnr}',
   locationReservationsOfLocationFrom: '/api/locations/reservations/from',
   locationReservationsOfLocationUntil: '/api/locations/reservations/until',
   locationReservationsOfLocationFromAndUntil:

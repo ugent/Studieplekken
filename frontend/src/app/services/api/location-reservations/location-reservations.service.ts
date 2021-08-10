@@ -40,7 +40,6 @@ export class LocationReservationsService {
     return this.http
       .get<unknown[]>(
         api.locationReservationsOfLocation
-          .replace('{date}', timeslot.timeslotDate.format('YYYY-MM-DD'))
           .replace('{seqnr}', `${timeslot.timeslotSequenceNumber}`)
       )
       .pipe(map((ls) => ls.map(LocationReservation.fromJSON.bind(this))));

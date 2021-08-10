@@ -33,22 +33,22 @@
           <!-- Table body -->
           <tbody>
           <tr *ngFor="let pair of locationReservations">
-            <td>{{pair.second.location.name}}</td>
-            <td>{{pair.first.timeslot.timeslotDate.format("DD/MM/YYYY")}}</td>
-            <td>{{getBeginHour(pair.first.timeslot, pair.second)}}</td>
+            <td>{{getLocation(pair) | async}}</td>
+            <td>{{pair.timeslot.timeslotDate.format("DD/MM/YYYY")}}</td>
+            <td>{{getBeginHour(pair.timeslot)}}</td>
 
             <!-- If not attended, we put some extra explanation, else we don't. -->
-            <td *ngIf="needTooltip(pair.first, pair.second)" class="dotted_ul"
+            <td *ngIf="needTooltip(pair)" class="dotted_ul"
                 data-toggle="tooltip" data-placement="top"
                 title="{{'profile.reservations.locations.table.attended.notScannedExplanation' | translate}}">
-              {{getCorrectI18NObject(pair.first, pair.second) | translate}}</td>
+              {{getCorrectI18NObject(pair) | translate}}</td>
 
-            <td *ngIf="!needTooltip(pair.first, pair.second)">{{getCorrectI18NObject(pair.first, pair.second) | translate}}</td>
+            <td *ngIf="!needTooltip(pair)">{{getCorrectI18NObject(pair) | translate}}</td>
             <!-- User should not be able to delete past reservations, otherwise the penalty points
                  could be deleted as well -->
-            <td *ngIf="!isTimeslotInPast(pair.first.timeslot, pair.second) && pair.first.attended !== false; else emptyTableData"
+            <td *ngIf="!isTimeslotInPast(pair.timeslot) && pair.attended !== false; else emptyTableData"
                 class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
-                (click)="prepareToDeleteLocationReservation(pair.first, pair.second, deleteLocationReservationModal)">
+                (click)="prepareToDeleteLocationReservation(pair, deleteLocationReservationModal)">
               <span class="glyphicon glyphicon-trash pointerCursor"></span>
             </td>
           </tr>

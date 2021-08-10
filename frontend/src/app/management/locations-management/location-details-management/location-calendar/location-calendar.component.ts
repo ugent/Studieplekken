@@ -113,12 +113,14 @@ export class LocationCalendarComponent implements OnInit {
 
   setup(): void {
     // retrieve all calendar periods for this location
+    console.log("setting up")
     this.timeslotObs = this.calendarPeriodsService
       .getTimeslotsOfLocation(this.locationId)
       .pipe(
         tap((next) => {
           // fill the events based on the calendar periods
           this.events = next.map(t => timeslotToCalendarEvent(t, this.translate.currentLang))
+          console.log(this.events)
 
           // and update the calendar
           this.refresh.next(null);
@@ -126,15 +128,16 @@ export class LocationCalendarComponent implements OnInit {
         catchError((err) => {
           console.error(err);
           this.errorSubject.next(true);
-          return of<Timeslot[]>(null);
+          return of<Timeslot[]>([]);
         })
       );
+      this.timeslotObs.subscribe();
   }
 
 
   timeslotPickedHandler(event: any): void {
     // event is a non-reservable calendar period.
-    if (!event.timeslot) {
+    if (!event.timeslot || !event.timeslot.reservable) {
       this.showReservations = false;
       this.errorOnRetrievingReservations = false;
       return;

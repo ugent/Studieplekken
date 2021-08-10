@@ -2,13 +2,14 @@ import {Component, Input, OnInit, TemplateRef} from '@angular/core';
 import {AuthenticationService} from '../../services/authentication/authentication.service';
 import {LocationReservationsService} from '../../services/api/location-reservations/location-reservations.service';
 import {BsModalService} from 'ngx-bootstrap/modal';
-import {Pair} from '../../shared/model/helpers/Pair';
 import {LocationReservation} from '../../shared/model/LocationReservation';
-import {CalendarPeriod} from '../../shared/model/CalendarPeriod';
 import {Timeslot} from '../../shared/model/Timeslot';
 import * as moment from 'moment';
 import {User} from '../../shared/model/User';
 import {Observable} from 'rxjs';
+import { LocationService } from 'src/app/services/api/locations/location.service';
+import { Location } from 'src/app/shared/model/Location';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-profile-reservations',
@@ -21,7 +22,6 @@ export class ProfileReservationsComponent implements OnInit {
   locationReservations: LocationReservation[] = [];
 
   locationReservationToDelete: LocationReservation = undefined;
-  calendarPeriodForLocationReservationToDelete: CalendarPeriod = undefined;
 
   successGettingLocationReservations: boolean = undefined;
   successDeletingLocationReservation: boolean = undefined;
@@ -29,7 +29,8 @@ export class ProfileReservationsComponent implements OnInit {
   constructor(
     private authenticationService: AuthenticationService,
     private locationReservationService: LocationReservationsService,
-    private modalService: BsModalService
+    private modalService: BsModalService,
+    private locationService: LocationService
   ) {
     authenticationService.user.subscribe(() => {
       this.setup();
@@ -62,12 +63,10 @@ export class ProfileReservationsComponent implements OnInit {
 
   prepareToDeleteLocationReservation(
     locationReservation: LocationReservation,
-    calendarPeriod: CalendarPeriod,
     template: TemplateRef<any>
   ): void {
     this.successDeletingLocationReservation = undefined;
     this.locationReservationToDelete = locationReservation;
-    this.calendarPeriodForLocationReservationToDelete = calendarPeriod;
     this.modalService.show(template);
   }
 
@@ -91,26 +90,21 @@ export class ProfileReservationsComponent implements OnInit {
   // *   AUXILIARIES   *
   // *******************/
 
-  getBeginHour(timeslot: Timeslot, calendarPeriod: CalendarPeriod): string {
-    const openingTime = calendarPeriod.openingTime
-      .clone()
-      .add(timeslot.timeslotSequenceNumber * calendarPeriod.timeslotLength, 'minutes');
-    return openingTime.format('HH:mm');
+  getBeginHour(timeslot: Timeslot): string {
+    return timeslot.openingHour.format("HH:mm");
   }
 
   needTooltip(
     reservation: LocationReservation,
-    calendarPeriod: CalendarPeriod
   ): boolean {
     return (
-      this.isTimeslotInPast(reservation.timeslot, calendarPeriod) &&
+      this.isTimeslotInPast(reservation.timeslot) &&
       reservation.attended === null
     );
   }
 
   getCorrectI18NObject(
     reservation: LocationReservation,
-    calendarPeriod: CalendarPeriod
   ): string {
     if (reservation.timeslot.getStartMoment().isBefore(moment())) {
       if (reservation.attended === null) {
@@ -126,7 +120,6 @@ export class ProfileReservationsComponent implements OnInit {
 
   isTimeslotInPast(
     timeslot: Timeslot,
-    calendarPeriod: CalendarPeriod
   ): boolean {
     return timeslot.getEndMoment().isBefore(moment());
   }
@@ -148,6 +141,10 @@ export class ProfileReservationsComponent implements OnInit {
       return this.locationReservationService
         .getLocationReservationsOfUser(this.userObj.userId);
     }
+  }
+
+  getLocation(locationReservation: LocationReservation): Observable<string> {
+    return this.locationService.getLocation(locationReservation.timeslot.locationId).pipe(map(l => l.name));
   }
 
 }
