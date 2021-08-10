@@ -52,6 +52,8 @@ public class TimeslotService implements ITimeslotDAO {
         original.setClosingHour(timeslot.getClosingHour());
         original.setSeatCount(timeslot.getSeatCount());
         original.setLocation(timeslot.getLocationId());
+        original.setReservable(timeslot.isReservable());
+        original.setReservableFrom(timeslot.getReservableFrom());
 
         timeslotRepository.save(original);
     }

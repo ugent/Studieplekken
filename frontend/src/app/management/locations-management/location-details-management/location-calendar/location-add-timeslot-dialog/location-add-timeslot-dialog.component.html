@@ -67,8 +67,12 @@
 
 <!-- Modal footer -->
 <div class="modal-footer">
-    <button class="btn btn-primary" (click)="confirm()" [disabled]="!model.isValid()">
+    <button class="btn btn-primary" (click)="confirm()" [disabled]="!model.isValid()" *ngIf="!isUpdating()">
         {{'general.buttons.add' | translate}}
+    </button>
+
+    <button class="btn btn-primary" (click)="confirm()" [disabled]="!model.isValid()" *ngIf="isUpdating()">
+        {{'general.buttons.update' | translate}}
     </button>
 
     <button type="button" class="btn btn-secondary" (click)="closeModal()">

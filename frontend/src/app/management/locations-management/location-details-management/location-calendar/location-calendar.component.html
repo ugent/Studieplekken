@@ -49,7 +49,7 @@
     <hr>
 
     <!-- Form to edit the calendar -->
-    <div #CPtable class="row">
+    <div #CPtable class="row" *ngIf="timeslotObs | async as timeslots">
       <!-- Title -->
       <div class="row">
         <h3 class="inline-block">
@@ -62,11 +62,10 @@
 
       <!-- The form itself -->
       <div style="margin-top: 10px; margin-bottom: 10px;">
-        <table style="width: 100%;" *ngIf="calendarPeriods.length > 0; else noCalendarPeriodsForLocation">
+        <table style="width: 100%;" *ngIf="timeslots.length > 0; else noCalendarPeriodsForLocation">
           <thead>
           <tr>
-            <th>{{'management.locationDetails.calendar.form.startsAt' | translate}}</th>
-            <th>{{'management.locationDetails.calendar.form.endsAt' | translate}}</th>
+            <th>{{'management.locationDetails.calendar.form.date' | translate}}</th>
             <th>{{'management.locationDetails.calendar.form.openingTime' | translate}}</th>
             <th>{{'management.locationDetails.calendar.form.closingTime' | translate}}</th>
             <th>{{'management.locationDetails.calendar.form.reservable' | translate}}</th>
@@ -77,23 +76,22 @@
           </thead>
 
           <tbody>
-          <tr *ngFor="let calendarPeriod of calendarPeriods">
-            <td>{{calendarPeriod.startsAt.format('DD/MM/YYYY')}}</td>
-            <td>{{calendarPeriod.endsAt.format('DD/MM/YYYY')}}</td>
-            <td>{{calendarPeriod.openingTime.format('HH:mm')}}</td>
-            <td>{{calendarPeriod.closingTime.format('HH:mm')}}</td>
-            <td>{{(calendarPeriod.reservable ? calendarPeriod.reservableFrom.format('DD/MM/YYYY - HH:mm'):
+          <tr *ngFor="let timeslot of timeslots">
+            <td>{{timeslot.timeslotDate.format('DD/MM/YYYY')}}</td>
+            <td>{{timeslot.openingHour.format('HH:mm')}}</td>
+            <td>{{timeslot.closingHour.format('HH:mm')}}</td>
+            <td>{{(timeslot.reservable ? timeslot.reservableFrom.format('DD/MM/YYYY - HH:mm'):
               'general.notAvailableAbbreviation') | translate}}</td>
-            <td>{{calendarPeriod.seatCount}}</td>
+            <td>{{timeslot.seatCount}}</td>
 
             <!-- Edit icon -->
             <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
-                (click)="prepareUpdate(calendarPeriod, updateCalendarPeriodModal)" *ngIf="!calendarPeriod.isLocked() || isAdmin">
+                (click)="prepareUpdate(timeslot, updateTimeslotModal)">
               <span class="glyphicon glyphicon-pencil pointerCursor"></span>
             </td>
             <!-- Delete icon -->
             <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
-                (click)="prepareDelete(calendarPeriod, deleteCalendarPeriodModal)" *ngIf="!calendarPeriod.isLocked() || isAdmin">
+                (click)="prepareDelete(timeslot, deleteTimeslotModal)">
               <span class="glyphicon glyphicon-trash pointerCursor"></span>
             </td>
           </tr>
@@ -117,7 +115,7 @@
 <ng-template #updateTimeslotModal>
   <app-location-add-timeslot-dialog
   [location]="getLocation() | async"
-  [timeslot]="currentTimeSlot"
+  [timeslot]="toUpdateTimeslot"
   (onNewTimeslot)="updateTimeslot($event)"
 
   >
@@ -140,11 +138,10 @@
       <b>{{'management.locationDetails.calendar.deleteModalView.body' | translate}}</b>
       <br><br>
       <ul *ngIf="prepareToUpdatePeriod !== null">
-        <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.startsAt' | translate}}</i></b>{{prepareToUpdatePeriod.startsAt.format('DD/MM/YYYY')}}</li>
-        <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.endsAt' | translate}}</i></b>{{prepareToUpdatePeriod.endsAt.format('DD/MM/YYYY')}}</li>
-        <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.openingTime' | translate}}</i></b>{{prepareToUpdatePeriod.openingTime.format('HH:mm')}}</li>
-        <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.closingTime' | translate}}</i></b>{{prepareToUpdatePeriod.closingTime.format('HH:mm')}}</li>
-        <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.reservable' | translate}}</i></b>{{(prepareToUpdatePeriod.reservable ? 'general.yes' : 'general.no') |translate}}</li>
+        <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.date' | translate}}</i></b>{{toUpdateTimeslot.timeslotDate.format('DD/MM/YYYY')}}</li>
+        <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.openingTime' | translate}}</i></b>{{toUpdateTimeslot.openingHour.format('HH:mm')}}</li>
+        <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.closingTime' | translate}}</i></b>{{toUpdateTimeslot.closingHour.format('HH:mm')}}</li>
+        <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.reservable' | translate}}</i></b>{{(toUpdateTimeslot.reservable ? 'general.yes' : 'general.no') |translate}}</li>
       </ul>
     </div>
   </div>
@@ -156,7 +153,7 @@
 
   <!-- Footer -->
   <div class="modal-footer">
-    <button type="button" class="btn btn-danger danger" (click)="delete()">
+    <button type="button" class="btn btn-danger danger" (click)="delete(toUpdateTimeslot)">
       {{'general.buttons.delete' | translate}}
     </button>
     <button type="button" class="btn btn-secondary" (click)="closeModal()">

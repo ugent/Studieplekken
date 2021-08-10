@@ -14,8 +14,8 @@ export const api = {
   calendarPeriods: '/api/locations/calendar/{locationId}',
   locationStatus: '/api/locations/calendar/{locationId}/status',
   addTimeslots: '/api/locations/timeslots',
-  updateCalendarPeriods: '/api/locations/calendar/{locationId}',
-  deleteCalendarPeriods: '/api/locations/calendar',
+  updateTimeslot: '/api/locations/timeslots',
+  deleteTimeslot: '/api/locations/timeslots',
 
   // TIMESLOTS
   timeslots: '/api/locations/timeslots/{locationId}',

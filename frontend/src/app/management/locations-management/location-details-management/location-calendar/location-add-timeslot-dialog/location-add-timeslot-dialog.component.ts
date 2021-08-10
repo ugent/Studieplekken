@@ -15,6 +15,7 @@ export class LocationAddTimeslotDialogComponent implements OnInit, OnChanges {
   public model: Timeslot = new Timeslot(null, null, null, null, true, null, null, null, null);
   @Output() onNewTimeslot: EventEmitter<Timeslot> = new EventEmitter();
   @Input() location: Location;
+  @Input() timeslot: Timeslot;
 
   constructor(private authenticationService: AuthenticationService, private modalService: BsModalService) { }
 
@@ -34,7 +35,7 @@ export class LocationAddTimeslotDialogComponent implements OnInit, OnChanges {
       this.model.openingHour = oldTimeslot.openingHour;
       this.model.timeslotDate = oldTimeslot.timeslotDate;
       this.model.timeslotSequenceNumber = oldTimeslot.timeslotSequenceNumber;
-      this.model.reservableFrom = oldTimeslot.reservableFrom;  
+      this.model.reservableFrom = oldTimeslot.reservableFrom; 
     }
   }
 
@@ -66,6 +67,10 @@ export class LocationAddTimeslotDialogComponent implements OnInit, OnChanges {
 
   confirm() {
     this.onNewTimeslot.next(this.model);
+  }
+
+  isUpdating() {
+    return this.model.timeslotSequenceNumber != null;
   }
 
 }

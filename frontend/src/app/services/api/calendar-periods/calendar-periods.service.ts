@@ -61,24 +61,21 @@ export class TimeslotsService {
    * will be invoked.
    */
   updateTimeslot(
-    locationId: number,
-    from: CalendarPeriod[],
-    to: CalendarPeriod
+    to: Timeslot
   ): Observable<void> {
-    const body = { previous: from, toUpdate: to };
     return this.http.put<void>(
-      api.updateCalendarPeriods.replace('{locationId}', String(locationId)),
-      body
+      api.updateTimeslot,
+      to.toJSON()
     );
   }
 
-  deleteCalendarPeriods(period: CalendarPeriod): Observable<void> {
+  deleteTimeslot(period: Timeslot): Observable<void> {
     const options = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
       }),
       body: period,
     };
-    return this.http.delete<void>(api.deleteCalendarPeriods, options);
+    return this.http.delete<void>(api.deleteTimeslot, options);
   }
 }

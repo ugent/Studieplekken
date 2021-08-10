@@ -1,3 +1,4 @@
+import { Template } from '@angular/compiler/src/render3/r3_ast';
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -30,6 +31,7 @@ export class LocationCalendarComponent implements OnInit {
 
   locationReservations: LocationReservation[];
   currentTimeSlot: Timeslot;
+  toUpdateTimeslot: Timeslot;
 
   refresh: Subject<unknown> = new Subject<unknown>();
 
@@ -52,8 +54,6 @@ export class LocationCalendarComponent implements OnInit {
   successAddingLocationReservation: boolean = undefined;
   successUpdatingLocationReservation: boolean = undefined;
   successDeletingLocationReservation: boolean = undefined;
-
-  calendarPeriods = [];
 
   /**
    * Depending on what the ApplicationTypeFunctionalityService returns
@@ -105,7 +105,6 @@ export class LocationCalendarComponent implements OnInit {
 
   setup(): void {
     // retrieve all calendar periods for this location
-    console.log("setting up")
     this.timeslotObs = this.timeslotService
       .getTimeslotsOfLocation(this.locationId)
       .pipe(
@@ -123,7 +122,6 @@ export class LocationCalendarComponent implements OnInit {
           return of<Timeslot[]>([]);
         })
       );
-      this.timeslotObs.subscribe();
   }
 
 
@@ -178,6 +176,27 @@ export class LocationCalendarComponent implements OnInit {
 
   newTimeslot(timeslot: Timeslot) {
     this.timeslotService.addTimeslot(timeslot).subscribe(() => this.setup())
+    this.modalService.hide();
+  }
+
+
+  prepareUpdate(timeslot: Timeslot, modal: TemplateRef<any>) {
+    this.toUpdateTimeslot = timeslot;
+    this.open(modal);
+  }
+
+  updateTimeslot(timeslot: Timeslot) {
+    this.timeslotService.updateTimeslot(timeslot).subscribe(() => this.setup())
+    this.modalService.hide();
+  }
+
+  prepareDelete(timeslot: Timeslot, modal: TemplateRef<any>) {
+    this.toUpdateTimeslot = timeslot;
+    this.open(modal);
+  }
+
+  delete(timeslot: Timeslot) {
+    this.timeslotService.deleteTimeslot(timeslot).subscribe(() => this.setup())
     this.modalService.hide();
   }
 }
