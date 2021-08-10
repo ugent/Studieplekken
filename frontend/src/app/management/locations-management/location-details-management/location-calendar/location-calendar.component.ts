@@ -1,27 +1,21 @@
-import { Component, OnInit, Input, TemplateRef } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, OnInit, TemplateRef } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { CalendarEvent } from 'angular-calendar';
-import * as moment from 'moment';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { Observable, Subject, timer } from 'rxjs';
+import { of } from 'rxjs/internal/observable/of';
+import { catchError, switchMap, tap } from 'rxjs/operators';
 import { TimeslotsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
-import { Observable, Subject, BehaviorSubject, timer } from 'rxjs';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
+import { LocationService } from 'src/app/services/api/locations/location.service';
+import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import {
   ApplicationTypeFunctionalityService
 } from 'src/app/services/functionality/application-type/application-type-functionality.service';
+import { Location } from 'src/app/shared/model/Location';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
 import { Timeslot, timeslotToCalendarEvent } from 'src/app/shared/model/Timeslot';
-import { LocationOpeningperiodDialogComponent } from './location-openingperiod-dialog/location-openingperiod-dialog.component';
-import { Location } from 'src/app/shared/model/Location';
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
-import { Moment } from 'moment';
-import { TranslateService } from '@ngx-translate/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { catchError, switchMap, tap } from 'rxjs/operators';
-import { of } from 'rxjs/internal/observable/of';
-import {
-  ConversionToCalendarEventService
-} from '../../../../services/styling/CalendarEvent/conversion-to-calendar-event.service';
 
 @Component({
   selector: 'app-location-calendar',
@@ -29,7 +23,6 @@ import {
   styleUrls: ['./location-calendar.component.css']
 })
 export class LocationCalendarComponent implements OnInit {
-  @Input() location: Location; // only use this for creating a CalendarPeriod
   locationId: number; // will be set based on the url
 
   timeslotObs: Observable<Timeslot[]>;
@@ -74,16 +67,15 @@ export class LocationCalendarComponent implements OnInit {
   currentLang: string;
 
   constructor(
-    private calendarPeriodsService: TimeslotsService,
+    private timeslotService: TimeslotsService,
     private functionalityService: ApplicationTypeFunctionalityService,
     private locationReservationService: LocationReservationsService,
-    private dialog: MatDialog,
     private modalService: BsModalService,
     private authenticationService: AuthenticationService,
     private translate: TranslateService,
     private route: ActivatedRoute,
-    private conversionService: ConversionToCalendarEventService,
-    private router: Router
+    private router: Router,
+    private locationService: LocationService
   ) {}
 
   ngOnInit(): void {
@@ -114,7 +106,7 @@ export class LocationCalendarComponent implements OnInit {
   setup(): void {
     // retrieve all calendar periods for this location
     console.log("setting up")
-    this.timeslotObs = this.calendarPeriodsService
+    this.timeslotObs = this.timeslotService
       .getTimeslotsOfLocation(this.locationId)
       .pipe(
         tap((next) => {
@@ -171,24 +163,21 @@ export class LocationCalendarComponent implements OnInit {
       );
   }
 
-  getMinStartDate(): Moment {
-    if (this.authenticationService.isAdmin()) {
-      return null;
-    } else {
-      return moment().add(3, 'weeks').day(8);
-    }
-  }
-
-  getMinReservableFrom(model: { startsAt: moment.MomentInput }): Moment {
-    if (!model.startsAt) {
-      return null;
-    } else {
-      return moment(model.startsAt).subtract(3, 'weeks').day(2);
-    }
-  }
-
 
   closeModal(): void {
+    this.modalService.hide();
+  }
+  
+  open(modal: TemplateRef<any>) {
+    this.modalService.show(modal)
+  } 
+
+  getLocation(): Observable<Location> {
+    return this.locationService.getLocation(this.locationId)
+  }
+
+  newTimeslot(timeslot: Timeslot) {
+    this.timeslotService.addTimeslot(timeslot).subscribe(() => this.setup())
     this.modalService.hide();
   }
 }

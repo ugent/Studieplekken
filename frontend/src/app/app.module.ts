@@ -77,6 +77,7 @@ import { ScannerComponent } from './shared/scanner/scanner.component';
 import { VolunteersManagementComponent } from './management/volunteers-management/volunteers-management.component';
 import { VolunteerManagementPanelComponent } from './management/volunteers-management/volunteer-management-panel/volunteer-management-panel.component';
 import { AuthenticationInterceptor } from './services/authentication/authentication.interceptor';
+import { LocationAddTimeslotDialogComponent } from './management/locations-management/location-details-management/location-calendar/location-add-timeslot-dialog/location-add-timeslot-dialog.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -306,6 +307,7 @@ const routes: Routes = [
     ScannerComponent,
     VolunteersManagementComponent,
     VolunteerManagementPanelComponent,
+    LocationAddTimeslotDialogComponent,
   ],
   imports: [
     BrowserModule,

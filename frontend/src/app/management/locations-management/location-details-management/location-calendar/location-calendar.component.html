@@ -55,7 +55,7 @@
         <h3 class="inline-block">
           {{'management.locationDetails.calendar.form.title' | translate}}
         </h3>
-        <button class="btn btn-primary pull-right" >
+        <button class="btn btn-primary pull-right" (click)="open(addTimeslotModal)">
           {{'management.locationDetails.calendar.form.addButton' | translate}}
         </button>
       </div>
@@ -106,12 +106,23 @@
 
 <!-- Modal view to add a calendar period -->
 <ng-template #addTimeslotModal>
-  
+  <app-location-add-timeslot-dialog
+  [location]="getLocation() | async"
+  (onNewTimeslot)="newTimeslot($event)"
+  >
+  </app-location-add-timeslot-dialog>
 </ng-template>
 
 <!-- Modal view to update a calendar period -->
-<ng-template #updateCalendarPeriodModal>
-  
+<ng-template #updateTimeslotModal>
+  <app-location-add-timeslot-dialog
+  [location]="getLocation() | async"
+  [timeslot]="currentTimeSlot"
+  (onNewTimeslot)="updateTimeslot($event)"
+
+  >
+</app-location-add-timeslot-dialog>
+
 </ng-template>
 
 <!-- Modal view to ask whether the user is sure to delete a timeslot -->

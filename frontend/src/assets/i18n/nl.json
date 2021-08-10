@@ -208,8 +208,7 @@
         "form": {
           "title": "Wijzig openingsdagen",
           "addButton": "Voeg nieuwe openingsperiode toe",
-          "startsAt": "Begint op",
-          "endsAt": "Eindigt op",
+          "date": "Datum",
           "openingTime": "Openingstijd",
           "closingTime": "Sluitingstijd",
           "reservable": "Reserveerbaar vanaf",
@@ -227,9 +226,9 @@
           "noCalendarPeriodsForLocation": "Op dit moment zijn er nog geen periodes voor de ruimte beschikbaar."
         },
         "addModalView": {
-          "title": "Nieuwe kalenderperiode toevoegen",
-          "success": "Het toevoegen van de nieuwe kalenderperiode is gelukt.",
-          "error": "Er is iets misgelopen tijdens het toevoegen van de nieuwe kalenderperiode."
+          "title": "Nieuw tijdslot toevoegen",
+          "success": "Het toevoegen van de nieuwe tijdsloten is gelukt.",
+          "error": "Er is iets misgelopen tijdens het toevoegen van de nieuwe tijdsloten."
         },
         "updateModalView": {
           "title": "Wijzigen van een kalenderperiode",

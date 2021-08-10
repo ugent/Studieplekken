@@ -47,10 +47,10 @@ export class TimeslotsService {
     return this.statusCache.getValue(locationId, url, invalidateCache);
   }
 
-  addCalendarPeriods(calendarPeriods: CalendarPeriod[]): Observable<void> {
+  addTimeslot(calendarPeriods: Timeslot): Observable<void> {
     return this.http.post<void>(
-      api.addCalendarPeriods,
-      calendarPeriods.map((s) => s.toJSON())
+      api.addTimeslots,
+      calendarPeriods.toJSON()
     );
   }
 
@@ -60,7 +60,7 @@ export class TimeslotsService {
    * the controller layer, and the correct add/delete/update methods to be called
    * will be invoked.
    */
-  updateCalendarPeriod(
+  updateTimeslot(
     locationId: number,
     from: CalendarPeriod[],
     to: CalendarPeriod

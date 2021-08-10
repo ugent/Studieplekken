@@ -60,7 +60,24 @@ export class Timeslot {
       timeslotSeqnr: this.timeslotSequenceNumber,
       timeslotDate: this.timeslotDate.format('YYYY-MM-DD'),
       seatCount: this.seatCount,
+      openingHour: this.openingHour.format("HH:mm"),
+      closingHour: this.closingHour.format("HH:mm"),
+      reservable: this.reservable,
+      reservableFrom: this.reservableFrom ? this.reservableFrom.toISOString():null,
+      locationId: this.locationId
     };
+  }
+
+  isValid() {
+    if(!this.timeslotDate || !this.openingHour || !this.closingHour) {
+      return false;
+    }
+
+    if(this.reservable && !this.reservableFrom) {
+      return false;
+    }
+
+    return true;
   }
 
   areReservationsLocked(): boolean {
