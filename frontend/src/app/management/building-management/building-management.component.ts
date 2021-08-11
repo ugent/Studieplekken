@@ -10,24 +10,7 @@ import {
 import { BuildingService } from 'src/app/services/api/buildings/buildings.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
-import * as Leaf from 'leaflet';
 import {AddressResolverService} from "src/app/services/addressresolver/nomenatim/addressresolver.service";
-
-// Leaflet stuff.
-const iconRetinaUrl = './assets/marker-icon-2x.png';
-const iconUrl = './assets/marker-icon.png';
-const shadowUrl = './assets/marker-shadow.png';
-const iconDefault = Leaf.icon({
-  iconRetinaUrl,
-  iconUrl,
-  shadowUrl,
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  tooltipAnchor: [16, -28],
-  shadowSize: [41, 41]
-});
-Leaf.Marker.prototype.options.icon = iconDefault;
 import { of } from 'rxjs/internal/observable/of';
 import { map } from 'rxjs/internal/operators/map';
 
@@ -54,10 +37,6 @@ export class BuildingManagementComponent implements OnInit {
   successUpdatingBuilding: boolean = undefined;
   successDeletingBuilding: boolean = undefined;
   showDelete: boolean = this.authenticationService.isAdmin();
-
-  leafletMap: Leaf.Map;
-  @ViewChild('leafletMapElementAdding', { static: false }) leafletMapElementAdding: ElementRef;
-  @ViewChild('leafletMapElementUpdating', { static: false }) leafletMapElementUpdating: ElementRef;
 
   isLoadingAddress: boolean;
   isCorrectAddress: boolean;
