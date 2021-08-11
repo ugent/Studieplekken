@@ -19,3 +19,7 @@
 h1.inline-block {
   display: inline-block;
 }
+
+#leafletMap {
+  height: 450px;
+}

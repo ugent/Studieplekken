@@ -372,8 +372,11 @@
       "table": {
         "name": "Name",
         "address": "Address",
+        "latitude": "Latitude",
+        "longitude": "Longitude",
         "institution": "Institution"
       },
+      "checkAddress": "Check",
       "addNewBuilding": "New building",
       "addBuildingModal": {
         "title": "Add new building",
