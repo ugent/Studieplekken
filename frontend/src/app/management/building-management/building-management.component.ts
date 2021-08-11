@@ -243,7 +243,7 @@ export class BuildingManagementComponent implements OnInit {
     this.addressResolver.query(address.value).subscribe(r => {
       this.isLoadingAddress = false;
 
-      if(r.length == 1) {
+      if(r.length >= 1) {
         this.isCorrectAddress = true;
         this.buildingFormGroup.setValue(
           {
