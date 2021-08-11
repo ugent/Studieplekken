@@ -24,6 +24,7 @@ import {
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { ConversionToCalendarEventService } from '../../services/styling/CalendarEvent/conversion-to-calendar-event.service';
 import * as Leaf from 'leaflet';
+import { environment } from 'src/environments/environment';
 
 // Leaflet stuff.
 const iconRetinaUrl = './assets/marker-icon-2x.png';
@@ -404,7 +405,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
       zoomOffset: -1,
       // Token has restriction to only work with https://studieplekken.ugent.be, https://studieplekken-dev.ugent.be and
       // https://localhost:4200. Token created by Ieben Smessaert (iesmessa).
-      accessToken: 'pk.eyJ1Ijoic21lc3NpZSIsImEiOiJja3JnMzR2ZXEwZG82MnVrd3l5NHFnYTk1In0.jER8bBqoIeiNrKX-HGlrZQ',
+      accessToken: environment.accessToken,
       maxZoom: 25
     });
 
