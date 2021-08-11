@@ -20,7 +20,7 @@
           <td>{{location.numberOfSeats}}</td>
           <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
 
-            <div *ngIf="location.currentTimeslot; then scannableTemplate else notScannableTemplate">
+            <div *ngIf="isScannable(location); then scannableTemplate else notScannableTemplate">
             </div>
 
             <ng-template #scannableTemplate>

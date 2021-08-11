@@ -3,6 +3,7 @@ package blok2.daos;
 import blok2.model.calendar.Timeslot;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ITimeslotDAO {
 
@@ -17,4 +18,6 @@ public interface ITimeslotDAO {
     void deleteTimeslot(Timeslot timeslot);
 
     void updateTimeslot(Timeslot timeslot);
+
+    Optional<Timeslot> getCurrentOrNextTimeslot(int locationId);
 }

@@ -182,12 +182,12 @@ public class TestSharedMethods {
 
             LocalTime mondayStartTime = LocalTime.of(8,0);
             LocalTime mondayEndTime = LocalTime.of(16,30);
-            Timeslot timeslotMonday = new Timeslot((int) Math.random(), date.atDay(DayOfWeek.MONDAY), mondayStartTime, mondayEndTime, true, reservableFrom, location.getNumberOfSeats(), location.getLocationId());
+            Timeslot timeslotMonday = new Timeslot(null, date.atDay(DayOfWeek.MONDAY), mondayStartTime, mondayEndTime, true, reservableFrom, location.getNumberOfSeats(), location.getLocationId());
 
 
             LocalTime fridayStartTime = LocalTime.of(12,0);
             LocalTime fridayEndTime = LocalTime.of(20, 0);
-            Timeslot timeslotFriday = new Timeslot((int) Math.random(), date.atDay(DayOfWeek.FRIDAY), fridayStartTime, fridayEndTime, true, reservableFrom, location.getNumberOfSeats(), location.getLocationId());
+            Timeslot timeslotFriday = new Timeslot(null, date.atDay(DayOfWeek.FRIDAY), fridayStartTime, fridayEndTime, true, reservableFrom, location.getNumberOfSeats(), location.getLocationId());
 
             timeslots.add(timeslotMonday);
             timeslots.add(timeslotFriday);
@@ -208,7 +208,7 @@ public class TestSharedMethods {
 
         LocalTime startTime = now.toLocalTime().plusMinutes(1);
         LocalTime endTime = now.toLocalTime().plusMinutes(2);
-        Timeslot timeslot = new Timeslot((int) Math.random(), past.atDay(DayOfWeek.MONDAY), startTime, endTime, true, now.minusDays(3), location.getNumberOfSeats(), location.getLocationId());
+        Timeslot timeslot = new Timeslot(null, past.atDay(DayOfWeek.MONDAY), startTime, endTime, true, now.minusDays(3), location.getNumberOfSeats(), location.getLocationId());
 
         return Collections.singletonList(timeslot);
     }
@@ -225,7 +225,7 @@ public class TestSharedMethods {
 
         LocalTime startTime = now.toLocalTime().plusMinutes(1);
         LocalTime endTime = now.toLocalTime().plusMinutes(2);
-        Timeslot timeslot = new Timeslot((int) Math.random(), past.atDay(now.getDayOfWeek()), startTime, endTime, true, now.minusDays(3), location.getNumberOfSeats(), location.getLocationId());
+        Timeslot timeslot = new Timeslot(null, past.atDay(now.getDayOfWeek()), startTime, endTime, true, now.minusDays(3), location.getNumberOfSeats(), location.getLocationId());
 
         return Collections.singletonList(timeslot);
 
@@ -247,7 +247,7 @@ public class TestSharedMethods {
 
         LocalTime startTime = now.toLocalTime().plusMinutes(1);
         LocalTime endTime = now.toLocalTime().plusMinutes(2);
-        Timeslot timeslot = new Timeslot((int) Math.random(), past.atDay(now.getDayOfWeek()), startTime, endTime, true, now.minusDays(3), location.getNumberOfSeats(), location.getLocationId());
+        Timeslot timeslot = new Timeslot(null, past.atDay(now.getDayOfWeek()), startTime, endTime, true, now.minusDays(3), location.getNumberOfSeats(), location.getLocationId());
 
 
 
@@ -272,7 +272,7 @@ public class TestSharedMethods {
 
         LocalTime startTime = now.toLocalTime().minusMinutes(1);
         LocalTime endTime = now.toLocalTime().plusMinutes(1);
-        Timeslot timeslot = new Timeslot((int) Math.random(), past.atDay(now.getDayOfWeek()), startTime, endTime, true, now.minusDays(3), location.getNumberOfSeats(), location.getLocationId());
+        Timeslot timeslot = new Timeslot(null, past.atDay(now.getDayOfWeek()), startTime, endTime, true, now.minusDays(3), location.getNumberOfSeats(), location.getLocationId());
 
 
 

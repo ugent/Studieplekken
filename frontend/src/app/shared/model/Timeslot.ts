@@ -102,6 +102,10 @@ export class Timeslot {
     )
   }
 
+  isCurrent() {
+    return this.getStartMoment().isBefore(moment()) && this.getEndMoment().isAfter(moment())
+  }
+
 }
 
 

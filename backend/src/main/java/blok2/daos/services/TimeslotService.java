@@ -4,9 +4,14 @@ import blok2.daos.ITimeslotDAO;
 import blok2.daos.repositories.TimeslotRepository;
 import blok2.model.calendar.Timeslot;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.threeten.extra.YearWeek;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TimeslotService implements ITimeslotDAO {
@@ -56,5 +61,12 @@ public class TimeslotService implements ITimeslotDAO {
         original.setReservableFrom(timeslot.getReservableFrom());
 
         timeslotRepository.save(original);
+    }
+
+    @Override
+    public Optional<Timeslot> getCurrentOrNextTimeslot(int locationId) {
+        LocalDateTime time = LocalDateTime.now();
+        YearWeek week = YearWeek.from(time);
+        return this.timeslotRepository.getCurrentOrNextTimeslot(locationId, week.getYear(), week.getWeek(), time.getDayOfWeek(), LocalTime.from(time), PageRequest.of(0,1)).stream().findFirst();
     }
 }
