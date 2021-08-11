@@ -8,29 +8,33 @@
   <div class="row" *ngIf="buildingsObs | async as buildings">
     <table style="width: 100%;" *ngIf="buildings.length > 0; else noBuilding">
       <thead>
-      <tr>
-        <th>{{'management.buildings.table.name' | translate}}</th>
-        <th>{{'management.buildings.table.address' | translate}}</th>
-        <th><!-- update --></th>
-        <th><!-- delete --></th>
-      </tr>
+        <tr>
+          <th>{{'management.buildings.table.name' | translate}}</th>
+          <th>{{'management.buildings.table.address' | translate}}</th>
+          <th>
+            <!-- update -->
+          </th>
+          <th>
+            <!-- delete -->
+          </th>
+        </tr>
       </thead>
 
       <tbody>
-      <tr *ngFor="let building of buildings">
-        <td>{{building.name}}</td>
-        <td>{{building.address}}</td>
-        <!-- Edit icon -->
-        <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
-            data-toggle="modal" (click)="prepareUpdate(building, updateBuildingModal)">
-          <span class="glyphicon glyphicon-pencil pointerCursor"></span>
-        </td>
-        <!-- Delete glyphicon -->
-        <td data-toggle="modal" class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
+        <tr *ngFor="let building of buildings">
+          <td>{{building.name}}</td>
+          <td>{{building.address}}</td>
+          <!-- Edit icon -->
+          <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px" data-toggle="modal"
+            (click)="prepareUpdate(building, updateBuildingModal)">
+            <span class="glyphicon glyphicon-pencil pointerCursor"></span>
+          </td>
+          <!-- Delete glyphicon -->
+          <td data-toggle="modal" class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
             (click)="prepareToDelete(building, deleteBuildingModal)">
-          <span class="glyphicon glyphicon-trash pointerCursor"></span>
-        </td>
-      </tr>
+            <span class="glyphicon glyphicon-trash pointerCursor"></span>
+          </td>
+        </tr>
       </tbody>
     </table>
 
@@ -81,13 +85,19 @@
         </div>
       </div>
 
-      <!-- Address of building -->
+      <!-- Building address -->
       <div class="row form-group">
-        <label class="col-lg-3 control-label" for="addressAdd">
+        <label class="col-lg-3 control-label" for="addressUpdate">
           {{'management.buildings.table.address' | translate}}<span style="color: red; margin-left: 5px;">*</span>
         </label>
-        <div class="col-lg-8">
-          <input class="form-control" id="addressAdd" type="text" formControlName="address">
+        <div class="col-lg-6">
+          <input class="form-control" id="addressUpdate" type="text" formControlName="address">
+        </div>
+        <div class="col-lg-1 icon">
+          <span class="icon glyphicon {{getAddressIcon()}}"></span>
+        </div>
+        <div class="col-lg-1">
+          <button class="btn btn-secondary" (click)="checkAddress()">{{'management.buildings.checkAddress' | translate}}</button>
         </div>
       </div>
 
@@ -110,47 +120,12 @@
           </div>
         </div>
       </div>
-
-      <!-- Coordinates of building -->
-      <div class="row">
-        <div class="col-lg-11">
-          <div class="row">
-            <div class="col-md-6">
-              <div class="row form-group">
-                <label class="col-lg-5 control-label" for="latitudeAdd">
-                  {{'management.buildings.table.latitude' | translate}}<span
-                  style="color: red; margin-left: 5px;">*</span>
-                </label>
-                <div class="col-lg-7">
-                  <input class="form-control" id="latitudeAdd" type="number" formControlName="latitude">
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="row form-group">
-                <label class="col-lg-5 control-label" for="longitudeAdd">
-                  {{'management.buildings.table.longitude' | translate}}<span
-                  style="color: red; margin-left: 5px;">*</span>
-                </label>
-                <div class="col-lg-7">
-                  <input class="form-control" id="longitudeAdd" type="number" formControlName="longitude">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-11">
-          <div #leafletMapElementAdding></div>
-        </div>
-      </div>
     </form>
   </div>
 
   <!-- Modal footer -->
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary"
-            [disabled]="!validBuildingFormGroup()"
-            (click)="addBuilding()">
+    <button type="submit" class="btn btn-primary" [disabled]="!validBuildingFormGroup()" (click)="addBuilding()">
       {{'general.buttons.add' | translate}}
     </button>
     <button type="button" class="btn btn-primary" (click)="closeModal()">
@@ -205,43 +180,17 @@
         <label class="col-lg-3 control-label" for="addressUpdate">
           {{'management.buildings.table.address' | translate}}<span style="color: red; margin-left: 5px;">*</span>
         </label>
-        <div class="col-lg-8">
+        <div class="col-lg-6">
           <input class="form-control" id="addressUpdate" type="text" formControlName="address">
+        </div>
+        <div class="col-lg-1 icon">
+          <span class="icon glyphicon {{getAddressIcon()}}"></span>
+        </div>
+        <div class="col-lg-1">
+          <button class="btn btn-secondary" (click)="checkAddress()">{{'management.buildings.checkAddress' | translate}}</button>
         </div>
       </div>
 
-      <!-- Coordinates of building -->
-      <div class="row">
-        <div class="col-lg-11">
-          <div class="row">
-            <div class="col-md-6">
-              <div class="row form-group">
-                <label class="col-lg-5 control-label" for="latitudeUpdate">
-                  {{'management.buildings.table.latitude' | translate}}<span
-                  style="color: red; margin-left: 5px;">*</span>
-                </label>
-                <div class="col-lg-7">
-                  <input class="form-control" id="latitudeUpdate" type="number" formControlName="latitude">
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="row form-group">
-                <label class="col-lg-5 control-label" for="longitudeUpdate">
-                  {{'management.buildings.table.longitude' | translate}}<span
-                  style="color: red; margin-left: 5px;">*</span>
-                </label>
-                <div class="col-lg-7">
-                  <input class="form-control" id="longitudeUpdate" type="number" formControlName="longitude">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-11">
-          <div #leafletMapElementUpdating></div>
-          </div>
-      </div>
       <!-- Institution of building -->
       <div class="row form-group" *ngIf="institutionsObs | async as institutions">
         <label class="col-lg-3 control-label" for="institutionUpdate">
@@ -266,9 +215,8 @@
 
   <!-- Modal footer -->
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary"
-            [disabled]="!validBuildingFormGroup()"
-            (click)="updateBuildingInFormGroup()">
+    <button type="submit" class="btn btn-primary" [disabled]="!validBuildingFormGroup()"
+      (click)="updateBuildingInFormGroup()">
       {{'general.buttons.update' | translate}}
     </button>
     <button type="button" class="btn btn-primary" (click)="closeModal()">
@@ -314,16 +262,17 @@
       </div>
 
       <ul>
-        <li><b style="margin-right: 5px"><i>{{('management.buildings.table.name' | translate) + ':   '}}</i></b>{{building.name}}</li>
-        <li><b style="margin-right: 5px"><i>{{('management.buildings.table.address' | translate)}}</i></b>{{building.address}}</li>
+        <li><b style="margin-right: 5px"><i>{{('management.buildings.table.name' | translate) + ':
+              '}}</i></b>{{building.name}}</li>
+        <li><b style="margin-right: 5px"><i>{{('management.buildings.table.address' |
+              translate)}}</i></b>{{building.address}}</li>
       </ul>
     </div>
   </div>
 
   <!-- Footer -->
   <div class="modal-footer">
-    <button type="button" class="btn btn-danger danger"
-            (click)="deleteBuildingInFormGroup()">
+    <button type="button" class="btn btn-danger danger" (click)="deleteBuildingInFormGroup()">
       {{'general.buttons.delete' | translate}}
     </button>
     <button type="button" class="btn btn-secondary" (click)="closeModal()">
@@ -345,5 +294,3 @@
     </div>
   </div>
 </ng-template>
-
-

@@ -376,6 +376,7 @@
         "longitude": "Lengtegraad",
         "institution": "Institutie"
       },
+      "checkAddress": "Check",
       "addNewBuilding": "Nieuw gebouw",
       "addBuildingModal": {
         "title": "Nieuw gebouw maken",

@@ -11,6 +11,7 @@ import { BuildingService } from 'src/app/services/api/buildings/buildings.servic
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import * as Leaf from 'leaflet';
+import {AddressResolverService} from "src/app/services/addressresolver/nomenatim/addressresolver.service";
 
 // Leaflet stuff.
 const iconRetinaUrl = './assets/marker-icon-2x.png';
@@ -58,10 +59,14 @@ export class BuildingManagementComponent implements OnInit {
   @ViewChild('leafletMapElementAdding', { static: false }) leafletMapElementAdding: ElementRef;
   @ViewChild('leafletMapElementUpdating', { static: false }) leafletMapElementUpdating: ElementRef;
 
+  isLoadingAddress: boolean;
+  isCorrectAddress: boolean;
+
   constructor(
     private buildingService: BuildingService,
     private modalService: BsModalService,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private addressResolver: AddressResolverService
   ) {
   }
 
@@ -165,7 +170,6 @@ export class BuildingManagementComponent implements OnInit {
     });
 
     this.modalService.show(template);
-    this.setupLeafletMap(this.leafletMapElementAdding.nativeElement);
   }
 
   addBuilding(): void {
@@ -194,8 +198,10 @@ export class BuildingManagementComponent implements OnInit {
     // prepare the tagFormGroup
     this.prepareFormGroup(building);
 
+    this.isCorrectAddress = true;
+    this.isLoadingAddress = false;
+
     this.modalService.show(template);
-    this.setupLeafletMap(this.leafletMapElementUpdating.nativeElement);
   }
 
   updateBuildingInFormGroup(): void {
@@ -241,47 +247,46 @@ export class BuildingManagementComponent implements OnInit {
   }
 
   validBuildingFormGroup(): boolean {
-    return !this.buildingFormGroup.invalid;
+    return !this.buildingFormGroup.invalid && !this.isLoadingAddress && this.isCorrectAddress;
   }
 
-  setupLeafletMap(leafletMapElement): void {
-    if (this.leafletMap) {
-      this.leafletMap.off();
-      this.leafletMap.remove();
-    }
-
-    const originalTile = Leaf.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-      id: 'mapbox/streets-v11',
-      tileSize: 512,
-      zoomOffset: -1,
-      // Token has restriction to only work with https://studieplekken.ugent.be, https://studieplekken-dev.ugent.be and
-      // https://localhost:4200. Token created by Ieben Smessaert (iesmessa).
-      accessToken: 'pk.eyJ1Ijoic21lc3NpZSIsImEiOiJja3JnMzR2ZXEwZG82MnVrd3l5NHFnYTk1In0.jER8bBqoIeiNrKX-HGlrZQ',
-      maxZoom: 25
-    });
-
-    // Use coordinates of UFO as placeholder.
-    const coordinates = new Leaf.LatLng(51.0466368, 3.72738899573349);
-    this.leafletMap = new Leaf.Map(leafletMapElement, {
-      center: coordinates,
-      zoom: 18,
-      layers: [originalTile]
-    });
-    new Leaf.Marker(coordinates).addTo(this.leafletMap);
-
-    // tslint:disable-next-line:no-shadowed-variable
-    this.leafletMap.on('click', <LeafletMouseEvent>(e) => {
-      const coords = e.latlng;
-      this.latitude.setValue(coords.latitude);
-      this.longitude.setValue(coords.longitude);
-    });
-  }
-  
   fillInstitutionsDependingOnUser(): void {
     if (this.authenticationService.isAdmin()) {
       this.institutionsObs = of(['UGent', 'HoGent', 'Arteveldehogeschool']);
     } else {
       this.institutionsObs = of([this.authenticationService.userValue().institution]);
     }
+  }
+
+  checkAddress() {
+    const address = this.address;
+    this.isLoadingAddress = true;
+    this.addressResolver.query(address.value).subscribe(r => {
+      this.isLoadingAddress = false;
+
+      if(r.length == 1) {
+        this.isCorrectAddress = true;
+        this.buildingFormGroup.setValue(
+          {
+            buildingId: this.buildingId.value,
+            address: this.address.value,
+            name: this.name.value,
+            latitude: r[0].lat,
+            longitude: r[0].lon,
+            institution: this.institution.value
+          }
+        )
+      } else {
+        this.isCorrectAddress = false;
+      }
+    })
+  }
+
+  getAddressIcon() {
+    if(this.isLoadingAddress) {
+      return "glyphicon-refresh waiting"
+    }
+
+    return this.isCorrectAddress ? "glyphicon-ok-circle ok": "glyphicon-remove-circle no"
   }
 }
