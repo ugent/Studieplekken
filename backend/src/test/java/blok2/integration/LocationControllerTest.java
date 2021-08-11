@@ -32,7 +32,7 @@ public class LocationControllerTest extends BaseIntegrationTest {
     public void testGetAllLocations() throws Exception {
         mockMvc.perform(get("/locations")).andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2)); // only approved location
+                .andExpect(jsonPath("$.length()").value(locations.size())); // only approved location
     }
 
     @Test
@@ -40,7 +40,7 @@ public class LocationControllerTest extends BaseIntegrationTest {
     public void testGetAllUnapprovedLocations() throws Exception {
         mockMvc.perform(get("/locations/unapproved")).andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(1));
+                .andExpect(jsonPath("$.length()").value(unapprovedLocations.size()));
     }
 
     @Test

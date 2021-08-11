@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 @AutoConfigureMockMvc
@@ -50,10 +51,14 @@ public abstract class BaseIntegrationTest extends BaseTest {
     protected Location testLocation;
     protected Location testLocationHoGent;
     protected Location testLocationUnapproved;
+    protected List<Location> locations = new ArrayList<>();
+    protected List<Location> unapprovedLocations = new ArrayList<>();
+
 
     protected Authority authority;
     protected Building testBuilding;
     protected Building testBuildingHoGent;
+    protected List<Building> buildings = new ArrayList<>();
 
     protected User admin;
     protected User student;
@@ -75,17 +80,23 @@ public abstract class BaseIntegrationTest extends BaseTest {
         authority = TestSharedMethods.insertTestAuthority(authorityDao);
         testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
         testBuildingHoGent = buildingDao.addBuilding(TestSharedMethods.testBuildingHoGent());
+        buildings.add(testBuilding);
+        buildings.add(testBuildingHoGent);
 
         testLocation = TestSharedMethods.testLocation(authority.clone(), testBuilding);
         locationDao.addLocation(testLocation);
         locationDao.approveLocation(testLocation, true);
         testLocationUnapproved = TestSharedMethods.testLocation2(authority.clone(), testBuilding);
         locationDao.addLocation(testLocationUnapproved);
+        locations.add(testLocation);
+        unapprovedLocations.add(testLocationUnapproved);
+
 
         testLocationHoGent = TestSharedMethods.testLocation(authority.clone(), testBuildingHoGent);
         testLocationHoGent.setName("TestLocation HoGent");
         locationDao.addLocation(testLocationHoGent);
         locationDao.approveLocation(testLocationHoGent, true);
+        locations.add(testLocationHoGent);
 
         // CALENDAR PERIOD
         calendarPeriods = TestSharedMethods.testCalendarPeriods(testLocation);

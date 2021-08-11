@@ -71,7 +71,7 @@ public class Building implements Cloneable {
         Building building = (Building) o;
         return buildingId == building.buildingId &&
                 name.equals(building.name) &&
-                institution.equals(building.institution);
+                Objects.equals(institution, building.institution);
     }
 
     @Override

@@ -35,9 +35,16 @@ public class AccountControllerTest extends BaseIntegrationTest {
     }
 
     @Test
+    @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
+    public void testGetUserFromOtherInstitutionSuccess() throws Exception {
+        mockMvc.perform(get("/account/id?id=" + authHolderHoGent.getUserId())).andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
     @WithUserDetails(value = "authholder", userDetailsServiceBeanName = "testUserDetails")
     public void testGetUserFromOtherInstitutionForbidden() throws Exception {
-        mockMvc.perform(get("/account/id?id=" + student.getUserId())).andDo(print())
-                .andExpect(status().isOk());
+        mockMvc.perform(get("/account/id?id=" + authHolderHoGent.getUserId())).andDo(print())
+                .andExpect(status().isNotFound());
     }
 }
