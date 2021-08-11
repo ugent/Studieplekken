@@ -530,6 +530,10 @@
         "reservations": {
           "title": "Reservations of {name}"
         }
+      },
+      "admins": {
+        "addNewButton": "Add admin",
+        "addNewHeader": "Search and add admin"
       }
     },
     "authorities": {
@@ -704,7 +708,8 @@
       "no-volunteers": "There are no supervisors for this location yet.",
       "errorOnLoadingManageableLocations": "Could not fetch the locations that you can manage.",
       "errorOnLoadingVolunteers": "Could not fetch the supervisors for this location.",
-      "addNewButton": "Add supervisor"
+      "addNewButton": "Add supervisor",
+      "addNewHeader": "Search and add supervisor"
     }
   },
   "profile": {

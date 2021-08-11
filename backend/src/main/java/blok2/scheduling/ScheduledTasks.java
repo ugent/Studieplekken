@@ -102,7 +102,7 @@ public class ScheduledTasks {
     @Scheduled(cron = "0 0 21 * * *")
     public void mailToUnattendedStudents() {
         List<Pair<LocationReservation, CalendarPeriod>> reservations =
-                locationReservationDao.getUnattendedLocationReservations(LocalDate.now());
+                locationReservationDao.getUnattendedLocationReservationsWith21PMRestriction(LocalDate.now());
 
         logger.info(String.format("Running scheduled task mailToUnattendedStudents() for %d recipients.",
                 reservations.size()));

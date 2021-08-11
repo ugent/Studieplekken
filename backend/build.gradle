@@ -55,6 +55,7 @@ dependencies {
     implementation 'org.flywaydb.flyway-test-extensions:flyway-test-extensions:6.4.0'
     implementation 'org.flywaydb.flyway-test-extensions:flyway-spring5-test:6.4.0'
     implementation 'org.hibernate:hibernate-core:5.4.30.Final'
+    implementation 'org.springframework:spring-aspects:3.2.4.RELEASE'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.2.2.RELEASE'
     testImplementation 'org.springframework.security:spring-security-test'

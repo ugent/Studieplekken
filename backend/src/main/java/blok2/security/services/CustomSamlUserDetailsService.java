@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @Service
 public class CustomSamlUserDetailsService implements SAMLUserDetailsService {
@@ -25,7 +24,7 @@ public class CustomSamlUserDetailsService implements SAMLUserDetailsService {
     private final String hoGentIdp;
     private final String arteveldeHSIdp;
 
-    private final Logger logger = LoggerFactory.getLogger(CustomUserDetailsService.class);
+    private final Logger logger = LoggerFactory.getLogger(CustomSamlUserDetailsService.class);
 
     private final IUserDao userDao;
 
@@ -58,6 +57,7 @@ public class CustomSamlUserDetailsService implements SAMLUserDetailsService {
 
             // Determine institution depending on the remote entity ID.
             if (!this.idpToInstitution.containsKey(credential.getRemoteEntityID())) {
+                this.logger.error("User with email '" + credential.getNameID().getValue() + "' trying to login for the first time with unknown IDP '" + credential.getRemoteEntityID() + "'. Did an institution their EntityID change?");
                 throw new InvalidRequestParametersException("User with email '" + credential.getNameID().getValue() + "' trying to login for the first time with unknown IDP '" + credential.getRemoteEntityID() + "'. Did an institution their EntityID change?");
             }
             String institution = this.idpToInstitution.get(credential.getRemoteEntityID());
@@ -77,7 +77,8 @@ public class CustomSamlUserDetailsService implements SAMLUserDetailsService {
                 user.setLastName(credential.getAttributeAsString("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname"));
                 user.setUserId(credential.getAttributeAsString("http://schemas.microsoft.com/identity/claims/objectidentifier"));
             } else {
-                user.setUserId(UUID.randomUUID().toString());
+                this.logger.error("User with email '" + credential.getNameID().getValue() + "' trying to login for the first time with unknown IDP '" + credential.getRemoteEntityID() + "'. Did you forget to add a clause to fill in the attributes for this IdP?");
+                throw new InvalidRequestParametersException("User with email '" + credential.getNameID().getValue() + "' trying to login for the first time with unknown IDP '" + credential.getRemoteEntityID() + "'. Did you forget to add a clause to fill in the attributes for this IdP?");
             }
             userDao.addUser(user);
         }
