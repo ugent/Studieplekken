@@ -17,6 +17,9 @@ repositories {
     maven {
         url = uri('http://repo.maven.apache.org/maven2')
     }
+    maven {
+        url = uri('https://build.shibboleth.net/nexus/content/repositories/releases/')
+    }
 }
 
 dependencies {
@@ -42,6 +45,9 @@ dependencies {
     implementation 'org.springframework.security:spring-security-cas:5.3.4.RELEASE'
     implementation 'org.springframework.ldap:spring-ldap-core:2.3.3.RELEASE'
 
+    implementation 'org.springframework.security.extensions:spring-security-saml2-core:1.0.10.RELEASE'
+    implementation 'com.github.ulisesbocchio:spring-boot-security-saml:1.17'
+
     implementation 'net.sf.barcode4j:barcode4j:2.1'
     implementation 'com.icegreen:greenmail-spring:1.5.13'
     implementation 'org.postgresql:postgresql:42.2.0'
@@ -49,6 +55,7 @@ dependencies {
     implementation 'org.flywaydb.flyway-test-extensions:flyway-test-extensions:6.4.0'
     implementation 'org.flywaydb.flyway-test-extensions:flyway-spring5-test:6.4.0'
     implementation 'org.hibernate:hibernate-core:5.4.30.Final'
+    implementation 'org.springframework:spring-aspects:3.2.4.RELEASE'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.2.2.RELEASE'
     testImplementation 'org.springframework.security:spring-security-test'

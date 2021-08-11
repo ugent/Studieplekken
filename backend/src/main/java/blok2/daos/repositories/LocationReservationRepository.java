@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface LocationReservationRepository extends JpaRepository<LocationReservation, LocationReservation.LocationReservationId> {
@@ -17,6 +18,9 @@ public interface LocationReservationRepository extends JpaRepository<LocationRes
 
     @Query("select lr from LocationReservation lr where lr.id.timeslotDate = ?1 and lr.attended = false")
     List<LocationReservation> findAllUnattendedByDate(LocalDate date);
+
+    @Query("select lr from LocationReservation lr where (lr.id.timeslotDate = ?1 or lr.id.timeslotDate = ?2) and lr.updatedAt >= ?3 and lr.updatedAt < ?4 and lr.attended = false")
+    List<LocationReservation> findAllUnattendedByDateAnd21PMRestriction(LocalDate date, LocalDate dayBefore, LocalDateTime yesterday21PM, LocalDateTime today21PM);
 
     @Query("select lr from LocationReservation lr where lr.id.timeslotSequenceNumber = ?1 and lr.id.timeslotDate = ?2 and lr.id.calendarId = ?3 and lr.attended is null")
     List<LocationReservation> findAllUnattendedByTimeslot(int sequenceNumber, LocalDate date, int calendarId);

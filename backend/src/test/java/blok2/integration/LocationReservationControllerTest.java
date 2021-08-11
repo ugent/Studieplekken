@@ -1,5 +1,7 @@
 package blok2.integration;
 
+import blok2.helpers.Pair;
+import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
 import org.json.JSONObject;
@@ -9,7 +11,11 @@ import org.springframework.security.test.context.support.WithSecurityContextTest
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -19,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @TestExecutionListeners(WithSecurityContextTestExecutionListener.class)
-public class RegistrationControllerTest extends BaseIntegrationTest {
+public class LocationReservationControllerTest extends BaseIntegrationTest {
 
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
@@ -205,7 +211,7 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
         Assert.assertEquals(false, list.get(1).getAttended());
 
         // when a user is set to unattended, the spot must be released so that others can make a reservation
-        Assert.assertEquals(timeslot.getAmountOfReservations()-1, timeslotAfterUpdate.getAmountOfReservations());
+        Assert.assertEquals(timeslot.getAmountOfReservations() - 1, timeslotAfterUpdate.getAmountOfReservations());
     }
 
     @Test
@@ -286,5 +292,53 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
         Assert.assertEquals(true, list.get(0).getAttended());
 
     }
-    
+
+    @Test
+    @WithUserDetails(value = "authholderHoGent", userDetailsServiceBeanName = "testUserDetails")
+    public void testGetReservationsOfTimeslotOfOtherInstitutionForbidden() throws Exception {
+        int calendarPeriodId = calendarPeriods.get(0).getId();
+        Timeslot timeslot = calendarPeriodDao.getById(calendarPeriodId).getTimeslots().get(0);
+        LocalDate date = timeslot.getTimeslotDate();
+
+        mockMvc.perform(get(String.format("/locations/reservations/timeslot/%d/%s/%d", calendarPeriodId,
+                    date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                    timeslot.getTimeslotSeqnr())).with(csrf()))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithUserDetails(value = "authholderHoGent", userDetailsServiceBeanName = "testUserDetails")
+    public void testDeleteReservationAsAuthorityOtherInstitutionUnauthorized() throws Exception {
+        Timeslot timeslot = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
+
+        LocationReservation reservation = new LocationReservation(student, timeslot, false);
+
+        mockMvc.perform(delete("/locations/reservations").with(csrf())
+                .content(objectMapper.writeValueAsString(reservation)).contentType("application/json")).andDo(print())
+                .andExpect(status().isForbidden());
+
+        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
+        Assert.assertEquals(2, list.size());
+    }
+
+    @Test
+    @WithUserDetails(value = "authholderHoGent", userDetailsServiceBeanName = "testUserDetails")
+    public void testSetAttendanceAsAuthorityOtherInstitutionUnauthorized() throws Exception {
+        Timeslot timeslot = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
+
+        String url = String.format("/locations/reservations/%s/%d/%s/%d/attendance",
+                student.getUserId(), timeslot.getCalendarId(),
+                timeslot.getTimeslotDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                timeslot.getTimeslotSeqnr());
+
+        JSONObject obj = new JSONObject().put("attended", true);
+
+        mockMvc.perform(post(url).with(csrf()).content(obj.toString()).contentType("application/json")).andDo(print())
+                .andExpect(status().isForbidden());
+
+        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
+        Assert.assertNull(list.get(0).getAttended());
+    }
+
 }

@@ -26,12 +26,16 @@ public class Building implements Cloneable {
     @Column(name = "longitude")
     private double longitude;
 
+    @Column(name = "institution")
+    private String institution;
+
     public Building() {}
 
-    public Building(int buildingId, String name, String address) {
+    public Building(int buildingId, String name, String address, String institution) {
         this.buildingId = buildingId;
         this.name = name;
         this.address = address;
+        this.institution = institution;
     }
 
     public int getBuildingId() {
@@ -74,13 +78,22 @@ public class Building implements Cloneable {
         this.longitude = longitude;
     }
 
+    public String getInstitution() {
+        return institution;
+    }
+
+    public void setInstitution(String institution) {
+        this.institution = institution;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Building)) return false;
         Building building = (Building) o;
         return buildingId == building.buildingId &&
-                name.equals(building.name);
+                name.equals(building.name) &&
+                Objects.equals(institution, building.institution);
     }
 
     @Override

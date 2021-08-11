@@ -2,6 +2,7 @@ package blok2.mail;
 
 import blok2.BaseTest;
 import blok2.TestSharedMethods;
+import blok2.helpers.Institution;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.reservables.Location;
@@ -42,7 +43,7 @@ public class MailServiceTest extends BaseTest {
     @Test
     public void exampleLocationCreatedMailTest() throws MessagingException {
         Authority authority = new Authority(1, "Test autoriteit", "Test authority");
-        Building building = new Building(1, "Test gebouw", "Test building");
+        Building building = new Building(1, "Test gebouw", "Test building", Institution.UGent);
         Location location = TestSharedMethods.testLocation(authority, building);
         mailService.sendNewLocationMessage(TARGET_MAIL_ADDRESS, "Bram Van de Walle", location);
     }

@@ -27,6 +27,8 @@ const iconDefault = Leaf.icon({
   shadowSize: [41, 41]
 });
 Leaf.Marker.prototype.options.icon = iconDefault;
+import { of } from 'rxjs/internal/observable/of';
+import { map } from 'rxjs/internal/operators/map';
 
 @Component({
   selector: 'app-building-management',
@@ -35,6 +37,7 @@ Leaf.Marker.prototype.options.icon = iconDefault;
 })
 export class BuildingManagementComponent implements OnInit {
   buildingsObs: Observable<Building[]>;
+  institutionsObs: Observable<string[]>;
 
   buildingFormGroup = new FormGroup({
     buildingId: new FormControl({ value: '', disabled: true }),
@@ -42,6 +45,7 @@ export class BuildingManagementComponent implements OnInit {
     address: new FormControl('', Validators.required.bind(this)),
     latitude: new FormControl('', Validators.required.bind(this)),
     longitude: new FormControl('', Validators.required.bind(this)),
+    institution: new FormControl('', Validators.required.bind(this)),
   });
 
   successGettingBuildings: boolean = undefined;
@@ -58,7 +62,8 @@ export class BuildingManagementComponent implements OnInit {
     private buildingService: BuildingService,
     private modalService: BsModalService,
     private authenticationService: AuthenticationService
-  ) {}
+  ) {
+  }
 
   get buildingId(): AbstractControl {
     return this.buildingFormGroup.get('buildingId');
@@ -79,6 +84,10 @@ export class BuildingManagementComponent implements OnInit {
   get longitude(): AbstractControl {
     return this.buildingFormGroup.get('longitude');
   }
+  
+  get institution(): AbstractControl {
+    return this.buildingFormGroup.get('institution');
+  }
 
   // ********************
   // *   CRUD: Create   *
@@ -91,11 +100,21 @@ export class BuildingManagementComponent implements OnInit {
       address: this.address.value as string,
       latitude: this.latitude.value as number,
       longitude: this.longitude.value as number,
+      institution: this.institution.value as string,
     };
   }
 
   ngOnInit(): void {
     this.buildingsObs = this.buildingService.getAllBuildings();
+
+    // Only show the buildings the user has access to.
+    if (!this.authenticationService.isAdmin()) {
+      const institution = this.authenticationService.userValue().institution;
+      this.buildingsObs = this.buildingsObs.pipe(
+        map(items => items.filter(building => building.institution === institution))
+      );
+    }
+
     this.buildingsObs.subscribe(
       () => {
         this.successGettingBuildings = true;
@@ -104,6 +123,7 @@ export class BuildingManagementComponent implements OnInit {
         this.successGettingBuildings = false;
       }
     );
+    this.fillInstitutionsDependingOnUser();
   }
 
   // ********************
@@ -117,6 +137,7 @@ export class BuildingManagementComponent implements OnInit {
       address: building.address,
       latitude: building.latitude,
       longitude: building.longitude,
+      institution: building.institution,
     });
   }
 
@@ -140,6 +161,7 @@ export class BuildingManagementComponent implements OnInit {
       address: '',
       latitude: 0,
       longitude: 0,
+      institution: this.authenticationService.userValue().institution,
     });
 
     this.modalService.show(template);
@@ -253,5 +275,13 @@ export class BuildingManagementComponent implements OnInit {
       this.latitude.setValue(coords.latitude);
       this.longitude.setValue(coords.longitude);
     });
+  }
+  
+  fillInstitutionsDependingOnUser(): void {
+    if (this.authenticationService.isAdmin()) {
+      this.institutionsObs = of(['UGent', 'HoGent', 'Arteveldehogeschool']);
+    } else {
+      this.institutionsObs = of([this.authenticationService.userValue().institution]);
+    }
   }
 }
