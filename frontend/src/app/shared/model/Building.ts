@@ -2,6 +2,7 @@ export interface Building {
   buildingId: number;
   name: string;
   address: string;
+  institution: string;
 }
 
 export class BuildingConstructor {
@@ -10,6 +11,7 @@ export class BuildingConstructor {
       buildingId: 0,
       name: '',
       address: '',
+      institution: '',
     };
   }
 
@@ -18,6 +20,7 @@ export class BuildingConstructor {
       buildingId: obj.buildingId,
       name: obj.name,
       address: obj.address,
+      institution: obj.institution,
     };
   }
 }

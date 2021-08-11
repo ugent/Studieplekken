@@ -80,10 +80,33 @@ public class AuthorityService implements IAuthorityDao {
     }
 
     @Override
+    public List<Authority> getAuthoritiesFromUserAndInstitution(String userId, String institution) {
+        User user = userRepository.findByUserIdAndInstitution(userId, institution)
+                .orElseThrow(() -> new NoSuchDatabaseObjectException(
+                        String.format("No user found with userId '%s' and institution '%s'", userId, institution)));
+        return new ArrayList<>(user.getUserAuthorities());
+    }
+
+    @Override
     public List<Location> getLocationsInAuthoritiesOfUser(String userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchDatabaseObjectException(
                         String.format("No user found with userId '%s'", userId)));
+
+        Set<Authority> authorities = user.getUserAuthorities();
+
+        Set<Location> locations = new HashSet<>();
+        authorities.forEach(authority -> locations.addAll(locationRepository
+                .findAllByAuthorityId(authority.getAuthorityId())));
+
+        return new ArrayList<>(locations);
+    }
+
+    @Override
+    public List<Location> getLocationsInAuthoritiesOfUserAndInstitution(String userId, String institution) {
+        User user = userRepository.findByUserIdAndInstitution(userId, institution)
+                .orElseThrow(() -> new NoSuchDatabaseObjectException(
+                        String.format("No user found with userId '%s' and institution '%s'", userId, institution)));
 
         Set<Authority> authorities = user.getUserAuthorities();
 

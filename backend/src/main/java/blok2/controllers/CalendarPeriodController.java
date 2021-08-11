@@ -75,7 +75,7 @@ public class CalendarPeriodController extends  AuthorizedLocationController {
     }
 
     @PutMapping("/{locationId}")
-    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    @PreAuthorize("@authorizedInstitutionController.hasAuthorityLocation(authentication.principal, #locationId)")
     public void updateCalendarPeriods(@PathVariable("locationId") int locationId,
                                       @RequestBody UpdateCalendarBody fromAndTo) {
         isAuthorized(locationId);
@@ -198,7 +198,7 @@ public class CalendarPeriodController extends  AuthorizedLocationController {
     }
 
     @DeleteMapping
-    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    @PreAuthorize("@authorizedInstitutionController.hasAuthorityLocation(authentication.principal, #calendarPeriod.getLocation().getLocationId())")
     public void deleteCalendarPeriods(@RequestBody CalendarPeriod calendarPeriod) {
         isAuthorized(calendarPeriod.getLocation().getLocationId());
 

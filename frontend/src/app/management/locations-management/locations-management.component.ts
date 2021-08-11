@@ -17,6 +17,7 @@ import { Building } from 'src/app/shared/model/Building';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { CalendarPeriodsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
 import { CalendarPeriod } from 'src/app/shared/model/CalendarPeriod';
+import { map } from 'rxjs/internal/operators/map';
 
 @Component({
   selector: 'app-locations-management',
@@ -221,7 +222,19 @@ export class LocationsManagementComponent implements OnInit {
    * The user can always see all buildings.
    */
   setupBuildings(): void {
-    this.buildingsObs = this.buildingsService.getAllBuildings().pipe(
+    const allBuildings = this.buildingsService.getAllBuildings();
+
+    // Only show the buildings the user has access to.
+    let filteredBuildings: Observable<Building[]>;
+    if (this.authenticationService.isAdmin()) {
+      filteredBuildings = allBuildings;
+    } else {
+      const institution = this.authenticationService.userValue().institution;
+      filteredBuildings = allBuildings.pipe(
+        map(items => items.filter(building => building.institution === institution))
+      );
+    }
+    this.buildingsObs = filteredBuildings.pipe(
       tap((next) => {
         this.buildingsMap = new Map<number, Building>();
         next.forEach((value) => {

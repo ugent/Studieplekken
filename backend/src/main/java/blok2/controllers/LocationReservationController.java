@@ -5,6 +5,7 @@ import blok2.daos.ILocationReservationDao;
 import blok2.helpers.Pair;
 import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
+import blok2.helpers.exceptions.NotAuthorizedException;
 import blok2.mail.MailService;
 import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
@@ -25,7 +26,10 @@ import javax.validation.Valid;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This controller handles all requests related to location reservations.
@@ -89,10 +93,20 @@ public class LocationReservationController extends AuthorizedLocationController 
     @GetMapping("/timeslot/{calendarid}/{date}/{seqnr}")
     @PreAuthorize("hasAuthority('HAS_VOLUNTEERS') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public List<LocationReservation> getLocationReservationsByTimeslot(
+            @AuthenticationPrincipal User user,
             @PathVariable("calendarid") int calendarId,
             @PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             @PathVariable("seqnr") int seqnr
     ) {
+        try {
+            if (!calendarPeriodDao.getById(calendarId).isAllowedToEdit(user)) {
+                throw new NotAuthorizedException("You are not authorized to retrieve information for this calendar period.");
+            }
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+        }
         Timeslot timeslot = new Timeslot(calendarId, seqnr, date, 0);
         return locationReservationDao.getAllLocationReservationsOfTimeslot(timeslot);
     }
@@ -109,10 +123,10 @@ public class LocationReservationController extends AuthorizedLocationController 
 
         try {
             CalendarPeriod parentPeriod = calendarPeriodDao.getById(locationReservation.getTimeslot().getCalendarId());
-            isAuthorized(
-                    (lr, u) -> hasAuthority(parentPeriod.getLocation().getLocationId()) || lr.getUser().getUserId().equals(u.getUserId()),
-                    locationReservation
-            );
+            if (!parentPeriod.isAllowedToEdit(user) &&
+                    !locationReservation.getUser().getUserId().equals(user.getUserId())) {
+                throw new NotAuthorizedException("You are not authorized to retrieve information for this calendar period.");
+            }
 
             locationReservationDao.deleteLocationReservation(locationReservation.getUser().getUserId(),
                     locationReservation.getTimeslot());
@@ -136,6 +150,7 @@ public class LocationReservationController extends AuthorizedLocationController 
     @PostMapping("/{userid}/{calendarid}/{date}/{seqnr}/attendance")
     @PreAuthorize("hasAuthority('HAS_VOLUNTEERS') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void setLocationReservationAttendance(
+            @AuthenticationPrincipal User user,
             @PathVariable("calendarid") int calendarId,
             @PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             @PathVariable("seqnr") int seqnr,
@@ -146,6 +161,10 @@ public class LocationReservationController extends AuthorizedLocationController 
         try {
             CalendarPeriod parentPeriod = calendarPeriodDao.getById(slot.getCalendarId());
             isVolunteer(parentPeriod.getLocation());
+            if (!user.isAdmin() && !parentPeriod.getLocation().getBuilding().getInstitution().equals(user.getInstitution())) {
+                throw new NotAuthorizedException("You are not authorized to this location.");
+            }
+
             if (!locationReservationDao.setReservationAttendance(userid, slot, body.getAttended()))
                 throw new NoSuchDatabaseObjectException("No such reservation");
         } catch (SQLException e) {
@@ -157,11 +176,15 @@ public class LocationReservationController extends AuthorizedLocationController 
 
     @PutMapping("/not-scanned")
     @PreAuthorize("hasAuthority('HAS_VOLUNTEERS') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public void setAllNotScannedStudentsToUnattendedForTimeslot(@RequestBody Timeslot timeslot) {
+    public void setAllNotScannedStudentsToUnattendedForTimeslot(@AuthenticationPrincipal User user,
+                                                                @RequestBody Timeslot timeslot) {
         try {
             // check if user is allowed by role
             CalendarPeriod calendarPeriod = calendarPeriodDao.getById(timeslot.getCalendarId());
             isVolunteer(calendarPeriod.getLocation());
+            if (!user.isAdmin() && !calendarPeriod.getLocation().getBuilding().getInstitution().equals(user.getInstitution())) {
+                throw new NotAuthorizedException("You are not authorized to this location.");
+            }
 
             logger.info(String.format("Setting all students who were not scanned to unattended for timeslot %s", timeslot));
             locationReservationDao.setNotScannedStudentsToUnattended(timeslot);

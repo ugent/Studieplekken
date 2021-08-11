@@ -338,6 +338,7 @@
         "formValidationErrorMessages": {
           "locationName": "Name is required",
           "authorityName": "Required to select an authority",
+          "buildingName": "Required to select a building",
           "address": "Address is required",
           "numberOfSeats": "Value for 'number of seats' is required",
           "numberOfLockers": "Value for 'number of lockers' is required",
@@ -370,7 +371,8 @@
       "title": "Management of buildings for rooms",
       "table": {
         "name": "Name",
-        "address": "Address"
+        "address": "Address",
+        "institution": "Institution"
       },
       "addNewBuilding": "New building",
       "addBuildingModal": {
@@ -391,7 +393,10 @@
         "success": "Successfully deleted the building.",
         "error": "Something went wrong while deleting the building."
       },
-      "errorOnRetrievingTags": "Something went wrong while retrieving the buildings..."
+      "errorOnRetrievingTags": "Something went wrong while retrieving the buildings...",
+      "formValidationErrorMessages": {
+        "institution": "Required to select a institution"
+      }
     },
     "tags": {
       "title": "Management of tags for rooms",
