@@ -77,6 +77,8 @@ import { ScannerComponent } from './shared/scanner/scanner.component';
 import { VolunteersManagementComponent } from './management/volunteers-management/volunteers-management.component';
 import { VolunteerManagementPanelComponent } from './management/volunteers-management/volunteer-management-panel/volunteer-management-panel.component';
 import { AuthenticationInterceptor } from './services/authentication/authentication.interceptor';
+import { HeaderComponent } from './stad-gent-components/header/header.component';
+import { AccordeonComponent } from './stad-gent-components/molecules/accordeon/accordeon.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -306,6 +308,8 @@ const routes: Routes = [
     ScannerComponent,
     VolunteersManagementComponent,
     VolunteerManagementPanelComponent,
+    HeaderComponent,
+    AccordeonComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,83 @@
+<!-- Default - without header image - not signed in -->
+<header class="header">
+    <div class="content-container">
+        <a href="#" title="Home" class="site-logo " rel="home">
+            Stad Gent
+        </a>
+
+        <div *ngIf="getUser() | async as user">
+
+            <!-- If user is logged in -->
+            <app-accordeon class="authentication" *ngIf="user != null && user.userId != ''">
+
+                <button accordion-button aria-expanded="false" aria-controls="no-hero_auth-authentication"
+                    class="toggle accordion--button">
+                    <span class="avatar">M</span>
+                    <span>{{user.firstName}}</span>
+                </button>
+
+                <div accordion-content id="no-hero_auth-authentication" class="accordion--content" aria-hidden="true" hidden>
+                    <article class="content">
+                        <h2>Mijn bibliotheek</h2>
+                        <section class="profile">
+                            <span class="avatar">M</span>
+                            <div class="profile-info">
+                                <span>{{user.firstName}}</span>
+                                <a href='#' class="button button-primary button-small">
+                                    Show profile </a>
+                            </div>
+                        </section>
+                        <section>
+
+                            <ul class="links">
+                                <li><a href='javascript:(void);'>Overzicht</a></li>
+                                <li><a href='javascript:(void);'>Leestips</a></li>
+                            </ul>
+
+                        </section>
+                        <section>
+                            <h2>Mijn gent</h2>
+
+                            <ul class="links">
+                                <li><a href='javascript:(void);'>Mijn profiel</a></li>
+                                <li><a href='javascript:(void);'>Nieuwsbrieven</a></li>
+                                <li><a href='javascript:(void);'>Historiek</a></li>
+                            </ul>
+
+                        </section>
+                        <footer>
+                            <a href='javascript:(void);' class="button button-small button-secondary">
+                                Afmelden </a>
+                        </footer>
+                    </article>
+
+                </div>
+
+            </app-accordeon>
+
+            <!-- If user is not logged in -->
+            <div class="authentication accordion" *ngIf="user == null || user.userId == ''">
+
+                <a routerLink="/login" class="login-link">
+                    Aanmelden </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <nav class="breadcrumb section--default" aria-labelledby="default-header-crumbs">
+        <div class="content-container">
+            <h2 id="default-header-crumbs" class="visually-hidden">Breadcrumb</h2>
+            <ol class="no-style">
+                <li *ngFor="let breadcrumb of (getLinkedBreadcrumbs() | async)"><a
+                        [routerLink]="breadcrumb.url">{{breadcrumb.pageName}}</a></li>
+                <li *ngFor="let breadcrumb of (getUnlinkedBreadcrumbs() | async)"><span>{{breadcrumb.pageName}}</span>
+                </li>
+            </ol>
+        </div>
+    </nav>
+
+    <hr />
+</header>

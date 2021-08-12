@@ -13,6 +13,7 @@ import { BuildingService } from '../services/api/buildings/buildings.service';
 import { merge, Observable, of, Subscription } from 'rxjs';
 import { Moment } from 'moment';
 import { map } from 'rxjs/operators';
+import { BreadcrumbService } from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -57,7 +58,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private tagsService: TagsService,
     private translate: TranslateService,
     private calendarPeriodService: CalendarPeriodsService,
-    private buildingService: BuildingService
+    private buildingService: BuildingService,
+    private breadcrumbService: BreadcrumbService
   ) {}
 
   ngOnInit(): void {
@@ -93,6 +95,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.tagObs = this.tagsService.getAllTags();
     this.buildingObs = this.buildingService.getAllBuildings();
+
+    this.breadcrumbService.setCurrentBreadcrumbs([{pageName: "default", url:""}, {pageName: "home", url: "/"}])
   }
 
   ngOnDestroy(): void {
