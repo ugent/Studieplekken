@@ -69,11 +69,13 @@
     "error": "Er is iets misgelopen tijdens het ophalen van de ruimtes."
   },
   "footer": {
-    "madeBy": "Gemaakt door",
-    "privacy": "Privacy",
+    "madeBy": "Gemaakt met trots door",
+    "privacy": "Privacy & Cookies",
     "disclaimer": "Disclaimer",
     "cookies": "Cookies",
-    "accessibility": "Toegankelijkheid"
+    "accessibility": "Toegankelijkheid",
+    "responsible-disclosure": "Responsible Disclosure",
+    "terms-of-use":"Terms of use"
   },
   "reservations": {
     "reservationButton": "Update Reservaties"
@@ -81,7 +83,7 @@
   "general": {
     "dsa": "Dienst StudentenActiviteiten",
     "ugent": "Universiteit Gent",
-    "appTitle": "Studieplekken UGent",
+    "appTitle": "Studieplekken",
     "yes": "Ja",
     "no": "Neen",
     "back": "Terug",

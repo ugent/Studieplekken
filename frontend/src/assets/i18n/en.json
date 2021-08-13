@@ -69,11 +69,15 @@
     "error": "Something went wrong while retrieving the rooms."
   },
   "footer": {
-    "madeBy": "Made by",
-    "privacy": "Privacy",
+    "madeBy": "Proudly made by",
+    "privacy": "Privacy & Cookies",
     "disclaimer": "Disclaimer",
     "cookies": "Cookies",
-    "accessibility": "Accessibility"
+    "accessibility": "Accessibility",
+    "responsible-disclosure": "Responsible Disclosure",
+    "terms-of-use":"Terms of use"
+
+
   },
   "reservations": {
     "reservationButton": "Update Reservations"
@@ -81,7 +85,7 @@
   "general": {
     "dsa": "Student Activities Office",
     "ugent": "Ghent University",
-    "appTitle": "Study Rooms UGent",
+    "appTitle": "Study Rooms",
     "yes": "Yes",
     "no": "No",
     "back": "Back",
