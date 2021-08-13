@@ -1,0 +1,33 @@
+<article class="content">
+    <h2>{{"header.navigation.profile" | translate }}</h2>
+    <section class="profile">
+        <span class="avatar">M</span>
+        <div class="profile-info">
+            <span>{{user.firstName + ' ' + user.lastName}}</span>
+            <a routerLink="/profile" class="button button-primary button-small">
+                {{"header.navigation.profile" | translate }} </a>
+        </div>
+    </section>
+    <section>
+
+        <ul class="links">
+            <li><a (click)="close()" routerLink="/dashboard">{{"header.navigation.dashboard" | translate }}</a></li>
+            <li><a (click)="close()" routerLink="/information">{{"header.navigation.information" | translate }}</a></li>
+        </ul>
+
+    </section>
+    <section>
+        <h2>{{"header.navigation.management"|translate}}</h2>
+
+        <ul class="links">
+            <li><a *ngIf="showManagement()" routerLink="/management">{{"header.navigation.management" | translate }}</a></li>
+            <li><a *ngIf="showScan()" routerLink='/scan'>{{"header.navigation.scan" | translate }}</a></li>
+        </ul>
+
+    </section>
+    <footer>
+        <a (click)='logout()' class="button button-small button-secondary">
+            {{"header.logOut" | translate}} </a>
+    </footer>
+</article>
+

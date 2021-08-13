@@ -1,3 +1,5 @@
+import { Authority, AuthorityConstructor } from "./Authority";
+
 export interface User {
   userId: string;
   firstName: string;
@@ -7,6 +9,8 @@ export interface User {
   penaltyPoints: number;
   institution: string;
   admin: boolean;
+  userAuthorities: Authority[];
+  userVolunteer: unknown[];
 }
 
 export class UserConstructor {
@@ -20,6 +24,8 @@ export class UserConstructor {
       penaltyPoints: 0,
       institution: '',
       admin: false,
+      userAuthorities: [],
+      userVolunteer: []
     };
   }
 
@@ -37,6 +43,8 @@ export class UserConstructor {
       penaltyPoints: obj.penaltyPoints,
       institution: obj.institution,
       admin: obj.admin,
+      userAuthorities: obj.userAuthorities.map(v => AuthorityConstructor.newFromObj(v)),
+      userVolunteer: obj.userVolunteer
     };
   }
 }

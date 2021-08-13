@@ -1,19 +1,35 @@
-import { AfterViewInit, Component, ElementRef, OnChanges, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
 import * as Accordion from "gent_styleguide/build/styleguide/js/accordion.functions.js"
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-accordeon',
   templateUrl: './accordeon.component.html',
   styleUrls: ['./accordeon.component.scss']
 })
-export class AccordeonComponent implements AfterViewInit {
+export class AccordeonComponent implements AfterViewInit, OnChanges {
   @ViewChildren("accordioncontainer", {read: ElementRef}) container: QueryList<ElementRef>;
+  @Input() controller: Observable<boolean>
   private accordionController: any;
 
   constructor() { }
 
   ngAfterViewInit(): void {
     this.accordionController = new Accordion(this.container.first.nativeElement)
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if(changes.controller && changes.controller.currentValue) {
+      changes.controller.currentValue.subscribe(b => b ? this.open():this.close())
+    }
+  }
+
+  private close() {
+    this.accordionController.closeAll();
+  }
+
+  private open() {
+    this.accordionController.openAll();
   }
 
 }

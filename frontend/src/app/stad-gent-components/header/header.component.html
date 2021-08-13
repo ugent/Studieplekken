@@ -8,7 +8,7 @@
         <div *ngIf="getUser() | async as user">
 
             <!-- If user is logged in -->
-            <app-accordeon class="authentication" *ngIf="user != null && user.userId != ''">
+            <app-accordeon class="authentication" *ngIf="user != null && user.userId != ''" [controller]="accordionSubject">
 
                 <button accordion-button aria-expanded="false" aria-controls="no-hero_auth-authentication"
                     class="toggle accordion--button">
@@ -17,40 +17,7 @@
                 </button>
 
                 <div accordion-content id="no-hero_auth-authentication" class="accordion--content" aria-hidden="true" hidden>
-                    <article class="content">
-                        <h2>Mijn bibliotheek</h2>
-                        <section class="profile">
-                            <span class="avatar">M</span>
-                            <div class="profile-info">
-                                <span>{{user.firstName}}</span>
-                                <a href='#' class="button button-primary button-small">
-                                    Show profile </a>
-                            </div>
-                        </section>
-                        <section>
-
-                            <ul class="links">
-                                <li><a href='javascript:(void);'>Overzicht</a></li>
-                                <li><a href='javascript:(void);'>Leestips</a></li>
-                            </ul>
-
-                        </section>
-                        <section>
-                            <h2>Mijn gent</h2>
-
-                            <ul class="links">
-                                <li><a href='javascript:(void);'>Mijn profiel</a></li>
-                                <li><a href='javascript:(void);'>Nieuwsbrieven</a></li>
-                                <li><a href='javascript:(void);'>Historiek</a></li>
-                            </ul>
-
-                        </section>
-                        <footer>
-                            <a href='javascript:(void);' class="button button-small button-secondary">
-                                Afmelden </a>
-                        </footer>
-                    </article>
-
+                    <app-header-dropdown [user]="user" [accordion]="accordionSubject"></app-header-dropdown>
                 </div>
 
             </app-accordeon>
@@ -59,7 +26,7 @@
             <div class="authentication accordion" *ngIf="user == null || user.userId == ''">
 
                 <a routerLink="/login" class="login-link">
-                    Aanmelden </a>
+                    {{"header.navigation.login" | translate}} </a>
 
             </div>
 

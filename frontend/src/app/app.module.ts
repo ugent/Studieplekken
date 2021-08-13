@@ -79,6 +79,7 @@ import { VolunteerManagementPanelComponent } from './management/volunteers-manag
 import { AuthenticationInterceptor } from './services/authentication/authentication.interceptor';
 import { HeaderComponent } from './stad-gent-components/header/header.component';
 import { AccordeonComponent } from './stad-gent-components/molecules/accordeon/accordeon.component';
+import { DropdownComponent } from './stad-gent-components/header/dropdown/dropdown.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -310,6 +311,7 @@ const routes: Routes = [
     VolunteerManagementPanelComponent,
     HeaderComponent,
     AccordeonComponent,
+    DropdownComponent,
   ],
   imports: [
     BrowserModule,
