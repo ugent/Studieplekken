@@ -8,7 +8,8 @@
         <div *ngIf="getUser() | async as user">
 
             <!-- If user is logged in -->
-            <app-accordeon class="authentication" *ngIf="user != null && user.userId != ''" [controller]="accordionSubject">
+            <app-accordeon class="authentication" *ngIf="user != null && user.userId != ''"
+                [controller]="accordionSubject">
 
                 <button accordion-button aria-expanded="false" aria-controls="no-hero_auth-authentication"
                     class="toggle accordion--button">
@@ -16,7 +17,8 @@
                     <span>{{user.firstName}}</span>
                 </button>
 
-                <div accordion-content id="no-hero_auth-authentication" class="accordion--content" aria-hidden="true" hidden>
+                <div accordion-content id="no-hero_auth-authentication" class="accordion--content" aria-hidden="true"
+                    hidden>
                     <app-header-dropdown [user]="user" [accordion]="accordionSubject"></app-header-dropdown>
                 </div>
 
@@ -29,9 +31,24 @@
                     {{"header.navigation.login" | translate}} </a>
 
             </div>
-
         </div>
-
+        
+        <app-accordeon [classes]="['language-switcher']" [controller]="languageSubject">
+            <button accordion-button aria-controls="seperate_translation_unauth-translate" aria-expanded="false" class="toggle accordion--button">
+                {{currentLanguage()}}
+            </button>
+            <div accordion-content id="seperate_translation_unauth-translate" class="accordion--content" aria-hidden="true">
+            <ul class="content links" >
+                <li>
+                    <strong>{{currentLanguage()}}</strong>
+                </li>
+                <li>
+                    <a (click)="changeLanguage($event)" hreflang="{{otherSupportedLanguage()}}" lang="{{otherSupportedLanguage()}}">
+                        {{otherSupportedLanguage()}} </a>
+                </li>
+            </ul>
+            </div>
+        </app-accordeon>
     </div>
 
     <nav class="breadcrumb section--default" aria-labelledby="default-header-crumbs">

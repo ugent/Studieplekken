@@ -1,4 +1,4 @@
-<div class="accordion" #accordioncontainer>
+<div class="accordion {{getClasses()}}" #accordioncontainer>
     <ng-content select="[accordion-button]"></ng-content>
     <ng-content select="[accordion-content]"></ng-content>
 </div>

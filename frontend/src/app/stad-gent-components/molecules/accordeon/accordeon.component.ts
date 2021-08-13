@@ -12,6 +12,8 @@ export class AccordeonComponent implements AfterViewInit, OnChanges {
   @Input() controller: Observable<boolean>
   private accordionController: any;
 
+  @Input() classes: string[];
+
   constructor() { }
 
   ngAfterViewInit(): void {
@@ -30,6 +32,10 @@ export class AccordeonComponent implements AfterViewInit, OnChanges {
 
   private open() {
     this.accordionController.openAll();
+  }
+
+  getClasses() {
+    return this.classes ? this.classes.join(" "):""
   }
 
 }
