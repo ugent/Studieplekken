@@ -1,78 +1,51 @@
-<div class="thumbnail wrapper card">
-  <div class="content" fxLayout="column nowrap" fxLayoutAlign="flex-start">
-    <!-- Image -->
-    <div>
-      <img *ngIf="!imageUrlErrorOccurred && location.imageUrl"
-           src="{{location.imageUrl}}" class="img" alt="Image for {{location.name}}"
-           (error)="handleImageError()">
-      <img *ngIf="imageUrlErrorOccurred || !location.imageUrl" [src]="altImageUrl" alt="Image of {{location.name}}">
+<!-- Teaser Underlined -->
+<li class="teaser   teaser--underlined ">
+  <article class="teaser-content">
 
-      <div class="locationStatusBar"
-           [classList]="'locationStatusBar ' + locationStatusColorClass()"></div>
-    </div>
-
-    <div fxLayout="column nowrap" class="location-info">
-      <!-- Title -->
+    <div class="content__second">
       <h3>{{ location.name }}</h3>
 
-      <!-- General information about the location -->
-      <div style="margin-bottom: 16px">
-
-        <table class="table borderless">
-          <tbody>
-          <tr>
-            <td><span class="glyphicon glyphicon-time" aria-hidden="true"></span></td>
-            <td>{{location.status | formatStatus | async }}</td>
-          </tr>
-          <tr>
-            <td><span class="glyphicon glyphicon-user" aria-hidden="true"></span></td>
-            <td>{{location.numberOfSeats}}</td>
-          </tr>
-          <tr *ngIf="showLockersManagement">
-            <td><span class="glyphicon glyphicon-lock" aria-hidden="true"></span></td>
-            <td>{{location.numberOfLockers}}</td>
-          </tr>
-          <tr>
-            <td><span class="glyphicon glyphicon-home" aria-hidden="true"></span></td>
-            <td>{{location.building.name}}<br/>{{location.building.address}}</td>
-          </tr>
-          <tr>
-            <td><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></td>
-            <td>{{nextReservableFrom ? (nextReservableFrom | date:'short') :
-              ('general.notAvailableAbbreviation' | translate)}}</td>
-          </tr>
-          </tbody>
-        </table>
-
-        <div class="tags">
-          <p class="tag" *ngFor="let item of tagsInCurrentLang; let i = index">
-            {{item}}
-          </p>
-        </div>
+      <div class="entry">
+        <i class="icon-clock" aria-hidden="true"></i>
+        <span>{{location.status | formatStatus | async }}</span>
+      </div>
+      <div class="entry">
+        <i class="icon-user" aria-hidden="true"></i> {{location.numberOfSeats}}
+      </div>
+      <div class="entry">
+        <i class="icon-home" aria-hidden="true"></i>
+        {{location.building.name}}<br />{{location.building.address}}
+      </div>
+      <div class="entry">
+        <i class="icon-calendar" aria-hidden="true"></i>
+        {{nextReservableFrom ? (nextReservableFrom | date:'short') :
+        ('general.notAvailableAbbreviation' | translate)}}
       </div>
 
-      <!-- Progress bar for reserved seats -->
-      <div class="mt-auto">
-        <div *ngIf="location.currentTimeslot as timeslot">
-          <div class="progress" [class.hidden]="!(showProgressBar && occupation >= 0)">
-            <div class="progress-bar" role="progressbar"
-                 [style.width]="(timeslot.amountOfReservations / timeslot.seatCount) * 100 + '%'"
-                 [attr.aria-valuenow]="timeslot.amountOfReservations"
-                 aria-valuemin="0" aria-valuemax="100">
-              <span>{{timeslot.amountOfReservations}}/{{timeslot.seatCount}}</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Details button for dashboard item -->
-        <p>
-          <a routerLink="/dashboard/{{location.locationId}}"
-             class="btn btn-block"
-             role="button">{{'dashboard.details' | translate}}
-          </a>
-        </p>
-      </div>
+      <a routerLink="/dashboard/{{location.locationId}}" class="read-more standalone-link"
+        title="{{'dashboard.details' | translate}}">
+        {{'dashboard.details' | translate}}
+      </a>
     </div>
-  </div>
-</div>
 
+    <div class="content__first">
+      <div class="figure-wrapper">
+        <div class="item-image">
+          <div class="locationStatusBar" [classList]="'locationStatusBar ' + locationStatusColorClass()"></div>
+          <figure class="teaser--underlined">
+            <div class="image-wrapper" data-ratio="8:5">
+              <img *ngIf="!imageUrlErrorOccurred && location.imageUrl" src="{{location.imageUrl}}"
+                class="teaser--underlined" alt="Image for {{location.name}}" (error)="handleImageError()">
+              <img *ngIf="imageUrlErrorOccurred || !location.imageUrl" [src]="altImageUrl"
+                alt="Image of {{location.name}}" class="teaser--underlined">
+            </div>
+          </figure>
+        </div>
+        <div class="accolade-inverse bottom-left"></div>
+      </div>
+
+
+    </div>
+  </article>
+  <!-- <a href="#" class="teaser-overlay-link" tabindex="-1" aria-hidden="true">Teasers can also be underlined</a> -->
+</li>

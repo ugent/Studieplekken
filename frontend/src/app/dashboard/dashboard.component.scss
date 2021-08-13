@@ -13,11 +13,7 @@
 .dashboard-item-container {
   flex-grow: 1;
 }
-
-.warning-banner {
-  text-align: left;
-  background-color: #e9f0fa;
-  padding: 20px;
-  margin-bottom: 15px;
+.banner {
+  max-width: 75%;
+  margin: 0 auto;
 }
-.warning-banner:empty { display: none }

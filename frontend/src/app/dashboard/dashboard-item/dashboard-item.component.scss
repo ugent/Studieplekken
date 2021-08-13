@@ -55,7 +55,7 @@
 }
 
 .locationStatusBar {
-  height: 8px;
+  width: 8px;
 }
 
 .open {
@@ -76,4 +76,21 @@
 
 .mt-auto {
   margin-top: auto;
+}
+
+.entry {
+  display: flex;
+  flex-direction: row;
+}
+
+.entry * {
+  margin: 5px;
+}
+
+.item-image {
+  display: flex;
+}
+
+.item-image > figure {
+  width: calc(100% - 8px)
 }
