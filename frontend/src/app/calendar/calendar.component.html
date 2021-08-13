@@ -1,28 +1,23 @@
 <div class="container-fluid">
-  <div class="row text-center">
+  <div class="text-center" fxLayout="row nowrap" fxLayoutAlign="space-between">
     <!-- Navigation -->
-    <div class="col-md-4">
-      <div class="btn-group">
-        <!-- Previous -->
-        <div class="btn btn-primary btn-left"
-             mwlCalendarPreviousView
-             [view]="view"
-             [(viewDate)]="viewDate">
+    <div fxLayout="row nowrap">
+      <!-- Previous -->
+      <div>
+        <div class="button button-secondary btn-left" mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate">
           {{'calendar.previous' | translate}}
         </div>
+      </div>
 
+      <div>
         <!-- Today -->
-        <div class="btn btn-outline-secondary btn-left"
-             mwlCalendarToday
-             [(viewDate)]="viewDate">
+        <div class="button button-primary btn-left" mwlCalendarToday [(viewDate)]="viewDate">
           {{'calendar.today' | translate}}
         </div>
-
+      </div>
+      <div>
         <!-- Next -->
-        <div class="btn btn-primary"
-             mwlCalendarNextView
-             [view]="view"
-             [(viewDate)]="viewDate">
+        <div class="button button-secondary" mwlCalendarNextView [view]="view" [(viewDate)]="viewDate">
           {{'calendar.next' | translate}}
         </div>
       </div>
@@ -34,25 +29,22 @@
     </div>
 
     <!-- Types of view -->
-    <div class="col-md-4">
-      <div class="btn-group">
-        <div
-          class="btn btn-primary btn-left"
-          (click)="setView(CalendarView.Month)"
+    <div fxLayout="row nowrap">
+      <div>
+        <div class="button btn-left" [class.button-secondary]="view != CalendarView.Month" [class.button-primary]="view == CalendarView.Month" (click)="setView(CalendarView.Month)"
           [class.active]="view === CalendarView.Month">
           {{'calendar.month' | translate}}
         </div>
-
-        <div
-          class="btn btn-primary btn-left"
-          (click)="setView(CalendarView.Week)"
+      </div>
+      <div>
+        <div class="button btn-left" [class.button-secondary]="view != CalendarView.Week" [class.button-primary]="view == CalendarView.Week" (click)="setView(CalendarView.Week)"
           [class.active]="view === CalendarView.Week">
           {{'calendar.week' | translate}}
         </div>
+      </div>
 
-        <div
-          class="btn btn-primary"
-          (click)="setView(CalendarView.Day)"
+      <div>
+        <div class="button" [class.button-secondary]="view != CalendarView.Day" [class.button-primary]="view == CalendarView.Day" (click)="setView(CalendarView.Day)"
           [class.active]="view === CalendarView.Day">
           {{'calendar.day' | translate}}
         </div>
@@ -63,35 +55,17 @@
   <br>
 
   <div [ngSwitch]="view">
-    <mwl-calendar-month-view
-      *ngSwitchCase="CalendarView.Month"
-      [viewDate]="viewDate"
-      [events]="events"
-      [refresh]="refresh"
-      [weekStartsOn]="1"
-      (eventClicked)="handleEvent('Clicked', $event.event)">
+    <mwl-calendar-month-view *ngSwitchCase="CalendarView.Month" [viewDate]="viewDate" [events]="events"
+      [refresh]="refresh" [weekStartsOn]="1" (eventClicked)="handleEvent('Clicked', $event.event)">
     </mwl-calendar-month-view>
 
-    <mwl-calendar-week-view
-      *ngSwitchCase="CalendarView.Week"
-      [viewDate]="viewDate"
-      [events]="events"
-      [refresh]="refresh"
-      [weekStartsOn]="1"
-      [hourSegmentHeight]=20
-      [dayStartHour] = openingHour
-      [dayEndHour] = closingHour
+    <mwl-calendar-week-view *ngSwitchCase="CalendarView.Week" [viewDate]="viewDate" [events]="events"
+      [refresh]="refresh" [weekStartsOn]="1" [hourSegmentHeight]=20 [dayStartHour]=openingHour [dayEndHour]=closingHour
       (eventClicked)="handleEvent('Clicked', $event.event)">
     </mwl-calendar-week-view>
 
-    <mwl-calendar-day-view
-      *ngSwitchCase="CalendarView.Day"
-      [viewDate]="viewDate"
-      [events]="events"
-      [refresh]="refresh"
-      [hourSegmentHeight]=20
-      [dayStartHour] = openingHour
-      [dayEndHour] = closingHour
+    <mwl-calendar-day-view *ngSwitchCase="CalendarView.Day" [viewDate]="viewDate" [events]="events" [refresh]="refresh"
+      [hourSegmentHeight]=20 [dayStartHour]=openingHour [dayEndHour]=closingHour
       (eventClicked)="handleEvent('Clicked', $event.event)">
     </mwl-calendar-day-view>
   </div>

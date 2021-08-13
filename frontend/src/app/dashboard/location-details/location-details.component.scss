@@ -19,3 +19,26 @@
 h1.inline-block {
   display: inline-block;
 }
+
+.teaser, .no-space-top {
+  margin-top: 0!important;
+  border-top: 0!important;
+}
+
+
+// Hacky way of not displaying box
+::ng-deep .ck.ck-editor__editable_inline {
+  border: none!important;
+}
+
+::ng-deep .ck-editor__top {
+  display: none;
+}
+
+::ng-deep .ck > hr {
+  display: none;
+}
+
+.center {
+  margin: 0 auto;
+}

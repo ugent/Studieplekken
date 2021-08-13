@@ -35,6 +35,7 @@ import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import {
   ConversionToCalendarEventService
 } from '../../services/styling/CalendarEvent/conversion-to-calendar-event.service';
+import { BreadcrumbService, dashboardBreadcrumb } from 'src/app/stad-gent-components/header/breadcrumbs/breadcrumb.service';
 
 @Component({
   selector: 'app-location-details',
@@ -102,11 +103,14 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
     private modalService: BsModalService,
     private functionalityService: ApplicationTypeFunctionalityService,
     private conversionService: ConversionToCalendarEventService,
-    private router: Router
+    private router: Router,
+    private breadcrumbs: BreadcrumbService
   ) {}
 
   ngOnInit(): void {
     this.locationId = Number(this.route.snapshot.paramMap.get('locationId'));
+
+    this.breadcrumbs.setCurrentBreadcrumbs([dashboardBreadcrumb, {pageName: "details", url:`/dashboard/${this.locationId}`}])
 
     // Check if locationId is a Number before proceeding. If NaN, redirect to dashboard.
     if (isNaN(this.locationId)) {
