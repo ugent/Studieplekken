@@ -1,15 +1,13 @@
 import { Component, Input, OnInit, TemplateRef } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Observable, of, Subject } from 'rxjs';
-import { LocationService } from 'src/app/services/api/locations/location.service';
-import { User } from 'src/app/shared/model/User';
-import { Location } from 'src/app/shared/model/Location';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { FormGroup, FormControl } from '@angular/forms';
-import { objectExists } from 'src/app/shared/GeneralFunctions';
-import { UserService } from 'src/app/services/api/users/user.service';
 import { catchError } from 'rxjs/operators';
-import { MatDialog } from '@angular/material/dialog';
-import { MatDialogRef } from '@angular/material/dialog';
+import { LocationService } from 'src/app/services/api/locations/location.service';
+import { UserService } from 'src/app/services/api/users/user.service';
+import { objectExists } from 'src/app/shared/GeneralFunctions';
+import { Location } from 'src/app/shared/model/Location';
+import { User } from 'src/app/shared/model/User';
 
 @Component({
   selector: 'app-volunteer-management-panel',

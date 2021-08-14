@@ -3,21 +3,20 @@ import {
   EventEmitter,
   Input,
   Output,
-  TemplateRef,
+  TemplateRef
 } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import * as moment from 'moment';
+import { BarcodeService } from 'src/app/services/barcode.service';
+import { User } from 'src/app/shared/model/User';
+import { LocationReservationsService } from '../../../../../../services/api/location-reservations/location-reservations.service';
+import { CalendarPeriod } from '../../../../../../shared/model/CalendarPeriod';
 import { LocationReservation } from '../../../../../../shared/model/LocationReservation';
 import {
   Timeslot,
   timeslotEndHour,
-  timeslotStartHour,
+  timeslotStartHour
 } from '../../../../../../shared/model/Timeslot';
-import * as moment from 'moment';
-import { CalendarPeriod } from '../../../../../../shared/model/CalendarPeriod';
-import { LocationReservationsService } from '../../../../../../services/api/location-reservations/location-reservations.service';
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { User } from 'src/app/shared/model/User';
-import { BarcodeService } from 'src/app/services/barcode.service';
-import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-location-reservations',

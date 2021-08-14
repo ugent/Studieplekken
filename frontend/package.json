@@ -37,7 +37,6 @@
     "jquery": "^3.5.1",
     "moment": "^2.29.1",
     "moment-duration-format": "^2.3.2",
-    "ngx-bootstrap": "^6.2.0",
     "ngx-markdown": "^10.1.1",
     "ngx-print": "^1.2.0-beta.5",
     "rxjs": "~6.5.5",

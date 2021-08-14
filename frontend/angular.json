@@ -25,7 +25,12 @@
 						"aot": true,
 						"assets": [
 							"src/favicon.ico",
-							"src/assets"
+							"src/assets",
+							{
+								"input": "node_modules/gent_styleguide/build/styleguide/",
+								"glob": "**/*",
+								"output": "/"
+							}
 						],
 						"styles": [
 							"src/styles.scss",
@@ -162,7 +167,12 @@
 						"karmaConfig": "karma.conf.js",
 						"assets": [
 							"src/favicon.ico",
-							"src/assets"
+							"src/assets",
+							{
+								"input": "node_modules/gent_styleguide/build/styleguide/fonts/",
+								"glob": "*",
+								"output": "/fonts/"
+							}
 						],
 						"styles": [
 							"./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",

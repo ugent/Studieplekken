@@ -1,12 +1,11 @@
 import { Component, Input, OnInit, TemplateRef } from '@angular/core';
-import { Observable } from 'rxjs';
-import { User } from '../../../../shared/model/User';
-import { Authority } from '../../../../shared/model/Authority';
-import { AuthoritiesService } from '../../../../services/api/authorities/authorities.service';
 import { FormControl, Validators } from '@angular/forms';
-import { UserDetailsService } from '../../../../services/single-point-of-truth/user-details/user-details.service';
-import { BsModalService } from 'ngx-bootstrap/modal';
 import { MatDialog } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
+import { AuthoritiesService } from '../../../../services/api/authorities/authorities.service';
+import { UserDetailsService } from '../../../../services/single-point-of-truth/user-details/user-details.service';
+import { Authority } from '../../../../shared/model/Authority';
+import { User } from '../../../../shared/model/User';
 
 @Component({
   selector: 'app-user-authorities-management',

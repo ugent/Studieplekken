@@ -1,30 +1,29 @@
-import { Component, OnInit, Input, TemplateRef } from '@angular/core';
+import { Component, Input, OnInit, TemplateRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { CalendarEvent } from 'angular-calendar';
 import * as moment from 'moment';
-import { Observable, Subject, BehaviorSubject, timer } from 'rxjs';
+import { Moment } from 'moment';
+import { BehaviorSubject, Observable, Subject, timer } from 'rxjs';
+import { of } from 'rxjs/internal/observable/of';
+import { catchError, switchMap, tap } from 'rxjs/operators';
 import { CalendarPeriodsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
+import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import {
   ApplicationTypeFunctionalityService
 } from 'src/app/services/functionality/application-type/application-type-functionality.service';
 import {
   CalendarPeriod
 } from 'src/app/shared/model/CalendarPeriod';
+import { Location } from 'src/app/shared/model/Location';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
 import { Timeslot } from 'src/app/shared/model/Timeslot';
-import { LocationOpeningperiodDialogComponent } from './location-openingperiod-dialog/location-openingperiod-dialog.component';
-import { Location } from 'src/app/shared/model/Location';
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
-import { Moment } from 'moment';
-import { TranslateService } from '@ngx-translate/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { catchError, switchMap, tap } from 'rxjs/operators';
-import { of } from 'rxjs/internal/observable/of';
 import {
   ConversionToCalendarEventService
 } from '../../../../services/styling/CalendarEvent/conversion-to-calendar-event.service';
+import { LocationOpeningperiodDialogComponent } from './location-openingperiod-dialog/location-openingperiod-dialog.component';
 
 @Component({
   selector: 'app-location-calendar',

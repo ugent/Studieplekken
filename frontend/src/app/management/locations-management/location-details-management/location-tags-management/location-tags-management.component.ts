@@ -9,7 +9,6 @@ import { LocationService } from '../../../../services/api/locations/location.ser
 import { FormControl } from '@angular/forms';
 import { LocationDetailsService } from '../../../../services/single-point-of-truth/location-details/location-details.service';
 import { matSelectionChanged } from '../../../../shared/GeneralFunctions';
-import { BsModalService } from 'ngx-bootstrap/modal';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
