@@ -3,7 +3,7 @@ import { Location } from '../../shared/model/Location';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { LocationService } from '../../services/api/locations/location.service';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 import { CalendarEvent } from 'angular-calendar';
 import { TranslateService } from '@ngx-translate/core';
 import { LocationTag } from '../../shared/model/LocationTag';
@@ -162,7 +162,9 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     }
     // when the location is loaded, setup the Leaflet map
     this.locationSub = this.location.subscribe((next) => {
-      this.setupLeafletMap(next);
+      if (next) {
+        this.setupLeafletMap(next);
+      }
     });
   }
 
@@ -237,14 +239,6 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
   handleImageError(): void {
     this.imageUrlErrorOccurred = true;
-  }
-
-  getGoogleMapsUrl(location: Location): SafeResourceUrl {
-    const url =
-      'https://www.google.com/maps?q=' +
-      location.building.address +
-      '&output=embed';
-    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
   setDescriptionToShow(): void {
