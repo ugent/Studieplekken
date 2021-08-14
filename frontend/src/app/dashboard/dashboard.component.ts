@@ -13,7 +13,7 @@ import { BuildingService } from '../services/api/buildings/buildings.service';
 import { merge, Observable, of, Subscription } from 'rxjs';
 import { Moment } from 'moment';
 import { map } from 'rxjs/operators';
-import { BreadcrumbService } from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
+import { BreadcrumbService, dashboardBreadcrumb } from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -96,7 +96,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.tagObs = this.tagsService.getAllTags();
     this.buildingObs = this.buildingService.getAllBuildings();
 
-    this.breadcrumbService.setCurrentBreadcrumbs([{pageName: "default", url:""}, {pageName: "home", url: "/"}])
+    this.breadcrumbService.setCurrentBreadcrumbs([dashboardBreadcrumb])
   }
 
   ngOnDestroy(): void {
