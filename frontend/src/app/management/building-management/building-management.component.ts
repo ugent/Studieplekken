@@ -105,7 +105,7 @@ export class BuildingManagementComponent implements OnInit {
       address: '',
     });
 
-    this.modalService.open(template);
+    this.modalService.open(template, {panelClass: ["cs--cyan" ,"bigmodal"]});
   }
 
   addBuilding(): void {
@@ -134,7 +134,7 @@ export class BuildingManagementComponent implements OnInit {
     // prepare the tagFormGroup
     this.prepareFormGroup(building);
 
-    this.modalService.open(template);
+    this.modalService.open(template, {panelClass: ["cs--cyan" ,"bigmodal"]});
   }
 
   updateBuildingInFormGroup(): void {
@@ -161,7 +161,7 @@ export class BuildingManagementComponent implements OnInit {
     // prepare the tagFormGroup
     this.prepareFormGroup(building);
 
-    this.modalService.open(template);
+    this.modalService.open(template, {panelClass: ["cs--cyan" ,"bigmodal"]});
   }
 
   deleteBuildingInFormGroup(): void {

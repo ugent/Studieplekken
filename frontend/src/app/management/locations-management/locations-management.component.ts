@@ -85,9 +85,8 @@ export class LocationsManagementComponent implements OnInit {
   // ********************/
 
   prepareToAddLocation(template: TemplateRef<unknown>): void {
-    console.log("trying")
     this.addingWasSuccess = undefined;
-    this.dialog.open(template);
+    this.dialog.open(template, {panelClass: "cs--cyan"});
     this.editMode = false;
   }
 

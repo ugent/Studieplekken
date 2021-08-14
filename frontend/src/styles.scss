@@ -178,3 +178,16 @@ $styleguide-dir: '' !default;
 video {
   width: 100%
 }
+
+.bigmodal {
+  min-width: 30vw;
+  min-height: 50vh;
+}
+
+.mat-dialog-container {
+  height: inherit!important;
+}
+
+.fullheight {
+  height: 100%
+}
