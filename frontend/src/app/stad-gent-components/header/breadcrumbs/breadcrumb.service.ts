@@ -27,6 +27,11 @@ export const dashboardBreadcrumb = {
   url: "/dashboard"
 }
 
+export const managementBreadcrumb = {
+  pageName: "Management",
+  url: "/management"
+}
+
 export interface Breadcrumb {
   pageName: string;
   url: string;

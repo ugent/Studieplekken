@@ -1,24 +1,33 @@
 <div class="container-fluid">
-  <div class="row">
+  <div fxLayout="row" fxLayoutGap="32px" fxLayoutAlign="space-between">
+
+
+    <!-- Default -->
+
 
     <!-- Menu for /management -->
-    <aside class="col-sm-12 col-md-2 inpage-nav-container" style="margin-bottom: 20px;">
-      <nav class="padding-default bg-tertiary">
-        <h2>{{'management.aside.title' | translate}}</h2>
-        <ul class="linklist linklist-dark">
-          <li><a routerLink="./locations">{{'management.aside.locations' | translate}}</a></li>
-          <li><a routerLink="./buildings">{{'management.aside.buildings' | translate}}</a></li>
-          <li *ngIf="showTagManagement"><a routerLink="./tags">{{'management.aside.tags' | translate}}</a></li>
-          <li *ngIf="showAdmin"><a routerLink="./users">{{'management.aside.users' | translate}}</a></li>
-          <li *ngIf="showVolunteersManagement"><a routerLink="./volunteers">{{'management.aside.volunteers' | translate}}</a></li>
-          <li *ngIf="showAdmin"><a routerLink="./authorities">{{'management.aside.authorities' | translate}}</a></li>
-          <li *ngIf="showAdmin"><a routerLink="./admins">{{'management.aside.admins' | translate}}</a></li>
-          <li *ngIf="showPenalties"><a routerLink="./penalties">{{'management.aside.penalties' | translate}}</a></li>
-        </ul>
-      </nav>
+    <aside fxFlex="0 1 calc(23% - 32px);">
+      <section class="highlight highlight--top">
+        <div class="highlight__inner no-right-padding">
+          <h2>{{'management.aside.title' | translate}}</h2>
+
+          <div fxLayout="column" fxLayoutGap="16px" fxLayoutAlign="space-between">
+
+            <a routerLink="./locations">{{'management.aside.locations' | translate}}</a>            
+              <a routerLink="./buildings">{{'management.aside.buildings' | translate}}</a>
+              <a routerLink="./tags"  *ngIf="showTagManagement">{{'management.aside.tags' | translate}}</a>
+              <a routerLink="./users" *ngIf="showAdmin">{{'management.aside.users' | translate}}</a>
+              <a routerLink="./volunteers" *ngIf="showVolunteersManagement">{{'management.aside.volunteers' | translate}}</a>
+              <a routerLink="./authorities"  *ngIf="showAdmin">{{'management.aside.authorities' | translate}}</a>
+              <a routerLink="./admins"  *ngIf="showAdmin">{{'management.aside.admins' | translate}}</a>
+              <a routerLink="./penalties"  *ngIf="showPenalties">{{'management.aside.penalties' | translate}}</a>
+
+          </div>
+        </div>
+      </section>
     </aside>
 
-    <article class="col-sm-12 col-md-10">
+    <article fxFlex="0 1 calc(75% - 32px);">
       <router-outlet></router-outlet>
     </article>
   </div>
