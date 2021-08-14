@@ -8,6 +8,8 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { objectExists } from 'src/app/shared/GeneralFunctions';
 import { UserService } from 'src/app/services/api/users/user.service';
 import { catchError } from 'rxjs/operators';
+import { MatDialog } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-volunteer-management-panel',
@@ -27,12 +29,12 @@ export class VolunteerManagementPanelComponent implements OnInit {
   neverSearched = true;
   filteredUsers: Observable<User[]>;
 
-  private modalRef: BsModalRef;
+  private modalRef: MatDialogRef<unknown>;
   collapsed = true;
 
   constructor(
     private locationService: LocationService,
-    private modalService: BsModalService,
+    private modalService: MatDialog,
     private userService: UserService
   ) {}
 
@@ -53,9 +55,8 @@ export class VolunteerManagementPanelComponent implements OnInit {
   }
 
   showAdd(template: TemplateRef<unknown>): void {
-    this.modalRef = this.modalService.show(
+    this.modalRef = this.modalService.open(
       template,
-      Object.assign({}, { class: 'modal-lg' })
     );
   }
 
@@ -130,7 +131,7 @@ export class VolunteerManagementPanelComponent implements OnInit {
           ))
       );
 
-    this.modalRef.hide();
+    this.modalRef.close();
     this.collapsed = false;
   }
 

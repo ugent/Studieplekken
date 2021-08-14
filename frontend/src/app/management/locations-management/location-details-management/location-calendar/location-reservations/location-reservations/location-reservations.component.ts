@@ -17,6 +17,7 @@ import { LocationReservationsService } from '../../../../../../services/api/loca
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { User } from 'src/app/shared/model/User';
 import { BarcodeService } from 'src/app/services/barcode.service';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-location-reservations',
@@ -51,7 +52,7 @@ export class LocationReservationsComponent {
 
   constructor(
     private locationReservationService: LocationReservationsService,
-    private modalService: BsModalService,
+    private modalService: MatDialog,
     private barcodeService: BarcodeService
   ) {}
 
@@ -96,18 +97,18 @@ export class LocationReservationsComponent {
         (err) => {
           this.waitingForServer = false;
           console.error(err);
-          this.modalService.show(errorTemplate);
+          this.modalService.open(errorTemplate);
         }
       );
   }
 
   onFinishScanningClick(modalTemplate: TemplateRef<unknown>): void {
-    this.modalService.show(modalTemplate);
+    this.modalService.open(modalTemplate);
   }
 
   setAllNotScannedToUnattended(errorTemplate: TemplateRef<unknown>): void {
     // hide finishScanningModal
-    this.modalService.hide();
+    this.modalService.closeAll();
 
     // if the update is not successful, rollback UI changes
     const rollback: LocationReservation[] = [];
@@ -130,7 +131,7 @@ export class LocationReservationsComponent {
           rollback.forEach((reservation) => {
             reservation.attended = null;
           });
-          this.modalService.show(errorTemplate);
+          this.modalService.open(errorTemplate);
         }
       );
   }
@@ -146,7 +147,7 @@ export class LocationReservationsComponent {
     console.log(locationReservation, template);
     this.successDeletingLocationReservation = undefined;
     this.locationReservationToDelete = locationReservation;
-    this.modalService.show(template);
+    this.modalService.open(template);
   }
 
   deleteLocationReservation(): void {
@@ -158,7 +159,7 @@ export class LocationReservationsComponent {
         if (this.reservationChange) {
           this.reservationChange.emit(null);
         }
-        this.modalService.hide();
+        this.modalService.closeAll();
       });
   }
 
@@ -230,7 +231,7 @@ export class LocationReservationsComponent {
   }
 
   closeModal(): void {
-    this.modalService.hide();
+    this.modalService.closeAll();
   }
 
   updateSearchTerm(errorTemplate: TemplateRef<unknown>): void {

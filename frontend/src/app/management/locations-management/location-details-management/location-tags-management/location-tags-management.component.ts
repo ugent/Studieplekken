@@ -10,6 +10,7 @@ import { FormControl } from '@angular/forms';
 import { LocationDetailsService } from '../../../../services/single-point-of-truth/location-details/location-details.service';
 import { matSelectionChanged } from '../../../../shared/GeneralFunctions';
 import { BsModalService } from 'ngx-bootstrap/modal';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-location-tags-management',
@@ -37,7 +38,7 @@ export class LocationTagsManagementComponent implements OnInit {
     private tagsService: TagsService,
     private locationService: LocationService,
     private locationDetailsService: LocationDetailsService,
-    private modalService: BsModalService
+    private modalService: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -64,7 +65,7 @@ export class LocationTagsManagementComponent implements OnInit {
     this.tagsFormControl = new FormControl(this.tagsThatAreSelected);
     this.tagsSelectionIsUpdatable = false;
     this.successUpdatingTagsConfiguration = undefined;
-    this.modalService.show(template);
+    this.modalService.open(template);
   }
 
   updateTags(): void {
@@ -76,7 +77,7 @@ export class LocationTagsManagementComponent implements OnInit {
           this.successUpdatingTagsConfiguration = true;
           // reload the location
           this.locationDetailsService.loadLocation(this.locationId);
-          this.modalService.hide();
+          this.modalService.closeAll();
         },
         () => {
           this.successUpdatingTagsConfiguration = false;
@@ -85,7 +86,7 @@ export class LocationTagsManagementComponent implements OnInit {
   }
 
   closeModal(): void {
-    this.modalService.hide();
+    this.modalService.closeAll();
   }
 
   /**

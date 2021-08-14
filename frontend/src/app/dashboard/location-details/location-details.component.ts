@@ -24,7 +24,6 @@ import {
   LocationStatus,
   msToShowFeedback,
 } from '../../app.constants';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import * as moment from 'moment';
 import { DatePipe } from '@angular/common';
 import { Pair } from '../../shared/model/helpers/Pair';
@@ -36,6 +35,7 @@ import {
   ConversionToCalendarEventService
 } from '../../services/styling/CalendarEvent/conversion-to-calendar-event.service';
 import { BreadcrumbService, dashboardBreadcrumb } from 'src/app/stad-gent-components/header/breadcrumbs/breadcrumb.service';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-location-details',
@@ -78,7 +78,7 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
 
   currentLang: string;
 
-  modalRef: BsModalRef;
+  modalRef: MatDialogRef<unknown, unknown>;
   newReservations: LocationReservation[];
   removedReservations: LocationReservation[];
 
@@ -100,7 +100,7 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
     private datepipe: DatePipe,
     private authenticationService: AuthenticationService,
     private locationReservationService: LocationReservationsService,
-    private modalService: BsModalService,
+    private modalService: MatDialog,
     private functionalityService: ApplicationTypeFunctionalityService,
     private conversionService: ConversionToCalendarEventService,
     private router: Router,
@@ -312,7 +312,7 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
         )
     );
 
-    this.modalRef = this.modalService.show(template);
+    this.modalRef = this.modalService.open(template);
   }
 
   confirmReservationChange(): void {
@@ -338,11 +338,11 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
       }
     );
     this.isModified = false;
-    this.modalRef.hide();
+    this.modalRef.close();
   }
 
   declineReservationChange(): void {
-    this.modalRef.hide();
+    this.modalRef.close();
   }
 
   getBeginHour(

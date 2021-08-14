@@ -1,7 +1,7 @@
 <div class="container-fluid">
 
   <div *ngIf="unapprovedLocations | async as locations">
-    <div  *ngIf="locations.length> 0">
+    <div *ngIf="locations.length> 0">
       <!-- Title -->
       <h3>{{'management.locations.unapproved' | translate}}</h3>
 
@@ -9,35 +9,39 @@
 
 
       <!-- Table with all unapproved locations -->
-      <div class="row">
-        <div >
+      <div class="responsive-table">
+        <div class="table-wrapper">
           <table style="width: 100%">
             <!-- Table header -->
             <thead>
-            <tr>
-              <th>{{'management.locations.table.header.name' | translate}}</th>
-              <th>{{'management.locations.table.header.authority' | translate}}</th>
-              <th>{{'management.locations.table.header.numberOfSeats' | translate}}</th>
-              <th><!-- Details --></th>
-              <th><!-- Delete --></th>
-            </tr>
+              <tr>
+                <th scope="col">{{'management.locations.table.header.name' | translate}}</th>
+                <th scope="col">{{'management.locations.table.header.authority' | translate}}</th>
+                <th scope="col">{{'management.locations.table.header.numberOfSeats' | translate}}</th>
+                <th scope="col">
+                  <!-- Details -->
+                </th>
+                <th scope="col">
+                  <!-- Delete -->
+                </th>
+              </tr>
             </thead>
 
             <!-- Table body -->
             <tbody>
-            <tr *ngFor="let location of locations">
-              <td>{{location.name}}</td>
-              <td>{{location.authority.authorityName}}</td>
-              <td>{{location.numberOfSeats}}</td>
-              <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
+              <tr *ngFor="let location of locations">
+                <td>{{location.name}}</td>
+                <td>{{location.authority.authorityName}}</td>
+                <td>{{location.numberOfSeats}}</td>
+                <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
                   (click)="prepareToApproveLocation(location, addLocationModal)">
-                <span class="glyphicon glyphicon-list-alt"></span>
-              </td>
-              <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
+                  <span class="glyphicon glyphicon-list-alt"></span>
+                </td>
+                <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
                   (click)="prepareToDeleteLocation(location, deleteLocationModal)">
-                <span class="glyphicon glyphicon-trash pointerCursor"></span>
-              </td>
-            </tr>
+                  <span class="glyphicon glyphicon-trash pointerCursor"></span>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -49,42 +53,44 @@
   <hr>
 
   <!-- Table with all existing locations, and a button to create a new location -->
-  <div class="row">
-    <div *ngIf="locations | async as locations; else loading">
+  <div class="responsive-table fullwidth">
+    <div class="table-wrapper fullwidth" *ngIf="locations | async as locations; else loading">
       <table style="width: 100%" *ngIf="locations.length > 0; else noLocations">
         <!-- Table header -->
         <thead>
-        <tr>
-          <th>{{'management.locations.table.header.name' | translate}}</th>
-          <th>{{'management.locations.table.header.authority' | translate}}</th>
-          <th>{{'management.locations.table.header.numberOfSeats' | translate}}</th>
-          <th><!-- Details --></th>
-          <th><!-- Delete --></th>
-        </tr>
+          <tr>
+            <th scope="col">{{'management.locations.table.header.name' | translate}}</th>
+            <th scope="col">{{'management.locations.table.header.authority' | translate}}</th>
+            <th scope="col">{{'management.locations.table.header.numberOfSeats' | translate}}</th>
+            <th scope="col">
+              <!-- Details -->
+            </th>
+            <th scope="col">
+              <!-- Delete -->
+            </th>
+          </tr>
         </thead>
 
         <!-- Table body -->
         <tbody>
-        <tr *ngFor="let location of locations">
-          <td>{{location.name}}</td>
-          <td>{{location.authority.authorityName}}</td>
-          <td>{{location.numberOfSeats}}</td>
-          <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
-            <span routerLink="./{{location.locationId}}"
-                  class="glyphicon glyphicon-list-alt">
-            </span>
-          </td>
-          <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
+          <tr *ngFor="let location of locations">
+            <td>{{location.name}}</td>
+            <td>{{location.authority.authorityName}}</td>
+            <td>{{location.numberOfSeats}}</td>
+            <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
+              <i class="icon-hamburger" aria-hidden="true" routerLink="./{{location.locationId}}"></i>
+            </td>
+            <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
               (click)="prepareToDeleteLocation(location, deleteLocationModal)">
-            <span class="glyphicon glyphicon-trash pointerCursor"></span>
-          </td>
-        </tr>
+              <i class="icon-cross" aria-hidden="true"></i>
+            </td>
+          </tr>
         </tbody>
       </table>
 
       <div class="row" style="margin-top: 20px">
-        <button class="btn btn-primary" data-toggle="modal" data-target="#addLocationModal"
-                (click)="prepareToAddLocation(addLocationModal)">
+        <button class="button button-primary" data-toggle="modal" data-target="#addLocationModal"
+          (click)="prepareToAddLocation(addLocationModal)">
           {{'management.locations.addNew' | translate}}
         </button>
       </div>
@@ -137,7 +143,7 @@
           {{'management.locationDetails.form.authority' | translate}}
         </label>
         <div class="col-lg-8">
-          <select class="form-control" id="authority" formControlName="authority" >
+          <select class="form-control" id="authority" formControlName="authority">
             <option *ngFor="let authority of authorities" [value]="authority.authorityId">
               {{authority.authorityName + ' (' + authority.description + ')'}}
             </option>
@@ -157,7 +163,7 @@
           {{'management.locationDetails.form.building' | translate}}
         </label>
         <div class="col-lg-8">
-          <select class="form-control" id="building" formControlName="building" >
+          <select class="form-control" id="building" formControlName="building">
             <option *ngFor="let building of buildings" [value]="building.buildingId">
               {{building.name + ' (' + building.address + ')'}}
             </option>
@@ -176,7 +182,7 @@
         <label class="col-lg-3 control-label" for="numberOfSeats">
           {{'management.locations.addLocationModal.form.numberOfSeats' | translate}}</label>
         <div class="col-lg-8">
-          <input class="form-control" id="numberOfSeats" type="number" formControlName="numberOfSeats" >
+          <input class="form-control" id="numberOfSeats" type="number" formControlName="numberOfSeats">
         </div>
 
         <div *ngIf="numberOfSeats.invalid && (numberOfSeats.dirty || numberOfSeats.touched)" class="alert alert-danger">
@@ -213,7 +219,7 @@
         <label class="col-lg-3 control-label" for="imageUrl">
           {{'management.locations.addLocationModal.form.imageUrl' | translate}}</label>
         <div class="col-lg-8">
-          <input class="form-control" id="imageUrl" type="text" formControlName="imageUrl" >
+          <input class="form-control" id="imageUrl" type="text" formControlName="imageUrl">
         </div>
       </div>
     </form>
@@ -224,20 +230,15 @@
     <div class="alert alert-warning" *ngIf="showAddWarning">
       {{'management.locations.addLocationModal.warning' | translate}}
     </div>
-    <button type="submit" class="btn btn-primary"
-            [disabled]="!validForm()"
-            (click)="addNewLocation(addLocationFormGroup.value)"
-            *ngIf="!editMode">
+    <button type="submit" class="button button-primary" [disabled]="!validForm()"
+      (click)="addNewLocation(addLocationFormGroup.value)" *ngIf="!editMode">
       {{'management.locations.addLocationModal.addButton' | translate}}
     </button>
-    <button type="submit" class="btn btn-primary"
-            [disabled]="!validForm()"
-            (click)="approveLocation(addLocationFormGroup.value)"
-            *ngIf="editMode">
+    <button type="submit" class="button button-primary" [disabled]="!validForm()"
+      (click)="approveLocation(addLocationFormGroup.value)" *ngIf="editMode">
       {{'management.locations.editLocationModal.approveButton' | translate}}
     </button>
-    <button type="button" class="btn btn-secondary"
-            (click)="closeModal()">
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">
       {{'management.locations.addLocationModal.cancelButton' | translate}}
     </button>
   </div>
@@ -274,14 +275,16 @@
   <div class="modal-body">
     <div>
       <p>
-        {{('management.locations.deleteLocationModal.body' | translate).replace('{locationName}', currentLocationNameToDelete)}}
+        {{('management.locations.deleteLocationModal.body' | translate).replace('{locationName}',
+        currentLocationNameToDelete)}}
       </p>
     </div>
     <div class="alert alert-danger">
       <p>{{'management.locations.deleteLocationModal.warning' | translate}}</p>
       <ul>
         <li *ngFor="let cp of currentCalendarPeriodsToDelete">
-          {{cp.startsAt | date}} - {{cp.endsAt | date}} ({{cp.openingTime | date:'shortTime'}}-{{cp.closingTime | date:'shortTime'}})
+          {{cp.startsAt | date}} - {{cp.endsAt | date}} ({{cp.openingTime | date:'shortTime'}}-{{cp.closingTime |
+          date:'shortTime'}})
         </li>
       </ul>
     </div>
@@ -311,5 +314,3 @@
     </div>
   </div>
 </ng-template>
-
-

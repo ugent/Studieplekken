@@ -9,7 +9,7 @@ import {
 } from '@angular/forms';
 import { AuthoritiesService } from '../../services/api/authorities/authorities.service';
 import { AuthorityToManageService } from '../../services/single-point-of-truth/authority-to-manage/authority-to-manage.service';
-import { BsModalService } from 'ngx-bootstrap/modal';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-authorities-management',
@@ -33,7 +33,7 @@ export class AuthoritiesManagementComponent implements OnInit {
   constructor(
     private authoritiesService: AuthoritiesService,
     private authorityToMangeService: AuthorityToManageService,
-    private modalService: BsModalService
+    private modalService: MatDialog
   ) {}
 
   // *****************
@@ -88,7 +88,7 @@ export class AuthoritiesManagementComponent implements OnInit {
    * Close whatever modal is opened
    */
   closeModal(): void {
-    this.modalService.hide();
+    this.modalService.closeAll();
   }
 
   // ********************
@@ -107,7 +107,7 @@ export class AuthoritiesManagementComponent implements OnInit {
       description: '',
     });
 
-    this.modalService.show(template);
+    this.modalService.open(template);
   }
 
   addAuthority(): void {
@@ -117,7 +117,7 @@ export class AuthoritiesManagementComponent implements OnInit {
         this.successAddingAuthority = true;
         // and reload the tags
         this.authoritiesObs = this.authoritiesService.getAllAuthorities();
-        this.modalService.hide();
+        this.modalService.closeAll();
       },
       () => {
         this.successAddingAuthority = false;
@@ -135,7 +135,7 @@ export class AuthoritiesManagementComponent implements OnInit {
 
     // prepare the tagFormGroup
     this.prepareFormGroup(authority);
-    this.modalService.show(template);
+    this.modalService.open(template);
   }
 
   updateTagInFormGroup(): void {
@@ -147,7 +147,7 @@ export class AuthoritiesManagementComponent implements OnInit {
           this.successUpdatingAuthority = true;
           // and reload the tags
           this.authoritiesObs = this.authoritiesService.getAllAuthorities();
-          this.modalService.hide();
+          this.modalService.closeAll();
         },
         () => {
           this.successUpdatingAuthority = false;
@@ -165,7 +165,7 @@ export class AuthoritiesManagementComponent implements OnInit {
 
     // prepare the tagFormGroup
     this.prepareFormGroup(authority);
-    this.modalService.show(template);
+    this.modalService.open(template);
   }
 
   deleteTagInFormGroup(): void {
@@ -177,7 +177,7 @@ export class AuthoritiesManagementComponent implements OnInit {
           this.successDeletingAuthority = true;
           // and reload the tags
           this.authoritiesObs = this.authoritiesService.getAllAuthorities();
-          this.modalService.hide();
+          this.modalService.closeAll();
         },
         () => {
           this.successDeletingAuthority = false;

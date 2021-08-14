@@ -61,7 +61,6 @@ import { FormatStatusPipe } from './shared/pipes/FormatStatusPipe';
 import { MomentDateTimeComponent } from './shared/inputs/moment-datetime/moment-datetime.component';
 import { LocationOpeningperiodDialogComponent } from './management/locations-management/location-details-management/location-calendar/location-openingperiod-dialog/location-openingperiod-dialog.component';
 import { BuildingManagementComponent } from './management/building-management/building-management.component';
-import { ModalModule } from 'ngx-bootstrap/modal';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTabsModule } from '@angular/material/tabs';
 import { LocationReservationsComponent } from './management/locations-management/location-details-management/location-calendar/location-reservations/location-reservations/location-reservations.component';
@@ -345,7 +344,6 @@ const routes: Routes = [
     MatDialogModule,
     MatCheckboxModule,
     MatChipsModule,
-    ModalModule.forRoot(),
     FlexLayoutModule,
     MarkdownModule.forRoot({
       sanitize: SecurityContext.NONE,

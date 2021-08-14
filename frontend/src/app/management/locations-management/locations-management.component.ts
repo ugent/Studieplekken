@@ -17,6 +17,7 @@ import { Building } from 'src/app/shared/model/Building';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { CalendarPeriodsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
 import { CalendarPeriod } from 'src/app/shared/model/CalendarPeriod';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-locations-management',
@@ -49,8 +50,8 @@ export class LocationsManagementComponent implements OnInit {
     private authoritiesService: AuthoritiesService,
     private authenticationService: AuthenticationService,
     private buildingsService: BuildingService,
-    private modalService: BsModalService,
-    private calendarPeriodService: CalendarPeriodsService
+    private calendarPeriodService: CalendarPeriodsService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -85,8 +86,9 @@ export class LocationsManagementComponent implements OnInit {
   // ********************/
 
   prepareToAddLocation(template: TemplateRef<unknown>): void {
+    console.log("trying")
     this.addingWasSuccess = undefined;
-    this.modalService.show(template);
+    this.dialog.open(template);
     this.editMode = false;
   }
 
@@ -106,7 +108,7 @@ export class LocationsManagementComponent implements OnInit {
       this.locationService.addLocation(location).subscribe(
         () => {
           this.successHandler();
-          this.modalService.hide();
+          this.dialog.closeAll();
         },
         () => {
           this.errorHandler();
@@ -130,7 +132,7 @@ export class LocationsManagementComponent implements OnInit {
       .getCalendarPeriodsOfLocation(location.locationId)
       .subscribe((next) => {
         this.currentCalendarPeriodsToDelete = next;
-        this.modalService.show(template);
+        this.dialog.open(template);
       });
   }
 
@@ -142,7 +144,7 @@ export class LocationsManagementComponent implements OnInit {
         () => {
           this.successDeletionHandler();
           this.currentCalendarPeriodsToDelete = [];
-          this.modalService.hide();
+          this.dialog.closeAll();
         },
         () => {
           this.deletionWasSuccess = false;
@@ -151,7 +153,7 @@ export class LocationsManagementComponent implements OnInit {
   }
 
   closeModal(): void {
-    this.modalService.hide();
+    this.dialog.closeAll();
     this.setupForm();
   }
 
@@ -285,7 +287,7 @@ export class LocationsManagementComponent implements OnInit {
       .setValue(location.numberOfSeats);
     this.addLocationFormGroup.get('forGroup').setValue(location.forGroup);
     this.addLocationFormGroup.get('imageUrl').setValue(location.imageUrl);
-    this.modalService.show(template);
+    this.dialog.open(template);
   }
 
   approveLocation(location: Location): void {
@@ -297,7 +299,7 @@ export class LocationsManagementComponent implements OnInit {
       this.locationService.approveLocation(location, true).subscribe(
         () => {
           this.successHandler();
-          this.modalService.hide();
+          this.dialog.closeAll();
         },
         () => {
           this.errorHandler();

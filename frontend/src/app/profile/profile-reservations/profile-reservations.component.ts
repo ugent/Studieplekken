@@ -1,7 +1,6 @@
 import {Component, Input, OnInit, TemplateRef} from '@angular/core';
 import {AuthenticationService} from '../../services/authentication/authentication.service';
 import {LocationReservationsService} from '../../services/api/location-reservations/location-reservations.service';
-import {BsModalService} from 'ngx-bootstrap/modal';
 import {Pair} from '../../shared/model/helpers/Pair';
 import {LocationReservation} from '../../shared/model/LocationReservation';
 import {CalendarPeriod} from '../../shared/model/CalendarPeriod';
@@ -9,6 +8,7 @@ import {Timeslot, timeslotEndHour, timeslotStartHour} from '../../shared/model/T
 import * as moment from 'moment';
 import {User} from '../../shared/model/User';
 import {Observable} from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-profile-reservations',
@@ -29,7 +29,7 @@ export class ProfileReservationsComponent implements OnInit {
   constructor(
     private authenticationService: AuthenticationService,
     private locationReservationService: LocationReservationsService,
-    private modalService: BsModalService
+    private modalService: MatDialog
   ) {
     authenticationService.user.subscribe(() => {
       this.setup();
@@ -68,7 +68,7 @@ export class ProfileReservationsComponent implements OnInit {
     this.successDeletingLocationReservation = undefined;
     this.locationReservationToDelete = locationReservation;
     this.calendarPeriodForLocationReservationToDelete = calendarPeriod;
-    this.modalService.show(template);
+    this.modalService.open(template);
   }
 
   deleteLocationReservation(): void {
@@ -79,7 +79,7 @@ export class ProfileReservationsComponent implements OnInit {
         () => {
           this.successDeletingLocationReservation = true;
           this.setup();
-          this.modalService.hide();
+          this.modalService.closeAll();
         },
         () => {
           this.successDeletingLocationReservation = false;
@@ -136,7 +136,7 @@ export class ProfileReservationsComponent implements OnInit {
   }
 
   closeModal(): void {
-    this.modalService.hide();
+    this.modalService.closeAll();
   }
 
   locationReservationsAndCalendarPeriodsObservable(

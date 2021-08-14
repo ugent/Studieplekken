@@ -13,6 +13,8 @@ import {
 import { UserService } from '../../../services/api/users/user.service';
 import { AuthorityToManageService } from '../../../services/single-point-of-truth/authority-to-manage/authority-to-manage.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { MatDialog } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog/dialog-ref';
 
 @Component({
   selector: 'app-authority-users-management',
@@ -42,15 +44,15 @@ export class AuthorityUsersManagementComponent implements OnInit {
 
   isValidUserToAdd: boolean = undefined;
 
-  addModal: BsModalRef;
-  deleteModal: BsModalRef;
+  addModal: MatDialogRef<unknown>;
+  deleteModal: MatDialogRef<unknown>;
 
   constructor(
     private authoritiesService: AuthoritiesService,
     private authorityToManageService: AuthorityToManageService,
     private route: ActivatedRoute,
     private userService: UserService,
-    private modalService: BsModalService
+    private modalService: MatDialog
   ) {}
 
   get firstName(): AbstractControl {
@@ -83,7 +85,7 @@ export class AuthorityUsersManagementComponent implements OnInit {
   }
 
   closeModal(): void {
-    this.modalService.hide();
+    this.modalService.closeAll();
   }
 
   prepareToAddUserToAuthority(template: TemplateRef<unknown>): void {
@@ -97,7 +99,7 @@ export class AuthorityUsersManagementComponent implements OnInit {
     this.selectedUserFormControl.setValue('');
     this.userSearchResult = [];
     this.selectedUserFormControl.disable();
-    this.addModal = this.modalService.show(template);
+    this.addModal = this.modalService.open(template);
   }
 
   // **************************************
@@ -130,7 +132,7 @@ export class AuthorityUsersManagementComponent implements OnInit {
       () => {
         this.successAddingAuthority = true;
         this.setUsersObs(authorityId);
-        this.addModal.hide();
+        this.addModal.close();
       },
       () => {
         this.successAddingAuthority = false;
@@ -148,7 +150,7 @@ export class AuthorityUsersManagementComponent implements OnInit {
   ): void {
     this.successDeletingAuthority = undefined;
     this.userPreparedToDelete = user;
-    this.deleteModal = this.modalService.show(template);
+    this.deleteModal = this.modalService.open(template);
   }
 
   deleteUserFromAuthority(userId: string, authorityId: number): void {
@@ -159,7 +161,7 @@ export class AuthorityUsersManagementComponent implements OnInit {
         () => {
           this.successDeletingAuthority = true;
           this.setUsersObs(authorityId); // reload users data
-          this.deleteModal.hide();
+          this.deleteModal.close();
         },
         () => {
           this.successDeletingAuthority = false;

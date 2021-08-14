@@ -8,8 +8,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { BuildingService } from 'src/app/services/api/buildings/buildings.service';
-import { BsModalService } from 'ngx-bootstrap/modal';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-building-management',
@@ -33,7 +33,7 @@ export class BuildingManagementComponent implements OnInit {
 
   constructor(
     private buildingService: BuildingService,
-    private modalService: BsModalService,
+    private modalService: MatDialog,
     private authenticationService: AuthenticationService
   ) {}
 
@@ -86,7 +86,7 @@ export class BuildingManagementComponent implements OnInit {
   }
 
   closeModal(): void {
-    this.modalService.hide();
+    this.modalService.closeAll();
   }
 
   // ********************
@@ -105,7 +105,7 @@ export class BuildingManagementComponent implements OnInit {
       address: '',
     });
 
-    this.modalService.show(template);
+    this.modalService.open(template);
   }
 
   addBuilding(): void {
@@ -115,7 +115,7 @@ export class BuildingManagementComponent implements OnInit {
         this.successAddingBuilding = true;
         // reload the buildings
         this.buildingsObs = this.buildingService.getAllBuildings();
-        this.modalService.hide();
+        this.modalService.closeAll();
       },
       () => {
         this.successAddingBuilding = false;
@@ -134,7 +134,7 @@ export class BuildingManagementComponent implements OnInit {
     // prepare the tagFormGroup
     this.prepareFormGroup(building);
 
-    this.modalService.show(template);
+    this.modalService.open(template);
   }
 
   updateBuildingInFormGroup(): void {
@@ -146,7 +146,7 @@ export class BuildingManagementComponent implements OnInit {
           this.successUpdatingBuilding = true;
           // and reload the tags
           this.buildingsObs = this.buildingService.getAllBuildings();
-          this.modalService.hide();
+          this.modalService.closeAll();
         },
         () => {
           this.successUpdatingBuilding = false;
@@ -161,7 +161,7 @@ export class BuildingManagementComponent implements OnInit {
     // prepare the tagFormGroup
     this.prepareFormGroup(building);
 
-    this.modalService.show(template);
+    this.modalService.open(template);
   }
 
   deleteBuildingInFormGroup(): void {
@@ -171,7 +171,7 @@ export class BuildingManagementComponent implements OnInit {
         this.successDeletingBuilding = true;
         // and reload the tags
         this.buildingsObs = this.buildingService.getAllBuildings();
-        this.modalService.hide();
+        this.modalService.closeAll();
       },
       () => {
         this.successDeletingBuilding = false;

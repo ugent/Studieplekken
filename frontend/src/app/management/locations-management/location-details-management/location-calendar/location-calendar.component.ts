@@ -111,7 +111,7 @@ export class LocationCalendarComponent implements OnInit {
     private functionalityService: ApplicationTypeFunctionalityService,
     private locationReservationService: LocationReservationsService,
     private dialog: MatDialog,
-    private modalService: BsModalService,
+    private modalService: MatDialog,
     private authenticationService: AuthenticationService,
     private translate: TranslateService,
     private route: ActivatedRoute,
@@ -163,7 +163,7 @@ export class LocationCalendarComponent implements OnInit {
     this.prepareToUpdatePeriod = null;
     this.successAddingLocationReservation = undefined;
     el.scrollIntoView();
-    this.modalService.show(template);
+    this.modalService.open(template);
   }
 
   add(): void {
@@ -182,7 +182,7 @@ export class LocationCalendarComponent implements OnInit {
     this.prepareToUpdatePeriod = calendarPeriod;
     // Copy
     this.calendarPeriodModel.next(CalendarPeriod.fromJSON(calendarPeriod));
-    this.modalService.show(template);
+    this.modalService.open(template);
   }
 
   update(add = false): void {
@@ -217,7 +217,7 @@ export class LocationCalendarComponent implements OnInit {
             ? (this.successAddingLocationReservation = true)
             : (this.successUpdatingLocationReservation = true);
           this.setup();
-          this.modalService.hide();
+          this.modalService.closeAll();
         },
         () => {
           add
@@ -238,7 +238,7 @@ export class LocationCalendarComponent implements OnInit {
   ): void {
     this.prepareToUpdatePeriod = calendarPeriod;
     this.successDeletingLocationReservation = undefined;
-    this.modalService.show(template);
+    this.modalService.open(template);
   }
 
   delete(): void {
@@ -400,7 +400,7 @@ export class LocationCalendarComponent implements OnInit {
   }
 
   closeModal(): void {
-    this.modalService.hide();
+    this.modalService.closeAll();
   }
 
   getCalendarPeriodTimeInMinutes(

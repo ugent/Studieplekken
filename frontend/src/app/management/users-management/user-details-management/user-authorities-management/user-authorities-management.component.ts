@@ -6,6 +6,7 @@ import { AuthoritiesService } from '../../../../services/api/authorities/authori
 import { FormControl, Validators } from '@angular/forms';
 import { UserDetailsService } from '../../../../services/single-point-of-truth/user-details/user-details.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-user-authorities-management',
@@ -32,7 +33,7 @@ export class UserAuthoritiesManagementComponent implements OnInit {
   constructor(
     private authoritiesService: AuthoritiesService,
     private userDetailsService: UserDetailsService,
-    private modalService: BsModalService
+    private modalService: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -70,7 +71,7 @@ export class UserAuthoritiesManagementComponent implements OnInit {
 
   prepareToAddAnAuthorityToUser(template: TemplateRef<unknown>): void {
     this.successOnAddingAuthorityToUser = undefined;
-    this.modalService.show(template);
+    this.modalService.open(template);
   }
 
   addAuthorityFromForm(): void {
@@ -83,7 +84,7 @@ export class UserAuthoritiesManagementComponent implements OnInit {
       () => {
         this.successOnAddingAuthorityToUser = true;
         this.userDetailsService.loadUser(userId);
-        this.modalService.hide();
+        this.modalService.closeAll();
       },
       () => {
         this.successOnAddingAuthorityToUser = false;
@@ -101,7 +102,7 @@ export class UserAuthoritiesManagementComponent implements OnInit {
   ): void {
     this.successOnDeletingAuthorityForUser = undefined;
     this.authorityPreparedToDelete = authority;
-    this.modalService.show(template);
+    this.modalService.open(template);
   }
 
   deleteAuthorityFromUser(userId: string, authorityId: number): void {
@@ -112,7 +113,7 @@ export class UserAuthoritiesManagementComponent implements OnInit {
         () => {
           this.successOnDeletingAuthorityForUser = true;
           this.userDetailsService.loadUser(userId);
-          this.modalService.hide();
+          this.modalService.closeAll();
         },
         () => {
           this.successOnDeletingAuthorityForUser = false;
@@ -133,7 +134,7 @@ export class UserAuthoritiesManagementComponent implements OnInit {
   }
 
   closeModal(): void {
-    this.modalService.hide();
+    this.modalService.closeAll();
   }
 
   /**
