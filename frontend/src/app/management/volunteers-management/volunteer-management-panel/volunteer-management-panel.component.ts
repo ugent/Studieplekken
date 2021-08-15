@@ -53,68 +53,7 @@ export class VolunteerManagementPanelComponent implements OnInit {
   }
 
   showAdd(template: TemplateRef<unknown>): void {
-    this.modalService.open(template, {panelClass: ["cs--cyan" ,"bigmodal"]});
-  }
-
-  enableSearchButton(value: { firstName: string; lastName: string }): boolean {
-    return (
-      (objectExists(value.firstName) && value.firstName.trim().length > 0) ||
-      (objectExists(value.lastName) && value.lastName.trim().length > 0)
-    );
-  }
-
-  /*
-   * If any of the input fields are not empty without trimming, enable the 'search' button
-   */
-  enableClearButton(value: { firstName: string; lastName: string }): boolean {
-    return (
-      (objectExists(value.firstName) && value.firstName.length > 0) ||
-      (objectExists(value.lastName) && value.lastName.length > 0)
-    );
-  }
-
-  clearFilterInput(): void {
-    this.formGroup.setValue({
-      firstName: '',
-      lastName: '',
-    });
-    this.formGroup.enable();
-
-    this.filteredUsers = of<User[]>([]);
-  }
-
-  submitSearch(value: {
-    firstName: string;
-    lastName: string;
-    barcode: string;
-  }): void {
-    this.neverSearched = null;
-    if (
-      objectExists(value.firstName) &&
-      value.firstName.trim().length > 0 &&
-      objectExists(value.lastName) &&
-      value.lastName.trim().length > 0
-    ) {
-      // search by first and last name
-      this.filteredUsers = this.userService.getUsersByFirstAndLastName(
-        value.firstName,
-        value.lastName
-      );
-    } else if (
-      objectExists(value.firstName) &&
-      value.firstName.trim().length > 0
-    ) {
-      // search by first name
-      this.filteredUsers = this.userService.getUsersByFirstName(
-        value.firstName
-      );
-    } else if (
-      objectExists(value.lastName) &&
-      value.lastName.trim().length > 0
-    ) {
-      // search by last name
-      this.filteredUsers = this.userService.getUsersByLastName(value.lastName);
-    }
+    this.modalRef = this.modalService.open(template, {panelClass: ["cs--cyan" ,"bigmodal"]});
   }
 
   addVolunteer(user: User): void {
