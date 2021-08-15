@@ -162,7 +162,7 @@ export class LocationCalendarComponent implements OnInit {
     this.prepareToUpdatePeriod = null;
     this.successAddingLocationReservation = undefined;
     el.scrollIntoView();
-    this.modalService.open(template);
+    this.modalService.open(template, {panelClass: ["cs--cyan" ,"bigmodal"]});
   }
 
   add(): void {
@@ -181,7 +181,7 @@ export class LocationCalendarComponent implements OnInit {
     this.prepareToUpdatePeriod = calendarPeriod;
     // Copy
     this.calendarPeriodModel.next(CalendarPeriod.fromJSON(calendarPeriod));
-    this.modalService.open(template);
+    this.modalService.open(template, {panelClass: ["cs--cyan" ,"bigmodal"]});
   }
 
   update(add = false): void {
@@ -237,7 +237,7 @@ export class LocationCalendarComponent implements OnInit {
   ): void {
     this.prepareToUpdatePeriod = calendarPeriod;
     this.successDeletingLocationReservation = undefined;
-    this.modalService.open(template);
+    this.modalService.open(template, {panelClass: ["cs--cyan" ,"bigmodal"]});
   }
 
   delete(): void {
@@ -320,7 +320,7 @@ export class LocationCalendarComponent implements OnInit {
 
     // if necessary, show the warning
     if (showWarning) {
-      this.dialog.open(LocationOpeningperiodDialogComponent);
+      this.dialog.open(LocationOpeningperiodDialogComponent, {panelClass: ["cs--cyan" ,"bigmodal"]});
     }
   }
 

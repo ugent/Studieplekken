@@ -22,11 +22,11 @@
 
     <div class="row" style="margin-top: 20px;">
       <div class="pull-right">
-        <button class="btn btn-primary btn-left" (click)="updateButtonClick()" [disabled]="!isModelUpdatable()">
+        <button class="button button-primary btn-left" (click)="updateButtonClick()" [disabled]="!isModelUpdatable()">
           {{'management.locationDetails.description.updateButton' | translate}}
         </button>
 
-        <button class="btn btn-secondary" (click)="cancelButtonClick()" [disabled]="!isModelUpdatable()">
+        <button class="button button-secondary" (click)="cancelButtonClick()" [disabled]="!isModelUpdatable()">
           {{'management.locationDetails.description.cancelButton' | translate}}
         </button>
       </div>

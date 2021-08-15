@@ -83,11 +83,11 @@
     </div>
 
     <!-- Buttons to edit/cancel/persist location -->
-    <div class="row form-group">
-      <div class="col-lg-11">
+    <div class="row form-group button-group">
+      <div fxLayout="row" fxLayoutAlign="space-between">
         <div class="pull-left">
           <!-- Button to make form editable -->
-          <button type="button" class="btn btn-primary btn-space"
+          <button type="button" class="button button-primary btn-space"
                   [disabled]="disableEditLocationButton"
                   (click)="editLocationDetailsButtonClick()">
             {{'management.locationDetails.form.edit' | translate}}
@@ -95,19 +95,23 @@
         </div>
 
         <div class="pull-right">
-          <!-- Button to cancel changes -->
-          <button type="button" class="btn btn-primary btn-space btn-left"
+
+          <!-- Button to persist changes -->
+          <button type="button" class="button button-primary btn-space"
+                  [disabled]="disablePersistLocationButton"
+                  (click)="persistLocationDetailsButtonClick()">
+            {{'management.locationDetails.form.persist' | translate}}
+          </button>
+
+                    <!-- Button to cancel changes -->
+
+          <button type="button" class="button button-secondary btn-space btn-left"
                   [disabled]="disableCancelLocationButton"
                   (click)="cancelLocationDetailsButtonClick(location)">
             {{'management.locationDetails.form.cancel' | translate}}
           </button>
 
-          <!-- Button to persist changes -->
-          <button type="button" class="btn btn-primary btn-space"
-                  [disabled]="disablePersistLocationButton"
-                  (click)="persistLocationDetailsButtonClick()">
-            {{'management.locationDetails.form.persist' | translate}}
-          </button>
+          
         </div>
       </div>
     </div>

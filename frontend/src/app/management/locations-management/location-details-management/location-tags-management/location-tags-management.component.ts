@@ -64,7 +64,7 @@ export class LocationTagsManagementComponent implements OnInit {
     this.tagsFormControl = new FormControl(this.tagsThatAreSelected);
     this.tagsSelectionIsUpdatable = false;
     this.successUpdatingTagsConfiguration = undefined;
-    this.modalService.open(template);
+    this.modalService.open(template, {panelClass: ["cs--cyan" ,"bigmodal"]});
   }
 
   updateTags(): void {

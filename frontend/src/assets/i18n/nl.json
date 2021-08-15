@@ -136,7 +136,7 @@
     "DUTCH": "Nederlands"
   },
   "login": {
-    "appTitle": "Studieplekken UGent",
+    "appTitle": "Studieplekken Gent",
     "title": "Aanmelden",
     "casLogin": "UGent Login",
     "hoGentLogin": "HoGent Login",
@@ -214,7 +214,7 @@
           "endsAt": "Eindigt op",
           "openingTime": "Openingstijd",
           "closingTime": "Sluitingstijd",
-          "reservable": "Reserveerbaar vanaf",
+          "reservable": "Reserveerbaar",
           "numberOfSeats": "Plaatsen",
           "timeslotCount": "Aantal timeslots",
           "reservableFrom": "Reserveerbaar vanaf",

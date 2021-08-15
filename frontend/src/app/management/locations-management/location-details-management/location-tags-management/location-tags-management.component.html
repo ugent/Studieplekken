@@ -1,12 +1,12 @@
 <div class="container-fluid" *ngIf="location | async as location">
   <div class="panel-body" style="padding: 20px">
     <div>
-      <div class="row alert alert-info">
+      <div class="row messages messages--info">
         <p>{{'management.locationDetails.tags.activeTagsInformation' | translate}}</p>
         <p>{{'management.locationDetails.tags.updateTagsInformation' | translate}}</p>
 
         <div class="pull-right">
-          <button class="btn btn-secondary" (click)="prepareUpdateTheTags(updateTagsConfigurationModal)">
+          <button class="button button-secondary" (click)="prepareUpdateTheTags(updateTagsConfigurationModal)">
             {{'management.locationDetails.tags.updateTagsButton' | translate}}
           </button>
         </div>
@@ -24,7 +24,7 @@
 </div>
 
 <ng-template #noTags>
-  <div class="alert alert-warning">
+  <div class="messages messages--warning">
     {{'management.locationDetails.tags.noTagsSelected' | translate}}
   </div>
 </ng-template>
@@ -32,13 +32,16 @@
 <!-- Modal view to update the tags configuration of the location -->
 <ng-template #updateTagsConfigurationModal>
   <!-- Modal header -->
-  <div class="modal-header">
-    <h5 class="modal-title" id="updateTagsConfigurationModalTitle">
+
+  <div fxLayout="row" fxLayoutAlign="space-between">
+    <h1>
       {{'management.locationDetails.tags.updateTagsConfigurationModal.title' | translate}}
-    </h5>
-    <button type="button" class="close" (click)="closeModal()" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
+    </h1>
+    <div>
+      <button type="button" class="close" (click)="closeModal()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>  
+    </div>
   </div>
 
   <!-- Modal body -->
@@ -65,31 +68,28 @@
 
   <!-- Modal footer -->
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary"
+    <button type="submit" class="button button-primary"
             [disabled]="!tagsSelectionIsUpdatable"
             (click)="updateTags()">
       {{'general.buttons.update' | translate}}
     </button>
-    <button type="button" class="btn btn-secondary"
+    <button type="button" class="button button-secondary"
             (click)="closeModal()">
       {{'general.buttons.cancel' | translate}}
-    </button>
-    <button type="button" class="btn btn-primary" (click)="closeModal()">
-      {{'general.buttons.close' | translate}}
     </button>
   </div>
 
   <!-- Feedback to the user -->
   <div class="container-fluid">
-    <div class="alert alert-info" *ngIf="successUpdatingTagsConfiguration === null">
+    <div class="messages messages--info" *ngIf="successUpdatingTagsConfiguration === null">
       {{'general.waitingForServer' | translate}}
     </div>
 
-    <div class="alert alert-success" *ngIf="successUpdatingTagsConfiguration === true">
+    <div class="messages messages--success" *ngIf="successUpdatingTagsConfiguration === true">
       {{('management.locationDetails.tags.updateTagsConfigurationModal.success' | translate).replace('{locationName}', locationName)}}
     </div>
 
-    <div class="alert alert-error" *ngIf="successUpdatingTagsConfiguration === false">
+    <div class="messages messages--error" *ngIf="successUpdatingTagsConfiguration === false">
       {{('management.locationDetails.tags.updateTagsConfigurationModal.error' | translate).replace('{locationName}', locationName)}}
     </div>
   </div>
