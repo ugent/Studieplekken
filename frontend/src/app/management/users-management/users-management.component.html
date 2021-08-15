@@ -9,18 +9,18 @@
           - last name
           - barcode
    -->
-  <div class="padding-default bg-tertiary">
-    <div class="padding-default">
+  <div class=" highlight loupe highlight--left">
+    <div class="highlight__inner">
       <div class="">
-        <form [formGroup]="formGroup" (ngSubmit)="submitSearch(formGroup.value)">
+        <form [formGroup]="formGroup" class="form" (ngSubmit)="submitSearch(formGroup.value)">
           <!-- First Name -->
           <div class="row form-group">
             <label class="col-lg-3 control-label" for="firstName">
               {{'management.users.overview.firstName' | translate}}
             </label>
-            <div class="col-lg-8">
-              <input class="form-control" id="firstName" type="text" formControlName="firstName"
-                     (ngModelChange)="filterFormChanged(formGroup.value)">
+            <div class="col-lg-8 search">
+              <input class="form-control search inline" id="firstName" type="search" formControlName="firstName"
+                (ngModelChange)="filterFormChanged(formGroup.value)">
             </div>
           </div>
 
@@ -29,9 +29,9 @@
             <label class="col-lg-3 control-label" for="lastName">
               {{'management.users.overview.lastName' | translate}}
             </label>
-            <div class="col-lg-8">
-              <input class="form-control" id="lastName" type="text" formControlName="lastName"
-                     (ngModelChange)="filterFormChanged(formGroup.value)">
+            <div class="col-lg-8 search">
+              <input class="form-control" id="lastName" type="search" formControlName="lastName"
+                (ngModelChange)="filterFormChanged(formGroup.value)">
             </div>
           </div>
 
@@ -40,9 +40,9 @@
             <label class="col-lg-3 control-label" for="barcode">
               {{'management.users.overview.barcode' | translate}}
             </label>
-            <div class="col-lg-8">
-              <input class="form-control" id="barcode" type="text" formControlName="barcode"
-                     (ngModelChange)="filterFormChanged(formGroup.value)">
+            <div class="col-lg-8 search">
+              <input class="form-control" id="barcode" type="search" formControlName="barcode"
+                (ngModelChange)="filterFormChanged(formGroup.value)">
             </div>
           </div>
 
@@ -52,15 +52,9 @@
 
               <div class="pull-right">
                 <!-- Search -->
-                <button type="submit" class="btn btn-default btn-left"
-                        [disabled]="!enableSearchButton(formGroup.value)">
+                <button type="submit" class="button button-primary btn-left"
+                  [disabled]="!enableSearchButton(formGroup.value)">
                   {{'management.users.overview.filterSearchButton' | translate}}
-                </button>
-
-                <!-- Clear input -->
-                <button type="button" class="btn btn-default" (click)="clearFilterInput()"
-                        [disabled]="!enableClearButton(formGroup.value)">
-                  {{'management.users.overview.filterClearButton' | translate}}
                 </button>
               </div>
             </div>
@@ -97,33 +91,38 @@
   </div>
 
   <div *ngIf="neverSearched === false && !errorOnRetrievingFilteredUsers && !noUserWithBarcodeHasBeenFound"
-       class="container-fluid">
-    <table style="width: 100%">
-      <thead>
-      <tr>
-        <th>{{'management.users.searchResult.table.id' | translate}}</th>
-        <th>{{'management.users.searchResult.table.firstName' | translate}}</th>
-        <th>{{'management.users.searchResult.table.lastName' | translate}}</th>
-        <th *ngIf="showPenaltyPoints">{{'management.users.searchResult.table.penaltyPoints' | translate}}</th>
-        <th>{{'management.users.searchResult.table.institution' | translate}}</th>
-        <th><!-- Details --></th>
-      </tr>
-      </thead>
+    class="container-fluid responsive-table fullwidth">
+    <div class="table-wrapper fullwidth">
+      <table class="fullwidth">
+        <thead>
+          <tr>
+            <th scope="col">{{'management.users.searchResult.table.id' | translate}}</th>
+            <th scope="col">{{'management.users.searchResult.table.firstName' | translate}}</th>
+            <th scope="col">{{'management.users.searchResult.table.lastName' | translate}}</th>
+            <th *ngIf="showPenaltyPoints" scope="col">{{'management.users.searchResult.table.penaltyPoints' |
+              translate}}</th>
+            <th scope="col">{{'management.users.searchResult.table.institution' | translate}}</th>
+            <th scope="col">
+              <!-- Details -->
+            </th>
+          </tr>
+        </thead>
 
-      <tbody *ngIf="filteredUsers | async as users">
-      <tr *ngFor="let user of users">
-        <td>{{user.userId}}</td>
-        <td>{{user.firstName}}</td>
-        <td>{{user.lastName}}</td>
-        <td *ngIf="showPenaltyPoints">{{user.penaltyPoints}}</td>
-        <td>{{user.institution}}</td>
-        <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
-          <span [routerLink]="'./' + user.userId"
-             class="glyphicon glyphicon-list-alt">
-          </span>
-        </td>
-      </tr>
-      </tbody>
-    </table>
+        <tbody *ngIf="filteredUsers | async as users">
+          <tr *ngFor="let user of users">
+            <td>{{user.userId}}</td>
+            <td>{{user.firstName}}</td>
+            <td>{{user.lastName}}</td>
+            <td *ngIf="showPenaltyPoints">{{user.penaltyPoints}}</td>
+            <td>{{user.institution}}</td>
+            <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
+              <span [routerLink]="'./' + user.userId">
+                <i class="icon-hamburger" aria-hidden="true"></i>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>

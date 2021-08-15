@@ -92,7 +92,7 @@ export class TagsManagementComponent implements OnInit {
       english: '',
     });
 
-    this.modalService.open(template);
+    this.modalService.open(template, {panelClass: ["cs--cyan" ,"bigmodal"]});
   }
 
   addTag(): void {
@@ -120,7 +120,7 @@ export class TagsManagementComponent implements OnInit {
     // prepare the tagFormGroup
     this.prepareFormGroup(locationTag);
 
-    this.modalService.open(template);
+    this.modalService.open(template,  {panelClass: ["cs--cyan" ,"bigmodal"]});
   }
 
   updateTagInFormGroup(): void {
@@ -148,7 +148,7 @@ export class TagsManagementComponent implements OnInit {
     // prepare the tagFormGroup
     this.prepareFormGroup(locationTag);
 
-    this.modalService.open(template);
+    this.modalService.open(template,  {panelClass: ["cs--cyan" ,"bigmodal"]});
   }
 
   deleteTagInFormGroup(): void {
