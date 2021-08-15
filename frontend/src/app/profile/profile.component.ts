@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApplicationTypeFunctionalityService } from '../services/functionality/application-type/application-type-functionality.service';
+import { BreadcrumbService, dashboardBreadcrumb } from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
 
 @Component({
   selector: 'app-profile',
@@ -13,7 +14,8 @@ export class ProfileComponent implements OnInit {
   showChangePassword: boolean;
 
   constructor(
-    private functionalityService: ApplicationTypeFunctionalityService
+    private functionalityService: ApplicationTypeFunctionalityService,
+    private breadcrumbService: BreadcrumbService
   ) {}
 
   ngOnInit(): void {
@@ -21,5 +23,6 @@ export class ProfileComponent implements OnInit {
     this.showPenalties = this.functionalityService.showPenaltyFunctionality();
     this.showChangePassword = this.functionalityService.showChangePasswordFunctionality();
     this.showPersonalCalendar = this.functionalityService.showProfilePersonalCalendarFunctionality();
+    this.breadcrumbService.setCurrentBreadcrumbs([dashboardBreadcrumb, {pageName:"Profile", url:"/profile/overview"}])
   }
 }
