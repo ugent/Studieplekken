@@ -8,25 +8,25 @@
 
   <!-- Table to show the location reservations of the logged in user -->
   <div class="container-fluid">
-    <div class="alert alert-info" *ngIf="successGettingLocationReservations === null">
+    <div class="messages messages--info" *ngIf="successGettingLocationReservations === null">
       {{'profile.reservations.locations.loading' | translate}}
     </div>
 
-    <div class="alert alert-error" *ngIf="successGettingLocationReservations === false">
+    <div class="messages messages--error" *ngIf="successGettingLocationReservations === false">
       {{'profile.reservations.locations.error' | translate}}
     </div>
 
-    <div *ngIf="successGettingLocationReservations === true">
-      <div *ngIf="locationReservations.length > 0; else noReservations">
+    <div *ngIf="successGettingLocationReservations === true" class="responsive-table fullwidth">
+      <div *ngIf="locationReservations.length > 0; else noReservations" class="table-wrapper fullwidth">
         <table class="table table-striped" style="width: 100%">
           <!-- Table header -->
           <thead>
           <tr>
-            <th>{{'profile.reservations.locations.table.header.locationName' | translate}}</th>
-            <th>{{'profile.reservations.locations.table.header.reservationDate' | translate}}</th>
-            <th>{{'profile.reservations.locations.table.header.beginHour' | translate}}</th>
-            <th>{{'profile.reservations.locations.table.header.attended' | translate}}</th>
-            <th></th>
+            <th scope="col">{{'profile.reservations.locations.table.header.locationName' | translate}}</th>
+            <th scope="col">{{'profile.reservations.locations.table.header.reservationDate' | translate}}</th>
+            <th scope="col">{{'profile.reservations.locations.table.header.beginHour' | translate}}</th>
+            <th scope="col">{{'profile.reservations.locations.table.header.attended' | translate}}</th>
+            <th scope="col"></th>
           </tr>
           </thead>
 
@@ -49,7 +49,9 @@
             <td *ngIf="!isTimeslotInPast(pair.first.timeslot, pair.second) && pair.first.attended !== false; else emptyTableData"
                 class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
                 (click)="prepareToDeleteLocationReservation(pair.first, pair.second, deleteLocationReservationModal)">
-              <span class="glyphicon glyphicon-trash pointerCursor"></span>
+              <span class="pointerCursor">
+                <i class="icon-cross" aria-hidden="true"></i>
+              </span>
             </td>
           </tr>
           </tbody>
@@ -60,13 +62,13 @@
 </div>
 
 <ng-template #noReservations>
-  <div *ngIf="userObj === undefined; else noReservationsInManagement" class="alert alert-info">
+  <div *ngIf="userObj === undefined; else noReservationsInManagement" class="messages messages--info">
     {{'profile.reservations.locations.zeroReservations' | translate}}
   </div>
 </ng-template>
 
 <ng-template #noReservationsInManagement>
-  <div class="alert alert-info">
+  <div class="messages messages--info">
     {{('profile.reservations.locations.zeroReservationsInManagement' | translate)
     .replace('{name}', userObj.firstName + ' ' + userObj.lastName)}}
   </div>
@@ -112,15 +114,15 @@
   </div>
 
   <div class="container-fluid">
-    <div class="alert alert-info" *ngIf="successDeletingLocationReservation === null">
+    <div class="messages messages--info" *ngIf="successDeletingLocationReservation === null">
       {{'general.waitingForServer' | translate}}
     </div>
 
-    <div class="alert alert-success" *ngIf="successDeletingLocationReservation === true">
+    <div class="messages messages--success" *ngIf="successDeletingLocationReservation === true">
       {{'management.reservations.location.deleteModal.success' | translate}}
     </div>
 
-    <div class="alert alert-error" *ngIf="successDeletingLocationReservation === false">
+    <div class="messages messages--error" *ngIf="successDeletingLocationReservation === false">
       {{'management.reservations.location.deleteModal.error' | translate}}
     </div>
   </div>

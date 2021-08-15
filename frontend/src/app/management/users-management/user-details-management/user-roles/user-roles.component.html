@@ -6,15 +6,15 @@
   <hr>
 
   <!-- Feedback on updating the user's role -->
-  <div class="alert alert-info" *ngIf="userUpdatingSuccess === null">
+  <div class="messages messages--info" *ngIf="userUpdatingSuccess === null">
     {{'management.users.userDetails.roles.loadingUpdatingUser' | translate}}
   </div>
 
-  <div class="alert alert-success" *ngIf="userUpdatingSuccess === true">
+  <div class="messages messages--success" *ngIf="userUpdatingSuccess === true">
     {{'management.users.userDetails.roles.successUpdatingUser' | translate}}
   </div>
 
-  <div class="alert alert-error" *ngIf="userUpdatingSuccess === false">
+  <div class="messages messages--error" *ngIf="userUpdatingSuccess === false">
     {{'management.users.userDetails.roles.errorUpdatingUser' | translate}}
   </div>
 
@@ -29,12 +29,12 @@
 
       <div class="row">
         <div class="pull-right">
-          <button type="submit" class="btn btn-primary btn-left"
+          <button type="submit" class="button button-warning btn-left"
                   [disabled]="disableRoleUpdateButton()">
             {{'management.users.userDetails.roles.updateButton' | translate}}
           </button>
 
-          <button class="btn btn-secondary" (click)="resetRolesFormArrayButtonClick()"
+          <button class="button button-secondary" (click)="resetRolesFormArrayButtonClick()"
                   [disabled]="disableRoleUpdateButton()">
             {{'management.users.userDetails.roles.resetButton' | translate}}
           </button>

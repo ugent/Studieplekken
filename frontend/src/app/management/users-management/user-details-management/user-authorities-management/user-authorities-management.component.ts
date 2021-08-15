@@ -70,7 +70,7 @@ export class UserAuthoritiesManagementComponent implements OnInit {
 
   prepareToAddAnAuthorityToUser(template: TemplateRef<unknown>): void {
     this.successOnAddingAuthorityToUser = undefined;
-    this.modalService.open(template);
+    this.modalService.open(template, {panelClass: ["cs--cyan" ,"bigmodal"]});
   }
 
   addAuthorityFromForm(): void {
@@ -101,7 +101,7 @@ export class UserAuthoritiesManagementComponent implements OnInit {
   ): void {
     this.successOnDeletingAuthorityForUser = undefined;
     this.authorityPreparedToDelete = authority;
-    this.modalService.open(template);
+    this.modalService.open(template, {panelClass: ["cs--cyan" ,"bigmodal"]});
   }
 
   deleteAuthorityFromUser(userId: string, authorityId: number): void {

@@ -7,36 +7,44 @@
 
   <div>
     <div class="row">
-      <div class="alert alert-info">
+      <div class="messages messages--info center">
+        <i class="icon-info" aria-hidden="true"></i>
         {{'management.users.userDetails.authorities.info' | translate}}
+      </div>
+      
+    </div>
+
+    <div class="row responsive-table" *ngIf="authoritiesOfUser !== undefined">
+      <div class="table-wrapper">
+        <table *ngIf="authoritiesOfUser.length > 0; else noAuthoritiesForUser" style="width: 100%">
+          <thead>
+            <tr>
+              <th scope="col">{{'management.authorities.table.authorityName' | translate}}</th>
+              <th scope="col">{{'management.authorities.table.description' | translate}}</th>
+              <th scope="col">
+                <!-- delete -->
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let authority of authoritiesOfUser">
+              <td>{{authority.authorityName}}</td>
+              <td>{{authority.description}}</td>
+              <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
+                (click)="prepareToDeleteAuthorityForUser(authority, deleteAuthorityFromUserModal)">
+                <span class="glyphicon glyphicon-trash pointerCursor">
+                  <i class="icon-cross" aria-hidden='false'></i>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
-    <div class="row" *ngIf="authoritiesOfUser !== undefined">
-      <table *ngIf="authoritiesOfUser.length > 0; else noAuthoritiesForUser" style="width: 100%">
-        <thead>
-        <tr>
-          <th>{{'management.authorities.table.authorityName' | translate}}</th>
-          <th>{{'management.authorities.table.description' | translate}}</th>
-          <th><!-- delete --></th>
-        </tr>
-        </thead>
-
-        <tbody>
-        <tr *ngFor="let authority of authoritiesOfUser">
-          <td>{{authority.authorityName}}</td>
-          <td>{{authority.description}}</td>
-          <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
-              (click)="prepareToDeleteAuthorityForUser(authority, deleteAuthorityFromUserModal)">
-            <span class="glyphicon glyphicon-trash pointerCursor"></span>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-
     <div class="row" style="margin-top: 20px">
-      <button class="btn btn-primary" (click)="prepareToAddAnAuthorityToUser(addAuthorityToUserModal)">
+      <button class="button button-primary" (click)="prepareToAddAnAuthorityToUser(addAuthorityToUserModal)">
         {{'management.users.userDetails.authorities.addNew' | translate}}
       </button>
     </div>
@@ -44,13 +52,13 @@
 </div>
 
 <ng-template #noAuthoritiesForUser>
-  <div class="alert alert-warning">
+  <div class="messages messages-warning">
     {{'management.users.userDetails.authorities.noAuthoritiesForUser' | translate}}
   </div>
 </ng-template>
 
 <ng-template #allAuthoritiesAreAssigned>
-  <div class="alert alert-info">
+  <div class="messages messages-info">
     {{'management.users.userDetails.authorities.allAuthoritiesAreAssigned' | translate}}
   </div>
 </ng-template>
@@ -58,13 +66,15 @@
 <!-- Modal view to add a new authority to the user -->
 <ng-template #addAuthorityToUserModal>
   <!-- Modal header -->
-  <div class="modal-header">
-    <h5 class="modal-title" id="addAuthorityToUserModalTitle">
+  <div fxLayout="row" fxLayoutAlign="space-between">
+    <h1 class="modal-title" id="addAuthorityToUserModalTitle">
       {{'management.users.userDetails.authorities.addAuthorityToUserModal.title' | translate}}
-    </h5>
-    <button type="button" class="close" (click)="closeModal()" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
+    </h1>
+    <div>
+      <button type="button" class="close" (click)="closeModal()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
   </div>
 
   <!-- Modal body -->
@@ -82,7 +92,7 @@
             {{'management.users.userDetails.authorities.addAuthorityToUserModal.selectAuthority' | translate}}
           </label>
           <div class="col-lg-8">
-            <select class="form-control" id="authority" [formControl]="authoritiesFormControl" >
+            <select class="form-control" id="authority" [formControl]="authoritiesFormControl">
               <option *ngFor="let authority of addableAuthorities" [value]="authority.authorityId">
                 {{authority.authorityName + ' (' + authority.description + ')'}}
               </option>
@@ -95,18 +105,13 @@
 
   <!-- Modal footer -->
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary"
-            [disabled]="!validForm()"
-            (click)="addAuthorityFromForm()">
+    <button type="submit" class="button button-primary" [disabled]="!validForm()" (click)="addAuthorityFromForm()">
       {{'general.buttons.add' | translate}}
     </button>
-    <button type="button" class="btn btn-secondary"
-            (click)="closeModal()" (click)="clearForm()">
+    <button type="button" class="button button-secondary" (click)="closeModal()" (click)="clearForm()">
       {{'general.buttons.cancel' | translate}}
     </button>
-    <button type="button" class="btn btn-primary" (click)="closeModal()">
-      {{'general.buttons.close' | translate}}
-    </button>
+
   </div>
 
   <!-- Feedback to the user -->
@@ -146,8 +151,10 @@
       <br><br>
 
       <ul *ngIf="authorityPreparedToDelete !== undefined">
-        <li><b style="margin-right: 5px"><i>{{('management.authorities.table.authorityName' | translate) + ':   '}}</i></b>{{authorityPreparedToDelete.authorityName}}</li>
-        <li><b style="margin-right: 5px"><i>{{('management.authorities.table.description' | translate)}}</i></b>{{authorityPreparedToDelete.description}}</li>
+        <li><b style="margin-right: 5px"><i>{{('management.authorities.table.authorityName' | translate) + ':
+              '}}</i></b>{{authorityPreparedToDelete.authorityName}}</li>
+        <li><b style="margin-right: 5px"><i>{{('management.authorities.table.description' |
+              translate)}}</i></b>{{authorityPreparedToDelete.description}}</li>
       </ul>
     </div>
   </div>
@@ -155,7 +162,7 @@
   <!-- Footer -->
   <div class="modal-footer">
     <button type="button" class="btn btn-primary"
-            (click)="deleteAuthorityFromUser(userId, authorityPreparedToDelete.authorityId)">
+      (click)="deleteAuthorityFromUser(userId, authorityPreparedToDelete.authorityId)">
       {{'general.buttons.delete' | translate}}
     </button>
     <button type="button" class="btn btn-secondary" (click)="closeModal()">
