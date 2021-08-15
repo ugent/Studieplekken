@@ -1,14 +1,14 @@
-<div class="container-fluid">
-  <div *ngIf="locationObs | async as locations; else loadingOrError">
+<div class="container-fluid responsive-table fullsize">
+  <div class="table-wrapped fullsize" *ngIf="locationObs | async as locations; else loadingOrError">
     <table *ngIf="locations.length > 0; else noLocations" class="table table-striped"
       style="table-layout: fixed; width: 100%;">
       <!-- Table header -->
       <thead>
         <tr>
-          <th style="width: 50%">{{'scan.locations.header.name' | translate}}</th>
-          <th style="width: 30%">{{'scan.locations.header.building' | translate}}</th>
-          <th style="width: 10%">{{'scan.locations.header.numberOfSeats' | translate}}</th>
-          <th style="width: 10%">{{'scan.locations.header.scan' | translate}}</th>
+          <th scope="col" style="width: 50%">{{'scan.locations.header.name' | translate}}</th>
+          <th scope='col' style="width: 30%">{{'scan.locations.header.building' | translate}}</th>
+          <th scope='col' style="width: 10%">{{'scan.locations.header.numberOfSeats' | translate}}</th>
+          <th scope="col" style="width: 10%">{{'scan.locations.header.scan' | translate}}</th>
         </tr>
       </thead>
 
