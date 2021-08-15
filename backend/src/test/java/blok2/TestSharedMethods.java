@@ -1,8 +1,8 @@
 package blok2;
 
-import blok2.daos.IUserDao;
 import blok2.daos.IAuthorityDao;
 import blok2.daos.ICalendarPeriodDao;
+import blok2.daos.IUserDao;
 import blok2.helpers.Institution;
 import blok2.helpers.TimeException;
 import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
@@ -77,6 +77,15 @@ public class TestSharedMethods {
         Building testBuilding = new Building();
         testBuilding.setName("TestBuilding");
         testBuilding.setAddress("TestStreet 123");
+        testBuilding.setInstitution(Institution.UGent);
+        return testBuilding;
+    }
+
+    public static Building testBuildingHoGent() {
+        Building testBuilding = new Building();
+        testBuilding.setName("TestBuilding HoGent");
+        testBuilding.setAddress("TestStreet 123, HoGent");
+        testBuilding.setInstitution(Institution.HoGent);
         return testBuilding;
     }
 
@@ -124,7 +133,7 @@ public class TestSharedMethods {
         User user = new User();
         user.setLastName("Added User");
         user.setFirstName("First");
-        user.setMail(s+"@ugent.be");
+        user.setMail(s + "@ugent.be");
         user.setPassword("first_password");
         user.setInstitution(Institution.UGent);
         user.setUserId(s);
@@ -143,6 +152,18 @@ public class TestSharedMethods {
         user.setMail(id + "@ugent.be");
         user.setPassword("second_password");
         user.setInstitution(Institution.UGent);
+        user.setUserId(id);
+        user.setAdmin(false);
+        return user;
+    }
+
+    public static User studentTestUserHoGent(String id) {
+        User user = new User();
+        user.setLastName("Added User");
+        user.setFirstName("Third");
+        user.setMail(id + "@hogent.be");
+        user.setPassword("second_password");
+        user.setInstitution(Institution.HoGent);
         user.setUserId(id);
         user.setAdmin(false);
         return user;
@@ -178,19 +199,19 @@ public class TestSharedMethods {
             CalendarPeriod period = new CalendarPeriod();
             period.setLocation(location);
 
-            date = LocalDate.of(date.getYear(), date.getMonth(), 2 + 10*i);
+            date = LocalDate.of(date.getYear(), date.getMonth(), 2 + 10 * i);
             period.setStartsAt(date);
 
-            date = LocalDate.of(date.getYear(), date.getMonth(), 4 + 10*i);
+            date = LocalDate.of(date.getYear(), date.getMonth(), 4 + 10 * i);
             period.setEndsAt(date);
 
-            time = LocalTime.of(9,0);
+            time = LocalTime.of(9, 0);
             period.setOpeningTime(time);
 
-            time = LocalTime.of(17,0);
+            time = LocalTime.of(17, 0);
             period.setClosingTime(time);
 
-            time = LocalTime.of(0,0);
+            time = LocalTime.of(0, 0);
             date = LocalDate.of(date.getYear(), date.getMonth(), 1);
             period.setReservableFrom(LocalDateTime.of(date, time));
 
@@ -208,6 +229,7 @@ public class TestSharedMethods {
 
     /**
      * Create CalendarPeriod that is completely in the past
+     *
      * @param location the location for which to create the period
      * @return a CalendarPeriod in the past
      */
@@ -220,7 +242,7 @@ public class TestSharedMethods {
 
         period.setStartsAt(now.minusDays(2).toLocalDate());
         period.setEndsAt(now.minusDays(1).toLocalDate());
-        period.setOpeningTime(LocalTime.of(9,0));
+        period.setOpeningTime(LocalTime.of(9, 0));
         period.setClosingTime(LocalTime.of(17, 0));
 
         period.setReservableFrom(now.minusDays(3));
@@ -230,6 +252,7 @@ public class TestSharedMethods {
 
     /**
      * Create CalendarPeriod that is completely in the future
+     *
      * @param location the location for which to create the period
      * @return a CalendarPeriod in the future
      */
@@ -240,7 +263,7 @@ public class TestSharedMethods {
         period.setLocation(location);
         period.setLockedFrom(now.minusWeeks(3));
 
-        LocalTime openingTime = LocalTime.of(9,0);
+        LocalTime openingTime = LocalTime.of(9, 0);
         LocalTime closingTime = LocalTime.of(17, 0);
 
         period.setStartsAt(now.plusDays(1).toLocalDate());
@@ -259,6 +282,7 @@ public class TestSharedMethods {
 
     /**
      * Create a CalendarPeriod that is active (today is between start and end date) but not during the active hours
+     *
      * @param location the location for which to create the period
      * @return a CalendarPeriod that is active, but outside the hours
      */
@@ -286,6 +310,7 @@ public class TestSharedMethods {
 
     /**
      * Create a CalendarPeriod that is active (today is between start and end date) and during the active hours
+     *
      * @param location the location for which to create the period
      * @return a CalendarPeriod that is active and within hours
      */
@@ -322,11 +347,11 @@ public class TestSharedMethods {
         }
 
         for (int i = 0; i < updatedPeriods.size(); i++) {
-            updatedPeriods.get(i).setStartsAt(LocalDate.of(1970,1,i+1));
-            updatedPeriods.get(i).setEndsAt(LocalDate.of(1970,1,i + 10));
+            updatedPeriods.get(i).setStartsAt(LocalDate.of(1970, 1, i + 1));
+            updatedPeriods.get(i).setEndsAt(LocalDate.of(1970, 1, i + 10));
             updatedPeriods.get(i).setOpeningTime(LocalTime.of(9, i));
-            updatedPeriods.get(i).setClosingTime(LocalTime.of(17,i));
-            updatedPeriods.get(i).setReservableFrom(LocalDateTime.of(1970,1,i+1,9,0));
+            updatedPeriods.get(i).setClosingTime(LocalTime.of(17, i));
+            updatedPeriods.get(i).setReservableFrom(LocalDateTime.of(1970, 1, i + 1, 9, 0));
         }
 
         return updatedPeriods;

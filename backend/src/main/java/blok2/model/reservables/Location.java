@@ -113,6 +113,10 @@ public class Location implements Cloneable {
         status = new Pair<>(LocationStatus.CLOSED, "");
     }
 
+    public String getInstitution() {
+        return building.getInstitution();
+    }
+
     public void addLocationTag(LocationTag tag) {
         assignedTags.add(tag);
     }

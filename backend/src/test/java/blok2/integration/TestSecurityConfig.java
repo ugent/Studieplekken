@@ -26,8 +26,13 @@ public class TestSecurityConfig {
             try {
                 addUsersIfNotExist();
                 System.out.println();
-                User user = userDao.getUserByEmail(s + "@ugent.be");
-                if(user.getUserId().equals("authholder"))
+                User user;
+                if (s.equals("authholderHoGent")) {
+                    user = userDao.getUserByEmail(s + "@hogent.be");
+                } else {
+                    user = userDao.getUserByEmail(s + "@ugent.be");
+                }
+                if (user.getUserId().equals("authholder") || user.getUserId().equals("authholderHoGent"))
                     user.getUserAuthorities().add(new Authority()); // kind of hacky but also necessary, its just test code
                 return user;
             } catch (SQLException throwables) {
@@ -42,8 +47,9 @@ public class TestSecurityConfig {
                 User student = TestSharedMethods.studentTestUser("student1");
                 User student2 = TestSharedMethods.studentTestUser("student2");
                 User authorityHolder = TestSharedMethods.studentTestUser("authholder");
+                User authorityHolderHoGent = TestSharedMethods.studentTestUserHoGent("authholderHoGent");
 
-                TestSharedMethods.addTestUsers(userDao, admin, student, student2, authorityHolder);
+                TestSharedMethods.addTestUsers(userDao, admin, student, student2, authorityHolder, authorityHolderHoGent);
 
             } catch (Exception ignored) {
 
@@ -51,7 +57,7 @@ public class TestSecurityConfig {
         }
     }
 
-    @Bean(name="testUserDetails")
+    @Bean(name = "testUserDetails")
     @Primary
     public UserDetailsService userDetailsService() {
         return new TestUserDetailsService();

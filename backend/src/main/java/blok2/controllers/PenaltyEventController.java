@@ -39,13 +39,13 @@ public class PenaltyEventController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    @PreAuthorize("@authorizedInstitutionController.hasAuthorityLocation(authentication.principal, #penalty.getReservationLocation().getLocationId())")
     public void addPenalty(@RequestBody Penalty penalty) {
         penaltyDao.addPenalty(penalty);
     }
 
     @DeleteMapping
-    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    @PreAuthorize("@authorizedInstitutionController.hasAuthorityLocation(authentication.principal, #penalty.getReservationLocation().getLocationId())")
     public void deletePenalty(@RequestBody Penalty penalty) {
         penaltyDao.deletePenalty(penalty);
     }

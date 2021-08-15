@@ -1,5 +1,6 @@
 package blok2.integration;
 
+import blok2.helpers.Institution;
 import blok2.model.Building;
 import org.junit.Assert;
 import org.junit.Test;
@@ -20,7 +21,7 @@ public class BuildingControllerTest extends BaseIntegrationTest {
     public void testGetAllBuildings() throws Exception {
         mockMvc.perform(get("/building")).andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(1)); // only one building
+                .andExpect(jsonPath("$.length()").value(buildings.size()));
     }
 
     @Test
@@ -41,25 +42,25 @@ public class BuildingControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testPostNewBuilding() throws Exception {
-        Building building = new Building(-1, "New building", "Place place");
+        Building building = new Building(-1, "New building", "Place place", Institution.UGent);
 
         mockMvc.perform(post("/building").contentType("application/json").with(csrf())
                 .content(objectMapper.writeValueAsString(building))).andDo(print())
                 .andExpect(status().isOk());
 
-        Assert.assertEquals(2, buildingDao.getAllBuildings().size());
+        Assert.assertEquals(3, buildingDao.getAllBuildings().size());
     }
 
     @Test
     @WithUserDetails(value = "student1", userDetailsServiceBeanName = "testUserDetails")
     public void testPostNewBuildingForbidden() throws Exception {
-        Building building = new Building(-1, "New building", "Place place");
+        Building building = new Building(-1, "New building", "Place place", Institution.UGent);
 
         mockMvc.perform(post("/building").contentType("application/json").with(csrf())
                 .content(objectMapper.writeValueAsString(building))).andDo(print())
                 .andExpect(status().isForbidden());
 
-        Assert.assertEquals(1, buildingDao.getAllBuildings().size());
+        Assert.assertEquals(2, buildingDao.getAllBuildings().size());
     }
 
     @Test
@@ -68,7 +69,7 @@ public class BuildingControllerTest extends BaseIntegrationTest {
         mockMvc.perform(delete("/building/" + testBuilding.getBuildingId()).with(csrf()))
                 .andDo(print()).andExpect(status().isOk());
 
-        Assert.assertEquals(0, buildingDao.getAllBuildings().size());
+        Assert.assertEquals(1, buildingDao.getAllBuildings().size());
     }
 
     @Test
@@ -77,7 +78,7 @@ public class BuildingControllerTest extends BaseIntegrationTest {
         mockMvc.perform(delete("/building/" + testBuilding.getBuildingId()).with(csrf()))
                 .andDo(print()).andExpect(status().isForbidden());
 
-        Assert.assertEquals(1, buildingDao.getAllBuildings().size());
+        Assert.assertEquals(2, buildingDao.getAllBuildings().size());
     }
 
     @Test
@@ -103,6 +104,20 @@ public class BuildingControllerTest extends BaseIntegrationTest {
                 .andExpect(status().isOk());
 
         Assert.assertEquals(testBuilding, buildingDao.getBuildingById(testBuilding.getBuildingId()));
+    }
+
+    @Test
+    @WithUserDetails(value = "authholder", userDetailsServiceBeanName = "testUserDetails")
+    public void testPutBuildingToOtherInstitutionForbidden() throws Exception {
+        String name = testBuildingHoGent.getName();
+        testBuildingHoGent.setName("New Name");
+
+        mockMvc.perform(put("/building/" + testBuildingHoGent.getBuildingId()).contentType("application/json")
+                .with(csrf()).content(objectMapper.writeValueAsString(testBuildingHoGent))).andDo(print())
+                .andExpect(status().isForbidden());
+
+        testBuildingHoGent.setName(name);
+        Assert.assertEquals(testBuildingHoGent, buildingDao.getBuildingById(testBuildingHoGent.getBuildingId()));
     }
 
 }

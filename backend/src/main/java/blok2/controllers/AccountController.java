@@ -1,8 +1,8 @@
 package blok2.controllers;
 
-import blok2.daos.IUserDao;
 import blok2.daos.IAuthorityDao;
 import blok2.daos.ILocationDao;
+import blok2.daos.IUserDao;
 import blok2.daos.IVolunteerDao;
 import blok2.helpers.exceptions.InvalidRequestParametersException;
 import blok2.model.Authority;
@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -54,71 +55,92 @@ public class AccountController {
 
     @GetMapping("/id")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public User getUserByAUGentId(@RequestParam
-                                  @Pattern(regexp = "^[^%_]*$")
-                                          String id) {
-        return userDao.getUserById(id);
+    public User getUserById(@AuthenticationPrincipal User user,
+                            @RequestParam @Pattern(regexp = "^[^%_]*$") String id) {
+        if (user.isAdmin()) {
+            return userDao.getUserById(id);
+        } else {
+            return userDao.getUserByIdAndInstitution(id, user.getInstitution());
+        }
     }
 
     @GetMapping("/mail")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public User getUserByMail(@RequestParam
-                              @Pattern(regexp = "^[^%_]*$")
-                                      String mail) {
-        return userDao.getUserByEmail(mail);
+    public User getUserByMail(@AuthenticationPrincipal User user,
+                              @RequestParam @Pattern(regexp = "^[^%_]*$") String mail) {
+        if (user.isAdmin()) {
+            return userDao.getUserByEmail(mail);
+        } else {
+            return userDao.getUserByEmailAndInstitution(mail, user.getInstitution());
+        }
     }
 
     @GetMapping("/firstName")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public List<User> getUsersByFirstName(@RequestParam("firstName")
-                                          @Pattern(regexp = "^[^%_]*$")
-                                                  String firstName) {
-        return userDao.getUsersByFirstName(firstName);
+    public List<User> getUsersByFirstName(@AuthenticationPrincipal User user,
+                                          @RequestParam("firstName") @Pattern(regexp = "^[^%_]*$") String firstName) {
+        if (user.isAdmin()) {
+            return userDao.getUsersByFirstName(firstName);
+        } else {
+            return userDao.getUsersByFirstNameAndInstitution(firstName, user.getInstitution());
+        }
     }
 
     @GetMapping("/lastName")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public List<User> getUsersByLastName(@RequestParam
-                                         @Pattern(regexp = "^[^%_]*$")
-                                                 String lastName) {
-        return userDao.getUsersByLastName(lastName);
+    public List<User> getUsersByLastName(@AuthenticationPrincipal User user,
+                                         @RequestParam @Pattern(regexp = "^[^%_]*$") String lastName) {
+        if (user.isAdmin()) {
+            return userDao.getUsersByLastName(lastName);
+        } else {
+            return userDao.getUsersByLastNameAndInstitution(lastName, user.getInstitution());
+        }
     }
 
     @GetMapping("/firstAndLastName")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public List<User> getUsersByLastName(@RequestParam
-                                         @Pattern(regexp = "^[^%_]*$")
-                                                 String firstName,
-                                         @RequestParam
-                                         @Pattern(regexp = "^[^%_]*$")
-                                                 String lastName) {
-        return userDao.getUsersByFirstAndLastName(firstName, lastName);
+    public List<User> getUsersByFirstAndLastName(@AuthenticationPrincipal User user,
+                                                 @RequestParam @Pattern(regexp = "^[^%_]*$") String firstName,
+                                                 @RequestParam @Pattern(regexp = "^[^%_]*$") String lastName) {
+        if (user.isAdmin()) {
+            return userDao.getUsersByFirstAndLastName(firstName, lastName);
+        } else {
+            return userDao.getUsersByFirstAndLastNameAndInstitution(firstName, lastName, user.getInstitution());
+        }
     }
 
     @GetMapping("/barcode")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public User getUserByBarcode(@RequestParam String barcode) {
-        User userLinkedToBarcode = userDao.getUserFromBarcode(barcode);
-        return userDao.getUserById(userLinkedToBarcode.getUserId());
+    public User getUserByBarcode(@AuthenticationPrincipal User user,
+                                 @RequestParam String barcode) {
+        if (user.isAdmin()) {
+            return userDao.getUserFromBarcode(barcode);
+        } else {
+            return userDao.getUserFromBarcodeAndInstitution(barcode, user.getInstitution());
+        }
     }
 
     @GetMapping("/{userId}/authorities")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public List<Authority> getAuthoritiesFromUser(@PathVariable
-                                                  @Pattern(regexp = "^[^%_]*$")
-                                                          String userId) {
-        return authorityDao.getAuthoritiesFromUser(userId);
+    public List<Authority> getAuthoritiesFromUser(@AuthenticationPrincipal User user,
+                                                  @PathVariable @Pattern(regexp = "^[^%_]*$") String userId) {
+        if (user.isAdmin()) {
+            return authorityDao.getAuthoritiesFromUser(userId);
+        } else {
+            return authorityDao.getAuthoritiesFromUserAndInstitution(userId, user.getInstitution());
+        }
     }
 
     @GetMapping("{userId}/manageable/locations")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public List<Location> getManageableLocations(@PathVariable("userId") @Pattern(regexp = "^[^%_]*$") String userId) {
+    public List<Location> getManageableLocations(@AuthenticationPrincipal User authenticatedUser,
+                                                 @PathVariable("userId") @Pattern(regexp = "^[^%_]*$") String userId) {
         User user = userDao.getUserById(userId);
 
         if (user.isAdmin()) {
             return locationDao.getAllActiveLocations();
         } else {
-            return authorityDao.getLocationsInAuthoritiesOfUser(userId);
+            return authorityDao.getLocationsInAuthoritiesOfUserAndInstitution(userId, authenticatedUser.getInstitution());
         }
     }
 
@@ -136,10 +158,15 @@ public class AccountController {
 
     @PutMapping("/{userId}")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public void updateUser(@PathVariable("userId")
-                           @Pattern(regexp = "^[^%_]*$")
-                                   String id, @RequestBody User user) {
-        User old = userDao.getUserById(id);
+    public void updateUser(@AuthenticationPrincipal User authenticatedUser,
+                           @PathVariable("userId") @Pattern(regexp = "^[^%_]*$") String id,
+                           @RequestBody User user) {
+        User old;
+        if (authenticatedUser.isAdmin()) {
+            old = userDao.getUserById(id);
+        } else {
+            old = userDao.getUserByIdAndInstitution(id, authenticatedUser.getInstitution());
+        }
         userDao.updateUser(user);
         logger.info(String.format("Updated user %s from %s to %s", id, old, user));
     }

@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @TestExecutionListeners(WithSecurityContextTestExecutionListener.class)
-public class RegistrationControllerTest extends BaseIntegrationTest {
+public class LocationReservationControllerTest extends BaseIntegrationTest {
 
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
@@ -294,48 +294,51 @@ public class RegistrationControllerTest extends BaseIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
-    public void testGetUnattendedLocationReservations() throws Exception {
-        // Add a calendar period and a reservation for it with the date of yesterday.
-        List<CalendarPeriod> calendarPeriods = new ArrayList<>();
-        CalendarPeriod period = new CalendarPeriod();
-        period.setLocation(testLocation);
+    @WithUserDetails(value = "authholderHoGent", userDetailsServiceBeanName = "testUserDetails")
+    public void testGetReservationsOfTimeslotOfOtherInstitutionForbidden() throws Exception {
+        int calendarPeriodId = calendarPeriods.get(0).getId();
+        Timeslot timeslot = calendarPeriodDao.getById(calendarPeriodId).getTimeslots().get(0);
+        LocalDate date = timeslot.getTimeslotDate();
 
-        LocalDate date = LocalDate.now();
-        if (LocalTime.now().isAfter(LocalTime.of(21, 0))) {
-            // Running tests after 21PM so we should get unattended reservations for the next day otherwise we would not send any mails in our test.
-            // This is needed because we cannot manipulate LastModifiedDate in our tests.
-            date = date.plusDays(1);
-        }
+        mockMvc.perform(get(String.format("/locations/reservations/timeslot/%d/%s/%d", calendarPeriodId,
+                    date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                    timeslot.getTimeslotSeqnr())).with(csrf()))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+    }
 
-        period.setStartsAt(date.minusDays(1));
-        period.setEndsAt(date.minusDays(1));
-        period.setOpeningTime(LocalTime.of(9, 0));
-        period.setClosingTime(LocalTime.of(17, 0));
-        period.setReservableFrom(LocalDateTime.of(date.minusDays(1), LocalTime.of(0, 0)));
-        period.setReservable(true);
-        period.setTimeslotLength(30);
-        period.setSeatCount(testLocation.getNumberOfSeats());
-        period.initializeLockedFrom();
-        calendarPeriods.add(period);
-        calendarPeriodDao.addCalendarPeriods(calendarPeriods);
+    @Test
+    @WithUserDetails(value = "authholderHoGent", userDetailsServiceBeanName = "testUserDetails")
+    public void testDeleteReservationAsAuthorityOtherInstitutionUnauthorized() throws Exception {
+        Timeslot timeslot = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
 
-        Timeslot timeslot = calendarPeriodDao.getById(period.getId()).getTimeslots().get(0);
-        locationReservationDao.addLocationReservationIfStillRoomAtomically(new LocationReservation(student2, timeslot, null));
-        // Set the attendance to false now, so it is changed less than 24 hours ago which is when the previous unattendance mails were sent.
-        locationReservationDao.setReservationAttendance(student2.getUserId(), timeslot, false);
+        LocationReservation reservation = new LocationReservation(student, timeslot, false);
 
-        // Attendance for student is true so should not send mail for this reservation.
-        locationReservationDao.addLocationReservationIfStillRoomAtomically(new LocationReservation(student, timeslot, null));
-        locationReservationDao.setReservationAttendance(student.getUserId(), timeslot, true);
+        mockMvc.perform(delete("/locations/reservations").with(csrf())
+                .content(objectMapper.writeValueAsString(reservation)).contentType("application/json")).andDo(print())
+                .andExpect(status().isForbidden());
 
-        // Attendance for admin is still null so should not send mail for this reservation.
-        locationReservationDao.addLocationReservationIfStillRoomAtomically(new LocationReservation(admin, timeslot, null));
+        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
+        Assert.assertEquals(2, list.size());
+    }
 
-        List<Pair<LocationReservation, CalendarPeriod>> reservations =
-                locationReservationDao.getUnattendedLocationReservationsWith21PMRestriction(date);
+    @Test
+    @WithUserDetails(value = "authholderHoGent", userDetailsServiceBeanName = "testUserDetails")
+    public void testSetAttendanceAsAuthorityOtherInstitutionUnauthorized() throws Exception {
+        Timeslot timeslot = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
 
-        Assert.assertEquals(1, reservations.size());
+        String url = String.format("/locations/reservations/%s/%d/%s/%d/attendance",
+                student.getUserId(), timeslot.getCalendarId(),
+                timeslot.getTimeslotDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                timeslot.getTimeslotSeqnr());
+
+        JSONObject obj = new JSONObject().put("attended", true);
+
+        mockMvc.perform(post(url).with(csrf()).content(obj.toString()).contentType("application/json")).andDo(print())
+                .andExpect(status().isForbidden());
+
+        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
+        Assert.assertNull(list.get(0).getAttended());
     }
 
 }

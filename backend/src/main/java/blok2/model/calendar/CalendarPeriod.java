@@ -1,7 +1,9 @@
 package blok2.model.calendar;
 
 import blok2.helpers.Resources;
+import blok2.model.Authority;
 import blok2.model.reservables.Location;
+import blok2.model.users.User;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 import javax.persistence.*;
@@ -50,6 +52,18 @@ public class CalendarPeriod extends Period implements Cloneable {
 
     public CalendarPeriod() {
 
+    }
+
+    public boolean isAllowedToEdit(User user) {
+        if (user.isAdmin())
+            return true;
+
+        Authority authority = location.getAuthority();
+        if (!user.getUserAuthorities().contains(authority))
+            return false;
+
+        String institution = location.getInstitution();
+        return Objects.equals(institution, user.getInstitution());
     }
 
     @Override
