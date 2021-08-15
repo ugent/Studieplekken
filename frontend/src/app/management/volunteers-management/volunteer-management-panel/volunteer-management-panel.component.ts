@@ -53,9 +53,7 @@ export class VolunteerManagementPanelComponent implements OnInit {
   }
 
   showAdd(template: TemplateRef<unknown>): void {
-    this.modalRef = this.modalService.open(
-      template,
-    );
+    this.modalService.open(template, {panelClass: ["cs--cyan" ,"bigmodal"]});
   }
 
   enableSearchButton(value: { firstName: string; lastName: string }): boolean {

@@ -17,7 +17,7 @@ export class AccordeonComponent implements AfterViewInit, OnChanges {
   constructor() { }
 
   ngAfterViewInit(): void {
-    this.accordionController = new Accordion(this.container.first.nativeElement)
+    this.accordionController = new Accordion(this.container.first.nativeElement, {buttonSelector:".accordion--button"})
   }
 
   ngOnChanges(changes: SimpleChanges) {

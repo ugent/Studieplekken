@@ -107,7 +107,7 @@ export class AuthoritiesManagementComponent implements OnInit {
       description: '',
     });
 
-    this.modalService.open(template);
+    this.modalService.open(template, {panelClass: ["cs--cyan" ,"bigmodal"]});
   }
 
   addAuthority(): void {
@@ -135,7 +135,7 @@ export class AuthoritiesManagementComponent implements OnInit {
 
     // prepare the tagFormGroup
     this.prepareFormGroup(authority);
-    this.modalService.open(template);
+    this.modalService.open(template, {panelClass: ["cs--cyan" ,"bigmodal"]});
   }
 
   updateTagInFormGroup(): void {
@@ -165,7 +165,7 @@ export class AuthoritiesManagementComponent implements OnInit {
 
     // prepare the tagFormGroup
     this.prepareFormGroup(authority);
-    this.modalService.open(template);
+    this.modalService.open(template, {panelClass: ["cs--cyan" ,"bigmodal"]});
   }
 
   deleteTagInFormGroup(): void {
