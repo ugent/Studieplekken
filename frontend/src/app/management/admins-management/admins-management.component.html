@@ -13,128 +13,60 @@
     {{'management.users.searchResult.error' | translate}}
   </div>
 
-  <div *ngIf="!loading && !errorOnRetrievingAdmins"
-       class="container-fluid">
-    <table style="width: 100%">
-      <thead>
-      <tr>
-        <th>{{'management.users.searchResult.table.id' | translate}}</th>
-        <th>{{'management.users.searchResult.table.firstName' | translate}}</th>
-        <th>{{'management.users.searchResult.table.lastName' | translate}}</th>
-        <th *ngIf="showPenaltyPoints">{{'management.users.searchResult.table.penaltyPoints' | translate}}</th>
-        <th>{{'management.users.searchResult.table.institution' | translate}}</th>
-        <th><!-- Details --></th>
-      </tr>
-      </thead>
+  <div *ngIf="!loading && !errorOnRetrievingAdmins" class="responsive-table fullwidth">
+    <div class="table-wrapper fullwidth">
+      <table style="width: 100%">
+        <thead>
+          <tr>
+            <th scope="col">{{'management.users.searchResult.table.id' | translate}}</th>
+            <th scope="col">{{'management.users.searchResult.table.firstName' | translate}}</th>
+            <th scope="col">{{'management.users.searchResult.table.lastName' | translate}}</th>
+            <th scope="col" *ngIf="showPenaltyPoints">{{'management.users.searchResult.table.penaltyPoints' |
+              translate}}</th>
+            <th scope="col">{{'management.users.searchResult.table.institution' | translate}}</th>
+            <th scope="col">
+              <!-- Details -->
+            </th>
+          </tr>
+        </thead>
 
-      <tbody>
-      <tr *ngFor="let user of users">
-        <td>{{user.userId}}</td>
-        <td>{{user.firstName}}</td>
-        <td>{{user.lastName}}</td>
-        <td *ngIf="showPenaltyPoints">{{user.penaltyPoints}}</td>
-        <td>{{user.institution}}</td>
-        <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
-          <span [routerLink]="'../users/' + user.userId"
-             class="glyphicon glyphicon-list-alt">
-          </span>
-        </td>
-      </tr>
-      </tbody>
-    </table>
+        <tbody>
+          <tr *ngFor="let user of users">
+            <td>{{user.userId}}</td>
+            <td>{{user.firstName}}</td>
+            <td>{{user.lastName}}</td>
+            <td *ngIf="showPenaltyPoints">{{user.penaltyPoints}}</td>
+            <td>{{user.institution}}</td>
+            <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
+              <span [routerLink]="'../users/' + user.userId" class="glyphicon glyphicon-list-alt">
+                <i class="icon-hamburger" aria-hidden="true"></i>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-    <button class='btn btn-default' (click)="showAdd(confirm)">{{'management.users.admins.addNewButton' | translate}}</button>
+      <button class='button button-primary' (click)="showAdd(confirm)">{{'management.users.admins.addNewButton' |
+        translate}}</button>
+    </div>
   </div>
 </div>
 
 <ng-template #confirm>
-  <div class="modal-header">
-    {{'management.users.admins.addNewHeader' | translate}}
+  <!-- header -->
+  <div fxLayout="row" fxLayoutAlign="space-between">
+    <h1>
+      {{'management.users.admins.addNewHeader' | translate}}
+    </h1>
+    <div>
+      <button type="button" class="close" (click)="closeModal()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
   </div>
+
+  <!-- body -->
   <div class="modal-body text-center">
-    <!-- Form to filter users by
-      - first name
-      - last name
--->
-    <div class="padding-default bg-tertiary">
-      <div class="padding-default">
-        <div class="">
-          <form [formGroup]="formGroup" (ngSubmit)="submitSearch(formGroup.value)">
-            <!-- First Name -->
-            <div class="row form-group">
-              <label class="col-lg-3 control-label" for="firstName">
-                {{'management.users.overview.firstName' | translate}}
-              </label>
-              <div class="col-lg-8">
-                <input class="form-control" id="firstName" type="text" formControlName="firstName">
-              </div>
-            </div>
-
-            <!-- Last Name -->
-            <div class="row form-group">
-              <label class="col-lg-3 control-label" for="lastName">
-                {{'management.users.overview.lastName' | translate}}
-              </label>
-              <div class="col-lg-8">
-                <input class="form-control" id="lastName" type="text" formControlName="lastName">
-              </div>
-            </div>
-
-            <!-- Search and Cancel buttons -->
-            <div class="row">
-              <div class="col-md-11">
-
-                <div class="pull-right">
-                  <!-- Search -->
-                  <button type="submit" class="btn btn-default btn-left"
-                          [disabled]="!enableSearchButton(formGroup.value)">
-                    {{'management.users.overview.filterSearchButton' | translate}}
-                  </button>
-
-                  <!-- Clear input -->
-                  <button type="button" class="btn btn-default" (click)="clearFilterInput()"
-                          [disabled]="!enableClearButton(formGroup.value)">
-                    {{'management.users.overview.filterClearButton' | translate}}
-                  </button>
-                </div>
-              </div>
-            </div>
-
-          </form>
-        </div>
-      </div>
-    </div>
-
-    <table style="width: 100%" *ngIf="neverSearched != true">
-      <thead>
-      <tr>
-        <th>{{'management.users.searchResult.table.id' | translate}}</th>
-        <th>{{'management.users.searchResult.table.firstName' | translate}}</th>
-        <th>{{'management.users.searchResult.table.lastName' | translate}}</th>
-        <th>{{'management.users.searchResult.table.institution' | translate}}</th>
-        <th>
-          <!-- Details -->
-        </th>
-      </tr>
-      </thead>
-
-      <tbody *ngIf="filteredUsers | async as users">
-      <tr *ngFor="let user of users" class="text-left">
-        <td>{{user.userId}}</td>
-        <td>{{user.firstName}}</td>
-        <td>{{user.lastName}}</td>
-        <td>{{user.institution}}</td>
-        <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
-                        <span (click)="addAdmin(user)" class="glyphicon glyphicon-plus">
-                        </span>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-
-    <div *ngIf="neverSearched == true" class="alert alert-info">
-      {{'management.users.searchResult.neverSearched' | translate}}
-    </div>
-
+    <app-search-user-component icon="icon-plus" (selectedUser)="addAdmin($event)"></app-search-user-component>
   </div>
 </ng-template>

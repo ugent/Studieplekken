@@ -52,7 +52,7 @@ export class AuthorityUsersManagementComponent implements OnInit {
     private route: ActivatedRoute,
     private userService: UserService,
     private modalService: MatDialog
-  ) {}
+  ) { }
 
   get firstName(): AbstractControl {
     return this.userSearchFormGroup.get('firstName');
@@ -98,7 +98,8 @@ export class AuthorityUsersManagementComponent implements OnInit {
     this.selectedUserFormControl.setValue('');
     this.userSearchResult = [];
     this.selectedUserFormControl.disable();
-    this.addModal = this.modalService.open(template);
+    this.addModal = this.modalService.open(template, { panelClass: ["cs--cyan", "bigmodal"] });
+
   }
 
   // **************************************
@@ -149,7 +150,8 @@ export class AuthorityUsersManagementComponent implements OnInit {
   ): void {
     this.successDeletingAuthority = undefined;
     this.userPreparedToDelete = user;
-    this.deleteModal = this.modalService.open(template);
+    this.deleteModal = this.modalService.open(template, { panelClass: ["cs--cyan", "bigmodal"] });
+
   }
 
   deleteUserFromAuthority(userId: string, authorityId: number): void {

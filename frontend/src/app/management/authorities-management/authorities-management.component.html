@@ -214,13 +214,15 @@
 <!-- Modal view to ask whether the user is sure to delete an authority -->
 <ng-template #deleteAuthorityModal>
   <!-- Header -->
-  <div class="modal-header">
-    <h5 class="modal-title" id="deleteAuthorityModalTitle">
+  <div fxLayout="row" fxLayoutAlign="space-between">
+    <h1 id="deleteAuthorityModalTitle">
       {{'management.authorities.deleteAuthorityModal.title' | translate}}
-    </h5>
+    </h1>
+    <div>
     <button type="button" class="close" (click)="closeModal()" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
+  </div>
   </div>
 
   <!-- Body -->

@@ -708,7 +708,8 @@
       "errorOnLoadingManageableLocations": "Could not fetch the locations that you can manage.",
       "errorOnLoadingVolunteers": "Could not fetch the supervisors for this location.",
       "addNewButton": "Add supervisor",
-      "addNewHeader": "Search and add supervisor"
+      "addNewHeader": "Search and add supervisor",
+      "title": "Inspect, add and delete supervisors"
     }
   },
   "profile": {

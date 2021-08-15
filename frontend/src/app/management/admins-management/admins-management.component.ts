@@ -74,7 +74,7 @@ export class AdminsManagementComponent implements OnInit {
   }
 
   showAdd(template: TemplateRef<unknown>): void {
-    this.modalService.open(template);
+    this.modalService.open(template, {panelClass: ["cs--cyan" ,"bigmodal"]});
   }
 
   submitSearch(value: {

@@ -706,7 +706,8 @@
       "errorOnLoadingManageableLocations": "De locaties die u kan beheren konden niet worden opgehaald.",
       "errorOnLoadingVolunteers": "De toezichthouders van deze locatie konden niet opgehaald worden.",
       "addNewButton": "Toezichter toevoegen",
-      "addNewHeader": "Zoek en voeg toezichter toe"
+      "addNewHeader": "Zoek en voeg toezichter toe",
+      "title": "Bekijk, voeg toe en verwijder toezichters"
     }
   },
   "profile": {

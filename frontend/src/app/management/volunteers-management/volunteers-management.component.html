@@ -1,3 +1,8 @@
+<h1>
+  {{'management.volunteers.title' | translate}}
+
+</h1>
+
 <!-- Overview of the location -->
 <div *ngIf="manageableLocationsObs | async as manageableLocations; else loadingOrError">
     <app-volunteer-management-panel *ngFor="let mLocation of manageableLocations" [location]="mLocation"></app-volunteer-management-panel>
