@@ -80,6 +80,8 @@ import { HeaderComponent } from './stad-gent-components/header/header.component'
 import { AccordeonComponent } from './stad-gent-components/molecules/accordeon/accordeon.component';
 import { DropdownComponent } from './stad-gent-components/header/dropdown/dropdown.component';
 import { FooterComponent } from './stad-gent-components/footer/footer.component';
+import { SearchUserComponentComponent } from './shared/search-user-component/search-user-component.component';
+import { SearchUserFormComponent } from './shared/search-user-component/search-user-form/search-user-form.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -313,6 +315,8 @@ const routes: Routes = [
     AccordeonComponent,
     DropdownComponent,
     FooterComponent,
+    SearchUserComponentComponent,
+    SearchUserFormComponent,
   ],
   imports: [
     BrowserModule,

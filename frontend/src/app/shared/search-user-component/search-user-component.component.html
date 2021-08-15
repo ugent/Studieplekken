@@ -1,0 +1,44 @@
+<app-search-user-form (filteredUsers)="newUsers($event)"></app-search-user-form>
+
+<div *ngIf="users">
+    <!-- Table with all users matching the filter -->
+    <h3>{{'management.users.searchResult.title' | translate}}</h3>
+
+    <hr>
+
+    <div class="container-fluid responsive-table fullwidth">
+        <div class="table-wrapper fullwidth">
+            <table class="fullwidth">
+                <thead>
+                    <tr>
+                        <th scope="col">{{'management.users.searchResult.table.id' | translate}}</th>
+                        <th scope="col">{{'management.users.searchResult.table.firstName' | translate}}</th>
+                        <th scope="col">{{'management.users.searchResult.table.lastName' | translate}}</th>
+                        <th *ngIf="showPenaltyPoints" scope="col">{{'management.users.searchResult.table.penaltyPoints'
+                            |
+                            translate}}</th>
+                        <th scope="col">{{'management.users.searchResult.table.institution' | translate}}</th>
+                        <th scope="col">
+                            <!-- Details -->
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let user of users">
+                        <td>{{user.userId}}</td>
+                        <td>{{user.firstName}}</td>
+                        <td>{{user.lastName}}</td>
+                        <td *ngIf="showPenaltyPoints">{{user.penaltyPoints}}</td>
+                        <td>{{user.institution}}</td>
+                        <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
+                            <span (click)="outputUser(user)">
+                                <i class="{{icon}}" aria-hidden="true"></i>
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

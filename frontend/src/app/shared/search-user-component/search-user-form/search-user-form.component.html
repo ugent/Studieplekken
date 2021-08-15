@@ -1,0 +1,71 @@
+<div class=" highlight loupe highlight--left">
+    <div class="highlight__inner">
+        <form [formGroup]="formGroup" class="form" (ngSubmit)="submitSearch(formGroup.value)">
+            <!-- First Name -->
+            <div class="row form-group">
+                <label class="col-lg-3 control-label" for="firstName">
+                    {{'management.users.overview.firstName' | translate}}
+                </label>
+                <div class="col-lg-8 search">
+                    <input class="form-control search inline" id="firstName" type="search" formControlName="firstName"
+                        (ngModelChange)="filterFormChanged(formGroup.value)">
+                </div>
+            </div>
+
+            <!-- Last Name -->
+            <div class="row form-group">
+                <label class="col-lg-3 control-label" for="lastName">
+                    {{'management.users.overview.lastName' | translate}}
+                </label>
+                <div class="col-lg-8 search">
+                    <input class="form-control" id="lastName" type="search" formControlName="lastName"
+                        (ngModelChange)="filterFormChanged(formGroup.value)">
+                </div>
+            </div>
+
+            <!-- Barcode -->
+            <div class="row form-group">
+                <label class="col-lg-3 control-label" for="barcode">
+                    {{'management.users.overview.barcode' | translate}}
+                </label>
+                <div class="col-lg-8 search">
+                    <input class="form-control" id="barcode" type="search" formControlName="barcode"
+                        (ngModelChange)="filterFormChanged(formGroup.value)">
+                </div>
+            </div>
+
+            <!-- Search and Cancel buttons -->
+            <div class="row">
+                <div class="col-md-11">
+
+                    <div class="pull-right">
+                        <!-- Search -->
+                        <button type="submit" class="button button-primary btn-left"
+                            [disabled]="!enableSearchButton(formGroup.value)">
+                            {{'management.users.overview.filterSearchButton' | translate}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<!-- Show table if user has queried, else show a message instead of an empty table -->
+<div *ngIf="neverSearched === true" class="messages messages--info">
+    <i class="icon-info" aria-hidden="true"></i>
+
+    {{'management.users.searchResult.neverSearched' | translate}}
+</div>
+
+<div *ngIf="neverSearched === null" class="messages messages--info">
+    <i class="icon-info" aria-hidden="true"></i>
+
+    {{'management.users.searchResult.loading' | translate}}
+</div>
+
+<!-- If an error has occurred while fetching the users, show the error -->
+<div *ngIf="error" class="messages messages--error">
+    {{'management.users.searchResult.error' | translate}}
+</div>
