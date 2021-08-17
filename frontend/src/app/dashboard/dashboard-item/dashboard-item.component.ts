@@ -61,7 +61,7 @@ export class DashboardItemComponent implements OnInit {
   }
 
   locationStatusColorClass(): string {
-    return this.location.status.first === LocationStatus.OPEN
+    return this.location.currentTimeslot?.isCurrent()
       ? 'open'
       : 'closed';
   }

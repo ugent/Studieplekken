@@ -194,4 +194,9 @@ export class LocationCalendarComponent implements OnInit {
     this.timeslotService.deleteTimeslot(timeslot).subscribe(() => this.setup())
     this.modalService.closeAll();
   }
+
+  updateTimeslot(timeslot: Timeslot) {
+    this.timeslotService.updateTimeslot(timeslot).subscribe(() => this.setup());
+    this.modalService.closeAll()
+  }
 }

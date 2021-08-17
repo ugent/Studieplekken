@@ -24,8 +24,8 @@
             </div>
 
             <ng-template #scannableTemplate>
-              <span routerLink="./{{location.locationId}}"
-                class="glyphicon glyphicon-qrcode">
+              <span routerLink="./{{location.locationId}}">
+                <i class="icon-hamburger" aria-hidden="true"></i>
               </span>
             </ng-template>
 
@@ -44,18 +44,18 @@
 </div>
 
 <ng-template #loadingOrError>
-  <div *ngIf="loadingError | async; else loading" class="alert alert-error">
+  <div *ngIf="loadingError | async; else loading" class="messages messages--error">
     {{'scan.locations.errorMessageOnLoadingLocations' | translate}}
   </div>
   <ng-template #loading>
-    <div class="alert alert-info">
+    <div class="messages messages--info">
       {{'general.waitingForServer' | translate}}
     </div>
   </ng-template>
 </ng-template>
 
 <ng-template #noLocations>
-  <div class="alert alert-warning">
+  <div class="messages messages--warning">
     {{'scan.locations.noLocationsWarning' | translate}}
   </div>
 </ng-template>

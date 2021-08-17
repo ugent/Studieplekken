@@ -83,12 +83,16 @@
             <!-- Edit icon -->
             <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
                 (click)="prepareUpdate(timeslot, updateTimeslotModal)">
-              <span class="glyphicon glyphicon-pencil pointerCursor"></span>
+              <span class="glyphicon glyphicon-pencil pointerCursor">
+                <i class="icon-document" aria-hidden="true"></i>
+              </span>
             </td>
             <!-- Delete icon -->
             <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
                 (click)="prepareDelete(timeslot, deleteTimeslotModal)">
-              <span class="glyphicon glyphicon-trash pointerCursor"></span>
+              <span class="glyphicon glyphicon-trash pointerCursor">
+                <i class="icon-cross" aria-hidden="true"></i>
+              </span>
             </td>
           </tr>
           </tbody>
