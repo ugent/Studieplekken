@@ -1,27 +1,26 @@
-import {Component, Input, OnInit, TemplateRef} from '@angular/core';
-import {AuthenticationService} from '../../services/authentication/authentication.service';
-import {LocationReservationsService} from '../../services/api/location-reservations/location-reservations.service';
-import {LocationReservation} from '../../shared/model/LocationReservation';
-import {Timeslot} from '../../shared/model/Timeslot';
+import {Component, TemplateRef} from '@angular/core';
+import { AuthenticationService } from '../../../services/authentication/authentication.service';
+import { LocationReservation } from '../../../shared/model/LocationReservation';
+import { CalendarPeriod } from 'src/app/shared/model/CalendarPeriod';
+import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
+import { Timeslot } from 'src/app/shared/model/Timeslot';
+import { Pair } from '../../../shared/model/helpers/Pair';
 import * as moment from 'moment';
-import {User} from '../../shared/model/User';
-import {Observable} from 'rxjs';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { LocationService } from 'src/app/services/api/locations/location.service';
-import { Location } from 'src/app/shared/model/Location';
-import { map } from 'rxjs/operators';
-import { MatDialog } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
+import { Location } from 'src/app/shared/model/Location'
 
 @Component({
-  selector: 'app-profile-reservations',
-  templateUrl: './profile-reservations.component.html',
-  styleUrls: ['./profile-reservations.component.scss'],
+  selector: 'app-profile-location-reservations',
+  templateUrl: './profile-location-reservations.component.html',
+  styleUrls: ['./profile-location-reservations.component.css'],
 })
-export class ProfileReservationsComponent implements OnInit {
-  @Input() userObj?: User;
-
+export class ProfileLocationReservationsComponent {
   locationReservations: LocationReservation[] = [];
 
   locationReservationToDelete: LocationReservation = undefined;
+  calendarPeriodForLocationReservationToDelete: CalendarPeriod = undefined;
 
   successGettingLocationReservations: boolean = undefined;
   successDeletingLocationReservation: boolean = undefined;
@@ -29,15 +28,12 @@ export class ProfileReservationsComponent implements OnInit {
   constructor(
     private authenticationService: AuthenticationService,
     private locationReservationService: LocationReservationsService,
-    private modalService: MatDialog,
+    private modalService: BsModalService,
     private locationService: LocationService
   ) {
     authenticationService.user.subscribe(() => {
       this.setup();
     });
-  }
-
-  ngOnInit(): void {
   }
 
   setup(): void {
@@ -46,19 +42,21 @@ export class ProfileReservationsComponent implements OnInit {
       return;
     }
 
-    // let the user know that the location reservations are loading
+    // let the user know that his/hers location reservations are loading
     this.successGettingLocationReservations = null;
 
     // load the location reservations
-    this.locationReservationsAndCalendarPeriodsObservable()
+    this.authenticationService
+      .getLocationReservationsAndCalendarPeriods()
       .subscribe(
         (next) => {
           this.successGettingLocationReservations = true;
           this.locationReservations = next;
-          },
+        },
         () => {
           this.successGettingLocationReservations = false;
-        });
+        }
+      );
   }
 
   prepareToDeleteLocationReservation(
@@ -67,7 +65,7 @@ export class ProfileReservationsComponent implements OnInit {
   ): void {
     this.successDeletingLocationReservation = undefined;
     this.locationReservationToDelete = locationReservation;
-    this.modalService.open(template);
+    this.modalService.show(template);
   }
 
   deleteLocationReservation(): void {
@@ -78,7 +76,7 @@ export class ProfileReservationsComponent implements OnInit {
         () => {
           this.successDeletingLocationReservation = true;
           this.setup();
-          this.modalService.closeAll();
+          this.modalService.hide();
         },
         () => {
           this.successDeletingLocationReservation = false;
@@ -90,8 +88,11 @@ export class ProfileReservationsComponent implements OnInit {
   // *   AUXILIARIES   *
   // *******************/
 
-  getBeginHour(timeslot: Timeslot): string {
-    return timeslot.openingHour.format("HH:mm");
+  getBeginHour(timeslot: Timeslot, calendarPeriod: CalendarPeriod): string {
+    const openingTime = calendarPeriod.openingTime
+      .clone()
+      .add(timeslot.timeslotSequenceNumber * calendarPeriod.timeslotLength, 'minutes');
+    return openingTime.format('HH:mm');
   }
 
   needTooltip(
@@ -106,7 +107,7 @@ export class ProfileReservationsComponent implements OnInit {
   getCorrectI18NObject(
     reservation: LocationReservation,
   ): string {
-    if (reservation.timeslot.getStartMoment().isBefore(moment())) {
+    if (this.isTimeslotInPast(reservation.timeslot)) {
       if (reservation.attended === null) {
         return 'profile.reservations.locations.table.attended.notScanned';
       } else {
@@ -129,22 +130,10 @@ export class ProfileReservationsComponent implements OnInit {
   }
 
   closeModal(): void {
-    this.modalService.closeAll();
+    this.modalService.hide();
   }
 
-  locationReservationsAndCalendarPeriodsObservable(
-  ): Observable<LocationReservation[]> {
-    if (this.userObj === undefined) {
-      return this.authenticationService
-        .getLocationReservations()
-    } else {
-      return this.locationReservationService
-        .getLocationReservationsOfUser(this.userObj.userId);
-    }
+  getLocation(id: number): Observable<Location> {
+    return this.locationService.getLocation(id)
   }
-
-  getLocation(locationReservation: LocationReservation): Observable<string> {
-    return this.locationService.getLocation(locationReservation.timeslot.locationId).pipe(map(l => l.name));
-  }
-
 }

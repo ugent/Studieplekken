@@ -212,8 +212,7 @@
         "form": {
           "title": "Edit opening days",
           "addButton": "Add new opening period",
-          "startsAt": "Starts at",
-          "endsAt": "Ends at",
+          "date": "Date",
           "openingTime": "Opening time",
           "closingTime": "Closing time",
           "reservable": "Reservable from",
@@ -231,14 +230,14 @@
           "noCalendarPeriodsForLocation": "At the moment, there are no opening periods for the room."
         },
         "addModalView": {
-          "title": "Add new calendar period",
-          "success": "Successfully added the new calendar period",
-          "error": "Something went wrong while adding the new calendar period"
+          "title": "Add new timeslot",
+          "success": "Successfully added the new timeslot",
+          "error": "Something went wrong while adding the new timeslot"
         },
         "updateModalView": {
-          "title": "Update a calendar period",
-          "success": "Successfully updated the calendar period",
-          "error": "Something went wrong while updating the calendar period"
+          "title": "Update a timeslot",
+          "success": "Successfully updated the timeslot",
+          "error": "Something went wrong while updating the timeslot"
         },
         "deleteModalView": {
           "title": "Sure to delete the calendar period?",

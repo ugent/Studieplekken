@@ -25,4 +25,7 @@ export class ScanningLocationsComponent implements OnInit {
       })
     );
   }
+
+  isScannable(location: Location) {    return (location.currentTimeslot && location.currentTimeslot.reservable && location.currentTimeslot.isCurrent())
+  }
 }

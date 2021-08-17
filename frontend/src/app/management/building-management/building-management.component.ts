@@ -1,18 +1,18 @@
-import { Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Building } from 'src/app/shared/model/Building';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
   FormGroup,
-  Validators,
+  Validators
 } from '@angular/forms';
-import { BuildingService } from 'src/app/services/api/buildings/buildings.service';
-import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { MatDialog } from '@angular/material/dialog';
-import {AddressResolverService} from "src/app/services/addressresolver/nomenatim/addressresolver.service";
+import { Observable } from 'rxjs';
 import { of } from 'rxjs/internal/observable/of';
 import { map } from 'rxjs/internal/operators/map';
+import { AddressResolverService } from "src/app/services/addressresolver/nomenatim/addressresolver.service";
+import { BuildingService } from 'src/app/services/api/buildings/buildings.service';
+import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
+import { Building } from 'src/app/shared/model/Building';
 
 @Component({
   selector: 'app-building-management',

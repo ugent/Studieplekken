@@ -5,8 +5,8 @@ import blok2.TestSharedMethods;
 import blok2.daos.*;
 import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.Authority;
-import blok2.model.calendar.CalendarPeriod;
 import blok2.model.Building;
+import blok2.model.calendar.Timeslot;
 import blok2.model.penalty.Penalty;
 import blok2.model.penalty.PenaltyEvent;
 import blok2.model.reservables.Location;
@@ -42,16 +42,22 @@ public class TestCascadeInDBAccountDao extends BaseTest {
     private IAuthorityDao authorityDao;
 
     @Autowired
-    private ICalendarPeriodDao calendarPeriodDao;
+    private ITimeslotDAO timeslotDAO;
 
     @Autowired IBuildingDao buildingDao;
 
     // this will be the test user
     private User testUser;
 
+    // for cascade on SCANNERS_LOCATION, LOCATION_RESERVATIONS
+    // and LOCKER_RESERVATIONS, a Location must be available
+    private Location testLocation1;
+    private Location testLocation2;
+
     // to test cascade on LOCATION_RESERVATIONS
     private LocationReservation testLocationReservation1;
     private LocationReservation testLocationReservation2;
+
 
     private Penalty testPenalty1;
     private Penalty testPenalty2;
@@ -63,18 +69,20 @@ public class TestCascadeInDBAccountDao extends BaseTest {
 
         Authority authority = TestSharedMethods.insertTestAuthority(authorityDao);
         Building testBuilding = buildingDao.addBuilding(TestSharedMethods.testBuilding());
+        testLocation1 = TestSharedMethods.testLocation(authority.clone(), testBuilding);
+        testLocation2 = TestSharedMethods.testLocation2(authority.clone(), testBuilding);
 
-        // for cascade on LOCATION_RESERVATIONS, a Location must be available
-        Location testLocation1 = locationDao.addLocation(TestSharedMethods.testLocation(authority.clone(), testBuilding));
-        Location testLocation2 = locationDao.addLocation(TestSharedMethods.testLocation2(authority.clone(), testBuilding));
+        locationDao.addLocation(testLocation1);
+        locationDao.addLocation(testLocation2);
+        List<Timeslot> cp1 = TestSharedMethods.testCalendarPeriods(testLocation1);
+        cp1 = timeslotDAO.addTimeslots(cp1);
+        List<Timeslot> cp2 = TestSharedMethods.testCalendarPeriods(testLocation2);
+        cp2 = timeslotDAO.addTimeslots(cp2);
 
-        CalendarPeriod cp1 = TestSharedMethods.testCalendarPeriods(testLocation1).get(0);
-        TestSharedMethods.addCalendarPeriods(calendarPeriodDao, cp1);
-        CalendarPeriod cp2 = TestSharedMethods.testCalendarPeriods(testLocation2).get(0);
-        TestSharedMethods.addCalendarPeriods(calendarPeriodDao, cp2);
+        testLocationReservation1 = new LocationReservation(testUser, cp1.get(0),  null);
+        testLocationReservation2 = new LocationReservation(testUser, cp2.get(0),  null);
 
-        testLocationReservation1 = new LocationReservation(testUser, cp1.getTimeslots().get(0),  null);
-        testLocationReservation2 = new LocationReservation(testUser, cp2.getTimeslots().get(0),  null);
+
 
         // Note: the received amount of points are 10 and 20, not testPenaltyEvent.getCode()
         // because when the penalties are retrieved from the penaltyEventDao, the list will

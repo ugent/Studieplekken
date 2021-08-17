@@ -1,15 +1,15 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Authority } from '../../shared/model/Authority';
 import {
   AbstractControl,
   FormControl,
   FormGroup,
-  Validators,
+  Validators
 } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
 import { AuthoritiesService } from '../../services/api/authorities/authorities.service';
 import { AuthorityToManageService } from '../../services/single-point-of-truth/authority-to-manage/authority-to-manage.service';
-import { MatDialog } from '@angular/material/dialog';
+import { Authority } from '../../shared/model/Authority';
 
 @Component({
   selector: 'app-authorities-management',
@@ -34,7 +34,7 @@ export class AuthoritiesManagementComponent implements OnInit {
     private authoritiesService: AuthoritiesService,
     private authorityToMangeService: AuthorityToManageService,
     private modalService: MatDialog
-  ) {}
+  ) { }
 
   // *****************
   // *   Auxiliary   *
@@ -107,7 +107,7 @@ export class AuthoritiesManagementComponent implements OnInit {
       description: '',
     });
 
-    this.modalService.open(template, {panelClass: ["cs--cyan" ,"bigmodal"]});
+    this.modalService.open(template, { panelClass: ["cs--cyan", "bigmodal"] });
   }
 
   addAuthority(): void {
@@ -135,7 +135,7 @@ export class AuthoritiesManagementComponent implements OnInit {
 
     // prepare the tagFormGroup
     this.prepareFormGroup(authority);
-    this.modalService.open(template, {panelClass: ["cs--cyan" ,"bigmodal"]});
+    this.modalService.open(template, { panelClass: ["cs--cyan", "bigmodal"] });
   }
 
   updateTagInFormGroup(): void {
@@ -165,7 +165,7 @@ export class AuthoritiesManagementComponent implements OnInit {
 
     // prepare the tagFormGroup
     this.prepareFormGroup(authority);
-    this.modalService.open(template, {panelClass: ["cs--cyan" ,"bigmodal"]});
+    this.modalService.open(template, { panelClass: ["cs--cyan", "bigmodal"] });
   }
 
   deleteTagInFormGroup(): void {

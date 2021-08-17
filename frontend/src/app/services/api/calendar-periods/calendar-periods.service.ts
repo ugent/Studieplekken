@@ -9,11 +9,12 @@ import { filter } from 'rxjs/internal/operators/filter';
 import { api } from '../endpoints';
 import { LocationStatus } from '../../../app.constants';
 import { Cache } from '../../../shared/cache/Cache';
+import { Timeslot } from 'src/app/shared/model/Timeslot';
 
 @Injectable({
   providedIn: 'root',
 })
-export class CalendarPeriodsService {
+export class TimeslotsService {
   constructor(private http: HttpClient) {}
 
   // tslint:disable-next-line: max-line-length
@@ -22,16 +23,16 @@ export class CalendarPeriodsService {
     Pair<LocationStatus, string>
   >(this.http, (arg: Location) => arg.locationId);
 
-  getCalendarPeriodsOfLocation(
+  getTimeslotsOfLocation(
     locationId: number
-  ): Observable<CalendarPeriod[]> {
+  ): Observable<Timeslot[]> {
     return this.http
-      .get<CalendarPeriod[]>(
-        api.calendarPeriods.replace('{locationId}', String(locationId))
+      .get<Timeslot[]>(
+        api.timeslots.replace('{locationId}', String(locationId))
       )
       .pipe(
         filter((s) => !!s),
-        map((ls) => ls.map((s) => CalendarPeriod.fromJSON(s)))
+        map((ls) => ls.map((s) => Timeslot.fromJSON(s)))
       );
   }
 
@@ -46,10 +47,10 @@ export class CalendarPeriodsService {
     return this.statusCache.getValue(locationId, url, invalidateCache);
   }
 
-  addCalendarPeriods(calendarPeriods: CalendarPeriod[]): Observable<void> {
+  addTimeslot(calendarPeriods: Timeslot): Observable<void> {
     return this.http.post<void>(
-      api.addCalendarPeriods,
-      calendarPeriods.map((s) => s.toJSON())
+      api.addTimeslots,
+      calendarPeriods.toJSON()
     );
   }
 
@@ -59,25 +60,22 @@ export class CalendarPeriodsService {
    * the controller layer, and the correct add/delete/update methods to be called
    * will be invoked.
    */
-  updateCalendarPeriod(
-    locationId: number,
-    from: CalendarPeriod[],
-    to: CalendarPeriod
+  updateTimeslot(
+    to: Timeslot
   ): Observable<void> {
-    const body = { previous: from, toUpdate: to };
     return this.http.put<void>(
-      api.updateCalendarPeriods.replace('{locationId}', String(locationId)),
-      body
+      api.updateTimeslot,
+      to.toJSON()
     );
   }
 
-  deleteCalendarPeriods(period: CalendarPeriod): Observable<void> {
+  deleteTimeslot(period: Timeslot): Observable<void> {
     const options = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
       }),
       body: period,
     };
-    return this.http.delete<void>(api.deleteCalendarPeriods, options);
+    return this.http.delete<void>(api.deleteTimeslot, options);
   }
 }

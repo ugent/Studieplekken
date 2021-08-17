@@ -82,6 +82,7 @@ import { DropdownComponent } from './stad-gent-components/header/dropdown/dropdo
 import { FooterComponent } from './stad-gent-components/footer/footer.component';
 import { SearchUserComponentComponent } from './shared/search-user-component/search-user-component.component';
 import { SearchUserFormComponent } from './shared/search-user-component/search-user-form/search-user-form.component';
+import { LocationAddTimeslotDialogComponent } from './management/locations-management/location-details-management/location-calendar/location-add-timeslot-dialog/location-add-timeslot-dialog.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -317,6 +318,7 @@ const routes: Routes = [
     FooterComponent,
     SearchUserComponentComponent,
     SearchUserFormComponent,
+    LocationAddTimeslotDialogComponent,
   ],
   imports: [
     BrowserModule,

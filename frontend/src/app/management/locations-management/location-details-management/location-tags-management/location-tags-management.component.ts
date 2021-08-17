@@ -1,15 +1,15 @@
 import { Component, Input, OnInit, TemplateRef } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Location } from '../../../../shared/model/Location';
-import { TranslateService } from '@ngx-translate/core';
-import { LocationTag } from '../../../../shared/model/LocationTag';
-import { MatSelectChange } from '@angular/material/select';
-import { TagsService } from '../../../../services/api/tags/tags.service';
-import { LocationService } from '../../../../services/api/locations/location.service';
 import { FormControl } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSelectChange } from '@angular/material/select';
+import { TranslateService } from '@ngx-translate/core';
+import { Observable } from 'rxjs';
+import { LocationService } from '../../../../services/api/locations/location.service';
+import { TagsService } from '../../../../services/api/tags/tags.service';
 import { LocationDetailsService } from '../../../../services/single-point-of-truth/location-details/location-details.service';
 import { matSelectionChanged } from '../../../../shared/GeneralFunctions';
-import { MatDialog } from '@angular/material/dialog';
+import { Location } from '../../../../shared/model/Location';
+import { LocationTag } from '../../../../shared/model/LocationTag';
 
 @Component({
   selector: 'app-location-tags-management',

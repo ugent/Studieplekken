@@ -127,7 +127,7 @@
       <div class="justify-content-center">
         <mat-chip-list aria-orientation="vertical">
           <mat-chip class="align-center" *ngFor="let reservation of newReservations" selected>
-            {{formatReservation(reservation)}}
+            {{formatReservation(reservation) | async}}
           </mat-chip>
         </mat-chip-list>
       </div>
@@ -137,7 +137,7 @@
       <p>{{'dashboard.locationDetails.calendar.reservation.updateDeleteMessage' | translate }}</p>
       <mat-chip-list class="mat-chip-list-wrapper">
         <mat-chip *ngFor="let reservation of removedReservations" selected color="warn">
-          {{formatReservation(reservation)}}
+          {{formatReservation(reservation) | async}}
         </mat-chip>
       </mat-chip-list>
     </div>

@@ -20,8 +20,12 @@ spring:
     user: ***REMOVED***
     password: ***REMOVED***
     baseline-on-migrate: true
-
-# server configuration
+  jpa:
+    properties:
+      javax:
+        persistence:
+          validation:
+            mode: none
 server:
   ssl:
     key-store-type: PKCS12

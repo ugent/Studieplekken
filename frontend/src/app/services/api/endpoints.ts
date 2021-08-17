@@ -13,9 +13,12 @@ export const api = {
   // CALENDAR_PERIODS
   calendarPeriods: '/api/locations/calendar/{locationId}',
   locationStatus: '/api/locations/calendar/{locationId}/status',
-  addCalendarPeriods: '/api/locations/calendar',
-  updateCalendarPeriods: '/api/locations/calendar/{locationId}',
-  deleteCalendarPeriods: '/api/locations/calendar',
+  addTimeslots: '/api/locations/timeslots',
+  updateTimeslot: '/api/locations/timeslots',
+  deleteTimeslot: '/api/locations/timeslots',
+
+  // TIMESLOTS
+  timeslots: '/api/locations/timeslots/{locationId}',
 
   // CALENDAR_PERIODS_FOR_LOCKERS
   calendarPeriodsForLockers: '/api/locations/lockerCalendar/{locationId}',
@@ -39,7 +42,7 @@ export const api = {
   // LOCATION_RESERVATIONS
   locationReservationsOfUser: '/api/locations/reservations/user',
   locationReservationsOfLocation:
-    '/api/locations/reservations/timeslot/{calendarid}/{date}/{seqnr}',
+    '/api/locations/reservations/timeslot/{seqnr}',
   locationReservationsOfLocationFrom: '/api/locations/reservations/from',
   locationReservationsOfLocationUntil: '/api/locations/reservations/until',
   locationReservationsOfLocationFromAndUntil:

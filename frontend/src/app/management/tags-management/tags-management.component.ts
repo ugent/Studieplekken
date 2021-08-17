@@ -1,14 +1,14 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
-import { Observable } from 'rxjs';
-import { LocationTag } from '../../shared/model/LocationTag';
-import { TagsService } from '../../services/api/tags/tags.service';
 import {
   AbstractControl,
   FormControl,
   FormGroup,
-  Validators,
+  Validators
 } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
+import { TagsService } from '../../services/api/tags/tags.service';
+import { LocationTag } from '../../shared/model/LocationTag';
 
 @Component({
   selector: 'app-tags-management',

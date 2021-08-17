@@ -1,22 +1,22 @@
 package blok2.daos.services;
 
-import blok2.daos.ICalendarPeriodDao;
 import blok2.daos.ILocationReservationDao;
 import blok2.daos.db.DBLocationReservationDao;
 import blok2.daos.repositories.LocationReservationRepository;
 import blok2.daos.repositories.UserRepository;
-import blok2.helpers.Pair;
 import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
-import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.threeten.extra.YearWeek;
 
 import java.sql.SQLException;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -25,9 +25,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class LocationReservationService implements ILocationReservationDao {
-
-    @Autowired
-    private ICalendarPeriodDao calendarPeriodDao; // TODO: delete after timeslot redesign
 
     private final LocationReservationRepository locationReservationRepository;
     private final UserRepository userRepository;
@@ -49,16 +46,9 @@ public class LocationReservationService implements ILocationReservationDao {
     }
 
     @Override
-    // TODO: update this method after timeslot redesign
-    public List<Pair<LocationReservation, CalendarPeriod>> getAllLocationReservationsAndCalendarPeriodsOfUser(String userId) {
-        List<LocationReservation> locationReservations = locationReservationRepository.findAllByUserId(userId);
-        return getLrAndCp(locationReservations);
-    }
-
-    @Override
     public LocationReservation getLocationReservation(String userId, Timeslot timeslot) {
         LocationReservation.LocationReservationId id = new LocationReservation.LocationReservationId(
-                timeslot.getTimeslotSeqnr(), timeslot.getTimeslotDate(), timeslot.getCalendarId(), userId
+                timeslot.getTimeslotSeqnr(), userId
         );
 
         return locationReservationRepository.findById(id)
@@ -67,44 +57,38 @@ public class LocationReservationService implements ILocationReservationDao {
     }
 
     @Override
-    // TODO: update this method after timeslot redesign
-    public List<Pair<LocationReservation, CalendarPeriod>> getUnattendedLocationReservations(LocalDate date) {
-        List<LocationReservation> locationReservations = locationReservationRepository.findAllUnattendedByDate(date);
-        return getLrAndCp(locationReservations);
+    public List<LocationReservation> getUnattendedLocationReservations(LocalDate date) {
+        return locationReservationRepository.findAllUnattendedByDate(YearWeek.from(date).getYear(), YearWeek.from(date).getWeek(), DayOfWeek.from(date));
     }
 
+
     @Override
-    // TODO: update this method after timeslot redesign
-    public List<Pair<LocationReservation, CalendarPeriod>> getUnattendedLocationReservationsWith21PMRestriction(LocalDate date) {
+    public List<LocationReservation> getUnattendedLocationReservationsWith21PMRestriction(LocalDate date) {
         LocalDate dayBefore = date.minusDays(1);
         LocalDateTime yesterday21PM = LocalDateTime.of(dayBefore, LocalTime.of(21, 0)); // dateTime since previous mailing batch.
         LocalDateTime today21PM = LocalDateTime.of(date, LocalTime.of(21, 0)); // dateTime of this mailing batch.
-        List<LocationReservation> locationReservations = locationReservationRepository.findAllUnattendedByDateAnd21PMRestriction(date, dayBefore, yesterday21PM, today21PM);
-        return getLrAndCp(locationReservations);
+        List<LocationReservation> locationReservations = locationReservationRepository.findAllUnattendedByDateAnd21PMRestriction(date.getYear(), YearWeek.from(date).getWeek(),
+                date.getDayOfWeek(),  dayBefore.getYear(), YearWeek.from(dayBefore).getWeek(), dayBefore.getDayOfWeek(), yesterday21PM, today21PM);
+        return locationReservations;
     }
 
     @Override
     public List<User> getUsersWithReservationForWindowOfTime(LocalDate start, LocalDate end) {
-        List<LocationReservation> locationReservations = locationReservationRepository.findAllInWindowOfTime(start, end);
-        List<String> userIds = locationReservations
-                .stream()
-                .map((LocationReservation lr) -> lr.getId().userId)
-                .collect(Collectors.toList());
-        return userRepository.findAllById(userIds);
+
+        return Collections.emptyList();
     }
 
     @Override
     public List<LocationReservation> getAllLocationReservationsOfTimeslot(Timeslot timeslot) {
         return locationReservationRepository.findAllByTimeslot(
-                timeslot.getTimeslotSeqnr(), timeslot.getTimeslotDate(), timeslot.getCalendarId()
+                timeslot.getTimeslotSeqnr()
         );
     }
 
     @Override
     public long countReservedSeatsOfTimeslot(Timeslot timeslot) {
         return locationReservationRepository.countReservedSeatsOfTimeslot(
-                timeslot.getTimeslotSeqnr(), timeslot.getTimeslotDate(), timeslot.getCalendarId()
-        );
+                timeslot.getTimeslotSeqnr());
     }
 
     @Override
@@ -115,7 +99,7 @@ public class LocationReservationService implements ILocationReservationDao {
     @Override
     public void deleteLocationReservation(String userId, Timeslot timeslot) {
         locationReservationRepository.deleteById(new LocationReservation.LocationReservationId(
-                timeslot.getTimeslotSeqnr(), timeslot.getTimeslotDate(), timeslot.getCalendarId(), userId
+                timeslot.getTimeslotSeqnr(), userId
         ));
     }
 
@@ -128,7 +112,7 @@ public class LocationReservationService implements ILocationReservationDao {
     @Transactional
     public boolean setReservationAttendance(String userId, Timeslot timeslot, boolean attendance) {
         LocationReservation.LocationReservationId id = new LocationReservation.LocationReservationId(
-                timeslot.getTimeslotSeqnr(), timeslot.getTimeslotDate(), timeslot.getCalendarId(), userId
+                timeslot.getTimeslotSeqnr(), userId
         );
 
         LocationReservation locationReservation = locationReservationRepository.findById(id)
@@ -157,8 +141,8 @@ public class LocationReservationService implements ILocationReservationDao {
 
     @Override
     public void setNotScannedStudentsToUnattended(Timeslot timeslot) {
-        List<LocationReservation> locationReservations = locationReservationRepository.findAllUnattendedByTimeslot(
-                timeslot.getTimeslotSeqnr(), timeslot.getTimeslotDate(), timeslot.getCalendarId()
+        List<LocationReservation> locationReservations = locationReservationRepository.findAllUnknownAttendanceByTimeslot(
+                timeslot.getTimeslotSeqnr()
         );
 
         // for each unattended reservation, set the attendance to false and decrement the reservation count
@@ -171,25 +155,10 @@ public class LocationReservationService implements ILocationReservationDao {
         locationReservationRepository.saveAll(locationReservations);
     }
 
-    // TODO: remove/update this method after timeslot redesign
-    private List<Pair<LocationReservation, CalendarPeriod>> getLrAndCp(List<LocationReservation> locationReservations) {
-        List<Pair<LocationReservation, CalendarPeriod>> ret = new ArrayList<>();
-
-        locationReservations.forEach((LocationReservation lr) -> {
-            try {
-                CalendarPeriod cp = calendarPeriodDao.getById(lr.getId().calendarId);
-                ret.add(new Pair<>(lr, cp));
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-        });
-
-        return ret;
-    }
-
     @Override
     public List<LocationReservation> getAllFutureLocationReservationsOfLocation(int locationId) {
-        return locationReservationRepository.findAllByLocationIdAndDateAfter(locationId, LocalDate.now());
+        YearWeek n = YearWeek.now();
+        return locationReservationRepository.findAllByLocationIdAndDateAfter(locationId, n.getYear(), n.getWeek(), LocalDate.now().getDayOfWeek());
     }
 
 }

@@ -58,7 +58,7 @@ export class AuthenticationService {
     private lockerReservationService: LockerReservationService,
     private router: Router,
     private userService: UserService
-  ) {}
+  ) { }
 
   // **************************************************
   // *   Getters for values of the BehaviorSubjects   *
@@ -192,10 +192,8 @@ export class AuthenticationService {
     );
   }
 
-  getLocationReservationsAndCalendarPeriods(): Observable<
-    Pair<LocationReservation, CalendarPeriod>[]
-  > {
-    return this.locationReservationService.getLocationReservationsWithCalendarPeriodsOfUser(
+  getLocationReservationsAndCalendarPeriods(): Observable<LocationReservation[]> {
+    return this.locationReservationService.getLocationReservationsOfUser(
       this.userSubject.value.userId
     );
   }

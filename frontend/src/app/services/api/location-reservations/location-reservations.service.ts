@@ -25,16 +25,6 @@ export class LocationReservationsService {
       .pipe(map((ls) => ls.map(LocationReservation.fromJSON.bind(this))));
   }
 
-  getLocationReservationsWithCalendarPeriodsOfUser(
-    userId: string
-  ): Observable<Pair<LocationReservation, CalendarPeriod>[]> {
-    return this.http
-      .get<Pair<LocationReservation, CalendarPeriod>[]>(
-        api.locationReservationsWithLocationOfUser.replace('{userId}', userId)
-      )
-      .pipe(map((value) => value.map((p) => this.createNewPair(p))));
-  }
-
   createNewPair(
     pair: Pair<LocationReservation, CalendarPeriod>
   ): Pair<LocationReservation, CalendarPeriod> {
@@ -50,9 +40,7 @@ export class LocationReservationsService {
     return this.http
       .get<unknown[]>(
         api.locationReservationsOfLocation
-          .replace('{calendarid}', `${timeslot.calendarId}`)
-          .replace('{date}', timeslot.timeslotDate.format('YYYY-MM-DD'))
-          .replace('{seqnr}', `${timeslot.timeslotSeqnr}`)
+          .replace('{seqnr}', `${timeslot.timeslotSequenceNumber}`)
       )
       .pipe(map((ls) => ls.map(LocationReservation.fromJSON.bind(this))));
   }
@@ -106,12 +94,11 @@ export class LocationReservationsService {
     return this.http.post<void>(
       api.updateAttendance
         .replace('{userid}', locationReservation.user.userId)
-        .replace('{calendarid}', `${locationReservation.timeslot.calendarId}`)
         .replace(
           '{date}',
           locationReservation.timeslot.timeslotDate.format('YYYY-MM-DD')
         )
-        .replace('{seqnr}', `${locationReservation.timeslot.timeslotSeqnr}`),
+        .replace('{seqnr}', `${locationReservation.timeslot.timeslotSequenceNumber}`),
       { attended },
       { withCredentials: true }
     );

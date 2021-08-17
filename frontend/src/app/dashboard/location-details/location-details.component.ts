@@ -1,39 +1,44 @@
+import { DatePipe } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef } from '@angular/core';
-import { Location } from '../../shared/model/Location';
-import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { LocationService } from '../../services/api/locations/location.service';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
-import { CalendarEvent } from 'angular-calendar';
+import { ActivatedRoute, Router } from '@angular/router';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { TranslateService } from '@ngx-translate/core';
-import { LocationTag } from '../../shared/model/LocationTag';
-import { CalendarPeriodsService } from '../../services/api/calendar-periods/calendar-periods.service';
-import { includesTimeslot, Timeslot, timeslotEquals, } from 'src/app/shared/model/Timeslot';
+import * as Leaf from 'leaflet';
+import * as moment from 'moment';
+import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/internal/operators/map';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
-import { LocationReservation } from 'src/app/shared/model/LocationReservation';
-import {
-  CalendarPeriod
-} from '../../shared/model/CalendarPeriod';
-import {
-  defaultLocationImage,
-  LocationStatus,
-  msToShowFeedback,
-} from '../../app.constants';
-import * as moment from 'moment';
-import { DatePipe } from '@angular/common';
-import { Pair } from '../../shared/model/helpers/Pair';
 import {
   ApplicationTypeFunctionalityService
 } from 'src/app/services/functionality/application-type/application-type-functionality.service';
-import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { LocationReservation } from 'src/app/shared/model/LocationReservation';
+import {
+  includesTimeslot,
+  Timeslot,
+  timeslotEquals,
+  timeslotToCalendarEvent
+} from 'src/app/shared/model/Timeslot';
+import { BreadcrumbService, dashboardBreadcrumb } from 'src/app/stad-gent-components/header/breadcrumbs/breadcrumb.service';
+import { environment } from 'src/environments/environment';
+import {
+  defaultLocationImage,
+  LocationStatus,
+  msToShowFeedback
+} from '../../app.constants';
+import { TimeslotsService } from '../../services/api/calendar-periods/calendar-periods.service';
+import { LocationService } from '../../services/api/locations/location.service';
 import {
   ConversionToCalendarEventService
 } from '../../services/styling/CalendarEvent/conversion-to-calendar-event.service';
-import { BreadcrumbService, dashboardBreadcrumb } from 'src/app/stad-gent-components/header/breadcrumbs/breadcrumb.service';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import * as Leaf from 'leaflet';
-import { environment } from 'src/environments/environment';
+import {
+  CalendarPeriod
+} from '../../shared/model/CalendarPeriod';
+import { Pair } from '../../shared/model/helpers/Pair';
+import { Location } from '../../shared/model/Location';
+import { LocationTag } from '../../shared/model/LocationTag';
 
 // Leaflet stuff.
 const iconRetinaUrl = './assets/marker-icon-2x.png';
@@ -62,7 +67,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
   locationId: number;
   tags: LocationTag[];
 
-  events: CalendarEvent[] = [];
+  events: Timeslot[] = [];
 
   editor: unknown = ClassicEditor;
 
@@ -75,8 +80,9 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
   showSuccess = false;
   showError = false;
 
-  currentTimeslot: Timeslot;
   isModified = false;
+
+  isFirst = true;
 
   description = {
     show: '',
@@ -96,8 +102,8 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
   newReservations: LocationReservation[];
   removedReservations: LocationReservation[];
 
-  calendarMap: Map<number, CalendarPeriod> = new Map<number, CalendarPeriod>();
-  locationReservations: LocationReservation[] = [];
+  private timeouts: number[] = [];
+  locationReservations: LocationReservation[];
   showAdmin: boolean;
   showLockersManagement: boolean;
   capacity: number;
@@ -112,7 +118,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     private route: ActivatedRoute,
     private sanitizer: DomSanitizer,
     private translate: TranslateService,
-    private calendarPeriodsService: CalendarPeriodsService,
+    private calendarPeriodsService: TimeslotsService,
     private datepipe: DatePipe,
     private authenticationService: AuthenticationService,
     private locationReservationService: LocationReservationsService,
@@ -121,12 +127,12 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     private conversionService: ConversionToCalendarEventService,
     private router: Router,
     private breadcrumbs: BreadcrumbService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.locationId = Number(this.route.snapshot.paramMap.get('locationId'));
 
-    this.breadcrumbs.setCurrentBreadcrumbs([dashboardBreadcrumb, {pageName: "details", url:`/dashboard/${this.locationId}`}])
+    this.breadcrumbs.setCurrentBreadcrumbs([dashboardBreadcrumb, { pageName: "details", url: `/dashboard/${this.locationId}` }])
 
     // Check if locationId is a Number before proceeding. If NaN, redirect to dashboard.
     if (isNaN(this.locationId)) {
@@ -195,46 +201,45 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
       : 'closed';
   }
 
-  timeslotPicked(event: {
-    timeslot: Timeslot;
-    calendarPeriod: CalendarPeriod;
-  }): void {
-    if (
-      !event.timeslot || // the calendar period is not reservable
-      !this.loggedIn() || // when not logged in, calendar periods are unclickable
-      !this.conversionService.clickableBasedOnTime(
-        event,
-        this.locationReservations
-      )
-    ) {
+  timeslotPicked(event: Event): void {
+    if (!event['timeslot']) {
+      // the calendar period is not reservable
+      return;
+    }
+    const currentTimeslot = event['timeslot'] as Timeslot;
+
+    if (!this.loggedIn()) {
+      // When not logged in, calendar periods are unclickable
       return;
     }
 
     // If the selected timeslot is not yet reservable, don't do anything
-    const calendarPeriod: CalendarPeriod = event.calendarPeriod;
-    if (moment().isBefore(calendarPeriod.reservableFrom)) {
+    if (moment().isBefore(currentTimeslot.reservableFrom)) {
       return;
     }
 
-    this.isModified = true;
-    this.currentTimeslot = event.timeslot;
 
     const reservation: LocationReservation = {
       user: this.authenticationService.userValue(),
-      timeslot: this.currentTimeslot,
+      timeslot: currentTimeslot,
     };
+
     const timeslotIsSelected = this.selectedSubject.value.some((r) =>
       timeslotEquals(r.timeslot, reservation.timeslot)
     );
 
+    // if it is full and you don't have this reservation yet, unselect
     if (
-      this.currentTimeslot.amountOfReservations >=
-        this.currentTimeslot.seatCount &&
+      currentTimeslot.amountOfReservations >=
+      currentTimeslot.seatCount &&
       !timeslotIsSelected
     ) {
       return;
     }
+
     this.isModified = true;
+
+
 
     // If it's already selected, unselect
     if (timeslotIsSelected) {
@@ -270,47 +275,35 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     this.calendarSub = combineLatest([
-      this.calendarPeriodsService.getCalendarPeriodsOfLocation(this.locationId),
+      this.calendarPeriodsService.getTimeslotsOfLocation(this.locationId),
       this.authenticationService.getLocationReservations(),
-    ]).subscribe(([periods, reservations]) => {
-      this.originalList = [...reservations];
-      this.selectedSubject.next(reservations);
+      this.selectedSubject,
+    ])
+      .subscribe(([timeslots, reservations, proposedReservations]) => {
+        this.originalList = [...reservations.filter(r => r.timeslot.locationId == this.locationId)];
+        this.timeouts.forEach(t => clearTimeout(t))
 
-      periods.forEach((element) => {
-        this.calendarMap.set(element.id, element);
-
-        // To avoid that users all refresh the page together when the calendar
-        // period is open for reservation, a timeout is set that refreshes the
-        // timeslots in the calendar. This makes them clickable without the
-        // need for refreshing the page which saves a lot of requests to the server.
-        // But, to avoid that a lot of timers are initialized, only those calendar
-        // periods that are reservable within one day are actually initialized.
-        // Another pitfall is that if the duration is too big for an uint32, the
-        // timer is triggered immediately: https://catonmat.net/settimeout-setinterval.
-        const duration = element.reservableFrom.valueOf() - moment().valueOf();
-        const oneDay = 24 * 3600 * 1000;
-        if (duration > 0 && duration < oneDay) {
-          setTimeout(() => {
-            this.events = this.conversionService.mapCalendarPeriodsToCalendarEvents(
-              [...this.calendarMap.values()],
-              this.currentLang,
-              [...this.selectedSubject.value]
-            );
-          }, duration);
+        // Only do this once, when selectedSubject isn't initialized yet.
+        if (this.isFirst) {
+          this.isFirst = false;
+          this.selectedSubject.next([...this.originalList])
+          return;
         }
-      });
 
-      this.subscription = this.selectedSubject
-        .asObservable()
-        .subscribe(
-          (proposedReservations) =>
-            (this.events = this.conversionService.mapCalendarPeriodsToCalendarEvents(
-              periods,
-              this.currentLang,
-              [...proposedReservations]
-            ))
-        );
-    });
+        this.timeouts = timeslots
+          .map(e => (e.reservableFrom.valueOf() - moment().valueOf()))
+          .filter(d => d > 0)
+          .filter(d => d < 1000 * 60 * 60 * 2) // don't set more than two days in advance (weird bugs if you do)
+          .map(d => setTimeout(() => this.draw(timeslots, proposedReservations), d));
+        this.draw(timeslots, proposedReservations);
+      })
+  }
+
+  draw(timeslots, proposedReservations): void {
+    this.events = timeslots.map(t => timeslotToCalendarEvent(
+      t, this.currentLang, [...proposedReservations]
+    ))
+    console.log(proposedReservations)
   }
 
   updateReservationIsPossible(): boolean {
@@ -376,24 +369,23 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
   ): moment.Moment {
     const d = moment(
       timeslot.timeslotDate.format('DD-MM-YYYY') +
-        'T' +
-        calendarPeriod.openingTime.format('HH:mm'),
+      'T' +
+      calendarPeriod.openingTime.format('HH:mm'),
       'DD-MM-YYYYTHH:mm'
     );
-    d.add(timeslot.timeslotSeqnr * calendarPeriod.timeslotLength, 'minutes');
+    d.add(timeslot.timeslotSequenceNumber * calendarPeriod.timeslotLength, 'minutes');
     return d;
   }
 
-  formatReservation(reservation: LocationReservation): string {
-    const name = this.calendarMap.get(reservation.timeslot.calendarId).location
-      .name;
-    const date = reservation.timeslot.timeslotDate.format('DD/MM/YYYY');
-    const hour = this.getBeginHour(
-      this.calendarMap.get(reservation.timeslot.calendarId),
-      reservation.timeslot
-    ).format('HH:mm');
+  formatReservation(reservation: LocationReservation): Observable<string> {
+    return this.locationService.getLocation(reservation.timeslot.locationId)
+      .pipe(map(location => {
+        const date = reservation.timeslot.timeslotDate.format('DD/MM/YYYY');
+        const hour = reservation.timeslot.openingHour.format('HH:mm');
 
-    return name + ' (' + date + ' ' + hour + ')';
+        return location.name + ' (' + date + ' ' + hour + ')';
+      }
+      ))
   }
 
   loggedIn(): boolean {

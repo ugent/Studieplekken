@@ -1,7 +1,5 @@
 package blok2.daos;
 
-import blok2.helpers.Pair;
-import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
@@ -17,12 +15,7 @@ public interface ILocationReservationDao {
      */
     List<LocationReservation> getAllLocationReservationsOfUser(String userId);
 
-    /**
-     * Get all location reservations and calendar periods of the specified user
-     */
-    List<Pair<LocationReservation, CalendarPeriod>> getAllLocationReservationsAndCalendarPeriodsOfUser(String userId);
-
-    /**
+    /*
      * Get the location reservation of a specified user at a specified timeslot
      */
     LocationReservation getLocationReservation(String userId, Timeslot timeslot);
@@ -30,13 +23,13 @@ public interface ILocationReservationDao {
     /**
      * Get all LocationReservations and corresponding CalendarPeriods of unattended reservations
      */
-    List<Pair<LocationReservation, CalendarPeriod>> getUnattendedLocationReservations(LocalDate date);
+    List<LocationReservation> getUnattendedLocationReservations(LocalDate date) ;
 
     /**
      * Get all LocationReservations and corresponding CalendarPeriods of unattended reservations
      * It starts at 21PM of the previous day until 21PM of the given date.
      */
-    List<Pair<LocationReservation, CalendarPeriod>> getUnattendedLocationReservationsWith21PMRestriction(LocalDate date);
+    List<LocationReservation> getUnattendedLocationReservationsWith21PMRestriction(LocalDate date);
 
     /**
      * Get all users that have made a reservation within the window of time that is provided through the parameters.

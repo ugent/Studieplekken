@@ -8,7 +8,6 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { CalendarPeriodsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
 import { Building } from 'src/app/shared/model/Building';
 import { CalendarPeriod } from 'src/app/shared/model/CalendarPeriod';
 import { AuthoritiesService } from '../../services/api/authorities/authorities.service';
@@ -18,6 +17,8 @@ import { AuthenticationService } from '../../services/authentication/authenticat
 import { Authority } from '../../shared/model/Authority';
 import { Location } from '../../shared/model/Location';
 import { map } from 'rxjs/internal/operators/map';
+import { Timeslot } from 'src/app/shared/model/Timeslot';
+import { TimeslotsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
 
 @Component({
   selector: 'app-locations-management',
@@ -33,7 +34,7 @@ export class LocationsManagementComponent implements OnInit {
 
   currentLocationNameToDelete: string;
   currentLocationIdToDelete: number;
-  currentCalendarPeriodsToDelete: CalendarPeriod[];
+  currentTimeslotsToDelete: Timeslot[];
   currentReservationCount: number = undefined;
   deletionWasSuccess: boolean = undefined;
 
@@ -50,9 +51,9 @@ export class LocationsManagementComponent implements OnInit {
     private authoritiesService: AuthoritiesService,
     private authenticationService: AuthenticationService,
     private buildingsService: BuildingService,
-    private calendarPeriodService: CalendarPeriodsService,
-    private dialog: MatDialog
-  ) {}
+    private dialog: MatDialog,
+    private calendarPeriodService: TimeslotsService
+  ) { }
 
   ngOnInit(): void {
     this.setupForm();
@@ -87,7 +88,7 @@ export class LocationsManagementComponent implements OnInit {
 
   prepareToAddLocation(template: TemplateRef<unknown>): void {
     this.addingWasSuccess = undefined;
-    this.dialog.open(template, {panelClass: "cs--cyan"});
+    this.dialog.open(template, { panelClass: "cs--cyan" });
     this.editMode = false;
   }
 
@@ -128,9 +129,9 @@ export class LocationsManagementComponent implements OnInit {
     this.currentLocationNameToDelete = location.name;
     this.currentLocationIdToDelete = location.locationId;
     this.calendarPeriodService
-      .getCalendarPeriodsOfLocation(location.locationId)
+      .getTimeslotsOfLocation(location.locationId)
       .subscribe((next) => {
-        this.currentCalendarPeriodsToDelete = next;
+        this.currentTimeslotsToDelete = next;
         this.dialog.open(template);
       });
   }
@@ -142,7 +143,7 @@ export class LocationsManagementComponent implements OnInit {
       .subscribe(
         () => {
           this.successDeletionHandler();
-          this.currentCalendarPeriodsToDelete = [];
+          this.currentTimeslotsToDelete = [];
           this.dialog.closeAll();
         },
         () => {
