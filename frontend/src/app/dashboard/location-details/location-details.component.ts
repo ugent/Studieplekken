@@ -3,7 +3,7 @@ import { Location } from '../../shared/model/Location';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { LocationService } from '../../services/api/locations/location.service';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 import { CalendarEvent } from 'angular-calendar';
 import { TranslateService } from '@ngx-translate/core';
 import { LocationTag } from '../../shared/model/LocationTag';
@@ -33,6 +33,7 @@ import {
 import { BreadcrumbService, dashboardBreadcrumb } from 'src/app/stad-gent-components/header/breadcrumbs/breadcrumb.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import * as Leaf from 'leaflet';
+import { environment } from 'src/environments/environment';
 
 // Leaflet stuff.
 const iconRetinaUrl = './assets/marker-icon-2x.png';
@@ -173,7 +174,9 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     }
     // when the location is loaded, setup the Leaflet map
     this.locationSub = this.location.subscribe((next) => {
-      this.setupLeafletMap(next);
+      if (next) {
+        this.setupLeafletMap(next);
+      }
     });
   }
 
@@ -248,14 +251,6 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
   handleImageError(): void {
     this.imageUrlErrorOccurred = true;
-  }
-
-  getGoogleMapsUrl(location: Location): SafeResourceUrl {
-    const url =
-      'https://www.google.com/maps?q=' +
-      location.building.address +
-      '&output=embed';
-    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
   setDescriptionToShow(): void {
@@ -342,7 +337,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         )
     );
 
-    this.modalRef = this.modalService.open(template);
+    this.modalRef = this.modalService.open(template, { panelClass: ["cs--cyan", "bigmodal"] });
   }
 
   confirmReservationChange(): void {
@@ -416,7 +411,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
       zoomOffset: -1,
       // Token has restriction to only work with https://studieplekken.ugent.be, https://studieplekken-dev.ugent.be and
       // https://localhost:4200. Token created by Ieben Smessaert (iesmessa).
-      accessToken: 'pk.eyJ1Ijoic21lc3NpZSIsImEiOiJja3JnMzR2ZXEwZG82MnVrd3l5NHFnYTk1In0.jER8bBqoIeiNrKX-HGlrZQ',
+      accessToken: environment.accessToken,
       maxZoom: 25
     });
 

@@ -97,23 +97,18 @@
 
   <!-- If clicked on reservationButton, give some feedback -->
   <div class="row" style="margin-top: 10px">
-    <div class="alert alert-success" *ngIf="showSuccess">
+    <div class="messages messages--success" *ngIf="showSuccess">
       {{'dashboard.locationDetails.calendar.reservation.successMessage' | translate}}
     </div>
 
-    <div class="alert alert-error" *ngIf="showError">
+    <div class="messages messages--error" *ngIf="showError">
       {{'dashboard.locationDetails.calendar.reservation.errorMessage' | translate}}
     </div>
   </div>
 
   <hr>
 
-  <!-- Google Maps Frame, based on address:
-         - https://developers.google.com/maps/documentation/embed/get-started
-         - https://stackoverflow.com/a/21141399/9356123
-
-       To bypass XSS for a trusted URL:
-          - https://angular.io/guide/security#xss -->
+  <!-- Leaflet map (although the div id=leafletMap must be outside the enclosing div) -->
   <div class="row">
     <h1>{{'dashboard.location' | translate}}</h1>
   </div>
@@ -121,9 +116,9 @@
 <div id="leafletMap"></div>
 
 <ng-template #confirm>
-  <div class="modal-header">
+  <h1 >
     {{'dashboard.locationDetails.calendar.reservation.header' | translate}}
-  </div>
+  </h1>
   <div class="modal-body text-center">
     <p>{{'dashboard.locationDetails.calendar.reservation.updateMessage' | translate }}</p>
     <div *ngIf='newReservations.length !== 0'>
@@ -148,13 +143,14 @@
     </div>
     <hr>
     <p>{{'dashboard.locationDetails.calendar.reservation.updateConfirmMessage' | translate }}</p>
-    <button type="button" class="btn btn-default" (click)="confirmReservationChange()">{{ 'general.yes' | translate
+    <button type="button" class="button button-primary" (click)="confirmReservationChange()">{{ 'general.yes' | translate
       }}</button>
-    <button type="button" class="btn btn-primary" (click)="declineReservationChange()">{{ 'general.no' |
+    <button type="button" class="button button-warning" (click)="declineReservationChange()">{{ 'general.no' |
       translate}}</button>
   </div>
   <div class="modal-footer">
-    <div class="alert alert-warning text-center">
+    <div class="messages messages--warning text-center">
+      <i class="icon-exclamation" aria-hidden="true"></i>
       {{'dashboard.locationDetails.calendar.reservation.updateWarningMessage' | translate}}
     </div>
   </div>
