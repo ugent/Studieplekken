@@ -374,8 +374,11 @@
       "table": {
         "name": "Naam",
         "address": "Adres",
+        "latitude": "Breedtegraad",
+        "longitude": "Lengtegraad",
         "institution": "Institutie"
       },
+      "checkAddress": "Check",
       "addNewBuilding": "Nieuw gebouw",
       "addBuildingModal": {
         "title": "Nieuw gebouw maken",

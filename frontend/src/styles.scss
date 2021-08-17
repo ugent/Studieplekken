@@ -23,6 +23,9 @@ $styleguide-dir: '' !default;
 /* angular-cli file: src/styles.css */
 @import "../node_modules/angular-calendar/css/angular-calendar.css";
 
+// import leaflet styling
+@import "../node_modules/leaflet/dist/leaflet.css";
+
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
@@ -182,10 +185,6 @@ video {
 .bigmodal {
   min-width: 60vw;
   min-height: 50vh;
-}
-
-.mat-dialog-container {
-  height: inherit!important;
 }
 
 .fullheight {

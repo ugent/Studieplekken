@@ -20,6 +20,12 @@ public class Building implements Cloneable {
     @Column(name = "address")
     private String address;
 
+    @Column(name = "latitude")
+    private double latitude;
+
+    @Column(name = "longitude")
+    private double longitude;
+
     @Column(name = "institution")
     private String institution;
 
@@ -54,6 +60,22 @@ public class Building implements Cloneable {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public String getInstitution() {
