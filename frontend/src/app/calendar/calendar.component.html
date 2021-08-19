@@ -81,7 +81,9 @@
       [hourSegmentHeight]=20
       [dayStartHour] = openingHour
       [dayEndHour] = closingHour
-      (eventClicked)="handleEvent('Clicked', $event.event)">
+      (eventClicked)="handleEvent('Clicked', $event.event)"
+      (hourSegmentClicked)="hourSegment($event)"
+      >
     </mwl-calendar-week-view>
 
     <mwl-calendar-day-view

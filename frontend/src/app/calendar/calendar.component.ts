@@ -11,6 +11,8 @@ import {CalendarView, CalendarEvent, CalendarEventTimesChangedEvent} from 'angul
 import { BehaviorSubject, Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { defaultOpeningHour, defaultClosingHour } from 'src/app/app.constants';
+import * as moment from 'moment';
+import { Moment } from '@ericblade/quagga2';
 
 @Component({
   selector: 'app-calendar',
@@ -28,9 +30,13 @@ export class CalendarComponent implements OnInit, OnChanges {
 
   @Input() events: CalendarEvent[];
   @Input() refresh: Subject<unknown>;
+  @Input() jumpToDay: Moment;
 
   @Output()
   timeslotPickedEvent: EventEmitter<any> = new EventEmitter<any>();
+
+   @Output()
+   hourPickedEvent: EventEmitter<moment.Moment> = new EventEmitter();
 
   eventsSubj: BehaviorSubject<CalendarEvent[]> = new BehaviorSubject<
     CalendarEvent[]
@@ -52,8 +58,14 @@ export class CalendarComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes)
     if (changes.events) {
       this.eventsSubj.next(this.events);
+    }
+
+    if(changes.jumpToDay && !!changes.jumpToDay.currentValue) {
+      console.log("changin stuff")
+      this.viewDate = changes.jumpToDay.currentValue.toDate();
     }
   }
 
@@ -81,5 +93,9 @@ export class CalendarComponent implements OnInit, OnChanges {
 
   setView(view: CalendarView): void {
     this.view = view;
+  }
+
+  hourSegment(event: any) {
+    this.hourPickedEvent.next(moment(event.date))
   }
 }

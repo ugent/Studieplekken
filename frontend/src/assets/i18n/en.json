@@ -102,7 +102,8 @@
       "clear": "Clear",
       "open": "Toon open locaties",
       "close": "Close",
-      "print": "Print"
+      "print": "Print",
+      "copy": "Copy"
     },
     "roles": {
       "ADMIN": "Admin"
@@ -236,11 +237,17 @@
           "error": "Something went wrong while updating the timeslot"
         },
         "deleteModalView": {
-          "title": "Sure to delete the calendar period?",
-          "body": "Are you sure that you want to delete following calendar period?",
-          "success": "Successfully deleted the calendar period",
-          "error": "Something went wrong while deleting the calendar period",
-          "warning": "Deleting the calendarperiod will result in the deletion of the corresponding reservations. Please be careful with this!"
+          "title": "Sure to delete the timeslot?",
+          "body": "Are you sure that you want to delete following timeslot?",
+          "success": "Successfully deleted the timeslot",
+          "error": "Something went wrong while deleting the timeslot",
+          "warning": "Deleting the timeslot will result in the deletion of the corresponding reservations. Please be careful with this!"
+        },
+        "copyModalView": {
+          "title": "Copy this calendar period",
+          "body": "You are about to copy the following timeslot:",
+          "weekSelect": "Copy to week:",
+          "nextWeek": "Copy to next week"
         },
         "warningDialog": {
           "warning": "Warning",

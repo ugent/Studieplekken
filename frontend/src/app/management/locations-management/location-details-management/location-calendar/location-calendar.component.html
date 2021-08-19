@@ -9,8 +9,18 @@
       [events]="events"
       [refresh]="refresh"
       (timeslotPickedEvent)="timeslotPickedHandler($event)"
+      (hourPickedEvent)="hourPickedHandler($event, addTimeslotModal)"
+      [jumpToDay]="jumpToDate"
       >
     </app-calendar>
+    <div fxLayout="row" fxLayoutAlign="flex-end" fxLayoutGap="12px">
+      <button class="btn btn-danger danger" [disabled]="!currentTimeSlot" (click)="prepareDelete(currentTimeSlot, deleteTimeslotModal)">
+      {{"general.buttons.delete" | translate}}
+      </button>
+      <button class="btn btn-primary" [disabled]="!currentTimeSlot" (click)="prepareCopy(currentTimeSlot, copyTimeslotModal)">
+        {{"general.buttons.copy" | translate}}
+      </button>
+    </div>
   </div>
 
   <hr>
@@ -49,13 +59,13 @@
     <hr>
 
     <!-- Form to edit the calendar -->
-    <div #CPtable class="row" *ngIf="timeslotObs | async as timeslots">
+    <div #CPtable class="row" *ngIf="groupTimeslots(timeslotObs | async) as timeslots">
       <!-- Title -->
       <div class="row">
         <h3 class="inline-block">
           {{'management.locationDetails.calendar.form.title' | translate}}
         </h3>
-        <button class="btn btn-primary pull-right" (click)="open(addTimeslotModal)">
+        <button class="btn btn-primary pull-right" (click)="prepareAdd(addTimeslotModal)">
           {{'management.locationDetails.calendar.form.addButton' | translate}}
         </button>
       </div>
@@ -77,22 +87,17 @@
 
           <tbody>
           <tr *ngFor="let timeslot of timeslots">
-            <td>{{timeslot.timeslotDate.format('DD/MM/YYYY')}}</td>
-            <td>{{timeslot.openingHour.format('HH:mm')}}</td>
-            <td>{{timeslot.closingHour.format('HH:mm')}}</td>
-            <td>{{(timeslot.reservable ? timeslot.reservableFrom.format('DD/MM/YYYY - HH:mm'):
+            <td>{{timeslot.date}}</td>
+            <td>{{timeslot.openingHour}}</td>
+            <td>{{timeslot.closingHour}}</td>
+            <td>{{(timeslot.reservable ? timeslot.reservableFrom:
               'general.notAvailableAbbreviation') | translate}}</td>
             <td>{{timeslot.seatCount}}</td>
 
             <!-- Edit icon -->
             <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
-                (click)="prepareUpdate(timeslot, updateTimeslotModal)">
+                (click)="jumpTo(timeslot)">
               <span class="glyphicon glyphicon-pencil pointerCursor"></span>
-            </td>
-            <!-- Delete icon -->
-            <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
-                (click)="prepareDelete(timeslot, deleteTimeslotModal)">
-              <span class="glyphicon glyphicon-trash pointerCursor"></span>
             </td>
           </tr>
           </tbody>
@@ -107,6 +112,7 @@
   <app-location-add-timeslot-dialog
   [location]="getLocation() | async"
   (onNewTimeslot)="newTimeslot($event)"
+  [timeslot]="toUpdateTimeslot"
   >
   </app-location-add-timeslot-dialog>
 </ng-template>
@@ -195,4 +201,56 @@
       {{'general.waitingForServer' | translate}}
     </div>
   </ng-template>
+</ng-template>
+
+<ng-template #copyTimeslotModal>
+    <!-- Header -->
+    <div class="modal-header">
+      <h5 class="modal-title" id="deleteCalendarPeriodModalTitle">
+        {{'management.locationDetails.calendar.copyModalView.title' | translate}}
+      </h5>
+    </div>
+  
+    <!-- Body -->
+    <div class="modal-body">
+      <div>
+        <b>{{'management.locationDetails.calendar.copyModalView.body' | translate}}</b>
+        <br><br>
+        <ul *ngIf="prepareToUpdatePeriod !== null">
+          <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.openingTime' | translate}}</i></b>{{toUpdateTimeslot.openingHour.format('HH:mm')}}</li>
+          <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.closingTime' | translate}}</i></b>{{toUpdateTimeslot.closingHour.format('HH:mm')}}</li>
+          <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.reservable' | translate}}</i></b>{{(toUpdateTimeslot.reservable ? 'general.yes' : 'general.no') |translate}}</li>
+        </ul>
+      </div>
+
+      <hr/>
+      <div fxLayout='row' fxLayoutAlign="space-between">
+        <div>
+          {{"management.locationDetails.calendar.copyModalView.weekSelect" | translate}}
+        </div>
+
+        
+    <select class="form-control" #weekSelector>
+      <option *ngFor="let weekOption of generateWeeksOptions(7, toUpdateTimeslot.timeslotDate); trackBy:trackWeekOption" [value]="weekOption.id">
+        {{weekOption.range}}
+      </option>
+    </select>
+  </div>
+    </div>
+
+  
+    <!-- Footer -->
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="closeModal()">
+        {{'general.buttons.cancel' | translate}}
+      </button>
+
+      <button type="button" class="btn btn-secondary" (click)="copy(toUpdateTimeslot, 0)">
+        {{'management.locationDetails.calendar.copyModalView.nextWeek' | translate}}
+      </button>
+
+      <button type="button" class="btn btn-primary" (click)="copy(toUpdateTimeslot, weekSelector.value)">
+        {{'general.buttons.add' | translate}}
+      </button>
+    </div>
 </ng-template>

@@ -15,6 +15,7 @@ export class Timeslot {
   locationId: number;
   openingHour: Moment;
   closingHour: Moment;
+  timeslotGroup: number;
 
   constructor(
     timeslotSequenceNumber: number,
@@ -25,7 +26,8 @@ export class Timeslot {
     reservableFrom: Moment,
     locationId: number,
     openingHour: Moment,
-    closingHour: Moment
+    closingHour: Moment,
+    timeslotGroup: number
   ) {
     this.timeslotSequenceNumber = timeslotSequenceNumber;
     this.timeslotDate = timeslotDate;
@@ -36,6 +38,7 @@ export class Timeslot {
     this.locationId = locationId;
     this.openingHour = openingHour;
     this.closingHour = closingHour;
+    this.timeslotGroup = timeslotGroup;
   }
 
   static fromJSON(json: Record<string, any>): Timeslot {
@@ -51,7 +54,8 @@ export class Timeslot {
       moment(json.reservableFrom),
       json.locationId,
       moment(json.openingHour, "HH:mm:ss"),
-      moment(json.closingHour, "HH:mm:ss")
+      moment(json.closingHour, "HH:mm:ss"),
+      json.timeslotGroup
     );
   }
 

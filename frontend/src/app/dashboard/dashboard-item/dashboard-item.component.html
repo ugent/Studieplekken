@@ -54,7 +54,7 @@
       <!-- Progress bar for reserved seats -->
       <div class="mt-auto">
         <div *ngIf="location.currentTimeslot as timeslot">
-          <div class="progress" [class.hidden]="!(showProgressBar && occupation >= 0)">
+          <div class="progress" [class.hidden]="!(showProgressBar && occupation >= 0 && timeslot.reservable)">
             <div class="progress-bar" role="progressbar"
                  [style.width]="(timeslot.amountOfReservations / timeslot.seatCount) * 100 + '%'"
                  [attr.aria-valuenow]="timeslot.amountOfReservations"
