@@ -217,6 +217,7 @@
         <b>{{'management.locationDetails.calendar.copyModalView.body' | translate}}</b>
         <br><br>
         <ul *ngIf="prepareToUpdatePeriod !== null">
+          <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.day' | translate}}</i></b>{{toUpdateTimeslot.timeslotDate.format('dddd')}}</li>
           <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.openingTime' | translate}}</i></b>{{toUpdateTimeslot.openingHour.format('HH:mm')}}</li>
           <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.closingTime' | translate}}</i></b>{{toUpdateTimeslot.closingHour.format('HH:mm')}}</li>
           <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.reservable' | translate}}</i></b>{{(toUpdateTimeslot.reservable ? 'general.yes' : 'general.no') |translate}}</li>

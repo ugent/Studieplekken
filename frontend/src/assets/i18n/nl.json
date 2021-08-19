@@ -210,6 +210,7 @@
           "title": "Wijzig openingsdagen",
           "addButton": "Voeg nieuwe openingsperiode toe",
           "date": "Datum",
+          "day":"Dag",
           "openingTime": "Openingstijd",
           "closingTime": "Sluitingstijd",
           "reservable": "Reserveerbaar vanaf",

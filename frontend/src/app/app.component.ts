@@ -5,6 +5,7 @@ import { ApplicationTypeFunctionalityService } from './services/functionality/ap
 import { AuthenticationService } from './services/authentication/authentication.service';
 import { UserService } from './services/api/users/user.service';
 import {forkJoin} from "rxjs";
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-root',
@@ -37,9 +38,12 @@ export class AppComponent implements OnInit {
     translate.setDefaultLang('en');
     // tries to set the language to the default browserlanguage of the user if 'en' or 'nl' (else en)
     const browserLang = translate.getBrowserLang();
+    moment().locale(browserLang)
 
     if (localStorage.getItem('selectedLanguage') !== null) {
-      translate.use(localStorage.getItem('selectedLanguage'));
+      const item = localStorage.getItem('selectedLanguage')
+      translate.use(item);
+      moment.locale(item)
     } else {
       // add another language? -> add language to regex and read comments at the beginning of this constructor!
       translate.use(/en|nl/.exec(browserLang) ? browserLang : 'en');
@@ -118,9 +122,12 @@ export class AppComponent implements OnInit {
     if (localStorage.getItem('selectedLanguage') === 'nl') {
       localStorage.setItem('selectedLanguage', 'en');
       this.translate.use('en');
+      moment.locale("en")
     } else {
       localStorage.setItem('selectedLanguage', 'nl');
       this.translate.use('nl');
+      moment.locale("nl")
+
     }
   }
 

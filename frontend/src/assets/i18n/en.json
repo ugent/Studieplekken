@@ -210,6 +210,7 @@
           "title": "Edit opening days",
           "addButton": "Add new opening period",
           "date": "Date",
+          "day":"Day",
           "openingTime": "Opening time",
           "closingTime": "Closing time",
           "reservable": "Reservable from",

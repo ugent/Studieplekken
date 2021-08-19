@@ -4,6 +4,8 @@ import blok2.helpers.YearWeekDeserializer;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
 import org.threeten.extra.YearWeek;
 
 import javax.persistence.*;
@@ -60,6 +62,10 @@ public class Timeslot implements Cloneable {
     @Column(name = "reservation_count")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private int amountOfReservations;
+
+    @Generated(GenerationTime.INSERT)
+    @Column(name="timeslot_group")
+    private Integer timeslotGroup;
 
     // Artefact for framework
     public Timeslot() {
@@ -202,6 +208,14 @@ public class Timeslot implements Cloneable {
 
     public void setLocation(int locationId) {
         this.locationId = locationId;
+    }
+
+    public Integer getTimeslotGroup() {
+        return timeslotGroup;
+    }
+
+    public void setTimeslotGroup(Integer timeslotGroup) {
+        this.timeslotGroup = timeslotGroup;
     }
 
     @Embeddable

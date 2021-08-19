@@ -3,6 +3,7 @@ package blok2.daos.services;
 import blok2.daos.ITimeslotDAO;
 import blok2.daos.repositories.TimeslotRepository;
 import blok2.model.calendar.Timeslot;
+import blok2.model.reservables.Location;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -17,10 +18,12 @@ import java.util.Optional;
 public class TimeslotService implements ITimeslotDAO {
 
     private final TimeslotRepository timeslotRepository;
+    private final LocationService locationService;
 
     @Autowired
-    public TimeslotService(TimeslotRepository repo) {
+    public TimeslotService(TimeslotRepository repo, LocationService locationService) {
         this.timeslotRepository = repo;
+        this.locationService = locationService;
     }
 
     @Override
@@ -40,6 +43,8 @@ public class TimeslotService implements ITimeslotDAO {
 
     @Override
     public Timeslot addTimeslot(Timeslot timeslot) {
+        Location loc = locationService.getLocationById(timeslot.getLocationId());
+        timeslot.setSeatCount(loc.getNumberOfSeats());
         return timeslotRepository.save(timeslot);
     }
 
