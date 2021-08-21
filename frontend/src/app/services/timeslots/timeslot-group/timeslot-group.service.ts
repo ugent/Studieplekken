@@ -6,6 +6,7 @@ import { Timeslot } from 'src/app/shared/model/Timeslot';
 
 
 export type TimeslotGroups = Map<number, Timeslot[]>;
+export type Suggestion = {model: Timeslot, copy: Timeslot};
 
 @Injectable({
   providedIn: 'root'
@@ -44,7 +45,6 @@ export class TimeslotGroupService {
                   = ([group, value]) => [group, value.reduce((a, b) => a.timeslotDate.isAfter(b.timeslotDate) ? a:b)]
 
     const list = Array.from(groups).map(mapper)
-    console.log(list)
 
     return new Map(list);
   }
@@ -53,18 +53,21 @@ export class TimeslotGroupService {
     const latestTimeslots = this.getOldestTimeslotPerGroup(timeslots);
     const repeatableTimeslots = [...latestTimeslots.values()].filter(t => t.repeatable);
     
-
-    const suggestions = [];
+    const suggestions: Suggestion[] = [];
 
     for(let i = 1; i <= amountOfWeeks; i++) {
-      const day = (t: Timeslot) => moment(t.timeslotDate).isoWeek(moment().isoWeek()).add(i, "weeks");
-      repeatableTimeslots.filter(t => t.timeslotDate.isBefore(day(t), "day")).forEach(t => suggestions.push(this.copy(t, day(t))));
+      const targetDate = (t: Timeslot) => moment(t.timeslotDate).add(i, "weeks");
+      repeatableTimeslots.filter(t => t.timeslotDate.isBefore(targetDate(t), "day")).forEach(t => suggestions.push({model: t, copy: this.copy(t, targetDate(t))}));
     }
 
     return suggestions;
   }
 
-  filterByMoment(timeslots: Timeslot[], day: Moment, granularity: moment.unitOfTime.StartOf) {
+  filterTimeslotsByMoment(timeslots: Timeslot[], day: Moment, granularity: moment.unitOfTime.StartOf) {
     return timeslots.filter(t => t.timeslotDate.isSame(day, granularity))
+  }
+
+  filterSuggestionsByMoment(suggestions: Suggestion[], day: Moment, granularity: moment.unitOfTime.StartOf) {
+    return suggestions.filter(t => t.copy.timeslotDate.isSame(day, granularity))
   }
 }

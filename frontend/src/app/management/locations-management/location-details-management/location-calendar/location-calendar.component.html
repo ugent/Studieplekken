@@ -14,7 +14,11 @@
       (calendarViewStyle)="calendarViewStyle = $event"
       >
     </app-calendar>
+
     <div fxLayout="row" fxLayoutAlign="flex-end" fxLayoutGap="12px">
+      <button class="btn btn-danger danger" *ngIf="showApproveAll()" (click)="rejectAll()">
+        {{"management.locationDetails.calendar.form.rejectAll" | translate}}
+      </button>
       <button class="btn btn-primary" *ngIf="showApproveAll()" (click)="approveAll()">
         {{"management.locationDetails.calendar.form.approveAll" | translate}}
         </button>
@@ -84,9 +88,9 @@
             <th>{{'management.locationDetails.calendar.form.openingTime' | translate}}</th>
             <th>{{'management.locationDetails.calendar.form.closingTime' | translate}}</th>
             <th>{{'management.locationDetails.calendar.form.reservable' | translate}}</th>
+            <th>{{'management.locationDetails.calendar.form.repeatable' | translate}}</th>
             <th>{{'management.locationDetails.calendar.form.numberOfSeats' | translate}}</th>
             <th><!-- update --></th>
-            <th><!-- delete --></th>
           </tr>
           </thead>
 
@@ -97,6 +101,9 @@
             <td>{{timeslot.closingHour}}</td>
             <td>{{(timeslot.reservable ? timeslot.reservableFrom:
               'general.notAvailableAbbreviation') | translate}}</td>
+              <td>{{(timeslot.repeatable ? 'general.yes':
+                'general.no') | translate}}</td>
+  
             <td>{{timeslot.seatCount}}</td>
 
             <!-- Edit icon -->
@@ -120,18 +127,6 @@
   [timeslot]="toUpdateTimeslot"
   >
   </app-location-add-timeslot-dialog>
-</ng-template>
-
-<!-- Modal view to update a calendar period -->
-<ng-template #updateTimeslotModal>
-  <app-location-add-timeslot-dialog
-  [location]="getLocation() | async"
-  [timeslot]="toUpdateTimeslot"
-  (onNewTimeslot)="updateTimeslot($event)"
-
-  >
-</app-location-add-timeslot-dialog>
-
 </ng-template>
 
 <!-- Modal view to ask whether the user is sure to delete a timeslot -->

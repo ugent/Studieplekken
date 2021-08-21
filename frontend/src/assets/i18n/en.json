@@ -228,7 +228,8 @@
           "adminWarning": "Be careful, this change is within the locked from period. You will have to manually contact the appropriate UGent services.",
           "updateReservationWarning": "Changing this period will result in the loss of all reservations already made during the period.",
           "noCalendarPeriodsForLocation": "At the moment, there are no opening periods for the room.",
-          "approveAll": "Approve all suggestions"
+          "approveAll": "Approve all suggestions",
+          "rejectAll": "Reject all suggestions"
         },
         "addModalView": {
           "title": "Add new timeslot",
