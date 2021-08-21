@@ -2,11 +2,15 @@ package blok2.stadgent.model;
 
 import blok2.model.reservables.Location;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class StadGentLocation {
+    public static String baseUrl = "";
+
     @JsonProperty("id")
     private Integer id;
 
@@ -42,7 +46,7 @@ public class StadGentLocation {
 
     @JsonProperty("lees_meer")
     public String getUrl() {
-        return "";
+        return baseUrl + "dashboard/"+id;
     }
 
     private LocalTime openingHour;
