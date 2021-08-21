@@ -39,6 +39,14 @@ public class TimeslotService implements ITimeslotDAO {
 
     @Override
     public List<Timeslot> addTimeslots(List<Timeslot> timeslot) {
+        for(Timeslot t : timeslot) {
+            Location loc = locationService.getLocationById(t.getLocationId());
+            t.setSeatCount(loc.getNumberOfSeats());
+            if(t.getTimeslotGroup() == null) {
+                t.setTimeslotGroup(UUID.randomUUID());
+            }
+
+        }
         return timeslotRepository.saveAll(timeslot);
     }
 
@@ -58,7 +66,7 @@ public class TimeslotService implements ITimeslotDAO {
     }
 
     @Override
-    public void updateTimeslot(Timeslot timeslot) {
+    public Timeslot updateTimeslot(Timeslot timeslot) {
         Timeslot original = timeslotRepository.getByTimeslotSeqnr(timeslot.getTimeslotSeqnr());
 
         original.setWeek(timeslot.getWeek());
@@ -69,7 +77,7 @@ public class TimeslotService implements ITimeslotDAO {
         original.setReservable(timeslot.isReservable());
         original.setReservableFrom(timeslot.getReservableFrom());
 
-        timeslotRepository.save(original);
+        return timeslotRepository.save(original);
     }
 
     @Override
