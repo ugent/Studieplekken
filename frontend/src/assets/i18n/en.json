@@ -213,7 +213,9 @@
           "day":"Day",
           "openingTime": "Opening time",
           "closingTime": "Closing time",
-          "reservable": "Reservable from",
+          "reservable": "Reservable",
+          "repeatable": "Repeatable",
+          "repeatable-info": "If checked, the period will be suggested for the oncoming weeks.",
           "numberOfSeats": "Seats",
           "timeslotCount": "Amount of timeslots",
           "reservableFrom": "Reservable from",
@@ -225,7 +227,8 @@
           },
           "adminWarning": "Be careful, this change is within the locked from period. You will have to manually contact the appropriate UGent services.",
           "updateReservationWarning": "Changing this period will result in the loss of all reservations already made during the period.",
-          "noCalendarPeriodsForLocation": "At the moment, there are no opening periods for the room."
+          "noCalendarPeriodsForLocation": "At the moment, there are no opening periods for the room.",
+          "approveAll": "Approve all suggestions"
         },
         "addModalView": {
           "title": "Add new timeslot",

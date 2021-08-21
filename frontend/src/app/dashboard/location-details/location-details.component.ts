@@ -1,43 +1,41 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnDestroy, OnInit, TemplateRef } from '@angular/core';
-import { Location } from '../../shared/model/Location';
-import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { LocationService } from '../../services/api/locations/location.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { CalendarEvent } from 'angular-calendar';
+import { ActivatedRoute, Router } from '@angular/router';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { TranslateService } from '@ngx-translate/core';
-import { LocationTag } from '../../shared/model/LocationTag';
-import { TimeslotsService } from '../../services/api/calendar-periods/calendar-periods.service';
-import {
-  includesTimeslot,
-  Timeslot,
-  timeslotEquals,
-  timeslotToCalendarEvent,
-} from 'src/app/shared/model/Timeslot';
+import * as moment from 'moment';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/internal/operators/map';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
-import { LocationReservation } from 'src/app/shared/model/LocationReservation';
-import {
-  CalendarPeriod
-} from '../../shared/model/CalendarPeriod';
-import {
-  defaultLocationImage,
-  LocationStatus,
-  msToShowFeedback,
-} from '../../app.constants';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import * as moment from 'moment';
-import { DatePipe } from '@angular/common';
-import { Pair } from '../../shared/model/helpers/Pair';
 import {
   ApplicationTypeFunctionalityService
 } from 'src/app/services/functionality/application-type/application-type-functionality.service';
-import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { map } from 'rxjs/internal/operators/map';
+import { TimeslotCalendarEventService } from 'src/app/services/timeslots/timeslot-calendar-event/timeslot-calendar-event.service';
+import { LocationReservation } from 'src/app/shared/model/LocationReservation';
+import {
+  includesTimeslot,
+  Timeslot,
+  timeslotEquals
+} from 'src/app/shared/model/Timeslot';
+import {
+  defaultLocationImage,
+  LocationStatus,
+  msToShowFeedback
+} from '../../app.constants';
+import { TimeslotsService } from '../../services/api/calendar-periods/calendar-periods.service';
+import { LocationService } from '../../services/api/locations/location.service';
 import {
   ConversionToCalendarEventService
 } from '../../services/styling/CalendarEvent/conversion-to-calendar-event.service';
-import { distinctUntilChanged, distinctUntilKeyChanged } from 'rxjs/operators';
+import {
+  CalendarPeriod
+} from '../../shared/model/CalendarPeriod';
+import { Pair } from '../../shared/model/helpers/Pair';
+import { Location } from '../../shared/model/Location';
+import { LocationTag } from '../../shared/model/LocationTag';
 
 @Component({
   selector: 'app-location-details',
@@ -106,7 +104,9 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
     private modalService: BsModalService,
     private functionalityService: ApplicationTypeFunctionalityService,
     private conversionService: ConversionToCalendarEventService,
-    private router: Router
+    private router: Router,
+    private timeslotCalendarEventService: TimeslotCalendarEventService
+
   ) {}
 
   ngOnInit(): void {
@@ -269,10 +269,9 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
   }
 
   draw(timeslots, proposedReservations): void {
-    this.events = timeslots.map(t => timeslotToCalendarEvent(
+    this.events = timeslots.map(t => this.timeslotCalendarEventService.timeslotToCalendarEvent(
       t, this.currentLang, [...proposedReservations]
     ))
-    console.log(proposedReservations)
   }
 
   updateReservationIsPossible(): boolean {

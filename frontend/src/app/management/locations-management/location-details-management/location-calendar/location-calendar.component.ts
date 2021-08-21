@@ -1,11 +1,13 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { CalendarEvent } from 'angular-calendar';
+import { CalendarEvent, CalendarView } from 'angular-calendar';
+import * as moment from 'moment';
+import { Moment } from 'moment';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { Observable, Subject, timer } from 'rxjs';
+import { combineLatest, Observable, Subject, timer } from 'rxjs';
 import { of } from 'rxjs/internal/observable/of';
-import { catchError, first, switchMap, tap } from 'rxjs/operators';
+import { catchError, switchMap, tap } from 'rxjs/operators';
 import { TimeslotsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { LocationService } from 'src/app/services/api/locations/location.service';
@@ -13,12 +15,12 @@ import { AuthenticationService } from 'src/app/services/authentication/authentic
 import {
   ApplicationTypeFunctionalityService
 } from 'src/app/services/functionality/application-type/application-type-functionality.service';
+import { TimeslotGroupService } from "src/app/services/timeslots/timeslot-group/timeslot-group.service";
+import { TimeslotCalendarEventService } from "src/app/services/timeslots/timeslot-calendar-event/timeslot-calendar-event.service";
+
 import { Location } from 'src/app/shared/model/Location';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
-import { Timeslot, timeslotToCalendarEvent } from 'src/app/shared/model/Timeslot';
-import { DefaultMap } from "src/app/shared/default-map/defaultMap"
-import { Moment } from 'moment';
-import * as moment from 'moment';
+import { Timeslot } from 'src/app/shared/model/Timeslot';
 
 type TypeOption = {
   date: string;
@@ -58,6 +60,8 @@ export class LocationCalendarComponent implements OnInit {
     timeslot?: Timeslot;
   }>[] = [];
 
+  suggestions: Timeslot[] = [];
+
 
   disableFootButtons = true;
 
@@ -80,6 +84,8 @@ export class LocationCalendarComponent implements OnInit {
 
   currentLang: string;
 
+  calendarViewStyle: CalendarView = CalendarView.Week;
+
   constructor(
     private timeslotService: TimeslotsService,
     private functionalityService: ApplicationTypeFunctionalityService,
@@ -89,7 +95,9 @@ export class LocationCalendarComponent implements OnInit {
     private translate: TranslateService,
     private route: ActivatedRoute,
     private router: Router,
-    private locationService: LocationService
+    private locationService: LocationService,
+    private timeslotGroupService: TimeslotGroupService,
+    private timeslotCalendarEventService: TimeslotCalendarEventService
   ) { }
 
   ngOnInit(): void {
@@ -124,11 +132,18 @@ export class LocationCalendarComponent implements OnInit {
       .pipe(
         tap((next) => {
           // fill the events based on the calendar periods
-          this.events = next.map(t => timeslotToCalendarEvent(t, this.translate.currentLang))
+          this.events = next.map(t => this.timeslotCalendarEventService.timeslotToCalendarEvent(t, this.translate.currentLang))
 
+
+          this.suggestions = this.timeslotGroupService.getSuggestions(next)
+          const suggestionEvents = this.suggestions.map(t => this.timeslotCalendarEventService.suggestedTimeslotToCalendarEvent(t, this.translate.currentLang));
+          
+
+          this.events = this.events.concat(suggestionEvents)
           // and update the calendar
           this.refresh.next(null);
         }),
+
         catchError((err) => {
           console.error(err);
           this.errorSubject.next(true);
@@ -228,22 +243,16 @@ export class LocationCalendarComponent implements OnInit {
   }
 
   copy(timeslot: Timeslot, weekOffset: number) {
-    const date = moment(timeslot.timeslotDate).add(weekOffset+1, "weeks");
-    const reservationDiff = date.diff(timeslot.timeslotDate, "minutes");
-
-    this.timeslotService.addTimeslot(new Timeslot(null, date, null, null, timeslot.reservable, timeslot.reservableFrom?.subtract(reservationDiff), timeslot.locationId, timeslot.openingHour, timeslot.closingHour, timeslot.timeslotGroup))
-    .subscribe(() => this.setup())
+    const newTimeslot = this.timeslotGroupService.copyByWeekOffset(timeslot, weekOffset)
+    this.timeslotService.addTimeslot(newTimeslot).subscribe(() => this.setup());
     this.modalService.hide();
   }
 
-  groupTimeslots(timeslot: Timeslot[]) {
-    if (!timeslot)
+  timeslotGroupData(timeslots: Timeslot[]) {
+    if(!timeslots)
       return []
 
-    const perGroup = new DefaultMap<number, Timeslot>();
-    timeslot.forEach(t => perGroup.addValueAsList(t.timeslotGroup, t))
-
-
+    const perGroup = this.timeslotGroupService.groupTimeslots(timeslots);
     return [...perGroup.values()].map(t => this.getGroupDetails(t)).reverse();
   }
 
@@ -291,7 +300,7 @@ export class LocationCalendarComponent implements OnInit {
   }
 
   hourPickedHandler(date: Moment, modal: TemplateRef<any>) {
-    this.toUpdateTimeslot = new Timeslot(null, date, null, null, null, null, this.locationId, date, null, null);
+    this.toUpdateTimeslot = new Timeslot(null, date, null, null, null, null, this.locationId, date, null, null, false);
     this.modalService.show(modal)
   }
 
@@ -311,6 +320,32 @@ export class LocationCalendarComponent implements OnInit {
 
   trackWeekOption(w: {id: number}) {
     return w.id;
+  }
+
+  showApproveAll() {
+    console.log(this.getCurrentSuggestions())
+    return this.getCurrentSuggestions().length > 0
+  }
+
+  approveAll() {
+    const timeslots = this.getCurrentSuggestions();
+    combineLatest(timeslots.map(t => this.timeslotService.addTimeslot(t))).subscribe(() => this.setup())
+  }
+
+  private getCurrentSuggestions() {
+    if(this.calendarViewStyle == CalendarView.Day) {
+      return this.timeslotGroupService.filterByMoment(this.suggestions, this.jumpToDate, "day")
+    }
+
+    if(this.calendarViewStyle == CalendarView.Week) {
+      return this.timeslotGroupService.filterByMoment(this.suggestions, this.jumpToDate, "isoWeek")
+    }
+
+    if(this.calendarViewStyle == CalendarView.Month) {
+      return this.timeslotGroupService.filterByMoment(this.suggestions, this.jumpToDate, "month")
+    }
+
+    return [];
   }
 
 }

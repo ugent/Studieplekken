@@ -10,10 +10,15 @@
       [refresh]="refresh"
       (timeslotPickedEvent)="timeslotPickedHandler($event)"
       (hourPickedEvent)="hourPickedHandler($event, addTimeslotModal)"
-      [jumpToDay]="jumpToDate"
+      [(currentEventTime)]="jumpToDate"
+      (calendarViewStyle)="calendarViewStyle = $event"
       >
     </app-calendar>
     <div fxLayout="row" fxLayoutAlign="flex-end" fxLayoutGap="12px">
+      <button class="btn btn-primary" *ngIf="showApproveAll()" (click)="approveAll()">
+        {{"management.locationDetails.calendar.form.approveAll" | translate}}
+        </button>
+
       <button class="btn btn-danger danger" [disabled]="!currentTimeSlot" (click)="prepareDelete(currentTimeSlot, deleteTimeslotModal)">
       {{"general.buttons.delete" | translate}}
       </button>
@@ -59,7 +64,7 @@
     <hr>
 
     <!-- Form to edit the calendar -->
-    <div #CPtable class="row" *ngIf="groupTimeslots(timeslotObs | async) as timeslots">
+    <div #CPtable class="row" *ngIf="timeslotGroupData(timeslotObs | async) as timeslots">
       <!-- Title -->
       <div class="row">
         <h3 class="inline-block">

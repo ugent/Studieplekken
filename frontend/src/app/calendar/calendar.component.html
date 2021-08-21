@@ -7,14 +7,17 @@
         <div class="btn btn-primary btn-left"
              mwlCalendarPreviousView
              [view]="view"
-             [(viewDate)]="viewDate">
+             [(viewDate)]="viewDate"
+             (viewDateChange)="emitDate($event)">
           {{'calendar.previous' | translate}}
         </div>
 
         <!-- Today -->
         <div class="btn btn-outline-secondary btn-left"
              mwlCalendarToday
-             [(viewDate)]="viewDate">
+             [(viewDate)]="viewDate"
+             (viewDateChange)="emitDate($event)">
+
           {{'calendar.today' | translate}}
         </div>
 
@@ -22,7 +25,9 @@
         <div class="btn btn-primary"
              mwlCalendarNextView
              [view]="view"
-             [(viewDate)]="viewDate">
+             [(viewDate)]="viewDate"
+             (viewDateChange)="emitDate($event)">
+
           {{'calendar.next' | translate}}
         </div>
       </div>

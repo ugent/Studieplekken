@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Table(name = "timeslots")
@@ -63,9 +64,11 @@ public class Timeslot implements Cloneable {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private int amountOfReservations;
 
-    @Generated(GenerationTime.INSERT)
-    @Column(name="timeslot_group")
-    private Integer timeslotGroup;
+    @Column(name="timeslot_group_id")
+    private UUID timeslotGroup;
+
+    @Column(name="repeatable")
+    private boolean repeatable;
 
     // Artefact for framework
     public Timeslot() {
@@ -210,12 +213,20 @@ public class Timeslot implements Cloneable {
         this.locationId = locationId;
     }
 
-    public Integer getTimeslotGroup() {
+    public UUID getTimeslotGroup() {
         return timeslotGroup;
     }
 
-    public void setTimeslotGroup(Integer timeslotGroup) {
+    public void setTimeslotGroup(UUID timeslotGroup) {
         this.timeslotGroup = timeslotGroup;
+    }
+
+    public boolean isRepeatable() {
+        return this.repeatable;
+    }
+
+    public void setRepeatable(boolean repeatable) {
+        this.repeatable = repeatable;
     }
 
     @Embeddable

@@ -7,12 +7,11 @@ import {
   OnChanges,
   SimpleChanges,
 } from '@angular/core';
-import {CalendarView, CalendarEvent, CalendarEventTimesChangedEvent} from 'angular-calendar';
+import {CalendarView, CalendarEvent,} from 'angular-calendar';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { defaultOpeningHour, defaultClosingHour } from 'src/app/app.constants';
 import * as moment from 'moment';
-import { Moment } from '@ericblade/quagga2';
 
 @Component({
   selector: 'app-calendar',
@@ -30,7 +29,16 @@ export class CalendarComponent implements OnInit, OnChanges {
 
   @Input() events: CalendarEvent[];
   @Input() refresh: Subject<unknown>;
-  @Input() jumpToDay: Moment;
+
+
+  @Input() currentEventTime: moment.Moment;
+  @Output()
+  currentEventTimeChange = new EventEmitter<moment.Moment>();
+
+  @Output()
+  calendarViewStyle = new EventEmitter<CalendarView>();
+
+
 
   @Output()
   timeslotPickedEvent: EventEmitter<any> = new EventEmitter<any>();
@@ -58,14 +66,12 @@ export class CalendarComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes)
     if (changes.events) {
       this.eventsSubj.next(this.events);
     }
 
-    if(changes.jumpToDay && !!changes.jumpToDay.currentValue) {
-      console.log("changin stuff")
-      this.viewDate = changes.jumpToDay.currentValue.toDate();
+    if(changes.currentEventTime && !!changes.currentEventTime.currentValue) {
+      this.viewDate = changes.currentEventTime.currentValue.toDate();
     }
   }
 
@@ -93,9 +99,14 @@ export class CalendarComponent implements OnInit, OnChanges {
 
   setView(view: CalendarView): void {
     this.view = view;
+    this.calendarViewStyle.next(view)
   }
 
   hourSegment(event: any) {
     this.hourPickedEvent.next(moment(event.date))
+  }
+
+  emitDate(event: any) {
+    this.currentEventTimeChange.next(moment(event))
   }
 }

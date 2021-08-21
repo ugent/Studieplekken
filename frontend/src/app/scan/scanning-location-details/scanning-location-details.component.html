@@ -20,7 +20,7 @@
           <div *ngIf="error" style="margin-top: 15px;" class="alert alert-error">{{error | translate}}</div>
 
           <div *ngIf="!reservation" style="margin-top: 15px;" class="alert alert-info">{{'scan.mobile-hint' | translate}}</div>
-          <app-scanner *ngIf="!reservation" [validator]="getValidator(lr)" (code)="scanUser(lr, $event)"></app-scanner>
+          <app-scanner *ngIf="!reservation" [validator]="getValidator()" (code)="scanUser(lr, $event)"></app-scanner>
 
           <div class="usertag" *ngIf="reservation" fxLayout="column" fxLayoutAlign="center center">
             <p>

@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class TimeslotService implements ITimeslotDAO {
@@ -45,6 +46,9 @@ public class TimeslotService implements ITimeslotDAO {
     public Timeslot addTimeslot(Timeslot timeslot) {
         Location loc = locationService.getLocationById(timeslot.getLocationId());
         timeslot.setSeatCount(loc.getNumberOfSeats());
+        if(timeslot.getTimeslotGroup() == null) {
+            timeslot.setTimeslotGroup(UUID.randomUUID());
+        }
         return timeslotRepository.save(timeslot);
     }
 

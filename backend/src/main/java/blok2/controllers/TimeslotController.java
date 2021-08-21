@@ -60,6 +60,7 @@ public class TimeslotController extends  AuthorizedLocationController {
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public Timeslot addTimeslot(@RequestBody Timeslot timeslot) {
         isAuthorized(timeslot.getLocationId());
+
         return timeslotDAO.addTimeslot(timeslot);
     }
 }

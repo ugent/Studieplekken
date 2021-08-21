@@ -213,7 +213,9 @@
           "day":"Dag",
           "openingTime": "Openingstijd",
           "closingTime": "Sluitingstijd",
-          "reservable": "Reserveerbaar vanaf",
+          "reservable": "Reserveerbaar",
+          "repeatable": "Herhalen",
+          "repeatable-info": "Als u dit aanvinkt zal de timeslot voor de komende weken gesuggereerd worden.",
           "numberOfSeats": "Plaatsen",
           "timeslotCount": "Aantal timeslots",
           "reservableFrom": "Reserveerbaar vanaf",
@@ -225,7 +227,8 @@
           },
           "adminWarning": "Opgepast, deze verandering ligt binnen de vastgelegde termijn. Je zal manueel contact moeten opnemen met dienst permanentie van de UGent.",
           "updateReservationWarning": "Het aanpassen van deze periode zal leiden tot de verwijdering van alle reservaties die al gemaakt zijn gedurende deze periode!",
-          "noCalendarPeriodsForLocation": "Op dit moment zijn er nog geen periodes voor de ruimte beschikbaar."
+          "noCalendarPeriodsForLocation": "Op dit moment zijn er nog geen periodes voor de ruimte beschikbaar.",
+          "approveAll": "Keur alle suggesties goed"
         },
         "addModalView": {
           "title": "Nieuw tijdslot toevoegen",
