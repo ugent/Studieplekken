@@ -225,8 +225,7 @@
           },
           "adminWarning": "Opgepast, deze verandering ligt binnen de vastgelegde termijn. Je zal manueel contact moeten opnemen met dienst permanentie van de UGent.",
           "updateReservationWarning": "Het aanpassen van deze periode zal leiden tot de verwijdering van alle reservaties die al gemaakt zijn gedurende deze periode!",
-          "noCalendarPeriodsForLocation": "Op dit moment zijn er nog geen periodes voor de ruimte beschikbaar.",
-          "impersonate": "Login als deze user"
+          "noCalendarPeriodsForLocation": "Op dit moment zijn er nog geen periodes voor de ruimte beschikbaar."
         },
         "addModalView": {
           "title": "Nieuw tijdslot toevoegen",
@@ -464,7 +463,8 @@
           "roles": "Rollen",
           "penaltyPoints": "Strafpunten",
           "institution": "Institutie",
-          "error": "Er is iets misgelopen tijdens het ophalen van de gebruiker..."
+          "error": "Er is iets misgelopen tijdens het ophalen van de gebruiker...",
+          "impersonate": "Log in als deze user"
         },
         "roles": {
           "title": "Rollen van {name}",
