@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { User, UserConstructor } from '../../shared/model/User';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Penalty } from '../../shared/model/Penalty';
 import { LocationReservation } from '../../shared/model/LocationReservation';
 import {
@@ -236,5 +236,10 @@ export class AuthenticationService {
     this.userService.hasUserVolunteered(user.userId).subscribe((next) => {
       this.hasVolunteeredSubject.next(next);
     });
+  }
+
+  substituteLogin(email: string) {
+    const headers = new HttpHeaders().set("AS-USER", email);
+    this.http.get(api.whoAmI, {headers}).subscribe(()=> this.login())
   }
 }

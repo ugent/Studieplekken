@@ -465,7 +465,8 @@
           "roles": "Roles",
           "penaltyPoints": "Penalty points",
           "institution": "Institution",
-          "error": "Something went wrong while retrieving the user..."
+          "error": "Something went wrong while retrieving the user...",
+          "impersonate": "Login as this user"
         },
         "roles": {
           "title": "Roles of {name}",

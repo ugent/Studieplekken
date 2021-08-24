@@ -1,5 +1,6 @@
 package blok2.security.config;
 
+import blok2.security.services.BackdoorUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -7,8 +8,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.cas.authentication.CasAuthenticationProvider;
 import org.springframework.security.cas.web.CasAuthenticationEntryPoint;
+import org.springframework.security.cas.web.CasAuthenticationFilter;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -64,7 +67,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final KeyManager keyManager;
     private final SavedRequestAwareAuthenticationSuccessHandler samlAuthSuccessHandler;
     private final SimpleUrlAuthenticationFailureHandler samlAuthFailureHandler;
-
+    @Autowired
+    private AuthenticationManager authManager;
+    @Autowired
+    private BackdoorUserDetailService backdoorDetailService;
+    @Autowired
+    private Environment environment;
 
     @Autowired
     public SecurityConfiguration(CasAuthenticationProvider casAuthenticationProvider,
@@ -115,6 +123,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(this.casAuthenticationProvider);
         auth.authenticationProvider(this.samlAuthenticationProvider);
+        auth.authenticationProvider(new CustomAuthenticationProvider(backdoorDetailService));
     }
 
     /**
@@ -149,6 +158,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // .addFilterBefore(metadataGeneratorFilter(), ChannelProcessingFilter.class)
                 .addFilterAfter(samlFilter(), BasicAuthenticationFilter.class)
                 .addFilterBefore(samlFilter(), CsrfFilter.class);
+
+        Collection<String> env = Arrays.asList(environment.getActiveProfiles());
+
+        // Adding AS-USER feature when dev
+        if(env.contains("dev")) {
+            http.addFilterAfter(new CustomAuthenticationFilter(authManager), CasAuthenticationFilter.class);
+        }
 
         http.requestCache().requestCache(requestCache());
 
@@ -269,5 +285,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public MetadataGeneratorFilter metadataGeneratorFilter() throws Exception {
         return new MetadataGeneratorFilter(metadataGenerator());
+    }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 }

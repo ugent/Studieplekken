@@ -225,7 +225,8 @@
           },
           "adminWarning": "Opgepast, deze verandering ligt binnen de vastgelegde termijn. Je zal manueel contact moeten opnemen met dienst permanentie van de UGent.",
           "updateReservationWarning": "Het aanpassen van deze periode zal leiden tot de verwijdering van alle reservaties die al gemaakt zijn gedurende deze periode!",
-          "noCalendarPeriodsForLocation": "Op dit moment zijn er nog geen periodes voor de ruimte beschikbaar."
+          "noCalendarPeriodsForLocation": "Op dit moment zijn er nog geen periodes voor de ruimte beschikbaar.",
+          "impersonate": "Login als deze user"
         },
         "addModalView": {
           "title": "Nieuw tijdslot toevoegen",

@@ -3,6 +3,8 @@ import { Observable } from 'rxjs';
 import { User } from '../../../../shared/model/User';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeFunctionalityService } from '../../../../services/functionality/application-type/application-type-functionality.service';
+import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-user-details-form',
@@ -26,7 +28,8 @@ export class UserDetailsFormComponent implements OnInit {
   showPenaltyPoints: boolean;
 
   constructor(
-    private functionalityService: ApplicationTypeFunctionalityService
+    private functionalityService: ApplicationTypeFunctionalityService,
+    private authenticationService: AuthenticationService
   ) {}
 
   ngOnInit(): void {
@@ -52,5 +55,13 @@ export class UserDetailsFormComponent implements OnInit {
     this.formGroup.disable();
 
     this.userQueryingError = false;
+  }
+
+  showImpersonate(): boolean {
+    return this.authenticationService.isAdmin() && !environment.production
+  }
+
+  impersonate(user) {
+    this.authenticationService.substituteLogin(user.mail);
   }
 }
