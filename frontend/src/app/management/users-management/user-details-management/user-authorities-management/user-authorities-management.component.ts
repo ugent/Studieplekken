@@ -70,7 +70,7 @@ export class UserAuthoritiesManagementComponent implements OnInit {
 
   prepareToAddAnAuthorityToUser(template: TemplateRef<unknown>): void {
     this.successOnAddingAuthorityToUser = undefined;
-    this.modalService.open(template, {panelClass: ["cs--cyan" ,"bigmodal"]});
+    this.modalService.open(template, {panelClass: ["cs--cyan" ]});
   }
 
   addAuthorityFromForm(): void {

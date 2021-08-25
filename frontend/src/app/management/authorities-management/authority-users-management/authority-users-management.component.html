@@ -6,7 +6,7 @@
   <hr>
 
   <div class="row">
-    <div class="alert alert-info">
+    <div class="messages messages--info">
       {{('management.authorities.users.info' | translate)
       .replace('{authorityName}', authority.authorityName)}}
 
@@ -55,13 +55,13 @@
 </div>
 
 <ng-template #waitingForServer>
-  <div class="alert alert-info">
+  <div class="messages messages--info">
     {{'general.waitingForServer' | translate}}
   </div>
 </ng-template>
 
 <ng-template #noUsersInAuthority>
-  <div class="alert alert-warning">
+  <div class="messages messages--warning">
     {{'management.authorities.users.noUsersInAuthority' | translate}}
   </div>
 </ng-template>
@@ -108,20 +108,13 @@
 
 <!-- Modal to ask whether the manager is sure to remove the user from the authority -->
 <ng-template #deleteUserFromAuthorityModal>
-  <!-- Header -->
-  <div fxLayout="row" fxLayoutAlign="space-between">
-    <h1 id="deleteUserFromAuthorityModalTitle">
-      {{'management.authorities.users.deleteUserFromAuthorityModal.title' | translate}}
-    </h1>
-    <div>
-      <button type="button" class="close" aria-label="Close" (click)="closeModal()">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-  </div>
+  <app-modal>
+  <h1 modal-header>
+    {{'management.authorities.users.deleteUserFromAuthorityModal.title' | translate}}
+  </h1>
 
   <!-- Body -->
-  <div class="modal-body">
+  <div modal-body>
     <div>
       <span>{{('management.authorities.users.deleteUserFromAuthorityModal.body' | translate)
         .replace('{authorityName}', authority.authorityName)}}</span>
@@ -140,7 +133,7 @@
   </div>
 
   <!-- Footer -->
-  <div class="modal-footer">
+  <div modal-footer>
     <button type="button" class="button button-alert"
       (click)="deleteUserFromAuthority(userPreparedToDelete.userId, authority.authorityId)">
       {{'general.buttons.delete' | translate}}
@@ -150,17 +143,18 @@
     </button>
   </div>
 
-  <div class="container-fluid">
-    <div class="alert alert-info" *ngIf="successDeletingAuthority === null">
+  <div modal-message-footer>
+    <div class="messages messages--info" *ngIf="successDeletingAuthority === null">
       {{'general.waitingForServer' | translate}}
     </div>
 
-    <div class="alert alert-success" *ngIf="successDeletingAuthority === true">
+    <div class="messages messages--success" *ngIf="successDeletingAuthority === true">
       {{'management.authorities.users.deleteUserFromAuthorityModal.success' | translate}}
     </div>
 
-    <div class="alert alert-error" *ngIf="successDeletingAuthority === false">
+    <div class="messages messages--error" *ngIf="successDeletingAuthority === false">
       {{'management.authorities.users.deleteUserFromAuthorityModal.error' | translate}}
     </div>
   </div>
+</app-modal>
 </ng-template>
