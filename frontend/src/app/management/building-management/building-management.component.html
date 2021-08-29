@@ -151,7 +151,7 @@
         (click)="addBuilding()">
         {{'general.buttons.add' | translate}}
       </button>
-      <button type="button" class="button button-alert" (click)="closeModal()">
+      <button type="button" class="button button-secondary" (click)="closeModal()">
         {{'general.buttons.close' | translate}}
       </button>
     </div>
@@ -176,20 +176,13 @@
 <!-- Modal view to update a building -->
 <ng-template #updateBuildingModal>
   <!-- Modal header -->
-  <div fxLayout="column" fxLayoutAlign="space-evenly" fxLayoutGap="20px" class="fullheight">
-    <div fxLayout="row" fxLayoutAlign="space-between">
-      <h1 class="modal-title" id="updateBuildingModalTitle">
-        {{'management.buildings.updateBuildingModal.title' | translate}}
-      </h1>
-      <div>
-        <button type="button" class="close" (click)="closeModal()" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-    </div>
 
-    <!-- Modal body -->
-    <div>
+  <app-modal>
+    <h1 modal-header>
+      {{'management.buildings.updateBuildingModal.title' | translate}}
+    </h1>
+
+    <div modal-body>
       <form [formGroup]="buildingFormGroup" fxFlex fxLayout="column" fxLayoutAlign="space-between">
 
         <!-- Building name -->
@@ -244,21 +237,23 @@
         </div>
       </form>
     </div>
-  </div>
 
-  <!-- Modal footer -->
-  <div class="modal-footer">
-    <button type="submit" class="button button-primary" [disabled]="!validBuildingFormGroup()"
-      (click)="updateBuildingInFormGroup()">
-      {{'general.buttons.update' | translate}}
-    </button>
-    <button type="button" class="button button-alert" (click)="closeModal()">
-      {{'general.buttons.close' | translate}}
-    </button>
-  </div>
+    <div modal-footer>
+      <button type="submit" class="button button-primary" [disabled]="!validBuildingFormGroup()"
+        (click)="updateBuildingInFormGroup()">
+        {{'general.buttons.update' | translate}}
+      </button>
+      <button type="button" class="button button-secondary" (click)="closeModal()">
+        {{'general.buttons.close' | translate}}
+      </button>
+    </div>
+
+  </app-modal>
+
+
 
   <!-- Feedback to the user -->
-  <div class="container-fluid">
+  <!-- <div class="container-fluid">
     <div class="alert alert-info" *ngIf="successUpdatingBuilding === null">
       {{'general.waitingForServer' | translate}}
     </div>
@@ -270,7 +265,7 @@
     <div class="alert alert-error" *ngIf="successUpdatingBuilding === false">
       {{'management.buildings.updateBuildingModal.error' | translate}}
     </div>
-  </div>
+  </div> -->
 </ng-template>
 
 <!-- Modal view to ask whether the user is sure to delete the building -->
@@ -328,7 +323,7 @@
 
       <!-- Footer -->
       <div class="modal-footer">
-        <button type="button" class="button button-alert danger" (click)="deleteBuildingInFormGroup()">
+        <button type="button" class="button button-secondary danger" (click)="deleteBuildingInFormGroup()">
           {{'general.buttons.delete' | translate}}
         </button>
         <button type="button" class="button button-secondary" (click)="closeModal()">

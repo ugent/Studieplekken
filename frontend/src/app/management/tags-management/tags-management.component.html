@@ -62,22 +62,13 @@
 
 <!-- Modal view to add a new tag -->
 <ng-template #addTagModal>
-  <!-- Modal header -->
-  <div fxLayout="column" fxLayoutAlign="space-evenly" fxLayoutGap="20px" class="fullheight">
 
-    <div fxLayout="row" fxLayoutAlign="space-between">
-      <h1 class="modal-title" id="addTagModalTitle">
-        {{'management.tags.addTagModal.title' | translate}}
-      </h1>
-      <div>
-        <button type="button" class="close" (click)="closeModal()" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-    </div>
+  <app-modal>
+    <h1 modal-header>
+      {{'management.tags.addTagModal.title' | translate}}
+    </h1>
 
-    <!-- Modal body -->
-    <div class="modal-body">
+    <div modal-body>
       <form [formGroup]="tagFormGroup">
         <!-- Dutch name of tag -->
         <div class="row form-group">
@@ -101,100 +92,88 @@
       </form>
     </div>
 
-    <!-- Modal footer -->
-    <div class="modal-footer">
+    <div modal-footer>
       <button type="submit" class="button button-primary" [disabled]="!validTagFormGroup()" (click)="addTag()">
         {{'general.buttons.add' | translate}}
       </button>
-      <button type="button" class="button button-primary" (click)="closeModal()">
+      <button type="button" class="button button-secondary" (click)="closeModal()">
         {{'general.buttons.close' | translate}}
       </button>
     </div>
 
     <!-- Feedback to the user -->
-    <div class="container-fluid">
-      <div class="alert alert-info" *ngIf="successAddingTag === null">
+    <div modal-message-footer>
+      <div class="messages messages--info" *ngIf="successAddingTag === null">
         {{'general.waitingForServer' | translate}}
       </div>
 
-      <div class="alert alert-success" *ngIf="successAddingTag === true">
+      <div class="messages messages--success" *ngIf="successAddingTag === true">
         {{'management.tags.addTagModal.success' | translate}}
       </div>
 
-      <div class="alert alert-error" *ngIf="successAddingTag === false">
+      <div class="messages messages--error" *ngIf="successAddingTag === false">
         {{'management.tags.addTagModal.error' | translate}}
       </div>
     </div>
-  </div>
+
+  </app-modal>
 </ng-template>
 
 <!-- Modal view to update a tag -->
 <ng-template #updateTagModal>
-  <!-- Modal header -->
-  <div fxLayout="column" fxLayoutAlign="space-evenly" fxLayoutGap="20px" class="fullheight">
 
-    <div fxLayout="row" fxLayoutAlign="space-between">
-      <h1 class="modal-title" id="updateTagModalTitle">
-        {{'management.tags.updateTagModal.title' | translate}}
-      </h1>
-      <div>
-        <button type="button" class="close" (click)="closeModal()" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+  <app-modal>
+    <h1 modal-header>
+      {{'management.tags.updateTagModal.title' | translate}}
+    </h1>
+
+    <form [formGroup]="tagFormGroup" modal-body>
+      <!-- Dutch tag name -->
+      <div class="row form-group">
+        <label class="col-lg-3 control-label" for="dutchUpdate">
+          {{'management.tags.table.dutch' | translate}}<span style="color: red; margin-left: 5px;">*</span>
+        </label>
+        <div class="col-lg-8">
+          <input class="form-control" id="dutchUpdate" type="text" formControlName="dutch">
+        </div>
       </div>
-    </div>
 
-    <!-- Modal body -->
-    <div class="modal-body">
-      <form [formGroup]="tagFormGroup">
-        <!-- Dutch tag name -->
-        <div class="row form-group">
-          <label class="col-lg-3 control-label" for="dutchUpdate">
-            {{'management.tags.table.dutch' | translate}}<span style="color: red; margin-left: 5px;">*</span>
-          </label>
-          <div class="col-lg-8">
-            <input class="form-control" id="dutchUpdate" type="text" formControlName="dutch">
-          </div>
+      <!-- English tag name -->
+      <div class="row form-group">
+        <label class="col-lg-3 control-label" for="englishUpdate">
+          {{'management.tags.table.english' | translate}}<span style="color: red; margin-left: 5px;">*</span>
+        </label>
+        <div class="col-lg-8">
+          <input class="form-control" id="englishUpdate" type="text" formControlName="english">
         </div>
+      </div>
+    </form>
 
-        <!-- English tag name -->
-        <div class="row form-group">
-          <label class="col-lg-3 control-label" for="englishUpdate">
-            {{'management.tags.table.english' | translate}}<span style="color: red; margin-left: 5px;">*</span>
-          </label>
-          <div class="col-lg-8">
-            <input class="form-control" id="englishUpdate" type="text" formControlName="english">
-          </div>
-        </div>
-      </form>
-    </div>
-
-    <!-- Modal footer -->
-    <div class="modal-footer">
+    <div modal-footer>
       <button type="submit" class="button button-primary" [disabled]="!validTagFormGroup()"
         (click)="updateTagInFormGroup()">
         {{'general.buttons.update' | translate}}
       </button>
-      <button type="button" class="button button-primary" (click)="closeModal()">
+      <button type="button" class="button button-secondary" (click)="closeModal()">
         {{'general.buttons.close' | translate}}
       </button>
     </div>
 
-    <!-- Feedback to the user -->
-    <div class="container-fluid">
-      <div class="alert alert-info" *ngIf="successUpdatingTag === null">
+    <div modal-message-footer>
+      <div class="messages messages--info" *ngIf="successUpdatingTag === null">
         {{'general.waitingForServer' | translate}}
       </div>
 
-      <div class="alert alert-success" *ngIf="successUpdatingTag === true">
+      <div class="messages messages--success" *ngIf="successUpdatingTag === true">
         {{'management.tags.updateTagModal.success' | translate}}
       </div>
 
-      <div class="alert alert-error" *ngIf="successUpdatingTag === false">
+      <div class="messages messages--error" *ngIf="successUpdatingTag === false">
         {{'management.tags.updateTagModal.error' | translate}}
       </div>
     </div>
-  </div>
+
+  </app-modal>
 </ng-template>
 
 <!-- Modal view to ask whether the user is sure to delete a tag -->
@@ -219,7 +198,8 @@
         <b>{{'management.tags.deleteTagModal.body' | translate}}</b>
         <br><br>
         <ul>
-          <li><b style="margin-right: 5px"><i>{{('management.tags.table.dutch' | translate) + ':'}}</i></b>{{dutch.value}}</li>
+          <li><b style="margin-right: 5px"><i>{{('management.tags.table.dutch' | translate) +
+                ':'}}</i></b>{{dutch.value}}</li>
           <li><b style="margin-right: 5px"><i>{{('management.tags.table.english' | translate)}}</i></b>{{english.value}}
           </li>
         </ul>
@@ -237,15 +217,15 @@
     </div>
 
     <div class="container-fluid">
-      <div class="alert alert-info" *ngIf="successDeletingTag === null">
+      <div class="messages messages--info" *ngIf="successDeletingTag === null">
         {{'general.waitingForServer' | translate}}
       </div>
 
-      <div class="alert alert-success" *ngIf="successDeletingTag === true">
+      <div class="messages messages--success" *ngIf="successDeletingTag === true">
         {{'management.tags.deleteTagModal.success' | translate}}
       </div>
 
-      <div class="alert alert-error" *ngIf="successDeletingTag === false">
+      <div class="messages messages--error" *ngIf="successDeletingTag === false">
         {{'management.tags.deleteTagModal.error' | translate}}
       </div>
     </div>
