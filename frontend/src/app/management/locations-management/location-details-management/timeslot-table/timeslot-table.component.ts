@@ -38,7 +38,7 @@ export class TimeslotTableComponent implements OnInit {
       return;
     }
 
-    this.timeslot = new Timeslot(seqnr, date, null, 0, null, null, null, null, null);
+    this.timeslot = new Timeslot(seqnr, date, null, 0, null, null, null, null, null, null, false);
     this.locationReservations = this.locationReservationsService.getLocationReservationsOfTimeslot(
       this.timeslot
     );

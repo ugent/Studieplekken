@@ -104,7 +104,8 @@
       "clear": "Annuleer",
       "open": "Toon open locaties",
       "close": "Sluiten",
-      "print": "Print"
+      "print": "Print",
+      "copy": "Kopieer"
     },
     "roles": {
       "ADMIN": "Admin"
@@ -211,9 +212,12 @@
           "title": "Wijzig openingsdagen",
           "addButton": "Voeg nieuwe openingsperiode toe",
           "date": "Datum",
+          "day":"Dag",
           "openingTime": "Openingstijd",
           "closingTime": "Sluitingstijd",
           "reservable": "Reserveerbaar",
+          "repeatable": "Herhalen",
+          "repeatable-info": "Als u dit aanvinkt zal de timeslot voor de komende weken gesuggereerd worden.",
           "numberOfSeats": "Plaatsen",
           "timeslotCount": "Aantal timeslots",
           "reservableFrom": "Reserveerbaar vanaf",
@@ -225,7 +229,9 @@
           },
           "adminWarning": "Opgepast, deze verandering ligt binnen de vastgelegde termijn. Je zal manueel contact moeten opnemen met dienst permanentie van de UGent.",
           "updateReservationWarning": "Het aanpassen van deze periode zal leiden tot de verwijdering van alle reservaties die al gemaakt zijn gedurende deze periode!",
-          "noCalendarPeriodsForLocation": "Op dit moment zijn er nog geen periodes voor de ruimte beschikbaar."
+          "noCalendarPeriodsForLocation": "Op dit moment zijn er nog geen periodes voor de ruimte beschikbaar.",
+          "approveAll": "Keur alle suggesties goed",
+          "rejectAll": "Keur alle suggesties af"
         },
         "addModalView": {
           "title": "Nieuw tijdslot toevoegen",
@@ -243,6 +249,12 @@
           "success": "Het verwijderen van de kalenderperiode is gelukt.",
           "error": "Er is iets misgelopen tijdens het verwijderen van de kalenderperiode.",
           "warning": "Het verwijderen van de kalenderperiode zal ook alle corresponderende reservaties verwijderen. Wees hier aandachtig voor!"
+        },
+        "copyModalView": {
+          "title": "Kopieer deze periode",
+          "body": "Je staat op het punt om de volgende periode te kopieren:",
+          "weekSelect":"Kopieer naar week",
+          "nextWeek": "Kopieer naar volgende week"
         },
         "warningDialog": {
           "warning": "Waarschuwing",

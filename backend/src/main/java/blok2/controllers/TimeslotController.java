@@ -60,6 +60,20 @@ public class TimeslotController extends  AuthorizedLocationController {
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public Timeslot addTimeslot(@RequestBody Timeslot timeslot) {
         isAuthorized(timeslot.getLocationId());
+
         return timeslotDAO.addTimeslot(timeslot);
     }
+
+    @PutMapping("/{timeslotId}/repeatable")
+    @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
+    public Timeslot setRepeatable(@PathVariable("timeslotId") Integer timeslotSequenceNumber, @RequestBody SetRepeatableBodyDao rep) {
+        Timeslot ts = timeslotDAO.getTimeslot(timeslotSequenceNumber);
+        isAuthorized(ts.getLocationId());
+        ts.setRepeatable(rep.repeatable);
+        return timeslotDAO.updateTimeslot(ts);
+    }
+}
+
+class SetRepeatableBodyDao {
+    public boolean repeatable;
 }

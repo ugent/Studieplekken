@@ -12,7 +12,7 @@ import { MatDialog } from '@angular/material/dialog';
   styleUrls: ['./location-add-timeslot-dialog.component.css']
 })
 export class LocationAddTimeslotDialogComponent implements OnInit, OnChanges {
-  public model: Timeslot = new Timeslot(null, null, null, null, true, null, null, null, null);
+  public model: Timeslot = new Timeslot(null, null, null, null, true, null, null, null, null, null, false);
   @Output() onNewTimeslot: EventEmitter<Timeslot> = new EventEmitter();
   @Input() location: Location;
   @Input() timeslot: Timeslot;

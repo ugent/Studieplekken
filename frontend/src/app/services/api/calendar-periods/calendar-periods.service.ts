@@ -54,19 +54,12 @@ export class TimeslotsService {
     );
   }
 
-  /**
-   * Note: this function does not require from.length === to.length, as opposed to
-   * the corresponding DAO method does. The comparison between from and to will happen in
-   * the controller layer, and the correct add/delete/update methods to be called
-   * will be invoked.
-   */
-  updateTimeslot(
-    to: Timeslot
-  ): Observable<void> {
-    return this.http.put<void>(
-      api.updateTimeslot,
-      to.toJSON()
-    );
+
+  setRepeatable(timeslot: Timeslot, repeatable: boolean) {
+      return this.http.put<Timeslot>(
+        api.setRepeatable.replace("{timeslotId}", `${timeslot.timeslotSequenceNumber}`),
+        {repeatable}
+      )
   }
 
   deleteTimeslot(period: Timeslot): Observable<void> {

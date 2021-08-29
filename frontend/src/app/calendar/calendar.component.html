@@ -4,20 +4,20 @@
     <div fxLayout="row nowrap">
       <!-- Previous -->
       <div>
-        <div class="button button-secondary btn-left" mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate">
+        <div class="button button-primary btn-left" mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate" (viewDateChange)="emitDate($event)">
           {{'calendar.previous' | translate}}
         </div>
       </div>
 
       <div>
         <!-- Today -->
-        <div class="button button-primary btn-left" mwlCalendarToday [(viewDate)]="viewDate">
+        <div class="button button-primary btn-left" mwlCalendarToday [(viewDate)]="viewDate" (viewDateChange)="emitDate($event)"> 
           {{'calendar.today' | translate}}
         </div>
       </div>
       <div>
         <!-- Next -->
-        <div class="button button-secondary" mwlCalendarNextView [view]="view" [(viewDate)]="viewDate">
+        <div class="button button-primary btn-left" mwlCalendarNextView [view]="view" [(viewDate)]="viewDate" (viewDateChange)="emitDate($event)">
           {{'calendar.next' | translate}}
         </div>
       </div>
@@ -59,9 +59,18 @@
       [refresh]="refresh" [weekStartsOn]="1" (eventClicked)="handleEvent('Clicked', $event.event)">
     </mwl-calendar-month-view>
 
-    <mwl-calendar-week-view *ngSwitchCase="CalendarView.Week" [viewDate]="viewDate" [events]="events"
-      [refresh]="refresh" [weekStartsOn]="1" [hourSegmentHeight]=20 [dayStartHour]=openingHour [dayEndHour]=closingHour
-      (eventClicked)="handleEvent('Clicked', $event.event)">
+    <mwl-calendar-week-view
+      *ngSwitchCase="CalendarView.Week"
+      [viewDate]="viewDate"
+      [events]="events"
+      [refresh]="refresh"
+      [weekStartsOn]="1"
+      [hourSegmentHeight]=20
+      [dayStartHour] = openingHour
+      [dayEndHour] = closingHour
+      (eventClicked)="handleEvent('Clicked', $event.event)"
+      (hourSegmentClicked)="hourSegment($event)"
+      >
     </mwl-calendar-week-view>
 
     <mwl-calendar-day-view *ngSwitchCase="CalendarView.Day" [viewDate]="viewDate" [events]="events" [refresh]="refresh"

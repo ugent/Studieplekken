@@ -5,7 +5,6 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { TranslateService } from '@ngx-translate/core';
-import * as Leaf from 'leaflet';
 import * as moment from 'moment';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/internal/operators/map';
@@ -14,12 +13,12 @@ import { AuthenticationService } from 'src/app/services/authentication/authentic
 import {
   ApplicationTypeFunctionalityService
 } from 'src/app/services/functionality/application-type/application-type-functionality.service';
+import { TimeslotCalendarEventService } from 'src/app/services/timeslots/timeslot-calendar-event/timeslot-calendar-event.service';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
 import {
   includesTimeslot,
   Timeslot,
   timeslotEquals,
-  timeslotToCalendarEvent
 } from 'src/app/shared/model/Timeslot';
 import { BreadcrumbService, dashboardBreadcrumb } from 'src/app/stad-gent-components/header/breadcrumbs/breadcrumb.service';
 import { environment } from 'src/environments/environment';
@@ -40,6 +39,8 @@ import { Pair } from '../../shared/model/helpers/Pair';
 import { Location } from '../../shared/model/Location';
 import { LocationTag } from '../../shared/model/LocationTag';
 
+
+import * as Leaf from 'leaflet';
 // Leaflet stuff.
 const iconRetinaUrl = './assets/marker-icon-2x.png';
 const iconUrl = './assets/marker-icon.png';
@@ -126,7 +127,9 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     private functionalityService: ApplicationTypeFunctionalityService,
     private conversionService: ConversionToCalendarEventService,
     private router: Router,
-    private breadcrumbs: BreadcrumbService
+    private breadcrumbs: BreadcrumbService,
+    private timeslotCalendarEventService: TimeslotCalendarEventService
+
   ) { }
 
   ngOnInit(): void {
@@ -300,10 +303,9 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   draw(timeslots, proposedReservations): void {
-    this.events = timeslots.map(t => timeslotToCalendarEvent(
+    this.events = timeslots.map(t => this.timeslotCalendarEventService.timeslotToCalendarEvent(
       t, this.currentLang, [...proposedReservations]
     ))
-    console.log(proposedReservations)
   }
 
   updateReservationIsPossible(): boolean {

@@ -15,6 +15,8 @@ export class Timeslot {
   locationId: number;
   openingHour: Moment;
   closingHour: Moment;
+  timeslotGroup: number;
+  repeatable: boolean;
 
   constructor(
     timeslotSequenceNumber: number,
@@ -25,7 +27,9 @@ export class Timeslot {
     reservableFrom: Moment,
     locationId: number,
     openingHour: Moment,
-    closingHour: Moment
+    closingHour: Moment,
+    timeslotGroup: number,
+    repeatable: boolean
   ) {
     this.timeslotSequenceNumber = timeslotSequenceNumber;
     this.timeslotDate = timeslotDate;
@@ -36,6 +40,8 @@ export class Timeslot {
     this.locationId = locationId;
     this.openingHour = openingHour;
     this.closingHour = closingHour;
+    this.timeslotGroup = timeslotGroup;
+    this.repeatable = repeatable;
   }
 
   static fromJSON(json: Record<string, any>): Timeslot {
@@ -51,7 +57,9 @@ export class Timeslot {
       moment(json.reservableFrom),
       json.locationId,
       moment(json.openingHour, "HH:mm:ss"),
-      moment(json.closingHour, "HH:mm:ss")
+      moment(json.closingHour, "HH:mm:ss"),
+      json.timeslotGroup,
+      json.repeatable
     );
   }
 
@@ -64,7 +72,9 @@ export class Timeslot {
       closingHour: this.closingHour.format("HH:mm"),
       reservable: this.reservable,
       reservableFrom: this.reservableFrom ? this.reservableFrom.toISOString():null,
-      locationId: this.locationId
+      locationId: this.locationId,
+      timeslotGroup: this.timeslotGroup,
+      repeatable: this.repeatable
     };
   }
 
@@ -119,53 +129,3 @@ export const includesTimeslot: (l: Timeslot[], t: Timeslot) => boolean = (
   l,
   t
 ) => l.some((lt) => timeslotEquals(lt, t));
-
-
-export const timeslotToCalendarEvent = (timeslot: Timeslot, currentLang: string, locationReservations: LocationReservation[] = []) =>
-  !timeslot.reservable ? nonReservableToCalendarEvent(timeslot, currentLang) :
-    timeslot.areReservationsLocked() ? notYetReservableTimeslotToCalendarEvent(timeslot, currentLang) :
-      reservableTimeslotToCalendarEvent(timeslot, currentLang, locationReservations);
-
-
-const nonReservableToCalendarEvent: (timeslot: Timeslot, currentLang: string) => CalendarEvent<{ timeslot: Timeslot }> =
-  (timeslot, currentLang) =>
-  ({
-    title: currentLang == "nl" ? "Geen reservatie nodig" : "No reservation needed",
-    start: timeslot.getStartMoment().toDate(),
-    end: timeslot.getEndMoment().toDate(),
-    meta: { timeslot },
-    color: { primary: 'black', secondary: '#BEBEBE' },
-    cssClass: 'calendar-event-NR',
-  })
-
-const notYetReservableTimeslotToCalendarEvent: (timeslot: Timeslot, currentLang: string) => CalendarEvent<{ timeslot: Timeslot }> =
-  (timeslot, currentLang) =>
-  ({
-    title: currentLang == "nl" ? "Nog niet reserveerbaar" : "Not yet reservable",
-    start: timeslot.getStartMoment().toDate(),
-    end: timeslot.getEndMoment().toDate(),
-    meta: { timeslot },
-    color: { primary: 'black', secondary: '#BEBEBE' },
-    cssClass: 'calendar-event-NR',
-  });
-
-const reservableTimeslotToCalendarEvent: (timeslot: Timeslot, currentLang: string, reservedTimeslots: LocationReservation[]) => CalendarEvent<{ timeslot: Timeslot }> =
-  (timeslot, currentLang, reservedTimeslots) =>
-  ({
-    title: `${timeslot.amountOfReservations} / ${timeslot.seatCount}`,
-    start: timeslot.getStartMoment().toDate(),
-    end: timeslot.getEndMoment().toDate(),
-    meta: { timeslot },
-    color: includesTimeslot(
-      reservedTimeslots.map((s) => s.timeslot),
-      timeslot
-    )
-      ? { primary: '#00004d', secondary: '#133E7D' }
-      : null,
-    cssClass: includesTimeslot(
-      reservedTimeslots.map((s) => s.timeslot),
-      timeslot
-    )
-      ? 'calendar-event-reserved'
-      : '',
-  });

@@ -17,7 +17,7 @@ public interface ITimeslotDAO {
 
     void deleteTimeslot(Timeslot timeslot);
 
-    void updateTimeslot(Timeslot timeslot);
+    Timeslot updateTimeslot(Timeslot timeslot);
 
     Optional<Timeslot> getCurrentOrNextTimeslot(int locationId);
 }

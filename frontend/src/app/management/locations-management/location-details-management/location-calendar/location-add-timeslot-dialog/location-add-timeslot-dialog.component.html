@@ -42,6 +42,19 @@
 
         <!-- Reservable -->
         <div class="row form-group">
+            <label class="col-lg-3 control-label dotted_ul" for="repeatable"
+            data-toggle="tooltip" data-placement="top"
+            title="{{'management.locationDetails.calendar.form.repeatable-info' | translate}}">
+                {{'management.locationDetails.calendar.form.repeatable' | translate}}
+            </label>
+            <div class="col-lg-8">
+                <input id="repeatable" style="height:40px;" type="checkbox" [(ngModel)]="model.repeatable"
+                    name="repeatable" />
+            </div>
+        </div>
+
+        <!-- Reservable -->
+        <div class="row form-group">
             <label class="col-lg-3 control-label" for="reservable">
                 {{'management.locationDetails.calendar.form.reservable' | translate}}
             </label>
