@@ -78,6 +78,9 @@ logging:
 custom:
   mailing:
     recipientsOpeningHoursOverview: ""
+  stadgent:
+    url: "https://studieplekken-dev.ugent.be/"
+
 
 # SAML
 saml:
