@@ -11,14 +11,14 @@
     </app-calendar>
 
     <div fxLayout="row" fxLayoutAlign="flex-end" fxLayoutGap="12px">
-      <button class="button button-danger danger" *ngIf="showApproveAll()" (click)="rejectAll()">
+      <button class="button button-alert alert" *ngIf="showApproveAll()" (click)="rejectAll()">
         {{"management.locationDetails.calendar.form.rejectAll" | translate}}
       </button>
       <button class="button button-primary" *ngIf="showApproveAll()" (click)="approveAll()">
         {{"management.locationDetails.calendar.form.approveAll" | translate}}
       </button>
 
-      <button class="button button-danger danger" [disabled]="!currentTimeSlot"
+      <button class="button button-alert alert" [disabled]="!currentTimeSlot"
         (click)="prepareDelete(currentTimeSlot, deleteTimeslotModal)">
         {{"general.buttons.delete" | translate}}
       </button>
