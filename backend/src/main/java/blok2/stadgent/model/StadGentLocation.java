@@ -1,12 +1,18 @@
 package blok2.stadgent.model;
 
+import blok2.daos.services.TimeslotService;
+import blok2.model.calendar.Timeslot;
 import blok2.model.reservables.Location;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class StadGentLocation {
     public static String baseUrl = "";
@@ -38,7 +44,7 @@ public class StadGentLocation {
     private boolean isReservable;
     @JsonProperty("tag_1")
     public String getReservationMethod() {
-        return isReservable ? "pc":"";
+        return isReservable ? "Reserveerbaar":"";
     }
 
     @JsonProperty("label_1")
@@ -49,23 +55,8 @@ public class StadGentLocation {
         return baseUrl + "dashboard/"+id;
     }
 
-    private LocalTime openingHour;
-    private LocalTime closingHour;
-
-    @JsonProperty("openingsuren_vanaf")
-    public String getOpeningHour() {
-        if(closingHour == null)
-            return "";
-
-        return openingHour.format(DateTimeFormatter.ofPattern("HH:mm"));
-    }
-
-    @JsonProperty("openingsuren_tot")
-    public String geClosingHour() {
-        if(closingHour == null)
-            return "";
-        return closingHour.format(DateTimeFormatter.ofPattern("HH:mm"));
-    }
+    @JsonProperty("openingsuren")
+    public String hours;
 
     private Double lat;
     private Double lng;
@@ -111,7 +102,7 @@ public class StadGentLocation {
         return buildingName;
     }
 
-    public StadGentLocation(Integer id, String name, String teaserUrl, String adres, String postcode, String gemeente, Integer capacity, Integer reserved, boolean isReservable, String buildingName, LocalTime openingHour, LocalTime closingHour, Double lat, Double lng) {
+    public StadGentLocation(Integer id, String name, String teaserUrl, String adres, String postcode, String gemeente, Integer capacity, Integer reserved, boolean isReservable, String buildingName, String hours, Double lat, Double lng) {
         this.id = id;
         this.name = name;
         this.teaserUrl = teaserUrl;
@@ -122,16 +113,19 @@ public class StadGentLocation {
         this.reserved = reserved;
         this.isReservable = isReservable;
         this.buildingName = buildingName;
-        this.closingHour = closingHour;
-        this.openingHour = openingHour;
+        this.hours = hours;
         this.lat = lat;
         this.lng = lng;
     }
 
-    public static StadGentLocation fromLocation(Location loc) {
+    public static StadGentLocation fromLocation(Location loc, TimeslotService ts) {
         Integer amountOfReservations = loc.getCurrentTimeslot() == null ? null:loc.getCurrentTimeslot().getAmountOfReservations();
         boolean isReservable = loc.getCurrentTimeslot() != null && loc.getCurrentTimeslot().isReservable();
 
+        Stream<Timeslot> l = ts.getTimeslotsOfLocation(loc.getLocationId()).stream().filter(t -> t.timeslotDate().isEqual(LocalDate.now()));
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        String hours = l.map(t -> t.getOpeningHour().format(formatter) + " - " + t.getClosingHour().format(formatter)).collect(Collectors.joining(","));
         LocalTime openingTime = loc.getCurrentTimeslot() == null ? null:loc.getCurrentTimeslot().getOpeningHour();
         LocalTime closingTime = loc.getCurrentTimeslot() == null ? null:loc.getCurrentTimeslot().getClosingHour();
 
@@ -146,8 +140,7 @@ public class StadGentLocation {
                 amountOfReservations,
                 isReservable,
                 loc.getBuilding().getName(),
-                openingTime,
-                closingTime,
+                hours,
                 loc.getBuilding().getLatitude(),
                 loc.getBuilding().getLongitude()
         );
