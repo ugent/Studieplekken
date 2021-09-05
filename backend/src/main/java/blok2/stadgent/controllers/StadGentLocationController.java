@@ -1,6 +1,7 @@
 package blok2.stadgent.controllers;
 
 import blok2.daos.services.LocationService;
+import blok2.daos.services.TimeslotService;
 import blok2.stadgent.model.StadGentLocation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,9 +16,12 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("stadgent")
 public class StadGentLocationController {
+    private final TimeslotService ts;
+
     @Autowired
-    public StadGentLocationController(Environment env) {
+    public StadGentLocationController(Environment env, TimeslotService ts) {
         StadGentLocation.baseUrl = env.getProperty("custom.stadgent.url");
+        this.ts = ts;
     }
 
     @Autowired
@@ -25,6 +29,6 @@ public class StadGentLocationController {
 
     @GetMapping("/locations")
     public List<StadGentLocation> getLocations() {
-        return this.locationService.getAllActiveLocations().stream().map(StadGentLocation::fromLocation).collect(Collectors.toList());
+        return this.locationService.getAllActiveLocations().stream().map(t -> StadGentLocation.fromLocation(t, ts)).collect(Collectors.toList());
     }
 }
