@@ -4,6 +4,16 @@ import blok2.daos.services.TimeslotService;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservables.Location;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.geotools.geometry.jts.JTS;
+import org.geotools.referencing.CRS;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.PrecisionModel;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
@@ -38,7 +48,7 @@ public class StadGentLocation {
     @JsonProperty("totale_capaciteit")
     private Integer capacity;
 
-    @JsonProperty("gereserveede_plaatsen")
+    @JsonProperty("gereserveerde_plaatsen")
     private Integer reserved;
 
     private boolean isReservable;
@@ -61,7 +71,7 @@ public class StadGentLocation {
     private Double lat;
     private Double lng;
 
-    @JsonProperty("coordinates(x,y)")
+    @JsonProperty("coordinates")
     public String getCoordinates() {
         return lat + "," + lng;
     }
@@ -129,20 +139,38 @@ public class StadGentLocation {
         LocalTime openingTime = loc.getCurrentTimeslot() == null ? null:loc.getCurrentTimeslot().getOpeningHour();
         LocalTime closingTime = loc.getCurrentTimeslot() == null ? null:loc.getCurrentTimeslot().getClosingHour();
 
-        return new StadGentLocation(
-                loc.getLocationId(),
-                loc.getName(),
-                loc.getImageUrl(),
-                loc.getBuilding().getAddress(),
-                "",
-                "",
-                loc.getNumberOfSeats(),
-                amountOfReservations,
-                isReservable,
-                loc.getBuilding().getName(),
-                hours,
-                loc.getBuilding().getLatitude(),
-                loc.getBuilding().getLongitude()
-        );
+        try {
+            CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:4326");
+            CoordinateReferenceSystem targetCRS = CRS.decode("EPSG:3857");
+            MathTransform t = CRS.findMathTransform(sourceCRS, targetCRS);
+            GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
+            Point point = geometryFactory.createPoint(new Coordinate(loc.getBuilding().getLongitude(), loc.getBuilding().getLatitude()));
+            Point targetPoint = (Point) JTS.transform(point, t);
+            System.out.println(loc.getBuilding().getLongitude()
+            );
+            System.out.println(targetPoint);
+
+            return new StadGentLocation(
+                    loc.getLocationId(),
+                    loc.getName(),
+                    loc.getImageUrl(),
+                    loc.getBuilding().getAddress(),
+                    "",
+                    "",
+                    loc.getNumberOfSeats(),
+                    amountOfReservations,
+                    isReservable,
+                    loc.getBuilding().getName(),
+                    hours,
+                    targetPoint.getX(),
+                    targetPoint.getY()
+            );
+
+        } catch (FactoryException e) {
+            e.printStackTrace();
+        } catch (TransformException e) {
+            e.printStackTrace();
+        }
+    return null;
     }
 }
