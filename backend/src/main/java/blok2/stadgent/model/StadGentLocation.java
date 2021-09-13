@@ -144,7 +144,7 @@ public class StadGentLocation {
             CoordinateReferenceSystem targetCRS = CRS.decode("EPSG:3857");
             MathTransform t = CRS.findMathTransform(sourceCRS, targetCRS);
             GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
-            Point point = geometryFactory.createPoint(new Coordinate(loc.getBuilding().getLongitude(), loc.getBuilding().getLatitude()));
+            Point point = geometryFactory.createPoint(new Coordinate(loc.getBuilding().getLatitude(), loc.getBuilding().getLongitude()));
             Point targetPoint = (Point) JTS.transform(point, t);
             System.out.println(loc.getBuilding().getLongitude()
             );
