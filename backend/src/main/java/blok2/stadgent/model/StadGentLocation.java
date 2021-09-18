@@ -17,10 +17,12 @@ import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -73,7 +75,8 @@ public class StadGentLocation {
 
     @JsonProperty("coordinates")
     public String getCoordinates() {
-        return lat + "," + lng;
+        DecimalFormat format = new DecimalFormat("###.####");
+        return format.format(lat) + ", " + format.format(lng);
     }
 
     public Integer getId() {
