@@ -1,0 +1,21 @@
+# This is only for local use!
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:12-alpine
+
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./scripts/pg-init:/docker-entrypoint-initdb.d
+    environment:
+        POSTGRES_MULTIPLE_DATABASES: blokatugent, blokatugent_test
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: ***REMOVED***
+        TZ: Europe/Brussels
+        PGTZ: Europe/Brussels
+
+volumes:
+  pgdata:
