@@ -116,7 +116,7 @@
 <div id="leafletMap"></div>
 
 <ng-template #confirm>
-  <h1 >
+  <h1>
     {{'dashboard.locationDetails.calendar.reservation.header' | translate}}
   </h1>
   <div class="modal-body text-center">
@@ -143,10 +143,13 @@
     </div>
     <hr>
     <p>{{'dashboard.locationDetails.calendar.reservation.updateConfirmMessage' | translate }}</p>
-    <button type="button" class="button button-primary" (click)="confirmReservationChange()">{{ 'general.yes' | translate
-      }}</button>
-    <button type="button" class="button button-warning" (click)="declineReservationChange()">{{ 'general.no' |
-      translate}}</button>
+    <div>
+      <button type="button" class="button button-primary" (click)="confirmReservationChange()">{{ 'general.yes' |
+        translate
+        }}</button>
+      <button type="button" class="button button-warning" (click)="declineReservationChange()">{{ 'general.no' |
+        translate}}</button>
+    </div>
   </div>
   <div class="modal-footer">
     <div class="messages messages--warning text-center">
