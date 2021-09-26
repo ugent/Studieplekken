@@ -5,7 +5,7 @@ import blok2.model.calendar.Timeslot;
 import java.util.List;
 import java.util.Optional;
 
-public interface ITimeslotDAO {
+public interface ITimeslotDao {
 
     List<Timeslot> getTimeslotsOfLocation(int locationId);
 

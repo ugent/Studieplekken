@@ -2,7 +2,6 @@ package blok2.daos;
 
 import blok2.BaseTest;
 import blok2.TestSharedMethods;
-import blok2.helpers.Pair;
 import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.Authority;
 import blok2.model.calendar.Timeslot;
@@ -17,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.*;
 
 public class TestDBLocationReservationDao extends BaseTest {
@@ -37,7 +35,7 @@ public class TestDBLocationReservationDao extends BaseTest {
     private IAuthorityDao authorityDao;
 
     @Autowired
-    private ITimeslotDAO timeslotDAO;
+    private ITimeslotDao timeslotDAO;
 
     @Autowired
     private IBuildingDao buildingDao;

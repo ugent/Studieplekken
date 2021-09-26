@@ -2,9 +2,7 @@ package blok2;
 
 import blok2.daos.IUserDao;
 import blok2.daos.IAuthorityDao;
-import blok2.daos.ITimeslotDAO;
 import blok2.helpers.Institution;
-import blok2.helpers.Pair;
 import blok2.helpers.TimeException;
 import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.Authority;
@@ -16,13 +14,10 @@ import blok2.model.users.User;
 import org.junit.Assert;
 import org.threeten.extra.YearWeek;
 
-import java.sql.SQLException;
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 

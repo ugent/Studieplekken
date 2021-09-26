@@ -1,6 +1,6 @@
 package blok2.daos.services;
 
-import blok2.daos.ITimeslotDAO;
+import blok2.daos.ITimeslotDao;
 import blok2.daos.repositories.TimeslotRepository;
 import blok2.model.calendar.Timeslot;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class TimeslotService implements ITimeslotDAO {
+public class TimeslotService implements ITimeslotDao {
 
     private final TimeslotRepository timeslotRepository;
 

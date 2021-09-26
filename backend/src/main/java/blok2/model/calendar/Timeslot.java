@@ -90,7 +90,12 @@ public class Timeslot implements Cloneable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Timeslot timeslot = (Timeslot) o;
-        return timeslotSequenceNumber == (timeslot.timeslotSequenceNumber);
+        return Objects.equals(timeslotSequenceNumber, timeslot.timeslotSequenceNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(timeslotSequenceNumber);
     }
 
     @Override
@@ -202,30 +207,6 @@ public class Timeslot implements Cloneable {
 
     public void setLocation(int locationId) {
         this.locationId = locationId;
-    }
-
-    @Embeddable
-    public static class TimeslotId implements Serializable {
-        Integer timeslotSequenceNumber;
-
-        public TimeslotId() {}
-
-        public TimeslotId(int timeslotSequenceNumber) {
-            this.timeslotSequenceNumber = timeslotSequenceNumber;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            TimeslotId that = (TimeslotId) o;
-                   return Objects.equals(timeslotSequenceNumber, that.timeslotSequenceNumber);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(timeslotSequenceNumber);
-        }
     }
 
 }

@@ -48,11 +48,6 @@ public interface ILocationReservationDao {
     long countReservedSeatsOfTimeslot(Timeslot timeslot);
 
     /**
-     * Get the number of location reservation of a specified location at this moment in time
-     */
-    int amountOfReservationsRightNow(int locationId);
-
-    /**
      * Delete the location reservation of a specified user at a specified timeslot
      */
     void deleteLocationReservation(String userId, Timeslot timeslot);

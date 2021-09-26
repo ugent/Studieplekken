@@ -51,7 +51,6 @@ export const api = {
   deleteLocationReservation: '/api/locations/reservations',
   updateAttendance:
     '/api/locations/reservations/{userid}/{calendarid}/{date}/{seqnr}/attendance',
-  locationReservationCount: '/api/locations/reservations/count/{locationId}',
   locationReservationsWithLocationOfUser:
     '/api/locations/reservations/{userId}',
   locationReservationsOfNotScannedUsers:

@@ -1,7 +1,6 @@
 package blok2.controllers;
 
-import blok2.daos.ILocationDao;
-import blok2.daos.ITimeslotDAO;
+import blok2.daos.ITimeslotDao;
 import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.model.calendar.Timeslot;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,22 +9,16 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("locations/timeslots")
 public class TimeslotController extends  AuthorizedLocationController {
 
-    private final Logger logger = Logger.getLogger(TimeslotController.class.getSimpleName());
-
-    private final ITimeslotDAO timeslotDAO;
-    private final ILocationDao locationDao;
+    private final ITimeslotDao timeslotDAO;
 
     @Autowired
-    public TimeslotController(ITimeslotDAO calendarPeriodDao,
-                                    ILocationDao locationDao) {
+    public TimeslotController(ITimeslotDao calendarPeriodDao) {
         this.timeslotDAO = calendarPeriodDao;
-        this.locationDao = locationDao;
     }
 
     @GetMapping("/{locationId}")
