@@ -7,7 +7,6 @@ import { Timeslot } from 'src/app/shared/model/Timeslot';
 import { map } from 'rxjs/internal/operators/map';
 import { of } from 'rxjs/internal/observable/of';
 import { Pair } from '../../../shared/model/helpers/Pair';
-import { CalendarPeriod } from '../../../shared/model/CalendarPeriod';
 
 @Injectable({
   providedIn: 'root',
@@ -23,15 +22,6 @@ export class LocationReservationsService {
     return this.http
       .get<LocationReservation[]>(api.locationReservationsOfUser, { params })
       .pipe(map((ls) => ls.map(LocationReservation.fromJSON.bind(this))));
-  }
-
-  createNewPair(
-    pair: Pair<LocationReservation, CalendarPeriod>
-  ): Pair<LocationReservation, CalendarPeriod> {
-    return {
-      first: LocationReservation.fromJSON(pair.first),
-      second: CalendarPeriod.fromJSON(pair.second),
-    };
   }
 
   getLocationReservationsOfTimeslot(

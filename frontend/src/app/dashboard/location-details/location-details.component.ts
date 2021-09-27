@@ -1,43 +1,35 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnDestroy, OnInit, TemplateRef } from '@angular/core';
-import { Location } from '../../shared/model/Location';
-import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { LocationService } from '../../services/api/locations/location.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { CalendarEvent } from 'angular-calendar';
+import { ActivatedRoute, Router } from '@angular/router';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { TranslateService } from '@ngx-translate/core';
-import { LocationTag } from '../../shared/model/LocationTag';
-import { TimeslotsService } from '../../services/api/calendar-periods/timeslot.service';
+import * as moment from 'moment';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/internal/operators/map';
+import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
+import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
+import {
+  ApplicationTypeFunctionalityService
+} from 'src/app/services/functionality/application-type/application-type-functionality.service';
+import { LocationReservation } from 'src/app/shared/model/LocationReservation';
 import {
   includesTimeslot,
   Timeslot,
   timeslotEquals,
-  timeslotToCalendarEvent,
+  timeslotToCalendarEvent
 } from 'src/app/shared/model/Timeslot';
-import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
-import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
-import { LocationReservation } from 'src/app/shared/model/LocationReservation';
-import {
-  CalendarPeriod
-} from '../../shared/model/CalendarPeriod';
 import {
   defaultLocationImage,
   LocationStatus,
-  msToShowFeedback,
+  msToShowFeedback
 } from '../../app.constants';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import * as moment from 'moment';
-import { DatePipe } from '@angular/common';
+import { TimeslotsService } from '../../services/api/calendar-periods/timeslot.service';
+import { LocationService } from '../../services/api/locations/location.service';
 import { Pair } from '../../shared/model/helpers/Pair';
-import {
-  ApplicationTypeFunctionalityService
-} from 'src/app/services/functionality/application-type/application-type-functionality.service';
-import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { map } from 'rxjs/internal/operators/map';
-import {
-  ConversionToCalendarEventService
-} from '../../services/styling/CalendarEvent/conversion-to-calendar-event.service';
-import { distinctUntilChanged, distinctUntilKeyChanged } from 'rxjs/operators';
+import { Location } from '../../shared/model/Location';
+import { LocationTag } from '../../shared/model/LocationTag';
 
 @Component({
   selector: 'app-location-details',
@@ -105,7 +97,6 @@ export class LocationDetailsComponent implements OnInit, OnDestroy {
     private locationReservationService: LocationReservationsService,
     private modalService: BsModalService,
     private functionalityService: ApplicationTypeFunctionalityService,
-    private conversionService: ConversionToCalendarEventService,
     private router: Router
   ) {}
 

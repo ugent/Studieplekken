@@ -1,8 +1,6 @@
-import { Time } from '@angular/common';
 import { CalendarEvent } from 'angular-calendar';
 import * as moment from 'moment';
 import { Moment } from 'moment';
-import { CalendarPeriod } from './CalendarPeriod';
 import { LocationReservation } from './LocationReservation';
 
 export class Timeslot {
