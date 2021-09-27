@@ -74,7 +74,14 @@ public class LocationService implements ILocationDao {
 
     @Override
     public void updateLocation(Location location) {
-        locationRepository.save(location);
+        Location originalLocation = locationRepository.getOne(location.getLocationId());
+        originalLocation.setBuilding(location.getBuilding());
+        originalLocation.setName(location.getName());
+        originalLocation.setAuthority(location.getAuthority());
+        originalLocation.setNumberOfSeats(location.getNumberOfSeats());
+        originalLocation.setForGroup(location.getForGroup());
+        originalLocation.setImageUrl(location.getImageUrl());
+        locationRepository.save(originalLocation);
     }
 
     @Override
