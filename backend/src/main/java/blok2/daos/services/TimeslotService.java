@@ -69,7 +69,7 @@ public class TimeslotService implements ITimeslotDao {
     public Timeslot updateTimeslot(Timeslot timeslot) {
         Timeslot original = timeslotRepository.getByTimeslotSeqnr(timeslot.getTimeslotSeqnr());
 
-        original.setWeek(timeslot.getWeek());
+        original.setTimeslotDate(timeslot.timeslotDate());
         original.setOpeningHour(timeslot.getOpeningHour());
         original.setClosingHour(timeslot.getClosingHour());
         original.setSeatCount(timeslot.getSeatCount());
@@ -83,7 +83,6 @@ public class TimeslotService implements ITimeslotDao {
     @Override
     public Optional<Timeslot> getCurrentOrNextTimeslot(int locationId) {
         LocalDateTime time = LocalDateTime.now();
-        YearWeek week = YearWeek.from(time);
-        return this.timeslotRepository.getCurrentOrNextTimeslot(locationId, week.getYear(), week.getWeek(), time.getDayOfWeek(), LocalTime.from(time), PageRequest.of(0,1)).stream().findFirst();
+        return this.timeslotRepository.getCurrentOrNextTimeslot(locationId, time.toLocalDate(), LocalTime.from(time), PageRequest.of(0,1)).stream().findFirst();
     }
 }

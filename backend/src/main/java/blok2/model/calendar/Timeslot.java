@@ -41,14 +41,8 @@ public class Timeslot implements Cloneable {
     @Min(0)
     private Integer seatCount;
 
-    @Column(name= "isoday_of_week")
-    private DayOfWeek dayOfWeek;
-
-    @Column(name="iso_week")
-    private int week;
-
-    @Column(name="iso_year")
-    private int year;
+    @Column(name="timeslot_date")
+    private LocalDate timeslotDate;
 
     @Column(name = "reservable")
     private boolean reservable;
@@ -162,14 +156,6 @@ public class Timeslot implements Cloneable {
         this.closingHour = closingHour;
     }
 
-    public DayOfWeek getDayOfWeek() {
-        return dayOfWeek;
-    }
-
-    public void setDayOfWeek(DayOfWeek dayOfWeek) {
-        this.dayOfWeek = dayOfWeek;
-    }
-
     public boolean isReservable() {
         return reservable;
     }
@@ -178,27 +164,16 @@ public class Timeslot implements Cloneable {
         this.reservable = reservable;
     }
 
-    @JsonProperty
-    @JsonDeserialize(using = YearWeekDeserializer.class)
-    public YearWeek getWeek() {
-        return YearWeek.of(this.year, this.week);
-    }
-
-    public void setWeek(YearWeek week) {
-        this.year = week.getYear();
-        this.week = week.getWeek();
-    }
 
     @JsonProperty
     @Transient
     public LocalDate timeslotDate() {
-        return getWeek().atDay(dayOfWeek);
+        return this.timeslotDate;
     }
 
     @Transient
     public void setTimeslotDate(LocalDate date) {
-        this.setWeek(YearWeek.from(date));
-        this.dayOfWeek = DayOfWeek.from(date);
+        this.timeslotDate = date;
     }
 
 
