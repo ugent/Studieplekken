@@ -13,7 +13,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface TimeslotRepository extends JpaRepository<Timeslot, Timeslot.TimeslotId> {
+public interface TimeslotRepository extends JpaRepository<Timeslot, Integer> {
     List<Timeslot> getAllByLocationId(Integer locationId);
 
     @Query("SELECT t FROM Timeslot t where t.timeslotSequenceNumber = ?1")

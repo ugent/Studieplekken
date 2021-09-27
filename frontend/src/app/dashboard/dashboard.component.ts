@@ -6,7 +6,7 @@ import { TagsService } from '../services/api/tags/tags.service';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
-import { TimeslotsService } from '../services/api/calendar-periods/calendar-periods.service';
+import { TimeslotsService } from '../services/api/calendar-periods/timeslot.service';
 import { LocationStatus } from '../app.constants';
 import { Building } from '../shared/model/Building';
 import { BuildingService } from '../services/api/buildings/buildings.service';

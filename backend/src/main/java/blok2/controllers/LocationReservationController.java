@@ -2,7 +2,7 @@ package blok2.controllers;
 
 import blok2.daos.ILocationDao;
 import blok2.daos.ILocationReservationDao;
-import blok2.daos.ITimeslotDAO;
+import blok2.daos.ITimeslotDao;
 import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.helpers.exceptions.NotAuthorizedException;
@@ -40,14 +40,14 @@ public class LocationReservationController extends AuthorizedLocationController 
     private final Logger logger = LoggerFactory.getLogger(LocationReservationController.class.getSimpleName());
 
     private final ILocationReservationDao locationReservationDao;
-    private final ITimeslotDAO timeslotDao;
+    private final ITimeslotDao timeslotDao;
 
     private final MailService mailService;
     private final ILocationDao locationDao;
 
     @Autowired
-    public LocationReservationController(ILocationReservationDao locationReservationDao, ITimeslotDAO timeslotDao, MailService ms
-                                                ,ILocationDao locDao) {
+    public LocationReservationController(ILocationReservationDao locationReservationDao, ITimeslotDao timeslotDao, MailService ms
+                                                , ILocationDao locDao) {
         this.locationReservationDao = locationReservationDao;
         this.timeslotDao = timeslotDao;
         this.mailService = ms;
@@ -71,7 +71,7 @@ public class LocationReservationController extends AuthorizedLocationController 
             Timeslot dbTimeslot = timeslotDao.getTimeslot(timeslot.getTimeslotSeqnr());
             LocationReservation reservation = new LocationReservation(user, dbTimeslot, null);
             if (LocalDateTime.now().isBefore(dbTimeslot.getReservableFrom())) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "This calendarperiod can't yet be reserved");
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "This timeslot can't yet be reserved");
             }
             if (!locationReservationDao.addLocationReservationIfStillRoomAtomically(reservation)) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "There are no more spots left for this location.");
@@ -91,12 +91,6 @@ public class LocationReservationController extends AuthorizedLocationController 
     ) {
         Timeslot timeslot = timeslotDao.getTimeslot(seqnr);
         return locationReservationDao.getAllLocationReservationsOfTimeslot(timeslot);
-    }
-
-    @GetMapping("/count/{locationId}")
-    @PreAuthorize("permitAll()")
-    public Map<String, Integer> getReservationCount(@PathVariable("locationId") int locationId) {
-        return Collections.singletonMap("amount", locationReservationDao.amountOfReservationsRightNow(locationId));
     }
 
     @DeleteMapping

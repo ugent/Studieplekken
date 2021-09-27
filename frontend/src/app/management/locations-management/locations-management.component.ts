@@ -9,7 +9,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Building } from 'src/app/shared/model/Building';
-import { CalendarPeriod } from 'src/app/shared/model/CalendarPeriod';
 import { AuthoritiesService } from '../../services/api/authorities/authorities.service';
 import { BuildingService } from '../../services/api/buildings/buildings.service';
 import { LocationService } from '../../services/api/locations/location.service';
@@ -18,7 +17,7 @@ import { Authority } from '../../shared/model/Authority';
 import { Location } from '../../shared/model/Location';
 import { map } from 'rxjs/internal/operators/map';
 import { Timeslot } from 'src/app/shared/model/Timeslot';
-import { TimeslotsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
+import { TimeslotsService } from 'src/app/services/api/calendar-periods/timeslot.service';
 
 @Component({
   selector: 'app-locations-management',
