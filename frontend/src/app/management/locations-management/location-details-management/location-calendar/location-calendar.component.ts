@@ -1,4 +1,3 @@
-import { Template } from '@angular/compiler/src/render3/r3_ast';
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -7,7 +6,7 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 import { Observable, Subject, timer } from 'rxjs';
 import { of } from 'rxjs/internal/observable/of';
 import { catchError, switchMap, tap } from 'rxjs/operators';
-import { TimeslotsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
+import { TimeslotsService } from 'src/app/services/api/calendar-periods/timeslot.service';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { LocationService } from 'src/app/services/api/locations/location.service';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
@@ -111,7 +110,6 @@ export class LocationCalendarComponent implements OnInit {
         tap((next) => {
           // fill the events based on the calendar periods
           this.events = next.map(t => timeslotToCalendarEvent(t, this.translate.currentLang))
-          console.log(this.events)
 
           // and update the calendar
           this.refresh.next(null);

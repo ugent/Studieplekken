@@ -1,24 +1,22 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { User, UserConstructor } from '../../shared/model/User';
 import { HttpClient } from '@angular/common/http';
-import { Penalty } from '../../shared/model/Penalty';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
+import { authenticationWasExpiredUrlLSKey, userWantsTLogInLocalStorageKey } from '../../app.constants';
 import { LocationReservation } from '../../shared/model/LocationReservation';
 import {
   LockerReservation,
-  LockerReservationConstructor,
+  LockerReservationConstructor
 } from '../../shared/model/LockerReservation';
-import { map } from 'rxjs/operators';
-import { PenaltyService } from '../api/penalties/penalty.service';
+import { Penalty } from '../../shared/model/Penalty';
+import { User, UserConstructor } from '../../shared/model/User';
+import { api } from '../api/endpoints';
 import { LocationReservationsService } from '../api/location-reservations/location-reservations.service';
 import { LockerReservationService } from '../api/locker-reservations/locker-reservation.service';
-import { Router } from '@angular/router';
+import { PenaltyService } from '../api/penalties/penalty.service';
 import { UserService } from '../api/users/user.service';
-import { api } from '../api/endpoints';
-import { authenticationWasExpiredUrlLSKey, userWantsTLogInLocalStorageKey } from '../../app.constants';
-import { Pair } from '../../shared/model/helpers/Pair';
-import { CalendarPeriod } from '../../shared/model/CalendarPeriod';
-import { environment } from 'src/environments/environment';
 
 /**
  * The structure of the authentication service has been based on this article:
@@ -187,12 +185,6 @@ export class AuthenticationService {
   // ********************************************************
 
   getLocationReservations(): Observable<LocationReservation[]> {
-    return this.locationReservationService.getLocationReservationsOfUser(
-      this.userSubject.value.userId
-    );
-  }
-
-  getLocationReservationsAndCalendarPeriods(): Observable<LocationReservation[]> {
     return this.locationReservationService.getLocationReservationsOfUser(
       this.userSubject.value.userId
     );

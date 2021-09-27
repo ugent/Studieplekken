@@ -15,9 +15,8 @@ import { AuthenticationService } from '../../services/authentication/authenticat
 import { tap } from 'rxjs/operators';
 import { Building } from 'src/app/shared/model/Building';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { TimeslotsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
-import { CalendarPeriod } from 'src/app/shared/model/CalendarPeriod';
 import { Timeslot } from 'src/app/shared/model/Timeslot';
+import { TimeslotsService } from 'src/app/services/api/calendar-periods/timeslot.service';
 
 @Component({
   selector: 'app-locations-management',

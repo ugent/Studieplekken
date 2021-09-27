@@ -39,7 +39,6 @@
       <app-location-reservations
         *ngIf="showReservations === true && !errorOnRetrievingReservations"
         [locationReservations]="locationReservations"
-        [currentCalendarPeriod]="currentCalendarPeriod"
         [currentTimeSlot]="currentTimeSlot"
         (reservationChange)="loadReservations()">
       </app-location-reservations>

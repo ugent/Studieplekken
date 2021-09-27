@@ -3,18 +3,17 @@ import {
   EventEmitter,
   Input,
   Output,
-  TemplateRef,
+  TemplateRef
 } from '@angular/core';
+import * as moment from 'moment';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { BarcodeService } from 'src/app/services/barcode.service';
+import { User } from 'src/app/shared/model/User';
+import { LocationReservationsService } from '../../../../../../services/api/location-reservations/location-reservations.service';
 import { LocationReservation } from '../../../../../../shared/model/LocationReservation';
 import {
-  Timeslot,
+  Timeslot
 } from '../../../../../../shared/model/Timeslot';
-import * as moment from 'moment';
-import { CalendarPeriod } from '../../../../../../shared/model/CalendarPeriod';
-import { LocationReservationsService } from '../../../../../../services/api/location-reservations/location-reservations.service';
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { User } from 'src/app/shared/model/User';
-import { BarcodeService } from 'src/app/services/barcode.service';
 
 @Component({
   selector: 'app-location-reservations',
@@ -23,7 +22,6 @@ import { BarcodeService } from 'src/app/services/barcode.service';
 })
 export class LocationReservationsComponent {
   @Input() locationReservations: LocationReservation[];
-  @Input() currentCalendarPeriod?: CalendarPeriod;
   @Input() currentTimeSlot: Timeslot;
   @Input() lastScanned?: LocationReservation;
 
@@ -177,16 +175,10 @@ export class LocationReservationsComponent {
   }
 
   isTimeslotEndInPast(): boolean {
-    if (!this.currentCalendarPeriod) {
-      return false; // Assume current
-    }
     return this.currentTimeSlot.getEndMoment().isBefore(moment());
   }
 
   isTimeslotStartInPast(): boolean {
-    if (!this.currentCalendarPeriod) {
-      return true; // Assume current
-    }
 
     const start = this.currentTimeSlot.getStartMoment()
     return start.isBefore(moment());

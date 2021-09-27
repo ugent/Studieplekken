@@ -98,7 +98,7 @@ export class ProfileReservationsComponent implements OnInit {
     reservation: LocationReservation,
   ): boolean {
     return (
-      this.isTimeslotInPast(reservation.timeslot) &&
+      reservation.timeslot.isInPast() &&
       reservation.attended === null
     );
   }
@@ -116,12 +116,6 @@ export class ProfileReservationsComponent implements OnInit {
       }
     }
     return 'general.notAvailableAbbreviation';
-  }
-
-  isTimeslotInPast(
-    timeslot: Timeslot,
-  ): boolean {
-    return timeslot.getEndMoment().isBefore(moment());
   }
 
   formatDate(date: unknown): string {

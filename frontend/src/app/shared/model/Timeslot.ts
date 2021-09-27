@@ -106,6 +106,10 @@ export class Timeslot {
     return this.getStartMoment().isBefore(moment()) && this.getEndMoment().isAfter(moment())
   }
 
+  isInPast() {
+    return this.getEndMoment().isBefore(moment());
+  }
+
 }
 
 

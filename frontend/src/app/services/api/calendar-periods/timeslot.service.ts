@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { CalendarPeriod } from '../../../shared/model/CalendarPeriod';
 import { Pair } from '../../../shared/model/helpers/Pair';
 import { Location } from '../../../shared/model/Location';
 import { Observable } from 'rxjs';

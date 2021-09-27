@@ -31,7 +31,6 @@ import { LocationDetailsManagementComponent } from './management/locations-manag
 import { DetailsFormComponent } from './management/locations-management/location-details-management/details-form/details-form.component';
 import { LocationCalendarComponent } from './management/locations-management/location-details-management/location-calendar/location-calendar.component';
 import { FlatpickrModule } from 'angularx-flatpickr';
-import { LockersCalendarComponent } from './management/locations-management/location-details-management/lockers-calendar/lockers-calendar.component';
 import { LockersTableComponent } from './management/locations-management/location-details-management/lockers-table/lockers-table.component';
 import { UserDetailsManagementComponent } from './management/users-management/user-details-management/user-details-management.component';
 import { UserDetailsFormComponent } from './management/users-management/user-details-management/user-details-form/user-details-form.component';
@@ -279,7 +278,6 @@ const routes: Routes = [
     LocationDetailsManagementComponent,
     DetailsFormComponent,
     LocationCalendarComponent,
-    LockersCalendarComponent,
     LockersTableComponent,
     UserDetailsManagementComponent,
     UserDetailsFormComponent,
