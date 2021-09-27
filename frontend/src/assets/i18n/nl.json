@@ -231,6 +231,8 @@
           "updateReservationWarning": "Het aanpassen van deze periode zal leiden tot de verwijdering van alle reservaties die al gemaakt zijn gedurende deze periode!",
           "noCalendarPeriodsForLocation": "Op dit moment zijn er nog geen periodes voor de ruimte beschikbaar.",
           "approveAll": "Keur alle suggesties goed",
+          "approve": "Keur goed",
+          "reject": "Keur af",
           "rejectAll": "Keur alle suggesties af"
         },
         "addModalView": {

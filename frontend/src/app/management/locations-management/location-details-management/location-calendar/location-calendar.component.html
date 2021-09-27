@@ -18,13 +18,22 @@
         {{"management.locationDetails.calendar.form.approveAll" | translate}}
       </button>
 
-      <button class="button button-alert alert" [disabled]="!currentTimeSlot"
+      <button class="button button-alert alert" [disabled]="!currentTimeSlot" *ngIf="!isSuggestion(currentTimeSlot)"
         (click)="prepareDelete(currentTimeSlot, deleteTimeslotModal)">
         {{"general.buttons.delete" | translate}}
       </button>
-      <button class="button button-primary" [disabled]="!currentTimeSlot"
+      <button class="button button-primary" [disabled]="!currentTimeSlot" *ngIf="!isSuggestion(currentTimeSlot)"
         (click)="prepareCopy(currentTimeSlot, copyTimeslotModal)">
         {{"general.buttons.copy" | translate}}
+      </button>
+
+      <button class="button button-alert alert" [disabled]="!currentTimeSlot" *ngIf="isSuggestion(currentTimeSlot)"
+        (click)="reject(currentTimeSlot)">
+        {{"management.locationDetails.calendar.form.reject" | translate}}
+      </button>
+      <button class="button button-primary" [disabled]="!currentTimeSlot" *ngIf="isSuggestion(currentTimeSlot)"
+        (click)="approve(currentTimeSlot)">
+        {{"management.locationDetails.calendar.form.approve" | translate}}
       </button>
     </div>
   </div>
@@ -209,7 +218,7 @@
 
 <ng-template #copyTimeslotModal>
 
-  <app-modal>
+  <app-modal *ngIf="getLocation() | async as location">
     <h5 modal-header>
       {{'management.locationDetails.calendar.copyModalView.title' | translate}}
     </h5>
@@ -252,11 +261,11 @@
         {{'general.buttons.cancel' | translate}}
       </button>
   
-      <button type="button" class="button button-secondary" (click)="copy(toUpdateTimeslot, 0)">
+      <button type="button" class="button button-secondary" (click)="copy(toUpdateTimeslot, 0, location)">
         {{'management.locationDetails.calendar.copyModalView.nextWeek' | translate}}
       </button>
   
-      <button type="button" class="button button-primary" (click)="copy(toUpdateTimeslot, weekSelector.value)">
+      <button type="button" class="button button-primary" (click)="copy(toUpdateTimeslot, weekSelector.value, location)">
         {{'general.buttons.add' | translate}}
       </button>
     </div>

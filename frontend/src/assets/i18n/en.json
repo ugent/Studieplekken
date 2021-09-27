@@ -233,6 +233,8 @@
           "updateReservationWarning": "Changing this period will result in the loss of all reservations already made during the period.",
           "noCalendarPeriodsForLocation": "At the moment, there are no opening periods for the room.",
           "approveAll": "Approve all suggestions",
+          "approve": "Approve",
+          "reject": "Reject",
           "rejectAll": "Reject all suggestions"
         },
         "addModalView": {
