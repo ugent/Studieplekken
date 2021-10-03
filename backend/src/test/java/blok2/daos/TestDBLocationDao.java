@@ -13,7 +13,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -30,7 +29,7 @@ public class TestDBLocationDao extends BaseTest {
     private IBuildingDao buildingDao;
 
     @Autowired
-    private ITimeslotDAO timeslotDAO;
+    private ITimeslotDao timeslotDAO;
 
     private Location testLocation;
 

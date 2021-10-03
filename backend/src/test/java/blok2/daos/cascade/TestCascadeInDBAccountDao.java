@@ -42,7 +42,7 @@ public class TestCascadeInDBAccountDao extends BaseTest {
     private IAuthorityDao authorityDao;
 
     @Autowired
-    private ITimeslotDAO timeslotDAO;
+    private ITimeslotDao timeslotDAO;
 
     @Autowired IBuildingDao buildingDao;
 

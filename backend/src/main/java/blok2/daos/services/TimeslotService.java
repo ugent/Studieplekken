@@ -1,6 +1,6 @@
 package blok2.daos.services;
 
-import blok2.daos.ITimeslotDAO;
+import blok2.daos.ITimeslotDao;
 import blok2.daos.repositories.TimeslotRepository;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservables.Location;
@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class TimeslotService implements ITimeslotDAO {
+public class TimeslotService implements ITimeslotDao {
 
     private final TimeslotRepository timeslotRepository;
     private final LocationService locationService;

@@ -10,7 +10,6 @@ import * as moment from 'moment';
 import { BarcodeService } from 'src/app/services/barcode.service';
 import { User } from 'src/app/shared/model/User';
 import { LocationReservationsService } from '../../../../../../services/api/location-reservations/location-reservations.service';
-import { CalendarPeriod } from '../../../../../../shared/model/CalendarPeriod';
 import { LocationReservation } from '../../../../../../shared/model/LocationReservation';
 import {
   Timeslot,
@@ -23,7 +22,6 @@ import {
 })
 export class LocationReservationsComponent {
   @Input() locationReservations: LocationReservation[];
-  @Input() currentCalendarPeriod?: CalendarPeriod;
   @Input() currentTimeSlot: Timeslot;
   @Input() lastScanned?: LocationReservation;
 
@@ -177,16 +175,10 @@ export class LocationReservationsComponent {
   }
 
   isTimeslotEndInPast(): boolean {
-    if (!this.currentCalendarPeriod) {
-      return false; // Assume current
-    }
     return this.currentTimeSlot.getEndMoment().isBefore(moment());
   }
 
   isTimeslotStartInPast(): boolean {
-    if (!this.currentCalendarPeriod) {
-      return true; // Assume current
-    }
 
     const start = this.currentTimeSlot.getStartMoment()
     return start.isBefore(moment());

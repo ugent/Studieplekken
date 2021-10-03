@@ -36,12 +36,6 @@ public interface LocationReservationRepository extends JpaRepository<LocationRes
 
     @Query("select lr from LocationReservation lr " +
             "   join Timeslot t on lr.id.timeslotSequenceNumber = t.timeslotSequenceNumber " +
-            "where t.locationId = ?1")
-    List<LocationReservation> getLocationReservationsAtLocationAtThisMoment(int locationId);
-
-
-    @Query("select lr from LocationReservation lr " +
-            "   join Timeslot t on lr.id.timeslotSequenceNumber = t.timeslotSequenceNumber " +
             "where t.locationId = ?1 " +
             "and t.year > ?2 " +
             "or (t.year = ?2 and t.week > ?3)" +

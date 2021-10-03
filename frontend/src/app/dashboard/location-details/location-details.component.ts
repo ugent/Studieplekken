@@ -27,20 +27,14 @@ import {
   LocationStatus,
   msToShowFeedback
 } from '../../app.constants';
-import { TimeslotsService } from '../../services/api/calendar-periods/calendar-periods.service';
+import { TimeslotsService } from '../../services/api/calendar-periods/timeslot.service';
 import { LocationService } from '../../services/api/locations/location.service';
-import {
-  ConversionToCalendarEventService
-} from '../../services/styling/CalendarEvent/conversion-to-calendar-event.service';
-import {
-  CalendarPeriod
-} from '../../shared/model/CalendarPeriod';
 import { Pair } from '../../shared/model/helpers/Pair';
 import { Location } from '../../shared/model/Location';
 import { LocationTag } from '../../shared/model/LocationTag';
 
-
 import * as Leaf from 'leaflet';
+
 // Leaflet stuff.
 const iconRetinaUrl = './assets/marker-icon-2x.png';
 const iconUrl = './assets/marker-icon.png';
@@ -119,13 +113,12 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     private route: ActivatedRoute,
     private sanitizer: DomSanitizer,
     private translate: TranslateService,
-    private calendarPeriodsService: TimeslotsService,
+    private timeslotsService: TimeslotsService,
     private datepipe: DatePipe,
     private authenticationService: AuthenticationService,
     private locationReservationService: LocationReservationsService,
     private modalService: MatDialog,
     private functionalityService: ApplicationTypeFunctionalityService,
-    private conversionService: ConversionToCalendarEventService,
     private router: Router,
     private breadcrumbs: BreadcrumbService,
     private timeslotCalendarEventService: TimeslotCalendarEventService
@@ -278,7 +271,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     this.calendarSub = combineLatest([
-      this.calendarPeriodsService.getTimeslotsOfLocation(this.locationId),
+      this.timeslotsService.getTimeslotsOfLocation(this.locationId),
       this.authenticationService.getLocationReservations(),
       this.selectedSubject,
     ])
@@ -296,7 +289,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         this.timeouts = timeslots
           .map(e => (e.reservableFrom.valueOf() - moment().valueOf()))
           .filter(d => d > 0)
-          .filter(d => d < 1000 * 60 * 60 * 2) // don't set more than two days in advance (weird bugs if you do)
+          .filter(d => d < 1000 * 60 * 60 * 24 * 2) // don't set more than two days in advance (weird bugs if you do)
           .map(d => setTimeout(() => this.draw(timeslots, proposedReservations), d));
         this.draw(timeslots, proposedReservations);
       })
@@ -363,20 +356,6 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
   declineReservationChange(): void {
     this.modalRef.close();
-  }
-
-  getBeginHour(
-    calendarPeriod: CalendarPeriod,
-    timeslot: Timeslot
-  ): moment.Moment {
-    const d = moment(
-      timeslot.timeslotDate.format('DD-MM-YYYY') +
-      'T' +
-      calendarPeriod.openingTime.format('HH:mm'),
-      'DD-MM-YYYYTHH:mm'
-    );
-    d.add(timeslot.timeslotSequenceNumber * calendarPeriod.timeslotLength, 'minutes');
-    return d;
   }
 
   formatReservation(reservation: LocationReservation): Observable<string> {

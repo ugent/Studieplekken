@@ -8,7 +8,7 @@ import { Moment } from 'moment';
 import { combineLatest, Observable, Subject, timer } from 'rxjs';
 import { of } from 'rxjs/internal/observable/of';
 import { catchError, switchMap, tap } from 'rxjs/operators';
-import { TimeslotsService } from 'src/app/services/api/calendar-periods/calendar-periods.service';
+import { TimeslotsService } from 'src/app/services/api/calendar-periods/timeslot.service';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { LocationService } from 'src/app/services/api/locations/location.service';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';

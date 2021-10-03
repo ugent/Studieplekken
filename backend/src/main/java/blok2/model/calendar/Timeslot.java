@@ -99,7 +99,12 @@ public class Timeslot implements Cloneable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Timeslot timeslot = (Timeslot) o;
-        return timeslotSequenceNumber == (timeslot.timeslotSequenceNumber);
+        return Objects.equals(timeslotSequenceNumber, timeslot.timeslotSequenceNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(timeslotSequenceNumber);
     }
 
     @Override
@@ -252,5 +257,4 @@ public class Timeslot implements Cloneable {
             return Objects.hash(timeslotSequenceNumber);
         }
     }
-
 }

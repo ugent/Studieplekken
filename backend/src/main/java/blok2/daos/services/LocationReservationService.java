@@ -92,11 +92,6 @@ public class LocationReservationService implements ILocationReservationDao {
     }
 
     @Override
-    public int amountOfReservationsRightNow(int locationId) {
-        return locationReservationRepository.getLocationReservationsAtLocationAtThisMoment(locationId).size();
-    }
-
-    @Override
     public void deleteLocationReservation(String userId, Timeslot timeslot) {
         locationReservationRepository.deleteById(new LocationReservation.LocationReservationId(
                 timeslot.getTimeslotSeqnr(), userId

@@ -32,7 +32,6 @@ export class DashboardItemComponent implements OnInit {
   showProgressBar: boolean;
 
   statusInCurrentLang: string;
-  occupationObs: Observable<number>;
   showLockersManagement: boolean;
 
   /* Subscriptions */
@@ -48,10 +47,6 @@ export class DashboardItemComponent implements OnInit {
       this.currentLang = this.translate.currentLang;
       this.setupTagsInCurrentLang();
     });
-
-    this.occupationObs = this.locationService.getNumberOfReservationsNow(
-      this.location.locationId
-    );
 
     this.assignedTags = this.location.assignedTags;
     this.setupTagsInCurrentLang();
