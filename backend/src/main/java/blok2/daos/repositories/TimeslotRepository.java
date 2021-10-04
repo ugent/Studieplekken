@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import javax.transaction.Transactional;
 import java.sql.Time;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -27,10 +28,8 @@ public interface TimeslotRepository extends JpaRepository<Timeslot, Integer> {
     @Query("select t" +
             "   FROM Timeslot t " +
             "where t.locationId = ?1 " +
-            "and (t.year > ?2 " +
-            "or (t.year = ?2 and t.week > ?3)" +
-            " or (t.year = ?2 and t.week = ?3 and t.dayOfWeek > ?4) " +
-            "or (t.year = ?2 and t.week = ?3 and t.dayOfWeek = ?4 and t.closingHour > ?5))" +
-            "order by t.year, t.week, t.dayOfWeek, t.closingHour")
-    List<Timeslot> getCurrentOrNextTimeslot(int locationId, int year, int week, DayOfWeek value, LocalTime closingHour, Pageable pageable);
+            "and (t.timeslotDate > ?2 " +
+            "or (t.timeslotDate = ?2 and t.closingHour > ?3))" +
+            "order by t.timeslotDate, t.closingHour")
+    List<Timeslot> getCurrentOrNextTimeslot(int locationId, LocalDate date, LocalTime closingHour, Pageable pageable);
 }

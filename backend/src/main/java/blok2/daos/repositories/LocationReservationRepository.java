@@ -19,16 +19,11 @@ public interface LocationReservationRepository extends JpaRepository<LocationRes
     @Query("select lr from LocationReservation lr where lr.id.timeslotSequenceNumber = ?1")
     List<LocationReservation> findAllByTimeslot(int sequenceNumber);
 
-    @Query("select lr from LocationReservation lr " +
-            "join Timeslot t on lr.id.timeslotSequenceNumber = t.timeslotSequenceNumber " +
-            "where t.year = ?1 and t.week = ?2 and t.dayOfWeek = ?3 and lr.attended = false")
-    List<LocationReservation> findAllUnattendedByDate(int year, int week, DayOfWeek value);
-
-    @Query("select lr from LocationReservation lr where lr.timeslot.year = ?1 and lr.timeslot.week = ?2 and lr.timeslot.dayOfWeek = ?3 and lr.attended = false")
+    @Query("select lr from LocationReservation lr where lr.timeslot.timeslotDate = ?1 and lr.attended = false")
     List<LocationReservation> findAllUnattendedByDate(LocalDate date);
 
-    @Query("select lr from LocationReservation lr where ((lr.timeslot.year = ?1 and lr.timeslot.week = ?2 and lr.timeslot.dayOfWeek = ?3) or (lr.timeslot.year = ?4 and lr.timeslot.week = ?5 and lr.timeslot.dayOfWeek = ?6)) and lr.updatedAt >= ?7 and lr.updatedAt < ?8 and lr.attended = false")
-    List<LocationReservation> findAllUnattendedByDateAnd21PMRestriction(int year1, int week1, DayOfWeek val1, int year2, int week2, DayOfWeek val2, LocalDateTime yesterday21PM, LocalDateTime today21PM);
+    @Query("select lr from LocationReservation lr where (lr.timeslot.timeslotDate = ?1 or lr.timeslot.timeslotDate = ?2) and lr.updatedAt >= ?3 and lr.updatedAt < ?4 and lr.attended = false")
+    List<LocationReservation> findAllUnattendedByDateAnd21PMRestriction(LocalDate date1, LocalDate date2, LocalDateTime yesterday21PM, LocalDateTime today21PM);
 
     @Query("select lr from LocationReservation lr where lr.id.timeslotSequenceNumber = ?1 and lr.attended is null")
     List<LocationReservation> findAllUnknownAttendanceByTimeslot(int sequenceNumber);
@@ -39,10 +34,8 @@ public interface LocationReservationRepository extends JpaRepository<LocationRes
     @Query("select lr from LocationReservation lr " +
             "   join Timeslot t on lr.id.timeslotSequenceNumber = t.timeslotSequenceNumber " +
             "where t.locationId = ?1 " +
-            "and t.year > ?2 " +
-            "or (t.year = ?2 and t.week > ?3)" +
-            " or (t.year = ?2 and t.week = ?3 and t.dayOfWeek > ?4)")
-    List<LocationReservation> findAllByLocationIdAndDateAfter(int locationId, int year, int week, DayOfWeek value);
+            "and t.timeslotDate > ?2 ")
+    List<LocationReservation> findAllByLocationIdAndDateAfter(int locationId, LocalDate date);
 
 
     /**
