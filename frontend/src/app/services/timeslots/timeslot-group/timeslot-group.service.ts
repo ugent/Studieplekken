@@ -3,6 +3,7 @@ import * as moment from 'moment';
 import { Moment } from 'moment';
 import { DefaultMap } from 'src/app/shared/default-map/defaultMap';
 import { Timeslot } from 'src/app/shared/model/Timeslot';
+import { Location } from 'src/app/shared/model/Location';
 
 
 export type TimeslotGroups = Map<number, Timeslot[]>;
@@ -15,16 +16,16 @@ export class TimeslotGroupService {
 
   constructor() { }
 
-  copyByWeekOffset(timeslot: Timeslot, weekOffset: number): Timeslot {
+  copyByWeekOffset(timeslot: Timeslot, weekOffset: number, location: Location): Timeslot {
     const date = moment(timeslot.timeslotDate).add(weekOffset+1, "weeks");
-    return this.copy(timeslot, date)
+    return this.copy(timeslot, date, location)
   }
 
-  copy(timeslot: Timeslot, date: Moment) {
+  copy(timeslot: Timeslot, date: Moment, location: Location) {
     const reservationDiff = date.diff(timeslot.timeslotDate, "minutes");
+    const reservableFrom = timeslot.reservableFrom ? moment(timeslot.reservableFrom):null;
 
-    return new Timeslot(null, date, null, null, timeslot.reservable, timeslot.reservableFrom?.subtract(reservationDiff), timeslot.locationId, timeslot.openingHour, timeslot.closingHour, timeslot.timeslotGroup, timeslot.repeatable)
-
+    return new Timeslot(null, date, 0, location.numberOfSeats, timeslot.reservable, reservableFrom.add(reservationDiff, "minutes"), timeslot.locationId, timeslot.openingHour, timeslot.closingHour, timeslot.timeslotGroup, timeslot.repeatable)
   }
 
   groupTimeslots(timeslot: Timeslot[]): TimeslotGroups {
@@ -49,7 +50,7 @@ export class TimeslotGroupService {
     return new Map(list);
   }
 
-  getSuggestions(timeslots: Timeslot[], amountOfWeeks=3) {
+  getSuggestions(timeslots: Timeslot[], location: Location, amountOfWeeks=3) {
     const latestTimeslots = this.getOldestTimeslotPerGroup(timeslots);
     const repeatableTimeslots = [...latestTimeslots.values()].filter(t => t.repeatable);
     
@@ -57,7 +58,7 @@ export class TimeslotGroupService {
 
     for(let i = 1; i <= amountOfWeeks; i++) {
       const targetDate = (t: Timeslot) => moment(t.timeslotDate).add(i, "weeks");
-      repeatableTimeslots.filter(t => t.timeslotDate.isBefore(targetDate(t), "day")).forEach(t => suggestions.push({model: t, copy: this.copy(t, targetDate(t))}));
+      repeatableTimeslots.filter(t => t.timeslotDate.isBefore(targetDate(t), "day")).forEach(t => suggestions.push({model: t, copy: this.copy(t, targetDate(t), location)}));
     }
 
     return suggestions;

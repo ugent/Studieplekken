@@ -23,7 +23,7 @@ public class TimeslotControllerTest extends BaseIntegrationTest {
     public void testUpdateTimeslot() throws Exception {
         Timeslot toUpdate = this.calendarPeriods.get(2);
         toUpdate.setLocation(testLocationUnapproved.getLocationId());
-        toUpdate.setWeek(toUpdate.getWeek().plus(Weeks.ONE));
+        toUpdate.setTimeslotDate(toUpdate.timeslotDate().plus(Weeks.ONE));
 
         mockMvc.perform(put("/locations/timeslots/").with(csrf())
                 .content(objectMapper.writeValueAsBytes(toUpdate)).contentType("application/json"))
@@ -39,7 +39,7 @@ public class TimeslotControllerTest extends BaseIntegrationTest {
     public void testFalseUpdateTimeslot() throws Exception {
         Timeslot toUpdate = this.calendarPeriods.get(2);
         toUpdate.setLocation(testLocationUnapproved.getLocationId());
-        toUpdate.setWeek(toUpdate.getWeek().plus(Weeks.ONE));
+        toUpdate.setTimeslotDate(toUpdate.timeslotDate().plus(Weeks.ONE));
 
         mockMvc.perform(put("/locations/timeslots/").with(csrf())
                 .content(objectMapper.writeValueAsBytes(toUpdate)).contentType("application/json"))

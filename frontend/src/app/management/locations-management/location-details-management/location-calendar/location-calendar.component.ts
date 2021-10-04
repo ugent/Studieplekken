@@ -7,7 +7,7 @@ import * as moment from 'moment';
 import { Moment } from 'moment';
 import { combineLatest, Observable, Subject, timer } from 'rxjs';
 import { of } from 'rxjs/internal/observable/of';
-import { catchError, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { TimeslotsService } from 'src/app/services/api/calendar-periods/timeslot.service';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { LocationService } from 'src/app/services/api/locations/location.service';
@@ -130,15 +130,19 @@ export class LocationCalendarComponent implements OnInit {
 
   setup(): void {
     // retrieve all calendar periods for this location
-    this.timeslotObs = this.timeslotService
-      .getTimeslotsOfLocation(this.locationId)
+    this.timeslotObs = 
+    combineLatest([ 
+      this.timeslotService.getTimeslotsOfLocation(this.locationId),
+      this.locationService.getLocation(this.locationId)
+    ])
       .pipe(
-        tap((next) => {
+        tap(([next, location]) => {
           // fill the events based on the calendar periods
           this.events = next.map(t => this.timeslotCalendarEventService.timeslotToCalendarEvent(t, this.translate.currentLang))
 
 
-          this.suggestions = this.timeslotGroupService.getSuggestions(next)
+          this.suggestions = this.timeslotGroupService.getSuggestions(next, location)
+          console.log(this.suggestions)
           const suggestionEvents = this.suggestions.map(t => this.timeslotCalendarEventService.suggestedTimeslotToCalendarEvent(t.copy, this.translate.currentLang));
           
 
@@ -146,6 +150,8 @@ export class LocationCalendarComponent implements OnInit {
           // and update the calendar
           this.refresh.next(null);
         }),
+
+        map(([next]) => next),
 
         catchError((err) => {
           console.error(err);
@@ -241,8 +247,8 @@ export class LocationCalendarComponent implements OnInit {
   }
 
 
-  copy(timeslot: Timeslot, weekOffset: number) {
-    const newTimeslot = this.timeslotGroupService.copyByWeekOffset(timeslot, weekOffset)
+  copy(timeslot: Timeslot, weekOffset: number, location: Location) {
+    const newTimeslot = this.timeslotGroupService.copyByWeekOffset(timeslot, weekOffset, location)
     this.timeslotService.addTimeslot(newTimeslot).subscribe(() => this.setup());
     this.modalService.closeAll();
   }
@@ -342,9 +348,20 @@ export class LocationCalendarComponent implements OnInit {
     combineLatest(suggestions.map(t => this.timeslotService.addTimeslot(t.copy))).subscribe(() => this.setup())
   }
 
+  approve(timeslot: Timeslot) {
+    this.timeslotService.addTimeslot(timeslot).subscribe(() => this.setup())
+    this.currentTimeSlot = null;
+  }
+
   rejectAll() {
     const suggestions = this.getCurrentSuggestions();
     combineLatest(suggestions.map(t => this.timeslotService.setRepeatable(t.model, false))).subscribe(() => this.setup())
+  }
+
+  reject(timeslot: Timeslot) {
+    const suggestion = this.getCurrentSuggestions().find(s => s.copy === timeslot);
+    this.timeslotService.setRepeatable(suggestion.model, false).subscribe(() => this.setup())
+    this.currentTimeSlot = null;
   }
 
   private getCurrentSuggestions() {
@@ -361,6 +378,10 @@ export class LocationCalendarComponent implements OnInit {
     }
 
     return [];
+  }
+
+  public isSuggestion(timeslot: Timeslot) {
+    return this.suggestions.map(s => s.copy).includes(timeslot);
   }
 
 }

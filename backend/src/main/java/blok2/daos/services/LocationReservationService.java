@@ -58,7 +58,7 @@ public class LocationReservationService implements ILocationReservationDao {
 
     @Override
     public List<LocationReservation> getUnattendedLocationReservations(LocalDate date) {
-        return locationReservationRepository.findAllUnattendedByDate(YearWeek.from(date).getYear(), YearWeek.from(date).getWeek(), DayOfWeek.from(date));
+        return locationReservationRepository.findAllUnattendedByDate(date);
     }
 
 
@@ -67,9 +67,7 @@ public class LocationReservationService implements ILocationReservationDao {
         LocalDate dayBefore = date.minusDays(1);
         LocalDateTime yesterday21PM = LocalDateTime.of(dayBefore, LocalTime.of(21, 0)); // dateTime since previous mailing batch.
         LocalDateTime today21PM = LocalDateTime.of(date, LocalTime.of(21, 0)); // dateTime of this mailing batch.
-        List<LocationReservation> locationReservations = locationReservationRepository.findAllUnattendedByDateAnd21PMRestriction(date.getYear(), YearWeek.from(date).getWeek(),
-                date.getDayOfWeek(),  dayBefore.getYear(), YearWeek.from(dayBefore).getWeek(), dayBefore.getDayOfWeek(), yesterday21PM, today21PM);
-        return locationReservations;
+        return locationReservationRepository.findAllUnattendedByDateAnd21PMRestriction(date,  dayBefore, yesterday21PM, today21PM);
     }
 
     @Override
@@ -156,8 +154,8 @@ public class LocationReservationService implements ILocationReservationDao {
 
     @Override
     public List<LocationReservation> getAllFutureLocationReservationsOfLocation(int locationId) {
-        YearWeek n = YearWeek.now();
-        return locationReservationRepository.findAllByLocationIdAndDateAfter(locationId, n.getYear(), n.getWeek(), LocalDate.now().getDayOfWeek());
+        LocalDate n = LocalDate.now();
+        return locationReservationRepository.findAllByLocationIdAndDateAfter(locationId, n);
     }
 
 }
