@@ -32,50 +32,25 @@
 
           <!-- Table body -->
           <tbody>
-<<<<<<< HEAD
-            <tr *ngFor="let pair of locationReservations">
-              <td>{{getLocation(pair) | async}}</td>
-              <td>{{pair.timeslot.timeslotDate.format("DD/MM/YYYY")}}</td>
-              <td>{{getBeginHour(pair.timeslot)}}</td>
+            <tr *ngFor="let reservation of locationReservations">
+              <td>{{getLocation(reservation) | async}}</td>
+              <td>{{reservation.timeslot.timeslotDate.format("DD/MM/YYYY")}}</td>
+              <td>{{getBeginHour(reservation.timeslot)}}</td>
 
               <!-- If not attended, we put some extra explanation, else we don't. -->
-              <td *ngIf="needTooltip(pair)" class="dotted_ul" data-toggle="tooltip" data-placement="top"
+              <td *ngIf="needTooltip(reservation)" class="dotted_ul" data-toggle="tooltip" data-placement="top"
                 title="{{'profile.reservations.locations.table.attended.notScannedExplanation' | translate}}">
-                {{getCorrectI18NObject(pair) | translate}}</td>
+                {{getCorrectI18NObject(reservation) | translate}}</td>
 
-              <td *ngIf="!needTooltip(pair)">{{getCorrectI18NObject(pair) | translate}}</td>
+              <td *ngIf="!needTooltip(reservation)">{{getCorrectI18NObject(reservation) | translate}}</td>
               <!-- User should not be able to delete past reservations, otherwise the penalty points
                  could be deleted as well -->
-              <td *ngIf="!isTimeslotInPast(pair.timeslot) && pair.attended !== false; else emptyTableData" class="hover"
-                style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
-                (click)="prepareToDeleteLocationReservation(pair, deleteLocationReservationModal)">
-                <span class="pointerCursor">
-                  <i class="icon-cross" aria-hidden="true"></i>
-                </span>
-              </td>
-            </tr>
-=======
-          <tr *ngFor="let reservation of locationReservations">
-            <td>{{getLocation(reservation) | async}}</td>
-            <td>{{pair.timeslot.timeslotDate.format("DD/MM/YYYY")}}</td>
-            <td>{{getBeginHour(reservation.timeslot)}}</td>
-
-            <!-- If not attended, we put some extra explanation, else we don't. -->
-            <td *ngIf="needTooltip(reservation)" class="dotted_ul"
-                data-toggle="tooltip" data-placement="top"
-                title="{{'profile.reservations.locations.table.attended.notScannedExplanation' | translate}}">
-              {{getCorrectI18NObject(reservation) | translate}}</td>
-
-            <td *ngIf="!needTooltip(reservation)">{{getCorrectI18NObject(reservation) | translate}}</td>
-            <!-- User should not be able to delete past reservations, otherwise the penalty points
-                 could be deleted as well -->
-            <td *ngIf="!isTimeslotInPast(reservation.timeslot) && pareservationir.attended !== false; else emptyTableData"
+              <td *ngIf="!reservation.timeslot.isInPast() && pareservationir.attended !== false; else emptyTableData"
                 class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
                 (click)="prepareToDeleteLocationReservation(reservation, deleteLocationReservationModal)">
-              <span class="glyphicon glyphicon-trash pointerCursor"></span>
-            </td>
-          </tr>
->>>>>>> timeslots-revamp
+                <span class="glyphicon glyphicon-trash pointerCursor"></span>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
