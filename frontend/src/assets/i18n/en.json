@@ -75,9 +75,7 @@
     "cookies": "Cookies",
     "accessibility": "Accessibility",
     "responsible-disclosure": "Responsible Disclosure",
-    "terms-of-use":"Terms of use"
-
-
+    "terms-of-use": "Terms of use"
   },
   "reservations": {
     "reservationButton": "Update Reservations"
@@ -116,7 +114,6 @@
     "notAvailableAbbreviation": "n/a",
     "waitingForServer": "Waiting for response of server...",
     "idSetByBackendMessage": "ID set by backend",
-
     "catchAllError": "Something seems to be wrong, please retry later."
   },
   "header": {
@@ -202,10 +199,8 @@
             "futureReservation": "Timeslot is in future",
             "number": "Student number",
             "scan": "Scan",
-
             "yetToScan": "Yet to scan",
             "notScanned": "Not scanned",
-
             "startScanning": "Start scanning",
             "finishScanning": "Finish scanning"
           }
@@ -214,7 +209,7 @@
           "title": "Edit opening days",
           "addButton": "Add new opening period",
           "date": "Date",
-          "day":"Day",
+          "day": "Day",
           "openingTime": "Opening time",
           "closingTime": "Closing time",
           "reservable": "Reservable",
@@ -632,15 +627,14 @@
           "message3": "If an absent student later this timeslot does show up, and there are still spots free, you can still set the student as attended by scanning him/her."
         },
         "deleteModal": {
-          "title": "Sure to delete the room reservation?",
-          "body": "Room reservation about to delete:",
+          "title": "Are you sure you want to delete this reservation?",
+          "body": "Reservation you are about to delete:",
           "yesButton": "Delete",
           "noButton": "Cancel",
           "loading": "Waiting on response of server...",
           "success": "Successfully deleted the room reservation.",
-          "error": "Something went wrong while deleting the room reservation..."
+          "error": "Something went wrong while deleting the room reservation."
         },
-
         "scanningErrorModal": {
           "title": "Scanning failed",
           "message": "Something went wrong while scanning. The attendance/absence was not registered correctly. Are you trying to change attendance from absent to present in a full timeslot? This reservation was removed and the seat is now reserved by someone else."
@@ -877,7 +871,7 @@
     "error": "Something went wrong with scanning this user. Please try again.",
     "mobile-hint": "Scanning works best when the barcode is aligned horizontally.",
     "handheld-hint": "To use the handheld scanner, select the input box below. If scan is succesful, the user will pop to the top of the list.",
-    "maybe":"This user wasn't found. Search in the list below, or try again.",
+    "maybe": "This user wasn't found. Search in the list below, or try again.",
     "warn-unattended": "Marking someone as unattended opens up the seat for reservation."
   }
 }

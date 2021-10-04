@@ -1,11 +1,11 @@
-import {Component, Input, OnInit, TemplateRef} from '@angular/core';
-import {AuthenticationService} from '../../services/authentication/authentication.service';
-import {LocationReservationsService} from '../../services/api/location-reservations/location-reservations.service';
-import {LocationReservation} from '../../shared/model/LocationReservation';
-import {Timeslot} from '../../shared/model/Timeslot';
+import { Component, Input, OnInit, TemplateRef } from '@angular/core';
+import { AuthenticationService } from '../../services/authentication/authentication.service';
+import { LocationReservationsService } from '../../services/api/location-reservations/location-reservations.service';
+import { LocationReservation } from '../../shared/model/LocationReservation';
+import { Timeslot } from '../../shared/model/Timeslot';
 import * as moment from 'moment';
-import {User} from '../../shared/model/User';
-import {Observable} from 'rxjs';
+import { User } from '../../shared/model/User';
+import { Observable } from 'rxjs';
 import { LocationService } from 'src/app/services/api/locations/location.service';
 import { Location } from 'src/app/shared/model/Location';
 import { map } from 'rxjs/operators';
@@ -55,7 +55,7 @@ export class ProfileReservationsComponent implements OnInit {
         (next) => {
           this.successGettingLocationReservations = true;
           this.locationReservations = next;
-          },
+        },
         () => {
           this.successGettingLocationReservations = false;
         });
@@ -67,7 +67,7 @@ export class ProfileReservationsComponent implements OnInit {
   ): void {
     this.successDeletingLocationReservation = undefined;
     this.locationReservationToDelete = locationReservation;
-    this.modalService.open(template);
+    this.modalService.open(template, { panelClass: ["cs--cyan", "bigmodal"] });
   }
 
   deleteLocationReservation(): void {
