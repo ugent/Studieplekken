@@ -103,7 +103,7 @@ public class TestDBLocationReservationDao extends BaseTest {
         Assert.assertEquals("addLocationReservation, getAllLocationReservationsOfUser", 1, list.size());
 
         // delete LocationReservation from database
-        locationReservationDao.deleteLocationReservation(u.getUserId(), timeslot);
+        locationReservationDao.deleteLocationReservation(lr);
         try {
             locationReservationDao.getLocationReservation(u.getUserId(), timeslot);
             Assert.fail("Location reservation was not deleted");

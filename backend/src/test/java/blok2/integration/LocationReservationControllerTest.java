@@ -87,6 +87,8 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
     @WithUserDetails(value = "student1", userDetailsServiceBeanName = "testUserDetails")
     public void testDeleteReservation() throws Exception {
         Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
+        int amountOfReservations = timeslot.getAmountOfReservations();
+
 
         LocationReservation reservation = new LocationReservation(student, timeslot, false);
 
@@ -98,12 +100,18 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
 
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
         Assert.assertEquals(currentAmount - 1, list.size());
+
+        timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
+        Assert.assertEquals(timeslot.getAmountOfReservations(), amountOfReservations -1);
+
     }
 
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testDeleteReservationAsAdmin() throws Exception {
         Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
+        int amountOfReservations = timeslot.getAmountOfReservations();
+
 
         LocationReservation reservation = new LocationReservation(student, timeslot, false);
 
@@ -115,6 +123,10 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
         Assert.assertEquals(currentAmount-1, list.size());
 
+        timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
+        Assert.assertEquals(timeslot.getAmountOfReservations(), amountOfReservations -1);
+
+
         // You can manually check in the logs if the mail was sent by looking for
         // Blocked sending mail to 'student1@ugent.be' with template file name 'mail/reservation_slot_deleted' and subject '[Werk- en Studieplekken] Uw gereserveerd tijdslot werd verwijderd' because 'mail' is not an active profile.
     }
@@ -123,6 +135,7 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
     @WithUserDetails(value = "student2", userDetailsServiceBeanName = "testUserDetails")
     public void testDeleteReservationAsOther() throws Exception {
         Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
+        int amountOfReservations = timeslot.getAmountOfReservations();
 
         LocationReservation reservation = new LocationReservation(student, timeslot, false);
 
@@ -132,6 +145,9 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
                 .andExpect(status().isForbidden());
 
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
+
+        timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
+        Assert.assertEquals(timeslot.getAmountOfReservations(), amountOfReservations);
         Assert.assertEquals(currentAmount, list.size());
     }
 

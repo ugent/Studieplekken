@@ -50,7 +50,7 @@ public interface ILocationReservationDao {
     /**
      * Delete the location reservation of a specified user at a specified timeslot
      */
-    void deleteLocationReservation(String userId, Timeslot timeslot);
+    void deleteLocationReservation(LocationReservation locationReservation);
 
     /**
      * This method should only be used for testing purposes, this does not check if there is still

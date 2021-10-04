@@ -95,21 +95,22 @@ public class LocationReservationController extends AuthorizedLocationController 
     @DeleteMapping
     @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void deleteLocationReservation(@AuthenticationPrincipal User user, @RequestBody @Valid LocationReservation locationReservation) {
+        LocationReservation dbLocationReservation = locationReservationDao.getLocationReservation(locationReservation.getUser().getUserId(), locationReservation.getTimeslot());
+
         isAuthorized(
-                (lr, u) -> hasAuthority(locationReservation.getTimeslot().getLocationId()) || lr.getUser().getUserId().equals(u.getUserId()),
-                locationReservation
+                (lr, u) -> hasAuthority(dbLocationReservation.getTimeslot().getLocationId()) || lr.getUser().getUserId().equals(u.getUserId()),
+                dbLocationReservation
         );
 
-        locationReservationDao.deleteLocationReservation(locationReservation.getUser().getUserId(),
-                locationReservation.getTimeslot());
-        logger.info(String.format("LocationReservation for user %s at time %s deleted", locationReservation.getUser(), locationReservation.getTimeslot().toString()));
+        locationReservationDao.deleteLocationReservation(dbLocationReservation);
+        logger.info(String.format("LocationReservation for user %s at time %s deleted", dbLocationReservation.getUser(), dbLocationReservation.getTimeslot().toString()));
 
         // Send email to student if student is not the user who requested the deletion.
-        if (!locationReservation.getUser().getUserId().equals(user.getUserId())) {
+        if (!dbLocationReservation.getUser().getUserId().equals(user.getUserId())) {
             try {
-                mailService.sendReservationSlotDeletedMessage(locationReservation.getUser().getMail(), locationReservation.getTimeslot());
+                mailService.sendReservationSlotDeletedMessage(dbLocationReservation.getUser().getMail(), dbLocationReservation.getTimeslot());
             } catch (MessagingException e) {
-                logger.error(String.format("Could not send mail to student %s about deleted reservation slot %s", user.getUsername(), locationReservation.getTimeslot().toString()));
+                logger.error(String.format("Could not send mail to student %s about deleted reservation slot %s", user.getUsername(), dbLocationReservation.getTimeslot().toString()));
             }
         }
     }

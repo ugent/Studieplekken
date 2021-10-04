@@ -93,10 +93,12 @@ public class LocationReservationService implements ILocationReservationDao {
 
     @Override
     @javax.transaction.Transactional
-    public void deleteLocationReservation(String userId, Timeslot timeslot) {
-        locationReservationRepository.decrementCountByOne(timeslot.getTimeslotSeqnr());
+    public void deleteLocationReservation(LocationReservation locationReservation) {
+        if(locationReservation.getAttended() == null || locationReservation.getAttended())
+            locationReservationRepository.decrementCountByOne(locationReservation.getTimeslot().getTimeslotSeqnr());
+
         locationReservationRepository.deleteById(new LocationReservation.LocationReservationId(
-                timeslot.getTimeslotSeqnr(), userId
+                locationReservation.getTimeslot().getTimeslotSeqnr(), locationReservation.getUser().getUserId()
         ));
     }
 
