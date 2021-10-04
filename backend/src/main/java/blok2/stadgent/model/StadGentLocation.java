@@ -149,9 +149,6 @@ public class StadGentLocation {
             GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
             Point point = geometryFactory.createPoint(new Coordinate(loc.getBuilding().getLatitude(), loc.getBuilding().getLongitude()));
             Point targetPoint = (Point) JTS.transform(point, t);
-            System.out.println(loc.getBuilding().getLongitude()
-            );
-            System.out.println(targetPoint);
 
             return new StadGentLocation(
                     loc.getLocationId(),

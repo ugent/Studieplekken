@@ -25,8 +25,6 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String username = request.getHeader("AS-USER");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println(auth);
-        System.out.println(username);
 
         if(username != null && auth != null && auth.getPrincipal() instanceof User && ((User) auth.getPrincipal()).isAdmin()) {
             Authentication token = new CustomAuthenticationToken(username);

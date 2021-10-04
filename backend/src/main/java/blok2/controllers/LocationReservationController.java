@@ -60,7 +60,6 @@ public class LocationReservationController extends AuthorizedLocationController 
     // Not sure why you'd be allowed to get a user's reservations if you own a location.
     // TODO: We suddenly use a request parameter here. Probably better to streamline it with everything else and put it in the url.
     public List<LocationReservation> getLocationReservationsByUserId(@RequestParam String id) {
-        System.out.println("YESYES GOT HERE!");
         return locationReservationDao.getAllLocationReservationsOfUser(id);
     }
 
