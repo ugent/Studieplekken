@@ -9,7 +9,7 @@ networks:
 
 services:
   oap:
-    image: apache/skywalking-oap-server
+    image: apache/skywalking-oap-server:8.7.0-es7
     restart: on-failure
     ports:
       - 11800:11800
@@ -32,7 +32,7 @@ services:
         max-size: "100m"
         max-file: "5"
   ui:
-    image: apache/skywalking-ui
+    image: apache/skywalking-ui:8.7.0-es7
     depends_on:
       - oap
     links:
