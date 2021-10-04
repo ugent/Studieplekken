@@ -53,4 +53,12 @@
             order by l.name;
         </query>
     </named-native-query>
+    
+    <named-native-query name="LocationReservation.decrementCountByOne">
+        <query>
+            update timeslots
+            set reservation_count = reservation_count - 1
+            where sequence_number = ?;
+        </query>
+    </named-native-query>
 </entity-mappings>
