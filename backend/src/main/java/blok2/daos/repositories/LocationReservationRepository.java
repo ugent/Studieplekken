@@ -2,8 +2,10 @@ package blok2.daos.repositories;
 
 import blok2.model.reservations.LocationReservation;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import javax.transaction.Transactional;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -43,4 +45,12 @@ public interface LocationReservationRepository extends JpaRepository<LocationRes
     List<LocationReservation> findAllByLocationIdAndDateAfter(int locationId, int year, int week, DayOfWeek value);
 
 
+    /**
+     * Decrements the timeslot reservation count by one on delete.
+     *
+     * This is a named query (cfr. orm.xml)
+     * @param timeslotId id of the to decrement timeslot
+     */
+    @Modifying
+    void decrementCountByOne(int timeslotId);
 }
