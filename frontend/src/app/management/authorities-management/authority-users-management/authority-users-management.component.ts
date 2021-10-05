@@ -123,8 +123,8 @@ export class AuthorityUsersManagementComponent implements OnInit {
     this.subscribeOnSearchedUsers(usersObs);
   }
 
-  addUserToAuthority(): void {
-    const userId: string = this.selectedUserFormControl.value as string;
+  addUserToAuthority(user: User): void {
+    const userId: string = user.userId;
     const authorityId = this.authority.authorityId;
     this.successAddingAuthority = null;
 
