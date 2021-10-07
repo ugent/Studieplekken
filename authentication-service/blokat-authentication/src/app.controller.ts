@@ -13,7 +13,19 @@ export class AppController {
   @UseGuards(AuthGuard('local'))
   @Post('auth/login')
   async login(@Request() req: any) {
-    return this.authService.login(req.user);
+    return this.authService.issueToken(req.user);
+  }
+
+  @UseGuards(AuthGuard('saml'))
+  @Get('auth/saml')
+  async loginSaml(@Request() req: any) {
+    return this.authService.issueToken(req.user);
+  }
+
+  @UseGuards(AuthGuard('saml'))
+  @Post('api/SSO/saml')
+  async loginSamlGet(@Request() req: any) {
+    return this.authService.issueToken(req.user);
   }
 
   @Get()

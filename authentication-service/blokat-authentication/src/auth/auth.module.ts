@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { DbModule } from 'src/db/db.module';
 import { AuthService } from './auth.service';
 import { jwtConstants } from './constants';
-import { LocalStrategy } from './local.strategy';
+import { LocalStrategy } from './local/local.strategy';
+import { SamlStrategy } from './saml/saml.strategy';
 
 @Module({
   imports: [
@@ -12,8 +14,9 @@ import { LocalStrategy } from './local.strategy';
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '60s' },
     }),
+    DbModule,
   ],
-  providers: [AuthService, LocalStrategy],
+  providers: [AuthService, LocalStrategy, SamlStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}
