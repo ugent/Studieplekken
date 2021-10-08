@@ -11,4 +11,6 @@ RUN npx prisma generate
 COPY . .
 RUN yarn build
 
+COPY auth/* auth/*
+
 CMD [ "node", "dist/main.js" ]
