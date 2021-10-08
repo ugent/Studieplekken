@@ -9,7 +9,7 @@ import * as path from 'path';
 export class SamlStrategy extends PassportStrategy(Strategy) {
   constructor() {
     super({
-      ...readMetadata('./sso-artevelde.xml'),
+      ...readMetadata('./sso-hogent.xml'),
       callbackUrl: 'https://studieplekken-dev.ugent.be/api/SSO/saml',
       issuer: 'https://studieplekken-dev.ugent.be/api/metadata/saml',
       privateKey: fs.readFileSync(path.join(__dirname, './key.pem')),
