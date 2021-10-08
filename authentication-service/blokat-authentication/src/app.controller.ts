@@ -1,4 +1,4 @@
-import { Controller, Request, Post, UseGuards, Get } from '@nestjs/common';
+import { Controller, Request, Post, UseGuards, Get, Res } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth/auth.service';
 import { DbUserService } from './db/db-user/db-user.service';
@@ -23,9 +23,11 @@ export class AppController {
   }
 
   @UseGuards(AuthGuard('saml'))
-  @Post('api/SSO/saml')
-  async loginSamlGet(@Request() req: any) {
-    return this.authService.issueToken(req.user);
+  @Post('auth/saml')
+  async loginSamlGet(@Request() req: any, @Res() res: any) {
+    const token : string = (await this.authService.issueToken(req.user)).access_token;
+    const redirectUrl : string = `/`;
+    return res.redirect(`${redirectUrl}?token=${token}`);
   }
 
   @Get()

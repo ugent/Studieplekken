@@ -9,9 +9,11 @@ import * as path from 'path';
 export class SamlStrategy extends PassportStrategy(Strategy) {
   constructor() {
     super({
-      ...readMetadata('./sso-hogent.xml'),
-      callbackUrl: 'https://studieplekken-dev.ugent.be/api/SSO/saml',
-      issuer: 'https://studieplekken-dev.ugent.be/api/metadata/saml',
+      ...readMetadata('./metadata-okta.xml'),
+      // callbackUrl: 'https://studieplekken-dev.ugent.be/api/SSO/saml',
+      // issuer: 'https://studieplekken-dev.ugent.be/api/metadata/saml',
+      callbackUrl: 'https://localhost:8087/api/SSO/saml',
+      issuer: 'https://localhost:8087/api/metadata/saml',
       privateKey: fs.readFileSync(path.join(__dirname, './key.pem')),
       decryptionPvk: fs.readFileSync(path.join(__dirname, './key.pem')),
     });
@@ -19,7 +21,6 @@ export class SamlStrategy extends PassportStrategy(Strategy) {
   }
 
   validate(first: any) {
-    console.log(first.getAssertion('username'));
     return first.getAssertion('username');
   }
 }
