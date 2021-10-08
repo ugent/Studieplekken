@@ -5,11 +5,11 @@ import * as path from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    httpsOptions: {
-      cert: fs.readFileSync(path.join(__dirname, './cert.pem')),
-      key: fs.readFileSync(path.join(__dirname, './key.pem')),
-    },
+    // httpsOptions: {
+    //   cert: fs.readFileSync(path.join(__dirname, './cert.pem')),
+    //   key: fs.readFileSync(path.join(__dirname, './key.pem')),
+    // },
   });
-  await app.listen(8080);
+  await app.listen(8087);
 }
 bootstrap();

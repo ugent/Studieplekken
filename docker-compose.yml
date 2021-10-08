@@ -25,6 +25,17 @@ services:
       options:
         max-size: "100m"
         max-file: "5"
+
+  authentication:
+    restart: always
+    build: authentication-service/blokat-authentication
+    ports:
+      - "8087:8087"
+    depends_on:
+      - db
+    networks:
+      - blokat
+
   db:
     image: postgres:12-alpine
     command: postgres -c 'max_connections=500' -c 'shared_buffers=1024' -c 'log_min_messages=notice'
@@ -71,8 +82,6 @@ services:
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
       - postfix_spool:/var/spool/postfix
-
-
 
 networks:
   blokat:
