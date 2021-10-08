@@ -21,6 +21,9 @@ $ yarn run start:dev
 $ yarn run start:prod
 ```
 
+# Credentials
+All credentials used for authentication are contained in the `/auth` directory. 
+
 ## Test
 
 ```bash
