@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { users } from '@prisma/client';
+import { SamlUser } from 'src/configModule/config';
 import { DbUserService } from '../db/db-user/db-user.service';
 
 @Injectable()
@@ -15,11 +16,11 @@ export class AuthService {
     return user || null;
   }
 
-  async issueToken(user: users) {
-    const payload = { sub: user.user_id };
+  async issueToken(user: SamlUser): Promise<{access_token: string}> {
+    const payload = { sub: user.id };
 
-    return {
+    return Promise.resolve({
       access_token: this.jwtService.sign(payload),
-    };
+    });
   }
 }

@@ -1,4 +1,4 @@
-import { Configuration } from "src/configModule/config";
+import { Configuration, Institution } from "src/configModule/config";
 
 export const configuration: Configuration = {
   auth: {
@@ -8,7 +8,7 @@ export const configuration: Configuration = {
         callbackUrl: 'https://localhost:8087/api/SSO/saml',
         issuer: 'https://localhost:8087',
         metadataFile: 'metadata-okta.xml',
-        toSamlUser: (a: any) => ({ firstName: a.firstName, lastName: a.lastName, email: a.email, id: a.nameID })
+        toSamlUser: (a: any) => ({ firstName: a.firstName, lastName: a.lastName, email: a.email, id: a.nameID, institution: Institution.UGENT })
       },
     ],
   },

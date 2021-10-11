@@ -10,23 +10,22 @@ export class AppController {
     private dbUsersService: DbUserService,
   ) {}
 
-  @UseGuards(AuthGuard('local'))
-  @Post('auth/login')
-  async login(@Request() req: any) {
-    return this.authService.issueToken(req.user);
-  }
 
   @UseGuards(AuthGuard('saml'))
   @Get('login/:idp')
   async loginSaml(@Request() req: any) {
-    return this.authService.issueToken(req.user);
+    return await this.authService.issueToken(req.user);
   }
 
   @UseGuards(AuthGuard('saml'))
   @Post('auth/saml')
   async loginSamlGet(@Request() req: any, @Res() res: any) {
-    const token : string = (await this.authService.issueToken(req.user)).access_token;
-    const redirectUrl : string = `/`;
+    // No need to retrieve the actual user, only create if it does not exist
+    await this.dbUsersService.getOrCreateUserBySaml(req.user);
+
+    const token: string = (await this.authService.issueToken(req.user))
+      .access_token;
+    const redirectUrl: string = `/`;
     return res.redirect(`${redirectUrl}?token=${token}`);
   }
 

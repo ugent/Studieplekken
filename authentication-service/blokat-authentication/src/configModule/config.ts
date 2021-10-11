@@ -7,11 +7,18 @@ type HTTPSOptions = {
   keyLocation: string;
 };
 
+export enum Institution {
+  HOGENT = 'HoGent',
+  UGENT = 'UGent',
+  ARTEVELDE = 'Arteveldehogeschool',
+}
+
 export interface SamlUser {
   email: string;
   firstName: string;
   lastName: string;
   id: string;
+  institution: Institution;
 }
 
 export type providerData = {

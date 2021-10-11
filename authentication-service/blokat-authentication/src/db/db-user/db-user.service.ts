@@ -1,4 +1,6 @@
+import { users } from '.prisma/client';
 import { Injectable } from '@nestjs/common';
+import { SamlUser } from 'src/configModule/config';
 import { DbService } from '../db.service';
 
 @Injectable()
@@ -9,5 +11,26 @@ export class DbUserService {
     return this.prisma.users.findUnique({
       where: { user_id },
     });
+  }
+
+  public async getOrCreateUserBySaml(samlUser: SamlUser): Promise<users> {
+    const user = await this.prisma.users.findUnique({
+      where: { user_id: samlUser.id },
+    });
+
+    if(user)
+      return user;
+
+    console.log("INFO: adding user " + samlUser.email + " to the database.")
+
+    return await this.prisma.users.create({
+      data: {
+        user_id: samlUser.id,
+        mail: samlUser.email,
+        first_name: samlUser.firstName,
+        last_name: samlUser.lastName,
+        institution: samlUser.institution
+      }
+    })
   }
 }
