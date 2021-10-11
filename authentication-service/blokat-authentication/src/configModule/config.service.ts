@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { configuration as development_config } from 'config/environment/environment.dev';
+import { configuration as development_config } from '../../config/environment/environment.dev';
 import { assert } from 'console';
 import { Configuration } from './config';
 
 const DEVELOPMENT_STRING = "development"
+const TEST_STRING = 'test';
+
 
 @Injectable()
 export class ConfigService {
@@ -18,6 +20,8 @@ export class ConfigService {
 
 const configMap: Map<string, Configuration> = new Map();
 configMap.set(DEVELOPMENT_STRING, development_config);
+configMap.set(TEST_STRING, development_config);
+
 
 
 export function getConfig() {

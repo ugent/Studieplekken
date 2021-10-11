@@ -2,13 +2,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { readMetadata, SamlStrategy } from './saml.strategy';
 import * as fs from 'fs';
 import * as path from 'path';
+import { ConfigService } from '../../configModule/config.service';
 
 describe('SamlService', () => {
   let service: SamlStrategy;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [SamlStrategy],
+      providers: [SamlStrategy, ConfigService],
     }).compile();
     service = module.get<SamlStrategy>(SamlStrategy);
   });
@@ -18,7 +19,11 @@ describe('SamlService', () => {
   });
 
   it('Should generate the metadata', () => {
-    const cert = fs.readFileSync(path.join(__dirname, './cert.pem')).toString();
+    const cert = fs
+      .readFileSync(
+        path.join(__dirname, '../../../config/auth/saml', './cert.pem'),
+      )
+      .toString();
     console.log(service.generateServiceProviderMetadata(cert, cert));
     expect(service.generateServiceProviderMetadata(cert, cert)).toBeDefined();
   });

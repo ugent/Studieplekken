@@ -3,8 +3,8 @@ import { Configuration } from "src/configModule/config";
 export const configuration: Configuration = {
   auth: {
     callbackUrl: 'https://localhost:8087/api/SSO/saml',
-    issuer: 'https://localhost:8087/api/metadata/saml',
-    metadataFile: "metadata-okta.xml",
+    issuer: 'https://localhost:8087',
+    metadataFile: "metadata-samltest.xml",
   },
 
   https: {
