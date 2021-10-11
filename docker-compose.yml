@@ -35,6 +35,8 @@ services:
       - db
     networks:
       - blokat
+    environment:
+      NODE_ENV: staging
 
   db:
     image: postgres:12-alpine
