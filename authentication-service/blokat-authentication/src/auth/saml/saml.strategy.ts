@@ -4,22 +4,22 @@ import { Strategy } from 'passport-saml';
 import { MetadataReader, toPassportConfig } from 'passport-saml-metadata';
 import * as fs from 'fs';
 import * as path from 'path';
+import { ConfigService } from 'src/configModule/config.service';
 
-const AUTH_CREDENTIALS_DIR = '../../../auth/';
+const AUTH_CREDENTIALS_DIR = '../../../config/auth/saml/';
 
 @Injectable()
 export class SamlStrategy extends PassportStrategy(Strategy) {
-  constructor() {
+  constructor(configService: ConfigService) {
     super({
-      ...readMetadata(AUTH_CREDENTIALS_DIR + 'saml/metadata-okta.xml'),
+      ...readMetadata(AUTH_CREDENTIALS_DIR + configService.getCurrentConfiguration().auth.metadataFile),
       // callbackUrl: 'https://studieplekken-dev.ugent.be/api/SSO/saml',
       // issuer: 'https://studieplekken-dev.ugent.be/api/metadata/saml',
-      callbackUrl: 'https://localhost:8087/api/SSO/saml',
-      issuer: 'https://localhost:8087/api/metadata/saml',
-      privateKey: fs.readFileSync(path.join(__dirname, AUTH_CREDENTIALS_DIR, 'saml/key.pem')),
-      decryptionPvk: fs.readFileSync(path.join(__dirname, AUTH_CREDENTIALS_DIR, 'saml/key.pem')),
+      callbackUrl: configService.getCurrentConfiguration().auth.callbackUrl,
+      issuer: configService.getCurrentConfiguration().auth.issuer,
+      privateKey: fs.readFileSync(path.join(__dirname, AUTH_CREDENTIALS_DIR, 'key.pem')),
+      decryptionPvk: fs.readFileSync(path.join(__dirname, AUTH_CREDENTIALS_DIR, 'key.pem')),
     });
-    console.log(readMetadata(AUTH_CREDENTIALS_DIR +  'saml/sso-artevelde.xml'));
   }
 
   validate(first: any) {

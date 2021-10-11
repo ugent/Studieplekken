@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { ConfigModule } from 'src/configModule/config.module';
 import { DbModule } from 'src/db/db.module';
 import { AuthService } from './auth.service';
 import { jwtConstants } from './constants';
@@ -15,7 +16,8 @@ import { SamlStrategy } from './saml/saml.strategy';
       signOptions: { expiresIn: '60s' },
     }),
     DbModule,
-  ],
+    ConfigModule
+    ],
   providers: [AuthService, LocalStrategy, SamlStrategy],
   exports: [AuthService],
 })

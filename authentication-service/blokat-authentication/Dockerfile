@@ -8,9 +8,10 @@ RUN yarn install
 COPY prisma/ .
 RUN npx prisma generate
 
+COPY config/* config/*
+
 COPY . .
 RUN yarn build
 
-COPY auth/* auth/*
 
 CMD [ "node", "dist/main.js" ]
