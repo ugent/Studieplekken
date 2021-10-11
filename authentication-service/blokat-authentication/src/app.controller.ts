@@ -18,7 +18,7 @@ export class AppController {
   }
 
   @UseGuards(AuthGuard('saml'))
-  @Post('auth/saml')
+  @Post('api/SSO/saml')
   async loginSamlGet(@Request() req: any, @Res() res: any) {
     // No need to retrieve the actual user, only create if it does not exist
     await this.dbUsersService.getOrCreateUserBySaml(req.user);
