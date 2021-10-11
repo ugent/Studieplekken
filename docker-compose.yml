@@ -27,7 +27,6 @@ services:
         max-file: "5"
 
   authentication:
-    restart: always
     build: authentication-service/blokat-authentication
     ports:
       - "8087:8087"

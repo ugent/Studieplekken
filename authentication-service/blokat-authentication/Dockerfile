@@ -8,10 +8,10 @@ RUN yarn install
 COPY prisma/ .
 RUN npx prisma generate
 
-COPY config/* config/*
+COPY config/* config/
 
 COPY . .
 RUN yarn build
 
 
-CMD [ "node", "dist/main.js" ]
+CMD [ "node", "dist/src/main.js" ]

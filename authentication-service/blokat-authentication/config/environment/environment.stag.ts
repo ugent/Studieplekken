@@ -39,14 +39,12 @@ export const configuration: Configuration = {
   },
 
   https: {
-    enabled: true,
-    certLocation: 'config/auth/cert.pem',
-    keyLocation: 'config/auth/key.pem',
-  },
+    enabled: false,
+ },
 
   database: {
-    username: ***REMOVED***,
-    password: ***REMOVED***,
+    username: 'blokat',
+    password: '***REMOVED***',
     url: 'db',
     port: '5432',
   },
