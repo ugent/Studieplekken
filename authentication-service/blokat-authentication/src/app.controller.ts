@@ -17,7 +17,7 @@ export class AppController {
   }
 
   @UseGuards(AuthGuard('saml'))
-  @Get('auth/saml')
+  @Get('login/:idp')
   async loginSaml(@Request() req: any) {
     return this.authService.issueToken(req.user);
   }
@@ -31,7 +31,7 @@ export class AppController {
   }
 
   @Get()
-  async home(@Request() req: any) {
-    return await this.dbUsersService.userById('000170335535');
+  async home() {
+    return "Online";
   }
 }

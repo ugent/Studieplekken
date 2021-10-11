@@ -16,7 +16,7 @@ export class AuthService {
   }
 
   async issueToken(user: users) {
-    const payload = { username: user.first_name, sub: user.user_id };
+    const payload = { sub: user.user_id };
 
     return {
       access_token: this.jwtService.sign(payload),
