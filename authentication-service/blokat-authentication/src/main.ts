@@ -11,14 +11,18 @@ async function bootstrap() {
     config.https.enabled === true
       ? {
           httpsOptions: {
-            cert: fs.readFileSync(path.join(__dirname, "..", config.https.certLocation)),
-            key: fs.readFileSync(path.join(__dirname, "..", config.https.keyLocation)),
+            cert: fs.readFileSync(
+              path.join(__dirname, '..', config.https.certLocation),
+            ),
+            key: fs.readFileSync(
+              path.join(__dirname, '..', config.https.keyLocation),
+            ),
           },
         }
       : undefined;
 
   const app = await NestFactory.create(AppModule, {
-    ...httpsOptions
+    ...httpsOptions,
   });
   await app.listen(8087);
 }

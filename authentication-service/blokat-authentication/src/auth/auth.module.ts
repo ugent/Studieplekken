@@ -16,8 +16,8 @@ import { SamlStrategy } from './saml/saml.strategy';
       signOptions: { expiresIn: '60s' },
     }),
     DbModule,
-    ConfigModule
-    ],
+    ConfigModule,
+  ],
   providers: [AuthService, LocalStrategy, SamlStrategy],
   exports: [AuthService],
 })

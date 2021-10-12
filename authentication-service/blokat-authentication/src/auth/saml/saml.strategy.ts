@@ -22,7 +22,7 @@ export class SamlStrategy extends PassportStrategy(MultiSamlStrategy) {
     super(getMultiSamlConfig(configService));
   }
 
-  validate(request: Request, profile: Profile, verified: any) {
+  validate(request: Request, profile: Profile) {
     const provider = getProviderConfiguration(this.configService, request);
     return provider.toSamlUser(profile);
   }
@@ -37,16 +37,19 @@ const getMultiSamlConfig: (a: ConfigService) => MultiSamlConfig = (c) => ({
     // Find the correct configuration for this provider
     const provider = getProviderConfiguration(c, req);
 
-    if (!provider) cb(new HttpException("Unsupported IDP", 400));
+    if (!provider) cb(new HttpException('Unsupported IDP', 400));
     else cb(null, createSamlOptionsFromConfig(provider));
   },
 });
 
-function getProviderConfiguration(configService: ConfigService, request: Request): providerData {
-    const search = request.params['idp'] || request.body.RelayState;
+function getProviderConfiguration(
+  configService: ConfigService,
+  request: Request,
+): providerData {
+  const search = request.params['idp'] || request.body.RelayState;
   return configService
-      .getCurrentConfiguration()
-      .auth.providers.find((prov) => search === prov.loginUrl);
+    .getCurrentConfiguration()
+    .auth.providers.find((prov) => search === prov.loginUrl);
 }
 
 function createSamlOptionsFromConfig(config: providerData): SamlConfig {
@@ -70,10 +73,10 @@ function createSamlOptionsFromConfig(config: providerData): SamlConfig {
 const metadataMap = new Map<string, string>();
 
 export function readMetadata(localP: string) {
-  if(!metadataMap.has(localP)) {
-  const data = fs
-    .readFileSync(path.join(__dirname, AUTH_CREDENTIALS_DIR, localP))
-    .toString();
+  if (!metadataMap.has(localP)) {
+    const data = fs
+      .readFileSync(path.join(__dirname, AUTH_CREDENTIALS_DIR, localP))
+      .toString();
 
     metadataMap.set(localP, data);
   }

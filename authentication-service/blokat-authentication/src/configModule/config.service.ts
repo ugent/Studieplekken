@@ -11,8 +11,6 @@ const STAG_STRING = 'staging';
 
 @Injectable()
 export class ConfigService {
-  constructor() {}
-
   public getCurrentConfiguration(): Configuration {
     return getConfig();
   }

@@ -10,7 +10,6 @@ export class AppController {
     private dbUsersService: DbUserService,
   ) {}
 
-
   @UseGuards(AuthGuard('saml'))
   @Get('login/:idp')
   async loginSaml(@Request() req: any) {
@@ -25,12 +24,12 @@ export class AppController {
 
     const token: string = (await this.authService.issueToken(req.user))
       .access_token;
-    const redirectUrl: string = `/`;
+    const redirectUrl = `/`;
     return res.redirect(`${redirectUrl}?token=${token}`);
   }
 
   @Get()
   async home() {
-    return "Online";
+    return 'Online';
   }
 }

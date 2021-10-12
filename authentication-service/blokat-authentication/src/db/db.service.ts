@@ -4,10 +4,8 @@ import { ConfigService } from '../configModule/config.service';
 
 @Injectable()
 export class DbService extends PrismaClient implements OnModuleInit {
-
   constructor(configService: ConfigService) {
-
-    const dbConfig = configService.getCurrentConfiguration().database
+    const dbConfig = configService.getCurrentConfiguration().database;
     super({
       datasources: {
         db: {

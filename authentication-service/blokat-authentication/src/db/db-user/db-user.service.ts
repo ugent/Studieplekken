@@ -18,10 +18,9 @@ export class DbUserService {
       where: { user_id: samlUser.id },
     });
 
-    if(user)
-      return user;
+    if (user) return user;
 
-    console.log("INFO: adding user " + samlUser.email + " to the database.")
+    console.log('INFO: adding user ' + samlUser.email + ' to the database.');
 
     return await this.prisma.users.create({
       data: {
@@ -29,8 +28,8 @@ export class DbUserService {
         mail: samlUser.email,
         first_name: samlUser.firstName,
         last_name: samlUser.lastName,
-        institution: samlUser.institution
-      }
-    })
+        institution: samlUser.institution,
+      },
+    });
   }
 }
