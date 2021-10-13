@@ -16,13 +16,13 @@ export class AppController {
   /******* CAS ENDPOINTS  *********/
 
   @UseGuards(AuthGuard('cas'))
-  @Get('login/cas')
+  @Get('auth/login/cas')
   async casLogin(@Request() req: any) {
     return await this.authService.issueToken(req.user);
   }
 
   @UseGuards(AuthGuard('cas'))
-  @Get('login/cas/:callbackURL')
+  @Get('auth/login/cas/:callbackURL')
   async casLoginCallback(@Request() req: any, @Res() res: any) {
     await this.dbUsersService.getOrCreateUserBySaml(req.user);
 
@@ -41,7 +41,7 @@ export class AppController {
 
   /******* TEST ENDPOINTS  *********/
 
-  @Get('/login/test')
+  @Get('auth/login/test')
   @UseGuards(ConfigGuard)
   async testEndpoint() {
     const id = randomUUID();
@@ -58,7 +58,7 @@ export class AppController {
   }
 
   @UseGuards(AuthGuard('saml'))
-  @Get('login/:idp')
+  @Get('auth/login/:idp')
   async loginSaml(@Request() req: any) {
     return await this.authService.issueToken(req.user);
   }

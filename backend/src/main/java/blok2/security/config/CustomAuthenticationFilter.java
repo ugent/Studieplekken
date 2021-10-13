@@ -24,6 +24,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String username = request.getHeader("AS-USER");
+        System.out.println("going to change the user!");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         if(username != null && auth != null && auth.getPrincipal() instanceof User && ((User) auth.getPrincipal()).isAdmin()) {

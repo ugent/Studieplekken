@@ -29,17 +29,17 @@ export class CasStrategy extends PassportStrategy(Strategy, 'cas') {
 
   service(req: any) {
     const urlEncoded = encodeURIComponent(
-      req.query.callbackURL || req.params.callbackURL,
+      req.query.callbackUrl || req.params.callbackURL,
     );
 
     const final =
       urlEncoded === 'undefined'
         ? `${
             this.configService.getCurrentConfiguration().auth.cas.serverBaseURL
-          }/login/cas/`
+          }/auth/login/cas/`
         : `${
             this.configService.getCurrentConfiguration().auth.cas.serverBaseURL
-          }/login/cas/${urlEncoded}/`;
+          }/auth/login/cas/${urlEncoded}/`;
 
     return final;
   }

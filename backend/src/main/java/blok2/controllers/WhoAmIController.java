@@ -29,6 +29,7 @@ public class WhoAmIController {
     @GetMapping
     @PreAuthorize("permitAll()")
     public User whoAmI() {
+        System.out.println("who am i?");
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof User) {
             return (User) principal;

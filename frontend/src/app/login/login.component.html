@@ -9,19 +9,19 @@
         <div class="col-xs-12 col-sm-4 p-5">
           <h2>{{'login.title' | translate}}</h2>
 
-          <a href="{{casFlowTriggerUrl}}" class="btn btn-secondary"
+          <a href="{{casFlowTriggerUrl}}?callbackUrl={{getCallbackUrl()}}" class="btn btn-secondary"
                   (click)="loginButtonClicked()">
             {{'login.casLogin' | translate}}
           </a>
           <br>
           <br>
-          <a href="{{hoGentFlowTriggerUrl}}" class="btn btn-secondary"
+          <a href="{{hoGentFlowTriggerUrl}}?callbackUrl={{getCallbackUrl()}}" class="btn btn-secondary"
              (click)="loginButtonClicked()">
             {{'login.hoGentLogin' | translate}}
           </a>
           <br>
           <br>
-          <a href="{{arteveldeHSFlowTriggerUrl}}" class="btn btn-secondary"
+          <a href="{{arteveldeHSFlowTriggerUrl}}?callbackUrl={{getCallbackUrl()}}" class="btn btn-secondary"
              (click)="loginButtonClicked()">
             {{'login.arteveldeHSLogin' | translate}}
           </a>
