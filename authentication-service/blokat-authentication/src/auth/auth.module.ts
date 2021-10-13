@@ -13,7 +13,7 @@ import { SamlStrategy } from './saml/saml.strategy';
     PassportModule,
     JwtModule.register({
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '5 days' },
     }),
     DbModule,
     ConfigModule,

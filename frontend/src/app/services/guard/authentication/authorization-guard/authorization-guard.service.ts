@@ -30,7 +30,7 @@ export class AuthorizationGuardService implements CanActivate {
       filter((f) => f != null),
       map(() => {
         if (url.startsWith('/login')) {
-          activate = !this.authenticationService.isLoggedIn();
+          activate = true;
         } else if (url.startsWith('/dashboard')) {
           activate = true;
         } else if (url.startsWith('/profile')) {
