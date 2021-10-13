@@ -5,7 +5,6 @@ import { ConfigModule } from '../configModule/config.module';
 import { DbModule } from '../db/db.module';
 import { AuthService } from './auth.service';
 import { jwtConstants } from './constants';
-import { LocalStrategy } from './local/local.strategy';
 import { SamlStrategy } from './saml/saml.strategy';
 
 @Module({
@@ -18,7 +17,7 @@ import { SamlStrategy } from './saml/saml.strategy';
     DbModule,
     ConfigModule,
   ],
-  providers: [AuthService, LocalStrategy, SamlStrategy],
+  providers: [AuthService, SamlStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}

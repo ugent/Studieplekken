@@ -24,8 +24,13 @@ export class AppController {
 
     const token: string = (await this.authService.issueToken(req.user))
       .access_token;
-    const redirectUrl = `/`;
-    return res.redirect(`${redirectUrl}?token=${token}`);
+
+    try {
+      const redirectUrl = JSON.parse(req.body.RelayState)?.callbackUrl;
+      if (redirectUrl) return res.redirect(`${redirectUrl}?token=${token}`);
+    } catch {
+      return res.send({ access_token: token });
+    }
   }
 
   @Get()

@@ -32,13 +32,15 @@ const getMultiSamlConfig: (a: ConfigService) => MultiSamlConfig = (c) => ({
   passReqToCallback: true,
   // See if the url includes the login url endpoints that are expected
   getSamlOptions: (req, cb) => {
-    // Idp is determined by either the query param or the relay state
-
     // Find the correct configuration for this provider
     const provider = getProviderConfiguration(c, req);
 
     if (!provider) cb(new HttpException('Unsupported IDP', 400));
-    else cb(null, createSamlOptionsFromConfig(provider));
+    else
+      cb(
+        null,
+        createSamlOptionsFromConfig(provider, req.query.callbackUrl as string),
+      );
   },
 });
 
@@ -46,13 +48,19 @@ function getProviderConfiguration(
   configService: ConfigService,
   request: Request,
 ): providerData {
-  const search = request.params['idp'] || request.body.RelayState;
+  // Idp is determined by either the query param or the relay state
+  const search =
+    request.params['idp'] || JSON.parse(request.body.RelayState).idp;
+
   return configService
     .getCurrentConfiguration()
     .auth.providers.find((prov) => search === prov.loginUrl);
 }
 
-function createSamlOptionsFromConfig(config: providerData): SamlConfig {
+function createSamlOptionsFromConfig(
+  config: providerData,
+  callbackUrl?: string,
+): SamlConfig {
   assert(!!config, "Config can't be null!");
   return {
     ...readMetadata(AUTH_CREDENTIALS_DIR + config.metadataFile),
@@ -65,7 +73,10 @@ function createSamlOptionsFromConfig(config: providerData): SamlConfig {
       path.join(__dirname, AUTH_CREDENTIALS_DIR, 'key.pem'),
     ),
     additionalParams: {
-      RelayState: config.loginUrl,
+      RelayState: JSON.stringify({
+        idp: config.loginUrl,
+        callbackUrl: callbackUrl,
+      }),
     },
   };
 }
