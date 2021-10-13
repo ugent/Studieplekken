@@ -10,6 +10,30 @@ export class AppController {
     private dbUsersService: DbUserService,
   ) {}
 
+  @UseGuards(AuthGuard('cas'))
+  @Get('login/cas')
+  async casLogin(@Request() req: any) {
+    return await this.authService.issueToken(req.user);
+  }
+
+  @UseGuards(AuthGuard('cas'))
+  @Get('login/cas/:callbackURL')
+  async casLoginCallback(@Request() req: any, @Res() res: any) {
+    await this.dbUsersService.getOrCreateUserBySaml(req.user);
+
+    const token: string = (await this.authService.issueToken(req.user))
+      .access_token;
+
+    try {
+      const redirectUrl = req.params.callbackURL;
+      if (redirectUrl && redirectUrl !== 'undefined')
+        return res.redirect(`${redirectUrl}?token=${token}`);
+      return res.send({ access_token: token });
+    } catch {
+      return res.send({ access_token: token });
+    }
+  }
+
   @UseGuards(AuthGuard('saml'))
   @Get('login/:idp')
   async loginSaml(@Request() req: any) {
@@ -35,6 +59,6 @@ export class AppController {
 
   @Get()
   async home() {
-    return 'Online';
+    return 'online';
   }
 }

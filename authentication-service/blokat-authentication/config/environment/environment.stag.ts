@@ -36,11 +36,14 @@ export const configuration: Configuration = {
         }),
       },
     ],
+    cas: {
+      serverBaseURL: 'https://localhost:8080',
+    },
   },
 
   https: {
     enabled: false,
- },
+  },
 
   database: {
     username: 'blokat',

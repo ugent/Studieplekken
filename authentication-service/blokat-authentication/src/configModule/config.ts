@@ -32,6 +32,9 @@ export type providerData = {
 export interface Configuration {
   auth: {
     providers: providerData[];
+    cas: {
+      serverBaseURL: string;
+    };
   };
 
   https: NoHTTPSOptions | HTTPSOptions;

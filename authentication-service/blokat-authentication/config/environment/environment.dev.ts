@@ -1,16 +1,26 @@
-import { Configuration, Institution } from "src/configModule/config";
+import { Configuration, Institution } from 'src/configModule/config';
 
 export const configuration: Configuration = {
   auth: {
     providers: [
       {
-        loginUrl: "okta",
+        loginUrl: 'okta',
         callbackUrl: 'https://localhost:8087/api/SSO/saml',
         issuer: 'https://localhost:8087',
         metadataFile: 'metadata-okta.xml',
-        toSamlUser: (a: any) => ({ firstName: a.firstName, lastName: a.lastName, email: a.email, id: a.nameID, institution: Institution.UGENT })
+        toSamlUser: (a: any) => ({
+          firstName: a.firstName,
+          lastName: a.lastName,
+          email: a.email,
+          id: a.nameID,
+          institution: Institution.UGENT,
+        }),
       },
     ],
+
+    cas: {
+      serverBaseURL: 'https://localhost:8080',
+    },
   },
 
   https: {
