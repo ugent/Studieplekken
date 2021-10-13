@@ -10,8 +10,10 @@ export enum APPLICATION_TYPE {
 export const environment = {
   production: false,
   applicationType: APPLICATION_TYPE.MINI_THERMIS,
-  casFlowTriggerUrl: 'https://localhost:8080/auth/login/cas',
-  hoGentFlowTriggerUrl: 'https://localhost:8080/auth/login/hogent',
-  arteveldeHSFlowTriggerUrl: 'https://localhost:8080/auth/login/artevelde',
-  accessToken: 'pk.eyJ1Ijoic21lc3NpZSIsImEiOiJja3JnMzR2ZXEwZG82MnVrd3l5NHFnYTk1In0.jER8bBqoIeiNrKX-HGlrZQ'
+  casFlowTriggerUrl: 'https://studieplekken-dev.ugent.be/auth/login/cas',
+  hoGentFlowTriggerUrl: 'https://studieplekken-dev.ugent.be/auth/login/hogent',
+  arteveldeHSFlowTriggerUrl:
+    'https://studieplekken-dev.ugent.be/auth/login/artevelde',
+  accessToken:
+    'pk.eyJ1Ijoic21lc3NpZSIsImEiOiJja3JnMzR2ZXEwZG82MnVrd3l5NHFnYTk1In0.jER8bBqoIeiNrKX-HGlrZQ',
 };
