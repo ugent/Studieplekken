@@ -38,7 +38,7 @@ export const configuration: Configuration = {
       },
     ],
     cas: {
-      serverBaseURL: 'https://localhost:8080',
+      serverBaseURL: 'https://studieplekken-dev.ugent.be',
     },
   },
 
