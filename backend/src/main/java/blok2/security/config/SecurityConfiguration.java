@@ -1,6 +1,7 @@
 package blok2.security.config;
 
 import blok2.security.services.BackdoorUserDetailService;
+import blok2.security.services.JwtUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -72,6 +73,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private BackdoorUserDetailService backdoorDetailService;
     @Autowired
+    private JwtUserDetailService jwtUserDetailService;
+    @Autowired
+    private JwtService jwtService;
+    @Autowired
     private Environment environment;
 
     @Autowired
@@ -124,6 +129,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         auth.authenticationProvider(this.casAuthenticationProvider);
         auth.authenticationProvider(this.samlAuthenticationProvider);
         auth.authenticationProvider(new CustomAuthenticationProvider(backdoorDetailService));
+        auth.authenticationProvider(new JwtAuthenticationProvider(jwtUserDetailService, jwtService));
+
     }
 
     /**
@@ -161,10 +168,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         Collection<String> env = Arrays.asList(environment.getActiveProfiles());
 
+        http.addFilterAfter(new JwtAuthenticationFilter(authManager), CasAuthenticationFilter.class);
+
         // Adding AS-USER feature when dev
         if(env.contains("dev")) {
-            http.addFilterAfter(new CustomAuthenticationFilter(authManager), CasAuthenticationFilter.class);
+            http.addFilterAfter(new CustomAuthenticationFilter(authManager), JwtAuthenticationFilter.class);
         }
+
 
         http.requestCache().requestCache(requestCache());
 

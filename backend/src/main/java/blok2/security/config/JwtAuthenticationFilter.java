@@ -12,22 +12,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class CustomAuthenticationFilter extends OncePerRequestFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
     private AuthenticationManager authManager;
 
-    public CustomAuthenticationFilter(AuthenticationManager authManager) {
+    public JwtAuthenticationFilter(AuthenticationManager authManager) {
         this.authManager = authManager;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String username = request.getHeader("AS-USER");
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String jwtToken = request.getHeader("X-AUTH");
 
-        if(username != null && auth != null && auth.getPrincipal() instanceof User && ((User) auth.getPrincipal()).isAdmin()) {
-            Authentication token = new CustomAuthenticationToken(username);
+        if(jwtToken != null ) {
+            Authentication token = new JwtAuthenticationToken(jwtToken);
             Authentication authToken = authManager.authenticate(token);
             SecurityContextHolder.getContext().setAuthentication(authToken);
         }

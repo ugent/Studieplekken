@@ -64,6 +64,7 @@ dependencies {
     implementation group: 'org.geotools', name: 'gt-referencing', version: '25.0'
     implementation group: 'org.geotools', name: 'gt-epsg-hsql', version: '25.0'
     implementation group: 'org.geotools', name: 'gt-main', version: '25.0'
+    implementation group: 'io.jsonwebtoken', name:'jjwt', version: '0.9.1'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.2.2.RELEASE'
     testImplementation 'org.springframework.security:spring-security-test'
