@@ -22,6 +22,7 @@ export const configuration: Configuration = {
     cas: {
       serverBaseURL: 'https://localhost:8080',
     },
+    testEndpoint: true,
   },
 
   https: {

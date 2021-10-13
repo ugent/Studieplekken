@@ -40,6 +40,8 @@ export const configuration: Configuration = {
     cas: {
       serverBaseURL: 'https://studieplekken-dev.ugent.be',
     },
+
+    testEndpoint: true,
   },
 
   https: {

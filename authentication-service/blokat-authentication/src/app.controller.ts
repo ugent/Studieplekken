@@ -1,6 +1,9 @@
 import { Controller, Request, Post, UseGuards, Get, Res } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { randomUUID } from 'crypto';
 import { AuthService } from './auth/auth.service';
+import { Institution, SamlUser } from './configModule/config';
+import { ConfigGuard } from './configModule/config.guard';
 import { DbUserService } from './db/db-user/db-user.service';
 
 @Controller()
@@ -9,6 +12,8 @@ export class AppController {
     private authService: AuthService,
     private dbUsersService: DbUserService,
   ) {}
+
+  /******* CAS ENDPOINTS  *********/
 
   @UseGuards(AuthGuard('cas'))
   @Get('login/cas')
@@ -32,6 +37,24 @@ export class AppController {
     } catch {
       return res.send({ access_token: token });
     }
+  }
+
+  /******* TEST ENDPOINTS  *********/
+
+  @Get('/login/test')
+  @UseGuards(ConfigGuard)
+  async testEndpoint() {
+    const id = randomUUID();
+    const newTestUser: SamlUser = {
+      id,
+      email: `${id}@test.com`,
+      institution: Institution.UGENT,
+      firstName: 'test',
+      lastName: 'test',
+    };
+
+    await this.dbUsersService.getOrCreateUserBySaml(newTestUser);
+    return await this.authService.issueToken(newTestUser);
   }
 
   @UseGuards(AuthGuard('saml'))

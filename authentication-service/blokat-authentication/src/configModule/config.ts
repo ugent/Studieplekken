@@ -36,6 +36,8 @@ export interface Configuration {
     cas: {
       serverBaseURL: string;
     };
+
+    testEndpoint: boolean;
   };
 
   https: NoHTTPSOptions | HTTPSOptions;
