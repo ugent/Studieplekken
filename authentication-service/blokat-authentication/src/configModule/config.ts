@@ -30,6 +30,7 @@ export type providerData = {
 };
 
 export interface Configuration {
+  port: number,
   auth: {
     providers: providerData[];
     cas: {

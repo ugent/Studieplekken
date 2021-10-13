@@ -1,6 +1,7 @@
 import { Configuration, Institution } from 'src/configModule/config';
 
 export const configuration: Configuration = {
+  port: 8080,
   auth: {
     providers: [
       {
