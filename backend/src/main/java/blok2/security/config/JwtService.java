@@ -14,7 +14,7 @@ public class JwtService {
 
     private String secret = "secretKey";
 
-    private Claims getClaims(String token) throws JwtException {
+    public Claims getClaims(String token) throws JwtException {
         return Jwts.parser()
                 .setSigningKey(secret.getBytes(StandardCharsets.UTF_8))
                 .parseClaimsJws(token)

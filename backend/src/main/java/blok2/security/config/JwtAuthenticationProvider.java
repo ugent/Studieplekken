@@ -28,8 +28,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         JwtAuthenticationToken jwtAuthenticationToken = (JwtAuthenticationToken) authentication;
         String token = (String) jwtAuthenticationToken.getPrincipal();
         if(this.jwtService.isValid(token)) {
-            String id = this.jwtService.getId(token);
-            User user = this.detailService.loadUserDetails(id);
+            User user = this.detailService.loadUserDetails(token);
             return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
         }
         else {
