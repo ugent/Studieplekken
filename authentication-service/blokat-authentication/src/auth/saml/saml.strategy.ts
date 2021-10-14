@@ -24,6 +24,7 @@ export class SamlStrategy extends PassportStrategy(MultiSamlStrategy) {
 
   validate(request: Request, profile: Profile) {
     const provider = getProviderConfiguration(this.configService, request);
+    console.log(profile);
     return provider.toSamlUser(profile);
   }
 }

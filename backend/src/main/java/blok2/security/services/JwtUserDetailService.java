@@ -38,7 +38,7 @@ public class JwtUserDetailService {
         String id = claims.getSubject();
         String firstName = claims.get("fn", String.class);
         String lastName = claims.get("ln", String.class);
-        String mail = claims.get("mail", String.class);
+        String mail = claims.get("email", String.class);
         String institution = claims.get("ins", String.class);
 
         User user = new User();

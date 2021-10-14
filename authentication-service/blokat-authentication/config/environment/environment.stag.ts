@@ -29,7 +29,7 @@ export const configuration: Configuration = {
             ],
           lastName:
             a['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'],
-          email: a.email,
+          email: a.nameID,
           id: a[
             'http://schemas.microsoft.com/identity/claims/objectidentifier'
           ],
