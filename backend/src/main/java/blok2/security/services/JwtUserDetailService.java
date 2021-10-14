@@ -6,6 +6,7 @@ import blok2.security.config.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,11 @@ public class JwtUserDetailService {
             User user = this.userDao.getUserById(id);
             return user;
         } catch (Exception e) {
-            return addUserToDb(token);
+            try {
+                return addUserToDb(token);
+            } catch( DataIntegrityViolationException e2){
+                return this.userDao.getUserById(id);
+            }
 
         }
     }

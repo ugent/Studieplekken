@@ -135,6 +135,8 @@ export class AuthenticationService {
       this.router.navigate(['/login']).then();
     });
 
+    localStorage.removeItem('access_token');
+
     // to be sure, set the 'userWantsToLogin' variables to false
     localStorage.setItem(userWantsTLogInLocalStorageKey, 'false');
   }
