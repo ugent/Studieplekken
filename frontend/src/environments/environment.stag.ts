@@ -8,5 +8,7 @@ export const environment = {
     casFlowTriggerUrl: 'https://studieplekken-dev.ugent.be/auth/login/cas',
     hoGentFlowTriggerUrl: 'https://studieplekken-dev.ugent.be/auth/login/hogent',
     arteveldeHSFlowTriggerUrl: 'https://studieplekken-dev.ugent.be/auth/login/artevelde',
+    lucaFlowTriggerUrl: 'https://studieplekken-dev.ugent.be/auth/login/luca',
+    odiseeFlowTriggerUrl: 'https://studieplekken-dev.ugent.be/auth/login/odisee',
     accessToken: "pk.eyJ1IjoiYXVyaXNhdWRlbnRpcyIsImEiOiJja3M3cGdqN24xMnNsMm5zM2tlN2d4a3MxIn0.i69TQAR5E1VCJJXMP_2QlA"
   };
