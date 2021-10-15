@@ -36,6 +36,44 @@ export const configuration: Configuration = {
           institution: Institution.ARTEVELDE,
         }),
       },
+      {
+        loginUrl: 'odisee',
+        callbackUrl: 'https://studieplekken-dev.ugent.be/api/SSO/saml',
+        issuer: 'https://studieplekken-dev.ugent.be/api/metadata/saml',
+        metadataFile: 'sso-kuleuven.xml',
+        toSamlUser: (a: any) => ({
+          firstName:
+            a[
+              'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'
+            ],
+          lastName:
+            a['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'],
+          email: a.nameID,
+          id: a[
+            'http://schemas.microsoft.com/identity/claims/objectidentifier'
+          ],
+          institution: Institution.ARTEVELDE,
+        }),
+      },
+      {
+        loginUrl: 'LUCA School Of Arts',
+        callbackUrl: 'https://studieplekken-dev.ugent.be/api/SSO/saml',
+        issuer: 'https://studieplekken-dev.ugent.be/api/metadata/saml',
+        metadataFile: 'sso-kuleuven.xml',
+        toSamlUser: (a: any) => ({
+          firstName:
+            a[
+              'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'
+            ],
+          lastName:
+            a['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'],
+          email: a.nameID,
+          id: a[
+            'http://schemas.microsoft.com/identity/claims/objectidentifier'
+          ],
+          institution: Institution.ARTEVELDE,
+        }),
+      },
     ],
     cas: {
       serverBaseURL: 'https://studieplekken-dev.ugent.be',
