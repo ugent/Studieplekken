@@ -139,8 +139,10 @@
     "appTitle": "Study Rooms Gent",
     "title": "Login",
     "casLogin": "UGent Login",
-    "hoGentLogin": "HoGent Login",
-    "arteveldeHSLogin": "Artevelde HS Login",
+    "hoGentLogin": "HOGENT Login",
+    "arteveldeHSLogin": "Artevelde Hogeschool Login",
+    "lucaLogin": "LUCA School of Arts login",
+    "odiseeLogin": "Odisee login",
     "about": "The digital platform for study locations"
   },
   "management": {
