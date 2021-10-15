@@ -56,7 +56,7 @@ export const configuration: Configuration = {
         }),
       },
       {
-        loginUrl: 'LUCA School Of Arts',
+        loginUrl: 'luca',
         callbackUrl: 'https://studieplekken-dev.ugent.be/api/SSO/saml',
         issuer: 'https://studieplekken-dev.ugent.be/api/metadata/saml',
         metadataFile: 'sso-kuleuven.xml',
