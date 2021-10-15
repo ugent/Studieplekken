@@ -12,7 +12,8 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    private String secret = "secretKey";
+    @Value("custom.jwtSecret")
+    private String secret;
 
     public Claims getClaims(String token) throws JwtException {
         return Jwts.parser()

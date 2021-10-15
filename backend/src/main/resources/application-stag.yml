@@ -38,6 +38,8 @@ custom:
     recipientsOpeningHoursOverview: "alarmbeheer@ugent.be,permanentie@ugent.be,schoonmaak@ugent.be,veiligheid@ugent.be"
   stadgent:
     url: "https://studieplekken-dev.ugent.be/"
+  jwtKey:
+    "***REMOVED***"
 # SAML
 saml:
   sp: https://studieplekken-dev.ugent.be/api/metadata/saml

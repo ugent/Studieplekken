@@ -37,4 +37,6 @@ export const configuration: Configuration = {
     url: 'localhost',
     port: '5432',
   },
+
+  jwtKey: '***REMOVED***',
 };

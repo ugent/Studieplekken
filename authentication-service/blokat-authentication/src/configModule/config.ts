@@ -48,4 +48,6 @@ export interface Configuration {
     password: string;
     port: string;
   };
+
+  jwtKey: string;
 }

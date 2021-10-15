@@ -54,4 +54,6 @@ export const configuration: Configuration = {
     url: 'db',
     port: '5432',
   },
+
+  jwtKey: '***REMOVED***',
 };

@@ -55,9 +55,6 @@ cas:
   loginUrl: https://login.ugent.be
   callbackUrl: https://localhost:8080/api/login/cas
 
-auth:
-  secret: secretKey
-
 # Redirect url after successful login
 redirect:
   successLoginRedirectUrl: https://localhost:4200/dashboard
@@ -83,7 +80,8 @@ custom:
     recipientsOpeningHoursOverview: ""
   stadgent:
     url: "https://studieplekken-dev.ugent.be/"
-
+  jwtKey:
+    "***REMOVED***"
 
 # SAML
 saml:
