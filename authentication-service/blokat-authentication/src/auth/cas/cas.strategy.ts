@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-cas';
 import { Institution, SamlUser } from 'src/configModule/config';
@@ -27,20 +27,16 @@ export class CasStrategy extends PassportStrategy(Strategy, 'cas') {
     };
   }
 
-  service(req: any) {
-    const urlEncoded = encodeURIComponent(
-      req.query.callbackUrl || req.params.callbackURL,
-    );
-
-    const final =
-      urlEncoded === 'undefined'
-        ? `${
-            this.configService.getCurrentConfiguration().auth.cas.serverBaseURL
-          }/auth/login/cas/`
-        : `${
-            this.configService.getCurrentConfiguration().auth.cas.serverBaseURL
-          }/auth/login/cas/${urlEncoded}/`;
-
-    return final;
+  service(req: any): string {
+    const configuration = this.configService.getCurrentConfiguration();
+    const allowedCallbacks : string[] = configuration.auth.providers.map(provider => provider.callbackUrl);
+    const callbackURL = req.query.callbackUrl || req.params.callbackURL;
+    const baseURL = configuration.auth.cas.serverBaseURL;
+    if (!callbackURL || allowedCallbacks.indexOf(callbackURL) === -1) {
+      Logger.warn(`callback to URL ${callbackURL} is not allowed`);
+      return baseURL + `/auth/login/cas/`;
+    }
+    const urlEncoded = encodeURIComponent(callbackURL);
+    return baseURL + `/auth/login/cas/${urlEncoded}`;
   }
 }

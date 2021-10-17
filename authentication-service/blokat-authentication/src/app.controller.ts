@@ -6,13 +6,13 @@ import { Institution, isSamlUser, missingSamlUserFields, SamlUser } from './conf
 import { ConfigGuard } from './configModule/config.guard';
 import { DbUserService } from './db/db-user/db-user.service';
 import { Logger } from '@nestjs/common';
+import { getConfig } from './configModule/config.service';
 
 @Controller()
 export class AppController {
   constructor(
     private authService: AuthService,
-    private dbUsersService: DbUserService,
-    private logger: Logger
+    private dbUsersService: DbUserService
   ) {}
 
   /******* CAS ENDPOINTS  *********/
@@ -23,7 +23,7 @@ export class AppController {
     const samlUser = req.user;
     if (!isSamlUser(samlUser)) {
       const missingFields = missingSamlUserFields(samlUser);
-      this.logger.warn(`SAML-user in request was missing ${missingFields.join(',')}.`);
+      Logger.warn(`SAML-user in request was missing ${missingFields.join(',')}.`);
       return res.status(400).send();
     }
     return res.send(await this.authService.issueToken(samlUser));
@@ -35,7 +35,7 @@ export class AppController {
     const samlUser = req.user;
     if (!isSamlUser(samlUser)) {
       const missingFields = missingSamlUserFields(samlUser);
-      this.logger.warn(`SAML-user in request was missing ${missingFields.join(',')}.`);
+      Logger.warn(`SAML-user in request was missing ${missingFields.join(',')}.`);
       return res.status(400).send();
     }
     await this.dbUsersService.getOrCreateUserBySaml(samlUser);
@@ -77,7 +77,7 @@ export class AppController {
     const samlUser = req.user;
     if (!isSamlUser(samlUser)) {
       const missingFields = missingSamlUserFields(samlUser);
-      this.logger.warn(`SAML-user in request was missing ${missingFields.join(',')}.`);
+      Logger.warn(`SAML-user in request was missing ${missingFields.join(',')}.`);
       return res.status(400).send();
     }
     return await this.authService.issueToken(samlUser);
@@ -89,7 +89,7 @@ export class AppController {
     const samlUser = req.user;
     if (!isSamlUser(samlUser)) {
       const missingFields = missingSamlUserFields(samlUser);
-      this.logger.warn(`SAML-user in request was missing ${missingFields.join(',')}.`);
+      Logger.warn(`SAML-user in request was missing ${missingFields.join(',')}.`);
       return res.status(400).send();
     }
     // No need to retrieve the actual user, only create if it does not exist
@@ -100,7 +100,13 @@ export class AppController {
 
     try {
       const redirectUrl = JSON.parse(req.body.RelayState)?.callbackUrl;
-      if (redirectUrl) return res.redirect(`${redirectUrl}?token=${token}`);
+      if (redirectUrl) {
+        const configuration = getConfig();
+        const allowedCallbacks = configuration.auth.providers.map(prov => prov.callbackUrl);
+        if (allowedCallbacks.indexOf(redirectUrl) !== -1) {
+          return res.redirect(`${redirectUrl}?token=${token}`);
+        }
+      } 
     } catch {
       return res.send({ access_token: token });
     }
