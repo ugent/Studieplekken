@@ -1,6 +1,9 @@
+import { Route } from '@angular/compiler/src/core';
 import { Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { userWantsTLogInLocalStorageKey } from '../app.constants';
+import { AuthenticationService } from '../services/authentication/authentication.service';
 
 @Component({
   selector: 'app-login',
@@ -11,6 +14,22 @@ export class LoginComponent {
   casFlowTriggerUrl = environment.casFlowTriggerUrl;
   hoGentFlowTriggerUrl = environment.hoGentFlowTriggerUrl;
   arteveldeHSFlowTriggerUrl = environment.arteveldeHSFlowTriggerUrl;
+  odiseeFlowTriggerUrl = environment.odiseeFlowTriggerUrl;
+  lucaFlowTriggerUrl = environment.lucaFlowTriggerUrl;
+
+
+  constructor(route: ActivatedRoute, authService: AuthenticationService, router: Router) {
+    route.queryParamMap.subscribe((map) => {
+      console.log(map)
+      if (map.has('token')) {
+        localStorage.setItem('access_token', map.get('token'));
+        console.log("set token: ")
+        console.log(map.get('token'))
+        authService.login();
+        router.navigateByUrl('/dashboard');
+      }
+    });
+  }
 
   /**
    * When the user clicked on the login button, we set the localStorage's
@@ -20,5 +39,10 @@ export class LoginComponent {
    */
   loginButtonClicked(): void {
     localStorage.setItem(userWantsTLogInLocalStorageKey, 'true');
+  }
+
+  getCallbackUrl() {
+    const origin = window.location.origin;
+    return `${origin}/login`
   }
 }

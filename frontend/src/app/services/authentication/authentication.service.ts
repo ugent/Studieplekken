@@ -105,11 +105,11 @@ export class AuthenticationService {
          * To avoid this, the AuthenticationInterceptor intercepts unknown exceptions and calls this.authExpired() so that a new authentication session is started in Spring.
          * Since this.authExpired() saves the last visited url, we can redirect the user to the last visited url instead of to the dashboard.
          */
-        const getPreviouslyAuthenticatedUrl = localStorage.getItem(authenticationWasExpiredUrlLSKey);
-        if (getPreviouslyAuthenticatedUrl) {
-          localStorage.setItem(authenticationWasExpiredUrlLSKey, '');
-          this.router.navigateByUrl(getPreviouslyAuthenticatedUrl).then();
-        }
+        // const getPreviouslyAuthenticatedUrl = localStorage.getItem(authenticationWasExpiredUrlLSKey);
+        // if (getPreviouslyAuthenticatedUrl) {
+        //   localStorage.setItem(authenticationWasExpiredUrlLSKey, '');
+        //   this.router.navigateByUrl(getPreviouslyAuthenticatedUrl).then();
+        // }
       },
       () => {
         this.userSubject.next(UserConstructor.new());
@@ -134,6 +134,8 @@ export class AuthenticationService {
       this.userSubject.next(UserConstructor.new());
       this.router.navigate(['/login']).then();
     });
+
+    localStorage.removeItem('access_token');
 
     // to be sure, set the 'userWantsToLogin' variables to false
     localStorage.setItem(userWantsTLogInLocalStorageKey, 'false');

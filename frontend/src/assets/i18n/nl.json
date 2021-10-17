@@ -140,8 +140,10 @@
     "appTitle": "Studieplekken Gent",
     "title": "Aanmelden",
     "casLogin": "UGent Login",
-    "hoGentLogin": "HoGent Login",
-    "arteveldeHSLogin": "Artevelde HS Login",
+    "hoGentLogin": "HOGENT Login",
+    "arteveldeHSLogin": "Artevelde Hogeschool Login",
+    "odiseeLogin": "Odisee Login",
+    "lucaLogin": "LUCA School of Arts Login",
     "about": "Het digitaal platform voor studieplekken"
   },
   "management": {

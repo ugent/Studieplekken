@@ -1,0 +1,199 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://postgres:postgres@localhost:5432/blokatugent?schema=public"
+}
+
+model authority {
+  authority_id         Int                    @id @default(autoincrement())
+  authority_name       String                 @unique
+  description          String
+  created_at           DateTime               @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime               @default(now()) @db.Timestamptz(6)
+  locations            locations[]
+  roles_user_authority roles_user_authority[]
+}
+
+model buildings {
+  building_id   Int           @id @default(autoincrement())
+  building_name String        @unique
+  address       String
+  created_at    DateTime      @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime      @default(now()) @db.Timestamptz(6)
+  institution   String?
+  latitude      Float         @default(0)
+  longitude     Float         @default(0)
+  institutions  institutions? @relation(fields: [institution], references: [name], onDelete: Cascade, map: "fk_buildings_to_institutions")
+  locations     locations[]
+
+  @@unique([building_name, address])
+}
+
+model flyway_schema_history {
+  installed_rank Int      @id(map: "flyway_schema_history_pk")
+  version        String?  @db.VarChar(50)
+  description    String   @db.VarChar(200)
+  type           String   @db.VarChar(20)
+  script         String   @db.VarChar(1000)
+  checksum       Int?
+  installed_by   String   @db.VarChar(100)
+  installed_on   DateTime @default(now()) @db.Timestamp(6)
+  execution_time Int
+  success        Boolean
+
+  @@index([success], map: "flyway_schema_history_s_idx")
+}
+
+model institutions {
+  name       String      @id
+  created_at DateTime    @default(now()) @db.Timestamptz(6)
+  updated_at DateTime    @default(now()) @db.Timestamptz(6)
+  buildings  buildings[]
+  users      users[]
+}
+
+model location_reservations {
+  attended                 Boolean?
+  user_id                  String
+  created_at               DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at               DateTime  @default(now()) @db.Timestamptz(6)
+  timeslot_sequence_number Int       @default(0)
+  timeslots                timeslots @relation(fields: [timeslot_sequence_number], references: [sequence_number], onDelete: Cascade, map: "fk_location_reservations_to_timeslot")
+  users                    users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, map: "fk_location_reservations_to_users")
+
+  @@id([timeslot_sequence_number, user_id], map: "pk_location_reservations")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model location_tags {
+  tag_id      Int
+  created_at  DateTime   @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime   @default(now()) @db.Timestamptz(6)
+  location_id Int?
+  locations   locations? @relation(fields: [location_id], references: [location_id], onDelete: Cascade, map: "fk_location_tags_to_locations")
+  tags        tags       @relation(fields: [tag_id], references: [tag_id], onDelete: Cascade, map: "fk_location_tags_to_tags")
+
+  @@unique([location_id, tag_id], map: "location_tags_unique")
+  @@ignore
+}
+
+model locations {
+  name                 String                 @unique(map: "location_name_unique")
+  number_of_seats      Int
+  number_of_lockers    Int
+  image_url            String?
+  building_id          Int
+  authority_id         Int
+  description_dutch    String?
+  description_english  String?
+  for_group            Boolean?
+  approved             Boolean?               @default(false)
+  created_at           DateTime               @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime               @default(now()) @db.Timestamptz(6)
+  location_id          Int                    @id @default(autoincrement())
+  authority            authority              @relation(fields: [authority_id], references: [authority_id], onDelete: Cascade, map: "fk_location_to_authority")
+  buildings            buildings              @relation(fields: [building_id], references: [building_id], onDelete: Cascade, map: "fk_location_to_building")
+  location_tags        location_tags[]        @ignore
+  penalty_book         penalty_book[]
+  roles_user_volunteer roles_user_volunteer[]
+  timeslots            timeslots[]
+}
+
+model penalty_book {
+  user_id                 String
+  event_code              Int
+  timestamp               DateTime       @db.Timestamp(6)
+  reservation_date        String?
+  received_points         Int
+  remarks                 String?
+  created_at              DateTime       @default(now()) @db.Timestamptz(6)
+  updated_at              DateTime       @default(now()) @db.Timestamptz(6)
+  reservation_location_id Int?
+  penalty_events          penalty_events @relation(fields: [event_code], references: [code], onDelete: Cascade, map: "fk_penalty_book_to_penalty_events")
+  locations               locations?     @relation(fields: [reservation_location_id], references: [location_id], onDelete: Cascade, map: "fk_penalty_book_to_locations")
+  users                   users          @relation(fields: [user_id], references: [user_id], onDelete: Cascade, map: "fk_penalty_book_to_users")
+
+  @@id([user_id, event_code, timestamp], map: "pk_penalty_book")
+}
+
+model penalty_events {
+  code                Int            @id @default(autoincrement())
+  points              Int
+  created_at          DateTime       @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime       @default(now()) @db.Timestamptz(6)
+  description_dutch   String?
+  description_english String?
+  penalty_book        penalty_book[]
+}
+
+model roles_user_authority {
+  user_id      String
+  authority_id Int
+  created_at   DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at   DateTime  @default(now()) @db.Timestamptz(6)
+  authority    authority @relation(fields: [authority_id], references: [authority_id], onDelete: Cascade, map: "fk_roles_user_authority_to_authority")
+  users        users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, map: "fk_roles_user_authority_to_user")
+
+  @@unique([user_id, authority_id], map: "uc_user_authority")
+}
+
+model roles_user_volunteer {
+  user_id     String
+  location_id Int
+  created_at  DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime  @default(now()) @db.Timestamptz(6)
+  locations   locations @relation(fields: [location_id], references: [location_id], onDelete: Cascade, map: "fk_roles_user_volunteer_to_location")
+  users       users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, map: "fk_roles_user_location_to_user")
+
+  @@unique([user_id, location_id], map: "uc_user_volunteer")
+}
+
+model tags {
+  tag_id        Int             @id @default(autoincrement())
+  dutch         String          @unique
+  english       String          @unique
+  created_at    DateTime        @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime        @default(now()) @db.Timestamptz(6)
+  location_tags location_tags[] @ignore
+
+  @@unique([dutch, english])
+}
+
+model timeslots {
+  created_at            DateTime                @default(now()) @db.Timestamptz(6)
+  updated_at            DateTime                @default(now()) @db.Timestamptz(6)
+  reservation_count     Int?                    @default(0)
+  seat_count            Int?                    @default(0)
+  reservable            Boolean                 @default(true)
+  opening_hour          DateTime                @default(now()) @db.Time(6)
+  closing_hour          DateTime                @default(now()) @db.Time(6)
+  sequence_number       Int                     @id(map: "pk_timeslots") @default(autoincrement())
+  reservable_from       DateTime?               @db.Timestamp(6)
+  location_id           Int?
+  repeatable            Boolean                 @default(false)
+  timeslot_group_id     String                  @default(dbgenerated("'00000000-0000-0000-0000-000000000000'::uuid")) @db.Uuid
+  timeslot_date         DateTime                @default(dbgenerated("'2021-07-27'::date")) @db.Date
+  locations             locations?              @relation(fields: [location_id], references: [location_id], onDelete: Cascade, map: "fk_timeslots_to_locations")
+  location_reservations location_reservations[]
+}
+
+model users {
+  user_id               String                  @id
+  first_name            String
+  last_name             String
+  penalty_points        Int?
+  mail                  String                  @unique(map: "uc_users")
+  password              String?
+  institution           String
+  admin                 Boolean                 @default(false)
+  created_at            DateTime                @default(now()) @db.Timestamptz(6)
+  updated_at            DateTime                @default(now()) @db.Timestamptz(6)
+  institutions          institutions            @relation(fields: [institution], references: [name], onDelete: Cascade, map: "fk_users_to_institutions")
+  location_reservations location_reservations[]
+  penalty_book          penalty_book[]
+  roles_user_authority  roles_user_authority[]
+  roles_user_volunteer  roles_user_volunteer[]
+}

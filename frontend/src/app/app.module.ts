@@ -2,7 +2,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, SecurityContext } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpClientModule,
+  HTTP_INTERCEPTORS,
+} from '@angular/common/http';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { RouterModule, Routes } from '@angular/router';
@@ -75,6 +79,7 @@ import { ScannerComponent } from './shared/scanner/scanner.component';
 import { VolunteersManagementComponent } from './management/volunteers-management/volunteers-management.component';
 import { VolunteerManagementPanelComponent } from './management/volunteers-management/volunteer-management-panel/volunteer-management-panel.component';
 import { AuthenticationInterceptor } from './services/authentication/authentication.interceptor';
+import { TokenInterceptor } from './services/authentication/token.interceptor';
 import { HeaderComponent } from './stad-gent-components/header/header.component';
 import { AccordeonComponent } from './stad-gent-components/molecules/accordeon/accordeon.component';
 import { DropdownComponent } from './stad-gent-components/header/dropdown/dropdown.component';
@@ -251,7 +256,7 @@ const routes: Routes = [
   {
     path: 'opening/overview/:year/:weekNr',
     component: OpeningHoursOverviewComponent,
-    canActivate: [AuthorizationGuardService]
+    canActivate: [AuthorizationGuardService],
   },
 
   {
@@ -357,7 +362,15 @@ const routes: Routes = [
     MatTabsModule,
     MatTooltipModule,
   ],
-  providers: [FormatStatusPipe, { provide: HTTP_INTERCEPTORS, useClass: AuthenticationInterceptor, multi: true }],
+  providers: [
+    FormatStatusPipe,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthenticationInterceptor,
+      multi: true,
+    },
+    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
