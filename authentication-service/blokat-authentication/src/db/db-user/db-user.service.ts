@@ -1,11 +1,13 @@
 import { users } from '.prisma/client';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { SamlUser } from 'src/configModule/config';
 import { DbService } from '../db.service';
 
 @Injectable()
 export class DbUserService {
-  constructor(private prisma: DbService) {}
+  constructor(
+    private prisma: DbService
+  ) {}
 
   public async userById(user_id: string) {
     return this.prisma.users.findUnique({
@@ -19,8 +21,7 @@ export class DbUserService {
     });
 
     if (user) return user;
-
-    console.log('INFO: adding user ' + samlUser.email + ' to the database.');
+    Logger.log('Adding user ' + samlUser.email + ' to the database.');
 
     return await this.prisma.users.create({
       data: {

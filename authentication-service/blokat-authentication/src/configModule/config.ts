@@ -21,6 +21,34 @@ export interface SamlUser {
   institution: Institution;
 }
 
+const dummySamlUser : SamlUser = {
+  email: "",
+  firstName: "",
+  lastName: "",
+  id: "",
+  institution: Institution.UGENT
+};
+
+export function isSamlUser(obj: any): obj is SamlUser {
+  for (const key in dummySamlUser) {
+    if (!(key in obj)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+export function missingSamlUserFields(obj: any): string[] {
+  const missingFields = [];
+  for (const key in dummySamlUser) {
+    if (!(key in obj)) {
+      missingFields.push(key);
+    }
+  }
+  return missingFields;
+}
+
+
 export type providerData = {
   loginUrl: string;
   callbackUrl: string;
