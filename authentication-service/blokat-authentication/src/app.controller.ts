@@ -51,6 +51,7 @@ export class AppController {
         if (allowedCallbacks.indexOf(redirectUrl) !== -1) {
           return res.redirect(`${redirectUrl}?token=${token}`);
         }
+        Logger.warn(`Callback URL ${redirectUrl} is not allowed.`);
       }
       return res.send({ access_token: token });
     } catch {
@@ -111,7 +112,9 @@ export class AppController {
         if (allowedCallbacks.indexOf(redirectUrl) !== -1) {
           return res.redirect(`${redirectUrl}?token=${token}`);
         }
-      } 
+        Logger.warn(`Callback URL ${redirectUrl} is not allowed.`);
+      }
+      return res.send({ access_token: token });
     } catch {
       return res.send({ access_token: token });
     }
