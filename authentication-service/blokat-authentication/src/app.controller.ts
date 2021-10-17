@@ -45,8 +45,13 @@ export class AppController {
 
     try {
       const redirectUrl = req.params.callbackURL;
-      if (redirectUrl && redirectUrl !== 'undefined')
-        return res.redirect(`${redirectUrl}?token=${token}`);
+      if (redirectUrl && redirectUrl !== 'undefined') {
+        const configuration = getConfig();
+        const allowedCallbacks = configuration.auth.providers.map(prov => prov.callbackUrl);
+        if (allowedCallbacks.indexOf(redirectUrl) !== -1) {
+          return res.redirect(`${redirectUrl}?token=${token}`);
+        }
+      }
       return res.send({ access_token: token });
     } catch {
       return res.send({ access_token: token });

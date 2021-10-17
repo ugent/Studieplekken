@@ -32,7 +32,10 @@ export class CasStrategy extends PassportStrategy(Strategy, 'cas') {
     const allowedCallbacks : string[] = configuration.auth.providers.map(provider => provider.callbackUrl);
     const callbackURL = req.query.callbackUrl || req.params.callbackURL;
     const baseURL = configuration.auth.cas.serverBaseURL;
-    if (!callbackURL || allowedCallbacks.indexOf(callbackURL) === -1) {
+    if (!callbackURL) {
+      return baseURL + `/auth/login/cas/`;
+    }
+    if (allowedCallbacks.indexOf(callbackURL) === -1) {
       Logger.warn(`callback to URL ${callbackURL} is not allowed`);
       return baseURL + `/auth/login/cas/`;
     }
