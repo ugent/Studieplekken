@@ -1,0 +1,52 @@
+config:
+  processor: "./processors.js"
+  target: "https://localhost:4200"
+  tls:
+    # Useful for testing, should not be used in production:
+    rejectUnauthorized: false
+  plugins:
+    metrics-by-endpoint:
+      useOnlyRequestNames: true
+  phases:
+      - duration: 30 #30
+        arrivalRate: 10 #30
+        name: Warm up
+      - duration: 60 #20
+        arrivalRate: 50 #100
+        #rampTo: 400
+        name: Ramp up load
+scenarios:
+  - name: "Go to dashboard with login"
+    flow:
+      - get:
+          url: "https://studieplekken-dev.ugent.be/auth/login/test"
+          capture:
+            - json: "$.access_token"
+              as: "token"
+          name: "Retrieve token"
+          #afterResponse: "printStatus"
+      - get:
+          url: "https://localhost:8087/api/locations"
+          headers:
+            X-AUTH: "{{ token }}"
+          #think: "{{$randomNumber(1,6)}}"
+          name: "Get locations"
+          #afterResponse: "printStatus"
+      - get:
+          url: "https://localhost:8087/api/locations/timeslots/19"
+          headers:
+            X-AUTH: "{{ token }}"
+          capture:
+            - json: "$"
+              as: "resources"
+          name: "Get timeslot"
+          #afterResponse: "printStatus"
+      - function: "setReservationTimeSlot"
+      - post: 
+          url: "https://localhost:8087/api/locations/reservations"
+          headers:
+            X-AUTH: "{{ token }}"
+          json: 
+            "{{reservationTimeSlot}}"
+          name: "Reserve timeslot"
+
