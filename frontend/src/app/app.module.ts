@@ -88,6 +88,8 @@ import { SearchUserComponentComponent } from './shared/search-user-component/sea
 import { SearchUserFormComponent } from './shared/search-user-component/search-user-form/search-user-form.component';
 import { LocationAddTimeslotDialogComponent } from './management/locations-management/location-details-management/location-calendar/location-add-timeslot-dialog/location-add-timeslot-dialog.component';
 import { ModalComponent } from './stad-gent-components/molecules/modal/modal.component';
+import { QRCodeModule } from 'angularx-qrcode';
+import { QRCodeComponent } from './miscellaneous/qrcode/qrcode.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -324,6 +326,7 @@ const routes: Routes = [
     SearchUserFormComponent,
     LocationAddTimeslotDialogComponent,
     ModalComponent,
+    QRCodeComponent,
   ],
   imports: [
     BrowserModule,
@@ -361,6 +364,7 @@ const routes: Routes = [
     }),
     MatTabsModule,
     MatTooltipModule,
+    QRCodeModule
   ],
   providers: [
     FormatStatusPipe,

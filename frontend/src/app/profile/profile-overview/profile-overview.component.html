@@ -4,7 +4,6 @@
 
   <hr>
 
-
   <!-- User overview in a form -->
   <form [formGroup]="formGroup" class="center">
     <!-- First name -->
@@ -48,4 +47,8 @@
       </div>
     </div>
   </form>
+
+  <!-- QR code of userId -->
+  <app-qrcode [userObs]="userObs"></app-qrcode>
+
 </div>
