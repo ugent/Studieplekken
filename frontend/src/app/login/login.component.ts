@@ -14,6 +14,9 @@ export class LoginComponent {
   casFlowTriggerUrl = environment.casFlowTriggerUrl;
   hoGentFlowTriggerUrl = environment.hoGentFlowTriggerUrl;
   arteveldeHSFlowTriggerUrl = environment.arteveldeHSFlowTriggerUrl;
+  odiseeFlowTriggerUrl = environment.odiseeFlowTriggerUrl;
+  lucaFlowTriggerUrl = environment.lucaFlowTriggerUrl;
+
 
   constructor(route: ActivatedRoute, authService: AuthenticationService, router: Router) {
     route.queryParamMap.subscribe((map) => {

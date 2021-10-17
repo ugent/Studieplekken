@@ -1,10 +1,10 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { assert } from 'console';
 import { Request } from 'express';
 import * as fs from 'fs';
 import { MultiSamlStrategy } from 'passport-saml';
-import { MetadataReader, toPassportConfig } from 'passport-saml-metadata';
+import { metadata, MetadataReader, toPassportConfig } from 'passport-saml-metadata';
 import {
   MultiSamlConfig,
   Profile,
@@ -13,6 +13,7 @@ import {
 import * as path from 'path';
 import { providerData } from 'src/configModule/config';
 import { ConfigService } from '../../configModule/config.service';
+
 
 const AUTH_CREDENTIALS_DIR = '../../../config/auth/saml/';
 
@@ -52,10 +53,18 @@ function getProviderConfiguration(
   // Idp is determined by either the query param or the relay state
   const search =
     request.params['idp'] || JSON.parse(request.body.RelayState).idp;
-
-  return configService
+  if (!search) {
+    Logger.warn(`IDP not included in request.`);
+    return null;
+  }
+  const data: providerData | undefined = configService
     .getCurrentConfiguration()
     .auth.providers.find((prov) => search === prov.loginUrl);
+  if (!data) {
+    Logger.warn(`IDP ${search} is not a valid IDP.`);
+    return null;
+  }
+  return data;
 }
 
 function createSamlOptionsFromConfig(
@@ -63,16 +72,22 @@ function createSamlOptionsFromConfig(
   callbackUrl?: string,
 ): SamlConfig {
   assert(!!config, "Config can't be null!");
+  const privateKeyPath = path.join(__dirname, AUTH_CREDENTIALS_DIR, 'key.pem');
+  const decryptionPvkPath = path.join(__dirname, AUTH_CREDENTIALS_DIR, 'key.pem');
+  if (!fs.existsSync(privateKeyPath)) {
+    Logger.error(`Private key at ${privateKeyPath} not found.`);
+    return null;
+  }
+  if (!fs.existsSync(decryptionPvkPath)) {
+    Logger.error(`Decryption key at ${decryptionPvkPath} not found.`);
+    return null;
+  }
   return {
     ...readMetadata(AUTH_CREDENTIALS_DIR + config.metadataFile),
     callbackUrl: config.callbackUrl,
     issuer: config.issuer,
-    privateKey: fs.readFileSync(
-      path.join(__dirname, AUTH_CREDENTIALS_DIR, 'key.pem'),
-    ),
-    decryptionPvk: fs.readFileSync(
-      path.join(__dirname, AUTH_CREDENTIALS_DIR, 'key.pem'),
-    ),
+    privateKey: fs.readFileSync(privateKeyPath),
+    decryptionPvk: fs.readFileSync(decryptionPvkPath),
     additionalParams: {
       RelayState: JSON.stringify({
         idp: config.loginUrl,
@@ -86,12 +101,21 @@ const metadataMap = new Map<string, string>();
 
 export function readMetadata(localP: string) {
   if (!metadataMap.has(localP)) {
+    const metadataPath = path.join(__dirname, AUTH_CREDENTIALS_DIR, localP);
+    if (!fs.existsSync(metadataPath)) {
+      Logger.error(`saml metadata file at ${metadataPath} not found.`);
+      return null;
+    }
     const data = fs
-      .readFileSync(path.join(__dirname, AUTH_CREDENTIALS_DIR, localP))
+      .readFileSync(metadataPath)
       .toString();
-
     metadataMap.set(localP, data);
   }
-  const metadataReader = new MetadataReader(metadataMap.get(localP));
-  return toPassportConfig(metadataReader);
+  try {
+    const metadataReader = new MetadataReader(metadataMap.get(localP));
+    return toPassportConfig(metadataReader);
+  } catch (e) {
+    Logger.error(`Failed to parse SAML metadata file of ${localP}.`);
+    return null;
+  }
 }

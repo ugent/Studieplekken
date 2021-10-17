@@ -29,6 +29,7 @@
     "@nestjs/platform-express": "^8.0.0",
     "@prisma/client": "3.2.0",
     "ldapjs": "^2.3.1",
+    "nest-logger": "^7.0.0",
     "passport": "^0.5.0",
     "passport-cas": "^0.1.1",
     "passport-jwt": "^4.0.0",

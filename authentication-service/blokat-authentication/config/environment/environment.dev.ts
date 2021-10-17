@@ -6,8 +6,8 @@ export const configuration: Configuration = {
     providers: [
       {
         loginUrl: 'okta',
-        callbackUrl: 'https://localhost:8087/api/SSO/saml',
-        issuer: 'https://localhost:8087',
+        callbackUrl: 'https://localhost:8080/api/SSO/saml',
+        issuer: 'https://localhost:8080',
         metadataFile: 'metadata-okta.xml',
         toSamlUser: (a: any) => ({
           firstName: a.firstName,
@@ -23,6 +23,7 @@ export const configuration: Configuration = {
       serverBaseURL: 'https://localhost:8080',
     },
     testEndpoint: true,
+    allowedClientCallbacks: ['https://localhost:8086/login', 'https://localhost:8080/login', 'https://localhost:8087/login']
   },
 
   https: {
