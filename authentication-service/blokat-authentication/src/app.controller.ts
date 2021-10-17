@@ -20,13 +20,8 @@ export class AppController {
   @UseGuards(AuthGuard('cas'))
   @Get('auth/login/cas')
   async casLogin(@Request() req: any, @Res() res: any) {
-    const samlUser = req.user;
-    if (!isSamlUser(samlUser)) {
-      const missingFields = missingSamlUserFields(samlUser);
-      Logger.warn(`SAML-user in request was missing ${missingFields.join(',')}.`);
-      return res.status(400).send();
-    }
-    return res.send(await this.authService.issueToken(samlUser));
+    Logger.warn(`User did not get redirected by CAS authguard.`);
+    return res.status(500).send();
   }
 
   @UseGuards(AuthGuard('cas'))
@@ -47,7 +42,7 @@ export class AppController {
       const redirectUrl = req.params.callbackURL;
       if (redirectUrl && redirectUrl !== 'undefined') {
         const configuration = getConfig();
-        const allowedCallbacks = configuration.auth.providers.map(prov => prov.callbackUrl);
+        const allowedCallbacks = configuration.auth.allowedClientCallbacks;
         if (allowedCallbacks.indexOf(redirectUrl) !== -1) {
           return res.redirect(`${redirectUrl}?token=${token}`);
         }
@@ -108,7 +103,7 @@ export class AppController {
       const redirectUrl = JSON.parse(req.body.RelayState)?.callbackUrl;
       if (redirectUrl) {
         const configuration = getConfig();
-        const allowedCallbacks = configuration.auth.providers.map(prov => prov.callbackUrl);
+        const allowedCallbacks = configuration.auth.allowedClientCallbacks;
         if (allowedCallbacks.indexOf(redirectUrl) !== -1) {
           return res.redirect(`${redirectUrl}?token=${token}`);
         }

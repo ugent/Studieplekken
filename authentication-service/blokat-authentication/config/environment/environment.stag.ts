@@ -80,6 +80,7 @@ export const configuration: Configuration = {
     },
 
     testEndpoint: true,
+    allowedClientCallbacks: ["https://studieplekken-dev.ugent.be/login"]
   },
 
   https: {

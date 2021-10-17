@@ -66,6 +66,7 @@ export interface Configuration {
     };
 
     testEndpoint: boolean;
+    allowedClientCallbacks: string[]
   };
 
   https: NoHTTPSOptions | HTTPSOptions;

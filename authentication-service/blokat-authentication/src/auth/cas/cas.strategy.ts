@@ -29,7 +29,7 @@ export class CasStrategy extends PassportStrategy(Strategy, 'cas') {
 
   service(req: any): string {
     const configuration = this.configService.getCurrentConfiguration();
-    const allowedCallbacks : string[] = configuration.auth.providers.map(provider => provider.callbackUrl);
+    const allowedCallbacks : string[] = configuration.auth.allowedClientCallbacks;
     const callbackURL = req.query.callbackUrl || req.params.callbackURL;
     const baseURL = configuration.auth.cas.serverBaseURL;
     if (!callbackURL) {
