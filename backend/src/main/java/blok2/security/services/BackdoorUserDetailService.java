@@ -17,7 +17,6 @@ public class BackdoorUserDetailService {
     }
 
     public User loadUserDetails(String email) throws UsernameNotFoundException {
-
         // Try to find the user with given id in the application database
         return this.userDao.getUserByEmail(email);
     }

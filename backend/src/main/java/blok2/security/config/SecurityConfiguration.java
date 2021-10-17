@@ -171,10 +171,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.addFilterAfter(new JwtAuthenticationFilter(authManager), CasAuthenticationFilter.class);
 
         // Adding AS-USER feature when dev
-        if(env.contains("dev")) {
+        if (env.contains("dev")) {
             http.addFilterAfter(new CustomAuthenticationFilter(authManager), JwtAuthenticationFilter.class);
         }
-
 
         http.requestCache().requestCache(requestCache());
 
