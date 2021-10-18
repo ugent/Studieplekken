@@ -1,3 +1,5 @@
+const fs =  require("fs");
+
 function printStatus (requestParams, response, context, ee, next) {
     console.log(`Printing status for request to ${requestParams.url}`)
     console.log("Request headers are: ", requestParams.headers)
@@ -14,7 +16,15 @@ function setReservationTimeSlot(context, events, done) {
     return done();
 }
 
+const data = JSON.parse(fs.readFileSync("access_tokens.txt")).tokens;
+function getRandomUserToken(context, events, done) {
+    const randomIndex = Math.round(Math.random() * data.length);//context.vars.resources.length
+    context.vars.token = data[randomIndex];
+    return done()
+}
+
 module.exports = {
     printStatus: printStatus,
-    setReservationTimeSlot: setReservationTimeSlot
+    setReservationTimeSlot: setReservationTimeSlot,
+    getRandomUserToken: getRandomUserToken
 }

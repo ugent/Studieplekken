@@ -1,3 +1,4 @@
+import json
 import requests
 import sys
 import os
@@ -10,11 +11,14 @@ if os.path.exists(TEXT_FILE):
     os.remove(TEXT_FILE)
 response = requests.get(REQUEST_LINK)
 
+tokens = []
+print(TEST_USERS)
+for i in range(TEST_USERS):
+    
+    access_token = response.json()["access_token"]
+    print(access_token)
+    response = requests.get(REQUEST_LINK)
+    tokens.append(access_token)
+
 with open(TEXT_FILE, 'a') as file:
-    print(TEST_USERS)
-    for i in range(TEST_USERS):
-        
-        access_token = response.json()["access_token"]
-        print(access_token)
-        response = requests.get(REQUEST_LINK)
-        file.write(access_token + "\n")
+    json.dump({"tokens": tokens}, file)

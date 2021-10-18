@@ -13,27 +13,29 @@ config:
         name: Warm up
       - duration: 60 #20
         arrivalRate: 50 #100
+        maxVusers: 250
         #rampTo: 400
         name: Ramp up load
 scenarios:
   - name: "Go to dashboard with login"
     flow:
-      - get:
-          url: "https://studieplekken-dev.ugent.be/auth/login/test"
-          capture:
-            - json: "$.access_token"
-              as: "token"
-          name: "Retrieve token"
+      # - get:
+      #     url: "https://studieplekken-dev.ugent.be/auth/login/test"
+      #     capture:
+      #       - json: "$.access_token"
+      #         as: "token"
+      #     name: "Retrieve token"
           #afterResponse: "printStatus"
+      - function: getRandomUserToken
       - get:
-          url: "https://localhost:8087/api/locations"
+          url: "https://studieplekken-dev.ugent.be/api/locations"
           headers:
             X-AUTH: "{{ token }}"
           #think: "{{$randomNumber(1,6)}}"
           name: "Get locations"
           #afterResponse: "printStatus"
       - get:
-          url: "https://localhost:8087/api/locations/timeslots/19"
+          url: "https://studieplekken-dev.ugent.be/api/locations/timeslots/19"
           headers:
             X-AUTH: "{{ token }}"
           capture:
@@ -43,7 +45,7 @@ scenarios:
           #afterResponse: "printStatus"
       - function: "setReservationTimeSlot"
       - post: 
-          url: "https://localhost:8087/api/locations/reservations"
+          url: "https://studieplekken-dev.ugent.be/api/locations/reservations"
           headers:
             X-AUTH: "{{ token }}"
           json: 
