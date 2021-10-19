@@ -11,6 +11,9 @@ export enum Institution {
   HOGENT = 'HoGent',
   UGENT = 'UGent',
   ARTEVELDE = 'Arteveldehogeschool',
+  LUCA = 'Luca',
+  ODISEE = 'Odisee',
+  STAD_GENT = 'STAD_GENT',
 }
 
 export interface SamlUser {
@@ -21,12 +24,12 @@ export interface SamlUser {
   institution: Institution;
 }
 
-const dummySamlUser : SamlUser = {
-  email: "",
-  firstName: "",
-  lastName: "",
-  id: "",
-  institution: Institution.UGENT
+const dummySamlUser: SamlUser = {
+  email: '',
+  firstName: '',
+  lastName: '',
+  id: '',
+  institution: Institution.UGENT,
 };
 
 export function isSamlUser(obj: any): obj is SamlUser {
@@ -48,7 +51,6 @@ export function missingSamlUserFields(obj: any): string[] {
   return missingFields;
 }
 
-
 export type providerData = {
   loginUrl: string;
   callbackUrl: string;
@@ -66,7 +68,7 @@ export interface Configuration {
     };
 
     testEndpoint: boolean;
-    allowedClientCallbacks: string[]
+    allowedClientCallbacks: string[];
   };
 
   https: NoHTTPSOptions | HTTPSOptions;
