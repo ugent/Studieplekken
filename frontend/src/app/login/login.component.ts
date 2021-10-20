@@ -16,6 +16,7 @@ export class LoginComponent {
   arteveldeHSFlowTriggerUrl = environment.arteveldeHSFlowTriggerUrl;
   odiseeFlowTriggerUrl = environment.odiseeFlowTriggerUrl;
   lucaFlowTriggerUrl = environment.lucaFlowTriggerUrl;
+  stadGentFlowTriggerUrl = environment.stadGentFlowTriggerUrl;
 
 
   constructor(route: ActivatedRoute, authService: AuthenticationService, router: Router) {

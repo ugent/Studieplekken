@@ -37,6 +37,11 @@
              (click)="loginButtonClicked()">
             {{'login.lucaLogin' | translate}}
           </a>
+          <a href="{{stadGentFlowTriggerUrl}}?callbackUrl={{getCallbackUrl()}}" class="btn btn-secondary"
+          (click)="loginButtonClicked()">
+         {{'login.lucaLogin' | translate}}
+       </a>
+
         </div>
         <div class="col-xs-12 col-sm-8" id="image-container" style="background-image: url(assets/images/welcome/welcome.jpg)">
           <div id="display">
