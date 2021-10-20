@@ -78,7 +78,7 @@ export const configuration: Configuration = {
         loginUrl: 'stadgent',
         callbackUrl: 'https://studieplekken-dev.ugent.be/api/SSO/saml',
         issuer: 'https://studieplekken-dev.ugent.be/api/metadata/saml',
-        metadataFile: 'sso-stadgent.xml',
+        metadataFile: 'metadata-stadgent.xml',
         toSamlUser: (a: any) => ({
           firstName:
             a[
