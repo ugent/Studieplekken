@@ -33,7 +33,6 @@ export class AppController {
       Logger.warn(`SAML-user in request was missing ${missingFields.join(',')}.`);
       return res.status(400).send();
     }
-    await this.dbUsersService.getOrCreateUserBySaml(samlUser);
 
     const token: string = (await this.authService.issueToken(samlUser))
       .access_token;
@@ -68,7 +67,6 @@ export class AppController {
       lastName: 'test',
     };
 
-    await this.dbUsersService.getOrCreateUserBySaml(newTestUser);
     return await this.authService.issueToken(newTestUser);
   }
 
@@ -93,9 +91,6 @@ export class AppController {
       Logger.warn(`SAML-user in request was missing ${missingFields.join(',')}.`);
       return res.status(400).send();
     }
-    // No need to retrieve the actual user, only create if it does not exist
-    await this.dbUsersService.getOrCreateUserBySaml(samlUser);
-
     const token: string = (await this.authService.issueToken(samlUser))
       .access_token;
 
