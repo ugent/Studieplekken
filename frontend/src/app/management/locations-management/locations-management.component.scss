@@ -1,9 +1,20 @@
 .fullwidth {
-    width: 100%;
+  width: 100%;
 }
 
 small {
-    font-size: 12px;
-    width:60%;
-    display: inline-block;
+  font-size: 12px;
+  width: 60%;
+  display: inline-block;
+}
+
+.modal-body {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+  visibility: visible;
+  color: red;
+}
+
+.modal-body:hover {
+  visibility: visible;
 }
