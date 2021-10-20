@@ -282,30 +282,18 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <<<<<<< HEAD=======<ul>
+      <ul>
         <li><b style="margin-right: 5px"><i>{{('management.buildings.table.name' | translate) + ':
               '}}</i></b>{{building.name}}</li>
         <li><b style="margin-right: 5px"><i>{{('management.buildings.table.address' |
               translate)}}</i></b>{{building.address}}</li>
-        </ul>
-        >>>>>>> master
+      </ul>
     </div>
 
-    <<<<<<< HEAD <!-- Body -->
+  <!-- Body -->
       <div class="modal-body">
         <div>
           <b>{{'management.buildings.deleteBuildingModal.body' | translate}}</b>
-          =======
-          <!-- Footer -->
-          <div class="modal-footer">
-            <button type="button" class="btn btn-danger danger" (click)="deleteBuildingInFormGroup()">
-              {{'general.buttons.delete' | translate}}
-            </button>
-            <button type="button" class="btn btn-secondary" (click)="closeModal()">
-              {{'general.buttons.cancel' | translate}}
-            </button>
-          </div>
-          >>>>>>> master
 
           <div class="alert alert-danger" style="margin-top: 10px; margin-bottom: 10px;">
             {{'management.buildings.deleteBuildingModal.warning' | translate}}
@@ -330,7 +318,7 @@
           {{'general.buttons.cancel' | translate}}
         </button>
       </div>
-      <<<<<<< HEAD <div class="container-fluid">
+      <div class="container-fluid">
         <div class="alert alert-info" *ngIf="successDeletingBuilding === null">
           {{'general.waitingForServer' | translate}}
         </div>
@@ -343,7 +331,6 @@
           {{'management.buildings.deleteBuildingModal.error' | translate}}
         </div>
   </div>
-  =======
-  >>>>>>> master
+
   </div>
 </ng-template>
