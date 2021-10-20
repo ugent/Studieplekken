@@ -169,12 +169,16 @@ export class LocationCalendarComponent implements OnInit {
       this.errorOnRetrievingReservations = false;
       return;
     }
+    const timeslot: Timeslot = event['timeslot'] as Timeslot;
+    if (!timeslot.timeslotSequenceNumber) {
+      return;
+    }
 
-    if (!event.timeslot.reservable) {
+    if (timeslot.reservable) {
       this.showReservations = false;
     }
 
-    this.currentTimeSlot = event['timeslot'] as Timeslot;
+    this.currentTimeSlot = timeslot;
 
     this.loadReservations();
   }

@@ -51,7 +51,7 @@ export class LocationAddTimeslotDialogComponent implements OnInit, OnChanges {
     if (!model.timeslotDate) {
       return null;
     } else {
-      return moment(model.timeslotDate).subtract(3, 'weeks').day(2);
+      return moment();
     }
   }
 
