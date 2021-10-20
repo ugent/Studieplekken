@@ -275,47 +275,47 @@
       
     </div>
 
-      <!-- Body -->
-      <div class="modal-body">
-        <div>
-          <b>{{'management.buildings.deleteBuildingModal.body' | translate}}</b>
+    <!-- Body -->
+    <div class="modal-body">
+      <div>
+        <b>{{'management.buildings.deleteBuildingModal.body' | translate}}</b>
 
-          <div class="alert alert-danger" style="margin-top: 10px; margin-bottom: 10px;">
-            {{'management.buildings.deleteBuildingModal.warning' | translate}}
-          </div>
-
-          <ul>
-            <li><b style="margin-right: 5px"><i>{{('management.buildings.table.name' |
-                  translate)}}</i></b>{{building.name}}
-            </li>
-            <li><b style="margin-right: 5px"><i>{{('management.buildings.table.address' |
-                  translate)}}</i></b>{{building.address}}</li>
-          </ul>
+        <div class="alert alert-danger" style="margin-top: 10px; margin-bottom: 10px;">
+          {{'management.buildings.deleteBuildingModal.warning' | translate}}
         </div>
+
+        <ul>
+          <li><b style="margin-right: 5px"><i>{{('management.buildings.table.name' |
+                translate)}}</i></b>{{building.name}}
+          </li>
+          <li><b style="margin-right: 5px"><i>{{('management.buildings.table.address' |
+                translate)}}</i></b>{{building.address}}</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="modal-footer">
+      <button type="button" class="button button-secondary danger" (click)="deleteBuildingInFormGroup()">
+        {{'general.buttons.delete' | translate}}
+      </button>
+      <button type="button" class="button button-secondary" (click)="closeModal()">
+        {{'general.buttons.cancel' | translate}}
+      </button>
+    </div>
+    <div class="container-fluid">
+      <div class="alert alert-info" *ngIf="successDeletingBuilding === null">
+        {{'general.waitingForServer' | translate}}
       </div>
 
-      <!-- Footer -->
-      <div class="modal-footer">
-        <button type="button" class="button button-secondary danger" (click)="deleteBuildingInFormGroup()">
-          {{'general.buttons.delete' | translate}}
-        </button>
-        <button type="button" class="button button-secondary" (click)="closeModal()">
-          {{'general.buttons.cancel' | translate}}
-        </button>
+      <div class="alert alert-success" *ngIf="successDeletingBuilding === true">
+        {{'management.buildings.deleteBuildingModal.success' | translate}}
       </div>
-      <div class="container-fluid">
-        <div class="alert alert-info" *ngIf="successDeletingBuilding === null">
-          {{'general.waitingForServer' | translate}}
-        </div>
 
-        <div class="alert alert-success" *ngIf="successDeletingBuilding === true">
-          {{'management.buildings.deleteBuildingModal.success' | translate}}
-        </div>
-
-        <div class="alert alert-error" *ngIf="successDeletingBuilding === false">
-          {{'management.buildings.deleteBuildingModal.error' | translate}}
-        </div>
-  </div>
+      <div class="alert alert-error" *ngIf="successDeletingBuilding === false">
+        {{'management.buildings.deleteBuildingModal.error' | translate}}
+      </div>
+    </div>
 
   </div>
 </ng-template>
