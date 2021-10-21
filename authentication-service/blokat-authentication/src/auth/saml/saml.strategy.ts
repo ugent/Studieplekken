@@ -95,6 +95,7 @@ function createSamlOptionsFromConfig(
       }),
     },
     disableRequestedAuthnContext: true,
+    identifierFormat: null,
   };
 }
 
