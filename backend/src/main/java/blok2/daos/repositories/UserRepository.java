@@ -14,17 +14,17 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     Optional<User> findByMailAndInstitution(String mail, String institution);
 
-    List<User> findAllByFirstName(String firstName);
+    List<User> findAllByFirstNameIgnoreCase(String firstName);
 
-    List<User> findAllByFirstNameAndInstitution(String firstName, String institution);
+    List<User> findAllByFirstNameIgnoreCaseAndInstitution(String firstName, String institution);
 
-    List<User> findAllByLastName(String lastName);
+    List<User> findAllByLastNameIgnoreCase(String lastName);
 
     List<User> findAllByLastNameAndInstitution(String lastName, String institution);
 
-    List<User> findAllByFirstNameAndLastName(String firstName, String lastName);
+    List<User> findAllByFirstNameIgnoreCaseAndLastNameIgnoreCase(String firstName, String lastName);
 
-    List<User> findAllByFirstNameAndLastNameAndInstitution(String firstName, String lastName, String institution);
+    List<User> findAllByFirstNameIgnoreCaseAndLastNameIgnoreCaseAndInstitution(String firstName, String lastName, String institution);
 
     List<User> findAllByAdminTrue();
 
