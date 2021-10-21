@@ -5,8 +5,8 @@
   <hr>
 
   <!-- Table with all existing building -->
-  <div class="row" *ngIf="buildingsObs | async as buildings">
-    <div class="responsive-table fullwidth">
+  <div class="row" >
+    <div class="responsive-table fullwidth" *ngIf="buildingsObs | async as buildings">
       <div class="table-wrapper fullwidth">
 
         <table style="width: 100%;" *ngIf="buildings.length > 0; else noBuilding">
@@ -272,7 +272,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      
+
     </div>
 
     <!-- Body -->
