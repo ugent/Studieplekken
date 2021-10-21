@@ -94,6 +94,7 @@ function createSamlOptionsFromConfig(
         callbackUrl: callbackUrl,
       }),
     },
+    disableRequestedAuthnContext: true,
   };
 }
 
