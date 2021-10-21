@@ -42,16 +42,10 @@ export const configuration: Configuration = {
         issuer: 'https://studieplekken-dev.ugent.be/api/metadata/saml',
         metadataFile: 'sso-kuleuven.xml',
         toSamlUser: (a: any) => ({
-          firstName:
-            a[
-              'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'
-            ],
-          lastName:
-            a['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'],
-          email: a.nameID,
-          id: a[
-            'http://schemas.microsoft.com/identity/claims/objectidentifier'
-          ],
+          firstName: a['givenName'],
+          lastName: a['sn'],
+          email: a['mail'],
+          id: a['uid'],
           institution: Institution.LUCA,
         }),
       },
@@ -61,16 +55,10 @@ export const configuration: Configuration = {
         issuer: 'https://studieplekken-dev.ugent.be/api/metadata/saml',
         metadataFile: 'sso-kuleuven.xml',
         toSamlUser: (a: any) => ({
-          firstName:
-            a[
-              'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'
-            ],
-          lastName:
-            a['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'],
-          email: a.nameID,
-          id: a[
-            'http://schemas.microsoft.com/identity/claims/objectidentifier'
-          ],
+          firstName: a['givenName'],
+          lastName: a['sn'],
+          email: a['mail'],
+          id: a['uid'],
           institution: Institution.ODISEE,
         }),
       },
