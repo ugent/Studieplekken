@@ -7,13 +7,3 @@ small {
   width: 60%;
   display: inline-block;
 }
-
-.modal-body {
-  max-height: calc(100vh - 200px);
-  overflow-y: auto;
-  visibility: visible;
-}
-
-.modal-body:hover {
-  visibility: visible;
-}
