@@ -1,8 +1,12 @@
 package blok2.model.calendar;
 
+import blok2.helpers.CustomLocalDateTimeDeserializer;
 import blok2.helpers.YearWeekDeserializer;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
@@ -48,6 +52,7 @@ public class Timeslot implements Cloneable {
     private boolean reservable;
 
     @Column(name="reservable_from")
+    @JsonDeserialize(using = CustomLocalDateTimeDeserializer.class)
     private LocalDateTime reservableFrom;
 
     @Column(name="location_id")

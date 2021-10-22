@@ -69,7 +69,7 @@ export class Timeslot {
       openingHour: this.openingHour.format("HH:mm"),
       closingHour: this.closingHour.format("HH:mm"),
       reservable: this.reservable,
-      reservableFrom: this.reservableFrom ? this.reservableFrom.toISOString():null,
+      reservableFrom: this.reservableFrom ? this.reservableFrom.toISOString(true):null,
       locationId: this.locationId,
       timeslotGroup: this.timeslotGroup,
       repeatable: this.repeatable
