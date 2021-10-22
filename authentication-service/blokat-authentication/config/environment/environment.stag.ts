@@ -92,6 +92,7 @@ export const configuration: Configuration = {
       'https://localhost:8086/login',
       'https://localhost:8080/login',
       'https://localhost:8087/login',
+      'https://localhost:4200/login',
     ],
   },
 
