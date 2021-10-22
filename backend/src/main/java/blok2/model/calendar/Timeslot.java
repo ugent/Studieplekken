@@ -54,7 +54,7 @@ public class Timeslot implements Cloneable {
 
     @Column(name="reservable_from")
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
-    @JsonDeserialize(using = CustomLocalDateTimeDeserializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime reservableFrom;
 
     @Column(name="location_id")
