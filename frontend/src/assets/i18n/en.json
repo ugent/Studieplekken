@@ -807,11 +807,14 @@
             "locationName": "Room",
             "reservationDate": "Reservation for date",
             "beginHour": "Starting time reservation",
-            "attended": "Did you attend?"
+            "state": "Reservation state"
           },
           "attended": {
-            "yes": "Present",
-            "no": "Absent",
+            "PENDING": "Pending",
+            "REJECTED": "Rejected",
+            "APPROVED": "Approved",
+            "PRESENT": "Present",
+            "ABSENT": "Absent",
             "notScanned": "No attendance taken",
             "notScannedExplanation": "For this reservation attendance wasn't taken, so you haven't gained any penalty points."
           }

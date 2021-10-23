@@ -811,11 +811,14 @@
             "locationName": "Ruimte",
             "reservationDate": "Gereserveerd voor datum",
             "beginHour": "Aanvangsuur reservatie",
-            "attended": "Was je aanwezig?"
+            "state": "Reservatie status"
           },
           "attended": {
-            "yes": "Aanwezig",
-            "no": "Afwezig",
+            "PENDING": "Aan het verwerken",
+            "REJECTED": "Geweigerd",
+            "APPROVED": "Goedgekeurd",
+            "PRESENT": "Aanwezig",
+            "ABSENT": "Afwezig",
             "notScanned": "Geen aanwezigheden opgenomen",
             "notScannedExplanation": "Voor deze reservatie zijn de aanwezigheden niet opgenomen. Je hebt dus ook geen strafpunten verkregen."
           }

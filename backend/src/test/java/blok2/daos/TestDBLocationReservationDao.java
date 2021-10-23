@@ -166,7 +166,7 @@ public class TestDBLocationReservationDao extends BaseTest {
 
         // Set first location reservation to unattended
         elrs.clear();
-        lr0.setAttended(false);
+        lr0.setState(LocationReservation.State.ABSENT);
 
         // not yet scanned: no unattended location reservations expected
         List<LocationReservation> unattendedReservations =
@@ -202,7 +202,7 @@ public class TestDBLocationReservationDao extends BaseTest {
         locationReservationDao.setNotScannedStudentsToUnattended(t0);
 
         // Now there should be one unattended student
-        lr0.setAttended(false);
+        lr0.setState(LocationReservation.State.ABSENT);
         unattendedReservations = locationReservationDao.getUnattendedLocationReservations(t0.timeslotDate());
         Assert.assertEquals(elrs, unattendedReservations);
 

@@ -8,7 +8,7 @@ import { catchError, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs/internal/observable/of';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { BarcodeService } from 'src/app/services/barcode.service';
-import { LocationReservation } from 'src/app/shared/model/LocationReservation';
+import { LocationReservation, LocationReservationState } from 'src/app/shared/model/LocationReservation';
 import { timer } from 'rxjs';
 
 @Component({
@@ -88,7 +88,7 @@ export class ScanningLocationDetailsComponent implements OnInit {
     this.reservationService
       .postLocationReservationAttendance(this.reservation, true)
       .subscribe({ error: () => (this.error = 'scan.error') });
-    this.reservation.attended = true;
+    this.reservation.state = LocationReservationState.PRESENT;
     this.lastScanned = this.reservation;
     this.reservation = null;
   }
