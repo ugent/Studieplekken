@@ -1,17 +1,17 @@
 # Gebruikershandleiding - beheerder
 
-Hier zal je alle informatie vinden over de beheerder functionaliteiten van de Studieplekken applicatie. Er zijn twee grote secties, namelijk beheer en scan. Wanneer je als beheerder op je naam klikt rechtsboven zal je een drop-down krijgen waar "Beheer"/"Management" staat en "scan". Het aanmaken en algemene beheer van gebouwen, ruimtes, tags,... zal je daar terugvinden. In scan zal je functionaliteiten vinden voor opnemen van studenten aanwezigheden.
+Hier zal je alle informatie vinden over de beheerder functionaliteiten van de Studieplekken applicatie. Er zijn twee grote secties, namelijk beheer en scan. Wanneer je als beheerder op je naam klikt rechtsboven zal je een drop-down krijgen waar 'Beheer'/'Management' staat en 'scan'. Het aanmaken en algemene beheer van gebouwen, ruimtes, tags,... zal je daar terugvinden. In scan zal je functionaliteiten vinden voor opnemen van aanwezigheden.
 
 # Beheer/Management
 
-In de linker kolom staat het hoofd menu met verschillende onderwerpen waarover je meer informatie kan verkrijgen.
+In de linkerkolom staat het hoofdmenu met verschillende onderwerpen waarover je meer informatie kan verkrijgen.
 
 ## Gebouw
-Een gebouw kan je beheren in het gebouw rubriek van beheer. Op deze pagina heb je een oplijsting van alle gebouwen die onder jouw beheer zijn. Elk gebouw heeft zijn adres als gegeven en bij welke institutie het behoort. Om meer details te zien ga je best naar bewerken.
+Een gebouw kan je beheren in het 'gebouw/building' rubriek. Op deze pagina heb je een oplijsting van alle gebouwen die onder jouw beheer zijn. Bij elk gebouw hoort zijn adres en tot welke onderwijsinstelling het behoort. Om meer details te zien klik je best op 'bewerken'.
 
 <img src="./assets/md/user-manuals/images/dutch/building_shortcuts.png" width="65%" />
 
-Om een nieuwe locatie aan te maken ga je helemaal onder de lijst van gebouwwen en klik op de knop "Nieuw gebouw". Hier zal je een naam, adres en institutie moeten ingeven. 
+Om een nieuwe locatie aan te maken ga je helemaal onder de lijst van gebouwen en klik op de knop "Nieuw gebouw". Hier zal je een naam, adres en instelling moeten ingeven. 
 
 
 ## Studie-ruimte
@@ -19,17 +19,15 @@ Om een nieuwe locatie aan te maken ga je helemaal onder de lijst van gebouwwen e
 <br/>
 
 ### Initiële aanmaak/verwijdering
-Een studieplek staat in de rubriek ruimte. Dit zijn zalen of delen van een gebouw die studenten kunnen reserveren. Op deze pagina zal je een naam zien, de autoriteit die deze ruimte beheert en "plaatsen" is de capaciteit die de kamer heeft.
+Een studieplek staat in de rubriek ruimte. Dit zijn zalen of delen van een gebouw die studenten kunnen reserveren. Op deze pagina zal je een naam zien, de autoriteit/beheerdersgroep die deze ruimte beheert en "plaatsen" is de capaciteit die de locatie heeft.
 
-Om meer gedetaileerde informatie te bekomen druk je op bewerken
+Om meer gedetaileerde informatie te bekomen druk je op "bewerken" (hamburgermenu).
 
 <img src="./assets/md/user-manuals/images/dutch/location_shortcuts.png" width="60%" />
 
-Een ruimte heeft de mogelijkheid om open te staan voor groepsreservaties. In dit geval is het voldoende dat één persoon deze ruimte reserveert. Individuele reservaties zullen dan niet meer mogelijk zijn.
-
 Opnieuw is er onderaan in de lijst van ruimtes een knop om ruimtes toe te voegen.
 
-! Let op, als de toevoeg knop niet activeert kan het zijn omdat je niet alle verplichte velden hebt ingevult. Dit kan het gevolg zijn van een te kleine venster. Het kan dus zijn dat je nog moet scrollen in het formulier zelf om de eventueel "verborgen" elementen te zien.
+! Let op, als de toevoeg knop niet activeert kan het zijn omdat je niet alle verplichte velden hebt ingevuld. Kijk even na of je in alle delen van het formulier een geldige waarde hebt ingevuld; scroll ook zeker eens naar beneden.
 
 <br/>
 
@@ -46,9 +44,7 @@ Een ruimte kan bepaalde eigenschappen hebben waar gebruikers naar op zoek zijn. 
 Openingsuren van de ruimtes kan je vinden onderaan op deze pagina.
 <img src="./assets/md/user-manuals/images/dutch/opening_hours.png" width="70%" />
 
-Ps: Het is ook mogelijk om in de bewerking-modus te geraken vanuit het dashboard. Als je naar het dashboard gaat en een specifieke ruimte selecteert zal je alle informatie zien dat een student ook zal krijgen over een locatie. Om eender welke bewerkingen door te voeren als beheerder zal je eerst op de beheer-knop moeten klikken rechts naast de titel van de ruimte. Dit verhelpt dat er perongeluk aanpassingen zouden gemaakt worden.
-
-### TODO testen van groepsreservatie en verwijderen
+Ps: Het is ook mogelijk om op de bewerkingspagina te komen via het dashboard. Als je naar het dashboard gaat en een specifieke ruimte selecteert zal je alle informatie zien dat een student ook zal krijgen over een locatie. Om eender welke bewerkingen door te voeren als beheerder zal je eerst op de beheer-knop moeten klikken rechts naast de titel van de ruimte. Dit verhelpt dat er perongeluk aanpassingen zouden gemaakt worden.
 
 <br/>
 
@@ -72,7 +68,8 @@ Nieuwe tijdsloten kunnen worden aangemaakt via het reservatiebeheer scherm. Dit 
 
 Onder reservatiebeheer is er een knop met "Voeg nieuwe openingsperiode toe". Hiermee kunnen er nieuwe tijdsloten worden aangemaakt. 
 
-Er zijn twee soorten tijdsloten: reserveerbare en niet-reserveerbare. Niet-reserveerbare tijsloten kunnen mensen naar toe gaan om te studeren zonder te hoeven gescanned te worden. Hier is dan ook niet noodzakelijk een toezichthouder voor nodig. Verder kan een tijdslot gemarkeerd worden als "herhaalbaar". Dit zorgt dat reservaties zullen worden gesugereerd voor volgende weken.
+Er zijn twee soorten tijdsloten: reserveerbare en niet-reserveerbare. Niet-reserveerbare tijsloten kunnen mensen naar toe gaan om te studeren zonder te reserveren. Verder kan een tijdslot gemarkeerd worden als "herhaalbaar". Dit zorgt dat reservaties zullen worden gesuggereerd voor volgende weken om het ingeven gemakkelijker te maken.
+
 ![](./assets/md/user-manuals/images/dutch/rrL41aD.png)
 
 Hier is een voorbeeld van:
@@ -82,14 +79,13 @@ Hier is een voorbeeld van:
 ![](./assets/md/user-manuals/images/dutch/c11aORU.png)
 
 Herhalende tijdsloten worden gesugereerd in volgende weken. Deze kunnen dan goedgekeurd worden door te klikken op de "Keur goed" knop.
-Alle herhalende tijdsloten kunnen in één keer goedgekeurd worden door te klikken op de "Keur alle suggesties goed" knop.
+Alle herhalende tijdsloten binnen een week kunnen in één keer goedgekeurd worden door te klikken op de "Keur alle suggesties goed" knop.
 ![](./assets/md/user-manuals/images/dutch/ZoEtyTb.png)
 
-PS: Lukt het niet om een reservatie slot aan te maken? Kijk zeker na of je ook altijd de minuten nauwkeurig zelf hebt ingevuld. Soms kan het zijn bv op Safari dat de minuten in het licht-grijs staan, wat wil zeggen dat je deze nog niet hebt ingevuld!
+PS: Lukt het niet om een reservatieslot aan te maken? Kijk zeker na of je alle velden nauwgezet hebt ingevuld. In sommige browsers volstaan de standaardwaarden niet.
 
 <br/>
 
 ## Nog vragen?
 
-Indien er nog vragen zijn waar je niet uitgeraakt kan je ons vinden op het volgend adres: 
-info-medewerkers@studieplekken.ugent.be.
+Indien er verdere vragen zijn contacteer je best de administrator van je onderwijsinstelling. Deze kan je normaal gezien verder helpen.
