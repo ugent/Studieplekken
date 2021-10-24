@@ -170,7 +170,7 @@ public class MailService {
         Context ctx = new Context();
         String title = "[Werk- en Studieplekken] Uw gereserveerd tijdslot werd verwijderd";
         ctx.setVariable("title", title);
-        ctx.setVariable("date", timeslot.getTimeslotDate());
+        ctx.setVariable("date", timeslot.timeslotDate());
         return sendMail(target, title, ctx, RESERVATION_SLOT_DELETED_TEMPLATE_URL);
     }
 

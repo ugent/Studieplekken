@@ -6,18 +6,19 @@ import { TagsService } from '../services/api/tags/tags.service';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
-import { CalendarPeriodsService } from '../services/api/calendar-periods/calendar-periods.service';
+import { TimeslotsService } from '../services/api/calendar-periods/timeslot.service';
 import { LocationStatus } from '../app.constants';
 import { Building } from '../shared/model/Building';
 import { BuildingService } from '../services/api/buildings/buildings.service';
 import { merge, Observable, of, Subscription } from 'rxjs';
 import { Moment } from 'moment';
 import { map } from 'rxjs/operators';
+import { BreadcrumbService, dashboardBreadcrumb } from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css'],
+  styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   locations: Location[];
@@ -56,7 +57,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private locationService: LocationService,
     private tagsService: TagsService,
     private translate: TranslateService,
-    private calendarPeriodService: CalendarPeriodsService,
+    private breadcrumbService: BreadcrumbService,
     private buildingService: BuildingService
   ) {}
 
@@ -93,6 +94,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.tagObs = this.tagsService.getAllTags();
     this.buildingObs = this.buildingService.getAllBuildings();
+
+    this.breadcrumbService.setCurrentBreadcrumbs([dashboardBreadcrumb])
   }
 
   ngOnDestroy(): void {

@@ -1,0 +1,11 @@
+/*
+ * Remove the upper border from the mat-select component. This
+ * adds unnecessary whitespace in the filter.
+ */
+::ng-deep .mat-form-field-infix {
+  border-top: 0;
+}
+
+.pull-right {
+  float: right;
+}

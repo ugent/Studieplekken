@@ -4,8 +4,9 @@
 
   <hr>
 
+
   <!-- User overview in a form -->
-  <form [formGroup]="formGroup">
+  <form [formGroup]="formGroup" class="center">
     <!-- First name -->
     <div class="row form-group">
       <label class="col-lg-3 control-label" for="firstName">{{'profile.overview.form.firstName' | translate}}</label>
@@ -48,29 +49,3 @@
     </div>
   </form>
 </div>
-
-
-<!-- Modal view if user wants to change his password -->
-<ng-template #modalContent let-close="close">
-
-  <!-- Header: title and close button -->
-  <div class="modal-header">
-    <h5>Change Password</h5> <!-- TODO: translate -->
-    <button type="button" class="close" (click)="close()">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-
-  <!-- Body: TODO: body -->
-  <div class="modal-body">
-    <div>Password</div>
-    <div>Confirm Password</div>
-  </div>
-
-  <!-- Footer -->
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline-secondary" (click)="close()">
-      OK
-    </button>
-  </div>
-</ng-template>

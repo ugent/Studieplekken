@@ -1,19 +1,19 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
-import { Observable } from 'rxjs';
-import { LocationTag } from '../../shared/model/LocationTag';
-import { TagsService } from '../../services/api/tags/tags.service';
 import {
   AbstractControl,
   FormControl,
   FormGroup,
-  Validators,
+  Validators
 } from '@angular/forms';
-import { BsModalService } from 'ngx-bootstrap/modal';
+import { MatDialog } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
+import { TagsService } from '../../services/api/tags/tags.service';
+import { LocationTag } from '../../shared/model/LocationTag';
 
 @Component({
   selector: 'app-tags-management',
   templateUrl: './tags-management.component.html',
-  styleUrls: ['./tags-management.component.css'],
+  styleUrls: ['./tags-management.component.scss'],
 })
 export class TagsManagementComponent implements OnInit {
   tagsObs: Observable<LocationTag[]>;
@@ -31,7 +31,7 @@ export class TagsManagementComponent implements OnInit {
 
   constructor(
     private tagsService: TagsService,
-    private modalService: BsModalService
+    private modalService: MatDialog
   ) {}
 
   get tagId(): AbstractControl {
@@ -77,7 +77,7 @@ export class TagsManagementComponent implements OnInit {
   }
 
   closeModal(): void {
-    this.modalService.hide();
+    this.modalService.closeAll();
   }
 
   prepareAdd(template: TemplateRef<unknown>): void {
@@ -92,7 +92,7 @@ export class TagsManagementComponent implements OnInit {
       english: '',
     });
 
-    this.modalService.show(template);
+    this.modalService.open(template, {panelClass: ["cs--cyan" ,"bigmodal"]});
   }
 
   addTag(): void {
@@ -102,7 +102,7 @@ export class TagsManagementComponent implements OnInit {
         this.successAddingTag = true;
         // and reload the tags
         this.tagsObs = this.tagsService.getAllTags();
-        this.modalService.hide();
+        this.modalService.closeAll();
       },
       () => {
         this.successAddingTag = false;
@@ -120,7 +120,7 @@ export class TagsManagementComponent implements OnInit {
     // prepare the tagFormGroup
     this.prepareFormGroup(locationTag);
 
-    this.modalService.show(template);
+    this.modalService.open(template,  {panelClass: ["cs--cyan" ,"bigmodal"]});
   }
 
   updateTagInFormGroup(): void {
@@ -130,7 +130,7 @@ export class TagsManagementComponent implements OnInit {
         this.successUpdatingTag = true;
         // and reload the tags
         this.tagsObs = this.tagsService.getAllTags();
-        this.modalService.hide();
+        this.modalService.closeAll();
       },
       () => {
         this.successUpdatingTag = false;
@@ -148,7 +148,7 @@ export class TagsManagementComponent implements OnInit {
     // prepare the tagFormGroup
     this.prepareFormGroup(locationTag);
 
-    this.modalService.show(template);
+    this.modalService.open(template,  {panelClass: ["cs--cyan" ,"bigmodal"]});
   }
 
   deleteTagInFormGroup(): void {
@@ -158,7 +158,8 @@ export class TagsManagementComponent implements OnInit {
         this.successDeletingTag = true;
         // and reload the tags
         this.tagsObs = this.tagsService.getAllTags();
-        this.modalService.hide();
+        this.modalService.closeAll();
+        location.reload();
       },
       () => {
         this.successDeletingTag = false;

@@ -10,8 +10,14 @@ export enum APPLICATION_TYPE {
 export const environment = {
   production: false,
   applicationType: APPLICATION_TYPE.MINI_THERMIS,
-  casFlowTriggerUrl: 'https://localhost:8080/api/login/cas',
-  hoGentFlowTriggerUrl: 'https://localhost:8080/api/login/saml?idp=https://idp.hogent.be/idp',
-  arteveldeHSFlowTriggerUrl: 'https://localhost:8080/api/login/saml?idp=https://sts.windows.net/b6e080ea-adb9-4c79-9303-6dcf826fb854/',
-  accessToken: 'pk.eyJ1Ijoic21lc3NpZSIsImEiOiJja3JnMzR2ZXEwZG82MnVrd3l5NHFnYTk1In0.jER8bBqoIeiNrKX-HGlrZQ'
+  casFlowTriggerUrl: 'https://studieplekken-dev.ugent.be/auth/login/cas',
+  hoGentFlowTriggerUrl: 'https://studieplekken-dev.ugent.be/auth/login/hogent',
+  arteveldeHSFlowTriggerUrl:
+    'https://studieplekken-dev.ugent.be/auth/login/artevelde',
+  lucaFlowTriggerUrl: 'https://studieplekken-dev.ugent.be/auth/login/luca',
+  odiseeFlowTriggerUrl: 'https://studieplekken-dev.ugent.be/auth/login/odisee',
+  stadGentFlowTriggerUrl: 'https://studieplekken-dev.ugent.be/auth/login/stadgent',
+
+  accessToken:
+    'pk.eyJ1Ijoic21lc3NpZSIsImEiOiJja3JnMzR2ZXEwZG82MnVrd3l5NHFnYTk1In0.jER8bBqoIeiNrKX-HGlrZQ',
 };

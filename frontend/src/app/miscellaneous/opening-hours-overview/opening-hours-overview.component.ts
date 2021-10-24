@@ -10,7 +10,7 @@ import { Location } from '@angular/common';
 @Component({
   selector: 'app-opening-hours-overview',
   templateUrl: './opening-hours-overview.component.html',
-  styleUrls: ['./opening-hours-overview.component.css']
+  styleUrls: ['./opening-hours-overview.component.scss']
 })
 export class OpeningHoursOverviewComponent implements OnInit {
   Object = Object;

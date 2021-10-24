@@ -9,7 +9,7 @@ import { of } from 'rxjs/internal/observable/of';
 @Component({
   selector: 'app-volunteers-management',
   templateUrl: './volunteers-management.component.html',
-  styleUrls: ['./volunteers-management.component.css'],
+  styleUrls: ['./volunteers-management.component.scss'],
 })
 export class VolunteersManagementComponent implements OnInit {
   manageableLocationsObs: Observable<Location[]>;

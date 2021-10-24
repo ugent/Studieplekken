@@ -22,10 +22,8 @@ public class TestSecurityConfig {
 
         @Override
         public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-            System.out.println("called the loadusername");
             try {
                 addUsersIfNotExist();
-                System.out.println();
                 User user;
                 if (s.equals("authholderHoGent")) {
                     user = userDao.getUserByEmail(s + "@hogent.be");

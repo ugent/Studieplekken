@@ -103,14 +103,6 @@ export class LocationService {
     );
   }
 
-  getNumberOfReservationsNow(locationId: number): Observable<number> {
-    return this.http
-      .get<{ amount: number }>(
-        api.locationReservationCount.replace('{locationId}', String(locationId))
-      )
-      .pipe(map((s) => s.amount));
-  }
-
   /***************************************************************
    *   API calls for CRUD operations with public.LOCATION_TAGS   *
    ***************************************************************/

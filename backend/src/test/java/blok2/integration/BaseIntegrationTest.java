@@ -5,7 +5,6 @@ import blok2.TestSharedMethods;
 import blok2.daos.*;
 import blok2.model.Authority;
 import blok2.model.Building;
-import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservables.Location;
 import blok2.model.reservations.LocationReservation;
@@ -19,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 
 @AutoConfigureMockMvc
 @Import(TestSecurityConfig.class)
@@ -34,8 +34,7 @@ public abstract class BaseIntegrationTest extends BaseTest {
     protected IAuthorityDao authorityDao;
 
     @Autowired
-    protected ICalendarPeriodDao calendarPeriodDao;
-
+    protected ITimeslotDao timeslotDAO;
     @Autowired
     protected IBuildingDao buildingDao;
 
@@ -63,7 +62,7 @@ public abstract class BaseIntegrationTest extends BaseTest {
     protected User admin;
     protected User student;
     protected User student2;
-    protected List<CalendarPeriod> calendarPeriods;
+    protected List<Timeslot> calendarPeriods;
     @Autowired
     protected ObjectMapper objectMapper;
     protected User authHolder;
@@ -101,9 +100,7 @@ public abstract class BaseIntegrationTest extends BaseTest {
         // CALENDAR PERIOD
         calendarPeriods = TestSharedMethods.testCalendarPeriods(testLocation);
 
-        CalendarPeriod[] cps = new CalendarPeriod[calendarPeriods.size()];
-        cps = calendarPeriods.toArray(cps);
-        TestSharedMethods.addCalendarPeriods(calendarPeriodDao, cps);
+        calendarPeriods = timeslotDAO.addTimeslots(calendarPeriods);
 
         admin = userDao.getUserByEmail("admin@ugent.be");
         student = userDao.getUserByEmail("student1@ugent.be");
@@ -114,9 +111,10 @@ public abstract class BaseIntegrationTest extends BaseTest {
         authorityDao.addUserToAuthority(authHolder.getUserId(), authority.getAuthorityId());
         authHolder = userDao.getUserByEmail("authholder@ugent.be");
 
-        Timeslot timeslot = calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().get(0);
+
+        Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
         // Add another timeslot which is in the future so we can test if an email is sent when deleting an upcoming reservation slot.
-        Timeslot timeslot2 = calendarPeriodDao.getById(calendarPeriods.get(calendarPeriods.size() - 1).getId()).getTimeslots().get(calendarPeriodDao.getById(calendarPeriods.get(0).getId()).getTimeslots().size() - 1);
+        Timeslot timeslot2 = timeslotDAO.getTimeslot(calendarPeriods.get(calendarPeriods.size() - 1).getTimeslotSeqnr());
 
         LocationReservation reservation = new LocationReservation(student, timeslot, null);
         LocationReservation reservation2 = new LocationReservation(student, timeslot2, null);

@@ -8,7 +8,7 @@ import { of } from 'rxjs/internal/observable/of';
 @Component({
   selector: 'app-scanning-locations',
   templateUrl: './scanning-locations.component.html',
-  styleUrls: ['./scanning-locations.component.css'],
+  styleUrls: ['./scanning-locations.component.scss'],
 })
 export class ScanningLocationsComponent implements OnInit {
   locationObs: Observable<Location[]>;
@@ -24,5 +24,8 @@ export class ScanningLocationsComponent implements OnInit {
         return of<Location[]>(null);
       })
     );
+  }
+
+  isScannable(location: Location) {    return (location.currentTimeslot && location.currentTimeslot.reservable && location.currentTimeslot.isCurrent())
   }
 }

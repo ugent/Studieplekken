@@ -4,23 +4,20 @@
   <div *ngIf="locationReservationObs | async as lr; else loadingOrError">
     <div *ngIf="lr.length > 0; else noUsers">
 
-      <div class="panel-group">
+      <app-accordeon>
         <!--MOBILE SCANNER-->
-        <div class="panel-heading">
-          <h3 class="panel-title">
-            <a data-toggle="collapse" href="#phone" aria-expanded="false" class="collapsed">
-              <i class="glyphicon glyphicon-plus"></i>
-              <i class="glyphicon glyphicon-minus"></i>
-              {{'scan.phone' | translate}}</a>
-          </h3>
-        </div>
+        <a accordion-button data-toggle="collapse" aria-controls="camera"
+           aria-expanded="false" class="collapsed accordion--button">
+          <i class="glyphicon glyphicon-plus"></i>
+          <i class="glyphicon glyphicon-minus"></i>
+          {{'scan.phone' | translate}}</a>
 
-        <div class="panel-collapse collapse" id="phone">
+        <div accordion-content class="accordion--content" id="camera">
 
-          <div *ngIf="error" style="margin-top: 15px;" class="alert alert-error">{{error | translate}}</div>
+          <div *ngIf="error" style="margin-top: 15px;" class="messages messages--error">{{error | translate}}</div>
 
           <div *ngIf="!reservation" style="margin-top: 15px;" class="alert alert-info">{{'scan.mobile-hint' | translate}}</div>
-          <app-scanner *ngIf="!reservation" [validator]="getValidator(lr)" (code)="scanUser(lr, $event)"></app-scanner>
+          <app-scanner *ngIf="!reservation" [validator]="getValidator()" (code)="scanUser(lr, $event)"></app-scanner>
 
           <div class="usertag" *ngIf="reservation" fxLayout="column" fxLayoutAlign="center center">
             <p>
@@ -36,50 +33,46 @@
           </div>
 
         </div>
-      </div>
+      </app-accordeon>
 
-      <br>
-      <div class="alert alert-warning">{{"scan.warn-unattended" | translate}}</div>
+    <br>
+    <div class="messages messages--warning">{{"scan.warn-unattended" | translate}}</div>
 
-      <div class="alert alert-info">{{"scan.handheld-hint" | translate}}</div>
+    <div class="messages messages--info">{{"scan.handheld-hint" | translate}}</div>
 
-      <app-location-reservations
-        [currentTimeSlot]="location.currentTimeslot"
-        [locationReservations]="lr"
-        [lastScanned]="lastScanned"
-        [isManagement]="false"
-      >
-      </app-location-reservations>
-    </div>
+    <app-location-reservations [currentTimeSlot]="location.currentTimeslot" [locationReservations]="lr"
+      [lastScanned]="lastScanned" [isManagement]="false">
+    </app-location-reservations>
   </div>
+</div>
 
 </div>
 
 <ng-template #loadingOrError>
-  <div *ngIf="loadingError | async; else loading" class="alert alert-error">
+  <div *ngIf="loadingError | async; else loading" class="messages messages--error">
     {{'scan.locationDetails.errorMessageOnLoadingUsers' | translate}}
   </div>
   <ng-template #loading>
-    <div class="alert alert-info">
+    <div class="messages messages--info">
       {{'general.waitingForServer' | translate}}
     </div>
   </ng-template>
 </ng-template>
 
 <ng-template #loadingOrErrorForLocation>
-  <div *ngIf="locationLoadingSubject | async; else loading" class="alert alert-error">
+  <div *ngIf="locationLoadingSubject | async; else loading" class="messages messages--error">
     {{'scan.locationDetails.errorMessageOnLoadingLocation' | translate}}
   </div>
 
   <ng-template #loading>
-    <div class="alert alert-info">
+    <div class="messages messages--info">
       {{'general.waitingForServer' | translate}}
     </div>
   </ng-template>
 </ng-template>
 
 <ng-template #noUsers>
-  <div class="alert alert-warning">
+  <div class="messages messages--warning">
     {{'scan.locationDetails.noUsersToScanWarning' | translate}}
   </div>
 </ng-template>

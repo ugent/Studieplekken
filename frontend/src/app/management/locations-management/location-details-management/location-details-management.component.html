@@ -12,116 +12,41 @@
      - the collapsable body: panel-body in which a panel-body resides with the actual content of the panel-group
    -->
 
-  <!-- Overview of the location -->
-  <div class="panel-group">
-    <!-- Heading -->
-    <div class="panel-heading">
-      <h3 class="panel-title">
-        <a data-toggle="collapse" href="#detailsOfLocationBody" aria-expanded="false" class="collapsed">
-          <i class="glyphicon glyphicon-plus"></i>
-          <i class="glyphicon glyphicon-minus"></i>
-          {{('management.locationDetails.title' | translate).replace('{locationName}', location.name)}}
-        </a>
-      </h3>
-    </div>
-
-    <!-- Body -->
-    <div class="panel-collapse collapse" id="detailsOfLocationBody">
-      <div class="panel-body" style="padding: 20px">
-        <app-details-form [location]="locationObs"></app-details-form>
-      </div>
-    </div>
-  </div>
+  <h2>
+    {{('management.locationDetails.title' | translate).replace('{locationName}', location.name)}}
+  </h2>
+  <hr>
+  <app-details-form [location]="locationObs"></app-details-form>
 
   <!-- Calendar with overview of opening days -->
-  <div class="panel-group">
-    <!-- Heading -->
-      <div class="panel-heading">
-        <h3 class="panel-title">
-          <a data-toggle="collapse" href="#calendarCollapseBody" aria-expanded="false" class="collapsed">
-            <i class="glyphicon glyphicon-plus"></i>
-            <i class="glyphicon glyphicon-minus"></i>
-            {{'management.locationDetails.calendar.title' | translate}}</a>
-        </h3>
-      </div>
+  <h2>
+    {{'management.locationDetails.calendar.title' | translate}}
+  </h2>
+  <hr />
 
-      <!-- Body -->
-      <div class="panel-collapse collapse" id="calendarCollapseBody">
-        <app-location-calendar [location]="location"></app-location-calendar>
-      </div>
+  <!-- Body -->
+  <div class="panel-collapse collapse" id="calendarCollapseBody">
+    <app-location-calendar [location]="location"></app-location-calendar>
   </div>
 
   <!-- Description of the location -->
-  <div class="panel-group">
-    <!-- Heading -->
-    <div class="panel-heading">
-      <h3 class="panel-title">
-        <a data-toggle="collapse" href="#descriptionCollapseBody" aria-expanded="false" class="collapsed">
-          <i class="glyphicon glyphicon-plus"></i>
-          <i class="glyphicon glyphicon-minus"></i>
-          {{'management.locationDetails.description.title' | translate}}</a>
-      </h3>
-    </div>
 
-    <!-- Body -->
-    <div class="panel-collapse collapse" id="descriptionCollapseBody">
-      <app-location-description [location]="locationObs"></app-location-description>
-    </div>
-  </div>
+  <h2>
+    {{'management.locationDetails.description.title' | translate}}
+  </h2>
+  <hr />
+  <!-- Body -->
+  <app-location-description [location]="locationObs"></app-location-description>
 
+
+  <h2>
+    {{'management.locationDetails.tags.title' | translate}}
+  </h2>
+  <hr />
   <!-- Tags of the location -->
-  <div class="panel-group">
-    <!-- Heading -->
-    <div class="panel-heading">
-      <h3 class="panel-title">
-        <a data-toggle="collapse" href="#tagsCollapseBody" aria-expanded="false" class="collapsed">
-          <i class="glyphicon glyphicon-plus"></i>
-          <i class="glyphicon glyphicon-minus"></i>
-          {{'management.locationDetails.tags.title' | translate}}</a>
-      </h3>
-    </div>
 
-    <!-- Body -->
-    <div class="panel-collapse collapse" id="tagsCollapseBody">
-      <app-location-tags-management [location]="locationObs"></app-location-tags-management>
-    </div>
-  </div>
-
-  <!-- If this period has lockers, show the calendar for lockers -->
-  <div class="panel-group" *ngIf="showLockersManagement && location.numberOfLockers > 0">
-    <!-- Heading -->
-    <div class="panel-heading">
-      <h3 class="panel-title">
-        <a data-toggle="collapse" href="#lockerCalendarCollapseBody" aria-expanded="false" class="collapsed">
-          <i class="glyphicon glyphicon-plus"></i>
-          <i class="glyphicon glyphicon-minus"></i>
-          {{'management.locationDetails.lockerCalendar.title' | translate}}</a>
-      </h3>
-    </div>
-
-    <!-- Body -->
-    <div class="panel-collapse collapse" id="lockerCalendarCollapseBody">
-      <app-lockers-calendar [location]="locationObs"></app-lockers-calendar>
-    </div>
-  </div>
-
-  <!-- If this period has lockers, show the table overview of lockers -->
-  <div class="panel-group" *ngIf="showLockersManagement && location.numberOfLockers > 0">
-    <!-- Heading -->
-    <div class="panel-heading">
-      <h3 class="panel-title">
-        <a data-toggle="collapse" href="#lockersTableCollapseBody" aria-expanded="false" class="collapsed">
-          <i class="glyphicon glyphicon-plus"></i>
-          <i class="glyphicon glyphicon-minus"></i>
-          {{'management.locationDetails.lockersTable.title' | translate}}</a>
-      </h3>
-    </div>
-
-    <!-- Body -->
-    <div class="panel-collapse collapse" id="lockersTableCollapseBody">
-      <app-lockers-table [location]="locationObs"></app-lockers-table>
-    </div>
-  </div>
+  <!-- Body -->
+  <app-location-tags-management [location]="locationObs"></app-location-tags-management>
 </div>
 
 <ng-template #loading>

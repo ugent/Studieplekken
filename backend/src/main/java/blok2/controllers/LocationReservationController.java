@@ -1,20 +1,18 @@
 package blok2.controllers;
 
-import blok2.daos.ICalendarPeriodDao;
+import blok2.daos.ILocationDao;
 import blok2.daos.ILocationReservationDao;
-import blok2.helpers.Pair;
+import blok2.daos.ITimeslotDao;
 import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.helpers.exceptions.NotAuthorizedException;
 import blok2.mail.MailService;
-import blok2.model.calendar.CalendarPeriod;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,7 +22,6 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.mail.MessagingException;
 import javax.validation.Valid;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -43,15 +40,18 @@ public class LocationReservationController extends AuthorizedLocationController 
     private final Logger logger = LoggerFactory.getLogger(LocationReservationController.class.getSimpleName());
 
     private final ILocationReservationDao locationReservationDao;
-    private final ICalendarPeriodDao calendarPeriodDao;
+    private final ITimeslotDao timeslotDao;
 
     private final MailService mailService;
+    private final ILocationDao locationDao;
 
     @Autowired
-    public LocationReservationController(ILocationReservationDao locationReservationDao, ICalendarPeriodDao calendarPeriodDao, MailService mailService) {
+    public LocationReservationController(ILocationReservationDao locationReservationDao, ITimeslotDao timeslotDao, MailService ms
+                                                , ILocationDao locDao) {
         this.locationReservationDao = locationReservationDao;
-        this.calendarPeriodDao = calendarPeriodDao;
-        this.mailService = mailService;
+        this.timeslotDao = timeslotDao;
+        this.mailService = ms;
+        this.locationDao = locDao;
     }
 
     @GetMapping("/user")
@@ -63,21 +63,14 @@ public class LocationReservationController extends AuthorizedLocationController 
         return locationReservationDao.getAllLocationReservationsOfUser(id);
     }
 
-    @GetMapping("/{userId}")
-    @PreAuthorize("hasAuthority('USER') and #userId == authentication.principal.userId")
-    public List<Pair<LocationReservation, CalendarPeriod>>
-    getLocationReservationsWithLocationByUserId(@PathVariable("userId") String userId) {
-        return locationReservationDao.getAllLocationReservationsAndCalendarPeriodsOfUser(userId);
-    }
-
     @PostMapping
     @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public LocationReservation createLocationReservation(@AuthenticationPrincipal User user, @Valid @RequestBody Timeslot timeslot) {
         try {
-            LocationReservation reservation = new LocationReservation(user, timeslot, null);
-            CalendarPeriod period = calendarPeriodDao.getById(timeslot.getCalendarId());
-            if (LocalDateTime.now().isBefore(period.getReservableFrom())) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "This calendarperiod can't yet be reserved");
+            Timeslot dbTimeslot = timeslotDao.getTimeslot(timeslot.getTimeslotSeqnr());
+            LocationReservation reservation = new LocationReservation(user, dbTimeslot, null);
+            if (LocalDateTime.now().isBefore(dbTimeslot.getReservableFrom())) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "This timeslot can't yet be reserved");
             }
             if (!locationReservationDao.addLocationReservationIfStillRoomAtomically(reservation)) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "There are no more spots left for this location.");
@@ -90,109 +83,59 @@ public class LocationReservationController extends AuthorizedLocationController 
         }
     }
 
-    @GetMapping("/timeslot/{calendarid}/{date}/{seqnr}")
+    @GetMapping("/timeslot/{seqnr}")
     @PreAuthorize("hasAuthority('HAS_VOLUNTEERS') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public List<LocationReservation> getLocationReservationsByTimeslot(
-            @AuthenticationPrincipal User user,
-            @PathVariable("calendarid") int calendarId,
-            @PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             @PathVariable("seqnr") int seqnr
     ) {
-        try {
-            if (!calendarPeriodDao.getById(calendarId).isAllowedToEdit(user)) {
-                throw new NotAuthorizedException("You are not authorized to retrieve information for this calendar period.");
-            }
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
-        Timeslot timeslot = new Timeslot(calendarId, seqnr, date, 0);
+        Timeslot timeslot = timeslotDao.getTimeslot(seqnr);
         return locationReservationDao.getAllLocationReservationsOfTimeslot(timeslot);
-    }
-
-    @GetMapping("/count/{locationId}")
-    @PreAuthorize("permitAll()")
-    public Map<String, Integer> getReservationCount(@PathVariable("locationId") int locationId) {
-        return Collections.singletonMap("amount", locationReservationDao.amountOfReservationsRightNow(locationId));
     }
 
     @DeleteMapping
     @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void deleteLocationReservation(@AuthenticationPrincipal User user, @RequestBody @Valid LocationReservation locationReservation) {
+        LocationReservation dbLocationReservation = locationReservationDao.getLocationReservation(locationReservation.getUser().getUserId(), locationReservation.getTimeslot());
 
-        try {
-            CalendarPeriod parentPeriod = calendarPeriodDao.getById(locationReservation.getTimeslot().getCalendarId());
-            if (!parentPeriod.isAllowedToEdit(user) &&
-                    !locationReservation.getUser().getUserId().equals(user.getUserId())) {
-                throw new NotAuthorizedException("You are not authorized to retrieve information for this calendar period.");
+        isAuthorized(
+                (lr, u) -> hasAuthority(dbLocationReservation.getTimeslot().getLocationId()) || lr.getUser().getUserId().equals(u.getUserId()),
+                dbLocationReservation
+        );
+
+        locationReservationDao.deleteLocationReservation(dbLocationReservation);
+        logger.info(String.format("LocationReservation for user %s at time %s deleted", dbLocationReservation.getUser(), dbLocationReservation.getTimeslot().toString()));
+
+        // Send email to student if student is not the user who requested the deletion.
+        if (!dbLocationReservation.getUser().getUserId().equals(user.getUserId())) {
+            try {
+                mailService.sendReservationSlotDeletedMessage(dbLocationReservation.getUser().getMail(), dbLocationReservation.getTimeslot());
+            } catch (MessagingException e) {
+                logger.error(String.format("Could not send mail to student %s about deleted reservation slot %s", user.getUsername(), dbLocationReservation.getTimeslot().toString()));
             }
-
-            locationReservationDao.deleteLocationReservation(locationReservation.getUser().getUserId(),
-                    locationReservation.getTimeslot());
-            logger.info(String.format("LocationReservation for user %s at time %s deleted", locationReservation.getUser(), locationReservation.getTimeslot().toString()));
-
-            // Send email to student if student is not the user who requested the deletion.
-            if (!locationReservation.getUser().getUserId().equals(user.getUserId())) {
-                try {
-                    mailService.sendReservationSlotDeletedMessage(locationReservation.getUser().getMail(), locationReservation.getTimeslot());
-                } catch (MessagingException e) {
-                    logger.error(String.format("Could not send mail to student %s about deleted reservation slot %s", user.getUsername(), locationReservation.getTimeslot().toString()));
-                }
-            }
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }
 
-    @PostMapping("/{userid}/{calendarid}/{date}/{seqnr}/attendance")
+    @PostMapping("/{userid}/{seqnr}/attendance")
     @PreAuthorize("hasAuthority('HAS_VOLUNTEERS') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void setLocationReservationAttendance(
-            @AuthenticationPrincipal User user,
-            @PathVariable("calendarid") int calendarId,
-            @PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             @PathVariable("seqnr") int seqnr,
             @PathVariable("userid") String userid,
             @RequestBody LocationReservation.AttendedPostBody body
     ) {
-        Timeslot slot = new Timeslot(calendarId, seqnr, date, 0);
-        try {
-            CalendarPeriod parentPeriod = calendarPeriodDao.getById(slot.getCalendarId());
-            isVolunteer(parentPeriod.getLocation());
-            if (!user.isAdmin() && !parentPeriod.getLocation().getBuilding().getInstitution().equals(user.getInstitution())) {
-                throw new NotAuthorizedException("You are not authorized to this location.");
-            }
-
-            if (!locationReservationDao.setReservationAttendance(userid, slot, body.getAttended()))
-                throw new NoSuchDatabaseObjectException("No such reservation");
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        Timeslot slot = timeslotDao.getTimeslot( seqnr);
+        isVolunteer(locationDao.getLocationById(slot.getLocationId()));
+        if (!locationReservationDao.setReservationAttendance(userid, slot, body.getAttended()))
+            throw new NoSuchDatabaseObjectException("No such reservation");
     }
 
     @PutMapping("/not-scanned")
     @PreAuthorize("hasAuthority('HAS_VOLUNTEERS') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public void setAllNotScannedStudentsToUnattendedForTimeslot(@AuthenticationPrincipal User user,
-                                                                @RequestBody Timeslot timeslot) {
-        try {
-            // check if user is allowed by role
-            CalendarPeriod calendarPeriod = calendarPeriodDao.getById(timeslot.getCalendarId());
-            isVolunteer(calendarPeriod.getLocation());
-            if (!user.isAdmin() && !calendarPeriod.getLocation().getBuilding().getInstitution().equals(user.getInstitution())) {
-                throw new NotAuthorizedException("You are not authorized to this location.");
-            }
+    public void setAllNotScannedStudentsToUnattendedForTimeslot(@RequestBody Timeslot timeslot) {
+        // check if user is allowed by role
+        isVolunteer(locationDao.getLocationById(timeslot.getLocationId()));
 
-            logger.info(String.format("Setting all students who were not scanned to unattended for timeslot %s", timeslot));
-            locationReservationDao.setNotScannedStudentsToUnattended(timeslot);
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
-        }
+        logger.info(String.format("Setting all students who were not scanned to unattended for timeslot %s", timeslot));
+        locationReservationDao.setNotScannedStudentsToUnattended(timeslot);
     }
 
 }

@@ -1,75 +1,91 @@
 package blok2.model.calendar;
 
+import blok2.helpers.YearWeekDeserializer;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
+import org.threeten.extra.YearWeek;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Table(name = "timeslots")
 public class Timeslot implements Cloneable {
 
-    @EmbeddedId
-    @AttributeOverrides({
-            @AttributeOverride(
-                    name = "calendarId",
-                    column = @Column(name = "calendar_id")
-            ),
-            @AttributeOverride(
-                    name = "timeslotSequenceNumber",
-                    column = @Column(name = "timeslot_sequence_number")
-            ),
-            @AttributeOverride(
-                    name = "timeslotDate",
-                    column = @Column(name = "timeslot_date")
-            ),
-    })
-    private final TimeslotId timeslotId;
+    @Id
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @Column(name = "sequence_number")
+    @NotNull
+    private Integer timeslotSequenceNumber;
+
+    @Column(name= "opening_hour")
+    private LocalTime openingHour;
+
+    @Column(name= "closing_hour")
+    private LocalTime closingHour;
+
 
     @Column(name = "seat_count")
     @NotNull
     @Min(0)
     private Integer seatCount;
 
+    @Column(name="timeslot_date")
+    private LocalDate timeslotDate;
+
+    @Column(name = "reservable")
+    private boolean reservable;
+
+    @Column(name="reservable_from")
+    private LocalDateTime reservableFrom;
+
+    @Column(name="location_id")
+    @NotNull
+    private Integer locationId;
+
     @Column(name = "reservation_count")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private int amountOfReservations;
 
+    @Column(name="timeslot_group_id")
+    private UUID timeslotGroup;
+
+    @Column(name="repeatable")
+    private boolean repeatable;
+
     // Artefact for framework
     public Timeslot() {
-        this(0, 0, null, 0, 0);
+        this(null, null, null, null, false, null, 0, 0);
     }
 
-    public Timeslot(int calendarId,
-                    int timeslotSequenceNumber,
+    public Timeslot(Integer timeslotSequenceNumber,
                     LocalDate timeslotDate,
+                    LocalTime openingHour,
+                    LocalTime closingHour,
+                    boolean reservable,
+                    LocalDateTime reservableFrom,
                     int seatCount,
-                    int amountOfReservations) {
-        this.timeslotId = new TimeslotId(calendarId, timeslotSequenceNumber, timeslotDate);
+                    int locationId) {
+        this.timeslotSequenceNumber = timeslotSequenceNumber;
+        if(timeslotDate != null)
+            this.setTimeslotDate(timeslotDate);
+        this.openingHour = openingHour;
+        this.closingHour = closingHour;
+        this.reservable = reservable;
+        this.reservableFrom = reservableFrom;
         this.seatCount = seatCount;
-        this.amountOfReservations = amountOfReservations;
-    }
-
-    public Timeslot(int calendarId, int timeslotSeqnr, LocalDate timeslotDate, int seatCount) {
-        this.timeslotId = new TimeslotId(calendarId, timeslotSeqnr, timeslotDate);
-        this.seatCount = seatCount;
-    }
-
-    public Timeslot(CalendarPeriod period, int timeslotSeqnr, LocalDate timeslotDate) {
-        this(period.getId(), timeslotSeqnr, timeslotDate, period.getSeatCount());
-    }
-
-    public static int compareTo(Timeslot var1, Timeslot var2) {
-        if (var1.timeslotId.timeslotDate.equals(var2.timeslotId.timeslotDate)) {
-            return Integer.compare(var1.timeslotId.timeslotSequenceNumber, var2.timeslotId.timeslotSequenceNumber);
-        } else {
-            return var1.timeslotId.timeslotDate.compareTo(var2.timeslotId.timeslotDate);
-        }
+        this.locationId = locationId;
     }
 
     @Override
@@ -77,7 +93,12 @@ public class Timeslot implements Cloneable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Timeslot timeslot = (Timeslot) o;
-        return timeslotId.calendarId.equals(timeslot.timeslotId.calendarId);
+        return Objects.equals(timeslotSequenceNumber, timeslot.timeslotSequenceNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(timeslotSequenceNumber);
     }
 
     @Override
@@ -85,45 +106,9 @@ public class Timeslot implements Cloneable {
         return ToStringBuilder.reflectionToString(this);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(timeslotId.calendarId);
-    }
-
-    public int getCalendarId() {
-        return timeslotId.calendarId;
-    }
-
-    public void setCalendarId(int calendarId) {
-        timeslotId.calendarId = calendarId;
-    }
-
-    public int getTimeslotSeqnr() {
-        return timeslotId.timeslotSequenceNumber;
-    }
-
-    public void setTimeslotSeqnr(int timeslotSeqnr) {
-        timeslotId.timeslotSequenceNumber = timeslotSeqnr;
-    }
-
-    public LocalDate getTimeslotDate() {
-        return timeslotId.timeslotDate;
-    }
-
-    public void setTimeslotDate(LocalDate timeslotDate) {
-        timeslotId.timeslotDate = timeslotDate;
-    }
 
     public int getAmountOfReservations() {
         return amountOfReservations;
-    }
-
-    public void decrementAmountOfReservations() {
-        amountOfReservations--;
-    }
-
-    public void incrementAmountOfReservations() {
-        amountOfReservations++;
     }
 
     public void setAmountOfReservations(int amountOfReservations) {
@@ -138,18 +123,100 @@ public class Timeslot implements Cloneable {
         this.seatCount = seatCount;
     }
 
+    public LocalTime getOpeningHour() {
+        return openingHour;
+    }
+
+    public Integer getTimeslotSeqnr() {
+        return timeslotSequenceNumber;
+    }
+
+    public void setTimeslotSeqnr(Integer i) {
+        timeslotSequenceNumber = i;
+    }
+
+
+    public void setOpeningHour(LocalTime openingHour) {
+        this.openingHour = openingHour;
+    }
+
+    public LocalTime getClosingHour() {
+            return closingHour;
+        }
+
+    public void decrementAmountOfReservations() {
+        amountOfReservations--;
+    }
+
+    public void incrementAmountOfReservations() {
+        amountOfReservations++;
+    }
+
+    public void setClosingHour(LocalTime closingHour) {
+        this.closingHour = closingHour;
+    }
+
+    public boolean isReservable() {
+        return reservable;
+    }
+
+    public void setReservable(boolean reservable) {
+        this.reservable = reservable;
+    }
+
+
+    @JsonProperty
+    @Transient
+    public LocalDate timeslotDate() {
+        return this.timeslotDate;
+    }
+
+    @Transient
+    public void setTimeslotDate(LocalDate date) {
+        this.timeslotDate = date;
+    }
+
+
+    public LocalDateTime getReservableFrom() {
+        return reservableFrom;
+    }
+
+    public void setReservableFrom(LocalDateTime reservableFrom) {
+        this.reservableFrom = reservableFrom;
+    }
+
+    public int getLocationId() {
+        return locationId;
+    }
+
+    public void setLocation(int locationId) {
+        this.locationId = locationId;
+    }
+
+    public UUID getTimeslotGroup() {
+        return timeslotGroup;
+    }
+
+    public void setTimeslotGroup(UUID timeslotGroup) {
+        this.timeslotGroup = timeslotGroup;
+    }
+
+    public boolean isRepeatable() {
+        return this.repeatable;
+    }
+
+    public void setRepeatable(boolean repeatable) {
+        this.repeatable = repeatable;
+    }
+
     @Embeddable
     public static class TimeslotId implements Serializable {
-        Integer calendarId;
         Integer timeslotSequenceNumber;
-        LocalDate timeslotDate;
 
         public TimeslotId() {}
 
-        public TimeslotId(int calendarId, int timeslotSequenceNumber, LocalDate timeslotDate) {
-            this.calendarId = calendarId;
+        public TimeslotId(int timeslotSequenceNumber) {
             this.timeslotSequenceNumber = timeslotSequenceNumber;
-            this.timeslotDate = timeslotDate;
         }
 
         @Override
@@ -157,15 +224,12 @@ public class Timeslot implements Cloneable {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             TimeslotId that = (TimeslotId) o;
-            return Objects.equals(calendarId, that.calendarId) &&
-                    Objects.equals(timeslotSequenceNumber, that.timeslotSequenceNumber) &&
-                    Objects.equals(timeslotDate, that.timeslotDate);
+                   return Objects.equals(timeslotSequenceNumber, that.timeslotSequenceNumber);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(calendarId, timeslotSequenceNumber, timeslotDate);
+            return Objects.hash(timeslotSequenceNumber);
         }
     }
-
 }

@@ -1,3 +1,7 @@
+// Setting up gent_styleguide (cfr. https://stijlgids.stad.gent/v4/index.html)
+$styleguide-dir: '' !default;
+@import "./node_modules/gent_styleguide/build/styleguide/sass/main_cli";
+
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
 
@@ -163,6 +167,10 @@
   opacity: 0.6;
 }
 
+.calendar-event-suggestion {
+  opacity: 0.6;
+}
+
 .float-right {
   float: right;
   margin-right: 2.5vw;
@@ -176,4 +184,15 @@
 
 video {
   width: 100%
+}
+
+.bigmodal {
+  min-width: 60vw;
+}
+
+.fullheight {
+  height: 100%
+}
+.fullwidth {
+  width: 100%;
 }

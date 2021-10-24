@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { UserService } from '../services/api/users/user.service';
 import { AuthenticationService } from '../services/authentication/authentication.service';
+import { BreadcrumbService, dashboardBreadcrumb } from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
 
 @Component({
   selector: 'app-information',
   templateUrl: './information.component.html',
-  styleUrls: ['./information.component.css'],
+  styleUrls: ['./information.component.scss'],
 })
 export class InformationComponent implements OnInit {
   showManagement = false;
@@ -14,7 +15,8 @@ export class InformationComponent implements OnInit {
   constructor(
     private translate: TranslateService,
     private authenticationService: AuthenticationService,
-    private userService: UserService
+    private userService: UserService,
+    private breadcrumbService: BreadcrumbService
   ) {}
 
   ngOnInit(): void {
@@ -36,6 +38,8 @@ export class InformationComponent implements OnInit {
         this.showManagement = false;
       }
     });
+
+    this.breadcrumbService.setCurrentBreadcrumbs([dashboardBreadcrumb, {pageName: "Information", url:"/information"}])
   }
 
   currentLanguage(): string {

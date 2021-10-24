@@ -9,7 +9,7 @@ import { AuthenticationService } from '../../../services/authentication/authenti
 @Component({
   selector: 'app-user-details-management',
   templateUrl: './user-details-management.component.html',
-  styleUrls: ['./user-details-management.component.css'],
+  styleUrls: ['./user-details-management.component.scss'],
 })
 export class UserDetailsManagementComponent implements OnInit {
   userObs: Observable<User> = this.userDetailsService.userObs;

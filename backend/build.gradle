@@ -12,14 +12,18 @@ plugins {
 }
 
 repositories {
+    maven {
+        url = uri("https://repo.osgeo.org/repository/release/")
+    }
     mavenLocal()
     mavenCentral()
     maven {
-        url = uri('http://repo.maven.apache.org/maven2')
+        url = uri('https://repo.maven.apache.org/maven2')
     }
     maven {
         url = uri('https://build.shibboleth.net/nexus/content/repositories/releases/')
     }
+
 }
 
 dependencies {
@@ -54,8 +58,13 @@ dependencies {
     implementation "org.flywaydb:flyway-core:6.5.6"
     implementation 'org.flywaydb.flyway-test-extensions:flyway-test-extensions:6.4.0'
     implementation 'org.flywaydb.flyway-test-extensions:flyway-spring5-test:6.4.0'
+    implementation "org.threeten:threeten-extra:1.6.0"
     implementation 'org.hibernate:hibernate-core:5.4.30.Final'
     implementation 'org.springframework:spring-aspects:3.2.4.RELEASE'
+    implementation group: 'org.geotools', name: 'gt-referencing', version: '25.0'
+    implementation group: 'org.geotools', name: 'gt-epsg-hsql', version: '25.0'
+    implementation group: 'org.geotools', name: 'gt-main', version: '25.0'
+    implementation group: 'io.jsonwebtoken', name:'jjwt', version: '0.9.1'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.2.2.RELEASE'
     testImplementation 'org.springframework.security:spring-security-test'

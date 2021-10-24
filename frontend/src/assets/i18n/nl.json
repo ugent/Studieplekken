@@ -69,11 +69,13 @@
     "error": "Er is iets misgelopen tijdens het ophalen van de ruimtes."
   },
   "footer": {
-    "madeBy": "Gemaakt door",
-    "privacy": "Privacy",
+    "madeBy": "Gemaakt met trots door",
+    "privacy": "Privacy & Cookies",
     "disclaimer": "Disclaimer",
     "cookies": "Cookies",
-    "accessibility": "Toegankelijkheid"
+    "accessibility": "Toegankelijkheid",
+    "responsible-disclosure": "Responsible Disclosure",
+    "terms-of-use":"Terms of use"
   },
   "reservations": {
     "reservationButton": "Update Reservaties"
@@ -81,7 +83,7 @@
   "general": {
     "dsa": "Dienst StudentenActiviteiten",
     "ugent": "Universiteit Gent",
-    "appTitle": "Studieplekken UGent",
+    "appTitle": "Studieplekken",
     "yes": "Ja",
     "no": "Neen",
     "back": "Terug",
@@ -102,7 +104,8 @@
       "clear": "Annuleer",
       "open": "Toon open locaties",
       "close": "Sluiten",
-      "print": "Print"
+      "print": "Print",
+      "copy": "Kopieer"
     },
     "roles": {
       "ADMIN": "Admin"
@@ -134,11 +137,14 @@
     "DUTCH": "Nederlands"
   },
   "login": {
-    "appTitle": "Studieplekken UGent",
+    "appTitle": "Studieplekken Gent",
     "title": "Aanmelden",
     "casLogin": "UGent Login",
-    "hoGentLogin": "HoGent Login",
-    "arteveldeHSLogin": "Artevelde HS Login",
+    "hoGentLogin": "HOGENT Login",
+    "arteveldeHSLogin": "Artevelde Hogeschool Login",
+    "odiseeLogin": "Odisee Login",
+    "lucaLogin": "LUCA School of Arts Login",
+    "stadGentLogin": "Stad Gent Login",
     "about": "Het digitaal platform voor studieplekken"
   },
   "management": {
@@ -208,11 +214,13 @@
         "form": {
           "title": "Wijzig openingsdagen",
           "addButton": "Voeg nieuwe openingsperiode toe",
-          "startsAt": "Begint op",
-          "endsAt": "Eindigt op",
+          "date": "Datum",
+          "day":"Dag",
           "openingTime": "Openingstijd",
           "closingTime": "Sluitingstijd",
-          "reservable": "Reserveerbaar vanaf",
+          "reservable": "Reserveerbaar",
+          "repeatable": "Herhalen",
+          "repeatable-info": "Als u dit aanvinkt zal de timeslot voor de komende weken gesuggereerd worden.",
           "numberOfSeats": "Plaatsen",
           "timeslotCount": "Aantal timeslots",
           "reservableFrom": "Reserveerbaar vanaf",
@@ -224,12 +232,16 @@
           },
           "adminWarning": "Opgepast, deze verandering ligt binnen de vastgelegde termijn. Je zal manueel contact moeten opnemen met dienst permanentie van de UGent.",
           "updateReservationWarning": "Het aanpassen van deze periode zal leiden tot de verwijdering van alle reservaties die al gemaakt zijn gedurende deze periode!",
-          "noCalendarPeriodsForLocation": "Op dit moment zijn er nog geen periodes voor de ruimte beschikbaar."
+          "noCalendarPeriodsForLocation": "Op dit moment zijn er nog geen periodes voor de ruimte beschikbaar.",
+          "approveAll": "Keur alle suggesties goed",
+          "approve": "Keur goed",
+          "reject": "Keur af",
+          "rejectAll": "Keur alle suggesties af"
         },
         "addModalView": {
-          "title": "Nieuwe kalenderperiode toevoegen",
-          "success": "Het toevoegen van de nieuwe kalenderperiode is gelukt.",
-          "error": "Er is iets misgelopen tijdens het toevoegen van de nieuwe kalenderperiode."
+          "title": "Nieuw tijdslot toevoegen",
+          "success": "Het toevoegen van de nieuwe tijdsloten is gelukt.",
+          "error": "Er is iets misgelopen tijdens het toevoegen van de nieuwe tijdsloten."
         },
         "updateModalView": {
           "title": "Wijzigen van een kalenderperiode",
@@ -242,6 +254,12 @@
           "success": "Het verwijderen van de kalenderperiode is gelukt.",
           "error": "Er is iets misgelopen tijdens het verwijderen van de kalenderperiode.",
           "warning": "Het verwijderen van de kalenderperiode zal ook alle corresponderende reservaties verwijderen. Wees hier aandachtig voor!"
+        },
+        "copyModalView": {
+          "title": "Kopieer deze periode",
+          "body": "Je staat op het punt om de volgende periode te kopieren:",
+          "weekSelect":"Kopieer naar week",
+          "nextWeek": "Kopieer naar volgende week"
         },
         "warningDialog": {
           "warning": "Waarschuwing",
@@ -462,7 +480,8 @@
           "roles": "Rollen",
           "penaltyPoints": "Strafpunten",
           "institution": "Institutie",
-          "error": "Er is iets misgelopen tijdens het ophalen van de gebruiker..."
+          "error": "Er is iets misgelopen tijdens het ophalen van de gebruiker...",
+          "impersonate": "Log in als deze user"
         },
         "roles": {
           "title": "Rollen van {name}",
@@ -712,7 +731,8 @@
       "errorOnLoadingManageableLocations": "De locaties die u kan beheren konden niet worden opgehaald.",
       "errorOnLoadingVolunteers": "De toezichthouders van deze locatie konden niet opgehaald worden.",
       "addNewButton": "Toezichter toevoegen",
-      "addNewHeader": "Zoek en voeg toezichter toe"
+      "addNewHeader": "Zoek en voeg toezichter toe",
+      "title": "Bekijk, voeg toe en verwijder toezichters"
     }
   },
   "profile": {

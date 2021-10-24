@@ -20,8 +20,12 @@ spring:
     user: ***REMOVED***
     password: ***REMOVED***
     baseline-on-migrate: true
-
-# server configuration
+  jpa:
+    properties:
+      javax:
+        persistence:
+          validation:
+            mode: none
 server:
   ssl:
     key-store-type: PKCS12
@@ -29,7 +33,7 @@ server:
     key-store-password: ***REMOVED***
     key-alias: blokat
     enabled: true
-  port: 8080
+  port: 8087
   servlet:
     context-path: /api
 
@@ -74,6 +78,10 @@ logging:
 custom:
   mailing:
     recipientsOpeningHoursOverview: ""
+  stadgent:
+    url: "https://studieplekken-dev.ugent.be/"
+  jwtKey:
+    "***REMOVED***"
 
 # SAML
 saml:

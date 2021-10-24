@@ -5,13 +5,13 @@ import { User, UserConstructor } from '../../shared/model/User';
 import { UserService } from '../../services/api/users/user.service';
 import { catchError, tap } from 'rxjs/operators';
 import { ApplicationTypeFunctionalityService } from '../../services/functionality/application-type/application-type-functionality.service';
-import { BsModalService } from 'ngx-bootstrap/modal';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-admins-management',
   templateUrl: './admins-management.component.html',
-  styleUrls: ['./admins-management.component.css'],
+  styleUrls: ['./admins-management.component.scss'],
 })
 export class AdminsManagementComponent implements OnInit {
   loading = true;
@@ -31,7 +31,7 @@ export class AdminsManagementComponent implements OnInit {
   constructor(
     private userService: UserService,
     private functionalityService: ApplicationTypeFunctionalityService,
-    private modalService: BsModalService,
+    private modalService: MatDialog,
   ) {
   }
 
@@ -74,7 +74,7 @@ export class AdminsManagementComponent implements OnInit {
   }
 
   showAdd(template: TemplateRef<unknown>): void {
-    this.modalService.show(template);
+    this.modalService.open(template, {panelClass: ["cs--cyan" ,"bigmodal"]});
   }
 
   submitSearch(value: {
@@ -136,6 +136,6 @@ export class AdminsManagementComponent implements OnInit {
           ))
       );
 
-    this.modalService.hide();
+    this.modalService.closeAll();
   }
 }

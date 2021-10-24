@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Location } from '../../../shared/model/Location';
+import { Location, LocationConstructor } from '../../../shared/model/Location';
 import { api } from '../endpoints';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +12,6 @@ export class ScanningService {
   constructor(private http: HttpClient) {}
 
   getLocationsToScan(): Observable<Location[]> {
-    return this.http.get<Location[]>(api.scanningLocations);
+    return this.http.get<Location[]>(api.scanningLocations).pipe(map(v => v.map(o => LocationConstructor.newFromObj(o))));
   }
 }

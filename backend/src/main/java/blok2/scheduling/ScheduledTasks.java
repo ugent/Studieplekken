@@ -2,9 +2,7 @@ package blok2.scheduling;
 
 import blok2.daos.ILocationDao;
 import blok2.daos.ILocationReservationDao;
-import blok2.helpers.Pair;
 import blok2.mail.MailService;
-import blok2.model.calendar.CalendarPeriod;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
 import org.slf4j.Logger;
@@ -101,8 +99,8 @@ public class ScheduledTasks {
      */
     @Scheduled(cron = "0 0 21 * * *")
     public void mailToUnattendedStudents() {
-        List<Pair<LocationReservation, CalendarPeriod>> reservations =
-                locationReservationDao.getUnattendedLocationReservationsWith21PMRestriction(LocalDate.now());
+        List<LocationReservation> reservations =
+                locationReservationDao.getUnattendedLocationReservations(LocalDate.now());
 
         logger.info(String.format("Running scheduled task mailToUnattendedStudents() for %d recipients.",
                 reservations.size()));
@@ -116,17 +114,17 @@ public class ScheduledTasks {
         mailToUnattendedStudentsInRange(reservations, n*N_CONCURRENT_CONNECTIONS, reservations.size());
     }
 
-    private void mailToUnattendedStudentsInRange(List<Pair<LocationReservation, CalendarPeriod>> reservations,
+    private void mailToUnattendedStudentsInRange(List<LocationReservation> reservations,
                                                  int start, int end) {
         Thread[] threads = new Thread[end - start];
 
         for (int i = start; i < end; i++) {
-            Pair<LocationReservation, CalendarPeriod> pair = reservations.get(i);
+            LocationReservation lr = reservations.get(i);
 
             try {
-                threads[i - start] = mailService.sendMailToUnattendedStudent(pair.getFirst().getUser().getMail());
+                threads[i - start] = mailService.sendMailToUnattendedStudent(lr.getUser().getMail());
             } catch (MessagingException e) {
-                logger.error(String.format("Could not send mail to unattended student for %s", pair));
+                logger.error(String.format("Could not send mail to unattended student for %s", lr));
             }
         }
 

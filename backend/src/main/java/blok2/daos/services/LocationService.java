@@ -6,6 +6,7 @@ import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.helpers.orm.LocationNameAndNextReservableFrom;
 import blok2.model.reservables.Location;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
@@ -23,27 +24,37 @@ public class LocationService implements ILocationDao {
     private final LocationRepository locationRepository;
 
     @Autowired
+    @Lazy
+    private TimeslotService timeslotService;
+
+    @Autowired
     public LocationService(LocationRepository locationRepository) {
         this.locationRepository = locationRepository;
     }
 
     @Override
     public Location getLocationById(int locationId) {
-        return locationRepository.findById(locationId)
+        Location l = locationRepository.findById(locationId)
                 .orElseThrow(() -> new NoSuchDatabaseObjectException(
                         String.format("Location with locationId '%d' does not exist.", locationId)));
+        initializeCurrentTimeslot(l);
+        return l;
     }
 
     @Override
     public Location getLocationByName(String locationName) {
-        return locationRepository.findLocationByName(locationName)
+        Location l = locationRepository.findLocationByName(locationName)
                 .orElseThrow(() -> new NoSuchDatabaseObjectException(
                         String.format("Location with locationName '%s' does not exist.", locationName)));
+        initializeCurrentTimeslot(l);
+        return l;
     }
 
     @Override
     public List<Location> getAllActiveLocations() {
-        return locationRepository.findAllActiveLocations();
+        List<Location> locs =  locationRepository.findAllActiveLocations();
+        locs.forEach(this::initializeCurrentTimeslot);
+        return locs;
     }
 
     @Override
@@ -63,7 +74,14 @@ public class LocationService implements ILocationDao {
 
     @Override
     public void updateLocation(Location location) {
-        locationRepository.save(location);
+        Location originalLocation = locationRepository.getOne(location.getLocationId());
+        originalLocation.setBuilding(location.getBuilding());
+        originalLocation.setName(location.getName());
+        originalLocation.setAuthority(location.getAuthority());
+        originalLocation.setNumberOfSeats(location.getNumberOfSeats());
+        originalLocation.setForGroup(location.getForGroup());
+        originalLocation.setImageUrl(location.getImageUrl());
+        locationRepository.save(originalLocation);
     }
 
     @Override
@@ -111,6 +129,10 @@ public class LocationService implements ILocationDao {
         }
 
         return overview;
+    }
+
+    private void initializeCurrentTimeslot(Location location) {
+        location.setCurrentTimeslot(timeslotService.getCurrentOrNextTimeslot(location.getLocationId()).orElse(null));
     }
 
 }

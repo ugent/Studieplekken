@@ -8,7 +8,7 @@ import { LocationService } from '../../../services/api/locations/location.servic
 @Component({
   selector: 'app-location-details-management',
   templateUrl: './location-details-management.component.html',
-  styleUrls: ['./location-details-management.component.css'],
+  styleUrls: ['./location-details-management.component.scss'],
 })
 export class LocationDetailsManagementComponent implements OnInit {
   locationObs: Observable<Location>;

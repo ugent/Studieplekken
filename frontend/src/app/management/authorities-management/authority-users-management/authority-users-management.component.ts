@@ -1,23 +1,24 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
-import { AuthoritiesService } from '../../../services/api/authorities/authorities.service';
-import { Observable } from 'rxjs';
-import { User } from '../../../shared/model/User';
-import { Authority } from '../../../shared/model/Authority';
-import { ActivatedRoute } from '@angular/router';
 import {
   AbstractControl,
   FormControl,
   FormGroup,
-  Validators,
+  Validators
 } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog/dialog-ref';
+import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
+import { AuthoritiesService } from '../../../services/api/authorities/authorities.service';
 import { UserService } from '../../../services/api/users/user.service';
 import { AuthorityToManageService } from '../../../services/single-point-of-truth/authority-to-manage/authority-to-manage.service';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { Authority } from '../../../shared/model/Authority';
+import { User } from '../../../shared/model/User';
 
 @Component({
   selector: 'app-authority-users-management',
   templateUrl: './authority-users-management.component.html',
-  styleUrls: ['./authority-users-management.component.css'],
+  styleUrls: ['./authority-users-management.component.scss'],
 })
 export class AuthorityUsersManagementComponent implements OnInit {
   authority: Authority;
@@ -42,16 +43,16 @@ export class AuthorityUsersManagementComponent implements OnInit {
 
   isValidUserToAdd: boolean = undefined;
 
-  addModal: BsModalRef;
-  deleteModal: BsModalRef;
+  addModal: MatDialogRef<unknown>;
+  deleteModal: MatDialogRef<unknown>;
 
   constructor(
     private authoritiesService: AuthoritiesService,
     private authorityToManageService: AuthorityToManageService,
     private route: ActivatedRoute,
     private userService: UserService,
-    private modalService: BsModalService
-  ) {}
+    private modalService: MatDialog
+  ) { }
 
   get firstName(): AbstractControl {
     return this.userSearchFormGroup.get('firstName');
@@ -83,7 +84,7 @@ export class AuthorityUsersManagementComponent implements OnInit {
   }
 
   closeModal(): void {
-    this.modalService.hide();
+    this.modalService.closeAll();
   }
 
   prepareToAddUserToAuthority(template: TemplateRef<unknown>): void {
@@ -97,7 +98,8 @@ export class AuthorityUsersManagementComponent implements OnInit {
     this.selectedUserFormControl.setValue('');
     this.userSearchResult = [];
     this.selectedUserFormControl.disable();
-    this.addModal = this.modalService.show(template);
+    this.addModal = this.modalService.open(template, { panelClass: ["cs--cyan", "bigmodal"] });
+
   }
 
   // **************************************
@@ -121,8 +123,8 @@ export class AuthorityUsersManagementComponent implements OnInit {
     this.subscribeOnSearchedUsers(usersObs);
   }
 
-  addUserToAuthority(): void {
-    const userId: string = this.selectedUserFormControl.value as string;
+  addUserToAuthority(user: User): void {
+    const userId: string = user.userId;
     const authorityId = this.authority.authorityId;
     this.successAddingAuthority = null;
 
@@ -130,7 +132,7 @@ export class AuthorityUsersManagementComponent implements OnInit {
       () => {
         this.successAddingAuthority = true;
         this.setUsersObs(authorityId);
-        this.addModal.hide();
+        this.addModal.close();
       },
       () => {
         this.successAddingAuthority = false;
@@ -148,7 +150,8 @@ export class AuthorityUsersManagementComponent implements OnInit {
   ): void {
     this.successDeletingAuthority = undefined;
     this.userPreparedToDelete = user;
-    this.deleteModal = this.modalService.show(template);
+    this.deleteModal = this.modalService.open(template, { panelClass: ["cs--cyan", "bigmodal"] });
+
   }
 
   deleteUserFromAuthority(userId: string, authorityId: number): void {
@@ -159,7 +162,7 @@ export class AuthorityUsersManagementComponent implements OnInit {
         () => {
           this.successDeletingAuthority = true;
           this.setUsersObs(authorityId); // reload users data
-          this.deleteModal.hide();
+          this.deleteModal.close();
         },
         () => {
           this.successDeletingAuthority = false;

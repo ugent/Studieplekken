@@ -1,24 +1,22 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { User, UserConstructor } from '../../shared/model/User';
-import { HttpClient } from '@angular/common/http';
-import { Penalty } from '../../shared/model/Penalty';
+import { map } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
+import { authenticationWasExpiredUrlLSKey, userWantsTLogInLocalStorageKey } from '../../app.constants';
 import { LocationReservation } from '../../shared/model/LocationReservation';
 import {
   LockerReservation,
-  LockerReservationConstructor,
+  LockerReservationConstructor
 } from '../../shared/model/LockerReservation';
-import { map } from 'rxjs/operators';
-import { PenaltyService } from '../api/penalties/penalty.service';
+import { Penalty } from '../../shared/model/Penalty';
+import { User, UserConstructor } from '../../shared/model/User';
+import { api } from '../api/endpoints';
 import { LocationReservationsService } from '../api/location-reservations/location-reservations.service';
 import { LockerReservationService } from '../api/locker-reservations/locker-reservation.service';
-import { Router } from '@angular/router';
+import { PenaltyService } from '../api/penalties/penalty.service';
 import { UserService } from '../api/users/user.service';
-import { api } from '../api/endpoints';
-import { authenticationWasExpiredUrlLSKey, userWantsTLogInLocalStorageKey } from '../../app.constants';
-import { Pair } from '../../shared/model/helpers/Pair';
-import { CalendarPeriod } from '../../shared/model/CalendarPeriod';
-import { environment } from 'src/environments/environment';
 
 /**
  * The structure of the authentication service has been based on this article:
@@ -58,7 +56,7 @@ export class AuthenticationService {
     private lockerReservationService: LockerReservationService,
     private router: Router,
     private userService: UserService
-  ) {}
+  ) { }
 
   // **************************************************
   // *   Getters for values of the BehaviorSubjects   *
@@ -107,11 +105,11 @@ export class AuthenticationService {
          * To avoid this, the AuthenticationInterceptor intercepts unknown exceptions and calls this.authExpired() so that a new authentication session is started in Spring.
          * Since this.authExpired() saves the last visited url, we can redirect the user to the last visited url instead of to the dashboard.
          */
-        const getPreviouslyAuthenticatedUrl = localStorage.getItem(authenticationWasExpiredUrlLSKey);
-        if (getPreviouslyAuthenticatedUrl) {
-          localStorage.setItem(authenticationWasExpiredUrlLSKey, '');
-          this.router.navigateByUrl(getPreviouslyAuthenticatedUrl).then();
-        }
+        // const getPreviouslyAuthenticatedUrl = localStorage.getItem(authenticationWasExpiredUrlLSKey);
+        // if (getPreviouslyAuthenticatedUrl) {
+        //   localStorage.setItem(authenticationWasExpiredUrlLSKey, '');
+        //   this.router.navigateByUrl(getPreviouslyAuthenticatedUrl).then();
+        // }
       },
       () => {
         this.userSubject.next(UserConstructor.new());
@@ -136,6 +134,8 @@ export class AuthenticationService {
       this.userSubject.next(UserConstructor.new());
       this.router.navigate(['/login']).then();
     });
+
+    localStorage.removeItem('access_token');
 
     // to be sure, set the 'userWantsToLogin' variables to false
     localStorage.setItem(userWantsTLogInLocalStorageKey, 'false');
@@ -192,33 +192,6 @@ export class AuthenticationService {
     );
   }
 
-  getLocationReservationsAndCalendarPeriods(): Observable<
-    Pair<LocationReservation, CalendarPeriod>[]
-  > {
-    return this.locationReservationService.getLocationReservationsWithCalendarPeriodsOfUser(
-      this.userSubject.value.userId
-    );
-  }
-
-  getLockerReservations(): Observable<LockerReservation[]> {
-    const v = this.lockerReservationService.getLockerReservationsOfUser(
-      this.userSubject.value.userId
-    );
-
-    return v.pipe(
-      map<LockerReservation[], LockerReservation[]>((value) => {
-        const reservations: LockerReservation[] = [];
-
-        value.forEach((reservation) => {
-          const obj = LockerReservationConstructor.newFromObj(reservation);
-          reservations.push(obj);
-        });
-
-        return reservations;
-      })
-    );
-  }
-
   getPenalties(): Observable<Penalty[]> {
     return this.penaltyService.getPenaltiesOfUserById(
       this.userSubject.value.userId
@@ -238,5 +211,10 @@ export class AuthenticationService {
     this.userService.hasUserVolunteered(user.userId).subscribe((next) => {
       this.hasVolunteeredSubject.next(next);
     });
+  }
+
+  substituteLogin(email: string) {
+    const headers = new HttpHeaders().set("AS-USER", email);
+    this.http.get(api.whoAmI, {headers}).subscribe(()=> this.login())
   }
 }

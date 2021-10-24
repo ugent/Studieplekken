@@ -2,7 +2,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, SecurityContext } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpClientModule,
+  HTTP_INTERCEPTORS,
+} from '@angular/common/http';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { RouterModule, Routes } from '@angular/router';
@@ -31,7 +35,6 @@ import { LocationDetailsManagementComponent } from './management/locations-manag
 import { DetailsFormComponent } from './management/locations-management/location-details-management/details-form/details-form.component';
 import { LocationCalendarComponent } from './management/locations-management/location-details-management/location-calendar/location-calendar.component';
 import { FlatpickrModule } from 'angularx-flatpickr';
-import { LockersCalendarComponent } from './management/locations-management/location-details-management/lockers-calendar/lockers-calendar.component';
 import { LockersTableComponent } from './management/locations-management/location-details-management/lockers-table/lockers-table.component';
 import { UserDetailsManagementComponent } from './management/users-management/user-details-management/user-details-management.component';
 import { UserDetailsFormComponent } from './management/users-management/user-details-management/user-details-form/user-details-form.component';
@@ -61,7 +64,6 @@ import { FormatStatusPipe } from './shared/pipes/FormatStatusPipe';
 import { MomentDateTimeComponent } from './shared/inputs/moment-datetime/moment-datetime.component';
 import { LocationOpeningperiodDialogComponent } from './management/locations-management/location-details-management/location-calendar/location-openingperiod-dialog/location-openingperiod-dialog.component';
 import { BuildingManagementComponent } from './management/building-management/building-management.component';
-import { ModalModule } from 'ngx-bootstrap/modal';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTabsModule } from '@angular/material/tabs';
 import { LocationReservationsComponent } from './management/locations-management/location-details-management/location-calendar/location-reservations/location-reservations/location-reservations.component';
@@ -77,6 +79,15 @@ import { ScannerComponent } from './shared/scanner/scanner.component';
 import { VolunteersManagementComponent } from './management/volunteers-management/volunteers-management.component';
 import { VolunteerManagementPanelComponent } from './management/volunteers-management/volunteer-management-panel/volunteer-management-panel.component';
 import { AuthenticationInterceptor } from './services/authentication/authentication.interceptor';
+import { TokenInterceptor } from './services/authentication/token.interceptor';
+import { HeaderComponent } from './stad-gent-components/header/header.component';
+import { AccordeonComponent } from './stad-gent-components/molecules/accordeon/accordeon.component';
+import { DropdownComponent } from './stad-gent-components/header/dropdown/dropdown.component';
+import { FooterComponent } from './stad-gent-components/footer/footer.component';
+import { SearchUserComponentComponent } from './shared/search-user-component/search-user-component.component';
+import { SearchUserFormComponent } from './shared/search-user-component/search-user-form/search-user-form.component';
+import { LocationAddTimeslotDialogComponent } from './management/locations-management/location-details-management/location-calendar/location-add-timeslot-dialog/location-add-timeslot-dialog.component';
+import { ModalComponent } from './stad-gent-components/molecules/modal/modal.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -245,7 +256,7 @@ const routes: Routes = [
   {
     path: 'opening/overview/:year/:weekNr',
     component: OpeningHoursOverviewComponent,
-    canActivate: [AuthorizationGuardService]
+    canActivate: [AuthorizationGuardService],
   },
 
   {
@@ -278,7 +289,6 @@ const routes: Routes = [
     LocationDetailsManagementComponent,
     DetailsFormComponent,
     LocationCalendarComponent,
-    LockersCalendarComponent,
     LockersTableComponent,
     UserDetailsManagementComponent,
     UserDetailsFormComponent,
@@ -306,6 +316,14 @@ const routes: Routes = [
     ScannerComponent,
     VolunteersManagementComponent,
     VolunteerManagementPanelComponent,
+    HeaderComponent,
+    AccordeonComponent,
+    DropdownComponent,
+    FooterComponent,
+    SearchUserComponentComponent,
+    SearchUserFormComponent,
+    LocationAddTimeslotDialogComponent,
+    ModalComponent,
   ],
   imports: [
     BrowserModule,
@@ -337,7 +355,6 @@ const routes: Routes = [
     MatDialogModule,
     MatCheckboxModule,
     MatChipsModule,
-    ModalModule.forRoot(),
     FlexLayoutModule,
     MarkdownModule.forRoot({
       sanitize: SecurityContext.NONE,
@@ -345,7 +362,15 @@ const routes: Routes = [
     MatTabsModule,
     MatTooltipModule,
   ],
-  providers: [FormatStatusPipe, { provide: HTTP_INTERCEPTORS, useClass: AuthenticationInterceptor, multi: true }],
+  providers: [
+    FormatStatusPipe,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthenticationInterceptor,
+      multi: true,
+    },
+    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

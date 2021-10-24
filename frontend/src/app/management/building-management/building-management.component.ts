@@ -1,23 +1,23 @@
-import { Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Building } from 'src/app/shared/model/Building';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
   FormGroup,
-  Validators,
+  Validators
 } from '@angular/forms';
-import { BuildingService } from 'src/app/services/api/buildings/buildings.service';
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
-import {AddressResolverService} from "src/app/services/addressresolver/nomenatim/addressresolver.service";
+import { MatDialog } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
 import { of } from 'rxjs/internal/observable/of';
 import { map } from 'rxjs/internal/operators/map';
+import { AddressResolverService } from "src/app/services/addressresolver/nomenatim/addressresolver.service";
+import { BuildingService } from 'src/app/services/api/buildings/buildings.service';
+import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
+import { Building } from 'src/app/shared/model/Building';
 
 @Component({
   selector: 'app-building-management',
   templateUrl: './building-management.component.html',
-  styleUrls: ['./building-management.component.css'],
+  styleUrls: ['./building-management.component.scss'],
 })
 export class BuildingManagementComponent implements OnInit {
   buildingsObs: Observable<Building[]>;
@@ -43,7 +43,7 @@ export class BuildingManagementComponent implements OnInit {
 
   constructor(
     private buildingService: BuildingService,
-    private modalService: BsModalService,
+    private modalService: MatDialog,
     private authenticationService: AuthenticationService,
     private addressResolver: AddressResolverService
   ) {
@@ -126,7 +126,7 @@ export class BuildingManagementComponent implements OnInit {
   }
 
   closeModal(): void {
-    this.modalService.hide();
+    this.modalService.closeAll();
   }
 
   // ********************
@@ -148,7 +148,7 @@ export class BuildingManagementComponent implements OnInit {
       institution: this.authenticationService.userValue().institution,
     });
 
-    this.modalService.show(template);
+    this.modalService.open(template, {panelClass: ["cs--cyan" ,"bigmodal"]});
   }
 
   addBuilding(): void {
@@ -158,7 +158,7 @@ export class BuildingManagementComponent implements OnInit {
         this.successAddingBuilding = true;
         // reload the buildings
         this.buildingsObs = this.buildingService.getAllBuildings();
-        this.modalService.hide();
+        this.modalService.closeAll();
       },
       () => {
         this.successAddingBuilding = false;
@@ -171,6 +171,8 @@ export class BuildingManagementComponent implements OnInit {
   // *****************/
 
   prepareUpdate(building: Building, template: TemplateRef<unknown>): void {
+    console.log(building)
+
     // reset the feedback boolean
     this.successUpdatingBuilding = undefined;
 
@@ -180,7 +182,7 @@ export class BuildingManagementComponent implements OnInit {
     this.isCorrectAddress = true;
     this.isLoadingAddress = false;
 
-    this.modalService.show(template);
+    this.modalService.open(template, {panelClass: ["cs--cyan" ,"bigmodal"]});
   }
 
   updateBuildingInFormGroup(): void {
@@ -192,7 +194,7 @@ export class BuildingManagementComponent implements OnInit {
           this.successUpdatingBuilding = true;
           // and reload the tags
           this.buildingsObs = this.buildingService.getAllBuildings();
-          this.modalService.hide();
+          this.modalService.closeAll();
         },
         () => {
           this.successUpdatingBuilding = false;
@@ -207,7 +209,7 @@ export class BuildingManagementComponent implements OnInit {
     // prepare the tagFormGroup
     this.prepareFormGroup(building);
 
-    this.modalService.show(template);
+    this.modalService.open(template, {panelClass: ["cs--cyan" ,"bigmodal"]});
   }
 
   deleteBuildingInFormGroup(): void {
@@ -217,7 +219,8 @@ export class BuildingManagementComponent implements OnInit {
         this.successDeletingBuilding = true;
         // and reload the tags
         this.buildingsObs = this.buildingService.getAllBuildings();
-        this.modalService.hide();
+        this.modalService.closeAll();
+        location.reload();
       },
       () => {
         this.successDeletingBuilding = false;
@@ -263,9 +266,9 @@ export class BuildingManagementComponent implements OnInit {
 
   getAddressIcon() {
     if(this.isLoadingAddress) {
-      return "glyphicon-refresh waiting"
+      return "icon-update"
     }
 
-    return this.isCorrectAddress ? "glyphicon-ok-circle ok": "glyphicon-remove-circle no"
+    return this.isCorrectAddress ? "icon-checkmark-circle ok": "icon-exclamation-circle no"
   }
 }

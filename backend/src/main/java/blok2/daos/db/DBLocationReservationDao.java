@@ -26,12 +26,10 @@ public class DBLocationReservationDao {
 
                 String query = "update timeslots " +
                         "set reservation_count = reservation_count + 1 " +
-                        "where calendar_id = ? and timeslot_date = ? and timeslot_sequence_number= ?;";
+                        "where sequence_number = ?;";
 
                 PreparedStatement stmt = conn.prepareStatement(query);
-                stmt.setInt(1, reservation.getTimeslot().getCalendarId());
-                stmt.setDate(2, Date.valueOf(reservation.getTimeslot().getTimeslotDate()));
-                stmt.setInt(3, reservation.getTimeslot().getTimeslotSeqnr());
+                stmt.setInt(1, reservation.getTimeslot().getTimeslotSeqnr());
                 int change = stmt.executeUpdate();
 
                 // Double checking the change for insurance (and also compiler check)
@@ -40,14 +38,12 @@ public class DBLocationReservationDao {
                 }
 
                 // If this operation succeeds, the reservation can proceed
-                query = "insert into public.location_reservations (user_id, timeslot_date, timeslot_seqnr, calendar_id, attended) " +
-                        "values (?, ?, ?, ?, null);";
-                
+                query = "insert into public.location_reservations (user_id, timeslot_sequence_number, attended) " +
+                        "values (?, ?, null);";
+
                 PreparedStatement pstmt = conn.prepareStatement(query);
                 pstmt.setString(1, reservation.getUser().getUserId());
-                pstmt.setDate(2, java.sql.Date.valueOf(reservation.getTimeslot().getTimeslotDate()));
-                pstmt.setInt(3, reservation.getTimeslot().getTimeslotSeqnr());
-                pstmt.setInt(4, reservation.getTimeslot().getCalendarId());
+                pstmt.setInt(2, reservation.getTimeslot().getTimeslotSeqnr());
                 pstmt.execute();
 
                 return true;

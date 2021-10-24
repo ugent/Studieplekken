@@ -3,29 +3,25 @@ import {
   EventEmitter,
   Input,
   Output,
-  TemplateRef,
+  TemplateRef
 } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import * as moment from 'moment';
+import { BarcodeService } from 'src/app/services/barcode.service';
+import { User } from 'src/app/shared/model/User';
+import { LocationReservationsService } from '../../../../../../services/api/location-reservations/location-reservations.service';
 import { LocationReservation } from '../../../../../../shared/model/LocationReservation';
 import {
   Timeslot,
-  timeslotEndHour,
-  timeslotStartHour,
 } from '../../../../../../shared/model/Timeslot';
-import * as moment from 'moment';
-import { CalendarPeriod } from '../../../../../../shared/model/CalendarPeriod';
-import { LocationReservationsService } from '../../../../../../services/api/location-reservations/location-reservations.service';
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { User } from 'src/app/shared/model/User';
-import { BarcodeService } from 'src/app/services/barcode.service';
 
 @Component({
   selector: 'app-location-reservations',
   templateUrl: './location-reservations.component.html',
-  styleUrls: ['./location-reservations.component.css'],
+  styleUrls: ['./location-reservations.component.scss'],
 })
 export class LocationReservationsComponent {
   @Input() locationReservations: LocationReservation[];
-  @Input() currentCalendarPeriod?: CalendarPeriod;
   @Input() currentTimeSlot: Timeslot;
   @Input() lastScanned?: LocationReservation;
 
@@ -51,7 +47,7 @@ export class LocationReservationsComponent {
 
   constructor(
     private locationReservationService: LocationReservationsService,
-    private modalService: BsModalService,
+    private modalService: MatDialog,
     private barcodeService: BarcodeService
   ) {}
 
@@ -66,7 +62,7 @@ export class LocationReservationsComponent {
   ): void {
     const idx = this.scannedLocationReservations.findIndex((r) => {
       return (
-        r.timeslot.timeslotSeqnr === reservation.timeslot.timeslotSeqnr &&
+        r.timeslot.timeslotSequenceNumber === reservation.timeslot.timeslotSequenceNumber &&
         r.user === reservation.user
       );
     });
@@ -96,18 +92,18 @@ export class LocationReservationsComponent {
         (err) => {
           this.waitingForServer = false;
           console.error(err);
-          this.modalService.show(errorTemplate);
+          this.modalService.open(errorTemplate);
         }
       );
   }
 
   onFinishScanningClick(modalTemplate: TemplateRef<unknown>): void {
-    this.modalService.show(modalTemplate);
+    this.modalService.open(modalTemplate);
   }
 
   setAllNotScannedToUnattended(errorTemplate: TemplateRef<unknown>): void {
     // hide finishScanningModal
-    this.modalService.hide();
+    this.modalService.closeAll();
 
     // if the update is not successful, rollback UI changes
     const rollback: LocationReservation[] = [];
@@ -130,7 +126,7 @@ export class LocationReservationsComponent {
           rollback.forEach((reservation) => {
             reservation.attended = null;
           });
-          this.modalService.show(errorTemplate);
+          this.modalService.open(errorTemplate);
         }
       );
   }
@@ -146,7 +142,7 @@ export class LocationReservationsComponent {
     console.log(locationReservation, template);
     this.successDeletingLocationReservation = undefined;
     this.locationReservationToDelete = locationReservation;
-    this.modalService.show(template);
+    this.modalService.open(template);
   }
 
   deleteLocationReservation(): void {
@@ -158,7 +154,7 @@ export class LocationReservationsComponent {
         if (this.reservationChange) {
           this.reservationChange.emit(null);
         }
-        this.modalService.hide();
+        this.modalService.closeAll();
       });
   }
 
@@ -179,24 +175,12 @@ export class LocationReservationsComponent {
   }
 
   isTimeslotEndInPast(): boolean {
-    if (!this.currentCalendarPeriod) {
-      return false; // Assume current
-    }
-    return timeslotEndHour(
-      this.currentCalendarPeriod,
-      this.currentTimeSlot
-    ).isBefore(moment());
+    return this.currentTimeSlot.getEndMoment().isBefore(moment());
   }
 
   isTimeslotStartInPast(): boolean {
-    if (!this.currentCalendarPeriod) {
-      return true; // Assume current
-    }
 
-    const start = timeslotStartHour(
-      this.currentCalendarPeriod,
-      this.currentTimeSlot
-    );
+    const start = this.currentTimeSlot.getStartMoment()
     return start.isBefore(moment());
   }
 
@@ -220,7 +204,7 @@ export class LocationReservationsComponent {
       const idx = this.locationReservations.findIndex(
         (lr) =>
           lr.user === slr.user &&
-          lr.timeslot.timeslotSeqnr === slr.timeslot.timeslotSeqnr
+          lr.timeslot.timeslotSequenceNumber === slr.timeslot.timeslotSequenceNumber
       );
 
       if (idx >= 0) {
@@ -230,7 +214,7 @@ export class LocationReservationsComponent {
   }
 
   closeModal(): void {
-    this.modalService.hide();
+    this.modalService.closeAll();
   }
 
   updateSearchTerm(errorTemplate: TemplateRef<unknown>): void {

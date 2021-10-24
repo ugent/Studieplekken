@@ -24,15 +24,7 @@ public class LocationReservation {
     @AttributeOverrides({
         @AttributeOverride(
             name = "timeslotSequenceNumber",
-            column = @Column(name = "timeslot_seqnr")
-        ),
-        @AttributeOverride(
-            name = "timeslotDate",
-            column = @Column(name = "timeslot_date")
-        ),
-        @AttributeOverride(
-            name = "calendarId",
-            column = @Column(name = "calendar_id")
+            column = @Column(name = "timeslot_sequence_number")
         ),
         @AttributeOverride(
             name = "userId",
@@ -46,17 +38,9 @@ public class LocationReservation {
     private User user;
 
     @ManyToOne
-    @JoinColumns({
-        @JoinColumn(
-            name = "timeslot_seqnr", referencedColumnName = "timeslot_sequence_number",
-            insertable = false, updatable = false),
-        @JoinColumn(
-            name = "timeslot_date", referencedColumnName = "timeslot_date",
-            insertable = false, updatable = false),
-        @JoinColumn(
-            name = "calendar_id", referencedColumnName = "calendar_id",
-            insertable = false, updatable = false)
-    })
+    @JoinColumn(
+        name = "timeslot_sequence_number", referencedColumnName = "sequence_number",
+        insertable = false, updatable = false)
     private Timeslot timeslot;
 
     @Column(name = "attended")
@@ -73,8 +57,6 @@ public class LocationReservation {
     public LocationReservation(User user, Timeslot timeslot, Boolean attended) {
         this.id = new LocationReservationId(
                 timeslot.getTimeslotSeqnr(),
-                timeslot.getTimeslotDate(),
-                timeslot.getCalendarId(),
                 user.getUserId()
         );
         this.user = user;
@@ -162,8 +144,6 @@ public class LocationReservation {
     @Embeddable
     public static class LocationReservationId implements Serializable {
         public Integer timeslotSequenceNumber;
-        public LocalDate timeslotDate;
-        public Integer calendarId;
         public String userId;
 
         public LocationReservationId() {
@@ -171,19 +151,15 @@ public class LocationReservation {
         }
 
         public LocationReservationId(int timeslotSequenceNumber,
-                                     LocalDate timeslotDate,
-                                     int calendarId,
                                      String userId) {
             this.timeslotSequenceNumber = timeslotSequenceNumber;
-            this.timeslotDate = timeslotDate;
-            this.calendarId = calendarId;
             this.userId = userId;
         }
 
         @Override
         public String toString() {
-            return String.format("[seq = '%d', date = '%s', calendarId = '%d', userId = '%s']",
-                    timeslotSequenceNumber, timeslotDate.format(DateTimeFormatter.ISO_DATE), calendarId, userId);
+            return String.format("[seq = '%d', userId = '%s']",
+                    timeslotSequenceNumber, userId);
         }
 
         @Override
@@ -192,14 +168,12 @@ public class LocationReservation {
             if (o == null || getClass() != o.getClass()) return false;
             LocationReservationId that = (LocationReservationId) o;
             return Objects.equals(timeslotSequenceNumber, that.timeslotSequenceNumber) &&
-                    Objects.equals(timeslotDate, that.timeslotDate) &&
-                    Objects.equals(calendarId, that.calendarId) &&
                     Objects.equals(userId, that.userId);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(timeslotSequenceNumber, timeslotDate, calendarId, userId);
+            return Objects.hash(timeslotSequenceNumber,  userId);
         }
     }
     

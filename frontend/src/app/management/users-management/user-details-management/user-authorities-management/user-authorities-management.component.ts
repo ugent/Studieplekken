@@ -1,16 +1,16 @@
 import { Component, Input, OnInit, TemplateRef } from '@angular/core';
-import { Observable } from 'rxjs';
-import { User } from '../../../../shared/model/User';
-import { Authority } from '../../../../shared/model/Authority';
-import { AuthoritiesService } from '../../../../services/api/authorities/authorities.service';
 import { FormControl, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
+import { AuthoritiesService } from '../../../../services/api/authorities/authorities.service';
 import { UserDetailsService } from '../../../../services/single-point-of-truth/user-details/user-details.service';
-import { BsModalService } from 'ngx-bootstrap/modal';
+import { Authority } from '../../../../shared/model/Authority';
+import { User } from '../../../../shared/model/User';
 
 @Component({
   selector: 'app-user-authorities-management',
   templateUrl: './user-authorities-management.component.html',
-  styleUrls: ['./user-authorities-management.component.css'],
+  styleUrls: ['./user-authorities-management.component.scss'],
 })
 export class UserAuthoritiesManagementComponent implements OnInit {
   @Input() userObs: Observable<User>;
@@ -32,8 +32,8 @@ export class UserAuthoritiesManagementComponent implements OnInit {
   constructor(
     private authoritiesService: AuthoritiesService,
     private userDetailsService: UserDetailsService,
-    private modalService: BsModalService
-  ) {}
+    private modalService: MatDialog
+  ) { }
 
   ngOnInit(): void {
     this.userObs.subscribe((next) => {
@@ -70,7 +70,7 @@ export class UserAuthoritiesManagementComponent implements OnInit {
 
   prepareToAddAnAuthorityToUser(template: TemplateRef<unknown>): void {
     this.successOnAddingAuthorityToUser = undefined;
-    this.modalService.show(template);
+    this.modalService.open(template, {panelClass: ["cs--cyan" ]});
   }
 
   addAuthorityFromForm(): void {
@@ -83,7 +83,7 @@ export class UserAuthoritiesManagementComponent implements OnInit {
       () => {
         this.successOnAddingAuthorityToUser = true;
         this.userDetailsService.loadUser(userId);
-        this.modalService.hide();
+        this.modalService.closeAll();
       },
       () => {
         this.successOnAddingAuthorityToUser = false;
@@ -101,7 +101,7 @@ export class UserAuthoritiesManagementComponent implements OnInit {
   ): void {
     this.successOnDeletingAuthorityForUser = undefined;
     this.authorityPreparedToDelete = authority;
-    this.modalService.show(template);
+    this.modalService.open(template, { panelClass: ["cs--cyan", "bigmodal"] });
   }
 
   deleteAuthorityFromUser(userId: string, authorityId: number): void {
@@ -112,7 +112,7 @@ export class UserAuthoritiesManagementComponent implements OnInit {
         () => {
           this.successOnDeletingAuthorityForUser = true;
           this.userDetailsService.loadUser(userId);
-          this.modalService.hide();
+          this.modalService.closeAll();
         },
         () => {
           this.successOnDeletingAuthorityForUser = false;
@@ -133,7 +133,7 @@ export class UserAuthoritiesManagementComponent implements OnInit {
   }
 
   closeModal(): void {
-    this.modalService.hide();
+    this.modalService.closeAll();
   }
 
   /**

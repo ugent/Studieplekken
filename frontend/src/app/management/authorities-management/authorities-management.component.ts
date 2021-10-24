@@ -1,20 +1,20 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Authority } from '../../shared/model/Authority';
 import {
   AbstractControl,
   FormControl,
   FormGroup,
-  Validators,
+  Validators
 } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
 import { AuthoritiesService } from '../../services/api/authorities/authorities.service';
 import { AuthorityToManageService } from '../../services/single-point-of-truth/authority-to-manage/authority-to-manage.service';
-import { BsModalService } from 'ngx-bootstrap/modal';
+import { Authority } from '../../shared/model/Authority';
 
 @Component({
   selector: 'app-authorities-management',
   templateUrl: './authorities-management.component.html',
-  styleUrls: ['./authorities-management.component.css'],
+  styleUrls: ['./authorities-management.component.scss'],
 })
 export class AuthoritiesManagementComponent implements OnInit {
   authoritiesObs: Observable<Authority[]>;
@@ -33,8 +33,8 @@ export class AuthoritiesManagementComponent implements OnInit {
   constructor(
     private authoritiesService: AuthoritiesService,
     private authorityToMangeService: AuthorityToManageService,
-    private modalService: BsModalService
-  ) {}
+    private modalService: MatDialog
+  ) { }
 
   // *****************
   // *   Auxiliary   *
@@ -88,7 +88,7 @@ export class AuthoritiesManagementComponent implements OnInit {
    * Close whatever modal is opened
    */
   closeModal(): void {
-    this.modalService.hide();
+    this.modalService.closeAll();
   }
 
   // ********************
@@ -107,7 +107,7 @@ export class AuthoritiesManagementComponent implements OnInit {
       description: '',
     });
 
-    this.modalService.show(template);
+    this.modalService.open(template, { panelClass: ["cs--cyan", "bigmodal"] });
   }
 
   addAuthority(): void {
@@ -117,7 +117,7 @@ export class AuthoritiesManagementComponent implements OnInit {
         this.successAddingAuthority = true;
         // and reload the tags
         this.authoritiesObs = this.authoritiesService.getAllAuthorities();
-        this.modalService.hide();
+        this.modalService.closeAll();
       },
       () => {
         this.successAddingAuthority = false;
@@ -135,7 +135,7 @@ export class AuthoritiesManagementComponent implements OnInit {
 
     // prepare the tagFormGroup
     this.prepareFormGroup(authority);
-    this.modalService.show(template);
+    this.modalService.open(template, { panelClass: ["cs--cyan", "bigmodal"] });
   }
 
   updateTagInFormGroup(): void {
@@ -147,7 +147,7 @@ export class AuthoritiesManagementComponent implements OnInit {
           this.successUpdatingAuthority = true;
           // and reload the tags
           this.authoritiesObs = this.authoritiesService.getAllAuthorities();
-          this.modalService.hide();
+          this.modalService.closeAll();
         },
         () => {
           this.successUpdatingAuthority = false;
@@ -165,7 +165,7 @@ export class AuthoritiesManagementComponent implements OnInit {
 
     // prepare the tagFormGroup
     this.prepareFormGroup(authority);
-    this.modalService.show(template);
+    this.modalService.open(template, { panelClass: ["cs--cyan", "bigmodal"] });
   }
 
   deleteTagInFormGroup(): void {
@@ -177,7 +177,7 @@ export class AuthoritiesManagementComponent implements OnInit {
           this.successDeletingAuthority = true;
           // and reload the tags
           this.authoritiesObs = this.authoritiesService.getAllAuthorities();
-          this.modalService.hide();
+          this.modalService.closeAll();
         },
         () => {
           this.successDeletingAuthority = false;

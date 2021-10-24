@@ -18,47 +18,47 @@ The study areas are organized by students, staff and volunteers. Please treat th
 
 ## Frequently Asked Questions
 
-> Will there be checks by UGent staff at the study space? If yes, at what time and how frequently will this happen?
+- Will there be checks by UGent staff at the study space? If yes, at what time and how frequently will this happen?
 
 Checks will be done daily at 10 AM and 3 PM. Study spots that are not taken by then will be made available for reservation again. The study spot is only accessible to students who have reserved. After releasing the emtpy study spots, other students can occupy these seats.
 
-> Until when can I cancel my reservation, and how should this be done?
+- Until when can I cancel my reservation, and how should this be done?
 
-Cancelling your time slot reservation is possible until the end of the time slot at the latest. Students who leave earlier or who cannot make it to the study space can cancel their time slot so other students can reserve the place. You can delete your reservation by going to **Profile > Reservations** in the navigation bar and using the trash can to delete reservations.
+Cancelling your time slot reservation is possible until the end of the time slot at the latest. Students who leave earlier or who cannot make it to the study space can cancel their time slot so other students can reserve the place. You can delete your reservation by going to **Profile - Reservations** in the navigation bar and using the trash can to delete reservations.
 
-> What should I do if I feel sick?
+- What should I do if I feel sick?
 
 If you feel sick or have symptoms, you should not come to the study space. Cancel your reservation on this site and contact your doctor.
 
-> Can I come if I need to be quarantined?
+- Can I come if I need to be quarantined?
 
 If you need to go into or are currently in quarantine you absolutely may not come to the study space. Cancel your reservation on this site. You need to strictly follow your doctor's guidelines.
 
-> How is the organization notified if someone tests positive who was present in a study space?
+- How is the organization notified if someone tests positive who was present in a study space?
 
 If you were present at a study space and tested positive for corona, please let contacttracing@ugent.be know. The contact tracers will then perform a risk analysis and take further steps.
 
-> Who can I contact if I have questions about the organization of the study places?
+- Who can I contact if I have questions about the organization of the study places?
 
 General information about the study spaces can be found on this page. For specific questions about a study space you can always contact the present UGent staff or the student volunteers who will be there when there are no UGent staff members at this study place. The student volunteers can be contacted after opening hours via blok@gentsestudentenraad.be.
 
-> Who should I contact if I have questions about lost and found?
+- Who should I contact if I have questions about lost and found?
 
 If you have questions about lost items, you should contact the UGent staff at the specific study space where you lost the item.
 
-> Can I be punished if my student card is accidentally not scanned?
+- Can I be punished if my student card is accidentally not scanned?
 
 There will be scanned consistently in the study rooms. It is your own responsibility as a student to make sure that your student card is scanned. It is recommended that you put your student card on your table. If on exceptional occasions no supervisor is present, then your absence will not be registered and no study spots will be released. This will be indicated in your profile (in the overview of the reservations made) as "No presences recorded".
 
-> Will there be study spots provided during the weekend
+- Will there be study spots provided during the weekend
 
 No study spots are provided during the weekend.
 
-> I would like to have another study place but all places are full
+- I would like to have another study place but all places are full
 
 Expanding the spaces and number of study places is unfortunately not possible. The offer we are making now is the maximum offer possible within the current corona measures. Other students can however cancel their reservations as well as study spots may be released if they are not taken after scanning. In both occasions you can reserve the spot through this website and still make use of the freed study spot.
 
-> Will there also be study spaces during the exam period in June?
+- Will there also be study spaces during the exam period in June?
 
 Yes, up to and including June 25, 2021, study places will continue to be offered through this application (for GUSB up to and including June 23, 2021). The space and opening hours can always be found in this application. 
 

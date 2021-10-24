@@ -7,15 +7,16 @@ import {
   OnChanges,
   SimpleChanges,
 } from '@angular/core';
-import {CalendarView, CalendarEvent, CalendarEventTimesChangedEvent} from 'angular-calendar';
+import {CalendarView, CalendarEvent} from 'angular-calendar';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { defaultOpeningHour, defaultClosingHour } from 'src/app/app.constants';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
-  styleUrls: ['./calendar.component.css'],
+  styleUrls: ['./calendar.component.scss'],
 })
 export class CalendarComponent implements OnInit, OnChanges {
   view: CalendarView = CalendarView.Week;
@@ -29,8 +30,21 @@ export class CalendarComponent implements OnInit, OnChanges {
   @Input() events: CalendarEvent[];
   @Input() refresh: Subject<unknown>;
 
+
+  @Input() currentEventTime: moment.Moment;
+  @Output()
+  currentEventTimeChange = new EventEmitter<moment.Moment>();
+
+  @Output()
+  calendarViewStyle = new EventEmitter<CalendarView>();
+
+
+
   @Output()
   timeslotPickedEvent: EventEmitter<any> = new EventEmitter<any>();
+
+   @Output()
+   hourPickedEvent: EventEmitter<moment.Moment> = new EventEmitter();
 
   eventsSubj: BehaviorSubject<CalendarEvent[]> = new BehaviorSubject<
     CalendarEvent[]
@@ -39,6 +53,7 @@ export class CalendarComponent implements OnInit, OnChanges {
   currentLang: string;
 
   constructor(private translate: TranslateService) {
+
     this.translate.onLangChange.subscribe(() => {
       this.currentLang = this.translate.currentLang;
     });
@@ -52,8 +67,13 @@ export class CalendarComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+
     if (changes.events) {
       this.eventsSubj.next(this.events);
+    }
+
+    if(changes.currentEventTime && !!changes.currentEventTime.currentValue) {
+      this.viewDate = changes.currentEventTime.currentValue.toDate();
     }
   }
 
@@ -81,5 +101,14 @@ export class CalendarComponent implements OnInit, OnChanges {
 
   setView(view: CalendarView): void {
     this.view = view;
+    this.calendarViewStyle.next(view)
+  }
+
+  hourSegment(event: any) {
+    this.hourPickedEvent.next(moment(event.date))
+  }
+
+  emitDate(event: any) {
+    this.currentEventTimeChange.next(moment(event))
   }
 }

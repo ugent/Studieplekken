@@ -11,7 +11,7 @@ import { Moment } from 'moment';
 @Component({
   selector: 'app-moment-date',
   templateUrl: './moment-date.component.html',
-  styleUrls: ['./moment-date.component.css'],
+  styleUrls: ['./moment-date.component.scss'],
 })
 export class MomentDateComponent implements OnChanges {
   @Input()

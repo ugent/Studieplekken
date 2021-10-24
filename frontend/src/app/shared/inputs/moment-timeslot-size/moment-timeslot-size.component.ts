@@ -10,7 +10,7 @@ import 'moment-duration-format';
 @Component({
   selector: 'app-moment-timeslot-size',
   templateUrl: './moment-timeslot-size.component.html',
-  styleUrls: ['./moment-timeslot-size.component.css'],
+  styleUrls: ['./moment-timeslot-size.component.scss'],
 })
 export class MomentTimeslotSizeComponent implements OnChanges {
   /**

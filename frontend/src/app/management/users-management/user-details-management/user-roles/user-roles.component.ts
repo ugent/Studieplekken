@@ -5,12 +5,13 @@ import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { UserDetailsService } from '../../../../services/single-point-of-truth/user-details/user-details.service';
 import { UserService } from '../../../../services/api/users/user.service';
 import { msToShowFeedback } from '../../../../app.constants';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { MatDialog } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog/dialog-ref';
 
 @Component({
   selector: 'app-user-roles',
   templateUrl: './user-roles.component.html',
-  styleUrls: ['./user-roles.component.css'],
+  styleUrls: ['./user-roles.component.scss'],
 })
 export class UserRolesComponent implements OnInit {
   @Input() userObs: Observable<User>;
@@ -22,12 +23,12 @@ export class UserRolesComponent implements OnInit {
     admin: new FormControl(''),
   });
 
-  modalRef: BsModalRef;
+  modalRef: MatDialogRef<unknown>;
 
   constructor(
     private userDetailsService: UserDetailsService,
     private userService: UserService,
-    private modalService: BsModalService
+    private modalService: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -71,16 +72,16 @@ export class UserRolesComponent implements OnInit {
 
   onAdminClick(event: Event, template: TemplateRef<unknown>): void {
     event.preventDefault();
-    this.modalRef = this.modalService.show(template);
+    this.modalRef = this.modalService.open(template);
   }
 
   confirmAdminChange(): void {
     this.admin.setValue(!this.admin.value);
-    this.modalRef.hide();
+    this.modalRef.close();
   }
 
   declineAdminChange(): void {
-    this.modalRef.hide();
+    this.modalRef.close();
   }
 
   // ********************************************

@@ -1,0 +1,40 @@
+/**
+ * The width and height are set, such that the div spans over the
+ * available width. The height isn't 100% because 90% looked nicer,
+ * 100% was too close to the lower border of the day cell
+ */
+.custom-event-bar {
+  width: 100%;
+  height: 90%;
+  border-radius: 5px;
+}
+
+/**
+ * First solution of https://stackoverflow.com/a/13515693/9356123 works
+ */
+.custom-event-bar-center-text {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+}
+
+/**
+ * We want the line-height of the title in the week view of the Angular Calendar
+ * to be 20px instead of the 25px provided by default (cfr. link1 below).
+ * To overwrite this styling, we need to deeply change the style (cfr. link2 below)
+ *
+ *     - link1: https://github.com/mattlewis92/angular-calendar/blob/master/projects/angular-calendar/src/modules/week/calendar-week-view.scss#L253
+ *     - link2: https://stackoverflow.com/a/59530894/9356123
+ */
+mwl-calendar-week-view::ng-deep {
+  .cal-week-view {
+    .cal-time-events {
+      .cal-event {
+        line-height: 20px !important;
+      }
+    }
+  }
+}
+

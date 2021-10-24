@@ -15,7 +15,7 @@ export enum LockerStatus {
 @Component({
   selector: 'app-lockers-table',
   templateUrl: './lockers-table.component.html',
-  styleUrls: ['./lockers-table.component.css'],
+  styleUrls: ['./lockers-table.component.scss'],
 })
 export class LockersTableComponent implements OnInit {
   @Input() location: Observable<Location>;

@@ -1,18 +1,18 @@
 import { Component, Input, OnInit, TemplateRef } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Observable, of, Subject } from 'rxjs';
-import { LocationService } from 'src/app/services/api/locations/location.service';
-import { User } from 'src/app/shared/model/User';
-import { Location } from 'src/app/shared/model/Location';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { FormGroup, FormControl } from '@angular/forms';
-import { objectExists } from 'src/app/shared/GeneralFunctions';
-import { UserService } from 'src/app/services/api/users/user.service';
 import { catchError } from 'rxjs/operators';
+import { LocationService } from 'src/app/services/api/locations/location.service';
+import { UserService } from 'src/app/services/api/users/user.service';
+import { objectExists } from 'src/app/shared/GeneralFunctions';
+import { Location } from 'src/app/shared/model/Location';
+import { User } from 'src/app/shared/model/User';
 
 @Component({
   selector: 'app-volunteer-management-panel',
   templateUrl: './volunteer-management-panel.component.html',
-  styleUrls: ['./volunteer-management-panel.component.css'],
+  styleUrls: ['./volunteer-management-panel.component.scss'],
 })
 export class VolunteerManagementPanelComponent implements OnInit {
   @Input() location: Location;
@@ -27,12 +27,12 @@ export class VolunteerManagementPanelComponent implements OnInit {
   neverSearched = true;
   filteredUsers: Observable<User[]>;
 
-  private modalRef: BsModalRef;
+  private modalRef: MatDialogRef<unknown>;
   collapsed = true;
 
   constructor(
     private locationService: LocationService,
-    private modalService: BsModalService,
+    private modalService: MatDialog,
     private userService: UserService
   ) {}
 
@@ -53,71 +53,7 @@ export class VolunteerManagementPanelComponent implements OnInit {
   }
 
   showAdd(template: TemplateRef<unknown>): void {
-    this.modalRef = this.modalService.show(
-      template,
-      Object.assign({}, { class: 'modal-lg' })
-    );
-  }
-
-  enableSearchButton(value: { firstName: string; lastName: string }): boolean {
-    return (
-      (objectExists(value.firstName) && value.firstName.trim().length > 0) ||
-      (objectExists(value.lastName) && value.lastName.trim().length > 0)
-    );
-  }
-
-  /*
-   * If any of the input fields are not empty without trimming, enable the 'search' button
-   */
-  enableClearButton(value: { firstName: string; lastName: string }): boolean {
-    return (
-      (objectExists(value.firstName) && value.firstName.length > 0) ||
-      (objectExists(value.lastName) && value.lastName.length > 0)
-    );
-  }
-
-  clearFilterInput(): void {
-    this.formGroup.setValue({
-      firstName: '',
-      lastName: '',
-    });
-    this.formGroup.enable();
-
-    this.filteredUsers = of<User[]>([]);
-  }
-
-  submitSearch(value: {
-    firstName: string;
-    lastName: string;
-    barcode: string;
-  }): void {
-    this.neverSearched = null;
-    if (
-      objectExists(value.firstName) &&
-      value.firstName.trim().length > 0 &&
-      objectExists(value.lastName) &&
-      value.lastName.trim().length > 0
-    ) {
-      // search by first and last name
-      this.filteredUsers = this.userService.getUsersByFirstAndLastName(
-        value.firstName,
-        value.lastName
-      );
-    } else if (
-      objectExists(value.firstName) &&
-      value.firstName.trim().length > 0
-    ) {
-      // search by first name
-      this.filteredUsers = this.userService.getUsersByFirstName(
-        value.firstName
-      );
-    } else if (
-      objectExists(value.lastName) &&
-      value.lastName.trim().length > 0
-    ) {
-      // search by last name
-      this.filteredUsers = this.userService.getUsersByLastName(value.lastName);
-    }
+    this.modalRef = this.modalService.open(template, {panelClass: ["cs--cyan" ,"bigmodal"]});
   }
 
   addVolunteer(user: User): void {
@@ -130,7 +66,7 @@ export class VolunteerManagementPanelComponent implements OnInit {
           ))
       );
 
-    this.modalRef.hide();
+    this.modalRef.close();
     this.collapsed = false;
   }
 

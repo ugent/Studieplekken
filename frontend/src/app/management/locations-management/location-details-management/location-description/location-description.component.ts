@@ -10,7 +10,7 @@ import {switchMap, take} from 'rxjs/operators';
 @Component({
   selector: 'app-location-description',
   templateUrl: './location-description.component.html',
-  styleUrls: ['./location-description.component.css'],
+  styleUrls: ['./location-description.component.scss'],
 })
 export class LocationDescriptionComponent implements OnInit {
   @Input() location: Observable<Location>;

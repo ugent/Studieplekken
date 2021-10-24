@@ -1,0 +1,67 @@
+<!-- Default - without header image - not signed in -->
+<header class="header">
+    <div class="content-container">
+        <a href="#" title="Home" class="site-logo " rel="home">
+            Stad Gent
+        </a>
+
+        <div *ngIf="getUser() | async as user">
+
+            <!-- If user is logged in -->
+            <app-accordeon class="authentication" *ngIf="user != null && user.userId != ''"
+                [controller]="accordionSubject">
+
+                <button accordion-button aria-expanded="false" aria-controls="no-hero_auth-authentication"
+                    class="toggle accordion--button">
+                    <span class="avatar">{{user.firstName[0]}}</span>
+                    <span>{{user.firstName}}</span>
+                </button>
+
+                <div accordion-content id="no-hero_auth-authentication" class="accordion--content" aria-hidden="true"
+                    hidden>
+                    <app-header-dropdown [user]="user" [accordion]="accordionSubject"></app-header-dropdown>
+                </div>
+
+            </app-accordeon>
+
+            <!-- If user is not logged in -->
+            <div class="authentication accordion" *ngIf="user == null || user.userId == ''">
+
+                <a routerLink="/login" class="login-link">
+                    {{"header.navigation.login" | translate}} </a>
+
+            </div>
+        </div>
+        
+        <app-accordeon [classes]="['language-switcher']" [controller]="languageSubject">
+            <button accordion-button aria-controls="seperate_translation_unauth-translate" aria-expanded="false" class="toggle accordion--button">
+                {{currentLanguage()}}
+            </button>
+            <div accordion-content id="seperate_translation_unauth-translate" class="accordion--content" aria-hidden="true">
+            <ul class="content links" >
+                <li>
+                    <strong>{{currentLanguage()}}</strong>
+                </li>
+                <li>
+                    <a (click)="changeLanguage($event)" hreflang="{{otherSupportedLanguage()}}" lang="{{otherSupportedLanguage()}}">
+                        {{otherSupportedLanguage()}} </a>
+                </li>
+            </ul>
+            </div>
+        </app-accordeon>
+    </div>
+
+    <nav class="breadcrumb section--default" aria-labelledby="default-header-crumbs">
+        <div class="content-container">
+            <h2 id="default-header-crumbs" class="visually-hidden">Breadcrumb</h2>
+            <ol class="no-style">
+                <li *ngFor="let breadcrumb of (getLinkedBreadcrumbs() | async)"><a
+                        [routerLink]="breadcrumb.url">{{breadcrumb.pageName}}</a></li>
+                <li *ngFor="let breadcrumb of (getUnlinkedBreadcrumbs() | async)"><span>{{breadcrumb.pageName}}</span>
+                </li>
+            </ol>
+        </div>
+    </nav>
+
+    <hr />
+</header>

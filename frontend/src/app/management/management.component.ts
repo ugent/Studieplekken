@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { ApplicationTypeFunctionalityService } from '../services/functionality/application-type/application-type-functionality.service';
 import { AuthenticationService } from '../services/authentication/authentication.service';
 import { combineLatest } from 'rxjs';
+import { BreadcrumbService, dashboardBreadcrumb, managementBreadcrumb } from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
 
 @Component({
   selector: 'app-management',
   templateUrl: './management.component.html',
-  styleUrls: ['./management.component.css'],
+  styleUrls: ['./management.component.scss'],
 })
 export class ManagementComponent implements OnInit {
   showReservations: boolean;
@@ -17,7 +18,8 @@ export class ManagementComponent implements OnInit {
 
   constructor(
     private functionalityService: ApplicationTypeFunctionalityService,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private breadcrumbsService: BreadcrumbService
   ) {}
 
   ngOnInit(): void {
@@ -39,5 +41,7 @@ export class ManagementComponent implements OnInit {
           authenticatedUser.admin || hasAuthorities;
       }
     );
+
+    this.breadcrumbsService.setCurrentBreadcrumbs([dashboardBreadcrumb, managementBreadcrumb])
   }
 }

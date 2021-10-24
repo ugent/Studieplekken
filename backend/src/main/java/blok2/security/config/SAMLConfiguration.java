@@ -205,7 +205,9 @@ public class SAMLConfiguration {
 
     @Bean
     public WebSSOProfileConsumer webSSOprofileConsumer() {
-        return new WebSSOProfileConsumerImpl();
+        WebSSOProfileConsumerImpl w = new WebSSOProfileConsumerImpl();
+        w.setMaxAuthenticationAge(60 * 60 * 12);
+        return w;
     }
 
     @Bean

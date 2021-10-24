@@ -12,7 +12,7 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'app-dashboard-item',
   templateUrl: './dashboard-item.component.html',
-  styleUrls: ['./dashboard-item.component.css', '../location.css'],
+  styleUrls: ['./dashboard-item.component.scss', '../location.scss'],
   providers: [DatePipe],
 })
 export class DashboardItemComponent implements OnInit {
@@ -32,7 +32,6 @@ export class DashboardItemComponent implements OnInit {
   showProgressBar: boolean;
 
   statusInCurrentLang: string;
-  occupationObs: Observable<number>;
   showLockersManagement: boolean;
 
   /* Subscriptions */
@@ -49,10 +48,6 @@ export class DashboardItemComponent implements OnInit {
       this.setupTagsInCurrentLang();
     });
 
-    this.occupationObs = this.locationService.getNumberOfReservationsNow(
-      this.location.locationId
-    );
-
     this.assignedTags = this.location.assignedTags;
     this.setupTagsInCurrentLang();
 
@@ -61,7 +56,7 @@ export class DashboardItemComponent implements OnInit {
   }
 
   locationStatusColorClass(): string {
-    return this.location.status.first === LocationStatus.OPEN
+    return this.location.currentTimeslot?.isCurrent()
       ? 'open'
       : 'closed';
   }

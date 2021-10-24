@@ -3,17 +3,15 @@
     <named-native-query name="Location.getOpeningHoursOverview">
         <query>
             with x as (
-                select t.timeslot_date, cp.opening_time, cp.closing_time, l.name as location_name
+                select t.timeslot_date, t.opening_hour, t.closing_hour, l.name as location_name
                 from public.timeslots t
-                         join public.calendar_periods cp
-                              on cp.calendar_id = t.calendar_id
                          join public.locations l
                               on l.location_id = cp.location_id
                 where t.timeslot_date >= ? and t.timeslot_date &lt;= ?
             ), y as (
                 select timeslot_date, location_name
-                     , min(opening_time) as opening_time
-                     , max(closing_time) as closing_time
+                     , min(opening_hour) as opening_time
+                     , max(closing_hour) as closing_time
                 from x
                 group by timeslot_date, location_name
             ), z as (
@@ -46,13 +44,21 @@
 
     <named-native-query name="Location.getNextReservationMomentsOfAllLocations">
         <query>
-            select l.name as locationName, min(cp.reservable_from) as nextReservableFrom
+            select l.name as locationName, min(t.reservable_from) as nextReservableFrom
             from public.locations l
-                     join public.calendar_periods cp
-                          on cp.location_id = l.location_id
-            where cp.reservable_from >= now()
+                     join public.timeslots t
+                          on t.location_id = l.location_id
+            where t.reservable_from >= now()
             group by l.name
             order by l.name;
+        </query>
+    </named-native-query>
+    
+    <named-native-query name="LocationReservation.decrementCountByOne">
+        <query>
+            update timeslots
+            set reservation_count = reservation_count - 1
+            where sequence_number = ?;
         </query>
     </named-native-query>
 </entity-mappings>
