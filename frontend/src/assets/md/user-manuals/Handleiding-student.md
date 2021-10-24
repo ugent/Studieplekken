@@ -7,13 +7,13 @@ Hier zal je meer informatie vinden over het gebruik van de Studieplekken applica
 
 <img src="./assets/md/user-manuals/images/dutch/login_page.png" width="80%" />
 
-Wanneer je nog niet bent ingelogt zal je rechtsbovenaan op de pagina de een inlog knop zien. Als je op inloggen klikt zal je op de login-pagina terechtkomen en heb je mogelijkheid om je in te loggen via je onderwijsinstelling. Wanneer alles succesvol is verlopen zal je rechtsbovenaan je naam zien staan.
+Wanneer je nog niet bent ingelogd zal je rechtsbovenaan op de pagina de een inlog knop zien. Als je op inloggen klikt zal je op de login-pagina terechtkomen en heb je mogelijkheid om je in te loggen via je onderwijsinstelling. Wanneer alles succesvol is verlopen zal je rechtsbovenaan je naam zien staan.
 
 <br /><br />
 
 ## Zoeken naar een studieruimte
 
-Op de hoofdpagina kan je alle ruimtes vinden die door jou gereserveerd kunnen worden. Op deze dashboard zal je voor elke ruimte kort wat informatie krijgen, waaronder of het open is op dit moment, hoeveel zitplaatsen er zijn en het eerst volgend moment dat nog vrij is om te reserveren. Om meer informatie te zien over deze studie ruimte klik je op details.
+Op de hoofdpagina kan je alle ruimtes vinden die door jou gereserveerd kunnen worden. Op deze dashboard zal je voor elke ruimte kort wat informatie krijgen: onder meer of het open is op dit moment, hoeveel zitplaatsen er zijn en het eerst volgend moment dat nog vrij is om te reserveren. Om meer informatie te zien over deze studieruimte klik je op 'details'.
 
 <img src="./assets/md/user-manuals/images/dutch/example_dashboard_location.png" width="30%" />
 
@@ -37,7 +37,7 @@ Om al je reserveringen te bekijken klik je op je naam rechtsboven op de pagina. 
 
 ## Aanwezigheden
 
-Bij het aankomen aan een studieplek zullen aanwezigheden worden opgenomen. Dit kan met behulp van een barcode die je gegeven zal worden.
+Bij het aankomen aan een studieplek zullen aanwezigheden worden opgenomen. Dit kan met behulp van je studentenkaart of de QR-code op je profiel. Hou zeker rekening met de regels van die locatie! Je kan die doorgaans vinden in de locatiebeschrijving.
 
 ### todo aanvullen (waar geven ze dit enzovoort)
 
@@ -45,5 +45,4 @@ Bij het aankomen aan een studieplek zullen aanwezigheden worden opgenomen. Dit k
 
 ## Nog vragen?
 
-Indien er nog vragen zijn kan je ons vinden op het volgend adres:
-info-medewerkers@studieplekken.ugent.be.
+Bij verdere vragen kan je de beheerder van de locatie of de administrator van je onderwijsinstelling aanspreken. Zij kunnen je telkens verder helpen.
