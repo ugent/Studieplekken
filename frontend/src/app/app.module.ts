@@ -75,7 +75,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { OpeningHoursOverviewComponent } from './miscellaneous/opening-hours-overview/opening-hours-overview.component';
 import { ScanningLocationsComponent } from './scan/scanning-locations/scanning-locations.component';
 import { ScanningLocationDetailsComponent } from './scan/scanning-location-details/scanning-location-details.component';
-import { ScannerComponent } from './shared/scanner/scanner.component';
 import { VolunteersManagementComponent } from './management/volunteers-management/volunteers-management.component';
 import { VolunteerManagementPanelComponent } from './management/volunteers-management/volunteer-management-panel/volunteer-management-panel.component';
 import { AuthenticationInterceptor } from './services/authentication/authentication.interceptor';
@@ -90,6 +89,8 @@ import { LocationAddTimeslotDialogComponent } from './management/locations-manag
 import { ModalComponent } from './stad-gent-components/molecules/modal/modal.component';
 import { QRCodeModule } from 'angularx-qrcode';
 import { QRCodeComponent } from './miscellaneous/qrcode/qrcode.component';
+import { ScannerComponent } from './miscellaneous/scanner/scanner.component';
+import { ZXingScannerModule } from '@zxing/ngx-scanner';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -315,7 +316,6 @@ const routes: Routes = [
     OpeningHoursOverviewComponent,
     ScanningLocationsComponent,
     ScanningLocationDetailsComponent,
-    ScannerComponent,
     VolunteersManagementComponent,
     VolunteerManagementPanelComponent,
     HeaderComponent,
@@ -327,6 +327,7 @@ const routes: Routes = [
     LocationAddTimeslotDialogComponent,
     ModalComponent,
     QRCodeComponent,
+    ScannerComponent,
   ],
   imports: [
     BrowserModule,
@@ -364,7 +365,8 @@ const routes: Routes = [
     }),
     MatTabsModule,
     MatTooltipModule,
-    QRCodeModule
+    QRCodeModule,
+    ZXingScannerModule
   ],
   providers: [
     FormatStatusPipe,

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocationService } from '../../services/api/locations/location.service';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Location } from '../../shared/model/Location';
 import { ScanningService } from '../../services/api/scan/scanning.service';
 import { catchError, switchMap } from 'rxjs/operators';
@@ -67,10 +67,6 @@ export class ScanningLocationDetailsComponent implements OnInit {
         return of<LocationReservation[]>(null);
       })
     );
-  }
-
-  getValidator(): (a: string) => boolean {
-    return (code) => code.length > 6; // filter out the most egregious examples
   }
 
   scanUser(reservations: LocationReservation[], code: string): void {

@@ -5,7 +5,6 @@
     <div *ngIf="lr.length > 0; else noUsers">
 
       <app-accordeon>
-        <!--MOBILE SCANNER-->
         <a accordion-button data-toggle="collapse" aria-controls="camera"
            aria-expanded="false" class="collapsed accordion--button">
           <i class="glyphicon glyphicon-plus"></i>
@@ -15,9 +14,9 @@
         <div accordion-content class="accordion--content" id="camera">
 
           <div *ngIf="error" style="margin-top: 15px;" class="messages messages--error">{{error | translate}}</div>
-
           <div *ngIf="!reservation" style="margin-top: 15px;" class="alert alert-info">{{'scan.mobile-hint' | translate}}</div>
-          <app-scanner *ngIf="!reservation" [validator]="getValidator()" (code)="scanUser(lr, $event)"></app-scanner>
+
+          <app-scanner (scanSuccess)="scanUser(lr, $event)"></app-scanner>
 
           <div class="usertag" *ngIf="reservation" fxLayout="column" fxLayoutAlign="center center">
             <p>
@@ -36,8 +35,8 @@
       </app-accordeon>
 
     <br>
-    <div class="messages messages--warning">{{"scan.warn-unattended" | translate}}</div>
 
+    <div class="messages messages--warning">{{"scan.warn-unattended" | translate}}</div>
     <div class="messages messages--info">{{"scan.handheld-hint" | translate}}</div>
 
     <app-location-reservations [currentTimeSlot]="location.currentTimeslot" [locationReservations]="lr"
