@@ -99,16 +99,12 @@
               {{'management.buildings.table.address' | translate}}<span style="color: red; margin-left: 5px;">*</span>
             </label>
             <div class="col-lg-8">
-              <input class="form-control" id="addressUpdate" type="text" formControlName="address">
+              <input class="form-control" id="addressUpdate" type="text" formControlName="address" (change)="checkAddress()">
             </div>
           </div>
           <div fxLayout="column" fxLayoutAlign="space-evenly">
             <div></div>
             <i class="{{getAddressIcon() }}" aria-hidden="true"></i>
-          </div>
-          <div fxLayout="column" fxLayoutAlign="flex-end">
-            <button class="button button-secondary" (click)="checkAddress()">{{'management.buildings.checkAddress' |
-              translate}}</button>
           </div>
         </div>
 
@@ -192,16 +188,12 @@
               {{'management.buildings.table.address' | translate}}<span style="color: red; margin-left: 5px;">*</span>
             </label>
             <div class="col-lg-8">
-              <input class="form-control" id="addressUpdate" type="text" formControlName="address">
+              <input class="form-control" id="addressUpdate" type="text" formControlName="address" (change)="checkAddress()">
             </div>
           </div>
           <div fxLayout="column" fxLayoutAlign="space-evenly">
             <div></div>
             <i class="{{getAddressIcon() }}" aria-hidden="true"></i>
-          </div>
-          <div fxLayout="column" fxLayoutAlign="flex-end">
-            <button class="button button-secondary" (click)="checkAddress()">{{'management.buildings.checkAddress' |
-              translate}}</button>
           </div>
         </div>
 
