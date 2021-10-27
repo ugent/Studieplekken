@@ -13,7 +13,7 @@ export enum Institution {
   ARTEVELDE = 'Arteveldehogeschool',
   LUCA = 'Luca',
   ODISEE = 'Odisee',
-  STAD_GENT = 'STAD_GENT',
+  STAD_GENT = 'StadGent',
 }
 
 export interface SamlUser {
