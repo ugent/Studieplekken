@@ -12,7 +12,8 @@
     "manager": "Manager",
     "goto": "Go to",
     "faq": "FAQ",
-    "student": "Student"
+    "student": "Student",
+    "admin": "Admin"
   },
   "dashboard": {
     "alert": {

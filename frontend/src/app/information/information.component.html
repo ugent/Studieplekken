@@ -10,11 +10,18 @@ The markdown files used are provided in `assets/md/information.<lang>.md`
       <markdown src="assets/md/user-manuals/Handleiding-student.md"></markdown>
     </div>
   </mat-tab>
-  <mat-tab label="{{'information.manager' | translate}}">
+  <mat-tab label="{{'information.manager' | translate}}" *ngIf="showManagement || showAdmin">
     <div style="padding-top: 10pt;">
       <markdown src="assets/md/user-manuals/Handleiding-beheer.md"></markdown>
     </div>
   </mat-tab>
+
+  <mat-tab label="{{'information.admin' | translate}}" *ngIf="showAdmin">
+    <div style="padding-top: 10pt;">
+      <markdown src="assets/md/user-manuals/Handleiding-admin.md"></markdown>
+    </div>
+  </mat-tab>
+
 
 </mat-tab-group>
 

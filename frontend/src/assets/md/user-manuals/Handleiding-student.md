@@ -39,7 +39,6 @@ Om al je reserveringen te bekijken klik je op je naam rechtsboven op de pagina. 
 
 Bij het aankomen aan een studieplek zullen aanwezigheden worden opgenomen. Dit kan met behulp van je studentenkaart of de QR-code op je profiel. Hou zeker rekening met de regels van die locatie! Je kan die doorgaans vinden in de locatiebeschrijving.
 
-### todo aanvullen (waar geven ze dit enzovoort)
 
 <br />
 

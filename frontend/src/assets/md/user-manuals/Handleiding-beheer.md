@@ -73,12 +73,12 @@ Er zijn twee soorten tijdsloten: reserveerbare en niet-reserveerbare. Niet-reser
 ![](./assets/md/user-manuals/images/dutch/rrL41aD.png)
 
 Hier is een voorbeeld van:
-* een niet-herhalende reserveerbare tijdsslot
-* een herhalende niet-reserveerbare tijdslot
+* een niet-herhalend reserveerbar tijdsslot
+* een herhalend niet-reserveerbar tijdslot
 
 ![](./assets/md/user-manuals/images/dutch/c11aORU.png)
 
-Herhalende tijdsloten worden gesugereerd in volgende weken. Deze kunnen dan goedgekeurd worden door te klikken op de "Keur goed" knop.
+Herhalende tijdsloten worden gesuggereerd in volgende weken. Deze kunnen dan goedgekeurd worden door te klikken op de "Keur goed" knop.
 Alle herhalende tijdsloten binnen een week kunnen in één keer goedgekeurd worden door te klikken op de "Keur alle suggesties goed" knop.
 ![](./assets/md/user-manuals/images/dutch/ZoEtyTb.png)
 
