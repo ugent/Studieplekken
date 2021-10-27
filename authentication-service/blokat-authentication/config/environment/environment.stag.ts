@@ -63,6 +63,19 @@ export const configuration: Configuration = {
         }),
       },
       {
+        loginUrl: 'leuven',
+        callbackUrl: 'https://studieplekken-dev.ugent.be/api/SSO/saml',
+        issuer: 'https://studieplekken-dev.ugent.be/api/metadata/saml',
+        metadataFile: 'sso-kuleuven-off.xml',
+        toSamlUser: (a: any) => ({
+          firstName: a['givenName'],
+          lastName: a['sn'],
+          email: a['mail'],
+          id: a['uid'],
+          institution: Institution.ODISEE,
+        }),
+      },
+      {
         loginUrl: 'stadgent',
         callbackUrl: 'https://studieplekken-dev.ugent.be/api/SSO/saml',
         issuer: 'https://studieplekken-dev.ugent.be/api/metadata/saml',
