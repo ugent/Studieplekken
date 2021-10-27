@@ -40,7 +40,7 @@ export const configuration: Configuration = {
         loginUrl: 'luca',
         callbackUrl: 'https://studieplekken-dev.ugent.be/api/SSO/saml',
         issuer: 'https://studieplekken-dev.ugent.be/api/metadata/saml',
-        metadataFile: 'sso-kuleuven.xml',
+        metadataFile: 'sso-kuleuven-off.xml',
         toSamlUser: (a: any) => ({
           firstName: a['urn:oid:2.5.4.42'],
           lastName: a['urn:oid:2.5.4.4'],
@@ -53,7 +53,7 @@ export const configuration: Configuration = {
         loginUrl: 'odisee',
         callbackUrl: 'https://studieplekken-dev.ugent.be/api/SSO/saml',
         issuer: 'https://studieplekken-dev.ugent.be/api/metadata/saml',
-        metadataFile: 'sso-kuleuven.xml',
+        metadataFile: 'sso-kuleuven-off.xml',
         toSamlUser: (a: any) => ({
           firstName: a['urn:oid:2.5.4.42'],
           lastName: a['urn:oid:2.5.4.4'],
