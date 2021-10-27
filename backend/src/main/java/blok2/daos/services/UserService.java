@@ -50,7 +50,7 @@ public class UserService implements IUserDao {
 
     @Override
     public List<User> getUsersByLastName(String lastName) {
-        return userRepository.findAllByLastName(lastName);
+        return userRepository.findAllByLastNameIgnoreCase(lastName);
     }
 
     @Override
@@ -60,22 +60,22 @@ public class UserService implements IUserDao {
 
     @Override
     public List<User> getUsersByFirstName(String firstName) {
-        return userRepository.findAllByFirstName(firstName);
+        return userRepository.findAllByFirstNameIgnoreCase(firstName);
     }
 
     @Override
     public List<User> getUsersByFirstNameAndInstitution(String firstName, String institution) {
-        return userRepository.findAllByFirstNameAndInstitution(firstName, institution);
+        return userRepository.findAllByFirstNameIgnoreCaseAndInstitution(firstName, institution);
     }
 
     @Override
     public List<User> getUsersByFirstAndLastName(String firstName, String lastName) {
-        return userRepository.findAllByFirstNameAndLastName(firstName, lastName);
+        return userRepository.findAllByFirstNameIgnoreCaseAndLastNameIgnoreCase(firstName, lastName);
     }
 
     @Override
     public List<User> getUsersByFirstAndLastNameAndInstitution(String firstName, String lastName, String institution) {
-        return userRepository.findAllByFirstNameAndLastNameAndInstitution(firstName, lastName, institution);
+        return userRepository.findAllByFirstNameIgnoreCaseAndLastNameIgnoreCaseAndInstitution(firstName, lastName, institution);
     }
 
     @Override
