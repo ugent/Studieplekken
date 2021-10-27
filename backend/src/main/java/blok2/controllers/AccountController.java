@@ -141,7 +141,7 @@ public class AccountController {
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public List<Location> getManageableLocations(@AuthenticationPrincipal User authenticatedUser,
                                                  @PathVariable("userId") String encodedId) throws UnsupportedEncodingException {
-        String userId = URLDecoder.decode(encodedId, StandardCharsets.UTF_8.toString());
+        String userId = new String(Base64.getDecoder().decode(encodedId));
 
         User user = userDao.getUserById(userId);
 
