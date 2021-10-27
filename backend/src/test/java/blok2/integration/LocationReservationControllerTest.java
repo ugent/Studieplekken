@@ -10,11 +10,13 @@ import org.springframework.security.test.context.support.WithSecurityContextTest
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -157,7 +159,7 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
         Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
 
         String url = String.format("/locations/reservations/%s/%d/attendance",
-                student.getUserId(), 
+                new String(Base64.getEncoder().encode(student.getUserId().getBytes(StandardCharsets.UTF_8))),
                 
                 timeslot.getTimeslotSeqnr());
 
@@ -196,7 +198,7 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
         Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
 
         String url = String.format("/locations/reservations/%s/%d/attendance",
-                student.getUserId(), 
+                new String(Base64.getEncoder().encode(student.getUserId().getBytes(StandardCharsets.UTF_8))),
                 
                 timeslot.getTimeslotSeqnr());
 
@@ -220,7 +222,7 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
         Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
 
         String url = String.format("/locations/reservations/%s/%d/attendance",
-                student.getUserId(), 
+                new String(Base64.getEncoder().encode(student.getUserId().getBytes(StandardCharsets.UTF_8))),
                 
                 timeslot.getTimeslotSeqnr());
 
@@ -245,7 +247,7 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
         Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
 
         String url = String.format("/locations/reservations/%s/%d/attendance",
-                student.getUserId(), 
+                new String(Base64.getEncoder().encode(student.getUserId().getBytes(StandardCharsets.UTF_8))),
                 
                 timeslot.getTimeslotSeqnr());
 
@@ -272,7 +274,7 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
         Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
 
         String url = String.format("/locations/reservations/%s/%d/attendance",
-                student.getUserId(), 
+                new String(Base64.getEncoder().encode(student.getUserId().getBytes(StandardCharsets.UTF_8))),
                 
                 timeslot.getTimeslotSeqnr());
 

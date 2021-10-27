@@ -7,6 +7,9 @@ import org.springframework.security.test.context.support.WithSecurityContextTest
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -121,7 +124,7 @@ public class AuthorityControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testGetAuthorityFromUser() throws Exception {
-        mockMvc.perform(get("/authority/users/" + authHolder.getUserId())).andDo(print())
+        mockMvc.perform(get("/authority/users/" + new String(Base64.getEncoder().encode(authHolder.getUserId().getBytes(StandardCharsets.UTF_8))))).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1));
     }
@@ -143,7 +146,7 @@ public class AuthorityControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testPostUserToAuthority() throws Exception {
-        mockMvc.perform(post("/authority/" + authority.getAuthorityId() + "/user/" + student2.getUserId())
+        mockMvc.perform(post("/authority/" + authority.getAuthorityId() + "/user/" + new String(Base64.getEncoder().encode(student2.getUserId().getBytes(StandardCharsets.UTF_8))))
                 .with(csrf())).andDo(print())
                 .andExpect(status().isOk());
 
@@ -185,7 +188,7 @@ public class AuthorityControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testDeleteUserFromAuthority() throws Exception {
-        mockMvc.perform(delete("/authority/" + authority.getAuthorityId() + "/user/" + authHolder.getUserId())
+        mockMvc.perform(delete("/authority/" + authority.getAuthorityId() + "/user/" + new String(Base64.getEncoder().encode(authHolder.getUserId().getBytes(StandardCharsets.UTF_8))))
                 .with(csrf())).andDo(print())
                 .andExpect(status().isOk()); // authholder is member of authority: therefore deleting should succeed
 
