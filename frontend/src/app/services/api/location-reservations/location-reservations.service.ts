@@ -82,12 +82,8 @@ export class LocationReservationsService {
     attended: boolean
   ): Observable<void> {
     return this.http.post<void>(
-      api.updateAttendance2
+      api.updateAttendance
         .replace('{userid}', locationReservation.user.userId)
-        /*.replace(
-          '{date}',
-          locationReservation.timeslot.timeslotDate.format('YYYY-MM-DD')
-        )*/
         .replace('{seqnr}', `${locationReservation.timeslot.timeslotSequenceNumber}`),
       { attended },
       { withCredentials: true }

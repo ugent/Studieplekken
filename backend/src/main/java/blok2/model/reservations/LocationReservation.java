@@ -50,26 +50,12 @@ public class LocationReservation {
         insertable = false, updatable = false)
     private Timeslot timeslot;
 
-    /*@Column(name = "attended")
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY) // Users can't set this themselves
-    private Boolean attended;*/
-
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
     public LocationReservation() {
     }
-
-    /*public LocationReservation(User user, Timeslot timeslot, Boolean attended) {
-        this.id = new LocationReservationId(
-                timeslot.getTimeslotSeqnr(),
-                user.getUserId()
-        );
-        this.user = user;
-        this.timeslot = timeslot;
-        this.attended = attended;
-    }*/
     
     public LocationReservation(User user, Timeslot timeslot, State state) {
         this.id = new LocationReservationId(

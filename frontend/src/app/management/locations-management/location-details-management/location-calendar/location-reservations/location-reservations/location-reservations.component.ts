@@ -107,15 +107,12 @@ export class LocationReservationsComponent {
     this.modalService.closeAll();
 
     // if the update is not successful, rollback UI changes
-    // const rollback: LocationReservation[] = [];
     const newLocationReservations: LocationReservation[] = [];
 
     // set all reservations where attended is null to false
     this.locationReservations.forEach((reservation) => {
       if (reservation.state !== LocationReservationState.PRESENT) {
         newLocationReservations.push(new LocationReservation(reservation.user, reservation.timeslot, LocationReservationState.ABSENT, reservation.createdAt));
-        // reservation.state = LocationReservationState.ABSENT;
-        // rollback.push(reservation);
       } else {
         newLocationReservations.push(reservation);
       }
@@ -129,11 +126,6 @@ export class LocationReservationsComponent {
           this.locationReservations = newLocationReservations;
         },
         () => {
-          // on error, rollback UI changes
-          /*rollback.forEach((reservation) => {
-            reservation.attended = null;
-          });*/
-          
           this.modalService.open(errorTemplate);
         }
       );
@@ -281,14 +273,6 @@ export class LocationReservationsComponent {
           }
         }
       }
-
-      // not scanned, absent, attended, other
-      /*if (b.attended !== a.attended) {
-        return a.attended === null ? -1 // not scanned before everything else
-          : b.attended === null ? 1 // everything else after not scanned
-          : a.attended && !b.attended ? 1 // attended after absent
-          : -1; // absent before attended
-      }*/
 
       // If a.user.firstName equals b.user.firstName, the first localeCompare returns 0 (= false)
       // and thus the second localeCompare is executed. If they are not equal, the first localeCompare

@@ -100,10 +100,6 @@ export class ProfileReservationsComponent implements OnInit {
   ): boolean {
     return  reservation.timeslot.isInPast() &&
             reservation.timeslot.reservable;
-    /*return (
-      reservation.timeslot.isInPast() &&
-      reservation.attended === null
-    );*/
   }
 
   canDeleteReservation(

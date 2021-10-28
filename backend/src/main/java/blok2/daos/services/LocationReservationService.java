@@ -96,9 +96,6 @@ public class LocationReservationService implements ILocationReservationDao {
         if (state == LocationReservation.State.APPROVED || state == LocationReservation.State.PRESENT) {
             locationReservationRepository.decrementCountByOne(locationReservation.getTimeslot().getTimeslotSeqnr());
         }
-        // if(locationReservation.getState() == null || locationReservation.getState().equals(LocationReservation.State.PRESENT.name()))
-//            locationReservationRepository.decrementCountByOne(locationReservation.getTimeslot().getTimeslotSeqnr());
-
         locationReservationRepository.deleteById(new LocationReservation.LocationReservationId(
                 locationReservation.getTimeslot().getTimeslotSeqnr(), locationReservation.getUser().getUserId()
         ));
@@ -136,27 +133,6 @@ public class LocationReservationService implements ILocationReservationDao {
     public boolean setReservationAttendance(String userId, Timeslot timeslot, boolean attendance) {
         LocationReservation.State state = attendance? LocationReservation.State.PRESENT : LocationReservation.State.ABSENT;
         return setReservationState(userId, timeslot, state);
-        /*LocationReservation.LocationReservationId id = new LocationReservation.LocationReservationId(
-                timeslot.getTimeslotSeqnr(), userId
-        );
-
-        LocationReservation locationReservation = locationReservationRepository.findById(id)
-                .orElseThrow(() -> new NoSuchDatabaseObjectException(
-                        String.format("No location reservation found with id '%s'", id)));
-        Boolean currentAttendance = locationReservation.getAttended();
-
-        // if attendance goes from null or true to false, decrement reservation count
-        if (!attendance && (currentAttendance == null || currentAttendance))
-            locationReservation.getTimeslot().decrementAmountOfReservations();
-
-        // if attendance goes from false to true, increment the current reservation count since this person is here now
-        if (attendance && (currentAttendance != null && !currentAttendance))
-            locationReservation.getTimeslot().incrementAmountOfReservations();
-
-        locationReservation.setAttended(attendance);
-        locationReservation = locationReservationRepository.saveAndFlush(locationReservation);
-
-        return locationReservation.getAttended() == attendance;*/
     }
 
     @Override
@@ -174,7 +150,6 @@ public class LocationReservationService implements ILocationReservationDao {
         // so that other students are able to make use of the freed spot
         locationReservations.forEach((LocationReservation lr) -> {
             lr.setState(LocationReservation.State.ABSENT);
-            // lr.setAttended(false);
             lr.getTimeslot().decrementAmountOfReservations();
         });
         
