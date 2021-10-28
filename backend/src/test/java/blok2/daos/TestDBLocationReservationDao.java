@@ -142,12 +142,12 @@ public class TestDBLocationReservationDao extends BaseTest {
 
         // Create first location reservation for user in testLocation
         Timeslot t0 = calendarPeriods.get(0);
-        LocationReservation lr0 = new LocationReservation(u, t0, null);
+        LocationReservation lr0 = new LocationReservation(u, t0, LocationReservation.State.APPROVED);
         elrs.add(lr0);
 
         // Create a second location reservation for the user in testLocation2
         Timeslot t1 = calendarPeriodsForLocation2.get(1);
-        LocationReservation lr1 = new LocationReservation(u, t1, null);
+        LocationReservation lr1 = new LocationReservation(u, t1, LocationReservation.State.APPROVED);
         elrs.add(lr1);
 
         // Add the location reservations to the db

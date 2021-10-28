@@ -177,8 +177,7 @@ public class LocationReservationService implements ILocationReservationDao {
             // lr.setAttended(false);
             lr.getTimeslot().decrementAmountOfReservations();
         });
-
-        // TODO(ydndonck): Update saveAll?
+        
         locationReservationRepository.saveAll(locationReservations);
     }
 

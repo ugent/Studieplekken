@@ -50,7 +50,6 @@ public class DBLocationReservationDao {
                 return true;
 
             } catch (SQLException e) {
-                e.printStackTrace(); // TODO(ydndonck): Remove this.
                 conn.rollback();
                 // Error codes that start with "23" are constraint violations.
                 // This means that the entry was probably not unique.

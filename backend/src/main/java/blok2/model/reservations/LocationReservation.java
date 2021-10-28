@@ -38,7 +38,7 @@ public class LocationReservation {
     @Column(name = "state")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY) // Users can't set this themselves
     // NOTE(ydndonck): String instead of state enum, because postgres tries to save it as bytea instead of text.
-    private String state = State.APPROVED.name(); // TODO(ydndonck): Default to APPROVED state. Should this be pending instead?
+    private String state = State.APPROVED.name();
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
@@ -78,7 +78,7 @@ public class LocationReservation {
         );
         this.user = user;
         this.timeslot = timeslot;
-        this.setState(state);
+        this.setState(state != null? state : State.APPROVED);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
@@ -161,7 +161,6 @@ public class LocationReservation {
     }
 
     
-    // TODO(ydndonck): Remove this?
     public static class AttendedPostBody {
         boolean attended;
 

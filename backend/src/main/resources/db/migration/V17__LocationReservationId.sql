@@ -18,5 +18,5 @@ ALTER TABLE location_reservations ADD state VARCHAR(20) NOT NULL DEFAULT 'APPROV
 -- Remove the old attended state.
 UPDATE location_reservations SET state = 'PRESENT' WHERE attended is true;
 UPDATE location_reservations SET state = 'ABSENT' WHERE attended is false;
-UPDATE location_reservations SET state = 'APPROVED' WHERE attended is null; -- TODO(ydndonck): Should this be 'PRESENT' instead? Because most of these are in the past already.
+UPDATE location_reservations SET state = 'APPROVED' WHERE attended is null;
 ALTER TABLE location_reservations DROP COLUMN IF EXISTS attended;
