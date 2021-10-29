@@ -1,6 +1,7 @@
 package blok2.controllers;
 
 import blok2.daos.IAuthorityDao;
+import blok2.helpers.Base64String;
 import blok2.helpers.exceptions.AlreadyExistsException;
 import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.Authority;
@@ -84,7 +85,7 @@ public class AuthorityController {
     @GetMapping("/users/{userId}")
     @PreAuthorize("(hasAuthority('HAS_AUTHORITIES') and #userId == authentication.principal.userId) or hasAuthority('ADMIN')")
     public List<Authority> getAuthoritiesFromUser(@PathVariable("userId") String encodedId) {
-        String userId = new String(Base64.getDecoder().decode(encodedId));
+        String userId = Base64String.base64Decode(encodedId);
 
         return authorityDao.getAuthoritiesFromUser(userId);
     }
@@ -92,7 +93,7 @@ public class AuthorityController {
     @GetMapping("/users/{userId}/locations")
     @PreAuthorize("(hasAuthority('HAS_AUTHORITIES') and #userId == authentication.principal.userId) or hasAuthority('ADMIN')")
     public List<Location> getLocationsInAuthoritiesOfUser(@PathVariable("userId") String encodedId) {
-        String userId = new String(Base64.getDecoder().decode(encodedId));
+        String userId = Base64String.base64Decode(encodedId);
 
         return authorityDao.getLocationsInAuthoritiesOfUser(userId);
     }
@@ -100,7 +101,7 @@ public class AuthorityController {
     @PostMapping("/{authorityId}/user/{userId}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public void addUserToAuthority(@PathVariable int authorityId, @PathVariable("userId") String encodedId) {
-        String userId = new String(Base64.getDecoder().decode(encodedId));
+        String userId = Base64String.base64Decode(encodedId);
 
         authorityDao.addUserToAuthority(userId, authorityId);
         logger.info(String.format("Adding user %s to authority %d", userId, authorityId));
@@ -109,7 +110,7 @@ public class AuthorityController {
     @DeleteMapping("/{authorityId}/user/{userId}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public void deleteUserFromAuthority(@PathVariable int authorityId, @PathVariable("userId") String encodedId) {
-        String userId = new String(Base64.getDecoder().decode(encodedId));
+        String userId = Base64String.base64Decode(encodedId);
 
         authorityDao.deleteUserFromAuthority(userId, authorityId);
         logger.info(String.format("Removing user %s from authority %d", userId, authorityId));

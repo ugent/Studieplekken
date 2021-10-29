@@ -4,6 +4,7 @@ import blok2.daos.IAuthorityDao;
 import blok2.daos.ILocationDao;
 import blok2.daos.IUserDao;
 import blok2.daos.IVolunteerDao;
+import blok2.helpers.Base64String;
 import blok2.helpers.exceptions.InvalidRequestParametersException;
 import blok2.model.Authority;
 import blok2.model.reservables.Location;
@@ -128,7 +129,7 @@ public class AccountController {
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public List<Authority> getAuthoritiesFromUser(@AuthenticationPrincipal User user,
                                                   @PathVariable String encodedId) throws UnsupportedEncodingException {
-        String userId = new String(Base64.getDecoder().decode(encodedId));
+        String userId = Base64String.base64Decode(encodedId);
 
         if (user.isAdmin()) {
             return authorityDao.getAuthoritiesFromUser(userId);
@@ -141,7 +142,7 @@ public class AccountController {
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public List<Location> getManageableLocations(@AuthenticationPrincipal User authenticatedUser,
                                                  @PathVariable("userId") String encodedId) throws UnsupportedEncodingException {
-        String userId = new String(Base64.getDecoder().decode(encodedId));
+        String userId = Base64String.base64Decode(encodedId);
 
         User user = userDao.getUserById(userId);
 
@@ -155,7 +156,7 @@ public class AccountController {
     @GetMapping("{userId}/has/authorities")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public boolean hasUserAuthorities(@PathVariable("userId") String encodedId) throws UnsupportedEncodingException {
-        String userId = new String(Base64.getDecoder().decode(encodedId));
+        String userId = Base64String.base64Decode(encodedId);
 
         return authorityDao.getAuthoritiesFromUser(userId).size() > 0;
     }
@@ -163,8 +164,7 @@ public class AccountController {
     @GetMapping("{userId}/has/volunteered")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public boolean hasUserVolunteered(@PathVariable("userId") @Pattern(regexp = "^.*$") String encodedId) throws UnsupportedEncodingException {
-        String userId = new String(Base64.getDecoder().decode(encodedId));
-        System.out.println(userId);
+        String userId = Base64String.base64Decode(encodedId);
 
         return volunteerDao.getVolunteeredLocations(userId).size() > 0;
     }
@@ -174,7 +174,7 @@ public class AccountController {
     public void updateUser(@AuthenticationPrincipal User authenticatedUser,
                            @PathVariable("userId") String encodedId,
                            @RequestBody User user) throws UnsupportedEncodingException {
-        String id = new String(Base64.getDecoder().decode(encodedId));
+        String id = Base64String.base64Decode(encodedId);
 
         User old;
         if (authenticatedUser.isAdmin()) {

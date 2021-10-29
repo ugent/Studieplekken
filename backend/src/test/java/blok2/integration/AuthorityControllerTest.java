@@ -1,5 +1,6 @@
 package blok2.integration;
 
+import blok2.helpers.Base64String;
 import blok2.model.Authority;
 import org.junit.Assert;
 import org.junit.Test;
@@ -124,7 +125,7 @@ public class AuthorityControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testGetAuthorityFromUser() throws Exception {
-        mockMvc.perform(get("/authority/users/" + new String(Base64.getEncoder().encode(authHolder.getUserId().getBytes(StandardCharsets.UTF_8))))).andDo(print())
+        mockMvc.perform(get("/authority/users/" + Base64String.base64Encode(authHolder.getUserId()))).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1));
     }
@@ -146,7 +147,7 @@ public class AuthorityControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testPostUserToAuthority() throws Exception {
-        mockMvc.perform(post("/authority/" + authority.getAuthorityId() + "/user/" + new String(Base64.getEncoder().encode(student2.getUserId().getBytes(StandardCharsets.UTF_8))))
+        mockMvc.perform(post("/authority/" + authority.getAuthorityId() + "/user/" + Base64String.base64Encode(student2.getUserId()))
                 .with(csrf())).andDo(print())
                 .andExpect(status().isOk());
 
@@ -188,7 +189,7 @@ public class AuthorityControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testDeleteUserFromAuthority() throws Exception {
-        mockMvc.perform(delete("/authority/" + authority.getAuthorityId() + "/user/" + new String(Base64.getEncoder().encode(authHolder.getUserId().getBytes(StandardCharsets.UTF_8))))
+        mockMvc.perform(delete("/authority/" + authority.getAuthorityId() + "/user/" + Base64String.base64Encode(authHolder.getUserId()))
                 .with(csrf())).andDo(print())
                 .andExpect(status().isOk()); // authholder is member of authority: therefore deleting should succeed
 

@@ -1,5 +1,6 @@
 package blok2.integration;
 
+import blok2.helpers.Base64String;
 import blok2.helpers.Pair;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
@@ -159,8 +160,7 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
         Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
 
         String url = String.format("/locations/reservations/%s/%d/attendance",
-                new String(Base64.getEncoder().encode(student.getUserId().getBytes(StandardCharsets.UTF_8))),
-                
+                Base64String.base64Encode(student.getUserId()),
                 timeslot.getTimeslotSeqnr());
 
         JSONObject obj = new JSONObject().put("attended", true);
@@ -179,8 +179,7 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
         Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
 
         String url = String.format("/locations/reservations/%s/%d/attendance",
-                student2.getUserId(), 
-                
+                Base64String.base64Encode(student2.getUserId()),
                 timeslot.getTimeslotSeqnr());
 
         JSONObject obj = new JSONObject().put("attended", true);
@@ -198,8 +197,7 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
         Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
 
         String url = String.format("/locations/reservations/%s/%d/attendance",
-                new String(Base64.getEncoder().encode(student.getUserId().getBytes(StandardCharsets.UTF_8))),
-                
+                Base64String.base64Encode(student.getUserId()),
                 timeslot.getTimeslotSeqnr());
 
         JSONObject obj = new JSONObject().put("attended", true);
@@ -222,8 +220,7 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
         Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
 
         String url = String.format("/locations/reservations/%s/%d/attendance",
-                new String(Base64.getEncoder().encode(student.getUserId().getBytes(StandardCharsets.UTF_8))),
-                
+                Base64String.base64Encode(student.getUserId()),
                 timeslot.getTimeslotSeqnr());
 
         JSONObject obj = new JSONObject().put("attended", false);
@@ -247,8 +244,7 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
         Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
 
         String url = String.format("/locations/reservations/%s/%d/attendance",
-                new String(Base64.getEncoder().encode(student.getUserId().getBytes(StandardCharsets.UTF_8))),
-                
+                Base64String.base64Encode(student.getUserId()),
                 timeslot.getTimeslotSeqnr());
 
         JSONObject obj = new JSONObject().put("attended", false);
@@ -274,8 +270,7 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
         Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
 
         String url = String.format("/locations/reservations/%s/%d/attendance",
-                new String(Base64.getEncoder().encode(student.getUserId().getBytes(StandardCharsets.UTF_8))),
-                
+                Base64String.base64Encode(student.getUserId()),
                 timeslot.getTimeslotSeqnr());
 
         JSONObject obj = new JSONObject().put("attended", false);

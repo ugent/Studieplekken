@@ -3,6 +3,7 @@ package blok2.controllers;
 import blok2.daos.ILocationDao;
 import blok2.daos.ILocationReservationDao;
 import blok2.daos.ITimeslotDao;
+import blok2.helpers.Base64String;
 import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.helpers.exceptions.NotAuthorizedException;
@@ -119,7 +120,7 @@ public class LocationReservationController extends AuthorizedLocationController 
             @PathVariable("userid") String encodedId,
             @RequestBody LocationReservation.AttendedPostBody body
     ) {
-        String userid = new String(Base64.getDecoder().decode(encodedId));
+        String userid = Base64String.base64Decode(encodedId);
         Timeslot slot = timeslotDao.getTimeslot( seqnr);
         isVolunteer(locationDao.getLocationById(slot.getLocationId()));
         if (!locationReservationDao.setReservationAttendance(userid, slot, body.getAttended()))
