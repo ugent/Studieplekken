@@ -158,6 +158,21 @@ export class BuildingManagementComponent implements OnInit {
     this.sendBuildingRequest(true);
   }
 
+  addBuildingRequest(){
+    //add new building
+    this.buildingService.addBuilding(this.building).subscribe(
+      () => {
+        this.successAddingBuilding = true;
+        // reload the buildings
+        this.buildingsObs = this.buildingService.getAllBuildings();
+        this.modalService.closeAll();
+      },
+      () => {
+        this.successAddingBuilding = false;
+      }
+    );
+  }
+
   // *****************
   // *   Auxiliary   *
   // *****************/
@@ -182,6 +197,23 @@ export class BuildingManagementComponent implements OnInit {
     this.sendBuildingRequest(false);
   }
 
+  updateBuildingRequest():void {
+    //update existing building
+    this.buildingService
+    .updateBuilding(this.building.buildingId, this.building)
+    .subscribe(
+      () => {
+        this.successUpdatingBuilding = true;
+        // reload the buildings
+        this.buildingsObs = this.buildingService.getAllBuildings();
+        this.modalService.closeAll();
+      },
+      () => {
+        this.successUpdatingBuilding = false;
+      }
+    );
+  }
+
   prepareToDelete(building: Building, template: TemplateRef<unknown>): void {
     // reset the feedback boolean
     this.successDeletingBuilding = undefined;
@@ -197,7 +229,7 @@ export class BuildingManagementComponent implements OnInit {
     this.buildingService.deleteBuilding(this.building.buildingId).subscribe(
       () => {
         this.successDeletingBuilding = true;
-        // and reload the tags
+        // reload the buildings
         this.buildingsObs = this.buildingService.getAllBuildings();
         this.modalService.closeAll();
         location.reload();
@@ -239,31 +271,9 @@ export class BuildingManagementComponent implements OnInit {
           }
         )
         if(isAdd){
-          this.buildingService.addBuilding(this.building).subscribe(
-            () => {
-              this.successAddingBuilding = true;
-              // reload the buildings
-              this.buildingsObs = this.buildingService.getAllBuildings();
-              this.modalService.closeAll();
-            },
-            () => {
-              this.successAddingBuilding = false;
-            }
-          );
+          this.addBuildingRequest();
         }else{
-          this.buildingService
-          .updateBuilding(this.building.buildingId, this.building)
-          .subscribe(
-            () => {
-              this.successUpdatingBuilding = true;
-              // and reload the tags
-              this.buildingsObs = this.buildingService.getAllBuildings();
-              this.modalService.closeAll();
-            },
-            () => {
-              this.successUpdatingBuilding = false;
-            }
-          );
+          this.updateBuildingRequest();
         }
       } else {
         this.isCorrectAddress = false;
