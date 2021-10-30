@@ -85,6 +85,7 @@
           </label>
           <div class="col-lg-8">
             <select class="form-control" id="authority" [formControl]="authoritiesFormControl">
+              <option disabled selected value style="display:none"></option>
               <option *ngFor="let authority of addableAuthorities" [value]="authority.authorityId">
                 {{authority.authorityName + ' (' + authority.description + ')'}}
               </option>
