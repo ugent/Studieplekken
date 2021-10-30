@@ -1,15 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { api } from '../endpoints';
 import { LocationTag } from '../../../shared/model/LocationTag';
 import { Cache } from '../../../shared/cache/Cache';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TagsService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private translateService: TranslateService) {}
 
   tagCache = new Cache<number, LocationTag>(
     this.http,
@@ -21,7 +23,20 @@ export class TagsService {
    *****************************************************/
 
   getAllTags(): Observable<LocationTag[]> {
-    return this.tagCache.getAllValues(api.tags);
+    return this.tagCache.getAllValues(api.tags)
+      .pipe(map(tags => {
+        return tags.sort((a, b) => {
+          const lang = this.translateService.currentLang;
+          if (lang === 'en') {
+            return a.english.localeCompare(b.english);
+          } else if (lang === 'nl') {
+            return a.dutch.localeCompare(b.dutch);
+          } else {
+            // Fallback in case of unexpected lang / lang not set.
+            return a.tagId - b.tagId;
+          }
+        });
+      }));
   }
 
   /**
