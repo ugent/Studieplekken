@@ -83,7 +83,7 @@ export class LocationReservationsService {
   ): Observable<void> {
     return this.http.post<void>(
       api.updateAttendance
-        .replace('{userid}', locationReservation.user.userId)
+        .replace('{userid}', btoa(locationReservation.user.userId))
         .replace(
           '{date}',
           locationReservation.timeslot.timeslotDate.format('YYYY-MM-DD')

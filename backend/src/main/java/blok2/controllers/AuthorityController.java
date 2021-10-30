@@ -1,6 +1,7 @@
 package blok2.controllers;
 
 import blok2.daos.IAuthorityDao;
+import blok2.helpers.Base64String;
 import blok2.helpers.exceptions.AlreadyExistsException;
 import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.Authority;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Base64;
 import java.util.List;
 
 @RestController
@@ -82,26 +84,34 @@ public class AuthorityController {
 
     @GetMapping("/users/{userId}")
     @PreAuthorize("(hasAuthority('HAS_AUTHORITIES') and #userId == authentication.principal.userId) or hasAuthority('ADMIN')")
-    public List<Authority> getAuthoritiesFromUser(@PathVariable("userId") String userId) {
+    public List<Authority> getAuthoritiesFromUser(@PathVariable("userId") String encodedId) {
+        String userId = Base64String.base64Decode(encodedId);
+
         return authorityDao.getAuthoritiesFromUser(userId);
     }
 
     @GetMapping("/users/{userId}/locations")
     @PreAuthorize("(hasAuthority('HAS_AUTHORITIES') and #userId == authentication.principal.userId) or hasAuthority('ADMIN')")
-    public List<Location> getLocationsInAuthoritiesOfUser(@PathVariable("userId") String userId) {
+    public List<Location> getLocationsInAuthoritiesOfUser(@PathVariable("userId") String encodedId) {
+        String userId = Base64String.base64Decode(encodedId);
+
         return authorityDao.getLocationsInAuthoritiesOfUser(userId);
     }
 
     @PostMapping("/{authorityId}/user/{userId}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public void addUserToAuthority(@PathVariable int authorityId, @PathVariable String userId) {
+    public void addUserToAuthority(@PathVariable int authorityId, @PathVariable("userId") String encodedId) {
+        String userId = Base64String.base64Decode(encodedId);
+
         authorityDao.addUserToAuthority(userId, authorityId);
         logger.info(String.format("Adding user %s to authority %d", userId, authorityId));
     }
 
     @DeleteMapping("/{authorityId}/user/{userId}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public void deleteUserFromAuthority(@PathVariable int authorityId, @PathVariable String userId) {
+    public void deleteUserFromAuthority(@PathVariable int authorityId, @PathVariable("userId") String encodedId) {
+        String userId = Base64String.base64Decode(encodedId);
+
         authorityDao.deleteUserFromAuthority(userId, authorityId);
         logger.info(String.format("Removing user %s from authority %d", userId, authorityId));
     }

@@ -4,6 +4,7 @@ import blok2.daos.IAuthorityDao;
 import blok2.daos.ILocationDao;
 import blok2.daos.IUserDao;
 import blok2.daos.IVolunteerDao;
+import blok2.helpers.Base64String;
 import blok2.helpers.exceptions.InvalidRequestParametersException;
 import blok2.model.Authority;
 import blok2.model.reservables.Location;
@@ -21,6 +22,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.constraints.Pattern;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
 
 
@@ -56,7 +61,7 @@ public class AccountController {
     @GetMapping("/id")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public User getUserById(@AuthenticationPrincipal User user,
-                            @RequestParam @Pattern(regexp = "^[^%_]*$") String id) {
+                            @RequestParam String id) {
         if (user.isAdmin()) {
             return userDao.getUserById(id);
         } else {
@@ -123,7 +128,9 @@ public class AccountController {
     @GetMapping("/{userId}/authorities")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public List<Authority> getAuthoritiesFromUser(@AuthenticationPrincipal User user,
-                                                  @PathVariable @Pattern(regexp = "^[^%_]*$") String userId) {
+                                                  @PathVariable String encodedId) throws UnsupportedEncodingException {
+        String userId = Base64String.base64Decode(encodedId);
+
         if (user.isAdmin()) {
             return authorityDao.getAuthoritiesFromUser(userId);
         } else {
@@ -134,7 +141,9 @@ public class AccountController {
     @GetMapping("{userId}/manageable/locations")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public List<Location> getManageableLocations(@AuthenticationPrincipal User authenticatedUser,
-                                                 @PathVariable("userId") @Pattern(regexp = "^[^%_]*$") String userId) {
+                                                 @PathVariable("userId") String encodedId) throws UnsupportedEncodingException {
+        String userId = Base64String.base64Decode(encodedId);
+
         User user = userDao.getUserById(userId);
 
         if (user.isAdmin()) {
@@ -146,21 +155,27 @@ public class AccountController {
 
     @GetMapping("{userId}/has/authorities")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public boolean hasUserAuthorities(@PathVariable("userId") @Pattern(regexp = "^[^%_]*$") String userId) {
+    public boolean hasUserAuthorities(@PathVariable("userId") String encodedId) throws UnsupportedEncodingException {
+        String userId = Base64String.base64Decode(encodedId);
+
         return authorityDao.getAuthoritiesFromUser(userId).size() > 0;
     }
 
     @GetMapping("{userId}/has/volunteered")
     @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public boolean hasUserVolunteered(@PathVariable("userId") @Pattern(regexp = "^[^%_]*$") String userId) {
+    public boolean hasUserVolunteered(@PathVariable("userId") @Pattern(regexp = "^.*$") String encodedId) throws UnsupportedEncodingException {
+        String userId = Base64String.base64Decode(encodedId);
+
         return volunteerDao.getVolunteeredLocations(userId).size() > 0;
     }
 
     @PutMapping("/{userId}")
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void updateUser(@AuthenticationPrincipal User authenticatedUser,
-                           @PathVariable("userId") @Pattern(regexp = "^[^%_]*$") String id,
-                           @RequestBody User user) {
+                           @PathVariable("userId") String encodedId,
+                           @RequestBody User user) throws UnsupportedEncodingException {
+        String id = Base64String.base64Decode(encodedId);
+
         User old;
         if (authenticatedUser.isAdmin()) {
             old = userDao.getUserById(id);
