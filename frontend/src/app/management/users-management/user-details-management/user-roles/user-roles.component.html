@@ -45,9 +45,9 @@
 </div>
 
 <ng-template #confirm>
-  <div class="modal-body text-center">
+  <div modal-body class="text-center">
     <p>{{'management.users.userDetails.roles.adminConfirmation' | translate }}</p>
-    <button type="button" class="btn btn-default" (click)="confirmAdminChange()" >{{ 'general.yes' | translate }}</button>
-    <button type="button" class="btn btn-primary" (click)="declineAdminChange()" >{{ 'general.no' | translate}}</button>
+    <button type="button" class="button button-default" (click)="confirmAdminChange()" >{{ 'general.yes' | translate }}</button>
+    <button type="button" class="button button-primary" (click)="declineAdminChange()" >{{ 'general.no' | translate}}</button>
   </div>
 </ng-template>

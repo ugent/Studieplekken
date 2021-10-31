@@ -490,7 +490,7 @@
           "loadingUpdatingUser": "Wachten op het antwoord van de server...",
           "successUpdatingUser": "Het updaten van de rollen van de gebruiker is gelukt...",
           "errorUpdatingUser": "Er is iets misgelopen tijdens het updaten van de gebruiker...",
-          "adminConfirmation": "Hiermee verandert u de administrator-status van de gebruiker, waardoor deze mogelijks onbeperkte toegang krijgt tot het platform. Spring hier voorzichtig mee om!"
+          "adminConfirmation": "De actie die u hier doet is gevaarlijk! Hiermee verandert u de administrator-status van de gebruiker, waardoor deze mogelijks geen toegang meer heeft tot het platform. Wil u verdergaan met het verwijderen van de administrator-status van de gebruiker?"
         },
         "authorities": {
           "title": "Autoriteiten van {name}",

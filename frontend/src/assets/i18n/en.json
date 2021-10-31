@@ -487,7 +487,7 @@
           "loadingUpdatingUser": "Waiting on a response of the server...",
           "successUpdatingUser": "Successfully updated the roles of the user...",
           "errorUpdatingUser": "Something went wrong while updating the user...",
-          "adminConfirmation": "This will change the administrator-status of the user, possibly granting the user with unrestricted access to the platform. Please be careful with this!"
+          "adminConfirmation": "The action you are about to preform is dangerous. This will change the administrator-status of the user, possibly resulting into the user no longer having access to the platform. Do you wish to proceed and remove the administrator-status from this user?"
         },
         "authorities": {
           "title": "Authorities of {name}",
