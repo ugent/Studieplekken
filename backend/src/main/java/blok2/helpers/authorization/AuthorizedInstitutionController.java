@@ -9,6 +9,8 @@ import blok2.model.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+
 @Component
 public class AuthorizedInstitutionController {
 
@@ -34,13 +36,14 @@ public class AuthorizedInstitutionController {
         if (user.isAdmin()) {
             return true;
         }
-        System.out.println("Testing this");
 
         // Only users with authority AND institution equal to the institution of the location/building they want to alter are allowed to alter that location.
         if (user.getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("HAS_AUTHORITIES"))) {
             return false;
         }
         Location location = locationDao.getLocationById(locationId);
+        System.out.println(location.getAuthority().getAuthorityId());
+        System.out.println(new ArrayList<Authority>(user.getUserAuthorities()).get(0).getAuthorityId());
         return location != null &&
                 user.getUserAuthorities()
                         .stream()
