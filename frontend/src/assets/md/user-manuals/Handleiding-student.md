@@ -21,11 +21,13 @@ Op de hoofdpagina kan je alle ruimtes vinden die door jou gereserveerd kunnen wo
 
 ## Studieruimte reserveren
 
-Wanneer je op de pagina bent van een studieruimte zal je een kalender zien waar je aan de hand van de knoppen kan navigeren doorheen de tijd. Na het kiezen van een moment dat nog plaatsen heeft kan je een reservatie maken door het tijdsblok te selecteren en op "update reservatie" te klikken en te confirmeren. Indien er geen plaats meer is zal je bijvoorbeeld 200/200 reservaties zien, dat wil dus zeggen dat alle plaatsen bezet zijn. Je mag deze locatie na reservatie dus gebruiken gedurende de hele reservatieblok.
+Wanneer je op de pagina bent van een studieruimte zal je een kalender zien waar je aan de hand van de knoppen kan navigeren doorheen de tijd. Na het kiezen van een moment dat nog plaatsen heeft kan je een reservatie maken door het tijdsblok te selecteren en op "update reservatie" te klikken en te confirmeren. Je mag deze locatie na reservatie dus gebruiken gedurende de hele reservatieperiode. Indien er geen plaats meer is zal je bijvoorbeeld 200/200 reservaties zien, dat wil dus zeggen dat alle plaatsen bezet zijn.
 
 ![](./assets/md/user-manuals/images/dutch/calendar_navigation.png)
 
 <br /><br />
+
+Indien je reserveringen wil verwijderen kan je dat door een tijdslot te selecteren die je al hebt gereserveerd en opnieuw op "update reservatie" te klikken. Zo zal je zien in het dialoog wat je aan het verwijderen bent. Je kan zo tegelijk meerdere reserveringen toevoegen en verwijderen op hetzelfde moment.
 
 ## Bekijken van reserveringen
 
@@ -35,10 +37,11 @@ Om al je reserveringen te bekijken klik je op je naam rechtsboven op de pagina. 
 
 <br /><br />
 
+Hier kan je je reserveringen ook verwijderen indien nodig, door op het kruisje te klikken bij je reservering.
+
 ## Aanwezigheden
 
 Bij het aankomen aan een studieplek zullen aanwezigheden worden opgenomen. Dit kan met behulp van je studentenkaart of de QR-code op je profiel. Hou zeker rekening met de regels van die locatie! Je kan die doorgaans vinden in de locatiebeschrijving.
-
 
 <br />
 
