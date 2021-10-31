@@ -44,7 +44,7 @@ export class UserService {
 
   getManageableLocations(userId: string): Observable<Location[]> {
     return this.http
-      .get<Location[]>(api.getManageableLocations.replace('{userId}', userId))
+      .get<Location[]>(api.getManageableLocations.replace('{userId}', btoa(userId)))
       .pipe(
         map<Location[], Location[]>((value) => {
           const locations: Location[] = [];
@@ -58,7 +58,7 @@ export class UserService {
 
   updateUser(userId: string, user: User): Observable<void> {
     return this.http.put<void>(
-      api.updateUser.replace('{userId}', userId),
+      api.updateUser.replace('{userId}', btoa(userId)),
       user
     );
   }
@@ -67,8 +67,11 @@ export class UserService {
     if (userId === '') {
       return of(false);
     }
+
+    console.log(userId);
+    console.log(btoa(userId))
     return this.http.get<boolean>(
-      api.hasUserAuthorities.replace('{userId}', userId)
+      api.hasUserAuthorities.replace('{userId}', btoa(userId))
     );
   }
 
@@ -77,7 +80,7 @@ export class UserService {
       return of(false);
     }
     return this.http.get<boolean>(
-      api.hasUserVolunteered.replace('{userId}', userId)
+      api.hasUserVolunteered.replace('{userId}', btoa(userId))
     );
   }
 
