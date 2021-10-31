@@ -73,6 +73,7 @@ export class ScanningLocationDetailsComponent implements OnInit {
     this.error = '';
     console.log(code);
     const res = this.barcodeService.getReservation(reservations, code);
+    console.log(res);
     if (res == null) {
       this.error = 'scan.maybe';
     } else {

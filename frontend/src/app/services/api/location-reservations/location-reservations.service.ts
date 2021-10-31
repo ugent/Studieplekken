@@ -84,10 +84,6 @@ export class LocationReservationsService {
     return this.http.post<void>(
       api.updateAttendance
         .replace('{userid}', locationReservation.user.userId)
-        .replace(
-          '{date}',
-          locationReservation.timeslot.timeslotDate.format('YYYY-MM-DD')
-        )
         .replace('{seqnr}', `${locationReservation.timeslot.timeslotSequenceNumber}`),
       { attended },
       { withCredentials: true }

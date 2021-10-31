@@ -768,7 +768,8 @@
         "mail": "Mail",
         "penaltyPoints": "Penalty Points",
         "studentNumber": "Student Number"
-      }
+      },
+      "qrcode": "You can show this QR code at the scanning desk of your study room. If scanned successfully, your attendance will be registered."
     },
     "penalties": {
       "title": "Penalty points",
