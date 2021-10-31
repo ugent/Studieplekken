@@ -2,6 +2,7 @@ package blok2.helpers.authorization;
 
 import blok2.daos.IBuildingDao;
 import blok2.daos.ILocationDao;
+import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;
@@ -33,13 +34,18 @@ public class AuthorizedInstitutionController {
         if (user.isAdmin()) {
             return true;
         }
+        System.out.println("Testing this");
 
         // Only users with authority AND institution equal to the institution of the location/building they want to alter are allowed to alter that location.
         if (user.getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("HAS_AUTHORITIES"))) {
             return false;
         }
         Location location = locationDao.getLocationById(locationId);
-        return location != null && location.getBuilding().getInstitution().equals(user.getInstitution());
+        return location != null &&
+                user.getUserAuthorities()
+                        .stream()
+                        .map(Authority::getAuthorityId)
+                        .anyMatch(id -> id.equals(location.getAuthority().getAuthorityId()));
     }
 
     /**
