@@ -220,6 +220,7 @@ export class BuildingManagementComponent implements OnInit {
         // and reload the tags
         this.buildingsObs = this.buildingService.getAllBuildings();
         this.modalService.closeAll();
+        location.reload();
       },
       () => {
         this.successDeletingBuilding = false;
