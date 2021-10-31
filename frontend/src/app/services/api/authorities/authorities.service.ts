@@ -61,14 +61,14 @@ export class AuthoritiesService {
 
   getLocationsInAuthoritiesOfUser(userId: string): Observable<Location[]> {
     return this.http.get<Location[]>(
-      api.locationsInAuthoritiesOfUser.replace('{userId}', userId)
+      api.locationsInAuthoritiesOfUser.replace('{userId}', btoa(userId))
     );
   }
 
   addUserToAuthority(userId: string, authorityId: number): Observable<void> {
     return this.http.post<void>(
       api.addUserToAuthority
-        .replace('{userId}', userId)
+        .replace('{userId}', btoa(userId))
         .replace('{authorityId}', String(authorityId)),
       {}
     );
@@ -80,7 +80,7 @@ export class AuthoritiesService {
   ): Observable<void> {
     return this.http.delete<void>(
       api.deleteUserFromAuthority
-        .replace('{userId}', userId)
+        .replace('{userId}', btoa(userId))
         .replace('{authorityId}', String(authorityId))
     );
   }
