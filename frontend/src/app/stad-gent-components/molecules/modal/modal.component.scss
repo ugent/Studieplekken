@@ -6,3 +6,13 @@
 ::ng-deep .modal-header > * {
     margin: 0;
 }
+
+.modal-body {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+    visibility: visible;
+}
+
+.modal-body:hover {
+    visibility: visible;
+}
