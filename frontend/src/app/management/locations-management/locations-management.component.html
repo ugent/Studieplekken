@@ -147,6 +147,8 @@
             <div class="form-columns">
               <div class="form-item-column">
                 <select class="form-control" id="authority" formControlName="authority">
+                  <!-- Display empty select for safari -->
+                  <option disabled selected value style="display:none"></option>
                   <option *ngFor="let authority of authorities" [value]="authority.authorityId">
                     {{authority.authorityName + ' (' + authority.description + ')'}}
                   </option>
@@ -164,7 +166,7 @@
           </div>
         </div>
 
-        <!-- Building -->
+        <!-- Building -->   
         <div class="row form-group" *ngIf="buildingsObs | async as buildings">
           <div class="form-item">
             <label class="col-lg-3 control-label" for="building">
@@ -173,6 +175,8 @@
             <div class="form-columns">
               <div class="form-item-column">
                 <select class="form-control" id="building" formControlName="building">
+                  <!-- Display empty select for safari -->
+                  <option disabled selected value style="display:none"></option>
                   <option *ngFor="let building of buildings" [value]="building.buildingId">
                     {{building.name + ' (' + building.address + ')'}}
                   </option>
@@ -180,6 +184,7 @@
               </div>
             </div>
           </div>
+   
 
           <div *ngIf="building.invalid && (building.dirty || building.touched)" class="messages messages--error">
             <div *ngIf="building.errors.required">
