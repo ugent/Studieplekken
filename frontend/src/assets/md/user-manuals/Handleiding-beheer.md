@@ -73,7 +73,7 @@ Er zijn twee soorten tijdsloten: reserveerbare en niet-reserveerbare. Niet-reser
 ![](./images/dutch/rrL41aD.png)
 
 Hier is een voorbeeld van:
-* een niet-herhalend reserveerbar tijdsslot
+* een niet-herhalend reserveerbar tijdslot
 * een herhalend niet-reserveerbar tijdslot
 
 ![](./images/dutch/c11aORU.png)
@@ -81,6 +81,8 @@ Hier is een voorbeeld van:
 Herhalende tijdsloten worden gesuggereerd in volgende weken. Deze kunnen dan goedgekeurd worden door te klikken op de "Keur goed" knop.
 Alle herhalende tijdsloten binnen een week kunnen in één keer goedgekeurd worden door te klikken op de "Keur alle suggesties goed" knop.
 ![](./images/dutch/ZoEtyTb.png)
+
+Bij het aanpassen van een tijdslot is het aangeraden om het originele te verwijderen en gewoon een nieuwe tijdslot aan te maken. Dit voorkomt dubieuze situaties waar studenten al reservaties hebben geboekt.
 
 PS: Lukt het niet om een reservatieslot aan te maken? Kijk zeker na of je alle velden nauwgezet hebt ingevuld. In sommige browsers volstaan de standaardwaarden niet.
 
