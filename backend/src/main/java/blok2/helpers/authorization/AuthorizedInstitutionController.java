@@ -70,6 +70,6 @@ public class AuthorizedInstitutionController {
             return false;
         }
         Building building = buildingDao.getBuildingById(buildingId);
-        return building != null && building.getInstitution().equals(user.getInstitution());
+        return building != null;
     }
 }
