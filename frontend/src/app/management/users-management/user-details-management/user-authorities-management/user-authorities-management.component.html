@@ -138,12 +138,12 @@
           .replace('{name}', userFirstName + ' ' + userLastName)}}
       </div>
 
-      <div class="row" *ngIf="authorityPreparedToDelete !== undefined">
+      <ul *ngIf="authorityPreparedToDelete !== undefined">
         <li><b style="margin-right: 5px"><i>{{('management.authorities.table.authorityName' | translate) + ':
               '}}</i></b>{{authorityPreparedToDelete.authorityName}}</li>
         <li><b style="margin-right: 5px"><i>{{('management.authorities.table.description' |
               translate)}}</i></b>{{authorityPreparedToDelete.description}}</li>
-      </div>
+      </ul>
     </form>
 
     <!-- Footer -->
