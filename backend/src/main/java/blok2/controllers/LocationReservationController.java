@@ -3,6 +3,7 @@ package blok2.controllers;
 import blok2.daos.ILocationDao;
 import blok2.daos.ILocationReservationDao;
 import blok2.daos.ITimeslotDao;
+import blok2.helpers.Base64String;
 import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.helpers.exceptions.NotAuthorizedException;
@@ -23,10 +24,7 @@ import javax.mail.MessagingException;
 import javax.validation.Valid;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This controller handles all requests related to location reservations.
@@ -119,9 +117,10 @@ public class LocationReservationController extends AuthorizedLocationController 
     @PreAuthorize("hasAuthority('HAS_VOLUNTEERS') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void setLocationReservationAttendance(
             @PathVariable("seqnr") int seqnr,
-            @PathVariable("userid") String userid,
+            @PathVariable("userid") String encodedId,
             @RequestBody LocationReservation.AttendedPostBody body
     ) {
+        String userid = Base64String.base64Decode(encodedId);
         Timeslot slot = timeslotDao.getTimeslot( seqnr);
         isVolunteer(locationDao.getLocationById(slot.getLocationId()));
         if (!locationReservationDao.setReservationAttendance(userid, slot, body.getAttended()))

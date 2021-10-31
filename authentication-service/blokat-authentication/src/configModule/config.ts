@@ -13,7 +13,7 @@ export enum Institution {
   ARTEVELDE = 'Arteveldehogeschool',
   LUCA = 'Luca',
   ODISEE = 'Odisee',
-  STAD_GENT = 'STAD_GENT',
+  STAD_GENT = 'StadGent',
 }
 
 export interface SamlUser {
@@ -34,7 +34,7 @@ const dummySamlUser: SamlUser = {
 
 export function isSamlUser(obj: any): obj is SamlUser {
   for (const key in dummySamlUser) {
-    if (!(key in obj)) {
+    if (!(key in obj) || !obj[key]) {
       return false;
     }
   }
@@ -44,7 +44,7 @@ export function isSamlUser(obj: any): obj is SamlUser {
 export function missingSamlUserFields(obj: any): string[] {
   const missingFields = [];
   for (const key in dummySamlUser) {
-    if (!(key in obj)) {
+    if (!(key in obj) || !obj[key]) {
       missingFields.push(key);
     }
   }
