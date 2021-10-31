@@ -41,7 +41,12 @@ export class AppController {
       Logger.warn(
         `SAML-user in request was missing ${missingFields.join(',')}.`,
       );
-      return res.status(400).send();
+      return res
+        .status(400)
+        .json({
+          error: `SAML-user in request was missing ${missingFields.join(',')}.`,
+        })
+        .send();
     }
 
     const token: string = (await this.authService.issueToken(samlUser))
@@ -83,6 +88,8 @@ export class AppController {
   @UseGuards(AuthGuard('saml'))
   @Get('auth/login/:idp')
   async loginSaml(@Request() req: any, @Res() res: any) {
+    Logger.debug(`Someone is attempting to log in from ${req.params.idp}`);
+
     const samlUser = req.user;
     if (!isSamlUser(samlUser)) {
       const missingFields = missingSamlUserFields(samlUser);
@@ -97,6 +104,9 @@ export class AppController {
   @UseGuards(AuthGuard('saml'))
   @Post('api/SSO/saml')
   async loginSamlGet(@Request() req: any, @Res() res: any) {
+    Logger.debug(`Someone is returning from idp.`);
+    Logger.debug(req.body.RelayState);
+
     const samlUser = req.user;
     if (!isSamlUser(samlUser)) {
       const missingFields = missingSamlUserFields(samlUser);
@@ -108,6 +118,8 @@ export class AppController {
 
     const token: string = (await this.authService.issueToken(samlUser))
       .access_token;
+
+    Logger.debug(`Issued token for user with id ${samlUser.id}`);
 
     try {
       const redirectUrl = JSON.parse(req.body.RelayState)?.callbackUrl;
