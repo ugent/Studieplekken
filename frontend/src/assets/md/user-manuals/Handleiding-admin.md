@@ -10,11 +10,11 @@ Als administrator is het niet noodzakelijk de bedoeling dat je het beheer van al
 
 Je kan een overzicht krijgen van deze groepen door op beheer te klikken, en op het menu aan de linkerkant te kiezen voor 'autoriteiten':
 
-<img src="./images/dutch/autoriteiten-screen.png" width="80%" />
+<img src="./assets/md/user-manuals/images/dutch/autoriteiten-screen.png" width="80%" />
 
 Je kan kiezen om een nieuwe autoriteit toe te voegen door op de 'Autoriteit toevoegen' knop te klikken en de naam + omschrijving in te vullen. Wanneer dit gebeurd is, kunnen we nieuwe personen toevoegen aan onze autoriteit. Hiervoor klik je op het personenicoontje naast de naam:
 
-<img src="./images/dutch/autoriteiten-users.png" width="80%" />
+<img src="./assets/md/user-manuals/images/dutch/autoriteiten-users.png" width="80%" />
 
 Op het volgende scherm krijg je de mogelijkheid om een gebruiker op te zoeken en hem toe te voegen aan de autoriteit. Wanneer dit gebeurd is krijgt die gebruiker de rechten toegekend om alle locaties die toebehoren aan een autoriteit te bewerken en tijdstippen toe te voegen.
 
