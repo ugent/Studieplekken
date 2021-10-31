@@ -11,7 +11,9 @@
     "general": "General",
     "manager": "Manager",
     "goto": "Go to",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "student": "Student",
+    "admin": "Admin"
   },
   "dashboard": {
     "alert": {
