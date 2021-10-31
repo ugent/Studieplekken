@@ -23,7 +23,7 @@ Een studieplek staat in de rubriek ruimte. Dit zijn zalen of delen van een gebou
 
 Om meer gedetaileerde informatie te bekomen druk je op "bewerken" (hamburgermenu).
 
-<img src="./images/dutch/location_shortcuts.png" width="60%" />
+<img src="./assets/md/user-manuals/images/dutch/location_shortcuts.png" width="60%" />
 
 Opnieuw is er onderaan in de lijst van ruimtes een knop om ruimtes toe te voegen.
 
@@ -36,20 +36,20 @@ Als je op bewerken klikt kan je bewerkingen maken op de ruimte. Op deze pagina k
 
 Druk op de knop "Pas aan" om de basis gegevens van een ruimte aan passen (zitplaatsen, naam van de ruimte,...). Bij het finaliseren van de laatste bewerkingen druk je op de "Oké"-knop klikken om de veranderingen op te slaan en "Annuleren" om aanpassingen ongedaan te maken.
 
-<img src="./images/dutch/edit_location_info.png" width="60%" />
+<img src="./assets/md/user-manuals/images/dutch/edit_location_info.png" width="60%" />
 
 Een ruimte kan bepaalde eigenschappen hebben waar gebruikers naar op zoek zijn. Zo kan het zijn dat je duidelijk zou willen maken dat er computers of groepsruimtes beschikbaar zijn in een bibliotheek. Dit doe je op basis van de "tags". De tags zijn etiketten die gemaakt zijn op in de beheer pagina, subrubriek tags. Deze vooraf gemaakte tags kan je dan toevoegen aan je ruimte. Zo zullen ze zichtbaar zijn voor studenten tijdens het kiezen van een ruimte. Voor meer informatie over het aanmaken van tags kijk je naar het volgende puntje.
-<img src="./images/dutch/location_tags.png" width="70%" />
+<img src="./assets/md/user-manuals/images/dutch/location_tags.png" width="70%" />
 
 Openingsuren van de ruimtes kan je vinden onderaan op deze pagina.
-<img src="./images/dutch/opening_hours.png" width="70%" />
+<img src="./assets/md/user-manuals/images/dutch/opening_hours.png" width="70%" />
 
 Ps: Het is ook mogelijk om op de bewerkingspagina te komen via het dashboard. Als je naar het dashboard gaat en een specifieke ruimte selecteert zal je alle informatie zien dat een student ook zal krijgen over een locatie. Om eender welke bewerkingen door te voeren als beheerder zal je eerst op de beheer-knop moeten klikken rechts naast de titel van de ruimte. Dit verhelpt dat er perongeluk aanpassingen zouden gemaakt worden.
 
 <br/>
 
 ## Tags
-<img src="./images/dutch/tags_shortcut.png" width="20%" />
+<img src="./assets/md/user-manuals/images/dutch/tags_shortcut.png" width="20%" />
 
 Tags of etiketten zijn eigenschappen die ruimtes kunnen hebben. Zo kan je bijvoorbeeld aangeven dat er computers zijn in deze ruimte door een tag "pc". Een tag moet je eerst aanmaken voordat je ze kan gebruiken op een studieruimte. Aanmaak kan je vinden onder "Beheer > Tags". Geef altijd zowel een Nederlandse als Engelse benaming zodat internationale studenten/medewerkers ook alle informatie hebben. 
 
@@ -64,7 +64,7 @@ Een barcode is een code die elke student bij reservatie zal ontvangen. Op basis 
 
 ## Tijdsloten aanmaken
 Nieuwe tijdsloten kunnen worden aangemaakt via het reservatiebeheer scherm. Dit is te vinden onder "Beheer > Ruimtes".
-<img src="./images/dutch/HBdj3md.png" width="35%" />
+<img src="./assets/md/user-manuals/images/dutch/HBdj3md.png" width="35%" />
 
 Onder reservatiebeheer is er een knop met "Voeg nieuwe openingsperiode toe". Hiermee kunnen er nieuwe tijdsloten worden aangemaakt. 
 
