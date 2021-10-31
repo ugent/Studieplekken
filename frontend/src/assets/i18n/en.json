@@ -11,7 +11,9 @@
     "general": "General",
     "manager": "Manager",
     "goto": "Go to",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "student": "Student",
+    "admin": "Admin"
   },
   "dashboard": {
     "alert": {
@@ -142,7 +144,8 @@
     "hoGentLogin": "HOGENT Login",
     "arteveldeHSLogin": "Artevelde Hogeschool Login",
     "lucaLogin": "LUCA School of Arts login",
-    "odiseeLogin": "Odisee login",
+    "odiseeLogin": "Odisee Hogeschool login",
+    "stadGentLogin": "Stad Gent Login",
     "about": "The digital platform for study locations"
   },
   "management": {
@@ -503,7 +506,7 @@
             "error": "Something went wrong while adding the authority to the user."
           },
           "deleteAuthorityFromUserModal": {
-            "title": "Sure to delete the authority from the user?",
+            "title": "Delete authority from the user",
             "body": "Are you sure that you want to delete the following authority from {name}:",
             "success": "Successfully deleted the authority from the user.",
             "error": "Something went wrong while deleting the authority from the user."

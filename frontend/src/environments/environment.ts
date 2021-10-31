@@ -16,6 +16,7 @@ export const environment = {
     'https://studieplekken-dev.ugent.be/auth/login/artevelde',
   lucaFlowTriggerUrl: 'https://studieplekken-dev.ugent.be/auth/login/luca',
   odiseeFlowTriggerUrl: 'https://studieplekken-dev.ugent.be/auth/login/odisee',
+  stadGentFlowTriggerUrl: 'https://studieplekken-dev.ugent.be/auth/login/stadgent',
 
   accessToken:
     'pk.eyJ1Ijoic21lc3NpZSIsImEiOiJja3JnMzR2ZXEwZG82MnVrd3l5NHFnYTk1In0.jER8bBqoIeiNrKX-HGlrZQ',

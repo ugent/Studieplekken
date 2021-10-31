@@ -11,7 +11,9 @@
     "general": "Algemeen",
     "manager": "Beheerder",
     "goto": "Ga naar",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "student": "Student",
+    "admin": "Administrator"
   },
   "dashboard": {
     "alert": {
@@ -144,6 +146,7 @@
     "arteveldeHSLogin": "Artevelde Hogeschool Login",
     "odiseeLogin": "Odisee Login",
     "lucaLogin": "LUCA School of Arts Login",
+    "stadGentLogin": "Stad Gent Login",
     "about": "Het digitaal platform voor studieplekken"
   },
   "management": {

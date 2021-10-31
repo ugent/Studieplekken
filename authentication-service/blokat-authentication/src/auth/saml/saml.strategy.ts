@@ -25,7 +25,7 @@ export class SamlStrategy extends PassportStrategy(MultiSamlStrategy) {
 
   validate(request: Request, profile: Profile) {
     const provider = getProviderConfiguration(this.configService, request);
-    console.log(profile);
+    Logger.debug(profile);
     return provider.toSamlUser(profile);
   }
 }
@@ -36,7 +36,7 @@ const getMultiSamlConfig: (a: ConfigService) => MultiSamlConfig = (c) => ({
   getSamlOptions: (req, cb) => {
     // Find the correct configuration for this provider
     const provider = getProviderConfiguration(c, req);
-
+    Logger.debug(`Found provider for idp: ${provider.loginUrl}`);
     if (!provider) cb(new HttpException('Unsupported IDP', 400));
     else
       cb(
@@ -94,6 +94,8 @@ function createSamlOptionsFromConfig(
         callbackUrl: callbackUrl,
       }),
     },
+    disableRequestedAuthnContext: true,
+    identifierFormat: null,
   };
 }
 

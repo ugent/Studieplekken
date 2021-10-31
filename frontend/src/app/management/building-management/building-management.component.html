@@ -5,8 +5,8 @@
   <hr>
 
   <!-- Table with all existing building -->
-  <div class="row" *ngIf="buildingsObs | async as buildings">
-    <div class="responsive-table fullwidth">
+  <div class="row" >
+    <div class="responsive-table fullwidth" *ngIf="buildingsObs | async as buildings">
       <div class="table-wrapper fullwidth">
 
         <table style="width: 100%;" *ngIf="buildings.length > 0; else noBuilding">
@@ -30,7 +30,7 @@
               <!-- Edit icon -->
               <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px" data-toggle="modal"
                 (click)="prepareUpdate(building, updateBuildingModal)">
-                <i class="icon-document" aria-hidden="true"></i>
+                <i class="icon-hamburger" aria-hidden="true"></i>
               </td>
               <!-- Delete glyphicon -->
               <td data-toggle="modal" class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
@@ -79,66 +79,52 @@
       </div>
     </div>
 
-    <!-- Modal body -->
-    <div class="modal-body">
-      <form [formGroup]="buildingFormGroup" fxLayout="column" fxLayoutAlign="space-between">
-        <!-- buildingID - this will be set by the database -->
+    <div modal-body>
+      <form [formGroup]="buildingFormGroup" fxFlex fxLayout="column" fxLayoutAlign="space-between">
 
-        <!-- Name of building -->
+        <!-- Building name -->
         <div class="row form-group">
-          <div class="form-item">
-            <label class="col-lg-3 control-label" for="nameAdd">
-              {{'management.buildings.table.name' | translate}}<span style="color: red; margin-left: 5px;">*</span>
+          <label class="col-lg-3 control-label" for="nameUpdate">
+            {{'management.buildings.table.name' | translate}}<span style="color: red; margin-left: 5px;">*</span>
+          </label>
+          <div class="col-lg-8">
+            <input class="form-control" id="nameUpdate" type="text" formControlName="name">
+          </div>
+        </div>
+
+        <!-- Building address -->
+        <div class="row form-group" fxLayout="row" fxLayoutAlign="flex-start" fxLayoutGap="20px">
+          <div fxFlex="0 1 80%">
+            <label class="col-lg-3 control-label" for="addressUpdate">
+              {{'management.buildings.table.address' | translate}}<span style="color: red; margin-left: 5px;">*</span>
             </label>
-            <div class="form-columns">
-              <div class="form-item-column">
-                <input class="form-control" id="nameAdd" type="text" formControlName="name">
-              </div>
+            <div class="col-lg-8">
+              <input class="form-control" id="addressUpdate" type="text" formControlName="address">
             </div>
-            <!-- Address of building -->
-            <div class="row form-group">
-              <label class="col-lg-3 control-label" for="addressAdd">
-                {{'management.buildings.table.address' | translate}}<span style="color: red; margin-left: 5px;">*</span>
-              </label>
-              <div class="col-lg-8">
-                <input class="form-control" id="addressAdd" type="text" formControlName="address">
-              </div>
-            </div>
+          </div>
+          <div fxLayout="column" fxLayoutAlign="space-evenly">
+            <div></div>
+            <i class="{{getAddressIcon() }}" aria-hidden="true"></i>
+          </div>
+        </div>
 
-            <!-- Institution of building -->
-            <div class="row form-group" *ngIf="institutionsObs | async as institutions">
-              <label class="col-lg-3 control-label" for="institutionAdd">
-                {{'management.buildings.table.institution' | translate}}<span
-                  style="color: red; margin-left: 5px;">*</span>
-              </label>
-              <div class="col-lg-8">
-                <select class="form-control" id="institutionAdd" formControlName="institution">
-                  <option *ngFor="let institution of institutions" [value]="institution">
-                    {{institution}}
-                  </option>
-                </select>
-              </div>
-            </div>
 
-            <div *ngIf="institution.invalid && (institution.dirty || institution.touched)" class="alert alert-danger">
-              <div *ngIf="institution.errors.required">
-                {{'management.buildings.table.formValidationErrorMessages.institution' | translate}}
-              </div>
-            </div>
+        <!-- Institution of building -->
+        <div class="row form-group" *ngIf="institutionsObs | async as institutions">
+          <label class="col-lg-3 control-label" for="institutionUpdate">
+            {{'management.buildings.table.institution' | translate}}<span style="color: red; margin-left: 5px;">*</span>
+          </label>
+          <div class="col-lg-8">
+            <select class="form-control" id="institutionUpdate" formControlName="institution">
+              <option *ngFor="let institution of institutions" [value]="institution">
+                {{institution}}
+              </option>
+            </select>
+          </div>
 
-            <!-- Address of building -->
-            <div class="row form-group">
-              <div class="form-item">
-                <label class="col-lg-3 control-label" for="addressAdd">
-                  {{'management.buildings.table.address' | translate}}<span
-                    style="color: red; margin-left: 5px;">*</span>
-                </label>
-                <div class="form-columns">
-                  <div class="form-item-column">
-                    <input class="form-control" id="addressAdd" type="text" formControlName="address">
-                  </div>
-                </div>
-              </div>
+          <div *ngIf="institution.invalid && (institution.dirty || institution.touched)" class="alert alert-danger">
+            <div *ngIf="institution.errors.required">
+              {{'management.buildings.table.formValidationErrorMessages.institution' | translate}}
             </div>
           </div>
         </div>
@@ -209,10 +195,6 @@
             <div></div>
             <i class="{{getAddressIcon() }}" aria-hidden="true"></i>
           </div>
-          <div fxLayout="column" fxLayoutAlign="flex-end">
-            <button class="button button-secondary" (click)="checkAddress()">{{'management.buildings.checkAddress' |
-              translate}}</button>
-          </div>
         </div>
 
 
@@ -282,68 +264,50 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <<<<<<< HEAD=======<ul>
-        <li><b style="margin-right: 5px"><i>{{('management.buildings.table.name' | translate) + ':
-              '}}</i></b>{{building.name}}</li>
-        <li><b style="margin-right: 5px"><i>{{('management.buildings.table.address' |
-              translate)}}</i></b>{{building.address}}</li>
-        </ul>
-        >>>>>>> master
+
     </div>
 
-    <<<<<<< HEAD <!-- Body -->
-      <div class="modal-body">
-        <div>
-          <b>{{'management.buildings.deleteBuildingModal.body' | translate}}</b>
-          =======
-          <!-- Footer -->
-          <div class="modal-footer">
-            <button type="button" class="btn btn-danger danger" (click)="deleteBuildingInFormGroup()">
-              {{'general.buttons.delete' | translate}}
-            </button>
-            <button type="button" class="btn btn-secondary" (click)="closeModal()">
-              {{'general.buttons.cancel' | translate}}
-            </button>
-          </div>
-          >>>>>>> master
+    <!-- Body -->
+    <div class="modal-body">
+      <div>
+        <b>{{'management.buildings.deleteBuildingModal.body' | translate}}</b>
 
-          <div class="alert alert-danger" style="margin-top: 10px; margin-bottom: 10px;">
-            {{'management.buildings.deleteBuildingModal.warning' | translate}}
-          </div>
-
-          <ul>
-            <li><b style="margin-right: 5px"><i>{{('management.buildings.table.name' |
-                  translate)}}</i></b>{{building.name}}
-            </li>
-            <li><b style="margin-right: 5px"><i>{{('management.buildings.table.address' |
-                  translate)}}</i></b>{{building.address}}</li>
-          </ul>
+        <div class="alert alert-danger" style="margin-top: 10px; margin-bottom: 10px;">
+          {{'management.buildings.deleteBuildingModal.warning' | translate}}
         </div>
+
+        <ul>
+          <li><b style="margin-right: 5px"><i>{{('management.buildings.table.name' |
+                translate)}}</i></b>{{building.name}}
+          </li>
+          <li><b style="margin-right: 5px"><i>{{('management.buildings.table.address' |
+                translate)}}</i></b>{{building.address}}</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="modal-footer">
+      <button type="button" class="button button-primary" (click)="deleteBuildingInFormGroup()">
+        {{'general.buttons.delete' | translate}}
+      </button>
+      <button type="button" class="button button-secondary" (click)="closeModal()">
+        {{'general.buttons.cancel' | translate}}
+      </button>
+    </div>
+    <div class="container-fluid">
+      <div class="alert alert-info" *ngIf="successDeletingBuilding === null">
+        {{'general.waitingForServer' | translate}}
       </div>
 
-      <!-- Footer -->
-      <div class="modal-footer">
-        <button type="button" class="button button-secondary danger" (click)="deleteBuildingInFormGroup()">
-          {{'general.buttons.delete' | translate}}
-        </button>
-        <button type="button" class="button button-secondary" (click)="closeModal()">
-          {{'general.buttons.cancel' | translate}}
-        </button>
+      <div class="alert alert-success" *ngIf="successDeletingBuilding === true">
+        {{'management.buildings.deleteBuildingModal.success' | translate}}
       </div>
-      <<<<<<< HEAD <div class="container-fluid">
-        <div class="alert alert-info" *ngIf="successDeletingBuilding === null">
-          {{'general.waitingForServer' | translate}}
-        </div>
 
-        <div class="alert alert-success" *ngIf="successDeletingBuilding === true">
-          {{'management.buildings.deleteBuildingModal.success' | translate}}
-        </div>
+      <div class="alert alert-error" *ngIf="successDeletingBuilding === false">
+        {{'management.buildings.deleteBuildingModal.error' | translate}}
+      </div>
+    </div>
 
-        <div class="alert alert-error" *ngIf="successDeletingBuilding === false">
-          {{'management.buildings.deleteBuildingModal.error' | translate}}
-        </div>
-  </div>
-  =======
-  >>>>>>> master
   </div>
 </ng-template>

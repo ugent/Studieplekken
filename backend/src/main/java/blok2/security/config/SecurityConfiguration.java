@@ -163,8 +163,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
                 // Uncomment following line to enable automatic metadata generation. This is useful in case you want to generate the metadata to pre-configure for a new environment.
                 // .addFilterBefore(metadataGeneratorFilter(), ChannelProcessingFilter.class)
-                .addFilterAfter(samlFilter(), BasicAuthenticationFilter.class)
-                .addFilterBefore(samlFilter(), CsrfFilter.class);
+                .addFilterAfter(samlFilter(), BasicAuthenticationFilter.class);
+                //.addFilterBefore(samlFilter(), CsrfFilter.class);
 
         Collection<String> env = Arrays.asList(environment.getActiveProfiles());
 
@@ -180,6 +180,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.logout()
                 .logoutSuccessHandler(logoutSuccessHandler)
                 .logoutUrl("/logout");
+
+        http.csrf().disable();
     }
 
     /**

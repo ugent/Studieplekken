@@ -32,7 +32,7 @@ services:
         max-size: "100m"
         max-file: "5"
   ui:
-    image: apache/skywalking-ui:8.7.0-es7
+    image: apache/skywalking-ui:8.7.0
     depends_on:
       - oap
     links:

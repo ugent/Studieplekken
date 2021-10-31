@@ -37,29 +37,49 @@ export const configuration: Configuration = {
         }),
       },
       {
-        loginUrl: 'odisee',
-        callbackUrl: 'https://studieplekken-dev.ugent.be/api/SSO/saml',
-        issuer: 'https://studieplekken-dev.ugent.be/api/metadata/saml',
-        metadataFile: 'sso-kuleuven.xml',
-        toSamlUser: (a: any) => ({
-          firstName:
-            a[
-              'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'
-            ],
-          lastName:
-            a['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'],
-          email: a.nameID,
-          id: a[
-            'http://schemas.microsoft.com/identity/claims/objectidentifier'
-          ],
-          institution: Institution.ARTEVELDE,
-        }),
-      },
-      {
         loginUrl: 'luca',
         callbackUrl: 'https://studieplekken-dev.ugent.be/api/SSO/saml',
         issuer: 'https://studieplekken-dev.ugent.be/api/metadata/saml',
-        metadataFile: 'sso-kuleuven.xml',
+        metadataFile: 'sso-kuleuven-off.xml',
+        toSamlUser: (a: any) => ({
+          firstName: a['urn:oid:2.5.4.42'],
+          lastName: a['urn:oid:2.5.4.4'],
+          email: a['mail'],
+          id: a['urn:mace:kuleuven.be:dir:attribute-def:KULMoreUnifiedUID'],
+          institution: Institution.LUCA,
+        }),
+      },
+      {
+        loginUrl: 'odisee',
+        callbackUrl: 'https://studieplekken-dev.ugent.be/api/SSO/saml',
+        issuer: 'https://studieplekken-dev.ugent.be/api/metadata/saml',
+        metadataFile: 'sso-kuleuven-off.xml',
+        toSamlUser: (a: any) => ({
+          firstName: a['urn:oid:2.5.4.42'],
+          lastName: a['urn:oid:2.5.4.4'],
+          email: a['mail'],
+          id: a['urn:mace:kuleuven.be:dir:attribute-def:KULMoreUnifiedUID'],
+          institution: Institution.ODISEE,
+        }),
+      },
+      {
+        loginUrl: 'leuven',
+        callbackUrl: 'https://studieplekken-dev.ugent.be/api/SSO/saml',
+        issuer: 'https://studieplekken-dev.ugent.be/api/metadata/saml',
+        metadataFile: 'sso-kuleuven-off.xml',
+        toSamlUser: (a: any) => ({
+          firstName: a['urn:oid:2.5.4.42'],
+          lastName: a['urn:oid:2.5.4.4'],
+          email: a['mail'],
+          id: a['urn:mace:kuleuven.be:dir:attribute-def:KULMoreUnifiedUID'],
+          institution: Institution.ODISEE,
+        }),
+      },
+      {
+        loginUrl: 'stadgent',
+        callbackUrl: 'https://studieplekken-dev.ugent.be/api/SSO/saml',
+        issuer: 'https://studieplekken-dev.ugent.be/api/metadata/saml',
+        metadataFile: 'metadata-stadgent.xml',
         toSamlUser: (a: any) => ({
           firstName:
             a[
@@ -71,7 +91,7 @@ export const configuration: Configuration = {
           id: a[
             'http://schemas.microsoft.com/identity/claims/objectidentifier'
           ],
-          institution: Institution.ARTEVELDE,
+          institution: Institution.STAD_GENT,
         }),
       },
     ],
@@ -80,7 +100,13 @@ export const configuration: Configuration = {
     },
 
     testEndpoint: true,
-    allowedClientCallbacks: ["https://studieplekken-dev.ugent.be/login", 'https://localhost:8086/login', 'https://localhost:8080/login', 'https://localhost:8087/login']
+    allowedClientCallbacks: [
+      'https://studieplekken-dev.ugent.be/login',
+      'https://localhost:8086/login',
+      'https://localhost:8080/login',
+      'https://localhost:8087/login',
+      'https://localhost:4200/login',
+    ],
   },
 
   https: {
