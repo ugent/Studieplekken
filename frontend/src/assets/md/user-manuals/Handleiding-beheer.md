@@ -99,7 +99,7 @@ Toezichthouders zijn vrijwilligers of medewerkers die de aanwezigheden gaan opne
 
 ## Aanwezigheden opnemen
 
-Nadat de student zich heeft ingeschreven is het mogelijk om de studenten hun aanwezigheden op te nemen. Dit kan om verschillende manieren.
+Nadat de student zich heeft ingeschreven is het mogelijk om de studenten hun aanwezigheden op te nemen. Dit kan op verschillende manieren.
 
 Je drukt op je naam rechtsboven en navigeer naar Scannen. Klik vervolgens op de locatie waar je aanwezigheden moet opnemen. Vervolgens kan je de voornaam, achternaam of studentennummer van de aanwezige intikken of de QR code van de student inscannen. Voor UGent locaties blijft het ook steeds mogelijk om studentenkaarten te scannen met behulp van een barcode scanner.
 
