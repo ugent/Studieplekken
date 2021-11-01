@@ -93,7 +93,7 @@ PS: Lukt het niet om een reservatieslot aan te maken? Kijk zeker na of je alle v
 
 ## Toezichthouders beheren
 
-Toezichthouders zijn vrijwilligers of medewerkers die de aanwezigheden gaan opnemen zonder bijkomende rechten. Je kan nieuwe gebruikers toevoegen aan een locatie door naar beheer > toezichthouders te navigeren. Klik dan op de gewenste locatie om dan gebruikers toe te voegen of te verwijderen.
+Toezichthouders zijn vrijwilligers of medewerkers die de aanwezigheden gaan opnemen zonder bijkomende rechten. Je kan nieuwe gebruikers toevoegen aan een locatie door naar beheer > toezichthouders te navigeren. Klik dan op de gewenste locatie om gebruikers toe te voegen of te verwijderen.
 
 ![](./assets/md/user-manuals/images/dutch/beheer_toezichthouders.png)
 
