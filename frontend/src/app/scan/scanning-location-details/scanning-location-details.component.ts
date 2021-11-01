@@ -71,9 +71,7 @@ export class ScanningLocationDetailsComponent implements OnInit {
 
   scanUser(reservations: LocationReservation[], code: string): void {
     this.error = '';
-    console.log(code);
     const res = this.barcodeService.getReservation(reservations, code);
-    console.log(res);
     if (res == null) {
       this.error = 'scan.maybe';
     } else {
