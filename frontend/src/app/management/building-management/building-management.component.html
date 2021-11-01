@@ -33,7 +33,7 @@
                 <i class="icon-hamburger" aria-hidden="true"></i>
               </td>
               <!-- Delete glyphicon -->
-              <td data-toggle="modal" class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
+              <td data-toggle="modal" class="hover" *ngIf="showAdmin()" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
                 (click)="prepareToDelete(building, deleteBuildingModal)">
                 <i class="icon-cross pointerCursor" aria-hidden="true"></i>
               </td>
