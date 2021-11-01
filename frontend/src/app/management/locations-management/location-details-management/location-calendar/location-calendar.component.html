@@ -118,7 +118,7 @@
                   <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
                     (click)="jumpTo(timeslot)">
                     <span class="pointerCursor">
-                      <i class="icon-document" aria-hidden="true"></i>
+                      <i class="icon-hamburger" aria-hidden="true"></i>
                     </span>
                   </td>
                 </tr>
@@ -219,9 +219,9 @@
 <ng-template #copyTimeslotModal>
 
   <app-modal *ngIf="getLocation() | async as location">
-    <h5 modal-header>
+    <h2 modal-header>
       {{'management.locationDetails.calendar.copyModalView.title' | translate}}
-    </h5>
+    </h2>
 
     <div modal-body>
       <div>
@@ -260,15 +260,15 @@
       <button type="button" class="button button-secondary" (click)="closeModal()">
         {{'general.buttons.cancel' | translate}}
       </button>
-  
+
       <button type="button" class="button button-secondary" (click)="copy(toUpdateTimeslot, 0, location)">
         {{'management.locationDetails.calendar.copyModalView.nextWeek' | translate}}
       </button>
-  
+
       <button type="button" class="button button-primary" (click)="copy(toUpdateTimeslot, weekSelector.value, location)">
         {{'general.buttons.add' | translate}}
       </button>
     </div>
   </app-modal>
-  
+
 </ng-template>

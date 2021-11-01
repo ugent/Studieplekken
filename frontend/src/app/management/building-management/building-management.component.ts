@@ -48,6 +48,8 @@ export class BuildingManagementComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private addressResolver: AddressResolverService
   ) {
+    // initial icon should be grey and not wrong icon by default
+    this.isLoadingAddress=true;
   }
 
   get buildingId(): AbstractControl {
@@ -154,6 +156,11 @@ export class BuildingManagementComponent implements OnInit {
 
   addBuilding(): void {
     this.successAddingBuilding = null;
+    this.sendBuildingRequest(true);
+  }
+
+  addBuildingRequest(){
+    //add new building
     this.buildingService.addBuilding(this.building).subscribe(
       () => {
         this.successAddingBuilding = true;
@@ -188,19 +195,24 @@ export class BuildingManagementComponent implements OnInit {
 
   updateBuildingInFormGroup(): void {
     this.successUpdatingBuilding = null;
+    this.sendBuildingRequest(false);
+  }
+
+  updateBuildingRequest():void {
+    //update existing building
     this.buildingService
-      .updateBuilding(this.building.buildingId, this.building)
-      .subscribe(
-        () => {
-          this.successUpdatingBuilding = true;
-          // and reload the tags
-          this.buildingsObs = this.buildingService.getAllBuildings();
-          this.modalService.closeAll();
-        },
-        () => {
-          this.successUpdatingBuilding = false;
-        }
-      );
+    .updateBuilding(this.building.buildingId, this.building)
+    .subscribe(
+      () => {
+        this.successUpdatingBuilding = true;
+        // reload the buildings
+        this.buildingsObs = this.buildingService.getAllBuildings();
+        this.modalService.closeAll();
+      },
+      () => {
+        this.successUpdatingBuilding = false;
+      }
+    );
   }
 
   prepareToDelete(building: Building, template: TemplateRef<unknown>): void {
@@ -218,9 +230,10 @@ export class BuildingManagementComponent implements OnInit {
     this.buildingService.deleteBuilding(this.building.buildingId).subscribe(
       () => {
         this.successDeletingBuilding = true;
-        // and reload the tags
-        this.buildingsObs = this.buildingService.getAllBuildings().pipe(tap(v => console.log(v)));
+        // reload the buildings
+        this.buildingsObs = this.buildingService.getAllBuildings();
         this.modalService.closeAll();
+        location.reload();
       },
       () => {
         this.successDeletingBuilding = false;
@@ -229,7 +242,7 @@ export class BuildingManagementComponent implements OnInit {
   }
 
   validBuildingFormGroup(): boolean {
-    return !this.buildingFormGroup.invalid && !this.isLoadingAddress && this.isCorrectAddress;
+    return !this.buildingFormGroup.invalid;
   }
 
   fillInstitutionsDependingOnUser(): void {
@@ -240,7 +253,7 @@ export class BuildingManagementComponent implements OnInit {
     }
   }
 
-  checkAddress() {
+  sendBuildingRequest(isAdd:boolean) {
     const address = this.address;
     this.isLoadingAddress = true;
     this.addressResolver.query(address.value).subscribe(r => {
@@ -258,8 +271,18 @@ export class BuildingManagementComponent implements OnInit {
             institution: this.institution.value
           }
         )
+        if(isAdd){
+          this.addBuildingRequest();
+        }else{
+          this.updateBuildingRequest();
+        }
       } else {
         this.isCorrectAddress = false;
+        if(isAdd){
+          this.successAddingBuilding = false;
+        }else{
+          this.successUpdatingBuilding = false;
+        }
       }
     })
   }

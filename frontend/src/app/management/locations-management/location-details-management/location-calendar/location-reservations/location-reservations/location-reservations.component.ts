@@ -42,8 +42,8 @@ export class LocationReservationsComponent {
 
   userHasSearchTerm: (u: User) => boolean = (u: User) =>
     u.userId.includes(this.searchTerm) ||
-    u.firstName.includes(this.searchTerm) ||
-    u.lastName.includes(this.searchTerm)
+    u.firstName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+    u.lastName.toLowerCase().includes(this.searchTerm.toLowerCase())
 
   constructor(
     private locationReservationService: LocationReservationsService,
