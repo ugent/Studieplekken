@@ -20,6 +20,8 @@ Op elke studieplek gelden strikte veiligheidsmaatregelen. Handen dienen ontsmet 
 
 De studieplekken worden georganiseerd door studenten, medewerkers en vrijwilligers. Ga respectvol met hen en met elkaar om. Voor de student-toezichters zijn er gemarkeerde studieplekken voorzien, gelieve deze niet in te nemen. Op elke studieplek is toezicht aanwezig. Bij problemen of vragen, aarzel niet om deze persoon aan te spreken.
 
+<div id="FAQ"></div>
+
 ## Veelgestelde vragen 
 
 - Zullen er controles uitgevoerd worden door UGent personeel op de locatie? Indien ja, op welk tijdstip en hoe frequent zal dit gebeuren? 

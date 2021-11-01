@@ -11,7 +11,9 @@
     "general": "Algemeen",
     "manager": "Beheerder",
     "goto": "Ga naar",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "student": "Student",
+    "admin": "Administrator"
   },
   "dashboard": {
     "alert": {
