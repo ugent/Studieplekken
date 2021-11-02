@@ -11,6 +11,10 @@ scritps/
 stop
 start
 varia/*.docx
+backend/.vscode/
+backend/bin/
+frontend/.vscode/
+
 
 # Mac-specific files
 .DS_Store
