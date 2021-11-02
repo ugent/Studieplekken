@@ -68,8 +68,6 @@ export class UserService {
       return of(false);
     }
 
-    console.log(userId);
-    console.log(btoa(userId))
     return this.http.get<boolean>(
       api.hasUserAuthorities.replace('{userId}', btoa(userId))
     );
