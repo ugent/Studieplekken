@@ -21,7 +21,7 @@ export class TagsService {
    *****************************************************/
 
   getAllTags(): Observable<LocationTag[]> {
-    return this.tagCache.getAllValues(api.tags);
+    return this.tagCache.getAllValues(api.tags, true);
   }
 
   /**
