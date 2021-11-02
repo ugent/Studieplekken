@@ -11,7 +11,9 @@
     "general": "Algemeen",
     "manager": "Beheerder",
     "goto": "Ga naar",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "student": "Student",
+    "admin": "Administrator"
   },
   "dashboard": {
     "alert": {
@@ -184,7 +186,7 @@
         "success": "Het wijzigen van de ruimte was succesvol",
         "error": "Er ging iets mis tijdens het wijzigen van de ruimte",
         "numberOfSeatsApplyWarning": "De aangepaste plaatsen worden alleen toegepast op nieuw aangemaakte openingsperiodes.",
-        "numberOfSeatsHelp": "Kan alleen aangepast worden door een admin in samenspraak met DGFB."
+        "numberOfSeatsHelp": "Kan alleen aangepast worden door een admin."
       },
       "calendar": {
         "title": "Reservatiebeheer",
@@ -368,7 +370,7 @@
         "loading": "Wachten op antwoord van de server...",
         "success": "Het toevoegen van de ruimte is geslaagd",
         "error": "Er is iets misgelopen tijdens het toevoegen van de nieuwe ruimte",
-        "warning": "Ben je zeker dat je een voorstel voor een nieuwe room wil toevoegen? Een bevestigingsmail zal naar DGFB gestuurd worden voor goedkeuring. Het aantal zitjes zal worden aangepast.\n"
+        "warning": "Ben je zeker dat je een voorstel voor een nieuwe room wil toevoegen?\n"
       },
       "editLocationModal": {
         "title": "Keur deze room goed",
@@ -773,7 +775,8 @@
         "mail": "Mail",
         "penaltyPoints": "Strafpunten",
         "studentNumber": "Studentennummer"
-      }
+      },
+      "qrcode": "Je kan deze QR code tonen aan de scanpost van je studieplek. Je aanwezigheid zal geregistreerd worden."
     },
     "penalties": {
       "title": "Strafpunten",

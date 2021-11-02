@@ -130,8 +130,8 @@ export class LocationCalendarComponent implements OnInit {
 
   setup(): void {
     // retrieve all calendar periods for this location
-    this.timeslotObs = 
-    combineLatest([ 
+    this.timeslotObs =
+    combineLatest([
       this.timeslotService.getTimeslotsOfLocation(this.locationId),
       this.locationService.getLocation(this.locationId)
     ])
@@ -144,7 +144,7 @@ export class LocationCalendarComponent implements OnInit {
           this.suggestions = this.timeslotGroupService.getSuggestions(next, location)
           console.log(this.suggestions)
           const suggestionEvents = this.suggestions.map(t => this.timeslotCalendarEventService.suggestedTimeslotToCalendarEvent(t.copy, this.translate.currentLang));
-          
+
 
           this.events = this.events.concat(suggestionEvents)
           // and update the calendar
@@ -170,7 +170,6 @@ export class LocationCalendarComponent implements OnInit {
       return;
     }
     const timeslot: Timeslot = event['timeslot'] as Timeslot;
-
 
     if (timeslot.reservable) {
       this.showReservations = false;
@@ -252,8 +251,8 @@ export class LocationCalendarComponent implements OnInit {
   }
 
 
-  copy(timeslot: Timeslot, weekOffset: number, location: Location) {
-    const newTimeslot = this.timeslotGroupService.copyByWeekOffset(timeslot, weekOffset, location)
+  copy(timeslot: Timeslot, weekOffset: string, location: Location) {
+    const newTimeslot = this.timeslotGroupService.copyByWeekOffset(timeslot, parseInt(weekOffset), location)
     this.timeslotService.addTimeslot(newTimeslot).subscribe(() => this.setup());
     this.modalService.closeAll();
   }
@@ -280,7 +279,7 @@ export class LocationCalendarComponent implements OnInit {
    * This function gets the details for the table.
    * Usually, a timeslot group will be on one day, in one time category.
    * However, with migrated timeslots, this might not be the case. We'll group all these together.
-   * @param timeslot 
+   * @param timeslot
    */
   private getGroupDetails(timeslot: Timeslot[], oldestTimeslot: Timeslot): TypeOption {
     const days = timeslot.map(t => t.timeslotDate.day())
@@ -386,6 +385,7 @@ export class LocationCalendarComponent implements OnInit {
   }
 
   public isSuggestion(timeslot: Timeslot) {
+    console.log(this.suggestions.map(s => s.copy).includes(timeslot));
     return this.suggestions.map(s => s.copy).includes(timeslot);
   }
 

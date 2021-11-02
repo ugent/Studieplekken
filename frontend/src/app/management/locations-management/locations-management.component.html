@@ -147,6 +147,8 @@
             <div class="form-columns">
               <div class="form-item-column">
                 <select class="form-control" id="authority" formControlName="authority">
+                  <!-- Display empty select for safari -->
+                  <option disabled selected value style="display:none"></option>
                   <option *ngFor="let authority of authorities" [value]="authority.authorityId">
                     {{authority.authorityName + ' (' + authority.description + ')'}}
                   </option>
@@ -164,7 +166,7 @@
           </div>
         </div>
 
-        <!-- Building -->
+        <!-- Building -->   
         <div class="row form-group" *ngIf="buildingsObs | async as buildings">
           <div class="form-item">
             <label class="col-lg-3 control-label" for="building">
@@ -173,6 +175,8 @@
             <div class="form-columns">
               <div class="form-item-column">
                 <select class="form-control" id="building" formControlName="building">
+                  <!-- Display empty select for safari -->
+                  <option disabled selected value style="display:none"></option>
                   <option *ngFor="let building of buildings" [value]="building.buildingId">
                     {{building.name + ' (' + building.address + ')'}}
                   </option>
@@ -180,6 +184,7 @@
               </div>
             </div>
           </div>
+   
 
           <div *ngIf="building.invalid && (building.dirty || building.touched)" class="messages messages--error">
             <div *ngIf="building.errors.required">
@@ -206,28 +211,6 @@
             <div *ngIf="numberOfSeats.errors.required">
               <i class="icon-cross" aria-hidden="true"></i>
               {{'management.locations.addLocationModal.formValidationErrorMessages.numberOfSeats' | translate}}
-            </div>
-          </div>
-        </div>
-
-        <!-- forGroup -->
-        <div class="row form-group">
-          <label class="col-lg-3 control-label" for="forGroup">
-            {{'management.locations.addLocationModal.form.forGroup' | translate}}
-          </label>
-          <div class="col-lg-8">
-            <input id="forGroup" type="checkbox" formControlName="forGroup">
-          </div>
-
-          <div class="col-lg-12">
-            <small id="forGroupHelp" class="form-text text-muted">
-              {{'management.locations.addLocationModal.form.forGroupHelp' | translate}}
-            </small>
-          </div>
-
-          <div *ngIf="forGroup.invalid && (forGroup.dirty || forGroup.touched)" class="alert alert-danger">
-            <div *ngIf="forGroup.errors.required">
-              {{'management.locations.addLocationModal.formValidationErrorMessages.forGroup' | translate}}
             </div>
           </div>
         </div>
@@ -285,14 +268,9 @@
 
 <!-- Modal view to ask whether the user is sure to delete a location -->
 <ng-template #deleteLocationModal>
-  <!-- Header -->
-  <div class="modal-header">
-    <button type="button" class="close" (click)="closeModal()" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
 
   <app-modal>
+    <!-- Header -->
     <h1 modal-header>
       {{'management.locations.deleteLocationModal.title' | translate}}
     </h1>
@@ -319,10 +297,10 @@
 
     <!-- Footer -->
     <div modal-footer>
-      <button type="button" class="btn btn-danger danger" (click)="deleteLocation()">
+      <button type="button" class="button button-primary" (click)="deleteLocation()">
         {{'management.locations.deleteLocationModal.yesButton' | translate}}
       </button>
-      <button type="button" class="btn btn-secondary" (click)="closeModal()">
+      <button type="button" class="button button-secondary" (click)="closeModal()">
         {{'management.locations.deleteLocationModal.noButton' | translate}}
       </button>
     </div>

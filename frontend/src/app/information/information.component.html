@@ -5,25 +5,24 @@ to use for everybody. And we dont have to change any code.
 The markdown files used are provided in `assets/md/information.<lang>.md`
 -->
 <mat-tab-group>
-  <mat-tab label="{{'information.general' | translate}}">
+  <mat-tab label="{{'information.student' | translate}}">
     <div style="padding-top: 10pt;">
-      <aside class="col-sm-3 inpage-nav-container xs-hide">
-        <div id="nav-anchor"></div>
-        <nav role="navigation" data-lockfixed="true" class="padding-default bg-tertiary">
-          <h2>{{'information.goto' | translate}}</h2>
-          <ul class="linklist linklist-dark">
-              <li><a href="information#FAQ">{{'information.faq' | translate}}</a></li>
-          </ul>
-        </nav>
-      </aside>
-      <markdown src="assets/md/information.{{currentLanguage()}}.md"></markdown>
+      <markdown src="assets/md/user-manuals/Handleiding-student.md"></markdown>
     </div>
   </mat-tab>
-  <mat-tab label="{{'information.manager' | translate}}" *ngIf="showManagement">
+  <mat-tab label="{{'information.manager' | translate}}" *ngIf="showManagement || showAdmin">
     <div style="padding-top: 10pt;">
-      <div markdown src="assets/md/information_manager.{{currentLanguage()}}.md"></div>
+      <markdown src="assets/md/user-manuals/Handleiding-beheer.md"></markdown>
     </div>
   </mat-tab>
+
+  <mat-tab label="{{'information.admin' | translate}}" *ngIf="showAdmin">
+    <div style="padding-top: 10pt;">
+      <markdown src="assets/md/user-manuals/Handleiding-admin.md"></markdown>
+    </div>
+  </mat-tab>
+
+
 </mat-tab-group>
 
 

@@ -42,8 +42,8 @@ export class LocationReservationsComponent {
 
   userHasSearchTerm: (u: User) => boolean = (u: User) =>
     u.userId.includes(this.searchTerm) ||
-    u.firstName.includes(this.searchTerm) ||
-    u.lastName.includes(this.searchTerm)
+    u.firstName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+    u.lastName.toLowerCase().includes(this.searchTerm.toLowerCase())
 
   constructor(
     private locationReservationService: LocationReservationsService,
@@ -99,7 +99,7 @@ export class LocationReservationsComponent {
   }
 
   onFinishScanningClick(modalTemplate: TemplateRef<unknown>): void {
-    this.modalService.open(modalTemplate);
+    this.modalService.open(modalTemplate, { panelClass: ["cs--cyan", "bigmodal"] });
   }
 
   setAllNotScannedToUnattended(errorTemplate: TemplateRef<unknown>): void {
@@ -126,7 +126,7 @@ export class LocationReservationsComponent {
           this.locationReservations = newLocationReservations;
         },
         () => {
-          this.modalService.open(errorTemplate);
+          this.modalService.open(errorTemplate, { panelClass: ["cs--cyan", "bigmodal"] });
         }
       );
   }
@@ -142,7 +142,7 @@ export class LocationReservationsComponent {
     console.log(locationReservation, template);
     this.successDeletingLocationReservation = undefined;
     this.locationReservationToDelete = locationReservation;
-    this.modalService.open(template);
+    this.modalService.open(template, { panelClass: ["cs--cyan", "bigmodal"] });
   }
 
   deleteLocationReservation(): void {

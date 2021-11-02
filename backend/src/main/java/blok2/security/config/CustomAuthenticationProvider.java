@@ -15,7 +15,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         this.detailService = detailService;
     }
 
-
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         User user = this.detailService.loadUserDetails((String) authentication.getPrincipal());

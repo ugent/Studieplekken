@@ -1,4 +1,4 @@
-<div class="cs--cyan" fxLayout="column" fxLayoutGap="32px">
+<div class="cs--cyan modal-full" fxLayout="column" fxLayoutGap="32px">
     <div fxLayout="row" fxLayoutAlign="space-between">
         <div class="modal-header"> 
             <!-- Header -->
@@ -16,7 +16,7 @@
         <!-- body -->
         <ng-content select="[modal-message-before]"></ng-content>
 
-        <ng-content select="[modal-body]"></ng-content>
+        <ng-content select="[modal-body]" class="modal_body"></ng-content>
 
         <ng-content select="[modal-message-after]"></ng-content>
     </div>

@@ -11,7 +11,9 @@
     "general": "General",
     "manager": "Manager",
     "goto": "Go to",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "student": "Student",
+    "admin": "Admin"
   },
   "dashboard": {
     "alert": {
@@ -183,7 +185,7 @@
         "success": "Successfully updated the room",
         "error": "An error occurred while updating the room",
         "numberOfSeatsApplyWarning": "The changed seats will only be applied to newly created opening periods",
-        "numberOfSeatsHelp": "Can only be updated by an admin in consultation with DGFB."
+        "numberOfSeatsHelp": "Can only be updated by an admin."
       },
       "calendar": {
         "title": "Reservation Management",
@@ -365,7 +367,7 @@
         "loading": "Waiting for response of server...",
         "success": "Successfully added the new room",
         "error": "Something went wrong while adding the new room",
-        "warning": "Are you sure you want to propose this room? An e-mail will be sent to DGFB for approval. The amount of seats will be adjusted."
+        "warning": "Are you sure you want to propose this room?"
       },
       "editLocationModal": {
         "title": "Approve this room",
@@ -504,7 +506,7 @@
             "error": "Something went wrong while adding the authority to the user."
           },
           "deleteAuthorityFromUserModal": {
-            "title": "Sure to delete the authority from the user?",
+            "title": "Delete authority from the user",
             "body": "Are you sure that you want to delete the following authority from {name}:",
             "success": "Successfully deleted the authority from the user.",
             "error": "Something went wrong while deleting the authority from the user."
@@ -769,7 +771,8 @@
         "mail": "Mail",
         "penaltyPoints": "Penalty Points",
         "studentNumber": "Student Number"
-      }
+      },
+      "qrcode": "You can show this QR code at the scanning desk of your study room. If scanned successfully, your attendance will be registered."
     },
     "penalties": {
       "title": "Penalty points",
