@@ -216,6 +216,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
 
     const reservation: LocationReservation = {
+      state: null, // TODO(ydndonck): Should this be approved? Something else? Currently using database default.
       user: this.authenticationService.userValue(),
       timeslot: currentTimeslot,
     };
@@ -245,6 +246,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
       this.selectedSubject.next(nextval);
       // If it's not yet selected, add to selection
     } else {
+      reservation.state
       const nextval = [...this.selectedSubject.value, reservation];
       this.selectedSubject.next(nextval);
     }

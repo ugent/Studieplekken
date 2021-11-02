@@ -66,7 +66,7 @@ public class LocationReservationController extends AuthorizedLocationController 
     public LocationReservation createLocationReservation(@AuthenticationPrincipal User user, @Valid @RequestBody Timeslot timeslot) {
         try {
             Timeslot dbTimeslot = timeslotDao.getTimeslot(timeslot.getTimeslotSeqnr());
-            LocationReservation reservation = new LocationReservation(user, dbTimeslot, null);
+            LocationReservation reservation = new LocationReservation(user, dbTimeslot, LocationReservation.State.APPROVED);
             if (LocalDateTime.now().isBefore(dbTimeslot.getReservableFrom())) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "This timeslot can't yet be reserved");
             }
@@ -77,6 +77,7 @@ public class LocationReservationController extends AuthorizedLocationController 
         } catch (SQLException e) {
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
+            e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
         }
     }

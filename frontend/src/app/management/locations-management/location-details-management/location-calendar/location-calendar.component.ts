@@ -177,6 +177,9 @@ export class LocationCalendarComponent implements OnInit {
 
     this.currentTimeSlot = timeslot;
 
+    if (!timeslot.timeslotSequenceNumber) {
+      return;
+    }
     this.loadReservations();
   }
 

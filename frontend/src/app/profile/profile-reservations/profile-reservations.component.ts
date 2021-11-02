@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, TemplateRef } from '@angular/core';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 import { LocationReservationsService } from '../../services/api/location-reservations/location-reservations.service';
-import { LocationReservation } from '../../shared/model/LocationReservation';
+import { LocationReservation, LocationReservationState } from '../../shared/model/LocationReservation';
 import { Timeslot } from '../../shared/model/Timeslot';
 import * as moment from 'moment';
 import { User } from '../../shared/model/User';
@@ -94,23 +94,38 @@ export class ProfileReservationsComponent implements OnInit {
     return timeslot.openingHour.format("HH:mm");
   }
 
+  // TODO(ydndonck): What is this? Should be double checked.
   needTooltip(
     reservation: LocationReservation,
   ): boolean {
-    return (
-      reservation.timeslot.isInPast() &&
-      reservation.attended === null
-    );
+    return  reservation.timeslot.isInPast() &&
+            reservation.timeslot.reservable;
+  }
+
+  canDeleteReservation(
+    reservation: LocationReservation
+  ): boolean {
+    switch (reservation.state) {
+      case LocationReservationState.PENDING:
+      case LocationReservationState.REJECTED:
+      case LocationReservationState.APPROVED: {
+        return true;
+      }
+      default: {
+        return false;
+      }
+    }
   }
 
   getCorrectI18NObject(
     reservation: LocationReservation,
   ): string {
+    return 'profile.reservations.locations.table.attended.' + reservation.state;
     if (reservation.timeslot.getStartMoment().isBefore(moment())) {
-      if (reservation.attended === null) {
+      if (reservation.state === LocationReservationState.APPROVED) {
         return 'profile.reservations.locations.table.attended.notScanned';
       } else {
-        return reservation.attended
+        return (reservation.state == LocationReservationState.PRESENT)
           ? 'profile.reservations.locations.table.attended.yes'
           : 'profile.reservations.locations.table.attended.no';
       }
