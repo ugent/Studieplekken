@@ -4,7 +4,6 @@
 
   <hr>
 
-
   <!-- User overview in a form -->
   <form [formGroup]="formGroup" class="center">
     <!-- First name -->
@@ -47,5 +46,13 @@
         <input class="form-control" id="institution" type="text" formControlName="institution">
       </div>
     </div>
+    <div class="messages messages--info">
+      {{'profile.overview.qrcode' | translate}}
+    </div>
+
   </form>
+
+  <!-- QR code of userId -->
+  <app-qrcode [userObs]="userObs"></app-qrcode>
+
 </div>
