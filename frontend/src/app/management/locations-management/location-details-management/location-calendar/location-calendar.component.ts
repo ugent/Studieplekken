@@ -212,7 +212,7 @@ export class LocationCalendarComponent implements OnInit {
   }
 
   open(modal: TemplateRef<any>) {
-    this.modalService.open(modal)
+    this.modalService.open(modal, { panelClass: ["cs--cyan", "bigmodal"] });
   }
 
   getLocation(): Observable<Location> {
