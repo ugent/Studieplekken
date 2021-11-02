@@ -87,7 +87,7 @@ public class Penalty implements Cloneable {
         Penalty penalty = (Penalty) o;
         return Objects.equals(penaltyId.eventCode, penalty.penaltyId.eventCode) &&
                 Objects.equals(penaltyId.userId, penalty.penaltyId.userId) &&
-                Objects.equals(penaltyId.timestamp, penalty.penaltyId.timestamp) &&
+                Objects.equals(penaltyId.timestamp.withNano(0), penalty.penaltyId.timestamp.withNano(0)) && // withNano(0) to avoid loss of accuracy during database save problem on Windows.
                 Objects.equals(reservationDate, penalty.reservationDate) &&
                 Objects.equals(reservationLocation, penalty.reservationLocation) &&
                 receivedPoints == penalty.receivedPoints &&
@@ -96,7 +96,7 @@ public class Penalty implements Cloneable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(penaltyId.userId, penaltyId.eventCode, penaltyId.timestamp, reservationDate, reservationLocation, receivedPoints, remarks);
+        return Objects.hash(penaltyId.userId, penaltyId.eventCode, penaltyId.timestamp.withNano(0), reservationDate, reservationLocation, receivedPoints, remarks);
     }
 
     @Override
@@ -171,12 +171,12 @@ public class Penalty implements Cloneable {
             PenaltyId penaltyId = (PenaltyId) o;
             return Objects.equals(userId, penaltyId.userId) &&
                     Objects.equals(eventCode, penaltyId.eventCode) &&
-                    Objects.equals(timestamp, penaltyId.timestamp);
+                    Objects.equals(timestamp.withNano(0), penaltyId.timestamp.withNano(0));
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(userId, eventCode, timestamp);
+            return Objects.hash(userId, eventCode, timestamp.withNano(0));
         }
     }
 
