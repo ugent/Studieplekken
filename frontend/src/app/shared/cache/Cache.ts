@@ -43,12 +43,16 @@ export class Cache<I, V> {
       .get<V[]>(url)
       .pipe(
         map((n) => n.map((v) => (this.mapFunction ? this.mapFunction(v) : v))),
-        tap((n) =>
+        tap((n) => {
+          this.cacheMap = new Map();
           n.forEach((element) =>
             this.cacheMap.set(this.idcallback(element), element)
           )
+
+        }
         ),
         tap(() => {
+          console.log(this.cacheMap)
           this.cacheSubject.next(this.cacheMap);
         }),
         catchError((error) => {

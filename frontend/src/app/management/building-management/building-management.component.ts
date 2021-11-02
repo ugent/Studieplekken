@@ -9,6 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { of } from 'rxjs/internal/observable/of';
 import { map } from 'rxjs/internal/operators/map';
+import { tap } from 'rxjs/operators';
 import { AddressResolverService } from "src/app/services/addressresolver/nomenatim/addressresolver.service";
 import { BuildingService } from 'src/app/services/api/buildings/buildings.service';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
@@ -70,7 +71,7 @@ export class BuildingManagementComponent implements OnInit {
   get longitude(): AbstractControl {
     return this.buildingFormGroup.get('longitude');
   }
-  
+
   get institution(): AbstractControl {
     return this.buildingFormGroup.get('institution');
   }
@@ -232,7 +233,6 @@ export class BuildingManagementComponent implements OnInit {
         // reload the buildings
         this.buildingsObs = this.buildingService.getAllBuildings();
         this.modalService.closeAll();
-        location.reload();
       },
       () => {
         this.successDeletingBuilding = false;
