@@ -92,9 +92,10 @@ public class LocationReservationService implements ILocationReservationDao {
     @Override
     @javax.transaction.Transactional
     public void deleteLocationReservation(LocationReservation locationReservation) {
-        if(locationReservation.getAttended() == null || locationReservation.getAttended())
+        LocationReservation.State state = locationReservation.getStateE();
+        if (state == LocationReservation.State.APPROVED || state == LocationReservation.State.PRESENT) {
             locationReservationRepository.decrementCountByOne(locationReservation.getTimeslot().getTimeslotSeqnr());
-
+        }
         locationReservationRepository.deleteById(new LocationReservation.LocationReservationId(
                 locationReservation.getTimeslot().getTimeslotSeqnr(), locationReservation.getUser().getUserId()
         ));
@@ -105,30 +106,33 @@ public class LocationReservationService implements ILocationReservationDao {
         return locationReservationRepository.saveAndFlush(locationReservation);
     }
 
-    @Override
     @Transactional
-    public boolean setReservationAttendance(String userId, Timeslot timeslot, boolean attendance) {
+    public boolean setReservationState(String userId, Timeslot timeslot,LocationReservation.State state) {
         LocationReservation.LocationReservationId id = new LocationReservation.LocationReservationId(
                 timeslot.getTimeslotSeqnr(), userId
         );
-
         LocationReservation locationReservation = locationReservationRepository.findById(id)
                 .orElseThrow(() -> new NoSuchDatabaseObjectException(
                         String.format("No location reservation found with id '%s'", id)));
-        Boolean currentAttendance = locationReservation.getAttended();
-
-        // if attendance goes from null or true to false, decrement reservation count
-        if (!attendance && (currentAttendance == null || currentAttendance))
+        LocationReservation.State currentState = locationReservation.getStateE();
+        boolean takesUpSpaceInOldState = currentState == LocationReservation.State.PRESENT || currentState == LocationReservation.State.APPROVED;
+        boolean takesUpSpaceInNewState = state == LocationReservation.State.PRESENT || state == LocationReservation.State.APPROVED;
+        if (takesUpSpaceInOldState && !takesUpSpaceInNewState) {
             locationReservation.getTimeslot().decrementAmountOfReservations();
-
-        // if attendance goes from false to true, increment the current reservation count since this person is here now
-        if (attendance && (currentAttendance != null && !currentAttendance))
+        }
+        if (takesUpSpaceInNewState && !takesUpSpaceInOldState) {
             locationReservation.getTimeslot().incrementAmountOfReservations();
-
-        locationReservation.setAttended(attendance);
+        }
+        locationReservation.setState(state);
         locationReservation = locationReservationRepository.saveAndFlush(locationReservation);
-
-        return locationReservation.getAttended() == attendance;
+        return locationReservation.getStateE() == state;
+    }
+    
+    @Override
+    @Transactional
+    public boolean setReservationAttendance(String userId, Timeslot timeslot, boolean attendance) {
+        LocationReservation.State state = attendance? LocationReservation.State.PRESENT : LocationReservation.State.ABSENT;
+        return setReservationState(userId, timeslot, state);
     }
 
     @Override
@@ -145,10 +149,10 @@ public class LocationReservationService implements ILocationReservationDao {
         // for each unattended reservation, set the attendance to false and decrement the reservation count
         // so that other students are able to make use of the freed spot
         locationReservations.forEach((LocationReservation lr) -> {
-            lr.setAttended(false);
+            lr.setState(LocationReservation.State.ABSENT);
             lr.getTimeslot().decrementAmountOfReservations();
         });
-
+        
         locationReservationRepository.saveAll(locationReservations);
     }
 

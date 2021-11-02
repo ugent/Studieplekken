@@ -93,7 +93,7 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
         int amountOfReservations = timeslot.getAmountOfReservations();
 
 
-        LocationReservation reservation = new LocationReservation(student, timeslot, false);
+        LocationReservation reservation = new LocationReservation(student, timeslot, LocationReservation.State.ABSENT);
 
         int currentAmount = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId()).size();
 
@@ -116,7 +116,7 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
         int amountOfReservations = timeslot.getAmountOfReservations();
 
 
-        LocationReservation reservation = new LocationReservation(student, timeslot, false);
+        LocationReservation reservation = new LocationReservation(student, timeslot, LocationReservation.State.ABSENT);
 
         int currentAmount = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId()).size();
         mockMvc.perform(delete("/locations/reservations").with(csrf())
@@ -140,7 +140,7 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
         Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
         int amountOfReservations = timeslot.getAmountOfReservations();
 
-        LocationReservation reservation = new LocationReservation(student, timeslot, false);
+        LocationReservation reservation = new LocationReservation(student, timeslot, LocationReservation.State.ABSENT);
 
         int currentAmount = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId()).size();
         mockMvc.perform(delete("/locations/reservations").with(csrf())
@@ -170,7 +170,7 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
 
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
         // Check that reservation is attended
-        Assert.assertEquals(true, list.stream().filter(lr -> lr.getTimeslot().getTimeslotSeqnr() == timeslot.getTimeslotSeqnr()).findFirst().get().getAttended());
+        Assert.assertEquals(LocationReservation.State.PRESENT, list.stream().filter(lr -> lr.getTimeslot().getTimeslotSeqnr() == timeslot.getTimeslotSeqnr()).findFirst().get().getStateE());
     }
 
     @Test
@@ -188,7 +188,7 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
                 .andExpect(status().isNotFound());
 
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
-        Assert.assertNull(list.get(0).getAttended());
+        Assert.assertEquals(LocationReservation.State.APPROVED, list.get(0).getStateE());
     }
 
     @Test
@@ -209,7 +209,7 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
 
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
         // Check that reservation is unattended
-        Assert.assertEquals(true, list.stream().filter(lr -> lr.getTimeslot().getTimeslotSeqnr() == timeslot.getTimeslotSeqnr()).findFirst().get().getAttended());
+        Assert.assertEquals(LocationReservation.State.PRESENT, list.stream().filter(lr -> lr.getTimeslot().getTimeslotSeqnr() == timeslot.getTimeslotSeqnr()).findFirst().get().getStateE());
 
         Assert.assertEquals(timeslot.getAmountOfReservations(), timeslotAfterUpdate.getAmountOfReservations());
     }
@@ -232,7 +232,7 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
 
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
         // Check that reservation is unattended
-        Assert.assertEquals(false, list.stream().filter(lr -> lr.getTimeslot().getTimeslotSeqnr() == timeslot.getTimeslotSeqnr()).findFirst().get().getAttended());
+        Assert.assertEquals(LocationReservation.State.ABSENT, list.stream().filter(lr -> lr.getTimeslot().getTimeslotSeqnr() == timeslot.getTimeslotSeqnr()).findFirst().get().getStateE());
 
         // when a user is set to unattended, the spot must be released so that others can make a reservation
         Assert.assertEquals(timeslot.getAmountOfReservations() - 1, timeslotAfterUpdate.getAmountOfReservations());
@@ -259,7 +259,7 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
 
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
         // Check that reservation is unattended
-        Assert.assertEquals(false, list.stream().filter(lr -> lr.getTimeslot().getTimeslotSeqnr() == timeslot.getTimeslotSeqnr()).findFirst().get().getAttended());
+        Assert.assertEquals(LocationReservation.State.ABSENT, list.stream().filter(lr -> lr.getTimeslot().getTimeslotSeqnr() == timeslot.getTimeslotSeqnr()).findFirst().get().getStateE());
 
         Assert.assertEquals(timeslot.getAmountOfReservations() - 1, timeslotAfterUpdate.getAmountOfReservations());
     }
@@ -281,7 +281,7 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
         Timeslot timeslotAfterUpdate = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
         Assert.assertEquals(timeslot.getAmountOfReservations() - 1, timeslotAfterUpdate.getAmountOfReservations());
 
-        LocationReservation lr = new LocationReservation(student, timeslot, false);
+        LocationReservation lr = new LocationReservation(student, timeslot, LocationReservation.State.ABSENT);
         mockMvc.perform(delete("/locations/reservations").with(csrf())
                 .content(objectMapper.writeValueAsString(lr)).contentType("application/json")).andDo(print())
                 .andExpect(status().isOk());
@@ -312,9 +312,9 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
         LocationReservation lr = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId())
                                 .stream().filter(l -> l.getTimeslot().getTimeslotSeqnr() == finalTimeslot1.getTimeslotSeqnr()).findFirst().get();
         System.out.println(lr);
-        Assert.assertEquals(false, lr.getAttended());
+        Assert.assertEquals(LocationReservation.State.ABSENT, lr.getStateE());
         lr = locationReservationDao.getAllLocationReservationsOfUser(student2.getUserId()).stream().filter(l -> l.getTimeslot().getTimeslotSeqnr() == finalTimeslot1.getTimeslotSeqnr()).findFirst().get();
-        Assert.assertEquals(true, lr.getAttended());
+        Assert.assertEquals(LocationReservation.State.PRESENT, lr.getStateE());
 
     }
 

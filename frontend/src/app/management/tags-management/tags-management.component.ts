@@ -159,7 +159,6 @@ export class TagsManagementComponent implements OnInit {
         // and reload the tags
         this.tagsObs = this.tagsService.getAllTags();
         this.modalService.closeAll();
-        location.reload();
       },
       () => {
         this.successDeletingTag = false;

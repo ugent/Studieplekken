@@ -1,5 +1,7 @@
 package blok2.security.config;
 
+
+// TODO: Do we still need this?
 import org.jasig.cas.client.validation.Cas20ServiceTicketValidator;
 import org.jasig.cas.client.validation.TicketValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,8 +78,7 @@ public class CASConfiguration {
         CasAuthenticationProvider provider = new CasAuthenticationProvider();
         provider.setServiceProperties(serviceProperties());
         provider.setTicketValidator(ticketValidator());
-
-        // TODO: actually implement the userDetailsService for the CasAuthenticationProvider
+        
         provider.setAuthenticationUserDetailsService(authenticationUserDetailsService);
 
         // A key is required so CasAuthenticationProvider can identify tokens
