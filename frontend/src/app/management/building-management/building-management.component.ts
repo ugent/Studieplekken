@@ -94,13 +94,6 @@ export class BuildingManagementComponent implements OnInit {
   ngOnInit(): void {
     this.buildingsObs = this.buildingService.getAllBuildings();
 
-    // Only show the buildings the user has access to.
-    if (!this.authenticationService.isAdmin()) {
-      const institution = this.authenticationService.userValue().institution;
-      this.buildingsObs = this.buildingsObs.pipe(
-        map(items => items.filter(building => building.institution === institution))
-      );
-    }
 
     this.buildingsObs.subscribe(
       () => {
@@ -292,5 +285,9 @@ export class BuildingManagementComponent implements OnInit {
     }
 
     return this.isCorrectAddress ? "icon-checkmark-circle ok": "icon-exclamation-circle no"
+  }
+
+  showAdmin() {
+    return this.authenticationService.isAdmin();
   }
 }

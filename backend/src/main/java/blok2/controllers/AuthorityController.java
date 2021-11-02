@@ -7,11 +7,16 @@ import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.Authority;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.coyote.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Base64;
 import java.util.List;
@@ -83,19 +88,23 @@ public class AuthorityController {
     }
 
     @GetMapping("/users/{userId}")
-    @PreAuthorize("(hasAuthority('HAS_AUTHORITIES') and #userId == authentication.principal.userId) or hasAuthority('ADMIN')")
-    public List<Authority> getAuthoritiesFromUser(@PathVariable("userId") String encodedId) {
+    public List<Authority> getAuthoritiesFromUser(@PathVariable("userId") String encodedId, @AuthenticationPrincipal User user) {
         String userId = Base64String.base64Decode(encodedId);
 
-        return authorityDao.getAuthoritiesFromUser(userId);
+        if((user.getUserAuthorities().size() > 0 && userId.equals(user.getUserId())) || user.isAdmin()) {
+            return authorityDao.getAuthoritiesFromUser(userId);
+        }
+        throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
 
     @GetMapping("/users/{userId}/locations")
-    @PreAuthorize("(hasAuthority('HAS_AUTHORITIES') and #userId == authentication.principal.userId) or hasAuthority('ADMIN')")
-    public List<Location> getLocationsInAuthoritiesOfUser(@PathVariable("userId") String encodedId) {
+    public List<Location> getLocationsInAuthoritiesOfUser(@PathVariable("userId") String encodedId, @AuthenticationPrincipal User user) {
         String userId = Base64String.base64Decode(encodedId);
 
-        return authorityDao.getLocationsInAuthoritiesOfUser(userId);
+        if((user.getUserAuthorities().size() > 0 && userId.equals(user.getUserId())) || user.isAdmin()) {
+            return authorityDao.getLocationsInAuthoritiesOfUser(userId);
+        }
+        throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
 
     @PostMapping("/{authorityId}/user/{userId}")
