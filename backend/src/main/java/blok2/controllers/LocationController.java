@@ -90,33 +90,20 @@ public class LocationController extends AuthorizedLocationController {
     public void addLocation(@AuthenticationPrincipal User user, @RequestBody Location location) {
         isAuthorized((l, $) -> hasAuthority(l.getAuthority()), location);
         try {
-            try {
-                locationDao.getLocationByName(location.getName());
-                throw new AlreadyExistsException("location name already in use");
-            } catch (NoSuchDatabaseObjectException ignore) {
-                // good to go
-            }
-
-            // Check if the user is an admin or is in the same institution that he is adding a location to.
-            if (!user.isAdmin() && !user.getInstitution().equals(location.getBuilding().getInstitution())) {
-                throw new NotAuthorizedException("You are not authorized to add a new location for this institution.");
-            }
-
-            this.locationDao.addLocation(location);
-
-            // Send a mail to the admins to notify them about the creation of a new location.
-            // Note: this mail is not sent in development or while testing (see implementation,
-            // of the sendMail() methods in MailServer)
-            String[] admins = userDao.getAdmins().stream().map(User::getMail).toArray(String[]::new);
-            logger.info(String.format("Sending mail to admins to notify about creation of new location %s. Recipients are: %s", location, Arrays.toString(admins)));
-            mailService.sendNewLocationMessage(admins, location);
-
-            logger.info(String.format("New location %s added", location.getName()));
-        } catch (MessagingException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Mailing error");
+            locationDao.getLocationByName(location.getName());
+            throw new AlreadyExistsException("location name already in use");
+        } catch (NoSuchDatabaseObjectException ignore) {
+            // good to go
         }
+
+        // Check if the user is an admin or is in the same institution that he is adding a location to.
+        if (!user.isAdmin() && !user.getInstitution().equals(location.getBuilding().getInstitution())) {
+            throw new NotAuthorizedException("You are not authorized to add a new location for this institution.");
+        }
+
+        this.locationDao.addLocation(location);
+
+        logger.info(String.format("New location %s added", location.getName()));
     }
 
     @PutMapping("/{locationId}")
@@ -184,7 +171,7 @@ public class LocationController extends AuthorizedLocationController {
     }
 
     @GetMapping("/{locationId}/volunteers")
-    @PreAuthorize("@authorizedInstitutionController.hasAuthorityLocation(authentication.principal, #locationId)")
+    // TODO: should be fixed by future PR, double check on merge
     public List<User> getVolunteers(@PathVariable int locationId) {
         isAuthorized(locationId);
         return volunteerDao.getVolunteers(locationId);
