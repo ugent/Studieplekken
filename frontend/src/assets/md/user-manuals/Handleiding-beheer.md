@@ -91,19 +91,13 @@ PS: Lukt het niet om een reservatieslot aan te maken? Kijk zeker na of je alle v
 
 <br/>
 
-## Toezichthouders beheren
+## Toezichthouders/vrijwilligers beheren
 
-Toezichthouders zijn vrijwilligers of medewerkers die de aanwezigheden gaan opnemen zonder bijkomende rechten. Je kan nieuwe gebruikers toevoegen aan een locatie door naar beheer > toezichthouders te navigeren. Klik dan op de gewenste locatie om dan gebruikers toe te voegen of te verwijderen.
+Toezichthouders zijn vrijwilligers of medewerkers die de aanwezigheden gaan opnemen zonder bijkomende rechten. Je kan nieuwe gebruikers toevoegen aan een locatie door naar beheer > toezichthouders te navigeren. Klik dan op de gewenste locatie om gebruikers toe te voegen of te verwijderen.
 
 ![](./assets/md/user-manuals/images/dutch/beheer_toezichthouders.png)
 
-## Aanwezigheden opnemen
-
-Nadat de student zich heeft ingeschreven is het mogelijk om de studenten hun aanwezigheden op te nemen. Dit kan om verschillende manieren.
-
-Eerst ga je naar de locatie met het reservatieslot, klik op het slot in de kalender. Dan ga je onder de kalender een lijst zien van alle gebruikers die zich hebben ingeschreven. Je kan manueel de voornaam, achternaam of studentennummer intikken. Of de QR-code van de student inscannen die hij/zij zal vinden in zijn/haar profiel.
-
-![](./assets/md/user-manuals/images/dutch/aanwezigheden_opnemen.png)
+Voor meer informatie over het opnemen van aanwezigheden ga naar de vrijwilligerspagina.
 
 ## Nog vragen?
 
