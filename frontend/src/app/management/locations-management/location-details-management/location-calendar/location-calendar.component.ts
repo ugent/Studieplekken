@@ -170,9 +170,7 @@ export class LocationCalendarComponent implements OnInit {
       return;
     }
     const timeslot: Timeslot = event['timeslot'] as Timeslot;
-    if (!timeslot.timeslotSequenceNumber) {
-      return;
-    }
+
 
     if (timeslot.reservable) {
       this.showReservations = false;
@@ -180,6 +178,9 @@ export class LocationCalendarComponent implements OnInit {
 
     this.currentTimeSlot = timeslot;
 
+    if (!timeslot.timeslotSequenceNumber) {
+      return;
+    }
     this.loadReservations();
   }
 
