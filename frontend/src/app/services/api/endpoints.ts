@@ -50,7 +50,7 @@ export const api = {
   addLocationReservation: '/api/locations/reservations',
   deleteLocationReservation: '/api/locations/reservations',
   updateAttendance:
-    '/api/locations/reservations/{userid}/{calendarid}/{date}/{seqnr}/attendance',
+    '/api/locations/reservations/{userid}/{seqnr}/attendance',
   locationReservationsWithLocationOfUser:
     '/api/locations/reservations/{userId}',
   locationReservationsOfNotScannedUsers:

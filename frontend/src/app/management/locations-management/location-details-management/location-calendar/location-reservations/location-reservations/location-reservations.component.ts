@@ -98,7 +98,7 @@ export class LocationReservationsComponent {
   }
 
   onFinishScanningClick(modalTemplate: TemplateRef<unknown>): void {
-    this.modalService.open(modalTemplate);
+    this.modalService.open(modalTemplate, { panelClass: ["cs--cyan", "bigmodal"] });
   }
 
   setAllNotScannedToUnattended(errorTemplate: TemplateRef<unknown>): void {
@@ -126,7 +126,7 @@ export class LocationReservationsComponent {
           rollback.forEach((reservation) => {
             reservation.attended = null;
           });
-          this.modalService.open(errorTemplate);
+          this.modalService.open(errorTemplate, { panelClass: ["cs--cyan", "bigmodal"] });
         }
       );
   }
@@ -142,7 +142,7 @@ export class LocationReservationsComponent {
     console.log(locationReservation, template);
     this.successDeletingLocationReservation = undefined;
     this.locationReservationToDelete = locationReservation;
-    this.modalService.open(template);
+    this.modalService.open(template, { panelClass: ["cs--cyan", "bigmodal"] });
   }
 
   deleteLocationReservation(): void {
