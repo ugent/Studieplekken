@@ -215,28 +215,6 @@
           </div>
         </div>
 
-        <!-- forGroup -->
-        <div class="row form-group">
-          <label class="col-lg-3 control-label" for="forGroup">
-            {{'management.locations.addLocationModal.form.forGroup' | translate}}
-          </label>
-          <div class="col-lg-8">
-            <input id="forGroup" type="checkbox" formControlName="forGroup">
-          </div>
-
-          <div class="col-lg-12">
-            <small id="forGroupHelp" class="form-text text-muted">
-              {{'management.locations.addLocationModal.form.forGroupHelp' | translate}}
-            </small>
-          </div>
-
-          <div *ngIf="forGroup.invalid && (forGroup.dirty || forGroup.touched)" class="alert alert-danger">
-            <div *ngIf="forGroup.errors.required">
-              {{'management.locations.addLocationModal.formValidationErrorMessages.forGroup' | translate}}
-            </div>
-          </div>
-        </div>
-
         <!-- Image URL -->
         <div class="row form-group">
           <div class="form-item">
