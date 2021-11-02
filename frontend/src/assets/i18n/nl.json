@@ -775,7 +775,8 @@
         "mail": "Mail",
         "penaltyPoints": "Strafpunten",
         "studentNumber": "Studentennummer"
-      }
+      },
+      "qrcode": "Je kan deze QR code tonen aan de scanpost van je studieplek. Je aanwezigheid zal geregistreerd worden."
     },
     "penalties": {
       "title": "Strafpunten",

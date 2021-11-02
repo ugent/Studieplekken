@@ -122,14 +122,14 @@
 <!-- Modal view to ask whether the user is sure to delete a lockerReservation -->
 <ng-template #deleteLocationReservationModal>
   <!-- Header -->
-  <div class="modal-header">
-    <h5 class="modal-title" id="deleteLocationModalLabel">
+  <div modal-header>
+    <h1 class="modal-title" id="deleteLocationModalLabel">
       {{ "management.reservations.location.deleteModal.title" | translate }}
-    </h5>
+    </h1>
   </div>
 
   <!-- Body -->
-  <div class="modal-body">
+  <div modal-body>
     <div>
       <b>{{
         "management.reservations.location.deleteModal.body" | translate
@@ -162,7 +162,7 @@
   </div>
 
   <!-- Footer -->
-  <div class="modal-footer">
+  <div modal-footer>
     <button type="button" class="button button-primary" (click)="deleteLocationReservation()">
       {{ "management.reservations.location.deleteModal.yesButton" | translate }}
     </button>
@@ -188,19 +188,16 @@
 
 <ng-template #finishScanningModal>
   <!-- Modal header -->
-  <div class="modal-header">
-    <h5 class="modal-title inline-block" id="finishScanningModalTitle">
+  <div modal-header>
+    <h1 id="finishScanningModalTitle">
       {{
       "management.reservations.location.finishScanningModal.title" | translate
       }}
-    </h5>
-    <button type="button" class="close" (click)="closeModal()" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
+    </h1>
   </div>
 
   <!-- Modal body -->
-  <div class="modal-body">
+  <div modal-body>
     <div class="messages messages--warning">
       <p>
         {{
@@ -224,8 +221,8 @@
   </div>
 
   <!-- Modal footer -->
-  <div class="modal-footer">
-    <button class="button button-primary" (click)="setAllNotScannedToUnattended(scanningError)">
+  <div modal-footer>
+    <button type="button" class="button button-primary" (click)="setAllNotScannedToUnattended(scanningError)">
       {{ "general.yes" | translate }}
     </button>
 
@@ -237,19 +234,16 @@
 
 <ng-template #scanningError>
   <!-- Modal header -->
-  <div class="modal-header">
-    <h5 class="modal-title inline-block" id="scanningErrorModalTitle">
+  <div modal-header>
+    <h1 id="scanningErrorModalTitle">
       {{
       "management.reservations.location.scanningErrorModal.title" | translate
       }}
-    </h5>
-    <button type="button" class="close" (click)="closeModal()" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
+    </h1>
   </div>
 
   <!-- Modal body -->
-  <div class="modal-body">
+  <div modal-body>
     <div class="messages messages--error">
       {{
       "management.reservations.location.scanningErrorModal.message"
@@ -259,7 +253,7 @@
   </div>
 
   <!-- Modal footer -->
-  <div class="modal-footer">
+  <div modal-footer>
     <button type="button" class="button button-primary" (click)="closeModal()">
       {{ "general.buttons.close" | translate }}
     </button>
