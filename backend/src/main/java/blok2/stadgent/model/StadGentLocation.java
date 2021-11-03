@@ -50,7 +50,7 @@ public class StadGentLocation {
     @JsonProperty("totale_capaciteit")
     private Integer capacity;
 
-    @JsonProperty("gereserveerde_plaatsen")
+    @JsonProperty("bezetting")
     private Integer reserved;
 
     private boolean isReservable;
@@ -139,12 +139,13 @@ public class StadGentLocation {
         Integer amountOfReservations = loc.getCurrentTimeslot() == null ? null:loc.getCurrentTimeslot().getAmountOfReservations();
         boolean isReservable = loc.getCurrentTimeslot() != null && loc.getCurrentTimeslot().isReservable();
 
-        Stream<Timeslot> l = ts.getTimeslotsOfLocation(loc.getLocationId()).stream().filter(t -> t.timeslotDate().isEqual(loc.getCurrentTimeslot().timeslotDate()));
+        LocalDate date = loc.getCurrentTimeslot() == null ? LocalDate.now() : loc.getCurrentTimeslot().timeslotDate();
+        Stream<Timeslot> l = ts.getTimeslotsOfLocation(loc.getLocationId()).stream().filter(t -> t.timeslotDate().isEqual(date));
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         String hours = l.map(t -> t.getOpeningHour().format(formatter) + " - " + t.getClosingHour().format(formatter)).collect(Collectors.joining(","));
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
-        String date = loc.getCurrentTimeslot().timeslotDate().format(dateTimeFormatter);
+        String dateStr = loc.getCurrentTimeslot() == null ? null : loc.getCurrentTimeslot().timeslotDate().format(dateTimeFormatter);
         LocalTime openingTime = loc.getCurrentTimeslot() == null ? null:loc.getCurrentTimeslot().getOpeningHour();
         LocalTime closingTime = loc.getCurrentTimeslot() == null ? null:loc.getCurrentTimeslot().getClosingHour();
 
@@ -170,7 +171,7 @@ public class StadGentLocation {
                     hours,
                     targetPoint.getX(),
                     targetPoint.getY(),
-                    date
+                    dateStr
             );
 
         } catch (FactoryException e) {
