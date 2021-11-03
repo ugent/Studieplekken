@@ -2,11 +2,14 @@ package blok2.helpers.authorization;
 
 import blok2.daos.IBuildingDao;
 import blok2.daos.ILocationDao;
+import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
 
 @Component
 public class AuthorizedInstitutionController {
@@ -39,7 +42,13 @@ public class AuthorizedInstitutionController {
             return false;
         }
         Location location = locationDao.getLocationById(locationId);
-        return location != null && location.getBuilding().getInstitution().equals(user.getInstitution());
+        System.out.println(location.getAuthority().getAuthorityId());
+        System.out.println(new ArrayList<Authority>(user.getUserAuthorities()).get(0).getAuthorityId());
+        return location != null &&
+                user.getUserAuthorities()
+                        .stream()
+                        .map(Authority::getAuthorityId)
+                        .anyMatch(id -> id.equals(location.getAuthority().getAuthorityId()));
     }
 
     /**
@@ -61,6 +70,6 @@ public class AuthorizedInstitutionController {
             return false;
         }
         Building building = buildingDao.getBuildingById(buildingId);
-        return building != null && building.getInstitution().equals(user.getInstitution());
+        return building != null;
     }
 }

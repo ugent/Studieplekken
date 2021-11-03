@@ -9,9 +9,11 @@ In de linkerkolom staat het hoofdmenu met verschillende onderwerpen waarover je 
 ## Gebouw
 Een gebouw kan je beheren in het 'gebouw/building' rubriek. Op deze pagina heb je een oplijsting van alle gebouwen die onder jouw beheer zijn. Bij elk gebouw hoort zijn adres en tot welke onderwijsinstelling het behoort. Om meer details te zien klik je best op 'bewerken'.
 
-<img src="./images/dutch/building_shortcuts.png" width="65%" />
+<img src="../assets/md/user-manuals/images/dutch/building_shortcuts.png" width="65%" />
 
 Om een nieuwe locatie aan te maken ga je helemaal onder de lijst van gebouwen en klik op de knop "Nieuw gebouw". Hier zal je een naam, adres en instelling moeten ingeven. 
+
+Als beheerder is het niet mogelijk om gebouwen te verwijderen.
 
 
 ## Studie-ruimte
@@ -39,7 +41,8 @@ Druk op de knop "Pas aan" om de basis gegevens van een ruimte aan passen (zitpla
 <img src="./assets/md/user-manuals/images/dutch/edit_location_info.png" width="60%" />
 
 Een ruimte kan bepaalde eigenschappen hebben waar gebruikers naar op zoek zijn. Zo kan het zijn dat je duidelijk zou willen maken dat er computers of groepsruimtes beschikbaar zijn in een bibliotheek. Dit doe je op basis van de "tags". De tags zijn etiketten die gemaakt zijn op in de beheer pagina, subrubriek tags. Deze vooraf gemaakte tags kan je dan toevoegen aan je ruimte. Zo zullen ze zichtbaar zijn voor studenten tijdens het kiezen van een ruimte. Voor meer informatie over het aanmaken van tags kijk je naar het volgende puntje.
-<img src="./assets/md/user-manuals/images/dutch/location_tags.png" width="70%" />
+
+<img src="./assets/md/user-manuals/images/dutch/location_tags.png" width="60%" />
 
 Openingsuren van de ruimtes kan je vinden onderaan op deze pagina.
 <img src="./assets/md/user-manuals/images/dutch/opening_hours.png" width="70%" />
@@ -70,23 +73,31 @@ Onder reservatiebeheer is er een knop met "Voeg nieuwe openingsperiode toe". Hie
 
 Er zijn twee soorten tijdsloten: reserveerbare en niet-reserveerbare. Niet-reserveerbare tijsloten kunnen mensen naar toe gaan om te studeren zonder te reserveren. Verder kan een tijdslot gemarkeerd worden als "herhaalbaar". Dit zorgt dat reservaties zullen worden gesuggereerd voor volgende weken om het ingeven gemakkelijker te maken.
 
-![](./images/dutch/rrL41aD.png)
+![](./assets/md/user-manuals/images/dutch/rrL41aD.png)
 
 Hier is een voorbeeld van:
 * een niet-herhalend reserveerbar tijdslot
 * een herhalend niet-reserveerbar tijdslot
 
-![](./images/dutch/c11aORU.png)
+![](./assets/md/user-manuals/images/dutch/c11aORU.png)
 
 Herhalende tijdsloten worden gesuggereerd in volgende weken. Deze kunnen dan goedgekeurd worden door te klikken op de "Keur goed" knop.
 Alle herhalende tijdsloten binnen een week kunnen in één keer goedgekeurd worden door te klikken op de "Keur alle suggesties goed" knop.
-![](./images/dutch/ZoEtyTb.png)
+![](./assets/md/user-manuals/images/dutch/ZoEtyTb.png)
 
 Bij het aanpassen van een tijdslot is het aangeraden om het originele te verwijderen en gewoon een nieuwe tijdslot aan te maken. Dit voorkomt dubieuze situaties waar studenten al reservaties hebben geboekt.
 
 PS: Lukt het niet om een reservatieslot aan te maken? Kijk zeker na of je alle velden nauwgezet hebt ingevuld. In sommige browsers volstaan de standaardwaarden niet.
 
 <br/>
+
+## Toezichthouders/vrijwilligers beheren
+
+Toezichthouders zijn vrijwilligers of medewerkers die de aanwezigheden gaan opnemen zonder bijkomende rechten. Je kan nieuwe gebruikers toevoegen aan een locatie door naar beheer > toezichthouders te navigeren. Klik dan op de gewenste locatie om gebruikers toe te voegen of te verwijderen.
+
+![](./assets/md/user-manuals/images/dutch/beheer_toezichthouders.png)
+
+Voor meer informatie over het opnemen van aanwezigheden ga naar de vrijwilligerspagina.
 
 ## Nog vragen?
 

@@ -24,6 +24,10 @@ Op het volgende scherm krijg je de mogelijkheid om een gebruiker op te zoeken en
 
 Als administrator kan je zelf ook andere mensen tot administrator maken. Het is echter **niet** de bedoeling om veel mensen administrator te maken, omwille van privacy: elke hogeronderwijsinstelling is beperkt tot 1-3 administrators. Deze functionaliteit is voornamelijk bedoeld om een overschakeling van administrators mogelijk te maken binnen één hogeronderwijsinstelling.
 
+## Gebouw beheer
+
+Verwijderen van gebouwen is een exclusief recht van administrators voor veiligheidsredenen.
+
 ## Verdere vragen
 
 Als er zich verdere vragen voordoen bij het gebruik van de applicatie kan je mailen naar de technische beheerders op studieplekken@student.ugent.be. 

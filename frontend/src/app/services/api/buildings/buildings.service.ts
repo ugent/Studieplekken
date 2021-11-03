@@ -21,7 +21,7 @@ export class BuildingService {
   // *************************************/
 
   getAllBuildings(): Observable<Building[]> {
-    return this.buildingCache.getAllValues(api.buildings);
+    return this.buildingCache.getAllValues(api.buildings, true);
   }
 
   getBuilding(buildingId: number): Observable<Building> {
