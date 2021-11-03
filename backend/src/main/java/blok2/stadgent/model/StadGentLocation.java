@@ -79,6 +79,9 @@ public class StadGentLocation {
         return format.format(lat) + ", " + format.format(lng);
     }
 
+    @JsonProperty("datum_reservatie")
+    public String date;
+
     public Integer getId() {
         return id;
     }
@@ -115,7 +118,7 @@ public class StadGentLocation {
         return buildingName;
     }
 
-    public StadGentLocation(Integer id, String name, String teaserUrl, String adres, String postcode, String gemeente, Integer capacity, Integer reserved, boolean isReservable, String buildingName, String hours, Double lat, Double lng) {
+    public StadGentLocation(Integer id, String name, String teaserUrl, String adres, String postcode, String gemeente, Integer capacity, Integer reserved, boolean isReservable, String buildingName, String hours, Double lat, Double lng, String date) {
         this.id = id;
         this.name = name;
         this.teaserUrl = teaserUrl;
@@ -129,16 +132,19 @@ public class StadGentLocation {
         this.hours = hours;
         this.lat = lat;
         this.lng = lng;
+        this.date = date;
     }
 
     public static StadGentLocation fromLocation(Location loc, TimeslotService ts) {
         Integer amountOfReservations = loc.getCurrentTimeslot() == null ? null:loc.getCurrentTimeslot().getAmountOfReservations();
         boolean isReservable = loc.getCurrentTimeslot() != null && loc.getCurrentTimeslot().isReservable();
 
-        Stream<Timeslot> l = ts.getTimeslotsOfLocation(loc.getLocationId()).stream().filter(t -> t.timeslotDate().isEqual(LocalDate.now()));
+        Stream<Timeslot> l = ts.getTimeslotsOfLocation(loc.getLocationId()).stream().filter(t -> t.timeslotDate().isEqual(loc.getCurrentTimeslot().timeslotDate()));
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         String hours = l.map(t -> t.getOpeningHour().format(formatter) + " - " + t.getClosingHour().format(formatter)).collect(Collectors.joining(","));
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
+        String date = loc.getCurrentTimeslot().timeslotDate().format(dateTimeFormatter);
         LocalTime openingTime = loc.getCurrentTimeslot() == null ? null:loc.getCurrentTimeslot().getOpeningHour();
         LocalTime closingTime = loc.getCurrentTimeslot() == null ? null:loc.getCurrentTimeslot().getClosingHour();
 
@@ -163,7 +169,8 @@ public class StadGentLocation {
                     loc.getBuilding().getName(),
                     hours,
                     targetPoint.getX(),
-                    targetPoint.getY()
+                    targetPoint.getY(),
+                    date
             );
 
         } catch (FactoryException e) {
