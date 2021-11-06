@@ -70,9 +70,13 @@ export class UserRolesComponent implements OnInit {
     this.admin.setValue(this.user.admin);
   }
 
-  onAdminClick(event: Event, template: TemplateRef<unknown>): void {
+  onAdminClick(event: Event, templateAdd: TemplateRef<unknown>, templateRemove: TemplateRef<unknown>, checkboxValue: boolean): void {
     event.preventDefault();
-    this.modalRef = this.modalService.open(template);
+    if (checkboxValue){
+      this.modalRef = this.modalService.open(templateRemove);
+    }else{
+      this.modalRef = this.modalService.open(templateAdd);
+    }
   }
 
   confirmAdminChange(): void {

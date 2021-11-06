@@ -23,7 +23,7 @@
     <form (ngSubmit)="submitUpdateUser()" [formGroup]="roleFormGroup">
       <div class="row">
         <label>
-          <mat-checkbox type="checkbox" color='primary' formControlName="admin" (click)="onAdminClick($event, confirm)">{{'general.roles.ADMIN' | translate}}</mat-checkbox>
+          <mat-checkbox #c type="checkbox" color='primary' formControlName="admin" (click)="onAdminClick($event, confirmadd, confirmremove, c.checked)">{{'general.roles.ADMIN' | translate}}</mat-checkbox>
         </label>
       </div>
 
@@ -44,9 +44,17 @@
   </div>
 </div>
 
-<ng-template #confirm>
+<ng-template #confirmadd>
   <div modal-body class="text-center">
-    <p>{{'management.users.userDetails.roles.adminConfirmation' | translate }}</p>
+    <p>{{'management.users.userDetails.roles.adminAddConfirmation' | translate }}</p>
+    <button type="button" class="button button-default" (click)="confirmAdminChange()" >{{ 'general.yes' | translate }}</button>
+    <button type="button" class="button button-primary" (click)="declineAdminChange()" >{{ 'general.no' | translate}}</button>
+  </div>
+</ng-template>
+
+<ng-template #confirmremove>
+  <div modal-body class="text-center">
+    <p>{{'management.users.userDetails.roles.adminRemoveConfirmation' | translate }}</p>
     <button type="button" class="button button-default" (click)="confirmAdminChange()" >{{ 'general.yes' | translate }}</button>
     <button type="button" class="button button-primary" (click)="declineAdminChange()" >{{ 'general.no' | translate}}</button>
   </div>
