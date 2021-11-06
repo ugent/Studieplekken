@@ -493,8 +493,8 @@
           "loadingUpdatingUser": "Wachten op het antwoord van de server...",
           "successUpdatingUser": "Het updaten van de rollen van de gebruiker is gelukt...",
           "errorUpdatingUser": "Er is iets misgelopen tijdens het updaten van de gebruiker...",
-          "adminAddConfirmation": "De actie die u hier doet is gevaarlijk! Hiermee verandert u de administrator-status van de gebruiker, waardoor deze onbeperkte toegang krijgt tot het platform. Wil u verdergaan met het toevoegen van de administrator-status?",
-          "adminRemoveConfirmation": "De actie die u hier doet is gevaarlijk! Hiermee verandert u de administrator-status van de gebruiker, waardoor deze mogelijks geen toegang meer heeft tot het platform. Wil u verdergaan met het verwijderen van de administrator-status van de gebruiker?"
+          "adminAddConfirmation": "Pas op! U bent de administrator-status van de gebruiker aan het toevoegen. Hierdoor krijgt de gebruiker onbeperkte toegang tot het platform. Wilt u verdergaan met het toevoegen van de administrator-status?",
+          "adminRemoveConfirmation": "Pas op! U bent de administrator-status van de gebruiker aan het verwijderen. De gebruiker kan hierna mogelijks geen toegang meer hebben tot het platform. Wil u verdergaan met het verwijderen van de administrator-status van de gebruiker?"
         },
         "authorities": {
           "title": "Autoriteiten van {name}",
