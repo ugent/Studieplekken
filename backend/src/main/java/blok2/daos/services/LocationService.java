@@ -69,6 +69,7 @@ public class LocationService implements ILocationDao {
 
     @Override
     public Location addLocation(Location location) {
+        location.setApproved(true);
         return locationRepository.saveAndFlush(location);
     }
 

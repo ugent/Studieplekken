@@ -18,6 +18,6 @@ public class StadGentLocationControllerTest extends BaseIntegrationTest {
     public void testGetLocations() throws Exception {
         mockMvc.perform(get("/stadgent/locations")).andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2)); // only approved location
+                .andExpect(jsonPath("$.length()").value(3)); // only approved location
     }
 }

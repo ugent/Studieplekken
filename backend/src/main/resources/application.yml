@@ -1,7 +1,9 @@
 # spring configuration
 spring:
   profiles:
-    active: "dev" # if profile "mail" is added, mails are allowed to be sent, otherwise not
+    # if profile "mail" is added, mails are allowed to be sent, otherwise not
+    # if profile "dev" is added, the mail address in the HTTP header "AS-USER" is used for impersonation
+    active: "dev"
   application:
     name: "BlokAtUGent"
   datasource:

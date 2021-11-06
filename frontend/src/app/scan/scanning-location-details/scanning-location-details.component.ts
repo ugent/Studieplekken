@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocationService } from '../../services/api/locations/location.service';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Location } from '../../shared/model/Location';
 import { ScanningService } from '../../services/api/scan/scanning.service';
 import { catchError, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs/internal/observable/of';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { BarcodeService } from 'src/app/services/barcode.service';
-import { LocationReservation } from 'src/app/shared/model/LocationReservation';
+import { LocationReservation, LocationReservationState } from 'src/app/shared/model/LocationReservation';
 import { timer } from 'rxjs';
 
 @Component({
@@ -69,13 +69,8 @@ export class ScanningLocationDetailsComponent implements OnInit {
     );
   }
 
-  getValidator(): (a: string) => boolean {
-    return (code) => code.length > 6; // filter out the most egregious examples
-  }
-
   scanUser(reservations: LocationReservation[], code: string): void {
     this.error = '';
-    console.log(code);
     const res = this.barcodeService.getReservation(reservations, code);
     if (res == null) {
       this.error = 'scan.maybe';
@@ -88,7 +83,7 @@ export class ScanningLocationDetailsComponent implements OnInit {
     this.reservationService
       .postLocationReservationAttendance(this.reservation, true)
       .subscribe({ error: () => (this.error = 'scan.error') });
-    this.reservation.attended = true;
+    this.reservation.state = LocationReservationState.PRESENT;
     this.lastScanned = this.reservation;
     this.reservation = null;
   }

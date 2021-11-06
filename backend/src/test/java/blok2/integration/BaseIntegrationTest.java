@@ -13,6 +13,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.sql.SQLException;
@@ -46,6 +51,9 @@ public abstract class BaseIntegrationTest extends BaseTest {
 
     @Autowired
     protected MockMvc mockMvc;
+
+    @Autowired
+    protected AuthenticationManager am;
 
     protected Location testLocation;
     protected Location testLocationHoGent;
@@ -122,5 +130,14 @@ public abstract class BaseIntegrationTest extends BaseTest {
         locationReservationDao.addLocationReservationIfStillRoomAtomically(reservation2);
 
         volunteerDao.addVolunteer(testLocation.getLocationId(), student2.getUserId());
+
+
+        // Refreshing the user to the latest database state
+        // Only to be done in tests!
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        User currentUser = (User) securityContext.getAuthentication().getPrincipal();
+        User refreshedUser = userDao.getUserById(currentUser.getUserId());
+        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(refreshedUser, "", refreshedUser.getAuthorities());
+        securityContext.setAuthentication(authRequest);
     }
 }

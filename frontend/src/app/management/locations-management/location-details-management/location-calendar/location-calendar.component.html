@@ -141,14 +141,14 @@
 <!-- Modal view to ask whether the user is sure to delete a timeslot -->
 <ng-template #deleteTimeslotModal>
   <!-- Header -->
-  <div class="modal-header">
-    <h5 class="modal-title" id="deleteCalendarPeriodModalTitle">
+  <div modal-header>
+    <h1 id="deleteCalendarPeriodModalTitle">
       {{'management.locationDetails.calendar.deleteModalView.title' | translate}}
-    </h5>
+    </h1>
   </div>
 
   <!-- Body -->
-  <div class="modal-body">
+  <div modal-body>
     <div>
       <b>{{'management.locationDetails.calendar.deleteModalView.body' | translate}}</b>
       <br><br>
@@ -171,8 +171,8 @@
 
 
   <!-- Footer -->
-  <div class="modal-footer">
-    <button type="button" class="button button-danger danger" (click)="delete(toUpdateTimeslot)">
+  <div modal-footer>
+    <button type="button" class="button button-primary" (click)="delete(toUpdateTimeslot)">
       {{'general.buttons.delete' | translate}}
     </button>
     <button type="button" class="button button-secondary" (click)="closeModal()">
@@ -219,9 +219,9 @@
 <ng-template #copyTimeslotModal>
 
   <app-modal *ngIf="getLocation() | async as location">
-    <h5 modal-header>
+    <h2 modal-header>
       {{'management.locationDetails.calendar.copyModalView.title' | translate}}
-    </h5>
+    </h2>
 
     <div modal-body>
       <div>
@@ -260,15 +260,15 @@
       <button type="button" class="button button-secondary" (click)="closeModal()">
         {{'general.buttons.cancel' | translate}}
       </button>
-  
+
       <button type="button" class="button button-secondary" (click)="copy(toUpdateTimeslot, 0, location)">
         {{'management.locationDetails.calendar.copyModalView.nextWeek' | translate}}
       </button>
-  
+
       <button type="button" class="button button-primary" (click)="copy(toUpdateTimeslot, weekSelector.value, location)">
         {{'general.buttons.add' | translate}}
       </button>
     </div>
   </app-modal>
-  
+
 </ng-template>
