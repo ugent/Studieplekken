@@ -106,19 +106,6 @@ public class LocationController extends AuthorizedLocationController {
     public void updateLocation(@AuthenticationPrincipal User user, @PathVariable("locationId") int locationId, @RequestBody Location location) {
         isAuthorized(locationId);
 
-        if (!user.isAdmin()) {
-            if (!location.getBuilding().getInstitution().equals(user.getInstitution())) {
-                throw new NotAuthorizedException("You are not authorized to update a location to an institution other than the one you belong to.");
-            }
-        }
-
-        // Get the location that is currently in db
-        Location cl = locationDao.getLocationById(locationId);
-
-        // Make sure that only an admin could change the number of seats
-        if (cl.getNumberOfSeats() != location.getNumberOfSeats() && !isAdmin())
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Changing seats can only be done by admins");
-
         locationDao.updateLocation(location);
         logger.info(String.format("Location %d updated", locationId));
     }
