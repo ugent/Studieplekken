@@ -37,7 +37,7 @@ export class LocationAddTimeslotDialogComponent implements OnInit, OnChanges {
       this.model.openingHour = oldTimeslot.openingHour;
       this.model.timeslotDate = oldTimeslot.timeslotDate;
       this.model.timeslotSequenceNumber = oldTimeslot.timeslotSequenceNumber;
-      this.model.reservableFrom = oldTimeslot.reservableFrom; 
+      this.model.reservableFrom = oldTimeslot.reservableFrom;
     }
   }
 
@@ -68,7 +68,7 @@ export class LocationAddTimeslotDialogComponent implements OnInit, OnChanges {
   }
 
   confirm() {
-    if(this.model.closingHour > this.model.openingHour){
+    if(this.model.closingHour.isAfter(this.model.openingHour)){
       this.displayErrorTime = false;
       this.onNewTimeslot.next(this.model);
     }else{
