@@ -18,6 +18,8 @@ import { Location } from '../../shared/model/Location';
 import { map } from 'rxjs/internal/operators/map';
 import { Timeslot } from 'src/app/shared/model/Timeslot';
 import { TimeslotsService } from 'src/app/services/api/calendar-periods/timeslot.service';
+import { CalendarViewPeriod } from 'angular-calendar';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-locations-management',
@@ -133,6 +135,24 @@ export class LocationsManagementComponent implements OnInit {
         this.currentTimeslotsToDelete = next;
         this.dialog.open(template);
       });
+  }
+
+  isFuture(cp: Timeslot): boolean {
+    let currentDate = new Date();
+    const currentMoment = moment(currentDate);
+    if (cp.timeslotDate >= moment(currentDate)){
+      return true;
+    }else if(cp.timeslotDate.format("YYYY-MM-DD") === currentMoment.format("YYYY-MM-DD")){
+      // Same dates need extra checks
+      if(cp.closingHour.format("HH") > currentMoment.format("HH")){
+        // and the closing hour is in the future
+        return true;
+      }else if((cp.closingHour.format("HH") === currentMoment.format("HH")) && cp.closingHour.format("MM") >= currentMoment.format("MM")){
+        // if the hours are the same compare the minutes
+        return true;
+      }
+    }
+    return false;
   }
 
   deleteLocation(): void {
