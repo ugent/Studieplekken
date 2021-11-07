@@ -239,7 +239,8 @@
           "approveAll": "Keur alle suggesties goed",
           "approve": "Keur goed",
           "reject": "Keur af",
-          "rejectAll": "Keur alle suggesties af"
+          "rejectAll": "Keur alle suggesties af",
+          "openingClosingHourError": "De openingstijd moet minstens één minuut voor de sluitingstijd zijn."
         },
         "addModalView": {
           "title": "Nieuw tijdslot toevoegen",
