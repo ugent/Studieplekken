@@ -34,15 +34,15 @@
 
     <!-- Feedback on updating the descriptions -->
     <div class="row" style="margin-top: 20px;">
-      <div class="alert alert-info" *ngIf="showUpdateSuccess === null">
+      <div class="messages messages--info" *ngIf="showUpdateSuccess === null">
         {{'general.waitingForServer' | translate}}
       </div>
 
-      <div class="alert alert-success" *ngIf="showUpdateSuccess === true">
+      <div class="messages messages--success" *ngIf="showUpdateSuccess === true">
         {{'management.locationDetails.description.successUpdating' | translate}}
       </div>
 
-      <div class="alert alert-error" *ngIf="showUpdateSuccess === false">
+      <div class="messages messages--error" *ngIf="showUpdateSuccess === false">
         {{'management.locationDetails.description.errorUpdating' | translate}}
       </div>
     </div>

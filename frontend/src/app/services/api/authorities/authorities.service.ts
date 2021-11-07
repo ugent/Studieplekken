@@ -55,7 +55,7 @@ export class AuthoritiesService {
 
   getAuthoritiesOfUser(userId: string): Observable<Authority[]> {
     return this.http.get<Authority[]>(
-      api.authoritiesOfUser.replace('{userId}', userId)
+      api.authoritiesOfUser.replace('{userId}', btoa(userId))
     );
   }
 
