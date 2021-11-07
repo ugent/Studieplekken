@@ -177,17 +177,6 @@ public class LocationControllerTest extends BaseIntegrationTest {
         Assert.assertEquals(2, locationDao.getAllActiveLocations().size());
     }
 
-    @Test
-    @WithUserDetails(value = "authholder", userDetailsServiceBeanName = "testUserDetails")
-    public void testPostNewLocationToOtherInstitutionUnauthorized() throws Exception {
-        // First remove the location from the database to prevent conflicts (already location with that name).
-        locationDao.deleteLocation(testLocationHoGent.getLocationId());
-
-        // Do test.
-        mockMvc.perform(post("/locations").with(csrf())
-                .content(objectMapper.writeValueAsBytes(testLocationHoGent)).contentType("application/json"))
-                .andDo(print()).andExpect(status().isForbidden());
-    }
 
     @Test
     @WithUserDetails(value = "authholder", userDetailsServiceBeanName = "testUserDetails")
