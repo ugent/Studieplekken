@@ -1,10 +1,10 @@
 <div fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap="20px" class="container">
   <label fxFlex="0 1 calc(90% - 20px)">
-    <input [disabled]="disabled" class="form-control" type="date" [(ngModel)]="modelDateAsString"
+    <input [disabled]="disabled" class="form-control input-{{this.model === null && !this.disabled }}" type="date" [(ngModel)]="modelDateAsString"
       (ngModelChange)="onNewDate()" [min]="modelMinAsString" [max]="modelMaxAsString" />
   </label>
   <label fxFlex="0 1 calc(10% - 20px)">
-    <input [disabled]="disabled" class="form-control" type="time" [(ngModel)]="modelTimeAsString"
+    <input [disabled]="disabled" class="form-control input-{{this.model === null && !this.disabled}}" type="time" [(ngModel)]="modelTimeAsString"
       (ngModelChange)="onNewDate()" />
   </label>
 </div>
