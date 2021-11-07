@@ -142,7 +142,7 @@ export class LocationCalendarComponent implements OnInit {
 
 
           this.suggestions = this.timeslotGroupService.getSuggestions(next, location)
-          console.log(this.suggestions)
+          //console.log(this.suggestions)
           const suggestionEvents = this.suggestions.map(t => this.timeslotCalendarEventService.suggestedTimeslotToCalendarEvent(t.copy, this.translate.currentLang));
 
 
@@ -385,7 +385,7 @@ export class LocationCalendarComponent implements OnInit {
   }
 
   public isSuggestion(timeslot: Timeslot) {
-    console.log(this.suggestions.map(s => s.copy).includes(timeslot));
+    //console.log(this.suggestions.map(s => s.copy).includes(timeslot));
     return this.suggestions.map(s => s.copy).includes(timeslot);
   }
 
