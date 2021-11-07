@@ -82,6 +82,8 @@ public class LocationService implements ILocationDao {
         originalLocation.setNumberOfSeats(location.getNumberOfSeats());
         originalLocation.setForGroup(location.getForGroup());
         originalLocation.setImageUrl(location.getImageUrl());
+        originalLocation.setDescriptionDutch(location.getDescriptionDutch());
+        originalLocation.setDescriptionEnglish((location.getDescriptionEnglish()));
         locationRepository.save(originalLocation);
     }
 
