@@ -33,7 +33,7 @@
                 <i class="icon-hamburger" aria-hidden="true"></i>
               </td>
               <!-- Delete glyphicon -->
-              <td data-toggle="modal" class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
+              <td data-toggle="modal" class="hover" *ngIf="showAdmin()" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
                 (click)="prepareToDelete(building, deleteBuildingModal)">
                 <i class="icon-cross pointerCursor" aria-hidden="true"></i>
               </td>
@@ -105,10 +105,6 @@
           <div fxLayout="column" fxLayoutAlign="space-evenly">
             <div></div>
             <i class="{{getAddressIcon() }}" aria-hidden="true"></i>
-          </div>
-          <div fxLayout="column" fxLayoutAlign="flex-end">
-            <button class="button button-secondary" (click)="checkAddress()">{{'management.buildings.checkAddress' |
-              translate}}</button>
           </div>
         </div>
 
@@ -198,10 +194,6 @@
           <div fxLayout="column" fxLayoutAlign="space-evenly">
             <div></div>
             <i class="{{getAddressIcon() }}" aria-hidden="true"></i>
-          </div>
-          <div fxLayout="column" fxLayoutAlign="flex-end">
-            <button class="button button-secondary" (click)="checkAddress()">{{'management.buildings.checkAddress' |
-              translate}}</button>
           </div>
         </div>
 
@@ -296,7 +288,7 @@
 
     <!-- Footer -->
     <div class="modal-footer">
-      <button type="button" class="button button-secondary danger" (click)="deleteBuildingInFormGroup()">
+      <button type="button" class="button button-primary" (click)="deleteBuildingInFormGroup()">
         {{'general.buttons.delete' | translate}}
       </button>
       <button type="button" class="button button-secondary" (click)="closeModal()">

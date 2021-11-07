@@ -25,7 +25,7 @@
               <th scope="col">{{'profile.reservations.locations.table.header.locationName' | translate}}</th>
               <th scope="col">{{'profile.reservations.locations.table.header.reservationDate' | translate}}</th>
               <th scope="col">{{'profile.reservations.locations.table.header.beginHour' | translate}}</th>
-              <th scope="col">{{'profile.reservations.locations.table.header.attended' | translate}}</th>
+              <th scope="col">{{'profile.reservations.locations.table.header.state' | translate}}</th>
               <th scope="col"></th>
             </tr>
           </thead>
@@ -45,7 +45,7 @@
               <td *ngIf="!needTooltip(reservation)">{{getCorrectI18NObject(reservation) | translate}}</td>
               <!-- User should not be able to delete past reservations, otherwise the penalty points
                  could be deleted as well -->
-              <td *ngIf="!reservation.timeslot.isInPast() && reservation.attended !== false; else emptyTableData"
+              <td *ngIf="canDeleteReservation(reservation); else emptyTableData"
                 class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
                 (click)="prepareToDeleteLocationReservation(reservation, deleteLocationReservationModal)">
                 <i class="icon-cross" aria-hidden="true"></i>

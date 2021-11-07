@@ -10,7 +10,7 @@ import * as moment from 'moment';
 import { BarcodeService } from 'src/app/services/barcode.service';
 import { User } from 'src/app/shared/model/User';
 import { LocationReservationsService } from '../../../../../../services/api/location-reservations/location-reservations.service';
-import { LocationReservation } from '../../../../../../shared/model/LocationReservation';
+import { LocationReservation, LocationReservationState } from '../../../../../../shared/model/LocationReservation';
 import {
   Timeslot,
 } from '../../../../../../shared/model/Timeslot';
@@ -42,8 +42,8 @@ export class LocationReservationsComponent {
 
   userHasSearchTerm: (u: User) => boolean = (u: User) =>
     u.userId.includes(this.searchTerm) ||
-    u.firstName.includes(this.searchTerm) ||
-    u.lastName.includes(this.searchTerm)
+    u.firstName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+    u.lastName.toLowerCase().includes(this.searchTerm.toLowerCase())
 
   constructor(
     private locationReservationService: LocationReservationsService,
@@ -66,11 +66,12 @@ export class LocationReservationsComponent {
         r.user === reservation.user
       );
     });
-
+    
+    const oldState = idx < 0? undefined : this.scannedLocationReservations[idx].state;
+    const newState = attended? LocationReservationState.PRESENT : LocationReservationState.ABSENT;
     // only perform API call if the attendance/absence changes
     if (
-      idx >= 0 &&
-      attended === this.scannedLocationReservations[idx].attended
+      oldState === newState
     ) {
       return;
     }
@@ -81,12 +82,12 @@ export class LocationReservationsComponent {
       .subscribe(
         () => {
           this.waitingForServer = false;
-          reservation.attended = attended;
+          reservation.state = newState;
 
           if (idx < 0) {
             this.scannedLocationReservations.push(reservation);
           } else {
-            this.scannedLocationReservations[idx].attended = attended;
+            this.scannedLocationReservations[idx].state = newState;
           }
         },
         (err) => {
@@ -98,7 +99,7 @@ export class LocationReservationsComponent {
   }
 
   onFinishScanningClick(modalTemplate: TemplateRef<unknown>): void {
-    this.modalService.open(modalTemplate);
+    this.modalService.open(modalTemplate, { panelClass: ["cs--cyan", "bigmodal"] });
   }
 
   setAllNotScannedToUnattended(errorTemplate: TemplateRef<unknown>): void {
@@ -106,13 +107,14 @@ export class LocationReservationsComponent {
     this.modalService.closeAll();
 
     // if the update is not successful, rollback UI changes
-    const rollback: LocationReservation[] = [];
+    const newLocationReservations: LocationReservation[] = [];
 
     // set all reservations where attended is null to false
     this.locationReservations.forEach((reservation) => {
-      if (reservation.attended !== true) {
-        reservation.attended = false;
-        rollback.push(reservation);
+      if (reservation.state !== LocationReservationState.PRESENT) {
+        newLocationReservations.push(new LocationReservation(reservation.user, reservation.timeslot, LocationReservationState.ABSENT, reservation.createdAt));
+      } else {
+        newLocationReservations.push(reservation);
       }
     });
 
@@ -120,13 +122,11 @@ export class LocationReservationsComponent {
     this.locationReservationService
       .setAllNotScannedAsUnattended(this.currentTimeSlot)
       .subscribe(
-        () => {},
         () => {
-          // on error, rollback UI changes
-          rollback.forEach((reservation) => {
-            reservation.attended = null;
-          });
-          this.modalService.open(errorTemplate);
+          this.locationReservations = newLocationReservations;
+        },
+        () => {
+          this.modalService.open(errorTemplate, { panelClass: ["cs--cyan", "bigmodal"] });
         }
       );
   }
@@ -142,7 +142,7 @@ export class LocationReservationsComponent {
     console.log(locationReservation, template);
     this.successDeletingLocationReservation = undefined;
     this.locationReservationToDelete = locationReservation;
-    this.modalService.open(template);
+    this.modalService.open(template, { panelClass: ["cs--cyan", "bigmodal"] });
   }
 
   deleteLocationReservation(): void {
@@ -163,14 +163,20 @@ export class LocationReservationsComponent {
   // *******************/
 
   getCorrectI18NObject(reservation: LocationReservation): string {
-    if (reservation.attended === null) {
-      if (this.isTimeslotStartInFuture()) {
-        return 'general.notAvailableAbbreviation';
-      } else {
-        return 'management.locationDetails.calendar.reservations.table.notScanned';
+    switch (reservation.state) {
+      case LocationReservationState.PRESENT: {
+        return 'general.yes';
       }
-    } else {
-      return reservation.attended ? 'general.yes' : 'general.no';
+      case LocationReservationState.ABSENT: {
+        return 'general.no';
+      }
+      default: {
+        if (this.isTimeslotStartInFuture()) {
+          return 'general.notAvailableAbbreviation';
+        } else {
+          return 'management.locationDetails.calendar.reservations.table.notScanned';
+        }
+      }
     }
   }
 
@@ -189,11 +195,11 @@ export class LocationReservationsComponent {
   }
 
   disableYesButton(reservation: LocationReservation): boolean {
-    return reservation.attended !== null && reservation.attended === true;
+    return reservation.state === LocationReservationState.PRESENT;
   }
 
   disableNoButton(reservation: LocationReservation): boolean {
-    return reservation.attended !== null && reservation.attended === false;
+    return reservation.state === LocationReservationState.ABSENT;
   }
 
   /**
@@ -208,7 +214,7 @@ export class LocationReservationsComponent {
       );
 
       if (idx >= 0) {
-        this.locationReservations[idx].attended = slr.attended;
+        this.locationReservations[idx].state = slr.state;
       }
     });
   }
@@ -250,11 +256,22 @@ export class LocationReservationsComponent {
         return this.userHasSearchTerm(a.user) ? -1 : 1;
       }
 
-      if (b.attended !== a.attended) {
-        return a.attended === null ? -1 // not scanned before everything else
-          : b.attended === null ? 1 // everything else after not scanned
-          : a.attended && !b.attended ? 1 // attended after absent
-          : -1; // absent before attended
+      if (b.state !== a.state) {
+        const order = [
+          LocationReservationState.APPROVED, // Not scanned first.
+          LocationReservationState.ABSENT,
+          LocationReservationState.PRESENT,
+          LocationReservationState.REJECTED,
+          LocationReservationState.PENDING
+        ];
+        for (const state of order) {
+          if (a.state === state) {
+            return -1;
+          }
+          if (b.state === state) {
+            return 1;
+          }
+        }
       }
 
       // If a.user.firstName equals b.user.firstName, the first localeCompare returns 0 (= false)

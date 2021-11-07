@@ -85,6 +85,7 @@
           </label>
           <div class="col-lg-8">
             <select class="form-control" id="authority" [formControl]="authoritiesFormControl">
+              <option disabled selected value style="display:none"></option>
               <option *ngFor="let authority of addableAuthorities" [value]="authority.authorityId">
                 {{authority.authorityName + ' (' + authority.description + ')'}}
               </option>
@@ -124,23 +125,18 @@
 
 <!-- Modal to ask whether the manager is sure to remove the authority from the user -->
 <ng-template #deleteAuthorityFromUserModal>
-  <!-- Header -->
-  <div class="modal-header">
-    <h5 class="modal-title" id="deleteAuthorityFromUserModalTitle">
+  <app-modal>
+    <!-- Header -->
+    <h1 modal-header>
       {{'management.users.userDetails.authorities.deleteAuthorityFromUserModal.title' | translate}}
-    </h5>
-    <button type="button" class="close" (click)="closeModal()" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
+    </h1>
 
-  <!-- Body -->
-  <div class="modal-body">
-    <div>
-      <span>{{('management.users.userDetails.authorities.deleteAuthorityFromUserModal.body' | translate)
-        .replace('{name}', userFirstName + ' ' + userLastName)}}</span>
-
-      <br><br>
+    <!-- Body -->
+    <form modal-body>
+      <div>
+        {{('management.users.userDetails.authorities.deleteAuthorityFromUserModal.body' | translate)
+          .replace('{name}', userFirstName + ' ' + userLastName)}}
+      </div>
 
       <ul *ngIf="authorityPreparedToDelete !== undefined">
         <li><b style="margin-right: 5px"><i>{{('management.authorities.table.authorityName' | translate) + ':
@@ -148,31 +144,31 @@
         <li><b style="margin-right: 5px"><i>{{('management.authorities.table.description' |
               translate)}}</i></b>{{authorityPreparedToDelete.description}}</li>
       </ul>
-    </div>
-  </div>
+    </form>
 
-  <!-- Footer -->
-  <div class="modal-footer">
-    <button type="button" class="btn btn-primary"
-      (click)="deleteAuthorityFromUser(userId, authorityPreparedToDelete.authorityId)">
-      {{'general.buttons.delete' | translate}}
-    </button>
-    <button type="button" class="btn btn-secondary" (click)="closeModal()">
-      {{'general.buttons.cancel' | translate}}
-    </button>
-  </div>
-
-  <div class="container-fluid">
-    <div class="messages messages--info" *ngIf="successOnDeletingAuthorityForUser === null">
-      {{'general.waitingForServer' | translate}}
+    <!-- Footer -->
+    <div modal-footer>
+      <button type="button" class="button button-primary"
+        (click)="deleteAuthorityFromUser(userId, authorityPreparedToDelete.authorityId)">
+        {{'general.buttons.delete' | translate}}
+      </button>
+      <button type="button" class="button button-secondary" (click)="closeModal()" aria-label="Close">
+        {{'general.buttons.cancel' | translate}}
+      </button>
     </div>
 
-    <div class="messages messages--success" *ngIf="successOnDeletingAuthorityForUser === true">
-      {{'management.users.userDetails.authorities.deleteAuthorityFromUserModal.success' | translate}}
-    </div>
+    <div class="container-fluid">
+      <div class="messages messages--info" *ngIf="successOnDeletingAuthorityForUser === null">
+        {{'general.waitingForServer' | translate}}
+      </div>
 
-    <div class="messages messages--error" *ngIf="successOnDeletingAuthorityForUser === false">
-      {{'management.users.userDetails.authorities.deleteAuthorityFromUserModal.error' | translate}}
+      <div class="messages messages--success" *ngIf="successOnDeletingAuthorityForUser === true">
+        {{'management.users.userDetails.authorities.deleteAuthorityFromUserModal.success' | translate}}
+      </div>
+
+      <div class="messages messages--error" *ngIf="successOnDeletingAuthorityForUser === false">
+        {{'management.users.userDetails.authorities.deleteAuthorityFromUserModal.error' | translate}}
+      </div>
     </div>
-  </div>
+  </app-modal>
 </ng-template>

@@ -16,6 +16,8 @@ Strict safety measures apply at every study place. Hands must be disinfected upo
 
 The study areas are organized by students, staff and volunteers. Please treat them and each other respectfully. Marked study spots are provided for student supervisors, please do not occupy them. Supervision is available at each study spot. If you have any problems or questions, please do not hesitate to speak to this person.
 
+<div id="FAQ"></div>
+
 ## Frequently Asked Questions
 
 - Will there be checks by UGent staff at the study space? If yes, at what time and how frequently will this happen?

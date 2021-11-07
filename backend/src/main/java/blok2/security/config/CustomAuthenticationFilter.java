@@ -14,7 +14,6 @@ import java.io.IOException;
 
 public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
-
     private AuthenticationManager authManager;
 
     public CustomAuthenticationFilter(AuthenticationManager authManager) {
