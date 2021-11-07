@@ -96,11 +96,6 @@ public class LocationController extends AuthorizedLocationController {
             // good to go
         }
 
-        // Check if the user is an admin or is in the same institution that he is adding a location to.
-        if (!user.isAdmin() && !user.getInstitution().equals(location.getBuilding().getInstitution())) {
-            throw new NotAuthorizedException("You are not authorized to add a new location for this institution.");
-        }
-
         this.locationDao.addLocation(location);
 
         logger.info(String.format("New location %s added", location.getName()));
