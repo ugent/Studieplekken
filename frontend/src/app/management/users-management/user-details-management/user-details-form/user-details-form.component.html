@@ -64,7 +64,7 @@
         <input class="form-control" id="institution" type="text" formControlName="institution" >
       </div>
     </div>
-    <div class="row" fxLayout="row" fxLayoutAlign="center">
+    <div class="row" fxLayout="row" fxLayoutAlign="center" *ngIf="showImpersonate()">
       <button class="button button-secondary" (click)="impersonate(user)">{{"management.users.userDetails.form.impersonate" | translate}}</button>
     </div>
   </form>
