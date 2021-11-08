@@ -34,6 +34,7 @@ import { Location } from '../../shared/model/Location';
 import { LocationTag } from '../../shared/model/LocationTag';
 
 import * as Leaf from 'leaflet';
+import { AuthoritiesService } from 'src/app/services/api/authorities/authorities.service';
 
 // Leaflet stuff.
 const iconRetinaUrl = './assets/marker-icon-2x.png';
@@ -121,7 +122,8 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     private functionalityService: ApplicationTypeFunctionalityService,
     private router: Router,
     private breadcrumbs: BreadcrumbService,
-    private timeslotCalendarEventService: TimeslotCalendarEventService
+    private timeslotCalendarEventService: TimeslotCalendarEventService,
+    private authoritiesService: AuthoritiesService
 
   ) { }
 
@@ -137,7 +139,13 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     this.location = this.locationService.getLocation(this.locationId);
+
     this.showAdmin = this.authenticationService.isAdmin();
+    combineLatest([this.authenticationService.user, this.location]).subscribe(([user, location]) => {
+      this.showAdmin = this.authenticationService.isAdmin() ||
+       user.userAuthorities.map(a => a.authorityId).includes(location.authority.authorityId);
+    })
+
     this.authenticationService
       .getLocationReservations()
       .subscribe((next) => (this.locationReservations = next));

@@ -1,6 +1,6 @@
 <label>
     <input
-      class="form-control"
+      class="form-control input-{{this.model === null}}"
       [type]="type"
       [(ngModel)]="modelAsString"
       (ngModelChange)="onNewDate()"
