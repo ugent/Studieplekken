@@ -231,16 +231,7 @@ export class LocationsManagementComponent implements OnInit {
     const allBuildings = this.buildingsService.getAllBuildings();
 
     // Only show the buildings the user has access to.
-    let filteredBuildings: Observable<Building[]>;
-    if (this.authenticationService.isAdmin()) {
-      filteredBuildings = allBuildings;
-    } else {
-      const institution = this.authenticationService.userValue().institution;
-      filteredBuildings = allBuildings.pipe(
-        map(items => items.filter(building => building.institution === institution))
-      );
-    }
-    this.buildingsObs = filteredBuildings.pipe(
+    this.buildingsObs = allBuildings.pipe(
       tap((next) => {
         this.buildingsMap = new Map<number, Building>();
         next.forEach((value) => {

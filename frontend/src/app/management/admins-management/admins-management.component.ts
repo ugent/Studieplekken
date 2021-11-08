@@ -58,6 +58,10 @@ export class AdminsManagementComponent implements OnInit {
     );
   }
 
+  closeModal(): void {
+    this.modalService.closeAll();
+  }
+  
   /*
    * If any of the input fields are not empty without trimming, enable the 'search' button
    */
