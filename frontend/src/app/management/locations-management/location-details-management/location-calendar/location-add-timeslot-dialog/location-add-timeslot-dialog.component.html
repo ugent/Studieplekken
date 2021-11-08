@@ -79,6 +79,11 @@
     </div>
 
     <div modal-footer>
+        <div *ngIf="displayErrorTime">
+            <div class="alert alert-warning">
+              {{'management.locationDetails.calendar.form.openingClosingHourError' | translate}}
+            </div>
+        </div>
         <button class="button button-primary" (click)="confirm()" [disabled]="!model.isValid()" *ngIf="!isUpdating()">
             {{'general.buttons.add' | translate}}
         </button>

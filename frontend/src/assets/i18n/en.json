@@ -236,7 +236,8 @@
           "approveAll": "Approve all suggestions",
           "approve": "Approve",
           "reject": "Reject",
-          "rejectAll": "Reject all suggestions"
+          "rejectAll": "Reject all suggestions", 
+          "openingClosingHourError": "The opening hour must be at least one minute before the closing hour."
         },
         "addModalView": {
           "title": "Add new timeslot",
