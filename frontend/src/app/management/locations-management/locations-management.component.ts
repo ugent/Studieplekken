@@ -18,6 +18,7 @@ import { Location } from '../../shared/model/Location';
 import { map } from 'rxjs/internal/operators/map';
 import { Timeslot } from 'src/app/shared/model/Timeslot';
 import { TimeslotsService } from 'src/app/services/api/calendar-periods/timeslot.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-locations-management',
@@ -131,8 +132,13 @@ export class LocationsManagementComponent implements OnInit {
       .getTimeslotsOfLocation(location.locationId)
       .subscribe((next) => {
         this.currentTimeslotsToDelete = next;
+        this.currentTimeslotsToDelete.sort((timeslota: Timeslot, timeslotb: Timeslot) => timeslota.getStartMoment().diff(timeslotb.getStartMoment()));
         this.dialog.open(template);
       });
+  }
+
+  isFuture(cp: Timeslot): boolean {
+    return cp.getEndMoment().isAfter(moment(new Date()));
   }
 
   deleteLocation(): void {
