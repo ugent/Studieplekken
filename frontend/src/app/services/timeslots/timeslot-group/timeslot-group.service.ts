@@ -42,7 +42,7 @@ export class TimeslotGroupService {
   }
 
   private getOldestInTimeslotGroup(groups: TimeslotGroups) {
-    const mapper: (a: [number, Timeslot[]]) => [number, Timeslot] 
+    const mapper: (a: [number, Timeslot[]]) => [number, Timeslot]
                   = ([group, value]) => [group, value.reduce((a, b) => a.timeslotDate.isAfter(b.timeslotDate) ? a:b)]
 
     const list = Array.from(groups).map(mapper)
@@ -53,7 +53,7 @@ export class TimeslotGroupService {
   getSuggestions(timeslots: Timeslot[], location: Location, amountOfWeeks=3) {
     const latestTimeslots = this.getOldestTimeslotPerGroup(timeslots);
     const repeatableTimeslots = [...latestTimeslots.values()].filter(t => t.repeatable);
-    
+
     const suggestions: Suggestion[] = [];
 
     for(let i = 1; i <= amountOfWeeks; i++) {
