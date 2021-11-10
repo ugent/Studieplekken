@@ -10,7 +10,7 @@ The markdown files used are provided in `assets/md/information.<lang>.md`
       <markdown src="assets/md/user-manuals/Handleiding-student.md"></markdown>
     </div>
   </mat-tab>
-  <mat-tab label="{{'information.supervisor' | translate}}" *ngIf="showManagement || showAdmin">
+  <mat-tab label="{{'information.supervisor' | translate}}" *ngIf="showSupervisors || showManagement || showAdmin">
     <div style="padding-top: 10pt;">
       <markdown src="assets/md/user-manuals/Handleiding-vrijwilligers.md"></markdown>
     </div>

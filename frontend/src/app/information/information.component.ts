@@ -12,6 +12,7 @@ import { BreadcrumbService, dashboardBreadcrumb } from '../stad-gent-components/
 export class InformationComponent implements OnInit {
   showManagement = false;
   showAdmin = false;
+  showSupervisors = false;
 
   constructor(
     private translate: TranslateService,
@@ -26,6 +27,9 @@ export class InformationComponent implements OnInit {
     this.authenticationService.user.subscribe((next) => {
       // first, check if the user is logged in
       if (this.authenticationService.isLoggedIn()) {
+        if (this.authenticationService.hasVolunteeredValue()){
+          this.showSupervisors = true;
+        }
         if (next.admin) {
           this.showAdmin = true;
         } else {

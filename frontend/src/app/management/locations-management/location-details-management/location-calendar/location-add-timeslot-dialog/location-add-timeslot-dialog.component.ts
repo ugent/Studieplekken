@@ -17,6 +17,8 @@ export class LocationAddTimeslotDialogComponent implements OnInit, OnChanges {
   @Input() location: Location;
   @Input() timeslot: Timeslot;
 
+  displayErrorTime = false;
+
   constructor(private authenticationService: AuthenticationService, private modalService: MatDialog) { }
 
 
@@ -35,7 +37,7 @@ export class LocationAddTimeslotDialogComponent implements OnInit, OnChanges {
       this.model.openingHour = oldTimeslot.openingHour;
       this.model.timeslotDate = oldTimeslot.timeslotDate;
       this.model.timeslotSequenceNumber = oldTimeslot.timeslotSequenceNumber;
-      this.model.reservableFrom = oldTimeslot.reservableFrom; 
+      this.model.reservableFrom = oldTimeslot.reservableFrom;
     }
   }
 
@@ -66,7 +68,12 @@ export class LocationAddTimeslotDialogComponent implements OnInit, OnChanges {
   }
 
   confirm() {
-    this.onNewTimeslot.next(this.model);
+    if(this.model.closingHour.isAfter(this.model.openingHour)){
+      this.displayErrorTime = false;
+      this.onNewTimeslot.next(this.model);
+    }else{
+      this.displayErrorTime = true;
+    }
   }
 
   isUpdating() {

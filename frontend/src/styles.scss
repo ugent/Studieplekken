@@ -196,3 +196,17 @@ video {
 .fullwidth {
   width: 100%;
 }
+
+// Safari specific coloring of input fields
+@media not all and (min-resolution:.001dpcm)
+{ @supports (-webkit-appearance:none) {
+     
+    .input-true{ 
+        border: 1px solid rgba(245, 64, 64, 0.767) !important;
+    }
+
+    .input-false{ 
+        border: 1px solid rgba(128, 128, 128, 0.678) !important;
+    }
+    
+}}

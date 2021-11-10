@@ -287,10 +287,12 @@
       <div class="alert alert-danger">
         <p>{{'management.locations.deleteLocationModal.warning' | translate}}</p>
         <ul>
-          <li *ngFor="let cp of currentCalendarPeriodsToDelete">
-            {{cp.startsAt | date}} - {{cp.endsAt | date}} ({{cp.openingTime | date:'shortTime'}}-{{cp.closingTime |
-            date:'shortTime'}})
-          </li>
+          <div *ngFor="let cp of currentTimeslotsToDelete">
+            <li *ngIf="isFuture(cp)">
+              {{cp.timeslotDate | date}} - ({{cp.openingHour | date:'shortTime'}}-{{cp.closingHour |
+              date:'shortTime'}})
+            </li>
+          </div>
         </ul>
       </div>
     </div>

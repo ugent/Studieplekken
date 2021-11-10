@@ -84,6 +84,8 @@ export class LocationDescriptionComponent implements OnInit {
     ).subscribe(
       () => {
         this.showUpdateSuccess = true;
+        this.modelInDataLayer.dutch = this.model.dutch;
+        this.modelInDataLayer.english = this.model.english;
         setTimeout(
           () => (this.showUpdateSuccess = undefined),
           msToShowFeedback
