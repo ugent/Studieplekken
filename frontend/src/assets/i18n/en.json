@@ -885,5 +885,13 @@
     "handheld-hint": "To use the handheld scanner, select the input box below. If scan is succesful, the user will pop to the top of the list.",
     "maybe": "This user wasn't found. Search in the list below, or try again.",
     "warn-unattended": "Marking someone as unattended opens up the seat for reservation."
-  }
+  },
+  "Odisee": "Odisee Hogeschool",
+  "Arteveldehogeschool": "Arteveldehogeschool",
+  "UGent": "UGent",
+  "HoGent": "HoGent",
+  "StadGent": "Stad Gent",
+  "Luca": "LUCA School of Arts",
+  "KULeuven": "KULeuven",
+  "other": "Other"
 }
