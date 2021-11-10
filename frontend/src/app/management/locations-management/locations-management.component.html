@@ -166,7 +166,7 @@
           </div>
         </div>
 
-        <!-- Building -->   
+        <!-- Building -->
         <div class="row form-group" *ngIf="buildingsObs | async as buildings">
           <div class="form-item">
             <label class="col-lg-3 control-label" for="building">
@@ -184,7 +184,7 @@
               </div>
             </div>
           </div>
-   
+
 
           <div *ngIf="building.invalid && (building.dirty || building.touched)" class="messages messages--error">
             <div *ngIf="building.errors.required">
