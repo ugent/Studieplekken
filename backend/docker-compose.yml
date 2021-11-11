@@ -8,14 +8,14 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdatas:/var/lib/postgresql/data
       - ./scripts/pg-init:/docker-entrypoint-initdb.d
     environment:
-        POSTGRES_MULTIPLE_DATABASES: blokatugent, blokatugent_test
+        POSTGRES_MULTIPLE_DATABASES: blokatugent, blokatugent_test, studieplekken_users
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: ***REMOVED***
         TZ: Europe/Brussels
         PGTZ: Europe/Brussels
 
 volumes:
-  pgdata:
+  pgdatas:

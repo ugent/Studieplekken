@@ -28,6 +28,8 @@
     "@nestjs/passport": "^8.0.1",
     "@nestjs/platform-express": "^8.0.0",
     "@prisma/client": "3.2.0",
+    "class-transformer": "^0.4.0",
+    "class-validator": "^0.13.1",
     "ldapjs": "^2.3.1",
     "nest-logger": "^7.0.0",
     "passport": "^0.5.0",
