@@ -1,4 +1,11 @@
-import { Body, Controller, Post, ValidationPipe } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Render,
+  ValidationPipe,
+} from "@nestjs/common";
 import { RegisterFlowService } from "./register-flow/register-flow-service";
 import { UnhashedRegisterBodyBase } from "./register-flow/RegisterBodyInterface";
 
@@ -9,5 +16,11 @@ export class LocalFlowController {
   @Post("register")
   registerNewAccount(@Body(ValidationPipe) body: UnhashedRegisterBodyBase) {
     return this.registerFlow.handleRegistration(body);
+  }
+
+  @Get("register")
+  @Render("register")
+  root() {
+    return { message: "Hello world!" };
   }
 }
