@@ -1,0 +1,25 @@
+<div class="mobile-container">
+  <div class="mobile-card" *ngFor="let dataPoint of tabularData.data">
+    <h3>{{ nonActionColumns()[0].columnContent(dataPoint) }}</h3>
+
+    <ul>
+      <li *ngFor="let column of nonActionColumns().slice(1)">
+        <b>{{ column.columnHeader }}</b>: {{ column.columnContent(dataPoint) }}
+      </li>
+    </ul>
+    <div fxLayoutAlign="flex-end">
+      <ng-container *ngFor="let column of actionColumns()">
+        <button
+          *ngIf="column.columnContent(dataPoint) as content"
+          class="button button-primary"
+          [attr.disabled]="column.columnContent(dataPoint).disabled"
+        >
+          {{
+            column.columnContent(dataPoint).fallbackContent ||
+              column.columnContent(dataPoint).actionContent
+          }}
+        </button>
+      </ng-container>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,29 @@
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { TabularData } from '../tabular-data';
+
+@Component({
+  selector: 'app-mobile-table',
+  templateUrl: './mobile-table.component.html',
+  styleUrls: ['./mobile-table.component.scss']
+})
+export class MobileTableComponent<T> implements OnInit {
+  @Input() tabularData: TabularData<T>;
+  @Output() action = new EventEmitter<{data: T, columnIndex: number}>()
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+  onAction(columnIndex: number, data: T) {
+    this.action.next({columnIndex, data});
+  }
+
+  nonActionColumns() {
+    return this.tabularData.columns.filter(c => c.type !== "actionColumn")
+  }
+
+  actionColumns() {
+    return this.tabularData.columns.filter(c => c.type === "actionColumn")
+  }
+}

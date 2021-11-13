@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
-import { Location } from '../../shared/model/Location';
-import { ScanningService } from '../../services/api/scan/scanning.service';
-import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs/internal/observable/of';
+import { catchError, map } from 'rxjs/operators';
+import { booleanSorter } from 'src/app/shared/util/Util';
+import { ScanningService } from '../../services/api/scan/scanning.service';
+import { Location } from '../../shared/model/Location';
+import { TableDataService } from '../../stad-gent-components/atoms/table/data-service/table-data-service.service';
 
 @Component({
   selector: 'app-scanning-locations',
@@ -14,7 +17,11 @@ export class ScanningLocationsComponent implements OnInit {
   locationObs: Observable<Location[]>;
   loadingError = new Subject<boolean>();
 
-  constructor(private scanningService: ScanningService) {}
+  constructor(
+    private scanningService: ScanningService,
+    private tableDataService: TableDataService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.locationObs = this.scanningService.getLocationsToScan().pipe(
@@ -22,10 +29,20 @@ export class ScanningLocationsComponent implements OnInit {
         console.error('Error while loading the locations you could scan.', err);
         this.loadingError.next(true);
         return of<Location[]>(null);
-      })
+      }),
+      map((l) =>
+        l.sort(
+          booleanSorter((l) => this.tableDataService.isLocationScannable(l))
+        )
+      )
     );
   }
+  getTableData(locations: Location[]) {
+    return this.tableDataService.locationsToScannable(locations);
+  }
 
-  isScannable(location: Location) {    return (location.currentTimeslot && location.currentTimeslot.reservable && location.currentTimeslot.isCurrent())
+  onAction({ data, columnIndex }: { data: Location; columnIndex: number }) {
+    console.log('action borreled up');
+    this.router.navigate([`/scan/locations/${data.locationId}`]);
   }
 }
