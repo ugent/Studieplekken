@@ -27,6 +27,7 @@ public class ScheduledTasks {
     private final ILocationReservationDao locationReservationDao;
     private final MailService mailService;
     private final ILocationDao locationDao;
+    private final ReservationManager reservationManager;
 
     private final String[] recipients;
 
@@ -34,11 +35,12 @@ public class ScheduledTasks {
 
     @Autowired
     public ScheduledTasks(ILocationReservationDao locationReservationDao, ILocationDao locationDao,
-                          MailService mailService, Environment env) {
+                          MailService mailService, Environment env, ReservationManager reservationManager) {
         this.locationReservationDao = locationReservationDao;
         this.mailService = mailService;
         this.locationDao = locationDao;
         recipients = env.getProperty("custom.mailing.recipientsOpeningHoursOverview", String[].class);
+        this.reservationManager = reservationManager;
     }
 
     /**
@@ -182,5 +184,16 @@ public class ScheduledTasks {
             }
         }
     }
+
+
+    /**
+     * Schedules the 'Random' reservation pools to be processes (if they're ready to be).
+     * TODO: How frequent should this be called?
+     */
+    @Scheduled(cron = "0 0 1 * * *")
+    public void scheduleRandomPools() {
+        reservationManager.scheduleRandomPools();
+    }
+    
 
 }

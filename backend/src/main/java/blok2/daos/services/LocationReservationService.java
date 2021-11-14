@@ -9,6 +9,7 @@ import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.threeten.extra.YearWeek;
@@ -138,6 +139,18 @@ public class LocationReservationService implements ILocationReservationDao {
     @Override
     public boolean addLocationReservationIfStillRoomAtomically(LocationReservation reservation) throws SQLException {
         return locationReservationDao.addLocationReservationIfStillRoomAtomically(reservation);
+    }
+
+    @Override
+    public boolean addLocationReservationToReservationQueue(LocationReservation reservation) {
+        try {
+            reservation.setState(LocationReservation.State.PENDING);
+            // TODO(ydndonck): Add reservation to in-memory queue.
+            locationReservationRepository.save(reservation);
+        } catch (DataAccessException ex) { // TODO(ydndonck): Propagate error instead?
+            return false;
+        }
+        return true;
     }
 
     @Override
