@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { TabularData } from '../tabular-data';
+import { Column, TabularData } from '../tabular-data';
 
 @Component({
   selector: 'app-desktop-table',
@@ -18,5 +18,9 @@ export class DesktopTableComponent<T> implements OnInit {
 
   onAction(columnIndex: number, data: T) {
     this.action.next({columnIndex, data});
+  }
+
+  getWidth(column: Column<T>) {
+    return column.width || ""
   }
 }

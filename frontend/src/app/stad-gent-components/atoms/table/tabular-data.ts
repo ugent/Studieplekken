@@ -20,14 +20,14 @@ type ActionColumn<T> = {
   type: "actionColumn",
   columnHeader: string,
   columnContent: ActionCell<T>,
-  width: number
+  width?: number
 }
 
 type ContentColumn<T> = {
   type: "contentColumn",
   columnHeader: string,
   columnContent: ContentCell<T>,
-  width: number
+  width?: number
 }
 
 export type Column<T> = ActionColumn<T> | ContentColumn<T>;
