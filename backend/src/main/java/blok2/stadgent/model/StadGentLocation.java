@@ -123,7 +123,7 @@ public class StadGentLocation {
     public StadGentLocation(Integer id, String name, String teaserUrl, String adres, String postcode, String gemeente, Integer capacity, Integer reserved, boolean isReservable, String buildingName, String hours, Double lat, Double lng, String date) {
         this.id = id;
         this.name = name;
-        this.teaserUrl = teaserUrl.equals("") ? getRandomUrl():teaserUrl;
+        this.teaserUrl = (teaserUrl == null || teaserUrl.trim().equals("")) ? getRandomUrl():teaserUrl;
         this.adres = adres;
         this.postcode = postcode;
         this.gemeente = gemeente;
