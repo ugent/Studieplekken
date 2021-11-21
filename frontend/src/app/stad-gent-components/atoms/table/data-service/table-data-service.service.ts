@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { LocationService } from 'src/app/services/api/locations/location.service';
 import { Location } from 'src/app/shared/model/Location';
 import { LocationReservation, LocationReservationState } from 'src/app/shared/model/LocationReservation';
 import { User } from 'src/app/shared/model/User';
@@ -10,7 +12,7 @@ import { TabularData } from '../tabular-data';
   providedIn: 'root',
 })
 export class TableDataService {
-  constructor(private translationService: TranslateService) {}
+  constructor(private locationService: LocationService) {}
 
   isLocationScannable(location: Location) {
     return (
@@ -111,7 +113,7 @@ export class TableDataService {
           columnHeader: "management.locationDetails.calendar.reservations.table.attended",
           type: 'contentColumn',
           columnContent: _ => "",
-          translateColumnContent: lr => this.getCorrectI18NObjectOfReservation(lr),
+          translateColumnContent: lr => this.getCorrectI18NObjectOfScan(lr),
         },
         {
           columnHeader: "management.locationDetails.calendar.reservations.table.scan",
@@ -140,7 +142,7 @@ export class TableDataService {
     }
   }
 
-  private getCorrectI18NObjectOfReservation(reservation: LocationReservation): string {
+  private getCorrectI18NObjectOfScan(reservation: LocationReservation): string {
     switch (reservation.state) {
       case LocationReservationState.PRESENT: {
         return 'general.yes';
@@ -164,5 +166,67 @@ export class TableDataService {
 
   private disableNoButton(reservation: LocationReservation): boolean {
     return reservation.state === LocationReservationState.ABSENT;
+  }
+
+  reservationsToProfileTable(reservations: LocationReservation[]): Observable<TabularData<LocationReservation>> {
+    const locations = reservations.map(r => this.locationService.getLocation(r.timeslot.locationId))
+    return combineLatest(locations).pipe(
+      map( locs => new Map(locs.map(l => [l.locationId, l]))),
+      map(locs => (
+        {
+          columns: [
+            {
+              columnHeader: "profile.reservations.locations.table.header.locationName",
+              type: 'contentColumn',
+              columnContent: lr => locs.get(lr.timeslot.locationId).name,
+            }, {
+              columnHeader: "profile.reservations.locations.table.header.reservationDate",
+              type: 'contentColumn',
+              columnContent: lr => lr.timeslot.timeslotDate.format("DD/MM/YYYY"),
+            },
+            {
+              columnHeader: "profile.reservations.locations.table.header.beginHour",
+              type: 'contentColumn',
+              columnContent: _ => "",
+              translateColumnContent: lr => lr.timeslot.openingHour.format("HH:mm"),
+            },
+            {
+              columnHeader: "profile.reservations.locations.table.header.state",
+              type: 'contentColumn',
+              columnContent: _ => "",
+              translateColumnContent: lr => 'profile.reservations.locations.table.attended.' + lr.state,
+            },
+
+            {
+              columnHeader: "",
+              type: 'actionColumn',
+              width: 7,
+              columnContent: lr => ({
+                actionType: 'icon',
+                actionContent: "cross",
+                fallbackContent: "delete",
+                disabled: !this.canDeleteReservation(lr)
+              })
+            },
+          ],
+          data: reservations
+        }
+      ))
+    )
+  }
+
+  private canDeleteReservation(
+    reservation: LocationReservation
+  ): boolean {
+    switch (reservation.state) {
+      case LocationReservationState.PENDING:
+      case LocationReservationState.REJECTED:
+      case LocationReservationState.APPROVED: {
+        return true;
+      }
+      default: {
+        return false;
+      }
+    }
   }
 }
