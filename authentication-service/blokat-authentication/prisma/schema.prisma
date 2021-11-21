@@ -15,3 +15,9 @@ model users {
   hashed_password String
   salt String
 }
+
+model tokens {
+  id String @id @default(uuid())
+  createdAt DateTime @default(now())
+  isUsed Boolean @default(false)
+}
