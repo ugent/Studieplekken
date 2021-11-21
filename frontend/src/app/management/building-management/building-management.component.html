@@ -117,7 +117,7 @@
           <div class="col-lg-8">
             <select class="form-control" id="institutionUpdate" formControlName="institution">
               <option *ngFor="let institution of institutions" [value]="institution">
-                {{institution}}
+                {{institution | translate}}
               </option>
             </select>
           </div>

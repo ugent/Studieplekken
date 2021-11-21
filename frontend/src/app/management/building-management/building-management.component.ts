@@ -239,7 +239,7 @@ export class BuildingManagementComponent implements OnInit {
 
   fillInstitutionsDependingOnUser(): void {
     if (this.authenticationService.isAdmin()) {
-      this.institutionsObs = of(['UGent', 'HoGent', 'Arteveldehogeschool']);
+      this.institutionsObs = of(['UGent', 'HoGent', 'Arteveldehogeschool', 'StadGent', 'Luca', 'Odisee', "Other"]);
     } else {
       this.institutionsObs = of([this.authenticationService.userValue().institution]);
     }

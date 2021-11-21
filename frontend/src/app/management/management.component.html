@@ -1,5 +1,5 @@
 <div class="container-fluid">
-  <div fxLayout="row" fxLayoutGap="32px" fxLayoutAlign="space-between">
+  <div fxLayout="row wrap" fxLayoutGap="32px" fxLayoutAlign="center">
 
 
     <!-- Default -->
@@ -14,7 +14,7 @@
 
           <div fxLayout="column" fxLayoutGap="16px" fxLayoutAlign="space-between">
 
-            <a routerLink="./locations">{{'management.aside.locations' | translate}}</a>            
+            <a routerLink="./locations">{{'management.aside.locations' | translate}}</a>
               <a routerLink="./buildings">{{'management.aside.buildings' | translate}}</a>
               <a routerLink="./tags"  *ngIf="showTagManagement">{{'management.aside.tags' | translate}}</a>
               <a routerLink="./users" *ngIf="showAdmin">{{'management.aside.users' | translate}}</a>
@@ -28,7 +28,7 @@
       </section>
     </aside>
 
-    <article fxFlex="0 1 calc(75% - 32px);">
+    <article fxFlex="0 1 calc(75% - 32px);" class="add-min-width">
       <router-outlet></router-outlet>
     </article>
   </div>
