@@ -9,6 +9,8 @@ import { MatDialog } from '@angular/material/dialog';
 import * as moment from 'moment';
 import { BarcodeService } from 'src/app/services/barcode.service';
 import { User } from 'src/app/shared/model/User';
+import { TableDataService } from 'src/app/stad-gent-components/atoms/table/data-service/table-data-service.service';
+import { TabularData } from 'src/app/stad-gent-components/atoms/table/tabular-data';
 import { LocationReservationsService } from '../../../../../../services/api/location-reservations/location-reservations.service';
 import { LocationReservation, LocationReservationState } from '../../../../../../shared/model/LocationReservation';
 import {
@@ -48,7 +50,8 @@ export class LocationReservationsComponent {
   constructor(
     private locationReservationService: LocationReservationsService,
     private modalService: MatDialog,
-    private barcodeService: BarcodeService
+    private barcodeService: BarcodeService,
+    private tabularDataService: TableDataService
   ) {}
 
   // /***************
@@ -66,7 +69,7 @@ export class LocationReservationsComponent {
         r.user === reservation.user
       );
     });
-    
+
     const oldState = idx < 0? undefined : this.scannedLocationReservations[idx].state;
     const newState = attended? LocationReservationState.PRESENT : LocationReservationState.ABSENT;
     // only perform API call if the attendance/absence changes
@@ -283,5 +286,18 @@ export class LocationReservationsComponent {
     });
 
     return locationReservations;
+  }
+
+  getTableData(locationReservations: LocationReservation[]): TabularData<LocationReservation> {
+    return this.tabularDataService.reservationsToTable(locationReservations)
+  }
+
+  onAction({columnIndex, data}: {columnIndex: number, data: LocationReservation}, errorTemplate: TemplateRef<unknown>) {
+    console.log(columnIndex)
+    if(columnIndex == 2)
+      return this.scanLocationReservation(data, true, errorTemplate);
+    else if(columnIndex == 3)
+      return this.scanLocationReservation(data, false, errorTemplate);
+
   }
 }

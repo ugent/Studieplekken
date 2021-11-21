@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { Observable } from 'rxjs';
 import { Location } from 'src/app/shared/model/Location';
+import { LocationReservation, LocationReservationState } from 'src/app/shared/model/LocationReservation';
 import { User } from 'src/app/shared/model/User';
 import { TabularData } from '../tabular-data';
 
@@ -7,7 +10,7 @@ import { TabularData } from '../tabular-data';
   providedIn: 'root',
 })
 export class TableDataService {
-  constructor() {}
+  constructor(private translationService: TranslateService) {}
 
   isLocationScannable(location: Location) {
     return (
@@ -95,5 +98,71 @@ export class TableDataService {
       ],
       data: users
     }
+  }
+
+  reservationsToTable(reservations: LocationReservation[]): TabularData<LocationReservation> {
+    return {
+      columns: [
+        {
+          columnHeader: "management.locationDetails.calendar.reservations.table.user",
+          type: 'contentColumn',
+          columnContent: lr => `${lr.user.firstName} ${lr.user.lastName}`,
+        }, {
+          columnHeader: "management.locationDetails.calendar.reservations.table.attended",
+          type: 'contentColumn',
+          columnContent: _ => "",
+          translateColumnContent: lr => this.getCorrectI18NObjectOfReservation(lr),
+        },
+        {
+          columnHeader: "management.locationDetails.calendar.reservations.table.scan",
+          type: 'actionColumn',
+          width: 7,
+          columnContent: lr => ({
+            actionType: 'button',
+            actionContent: "Yes",
+            buttonClass: "primary",
+            disabled: this.disableYesButton(lr)
+          })
+        },
+        {
+          columnHeader: "",
+          type: 'actionColumn',
+          width: 7,
+          columnContent: lr => ({
+            actionType: 'button',
+            actionContent: "No",
+            buttonClass: "secondary",
+            disabled: this.disableNoButton(lr)
+          })
+        },
+      ],
+      data: reservations
+    }
+  }
+
+  private getCorrectI18NObjectOfReservation(reservation: LocationReservation): string {
+    switch (reservation.state) {
+      case LocationReservationState.PRESENT: {
+        return 'general.yes';
+      }
+      case LocationReservationState.ABSENT: {
+        return 'general.no';
+      }
+      default: {
+        if (!reservation.timeslot.isInPast()) {
+          return "general.notAvailableAbbreviation";
+        } else {
+          return "management.locationDetails.calendar.reservations.table.notScanned";
+        }
+      }
+    }
+  }
+
+  private disableYesButton(reservation: LocationReservation): boolean {
+    return reservation.state === LocationReservationState.PRESENT;
+  }
+
+  private disableNoButton(reservation: LocationReservation): boolean {
+    return reservation.state === LocationReservationState.ABSENT;
   }
 }

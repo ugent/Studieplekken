@@ -46,67 +46,8 @@
       </div>
     </div>
 
-    <div class="responsive-table fullwidth">
-      <div class="table-wrapper fullwidth">
-        <table class="table table-striped" style="width: 100%; margin-bottom: 10px">
-          <thead>
-            <tr>
-              <th scope="col">
-                {{
-                "management.locationDetails.calendar.reservations.table.user"
-                | translate
-                }}
-              </th>
-              <th scope="col">
-                {{
-                "management.locationDetails.calendar.reservations.table.attended"
-                | translate
-                }}
-              </th>
-              <th scope="col">
-                {{
-                "management.locationDetails.calendar.reservations.table.scan"
-                | translate
-                }}
-              </th>
-              <th *ngIf="isManagement" scope="col">
-                <!-- Delete -->
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let reservation of filter(locationReservations)"
-              style="{{reservation.attended !== null ? 'background-color: #E9F0FA': ''}}">
-              <td>
-                {{ reservation.user.firstName + " " + reservation.user.lastName }}
-              </td>
-              <td>{{ getCorrectI18NObject(reservation) | translate }}</td>
-              <td>
-                <button class="button button-primary btn-left" [disabled]="disableYesButton(reservation)" (click)="
-                scanLocationReservation(reservation, true, scanningError)
-              ">
-                  {{ "general.yes" | translate }}
-                </button>
-                <button class="button button-secondary" [disabled]="disableNoButton(reservation)" (click)="
-                scanLocationReservation(reservation, false, scanningError)
-              ">
-                  {{ "general.no" | translate }}
-                </button>
-              </td>
-              <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px" *ngIf="isManagement"
-                (click)="
-              prepareToDeleteLocationReservation(
-                reservation,
-                deleteLocationReservationModal
-              )
-            ">
-                <span class="glyphicon glyphicon-trash pointerCursor"></span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <app-table [tabularData]="getTableData(filter(locationReservations))" (action)="onAction($event, scanningError)"></app-table>
+
 
     <button *ngIf="isManagement" [routerLink]="[
         './timeslot',

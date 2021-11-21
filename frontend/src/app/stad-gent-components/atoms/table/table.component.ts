@@ -1,4 +1,7 @@
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/internal/operators/map';
 import { TabularData } from './tabular-data';
 
 @Component({
@@ -10,7 +13,7 @@ export class TableComponent<T> implements OnInit, OnChanges {
   @Input() tabularData: TabularData<T>;
   @Output() action = new EventEmitter<{data: T, columnIndex: number}>()
 
-  constructor() {}
+  constructor(private breakpointObserver: BreakpointObserver) {}
 
   ngOnInit(): void {}
 
@@ -19,5 +22,10 @@ export class TableComponent<T> implements OnInit, OnChanges {
 
   onAction({columnIndex, data}: {columnIndex: number, data: T}) {
     this.action.next({columnIndex, data});
+  }
+
+  showMobile(): Observable<boolean> {
+    return this.breakpointObserver.observe(['(max-width: 768px)'])
+            .pipe(map(s => s.matches))
   }
 }

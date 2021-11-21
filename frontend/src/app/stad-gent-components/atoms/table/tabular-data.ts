@@ -11,22 +11,30 @@ type StringAction = {
   disabled?: boolean
 }
 
-export type ActionContent = IconAction | StringAction;
+type ButtonAction = {
+  actionType: "button",
+  actionContent: string,
+  buttonClass: string,
+  disabled?: boolean
+}
+
+export type ActionContent = IconAction | StringAction | ButtonAction;
 export type ActionCell<T> = (a: T) => ActionContent;
 
 export type ContentCell<T> = (a: T) => string;
 
-type ActionColumn<T> = {
+export type ActionColumn<T> = {
   type: "actionColumn",
   columnHeader: string,
   columnContent: ActionCell<T>,
   width?: number
 }
 
-type ContentColumn<T> = {
+export type ContentColumn<T> = {
   type: "contentColumn",
   columnHeader: string,
   columnContent: ContentCell<T>,
+  translateColumnContent?: ContentCell<T>,
   width?: number
 }
 
