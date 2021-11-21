@@ -2,6 +2,7 @@ package blok2.daos.services;
 
 import blok2.daos.ITimeslotDao;
 import blok2.daos.repositories.TimeslotRepository;
+import blok2.helpers.exceptions.InvalidRequestParametersException;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservables.Location;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,9 @@ public class TimeslotService implements ITimeslotDao {
     public List<Timeslot> addTimeslots(List<Timeslot> timeslot) {
         for(Timeslot t : timeslot) {
             Location loc = locationService.getLocationById(t.getLocationId());
+            if (t.isReservable() && t.getReservableFrom() == null){
+                throw new InvalidRequestParametersException("Reservable timeslot is invalid.");
+            }
             t.setSeatCount(loc.getNumberOfSeats());
             if(t.getTimeslotGroup() == null) {
                 t.setTimeslotGroup(UUID.randomUUID());
