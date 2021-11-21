@@ -100,7 +100,7 @@ export class TableDataService {
     }
   }
 
-  reservationsToTable(reservations: LocationReservation[]): TabularData<LocationReservation> {
+  reservationsToScanningTable(reservations: LocationReservation[]): TabularData<LocationReservation> {
     return {
       columns: [
         {

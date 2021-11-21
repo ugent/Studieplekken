@@ -289,7 +289,7 @@ export class LocationReservationsComponent {
   }
 
   getTableData(locationReservations: LocationReservation[]): TabularData<LocationReservation> {
-    return this.tabularDataService.reservationsToTable(locationReservations)
+    return this.tabularDataService.reservationsToScanningTable(locationReservations)
   }
 
   onAction({columnIndex, data}: {columnIndex: number, data: LocationReservation}, errorTemplate: TemplateRef<unknown>) {
