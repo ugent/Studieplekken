@@ -80,8 +80,8 @@ export class Timeslot {
     if(!this.timeslotDate || !this.openingHour || !this.closingHour) {
       return false;
     }
-
-    if(this.reservable && !this.reservableFrom) {
+    
+    if(this.reservable && (!this.reservableFrom || !this.reservableFrom.isValid())) {
       return false;
     }
 
