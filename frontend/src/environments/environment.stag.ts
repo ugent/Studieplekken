@@ -17,3 +17,5 @@ export const environment = {
     useExternalDashboard: true,
     externalDashboardUrl: "https://qa.stad.gent/nl/student-gent/studeren/bloklocaties-0"
   };
+
+  console.log("actually works")
