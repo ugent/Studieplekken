@@ -27,7 +27,7 @@ export class LoginComponent {
         console.log("set token: ")
         console.log(map.get('token'))
         authService.login();
-        router.navigateByUrl('/dashboard');
+        router.navigateByUrl(environment.useExternalDashboard ? '/management':'/dashboard');
       }
     });
   }
