@@ -34,6 +34,7 @@ public class ReservationManagerTest {
     // this into a proper test.
     // @Test
     public void test1() {
+        System.out.println("STARTED");
         Thread reservationProducerThread = new Thread(reservationProducer(5000)); // Pretty much 5000 requests in 1s.
         Thread reservationConsumerThread = new Thread(reservationConsumer());
         Thread randomPoolSchedulerThread = new Thread(randomScheduler());
@@ -122,7 +123,7 @@ public class ReservationManagerTest {
                 System.out.println("[P-CONSUMER] Acquiring reservations.");
                 List<LocationReservation> reservationList = new ArrayList<>();
                 while (reservationList.size() == 0) { 
-                  reservationList = reservationManager.getReservationPool();
+                  reservationList = reservationManager.getPool();
                 }
                 System.out.println("[P-CONSUMER] Found " + reservationList.size() + " reservations. Expected process time: " + 15 * reservationList.size() + "ms.");
                 try {

@@ -187,12 +187,13 @@ public class ScheduledTasks {
 
 
     /**
-     * Schedules the 'Random' reservation pools to be processes (if they're ready to be).
-     * TODO: How frequent should this be called?
+     * Schedules the 'Random' reservation pools to be processed every minute.
      */
-    @Scheduled(cron = "0 0 1 * * *")
+    @Scheduled(cron = "0 * * * * *")
     public void scheduleRandomPools() {
+        System.out.println("[CRON-RAND] Started cron job to allocate random pools.");
         reservationManager.scheduleRandomPools();
+        System.out.println("[CRON-RAND] Cron job done.");
     }
     
 

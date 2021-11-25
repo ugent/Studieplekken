@@ -63,23 +63,17 @@ public class LocationReservationController extends AuthorizedLocationController 
 
     @PostMapping
     @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public LocationReservation createLocationReservation(@AuthenticationPrincipal User user, @Valid @RequestBody Timeslot timeslot) {
-        try {
-            Timeslot dbTimeslot = timeslotDao.getTimeslot(timeslot.getTimeslotSeqnr());
-            LocationReservation reservation = new LocationReservation(user, dbTimeslot, LocationReservation.State.APPROVED);
-            if (LocalDateTime.now().isBefore(dbTimeslot.getReservableFrom())) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "This timeslot can't yet be reserved");
-            }
-            if (!locationReservationDao.addLocationReservationIfStillRoomAtomically(reservation)) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "There are no more spots left for this location.");
-            }
-            return locationReservationDao.getLocationReservation(user.getUserId(), timeslot);
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            e.printStackTrace();
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+    public boolean createLocationReservation(@AuthenticationPrincipal User user, @Valid @RequestBody Timeslot timeslot) {
+        // TODO(ydndonck): Why do we need to get from db here? To prevent people from sending along malicious reservablefrom?
+        // If that is the case then this check may no longer be needed as the actual checking and processing of reservations
+        // now happens in a different thread and a 'naive' check based on the timeslot the user provided is sufficient (in this thread).
+        // This could save a trip to the database, which makes this slightly faster.
+        Timeslot dbTimeslot = timeslotDao.getTimeslot(timeslot.getTimeslotSeqnr());
+        if (LocalDateTime.now().isBefore(dbTimeslot.getReservableFrom())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "This timeslot can't yet be reserved");
         }
+        LocationReservation reservation = new LocationReservation(user, dbTimeslot, LocationReservation.State.PENDING);
+        return locationReservationDao.addLocationReservationToReservationQueue(reservation);
     }
 
     @GetMapping("/timeslot/{seqnr}")
