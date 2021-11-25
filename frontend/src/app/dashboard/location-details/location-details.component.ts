@@ -20,7 +20,7 @@ import {
   Timeslot,
   timeslotEquals,
 } from 'src/app/shared/model/Timeslot';
-import { BreadcrumbService, dashboardBreadcrumb } from 'src/app/stad-gent-components/header/breadcrumbs/breadcrumb.service';
+import { BreadcrumbService } from 'src/app/stad-gent-components/header/breadcrumbs/breadcrumb.service';
 import { environment } from 'src/environments/environment';
 import {
   defaultLocationImage,
@@ -130,7 +130,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
   ngOnInit(): void {
     this.locationId = Number(this.route.snapshot.paramMap.get('locationId'));
 
-    this.breadcrumbs.setCurrentBreadcrumbs([dashboardBreadcrumb, { pageName: "details", url: `/dashboard/${this.locationId}` }])
+    this.breadcrumbs.setCurrentBreadcrumbs([{ pageName: "Details", url: `/dashboard/${this.locationId}` }])
 
     // Check if locationId is a Number before proceeding. If NaN, redirect to dashboard.
     if (isNaN(this.locationId)) {
