@@ -17,6 +17,8 @@ export class LoginComponent {
   odiseeFlowTriggerUrl = environment.odiseeFlowTriggerUrl;
   lucaFlowTriggerUrl = environment.lucaFlowTriggerUrl;
   stadGentFlowTriggerUrl = environment.stadGentFlowTriggerUrl;
+  kulFlowTriggerUrl = environment.kulFlowTriggerUrl;
+
 
 
   constructor(route: ActivatedRoute, authService: AuthenticationService, router: Router) {

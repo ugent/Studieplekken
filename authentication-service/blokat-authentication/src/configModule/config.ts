@@ -14,6 +14,8 @@ export enum Institution {
   LUCA = 'Luca',
   ODISEE = 'Odisee',
   STAD_GENT = 'StadGent',
+  KU_LEUVEN = 'KULeuven',
+  OTHER = 'Other',
 }
 
 export interface SamlUser {
