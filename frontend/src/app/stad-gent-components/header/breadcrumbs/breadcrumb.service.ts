@@ -18,26 +18,42 @@ export class BreadcrumbService {
   }
 
   public setCurrentBreadcrumbs(breadcrumbs: Breadcrumb[]) {
-    this.currentBreadcrumbs.next(breadcrumbs);
+    this.currentBreadcrumbs.next([homeBreadcrumb, studentInGentBreadcrumb, studerenBreadcrumb, blokLocatiesBreadcrumb, ...breadcrumbs]);
   }
 
 }
 
-export const dashboardBreadcrumb = !environment.useExternalDashboard ? {
+export const blokLocatiesBreadcrumb = !environment.useExternalDashboard ? {
   pageName: "Dashboard",
   url: "/dashboard",
   external: false
-} : {
-  pageName: "Dashboard",
+} :  {
+  pageName: "Bloklocaties",
   url: environment.externalDashboardUrl,
   external: true
 };
 
-console.log(dashboardBreadcrumb)
-
 export const managementBreadcrumb = {
   pageName: "Management",
   url: "/management"
+}
+
+const homeBreadcrumb = {
+  pageName: "Home",
+  url: "https://stad.gent/nl",
+  external: true
+}
+
+const studentInGentBreadcrumb = {
+  pageName: "Student in Gent",
+  url: "https://stad.gent/nl/student-gent",
+  external: true,
+}
+
+const studerenBreadcrumb = {
+  pageName: "Studeren",
+  url: "https://stad.gent/nl/student-gent/studeren",
+  external: true
 }
 
 export interface Breadcrumb {
