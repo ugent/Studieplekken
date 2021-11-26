@@ -96,13 +96,13 @@ export class AuthenticationService {
    *                get information about the logged in user if the variable userWantsToLogIn
    *                was set to 'true' by the LoginComponent.
    */
-  login(): void {
+  login(redirect = false): void {
     this.http.get<User>(api.whoAmI).subscribe(
       (next) => {
         this.userSubject.next(next);
         this.updateHasAuthoritiesSubject(next);
         this.updateHasVolunteeredSubject(next);
-        if(next.userId)
+        if(next.userId && redirect)
           this.loginRedirectService.navigateToLastUrl();
 
 

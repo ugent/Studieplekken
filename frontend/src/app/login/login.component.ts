@@ -25,7 +25,7 @@ export class LoginComponent {
     route.queryParamMap.subscribe((map) => {
       if (map.has('token')) {
         localStorage.setItem('access_token', map.get('token'));
-        authService.login();
+        authService.login(true);
       }
     });
   }
