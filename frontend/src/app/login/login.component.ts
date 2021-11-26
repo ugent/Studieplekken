@@ -17,6 +17,8 @@ export class LoginComponent {
   odiseeFlowTriggerUrl = environment.odiseeFlowTriggerUrl;
   lucaFlowTriggerUrl = environment.lucaFlowTriggerUrl;
   stadGentFlowTriggerUrl = environment.stadGentFlowTriggerUrl;
+  kulFlowTriggerUrl = environment.kulFlowTriggerUrl;
+
 
 
   constructor(route: ActivatedRoute, authService: AuthenticationService, router: Router) {
@@ -27,7 +29,7 @@ export class LoginComponent {
         console.log("set token: ")
         console.log(map.get('token'))
         authService.login();
-        router.navigateByUrl('/dashboard');
+        router.navigateByUrl(environment.useExternalDashboard ? '/management':'/dashboard');
       }
     });
   }

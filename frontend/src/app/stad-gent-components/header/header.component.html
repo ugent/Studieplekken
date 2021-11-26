@@ -32,7 +32,7 @@
 
             </div>
         </div>
-        
+
         <app-accordeon [classes]="['language-switcher']" [controller]="languageSubject">
             <button accordion-button aria-controls="seperate_translation_unauth-translate" aria-expanded="false" class="toggle accordion--button">
                 {{currentLanguage()}}
@@ -55,8 +55,11 @@
         <div class="content-container">
             <h2 id="default-header-crumbs" class="visually-hidden">Breadcrumb</h2>
             <ol class="no-style">
-                <li *ngFor="let breadcrumb of (getLinkedBreadcrumbs() | async)"><a
-                        [routerLink]="breadcrumb.url">{{breadcrumb.pageName}}</a></li>
+                <li *ngFor="let breadcrumb of (getLinkedBreadcrumbs() | async)">
+                  <a [routerLink]="breadcrumb.url" *ngIf="!breadcrumb.external">{{breadcrumb.pageName}}</a>
+                  <a [href]="breadcrumb.url" *ngIf="breadcrumb.external">{{breadcrumb.pageName}}</a>
+
+                </li>
                 <li *ngFor="let breadcrumb of (getUnlinkedBreadcrumbs() | async)"><span>{{breadcrumb.pageName}}</span>
                 </li>
             </ol>

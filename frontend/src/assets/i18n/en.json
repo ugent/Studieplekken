@@ -147,6 +147,7 @@
     "lucaLogin": "LUCA School of Arts login",
     "odiseeLogin": "Odisee Hogeschool login",
     "stadGentLogin": "Stad Gent Login",
+    "kuLeuvenLogin": "KU Leuven Login",
     "about": "The digital platform for study locations"
   },
   "management": {
@@ -236,7 +237,7 @@
           "approveAll": "Approve all suggestions",
           "approve": "Approve",
           "reject": "Reject",
-          "rejectAll": "Reject all suggestions", 
+          "rejectAll": "Reject all suggestions",
           "openingClosingHourError": "The opening hour must be at least one minute before the closing hour."
         },
         "addModalView": {

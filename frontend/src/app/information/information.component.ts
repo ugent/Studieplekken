@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { UserService } from '../services/api/users/user.service';
 import { AuthenticationService } from '../services/authentication/authentication.service';
-import { BreadcrumbService, dashboardBreadcrumb } from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
+import { BreadcrumbService } from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
 
 @Component({
   selector: 'app-information',
@@ -44,7 +44,7 @@ export class InformationComponent implements OnInit {
       }
     });
 
-    this.breadcrumbService.setCurrentBreadcrumbs([dashboardBreadcrumb, {pageName: "Information", url:"/information"}])
+    this.breadcrumbService.setCurrentBreadcrumbs([{pageName: "Information", url:"/information"}])
   }
 
   currentLanguage(): string {

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApplicationTypeFunctionalityService } from '../services/functionality/application-type/application-type-functionality.service';
 import { AuthenticationService } from '../services/authentication/authentication.service';
 import { combineLatest } from 'rxjs';
-import { BreadcrumbService, dashboardBreadcrumb, managementBreadcrumb } from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
+import { BreadcrumbService, managementBreadcrumb } from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
 
 @Component({
   selector: 'app-management',
@@ -42,6 +42,6 @@ export class ManagementComponent implements OnInit {
       }
     );
 
-    this.breadcrumbsService.setCurrentBreadcrumbs([dashboardBreadcrumb, managementBreadcrumb])
+    this.breadcrumbsService.setCurrentBreadcrumbs([managementBreadcrumb])
   }
 }
