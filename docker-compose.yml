@@ -10,7 +10,7 @@ services:
     restart: always
     build: backend
     ports:
-      - "8080:8080"
+      - "8090:8080"
     environment:
       SPRING_PROFILES_ACTIVE: prod,mail
       SW_AGENT_COLLECTOR_BACKEND_SERVICES: oap:11800
@@ -25,17 +25,6 @@ services:
       options:
         max-size: "100m"
         max-file: "5"
-
-  authentication:
-    build: authentication-service/blokat-authentication
-    ports:
-      - "8087:8087"
-    depends_on:
-      - db
-    networks:
-      - blokat
-    environment:
-      NODE_ENV: staging
 
   db:
     image: postgres:12-alpine
@@ -62,7 +51,7 @@ services:
     restart: always
     build: frontend
     ports:
-      - "4242:80"
+      - "8091:80"
     networks:
       - blokat
     logging:
