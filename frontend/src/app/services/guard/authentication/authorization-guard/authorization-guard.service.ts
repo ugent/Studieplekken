@@ -59,7 +59,7 @@ export class AuthorizationGuardService implements CanActivate {
         }
 
         if (!activate) {
-          this.router.navigate(['/']).catch(console.log);
+          this.router.navigate(['/login']).catch(console.log);
         }
         return activate;
       })
