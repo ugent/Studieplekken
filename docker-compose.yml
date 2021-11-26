@@ -53,7 +53,7 @@ services:
     ports:
       - "8091:80"
     networks:
-      - blokat
+      - blokatgent
     logging:
       options:
         max-size: "100m"
