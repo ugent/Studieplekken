@@ -8,6 +8,7 @@ import {
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/internal/operators/map';
 import { filter } from 'rxjs/operators';
+import { LoginRedirectService } from 'src/app/services/authentication/login-redirect.service';
 import { AuthenticationService } from '../../../authentication/authentication.service';
 
 @Injectable({
@@ -16,7 +17,8 @@ import { AuthenticationService } from '../../../authentication/authentication.se
 export class AuthorizationGuardService implements CanActivate {
   constructor(
     private router: Router,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private loginRedirect: LoginRedirectService
   ) {}
 
   canActivate(
@@ -29,14 +31,17 @@ export class AuthorizationGuardService implements CanActivate {
     return this.authenticationService.user.pipe(
       filter((f) => f != null),
       map(() => {
+        console.log(url);
         if (url.startsWith('/login')) {
           activate = true;
         } else if (url.startsWith('/dashboard')) {
           activate = true;
         } else if (url.startsWith('/profile')) {
           activate = this.authenticationService.isLoggedIn();
+          this.loginRedirect.registerUrl('/profile')
         } else if (url.startsWith('/scan')) {
           activate = this.isLoginAndAdminOrHasLocationsToScan();
+          this.loginRedirect.registerUrl('/scan')
         } else if (url.startsWith('/management')) {
           if (this.authenticationService.isLoggedIn()) {
             if (
@@ -49,7 +54,9 @@ export class AuthorizationGuardService implements CanActivate {
             } else {
               activate = this.isAdminOrHasAuthorities();
             }
+            this.loginRedirect.registerUrl('/management')
           } else {
+            this.loginRedirect.registerUrl('/management')
             activate = false;
           }
         } else if (url.startsWith('/information')) {
@@ -61,6 +68,8 @@ export class AuthorizationGuardService implements CanActivate {
         if (!activate) {
           this.router.navigate(['/login']).catch(console.log);
         }
+
+        console.log(activate);
         return activate;
       })
     );

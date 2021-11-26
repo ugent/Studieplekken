@@ -19,6 +19,7 @@ import { LocationReservationsService } from '../api/location-reservations/locati
 import { LockerReservationService } from '../api/locker-reservations/locker-reservation.service';
 import { PenaltyService } from '../api/penalties/penalty.service';
 import { UserService } from '../api/users/user.service';
+import { LoginRedirectService } from './login-redirect.service';
 
 /**
  * The structure of the authentication service has been based on this article:
@@ -57,7 +58,8 @@ export class AuthenticationService {
     private locationReservationService: LocationReservationsService,
     private lockerReservationService: LockerReservationService,
     private router: Router,
-    private userService: UserService
+    private userService: UserService,
+    private loginRedirectService: LoginRedirectService
   ) { }
 
   // **************************************************
@@ -100,6 +102,9 @@ export class AuthenticationService {
         this.userSubject.next(next);
         this.updateHasAuthoritiesSubject(next);
         this.updateHasVolunteeredSubject(next);
+        if(next.userId)
+          this.loginRedirectService.navigateToLastUrl();
+
 
         /**
          *  Spring's authentication ticket of a logged in user expires before the CAS authentication has expired.
