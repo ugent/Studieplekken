@@ -20,7 +20,7 @@ services:
     volumes:
       - backend_logs:/app/logs:rw
     networks:
-      - blokat
+      - blokatgent
     logging:
       options:
         max-size: "100m"
@@ -41,7 +41,7 @@ services:
     #  - ./backend/postgres.conf:/var/lib/postgresql/data/postgresql.conf
 
     networks:
-      - blokat
+      - blokatgent
     logging:
       options:
         max-size: "100m"
@@ -53,7 +53,7 @@ services:
     ports:
       - "8091:80"
     networks:
-      - blokat
+      - blokatgent
     logging:
       options:
         max-size: "100m"
@@ -62,7 +62,7 @@ services:
     restart: always
     image: juanluisbaptiste/postfix:latest
     networks:
-      - blokat
+      - blokatgent
     expose:
       - "25"
     environment:
@@ -74,5 +74,5 @@ services:
       - postfix_spool:/var/spool/postfix
 
 networks:
-  blokat:
-    name: blokat
+  blokatgent:
+    name: blokatgent
