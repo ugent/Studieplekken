@@ -10,7 +10,7 @@ export class LoginFlowService {
    */
   async handleLogin(body: any): Promise<{ access_token: string }> {
     // TODO get user from database
-
+    
     // TODO validate password
 
     // TODO translate user to SamlUser

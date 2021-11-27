@@ -8,12 +8,12 @@
   </head>
   <body>
     <div>
+      <img src="/auth/local/images/logo_stad_gent.png" class="logo" alt="stad_gent"/>
+      <br/><br/>
+      <h3 class="center">Registration Form</h3>
+    </div>
+    <div>
       <form action="./register" method="post">
-      <div>
-        <img src="/auth/local/images/logo_stad_gent.png" class="logo" alt="stad_gent"/>
-        <br/><br/>
-        <h3 class="center">Registration Form</h3>
-      </div>
         <label for="email">E-mail</label><br />
         <input type="email" id="email" name="email" /><br />
 
@@ -28,7 +28,6 @@
         <label for="last_name">Retype password</label><br />
         <input type="password" id="password" name="password" /><br />
         <input type="hidden" id="token" name="token" value="{{ token }}" /><br />
-
 
         <input type="submit" value="Submit" />
       </form>
