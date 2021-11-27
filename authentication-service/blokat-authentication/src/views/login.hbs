@@ -11,15 +11,16 @@
         <img src="/auth/local/images/logo_stad_gent.png" class="logo" alt="stad_gent"/>
         <br/><br/>
       </div>
-    <div>
+    <div
+    <!--?callbackURL={{ callbackURL }}-->
       <form action="./login?callbackURL={{ callbackURL }}" method="post">
-        <label for="first_name">Email</label><br />
+        <label for="email">Email</label><br />
         <input type="email" id="email" name="email" /><br />
-        <label for="last_name">Password</label><br />
+        <label for="password">Password</label><br />
         <input type="password" id="password" name="password" /><br />
 
         <br/>
-        <input type="submit" value="Login" />
+        <input type="submit" value="Submit" />
       </form>
     </div>
   </body>

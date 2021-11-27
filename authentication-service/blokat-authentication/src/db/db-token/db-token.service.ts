@@ -18,7 +18,9 @@ export class DbTokenService {
     });
     if (!token) throw new TokenDoesntExistError();
 
-    if (token.isUsed) throw new TokenIsUsedError();
+    if (token.isUsed) {
+      throw new TokenIsUsedError();
+    }
 
     token.isUsed = true;
     const updatedToken = await this.prisma.tokens.update({
