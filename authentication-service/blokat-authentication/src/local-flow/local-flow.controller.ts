@@ -49,13 +49,11 @@ export class LocalFlowController {
     console.log("enters login page");
     try {
       const token = await this.loginFlow.handleLogin(body);
-      console.log(callbackURL);
       if (callbackURL) {
         const configuration = getConfig();
         const allowedCallbacks = configuration.auth.allowedClientCallbacks;
 
         if (allowedCallbacks.indexOf(callbackURL) !== -1) {
-          console.log(`${callbackURL}?token=${token.access_token}`);
           return res.redirect(`${callbackURL}?token=${token.access_token}`);
         } else {
           Logger.warn(`Callback URL ${callbackURL} is not allowed.`);

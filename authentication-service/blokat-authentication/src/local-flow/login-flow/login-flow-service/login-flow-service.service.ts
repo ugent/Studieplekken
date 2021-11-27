@@ -21,16 +21,12 @@ export class LoginFlowService {
    * If it's not valid, throw a good error.
    */
   async handleLogin(body: any): Promise<{ access_token: string }> {
-    console.log("enters login");
     // Get user from database
     const user: any = await this.usersDb.userByEmail(body.email);
-    console.log(user);
     if (user) {
       // user has a valid email
       const userHash = await this.hashedService.hash(body.password, user.salt);
-      console.log(userHash);
       if (user.hashed_password === userHash) {
-        console.log(user);
         // translate user to SamlUser
         const samlUser: SamlUser = {
           id: user.user_id,
@@ -40,17 +36,12 @@ export class LoginFlowService {
           lastName: user.last_name,
         };
 
-        console.log("hello");
         // Write token
-        const token = await this.authService.issueToken(samlUser);
-        console.log(token);
-        return token;
+        return await this.authService.issueToken(samlUser);
       } else {
-        console.log("invalid pass");
         throw new InvalidPasswordError();
       }
     } else {
-      console.log("email not found");
       throw new EmailNotFoundError();
     }
   }
