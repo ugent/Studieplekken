@@ -35,7 +35,9 @@ async function bootstrap() {
   });
 
   // Templating for local authentication
-  app.useStaticAssets(join(__dirname, "..", "public"));
+  app.useStaticAssets(join(__dirname, "..", "public"), {
+    prefix: "/auth/local/css/",
+  });
   app.setBaseViewsDir(join(__dirname, "..", "views"));
   app.setViewEngine("hbs");
 
