@@ -18,8 +18,13 @@ html {
   background-color: #56baed;
 }
 
+@font-face {
+  font-family: PannoTextMedium;
+  src: url(PannoTextMedium.woff2);
+}
+
 body {
-  font-family: "PannoTextLight", Arial, sans-serif;
+  font-family: 'PannoTextMedium', sans-serif;
 }
 
 a {
