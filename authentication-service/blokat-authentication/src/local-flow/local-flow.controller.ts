@@ -46,17 +46,19 @@ export class LocalFlowController {
     @Body(ValidationPipe) body: any,
     @Res() res: Response,
   ) {
+    console.log("enters login page");
     try {
       const token = await this.loginFlow.handleLogin(body);
-
       if (callbackURL) {
         const configuration = getConfig();
         const allowedCallbacks = configuration.auth.allowedClientCallbacks;
+
         if (allowedCallbacks.indexOf(callbackURL) !== -1) {
           return res.redirect(`${callbackURL}?token=${token.access_token}`);
+        } else {
+          Logger.warn(`Callback URL ${callbackURL} is not allowed.`);
+          res.status(400).send("The URL is not allowed.");
         }
-        Logger.warn(`Callback URL ${callbackURL} is not allowed.`);
-        res.status(400).send("The URL is not allowed.");
       }
     } catch (e: unknown) {
       // TODO: show error when password is incorrect

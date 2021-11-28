@@ -14,10 +14,28 @@ export class RegisterFlowService {
   ) {}
 
   public async handleRegistration(body: UnhashedRegisterBodyBase) {
-    const user = await this.unhashedToUserData(body);
-    // TODO check token handed in body
+    // Check password
+    if (
+      !Array.isArray(body.password) ||
+      body.password[0] !== body.password[1]
+    ) {
+      throw new PasswordNoMatchError();
+    } else {
+      body.password = body.password[0];
+    }
 
-    return await this.saveUser(user);
+    // create user
+    const user = await this.unhashedToUserData(body);
+
+    // check token handed in body
+    this.tokenDb.useToken(body.token);
+
+    // save user
+    try {
+      return await this.saveUser(user);
+    } catch (error) {
+      throw new SaveUserError();
+    }
   }
 
   private async unhashedToUserData(
@@ -27,10 +45,12 @@ export class RegisterFlowService {
       body.password,
     );
     const user: users = {
-      ...body,
+      email: body.email,
+      first_name: body.first_name,
+      last_name: body.last_name,
       hashed_password,
       salt,
-      user_id: null,
+      user_id: undefined,
     };
 
     return user;
@@ -42,5 +62,17 @@ export class RegisterFlowService {
 
   public async newToken(): Promise<string> {
     return (await this.tokenDb.createNewToken()).id;
+  }
+}
+
+class PasswordNoMatchError extends Error {
+  constructor() {
+    super("The passwords do not match.");
+  }
+}
+
+class SaveUserError extends Error {
+  constructor() {
+    super("Something went wrong when saving the user");
   }
 }

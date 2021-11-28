@@ -2,7 +2,7 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
   "compilerOptions": {
-    "assets": ["**/*.hbs", "**/*.txt", "**/*.css", "**/*.png"],
+    "assets": ["**/*.hbs", "**/*.txt", "**/*.css", "**/*.png", "**/*.woff2"],
     "watchAssets": true  
   }
 }
