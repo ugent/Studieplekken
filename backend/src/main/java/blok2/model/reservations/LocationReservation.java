@@ -44,7 +44,7 @@ public class LocationReservation {
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(
         name = "timeslot_sequence_number", referencedColumnName = "sequence_number",
         insertable = false, updatable = false)

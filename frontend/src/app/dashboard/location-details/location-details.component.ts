@@ -73,7 +73,6 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
   originalList: LocationReservation[];
   subscription: Subscription;
 
-  showSuccess = false;
   showError = false;
   showSuccessPendingLong = false;
   showSuccessPendingShort = false;
@@ -352,7 +351,6 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     ]).subscribe(
       (res) => {
         this.showError = false;
-        this.showSuccess = false;
         this.showSuccessDeletion = false;
         this.showSuccessPendingShort = false;
         this.showSuccessPendingLong = false;
@@ -361,8 +359,6 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         const reservationProcessingStart : Moment[] = res[0];
 
         this.updateCalendar();
-        // this.showSuccess = true; // TODO: Remove this.
-        //         this.showError = false;
         if (reservationProcessingStart.length !== 0) {
           const now : Moment = moment();
           const maxMoment : Moment = moment.max(reservationProcessingStart);
@@ -381,9 +377,11 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         }
       },
       () => {
-        this.isModified = true;
-        this.showSuccess = false;
         this.showError = true;
+        this.showSuccessDeletion = false;
+        this.showSuccessPendingShort = false;
+        this.showSuccessPendingLong = false;
+        this.isModified = true;
         setTimeout(() => (this.showError = false), msToShowFeedback);
       }
     );

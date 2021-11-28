@@ -65,9 +65,8 @@ public class LocationReservationController extends AuthorizedLocationController 
 
     /**
      * Add a new reservation queue, to be processed later.
-     * @return : true if the reservation is in the slow 'random' queue and may not start
-     *           being processed for another 10 minutes. Note that 'false' does not indicate that
-     *           the reservation has already been processed.
+     * @return : The time at which the reservation will enter the 'fast' or 'non-random order' queue.
+     *           This time may be in the past.
      */
     @PostMapping
     @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
