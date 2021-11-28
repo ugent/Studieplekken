@@ -191,9 +191,7 @@ public class ScheduledTasks {
      */
     @Scheduled(cron = "0 * * * * *")
     public void scheduleRandomPools() {
-        System.out.println("[CRON-RAND] Started cron job to allocate random pools.");
         reservationManager.scheduleRandomPools();
-        System.out.println("[CRON-RAND] Cron job done.");
     }
     
 

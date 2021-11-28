@@ -97,10 +97,17 @@
 
   <!-- If clicked on reservationButton, give some feedback -->
   <div class="row" style="margin-top: 10px">
-    <div class="messages messages--success" *ngIf="showSuccess">
-      {{'dashboard.locationDetails.calendar.reservation.successMessage' | translate}}
+    <!-- TODO: Why arent't these CSS classes   -->
+    <div class="messages messages--success" *ngIf="showSuccessDeletion">
+      {{'dashboard.locationDetails.calendar.reservation.successGenericMessage' | translate}}
     </div>
-
+    <div class="message messages--success" *ngIf="showSuccessPendingShort">
+      {{'dashboard.locationDetails.calendar.reservation.successPendingShortMessage' | translate}}
+    </div>
+    
+    <div class="message messages--warning" *ngIf="showSuccessPendingLong">
+      {{'dashboard.locationDetails.calendar.reservation.successPendingLongMessage' | translate}}
+    </div>
     <div class="messages messages--error" *ngIf="showError">
       {{'dashboard.locationDetails.calendar.reservation.errorMessage' | translate}}
     </div>

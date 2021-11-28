@@ -32,7 +32,7 @@ import { LocationService } from '../../services/api/locations/location.service';
 import { Pair } from '../../shared/model/helpers/Pair';
 import { Location } from '../../shared/model/Location';
 import { LocationTag } from '../../shared/model/LocationTag';
-
+import { Moment } from 'moment';
 import * as Leaf from 'leaflet';
 import { AuthoritiesService } from 'src/app/services/api/authorities/authorities.service';
 
@@ -75,6 +75,9 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
   showSuccess = false;
   showError = false;
+  showSuccessPendingLong = false;
+  showSuccessPendingShort = false;
+  showSuccessDeletion = false;
 
   isModified = false;
 
@@ -347,11 +350,35 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         this.removedReservations
       ),
     ]).subscribe(
-      () => {
-        this.updateCalendar();
-        this.showSuccess = true;
+      (res) => {
         this.showError = false;
-        setTimeout(() => (this.showSuccess = false), msToShowFeedback);
+        this.showSuccess = false;
+        this.showSuccessDeletion = false;
+        this.showSuccessPendingShort = false;
+        this.showSuccessPendingLong = false;
+        console.log(res);
+        
+        const reservationProcessingStart : Moment[] = res[0];
+
+        this.updateCalendar();
+        // this.showSuccess = true; // TODO: Remove this.
+        //         this.showError = false;
+        if (reservationProcessingStart.length !== 0) {
+          const now : Moment = moment();
+          const maxMoment : Moment = moment.max(reservationProcessingStart);
+          const hasDelayedReservation: boolean = now.isBefore(maxMoment);
+          if (hasDelayedReservation) {
+            this.showSuccessPendingLong = true;
+            const msDelayUntilReservationsStart = moment.duration(maxMoment.diff(now)).asMilliseconds();
+            setTimeout(() => (this.showSuccessPendingLong = false), msDelayUntilReservationsStart);;
+          } else {
+            this.showSuccessPendingShort = true;
+            setTimeout(() => (this.showSuccessPendingShort = false), msToShowFeedback);
+          }
+        } else {
+          this.showSuccessDeletion = true;
+          setTimeout(() => (this.showSuccessDeletion = false), msToShowFeedback);
+        }
       },
       () => {
         this.isModified = true;

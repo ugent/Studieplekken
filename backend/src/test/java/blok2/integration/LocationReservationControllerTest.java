@@ -66,8 +66,9 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(timeslot)).contentType("application/json")).andDo(print())
                 .andExpect(status().isOk());
 
-        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student2.getUserId());
-        Assert.assertEquals(1, list.stream().filter(lr -> lr.getTimeslot().getTimeslotSeqnr() == timeslot.getTimeslotSeqnr()).count());
+        // NOTE: Cannot guarantee reservation is already visible with queued system.
+        // List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student2.getUserId());
+        // Assert.assertEquals(1, list.stream().filter(lr -> lr.getTimeslot().getTimeslotSeqnr() == timeslot.getTimeslotSeqnr()).count());
     }
 
     @Test
@@ -78,8 +79,10 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
         int currentAmount = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId()).size();
         mockMvc.perform(post("/locations/reservations").with(csrf())
                 .content(objectMapper.writeValueAsString(timeslot)).contentType("application/json")).andDo(print())
-                .andExpect(status().isConflict());
+                .andExpect(status().isOk()); // NOTE: Validity of reservation is not checked before the response is sent in queued system.
 
+        // NOTE: Cannot guarantee reservation is already visible with queued system, but the amount should not be changed
+        //       regardless of wheter the reservation has been processed already or not.
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
         Assert.assertEquals(currentAmount, list.size());
     }

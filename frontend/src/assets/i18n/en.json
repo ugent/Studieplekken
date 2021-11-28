@@ -47,7 +47,9 @@
       },
       "calendar": {
         "reservation": {
-          "successMessage": "Successfully updated the reservations",
+          "successGenericMessage": "Successfully updated the reservations",
+          "successPendingShortMessage": "Your reservations have been received and will be processed shortly. There is no need to refresh this page. It will happen automatically.",
+          "successPendingLongMessage": "Your reservations have been received. They may take up to 10 minutes to be processed. There is no need to refresh this page. It will happen automatically.",
           "errorMessage": "Update was not successful. Something went wrong.",
           "header": "Change reservations",
           "updateMessage": "You are about to make changes to your registered reservations.",

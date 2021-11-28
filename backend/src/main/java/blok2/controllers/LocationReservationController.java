@@ -26,6 +26,8 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static blok2.config.PoolProcessor.RANDOM_RESERVATION_DURATION_MINS;
+
 /**
  * This controller handles all requests related to location reservations.
  * Such as creating reservations, list of reservations, cancelling reservations,
@@ -61,19 +63,29 @@ public class LocationReservationController extends AuthorizedLocationController 
         return locationReservationDao.getAllLocationReservationsOfUser(id);
     }
 
+    /**
+     * Add a new reservation queue, to be processed later.
+     * @return : true if the reservation is in the slow 'random' queue and may not start
+     *           being processed for another 10 minutes. Note that 'false' does not indicate that
+     *           the reservation has already been processed.
+     */
     @PostMapping
     @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public boolean createLocationReservation(@AuthenticationPrincipal User user, @Valid @RequestBody Timeslot timeslot) {
+    public LocalDateTime createLocationReservation(@AuthenticationPrincipal User user, @Valid @RequestBody Timeslot timeslot) {
         // TODO(ydndonck): Why do we need to get from db here? To prevent people from sending along malicious reservablefrom?
         // If that is the case then this check may no longer be needed as the actual checking and processing of reservations
         // now happens in a different thread and a 'naive' check based on the timeslot the user provided is sufficient (in this thread).
         // This could save a trip to the database, which makes this slightly faster.
         Timeslot dbTimeslot = timeslotDao.getTimeslot(timeslot.getTimeslotSeqnr());
-        if (LocalDateTime.now().isBefore(dbTimeslot.getReservableFrom())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "This timeslot can't yet be reserved");
+        LocalDateTime now = LocalDateTime.now();
+        if (now.isBefore(dbTimeslot.getReservableFrom())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This timeslot can't yet be reserved");
         }
         LocationReservation reservation = new LocationReservation(user, dbTimeslot, LocationReservation.State.PENDING);
-        return locationReservationDao.addLocationReservationToReservationQueue(reservation);
+        if (!locationReservationDao.addLocationReservationToReservationQueue(reservation)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The timeslot was invalid.");
+        }
+        return dbTimeslot.getReservableFrom().plusMinutes(RANDOM_RESERVATION_DURATION_MINS);
     }
 
     @GetMapping("/timeslot/{seqnr}")

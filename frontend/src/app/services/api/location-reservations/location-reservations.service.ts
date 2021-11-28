@@ -7,6 +7,8 @@ import { Timeslot } from 'src/app/shared/model/Timeslot';
 import { map } from 'rxjs/internal/operators/map';
 import { of } from 'rxjs/internal/observable/of';
 import { Pair } from '../../../shared/model/helpers/Pair';
+import * as moment from 'moment';
+import { Moment } from 'moment';
 
 @Injectable({
   providedIn: 'root',
@@ -59,22 +61,24 @@ export class LocationReservationsService {
 
   postLocationReservations(
     locationReservations: LocationReservation[]
-  ): Observable<void[]> {
+  ): Observable<Moment[]> {
     return locationReservations.length > 0
       ? combineLatest(
           locationReservations.map((l) => this.postLocationReservation(l))
         )
-      : of<Array<void>>([]);
+      : of<Array<Moment>>([]);
   }
 
   postLocationReservation(
     locationReservation: LocationReservation
-  ): Observable<void> {
-    return this.http.post<void>(
+  ): Observable<Moment> {
+    return this.http.post<string>(
       api.addLocationReservation,
       locationReservation.timeslot,
       { withCredentials: true }
-    );
+    ).pipe(map(str => {
+      return moment(str);
+    }));
   }
 
   postLocationReservationAttendance(
