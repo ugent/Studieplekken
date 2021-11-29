@@ -14,7 +14,7 @@ import {
   ApplicationTypeFunctionalityService
 } from 'src/app/services/functionality/application-type/application-type-functionality.service';
 import { TimeslotCalendarEventService } from 'src/app/services/timeslots/timeslot-calendar-event/timeslot-calendar-event.service';
-import { LocationReservation } from 'src/app/shared/model/LocationReservation';
+import { LocationReservation, LocationReservationState } from 'src/app/shared/model/LocationReservation';
 import {
   includesTimeslot,
   Timeslot,
@@ -111,6 +111,10 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
   leafletMap: Leaf.Map;
 
+  pendingReservations: LocationReservation[] = [];
+  rejectedReservations: LocationReservation[] = [];
+  acceptedReservations: LocationReservation[] = [];
+
   constructor(
     private locationService: LocationService,
     private route: ActivatedRoute,
@@ -126,7 +130,6 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     private breadcrumbs: BreadcrumbService,
     private timeslotCalendarEventService: TimeslotCalendarEventService,
     private authoritiesService: AuthoritiesService
-
   ) { }
 
   ngOnInit(): void {
@@ -289,12 +292,13 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     ])
       .subscribe(([timeslots, reservations, proposedReservations]) => {
         this.originalList = [...reservations.filter(r => r.timeslot.locationId == this.locationId)];
-        this.timeouts.forEach(t => clearTimeout(t))
+        this.pendingReservations = this.originalList.filter(locres => locres.state === LocationReservationState.PENDING);
+        this.timeouts.forEach(t => clearTimeout(t));
 
         // Only do this once, when selectedSubject isn't initialized yet.
         if (this.isFirst) {
           this.isFirst = false;
-          this.selectedSubject.next([...this.originalList])
+          this.selectedSubject.next([...this.originalList]);
           return;
         }
 
@@ -304,13 +308,13 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
           .filter(d => d < 1000 * 60 * 60 * 24 * 2) // don't set more than two days in advance (weird bugs if you do)
           .map(d => setTimeout(() => this.draw(timeslots, proposedReservations), d));
         this.draw(timeslots, proposedReservations);
-      })
+      });
   }
 
-  draw(timeslots, proposedReservations): void {
+  draw(timeslots, proposedReservations : LocationReservation[]): void {
     this.events = timeslots.map(t => this.timeslotCalendarEventService.timeslotToCalendarEvent(
       t, this.currentLang, [...proposedReservations]
-    ))
+    ));
   }
 
   updateReservationIsPossible(): boolean {
@@ -401,7 +405,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
         return location.name + ' (' + date + ' ' + hour + ')';
       }
-      ))
+      ));
   }
 
   loggedIn(): boolean {
@@ -431,4 +435,13 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     });
     new Leaf.Marker(coordinates).addTo(this.leafletMap);
   }
+
+  getStateI18NObject(state : LocationReservationState): string {
+    return 'profile.reservations.locations.table.attended.' + state;
+  }
+
+  getLinkToElement(id : string): string {
+    return document.location.href.replace(document.location.hash, '') + id;
+  }
+
 }

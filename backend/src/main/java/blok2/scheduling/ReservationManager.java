@@ -44,7 +44,6 @@ public class ReservationManager {
                 // Ignore reservation, because it is too early.
                 Optional<LocationReservation> optDbRes = reservationRepository.findById(reservation.getId());
                 if (!optDbRes.isPresent()) {
-                    System.err.println("Reservation from queue not in DB.");;
                     continue;
                 }
                 LocationReservation dbRes = optDbRes.get();

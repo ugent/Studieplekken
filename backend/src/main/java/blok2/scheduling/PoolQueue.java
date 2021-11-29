@@ -10,6 +10,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 
+import static blok2.config.PoolProcessor.RANDOM_RESERVATION_DURATION_MINS;
+
 /**
  * Implements a thread-safe queue of pools. Reservations are added to
  * the queue and automatically sorted into pools. Pools can then be popped
@@ -37,7 +39,7 @@ public class PoolQueue {
         }
         // As long as the there still exists a randompool for the timeslot, schedule it in there
         // regardless of the time.
-        if (now.plusMinutes(PoolProcessor.RANDOM_RESERVATION_DURATION_MINS).isBefore(timeslot.getReservableFrom()) || randomPools.containsKey(reservation.getTimeslot())) {
+        if (now.isBefore(timeslot.getReservableFrom().plusMinutes(RANDOM_RESERVATION_DURATION_MINS)) || randomPools.containsKey(reservation.getTimeslot())) {
             randomPools.computeIfAbsent(timeslot, timeslotIgnore -> new LockFreeClearQueue<>());
             randomPools.get(timeslot).add(reservation);
             // NOTE: No semaphore release here, because the pre-reservation timer needs to expire first.
@@ -58,7 +60,7 @@ public class PoolQueue {
         LocalDateTime now = LocalDateTime.now();
         Set<Timeslot> timeslots = randomPools.keySet();
         for (Timeslot timeslot : timeslots) {
-            if (now.isAfter(timeslot.getReservableFrom())) {
+            if (now.isAfter(timeslot.getReservableFrom().plusMinutes(RANDOM_RESERVATION_DURATION_MINS))) {
                 LockFreeClearQueue<LocationReservation> timeslotRandomQueue = randomPools.remove(timeslot);
                 if (timeslotRandomQueue == null) {
                     continue;

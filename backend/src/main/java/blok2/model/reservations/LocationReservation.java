@@ -38,7 +38,7 @@ public class LocationReservation {
     @Column(name = "state")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY) // Users can't set this themselves
     // NOTE(ydndonck): String instead of state enum, because postgres tries to save it as bytea instead of text.
-    private String state = State.APPROVED.name();
+    private String state = State.PENDING.name();
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)

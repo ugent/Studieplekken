@@ -45,12 +45,16 @@ public class PoolProcessor implements Runnable{
                 for (LocationReservation reservation : reservations) {
                     Optional<LocationReservation> optDbRes =  reservationRepository.findById(reservation.getId());
                     if (!optDbRes.isPresent()) {
-                        continue; // Ignore.
+                        continue; // Not or no longer present. Ignore.
                     }
                     reservation = optDbRes.get();
                     Timeslot dbTimeslot = timeslotRepository.getByTimeslotSeqnr(reservation.getTimeslot().getTimeslotSeqnr());
-                    // TODO(ydndonck): Check if timeslot is reservable as well?
+                    if (!dbTimeslot.isReservable()) {
+                        rejectReservation(reservation);
+                        continue;
+                    }
                     if (!LocalDateTime.now().isAfter(dbTimeslot.getReservableFrom().plusMinutes(RANDOM_RESERVATION_DURATION_MINS))) {
+                        System.err.println("Warning: Invalid state. Reservations should not be processing yet.");
                         rejectReservation(reservation);
                         continue;
                     }
@@ -60,7 +64,6 @@ public class PoolProcessor implements Runnable{
                     }
                     approveReservation(dbTimeslot, reservation);
                 }
-
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

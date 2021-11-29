@@ -50,6 +50,7 @@
           "successGenericMessage": "Het wijzigen van de reservaties is succesvol verlopen",
           "successPendingShortMessage": "Je reservaties zijn ontvangen en zullen binnenkort worden verwerkt. Je moet deze pagina niet refreshen. Dit zal automatisch gebeuren.",
           "successPendingLongMessage": "Je reservaties zijn ontvangen. Het kan tot 10 minuten duren voor deze verwerkt zijn. Je moet deze pagina niet refreshen. Dit zal automatisch gebeuren.",
+          "watchProgressMessage": "Je kan de vooruitgang van je reservaties volgen door hier te klikken.",
           "errorMessage": "Het aanpassen van de reservaties is mislukt. Er is iets misgegaan.",
           "header": "Wijzig reservaties",
           "updateMessage": "Je staat op het punt om wijzigingen aan te brengen aan jouw reservaties.",

@@ -50,6 +50,7 @@
           "successGenericMessage": "Successfully updated the reservations",
           "successPendingShortMessage": "Your reservations have been received and will be processed shortly. There is no need to refresh this page. It will happen automatically.",
           "successPendingLongMessage": "Your reservations have been received. They may take up to 10 minutes to be processed. There is no need to refresh this page. It will happen automatically.",
+          "watchProgressMessage": "You can watch the progress of your reservations by clicking here.",
           "errorMessage": "Update was not successful. Something went wrong.",
           "header": "Change reservations",
           "updateMessage": "You are about to make changes to your registered reservations.",
