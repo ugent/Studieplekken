@@ -56,7 +56,6 @@ export class AppComponent implements OnInit {
     // Since the user was redirected to the cas-login website, the AppComponent
     // will be recreated. After the recreation, we try to log in in the frontend.
     this.authenticationService.login();
-    console.log("why?")
 
     // subscribe to the user observable to make sure that the correct information
     // is shown in the application.
