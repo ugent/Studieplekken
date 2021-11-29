@@ -35,6 +35,7 @@ import { LocationTag } from '../../shared/model/LocationTag';
 
 import * as Leaf from 'leaflet';
 import { AuthoritiesService } from 'src/app/services/api/authorities/authorities.service';
+import { LoginRedirectService } from 'src/app/services/authentication/login-redirect.service';
 
 // Leaflet stuff.
 const iconRetinaUrl = './assets/marker-icon-2x.png';
@@ -123,7 +124,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     private router: Router,
     private breadcrumbs: BreadcrumbService,
     private timeslotCalendarEventService: TimeslotCalendarEventService,
-    private authoritiesService: AuthoritiesService
+    private loginRedirect: LoginRedirectService
 
   ) { }
 
@@ -131,6 +132,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     this.locationId = Number(this.route.snapshot.paramMap.get('locationId'));
 
     this.breadcrumbs.setCurrentBreadcrumbs([{ pageName: "Details", url: `/dashboard/${this.locationId}` }])
+    this.loginRedirect.registerUrl(`/dashboard/${this.locationId}`);
 
     // Check if locationId is a Number before proceeding. If NaN, redirect to dashboard.
     if (isNaN(this.locationId)) {

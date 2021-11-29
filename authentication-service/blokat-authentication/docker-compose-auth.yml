@@ -1,8 +1,6 @@
   authentication:
-    build: authentication-service/blokat-authentication
+    build: .
     ports:
       - "8087:8087"
     environment:
-      NODE_ENV: production
-
-  
+      NODE_ENV: staging
