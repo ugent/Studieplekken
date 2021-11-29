@@ -3,6 +3,4 @@
     ports:
       - "8087:8087"
     environment:
-      NODE_ENV: production
-
-  
+      NODE_ENV: .
