@@ -314,7 +314,9 @@ export class LocationCalendarComponent implements OnInit {
   }
 
   hourPickedHandler(date: Moment, modal: TemplateRef<any>) {
-    this.toUpdateTimeslot = new Timeslot(null, date, null, null, null, null, this.locationId, date, null, null, false);
+    console.log(date);
+    const openingHour = moment(date.format("HH:mm"), "HH:mm")
+    this.toUpdateTimeslot = new Timeslot(null, date, null, null, null, null, this.locationId, openingHour, null, null, false);
     this.modalService.open(modal)
   }
 
