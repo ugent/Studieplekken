@@ -1,4 +1,6 @@
 export const defaultLocationImage = 'assets/images/default_location.jpg';
+export const defaultTeaserImages = ['assets/images/teaser/teaser1.jpg','assets/images/teaser/teaser2.jpg','assets/images/teaser/teaser3.jpg','assets/images/teaser/teaser4.jpg'] ;
+
 export const userWantsTLogInLocalStorageKey = 'userWantsTLogIn';
 export const authenticationWasExpiredUrlLSKey = 'authenticationWasExpiredUrl'
 /*
