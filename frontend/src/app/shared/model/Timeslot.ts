@@ -122,10 +122,10 @@ export class Timeslot {
   }
 
   sanitize() {
-    if(!this.reservableFrom.isValid())
+    if(!this.reservableFrom || !this.reservableFrom.isValid())
       this.reservableFrom = null;
 
-    if(!this.timeslotDate.isValid())
+    if(!this.timeslotDate || !this.timeslotDate.isValid())
       this.timeslotDate = null;
   }
 
