@@ -46,7 +46,7 @@ export class Timeslot {
     if (!json) {
       return null;
     }
-    return new Timeslot(
+    const t = new Timeslot(
       json.timeslotSeqnr,
       moment(json.timeslotDate),
       json.amountOfReservations,
@@ -59,6 +59,9 @@ export class Timeslot {
       json.timeslotGroup,
       json.repeatable
     );
+
+    t.sanitize();
+    return t;
   }
 
   toJSON(): Record<string, unknown> {
