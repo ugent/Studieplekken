@@ -21,12 +21,12 @@ export class TimeslotGroupService {
     return this.copy(timeslot, date, location)
   }
 
-  copy(timeslot: Timeslot, date: Moment, location: Location) {
+  copy(timeslot: Timeslot, date: Moment, location: Location, keepTimeslotGroup = false) {
     const reservationDiff = date.diff(timeslot.timeslotDate, "minutes");
     const reservableFrom = timeslot.reservableFrom ? moment(timeslot.reservableFrom):null;
     const newReservableFrom = reservableFrom.add(reservationDiff, "minutes");
 
-    return new Timeslot(null, date, 0, location.numberOfSeats, timeslot.reservable, newReservableFrom.isValid() ? newReservableFrom: null, timeslot.locationId, timeslot.openingHour, timeslot.closingHour, timeslot.timeslotGroup, timeslot.repeatable)
+    return new Timeslot(null, date, 0, location.numberOfSeats, timeslot.reservable, newReservableFrom.isValid() ? newReservableFrom: null, timeslot.locationId, timeslot.openingHour, timeslot.closingHour, keepTimeslotGroup ? timeslot.timeslotGroup : null, timeslot.repeatable)
   }
 
   groupTimeslots(timeslot: Timeslot[]): TimeslotGroups {
@@ -59,7 +59,7 @@ export class TimeslotGroupService {
 
     for(let i = 1; i <= amountOfWeeks; i++) {
       const targetDate = (t: Timeslot) => moment(t.timeslotDate).add(i, "weeks");
-      repeatableTimeslots.filter(t => t.timeslotDate.isBefore(targetDate(t), "day")).forEach(t => suggestions.push({model: t, copy: this.copy(t, targetDate(t), location)}));
+      repeatableTimeslots.filter(t => t.timeslotDate.isBefore(targetDate(t), "day")).forEach(t => suggestions.push({model: t, copy: this.copy(t, targetDate(t), location, true)}));
     }
 
     return suggestions;
