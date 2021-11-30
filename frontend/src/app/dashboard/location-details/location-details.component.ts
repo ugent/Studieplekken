@@ -23,7 +23,7 @@ import {
 import { BreadcrumbService } from 'src/app/stad-gent-components/header/breadcrumbs/breadcrumb.service';
 import { environment } from 'src/environments/environment';
 import {
-  defaultLocationImage,
+  defaultTeaserImages,
   LocationStatus,
   msToShowFeedback
 } from '../../app.constants';
@@ -87,7 +87,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     dutch: '',
   };
 
-  altImageUrl = defaultLocationImage;
+  altImageUrl = defaultTeaserImages[Math.floor(Math.random()*defaultTeaserImages.length)];
   imageUrlErrorOccurred = false;
 
   status: Pair<LocationStatus, string>;
