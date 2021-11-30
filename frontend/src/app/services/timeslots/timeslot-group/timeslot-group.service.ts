@@ -24,9 +24,9 @@ export class TimeslotGroupService {
   copy(timeslot: Timeslot, date: Moment, location: Location, keepTimeslotGroup = false) {
     const reservationDiff = date.diff(timeslot.timeslotDate, "minutes");
     const reservableFrom = timeslot.reservableFrom ? moment(timeslot.reservableFrom):null;
-    const newReservableFrom = reservableFrom.add(reservationDiff, "minutes");
+    const newReservableFrom = reservableFrom?.add(reservationDiff, "minutes");
 
-    return new Timeslot(null, date, 0, location.numberOfSeats, timeslot.reservable, newReservableFrom.isValid() ? newReservableFrom: null, timeslot.locationId, timeslot.openingHour, timeslot.closingHour, keepTimeslotGroup ? timeslot.timeslotGroup : null, timeslot.repeatable)
+    return new Timeslot(null, date, 0, location.numberOfSeats, timeslot.reservable, newReservableFrom && newReservableFrom.isValid() ? newReservableFrom: null, timeslot.locationId, timeslot.openingHour, timeslot.closingHour, keepTimeslotGroup ? timeslot.timeslotGroup : null, timeslot.repeatable)
   }
 
   groupTimeslots(timeslot: Timeslot[]): TimeslotGroups {
