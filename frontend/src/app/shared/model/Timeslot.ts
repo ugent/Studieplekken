@@ -80,7 +80,7 @@ export class Timeslot {
     if(!this.timeslotDate || !this.openingHour || !this.closingHour) {
       return false;
     }
-    
+
     if(this.reservable && (!this.reservableFrom || !this.reservableFrom.isValid())) {
       return false;
     }
@@ -116,6 +116,14 @@ export class Timeslot {
 
   isInPast() {
     return this.getEndMoment().isBefore(moment());
+  }
+
+  sanitize() {
+    if(!this.reservableFrom.isValid())
+      this.reservableFrom = null;
+
+    if(!this.timeslotDate.isValid())
+      this.timeslotDate = null;
   }
 
 }
