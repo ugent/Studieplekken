@@ -305,7 +305,7 @@ export class LocationCalendarComponent implements OnInit {
       "openingHour": oldestTimeslot.openingHour.format("HH:mm"),
       "closingHour": oldestTimeslot.closingHour.format("HH:mm"),
       "reservable": oldestTimeslot.reservable,
-      "reservableFrom": allOnSameDay ? oldestTimeslot.reservableFrom.format("DD/MM/YYYY HH:mm") : oldestTimeslot.reservableFrom.format("dddd HH:mm"),
+      "reservableFrom": oldestTimeslot.reservable ? allOnSameDay ? oldestTimeslot.reservableFrom.format("DD/MM/YYYY HH:mm") : oldestTimeslot.reservableFrom.format("dddd HH:mm") : "Not reservable",
       "seatCount": oldestTimeslot.seatCount,
       "timeslots": timeslot,
       "repeatable": oldestTimeslot.repeatable
