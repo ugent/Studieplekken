@@ -40,7 +40,7 @@ export class LoginFlowService {
         const samlUser: SamlUser = {
           id: user.user_id,
           email: user.email,
-          institution: Institution.STAD_GENT,
+          institution: Institution.OTHER,
           firstName: user.first_name,
           lastName: user.last_name,
         };

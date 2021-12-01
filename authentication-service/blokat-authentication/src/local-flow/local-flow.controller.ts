@@ -9,33 +9,33 @@ import {
   Res,
   ValidationPipe,
   Redirect,
-} from '@nestjs/common';
-import { Response } from 'express';
-import { getConfig } from 'src/configModule/config.service';
-import { LoginFlowService } from './login-flow/login-flow-service/login-flow-service.service';
-import { UnhashedLoginBodyBase } from './login-flow/login-flow-service/LoginBodyInterface';
-import { RegisterFlowService } from './register-flow/register-flow-service';
-import { UnhashedRegisterBodyBase } from './register-flow/RegisterBodyInterface';
+} from "@nestjs/common";
+import { Response } from "express";
+import { getConfig } from "src/configModule/config.service";
+import { LoginFlowService } from "./login-flow/login-flow-service/login-flow-service.service";
+import { UnhashedLoginBodyBase } from "./login-flow/login-flow-service/LoginBodyInterface";
+import { RegisterFlowService } from "./register-flow/register-flow-service";
+import { UnhashedRegisterBodyBase } from "./register-flow/RegisterBodyInterface";
 
-@Controller('/auth/local')
+@Controller("/auth/local")
 export class LocalFlowController {
   constructor(
     private registerFlow: RegisterFlowService,
     private loginFlow: LoginFlowService,
   ) {}
 
-  @Post('register')
+  @Post("register")
   async registerNewAccount(
-    @Query('token') token: string,
+    @Query("token") token: string,
     @Body() body: UnhashedRegisterBodyBase,
     @Res() res: Response,
   ) {
     try {
       const return_val = await this.registerFlow.handleRegistration(body);
 
-      if ('errors' in return_val && return_val['errors'].length != 0) {
-        return res.status(400).render('register', {
-          errors: return_val['errors'].join(' '),
+      if ("errors" in return_val && return_val["errors"].length != 0) {
+        return res.status(400).render("register", {
+          errors: return_val["errors"].join(" "),
           first_name: body.first_name,
           email: body.email,
           last_name: body.last_name,
@@ -45,27 +45,25 @@ export class LocalFlowController {
 
       res.redirect("https://bloklocaties.stad.gent/login");
     } catch (e: unknown) {
-      res.render('register', { errors: 'valuable error', token });
+      res.render("register", { errors: "Unknown error", token });
     }
   }
 
-  @Get('register')
-  @Render('register')
-  getRegisterPage(
-    @Query('token') token: string,
-  ) {
+  @Get("register")
+  @Render("register")
+  getRegisterPage(@Query("token") token: string) {
     return { token: token };
   }
 
-  @Get('login')
-  @Render('login')
-  getLoginPage(@Query('callbackURL') callbackURL: string) {
+  @Get("login")
+  @Render("login")
+  getLoginPage(@Query("callbackURL") callbackURL: string) {
     return { callbackURL };
   }
 
-  @Post('login')
+  @Post("login")
   async login(
-    @Query('callbackURL') callbackURL: string,
+    @Query("callbackURL") callbackURL: string,
     @Body() body: UnhashedLoginBodyBase,
     @Res() res: Response,
   ) {
@@ -73,12 +71,11 @@ export class LocalFlowController {
       const response = await this.loginFlow.handleLogin(body);
 
       if (response.errors.length > 0) {
-        res.render('login', {
-          errors: response.errors.join(' '),
+        res.render("login", {
+          errors: response.errors.join(" "),
           email: body.email,
         });
       } else {
-
         if (callbackURL) {
           const configuration = getConfig();
           const allowedCallbacks = configuration.auth.allowedClientCallbacks;
@@ -89,18 +86,18 @@ export class LocalFlowController {
             );
           } else {
             Logger.warn(`Callback URL ${callbackURL} is not allowed.`);
-            return res.status(400).send('The URL is not allowed.');
+            return res.status(400).send("The URL is not allowed.");
           }
         } else {
-          return res.status(400).send('No callbackURL.');
+          return res.status(400).send("No callbackURL.");
         }
       }
     } catch (e: unknown) {
-      res.render('login', { errors: 'valuable error', callbackURL });
+      res.render("login", { errors: "valuable error", callbackURL });
     }
   }
 
-  @Post('tokenLink')
+  @Post("tokenLink")
   async getNewTokenLink() {
     const token = await this.registerFlow.newToken();
     return { token };

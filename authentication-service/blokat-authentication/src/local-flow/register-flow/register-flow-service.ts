@@ -1,11 +1,11 @@
-import { users } from '.prisma/client';
-import { Injectable } from '@nestjs/common';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
-import { validate, validateOrReject } from 'class-validator';
-import { DbTokenService } from 'src/db/db-token/db-token.service';
-import { DbUserService } from 'src/db/db-user/db-user.service';
-import { HashedService } from 'src/db/hasher/hash.service';
-import { UnhashedRegisterBodyBase } from './RegisterBodyInterface';
+import { users } from ".prisma/client";
+import { Injectable } from "@nestjs/common";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
+import { validate, validateOrReject } from "class-validator";
+import { DbTokenService } from "src/db/db-token/db-token.service";
+import { DbUserService } from "src/db/db-user/db-user.service";
+import { HashedService } from "src/db/hasher/hash.service";
+import { UnhashedRegisterBodyBase } from "./RegisterBodyInterface";
 
 @Injectable()
 export class RegisterFlowService {
@@ -29,9 +29,9 @@ export class RegisterFlowService {
         !Array.isArray(body.password) ||
         body.password[0] !== body.password[1]
       ) {
-        errors.push('The passwords do not match.');
+        errors.push("The passwords do not match.");
       } else if (body.password[0].length < 8) {
-        errors.push('Password is too short, must be atleast 8 characters');
+        errors.push("Password is too short, must be at least 8 characters");
       } else {
         body.password = body.password[0];
       }
@@ -51,12 +51,11 @@ export class RegisterFlowService {
         return savedUser;
       } catch (error) {
         if (error instanceof PrismaClientKnownRequestError)
-          errors.push('Email is already in use.');
+          errors.push("Email is already in use.");
         else errors.push("Invalid token.");
-
       }
     } else {
-      errors.push('All fields need to be filled in.');
+      errors.push("All fields need to be filled in.");
     }
 
     return { errors: errors };
