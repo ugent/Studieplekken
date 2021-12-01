@@ -148,6 +148,7 @@
     "odiseeLogin": "Odisee Login",
     "lucaLogin": "LUCA School of Arts Login",
     "stadGentLogin": "Stad Gent Login",
+    "kuLeuvenLogin": "KU Leuven Login",
     "about": "Het digitaal platform voor studieplekken"
   },
   "management": {
@@ -895,7 +896,7 @@
   "Odisee": "Odisee Hogeschool",
   "Arteveldehogeschool": "Arteveldehogeschool",
   "UGent": "UGent",
-  "HoGent": "HoGent",
+  "HoGent": "HOGENT",
   "StadGent": "Stad Gent",
   "Luca": "LUCA School of Arts",
   "KULeuven": "KULeuven",

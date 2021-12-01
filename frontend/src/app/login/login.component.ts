@@ -17,17 +17,15 @@ export class LoginComponent {
   odiseeFlowTriggerUrl = environment.odiseeFlowTriggerUrl;
   lucaFlowTriggerUrl = environment.lucaFlowTriggerUrl;
   stadGentFlowTriggerUrl = environment.stadGentFlowTriggerUrl;
+  kulFlowTriggerUrl = environment.kulFlowTriggerUrl;
+
 
 
   constructor(route: ActivatedRoute, authService: AuthenticationService, router: Router) {
     route.queryParamMap.subscribe((map) => {
-      console.log(map)
       if (map.has('token')) {
         localStorage.setItem('access_token', map.get('token'));
-        console.log("set token: ")
-        console.log(map.get('token'))
-        authService.login();
-        router.navigateByUrl('/dashboard');
+        authService.login(true);
       }
     });
   }

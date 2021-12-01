@@ -91,6 +91,7 @@ import { QRCodeModule } from 'angularx-qrcode';
 import { QRCodeComponent } from './miscellaneous/qrcode/qrcode.component';
 import { ScannerComponent } from './miscellaneous/scanner/scanner.component';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
+import { EntryComponent } from './entry/entry.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -264,7 +265,7 @@ const routes: Routes = [
 
   {
     path: '',
-    redirectTo: '/dashboard',
+    component: EntryComponent,
     pathMatch: 'full',
   },
   // , {path: '**', component: PageNotFoundController} TODO: create PageNotFoundController
@@ -328,6 +329,7 @@ const routes: Routes = [
     ModalComponent,
     QRCodeComponent,
     ScannerComponent,
+    EntryComponent,
   ],
   imports: [
     BrowserModule,

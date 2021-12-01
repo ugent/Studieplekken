@@ -63,7 +63,7 @@ export const configuration: Configuration = {
         }),
       },
       {
-        loginUrl: 'leuven',
+        loginUrl: 'kuleuven',
         callbackUrl: 'https://studieplekken-dev.ugent.be/api/SSO/saml',
         issuer: 'https://studieplekken-dev.ugent.be/api/metadata/saml',
         metadataFile: 'sso-kuleuven-off.xml',
@@ -72,7 +72,7 @@ export const configuration: Configuration = {
           lastName: a['urn:oid:2.5.4.4'],
           email: a['mail'],
           id: a['urn:mace:kuleuven.be:dir:attribute-def:KULMoreUnifiedUID'],
-          institution: Institution.ODISEE,
+          institution: Institution.KU_LEUVEN,
         }),
       },
       {

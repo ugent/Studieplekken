@@ -313,12 +313,6 @@ export class LocationCalendarComponent implements OnInit {
 
   }
 
-  jumpTo(type: TypeOption) {
-    const lastTimeslot = type.timeslots.reduce((a, b) => a.timeslotDate.isAfter(b.timeslotDate) ? a:b)
-    this.jumpToDate = lastTimeslot.timeslotDate;
-    this.currentTimeSlot = lastTimeslot;
-  }
-
   hourPickedHandler(date: Moment, modal: TemplateRef<any>) {
     this.toUpdateTimeslot = new Timeslot(null, date, null, null, null, null, this.locationId, date, null, null, false);
     this.modalService.open(modal)

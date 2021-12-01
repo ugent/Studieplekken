@@ -1,19 +1,18 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { LocationService } from '../services/api/locations/location.service';
-import { Location } from '../shared/model/Location';
-import { LocationTag } from '../shared/model/LocationTag';
-import { TagsService } from '../services/api/tags/tags.service';
-import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
-import { TimeslotsService } from '../services/api/calendar-periods/timeslot.service';
-import { LocationStatus } from '../app.constants';
-import { Building } from '../shared/model/Building';
-import { BuildingService } from '../services/api/buildings/buildings.service';
-import { merge, Observable, of, Subscription } from 'rxjs';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { Moment } from 'moment';
+import { merge, Observable, of, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { BreadcrumbService, dashboardBreadcrumb } from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
+import { LocationStatus } from '../app.constants';
+import { BuildingService } from '../services/api/buildings/buildings.service';
+import { LocationService } from '../services/api/locations/location.service';
+import { TagsService } from '../services/api/tags/tags.service';
+import { Building } from '../shared/model/Building';
+import { Location } from '../shared/model/Location';
+import { LocationTag } from '../shared/model/LocationTag';
+import { BreadcrumbService } from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -95,7 +94,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.tagObs = this.tagsService.getAllTags();
     this.buildingObs = this.buildingService.getAllBuildings();
 
-    this.breadcrumbService.setCurrentBreadcrumbs([dashboardBreadcrumb])
+    this.breadcrumbService.setCurrentBreadcrumbs([])
   }
 
   ngOnDestroy(): void {
