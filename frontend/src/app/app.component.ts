@@ -35,7 +35,7 @@ export class AppComponent implements OnInit {
     // if you think about supporting another language, you must change the exported variable 'appLanguages'
     // in environments.ts accordingly. This variable is used in PenaltiesComponent to show the correct description
 
-    translate.setDefaultLang('en');
+    translate.setDefaultLang('nl');
     // tries to set the language to the default browserlanguage of the user if 'en' or 'nl' (else en)
     const browserLang = translate.getBrowserLang();
     moment().locale(browserLang)
@@ -46,8 +46,8 @@ export class AppComponent implements OnInit {
       moment.locale(item)
     } else {
       // add another language? -> add language to regex and read comments at the beginning of this constructor!
-      translate.use(/en|nl/.exec(browserLang) ? browserLang : 'en');
-      localStorage.setItem('selectedLanguage', 'en');
+      translate.use(/en|nl/.exec(browserLang) ? browserLang : 'nl');
+      localStorage.setItem('selectedLanguage', 'nl');
     }
   }
 

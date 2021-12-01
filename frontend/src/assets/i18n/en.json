@@ -260,7 +260,7 @@
         "copyModalView": {
           "title": "Copy this calendar period",
           "body": "You are about to copy the following timeslot:",
-          "weekSelect": "Copy to week:",
+          "weekSelect": "Copy to date:",
           "nextWeek": "Copy to next week"
         },
         "warningDialog": {
