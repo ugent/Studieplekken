@@ -52,7 +52,6 @@ export class Cache<I, V> {
         }
         ),
         tap(() => {
-          console.log(this.cacheMap)
           this.cacheSubject.next(this.cacheMap);
         }),
         catchError((error) => {
