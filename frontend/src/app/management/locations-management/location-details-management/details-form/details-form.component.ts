@@ -99,10 +99,13 @@ export class DetailsFormComponent implements OnInit {
 
     this.buildingsObs = this.buildingsService.getAllBuildings().pipe(
       tap((next) => {
+        const buildingId = this.locationForm.get("building").value;
         this.buildingsMap = new Map<number, Building>();
         next.forEach((value) => {
           this.buildingsMap.set(value.buildingId, value);
         });
+
+        setTimeout(() => this.locationForm.get("building").setValue(buildingId), 50)
       })
     );
 
@@ -110,6 +113,7 @@ export class DetailsFormComponent implements OnInit {
   }
 
   updateFormGroup(location: Location): void {
+    console.log(location)
     this.locationForm.setValue({
       name: location.name,
       authority: location.authority.authorityId,
