@@ -27,7 +27,7 @@ export class LocalFlowController {
   async registerNewAccount(
     @Query("callbackURL") callbackURL: string,
     @Query("token") token: string,
-    @Body(ValidationPipe) body: UnhashedRegisterBodyBase,
+    @Body() body: UnhashedRegisterBodyBase,
     @Res() res: Response,
   ) {
     try {
@@ -35,8 +35,7 @@ export class LocalFlowController {
       console.log(return_val);
       if ("errors" in return_val && return_val["errors"].length != 0) {
         console.log(return_val["errors"]);
-        //res.render("register", { error: "valuable error" });
-        ///res.end();
+        res.render("register", { error: "valuable error" });
       }
       if (callbackURL) {
         const configuration = getConfig();

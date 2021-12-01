@@ -1,5 +1,6 @@
 import { users } from ".prisma/client";
 import { Injectable } from "@nestjs/common";
+import { validate, validateOrReject } from "class-validator";
 import { DbTokenService } from "src/db/db-token/db-token.service";
 import { DbUserService } from "src/db/db-user/db-user.service";
 import { HashedService } from "src/db/hasher/hash.service";
@@ -15,9 +16,9 @@ export class RegisterFlowService {
 
   public async handleRegistration(body: UnhashedRegisterBodyBase) {
     const errors = [];
-
-    if (body.email && body.first_name && body.last_name) {
-      errors.push("All fields need to be filled in");
+    const validationErrors = await validate(body);
+    if (validationErrors) {
+      validationErrors.forEach((v) => errors.push(v.toString()));
       //throw new PasswordNoMatchError();
     }
 
