@@ -35,7 +35,12 @@ export class LocalFlowController {
       const return_val = await this.registerFlow.handleRegistration(body);
 
       if ('errors' in return_val && return_val['errors'].length != 0) {
-        res.render('register', { error: return_val['errors'] });
+        res.render('register', {
+          error: return_val['errors'],
+          first_name: body.first_name,
+          email: body.email,
+          last_name: body.last_name,
+        });
       }
       if (callbackURL) {
         const configuration = getConfig();
@@ -81,7 +86,7 @@ export class LocalFlowController {
     try {
       const response = await this.loginFlow.handleLogin(body);
       if (response.errors.length > 0) {
-        res.render('login', { error: response.errors });
+        res.render('login', { error: response.errors, email: body.email });
       } else {
         if (callbackURL) {
           const configuration = getConfig();

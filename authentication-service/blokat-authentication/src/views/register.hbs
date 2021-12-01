@@ -15,12 +15,12 @@
     <div>
       <form action="./register?callbackURL={{ callbackURL }}&token={{ token }}" method="POST">
         <label for="email">E-mail</label><br />
-        <input type="email" id="email" name="email" /><br />
+        <input type="email" id="email" name="email" value="{{email}}" /><br />
 
         <label for="first_name">First name</label><br />
-        <input type="text" id="first_name" name="first_name" /><br />
+        <input type="text" id="first_name" name="first_name" value="{{first_name}}" /><br />
         <label for="last_name">Last name</label><br />
-        <input type="text" id="last_name" name="last_name" /><br />
+        <input type="text" id="last_name" name="last_name" value="{{last_name}}"/><br />
         <br/>
         <br/>
         <label for="password">Password (minimum 8 characters)</label><br />
