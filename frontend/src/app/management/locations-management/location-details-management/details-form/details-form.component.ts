@@ -99,21 +99,26 @@ export class DetailsFormComponent implements OnInit {
 
     this.buildingsObs = this.buildingsService.getAllBuildings().pipe(
       tap((next) => {
+        const buildingId = this.locationForm.get("building").value;
         this.buildingsMap = new Map<number, Building>();
         next.forEach((value) => {
           this.buildingsMap.set(value.buildingId, value);
         });
+
+        setTimeout(() => this.locationForm.get("building").setValue(buildingId), 100)
       })
     );
 
     this.showLockersManagement = this.functionalityService.showLockersManagementFunctionality();
+
+    this.locationForm.valueChanges.subscribe(v => console.log(v))
   }
 
   updateFormGroup(location: Location): void {
     this.locationForm.setValue({
       name: location.name,
       authority: location.authority.authorityId,
-      building: location.building.buildingId,
+      building: `${location.building.buildingId}`,
       numberOfSeats: location.numberOfSeats,
       numberOfLockers: 0,
       forGroup: location.forGroup,
