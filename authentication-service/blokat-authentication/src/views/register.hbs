@@ -14,7 +14,6 @@
     </div>
     <div>
       <form action="./register?callbackURL={{ callbackURL }}&token={{ token }}" method="POST">
-      <p>{{error}}</p>
         <label for="email">E-mail</label><br />
         <input type="email" id="email" name="email" /><br />
 
@@ -31,6 +30,7 @@
         <input type="hidden" id="token" name="token" value="{{ token }}" /><br />
 
         <input type="hidden" id="hidden_value" value=""/>
+        <p class="error">{{error}}</p>
         <input type="submit" value="Submit" />
 
       </form>

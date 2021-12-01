@@ -111,3 +111,7 @@ html {
 body {
   font-family: 'PannoTextMedium', sans-serif;
 }
+
+.error{
+  color:red;
+}
