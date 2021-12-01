@@ -8,6 +8,7 @@ import {
   Render,
   Res,
   ValidationPipe,
+  Redirect,
 } from "@nestjs/common";
 import { Response } from "express";
 import { getConfig } from "src/configModule/config.service";
@@ -23,14 +24,46 @@ export class LocalFlowController {
   ) {}
 
   @Post("register")
-  registerNewAccount(@Body(ValidationPipe) body: UnhashedRegisterBodyBase) {
-    return this.registerFlow.handleRegistration(body);
+  async registerNewAccount(
+    @Query("callbackURL") callbackURL: string,
+    @Query("token") token: string,
+    @Body(ValidationPipe) body: UnhashedRegisterBodyBase,
+    @Res() res: Response,
+  ) {
+    try {
+      const return_val = await this.registerFlow.handleRegistration(body);
+      console.log(return_val);
+      if ("errors" in return_val && return_val["errors"].length != 0) {
+        console.log(return_val["errors"]);
+        //res.render("register", { error: "valuable error" });
+        ///res.end();
+      }
+      if (callbackURL) {
+        const configuration = getConfig();
+        const allowedCallbacks = configuration.auth.allowedClientCallbacks;
+
+        if (allowedCallbacks.indexOf(callbackURL) !== -1) {
+          //return res.redirect(`${callbackURL}`);
+          //Logger.warn(`Callback URL ${callbackURL} is not allowed.`);
+          //res.status(400).send("The URL is not allowed.");
+        } else {
+          //Logger.warn(`Callback URL ${callbackURL} is not allowed.`);
+          //res.status(400).send("The URL is not allowed.");
+        }
+      }
+    } catch (e: unknown) {
+      // TODO: show error when password is incorrect
+      //res.render("register", { error: "valuable error" });
+    }
   }
 
   @Get("register")
   @Render("register")
-  getRegisterPage(@Query("token") token: string) {
-    return { token };
+  getRegisterPage(
+    @Query("callbackURL") callbackURL: string,
+    @Query("token") token: string,
+  ) {
+    return { callbackURL: callbackURL, token: token };
   }
 
   @Get("login")

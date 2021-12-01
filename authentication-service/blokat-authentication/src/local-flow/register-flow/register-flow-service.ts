@@ -14,14 +14,29 @@ export class RegisterFlowService {
   ) {}
 
   public async handleRegistration(body: UnhashedRegisterBodyBase) {
+    const errors = [];
+
+    if (body.email && body.first_name && body.last_name) {
+      errors.push("All fields need to be filled in");
+      //throw new PasswordNoMatchError();
+    }
+
     // Check password
     if (
       !Array.isArray(body.password) ||
       body.password[0] !== body.password[1]
     ) {
-      throw new PasswordNoMatchError();
+      errors.push("The passwords do not match.");
+      //throw new PasswordNoMatchError();
+    } else if (body.password[0].length < 8) {
+      errors.push("Password is too short, must be atleast 8 characters");
+      //throw new PasswordNoMatchError();
     } else {
       body.password = body.password[0];
+    }
+
+    if (errors.length > 0) {
+      return { errors: errors };
     }
 
     // create user
@@ -34,8 +49,10 @@ export class RegisterFlowService {
     try {
       return await this.saveUser(user);
     } catch (error) {
-      throw new SaveUserError();
+      errors.push("Something went wrong when saving the user");
+      //throw new SaveUserError();
     }
+    return { errors: errors };
   }
 
   private async unhashedToUserData(

@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty } from "class-validator";
+import { IsEmail, isNotEmpty, IsNotEmpty, MinLength } from "class-validator";
 
 class RegisterBodyBase {
   @IsEmail()
