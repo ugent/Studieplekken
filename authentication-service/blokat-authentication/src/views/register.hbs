@@ -13,24 +13,29 @@
       <h3 class="center">Registration Form</h3>
     </div>
     <div>
-      <form action="./register" method="post">
+      <form action="./register?callbackURL={{ callbackURL }}&token={{ token }}" method="POST">
         <label for="email">E-mail</label><br />
-        <input type="email" id="email" name="email" /><br />
+        <input type="email" id="email" name="email" value="{{email}}" /><br />
 
         <label for="first_name">First name</label><br />
-        <input type="text" id="first_name" name="first_name" /><br />
+        <input type="text" id="first_name" name="first_name" value="{{first_name}}" /><br />
         <label for="last_name">Last name</label><br />
-        <input type="text" id="last_name" name="last_name" /><br />
+        <input type="text" id="last_name" name="last_name" value="{{last_name}}"/><br />
         <br/>
         <br/>
-        <label for="last_name">Password</label><br />
+        <label for="password">Password (minimum 8 characters)</label><br />
         <input type="password" id="password" name="password" /><br />
-        <label for="last_name">Retype password</label><br />
+        <label for="password_two">Retype password</label><br />
         <input type="password" id="password" name="password" /><br />
         <input type="hidden" id="token" name="token" value="{{ token }}" /><br />
 
+        <input type="hidden" id="hidden_value" value=""/>
+
+        <p class="error">{{errors}}</p>
         <input type="submit" value="Submit" />
+
       </form>
     </div>
+
   </body>
 </html>

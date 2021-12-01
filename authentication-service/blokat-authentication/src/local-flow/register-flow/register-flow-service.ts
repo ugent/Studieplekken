@@ -1,9 +1,10 @@
-import { users } from ".prisma/client";
-import { Injectable } from "@nestjs/common";
-import { DbTokenService } from "src/db/db-token/db-token.service";
-import { DbUserService } from "src/db/db-user/db-user.service";
-import { HashedService } from "src/db/hasher/hash.service";
-import { UnhashedRegisterBodyBase } from "./RegisterBodyInterface";
+import { users } from '.prisma/client';
+import { Injectable } from '@nestjs/common';
+import { validate, validateOrReject } from 'class-validator';
+import { DbTokenService } from 'src/db/db-token/db-token.service';
+import { DbUserService } from 'src/db/db-user/db-user.service';
+import { HashedService } from 'src/db/hasher/hash.service';
+import { UnhashedRegisterBodyBase } from './RegisterBodyInterface';
 
 @Injectable()
 export class RegisterFlowService {
@@ -14,28 +15,45 @@ export class RegisterFlowService {
   ) {}
 
   public async handleRegistration(body: UnhashedRegisterBodyBase) {
-    // Check password
-    if (
-      !Array.isArray(body.password) ||
-      body.password[0] !== body.password[1]
-    ) {
-      throw new PasswordNoMatchError();
+    const errors = [];
+    const validationErrors = await validate(body);
+    if (validationErrors) {
+      validationErrors.forEach((v) => errors.push(v.toString()));
+    }
+
+    // Check if all values are filled in
+    if (body.email && body.first_name && body.last_name && body.password) {
+      // Check password
+      if (
+        !Array.isArray(body.password) ||
+        body.password[0] !== body.password[1]
+      ) {
+        errors.push('The passwords do not match.');
+      } else if (body.password[0].length < 8) {
+        errors.push('Password is too short, must be atleast 8 characters');
+      } else {
+        body.password = body.password[0];
+      }
+
+      if (errors.length > 0) {
+        return { errors: errors };
+      }
+
+      // create user
+      const user = await this.unhashedToUserData(body);
+
+      // check token handed in body
+      try {
+        await this.tokenDb.useToken(body.token);
+        return await this.saveUser(user);
+      } catch (error) {
+        errors.push('Invalid token given.');
+      }
     } else {
-      body.password = body.password[0];
+      errors.push('All fields need to be filled in.');
     }
 
-    // create user
-    const user = await this.unhashedToUserData(body);
-
-    // check token handed in body
-    this.tokenDb.useToken(body.token);
-
-    // save user
-    try {
-      return await this.saveUser(user);
-    } catch (error) {
-      throw new SaveUserError();
-    }
+    return { errors: errors };
   }
 
   private async unhashedToUserData(
@@ -62,17 +80,5 @@ export class RegisterFlowService {
 
   public async newToken(): Promise<string> {
     return (await this.tokenDb.createNewToken()).id;
-  }
-}
-
-class PasswordNoMatchError extends Error {
-  constructor() {
-    super("The passwords do not match.");
-  }
-}
-
-class SaveUserError extends Error {
-  constructor() {
-    super("Something went wrong when saving the user");
   }
 }
