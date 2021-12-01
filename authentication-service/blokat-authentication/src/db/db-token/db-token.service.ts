@@ -12,6 +12,17 @@ export class DbTokenService {
     });
   }
 
+  async checkToken(tokenId: string) {
+    const token = await this.prisma.tokens.findUnique({
+      where: { id: tokenId },
+    });
+    if (!token) throw new TokenDoesntExistError();
+
+    if (token.isUsed) {
+      throw new TokenIsUsedError();
+    }
+  }
+
   async useToken(tokenId: string): Promise<tokens> {
     const token = await this.prisma.tokens.findUnique({
       where: { id: tokenId },

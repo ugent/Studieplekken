@@ -1,5 +1,6 @@
 import { users } from '.prisma/client';
 import { Injectable } from '@nestjs/common';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { validate, validateOrReject } from 'class-validator';
 import { DbTokenService } from 'src/db/db-token/db-token.service';
 import { DbUserService } from 'src/db/db-user/db-user.service';
@@ -44,10 +45,15 @@ export class RegisterFlowService {
 
       // check token handed in body
       try {
+        await this.tokenDb.checkToken(body.token);
+        const savedUser = await this.saveUser(user);
         await this.tokenDb.useToken(body.token);
-        return await this.saveUser(user);
+        return savedUser;
       } catch (error) {
-        errors.push('Invalid token given.');
+        if (error instanceof PrismaClientKnownRequestError)
+          errors.push('Email is already in use.');
+        else errors.push("Invalid token.");
+
       }
     } else {
       errors.push('All fields need to be filled in.');

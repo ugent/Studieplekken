@@ -26,7 +26,6 @@ export class LocalFlowController {
 
   @Post('register')
   async registerNewAccount(
-    @Query('callbackURL') callbackURL: string,
     @Query('token') token: string,
     @Body() body: UnhashedRegisterBodyBase,
     @Res() res: Response,
@@ -35,39 +34,27 @@ export class LocalFlowController {
       const return_val = await this.registerFlow.handleRegistration(body);
 
       if ('errors' in return_val && return_val['errors'].length != 0) {
-        res.render('register', {
+        return res.status(400).render('register', {
           errors: return_val['errors'].join(' '),
           first_name: body.first_name,
           email: body.email,
           last_name: body.last_name,
+          token,
         });
       }
-      if (callbackURL) {
-        const configuration = getConfig();
-        const allowedCallbacks = configuration.auth.allowedClientCallbacks;
 
-        if (
-          allowedCallbacks.indexOf(callbackURL) !== -1 &&
-          !('errors' in return_val)
-        ) {
-          return res.redirect(`${callbackURL}`);
-        } else if (!('errors' in return_val)) {
-          Logger.warn(`Callback URL ${callbackURL} is not allowed.`);
-          res.status(400).send('The URL is not allowed.');
-        }
-      }
+      res.redirect("https://bloklocaties.stad.gent/login");
     } catch (e: unknown) {
-      res.render('register', { errors: 'valuable error' });
+      res.render('register', { errors: 'valuable error', token });
     }
   }
 
   @Get('register')
   @Render('register')
   getRegisterPage(
-    @Query('callbackURL') callbackURL: string,
     @Query('token') token: string,
   ) {
-    return { callbackURL: callbackURL, token: token };
+    return { token: token };
   }
 
   @Get('login')
@@ -82,15 +69,16 @@ export class LocalFlowController {
     @Body() body: UnhashedLoginBodyBase,
     @Res() res: Response,
   ) {
-    console.log('enters login page');
     try {
       const response = await this.loginFlow.handleLogin(body);
+
       if (response.errors.length > 0) {
         res.render('login', {
           errors: response.errors.join(' '),
           email: body.email,
         });
       } else {
+
         if (callbackURL) {
           const configuration = getConfig();
           const allowedCallbacks = configuration.auth.allowedClientCallbacks;
@@ -101,8 +89,10 @@ export class LocalFlowController {
             );
           } else {
             Logger.warn(`Callback URL ${callbackURL} is not allowed.`);
-            res.status(400).send('The URL is not allowed.');
+            return res.status(400).send('The URL is not allowed.');
           }
+        } else {
+          return res.status(400).send('No callbackURL.');
         }
       }
     } catch (e: unknown) {
