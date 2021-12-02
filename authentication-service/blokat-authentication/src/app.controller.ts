@@ -6,18 +6,18 @@ import {
   Request,
   Res,
   UseGuards,
-} from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { randomUUID } from 'crypto';
-import { AuthService } from './auth/auth.service';
+} from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
+import { randomUUID } from "crypto";
+import { AuthService } from "./auth/auth.service";
 import {
   Institution,
   isSamlUser,
   missingSamlUserFields,
   SamlUser,
-} from './configModule/config';
-import { ConfigGuard } from './configModule/config.guard';
-import { getConfig } from './configModule/config.service';
+} from "./configModule/config";
+import { ConfigGuard } from "./configModule/config.guard";
+import { getConfig } from "./configModule/config.service";
 
 @Controller()
 export class AppController {
@@ -25,26 +25,26 @@ export class AppController {
 
   /******* CAS ENDPOINTS  *********/
 
-  @UseGuards(AuthGuard('cas'))
-  @Get('auth/login/cas')
+  @UseGuards(AuthGuard("cas"))
+  @Get("auth/login/cas")
   async casLogin(@Request() req: any, @Res() res: any) {
     Logger.warn(`User did not get redirected by CAS authguard.`);
     return res.status(500).send();
   }
 
-  @UseGuards(AuthGuard('cas'))
-  @Get('auth/login/cas/:callbackURL')
+  @UseGuards(AuthGuard("cas"))
+  @Get("auth/login/cas/:callbackURL")
   async casLoginCallback(@Request() req: any, @Res() res: any) {
     const samlUser = req.user;
     if (!isSamlUser(samlUser)) {
       const missingFields = missingSamlUserFields(samlUser);
       Logger.warn(
-        `SAML-user in request was missing ${missingFields.join(',')}.`,
+        `SAML-user in request was missing ${missingFields.join(",")}.`,
       );
       return res
         .status(400)
         .json({
-          error: `SAML-user in request was missing ${missingFields.join(',')}.`,
+          error: `SAML-user in request was missing ${missingFields.join(",")}.`,
         })
         .send();
     }
@@ -54,7 +54,7 @@ export class AppController {
 
     try {
       const redirectUrl = req.params.callbackURL;
-      if (redirectUrl && redirectUrl !== 'undefined') {
+      if (redirectUrl && redirectUrl !== "undefined") {
         const configuration = getConfig();
         const allowedCallbacks = configuration.auth.allowedClientCallbacks;
         if (allowedCallbacks.indexOf(redirectUrl) !== -1) {
@@ -70,7 +70,7 @@ export class AppController {
 
   /******* TEST ENDPOINTS  *********/
 
-  @Get('auth/login/test')
+  @Get("auth/login/test")
   @UseGuards(ConfigGuard)
   async testEndpoint() {
     const id = randomUUID();
@@ -78,15 +78,15 @@ export class AppController {
       id,
       email: `${id}@test.com`,
       institution: Institution.UGENT,
-      firstName: 'test',
-      lastName: 'test',
+      firstName: "test",
+      lastName: "test",
     };
 
     return await this.authService.issueToken(newTestUser);
   }
 
-  @UseGuards(AuthGuard('saml'))
-  @Get('auth/login/:idp')
+  @UseGuards(AuthGuard("saml"))
+  @Get("auth/login/:idp")
   async loginSaml(@Request() req: any, @Res() res: any) {
     Logger.debug(`Someone is attempting to log in from ${req.params.idp}`);
 
@@ -94,15 +94,15 @@ export class AppController {
     if (!isSamlUser(samlUser)) {
       const missingFields = missingSamlUserFields(samlUser);
       Logger.warn(
-        `SAML-user in request was missing ${missingFields.join(',')}.`,
+        `SAML-user in request was missing ${missingFields.join(",")}.`,
       );
       return res.status(400).send();
     }
     return await this.authService.issueToken(samlUser);
   }
 
-  @UseGuards(AuthGuard('saml'))
-  @Post('api/SSO/saml')
+  @UseGuards(AuthGuard("saml"))
+  @Post("api/SSO/saml")
   async loginSamlGet(@Request() req: any, @Res() res: any) {
     Logger.debug(`Someone is returning from idp.`);
     Logger.debug(req.body.RelayState);
@@ -111,7 +111,7 @@ export class AppController {
     if (!isSamlUser(samlUser)) {
       const missingFields = missingSamlUserFields(samlUser);
       Logger.warn(
-        `SAML-user in request was missing ${missingFields.join(',')}.`,
+        `SAML-user in request was missing ${missingFields.join(",")}.`,
       );
       return res.status(400).send();
     }
@@ -139,6 +139,6 @@ export class AppController {
 
   @Get()
   async home() {
-    return 'online';
+    return "online";
   }
 }
