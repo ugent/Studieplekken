@@ -117,7 +117,7 @@ export const configuration: Configuration = {
   database: {
     username: 'blokat',
     password: '***REMOVED***',
-    url: 'db',
+    url: 'user-db',
     port: '5432',
   },
 

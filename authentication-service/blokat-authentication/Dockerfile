@@ -14,4 +14,4 @@ COPY . .
 RUN yarn build
 
 
-CMD [ "node", "dist/src/main.js" ]
+ENTRYPOINT  yarn run init-db && node dist/src/main.js

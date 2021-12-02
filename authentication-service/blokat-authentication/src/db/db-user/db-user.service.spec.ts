@@ -1,9 +1,9 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ConfigService } from '../../configModule/config.service';
-import { DbService } from '../db.service';
-import { DbUserService } from './db-user.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { ConfigService } from "../../configModule/config.service";
+import { DbService } from "../db.service";
+import { DbUserService } from "./db-user.service";
 
-describe('DbUserService', () => {
+describe("DbUserService", () => {
   let service: DbUserService;
 
   beforeEach(async () => {
@@ -14,13 +14,12 @@ describe('DbUserService', () => {
     service = module.get<DbUserService>(DbUserService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  it('Should fetch my user', async () => {
-    const me = await service.userById('000170335535');
-    expect(me.first_name).toEqual('Maxiem');
-    expect(me.admin).toEqual(true);
+  it("Should fetch my user", async () => {
+    const me = await service.userByEmail("maxiem.geldhof@ugent.be");
+    expect(me.first_name).toEqual("Maxiem");
   });
 });
