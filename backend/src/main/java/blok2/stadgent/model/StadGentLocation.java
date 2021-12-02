@@ -129,6 +129,8 @@ public class StadGentLocation {
         this.gemeente = gemeente;
         this.capacity = capacity;
         this.reserved = reserved;
+        if(reserved == null)
+            this.reserved = 0;
         this.isReservable = isReservable;
         this.buildingName = buildingName;
         this.hours = hours;
