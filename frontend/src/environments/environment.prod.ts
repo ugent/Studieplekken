@@ -13,6 +13,7 @@ export const environment = {
   odiseeFlowTriggerUrl: 'https://studieplekken-dev.ugent.be/auth/login/odisee',
   stadGentFlowTriggerUrl: 'https://studieplekken-dev.ugent.be/auth/login/stadgent',
   kulFlowTriggerUrl: 'https://studieplekken-dev.ugent.be/auth/login/kuleuven',
+  otherFlowTriggerUrl: 'https://studieplekken-dev.ugent.be/auth/local/login',
 
   accessToken: "pk.eyJ1IjoiYXVyaXNhdWRlbnRpcyIsImEiOiJja3M3cGdqN24xMnNsMm5zM2tlN2d4a3MxIn0.i69TQAR5E1VCJJXMP_2QlA",
 
