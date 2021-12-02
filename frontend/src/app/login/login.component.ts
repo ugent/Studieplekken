@@ -18,6 +18,7 @@ export class LoginComponent {
   lucaFlowTriggerUrl = environment.lucaFlowTriggerUrl;
   stadGentFlowTriggerUrl = environment.stadGentFlowTriggerUrl;
   kulFlowTriggerUrl = environment.kulFlowTriggerUrl;
+  otherFlowTriggerUrl = environment.otherFlowTriggerUrl;
 
 
 

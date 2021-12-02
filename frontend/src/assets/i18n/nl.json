@@ -149,6 +149,7 @@
     "lucaLogin": "LUCA School of Arts Login",
     "stadGentLogin": "Stad Gent Login",
     "kuLeuvenLogin": "KU Leuven Login",
+    "otherLogin": "Login voor speciale accounts",
     "about": "Het digitaal platform voor studieplekken"
   },
   "management": {
