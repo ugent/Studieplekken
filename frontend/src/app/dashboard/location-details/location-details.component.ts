@@ -23,7 +23,7 @@ import {
 import { BreadcrumbService } from 'src/app/stad-gent-components/header/breadcrumbs/breadcrumb.service';
 import { environment } from 'src/environments/environment';
 import {
-  defaultLocationImage,
+  defaultTeaserImages,
   LocationStatus,
   msToShowFeedback
 } from '../../app.constants';
@@ -87,7 +87,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     dutch: '',
   };
 
-  altImageUrl = defaultLocationImage;
+  altImageUrl = defaultTeaserImages[Math.floor(Math.random()*defaultTeaserImages.length)];
   imageUrlErrorOccurred = false;
 
   status: Pair<LocationStatus, string>;
@@ -220,7 +220,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     // If the selected timeslot is not yet reservable, don't do anything
-    if (moment().isBefore(currentTimeslot.reservableFrom)) {
+    if (currentTimeslot.reservableFrom && moment().isBefore(currentTimeslot.reservableFrom)) {
       return;
     }
 
@@ -299,6 +299,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         }
 
         this.timeouts = timeslots
+          .filter(t => t.reservable)
           .map(e => (e.reservableFrom.valueOf() - moment().valueOf()))
           .filter(d => d > 0)
           .filter(d => d < 1000 * 60 * 60 * 24 * 2) // don't set more than two days in advance (weird bugs if you do)

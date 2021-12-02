@@ -1,0 +1,6 @@
+  authentication:
+    build: .
+    ports:
+      - "8087:8087"
+    environment:
+      NODE_ENV: staging

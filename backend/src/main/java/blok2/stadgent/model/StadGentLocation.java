@@ -129,6 +129,8 @@ public class StadGentLocation {
         this.gemeente = gemeente;
         this.capacity = capacity;
         this.reserved = reserved;
+        if(reserved == null)
+            this.reserved = 0;
         this.isReservable = isReservable;
         this.buildingName = buildingName;
         this.hours = hours;
@@ -141,7 +143,7 @@ public class StadGentLocation {
         Integer amountOfReservations = loc.getCurrentTimeslot() == null ? null:loc.getCurrentTimeslot().getAmountOfReservations();
         boolean isReservable = loc.getCurrentTimeslot() != null && loc.getCurrentTimeslot().isReservable();
 
-        LocalDate date = loc.getCurrentTimeslot() == null ? LocalDate.now() : loc.getCurrentTimeslot().timeslotDate();
+        LocalDate date = LocalDate.now();
         Stream<Timeslot> l = ts.getTimeslotsOfLocation(loc.getLocationId()).stream().filter(t -> t.timeslotDate().isEqual(date));
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");

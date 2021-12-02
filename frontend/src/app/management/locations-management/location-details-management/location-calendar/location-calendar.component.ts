@@ -251,7 +251,7 @@ export class LocationCalendarComponent implements OnInit {
 
 
   copy(timeslot: Timeslot, weekOffset: string, location: Location) {
-    const newTimeslot = this.timeslotGroupService.copyByWeekOffset(timeslot, parseInt(weekOffset), location)
+    const newTimeslot = this.timeslotGroupService.copy(timeslot, moment(weekOffset), location);
     this.timeslotService.addTimeslot(newTimeslot).subscribe(() => this.setup());
     this.modalService.closeAll();
   }
@@ -305,7 +305,7 @@ export class LocationCalendarComponent implements OnInit {
       "openingHour": oldestTimeslot.openingHour.format("HH:mm"),
       "closingHour": oldestTimeslot.closingHour.format("HH:mm"),
       "reservable": oldestTimeslot.reservable,
-      "reservableFrom": allOnSameDay ? oldestTimeslot.reservableFrom.format("DD/MM/YYYY HH:mm") : oldestTimeslot.reservableFrom.format("dddd HH:mm"),
+      "reservableFrom": oldestTimeslot.reservable ? allOnSameDay ? oldestTimeslot.reservableFrom.format("DD/MM/YYYY HH:mm") : oldestTimeslot.reservableFrom.format("dddd HH:mm") : "Not reservable",
       "seatCount": oldestTimeslot.seatCount,
       "timeslots": timeslot,
       "repeatable": oldestTimeslot.repeatable
@@ -314,7 +314,9 @@ export class LocationCalendarComponent implements OnInit {
   }
 
   hourPickedHandler(date: Moment, modal: TemplateRef<any>) {
-    this.toUpdateTimeslot = new Timeslot(null, date, null, null, null, null, this.locationId, date, null, null, false);
+    console.log(date);
+    const openingHour = moment(date.format("HH:mm"), "HH:mm")
+    this.toUpdateTimeslot = new Timeslot(null, date, null, null, null, null, this.locationId, openingHour, null, null, false);
     this.modalService.open(modal)
   }
 
