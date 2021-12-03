@@ -53,6 +53,14 @@
 
           <hr>
         </div>
+
+        <div class="messages messages--warning" *ngIf="showUgentWarning(location)">
+          <div markdown *ngIf="currentLanguage() | async as currlan"
+          src="assets/md/corona.{{currlan}}.md">>
+          </div>
+
+        </div>
+
       </div>
 
       <div class="content__first">
