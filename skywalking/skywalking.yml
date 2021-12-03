@@ -5,6 +5,7 @@ volumes:
 
 networks:
   blokatgent:
+    external: true
 
 
 services:
