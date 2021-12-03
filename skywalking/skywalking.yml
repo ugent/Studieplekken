@@ -4,29 +4,29 @@ volumes:
   oap_database:
 
 networks:
-  blokat:
+  blokatgent:
     external: true
+
 
 services:
   oap:
-    image: apache/skywalking-oap-server:8.7.0-es7
+    build: .
     restart: on-failure
     ports:
       - 11800:11800
       - 12800:12800
     environment:
       TZ: Europe/Brussels
+      SW_STORAGE: mysql
       SW_JDBC_URL: jdbc:mysql://oap-db:3306/swtest
       SW_DATA_SOURCE_USER: sw
       SW_DATA_SOURCE_PASSWORD: ***REMOVED***
-#      SW_TELEMETRY_PROMETHEUS_HOST: prom
-#      SW_TELEMETRY_PROMETHEUS_PORT: 9090
-#    volumes:
-#      - ./swconfig:/skywalking/config
+    volumes:
+      - ./oadb-libs:/oap-libs
 #   volumes:
 #     - oap_database:/var/lib/mysql
     networks:
-      - blokat
+      - blokatgent
     logging:
       options:
         max-size: "100m"
@@ -44,7 +44,7 @@ services:
       - TZ=Europe/Brussels
       - collector.ribbon.listOfServers=oap:12800
     networks:
-      - blokat
+      - blokatgent
   oap-db:
     image: mysql
     command: --default-authentication-plugin=mysql_native_password
@@ -55,7 +55,7 @@ services:
       MYSQL_USER: sw
       MYSQL_PASSWORD: ***REMOVED***
     networks:
-      - blokat
+      - blokatgent
 
 #  prom:
 #    image: prom/prometheus
