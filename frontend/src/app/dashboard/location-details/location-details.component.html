@@ -45,7 +45,7 @@
 
         </ul>
 
-        <div *ngIf="showDescription(description.show)">
+        <div *ngIf="showDescription(description.show)" class="rounded-ck-editor">
           <h4>{{'dashboard.description' | translate}}</h4>
 
           <ckeditor [(ngModel)]="description.show" [editor]="editor" [disabled]="true" [config]="{toolbar: []}">
