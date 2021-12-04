@@ -197,6 +197,6 @@ public class StadGentLocation {
         Random rand = new Random();
         String randomElement = possibilities.get(rand.nextInt(possibilities.size()));
 
-        return String.format("https://studieplekken-dev.ugent.be/assets/images/teaser/%s", randomElement);
+        return String.format("https://studieplekken.ugent.be/assets/images/teaser/%s", randomElement);
     }
 }
