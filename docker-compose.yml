@@ -4,7 +4,6 @@ volumes:
   backend_logs:
   pgdata:
   postfix_spool:
-  pgdata-users:
 
 services:
   backend:
@@ -40,19 +39,6 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     #  - ./backend/postgres.conf:/var/lib/postgresql/data/postgresql.conf
-
-  user-db:
-    image: postgres:12-alpine
-    command: postgres -c 'max_connections=500' -c 'shared_buffers=1024' -c 'log_min_messages=notice'
-    restart: always
-    environment:
-      POSTGRES_DB: studieplekken_users
-      POSTGRES_USER: blokat
-      POSTGRES_PASSWORD: ***REMOVED***
-      TZ: Europe/Brussels
-      PGTZ: Europe/Brussels
-    volumes:
-      - pgdata-users:/var/lib/postgresql/data
 
     networks:
       - blokatgent

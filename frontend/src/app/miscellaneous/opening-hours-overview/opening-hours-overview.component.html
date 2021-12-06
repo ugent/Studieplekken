@@ -13,16 +13,15 @@
   </span>
 
     <div class="pull-right" style="float: right">
-      <button class="btn btn-primary btn-left" (click)="previousWeek()">&#8592;</button>
-      <button class="btn btn-primary" (click)="nextWeek()">&#8594;</button>
+      <button class="button button-primary btn-left" (click)="previousWeek()">&#8592;</button>
+      <button class="button button-primary" (click)="nextWeek()">&#8594;</button>
     </div>
   </div>
 
-  <div class="row">
-    <div *ngIf="overviewObs | async as overview; else loadingOrError">
-      <table *ngIf="Object.keys(overview).length > 0; else noOpenings"
-             class="table table-striped" style="table-layout: fixed; width: 100%;">
-        <!-- Table header -->
+  <div class="container-fluid responsive-table fullsize">
+    <div class="table-wrapped fullsize" *ngIf="overviewObs | async as overview; else loadingOrError">
+      <table *ngIf="Object.keys(overview).length > 0; else noOpenings" class="table table-striped" style="width: 100%">
+                <!-- Table header -->
         <thead>
         <tr>
           <th style="width: 30%">{{'openingHoursOverview.table.locationName' | translate}}</th>

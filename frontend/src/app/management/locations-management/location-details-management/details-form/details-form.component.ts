@@ -48,7 +48,7 @@ export class DetailsFormComponent implements OnInit {
   successUpdatingLocation: boolean = undefined;
   showLockersManagement: boolean;
 
-  canEditLocationSeats = this.authenticationService.isAdmin();
+  canEditLocationSeats = true;
 
   constructor(
     private locationService: LocationService,
@@ -223,10 +223,7 @@ export class DetailsFormComponent implements OnInit {
     // seats must be enabled to read data
     this.numberOfSeats.enable();
     location.numberOfSeats = Number(this.numberOfSeats.value);
-    // disable the numberOfSeats again if user is not admin
-    if (!this.canEditLocationSeats) {
-      this.numberOfSeats.disable();
-    }
+
 
     location.numberOfLockers = Number(this.numberOfLockers.value);
     location.forGroup = Boolean(this.forGroup.value);

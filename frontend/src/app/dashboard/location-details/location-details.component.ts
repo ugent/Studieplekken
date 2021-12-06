@@ -4,9 +4,9 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { TranslateService } from '@ngx-translate/core';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
-import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, merge, Observable, of, Subscription } from 'rxjs';
 import { map } from 'rxjs/internal/operators/map';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
@@ -409,4 +409,18 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     });
     new Leaf.Marker(coordinates).addTo(this.leafletMap);
   }
+
+  currentLanguage(): Observable<string> {
+    return merge<LangChangeEvent, LangChangeEvent>(
+      of<LangChangeEvent>({
+        lang: this.translate.currentLang,
+      } as LangChangeEvent),
+      this.translate.onLangChange
+    ).pipe(map((s) => s.lang));
+  }
+
+  showUgentWarning(location: Location) {
+    return location.institution == 'UGent';
+  }
+
 }

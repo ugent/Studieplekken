@@ -5,6 +5,7 @@ import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { Moment } from 'moment';
 import { merge, Observable, of, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 import { LocationStatus } from '../app.constants';
 import { BuildingService } from '../services/api/buildings/buildings.service';
 import { LocationService } from '../services/api/locations/location.service';
@@ -43,6 +44,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   currentLang: string;
 
   successOnRetrievingLocations: boolean = undefined;
+
+  showStagingWarning = environment.showStagingWarning;
 
   showOpen = false;
 

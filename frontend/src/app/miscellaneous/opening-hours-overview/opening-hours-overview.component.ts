@@ -64,18 +64,18 @@ export class OpeningHoursOverviewComponent implements OnInit {
   previousWeek(): void {
     this.overviewObs = null;
     const calc = moment()
-      .year(this.year)
+      .isoWeekYear(this.year)
       .isoWeek(this.weekNr)
       .subtract(1, 'week');
-    const year = calc.year();
+    const year = calc.isoWeekYear();
     const week = calc.isoWeek();
     this.retrieveOverview(year, week);
   }
 
   nextWeek(): void {
     this.overviewObs = null;
-    const calc = moment().year(this.year).isoWeek(this.weekNr).add(1, 'week');
-    const year = calc.year();
+    const calc = moment().isoWeekYear(this.year).isoWeek(this.weekNr).add(1, 'week');
+    const year = calc.isoWeekYear();
     const week = calc.isoWeek();
     this.retrieveOverview(year, week);
   }
