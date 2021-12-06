@@ -4,6 +4,7 @@ import { AuthenticationService } from '../services/authentication/authentication
 import { combineLatest } from 'rxjs';
 import { BreadcrumbService, managementBreadcrumb } from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
 import { LoginRedirectService } from '../services/authentication/login-redirect.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-management',
@@ -16,6 +17,7 @@ export class ManagementComponent implements OnInit {
   showTagManagement: boolean;
   showAdmin: boolean = this.authenticationService.isAdmin();
   showVolunteersManagement: boolean;
+  showStagingWarning = environment.showStagingWarning;
 
   constructor(
     private functionalityService: ApplicationTypeFunctionalityService,
