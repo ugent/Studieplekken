@@ -19,6 +19,7 @@ export interface Location {
   assignedTags: LocationTag[];
   status: Pair<LocationStatus, string>;
   currentTimeslot?: Timeslot;
+  institution: string;
 }
 
 export class LocationConstructor {
@@ -36,6 +37,7 @@ export class LocationConstructor {
       descriptionEnglish: '',
       assignedTags: [],
       status: { first: LocationStatus.CLOSED, second: '' },
+      institution: "Other"
     };
   }
 
@@ -58,6 +60,7 @@ export class LocationConstructor {
       forGroup: obj.forGroup,
       status: { first: obj.status.first, second: obj.status.second },
       currentTimeslot: Timeslot.fromJSON(obj.currentTimeslot),
+      institution: obj.institution
     };
   }
 }
