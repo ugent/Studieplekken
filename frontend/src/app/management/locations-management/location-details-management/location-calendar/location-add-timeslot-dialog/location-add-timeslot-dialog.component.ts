@@ -42,11 +42,7 @@ export class LocationAddTimeslotDialogComponent implements OnInit, OnChanges {
   }
 
   getMinStartDate(): Moment {
-    if (this.authenticationService.isAdmin()) {
       return null;
-    } else {
-      return moment().add(3, 'weeks').day(8);
-    }
   }
 
   getMinReservableFrom(model: Timeslot): Moment {
