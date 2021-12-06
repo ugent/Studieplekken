@@ -241,6 +241,13 @@
 
         <input type="date" class="form-control input-{{this.model === null}" #weekSelector/>
       </div>
+      <div fxLayout='row' fxLayoutAlign="space-between">
+        <div>
+          {{"management.locationDetails.calendar.copyModalView.lockReservableFrom" | translate}}
+        </div>
+
+        <input type="checkbox" class="form-control input-{{this.model === null}" #reservableFromSelector checked/>
+      </div>
     </div>
 
     <div modal-footer>
@@ -248,7 +255,7 @@
         {{'general.buttons.cancel' | translate}}
       </button>
 
-      <button type="button" class="button button-primary" (click)="copy(toUpdateTimeslot, weekSelector.value, location)">
+      <button type="button" class="button button-primary" (click)="copy(toUpdateTimeslot, weekSelector.value, location, reservableFromSelector.checked)">
         {{'general.buttons.add' | translate}}
       </button>
     </div>

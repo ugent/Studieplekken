@@ -21,11 +21,11 @@ export class TimeslotGroupService {
     return this.copy(timeslot, date, location)
   }
 
-  copy(timeslot: Timeslot, date: Moment, location: Location, keepTimeslotGroup = false) {
+  copy(timeslot: Timeslot, date: Moment, location: Location, keepTimeslotGroup = false, moveReservableFrom = true) {
     const reservationDiff = date.diff(timeslot.timeslotDate, "minutes");
     const reservableFrom = timeslot.reservableFrom ? moment(timeslot.reservableFrom):null;
-    const newReservableFrom = reservableFrom?.add(reservationDiff, "minutes");
-
+    const newReservableFrom = moveReservableFrom ? reservableFrom?.add(reservationDiff, "minutes") : reservableFrom;
+    console.log(moveReservableFrom, reservableFrom, newReservableFrom)
     return new Timeslot(null, date, 0, location.numberOfSeats, timeslot.reservable, newReservableFrom && newReservableFrom.isValid() ? newReservableFrom: null, timeslot.locationId, timeslot.openingHour, timeslot.closingHour, keepTimeslotGroup ? timeslot.timeslotGroup : null, timeslot.repeatable)
   }
 
