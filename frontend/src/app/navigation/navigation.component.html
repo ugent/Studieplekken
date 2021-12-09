@@ -1,0 +1,47 @@
+<!--
+The information page is provided through Markdown because it is a static
+page. If, at certain points, the page needs to be updated, markdown is easy
+to use for everybody. And we dont have to change any code.
+The markdown files used are provided in `assets/md/information.<lang>.md`
+-->
+<!--
+  title="{{'dashboard.details' | translate}}"
+  {{'dashboard.details' | translate}}
+
+  <a routerLink="/profile/overview" class="read-more standalone-link"
+        title="Link to profile and QR-Code">
+        Link to profile and QR-Code
+  </a>
+-->
+
+<a routerLink="/profile/overview" class="read-more standalone-link"
+        title="Link to profile and QR-Code">
+        Link to profile and QR-Code
+</a>
+<br/>
+<a routerLink="/dashboard" class="read-more standalone-link" 
+        title="dashboard" >
+        Show all study locations
+</a>
+<br/>
+<a routerLink="/information" class="read-more standalone-link" 
+        title="help" *ngIf="showManagement || showAdmin">
+        help
+</a>
+<br/>
+<a routerLink="/scan/locations" class="read-more standalone-link" 
+        title=" Link to management page "*ngIf="showSupervisors || showManagement || showAdmin">
+        Scan
+</a>
+<br/>
+<a routerLink="/management/locations" class="read-more standalone-link" 
+        title="Link to management page" *ngIf="showManagement || showAdmin">
+        Link to management page 
+</a>
+<br/>
+<a routerLink="/login" class="read-more standalone-link" 
+        title="Login page to log into a different account">
+        Login page to log into a different account
+</a>
+
+

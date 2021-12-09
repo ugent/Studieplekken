@@ -7,6 +7,15 @@
     "week": "Week",
     "day": "Day"
   },
+  "navigation": {
+    "general": "General",
+    "manager": "Manager",
+    "goto": "Go to",
+    "faq": "FAQ",
+    "student": "Student",
+    "admin": "Admin",
+    "supervisor": "Supervisor"
+  },
   "information": {
     "general": "General",
     "manager": "Manager",

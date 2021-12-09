@@ -15,6 +15,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { ScanComponent } from './scan/scan.component';
 import { ManagementComponent } from './management/management.component';
 import { InformationComponent } from './information/information.component';
+import { NavigationComponent } from './navigation/navigation.component';
 import { MarkdownModule } from 'ngx-markdown';
 import { DashboardItemComponent } from './dashboard/dashboard-item/dashboard-item.component';
 import { LocationDetailsComponent } from './dashboard/location-details/location-details.component';
@@ -106,7 +107,11 @@ const routes: Routes = [
     component: LoginComponent,
     canActivate: [AuthorizationGuardService],
   },
-
+  {
+    path:'navigation', 
+    component: NavigationComponent,
+    //canActivate: [AuthorizationGuardService, ApplicationTypeGuardService],
+  },
   {
     path: 'dashboard',
     component: DashboardComponent,
@@ -279,6 +284,7 @@ const routes: Routes = [
     ScanComponent,
     ManagementComponent,
     InformationComponent,
+    NavigationComponent,
     DashboardItemComponent,
     LocationDetailsComponent,
     CalendarComponent,
