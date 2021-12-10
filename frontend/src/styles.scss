@@ -163,6 +163,12 @@ $styleguide-dir: "" !default;
   color: #3498db;
 }
 
+.calendar-event-full-not-reserved * * mwl-calendar-event-title {
+  color: #a32707;
+}
+.calendar-event-full-not-reserved span {
+  white-space: normal !important;
+}
 
 .unclickable {
   opacity: 0.6;

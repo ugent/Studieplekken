@@ -68,7 +68,7 @@ private reservableTimeslotToCalendarEvent(timeslot: Timeslot, currentLang: strin
       : (locationFull ? { primary: '#c53726', secondary: '#f4ded9' } : null),
     cssClass: includedTimeSlot 
       ? 'calendar-event-reserved'
-      : (locationFull ? 'blue-text' : 'blue-text'),
+      : (locationFull ? 'calendar-event-full-not-reserved' : 'blue-text'),
   });
 }
 
