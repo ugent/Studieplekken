@@ -8,13 +8,16 @@
     "day": "Dag"
   },
   "navigation": {
-    "general": "Algemeen",
-    "manager": "Beheerder",
-    "supervisor": "Toezichthouder",
-    "goto": "Ga naar",
-    "faq": "FAQ",
-    "student": "Student",
-    "admin": "Administrator"
+    "profile" : "Profiel",
+    "dashboard" : "Alle studieplekken",
+    "information" : "Help",
+    "scan" : "Scan pagina",
+    "management" : "Beheer pagina",
+    "profileInfo": "Bekijk hier je reservaties en je QR-code",
+    "informationInfo": "Geraak je er niet onmiddellijk aan uit hoe de applicatie werkt? Ga zeker eens kijken op de hulp pagina.",
+    "managementInfo": "Beheer gebouwen/locaties/gebruikers",
+    "dashboardInfo": "Vind jouw ideale studieplekje",
+    "scanInfo": "Scan/neem aanwezigheden op van studenten"
   },
   "information": {
     "general": "Algemeen",

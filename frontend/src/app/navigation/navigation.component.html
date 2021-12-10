@@ -1,47 +1,49 @@
-<!--
-The information page is provided through Markdown because it is a static
-page. If, at certain points, the page needs to be updated, markdown is easy
-to use for everybody. And we dont have to change any code.
-The markdown files used are provided in `assets/md/information.<lang>.md`
--->
-<!--
-  title="{{'dashboard.details' | translate}}"
-  {{'dashboard.details' | translate}}
-
-  <a routerLink="/profile/overview" class="read-more standalone-link"
-        title="Link to profile and QR-Code">
-        Link to profile and QR-Code
-  </a>
+<!--"managementInfo": "Management of buildings/locations/users."
+<p>{{'navigation.informationInfo' | translate}}</p>
+        "dashboardInfo": "Find your ideal study location in our application"
+<p>{{'navigation.scanInfo' | translate}}</p>
 -->
 
-<a routerLink="/profile/overview" class="read-more standalone-link"
-        title="Link to profile and QR-Code">
-        Link to profile and QR-Code
-</a>
-<br/>
-<a routerLink="/dashboard" class="read-more standalone-link" 
-        title="dashboard" >
-        Show all study locations
-</a>
-<br/>
-<a routerLink="/information" class="read-more standalone-link" 
-        title="help" *ngIf="showManagement || showAdmin">
-        help
-</a>
-<br/>
-<a routerLink="/scan/locations" class="read-more standalone-link" 
-        title=" Link to management page "*ngIf="showSupervisors || showManagement || showAdmin">
-        Scan
-</a>
-<br/>
-<a routerLink="/management/locations" class="read-more standalone-link" 
-        title="Link to management page" *ngIf="showManagement || showAdmin">
-        Link to management page 
-</a>
-<br/>
-<a routerLink="/login" class="read-more standalone-link" 
-        title="Login page to log into a different account">
-        Login page to log into a different account
-</a>
+<div class="container-fluid">
+        <div fxLayout="row wrap" fxLayoutGap="32px" fxLayoutAlign="center">
+                <p>{{'navigation.profileInfo' | translate}}</p>
+                <a routerLink="/profile/overview" class="read-more standalone-link"
+                        title="Link to profile and QR-Code">
+                        {{'navigation.profile' | translate}}
+                </a>
+        </div>
+        <br/>
+        <div fxLayout="row wrap" fxLayoutGap="32px" fxLayoutAlign="center">
+                <p>{{'navigation.dashboardInfo' | translate}}</p>
+                <a routerLink="/dashboard" class="read-more standalone-link" 
+                        title="dashboard" >
+                        {{'navigation.dashboard' | translate}}
+                </a><br/>
+        </div>
+        <br/>
+        <div fxLayout="row wrap" fxLayoutGap="32px" fxLayoutAlign="center">
+                <p>{{'navigation.informationInfo' | translate}}</p>
+                <a routerLink="/information" class="read-more standalone-link" 
+                        title="help" *ngIf="showManagement || showAdmin">
+                        {{'navigation.information' | translate}}
+                </a>
+        </div>
+        <br/>
+        <div fxLayout="row wrap" fxLayoutGap="32px" fxLayoutAlign="center">
+                <p>{{'navigation.scanInfo' | translate}}</p>
+                <a routerLink="/scan/locations" class="read-more standalone-link" 
+                        title="{{'navigation.scan' | translate}}" *ngIf="showSupervisors || showManagement || showAdmin">
+                        {{'navigation.scan' | translate}}
+                </a>
+        </div>
 
+        <br/>
+        <div fxLayout="row wrap" fxLayoutGap="32px" fxLayoutAlign="center">
+                <p>{{'navigation.managementInfo' | translate}}</p>
+                <a routerLink="/management/locations" class="read-more standalone-link" 
+                        title="Link to management page" *ngIf="showManagement || showAdmin">
+                        {{'navigation.management' | translate}}
+                </a>
+        </div>
 
+</div>

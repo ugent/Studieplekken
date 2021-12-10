@@ -8,13 +8,16 @@
     "day": "Day"
   },
   "navigation": {
-    "general": "General",
-    "manager": "Manager",
-    "goto": "Go to",
-    "faq": "FAQ",
-    "student": "Student",
-    "admin": "Admin",
-    "supervisor": "Supervisor"
+    "profile" : "Profile",
+    "dashboard" : "study locations",
+    "information" : "Help",
+    "scan" : "Scanning page",
+    "management" : "Management page",
+    "profileInfo": "Check your reservations and get your QR-code",
+    "informationInfo": "Just can't get a hang of this application? Then definitely check out our help page!",
+    "managementInfo": "Management of buildings/locations/users",
+    "dashboardInfo": "Find your ideal study location in our application",
+    "scanInfo": "Scan/take note of present students"
   },
   "information": {
     "general": "General",
