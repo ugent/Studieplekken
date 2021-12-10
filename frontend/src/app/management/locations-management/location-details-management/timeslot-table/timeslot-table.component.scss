@@ -16,3 +16,34 @@ tr:first-child {
   h3 {
     white-space: pre;
   }
+
+  @media print
+{
+    ::ng-deep aside
+    {
+        display: none !important;
+    }
+
+    ::ng-deep .footer
+    {
+        display: none !important;
+    }
+
+    .noprint
+    {
+        display: none !important;
+    }
+
+    .print
+    {
+        display: block !important;
+    }
+
+    ::ng-deep header {
+      display: none;
+    }
+}
+
+.print {
+  display: none;
+}

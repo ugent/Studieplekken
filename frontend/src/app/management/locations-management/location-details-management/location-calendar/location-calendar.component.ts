@@ -188,7 +188,7 @@ export class LocationCalendarComponent implements OnInit {
       .pipe(
         switchMap(() =>
           this.locationReservationService.getLocationReservationsOfTimeslot(
-            this.currentTimeSlot
+            this.currentTimeSlot.timeslotSequenceNumber
           )
         )
       )

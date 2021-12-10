@@ -199,7 +199,7 @@ const routes: Routes = [
         canActivate: [AuthorizationGuardService],
       },
       {
-        path: 'locations/:locationId/timeslot/:calendarid/:date/:seqnr',
+        path: 'locations/:locationId/timeslot/:seqnr',
         component: TimeslotTableComponent,
         canActivate: [AuthorizationGuardService],
       },

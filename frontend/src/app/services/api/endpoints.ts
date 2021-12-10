@@ -19,6 +19,8 @@ export const api = {
 
   // TIMESLOTS
   timeslots: '/api/locations/timeslots/{locationId}',
+  timeslotDetails: '/api/locations/timeslots/details/{timeslotId}',
+
 
   // CALENDAR_PERIODS_FOR_LOCKERS
   calendarPeriodsForLockers: '/api/locations/lockerCalendar/{locationId}',
@@ -49,7 +51,7 @@ export const api = {
     '/api/locations/reservations/fromAndUntil',
   addLocationReservation: '/api/locations/reservations',
   deleteLocationReservation: '/api/locations/reservations',
-  updateAttendance: 
+  updateAttendance:
     `/api/locations/reservations/{userid}/{seqnr}/attendance`,
   locationReservationsWithLocationOfUser:
     '/api/locations/reservations/{userId}',

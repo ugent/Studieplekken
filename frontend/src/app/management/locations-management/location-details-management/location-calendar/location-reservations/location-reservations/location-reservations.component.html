@@ -110,9 +110,7 @@
 
     <button *ngIf="isManagement" [routerLink]="[
         './timeslot',
-        currentTimeSlot.calendarId,
-        currentTimeSlot.timeslotDate.format('YYYY-MM-DD'),
-        currentTimeSlot.timeslotSeqnr
+        currentTimeSlot.timeslotSequenceNumber
       ]" class="button button-primary">
       {{ "general.buttons.print" | translate }}
     </button>
