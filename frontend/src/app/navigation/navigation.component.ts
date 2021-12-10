@@ -13,6 +13,7 @@ export class NavigationComponent implements OnInit {
   showManagement = false;
   showAdmin = false;
   showSupervisors = false;
+  showLoggedIn = false;
 
   constructor(
     private translate: TranslateService,
@@ -27,6 +28,7 @@ export class NavigationComponent implements OnInit {
     this.authenticationService.user.subscribe((next) => {
       // first, check if the user is logged in
       if (this.authenticationService.isLoggedIn()) {
+        this.showLoggedIn = true;
         if (this.authenticationService.hasVolunteeredValue()){
           this.showSupervisors = true;
         }

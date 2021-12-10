@@ -141,7 +141,8 @@
       "profile": "Profile",
       "scan": "Scan",
       "management": "Management",
-      "information": "Information"
+      "information": "Help",
+      "navigation": "Navigation"
     }
   },
   "language": {
