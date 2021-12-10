@@ -51,7 +51,7 @@ private notYetReservableTimeslotToCalendarEvent: (timeslot: Timeslot, currentLan
 
 private reservableTimeslotToCalendarEvent(timeslot: Timeslot, currentLang: string, reservedTimeslots: LocationReservation[]):CalendarEvent<{ timeslot: Timeslot }> {
  
-  let locationFull = timeslot.amountOfReservations >= timeslot.seatCount;
+  const locationFull = timeslot.amountOfReservations >= timeslot.seatCount;
   let includedTimeSlot = includesTimeslot(
     reservedTimeslots.map((s) => s.timeslot),
     timeslot
