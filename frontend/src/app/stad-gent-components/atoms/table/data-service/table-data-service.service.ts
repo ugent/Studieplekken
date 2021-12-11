@@ -31,19 +31,19 @@ export class TableDataService {
           width: 50,
         },
         {
-          columnHeader: 'scan.locations.header.name',
+          columnHeader: 'scan.locations.header.building',
           type: 'contentColumn',
           columnContent: (l) => l.building.name,
           width: 30,
         },
         {
-          columnHeader: 'scan.locations.header.name',
+          columnHeader: 'scan.locations.header.numberOfSeats',
           type: 'contentColumn',
           columnContent: (l) => `${l.numberOfSeats}`,
           width: 10,
         },
         {
-          columnHeader: 'scan.locations.header.name',
+          columnHeader: 'scan.locations.header.scan',
           type: 'actionColumn',
           width: 10,
           columnContent: (l) =>
