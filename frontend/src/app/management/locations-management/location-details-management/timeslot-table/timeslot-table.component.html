@@ -24,7 +24,7 @@
         </thead>
 
         <tbody>
-          <tr *ngFor="let reservation of lrs">
+          <tr *ngFor="let reservation of sortReservations(lrs)">
             <td>
               {{ reservation.user.firstName + " " + reservation.user.lastName }}
             </td>

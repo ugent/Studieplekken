@@ -58,5 +58,8 @@ export class TimeslotTableComponent implements OnInit {
     return this.locationService.getLocation(locationId);
   }
 
+  sortReservations(lrs: LocationReservation[]) {
+    return lrs.sort((a, b) => a.user.lastName < b.user.lastName ? -1:1);
+  }
 
 }
