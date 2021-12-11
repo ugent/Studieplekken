@@ -3,7 +3,7 @@
   <h3>{{ timestring(timeslot) }}</h3>
 
   <hr />
-  <div class="responsive-table fullwidth noprint">
+  <div class="responsive-table fullwidth print">
     <div class="">
       <table style="width: 100%" *ngIf="locationReservations | async as lrs">
         <thead>
@@ -33,39 +33,6 @@
         </tbody>
       </table>
     </div>
-  </div>
-  <div class="fullwidth">
-    <table
-      style="width: 100%"
-      *ngIf="locationReservations | async as lrs"
-      class="print"
-    >
-      <thead>
-        <tr>
-          <th scope="col">
-            {{
-              "management.locationDetails.calendar.reservations.table.user"
-                | translate
-            }}
-          </th>
-          <th scope="col">
-            {{
-              "management.locationDetails.calendar.reservations.table.number"
-                | translate
-            }}
-          </th>
-        </tr>
-      </thead>
-
-      <tbody>
-        <tr *ngFor="let reservation of lrs" >
-          <td style="width: 50vw">
-            {{ reservation.user.firstName + " " + reservation.user.lastName }}
-          </td>
-          <td style="width: 50vw">{{ reservation.user.userId }}</td>
-        </tr>
-      </tbody>
-    </table>
   </div>
 </div>
 

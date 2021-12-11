@@ -36,7 +36,7 @@ tr:first-child {
 
     .print
     {
-        display: inline-block !important;
+        display: table !important;
     }
 
     ::ng-deep header {
