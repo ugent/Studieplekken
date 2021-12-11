@@ -73,4 +73,8 @@ export class TimeslotsService {
     };
     return this.http.delete<void>(api.deleteTimeslot, options);
   }
+
+  getById(timeslotId: number): Observable<Timeslot> {
+    return this.http.get(api.timeslotDetails.replace("{timeslotId}", `${timeslotId}`)).pipe(map(Timeslot.fromJSON))
+  }
 }
