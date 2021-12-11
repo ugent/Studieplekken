@@ -94,6 +94,7 @@ import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { TableComponent } from './stad-gent-components/atoms/table/table.component';
 import { DesktopTableComponent } from './stad-gent-components/atoms/table/desktop-table/desktop-table.component';
 import { MobileTableComponent } from './stad-gent-components/atoms/table/mobile-table/mobile-table.component';
+import { EntryComponent } from './entry/entry.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -267,7 +268,7 @@ const routes: Routes = [
 
   {
     path: '',
-    redirectTo: '/dashboard',
+    component: EntryComponent,
     pathMatch: 'full',
   },
   // , {path: '**', component: PageNotFoundController} TODO: create PageNotFoundController
@@ -334,6 +335,7 @@ const routes: Routes = [
     TableComponent,
     DesktopTableComponent,
     MobileTableComponent,
+    EntryComponent,
   ],
   imports: [
     BrowserModule,

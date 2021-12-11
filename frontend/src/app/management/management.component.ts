@@ -3,6 +3,8 @@ import { ApplicationTypeFunctionalityService } from '../services/functionality/a
 import { AuthenticationService } from '../services/authentication/authentication.service';
 import { combineLatest } from 'rxjs';
 import { BreadcrumbService, managementBreadcrumb } from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
+import { LoginRedirectService } from '../services/authentication/login-redirect.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-management',
@@ -15,11 +17,13 @@ export class ManagementComponent implements OnInit {
   showTagManagement: boolean;
   showAdmin: boolean = this.authenticationService.isAdmin();
   showVolunteersManagement: boolean;
+  showStagingWarning = environment.showStagingWarning;
 
   constructor(
     private functionalityService: ApplicationTypeFunctionalityService,
     private authenticationService: AuthenticationService,
-    private breadcrumbsService: BreadcrumbService
+    private breadcrumbsService: BreadcrumbService,
+    private loginRedirect: LoginRedirectService
   ) {}
 
   ngOnInit(): void {
@@ -42,6 +46,6 @@ export class ManagementComponent implements OnInit {
       }
     );
 
-    this.breadcrumbsService.setCurrentBreadcrumbs([managementBreadcrumb])
+    this.breadcrumbsService.setCurrentBreadcrumbs([managementBreadcrumb]);
   }
 }

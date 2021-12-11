@@ -21,8 +21,10 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -121,12 +123,14 @@ public class StadGentLocation {
     public StadGentLocation(Integer id, String name, String teaserUrl, String adres, String postcode, String gemeente, Integer capacity, Integer reserved, boolean isReservable, String buildingName, String hours, Double lat, Double lng, String date) {
         this.id = id;
         this.name = name;
-        this.teaserUrl = teaserUrl;
+        this.teaserUrl = (teaserUrl == null || teaserUrl.trim().equals("")) ? getRandomUrl():teaserUrl;
         this.adres = adres;
         this.postcode = postcode;
         this.gemeente = gemeente;
         this.capacity = capacity;
         this.reserved = reserved;
+        if(reserved == null)
+            this.reserved = 0;
         this.isReservable = isReservable;
         this.buildingName = buildingName;
         this.hours = hours;
@@ -139,7 +143,7 @@ public class StadGentLocation {
         Integer amountOfReservations = loc.getCurrentTimeslot() == null ? null:loc.getCurrentTimeslot().getAmountOfReservations();
         boolean isReservable = loc.getCurrentTimeslot() != null && loc.getCurrentTimeslot().isReservable();
 
-        LocalDate date = loc.getCurrentTimeslot() == null ? LocalDate.now() : loc.getCurrentTimeslot().timeslotDate();
+        LocalDate date = LocalDate.now();
         Stream<Timeslot> l = ts.getTimeslotsOfLocation(loc.getLocationId()).stream().filter(t -> t.timeslotDate().isEqual(date));
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
@@ -180,5 +184,19 @@ public class StadGentLocation {
             e.printStackTrace();
         }
     return null;
+    }
+
+    private static String getRandomUrl() {
+        List<String> possibilities = Arrays.asList(
+                "teaser1.jpg",
+                "teaser2.jpg",
+                "teaser3.jpg",
+                "teaser4.jpg"
+                );
+
+        Random rand = new Random();
+        String randomElement = possibilities.get(rand.nextInt(possibilities.size()));
+
+        return String.format("https://studieplekken.ugent.be/assets/images/teaser/%s", randomElement);
     }
 }

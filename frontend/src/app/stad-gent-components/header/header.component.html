@@ -1,7 +1,7 @@
 <!-- Default - without header image - not signed in -->
 <header class="header">
     <div class="content-container">
-        <a href="#" title="Home" class="site-logo " rel="home">
+        <a href="https://stad.gent" title="Home" class="site-logo " rel="home">
             Stad Gent
         </a>
 
@@ -56,11 +56,10 @@
             <h2 id="default-header-crumbs" class="visually-hidden">Breadcrumb</h2>
             <ol class="no-style">
                 <li *ngFor="let breadcrumb of (getLinkedBreadcrumbs() | async)">
-                  <a *ngIf="!breadcrumb.url.startsWith('https')"
-                        [routerLink]="breadcrumb.url">{{breadcrumb.pageName}}</a>
-                        <a *ngIf="breadcrumb.url.startsWith('https')"
-                        [href]="breadcrumb.url">{{breadcrumb.pageName}}</a>
-                      </li>
+                  <a [routerLink]="breadcrumb.url" *ngIf="!breadcrumb.external">{{breadcrumb.pageName}}</a>
+                  <a [href]="breadcrumb.url" *ngIf="breadcrumb.external">{{breadcrumb.pageName}}</a>
+
+                </li>
                 <li *ngFor="let breadcrumb of (getUnlinkedBreadcrumbs() | async)"><span>{{breadcrumb.pageName}}</span>
                 </li>
             </ol>

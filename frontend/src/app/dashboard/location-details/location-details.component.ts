@@ -4,9 +4,9 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { TranslateService } from '@ngx-translate/core';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
-import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, merge, Observable, of, Subscription } from 'rxjs';
 import { map } from 'rxjs/internal/operators/map';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
@@ -23,7 +23,7 @@ import {
 import { BreadcrumbService } from 'src/app/stad-gent-components/header/breadcrumbs/breadcrumb.service';
 import { environment } from 'src/environments/environment';
 import {
-  defaultLocationImage,
+  defaultTeaserImages,
   LocationStatus,
   msToShowFeedback
 } from '../../app.constants';
@@ -35,6 +35,7 @@ import { LocationTag } from '../../shared/model/LocationTag';
 
 import * as Leaf from 'leaflet';
 import { AuthoritiesService } from 'src/app/services/api/authorities/authorities.service';
+import { LoginRedirectService } from 'src/app/services/authentication/login-redirect.service';
 
 // Leaflet stuff.
 const iconRetinaUrl = './assets/marker-icon-2x.png';
@@ -86,7 +87,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     dutch: '',
   };
 
-  altImageUrl = defaultLocationImage;
+  altImageUrl = defaultTeaserImages[Math.floor(Math.random()*defaultTeaserImages.length)];
   imageUrlErrorOccurred = false;
 
   status: Pair<LocationStatus, string>;
@@ -123,7 +124,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     private router: Router,
     private breadcrumbs: BreadcrumbService,
     private timeslotCalendarEventService: TimeslotCalendarEventService,
-    private authoritiesService: AuthoritiesService
+    private loginRedirect: LoginRedirectService
 
   ) { }
 
@@ -131,6 +132,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     this.locationId = Number(this.route.snapshot.paramMap.get('locationId'));
 
     this.breadcrumbs.setCurrentBreadcrumbs([{ pageName: "Details", url: `/dashboard/${this.locationId}` }])
+    this.loginRedirect.registerUrl(`/dashboard/${this.locationId}`);
 
     // Check if locationId is a Number before proceeding. If NaN, redirect to dashboard.
     if (isNaN(this.locationId)) {
@@ -218,7 +220,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     // If the selected timeslot is not yet reservable, don't do anything
-    if (moment().isBefore(currentTimeslot.reservableFrom)) {
+    if (currentTimeslot.reservableFrom && moment().isBefore(currentTimeslot.reservableFrom)) {
       return;
     }
 
@@ -297,6 +299,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         }
 
         this.timeouts = timeslots
+          .filter(t => t.reservable)
           .map(e => (e.reservableFrom.valueOf() - moment().valueOf()))
           .filter(d => d > 0)
           .filter(d => d < 1000 * 60 * 60 * 24 * 2) // don't set more than two days in advance (weird bugs if you do)
@@ -406,4 +409,18 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     });
     new Leaf.Marker(coordinates).addTo(this.leafletMap);
   }
+
+  currentLanguage(): Observable<string> {
+    return merge<LangChangeEvent, LangChangeEvent>(
+      of<LangChangeEvent>({
+        lang: this.translate.currentLang,
+      } as LangChangeEvent),
+      this.translate.onLangChange
+    ).pipe(map((s) => s.lang));
+  }
+
+  showUgentWarning(location: Location) {
+    return location.institution == 'UGent';
+  }
+
 }

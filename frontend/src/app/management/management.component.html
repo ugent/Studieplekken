@@ -29,6 +29,11 @@
     </aside>
 
     <article fxFlex="0 1 calc(75% - 32px);" class="add-min-width">
+      <section class="messages messages--error" *ngIf="showStagingWarning">
+        <div  markdown
+        src="assets/md/staging-warning.nl.md">>
+        </div>
+        </section>
       <router-outlet></router-outlet>
     </article>
   </div>

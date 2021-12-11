@@ -47,6 +47,7 @@ export class TimeslotsService {
   }
 
   addTimeslot(calendarPeriods: Timeslot): Observable<void> {
+    calendarPeriods.sanitize();
     return this.http.post<void>(
       api.addTimeslots,
       calendarPeriods.toJSON()
@@ -55,6 +56,7 @@ export class TimeslotsService {
 
 
   setRepeatable(timeslot: Timeslot, repeatable: boolean) {
+    timeslot.sanitize();
       return this.http.put<Timeslot>(
         api.setRepeatable.replace("{timeslotId}", `${timeslot.timeslotSequenceNumber}`),
         {repeatable}
@@ -62,6 +64,7 @@ export class TimeslotsService {
   }
 
   deleteTimeslot(period: Timeslot): Observable<void> {
+    period.sanitize();
     const options = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',

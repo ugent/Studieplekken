@@ -1,3 +1,9 @@
+<section class="messages messages--error" *ngIf="showStagingWarning">
+<div  markdown *ngIf="currentLanguage() | async as currlan"
+src="assets/md/staging-warning.{{currlan}}.md">>
+</div>
+</section>
+
 <div *ngIf="locations !== undefined && successOnRetrievingLocations === true">
   <div *ngIf="locations.length > 0; else noLocations">
     <!-- Provide a panel group for filter -->
@@ -70,7 +76,7 @@
 
     <hr> -->
 
-    
+
     <div class="dashboard-item-container" fxLayout="row wrap" fxLayoutGap="32px" fxLayoutAlign="flex-start"
       *ngIf="filteredLocations && filteredLocations.length > 0; else noMatchesFromFilter">
       <app-dashboard-item fxFlex="0 1 calc(33% - 32px);" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%"

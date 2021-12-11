@@ -1,7 +1,7 @@
 <div class="container-fluid">
   <div class="panel-body" style="padding: 20px">
     <div class="text-center" style="margin-bottom: 20px" fxLayout="row" fxLayoutAlign="center">
-      <button class="button button-primary pull-center" (click)="open(addTimeslotModal)">
+      <button class="button button-primary pull-center" (click)="prepareAdd(addTimeslotModal)">
         {{'management.locationDetails.calendar.form.addButton' | translate}}
       </button>
     </div>
@@ -114,13 +114,6 @@
 
                   <td>{{timeslot.seatCount}}</td>
 
-                  <!-- Edit icon -->
-                  <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
-                    (click)="jumpTo(timeslot)">
-                    <span class="pointerCursor">
-                      <i class="icon-hamburger" aria-hidden="true"></i>
-                    </span>
-                  </td>
                 </tr>
               </tbody>
             </table>
@@ -246,23 +239,13 @@
         </div>
 
 
-        <select class="form-control" #weekSelector>
-          <option
-            *ngFor="let weekOption of generateWeeksOptions(7, toUpdateTimeslot.timeslotDate); trackBy:trackWeekOption"
-            [value]="weekOption.id">
-            {{weekOption.range}}
-          </option>
-        </select>
+        <input type="date" class="form-control input-{{this.model === null}" #weekSelector/>
       </div>
     </div>
 
     <div modal-footer>
       <button type="button" class="button button-secondary" (click)="closeModal()">
         {{'general.buttons.cancel' | translate}}
-      </button>
-
-      <button type="button" class="button button-secondary" (click)="copy(toUpdateTimeslot, 0, location)">
-        {{'management.locationDetails.calendar.copyModalView.nextWeek' | translate}}
       </button>
 
       <button type="button" class="button button-primary" (click)="copy(toUpdateTimeslot, weekSelector.value, location)">

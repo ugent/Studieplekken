@@ -1,17 +1,20 @@
-import { users } from '.prisma/client';
-import { Injectable, Logger } from '@nestjs/common';
-import { SamlUser } from 'src/configModule/config';
-import { DbService } from '../db.service';
+import { users } from ".prisma/client";
+import { Injectable } from "@nestjs/common";
+import { DbService } from "../db.service";
 
 @Injectable()
 export class DbUserService {
-  constructor(
-    private prisma: DbService
-  ) {}
+  constructor(private prisma: DbService) {}
 
-  public async userById(user_id: string) {
+  public async userByEmail(email: string) {
     return this.prisma.users.findUnique({
-      where: { user_id },
+      where: { email },
+    });
+  }
+
+  public async create(data: users) {
+    return this.prisma.users.create({
+      data,
     });
   }
 }

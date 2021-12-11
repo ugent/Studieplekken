@@ -6,8 +6,14 @@ services:
             SPRING_PROFILES_ACTIVE: stag
             SW_AGENT_COLLECTOR_BACKEND_SERVICES: oap:11800
             TZ: Europe/Brussels
+        ports:
+            - "8080:8080"
+
     frontend:
         build:
             args:
                 configuration: "staging"
+        ports:
+            - "4747:80"
+ 
       

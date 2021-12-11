@@ -147,6 +147,8 @@
     "lucaLogin": "LUCA School of Arts login",
     "odiseeLogin": "Odisee Hogeschool login",
     "stadGentLogin": "Stad Gent Login",
+    "kuLeuvenLogin": "KU Leuven Login",
+    "otherLogin": "Special Accounts Login",
     "about": "The digital platform for study locations"
   },
   "management": {
@@ -236,7 +238,7 @@
           "approveAll": "Approve all suggestions",
           "approve": "Approve",
           "reject": "Reject",
-          "rejectAll": "Reject all suggestions", 
+          "rejectAll": "Reject all suggestions",
           "openingClosingHourError": "The opening hour must be at least one minute before the closing hour."
         },
         "addModalView": {
@@ -259,7 +261,7 @@
         "copyModalView": {
           "title": "Copy this calendar period",
           "body": "You are about to copy the following timeslot:",
-          "weekSelect": "Copy to week:",
+          "weekSelect": "Copy to date:",
           "nextWeek": "Copy to next week"
         },
         "warningDialog": {
@@ -891,7 +893,7 @@
   "Odisee": "Odisee Hogeschool",
   "Arteveldehogeschool": "Arteveldehogeschool",
   "UGent": "UGent",
-  "HoGent": "HoGent",
+  "HoGent": "HOGENT",
   "StadGent": "Stad Gent",
   "Luca": "LUCA School of Arts",
   "KULeuven": "KULeuven",

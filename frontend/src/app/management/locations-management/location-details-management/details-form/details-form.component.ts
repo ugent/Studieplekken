@@ -48,7 +48,7 @@ export class DetailsFormComponent implements OnInit {
   successUpdatingLocation: boolean = undefined;
   showLockersManagement: boolean;
 
-  canEditLocationSeats = this.authenticationService.isAdmin();
+  canEditLocationSeats = true;
 
   constructor(
     private locationService: LocationService,
@@ -99,21 +99,27 @@ export class DetailsFormComponent implements OnInit {
 
     this.buildingsObs = this.buildingsService.getAllBuildings().pipe(
       tap((next) => {
+        const buildingId = this.locationForm.get("building").value;
         this.buildingsMap = new Map<number, Building>();
         next.forEach((value) => {
           this.buildingsMap.set(value.buildingId, value);
         });
+
+        setTimeout(() => this.locationForm.get("building").setValue(buildingId), 100)
       })
     );
 
     this.showLockersManagement = this.functionalityService.showLockersManagementFunctionality();
+
+    this.locationForm.valueChanges.subscribe(v => console.log(v))
   }
 
   updateFormGroup(location: Location): void {
+    console.log(location)
     this.locationForm.setValue({
       name: location.name,
       authority: location.authority.authorityId,
-      building: location.building.buildingId,
+      building: `${location.building.buildingId}`,
       numberOfSeats: location.numberOfSeats,
       numberOfLockers: 0,
       forGroup: location.forGroup,
@@ -217,10 +223,7 @@ export class DetailsFormComponent implements OnInit {
     // seats must be enabled to read data
     this.numberOfSeats.enable();
     location.numberOfSeats = Number(this.numberOfSeats.value);
-    // disable the numberOfSeats again if user is not admin
-    if (!this.canEditLocationSeats) {
-      this.numberOfSeats.disable();
-    }
+
 
     location.numberOfLockers = Number(this.numberOfLockers.value);
     location.forGroup = Boolean(this.forGroup.value);

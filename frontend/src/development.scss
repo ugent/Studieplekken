@@ -10,3 +10,16 @@
   border-color: #F1A42B !important;
   text-decoration-color: #F1A42B !important;
 }
+
+header.header hr::after {
+  border-color: #F1A42B !important;
+}
+
+
+header.header hr::before {
+  border-color: #F1A42B !important;
+}
+
+.cs--cyan .theme-footer {
+  background-color: #F1A42B !important;
+}

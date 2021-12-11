@@ -11,5 +11,14 @@ export const environment = {
   arteveldeHSFlowTriggerUrl: 'https://studieplekken-dev.ugent.be/auth/login/artevelde',
   lucaFlowTriggerUrl: 'https://studieplekken-dev.ugent.be/auth/login/luca',
   odiseeFlowTriggerUrl: 'https://studieplekken-dev.ugent.be/auth/login/odisee',
-  accessToken: "pk.eyJ1IjoiYXVyaXNhdWRlbnRpcyIsImEiOiJja3M3cGdqN24xMnNsMm5zM2tlN2d4a3MxIn0.i69TQAR5E1VCJJXMP_2QlA"
+  stadGentFlowTriggerUrl: 'https://studieplekken-dev.ugent.be/auth/login/stadgent',
+  kulFlowTriggerUrl: 'https://studieplekken-dev.ugent.be/auth/login/kuleuven',
+  otherFlowTriggerUrl: 'https://studieplekken-dev.ugent.be/auth/local/login',
+
+  accessToken: "pk.eyJ1IjoiYXVyaXNhdWRlbnRpcyIsImEiOiJja3M3cGdqN24xMnNsMm5zM2tlN2d4a3MxIn0.i69TQAR5E1VCJJXMP_2QlA",
+
+  useExternalDashboard: true,
+  externalDashboardUrl: "https://stad.gent/nl/student-gent/studeren/bloklocaties",
+  showStagingWarning: false
+
 };
