@@ -36,11 +36,15 @@ tr:first-child {
 
     .print
     {
-        display: block !important;
+        display: inline-block !important;
     }
 
     ::ng-deep header {
       display: none;
+    }
+
+    table {
+      text-align: center;
     }
 }
 
