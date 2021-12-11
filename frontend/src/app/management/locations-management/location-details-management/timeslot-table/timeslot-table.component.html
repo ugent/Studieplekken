@@ -1,25 +1,46 @@
-<div id='print-ngx'>
-    <h1>{{(getLocation(locationId) | async).name}}</h1>
-    <h3>{{timestring(timeslot)}}</h3>
+<div id="print-ngx" *ngIf="timeslot | async as timeslot">
+  <h1 *ngIf="getLocation(timeslot.locationId) | async as loc">{{ loc.name }}</h1>
+  <h3>{{ timestring(timeslot) }}</h3>
 
-    <hr>
-<table *ngIf="locationReservations | async as lrs">
-    <thead>
-        <tr>
-            <th>{{'management.locationDetails.calendar.reservations.table.user' | translate}}</th>
-            <th>{{'management.locationDetails.calendar.reservations.table.number' | translate}}</th>
-        </tr>
-    </thead>
+  <hr />
+  <div class="responsive-table fullwidth print">
+    <div class="">
+      <table style="width: 100%" *ngIf="locationReservations | async as lrs">
+        <thead>
+          <tr>
+            <th scope="col">
+              {{
+                "management.locationDetails.calendar.reservations.table.user"
+                  | translate
+              }}
+            </th>
+            <th scope="col">
+              {{
+                "management.locationDetails.calendar.reservations.table.number"
+                  | translate
+              }}
+            </th>
+          </tr>
+        </thead>
 
-    <tbody>
-    <tr *ngFor="let reservation of lrs">
-        <td>{{reservation.user.firstName + ' ' + reservation.user.lastName}}</td>
-        <td>{{reservation.user.userId}}</td>
-    </tr>
-    </tbody>
-</table>
+        <tbody>
+          <tr *ngFor="let reservation of sortReservations(lrs)">
+            <td>
+              {{ reservation.user.firstName + " " + reservation.user.lastName }}
+            </td>
+            <td>{{ reservation.user.userId }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
-<div fxLayout="row">
-<button (click)="print()" class="btn"> {{'general.print' | translate}}</button>
-<button routerLink="../../../../" class="btn btn-primary">{{'general.back' | translate}}</button>
+
+<div fxLayout="row" class="noprint">
+  <button (click)="print()" class="button button-primary">
+    {{ "general.print" | translate }}
+  </button>
+  <button routerLink="../../../" class="button button-secondary">
+    {{ "general.back" | translate }}
+  </button>
 </div>

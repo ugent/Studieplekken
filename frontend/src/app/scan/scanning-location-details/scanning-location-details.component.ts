@@ -58,7 +58,7 @@ export class ScanningLocationDetailsComponent implements OnInit {
       switchMap(() => this.locationObs),
       switchMap((l) =>
         this.reservationService.getLocationReservationsOfTimeslot(
-          l.currentTimeslot
+          l.currentTimeslot.timeslotSequenceNumber
         )
       ),
       catchError((err) => {
