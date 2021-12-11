@@ -1,7 +1,15 @@
-<div *ngIf="!(showMobile() | async)"  class="desktop">
-  <app-desktop-table [tabularData]="tabularData" (action)="onAction($event)"></app-desktop-table>
-</div>
+<div *ngIf="copyOfTabData">
+  <div *ngIf="!(showMobile() | async)" class="desktop">
+    <app-desktop-table
+      [tabularData]="copyOfTabData"
+      (action)="onAction($event)"
+    ></app-desktop-table>
+  </div>
 
-<div *ngIf="(showMobile() | async)"  class="mobile">
-  <app-mobile-table [tabularData]="tabularData" (action)="onAction($event)"></app-mobile-table>
+  <div *ngIf="showMobile() | async" class="mobile">
+    <app-mobile-table
+      [tabularData]="copyOfTabData"
+      (action)="onAction($event)"
+    ></app-mobile-table>
+  </div>
 </div>

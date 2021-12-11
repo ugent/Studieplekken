@@ -13,11 +13,20 @@ export class TableComponent<T> implements OnInit, OnChanges {
   @Input() tabularData: TabularData<T>;
   @Output() action = new EventEmitter<{data: T, columnIndex: number}>()
 
+  // See ngOnChanges
+  public copyOfTabData;
+
   constructor(private breakpointObserver: BreakpointObserver) {}
 
   ngOnInit(): void {}
 
-  ngOnChanges() {
+  ngOnChanges(changes) {
+
+    // If we don't eat these duplicate events, the binding of the table sometimes fails
+    // I don't know why, pretty sure it's a bug in angular
+    // but this way it works.
+    if(changes.tabularData.previousValue?.data != changes.tabularData.currentValue.data)
+      this.copyOfTabData = {...changes.tabularData.currentValue};
   }
 
   onAction({columnIndex, data}: {columnIndex: number, data: T}) {
