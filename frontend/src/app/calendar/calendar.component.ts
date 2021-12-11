@@ -12,6 +12,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { defaultOpeningHour, defaultClosingHour } from 'src/app/app.constants';
 import * as moment from 'moment';
+import { BreakpointObserver } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-calendar',
@@ -52,7 +53,8 @@ export class CalendarComponent implements OnInit, OnChanges {
 
   currentLang: string;
 
-  constructor(private translate: TranslateService) {
+  constructor(private translate: TranslateService,
+              private breakpointObserver: BreakpointObserver) {
 
     this.translate.onLangChange.subscribe(() => {
       this.currentLang = this.translate.currentLang;
@@ -64,6 +66,9 @@ export class CalendarComponent implements OnInit, OnChanges {
     this.eventsSubj.subscribe((next) => {
       this.changeCalendarSize(next);
     });
+
+    this.setView(this.breakpointObserver.isMatched('(max-width: 400px)') ? CalendarView.Day:CalendarView.Week);
+
   }
 
   ngOnChanges(changes: SimpleChanges): void {

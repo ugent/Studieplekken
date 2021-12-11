@@ -7,7 +7,7 @@
     </div>
     <app-calendar [events]="events" [refresh]="refresh" (timeslotPickedEvent)="timeslotPickedHandler($event)"
       (hourPickedEvent)="hourPickedHandler($event, addTimeslotModal)" [(currentEventTime)]="jumpToDate"
-      (calendarViewStyle)="calendarViewStyle = $event">
+      [(calendarViewStyle)]="calendarViewStyle">
     </app-calendar>
 
     <div fxLayout="row" fxLayoutAlign="flex-end" fxLayoutGap="12px">
