@@ -250,8 +250,9 @@ export class LocationCalendarComponent implements OnInit {
   }
 
 
-  copy(timeslot: Timeslot, weekOffset: string, location: Location) {
-    const newTimeslot = this.timeslotGroupService.copy(timeslot, moment(weekOffset), location);
+  copy(timeslot: Timeslot, weekOffset: string, location: Location, keepReservableFrom: boolean) {
+    console.log(keepReservableFrom);
+    const newTimeslot = this.timeslotGroupService.copy(timeslot, moment(weekOffset), location, false, !keepReservableFrom);
     this.timeslotService.addTimeslot(newTimeslot).subscribe(() => this.setup());
     this.modalService.closeAll();
   }
