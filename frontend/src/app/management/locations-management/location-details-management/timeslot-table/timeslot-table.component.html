@@ -1,5 +1,5 @@
 <div id="print-ngx" *ngIf="timeslot | async as timeslot">
-  <h1>{{ (getLocation(locationId) | async).name }}</h1>
+  <h1 *ngIf="getLocation(timeslot.locationId) | async as loc">{{ loc.name }}</h1>
   <h3>{{ timestring(timeslot) }}</h3>
 
   <hr />
