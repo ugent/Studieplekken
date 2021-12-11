@@ -7,9 +7,14 @@ import { Timeslot, includesTimeslot } from 'src/app/shared/model/Timeslot';
 @Injectable({
   providedIn: 'root'
 })
-export class TimeslotCalendarEventService {
 
-  constructor() { }
+export class TimeslotCalendarEventService {
+  clicked:boolean;
+  initial:boolean;
+  constructor() { 
+    this.clicked = true;
+    this.initial = true;
+  }
 
   
 timeslotToCalendarEvent = (timeslot: Timeslot, currentLang: string, locationReservations: LocationReservation[] = []) =>
@@ -44,28 +49,30 @@ private notYetReservableTimeslotToCalendarEvent: (timeslot: Timeslot, currentLan
   cssClass: 'calendar-event-NR',
 });
 
-private reservableTimeslotToCalendarEvent: (timeslot: Timeslot, currentLang: string, reservedTimeslots: LocationReservation[]) => CalendarEvent<{ timeslot: Timeslot }> =
-(timeslot, currentLang, reservedTimeslots) =>
-({
-  title: `${timeslot.amountOfReservations} / ${timeslot.seatCount}`,
-  start: timeslot.getStartMoment().toDate(),
-  end: timeslot.getEndMoment().toDate(),
-  meta: { timeslot },
-  color: includesTimeslot(
+private reservableTimeslotToCalendarEvent(timeslot: Timeslot, currentLang: string, reservedTimeslots: LocationReservation[]):CalendarEvent<{ timeslot: Timeslot }> {
+ 
+  const locationFull = timeslot.amountOfReservations >= timeslot.seatCount;
+  const includedTimeSlot = includesTimeslot(
     reservedTimeslots.map((s) => s.timeslot),
     timeslot
-  )
-    ? { primary: '#00004d', secondary: '#133E7D' }
-    : null,
-  cssClass: includesTimeslot(
-    reservedTimeslots.map((s) => s.timeslot),
-    timeslot
-  )
-    ? 'calendar-event-reserved'
-    : '',
-});
+  );
+  return ({
+    title: `${timeslot.amountOfReservations} / ${timeslot.seatCount}`,
+    start: timeslot.getStartMoment().toDate(),
+    end: timeslot.getEndMoment().toDate(),
+    meta: { timeslot },
+    color: includedTimeSlot
+      // reserved -> dark blue, reserved full -> dark red
+      ? (!locationFull ? { primary: '#00004d', secondary: '#133E7D' } : { primary: '#c53726', secondary: '#ed9987' })
+      // unselected light pink, unselected light blue
+      : (locationFull ? { primary: '#c53726', secondary: '#f4ded9' } : null),
+    cssClass: includedTimeSlot 
+      ? 'calendar-event-reserved'
+      : (locationFull ? 'calendar-event-full-not-reserved' : 'blue-text'),
+  });
+}
 
-  suggestedTimeslotToCalendarEvent(timeslot: Timeslot, currentLang: string) {
+public suggestedTimeslotToCalendarEvent(timeslot: Timeslot, currentLang: string) {
     const calendarEvent = this.timeslotToCalendarEvent(timeslot, currentLang);
 
     calendarEvent.cssClass = (calendarEvent.cssClass || '') + " calendar-event-suggestion"
