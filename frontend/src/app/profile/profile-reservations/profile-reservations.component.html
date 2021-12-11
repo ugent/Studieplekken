@@ -70,13 +70,17 @@
     </div>
 
     <!-- Footer -->
-    <div modal-footer>
-      <button type="button" class="button button-primary" (click)="deleteLocationReservation()">
-        {{'management.reservations.location.deleteModal.yesButton' | translate}}
-      </button>
-      <button type="button" class="button button-secondary" (click)="closeModal()">
-        {{'management.reservations.location.deleteModal.noButton' | translate}}
-      </button>
+    <div modal-footer fxLayout="row wrap" fxLayoutGap="10px grid">
+      <div>
+        <button type="button" class="button button-primary" (click)="deleteLocationReservation()">
+          {{'management.reservations.location.deleteModal.yesButton' | translate}}
+        </button>
+      </div>
+      <div>
+        <button type="button" class="button button-secondary" (click)="closeModal()">
+          {{'management.reservations.location.deleteModal.noButton' | translate}}
+        </button>
+      </div>
     </div>
 
     <div modal-message-footer>

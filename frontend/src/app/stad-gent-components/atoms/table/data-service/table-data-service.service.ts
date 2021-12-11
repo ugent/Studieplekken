@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { LocationService } from 'src/app/services/api/locations/location.service';

@@ -21,7 +21,9 @@ export class TableComponent<T> implements OnInit, OnChanges {
   }
 
   onAction({columnIndex, data}: {columnIndex: number, data: T}) {
-    this.action.next({columnIndex, data});
+    const column = this.tabularData.columns[columnIndex];
+    if(!(column.type === "actionColumn") || !column.columnContent(data).disabled)
+      this.action.next({columnIndex, data});
   }
 
   showMobile(): Observable<boolean> {

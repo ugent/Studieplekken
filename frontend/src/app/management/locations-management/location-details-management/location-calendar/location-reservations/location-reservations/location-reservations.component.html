@@ -8,18 +8,12 @@
     </div>
   </div>
 
-  <div *ngIf="waitingForServer" class="row">
-    <div class="messages messages--info">
-      {{ "general.waitingForServer" | translate }}
-    </div>
-  </div>
-
   <div *ngIf="locationReservations.length > 0" class="row">
     <div *ngIf="noSuchUserFoundWarning" class="messages messages--warning">
       {{ "scan.unregistered" | translate }}
     </div>
 
-    <div fxLayout="row" fxLayoutGap="15px">
+    <div fxLayout="row wrap" fxLayoutGap="15px grid" fxLayoutAlign="center flex-start">
       <div fxFlex="0 1 80%">
         <label class="col-md-3 control-label" for="search">
           {{
@@ -32,7 +26,7 @@
             (ngModelChange)="updateSearchTerm(scanningError)" />
         </div>
       </div>
-      <div fxFlex="0 1 15%" fxLayout="column" fxLayoutAlign="flex-end">
+      <div fxLayout="column" fxLayoutAlign="flex-end">
         <button id="finish" class="button button-secondary" [disabled]="isTimeslotStartInFuture()"
           (click)="onFinishScanningClick(finishScanningModal)" data-toggle="tooltip" data-placement="top" title="{{
             'management.locationDetails.calendar.reservations.startScanningTooltip'
@@ -45,6 +39,7 @@
         </button>
       </div>
     </div>
+    <br/>
 
     <app-table [tabularData]="getTableData(filter(locationReservations))" (action)="onAction($event, scanningError)"></app-table>
 

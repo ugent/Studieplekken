@@ -4,10 +4,10 @@
 
     <ul>
       <li *ngFor="let column of nonActionColumns().slice(1)">
-        <b>{{ column.columnHeader | translate }}</b>: {{ column.columnContent(dataPoint) }} {{column.translateColumnContent(dataPoint) | translate}}
+        <b>{{ column.columnHeader | translate }}</b>: {{ column.columnContent(dataPoint) }} {{translateColumnContent(dataPoint) | translate}}
       </li>
     </ul>
-    <div fxLayoutAlign="flex-end">
+    <div fxLayoutAlign="flex-end" fxLayoutGap="10px">
       <ng-container *ngFor="let column of actionColumns(); let i = index">
         <button
           *ngIf="column.columnContent(dataPoint) as content"
