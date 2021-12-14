@@ -175,7 +175,7 @@ export class AuthenticationService {
     }
 
     // Jump to login.ugent.be immediately. Chances are that this will instantly resolve any issues.
-    window.location.href = environment.casFlowTriggerUrl;
+    this.router.navigateByUrl("/login");
   }
 
   isAdmin(): boolean {
