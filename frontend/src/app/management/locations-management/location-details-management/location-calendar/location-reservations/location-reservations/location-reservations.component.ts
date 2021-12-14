@@ -40,6 +40,8 @@ export class LocationReservationsComponent {
   noSuchUserFoundWarning = false;
   waitingForServer = false;
 
+  selectionTimeout: number;
+
   userHasSearchTerm: (u: User) => boolean = (u: User) =>
     u.userId.includes(this.searchTerm) ||
     u.firstName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
@@ -66,7 +68,7 @@ export class LocationReservationsComponent {
         r.user === reservation.user
       );
     });
-    
+
     const oldState = idx < 0? undefined : this.scannedLocationReservations[idx].state;
     const newState = attended? LocationReservationState.PRESENT : LocationReservationState.ABSENT;
     // only perform API call if the attendance/absence changes
@@ -227,6 +229,8 @@ export class LocationReservationsComponent {
     this.noSuchUserFoundWarning =
       this.searchTerm.length > 0 &&
       this.locationReservations.every((lr) => !this.userHasSearchTerm(lr.user));
+    if(this.noSuchUserFoundWarning)
+      this.delayedSelectInputBox();
 
     const fullyMatchedUser = this.barcodeService.getReservation(
       this.locationReservations,
@@ -234,15 +238,16 @@ export class LocationReservationsComponent {
     );
 
     if (fullyMatchedUser) {
+      this.lastScanned = fullyMatchedUser;
       this.scanLocationReservation(fullyMatchedUser, true, errorTemplate);
       setTimeout(() => {
         this.searchTerm = '';
-        this.lastScanned = fullyMatchedUser;
         this.updateSearchTerm(errorTemplate);
       }, 10);
+    } else if(this.searchTerm.length != 0) {
+      this.lastScanned = null;
     }
 
-    this.lastScanned = null;
   }
 
   filter(locationReservations: LocationReservation[]): LocationReservation[] {
@@ -283,5 +288,18 @@ export class LocationReservationsComponent {
     });
 
     return locationReservations;
+  }
+
+  selectInputBox() {
+    const el = document.getElementById("search") as HTMLInputElement;
+    el.focus();
+    el.select();
+  }
+
+  delayedSelectInputBox() {
+    if(this.selectionTimeout)
+      clearTimeout(this.selectionTimeout);
+
+      this.selectionTimeout = setTimeout(() => this.selectInputBox(), 800);
   }
 }

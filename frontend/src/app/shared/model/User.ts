@@ -1,3 +1,4 @@
+import { decode } from "html-entities";
 import { Authority, AuthorityConstructor } from "./Authority";
 
 export interface User {
@@ -36,8 +37,8 @@ export class UserConstructor {
 
     return {
       userId: obj.userId,
-      firstName: obj.firstName,
-      lastName: obj.lastName,
+      firstName: decode(obj.firstName),
+      lastName: decode(obj.lastName),
       mail: obj.mail,
       password: obj.password,
       penaltyPoints: obj.penaltyPoints,
