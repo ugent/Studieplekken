@@ -2,18 +2,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
-import { Authority } from 'src/app/shared/model/Authority';
-import { environment } from 'src/environments/environment';
 import { authenticationWasExpiredUrlLSKey, userWantsTLogInLocalStorageKey } from '../../app.constants';
 import { LocationReservation } from '../../shared/model/LocationReservation';
-import {
-  LockerReservation,
-  LockerReservationConstructor
-} from '../../shared/model/LockerReservation';
 import { Penalty } from '../../shared/model/Penalty';
 import { User, UserConstructor } from '../../shared/model/User';
-import { AuthoritiesService } from '../api/authorities/authorities.service';
 import { api } from '../api/endpoints';
 import { LocationReservationsService } from '../api/location-reservations/location-reservations.service';
 import { LockerReservationService } from '../api/locker-reservations/locker-reservation.service';
@@ -59,7 +51,7 @@ export class AuthenticationService {
     private lockerReservationService: LockerReservationService,
     private router: Router,
     private userService: UserService,
-    private loginRedirectService: LoginRedirectService
+    private loginRedirectService: LoginRedirectService,
   ) { }
 
   // **************************************************
@@ -221,6 +213,7 @@ export class AuthenticationService {
   }
 
   substituteLogin(email: string) {
+    localStorage.setItem("impersonate", email);
     const headers = new HttpHeaders().set("AS-USER", email);
     this.http.get(api.whoAmI, {headers}).subscribe(()=> this.login())
   }
