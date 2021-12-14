@@ -15,7 +15,7 @@
 
           <div *ngIf="!reservation" style="margin-top: 15px;" class="messages messages--info">{{'scan.mobile-hint' | translate}}</div>
 
-          <app-scanner *ngIf="!reservation && !error" (scanSuccess)="scanUser(lr, $event)"></app-scanner>
+          <app-scanner [class.hide]="reservation || error" (scanSuccess)="scanUser(lr, $event)"></app-scanner>
 
           <div class="usertag" *ngIf="reservation" fxLayout="column" fxLayoutAlign="center center">
             <p>
