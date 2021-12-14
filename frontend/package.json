@@ -30,7 +30,7 @@
     "@ngx-translate/core": "^13.0.0",
     "@ngx-translate/http-loader": "^6.0.0",
     "@types/leaflet": "^1.7.4",
-    "@zxing/browser": "0.0.9",
+    "@zxing/browser": "0.0.10",
     "@zxing/library": "^0.18.6",
     "@zxing/ngx-scanner": "^3.2.0",
     "angular-calendar": "^0.28.16",
