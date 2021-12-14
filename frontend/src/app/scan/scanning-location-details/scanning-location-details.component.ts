@@ -88,6 +88,10 @@ export class ScanningLocationDetailsComponent implements OnInit {
     this.reservation = null;
   }
 
+  clearError():void {
+    this.error = '';
+  }
+
   cancel(): void {
     this.reservation = null;
   }
