@@ -13,10 +13,9 @@
 
         <div accordion-content class="accordion--content" id="camera">
 
-          <div *ngIf="error" style="margin-top: 15px;" class="messages messages--error">{{error | translate}}</div>
           <div *ngIf="!reservation" style="margin-top: 15px;" class="messages messages--info">{{'scan.mobile-hint' | translate}}</div>
 
-          <app-scanner *ngIf="!reservation" (scanSuccess)="scanUser(lr, $event)"></app-scanner>
+          <app-scanner *ngIf="!reservation && !error" (scanSuccess)="scanUser(lr, $event)"></app-scanner>
 
           <div class="usertag" *ngIf="reservation" fxLayout="column" fxLayoutAlign="center center">
             <p>
@@ -30,6 +29,14 @@
               <button class="button button-secondary" (click)="cancel()">Cancel</button>
             </div>
           </div>
+
+          <div class="usertag" *ngIf="error" fxLayout="column" fxLayoutAlign="center center">
+            <span>This user doesn't have a reservation. Please check in the list below.</span>
+            <div fxLayout="row">
+              <button class="button button-primary" (click)="clearError()">Confirm</button>
+            </div>
+          </div>
+
 
         </div>
       </app-accordeon>

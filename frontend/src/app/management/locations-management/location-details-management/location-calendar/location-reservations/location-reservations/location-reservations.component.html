@@ -14,9 +14,9 @@
     </div>
   </div>
 
-  <div *ngIf="locationReservations.length > 0" class="row">
-    <div *ngIf="noSuchUserFoundWarning" class="messages messages--warning">
-      {{ "scan.unregistered" | translate }}
+  <div *ngIf="locationReservations.length > 0" class="row" >
+    <div *ngIf="noSuchUserFoundWarning" class="messages unregisteredwarning" fxLayoutAlign="center">
+      <span>{{ "scan.unregistered" | translate }}</span>
     </div>
 
     <div fxLayout="row" fxLayoutGap="15px">
@@ -76,7 +76,7 @@
           </thead>
           <tbody>
             <tr *ngFor="let reservation of filter(locationReservations)"
-              style="{{reservation.attended !== null ? 'background-color: #E9F0FA': ''}}">
+              [class.success]="reservation.state === 'PRESENT'">
               <td>
                 {{ reservation.user.firstName + " " + reservation.user.lastName }}
               </td>
