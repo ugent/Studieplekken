@@ -14,9 +14,9 @@
     </div>
   </div>
 
-  <div *ngIf="locationReservations.length > 0" class="row">
-    <div *ngIf="noSuchUserFoundWarning" class="messages messages--warning">
-      {{ "scan.unregistered" | translate }}
+  <div *ngIf="locationReservations.length > 0" class="row" >
+    <div *ngIf="noSuchUserFoundWarning" class="messages unregisteredwarning" fxLayoutAlign="center">
+      <span>{{ "scan.unregistered" | translate }}</span>
     </div>
 
     <div fxLayout="row" fxLayoutGap="15px">
@@ -76,7 +76,7 @@
           </thead>
           <tbody>
             <tr *ngFor="let reservation of filter(locationReservations)"
-              style="{{reservation.attended !== null ? 'background-color: #E9F0FA': ''}}">
+              [class.success]="reservation.state === 'PRESENT'">
               <td>
                 {{ reservation.user.firstName + " " + reservation.user.lastName }}
               </td>
@@ -108,11 +108,9 @@
       </div>
     </div>
 
-    <button *ngIf="isManagement" [routerLink]="[
-        './timeslot',
-        currentTimeSlot.calendarId,
-        currentTimeSlot.timeslotDate.format('YYYY-MM-DD'),
-        currentTimeSlot.timeslotSeqnr
+    <button [routerLink]="[
+        '/management/locations/0/timeslot',
+        currentTimeSlot.timeslotSequenceNumber
       ]" class="button button-primary">
       {{ "general.buttons.print" | translate }}
     </button>
@@ -200,24 +198,26 @@
   <!-- Modal body -->
   <div modal-body>
     <div class="messages messages--warning">
-      <p>
-        {{
-        "management.reservations.location.finishScanningModal.message1"
-        | translate
-        }}
-      </p>
-      <p>
-        {{
-        "management.reservations.location.finishScanningModal.message2"
-        | translate
-        }}
-      </p>
-      <p>
-        {{
-        "management.reservations.location.finishScanningModal.message3"
-        | translate
-        }}
-      </p>
+      <div>
+        <p>
+          {{
+          "management.reservations.location.finishScanningModal.message1"
+          | translate
+          }}
+        </p>
+        <p>
+          {{
+          "management.reservations.location.finishScanningModal.message2"
+          | translate
+          }}
+        </p>
+        <p>
+          {{
+          "management.reservations.location.finishScanningModal.message3"
+          | translate
+          }}
+        </p>
+      </div>
     </div>
   </div>
 

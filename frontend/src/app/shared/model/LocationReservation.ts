@@ -1,4 +1,4 @@
-import { User } from './User';
+import { User, UserConstructor } from './User';
 import { Timeslot } from './Timeslot';
 import { Moment } from 'moment';
 import * as moment from 'moment';
@@ -31,7 +31,7 @@ export class LocationReservation {
 
   static fromJSON(json: LocationReservation): LocationReservation {
     return new LocationReservation(
-      json.user,
+      UserConstructor.newFromObj(json.user),
       Timeslot.fromJSON(json.timeslot),
       json.state,
       json.createdAt ? moment(json.createdAt) : null

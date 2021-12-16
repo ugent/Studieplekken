@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { User } from '../../../shared/model/User';
+import { User, UserConstructor } from '../../../shared/model/User';
 import { api } from '../endpoints';
 import { Location, LocationConstructor } from '../../../shared/model/Location';
 import { map } from 'rxjs/internal/operators/map';
@@ -14,17 +14,17 @@ export class UserService {
 
   getUserByAUGentId(id: string): Observable<User> {
     const params = new HttpParams().set('id', id);
-    return this.http.get<User>(api.userByAUGentId, { params });
+    return this.http.get<User>(api.userByAUGentId, { params }).pipe(map(UserConstructor.newFromObj));
   }
 
   getUsersByFirstName(firstName: string): Observable<User[]> {
     const params = new HttpParams().set('firstName', firstName.trim());
-    return this.http.get<User[]>(api.usersByFirstName, { params });
+    return this.http.get<User[]>(api.usersByFirstName, { params }).pipe(map(x => x.map(UserConstructor.newFromObj)));
   }
 
   getUsersByLastName(lastName: string): Observable<User[]> {
     const params = new HttpParams().set('lastName', lastName.trim());
-    return this.http.get<User[]>(api.usersByLastName, { params });
+    return this.http.get<User[]>(api.usersByLastName, { params }).pipe(map(x => x.map(UserConstructor.newFromObj)));
   }
 
   getUsersByFirstAndLastName(
@@ -34,12 +34,12 @@ export class UserService {
     const params = new HttpParams()
       .set('firstName', firstName.trim())
       .set('lastName', lastName.trim());
-    return this.http.get<User[]>(api.usersByFirstAndLast, { params });
+    return this.http.get<User[]>(api.usersByFirstAndLast, { params }).pipe(map(x => x.map(UserConstructor.newFromObj)));
   }
 
   getUserByBarcode(barcode: string): Observable<User> {
     const params = new HttpParams().set('barcode', barcode.trim());
-    return this.http.get<User>(api.userByBarcode, { params });
+    return this.http.get<User>(api.userByBarcode, { params }).pipe(map(UserConstructor.newFromObj));
   }
 
   getManageableLocations(userId: string): Observable<Location[]> {
@@ -83,6 +83,6 @@ export class UserService {
   }
 
   getAdmins(): Observable<User[]> {
-    return this.http.get<User[]>(api.getAdmins);
+    return this.http.get<User[]>(api.getAdmins).pipe(map(x => x.map(UserConstructor.newFromObj)));
   }
 }

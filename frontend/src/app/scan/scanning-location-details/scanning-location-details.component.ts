@@ -58,7 +58,7 @@ export class ScanningLocationDetailsComponent implements OnInit {
       switchMap(() => this.locationObs),
       switchMap((l) =>
         this.reservationService.getLocationReservationsOfTimeslot(
-          l.currentTimeslot
+          l.currentTimeslot.timeslotSequenceNumber
         )
       ),
       catchError((err) => {
@@ -86,6 +86,10 @@ export class ScanningLocationDetailsComponent implements OnInit {
     this.reservation.state = LocationReservationState.PRESENT;
     this.lastScanned = this.reservation;
     this.reservation = null;
+  }
+
+  clearError():void {
+    this.error = '';
   }
 
   cancel(): void {
