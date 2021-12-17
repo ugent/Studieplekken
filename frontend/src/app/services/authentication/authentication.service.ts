@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { authenticationWasExpiredUrlLSKey, userWantsTLogInLocalStorageKey } from '../../app.constants';
 import { LocationReservation } from '../../shared/model/LocationReservation';
 import { Penalty } from '../../shared/model/Penalty';
@@ -35,13 +35,9 @@ export class AuthenticationService {
   // (which comes from the userSubject)
   public user: Observable<User> = this.userSubject.asObservable();
 
-  private hasAuthoritiesSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
-    false
-  );
+  private hasAuthoritiesSubject: Subject<boolean> = new Subject<boolean>();
   public hasAuthoritiesObs: Observable<boolean> = this.hasAuthoritiesSubject.asObservable();
-  private hasVolunteeredSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
-    false
-  );
+  private hasVolunteeredSubject: Subject<boolean> = new Subject<boolean>();
   public hasVolunteeredObs: Observable<boolean> = this.hasVolunteeredSubject.asObservable();
 
   constructor(
@@ -60,14 +56,6 @@ export class AuthenticationService {
 
   userValue(): User {
     return this.userSubject.value;
-  }
-
-  hasAuthoritiesValue(): boolean {
-    return this.hasAuthoritiesSubject.value;
-  }
-
-  hasVolunteeredValue(): boolean {
-    return this.hasVolunteeredSubject.value;
   }
 
   /**
@@ -91,9 +79,10 @@ export class AuthenticationService {
   login(redirect = false): void {
     this.http.get<User>(api.whoAmI).subscribe(
       (next) => {
-        this.userSubject.next(next);
         this.updateHasAuthoritiesSubject(next);
         this.updateHasVolunteeredSubject(next);
+        this.userSubject.next(next);
+
         if(next.userId && redirect)
           this.loginRedirectService.navigateToLastUrl();
 
