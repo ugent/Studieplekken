@@ -4,6 +4,7 @@ import { Location } from '../../shared/model/Location';
 import { ScanningService } from '../../services/api/scan/scanning.service';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs/internal/observable/of';
+import * as moment from "moment";
 
 @Component({
   selector: 'app-scanning-locations',
@@ -26,6 +27,9 @@ export class ScanningLocationsComponent implements OnInit {
     );
   }
 
-  isScannable(location: Location) {    return (location.currentTimeslot && location.currentTimeslot.reservable && location.currentTimeslot.isCurrent())
+  isScannable(location: Location) {
+    return (location.currentTimeslot
+      && location.currentTimeslot.reservable
+      && location.currentTimeslot.getStartMoment().isBefore(moment().add(30, "minutes")))
   }
 }
