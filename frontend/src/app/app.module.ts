@@ -91,6 +91,8 @@ import { QRCodeModule } from 'angularx-qrcode';
 import { QRCodeComponent } from './miscellaneous/qrcode/qrcode.component';
 import { ScannerComponent } from './miscellaneous/scanner/scanner.component';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
+import { EntryComponent } from './entry/entry.component';
+import { ImpersonateInterceptor } from './services/authentication/impersonate.interceptor';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -198,7 +200,7 @@ const routes: Routes = [
         canActivate: [AuthorizationGuardService],
       },
       {
-        path: 'locations/:locationId/timeslot/:calendarid/:date/:seqnr',
+        path: 'locations/:locationId/timeslot/:seqnr',
         component: TimeslotTableComponent,
         canActivate: [AuthorizationGuardService],
       },
@@ -264,7 +266,7 @@ const routes: Routes = [
 
   {
     path: '',
-    redirectTo: '/dashboard',
+    component: EntryComponent,
     pathMatch: 'full',
   },
   // , {path: '**', component: PageNotFoundController} TODO: create PageNotFoundController
@@ -328,6 +330,7 @@ const routes: Routes = [
     ModalComponent,
     QRCodeComponent,
     ScannerComponent,
+    EntryComponent,
   ],
   imports: [
     BrowserModule,
@@ -370,12 +373,10 @@ const routes: Routes = [
   ],
   providers: [
     FormatStatusPipe,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthenticationInterceptor,
-      multi: true,
-    },
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ImpersonateInterceptor, multi: true },
+
+
   ],
   bootstrap: [AppComponent],
 })

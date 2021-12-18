@@ -28,7 +28,7 @@ public class TestSharedMethods {
         testLocation.setName("TestLocation");
         testLocation.setNumberOfSeats(50);
         testLocation.setNumberOfLockers(15);
-        testLocation.setImageUrl("https://example.com/image.jpg");
+        testLocation.setImageUrl("");
         testLocation.setAuthority(authority);
         testLocation.setBuilding(building);
         testLocation.setForGroup(false);

@@ -2,23 +2,16 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
-import { Authority } from 'src/app/shared/model/Authority';
-import { environment } from 'src/environments/environment';
 import { authenticationWasExpiredUrlLSKey, userWantsTLogInLocalStorageKey } from '../../app.constants';
 import { LocationReservation } from '../../shared/model/LocationReservation';
-import {
-  LockerReservation,
-  LockerReservationConstructor
-} from '../../shared/model/LockerReservation';
 import { Penalty } from '../../shared/model/Penalty';
 import { User, UserConstructor } from '../../shared/model/User';
-import { AuthoritiesService } from '../api/authorities/authorities.service';
 import { api } from '../api/endpoints';
 import { LocationReservationsService } from '../api/location-reservations/location-reservations.service';
 import { LockerReservationService } from '../api/locker-reservations/locker-reservation.service';
 import { PenaltyService } from '../api/penalties/penalty.service';
 import { UserService } from '../api/users/user.service';
+import { LoginRedirectService } from './login-redirect.service';
 
 /**
  * The structure of the authentication service has been based on this article:
@@ -57,7 +50,8 @@ export class AuthenticationService {
     private locationReservationService: LocationReservationsService,
     private lockerReservationService: LockerReservationService,
     private router: Router,
-    private userService: UserService
+    private userService: UserService,
+    private loginRedirectService: LoginRedirectService,
   ) { }
 
   // **************************************************
@@ -94,12 +88,15 @@ export class AuthenticationService {
    *                get information about the logged in user if the variable userWantsToLogIn
    *                was set to 'true' by the LoginComponent.
    */
-  login(): void {
+  login(redirect = false): void {
     this.http.get<User>(api.whoAmI).subscribe(
       (next) => {
         this.userSubject.next(next);
         this.updateHasAuthoritiesSubject(next);
         this.updateHasVolunteeredSubject(next);
+        if(next.userId && redirect)
+          this.loginRedirectService.navigateToLastUrl();
+
 
         /**
          *  Spring's authentication ticket of a logged in user expires before the CAS authentication has expired.
@@ -170,7 +167,7 @@ export class AuthenticationService {
     }
 
     // Jump to login.ugent.be immediately. Chances are that this will instantly resolve any issues.
-    window.location.href = environment.casFlowTriggerUrl;
+    this.router.navigateByUrl("/login");
   }
 
   isAdmin(): boolean {
@@ -216,6 +213,7 @@ export class AuthenticationService {
   }
 
   substituteLogin(email: string) {
+    localStorage.setItem("impersonate", email);
     const headers = new HttpHeaders().set("AS-USER", email);
     this.http.get(api.whoAmI, {headers}).subscribe(()=> this.login())
   }

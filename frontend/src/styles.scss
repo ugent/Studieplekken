@@ -1,5 +1,5 @@
 // Setting up gent_styleguide (cfr. https://stijlgids.stad.gent/v4/index.html)
-$styleguide-dir: '' !default;
+$styleguide-dir: "" !default;
 @import "./node_modules/gent_styleguide/build/styleguide/sass/main_cli";
 
 // Custom Theming for Angular Material
@@ -26,14 +26,12 @@ $styleguide-dir: '' !default;
 // import leaflet styling
 @import "../node_modules/leaflet/dist/leaflet.css";
 
-
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 
 @include angular-material-theme($theming-material-components-theme);
 @include custom-components-theme($theming-material-components-theme);
-
 
 // Include the dark color styles inside of a block with a CSS class. You can make this
 // CSS class whatever you want. In this example, any component inside of an element with
@@ -45,9 +43,7 @@ $styleguide-dir: '' !default;
 // Override typography for all Angular Material, including mat-base-typography and all components.
 @include angular-material-typography($typography);
 
-
 /* You can add global styles to this file, and also import other style files */
-
 
 /*
  * Class definition for a rotating loader
@@ -127,7 +123,7 @@ $styleguide-dir: '' !default;
  * hover class
  */
 .hover {
-  cursor: pointer
+  cursor: pointer;
 }
 
 /**
@@ -152,7 +148,7 @@ $styleguide-dir: '' !default;
 }
 
 .calendar-event-reserved * * mwl-calendar-event-title {
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .calendar-event-NR span {
@@ -160,6 +156,17 @@ $styleguide-dir: '' !default;
 }
 
 .calendar-event-reserved span {
+  white-space: normal !important;
+}
+
+.blue-text {
+  color: #3498db;
+}
+
+.calendar-event-full-not-reserved * * mwl-calendar-event-title {
+  color: #a32707;
+}
+.calendar-event-full-not-reserved span {
   white-space: normal !important;
 }
 
@@ -183,7 +190,7 @@ $styleguide-dir: '' !default;
 }
 
 video {
-  width: 100%
+  width: 100%;
 }
 
 .bigmodal {
@@ -191,25 +198,24 @@ video {
 }
 
 .fullheight {
-  height: 100%
+  height: 100%;
 }
 .fullwidth {
   width: 100%;
 }
 
 .responsive-table {
-  display: inline-block!important;
+  display: inline-block !important;
 }
 // Safari specific coloring of input fields
-@media not all and (min-resolution:.001dpcm)
-{ @supports (-webkit-appearance:none) {
-
-    .input-true{
-        border: 1px solid rgba(245, 64, 64, 0.767) !important;
+@media not all and (min-resolution: 0.001dpcm) {
+  @supports (-webkit-appearance: none) {
+    .input-true {
+      border: 1px solid rgba(245, 64, 64, 0.767) !important;
     }
 
-    .input-false{
-        border: 1px solid rgba(128, 128, 128, 0.678) !important;
+    .input-false {
+      border: 1px solid rgba(128, 128, 128, 0.678) !important;
     }
-
-}}
+  }
+}

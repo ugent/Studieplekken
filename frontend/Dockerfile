@@ -1,6 +1,6 @@
 ### STAGE 1: Build ###
 
-FROM node:12.7-alpine AS build
+FROM node:12.20-alpine AS build
 WORKDIR /app
 RUN npm install -g @angular/cli
 COPY package.json package-lock.json ./
@@ -10,6 +10,8 @@ COPY . .
 ARG configuration=production
 
 RUN ng build --configuration=${configuration}
+
+RUN echo ${configuration}
 
 ### STAGE 2: Run ###
 

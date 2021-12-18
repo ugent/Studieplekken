@@ -46,7 +46,7 @@ export class Timeslot {
     if (!json) {
       return null;
     }
-    return new Timeslot(
+    const t = new Timeslot(
       json.timeslotSeqnr,
       moment(json.timeslotDate),
       json.amountOfReservations,
@@ -59,6 +59,9 @@ export class Timeslot {
       json.timeslotGroup,
       json.repeatable
     );
+
+    t.sanitize();
+    return t;
   }
 
   toJSON(): Record<string, unknown> {
@@ -81,7 +84,7 @@ export class Timeslot {
       return false;
     }
 
-    if(this.reservable && !this.reservableFrom) {
+    if(this.reservable && (!this.reservableFrom || !this.reservableFrom.isValid())) {
       return false;
     }
 
@@ -116,6 +119,14 @@ export class Timeslot {
 
   isInPast() {
     return this.getEndMoment().isBefore(moment());
+  }
+
+  sanitize() {
+    if(!this.reservableFrom || !this.reservableFrom.isValid())
+      this.reservableFrom = null;
+
+    if(!this.timeslotDate || !this.timeslotDate.isValid())
+      this.timeslotDate = null;
   }
 
 }

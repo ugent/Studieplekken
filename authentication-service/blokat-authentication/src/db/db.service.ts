@@ -1,6 +1,6 @@
-import { INestApplication, Injectable, OnModuleInit } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
-import { ConfigService } from '../configModule/config.service';
+import { INestApplication, Injectable, OnModuleInit } from "@nestjs/common";
+import { PrismaClient } from "@prisma/client";
+import { ConfigService } from "../configModule/config.service";
 
 @Injectable()
 export class DbService extends PrismaClient implements OnModuleInit {
@@ -9,7 +9,7 @@ export class DbService extends PrismaClient implements OnModuleInit {
     super({
       datasources: {
         db: {
-          url: `postgresql://${dbConfig.username}:${dbConfig.password}@${dbConfig.url}:${dbConfig.port}/blokatugent?schema=public`,
+          url: `postgresql://${dbConfig.username}:${dbConfig.password}@${dbConfig.url}:${dbConfig.port}/studieplekken_users?schema=public`,
         },
       },
     });
@@ -20,7 +20,7 @@ export class DbService extends PrismaClient implements OnModuleInit {
   }
 
   async enableShutdownHooks(app: INestApplication) {
-    this.$on('beforeExit', async () => {
+    this.$on("beforeExit", async () => {
       await app.close();
     });
   }

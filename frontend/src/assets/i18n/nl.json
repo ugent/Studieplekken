@@ -151,6 +151,8 @@
     "odiseeLogin": "Odisee Login",
     "lucaLogin": "LUCA School of Arts Login",
     "stadGentLogin": "Stad Gent Login",
+    "kuLeuvenLogin": "KU Leuven Login",
+    "otherLogin": "Login voor speciale accounts",
     "about": "Het digitaal platform voor studieplekken"
   },
   "management": {
@@ -265,8 +267,8 @@
         "copyModalView": {
           "title": "Kopieer deze periode",
           "body": "Je staat op het punt om de volgende periode te kopieren:",
-          "weekSelect":"Kopieer naar week",
-          "nextWeek": "Kopieer naar volgende week"
+          "weekSelect":"Kopieer naar datum",
+          "lockReservableFrom": "Wil je de originele openingsdatum voor reservaties houden?"
         },
         "warningDialog": {
           "warning": "Waarschuwing",
@@ -898,7 +900,7 @@
   "Odisee": "Odisee Hogeschool",
   "Arteveldehogeschool": "Arteveldehogeschool",
   "UGent": "UGent",
-  "HoGent": "HoGent",
+  "HoGent": "HOGENT",
   "StadGent": "Stad Gent",
   "Luca": "LUCA School of Arts",
   "KULeuven": "KULeuven",

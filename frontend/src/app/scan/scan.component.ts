@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BreadcrumbService, dashboardBreadcrumb } from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
+import { BreadcrumbService } from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
 
 @Component({
   selector: 'app-scan',
@@ -12,6 +12,6 @@ export class ScanComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.breadcrumbs.setCurrentBreadcrumbs([dashboardBreadcrumb, {pageName: "Scan Overview", url:"/scan/locations"}])
+    this.breadcrumbs.setCurrentBreadcrumbs([{pageName: "Scan Overview", url:"/scan/locations"}])
   }
 }

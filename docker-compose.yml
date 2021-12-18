@@ -10,9 +10,9 @@ services:
     restart: always
     build: backend
     ports:
-      - "8080:8080"
+      - "8090:8080"
     environment:
-      SPRING_PROFILES_ACTIVE: prod,mail
+      SPRING_PROFILES_ACTIVE: prod
       SW_AGENT_COLLECTOR_BACKEND_SERVICES: oap:11800
       TZ: Europe/Brussels
     depends_on:
@@ -20,22 +20,11 @@ services:
     volumes:
       - backend_logs:/app/logs:rw
     networks:
-      - blokat
+      - blokatgent
     logging:
       options:
         max-size: "100m"
         max-file: "5"
-
-  authentication:
-    build: authentication-service/blokat-authentication
-    ports:
-      - "8087:8087"
-    depends_on:
-      - db
-    networks:
-      - blokat
-    environment:
-      NODE_ENV: staging
 
   db:
     image: postgres:12-alpine
@@ -52,7 +41,7 @@ services:
     #  - ./backend/postgres.conf:/var/lib/postgresql/data/postgresql.conf
 
     networks:
-      - blokat
+      - blokatgent
     logging:
       options:
         max-size: "100m"
@@ -62,9 +51,9 @@ services:
     restart: always
     build: frontend
     ports:
-      - "4242:80"
+      - "8091:80"
     networks:
-      - blokat
+      - blokatgent
     logging:
       options:
         max-size: "100m"
@@ -73,7 +62,7 @@ services:
     restart: always
     image: juanluisbaptiste/postfix:latest
     networks:
-      - blokat
+      - blokatgent
     expose:
       - "25"
     environment:
@@ -85,5 +74,5 @@ services:
       - postfix_spool:/var/spool/postfix
 
 networks:
-  blokat:
-    name: blokat
+  blokatgent:
+    name: blokatgent
