@@ -5,9 +5,9 @@ import {
   Router,
   RouterStateSnapshot,
 } from '@angular/router';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable, of } from 'rxjs';
 import { map } from 'rxjs/internal/operators/map';
-import { filter } from 'rxjs/operators';
+import { filter, switchMap, tap } from 'rxjs/operators';
 import { LoginRedirectService } from 'src/app/services/authentication/login-redirect.service';
 import { AuthenticationService } from '../../../authentication/authentication.service';
 
@@ -30,19 +30,21 @@ export class AuthorizationGuardService implements CanActivate {
 
     return this.authenticationService.user.pipe(
       filter((f) => f != null),
-      map(() => {
-        console.log(url);
+      switchMap(() => {
         if (url.startsWith('/login')) {
-          activate = true;
+          return of(true);
         } else if (url.startsWith('/dashboard')) {
-          activate = true;
+          return of(true);
         } else if (url.startsWith('/profile')) {
-          activate = this.authenticationService.isLoggedIn();
-          this.loginRedirect.registerUrl('/profile')
+          this.loginRedirect.registerUrl('/profile');
+
+          return of(this.authenticationService.isLoggedIn());
         } else if (url.startsWith('/scan')) {
-          activate = this.isLoginAndAdminOrHasLocationsToScan();
-          this.loginRedirect.registerUrl('/scan')
+          this.loginRedirect.registerUrl('/scan');
+          return this.isLoginAndAdminOrHasLocationsToScan();
         } else if (url.startsWith('/management')) {
+          this.loginRedirect.registerUrl('/management');
+
           if (this.authenticationService.isLoggedIn()) {
             if (
               url.includes('/tags') ||
@@ -50,55 +52,55 @@ export class AuthorizationGuardService implements CanActivate {
               url.includes('/penalties') ||
               url.includes('/admins')
             ) {
-              activate = this.authenticationService.isAdmin();
+              return of(this.authenticationService.isAdmin());
             } else {
-              activate = this.isAdminOrHasAuthorities();
+              return this.isAdminOrHasAuthorities();
             }
-            this.loginRedirect.registerUrl('/management')
           } else {
-            this.loginRedirect.registerUrl('/management')
-            activate = false;
+            this.loginRedirect.registerUrl('/management');
+            return of(false);
           }
         } else if (url.startsWith('/information')) {
-          activate = true;
+          return of(true);
         } else if (url.startsWith('/opening/overview')) {
-          activate = true; // everybody is allowed to see this overview
+          return of(true); // everybody is allowed to see this overview
         }
 
         if (!activate) {
-          this.router.navigate(['/login']).catch(console.log);
         }
 
-        console.log(activate);
-        return activate;
+        return of(activate);
+      }),
+      tap((t) => {
+        if (!t) {
+          this.router.navigate(['/login']).catch(console.log);
+        }
       })
     );
   }
 
-  isLoginAndAdminOrHasAuthorities(): boolean {
+  isLoginAndAdminOrHasAuthorities(): Observable<boolean> {
     return (
       this.authenticationService.isLoggedIn() && this.isAdminOrHasAuthorities()
     );
   }
 
-  isLoginAndAdminOrHasLocationsToScan(): boolean {
+  isLoginAndAdminOrHasLocationsToScan(): Observable<boolean> {
     return (
-      this.authenticationService.isLoggedIn() &&
-      this.isAdminOrHasLocationsToScan()
+      this.authenticationService.isLoggedIn() ? this.isAdminOrHasLocationsToScan() : of(false)
     );
   }
 
-  isAdminOrHasAuthorities(): boolean {
+  isAdminOrHasAuthorities(): Observable<boolean> {
     return (
-      this.authenticationService.isAdmin() ||
-      this.authenticationService.hasAuthoritiesValue()
+      this.authenticationService.isLoggedIn() ? this.authenticationService.hasAuthoritiesObs.pipe(filter(t => t !== null)) : of(false)
     );
   }
 
-  isAdminOrHasLocationsToScan(): boolean {
-    return (
-      this.isAdminOrHasAuthorities() ||
-      this.authenticationService.hasVolunteeredValue()
-    );
+  isAdminOrHasLocationsToScan(): Observable<boolean> {
+    return combineLatest([
+      this.isAdminOrHasAuthorities(),
+      this.authenticationService.hasVolunteeredObs.pipe(filter(t => t !== null))]
+    ).pipe(map(([a, b]) => a && b))
   }
 }
