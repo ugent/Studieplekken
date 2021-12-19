@@ -90,7 +90,7 @@
           <th scope="col">{{'profile.reservations.locations.table.header.state' | translate}}</th>
         </thead>
         <tbody>
-          <tr *ngFor="let reservation of originalList">
+          <tr *ngFor="let reservation of futureReservations(originalList);">
             <td>{{reservation.timeslot.timeslotDate.format("DD/MM/YYYY")}}</td>
             <td>{{reservation.timeslot.openingHour.format("HH:mm")}}</td>
             <td>{{getStateI18NObject(reservation.state) | translate}}</td>
@@ -99,6 +99,22 @@
       </table>
     </div>
   </div>
+    <!-- If clicked on reservationButton, give some feedback -->
+    <div class="row" style="margin-top: 10px">
+      <!-- TODO: Why arent't these CSS classes doing anything visually? -->
+      <div class="messages messages--success" *ngIf="showSuccessDeletion">
+        {{'dashboard.locationDetails.calendar.reservation.successGenericMessage' | translate}}
+      </div>
+      <div class="message messages--success" *ngIf="showSuccessPendingShort">
+        {{'dashboard.locationDetails.calendar.reservation.successPendingShortMessage' | translate}}
+      </div>
+      <div class="message messages--warning" *ngIf="showSuccessPendingLong">
+        {{'dashboard.locationDetails.calendar.reservation.successPendingLongMessage' | translate}}
+      </div>
+      <div class="messages messages--error" *ngIf="showError">
+        {{'dashboard.locationDetails.calendar.reservation.errorMessage' | translate}}
+      </div>
+    </div>
 
   <div class="messages messages--warning center" *ngIf="!loggedIn()">
     <i class="icon-info" aria-hidden="true"></i>
@@ -122,24 +138,7 @@
     </button>
   </div>
 
-  <!-- If clicked on reservationButton, give some feedback -->
-  <div class="row" style="margin-top: 10px">
-    <!-- TODO: Why arent't these CSS classes doing anything visually? -->
-    <div class="messages messages--success" *ngIf="showSuccessDeletion">
-      {{'dashboard.locationDetails.calendar.reservation.successGenericMessage' | translate}}
-    </div>
-    <div class="message messages--success" *ngIf="showSuccessPendingShort">
-      {{'dashboard.locationDetails.calendar.reservation.successPendingShortMessage' | translate}}
-      <a href="{{getLinkToElement('#location_reservations')}}">{{'dashboard.locationDetails.calendar.reservation.watchProgressMessage' | translate}}</a>
-    </div>
-    <div class="message messages--warning" *ngIf="showSuccessPendingLong">
-      {{'dashboard.locationDetails.calendar.reservation.successPendingLongMessage' | translate}}
-      <a href="{{getLinkToElement('#location_reservations')}}">{{'dashboard.locationDetails.calendar.reservation.watchProgressMessage' | translate}}</a>
-    </div>
-    <div class="messages messages--error" *ngIf="showError">
-      {{'dashboard.locationDetails.calendar.reservation.errorMessage' | translate}}
-    </div>
-  </div>
+
 
   <hr>
 

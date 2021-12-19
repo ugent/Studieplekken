@@ -374,9 +374,11 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
           if (hasDelayedReservation) {
             this.showSuccessPendingLong = true;
             const msDelayUntilReservationsStart = moment.duration(maxMoment.diff(now)).asMilliseconds();
-            setTimeout(() => (this.showSuccessPendingLong = false), msDelayUntilReservationsStart);;
+            setTimeout(() => (document.querySelector("#location_reservations").scrollIntoView()), 300);
+            setTimeout(() => (this.showSuccessPendingLong = false), msDelayUntilReservationsStart);
           } else {
             this.showSuccessPendingShort = true;
+            setTimeout(() => (document.querySelector("#location_reservations").scrollIntoView({'behavior': 'smooth'})), 300);
             setTimeout(() => (this.showSuccessPendingShort = false), msToShowFeedback);
           }
         } else {
@@ -458,6 +460,10 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
   showUgentWarning(location: Location) {
     return location.institution == 'UGent';
+  }
+
+  futureReservations(reservations: LocationReservation[]) {
+    return reservations.filter((res) => !res.timeslot.isInPast());
   }
 
 }
