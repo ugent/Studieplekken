@@ -311,7 +311,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
           .filter(d => d > 0)
           .filter(d => d < 1000 * 60 * 60 * 24 * 2) // don't set more than two days in advance (weird bugs if you do)
           .map(d => setTimeout(() => this.draw(timeslots, proposedReservations), d));
-        this.draw(timeslots, proposedReservations);
+        this.draw(timeslots, [...this.originalList, ...proposedReservations]);
       });
   }
 
@@ -362,8 +362,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         this.showSuccessDeletion = false;
         this.showSuccessPendingShort = false;
         this.showSuccessPendingLong = false;
-        console.log(res);
-        
+
         const reservationProcessingStart : Moment[] = res[0];
 
         this.updateCalendar();
