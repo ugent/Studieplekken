@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class LocationReservationService implements ILocationReservationDao {
@@ -143,6 +144,13 @@ public class LocationReservationService implements ILocationReservationDao {
     @Override
     public boolean addLocationReservationToReservationQueue(LocationReservation reservation) {
         try {
+            Optional<LocationReservation> optLocRes = locationReservationRepository.findById(reservation.getId());
+            if (optLocRes.isPresent()) {
+                reservation = optLocRes.get();
+                if (reservation.getStateE() == LocationReservation.State.PENDING || reservation.getStateE() == LocationReservation.State.APPROVED) {
+                    return true;
+                }
+            }
             reservation.setState(LocationReservation.State.PENDING);
             locationReservationRepository.save(reservation);
             reservationManager.addReservationToQueue(reservation);

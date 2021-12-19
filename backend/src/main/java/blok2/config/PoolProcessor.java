@@ -48,6 +48,9 @@ public class PoolProcessor implements Runnable{
                         continue; // Not or no longer present. Ignore.
                     }
                     reservation = optDbRes.get();
+                    if (reservation.getStateE() != LocationReservation.State.PENDING) {
+                        continue;
+                    }
                     Timeslot dbTimeslot = timeslotRepository.getByTimeslotSeqnr(reservation.getTimeslot().getTimeslotSeqnr());
                     if (!dbTimeslot.isReservable()) {
                         rejectReservation(reservation);
@@ -72,10 +75,16 @@ public class PoolProcessor implements Runnable{
 
     @Transactional
     public void approveReservation(Timeslot timeslot, LocationReservation reservation) {
-        timeslot.incrementAmountOfReservations();
-        timeslotRepository.save(timeslot);
+        Optional<LocationReservation> optDbRes =  reservationRepository.findById(reservation.getId());
+        if (!optDbRes.isPresent()) {
+            return; // Not or no longer present. Ignore.
+        }
+        reservation = optDbRes.get();
         reservation.setState(LocationReservation.State.APPROVED);
         reservationRepository.save(reservation);
+        timeslot = timeslotRepository.getByTimeslotSeqnr(timeslot.getTimeslotSeqnr());
+        timeslot.incrementAmountOfReservations();
+        timeslotRepository.save(timeslot);
     }
 
     @Transactional
