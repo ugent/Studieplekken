@@ -178,7 +178,7 @@
     <hr>
     <p>{{'dashboard.locationDetails.calendar.reservation.updateConfirmMessage' | translate }}</p>
     <div>
-      <button type="button" class="button button-primary" (click)="confirmReservationChange()">{{ 'general.yes' |
+      <button type="button" class="button button-primary" (click)="confirmReservationChange(afterReservationTemplate)">{{ 'general.yes' |
         translate
         }}</button>
       <button type="button" class="button button-warning" (click)="declineReservationChange()">{{ 'general.no' |
@@ -191,4 +191,8 @@
       {{'dashboard.locationDetails.calendar.reservation.updateWarningMessage' | translate}}
     </div>
   </div>
+</ng-template>
+
+<ng-template #afterReservationTemplate>
+  <app-after-reservation [newReservationCreator]="newReservationCreator"></app-after-reservation>
 </ng-template>

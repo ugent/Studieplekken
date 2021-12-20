@@ -36,6 +36,7 @@ import { Moment } from 'moment';
 import * as Leaf from 'leaflet';
 import { AuthoritiesService } from 'src/app/services/api/authorities/authorities.service';
 import { LoginRedirectService } from 'src/app/services/authentication/login-redirect.service';
+import { tap } from 'rxjs/operators';
 
 // Leaflet stuff.
 const iconRetinaUrl = './assets/marker-icon-2x.png';
@@ -115,6 +116,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
   pendingReservations: LocationReservation[] = [];
   rejectedReservations: LocationReservation[] = [];
   acceptedReservations: LocationReservation[] = [];
+  newReservationCreator: Observable<moment.Moment[]>;
 
   constructor(
     private locationService: LocationService,
@@ -311,7 +313,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
           .filter(d => d > 0)
           .filter(d => d < 1000 * 60 * 60 * 24 * 2) // don't set more than two days in advance (weird bugs if you do)
           .map(d => setTimeout(() => this.draw(timeslots, proposedReservations), d));
-        this.draw(timeslots, [...this.originalList, ...proposedReservations]);
+        this.draw(timeslots, [...this.pendingReservations, ...proposedReservations]);
       });
   }
 
@@ -348,52 +350,60 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     this.modalRef = this.modalService.open(template, { panelClass: ["cs--cyan", "bigmodal"] });
   }
 
-  confirmReservationChange(): void {
-    combineLatest([
+  confirmReservationChange(template: TemplateRef<unknown>): void {
+    this.modalService.open(template, { panelClass: ["cs--cyan", "bigmodal"] });
+    this.newReservationCreator = combineLatest([
       this.locationReservationService.postLocationReservations(
         this.newReservations
       ),
       this.locationReservationService.deleteLocationReservations(
         this.removedReservations
       ),
-    ]).subscribe(
-      (res) => {
-        this.showError = false;
-        this.showSuccessDeletion = false;
-        this.showSuccessPendingShort = false;
-        this.showSuccessPendingLong = false;
+    ]).pipe(
+      tap(
+        () => this.updateCalendar()
+      ),
+      map(([res]) => res)
+      );
 
-        const reservationProcessingStart : Moment[] = res[0];
+    // .subscribe(
+    //   (res) => {
+    //     this.showError = false;
+    //     this.showSuccessDeletion = false;
+    //     this.showSuccessPendingShort = false;
+    //     this.showSuccessPendingLong = false;
 
-        this.updateCalendar();
-        if (reservationProcessingStart.length !== 0) {
-          const now : Moment = moment();
-          const maxMoment : Moment = moment.max(reservationProcessingStart);
-          const hasDelayedReservation: boolean = now.isBefore(maxMoment);
-          if (hasDelayedReservation) {
-            this.showSuccessPendingLong = true;
-            const msDelayUntilReservationsStart = moment.duration(maxMoment.diff(now)).asMilliseconds();
-            setTimeout(() => (document.querySelector("#location_reservations").scrollIntoView()), 300);
-            setTimeout(() => (this.showSuccessPendingLong = false), msDelayUntilReservationsStart);
-          } else {
-            this.showSuccessPendingShort = true;
-            setTimeout(() => (document.querySelector("#location_reservations").scrollIntoView({'behavior': 'smooth'})), 300);
-            setTimeout(() => (this.showSuccessPendingShort = false), msToShowFeedback);
-          }
-        } else {
-          this.showSuccessDeletion = true;
-          setTimeout(() => (this.showSuccessDeletion = false), msToShowFeedback);
-        }
-      },
-      () => {
-        this.showError = true;
-        this.showSuccessDeletion = false;
-        this.showSuccessPendingShort = false;
-        this.showSuccessPendingLong = false;
-        this.isModified = true;
-        setTimeout(() => (this.showError = false), msToShowFeedback);
-      }
-    );
+    //     const reservationProcessingStart : Moment[] = res[0];
+
+    //     this.updateCalendar();
+    //     if (reservationProcessingStart.length !== 0) {
+    //       const now : Moment = moment();
+    //       const maxMoment : Moment = moment.max(reservationProcessingStart);
+    //       const hasDelayedReservation: boolean = now.isBefore(maxMoment);
+    //       if (hasDelayedReservation) {
+    //         this.showSuccessPendingLong = true;
+    //         const msDelayUntilReservationsStart = moment.duration(maxMoment.diff(now)).asMilliseconds();
+    //         setTimeout(() => (document.querySelector("#location_reservations").scrollIntoView()), 300);
+    //         setTimeout(() => (this.showSuccessPendingLong = false), msDelayUntilReservationsStart);
+    //       } else {
+    //         this.showSuccessPendingShort = true;
+    //         setTimeout(() => (document.querySelector("#location_reservations").scrollIntoView({'behavior': 'smooth'})), 300);
+    //         setTimeout(() => (this.showSuccessPendingShort = false), msToShowFeedback);
+    //       }
+    //     } else {
+    //       this.showSuccessDeletion = true;
+    //       setTimeout(() => (this.showSuccessDeletion = false), msToShowFeedback);
+    //     }
+    //   },
+    //   () => {
+    //     this.showError = true;
+    //     this.showSuccessDeletion = false;
+    //     this.showSuccessPendingShort = false;
+    //     this.showSuccessPendingLong = false;
+    //     this.isModified = true;
+    //     setTimeout(() => (this.showError = false), msToShowFeedback);
+    //   }
+    // );
     this.isModified = false;
     this.modalRef.close();
   }
