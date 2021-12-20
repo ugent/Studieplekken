@@ -254,17 +254,19 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
     this.isModified = true;
 
+    const oldReservation = this.originalList.find(t => t.timeslot.timeslotSequenceNumber === currentTimeslot.timeslotSequenceNumber);
 
-
-    // If it's already selected, unselect
-    if (timeslotIsSelected) {
+    console.log(oldReservation);
+    if (timeslotIsSelected && oldReservation && oldReservation.state === LocationReservationState.REJECTED) { // If it was rejected, allow to try again
+      const nextval = [...this.selectedSubject.value.filter(o => o !== oldReservation), reservation];
+      this.selectedSubject.next(nextval);
+    } else if (timeslotIsSelected) { // If it's already selected, unselect
       const nextval = this.selectedSubject.value.filter(
         (r) => !timeslotEquals(r.timeslot, reservation.timeslot)
       );
       this.selectedSubject.next(nextval);
       // If it's not yet selected, add to selection
     } else {
-      reservation.state
       const nextval = [...this.selectedSubject.value, reservation];
       this.selectedSubject.next(nextval);
     }
@@ -335,7 +337,8 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         !includesTimeslot(
           this.originalList.map((l) => l.timeslot),
           selected.timeslot
-        )
+        ) ||
+         this.originalList.find(l => l.timeslot.timeslotSequenceNumber === selected.timeslot.timeslotSequenceNumber)?.state === LocationReservationState.REJECTED
     );
 
     // And we calculate previous \ selected
