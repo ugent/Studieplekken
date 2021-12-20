@@ -44,6 +44,7 @@ export class AuthorizationGuardService implements CanActivate {
           return this.isLoginAndAdminOrHasLocationsToScan();
         } else if (url.startsWith('/management')) {
           this.loginRedirect.registerUrl('/management');
+          console.log(url);
 
           if (this.authenticationService.isLoggedIn()) {
             if (
@@ -92,6 +93,7 @@ export class AuthorizationGuardService implements CanActivate {
   }
 
   isAdminOrHasAuthorities(): Observable<boolean> {
+    this.authenticationService.hasAuthoritiesObs.subscribe(() => console.log());
     return (
       this.authenticationService.isLoggedIn() ? this.authenticationService.hasAuthoritiesObs.pipe(filter(t => t !== null)) : of(false)
     );

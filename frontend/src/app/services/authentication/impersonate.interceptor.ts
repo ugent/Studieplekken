@@ -8,7 +8,6 @@ export class ImpersonateInterceptor implements HttpInterceptor {
 
     public constructor() {}
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-      console.log(this.getUser())
       if(!this.getUser())
         return next.handle(req);
 
