@@ -1,4 +1,4 @@
-import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, HostListener } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { delay, distinctUntilChanged, map, tap } from 'rxjs/operators';
@@ -23,7 +23,12 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   constructor(private breadcrumbService: BreadcrumbService, private authenticationService: AuthenticationService,
     private translationService: TranslateService, private userService: UserService) { }
 
+  mobile: boolean;
+  smallMobile: boolean;
+
   ngOnInit(): void {
+    this.mobile = window.innerWidth < 700;
+    this.smallMobile = window.innerWidth < 400;
     // subscribe to the user observable to make sure that the correct information
     // is shown in the application.
     this.authenticationService.user.subscribe((next) => {
@@ -46,6 +51,12 @@ export class HeaderComponent implements OnInit, AfterViewInit {
         this.showManagement = false;
       }
     });
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.mobile = window.innerWidth < 700;
+    this.smallMobile = window.innerWidth < 400;
   }
 
   ngAfterViewInit() {

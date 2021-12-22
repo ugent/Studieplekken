@@ -17,7 +17,8 @@
     "informationInfo": "Just can't get a hang of this application? Then definitely check out our help page!",
     "managementInfo": "Management of buildings/locations/users",
     "dashboardInfo": "Find your ideal study location in our application",
-    "scanInfo": "Scan/take note of present students"
+    "scanInfo": "Scan/take note of present students",
+    "page": "Navigation page"
   },
   "information": {
     "general": "General",
@@ -135,6 +136,7 @@
     "imageAlt": "Ghent University",
     "logIn": "Log in",
     "logOut": "Log out",
+    "menu": "Menu",
     "navigation": {
       "login": "Login",
       "dashboard": "Dashboard",

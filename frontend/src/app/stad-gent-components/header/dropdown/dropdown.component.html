@@ -1,6 +1,6 @@
 <article class="content">
-    <h2>{{"header.navigation.profile" | translate }}</h2>
-    <section class="profile">
+    <h2 *ngIf="showLoggedIn()">{{"header.navigation.profile" | translate }}</h2>
+    <section *ngIf="showLoggedIn()" class="profile">
         <span class="avatar">{{user.firstName[0]}}</span>
         <div class="profile-info">
             <span>{{user.firstName + ' ' + user.lastName}}</span>
@@ -8,16 +8,17 @@
                 {{"header.navigation.profile" | translate }} </a>
         </div>
     </section>
+ 
     <section>
-
         <ul class="links">
             <li><a (click)="close()" routerLink="/">{{"header.navigation.dashboard" | translate }}</a></li>
             <li><a (click)="close()" routerLink="/information">{{"header.navigation.information" | translate }}</a></li>
+            <li><a (click)="close()" routerLink="/navigation">{{"header.navigation.navigation" | translate }}</a></li>
         </ul>
-
     </section>
-    <section *ngIf="showManagement() || showScan()">
-        <h2>{{"header.navigation.management"|translate}}</h2>
+
+    <section *ngIf="showLoggedIn() && (showManagement() || showScan())">
+        <h2>{{"header.navigation.management" | translate}}</h2>
 
         <ul class="links">
             <li><a (click)="close()" *ngIf="showManagement()" routerLink="/management">{{"header.navigation.management" | translate }}</a></li>
@@ -26,7 +27,7 @@
 
     </section>
     <footer>
-        <a (click)='logout()' class="button button-small button-secondary">
+        <a (click)='showLoggedIn() && logout()' class="button button-small button-secondary">
             {{"header.logOut" | translate}} </a>
     </footer>
 </article>

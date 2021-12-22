@@ -17,7 +17,8 @@
     "informationInfo": "Geraak je er niet onmiddellijk aan uit hoe de applicatie werkt? Ga zeker eens kijken op de hulp pagina.",
     "managementInfo": "Beheer gebouwen/locaties/gebruikers",
     "dashboardInfo": "Vind jouw ideale studieplekje",
-    "scanInfo": "Scan/neem aanwezigheden op van studenten"
+    "scanInfo": "Scan/neem aanwezigheden op van studenten",
+    "page": "Navigatie pagina"
   },
   "information": {
     "general": "Algemeen",
@@ -136,6 +137,7 @@
     "imageAlt": "Universiteit Gent",
     "logIn": "Log in",
     "logOut": "Log uit",
+    "menu": "Menu",
     "navigation": {
       "login": "Login",
       "dashboard": "Dashboard",
@@ -143,7 +145,7 @@
       "scan": "Scan",
       "management": "Beheer",
       "information": "Help",
-      "navigation": "Navigatie"
+      "navigation": "Navigatie",
     }
   },
   "language": {
