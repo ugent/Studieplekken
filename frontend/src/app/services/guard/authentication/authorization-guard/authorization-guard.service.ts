@@ -44,6 +44,7 @@ export class AuthorizationGuardService implements CanActivate {
           return this.isLoginAndAdminOrHasLocationsToScan();
         } else if (url.startsWith('/management')) {
           this.loginRedirect.registerUrl('/management');
+          console.log(url);
 
           if (this.authenticationService.isLoggedIn()) {
             if (
@@ -92,8 +93,9 @@ export class AuthorizationGuardService implements CanActivate {
   }
 
   isAdminOrHasAuthorities(): Observable<boolean> {
+    this.authenticationService.hasAuthoritiesObs.subscribe(() => console.log());
     return (
-      this.authenticationService.isLoggedIn() ? this.authenticationService.hasAuthoritiesObs.pipe(filter(t => t !== null)) : of(false)
+      this.authenticationService.isLoggedIn() ? (this.authenticationService.isAdmin() ? of(true):this.authenticationService.hasAuthoritiesObs.pipe(filter(t => t !== null))) : of(false)
     );
   }
 
@@ -101,6 +103,6 @@ export class AuthorizationGuardService implements CanActivate {
     return combineLatest([
       this.isAdminOrHasAuthorities(),
       this.authenticationService.hasVolunteeredObs.pipe(filter(t => t !== null))]
-    ).pipe(map(([a, b]) => a && b))
+    ).pipe(map(([a, b]) => a || b))
   }
 }
