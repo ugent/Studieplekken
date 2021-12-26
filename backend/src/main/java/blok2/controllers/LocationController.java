@@ -8,6 +8,7 @@ import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.helpers.exceptions.NotAuthorizedException;
 import blok2.helpers.orm.LocationNameAndNextReservableFrom;
 import blok2.mail.MailService;
+import blok2.model.ActionLogEntry;
 import blok2.model.reservables.Location;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
@@ -42,6 +43,7 @@ public class LocationController extends AuthorizedLocationController {
     private final IUserDao userDao;
     private final IVolunteerDao volunteerDao;
     private final ILocationReservationDao locationReservationDao;
+    private final IActionLogDao actionLogDao;
 
     private final MailService mailService;
 
@@ -51,13 +53,14 @@ public class LocationController extends AuthorizedLocationController {
 
     @Autowired
     public LocationController(ILocationDao locationDao, ILocationTagDao locationTagDao, IUserDao userDao,
-                              IVolunteerDao volunteerDao, MailService mailService, ILocationReservationDao locationReservationDao) {
+                              IVolunteerDao volunteerDao, MailService mailService, ILocationReservationDao locationReservationDao, IActionLogDao actionLogDao) {
         this.locationDao = locationDao;
         this.locationTagDao = locationTagDao;
         this.userDao = userDao;
         this.mailService = mailService;
         this.volunteerDao = volunteerDao;
         this.locationReservationDao = locationReservationDao;
+        this.actionLogDao = actionLogDao;
     }
 
     @GetMapping
@@ -88,6 +91,9 @@ public class LocationController extends AuthorizedLocationController {
     @PostMapping
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void addLocation(@AuthenticationPrincipal User user, @RequestBody Location location) {
+        System.out.println(user);
+        ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.ActionType.INSERTION, "Attempted to create a new location.", user);
+        actionLogDao.addLogEnty(logEntry);
         isAuthorized((l, $) -> hasAuthority(l.getAuthority()), location);
         try {
             locationDao.getLocationByName(location.getName());
@@ -104,6 +110,8 @@ public class LocationController extends AuthorizedLocationController {
     @PutMapping("/{locationId}")
     @PreAuthorize("@authorizedInstitutionController.hasAuthorityLocation(authentication.principal, #locationId)")
     public void updateLocation(@AuthenticationPrincipal User user, @PathVariable("locationId") int locationId, @RequestBody Location location) {
+        ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.ActionType.UPDATE, "Attempted to update location with id " + locationId + ".", user);
+        actionLogDao.addLogEnty(logEntry);
         isAuthorized(locationId);
 
         locationDao.updateLocation(location);
@@ -112,7 +120,9 @@ public class LocationController extends AuthorizedLocationController {
 
     @PutMapping("/{locationId}/approval")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public void approveLocation(@PathVariable("locationId") int locationId, @RequestBody LocationWithApproval landa) {
+    public void approveLocation(@PathVariable("locationId") int locationId, @RequestBody LocationWithApproval landa, @AuthenticationPrincipal User user) {
+        ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.ActionType.OTHER, "Attempted to approve location.", user);
+        actionLogDao.addLogEnty(logEntry);
         locationDao.approveLocation(landa.getLocation(), landa.isApproval());
         logger.info(String.format("Location %d approved", locationId));
     }
@@ -121,7 +131,9 @@ public class LocationController extends AuthorizedLocationController {
     //the updated location should be part of an authority the user is part of.
     @DeleteMapping("/{locationId}")
     @PreAuthorize("@authorizedInstitutionController.hasAuthorityLocation(authentication.principal, #locationId)")
-    public void deleteLocation(@PathVariable("locationId") int locationId) {
+    public void deleteLocation(@PathVariable("locationId") int locationId, @AuthenticationPrincipal User user) {
+        ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.ActionType.DELETION, "Attempted to delete location.", user);
+        actionLogDao.addLogEnty(logEntry);
         isAuthorized(locationId);
 
         // Send email to all users who has a reservation for this location.
@@ -140,14 +152,18 @@ public class LocationController extends AuthorizedLocationController {
 
     @PostMapping("/{locationId}/volunteers/{userId}")
     @PreAuthorize("@authorizedInstitutionController.hasAuthorityLocation(authentication.principal, #locationId)")
-    public void addVolunteer(@PathVariable int locationId, @PathVariable String userId) {
+    public void addVolunteer(@PathVariable int locationId, @PathVariable String userId, @AuthenticationPrincipal User user) {
+        ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.ActionType.OTHER, "Attempted to add a volunteer with id " + userId + " to location with id " + locationId + ".", user);
+        actionLogDao.addLogEnty(logEntry);
         isAuthorized(locationId);
         volunteerDao.addVolunteer(locationId, userId);
     }
 
     @DeleteMapping("/{locationId}/volunteers/{userId}")
     @PreAuthorize("@authorizedInstitutionController.hasAuthorityLocation(authentication.principal, #locationId)")
-    public void deleteVolunteer(@PathVariable int locationId, @PathVariable String userId) {
+    public void deleteVolunteer(@PathVariable int locationId, @PathVariable String userId, @AuthenticationPrincipal User user) {
+        ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.ActionType.OTHER, "Attempted to remove a volunteer with id " + userId + " to location with id " + locationId + ".", user);
+        actionLogDao.addLogEnty(logEntry);
         isAuthorized(locationId);
         volunteerDao.deleteVolunteer(locationId, userId);
     }

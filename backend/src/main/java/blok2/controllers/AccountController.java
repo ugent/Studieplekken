@@ -1,11 +1,9 @@
 package blok2.controllers;
 
-import blok2.daos.IAuthorityDao;
-import blok2.daos.ILocationDao;
-import blok2.daos.IUserDao;
-import blok2.daos.IVolunteerDao;
+import blok2.daos.*;
 import blok2.helpers.Base64String;
 import blok2.helpers.exceptions.InvalidRequestParametersException;
+import blok2.model.ActionLogEntry;
 import blok2.model.Authority;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;
@@ -44,12 +42,14 @@ public class AccountController {
     private final IAuthorityDao authorityDao;
     private final ILocationDao locationDao;
     private final IVolunteerDao volunteerDao;
+    private final IActionLogDao actionLogDao;
 
-    public AccountController(IUserDao userDao, IAuthorityDao authorityDao, ILocationDao locationDao, IVolunteerDao volunteerDao) {
+    public AccountController(IUserDao userDao, IAuthorityDao authorityDao, ILocationDao locationDao, IVolunteerDao volunteerDao, IActionLogDao actionLogDao) {
         this.userDao = userDao;
         this.authorityDao = authorityDao;
         this.locationDao = locationDao;
         this.volunteerDao = volunteerDao;
+        this.actionLogDao = actionLogDao;
     }
 
     @GetMapping("/admins")
@@ -188,7 +188,10 @@ public class AccountController {
 
     @PutMapping("/password")
     @PreAuthorize("hasAuthority('USER')")
-    public void changePassword(@RequestBody ChangePasswordBody body) {
+    public void changePassword(@RequestBody ChangePasswordBody body, @AuthenticationPrincipal User user) {
+        ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.ActionType.UPDATE, "Attempted to change their password.", user);
+        actionLogDao.addLogEnty(logEntry);
+
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
         // check if 'from' is the correct current password

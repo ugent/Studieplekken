@@ -93,6 +93,7 @@ import { ScannerComponent } from './miscellaneous/scanner/scanner.component';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { EntryComponent } from './entry/entry.component';
 import { ImpersonateInterceptor } from './services/authentication/impersonate.interceptor';
+import { ActionLogComponent } from './management/action-log/action-log.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -249,6 +250,11 @@ const routes: Routes = [
         component: VolunteersManagementComponent,
         canActivate: [AuthorizationGuardService],
       },
+      {
+        path: 'actionlog',
+        component: ActionLogComponent,
+        canActivate: [AuthorizationGuardService]
+      },
     ],
   },
 
@@ -331,6 +337,7 @@ const routes: Routes = [
     QRCodeComponent,
     ScannerComponent,
     EntryComponent,
+    ActionLogComponent,
   ],
   imports: [
     BrowserModule,

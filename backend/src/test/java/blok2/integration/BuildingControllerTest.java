@@ -47,7 +47,7 @@ public class BuildingControllerTest extends BaseIntegrationTest {
         mockMvc.perform(post("/building").contentType("application/json").with(csrf())
                 .content(objectMapper.writeValueAsString(building))).andDo(print())
                 .andExpect(status().isOk());
-
+        Assert.assertTrue(hasActionLogEntry("admin", "building"));
         Assert.assertEquals(3, buildingDao.getAllBuildings().size());
     }
 
@@ -102,7 +102,7 @@ public class BuildingControllerTest extends BaseIntegrationTest {
         mockMvc.perform(put("/building/" + testBuilding.getBuildingId()).contentType("application/json")
                 .with(csrf()).content(objectMapper.writeValueAsString(testBuilding))).andDo(print())
                 .andExpect(status().isOk());
-
+        Assert.assertTrue(hasActionLogEntry("admin", "building"));
         Assert.assertEquals(testBuilding, buildingDao.getBuildingById(testBuilding.getBuildingId()));
     }
 

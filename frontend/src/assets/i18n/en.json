@@ -162,14 +162,26 @@
       "calendar": "Calendar",
       "penalties": "Penalties",
       "admins": "Admins",
-      "volunteers": "Supervisors"
+      "volunteers": "Supervisors",
+      "actionlog": "Action log"
+    },
+    "actionlog": {
+      "title": "A logbook of all important recent actions",
+      "table": {
+        "type": "Type",
+        "description": "Description",
+        "username": "Username",
+        "userid": "User ID",
+        "time": "Time"
+      }
     },
     "general": {
       "loading": "Loading...",
       "noLocations": "There are no rooms yet, make one using the 'Add room' button",
       "noBuildings": "There are no buildings yet, make one using the 'Add Building' button",
       "noTags": "There are no tags yet, make one using the 'Add Tag' button",
-      "noAuthorities": "There are no authorities yet, make on using the 'Add Authority' button"
+      "noAuthorities": "There are no authorities yet, make on using the 'Add Authority' button",
+      "noActions": "There are no actions yet. They will be added automatically when important actions are performed."
     },
     "locationDetails": {
       "title": "Details of {locationName}",

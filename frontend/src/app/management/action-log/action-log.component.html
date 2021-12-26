@@ -1,0 +1,42 @@
+<div class="container-fluid">
+    <h3>{{'management.actionlog.title' | translate}}</h3>
+    <hr>
+    <form [formGroup]="formGroup" class="form" (ngSubmit)="ignore()">
+        <div class="search">
+            <input class="form-control sarch inline" type="search" formControlName="searchFilter" (ngModelChange)="filterChanged(formGroup.value)">
+        </div>
+    </form>
+
+    <div class="row">
+        <div class="responsive-table fullwidth" *ngIf="allActions">
+            <div class="table-wrapper fullwidth">
+                <table style="width: 100%;" *ngIf="allActions.length > 0 else noActions">
+                    <thead>
+                        <tr>
+                            <th scope="col">{{'management.actionlog.table.type' | translate}}</th>
+                            <th scope="col">{{'management.actionlog.table.description' | translate }}</th>
+                            <th scope="col">{{'management.actionlog.table.username' | translate}}</th>
+                            <th scope="col">{{'management.actionlog.table.userid' | translate}}</th>
+                            <th scope="col">{{'management.actionlog.table.time' | translate}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let action of actionFilter(allActions, searchFilter);">
+                            <td>{{action.type}}</td>
+                            <td>{{action.description}}</td>
+                            <td>{{action.userFullName}}</td>
+                            <td>{{action.user.userId}}</td>
+                            <td>{{action.time.format('DD/MM/YYYY HH:mm:ss')}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #noActions>
+    <div class="alert alert-info">
+        {{'management.general.noActions' | translate}}
+    </div>
+</ng-template>

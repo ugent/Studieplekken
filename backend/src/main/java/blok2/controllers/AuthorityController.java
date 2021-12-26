@@ -1,9 +1,11 @@
 package blok2.controllers;
 
+import blok2.daos.IActionLogDao;
 import blok2.daos.IAuthorityDao;
 import blok2.helpers.Base64String;
 import blok2.helpers.exceptions.AlreadyExistsException;
 import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
+import blok2.model.ActionLogEntry;
 import blok2.model.Authority;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;
@@ -28,10 +30,12 @@ public class AuthorityController {
     private final Logger logger = LoggerFactory.getLogger(AuthorityController.class.getSimpleName());
 
     private final IAuthorityDao authorityDao;
+    private final IActionLogDao actionLogDao;
 
     @Autowired
-    public AuthorityController(IAuthorityDao authorityDao) {
+    public AuthorityController(IAuthorityDao authorityDao, IActionLogDao actionLogDao) {
         this.authorityDao = authorityDao;
+        this.actionLogDao = actionLogDao;
     }
 
     // *************************************
@@ -52,8 +56,10 @@ public class AuthorityController {
 
     @PostMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public void addAuthority(@RequestBody Authority authority) {
+    public void addAuthority(@RequestBody Authority authority, @AuthenticationPrincipal User user) {
         try {
+            ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.ActionType.INSERTION, "Attempted to create new authority with name " + authority.getAuthorityName() + ".", user);
+            actionLogDao.addLogEnty(logEntry);
             authorityDao.getAuthorityByName(authority.getAuthorityName());
             throw new AlreadyExistsException("Authority");
         } catch (NoSuchDatabaseObjectException ignore) {
@@ -64,7 +70,9 @@ public class AuthorityController {
 
     @PutMapping("/{authorityId}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public void updateAuthority(@PathVariable int authorityId, @RequestBody Authority authority) {
+    public void updateAuthority(@PathVariable int authorityId, @RequestBody Authority authority, @AuthenticationPrincipal User user) {
+        ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.ActionType.UPDATE, "Attempted to update an existing authority with id " + authorityId + ".", user);
+        actionLogDao.addLogEnty(logEntry);
         authority.setAuthorityId(authorityId);
         authorityDao.updateAuthority(authority);
         logger.info(String.format("Updating authority %d", authorityId));
@@ -72,7 +80,9 @@ public class AuthorityController {
 
     @DeleteMapping("/{authorityId}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public void deleteAuthority(@PathVariable int authorityId) {
+    public void deleteAuthority(@PathVariable int authorityId, @AuthenticationPrincipal User user) {
+        ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.ActionType.DELETION, "Attempted to delete an existing authority with id " + authorityId + ".", user);
+        actionLogDao.addLogEnty(logEntry);
         authorityDao.deleteAuthority(authorityId);
         logger.info(String.format("Removing authority %d", authorityId));
     }
@@ -109,18 +119,20 @@ public class AuthorityController {
 
     @PostMapping("/{authorityId}/user/{userId}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public void addUserToAuthority(@PathVariable int authorityId, @PathVariable("userId") String encodedId) {
+    public void addUserToAuthority(@PathVariable int authorityId, @PathVariable("userId") String encodedId, @AuthenticationPrincipal User user) {
         String userId = Base64String.base64Decode(encodedId);
-
+        ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.ActionType.OTHER, "Attempted to add user with id " + userId + " to authority with id " + authorityId + ".", user);
+        actionLogDao.addLogEnty(logEntry);
         authorityDao.addUserToAuthority(userId, authorityId);
         logger.info(String.format("Adding user %s to authority %d", userId, authorityId));
     }
 
     @DeleteMapping("/{authorityId}/user/{userId}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public void deleteUserFromAuthority(@PathVariable int authorityId, @PathVariable("userId") String encodedId) {
+    public void deleteUserFromAuthority(@PathVariable int authorityId, @PathVariable("userId") String encodedId, @AuthenticationPrincipal User user) {
         String userId = Base64String.base64Decode(encodedId);
-
+        ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.ActionType.OTHER, "Attemtped to remove user with id " + userId + " from authority with id " + authorityId + ".", user);
+        actionLogDao.addLogEnty(logEntry);
         authorityDao.deleteUserFromAuthority(userId, authorityId);
         logger.info(String.format("Removing user %s from authority %d", userId, authorityId));
     }

@@ -3,6 +3,7 @@ package blok2.integration;
 import blok2.BaseTest;
 import blok2.TestSharedMethods;
 import blok2.daos.*;
+import blok2.model.ActionLogEntry;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.calendar.Timeslot;
@@ -42,6 +43,9 @@ public abstract class BaseIntegrationTest extends BaseTest {
     protected ITimeslotDao timeslotDAO;
     @Autowired
     protected IBuildingDao buildingDao;
+
+    @Autowired
+    protected IActionLogDao actionLogDao;
 
     @Autowired
     protected ILocationReservationDao locationReservationDao;
@@ -140,4 +144,19 @@ public abstract class BaseIntegrationTest extends BaseTest {
         UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(refreshedUser, "", refreshedUser.getAuthorities());
         securityContext.setAuthentication(authRequest);
     }
+
+    public boolean hasActionLogEntry(String userId, String contains) {
+        List<ActionLogEntry> list = actionLogDao.getAllActions();
+        for (ActionLogEntry entry : list) {
+            if (userId != null && !userId.equals(entry.getUser().getUserId())) {
+                continue;
+            }
+            if (!entry.getDescription().contains(contains)) {
+                continue;
+            }
+            return true;
+        }
+        return false;
+    }
+
 }
