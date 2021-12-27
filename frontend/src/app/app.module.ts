@@ -61,6 +61,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MomentDateComponent } from './shared/inputs/moment-date/moment-date.component';
 import { FormatStatusPipe } from './shared/pipes/FormatStatusPipe';
+import { FormatActionPipe } from './shared/pipes/FormatActionPipe';
 import { MomentDateTimeComponent } from './shared/inputs/moment-datetime/moment-datetime.component';
 import { LocationOpeningperiodDialogComponent } from './management/locations-management/location-details-management/location-calendar/location-openingperiod-dialog/location-openingperiod-dialog.component';
 import { BuildingManagementComponent } from './management/building-management/building-management.component';
@@ -321,6 +322,7 @@ const routes: Routes = [
     AdminsManagementComponent,
     TimeslotTableComponent,
     FormatStatusPipe,
+    FormatActionPipe,
     OpeningHoursOverviewComponent,
     ScanningLocationsComponent,
     ScanningLocationDetailsComponent,
@@ -380,6 +382,7 @@ const routes: Routes = [
   ],
   providers: [
     FormatStatusPipe,
+    FormatActionPipe,
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ImpersonateInterceptor, multi: true },
 

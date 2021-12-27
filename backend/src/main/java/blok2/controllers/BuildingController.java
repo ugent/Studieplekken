@@ -49,7 +49,7 @@ public class BuildingController {
     @PostMapping
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void addBuilding(@AuthenticationPrincipal User user, @RequestBody Building building) {
-        ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.ActionType.INSERTION, "Attempted to add a new building.", user);
+        ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.Type.INSERTION, user, ActionLogEntry.Domain.BUILDING);
         actionLogDao.addLogEnty(logEntry);
         if (!user.isAdmin()) {
             if (!building.getInstitution().equals(user.getInstitution())) {
@@ -63,7 +63,7 @@ public class BuildingController {
     @PutMapping("/{buildingId}")
     @PreAuthorize("@authorizedInstitutionController.hasAuthorityBuilding(authentication.principal, #buildingId)")
     public void updateBuilding(@AuthenticationPrincipal User user, @PathVariable int buildingId, @RequestBody Building building) {
-        ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.ActionType.UPDATE, "Attempted to update a building.", user);
+        ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.Type.UPDATE, user, ActionLogEntry.Domain.BUILDING, buildingId);
         actionLogDao.addLogEnty(logEntry);
         if (!user.isAdmin()) {
             if (!building.getInstitution().equals(user.getInstitution())) {
@@ -77,7 +77,7 @@ public class BuildingController {
     @DeleteMapping("/{buildingId}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public void deleteBuilding(@PathVariable int buildingId, @AuthenticationPrincipal User user) {
-        ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.ActionType.DELETION, "Attempted to delete a building.", user);
+        ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.Type.DELETION, user, ActionLogEntry.Domain.BUILDING, buildingId);
         actionLogDao.addLogEnty(logEntry);
         buildingDao.deleteBuilding(buildingId);
         logger.info(String.format("Removed building with id '%d'", buildingId));

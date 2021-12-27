@@ -17,8 +17,11 @@ public class ActionLogEntry {
     @Column(name = "type")
     private String type;
 
-    @Column(name = "description")
-    private String description;
+    @Column(name = "domain")
+    private String domain;
+
+    @Column(name = "domain_id")
+    private int domainId;
 
     @ManyToOne
     @JoinColumn(
@@ -34,10 +37,15 @@ public class ActionLogEntry {
 
     }
 
-    public ActionLogEntry(ActionType type, String description, User user) {
+    public ActionLogEntry(Type type, User user, Domain domain) {
+        this(type, user, domain, 0);
+    }
+
+    public ActionLogEntry(Type type, User user, Domain domain, int domainId) {
         this.type = type.name();
-        this.description = description;
+        this.domain = domain.name();
         this.user = user;
+        this.domainId = domainId;
     }
 
 
@@ -49,27 +57,43 @@ public class ActionLogEntry {
         this.id = id;
     }
 
-    public String getDescription() {
-        return description;
+    public String getDomain() {
+        return domain;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public Domain getDomainE() {
+        return Domain.valueOf(this.domain);
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
+    }
+
+    public void setDomain(Domain domain) {
+        setDomain(domain.name());
+    }
+
+    public int getDomainId() {
+        return domainId;
+    }
+
+    public void setDomainId(int domainId) {
+        this.domainId = domainId;
     }
 
     public String getType() {
         return type;
     }
 
-    public ActionType getTypeE() {
-        return ActionType.valueOf(this.type);
+    public Type getTypeE() {
+        return Type.valueOf(this.type);
     }
 
     public void setType(String type) {
         this.type = type;
     }
 
-    public void setType(ActionType type) {
+    public void setType(Type type) {
         setType(type.name());
     }
 
@@ -89,11 +113,19 @@ public class ActionLogEntry {
         this.time = time;
     }
 
-    public static enum ActionType {
+    public static enum Type {
         INSERTION,
         DELETION,
         UPDATE,
         OTHER
+    }
+
+    public static enum Domain {
+        LOCATION,
+        BUILDING,
+        AUTHORITY,
+        USER,
+        PASSWORD
     }
 
 }

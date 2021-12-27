@@ -170,10 +170,32 @@
       "title": "Een logboek van alle belangrijke recent uitgevoerde acties",
       "table": {
         "type": "Type",
+        "domain": "Domein",
         "description": "Omschrijving",
         "username": "Gebruikersnaam",
         "userid": "Gebruikers ID",
         "time": "Tijdstip"
+      },
+      "descriptionFormatId": "Poging om de %subject met id %id te %action.",
+      "descriptionFormatNoId": "Poging om een %subject te %action.",
+      "type": {
+        "INSERTION": "Toevoeging",
+        "DELETION": "Verwijdering",
+        "UPDATE": "Wijziging",
+        "OTHER": "Andere"
+      },
+      "action": {
+        "INSERTION": "aanmaken",
+        "DELETION": "verwijderen",
+        "UPDATE": "wijzigen",
+        "OTHER": "wijzigen"
+      },
+      "domain": {
+        "LOCATION": "locatie",
+        "BUILDING": "gebouw",
+        "AUTHORITY": "authoriteit",
+        "USER": "gebruiker",
+        "PASSWORD": "wachtwoord"
       }
     },
     "general": {
@@ -839,6 +861,7 @@
             "APPROVED": "Goedgekeurd",
             "PRESENT": "Aanwezig",
             "ABSENT": "Afwezig",
+            "DELETED": "Verwijderd",
             "notScanned": "Geen aanwezigheden opgenomen",
             "notScannedExplanation": "Voor deze reservatie zijn de aanwezigheden niet opgenomen. Je hebt dus ook geen strafpunten verkregen."
           }

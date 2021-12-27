@@ -21,9 +21,6 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.validation.ConstraintViolationException;
 import javax.validation.constraints.Pattern;
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.List;
 
 
@@ -189,7 +186,7 @@ public class AccountController {
     @PutMapping("/password")
     @PreAuthorize("hasAuthority('USER')")
     public void changePassword(@RequestBody ChangePasswordBody body, @AuthenticationPrincipal User user) {
-        ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.ActionType.UPDATE, "Attempted to change their password.", user);
+        ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.Type.UPDATE, user, ActionLogEntry.Domain.PASSWORD);
         actionLogDao.addLogEnty(logEntry);
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();

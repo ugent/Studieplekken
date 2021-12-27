@@ -169,10 +169,32 @@
       "title": "A logbook of all important recent actions",
       "table": {
         "type": "Type",
+        "domain": "Domain",
         "description": "Description",
         "username": "Username",
         "userid": "User ID",
         "time": "Time"
+      },
+      "descriptionFormatId": "Attempt to %action the %subject with id %id.",
+      "descriptionFormatNoId": "Attempt to %action a/an %subject.",
+      "type": {
+        "INSERTION": "Insertion",
+        "DELETION": "Deletion",
+        "UPDATE": "Update",
+        "OTHER": "Other"
+      },
+      "action": {
+        "INSERTION": "create",
+        "DELETION": "delete",
+        "UPDATE": "update",
+        "OTHER": "do an unknown action"
+      },
+      "domain": {
+        "LOCATION": "location",
+        "BUILDING": "building",
+        "AUTHORITY": "authority",
+        "USER": "user",
+        "PASSWORD": "password"
       }
     },
     "general": {
@@ -836,6 +858,7 @@
             "APPROVED": "Approved",
             "PRESENT": "Present",
             "ABSENT": "Absent",
+            "DELETED": "Deleted",
             "notScanned": "No attendance taken",
             "notScannedExplanation": "For this reservation attendance wasn't taken, so you haven't gained any penalty points."
           }
