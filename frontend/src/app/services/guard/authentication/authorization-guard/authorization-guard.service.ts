@@ -44,11 +44,6 @@ export class AuthorizationGuardService implements CanActivate {
           return this.isLoginAndAdminOrHasLocationsToScan();
         } else if (url.startsWith('/management')) {
           this.loginRedirect.registerUrl('/management');
-<<<<<<< HEAD
-=======
-          console.log(url);
-
->>>>>>> 2a357fe68669cbd0bc3e5cdbc7308a36c2d2fa35
           if (this.authenticationService.isLoggedIn()) {
             if (
               url.includes('/tags') ||
