@@ -92,13 +92,9 @@ export class AuthorizationGuardService implements CanActivate {
   }
 
   isAdminOrHasAuthorities(): Observable<boolean> {
-<<<<<<< HEAD
     if (this.authenticationService.isAdmin()) {
       return of(true);
     }
-=======
-    this.authenticationService.hasAuthoritiesObs.subscribe(() => console.log());
->>>>>>> 2a357fe68669cbd0bc3e5cdbc7308a36c2d2fa35
     return (
       this.authenticationService.isLoggedIn() ? (this.authenticationService.isAdmin() ? of(true):this.authenticationService.hasAuthoritiesObs.pipe(filter(t => t !== null))) : of(false)
     );
@@ -108,10 +104,6 @@ export class AuthorizationGuardService implements CanActivate {
     return combineLatest([
       this.isAdminOrHasAuthorities(),
       this.authenticationService.hasVolunteeredObs.pipe(filter(t => t !== null))]
-<<<<<<< HEAD
-    ).pipe(map(([a, b]) => a && b));
-=======
     ).pipe(map(([a, b]) => a || b))
->>>>>>> 2a357fe68669cbd0bc3e5cdbc7308a36c2d2fa35
   }
 }
