@@ -145,13 +145,13 @@ public abstract class BaseIntegrationTest extends BaseTest {
         securityContext.setAuthentication(authRequest);
     }
 
-    public boolean hasActionLogEntry(String userId, String contains) {
+    public boolean hasActionLogEntry(String userId, String domain) {
         List<ActionLogEntry> list = actionLogDao.getAllActions();
         for (ActionLogEntry entry : list) {
             if (userId != null && !userId.equals(entry.getUser().getUserId())) {
                 continue;
             }
-            if (!entry.getDescription().contains(contains)) {
+            if (!entry.getDomain().toLowerCase().contains(domain.toLowerCase())) {
                 continue;
             }
             return true;
