@@ -233,6 +233,11 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
       return;
     }
 
+    // If the timeslot is in the past, reservation can no longer be changed.
+    if (currentTimeslot.isInPast()) {
+      return;
+    }
+
 
     
     let reservation: LocationReservation = {
@@ -356,7 +361,6 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         );
         const oldReservation = tempList.length > 0? tempList[0] : undefined;
         if (!oldReservation) {
-          console.log("No old reservation for ", selected);
           return true;
         }
         if (oldReservation && (oldReservation.state === LocationReservationState.DELETED || oldReservation.state == LocationReservationState.REJECTED)) {
@@ -532,12 +536,10 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   futureReservations(reservations: LocationReservation[]) {
-    console.log("ftr input: ", reservations);
     return reservations.filter((res) => !res.timeslot.isInPast());
   }
 
   nonDeletedReservation(reservations: LocationReservation[]) {
-    console.log("ndlt input: ", reservations);
     return reservations.filter((res) => res.state !== LocationReservationState.DELETED);
   }
 

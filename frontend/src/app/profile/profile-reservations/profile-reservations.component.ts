@@ -105,6 +105,14 @@ export class ProfileReservationsComponent implements OnInit {
   canDeleteReservation(
     reservation: LocationReservation
   ): boolean {
+    const ts = reservation.timeslot;
+    const hours = moment.duration(ts.closingHour.hours(), 'hours');
+    const minutes = moment.duration(ts.closingHour.minutes(), 'minutes');
+    const closingDateTime = moment(ts.timeslotDate).add(hours).add(minutes);
+    const now = moment();
+    if (closingDateTime.isBefore(now)) {
+      return false;
+    }
     switch (reservation.state) {
       case LocationReservationState.PENDING:
       case LocationReservationState.REJECTED:
