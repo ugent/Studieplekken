@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
 import { authenticationWasExpiredUrlLSKey, userWantsTLogInLocalStorageKey } from '../../app.constants';
 import { LocationReservation } from '../../shared/model/LocationReservation';
 import { Penalty } from '../../shared/model/Penalty';
@@ -35,9 +35,9 @@ export class AuthenticationService {
   // (which comes from the userSubject)
   public user: Observable<User> = this.userSubject.asObservable();
 
-  private hasAuthoritiesSubject: Subject<boolean> = new Subject<boolean>();
+  private hasAuthoritiesSubject: Subject<boolean> = new ReplaySubject<boolean>();
   public hasAuthoritiesObs: Observable<boolean> = this.hasAuthoritiesSubject.asObservable();
-  private hasVolunteeredSubject: Subject<boolean> = new Subject<boolean>();
+  private hasVolunteeredSubject: Subject<boolean> = new ReplaySubject<boolean>();
   public hasVolunteeredObs: Observable<boolean> = this.hasVolunteeredSubject.asObservable();
 
   constructor(
