@@ -12,6 +12,7 @@ export class AfterReservationComponent implements OnInit, OnChanges {
 
   @Input() newReservationCreator: Observable<Moment[]>;
   loading: boolean = true;
+  failure: boolean = false;
   hasDelayedReservation = true;
 
   constructor() { }
@@ -23,12 +24,15 @@ export class AfterReservationComponent implements OnInit, OnChanges {
     if (this.newReservationCreator) {
       this.loading = true;
       this.newReservationCreator.subscribe(m => {
-        console.log(m);
+
         const now : Moment = moment();
         const maxMoment : Moment = moment.max(m);
         this.hasDelayedReservation = now.isBefore(maxMoment);
         this.loading = false;
-      })
+      }, (error) => {
+        this.failure = true;
+        this.loading = false;
+      });
     }
   }
 

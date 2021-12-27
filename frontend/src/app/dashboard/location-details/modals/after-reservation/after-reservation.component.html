@@ -1,12 +1,16 @@
 <app-modal>
   <h1 modal-header>{{'dashboard.locationDetails.calendar.reservation.afterReservationHeader' |translate}}</h1>
   <div modal-body fxLayout="column" fxLayoutAlign="center center" *ngIf="!loading">
-    <object class="large-checkmark" type="image/svg+xml" data="/assets/icon/check-mark-green.svg"></object>
-    <div class="messages messages--warning" *ngIf="hasDelayedReservation">
+    <object *ngIf="!failure" class="large-checkmark" type="image/svg+xml" data="/assets/icon/check-mark-green.svg"></object>
+    <object *ngIf="failure" class="large-red-cross" type="image/svg+xml" data="/assets/icon/red-cross.svg"></object>
+    <div class="messages messages--warning" *ngIf="!failure && hasDelayedReservation">
       {{'dashboard.locationDetails.calendar.reservation.afterReservationPendingMessage' | translate}}
     </div>
-    <div class="messages messages--info" *ngIf="!hasDelayedReservation">
+    <div class="messages messages--info" *ngIf="!failure && !hasDelayedReservation">
       {{'dashboard.locationDetails.calendar.reservation.afterReservationConfirmedMessage' | translate}}
+    </div>
+    <div class="messages messages--warning" *ngIf="failure">
+      {{'dashboard.locationDetails.calendar.reservation.afterReservationFailedMessage' | translate}}
     </div>
   </div>
 

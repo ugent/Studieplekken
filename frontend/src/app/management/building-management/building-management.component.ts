@@ -172,7 +172,6 @@ export class BuildingManagementComponent implements OnInit {
   // *****************/
 
   prepareUpdate(building: Building, template: TemplateRef<unknown>): void {
-    console.log(building)
 
     // reset the feedback boolean
     this.successUpdatingBuilding = undefined;

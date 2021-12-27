@@ -6,7 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
-import { BehaviorSubject, combineLatest, merge, Observable, of, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, merge, Observable, of, Subscription, throwError } from 'rxjs';
 import { map } from 'rxjs/internal/operators/map';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
@@ -36,7 +36,8 @@ import { Moment } from 'moment';
 import * as Leaf from 'leaflet';
 import { AuthoritiesService } from 'src/app/services/api/authorities/authorities.service';
 import { LoginRedirectService } from 'src/app/services/authentication/login-redirect.service';
-import { tap } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
+import {CalendarEvent} from 'angular-calendar';
 
 // Leaflet stuff.
 const iconRetinaUrl = './assets/marker-icon-2x.png';
@@ -65,7 +66,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
   locationId: number;
   tags: LocationTag[];
 
-  events: Timeslot[] = [];
+  events: CalendarEvent<{timeslot: Timeslot}>[] = [];
 
   editor: unknown = ClassicEditor;
 
@@ -233,14 +234,23 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     }
 
 
-    const reservation: LocationReservation = {
+    
+    let reservation: LocationReservation = {
       state: null, // TODO(ydndonck): Should this be approved? Something else? Currently using database default.
       user: this.authenticationService.userValue(),
       timeslot: currentTimeslot,
     };
+    // Check if reservation doesn't already exist in deleted state.
+    /*for (const res of this.selectedSubject.value) {
+      if (res.timeslot.timeslotSequenceNumber == currentTimeslot.timeslotSequenceNumber) {
+        reservation = res;
+        reservation.state = R
+        break;
+      }
+    }*/
 
     const timeslotIsSelected = this.selectedSubject.value.some((r) =>
-      timeslotEquals(r.timeslot, reservation.timeslot)
+      timeslotEquals(r.timeslot, reservation.timeslot) && r.state != LocationReservationState.DELETED
     );
 
     // if it is full and you don't have this reservation yet, unselect
@@ -255,10 +265,9 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     this.isModified = true;
 
     const oldReservation = this.originalList.find(t => t.timeslot.timeslotSequenceNumber === currentTimeslot.timeslotSequenceNumber);
-
-    console.log(oldReservation);
-    if (timeslotIsSelected && oldReservation && oldReservation.state === LocationReservationState.REJECTED) { // If it was rejected, allow to try again
-      const nextval = [...this.selectedSubject.value.filter(o => o !== oldReservation), reservation];
+    
+    if (!timeslotIsSelected && oldReservation && (oldReservation.state === LocationReservationState.REJECTED || oldReservation.state == LocationReservationState.DELETED)) { // If it was rejected, allow to try again
+      const nextval = [...this.selectedSubject.value.filter(o => o !== oldReservation && o.timeslot.timeslotSequenceNumber !== oldReservation.timeslot.timeslotSequenceNumber), reservation];
       this.selectedSubject.next(nextval);
     } else if (timeslotIsSelected) { // If it's already selected, unselect
       const nextval = this.selectedSubject.value.filter(
@@ -286,7 +295,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
       lang === 'nl' ? this.description.dutch : this.description.english;
   }
 
-  updateCalendar(): void {
+  updateCalendar(update_selection = false): void {
     // retrieve the calendar periods and map them to calendar events used by Angular Calendar
     if (this.subscription) {
       this.subscription.unsubscribe();
@@ -303,7 +312,9 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         this.timeouts.forEach(t => clearTimeout(t));
 
         // Only do this once, when selectedSubject isn't initialized yet.
-        if (this.isFirst) {
+        // TODO: Why only the first time? If there is a faulty reservation it'll keep trying (and failing) to make that reservation.
+        // If this line can be removed then this scenario
+        if (this.isFirst || update_selection) {
           this.isFirst = false;
           this.selectedSubject.next([...this.originalList]);
           return;
@@ -319,7 +330,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
       });
   }
 
-  draw(timeslots, proposedReservations : LocationReservation[]): void {
+  draw(timeslots: Timeslot[], proposedReservations : LocationReservation[]): void {
     this.events = timeslots.map(t => this.timeslotCalendarEventService.timeslotToCalendarEvent(
       t, this.currentLang, [...proposedReservations]
     ));
@@ -333,22 +344,64 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     // We need to find out which of the selected boxes need to be removed, and which need to be added.
     // Therefore, we calculate selected \ previous
     this.newReservations = this.selectedSubject.value.filter(
-      (selected) =>
-        !includesTimeslot(
+      (selected) => {
+        if (selected.state === LocationReservationState.DELETED) {
+          return false;
+        }
+        const tempList: LocationReservation[] = this.originalList.filter(
+          (reservation) => {
+            return  reservation.user.userId == selected.user.userId &&
+                    reservation.timeslot.timeslotSequenceNumber == selected.timeslot.timeslotSequenceNumber;
+          }
+        );
+        const oldReservation = tempList.length > 0? tempList[0] : undefined;
+        if (!oldReservation) {
+          console.log("No old reservation for ", selected);
+          return true;
+        }
+        if (oldReservation && (oldReservation.state === LocationReservationState.DELETED || oldReservation.state == LocationReservationState.REJECTED)) {
+          return true;
+        }
+        return false;
+      }
+        /*!includesTimeslot(
           this.originalList.map((l) => l.timeslot),
           selected.timeslot
         ) ||
-         this.originalList.find(l => l.timeslot.timeslotSequenceNumber === selected.timeslot.timeslotSequenceNumber)?.state === LocationReservationState.REJECTED
+         this.originalList.find(l => l.timeslot.timeslotSequenceNumber === selected.timeslot.timeslotSequenceNumber)?.state === LocationReservationState.REJECTED*/
     );
 
     // And we calculate previous \ selected
     this.removedReservations = this.originalList.filter(
-      (selected) =>
-        !includesTimeslot(
-          this.selectedSubject.value.map((l) => l.timeslot),
-          selected.timeslot
-        )
-    );
+      (selected) => {
+        if (selected.state === LocationReservationState.DELETED) {
+          return false;
+        }
+        const tempList: LocationReservation[] = this.selectedSubject.value.filter(
+          (res) =>  res.timeslot.timeslotSequenceNumber === selected.timeslot.timeslotSequenceNumber
+        );
+        const reservation = tempList.length > 0 ? tempList[0] : undefined;
+        if (!reservation) {
+          return true;
+        }
+        return false;
+      });
+      /*!includesTimeslot(
+        this.selectedSubject.value.map((l) => l.timeslot),
+        selected.timeslot
+      ));*/
+      /*{
+        const tempList: LocationReservation[] = this.selectedSubject.value.filter(
+          (reservation) => reservation.user.userId == selected.user.userId && reservation.timeslot.timeslotSequenceNumber == selected.timeslot.timeslotSequenceNumber
+        );
+        const selectedReservation = tempList.length > 0? tempList[0] : undefined;
+        if (selectedReservation && selectedReservation.state !== selected.state && selected.state === LocationReservationState.DELETED) {
+          return true;
+        }
+        return false;
+      }
+        )*/
+    // );
 
     this.modalRef = this.modalService.open(template, { panelClass: ["cs--cyan", "bigmodal"] });
   }
@@ -363,6 +416,10 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         this.removedReservations
       ),
     ]).pipe(
+      catchError((err) => {
+        this.updateCalendar(true);
+        return throwError(err);
+      }),
       tap(
         () => this.updateCalendar()
       ),
@@ -475,7 +532,13 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   futureReservations(reservations: LocationReservation[]) {
+    console.log("ftr input: ", reservations);
     return reservations.filter((res) => !res.timeslot.isInPast());
+  }
+
+  nonDeletedReservation(reservations: LocationReservation[]) {
+    console.log("ndlt input: ", reservations);
+    return reservations.filter((res) => res.state !== LocationReservationState.DELETED);
   }
 
 }

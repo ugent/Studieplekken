@@ -45,10 +45,11 @@ public class PoolProcessor implements Runnable{
                 for (LocationReservation reservation : reservations) {
                     Optional<LocationReservation> optDbRes =  reservationRepository.findById(reservation.getId());
                     if (!optDbRes.isPresent()) {
-                        continue; // Not or no longer present. Ignore.
+                        continue; // Not or no longer present. Should not happen. Ignore.
                     }
                     reservation = optDbRes.get();
                     if (reservation.getStateE() != LocationReservation.State.PENDING) {
+                        // Might have been deleted (state DELETED). Ignore.
                         continue;
                     }
                     Timeslot dbTimeslot = timeslotRepository.getByTimeslotSeqnr(reservation.getTimeslot().getTimeslotSeqnr());

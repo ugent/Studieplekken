@@ -93,13 +93,19 @@ public class LocationReservationService implements ILocationReservationDao {
     @Override
     @javax.transaction.Transactional
     public void deleteLocationReservation(LocationReservation locationReservation) {
+
         LocationReservation.State state = locationReservation.getStateE();
         if (state == LocationReservation.State.APPROVED || state == LocationReservation.State.PRESENT) {
             locationReservationRepository.decrementCountByOne(locationReservation.getTimeslot().getTimeslotSeqnr());
         }
-        locationReservationRepository.deleteById(new LocationReservation.LocationReservationId(
+        LocationReservation temp = locationReservationRepository.getOne(locationReservation.getId());
+        System.out.println(locationReservation);
+        System.out.println(temp);
+        locationReservation.setState(LocationReservation.State.DELETED);
+        locationReservationRepository.save(locationReservation);
+        /*locationReservationRepository.deleteById(new LocationReservation.LocationReservationId(
                 locationReservation.getTimeslot().getTimeslotSeqnr(), locationReservation.getUser().getUserId()
-        ));
+        ));*/
     }
 
     @Override
@@ -151,8 +157,10 @@ public class LocationReservationService implements ILocationReservationDao {
                     return true;
                 }
             }
+            System.out.println("Before: " + reservation);
             reservation.setState(LocationReservation.State.PENDING);
             locationReservationRepository.save(reservation);
+            System.out.println("After: " + reservation);
             reservationManager.addReservationToQueue(reservation);
             return true;
         } catch (DataAccessException ex) { // TODO(ydndonck): Propagate error instead?

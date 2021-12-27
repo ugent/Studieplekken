@@ -169,7 +169,8 @@ public class LocationReservation {
         REJECTED,
         APPROVED,
         PRESENT,
-        ABSENT;
+        ABSENT,
+        DELETED;
     }
     
     @Embeddable

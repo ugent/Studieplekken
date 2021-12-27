@@ -141,7 +141,6 @@ export class LocationReservationsComponent {
     locationReservation: LocationReservation,
     template: TemplateRef<unknown>
   ): void {
-    console.log(locationReservation, template);
     this.successDeletingLocationReservation = undefined;
     this.locationReservationToDelete = locationReservation;
     this.modalService.open(template, { panelClass: ["cs--cyan", "bigmodal"] });

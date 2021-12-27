@@ -115,7 +115,6 @@ export class DetailsFormComponent implements OnInit {
   }
 
   updateFormGroup(location: Location): void {
-    console.log(location)
     this.locationForm.setValue({
       name: location.name,
       authority: location.authority.authorityId,

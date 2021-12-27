@@ -75,6 +75,7 @@ public class LocationReservationController extends AuthorizedLocationController 
         // If that is the case then this check may no longer be needed as the actual checking and processing of reservations
         // now happens in a different thread and a 'naive' check based on the timeslot the user provided is sufficient (in this thread).
         // This could save a trip to the database, which makes this slightly faster.
+        System.out.println(timeslot);
         Timeslot dbTimeslot = timeslotDao.getTimeslot(timeslot.getTimeslotSeqnr());
         LocalDateTime now = LocalDateTime.now();
         if (now.isBefore(dbTimeslot.getReservableFrom())) {
@@ -105,6 +106,11 @@ public class LocationReservationController extends AuthorizedLocationController 
                 (lr, u) -> hasAuthority(dbLocationReservation.getTimeslot().getLocationId()) || lr.getUser().getUserId().equals(u.getUserId()),
                 dbLocationReservation
         );
+        Timeslot timeslot = locationReservation.getTimeslot();
+        LocalDateTime closingHour = timeslot.timeslotDate().atTime(timeslot.getClosingHour());
+        if (closingHour.isBefore(LocalDateTime.now())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The timeslot has already been closed.");
+        }
 
         locationReservationDao.deleteLocationReservation(dbLocationReservation);
         logger.info(String.format("LocationReservation for user %s at time %s deleted", dbLocationReservation.getUser(), dbLocationReservation.getTimeslot().toString()));

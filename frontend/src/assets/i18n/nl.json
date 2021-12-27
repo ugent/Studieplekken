@@ -60,7 +60,8 @@
           "afterReservationHeader": "Je reservaties bevestigen",
           "afterReservationPendingMessage": "Je reservaties zijn succesvol in de wachtlijn geplaatst. Om iedereen een eerlijke kans te geven zullen de plaatsen over tien minuten willekeurig worden toegekend. Je reservatie zal dus pas toegekend of afgekeurd worden binnen 10 minuten!",
           "afterReservationConfirmedMessage": "Je reservaties zijn succesvol geplaatst en meteen toegekend. Al jouw reservaties zijn dus bevestigd.",
-          "afterReservationLoadingMessage": "Je reservaties worden geplaatst..."
+          "afterReservationLoadingMessage": "Je reservaties worden geplaatst...",
+          "afterReservationFailedMessage": "Er is iets misgegaan tijdens het aanmaken van je reservaties."
 
         }
       },
@@ -834,6 +835,7 @@
             "APPROVED": "Goedgekeurd",
             "PRESENT": "Aanwezig",
             "ABSENT": "Afwezig",
+            "DELETED": "Verwijderd",
             "notScanned": "Geen aanwezigheden opgenomen",
             "notScannedExplanation": "Voor deze reservatie zijn de aanwezigheden niet opgenomen. Je hebt dus ook geen strafpunten verkregen."
           }

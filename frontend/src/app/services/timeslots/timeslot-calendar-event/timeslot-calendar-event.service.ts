@@ -52,12 +52,11 @@ private notYetReservableTimeslotToCalendarEvent: (timeslot: Timeslot, currentLan
 private reservableTimeslotToCalendarEvent(timeslot: Timeslot, currentLang: string, reservedTimeslots: LocationReservation[]):CalendarEvent<{ timeslot: Timeslot }> {
 
   const locationFull = timeslot.amountOfReservations >= timeslot.seatCount;
+  const reservation = reservedTimeslots.find(t => t.timeslot.timeslotSequenceNumber === timeslot.timeslotSequenceNumber);
   const includedTimeSlot = includesTimeslot(
     reservedTimeslots.map((s) => s.timeslot),
     timeslot
-  );
-  const reservation = reservedTimeslots.find(t => t.timeslot.timeslotSequenceNumber === timeslot.timeslotSequenceNumber);
-
+  ) && reservation && reservation.state !== LocationReservationState.DELETED;
   return ({
     title: `${timeslot.amountOfReservations} / ${timeslot.seatCount}`,
     start: timeslot.getStartMoment().toDate(),
