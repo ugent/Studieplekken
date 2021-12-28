@@ -13,7 +13,7 @@
 
 
       <tbody>
-        <tr *ngFor="let dataPoint of tabularData.data" [ngClass]="tabularData?.css(dataPoint) || []">
+        <tr *ngFor="let dataPoint of tabularData.data" [ngClass]="getCssClasses(dataPoint)">
           <td *ngFor="let column of tabularData.columns; let i = index">
             <ng-template *ngIf="column.type === 'contentColumn'" [ngTemplateOutlet]="contentColumn" [ngTemplateOutletContext]="{ column: column, dataPoint: dataPoint, index: i }">
             </ng-template>

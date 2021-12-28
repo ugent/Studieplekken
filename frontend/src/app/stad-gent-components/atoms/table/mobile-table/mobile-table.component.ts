@@ -30,4 +30,11 @@ export class MobileTableComponent<T> implements OnInit {
   translateColumnContent(column: ContentColumn<T>, data: T): string {
     return column.translateColumnContent ? column.translateColumnContent(data) : "";
   }
+
+  getCssClasses(datapoint: T): string[] {
+    if(this.tabularData.css)
+    return this.tabularData.css(datapoint)
+
+    return [];
+  }
 }
