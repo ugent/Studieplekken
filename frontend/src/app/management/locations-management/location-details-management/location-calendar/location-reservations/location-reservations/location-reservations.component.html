@@ -8,9 +8,15 @@
     </div>
   </div>
 
-  <div *ngIf="locationReservations.length > 0" class="row">
-    <div *ngIf="noSuchUserFoundWarning" class="messages messages--warning">
-      {{ "scan.unregistered" | translate }}
+  <div *ngIf="waitingForServer" class="row">
+    <div class="messages messages--info">
+      {{ "general.waitingForServer" | translate }}
+    </div>
+  </div>
+
+  <div *ngIf="locationReservations.length > 0" class="row" >
+    <div *ngIf="noSuchUserFoundWarning" class="messages unregisteredwarning" fxLayoutAlign="center">
+      <span>{{ "scan.unregistered" | translate }}</span>
     </div>
 
     <div fxLayout="row wrap" fxLayoutGap="15px grid" fxLayoutAlign="center flex-start">
@@ -134,24 +140,26 @@
   <!-- Modal body -->
   <div modal-body>
     <div class="messages messages--warning">
-      <p>
-        {{
-        "management.reservations.location.finishScanningModal.message1"
-        | translate
-        }}
-      </p>
-      <p>
-        {{
-        "management.reservations.location.finishScanningModal.message2"
-        | translate
-        }}
-      </p>
-      <p>
-        {{
-        "management.reservations.location.finishScanningModal.message3"
-        | translate
-        }}
-      </p>
+      <div>
+        <p>
+          {{
+          "management.reservations.location.finishScanningModal.message1"
+          | translate
+          }}
+        </p>
+        <p>
+          {{
+          "management.reservations.location.finishScanningModal.message2"
+          | translate
+          }}
+        </p>
+        <p>
+          {{
+          "management.reservations.location.finishScanningModal.message3"
+          | translate
+          }}
+        </p>
+      </div>
     </div>
   </div>
 

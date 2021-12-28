@@ -95,6 +95,7 @@ import { TableComponent } from './stad-gent-components/atoms/table/table.compone
 import { DesktopTableComponent } from './stad-gent-components/atoms/table/desktop-table/desktop-table.component';
 import { MobileTableComponent } from './stad-gent-components/atoms/table/mobile-table/mobile-table.component';
 import { EntryComponent } from './entry/entry.component';
+import { ImpersonateInterceptor } from './services/authentication/impersonate.interceptor';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -378,12 +379,10 @@ const routes: Routes = [
   ],
   providers: [
     FormatStatusPipe,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthenticationInterceptor,
-      multi: true,
-    },
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ImpersonateInterceptor, multi: true },
+
+
   ],
   bootstrap: [AppComponent],
 })

@@ -28,8 +28,10 @@ export class AppController {
   @UseGuards(AuthGuard("cas"))
   @Get("auth/login/cas")
   async casLogin(@Request() req: any, @Res() res: any) {
-    Logger.warn(`User did not get redirected by CAS authguard.`);
-    return res.status(500).send();
+    const token = await this.authService.issueToken(req.user);
+    Logger.log(`Written token for user ${req.user.id}`);
+
+    return res.status(200).send(token);
   }
 
   @UseGuards(AuthGuard("cas"))
@@ -52,6 +54,7 @@ export class AppController {
     const token: string = (await this.authService.issueToken(samlUser))
       .access_token;
 
+    Logger.log(`Written token for user ${samlUser.id}`);
     try {
       const redirectUrl = req.params.callbackURL;
       if (redirectUrl && redirectUrl !== "undefined") {

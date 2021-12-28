@@ -44,4 +44,5 @@ export type Column<T> = ActionColumn<T> | ContentColumn<T>;
 export interface TabularData<T> {
   columns: Column<T>[];
   data: T[];
+  css?: (a: T) => string[];
 }

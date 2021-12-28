@@ -1,5 +1,5 @@
 <div class="mobile-container">
-  <div class="mobile-card" *ngFor="let dataPoint of tabularData.data">
+  <div class="mobile-card" *ngFor="let dataPoint of tabularData.data" [ngClass]="tabularData.css(dataPoint) || []">
     <h3>{{ nonActionColumns()[0].columnContent(dataPoint) }}</h3>
 
     <ul>

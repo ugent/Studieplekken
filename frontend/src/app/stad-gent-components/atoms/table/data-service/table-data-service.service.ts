@@ -137,6 +137,7 @@ export class TableDataService {
           })
         },
       ],
+      css: lr => lr.state === LocationReservationState.PRESENT ? [ "success" ] : [],
       data: reservations
     }
   }

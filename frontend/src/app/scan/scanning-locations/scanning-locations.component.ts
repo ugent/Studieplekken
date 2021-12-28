@@ -7,6 +7,7 @@ import { booleanSorter } from 'src/app/shared/util/Util';
 import { ScanningService } from '../../services/api/scan/scanning.service';
 import { Location } from '../../shared/model/Location';
 import { TableDataService } from '../../stad-gent-components/atoms/table/data-service/table-data-service.service';
+import * as moment from "moment";
 
 @Component({
   selector: 'app-scanning-locations',
@@ -42,7 +43,12 @@ export class ScanningLocationsComponent implements OnInit {
   }
 
   onAction({ data, columnIndex }: { data: Location; columnIndex: number }) {
-    console.log('action borreled up');
     this.router.navigate([`/scan/locations/${data.locationId}`]);
+  }
+
+  isScannable(location: Location) {
+    return (location.currentTimeslot
+      && location.currentTimeslot.reservable
+      && location.currentTimeslot.getStartMoment().isBefore(moment().add(30, "minutes")))
   }
 }
