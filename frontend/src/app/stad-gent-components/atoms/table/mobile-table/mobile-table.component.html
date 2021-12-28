@@ -4,7 +4,7 @@
 
     <ul>
       <li *ngFor="let column of nonActionColumns().slice(1)">
-        <b>{{ column.columnHeader | translate }}</b>: {{ column.columnContent(dataPoint) }} {{translateColumnContent(dataPoint) | translate}}
+        <b>{{ column.columnHeader | translate }}</b>: {{ column.columnContent(dataPoint) }} {{translateColumnContent(column, dataPoint) | translate}}
       </li>
     </ul>
     <div fxLayoutAlign="flex-end" fxLayoutGap="10px">

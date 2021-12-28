@@ -168,7 +168,8 @@ export class TableDataService {
   }
 
   reservationsToProfileTable(reservations: LocationReservation[]): Observable<TabularData<LocationReservation>> {
-    const locations = reservations.map(r => this.locationService.getLocation(r.timeslot.locationId))
+    const sreservations = Array.from(reservations).sort((a, b) => a.timeslot.getStartMoment().isBefore(b.timeslot.getStartMoment()) ? 1:-1)
+    const locations = sreservations.map(r => this.locationService.getLocation(r.timeslot.locationId))
     return combineLatest(locations).pipe(
       map( locs => new Map(locs.map(l => [l.locationId, l]))),
       map(locs => (
@@ -203,12 +204,12 @@ export class TableDataService {
               columnContent: lr => ({
                 actionType: 'icon',
                 actionContent: "cross",
-                fallbackContent: "delete",
+                fallbackContent: "Delete",
                 disabled: !this.canDeleteReservation(lr)
               })
             },
           ],
-          data: reservations
+          data: sreservations
         }
       ))
     )
