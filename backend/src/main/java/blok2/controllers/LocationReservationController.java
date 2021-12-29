@@ -106,7 +106,7 @@ public class LocationReservationController extends AuthorizedLocationController 
                 (lr, u) -> hasAuthority(dbLocationReservation.getTimeslot().getLocationId()) || lr.getUser().getUserId().equals(u.getUserId()),
                 dbLocationReservation
         );
-        Timeslot timeslot = locationReservation.getTimeslot();
+        Timeslot timeslot = dbLocationReservation.getTimeslot();
         LocalDateTime closingHour = timeslot.timeslotDate().atTime(timeslot.getClosingHour());
         if (closingHour.isBefore(LocalDateTime.now())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The timeslot has already been closed.");
