@@ -22,6 +22,7 @@ import { Location } from 'src/app/shared/model/Location';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
 import { Timeslot } from 'src/app/shared/model/Timeslot';
 import {booleanSorter} from 'src/app/shared/util/Util'
+import { BreakpointObserver } from '@angular/cdk/layout';
 
 type TypeOption = {
   date: string;
@@ -100,8 +101,10 @@ export class LocationCalendarComponent implements OnInit {
     private router: Router,
     private locationService: LocationService,
     private timeslotGroupService: TimeslotGroupService,
-    private timeslotCalendarEventService: TimeslotCalendarEventService
-  ) { }
+    private timeslotCalendarEventService: TimeslotCalendarEventService,
+    private breakpointObserver: BreakpointObserver
+  ) {
+  }
 
   ngOnInit(): void {
     this.locationId = Number(this.route.snapshot.paramMap.get('locationId'));
