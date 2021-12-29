@@ -32,7 +32,7 @@
 
           <!-- Table body -->
           <tbody>
-            <tr *ngFor="let reservation of locationReservations">
+            <tr *ngFor="let reservation of sortedLocationReservations(locationReservations)">
               <td>{{getLocation(reservation) | async}}</td>
               <td>{{reservation.timeslot.timeslotDate.format("DD/MM/YYYY")}}</td>
               <td>{{getBeginHour(reservation.timeslot)}}</td>
