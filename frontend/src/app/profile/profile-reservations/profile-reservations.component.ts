@@ -169,4 +169,7 @@ export class ProfileReservationsComponent implements OnInit {
     return Array.from(lres).sort((a, b) => a.timeslot.getStartMoment().isBefore(b.timeslot.getStartMoment()) ? 1:-1);
   }
 
+  isReservationCurrent(l: LocationReservation) {
+    return l.timeslot.isCurrent();
+  }
 }

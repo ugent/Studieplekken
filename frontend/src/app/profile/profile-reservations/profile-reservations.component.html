@@ -32,7 +32,7 @@
 
           <!-- Table body -->
           <tbody>
-            <tr *ngFor="let reservation of sortedLocationReservations(locationReservations)">
+            <tr *ngFor="let reservation of sortedLocationReservations(locationReservations)" [class.success]="isReservationCurrent(reservation)">
               <td>{{getLocation(reservation) | async}}</td>
               <td>{{reservation.timeslot.timeslotDate.format("DD/MM/YYYY")}}</td>
               <td>{{getBeginHour(reservation.timeslot)}}</td>
