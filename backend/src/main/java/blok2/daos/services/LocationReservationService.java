@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @Service
 public class LocationReservationService implements ILocationReservationDao {
@@ -154,13 +155,12 @@ public class LocationReservationService implements ILocationReservationDao {
             if (optLocRes.isPresent()) {
                 reservation = optLocRes.get();
                 if (reservation.getStateE() == LocationReservation.State.PENDING || reservation.getStateE() == LocationReservation.State.APPROVED) {
+                    System.out.println("RESERVATIONS: duplicate reservation made!");
                     return true;
                 }
             }
-            System.out.println("Before: " + reservation);
             reservation.setState(LocationReservation.State.PENDING);
             locationReservationRepository.save(reservation);
-            System.out.println("After: " + reservation);
             reservationManager.addReservationToQueue(reservation);
             return true;
         } catch (DataAccessException ex) { // TODO(ydndonck): Propagate error instead?
