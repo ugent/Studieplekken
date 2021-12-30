@@ -57,8 +57,12 @@ private reservableTimeslotToCalendarEvent(timeslot: Timeslot, currentLang: strin
     reservedTimeslots.map((s) => s.timeslot),
     timeslot
   ) && reservation && reservation.state !== LocationReservationState.DELETED;
+
+    const isRandomReservationMoment = timeslot.amountOfReservations === 0 && timeslot.reservableFrom.isAfter(moment().subtract(10, "minutes"));
+    const randomMomentTitle = currentLang == "en" ? "Reservation queue is open" : "Reservatiewachtlijn is open";
+
   return ({
-    title: `${timeslot.amountOfReservations} / ${timeslot.seatCount}`,
+    title: isRandomReservationMoment ? randomMomentTitle:`${timeslot.amountOfReservations} / ${timeslot.seatCount}`,
     start: timeslot.getStartMoment().toDate(),
     end: timeslot.getEndMoment().toDate(),
     meta: { timeslot },
