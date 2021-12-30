@@ -130,7 +130,7 @@
           <th scope="col">{{'profile.reservations.locations.table.header.state' | translate}}</th>
         </thead>
         <tbody>
-          <tr *ngFor="let reservation of nonDeletedReservation(futureReservations(originalList));">
+          <tr *ngFor="let reservation of sortedLocalReservations(nonDeletedReservation(futureReservations(originalList)));">
             <td>{{reservation.timeslot.timeslotDate.format("DD/MM/YYYY")}}</td>
             <td>{{reservation.timeslot.openingHour.format("HH:mm")}}</td>
             <td>{{getStateI18NObject(reservation.state) | translate}}</td>

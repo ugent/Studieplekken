@@ -237,7 +237,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     }
 
 
-    
+
     let reservation: LocationReservation = {
       state: null, // TODO(ydndonck): Should this be approved? Something else? Currently using database default.
       user: this.authenticationService.userValue(),
@@ -268,7 +268,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     this.isModified = true;
 
     const oldReservation = this.originalList.find(t => t.timeslot.timeslotSequenceNumber === currentTimeslot.timeslotSequenceNumber);
-    
+
     if (!timeslotIsSelected && oldReservation && (oldReservation.state === LocationReservationState.REJECTED || oldReservation.state == LocationReservationState.DELETED)) { // If it was rejected, allow to try again
       const nextval = [...this.selectedSubject.value.filter(o => o !== oldReservation && o.timeslot.timeslotSequenceNumber !== oldReservation.timeslot.timeslotSequenceNumber), reservation];
       this.selectedSubject.next(nextval);
@@ -538,6 +538,10 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
   nonDeletedReservation(reservations: LocationReservation[]) {
     return reservations.filter((res) => res.state !== LocationReservationState.DELETED);
+  }
+
+  sortedLocalReservations(reservations: LocationReservation[]) {
+    return Array.from(reservations).sort((a, b) => a.timeslot.getStartMoment().isBefore(b.timeslot.getStartMoment()) ? 1:-1);
   }
 
 }
