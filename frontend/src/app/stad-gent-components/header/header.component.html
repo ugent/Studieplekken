@@ -1,6 +1,6 @@
 <!-- Default - without header image - not signed in -->
 <header class="header">
-    <div class="content-container">
+    <div class="content-container" style='flex-wrap: wrap;'>
         <a href="https://stad.gent" title="Home" class="site-logo " rel="home">
             Stad Gent
         </a>
@@ -33,12 +33,12 @@
         <!-- Menu for mid sized mobile -->
         <div *ngIf="mobile">
             <app-accordeon class="authentication" [controller]="accordionSubject">
-                <button accordion-button aria-expanded="false" aria-controls="no-hero_auth-authentication"
-                    class="toggle accordion--button">
-                    <span>{{'header.menu' | translate}}</span>
+
+                <button accordion-button aria-controls="accordion--single--content--1" aria-expanded="false" class="toggle accordion--button bold" >
+                    {{'header.menu' | translate}}
                 </button>
 
-                <div accordion-content id="no-hero_auth-authentication" class="accordion--content" aria-hidden="true" hidden>
+                <div accordion-content id="accordion--single--content--1" class="accordion--content">
                     <app-header-dropdown [isProfile]="false" [accordion]="accordionSubject"></app-header-dropdown>
                 </div>
             </app-accordeon>
@@ -62,6 +62,7 @@
                 </div>
             </app-accordeon>
         </div>
+     
     </div>
 
     <nav class="breadcrumb section--default" aria-labelledby="default-header-crumbs">
@@ -80,7 +81,7 @@
             </div>
         </div>
         
-        <div style="float:right" *ngIf="!mobile && !smallMobile">
+        <div style="float:right" *ngIf="!mobile">
             <div class="content-container">
                 <a routerLink="/profile/overview" class="read-more margin-right" *ngIf="showLoggedIn"
                     title="{{'header.navigation.profile' | translate}}">

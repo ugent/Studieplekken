@@ -9,15 +9,6 @@
         </div>
     </section>
 
-    <section *ngIf="!isProfile" class="profile">
-        <span class="avatar">{{user.firstName[0]}}</span>
-        <div class="profile-info">
-            <span>{{user.firstName + ' ' + user.lastName}}</span>
-            <a routerLink="/profile" (click)="close()" class="button button-primary button-small">
-                {{"header.navigation.profile" | translate }} </a>
-        </div>
-    </section>
-
     <section *ngIf="!isProfile">
         <h2>{{"header.navigation.general" | translate}}</h2>
         <ul class="links">

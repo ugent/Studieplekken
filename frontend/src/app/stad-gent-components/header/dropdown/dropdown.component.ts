@@ -38,26 +38,21 @@ export class DropdownComponent implements OnInit {
           this.showAdmin = true;
         } else {
           this.showManagement = this.user.userAuthorities.length > 0;
-          this.showVolunteer = this.user.uservolunteer.length > 0;
+          this.showVolunteer = this.user.userVolunteer.length > 0;
         }
       } else {
         this.showManagement = false;
+        this.showLoggedIn = false;
+        this.showVolunteer = false;
+        this.showAdmin = false;
+        this.showSupervisors = false;
       }
     });
   }
 
 
   logout() {
-    this.showAdmin = false;
-    this.showLoggedIn = false;
-    this.showManagement = false;
-    this.showSupervisors = false;
-    this.showVolunteer = false;
     return this.authenticationService.logout();
-  }
-
-  isLoggedIn() {
-    return this.user != null && this.user.userId != '';
   }
 
   close() {

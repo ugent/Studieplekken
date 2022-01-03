@@ -20,44 +20,36 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   showManagement = false;
   showLoggedIn = false;
   showVolunteer = false;
-  MOBILE_SIZE = 870;
-  MINI_MOBILE_SIZE = 400;
+  MOBILE_SIZE = 885;
 
   constructor(private breadcrumbService: BreadcrumbService, private authenticationService: AuthenticationService,
     private translationService: TranslateService, private userService: UserService) { }
 
   mobile: boolean;
-  smallMobile: boolean;
 
   ngOnInit(): void {
     this.mobile = window.innerWidth < this.MOBILE_SIZE;
-    this.smallMobile = window.innerWidth < this.MINI_MOBILE_SIZE;
     // subscribe to the user observable to make sure that the correct information
     // is shown in the application.
-    this.authenticationService.user.subscribe((next) => {
+    this.authenticationService.user.subscribe((user) => {
       // first, check if the user is logged in
       if (this.authenticationService.isLoggedIn()) {
         this.showLoggedIn = true;
         if (this.authenticationService.hasVolunteeredValue()){
           this.showSupervisors = true;
         }
-        if (next.admin) {
+        if (user.admin) {
           this.showAdmin = true;
         } else {
-          this.userService
-            .hasUserAuthorities(next.userId)
-            .subscribe((next2) => {
-              this.showManagement = next2;
-            });
-
-            this.userService
-            .hasUserVolunteered(next.userId)
-            .subscribe((next3) => {
-              this.showVolunteer = next3;
-            });
+          this.showManagement = user.userAuthorities.length > 0;
+          this.showVolunteer = user.userVolunteer.length > 0;
         }
       } else {
         this.showManagement = false;
+        this.showLoggedIn = false;
+        this.showVolunteer = false;
+        this.showAdmin = false;
+        this.showSupervisors = false;
       }
     });
   }
@@ -65,7 +57,6 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.mobile = window.innerWidth < this.MOBILE_SIZE;
-    this.smallMobile = window.innerWidth < this.MINI_MOBILE_SIZE;
   }
 
   ngAfterViewInit() {
@@ -84,11 +75,6 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   }
 
   logout(): void {
-    this.showSupervisors = false;
-    this.showAdmin = false;
-    this.showManagement = false;
-    this.showLoggedIn = false;
-    this.showVolunteer = false;
     this.authenticationService.logout();
   }
 
