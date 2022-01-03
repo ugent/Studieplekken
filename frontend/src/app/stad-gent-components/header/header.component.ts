@@ -18,7 +18,10 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   showSupervisors = false;
   showAdmin = false;
   showManagement = false;
-  showLoggedIn=false;
+  showLoggedIn = false;
+  showVolunteer = false;
+  MOBILE_SIZE = 870;
+  MINI_MOBILE_SIZE = 400;
 
   constructor(private breadcrumbService: BreadcrumbService, private authenticationService: AuthenticationService,
     private translationService: TranslateService, private userService: UserService) { }
@@ -27,8 +30,8 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   smallMobile: boolean;
 
   ngOnInit(): void {
-    this.mobile = window.innerWidth < 700;
-    this.smallMobile = window.innerWidth < 400;
+    this.mobile = window.innerWidth < this.MOBILE_SIZE;
+    this.smallMobile = window.innerWidth < this.MINI_MOBILE_SIZE;
     // subscribe to the user observable to make sure that the correct information
     // is shown in the application.
     this.authenticationService.user.subscribe((next) => {
@@ -46,6 +49,12 @@ export class HeaderComponent implements OnInit, AfterViewInit {
             .subscribe((next2) => {
               this.showManagement = next2;
             });
+
+            this.userService
+            .hasUserVolunteered(next.userId)
+            .subscribe((next3) => {
+              this.showVolunteer = next3;
+            });
         }
       } else {
         this.showManagement = false;
@@ -55,8 +64,8 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    this.mobile = window.innerWidth < 700;
-    this.smallMobile = window.innerWidth < 400;
+    this.mobile = window.innerWidth < this.MOBILE_SIZE;
+    this.smallMobile = window.innerWidth < this.MINI_MOBILE_SIZE;
   }
 
   ngAfterViewInit() {
@@ -75,6 +84,11 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   }
 
   logout(): void {
+    this.showSupervisors = false;
+    this.showAdmin = false;
+    this.showManagement = false;
+    this.showLoggedIn = false;
+    this.showVolunteer = false;
     this.authenticationService.logout();
   }
 
@@ -82,7 +96,6 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     return localStorage.getItem('selectedLanguage');
   }
 
-  
   otherSupportedLanguage(): string {
     return localStorage.getItem('selectedLanguage') === 'nl' ? 'en' : 'nl';
   }

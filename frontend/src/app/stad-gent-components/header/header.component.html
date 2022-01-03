@@ -8,13 +8,20 @@
         <!-- The user profile / login button -->
         <div *ngIf="getUser() | async as user">
             <!-- If user is logged in -->
-            <div class="authentication" *ngIf="user != null && user.userId != ''">
-                <button routerLink="/profile/overview" aria-controls="no-hero_auth-authentication"
+            <app-accordeon class="authentication" *ngIf="user != null && user.userId != ''"
+                [controller]="accordionSubject">
+
+                <button accordion-button aria-expanded="false" aria-controls="no-hero_auth-authentication"
                     class="toggle accordion--button">
                     <span class="avatar">{{user.firstName[0]}}</span>
                     <span>{{user.firstName}}</span>
                 </button>
-            </div>
+
+                <div accordion-content id="no-hero_auth-authentication" class="accordion--content" aria-hidden="true"
+                    hidden>
+                    <app-header-dropdown [isProfile]="true" [accordion]="accordionSubject"></app-header-dropdown>
+                </div>
+            </app-accordeon>
 
             <!-- If user is not logged in -->
             <div class="authentication accordion" *ngIf="user == null || user.userId == ''">
@@ -26,14 +33,13 @@
         <!-- Menu for mid sized mobile -->
         <div *ngIf="mobile">
             <app-accordeon class="authentication" [controller]="accordionSubject">
-
                 <button accordion-button aria-expanded="false" aria-controls="no-hero_auth-authentication"
                     class="toggle accordion--button">
-                    <span>{{"header.menu" | translate}}</span>
+                    <span>{{'header.menu' | translate}}</span>
                 </button>
 
                 <div accordion-content id="no-hero_auth-authentication" class="accordion--content" aria-hidden="true" hidden>
-                    <app-header-dropdown [user]="getUser()" [accordion]="accordionSubject"></app-header-dropdown>
+                    <app-header-dropdown [isProfile]="false" [accordion]="accordionSubject"></app-header-dropdown>
                 </div>
             </app-accordeon>
         </div>

@@ -144,7 +144,8 @@
       "scan": "Scan",
       "management": "Management",
       "information": "Help",
-      "navigation": "Navigation"
+      "navigation": "Navigation",
+      "general": "General"
     }
   },
   "language": {
