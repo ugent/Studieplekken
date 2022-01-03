@@ -119,4 +119,8 @@ public class Penalty implements Cloneable {
     public User getDesignee() {
         return designee;
     }
+
+    public String getPenaltyClass() {
+        return penaltyClass;
+    }
 }

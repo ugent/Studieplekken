@@ -15,6 +15,10 @@ import java.util.List;
 public class PenaltyService implements IPenaltyDao {
 
     private int PENALTY_OFFSET = 20;
+    private String EARLY_DELETE_CLASS = "profile.penalties.table.late.delete";
+    private String NOT_ATTENDED_CLASS = "profile.penalties.table.not.attended";
+    private int EARLY_DELETE_LIMIT = 4;
+    private int EARLY_DELETE_COST = 20;
 
     private final PenaltyRepository penaltyRepository;
 
@@ -57,7 +61,13 @@ public class PenaltyService implements IPenaltyDao {
     public void notifyOfReservationDeletion(LocationReservation lr) {
         LocalDateTime opening = LocalDateTime.of(lr.getTimeslot().timeslotDate(), lr.getTimeslot().getOpeningHour());
         if(LocalDateTime.now().isAfter(opening.minus(1, ChronoUnit.DAYS))) {
-            Penalty penalty = new Penalty(20, "", null, "profile.penalties.table.late.delete", lr);
+            List<Penalty> penalties = this.getPenaltiesByUser(lr.getUser().getUserId());
+            long amountOfEarlyDeletePenalties = penalties.stream()
+                                                    .filter(p -> p.getPenaltyClass().equals(EARLY_DELETE_CLASS)).count();
+
+            int points = amountOfEarlyDeletePenalties >= EARLY_DELETE_LIMIT ? EARLY_DELETE_COST : 0;
+
+            Penalty penalty = new Penalty(points, "", null, EARLY_DELETE_CLASS, lr);
             this.addPenalty(penalty);
         }
     }
@@ -65,7 +75,7 @@ public class PenaltyService implements IPenaltyDao {
     public void notifyOfReservationAttendance(LocationReservation lr) {
         List<Penalty> l = penaltyRepository.findAllByLocationReservation(lr.getUser().getUserId(), lr.getTimeslot().getTimeslotSeqnr());
         if(lr.getStateE().equals(LocationReservation.State.ABSENT) && l.size() <= 0) {
-            Penalty penalty = new Penalty(25, "", null, "profile.penalties.table.not.attended", lr);
+            Penalty penalty = new Penalty(25, "", null, NOT_ATTENDED_CLASS, lr);
             this.addPenalty(penalty);
         }
 
