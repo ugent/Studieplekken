@@ -26,47 +26,5 @@
 
   <hr>
 
-  <!-- Show table with received penalties, if the user has any. Else, congratulate him/her -->
-  <div *ngIf="penalties.points > 0; else noPenalties" class="container-fluid row">
-    <!-- Table title -->
-    <b>{{'profile.penalties.table.title' | translate}}</b>
-    <br><br>
-
-    <div class="container-fluid col-md-11">
-      <div class="responsive-table fullwidth">
-        <div class="table-wrapper fullwidth">
-          <table style="width: 100%">
-            <!-- Table header -->
-            <thead>
-            <tr>
-              <th scope="col">{{'profile.penalties.table.header.timestamp' | translate}}</th>
-              <th scope="col">{{'profile.penalties.table.header.issuer' | translate}}</th>
-              <th scope="col">{{'profile.penalties.table.header.description' | translate}}</th>
-              <th scope="col">{{'profile.penalties.table.header.receivedPoints' | translate}}</th>
-            </tr>
-            </thead>
-
-            <!-- Table body -->
-            <tbody >
-            <tr *ngFor="let penalty of penalties.penalties">
-              <td>{{penalty.createdAt.format("DD/MM/YYYY HH:mm")}}</td>
-              <td>{{getIssuedBy(penalty) | translate}}</td>
-              <td>{{penalty.description | translate}}</td>
-              <td>{{penalty.points}}</td>
-            </tr>
-            </tbody>
-          </table>
-
-        </div>
-      </div>
-    </div>
-
-  </div>
-
+  <app-penalty-table [penalties]="penalties" [showDesignee]="false"></app-penalty-table>
 </div>
-
-<ng-template #noPenalties>
-  <div class="messages messages--info">
-    {{'profile.penalties.table.noPenalties' | translate}}
-  </div>
-</ng-template>

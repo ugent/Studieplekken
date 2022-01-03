@@ -1,0 +1,49 @@
+<app-modal>
+  <h1 modal-header>{{ "penalties.management.header" | translate }}</h1>
+
+  <div modal-body>
+    <h3>
+      {{ "penalties.management.subheader" | translate }} {{ user.firstName }}
+      {{ user.lastName }}
+    </h3>
+
+    <div *ngIf="overview">
+      <app-penalty-table
+        *ngIf="penalties | async as penalties"
+        [penalties]="penalties"
+        [showDelete]="true"
+        (onDelete)="onDelete()"
+      ></app-penalty-table>
+
+      <button class="button button-primary" (click)="addPenaltyButton()">
+        {{ "penalties.management.addButton" | translate }}
+      </button>
+    </div>
+
+    <div *ngIf="addForm">
+      <!-- points -->
+      <div class="row form-group">
+        <label class="col-lg-3 control-label" for="startsAt">
+          {{ "penalties.management.points" | translate }}
+        </label>
+        <div class="col-lg-8">
+          <input type="number" min="0" [(ngModel)]="model.points" />
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="row form-group">
+        <label class="col-lg-3 control-label" for="startsAt">
+          {{ "penalties.management.description" | translate }}
+        </label>
+        <div class="col-lg-8">
+          <input type="text" [(ngModel)]="model.description"/>
+        </div>
+      </div>
+
+      <br/>
+      <button class="button button-primary" (click)="addPenalty()">{{"penalties.management.confirm" | translate}}</button>
+
+    </div>
+  </div>
+</app-modal>

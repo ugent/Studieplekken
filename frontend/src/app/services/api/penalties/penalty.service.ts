@@ -34,7 +34,7 @@ export class PenaltyService {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
       }),
-      body: penalty,
+      body: penalty.toJSON(),
     };
     return this.http.delete<void>(api.deletePenalty, options);
   }

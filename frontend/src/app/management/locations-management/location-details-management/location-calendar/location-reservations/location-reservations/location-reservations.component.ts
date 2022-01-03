@@ -41,6 +41,7 @@ export class LocationReservationsComponent {
   waitingForServer = false;
 
   selectionTimeout: number;
+  penaltyManagerUser: User;
 
   userHasSearchTerm: (u: User) => boolean = (u: User) =>
     u.userId.includes(this.searchTerm) ||
@@ -250,6 +251,8 @@ export class LocationReservationsComponent {
   }
 
   filter(locationReservations: LocationReservation[]): LocationReservation[] {
+    locationReservations = locationReservations.filter(r => r.state !== LocationReservationState.DELETED);
+
     // Sorting the searchTerm hits first. After that, fallback on name sorting (createdAt is not available here)
     locationReservations.sort((a, b) => {
       if (a === this.lastScanned || b === this.lastScanned) {
@@ -300,5 +303,10 @@ export class LocationReservationsComponent {
       clearTimeout(this.selectionTimeout);
 
       this.selectionTimeout = setTimeout(() => this.selectInputBox(), 800);
+  }
+
+  openPenaltyBox(locres: LocationReservation, modal: TemplateRef<unknown>) {
+    this.penaltyManagerUser = locres.user;
+    this.modalService.open(modal, {panelClass: ["cs--cyan", "bigmodal"]});
   }
 }

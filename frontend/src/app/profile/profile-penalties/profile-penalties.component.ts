@@ -18,28 +18,9 @@ export class ProfilePenaltiesComponent {
   penalties: Observable<PenaltyList>;
 
   constructor(
-    private authenticationService: AuthenticationService,
-    private locationService: LocationService
+    authenticationService: AuthenticationService,
   ) {
-    this.penalties = authenticationService.penaltyObservable.pipe(tap(console.log))
+    this.penalties = authenticationService.penaltyObservable
   }
 
-  getLocation(locationId: number): Observable<Location> {
-    return this.locationService.getLocation(locationId);
-  }
-
-  getIssuedBy(penalty: Penalty) {
-    if(!penalty.issuer)
-      return "profile.penalties.table.system"
-
-    else
-      return penalty.issuer.firstName + " " + penalty.issuer.lastName
-  }
-
-  getPenaltyDescription(penalty: Penalty) {
-    if(penalty.penaltyClass === "custom")
-      return penalty.description;
-
-      return penalty.penaltyClass
-  }
 }

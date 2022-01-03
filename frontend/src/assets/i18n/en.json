@@ -1,4 +1,14 @@
 {
+  "penalties": {
+    "management": {
+      "header": "Manage user penalties",
+      "subheader": "Penalties for",
+      "addButton": "Add Penalty",
+      "points": "Points",
+      "description": "Description",
+      "confirm": "Confirm"
+    }
+  },
   "calendar": {
     "previous": "Previous",
     "today": "Today",
@@ -217,7 +227,8 @@
             "yetToScan": "Yet to scan",
             "notScanned": "Not scanned",
             "startScanning": "Start scanning",
-            "finishScanning": "Finish scanning"
+            "finishScanning": "Finish scanning",
+            "penalties": "Penalties"
           }
         },
         "form": {
@@ -810,9 +821,19 @@
           "location": "Room",
           "receivedPoints": "Received points",
           "issuer": "Issuer",
-          "description": "Description"
+          "description": "Description",
+          "designee": "Designee",
+          "delete": "Delete"
         },
-        "noPenalties": "You have had no penalties so far. Very good!"
+        "system": "System",
+        "noPenalties": "You have had no penalties so far. Very good!",
+        "not": {
+          "attended": "User didn't attend a reservation."
+        },
+        "late": {
+          "delete": "User deleted this reservation too late."
+        }
+
       }
     },
     "reservations": {

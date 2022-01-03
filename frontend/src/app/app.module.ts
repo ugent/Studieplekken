@@ -92,6 +92,8 @@ import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { EntryComponent } from './entry/entry.component';
 import { ImpersonateInterceptor } from './services/authentication/impersonate.interceptor';
 import { AfterReservationComponent } from './dashboard/location-details/modals/after-reservation/after-reservation.component';
+import { PenaltyTableComponent } from './shared/penalties/penalty-table/penalty-table.component';
+import { UserPenaltyManagerComponent } from './shared/penalties/user-penalty-manager/user-penalty-manager.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -323,7 +325,9 @@ const routes: Routes = [
     QRCodeComponent,
     ScannerComponent,
     EntryComponent,
-    AfterReservationComponent
+    AfterReservationComponent,
+    PenaltyTableComponent,
+    UserPenaltyManagerComponent
   ],
   imports: [
     BrowserModule,
