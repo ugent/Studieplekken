@@ -133,60 +133,59 @@
 
 <!-- Modal view to ask whether the user is sure to delete a timeslot -->
 <ng-template #deleteTimeslotModal>
-  <!-- Header -->
-  <div modal-header>
-    <h1 id="deleteCalendarPeriodModalTitle">
+  <app-modal>
+    <!-- Header -->
+    <h2 modal-header id="deleteCalendarPeriodModalTitle">
       {{'management.locationDetails.calendar.deleteModalView.title' | translate}}
-    </h1>
-  </div>
+    </h2>
 
-  <!-- Body -->
-  <div modal-body>
-    <div>
-      <b>{{'management.locationDetails.calendar.deleteModalView.body' | translate}}</b>
-      <br><br>
-      <ul *ngIf="prepareToUpdatePeriod !== null">
-        <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.date' |
-              translate}}</i></b>{{toUpdateTimeslot.timeslotDate.format('DD/MM/YYYY')}}</li>
-        <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.openingTime' |
-              translate}}</i></b>{{toUpdateTimeslot.openingHour.format('HH:mm')}}</li>
-        <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.closingTime' |
-              translate}}</i></b>{{toUpdateTimeslot.closingHour.format('HH:mm')}}</li>
-        <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.reservable' |
-              translate}}</i></b>{{(toUpdateTimeslot.reservable ? 'general.yes' : 'general.no') |translate}}</li>
-      </ul>
-    </div>
-  </div>
+    <!-- Body -->
+    <div modal-body>
+      <div>
+        <b>{{'management.locationDetails.calendar.deleteModalView.body' | translate}}</b>
+        <br><br>
+        <ul *ngIf="prepareToUpdatePeriod !== null">
+          <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.date' |
+                translate}}</i></b>{{toUpdateTimeslot.timeslotDate.format('DD/MM/YYYY')}}</li>
+          <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.openingTime' |
+                translate}}</i></b>{{toUpdateTimeslot.openingHour.format('HH:mm')}}</li>
+          <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.closingTime' |
+                translate}}</i></b>{{toUpdateTimeslot.closingHour.format('HH:mm')}}</li>
+          <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.reservable' |
+                translate}}</i></b>{{(toUpdateTimeslot.reservable ? 'general.yes' : 'general.no') |translate}}</li>
+        </ul>
+      </div>
 
-  <div class="messages messages--danger">
-    <p>{{'management.locationDetails.calendar.deleteModalView.warning' | translate}}</p>
-  </div>
-
-
-  <!-- Footer -->
-  <div modal-footer>
-    <button type="button" class="button button-primary" (click)="delete(toUpdateTimeslot)">
-      {{'general.buttons.delete' | translate}}
-    </button>
-    <button type="button" class="button button-secondary" (click)="closeModal()">
-      {{'general.buttons.cancel' | translate}}
-    </button>
-  </div>
-
-  <!-- Feedback to the user -->
-  <div class="container-fluid">
-    <div class="messages messages--info" *ngIf="successDeletingLocationReservation === null">
-      {{'general.waitingForServer' | translate}}
+      <div class="messages messages--danger">
+        <p>{{'management.locationDetails.calendar.deleteModalView.warning' | translate}}</p>
+      </div>
     </div>
 
-    <div class="messages messages--success" *ngIf="successDeletingLocationReservation === true">
-      {{'management.locationDetails.calendar.deleteModalView.success' | translate}}
+    <!-- Footer -->
+    <div modal-footer>
+      <button type="button" class="button button-primary" (click)="delete(toUpdateTimeslot)">
+        {{'general.buttons.delete' | translate}}
+      </button>
+      <button type="button" class="button button-secondary" (click)="closeModal()">
+        {{'general.buttons.cancel' | translate}}
+      </button>
     </div>
 
-    <div class="messages messages--error" *ngIf="successDeletingLocationReservation === false">
-      {{'management.locationDetails.calendar.deleteModalView.error' | translate}}
+    <!-- Feedback to the user -->
+    <div class="container-fluid">
+      <div class="messages messages--info" *ngIf="successDeletingLocationReservation === null">
+        {{'general.waitingForServer' | translate}}
+      </div>
+
+      <div class="messages messages--success" *ngIf="successDeletingLocationReservation === true">
+        {{'management.locationDetails.calendar.deleteModalView.success' | translate}}
+      </div>
+
+      <div class="messages messages--error" *ngIf="successDeletingLocationReservation === false">
+        {{'management.locationDetails.calendar.deleteModalView.error' | translate}}
+      </div>
     </div>
-  </div>
+  </app-modal>
 </ng-template>
 
 <ng-template #noCalendarPeriodsForLocation>

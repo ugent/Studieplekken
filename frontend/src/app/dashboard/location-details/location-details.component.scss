@@ -20,22 +20,22 @@ h1.inline-block {
   display: inline-block;
 }
 
-.teaser, .no-space-top {
-  margin-top: 0!important;
-  border-top: 0!important;
+.teaser,
+.no-space-top {
+  margin-top: 0 !important;
+  border-top: 0 !important;
 }
-
 
 // Hacky way of not displaying box
 ::ng-deep .rounded-ck-editor > * > * > * > .ck.ck-editor__editable_inline {
-  border: none!important;
+  border: none !important;
 }
 
 ::ng-deep .rounded-ck-editor > * > * > .ck-editor__top {
   display: none;
 }
 
-::ng-deep .rounded-ck-editor > * > * >  .ck > hr {
+::ng-deep .rounded-ck-editor > * > * > .ck > hr {
   display: none;
 }
 
@@ -45,4 +45,8 @@ h1.inline-block {
 
 #leafletMap {
   height: 450px;
+}
+
+.padding {
+  padding-top: 1em;
 }

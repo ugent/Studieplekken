@@ -124,45 +124,50 @@
 <div id="leafletMap"></div>
 
 <ng-template #confirm>
-  <h1>
-    {{'dashboard.locationDetails.calendar.reservation.header' | translate}}
-  </h1>
-  <div class="modal-body text-center">
-    <p>{{'dashboard.locationDetails.calendar.reservation.updateMessage' | translate }}</p>
-    <div *ngIf='newReservations.length !== 0'>
-      <hr>
-      <p>{{'dashboard.locationDetails.calendar.reservation.updateAddMessage' | translate }}</p>
-      <div class="justify-content-center">
-        <mat-chip-list aria-orientation="vertical">
-          <mat-chip class="align-center" *ngFor="let reservation of newReservations" selected>
+  <app-modal>
+    <h2 modal-header>
+      {{'dashboard.locationDetails.calendar.reservation.header' | translate}}
+    </h2>
+
+    <div modal-body>
+      <p>{{'dashboard.locationDetails.calendar.reservation.updateMessage' | translate }}</p>
+      <div *ngIf='newReservations.length !== 0'>
+        <hr>
+        <p>{{'dashboard.locationDetails.calendar.reservation.updateAddMessage' | translate }}</p>
+        <div class="justify-content-center">
+          <mat-chip-list aria-orientation="vertical">
+            <mat-chip class="align-center padding" *ngFor="let reservation of newReservations" selected>
+              {{formatReservation(reservation) | async}}
+            </mat-chip>
+          </mat-chip-list>
+        </div>
+      </div>
+      <div *ngIf='removedReservations.length !== 0'>
+        <hr>
+        <p>{{'dashboard.locationDetails.calendar.reservation.updateDeleteMessage' | translate }}</p>
+        <mat-chip-list class="mat-chip-list-wrapper">
+          <mat-chip *ngFor="let reservation of removedReservations" selected color="warn" class="padding">
             {{formatReservation(reservation) | async}}
           </mat-chip>
         </mat-chip-list>
       </div>
-    </div>
-    <div *ngIf='removedReservations.length !== 0'>
       <hr>
-      <p>{{'dashboard.locationDetails.calendar.reservation.updateDeleteMessage' | translate }}</p>
-      <mat-chip-list class="mat-chip-list-wrapper">
-        <mat-chip *ngFor="let reservation of removedReservations" selected color="warn">
-          {{formatReservation(reservation) | async}}
-        </mat-chip>
-      </mat-chip-list>
+      <p>{{'dashboard.locationDetails.calendar.reservation.updateConfirmMessage' | translate }}</p>
+      
+      <div class="messages messages--warning text-center">
+        <i class="icon-exclamation" aria-hidden="true"></i>
+        {{'dashboard.locationDetails.calendar.reservation.updateWarningMessage' | translate}}
+      </div>
+      
     </div>
-    <hr>
-    <p>{{'dashboard.locationDetails.calendar.reservation.updateConfirmMessage' | translate }}</p>
-    <div>
-      <button type="button" class="button button-primary" (click)="confirmReservationChange()">{{ 'general.yes' |
-        translate
-        }}</button>
-      <button type="button" class="button button-warning" (click)="declineReservationChange()">{{ 'general.no' |
-        translate}}</button>
+    <div modal-footer>
+      <div>
+        <button type="button" class="button button-primary" (click)="confirmReservationChange()">{{ 'general.yes' |
+          translate
+          }}</button>
+        <button type="button" class="button button-warning" (click)="declineReservationChange()">{{ 'general.no' |
+          translate}}</button>
+      </div>
     </div>
-  </div>
-  <div class="modal-footer">
-    <div class="messages messages--warning text-center">
-      <i class="icon-exclamation" aria-hidden="true"></i>
-      {{'dashboard.locationDetails.calendar.reservation.updateWarningMessage' | translate}}
-    </div>
-  </div>
+  </app-modal>
 </ng-template>
