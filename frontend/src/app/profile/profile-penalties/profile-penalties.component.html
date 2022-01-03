@@ -1,9 +1,9 @@
-<div class="container-fluid">
+<div class="container-fluid" *ngIf="penalties | async as penalties">
   <!-- Page title -->
   <h3>{{'profile.penalties.title' | translate}}</h3>
 
   <hr>
-  <b>{{'profile.penalties.subtitle' | translate}} {{user.penaltyPoints}}</b>
+  <b>{{'profile.penalties.subtitle' | translate}} {{penalties.points}}</b>
 
   <!-- Show information about penalty points -->
   <div class="row">
@@ -27,35 +27,38 @@
   <hr>
 
   <!-- Show table with received penalties, if the user has any. Else, congratulate him/her -->
-  <div *ngIf="user.penaltyPoints > 0; else noPenalties" class="container-fluid row">
+  <div *ngIf="penalties.points > 0; else noPenalties" class="container-fluid row">
     <!-- Table title -->
     <b>{{'profile.penalties.table.title' | translate}}</b>
     <br><br>
 
     <div class="container-fluid col-md-11">
-      <table style="width: 100%">
-        <!-- Table header -->
-        <thead>
-        <tr>
-          <th>{{'profile.penalties.table.header.eventCode' | translate}}</th>
-          <th>{{'profile.penalties.table.header.timestamp' | translate}}</th>
-          <th>{{'profile.penalties.table.header.reservationDate' | translate}}</th>
-          <th>{{'profile.penalties.table.header.location' | translate}}</th>
-          <th>{{'profile.penalties.table.header.receivedPoints' | translate}}</th>
-        </tr>
-        </thead>
+      <div class="responsive-table fullwidth">
+        <div class="table-wrapper fullwidth">
+          <table style="width: 100%">
+            <!-- Table header -->
+            <thead>
+            <tr>
+              <th scope="col">{{'profile.penalties.table.header.timestamp' | translate}}</th>
+              <th scope="col">{{'profile.penalties.table.header.issuer' | translate}}</th>
+              <th scope="col">{{'profile.penalties.table.header.description' | translate}}</th>
+              <th scope="col">{{'profile.penalties.table.header.receivedPoints' | translate}}</th>
+            </tr>
+            </thead>
 
-        <!-- Table body -->
-        <tbody *ngIf="penalties | async as penalties">
-        <tr *ngFor="let penalty of penalties">
-          <td>{{penalty.eventCode}}</td>
-          <td>{{penalty.timestamp.format('DD-MM-YYYY HH:mm')}}</td>
-          <td>{{penalty.reservationDate.format('DD-MM-YYYY')}}</td>
-          <td>{{(getLocation(penalty.reservationLocationId) | async).name}}</td>
-          <td>{{penalty.receivedPoints}}</td>
-        </tr>
-        </tbody>
-      </table>
+            <!-- Table body -->
+            <tbody >
+            <tr *ngFor="let penalty of penalties.penalties">
+              <td>{{penalty.createdAt.format("DD/MM/YYYY HH:mm")}}</td>
+              <td>{{getIssuedBy(penalty) | translate}}</td>
+              <td>{{penalty.description | translate}}</td>
+              <td>{{penalty.points}}</td>
+            </tr>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
     </div>
 
   </div>
@@ -63,7 +66,7 @@
 </div>
 
 <ng-template #noPenalties>
-  <div>
+  <div class="messages messages--info">
     {{'profile.penalties.table.noPenalties' | translate}}
   </div>
 </ng-template>

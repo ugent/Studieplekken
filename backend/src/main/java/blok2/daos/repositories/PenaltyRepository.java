@@ -6,15 +6,12 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface PenaltyRepository extends JpaRepository<Penalty, Penalty.PenaltyId> {
+public interface PenaltyRepository extends JpaRepository<Penalty, Integer> {
 
-    @Query("select p from Penalty p where p.penaltyId.userId = ?1")
-    List<Penalty> findAllByUserId(String userId);
+    @Query("select p from Penalty p where p.user_id = ?1")
+    List<Penalty> findAllByDesignee(String userId);
 
-    @Query("select p from Penalty p where p.reservationLocation.locationId = ?1")
-    List<Penalty> findAllByLocationId(int locationId);
-
-    @Query("select p from Penalty p where p.penaltyId.eventCode = ?1")
-    List<Penalty> findAllByPenaltyEventCode(int eventCode);
+    @Query("select p from Penalty p where p.user_id = ?1 and p.timeslotSequenceNumber = ?2")
+    List<Penalty> findAllByLocationReservation(String userid, int timeslot_sequence_number);
 
 }

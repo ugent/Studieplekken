@@ -528,12 +528,11 @@
         "penalties": {
           "title": "Penalties of {name}",
           "table": {
-            "eventCode": "Penalty event code",
-            "timestamp": "Timestamp",
-            "location": "Room",
+            "timestamp": "Date of penalty",
             "receivedPoints": "Received points",
-            "remarks": "Remark",
+            "description": "Description",
             "addNew": "Add penalty",
+            "issuer": "Issuer",
             "addPenaltyModalView": {
               "title": "Add new penalty",
               "addButton": "Add",
@@ -809,7 +808,9 @@
           "timestamp": "Timestamp",
           "reservationDate": "Reservation for",
           "location": "Room",
-          "receivedPoints": "Received points"
+          "receivedPoints": "Received points",
+          "issuer": "Issuer",
+          "description": "Description"
         },
         "noPenalties": "You have had no penalties so far. Very good!"
       }

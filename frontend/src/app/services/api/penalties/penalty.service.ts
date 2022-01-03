@@ -4,6 +4,9 @@ import { Penalty } from '../../../shared/model/Penalty';
 import { api } from '../endpoints';
 import { Observable } from 'rxjs';
 import { PenaltyEvent } from '../../../shared/model/PenaltyEvent';
+import { map } from 'rxjs/operators';
+
+export type PenaltyList = {points: number, penalties: Penalty[]}
 
 @Injectable({
   providedIn: 'root',
@@ -15,8 +18,11 @@ export class PenaltyService {
    *    API calls concerning Penalties    *
    ****************************************/
 
-  getPenaltiesOfUserById(id: string): Observable<Penalty[]> {
-    return this.http.get<Penalty[]>(api.penaltiesByUserId.replace('{id}', id));
+  getPenaltiesOfUserById(id: string): Observable<PenaltyList> {
+    return this.http.get<any>(api.penaltiesByUserId.replace('{id}', id))
+    .pipe(
+      map(a => ({points: a.currentPoints, penalties: a.penalties.map(Penalty.fromJSON)}))
+      );
   }
 
   addPenalty(penalty: Penalty): Observable<void> {
@@ -31,37 +37,5 @@ export class PenaltyService {
       body: penalty,
     };
     return this.http.delete<void>(api.deletePenalty, options);
-  }
-
-  /********************************************
-   *    API calls concerning PenaltyEvents    *
-   ********************************************/
-
-  getPenaltyEvents(): Observable<PenaltyEvent[]> {
-    return this.http.get<PenaltyEvent[]>(api.penaltyEvents);
-  }
-
-  addPenaltyEvent(penaltyEvent: PenaltyEvent): Observable<void> {
-    return this.http.post<void>(api.addPenaltyEvent, penaltyEvent);
-  }
-
-  updatePenaltyEvent(
-    code: number,
-    penaltyEvent: PenaltyEvent
-  ): Observable<void> {
-    return this.http.put<void>(
-      api.updatePenaltyEvent.replace('{code}', String(code)),
-      penaltyEvent
-    );
-  }
-
-  deletePenaltyEvent(penaltyEvent: PenaltyEvent): Observable<void> {
-    const options = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-      }),
-      body: penaltyEvent,
-    };
-    return this.http.delete<void>(api.deletePenaltyEvent, options);
   }
 }
