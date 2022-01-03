@@ -14,4 +14,5 @@ public interface PenaltyRepository extends JpaRepository<Penalty, Integer> {
     @Query("select p from Penalty p where p.user_id = ?1 and p.timeslotSequenceNumber = ?2")
     List<Penalty> findAllByLocationReservation(String userid, int timeslot_sequence_number);
 
+    List<Penalty> findAllByOrderByCreatedAtDesc();
 }

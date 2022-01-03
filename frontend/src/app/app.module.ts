@@ -94,6 +94,7 @@ import { ImpersonateInterceptor } from './services/authentication/impersonate.in
 import { AfterReservationComponent } from './dashboard/location-details/modals/after-reservation/after-reservation.component';
 import { PenaltyTableComponent } from './shared/penalties/penalty-table/penalty-table.component';
 import { UserPenaltyManagerComponent } from './shared/penalties/user-penalty-manager/user-penalty-manager.component';
+import { PenaltiesManagementComponent } from './management/penalties-management/penalties-management.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -245,6 +246,11 @@ const routes: Routes = [
         component: VolunteersManagementComponent,
         canActivate: [AuthorizationGuardService],
       },
+      {
+        path: "penalty",
+        component: PenaltiesManagementComponent,
+        canActivate: [AuthorizationGuardService]
+      }
     ],
   },
 
@@ -327,7 +333,8 @@ const routes: Routes = [
     EntryComponent,
     AfterReservationComponent,
     PenaltyTableComponent,
-    UserPenaltyManagerComponent
+    UserPenaltyManagerComponent,
+    PenaltiesManagementComponent
   ],
   imports: [
     BrowserModule,

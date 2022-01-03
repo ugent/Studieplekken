@@ -821,7 +821,7 @@
         }
       },
       "table": {
-        "title": "Overzicht van jou strafpunten",
+        "title": "Overzicht van jouw strafpunten",
         "header": {
           "eventCode": "Reden voor strafpunten",
           "timestamp": "Timestamp",

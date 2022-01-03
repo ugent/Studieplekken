@@ -97,6 +97,7 @@ export const api = {
   addPenaltyEvent: '/api/penalties/events',
   updatePenaltyEvent: '/api/penalties/events/{code}',
   deletePenaltyEvent: '/api/penalties/events',
+  getAllPenalties: '/api/penalties',
 
   // TAGS
   tags: '/api/tags',

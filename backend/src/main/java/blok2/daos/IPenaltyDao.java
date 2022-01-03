@@ -11,6 +11,8 @@ public interface IPenaltyDao {
      */
     List<Penalty> getPenaltiesByUser(String userId);
 
+    List<Penalty> getAllPenalties();
+
     /**
      * addPenalty() adds a Penalty
      */

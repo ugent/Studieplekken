@@ -38,4 +38,8 @@ export class PenaltyService {
     };
     return this.http.delete<void>(api.deletePenalty, options);
   }
+
+  getAllPenalties(): Observable<Penalty[]> {
+    return this.http.get<Penalty[]>(api.getAllPenalties).pipe(map(v => v.map(p => Penalty.fromJSON(p))))
+  }
 }

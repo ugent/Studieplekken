@@ -28,6 +28,10 @@ public class PenaltyService implements IPenaltyDao {
         return penaltyRepository.findAllByDesignee(userId);
     }
 
+    public List<Penalty> getAllPenalties() {
+        return penaltyRepository.findAllByOrderByCreatedAtDesc();
+    }
+
     @Override
     public Penalty addPenalty(Penalty penalty) {
         return penaltyRepository.saveAndFlush(penalty);

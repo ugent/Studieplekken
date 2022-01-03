@@ -31,6 +31,12 @@ public class PenaltyController {
      *    Controller methods for Penalties    *
      ******************************************/
 
+    @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public List<Penalty> getAllPenalties() {
+        return penaltyDao.getAllPenalties();
+    }
+
     @GetMapping("/{userId}")
     @PreAuthorize("(hasAuthority('USER') and #userId == authentication.principal.userId) or " +
                   "hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
