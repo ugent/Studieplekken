@@ -27,6 +27,7 @@
     "admin": "Administrator"
   },
   "dashboard": {
+    "penaltyWarning": "Deze locatie gebruikt strafpunten! Bekijk zeker de informatiepagina voor meer informatie.",
     "alert": {
       "title": "[VRIJDAG 11 DECEMBER, RESERVATIES OP VERSCHILLENDE MOMENTEN]",
       "p1": "De reservaties zullen plaatsvinden om 19:00, 19:30 en 20:00 afhankelijk van de locatie. Bekijk dus zeker op voorhand wanneer de reservaties zullen openen.",
@@ -99,7 +100,8 @@
     "terms-of-use":"Terms of use"
   },
   "reservations": {
-    "reservationButton": "Update Reservaties"
+    "reservationButton": "Update Reservaties",
+    "tooManyPenalty": "Je hebt te veel strafpunten. Bekijk de informatiepagina voor meer info."
   },
   "general": {
     "dsa": "Dienst StudentenActiviteiten",
@@ -207,7 +209,8 @@
         "success": "Het wijzigen van de ruimte was succesvol",
         "error": "Er ging iets mis tijdens het wijzigen van de ruimte",
         "numberOfSeatsApplyWarning": "De aangepaste plaatsen worden alleen toegepast op nieuw aangemaakte openingsperiodes.",
-        "numberOfSeatsHelp": "Kan alleen aangepast worden door een admin."
+        "numberOfSeatsHelp": "Kan alleen aangepast worden door een admin.",
+        "usesPenaltyPoints": "Gebruikt strafpunten"
       },
       "calendar": {
         "title": "Reservatiebeheer",

@@ -59,6 +59,9 @@ public class Location implements Cloneable {
     @Column(name = "approved")
     private boolean approved;
 
+    @Column(name = "uses_penalty_points")
+    private boolean usesPenaltyPoints = false;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "location_tags",
@@ -322,6 +325,14 @@ public class Location implements Cloneable {
 
     public void setVolunteers(List<User> volunteers) {
         this.volunteers = volunteers;
+    }
+
+    public boolean isUsesPenaltyPoints() {
+        return usesPenaltyPoints;
+    }
+
+    public void setUsesPenaltyPoints(boolean usesPenaltyPoints) {
+        this.usesPenaltyPoints = usesPenaltyPoints;
     }
 
     //</editor-fold>

@@ -61,8 +61,8 @@ public class Penalty implements Cloneable {
     @OneToOne()
     @JoinColumns(
             {
-            @JoinColumn(name = "user_id", insertable = false, updatable = false),
-            @JoinColumn(name = "timeslot_sequence_number", insertable = false, updatable = false)
+                    @JoinColumn(name = "timeslot_sequence_number", insertable = false, updatable = false),
+                    @JoinColumn(name = "user_id", insertable = false, updatable = false),
             }
     )
     private LocationReservation reservation;
