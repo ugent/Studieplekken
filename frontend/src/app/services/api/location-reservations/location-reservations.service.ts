@@ -25,12 +25,12 @@ export class LocationReservationsService {
   }
 
   getLocationReservationsOfTimeslot(
-    timeslot: Timeslot
+    timeslotId: number
   ): Observable<LocationReservation[]> {
     return this.http
       .get<unknown[]>(
         api.locationReservationsOfLocation
-          .replace('{seqnr}', `${timeslot.timeslotSequenceNumber}`)
+          .replace('{seqnr}', `${timeslotId}`)
       )
       .pipe(map((ls) => ls.map(LocationReservation.fromJSON.bind(this))));
   }

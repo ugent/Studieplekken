@@ -5,7 +5,7 @@ import { getConfig } from '../configModule/config.service';
 import { ConfigModule } from '../configModule/config.module';
 import { DbModule } from '../db/db.module';
 import { AuthService } from './auth.service';
-import { CasStrategy } from './cas/cas.strategy';
+import { CasStrategyService } from './cas/cas.strategy.service';
 import { SamlStrategy } from './saml/saml.strategy';
 
 @Module({
@@ -18,7 +18,7 @@ import { SamlStrategy } from './saml/saml.strategy';
     DbModule,
     ConfigModule,
   ],
-  providers: [AuthService, SamlStrategy, CasStrategy],
+  providers: [AuthService, SamlStrategy, CasStrategyService],
   exports: [AuthService],
 })
 export class AuthModule {}

@@ -280,7 +280,8 @@
         "copyModalView": {
           "title": "Kopieer deze periode",
           "body": "Je staat op het punt om de volgende periode te kopieren:",
-          "weekSelect":"Kopieer naar datum"
+          "weekSelect":"Kopieer naar datum",
+          "lockReservableFrom": "Wil je de originele openingsdatum voor reservaties houden?"
         },
         "warningDialog": {
           "warning": "Waarschuwing",

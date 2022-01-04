@@ -9,6 +9,8 @@ import { MatDialog } from '@angular/material/dialog';
 import * as moment from 'moment';
 import { BarcodeService } from 'src/app/services/barcode.service';
 import { User } from 'src/app/shared/model/User';
+import { TableDataService } from 'src/app/stad-gent-components/atoms/table/data-service/table-data-service.service';
+import { TabularData } from 'src/app/stad-gent-components/atoms/table/tabular-data';
 import { LocationReservationsService } from '../../../../../../services/api/location-reservations/location-reservations.service';
 import { LocationReservation, LocationReservationState } from '../../../../../../shared/model/LocationReservation';
 import {
@@ -40,6 +42,8 @@ export class LocationReservationsComponent {
   noSuchUserFoundWarning = false;
   waitingForServer = false;
 
+  selectionTimeout: number;
+
   userHasSearchTerm: (u: User) => boolean = (u: User) =>
     u.userId.includes(this.searchTerm) ||
     u.firstName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
@@ -48,7 +52,8 @@ export class LocationReservationsComponent {
   constructor(
     private locationReservationService: LocationReservationsService,
     private modalService: MatDialog,
-    private barcodeService: BarcodeService
+    private barcodeService: BarcodeService,
+    private tabularDataService: TableDataService
   ) {}
 
   // /***************
@@ -66,7 +71,7 @@ export class LocationReservationsComponent {
         r.user === reservation.user
       );
     });
-    
+
     const oldState = idx < 0? undefined : this.scannedLocationReservations[idx].state;
     const newState = attended? LocationReservationState.PRESENT : LocationReservationState.ABSENT;
     // only perform API call if the attendance/absence changes
@@ -227,6 +232,8 @@ export class LocationReservationsComponent {
     this.noSuchUserFoundWarning =
       this.searchTerm.length > 0 &&
       this.locationReservations.every((lr) => !this.userHasSearchTerm(lr.user));
+    if(this.noSuchUserFoundWarning)
+      this.delayedSelectInputBox();
 
     const fullyMatchedUser = this.barcodeService.getReservation(
       this.locationReservations,
@@ -234,15 +241,16 @@ export class LocationReservationsComponent {
     );
 
     if (fullyMatchedUser) {
+      this.lastScanned = fullyMatchedUser;
       this.scanLocationReservation(fullyMatchedUser, true, errorTemplate);
       setTimeout(() => {
         this.searchTerm = '';
-        this.lastScanned = fullyMatchedUser;
         this.updateSearchTerm(errorTemplate);
       }, 10);
+    } else if(this.searchTerm.length != 0) {
+      this.lastScanned = null;
     }
 
-    this.lastScanned = null;
   }
 
   filter(locationReservations: LocationReservation[]): LocationReservation[] {
@@ -283,5 +291,29 @@ export class LocationReservationsComponent {
     });
 
     return locationReservations;
+  }
+
+  getTableData(locationReservations: LocationReservation[]): TabularData<LocationReservation> {
+    return this.tabularDataService.reservationsToScanningTable(locationReservations)
+  }
+
+  onAction({columnIndex, data}: {columnIndex: number, data: LocationReservation}, errorTemplate: TemplateRef<unknown>) {
+    if(columnIndex == 2)
+      return this.scanLocationReservation(data, true, errorTemplate);
+    else if(columnIndex == 3)
+      return this.scanLocationReservation(data, false, errorTemplate);
+    }
+
+  selectInputBox() {
+    const el = document.getElementById("search") as HTMLInputElement;
+    el.focus();
+    el.select();
+  }
+
+  delayedSelectInputBox() {
+    if(this.selectionTimeout)
+      clearTimeout(this.selectionTimeout);
+
+      this.selectionTimeout = setTimeout(() => this.selectInputBox(), 800);
   }
 }

@@ -92,7 +92,11 @@ import { QRCodeModule } from 'angularx-qrcode';
 import { QRCodeComponent } from './miscellaneous/qrcode/qrcode.component';
 import { ScannerComponent } from './miscellaneous/scanner/scanner.component';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
+import { TableComponent } from './stad-gent-components/atoms/table/table.component';
+import { DesktopTableComponent } from './stad-gent-components/atoms/table/desktop-table/desktop-table.component';
+import { MobileTableComponent } from './stad-gent-components/atoms/table/mobile-table/mobile-table.component';
 import { EntryComponent } from './entry/entry.component';
+import { ImpersonateInterceptor } from './services/authentication/impersonate.interceptor';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -204,7 +208,7 @@ const routes: Routes = [
         canActivate: [AuthorizationGuardService],
       },
       {
-        path: 'locations/:locationId/timeslot/:calendarid/:date/:seqnr',
+        path: 'locations/:locationId/timeslot/:seqnr',
         component: TimeslotTableComponent,
         canActivate: [AuthorizationGuardService],
       },
@@ -335,6 +339,9 @@ const routes: Routes = [
     ModalComponent,
     QRCodeComponent,
     ScannerComponent,
+    TableComponent,
+    DesktopTableComponent,
+    MobileTableComponent,
     EntryComponent,
   ],
   imports: [
@@ -378,12 +385,10 @@ const routes: Routes = [
   ],
   providers: [
     FormatStatusPipe,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthenticationInterceptor,
-      multi: true,
-    },
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ImpersonateInterceptor, multi: true },
+
+
   ],
   bootstrap: [AppComponent],
 })

@@ -278,7 +278,8 @@
           "title": "Copy this calendar period",
           "body": "You are about to copy the following timeslot:",
           "weekSelect": "Copy to date:",
-          "nextWeek": "Copy to next week"
+          "nextWeek": "Copy to next week",
+          "lockReservableFrom": "Keep the original reservation start date?"
         },
         "warningDialog": {
           "warning": "Warning",

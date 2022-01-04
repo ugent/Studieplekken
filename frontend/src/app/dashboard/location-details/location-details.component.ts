@@ -21,7 +21,6 @@ import {
   timeslotEquals,
 } from 'src/app/shared/model/Timeslot';
 import { BreadcrumbService } from 'src/app/stad-gent-components/header/breadcrumbs/breadcrumb.service';
-import { environment } from 'src/environments/environment';
 import {
   defaultTeaserImages,
   LocationStatus,
@@ -34,7 +33,6 @@ import { Location } from '../../shared/model/Location';
 import { LocationTag } from '../../shared/model/LocationTag';
 
 import * as Leaf from 'leaflet';
-import { AuthoritiesService } from 'src/app/services/api/authorities/authorities.service';
 import { LoginRedirectService } from 'src/app/services/authentication/login-redirect.service';
 
 // Leaflet stuff.
@@ -391,21 +389,20 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   setupLeafletMap(location: Location): void {
-    const originalTile = Leaf.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-      id: 'mapbox/streets-v11',
+
+    const originalTile = Leaf.tileLayer('https://geo.gent.be/geoserver/gwc/service/wmts?layer=SG-E-Stadsplan%3AStadsplan&style=default&tilematrixset=SG-WEB%20MERCATOR&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=SG-WEB%20MERCATOR%3A{z}&TileCol={x}&TileRow={y}', {
       tileSize: 512,
       zoomOffset: -1,
-      // Token has restriction to only work with https://studieplekken.ugent.be, https://studieplekken-dev.ugent.be and
-      // https://localhost:4200. Token created by Ieben Smessaert (iesmessa).
-      accessToken: environment.accessToken,
-      maxZoom: 25
+      maxZoom: 25,
     });
 
     const coordinates = new Leaf.LatLng(location.building.latitude, location.building.longitude);
+
     this.leafletMap = new Leaf.Map('leafletMap', {
       center: coordinates,
       zoom: 18,
-      layers: [originalTile]
+      layers: [originalTile],
+      crs: Leaf.CRS.EPSG3857
     });
     new Leaf.Marker(coordinates).addTo(this.leafletMap);
   }

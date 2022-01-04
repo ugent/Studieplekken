@@ -2,6 +2,7 @@ package blok2.controllers;
 
 import blok2.daos.ITimeslotDao;
 import blok2.helpers.authorization.AuthorizedLocationController;
+import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.calendar.Timeslot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +20,16 @@ public class TimeslotController extends  AuthorizedLocationController {
     @Autowired
     public TimeslotController(ITimeslotDao calendarPeriodDao) {
         this.timeslotDAO = calendarPeriodDao;
+    }
+
+    @GetMapping("/details/{timeslotId}")
+    @PreAuthorize("permitAll()")
+    public Timeslot getTimeslot(@PathVariable("timeslotId") int timeslotId) {
+        Timeslot timeslot = timeslotDAO.getTimeslot(timeslotId);
+        if(timeslot == null)
+            throw new NoSuchDatabaseObjectException("Timeslot does not exist");
+
+        return timeslot;
     }
 
     @GetMapping("/{locationId}")

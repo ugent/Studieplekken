@@ -1,19 +1,11 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
-import { Authority } from 'src/app/shared/model/Authority';
-import { environment } from 'src/environments/environment';
+import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
 import { authenticationWasExpiredUrlLSKey, userWantsTLogInLocalStorageKey } from '../../app.constants';
 import { LocationReservation } from '../../shared/model/LocationReservation';
-import {
-  LockerReservation,
-  LockerReservationConstructor
-} from '../../shared/model/LockerReservation';
 import { Penalty } from '../../shared/model/Penalty';
 import { User, UserConstructor } from '../../shared/model/User';
-import { AuthoritiesService } from '../api/authorities/authorities.service';
 import { api } from '../api/endpoints';
 import { LocationReservationsService } from '../api/location-reservations/location-reservations.service';
 import { LockerReservationService } from '../api/locker-reservations/locker-reservation.service';
@@ -43,13 +35,9 @@ export class AuthenticationService {
   // (which comes from the userSubject)
   public user: Observable<User> = this.userSubject.asObservable();
 
-  private hasAuthoritiesSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
-    false
-  );
+  private hasAuthoritiesSubject: Subject<boolean> = new ReplaySubject<boolean>();
   public hasAuthoritiesObs: Observable<boolean> = this.hasAuthoritiesSubject.asObservable();
-  private hasVolunteeredSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
-    false
-  );
+  private hasVolunteeredSubject: Subject<boolean> = new ReplaySubject<boolean>();
   public hasVolunteeredObs: Observable<boolean> = this.hasVolunteeredSubject.asObservable();
 
   constructor(
@@ -59,7 +47,7 @@ export class AuthenticationService {
     private lockerReservationService: LockerReservationService,
     private router: Router,
     private userService: UserService,
-    private loginRedirectService: LoginRedirectService
+    private loginRedirectService: LoginRedirectService,
   ) { }
 
   // **************************************************
@@ -68,14 +56,6 @@ export class AuthenticationService {
 
   userValue(): User {
     return this.userSubject.value;
-  }
-
-  hasAuthoritiesValue(): boolean {
-    return this.hasAuthoritiesSubject.value;
-  }
-
-  hasVolunteeredValue(): boolean {
-    return this.hasVolunteeredSubject.value;
   }
 
   /**
@@ -99,9 +79,10 @@ export class AuthenticationService {
   login(redirect = false): void {
     this.http.get<User>(api.whoAmI).subscribe(
       (next) => {
-        this.userSubject.next(next);
         this.updateHasAuthoritiesSubject(next);
         this.updateHasVolunteeredSubject(next);
+        this.userSubject.next(next);
+
         if(next.userId && redirect)
           this.loginRedirectService.navigateToLastUrl();
 
@@ -175,7 +156,7 @@ export class AuthenticationService {
     }
 
     // Jump to login.ugent.be immediately. Chances are that this will instantly resolve any issues.
-    window.location.href = environment.casFlowTriggerUrl;
+    this.router.navigateByUrl("/login");
   }
 
   isAdmin(): boolean {
@@ -221,6 +202,7 @@ export class AuthenticationService {
   }
 
   substituteLogin(email: string) {
+    localStorage.setItem("impersonate", email);
     const headers = new HttpHeaders().set("AS-USER", email);
     this.http.get(api.whoAmI, {headers}).subscribe(()=> this.login())
   }

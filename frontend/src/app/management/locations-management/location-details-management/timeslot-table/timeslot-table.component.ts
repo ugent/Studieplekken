@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import * as moment from 'moment';
 import { Observable } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
+import { TimeslotsService } from 'src/app/services/api/calendar-periods/timeslot.service';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
 import {
@@ -16,31 +17,29 @@ import { Location } from '../../../../shared/model/Location';
   styleUrls: ['./timeslot-table.component.scss'],
 })
 export class TimeslotTableComponent implements OnInit {
-  timeslot: Timeslot;
+  timeslot: Observable<Timeslot>;
   locationReservations: Observable<LocationReservation[]>;
-  locationId: number;
 
   constructor(
     private route: ActivatedRoute,
     private locationReservationsService: LocationReservationsService,
     private locationService: LocationService,
-    private router: Router
+    private router: Router,
+    private timeslotService: TimeslotsService
   ) { }
 
   ngOnInit(): void {
-    this.locationId = Number(this.route.snapshot.paramMap.get('locationId'));
-    const date = moment(this.route.snapshot.paramMap.get('date'), 'YYYY-MM-DD');
     const seqnr = Number(this.route.snapshot.paramMap.get('seqnr'));
 
     // Check if locationId, calendarId and seqnr are a Number before proceeding. If NaN, redirect to management locations.
-    if (isNaN(this.locationId) || isNaN(seqnr)) {
+    if (isNaN(seqnr)) {
       this.router.navigate(['/management/locations']).catch(console.log);
       return;
     }
 
-    this.timeslot = new Timeslot(seqnr, date, null, 0, null, null, null, null, null, null, false);
+    this.timeslot = this.timeslotService.getById(seqnr);
     this.locationReservations = this.locationReservationsService.getLocationReservationsOfTimeslot(
-      this.timeslot
+      seqnr
     );
   }
 
@@ -58,5 +57,8 @@ export class TimeslotTableComponent implements OnInit {
     return this.locationService.getLocation(locationId);
   }
 
+  sortReservations(lrs: LocationReservation[]) {
+    return lrs.sort((a, b) => a.user.lastName < b.user.lastName ? -1:1);
+  }
 
 }
