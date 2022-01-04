@@ -402,6 +402,7 @@
       },
       "checkAddress": "Check",
       "addNewBuilding": "Nieuw gebouw",
+      "incorrectAddress": "Gegeven adres bestaat niet.",
       "addBuildingModal": {
         "title": "Nieuw gebouw maken",
         "idSetByBackendMessage": "Ingesteld door backend",

@@ -105,9 +105,12 @@
           <div fxLayout="column" fxLayoutAlign="space-evenly">
             <div></div>
             <i class="{{getAddressIcon() }}" aria-hidden="true"></i>
-          </div>
+          </div>  
         </div>
 
+        <div *ngIf="!isLoadingAddress && !isCorrectAddress">
+          <p class="no">{{'management.buildings.incorrectAddress' | translate}}</p>
+        </div>
 
         <!-- Institution of building -->
         <div class="row form-group" *ngIf="institutionsObs | async as institutions">
