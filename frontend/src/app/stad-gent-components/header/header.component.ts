@@ -19,7 +19,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   showManagement = false;
   showLoggedIn = false;
   showVolunteer = false;
-  MOBILE_SIZE = 885;
+  MOBILE_SIZE = 800;
 
   constructor(private breadcrumbService: BreadcrumbService, private authenticationService: AuthenticationService,
     private translationService: TranslateService, private userService: UserService) { }
