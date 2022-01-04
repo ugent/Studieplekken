@@ -43,7 +43,7 @@
   <div class="container-fluid">
     <div class="row">
       <!-- Title -->
-      <h3>
+      <h3 class="margin-left">
         {{'management.locationDetails.calendar.reservations.title' | translate}}
       </h3>
 
@@ -74,10 +74,10 @@
     <div #CPtable class="row" *ngIf="timeslotGroupData(timeslotObs | async) as timeslots">
       <!-- Title -->
       <div class="row">
-        <h3 class="inline-block">
+        <h3 class="inline-block margin-left">
           {{'management.locationDetails.calendar.form.title' | translate}}
         </h3>
-        <button class="button button-primary pull-right" (click)="prepareAdd(addTimeslotModal)">
+        <button class="button button-primary pull-right margin-left" (click)="prepareAdd(addTimeslotModal)">
           {{'management.locationDetails.calendar.form.addButton' | translate}}
         </button>
       </div>

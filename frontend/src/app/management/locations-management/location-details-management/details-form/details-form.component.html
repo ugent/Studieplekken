@@ -1,5 +1,5 @@
 <!-- Form with information about location -->
-<div class="container-fluid" *ngIf="location | async as location">
+<div class="container-fluid full-screen" *ngIf="location | async as location">
   <form [formGroup]="locationForm">
     <!-- Location name -->
     <div class="row form-group">
@@ -81,7 +81,7 @@
             {{'management.locationDetails.form.persist' | translate}}
           </button>
 
-                    <!-- Button to cancel changes -->
+          <!-- Button to cancel changes -->
 
           <button type="button" class="button button-secondary btn-space btn-left"
                   [disabled]="disableCancelLocationButton"

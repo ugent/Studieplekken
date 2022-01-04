@@ -1,7 +1,7 @@
 <div class="container-fluid">
   <div class="text-center" fxLayout="row nowrap" fxLayoutAlign="space-between">
     <!-- Navigation -->
-    <div fxLayout={{getWrapLayout()}}>
+    <div fxLayout={{getWrapLayout()}} class={{getWrapMargin()}}>
       <!-- Previous -->
       <div>
         <div class="button button-primary btn-left" mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate" (viewDateChange)="emitDate($event)">
@@ -29,7 +29,7 @@
     </div>
 
     <!-- Types of view -->
-    <div *ngIf="!isMobile" fxLayout="row nowrap">
+    <div *ngIf="!isMobile" fxLayout={{getWrapLayout()}}>
       <div>
         <div class="button btn-left" [class.button-secondary]="view != CalendarView.Month" [class.button-primary]="view == CalendarView.Month" (click)="setView(CalendarView.Month)"
           [class.active]="view === CalendarView.Month">

@@ -29,7 +29,9 @@ export class CalendarComponent implements OnInit, OnChanges {
   openingHour: number;
   closingHour: number;
   MOBILE_SIZE = 370;
+  HALF_SCREEN_SIZE = 1200;
   isMobile: boolean;
+  isHalfScreen: boolean;
 
   @Input() events: CalendarEvent[];
   @Input() refresh: Subject<unknown>;
@@ -78,6 +80,7 @@ export class CalendarComponent implements OnInit, OnChanges {
   @HostListener('window:resize', ['$event'])
    onResize(event) {
      this.isMobile = window.innerWidth < this.MOBILE_SIZE;
+     this.isHalfScreen= window.innerWidth < this.HALF_SCREEN_SIZE;
    }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -127,6 +130,15 @@ export class CalendarComponent implements OnInit, OnChanges {
   }
 
   getWrapLayout(){
-    return "row "+ (this.isMobile ? "":"no") +"wrap";
+    if(this.isMobile){
+      return "row wrap";
+    }else if(this.isHalfScreen){
+      return "row wrap";
+    }
+    return "row nowrap";
+  }
+
+  getWrapMargin(){
+    return this.isMobile ? "margin-left" : "";
   }
 }
