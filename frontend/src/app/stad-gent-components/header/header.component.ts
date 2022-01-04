@@ -15,7 +15,6 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
   accordionSubject = new Subject<boolean>();
   languageSubject = new Subject<boolean>();
-  showSupervisors = false;
   showAdmin = false;
   showManagement = false;
   showLoggedIn = false;
@@ -35,9 +34,6 @@ export class HeaderComponent implements OnInit, AfterViewInit {
       // first, check if the user is logged in
       if (this.authenticationService.isLoggedIn()) {
         this.showLoggedIn = true;
-        if (this.authenticationService.hasVolunteeredValue()){
-          this.showSupervisors = true;
-        }
         if (user.admin) {
           this.showAdmin = true;
         } else {
@@ -49,7 +45,6 @@ export class HeaderComponent implements OnInit, AfterViewInit {
         this.showLoggedIn = false;
         this.showVolunteer = false;
         this.showAdmin = false;
-        this.showSupervisors = false;
       }
     });
   }

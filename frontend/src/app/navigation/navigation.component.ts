@@ -29,8 +29,10 @@ export class NavigationComponent implements OnInit {
       // first, check if the user is logged in
       if (this.authenticationService.isLoggedIn()) {
         this.showLoggedIn = true;
-        if (this.authenticationService.hasVolunteeredValue()){
+        if (next.userVolunteer.length > 0){
           this.showSupervisors = true;
+        }else{
+          this.showSupervisors = false;
         }
         if (next.admin) {
           this.showAdmin = true;

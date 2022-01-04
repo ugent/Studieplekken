@@ -16,7 +16,6 @@ export class DropdownComponent implements OnInit {
   @Input() accordion: Subject<boolean>;
   @Input() isProfile: Subject<boolean>;
 
-  showSupervisors = false;
   showAdmin = false;
   showManagement = false;
   showLoggedIn=false;
@@ -31,9 +30,6 @@ export class DropdownComponent implements OnInit {
       // first, check if the user is logged in
       if (this.authenticationService.isLoggedIn()) {
         this.showLoggedIn = true;
-        if (this.authenticationService.hasVolunteeredValue()){
-          this.showSupervisors = true;
-        }
         if (next.admin) {
           this.showAdmin = true;
         } else {
@@ -45,7 +41,6 @@ export class DropdownComponent implements OnInit {
         this.showLoggedIn = false;
         this.showVolunteer = false;
         this.showAdmin = false;
-        this.showSupervisors = false;
       }
     });
   }

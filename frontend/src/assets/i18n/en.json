@@ -18,7 +18,9 @@
     "managementInfo": "Management of buildings/locations/users",
     "dashboardInfo": "Find your ideal study location in our application",
     "scanInfo": "Scan/take note of present students",
-    "page": "Navigation page"
+    "page": "Navigation page",
+    "loginInfo": "Login to be able to use all functionalities in this application.",
+    "login": "Login"
   },
   "information": {
     "general": "General",

@@ -18,7 +18,9 @@
     "managementInfo": "Beheer gebouwen/locaties/gebruikers",
     "dashboardInfo": "Vind jouw ideale studieplekje",
     "scanInfo": "Scan/neem aanwezigheden op van studenten",
-    "page": "Navigatie pagina"
+    "page": "Navigatie pagina",
+    "loginInfo": "Log in om gebruik te kunnen maken van alle functionaliteiten in deze applicatie.",
+    "login": "Login"
   },
   "information": {
     "general": "Algemeen",

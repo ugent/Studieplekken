@@ -82,14 +82,10 @@
         </div>
         
         <div style="float:right" *ngIf="!mobile">
-            <div class="content-container">
+            <div class="content-container" fxLayout="row" fxLayoutGap="10px">
                 <a routerLink="/profile/overview" class="read-more margin-right" *ngIf="showLoggedIn"
                     title="{{'header.navigation.profile' | translate}}">
                     {{'header.navigation.profile' | translate}}
-                </a>
-                <a routerLink="/navigation" class="read-more margin-right" 
-                        title="{{'header.navigation.navigation' | translate}}" >
-                        {{'header.navigation.navigation' | translate}}
                 </a>
                 <a routerLink="/" class="read-more margin-right" 
                         title="{{'header.navigation.dashboard' | translate}}" >
@@ -100,7 +96,7 @@
                         {{'header.navigation.information' | translate}}
                 </a>
                 <a routerLink="/scan/locations" class="read-more margin-right" 
-                    title="{{'header.navigation.scan' | translate}}" *ngIf="showManagement || showAdmin || showSupervisors">
+                    title="{{'header.navigation.scan' | translate}}" *ngIf="showManagement || showAdmin || showVolunteer">
                     {{'header.navigation.scan' | translate}}
                 </a>
                 <a routerLink="/management/locations" class="read-more margin-right" 
