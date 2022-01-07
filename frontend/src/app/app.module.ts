@@ -252,17 +252,16 @@ const routes: Routes = [
         canActivate: [AuthorizationGuardService],
       },
       {
-<<<<<<< HEAD
         path: "penalty",
         component: PenaltiesManagementComponent,
         canActivate: [AuthorizationGuardService]
       }
-=======
+    ,
+    {
         path: 'actionlog',
         component: ActionLogComponent,
         canActivate: [AuthorizationGuardService]
       },
->>>>>>> release/2.1
     ],
   },
 
@@ -347,15 +346,12 @@ const routes: Routes = [
     DesktopTableComponent,
     MobileTableComponent,
     EntryComponent,
-<<<<<<< HEAD
     AfterReservationComponent,
     PenaltyTableComponent,
     UserPenaltyManagerComponent,
-    PenaltiesManagementComponent
-=======
+    PenaltiesManagementComponent,
     ActionLogComponent,
     AfterReservationComponent
->>>>>>> release/2.1
   ],
   imports: [
     BrowserModule,
