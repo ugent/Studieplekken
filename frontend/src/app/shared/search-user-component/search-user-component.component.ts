@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { TableDataService } from 'src/app/stad-gent-components/atoms/table/data-service/table-data-service.service';
 import { User } from '../model/User';
 
 @Component({
@@ -13,7 +14,7 @@ export class SearchUserComponentComponent implements OnInit {
   users: User[];
 
 
-  constructor() { }
+  constructor(private table: TableDataService) { }
 
   ngOnInit(): void {
   }
@@ -26,4 +27,7 @@ export class SearchUserComponentComponent implements OnInit {
     this.selectedUser.next(user);
   }
 
+  getTableData(users: User[]) {
+    return this.table.usersToTable(users, this.icon)
+  }
 }

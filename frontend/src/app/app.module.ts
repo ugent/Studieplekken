@@ -91,6 +91,9 @@ import { QRCodeModule } from 'angularx-qrcode';
 import { QRCodeComponent } from './miscellaneous/qrcode/qrcode.component';
 import { ScannerComponent } from './miscellaneous/scanner/scanner.component';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
+import { TableComponent } from './stad-gent-components/atoms/table/table.component';
+import { DesktopTableComponent } from './stad-gent-components/atoms/table/desktop-table/desktop-table.component';
+import { MobileTableComponent } from './stad-gent-components/atoms/table/mobile-table/mobile-table.component';
 import { EntryComponent } from './entry/entry.component';
 import { ImpersonateInterceptor } from './services/authentication/impersonate.interceptor';
 import { AfterReservationComponent } from './dashboard/location-details/modals/after-reservation/after-reservation.component';
@@ -331,6 +334,9 @@ const routes: Routes = [
     ModalComponent,
     QRCodeComponent,
     ScannerComponent,
+    TableComponent,
+    DesktopTableComponent,
+    MobileTableComponent,
     EntryComponent,
     AfterReservationComponent
   ],

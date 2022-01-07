@@ -16,46 +16,12 @@
       {{'profile.reservations.locations.error' | translate}}
     </div>
 
-    <div *ngIf="successGettingLocationReservations === true" class="responsive-table fullwidth">
-      <div *ngIf="locationReservations.length > 0; else noReservations" class="table-wrapper fullwidth">
-        <table class="table table-striped" style="width: 100%">
-          <!-- Table header -->
-          <thead>
-            <tr>
-              <th scope="col">{{'profile.reservations.locations.table.header.locationName' | translate}}</th>
-              <th scope="col">{{'profile.reservations.locations.table.header.reservationDate' | translate}}</th>
-              <th scope="col">{{'profile.reservations.locations.table.header.beginHour' | translate}}</th>
-              <th scope="col">{{'profile.reservations.locations.table.header.state' | translate}}</th>
-              <th scope="col"></th>
-            </tr>
-          </thead>
-
-          <!-- Table body -->
-          <tbody>
-            <tr *ngFor="let reservation of sortedLocationReservations(locationReservations)" [class.success]="isReservationCurrent(reservation)">
-              <td>{{getLocation(reservation) | async}}</td>
-              <td>{{reservation.timeslot.timeslotDate.format("DD/MM/YYYY")}}</td>
-              <td>{{getBeginHour(reservation.timeslot)}}</td>
-
-              <!-- If not attended, we put some extra explanation, else we don't. -->
-              <td *ngIf="needTooltip(reservation)" class="dotted_ul" data-toggle="tooltip" data-placement="top"
-                title="{{'profile.reservations.locations.table.attended.notScannedExplanation' | translate}}">
-                {{getCorrectI18NObject(reservation) | translate}}</td>
-
-              <td *ngIf="!needTooltip(reservation)">{{getCorrectI18NObject(reservation) | translate}}</td>
-              <!-- User should not be able to delete past reservations, otherwise the penalty points
-                 could be deleted as well -->
-              <td *ngIf="canDeleteReservation(reservation); else emptyTableData"
-                class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
-                (click)="prepareToDeleteLocationReservation(reservation, deleteLocationReservationModal)">
-                <i class="icon-cross" aria-hidden="true"></i>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <div *ngIf="successGettingLocationReservations === true">
+      <ng-container *ngIf="locationReservations.length > 0; else noReservations">
+        <app-table *ngIf="getTabularData(locationReservations) | async as tableData" [tabularData]="tableData" (action)="prepareToDeleteLocationReservation($event.data, deleteLocationReservationModal)"></app-table>
+      </ng-container>
     </div>
-  </div>
+
 </div>
 
 <ng-template #noReservations>
@@ -104,13 +70,17 @@
     </div>
 
     <!-- Footer -->
-    <div modal-footer>
-      <button type="button" class="button button-primary" (click)="deleteLocationReservation()">
-        {{'management.reservations.location.deleteModal.yesButton' | translate}}
-      </button>
-      <button type="button" class="button button-secondary" (click)="closeModal()">
-        {{'management.reservations.location.deleteModal.noButton' | translate}}
-      </button>
+    <div modal-footer fxLayout="row wrap" fxLayoutGap="10px grid">
+      <div>
+        <button type="button" class="button button-primary" (click)="deleteLocationReservation()">
+          {{'management.reservations.location.deleteModal.yesButton' | translate}}
+        </button>
+      </div>
+      <div>
+        <button type="button" class="button button-secondary" (click)="closeModal()">
+          {{'management.reservations.location.deleteModal.noButton' | translate}}
+        </button>
+      </div>
     </div>
 
     <div modal-message-footer>
