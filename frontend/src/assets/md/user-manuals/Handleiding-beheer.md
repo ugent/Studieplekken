@@ -99,6 +99,19 @@ Toezichthouders zijn vrijwilligers of medewerkers die de aanwezigheden gaan opne
 
 Voor meer informatie over het opnemen van aanwezigheden ga naar de vrijwilligerspagina.
 
+## Stafpunten
+
+Je kan er als beheerder van een lokatie ook voor kiezen om mee te stappen in het strafpuntensysteem. In dat systeem worden studenten strafpunten toegekend als ze te vaak reservaties maken zonder deze ook te benutten. Als ze te veel strafpunten hebben kunnen ze gedurende een bepaalde periode niet meer reserveren. Op die manier streven wij naar een betere bezetting van de studieplekken.
+
+Beheerders hebben de mogelijkheid om de strafpunten van mensen die reserveerden in te kijken, en er eventueel toe te voegen. Dit kan door naar de beheerderspagina te gaan, daar een tijdsslot uit te kiezen en deze aan te klikken zoals gewoonlijk om de reservatielijst te krijgen. Je kan daar zien dat er nu een extra knop is aangevuld die je kan aanklikken om de strafpunten van die persoon te bekijken. Via deze knop kan je ook manuele strafpunten toevoegen.
+
+Stafpunten voor afwezig zijn en late verwijderingen te doen zijn telkens automatisch toegekend.
+
+![](./assets/md/user-manuals/images/dutch/voorbeeld-strafpunten.png)
+
+
+Dit systeem heeft geen invloed op reserveringen waarbij de locatiebeheerder niet de keuze maakt om toe te treden tot het systeem.
+
 ## Nog vragen?
 
 Indien er verdere vragen zijn contacteer je best de administrator van je onderwijsinstelling. Deze kan je normaal gezien verder helpen.

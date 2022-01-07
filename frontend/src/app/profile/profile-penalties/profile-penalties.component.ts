@@ -1,12 +1,10 @@
 import { Component } from '@angular/core';
-import { User } from '../../shared/model/User';
-import { AuthenticationService } from '../../services/authentication/authentication.service';
-import { Observable } from 'rxjs';
-import { tap } from "rxjs/operators"
-import { Penalty } from '../../shared/model/Penalty';
-import { Location } from '../../shared/model/Location';
-import { LocationService } from '../../services/api/locations/location.service';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
+import { merge, Observable, of } from 'rxjs';
+import { map } from "rxjs/operators";
 import { PenaltyList } from 'src/app/services/api/penalties/penalty.service';
+import { AuthenticationService } from '../../services/authentication/authentication.service';
+import { User } from '../../shared/model/User';
 
 @Component({
   selector: 'app-profile-penalties',
@@ -19,8 +17,17 @@ export class ProfilePenaltiesComponent {
 
   constructor(
     authenticationService: AuthenticationService,
+    private translationService: TranslateService
   ) {
     this.penalties = authenticationService.penaltyObservable
   }
 
+  currentLanguage(): Observable<string> {
+    return merge<LangChangeEvent, LangChangeEvent>(
+      of<LangChangeEvent>({
+        lang: this.translationService.currentLang,
+      } as LangChangeEvent),
+      this.translationService.onLangChange
+    ).pipe(map((s) => s.lang));
+  }
 }

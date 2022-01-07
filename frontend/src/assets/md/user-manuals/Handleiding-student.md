@@ -21,7 +21,9 @@ Op de hoofdpagina kan je alle ruimtes vinden die door jou gereserveerd kunnen wo
 
 ## Studieruimte reserveren
 
-Wanneer je op de pagina bent van een studieruimte zal je een kalender zien waar je aan de hand van de knoppen kan navigeren doorheen de tijd. Na het kiezen van een moment dat nog plaatsen heeft kan je een reservatie maken door het tijdsblok te selecteren en op "update reservatie" te klikken en te confirmeren. Je mag deze locatie na reservatie dus gebruiken gedurende de hele reservatieperiode. Indien er geen plaats meer is zal je bijvoorbeeld 200/200 reservaties zien, dat wil dus zeggen dat alle plaatsen bezet zijn.
+Wanneer je op de pagina bent van een studieruimte zal je een kalender zien waar je aan de hand van de knoppen kan navigeren doorheen de tijd. Na het kiezen van een moment dat nog plaatsen heeft kan je een reservatieaanvraag maken door het tijdsblok te selecteren en op "update reservatie" te klikken en te confirmeren. Je reservatie wordt dan bekeken, en eventueel goedgekeurd. Je mag deze locatie na goedkeuring van je reservatie dus gebruiken gedurende de hele reservatieperiode. Indien er geen plaats meer is zal je bijvoorbeeld 200/200 reservaties zien, dat wil dus zeggen dat alle plaatsen bezet zijn.
+
+Gedurende de eerste tien minuten van een reservatieperiode kan men zich in een wachtrij plaatsen. Als deze tien minuten voorbij zijn zullen de plaatsen dan op volstrekt willekeurige wijze worden toegekend aan de mensen die een aanvraag hebben ingediend. Als deze tien minuten voorbij zijn wordt de wachtrij afgesloten, en zullen reservaties terug meteen worden opgenomen.
 
 ![](./assets/md/user-manuals/images/dutch/calendar_navigation.png)
 
@@ -44,6 +46,21 @@ Hier kan je je reserveringen ook verwijderen indien nodig, door op het kruisje t
 Bij het aankomen aan een studieplek zullen aanwezigheden worden opgenomen. Dit kan met behulp van je studentenkaart of de QR-code op je profiel. Hou zeker rekening met de regels van die locatie! Je kan die doorgaans vinden in de locatiebeschrijving.
 
 <br />
+
+## Strafpunten
+
+Sinds 10 januari 2021 geldt het puntensysteem op de bloklocaties. Het puntensysteem omvat verschillende parameters om te garanderen de studieplekken optimaal benut worden, waaronder:
+
+  -  Laattijdige annulering reservatie (<24u): 20 punten
+  -  Annulering reservatie tijdens scanmoment: 25 punten
+  -  Laattijdige annulering reservatie twee dagen na elkaar: 50 punten
+  -  Niet opdagen op studieplek (incl. te laat komen): 50 punten
+  -  Mondmasker niet willen dragen: 50 punten
+  -  Niet komen opdagen/Te laat komen op de locatie twee dagen na elkaar: 100 punten
+  -  Vandalisme en losbandigheid: 150 punten
+
+Iedere student start met 0 punten. Vanaf 100 punten kan je geen reservaties meer plaatsen op de applicatie tot en met het einde van de examenperiode.
+<br/>
 
 ## Nog vragen?
 

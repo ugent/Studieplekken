@@ -8,20 +8,7 @@
   <!-- Show information about penalty points -->
   <div class="row">
     <div class="container-fluid">
-      <p>
-        {{'profile.penalties.information.1' | translate}}<br>
-        {{'profile.penalties.information.2' | translate}}<br>
-        {{'profile.penalties.information.3' | translate}}<br><br>
-        {{'profile.penalties.information.4' | translate}}<br>
-      </p>
-
-      <ul>
-        <li>{{'profile.penalties.information.li.1' | translate}}</li>
-        <li>{{'profile.penalties.information.li.2' | translate}}</li>
-        <li>{{'profile.penalties.information.li.3' | translate}}</li>
-        <li>{{'profile.penalties.information.li.4' | translate}}</li>
-      </ul>
-    </div>
+      <markdown *ngIf="currentLanguage() | async as currlan" src="assets/md/information-penalty.{{currlan}}.md"></markdown>
   </div>
 
   <hr>
