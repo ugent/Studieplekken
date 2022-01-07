@@ -59,6 +59,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MomentDateComponent } from './shared/inputs/moment-date/moment-date.component';
 import { FormatStatusPipe } from './shared/pipes/FormatStatusPipe';
+import { FormatActionPipe } from './shared/pipes/FormatActionPipe';
 import { MomentDateTimeComponent } from './shared/inputs/moment-datetime/moment-datetime.component';
 import { LocationOpeningperiodDialogComponent } from './management/locations-management/location-details-management/location-calendar/location-openingperiod-dialog/location-openingperiod-dialog.component';
 import { BuildingManagementComponent } from './management/building-management/building-management.component';
@@ -94,6 +95,7 @@ import { DesktopTableComponent } from './stad-gent-components/atoms/table/deskto
 import { MobileTableComponent } from './stad-gent-components/atoms/table/mobile-table/mobile-table.component';
 import { EntryComponent } from './entry/entry.component';
 import { ImpersonateInterceptor } from './services/authentication/impersonate.interceptor';
+import { ActionLogComponent } from './management/action-log/action-log.component';
 import { AfterReservationComponent } from './dashboard/location-details/modals/after-reservation/after-reservation.component';
 import { PenaltyTableComponent } from './shared/penalties/penalty-table/penalty-table.component';
 import { UserPenaltyManagerComponent } from './shared/penalties/user-penalty-manager/user-penalty-manager.component';
@@ -250,10 +252,17 @@ const routes: Routes = [
         canActivate: [AuthorizationGuardService],
       },
       {
+<<<<<<< HEAD
         path: "penalty",
         component: PenaltiesManagementComponent,
         canActivate: [AuthorizationGuardService]
       }
+=======
+        path: 'actionlog',
+        component: ActionLogComponent,
+        canActivate: [AuthorizationGuardService]
+      },
+>>>>>>> release/2.1
     ],
   },
 
@@ -318,6 +327,7 @@ const routes: Routes = [
     AdminsManagementComponent,
     TimeslotTableComponent,
     FormatStatusPipe,
+    FormatActionPipe,
     OpeningHoursOverviewComponent,
     ScanningLocationsComponent,
     ScanningLocationDetailsComponent,
@@ -337,10 +347,15 @@ const routes: Routes = [
     DesktopTableComponent,
     MobileTableComponent,
     EntryComponent,
+<<<<<<< HEAD
     AfterReservationComponent,
     PenaltyTableComponent,
     UserPenaltyManagerComponent,
     PenaltiesManagementComponent
+=======
+    ActionLogComponent,
+    AfterReservationComponent
+>>>>>>> release/2.1
   ],
   imports: [
     BrowserModule,
@@ -383,6 +398,7 @@ const routes: Routes = [
   ],
   providers: [
     FormatStatusPipe,
+    FormatActionPipe,
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ImpersonateInterceptor, multi: true },
 

@@ -1,0 +1,16 @@
+th > .order-marker-outer {
+    cursor:pointer;
+}
+.clickable {
+    cursor: pointer;
+}
+.order-marker-inner {
+    position: absolute;
+    margin-top: auto;
+    margin-bottom: auto;
+    border: 1px solid red;
+}
+
+.order-marker {
+    padding-top: 10px;
+}

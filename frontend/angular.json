@@ -26,6 +26,7 @@
 						"assets": [
 							"src/favicon.ico",
 							"src/assets",
+							"src/assets/icon/*",
 							{
 								"input": "node_modules/gent_styleguide/build/styleguide/",
 								"glob": "**/*",
