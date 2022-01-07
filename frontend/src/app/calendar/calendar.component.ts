@@ -6,6 +6,7 @@ import {
   Output,
   OnChanges,
   SimpleChanges,
+  HostListener
 } from '@angular/core';
 import {CalendarView, CalendarEvent} from 'angular-calendar';
 import { BehaviorSubject, Subject } from 'rxjs';
@@ -27,6 +28,10 @@ export class CalendarComponent implements OnInit, OnChanges {
 
   openingHour: number;
   closingHour: number;
+  MOBILE_SIZE = 500;
+  HALF_SCREEN_SIZE = 1200;
+  isMobile: boolean;
+  isHalfScreen: boolean;
 
   @Input() events: CalendarEvent[];
   @Input() refresh: Subject<unknown>;
@@ -62,14 +67,21 @@ export class CalendarComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
+    this.isMobile = window.innerWidth < this.MOBILE_SIZE;
     this.currentLang = this.translate.currentLang;
     this.eventsSubj.subscribe((next) => {
       this.changeCalendarSize(next);
     });
 
-    this.setView(this.breakpointObserver.isMatched('(max-width: 400px)') ? CalendarView.Day:CalendarView.Week);
+    this.setView(this.breakpointObserver.isMatched('(max-width: 500px)') ? CalendarView.Day:CalendarView.Week);
 
   }
+
+  @HostListener('window:resize', ['$event'])
+   onResize(event) {
+     this.isMobile = window.innerWidth < this.MOBILE_SIZE;
+     this.isHalfScreen= window.innerWidth < this.HALF_SCREEN_SIZE;
+   }
 
   ngOnChanges(changes: SimpleChanges): void {
 
@@ -115,5 +127,18 @@ export class CalendarComponent implements OnInit, OnChanges {
 
   emitDate(event: any) {
     this.currentEventTimeChange.next(moment(event))
+  }
+
+  getWrapLayout(){
+    if(this.isMobile){
+      return "row wrap";
+    }else if(this.isHalfScreen){
+      return "row wrap";
+    }
+    return "row nowrap";
+  }
+
+  getWrapMargin(){
+    return this.isMobile ? "margin-left" : "";
   }
 }

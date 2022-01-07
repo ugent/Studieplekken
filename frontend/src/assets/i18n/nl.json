@@ -77,7 +77,7 @@
         }
       },
       "loginWarning": "Voordat er reservaties kunnen geplaatst worden voor deze locatie, dient u ingelogd te zijn.",
-      "refreshWarning": "Herladen van de kalendar zal automatisch gebeuren, het is niet nodig om manueel de pagina te herladen."
+      "refreshWarning": "Herladen van de kalender zal automatisch gebeuren, het is niet nodig om manueel de pagina te herladen."
     },
     "filter": {
       "title": "Filter",
@@ -458,6 +458,7 @@
       },
       "checkAddress": "Check",
       "addNewBuilding": "Nieuw gebouw",
+      "incorrectAddress": "Gegeven adres bestaat niet.",
       "addBuildingModal": {
         "title": "Nieuw gebouw maken",
         "idSetByBackendMessage": "Ingesteld door backend",

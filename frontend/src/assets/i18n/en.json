@@ -455,6 +455,7 @@
       },
       "checkAddress": "Check",
       "addNewBuilding": "New building",
+      "incorrectAddress": "Filled in address does not exist.",
       "addBuildingModal": {
         "title": "Add new building",
         "idSetByBackendMessage": "Set by backend",

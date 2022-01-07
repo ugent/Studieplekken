@@ -19,6 +19,9 @@ export class ManagementComponent implements OnInit {
   showVolunteersManagement: boolean;
   showActionlog: boolean;
   showStagingWarning = environment.showStagingWarning;
+  isMobile: boolean;
+  MOBILE_SIZE = 500;
+
 
   constructor(
     private functionalityService: ApplicationTypeFunctionalityService,
@@ -49,5 +52,10 @@ export class ManagementComponent implements OnInit {
     );
 
     this.breadcrumbsService.setCurrentBreadcrumbs([managementBreadcrumb]);
+    this.isMobile = window.innerWidth < this.MOBILE_SIZE;
+  }
+
+  getSize() {
+    return this.isMobile ? "80%" : "23%";
   }
 }

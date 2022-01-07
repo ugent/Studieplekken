@@ -6,7 +6,7 @@
 
 
     <!-- Menu for /management -->
-    <aside fxFlex="0 1 calc(23% - 32px);">
+    <aside fxFlex="0 1 calc({{getSize()}} - 0px);" class="bottom-margin">
       <section class="highlight highlight--top">
         <br/>
         <div class="highlight__inner no-right-padding">
@@ -22,12 +22,14 @@
               <a routerLink="./authorities"  *ngIf="showAdmin">{{'management.aside.authorities' | translate}}</a>
               <a routerLink="./admins"  *ngIf="showAdmin">{{'management.aside.admins' | translate}}</a>
               <a routerLink="./penalties"  *ngIf="showPenalties">{{'management.aside.penalties' | translate}}</a>
-              <a routerLink="./actionlog" *ngIf="showActionlog">{{'management.aside.actionlog' | translate}}</a> 
+              <a routerLink="./actionlog" *ngIf="showActionlog">{{'management.aside.actionlog' | translate}}</a>
 
           </div>
         </div>
       </section>
     </aside>
+
+    <br/>
 
     <article fxFlex="0 1 calc(75% - 32px);" class="add-min-width">
       <section class="messages messages--error" *ngIf="showStagingWarning">
