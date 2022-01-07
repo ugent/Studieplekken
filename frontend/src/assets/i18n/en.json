@@ -169,14 +169,48 @@
       "calendar": "Calendar",
       "penalties": "Penalties",
       "admins": "Admins",
-      "volunteers": "Supervisors"
+      "volunteers": "Supervisors",
+      "actionlog": "Action log"
+    },
+    "actionlog": {
+      "title": "A logbook of all important recent actions",
+      "table": {
+        "type": "Type",
+        "domain": "Domain",
+        "description": "Description",
+        "username": "Username",
+        "userid": "User ID",
+        "time": "Time"
+      },
+      "descriptionFormatId": "Attempt to %action the %subject with id %id.",
+      "descriptionFormatNoId": "Attempt to %action a/an %subject.",
+      "type": {
+        "INSERTION": "Insertion",
+        "DELETION": "Deletion",
+        "UPDATE": "Update",
+        "OTHER": "Other"
+      },
+      "action": {
+        "INSERTION": "create",
+        "DELETION": "delete",
+        "UPDATE": "update",
+        "OTHER": "do an unknown action"
+      },
+      "domain": {
+        "LOCATION": "location",
+        "BUILDING": "building",
+        "AUTHORITY": "authority",
+        "USER": "user",
+        "PASSWORD": "password"
+      }
     },
     "general": {
       "loading": "Loading...",
       "noLocations": "There are no rooms yet, make one using the 'Add room' button",
       "noBuildings": "There are no buildings yet, make one using the 'Add Building' button",
       "noTags": "There are no tags yet, make one using the 'Add Tag' button",
-      "noAuthorities": "There are no authorities yet, make on using the 'Add Authority' button"
+      "noAuthorities": "There are no authorities yet, make on using the 'Add Authority' button",
+      "noActions": "There are no actions yet. They will be added automatically when important actions are performed."
     },
     "locationDetails": {
       "title": "Details of {locationName}",

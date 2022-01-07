@@ -5,23 +5,20 @@ import blok2.helpers.LocationWithApproval;
 import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.helpers.exceptions.AlreadyExistsException;
 import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
-import blok2.helpers.exceptions.NotAuthorizedException;
 import blok2.helpers.orm.LocationNameAndNextReservableFrom;
 import blok2.mail.MailService;
+import blok2.model.ActionLogEntry;
 import blok2.model.reservables.Location;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.mail.MessagingException;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +39,7 @@ public class LocationController extends AuthorizedLocationController {
     private final IUserDao userDao;
     private final IVolunteerDao volunteerDao;
     private final ILocationReservationDao locationReservationDao;
+    private final IActionLogDao actionLogDao;
 
     private final MailService mailService;
 
@@ -51,13 +49,14 @@ public class LocationController extends AuthorizedLocationController {
 
     @Autowired
     public LocationController(ILocationDao locationDao, ILocationTagDao locationTagDao, IUserDao userDao,
-                              IVolunteerDao volunteerDao, MailService mailService, ILocationReservationDao locationReservationDao) {
+                              IVolunteerDao volunteerDao, MailService mailService, ILocationReservationDao locationReservationDao, IActionLogDao actionLogDao) {
         this.locationDao = locationDao;
         this.locationTagDao = locationTagDao;
         this.userDao = userDao;
         this.mailService = mailService;
         this.volunteerDao = volunteerDao;
         this.locationReservationDao = locationReservationDao;
+        this.actionLogDao = actionLogDao;
     }
 
     @GetMapping
@@ -88,6 +87,9 @@ public class LocationController extends AuthorizedLocationController {
     @PostMapping
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void addLocation(@AuthenticationPrincipal User user, @RequestBody Location location) {
+        System.out.println(user);
+        ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.Type.INSERTION, user, ActionLogEntry.Domain.LOCATION);
+        actionLogDao.addLogEntry(logEntry);
         isAuthorized((l, $) -> hasAuthority(l.getAuthority()), location);
         try {
             locationDao.getLocationByName(location.getName());
@@ -104,6 +106,8 @@ public class LocationController extends AuthorizedLocationController {
     @PutMapping("/{locationId}")
     @PreAuthorize("@authorizedInstitutionController.hasAuthorityLocation(authentication.principal, #locationId)")
     public void updateLocation(@AuthenticationPrincipal User user, @PathVariable("locationId") int locationId, @RequestBody Location location) {
+        ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.Type.UPDATE, user, ActionLogEntry.Domain.LOCATION, locationId);
+        actionLogDao.addLogEntry(logEntry);
         isAuthorized(locationId);
 
         locationDao.updateLocation(location);
@@ -112,7 +116,9 @@ public class LocationController extends AuthorizedLocationController {
 
     @PutMapping("/{locationId}/approval")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public void approveLocation(@PathVariable("locationId") int locationId, @RequestBody LocationWithApproval landa) {
+    public void approveLocation(@PathVariable("locationId") int locationId, @RequestBody LocationWithApproval landa, @AuthenticationPrincipal User user) {
+        ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.Type.OTHER, user, ActionLogEntry.Domain.LOCATION, locationId);
+        actionLogDao.addLogEntry(logEntry);
         locationDao.approveLocation(landa.getLocation(), landa.isApproval());
         logger.info(String.format("Location %d approved", locationId));
     }
@@ -121,7 +127,9 @@ public class LocationController extends AuthorizedLocationController {
     //the updated location should be part of an authority the user is part of.
     @DeleteMapping("/{locationId}")
     @PreAuthorize("@authorizedInstitutionController.hasAuthorityLocation(authentication.principal, #locationId)")
-    public void deleteLocation(@PathVariable("locationId") int locationId) {
+    public void deleteLocation(@PathVariable("locationId") int locationId, @AuthenticationPrincipal User user) {
+        ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.Type.DELETION, user, ActionLogEntry.Domain.LOCATION, locationId);
+        actionLogDao.addLogEntry(logEntry);
         isAuthorized(locationId);
 
         // Send email to all users who has a reservation for this location.
@@ -140,14 +148,18 @@ public class LocationController extends AuthorizedLocationController {
 
     @PostMapping("/{locationId}/volunteers/{userId}")
     @PreAuthorize("@authorizedInstitutionController.hasAuthorityLocation(authentication.principal, #locationId)")
-    public void addVolunteer(@PathVariable int locationId, @PathVariable String userId) {
+    public void addVolunteer(@PathVariable int locationId, @PathVariable String userId, @AuthenticationPrincipal User user) {
+        ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.Type.OTHER, user, ActionLogEntry.Domain.LOCATION, locationId);
+        actionLogDao.addLogEntry(logEntry);
         isAuthorized(locationId);
         volunteerDao.addVolunteer(locationId, userId);
     }
 
     @DeleteMapping("/{locationId}/volunteers/{userId}")
     @PreAuthorize("@authorizedInstitutionController.hasAuthorityLocation(authentication.principal, #locationId)")
-    public void deleteVolunteer(@PathVariable int locationId, @PathVariable String userId) {
+    public void deleteVolunteer(@PathVariable int locationId, @PathVariable String userId, @AuthenticationPrincipal User user) {
+        ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.Type.OTHER, user, ActionLogEntry.Domain.LOCATION, locationId);
+        actionLogDao.addLogEntry(logEntry);
         isAuthorized(locationId);
         volunteerDao.deleteVolunteer(locationId, userId);
     }

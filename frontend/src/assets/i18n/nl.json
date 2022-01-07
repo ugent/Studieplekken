@@ -171,14 +171,48 @@
       "calendar": "Kalender",
       "penalties": "Overtredingen",
       "admins": "Admins",
-      "volunteers": "Toezichthouders"
+      "volunteers": "Toezichthouders",
+      "actionlog": "Actie logboek"
+    },
+    "actionlog": {
+      "title": "Een logboek van alle belangrijke recent uitgevoerde acties",
+      "table": {
+        "type": "Type",
+        "domain": "Domein",
+        "description": "Omschrijving",
+        "username": "Gebruikersnaam",
+        "userid": "Gebruikers ID",
+        "time": "Tijdstip"
+      },
+      "descriptionFormatId": "Poging om de %subject met id %id te %action.",
+      "descriptionFormatNoId": "Poging om een %subject te %action.",
+      "type": {
+        "INSERTION": "Toevoeging",
+        "DELETION": "Verwijdering",
+        "UPDATE": "Wijziging",
+        "OTHER": "Andere"
+      },
+      "action": {
+        "INSERTION": "aanmaken",
+        "DELETION": "verwijderen",
+        "UPDATE": "wijzigen",
+        "OTHER": "wijzigen"
+      },
+      "domain": {
+        "LOCATION": "locatie",
+        "BUILDING": "gebouw",
+        "AUTHORITY": "authoriteit",
+        "USER": "gebruiker",
+        "PASSWORD": "wachtwoord"
+      }
     },
     "general": {
       "loading": "Aan het laden...",
       "noLocations": "Er zijn nog geen beschikbare ruimtes. Maak er een aan met de knop 'Ruimte Toevoegen'",
       "noBuildings": "Er zijn nog geen beschikbare gebouwen. Maak er een aan met de knop 'Gebouw toevoegen",
       "noTags": "Er zijn nog geen tags. Maak er een aan met de knop 'Tag Toevoegen'",
-      "noAuthorities": "Er zijn nog geen autoriteiten aangemaakt. Maak er een aan met de knop 'Autoriteit Toevoegen'"
+      "noAuthorities": "Er zijn nog geen autoriteiten aangemaakt. Maak er een aan met de knop 'Autoriteit Toevoegen'",
+      "noActions": "Er zijn nog geen acties. Deze zullen automatisch worden toegevoegd wanneer belangrijke acties worden uitgevoerd."
     },
     "locationDetails": {
       "title": "Details van {locationName}",

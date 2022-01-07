@@ -17,6 +17,7 @@ export class ManagementComponent implements OnInit {
   showTagManagement: boolean;
   showAdmin: boolean = this.authenticationService.isAdmin();
   showVolunteersManagement: boolean;
+  showActionlog: boolean;
   showStagingWarning = environment.showStagingWarning;
 
   constructor(
@@ -43,6 +44,7 @@ export class ManagementComponent implements OnInit {
         this.showTagManagement = authenticatedUser.admin;
         this.showVolunteersManagement =
           authenticatedUser.admin || hasAuthorities;
+        this.showActionlog = authenticatedUser.admin;
       }
     );
 
