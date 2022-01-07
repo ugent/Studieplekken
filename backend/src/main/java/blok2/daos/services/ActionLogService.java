@@ -19,7 +19,7 @@ public class ActionLogService implements IActionLogDao {
     }
 
     @Override
-    public ActionLogEntry addLogEnty(ActionLogEntry entry) {
+    public ActionLogEntry addLogEntry(ActionLogEntry entry) {
         return actionLogRepository.save(entry);
     }
 

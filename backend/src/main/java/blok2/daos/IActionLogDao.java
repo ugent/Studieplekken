@@ -10,7 +10,7 @@ public interface IActionLogDao {
      * Add a new action to the action log.
      * @return : The added log entry.
      */
-    ActionLogEntry addLogEnty(ActionLogEntry entry);
+    ActionLogEntry addLogEntry(ActionLogEntry entry);
 
     /**
      * // TODO(ydndonck): Should probably only return a subset right? Should see if it becomes a problem maybe.

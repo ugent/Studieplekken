@@ -89,7 +89,7 @@ public class LocationController extends AuthorizedLocationController {
     public void addLocation(@AuthenticationPrincipal User user, @RequestBody Location location) {
         System.out.println(user);
         ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.Type.INSERTION, user, ActionLogEntry.Domain.LOCATION);
-        actionLogDao.addLogEnty(logEntry);
+        actionLogDao.addLogEntry(logEntry);
         isAuthorized((l, $) -> hasAuthority(l.getAuthority()), location);
         try {
             locationDao.getLocationByName(location.getName());
@@ -107,7 +107,7 @@ public class LocationController extends AuthorizedLocationController {
     @PreAuthorize("@authorizedInstitutionController.hasAuthorityLocation(authentication.principal, #locationId)")
     public void updateLocation(@AuthenticationPrincipal User user, @PathVariable("locationId") int locationId, @RequestBody Location location) {
         ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.Type.UPDATE, user, ActionLogEntry.Domain.LOCATION, locationId);
-        actionLogDao.addLogEnty(logEntry);
+        actionLogDao.addLogEntry(logEntry);
         isAuthorized(locationId);
 
         locationDao.updateLocation(location);
@@ -118,7 +118,7 @@ public class LocationController extends AuthorizedLocationController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public void approveLocation(@PathVariable("locationId") int locationId, @RequestBody LocationWithApproval landa, @AuthenticationPrincipal User user) {
         ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.Type.OTHER, user, ActionLogEntry.Domain.LOCATION, locationId);
-        actionLogDao.addLogEnty(logEntry);
+        actionLogDao.addLogEntry(logEntry);
         locationDao.approveLocation(landa.getLocation(), landa.isApproval());
         logger.info(String.format("Location %d approved", locationId));
     }
@@ -129,7 +129,7 @@ public class LocationController extends AuthorizedLocationController {
     @PreAuthorize("@authorizedInstitutionController.hasAuthorityLocation(authentication.principal, #locationId)")
     public void deleteLocation(@PathVariable("locationId") int locationId, @AuthenticationPrincipal User user) {
         ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.Type.DELETION, user, ActionLogEntry.Domain.LOCATION, locationId);
-        actionLogDao.addLogEnty(logEntry);
+        actionLogDao.addLogEntry(logEntry);
         isAuthorized(locationId);
 
         // Send email to all users who has a reservation for this location.
@@ -150,7 +150,7 @@ public class LocationController extends AuthorizedLocationController {
     @PreAuthorize("@authorizedInstitutionController.hasAuthorityLocation(authentication.principal, #locationId)")
     public void addVolunteer(@PathVariable int locationId, @PathVariable String userId, @AuthenticationPrincipal User user) {
         ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.Type.OTHER, user, ActionLogEntry.Domain.LOCATION, locationId);
-        actionLogDao.addLogEnty(logEntry);
+        actionLogDao.addLogEntry(logEntry);
         isAuthorized(locationId);
         volunteerDao.addVolunteer(locationId, userId);
     }
@@ -159,7 +159,7 @@ public class LocationController extends AuthorizedLocationController {
     @PreAuthorize("@authorizedInstitutionController.hasAuthorityLocation(authentication.principal, #locationId)")
     public void deleteVolunteer(@PathVariable int locationId, @PathVariable String userId, @AuthenticationPrincipal User user) {
         ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.Type.OTHER, user, ActionLogEntry.Domain.LOCATION, locationId);
-        actionLogDao.addLogEnty(logEntry);
+        actionLogDao.addLogEntry(logEntry);
         isAuthorized(locationId);
         volunteerDao.deleteVolunteer(locationId, userId);
     }

@@ -187,7 +187,7 @@ public class AccountController {
     @PreAuthorize("hasAuthority('USER')")
     public void changePassword(@RequestBody ChangePasswordBody body, @AuthenticationPrincipal User user) {
         ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.Type.UPDATE, user, ActionLogEntry.Domain.PASSWORD);
-        actionLogDao.addLogEnty(logEntry);
+        actionLogDao.addLogEntry(logEntry);
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 

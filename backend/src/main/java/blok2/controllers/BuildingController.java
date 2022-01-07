@@ -50,7 +50,7 @@ public class BuildingController {
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void addBuilding(@AuthenticationPrincipal User user, @RequestBody Building building) {
         ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.Type.INSERTION, user, ActionLogEntry.Domain.BUILDING);
-        actionLogDao.addLogEnty(logEntry);
+        actionLogDao.addLogEntry(logEntry);
         if (!user.isAdmin()) {
             if (!building.getInstitution().equals(user.getInstitution())) {
                 throw new NotAuthorizedException("You are not authorized to add a new building for this institution.");
@@ -64,7 +64,7 @@ public class BuildingController {
     @PreAuthorize("@authorizedInstitutionController.hasAuthorityBuilding(authentication.principal, #buildingId)")
     public void updateBuilding(@AuthenticationPrincipal User user, @PathVariable int buildingId, @RequestBody Building building) {
         ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.Type.UPDATE, user, ActionLogEntry.Domain.BUILDING, buildingId);
-        actionLogDao.addLogEnty(logEntry);
+        actionLogDao.addLogEntry(logEntry);
         if (!user.isAdmin()) {
             if (!building.getInstitution().equals(user.getInstitution())) {
                 throw new NotAuthorizedException("You are not authorized to update a building to an institution other than the one you belong to.");
@@ -78,7 +78,7 @@ public class BuildingController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public void deleteBuilding(@PathVariable int buildingId, @AuthenticationPrincipal User user) {
         ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.Type.DELETION, user, ActionLogEntry.Domain.BUILDING, buildingId);
-        actionLogDao.addLogEnty(logEntry);
+        actionLogDao.addLogEntry(logEntry);
         buildingDao.deleteBuilding(buildingId);
         logger.info(String.format("Removed building with id '%d'", buildingId));
     }
