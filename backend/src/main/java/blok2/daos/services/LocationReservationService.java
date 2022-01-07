@@ -31,15 +31,18 @@ public class LocationReservationService implements ILocationReservationDao {
     private final ReservationManager reservationManager;
 
     private final DBLocationReservationDao locationReservationDao;
+    private final PenaltyService penaltyService;
 
     @Autowired
     public LocationReservationService(LocationReservationRepository locationReservationRepository,
                                       UserRepository userRepository,
-                                      ReservationManager reservationManager, DBLocationReservationDao locationReservationDao) {
+                                      ReservationManager reservationManager, DBLocationReservationDao locationReservationDao,
+                                      PenaltyService pService) {
         this.locationReservationRepository = locationReservationRepository;
         this.userRepository = userRepository;
         this.reservationManager = reservationManager;
         this.locationReservationDao = locationReservationDao;
+        this.penaltyService = pService;
     }
 
     @Override
@@ -103,7 +106,8 @@ public class LocationReservationService implements ILocationReservationDao {
         System.out.println(locationReservation);
         System.out.println(temp);
         locationReservation.setState(LocationReservation.State.DELETED);
-        locationReservationRepository.save(locationReservation);
+        LocationReservation lr = locationReservationRepository.save(locationReservation);
+        this.penaltyService.notifyOfReservationDeletion(lr);
         /*locationReservationRepository.deleteById(new LocationReservation.LocationReservationId(
                 locationReservation.getTimeslot().getTimeslotSeqnr(), locationReservation.getUser().getUserId()
         ));*/
@@ -133,6 +137,8 @@ public class LocationReservationService implements ILocationReservationDao {
         }
         locationReservation.setState(state);
         locationReservation = locationReservationRepository.saveAndFlush(locationReservation);
+        this.penaltyService.notifyOfReservationAttendance(locationReservation);
+
         return locationReservation.getStateE() == state;
     }
     

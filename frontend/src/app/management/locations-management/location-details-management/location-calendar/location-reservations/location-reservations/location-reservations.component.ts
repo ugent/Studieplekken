@@ -43,6 +43,7 @@ export class LocationReservationsComponent {
   waitingForServer = false;
 
   selectionTimeout: number;
+  penaltyManagerUser: User;
 
   userHasSearchTerm: (u: User) => boolean = (u: User) =>
     u.userId.includes(this.searchTerm) ||
@@ -253,6 +254,8 @@ export class LocationReservationsComponent {
   }
 
   filter(locationReservations: LocationReservation[]): LocationReservation[] {
+    locationReservations = locationReservations.filter(r => r.state !== LocationReservationState.DELETED);
+
     // Sorting the searchTerm hits first. After that, fallback on name sorting (createdAt is not available here)
     locationReservations.sort((a, b) => {
       if (a === this.lastScanned || b === this.lastScanned) {
@@ -293,14 +296,21 @@ export class LocationReservationsComponent {
   }
 
   getTableData(locationReservations: LocationReservation[]): TabularData<LocationReservation> {
-    return this.tabularDataService.reservationsToScanningTable(locationReservations)
+    return this.tabularDataService.reservationsToScanningTable(locationReservations, this.isManagement)
   }
 
-  onAction({columnIndex, data}: {columnIndex: number, data: LocationReservation}, errorTemplate: TemplateRef<unknown>) {
-    if(columnIndex == 2)
+  onAction({columnIndex, data}: {columnIndex: number, data: LocationReservation}, errorTemplate: TemplateRef<unknown>, penaltyManager: TemplateRef<unknown>) {
+    if(columnIndex == 3)
       return this.scanLocationReservation(data, true, errorTemplate);
-    else if(columnIndex == 3)
+    else if(columnIndex == 4)
       return this.scanLocationReservation(data, false, errorTemplate);
+    else if (columnIndex == 2) {
+      this.openPenaltyBox(
+        data,
+        penaltyManager
+      )
+
+      }
     }
 
   selectInputBox() {
@@ -314,5 +324,10 @@ export class LocationReservationsComponent {
       clearTimeout(this.selectionTimeout);
 
       this.selectionTimeout = setTimeout(() => this.selectInputBox(), 800);
+  }
+
+  openPenaltyBox(locres: LocationReservation, modal: TemplateRef<unknown>) {
+    this.penaltyManagerUser = locres.user;
+    this.modalService.open(modal, {panelClass: ["cs--cyan", "bigmodal"]});
   }
 }

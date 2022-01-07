@@ -1,4 +1,14 @@
 {
+  "penalties": {
+    "management": {
+      "header": "Manage user penalties",
+      "subheader": "Penalties for",
+      "addButton": "Add Penalty",
+      "points": "Points",
+      "description": "Description",
+      "confirm": "Confirm"
+    }
+  },
   "calendar": {
     "previous": "Previous",
     "today": "Today",
@@ -17,6 +27,7 @@
     "supervisor": "Supervisor"
   },
   "dashboard": {
+    "penaltyWarning": "This location uses penalty points! Please refer to the information page for more details.",
     "alert": {
       "title": "[FRIDAY DECEMBER 11th, RESERVATIONS AT DIFFERENT TIMES]",
       "p1": "Reservations will take place at 19:00, 19:30 and 20:00 depending on the location. Be sure to check in advance when the reservations will open (see symbol).",
@@ -88,7 +99,8 @@
     "terms-of-use": "Terms of use"
   },
   "reservations": {
-    "reservationButton": "Update Reservations"
+    "reservationButton": "Update Reservations",
+    "tooManyPenalty": "You have too many penalty points. Please refer to the information page."
   },
   "general": {
     "dsa": "Student Activities Office",
@@ -229,7 +241,8 @@
         "success": "Successfully updated the room",
         "error": "An error occurred while updating the room",
         "numberOfSeatsApplyWarning": "The changed seats will only be applied to newly created opening periods",
-        "numberOfSeatsHelp": "Can only be updated by an admin."
+        "numberOfSeatsHelp": "Can only be updated by an admin.",
+        "usesPenaltyPoints": "Uses penalty points"
       },
       "calendar": {
         "title": "Reservation Management",
@@ -251,7 +264,8 @@
             "yetToScan": "Yet to scan",
             "notScanned": "Not scanned",
             "startScanning": "Start scanning",
-            "finishScanning": "Finish scanning"
+            "finishScanning": "Finish scanning",
+            "penalties": "Penalties"
           }
         },
         "form": {
@@ -562,12 +576,11 @@
         "penalties": {
           "title": "Penalties of {name}",
           "table": {
-            "eventCode": "Penalty event code",
-            "timestamp": "Timestamp",
-            "location": "Room",
+            "timestamp": "Date of penalty",
             "receivedPoints": "Received points",
-            "remarks": "Remark",
+            "description": "Description",
             "addNew": "Add penalty",
+            "issuer": "Issuer",
             "addPenaltyModalView": {
               "title": "Add new penalty",
               "addButton": "Add",
@@ -843,9 +856,21 @@
           "timestamp": "Timestamp",
           "reservationDate": "Reservation for",
           "location": "Room",
-          "receivedPoints": "Received points"
+          "receivedPoints": "Received points",
+          "issuer": "Issuer",
+          "description": "Description",
+          "designee": "Designee",
+          "delete": "Delete"
         },
-        "noPenalties": "You have had no penalties so far. Very good!"
+        "system": "System",
+        "noPenalties": "You have had no penalties so far. Very good!",
+        "not": {
+          "attended": "User didn't attend a reservation."
+        },
+        "late": {
+          "delete": "User deleted this reservation too late."
+        }
+
       }
     },
     "reservations": {

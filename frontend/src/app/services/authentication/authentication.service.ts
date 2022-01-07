@@ -9,7 +9,7 @@ import { User, UserConstructor } from '../../shared/model/User';
 import { api } from '../api/endpoints';
 import { LocationReservationsService } from '../api/location-reservations/location-reservations.service';
 import { LockerReservationService } from '../api/locker-reservations/locker-reservation.service';
-import { PenaltyService } from '../api/penalties/penalty.service';
+import { PenaltyList, PenaltyService } from '../api/penalties/penalty.service';
 import { UserService } from '../api/users/user.service';
 import { LoginRedirectService } from './login-redirect.service';
 
@@ -39,6 +39,9 @@ export class AuthenticationService {
   public hasAuthoritiesObs: Observable<boolean> = this.hasAuthoritiesSubject.asObservable();
   private hasVolunteeredSubject: Subject<boolean> = new ReplaySubject<boolean>();
   public hasVolunteeredObs: Observable<boolean> = this.hasVolunteeredSubject.asObservable();
+
+  private penaltySubject: Subject<PenaltyList> = new ReplaySubject<PenaltyList>();
+  public penaltyObservable = this.penaltySubject.asObservable();
 
   constructor(
     private http: HttpClient,
@@ -81,6 +84,7 @@ export class AuthenticationService {
       (next) => {
         this.updateHasAuthoritiesSubject(next);
         this.updateHasVolunteeredSubject(next);
+        this.updatePenaltiesSubject(next);
         this.userSubject.next(next);
 
         if(next.userId && redirect)
@@ -180,25 +184,29 @@ export class AuthenticationService {
     );
   }
 
-  getPenalties(): Observable<Penalty[]> {
+  getPenalties(userId: string): Observable<PenaltyList> {
     return this.penaltyService.getPenaltiesOfUserById(
-      this.userSubject.value.userId
+      userId
     );
   }
 
   // *******************
   // *   Auxiliaries   *
   // *******************
-  updateHasAuthoritiesSubject(user: User): void {
+  private updateHasAuthoritiesSubject(user: User): void {
     this.userService.hasUserAuthorities(user.userId).subscribe((next) => {
       this.hasAuthoritiesSubject.next(next);
     });
   }
 
-  updateHasVolunteeredSubject(user: User): void {
+  private updateHasVolunteeredSubject(user: User): void {
     this.userService.hasUserVolunteered(user.userId).subscribe((next) => {
       this.hasVolunteeredSubject.next(next);
     });
+  }
+
+  private updatePenaltiesSubject(user: User): void {
+    this.getPenalties(user.userId).subscribe(p => this.penaltySubject.next(p));
   }
 
   substituteLogin(email: string) {

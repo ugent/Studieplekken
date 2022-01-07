@@ -84,6 +84,7 @@ public class LocationService implements ILocationDao {
         originalLocation.setImageUrl(location.getImageUrl());
         originalLocation.setDescriptionDutch(location.getDescriptionDutch());
         originalLocation.setDescriptionEnglish((location.getDescriptionEnglish()));
+        originalLocation.setUsesPenaltyPoints(location.isUsesPenaltyPoints());
         locationRepository.save(originalLocation);
     }
 

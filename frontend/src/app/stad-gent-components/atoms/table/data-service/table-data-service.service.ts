@@ -5,7 +5,7 @@ import { LocationService } from 'src/app/services/api/locations/location.service
 import { Location } from 'src/app/shared/model/Location';
 import { LocationReservation, LocationReservationState } from 'src/app/shared/model/LocationReservation';
 import { User } from 'src/app/shared/model/User';
-import { TabularData } from '../tabular-data';
+import { ActionColumn, TabularData } from '../tabular-data';
 
 @Injectable({
   providedIn: 'root',
@@ -101,8 +101,19 @@ export class TableDataService {
     }
   }
 
-  reservationsToScanningTable(reservations: LocationReservation[]): TabularData<LocationReservation> {
-    return {
+  reservationsToScanningTable(reservations: LocationReservation[], isManagement: boolean): TabularData<LocationReservation> {
+    const penaltiesColumn: ActionColumn<LocationReservation> = {
+      columnHeader: "management.locationDetails.calendar.reservations.table.penalties",
+      type: 'actionColumn',
+      columnContent: lr => ({
+        actionType: "icon",
+        actionContent: "user",
+        fallbackContent: "Set Penalties",
+      }),
+    };
+
+
+    const table: TabularData<LocationReservation> = {
       columns: [
         {
           columnHeader: "management.locationDetails.calendar.reservations.table.user",
@@ -117,7 +128,7 @@ export class TableDataService {
         {
           columnHeader: "management.locationDetails.calendar.reservations.table.scan",
           type: 'actionColumn',
-          width: 7,
+          width: 10,
           columnContent: lr => ({
             actionType: 'button',
             actionContent: "Yes",
@@ -128,7 +139,7 @@ export class TableDataService {
         {
           columnHeader: "",
           type: 'actionColumn',
-          width: 7,
+          width: 10,
           columnContent: lr => ({
             actionType: 'button',
             actionContent: "No",
@@ -140,6 +151,11 @@ export class TableDataService {
       css: lr => lr.state === LocationReservationState.PRESENT ? [ "success" ] : [],
       data: reservations
     }
+
+    if (isManagement) {
+      table.columns.splice(2,0, penaltiesColumn);
+    }
+    return table;
   }
 
   private getCorrectI18NObjectOfScan(reservation: LocationReservation): string {

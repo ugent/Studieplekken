@@ -50,6 +50,7 @@ export class AuthorizationGuardService implements CanActivate {
               url.includes('/authorities') ||
               url.includes('/penalties') ||
               url.includes('/admins') ||
+              url.includes("/penalty") ||
               url.includes('/actionlog')
             ) {
               return of(this.authenticationService.isAdmin());
