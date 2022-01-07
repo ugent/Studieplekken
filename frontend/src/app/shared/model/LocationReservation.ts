@@ -8,7 +8,8 @@ export enum LocationReservationState {
   REJECTED = "REJECTED",
   APPROVED = "APPROVED",
   PRESENT = "PRESENT",
-  ABSENT = "ABSENT"
+  ABSENT = "ABSENT",
+  DELETED = "DELETED"
 };
 
 export class LocationReservation {

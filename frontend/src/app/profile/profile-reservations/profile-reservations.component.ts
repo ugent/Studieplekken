@@ -102,12 +102,21 @@ export class ProfileReservationsComponent implements OnInit {
     reservation: LocationReservation,
   ): boolean {
     return  reservation.timeslot.isInPast() &&
-            reservation.timeslot.reservable;
+            reservation.timeslot.reservable &&
+            reservation.state === LocationReservationState.APPROVED;
   }
 
   canDeleteReservation(
     reservation: LocationReservation
   ): boolean {
+    const ts = reservation.timeslot;
+    const hours = moment.duration(ts.closingHour.hours(), 'hours');
+    const minutes = moment.duration(ts.closingHour.minutes(), 'minutes');
+    const closingDateTime = moment(ts.timeslotDate).add(hours).add(minutes);
+    const now = moment();
+    if (closingDateTime.isBefore(now)) {
+      return false;
+    }
     switch (reservation.state) {
       case LocationReservationState.PENDING:
       case LocationReservationState.REJECTED:
@@ -159,8 +168,12 @@ export class ProfileReservationsComponent implements OnInit {
     return this.locationService.getLocation(locationReservation.timeslot.locationId).pipe(map(l => l.name));
   }
 
+  sortedLocationReservations(lres: LocationReservation[]) {
+    return Array.from(lres).sort((a, b) => a.timeslot.getStartMoment().isBefore(b.timeslot.getStartMoment()) ? 1:-1);
+  }
+
   getTabularData(locationReservations: LocationReservation[]): Observable<TabularData<LocationReservation>> {
-    return this.tableDataService.reservationsToProfileTable(locationReservations);
+    return this.tableDataService.reservationsToProfileTable(this.sortedLocationReservations(locationReservations));
   }
 
 }

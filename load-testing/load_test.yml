@@ -13,7 +13,7 @@ config:
         name: Warm up
       - duration: 60 #20
         arrivalRate: 50 #100
-        maxVusers: 250
+        maxVusers: 400
         #rampTo: 400
         name: Ramp up load
 scenarios:
@@ -35,7 +35,7 @@ scenarios:
           name: "Get locations"
           #afterResponse: "printStatus"
       - get:
-          url: "https://studieplekken-dev.ugent.be/api/locations/timeslots/19"
+          url: "https://studieplekken-dev.ugent.be/api/locations/timeslots/24"
           headers:
             X-AUTH: "{{ token }}"
           capture:

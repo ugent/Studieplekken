@@ -110,12 +110,9 @@ export class DetailsFormComponent implements OnInit {
     );
 
     this.showLockersManagement = this.functionalityService.showLockersManagementFunctionality();
-
-    this.locationForm.valueChanges.subscribe(v => console.log(v))
   }
 
   updateFormGroup(location: Location): void {
-    console.log(location)
     this.locationForm.setValue({
       name: location.name,
       authority: location.authority.authorityId,

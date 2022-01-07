@@ -90,7 +90,6 @@ export class LocationService {
   }
 
   approveLocation(location: Location, approval: boolean): Observable<void> {
-    console.log(location);
     return this.http.put<void>(
       api.approveLocation.replace('{locationId}', String(location.locationId)),
       { location, approval }

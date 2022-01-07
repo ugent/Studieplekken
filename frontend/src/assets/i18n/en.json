@@ -47,14 +47,21 @@
       },
       "calendar": {
         "reservation": {
-          "successMessage": "Successfully updated the reservations",
+          "successGenericMessage": "Successfully updated the reservations",
+          "successPendingShortMessage": "Your reservations have been received and will be processed shortly. There is no need to refresh this page. It will happen automatically.",
+          "successPendingLongMessage": "Your reservations have been received. They may take up to 10 minutes to be processed. There is no need to refresh this page. It will happen automatically.",
           "errorMessage": "Update was not successful. Something went wrong.",
           "header": "Change reservations",
           "updateMessage": "You are about to make changes to your registered reservations.",
           "updateAddMessage": "The following reservations will be added to your profile",
           "updateDeleteMessage": "The following reservations will be deleted",
           "updateConfirmMessage": "Would you like to confirm these changes?",
-          "updateWarningMessage": "WARNING: You are only allowed to make a reservation when you will attend. Attendance can and will be taken."
+          "updateWarningMessage": "WARNING: You are only allowed to make a reservation when you will attend. Attendance can and will be taken.",
+          "afterReservationHeader": "Confirming your reservations",
+          "afterReservationPendingMessage": "Your reservation is succesfully placed in the queue. To give every student a fair chance, the reservations will be randomly assigned after ten minutes. Your reservations have not yet been confirmed!",
+          "afterReservationConfirmedMessage": "Your reservations have been succesful. All your requested spots have been confirmed.",
+          "afterReservationLoadingMessage": "Your reservations are being placed, please wait...",
+          "afterReservationFailedMessage": "Something went wrong while trying to make your reservation."
         }
       },
       "loginWarning": "In order to be able to make a reservation for this location, you need to be logged in.",
@@ -824,6 +831,7 @@
             "APPROVED": "Approved",
             "PRESENT": "Present",
             "ABSENT": "Absent",
+            "DELETED": "Deleted",
             "notScanned": "No attendance taken",
             "notScannedExplanation": "For this reservation attendance wasn't taken, so you haven't gained any penalty points."
           }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 84.852837 84.852837" xmlns="http://www.w3.org/2000/svg">
+ <g transform="matrix(.70711 -.70711 .70711 .70711 -219.86 56.918)" fill="#f00">
+  <path d="m145.71 165.22h100v20h-100z"/>
+  <path transform="rotate(90)" d="m125.22-205.71h100v20h-100z"/>
+ </g>
+</svg>
