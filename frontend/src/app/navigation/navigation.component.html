@@ -1,0 +1,55 @@
+<div class="container-fluid">
+
+        <div fxLayout="row wrap" fxLayoutGap="32px" fxLayoutAlign="center" *ngIf="!showLoggedIn">
+                <p>{{'navigation.loginInfo' | translate}}</p>
+                <a routerLink="/login" class="read-more standalone-link"
+                        title="{{'navigation.login' | translate}}">
+                        {{'navigation.login' | translate}}
+                </a>
+        </div>
+
+        <!-- Regular users -->
+        <div fxLayout="row wrap" fxLayoutGap="32px" fxLayoutAlign="center" *ngIf="showLoggedIn">
+                <p>{{'navigation.profileInfo' | translate}}</p>
+                <a routerLink="/profile/overview" class="read-more standalone-link"
+                        title="{{'navigation.profile' | translate}}">
+                        {{'navigation.profile' | translate}}
+                </a>
+        </div>
+        <br/>
+        <div fxLayout="row wrap" fxLayoutGap="32px" fxLayoutAlign="center">
+                <p>{{'navigation.dashboardInfo' | translate}}</p>
+                <a routerLink="/" class="read-more standalone-link"
+                        title="{{'navigation.dashboard' | translate}}" >
+                        {{'navigation.dashboard' | translate}}
+                </a><br/>
+        </div>
+        <br/>
+        <div fxLayout="row wrap" fxLayoutGap="32px" fxLayoutAlign="center" *ngIf="showManagement || showAdmin">
+                <p>{{'navigation.informationInfo' | translate}}</p>
+                <a routerLink="/information" class="read-more standalone-link"
+                        title="{{'navigation.information' | translate}}" >
+                        {{'navigation.information' | translate}}
+                </a>
+        </div>
+        <br/>
+
+        <!-- Supervisors -->
+        <div fxLayout="row wrap" fxLayoutGap="32px" fxLayoutAlign="center" *ngIf="showSupervisors || showManagement || showAdmin">
+                <p>{{'navigation.scanInfo' | translate}}</p>
+                <a routerLink="/scan/locations" class="read-more standalone-link"
+                        title="{{'navigation.scan' | translate}}">
+                        {{'navigation.scan' | translate}}
+                </a>
+        </div>
+
+        <br/>
+        <!-- Admins -->
+        <div fxLayout="row wrap" fxLayoutGap="32px" fxLayoutAlign="center" *ngIf="showManagement || showAdmin">
+                <p>{{'navigation.managementInfo' | translate}}</p>
+                <a routerLink="/management/locations" class="read-more standalone-link"
+                        title="{{'navigation.management' | translate}}" >
+                        {{'navigation.management' | translate}}
+                </a>
+        </div>
+</div>

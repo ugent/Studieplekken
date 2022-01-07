@@ -17,6 +17,21 @@
     "week": "Week",
     "day": "Day"
   },
+  "navigation": {
+    "profile" : "Profile",
+    "dashboard" : "study locations",
+    "information" : "Help",
+    "scan" : "Scanning page",
+    "management" : "Management page",
+    "profileInfo": "Check your reservations and get your QR-code",
+    "informationInfo": "Just can't get a hang of this application? Then definitely check out our help page!",
+    "managementInfo": "Management of buildings/locations/users",
+    "dashboardInfo": "Find your ideal study location in our application",
+    "scanInfo": "Scan/take note of present students",
+    "page": "Navigation page",
+    "loginInfo": "Login to be able to use all functionalities in this application.",
+    "login": "Login"
+  },
   "information": {
     "general": "General",
     "manager": "Manager",
@@ -142,13 +157,16 @@
     "imageAlt": "Ghent University",
     "logIn": "Log in",
     "logOut": "Log out",
+    "menu": "Menu",
     "navigation": {
       "login": "Login",
       "dashboard": "Dashboard",
-      "profile": "Profile",
+      "profile": "My reservations",
       "scan": "Scan",
       "management": "Management",
-      "information": "Information"
+      "information": "Help",
+      "navigation": "Navigation",
+      "general": "General"
     }
   },
   "language": {
