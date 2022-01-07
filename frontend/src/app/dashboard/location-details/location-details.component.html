@@ -54,6 +54,10 @@
           <hr>
         </div>
 
+        <div class="messages messages--warning" *ngIf="location.usesPenaltyPoints">
+          {{"dashboard.penaltyWarning" | translate}}
+        </div>
+
         <div class="messages messages--warning" *ngIf="showUgentWarning(location)">
           <div markdown *ngIf="currentLanguage() | async as currlan"
           src="assets/md/corona.{{currlan}}.md">>
@@ -114,10 +118,14 @@
   </div>
 
   <div class="row padding-top">
-    <button *ngIf="loggedIn()" class="button button-primary float-right" [disabled]="updateReservationIsPossible()"
+    <button *ngIf="loggedIn() && (penaltyPointsOk(location) | async)" class="button button-primary float-right" [disabled]="updateReservationIsPossible()"
       (click)="commitReservations(confirm)">
       {{'reservations.reservationButton' | translate}}
     </button>
+
+    <div *ngIf="loggedIn() && !(penaltyPointsOk(location) | async)" class="messages messages--warning float-right">
+      {{"reservations.tooManyPenalty" | translate}}
+    </div>
   </div>
 
   <div class="responsive-table fullwidth" id="location_reservations" >

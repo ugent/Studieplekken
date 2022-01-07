@@ -1,0 +1,8 @@
+<div class="container-fluid">
+  <!-- Title -->
+  <h3>{{'penalties.management.header' | translate}}</h3>
+
+  <hr>
+
+  <app-penalty-table *ngIf="penaltyObservable | async as penalties" [penalties]="penalties" [showDesignee]="true" [showDelete]="true" (onDelete)="onDelete()"></app-penalty-table>
+</div>

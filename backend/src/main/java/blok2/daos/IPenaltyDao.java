@@ -11,18 +11,10 @@ public interface IPenaltyDao {
      */
     List<Penalty> getPenaltiesByUser(String userId);
 
-    /**
-     * Get all occurrences of a PenaltyEvent within a location
-     */
-    List<Penalty> getPenaltiesByLocation(int locationId);
+    List<Penalty> getAllPenalties();
 
     /**
-     * Get all occurrences of a PenaltyEvent by type of PenaltyEvent
-     */
-    List<Penalty> getPenaltiesByEventCode(int eventCode);
-
-    /**
-     * addPenalty() adds a Penalty to the so called Penalty Book (like the Order Book in a stock exchange market)
+     * addPenalty() adds a Penalty
      */
     Penalty addPenalty(Penalty penalty);
 
@@ -30,5 +22,6 @@ public interface IPenaltyDao {
      * deleteEvent() deletes a Penalty
      */
     void deletePenalty(Penalty penalty);
-    
+
+    int getUserPenalty(String userid);
 }

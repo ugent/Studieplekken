@@ -30,7 +30,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProfileChangePasswordComponent } from './profile/profile-change-password/profile-change-password.component';
 import { LocationsManagementComponent } from './management/locations-management/locations-management.component';
 import { UsersManagementComponent } from './management/users-management/users-management.component';
-import { PenaltyEventsManagementComponent } from './management/penalty-events-management/penalty-events-management.component';
 import { LocationDetailsManagementComponent } from './management/locations-management/location-details-management/location-details-management.component';
 import { DetailsFormComponent } from './management/locations-management/location-details-management/details-form/details-form.component';
 import { LocationCalendarComponent } from './management/locations-management/location-details-management/location-calendar/location-calendar.component';
@@ -39,7 +38,6 @@ import { LockersTableComponent } from './management/locations-management/locatio
 import { UserDetailsManagementComponent } from './management/users-management/user-details-management/user-details-management.component';
 import { UserDetailsFormComponent } from './management/users-management/user-details-management/user-details-form/user-details-form.component';
 import { UserRolesComponent } from './management/users-management/user-details-management/user-roles/user-roles.component';
-import { UserDetailsManagementPenaltiesComponent } from './management/users-management/user-details-management/user-details-management-penalties/user-details-management-penalties.component';
 import { ApplicationTypeGuardService } from './services/guard/functionality/application-type-guard/application-type-guard.service';
 import { LocationDescriptionComponent } from './management/locations-management/location-details-management/location-description/location-description.component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
@@ -99,6 +97,9 @@ import { EntryComponent } from './entry/entry.component';
 import { ImpersonateInterceptor } from './services/authentication/impersonate.interceptor';
 import { ActionLogComponent } from './management/action-log/action-log.component';
 import { AfterReservationComponent } from './dashboard/location-details/modals/after-reservation/after-reservation.component';
+import { PenaltyTableComponent } from './shared/penalties/penalty-table/penalty-table.component';
+import { UserPenaltyManagerComponent } from './shared/penalties/user-penalty-manager/user-penalty-manager.component';
+import { PenaltiesManagementComponent } from './management/penalties-management/penalties-management.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -241,11 +242,6 @@ const routes: Routes = [
         canActivate: [AuthorizationGuardService],
       },
       {
-        path: 'penalties',
-        component: PenaltyEventsManagementComponent,
-        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService],
-      },
-      {
         path: 'admins',
         component: AdminsManagementComponent,
         canActivate: [AuthorizationGuardService],
@@ -256,6 +252,12 @@ const routes: Routes = [
         canActivate: [AuthorizationGuardService],
       },
       {
+        path: "penalty",
+        component: PenaltiesManagementComponent,
+        canActivate: [AuthorizationGuardService]
+      }
+    ,
+    {
         path: 'actionlog',
         component: ActionLogComponent,
         canActivate: [AuthorizationGuardService]
@@ -301,7 +303,6 @@ const routes: Routes = [
     ProfileChangePasswordComponent,
     LocationsManagementComponent,
     UsersManagementComponent,
-    PenaltyEventsManagementComponent,
     LocationDetailsManagementComponent,
     DetailsFormComponent,
     LocationCalendarComponent,
@@ -309,7 +310,6 @@ const routes: Routes = [
     UserDetailsManagementComponent,
     UserDetailsFormComponent,
     UserRolesComponent,
-    UserDetailsManagementPenaltiesComponent,
     LocationDescriptionComponent,
     TagsManagementComponent,
     LocationTagsManagementComponent,
@@ -346,6 +346,10 @@ const routes: Routes = [
     DesktopTableComponent,
     MobileTableComponent,
     EntryComponent,
+    AfterReservationComponent,
+    PenaltyTableComponent,
+    UserPenaltyManagerComponent,
+    PenaltiesManagementComponent,
     ActionLogComponent,
     AfterReservationComponent
   ],

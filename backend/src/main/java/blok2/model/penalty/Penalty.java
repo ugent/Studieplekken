@@ -2,7 +2,13 @@ package blok2.model.penalty;
 
 import blok2.helpers.Variables;
 import blok2.model.reservables.Location;
+import blok2.model.reservations.LocationReservation;
+import blok2.model.users.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,171 +19,108 @@ import java.util.Calendar;
 import java.util.Objects;
 
 @Entity
-@Table(name = "penalty_book")
+@Table(name = "penalty_points")
 public class Penalty implements Cloneable {
 
-    @EmbeddedId
-    @AttributeOverrides({
-        @AttributeOverride(
-            name = "userId",
-            column = @Column(name = "user_id")
-        ),
-        @AttributeOverride(
-            name = "eventCode",
-            column = @Column(name = "event_code")
-        ),
-        @AttributeOverride(
-            name = "timestamp",
-            column = @Column(name = "timestamp")
-        )
-    })
-    private PenaltyId penaltyId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int penaltyId;
 
-    @Column(name = "reservation_date")
-    private LocalDate reservationDate;
+    @OneToOne()
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    private User designee;
 
-    @ManyToOne
-    @JoinColumn(name = "reservation_location_id")
-    private Location reservationLocation;
+    @Column(name = "user_id", nullable = false)
+    private String user_id;
 
-    @Column(name = "received_points")
-    private int receivedPoints;
+    @Column(name = "description")
+    private String description;
 
-    @Column(name = "remarks")
-    private String remarks;
+    @OneToOne()
+    @JoinColumn(name = "issuer_id")
+    private User issuer;
+
+    @Column(name = "class")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY) // Users can't set this themselves
+    private String penaltyClass = "custom";
+
+    private int points;
+
+    @Column(name="timeslot_sequence_number")
+    @JsonIgnore
+    private Integer timeslotSequenceNumber;
+
+    @LastModifiedDate
+    @Column(name = "updated_at", insertable = false)
+    private LocalDateTime updatedAt;
+
+    @CreatedDate
+    @Column(name = "created_at", insertable = false)
+    private LocalDateTime createdAt;
+
+    @OneToOne()
+    @JoinColumns(
+            {
+                    @JoinColumn(name = "timeslot_sequence_number", insertable = false, updatable = false),
+                    @JoinColumn(name = "user_id", insertable = false, updatable = false),
+            }
+    )
+    private LocationReservation reservation;
 
     public Penalty() {
-
     }
 
-    public Penalty(String userId, int eventCode, LocalDateTime timestamp, LocalDate reservationDate, Location reservationLocation, int receivedPoints, String remarks) {
-        this.penaltyId = new PenaltyId(userId, eventCode, timestamp);
-        this.reservationDate = reservationDate;
-        this.reservationLocation = reservationLocation;
-        this.receivedPoints = receivedPoints;
-        this.remarks = remarks;
+    public Penalty(String designee, int points, String description, User issuer, String penaltyClass) {
+        this.user_id = designee;
+        this.description = description;
+        this.issuer = issuer;
+        this.penaltyClass = penaltyClass;
+        this.points = points;
     }
 
-    public static int calculateLateCancelPoints(LocalDateTime date, int points) {
-        Calendar tdy = Calendar.getInstance();
-        LocalDateTime today = LocalDateTime.of(tdy.get(Calendar.YEAR), tdy.get(Calendar.MONTH) + 1, tdy.get(Calendar.DAY_OF_MONTH),
-                tdy.get(Calendar.HOUR_OF_DAY), tdy.get(Calendar.MINUTE), tdy.get(Calendar.SECOND));
-        int secondsBetween = (int) ChronoUnit.SECONDS.between(today, date);
-
-        LocalDateTime maxCancelDate = LocalDateTime.from(date);
-        maxCancelDate = maxCancelDate.minusDays(Variables.maxCancelDate.getDayOfMonth());
-        maxCancelDate = maxCancelDate.minusMonths(Variables.maxCancelDate.getMonthValue());
-        maxCancelDate = maxCancelDate.minusYears(Variables.maxCancelDate.getYear());
-        maxCancelDate = maxCancelDate.withHour(Variables.maxCancelDate.getHour());
-        maxCancelDate = maxCancelDate.withMinute(Variables.maxCancelDate.getMinute());
-        maxCancelDate = maxCancelDate.withSecond(Variables.maxCancelDate.getSecond());
-        int maxCancelSeconds = (int) ChronoUnit.SECONDS.between(maxCancelDate, date);
-
-        if (secondsBetween <= maxCancelSeconds) {
-            return (int) Math.ceil((((double) (maxCancelSeconds - secondsBetween) / (double) (maxCancelSeconds)) * (double) points));
-        } else {
-            return 0;
-        }
+    public Penalty(int points, String description, User issuer, String penaltyClass, LocationReservation lr) {
+        this(lr.getUser().getUserId(), points, description, issuer, penaltyClass);
+        this.timeslotSequenceNumber = lr.getTimeslot().getTimeslotSeqnr();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Penalty penalty = (Penalty) o;
-        return Objects.equals(penaltyId.eventCode, penalty.penaltyId.eventCode) &&
-                Objects.equals(penaltyId.userId, penalty.penaltyId.userId) &&
-                Objects.equals(penaltyId.timestamp.withNano(0), penalty.penaltyId.timestamp.withNano(0)) && // withNano(0) to avoid loss of accuracy during database save problem on Windows.
-                Objects.equals(reservationDate, penalty.reservationDate) &&
-                Objects.equals(reservationLocation, penalty.reservationLocation) &&
-                receivedPoints == penalty.receivedPoints &&
-                Objects.equals(remarks, penalty.remarks);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(penaltyId.userId, penaltyId.eventCode, penaltyId.timestamp.withNano(0), reservationDate, reservationLocation, receivedPoints, remarks);
-    }
-
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
-
-    //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
-
-    public PenaltyId getPenaltyId() {
+    public int getPenaltyId() {
         return penaltyId;
     }
 
-    public void setPenaltyId(PenaltyId penaltyId) {
-        this.penaltyId = penaltyId;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public LocalDate getReservationDate() {
-        return reservationDate;
+    public int getPoints() {
+        return points;
     }
 
-    public void setReservationDate(LocalDate reservationDate) {
-        this.reservationDate = reservationDate;
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
     }
 
-    public Location getReservationLocation() {
-        return reservationLocation;
+    public String getDescription() {
+        return description;
     }
 
-    public void setReservationLocation(Location reservationLocation) {
-        this.reservationLocation = reservationLocation;
+    public User getIssuer() {
+        return issuer;
     }
 
-    public int getReceivedPoints() {
-        return receivedPoints;
+    public void setIssuer(User issuer) {
+        this.issuer = issuer;
     }
 
-    public void setReceivedPoints(int receivedPoints) {
-        this.receivedPoints = receivedPoints;
+    public int getTimeslotSequenceNumber() {
+        return timeslotSequenceNumber;
     }
 
-    public String getRemarks() {
-        return remarks;
+    public User getDesignee() {
+        return designee;
     }
 
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
+    public String getPenaltyClass() {
+        return penaltyClass;
     }
-
-    //</editor-fold>
-
-    @Embeddable
-    public static class PenaltyId implements Serializable {
-        public String userId;
-        public Integer eventCode;
-        public LocalDateTime timestamp;
-
-        public PenaltyId() {
-
-        }
-
-        public PenaltyId(String userId, Integer eventCode, LocalDateTime timestamp) {
-            this.userId = userId;
-            this.eventCode = eventCode;
-            this.timestamp = timestamp;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            PenaltyId penaltyId = (PenaltyId) o;
-            return Objects.equals(userId, penaltyId.userId) &&
-                    Objects.equals(eventCode, penaltyId.eventCode) &&
-                    Objects.equals(timestamp.withNano(0), penaltyId.timestamp.withNano(0));
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(userId, eventCode, timestamp.withNano(0));
-        }
-    }
-
 }

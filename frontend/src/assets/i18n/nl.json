@@ -1,4 +1,14 @@
 {
+  "penalties": {
+    "management": {
+      "header": "Beheer strafpunten",
+      "subheader": "Strafpunten voor",
+      "addButton": "Voeg strafpunt toe",
+      "points": "Punten",
+      "description": "Beschrijving",
+      "confirm": "Bevestig"
+    }
+  },
   "calendar": {
     "previous": "Vorige",
     "today": "Vandaag",
@@ -17,6 +27,7 @@
     "admin": "Administrator"
   },
   "dashboard": {
+    "penaltyWarning": "Deze locatie gebruikt strafpunten! Bekijk zeker de informatiepagina voor meer informatie.",
     "alert": {
       "title": "[VRIJDAG 11 DECEMBER, RESERVATIES OP VERSCHILLENDE MOMENTEN]",
       "p1": "De reservaties zullen plaatsvinden om 19:00, 19:30 en 20:00 afhankelijk van de locatie. Bekijk dus zeker op voorhand wanneer de reservaties zullen openen.",
@@ -89,7 +100,8 @@
     "terms-of-use":"Terms of use"
   },
   "reservations": {
-    "reservationButton": "Update Reservaties"
+    "reservationButton": "Update Reservaties",
+    "tooManyPenalty": "Je hebt te veel strafpunten. Bekijk de informatiepagina voor meer info."
   },
   "general": {
     "dsa": "Dienst StudentenActiviteiten",
@@ -231,7 +243,8 @@
         "success": "Het wijzigen van de ruimte was succesvol",
         "error": "Er ging iets mis tijdens het wijzigen van de ruimte",
         "numberOfSeatsApplyWarning": "De aangepaste plaatsen worden alleen toegepast op nieuw aangemaakte openingsperiodes.",
-        "numberOfSeatsHelp": "Kan alleen aangepast worden door een admin."
+        "numberOfSeatsHelp": "Kan alleen aangepast worden door een admin.",
+        "usesPenaltyPoints": "Gebruikt strafpunten"
       },
       "calendar": {
         "title": "Reservatiebeheer",
@@ -255,7 +268,8 @@
             "notScanned": "Niet gescand",
 
             "startScanning": "Start scannen",
-            "finishScanning": "Beïndig scannen"
+            "finishScanning": "Beïndig scannen",
+            "penalties": "Strafpunten"
           }
         },
         "form": {
@@ -842,15 +856,27 @@
         }
       },
       "table": {
-        "title": "Overzicht van jou strafpunten",
+        "title": "Overzicht van jouw strafpunten",
         "header": {
           "eventCode": "Reden voor strafpunten",
           "timestamp": "Timestamp",
           "reservationDate": "Reservatie voor",
           "location": "Ruimte",
-          "receivedPoints": "Ontvangen strafpunten"
+          "receivedPoints": "Ontvangen strafpunten",
+          "issuer": "Door wie",
+          "description": "Beschrijving",
+          "designee": "Voor wie",
+          "delete": "Verwijder"
         },
-        "noPenalties": "Je hebt geen enkele overtreding gemaakt. Goed zo!"
+        "noPenalties": "Je hebt geen enkele overtreding gemaakt. Goed zo!",
+        "system": "Systeem",
+        "not": {
+          "attended": "Gebruiker was afwezig op een reservatie."
+        },
+        "late": {
+          "delete": "Gebruiker verwijderde reservatie te laat."
+        }
+
       }
     },
     "reservations": {

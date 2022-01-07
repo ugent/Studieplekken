@@ -544,4 +544,9 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     return Array.from(reservations).sort((a, b) => a.timeslot.getStartMoment().isBefore(b.timeslot.getStartMoment()) ? 1:-1);
   }
 
+  penaltyPointsOk(location: Location): Observable<boolean> {
+    return location.usesPenaltyPoints ?
+    this.authenticationService.penaltyObservable.pipe(map(p => p.points < 100)) : of(true);
+  }
+
 }
