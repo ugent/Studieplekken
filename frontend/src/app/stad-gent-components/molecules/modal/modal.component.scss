@@ -3,7 +3,7 @@
     height: 100%;
 }
 
-::ng-deep .modal-header > * {
+::ng-deep .modal-c-header > * {
     margin: 0;
 }
 
@@ -18,5 +18,5 @@
 }
 
 .modal-full {
-    max-height: calc(100vh - 48px); /* 24px is padding used by MatDialog so it is excluded from max height. */ 
+    max-height: calc(100vh - 48px); /* 24px is padding used by MatDialog so it is excluded from max height. */
 }
