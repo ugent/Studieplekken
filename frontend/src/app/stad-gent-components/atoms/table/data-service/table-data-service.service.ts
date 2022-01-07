@@ -210,7 +210,8 @@ export class TableDataService {
               })
             },
           ],
-          data: sreservations
+          data: sreservations,
+          css: lr => lr.timeslot.isCurrent() ? ["success"] : []
         }
       ))
     )

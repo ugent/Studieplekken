@@ -11,15 +11,10 @@ export class LoginRedirectService {
 
   registerUrl(url: string) {
     localStorage.setItem("afterLogin", url);
-    console.log(url);
-
   }
 
   navigateToLastUrl() {
     const url = localStorage.getItem("afterLogin") || (environment.useExternalDashboard ? '/management':'/dashboard');
-    console.log(localStorage.getItem("afterLogin"));
-    console.log(url);
-
     localStorage.removeItem("afterLogin");
     this.router.navigateByUrl(url);
   }

@@ -1,7 +1,9 @@
 package blok2.controllers;
 
+import blok2.daos.IActionLogDao;
 import blok2.daos.IBuildingDao;
 import blok2.helpers.exceptions.NotAuthorizedException;
+import blok2.model.ActionLogEntry;
 import blok2.model.Building;
 import blok2.model.users.User;
 import org.slf4j.Logger;
@@ -20,10 +22,12 @@ public class BuildingController {
     private final Logger logger = LoggerFactory.getLogger(AuthorityController.class.getSimpleName());
 
     private final IBuildingDao buildingDao;
+    private final IActionLogDao actionLogDao;
 
     @Autowired
-    public BuildingController(IBuildingDao buildingDao) {
+    public BuildingController(IBuildingDao buildingDao, IActionLogDao actionLogDao) {
         this.buildingDao = buildingDao;
+        this.actionLogDao = actionLogDao;
     }
 
     // *************************************
@@ -45,6 +49,8 @@ public class BuildingController {
     @PostMapping
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void addBuilding(@AuthenticationPrincipal User user, @RequestBody Building building) {
+        ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.Type.INSERTION, user, ActionLogEntry.Domain.BUILDING);
+        actionLogDao.addLogEntry(logEntry);
         if (!user.isAdmin()) {
             if (!building.getInstitution().equals(user.getInstitution())) {
                 throw new NotAuthorizedException("You are not authorized to add a new building for this institution.");
@@ -57,6 +63,8 @@ public class BuildingController {
     @PutMapping("/{buildingId}")
     @PreAuthorize("@authorizedInstitutionController.hasAuthorityBuilding(authentication.principal, #buildingId)")
     public void updateBuilding(@AuthenticationPrincipal User user, @PathVariable int buildingId, @RequestBody Building building) {
+        ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.Type.UPDATE, user, ActionLogEntry.Domain.BUILDING, buildingId);
+        actionLogDao.addLogEntry(logEntry);
         if (!user.isAdmin()) {
             if (!building.getInstitution().equals(user.getInstitution())) {
                 throw new NotAuthorizedException("You are not authorized to update a building to an institution other than the one you belong to.");
@@ -68,7 +76,9 @@ public class BuildingController {
 
     @DeleteMapping("/{buildingId}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public void deleteBuilding(@PathVariable int buildingId) {
+    public void deleteBuilding(@PathVariable int buildingId, @AuthenticationPrincipal User user) {
+        ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.Type.DELETION, user, ActionLogEntry.Domain.BUILDING, buildingId);
+        actionLogDao.addLogEntry(logEntry);
         buildingDao.deleteBuilding(buildingId);
         logger.info(String.format("Removed building with id '%d'", buildingId));
     }

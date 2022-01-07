@@ -26,6 +26,8 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static blok2.config.PoolProcessor.RANDOM_RESERVATION_DURATION_MINS;
+
 /**
  * This controller handles all requests related to location reservations.
  * Such as creating reservations, list of reservations, cancelling reservations,
@@ -61,25 +63,29 @@ public class LocationReservationController extends AuthorizedLocationController 
         return locationReservationDao.getAllLocationReservationsOfUser(id);
     }
 
+    /**
+     * Add a new reservation queue, to be processed later.
+     * @return : The time at which the reservation will enter the 'fast' or 'non-random order' queue.
+     *           This time may be in the past.
+     */
     @PostMapping
     @PreAuthorize("hasAuthority('USER') or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public LocationReservation createLocationReservation(@AuthenticationPrincipal User user, @Valid @RequestBody Timeslot timeslot) {
-        try {
-            Timeslot dbTimeslot = timeslotDao.getTimeslot(timeslot.getTimeslotSeqnr());
-            LocationReservation reservation = new LocationReservation(user, dbTimeslot, LocationReservation.State.APPROVED);
-            if (LocalDateTime.now().isBefore(dbTimeslot.getReservableFrom())) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "This timeslot can't yet be reserved");
-            }
-            if (!locationReservationDao.addLocationReservationIfStillRoomAtomically(reservation)) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "There are no more spots left for this location.");
-            }
-            return locationReservationDao.getLocationReservation(user.getUserId(), timeslot);
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            e.printStackTrace();
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database error");
+    public LocalDateTime createLocationReservation(@AuthenticationPrincipal User user, @Valid @RequestBody Timeslot timeslot) {
+        // TODO(ydndonck): Why do we need to get from db here? To prevent people from sending along malicious reservablefrom?
+        // If that is the case then this check may no longer be needed as the actual checking and processing of reservations
+        // now happens in a different thread and a 'naive' check based on the timeslot the user provided is sufficient (in this thread).
+        // This could save a trip to the database, which makes this slightly faster.
+        System.out.println(timeslot);
+        Timeslot dbTimeslot = timeslotDao.getTimeslot(timeslot.getTimeslotSeqnr());
+        LocalDateTime now = LocalDateTime.now();
+        if (now.isBefore(dbTimeslot.getReservableFrom())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This timeslot can't yet be reserved");
         }
+        LocationReservation reservation = new LocationReservation(user, dbTimeslot, LocationReservation.State.PENDING);
+        if (!locationReservationDao.addLocationReservationToReservationQueue(reservation)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The timeslot was invalid.");
+        }
+        return dbTimeslot.getReservableFrom().plusMinutes(RANDOM_RESERVATION_DURATION_MINS);
     }
 
     @GetMapping("/timeslot/{seqnr}")
@@ -100,6 +106,11 @@ public class LocationReservationController extends AuthorizedLocationController 
                 (lr, u) -> hasAuthority(dbLocationReservation.getTimeslot().getLocationId()) || lr.getUser().getUserId().equals(u.getUserId()),
                 dbLocationReservation
         );
+        Timeslot timeslot = dbLocationReservation.getTimeslot();
+        LocalDateTime closingHour = timeslot.timeslotDate().atTime(timeslot.getClosingHour());
+        if (closingHour.isBefore(LocalDateTime.now())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The timeslot has already been closed.");
+        }
 
         locationReservationDao.deleteLocationReservation(dbLocationReservation);
         logger.info(String.format("LocationReservation for user %s at time %s deleted", dbLocationReservation.getUser(), dbLocationReservation.getTimeslot().toString()));

@@ -81,6 +81,23 @@
     </article>
   </li>
 
+    <!-- If clicked on reservationButton, give some feedback -->
+    <div class="row" style="margin-top: 10px">
+      <!-- TODO: Why arent't these CSS classes doing anything visually? -->
+      <div class="messages messages--success" *ngIf="showSuccessDeletion">
+        {{'dashboard.locationDetails.calendar.reservation.successGenericMessage' | translate}}
+      </div>
+      <div class="message messages--success" *ngIf="showSuccessPendingShort">
+        {{'dashboard.locationDetails.calendar.reservation.successPendingShortMessage' | translate}}
+      </div>
+      <div class="message messages--warning" *ngIf="showSuccessPendingLong">
+        {{'dashboard.locationDetails.calendar.reservation.successPendingLongMessage' | translate}}
+      </div>
+      <div class="messages messages--error" *ngIf="showError">
+        {{'dashboard.locationDetails.calendar.reservation.errorMessage' | translate}}
+      </div>
+    </div>
+
   <div class="messages messages--warning center" *ngIf="!loggedIn()">
     <i class="icon-info" aria-hidden="true"></i>
     {{'dashboard.locationDetails.loginWarning' | translate}}
@@ -103,14 +120,23 @@
     </button>
   </div>
 
-  <!-- If clicked on reservationButton, give some feedback -->
-  <div class="row" style="margin-top: 10px">
-    <div class="messages messages--success" *ngIf="showSuccess">
-      {{'dashboard.locationDetails.calendar.reservation.successMessage' | translate}}
-    </div>
-
-    <div class="messages messages--error" *ngIf="showError">
-      {{'dashboard.locationDetails.calendar.reservation.errorMessage' | translate}}
+  <div class="responsive-table fullwidth" id="location_reservations" >
+    <div class="table-wrapper fullwidth" *ngIf="originalList && originalList.length !== 0">
+      <table class="table table-striped" style="width: 100%;">
+        <thead>
+          <!-- TODO: Is it better to make new strings for these for separation of concerns or use the same (as it is now) to avoid duplication? -->
+          <th scope="col">{{'profile.reservations.locations.table.header.reservationDate' | translate}}</th>
+          <th scope="col">{{'profile.reservations.locations.table.header.beginHour' | translate}}</th>
+          <th scope="col">{{'profile.reservations.locations.table.header.state' | translate}}</th>
+        </thead>
+        <tbody>
+          <tr *ngFor="let reservation of sortedLocalReservations(nonDeletedReservation(futureReservations(originalList)));">
+            <td>{{reservation.timeslot.timeslotDate.format("DD/MM/YYYY")}}</td>
+            <td>{{reservation.timeslot.openingHour.format("HH:mm")}}</td>
+            <td>{{getStateI18NObject(reservation.state) | translate}}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
@@ -153,16 +179,16 @@
       </div>
       <hr>
       <p>{{'dashboard.locationDetails.calendar.reservation.updateConfirmMessage' | translate }}</p>
-      
+
       <div class="messages messages--warning text-center">
         <i class="icon-exclamation" aria-hidden="true"></i>
         {{'dashboard.locationDetails.calendar.reservation.updateWarningMessage' | translate}}
       </div>
-      
+
     </div>
     <div modal-footer>
       <div>
-        <button type="button" class="button button-primary" (click)="confirmReservationChange()">{{ 'general.yes' |
+        <button type="button" class="button button-primary" (click)="confirmReservationChange(afterReservationTemplate)">{{ 'general.yes' |
           translate
           }}</button>
         <button type="button" class="button button-warning" (click)="declineReservationChange()">{{ 'general.no' |
@@ -170,4 +196,8 @@
       </div>
     </div>
   </app-modal>
+</ng-template>
+
+<ng-template #afterReservationTemplate>
+  <app-after-reservation [newReservationCreator]="newReservationCreator"></app-after-reservation>
 </ng-template>

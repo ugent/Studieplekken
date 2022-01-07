@@ -28,7 +28,7 @@ export class CalendarComponent implements OnInit, OnChanges {
 
   openingHour: number;
   closingHour: number;
-  MOBILE_SIZE = 370;
+  MOBILE_SIZE = 500;
   HALF_SCREEN_SIZE = 1200;
   isMobile: boolean;
   isHalfScreen: boolean;
@@ -73,7 +73,7 @@ export class CalendarComponent implements OnInit, OnChanges {
       this.changeCalendarSize(next);
     });
 
-    this.setView(this.breakpointObserver.isMatched('(max-width: 400px)') ? CalendarView.Day:CalendarView.Week);
+    this.setView(this.breakpointObserver.isMatched('(max-width: 500px)') ? CalendarView.Day:CalendarView.Week);
 
   }
 

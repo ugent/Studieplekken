@@ -66,7 +66,7 @@ public class AuthorityControllerTest extends BaseIntegrationTest {
         mockMvc.perform(post("/authority").with(csrf())
                 .content(objectMapper.writeValueAsBytes(newAuthority)).contentType("application/json"))
                 .andDo(print()).andExpect(status().isOk());
-
+        Assert.assertTrue(hasActionLogEntry("admin", "authority"));
         Assert.assertEquals(2, authorityDao.getAllAuthorities().size());
     }
 
@@ -150,7 +150,7 @@ public class AuthorityControllerTest extends BaseIntegrationTest {
         mockMvc.perform(post("/authority/" + authority.getAuthorityId() + "/user/" + Base64String.base64Encode(student2.getUserId()))
                 .with(csrf())).andDo(print())
                 .andExpect(status().isOk());
-
+        Assert.assertTrue(hasActionLogEntry("admin", "authority"));
         Assert.assertEquals(2, authorityDao.getUsersFromAuthority(authority.getAuthorityId()).size());
     }
 
@@ -192,7 +192,7 @@ public class AuthorityControllerTest extends BaseIntegrationTest {
         mockMvc.perform(delete("/authority/" + authority.getAuthorityId() + "/user/" + Base64String.base64Encode(authHolder.getUserId()))
                 .with(csrf())).andDo(print())
                 .andExpect(status().isOk()); // authholder is member of authority: therefore deleting should succeed
-
+        Assert.assertTrue(hasActionLogEntry("admin", "authority"));
         Assert.assertEquals(0, authorityDao.getUsersFromAuthority(authority.getAuthorityId()).size());
     }
 

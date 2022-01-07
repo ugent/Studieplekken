@@ -70,6 +70,11 @@ public interface ILocationReservationDao {
     boolean addLocationReservationIfStillRoomAtomically(LocationReservation reservation) throws SQLException;
 
     /**
+     * Add a location reservation to the queue of reservations that are pending and need to be completed later.
+     */
+    boolean addLocationReservationToReservationQueue(LocationReservation reservation);
+
+    /**
      * Set all LocationReservations corresponding to the given Timeslot for which the field attended is null
      * to false. This sets the not scanned students to unattended for the given timeslot.
      */

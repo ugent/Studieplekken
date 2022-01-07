@@ -204,6 +204,10 @@ video {
   width: 100%;
 }
 
+h1 {
+  text-overflow: wrap;
+}
+
 .responsive-table {
   display: inline-block !important;
 }
