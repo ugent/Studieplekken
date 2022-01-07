@@ -10,6 +10,8 @@ import { LocationService } from 'src/app/services/api/locations/location.service
 import { Location } from 'src/app/shared/model/Location';
 import { map } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
+import { TableDataService } from 'src/app/stad-gent-components/atoms/table/data-service/table-data-service.service';
+import { TabularData } from 'src/app/stad-gent-components/atoms/table/tabular-data';
 
 @Component({
   selector: 'app-profile-reservations',
@@ -30,7 +32,8 @@ export class ProfileReservationsComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private locationReservationService: LocationReservationsService,
     private modalService: MatDialog,
-    private locationService: LocationService
+    private locationService: LocationService,
+    private tableDataService: TableDataService
   ) {
     authenticationService.user.subscribe(() => {
       this.setup();
@@ -169,7 +172,8 @@ export class ProfileReservationsComponent implements OnInit {
     return Array.from(lres).sort((a, b) => a.timeslot.getStartMoment().isBefore(b.timeslot.getStartMoment()) ? 1:-1);
   }
 
-  isReservationCurrent(l: LocationReservation) {
-    return l.timeslot.isCurrent();
+  getTabularData(locationReservations: LocationReservation[]): Observable<TabularData<LocationReservation>> {
+    return this.tableDataService.reservationsToProfileTable(this.sortedLocationReservations(locationReservations));
   }
+
 }
