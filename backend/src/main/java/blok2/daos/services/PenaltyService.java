@@ -19,6 +19,7 @@ public class PenaltyService implements IPenaltyDao {
     private String NOT_ATTENDED_CLASS = "profile.penalties.table.not.attended";
     private int EARLY_DELETE_LIMIT = 4;
     private int EARLY_DELETE_COST = 20;
+    private int NON_ATTENDANCE = 50;
 
     private final PenaltyRepository penaltyRepository;
 
@@ -53,9 +54,9 @@ public class PenaltyService implements IPenaltyDao {
     }
 
     private int getActualPointsOfPenalty(Penalty p) {
-        int weeks = (int) ChronoUnit.WEEKS.between(p.getCreatedAt(), LocalDateTime.now());
+        //int weeks = (int) ChronoUnit.WEEKS.between(p.getCreatedAt(), LocalDateTime.now());
 
-        return Math.max(p.getPoints() - weeks * PENALTY_OFFSET, 0);
+        return p.getPoints();
     }
 
     public void notifyOfReservationDeletion(LocationReservation lr) {
@@ -75,7 +76,7 @@ public class PenaltyService implements IPenaltyDao {
     public void notifyOfReservationAttendance(LocationReservation lr) {
         List<Penalty> l = penaltyRepository.findAllByLocationReservation(lr.getUser().getUserId(), lr.getTimeslot().getTimeslotSeqnr());
         if(lr.getStateE().equals(LocationReservation.State.ABSENT) && l.size() <= 0) {
-            Penalty penalty = new Penalty(25, "", null, NOT_ATTENDED_CLASS, lr);
+            Penalty penalty = new Penalty(NON_ATTENDANCE, "", null, NOT_ATTENDED_CLASS, lr);
             this.addPenalty(penalty);
         }
 
