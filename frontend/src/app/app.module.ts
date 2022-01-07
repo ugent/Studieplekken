@@ -98,6 +98,7 @@ import { MobileTableComponent } from './stad-gent-components/atoms/table/mobile-
 import { EntryComponent } from './entry/entry.component';
 import { ImpersonateInterceptor } from './services/authentication/impersonate.interceptor';
 import { ActionLogComponent } from './management/action-log/action-log.component';
+import { AfterReservationComponent } from './dashboard/location-details/modals/after-reservation/after-reservation.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -346,6 +347,7 @@ const routes: Routes = [
     MobileTableComponent,
     EntryComponent,
     ActionLogComponent,
+    AfterReservationComponent
   ],
   imports: [
     BrowserModule,

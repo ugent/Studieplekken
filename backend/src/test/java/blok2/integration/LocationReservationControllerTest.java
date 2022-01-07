@@ -66,8 +66,9 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(timeslot)).contentType("application/json")).andDo(print())
                 .andExpect(status().isOk());
 
-        List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student2.getUserId());
-        Assert.assertEquals(1, list.stream().filter(lr -> lr.getTimeslot().getTimeslotSeqnr() == timeslot.getTimeslotSeqnr()).count());
+        // NOTE: Cannot guarantee reservation is already visible with queued system.
+        // List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student2.getUserId());
+        // Assert.assertEquals(1, list.stream().filter(lr -> lr.getTimeslot().getTimeslotSeqnr() == timeslot.getTimeslotSeqnr()).count());
     }
 
     @Test
@@ -78,8 +79,10 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
         int currentAmount = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId()).size();
         mockMvc.perform(post("/locations/reservations").with(csrf())
                 .content(objectMapper.writeValueAsString(timeslot)).contentType("application/json")).andDo(print())
-                .andExpect(status().isConflict());
+                .andExpect(status().isOk()); // NOTE: Validity of reservation is not checked before the response is sent in queued system.
 
+        // NOTE: Cannot guarantee reservation is already visible with queued system, but the amount should not be changed
+        //       regardless of wheter the reservation has been processed already or not.
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
         Assert.assertEquals(currentAmount, list.size());
     }
@@ -89,7 +92,7 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "student1", userDetailsServiceBeanName = "testUserDetails")
     public void testDeleteReservation() throws Exception {
-        Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
+        Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(calendarPeriods.size() - 1).getTimeslotSeqnr());
         int amountOfReservations = timeslot.getAmountOfReservations();
 
 
@@ -102,9 +105,9 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
                 .andExpect(status().isOk());
 
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
-        Assert.assertEquals(currentAmount - 1, list.size());
+        Assert.assertEquals(currentAmount, list.size()); // List does not decrease in size, only marked as deleted.
 
-        timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
+        timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(calendarPeriods.size() -1).getTimeslotSeqnr());
         Assert.assertEquals(timeslot.getAmountOfReservations(), amountOfReservations -1);
 
     }
@@ -112,7 +115,7 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testDeleteReservationAsAdmin() throws Exception {
-        Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
+        Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(calendarPeriods.size() - 1).getTimeslotSeqnr());
         int amountOfReservations = timeslot.getAmountOfReservations();
 
 
@@ -124,9 +127,9 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
                 .andExpect(status().isOk());
 
         List<LocationReservation> list = locationReservationDao.getAllLocationReservationsOfUser(student.getUserId());
-        Assert.assertEquals(currentAmount-1, list.size());
+        Assert.assertEquals(currentAmount, list.size()); // List does not decrease in size, only marked as deleted.
 
-        timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
+        timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(calendarPeriods.size() - 1).getTimeslotSeqnr());
         Assert.assertEquals(timeslot.getAmountOfReservations(), amountOfReservations -1);
 
 
@@ -267,7 +270,7 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
     @Test
     @WithUserDetails(value = "admin", userDetailsServiceBeanName = "testUserDetails")
     public void testSetAttendanceThenDelete() throws Exception {
-        Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
+        Timeslot timeslot = timeslotDAO.getTimeslot(calendarPeriods.get(calendarPeriods.size() - 1).getTimeslotSeqnr());
 
         String url = String.format("/locations/reservations/%s/%d/attendance",
                 Base64String.base64Encode(student.getUserId()),
@@ -278,7 +281,7 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
         mockMvc.perform(post(url).with(csrf()).content(obj.toString()).contentType("application/json")).andDo(print())
                 .andExpect(status().isOk());
 
-        Timeslot timeslotAfterUpdate = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
+        Timeslot timeslotAfterUpdate = timeslotDAO.getTimeslot(calendarPeriods.get(calendarPeriods.size() - 1).getTimeslotSeqnr());
         Assert.assertEquals(timeslot.getAmountOfReservations() - 1, timeslotAfterUpdate.getAmountOfReservations());
 
         LocationReservation lr = new LocationReservation(student, timeslot, LocationReservation.State.ABSENT);
@@ -286,8 +289,8 @@ public class LocationReservationControllerTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(lr)).contentType("application/json")).andDo(print())
                 .andExpect(status().isOk());
 
-        timeslotAfterUpdate = timeslotDAO.getTimeslot(calendarPeriods.get(0).getTimeslotSeqnr());
-        Assert.assertEquals(timeslot.getAmountOfReservations() - 1, timeslotAfterUpdate.getAmountOfReservations());
+        timeslotAfterUpdate = timeslotDAO.getTimeslot(calendarPeriods.get(calendarPeriods.size() - 1).getTimeslotSeqnr());
+        Assert.assertEquals(timeslot.getAmountOfReservations() -1, timeslotAfterUpdate.getAmountOfReservations());
     }
 
     @Test

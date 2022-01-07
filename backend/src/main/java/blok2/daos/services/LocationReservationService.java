@@ -8,35 +8,37 @@ import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
+import blok2.scheduling.ReservationManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.threeten.extra.YearWeek;
 
 import java.sql.SQLException;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
+import java.util.logging.Logger;
 
 @Service
 public class LocationReservationService implements ILocationReservationDao {
 
     private final LocationReservationRepository locationReservationRepository;
     private final UserRepository userRepository;
+    private final ReservationManager reservationManager;
 
     private final DBLocationReservationDao locationReservationDao;
 
     @Autowired
     public LocationReservationService(LocationReservationRepository locationReservationRepository,
                                       UserRepository userRepository,
-                                      DBLocationReservationDao locationReservationDao) {
+                                      ReservationManager reservationManager, DBLocationReservationDao locationReservationDao) {
         this.locationReservationRepository = locationReservationRepository;
         this.userRepository = userRepository;
+        this.reservationManager = reservationManager;
         this.locationReservationDao = locationReservationDao;
     }
 
@@ -72,7 +74,7 @@ public class LocationReservationService implements ILocationReservationDao {
 
     @Override
     public List<User> getUsersWithReservationForWindowOfTime(LocalDate start, LocalDate end) {
-
+        // TODO(ydndonck): What is this method used for? Does it still need to be implemented?
         return Collections.emptyList();
     }
 
@@ -92,13 +94,19 @@ public class LocationReservationService implements ILocationReservationDao {
     @Override
     @javax.transaction.Transactional
     public void deleteLocationReservation(LocationReservation locationReservation) {
+
         LocationReservation.State state = locationReservation.getStateE();
         if (state == LocationReservation.State.APPROVED || state == LocationReservation.State.PRESENT) {
             locationReservationRepository.decrementCountByOne(locationReservation.getTimeslot().getTimeslotSeqnr());
         }
-        locationReservationRepository.deleteById(new LocationReservation.LocationReservationId(
+        LocationReservation temp = locationReservationRepository.getOne(locationReservation.getId());
+        System.out.println(locationReservation);
+        System.out.println(temp);
+        locationReservation.setState(LocationReservation.State.DELETED);
+        locationReservationRepository.save(locationReservation);
+        /*locationReservationRepository.deleteById(new LocationReservation.LocationReservationId(
                 locationReservation.getTimeslot().getTimeslotSeqnr(), locationReservation.getUser().getUserId()
-        ));
+        ));*/
     }
 
     @Override
@@ -138,6 +146,26 @@ public class LocationReservationService implements ILocationReservationDao {
     @Override
     public boolean addLocationReservationIfStillRoomAtomically(LocationReservation reservation) throws SQLException {
         return locationReservationDao.addLocationReservationIfStillRoomAtomically(reservation);
+    }
+
+    @Override
+    public boolean addLocationReservationToReservationQueue(LocationReservation reservation) {
+        try {
+            Optional<LocationReservation> optLocRes = locationReservationRepository.findById(reservation.getId());
+            if (optLocRes.isPresent()) {
+                reservation = optLocRes.get();
+                if (reservation.getStateE() == LocationReservation.State.PENDING || reservation.getStateE() == LocationReservation.State.APPROVED) {
+                    System.out.println("RESERVATIONS: duplicate reservation made!");
+                    return true;
+                }
+            }
+            reservation.setState(LocationReservation.State.PENDING);
+            locationReservationRepository.save(reservation);
+            reservationManager.addReservationToQueue(reservation);
+            return true;
+        } catch (DataAccessException ex) { // TODO(ydndonck): Propagate error instead?
+            return false;
+        }
     }
 
     @Override
