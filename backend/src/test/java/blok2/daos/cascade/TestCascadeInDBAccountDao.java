@@ -89,9 +89,6 @@ public class TestCascadeInDBAccountDao extends BaseTest {
 
         locationReservationDao.addLocationReservation(testLocationReservation1);
         locationReservationDao.addLocationReservation(testLocationReservation2);
-
-        penaltyDao.addPenalty(testPenalty1);
-        penaltyDao.addPenalty(testPenalty2);
     }
 
     @Test
