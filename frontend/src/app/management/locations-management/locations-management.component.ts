@@ -79,6 +79,7 @@ export class LocationsManagementComponent implements OnInit {
       numberOfSeats: new FormControl('', Validators.required.bind(this)),
       forGroup: new FormControl(false, Validators.required.bind(this)),
       imageUrl: new FormControl(''),
+      usesPenaltyPoints: new FormControl(false),
     });
   }
 
@@ -101,6 +102,7 @@ export class LocationsManagementComponent implements OnInit {
 
     location.authority = this.authoritiesMap.get(Number(this.authority.value));
     location.building = this.buildingsMap.get(Number(this.building.value));
+    location.usesPenaltyPoints = Boolean(this.usesPenaltyPoints.value);
     // location.numberOfLockers = 0;
 
     this.addingWasSuccess = null;
@@ -207,6 +209,11 @@ export class LocationsManagementComponent implements OnInit {
 
   get imageUrl(): AbstractControl {
     return this.addLocationFormGroup.get('imageUrl');
+  }
+
+  get usesPenaltyPoints(): AbstractControl {
+    return this.addLocationFormGroup.get('usesPenaltyPoints');
+
   }
 
   // *******************

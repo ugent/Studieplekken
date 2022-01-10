@@ -22,6 +22,7 @@ import { Location } from 'src/app/shared/model/Location';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
 import { Timeslot } from 'src/app/shared/model/Timeslot';
 import {booleanSorter} from 'src/app/shared/util/Util'
+import { BreakpointObserver } from '@angular/cdk/layout';
 
 type TypeOption = {
   date: string;
@@ -100,8 +101,10 @@ export class LocationCalendarComponent implements OnInit {
     private router: Router,
     private locationService: LocationService,
     private timeslotGroupService: TimeslotGroupService,
-    private timeslotCalendarEventService: TimeslotCalendarEventService
-  ) { }
+    private timeslotCalendarEventService: TimeslotCalendarEventService,
+    private breakpointObserver: BreakpointObserver
+  ) {
+  }
 
   ngOnInit(): void {
     this.locationId = Number(this.route.snapshot.paramMap.get('locationId'));
@@ -251,7 +254,6 @@ export class LocationCalendarComponent implements OnInit {
 
 
   copy(timeslot: Timeslot, weekOffset: string, location: Location, keepReservableFrom: boolean) {
-    console.log(keepReservableFrom);
     const newTimeslot = this.timeslotGroupService.copy(timeslot, moment(weekOffset), location, false, !keepReservableFrom);
     this.timeslotService.addTimeslot(newTimeslot).subscribe(() => this.setup());
     this.modalService.closeAll();
@@ -315,7 +317,6 @@ export class LocationCalendarComponent implements OnInit {
   }
 
   hourPickedHandler(date: Moment, modal: TemplateRef<any>) {
-    console.log(date);
     const openingHour = moment(date.format("HH:mm"), "HH:mm")
     this.toUpdateTimeslot = new Timeslot(null, date, null, null, null, null, this.locationId, openingHour, null, null, false);
     this.modalService.open(modal)

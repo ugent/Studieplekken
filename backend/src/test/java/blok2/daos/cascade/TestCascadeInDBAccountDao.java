@@ -84,24 +84,11 @@ public class TestCascadeInDBAccountDao extends BaseTest {
 
 
 
-        // Note: the received amount of points are 10 and 20, not testPenaltyEvent.getCode()
-        // because when the penalties are retrieved from the penaltyEventDao, the list will
-        // be sorted by received points before asserting, if they would be equal we can't sort
-        // on the points and be sure about the equality of the actual and expected list.
-        PenaltyEvent testPenaltyEvent = penaltyEventsDao.addPenaltyEvent(new PenaltyEvent(null, 10,
-                "Dit is een test omschrijving van een penalty event",
-                "This is a test description of a penalty event"));
-        testPenalty1 = new Penalty(testUser.getUserId(), testPenaltyEvent.getCode(), LocalDateTime.now(), LocalDate.now(), testLocation1, 10, "First test penalty");
-        testPenalty2 = new Penalty(testUser.getUserId(), testPenaltyEvent.getCode(), LocalDateTime.of(1970, 1, 1, 0, 0, 0), LocalDate.now(), testLocation2, 20, "Second test penalty");
-
         // Add test objects to database
         userDao.addUser(testUser);
 
         locationReservationDao.addLocationReservation(testLocationReservation1);
         locationReservationDao.addLocationReservation(testLocationReservation2);
-
-        penaltyDao.addPenalty(testPenalty1);
-        penaltyDao.addPenalty(testPenalty2);
     }
 
     @Test
@@ -121,19 +108,7 @@ public class TestCascadeInDBAccountDao extends BaseTest {
                 testLocationReservation2.getUser().getUserId(),
                 testLocationReservation2.getTimeslot());
         Assert.assertEquals("updateUserWithoutCascadeNeededTest, testLocationReservation2",
-                testLocationReservation2, lr2);
-
-        List<Penalty> penalties = penaltyDao.getPenaltiesByUser(testUser.getUserId());
-        penalties.sort(Comparator.comparing(Penalty::getReceivedPoints));
-
-        List<Penalty> expectedPenalties = new ArrayList<>();
-        expectedPenalties.add(testPenalty1);
-        expectedPenalties.add(testPenalty2);
-        expectedPenalties.sort(Comparator.comparing(Penalty::getReceivedPoints));
-
-        Assert.assertEquals("updateUserWithoutCascadeNeededTest, penalties", expectedPenalties,
-                penalties);
-    }
+                testLocationReservation2, lr2);}
 
     @Test
     public void deleteUserTest() {

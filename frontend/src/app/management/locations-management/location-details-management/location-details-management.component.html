@@ -12,14 +12,14 @@
      - the collapsable body: panel-body in which a panel-body resides with the actual content of the panel-group
    -->
 
-  <h2>
+  <h2 class="full-screen">
     {{('management.locationDetails.title' | translate).replace('{locationName}', location.name)}}
   </h2>
   <hr>
   <app-details-form [location]="locationObs"></app-details-form>
 
   <!-- Calendar with overview of opening days -->
-  <h2>
+  <h2 class="full-screen">
     {{'management.locationDetails.calendar.title' | translate}}
   </h2>
   <hr />
@@ -31,7 +31,7 @@
 
   <!-- Description of the location -->
 
-  <h2>
+  <h2 class="full-screen">
     {{'management.locationDetails.description.title' | translate}}
   </h2>
   <hr />
@@ -39,7 +39,7 @@
   <app-location-description [location]="locationObs"></app-location-description>
 
 
-  <h2>
+  <h2 class="full-screen">
     {{'management.locationDetails.tags.title' | translate}}
   </h2>
   <hr />

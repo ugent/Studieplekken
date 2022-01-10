@@ -39,6 +39,7 @@ export class DetailsFormComponent implements OnInit {
     numberOfLockers: new FormControl({ value: '', disabled: true }),
     forGroup: new FormControl({ value: '', disabled: true }),
     imageUrl: new FormControl({ value: '', disabled: true }),
+    usesPenaltyPoints: new FormControl({ value: false, disabled: true })
   });
 
   disableEditLocationButton = false;
@@ -110,12 +111,9 @@ export class DetailsFormComponent implements OnInit {
     );
 
     this.showLockersManagement = this.functionalityService.showLockersManagementFunctionality();
-
-    this.locationForm.valueChanges.subscribe(v => console.log(v))
   }
 
   updateFormGroup(location: Location): void {
-    console.log(location)
     this.locationForm.setValue({
       name: location.name,
       authority: location.authority.authorityId,
@@ -124,6 +122,7 @@ export class DetailsFormComponent implements OnInit {
       numberOfLockers: 0,
       forGroup: location.forGroup,
       imageUrl: location.imageUrl,
+      usesPenaltyPoints: location.usesPenaltyPoints
     });
   }
 
@@ -213,6 +212,10 @@ export class DetailsFormComponent implements OnInit {
     return this.locationForm.get('imageUrl');
   }
 
+  get usesPenaltyPoints(): AbstractControl {
+    return this.locationForm.get('usesPenaltyPoints');
+  }
+
   get locationInForm(): Location {
     const location: Location = LocationConstructor.newFromObj(this.locationObj);
 
@@ -228,6 +231,7 @@ export class DetailsFormComponent implements OnInit {
     location.numberOfLockers = Number(this.numberOfLockers.value);
     location.forGroup = Boolean(this.forGroup.value);
     location.imageUrl = String(this.imageUrl.value);
+    location.usesPenaltyPoints = Boolean(this.usesPenaltyPoints.value);
 
     return location;
   }

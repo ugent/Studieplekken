@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CalendarEvent } from 'angular-calendar';
 import * as moment from 'moment';
-import { LocationReservation } from 'src/app/shared/model/LocationReservation';
+import { LocationReservation, LocationReservationState } from 'src/app/shared/model/LocationReservation';
 import { Timeslot, includesTimeslot } from 'src/app/shared/model/Timeslot';
 
 @Injectable({
@@ -11,12 +11,12 @@ import { Timeslot, includesTimeslot } from 'src/app/shared/model/Timeslot';
 export class TimeslotCalendarEventService {
   clicked:boolean;
   initial:boolean;
-  constructor() { 
+  constructor() {
     this.clicked = true;
     this.initial = true;
   }
 
-  
+
 timeslotToCalendarEvent = (timeslot: Timeslot, currentLang: string, locationReservations: LocationReservation[] = []) =>
 !timeslot.reservable ? this.nonReservableToCalendarEvent(timeslot, currentLang) :
   timeslot.areReservationsLocked() ? this.notYetReservableTimeslotToCalendarEvent(timeslot, currentLang) :
@@ -26,7 +26,7 @@ timeslotToCalendarEvent = (timeslot: Timeslot, currentLang: string, locationRese
 private nonReservableToCalendarEvent: (timeslot: Timeslot, currentLang: string) => CalendarEvent<{ timeslot: Timeslot }> =
 (timeslot, currentLang) =>
 ({
-  title: currentLang == "nl" ? 
+  title: currentLang == "nl" ?
       `Geen reservatie nodig <br> ${timeslot.openingHour.format('HH:mm')} - ${timeslot.closingHour.format('HH:mm')}`
        : `Requires no reservation <br> ${timeslot.openingHour.format('HH:mm')} - ${timeslot.closingHour.format('HH:mm')}`,
   start: timeslot.getStartMoment().toDate(),
@@ -39,7 +39,7 @@ private nonReservableToCalendarEvent: (timeslot: Timeslot, currentLang: string) 
 private notYetReservableTimeslotToCalendarEvent: (timeslot: Timeslot, currentLang: string) => CalendarEvent<{ timeslot: Timeslot }> =
 (timeslot, currentLang) =>
 ({
-  title: currentLang == "nl" ? 
+  title: currentLang == "nl" ?
   `${timeslot.openingHour.format('HH:mm')} - ${timeslot.closingHour.format('HH:mm')} <br> Reserveren vanaf ${timeslot.reservableFrom.format('DD/MM/YYYY HH:mm')}`
    : `${timeslot.openingHour.format('HH:mm')} - ${timeslot.closingHour.format('HH:mm')} <br> Reservable from ${timeslot.reservableFrom.format('DD/MM/YYYY HH:mm')}`,
   start: timeslot.getStartMoment().toDate(),
@@ -50,23 +50,33 @@ private notYetReservableTimeslotToCalendarEvent: (timeslot: Timeslot, currentLan
 });
 
 private reservableTimeslotToCalendarEvent(timeslot: Timeslot, currentLang: string, reservedTimeslots: LocationReservation[]):CalendarEvent<{ timeslot: Timeslot }> {
- 
+
   const locationFull = timeslot.amountOfReservations >= timeslot.seatCount;
+  const reservation = reservedTimeslots.find(t => t.timeslot.timeslotSequenceNumber === timeslot.timeslotSequenceNumber);
   const includedTimeSlot = includesTimeslot(
     reservedTimeslots.map((s) => s.timeslot),
     timeslot
-  );
+  ) && reservation && reservation.state !== LocationReservationState.DELETED;
+
+    const isRandomReservationMoment = timeslot.amountOfReservations === 0 && timeslot.reservableFrom.isAfter(moment().subtract(10, "minutes"));
+    const randomMomentTitle = currentLang == "en" ? "Reservation queue is open" : "Reservatiewachtlijn is open";
+
   return ({
-    title: `${timeslot.amountOfReservations} / ${timeslot.seatCount}`,
+    title: isRandomReservationMoment ? randomMomentTitle:`${timeslot.amountOfReservations} / ${timeslot.seatCount}`,
     start: timeslot.getStartMoment().toDate(),
     end: timeslot.getEndMoment().toDate(),
     meta: { timeslot },
     color: includedTimeSlot
       // reserved -> dark blue, reserved full -> dark red
-      ? (!locationFull ? { primary: '#00004d', secondary: '#133E7D' } : { primary: '#c53726', secondary: '#ed9987' })
+      ? (!locationFull ?
+
+        ( reservation.state === LocationReservationState.PENDING ? { primary: '#F5512C', secondary: '#FC8A17' } :
+        (reservation.state === LocationReservationState.REJECTED ? { primary: '#c53726', secondary: '#ed9987' } : { primary: '#00004d', secondary: '#133E7D' }) )
+        :
+        (reservation.state === LocationReservationState.REJECTED ? { primary: '#c53726', secondary: '#ed9987' } : { primary: '#00004d', secondary: '#133E7D' }) )
       // unselected light pink, unselected light blue
       : (locationFull ? { primary: '#c53726', secondary: '#f4ded9' } : null),
-    cssClass: includedTimeSlot 
+    cssClass: includedTimeSlot
       ? 'calendar-event-reserved'
       : (locationFull ? 'calendar-event-full-not-reserved' : 'blue-text'),
   });

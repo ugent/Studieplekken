@@ -28,7 +28,7 @@ export class FormatStatusPipe implements PipeTransform {
       return this.translate.get(
         'dashboard.locationDetails.status.statusClosed'
       ) as Observable<string>;
-  }
+    }
 
     const now = moment()
     // status.second format: "yyyy-MM-dd hh:mm"

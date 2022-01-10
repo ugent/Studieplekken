@@ -9,6 +9,8 @@ import { MatDialog } from '@angular/material/dialog';
 import * as moment from 'moment';
 import { BarcodeService } from 'src/app/services/barcode.service';
 import { User } from 'src/app/shared/model/User';
+import { TableDataService } from 'src/app/stad-gent-components/atoms/table/data-service/table-data-service.service';
+import { TabularData } from 'src/app/stad-gent-components/atoms/table/tabular-data';
 import { LocationReservationsService } from '../../../../../../services/api/location-reservations/location-reservations.service';
 import { LocationReservation, LocationReservationState } from '../../../../../../shared/model/LocationReservation';
 import {
@@ -41,6 +43,7 @@ export class LocationReservationsComponent {
   waitingForServer = false;
 
   selectionTimeout: number;
+  penaltyManagerUser: User;
 
   userHasSearchTerm: (u: User) => boolean = (u: User) =>
     u.userId.includes(this.searchTerm) ||
@@ -50,7 +53,8 @@ export class LocationReservationsComponent {
   constructor(
     private locationReservationService: LocationReservationsService,
     private modalService: MatDialog,
-    private barcodeService: BarcodeService
+    private barcodeService: BarcodeService,
+    private tabularDataService: TableDataService
   ) {}
 
   // /***************
@@ -141,7 +145,6 @@ export class LocationReservationsComponent {
     locationReservation: LocationReservation,
     template: TemplateRef<unknown>
   ): void {
-    console.log(locationReservation, template);
     this.successDeletingLocationReservation = undefined;
     this.locationReservationToDelete = locationReservation;
     this.modalService.open(template, { panelClass: ["cs--cyan", "bigmodal"] });
@@ -251,6 +254,8 @@ export class LocationReservationsComponent {
   }
 
   filter(locationReservations: LocationReservation[]): LocationReservation[] {
+    locationReservations = locationReservations.filter(r => r.state !== LocationReservationState.DELETED);
+
     // Sorting the searchTerm hits first. After that, fallback on name sorting (createdAt is not available here)
     locationReservations.sort((a, b) => {
       if (a === this.lastScanned || b === this.lastScanned) {
@@ -290,6 +295,24 @@ export class LocationReservationsComponent {
     return locationReservations;
   }
 
+  getTableData(locationReservations: LocationReservation[]): TabularData<LocationReservation> {
+    return this.tabularDataService.reservationsToScanningTable(locationReservations, this.isManagement)
+  }
+
+  onAction({columnIndex, data}: {columnIndex: number, data: LocationReservation}, errorTemplate: TemplateRef<unknown>, penaltyManager: TemplateRef<unknown>) {
+    if(columnIndex == 3)
+      return this.scanLocationReservation(data, true, errorTemplate);
+    else if(columnIndex == 4)
+      return this.scanLocationReservation(data, false, errorTemplate);
+    else if (columnIndex == 2) {
+      this.openPenaltyBox(
+        data,
+        penaltyManager
+      )
+
+      }
+    }
+
   selectInputBox() {
     const el = document.getElementById("search") as HTMLInputElement;
     el.focus();
@@ -301,5 +324,10 @@ export class LocationReservationsComponent {
       clearTimeout(this.selectionTimeout);
 
       this.selectionTimeout = setTimeout(() => this.selectInputBox(), 800);
+  }
+
+  openPenaltyBox(locres: LocationReservation, modal: TemplateRef<unknown>) {
+    this.penaltyManagerUser = locres.user;
+    this.modalService.open(modal, {panelClass: ["cs--cyan", "bigmodal"]});
   }
 }

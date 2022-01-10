@@ -54,6 +54,10 @@
           <hr>
         </div>
 
+        <div class="messages messages--warning" *ngIf="location.usesPenaltyPoints">
+          {{"dashboard.penaltyWarning" | translate}}
+        </div>
+
         <div class="messages messages--warning" *ngIf="showUgentWarning(location)">
           <div markdown *ngIf="currentLanguage() | async as currlan"
           src="assets/md/corona.{{currlan}}.md">>
@@ -81,12 +85,29 @@
     </article>
   </li>
 
+    <!-- If clicked on reservationButton, give some feedback -->
+    <div class="row" style="margin-top: 10px">
+      <!-- TODO: Why arent't these CSS classes doing anything visually? -->
+      <div class="messages messages--success" *ngIf="showSuccessDeletion">
+        {{'dashboard.locationDetails.calendar.reservation.successGenericMessage' | translate}}
+      </div>
+      <div class="message messages--success" *ngIf="showSuccessPendingShort">
+        {{'dashboard.locationDetails.calendar.reservation.successPendingShortMessage' | translate}}
+      </div>
+      <div class="message messages--warning" *ngIf="showSuccessPendingLong">
+        {{'dashboard.locationDetails.calendar.reservation.successPendingLongMessage' | translate}}
+      </div>
+      <div class="messages messages--error" *ngIf="showError">
+        {{'dashboard.locationDetails.calendar.reservation.errorMessage' | translate}}
+      </div>
+    </div>
+
   <div class="messages messages--warning center" *ngIf="!loggedIn()">
     <i class="icon-info" aria-hidden="true"></i>
     {{'dashboard.locationDetails.loginWarning' | translate}}
   </div>
 
-  <div class="messages messages--info center" *ngIf="loggedIn()">
+  <div class="margin-bottom messages messages--info center" *ngIf="loggedIn()">
     <i class="icon-info" aria-hidden="true"></i>
     {{'dashboard.locationDetails.refreshWarning' | translate}}
   </div>
@@ -96,21 +117,34 @@
     <app-calendar [events]="events" (timeslotPickedEvent)="timeslotPicked($event)"></app-calendar>
   </div>
 
-  <div class="row" style="padding-top: 10px;">
-    <button *ngIf="loggedIn()" class="button button-primary float-right" [disabled]="updateReservationIsPossible()"
+  <div class="row padding-top">
+    <button *ngIf="loggedIn() && (penaltyPointsOk(location) | async)" class="button button-primary float-right" [disabled]="updateReservationIsPossible()"
       (click)="commitReservations(confirm)">
       {{'reservations.reservationButton' | translate}}
     </button>
+
+    <div *ngIf="loggedIn() && !(penaltyPointsOk(location) | async)" class="messages messages--warning float-right">
+      {{"reservations.tooManyPenalty" | translate}}
+    </div>
   </div>
 
-  <!-- If clicked on reservationButton, give some feedback -->
-  <div class="row" style="margin-top: 10px">
-    <div class="messages messages--success" *ngIf="showSuccess">
-      {{'dashboard.locationDetails.calendar.reservation.successMessage' | translate}}
-    </div>
-
-    <div class="messages messages--error" *ngIf="showError">
-      {{'dashboard.locationDetails.calendar.reservation.errorMessage' | translate}}
+  <div class="responsive-table fullwidth" id="location_reservations" >
+    <div class="table-wrapper fullwidth" *ngIf="originalList && originalList.length !== 0">
+      <table class="table table-striped" style="width: 100%;">
+        <thead>
+          <!-- TODO: Is it better to make new strings for these for separation of concerns or use the same (as it is now) to avoid duplication? -->
+          <th scope="col">{{'profile.reservations.locations.table.header.reservationDate' | translate}}</th>
+          <th scope="col">{{'profile.reservations.locations.table.header.beginHour' | translate}}</th>
+          <th scope="col">{{'profile.reservations.locations.table.header.state' | translate}}</th>
+        </thead>
+        <tbody>
+          <tr *ngFor="let reservation of sortedLocalReservations(nonDeletedReservation(futureReservations(originalList)));">
+            <td>{{reservation.timeslot.timeslotDate.format("DD/MM/YYYY")}}</td>
+            <td>{{reservation.timeslot.openingHour.format("HH:mm")}}</td>
+            <td>{{getStateI18NObject(reservation.state) | translate}}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
@@ -124,45 +158,54 @@
 <div id="leafletMap"></div>
 
 <ng-template #confirm>
-  <h1>
-    {{'dashboard.locationDetails.calendar.reservation.header' | translate}}
-  </h1>
-  <div class="modal-body text-center">
-    <p>{{'dashboard.locationDetails.calendar.reservation.updateMessage' | translate }}</p>
-    <div *ngIf='newReservations.length !== 0'>
-      <hr>
-      <p>{{'dashboard.locationDetails.calendar.reservation.updateAddMessage' | translate }}</p>
-      <div class="justify-content-center">
-        <mat-chip-list aria-orientation="vertical">
-          <mat-chip class="align-center" *ngFor="let reservation of newReservations" selected>
+  <app-modal>
+    <h2 modal-header>
+      {{'dashboard.locationDetails.calendar.reservation.header' | translate}}
+    </h2>
+
+    <div modal-body>
+      <p>{{'dashboard.locationDetails.calendar.reservation.updateMessage' | translate }}</p>
+      <div *ngIf='newReservations.length !== 0'>
+        <hr>
+        <p>{{'dashboard.locationDetails.calendar.reservation.updateAddMessage' | translate }}</p>
+        <div class="justify-content-center">
+          <mat-chip-list aria-orientation="vertical">
+            <mat-chip class="align-center padding-top" *ngFor="let reservation of newReservations" selected>
+              {{formatReservation(reservation) | async}}
+            </mat-chip>
+          </mat-chip-list>
+        </div>
+      </div>
+      <div *ngIf='removedReservations.length !== 0'>
+        <hr>
+        <p>{{'dashboard.locationDetails.calendar.reservation.updateDeleteMessage' | translate }}</p>
+        <mat-chip-list class="mat-chip-list-wrapper">
+          <mat-chip *ngFor="let reservation of removedReservations" selected color="warn" class="padding-top">
             {{formatReservation(reservation) | async}}
           </mat-chip>
         </mat-chip-list>
       </div>
-    </div>
-    <div *ngIf='removedReservations.length !== 0'>
       <hr>
-      <p>{{'dashboard.locationDetails.calendar.reservation.updateDeleteMessage' | translate }}</p>
-      <mat-chip-list class="mat-chip-list-wrapper">
-        <mat-chip *ngFor="let reservation of removedReservations" selected color="warn">
-          {{formatReservation(reservation) | async}}
-        </mat-chip>
-      </mat-chip-list>
+      <p>{{'dashboard.locationDetails.calendar.reservation.updateConfirmMessage' | translate }}</p>
+
+      <div class="messages messages--warning text-center">
+        <i class="icon-exclamation" aria-hidden="true"></i>
+        {{'dashboard.locationDetails.calendar.reservation.updateWarningMessage' | translate}}
+      </div>
+
     </div>
-    <hr>
-    <p>{{'dashboard.locationDetails.calendar.reservation.updateConfirmMessage' | translate }}</p>
-    <div>
-      <button type="button" class="button button-primary" (click)="confirmReservationChange()">{{ 'general.yes' |
-        translate
-        }}</button>
-      <button type="button" class="button button-warning" (click)="declineReservationChange()">{{ 'general.no' |
-        translate}}</button>
+    <div modal-footer>
+      <div>
+        <button type="button" class="button button-primary" (click)="confirmReservationChange(afterReservationTemplate)">{{ 'general.yes' |
+          translate
+          }}</button>
+        <button type="button" class="button button-warning" (click)="declineReservationChange()">{{ 'general.no' |
+          translate}}</button>
+      </div>
     </div>
-  </div>
-  <div class="modal-footer">
-    <div class="messages messages--warning text-center">
-      <i class="icon-exclamation" aria-hidden="true"></i>
-      {{'dashboard.locationDetails.calendar.reservation.updateWarningMessage' | translate}}
-    </div>
-  </div>
+  </app-modal>
+</ng-template>
+
+<ng-template #afterReservationTemplate>
+  <app-after-reservation [newReservationCreator]="newReservationCreator"></app-after-reservation>
 </ng-template>

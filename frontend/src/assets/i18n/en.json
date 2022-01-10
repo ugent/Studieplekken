@@ -1,4 +1,14 @@
 {
+  "penalties": {
+    "management": {
+      "header": "Manage user penalties",
+      "subheader": "Penalties for",
+      "addButton": "Add Penalty",
+      "points": "Points",
+      "description": "Description",
+      "confirm": "Confirm"
+    }
+  },
   "calendar": {
     "previous": "Previous",
     "today": "Today",
@@ -6,6 +16,21 @@
     "month": "Month",
     "week": "Week",
     "day": "Day"
+  },
+  "navigation": {
+    "profile" : "Profile",
+    "dashboard" : "study locations",
+    "information" : "Help",
+    "scan" : "Scanning page",
+    "management" : "Management page",
+    "profileInfo": "Check your reservations and get your QR-code",
+    "informationInfo": "Just can't get a hang of this application? Then definitely check out our help page!",
+    "managementInfo": "Management of buildings/locations/users",
+    "dashboardInfo": "Find your ideal study location in our application",
+    "scanInfo": "Scan/take note of present students",
+    "page": "Navigation page",
+    "loginInfo": "Login to be able to use all functionalities in this application.",
+    "login": "Login"
   },
   "information": {
     "general": "General",
@@ -17,6 +42,7 @@
     "supervisor": "Supervisor"
   },
   "dashboard": {
+    "penaltyWarning": "This location uses penalty points! Please refer to the information page for more details.",
     "alert": {
       "title": "[FRIDAY DECEMBER 11th, RESERVATIONS AT DIFFERENT TIMES]",
       "p1": "Reservations will take place at 19:00, 19:30 and 20:00 depending on the location. Be sure to check in advance when the reservations will open (see symbol).",
@@ -47,14 +73,21 @@
       },
       "calendar": {
         "reservation": {
-          "successMessage": "Successfully updated the reservations",
+          "successGenericMessage": "Successfully updated the reservations",
+          "successPendingShortMessage": "Your reservations have been received and will be processed shortly. There is no need to refresh this page. It will happen automatically.",
+          "successPendingLongMessage": "Your reservations have been received. They may take up to 10 minutes to be processed. There is no need to refresh this page. It will happen automatically.",
           "errorMessage": "Update was not successful. Something went wrong.",
           "header": "Change reservations",
           "updateMessage": "You are about to make changes to your registered reservations.",
           "updateAddMessage": "The following reservations will be added to your profile",
           "updateDeleteMessage": "The following reservations will be deleted",
           "updateConfirmMessage": "Would you like to confirm these changes?",
-          "updateWarningMessage": "WARNING: You are only allowed to make a reservation when you will attend. Attendance can and will be taken."
+          "updateWarningMessage": "WARNING: You are only allowed to make a reservation when you will attend. Attendance can and will be taken.",
+          "afterReservationHeader": "Confirming your reservations",
+          "afterReservationPendingMessage": "Your reservation is succesfully placed in the queue. To give every student a fair chance, the reservations will be randomly assigned after ten minutes. Your reservations have not yet been confirmed!",
+          "afterReservationConfirmedMessage": "Your reservations have been succesful. All your requested spots have been confirmed.",
+          "afterReservationLoadingMessage": "Your reservations are being placed, please wait...",
+          "afterReservationFailedMessage": "Something went wrong while trying to make your reservation."
         }
       },
       "loginWarning": "In order to be able to make a reservation for this location, you need to be logged in.",
@@ -81,7 +114,8 @@
     "terms-of-use": "Terms of use"
   },
   "reservations": {
-    "reservationButton": "Update Reservations"
+    "reservationButton": "Update Reservations",
+    "tooManyPenalty": "You have too many penalty points. Please refer to the information page."
   },
   "general": {
     "dsa": "Student Activities Office",
@@ -123,13 +157,16 @@
     "imageAlt": "Ghent University",
     "logIn": "Log in",
     "logOut": "Log out",
+    "menu": "Menu",
     "navigation": {
       "login": "Login",
       "dashboard": "Dashboard",
-      "profile": "Profile",
+      "profile": "My reservations",
       "scan": "Scan",
       "management": "Management",
-      "information": "Information"
+      "information": "Help",
+      "navigation": "Navigation",
+      "general": "General"
     }
   },
   "language": {
@@ -162,14 +199,48 @@
       "calendar": "Calendar",
       "penalties": "Penalties",
       "admins": "Admins",
-      "volunteers": "Supervisors"
+      "volunteers": "Supervisors",
+      "actionlog": "Action log"
+    },
+    "actionlog": {
+      "title": "A logbook of all important recent actions",
+      "table": {
+        "type": "Type",
+        "domain": "Domain",
+        "description": "Description",
+        "username": "Username",
+        "userid": "User ID",
+        "time": "Time"
+      },
+      "descriptionFormatId": "Attempt to %action the %subject with id %id.",
+      "descriptionFormatNoId": "Attempt to %action a/an %subject.",
+      "type": {
+        "INSERTION": "Insertion",
+        "DELETION": "Deletion",
+        "UPDATE": "Update",
+        "OTHER": "Other"
+      },
+      "action": {
+        "INSERTION": "create",
+        "DELETION": "delete",
+        "UPDATE": "update",
+        "OTHER": "do an unknown action"
+      },
+      "domain": {
+        "LOCATION": "location",
+        "BUILDING": "building",
+        "AUTHORITY": "authority",
+        "USER": "user",
+        "PASSWORD": "password"
+      }
     },
     "general": {
       "loading": "Loading...",
       "noLocations": "There are no rooms yet, make one using the 'Add room' button",
       "noBuildings": "There are no buildings yet, make one using the 'Add Building' button",
       "noTags": "There are no tags yet, make one using the 'Add Tag' button",
-      "noAuthorities": "There are no authorities yet, make on using the 'Add Authority' button"
+      "noAuthorities": "There are no authorities yet, make on using the 'Add Authority' button",
+      "noActions": "There are no actions yet. They will be added automatically when important actions are performed."
     },
     "locationDetails": {
       "title": "Details of {locationName}",
@@ -188,7 +259,8 @@
         "success": "Successfully updated the room",
         "error": "An error occurred while updating the room",
         "numberOfSeatsApplyWarning": "The changed seats will only be applied to newly created opening periods",
-        "numberOfSeatsHelp": "Can only be updated by an admin."
+        "numberOfSeatsHelp": "Can only be updated by an admin.",
+        "usesPenaltyPoints": "Uses penalty points"
       },
       "calendar": {
         "title": "Reservation Management",
@@ -210,7 +282,8 @@
             "yetToScan": "Yet to scan",
             "notScanned": "Not scanned",
             "startScanning": "Start scanning",
-            "finishScanning": "Finish scanning"
+            "finishScanning": "Finish scanning",
+            "penalties": "Penalties"
           }
         },
         "form": {
@@ -400,6 +473,7 @@
       },
       "checkAddress": "Check",
       "addNewBuilding": "New building",
+      "incorrectAddress": "Filled in address does not exist.",
       "addBuildingModal": {
         "title": "Add new building",
         "idSetByBackendMessage": "Set by backend",
@@ -521,12 +595,11 @@
         "penalties": {
           "title": "Penalties of {name}",
           "table": {
-            "eventCode": "Penalty event code",
-            "timestamp": "Timestamp",
-            "location": "Room",
+            "timestamp": "Date of penalty",
             "receivedPoints": "Received points",
-            "remarks": "Remark",
+            "description": "Description",
             "addNew": "Add penalty",
+            "issuer": "Issuer",
             "addPenaltyModalView": {
               "title": "Add new penalty",
               "addButton": "Add",
@@ -802,9 +875,21 @@
           "timestamp": "Timestamp",
           "reservationDate": "Reservation for",
           "location": "Room",
-          "receivedPoints": "Received points"
+          "receivedPoints": "Received points",
+          "issuer": "Issuer",
+          "description": "Description",
+          "designee": "Designee",
+          "delete": "Delete"
         },
-        "noPenalties": "You have had no penalties so far. Very good!"
+        "system": "System",
+        "noPenalties": "You have had no penalties so far. Very good!",
+        "not": {
+          "attended": "User didn't attend a reservation."
+        },
+        "late": {
+          "delete": "User deleted this reservation too late."
+        }
+
       }
     },
     "reservations": {
@@ -824,6 +909,7 @@
             "APPROVED": "Approved",
             "PRESENT": "Present",
             "ABSENT": "Absent",
+            "DELETED": "Deleted",
             "notScanned": "No attendance taken",
             "notScannedExplanation": "For this reservation attendance wasn't taken, so you haven't gained any penalty points."
           }

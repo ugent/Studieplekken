@@ -87,15 +87,14 @@
           </tr>
         </tbody>
       </table>
-
-      <div class="row" style="margin-top: 20px">
-        <button class="button button-primary" data-toggle="modal" data-target="#addLocationModal"
-          (click)="prepareToAddLocation(addLocationModal)">
-          {{'management.locations.addNew' | translate}}
-        </button>
-      </div>
-
     </div>
+
+  </div>
+  <div class="row" style="margin-top: 20px">
+    <button class="button button-primary" data-toggle="modal" data-target="#addLocationModal"
+      (click)="prepareToAddLocation(addLocationModal)">
+      {{'management.locations.addNew' | translate}}
+    </button>
   </div>
 </div>
 
@@ -212,6 +211,16 @@
               <i class="icon-cross" aria-hidden="true"></i>
               {{'management.locations.addLocationModal.formValidationErrorMessages.numberOfSeats' | translate}}
             </div>
+          </div>
+        </div>
+
+        <!-- Uses penalty points -->
+        <div class="row form-group">
+          <label class="col-lg-3 control-label" for="usesPenaltyPoints">
+            {{'management.locationDetails.form.usesPenaltyPoints' | translate}}
+          </label>
+          <div class="col-lg-8">
+            <input class="form-control" id="usesPenaltyPoints" type="checkbox" formControlName="usesPenaltyPoints">
           </div>
         </div>
 

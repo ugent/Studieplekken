@@ -105,8 +105,8 @@ public class TestDBLocationReservationDao extends BaseTest {
         // delete LocationReservation from database
         locationReservationDao.deleteLocationReservation(lr);
         try {
-            locationReservationDao.getLocationReservation(u.getUserId(), timeslot);
-            Assert.fail("Location reservation was not deleted");
+            LocationReservation reservation = locationReservationDao.getLocationReservation(u.getUserId(), timeslot);
+            Assert.assertSame(reservation.getStateE(), LocationReservation.State.DELETED);
         } catch (NoSuchDatabaseObjectException ignore) {
             Assert.assertTrue(true);
         }

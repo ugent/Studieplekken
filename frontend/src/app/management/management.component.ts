@@ -17,7 +17,11 @@ export class ManagementComponent implements OnInit {
   showTagManagement: boolean;
   showAdmin: boolean = this.authenticationService.isAdmin();
   showVolunteersManagement: boolean;
+  showActionlog: boolean;
   showStagingWarning = environment.showStagingWarning;
+  isMobile: boolean;
+  MOBILE_SIZE = 500;
+
 
   constructor(
     private functionalityService: ApplicationTypeFunctionalityService,
@@ -43,9 +47,15 @@ export class ManagementComponent implements OnInit {
         this.showTagManagement = authenticatedUser.admin;
         this.showVolunteersManagement =
           authenticatedUser.admin || hasAuthorities;
+        this.showActionlog = authenticatedUser.admin;
       }
     );
 
     this.breadcrumbsService.setCurrentBreadcrumbs([managementBreadcrumb]);
+    this.isMobile = window.innerWidth < this.MOBILE_SIZE;
+  }
+
+  getSize() {
+    return this.isMobile ? "80%" : "23%";
   }
 }

@@ -1,7 +1,7 @@
 <div class="container-fluid" *ngIf="location | async as location">
   <div class="panel-body" style="padding: 20px">
     <!-- The editor for the dutch description -->
-    <div class="row">
+    <div class="row" >
       <h3>{{'management.locationDetails.description.dutchDescription' | translate}}</h3>
 
       <ckeditor [(ngModel)]="model.dutch"

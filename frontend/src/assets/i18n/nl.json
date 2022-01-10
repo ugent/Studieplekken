@@ -1,4 +1,14 @@
 {
+  "penalties": {
+    "management": {
+      "header": "Beheer strafpunten",
+      "subheader": "Strafpunten voor",
+      "addButton": "Voeg strafpunt toe",
+      "points": "Punten",
+      "description": "Beschrijving",
+      "confirm": "Bevestig"
+    }
+  },
   "calendar": {
     "previous": "Vorige",
     "today": "Vandaag",
@@ -6,6 +16,21 @@
     "month": "Maand",
     "week": "Week",
     "day": "Dag"
+  },
+  "navigation": {
+    "profile" : "Profiel",
+    "dashboard" : "Alle studieplekken",
+    "information" : "Help",
+    "scan" : "Scan pagina",
+    "management" : "Beheer pagina",
+    "profileInfo": "Op zoek naar je profiel? Bekijk hier je reservaties of je strafpunten, of toon je QR code.",
+    "informationInfo": "Geraak je er niet onmiddellijk aan uit hoe de applicatie werkt? Ga zeker eens kijken op de hulp pagina.",
+    "managementInfo": "Beheer gebouwen/locaties/gebruikers",
+    "dashboardInfo": "Vind jouw ideale studieplekje",
+    "scanInfo": "Scan/neem aanwezigheden op van studenten",
+    "page": "Navigatie pagina",
+    "loginInfo": "Log in om gebruik te kunnen maken van alle functionaliteiten in deze applicatie.",
+    "login": "Login"
   },
   "information": {
     "general": "Algemeen",
@@ -17,6 +42,7 @@
     "admin": "Administrator"
   },
   "dashboard": {
+    "penaltyWarning": "Deze locatie gebruikt strafpunten! Bekijk zeker de informatiepagina voor meer informatie.",
     "alert": {
       "title": "[VRIJDAG 11 DECEMBER, RESERVATIES OP VERSCHILLENDE MOMENTEN]",
       "p1": "De reservaties zullen plaatsvinden om 19:00, 19:30 en 20:00 afhankelijk van de locatie. Bekijk dus zeker op voorhand wanneer de reservaties zullen openen.",
@@ -47,18 +73,26 @@
       },
       "calendar": {
         "reservation": {
-          "successMessage": "Het wijzigen van de reservaties is succesvol verlopen",
+          "successGenericMessage": "Het wijzigen van de reservaties is succesvol verlopen",
+          "successPendingShortMessage": "Je reservaties zijn ontvangen en zullen binnenkort worden verwerkt. Je moet deze pagina niet refreshen. Dit zal automatisch gebeuren.",
+          "successPendingLongMessage": "Je reservaties zijn ontvangen. Het kan tot 10 minuten duren voor deze verwerkt zijn. Je moet deze pagina niet refreshen. Dit zal automatisch gebeuren.",
           "errorMessage": "Het aanpassen van de reservaties is mislukt. Er is iets misgegaan.",
           "header": "Wijzig reservaties",
           "updateMessage": "Je staat op het punt om wijzigingen aan te brengen aan jouw reservaties.",
           "updateAddMessage": "De volgende reservaties zullen toegevoegd worden aan jouw profiel:",
           "updateDeleteMessage": "De volgende reservaties zullen verwijderd worden",
           "updateConfirmMessage": "Wilt u deze wijzigingen doorvoeren?",
-          "updateWarningMessage": "WAARSCHUWING: Je mag enkel een plek reserveren wanneer je deze nodig hebt. Aanwezigheden kunnen en zullen opgenomen worden."
+          "updateWarningMessage": "WAARSCHUWING: Je mag enkel een plek reserveren wanneer je deze nodig hebt. Aanwezigheden kunnen en zullen opgenomen worden.",
+          "afterReservationHeader": "Je reservaties bevestigen",
+          "afterReservationPendingMessage": "Je reservaties zijn succesvol in de wachtlijn geplaatst. Om iedereen een eerlijke kans te geven zullen de plaatsen over tien minuten willekeurig worden toegekend. Je reservatie zal dus pas toegekend of afgekeurd worden binnen 10 minuten!",
+          "afterReservationConfirmedMessage": "Je reservaties zijn succesvol geplaatst en meteen toegekend. Al jouw reservaties zijn dus bevestigd.",
+          "afterReservationLoadingMessage": "Je reservaties worden geplaatst...",
+          "afterReservationFailedMessage": "Er is iets misgegaan tijdens het aanmaken van je reservaties."
+
         }
       },
       "loginWarning": "Voordat er reservaties kunnen geplaatst worden voor deze locatie, dient u ingelogd te zijn.",
-      "refreshWarning": "Herladen van de kalendar zal automatisch gebeuren, het is niet nodig om manueel de pagina te herladen."
+      "refreshWarning": "Herladen van de kalender zal automatisch gebeuren, het is niet nodig om manueel de pagina te herladen."
     },
     "filter": {
       "title": "Filter",
@@ -81,7 +115,8 @@
     "terms-of-use":"Terms of use"
   },
   "reservations": {
-    "reservationButton": "Update Reservaties"
+    "reservationButton": "Update Reservaties",
+    "tooManyPenalty": "Je hebt te veel strafpunten. Bekijk de informatiepagina voor meer info."
   },
   "general": {
     "dsa": "Dienst StudentenActiviteiten",
@@ -124,13 +159,16 @@
     "imageAlt": "Universiteit Gent",
     "logIn": "Log in",
     "logOut": "Log uit",
+    "menu": "Menu",
     "navigation": {
       "login": "Login",
       "dashboard": "Dashboard",
-      "profile": "Profiel",
+      "profile": "Mijn reservaties",
       "scan": "Scan",
       "management": "Beheer",
-      "information": "Informatie"
+      "information": "Help",
+      "navigation": "Navigatie",
+      "general": "Algemeen"
     }
   },
   "language": {
@@ -163,14 +201,48 @@
       "calendar": "Kalender",
       "penalties": "Overtredingen",
       "admins": "Admins",
-      "volunteers": "Toezichthouders"
+      "volunteers": "Toezichthouders",
+      "actionlog": "Actie logboek"
+    },
+    "actionlog": {
+      "title": "Een logboek van alle belangrijke recent uitgevoerde acties",
+      "table": {
+        "type": "Type",
+        "domain": "Domein",
+        "description": "Omschrijving",
+        "username": "Gebruikersnaam",
+        "userid": "Gebruikers ID",
+        "time": "Tijdstip"
+      },
+      "descriptionFormatId": "Poging om de %subject met id %id te %action.",
+      "descriptionFormatNoId": "Poging om een %subject te %action.",
+      "type": {
+        "INSERTION": "Toevoeging",
+        "DELETION": "Verwijdering",
+        "UPDATE": "Wijziging",
+        "OTHER": "Andere"
+      },
+      "action": {
+        "INSERTION": "aanmaken",
+        "DELETION": "verwijderen",
+        "UPDATE": "wijzigen",
+        "OTHER": "wijzigen"
+      },
+      "domain": {
+        "LOCATION": "locatie",
+        "BUILDING": "gebouw",
+        "AUTHORITY": "authoriteit",
+        "USER": "gebruiker",
+        "PASSWORD": "wachtwoord"
+      }
     },
     "general": {
       "loading": "Aan het laden...",
       "noLocations": "Er zijn nog geen beschikbare ruimtes. Maak er een aan met de knop 'Ruimte Toevoegen'",
       "noBuildings": "Er zijn nog geen beschikbare gebouwen. Maak er een aan met de knop 'Gebouw toevoegen",
       "noTags": "Er zijn nog geen tags. Maak er een aan met de knop 'Tag Toevoegen'",
-      "noAuthorities": "Er zijn nog geen autoriteiten aangemaakt. Maak er een aan met de knop 'Autoriteit Toevoegen'"
+      "noAuthorities": "Er zijn nog geen autoriteiten aangemaakt. Maak er een aan met de knop 'Autoriteit Toevoegen'",
+      "noActions": "Er zijn nog geen acties. Deze zullen automatisch worden toegevoegd wanneer belangrijke acties worden uitgevoerd."
     },
     "locationDetails": {
       "title": "Details van {locationName}",
@@ -189,7 +261,8 @@
         "success": "Het wijzigen van de ruimte was succesvol",
         "error": "Er ging iets mis tijdens het wijzigen van de ruimte",
         "numberOfSeatsApplyWarning": "De aangepaste plaatsen worden alleen toegepast op nieuw aangemaakte openingsperiodes.",
-        "numberOfSeatsHelp": "Kan alleen aangepast worden door een admin."
+        "numberOfSeatsHelp": "Kan alleen aangepast worden door een admin.",
+        "usesPenaltyPoints": "Gebruikt strafpunten"
       },
       "calendar": {
         "title": "Reservatiebeheer",
@@ -213,7 +286,8 @@
             "notScanned": "Niet gescand",
 
             "startScanning": "Start scannen",
-            "finishScanning": "Beïndig scannen"
+            "finishScanning": "Beïndig scannen",
+            "penalties": "Strafpunten"
           }
         },
         "form": {
@@ -402,6 +476,7 @@
       },
       "checkAddress": "Check",
       "addNewBuilding": "Nieuw gebouw",
+      "incorrectAddress": "Gegeven adres bestaat niet.",
       "addBuildingModal": {
         "title": "Nieuw gebouw maken",
         "idSetByBackendMessage": "Ingesteld door backend",
@@ -799,15 +874,27 @@
         }
       },
       "table": {
-        "title": "Overzicht van jou strafpunten",
+        "title": "Overzicht van jouw strafpunten",
         "header": {
           "eventCode": "Reden voor strafpunten",
           "timestamp": "Timestamp",
           "reservationDate": "Reservatie voor",
           "location": "Ruimte",
-          "receivedPoints": "Ontvangen strafpunten"
+          "receivedPoints": "Ontvangen strafpunten",
+          "issuer": "Door wie",
+          "description": "Beschrijving",
+          "designee": "Voor wie",
+          "delete": "Verwijder"
         },
-        "noPenalties": "Je hebt geen enkele overtreding gemaakt. Goed zo!"
+        "noPenalties": "Je hebt geen enkele overtreding gemaakt. Goed zo!",
+        "system": "Systeem",
+        "not": {
+          "attended": "Gebruiker was afwezig op een reservatie."
+        },
+        "late": {
+          "delete": "Gebruiker verwijderde reservatie te laat."
+        }
+
       }
     },
     "reservations": {
@@ -827,6 +914,7 @@
             "APPROVED": "Goedgekeurd",
             "PRESENT": "Aanwezig",
             "ABSENT": "Afwezig",
+            "DELETED": "Verwijderd",
             "notScanned": "Geen aanwezigheden opgenomen",
             "notScannedExplanation": "Voor deze reservatie zijn de aanwezigheden niet opgenomen. Je hebt dus ook geen strafpunten verkregen."
           }

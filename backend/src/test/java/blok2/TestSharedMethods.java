@@ -187,7 +187,7 @@ public class TestSharedMethods {
         }
     }
 
-    public static  List<Timeslot> testCalendarPeriods(Location location) {
+    public static List<Timeslot> testCalendarPeriods(Location location) {
 
         List<Timeslot> timeslots = new ArrayList<>();
         YearWeek date = YearWeek.now();
@@ -195,15 +195,15 @@ public class TestSharedMethods {
         for (int i = -1; i < 1; i++) {
             LocalDateTime reservableFrom = LocalDateTime.now().withDayOfMonth(1);
 
+            LocalTime mondayStartTime = LocalTime.of(8, 0);
+            LocalTime mondayEndTime = LocalTime.of(16, 30);
+            Timeslot timeslotMonday = new Timeslot(null, date.atDay(DayOfWeek.MONDAY), mondayStartTime, mondayEndTime,
+                    true, reservableFrom, location.getNumberOfSeats(), location.getLocationId());
 
-            LocalTime mondayStartTime = LocalTime.of(8,0);
-            LocalTime mondayEndTime = LocalTime.of(16,30);
-            Timeslot timeslotMonday = new Timeslot(null, date.atDay(DayOfWeek.MONDAY), mondayStartTime, mondayEndTime, true, reservableFrom, location.getNumberOfSeats(), location.getLocationId());
-
-
-            LocalTime fridayStartTime = LocalTime.of(12,0);
+            LocalTime fridayStartTime = LocalTime.of(12, 0);
             LocalTime fridayEndTime = LocalTime.of(20, 0);
-            Timeslot timeslotFriday = new Timeslot(null, date.atDay(DayOfWeek.FRIDAY), fridayStartTime, fridayEndTime, true, reservableFrom, location.getNumberOfSeats(), location.getLocationId());
+            Timeslot timeslotFriday = new Timeslot(null, date.atDay(DayOfWeek.FRIDAY), fridayStartTime, fridayEndTime,
+                    true, reservableFrom, location.getNumberOfSeats(), location.getLocationId());
 
             timeslots.add(timeslotMonday);
             timeslots.add(timeslotFriday);
@@ -213,6 +213,7 @@ public class TestSharedMethods {
 
     /**
      * Create timeslots that are completely in the past
+     * 
      * @param location the location for which to create the timeslots
      * @return a timeslots in the past
      */
@@ -222,22 +223,17 @@ public class TestSharedMethods {
 
         LocalTime startTime = now.toLocalTime().plusMinutes(1);
         LocalTime endTime = now.toLocalTime().plusMinutes(2);
-        Timeslot timeslot = new Timeslot(null, past.atDay(DayOfWeek.MONDAY), startTime, endTime, true, now.minusDays(3), location.getNumberOfSeats(), location.getLocationId());
+        Timeslot timeslot = new Timeslot(null, past.atDay(DayOfWeek.MONDAY), startTime, endTime, true, now.minusDays(3),
+                location.getNumberOfSeats(), location.getLocationId());
 
         return Collections.singletonList(timeslot);
     }
 
     /**
-<<<<<<< HEAD
-     * Create CalendarPeriod that is completely in the future
-     *
-     * @param location the location for which to create the period
-     * @return a CalendarPeriod in the future
-=======
      * Create timeslots that is completely in the future
+     * 
      * @param location the location for which to create the timeslots
      * @return a list of timeslots in the future
->>>>>>> timeslots-#399
      */
     public static List<Timeslot> upcomingCalendarPeriods(Location location) {
         YearWeek past = YearWeek.now().plusWeeks(3);
@@ -245,19 +241,17 @@ public class TestSharedMethods {
 
         LocalTime startTime = now.toLocalTime().plusMinutes(1);
         LocalTime endTime = now.toLocalTime().plusMinutes(2);
-        Timeslot timeslot = new Timeslot(null, past.atDay(now.getDayOfWeek()), startTime, endTime, true, now.minusDays(3), location.getNumberOfSeats(), location.getLocationId());
+        Timeslot timeslot = new Timeslot(null, past.atDay(now.getDayOfWeek()), startTime, endTime, true,
+                now.minusDays(3), location.getNumberOfSeats(), location.getLocationId());
 
         return Collections.singletonList(timeslot);
 
     }
 
     /**
-<<<<<<< HEAD
-     * Create a CalendarPeriod that is active (today is between start and end date) but not during the active hours
-     *
-=======
-     * Create a timeslots that is active (today is between start and end date) but not during the active hours
->>>>>>> timeslots-#399
+     * Create a timeslots that is active (today is between start and end date) but
+     * not during the active hours
+     * 
      * @param location the location for which to create the period
      * @return a list of timeslots that are active, but outside the hours
      */
@@ -269,25 +263,20 @@ public class TestSharedMethods {
         if (LocalTime.now().isAfter(LocalTime.of(23, 59)) || LocalTime.now().isBefore(LocalTime.of(0, 1)))
             throw new TimeException("Impossible to create active calendar period at this time");
 
-
         LocalTime startTime = now.toLocalTime().plusMinutes(1);
         LocalTime endTime = now.toLocalTime().plusMinutes(2);
-        Timeslot timeslot = new Timeslot(null, past.atDay(now.getDayOfWeek()), startTime, endTime, true, now.minusDays(3), location.getNumberOfSeats(), location.getLocationId());
-
-
-
+        Timeslot timeslot = new Timeslot(null, past.atDay(now.getDayOfWeek()), startTime, endTime, true,
+                now.minusDays(3), location.getNumberOfSeats(), location.getLocationId());
 
         return Collections.singletonList(timeslot);
     }
 
-    /**
-<<<<<<< HEAD
-     * Create a CalendarPeriod that is active (today is between start and end date) and during the active hours
-     *
-=======
-     * Create a list of timeslots that is active (today is between start and end date) and during the active hours
->>>>>>> timeslots-#399
+    /*
+     * Create a list of timeslots that is active (today is between start and end
+     * date) and during the active hours
+     * 
      * @param location the location for which to create the period
+     * 
      * @return a list of timeslots that is active and within hours
      */
     public static List<Timeslot> activeCalendarPeriodsInsideHours(Location location) throws TimeException {
@@ -299,11 +288,10 @@ public class TestSharedMethods {
         if (LocalTime.now().isAfter(LocalTime.of(23, 59)) || LocalTime.now().isBefore(LocalTime.of(0, 1)))
             throw new TimeException("Impossible to create active calendar period at this time");
 
-
         LocalTime startTime = now.toLocalTime().minusMinutes(1);
         LocalTime endTime = now.toLocalTime().plusMinutes(1);
-        Timeslot timeslot = new Timeslot(null, past.atDay(now.getDayOfWeek()), startTime, endTime, true, now.minusDays(3), location.getNumberOfSeats(), location.getLocationId());
-
+        Timeslot timeslot = new Timeslot(null, past.atDay(now.getDayOfWeek()), startTime, endTime, true,
+                now.minusDays(3), location.getNumberOfSeats(), location.getLocationId());
 
         return Collections.singletonList(timeslot);
     }

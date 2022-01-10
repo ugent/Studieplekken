@@ -22,7 +22,6 @@ export class ApplicationTypeGuardService implements CanActivate {
   ): boolean {
     const url: string = state.url;
     let activate = false;
-
     if (url.startsWith('/profile')) {
       if (url.includes('/reservations')) {
         activate = this.functionalityService.showReservationsFunctionality();
