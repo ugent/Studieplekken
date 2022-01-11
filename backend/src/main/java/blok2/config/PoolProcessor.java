@@ -54,6 +54,7 @@ public class PoolProcessor implements Runnable{
                     }
                     Timeslot dbTimeslot = timeslotRepository.getByTimeslotSeqnr(reservation.getTimeslot().getTimeslotSeqnr());
                     if (!dbTimeslot.isReservable()) {
+                        System.err.println("Warning: Invalid state. Reservation is not reservable.");
                         rejectReservation(reservation);
                         continue;
                     }
@@ -63,6 +64,8 @@ public class PoolProcessor implements Runnable{
                         continue;
                     }
                     if (dbTimeslot.getAmountOfReservations() + 1 > dbTimeslot.getSeatCount()) {
+                        System.err.println("Warning: Invalid state. Is full.");
+
                         rejectReservation(reservation);
                         continue;
                     }

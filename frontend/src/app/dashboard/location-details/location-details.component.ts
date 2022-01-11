@@ -253,7 +253,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     }*/
 
     const timeslotIsSelected = this.selectedSubject.value.some((r) =>
-      timeslotEquals(r.timeslot, reservation.timeslot) && r.state != LocationReservationState.DELETED
+      timeslotEquals(r.timeslot, reservation.timeslot) && r.state != LocationReservationState.DELETED && r.state != LocationReservationState.REJECTED
     );
 
     // if it is full and you don't have this reservation yet, unselect
