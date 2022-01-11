@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import * as moment from 'moment';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { LocationService } from 'src/app/services/api/locations/location.service';
@@ -17,7 +18,7 @@ export class TableDataService {
     return (
       location.currentTimeslot &&
       location.currentTimeslot.reservable &&
-      location.currentTimeslot.isCurrent()
+      location.currentTimeslot.getStartMoment().isAfter(moment().subtract(30, "minutes"))
     );
   }
 
