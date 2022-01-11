@@ -85,7 +85,7 @@
           "updateWarningMessage": "WARNING: You are only allowed to make a reservation when you will attend. Attendance can and will be taken.",
           "afterReservationHeader": "Confirming your reservations",
           "afterReservationPendingMessage": "Your reservation is succesfully placed in the queue. To give every student a fair chance, the reservations will be randomly assigned after ten minutes. Your reservations have not yet been confirmed!",
-          "afterReservationConfirmedMessage": "Your reservations have been succesful. All your requested spots have been confirmed.",
+          "afterReservationConfirmedMessage": "Your reservations have been succesfully requested and will be looked at as soon as possible.",
           "afterReservationLoadingMessage": "Your reservations are being placed, please wait...",
           "afterReservationFailedMessage": "Something went wrong while trying to make your reservation."
         }
