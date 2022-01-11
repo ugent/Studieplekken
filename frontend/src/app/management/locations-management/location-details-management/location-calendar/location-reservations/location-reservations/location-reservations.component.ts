@@ -296,21 +296,35 @@ export class LocationReservationsComponent {
   }
 
   getTableData(locationReservations: LocationReservation[]): TabularData<LocationReservation> {
-    return this.tabularDataService.reservationsToScanningTable(locationReservations, this.isManagement)
+    const reservations = locationReservations
+    .filter(lr => lr.state !== LocationReservationState.DELETED)
+    .filter(lr => lr.state !== LocationReservationState.REJECTED)
+    return this.tabularDataService.reservationsToScanningTable(reservations, this.isManagement)
   }
 
   onAction({columnIndex, data}: {columnIndex: number, data: LocationReservation}, errorTemplate: TemplateRef<unknown>, penaltyManager: TemplateRef<unknown>) {
-    if(columnIndex == 3)
-      return this.scanLocationReservation(data, true, errorTemplate);
-    else if(columnIndex == 4)
-      return this.scanLocationReservation(data, false, errorTemplate);
-    else if (columnIndex == 2) {
-      this.openPenaltyBox(
-        data,
-        penaltyManager
-      )
+    if(this.isManagement) {
+        if(columnIndex == 3) {
+          this.lastScanned = data;
+          return this.scanLocationReservation(data, true, errorTemplate);
+        }
+        else if(columnIndex == 4)
+          return this.scanLocationReservation(data, false, errorTemplate);
+       else if (columnIndex == 2) {
+          return this.openPenaltyBox(
+            data,
+            penaltyManager
+          )
 
       }
+    }
+
+    if(columnIndex == 2) {
+      this.lastScanned = data;
+      return this.scanLocationReservation(data, true, errorTemplate);
+    }
+        else if(columnIndex == 3)
+          return this.scanLocationReservation(data, false, errorTemplate);
     }
 
   selectInputBox() {
