@@ -18,7 +18,7 @@ export class TableDataService {
     return (
       location.currentTimeslot &&
       location.currentTimeslot.reservable &&
-      location.currentTimeslot.getStartMoment().isAfter(moment().subtract(30, "minutes"))
+      moment().isAfter(location.currentTimeslot.getStartMoment().subtract(30, "minutes"))
     );
   }
 
