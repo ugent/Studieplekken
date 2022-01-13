@@ -54,3 +54,8 @@ h1.inline-block {
 .margin-bottom {
   margin-bottom: 1em;
 }
+
+.tooltip {
+  cursor: pointer;
+  text-decoration: underline #000 dotted;
+}

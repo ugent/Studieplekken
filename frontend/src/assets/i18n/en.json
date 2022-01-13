@@ -88,7 +88,8 @@
           "afterReservationConfirmedMessage": "Your reservations have been succesfully requested and will be looked at as soon as possible.",
           "afterReservationLoadingMessage": "Your reservations are being placed, please wait...",
           "afterReservationFailedMessage": "Something went wrong while trying to make your reservation."
-        }
+        },
+        "rejectedExplanation": "Your reservation was rejected, because the location was already full when it came through. This is purely informative, and can be ignored. If any places become available, be sure to try again!"
       },
       "loginWarning": "In order to be able to make a reservation for this location, you need to be logged in.",
       "refreshWarning": "Refreshing the calendar will happen automatically, it is not necessary to refresh the page manually."

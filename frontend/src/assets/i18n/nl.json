@@ -89,7 +89,8 @@
           "afterReservationLoadingMessage": "Je reservaties worden geplaatst...",
           "afterReservationFailedMessage": "Er is iets misgegaan tijdens het aanmaken van je reservaties."
 
-        }
+        },
+        "rejectedMessage": "Je reservatie is geweigerd omdat de locatie al vol zat. Dit is puur informatief: je kan dit gewoon negeren. Probeer zeker opnieuw als er een plekje vrijkomt!"
       },
       "loginWarning": "Voordat er reservaties kunnen geplaatst worden voor deze locatie, dient u ingelogd te zijn.",
       "refreshWarning": "Herladen van de kalender zal automatisch gebeuren, het is niet nodig om manueel de pagina te herladen."

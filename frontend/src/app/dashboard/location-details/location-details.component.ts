@@ -516,6 +516,10 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     return 'profile.reservations.locations.table.attended.' + state;
   }
 
+  needsTooltip(state: LocationReservationState) {
+    return state === LocationReservationState.REJECTED;
+  }
+
   getLinkToElement(id : string): string {
     return document.location.href.replace(document.location.hash, '') + id;
   }
