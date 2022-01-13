@@ -1,5 +1,5 @@
 <div>
-  <div *ngIf="filter(locationReservations).length === 0" class="row">
+  <div *ngIf="filteredLocationReservations.length === 0" class="row">
     <div class="messages messages--info">
       {{
         "management.locationDetails.calendar.reservations.table.noLocationReservations"
@@ -8,13 +8,7 @@
     </div>
   </div>
 
-  <div *ngIf="waitingForServer" class="row">
-    <div class="messages messages--info">
-      {{ "general.waitingForServer" | translate }}
-    </div>
-  </div>
-
-  <div *ngIf="filter(locationReservations).length > 0" class="row">
+  <div *ngIf="filteredLocationReservations.length > 0" class="row">
     <div
       *ngIf="noSuchUserFoundWarning"
       class="messages unregisteredwarning"
@@ -63,7 +57,7 @@
     </div>
     <br/>
 
-    <app-table [tabularData]="getTableData(filter(locationReservations))" (action)="onAction($event, scanningError, penaltyManager)"></app-table>
+    <app-table *ngIf="currentTableData" [tabularData]="currentTableData" (action)="onAction($event, scanningError, penaltyManager)"></app-table>
 
 
     <button

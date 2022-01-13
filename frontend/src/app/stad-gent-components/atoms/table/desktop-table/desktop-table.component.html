@@ -3,7 +3,7 @@
     <table class="table table-striped" style="table-layout: fixed; width: 100%">
       <thead> <!-- Table header -->
         <tr>
-          <th *ngFor="let column of this.tabularData.columns; let i = index" scope="col" style="width: {{ getWidth(column) }}%">
+          <th *ngFor="let column of this.tabularData.columns; let i = index; trackBy: trackByMethod" scope="col" style="width: {{ getWidth(column) }}%">
             {{ column.columnHeader | translate }}
           </th>
 
@@ -14,7 +14,7 @@
 
       <tbody>
         <tr *ngFor="let dataPoint of tabularData.data" [ngClass]="getCssClasses(dataPoint)">
-          <td *ngFor="let column of tabularData.columns; let i = index">
+          <td *ngFor="let column of tabularData.columns; let i = index; trackBy: trackByMethod">
             <ng-template *ngIf="column.type === 'contentColumn'" [ngTemplateOutlet]="contentColumn" [ngTemplateOutletContext]="{ column: column, dataPoint: dataPoint, index: i }">
             </ng-template>
 
