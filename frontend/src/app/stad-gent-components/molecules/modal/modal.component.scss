@@ -23,6 +23,6 @@
 
 .modal-full {
   max-height: calc(
-    100vh - 48px
+    80vh - 48px
   ); /* 24px is padding used by MatDialog so it is excluded from max height. */
 }
