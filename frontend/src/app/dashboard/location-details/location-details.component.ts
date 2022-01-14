@@ -6,7 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
-import { BehaviorSubject, combineLatest, merge, Observable, of, Subscription, throwError } from 'rxjs';
+import { BehaviorSubject, combineLatest, merge, Observable, of, ReplaySubject, Subject, Subscription, throwError } from 'rxjs';
 import { map } from 'rxjs/internal/operators/map';
 import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
@@ -117,6 +117,8 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
   acceptedReservations: LocationReservation[] = [];
   newReservationCreator: Observable<moment.Moment[]>;
 
+  ownReservations: Subject<LocationReservation[]> = new ReplaySubject();
+
   constructor(
     private locationService: LocationService,
     private route: ActivatedRoute,
@@ -155,9 +157,10 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
        user.userAuthorities.map(a => a.authorityId).includes(location.authority.authorityId);
     })
 
-    this.authenticationService
-      .getLocationReservations()
-      .subscribe((next) => (this.locationReservations = next));
+    this.updateOwnReservations();
+
+    this.ownReservations.subscribe(v => this.selectedSubject.next(v))
+
     this.currentLang = this.translate.currentLang;
 
     // when the location is loaded, setup the descriptions
@@ -181,6 +184,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
     setInterval(() => {
       this.updateCalendar();
+      this.updateOwnReservations();
     }, 60 * 1000); // 1 minute
 
     this.showLockersManagement = this.functionalityService.showLockersManagementFunctionality();
@@ -306,10 +310,12 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
     this.calendarSub = combineLatest([
       this.timeslotsService.getTimeslotsOfLocation(this.locationId),
-      this.authenticationService.getLocationReservations(),
+      this.ownReservations,
       this.selectedSubject,
     ])
       .subscribe(([timeslots, reservations, proposedReservations]) => {
+
+        console.log(reservations)
         this.originalList = [...reservations.filter(r => r.timeslot.locationId == this.locationId)];
         this.pendingReservations = this.originalList.filter(locres => locres.state === LocationReservationState.PENDING);
         this.timeouts.forEach(t => clearTimeout(t));
@@ -423,7 +429,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         return throwError(err);
       }),
       tap(
-        () => this.updateCalendar()
+        () => this.updateOwnReservations()
       ),
       map(([res]) => res)
       );
@@ -483,6 +489,10 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         return location.name + ' (' + date + ' ' + hour + ')';
       }
       ));
+  }
+
+  private updateOwnReservations() {
+    this.authenticationService.getLocationReservations().subscribe(next => this.ownReservations.next(next));
   }
 
   loggedIn(): boolean {
