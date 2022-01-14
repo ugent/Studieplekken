@@ -29,6 +29,13 @@ Gedurende de eerste tien minuten van een reservatieperiode kan men zich in een w
 
 <br /><br />
 
+Hieronder nog even de kleurcode van de kalender toegelicht:
+1. Als je reservatieslot donkerblauw kleurt nadat je op 'update reservaties' geklikt hebt, is je reservatie succesvol geweest.
+2. Als je reservatieslot donkerrood kleurt, is je reservatie geweigerd. Je hebt jammer genoeg geen plaatsje kunnen bemachtigen. Voor de rest heeft deze kleur geen invloed op jou: we moedigen je aan om opnieuw te proberen als er plaats vrijkomt!
+3. Als je slot lichtoranje kleurt, is deze in behandeling of in de wachtrij. Gelieve even te wachten tot we je reservatie hebben bekeken!
+4. Als je slot lichtblauw kleurt, kan je een reservatie maken.
+5. Als je slot lichtrood kleurt, is deze voorlopig jammer genoeg vol.
+
 Indien je reserveringen wil verwijderen kan je dat door een tijdslot te selecteren die je al hebt gereserveerd en opnieuw op "update reservatie" te klikken. Zo zal je zien in het dialoog wat je aan het verwijderen bent. Je kan zo tegelijk meerdere reserveringen toevoegen en verwijderen op hetzelfde moment.
 
 ## Bekijken van reserveringen
