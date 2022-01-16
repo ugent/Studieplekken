@@ -159,7 +159,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
     this.updateOwnReservations();
 
-    this.ownReservations.subscribe(v => this.selectedSubject.next(v))
+    this.ownReservations.subscribe(v => this.selectedSubject.next(v.filter(f => f.timeslot.locationId === this.locationId)))
 
     this.currentLang = this.translate.currentLang;
 
@@ -473,7 +473,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   private updateOwnReservations() {
-    this.authenticationService.getLocationReservations().subscribe(next => this.ownReservations.next(next));
+    this.authenticationService.getLocationReservations().subscribe(next => this.ownReservations.next(next.filter(f => f.timeslot.locationId === this.locationId)));
   }
 
   loggedIn(): boolean {
