@@ -352,9 +352,11 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
   commitReservations(template: TemplateRef<unknown>): void {
     // We need to find out which of the selected boxes need to be removed, and which need to be added.
     // Therefore, we calculate selected \ previous
+    console.log(this.selectedSubject.value)
+
     this.newReservations = this.selectedSubject.value.filter(
       (selected) => {
-        if (selected.state === LocationReservationState.DELETED) {
+        if (selected.state === LocationReservationState.DELETED || selected.state === LocationReservationState.REJECTED ) {
           return false;
         }
         const tempList: LocationReservation[] = this.originalList.filter(
@@ -372,17 +374,12 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         }
         return false;
       }
-        /*!includesTimeslot(
-          this.originalList.map((l) => l.timeslot),
-          selected.timeslot
-        ) ||
-         this.originalList.find(l => l.timeslot.timeslotSequenceNumber === selected.timeslot.timeslotSequenceNumber)?.state === LocationReservationState.REJECTED*/
     );
 
     // And we calculate previous \ selected
     this.removedReservations = this.originalList.filter(
       (selected) => {
-        if (selected.state === LocationReservationState.DELETED) {
+        if (selected.state === LocationReservationState.DELETED || selected.state === LocationReservationState.REJECTED) {
           return false;
         }
         const tempList: LocationReservation[] = this.selectedSubject.value.filter(
@@ -394,22 +391,6 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         }
         return false;
       });
-      /*!includesTimeslot(
-        this.selectedSubject.value.map((l) => l.timeslot),
-        selected.timeslot
-      ));*/
-      /*{
-        const tempList: LocationReservation[] = this.selectedSubject.value.filter(
-          (reservation) => reservation.user.userId == selected.user.userId && reservation.timeslot.timeslotSequenceNumber == selected.timeslot.timeslotSequenceNumber
-        );
-        const selectedReservation = tempList.length > 0? tempList[0] : undefined;
-        if (selectedReservation && selectedReservation.state !== selected.state && selected.state === LocationReservationState.DELETED) {
-          return true;
-        }
-        return false;
-      }
-        )*/
-    // );
 
     this.modalRef = this.modalService.open(template, { panelClass: ["cs--cyan", "bigmodal"] });
   }
