@@ -84,7 +84,7 @@
           "updateConfirmMessage": "Wilt u deze wijzigingen doorvoeren?",
           "updateWarningMessage": "WAARSCHUWING: Je mag enkel een plek reserveren wanneer je deze nodig hebt. Aanwezigheden kunnen en zullen opgenomen worden.",
           "afterReservationHeader": "Je reservaties bevestigen",
-          "afterReservationPendingMessage": "Je reservaties zijn succesvol in de wachtlijn geplaatst. Om iedereen een eerlijke kans te geven zullen de plaatsen over tien minuten willekeurig worden toegekend. Je reservatie zal dus pas toegekend of afgekeurd worden binnen 10 minuten!",
+          "afterReservationPendingMessage": "Je reservaties zijn succesvol in de wachtlijn geplaatst. De plaatsen zullen over tien minuten worden toegekend. Je reservatie zal dus pas toegekend of afgekeurd worden binnen 10 minuten!",
           "afterReservationConfirmedMessage": "Je reservaties zijn succesvol aangevraagd en zullen zo snel mogelijk worden bekeken.",
           "afterReservationLoadingMessage": "Je reservaties worden geplaatst...",
           "afterReservationFailedMessage": "Er is iets misgegaan tijdens het aanmaken van je reservaties."
