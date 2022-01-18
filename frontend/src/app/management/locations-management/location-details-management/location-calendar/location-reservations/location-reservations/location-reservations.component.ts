@@ -186,7 +186,7 @@ export class LocationReservationsComponent implements OnChanges {
     if (this.noSuchUserFoundWarning) this.delayedSelectInputBox();
 
     const fullyMatchedUser = this.barcodeService.getReservation(
-      this.locationReservations,
+      this.filteredLocationReservations,
       this.searchTerm
     );
 
