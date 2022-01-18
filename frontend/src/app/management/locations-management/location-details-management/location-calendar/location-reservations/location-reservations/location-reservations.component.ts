@@ -76,6 +76,7 @@ export class LocationReservationsComponent implements OnChanges {
     attended: boolean,
     errorTemplate: TemplateRef<unknown>
   ): void {
+    const olds = reservation.state;
     const newS = attended
       ? LocationReservationState.PRESENT
       : LocationReservationState.ABSENT;
@@ -87,6 +88,8 @@ export class LocationReservationsComponent implements OnChanges {
       .subscribe(
         () => {},
         (err) => {
+          reservation.state = olds;
+          this.setLastScanned(reservation);
           console.error(err);
           this.modalService.open(errorTemplate);
         }
