@@ -61,7 +61,7 @@ public class PenaltyService implements IPenaltyDao {
 
     public void notifyOfReservationDeletion(LocationReservation lr) {
         LocalDateTime opening = LocalDateTime.of(lr.getTimeslot().timeslotDate(), lr.getTimeslot().getOpeningHour());
-        if(LocalDateTime.now().isAfter(opening.minus(1, ChronoUnit.DAYS))) {
+        if(LocalDateTime.now().isAfter(opening.minus(1, ChronoUnit.DAYS)) && lr.getStateE() == LocationReservation.State.APPROVED) {
             List<Penalty> penalties = this.getPenaltiesByUser(lr.getUser().getUserId());
             long amountOfEarlyDeletePenalties = penalties.stream()
                                                     .filter(p -> p.getPenaltyClass().equals(EARLY_DELETE_CLASS)).count();
