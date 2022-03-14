@@ -119,5 +119,8 @@ export const api = {
   usersToScanAtLocation: '/api/scan/users/{locationId}',
 
   // Action log
-  actions: '/api/actions'
+  actions: '/api/actions',
+
+  // STATS
+  getStats: 'api/stats',
 };

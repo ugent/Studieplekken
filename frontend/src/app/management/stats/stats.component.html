@@ -1,0 +1,26 @@
+<div class="container-fluid" *ngIf="statsObs | async as stats">
+  <!-- Title -->
+  <h3>{{'management.stats.title' | translate}}</h3>
+
+  <hr>
+
+  <div *ngIf="loading" class="alert alert-info">
+    {{'management.stats.loading' | translate}}
+  </div>
+
+  <!-- If an error has occurred while fetching the stats, show the error -->
+  <div *ngIf="errorOnRetrievingStats" class="alert alert-error">
+    {{'management.stats.error' | translate}}
+  </div>
+
+  <p>
+    {{'management.stats.info' | translate}}
+  </p>
+  <br>
+
+  <div *ngIf="!loading && !errorOnRetrievingStats" class="responsive-table fullwidth">
+    <div class="table-wrapper fullwidth" *ngFor="let locationStat of stats">
+      <app-waffle [locationStat]="locationStat"></app-waffle>
+    </div>
+  </div>
+</div>

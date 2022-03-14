@@ -815,6 +815,17 @@
       "addNewButton": "Toezichter toevoegen",
       "addNewHeader": "Zoek en voeg toezichter toe",
       "title": "Bekijk, voeg toe en verwijder toezichters"
+    },
+    "stats": {
+      "title": "Statistieken",
+      "loading": "Wachten op antwoord van de server...",
+      "error": "Er is iets misgelopen tijdens het ophalen van de statistieken.",
+      "info": "Per locatie wordt de bezetting weergegeven, steeds van het huidige of eerstvolgende tijdslot. Blauwe kleur geeft aan dat er geen reservatie mogelijk is. Grijze kleur geeft de vrije plaatsen weer. Wanneer er een groene kleur is, is er een bezetting van minder dan 80%, oranje bij minder dan 95% en anders rood.",
+      "withoutReservation": "Zonder reservatie",
+      "occupied": "bezet",
+      "takenSeats": "Bezette stoelen",
+      "freeSeats": "Vrije stoelen",
+      "unknown": "Onbekend"
     }
   },
   "profile": {
