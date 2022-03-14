@@ -47,6 +47,7 @@ public class ReservationManager {
                     continue;
                 }
                 LocationReservation dbRes = optDbRes.get();
+                System.out.println("WARNING: location rejected because of too early");
                 dbRes.setState(LocationReservation.State.REJECTED);
                 reservationRepository.save(dbRes);
                 continue;

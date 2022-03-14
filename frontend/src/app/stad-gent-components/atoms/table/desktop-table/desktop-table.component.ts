@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { Column, ContentColumn, TabularData } from '../tabular-data';
 
 @Component({
@@ -6,18 +6,25 @@ import { Column, ContentColumn, TabularData } from '../tabular-data';
   templateUrl: './desktop-table.component.html',
   styleUrls: ['./desktop-table.component.scss']
 })
-export class DesktopTableComponent<T> implements OnInit {
+export class DesktopTableComponent<T> implements OnInit, OnChanges {
   @Input() tabularData: TabularData<T>;
   @Output() action = new EventEmitter<{data: T, columnIndex: number}>()
 
   constructor() { }
 
   ngOnInit(): void {
+    console.log("init");
+  }
+
+  ngOnChanges() {
+    console.log(performance.now())
   }
 
 
   onAction(columnIndex: number, data: T) {
     console.log("table action")
+    console.log(performance.now())
+
     this.action.next({columnIndex, data});
   }
 
@@ -34,6 +41,10 @@ export class DesktopTableComponent<T> implements OnInit {
     return this.tabularData.css(datapoint)
 
     return [];
+  }
+
+  trackByMethod(index: number, el: T) {
+    return index;
   }
 
 }

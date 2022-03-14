@@ -84,11 +84,12 @@
           "updateConfirmMessage": "Would you like to confirm these changes?",
           "updateWarningMessage": "WARNING: You are only allowed to make a reservation when you will attend. Attendance can and will be taken.",
           "afterReservationHeader": "Confirming your reservations",
-          "afterReservationPendingMessage": "Your reservation is succesfully placed in the queue. To give every student a fair chance, the reservations will be randomly assigned after ten minutes. Your reservations have not yet been confirmed!",
-          "afterReservationConfirmedMessage": "Your reservations have been succesful. All your requested spots have been confirmed.",
+          "afterReservationPendingMessage": "Your reservation is succesfully placed in the queue. The reservations will be assigned in ten minutes. Your reservations have not yet been confirmed!",
+          "afterReservationConfirmedMessage": "Your reservations have been succesfully requested and will be looked at as soon as possible.",
           "afterReservationLoadingMessage": "Your reservations are being placed, please wait...",
           "afterReservationFailedMessage": "Something went wrong while trying to make your reservation."
-        }
+        },
+        "rejectedExplanation": "Your reservation was rejected, because the location was already full when it came through. This is purely informative, and can be ignored. If any places become available, be sure to try again!"
       },
       "loginWarning": "In order to be able to make a reservation for this location, you need to be logged in.",
       "refreshWarning": "Refreshing the calendar will happen automatically, it is not necessary to refresh the page manually."

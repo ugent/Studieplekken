@@ -1,5 +1,6 @@
 package blok2.daos.services;
 
+import blok2.controllers.AuthorityController;
 import blok2.daos.ILocationReservationDao;
 import blok2.daos.db.DBLocationReservationDao;
 import blok2.daos.repositories.LocationReservationRepository;
@@ -9,6 +10,7 @@ import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
 import blok2.scheduling.ReservationManager;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,9 @@ import java.util.logging.Logger;
 
 @Service
 public class LocationReservationService implements ILocationReservationDao {
+
+    private final org.slf4j.Logger logger = LoggerFactory.getLogger(LocationReservationService.class.getSimpleName());
+
 
     private final LocationReservationRepository locationReservationRepository;
     private final UserRepository userRepository;
@@ -129,14 +134,20 @@ public class LocationReservationService implements ILocationReservationDao {
         LocationReservation.State currentState = locationReservation.getStateE();
         boolean takesUpSpaceInOldState = currentState == LocationReservation.State.PRESENT || currentState == LocationReservation.State.APPROVED;
         boolean takesUpSpaceInNewState = state == LocationReservation.State.PRESENT || state == LocationReservation.State.APPROVED;
-        if (takesUpSpaceInOldState && !takesUpSpaceInNewState) {
-            locationReservation.getTimeslot().decrementAmountOfReservations();
+        try {
+            if (takesUpSpaceInOldState && !takesUpSpaceInNewState) {
+                locationReservation.getTimeslot().decrementAmountOfReservations();
+            }
+            if (takesUpSpaceInNewState && !takesUpSpaceInOldState) {
+                locationReservation.getTimeslot().incrementAmountOfReservations();
+            }
+            locationReservation.setState(state);
+            locationReservation = locationReservationRepository.saveAndFlush(locationReservation);
+
+        } catch(Exception e) {
+            logger.error("The current locationreservation can't be changed to state " + state.name() + ". Details: " + locationReservation);
+            throw e;
         }
-        if (takesUpSpaceInNewState && !takesUpSpaceInOldState) {
-            locationReservation.getTimeslot().incrementAmountOfReservations();
-        }
-        locationReservation.setState(state);
-        locationReservation = locationReservationRepository.saveAndFlush(locationReservation);
         this.penaltyService.notifyOfReservationAttendance(locationReservation);
 
         return locationReservation.getStateE() == state;

@@ -71,12 +71,12 @@ private reservableTimeslotToCalendarEvent(timeslot: Timeslot, currentLang: strin
       ? (!locationFull ?
 
         ( reservation.state === LocationReservationState.PENDING ? { primary: '#F5512C', secondary: '#FC8A17' } :
-        (reservation.state === LocationReservationState.REJECTED ? { primary: '#c53726', secondary: '#ed9987' } : { primary: '#00004d', secondary: '#133E7D' }) )
+        (reservation.state === LocationReservationState.REJECTED ? null : { primary: '#00004d', secondary: '#133E7D' }) )
         :
-        (reservation.state === LocationReservationState.REJECTED ? { primary: '#c53726', secondary: '#ed9987' } : { primary: '#00004d', secondary: '#133E7D' }) )
+        (reservation.state === LocationReservationState.REJECTED ? { primary: '#c53726', secondary: '#ed9987' } : reservation.state === LocationReservationState.PENDING ? { primary: '#F5512C', secondary: '#FC8A17' } : { primary: '#00004d', secondary: '#133E7D' }) )
       // unselected light pink, unselected light blue
       : (locationFull ? { primary: '#c53726', secondary: '#f4ded9' } : null),
-    cssClass: includedTimeSlot
+    cssClass: includedTimeSlot && (reservation.state === LocationReservationState.APPROVED || (locationFull && reservation.state === LocationReservationState.REJECTED))
       ? 'calendar-event-reserved'
       : (locationFull ? 'calendar-event-full-not-reserved' : 'blue-text'),
   });

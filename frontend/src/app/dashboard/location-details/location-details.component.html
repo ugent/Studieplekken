@@ -141,7 +141,19 @@
           <tr *ngFor="let reservation of sortedLocalReservations(nonDeletedReservation(futureReservations(originalList)));">
             <td>{{reservation.timeslot.timeslotDate.format("DD/MM/YYYY")}}</td>
             <td>{{reservation.timeslot.openingHour.format("HH:mm")}}</td>
-            <td>{{getStateI18NObject(reservation.state) | translate}}</td>
+            <td *ngIf="!needsTooltip(reservation.state)">{{getStateI18NObject(reservation.state) | translate}}</td>
+            <td
+            *ngIf="needsTooltip(reservation.state)"
+            data-toggle="tooltip"
+            data-placement="top"
+            class="tooltip"
+            title="{{
+              'dashboard.locationDetails.calendar.rejectedMessage'
+                | translate
+            }}"
+
+            >
+            {{getStateI18NObject(reservation.state) | translate}}</td>
           </tr>
         </tbody>
       </table>
