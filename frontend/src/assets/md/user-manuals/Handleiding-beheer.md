@@ -110,6 +110,18 @@ Stafpunten voor afwezig zijn en late verwijderingen te doen zijn telkens automat
 ![](./assets/md/user-manuals/images/dutch/voorbeeld-strafpunten.png)
 
 
+## Lijst van reservaties afdrukken
+
+Het is mogelijk een lijst van geplaatste reservaties voor een locatie af te drukken. Deze kan dan gebruikt worden om bijvoorbeeld manueel de aanwezigheden af te vinken.
+
+Om dit te doen klik je eerst op beheer, vervolgens klik je op de gewenste locatie.
+
+Vervolgens klik je op de dag die je wenst te printen. Scroll dan naar beneden en klik op de knop 'print'.
+
+Nu zal het print dialoogvenster verschijnen en kan je de lijst van reservaties afdrukken.
+
+
+
 Dit systeem heeft geen invloed op reserveringen waarbij de locatiebeheerder niet de keuze maakt om toe te treden tot het systeem.
 
 ## Nog vragen?

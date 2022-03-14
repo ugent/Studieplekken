@@ -18,6 +18,16 @@ Vervolgens kan je de voornaam, achternaam of studentennummer van de aanwezige in
 
 ![](./assets/md/user-manuals/images/dutch/scan_pagina.png)
 
+## Lijst van reservaties afdrukken
+
+Het is mogelijk een lijst van geplaatste reservaties voor een locatie af te drukken. Deze kan dan gebruikt worden om bijvoorbeeld manueel de aanwezigheden af te vinken.
+
+Om dit te doen klik je eerst op scan, vervolgens klik je op de gewenste locatie, dit is mogelijk vanaf 30 minuten voor het tijdslot begint.
+
+Vervolgens scroll je dan naar beneden en onder de lijst van ingeschreven gebruikers klik je op de knop 'print'.
+
+Nu zal het print dialoogvenster verschijnen en kan je de lijst van reservaties afdrukken.
+
 ## Nog vragen?
 
 Indien er verdere vragen zijn contacteer je best de beheerder van je locatie. Deze kan je normaal gezien verder helpen.
