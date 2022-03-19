@@ -49,4 +49,8 @@ public interface LocationReservationRepository extends JpaRepository<LocationRes
      */
     @Modifying
     void decrementCountByOne(int timeslotId);
+
+    @Query("select lr from LocationReservation lr where lr.state = 'PENDING'")
+    List<LocationReservation> findAllPending();
+
 }

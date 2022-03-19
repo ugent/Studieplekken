@@ -18,6 +18,7 @@ public class ReservationManager {
 
     public ReservationManager(LocationReservationRepository reservationRepository) {
         this.reservationRepository = reservationRepository;
+        this.scheduleOnInitialize();
     }
 
     /**
@@ -74,6 +75,10 @@ public class ReservationManager {
      */
     public List<LocationReservation> getPool() {
         return poolQueue.popPool();
+    }
+
+    private void scheduleOnInitialize() {
+        reservationRepository.findAllPending().forEach(this::addReservationToQueue);
     }
 
 }
