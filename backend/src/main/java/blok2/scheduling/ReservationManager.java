@@ -6,7 +6,8 @@ import blok2.model.reservations.LocationReservation;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ReservationManager {
@@ -58,7 +59,7 @@ public class ReservationManager {
     }
 
     /**
-     * Moves the the random-pools into the pool-queue if the are ready to be scheduled.
+     * Moves the random-pools into the pool-queue if they are ready to be scheduled.
      * This method is meant to be called somewhat regularly, to make sure the random-pools are processed
      * in due time.
      * NON-BLOCKING
@@ -68,15 +69,20 @@ public class ReservationManager {
     }
 
     /**
-     * Pops a pool of reservations from the poolqueue. Does not
+     * Pops a pool of reservations from the pool-queue. Does not
      * return until such a pool is available.
      * BLOCKING
+     *
      * @return : A list of reservations that is ready to be processed.
      */
     public List<LocationReservation> getPool() {
         return poolQueue.popPool();
     }
 
+    /**
+     * Add all pending reservations in the database to the reservation queue.
+     * Useful if the application is restarted when not all reservations in the queue were processed yet.
+     */
     private void scheduleOnInitialize() {
         reservationRepository.findAllPending().forEach(this::addReservationToQueue);
     }
