@@ -14,17 +14,14 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
 
 import java.text.DecimalFormat;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -56,9 +53,42 @@ public class StadGentLocation {
     private Integer reserved;
 
     private boolean isReservable;
+
     @JsonProperty("tag_1")
     public String getReservationMethod() {
-        return isReservable ? "Reserveerbaar":"";
+        return isReservable ? "Reserveerbaar" : "Vrij toegankelijk";
+    }
+
+    private Optional<Timeslot> optionalNextUpcomingReservableTimeslot;
+
+    @JsonProperty("tag_2")
+    public String getStartDateReservation() {
+        if (optionalNextUpcomingReservableTimeslot.isPresent()) {
+            Timeslot nextUpcomingReservableTimeslot = optionalNextUpcomingReservableTimeslot.get();
+            return "Reservatie voor week " + nextUpcomingReservableTimeslot.timeslotDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + " open vanaf " + nextUpcomingReservableTimeslot.getReservableFrom().format(DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy"));
+        } else {
+            return "";
+        }
+    }
+
+    private boolean tomorrowStillAvailable;
+    private boolean openDuringWeek;
+    private boolean openDuringWeekend;
+
+    @JsonProperty("tag_3")
+    public String getAvailability() {
+        ArrayList<String> tags = new ArrayList<>();
+        if (tomorrowStillAvailable) {
+            tags.add("Morgen nog beschikbaar");
+        }
+        if (openDuringWeek) {
+            tags.add("Week");
+        }
+        if (openDuringWeekend) {
+            tags.add("Weekend");
+        }
+
+        return String.join(", ", tags);
     }
 
     @JsonProperty("label_1")
@@ -66,7 +96,7 @@ public class StadGentLocation {
 
     @JsonProperty("lees_meer")
     public String getUrl() {
-        return baseUrl + "dashboard/"+id;
+        return baseUrl + "dashboard/" + id;
     }
 
     @JsonProperty("openingsuren")
@@ -120,16 +150,16 @@ public class StadGentLocation {
         return buildingName;
     }
 
-    public StadGentLocation(Integer id, String name, String teaserUrl, String adres, String postcode, String gemeente, Integer capacity, Integer reserved, boolean isReservable, String buildingName, String hours, Double lat, Double lng, String date) {
+    public StadGentLocation(Integer id, String name, String teaserUrl, String adres, String postcode, String gemeente, Integer capacity, Integer reserved, boolean isReservable, String buildingName, String hours, Double lat, Double lng, String date, boolean tomorrowStillAvailable, boolean openDuringWeek, boolean openDuringWeekend, Optional<Timeslot> optionalNextUpcomingReservableTimeslot) {
         this.id = id;
         this.name = name;
-        this.teaserUrl = (teaserUrl == null || teaserUrl.trim().equals("")) ? getRandomUrl():teaserUrl;
+        this.teaserUrl = (teaserUrl == null || teaserUrl.trim().equals("")) ? getRandomUrl() : teaserUrl;
         this.adres = adres;
         this.postcode = postcode;
         this.gemeente = gemeente;
         this.capacity = capacity;
         this.reserved = reserved;
-        if(reserved == null)
+        if (reserved == null)
             this.reserved = 0;
         this.isReservable = isReservable;
         this.buildingName = buildingName;
@@ -137,21 +167,32 @@ public class StadGentLocation {
         this.lat = lat;
         this.lng = lng;
         this.date = date;
+        this.tomorrowStillAvailable = tomorrowStillAvailable;
+        this.openDuringWeek = openDuringWeek;
+        this.openDuringWeekend = openDuringWeekend;
+        this.optionalNextUpcomingReservableTimeslot = optionalNextUpcomingReservableTimeslot;
     }
 
     public static StadGentLocation fromLocation(Location loc, TimeslotService ts) {
-        Integer amountOfReservations = loc.getCurrentTimeslot() == null ? null:loc.getCurrentTimeslot().getAmountOfReservations();
+        Integer amountOfReservations = loc.getCurrentTimeslot() == null ? null : loc.getCurrentTimeslot().getAmountOfReservations();
         boolean isReservable = loc.getCurrentTimeslot() != null && loc.getCurrentTimeslot().isReservable();
 
         LocalDate date = LocalDate.now();
-        Stream<Timeslot> l = ts.getTimeslotsOfLocation(loc.getLocationId()).stream().filter(t -> t.timeslotDate().isEqual(date));
+        List<Timeslot> timeslotsOfLocation = ts.getTimeslotsOfLocation(loc.getLocationId());
+        Stream<Timeslot> l = timeslotsOfLocation.stream().filter(t -> t.timeslotDate().isEqual(date));
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         String hours = l.map(t -> t.getOpeningHour().format(formatter) + " - " + t.getClosingHour().format(formatter)).collect(Collectors.joining(","));
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
         String dateStr = loc.getCurrentTimeslot() == null ? null : loc.getCurrentTimeslot().timeslotDate().format(dateTimeFormatter);
-        LocalTime openingTime = loc.getCurrentTimeslot() == null ? null:loc.getCurrentTimeslot().getOpeningHour();
-        LocalTime closingTime = loc.getCurrentTimeslot() == null ? null:loc.getCurrentTimeslot().getClosingHour();
+        LocalTime openingTime = loc.getCurrentTimeslot() == null ? null : loc.getCurrentTimeslot().getOpeningHour();
+        LocalTime closingTime = loc.getCurrentTimeslot() == null ? null : loc.getCurrentTimeslot().getClosingHour();
+
+        boolean tomorrowStillAvailable = timeslotsOfLocation.stream().filter(timeslot -> timeslot.timeslotDate().isEqual(LocalDate.now().plusDays(1))).anyMatch(timeslot -> timeslot.getAmountOfReservations() < timeslot.getSeatCount());
+        boolean openDuringWeek = timeslotsOfLocation.stream().filter(timeslot -> timeslot.timeslotDate().isAfter(date) && timeslot.timeslotDate().isBefore(date.plusDays(8))).anyMatch(timeslot -> timeslot.timeslotDate().getDayOfWeek() != DayOfWeek.SATURDAY && timeslot.timeslotDate().getDayOfWeek() != DayOfWeek.SUNDAY);
+        boolean openDuringWeekend = timeslotsOfLocation.stream().filter(timeslot -> timeslot.timeslotDate().isAfter(date) && timeslot.timeslotDate().isBefore(date.plusDays(8))).anyMatch(timeslot -> timeslot.timeslotDate().getDayOfWeek() == DayOfWeek.SATURDAY || timeslot.timeslotDate().getDayOfWeek() == DayOfWeek.SUNDAY);
+
+        Optional<Timeslot> optionalNextUpcomingReservableTimeslot = timeslotsOfLocation.stream().filter(timeslot -> timeslot.isReservable() && timeslot.getReservableFrom().isAfter(LocalDateTime.now())).min(Comparator.comparing(Timeslot::timeslotDate));
 
         try {
             CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:4326");
@@ -175,15 +216,17 @@ public class StadGentLocation {
                     hours,
                     targetPoint.getX(),
                     targetPoint.getY(),
-                    dateStr
+                    dateStr,
+                    tomorrowStillAvailable,
+                    openDuringWeek,
+                    openDuringWeekend,
+                    optionalNextUpcomingReservableTimeslot
             );
 
-        } catch (FactoryException e) {
-            e.printStackTrace();
-        } catch (TransformException e) {
+        } catch (FactoryException | TransformException e) {
             e.printStackTrace();
         }
-    return null;
+        return null;
     }
 
     private static String getRandomUrl() {
@@ -192,7 +235,7 @@ public class StadGentLocation {
                 "teaser2.jpg",
                 "teaser3.jpg",
                 "teaser4.jpg"
-                );
+        );
 
         Random rand = new Random();
         String randomElement = possibilities.get(rand.nextInt(possibilities.size()));
