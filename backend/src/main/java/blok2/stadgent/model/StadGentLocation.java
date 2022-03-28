@@ -61,7 +61,7 @@ public class StadGentLocation {
 
     private Optional<Timeslot> optionalNextUpcomingReservableTimeslot;
 
-    @JsonProperty("tag_2")
+    @JsonProperty("teaser_text")
     public String getStartDateReservation() {
         if (optionalNextUpcomingReservableTimeslot.isPresent()) {
             Timeslot nextUpcomingReservableTimeslot = optionalNextUpcomingReservableTimeslot.get();
@@ -75,7 +75,7 @@ public class StadGentLocation {
     private boolean openDuringWeek;
     private boolean openDuringWeekend;
 
-    @JsonProperty("tag_3")
+    @JsonProperty("tag_2")
     public String getAvailability() {
         ArrayList<String> tags = new ArrayList<>();
         if (tomorrowStillAvailable) {
