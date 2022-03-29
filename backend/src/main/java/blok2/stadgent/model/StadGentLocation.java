@@ -56,7 +56,7 @@ public class StadGentLocation {
 
     @JsonProperty("tag_1")
     public String getReservationMethod() {
-        return isReservable ? "Reserveerbaar" : "Vrij toegankelijk";
+        return isReservable ? "Reserveerbaar" : "Geen reservatie nodig";
     }
 
     private Optional<Timeslot> optionalNextUpcomingReservableTimeslot;
