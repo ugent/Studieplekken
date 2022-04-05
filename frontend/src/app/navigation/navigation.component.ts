@@ -3,6 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { UserService } from '../services/api/users/user.service';
 import { AuthenticationService } from '../services/authentication/authentication.service';
 import { BreadcrumbService } from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
+import { LoginRedirectService } from '../services/authentication/login-redirect.service';
 
 @Component({
   selector: 'app-information',
@@ -19,10 +20,13 @@ export class NavigationComponent implements OnInit {
     private translate: TranslateService,
     private authenticationService: AuthenticationService,
     private userService: UserService,
-    private breadcrumbService: BreadcrumbService
+    private breadcrumbService: BreadcrumbService,
+    private loginRedirectService: LoginRedirectService
   ) {}
 
   ngOnInit(): void {
+    
+    this.loginRedirectService.registerUrl("/navigation");
     // subscribe to the user observable to make sure that the correct information
     // is shown in the application.
     this.authenticationService.user.subscribe((next) => {
