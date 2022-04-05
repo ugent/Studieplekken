@@ -8,8 +8,8 @@ import blok2.model.reservables.Location;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.threeten.extra.YearWeek;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -34,19 +34,24 @@ public class TimeslotService implements ITimeslotDao {
     }
 
     @Override
+    public List<Timeslot> getTimeslotsOfLocationAfterTimeslotDate(int locationId, LocalDate timeslotDate) {
+        return this.timeslotRepository.getAllByLocationIdAndAfterTimeslotDate(locationId, timeslotDate);
+    }
+
+    @Override
     public Timeslot getTimeslot(int timeslotSeqNr) {
         return timeslotRepository.getByTimeslotSeqnr(timeslotSeqNr);
     }
 
     @Override
     public List<Timeslot> addTimeslots(List<Timeslot> timeslot) {
-        for(Timeslot t : timeslot) {
+        for (Timeslot t : timeslot) {
             Location loc = locationService.getLocationById(t.getLocationId());
-            if (t.isReservable() && t.getReservableFrom() == null){
+            if (t.isReservable() && t.getReservableFrom() == null) {
                 throw new InvalidRequestParametersException("Reservable timeslot is invalid.");
             }
             t.setSeatCount(loc.getNumberOfSeats());
-            if(t.getTimeslotGroup() == null) {
+            if (t.getTimeslotGroup() == null) {
                 t.setTimeslotGroup(UUID.randomUUID());
             }
 
@@ -58,7 +63,7 @@ public class TimeslotService implements ITimeslotDao {
     public Timeslot addTimeslot(Timeslot timeslot) {
         Location loc = locationService.getLocationById(timeslot.getLocationId());
         timeslot.setSeatCount(loc.getNumberOfSeats());
-        if(timeslot.getTimeslotGroup() == null) {
+        if (timeslot.getTimeslotGroup() == null) {
             timeslot.setTimeslotGroup(UUID.randomUUID());
         }
         return timeslotRepository.save(timeslot);
@@ -87,6 +92,6 @@ public class TimeslotService implements ITimeslotDao {
     @Override
     public Optional<Timeslot> getCurrentOrNextTimeslot(int locationId) {
         LocalDateTime time = LocalDateTime.now();
-        return this.timeslotRepository.getCurrentOrNextTimeslot(locationId, time.toLocalDate(), LocalTime.from(time), PageRequest.of(0,1)).stream().findFirst();
+        return this.timeslotRepository.getCurrentOrNextTimeslot(locationId, time.toLocalDate(), LocalTime.from(time), PageRequest.of(0, 1)).stream().findFirst();
     }
 }

@@ -9,11 +9,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
 @RequestMapping("locations/timeslots")
-public class TimeslotController extends  AuthorizedLocationController {
+public class TimeslotController extends AuthorizedLocationController {
 
     private final ITimeslotDao timeslotDAO;
 
@@ -26,7 +27,7 @@ public class TimeslotController extends  AuthorizedLocationController {
     @PreAuthorize("permitAll()")
     public Timeslot getTimeslot(@PathVariable("timeslotId") int timeslotId) {
         Timeslot timeslot = timeslotDAO.getTimeslot(timeslotId);
-        if(timeslot == null)
+        if (timeslot == null)
             throw new NoSuchDatabaseObjectException("Timeslot does not exist");
 
         return timeslot;
@@ -35,12 +36,13 @@ public class TimeslotController extends  AuthorizedLocationController {
     @GetMapping("/{locationId}")
     @PreAuthorize("permitAll()")
     public List<Timeslot> getTimeslotsOfLocation(@PathVariable("locationId") int locationId) {
-        return timeslotDAO.getTimeslotsOfLocation(locationId);
+        // Only return timeslots from up to 6 months old until all in the future, to limit data sent to the frontend.
+        return timeslotDAO.getTimeslotsOfLocationAfterTimeslotDate(locationId, LocalDate.now().minusMonths(6));
     }
 
     @PutMapping()
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public void updateTimeslot(@Valid @RequestBody  Timeslot timeslot) {
+    public void updateTimeslot(@Valid @RequestBody Timeslot timeslot) {
         Timeslot original = timeslotDAO.getTimeslot(timeslot.getTimeslotSeqnr());
         // Validate original location
         isAuthorized(original.getLocationId());
