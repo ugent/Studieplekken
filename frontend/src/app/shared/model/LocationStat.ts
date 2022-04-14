@@ -1,3 +1,6 @@
+import * as moment from 'moment';
+import { Moment } from 'moment';
+
 export interface LocationStat {
   locationId: number;
   locationName: string;
@@ -5,6 +8,7 @@ export interface LocationStat {
   reservable: boolean;
   numberOfSeats: number;
   numberOfTakenSeats: number;
+  timeslotDate: Moment;
 }
 
 export class LocationStatConstructor {
@@ -15,7 +19,8 @@ export class LocationStatConstructor {
       open: false,
       reservable: false,
       numberOfSeats: 0,
-      numberOfTakenSeats: 0
+      numberOfTakenSeats: 0,
+      timeslotDate: null
     };
   }
 
@@ -30,7 +35,8 @@ export class LocationStatConstructor {
       open: obj.open,
       reservable: obj.reservable,
       numberOfSeats: obj.numberOfSeats,
-      numberOfTakenSeats: obj.numberOfTakenSeats
+      numberOfTakenSeats: obj.numberOfTakenSeats,
+      timeslotDate: obj.timeslotDate ? moment(obj.timeslotDate) : null
     };
   }
 }

@@ -1,1 +1,5 @@
-<div class="chart" id="chart"></div>
+<p class="title">{{ locationStat.locationName }}</p>
+<div *ngIf="locationStat.numberOfSeats !== 0" class="chart {{ uuid }}" id="{{ uuid }}"></div>
+<a class="time" routerLink="/management/locations/{{ locationStat.locationId }}"
+   *ngIf="locationStat.timeslotDate !== null && locationStat.numberOfSeats !== 0">{{ locationStat.timeslotDate.format("DD-MM-YYYY HH:mm") }}</a>
+<p *ngIf="locationStat.numberOfSeats === 0">{{'management.stats.notOpen' | translate}}</p>

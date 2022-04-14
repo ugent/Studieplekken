@@ -1,9 +1,13 @@
 package blok2.model.stats;
 
+import blok2.helpers.orm.CustomLocalDateTimeSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.time.LocalDateTime;
 
 @Entity
 public class LocationStat {
@@ -21,13 +25,18 @@ public class LocationStat {
 
     private int numberOfTakenSeats;
 
-    public LocationStat(int locationId, String locationName, boolean open, boolean reservable, int numberOfSeats, int numberOfTakenSeats) {
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime timeslotDate;
+
+    public LocationStat(int locationId, String locationName, boolean open, boolean reservable, int numberOfSeats, int numberOfTakenSeats, LocalDateTime timeslotDate) {
         this.locationId = locationId;
         this.locationName = locationName;
         this.open = open;
         this.reservable = reservable;
         this.numberOfSeats = numberOfSeats;
         this.numberOfTakenSeats = numberOfTakenSeats;
+        this.timeslotDate = timeslotDate;
     }
 
     public LocationStat() {
@@ -55,5 +64,9 @@ public class LocationStat {
 
     public int getNumberOfTakenSeats() {
         return numberOfTakenSeats;
+    }
+
+    public LocalDateTime getTimeslotDate() {
+        return timeslotDate;
     }
 }

@@ -15,14 +15,16 @@
           <div fxLayout="column" fxLayoutGap="16px" fxLayoutAlign="space-between">
 
             <a routerLink="./locations">{{'management.aside.locations' | translate}}</a>
-              <a routerLink="./buildings">{{'management.aside.buildings' | translate}}</a>
-              <a routerLink="./tags"  *ngIf="showTagManagement">{{'management.aside.tags' | translate}}</a>
-              <a routerLink="./users" *ngIf="showAdmin">{{'management.aside.users' | translate}}</a>
-              <a routerLink="./volunteers" *ngIf="showVolunteersManagement">{{'management.aside.volunteers' | translate}}</a>
-              <a routerLink="./authorities"  *ngIf="showAdmin">{{'management.aside.authorities' | translate}}</a>
-              <a routerLink="./admins"  *ngIf="showAdmin">{{'management.aside.admins' | translate}}</a>
-              <a routerLink="./penalties"  *ngIf="showPenalties">{{'management.aside.penalties' | translate}}</a>
-              <a routerLink="./actionlog" *ngIf="showActionlog">{{'management.aside.actionlog' | translate}}</a>
+            <a routerLink="./buildings">{{'management.aside.buildings' | translate}}</a>
+            <a routerLink="./tags" *ngIf="showTagManagement">{{'management.aside.tags' | translate}}</a>
+            <a routerLink="./users" *ngIf="showAdmin">{{'management.aside.users' | translate}}</a>
+            <a routerLink="./volunteers"
+               *ngIf="showVolunteersManagement">{{'management.aside.volunteers' | translate}}</a>
+            <a routerLink="./authorities" *ngIf="showAdmin">{{'management.aside.authorities' | translate}}</a>
+            <a routerLink="./admins" *ngIf="showAdmin">{{'management.aside.admins' | translate}}</a>
+            <a routerLink="./penalties" *ngIf="showPenalties">{{'management.aside.penalties' | translate}}</a>
+            <a routerLink="./actionlog" *ngIf="showActionlog">{{'management.aside.actionlog' | translate}}</a>
+            <a routerLink="./stats" *ngIf="showStats">{{'management.aside.stats' | translate}}</a>
 
           </div>
         </div>
@@ -33,10 +35,10 @@
 
     <article fxFlex="0 1 calc(75% - 32px);" class="add-min-width">
       <section class="messages messages--error" *ngIf="showStagingWarning">
-        <div  markdown
-        src="assets/md/staging-warning.nl.md">>
+        <div markdown
+             src="assets/md/staging-warning.nl.md">>
         </div>
-        </section>
+      </section>
       <router-outlet></router-outlet>
     </article>
   </div>

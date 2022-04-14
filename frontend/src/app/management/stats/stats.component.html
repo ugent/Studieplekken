@@ -18,9 +18,11 @@
   </p>
   <br>
 
-  <div *ngIf="!loading && !errorOnRetrievingStats" class="responsive-table fullwidth">
-    <div class="table-wrapper fullwidth" *ngFor="let locationStat of stats">
-      <app-waffle [locationStat]="locationStat"></app-waffle>
-    </div>
+  <div *ngIf="!loading && !errorOnRetrievingStats" class="fullwidth">
+    <mat-grid-list cols="4" rowHeight="230px" gutterSize="5px">
+      <mat-grid-tile *ngFor="let locationStat of stats">
+        <app-waffle [locationStat]="locationStat" class="waffle-chart"></app-waffle>
+      </mat-grid-tile>
+    </mat-grid-list>
   </div>
 </div>

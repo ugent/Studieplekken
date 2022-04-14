@@ -202,7 +202,8 @@
       "penalties": "Overtredingen",
       "admins": "Admins",
       "volunteers": "Toezichthouders",
-      "actionlog": "Actie logboek"
+      "actionlog": "Actie logboek",
+      "stats": "Statistieken"
     },
     "actionlog": {
       "title": "Een logboek van alle belangrijke recent uitgevoerde acties",
@@ -825,7 +826,8 @@
       "occupied": "bezet",
       "takenSeats": "Bezette stoelen",
       "freeSeats": "Vrije stoelen",
-      "unknown": "Onbekend"
+      "unknown": "Onbekend",
+      "notOpen": "Deze locatie is niet geopend op dit moment."
     }
   },
   "profile": {

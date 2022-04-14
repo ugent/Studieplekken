@@ -200,7 +200,8 @@
       "penalties": "Penalties",
       "admins": "Admins",
       "volunteers": "Supervisors",
-      "actionlog": "Action log"
+      "actionlog": "Action log",
+      "stats": "Statistics"
     },
     "actionlog": {
       "title": "A logbook of all important recent actions",
@@ -820,7 +821,8 @@
       "occupied": "occupied",
       "takenSeats": "Taken seats",
       "freeSeats": "Free seats",
-      "unknown": "Unknown"
+      "unknown": "Unknown",
+      "notOpen": "This location is not open at this moment."
     }
   },
   "profile": {

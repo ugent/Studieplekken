@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -40,18 +40,20 @@ public class StatsController {
             Optional<Timeslot> currentOrNextTimeslot = timeslotDAO.getCurrentOrNextTimeslot(location.getLocationId());
             boolean open = false;
             boolean reservable = false;
-            int numberOfSeats = location.getNumberOfSeats();
+            int numberOfSeats = 0;
             int numberOfTakenSeats = 0;
+            LocalDateTime timeslotDate = null;
 
             if (currentOrNextTimeslot.isPresent()) {
                 Timeslot timeslot = currentOrNextTimeslot.get();
-                open = timeslot.getOpeningHour().isBefore(LocalTime.now());
+                open = LocalDateTime.of(timeslot.timeslotDate(), timeslot.getOpeningHour()).isBefore(LocalDateTime.now());
                 reservable = timeslot.isReservable();
                 numberOfSeats = timeslot.getSeatCount();
                 numberOfTakenSeats = timeslot.getAmountOfReservations();
+                timeslotDate = LocalDateTime.of(timeslot.timeslotDate(), timeslot.getOpeningHour());
             }
 
-            return new LocationStat(location.getLocationId(), location.getName(), open, reservable, numberOfSeats, numberOfTakenSeats);
+            return new LocationStat(location.getLocationId(), location.getName(), open, reservable, numberOfSeats, numberOfTakenSeats, timeslotDate);
         }).collect(Collectors.toList());
     }
 }
