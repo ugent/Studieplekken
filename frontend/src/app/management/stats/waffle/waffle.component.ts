@@ -33,8 +33,8 @@ export class WaffleComponent implements AfterViewInit {
   private makeGraph(): void {
     const dataset = Array.from(Array(100).keys());
 
-    const width = 180;
-    const height = 180;
+    const width = 300;
+    const height = 220;
 
     const takenSeats = (this.locationStat.numberOfTakenSeats / this.locationStat.numberOfSeats) * 100;
 
@@ -48,10 +48,10 @@ export class WaffleComponent implements AfterViewInit {
       .data(dataset).enter()
       .append('rect');
 
-    rectangles.attr('x', (d, i) => (i % 10) * 15 + 15)
-      .attr('y', (d, i) => (Math.floor(i / 10) * 15))
-      .attr('width', 14)
-      .attr('height', 14)
+    rectangles.attr('x', (d, i) => (i % 10) * 20 + 50)
+      .attr('y', (d, i) => (Math.floor(i / 10) * 20))
+      .attr('width', 15)
+      .attr('height', 15)
       .attr('fill', d => {
         if (!this.locationStat.reservable) {
           return '#009de0';
@@ -85,8 +85,8 @@ export class WaffleComponent implements AfterViewInit {
     this.text = graph
       .append('text')
       .text(this.locationStat.reservable ? `${this.locationStat.numberOfTakenSeats} / ${this.locationStat.numberOfSeats} ${this.translate.instant('management.stats.occupied')}` : this.translate.instant('management.stats.withoutReservation'))
-      .attr('x', 90)
-      .attr('y', 170)
+      .attr('x', 150)
+      .attr('y', 215)
       .style('text-anchor', 'middle')
       .attr('font-family', 'sans-serif')
       .attr('font-size', '14px')

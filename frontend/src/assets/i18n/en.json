@@ -822,7 +822,8 @@
       "takenSeats": "Taken seats",
       "freeSeats": "Free seats",
       "unknown": "Unknown",
-      "notOpen": "This location is not open at this moment."
+      "notOpen": "This location is not open at this moment.",
+      "occupancyOn": "Occupancy for timeslot on"
     }
   },
   "profile": {

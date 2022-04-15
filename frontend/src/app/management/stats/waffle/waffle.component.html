@@ -1,5 +1,6 @@
 <p class="title">{{ locationStat.locationName }}</p>
-<div *ngIf="locationStat.numberOfSeats !== 0" class="chart {{ uuid }}" id="{{ uuid }}"></div>
-<a class="time" routerLink="/management/locations/{{ locationStat.locationId }}"
+<div *ngIf="locationStat.numberOfSeats !== 0" class="center-text {{ uuid }}" id="{{ uuid }}"></div>
+<span *ngIf="locationStat.timeslotDate !== null && locationStat.numberOfSeats !== 0" class="center-text">{{'management.stats.occupancyOn' | translate}}<br></span>
+<a class="time center-text" routerLink="/management/locations/{{ locationStat.locationId }}"
    *ngIf="locationStat.timeslotDate !== null && locationStat.numberOfSeats !== 0">{{ locationStat.timeslotDate.format("DD-MM-YYYY HH:mm") }}</a>
-<p *ngIf="locationStat.numberOfSeats === 0">{{'management.stats.notOpen' | translate}}</p>
+<p *ngIf="locationStat.numberOfSeats === 0" class="center-text">{{'management.stats.notOpen' | translate}}</p>

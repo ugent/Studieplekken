@@ -827,7 +827,8 @@
       "takenSeats": "Bezette stoelen",
       "freeSeats": "Vrije stoelen",
       "unknown": "Onbekend",
-      "notOpen": "Deze locatie is niet geopend op dit moment."
+      "notOpen": "Deze locatie is niet geopend op dit moment.",
+      "occupancyOn": "Bezetting voor tijdslot op"
     }
   },
   "profile": {

@@ -17,13 +17,14 @@
   font-weight: bold;
 }
 
-.chart {
+.center-text {
   text-align: center;
+  display: inline-block;
+  width: 100%;
 }
 
 .time {
-  text-align: center;
   margin-top: -15px;
-  width: 100%;
-  display: inline-block;
+  border: none;
+  font-weight: normal;
 }
