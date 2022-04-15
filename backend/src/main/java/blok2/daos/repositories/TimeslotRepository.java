@@ -7,15 +7,15 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import javax.transaction.Transactional;
-import java.sql.Time;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 
 public interface TimeslotRepository extends JpaRepository<Timeslot, Integer> {
     List<Timeslot> getAllByLocationId(Integer locationId);
+
+    @Query("SELECT t FROM Timeslot t where t.locationId = ?1 and t.timeslotDate > ?2")
+    List<Timeslot> getAllByLocationIdAndAfterTimeslotDate(Integer locationId, LocalDate timeslotDate);
 
     @Query("SELECT t FROM Timeslot t where t.timeslotSequenceNumber = ?1")
     Timeslot getByTimeslotSeqnr(int sequence_number);

@@ -2,12 +2,15 @@ package blok2.daos;
 
 import blok2.model.calendar.Timeslot;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 public interface ITimeslotDao {
 
     List<Timeslot> getTimeslotsOfLocation(int locationId);
+
+    List<Timeslot> getTimeslotsOfLocationAfterTimeslotDate(int locationId, LocalDate timeslotDate);
 
     Timeslot getTimeslot(int timeslotSeqNr);
 
