@@ -201,7 +201,8 @@
       "penalties": "Penalties",
       "admins": "Admins",
       "volunteers": "Supervisors",
-      "actionlog": "Action log"
+      "actionlog": "Action log",
+      "stats": "Statistics"
     },
     "actionlog": {
       "title": "A logbook of all important recent actions",
@@ -811,6 +812,19 @@
       "addNewButton": "Add supervisor",
       "addNewHeader": "Search and add supervisor",
       "title": "Inspect, add and delete supervisors"
+    },
+    "stats": {
+      "title": "Statistics",
+      "loading": "Waiting for response of server...",
+      "error": "Something went wrong while retrieving the statistics.",
+      "info": "For each location the occupancy is displayed, always of the current or next time slot. Blue color indicates that no reservation is possible. Grey color indicates free places. Green indicates occupancy below 80%, orange below 95% and red otherwise.",
+      "withoutReservation": "Without reservation",
+      "occupied": "occupied",
+      "takenSeats": "Taken seats",
+      "freeSeats": "Free seats",
+      "unknown": "Unknown",
+      "notOpen": "This location is not open at this moment.",
+      "occupancyOn": "Occupancy for timeslot on"
     }
   },
   "profile": {

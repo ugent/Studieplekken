@@ -18,6 +18,7 @@ export class ManagementComponent implements OnInit {
   showAdmin: boolean = this.authenticationService.isAdmin();
   showVolunteersManagement: boolean;
   showActionlog: boolean;
+  showStats: boolean;
   showStagingWarning = environment.showStagingWarning;
   isMobile: boolean;
   MOBILE_SIZE = 500;
@@ -48,6 +49,7 @@ export class ManagementComponent implements OnInit {
         this.showVolunteersManagement =
           authenticatedUser.admin || hasAuthorities;
         this.showActionlog = authenticatedUser.admin;
+        this.showStats = authenticatedUser.admin;
       }
     );
 

@@ -101,6 +101,8 @@ import { AfterReservationComponent } from './dashboard/location-details/modals/a
 import { PenaltyTableComponent } from './shared/penalties/penalty-table/penalty-table.component';
 import { UserPenaltyManagerComponent } from './shared/penalties/user-penalty-manager/user-penalty-manager.component';
 import { PenaltiesManagementComponent } from './management/penalties-management/penalties-management.component';
+import { StatsComponent } from './management/stats/stats.component';
+import { WaffleComponent } from './management/stats/waffle/waffle.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -116,9 +118,9 @@ const routes: Routes = [
     canActivate: [AuthorizationGuardService],
   },
   {
-    path:'navigation', 
+    path: 'navigation',
     component: NavigationComponent,
-    //canActivate: [AuthorizationGuardService, ApplicationTypeGuardService],
+    // canActivate: [AuthorizationGuardService, ApplicationTypeGuardService],
   },
   {
     path: 'dashboard',
@@ -257,7 +259,7 @@ const routes: Routes = [
         canActivate: [AuthorizationGuardService],
       },
       {
-        path: "penalty",
+        path: 'penalty',
         component: PenaltiesManagementComponent,
         canActivate: [AuthorizationGuardService]
       }
@@ -265,6 +267,11 @@ const routes: Routes = [
     {
         path: 'actionlog',
         component: ActionLogComponent,
+        canActivate: [AuthorizationGuardService]
+      },
+      {
+        path: 'stats',
+        component: StatsComponent,
         canActivate: [AuthorizationGuardService]
       },
     ],
@@ -357,7 +364,9 @@ const routes: Routes = [
     UserPenaltyManagerComponent,
     PenaltiesManagementComponent,
     ActionLogComponent,
-    AfterReservationComponent
+    AfterReservationComponent,
+    StatsComponent,
+    WaffleComponent,
   ],
   imports: [
     BrowserModule,
