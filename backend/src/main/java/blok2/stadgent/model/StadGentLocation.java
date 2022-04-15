@@ -53,10 +53,11 @@ public class StadGentLocation {
     private Integer reserved;
 
     private boolean isReservable;
+    private boolean hasFutureTimeslots;
 
     @JsonProperty("tag_1")
     public String getReservationMethod() {
-        return isReservable ? "Reserveerbaar" : "Geen reservatie nodig";
+        return isReservable ? "Reserveerbaar" : (hasFutureTimeslots ? "Geen reservatie nodig" : "");
     }
 
     private Optional<Timeslot> optionalNextUpcomingReservableTimeslot;
@@ -150,7 +151,7 @@ public class StadGentLocation {
         return buildingName;
     }
 
-    public StadGentLocation(Integer id, String name, String teaserUrl, String adres, String postcode, String gemeente, Integer capacity, Integer reserved, boolean isReservable, String buildingName, String hours, Double lat, Double lng, String date, boolean tomorrowStillAvailable, boolean openDuringWeek, boolean openDuringWeekend, Optional<Timeslot> optionalNextUpcomingReservableTimeslot) {
+    public StadGentLocation(Integer id, String name, String teaserUrl, String adres, String postcode, String gemeente, Integer capacity, Integer reserved, boolean isReservable, boolean hasFutureTimeslots, String buildingName, String hours, Double lat, Double lng, String date, boolean tomorrowStillAvailable, boolean openDuringWeek, boolean openDuringWeekend, Optional<Timeslot> optionalNextUpcomingReservableTimeslot) {
         this.id = id;
         this.name = name;
         this.teaserUrl = (teaserUrl == null || teaserUrl.trim().equals("")) ? getRandomUrl() : teaserUrl;
@@ -162,6 +163,7 @@ public class StadGentLocation {
         if (reserved == null)
             this.reserved = 0;
         this.isReservable = isReservable;
+        this.hasFutureTimeslots = hasFutureTimeslots;
         this.buildingName = buildingName;
         this.hours = hours;
         this.lat = lat;
@@ -176,6 +178,7 @@ public class StadGentLocation {
     public static StadGentLocation fromLocation(Location loc, TimeslotService ts) {
         Integer amountOfReservations = loc.getCurrentTimeslot() == null ? null : loc.getCurrentTimeslot().getAmountOfReservations();
         boolean isReservable = loc.getCurrentTimeslot() != null && loc.getCurrentTimeslot().isReservable();
+        boolean hasFutureTimeslots = loc.getCurrentTimeslot() != null;
 
         LocalDate date = LocalDate.now();
         List<Timeslot> timeslotsOfLocation = ts.getTimeslotsOfLocation(loc.getLocationId());
@@ -212,6 +215,7 @@ public class StadGentLocation {
                     loc.getNumberOfSeats(),
                     amountOfReservations,
                     isReservable,
+                    hasFutureTimeslots,
                     loc.getBuilding().getName(),
                     hours,
                     targetPoint.getX(),
