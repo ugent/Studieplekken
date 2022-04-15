@@ -77,48 +77,9 @@
         <h3 class="inline-block margin-left">
           {{'management.locationDetails.calendar.form.title' | translate}}
         </h3>
-        <button class="button button-primary pull-right margin-left" (click)="prepareAdd(addTimeslotModal)">
+        <button class="button button-primary pull-right margin-left margin-bottom" (click)="prepareAdd(addTimeslotModal)">
           {{'management.locationDetails.calendar.form.addButton' | translate}}
         </button>
-      </div>
-
-      <!-- The form itself -->
-      <div style="margin-top: 10px; margin-bottom: 10px;">
-        <div class="responsive-table fullwidth" style="margin-top: 10px; margin-bottom: 10px;">
-          <div class="table-wrapper fullwidth">
-
-            <table style="width: 100%;" *ngIf="timeslots.length > 0; else noCalendarPeriodsForLocation">
-              <thead>
-                <tr>
-                  <th scope="col">{{'management.locationDetails.calendar.form.date' | translate}}</th>
-                  <th scope="col">{{'management.locationDetails.calendar.form.openingTime' | translate}}</th>
-                  <th scope="col">{{'management.locationDetails.calendar.form.closingTime' | translate}}</th>
-                  <th scope="col">{{'management.locationDetails.calendar.form.reservable' | translate}}</th>
-                  <th scope="col">{{'management.locationDetails.calendar.form.repeatable' | translate}}</th>
-                  <th scope="col">{{'management.locationDetails.calendar.form.numberOfSeats' | translate}}</th>
-                  <th scope="col">
-                    <!-- update -->
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody>
-                <tr *ngFor="let timeslot of timeslots">
-                  <td>{{timeslot.date}}</td>
-                  <td>{{timeslot.openingHour}}</td>
-                  <td>{{timeslot.closingHour}}</td>
-                  <td>{{(timeslot.reservable ? timeslot.reservableFrom:
-                    'general.notAvailableAbbreviation') | translate}}</td>
-                  <td>{{(timeslot.repeatable ? 'general.yes':
-                    'general.no') | translate}}</td>
-
-                  <td>{{timeslot.seatCount}}</td>
-
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
       </div>
     </div>
   </div>
