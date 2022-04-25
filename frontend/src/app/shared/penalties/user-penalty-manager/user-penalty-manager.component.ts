@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { PenaltyList, PenaltyService } from 'src/app/services/api/penalties/penalty.service';
 import { Penalty } from '../../model/Penalty';
@@ -9,7 +9,7 @@ import { User } from '../../model/User';
   templateUrl: './user-penalty-manager.component.html',
   styleUrls: ['./user-penalty-manager.component.scss']
 })
-export class UserPenaltyManagerComponent implements OnInit {
+export class UserPenaltyManagerComponent implements OnInit, OnChanges {
 
   @Input() user: User;
   @Input() showHeader = true;
@@ -23,9 +23,10 @@ export class UserPenaltyManagerComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  ngOnChanges() {
-    if(this.user)
+  ngOnChanges(): void {
+    if (this.user) {
       this.penalties = this.penaltiesService.getPenaltiesOfUserById(this.user.userId);
+    }
   }
 
   addPenaltyButton() {
