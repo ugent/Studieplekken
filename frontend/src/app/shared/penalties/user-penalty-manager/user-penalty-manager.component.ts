@@ -12,6 +12,7 @@ import { User } from '../../model/User';
 export class UserPenaltyManagerComponent implements OnInit {
 
   @Input() user: User;
+  @Input() showHeader = true;
   penalties: Observable<PenaltyList>;
   overview = true;
   addForm = false;
@@ -32,7 +33,7 @@ export class UserPenaltyManagerComponent implements OnInit {
     this.overview = false;
   }
 
-  addPenalty() {
+  addPenalty(): void {
     const penalty = new Penalty();
     penalty.designee = this.user;
     penalty.points = this.model.points;
@@ -42,6 +43,11 @@ export class UserPenaltyManagerComponent implements OnInit {
     this.addForm = false;
     this.overview = true;
     this.penalties = this.penaltiesService.getPenaltiesOfUserById(this.user.userId);
+  }
+
+  cancelPenalty(): void {
+    this.addForm = false;
+    this.overview = true;
   }
 
   onDelete() {

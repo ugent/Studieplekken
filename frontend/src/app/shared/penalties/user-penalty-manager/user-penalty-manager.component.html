@@ -1,17 +1,19 @@
 <app-modal>
-  <h1 modal-header>{{ "penalties.management.header" | translate }}</h1>
+  <h1 modal-header *ngIf="showHeader">{{ "penalties.management.header" | translate }}</h1>
 
   <div modal-body>
     <h3>
       {{ "penalties.management.subheader" | translate }} {{ user.firstName }}
       {{ user.lastName }}
     </h3>
+    <hr>
 
     <div *ngIf="overview">
       <app-penalty-table
         *ngIf="penalties | async as penalties"
         [penalties]="penalties"
         [showDelete]="true"
+        [showTitle]="false"
         (onDelete)="onDelete()"
       ></app-penalty-table>
 
@@ -23,26 +25,27 @@
     <div *ngIf="addForm">
       <!-- points -->
       <div class="row form-group">
-        <label class="col-lg-3 control-label" for="startsAt">
+        <label class="col-lg-3 control-label" for="points">
           {{ "penalties.management.points" | translate }}
         </label>
         <div class="col-lg-8">
-          <input type="number" min="0" [(ngModel)]="model.points" />
+          <input type="number" min="0" [(ngModel)]="model.points" id="points" />
         </div>
       </div>
 
       <!-- Description -->
       <div class="row form-group">
-        <label class="col-lg-3 control-label" for="startsAt">
+        <label class="col-lg-3 control-label" for="description">
           {{ "penalties.management.description" | translate }}
         </label>
         <div class="col-lg-8">
-          <input type="text" [(ngModel)]="model.description"/>
+          <input type="text" [(ngModel)]="model.description" id="description" />
         </div>
       </div>
 
       <br/>
       <button class="button button-primary" (click)="addPenalty()">{{"penalties.management.confirm" | translate}}</button>
+      <button class="button button-secondary" (click)="cancelPenalty()">{{"penalties.management.cancel" | translate}}</button>
 
     </div>
   </div>

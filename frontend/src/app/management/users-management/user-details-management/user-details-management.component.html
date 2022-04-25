@@ -21,10 +21,7 @@
     </div>
 
     <!-- Table with all penalty points and the option to add/delete them manually  -->
-    <app-user-details-management-penalties
-      *ngIf="showPenaltyManagement"
-      [userObs]="userObs">
-    </app-user-details-management-penalties>
+    <app-user-penalty-manager [user]="user" [showHeader]="false"></app-user-penalty-manager>
 
     <app-profile-reservations
       [userObj]="user">

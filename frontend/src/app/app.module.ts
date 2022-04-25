@@ -259,7 +259,7 @@ const routes: Routes = [
         canActivate: [AuthorizationGuardService],
       },
       {
-        path: 'penalty',
+        path: 'penalties',
         component: PenaltiesManagementComponent,
         canActivate: [AuthorizationGuardService]
       }

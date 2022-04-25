@@ -6,7 +6,8 @@
       "addButton": "Add Penalty",
       "points": "Points",
       "description": "Description",
-      "confirm": "Confirm"
+      "confirm": "Confirm",
+      "cancel": "Cancel"
     }
   },
   "calendar": {

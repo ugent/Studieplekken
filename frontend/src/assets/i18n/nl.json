@@ -6,7 +6,8 @@
       "addButton": "Voeg strafpunt toe",
       "points": "Punten",
       "description": "Beschrijving",
-      "confirm": "Bevestig"
+      "confirm": "Bevestig",
+      "cancel": "Annuleer"
     }
   },
   "calendar": {

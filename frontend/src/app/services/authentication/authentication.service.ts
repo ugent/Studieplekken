@@ -209,9 +209,9 @@ export class AuthenticationService {
     this.getPenalties(user.userId).subscribe(p => this.penaltySubject.next(p));
   }
 
-  substituteLogin(email: string) {
-    localStorage.setItem("impersonate", email);
-    const headers = new HttpHeaders().set("AS-USER", email);
-    this.http.get(api.whoAmI, {headers}).subscribe(()=> this.login())
+  substituteLogin(email: string): void {
+    localStorage.setItem('impersonate', email);
+    const headers = new HttpHeaders().set('AS-USER', email);
+    this.http.get(api.whoAmI, {headers}).subscribe(() => this.login());
   }
 }
