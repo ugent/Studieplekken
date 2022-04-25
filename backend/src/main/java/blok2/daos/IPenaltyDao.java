@@ -23,5 +23,9 @@ public interface IPenaltyDao {
      */
     void deletePenalty(Penalty penalty);
 
+    /**
+     * Get penalty count since last reset date.
+     * See RESET_DATE in PenaltyService.java.
+     */
     int getUserPenalty(String userid);
 }
