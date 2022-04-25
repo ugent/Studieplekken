@@ -41,7 +41,7 @@ public class User implements Cloneable, UserDetails {
     @Column(name = "institution")
     private String institution;
 
-    private int penaltyPoints = 0; // currently not used
+    private int penaltyPoints;
 
     @Column(name = "admin")
     private boolean admin;

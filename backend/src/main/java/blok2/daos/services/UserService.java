@@ -14,73 +14,97 @@ import java.util.Optional;
 public class UserService implements IUserDao {
 
     private final UserRepository userRepository;
+    private final PenaltyService penaltyService;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PenaltyService penaltyService) {
         this.userRepository = userRepository;
+        this.penaltyService = penaltyService;
     }
 
     @Override
     public User getUserByEmail(String email) {
-        return userRepository.findByMail(email)
+        User user = userRepository.findByMail(email)
                 .orElseThrow(() -> new NoSuchDatabaseObjectException(
                         String.format("No user found with email '%s'", email)));
+        user.setPenaltyPoints(penaltyService.getUserPenalty(user.getUserId()));
+        return user;
     }
 
     @Override
     public User getUserByEmailAndInstitution(String email, String institution) {
-        return userRepository.findByMailAndInstitution(email, institution)
+        User user = userRepository.findByMailAndInstitution(email, institution)
                 .orElseThrow(() -> new NoSuchDatabaseObjectException(
                         String.format("No user found with email '%s' and institution '%s'", email, institution)));
+        user.setPenaltyPoints(penaltyService.getUserPenalty(user.getUserId()));
+        return user;
     }
 
     @Override
     public User getUserById(String userId) {
-        return userRepository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchDatabaseObjectException(
                         String.format("No user found with userId '%s'", userId)));
+        user.setPenaltyPoints(penaltyService.getUserPenalty(user.getUserId()));
+        return user;
     }
 
     @Override
     public User getUserByIdAndInstitution(String userId, String institution) {
-        return userRepository.findByUserIdAndInstitution(userId, institution)
+        User user = userRepository.findByUserIdAndInstitution(userId, institution)
                 .orElseThrow(() -> new NoSuchDatabaseObjectException(
                         String.format("No user found with userId '%s' and institution '%s'", userId, institution)));
+        user.setPenaltyPoints(penaltyService.getUserPenalty(user.getUserId()));
+        return user;
     }
 
     @Override
     public List<User> getUsersByLastName(String lastName) {
-        return userRepository.findAllByLastNameIgnoreCase(lastName);
+        List<User> users = userRepository.findAllByLastNameIgnoreCase(lastName);
+        users.forEach(user -> user.setPenaltyPoints(penaltyService.getUserPenalty(user.getUserId())));
+        return users;
     }
 
     @Override
     public List<User> getUsersByLastNameAndInstitution(String lastName, String institution) {
-        return userRepository.findAllByLastNameAndInstitution(lastName, institution);
+        List<User> users = userRepository.findAllByLastNameAndInstitution(lastName, institution);
+        users.forEach(user -> user.setPenaltyPoints(penaltyService.getUserPenalty(user.getUserId())));
+        return users;
     }
 
     @Override
     public List<User> getUsersByFirstName(String firstName) {
-        return userRepository.findAllByFirstNameIgnoreCase(firstName);
+        List<User> users = userRepository.findAllByFirstNameIgnoreCase(firstName);
+        users.forEach(user -> user.setPenaltyPoints(penaltyService.getUserPenalty(user.getUserId())));
+        return users;
     }
 
     @Override
     public List<User> getUsersByFirstNameAndInstitution(String firstName, String institution) {
-        return userRepository.findAllByFirstNameIgnoreCaseAndInstitution(firstName, institution);
+        List<User> users = userRepository.findAllByFirstNameIgnoreCaseAndInstitution(firstName, institution);
+        users.forEach(user -> user.setPenaltyPoints(penaltyService.getUserPenalty(user.getUserId())));
+        return users;
     }
 
     @Override
     public List<User> getUsersByFirstAndLastName(String firstName, String lastName) {
-        return userRepository.findAllByFirstNameIgnoreCaseAndLastNameIgnoreCase(firstName, lastName);
+        List<User> users = userRepository.findAllByFirstNameIgnoreCaseAndLastNameIgnoreCase(firstName, lastName);
+        users.forEach(user -> user.setPenaltyPoints(penaltyService.getUserPenalty(user.getUserId())));
+        return users;
     }
 
     @Override
     public List<User> getUsersByFirstAndLastNameAndInstitution(String firstName, String lastName, String institution) {
-        return userRepository.findAllByFirstNameIgnoreCaseAndLastNameIgnoreCaseAndInstitution(firstName, lastName, institution);
+        List<User> users = userRepository.findAllByFirstNameIgnoreCaseAndLastNameIgnoreCaseAndInstitution(firstName, lastName, institution);
+        users.forEach(user -> user.setPenaltyPoints(penaltyService.getUserPenalty(user.getUserId())));
+        return users;
     }
 
     @Override
     public List<User> getAdmins() {
-        return userRepository.findAllByAdminTrue();
+        List<User> users = userRepository.findAllByAdminTrue();
+        users.forEach(user -> user.setPenaltyPoints(penaltyService.getUserPenalty(user.getUserId())));
+        return users;
     }
 
     @Override
@@ -88,30 +112,40 @@ public class UserService implements IUserDao {
         // Case 1: the student number and barcode match exactly.
         // For example, when scanning the barcode page, the student number is encoded as Code 128.
         Optional<User> optionalUser = userRepository.findById(barcode);
-        if (optionalUser.isPresent())
-            return optionalUser.get();
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setPenaltyPoints(penaltyService.getUserPenalty(user.getUserId()));
+            return user;
+        }
 
         // Case 2: the barcode is a UPC-A encoded student number.
         // Example student number: 000140462060
         // Example barcode:        001404620603
         String alternative = "0" + barcode.substring(0, barcode.length() - 1);
         optionalUser = userRepository.findById(alternative);
-        if (optionalUser.isPresent())
-            return optionalUser.get();
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setPenaltyPoints(penaltyService.getUserPenalty(user.getUserId()));
+            return user;
+        }
 
         // Case 3: the barcode is EAN13.
         // Example student number: 114637753611
         // Example barcode:        1146377536113
         alternative = barcode.substring(0, barcode.length() - 1);
         optionalUser = userRepository.findById(alternative);
-        if (optionalUser.isPresent())
-            return optionalUser.get();
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setPenaltyPoints(penaltyService.getUserPenalty(user.getUserId()));
+            return user;
+        }
 
         // Case 4: last known option is that all but the first character match the student number
         // Example student number: 000140462060
         // Example barcode:        0000140462060
         alternative = barcode.substring(1);
         optionalUser = userRepository.findById(alternative);
+        optionalUser.ifPresent(user -> user.setPenaltyPoints(penaltyService.getUserPenalty(user.getUserId())));
 
         return optionalUser.orElseThrow(
                 () -> new NoSuchDatabaseObjectException(
