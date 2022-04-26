@@ -19,11 +19,11 @@
     "day": "Dag"
   },
   "navigation": {
-    "profile" : "Profiel",
-    "dashboard" : "Alle studieplekken",
-    "information" : "Help",
-    "scan" : "Scan pagina",
-    "management" : "Beheer pagina",
+    "profile": "Profiel",
+    "dashboard": "Alle studieplekken",
+    "information": "Help",
+    "scan": "Scan pagina",
+    "management": "Beheer pagina",
     "profileInfo": "Op zoek naar je profiel? Bekijk hier je reservaties of je strafpunten, of toon je QR code.",
     "informationInfo": "Geraak je er niet onmiddellijk aan uit hoe de applicatie werkt? Ga zeker eens kijken op de hulp pagina.",
     "managementInfo": "Beheer gebouwen/locaties/gebruikers",
@@ -70,7 +70,8 @@
         "statusOpen": "Sluit om {}",
         "statusClosed": "Gesloten",
         "statusClosedActive": "Opent opnieuw om {}",
-        "statusClosedUpcoming": "Opent opnieuw op {}"
+        "statusClosedUpcoming": "Opent opnieuw op {}",
+        "statusReservableFrom":  "Reservatie voor week {{week}} open vanaf {{opening}}"
       },
       "calendar": {
         "reservation": {
@@ -89,9 +90,15 @@
           "afterReservationConfirmedMessage": "Je reservaties zijn succesvol aangevraagd en zullen zo snel mogelijk worden bekeken.",
           "afterReservationLoadingMessage": "Je reservaties worden geplaatst...",
           "afterReservationFailedMessage": "Er is iets misgegaan tijdens het aanmaken van je reservaties."
-
         },
         "rejectedMessage": "Je reservatie is geweigerd omdat de locatie al vol zat. Dit is puur informatief: je kan dit gewoon negeren. Probeer zeker opnieuw als er een plekje vrijkomt!"
+      },
+      "tag": {
+        "reservable": "Reserveerbaar",
+        "notReservable": "Geen reservatie nodig",
+        "tomorrowStillAvailable": "Morgen nog beschikbaar",
+        "week": "Week",
+        "weekend": "Weekend"
       },
       "loginWarning": "Je moet eerst inloggen voordat je kan reserveren.",
       "refreshWarning": "Herladen van de kalender zal automatisch gebeuren, het is niet nodig om manueel de pagina te herladen."
@@ -114,7 +121,7 @@
     "cookies": "Cookies",
     "accessibility": "Toegankelijkheid",
     "responsible-disclosure": "Responsible Disclosure",
-    "terms-of-use":"Terms of use"
+    "terms-of-use": "Terms of use"
   },
   "reservations": {
     "reservationButton": "Update Reservaties",
@@ -154,7 +161,6 @@
     "notAvailableAbbreviation": "n.v.t.",
     "waitingForServer": "Wachten op antwoord van de server...",
     "idSetByBackend": "ID door backend gezet",
-
     "catchAllError": "Er is iets misgelopen, gelieve op een later tijdstip opnieuw te proberen."
   },
   "header": {
@@ -284,10 +290,8 @@
             "futureReservation": "Timeslot is nog niet geweest",
             "number": "Studentennummer",
             "scan": "Scan",
-
             "yetToScan": "Nog te scannen",
             "notScanned": "Niet gescand",
-
             "startScanning": "Start scannen",
             "finishScanning": "Beïndig scannen",
             "penalties": "Strafpunten"
@@ -297,7 +301,7 @@
           "title": "Wijzig openingsdagen",
           "addButton": "Voeg nieuwe openingsperiode toe",
           "date": "Datum",
-          "day":"Dag",
+          "day": "Dag",
           "openingTime": "Openingstijd",
           "closingTime": "Sluitingstijd",
           "reservable": "Reserveerbaar",
@@ -341,7 +345,7 @@
         "copyModalView": {
           "title": "Kopieer deze periode",
           "body": "Je staat op het punt om de volgende periode te kopieren:",
-          "weekSelect":"Kopieer naar datum",
+          "weekSelect": "Kopieer naar datum",
           "lockReservableFrom": "Wil je de originele openingsdatum voor reservaties houden?"
         },
         "warningDialog": {
@@ -728,7 +732,6 @@
           "success": "Het verwijderen van de reservatie is gelukt.",
           "error": "Er is iets misgelopen tijdens het verwijderen van de reservatie..."
         },
-
         "scanningErrorModal": {
           "title": "Scannen mislukt",
           "message": "Er is iets misgelopen tijdens het scannen. De aan-/afwezigheid werd niet goed geregistreerd. Probeer je een afwezige als aanwezig aan te duiden in een volle locatie? Deze reservatie was verwijderd en het zitje is intussen gereserveerd door iemand anders."
@@ -910,7 +913,6 @@
         "late": {
           "delete": "Gebruiker verwijderde reservatie te laat."
         }
-
       }
     },
     "reservations": {
@@ -976,7 +978,7 @@
         "name": "Naam",
         "building": "Gebouw",
         "numberOfSeats": "Plaatsen",
-        "scan":"Scan"
+        "scan": "Scan"
       },
       "empty": "Gesloten",
       "noLocationsWarning": "Je hebt momenteel geen locaties toegewezen gekregen waar je studenten kan scannen.",
@@ -991,12 +993,12 @@
     "phone": "Scan met GSM-camera",
     "handheld": "Scan met een handscanner",
     "manual": "Checklist",
-    "unregistered":"Deze gebruiker is niet geregistreerd.",
+    "unregistered": "Deze gebruiker is niet geregistreerd.",
     "error": "Er ging iets fout bij deze actie.",
     "mobile-hint": "Scanning werkt best wanneer je de barcode horizontaal plaatst.",
     "handheld-hint": "Om met de handscanner te scannen selecteer je de inputbox. Wanneer je iemand scant, zal de naam naar boven springen in de lijst.",
-    "maybe":"Deze gebruiker werd niet gevonden. Zoek in de lijst hieronder of probeer opnieuw.",
-    "warn-unattended":"Als je iemand op afwezig zet, wordt de plek opengesteld voor anderen om te reserveren."
+    "maybe": "Deze gebruiker werd niet gevonden. Zoek in de lijst hieronder of probeer opnieuw.",
+    "warn-unattended": "Als je iemand op afwezig zet, wordt de plek opengesteld voor anderen om te reserveren."
   },
   "Odisee": "Odisee Hogeschool",
   "Arteveldehogeschool": "Arteveldehogeschool",
