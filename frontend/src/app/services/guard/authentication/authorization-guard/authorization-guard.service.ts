@@ -69,10 +69,7 @@ export class AuthorizationGuardService implements CanActivate {
           return of(true); // everybody is allowed to see this overview
         }
 
-        if (!activate) {
-        }
-
-        return of(activate);
+        return of(this.authenticationService.isAdmin());
       }),
       tap((t) => {
         if (!t) {
