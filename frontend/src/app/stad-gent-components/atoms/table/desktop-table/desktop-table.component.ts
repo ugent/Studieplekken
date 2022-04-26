@@ -6,39 +6,29 @@ import { Column, ContentColumn, TabularData } from '../tabular-data';
   templateUrl: './desktop-table.component.html',
   styleUrls: ['./desktop-table.component.scss']
 })
-export class DesktopTableComponent<T> implements OnInit, OnChanges {
+export class DesktopTableComponent<T> {
   @Input() tabularData: TabularData<T>;
-  @Output() action = new EventEmitter<{data: T, columnIndex: number}>()
+  @Output() action = new EventEmitter<{data: T, columnIndex: number}>();
 
   constructor() { }
 
-  ngOnInit(): void {
-    console.log("init");
-  }
 
-  ngOnChanges() {
-    console.log(performance.now())
-  }
-
-
-  onAction(columnIndex: number, data: T) {
-    console.log("table action")
-    console.log(performance.now())
-
+  onAction(columnIndex: number, data: T): void {
     this.action.next({columnIndex, data});
   }
 
   getWidth(column: Column<T>) {
-    return column.width || ""
+    return column.width || '';
   }
 
   translateColumnContent(column: ContentColumn<T>, data: T): string {
-    return column.translateColumnContent ? column.translateColumnContent(data) : "";
+    return column.translateColumnContent ? column.translateColumnContent(data) : '';
   }
 
   getCssClasses(datapoint: T): string[] {
-    if(this.tabularData.css)
-    return this.tabularData.css(datapoint)
+    if (this.tabularData.css) {
+      return this.tabularData.css(datapoint);
+    }
 
     return [];
   }

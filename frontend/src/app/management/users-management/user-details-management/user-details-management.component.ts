@@ -5,6 +5,8 @@ import { UserDetailsService } from '../../../services/single-point-of-truth/user
 import { ActivatedRoute } from '@angular/router';
 import { ApplicationTypeFunctionalityService } from '../../../services/functionality/application-type/application-type-functionality.service';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
+import { PenaltyList, PenaltyService } from '../../../services/api/penalties/penalty.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-user-details-management',
@@ -13,6 +15,7 @@ import { AuthenticationService } from '../../../services/authentication/authenti
 })
 export class UserDetailsManagementComponent implements OnInit {
   userObs: Observable<User> = this.userDetailsService.userObs;
+  penaltyObservable: Observable<{ penalties: PenaltyList; points: number }>;
 
   userQueryingError: boolean = undefined;
   userId: string;
@@ -24,13 +27,16 @@ export class UserDetailsManagementComponent implements OnInit {
     private userDetailsService: UserDetailsService,
     private route: ActivatedRoute,
     private functionalityService: ApplicationTypeFunctionalityService,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private penaltiesService: PenaltyService
   ) {}
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     this.userId = id;
     this.userDetailsService.loadUser(id);
+
+    this.penaltyObservable = this.penaltiesService.getPenaltiesOfUserById(this.userId).pipe(map(p => ({points: 1, penalties: p})));
 
     this.userObs.subscribe(
       () => {
@@ -48,5 +54,9 @@ export class UserDetailsManagementComponent implements OnInit {
     this.authenticationService.user.subscribe((next) => {
       this.showRolesManagement = next.admin;
     });
+  }
+
+  onPenaltyDelete(): void {
+    this.penaltyObservable = this.penaltiesService.getPenaltiesOfUserById(this.userId).pipe(map(p => ({points: 1, penalties: p})));
   }
 }

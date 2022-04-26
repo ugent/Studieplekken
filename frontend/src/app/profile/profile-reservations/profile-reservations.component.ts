@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, TemplateRef } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, TemplateRef } from '@angular/core';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 import { LocationReservationsService } from '../../services/api/location-reservations/location-reservations.service';
 import { LocationReservation, LocationReservationState } from '../../shared/model/LocationReservation';
@@ -18,7 +18,7 @@ import { TabularData } from 'src/app/stad-gent-components/atoms/table/tabular-da
   templateUrl: './profile-reservations.component.html',
   styleUrls: ['./profile-reservations.component.scss'],
 })
-export class ProfileReservationsComponent implements OnInit {
+export class ProfileReservationsComponent implements OnChanges {
   @Input() userObj?: User;
 
   locationReservations: LocationReservation[] = [];
@@ -35,12 +35,10 @@ export class ProfileReservationsComponent implements OnInit {
     private locationService: LocationService,
     private tableDataService: TableDataService
   ) {
-    authenticationService.user.subscribe(() => {
-      this.setup();
-    });
   }
 
-  ngOnInit(): void {
+  ngOnChanges(): void {
+    this.setup();
   }
 
   setup(): void {
@@ -157,7 +155,7 @@ export class ProfileReservationsComponent implements OnInit {
   ): Observable<LocationReservation[]> {
     if (this.userObj === undefined) {
       return this.authenticationService
-        .getLocationReservations()
+        .getLocationReservations();
     } else {
       return this.locationReservationService
         .getLocationReservationsOfUser(this.userObj.userId);
