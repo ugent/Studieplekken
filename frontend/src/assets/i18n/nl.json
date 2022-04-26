@@ -93,7 +93,7 @@
         },
         "rejectedMessage": "Je reservatie is geweigerd omdat de locatie al vol zat. Dit is puur informatief: je kan dit gewoon negeren. Probeer zeker opnieuw als er een plekje vrijkomt!"
       },
-      "loginWarning": "Voordat er reservaties kunnen geplaatst worden voor deze locatie, dient u ingelogd te zijn.",
+      "loginWarning": "Je moet eerst inloggen voordat je kan reserveren.",
       "refreshWarning": "Herladen van de kalender zal automatisch gebeuren, het is niet nodig om manueel de pagina te herladen."
     },
     "filter": {

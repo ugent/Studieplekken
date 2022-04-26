@@ -92,7 +92,7 @@
         },
         "rejectedExplanation": "Your reservation was rejected, because the location was already full when it came through. This is purely informative, and can be ignored. If any places become available, be sure to try again!"
       },
-      "loginWarning": "In order to be able to make a reservation for this location, you need to be logged in.",
+      "loginWarning": "You have to log in first before you can make a reservation.",
       "refreshWarning": "Refreshing the calendar will happen automatically, it is not necessary to refresh the page manually."
     },
     "filter": {
