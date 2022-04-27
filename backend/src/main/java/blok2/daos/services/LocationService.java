@@ -4,6 +4,7 @@ import blok2.daos.ILocationDao;
 import blok2.daos.repositories.LocationRepository;
 import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.helpers.orm.LocationNameAndNextReservableFrom;
+import blok2.model.calendar.Timeslot;
 import blok2.model.reservables.Location;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -11,12 +12,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.IsoFields;
 import java.time.temporal.TemporalAdjusters;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 @Service
 public class LocationService implements ILocationDao {
@@ -52,7 +51,7 @@ public class LocationService implements ILocationDao {
 
     @Override
     public List<Location> getAllActiveLocations() {
-        List<Location> locs =  locationRepository.findAllActiveLocations();
+        List<Location> locs = locationRepository.findAllActiveLocations();
         locs.forEach(this::initializeCurrentTimeslot);
         return locs;
     }
@@ -139,4 +138,13 @@ public class LocationService implements ILocationDao {
         location.setCurrentTimeslot(timeslotService.getCurrentOrNextTimeslot(location.getLocationId()).orElse(null));
     }
 
+    public void initializeTags(Location location) {
+        List<Timeslot> timeslotsOfLocation = this.timeslotService.getTimeslotsOfLocation(location.getLocationId());
+        LocalDate date = LocalDate.now();
+
+        location.setTomorrowStillAvailable(timeslotsOfLocation.stream().filter(timeslot -> timeslot.timeslotDate().isEqual(LocalDate.now().plusDays(1))).anyMatch(timeslot -> timeslot.getAmountOfReservations() < timeslot.getSeatCount()));
+        location.setOpenDuringWeek(timeslotsOfLocation.stream().filter(timeslot -> timeslot.timeslotDate().isAfter(date) && timeslot.timeslotDate().isBefore(date.plusDays(8))).anyMatch(timeslot -> timeslot.timeslotDate().getDayOfWeek() != DayOfWeek.SATURDAY && timeslot.timeslotDate().getDayOfWeek() != DayOfWeek.SUNDAY));
+        location.setOpenDuringWeekend(timeslotsOfLocation.stream().filter(timeslot -> timeslot.timeslotDate().isAfter(date) && timeslot.timeslotDate().isBefore(date.plusDays(8))).anyMatch(timeslot -> timeslot.timeslotDate().getDayOfWeek() == DayOfWeek.SATURDAY || timeslot.timeslotDate().getDayOfWeek() == DayOfWeek.SUNDAY));
+        location.setOptionalNextUpcomingReservableTimeslot(timeslotsOfLocation.stream().filter(timeslot -> timeslot.isReservable() && timeslot.getReservableFrom().isAfter(LocalDateTime.now())).min(Comparator.comparing(Timeslot::timeslotDate)));
+    }
 }

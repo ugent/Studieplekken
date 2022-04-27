@@ -19,11 +19,11 @@
     "day": "Day"
   },
   "navigation": {
-    "profile" : "Profile",
-    "dashboard" : "study locations",
-    "information" : "Help",
-    "scan" : "Scanning page",
-    "management" : "Management page",
+    "profile": "Profile",
+    "dashboard": "study locations",
+    "information": "Help",
+    "scan": "Scanning page",
+    "management": "Management page",
     "profileInfo": "Check your reservations and get your QR-code",
     "informationInfo": "Just can't get a hang of this application? Then definitely check out our help page!",
     "managementInfo": "Management of buildings/locations/users",
@@ -70,7 +70,8 @@
         "statusOpen": "Closes at {}",
         "statusClosed": "Closed",
         "statusClosedActive": "Opens again at {}",
-        "statusClosedUpcoming": "Opens again {}"
+        "statusClosedUpcoming": "Opens again {}",
+        "statusReservableFrom":  "Reservation for week {{week}} open from {{opening}}"
       },
       "calendar": {
         "reservation": {
@@ -92,7 +93,14 @@
         },
         "rejectedExplanation": "Your reservation was rejected, because the location was already full when it came through. This is purely informative, and can be ignored. If any places become available, be sure to try again!"
       },
-      "loginWarning": "In order to be able to make a reservation for this location, you need to be logged in.",
+      "tag": {
+        "reservable": "Reservable",
+        "notReservable": "No reservation needed",
+        "tomorrowStillAvailable": "Tomorrow still available",
+        "week": "Week",
+        "weekend": "Weekend"
+      },
+      "loginWarning": "You have to log in first before you can make a reservation.",
       "refreshWarning": "Refreshing the calendar will happen automatically, it is not necessary to refresh the page manually."
     },
     "filter": {
@@ -905,7 +913,6 @@
         "late": {
           "delete": "User deleted this reservation too late."
         }
-
       }
     },
     "reservations": {

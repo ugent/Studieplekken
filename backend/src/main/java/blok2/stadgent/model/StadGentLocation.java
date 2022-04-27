@@ -1,5 +1,6 @@
 package blok2.stadgent.model;
 
+import blok2.daos.services.LocationService;
 import blok2.daos.services.TimeslotService;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservables.Location;
@@ -175,7 +176,7 @@ public class StadGentLocation {
         this.optionalNextUpcomingReservableTimeslot = optionalNextUpcomingReservableTimeslot;
     }
 
-    public static StadGentLocation fromLocation(Location loc, TimeslotService ts) {
+    public static StadGentLocation fromLocation(Location loc, TimeslotService ts, LocationService ls) {
         Integer amountOfReservations = loc.getCurrentTimeslot() == null ? null : loc.getCurrentTimeslot().getAmountOfReservations();
         boolean isReservable = loc.getCurrentTimeslot() != null && loc.getCurrentTimeslot().isReservable();
         boolean hasFutureTimeslots = loc.getCurrentTimeslot() != null;
@@ -191,11 +192,7 @@ public class StadGentLocation {
         LocalTime openingTime = loc.getCurrentTimeslot() == null ? null : loc.getCurrentTimeslot().getOpeningHour();
         LocalTime closingTime = loc.getCurrentTimeslot() == null ? null : loc.getCurrentTimeslot().getClosingHour();
 
-        boolean tomorrowStillAvailable = timeslotsOfLocation.stream().filter(timeslot -> timeslot.timeslotDate().isEqual(LocalDate.now().plusDays(1))).anyMatch(timeslot -> timeslot.getAmountOfReservations() < timeslot.getSeatCount());
-        boolean openDuringWeek = timeslotsOfLocation.stream().filter(timeslot -> timeslot.timeslotDate().isAfter(date) && timeslot.timeslotDate().isBefore(date.plusDays(8))).anyMatch(timeslot -> timeslot.timeslotDate().getDayOfWeek() != DayOfWeek.SATURDAY && timeslot.timeslotDate().getDayOfWeek() != DayOfWeek.SUNDAY);
-        boolean openDuringWeekend = timeslotsOfLocation.stream().filter(timeslot -> timeslot.timeslotDate().isAfter(date) && timeslot.timeslotDate().isBefore(date.plusDays(8))).anyMatch(timeslot -> timeslot.timeslotDate().getDayOfWeek() == DayOfWeek.SATURDAY || timeslot.timeslotDate().getDayOfWeek() == DayOfWeek.SUNDAY);
-
-        Optional<Timeslot> optionalNextUpcomingReservableTimeslot = timeslotsOfLocation.stream().filter(timeslot -> timeslot.isReservable() && timeslot.getReservableFrom().isAfter(LocalDateTime.now())).min(Comparator.comparing(Timeslot::timeslotDate));
+        ls.initializeTags(loc);
 
         try {
             CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:4326");
@@ -221,10 +218,10 @@ public class StadGentLocation {
                     targetPoint.getX(),
                     targetPoint.getY(),
                     dateStr,
-                    tomorrowStillAvailable,
-                    openDuringWeek,
-                    openDuringWeekend,
-                    optionalNextUpcomingReservableTimeslot
+                    loc.isTomorrowStillAvailable(),
+                    loc.isOpenDuringWeek(),
+                    loc.isOpenDuringWeekend(),
+                    loc.getOptionalNextUpcomingReservableTimeslot()
             );
 
         } catch (FactoryException | TransformException e) {

@@ -4,7 +4,6 @@ import blok2.daos.services.LocationService;
 import blok2.daos.services.TimeslotService;
 import blok2.stadgent.model.StadGentLocation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +28,6 @@ public class StadGentLocationController {
 
     @GetMapping("/locations")
     public List<StadGentLocation> getLocations() {
-        return this.locationService.getAllActiveLocations().stream().map(t -> StadGentLocation.fromLocation(t, ts)).collect(Collectors.toList());
+        return this.locationService.getAllActiveLocations().stream().map(t -> StadGentLocation.fromLocation(t, ts, locationService)).collect(Collectors.toList());
     }
 }

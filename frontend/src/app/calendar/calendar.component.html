@@ -11,7 +11,7 @@
 
       <div>
         <!-- Today -->
-        <div class="button button-primary btn-left" mwlCalendarToday [(viewDate)]="viewDate" (viewDateChange)="emitDate($event)"> 
+        <div class="button button-primary btn-left" mwlCalendarToday [(viewDate)]="viewDate" (viewDateChange)="emitDate($event)">
           {{'calendar.today' | translate}}
         </div>
       </div>
@@ -54,8 +54,8 @@
 
   <br>
 
-  <div [ngSwitch]="view">
-    <mwl-calendar-month-view *ngSwitchCase="CalendarView.Month" [viewDate]="viewDate" [events]="events"
+  <div [ngSwitch]="view" *ngIf="currentLanguage() | async as currlan">
+    <mwl-calendar-month-view *ngSwitchCase="CalendarView.Month" [viewDate]="viewDate" [events]="events" [locale]="currlan"
       [refresh]="refresh" [weekStartsOn]="1" (eventClicked)="handleEvent('Clicked', $event.event)">
     </mwl-calendar-month-view>
 
@@ -68,13 +68,14 @@
       [hourSegmentHeight]=20
       [dayStartHour] = openingHour
       [dayEndHour] = closingHour
+      [locale]="currlan"
       (eventClicked)="handleEvent('Clicked', $event.event)"
       (hourSegmentClicked)="hourSegment($event)"
       >
     </mwl-calendar-week-view>
 
     <mwl-calendar-day-view *ngSwitchCase="CalendarView.Day" [viewDate]="viewDate" [events]="events" [refresh]="refresh"
-      [hourSegmentHeight]=20 [dayStartHour]=openingHour [dayEndHour]=closingHour
+      [hourSegmentHeight]=20 [dayStartHour]=openingHour [dayEndHour]=closingHour [locale]="currlan"
       (eventClicked)="handleEvent('Clicked', $event.event)">
     </mwl-calendar-day-view>
   </div>
