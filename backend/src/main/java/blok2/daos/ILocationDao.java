@@ -61,10 +61,15 @@ public interface ILocationDao {
     /**
      * Returns an array of 7 strings for each location that is opened in the week specified by the given
      * week number in the given year.
-     *
+     * <p>
      * Each string is in the form of 'HH24:MI - HH24:MI' to indicate the opening and closing hour at
      * monday, tuesday, ..., sunday but can also be null to indicate that the location is not open that day.
      */
     Map<String, String[]> getOpeningOverviewOfWeek(int year, int weekNr);
+
+    /**
+     * Initialize the fields of the location with all tags related data.
+     */
+    void initializeTags(Location location);
 
 }

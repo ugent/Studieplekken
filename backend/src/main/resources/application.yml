@@ -29,6 +29,9 @@ spring:
         persistence:
           validation:
             mode: none
+  jackson:
+    mapper:
+      default-view-inclusion: true
 server:
   ssl:
     key-store-type: PKCS12

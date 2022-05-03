@@ -4,5 +4,5 @@
 
   <hr>
 
-  <app-penalty-table *ngIf="penaltyObservable | async as penalties" [penalties]="penalties" [showDesignee]="true" [showDelete]="true" (onDelete)="onDelete()"></app-penalty-table>
+  <app-penalty-table *ngIf="penaltyObservable | async as penalties" [penalties]="penalties" [showDesignee]="true" [showDelete]="true" [showTitle]="false" (onDelete)="onDelete()"></app-penalty-table>
 </div>

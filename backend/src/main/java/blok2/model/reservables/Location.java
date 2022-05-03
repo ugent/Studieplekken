@@ -3,6 +3,7 @@ package blok2.model.reservables;
 import blok2.helpers.Equality;
 import blok2.helpers.LocationStatus;
 import blok2.helpers.Pair;
+import blok2.helpers.View;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.LocationTag;
@@ -10,20 +11,20 @@ import blok2.model.calendar.Timeslot;
 import blok2.model.users.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.apache.commons.lang.builder.ToStringBuilder;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-
 import java.util.Objects;
+import java.util.Optional;
 
 @Entity
 @Table(name = "locations")
 public class Location implements Cloneable {
 
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "location_id")
     private int locationId;
 
@@ -43,7 +44,7 @@ public class Location implements Cloneable {
     private String descriptionDutch = "";
 
     @Column(name = "description_english")
-    private String descriptionEnglish= "";
+    private String descriptionEnglish = "";
 
     @Column(name = "reminder_dutch")
     private String reminderDutch;
@@ -70,17 +71,17 @@ public class Location implements Cloneable {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-        name = "location_tags",
-        joinColumns = @JoinColumn(name = "location_id"),
-        inverseJoinColumns = @JoinColumn(name = "tag_id")
+            name = "location_tags",
+            joinColumns = @JoinColumn(name = "location_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private List<LocationTag> assignedTags;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-        name = "roles_user_volunteer",
-        joinColumns = @JoinColumn(name = "location_id"),
-        inverseJoinColumns = @JoinColumn(name = "user_id")
+            name = "roles_user_volunteer",
+            joinColumns = @JoinColumn(name = "location_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     @JsonIgnore
     private List<User> volunteers;
@@ -92,10 +93,26 @@ public class Location implements Cloneable {
     @Transient
     private Timeslot currentTimeslot;
 
+    @JsonView(View.Detail.class)
+    @Transient
+    private boolean tomorrowStillAvailable;
+
+    @JsonView(View.Detail.class)
+    @Transient
+    private boolean openDuringWeek;
+
+    @JsonView(View.Detail.class)
+    @Transient
+    private boolean openDuringWeekend;
+
+    @JsonView(View.Detail.class)
+    @Transient
+    private Optional<Timeslot> optionalNextUpcomingReservableTimeslot;
+
     public Location(int locationId, String name, int numberOfSeats, int numberOfLockers, String imageUrl,
                     Authority authority, String descriptionDutch, String descriptionEnglish, Building building,
                     boolean forGroup, List<LocationTag> assignedTags, Pair<LocationStatus, String> status) {
-        this(locationId, name, numberOfSeats,numberOfLockers,imageUrl,authority,descriptionDutch,descriptionEnglish, building, forGroup, assignedTags, status, null);
+        this(locationId, name, numberOfSeats, numberOfLockers, imageUrl, authority, descriptionDutch, descriptionEnglish, building, forGroup, assignedTags, status, null);
     }
 
     public Location(int locationId, String name, int numberOfSeats, int numberOfLockers, String imageUrl,
@@ -343,6 +360,7 @@ public class Location implements Cloneable {
         this.usesPenaltyPoints = usesPenaltyPoints;
     }
 
+
     public String getReminderDutch() {
         return reminderDutch;
     }
@@ -357,6 +375,38 @@ public class Location implements Cloneable {
 
     public void setReminderEnglish(String reminderEnglish) {
         this.reminderEnglish = reminderEnglish;
+    }
+
+    public boolean isTomorrowStillAvailable() {
+        return tomorrowStillAvailable;
+    }
+
+    public void setTomorrowStillAvailable(boolean tomorrowStillAvailable) {
+        this.tomorrowStillAvailable = tomorrowStillAvailable;
+    }
+
+    public boolean isOpenDuringWeek() {
+        return openDuringWeek;
+    }
+
+    public void setOpenDuringWeek(boolean openDuringWeek) {
+        this.openDuringWeek = openDuringWeek;
+    }
+
+    public boolean isOpenDuringWeekend() {
+        return openDuringWeekend;
+    }
+
+    public void setOpenDuringWeekend(boolean openDuringWeekend) {
+        this.openDuringWeekend = openDuringWeekend;
+    }
+
+    public Optional<Timeslot> getOptionalNextUpcomingReservableTimeslot() {
+        return optionalNextUpcomingReservableTimeslot;
+    }
+
+    public void setOptionalNextUpcomingReservableTimeslot(Optional<Timeslot> optionalNextUpcomingReservableTimeslot) {
+        this.optionalNextUpcomingReservableTimeslot = optionalNextUpcomingReservableTimeslot;
     }
 
     //</editor-fold>

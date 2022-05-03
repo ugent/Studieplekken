@@ -8,17 +8,25 @@ import {
   SimpleChanges,
   HostListener
 } from '@angular/core';
-import {CalendarView, CalendarEvent} from 'angular-calendar';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
+import { CalendarView, CalendarEvent, CalendarDateFormatter } from 'angular-calendar';
+import { BehaviorSubject, merge, Observable, of, Subject } from 'rxjs';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { defaultOpeningHour, defaultClosingHour } from 'src/app/app.constants';
 import * as moment from 'moment';
 import { BreakpointObserver } from '@angular/cdk/layout';
+import { map } from 'rxjs/operators';
+import { CustomDateFormatter } from '../shared/util/CustomDateFormatter';
 
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss'],
+  providers: [
+    {
+      provide: CalendarDateFormatter,
+      useClass: CustomDateFormatter
+    }
+  ]
 })
 export class CalendarComponent implements OnInit, OnChanges {
   view: CalendarView = CalendarView.Week;
@@ -73,14 +81,14 @@ export class CalendarComponent implements OnInit, OnChanges {
       this.changeCalendarSize(next);
     });
 
-    this.setView(this.breakpointObserver.isMatched('(max-width: 500px)') ? CalendarView.Day:CalendarView.Week);
+    this.setView(this.breakpointObserver.isMatched('(max-width: 500px)') ? CalendarView.Day : CalendarView.Week);
 
   }
 
   @HostListener('window:resize', ['$event'])
    onResize(event) {
      this.isMobile = window.innerWidth < this.MOBILE_SIZE;
-     this.isHalfScreen= window.innerWidth < this.HALF_SCREEN_SIZE;
+     this.isHalfScreen = window.innerWidth < this.HALF_SCREEN_SIZE;
    }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -89,7 +97,7 @@ export class CalendarComponent implements OnInit, OnChanges {
       this.eventsSubj.next(this.events);
     }
 
-    if(changes.currentEventTime && !!changes.currentEventTime.currentValue) {
+    if (changes.currentEventTime && !!changes.currentEventTime.currentValue) {
       this.viewDate = changes.currentEventTime.currentValue.toDate();
     }
   }
@@ -118,27 +126,36 @@ export class CalendarComponent implements OnInit, OnChanges {
 
   setView(view: CalendarView): void {
     this.view = view;
-    this.calendarViewStyle.next(view)
+    this.calendarViewStyle.next(view);
   }
 
   hourSegment(event: any) {
-    this.hourPickedEvent.next(moment(event.date))
+    this.hourPickedEvent.next(moment(event.date));
   }
 
   emitDate(event: any) {
-    this.currentEventTimeChange.next(moment(event))
+    this.currentEventTimeChange.next(moment(event));
   }
 
-  getWrapLayout(){
-    if(this.isMobile){
-      return "row wrap";
-    }else if(this.isHalfScreen){
-      return "row wrap";
+  getWrapLayout(): string {
+    if (this.isMobile){
+      return 'row wrap';
+    }else if (this.isHalfScreen){
+      return 'row wrap';
     }
-    return "row nowrap";
+    return 'row nowrap';
   }
 
-  getWrapMargin(){
-    return this.isMobile ? "margin-left" : "";
+  getWrapMargin(): string {
+    return this.isMobile ? 'margin-left' : '';
+  }
+
+  currentLanguage(): Observable<string> {
+    return merge<LangChangeEvent, LangChangeEvent>(
+      of<LangChangeEvent>({
+        lang: this.translate.currentLang,
+      } as LangChangeEvent),
+      this.translate.onLangChange
+    ).pipe(map((s) => s.lang));
   }
 }

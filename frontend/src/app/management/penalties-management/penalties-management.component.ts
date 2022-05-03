@@ -15,11 +15,11 @@ export class PenaltiesManagementComponent implements OnInit {
   constructor(private penaltiesService: PenaltyService) { }
 
   ngOnInit(): void {
-    this.penaltyObservable = this.penaltiesService.getAllPenalties().pipe(map(p => ({points: 1, penalties: p})))
+    this.penaltyObservable = this.penaltiesService.getAllPenalties().pipe(map(p => ({points: 1, penalties: p})));
   }
 
-  onDelete() {
-    this.penaltyObservable = this.penaltiesService.getAllPenalties().pipe(map(p => ({points: 1, penalties: p})))
+  onDelete(): void {
+    this.penaltyObservable = this.penaltiesService.getAllPenalties().pipe(map(p => ({points: 1, penalties: p})));
   }
 
 }

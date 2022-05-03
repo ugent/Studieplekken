@@ -11,17 +11,17 @@ Wanneer je nog niet bent ingelogd zal je rechtsbovenaan op de pagina de een inlo
 
 <br /><br />
 
-## Zoeken naar een studieruimte
+## Zoeken naar een studielocatie
 
-Op de hoofdpagina kan je alle ruimtes vinden die door jou gereserveerd kunnen worden. Op deze dashboard zal je voor elke ruimte kort wat informatie krijgen: onder meer of het open is op dit moment, hoeveel zitplaatsen er zijn en het eerst volgend moment dat nog vrij is om te reserveren. Om meer informatie te zien over deze studieruimte klik je op 'details'.
+Op de hoofdpagina kan je alle locaties vinden die door jou gereserveerd kunnen worden. Op deze dashboard zal je voor elke locatie kort wat informatie krijgen: onder meer of het open is op dit moment, hoeveel zitplaatsen er zijn en het eerst volgend moment dat nog vrij is om te reserveren. Om meer informatie te zien over deze studielocatie klik je op 'details'.
 
 <img src="./assets/md/user-manuals/images/dutch/example_dashboard_location.png" width="30%" />
 
 <br /><br />
 
-## Studieruimte reserveren
+## Studielocatie reserveren
 
-Wanneer je op de pagina bent van een studieruimte zal je een kalender zien waar je aan de hand van de knoppen kan navigeren doorheen de tijd. Na het kiezen van een moment dat nog plaatsen heeft kan je een reservatieaanvraag maken door het tijdsblok te selecteren en op "update reservatie" te klikken en te confirmeren. Je reservatie wordt dan bekeken, en eventueel goedgekeurd. Je mag deze locatie na goedkeuring van je reservatie dus gebruiken gedurende de hele reservatieperiode. Indien er geen plaats meer is zal je bijvoorbeeld 200/200 reservaties zien, dat wil dus zeggen dat alle plaatsen bezet zijn.
+Wanneer je op de pagina bent van een studielocatie zal je een kalender zien waar je aan de hand van de knoppen kan navigeren doorheen de tijd. Na het kiezen van een moment dat nog plaatsen heeft kan je een reservatieaanvraag maken door het tijdsblok te selecteren en op "update reservatie" te klikken en te confirmeren. Je reservatie wordt dan bekeken, en eventueel goedgekeurd. Je mag deze locatie na goedkeuring van je reservatie dus gebruiken gedurende de hele reservatieperiode. Indien er geen plaats meer is zal je bijvoorbeeld 200/200 reservaties zien, dat wil dus zeggen dat alle plaatsen bezet zijn.
 
 Gedurende de eerste tien minuten van een reservatieperiode kan men zich in een wachtrij plaatsen. Als deze tien minuten voorbij zijn zullen de plaatsen dan op volstrekt willekeurige wijze worden toegekend aan de mensen die een aanvraag hebben ingediend. Als deze tien minuten voorbij zijn wordt de wachtrij afgesloten, en zullen reservaties terug meteen worden opgenomen.
 

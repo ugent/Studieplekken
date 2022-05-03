@@ -2,6 +2,7 @@ package blok2.controllers;
 
 import blok2.daos.*;
 import blok2.helpers.LocationWithApproval;
+import blok2.helpers.View;
 import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.helpers.exceptions.AlreadyExistsException;
 import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
@@ -11,6 +12,7 @@ import blok2.model.ActionLogEntry;
 import blok2.model.reservables.Location;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +61,7 @@ public class LocationController extends AuthorizedLocationController {
         this.actionLogDao = actionLogDao;
     }
 
+    @JsonView(View.List.class)
     @GetMapping
     @PreAuthorize("permitAll()")
     public List<Location> getAllLocations() {
@@ -67,15 +70,19 @@ public class LocationController extends AuthorizedLocationController {
         return locations;
     }
 
+    @JsonView(View.List.class)
     @GetMapping("/unapproved")
     public List<Location> getAllUnapprovedLocations() {
         return locationDao.getAllUnapprovedLocations();
     }
 
+    @JsonView(View.Detail.class)
     @GetMapping("/{locationId}")
     @PreAuthorize("permitAll()")
     public Location getLocation(@PathVariable("locationId") int locationId) {
-        return locationDao.getLocationById(locationId);
+        Location location = locationDao.getLocationById(locationId);
+        locationDao.initializeTags(location);
+        return location;
     }
 
     @GetMapping("/nextReservableFroms")

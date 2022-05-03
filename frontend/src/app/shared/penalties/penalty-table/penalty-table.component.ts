@@ -12,6 +12,7 @@ export class PenaltyTableComponent implements OnInit {
   @Input() penalties: PenaltyList;
   @Input() showDesignee = false;
   @Input() showDelete = false;
+  @Input() showTitle = false;
 
   @Output() onDelete: EventEmitter<Penalty> = new EventEmitter();
 

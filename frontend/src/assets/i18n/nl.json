@@ -6,7 +6,8 @@
       "addButton": "Voeg strafpunt toe",
       "points": "Punten",
       "description": "Beschrijving",
-      "confirm": "Bevestig"
+      "confirm": "Bevestig",
+      "cancel": "Annuleer"
     }
   },
   "calendar": {
@@ -18,11 +19,11 @@
     "day": "Dag"
   },
   "navigation": {
-    "profile" : "Profiel",
-    "dashboard" : "Alle studieplekken",
-    "information" : "Help",
-    "scan" : "Scan pagina",
-    "management" : "Beheer pagina",
+    "profile": "Profiel",
+    "dashboard": "Alle studieplekken",
+    "information": "Help",
+    "scan": "Scan pagina",
+    "management": "Beheer pagina",
     "profileInfo": "Op zoek naar je profiel? Bekijk hier je reservaties of je strafpunten, of toon je QR code.",
     "informationInfo": "Geraak je er niet onmiddellijk aan uit hoe de applicatie werkt? Ga zeker eens kijken op de hulp pagina.",
     "managementInfo": "Beheer gebouwen/locaties/gebruikers",
@@ -53,15 +54,15 @@
     "description": "Omschrijving",
     "details": "Details",
     "tags": "Tags",
-    "gotoDashboard": "Gelieve naar het dashboard te navigeren en een ruimte te selecteren.",
-    "location": "Ruimte",
+    "gotoDashboard": "Gelieve naar het dashboard te navigeren en een locatie te selecteren.",
+    "location": "Locatie",
     "numberOfLockers": "Aantal lockers",
     "numberOfSeats": "Aantal plaatsen",
-    "noLocations": "Helaas zijn er op dit moment geen ruimtes beschikbaar",
+    "noLocations": "Helaas zijn er op dit moment geen locaties beschikbaar",
     "status": "Status",
     "locationDetails": {
-      "info": "Algemene informatie over deze ruimte",
-      "tags": "Tags die deze ruimte kenmerken",
+      "info": "Algemene informatie over deze locatie",
+      "tags": "Tags die deze locatie kenmerken",
       "buttons": {
         "manage": "Beheer"
       },
@@ -69,7 +70,8 @@
         "statusOpen": "Sluit om {}",
         "statusClosed": "Gesloten",
         "statusClosedActive": "Opent opnieuw om {}",
-        "statusClosedUpcoming": "Opent opnieuw op {}"
+        "statusClosedUpcoming": "Opent opnieuw op {}",
+        "statusReservableFrom":  "Reservatie voor week {{week}} open vanaf {{opening}}"
       },
       "calendar": {
         "reservation": {
@@ -88,23 +90,29 @@
           "afterReservationConfirmedMessage": "Je reservaties zijn succesvol aangevraagd en zullen zo snel mogelijk worden bekeken.",
           "afterReservationLoadingMessage": "Je reservaties worden geplaatst...",
           "afterReservationFailedMessage": "Er is iets misgegaan tijdens het aanmaken van je reservaties."
-
         },
         "rejectedMessage": "Je reservatie is geweigerd omdat de locatie al vol zat. Dit is puur informatief: je kan dit gewoon negeren. Probeer zeker opnieuw als er een plekje vrijkomt!"
       },
-      "loginWarning": "Voordat er reservaties kunnen geplaatst worden voor deze locatie, dient u ingelogd te zijn.",
+      "tag": {
+        "reservable": "Reserveerbaar",
+        "notReservable": "Geen reservatie nodig",
+        "tomorrowStillAvailable": "Morgen nog beschikbaar",
+        "week": "Week",
+        "weekend": "Weekend"
+      },
+      "loginWarning": "Je moet eerst inloggen voordat je kan reserveren.",
       "refreshWarning": "Herladen van de kalender zal automatisch gebeuren, het is niet nodig om manueel de pagina te herladen."
     },
     "filter": {
       "title": "Filter",
-      "tagsFilterTitle": "Filter ruimtes op tags",
+      "tagsFilterTitle": "Filter locaties op tags",
       "buildingsFilterTitle": "Kies gebouw/locatie",
-      "noMatchesFromFilter": "Er zijn geen ruimtes die voldoen aan je filtervoorwaarden of aan je zoekterm.",
-      "searchPlaceholder": "zoek een ruimte op naam",
-      "showAll": "Toon alle ruimtes",
-      "showOpen": "Toon open ruimtes"
+      "noMatchesFromFilter": "Er zijn geen locaties die voldoen aan je filtervoorwaarden of aan je zoekterm.",
+      "searchPlaceholder": "zoek een locatie op naam",
+      "showAll": "Toon alle locaties",
+      "showOpen": "Toon open locaties"
     },
-    "error": "Er is iets misgelopen tijdens het ophalen van de ruimtes."
+    "error": "Er is iets misgelopen tijdens het ophalen van de locaties."
   },
   "footer": {
     "madeBy": "Gemaakt met trots door",
@@ -113,7 +121,7 @@
     "cookies": "Cookies",
     "accessibility": "Toegankelijkheid",
     "responsible-disclosure": "Responsible Disclosure",
-    "terms-of-use":"Terms of use"
+    "terms-of-use": "Terms of use"
   },
   "reservations": {
     "reservationButton": "Update Reservaties",
@@ -153,7 +161,6 @@
     "notAvailableAbbreviation": "n.v.t.",
     "waitingForServer": "Wachten op antwoord van de server...",
     "idSetByBackend": "ID door backend gezet",
-
     "catchAllError": "Er is iets misgelopen, gelieve op een later tijdstip opnieuw te proberen."
   },
   "header": {
@@ -194,7 +201,7 @@
   "management": {
     "aside": {
       "title": "Beheer",
-      "locations": "Ruimtes",
+      "locations": "Locaties",
       "buildings": "Gebouwen",
       "tags": "Tags",
       "users": "Gebruikers",
@@ -240,7 +247,7 @@
     },
     "general": {
       "loading": "Aan het laden...",
-      "noLocations": "Er zijn nog geen beschikbare ruimtes. Maak er een aan met de knop 'Ruimte Toevoegen'",
+      "noLocations": "Er zijn nog geen beschikbare Locaties. Maak er een aan met de knop 'Locatie Toevoegen'",
       "noBuildings": "Er zijn nog geen beschikbare gebouwen. Maak er een aan met de knop 'Gebouw toevoegen",
       "noTags": "Er zijn nog geen tags. Maak er een aan met de knop 'Tag Toevoegen'",
       "noAuthorities": "Er zijn nog geen autoriteiten aangemaakt. Maak er een aan met de knop 'Autoriteit Toevoegen'",
@@ -260,8 +267,8 @@
         "cancel": "Annuleer",
         "persist": "Oké",
         "loading": "Wachten op antwoord van de server...",
-        "success": "Het wijzigen van de ruimte was succesvol",
-        "error": "Er ging iets mis tijdens het wijzigen van de ruimte",
+        "success": "Het wijzigen van de locatie was succesvol",
+        "error": "Er ging iets mis tijdens het wijzigen van de locatie",
         "numberOfSeatsApplyWarning": "De aangepaste plaatsen worden alleen toegepast op nieuw aangemaakte openingsperiodes.",
         "numberOfSeatsHelp": "Kan alleen aangepast worden door een admin.",
         "usesPenaltyPoints": "Gebruikt strafpunten"
@@ -269,7 +276,7 @@
       "calendar": {
         "title": "Reservatiebeheer",
         "reservations": {
-          "title": "Reservaties voor de ruimte",
+          "title": "Reservaties voor de locatie",
           "selectSlot": "Selecteer een (reserveerbaar) timeslot om de reservaties te zien",
           "searchUser": "Zoek naar een gebruiker op voornaam, achternaam of studentennummer:",
           "startScanning": "Einde scannen",
@@ -283,10 +290,8 @@
             "futureReservation": "Timeslot is nog niet geweest",
             "number": "Studentennummer",
             "scan": "Scan",
-
             "yetToScan": "Nog te scannen",
             "notScanned": "Niet gescand",
-
             "startScanning": "Start scannen",
             "finishScanning": "Beïndig scannen",
             "penalties": "Strafpunten"
@@ -296,7 +301,7 @@
           "title": "Wijzig openingsdagen",
           "addButton": "Voeg nieuwe openingsperiode toe",
           "date": "Datum",
-          "day":"Dag",
+          "day": "Dag",
           "openingTime": "Openingstijd",
           "closingTime": "Sluitingstijd",
           "reservable": "Reserveerbaar",
@@ -313,7 +318,7 @@
           },
           "adminWarning": "Opgepast, deze verandering ligt binnen de vastgelegde termijn. Je zal manueel contact moeten opnemen met dienst permanentie van de UGent.",
           "updateReservationWarning": "Het aanpassen van deze periode zal leiden tot de verwijdering van alle reservaties die al gemaakt zijn gedurende deze periode!",
-          "noCalendarPeriodsForLocation": "Op dit moment zijn er nog geen periodes voor de ruimte beschikbaar.",
+          "noCalendarPeriodsForLocation": "Op dit moment zijn er nog geen periodes voor de locatie beschikbaar.",
           "approveAll": "Keur alle suggesties goed",
           "approve": "Keur goed",
           "reject": "Keur af",
@@ -340,7 +345,7 @@
         "copyModalView": {
           "title": "Kopieer deze periode",
           "body": "Je staat op het punt om de volgende periode te kopieren:",
-          "weekSelect":"Kopieer naar datum",
+          "weekSelect": "Kopieer naar datum",
           "lockReservableFrom": "Wil je de originele openingsdatum voor reservaties houden?"
         },
         "warningDialog": {
@@ -352,7 +357,7 @@
         "errorLoadingCalendarPeriods": "De kalenderperiodes voor deze locatie kunnen niet opgehaald worden."
       },
       "description": {
-        "title": "Beschrijving van de ruimte",
+        "title": "Beschrijving van de locatie",
         "englishDescription": "Omschrijving in het Engels",
         "dutchDescription": "Omschrijving in het Nederlands",
         "updateButton": "Update",
@@ -361,18 +366,18 @@
         "successUpdating": "Het updaten van de omschrijvingen is geslaagd."
       },
       "tags": {
-        "title": "Tags van de ruimte",
+        "title": "Tags van de locatie",
         "activeTagsInformation": "Hieronder is een lijst gegeven van de tags die beschikbaar zijn.",
         "updateTagsInformation": "Om de tags te wijzigen, klik op de knop rechts.",
         "updateTagsButton": "Wijzig de tags",
         "updateTagsConfigurationModal": {
-          "title": "Wijzig de tags van de ruimte",
+          "title": "Wijzig de tags van de locatie",
           "body": "In de dropdown hieronder kan je alle tags selecteren die je wil toekennen aan '{locationName}'.",
-          "comboboxTitle": "Tags van de ruimte",
+          "comboboxTitle": "Tags van de locatie",
           "success": "Het is gelukt om de tags voor '{locationName}' te wijzigen",
           "error": "Er is iets misgelopen tijdens het wijzigen van de tags van '{locationName}'."
         },
-        "noTagsSelected": "Op dit moment zijn er geen tags voor deze ruimte geselecteerd."
+        "noTagsSelected": "Op dit moment zijn er geen tags voor deze locatie geselecteerd."
       },
       "lockerCalendar": {
         "title": "Kalender voor beschikbaarheid van lockers",
@@ -420,12 +425,12 @@
       }
     },
     "locations": {
-      "title": "Beheer van blokruimtes",
-      "addNew": "Ruimte toevoegen",
-      "unapproved": "Goedkeuring van nieuwe blokruimtes",
+      "title": "Beheer van bloklocaties",
+      "addNew": "Locatie toevoegen",
+      "unapproved": "Goedkeuring van nieuwe bloklocaties",
       "table": {
         "header": {
-          "name": "Ruimte",
+          "name": "Locatie",
           "authority": "Autoriteit",
           "numberOfSeats": "Plaatsen",
           "numberOfLockers": "Lockers"
@@ -433,9 +438,9 @@
         "details": "Details"
       },
       "addLocationModal": {
-        "title": "Nieuwe ruimte toevoegen",
+        "title": "Nieuwe locatie toevoegen",
         "form": {
-          "locationName": "Naam Ruimte",
+          "locationName": "Naam Locatie",
           "address": "Adres",
           "numberOfSeats": "Aantal zitjes",
           "numberOfLockers": "Aantal lockers",
@@ -456,8 +461,8 @@
         "addButton": "Voeg toe",
         "closeButton": "Sluit",
         "loading": "Wachten op antwoord van de server...",
-        "success": "Het toevoegen van de ruimte is geslaagd",
-        "error": "Er is iets misgelopen tijdens het toevoegen van de nieuwe ruimte",
+        "success": "Het toevoegen van de locatie is geslaagd",
+        "error": "Er is iets misgelopen tijdens het toevoegen van de nieuwe locatie",
         "warning": "Ben je zeker dat je een voorstel voor een nieuwe room wil toevoegen?\n"
       },
       "editLocationModal": {
@@ -465,18 +470,18 @@
         "approveButton": "Keur goed"
       },
       "deleteLocationModal": {
-        "title": "Ruimte verwijderen?",
+        "title": "Locatie verwijderen?",
         "body": "Ben je zeker dat je {locationName} wil verwijderen?",
-        "warning": "Het verwijderen van deze ruimte zal ook al de volgende openingsperiodes (en de eventuele reservaties daarbinnen) verwijderen:",
+        "warning": "Het verwijderen van deze locatie zal ook al de volgende openingsperiodes (en de eventuele reservaties daarbinnen) verwijderen:",
         "loading": "Wachten op antwoord van de server...",
-        "success": "Het verwijderen van de ruimte is geslaagd",
-        "error": "Er is iets misgelopen tijdens het verwijderen van de ruimte",
+        "success": "Het verwijderen van de locatie is geslaagd",
+        "error": "Er is iets misgelopen tijdens het verwijderen van de locatie",
         "yesButton": "Verwijder",
         "noButton": "Annuleer"
       }
     },
     "buildings": {
-      "title": "Beheer van gebouwen voor ruimtes",
+      "title": "Beheer van gebouwen voor locaties",
       "table": {
         "name": "Naam",
         "address": "Adres",
@@ -501,7 +506,7 @@
       "deleteBuildingModal": {
         "title": "Verwijder het gebouw",
         "body": "Ben je zeker dat je volgend gebouw wilt verwijderen?",
-        "warning": "Gelieve op te merken dat alle ruimtes in dit gebouw ook zullen verwijderd worden!",
+        "warning": "Gelieve op te merken dat alle locaties in dit gebouw ook zullen verwijderd worden!",
         "success": "Het verwijderen van het gebouw is gelukt.",
         "error": "Er is iets misgelopen tijdens het verwijderen van het gebouw."
       },
@@ -511,7 +516,7 @@
       }
     },
     "tags": {
-      "title": "Beheer van tags van ruimte",
+      "title": "Beheer van tags van locatie",
       "table": {
         "dutch": "Nederlands",
         "english": "Engels"
@@ -586,9 +591,9 @@
         },
         "authorities": {
           "title": "Autoriteiten van {name}",
-          "info": "Hieronder is een tabel gegeven met alle autoriteiten waarin de gebruiker een beherende rol heeft. Dit wil zeggen dat hij/zij ruimtes van deze autoriteiten kan beheren.",
+          "info": "Hieronder is een tabel gegeven met alle autoriteiten waarin de gebruiker een beherende rol heeft. Dit wil zeggen dat hij/zij locaties van deze autoriteiten kan beheren.",
           "notAllowedToHaveAuthorities": "De gebruiker is niet gemachtigd om autoriteiten te hebben. Pas de rol van de gebruiker aan indien je wil dat hij/zij beheerder mag zijn van één of meerdere autoriteiten.",
-          "noAuthoritiesForUser": "De gebruiker is niet gelinkt aan één of meerdere autoriteiten. Dit wil zeggen dat hij/zij geen enkele ruimte kan beheren.",
+          "noAuthoritiesForUser": "De gebruiker is niet gelinkt aan één of meerdere autoriteiten. Dit wil zeggen dat hij/zij geen enkele locatie kan beheren.",
           "allAuthoritiesAreAssigned": "Alle autoriteiten zijn al toegekend aan de gebruiker.",
           "addNew": "Autoriteit aan gebruiker toevoegen",
           "addAuthorityToUserModal": {
@@ -610,7 +615,7 @@
           "table": {
             "eventCode": "Code van overtreding",
             "timestamp": "Timestamp",
-            "location": "Ruimte",
+            "location": "Locatie",
             "receivedPoints": "Ontvangen strafpunten",
             "remarks": "Opmerking",
             "addNew": "Overtreding toevoegen",
@@ -661,9 +666,9 @@
       "users": {
         "title": "Beheer de gebruikers in de autoriteit {authorityName}",
         "info": "In onderstaande tabel zijn alle gebruikers gegeven die in de autoriteit {authorityName} zitten. Je kan hier gebruikers toevoegen of verwijderen.",
-        "info2": "De gebruikers die in de tabel zijn opgenomen, hebben beheersrechten op de ruimtes van de autoriteit.",
+        "info2": "De gebruikers die in de tabel zijn opgenomen, hebben beheersrechten op de locaties van de autoriteit.",
         "addNewUser": "Gebruiker toevoegen",
-        "noUsersInAuthority": "Er zijn geen gebruikers opgenomen in deze autoriteit. Dat wil zeggen dat geen enkele gebruiker ruimtes van deze autoriteit kan beheren.",
+        "noUsersInAuthority": "Er zijn geen gebruikers opgenomen in deze autoriteit. Dat wil zeggen dat geen enkele gebruiker locaties van deze autoriteit kan beheren.",
         "addUserToAuthorityModal": {
           "title": "Voeg gebruiker toe aan autoriteit",
           "searchInfo": "Zoek een gebruiker op voor- en/of achternaam om aan de autoriteit toe te voegen.",
@@ -695,17 +700,17 @@
       "deleteAuthorityModal": {
         "title": "Verwijder de autoriteit",
         "body": "Ben je zeker dat je volgende autoriteit wilt verwijderen?",
-        "warning": "Gelieve op te merken dat alle ruimtes gelinkt aan deze autoriteit ook zullen verwijderd worden!",
+        "warning": "Gelieve op te merken dat alle locaties gelinkt aan deze autoriteit ook zullen verwijderd worden!",
         "success": "Het verwijderen van de autoriteit is gelukt.",
         "error": "Er is iets misgelopen tijdens het verwijderen van de autoriteit."
       }
     },
     "reservations": {
       "title": "Overzicht van de reservaties",
-      "locationsPanelTitle": "Zoek naar reservaties voor blokruimtes",
+      "locationsPanelTitle": "Zoek naar reservaties voor bloklocaties",
       "lockersPanelTitle": "Zoek naar reservaties van lockers",
       "location": {
-        "location": "Ruimtes",
+        "location": "Locaties",
         "start": "Reservaties vanaf",
         "end": "Reservaties tot",
         "pastReservations": "Vroegere reservaties inbegrijpen?",
@@ -718,7 +723,7 @@
           "date": "Datum waarvoor gereserveerd",
           "user": "Gebruiker",
           "attended": "Gebruiker was aanwezig?",
-          "noLocationReservations": "Er zijn geen reservaties voor de ruimte."
+          "noLocationReservations": "Er zijn geen reservaties voor de locatie."
         },
         "finishScanningModal": {
           "title": "Beëindigen van het scannen",
@@ -735,10 +740,9 @@
           "success": "Het verwijderen van de reservatie is gelukt.",
           "error": "Er is iets misgelopen tijdens het verwijderen van de reservatie..."
         },
-
         "scanningErrorModal": {
           "title": "Scannen mislukt",
-          "message": "Er is iets misgelopen tijdens het scannen. De aan-/afwezigheid werd niet goed geregistreerd. Probeer je een afwezige als aanwezig aan te duiden in een volle ruimte? Deze reservatie was verwijderd en het zitje is intussen gereserveerd door iemand anders."
+          "message": "Er is iets misgelopen tijdens het scannen. De aan-/afwezigheid werd niet goed geregistreerd. Probeer je een afwezige als aanwezig aan te duiden in een volle locatie? Deze reservatie was verwijderd en het zitje is intussen gereserveerd door iemand anders."
         }
       },
       "locker": {
@@ -756,7 +760,7 @@
           "owner": "Gebruiker",
           "keyPickupDate": "Sleutel opgehaald?",
           "keyReturnedDate": "Sleutel teruggebracht?",
-          "noLockerReservations": "Er zijn geen locker reservaties voor de ruimte."
+          "noLockerReservations": "Er zijn geen locker reservaties voor de locatie."
         },
         "deleteModal": {
           "title": "Zeker om de locker reservatie te verwijderen?",
@@ -891,7 +895,7 @@
         "4": "Met andere woorden zullen het aantal strafpunten voor een overtreding voor 5 weken zichtbaar zijn in je totale aantal strafpunten.",
         "3": "Mogelijke overtredingen zijn:",
         "li": {
-          "1": "Een reservatie voor een ruimte annuleren vanaf 19u, de avond voorafgaand aan de datum waarvoor werd gereserveerd (start op 15 punten en neemt toe tot 30, een uur voor opening)",
+          "1": "Een reservatie voor een locatie annuleren vanaf 19u, de avond voorafgaand aan de datum waarvoor werd gereserveerd (start op 15 punten en neemt toe tot 30, een uur voor opening)",
           "2": "Niet komen opdagen wanneer je reserveerde (50 points)",
           "3": "Een plek vrijhouden voor jezelf, of voor iemand anders, door de plek te bezetten met een boekentas/boeken/...",
           "4": "Wanneer je echt over de schreef zou gaan, dan kan je op de blacklist gezet worden. Je krijgt dan onmiddellijk 100 strafpunten, die niet verminderen in de loop der tijd"
@@ -903,7 +907,7 @@
           "eventCode": "Reden voor strafpunten",
           "timestamp": "Timestamp",
           "reservationDate": "Reservatie voor",
-          "location": "Ruimte",
+          "location": "Locatie",
           "receivedPoints": "Ontvangen strafpunten",
           "issuer": "Door wie",
           "description": "Beschrijving",
@@ -918,7 +922,6 @@
         "late": {
           "delete": "Gebruiker verwijderde reservatie te laat."
         }
-
       }
     },
     "reservations": {
@@ -927,7 +930,7 @@
         "table": {
           "header": {
             "user": "Gebruiker",
-            "locationName": "Ruimte",
+            "locationName": "Locatie",
             "reservationDate": "Gereserveerd voor datum",
             "beginHour": "Aanvangsuur reservatie",
             "state": "Reservatie status"
@@ -952,7 +955,7 @@
         "title": "Overzicht van je lockerreservaties",
         "table": {
           "header": {
-            "locationName": "Ruimte",
+            "locationName": "Locatie",
             "lockerNumber": "Nummer van locker",
             "keyPickupDate": "Datum waarop sleutel opgehaald",
             "keyReturnedDate": "Datum waarop sleutel teruggebracht"
@@ -984,7 +987,7 @@
         "name": "Naam",
         "building": "Gebouw",
         "numberOfSeats": "Plaatsen",
-        "scan":"Scan"
+        "scan": "Scan"
       },
       "empty": "Gesloten",
       "noLocationsWarning": "Je hebt momenteel geen locaties toegewezen gekregen waar je studenten kan scannen.",
@@ -999,12 +1002,12 @@
     "phone": "Scan met GSM-camera",
     "handheld": "Scan met een handscanner",
     "manual": "Checklist",
-    "unregistered":"Deze gebruiker is niet geregistreerd.",
+    "unregistered": "Deze gebruiker is niet geregistreerd.",
     "error": "Er ging iets fout bij deze actie.",
     "mobile-hint": "Scanning werkt best wanneer je de barcode horizontaal plaatst.",
     "handheld-hint": "Om met de handscanner te scannen selecteer je de inputbox. Wanneer je iemand scant, zal de naam naar boven springen in de lijst.",
-    "maybe":"Deze gebruiker werd niet gevonden. Zoek in de lijst hieronder of probeer opnieuw.",
-    "warn-unattended":"Als je iemand op afwezig zet, wordt de plek opengesteld voor anderen om te reserveren."
+    "maybe": "Deze gebruiker werd niet gevonden. Zoek in de lijst hieronder of probeer opnieuw.",
+    "warn-unattended": "Als je iemand op afwezig zet, wordt de plek opengesteld voor anderen om te reserveren."
   },
   "Odisee": "Odisee Hogeschool",
   "Arteveldehogeschool": "Arteveldehogeschool",

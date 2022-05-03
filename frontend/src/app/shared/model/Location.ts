@@ -23,6 +23,10 @@ export interface Location {
   currentTimeslot?: Timeslot;
   institution: string;
   usesPenaltyPoints: boolean;
+  tomorrowStillAvailable: boolean;
+  openDuringWeek: boolean;
+  openDuringWeekend: boolean;
+  optionalNextUpcomingReservableTimeslot?: Timeslot;
 }
 
 export class LocationConstructor {
@@ -42,8 +46,11 @@ export class LocationConstructor {
       reminderEnglish: '',
       assignedTags: [],
       status: { first: LocationStatus.CLOSED, second: '' },
-      institution: "Other",
-      usesPenaltyPoints: false
+      institution: 'Other',
+      usesPenaltyPoints: false,
+      tomorrowStillAvailable: false,
+      openDuringWeek: false,
+      openDuringWeekend: false
     };
   }
 
@@ -69,7 +76,11 @@ export class LocationConstructor {
       status: { first: obj.status.first, second: obj.status.second },
       currentTimeslot: Timeslot.fromJSON(obj.currentTimeslot),
       institution: obj.institution,
-      usesPenaltyPoints: obj.usesPenaltyPoints
+      usesPenaltyPoints: obj.usesPenaltyPoints,
+      tomorrowStillAvailable: obj.tomorrowStillAvailable,
+      openDuringWeek: obj.openDuringWeek,
+      openDuringWeekend: obj.openDuringWeekend,
+      optionalNextUpcomingReservableTimeslot: Timeslot.fromJSON(obj.optionalNextUpcomingReservableTimeslot)
     };
   }
 }
