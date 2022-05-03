@@ -16,6 +16,8 @@ export interface Location {
   building: Building;
   descriptionDutch: string;
   descriptionEnglish: string;
+  reminderDutch: string;
+  reminderEnglish: string;
   assignedTags: LocationTag[];
   status: Pair<LocationStatus, string>;
   currentTimeslot?: Timeslot;
@@ -36,6 +38,8 @@ export class LocationConstructor {
       building: BuildingConstructor.new(),
       descriptionDutch: '',
       descriptionEnglish: '',
+      reminderDutch: '',
+      reminderEnglish: '',
       assignedTags: [],
       status: { first: LocationStatus.CLOSED, second: '' },
       institution: "Other",
@@ -58,6 +62,8 @@ export class LocationConstructor {
       building: BuildingConstructor.newFromObj(obj.building),
       descriptionDutch: obj.descriptionDutch,
       descriptionEnglish: obj.descriptionEnglish,
+      reminderDutch: obj.reminderDutch,
+      reminderEnglish: obj.reminderEnglish,
       assignedTags: obj.assignedTags,
       forGroup: obj.forGroup,
       status: { first: obj.status.first, second: obj.status.second },

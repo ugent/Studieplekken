@@ -1,0 +1,48 @@
+<div class="container-fluid" *ngIf="location | async as location" >
+    <div class="panel-body" style="padding: 20px">
+        <!-- The editor for the dutch reminder -->
+        <div class="row">
+            <h3>{{'management.locationDetails.reminder.dutchReminder' | translate}}</h3>
+            <ckeditor [(ngModel)]="model.dutch"
+                [editor]="editor"
+                [config]="config">
+            </ckeditor>
+        </div>
+
+        <!-- The editor row for the english reminder -->
+        <div class="row" style="margin-top: 20px;">
+            <h3>{{'management.locationDetails.reminder.englishReminder' | translate}}</h3>
+            <ckeditor [(ngModel)]="model.english"
+                [editor]="editor"
+                [config]="config">
+            </ckeditor>
+        </div>
+
+        <!-- Buttons -->
+        <div class="row" style="margin-top: 20px;">
+            <div class="pull-right">
+                <button class="button button-primary btn-left" (click)="updateButtonClick()" [disabled]="!isModelUpdatable()">
+                    {{'management.locationDetails.reminder.updateButton' | translate}}
+                </button>
+                <button class="button button-secondary" (click)="cancelButtonClick()" [disabled]="!isModelUpdatable()">
+                    {{'management.locationDetails.reminder.cancelButton' | translate}}
+                </button>
+            </div>
+        </div>
+
+
+        <!-- Feedback on updating the reminders -->
+        <div class="row" style="margin-top: 20px;">
+            <div class="messages messages--info" *ngIf="showUpdateSuccess === null">
+                {{'general.waitingForServer' | translate}}
+            </div>
+            <div class="messages messages-success" *ngIf="showUpdateSuccess === true">
+                {{'management.locationDetails.reminder.successUpdating' | translate}}
+            </div>
+            <div class="messages messages--error" *ngIf="showUpdateSuccess === false">
+                {{'management.locationDetails.reminder.errorUpdating' | translate}}
+            </div>
+        </div>
+
+    </div>
+</div>

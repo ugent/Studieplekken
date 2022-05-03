@@ -406,6 +406,14 @@
         "loading": "Waiting for response of server",
         "success": "Successfully updated the locker's status",
         "error": "Something went wrong while updating the locker's status"
+      }, 
+      "reminder": {
+        "dutchReminder": "Reminder in Dutch",
+        "englishReminder": "Reminder in English",
+        "updateButton": "Update",
+        "cancelButton": "Cancel",
+        "successUpdating": "Successfully updated the reminders of the room.",
+        "errorUpdating": "Something went wrong while updating the reminders of the room."
       }
     },
     "locations": {
@@ -864,7 +872,8 @@
         "lastName": "Last Name",
         "mail": "Mail",
         "penaltyPoints": "Penalty Points",
-        "studentNumber": "Student Number"
+        "studentNumber": "Student Number",
+        "receiveMailConfirmation": "Receive e-mail confirmation of reservations"
       },
       "qrcode": "You can show this QR code at the scanning desk of your study room. If scanned successfully, your attendance will be registered."
     },

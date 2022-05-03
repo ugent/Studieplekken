@@ -19,10 +19,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.IsoFields;
 import java.time.temporal.TemporalAdjusters;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 @Service
 public class MailService {
@@ -38,6 +35,7 @@ public class MailService {
     public static final String STUDENT_DID_NOT_ATTEND_TEMPLATE_URL = "mail/not_attended";
     public static final String RESERVATION_NOTIFICATION_TEMPLATE_URL = "mail/reservation_notification";
     public static final String RESERVATION_SLOT_DELETED_TEMPLATE_URL = "mail/reservation_slot_deleted";
+    public static final String RESERVATION_CONFIRMATION_PAST24HRS_URL = "mail/reservation_confirmation_past24hrs";
 
     public static final String NO_REPLY_SENDER = "info@studieplekken.ugent.be";
 
@@ -172,6 +170,33 @@ public class MailService {
         ctx.setVariable("title", title);
         ctx.setVariable("date", timeslot.timeslotDate());
         return sendMail(target, title, ctx, RESERVATION_SLOT_DELETED_TEMPLATE_URL);
+    }
+
+    // ***************************************************************************************************
+    // * Method for mailing a notification to a student of all reservations that were made by them today *
+    // **************************************************************************************************/
+
+    public Thread sendMailConfirmingLast24hrsOfReservations(String target, List<MailReservationData> reservationData) throws MessagingException {
+        reservationData.sort(Comparator.comparing(o -> o.time));
+        // Make a list of all reservation data that has a location not previously mentioned in the list.
+        // a.k.a get all locations.
+        List<MailReservationData> locationInformation = new ArrayList<>();
+        for (MailReservationData mailReservationDatum : reservationData) {
+            if (locationInformation.stream().anyMatch(mrd -> mrd.locationName.equals(mailReservationDatum.locationName))) {
+                continue; // Skip if locationinfo already in list.
+            }
+            if (mailReservationDatum.locationReminderEnglish.isEmpty() && mailReservationDatum.locationReminderDutch.isEmpty()) {
+                continue; // Skip if locationinfo is empty string
+            }
+            locationInformation.add(mailReservationDatum);
+        }
+
+        Context ctx = new Context();
+        String title = "[Werk- en Studieplekken] Bevestiging van uw reservatie(s)";
+        ctx.setVariable("title", title);
+        ctx.setVariable("mailReservationData", reservationData);
+        ctx.setVariable("locationInformation", locationInformation);
+        return sendMail(target, title, ctx, RESERVATION_CONFIRMATION_PAST24HRS_URL);
     }
 
 

@@ -103,6 +103,8 @@ import { UserPenaltyManagerComponent } from './shared/penalties/user-penalty-man
 import { PenaltiesManagementComponent } from './management/penalties-management/penalties-management.component';
 import { StatsComponent } from './management/stats/stats.component';
 import { WaffleComponent } from './management/stats/waffle/waffle.component';
+import { LocationReminderComponent } from './management/locations-management/location-details-management/location-reminder/location-reminder.component';
+
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -367,6 +369,7 @@ const routes: Routes = [
     AfterReservationComponent,
     StatsComponent,
     WaffleComponent,
+    LocationReminderComponent
   ],
   imports: [
     BrowserModule,

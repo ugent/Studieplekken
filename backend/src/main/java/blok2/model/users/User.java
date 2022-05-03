@@ -67,6 +67,11 @@ public class User implements Cloneable, UserDetails {
     )
     private Set<Location> userVolunteer;
 
+    @OneToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name="user_id")
+    private UserSettings userSettings;
+
+
     public User() {
         lastName = "";
         firstName = "";
@@ -253,4 +258,11 @@ public class User implements Cloneable, UserDetails {
         return true;
     }
 
+    public UserSettings getUserSettings() {
+        return userSettings;
+    }
+
+    public void setUserSettings(UserSettings userSettings) {
+        this.userSettings = userSettings;
+    }
 }

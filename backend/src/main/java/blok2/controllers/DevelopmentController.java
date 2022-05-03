@@ -1,5 +1,6 @@
 package blok2.controllers;
 
+import blok2.scheduling.ScheduledTasks;
 import blok2.security.services.CustomUserDetailsService;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.authentication.AttributePrincipalImpl;
@@ -26,10 +27,12 @@ import java.util.Map;
 public class DevelopmentController {
 
     private final CustomUserDetailsService customUserDetailsService;
+    private final ScheduledTasks scheduledTasks;
 
     @Autowired
-    public DevelopmentController(CustomUserDetailsService customUserDetailsService) {
+    public DevelopmentController(CustomUserDetailsService customUserDetailsService, ScheduledTasks scheduledTasks) {
         this.customUserDetailsService = customUserDetailsService;
+        this.scheduledTasks = scheduledTasks;
     }
 
     /**
@@ -54,5 +57,6 @@ public class DevelopmentController {
 
         customUserDetailsService.loadUserDetails(authenticationToken);
     }
+
 
 }
