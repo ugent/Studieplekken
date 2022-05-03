@@ -414,6 +414,14 @@
         "loading": "Wachten op antwoord van de server",
         "success": "Het wijzigen van de status is gelukt",
         "error": "Er is iets mis gegaan tijdens het wijzigen van de status"
+      },
+      "reminder": {
+        "dutchReminder": "Herinnering in het nederlands",
+        "englishReminder": "Herinnering in het engels",
+        "updateButton": "Update",
+        "cancelButton": "Annuleer",
+        "successUpdating": "Het updaten van de herinneringen is geslaagd.",
+        "errorUpdating":"Er is iets misgelopen tijdens het updaten van de herinneringen."
       }
     },
     "locations": {
@@ -873,7 +881,8 @@
         "lastName": "Achternaam",
         "mail": "Mail",
         "penaltyPoints": "Strafpunten",
-        "studentNumber": "Studentennummer"
+        "studentNumber": "Studentennummer",
+        "receiveMailConfirmation": "Ontvang bevestigingsmails van reservaties"
       },
       "qrcode": "Je kan deze QR code tonen aan de scanpost van je studieplek. Je aanwezigheid zal geregistreerd worden."
     },

@@ -22,14 +22,6 @@
       </div>
     </div>
 
-    <!-- Mail -->
-    <div class="row form-group">
-      <label class="col-lg-3 control-label" for="mail">{{'profile.overview.form.mail' | translate}}</label>
-      <div class="col-lg-8">
-        <input class="form-control" id="mail" type="email" formControlName="mail">
-      </div>
-    </div>
-
     <!-- Penalty Points -->
     <!-- Only to be shown in BlokAt, not in MiniThermis -->
     <div class="row form-group" *ngIf="showPenaltyPoints">
@@ -46,11 +38,32 @@
         <input class="form-control" id="institution" type="text" formControlName="institution">
       </div>
     </div>
-    <div class="messages messages--info">
-      {{'profile.overview.qrcode' | translate}}
+
+    <!-- Mail -->
+    <div class="row form-group">
+      <label class="col-lg-3 control-label" for="mail">{{'profile.overview.form.mail' | translate}}</label>
+      <div class="col-lg-8">
+        <input class="form-control" id="mail" type="email" formControlName="mail">
+      </div>
+
     </div>
 
+
+
   </form>
+  <form [formGroup]="settingsFormGroup" class="center">
+    <!-- Receive mail confirming reservations 24hrs -->
+    <div class="row form-group">
+      <div class="col-lg-8">
+        <input class="form-control" id="receiveMailConfirmation" type="checkbox" formControlName="receiveMailConfirmation">
+        {{'profile.overview.form.receiveMailConfirmation' | translate}}
+      </div>
+    </div>
+  </form>
+
+  <div class="messages messages--info center">
+    {{'profile.overview.qrcode' | translate}}
+  </div>
 
   <!-- QR code of userId -->
   <app-qrcode [userObs]="userObs"></app-qrcode>

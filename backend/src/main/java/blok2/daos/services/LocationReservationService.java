@@ -80,9 +80,23 @@ public class LocationReservationService implements ILocationReservationDao {
         return locationReservationRepository.findAllUnattendedByDateAnd21PMRestriction(date,  dayBefore, yesterday21PM, today21PM);
     }
 
+
+    @Override
+    public List<LocationReservation> getReservationCreatedToday() {
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        LocalDateTime yesterday21PM = LocalDateTime.of(yesterday, LocalTime.of(21, 0));
+        return locationReservationRepository.findAllCreatedAfterDateTime(yesterday21PM);
+    }
+
     @Override
     public List<User> getUsersWithReservationForWindowOfTime(LocalDate start, LocalDate end) {
         // TODO(ydndonck): What is this method used for? Does it still need to be implemented?
+                /*List<LocationReservation> reservations = locationReservationRepository.findAllByDateRange(start, end);
+        return reservations.stream()
+                .map(LocationReservation::getUser)
+                .collect(Collectors.toList());
+
+         */
         return Collections.emptyList();
     }
 

@@ -2,7 +2,10 @@ package blok2.scheduling;
 
 import blok2.daos.ILocationDao;
 import blok2.daos.ILocationReservationDao;
+import blok2.daos.IUserDao;
+import blok2.mail.MailReservationData;
 import blok2.mail.MailService;
+import blok2.model.reservables.Location;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
 import org.slf4j.Logger;
@@ -14,10 +17,10 @@ import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.IsoFields;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class ScheduledTasks {
@@ -28,6 +31,7 @@ public class ScheduledTasks {
     private final MailService mailService;
     private final ILocationDao locationDao;
     private final ReservationManager reservationManager;
+    private final IUserDao userDao;
 
     private final String[] recipients;
 
@@ -35,12 +39,13 @@ public class ScheduledTasks {
 
     @Autowired
     public ScheduledTasks(ILocationReservationDao locationReservationDao, ILocationDao locationDao,
-                          MailService mailService, Environment env, ReservationManager reservationManager) {
+                          MailService mailService, Environment env, ReservationManager reservationManager, IUserDao userDao) {
         this.locationReservationDao = locationReservationDao;
         this.mailService = mailService;
         this.locationDao = locationDao;
         recipients = env.getProperty("custom.mailing.recipientsOpeningHoursOverview", String[].class);
         this.reservationManager = reservationManager;
+        this.userDao = userDao;
     }
 
     /**
@@ -181,6 +186,61 @@ public class ScheduledTasks {
             } catch (InterruptedException e) {
                 logger.error(String.format("Could not join on thread while sending a reminder mail to student:" +
                         " %s", e.getMessage()));
+            }
+        }
+    }
+
+
+
+    // TODO(ydndonck): This runs at the exact same time as mailUnattendedStudents().
+    // Is this desirable so that these are sent out simultaneously or not to prevent server overload?
+    @Scheduled(cron = "0 0 21 * * *")
+    public void printReservationsYente() {
+        // Gather all reservations from past 24hrs and group them by user.
+        Map<User, List<MailReservationData>> usermap = new HashMap<>();
+        Map<Integer, Location> locationMap = new HashMap<>();
+        List<LocationReservation> newReservations = this.locationReservationDao.getReservationCreatedToday();
+        for (LocationReservation reservation : newReservations) {
+            locationMap.computeIfAbsent(reservation.getTimeslot().getLocationId(), (locationDao::getLocationById));
+
+            Location location = locationMap.get(reservation.getTimeslot().getLocationId());
+            String locationName = location.getName();
+            LocalDateTime time = reservation.getTimeslot().timeslotDate().atTime(reservation.getTimeslot().getOpeningHour());
+            String locationReminderDutch = location.getReminderDutch().trim();
+            String locationReminderEnglish = location.getReminderEnglish().trim();
+
+            usermap.computeIfAbsent(reservation.getUser(), (user -> new ArrayList<>()))
+                .add(new MailReservationData(locationName, time, locationReminderDutch, locationReminderEnglish));
+        }
+        // Send mails to the users about their reservations N_CONCURRENT_CONNECTIONS at a time.
+        Thread[] threads = new Thread[N_CONCURRENT_CONNECTIONS];
+        int currentConnections = 0;
+        for (User user : usermap.keySet()) {
+            if (!user.getUserSettings().isReceiveMailConfirmation()) {
+                continue; // Skip if user doesn't want mail confirmations of reservations.
+            }
+            try {
+                threads[currentConnections] = mailService.sendMailConfirmingLast24hrsOfReservations(user.getMail(), usermap.get(user));
+            } catch (MessagingException e) {
+                logger.error(String.format("Could not join on thread while sending mail to unattended student: %s", e.getMessage()));
+            }
+            currentConnections += 1;
+            if (currentConnections == N_CONCURRENT_CONNECTIONS) {
+                for (int i = 0; i < N_CONCURRENT_CONNECTIONS; i += 1) {
+                    try {
+                        threads[i].join();
+                    } catch (InterruptedException e) {
+                        logger.error(String.format("Could not join on thread while sending mail to unattended student: %s", e.getMessage()));
+                    }
+                }
+                currentConnections = 0;
+            }
+        }
+        for (int i = 0; i < currentConnections; i += 1) {
+            try {
+                threads[i].join();
+            } catch (InterruptedException e) {
+                logger.error(String.format("Could not join on thread while sending mail to unattended student: %s", e.getMessage()));
             }
         }
     }

@@ -2,11 +2,13 @@ package blok2.controllers;
 
 import blok2.daos.*;
 import blok2.helpers.Base64String;
+import blok2.helpers.authorization.AuthorizedController;
 import blok2.helpers.exceptions.InvalidRequestParametersException;
 import blok2.model.ActionLogEntry;
 import blok2.model.Authority;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;
+import blok2.model.users.UserSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import blok2.helpers.authorization.AuthorizedLocationController;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.constraints.Pattern;
@@ -31,7 +34,7 @@ import java.util.List;
 @RestController
 @RequestMapping("account")
 @Validated
-public class AccountController {
+public class AccountController extends AuthorizedController {
 
     private final Logger logger = LoggerFactory.getLogger(AccountController.class.getSimpleName());
 
@@ -182,6 +185,28 @@ public class AccountController {
         userDao.updateUser(user);
         logger.info(String.format("Updated user %s from %s to %s", id, old, user));
     }
+
+    @PutMapping("/{userId}/settings")
+    public void updateUserSettings(@AuthenticationPrincipal User authenticatedUser,
+                                   @PathVariable("userId") String encodedId,
+                                   @RequestBody UserSettings userSettings) {
+        String userId = Base64String.base64Decode(encodedId);
+        isAuthorized(
+                (uid, u) -> uid.equals(u.getUserId()),
+                userId
+        );
+        User old;
+        if (authenticatedUser.isAdmin()) {
+            old = userDao.getUserById(userId);
+        } else {
+            old = userDao.getUserByIdAndInstitution(userId, authenticatedUser.getInstitution());
+        }
+        userSettings.setUserId(old.getUserId());
+        old.setUserSettings(userSettings);
+        userDao.updateUser(old);
+        logger.info(String.format("Updated user settings %s to %s", userId, userSettings));
+    }
+
 
     @PutMapping("/password")
     @PreAuthorize("hasAuthority('USER')")

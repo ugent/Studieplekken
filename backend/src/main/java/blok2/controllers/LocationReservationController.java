@@ -75,7 +75,6 @@ public class LocationReservationController extends AuthorizedLocationController 
         // If that is the case then this check may no longer be needed as the actual checking and processing of reservations
         // now happens in a different thread and a 'naive' check based on the timeslot the user provided is sufficient (in this thread).
         // This could save a trip to the database, which makes this slightly faster.
-        System.out.println(timeslot);
         Timeslot dbTimeslot = timeslotDao.getTimeslot(timeslot.getTimeslotSeqnr());
         LocalDateTime now = LocalDateTime.now();
         if (now.isBefore(dbTimeslot.getReservableFrom())) {

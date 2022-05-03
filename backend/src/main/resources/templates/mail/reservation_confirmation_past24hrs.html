@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="nl" xmlns:th="http://www.thymeleaf.org">
+<head>
+        <title th:text="${title}"></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    
+        <style>
+            @media all and (max-width: 599px) {
+                }
+    
+            main {
+                margin-top: 2em;
+                margin-bottom: 3em;
+            }
+    
+            footer {
+                margin-top: 1em;
+                font-family: 'Courier New', monospace;
+                font-size: 0.9em;
+            }
+
+            table, th, td {
+                border: 1px solid black;
+                border-collapse: collapse;
+            }
+        </style>
+</head>
+<body>
+    <main>
+        <p><i>English version below.</i></p>
+        <p>Beste student</p>
+        <p>Dit is een e-mail ter bevestiging van de reservaties die je vandaag hebt gemaakt. De volgende reservaties zijn aangemaakt:</p>
+        <table style="text-align: left">
+            <tr>
+                <th>Locatie</th>
+                <th>Tijdstip</th>
+            </tr>
+            <tr th:each="mailReservationDatum : ${mailReservationData}">
+                <td th:text="${mailReservationDatum.locationName}"></td>
+                <!-- <td th:text="${#dates.format(mailReservationDatum.time)}"></td>-->
+                <td th:text="${#temporals.format(mailReservationDatum.time, 'dd/MM/yyyy HH:mm')}"></td>
+            </tr>
+        </table>
+        <p>Verder willen we u aan de volgende zaken herinneren:</p>
+        <div th:each="locationInfo : ${locationInformation}" style="margin-bottom: 10px">
+            <div th:text="${locationInfo.locationName}" style="font-style: italic"></div>
+            <div th:utext="${locationInfo.locationReminderDutch}"></div>
+        </div>
+        <p>Het is mogelijk om tot 24 uur op voorhand een reservatie te annuleren zonder strafpunten te ontvangen.</p>
+        <p>Met vriendelijke groeten</p>
+        <p>Het Werk- en Studieplekken Team</p>
+        <p>Dit is een automatisch bericht. Als je niet de bedoelde ontvanger bent, of je hebt andere vragen of opmerking over dit bericht, gelieve te mailen naar info@studieplekken.ugent.be.</p>
+        <br>
+        <br>
+        <p>Dear student</p>
+        <p>This is a confirmation for the reservations you made today. The following reservations have been made:</p>
+        <table style="text-align: left">
+            <tr>
+                <th>Location</th>
+                <th>Time</th>
+            </tr>
+            <tr th:each="mailReservationDatum : ${mailReservationData}">
+                <td th:text="${mailReservationDatum.locationName}"></td>
+                <td th:text="${#temporals.format(mailReservationDatum.time, 'dd/MMM/YYYY HH:mm')}"></td>
+            </tr>
+        </table>
+        <p>We would also like to remind you of the following:</p>
+        <div th:each="locationInfo : ${locationInformation}" style="margin-bottom: 10px">
+            <div th:text="${locationInfo.locationName}" style="font-style: italic"></div>
+            <div th:utext="${locationInfo.locationReminderEnglish}"></div>
+        </div>
+        <p>It is possible to cancel a reservation up to 24hrs beforehand without receiving penalty points.</p>
+        <p>With kind regards</p>
+        <p>The Work and Study Rooms Team</p>
+        <p>This is an automated message. If you are not the intended recipient, or have other concerns about this message, please mail info@studieplekken.ugent.be.</p>
+    </main>
+</body>

@@ -12,6 +12,12 @@ export interface User {
   admin: boolean;
   userAuthorities: Authority[];
   userVolunteer: unknown[];
+  userSettings: UserSettings;
+}
+
+
+export class UserSettings {
+  receiveMailConfirmation: boolean;
 }
 
 export class UserConstructor {
@@ -26,7 +32,10 @@ export class UserConstructor {
       institution: '',
       admin: false,
       userAuthorities: [],
-      userVolunteer: []
+      userVolunteer: [],
+      userSettings: {
+        receiveMailConfirmation: false
+      }
     };
   }
 
@@ -45,7 +54,8 @@ export class UserConstructor {
       institution: obj.institution,
       admin: obj.admin,
       userAuthorities: obj.userAuthorities.map(v => AuthorityConstructor.newFromObj(v)),
-      userVolunteer: obj.userVolunteer
+      userVolunteer: obj.userVolunteer,
+      userSettings: obj.userSettings
     };
   }
 }
