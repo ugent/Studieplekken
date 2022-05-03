@@ -47,10 +47,10 @@ public class Location implements Cloneable {
     private String descriptionEnglish = "";
 
     @Column(name = "reminder_dutch")
-    private String reminderDutch;
+    private String reminderDutch = "";
 
     @Column(name = "reminder_english")
-    private String reminderEnglish;
+    private String reminderEnglish = "";
 
     @OneToOne
     @JoinColumn(name = "building_id", referencedColumnName = "building_id")
