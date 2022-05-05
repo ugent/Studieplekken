@@ -59,14 +59,6 @@ public class TestDBAccountDao extends BaseTest {
         Assert.assertEquals(expectedChangedUser, actualChangedUser);
     }
 
-    @Test(expected = DataAccessException.class)
-    public void updateUserToExistingMailTest() {
-        // change expectedChangedUser's mail to an existing mail, should fail
-        User updated = testUser1.clone();
-        updated.setMail(testUser2.getMail());
-        userDao.updateUser(updated);
-    }
-
     @Test
     public void accountExistsByEmailTest() {
         boolean exists = userDao.accountExistsByEmail(testUser1.getMail());
