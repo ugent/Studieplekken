@@ -190,11 +190,11 @@ public class ScheduledTasks {
         }
     }
 
-
-
-    // TODO(ydndonck): This runs at the exact same time as mailUnattendedStudents().
-    // Is this desirable so that these are sent out simultaneously or not to prevent server overload?
-    @Scheduled(cron = "0 0 21 * * *")
+    /**
+     * Scheduled task to be run every day at 21h30. This task fetches all made reservations at that day
+     * and sends a mail to all those students (cfr. resources/templates/mail/reservation_confirmation_past24hrs.html for the mail).
+     */
+    @Scheduled(cron = "0 30 21 * * *")
     public void sendReservationsPast24hrs() {
         // Gather all reservations from past 24hrs and group them by user.
         Map<User, List<MailReservationData>> usermap = new HashMap<>();
