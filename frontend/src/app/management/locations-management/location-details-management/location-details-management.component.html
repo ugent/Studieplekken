@@ -30,24 +30,31 @@
   </div>
 
   <!-- Description of the location -->
-
   <h2 class="full-screen">
     {{'management.locationDetails.description.title' | translate}}
   </h2>
   <hr />
+
   <!-- Body -->
   <app-location-description [location]="locationObs"></app-location-description>
 
 
+  <!-- Tags of the location -->
   <h2 class="full-screen">
     {{'management.locationDetails.tags.title' | translate}}
   </h2>
   <hr />
-  <!-- Tags of the location -->
 
   <!-- Body -->
   <app-location-tags-management [location]="locationObs"></app-location-tags-management>
 
+  <!-- Tags of the location -->
+  <h2 class="full-screen">
+    {{'management.locationDetails.reminder.title' | translate}}
+  </h2>
+  <hr />
+
+  <!-- Body -->
   <app-location-reminder [location]="locationObs"></app-location-reminder>
 
 </div>

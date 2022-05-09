@@ -416,8 +416,9 @@
         "error": "Er is iets mis gegaan tijdens het wijzigen van de status"
       },
       "reminder": {
-        "dutchReminder": "Herinnering in het nederlands",
-        "englishReminder": "Herinnering in het engels",
+        "title": "Extra sectie in mail naar student na reservatie",
+        "dutchReminder": "Herinnering in het Nederlands",
+        "englishReminder": "Herinnering in het Engels",
         "updateButton": "Update",
         "cancelButton": "Annuleer",
         "successUpdating": "Het updaten van de herinneringen is geslaagd.",
