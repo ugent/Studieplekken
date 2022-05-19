@@ -101,6 +101,10 @@ public class Location implements Cloneable {
 
     @JsonView(View.Detail.class)
     @Transient
+    private boolean openDuringEvening;
+
+    @JsonView(View.Detail.class)
+    @Transient
     private Optional<Timeslot> optionalNextUpcomingReservableTimeslot;
 
     public Location(int locationId, String name, int numberOfSeats, int numberOfLockers, String imageUrl,
@@ -374,6 +378,14 @@ public class Location implements Cloneable {
 
     public void setOpenDuringWeekend(boolean openDuringWeekend) {
         this.openDuringWeekend = openDuringWeekend;
+    }
+
+    public boolean isOpenDuringEvening() {
+        return openDuringEvening;
+    }
+
+    public void setOpenDuringEvening(boolean openDuringEvening) {
+        this.openDuringEvening = openDuringEvening;
     }
 
     public Optional<Timeslot> getOptionalNextUpcomingReservableTimeslot() {

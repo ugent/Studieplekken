@@ -76,6 +76,7 @@ public class StadGentLocation {
     private boolean tomorrowStillAvailable;
     private boolean openDuringWeek;
     private boolean openDuringWeekend;
+    private boolean openDuringEvening;
 
     @JsonProperty("tag_2")
     public String getAvailability() {
@@ -88,6 +89,9 @@ public class StadGentLocation {
         }
         if (openDuringWeekend) {
             tags.add("Weekend");
+        }
+        if (openDuringEvening) {
+            tags.add("'s Avonds");
         }
 
         return String.join(", ", tags);
@@ -152,7 +156,7 @@ public class StadGentLocation {
         return buildingName;
     }
 
-    public StadGentLocation(Integer id, String name, String teaserUrl, String adres, String postcode, String gemeente, Integer capacity, Integer reserved, boolean isReservable, boolean hasFutureTimeslots, String buildingName, String hours, Double lat, Double lng, String date, boolean tomorrowStillAvailable, boolean openDuringWeek, boolean openDuringWeekend, Optional<Timeslot> optionalNextUpcomingReservableTimeslot) {
+    public StadGentLocation(Integer id, String name, String teaserUrl, String adres, String postcode, String gemeente, Integer capacity, Integer reserved, boolean isReservable, boolean hasFutureTimeslots, String buildingName, String hours, Double lat, Double lng, String date, boolean tomorrowStillAvailable, boolean openDuringWeek, boolean openDuringWeekend, boolean openDuringEvening, Optional<Timeslot> optionalNextUpcomingReservableTimeslot) {
         this.id = id;
         this.name = name;
         this.teaserUrl = (teaserUrl == null || teaserUrl.trim().equals("")) ? getRandomUrl() : teaserUrl;
@@ -173,6 +177,7 @@ public class StadGentLocation {
         this.tomorrowStillAvailable = tomorrowStillAvailable;
         this.openDuringWeek = openDuringWeek;
         this.openDuringWeekend = openDuringWeekend;
+        this.openDuringEvening = openDuringEvening;
         this.optionalNextUpcomingReservableTimeslot = optionalNextUpcomingReservableTimeslot;
     }
 
@@ -221,6 +226,7 @@ public class StadGentLocation {
                     loc.isTomorrowStillAvailable(),
                     loc.isOpenDuringWeek(),
                     loc.isOpenDuringWeekend(),
+                    loc.isOpenDuringEvening(),
                     loc.getOptionalNextUpcomingReservableTimeslot()
             );
 
