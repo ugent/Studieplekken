@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.IsoFields;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
@@ -145,6 +146,7 @@ public class LocationService implements ILocationDao {
         location.setTomorrowStillAvailable(timeslotsOfLocation.stream().filter(timeslot -> timeslot.timeslotDate().isEqual(LocalDate.now().plusDays(1))).anyMatch(timeslot -> timeslot.getAmountOfReservations() < timeslot.getSeatCount()));
         location.setOpenDuringWeek(timeslotsOfLocation.stream().filter(timeslot -> timeslot.timeslotDate().isAfter(date) && timeslot.timeslotDate().isBefore(date.plusDays(8))).anyMatch(timeslot -> timeslot.timeslotDate().getDayOfWeek() != DayOfWeek.SATURDAY && timeslot.timeslotDate().getDayOfWeek() != DayOfWeek.SUNDAY));
         location.setOpenDuringWeekend(timeslotsOfLocation.stream().filter(timeslot -> timeslot.timeslotDate().isAfter(date) && timeslot.timeslotDate().isBefore(date.plusDays(8))).anyMatch(timeslot -> timeslot.timeslotDate().getDayOfWeek() == DayOfWeek.SATURDAY || timeslot.timeslotDate().getDayOfWeek() == DayOfWeek.SUNDAY));
+        location.setOpenDuringEvening(timeslotsOfLocation.stream().filter(timeslot -> timeslot.timeslotDate().isAfter(date) && timeslot.timeslotDate().isBefore(date.plusDays(8))).anyMatch(timeslot -> !timeslot.getClosingHour().isBefore(LocalTime.of(20, 0))));
         location.setOptionalNextUpcomingReservableTimeslot(timeslotsOfLocation.stream().filter(timeslot -> timeslot.isReservable() && timeslot.getReservableFrom().isAfter(LocalDateTime.now())).min(Comparator.comparing(Timeslot::timeslotDate)));
     }
 }
