@@ -1,5 +1,5 @@
 <div class="container-fluid">
-  <div class="text-center" fxLayout="row nowrap" fxLayoutAlign="space-between">
+  <div class="text-center nav-buttons" fxLayout="row nowrap" fxLayoutAlign="space-between">
     <!-- Navigation -->
     <div fxLayout={{getWrapLayout()}} class={{getWrapMargin()}}>
       <!-- Previous -->
@@ -23,13 +23,14 @@
       </div>
     </div>
 
+    <br>
     <!-- Title -->
-    <div class="col-md-4">
+    <div class={{getWrapMargin()}}>
       <h1>{{ viewDate | calendarDate:(view + 'ViewTitle'): currentLang: 1 }}</h1>
     </div>
 
     <!-- Types of view -->
-    <div *ngIf="!isMobile" fxLayout={{getWrapLayout()}}>
+    <div fxLayout={{getWrapLayout()}} class={{getWrapMargin()}}>
       <div>
         <div class="button btn-left" [class.button-secondary]="view != CalendarView.Month" [class.button-primary]="view == CalendarView.Month" (click)="setView(CalendarView.Month)"
           [class.active]="view === CalendarView.Month">
