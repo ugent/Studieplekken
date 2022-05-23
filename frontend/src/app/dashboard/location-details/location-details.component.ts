@@ -15,27 +15,18 @@ import {
 } from 'src/app/services/functionality/application-type/application-type-functionality.service';
 import { TimeslotCalendarEventService } from 'src/app/services/timeslots/timeslot-calendar-event/timeslot-calendar-event.service';
 import { LocationReservation, LocationReservationState } from 'src/app/shared/model/LocationReservation';
-import {
-  includesTimeslot,
-  Timeslot,
-  timeslotEquals,
-} from 'src/app/shared/model/Timeslot';
+import { Timeslot, timeslotEquals, } from 'src/app/shared/model/Timeslot';
 import { BreadcrumbService } from 'src/app/stad-gent-components/header/breadcrumbs/breadcrumb.service';
-import {
-  defaultTeaserImages,
-  LocationStatus,
-  msToShowFeedback
-} from '../../app.constants';
+import { defaultTeaserImages, LocationStatus } from '../../app.constants';
 import { TimeslotsService } from '../../services/api/calendar-periods/timeslot.service';
 import { LocationService } from '../../services/api/locations/location.service';
 import { Pair } from '../../shared/model/helpers/Pair';
 import { Location } from '../../shared/model/Location';
 import { LocationTag } from '../../shared/model/LocationTag';
-import { Moment } from 'moment';
 import * as Leaf from 'leaflet';
 import { LoginRedirectService } from 'src/app/services/authentication/login-redirect.service';
 import { catchError, tap } from 'rxjs/operators';
-import {CalendarEvent} from 'angular-calendar';
+import { CalendarEvent } from 'angular-calendar';
 
 // Leaflet stuff.
 const iconRetinaUrl = './assets/marker-icon-2x.png';
@@ -257,7 +248,8 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     }*/
 
     const timeslotIsSelected = this.selectedSubject.value.some((r) =>
-      timeslotEquals(r.timeslot, reservation.timeslot) && r.state != LocationReservationState.DELETED && r.state != LocationReservationState.REJECTED
+      timeslotEquals(r.timeslot, reservation.timeslot) && r.state !== LocationReservationState.DELETED &&
+      r.state !== LocationReservationState.REJECTED
     );
 
     // if it is full and you don't have this reservation yet, unselect
@@ -269,12 +261,19 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
       return;
     }
 
-    this.isModified = true;
-
     const oldReservation = this.originalList.find(t => t.timeslot.timeslotSequenceNumber === currentTimeslot.timeslotSequenceNumber);
 
-    if (!timeslotIsSelected && oldReservation && (oldReservation.state === LocationReservationState.REJECTED || oldReservation.state == LocationReservationState.DELETED)) { // If it was rejected, allow to try again
-      const nextval = [...this.selectedSubject.value.filter(o => o !== oldReservation && o.timeslot.timeslotSequenceNumber !== oldReservation.timeslot.timeslotSequenceNumber), reservation];
+    if (timeslotIsSelected && oldReservation.state === LocationReservationState.PRESENT) {
+      // If user is already scanned as present, do not allow to unselect.
+      return;
+    }
+
+    this.isModified = true;
+
+    if (!timeslotIsSelected && oldReservation && (oldReservation.state === LocationReservationState.REJECTED
+      || oldReservation.state === LocationReservationState.DELETED)) { // If it was rejected, allow to try again
+      const nextval = [...this.selectedSubject.value.filter(o => o !== oldReservation
+        && o.timeslot.timeslotSequenceNumber !== oldReservation.timeslot.timeslotSequenceNumber), reservation];
       this.selectedSubject.next(nextval);
     } else if (timeslotIsSelected) { // If it's already selected, unselect
       const nextval = this.selectedSubject.value.filter(

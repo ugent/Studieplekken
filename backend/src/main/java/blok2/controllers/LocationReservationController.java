@@ -111,6 +111,12 @@ public class LocationReservationController extends AuthorizedLocationController 
         if (closingHour.isBefore(LocalDateTime.now())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The timeslot has already been closed.");
         }
+        // Throw exception back if user is already scanned as present.
+        if (!dbLocationReservation.getUser().getUserId().equals(user.getUserId())) {
+            if (dbLocationReservation.getStateE() == LocationReservation.State.PRESENT) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The user is already scanned as present for this timeslot.");
+            }
+        }
 
         locationReservationDao.deleteLocationReservation(dbLocationReservation);
         logger.info(String.format("LocationReservation for user %s at time %s deleted", dbLocationReservation.getUser(), dbLocationReservation.getTimeslot().toString()));
