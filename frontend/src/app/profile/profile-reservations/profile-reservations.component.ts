@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, TemplateRef } from '@angular/core';
+import { Component, Input, OnInit, TemplateRef } from '@angular/core';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 import { LocationReservationsService } from '../../services/api/location-reservations/location-reservations.service';
 import { LocationReservation, LocationReservationState } from '../../shared/model/LocationReservation';
@@ -7,7 +7,6 @@ import * as moment from 'moment';
 import { User } from '../../shared/model/User';
 import { Observable } from 'rxjs';
 import { LocationService } from 'src/app/services/api/locations/location.service';
-import { Location } from 'src/app/shared/model/Location';
 import { map } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { TableDataService } from 'src/app/stad-gent-components/atoms/table/data-service/table-data-service.service';
@@ -18,7 +17,7 @@ import { TabularData } from 'src/app/stad-gent-components/atoms/table/tabular-da
   templateUrl: './profile-reservations.component.html',
   styleUrls: ['./profile-reservations.component.scss'],
 })
-export class ProfileReservationsComponent implements OnChanges {
+export class ProfileReservationsComponent implements OnInit {
   @Input() userObj?: User;
 
   locationReservations: LocationReservation[] = [];
@@ -37,7 +36,7 @@ export class ProfileReservationsComponent implements OnChanges {
   ) {
   }
 
-  ngOnChanges(): void {
+  ngOnInit(): void {
     this.setup();
   }
 
@@ -68,7 +67,7 @@ export class ProfileReservationsComponent implements OnChanges {
   ): void {
     this.successDeletingLocationReservation = undefined;
     this.locationReservationToDelete = locationReservation;
-    this.modalService.open(template, { panelClass: ["cs--cyan", "bigmodal"] });
+    this.modalService.open(template, { panelClass: ['cs--cyan', 'bigmodal'] });
   }
 
   deleteLocationReservation(): void {
@@ -92,16 +91,16 @@ export class ProfileReservationsComponent implements OnChanges {
   // *******************/
 
   getBeginHour(timeslot: Timeslot): string {
-    return timeslot.openingHour.format("HH:mm");
+    return timeslot.openingHour.format('HH:mm');
   }
 
   // TODO(ydndonck): What is this? Should be double checked.
   needTooltip(
     reservation: LocationReservation,
   ): boolean {
-    return  reservation.timeslot.isInPast() &&
-            reservation.timeslot.reservable &&
-            reservation.state === LocationReservationState.APPROVED;
+    return reservation.timeslot.isInPast() &&
+      reservation.timeslot.reservable &&
+      reservation.state === LocationReservationState.APPROVED;
   }
 
   canDeleteReservation(
@@ -135,7 +134,7 @@ export class ProfileReservationsComponent implements OnChanges {
       if (reservation.state === LocationReservationState.APPROVED) {
         return 'profile.reservations.locations.table.attended.notScanned';
       } else {
-        return (reservation.state == LocationReservationState.PRESENT)
+        return (reservation.state === LocationReservationState.PRESENT)
           ? 'profile.reservations.locations.table.attended.yes'
           : 'profile.reservations.locations.table.attended.no';
       }
@@ -151,8 +150,7 @@ export class ProfileReservationsComponent implements OnChanges {
     this.modalService.closeAll();
   }
 
-  locationReservationsAndCalendarPeriodsObservable(
-  ): Observable<LocationReservation[]> {
+  locationReservationsAndCalendarPeriodsObservable(): Observable<LocationReservation[]> {
     if (this.userObj === undefined) {
       return this.authenticationService
         .getLocationReservations();
@@ -166,8 +164,8 @@ export class ProfileReservationsComponent implements OnChanges {
     return this.locationService.getLocation(locationReservation.timeslot.locationId).pipe(map(l => l.name));
   }
 
-  sortedLocationReservations(lres: LocationReservation[]) {
-    return Array.from(lres).sort((a, b) => a.timeslot.getStartMoment().isBefore(b.timeslot.getStartMoment()) ? 1:-1);
+  sortedLocationReservations(lres: LocationReservation[]): Array<LocationReservation> {
+    return Array.from(lres).sort((a, b) => a.timeslot.getStartMoment().isBefore(b.timeslot.getStartMoment()) ? 1 : -1);
   }
 
   getTabularData(locationReservations: LocationReservation[]): Observable<TabularData<LocationReservation>> {

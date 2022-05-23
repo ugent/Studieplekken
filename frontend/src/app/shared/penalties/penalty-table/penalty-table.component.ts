@@ -16,28 +16,31 @@ export class PenaltyTableComponent implements OnInit {
 
   @Output() onDelete: EventEmitter<Penalty> = new EventEmitter();
 
-  constructor(private penaltyService: PenaltyService) { }
+  constructor(private penaltyService: PenaltyService) {
+  }
 
   ngOnInit(): void {
+    console.log('here', this.penalties);
   }
 
   getIssuedBy(penalty: Penalty) {
-    if(!penalty.issuer)
-      return "profile.penalties.table.system"
-
-    else
-      return penalty.issuer.firstName + " " + penalty.issuer.lastName
+    if (!penalty.issuer) {
+      return 'profile.penalties.table.system';
+    } else {
+      return penalty.issuer.firstName + ' ' + penalty.issuer.lastName;
+    }
   }
 
   getPenaltyDescription(penalty: Penalty) {
-    if(penalty.penaltyClass === "custom")
+    if (penalty.penaltyClass === 'custom') {
       return penalty.description;
+    }
 
-      return penalty.penaltyClass
+    return penalty.penaltyClass;
   }
 
   getDesignee(penalty: Penalty) {
-      return penalty.designee.firstName + " " + penalty.designee.lastName
+    return penalty.designee.firstName + ' ' + penalty.designee.lastName;
   }
 
   delete(penalty: Penalty) {
