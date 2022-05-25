@@ -156,7 +156,7 @@ public class LocationReservationService implements ILocationReservationDao {
     @Override
     @Transactional
     public boolean setReservationAttendance(String userId, Timeslot timeslot, boolean attendance) {
-        LocationReservation.State state = attendance? LocationReservation.State.PRESENT : LocationReservation.State.ABSENT;
+        LocationReservation.State state = attendance ? LocationReservation.State.PRESENT : LocationReservation.State.ABSENT;
         return setReservationState(userId, timeslot, state);
     }
 
@@ -196,6 +196,7 @@ public class LocationReservationService implements ILocationReservationDao {
         locationReservations.forEach((LocationReservation lr) -> {
             lr.setState(LocationReservation.State.ABSENT);
             lr.getTimeslot().decrementAmountOfReservations();
+            this.penaltyService.notifyOfReservationAttendance(lr);
         });
         
         locationReservationRepository.saveAll(locationReservations);
