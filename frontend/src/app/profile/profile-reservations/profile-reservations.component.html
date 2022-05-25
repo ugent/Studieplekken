@@ -1,6 +1,6 @@
 <div class="container-fluid">
   <!-- Title -->
-  <h3 *ngIf="userObj === undefined; else managementTitle">
+  <h3 *ngIf="user === undefined; else managementTitle">
     {{'profile.reservations.locations.title' | translate}}
   </h3>
 
@@ -25,7 +25,7 @@
 </div>
 
 <ng-template #noReservations>
-  <div *ngIf="userObj === undefined; else noReservationsInManagement" class="messages messages--info">
+  <div *ngIf="user === undefined; else noReservationsInManagement" class="messages messages--info">
     {{'profile.reservations.locations.zeroReservations' | translate}}
   </div>
 </ng-template>
@@ -33,7 +33,7 @@
 <ng-template #noReservationsInManagement>
   <div class="messages messages--info">
     {{('profile.reservations.locations.zeroReservationsInManagement' | translate)
-    .replace('{name}', userObj.firstName + ' ' + userObj.lastName)}}
+    .replace('{name}', user.firstName + ' ' + user.lastName)}}
   </div>
 </ng-template>
 
@@ -54,8 +54,8 @@
         <ul>
           <!-- If ProfileReservationsComponent is used in the UserDetailsManagementComponent, you also want the name
              of the user of which you are deleting the LocationReservation -->
-          <li *ngIf="userObj"><b style="margin-right: 5px"><i>{{('profile.reservations.locations.table.header.user' |
-                translate) + ': '}}</i></b>{{userObj.firstName + ' ' + userObj.lastName}}</li>
+          <li *ngIf="user"><b style="margin-right: 5px"><i>{{('profile.reservations.locations.table.header.user' |
+                translate) + ': '}}</i></b>{{user.firstName + ' ' + user.lastName}}</li>
           <li><b style="margin-right: 5px"><i>{{('profile.reservations.locations.table.header.locationName' | translate)
                 +
                 ': '}}</i></b>{{locationName}}</li>
@@ -63,8 +63,7 @@
                 translate) + ': '}}</i></b>{{locationReservationToDelete.timeslot.timeslotDate.format("DD/MM/YYYY")}}
           </li>
           <li><b style="margin-right: 5px"><i>{{('profile.reservations.locations.table.header.beginHour' | translate) +
-                ':
-                '}}</i></b>{{locationReservationToDelete.timeslot.getStartMoment().format("HH:mm")}}</li>
+                ':'}}</i></b>{{locationReservationToDelete.timeslot.getStartMoment().format("HH:mm")}}</li>
         </ul>
       </div>
     </div>
@@ -101,7 +100,7 @@
 
 <ng-template #managementTitle>
   <h3>{{('management.users.userDetails.reservations.title' | translate)
-    .replace('{name}', userObj.firstName + ' ' + userObj.lastName)}}</h3>
+    .replace('{name}', user.firstName + ' ' + user.lastName)}}</h3>
 </ng-template>
 
 <ng-template #emptyTableData>
@@ -109,3 +108,4 @@
     <span></span>
   </td>
 </ng-template>
+</div>
