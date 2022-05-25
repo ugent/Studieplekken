@@ -43,7 +43,7 @@
     "supervisor": "Supervisor"
   },
   "dashboard": {
-    "penaltyWarning": "This location uses penalty points! Please refer to the information page for more details.",
+    "penaltyWarning": "This location uses penalty points! Please refer to the <a href=\"/information\">information page</a> for more details.",
     "alert": {
       "title": "[FRIDAY DECEMBER 11th, RESERVATIONS AT DIFFERENT TIMES]",
       "p1": "Reservations will take place at 19:00, 19:30 and 20:00 depending on the location. Be sure to check in advance when the reservations will open (see symbol).",

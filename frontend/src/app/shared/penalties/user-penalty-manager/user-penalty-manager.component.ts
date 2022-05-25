@@ -24,7 +24,7 @@ export class UserPenaltyManagerComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(): void {
-    if (this.user) {
+    if (this.user && this.user.userId) {
       this.penalties = this.penaltiesService.getPenaltiesOfUserById(this.user.userId);
     }
   }

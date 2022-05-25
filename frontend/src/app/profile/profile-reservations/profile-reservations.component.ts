@@ -18,7 +18,8 @@ import { TabularData } from 'src/app/stad-gent-components/atoms/table/tabular-da
   styleUrls: ['./profile-reservations.component.scss'],
 })
 export class ProfileReservationsComponent implements OnInit {
-  @Input() userObj?: User;
+  @Input() userObs?: Observable<User>;
+  user: User;
 
   locationReservations: LocationReservation[] = [];
 
@@ -37,7 +38,16 @@ export class ProfileReservationsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.setup();
+    if (this.userObs) {
+      this.userObs.subscribe((next) => {
+        if (next.userId) {
+          this.user = next;
+          this.setup();
+        }
+      });
+    } else {
+      this.setup();
+    }
   }
 
   setup(): void {
@@ -45,7 +55,6 @@ export class ProfileReservationsComponent implements OnInit {
     if (!this.authenticationService.isLoggedIn()) {
       return;
     }
-
     // let the user know that the location reservations are loading
     this.successGettingLocationReservations = null;
 
@@ -151,12 +160,12 @@ export class ProfileReservationsComponent implements OnInit {
   }
 
   locationReservationsAndCalendarPeriodsObservable(): Observable<LocationReservation[]> {
-    if (this.userObj === undefined) {
+    if (this.user === undefined) {
       return this.authenticationService
         .getLocationReservations();
     } else {
       return this.locationReservationService
-        .getLocationReservationsOfUser(this.userObj.userId);
+        .getLocationReservationsOfUser(this.user.userId);
     }
   }
 

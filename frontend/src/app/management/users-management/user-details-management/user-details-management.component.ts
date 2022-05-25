@@ -15,7 +15,6 @@ import { map } from 'rxjs/operators';
 })
 export class UserDetailsManagementComponent implements OnInit {
   userObs: Observable<User> = this.userDetailsService.userObs;
-  penaltyObservable: Observable<{ penalties: PenaltyList; points: number }>;
 
   userQueryingError: boolean = undefined;
   userId: string;
@@ -28,15 +27,12 @@ export class UserDetailsManagementComponent implements OnInit {
     private route: ActivatedRoute,
     private functionalityService: ApplicationTypeFunctionalityService,
     private authenticationService: AuthenticationService,
-    private penaltiesService: PenaltyService
   ) {}
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     this.userId = id;
     this.userDetailsService.loadUser(id);
-
-    this.penaltyObservable = this.penaltiesService.getPenaltiesOfUserById(this.userId).pipe(map(p => ({points: 1, penalties: p})));
 
     this.userObs.subscribe(
       () => {
@@ -54,9 +50,5 @@ export class UserDetailsManagementComponent implements OnInit {
     this.authenticationService.user.subscribe((next) => {
       this.showRolesManagement = next.admin;
     });
-  }
-
-  onPenaltyDelete(): void {
-    this.penaltyObservable = this.penaltiesService.getPenaltiesOfUserById(this.userId).pipe(map(p => ({points: 1, penalties: p})));
   }
 }

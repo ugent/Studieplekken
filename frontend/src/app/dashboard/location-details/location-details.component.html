@@ -77,7 +77,7 @@
         </div>
 
         <div class="messages messages--warning" *ngIf="location.usesPenaltyPoints">
-          {{"dashboard.penaltyWarning" | translate}}
+          <p [innerHTML]="'dashboard.penaltyWarning' | translate"></p>
         </div>
 
         <div class="messages messages--warning" *ngIf="showUgentWarning(location)">

@@ -7,7 +7,7 @@ import { Penalty } from '../../model/Penalty';
   templateUrl: './penalty-table.component.html',
   styleUrls: ['./penalty-table.component.scss']
 })
-export class PenaltyTableComponent implements OnInit {
+export class PenaltyTableComponent {
 
   @Input() penalties: PenaltyList;
   @Input() showDesignee = false;
@@ -19,11 +19,7 @@ export class PenaltyTableComponent implements OnInit {
   constructor(private penaltyService: PenaltyService) {
   }
 
-  ngOnInit(): void {
-    console.log('here', this.penalties);
-  }
-
-  getIssuedBy(penalty: Penalty) {
+  getIssuedBy(penalty: Penalty): string {
     if (!penalty.issuer) {
       return 'profile.penalties.table.system';
     } else {
@@ -31,7 +27,7 @@ export class PenaltyTableComponent implements OnInit {
     }
   }
 
-  getPenaltyDescription(penalty: Penalty) {
+  getPenaltyDescription(penalty: Penalty): string {
     if (penalty.penaltyClass === 'custom') {
       return penalty.description;
     }
@@ -39,14 +35,14 @@ export class PenaltyTableComponent implements OnInit {
     return penalty.penaltyClass;
   }
 
-  getDesignee(penalty: Penalty) {
+  getDesignee(penalty: Penalty): string {
     return penalty.designee.firstName + ' ' + penalty.designee.lastName;
   }
 
-  delete(penalty: Penalty) {
+  delete(penalty: Penalty): void {
     this.penaltyService.deletePenalty(penalty).subscribe(
       () => this.onDelete.emit(penalty)
-    )
+    );
   }
 
 }

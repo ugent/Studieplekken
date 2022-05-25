@@ -37,17 +37,20 @@ public class LocationReservationService implements ILocationReservationDao {
 
     private final DBLocationReservationDao locationReservationDao;
     private final PenaltyService penaltyService;
+    private final LocationService locationService;
 
     @Autowired
     public LocationReservationService(LocationReservationRepository locationReservationRepository,
                                       UserRepository userRepository,
                                       ReservationManager reservationManager, DBLocationReservationDao locationReservationDao,
-                                      PenaltyService pService) {
+                                      PenaltyService pService,
+                                      LocationService locationService) {
         this.locationReservationRepository = locationReservationRepository;
         this.userRepository = userRepository;
         this.reservationManager = reservationManager;
         this.locationReservationDao = locationReservationDao;
         this.penaltyService = pService;
+        this.locationService = locationService;
     }
 
     @Override
@@ -148,7 +151,9 @@ public class LocationReservationService implements ILocationReservationDao {
             logger.error("The current locationreservation can't be changed to state " + state.name() + ". Details: " + locationReservation);
             throw e;
         }
-        this.penaltyService.notifyOfReservationAttendance(locationReservation);
+        if (locationService.getLocationById(timeslot.getLocationId()).isUsesPenaltyPoints()) {
+            this.penaltyService.notifyOfReservationAttendance(locationReservation);
+        }
 
         return locationReservation.getStateE() == state;
     }
@@ -156,7 +161,7 @@ public class LocationReservationService implements ILocationReservationDao {
     @Override
     @Transactional
     public boolean setReservationAttendance(String userId, Timeslot timeslot, boolean attendance) {
-        LocationReservation.State state = attendance? LocationReservation.State.PRESENT : LocationReservation.State.ABSENT;
+        LocationReservation.State state = attendance ? LocationReservation.State.PRESENT : LocationReservation.State.ABSENT;
         return setReservationState(userId, timeslot, state);
     }
 
@@ -191,11 +196,16 @@ public class LocationReservationService implements ILocationReservationDao {
                 timeslot.getTimeslotSeqnr()
         );
 
+        boolean usesPenaltyPoints = locationService.getLocationById(timeslot.getLocationId()).isUsesPenaltyPoints();
+
         // for each unattended reservation, set the attendance to false and decrement the reservation count
         // so that other students are able to make use of the freed spot
         locationReservations.forEach((LocationReservation lr) -> {
             lr.setState(LocationReservation.State.ABSENT);
             lr.getTimeslot().decrementAmountOfReservations();
+            if (usesPenaltyPoints) {
+                this.penaltyService.notifyOfReservationAttendance(lr);
+            }
         });
         
         locationReservationRepository.saveAll(locationReservations);
