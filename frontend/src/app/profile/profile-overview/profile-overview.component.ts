@@ -64,16 +64,15 @@ export class ProfileOverviewComponent implements OnInit {
       confirmPassword: user.password,
     });
     this.settingsFormGroup.setValue({
-      receiveMailConfirmation: user.userSettings.receiveMailConfirmation      
+      receiveMailConfirmation: user.userSettings.receiveMailConfirmation
     });
-    this.settingsFormGroup.valueChanges.subscribe((newSettings : UserSettings) => {
+    this.settingsFormGroup.valueChanges.subscribe((newSettings: UserSettings) => {
       this.saveUserSettings(newSettings);
     });
   }
 
-  saveUserSettings(userSettings: UserSettings) {
-    console.log(userSettings);
-    this.userService.updateUserSettings(this.formGroup.get("userId").value, userSettings);
+  saveUserSettings(userSettings: UserSettings): void {
+    this.userService.updateUserSettings(this.formGroup.get('userId').value, userSettings);
   }
 
 }

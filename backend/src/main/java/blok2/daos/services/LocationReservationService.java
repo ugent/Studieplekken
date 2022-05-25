@@ -84,8 +84,8 @@ public class LocationReservationService implements ILocationReservationDao {
     @Override
     public List<LocationReservation> getReservationCreatedToday() {
         LocalDate yesterday = LocalDate.now().minusDays(1);
-        LocalDateTime yesterday21PM = LocalDateTime.of(yesterday, LocalTime.of(21, 0));
-        return locationReservationRepository.findAllCreatedAfterDateTime(yesterday21PM);
+        LocalDateTime yesterday21_30PM = LocalDateTime.of(yesterday, LocalTime.of(21, 30));
+        return locationReservationRepository.findAllCreatedAfterDateTime(yesterday21_30PM);
     }
 
     @Override

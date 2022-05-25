@@ -64,15 +64,10 @@ export class UserService {
   }
 
   updateUserSettings(userId: string, userSettings: UserSettings): Observable<void> {
-    console.log(userId);
-    console.log(userSettings);
-    const a = this.http.put<void>(
+    return this.http.put<void>(
       api.updateUserSettings.replace('{userId}', btoa(userId)),
       userSettings
     );
-      a.subscribe(thing => console.log(thing));
-
-    return a;
   }
 
   hasUserAuthorities(userId: string): Observable<boolean> {

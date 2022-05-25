@@ -415,8 +415,9 @@
         "loading": "Waiting for response of server",
         "success": "Successfully updated the locker's status",
         "error": "Something went wrong while updating the locker's status"
-      }, 
+      },
       "reminder": {
+        "title": "Extra section in mail to student after reservation",
         "dutchReminder": "Reminder in Dutch",
         "englishReminder": "Reminder in English",
         "updateButton": "Update",
