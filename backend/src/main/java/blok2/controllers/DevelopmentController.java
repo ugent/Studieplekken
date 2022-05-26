@@ -27,12 +27,10 @@ import java.util.Map;
 public class DevelopmentController {
 
     private final CustomUserDetailsService customUserDetailsService;
-    private final ScheduledTasks scheduledTasks;
 
     @Autowired
-    public DevelopmentController(CustomUserDetailsService customUserDetailsService, ScheduledTasks scheduledTasks) {
+    public DevelopmentController(CustomUserDetailsService customUserDetailsService) {
         this.customUserDetailsService = customUserDetailsService;
-        this.scheduledTasks = scheduledTasks;
     }
 
     /**
