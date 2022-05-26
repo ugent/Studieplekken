@@ -34,8 +34,10 @@ CREATE TRIGGER create_user_settings_trigger
     FOR EACH ROW
     EXECUTE PROCEDURE f_create_user_settings();
 
+ALTER TABLE LOCATIONS DROP COLUMN IF EXISTS reminder_dutch;
 ALTER TABLE LOCATIONS
     ADD reminder_dutch      TEXT    NOT NULL    DEFAULT '';
 
+ALTER TABLE LOCATIONS DROP COLUMN IF EXISTS reminder_english;
 ALTER TABLE LOCATIONS
     ADD reminder_english    TEXT    NOT NULL    DEFAULT '';

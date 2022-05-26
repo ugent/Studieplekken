@@ -409,22 +409,6 @@ public class Location implements Cloneable {
         this.optionalNextUpcomingReservableTimeslot = optionalNextUpcomingReservableTimeslot;
     }
 
-    public String getReminderDutch() {
-        return reminderDutch;
-    }
-
-    public void setReminderDutch(String reminderDutch) {
-        this.reminderDutch = reminderDutch;
-    }
-
-    public String getReminderEnglish() {
-        return reminderEnglish;
-    }
-
-    public void setReminderEnglish(String reminderEnglish) {
-        this.reminderEnglish = reminderEnglish;
-    }
-
     //</editor-fold>
 
 }

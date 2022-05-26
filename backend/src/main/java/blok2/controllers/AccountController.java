@@ -202,8 +202,7 @@ public class AccountController extends AuthorizedController {
             old = userDao.getUserByIdAndInstitution(userId, authenticatedUser.getInstitution());
         }
         userSettings.setUserId(old.getUserId());
-        old.setUserSettings(userSettings);
-        userDao.updateUser(old);
+        userDao.updateUserSettings(userSettings);
         logger.info(String.format("Updated user settings %s to %s", userId, userSettings));
     }
 

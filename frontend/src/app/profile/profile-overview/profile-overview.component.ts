@@ -72,7 +72,7 @@ export class ProfileOverviewComponent implements OnInit {
   }
 
   saveUserSettings(userSettings: UserSettings): void {
-    this.userService.updateUserSettings(this.formGroup.get('userId').value, userSettings);
+    this.userService.updateUserSettings(this.formGroup.get('userId').value, userSettings).subscribe();
   }
 
 }

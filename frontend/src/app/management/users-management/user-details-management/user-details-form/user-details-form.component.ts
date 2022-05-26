@@ -1,10 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { User } from '../../../../shared/model/User';
+import { User, UserSettings } from '../../../../shared/model/User';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApplicationTypeFunctionalityService } from '../../../../services/functionality/application-type/application-type-functionality.service';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { environment } from 'src/environments/environment';
+import { UserService } from 'src/app/services/api/users/user.service';
 
 @Component({
   selector: 'app-user-details-form',
@@ -24,16 +25,21 @@ export class UserDetailsFormComponent implements OnInit {
     penaltyPoints: new FormControl(''),
     institution: new FormControl(''),
   });
+  settingsFormGroup: FormGroup = new FormGroup({
+    receiveMailConfirmation: new FormControl({value: true, disabled: false})
+  });
 
   showPenaltyPoints: boolean;
 
   constructor(
     private functionalityService: ApplicationTypeFunctionalityService,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
     this.formGroup.disable();
+    this.settingsFormGroup.disable();
 
     this.userObs.subscribe((next) => {
       this.setup(next);
@@ -54,6 +60,18 @@ export class UserDetailsFormComponent implements OnInit {
     });
     this.formGroup.disable();
 
+    this.settingsFormGroup.setValue({
+      receiveMailConfirmation: user.userSettings.receiveMailConfirmation
+    });
+    // NOTE(ydndonck): This update functionality will never get triggered if the form is disabled.
+    // But leaving it implemented here in case it is wanted in the future that admins can edit user
+    // settings through this UI.
+    this.settingsFormGroup.valueChanges.subscribe((newSettings: UserSettings) => {
+      this.saveUserSettings(newSettings);
+    });
+    this.settingsFormGroup.disable();
+
+
     this.userQueryingError = false;
   }
 
@@ -64,4 +82,9 @@ export class UserDetailsFormComponent implements OnInit {
   impersonate(user): void {
     this.authenticationService.substituteLogin(user.mail);
   }
+
+  saveUserSettings(userSettings: UserSettings): void {
+    this.userService.updateUserSettings(this.formGroup.get('id').value, userSettings);
+  }
+
 }
