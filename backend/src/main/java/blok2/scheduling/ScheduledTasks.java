@@ -70,7 +70,7 @@ public class ScheduledTasks {
      * applications.properties), then you'll need to be connected with an UGent network. Either directly or
      * with VPN.
      */
-    @Scheduled(cron = "0 0 6 * * MON")
+    // @Scheduled(cron = "0 0 6 * * MON")
     public void weeklyOpeningHoursMailing() {
         logger.info(String.format("Running scheduled task weeklyOpeningHoursMailing() with recipients %s",
                 Arrays.toString(recipients)));
@@ -104,7 +104,7 @@ public class ScheduledTasks {
      * Scheduled task to be run every day at 21h00. This task fetches all unattended reservations for that day
      * and sends a mail to all unattended students (cfr. resources/templates/mail/not_attended.html for the mail).
      */
-    @Scheduled(cron = "0 0 21 * * *")
+    // @Scheduled(cron = "0 0 21 * * *")
     public void mailToUnattendedStudents() {
         List<LocationReservation> reservations =
                 locationReservationDao.getUnattendedLocationReservations(LocalDate.now());
@@ -149,7 +149,7 @@ public class ScheduledTasks {
      * Scheduled task to be run every sunday at 10h00. This task fetches all students that have made at least one
      * reservation for next week and send them a reminder mail.
      */
-    @Scheduled(cron = "0 0 10 * * SUN")
+    // @Scheduled(cron = "0 0 10 * * SUN")
     public void mailReminderToStudentsWithReservation() {
         LocalDate tomorrow = LocalDate.now().plusDays(1);
         LocalDate tomorrowPlus7 = tomorrow.plusDays(7);
