@@ -19,7 +19,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import blok2.helpers.authorization.AuthorizedLocationController;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.constraints.Pattern;

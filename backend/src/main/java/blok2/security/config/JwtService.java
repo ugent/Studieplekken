@@ -33,6 +33,7 @@ public class JwtService {
             return isNotOutOfDate(claims);
 
         } catch (JwtException ex) {
+            ex.printStackTrace();
             return false;
         }
     }

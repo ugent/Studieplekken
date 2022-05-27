@@ -2,7 +2,6 @@ package blok2.scheduling;
 
 import blok2.daos.ILocationDao;
 import blok2.daos.ILocationReservationDao;
-import blok2.daos.IUserDao;
 import blok2.mail.MailReservationData;
 import blok2.mail.MailService;
 import blok2.model.reservables.Location;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Component;
 import javax.mail.MessagingException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.temporal.IsoFields;
 import java.util.*;
 
@@ -31,7 +29,6 @@ public class ScheduledTasks {
     private final MailService mailService;
     private final ILocationDao locationDao;
     private final ReservationManager reservationManager;
-    private final IUserDao userDao;
 
     private final String[] recipients;
 
@@ -39,31 +36,30 @@ public class ScheduledTasks {
 
     @Autowired
     public ScheduledTasks(ILocationReservationDao locationReservationDao, ILocationDao locationDao,
-                          MailService mailService, Environment env, ReservationManager reservationManager, IUserDao userDao) {
+                          MailService mailService, Environment env, ReservationManager reservationManager) {
         this.locationReservationDao = locationReservationDao;
         this.mailService = mailService;
         this.locationDao = locationDao;
         recipients = env.getProperty("custom.mailing.recipientsOpeningHoursOverview", String[].class);
         this.reservationManager = reservationManager;
-        this.userDao = userDao;
     }
 
     /**
      * Schedule this task to be run every monday at 6 AM. The task is responsible for sending
      * an email to following UGent services (see recipients in application-prod.yml in the property
      * custom.mailing.recipientsOpeningHoursOverview):
-     *     - Alarmbeheer - alarmbeheer@ugent.be
-     *     - Permanentie - permanentiecentrum@ugent.be
-     *     - Schoonmaak - schoonmaak@ugent.be
-     *     - Veiligheid - veiligheid@ugent.be
-     *
+     * - Alarmbeheer - alarmbeheer@ugent.be
+     * - Permanentie - permanentiecentrum@ugent.be
+     * - Schoonmaak - schoonmaak@ugent.be
+     * - Veiligheid - veiligheid@ugent.be
+     * <p>
      * The mail is only sent if there are any locations that should be opened in 2 weeks from now().
      * There is a reason behind "2 weeks" from now and not "3 weeks". Every calendar period is locked for
      * updates by employees if the starts_at is less than 3 weeks from now. The mail we are sending
      * here is to notify the UGent services about all those locations that had been locked for updates
      * during last week. Therefore we need to get the overview of opening hours for locations 2 weeks
      * from now.
-     *
+     * <p>
      * For testing purposes, you can change the cron-value to "0 * * * * *" to trigger the scheduled task
      * every minute. Make sure to change the recipients as well to just include your own email address.
      * Extra note: if you want to test the mailing with the smtp.ugent.be mail server (as configured in
@@ -85,13 +81,13 @@ public class ScheduledTasks {
             Map<String, String[]> openingHours = locationDao.getOpeningOverviewOfWeek(year, week);
             if (openingHours.size() > 0) {
                 logger.info(String.format("Sending mail for scheduled tast weeklyOpeningHoursMailing() because in " +
-                        "week %d of year %d, there are %d locations that have to be opened. Current week number is %d " +
-                        "in year %d.", week, year, openingHours.size(), now.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR),
+                                "week %d of year %d, there are %d locations that have to be opened. Current week number is %d " +
+                                "in year %d.", week, year, openingHours.size(), now.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR),
                         now.getYear()));
                 mailService.sendOpeningHoursOverviewMail(recipients, year, week);
             } else {
                 logger.info(String.format("No mail is sent for scheduled task weeklyOpeningHoursMailing() because in " +
-                        "week %d of year %d, there will be no locations opened. Current week number is %d in year %d.",
+                                "week %d of year %d, there will be no locations opened. Current week number is %d in year %d.",
                         week, year, now.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR), now.getYear()));
             }
         } catch (Exception e) {
@@ -115,10 +111,10 @@ public class ScheduledTasks {
         // Send 5 mails concurrently n times. For the n+1-th time, send the remainder of the mails
         int n = reservations.size() / N_CONCURRENT_CONNECTIONS;
         for (int i = 0; i < n; i++) {
-            mailToUnattendedStudentsInRange(reservations, i*N_CONCURRENT_CONNECTIONS,
-                    i*N_CONCURRENT_CONNECTIONS + N_CONCURRENT_CONNECTIONS);
+            mailToUnattendedStudentsInRange(reservations, i * N_CONCURRENT_CONNECTIONS,
+                    i * N_CONCURRENT_CONNECTIONS + N_CONCURRENT_CONNECTIONS);
         }
-        mailToUnattendedStudentsInRange(reservations, n*N_CONCURRENT_CONNECTIONS, reservations.size());
+        mailToUnattendedStudentsInRange(reservations, n * N_CONCURRENT_CONNECTIONS, reservations.size());
     }
 
     private void mailToUnattendedStudentsInRange(List<LocationReservation> reservations,
@@ -161,10 +157,10 @@ public class ScheduledTasks {
         // Send 5 mails concurrently n times. For the n+1-th time, send the remainder of the mails
         int n = users.size() / N_CONCURRENT_CONNECTIONS;
         for (int i = 0; i < n; i++) {
-            mailReminderToStudentsWithReservationInRange(users, i*N_CONCURRENT_CONNECTIONS,
-                    i*N_CONCURRENT_CONNECTIONS + N_CONCURRENT_CONNECTIONS);
+            mailReminderToStudentsWithReservationInRange(users, i * N_CONCURRENT_CONNECTIONS,
+                    i * N_CONCURRENT_CONNECTIONS + N_CONCURRENT_CONNECTIONS);
         }
-        mailReminderToStudentsWithReservationInRange(users, n*N_CONCURRENT_CONNECTIONS, users.size());
+        mailReminderToStudentsWithReservationInRange(users, n * N_CONCURRENT_CONNECTIONS, users.size());
     }
 
     private void mailReminderToStudentsWithReservationInRange(List<User> users, int start, int end) {
@@ -210,7 +206,7 @@ public class ScheduledTasks {
             String locationReminderEnglish = location.getReminderEnglish().trim();
 
             usermap.computeIfAbsent(reservation.getUser(), (user -> new ArrayList<>()))
-                .add(new MailReservationData(locationName, time, locationReminderDutch, locationReminderEnglish));
+                    .add(new MailReservationData(locationName, time, locationReminderDutch, locationReminderEnglish));
         }
         // Send mails to the users about their reservations N_CONCURRENT_CONNECTIONS at a time.
         Thread[] threads = new Thread[N_CONCURRENT_CONNECTIONS];
@@ -252,6 +248,6 @@ public class ScheduledTasks {
     public void scheduleRandomPools() {
         reservationManager.scheduleRandomPools();
     }
-    
+
 
 }

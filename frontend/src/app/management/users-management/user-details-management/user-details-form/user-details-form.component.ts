@@ -39,7 +39,6 @@ export class UserDetailsFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.formGroup.disable();
-    this.settingsFormGroup.disable();
 
     this.userObs.subscribe((next) => {
       this.setup(next);
@@ -69,7 +68,6 @@ export class UserDetailsFormComponent implements OnInit {
     this.settingsFormGroup.valueChanges.subscribe((newSettings: UserSettings) => {
       this.saveUserSettings(newSettings);
     });
-    this.settingsFormGroup.disable();
 
 
     this.userQueryingError = false;
@@ -84,7 +82,7 @@ export class UserDetailsFormComponent implements OnInit {
   }
 
   saveUserSettings(userSettings: UserSettings): void {
-    this.userService.updateUserSettings(this.formGroup.get('id').value, userSettings);
+    this.userService.updateUserSettings(this.formGroup.get('id').value, userSettings).subscribe();
   }
 
 }

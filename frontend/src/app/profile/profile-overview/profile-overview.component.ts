@@ -25,7 +25,6 @@ export class ProfileOverviewComponent implements OnInit {
   ) {
     this.prepareEmptyFormGroup();
     this.authenticationService.user.subscribe((next) => {
-      console.log(next);
       this.setupFormGroup(next);
     });
     this.userObs = this.authenticationService.user;
