@@ -61,7 +61,8 @@
             <i class="icon-calendar" aria-hidden="true"></i>
             {{'dashboard.locationDetails.status.statusReservableFrom' | translate:{
             week: (location.optionalNextUpcomingReservableTimeslot.timeslotDate | date:'dd/MM/yyyy'),
-            opening: (location.optionalNextUpcomingReservableTimeslot.reservableFrom | date:'HH:mm dd/MM/yyyy')
+            openingDate: (location.optionalNextUpcomingReservableTimeslot.reservableFrom | date:'dd/MM/yyyy'),
+            openingTime: (location.optionalNextUpcomingReservableTimeslot.reservableFrom | date:'HH:mm')
           } }}
           </li>
 

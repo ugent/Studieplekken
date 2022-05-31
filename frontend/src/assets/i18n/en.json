@@ -71,7 +71,7 @@
         "statusClosed": "Closed",
         "statusClosedActive": "Opens again at {}",
         "statusClosedUpcoming": "Opens again {}",
-        "statusReservableFrom":  "Reservation for week {{week}} open from {{opening}}"
+        "statusReservableFrom":  "Reservations for week {{week}} can be made as of {{openingDate}} at {{openingTime}}"
       },
       "calendar": {
         "reservation": {
