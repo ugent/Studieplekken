@@ -67,7 +67,7 @@ public class StadGentLocation {
     public String getStartDateReservation() {
         if (optionalNextUpcomingReservableTimeslot.isPresent()) {
             Timeslot nextUpcomingReservableTimeslot = optionalNextUpcomingReservableTimeslot.get();
-            return "Reservatie voor week " + nextUpcomingReservableTimeslot.timeslotDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + " open vanaf " + nextUpcomingReservableTimeslot.getReservableFrom().format(DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy"));
+            return "Reservatie voor week " + nextUpcomingReservableTimeslot.timeslotDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + " kan vanaf " + nextUpcomingReservableTimeslot.getReservableFrom().format(DateTimeFormatter.ofPattern("dd/MM/yyyy 'om' HH:mm"));
         } else {
             return "";
         }

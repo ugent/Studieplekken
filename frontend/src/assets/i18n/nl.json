@@ -71,7 +71,7 @@
         "statusClosed": "Gesloten",
         "statusClosedActive": "Opent opnieuw om {}",
         "statusClosedUpcoming": "Opent opnieuw op {}",
-        "statusReservableFrom":  "Reservatie voor week {{week}} open vanaf {{opening}}"
+        "statusReservableFrom":  "Reserveren voor week {{week}} kan vanaf {{openingDate}} om {{openingTime}}"
       },
       "calendar": {
         "reservation": {
