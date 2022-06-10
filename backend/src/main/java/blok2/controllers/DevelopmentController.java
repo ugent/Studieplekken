@@ -8,7 +8,10 @@ import org.jasig.cas.client.validation.AssertionImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.cas.authentication.CasAssertionAuthenticationToken;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +37,7 @@ public class DevelopmentController {
 
     /**
      * Provide an endpoint in development to create a new user given the userId.
-     *
+     * <p>
      * This is useful to easily track down problems that occur with certain users
      * in the CustomUserDetailsService while they try to log in for the first time
      * in production, but some error occurs. Just put a breakpoint at beginning of
@@ -54,5 +57,6 @@ public class DevelopmentController {
 
         customUserDetailsService.loadUserDetails(authenticationToken);
     }
+
 
 }

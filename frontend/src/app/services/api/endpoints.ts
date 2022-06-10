@@ -79,6 +79,7 @@ export const api = {
   usersByFirstAndLast: '/api/account/firstAndLastName',
   changePassword: '/api/account/password',
   updateUser: '/api/account/{userId}',
+  updateUserSettings: '/api/account/{userId}/settings',
   hasUserAuthorities: '/api/account/{userId}/has/authorities',
   hasUserVolunteered: '/api/account/{userId}/has/volunteered',
   getAdmins: '/api/account/admins',

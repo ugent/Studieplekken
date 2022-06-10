@@ -46,6 +46,12 @@ public class Location implements Cloneable {
     @Column(name = "description_english")
     private String descriptionEnglish = "";
 
+    @Column(name = "reminder_dutch")
+    private String reminderDutch = "";
+
+    @Column(name = "reminder_english")
+    private String reminderEnglish = "";
+
     @OneToOne
     @JoinColumn(name = "building_id", referencedColumnName = "building_id")
     private Building building;
@@ -211,6 +217,8 @@ public class Location implements Cloneable {
                 ", imageUrl='" + imageUrl + '\'' +
                 ", descriptionDutch='" + descriptionDutch + '\'' +
                 ", descriptionEnglish='" + descriptionEnglish + '\'' +
+                ", reminderDutch='" + reminderDutch + '\'' +
+                ", reminderEnglish='" + reminderEnglish + '\'' +
                 ", building=" + building +
                 ", authority=" + authority +
                 ", forGroup=" + forGroup +
@@ -354,6 +362,23 @@ public class Location implements Cloneable {
 
     public void setUsesPenaltyPoints(boolean usesPenaltyPoints) {
         this.usesPenaltyPoints = usesPenaltyPoints;
+    }
+
+
+    public String getReminderDutch() {
+        return reminderDutch;
+    }
+
+    public void setReminderDutch(String reminderDutch) {
+        this.reminderDutch = reminderDutch;
+    }
+
+    public String getReminderEnglish() {
+        return reminderEnglish;
+    }
+
+    public void setReminderEnglish(String reminderEnglish) {
+        this.reminderEnglish = reminderEnglish;
     }
 
     public boolean isTomorrowStillAvailable() {

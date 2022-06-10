@@ -85,4 +85,10 @@ public interface ILocationReservationDao {
      */
     List<LocationReservation> getAllFutureLocationReservationsOfLocation(int locationId);
 
+
+    /**
+      * Gets all reservations since yesterday 21:30PM up until now.
+      */
+    List<LocationReservation> getReservationCreatedToday();
+
 }

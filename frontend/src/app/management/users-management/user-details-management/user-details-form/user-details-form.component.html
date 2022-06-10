@@ -64,8 +64,17 @@
         <input class="form-control" id="institution" type="text" formControlName="institution" >
       </div>
     </div>
-    <div class="row" fxLayout="row" fxLayoutAlign="center" *ngIf="showImpersonate()">
-      <button class="button button-secondary" (click)="impersonate(user)">{{"management.users.userDetails.form.impersonate" | translate}}</button>
+  </form>
+  <form [formGroup]="settingsFormGroup" class="center">
+    <!-- Receive mail confirming reservations 24hrs -->
+    <div class="row form-group">
+      <div class="col-lg-8">
+        <input class="form-control" id="receiveMailConfirmation" type="checkbox" formControlName="receiveMailConfirmation">
+        {{'profile.overview.form.receiveMailConfirmation' | translate}}
+      </div>
     </div>
   </form>
+  <div class="row" fxLayout="row" fxLayoutAlign="center" *ngIf="showImpersonate()">
+    <button class="button button-secondary" (click)="impersonate(user)">{{"management.users.userDetails.form.impersonate" | translate}}</button>
+  </div>
 </div>

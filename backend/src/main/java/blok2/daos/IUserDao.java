@@ -1,6 +1,7 @@
 package blok2.daos;
 
 import blok2.model.users.User;
+import blok2.model.users.UserSettings;
 
 import java.util.List;
 
@@ -86,6 +87,9 @@ public interface IUserDao {
      * Updates the user
      */
     void updateUser(User user);
+
+
+    void updateUserSettings(UserSettings settings);
 
     // DELETE
 

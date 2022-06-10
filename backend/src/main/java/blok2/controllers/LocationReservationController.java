@@ -6,7 +6,6 @@ import blok2.daos.ITimeslotDao;
 import blok2.helpers.Base64String;
 import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
-import blok2.helpers.exceptions.NotAuthorizedException;
 import blok2.mail.MailService;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
@@ -22,9 +21,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.mail.MessagingException;
 import javax.validation.Valid;
-import java.sql.SQLException;
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
 
 import static blok2.config.PoolProcessor.RANDOM_RESERVATION_DURATION_MINS;
 
@@ -75,7 +74,6 @@ public class LocationReservationController extends AuthorizedLocationController 
         // If that is the case then this check may no longer be needed as the actual checking and processing of reservations
         // now happens in a different thread and a 'naive' check based on the timeslot the user provided is sufficient (in this thread).
         // This could save a trip to the database, which makes this slightly faster.
-        System.out.println(timeslot);
         Timeslot dbTimeslot = timeslotDao.getTimeslot(timeslot.getTimeslotSeqnr());
         LocalDateTime now = LocalDateTime.now();
         if (now.isBefore(dbTimeslot.getReservableFrom())) {
@@ -125,7 +123,7 @@ public class LocationReservationController extends AuthorizedLocationController 
         if (!dbLocationReservation.getUser().getUserId().equals(user.getUserId())) {
             try {
                 mailService.sendReservationSlotDeletedMessage(dbLocationReservation.getUser().getMail(), dbLocationReservation.getTimeslot());
-            } catch (MessagingException e) {
+            } catch (MessagingException | UnsupportedEncodingException e) {
                 logger.error(String.format("Could not send mail to student %s about deleted reservation slot %s", user.getUsername(), dbLocationReservation.getTimeslot().toString()));
             }
         }

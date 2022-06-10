@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { User, UserConstructor } from '../../../shared/model/User';
+import { User, UserConstructor, UserSettings } from '../../../shared/model/User';
 import { api } from '../endpoints';
 import { Location, LocationConstructor } from '../../../shared/model/Location';
 import { map } from 'rxjs/internal/operators/map';
@@ -60,6 +60,13 @@ export class UserService {
     return this.http.put<void>(
       api.updateUser.replace('{userId}', btoa(userId)),
       user
+    );
+  }
+
+  updateUserSettings(userId: string, userSettings: UserSettings): Observable<void> {
+    return this.http.put<void>(
+      api.updateUserSettings.replace('{userId}', btoa(userId)),
+      userSettings
     );
   }
 

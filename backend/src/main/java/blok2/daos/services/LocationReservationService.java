@@ -1,6 +1,5 @@
 package blok2.daos.services;
 
-import blok2.controllers.AuthorityController;
 import blok2.daos.ILocationReservationDao;
 import blok2.daos.db.DBLocationReservationDao;
 import blok2.daos.repositories.LocationReservationRepository;
@@ -23,7 +22,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 @Service
 public class LocationReservationService implements ILocationReservationDao {
@@ -83,9 +81,23 @@ public class LocationReservationService implements ILocationReservationDao {
         return locationReservationRepository.findAllUnattendedByDateAnd21PMRestriction(date,  dayBefore, yesterday21PM, today21PM);
     }
 
+
+    @Override
+    public List<LocationReservation> getReservationCreatedToday() {
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        LocalDateTime yesterday21_30PM = LocalDateTime.of(yesterday, LocalTime.of(21, 30));
+        return locationReservationRepository.findAllCreatedAndApprovedAfterDateTime(yesterday21_30PM);
+    }
+
     @Override
     public List<User> getUsersWithReservationForWindowOfTime(LocalDate start, LocalDate end) {
         // TODO(ydndonck): What is this method used for? Does it still need to be implemented?
+                /*List<LocationReservation> reservations = locationReservationRepository.findAllByDateRange(start, end);
+        return reservations.stream()
+                .map(LocationReservation::getUser)
+                .collect(Collectors.toList());
+
+         */
         return Collections.emptyList();
     }
 

@@ -2,8 +2,10 @@ package blok2.daos.services;
 
 import blok2.daos.IUserDao;
 import blok2.daos.repositories.UserRepository;
+import blok2.daos.repositories.UserSettingsRepository;
 import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.users.User;
+import blok2.model.users.UserSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +16,13 @@ import java.util.Optional;
 public class UserService implements IUserDao {
 
     private final UserRepository userRepository;
+    private final UserSettingsRepository userSettingsRepository;
     private final PenaltyService penaltyService;
 
     @Autowired
-    public UserService(UserRepository userRepository, PenaltyService penaltyService) {
+    public UserService(UserRepository userRepository, UserSettingsRepository userSettingsRepository, PenaltyService penaltyService) {
         this.userRepository = userRepository;
+        this.userSettingsRepository = userSettingsRepository;
         this.penaltyService = penaltyService;
     }
 
@@ -170,6 +174,11 @@ public class UserService implements IUserDao {
     @Override
     public void updateUser(User user) {
         userRepository.save(user);
+    }
+
+    @Override
+    public void updateUserSettings(UserSettings settings) {
+        userSettingsRepository.save(settings);
     }
 
     @Override

@@ -1,4 +1,4 @@
-Since 10 January 2021, the point system applies to the block locations. The point system includes various parameters to ensure that the study places are utilized optimally, including:
+Since 10 January 2021, the point system applies to the study locations. The point system includes various parameters to ensure that the study places are utilized optimally, including:
 Late cancellation of reservation (<24h): 20 points
 
    - Cancellation of reservation during the scanning moment: 25 points
