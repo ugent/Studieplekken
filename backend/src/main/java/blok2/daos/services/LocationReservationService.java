@@ -1,6 +1,5 @@
 package blok2.daos.services;
 
-import blok2.controllers.AuthorityController;
 import blok2.daos.ILocationReservationDao;
 import blok2.daos.db.DBLocationReservationDao;
 import blok2.daos.repositories.LocationReservationRepository;
@@ -23,7 +22,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 @Service
 public class LocationReservationService implements ILocationReservationDao {
@@ -85,7 +83,7 @@ public class LocationReservationService implements ILocationReservationDao {
     public List<LocationReservation> getReservationCreatedToday() {
         LocalDate yesterday = LocalDate.now().minusDays(1);
         LocalDateTime yesterday21_30PM = LocalDateTime.of(yesterday, LocalTime.of(21, 30));
-        return locationReservationRepository.findAllCreatedAfterDateTime(yesterday21_30PM);
+        return locationReservationRepository.findAllCreatedAndApprovedAfterDateTime(yesterday21_30PM);
     }
 
     @Override
