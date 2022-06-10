@@ -42,12 +42,12 @@
             </tr>
         </table>
         <p>Verder willen we u aan de volgende zaken herinneren:</p>
-        <br>
+        <br th:if="${not #lists.isEmpty(locationInformation)}">
         <div th:each="locationInfo : ${locationInformation}" style="margin-bottom: 10px">
-            <div th:text="${locationInfo.locationName}" style="font-style: italic"></div>
-            <div th:utext="${locationInfo.locationReminderDutch}"></div>
+            <div th:text="|Extra informatie voor locatie ${locationInfo.locationName}:|"></div>
+            <div th:utext="${locationInfo.locationReminderDutch}" style="font-style: italic"></div>
         </div>
-        <br>
+        <br th:if="${not #lists.isEmpty(locationInformation)}">
         <p>Het is mogelijk om tot 24 uur op voorhand een reservatie te annuleren zonder strafpunten te ontvangen.</p>
         <p>Het scannen van de aanwezigheid op de studieplek gebeurt aan de hand van de studentenkaarten. Er is steeds een toezichter op de studieplek aanwezig die deze controles uitvoert (personeelslid of student-vrijwilliger). We raden je aan om hiervoor reeds bij het plaatsnemen op de studieplek je studentenkaart op de hoek van de tafel te leggen opdat het scannen vlot kan gebeuren (tenzij dit uiteraard reeds aan de ingang gebeurd is).  Als student ben je zelf verantwoordelijk dat je studentenkaart ingescand wordt, zeker als er strafpunten worden gebruikt. Is er geen toezichter aanwezig, dan kan je jouw kaart niet laten scannen maar wordt jouw plaats ook niet verwijderd.</p>
         <br>
@@ -70,12 +70,12 @@
             </tr>
         </table>
         <p>We would also like to remind you of the following:</p>
-        <br>
+        <br th:if="${not #lists.isEmpty(locationInformation)}">
         <div th:each="locationInfo : ${locationInformation}" style="margin-bottom: 10px">
-            <div th:text="${locationInfo.locationName}" style="font-style: italic"></div>
-            <div th:utext="${locationInfo.locationReminderEnglish}"></div>
+            <div th:text="|Extra information for location ${locationInfo.locationName}:|"></div>
+            <div th:utext="${locationInfo.locationReminderEnglish}" style="font-style: italic"></div>
         </div>
-        <br>
+        <br th:if="${not #lists.isEmpty(locationInformation)}">
         <p>It is possible to cancel a reservation up to 24hrs beforehand without receiving penalty points.</p>
         <p>The scanning of the presence at the study place is done by means of the student cards. There is always a supervisor at the study place who performs these checks (staff member or student volunteer). We advise you to lay your student card on the corner of the table when you arrive at the study place so that the scanning can be done easily (unless you have already done so at the entrance).  As a student you are responsible for the scanning of your student card, especially if the location uses penalty points. If there is no supervisor present, you cannot have your card scanned but your seat will not be removed either.</p>
         <br>
