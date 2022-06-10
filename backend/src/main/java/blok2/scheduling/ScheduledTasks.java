@@ -15,6 +15,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.IsoFields;
@@ -126,7 +127,7 @@ public class ScheduledTasks {
 
             try {
                 threads[i - start] = mailService.sendMailToUnattendedStudent(lr.getUser().getMail());
-            } catch (MessagingException e) {
+            } catch (MessagingException | UnsupportedEncodingException e) {
                 logger.error(String.format("Could not send mail to unattended student for %s", lr));
             }
         }
@@ -171,7 +172,7 @@ public class ScheduledTasks {
 
             try {
                 threads[i - start] = mailService.sendReminderToStudentsAboutReservation(user.getMail());
-            } catch (MessagingException e) {
+            } catch (MessagingException | UnsupportedEncodingException e) {
                 logger.error(String.format("Could not send reminder mail to student for %s", user));
             }
         }
@@ -217,7 +218,7 @@ public class ScheduledTasks {
             }
             try {
                 threads[currentConnections] = mailService.sendMailConfirmingLast24hrsOfReservations(user.getMail(), usermap.get(user));
-            } catch (MessagingException e) {
+            } catch (MessagingException | UnsupportedEncodingException e) {
                 logger.error(String.format("Could not join on thread while sending mail to unattended student: %s", e.getMessage()));
             }
             currentConnections += 1;

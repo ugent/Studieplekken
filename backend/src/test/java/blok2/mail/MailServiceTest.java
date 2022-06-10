@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
 
 public class MailServiceTest extends BaseTest {
 
@@ -27,12 +28,12 @@ public class MailServiceTest extends BaseTest {
     }
 
     @Test
-    public void exampleMailTest() throws MessagingException {
+    public void exampleMailTest() throws MessagingException, UnsupportedEncodingException {
         mailService.sendTestMail(TARGET_MAIL_ADDRESS);
     }
 
     @Test
-    public void exampleOpeningHoursOverviewMailTest() throws MessagingException {
+    public void exampleOpeningHoursOverviewMailTest() throws MessagingException, UnsupportedEncodingException {
         mailService.sendOpeningHoursOverviewMail(TARGET_MAIL_ADDRESS, 2020, 1);
         mailService.sendOpeningHoursOverviewMail(TARGET_MAIL_ADDRESS, 2020, 52);
         mailService.sendOpeningHoursOverviewMail(TARGET_MAIL_ADDRESS, 2021, 3);
@@ -41,7 +42,7 @@ public class MailServiceTest extends BaseTest {
     }
 
     @Test
-    public void exampleLocationCreatedMailTest() throws MessagingException {
+    public void exampleLocationCreatedMailTest() throws MessagingException, UnsupportedEncodingException {
         Authority authority = new Authority(1, "Test autoriteit", "Test authority");
         Building building = new Building(1, "Test gebouw", "Test building", Institution.UGent);
         Location location = TestSharedMethods.testLocation(authority, building);

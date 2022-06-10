@@ -6,7 +6,6 @@ import blok2.daos.ITimeslotDao;
 import blok2.helpers.Base64String;
 import blok2.helpers.authorization.AuthorizedLocationController;
 import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
-import blok2.helpers.exceptions.NotAuthorizedException;
 import blok2.mail.MailService;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
@@ -22,9 +21,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.mail.MessagingException;
 import javax.validation.Valid;
-import java.sql.SQLException;
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
 
 import static blok2.config.PoolProcessor.RANDOM_RESERVATION_DURATION_MINS;
 
@@ -118,7 +117,7 @@ public class LocationReservationController extends AuthorizedLocationController 
         if (!dbLocationReservation.getUser().getUserId().equals(user.getUserId())) {
             try {
                 mailService.sendReservationSlotDeletedMessage(dbLocationReservation.getUser().getMail(), dbLocationReservation.getTimeslot());
-            } catch (MessagingException e) {
+            } catch (MessagingException | UnsupportedEncodingException e) {
                 logger.error(String.format("Could not send mail to student %s about deleted reservation slot %s", user.getUsername(), dbLocationReservation.getTimeslot().toString()));
             }
         }
