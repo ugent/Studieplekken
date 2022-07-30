@@ -25,7 +25,7 @@ public class PenaltyService implements IPenaltyDao {
     /**
      * Update this variable every exam period to clear the penalty count.
      */
-    private final LocalDateTime RESET_DATE = LocalDateTime.of(2022, Month.MARCH, 1, 0, 0);
+    private final LocalDateTime RESET_DATE = LocalDateTime.of(2022, Month.AUGUST, 1, 0, 0);
 
     private final PenaltyRepository penaltyRepository;
 
