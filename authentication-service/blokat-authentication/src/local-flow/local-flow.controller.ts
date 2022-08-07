@@ -7,8 +7,6 @@ import {
   Query,
   Render,
   Res,
-  ValidationPipe,
-  Redirect,
 } from "@nestjs/common";
 import { Response } from "express";
 import { getConfig } from "src/configModule/config.service";
@@ -16,12 +14,15 @@ import { LoginFlowService } from "./login-flow/login-flow-service/login-flow-ser
 import { UnhashedLoginBodyBase } from "./login-flow/login-flow-service/LoginBodyInterface";
 import { RegisterFlowService } from "./register-flow/register-flow-service";
 import { UnhashedRegisterBodyBase } from "./register-flow/RegisterBodyInterface";
+import { UnhashedPasswordResetBodyBase } from "./password-reset-flow/PasswordResetBodyInterface";
+import { PasswordResetFlowService } from "./password-reset-flow/password-reset-flow-service";
 
 @Controller("/auth/local")
 export class LocalFlowController {
   constructor(
     private registerFlow: RegisterFlowService,
     private loginFlow: LoginFlowService,
+    private passwordResetFlow: PasswordResetFlowService,
   ) {}
 
   @Post("register")
@@ -94,6 +95,34 @@ export class LocalFlowController {
       }
     } catch (e: unknown) {
       res.render("login", { errors: "valuable error", callbackURL });
+    }
+  }
+
+  @Get("password-reset")
+  @Render("password-reset")
+  getPasswordResetPage(@Query("token") token: string) {
+    return { token: token };
+  }
+
+  @Post("password-reset")
+  async passwordReset(
+    @Query("token") token: string,
+    @Body() body: UnhashedPasswordResetBodyBase,
+    @Res() res: Response,
+  ) {
+    try {
+      const response = await this.passwordResetFlow.handlePasswordReset(body);
+
+      if (response.errors.length > 0) {
+        res.render("password-reset", {
+          errors: response.errors.join(" "),
+          token,
+        });
+      } else {
+        res.redirect("https://bloklocaties.stad.gent/login");
+      }
+    } catch (e) {
+      res.render("password-reset", { errors: "Unknown error", token });
     }
   }
 

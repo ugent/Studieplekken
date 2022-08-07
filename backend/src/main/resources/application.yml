@@ -14,6 +14,13 @@ spring:
     username: ***REMOVED***
     password: ***REMOVED***
     maximumPoolSize: 200
+  auth-datasource:
+    type: "com.zaxxer.hikari.HikariDataSource"
+    driverClassName: org.postgresql.Driver
+    url: "jdbc:postgresql://localhost:5432/studieplekken_users"
+    username: ***REMOVED***
+    password: ***REMOVED***
+    maximumPoolSize: 200
   mail:
     host: smtp.ugent.be
     protocol: smtp

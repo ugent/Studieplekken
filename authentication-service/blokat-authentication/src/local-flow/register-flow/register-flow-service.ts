@@ -45,9 +45,9 @@ export class RegisterFlowService {
 
       // check token handed in body
       try {
-        await this.tokenDb.checkToken(body.token);
+        await this.tokenDb.checkToken(body.token, "REGISTRATION");
         const savedUser = await this.saveUser(user);
-        await this.tokenDb.useToken(body.token);
+        await this.tokenDb.useToken(body.token, "REGISTRATION");
         return savedUser;
       } catch (error) {
         if (error instanceof PrismaClientKnownRequestError)

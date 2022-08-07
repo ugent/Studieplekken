@@ -20,4 +20,6 @@ model tokens {
   id String @id @default(uuid())
   createdAt DateTime @default(now())
   isUsed Boolean @default(false)
+  purpose String @db.VarChar(64) @default("REGISTRATION")
+  email String @db.VarChar(255)
 }

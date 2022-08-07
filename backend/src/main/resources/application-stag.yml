@@ -9,6 +9,13 @@ spring:
     username: blokat
     password:  ***REMOVED***
     maximumPoolSize: 200
+  auth-datasource:
+    type: "com.zaxxer.hikari.HikariDataSource"
+    driverClassName: org.postgresql.Driver
+    url: "jdbc:postgresql://db:5432/studieplekken_users"
+    username: blokat
+    password: ***REMOVED***
+    maximumPoolSize: 200
   flyway: # For automatic flyway migration integration with spring boot
     url: "jdbc:postgresql://db:5432/blokatugent"
     user: blokat
