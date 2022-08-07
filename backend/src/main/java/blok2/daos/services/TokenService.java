@@ -28,18 +28,19 @@ public class TokenService implements ITokenDao {
     @Override
     public List<Token> getAllTokens() {
         try (Connection connection = connectionProvider.getConnection()) {
-            String query = "SELECT * FROM tokens";
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.execute();
-            ResultSet resultSet = statement.getResultSet();
-
             List<Token> tokens = new ArrayList<>();
-            while (resultSet.next()) {
-                Token token = new Token();
-                token.setToken(resultSet.getString("id"));
-                token.setPurpose(resultSet.getString("purpose"));
-                token.setEmail(resultSet.getString("email"));
-                tokens.add(token);
+            String query = "SELECT * FROM tokens";
+            try (PreparedStatement statement = connection.prepareStatement(query);) {
+                statement.execute();
+                try (ResultSet resultSet = statement.getResultSet()) {
+                    while (resultSet.next()) {
+                        Token token = new Token();
+                        token.setToken(resultSet.getString("id"));
+                        token.setPurpose(resultSet.getString("purpose"));
+                        token.setEmail(resultSet.getString("email"));
+                        tokens.add(token);
+                    }
+                }
             }
             return tokens;
         } catch (SQLException e) {
@@ -64,17 +65,18 @@ public class TokenService implements ITokenDao {
         try (Connection connection = connectionProvider.getConnection()) {
             // Create a new token in the database
             String query = "INSERT INTO tokens (id, purpose, email) VALUES (?, ?, ?)";
-            PreparedStatement statement = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
-            statement.setString(1, UUID.randomUUID().toString());
-            statement.setString(2, purpose);
-            statement.setString(3, email);
-            statement.executeUpdate();
+            try (PreparedStatement statement = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
+                statement.setString(1, UUID.randomUUID().toString());
+                statement.setString(2, purpose);
+                statement.setString(3, email);
+                statement.executeUpdate();
 
-            if (statement.getGeneratedKeys().next()) {
-                String id = statement.getGeneratedKeys().getString(1);
-                return new Token(id, purpose, email);
-            } else {
-                throw new RuntimeException("Could not create token");
+                if (statement.getGeneratedKeys().next()) {
+                    String id = statement.getGeneratedKeys().getString(1);
+                    return new Token(id, purpose, email);
+                } else {
+                    throw new RuntimeException("Could not create token");
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

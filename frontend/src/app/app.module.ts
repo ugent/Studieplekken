@@ -77,7 +77,6 @@ import { ScanningLocationsComponent } from './scan/scanning-locations/scanning-l
 import { ScanningLocationDetailsComponent } from './scan/scanning-location-details/scanning-location-details.component';
 import { VolunteersManagementComponent } from './management/volunteers-management/volunteers-management.component';
 import { VolunteerManagementPanelComponent } from './management/volunteers-management/volunteer-management-panel/volunteer-management-panel.component';
-import { AuthenticationInterceptor } from './services/authentication/authentication.interceptor';
 import { TokenInterceptor } from './services/authentication/token.interceptor';
 import { HeaderComponent } from './stad-gent-components/header/header.component';
 import { AccordeonComponent } from './stad-gent-components/molecules/accordeon/accordeon.component';
@@ -104,7 +103,7 @@ import { PenaltiesManagementComponent } from './management/penalties-management/
 import { StatsComponent } from './management/stats/stats.component';
 import { WaffleComponent } from './management/stats/waffle/waffle.component';
 import { LocationReminderComponent } from './management/locations-management/location-details-management/location-reminder/location-reminder.component';
-import {TokensComponent} from './management/tokens/tokens.component';
+import { TokensComponent } from './management/tokens/tokens.component';
 
 
 // AoT requires an exported function for factories
