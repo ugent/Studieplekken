@@ -1,6 +1,6 @@
 ## Blokat authentication service 
 
-This service will manage the different authorization flows with the different HOI's, and hand out JWT tokens which can be handled by the main spring respository.
+This service will manage the different authorization flows with the different HOI's, and hand out JWT tokens which can be handled by the main spring repository.
 
 ## Installation
 

@@ -125,10 +125,4 @@ export class LocalFlowController {
       res.render("password-reset", { errors: "Unknown error", token });
     }
   }
-
-  @Post("tokenLink")
-  async getNewTokenLink() {
-    const token = await this.registerFlow.newToken();
-    return { token };
-  }
 }

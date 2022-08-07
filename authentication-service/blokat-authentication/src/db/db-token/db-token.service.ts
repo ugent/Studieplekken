@@ -6,12 +6,6 @@ import { DbService } from "../db.service";
 export class DbTokenService {
   constructor(private prisma: DbService) {}
 
-  async createNewToken(): Promise<tokens> {
-    return await this.prisma.tokens.create({
-      data: { email: null },
-    });
-  }
-
   async checkToken(tokenId: string, purpose: string) {
     const token = await this.prisma.tokens.findUnique({
       where: { id: tokenId },
