@@ -843,6 +843,25 @@
       "unknown": "Onbekend",
       "notOpen": "Deze locatie is niet geopend op dit moment.",
       "occupancyOn": "Bezetting voor tijdslot op"
+    },
+    "tokens": {
+      "title": "Tokens",
+      "loading": "Wachten op antwoord van de server...",
+      "error": "Er is iets misgelopen tijdens het ophalen van de tokens.",
+      "addNewToken": "Nieuwe token",
+      "table": {
+        "token": "Token",
+        "purpose": "Doel",
+        "email": "Email"
+      },
+      "addTokenModal": {
+        "title": "Nieuwe token toevoegen",
+        "purpose": {
+          "registration": "Registratie",
+          "passwordReset": "Wachtwoord reset"
+        },
+        "error": "Er is iets misgelopen tijdens het toevoegen van de token."
+      }
     }
   },
   "profile": {

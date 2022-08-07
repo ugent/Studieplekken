@@ -124,4 +124,7 @@ export const api = {
 
   // STATS
   getStats: 'api/stats',
+
+  // TOKENS
+  tokens: '/api/tokens',
 };

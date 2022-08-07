@@ -104,6 +104,7 @@ import { PenaltiesManagementComponent } from './management/penalties-management/
 import { StatsComponent } from './management/stats/stats.component';
 import { WaffleComponent } from './management/stats/waffle/waffle.component';
 import { LocationReminderComponent } from './management/locations-management/location-details-management/location-reminder/location-reminder.component';
+import {TokensComponent} from './management/tokens/tokens.component';
 
 
 // AoT requires an exported function for factories
@@ -276,6 +277,11 @@ const routes: Routes = [
         component: StatsComponent,
         canActivate: [AuthorizationGuardService]
       },
+      {
+        path: 'tokens',
+        component: TokensComponent,
+        canActivate: [AuthorizationGuardService]
+      },
     ],
   },
 
@@ -369,7 +375,8 @@ const routes: Routes = [
     AfterReservationComponent,
     StatsComponent,
     WaffleComponent,
-    LocationReminderComponent
+    LocationReminderComponent,
+    TokensComponent,
   ],
   imports: [
     BrowserModule,

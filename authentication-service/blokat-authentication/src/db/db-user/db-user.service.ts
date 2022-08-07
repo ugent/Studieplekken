@@ -17,4 +17,11 @@ export class DbUserService {
       data,
     });
   }
+
+  public async updatePassword(email: string, password: string, salt: string) {
+    await this.prisma.users.update({
+      where: { email: email },
+      data: { hashed_password: password, salt: salt },
+    });
+  }
 }

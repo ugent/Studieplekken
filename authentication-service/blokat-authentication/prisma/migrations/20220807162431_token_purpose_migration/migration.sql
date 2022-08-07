@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "tokens" ADD COLUMN     "purpose" VARCHAR(64) NOT NULL DEFAULT E'REGISTRATION';

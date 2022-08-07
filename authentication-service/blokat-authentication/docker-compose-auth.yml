@@ -3,6 +3,9 @@ volumes:
 networks:
   loginsystem:
     name: loginsystem
+  blokatgent:
+    external:
+      name: blokatgent
 
 
 services:
@@ -31,3 +34,4 @@ services:
       - pgdata-users:/var/lib/postgresql/data 
     networks:
       - loginsystem
+      - blokatgent

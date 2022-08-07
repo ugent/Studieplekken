@@ -843,6 +843,25 @@
       "unknown": "Unknown",
       "notOpen": "This location is not open at this moment.",
       "occupancyOn": "Occupancy for timeslot on"
+    },
+    "tokens": {
+      "title": "Tokens",
+      "loading": "Waiting for response of server...",
+      "error": "Something went wrong while retrieving the tokens.",
+      "addNewToken": "New token",
+      "table": {
+        "token": "Token",
+        "purpose": "Purpose",
+        "email": "Email"
+      },
+      "addTokenModal": {
+        "title": "Add new token",
+        "purpose": {
+          "registration": "Registration",
+          "passwordReset": "Password reset"
+        },
+        "error": "Something went wrong while adding the token."
+      }
     }
   },
   "profile": {

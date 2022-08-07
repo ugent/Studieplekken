@@ -8,38 +8,44 @@ export class DbTokenService {
 
   async createNewToken(): Promise<tokens> {
     return await this.prisma.tokens.create({
-      data: {},
+      data: { email: null },
     });
   }
 
-  async checkToken(tokenId: string) {
+  async checkToken(tokenId: string, purpose: string) {
     const token = await this.prisma.tokens.findUnique({
       where: { id: tokenId },
     });
     if (!token) throw new TokenDoesntExistError();
 
+    if (token.purpose !== purpose) {
+      throw new TokenDoesntExistError();
+    }
     if (token.isUsed) {
       throw new TokenIsUsedError();
     }
+
+    return token;
   }
 
-  async useToken(tokenId: string): Promise<tokens> {
+  async useToken(tokenId: string, purpose: string): Promise<tokens> {
     const token = await this.prisma.tokens.findUnique({
       where: { id: tokenId },
     });
     if (!token) throw new TokenDoesntExistError();
 
+    if (token.purpose !== purpose) {
+      throw new TokenDoesntExistError();
+    }
     if (token.isUsed) {
       throw new TokenIsUsedError();
     }
 
     token.isUsed = true;
-    const updatedToken = await this.prisma.tokens.update({
+    return await this.prisma.tokens.update({
       where: { id: token.id },
-      data: { isUsed: true },
+      data: { isUsed: true, email: token.email },
     });
-
-    return updatedToken;
   }
 }
 
