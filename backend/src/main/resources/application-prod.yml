@@ -12,7 +12,7 @@ spring:
   auth-datasource:
     type: "com.zaxxer.hikari.HikariDataSource"
     driverClassName: org.postgresql.Driver
-    url: "jdbc:postgresql://db:5432/studieplekken_users"
+    url: "jdbc:postgresql://user-db:5432/studieplekken_users"
     username: blokat
     password: ***REMOVED***
     maximumPoolSize: 200
