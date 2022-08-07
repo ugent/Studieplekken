@@ -82,8 +82,4 @@ export class RegisterFlowService {
   private async saveUser(user: users) {
     return this.usersDb.create(user);
   }
-
-  public async newToken(): Promise<string> {
-    return (await this.tokenDb.createNewToken()).id;
-  }
 }
