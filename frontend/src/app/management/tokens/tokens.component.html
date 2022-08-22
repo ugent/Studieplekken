@@ -39,6 +39,8 @@
             </th>
             <th class="clickable" scope="col" (click)="sortOn('email')">{{'management.tokens.table.email' | translate}}
               <img class="order-marker" src="{{'assets/icon/' + orderMarkers['email'] + '.svg'}}"></th>
+            <th class="clickable" scope="col" (click)="sortOn('isUsed')">{{'management.tokens.table.used' | translate}}
+              <img class="order-marker" src="{{'assets/icon/' + orderMarkers['isUsed'] + '.svg'}}"></th>
           </tr>
           </thead>
           <tbody>
@@ -46,6 +48,7 @@
             <td>{{token.token}}</td>
             <td>{{token.purpose}}</td>
             <td>{{token.email}}</td>
+            <td>{{token.isUsed ? ('management.tokens.table.yes' | translate) : ('management.tokens.table.no') | translate}}</td>
           </tr>
           </tbody>
         </table>

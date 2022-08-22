@@ -852,7 +852,10 @@
       "table": {
         "token": "Token",
         "purpose": "Doel",
-        "email": "Email"
+        "email": "Email",
+        "used": "Gebruikt",
+        "yes": "Ja",
+        "no": "Nee"
       },
       "addTokenModal": {
         "title": "Nieuwe token toevoegen",

@@ -852,7 +852,10 @@
       "table": {
         "token": "Token",
         "purpose": "Purpose",
-        "email": "Email"
+        "email": "Email",
+        "used": "Used",
+        "yes": "Yes",
+        "no": "No"
       },
       "addTokenModal": {
         "title": "Add new token",

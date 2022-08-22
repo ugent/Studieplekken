@@ -38,6 +38,7 @@ public class TokenService implements ITokenDao {
                         token.setToken(resultSet.getString("id"));
                         token.setPurpose(resultSet.getString("purpose"));
                         token.setEmail(resultSet.getString("email"));
+                        token.setIsUsed(resultSet.getBoolean("isUsed"));
                         tokens.add(token);
                     }
                 }
@@ -73,7 +74,7 @@ public class TokenService implements ITokenDao {
 
                 if (statement.getGeneratedKeys().next()) {
                     String id = statement.getGeneratedKeys().getString(1);
-                    return new Token(id, purpose, email);
+                    return new Token(id, purpose, email, false);
                 } else {
                     throw new RuntimeException("Could not create token");
                 }

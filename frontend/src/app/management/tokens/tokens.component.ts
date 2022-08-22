@@ -20,7 +20,8 @@ export class TokensComponent implements OnInit {
   orderMarkers = {
     token: 'sort-both',
     purpose: 'sort-both',
-    email: 'sort-both'
+    email: 'sort-both',
+    isUsed: 'sort-both'
   };
 
   tokenFormGroup = new FormGroup({
@@ -53,6 +54,7 @@ export class TokensComponent implements OnInit {
       token: null,
       purpose: this.purpose.value as string,
       email: this.email.value as string,
+      isUsed: false,
     };
   }
 
@@ -114,6 +116,17 @@ export class TokensComponent implements OnInit {
           return (-1) * orderFactor;
         }
         if (a.email < b.email) {
+          return 1 * orderFactor;
+        }
+        return 0;
+      });
+    }
+    if (this.currentSort === 'isUsed') {
+      return tokens.sort((a, b) => {
+        if (a.isUsed > b.isUsed) {
+          return (-1) * orderFactor;
+        }
+        if (a.isUsed < b.isUsed) {
           return 1 * orderFactor;
         }
         return 0;

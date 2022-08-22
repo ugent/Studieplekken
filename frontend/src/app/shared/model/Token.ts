@@ -2,6 +2,7 @@ export interface Token {
   token: string;
   purpose: string;
   email: string;
+  isUsed: boolean;
 }
 
 export class TokenConstructor {
@@ -10,6 +11,7 @@ export class TokenConstructor {
       token: '',
       purpose: '',
       email: null,
+      isUsed: false,
     };
   }
 
@@ -22,6 +24,7 @@ export class TokenConstructor {
       token: obj.token,
       purpose: obj.purpose,
       email: obj.email,
+      isUsed: obj.isUsed,
     };
   }
 }
