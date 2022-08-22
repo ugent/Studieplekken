@@ -29,7 +29,7 @@ public class TokenService implements ITokenDao {
     public List<Token> getAllTokens() {
         try (Connection connection = connectionProvider.getConnection()) {
             List<Token> tokens = new ArrayList<>();
-            String query = "SELECT * FROM tokens";
+            String query = "SELECT * FROM \"tokens\";";
             try (PreparedStatement statement = connection.prepareStatement(query);) {
                 statement.execute();
                 try (ResultSet resultSet = statement.getResultSet()) {
@@ -64,7 +64,7 @@ public class TokenService implements ITokenDao {
         }
         try (Connection connection = connectionProvider.getConnection()) {
             // Create a new token in the database
-            String query = "INSERT INTO tokens (id, purpose, email) VALUES (?, ?, ?)";
+            String query = "INSERT INTO \"tokens\" (id, purpose, email) VALUES (?, ?, ?);";
             try (PreparedStatement statement = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
                 statement.setString(1, UUID.randomUUID().toString());
                 statement.setString(2, purpose);
