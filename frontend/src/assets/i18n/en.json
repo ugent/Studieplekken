@@ -1030,7 +1030,8 @@
     "mobile-hint": "Scanning works best when the barcode is aligned horizontally.",
     "handheld-hint": "To use the handheld scanner, select the input box below. If scan is succesful, the user will pop to the top of the list.",
     "maybe": "This user wasn't found. Search in the list below, or try again.",
-    "warn-unattended": "Marking someone as unattended opens up the seat for reservation."
+    "warn-unattended": "Marking someone as unattended opens up the seat for reservation.",
+    "already-present": "{{user}} was already marked as present!"
   },
   "Odisee": "Odisee Hogeschool",
   "Arteveldehogeschool": "Arteveldehogeschool",

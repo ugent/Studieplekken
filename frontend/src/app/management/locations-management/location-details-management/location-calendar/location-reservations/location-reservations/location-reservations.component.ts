@@ -43,6 +43,7 @@ export class LocationReservationsComponent implements OnChanges {
 
   searchTerm = '';
   noSuchUserFoundWarning = false;
+  userAlreadyPresentWarning: User[] = [];
   selectionTimeout: number;
   penaltyManagerUser: User;
 
@@ -74,12 +75,25 @@ export class LocationReservationsComponent implements OnChanges {
   scanLocationReservation(
     reservation: LocationReservation,
     attended: boolean,
-    errorTemplate: TemplateRef<unknown>
+    errorTemplate: TemplateRef<unknown>,
+    previousScanned: LocationReservation
   ): void {
     const olds = reservation.state;
     const newS = attended
       ? LocationReservationState.PRESENT
       : LocationReservationState.ABSENT;
+    if (olds === LocationReservationState.PRESENT && newS === LocationReservationState.PRESENT) {
+      // Trying to set a user as present who was already present. Check if it was the last scanned user. (Maybe request was sent twice)
+      if (!previousScanned || previousScanned.user.userId !== reservation.user.userId) {
+        // Not the last scanned user. Show warning.
+        console.log('Not the last scanned user. Show warning.', previousScanned);
+        this.userAlreadyPresentWarning.push(reservation.user);
+        return;
+      } else {
+        console.log('lastScanned', previousScanned);
+      }
+    }
+
     reservation.state = newS;
     this.setLastScanned(reservation);
 
@@ -190,11 +204,12 @@ export class LocationReservationsComponent implements OnChanges {
       this.searchTerm
     );
 
+    const previousScanned = this.lastScanned;
     if (this.searchTerm.length > 0) this.setLastScanned(null);
 
     if (fullyMatchedUser) {
       this.setLastScanned(fullyMatchedUser);
-      this.scanLocationReservation(fullyMatchedUser, true, errorTemplate);
+      this.scanLocationReservation(fullyMatchedUser, true, errorTemplate, previousScanned);
       setTimeout(() => {
         this.searchTerm = '';
         this.updateSearchTerm(errorTemplate);
@@ -255,13 +270,14 @@ export class LocationReservationsComponent implements OnChanges {
     errorTemplate: TemplateRef<unknown>,
     penaltyManager: TemplateRef<unknown>
   ) {
+    const previousScanned = this.lastScanned;
     if (this.isManagement) {
       console.log(columnIndex);
       if (columnIndex == 3) {
         this.lastScanned = data;
-        return this.scanLocationReservation(data, true, errorTemplate);
+        return this.scanLocationReservation(data, true, errorTemplate, previousScanned);
       } else if (columnIndex == 4)
-        return this.scanLocationReservation(data, false, errorTemplate);
+        return this.scanLocationReservation(data, false, errorTemplate, previousScanned);
       else if (columnIndex == 2) {
         return this.openPenaltyBox(data, penaltyManager);
       }
@@ -269,9 +285,9 @@ export class LocationReservationsComponent implements OnChanges {
 
     if (columnIndex == 2) {
       this.lastScanned = data;
-      return this.scanLocationReservation(data, true, errorTemplate);
+      return this.scanLocationReservation(data, true, errorTemplate, previousScanned);
     } else if (columnIndex == 3)
-      return this.scanLocationReservation(data, false, errorTemplate);
+      return this.scanLocationReservation(data, false, errorTemplate, previousScanned);
   }
 
   isTimeslotStartInFuture() {

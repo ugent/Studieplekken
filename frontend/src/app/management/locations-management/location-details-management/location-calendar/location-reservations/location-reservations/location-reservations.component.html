@@ -17,6 +17,14 @@
       <span>{{ "scan.unregistered" | translate }}</span>
     </div>
 
+    <div
+      *ngFor="let user of userAlreadyPresentWarning"
+      class="messages unregisteredwarning"
+      fxLayoutAlign="center"
+    >
+      <span>{{ "scan.already-present" | translate : { user: user.firstName + ' ' + user.lastName } }}</span>
+    </div>
+
     <div fxLayout="row wrap" fxLayoutGap="15px grid" fxLayoutAlign="center flex-start">
       <div fxFlex="0 1 80%">
         <label class="col-md-3 control-label" for="search">
