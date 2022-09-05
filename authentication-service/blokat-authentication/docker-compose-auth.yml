@@ -1,8 +1,6 @@
 volumes:
    pgdata-users:
 networks:
-  loginsystem:
-    name: loginsystem
   blokatgent:
     external:
       name: blokatgent
@@ -16,7 +14,7 @@ services:
     environment:
       NODE_ENV: staging
     networks:
-      - loginsystem
+      - blokatgent
     depends_on:
       - user-db
 
@@ -33,5 +31,4 @@ services:
     volumes:
       - pgdata-users:/var/lib/postgresql/data 
     networks:
-      - loginsystem
       - blokatgent
