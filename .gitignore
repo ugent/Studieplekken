@@ -21,3 +21,8 @@ frontend/.vscode/
 backup**
 .gradle/
 bin/**
+
+# Credentials
+*.override.yml
+nginx/*.crt
+nginx/*.key

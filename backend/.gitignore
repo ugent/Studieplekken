@@ -35,3 +35,8 @@ build/
 build/
 
 src/main/resources/application-dev.yml
+
+# Credentials
+*.override.yml
+keystore/
+/src/main/resources/saml/metadata/
