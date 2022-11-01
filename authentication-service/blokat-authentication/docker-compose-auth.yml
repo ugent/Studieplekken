@@ -13,6 +13,9 @@ services:
       - "8087:8087"
     environment:
       NODE_ENV: staging
+      POSTGRES_USER: blokat
+      POSTGRES_PASSWORD: ""
+      JWT_KEY: ""
     networks:
       - blokatgent
     depends_on:
@@ -25,7 +28,7 @@ services:
     environment:
       POSTGRES_DB: studieplekken_users
       POSTGRES_USER: blokat
-      POSTGRES_PASSWORD: ***REMOVED***
+      POSTGRES_PASSWORD: "***REMOVED***"
       TZ: Europe/Brussels
       PGTZ: Europe/Brussels
     volumes:

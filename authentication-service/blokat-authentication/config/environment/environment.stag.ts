@@ -115,11 +115,11 @@ export const configuration: Configuration = {
   },
 
   database: {
-    username: 'blokat',
-    password: '***REMOVED***',
+    username: process.env.POSTGRES_USER,
+    password: process.env.POSTGRES_PASSWORD,
     url: 'user-db',
     port: '5432',
   },
 
-  jwtKey: '***REMOVED***',
+  jwtKey: process.env.JWT_KEY,
 };

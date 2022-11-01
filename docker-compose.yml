@@ -15,6 +15,16 @@ services:
       SPRING_PROFILES_ACTIVE: prod,mail
       SW_AGENT_COLLECTOR_BACKEND_SERVICES: oap:11800
       TZ: Europe/Brussels
+      DB_USERNAME: ""
+      DB_PASSWORD: ""
+      DB_URL: ""
+      AUTH_DB_USERNAME: ""
+      AUTH_DB_PASSWORD: ""
+      AUTH_DB_URL: ""
+      LDAP_URL: ""
+      LDAP_BASE: ""
+      LDAP_USER_DN: ""
+      LDAP_PASSWORD: ""
     depends_on:
       - db
     volumes:
@@ -33,7 +43,7 @@ services:
     environment:
       POSTGRES_DB: blokatugent
       POSTGRES_USER: blokat
-      POSTGRES_PASSWORD: ***REMOVED***
+      POSTGRES_PASSWORD: "***REMOVED***"
       TZ: Europe/Brussels
       PGTZ: Europe/Brussels
     volumes:

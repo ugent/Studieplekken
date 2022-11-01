@@ -13,7 +13,7 @@ services:
     environment:
         POSTGRES_MULTIPLE_DATABASES: blokatugent, blokatugent_test, studieplekken_users
         POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: ***REMOVED***
+        POSTGRES_PASSWORD: "postgres"
         TZ: Europe/Brussels
         PGTZ: Europe/Brussels
 

@@ -5,21 +5,21 @@ spring:
   datasource:
     type: "com.zaxxer.hikari.HikariDataSource"
     driverClassName: org.postgresql.Driver
-    url: "jdbc:postgresql://db:5432/blokatugent"
-    username: blokat
-    password:  ***REMOVED***
+    url: "${DB_URL}"
+    username: "${DB_USERNAME}"
+    password: "${DB_PASSWORD}"
     maximumPoolSize: 200
   auth-datasource:
     type: "com.zaxxer.hikari.HikariDataSource"
     driverClassName: org.postgresql.Driver
-    url: "jdbc:postgresql://user-db:5432/studieplekken_users"
-    username: blokat
-    password: ***REMOVED***
+    url: "${AUTH_DB_URL}"
+    username: "${AUTH_DB_USERNAME}"
+    password: "${AUTH_DB_PASSWORD}"
     maximumPoolSize: 200
   flyway: # For automatic flyway migration integration with spring boot
-    url: "jdbc:postgresql://db:5432/blokatugent"
-    user: blokat
-    password:  ***REMOVED***
+    url: "${DB_URL}"
+    user: "${DB_USERNAME}"
+    password: "${DB_PASSWORD}"
   mail:
     host: mailrelay
     protocol: smtp
@@ -45,8 +45,7 @@ custom:
     recipientsOpeningHoursOverview: "alarmbeheer@ugent.be,permanentie@ugent.be,schoonmaak@ugent.be,veiligheid@ugent.be"
   stadgent:
     url: "https://studieplekken-dev.ugent.be/"
-  jwtKey:
-    "***REMOVED***"
+  jwtKey: "${JWT_KEY}"
 # SAML
 saml:
   sp: https://studieplekken-dev.ugent.be/api/metadata/saml

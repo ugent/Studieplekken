@@ -38,11 +38,11 @@ export const configuration: Configuration = {
   },
 
   database: {
-    username: ***REMOVED***,
-    password: ***REMOVED***,
+    username: 'postgres',
+    password: 'postgres',
     url: 'localhost',
     port: '5432',
   },
 
-  jwtKey: '***REMOVED***',
+  jwtKey: process.env.JWT_KEY,
 };
