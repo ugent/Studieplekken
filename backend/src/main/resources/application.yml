@@ -10,25 +10,25 @@ spring:
   datasource:
     type: "com.zaxxer.hikari.HikariDataSource"
     driverClassName: org.postgresql.Driver
-    url: "${DB_URL}"
-    username: "${DB_USERNAME}"
-    password: "${DB_PASSWORD}"
+    url: "${DB_URL:}"
+    username: "${DB_USERNAME:}"
+    password: "${DB_PASSWORD:}"
     maximumPoolSize: 200
   auth-datasource:
     type: "com.zaxxer.hikari.HikariDataSource"
     driverClassName: org.postgresql.Driver
-    url: "${AUTH_DB_URL}"
-    username: "${AUTH_DB_USERNAME}"
-    password: "${AUTH_DB_PASSWORD}"
+    url: "${AUTH_DB_URL:}"
+    username: "${AUTH_DB_USERNAME:}"
+    password: "${AUTH_DB_PASSWORD:}"
     maximumPoolSize: 200
   mail:
     host: smtp.ugent.be
     protocol: smtp
     port: 25
   flyway: # For automatic flyway migration integration with spring boot
-    url: "${DB_URL}"
-    user: "${DB_USERNAME}"
-    password: "${DB_PASSWORD}"
+    url: "${DB_URL:}"
+    user: "${DB_USERNAME:}"
+    password: "${DB_PASSWORD:}"
     baseline-on-migrate: true
   jpa:
     properties:
@@ -42,8 +42,8 @@ spring:
 server:
   ssl:
     key-store-type: PKCS12
-    key-store: classpath:keystore/blokat.p12
-    key-store-password: "${SSL_KEYSTORE_PASSWORD}"
+    key-store: "${SSL_KEYSTORE_PATH:classpath:keystore/blokat-tests.p12}"
+    key-store-password: "${SSL_KEYSTORE_PASSWORD:blokat-tests}"
     key-alias: blokat
     enabled: true
   port: 8087
@@ -74,10 +74,10 @@ redirect:
 
 # LDAP Configuration
 ldap:
-  url: "${LDAP_URL}"
-  base: "${LDAP_BASE}"
-  userDn: "${LDAP_USER_DN}"
-  password: "${LDAP_PASSWORD}"
+  url: "${LDAP_URL:}"
+  base: "${LDAP_BASE:}"
+  userDn: "${LDAP_USER_DN:}"
+  password: "${LDAP_PASSWORD:}"
 
 # Logging config
 logging:
@@ -93,13 +93,13 @@ custom:
     recipientsOpeningHoursOverview: ""
   stadgent:
     url: "https://studieplekken-dev.ugent.be/"
-  jwtKey: "${JWT_KEY}"
+  jwtKey: "${JWT_KEY:}"
 
 # SAML
 saml:
   keystore:
-    location: classpath:/keystore/samlKeystore.jks
-    password: "${SAML_KEYSTORE_PASSWORD}"
+    location: "${SAML_KEYSTORE_PATH:classpath:/keystore/samlKeystore-tests.jks}"
+    password: "${SAML_KEYSTORE_PASSWORD:blokat-tests}"
     alias: blokat
   idp: http://www.okta.com/exk15hzmbtaSjzq1E5d7
   sp: https://localhost:8080/api/metadata/saml

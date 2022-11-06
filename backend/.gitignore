@@ -38,5 +38,7 @@ src/main/resources/application-dev.yml
 
 # Credentials
 *.override.yml
-keystore/
+/src/main/resources/keystore/**
+!/src/main/resources/keystore/blokat-tests.p12
+!/src/main/resources/keystore/samlKeystore-tests.jks
 /src/main/resources/saml/metadata/
