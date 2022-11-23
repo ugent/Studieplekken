@@ -172,16 +172,17 @@ public class AccountController extends AuthorizedController {
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public void updateUser(@AuthenticationPrincipal User authenticatedUser,
                            @PathVariable("userId") String encodedId,
-                           @RequestBody User user) throws UnsupportedEncodingException {
+                           @RequestBody User user) {
         String id = Base64String.base64Decode(encodedId);
 
-        User old;
-        if (authenticatedUser.isAdmin()) {
-            old = userDao.getUserById(id);
-        } else {
-            old = userDao.getUserByIdAndInstitution(id, authenticatedUser.getInstitution());
-        }
+        User old = authenticatedUser.isAdmin()
+            ? userDao.getUserById(id)
+            : userDao.getUserByIdAndInstitution(id, authenticatedUser.getInstitution());
+
+        user.setUserSettings(old.getUserSettings());
+
         userDao.updateUser(user);
+
         logger.info(String.format("Updated user %s from %s to %s", id, old, user));
     }
 

@@ -41,10 +41,10 @@ public class User implements Cloneable, UserDetails {
     @Column(name = "institution")
     private String institution;
 
-    private int penaltyPoints;
-
     @Column(name = "admin")
     private boolean admin;
+
+    private int penaltyPoints;
 
     // Named 'userAuthorities' instead of 'authorities' because there would be a
     // conflict with the getter UserDetails#getAuthorities() that is used to return
