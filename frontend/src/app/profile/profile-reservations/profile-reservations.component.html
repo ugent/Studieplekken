@@ -6,6 +6,14 @@
 
   <hr>
 
+  <div style="display: flex; flex-direction: row;">
+    <a class="button button-primary" href="{{getCalendarLink()}}" target="_blank">
+      {{'profile.reservations.calendarLink' | translate}}
+    </a>
+    <input class="form-control" type="text"  value="{{getCalendarLink()}}" />
+  </div>
+  <br>
+
   <!-- Table to show the location reservations of the logged in user -->
   <div class="container-fluid">
     <div class="messages messages--info" *ngIf="successGettingLocationReservations === null">

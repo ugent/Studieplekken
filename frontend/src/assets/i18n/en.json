@@ -987,7 +987,8 @@
           "keyReturnedDateNull": "n/a"
         },
         "noReservations": "You have never made any locker reservations so far."
-      }
+      },
+      "calendarLink": "Import your reservations into your personal calendar"
     }
   },
   "openingHoursOverview": {

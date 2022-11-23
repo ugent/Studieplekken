@@ -7,6 +7,7 @@ import blok2.model.Authority;
 import blok2.model.reservables.Location;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.hibernate.annotations.Type;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,10 +42,14 @@ public class User implements Cloneable, UserDetails {
     @Column(name = "institution")
     private String institution;
 
+    private int penaltyPoints;
+
     @Column(name = "admin")
     private boolean admin;
 
-    private int penaltyPoints;
+    @Type(type = "pg-uuid")
+    @Column(name = "calendar_id", columnDefinition = "uuid")
+    private UUID calendarId;
 
     // Named 'userAuthorities' instead of 'authorities' because there would be a
     // conflict with the getter UserDetails#getAuthorities() that is used to return
@@ -81,6 +86,7 @@ public class User implements Cloneable, UserDetails {
         userId = "";
         userAuthorities = new HashSet<>();
         userVolunteer = new HashSet<>();
+        calendarId = UUID.randomUUID();
     }
 
     @Override
@@ -93,7 +99,8 @@ public class User implements Cloneable, UserDetails {
                 Objects.equals(mail.toLowerCase(), user.mail.toLowerCase()) &&
                 Objects.equals(institution, user.institution) &&
                 Objects.equals(userId, user.userId) &&
-                admin == user.admin;
+                admin == user.admin &&
+                Objects.equals(calendarId, user.calendarId);
     }
 
     @Override
@@ -264,5 +271,9 @@ public class User implements Cloneable, UserDetails {
 
     public void setUserSettings(UserSettings userSettings) {
         this.userSettings = userSettings;
+    }
+
+    public UUID getCalendarId() {
+        return calendarId;
     }
 }

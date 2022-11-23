@@ -11,6 +11,7 @@ import { map } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { TableDataService } from 'src/app/stad-gent-components/atoms/table/data-service/table-data-service.service';
 import { TabularData } from 'src/app/stad-gent-components/atoms/table/tabular-data';
+import {api} from '../../services/api/endpoints';
 
 @Component({
   selector: 'app-profile-reservations',
@@ -179,6 +180,17 @@ export class ProfileReservationsComponent implements OnInit {
 
   getTabularData(locationReservations: LocationReservation[]): Observable<TabularData<LocationReservation>> {
     return this.tableDataService.reservationsToProfileTable(this.sortedLocationReservations(locationReservations));
+  }
+
+  getCalendarLink(): string {
+    let user = this.user;
+    if (!user) {
+      this.authenticationService.user.subscribe(u => {
+        user = u;
+      });
+    }
+    return window.location.protocol + '//' +
+      window.location.host + api.calendarLink.replace('{userId}', user.userId).replace('{calendarId}', user.calendarId);
   }
 
 }

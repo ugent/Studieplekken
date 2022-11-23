@@ -987,7 +987,8 @@
           "keyReturnedDateNull": "n.v.t."
         },
         "noReservations": "Je hebt tot nu toe nog nooit een locker gereserveerd."
-      }
+      },
+      "calendarLink": "Importeer je reservaties in je kalender"
     }
   },
   "openingHoursOverview": {

@@ -66,6 +66,8 @@ dependencies {
     implementation group: 'org.geotools', name: 'gt-main', version: '25.0'
     implementation group: 'io.jsonwebtoken', name:'jjwt', version: '0.9.1'
 
+    implementation group: 'org.mnode.ical4j', name: 'ical4j', version: '4.0.0-beta3'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.2.2.RELEASE'
     testImplementation 'org.springframework.security:spring-security-test'
 }

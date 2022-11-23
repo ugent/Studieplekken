@@ -85,6 +85,9 @@ export const api = {
   getAdmins: '/api/account/admins',
   getManageableLocations: '/api/account/{userId}/manageable/locations',
 
+  // CALENDAR ICAL
+  calendarLink: '/api/ical/{userId}/{calendarId}',
+
   // LOCKERS
   lockersStatusesOfLocation: '/api/lockers/status/{locationId}',
 

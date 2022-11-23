@@ -10,6 +10,7 @@ export interface User {
   penaltyPoints: number;
   institution: string;
   admin: boolean;
+  calendarId: string;
   userAuthorities: Authority[];
   userVolunteer: unknown[];
   userSettings: UserSettings;
@@ -31,6 +32,7 @@ export class UserConstructor {
       penaltyPoints: 0,
       institution: '',
       admin: false,
+      calendarId: '',
       userAuthorities: [],
       userVolunteer: [],
       userSettings: {
@@ -53,6 +55,7 @@ export class UserConstructor {
       penaltyPoints: obj.penaltyPoints,
       institution: obj.institution,
       admin: obj.admin,
+      calendarId: obj.calendarId,
       userAuthorities: obj.userAuthorities.map(v => AuthorityConstructor.newFromObj(v)),
       userVolunteer: obj.userVolunteer,
       userSettings: obj.userSettings
