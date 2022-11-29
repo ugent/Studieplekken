@@ -20,7 +20,7 @@ services:
       SW_STORAGE: mysql
       SW_JDBC_URL: jdbc:mysql://oap-db:3306/swtest
       SW_DATA_SOURCE_USER: sw
-      SW_DATA_SOURCE_PASSWORD: ***REMOVED***
+      SW_DATA_SOURCE_PASSWORD: "***REMOVED***"
     volumes:
       - ./oadb-libs:/oap-libs
 #   volumes:
@@ -50,12 +50,14 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ***REMOVED***
+      MYSQL_ROOT_PASSWORD: "***REMOVED***"
       MYSQL_DATABASE: swtest
       MYSQL_USER: sw
-      MYSQL_PASSWORD: ***REMOVED***
+      MYSQL_PASSWORD: "***REMOVED***"
     networks:
       - blokatgent
+    cap_add:
+      - SYS_NICE  # CAP_SYS_NICE
 
 #  prom:
 #    image: prom/prometheus
