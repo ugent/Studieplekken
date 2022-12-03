@@ -15,6 +15,10 @@ All information about the backend application can be found at [/backend/README.m
 
 All information about the frontend application can be found at [/frontend/README.md](frontend/README.md).
 
+### Authentication service
+
+All information about the authentication service can be found at [/authentication-service/blokat-authentication/README.md](authentication-service/blokat-authentication/README.md).
+
 ### Profiling with Skywalking
 
 All information about profiling with Skywalking can be found at [/skywalking/README.md](skywalking/README.md)
