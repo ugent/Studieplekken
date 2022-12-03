@@ -1,6 +1,7 @@
 # Studieplekken
 
-[![Build Status](https://ci.dsa.ugent.be/api/badges/DSA/BlokAt/status.svg)](https://ci.dsa.ugent.be/DSA/BlokAt)
+![Build Status](https://github.com/ugent/Studieplekken/actions/workflows/test-backend.yml/badge.svg)
+
 
 This is an application made by the [DSA](https://dsa.ugent.be) IT-Team of [Ghent University](https://www.ugent.be).
 
