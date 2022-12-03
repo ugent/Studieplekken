@@ -43,6 +43,12 @@ export class RegisterFlowService {
       // create user
       const user = await this.unhashedToUserData(body);
 
+      // check if email (case-insensitive) is already used
+      if (await this.usersDb.userByEmail(body.email)) {
+        errors.push("Email is already in use.");
+        return;
+      }
+
       // check token handed in body
       try {
         await this.tokenDb.checkToken(body.token, "REGISTRATION");

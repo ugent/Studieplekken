@@ -7,8 +7,13 @@ export class DbUserService {
   constructor(private prisma: DbService) {}
 
   public async userByEmail(email: string) {
-    return this.prisma.users.findUnique({
-      where: { email },
+    return this.prisma.users.findFirst({
+      where: {
+        email: {
+          equals: email,
+          mode: "insensitive",
+        },
+      },
     });
   }
 
@@ -19,8 +24,13 @@ export class DbUserService {
   }
 
   public async updatePassword(email: string, password: string, salt: string) {
-    await this.prisma.users.update({
-      where: { email: email },
+    await this.prisma.users.updateMany({
+      where: {
+        email: {
+          equals: email,
+          mode: "insensitive",
+        },
+      },
       data: { hashed_password: password, salt: salt },
     });
   }
