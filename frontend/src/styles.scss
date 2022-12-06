@@ -49,32 +49,32 @@ $styleguide-dir: "" !default;
  * Class definition for a rotating loader
  */
 .loader {
-  border: 10px solid #f3f3f3;
-  border-radius: 50%;
-  border-top: 10px double #3498db;
-  width: 60px;
-  height: 60px;
-  -webkit-animation: spin 2s linear infinite; /* Safari */
-  animation: spin 2s linear infinite;
+    border: 10px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 10px double #3498db;
+    width: 60px;
+    height: 60px;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
 }
 
 /* Safari */
 @-webkit-keyframes spin {
-  0% {
-    -webkit-transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-  }
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
 }
 
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /*
@@ -83,47 +83,47 @@ $styleguide-dir: "" !default;
  */
 /* The Modal (background) */
 .my-modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0, 0, 0); /* Fallback color */
-  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0); /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
 }
 
 /* Modal Content/Box */
 .my-modal-content {
-  background-color: #fefefe;
-  margin: 5% auto; /* 15% from the top and centered */
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%; /* Could be more or less, depending on screen size */
+    background-color: #fefefe;
+    margin: 5% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
 }
 
 /* The Close Button */
 .my-close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
 }
 
 .my-close:hover,
 .my-close:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 /**
  * hover class
  */
 .hover {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 /**
@@ -131,7 +131,7 @@ $styleguide-dir: "" !default;
  * This class should be set on the left button.
  */
 .btn-left {
-  margin-right: 10px;
+    margin-right: 10px;
 }
 
 /**
@@ -139,133 +139,139 @@ $styleguide-dir: "" !default;
  * Bootstrap Modal is at the foreground.
  * Solution found at: https://stackoverflow.com/a/63051872/9356123
  */
-.cdk-overlay-container {
-  z-index: 9999 !important;
+.cdk-global-overlay-wrapper {
+    padding-top: 2rem;
+    .cdk-overlay-pane {
+        overflow-y: scroll;
+    }
 }
 
 .calendar-event-NR * * mwl-calendar-event-title {
-  color: black;
+    color: black;
 }
 
 .calendar-event-reserved * * mwl-calendar-event-title {
-  color: #ffffff;
+    color: #ffffff;
 }
 
 .calendar-event-NR span {
-  white-space: normal !important;
+    white-space: normal !important;
 }
 
 .calendar-event-reserved span {
-  white-space: normal !important;
+    white-space: normal !important;
 }
 
 .blue-text {
-  color: #3498db;
+    color: #3498db;
 }
 
 .calendar-event-full-not-reserved * * mwl-calendar-event-title {
-  color: #a32707;
+    color: #a32707;
 }
+
 .calendar-event-full-not-reserved span {
-  white-space: normal !important;
+    white-space: normal !important;
 }
 
 .unclickable {
-  opacity: 0.6;
+    opacity: 0.6;
 }
 
 .calendar-event-suggestion {
-  opacity: 0.6;
+    opacity: 0.6;
 }
 
 .float-right {
-  float: right;
-  margin-right: 2.5vw;
+    float: right;
+    margin-right: 2.5vw;
 }
 
 .btn-danger.danger {
-  color: #fff;
-  background-color: #d9534f;
-  border-color: #d43f3a;
+    color: #fff;
+    background-color: #d9534f;
+    border-color: #d43f3a;
 }
 
 video {
-  width: 100%;
+    width: 100%;
 }
 
 .bigmodal {
-  min-width: 60vw;
+    min-width: 60vw;
 }
 
 .fullheight {
-  height: 100%;
+    height: 100%;
 }
+
 .fullwidth {
-  width: 100%;
+    width: 100%;
 }
 
 h1 {
-  text-overflow: wrap;
+    text-overflow: wrap;
 }
 
 .responsive-table {
-  display: inline-block !important;
+    display: inline-block !important;
 }
+
 // Safari specific coloring of input fields
 @media not all and (min-resolution: 0.001dpcm) {
-  @supports (-webkit-appearance: none) {
-    .input-true {
-      border: 1px solid rgba(245, 64, 64, 0.767) !important;
-    }
+    @supports (-webkit-appearance: none) {
+        .input-true {
+            border: 1px solid rgba(245, 64, 64, 0.767) !important;
+        }
 
-    .input-false {
-      border: 1px solid rgba(128, 128, 128, 0.678) !important;
+        .input-false {
+            border: 1px solid rgba(128, 128, 128, 0.678) !important;
+        }
     }
-  }
 }
 
 .alert {
-  padding: 15px;
-  margin-bottom: 20px;
-  border: 1px solid transparent;
-  border-radius: 4px;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
 }
 
 .alert-success {
-  background-color: #dff0d8;
-  border-color: #d6e9c6;
-  color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+    color: #3c763d;
 }
 
 .alert-info {
-  background-color: #d9edf7;
-  border-color: #bce8f1;
-  color: #31708f;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+    color: #31708f;
 }
 
 .alert-warning {
-  background-color: #fcf8e3;
-  border-color: #faebcc;
-  color: #8a6d3b;
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+    color: #8a6d3b;
 }
 
 .alert-danger {
-  background-color: #f2dede;
-  border-color: #ebccd1;
-  color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+    color: #a94442;
 }
 
 // Bootstrap form-control input styling
 .my-form-control {
-  border-radius: .25rem;
-  border: 1px solid #ced4da;
-  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-  display: block;
-  padding: .375rem .75rem;
-  line-height: 1.5;
-  color: #495057;
-  background-color: #fff;
-  background-clip: padding-box;
-  width: 100%;
+    border-radius: .25rem;
+    border: 1px solid #ced4da;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    display: block;
+    padding: .375rem .75rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    width: 100%;
 }
