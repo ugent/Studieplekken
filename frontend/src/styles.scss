@@ -140,9 +140,9 @@ $styleguide-dir: "" !default;
  * Solution found at: https://stackoverflow.com/a/63051872/9356123
  */
 .cdk-global-overlay-wrapper {
-    padding-top: 2rem;
+    padding: 2rem 0;
     .cdk-overlay-pane {
-        overflow-y: scroll;
+        overflow-y: auto;
     }
 }
 
