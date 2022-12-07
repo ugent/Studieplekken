@@ -18,7 +18,7 @@ export const environment = {
   odiseeFlowTriggerUrl: 'https://studieplekken-dev.ugent.be/auth/login/odisee',
   stadGentFlowTriggerUrl: 'https://studieplekken-dev.ugent.be/auth/login/stadgent',
   kulFlowTriggerUrl: 'https://studieplekken-dev.ugent.be/auth/login/kuleuven',
-  otherFlowTriggerUrl: 'https://studieplekken-dev.ugent.be/auth/local/login',
+  otherFlowTriggerUrl: 'http://localhost:8080/auth/local/login',
 
 
 

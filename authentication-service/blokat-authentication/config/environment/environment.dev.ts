@@ -28,13 +28,12 @@ export const configuration: Configuration = {
       'https://localhost:8080/login',
       'https://localhost:8087/login',
       'https://localhost:4200/login',
+      'http://localhost:4200/login',
     ],
   },
 
   https: {
-    enabled: true,
-    certLocation: 'config/auth/cert.pem',
-    keyLocation: 'config/auth/key.pem',
+    enabled: false,
   },
 
   database: {
@@ -44,5 +43,5 @@ export const configuration: Configuration = {
     port: '5432',
   },
 
-  jwtKey: process.env.JWT_KEY,
+  jwtKey: "local-key",
 };
