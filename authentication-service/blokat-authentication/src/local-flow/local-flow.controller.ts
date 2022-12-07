@@ -94,6 +94,7 @@ export class LocalFlowController {
         }
       }
     } catch (e: unknown) {
+      Logger.error(e);
       res.render("login", { errors: "valuable error", callbackURL });
     }
   }
