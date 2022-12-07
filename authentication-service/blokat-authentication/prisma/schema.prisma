@@ -8,18 +8,18 @@ datasource db {
 }
 
 model users {
-  user_id String     @id @default(uuid())
-  first_name    String
-  last_name    String
-  email   String  @unique
+  user_id         String @id @default(uuid())
+  first_name      String
+  last_name       String
+  email           String @unique
   hashed_password String
-  salt String
+  salt            String
 }
 
 model tokens {
-  id String @id @default(uuid())
+  id        String   @id @default(uuid())
   createdAt DateTime @default(now())
-  isUsed Boolean @default(false)
-  purpose String @db.VarChar(64) @default("REGISTRATION")
-  email String @db.VarChar(255)
+  isUsed    Boolean  @default(false)
+  purpose   String   @default("REGISTRATION") @db.VarChar(64)
+  email     String?  @db.VarChar(255)
 }
