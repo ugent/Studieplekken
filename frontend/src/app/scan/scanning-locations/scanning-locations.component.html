@@ -1,8 +1,6 @@
 <div *ngIf="locationObs | async as locations; else loadingOrError">
-  <app-table
-  [tabularData]="getTableData(locations)"
-  (action)="onAction($event)">
-  <span>Hello</span>
+  <app-table [tabularData]="getTableData(locations)" (action)="onAction($event)">
+
   </app-table>
 </div>
 
