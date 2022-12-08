@@ -1,4 +1,3 @@
-import { Route } from '@angular/compiler/src/core';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../environments/environment';
@@ -20,8 +19,6 @@ export class LoginComponent {
   kulFlowTriggerUrl = environment.kulFlowTriggerUrl;
   otherFlowTriggerUrl = environment.otherFlowTriggerUrl;
 
-
-
   constructor(route: ActivatedRoute, authService: AuthenticationService, router: Router) {
     route.queryParamMap.subscribe((map) => {
       if (map.has('token')) {
@@ -41,8 +38,7 @@ export class LoginComponent {
     localStorage.setItem(userWantsTLogInLocalStorageKey, 'true');
   }
 
-  getCallbackUrl() {
-    const origin = window.location.origin;
-    return `${origin}/login`
+  getCallbackUrl(): string {
+    return `${window.location.origin}/login`;
   }
 }
