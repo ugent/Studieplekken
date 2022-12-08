@@ -1,21 +1,20 @@
-import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { environment } from 'src/environments/environment';
+import {Injectable} from '@angular/core';
+import {Router} from '@angular/router';
 
 @Injectable({
-  providedIn: 'root',
+    providedIn: 'root',
 })
 export class LoginRedirectService {
 
-  constructor(private router: Router) {}
+    constructor(private router: Router) {}
 
-  registerUrl(url: string) {
-    localStorage.setItem("afterLogin", url);
-  }
+    registerUrl(url: string): void {
+        localStorage.setItem('afterLogin', url);
+    }
 
-  navigateToLastUrl() {
-    const url = localStorage.getItem("afterLogin") || (environment.useExternalDashboard ? '/management':'/dashboard');
-    localStorage.removeItem("afterLogin");
-    this.router.navigateByUrl(url);
-  }
+    navigateToLastUrl(): void {
+        const url = localStorage.getItem('afterLogin');
+        localStorage.removeItem('afterLogin');
+        void this.router.navigateByUrl(url);
+    }
 }
