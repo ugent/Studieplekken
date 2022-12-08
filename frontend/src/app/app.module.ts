@@ -177,7 +177,7 @@ const routes: Routes = [
         component: ScanComponent,
         canActivate: [AuthorizationGuardService, ApplicationTypeGuardService],
         data:  {
-            guards: [['scanner'], ['admin']]
+            guards: [['scanner']]
         },
         children: [
             {
@@ -201,7 +201,7 @@ const routes: Routes = [
         component: ManagementComponent,
         canActivate: [AuthorizationGuardService],
         data:  {
-            guards: [['authorities'], ['admin']]
+            guards: [['authorities']]
         },
         children: [
             {
@@ -213,28 +213,28 @@ const routes: Routes = [
                 path: 'locations',
                 component: LocationsManagementComponent,
                 data:  {
-                    guards: [['authorities'], ['admin']]
+                    guards: [['authorities']]
                 }
             },
             {
                 path: 'locations/:locationId',
                 component: LocationDetailsManagementComponent,
                 data:  {
-                    guards: [['authorities'], ['admin']]
+                    guards: [['authorities']]
                 }
             },
             {
                 path: 'locations/:locationId/timeslot/:seqnr',
                 component: TimeslotTableComponent,
                 data:  {
-                    guards: [['authorities'], ['admin']]
+                    guards: [['authorities']]
                 }
             },
             {
                 path: 'buildings',
                 component: BuildingManagementComponent,
                 data:  {
-                    guards: [['authorities'], ['admin']]
+                    guards: [['authorities']]
                 }
             },
             {
@@ -283,7 +283,7 @@ const routes: Routes = [
                 path: 'volunteers',
                 component: VolunteersManagementComponent,
                 data:  {
-                    guards: [['authorities'], ['admin']]
+                    guards: [['authorities']]
                 }
             },
             {

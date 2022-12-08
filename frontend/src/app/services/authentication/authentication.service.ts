@@ -15,7 +15,7 @@ import {LoginRedirectService} from './login-redirect.service';
 /**
  * The structure of the authentication service has been based on this article:
  *   - https://jasonwatmore.com/post/2020/05/15/angular-9-role-based-authorization-tutorial-with-example
- *   - but without using the actual JWT authentication, this is not save as mentioned in:
+ *   - but without using the actual JWT authentication, this is not safe as mentioned in:
  *     - https://dev.to/rdegges/please-stop-using-local-storage-1i04
  *
  * The authentication of non UGent users will use HTTP-only cookies created by the backend.
@@ -24,6 +24,7 @@ import {LoginRedirectService} from './login-redirect.service';
  * Importance of HTTP-only cookies: https://blog.codinghorror.com/protecting-your-cookies-httponly/
  */
 @Injectable({
+    // Make the service a singleton service.
     providedIn: 'root',
 })
 export class AuthenticationService {
@@ -51,6 +52,17 @@ export class AuthenticationService {
         private userService: UserService,
         private loginRedirectService: LoginRedirectService,
     ) {
+        // When the access token is modified (e.g. in a different tab),
+        // refresh the authentication information.
+        window.onstorage = (event: StorageEvent) => {
+            if (event.key === 'access_token') {
+                if (!event.newValue) {
+                    this.logout();
+                } else {
+                    this.login();
+                }
+            }
+        };
     }
 
     // **************************************************
@@ -106,7 +118,6 @@ export class AuthenticationService {
             },
             () => {
                 this.userSubject.next(UserConstructor.new());
-                this.hasAuthoritiesSubject.next(false);
             }
         );
     }
@@ -125,7 +136,7 @@ export class AuthenticationService {
     logout(): void {
         this.http.post(api.logout, {}).subscribe(() => {
             this.userSubject.next(UserConstructor.new());
-            this.router.navigate(['/login']).then();
+            void this.router.navigate(['/login']);
         });
 
         localStorage.removeItem('access_token');
@@ -142,7 +153,28 @@ export class AuthenticationService {
      * userSubject has a valid user as value, we can consider the user as logged in.
      */
     isLoggedIn(): boolean {
-        return this.userSubject.value && this.userSubject.value.userId !== '';
+        return this.userValue() && this.userValue().userId !== '';
+    }
+
+    /**
+     * Returns whether the user has any locations to scan.
+     */
+    isScanner(): boolean {
+        return this.isLoggedIn() && (this.isAuthority() || this.userValue().userVolunteer.length > 0);
+    }
+
+    /**
+     * Returns whether the user has any authorities.
+     */
+    isAuthority(): boolean {
+        return this.isLoggedIn() && (this.isAdmin() || this.userValue().userAuthorities.length > 0);
+    }
+
+    /**
+     * Returns whether the user is logged in as admin.
+     */
+    isAdmin(): boolean {
+        return this.isLoggedIn() && this.userValue().admin;
     }
 
     /**
@@ -162,27 +194,6 @@ export class AuthenticationService {
 
         // Jump to login.ugent.be immediately. Chances are that this will instantly resolve any issues.
         void this.router.navigateByUrl('/login');
-    }
-
-    /**
-     * Returns whether the user is logged in as admin.
-     */
-    isAdmin(): boolean {
-        return this.userSubject.value?.admin ?? false;
-    }
-
-    /**
-     * Returns whether the user has any authorities.
-     */
-    hasAuthorities(): boolean {
-        return this.userValue()?.userAuthorities.length > 0 ?? false;
-    }
-
-    /**
-     * Returns whether the user has any locations to scan.
-     */
-    hasLocationsToScan(): boolean {
-        return this.userValue()?.userVolunteer.length > 0 ?? false;
     }
 
     // ********************************************************
