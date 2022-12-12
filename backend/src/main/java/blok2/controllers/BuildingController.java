@@ -66,7 +66,7 @@ public class BuildingController {
         ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.Type.UPDATE, user, ActionLogEntry.Domain.BUILDING, buildingId);
         actionLogDao.addLogEntry(logEntry);
         if (!user.isAdmin()) {
-            if (!building.getInstitution().equals(user.getInstitution())) {
+            if (!building.getInstitution().equals(user.getInstitution()) || !buildingDao.getBuildingById(buildingId).getInstitution().equals(user.getInstitution())) {
                 throw new NotAuthorizedException("You are not authorized to update a building to an institution other than the one you belong to.");
             }
         }
