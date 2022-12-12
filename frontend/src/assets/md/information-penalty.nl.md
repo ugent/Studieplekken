@@ -4,7 +4,6 @@ Sinds 10 januari 2021 geldt het puntensysteem op de bloklocaties. Het puntensyst
   -  Annulering reservatie tijdens scanmoment: 25 punten
   -  Laattijdige annulering reservatie twee dagen na elkaar: 50 punten
   -  Niet opdagen op studieplek (incl. te laat komen): 50 punten
-  -  Mondmasker niet willen dragen: 50 punten
   -  Niet komen opdagen/Te laat komen op de locatie twee dagen na elkaar: 100 punten
   -  Vandalisme en losbandigheid: 150 punten
 
