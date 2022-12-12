@@ -49,7 +49,7 @@ export class BuildingManagementComponent implements OnInit {
     private addressResolver: AddressResolverService
   ) {
     // initial icon should be grey and not wrong icon by default
-    this.isLoadingAddress=true;
+    this.isLoadingAddress = true;
   }
 
   get buildingId(): AbstractControl {
@@ -92,7 +92,7 @@ export class BuildingManagementComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.buildingsObs = this.buildingService.getAllBuildings();
+    this.reloadBuildings();
 
 
     this.buildingsObs.subscribe(
@@ -144,7 +144,7 @@ export class BuildingManagementComponent implements OnInit {
       institution: this.authenticationService.userValue().institution,
     });
 
-    this.modalService.open(template, {panelClass: ["cs--cyan" ,"bigmodal"]});
+    this.modalService.open(template, {panelClass: ['cs--cyan', 'bigmodal']});
   }
 
   addBuilding(): void {
@@ -152,13 +152,13 @@ export class BuildingManagementComponent implements OnInit {
     this.sendBuildingRequest(true);
   }
 
-  addBuildingRequest(){
-    //add new building
+  addBuildingRequest(): void {
+    // add new building
     this.buildingService.addBuilding(this.building).subscribe(
       () => {
         this.successAddingBuilding = true;
         // reload the buildings
-        this.buildingsObs = this.buildingService.getAllBuildings();
+        this.reloadBuildings();
         this.modalService.closeAll();
       },
       () => {
@@ -182,7 +182,7 @@ export class BuildingManagementComponent implements OnInit {
     this.isCorrectAddress = true;
     this.isLoadingAddress = false;
 
-    this.modalService.open(template, {panelClass: ["cs--cyan" ,"bigmodal"]});
+    this.modalService.open(template, {panelClass: ['cs--cyan', 'bigmodal']});
   }
 
   updateBuildingInFormGroup(): void {
@@ -190,15 +190,15 @@ export class BuildingManagementComponent implements OnInit {
     this.sendBuildingRequest(false);
   }
 
-  updateBuildingRequest():void {
-    //update existing building
+  updateBuildingRequest(): void {
+    // update existing building
     this.buildingService
     .updateBuilding(this.building.buildingId, this.building)
     .subscribe(
       () => {
         this.successUpdatingBuilding = true;
         // reload the buildings
-        this.buildingsObs = this.buildingService.getAllBuildings();
+        this.reloadBuildings();
         this.modalService.closeAll();
       },
       () => {
@@ -214,7 +214,7 @@ export class BuildingManagementComponent implements OnInit {
     // prepare the tagFormGroup
     this.prepareFormGroup(building);
 
-    this.modalService.open(template, {panelClass: ["cs--cyan" ,"bigmodal"]});
+    this.modalService.open(template, {panelClass: ['cs--cyan', 'bigmodal']});
   }
 
   deleteBuildingInFormGroup(): void {
@@ -223,7 +223,7 @@ export class BuildingManagementComponent implements OnInit {
       () => {
         this.successDeletingBuilding = true;
         // reload the buildings
-        this.buildingsObs = this.buildingService.getAllBuildings();
+        this.reloadBuildings();
         this.modalService.closeAll();
       },
       () => {
@@ -238,13 +238,13 @@ export class BuildingManagementComponent implements OnInit {
 
   fillInstitutionsDependingOnUser(): void {
     if (this.authenticationService.isAdmin()) {
-      this.institutionsObs = of(['UGent', 'HoGent', 'Arteveldehogeschool', 'StadGent', 'Luca', 'Odisee', "Other"]);
+      this.institutionsObs = of(['UGent', 'HoGent', 'Arteveldehogeschool', 'StadGent', 'Luca', 'Odisee', 'Other']);
     } else {
       this.institutionsObs = of([this.authenticationService.userValue().institution]);
     }
   }
 
-  sendBuildingRequest(isAdd:boolean) {
+  sendBuildingRequest(isAdd: boolean): void {
     const address = this.address;
     this.isLoadingAddress = true;
     this.addressResolver.query(address.value).subscribe(r => {
@@ -261,32 +261,37 @@ export class BuildingManagementComponent implements OnInit {
             longitude: r[0].lon,
             institution: this.institution.value
           }
-        )
-        if(isAdd){
+        );
+        if (isAdd){
           this.addBuildingRequest();
-        }else{
+        } else {
           this.updateBuildingRequest();
         }
       } else {
         this.isCorrectAddress = false;
-        if(isAdd){
+        if (isAdd){
           this.successAddingBuilding = false;
         }else{
           this.successUpdatingBuilding = false;
         }
       }
-    })
+    });
   }
 
-  getAddressIcon() {
-    if(this.isLoadingAddress) {
-      return "icon-update"
+  getAddressIcon(): string {
+    if (this.isLoadingAddress) {
+      return 'icon-update';
     }
 
-    return this.isCorrectAddress ? "icon-checkmark-circle ok": "icon-exclamation-circle no"
+    return this.isCorrectAddress ? 'icon-checkmark-circle ok' : 'icon-exclamation-circle no';
   }
 
-  showAdmin() {
+  showAdmin(): boolean {
     return this.authenticationService.isAdmin();
+  }
+
+  reloadBuildings(): void {
+      this.buildingsObs = this.buildingService.getAllBuildings().pipe(map(buildings =>
+          buildings.filter(building => building.institution === this.authenticationService.userValue().institution)));
   }
 }

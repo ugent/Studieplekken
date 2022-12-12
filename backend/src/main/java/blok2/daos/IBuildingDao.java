@@ -12,7 +12,7 @@ public interface IBuildingDao {
     // *************************************/
 
     /**
-     * get all authorities
+     * get all buildings
      */
     List<Building> getAllBuildings();
 
