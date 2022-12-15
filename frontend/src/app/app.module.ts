@@ -183,7 +183,7 @@ const routes: Routes = [
             {
                 path: '',
                 redirectTo: 'locations',
-                pathMatch: 'full',
+                pathMatch: 'full'
             },
             {
                 path: 'locations',
