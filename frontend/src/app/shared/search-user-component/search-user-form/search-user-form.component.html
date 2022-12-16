@@ -8,7 +8,7 @@
                 </label>
                 <div class="col-lg-8 search">
                     <input class="form-control search inline" id="firstName" type="search" formControlName="firstName"
-                        (ngModelChange)="filterFormChanged(formGroup.value)">
+                           (ngModelChange)="filterFormChanged(formGroup.value)">
                 </div>
             </div>
 
@@ -19,7 +19,7 @@
                 </label>
                 <div class="col-lg-8 search">
                     <input class="form-control" id="lastName" type="search" formControlName="lastName"
-                        (ngModelChange)="filterFormChanged(formGroup.value)">
+                           (ngModelChange)="filterFormChanged(formGroup.value)">
                 </div>
             </div>
 
@@ -30,18 +30,17 @@
                 </label>
                 <div class="col-lg-8 search">
                     <input class="form-control" id="barcode" type="search" formControlName="barcode"
-                        (ngModelChange)="filterFormChanged(formGroup.value)">
+                           (ngModelChange)="filterFormChanged(formGroup.value)">
                 </div>
             </div>
 
             <!-- Search and Cancel buttons -->
             <div class="row">
                 <div class="col-md-11">
-
                     <div class="pull-right">
                         <!-- Search -->
                         <button type="submit" class="button button-primary btn-left"
-                            [disabled]="!enableSearchButton(formGroup.value)">
+                                [disabled]="!enableSearchButton(formGroup.value)">
                             {{'management.users.overview.filterSearchButton' | translate}}
                         </button>
                     </div>
@@ -67,5 +66,7 @@
 
 <!-- If an error has occurred while fetching the users, show the error -->
 <div *ngIf="error" class="messages messages--error">
+    <i class="icon-exclamation" aria-hidden="true"></i>
+
     {{'management.users.searchResult.error' | translate}}
 </div>

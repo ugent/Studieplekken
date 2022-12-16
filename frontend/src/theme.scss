@@ -1,6 +1,5 @@
 // src/theme.scss
 
-
 // 👇 1. Default theme
 $theming-material-components-primary: mat-palette($mat-blue, 800);
 $theming-material-components-accent: mat-palette($mat-pink, A200, A100, A400);
@@ -10,10 +9,11 @@ $theming-material-components-warn: mat-palette($mat-red);
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as `color` or `typography`.
 $theming-material-components-theme: mat-light-theme((
-  color:(
-    primary: $theming-material-components-primary,
-    accent: $theming-material-components-accent,
-    warn: $theming-material-components-warn)
+    color:(
+        primary: $theming-material-components-primary,
+        accent: $theming-material-components-accent,
+        warn: $theming-material-components-warn
+    )
 ));
 
 
@@ -35,10 +35,10 @@ $theming-material-components-theme: mat-light-theme((
 $heading-font-family: "'PannoTextMedium',Arial, sans-serif";
 
 $typography: mat-typography-config(
-  $display-4: mat-typography-level(112px, $font-family: $heading-font-family),
-  $display-3: mat-typography-level(56px, $font-family: $heading-font-family),
-  $display-2: mat-typography-level(45px, $font-family: $heading-font-family),
-  $display-1: mat-typography-level(34px, $font-family: $heading-font-family),
-  $headline: mat-typography-level(24px, $font-family: $heading-font-family),
-  $title: mat-typography-level(20px, $font-family: $heading-font-family),
+    $display-4: mat-typography-level(112px, $font-family: $heading-font-family),
+    $display-3: mat-typography-level(56px, $font-family: $heading-font-family),
+    $display-2: mat-typography-level(45px, $font-family: $heading-font-family),
+    $display-1: mat-typography-level(34px, $font-family: $heading-font-family),
+    $headline: mat-typography-level(24px, $font-family: $heading-font-family),
+    $title: mat-typography-level(20px, $font-family: $heading-font-family),
 );
