@@ -48,7 +48,7 @@ public class CalendarController {
     public ResponseEntity getCalender(@PathVariable("userId") String userId, @PathVariable("calendarId") String calendarId) {
 
         User user = userDao.getUserById(userId);
-        if (user == null || !user.getCalendarId().equals(calendarId)) {
+        if (user == null || !user.getCalendarId().toString().equals(calendarId)) {
             return ResponseEntity.badRequest().body("Calendar not found");
         }
 
