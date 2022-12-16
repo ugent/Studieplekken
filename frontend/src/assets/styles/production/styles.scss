@@ -39,6 +39,19 @@ $styleguide-dir: "" !default;
 
 /* You can add global styles to this file, and also import other style files */
 
+body {
+    hr {
+        border: 1px solid whitesmoke;
+        border-radius: 2px;
+    }
+
+    .messages {
+        i {
+            align-self: center;
+        }
+    }
+}
+
 /*
  * Class definition for a rotating loader
  */
@@ -201,10 +214,6 @@ video {
 
 .fullwidth {
     width: 100%;
-}
-
-h1 {
-    text-overflow: wrap;
 }
 
 .responsive-table {
