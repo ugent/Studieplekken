@@ -3,11 +3,6 @@
 <div *ngIf="users">
     <!-- Table with all users matching the filter -->
     <h3>{{'management.users.searchResult.title' | translate}}</h3>
-
     <hr>
-
-    <app-table
-    [tabularData]="getTableData(users)"
-    (action)="outputUser($event.data)">
-    ></app-table>
+    <app-table [tabularData]="getTableData(users)" (action)="outputUser($event.data)">></app-table>
 </div>

@@ -5,10 +5,12 @@
             <h3>{{'management.locations.unapproved' | translate}}</h3>
 
             <hr>
+
+
             <!-- Table with all unapproved locations -->
             <div class="responsive-table fullwidth">
                 <div class="table-wrapper">
-                    <table>
+                    <table style="width: 100%">
                         <!-- Table header -->
                         <thead>
                         <tr>
@@ -46,9 +48,7 @@
         </div>
     </div>
     <h3>{{'management.locations.title' | translate}}</h3>
-
     <hr>
-
     <!-- Table with all existing locations, and a button to create a new location -->
     <div class="responsive-table fullwidth">
         <div class="table-wrapper fullwidth" *ngIf="locations | async as locations; else loading">
@@ -94,11 +94,19 @@
 </div>
 
 <ng-template #loading>
-    {{'management.general.loading' | translate}}
+    <div class="messages messages--info">
+        <i class="icon-info" aria-hidden="true"></i>
+
+        {{'general.waitingForServer' | translate}}
+    </div>
 </ng-template>
 
 <ng-template #noLocations>
-    {{'management.general.noLocations' | translate}}
+    <div class="messages messages--warning">
+        <i class="icon-exclamation" aria-hidden="true"></i>
+
+        {{'management.general.noLocations' | translate}}
+    </div>
 </ng-template>
 
 <!-- Modal view to add a new location -->
@@ -282,7 +290,6 @@
         <h1 modal-header>
             {{'management.locations.deleteLocationModal.title' | translate}}
         </h1>
-
 
         <!-- Body -->
         <div modal-body>
