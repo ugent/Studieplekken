@@ -41,6 +41,14 @@ export class DbTokenService {
       data: { isUsed: true, email: token.email },
     });
   }
+
+  async allTokens(): Promise<tokens[]> {
+    return this.prisma.tokens.findMany();
+  }
+
+  async createToken(email: string, purpose: string): Promise<tokens> {
+    return this.prisma.tokens.create({data: {email, purpose, createdAt: new Date()}})
+  }
 }
 
 class TokenIsUsedError extends Error {

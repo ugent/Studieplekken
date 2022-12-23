@@ -93,6 +93,10 @@ custom:
     recipientsOpeningHoursOverview: ""
   stadgent:
     url: "https://studieplekken-dev.ugent.be/"
+  services:
+    auth:
+      secret: "${AUTH_SERVICE_KEY:local-key}"
+      subject: "blokat-auth-service"
   jwtKey: "${JWT_KEY:local-key}"
 
 # SAML
