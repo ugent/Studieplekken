@@ -11,6 +11,9 @@ describe("DbUserService", () => {
       providers: [DbUserService, DbService, ConfigService],
     }).compile();
 
+    const dbService = module.get<DbService>(DbService);
+    dbService.wipe();
+
     service = module.get<DbUserService>(DbUserService);
   });
 
@@ -18,8 +21,16 @@ describe("DbUserService", () => {
     expect(service).toBeDefined();
   });
 
-  it("Should fetch my user", async () => {
+  it("Should create and fetch my user", async () => {
+    const createUser = await service.create({email: "maxiem.geldhof@ugent.be", first_name: "Maxiem", last_name: "Geldhof", user_id: "0", hashed_password: "", salt: ""})
+
     const me = await service.userByEmail("maxiem.geldhof@ugent.be");
-    expect(me.first_name).toEqual("Maxiem");
+    expect(me.first_name).toEqual(createUser.first_name);
+  });
+
+
+  it("Should not find nonexistent user", async () => {
+    const me = await service.userByEmail("maxiem.geldhof@ugent.be");
+    expect(me).toEqual(null);
   });
 });

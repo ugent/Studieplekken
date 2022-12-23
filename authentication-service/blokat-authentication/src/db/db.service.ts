@@ -1,5 +1,5 @@
 import { INestApplication, Injectable, OnModuleInit } from "@nestjs/common";
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { ConfigService } from "../configModule/config.service";
 
 @Injectable()
@@ -23,5 +23,14 @@ export class DbService extends PrismaClient implements OnModuleInit {
     this.$on("beforeExit", async () => {
       await app.close();
     });
+  }
+
+  async wipe() {
+    const modelNames = Prisma.dmmf.datamodel.models.map((model) => model.name);
+
+    return Promise.all(
+      // @ts-ignore
+      modelNames.map((modelName) => this[modelName.toLowerCase()].deleteMany()) 
+    );
   }
 }
