@@ -15,13 +15,13 @@ export class TokenConstructor {
     };
   }
 
-  static newFromObj(obj: Token): Token {
+  static newFromObj(obj: Record<string, any>): Token {
     if (obj === null) {
       return null;
     }
 
     return {
-      token: obj.token,
+      token: obj.token || obj.id,
       purpose: obj.purpose,
       email: obj.email,
       isUsed: obj.isUsed,
