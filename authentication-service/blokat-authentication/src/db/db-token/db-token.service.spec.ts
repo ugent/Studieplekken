@@ -1,4 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigService } from 'src/configModule/config.service';
+import { DbService } from '../db.service';
 import { DbTokenService } from './db-token.service';
 
 describe('DbTokenService', () => {
@@ -6,7 +8,7 @@ describe('DbTokenService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [DbTokenService],
+      providers: [DbTokenService, DbService, ConfigService],
     }).compile();
 
     service = module.get<DbTokenService>(DbTokenService);

@@ -1,9 +1,9 @@
 import { JwtModule } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
+import { getConfig } from 'src/configModule/config.service';
 import { ConfigModule } from '../configModule/config.module';
 import { DbModule } from '../db/db.module';
 import { AuthService } from './auth.service';
-import { jwtConstants } from './constants';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -14,7 +14,7 @@ describe('AuthService', () => {
         DbModule,
         ConfigModule,
         JwtModule.register({
-          secret: jwtConstants.secret,
+          secret: getConfig().jwtKey,
           signOptions: { expiresIn: '60s' },
         }),
       ],
