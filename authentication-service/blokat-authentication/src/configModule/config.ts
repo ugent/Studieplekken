@@ -80,6 +80,7 @@ export interface Configuration {
     username: string;
     password: string;
     port: string;
+    database: string;
   };
 
   jwtKey: string;
