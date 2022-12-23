@@ -54,7 +54,7 @@ describe('ApiController', () => {
   })
 
   it('should accept token and create', async () => {
-    const token = {email: "maxiem@maxiemgeldhof.com", purpose: "PASSWORDRESET"}
+    const token = {email: "maxiem@maxiemgeldhof.com", purpose: "PASSWORD_RESET"}
     const postTokenRequest = await request(app.getHttpServer())
                 .post("/api/token")
                 .set('Authorization', header())
