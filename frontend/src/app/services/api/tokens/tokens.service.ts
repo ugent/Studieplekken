@@ -13,7 +13,7 @@ export class TokensService {
   }
 
   getTokens(): Observable<Token[]> {
-    return this.http.get<Token[]>(api.tokens).pipe(map(x => x.map(TokenConstructor.newFromObj)));
+    return this.http.get<{tokens: Token[]}>(api.tokens).pipe(map(x => x.tokens.map(TokenConstructor.newFromObj)));
   }
 
   /**
@@ -21,7 +21,7 @@ export class TokensService {
    * value will have set the correct token for the added Tag.
    */
   addToken(token: Token): Observable<Token> {
-    return this.http.post<Token>(api.tokens, token);
+    return this.http.post<Token>(api.tokens, token).pipe(map(TokenConstructor.newFromObj));
   }
 
 }

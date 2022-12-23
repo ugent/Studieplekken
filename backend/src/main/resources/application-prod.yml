@@ -49,6 +49,7 @@ custom:
     auth:
       secret: "${AUTH_SERVICE_KEY:local-key}"
       subject: "blokat-auth-service"
+      baseurl: ""
   jwtKey: "${JWT_KEY}"
 
 # SAML

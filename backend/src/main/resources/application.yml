@@ -97,6 +97,7 @@ custom:
     auth:
       secret: "${AUTH_SERVICE_KEY:local-key}"
       subject: "blokat-auth-service"
+      baseurl: "http://localhost:8080"
   jwtKey: "${JWT_KEY:local-key}"
 
 # SAML

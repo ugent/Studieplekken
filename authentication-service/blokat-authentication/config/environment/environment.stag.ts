@@ -123,4 +123,5 @@ export const configuration: Configuration = {
   },
 
   jwtKey: process.env.JWT_KEY,
+  backendServiceJwtKey: process.env.BACKEND_SERVICE_KEY
 };

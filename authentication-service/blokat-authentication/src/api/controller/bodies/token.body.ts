@@ -1,13 +1,12 @@
-import { IsEnum, IsNotEmpty } from "class-validator"
+import { IsEnum } from "class-validator"
 
 enum TokenPurpose {
-    PASSWORD_RESET = "PASSWORDRESET",
+    PASSWORD_RESET = "PASSWORD_RESET",
     REGISTRATION = "REGISTRATION"
 }
 
 export class TokenBody {
     @IsEnum(TokenPurpose)
     purpose: TokenPurpose
-    @IsNotEmpty()
     email: string  
 }

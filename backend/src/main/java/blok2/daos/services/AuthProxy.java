@@ -2,6 +2,7 @@ package blok2.daos.services;
 
 
 import java.net.URI;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Enumeration;
 
@@ -23,7 +24,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Service
 public class AuthProxy {
 
-    private String baseUrl = "";
+    @Value("${custom.services.auth.baseurl}")
+    private String baseUrl;
     private int tokenValiditySeconds = 10;
 
     @Value("${custom.services.auth.subject}")
@@ -31,7 +33,7 @@ public class AuthProxy {
     @Value("${custom.services.auth.secret}")
     private String secret;
 
-    private String tokenEndpoint = "/auth/local/tokens";
+    private String tokenEndpoint = "/api/token";
 
     public ResponseEntity<String> getAllTokens(HttpServletRequest request) {
         return this.mirrorRest(request, HttpMethod.GET, this.tokenEndpoint, null);
@@ -68,8 +70,10 @@ public class AuthProxy {
     }
 
     private String generateServiceJWT() {
-        return Jwts.builder().setSubject(this.subject).setIssuedAt(new Date(System.currentTimeMillis()))
+        String jwt = Jwts.builder().setSubject(this.subject).setIssuedAt(new Date(System.currentTimeMillis()))
         .setExpiration(new Date(System.currentTimeMillis() + this.tokenValiditySeconds * 1000))
-        .signWith(SignatureAlgorithm.HS512, this.secret).compact();
+        .signWith(SignatureAlgorithm.HS512, this.secret.getBytes()).compact();
+
+        return jwt;
     }
 }
