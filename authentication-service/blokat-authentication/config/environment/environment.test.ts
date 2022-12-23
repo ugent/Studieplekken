@@ -45,4 +45,5 @@ export const configuration: Configuration = {
   },
 
   jwtKey: "local-key",
+  backendServiceJwtKey: "local-key"
 };
