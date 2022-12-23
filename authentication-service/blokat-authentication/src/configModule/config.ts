@@ -84,4 +84,5 @@ export interface Configuration {
   };
 
   jwtKey: string;
+  backendServiceJwtKey: string;
 }
