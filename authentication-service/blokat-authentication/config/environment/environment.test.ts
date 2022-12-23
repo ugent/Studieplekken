@@ -41,7 +41,7 @@ export const configuration: Configuration = {
     password: 'postgres',
     url: 'localhost',
     port: '5432',
-    database: 'studieplekken_users'
+    database: 'studieplekken_users_test',
   },
 
   jwtKey: "local-key",

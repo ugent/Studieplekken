@@ -9,7 +9,7 @@ export class DbService extends PrismaClient implements OnModuleInit {
     super({
       datasources: {
         db: {
-          url: `postgresql://${dbConfig.username}:${dbConfig.password}@${dbConfig.url}:${dbConfig.port}/studieplekken_users?schema=public`,
+          url: `postgresql://${dbConfig.username}:${dbConfig.password}@${dbConfig.url}:${dbConfig.port}/${dbConfig.database}?schema=public`,
         },
       },
     });
