@@ -24,6 +24,7 @@ import {LoginRedirectService} from './login-redirect.service';
  * Importance of HTTP-only cookies: https://blog.codinghorror.com/protecting-your-cookies-httponly/
  */
 @Injectable({
+    // Make the service a singleton service.
     providedIn: 'root',
 })
 export class AuthenticationService {
