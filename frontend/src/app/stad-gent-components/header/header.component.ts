@@ -1,10 +1,10 @@
-import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, HostListener } from '@angular/core';
+import { AfterViewInit, Component, OnInit, HostListener } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
-import { delay, distinctUntilChanged, map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { UserService } from 'src/app/services/api/users/user.service';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
-import {BreadcrumbService} from "./breadcrumbs/breadcrumb.service"
+import {BreadcrumbService} from './breadcrumbs/breadcrumb.service'
 
 @Component({
   selector: 'app-header',
@@ -22,7 +22,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   MOBILE_SIZE = 800;
 
   constructor(private breadcrumbService: BreadcrumbService, private authenticationService: AuthenticationService,
-    private translationService: TranslateService, private userService: UserService) { }
+              private translationService: TranslateService, private userService: UserService) { }
 
   mobile: boolean;
 

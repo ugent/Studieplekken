@@ -25,8 +25,8 @@ export class NavigationComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    
-    this.loginRedirectService.registerUrl("/navigation");
+
+    this.loginRedirectService.registerUrl('/navigation');
     // subscribe to the user observable to make sure that the correct information
     // is shown in the application.
     this.authenticationService.user.subscribe((next) => {
