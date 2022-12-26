@@ -42,15 +42,15 @@ export class AuthorizationGuardService implements CanActivate {
             filter((user: User) => user != null),
             // Map the user observable on a boolean.
             map(() => {
-                let authorized = false;
-
                 const authorizations: string[][] = route.data.guards || [];
-
-                for (const authorization of authorizations) {
-                    authorized = authorized || authorization.every(guard => this.hasGuard(guard));
+                if (authorizations.length > 0) {
+                    let authorized = false;
+                    for (const authorization of authorizations) {
+                        authorized = authorized || authorization.every(guard => this.hasGuard(guard));
+                    }
+                    return authorized;
                 }
-
-                return authorized;
+                return true;
             }),
             // Redirect if necessary.
             tap((authorized: boolean) => {

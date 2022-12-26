@@ -195,14 +195,9 @@ const routes: Routes = [
             },
         ],
     },
-
     {
         path: 'management',
         component: ManagementComponent,
-        canActivate: [AuthorizationGuardService],
-        data:  {
-            guards: [['authorities']]
-        },
         children: [
             {
                 path: '',
@@ -212,23 +207,26 @@ const routes: Routes = [
             {
                 path: 'locations',
                 component: LocationsManagementComponent,
+                canActivate: [AuthorizationGuardService],
                 data:  {
                     guards: [['authorities']]
-                }
+                },
             },
             {
                 path: 'locations/:locationId',
                 component: LocationDetailsManagementComponent,
+                canActivate: [AuthorizationGuardService],
                 data:  {
                     guards: [['authorities']]
-                }
+                },
             },
             {
                 path: 'locations/:locationId/timeslot/:seqnr',
                 component: TimeslotTableComponent,
+                canActivate: [AuthorizationGuardService],
                 data:  {
                     guards: [['authorities']]
-                }
+                },
             },
             {
                 path: 'buildings',
@@ -240,27 +238,31 @@ const routes: Routes = [
             {
                 path: 'tags',
                 component: TagsManagementComponent,
+                canActivate: [AuthorizationGuardService],
                 data:  {
-                    guards: [['admin']]
+                    guards: [['authorities']]
                 }
             },
             {
                 path: 'users',
                 component: UsersManagementComponent,
+                canActivate: [AuthorizationGuardService],
                 data:  {
-                    guards: [['admin']]
+                    guards: [['authorities']]
                 }
             },
             {
                 path: 'users/:id',
                 component: UserDetailsManagementComponent,
+                canActivate: [AuthorizationGuardService],
                 data:  {
-                    guards: [['admin']]
+                    guards: [['authorities']]
                 }
             },
             {
                 path: 'authorities',
                 component: AuthoritiesManagementComponent,
+                canActivate: [AuthorizationGuardService],
                 data:  {
                     guards: [['admin']]
                 }
@@ -268,6 +270,7 @@ const routes: Routes = [
             {
                 path: 'authorities/:authorityId',
                 component: AuthorityUsersManagementComponent,
+                canActivate: [AuthorizationGuardService],
                 data:  {
                     guards: [['admin']]
                 }
@@ -275,6 +278,7 @@ const routes: Routes = [
             {
                 path: 'admins',
                 component: AdminsManagementComponent,
+                canActivate: [AuthorizationGuardService],
                 data:  {
                     guards: [['admin']]
                 }
@@ -282,6 +286,7 @@ const routes: Routes = [
             {
                 path: 'volunteers',
                 component: VolunteersManagementComponent,
+                canActivate: [AuthorizationGuardService],
                 data:  {
                     guards: [['authorities']]
                 }
@@ -289,6 +294,7 @@ const routes: Routes = [
             {
                 path: 'penalties',
                 component: PenaltiesManagementComponent,
+                canActivate: [AuthorizationGuardService],
                 data:  {
                     guards: [['admin']]
                 }
@@ -296,6 +302,7 @@ const routes: Routes = [
             {
                 path: 'actionlog',
                 component: ActionLogComponent,
+                canActivate: [AuthorizationGuardService],
                 data:  {
                     guards: [['admin']]
                 }
@@ -303,6 +310,7 @@ const routes: Routes = [
             {
                 path: 'stats',
                 component: StatsComponent,
+                canActivate: [AuthorizationGuardService],
                 data:  {
                     guards: [['admin']]
                 }
@@ -310,6 +318,7 @@ const routes: Routes = [
             {
                 path: 'tokens',
                 component: TokensComponent,
+                canActivate: [AuthorizationGuardService],
                 data:  {
                     guards: [['admin']]
                 }
