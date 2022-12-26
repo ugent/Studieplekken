@@ -24,7 +24,6 @@ import {LoginRedirectService} from './login-redirect.service';
  * Importance of HTTP-only cookies: https://blog.codinghorror.com/protecting-your-cookies-httponly/
  */
 @Injectable({
-    // Make the service a singleton service.
     providedIn: 'root',
 })
 export class AuthenticationService {
@@ -52,17 +51,6 @@ export class AuthenticationService {
         private userService: UserService,
         private loginRedirectService: LoginRedirectService,
     ) {
-        // When the access token is modified (e.g. in a different tab),
-        // refresh the authentication information.
-        window.onstorage = (event: StorageEvent) => {
-            if (event.key === 'access_token') {
-                if (!event.newValue) {
-                    this.logout();
-                } else {
-                    this.login();
-                }
-            }
-        };
     }
 
     // **************************************************
@@ -118,6 +106,7 @@ export class AuthenticationService {
             },
             () => {
                 this.userSubject.next(UserConstructor.new());
+                this.hasAuthoritiesSubject.next(false);
             }
         );
     }
