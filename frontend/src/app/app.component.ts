@@ -1,10 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {NavigationStart, Router} from '@angular/router';
+import {Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ApplicationTypeFunctionalityService} from './services/functionality/application-type/application-type-functionality.service';
 import {AuthenticationService} from './services/authentication/authentication.service';
-import {UserService} from './services/api/users/user.service';
-import {forkJoin} from 'rxjs';
 import * as moment from 'moment';
 
 @Component({
