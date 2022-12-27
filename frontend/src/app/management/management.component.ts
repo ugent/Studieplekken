@@ -27,8 +27,7 @@ export class ManagementComponent implements OnInit {
   constructor(
     private functionalityService: ApplicationTypeFunctionalityService,
     private authenticationService: AuthenticationService,
-    private breadcrumbsService: BreadcrumbService,
-    private loginRedirect: LoginRedirectService
+    private breadcrumbsService: BreadcrumbService
   ) {}
 
   ngOnInit(): void {
@@ -41,23 +40,19 @@ export class ManagementComponent implements OnInit {
     const hasAuthoritiesObs = this.authenticationService.hasAuthoritiesObs;
 
     combineLatest([authenticatedUserObs, hasAuthoritiesObs]).subscribe(
-      (result) => {
-        const authenticatedUser = result[0];
-        const hasAuthorities = result[1];
-
-        this.showTagManagement = authenticatedUser.admin;
-        this.showVolunteersManagement =
-          authenticatedUser.admin || hasAuthorities;
-        this.showActionlog = authenticatedUser.admin;
-        this.showStats = authenticatedUser.admin;
-      }
+      ([authenticatedUser, hasAuthorities]) => {
+            this.showTagManagement = authenticatedUser.admin;
+            this.showVolunteersManagement = authenticatedUser.admin || hasAuthorities;
+            this.showActionlog = authenticatedUser.admin;
+            this.showStats = authenticatedUser.admin;
+        }
     );
 
     this.breadcrumbsService.setCurrentBreadcrumbs([managementBreadcrumb]);
     this.isMobile = window.innerWidth < this.MOBILE_SIZE;
   }
 
-  getSize() {
-    return this.isMobile ? "80%" : "23%";
+  getSize(): string {
+    return this.isMobile ? '80%' : '23%';
   }
 }
