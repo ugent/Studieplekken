@@ -119,7 +119,9 @@ export const configuration: Configuration = {
     password: process.env.POSTGRES_PASSWORD,
     url: 'user-db',
     port: '5432',
+    database: 'studieplekken_users',
   },
 
   jwtKey: process.env.JWT_KEY,
+  backendServiceJwtKey: process.env.BACKEND_SERVICE_KEY
 };
