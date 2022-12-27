@@ -315,8 +315,6 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
       this.selectedSubject,
     ])
       .subscribe(([timeslots, reservations, proposedReservations]) => {
-
-        console.log(reservations)
         this.originalList = [...reservations.filter(r => r.timeslot.locationId == this.locationId)];
         this.pendingReservations = this.originalList.filter(locres => locres.state === LocationReservationState.PENDING);
         this.timeouts.forEach(t => clearTimeout(t));
