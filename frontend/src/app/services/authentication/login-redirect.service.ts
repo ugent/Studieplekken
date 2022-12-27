@@ -15,6 +15,6 @@ export class LoginRedirectService {
     navigateToLastUrl(): void {
         const url = localStorage.getItem('afterLogin');
         localStorage.removeItem('afterLogin');
-        void this.router.navigateByUrl(url);
+        void this.router.navigateByUrl(url || '/profile/overview');
     }
 }
