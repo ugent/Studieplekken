@@ -129,9 +129,12 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
   ) { }
 
   ngOnInit(): void {
-    this.locationId = Number(this.route.snapshot.paramMap.get('locationId'));
-
-    this.breadcrumbs.setCurrentBreadcrumbs([{ pageName: "Details", url: `/dashboard/${this.locationId}` }])
+    this.locationId = Number(
+        this.route.snapshot.paramMap.get('locationId')
+    );
+    this.breadcrumbs.setCurrentBreadcrumbs([{
+        pageName: 'Details', url: `/dashboard/${this.locationId}`
+    }]);
     this.loginRedirect.registerUrl(`/dashboard/${this.locationId}`);
 
     // Check if locationId is a Number before proceeding. If NaN, redirect to dashboard.
@@ -142,13 +145,12 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
     this.location = this.locationService.getLocation(this.locationId);
 
-    this.showAdmin = this.authenticationService.isAdmin();
     combineLatest([this.authenticationService.user, this.location]).subscribe(([user, location]) => {
-      this.showAdmin = this.authenticationService.isAdmin() ||
-       user.userAuthorities.map(a => a.authorityId).includes(location.authority.authorityId);
-    })
-
-    this.updateOwnReservations();
+        if (user != null) {
+            this.showAdmin = this.authenticationService.isAdmin() || user.userAuthorities.map(a => a.authorityId).includes(location.authority.authorityId);
+            this.updateOwnReservations();
+        }
+    });
 
     this.ownReservations.subscribe(v => this.selectedSubject.next(v.filter(f => f.timeslot.locationId === this.locationId)))
 
@@ -313,8 +315,6 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
       this.selectedSubject,
     ])
       .subscribe(([timeslots, reservations, proposedReservations]) => {
-
-        console.log(reservations)
         this.originalList = [...reservations.filter(r => r.timeslot.locationId == this.locationId)];
         this.pendingReservations = this.originalList.filter(locres => locres.state === LocationReservationState.PENDING);
         this.timeouts.forEach(t => clearTimeout(t));
@@ -350,9 +350,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
   commitReservations(template: TemplateRef<unknown>): void {
     // We need to find out which of the selected boxes need to be removed, and which need to be added.
-    // Therefore, we calculate selected \ previous
-    console.log(this.selectedSubject.value)
-
+    // Therefore, we calculate selected \ previous.
     this.newReservations = this.selectedSubject.value.filter(
       (selected) => {
         if (selected.state === LocationReservationState.DELETED || selected.state === LocationReservationState.REJECTED ) {
@@ -360,8 +358,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         }
         const tempList: LocationReservation[] = this.originalList.filter(
           (reservation) => {
-            return  reservation.user.userId == selected.user.userId &&
-                    reservation.timeslot.timeslotSequenceNumber == selected.timeslot.timeslotSequenceNumber;
+            return  reservation.user.userId === selected.user.userId && reservation.timeslot.timeslotSequenceNumber === selected.timeslot.timeslotSequenceNumber;
           }
         );
         const oldReservation = tempList.length > 0? tempList[0] : undefined;
