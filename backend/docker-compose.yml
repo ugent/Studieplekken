@@ -11,7 +11,7 @@ services:
       - pgdatas:/var/lib/postgresql/data
       - ./scripts/pg-init:/docker-entrypoint-initdb.d
     environment:
-        POSTGRES_MULTIPLE_DATABASES: blokatugent, blokatugent_test, studieplekken_users
+        POSTGRES_MULTIPLE_DATABASES: blokatugent, blokatugent_test, studieplekken_users, studieplekken_users_test
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: "postgres"
         TZ: Europe/Brussels

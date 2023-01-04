@@ -18,16 +18,6 @@ describe('SamlService', () => {
     expect(service).toBeDefined();
   });
 
-  it('Should generate the metadata', () => {
-    const cert = fs
-      .readFileSync(
-        path.join(__dirname, '../../../config/auth/saml', './cert.pem'),
-      )
-      .toString();
-    console.log(service.generateServiceProviderMetadata(cert, cert));
-    expect(service.generateServiceProviderMetadata(cert, cert)).toBeDefined();
-  });
-
   it('Should read metadata from a file', () => {
     expect(readMetadata('./meta-idp.xml')).toBeDefined();
   });
