@@ -18,6 +18,7 @@ import {
 } from "./configModule/config";
 import { ConfigGuard } from "./configModule/config.guard";
 import { getConfig } from "./configModule/config.service";
+import {RealIP} from "nestjs-real-ip";
 
 @Controller()
 export class AppController {
@@ -27,16 +28,16 @@ export class AppController {
 
   @UseGuards(AuthGuard("cas"))
   @Get("auth/login/cas")
-  async casLogin(@Request() req: any, @Res() res: any) {
+  async casLogin(@Request() req: any, @Res() res: any, @RealIP() ip: string) {
     const token = await this.authService.issueToken(req.user);
-    Logger.log(`Written token for user ${req.user.id}`);
+    Logger.log(`Written token for user ${req.user.id} and IP ${ip}`);
 
     return res.status(200).send(token);
   }
 
   @UseGuards(AuthGuard("cas"))
   @Get("auth/login/cas/:callbackURL")
-  async casLoginCallback(@Request() req: any, @Res() res: any) {
+  async casLoginCallback(@Request() req: any, @Res() res: any, @RealIP() ip: string) {
     const samlUser = req.user;
     if (!isSamlUser(samlUser)) {
       const missingFields = missingSamlUserFields(samlUser);
@@ -54,7 +55,7 @@ export class AppController {
     const token: string = (await this.authService.issueToken(samlUser))
       .access_token;
 
-    Logger.log(`Written token for user ${samlUser.id}`);
+    Logger.log(`Written token for user ${samlUser.id} and IP ${ip}`);
     try {
       const redirectUrl = req.params.callbackURL;
       if (redirectUrl && redirectUrl !== "undefined") {
@@ -90,7 +91,7 @@ export class AppController {
 
   @UseGuards(AuthGuard("saml"))
   @Get("auth/login/:idp")
-  async loginSaml(@Request() req: any, @Res() res: any) {
+  async loginSaml(@Request() req: any, @Res() res: any, @RealIP() ip: string) {
     Logger.debug(`Someone is attempting to log in from ${req.params.idp}`);
 
     const samlUser = req.user;
@@ -101,12 +102,16 @@ export class AppController {
       );
       return res.status(400).send();
     }
-    return await this.authService.issueToken(samlUser);
+
+    const token = await this.authService.issueToken(samlUser);
+    Logger.log(`Written token for user ${req.user.id} and IP ${ip}`);
+
+    return res.status(200).send(token);
   }
 
   @UseGuards(AuthGuard("saml"))
   @Post("api/SSO/saml")
-  async loginSamlGet(@Request() req: any, @Res() res: any) {
+  async loginSamlGet(@Request() req: any, @Res() res: any, @RealIP() ip: string) {
     Logger.debug(`Someone is returning from idp.`);
     Logger.debug(req.body.RelayState);
 
@@ -122,7 +127,7 @@ export class AppController {
     const token: string = (await this.authService.issueToken(samlUser))
       .access_token;
 
-    Logger.debug(`Issued token for user with id ${samlUser.id}`);
+    Logger.debug(`Issued token for user with id ${samlUser.id} and IP ${ip}`);
 
     try {
       const redirectUrl = JSON.parse(req.body.RelayState)?.callbackUrl;

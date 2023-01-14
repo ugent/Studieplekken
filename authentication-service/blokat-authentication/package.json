@@ -39,6 +39,7 @@
     "hbs": "^4.1.2",
     "ldapjs": "^2.3.1",
     "nest-logger": "^7.0.0",
+    "nestjs-real-ip": "^2.2.0",
     "passport": "^0.5.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",

@@ -788,6 +788,11 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
+"@supercharge/request-ip@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@supercharge/request-ip/-/request-ip-1.2.0.tgz#b8a8164322e09de3fa9b6f556885795c4841a7d4"
+  integrity sha512-wlt6JW69MHqLY2M6Sm/jVyCojNRKq2CBvwH0Hbx24SFhDQQGkgEjeKxVutDxHSyrWixFaOSLXC27euzxijhyMQ==
+
 "@szmarczak/http-timer@^4.0.5":
   version "4.0.6"
   resolved "https://registry.yarnpkg.com/@szmarczak/http-timer/-/http-timer-4.0.6.tgz#b4a914bb62e7c272d4e5989fe4440f812ab1d807"
@@ -4439,6 +4444,13 @@ nest-logger@^7.0.0:
     typescript "4.2.4"
     winston "3.3.3"
     winston-daily-rotate-file "4.5.5"
+
+nestjs-real-ip@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/nestjs-real-ip/-/nestjs-real-ip-2.2.0.tgz#4132b8093be218cb252f02734e3bb2326fbb4a4f"
+  integrity sha512-YiewaXGJTd9Ba99Q8Or4VoiYjspl8LwTpb6TYJov62xVH8gW9y+uWoZTLHh11T4K/qfqYQ+DGUFIRqT94Y7BKQ==
+  dependencies:
+    "@supercharge/request-ip" "^1.2.0"
 
 next-tick@1, next-tick@~1.0.0:
   version "1.0.0"
