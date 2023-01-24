@@ -7,6 +7,9 @@ import blok2.model.reservables.UserLocationSubscription;
 import blok2.model.users.User;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class UserLocationSubscriptionService implements IUserLocationSubscriptionDao {
 
@@ -26,7 +29,15 @@ public class UserLocationSubscriptionService implements IUserLocationSubscriptio
         userLocationSubscriptionRepository.deleteByLocationAndUser(location, user);
     }
 
+    @Override
     public void initializeSubscribed(Location location, User user) {
         location.setSubscribed(user != null && userLocationSubscriptionRepository.existsByLocationAndUser(location, user));
+    }
+
+    @Override
+    public List<Location> getSubscribedLocations(User user) {
+        return userLocationSubscriptionRepository.findAllByUser(user).stream()
+                .map(UserLocationSubscription::getLocation)
+                .collect(Collectors.toList());
     }
 }
