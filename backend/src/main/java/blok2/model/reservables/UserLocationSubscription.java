@@ -38,4 +38,8 @@ public class UserLocationSubscription implements Cloneable {
             throw new AssertionError();
         }
     }
+
+    public Location getLocation() {
+        return location;
+    }
 }

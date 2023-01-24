@@ -1,16 +1,14 @@
 package blok2.controllers;
 
-import blok2.daos.ILocationDao;
-import blok2.daos.ILocationReservationDao;
-import blok2.daos.IUserDao;
+import blok2.daos.*;
+import blok2.model.calendar.Timeslot;
+import blok2.model.reservables.Location;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
 import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VEvent;
-import net.fortuna.ical4j.model.property.CalScale;
-import net.fortuna.ical4j.model.property.ProdId;
-import net.fortuna.ical4j.model.property.Uid;
-import net.fortuna.ical4j.model.property.Version;
+import net.fortuna.ical4j.model.property.*;
 import net.fortuna.ical4j.util.RandomUidGenerator;
 import net.fortuna.ical4j.util.UidGenerator;
 import org.springframework.core.io.ByteArrayResource;
@@ -23,12 +21,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.Duration;
+import java.time.*;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
+
+import static blok2.config.PoolProcessor.RANDOM_RESERVATION_DURATION_MINS;
 
 @RestController
 @RequestMapping("/ical")
@@ -37,11 +38,16 @@ public class CalendarController {
     private final ILocationReservationDao locationReservationDao;
     private final ILocationDao locationDao;
     private final IUserDao userDao;
+    private final IUserLocationSubscriptionDao userLocationSubscriptionDao;
+    private final ITimeslotDao timeslotDao;
 
-    public CalendarController(ILocationReservationDao locationReservationDao, ILocationDao locationDao, IUserDao userDao) {
+    public CalendarController(ILocationReservationDao locationReservationDao, ILocationDao locationDao, IUserDao userDao,
+                              IUserLocationSubscriptionDao userLocationSubscriptionDao, ITimeslotDao timeslotDao) {
         this.locationReservationDao = locationReservationDao;
         this.locationDao = locationDao;
         this.userDao = userDao;
+        this.userLocationSubscriptionDao = userLocationSubscriptionDao;
+        this.timeslotDao = timeslotDao;
     }
 
     @GetMapping("/{userId}/{calendarId}")
@@ -88,6 +94,51 @@ public class CalendarController {
 
             // Add the event to the calendar
             calendar.add(event);
+        }
+
+        // Add the location reservation openings for which the user subscribed to the calendar
+        List<Location> subscribedLocations = userLocationSubscriptionDao.getSubscribedLocations(user);
+        for (Location location : subscribedLocations) {
+            // Get all timeslots for the location
+            List<LocalDateTime> addedTimes = new ArrayList<>();
+            List<Timeslot> timeslots = timeslotDao.getTimeslotsOfLocationAfterTimeslotDate(location.getLocationId(), LocalDate.now().minusWeeks(1)).stream().filter(Timeslot::isReservable).collect(Collectors.toList());
+            for (Timeslot timeslot : timeslots) {
+                if (addedTimes.contains(timeslot.getReservableFrom())) {
+                    continue;
+                }
+                addedTimes.add(timeslot.getReservableFrom());
+
+                // Location reservation start and end time in milliseconds
+                long startDateTimeInMillis = timeslot.getReservableFrom().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+                long endDateTimeInMillis = timeslot.getReservableFrom().plusMinutes(RANDOM_RESERVATION_DURATION_MINS).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+
+                java.util.Calendar calendarStartTime = new GregorianCalendar();
+                calendarStartTime.setTimeInMillis(startDateTimeInMillis);
+
+                // Timezone info
+                TimeZone tz = calendarStartTime.getTimeZone();
+                ZoneId zid = tz.toZoneId();
+
+                // Generate unique identifier
+                UidGenerator ug = new RandomUidGenerator();
+                Uid uid = ug.generateUid();
+
+                // Create the calendar event
+                LocalDateTime start = LocalDateTime.ofInstant(calendarStartTime.toInstant(), zid);
+                LocalDateTime end = LocalDateTime.ofInstant(Instant.ofEpochMilli(endDateTimeInMillis), zid);
+                String summary = location.getName();
+                VEvent event = new VEvent(start, end, summary);
+                event.add(uid);
+
+                // Add notification
+                VAlarm reminder = new VAlarm(Duration.ofMinutes(-10));
+                reminder.add(new Action(Action.VALUE_DISPLAY));
+                reminder.add(new Description(summary));
+                event.add(reminder);
+
+                // Add the event to the calendar
+                calendar.add(event);
+            }
         }
 
         byte[] calendarBytes = calendar.toString().getBytes();
