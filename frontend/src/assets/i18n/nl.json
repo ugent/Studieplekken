@@ -66,6 +66,8 @@
       "buttons": {
         "manage": "Beheer"
       },
+      "subscribe": "Voeg opening reservaties toe aan  ",
+      "yourCalendar": "jouw persoonlijke kalender",
       "status": {
         "statusOpen": "Sluit om {}",
         "statusClosed": "Gesloten",

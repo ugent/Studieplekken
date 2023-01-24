@@ -10,6 +10,7 @@ import blok2.helpers.orm.LocationNameAndNextReservableFrom;
 import blok2.mail.MailService;
 import blok2.model.ActionLogEntry;
 import blok2.model.reservables.Location;
+import blok2.model.reservables.UserLocationSubscription;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -43,6 +44,7 @@ public class LocationController extends AuthorizedLocationController {
     private final IVolunteerDao volunteerDao;
     private final ILocationReservationDao locationReservationDao;
     private final IActionLogDao actionLogDao;
+    private final IUserLocationSubscriptionDao userLocationSubscriptionDao;
 
     private final MailService mailService;
 
@@ -52,7 +54,8 @@ public class LocationController extends AuthorizedLocationController {
 
     @Autowired
     public LocationController(ILocationDao locationDao, ILocationTagDao locationTagDao, IUserDao userDao,
-                              IVolunteerDao volunteerDao, MailService mailService, ILocationReservationDao locationReservationDao, IActionLogDao actionLogDao) {
+                              IVolunteerDao volunteerDao, MailService mailService, ILocationReservationDao locationReservationDao,
+                              IActionLogDao actionLogDao, IUserLocationSubscriptionDao userLocationSubscriptionDao) {
         this.locationDao = locationDao;
         this.locationTagDao = locationTagDao;
         this.userDao = userDao;
@@ -60,6 +63,7 @@ public class LocationController extends AuthorizedLocationController {
         this.volunteerDao = volunteerDao;
         this.locationReservationDao = locationReservationDao;
         this.actionLogDao = actionLogDao;
+        this.userLocationSubscriptionDao = userLocationSubscriptionDao;
     }
 
     @JsonView(View.List.class)
@@ -80,9 +84,10 @@ public class LocationController extends AuthorizedLocationController {
     @JsonView(View.Detail.class)
     @GetMapping("/{locationId}")
     @PreAuthorize("permitAll()")
-    public Location getLocation(@PathVariable("locationId") int locationId) {
+    public Location getLocation(@PathVariable("locationId") int locationId, @AuthenticationPrincipal User user) {
         Location location = locationDao.getLocationById(locationId);
         locationDao.initializeTags(location);
+        userLocationSubscriptionDao.initializeSubscribed(location, user);
         return location;
     }
 
@@ -217,4 +222,15 @@ public class LocationController extends AuthorizedLocationController {
         return locationDao.getOpeningOverviewOfWeek(year, weekNr);
     }
 
+    @PostMapping("/{locationId}/subscriptions")
+    public void subscribeToLocation(@PathVariable int locationId, @AuthenticationPrincipal User user) {
+        Location location = locationDao.getLocationById(locationId);
+        userLocationSubscriptionDao.subscribeToLocation(location, user);
+    }
+
+    @DeleteMapping("/{locationId}/subscriptions")
+    public void unsubscribeFromLocation(@PathVariable int locationId, @AuthenticationPrincipal User user) {
+        Location location = locationDao.getLocationById(locationId);
+        userLocationSubscriptionDao.unsubscribeFromLocation(location, user);
+    }
 }

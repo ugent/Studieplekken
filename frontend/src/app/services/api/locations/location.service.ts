@@ -130,4 +130,17 @@ export class LocationService {
         .replace('{weekNr}', String(weekNr))
     );
   }
+
+  subscribeToLocation(locationId: number): Observable<void> {
+    return this.http.post<void>(
+      api.userLocationSubscriptions.replace('{locationId}', String(locationId)),
+      {}
+    );
+  }
+
+  unsubscribeFromLocation(locationId: number): Observable<void> {
+    return this.http.delete<void>(
+      api.userLocationSubscriptions.replace('{locationId}', String(locationId))
+    );
+  }
 }

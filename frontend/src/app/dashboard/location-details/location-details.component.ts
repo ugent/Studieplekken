@@ -110,6 +110,8 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
   ownReservations: Subject<LocationReservation[]> = new ReplaySubject();
 
+  locationSubscribed = false;
+
   constructor(
     private locationService: LocationService,
     private route: ActivatedRoute,
@@ -181,6 +183,10 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     }, 60 * 1000); // 1 minute
 
     this.showLockersManagement = this.functionalityService.showLockersManagementFunctionality();
+
+    this.location.pipe().subscribe(location => {
+        this.locationSubscribed = location.subscribed;
+    });
   }
 
   ngAfterViewInit(): void {
@@ -538,6 +544,21 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
   penaltyPointsOk(location: Location): Observable<boolean> {
     return location.usesPenaltyPoints ?
     this.authenticationService.penaltyObservable.pipe(map(p => p.points < 100)) : of(true);
+  }
+
+  toggleSubscription() {
+    this.locationSubscribed = !this.locationSubscribed;
+
+    // Check if the user is logged in
+    if (!this.authenticationService.isLoggedIn()) {
+        return;
+    }
+
+    if (this.locationSubscribed) {
+        this.locationService.subscribeToLocation(this.locationId).subscribe();
+    } else {
+        this.locationService.unsubscribeFromLocation(this.locationId).subscribe();
+    }
   }
 
 }

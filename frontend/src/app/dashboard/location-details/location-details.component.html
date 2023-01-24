@@ -65,7 +65,15 @@
             openingTime: (location.optionalNextUpcomingReservableTimeslot.reservableFrom | date:'HH:mm')
           } }}
           </li>
-
+          <li class="entry">
+              <i aria-hidden="true">
+                <input type="checkbox" id="subscribedCheckbox" [checked]="locationSubscribed" (change)="toggleSubscription()" [disabled]="!loggedIn()" />
+              </i>
+            <label for="subscribedCheckbox">{{'dashboard.locationDetails.subscribe' | translate}}
+                <a routerLink="/profile/overview" class="read-more"
+                   title="{{'dashboard.locationDetails.yourCalendar' | translate}}">{{'dashboard.locationDetails.yourCalendar' | translate}}</a>
+            </label>
+          </li>
         </ul>
 
         <div *ngIf="showDescription(description.show)" class="rounded-ck-editor">
