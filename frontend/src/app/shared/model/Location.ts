@@ -27,6 +27,7 @@ export interface Location {
   openDuringWeek: boolean;
   openDuringWeekend: boolean;
   optionalNextUpcomingReservableTimeslot?: Timeslot;
+  subscribed: boolean;
 }
 
 export class LocationConstructor {
@@ -50,7 +51,8 @@ export class LocationConstructor {
       usesPenaltyPoints: false,
       tomorrowStillAvailable: false,
       openDuringWeek: false,
-      openDuringWeekend: false
+      openDuringWeekend: false,
+      subscribed: false
     };
   }
 
@@ -80,7 +82,8 @@ export class LocationConstructor {
       tomorrowStillAvailable: obj.tomorrowStillAvailable,
       openDuringWeek: obj.openDuringWeek,
       openDuringWeekend: obj.openDuringWeekend,
-      optionalNextUpcomingReservableTimeslot: Timeslot.fromJSON(obj.optionalNextUpcomingReservableTimeslot)
+      optionalNextUpcomingReservableTimeslot: Timeslot.fromJSON(obj.optionalNextUpcomingReservableTimeslot),
+      subscribed: obj.subscribed
     };
   }
 }

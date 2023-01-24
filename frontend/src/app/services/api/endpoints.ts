@@ -58,6 +58,9 @@ export const api = {
   locationReservationsOfNotScannedUsers:
     '/api/locations/reservations/not-scanned',
 
+  // USER_LOCATION_SUBSCRIPTIONS
+  userLocationSubscriptions: '/api/locations/{locationId}/subscriptions',
+
   // AUTHORITY
   buildings: '/api/building',
   building: '/api/building/{buildingId}',

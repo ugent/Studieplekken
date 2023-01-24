@@ -111,6 +111,10 @@ public class Location implements Cloneable {
 
     @JsonView(View.Detail.class)
     @Transient
+    private boolean subscribed;
+
+    @JsonView(View.Detail.class)
+    @Transient
     private Optional<Timeslot> optionalNextUpcomingReservableTimeslot;
 
     public Location(int locationId, String name, int numberOfSeats, int numberOfLockers, String imageUrl,
@@ -419,6 +423,10 @@ public class Location implements Cloneable {
 
     public void setOptionalNextUpcomingReservableTimeslot(Optional<Timeslot> optionalNextUpcomingReservableTimeslot) {
         this.optionalNextUpcomingReservableTimeslot = optionalNextUpcomingReservableTimeslot;
+    }
+
+    public void setSubscribed(boolean subscribed) {
+        this.subscribed = subscribed;
     }
 
     //</editor-fold>

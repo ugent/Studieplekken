@@ -66,6 +66,8 @@
       "buttons": {
         "manage": "Manage"
       },
+      "subscribe": "Add opening reservations to ",
+      "yourCalendar": "your personal calendar",
       "status": {
         "statusOpen": "Closes at {}",
         "statusClosed": "Closed",
