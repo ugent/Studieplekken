@@ -1,6 +1,6 @@
 ### STAGE 1: Build ###
 
-FROM node:12.20-alpine AS build
+FROM node:14.21-alpine AS build
 WORKDIR /app
 RUN npm install -g @angular/cli
 COPY package.json package-lock.json ./
