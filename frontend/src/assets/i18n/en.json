@@ -837,14 +837,16 @@
       "title": "Statistics",
       "loading": "Waiting for response of server...",
       "error": "Something went wrong while retrieving the statistics.",
-      "info": "For each location the occupancy is displayed, always of the current or next time slot. Blue color indicates that no reservation is possible. Grey color indicates free places. Green indicates occupancy below 80%, orange below 95% and red otherwise.",
+      "info": "For each location the occupancy is displayed, for the time slot as displayed below. Blue color indicates that no reservation is possible. Grey color indicates free places. Green indicates occupancy below 80%, orange below 95% and red otherwise.",
       "withoutReservation": "Without reservation",
       "occupied": "occupied",
       "takenSeats": "Taken seats",
       "freeSeats": "Free seats",
       "unknown": "Unknown",
       "notOpen": "This location is not open at this moment.",
-      "occupancyOn": "Occupancy for timeslot on"
+      "occupancyOn": "Occupancy for timeslot on",
+      "showSpecificDateInsteadOfCurrentOrNext": "Show occupancy for a specific date instead of the current or next timeslot",
+      "noOpenLocations": "There are no open locations at this given date."
     },
     "tokens": {
       "title": "Tokens",

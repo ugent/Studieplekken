@@ -39,6 +39,11 @@ public class TimeslotService implements ITimeslotDao {
     }
 
     @Override
+    public List<Timeslot> getTimeslotsOfLocationOnTimeslotDate(int locationId, LocalDate timeslotDate) {
+        return this.timeslotRepository.getAllByLocationIdAndOnTimeslotDate(locationId, timeslotDate);
+    }
+
+    @Override
     public Timeslot getTimeslot(int timeslotSeqNr) {
         return timeslotRepository.getByTimeslotSeqnr(timeslotSeqNr);
     }

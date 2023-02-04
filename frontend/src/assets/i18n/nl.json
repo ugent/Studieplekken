@@ -837,14 +837,16 @@
       "title": "Statistieken",
       "loading": "Wachten op antwoord van de server...",
       "error": "Er is iets misgelopen tijdens het ophalen van de statistieken.",
-      "info": "Per locatie wordt de bezetting weergegeven, steeds van het huidige of eerstvolgende tijdslot. Blauwe kleur geeft aan dat er geen reservatie mogelijk is. Grijze kleur geeft de vrije plaatsen weer. Wanneer er een groene kleur is, is er een bezetting van minder dan 80%, oranje bij minder dan 95% en anders rood.",
+      "info": "Per locatie wordt de bezetting weergegeven, voor het tijdslot eronder weergegeven. Blauwe kleur geeft aan dat er geen reservatie mogelijk is. Grijze kleur geeft de vrije plaatsen weer. Wanneer er een groene kleur is, is er een bezetting van minder dan 80%, oranje bij minder dan 95% en anders rood.",
       "withoutReservation": "Zonder reservatie",
       "occupied": "bezet",
       "takenSeats": "Bezette stoelen",
       "freeSeats": "Vrije stoelen",
       "unknown": "Onbekend",
       "notOpen": "Deze locatie is niet geopend op dit moment.",
-      "occupancyOn": "Bezetting voor tijdslot op"
+      "occupancyOn": "Bezetting voor tijdslot op",
+      "showSpecificDateInsteadOfCurrentOrNext": "Toon bezetting voor specifieke datum in plaats van huidige of eerstvolgende tijdslot",
+      "noOpenLocations": "Er zijn geen geopende locaties op deze gegeven dag."
     },
     "tokens": {
       "title": "Tokens",
