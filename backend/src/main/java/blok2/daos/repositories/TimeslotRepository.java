@@ -17,6 +17,9 @@ public interface TimeslotRepository extends JpaRepository<Timeslot, Integer> {
     @Query("SELECT t FROM Timeslot t where t.locationId = ?1 and t.timeslotDate > ?2")
     List<Timeslot> getAllByLocationIdAndAfterTimeslotDate(Integer locationId, LocalDate timeslotDate);
 
+    @Query("SELECT t FROM Timeslot t where t.locationId = ?1 and t.timeslotDate = ?2")
+    List<Timeslot> getAllByLocationIdAndOnTimeslotDate(Integer locationId, LocalDate timeslotDate);
+
     @Query("SELECT t FROM Timeslot t where t.timeslotSequenceNumber = ?1")
     Timeslot getByTimeslotSeqnr(int sequence_number);
 

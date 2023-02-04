@@ -12,6 +12,8 @@ public interface ITimeslotDao {
 
     List<Timeslot> getTimeslotsOfLocationAfterTimeslotDate(int locationId, LocalDate timeslotDate);
 
+    List<Timeslot> getTimeslotsOfLocationOnTimeslotDate(int locationId, LocalDate timeslotDate);
+
     Timeslot getTimeslot(int timeslotSeqNr);
 
     List<Timeslot> addTimeslots(List<Timeslot> timeslot);

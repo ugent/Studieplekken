@@ -1,28 +1,43 @@
 <div class="container-fluid" *ngIf="statsObs | async as stats">
-  <!-- Title -->
-  <h3>{{'management.stats.title' | translate}}</h3>
+    <!-- Title -->
+    <h3>{{'management.stats.title' | translate}}</h3>
 
-  <hr>
+    <hr>
 
-  <div *ngIf="loading" class="alert alert-info">
-    {{'management.stats.loading' | translate}}
-  </div>
+    <div *ngIf="loading" class="alert alert-info">
+        {{'management.stats.loading' | translate}}
+    </div>
 
-  <!-- If an error has occurred while fetching the stats, show the error -->
-  <div *ngIf="errorOnRetrievingStats" class="alert alert-error">
-    {{'management.stats.error' | translate}}
-  </div>
+    <!-- If an error has occurred while fetching the stats, show the error -->
+    <div *ngIf="errorOnRetrievingStats" class="alert alert-error">
+        {{'management.stats.error' | translate}}
+    </div>
 
-  <p>
-    {{'management.stats.info' | translate}}
-  </p>
-  <br>
+    <div>
+        <input type="checkbox" [(ngModel)]="showSpecificDateInsteadOfCurrentOrNext" (change)="onShowChange()" />
+        {{'management.stats.showSpecificDateInsteadOfCurrentOrNext' | translate}}
+    </div>
+    <div *ngIf="showSpecificDateInsteadOfCurrentOrNext">
+        <input type="date" [(ngModel)]="date" (change)="onDateChange()" />
+    </div>
+    <br>
 
-  <div *ngIf="!loading && !errorOnRetrievingStats" class="fullwidth">
-    <mat-grid-list cols="4" rowHeight="230px" gutterSize="5px">
-      <mat-grid-tile *ngFor="let locationStat of stats">
-        <app-waffle [locationStat]="locationStat" class="waffle-chart"></app-waffle>
-      </mat-grid-tile>
-    </mat-grid-list>
-  </div>
+    <p>
+        {{'management.stats.info' | translate}}
+    </p>
+    <br>
+
+    <div *ngIf="!loading && !errorOnRetrievingStats" class="fullwidth">
+        <mat-grid-list cols="4" rowHeight="230px" gutterSize="5px" *ngIf="stats.length > 0; else noLocations">
+            <mat-grid-tile *ngFor="let locationStat of stats">
+                <app-waffle [locationStat]="locationStat" class="waffle-chart"></app-waffle>
+            </mat-grid-tile>
+        </mat-grid-list>
+    </div>
 </div>
+
+<ng-template #noLocations>
+    <div class="messages messages--info">
+        {{'management.stats.noOpenLocations' | translate}}
+    </div>
+</ng-template>

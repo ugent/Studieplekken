@@ -130,6 +130,7 @@ export const api = {
 
   // STATS
   getStats: 'api/stats',
+  getStatsAtDate: 'api/stats/{date}',
 
   // TOKENS
   tokens: '/api/tokens',
