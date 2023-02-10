@@ -91,4 +91,9 @@ public interface ILocationReservationDao {
       */
     List<LocationReservation> getReservationCreatedToday();
 
+    /**
+     * Get all location reservations of the specified location between the given dates
+     */
+    List<LocationReservation> getAllLocationReservationsOfLocationFromTo(int locationId, LocalDate dateFrom, LocalDate dateTo);
+
 }

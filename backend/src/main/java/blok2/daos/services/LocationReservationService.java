@@ -229,4 +229,9 @@ public class LocationReservationService implements ILocationReservationDao {
         return locationReservationRepository.findAllByLocationIdAndDateAfter(locationId, n);
     }
 
+    @Override
+    public List<LocationReservation> getAllLocationReservationsOfLocationFromTo(int locationId, LocalDate dateFrom, LocalDate dateTo) {
+        return locationReservationRepository.findAllByLocationIdAndDateFromTo(locationId, dateFrom, dateTo);
+    }
+
 }

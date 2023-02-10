@@ -131,6 +131,7 @@ export const api = {
   // STATS
   getStats: 'api/stats',
   getStatsAtDate: 'api/stats/{date}',
+  getStatsForLocation: 'api/stats/locations/{locationId}/from/{from}/to/{to}',
 
   // TOKENS
   tokens: '/api/tokens',
