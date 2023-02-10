@@ -846,7 +846,21 @@
       "notOpen": "This location is not open at this moment.",
       "occupancyOn": "Occupancy for timeslot on",
       "showSpecificDateInsteadOfCurrentOrNext": "Show occupancy for a specific date instead of the current or next timeslot",
-      "noOpenLocations": "There are no open locations at this given date."
+      "noOpenLocations": "There are no open locations at this given date.",
+      "nav": {
+        "occupancy": "Occupancy per location",
+        "overview": "Overview period"
+      },
+      "reservationsTotal": "Total number of reservations",
+      "reservationsTotalMsg": "During this period, a total amount of {total} reservations were made for this location.",
+      "location": "Location",
+      "from": "From",
+      "to": "To",
+      "totalPerInstitution": "Total per institution",
+      "institution": "Institution",
+      "total": "Total",
+      "totalPerDay": "Total per day",
+      "date": "Date"
     },
     "tokens": {
       "title": "Tokens",

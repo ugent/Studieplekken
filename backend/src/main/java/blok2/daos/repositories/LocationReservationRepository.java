@@ -37,6 +37,13 @@ public interface LocationReservationRepository extends JpaRepository<LocationRes
             "and t.timeslotDate > ?2 ")
     List<LocationReservation> findAllByLocationIdAndDateAfter(int locationId, LocalDate date);
 
+    @Query("select lr from LocationReservation lr " +
+            "   join Timeslot t on lr.id.timeslotSequenceNumber = t.timeslotSequenceNumber " +
+            "where t.locationId = ?1 " +
+            "and t.timeslotDate >= ?2 " +
+            "and t.timeslotDate <= ?3")
+    List<LocationReservation> findAllByLocationIdAndDateFromTo(int locationId, LocalDate dateFrom, LocalDate dateTo);
+
 
     @Query("select lr from LocationReservation lr " +
            "    join Timeslot t on lr.id.timeslotSequenceNumber = t.timeslotSequenceNumber " +

@@ -846,7 +846,21 @@
       "notOpen": "Deze locatie is niet geopend op dit moment.",
       "occupancyOn": "Bezetting voor tijdslot op",
       "showSpecificDateInsteadOfCurrentOrNext": "Toon bezetting voor specifieke datum in plaats van huidige of eerstvolgende tijdslot",
-      "noOpenLocations": "Er zijn geen geopende locaties op deze gegeven dag."
+      "noOpenLocations": "Er zijn geen geopende locaties op deze gegeven dag.",
+      "nav": {
+        "occupancy": "Bezetting per locatie",
+        "overview": "Overzicht periode"
+      },
+      "reservationsTotal": "Totaal aantal reservaties",
+      "reservationsTotalMsg": "Gedurende deze periode werd een totaal van {total} reservaties gemaakt.",
+      "location": "Locatie",
+      "from": "Vanaf",
+      "to": "Tot",
+      "totalPerInstitution": "Totaal per onderwijsinstelling",
+      "institution": "Onderwijsinstelling",
+      "total": "Totaal",
+      "totalPerDay": "Totaal per dag",
+      "date": "Datum"
     },
     "tokens": {
       "title": "Tokens",
