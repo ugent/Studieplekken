@@ -866,7 +866,8 @@
       "institutionStudents": "Studenten van onderwijsinstelling",
       "outgoingStudentsPerHOI": "Waar gaan {institution} studenten gaan studeren?",
       "incomingStudentsPerHOI": "Wie komt studeren aan {institution}?",
-      "noteInstitutionOverview": "Er zijn ook locaties die zonder reservaties werken. Enkel reservaties kunnen worden getoond in deze overzichten. Enkel goedgekeurde reservaties worden in rekening gebracht, in geval van annulatie of niet komen opdagen worden deze niet in rekening gebracht wanneer deze als dusdanig werden aangeduid."
+      "noteInstitutionOverview": "Er zijn ook locaties die zonder reservaties werken. Enkel reservaties kunnen worden getoond in deze overzichten. Enkel goedgekeurde reservaties worden in rekening gebracht, in geval van annulatie of niet komen opdagen worden deze niet in rekening gebracht wanneer deze als dusdanig werden aangeduid.",
+      "noteLocationOverview": "Enkel goedgekeurde reservaties worden in rekening gebracht, in geval van annulatie of niet komen opdagen worden deze niet in rekening gebracht wanneer deze als dusdanig werden aangeduid."
     },
     "tokens": {
       "title": "Tokens",
