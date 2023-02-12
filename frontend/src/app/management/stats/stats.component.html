@@ -17,7 +17,9 @@
         <li><a href="" [class]="activeTab === 0 ? 'active' : ''"
                (click)="changeTab($event, 0)">{{'management.stats.nav.occupancy' | translate}}</a></li>
         <li><a href="" [class]="activeTab === 1 ? 'active' : ''"
-               (click)="changeTab($event, 1)">{{'management.stats.nav.overview' | translate}}</a></li>
+               (click)="changeTab($event, 1)">{{'management.stats.nav.overviewLocation' | translate}}</a></li>
+        <li><a href="" [class]="activeTab === 2 ? 'active' : ''"
+               (click)="changeTab($event, 2)">{{'management.stats.nav.overviewInstitution' | translate}}</a></li>
     </ul>
 
     <div *ngIf="activeTab === 0">
@@ -64,43 +66,115 @@
         </div>
         <br>
         <hr>
-        <h4>{{'management.stats.reservationsTotal' | translate}}</h4>
-        <p>{{('management.stats.reservationsTotalMsg' | translate).replace('{total}', locationOverviewStat.reservationsTotal + '')}}</p>
-        <h4>{{'management.stats.totalPerInstitution' | translate}}</h4>
-        <div class="responsive-table table-wrapper fullwidth">
-            <table style="width: 100%">
-                <thead>
-                <tr>
-                    <th>{{'management.stats.institution' | translate}}</th>
-                    <th>{{'management.stats.total' | translate}}</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="let item of locationOverviewStat.reservationsTotalPerHOI | keyvalue">
-                    <td>{{item.key}}</td>
-                    <td>{{item.value}}</td>
-                </tr>
-                </tbody>
-            </table>
+        <div *ngIf="locationOverviewStat">
+            <h4>{{'management.stats.reservationsTotal' | translate}}</h4>
+            <p>{{('management.stats.reservationsTotalMsg' | translate).replace('{total}', locationOverviewStat.reservationsTotal + '')}}</p>
+            <h4>{{'management.stats.totalPerInstitution' | translate}}</h4>
+            <div class="responsive-table table-wrapper fullwidth">
+                <table style="width: 100%">
+                    <thead>
+                    <tr>
+                        <th>{{'management.stats.institution' | translate}}</th>
+                        <th>{{'management.stats.total' | translate}}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let item of locationOverviewStat.reservationsTotalPerHOI | keyvalue">
+                        <td>{{item.key}}</td>
+                        <td>{{item.value}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h4>{{'management.stats.totalPerDay' | translate}}</h4>
+            <div class="responsive-table table-wrapper fullwidth">
+                <table style="width: 100%">
+                    <thead>
+                    <tr>
+                        <th>{{'management.stats.date' | translate}}</th>
+                        <th>{{'management.stats.total' | translate}}</th>
+                        <th *ngFor="let institution of institutions">{{institution}}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let item of locationOverviewStat.reservationsPerDayPerHOI | keyvalue">
+                        <td>{{item.key}}</td>
+                        <td>{{locationOverviewStat.reservationsPerDay[item.key]}}</td>
+                        <td *ngFor="let institution of institutions">{{item.value[institution] || 0}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <h4>{{'management.stats.totalPerDay' | translate}}</h4>
-        <div class="responsive-table table-wrapper fullwidth">
-            <table style="width: 100%">
-                <thead>
-                <tr>
-                    <th>{{'management.stats.date' | translate}}</th>
-                    <th>{{'management.stats.total' | translate}}</th>
-                    <th *ngFor="let institution of institutions">{{institution}}</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="let item of locationOverviewStat.reservationsPerDayPerHOI | keyvalue">
-                    <td>{{item.key}}</td>
-                    <td>{{locationOverviewStat.reservationsPerDay[item.key]}}</td>
-                    <td *ngFor="let institution of institutions">{{item.value[institution] || 0}}</td>
-                </tr>
-                </tbody>
-            </table>
+    </div>
+
+    <div *ngIf="activeTab === 2">
+        <div>
+            <label for="institutionLocations">{{'management.stats.institutionLocations' | translate}}</label>
+            <select class="form-control" id="institutionLocations" [(ngModel)]="selectedInstitutionLocations"
+                    (change)="onInstitutionOverviewChange()">
+                <option *ngFor="let institution of institutionsExtended" [value]="institution">
+                    {{institution}}
+                </option>
+            </select>
+        </div>
+        <div>
+            <label for="institutionStudents">{{'management.stats.institutionStudents' | translate}}</label>
+            <select class="form-control" id="institutionStudents" [(ngModel)]="selectedInstitutionStudents"
+                    (change)="onInstitutionOverviewChange()">
+                <option *ngFor="let institution of institutionsExtended" [value]="institution">
+                    {{institution}}
+                </option>
+            </select>
+        </div>
+        <div>
+            <label for="institutionOverviewFrom">{{'management.stats.from' | translate}}</label>
+            <input id="institutionOverviewFrom" type="date" [(ngModel)]="institutionOverviewFrom"
+                   (change)="onInstitutionOverviewChange()"/>
+            <label for="institutionOverviewFrom">{{'management.stats.to' | translate}}</label>
+            <input id="institutionOverviewTo" type="date" [(ngModel)]="institutionOverviewTo"
+                   (change)="onInstitutionOverviewChange()"/>
+        </div>
+        <br>
+        <hr>
+        <div *ngIf="institutionOverviewStat">
+            <div class="alert alert-info">
+                {{'management.stats.noteInstitutionOverview' | translate}}
+            </div>
+            <h4>{{('management.stats.outgoingStudentsPerHOI' | translate).replace('{institution}', selectedInstitutionStudents)}}</h4>
+            <div class="responsive-table table-wrapper fullwidth">
+                <table style="width: 100%">
+                    <thead>
+                    <tr>
+                        <th>{{'management.stats.institution' | translate}}</th>
+                        <th>{{'management.stats.total' | translate}}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let item of institutionOverviewStat.outgoingStudentsPerHOI | keyvalue">
+                        <td>{{item.key}}</td>
+                        <td>{{item.value}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h4>{{('management.stats.incomingStudentsPerHOI' | translate).replace('{institution}', selectedInstitutionLocations)}}</h4>
+            <div class="responsive-table table-wrapper fullwidth">
+                <table style="width: 100%">
+                    <thead>
+                    <tr>
+                        <th>{{'management.stats.institution' | translate}}</th>
+                        <th>{{'management.stats.total' | translate}}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let item of institutionOverviewStat.incomingStudentsPerHOI | keyvalue">
+                        <td>{{item.key}}</td>
+                        <td>{{item.value}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

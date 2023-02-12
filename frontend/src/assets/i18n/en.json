@@ -849,7 +849,8 @@
       "noOpenLocations": "There are no open locations at this given date.",
       "nav": {
         "occupancy": "Occupancy per location",
-        "overview": "Overview period"
+        "overviewLocation": "Overview period for location",
+        "overviewInstitution": "Overview period for HOI"
       },
       "reservationsTotal": "Total number of reservations",
       "reservationsTotalMsg": "During this period, a total amount of {total} reservations were made for this location.",
@@ -860,7 +861,12 @@
       "institution": "Institution",
       "total": "Total",
       "totalPerDay": "Total per day",
-      "date": "Date"
+      "date": "Date",
+      "institutionLocations": "Locations of institution",
+      "institutionStudents": "Students of institution",
+      "outgoingStudentsPerHOI": "Where are {institution} students going to study?",
+      "incomingStudentsPerHOI": "Who is coming to study at {institution}?",
+      "noInstitutionOverview": "There are also locations that operate without reservations. Only reservations can be shown in these listings. Only approved reservations will be considered, in case of cancellation or no-show, they will not be considered if they were marked as such."
     },
     "tokens": {
       "title": "Tokens",

@@ -5,6 +5,7 @@ import {LocationStat, LocationStatConstructor} from '../../../shared/model/Locat
 import {api} from '../endpoints';
 import {map} from 'rxjs/internal/operators/map';
 import {LocationOverviewStat, LocationOverviewStatConstructor} from '../../../shared/model/LocationOverviewStat';
+import {InstitutionOverviewStat} from '../../../shared/model/InstitutionOverviewStat';
 
 @Injectable({
     providedIn: 'root',
@@ -28,6 +29,15 @@ export class StatsService {
             .replace('{from}', from)
             .replace('{to}', to))
             .pipe(map(x => LocationOverviewStatConstructor.newFromObj(x)));
+    }
+
+    getStatsForInstitutionFromTo(institutionLocations: string, institutionStudents: string, from: string, to: string):
+        Observable<InstitutionOverviewStat> {
+        return this.http.get<InstitutionOverviewStat>(api.getStatsForInstitution
+            .replace('{institutionLocations}', institutionLocations)
+            .replace('{institutionStudents}', institutionStudents)
+            .replace('{from}', from)
+            .replace('{to}', to));
     }
 
 }
