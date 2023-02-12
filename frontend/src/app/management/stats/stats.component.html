@@ -37,6 +37,9 @@
         </div>
         <br>
 
+        <p [innerHTML]="('management.stats.summaryOccupancy' | translate).replace('{occupied}', occupancy).replace('{total}', total) + '<br>' + ('management.stats.noteLocationOverview' | translate)"></p>
+        <br>
+
         <div *ngIf="!loading && !errorOnRetrievingStats" class="fullwidth">
             <mat-grid-list cols="4" rowHeight="230px" gutterSize="5px" *ngIf="stats.length > 0; else noLocations">
                 <mat-grid-tile *ngFor="let locationStat of stats">
