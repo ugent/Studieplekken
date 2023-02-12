@@ -32,9 +32,9 @@
         </div>
         <br>
 
-        <p>
+        <div class="alert alert-info">
             {{'management.stats.info' | translate}}
-        </p>
+        </div>
         <br>
 
         <div *ngIf="!loading && !errorOnRetrievingStats" class="fullwidth">
@@ -67,6 +67,9 @@
         <br>
         <hr>
         <div *ngIf="locationOverviewStat">
+            <div class="alert alert-info">
+                {{'management.stats.noteLocationOverview' | translate}}
+            </div>
             <h4>{{'management.stats.reservationsTotal' | translate}}</h4>
             <p>{{('management.stats.reservationsTotalMsg' | translate).replace('{total}', locationOverviewStat.reservationsTotal + '')}}</p>
             <h4>{{'management.stats.totalPerInstitution' | translate}}</h4>
