@@ -132,6 +132,7 @@ export const api = {
   getStats: 'api/stats',
   getStatsAtDate: 'api/stats/{date}',
   getStatsForLocation: 'api/stats/locations/{locationId}/from/{from}/to/{to}',
+  getStatsForInstitution: 'api/stats/institutions/{institutionLocations}/students/{institutionStudents}/from/{from}/to/{to}',
 
   // TOKENS
   tokens: '/api/tokens',

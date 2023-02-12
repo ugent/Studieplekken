@@ -6,6 +6,7 @@ import {LocationStat} from '../../shared/model/LocationStat';
 import {LocationOverviewStat} from '../../shared/model/LocationOverviewStat';
 import {Location} from '../../shared/model/Location';
 import {LocationService} from '../../services/api/locations/location.service';
+import {InstitutionOverviewStat} from '../../shared/model/InstitutionOverviewStat';
 
 @Component({
     selector: 'app-stats',
@@ -16,8 +17,10 @@ export class StatsComponent implements OnInit {
     loading = true;
     statsObs: Observable<LocationStat[]>;
     locationOverviewStat: LocationOverviewStat;
+    institutionOverviewStat: InstitutionOverviewStat;
     locations: Observable<Location[]>;
     institutions = ['UGent', 'HoGent', 'Arteveldehogeschool', 'KULeuven', 'Luca', 'Odisee'];
+    institutionsExtended = ['All', 'UGent', 'HoGent', 'Arteveldehogeschool', 'KULeuven', 'Luca', 'Odisee', 'StadGent', 'Other'];
 
     errorOnRetrievingStats = false; // booleanId = 0
 
@@ -29,6 +32,11 @@ export class StatsComponent implements OnInit {
     selectedLocationId = 0;
     locationOverviewFrom = '';
     locationOverviewTo = '';
+
+    selectedInstitutionLocations = 'UGent';
+    selectedInstitutionStudents = 'UGent';
+    institutionOverviewFrom = '';
+    institutionOverviewTo = '';
 
     constructor(
         private statsService: StatsService,
@@ -47,18 +55,16 @@ export class StatsComponent implements OnInit {
 
         this.locations = this.locationService.getLocations();
 
-        this.selectedLocationId = 42;
-        this.locationOverviewFrom = '2022-01-01';
-        this.locationOverviewTo = '2023-02-28';
         this.onLocationOverviewChange();
     }
 
     onDateChange(): void {
-        console.log('Date changed to: ' + this.date);
         if (this.date) {
+            this.loading = true;
             this.statsObs = this.statsService.getStatsAtDate(this.date).pipe(
                 tap(() => (this.loading = false)),
                 catchError((e) => {
+                    this.loading = false;
                     this.errorOnRetrievingStats = !!e;
                     return of<LocationStat[]>([]);
                 })
@@ -81,10 +87,26 @@ export class StatsComponent implements OnInit {
 
     onLocationOverviewChange(): void {
         if (this.selectedLocationId && this.locationOverviewFrom && this.locationOverviewTo) {
+            this.loading = true;
+            this.locationOverviewStat = null;
             this.statsService.getStatsForLocationFromTo(this.selectedLocationId, this.locationOverviewFrom, this.locationOverviewTo)
                 .subscribe(x => {
                 this.locationOverviewStat = x;
-                console.log(x);
+                this.loading = false;
+            });
+        }
+    }
+
+    onInstitutionOverviewChange(): void {
+        if (this.selectedInstitutionLocations && this.selectedInstitutionStudents
+            && this.institutionOverviewFrom && this.institutionOverviewTo) {
+            this.loading = true;
+            this.institutionOverviewStat = null;
+            this.statsService.getStatsForInstitutionFromTo(this.selectedInstitutionLocations, this.selectedInstitutionStudents,
+                this.institutionOverviewFrom, this.institutionOverviewTo)
+                .subscribe(x => {
+                this.institutionOverviewStat = x;
+                this.loading = false;
             });
         }
     }

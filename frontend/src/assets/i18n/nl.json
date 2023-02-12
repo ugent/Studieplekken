@@ -849,7 +849,8 @@
       "noOpenLocations": "Er zijn geen geopende locaties op deze gegeven dag.",
       "nav": {
         "occupancy": "Bezetting per locatie",
-        "overview": "Overzicht periode"
+        "overviewLocation": "Overzicht periode voor locatie",
+        "overviewInstitution": "Overzicht periode voor HOI"
       },
       "reservationsTotal": "Totaal aantal reservaties",
       "reservationsTotalMsg": "Gedurende deze periode werd een totaal van {total} reservaties gemaakt.",
@@ -860,7 +861,12 @@
       "institution": "Onderwijsinstelling",
       "total": "Totaal",
       "totalPerDay": "Totaal per dag",
-      "date": "Datum"
+      "date": "Datum",
+      "institutionLocations": "Locaties van onderwijsinstelling",
+      "institutionStudents": "Studenten van onderwijsinstelling",
+      "outgoingStudentsPerHOI": "Waar gaan {institution} studenten gaan studeren?",
+      "incomingStudentsPerHOI": "Wie komt studeren aan {institution}?",
+      "noteInstitutionOverview": "Er zijn ook locaties die zonder reservaties werken. Enkel reservaties kunnen worden getoond in deze overzichten. Enkel goedgekeurde reservaties worden in rekening gebracht, in geval van annulatie of niet komen opdagen worden deze niet in rekening gebracht wanneer deze als dusdanig werden aangeduid."
     },
     "tokens": {
       "title": "Tokens",
