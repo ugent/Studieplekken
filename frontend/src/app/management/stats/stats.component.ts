@@ -30,6 +30,7 @@ export class StatsComponent implements OnInit {
     date = '';
     occupancy = 0;
     total = 0;
+    totalNotReservable = 0;
 
     selectedLocationId = 0;
     locationOverviewFrom = '';
@@ -51,7 +52,8 @@ export class StatsComponent implements OnInit {
             tap((x) => {
                 this.loading = false;
                 this.occupancy = x.map(y => y.numberOfTakenSeats).reduce((a, b) => a + b, 0);
-                this.total = x.map(y => y.numberOfSeats).reduce((a, b) => a + b, 0);
+                this.total = x.filter(y => y.reservable).map(y => y.numberOfSeats).reduce((a, b) => a + b, 0);
+                this.totalNotReservable = x.filter(y => !y.reservable).map(y => y.numberOfSeats).reduce((a, b) => a + b, 0);
             }),
             catchError((e) => {
                 this.errorOnRetrievingStats = !!e;
