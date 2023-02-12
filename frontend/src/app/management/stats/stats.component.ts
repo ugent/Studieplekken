@@ -28,6 +28,8 @@ export class StatsComponent implements OnInit {
 
     showSpecificDateInsteadOfCurrentOrNext = false;
     date = '';
+    occupancy = 0;
+    total = 0;
 
     selectedLocationId = 0;
     locationOverviewFrom = '';
@@ -46,7 +48,11 @@ export class StatsComponent implements OnInit {
 
     ngOnInit(): void {
         this.statsObs = this.statsService.getStats().pipe(
-            tap(() => (this.loading = false)),
+            tap((x) => {
+                this.loading = false;
+                this.occupancy = x.map(y => y.numberOfTakenSeats).reduce((a, b) => a + b, 0);
+                this.total = x.map(y => y.numberOfSeats).reduce((a, b) => a + b, 0);
+            }),
             catchError((e) => {
                 this.errorOnRetrievingStats = !!e;
                 return of<LocationStat[]>([]);
@@ -54,15 +60,17 @@ export class StatsComponent implements OnInit {
         );
 
         this.locations = this.locationService.getLocations();
-
-        this.onLocationOverviewChange();
     }
 
     onDateChange(): void {
         if (this.date) {
             this.loading = true;
             this.statsObs = this.statsService.getStatsAtDate(this.date).pipe(
-                tap(() => (this.loading = false)),
+                tap((x) => {
+                    this.loading = false;
+                    this.occupancy = x.map(y => y.numberOfTakenSeats).reduce((a, b) => a + b, 0);
+                    this.total = x.map(y => y.numberOfSeats).reduce((a, b) => a + b, 0);
+                }),
                 catchError((e) => {
                     this.loading = false;
                     this.errorOnRetrievingStats = !!e;
