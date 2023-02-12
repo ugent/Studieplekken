@@ -868,7 +868,7 @@
       "incomingStudentsPerHOI": "Wie komt studeren aan {institution}?",
       "noteInstitutionOverview": "Er zijn ook locaties die zonder reservaties werken. Enkel reservaties kunnen worden getoond in deze overzichten. Enkel goedgekeurde reservaties worden in rekening gebracht, in geval van annulatie of niet komen opdagen worden deze niet in rekening gebracht wanneer deze als dusdanig werden aangeduid.",
       "noteLocationOverview": "Enkel goedgekeurde reservaties worden in rekening gebracht, in geval van annulatie of niet komen opdagen worden deze niet in rekening gebracht wanneer deze als dusdanig werden aangeduid.",
-      "summaryOccupancy": "Op deze datum was er een bezetting van <b>{occupied} / {total}</b> over alle locaties heen."
+      "summaryOccupancy": "Op deze datum was/is er een bezetting van <b>{occupied} / {total}</b> over alle locaties heen. Daarnaast waren/zijn er <b>{totalNotReservable}</b> niet reserveerbare plaatsen."
     },
     "tokens": {
       "title": "Tokens",

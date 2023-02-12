@@ -37,7 +37,7 @@
         </div>
         <br>
 
-        <p [innerHTML]="('management.stats.summaryOccupancy' | translate).replace('{occupied}', occupancy).replace('{total}', total) + '<br>' + ('management.stats.noteLocationOverview' | translate)"></p>
+        <p [innerHTML]="('management.stats.summaryOccupancy' | translate).replace('{occupied}', occupancy).replace('{total}', total).replace('{totalNotReservable}', totalNotReservable) + '<br>' + ('management.stats.noteLocationOverview' | translate)"></p>
         <br>
 
         <div *ngIf="!loading && !errorOnRetrievingStats" class="fullwidth">

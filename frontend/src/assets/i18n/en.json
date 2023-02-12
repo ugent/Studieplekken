@@ -868,7 +868,7 @@
       "incomingStudentsPerHOI": "Who is coming to study at {institution}?",
       "noteInstitutionOverview": "There are also locations that operate without reservations. Only reservations can be shown in these listings. Only approved reservations will be considered, in case of cancellation or no-show, they will not be considered if they were marked as such.",
       "noteLocationOverview": "Only approved reservations will be considered, in case of cancellation or no-show, they will not be considered if they were marked as such.",
-      "summaryOccupancy": "On this date, there was an occupation of <b>{occupied} / {total}</b> across all locations."
+      "summaryOccupancy": "On this date, there was/is an occupation of <b>{occupied} / {total}</b> across all locations. Next to that, there were/are <b>{totalNotReservable}</b> not reservable places."
     },
     "tokens": {
       "title": "Tokens",
