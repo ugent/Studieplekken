@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { MomentTimeslotSizeComponent } from './moment-timeslot-size.component';
 
@@ -6,7 +6,7 @@ describe('MomentTimeslotSizeComponent', () => {
   let component: MomentTimeslotSizeComponent;
   let fixture: ComponentFixture<MomentTimeslotSizeComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     void TestBed.configureTestingModule({
       declarations: [MomentTimeslotSizeComponent],
     }).compileComponents();

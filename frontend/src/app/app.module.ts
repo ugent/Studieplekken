@@ -417,7 +417,7 @@ const routes: Routes = [
     imports: [
         BrowserModule,
         AppRoutingModule,
-        RouterModule.forRoot(routes),
+        RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' }),
         HttpClientModule,
         TranslateModule.forRoot({
             defaultLanguage: 'nl',

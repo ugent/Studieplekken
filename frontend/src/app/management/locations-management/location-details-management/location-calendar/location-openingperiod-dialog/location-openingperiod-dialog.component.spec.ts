@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { LocationOpeningperiodDialogComponent } from './location-openingperiod-dialog.component';
 
@@ -6,7 +6,7 @@ describe('LocationOpeningperiodDialogComponent', () => {
   let component: LocationOpeningperiodDialogComponent;
   let fixture: ComponentFixture<LocationOpeningperiodDialogComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     void TestBed.configureTestingModule({
       declarations: [LocationOpeningperiodDialogComponent],
     }).compileComponents();
