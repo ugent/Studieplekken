@@ -1,5 +1,5 @@
 // Setting up gent_styleguide (cfr. https://stijlgids.stad.gent/v4/index.html)
-@use '@angular/material' as mat;
+@use '~@angular/material' as mat;
 $styleguide-dir: "" !default;
 @import "./node_modules/gent_styleguide/build/styleguide/sass/main_cli";
 
