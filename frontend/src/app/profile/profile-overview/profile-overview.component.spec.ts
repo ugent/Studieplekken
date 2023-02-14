@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ProfileOverviewComponent } from './profile-overview.component';
 
@@ -6,7 +6,7 @@ describe('ProfileOverviewComponent', () => {
   let component: ProfileOverviewComponent;
   let fixture: ComponentFixture<ProfileOverviewComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     void TestBed.configureTestingModule({
       declarations: [ProfileOverviewComponent],
     }).compileComponents();
