@@ -72,6 +72,7 @@ export class StatsComponent implements OnInit {
                     this.loading = false;
                     this.occupancy = x.map(y => y.numberOfTakenSeats).reduce((a, b) => a + b, 0);
                     this.total = x.map(y => y.numberOfSeats).reduce((a, b) => a + b, 0);
+                    this.totalNotReservable = x.filter(y => !y.reservable).map(y => y.numberOfSeats).reduce((a, b) => a + b, 0);
                 }),
                 catchError((e) => {
                     this.loading = false;
