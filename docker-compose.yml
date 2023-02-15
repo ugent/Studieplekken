@@ -25,6 +25,7 @@ services:
       LDAP_BASE: ""
       LDAP_USER_DN: ""
       LDAP_PASSWORD: ""
+      AUTH_SERVICE_KEY: ""
     depends_on:
       - db
     volumes:
