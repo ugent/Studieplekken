@@ -49,7 +49,7 @@ custom:
     auth:
       secret: "${AUTH_SERVICE_KEY:local-key}"
       subject: "blokat-auth-service"
-      baseurl: ""
+      baseurl: "https://bloklocaties.stad.gent/"
   jwtKey: "${JWT_KEY}"
 
 # SAML
