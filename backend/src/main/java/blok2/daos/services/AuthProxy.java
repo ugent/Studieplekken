@@ -33,7 +33,7 @@ public class AuthProxy {
     @Value("${custom.services.auth.secret}")
     private String secret;
 
-    private String tokenEndpoint = "/api/token";
+    private String tokenEndpoint = "/auth/tokens";
 
     public ResponseEntity<String> getAllTokens(HttpServletRequest request) {
         return this.mirrorRest(request, HttpMethod.GET, this.tokenEndpoint, null);

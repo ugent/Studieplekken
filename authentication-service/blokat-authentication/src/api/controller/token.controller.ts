@@ -1,10 +1,9 @@
 import { Body, Controller, Get, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
-import { tokens } from '@prisma/client';
 import { DbTokenService } from 'src/db/db-token/db-token.service';
 import { BackendServiceGuard } from '../internal-auth/service-jwt/backend-service.guard';
 import { TokenBody } from './bodies/token.body';
 
-@Controller('api/token')
+@Controller('auth/tokens')
 @UseGuards(BackendServiceGuard)
 export class TokenController {
     constructor(private tokenDb: DbTokenService) {}

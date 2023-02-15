@@ -35,17 +35,17 @@ describe('ApiController', () => {
 
 
   it('should error when no jwt is given', () => {
-    return request(app.getHttpServer()).get("/api/token").expect(403)
+    return request(app.getHttpServer()).get("/auth/tokens").expect(403)
   })
 
   it('should give empty', () => {
-    return request(app.getHttpServer()).get("/api/token").set('Authorization', header()).expect({"tokens": []})
+    return request(app.getHttpServer()).get("/auth/tokens").set('Authorization', header()).expect({"tokens": []})
   })
 
   it('should reject invalid purpose', () => {
     const token = {email: "maxiem@maxiemgeldhof.com", purpose: "wrong purpose"}
     const tokenRequest = request(app.getHttpServer())
-                .post("/api/token")
+                .post("/auth/tokens")
                 .set('Authorization', header())
                 .set('Accept', 'application/json')
                 .send(token)
@@ -56,14 +56,14 @@ describe('ApiController', () => {
   it('should accept token and create', async () => {
     const token = {email: "maxiem@maxiemgeldhof.com", purpose: "PASSWORD_RESET"}
     const postTokenRequest = await request(app.getHttpServer())
-                .post("/api/token")
+                .post("/auth/tokens")
                 .set('Authorization', header())
                 .set('Accept', 'application/json')
                 .send(token)
                 .expect(201)
 
     const getTokenRequest = await request(app.getHttpServer())
-                .get("/api/token")
+                .get("/auth/tokens")
                 .set('Authorization', header())
                 .set('Accept', 'application/json')
                 .expect(200)
