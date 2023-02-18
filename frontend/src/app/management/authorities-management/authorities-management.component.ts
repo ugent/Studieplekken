@@ -1,8 +1,8 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import {
   AbstractControl,
-  FormControl,
-  FormGroup,
+  UntypedFormControl,
+  UntypedFormGroup,
   Validators
 } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -19,10 +19,10 @@ import { Authority } from '../../shared/model/Authority';
 export class AuthoritiesManagementComponent implements OnInit {
   authoritiesObs: Observable<Authority[]>;
 
-  authorityFormGroup = new FormGroup({
-    authorityId: new FormControl({ value: '', disabled: true }),
-    authorityName: new FormControl('', Validators.required.bind(this)),
-    description: new FormControl('', Validators.required.bind(this)),
+  authorityFormGroup = new UntypedFormGroup({
+    authorityId: new UntypedFormControl({ value: '', disabled: true }),
+    authorityName: new UntypedFormControl('', Validators.required.bind(this)),
+    description: new UntypedFormControl('', Validators.required.bind(this)),
   });
 
   successGettingAuthorities: boolean = undefined;

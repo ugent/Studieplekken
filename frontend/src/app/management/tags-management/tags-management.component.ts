@@ -1,8 +1,8 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import {
   AbstractControl,
-  FormControl,
-  FormGroup,
+  UntypedFormControl,
+  UntypedFormGroup,
   Validators
 } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -18,10 +18,10 @@ import { LocationTag } from '../../shared/model/LocationTag';
 export class TagsManagementComponent implements OnInit {
   tagsObs: Observable<LocationTag[]>;
 
-  tagFormGroup = new FormGroup({
-    tagId: new FormControl({ value: '', disabled: true }),
-    dutch: new FormControl('', Validators.required.bind(this)),
-    english: new FormControl('', Validators.required.bind(this)),
+  tagFormGroup = new UntypedFormGroup({
+    tagId: new UntypedFormControl({ value: '', disabled: true }),
+    dutch: new UntypedFormControl('', Validators.required.bind(this)),
+    english: new UntypedFormControl('', Validators.required.bind(this)),
   });
 
   successGettingTags: boolean = undefined;

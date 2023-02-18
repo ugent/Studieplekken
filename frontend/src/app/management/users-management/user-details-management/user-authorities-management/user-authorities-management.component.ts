@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, TemplateRef } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { AuthoritiesService } from '../../../../services/api/authorities/authorities.service';
@@ -22,7 +22,7 @@ export class UserAuthoritiesManagementComponent implements OnInit {
   allAuthorities: Authority[]; // all authorities in the application
   addableAuthorities: Authority[]; // the authorities in the application, that are not yet assigned to the user
 
-  authoritiesFormControl = new FormControl('', Validators.required.bind(this));
+  authoritiesFormControl = new UntypedFormControl('', Validators.required.bind(this));
 
   authorityPreparedToDelete: Authority;
 
