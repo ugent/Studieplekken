@@ -4,7 +4,7 @@ FROM node:14.21-alpine AS build
 WORKDIR /app
 RUN npm install -g @angular/cli
 COPY package.json package-lock.json ./
-RUN npm install
+RUN npm install --legacy-peer-deps
 COPY . .
 
 ARG configuration=production

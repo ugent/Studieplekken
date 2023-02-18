@@ -1,8 +1,8 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import {
   AbstractControl,
-  FormControl,
-  FormGroup,
+  UntypedFormControl,
+  UntypedFormGroup,
   Validators
 } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -25,12 +25,12 @@ export class AuthorityUsersManagementComponent implements OnInit {
 
   usersInAuthorityObs: Observable<User[]>;
 
-  userSearchFormGroup = new FormGroup({
-    firstName: new FormControl('', Validators.required.bind(this)),
-    lastName: new FormControl('', Validators.required.bind(this)),
+  userSearchFormGroup = new UntypedFormGroup({
+    firstName: new UntypedFormControl('', Validators.required.bind(this)),
+    lastName: new UntypedFormControl('', Validators.required.bind(this)),
   });
 
-  selectedUserFormControl = new FormControl('', Validators.required.bind(this));
+  selectedUserFormControl = new UntypedFormControl('', Validators.required.bind(this));
 
   userSearchResult: User[] = [];
 

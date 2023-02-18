@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, TemplateRef } from '@angular/core';
 import { Observable } from 'rxjs';
 import { User, UserConstructor } from '../../../../shared/model/User';
-import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { UserDetailsService } from '../../../../services/single-point-of-truth/user-details/user-details.service';
 import { UserService } from '../../../../services/api/users/user.service';
 import { msToShowFeedback } from '../../../../app.constants';
@@ -19,8 +19,8 @@ export class UserRolesComponent implements OnInit {
 
   userUpdatingSuccess: boolean = undefined;
 
-  roleFormGroup = new FormGroup({
-    admin: new FormControl(''),
+  roleFormGroup = new UntypedFormGroup({
+    admin: new UntypedFormControl(''),
   });
 
   modalRef: MatDialogRef<unknown>;

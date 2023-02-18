@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 import { User, UserSettings } from '../../shared/model/User';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { ApplicationTypeFunctionalityService } from '../../services/functionality/application-type/application-type-functionality.service';
 import { Observable } from 'rxjs';
 import { UserService } from 'src/app/services/api/users/user.service';
@@ -13,8 +13,8 @@ import { UserService } from 'src/app/services/api/users/user.service';
 })
 export class ProfileOverviewComponent implements OnInit {
   userObs: Observable<User>;
-  formGroup: FormGroup;
-  settingsFormGroup: FormGroup;
+  formGroup: UntypedFormGroup;
+  settingsFormGroup: UntypedFormGroup;
 
   showPenaltyPoints: boolean;
 
@@ -35,18 +35,18 @@ export class ProfileOverviewComponent implements OnInit {
   }
 
   prepareEmptyFormGroup(): void {
-    this.formGroup = new FormGroup({
-      userId: new FormControl({ value: '', disabled: true }),
-      firstName: new FormControl({ value: '', disabled: true }),
-      lastName: new FormControl({ value: '', disabled: true }),
-      mail: new FormControl({ value: '', disabled: true }),
-      penaltyPoints: new FormControl({ value: 0, disabled: true }),
-      institution: new FormControl({ value: '', disabled: true }),
-      password: new FormControl({ value: '', disabled: true }),
-      confirmPassword: new FormControl({ value: '', disabled: true })
+    this.formGroup = new UntypedFormGroup({
+      userId: new UntypedFormControl({ value: '', disabled: true }),
+      firstName: new UntypedFormControl({ value: '', disabled: true }),
+      lastName: new UntypedFormControl({ value: '', disabled: true }),
+      mail: new UntypedFormControl({ value: '', disabled: true }),
+      penaltyPoints: new UntypedFormControl({ value: 0, disabled: true }),
+      institution: new UntypedFormControl({ value: '', disabled: true }),
+      password: new UntypedFormControl({ value: '', disabled: true }),
+      confirmPassword: new UntypedFormControl({ value: '', disabled: true })
     });
-    this.settingsFormGroup = new FormGroup({
-      receiveMailConfirmation: new FormControl({value: true, disabled: false})
+    this.settingsFormGroup = new UntypedFormGroup({
+      receiveMailConfirmation: new UntypedFormControl({value: true, disabled: false})
     });
 
   }

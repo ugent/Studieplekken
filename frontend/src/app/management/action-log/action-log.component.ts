@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ActionLogEntry } from 'src/app/shared/model/ActionLogEntry';
 import { ActionLogService } from 'src/app/services/api/action-log/action-log.service';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 
 
 @Component({
@@ -12,8 +12,8 @@ import { FormControl, FormGroup } from '@angular/forms';
 })
 export class ActionLogComponent implements OnInit {
 
-  formGroup = new FormGroup({
-    searchFilter: new FormControl('')
+  formGroup = new UntypedFormGroup({
+    searchFilter: new UntypedFormControl('')
   });
 
   allActions: ActionLogEntry[];

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, TemplateRef } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
 import { TranslateService } from '@ngx-translate/core';
@@ -23,7 +23,7 @@ export class LocationTagsManagementComponent implements OnInit {
   locationId: number;
   currentLang: string;
 
-  tagsFormControl: FormControl = new FormControl([]);
+  tagsFormControl: UntypedFormControl = new UntypedFormControl([]);
   matSelectSelection: LocationTag[]; // this set upon a selectionChange() of the mat-selection
   allTags: LocationTag[]; // these tags are assignable to the location (retrieved from backend)
   tagsThatAreSelected: LocationTag[]; // these tags are actually set on the location (retrieved from backend)
@@ -55,13 +55,13 @@ export class LocationTagsManagementComponent implements OnInit {
         this.locationId = next.locationId;
         this.locationName = next.name;
         this.tagsThatAreSelected = next.assignedTags;
-        this.tagsFormControl = new FormControl(this.tagsThatAreSelected);
+        this.tagsFormControl = new UntypedFormControl(this.tagsThatAreSelected);
       }
     });
   }
 
   prepareUpdateTheTags(template: TemplateRef<unknown>): void {
-    this.tagsFormControl = new FormControl(this.tagsThatAreSelected);
+    this.tagsFormControl = new UntypedFormControl(this.tagsThatAreSelected);
     this.tagsSelectionIsUpdatable = false;
     this.successUpdatingTagsConfiguration = undefined;
     this.modalService.open(template, {panelClass: ["cs--cyan" ,"bigmodal"]});

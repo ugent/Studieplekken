@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, TemplateRef } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Observable, of, Subject } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -20,9 +20,9 @@ export class VolunteerManagementPanelComponent implements OnInit {
   volunteerObs: Observable<User[]>;
   errorSubject: Subject<boolean> = new Subject<boolean>();
 
-  formGroup = new FormGroup({
-    firstName: new FormControl(''),
-    lastName: new FormControl(''),
+  formGroup = new UntypedFormGroup({
+    firstName: new UntypedFormControl(''),
+    lastName: new UntypedFormControl(''),
   });
   neverSearched = true;
   filteredUsers: Observable<User[]>;
