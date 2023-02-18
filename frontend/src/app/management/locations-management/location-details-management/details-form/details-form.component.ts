@@ -3,7 +3,7 @@ import {
   Location,
   LocationConstructor,
 } from '../../../../shared/model/Location';
-import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { LocationService } from '../../../../services/api/locations/location.service';
 import { Observable } from 'rxjs';
 import { LocationDetailsService } from '../../../../services/single-point-of-truth/location-details/location-details.service';
@@ -31,15 +31,15 @@ export class DetailsFormComponent implements OnInit {
   buildingsObs: Observable<Building[]>;
   buildingsMap: Map<number, Building>; // map the buildingId to the Building object
 
-  locationForm = new FormGroup({
-    name: new FormControl({ value: '', disabled: true }),
-    authority: new FormControl({ value: '', disabled: true }),
-    building: new FormControl({ value: '', disabled: true }),
-    numberOfSeats: new FormControl({ value: '', disabled: true }),
-    numberOfLockers: new FormControl({ value: '', disabled: true }),
-    forGroup: new FormControl({ value: '', disabled: true }),
-    imageUrl: new FormControl({ value: '', disabled: true }),
-    usesPenaltyPoints: new FormControl({ value: false, disabled: true })
+  locationForm = new UntypedFormGroup({
+    name: new UntypedFormControl({ value: '', disabled: true }),
+    authority: new UntypedFormControl({ value: '', disabled: true }),
+    building: new UntypedFormControl({ value: '', disabled: true }),
+    numberOfSeats: new UntypedFormControl({ value: '', disabled: true }),
+    numberOfLockers: new UntypedFormControl({ value: '', disabled: true }),
+    forGroup: new UntypedFormControl({ value: '', disabled: true }),
+    imageUrl: new UntypedFormControl({ value: '', disabled: true }),
+    usesPenaltyPoints: new UntypedFormControl({ value: false, disabled: true })
   });
 
   disableEditLocationButton = false;

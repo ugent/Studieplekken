@@ -1,8 +1,8 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import {
   AbstractControl,
-  FormControl,
-  FormGroup,
+  UntypedFormControl,
+  UntypedFormGroup,
   Validators
 } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -29,7 +29,7 @@ export class LocationsManagementComponent implements OnInit {
   locations: Observable<Location[]>;
   unapprovedLocations: Observable<Location[]>;
 
-  addLocationFormGroup: FormGroup;
+  addLocationFormGroup: UntypedFormGroup;
   addingWasSuccess: boolean = undefined;
 
   currentLocationNameToDelete: string;
@@ -68,18 +68,18 @@ export class LocationsManagementComponent implements OnInit {
   }
 
   setupForm(edit: boolean = false): void {
-    this.addLocationFormGroup = new FormGroup({
-      locationId: new FormControl(-1, Validators.required.bind(this)),
-      name: new FormControl(
+    this.addLocationFormGroup = new UntypedFormGroup({
+      locationId: new UntypedFormControl(-1, Validators.required.bind(this)),
+      name: new UntypedFormControl(
         { value: '', disabled: edit },
         Validators.required.bind(this)
       ),
-      authority: new FormControl('', Validators.required.bind(this)),
-      building: new FormControl('', Validators.required.bind(this)),
-      numberOfSeats: new FormControl('', Validators.required.bind(this)),
-      forGroup: new FormControl(false, Validators.required.bind(this)),
-      imageUrl: new FormControl(''),
-      usesPenaltyPoints: new FormControl(false),
+      authority: new UntypedFormControl('', Validators.required.bind(this)),
+      building: new UntypedFormControl('', Validators.required.bind(this)),
+      numberOfSeats: new UntypedFormControl('', Validators.required.bind(this)),
+      forGroup: new UntypedFormControl(false, Validators.required.bind(this)),
+      imageUrl: new UntypedFormControl(''),
+      usesPenaltyPoints: new UntypedFormControl(false),
     });
   }
 

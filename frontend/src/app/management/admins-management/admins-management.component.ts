@@ -5,7 +5,7 @@ import { User, UserConstructor } from '../../shared/model/User';
 import { UserService } from '../../services/api/users/user.service';
 import { catchError, tap } from 'rxjs/operators';
 import { ApplicationTypeFunctionalityService } from '../../services/functionality/application-type/application-type-functionality.service';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
@@ -17,9 +17,9 @@ export class AdminsManagementComponent implements OnInit {
   loading = true;
   adminsObs: Observable<User[]>;
 
-  formGroup = new FormGroup({
-    firstName: new FormControl(''),
-    lastName: new FormControl(''),
+  formGroup = new UntypedFormGroup({
+    firstName: new UntypedFormControl(''),
+    lastName: new UntypedFormControl(''),
   });
   neverSearched = true;
   filteredUsers: Observable<User[]>;
