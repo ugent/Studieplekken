@@ -8,7 +8,7 @@
 			"schematics": {
 				"@schematics/angular:component": {
 					"style": "scss"
-				}
+                }
 			},
 			"root": "",
 			"sourceRoot": "src",
@@ -37,18 +37,15 @@
 								"output": "./assets/"
 							  }
 						],
-						"styles": [
-							"src/styles.scss",
-							"src/development.scss"
-						],
-						"scripts": [
-						],
-            "stylePreprocessorOptions": {
-              "includePaths": [
-                "node_modules/breakpoint-sass/stylesheets",
-                "node_modules/susy/sass"
-              ]
-            },
+                        "styles": [
+                            "src/assets/styles/local/styles.scss"
+                        ],
+                        "stylePreprocessorOptions": {
+                          "includePaths": [
+                            "node_modules/breakpoint-sass/stylesheets",
+                            "node_modules/susy/sass"
+                          ]
+                        },
 						"vendorChunk": true,
 						"extractLicenses": false,
 						"buildOptimizer": false,
@@ -61,13 +58,12 @@
 							"fileReplacements": [
 								{
 									"replace": "src/environments/environment.ts",
-									"with": "src/environments/environment.prod.ts"
-								},
-								{
-									"replace": "src/development.scss",
-									"with": "src/extra-styling-placeholder.scss"
+									"with": "src/environments/environment.production.ts"
 								}
 							],
+                            "styles": [
+                                "src/assets/styles/production/styles.scss"
+                            ],
 							"optimization": true,
 							"outputHashing": "all",
 							"namedChunks": false,
@@ -91,13 +87,12 @@
 							"fileReplacements": [
 								{
 									"replace": "src/environments/environment.ts",
-									"with": "src/environments/environment.local-prod.ts"
-								},
-								{
-									"replace": "src/development.scss",
-									"with": "src/extra-styling-placeholder.scss"
+									"with": "src/environments/environment.local-production.ts"
 								}
 							],
+                            "styles": [
+                                "src/assets/styles/production/styles.scss"
+                            ],
 							"optimization": true,
 							"outputHashing": "all",
 							"sourceMap": false,
@@ -122,9 +117,12 @@
 							"fileReplacements": [
 								{
 									"replace": "src/environments/environment.ts",
-									"with": "src/environments/environment.stag.ts"
+									"with": "src/environments/environment.staging.ts"
 								}
 							],
+                            "styles": [
+                                "src/assets/styles/staging/styles.scss"
+                            ],
 							"optimization": true,
 							"outputHashing": "all",
 							"namedChunks": false,
@@ -144,8 +142,7 @@
 								}
 							]
 						}
-					},
-					"defaultConfiguration": ""
+					}
 				},
 				"serve": {
 					"builder": "@angular-devkit/build-angular:dev-server",
@@ -154,11 +151,11 @@
 						"proxyConfig": "proxy.conf.json"
 					},
 					"configurations": {
-						"production": {
-							"browserTarget": "frontend:build:production"
+						"local-production": {
+							"browserTarget": "frontend:build:local-production"
 						}
 					}
-				},
+                },
 				"extract-i18n": {
 					"builder": "@angular-devkit/build-angular:extract-i18n",
 					"options": {
