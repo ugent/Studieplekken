@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     
     container:
-      image: gradle:6
+      image: gradle:6.9.3-jdk
       env:
         SPRING_PROFILES_ACTIVE: test,ci
         
