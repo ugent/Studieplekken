@@ -3,7 +3,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import {TokensService} from '../../services/api/tokens/tokens.service';
 import {Token} from '../../shared/model/Token';
-import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
+import {AbstractControl, UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 
 @Component({
@@ -24,9 +24,9 @@ export class TokensComponent implements OnInit {
     isUsed: 'sort-both'
   };
 
-  tokenFormGroup = new FormGroup({
-    purpose: new FormControl('', Validators.required.bind(this)),
-    email: new FormControl(''),
+  tokenFormGroup = new UntypedFormGroup({
+    purpose: new UntypedFormControl('', Validators.required.bind(this)),
+    email: new UntypedFormControl(''),
   });
 
   successAddingToken: boolean = undefined;

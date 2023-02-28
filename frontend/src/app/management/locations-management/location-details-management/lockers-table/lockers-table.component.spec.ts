@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { LockersTableComponent } from './lockers-table.component';
 
@@ -6,7 +6,7 @@ describe('LockersTableComponent', () => {
   let component: LockersTableComponent;
   let fixture: ComponentFixture<LockersTableComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     void TestBed.configureTestingModule({
       declarations: [LockersTableComponent],
     }).compileComponents();

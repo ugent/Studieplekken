@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, isDevMode, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ApplicationTypeFunctionalityService} from './services/functionality/application-type/application-type-functionality.service';
@@ -32,13 +32,12 @@ export class AppComponent implements OnInit {
         /******************************
          *   Language support setup   *
          ******************************/
-        // if you think about supporting another language, you must change the exported variable 'appLanguages'
+        // If you think about supporting another language, you must change the exported variable 'appLanguages'
         // in environments.ts accordingly. This variable is used in PenaltiesComponent to show the correct description
         translate.setDefaultLang('nl');
         // tries to set the language to the default browser language of the user if 'en' or 'nl' (else en)
         const browserLang = translate.getBrowserLang();
         moment().locale(browserLang);
-
         if (localStorage.getItem('selectedLanguage') !== null) {
             const item = localStorage.getItem('selectedLanguage');
             translate.use(item);

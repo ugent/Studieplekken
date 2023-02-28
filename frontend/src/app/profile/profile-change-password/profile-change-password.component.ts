@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import {
   validateConfirmationPassword,
   validPassword,
@@ -13,11 +13,11 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./profile-change-password.component.scss'],
 })
 export class ProfileChangePasswordComponent {
-  formGroup: FormGroup = new FormGroup(
+  formGroup: UntypedFormGroup = new UntypedFormGroup(
     {
-      oldPassword: new FormControl('', Validators.required.bind(this)),
-      password: new FormControl('', [Validators.minLength(8)]),
-      confirmPassword: new FormControl(''),
+      oldPassword: new UntypedFormControl('', Validators.required.bind(this)),
+      password: new UntypedFormControl('', [Validators.minLength(8)]),
+      confirmPassword: new UntypedFormControl(''),
     },
     { validators: [validateConfirmationPassword, validPassword] }
   );

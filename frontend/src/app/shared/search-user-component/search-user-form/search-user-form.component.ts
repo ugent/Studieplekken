@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { UserService } from 'src/app/services/api/users/user.service';
@@ -12,10 +12,10 @@ import { User } from '../../model/User';
   styleUrls: ['./search-user-form.component.scss']
 })
 export class SearchUserFormComponent implements OnInit {
-  formGroup = new FormGroup({
-    firstName: new FormControl(''),
-    lastName: new FormControl(''),
-    barcode: new FormControl(''),
+  formGroup = new UntypedFormGroup({
+    firstName: new UntypedFormControl(''),
+    lastName: new UntypedFormControl(''),
+    barcode: new UntypedFormControl(''),
   });
 
   public neverSearched: boolean = true;

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { Moment } from 'moment';
@@ -33,12 +33,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   // the name that should be filtered
   locationSearch: string;
 
-  tagFilterFormGroup = new FormGroup({
-    filteredTags: new FormControl(''),
+  tagFilterFormGroup = new UntypedFormGroup({
+    filteredTags: new UntypedFormControl(''),
   });
 
-  buildingFilterFormGroup = new FormGroup({
-    filteredBuilding: new FormControl(''),
+  buildingFilterFormGroup = new UntypedFormGroup({
+    filteredBuilding: new UntypedFormControl(''),
   });
 
   currentLang: string;

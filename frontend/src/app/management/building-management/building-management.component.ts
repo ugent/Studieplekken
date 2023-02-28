@@ -1,8 +1,8 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import {
   AbstractControl,
-  FormControl,
-  FormGroup,
+  UntypedFormControl,
+  UntypedFormGroup,
   Validators
 } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -24,13 +24,13 @@ export class BuildingManagementComponent implements OnInit {
   buildingsObs: Observable<Building[]>;
   institutionsObs: Observable<string[]>;
 
-  buildingFormGroup = new FormGroup({
-    buildingId: new FormControl({ value: '', disabled: true }),
-    name: new FormControl('', Validators.required.bind(this)),
-    address: new FormControl('', Validators.required.bind(this)),
-    latitude: new FormControl('', Validators.required.bind(this)),
-    longitude: new FormControl('', Validators.required.bind(this)),
-    institution: new FormControl('', Validators.required.bind(this)),
+  buildingFormGroup = new UntypedFormGroup({
+    buildingId: new UntypedFormControl({ value: '', disabled: true }),
+    name: new UntypedFormControl('', Validators.required.bind(this)),
+    address: new UntypedFormControl('', Validators.required.bind(this)),
+    latitude: new UntypedFormControl('', Validators.required.bind(this)),
+    longitude: new UntypedFormControl('', Validators.required.bind(this)),
+    institution: new UntypedFormControl('', Validators.required.bind(this)),
   });
 
   successGettingBuildings: boolean = undefined;
