@@ -10,7 +10,9 @@ RUN npm install --legacy-peer-deps
 
 COPY . .
 
-RUN ng build --configuration=production
+ARG configuration=production
+
+RUN ng build --configuration=${configuration}
 
 ### STAGE 2: Run ###
 FROM nginx:1.17.1-alpine
