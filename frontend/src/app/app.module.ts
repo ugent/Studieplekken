@@ -106,6 +106,7 @@ import {WaffleComponent} from './management/stats/waffle/waffle.component';
 import {LocationReminderComponent} from './management/locations-management/location-details-management/location-reminder/location-reminder.component';
 import {TokensComponent} from './management/tokens/tokens.component';
 import {AuthorizationGuardService} from './services/guard/authorization/authorization-guard.service';
+import { ChartComponent } from './management/stats/chart/chart.component';
 
 
 // AoT requires an exported function for factories
@@ -413,6 +414,7 @@ const routes: Routes = [
         WaffleComponent,
         LocationReminderComponent,
         TokensComponent,
+        ChartComponent,
     ],
     imports: [
         BrowserModule,
