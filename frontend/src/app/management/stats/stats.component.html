@@ -31,15 +31,12 @@
             <input type="date" [(ngModel)]="date" (change)="onDateChange()"/>
         </div>
         <br>
-
         <div class="alert alert-info">
             {{'management.stats.info' | translate}}
         </div>
         <br>
-
         <p [innerHTML]="('management.stats.summaryOccupancy' | translate).replace('{occupied}', occupancy).replace('{total}', total).replace('{totalNotReservable}', totalNotReservable) + '<br>' + ('management.stats.noteLocationOverview' | translate)"></p>
         <br>
-
         <div *ngIf="!loading && !errorOnRetrievingStats" class="fullwidth">
             <mat-grid-list cols="4" rowHeight="230px" gutterSize="5px" *ngIf="stats.length > 0; else noLocations">
                 <mat-grid-tile *ngFor="let locationStat of stats">
@@ -76,6 +73,9 @@
             <h4>{{'management.stats.reservationsTotal' | translate}}</h4>
             <p>{{('management.stats.reservationsTotalMsg' | translate).replace('{total}', locationOverviewStat.reservationsTotal + '')}}</p>
             <h4>{{'management.stats.totalPerInstitution' | translate}}</h4>
+            <app-chart
+                [reservations]="locationOverviewStat.reservationsPerDayPerHOI">6
+            </app-chart>
             <div class="responsive-table table-wrapper fullwidth">
                 <table style="width: 100%">
                     <thead>
