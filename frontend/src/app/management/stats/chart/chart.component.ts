@@ -27,22 +27,22 @@ export class ChartComponent implements AfterViewInit {
      * We use this hook to make sure the canvas was loaded.
      */
     ngAfterViewInit(): void {
-        let datasets = {};
+        let datasets: Map<string, any> = new Map();
 
-        for (let hois of Object.values(this.reservations)) {
+        for (let hois of this.reservations.values()) {
             for (let [hoi, reservations] of Object.entries(hois)) {
-                if (!datasets[hoi]) {
-                    datasets[hoi] = { label: hoi, data: [], backgroundColor: HOIColors[hoi] ?? '#1E64C8' };
+                if (!datasets.has(hoi)) {
+                    datasets.set(hoi, { label: hoi, data: [], backgroundColor: HOIColors[hoi] ?? '#1E64C8' });
                 }
-                datasets[hoi].data.push(reservations);
+                datasets.get(hoi).data.push(reservations);
             }
         }
 
         this.chart = new Chart(this.chartElement.nativeElement, {
             type: 'bar',
             data: {
-                labels: Object.keys(this.reservations),
-                datasets: Object.values(datasets)
+                labels: [...this.reservations.keys()],
+                datasets: [...datasets.values()]
             },
             options: {
                 scales: {

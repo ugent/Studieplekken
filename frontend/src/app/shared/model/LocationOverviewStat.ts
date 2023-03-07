@@ -23,19 +23,22 @@ export class LocationOverviewStatConstructor {
         if (obj === null) {
             return null;
         }
-        // Foreach entry of reservationsPerDayPerHOI, json deserialize the inner map
-        for (const key of Object.keys(obj.reservationsPerDayPerHOI)) {
-            const value = obj.reservationsPerDayPerHOI[key];
-            obj.reservationsPerDayPerHOI[key] = JSON.parse(value);
-        }
+
+        const reservationsTotalPerHOI = new Map(Object.entries(obj.reservationsTotalPerHOI));
+        const reservationsPerDay = new Map(Object.entries(obj.reservationsPerDay));
+        const reservationsPerDayPerHOI = new Map([...Object.entries(obj.reservationsPerDayPerHOI)].sort((a, b) => {
+            return new Date(a[0]).getTime() - new Date(b[0]).getTime();
+        }).map(e => {
+            return [e[0], JSON.parse(e[1])];
+        }));
 
         return {
             locationId: obj.locationId,
             locationName: obj.locationName,
             reservationsTotal: obj.reservationsTotal,
-            reservationsTotalPerHOI: obj.reservationsTotalPerHOI,
-            reservationsPerDay: obj.reservationsPerDay,
-            reservationsPerDayPerHOI: obj.reservationsPerDayPerHOI
+            reservationsTotalPerHOI: reservationsTotalPerHOI,
+            reservationsPerDay: reservationsPerDay,
+            reservationsPerDayPerHOI: reservationsPerDayPerHOI
         };
     }
 }
