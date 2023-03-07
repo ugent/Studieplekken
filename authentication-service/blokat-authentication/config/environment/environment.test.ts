@@ -39,7 +39,7 @@ export const configuration: Configuration = {
   database: {
     username: 'postgres',
     password: 'postgres',
-    url: 'localhost',
+    url: process.env.POSTGRES_DB || 'localhost',
     port: '5432',
     database: 'studieplekken_users_test',
   },
