@@ -1,45 +1,56 @@
 <div class="container-fluid">
-  <div fxLayout="row wrap" fxLayoutGap="32px" fxLayoutAlign="center">
+    <div class="row justify-content-center">
+        <!-- Menu for /management -->
+        <aside class="col-12 col-lg-3 bottom-margin">
+            <section class="highlight highlight--top">
+                <div class="highlight__inner no-right-padding">
+                    <h2>
+                        {{ 'management.aside.title' | translate }}
+                    </h2>
+                    <div class="d-flex flex-column gap-3 align-items-between">
+                        <a routerLink="./locations">
+                            {{'management.aside.locations' | translate}}
+                        </a>
+                        <a routerLink="./buildings">
+                            {{'management.aside.buildings' | translate}}
+                        </a>
+                        <a routerLink="./tags" *ngIf="showTagManagement">
+                            {{'management.aside.tags' | translate}}
+                        </a>
+                        <a routerLink="./users" *ngIf="showAdmin">
+                            {{'management.aside.users' | translate}}
+                        </a>
+                        <a routerLink="./volunteers" *ngIf="showVolunteersManagement">
+                            {{'management.aside.volunteers' | translate}}
+                        </a>
+                        <a routerLink="./authorities" *ngIf="showAdmin">
+                            {{'management.aside.authorities' | translate}}
+                        </a>
+                        <a routerLink="./admins" *ngIf="showAdmin">
+                            {{'management.aside.admins' | translate}}
+                        </a>
+                        <a routerLink="./penalties" *ngIf="showPenalties">
+                            {{'management.aside.penalties' | translate}}
+                        </a>
+                        <a routerLink="./actionlog" *ngIf="showActionlog">
+                            {{'management.aside.actionlog' | translate}}
+                        </a>
+                        <a routerLink="./stats" *ngIf="showStats">
+                            {{'management.aside.stats' | translate}}
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </aside>
+        <article class="col-12 col-lg-9 add-min-width">
+            <section class="messages messages--error" *ngIf="showStagingWarning">
+                <div markdown src="assets/md/staging-warning.nl.md">
 
+                </div>
+            </section>
+            <router-outlet>
 
-    <!-- Default -->
-
-
-    <!-- Menu for /management -->
-    <aside fxFlex="0 1 calc({{getSize()}} - 0px);" class="bottom-margin">
-      <section class="highlight highlight--top">
-        <br/>
-        <div class="highlight__inner no-right-padding">
-          <h2>{{'management.aside.title' | translate}}</h2>
-
-          <div fxLayout="column" fxLayoutGap="16px" fxLayoutAlign="space-between">
-
-            <a routerLink="./locations">{{'management.aside.locations' | translate}}</a>
-            <a routerLink="./buildings">{{'management.aside.buildings' | translate}}</a>
-            <a routerLink="./tags" *ngIf="showTagManagement">{{'management.aside.tags' | translate}}</a>
-            <a routerLink="./users" *ngIf="showAdmin">{{'management.aside.users' | translate}}</a>
-            <a routerLink="./volunteers"
-               *ngIf="showVolunteersManagement">{{'management.aside.volunteers' | translate}}</a>
-            <a routerLink="./authorities" *ngIf="showAdmin">{{'management.aside.authorities' | translate}}</a>
-            <a routerLink="./admins" *ngIf="showAdmin">{{'management.aside.admins' | translate}}</a>
-            <a routerLink="./penalties" *ngIf="showPenalties">{{'management.aside.penalties' | translate}}</a>
-            <a routerLink="./actionlog" *ngIf="showActionlog">{{'management.aside.actionlog' | translate}}</a>
-            <a routerLink="./stats" *ngIf="showStats">{{'management.aside.stats' | translate}}</a>
-
-          </div>
-        </div>
-      </section>
-    </aside>
-
-    <br/>
-
-    <article fxFlex="0 1 calc(75% - 32px);" class="add-min-width">
-      <section class="messages messages--error" *ngIf="showStagingWarning">
-        <div markdown
-             src="assets/md/staging-warning.nl.md">>
-        </div>
-      </section>
-      <router-outlet></router-outlet>
-    </article>
-  </div>
+            </router-outlet>
+        </article>
+    </div>
 </div>

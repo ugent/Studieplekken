@@ -1,61 +1,59 @@
 <!-- Show table with received penalties, if the user has any. Else, congratulate him/her -->
-<div *ngIf="penalties.penalties.length > 0; else noPenalties" class="container-fluid row">
-  <!-- Table title -->
-  <b *ngIf="showTitle">{{ "profile.penalties.table.title" | translate }}</b>
-  <br /><br />
+<div *ngIf="penalties.penalties.length > 0; else noPenalties">
+    <!-- Table title -->
+    <b *ngIf="showTitle">{{ "profile.penalties.table.title" | translate }}</b>
+    <div>
+        <div class="responsive-table fullwidth">
+            <div class="table-wrapper fullwidth">
+                <table style="width: 100%">
+                    <!-- Table header -->
+                    <thead>
+                    <tr>
+                        <th scope="col">
+                            {{ "profile.penalties.table.header.timestamp" | translate }}
+                        </th>
+                        <th scope="col" *ngIf="showDesignee">
+                            {{ "profile.penalties.table.header.designee" | translate }}
+                        </th>
+                        <th scope="col">
+                            {{ "profile.penalties.table.header.issuer" | translate }}
+                        </th>
+                        <th scope="col">
+                            {{ "profile.penalties.table.header.description" | translate }}
+                        </th>
+                        <th scope="col">
+                            {{
+                            "profile.penalties.table.header.receivedPoints" | translate
+                            }}
+                        </th>
+                        <th scope="col" *ngIf="showDelete">
+                            {{
+                            "profile.penalties.table.header.delete" | translate
+                            }}
+                        </th>
+                    </tr>
+                    </thead>
 
-  <div class="container-fluid col-md-11">
-    <div class="responsive-table fullwidth">
-      <div class="table-wrapper fullwidth">
-        <table style="width: 100%">
-          <!-- Table header -->
-          <thead>
-            <tr>
-              <th scope="col">
-                {{ "profile.penalties.table.header.timestamp" | translate }}
-              </th>
-              <th scope="col" *ngIf="showDesignee">
-                {{ "profile.penalties.table.header.designee" | translate }}
-              </th>
-              <th scope="col">
-                {{ "profile.penalties.table.header.issuer" | translate }}
-              </th>
-              <th scope="col">
-                {{ "profile.penalties.table.header.description" | translate }}
-              </th>
-              <th scope="col">
-                {{
-                  "profile.penalties.table.header.receivedPoints" | translate
-                }}
-              </th>
-              <th scope="col" *ngIf="showDelete">
-                {{
-                  "profile.penalties.table.header.delete" | translate
-                }}
-              </th>
-            </tr>
-          </thead>
+                    <!-- Table body -->
+                    <tbody>
+                    <tr *ngFor="let penalty of penalties.penalties">
+                        <td>{{ penalty.createdAt.format("DD/MM/YYYY HH:mm") }}</td>
+                        <td *ngIf="showDesignee">{{ getDesignee(penalty) | translate }}</td>
+                        <td>{{ getIssuedBy(penalty) | translate }}</td>
+                        <td>{{ getPenaltyDescription(penalty) | translate }}</td>
+                        <td>{{ penalty.points }}</td>
+                        <td *ngIf="showDelete" (click)="delete(penalty)"><i class="icon-cross cursorPointer"></i></td>
 
-          <!-- Table body -->
-          <tbody>
-            <tr *ngFor="let penalty of penalties.penalties">
-              <td>{{ penalty.createdAt.format("DD/MM/YYYY HH:mm") }}</td>
-              <td *ngIf="showDesignee">{{ getDesignee(penalty) | translate }}</td>
-              <td>{{ getIssuedBy(penalty) | translate }}</td>
-              <td>{{ getPenaltyDescription(penalty) | translate }}</td>
-              <td>{{ penalty.points }}</td>
-              <td *ngIf="showDelete" (click)="delete(penalty)"><i class="icon-cross cursorPointer"></i></td>
-
-            </tr>
-          </tbody>
-        </table>
-      </div>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <ng-template #noPenalties>
-  <div class="messages messages--info">
-    {{ "profile.penalties.table.noPenalties" | translate }}
-  </div>
+    <div class="messages messages--info">
+        {{ "profile.penalties.table.noPenalties" | translate }}
+    </div>
 </ng-template>

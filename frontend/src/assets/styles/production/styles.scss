@@ -29,15 +29,13 @@ $styleguide-dir: "" !default;
 // that you are using.
 @include mat.all-component-themes($theming-material-components-theme);
 
-// Include the dark color styles inside of a block with a CSS class. You can make this
-// CSS class whatever you want. In this example, any component inside of an element with
-// `.dark-theme` will be affected by this alternate dark theme instead of the default theme.
-//.dark-theme {
-//  @include angular-material-color($dark-theme);
-//}
-
 // Override typography for all Angular Material, including mat-base-typography and all components.
 @include mat.all-component-typographies($typography);
+
+// Bootstrap components
+@import 'bootstrap/dist/css/bootstrap-grid.min.css';
+@import 'bootstrap/dist/css/bootstrap-utilities.min.css';
+
 
 /* You can add global styles to this file, and also import other style files */
 
