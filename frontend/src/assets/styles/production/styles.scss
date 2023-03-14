@@ -36,6 +36,9 @@ $styleguide-dir: "" !default;
 @import 'bootstrap/dist/css/bootstrap-grid.min.css';
 @import 'bootstrap/dist/css/bootstrap-utilities.min.css';
 
+// App components
+@import 'components/forms';
+
 
 /* You can add global styles to this file, and also import other style files */
 

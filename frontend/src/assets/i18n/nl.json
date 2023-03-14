@@ -934,7 +934,7 @@
         "studentNumber": "Studentennummer",
         "receiveMailConfirmation": "Ontvang bevestigingsmails van reservaties"
       },
-      "qrcode": "Je kan deze QR code tonen aan de scanpost van je studieplek. Je aanwezigheid zal geregistreerd worden."
+      "qrcode": "Je kan deze QR- of barcode tonen aan de scanpost van je studieplek. Je aanwezigheid zal geregistreerd worden."
     },
     "penalties": {
       "title": "Strafpunten",

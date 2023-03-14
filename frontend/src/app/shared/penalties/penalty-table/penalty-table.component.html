@@ -43,7 +43,6 @@
                         <td>{{ getPenaltyDescription(penalty) | translate }}</td>
                         <td>{{ penalty.points }}</td>
                         <td *ngIf="showDelete" (click)="delete(penalty)"><i class="icon-cross cursorPointer"></i></td>
-
                     </tr>
                     </tbody>
                 </table>
@@ -51,7 +50,6 @@
         </div>
     </div>
 </div>
-
 <ng-template #noPenalties>
     <div class="messages messages--info">
         {{ "profile.penalties.table.noPenalties" | translate }}
