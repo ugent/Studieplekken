@@ -28,7 +28,8 @@ export class ManagementComponent implements OnInit {
     private functionalityService: ApplicationTypeFunctionalityService,
     private authenticationService: AuthenticationService,
     private breadcrumbsService: BreadcrumbService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     // Show certain functionality depending on type of application

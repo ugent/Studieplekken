@@ -6,11 +6,11 @@
             <input class="form-control sarch inline" type="search" formControlName="searchFilter" (ngModelChange)="filterChanged(formGroup.value)">
         </div>
     </form>
-    
+
     <!--<svg>
         <use xlink:href="assets/icon/sort-both.svg"></use>
     </svg>-->
-    <div class="row">
+    <div>
         <div class="responsive-table fullwidth" *ngIf="allActions">
             <div class="table-wrapper fullwidth">
                 <table style="width: 100%;" *ngIf="allActions.length > 0 else noActions">
