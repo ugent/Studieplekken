@@ -1,4 +1,4 @@
-<div *ngIf="locationObs | async as location; else loadingOrErrorForLocation" class="container-fluid">
+<div *ngIf="locationObs | async as location; else loadingOrErrorForLocation">
   <h3>{{('scan.locationDetails.title' | translate).replace('{locationName}', location.name)}}</h3>
 
   <div *ngIf="locationReservationObs | async as lr; else loadingOrError">

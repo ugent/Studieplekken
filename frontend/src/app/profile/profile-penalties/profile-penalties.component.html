@@ -1,17 +1,15 @@
-<div class="container-fluid" *ngIf="penalties | async as penalties">
-  <!-- Page title -->
-  <h3>{{'profile.penalties.title' | translate}}</h3>
-
-  <hr>
-  <b>{{'profile.penalties.subtitle' | translate}} {{penalties.points}}</b>
-
-  <!-- Show information about penalty points -->
-  <div class="row">
-    <div class="container-fluid">
-      <markdown *ngIf="currentLanguage() | async as currlan" src="assets/md/information-penalty.{{currlan}}.md"></markdown>
-  </div>
-
-  <hr>
-
-  <app-penalty-table [penalties]="penalties" [showDesignee]="false" [showTitle]="true"></app-penalty-table>
+<div *ngIf="penalties | async as penalties">
+    <!-- Page title -->
+    <h3>{{'profile.penalties.title' | translate}}</h3>
+    <hr>
+    <p>
+        <b>{{'profile.penalties.subtitle' | translate}} {{ penalties.points }}</b>
+    </p>
+    <!-- Show information about penalty points -->
+    <div class="row">
+        <div>
+            <markdown *ngIf="currentLanguage() | async as currlan" src="assets/md/information-penalty.{{currlan}}.md"></markdown>
+        </div>
+        <app-penalty-table [penalties]="penalties" [showDesignee]="false" [showTitle]="true"></app-penalty-table>
+    </div>
 </div>

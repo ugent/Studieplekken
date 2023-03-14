@@ -1,57 +1,59 @@
-<div class="container-fluid">
+<div>
     <!-- Page title -->
     <h3>{{'profile.overview.title' | translate}}</h3>
-
     <hr>
-
-    <!-- User overview in a form -->
-    <form [formGroup]="formGroup" class="center">
-        <!-- First name -->
+    <div class="d-flex flex-column mb-3">
         <div>
-            <label class="control-label" for="firstName">{{'profile.overview.form.firstName' | translate}}</label>
-            <input class="form-control" id="firstName" type="text" formControlName="firstName">
-        </div>
+            <!-- User overview in a form -->
+            <form [formGroup]="formGroup" class="center">
+                <!-- First name -->
+                <div>
+                    <label class="control-label" for="firstName">{{'profile.overview.form.firstName' | translate}}</label>
+                    <input class="form-control" id="firstName" type="text" formControlName="firstName">
+                </div>
 
-        <!-- Last name -->
-        <div class="form-group">
-            <label class="control-label" for="lastName">{{'profile.overview.form.lastName' | translate}}</label>
-            <input class="form-control" id="lastName" type="text" formControlName="lastName">
-        </div>
+                <!-- Last name -->
+                <div class="form-group">
+                    <label class="control-label" for="lastName">{{'profile.overview.form.lastName' | translate}}</label>
+                    <input class="form-control" id="lastName" type="text" formControlName="lastName">
+                </div>
 
-        <!-- Penalty Points -->
-        <!-- Only to be shown in BlokAt, not in MiniThermis -->
-        <div class="form-group" *ngIf="showPenaltyPoints">
-            <label class="control-label"
-                   for="penaltyPoints">{{'profile.overview.form.penaltyPoints' | translate}}</label>
-            <input class="form-control" id="penaltyPoints" type="number" formControlName="penaltyPoints">
-        </div>
+                <!-- Penalty Points -->
+                <!-- Only to be shown in BlokAt, not in MiniThermis -->
+                <div class="form-group" *ngIf="showPenaltyPoints">
+                    <label class="control-label"
+                           for="penaltyPoints">{{'profile.overview.form.penaltyPoints' | translate}}</label>
+                    <input class="form-control" id="penaltyPoints" type="number" formControlName="penaltyPoints">
+                </div>
 
-        <!-- Institution -->
-        <div class="form-group">
-            <label class="control-label" for="institution">{{'profile.overview.form.institution' | translate}}</label>
-            <input class="form-control" id="institution" type="text" formControlName="institution">
-        </div>
+                <!-- Institution -->
+                <div class="form-group">
+                    <label class="control-label" for="institution">{{'profile.overview.form.institution' | translate}}</label>
+                    <input class="form-control" id="institution" type="text" formControlName="institution">
+                </div>
 
-        <!-- Mail -->
-        <div class="form-group">
-            <label class="control-label" for="mail">{{'profile.overview.form.mail' | translate}}</label>
-            <input class="form-control" id="mail" type="email" formControlName="mail">
+                <!-- Mail -->
+                <div class="form-group">
+                    <label class="control-label" for="mail">{{'profile.overview.form.mail' | translate}}</label>
+                    <input class="form-control" id="mail" type="email" formControlName="mail">
+                </div>
+            </form>
+            <form [formGroup]="settingsFormGroup" class="center">
+                <!-- Receive mail confirming reservations 24hrs -->
+                <div class="form-group">
+                    <input class="form-control" id="receiveMailConfirmation" type="checkbox"
+                           formControlName="receiveMailConfirmation"> {{'profile.overview.form.receiveMailConfirmation' | translate}}
+                </div>
+            </form>
+            <div class="messages messages--info center">
+                {{'profile.overview.qrcode' | translate}}
+            </div>
         </div>
-    </form>
-    <form [formGroup]="settingsFormGroup" class="center">
-        <!-- Receive mail confirming reservations 24hrs -->
-        <div class="form-group">
-            <input class="form-control" id="receiveMailConfirmation" type="checkbox"
-                   formControlName="receiveMailConfirmation"> {{'profile.overview.form.receiveMailConfirmation' | translate}}
+        <div class="d-flex flex-column align-items-center justify-content-between center">
+            <!-- QR code of userId -->
+            <app-qrcode [userObs]="userObs"></app-qrcode>
+            <!-- Barcode of userId -->
+            <app-barcode [userObs]="userObs"></app-barcode>
         </div>
-    </form>
-
-    <div class="messages messages--info center">
-        {{'profile.overview.qrcode' | translate}}
     </div>
-
-    <!-- QR code of userId -->
-    <app-qrcode [userObs]="userObs"></app-qrcode>
-    <app-barcode [userObs]="userObs"></app-barcode>
-
 </div>

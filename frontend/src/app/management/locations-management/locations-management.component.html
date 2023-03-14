@@ -3,10 +3,7 @@
         <div *ngIf="locations.length> 0">
             <!-- Title -->
             <h3>{{'management.locations.unapproved' | translate}}</h3>
-
             <hr>
-
-
             <!-- Table with all unapproved locations -->
             <div class="responsive-table fullwidth">
                 <div class="table-wrapper">
@@ -25,7 +22,6 @@
                             </th>
                         </tr>
                         </thead>
-
                         <!-- Table body -->
                         <tbody>
                         <tr *ngFor="let location of locations">

@@ -19,7 +19,8 @@ export class InformationComponent implements OnInit {
         private authenticationService: AuthenticationService,
         private userService: UserService,
         private breadcrumbService: BreadcrumbService
-    ) {}
+    ) {
+    }
 
     /**
      * Determine what manuals are shown to the user,
