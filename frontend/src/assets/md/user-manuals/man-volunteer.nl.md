@@ -4,11 +4,7 @@ Hier zal je alle informatie vinden over de toezichthouder functionaliteiten van 
 
 ## Aanwezigheden opnemen
 
-Nadat de student zich heeft ingeschreven is het mogelijk om de studenten hun aanwezigheden op te nemen. Dit kan op verschillende manieren.
-
-Je drukt op je naam rechtsboven en navigeer naar Scannen. 
-
-![](./assets/md/user-manuals/images/dutch/scan_profiel.png)
+Nadat de student zich heeft ingeschreven is het mogelijk om de studenten hun aanwezigheden op te nemen. Dit doe je door op de 'Scan' knop te klikken, rechtsboven op de navigatiebalk.
 
 Klik vervolgens op de locatie waar je aanwezigheden moet opnemen. 
 

@@ -7,6 +7,8 @@ Hier zal je meer informatie vinden over het gebruik van de Studieplekken applica
 
 <img src="./assets/md/user-manuals/images/dutch/login_page.png" width="80%" />
 
+<br /><br />
+
 Wanneer je nog niet bent ingelogd zal je rechtsbovenaan op de pagina de een inlog knop zien. Als je op inloggen klikt zal je op de login-pagina terechtkomen en heb je mogelijkheid om je in te loggen via je onderwijsinstelling. Wanneer alles succesvol is verlopen zal je rechtsbovenaan je naam zien staan.
 
 <br /><br />
@@ -27,7 +29,7 @@ Gedurende de eerste tien minuten van een reservatieperiode kan men zich in een w
 
 ![](./assets/md/user-manuals/images/dutch/calendar_navigation.png)
 
-<br /><br />
+<br>
 
 Hieronder nog even de kleurcode van de kalender toegelicht:
 1. Als je reservatieslot donkerblauw kleurt nadat je op 'update reservaties' geklikt hebt, is je reservatie succesvol geweest.
@@ -36,7 +38,11 @@ Hieronder nog even de kleurcode van de kalender toegelicht:
 4. Als je slot lichtblauw kleurt, kan je een reservatie maken.
 5. Als je slot lichtrood kleurt, is deze voorlopig jammer genoeg vol.
 
+## Annuleren van reserveringen
+
 Indien je reserveringen wil verwijderen kan je dat door een tijdslot te selecteren die je al hebt gereserveerd en opnieuw op "update reservatie" te klikken. Zo zal je zien in het dialoog wat je aan het verwijderen bent. Je kan zo tegelijk meerdere reserveringen toevoegen en verwijderen op hetzelfde moment.
+
+Het is ook mogelijk om reservaties te verwijderen via je profiel: klik op je naam rechtsboven de pagina en ga naar "mijn reservaties". Onderaan de pagina vind je een overzicht van al je reservaties. Een reservatie annuleren kan door op het kruisje te klikken in de laatste kolom van de tabel.
 
 ## Bekijken van reserveringen
 

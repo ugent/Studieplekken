@@ -1,52 +1,49 @@
-import { Component, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { UserService } from '../services/api/users/user.service';
-import { AuthenticationService } from '../services/authentication/authentication.service';
-import { BreadcrumbService } from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
+import {Component, OnInit} from '@angular/core';
+import {TranslateService} from '@ngx-translate/core';
+import {UserService} from '../services/api/users/user.service';
+import {AuthenticationService} from '../services/authentication/authentication.service';
+import {BreadcrumbService} from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
 
 @Component({
-  selector: 'app-information',
-  templateUrl: './information.component.html',
-  styleUrls: ['./information.component.scss'],
+    selector: 'app-information',
+    templateUrl: './information.component.html',
+    styleUrls: ['./information.component.scss'],
 })
 export class InformationComponent implements OnInit {
-  showManagement = false;
-  showAdmin = false;
-  showSupervisors = false;
+    public currentLang: string;
 
-  constructor(
-    private translate: TranslateService,
-    private authenticationService: AuthenticationService,
-    private userService: UserService,
-    private breadcrumbService: BreadcrumbService
-  ) {}
+    public showManagement = false;
+    public showAdmin = false;
+    public showSupervisors = false;
 
-  ngOnInit(): void {
-    // subscribe to the user observable to make sure that the correct information
-    // is shown in the application.
-    this.authenticationService.user.subscribe((next) => {
-      // first, check if the user is logged in
-      if (this.authenticationService.isLoggedIn()) {
-        this.authenticationService.hasVolunteeredObs.subscribe(o => this.showSupervisors = o);
+    constructor(
+        private translate: TranslateService,
+        private authenticationService: AuthenticationService,
+        private userService: UserService,
+        private breadcrumbService: BreadcrumbService
+    ) {
+    }
 
-        if (next.admin) {
-          this.showAdmin = true;
-        } else {
-          this.userService
-            .hasUserAuthorities(next.userId)
-            .subscribe((next2) => {
-              this.showManagement = next2;
-            });
-        }
-      } else {
-        this.showManagement = false;
-      }
-    });
+    /**
+     * Determine what manuals are shown to the user,
+     * depending on their role.
+     */
+    ngOnInit(): void {
+        // subscribe to the user observable to make sure that the correct information
+        // is shown in the application.
+        this.authenticationService.user.subscribe((_) => {
+            // first, check if the user is logged in
+            if (this.authenticationService.isLoggedIn()) {
+                this.showManagement = this.authenticationService.isAuthority();
+                this.showAdmin = this.authenticationService.isAdmin();
+                this.showSupervisors = this.authenticationService.isScanner();
+            }
+        });
 
-    this.breadcrumbService.setCurrentBreadcrumbs([{pageName: "Information", url:"/information"}])
-  }
+        this.translate.onLangChange.subscribe(() => {
+            this.currentLang = this.translate.currentLang;
+        });
 
-  currentLanguage(): string {
-    return this.translate.currentLang;
-  }
+        this.breadcrumbService.setCurrentBreadcrumbs([{pageName: 'Information', url: '/information'}]);
+    }
 }
