@@ -107,6 +107,8 @@ import {LocationReminderComponent} from './management/locations-management/locat
 import {TokensComponent} from './management/tokens/tokens.component';
 import {AuthorizationGuardService} from './services/guard/authorization/authorization-guard.service';
 import { ChartComponent } from './management/stats/chart/chart.component';
+import {BarCodeComponent} from './miscellaneous/barcode/barcode.component';
+import {NgxBarcodeModule} from 'ngx-barcode';
 
 
 // AoT requires an exported function for factories
@@ -415,11 +417,12 @@ const routes: Routes = [
         LocationReminderComponent,
         TokensComponent,
         ChartComponent,
+        BarCodeComponent,
     ],
     imports: [
         BrowserModule,
         AppRoutingModule,
-        RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' }),
+        RouterModule.forRoot(routes, {relativeLinkResolution: 'legacy'}),
         HttpClientModule,
         TranslateModule.forRoot({
             defaultLanguage: 'nl',
@@ -453,7 +456,8 @@ const routes: Routes = [
         MatTabsModule,
         MatTooltipModule,
         QRCodeModule,
-        ZXingScannerModule
+        ZXingScannerModule,
+        NgxBarcodeModule
     ],
     providers: [
         FormatStatusPipe,

@@ -18,7 +18,7 @@ import {
 } from "./configModule/config";
 import { ConfigGuard } from "./configModule/config.guard";
 import { getConfig } from "./configModule/config.service";
-import {RealIP} from "nestjs-real-ip";
+import { RealIP } from "nestjs-real-ip";
 
 @Controller()
 export class AppController {
