@@ -52,7 +52,7 @@ jobs:
           cd authentication-service/blokat-authentication
           yarn install
           DATABASE_URL="postgresql://postgres:postgres@db:5432/studieplekken_users_test?schema=public" npx prisma migrate deploy
-          yarn run test
+          yarn run test --runInBand
 
       - name: Delete secret file
         run: |
