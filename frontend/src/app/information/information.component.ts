@@ -10,19 +10,16 @@ import {BreadcrumbService} from '../stad-gent-components/header/breadcrumbs/brea
     styleUrls: ['./information.component.scss'],
 })
 export class InformationComponent implements OnInit {
-    public currentLang: string;
-
     public showManagement = false;
     public showAdmin = false;
     public showSupervisors = false;
 
     constructor(
-        private translate: TranslateService,
+        public translate: TranslateService,
         private authenticationService: AuthenticationService,
         private userService: UserService,
         private breadcrumbService: BreadcrumbService
-    ) {
-    }
+    ) {}
 
     /**
      * Determine what manuals are shown to the user,
@@ -38,10 +35,6 @@ export class InformationComponent implements OnInit {
                 this.showAdmin = this.authenticationService.isAdmin();
                 this.showSupervisors = this.authenticationService.isScanner();
             }
-        });
-
-        this.translate.onLangChange.subscribe(() => {
-            this.currentLang = this.translate.currentLang;
         });
 
         this.breadcrumbService.setCurrentBreadcrumbs([{pageName: 'Information', url: '/information'}]);
