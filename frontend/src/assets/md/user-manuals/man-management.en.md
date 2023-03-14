@@ -1,6 +1,6 @@
 # User guide - manager
 
-Here you will find all the information about the administrator functionalities of the Study Rooms application. There are two main sections, management and scan. When you click on your name at the top right as an administrator, you will get a drop-down where 'Management'/'Management' and 'scan' are listed. The creation and general management of buildings, locations, tags,... will be found there. In scan, you will find functionalities for recording presences.
+Here you will find all the information about the manager functionalities of the Study Rooms application. There are two main sections, management and scan. When you click on your name at the top right as a manager, you will get a drop-down where 'Beheer'/'Management' and 'scan' are listed. The creation and general management of buildings, locations, tags,... will be found there. In scan, you will find functionalities for recording presences.
 
 # Management
 
@@ -12,7 +12,7 @@ You can manage a building in the 'building' section. This page lists all the bui
 
 To create a new location, go all the way down the list of buildings and click the "New building" button. Here you will need to enter a name, address and setting. 
 
-As administrator, it is not possible to delete buildings.
+As a manager, it is not possible to delete buildings.
 
 ## Study location
 
@@ -20,7 +20,7 @@ As administrator, it is not possible to delete buildings.
 
 ### Initial creation/removal
 
-A study place is in the location section. These are rooms or parts of a building that students can reserve. On this page you will see a name, the authority/manager group that manages this location and "places" is the capacity the location has.
+A study place is in the location section. These are rooms or parts of a building that students can reserve. On this page you will see a name, the authority/manager group that manages this location, and "places" is the capacity the location has.
 
 To get more detailed information press "edit" (hamburger menu).
 
@@ -34,7 +34,7 @@ Again, at the bottom of the list of locations, there is a button to add location
 
 If you click edit, you can make edits to the location. On this page, you can start editing a number of things:
 
-Press the "Adjust" button to adjust the basic details of a location (seats, location name,...). When finalising the last edits, press the "OK" button to save the changes and "Cancel" to undo adjustments.
+Press the "Edit" button to edit the basic details of a location (seats, location name,...). When finalising the last edits, press the "Okay" button to save the changes and "Cancel" to undo adjustments.
 
 A location may have certain features that users are looking for. For example, you might want to make it clear that computers or group locations are available in a library. You do this based on the "tags". Tags are labels created on in the admin page, subheading tags. You can then add these pre-made tags to your location. This way, they will be visible to students while choosing a location. For more information on how to create tags, check out the next section.
 
@@ -81,7 +81,7 @@ For more information on recording attendance go to the volunteer page.
 
 As a location manager, you can also choose to join the penalty point system. Under this system, students are awarded penalty points if they make too many reservations without using them. If they have too many penalty points, they can no longer make reservations for a certain period of time. In this way, we aim to improve occupancy of study places.
 
-Administrators have the possibility to view the penalty points of people who made reservations, and add to them if necessary. This can be done by going to the administrator page, selecting a time slot there and clicking on it as usual to get the reservation list. You can see there that an additional button has now been added that you can click to view that person's penalty points. This button also allows you to add manual penalty points.
+Managers have the possibility to view the penalty points of people who made reservations, and add to them if necessary. This can be done by going to the management page, selecting a time slot there and clicking on it as usual to get the reservation list. You can see there that an additional button has now been added that you can click to view that person's penalty points. This button also allows you to add manual penalty points.
 
 Penalty points for being absent and late deletions are awarded automatically each time.
 

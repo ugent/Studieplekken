@@ -8,11 +8,11 @@ If you have not yet logged in, you will see the login button at the top right of
 
 ## Searching for a study room
 
-On the main page, you can find all the study locatiosn that can be reserved by you. On this dashboard, you will briefly see some information for each location: including whether it is currently open, how many seats there are and the next free moment for booking. To see more information about this studio location, click on 'details'.
+On the main page, you can find all the study locations that can be reserved by you. On this dashboard, you will briefly see some information for each location: including whether it is currently open, how many seats there are and the next free moment for booking. To see more information about this study location, click on 'details'.
 
 ## Booking a study location
 
-When you are on the page of a study location, you will see a calendar where you can navigate through the time using the buttons. After choosing a timestamp that still has space, you can make a reservation request by selecting the time block and clicking on "update reservation" and confirming. Your reservation will then be reviewed, and possibly approved. You may therefore use this location during the entire reservation period once your reservation has been approved. If there is no more space, you will see, for example, 200/200 reservations, which means that all places are occupied.
+When you are on the page of a study location, you will see a calendar where you can navigate through the time using the buttons. After choosing a time slot that still has space, you can make a reservation request by selecting the time block and clicking on "Update Reservations" and confirming. Your reservation will then be reviewed, and possibly approved. You may therefore use this location during the entire reservation period once your reservation has been approved. If there is no more space, you will see, for example, 200/200 reservations, which means that all places are occupied.
 
 During the first ten minutes of a reservation period, people can place themselves in a queue. Once these ten minutes are over, seats will then be allocated in a completely random manner to those who have applied. Once these ten minutes are over, the queue will be closed, and reservations will be taken back immediately.
 
@@ -41,7 +41,7 @@ When arriving at a study place, attendance will be recorded. This can be done us
 
 ## Penalty points
 
-Since 10 January 2021, the point system has been in place at block locations. The points system includes several parameters to ensure study places are optimally used, including:
+Since 10 January 2021, the point system has been in place at Study Rooms. The points system includes several parameters to ensure study places are optimally used, including:
 
 - Late cancellation reservation (<24h): 20 points
 - Cancellation of reservation during scanning time: 25 points

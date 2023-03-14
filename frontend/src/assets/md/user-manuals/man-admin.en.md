@@ -6,13 +6,13 @@ As an administrator you are the first point of contact for the administrators of
 
 ## Administrator groups or 'authorities'
 
-As an administrator, you do not necessarily have to manage all the sites of your higher education institution: you can appoint administrators for this purpose. Administrators have access to some of the locations available on the site, and can add locations themselves to their administrator group. In short: these are the people who will operate the sites in practice.
+As an administrator, you do not necessarily have to manage all the sites of your higher education institution: you can appoint managers for this purpose. Managers have access to some of the locations available on the site, and can add locations themselves to their manager group. In short: these are the people who will operate the sites in practice.
 
 You can get an overview of these groups by clicking on admin, and choosing 'authorities' from the menu on the left:
 
 You can choose to add a new authority by clicking the 'Add authority' button and filling in the name + description. Once this is done, we can add new people to our authority. To do this, click on the persons icon next to the name:
 
-On the next screen, you get the option to look up a user and add him to the authority. Once this is done, that user is granted rights to edit all locations belonging to an authority and add times.
+On the next screen, you get the option to look up a user and add him to the authority. Once this is done, that user is granted rights to edit all locations belonging to that authority and add time slots.
 
 ## Add administrators
 
