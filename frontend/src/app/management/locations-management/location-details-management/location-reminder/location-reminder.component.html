@@ -1,5 +1,9 @@
 <div class="container-fluid" *ngIf="location | async as location" >
     <div class="panel-body" style="padding: 20px">
+        <div class="alert alert-info">
+            {{'management.locationDetails.reminder.info' | translate}}
+        </div>
+
         <!-- The editor for the dutch reminder -->
         <div class="row">
             <h3>{{'management.locationDetails.reminder.dutchReminder' | translate}}</h3>
