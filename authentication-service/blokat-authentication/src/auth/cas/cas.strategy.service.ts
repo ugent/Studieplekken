@@ -18,11 +18,15 @@ export class CasStrategyService extends PassportStrategy(CasStrategy, "cas") {
 
   validate(body: any): SamlUser {
     const attributes = body["cas:attributes"];
+    const id = attributes["cas:ugentStudentID"]
+      ? this.calculateEAN13UgentStudentID(attributes["cas:ugentStudentID"])
+      : attributes["cas:ugentID"];
+
     return {
       firstName: attributes["cas:givenname"],
       lastName: attributes["cas:surname"],
       email: attributes["cas:mail"],
-      id: attributes["cas:ugentID"],
+      id: id,
       institution: Institution.UGENT,
     };
   }
@@ -42,5 +46,29 @@ export class CasStrategyService extends PassportStrategy(CasStrategy, "cas") {
     }
     const urlEncoded = encodeURIComponent(callbackURL);
     return baseURL + `/auth/login/cas/${urlEncoded}`;
+  }
+
+  calculateEAN13UgentStudentID(barcode: string) {
+    // Check that the barcode is 8 digits long
+    if (barcode.length !== 8) {
+      throw new Error("Barcode must be 8 digits long");
+    }
+
+    // Get the modulo 97 of the digit.
+    let modulo = parseInt(barcode) % 97;
+
+    // If modulo is 0, the modulo digit is 97
+    if (modulo === 0) {
+      modulo = 97;
+    }
+
+    // Append the modulo digit to the barcode as the 9th and 10th digit
+    barcode += modulo.toString().padStart(2, "0");
+
+    // Add 2 leading zeros
+    barcode = "00" + barcode;
+
+    // Return the barcode
+    return barcode;
   }
 }
