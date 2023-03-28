@@ -1,4 +1,4 @@
-<div class="container-fluid panel" *ngIf="locationObs | async as location; else loading">
+<div class="panel" *ngIf="locationObs | async as location; else loading">
 
   <!--
    This page has four functionalities, each put into a collapsable panel-group:
@@ -12,14 +12,14 @@
      - the collapsable body: panel-body in which a panel-body resides with the actual content of the panel-group
    -->
 
-  <h2 class="full-screen">
+  <h2>
     {{('management.locationDetails.title' | translate).replace('{locationName}', location.name)}}
   </h2>
   <hr>
   <app-details-form [location]="locationObs"></app-details-form>
 
   <!-- Calendar with overview of opening days -->
-  <h2 class="full-screen">
+  <h2>
     {{'management.locationDetails.calendar.title' | translate}}
   </h2>
   <hr />
@@ -30,7 +30,7 @@
   </div>
 
   <!-- Description of the location -->
-  <h2 class="full-screen">
+  <h2>
     {{'management.locationDetails.description.title' | translate}}
   </h2>
   <hr />
@@ -40,7 +40,7 @@
 
 
   <!-- Tags of the location -->
-  <h2 class="full-screen">
+  <h2>
     {{'management.locationDetails.tags.title' | translate}}
   </h2>
   <hr />
@@ -49,7 +49,7 @@
   <app-location-tags-management [location]="locationObs"></app-location-tags-management>
 
   <!-- Tags of the location -->
-  <h2 class="full-screen">
+  <h2>
     {{'management.locationDetails.reminder.title' | translate}}
   </h2>
   <hr />

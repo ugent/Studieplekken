@@ -1,11 +1,18 @@
 form {
     line-height: 1rem;
+    margin-top: -1rem;
+    margin-bottom: 1rem !important;
 
-    label {
-        margin: 1rem 0 .5rem 0;
-    }
+    .row {
+        margin-top: 1rem;
 
-    input[type=checkbox] {
-        margin: 1.5rem 0;
+        label {
+            max-width: 100%;
+
+            .form-control {
+                margin-top: .5rem;
+                max-width: 100%;
+            }
+        }
     }
 }

@@ -7,42 +7,63 @@
             <!-- User overview in a form -->
             <form [formGroup]="formGroup" class="center">
                 <!-- First name -->
-                <div>
-                    <label class="control-label" for="firstName">{{'profile.overview.form.firstName' | translate}}</label>
-                    <input class="form-control" id="firstName" type="text" formControlName="firstName">
+                <div class="row">
+                    <div class="col">
+                        <label class="control-label" for="firstName">
+                            {{'profile.overview.form.firstName' | translate}}
+                            <input class="form-control" id="firstName" type="text" formControlName="firstName">
+                        </label>
+                    </div>
                 </div>
 
+
                 <!-- Last name -->
-                <div class="form-group">
-                    <label class="control-label" for="lastName">{{'profile.overview.form.lastName' | translate}}</label>
-                    <input class="form-control" id="lastName" type="text" formControlName="lastName">
+                <div class="row">
+                    <div class="col">
+                        <label class="control-label" for="lastName">
+                            {{'profile.overview.form.lastName' | translate}}
+                            <input class="form-control" id="lastName" type="text" formControlName="lastName">
+                        </label>
+                    </div>
                 </div>
 
                 <!-- Penalty Points -->
-                <!-- Only to be shown in BlokAt, not in MiniThermis -->
-                <div class="form-group" *ngIf="showPenaltyPoints">
-                    <label class="control-label"
-                           for="penaltyPoints">{{'profile.overview.form.penaltyPoints' | translate}}</label>
-                    <input class="form-control" id="penaltyPoints" type="number" formControlName="penaltyPoints">
+                <div class="row">
+                    <div class="col">
+                        <label class="control-label" for="penaltyPoints">
+                            {{'profile.overview.form.penaltyPoints' | translate}}
+                            <input class="form-control" id="penaltyPoints" type="number" formControlName="penaltyPoints">
+                        </label>
+                    </div>
                 </div>
 
                 <!-- Institution -->
-                <div class="form-group">
-                    <label class="control-label" for="institution">{{'profile.overview.form.institution' | translate}}</label>
-                    <input class="form-control" id="institution" type="text" formControlName="institution">
+                <div class="row">
+                    <div class="col">
+                        <label class="control-label" for="institution">
+                            {{'profile.overview.form.institution' | translate}}
+                            <input class="form-control" id="institution" type="text" formControlName="institution">
+                        </label>
+
+                    </div>
                 </div>
 
                 <!-- Mail -->
-                <div class="form-group">
-                    <label class="control-label" for="mail">{{'profile.overview.form.mail' | translate}}</label>
-                    <input class="form-control" id="mail" type="email" formControlName="mail">
+                <div class="row">
+                    <div class="col">
+                        <label class="control-label" for="mail">
+                            {{'profile.overview.form.mail' | translate}}
+                            <input class="form-control" id="mail" type="email" formControlName="mail">
+                        </label>
+                    </div>
                 </div>
             </form>
             <form [formGroup]="settingsFormGroup" class="center">
                 <!-- Receive mail confirming reservations 24hrs -->
-                <div class="form-group">
-                    <input class="form-control" id="receiveMailConfirmation" type="checkbox"
-                           formControlName="receiveMailConfirmation"> {{'profile.overview.form.receiveMailConfirmation' | translate}}
+                <div class="row">
+                    <div class="col">
+                        <input class="form-control" id="receiveMailConfirmation" type="checkbox" formControlName="receiveMailConfirmation"> {{'profile.overview.form.receiveMailConfirmation' | translate}}
+                    </div>
                 </div>
             </form>
             <div class="messages messages--info center">
