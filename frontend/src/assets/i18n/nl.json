@@ -424,7 +424,8 @@
         "updateButton": "Update",
         "cancelButton": "Annuleer",
         "successUpdating": "Het updaten van de herinneringen is geslaagd.",
-        "errorUpdating":"Er is iets misgelopen tijdens het updaten van de herinneringen."
+        "errorUpdating": "Er is iets misgelopen tijdens het updaten van de herinneringen.",
+        "info": "Hier kan vrijblijvend een kort bericht ingesteld worden. Deze sectie zal toegevoegd worden aan de mail die naar de student gestuurd wordt. Deze mail wordt dagelijks om 21:30 verstuurd als er die dag reservaties zijn gemaakt."
       }
     },
     "locations": {

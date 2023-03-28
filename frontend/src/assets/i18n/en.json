@@ -425,7 +425,8 @@
         "updateButton": "Update",
         "cancelButton": "Cancel",
         "successUpdating": "Successfully updated the reminders of the room.",
-        "errorUpdating": "Something went wrong while updating the reminders of the room."
+        "errorUpdating": "Something went wrong while updating the reminders of the room.",
+        "info": "A short optional message can be set here. This section will be added to the mail sent to the student. This mail will be sent daily at 9:30 p.m. if reservations have been made that day."
       }
     },
     "locations": {
