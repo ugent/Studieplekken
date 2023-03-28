@@ -1,5 +1,8 @@
-
-.mobile-card {
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-  padding: 20px;
+.mobile-container {
+    margin-top: -1rem;
+    .mobile-card {
+        margin-top: 1rem;
+        background: whitesmoke;
+        padding: 20px;
+    }
 }
