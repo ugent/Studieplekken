@@ -30,7 +30,7 @@
     "@nestjs/platform-express": "^8.0.0",
     "@prisma/client": "4.7.1",
     "@types/got": "^9.6.12",
-    "class-transformer": "^0.4.0",
+    "class-transformer": "0.4.0",
     "class-validator": "^0.13.1",
     "dotenv": "^10.0.0",
     "dotenv-cli": "^4.1.1",
@@ -96,7 +96,11 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
-    "roots": ["<rootDir>"],
-    "modulePaths": ["<rootDir>"]
+    "roots": [
+      "<rootDir>"
+    ],
+    "modulePaths": [
+      "<rootDir>"
+    ]
   }
 }
