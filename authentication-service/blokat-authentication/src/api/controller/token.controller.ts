@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import {Body, Controller, Get, Header, Post, UseGuards, UsePipes, ValidationPipe} from '@nestjs/common';
 import { DbTokenService } from 'src/db/db-token/db-token.service';
 import { BackendServiceGuard } from '../internal-auth/service-jwt/backend-service.guard';
 import { TokenBody } from './bodies/token.body';
@@ -9,6 +9,7 @@ export class TokenController {
     constructor(private tokenDb: DbTokenService) {}
 
     @Get()
+    @Header('Content-Encoding', undefined)
     async getAllTokens() {
         return {"tokens": await this.tokenDb.allTokens()};
     }
