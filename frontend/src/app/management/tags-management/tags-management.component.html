@@ -1,12 +1,11 @@
 <div>
     <!-- Title -->
     <h3>{{'management.tags.title' | translate}}</h3>
-
     <hr>
     <!-- Table with all existing tags -->
     <div class="responsive-table fullwidth" *ngIf="tagsObs | async as tags">
         <div class="table-wrapper fullwidth">
-            <table style="width: 100%;" *ngIf="tags.length > 0; else noTags">
+            <table class="w-100" *ngIf="tags.length > 0; else noTags">
                 <thead>
                 <tr>
                     <th scope="col">{{'management.tags.table.dutch' | translate}}</th>
@@ -61,33 +60,30 @@
 
 <!-- Modal view to add a new tag -->
 <ng-template #addTagModal>
-
     <app-modal>
-        <h1 modal-header>
+        <h2 modal-header>
             {{'management.tags.addTagModal.title' | translate}}
-        </h1>
+        </h2>
 
         <div modal-body>
             <form [formGroup]="tagFormGroup">
                 <!-- Dutch name of tag -->
-                <div class="row form-group">
-                    <label class="col-lg-3 control-label" for="dutchDelete">
-                        {{'management.tags.table.dutch' | translate}}<span
-                        style="color: red; margin-left: 5px;">*</span>
-                    </label>
-                    <div class="col-lg-8">
-                        <input class="form-control" id="dutchDelete" type="text" formControlName="dutch">
+                <div class="row">
+                    <div class="col">
+                        <label class="control-label" for="dutchDelete">
+                            {{'management.tags.table.dutch' | translate}} <span class="text-red">*</span>
+                            <input class="form-control" id="dutchDelete" type="text" formControlName="dutch">
+                        </label>
                     </div>
                 </div>
 
                 <!-- English name of tag -->
-                <div class="row form-group">
-                    <label class="col-lg-3 control-label" for="englishDelete">
-                        {{'management.tags.table.english' | translate}}<span
-                        style="color: red; margin-left: 5px;">*</span>
-                    </label>
-                    <div class="col-lg-8">
-                        <input class="form-control" id="englishDelete" type="text" formControlName="english">
+                <div class="row">
+                    <div class="col">
+                        <label class="control-label" for="englishDelete">
+                            {{'management.tags.table.english' | translate}} <span class="text-red">*</span>
+                            <input class="form-control" id="englishDelete" type="text" formControlName="english">
+                        </label>
                     </div>
                 </div>
             </form>
@@ -122,30 +118,29 @@
 
 <!-- Modal view to update a tag -->
 <ng-template #updateTagModal>
-
     <app-modal>
-        <h1 modal-header>
+        <h2 modal-header>
             {{'management.tags.updateTagModal.title' | translate}}
-        </h1>
+        </h2>
 
         <form [formGroup]="tagFormGroup" modal-body>
             <!-- Dutch tag name -->
-            <div class="row form-group">
-                <label class="col-lg-3 control-label" for="dutchUpdate">
-                    {{'management.tags.table.dutch' | translate}}<span style="color: red; margin-left: 5px;">*</span>
-                </label>
-                <div class="col-lg-8">
-                    <input class="form-control" id="dutchUpdate" type="text" formControlName="dutch">
+            <div class="row">
+                <div class="col">
+                    <label class="control-label" for="dutchUpdate">
+                        {{'management.tags.table.dutch' | translate}} <span class="text-red">*</span>
+                        <input class="form-control" id="dutchUpdate" type="text" formControlName="dutch">
+                    </label>
                 </div>
             </div>
 
             <!-- English tag name -->
-            <div class="row form-group">
-                <label class="col-lg-3 control-label" for="englishUpdate">
-                    {{'management.tags.table.english' | translate}}<span style="color: red; margin-left: 5px;">*</span>
-                </label>
-                <div class="col-lg-8">
-                    <input class="form-control" id="englishUpdate" type="text" formControlName="english">
+            <div class="row ">
+                <div class="col">
+                    <label class="control-label" for="englishUpdate">
+                        {{'management.tags.table.english' | translate}} <span class="text-red">*</span>
+                        <input class="form-control" id="englishUpdate" type="text" formControlName="english">
+                    </label>
                 </div>
             </div>
         </form>
@@ -179,37 +174,20 @@
 
 <!-- Modal view to ask whether the user is sure to delete a tag -->
 <ng-template #deleteTagModal>
-    <div fxLayout="column" fxLayoutAlign="space-evenly" fxLayoutGap="20px" class="fullheight">
-
-        <!-- Header -->
-        <div fxLayout="row" fxLayoutAlign="space-between">
-            <h1 class="modal-title" id="deleteLockerModalLabel">
-                {{'management.tags.deleteTagModal.title' | translate}}
-            </h1>
-            <div>
-                <button type="button" class="close" (click)="closeModal()" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
+    <app-modal>
+        <h2 modal-header>
+            {{'management.tags.deleteTagModal.title' | translate}}
+        </h2>
+        <div modal-body>
+            <p>
+                {{'management.tags.deleteTagModal.body' | translate}}
+            </p>
+            <ul>
+                <li><b>{{('management.tags.table.dutch' | translate)}}</b> {{dutch.value}}</li>
+                <li><b>{{('management.tags.table.english' | translate)}}</b> {{english.value}}</li>
+            </ul>
         </div>
-
-        <!-- Body -->
-        <div class="modal-body">
-            <div>
-                <b>{{'management.tags.deleteTagModal.body' | translate}}</b>
-                <br><br>
-                <ul>
-                    <li><b style="margin-right: 5px"><i>{{('management.tags.table.dutch' | translate) +
-                    ':'}}</i></b>{{dutch.value}}</li>
-                    <li><b
-                        style="margin-right: 5px"><i>{{('management.tags.table.english' | translate)}}</i></b>{{english.value}}
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="modal-footer">
+        <div modal-footer>
             <button type="button" class="button button-primary" (click)="deleteTagInFormGroup()">
                 {{'general.buttons.delete' | translate}}
             </button>
@@ -217,12 +195,10 @@
                 {{'general.buttons.cancel' | translate}}
             </button>
         </div>
-
-        <div class="container-fluid">
+        <div modal-message-footer>
             <div class="messages messages--info" *ngIf="successDeletingTag === null">
                 {{'general.waitingForServer' | translate}}
             </div>
-
             <div class="messages messages--success" *ngIf="successDeletingTag === true">
                 {{'management.tags.deleteTagModal.success' | translate}}
             </div>
@@ -231,5 +207,5 @@
                 {{'management.tags.deleteTagModal.error' | translate}}
             </div>
         </div>
-    </div>
+    </app-modal>
 </ng-template>
