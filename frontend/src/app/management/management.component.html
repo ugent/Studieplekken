@@ -3,8 +3,8 @@
         <!-- Menu for /management -->
         <aside class="col-12 col-lg-3">
             <section class="highlight highlight--top">
-                <div class="highlight__inner px-5">
-                    <h2>
+                <div class="highlight__inner px-4">
+                    <h2 class="mt-0">
                         {{ 'management.aside.title' | translate }}
                     </h2>
                     <div class="d-flex flex-column gap-3 align-items-between">
@@ -29,7 +29,7 @@
                         <a routerLink="./admins" *ngIf="showAdmin">
                             {{'management.aside.admins' | translate}}
                         </a>
-                        <a routerLink="./penalties" *ngIf="showPenalties">
+                        <a routerLink="./penalties" *ngIf="showAdmin">
                             {{'management.aside.penalties' | translate}}
                         </a>
                         <a routerLink="./actionlog" *ngIf="showActionlog">

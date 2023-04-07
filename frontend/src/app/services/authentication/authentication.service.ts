@@ -31,6 +31,7 @@ export class AuthenticationService {
     // BehaviorSubject to be able to emit on changes
     // private so that only the AuthenticationService can modify the user
     private userSubject: BehaviorSubject<User> = new BehaviorSubject<User>(null);
+
     // and other components can subscribe using the public observable
     // (which comes from the userSubject)
     public user: Observable<User> = this.userSubject.asObservable();
@@ -38,7 +39,6 @@ export class AuthenticationService {
     private hasAuthoritiesSubject: Subject<boolean> = new ReplaySubject<boolean>();
     public hasAuthoritiesObs: Observable<boolean> = this.hasAuthoritiesSubject.asObservable();
     private hasVolunteeredSubject: Subject<boolean> = new ReplaySubject<boolean>();
-    public hasVolunteeredObs: Observable<boolean> = this.hasVolunteeredSubject.asObservable();
 
     private penaltySubject: Subject<PenaltyList> = new ReplaySubject<PenaltyList>();
     public penaltyObservable = this.penaltySubject.asObservable();
@@ -96,6 +96,7 @@ export class AuthenticationService {
                 this.updateHasAuthoritiesSubject(next);
                 this.updateHasVolunteeredSubject(next);
                 this.updatePenaltiesSubject(next);
+
                 this.userSubject.next(next);
 
                 if (next.userId && redirect) {

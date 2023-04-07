@@ -3,5 +3,10 @@
 }
 
 .accordion--button {
+    margin-top: .75rem;
     padding-right: 2rem;
+
+    h4 {
+        margin-top: 0;
+    }
 }
