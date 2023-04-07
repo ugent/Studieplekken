@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div>
     <!-- Title -->
     <h3>{{'management.buildings.title' | translate}}</h3>
     <hr>
@@ -214,18 +214,15 @@
             {{'management.buildings.deleteBuildingModal.title' | translate}}
         </h2>
         <div modal-body>
-            <b>{{'management.buildings.deleteBuildingModal.body' | translate}}</b>
-
-            <div class="alert alert-danger" style="margin-top: 10px; margin-bottom: 10px;">
+            <p>
+                {{'management.buildings.deleteBuildingModal.body' | translate}}
+            </p>
+            <p class="text-red">
                 {{'management.buildings.deleteBuildingModal.warning' | translate}}
-            </div>
-
+            </p>
             <ul>
-                <li><b style="margin-right: 5px"><i>{{('management.buildings.table.name' |
-                    translate)}}</i></b>{{building.name}}
-                </li>
-                <li><b style="margin-right: 5px"><i>{{('management.buildings.table.address' |
-                    translate)}}</i></b>{{building.address}}</li>
+                <li><b>{{('management.buildings.table.name' | translate)}}</b> {{building.name}}</li>
+                <li><b>{{('management.buildings.table.address' | translate)}}</b> {{building.address}}</li>
             </ul>
         </div>
         <div modal-footer>

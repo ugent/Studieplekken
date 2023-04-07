@@ -169,4 +169,6 @@ export class TagsManagementComponent implements OnInit {
   validTagFormGroup(): boolean {
     return !this.tagFormGroup.invalid;
   }
+
+    protected readonly undefined = undefined;
 }
