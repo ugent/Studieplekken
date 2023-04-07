@@ -196,4 +196,6 @@ export class AuthorityUsersManagementComponent implements OnInit {
       }
     );
   }
+
+    protected readonly undefined = undefined;
 }
