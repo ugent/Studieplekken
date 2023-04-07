@@ -1,8 +1,9 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import {Component, Input, OnChanges, OnInit, TemplateRef} from '@angular/core';
 import { Observable } from 'rxjs';
 import { PenaltyList, PenaltyService } from 'src/app/services/api/penalties/penalty.service';
 import { Penalty } from '../../model/Penalty';
 import { User } from '../../model/User';
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-user-penalty-manager',
@@ -18,7 +19,7 @@ export class UserPenaltyManagerComponent implements OnInit, OnChanges {
   addForm = false;
   model: {points: number, description: string} = {points: 0, description: ""};
 
-  constructor(private penaltiesService: PenaltyService) { }
+  constructor(private penaltiesService: PenaltyService, private modalService: MatDialog) { }
 
   ngOnInit(): void {
   }
@@ -29,9 +30,8 @@ export class UserPenaltyManagerComponent implements OnInit, OnChanges {
     }
   }
 
-  addPenaltyButton() {
-    this.addForm = true;
-    this.overview = false;
+  addPenaltyButton(template: TemplateRef<any>): void {
+      this.modalService.open(template);
   }
 
   addPenalty(): void {
