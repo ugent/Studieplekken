@@ -15,9 +15,9 @@
         </div>
         <!-- Body -->
         <div class="panel-collapse accordion--content " [class.collapse]="collapsed" id="accordion--{{location.locationId}}" accordion-content>
-            <div class="panel-body responsive-table fullwidth">
-                <div class="table-wrapper fullwidth">
-                    <table class="fullwidth" *ngIf="!showEmpty(volunteers)">
+            <div class="panel-body responsive-table">
+                <div class="table-wrapper">
+                    <table class="w-100" *ngIf="!showEmpty(volunteers)">
                         <thead>
                             <tr>
                                 <th scope="col">{{'management.users.searchResult.table.id' | translate}}</th>
@@ -51,7 +51,7 @@
                         </div>
                     </div>
 
-                    <button class='button button-primary' (click)="showAdd(confirm)">{{'management.volunteers.addNewButton' |translate}}</button>
+                    <button class='button button-primary mt-3' (click)="showAdd(confirm)">{{'management.volunteers.addNewButton' |translate}}</button>
                 </div>
             </div>
         </div>
@@ -59,10 +59,12 @@
 </div>
 
 <ng-template #confirm>
-    <h1>
-        {{'management.volunteers.addNewHeader' | translate}}
-    </h1>
-    <div>
-        <app-search-user-component [icon]="'icon-plus'" (selectedUser)="addVolunteer($event)"></app-search-user-component>
-    </div>
+    <app-modal>
+        <h2 modal-header>
+            {{'management.volunteers.addNewHeader' | translate}}
+        </h2>
+        <div modal-body>
+            <app-search-user-component [icon]="'icon-plus'" (selectedUser)="addVolunteer($event)"></app-search-user-component>
+        </div>
+    </app-modal>
 </ng-template>

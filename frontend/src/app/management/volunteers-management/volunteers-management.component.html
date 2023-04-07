@@ -8,6 +8,7 @@
     <div *ngIf="manageableLocationsObs | async as manageableLocations; else loadingOrError">
         <app-volunteer-management-panel *ngFor="let mLocation of manageableLocations" [location]="mLocation"></app-volunteer-management-panel>
     </div>
+
     <ng-template #loadingOrError>
         <div class="messages messages--error" *ngIf="errorSubject | async; else loading">
             <i class="icon-exclamation" aria-hidden="true"></i>
