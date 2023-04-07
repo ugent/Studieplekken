@@ -203,6 +203,7 @@
         "about": "The digital platform for study locations"
     },
     "management": {
+        "confirm": "Are you sure?",
         "aside": {
             "title": "Management",
             "locations": "Room",

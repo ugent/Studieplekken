@@ -1,30 +1,26 @@
 <!-- If querying the user is not successful, show an error -->
 <div class="alert alert-error" *ngIf="userQueryingError">
-  {{('management.users.userDetails.errorQuerying' | translate).replace('{id}', userId)}}
+    {{('management.users.userDetails.errorQuerying' | translate).replace('{id}', userId)}}
 </div>
 
 <div *ngIf="!userQueryingError">
-  <div class="container-fluid" *ngIf="userObs | async as user">
-    <!-- Form with details of the user -->
-    <app-user-details-form [userObs]="userObs"></app-user-details-form>
-    <br><br>
+    <div *ngIf="userObs | async as user">
+        <!-- Form with details of the user -->
+        <app-user-details-form [userObs]="userObs"></app-user-details-form>
 
-    <!-- If the user is an EMPLOYEE or ADMIN, show the authorities of the user -->
-    <app-user-authorities-management [userObs]="userObs"></app-user-authorities-management>
-    <br><br>
+        <!-- If the user is an EMPLOYEE or ADMIN, show the authorities of the user -->
+        <app-user-authorities-management [userObs]="userObs"></app-user-authorities-management>
 
-    <!-- If the user is an ADMIN, then he may change the role of a user -->
-    <div *ngIf="showRolesManagement">
-      <app-user-roles [userObs]="userObs"></app-user-roles>
+        <!-- If the user is an ADMIN, then he may change the role of a user -->
+        <div *ngIf="showRolesManagement">
+            <app-user-roles [userObs]="userObs"></app-user-roles>
+        </div>
 
-      <br><br>
+        <!-- Table with all penalty points and the option to add/delete them manually  -->
+        <app-user-penalty-manager [user]="user" [showHeader]="false"></app-user-penalty-manager>
+
+        <app-profile-reservations
+            [userObs]="userObs">
+        </app-profile-reservations>
     </div>
-
-    <!-- Table with all penalty points and the option to add/delete them manually  -->
-    <app-user-penalty-manager [user]="user" [showHeader]="false"></app-user-penalty-manager>
-
-    <app-profile-reservations
-      [userObs]="userObs">
-    </app-profile-reservations>
-  </div>
 </div>

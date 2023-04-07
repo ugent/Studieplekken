@@ -203,6 +203,7 @@
         "about": "Het digitaal platform voor studieplekken"
     },
     "management": {
+        "confirm": "Ben je het zeker?",
         "aside": {
             "title": "Beheer",
             "locations": "Locaties",

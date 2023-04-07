@@ -1,61 +1,80 @@
-<div class="container-fluid" *ngIf="userObs | async as user">
-  <!-- Management of the roles of the user -->
-  <h3>{{('management.users.userDetails.roles.title' | translate)
-    .replace('{name}', user.firstName + ' ' + user.lastName)}}</h3>
+<div *ngIf="userObs | async as user">
+    <!-- Management of the roles of the user -->
+    <h3>
+        {{('management.users.userDetails.roles.title' | translate).replace('{name}', user.firstName + ' ' + user.lastName)}}
+    </h3>
+    <hr>
+    <!-- Feedback on updating the user's role -->
+    <div class="messages messages--info" *ngIf="userUpdatingSuccess === null">
+        {{'management.users.userDetails.roles.loadingUpdatingUser' | translate}}
+    </div>
 
-  <hr>
+    <div class="messages messages--success" *ngIf="userUpdatingSuccess === true">
+        {{'management.users.userDetails.roles.successUpdatingUser' | translate}}
+    </div>
 
-  <!-- Feedback on updating the user's role -->
-  <div class="messages messages--info" *ngIf="userUpdatingSuccess === null">
-    {{'management.users.userDetails.roles.loadingUpdatingUser' | translate}}
-  </div>
+    <div class="messages messages--error" *ngIf="userUpdatingSuccess === false">
+        {{'management.users.userDetails.roles.errorUpdatingUser' | translate}}
+    </div>
 
-  <div class="messages messages--success" *ngIf="userUpdatingSuccess === true">
-    {{'management.users.userDetails.roles.successUpdatingUser' | translate}}
-  </div>
-
-  <div class="messages messages--error" *ngIf="userUpdatingSuccess === false">
-    {{'management.users.userDetails.roles.errorUpdatingUser' | translate}}
-  </div>
-
-  <!-- The form containing the checkboxes of the roles, and an update and reset buttons -->
-  <div class="container-fluid">
+    <!-- The form containing the checkboxes of the roles, and an update and reset buttons -->
     <form (ngSubmit)="submitUpdateUser()" [formGroup]="roleFormGroup">
-      <div class="row">
-        <label>
-          <mat-checkbox #c type="checkbox" color='primary' formControlName="admin" (click)="onAdminClick($event, confirmadd, confirmremove, c.checked)">{{'general.roles.ADMIN' | translate}}</mat-checkbox>
-        </label>
-      </div>
-
-      <div class="row">
-        <div class="pull-right">
-          <button type="submit" class="button button-warning btn-left"
-                  [disabled]="disableRoleUpdateButton()">
-            {{'management.users.userDetails.roles.updateButton' | translate}}
-          </button>
-
-          <button class="button button-secondary" (click)="resetRolesFormArrayButtonClick()"
-                  [disabled]="disableRoleUpdateButton()">
-            {{'management.users.userDetails.roles.resetButton' | translate}}
-          </button>
+        <div class="row">
+            <div class="col">
+                <label>
+                    <mat-checkbox #c color='primary' formControlName="admin" (click)="onAdminClick($event, confirmadd, confirmremove, c.checked)">
+                        {{'general.roles.ADMIN' | translate}}
+                    </mat-checkbox>
+                </label>
+            </div>
         </div>
-      </div>
+
+        <div class="d-flex gap-3 mt-3">
+            <button type="submit" class="button button-primary btn-left"
+                    [disabled]="disableRoleUpdateButton()">
+                {{'management.users.userDetails.roles.updateButton' | translate}}
+            </button>
+
+            <button class="button button-secondary" (click)="resetRolesFormArrayButtonClick()"
+                    [disabled]="disableRoleUpdateButton()">
+                {{'management.users.userDetails.roles.resetButton' | translate}}
+            </button>
+        </div>
     </form>
-  </div>
 </div>
 
 <ng-template #confirmadd>
-  <div modal-body class="text-center">
-    <p>{{'management.users.userDetails.roles.adminAddConfirmation' | translate }}</p>
-    <button type="button" class="button button-default" (click)="confirmAdminChange()" >{{ 'general.yes' | translate }}</button>
-    <button type="button" class="button button-primary" (click)="declineAdminChange()" >{{ 'general.no' | translate}}</button>
-  </div>
+    <app-modal>
+        <h2 modal-header>
+            {{ 'management.confirm' | translate }}
+        </h2>
+        <div modal-body>
+            <p>
+                {{'management.users.userDetails.roles.adminAddConfirmation' | translate }}
+            </p>
+        </div>
+        <div modal-footer>
+            <button type="button" class="button button-primary" (click)="confirmAdminChange()">{{ 'general.yes' | translate }}</button>
+            <button type="button" class="button button-secondary" (click)="declineAdminChange()">{{ 'general.no' | translate}}</button>
+        </div>
+    </app-modal>
 </ng-template>
 
 <ng-template #confirmremove>
-  <div modal-body class="text-center">
-    <p>{{'management.users.userDetails.roles.adminRemoveConfirmation' | translate }}</p>
-    <button type="button" class="button button-default" (click)="confirmAdminChange()" >{{ 'general.yes' | translate }}</button>
-    <button type="button" class="button button-primary" (click)="declineAdminChange()" >{{ 'general.no' | translate}}</button>
-  </div>
+    <app-modal>
+        <h2 modal-header>
+            {{ 'management.confirm' | translate }}
+        </h2>
+        <div modal-body>
+            <p>
+                {{'management.users.userDetails.roles.adminRemoveConfirmation' | translate }}
+            </p>
+        </div>
+        <div modal-footer>
+            <button type="button" class="button button-default"
+                    (click)="confirmAdminChange()">{{ 'general.yes' | translate }}</button>
+            <button type="button" class="button button-primary"
+                    (click)="declineAdminChange()">{{ 'general.no' | translate}}</button>
+        </div>
+    </app-modal>
 </ng-template>
