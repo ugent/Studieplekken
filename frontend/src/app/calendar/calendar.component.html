@@ -1,84 +1,78 @@
-<div class="container-fluid">
-  <div class="text-center nav-buttons" fxLayout="row nowrap" fxLayoutAlign="space-between">
-    <!-- Navigation -->
-    <div fxLayout={{getWrapLayout()}} class={{getWrapMargin()}}>
-      <!-- Previous -->
-      <div>
-        <div class="button button-primary btn-left" mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate" (viewDateChange)="emitDate($event)">
-          {{'calendar.previous' | translate}}
-        </div>
-      </div>
-
-      <div>
-        <!-- Today -->
-        <div class="button button-primary btn-left" mwlCalendarToday [(viewDate)]="viewDate" (viewDateChange)="emitDate($event)">
-          {{'calendar.today' | translate}}
-        </div>
-      </div>
-      <div>
-        <!-- Next -->
-        <div class="button button-primary btn-left" mwlCalendarNextView [view]="view" [(viewDate)]="viewDate" (viewDateChange)="emitDate($event)">
-          {{'calendar.next' | translate}}
-        </div>
-      </div>
-    </div>
-
-    <br>
+<div>
     <!-- Title -->
-    <div class={{getWrapMargin()}}>
-      <h1>{{ viewDate | calendarDate:(view + 'ViewTitle'): currentLang: 1 }}</h1>
+    <div class="text-center nav-buttons d-flex flex-column flex-md-row gap-3 align-items-center justify-content-between my-4">
+        <!-- Navigation -->
+        <div>
+            <div class="d-flex gap-3">
+                <!-- Previous -->
+                <div class="button button-primary" mwlCalendarPreviousView [view]="view"
+                     [(viewDate)]="viewDate" (viewDateChange)="emitDate($event)">
+                    {{'calendar.previous' | translate}}
+                </div>
+                <!-- Today -->
+                <div class="button button-primary" mwlCalendarToday [(viewDate)]="viewDate"
+                     (viewDateChange)="emitDate($event)">
+                    {{'calendar.today' | translate}}
+                </div>
+                <!-- Next -->
+                <div class="button button-primary" mwlCalendarNextView [view]="view" [(viewDate)]="viewDate"
+                     (viewDateChange)="emitDate($event)">
+                    {{'calendar.next' | translate}}
+                </div>
+            </div>
+        </div>
+        <h1 class="calendar-title">
+            {{ viewDate | calendarDate:(view + 'ViewTitle'): currentLang: 1 }}
+        </h1>
+        <!-- Types of view -->
+        <div>
+            <div class="d-flex gap-3">
+                <div class="button" [class.button-secondary]="view != CalendarView.Month"
+                     [class.button-primary]="view == CalendarView.Month" (click)="setView(CalendarView.Month)"
+                     [class.active]="view === CalendarView.Month">
+                    {{'calendar.month' | translate}}
+                </div>
+                <div class="button" [class.button-secondary]="view != CalendarView.Week"
+                     [class.button-primary]="view == CalendarView.Week" (click)="setView(CalendarView.Week)"
+                     [class.active]="view === CalendarView.Week">
+                    {{'calendar.week' | translate}}
+                </div>
+                <div class="button" [class.button-secondary]="view != CalendarView.Day"
+                     [class.button-primary]="view == CalendarView.Day" (click)="setView(CalendarView.Day)"
+                     [class.active]="view === CalendarView.Day">
+                    {{'calendar.day' | translate}}
+                </div>
+            </div>
+        </div>
     </div>
+    <div [ngSwitch]="view" *ngIf="currentLanguage() | async as currlan">
+        <mwl-calendar-month-view *ngSwitchCase="CalendarView.Month" [viewDate]="viewDate" [events]="events"
+                                 [locale]="currlan"
+                                 [refresh]="refresh" [weekStartsOn]="1"
+                                 (eventClicked)="handleEvent('Clicked', $event.event)">
+        </mwl-calendar-month-view>
 
-    <!-- Types of view -->
-    <div fxLayout={{getWrapLayout()}} class={{getWrapMargin()}}>
-      <div>
-        <div class="button btn-left" [class.button-secondary]="view != CalendarView.Month" [class.button-primary]="view == CalendarView.Month" (click)="setView(CalendarView.Month)"
-          [class.active]="view === CalendarView.Month">
-          {{'calendar.month' | translate}}
-        </div>
-      </div>
-      <div>
-        <div class="button btn-left" [class.button-secondary]="view != CalendarView.Week" [class.button-primary]="view == CalendarView.Week" (click)="setView(CalendarView.Week)"
-          [class.active]="view === CalendarView.Week">
-          {{'calendar.week' | translate}}
-        </div>
-      </div>
+        <mwl-calendar-week-view
+            *ngSwitchCase="CalendarView.Week"
+            [viewDate]="viewDate"
+            [events]="events"
+            [refresh]="refresh"
+            [weekStartsOn]="1"
+            [hourSegmentHeight]=20
+            [dayStartHour]=openingHour
+            [dayEndHour]=closingHour
+            [locale]="currlan"
+            (eventClicked)="handleEvent('Clicked', $event.event)"
+            (hourSegmentClicked)="hourSegment($event)"
+        >
+        </mwl-calendar-week-view>
 
-      <div>
-        <div class="button" [class.button-secondary]="view != CalendarView.Day" [class.button-primary]="view == CalendarView.Day" (click)="setView(CalendarView.Day)"
-          [class.active]="view === CalendarView.Day">
-          {{'calendar.day' | translate}}
-        </div>
-      </div>
+        <mwl-calendar-day-view *ngSwitchCase="CalendarView.Day" [viewDate]="viewDate" [events]="events"
+                               [refresh]="refresh"
+                               [hourSegmentHeight]=20 [dayStartHour]=openingHour [dayEndHour]=closingHour
+                               [locale]="currlan"
+                               (eventClicked)="handleEvent('Clicked', $event.event)">
+        </mwl-calendar-day-view>
     </div>
-  </div>
-
-  <br>
-
-  <div [ngSwitch]="view" *ngIf="currentLanguage() | async as currlan">
-    <mwl-calendar-month-view *ngSwitchCase="CalendarView.Month" [viewDate]="viewDate" [events]="events" [locale]="currlan"
-      [refresh]="refresh" [weekStartsOn]="1" (eventClicked)="handleEvent('Clicked', $event.event)">
-    </mwl-calendar-month-view>
-
-    <mwl-calendar-week-view
-      *ngSwitchCase="CalendarView.Week"
-      [viewDate]="viewDate"
-      [events]="events"
-      [refresh]="refresh"
-      [weekStartsOn]="1"
-      [hourSegmentHeight]=20
-      [dayStartHour] = openingHour
-      [dayEndHour] = closingHour
-      [locale]="currlan"
-      (eventClicked)="handleEvent('Clicked', $event.event)"
-      (hourSegmentClicked)="hourSegment($event)"
-      >
-    </mwl-calendar-week-view>
-
-    <mwl-calendar-day-view *ngSwitchCase="CalendarView.Day" [viewDate]="viewDate" [events]="events" [refresh]="refresh"
-      [hourSegmentHeight]=20 [dayStartHour]=openingHour [dayEndHour]=closingHour [locale]="currlan"
-      (eventClicked)="handleEvent('Clicked', $event.event)">
-    </mwl-calendar-day-view>
-  </div>
 
 </div>

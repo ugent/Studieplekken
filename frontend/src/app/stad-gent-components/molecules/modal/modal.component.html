@@ -1,18 +1,18 @@
-<div class="cs--cyan modal-full" fxLayout="column" fxLayoutGap="32px">
-    <div fxLayout="row" fxLayoutAlign="space-between" class="modal-header-container">
+<div class="cs--cyan modal-full" >
+    <div class="modal-header-container">
         <div class="modal-header">
             <!-- Header -->
             <ng-content select="[modal-header]" ></ng-content>
         </div>
 
         <div>
-            <button type="button" class="close" (click)="closeModal()" aria-label="Close">
+            <button type="button" class="close button button-secondary" (click)="closeModal()" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
     </div>
 
-    <div fxLayout="column nowrap" fxLayoutAlign="space-between center" fxLayoutGap="20px" class="modal-body">
+    <div class="modal-body">
         <!-- body -->
         <ng-content select="[modal-message-before]"></ng-content>
 
@@ -22,10 +22,13 @@
     </div>
 
 
-    <div fxLayout="column" fxLayoutGap="10px">
+    <div class="d-flex flex-column gap-4">
         <!-- footer -->
-
-        <ng-content select="[modal-footer]"></ng-content>
-        <ng-content select="[modal-message-footer]"></ng-content>
+        <div class="modal-footer">
+            <ng-content select="[modal-footer]"></ng-content>
+        </div>
+        <div class="modal-message-footer">
+            <ng-content select="[modal-message-footer]"></ng-content>
+        </div>
     </div>
 </div>

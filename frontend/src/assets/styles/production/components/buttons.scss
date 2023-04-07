@@ -1,0 +1,16 @@
+.button {
+    min-width: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &.button-alert {
+        background: indianred;
+        border-color: indianred;
+
+        &:hover {
+            background: #b85252;
+            border-color: #b85252;
+        }
+    }
+}

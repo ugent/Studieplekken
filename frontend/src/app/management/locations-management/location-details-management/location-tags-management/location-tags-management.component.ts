@@ -110,4 +110,6 @@ export class LocationTagsManagementComponent implements OnInit {
   compareTagsInSelection(tag1: LocationTag, tag2: LocationTag): boolean {
     return tag1.tagId === tag2.tagId;
   }
+
+    protected readonly undefined = undefined;
 }

@@ -1,0 +1,46 @@
+.calendar-event-NR * * mwl-calendar-event-title {
+    color: black;
+}
+
+.calendar-event-reserved * * mwl-calendar-event-title {
+    color: #ffffff;
+}
+
+.calendar-event-NR span {
+    white-space: normal !important;
+}
+
+.calendar-event-reserved span {
+    white-space: normal !important;
+}
+
+.calendar-event-full-not-reserved * * mwl-calendar-event-title {
+    color: #a32707;
+}
+
+.calendar-event-full-not-reserved span {
+    white-space: normal !important;
+}
+
+.calendar-event-suggestion {
+    opacity: 0.6;
+}
+
+.cal-time-events {
+    .cal-event {
+        background: #c9e3ee;
+        color: #007db3;
+        border-color: #007db3;
+    }
+}
+
+.cal-month-view {
+    .cal-event {
+        background: #0071a1;
+    }
+
+    .cal-day-badge {
+        background: whitesmoke;
+        color: #555;
+    }
+}

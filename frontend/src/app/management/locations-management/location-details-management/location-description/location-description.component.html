@@ -1,50 +1,50 @@
-<div class="container-fluid" *ngIf="location | async as location">
-  <div class="panel-body" style="padding: 20px">
-    <!-- The editor for the dutch description -->
-    <div class="row" >
-      <h3>{{'management.locationDetails.description.dutchDescription' | translate}}</h3>
+<div *ngIf="location | async as location">
+    <div class="panel-body">
+        <!-- The editor for the dutch description -->
+        <div>
+            <h3>{{'management.locationDetails.description.dutchDescription' | translate}}</h3>
 
-      <ckeditor [(ngModel)]="model.dutch"
-                [editor]="editor"
-                [config]="config">
-      </ckeditor>
+            <ckeditor [(ngModel)]="model.dutch"
+                      [editor]="editor"
+                      [config]="config">
+            </ckeditor>
+        </div>
+
+        <!-- The editor for the english description -->
+        <div class="mt-3">
+            <h3>{{'management.locationDetails.description.englishDescription' | translate}}</h3>
+
+            <ckeditor [(ngModel)]="model.english"
+                      [editor]="editor"
+                      [config]="config">
+            </ckeditor>
+        </div>
+
+        <div class="mt-3">
+            <div class="d-flex align-items-center">
+                <button class="button button-primary me-3" (click)="updateButtonClick()" [disabled]="!isModelUpdatable()">
+                    {{'management.locationDetails.description.updateButton' | translate}}
+                </button>
+
+                <button class="button button-secondary" (click)="cancelButtonClick()" [disabled]="!isModelUpdatable()">
+                    {{'management.locationDetails.description.cancelButton' | translate}}
+                </button>
+            </div>
+        </div>
+
+        <!-- Feedback on updating the descriptions -->
+        <div class="row" style="margin-top: 20px;">
+            <div class="messages messages--info" *ngIf="showUpdateSuccess === null">
+                {{'general.waitingForServer' | translate}}
+            </div>
+
+            <div class="messages messages--success" *ngIf="showUpdateSuccess === true">
+                {{'management.locationDetails.description.successUpdating' | translate}}
+            </div>
+
+            <div class="messages messages--error" *ngIf="showUpdateSuccess === false">
+                {{'management.locationDetails.description.errorUpdating' | translate}}
+            </div>
+        </div>
     </div>
-
-    <!-- The editor for the english description -->
-    <div class="row" style="margin-top: 20px;">
-      <h3>{{'management.locationDetails.description.englishDescription' | translate}}</h3>
-
-      <ckeditor [(ngModel)]="model.english"
-                [editor]="editor"
-                [config]="config">
-      </ckeditor>
-    </div>
-
-    <div class="row" style="margin-top: 20px;">
-      <div class="pull-right">
-        <button class="button button-primary btn-left" (click)="updateButtonClick()" [disabled]="!isModelUpdatable()">
-          {{'management.locationDetails.description.updateButton' | translate}}
-        </button>
-
-        <button class="button button-secondary" (click)="cancelButtonClick()" [disabled]="!isModelUpdatable()">
-          {{'management.locationDetails.description.cancelButton' | translate}}
-        </button>
-      </div>
-    </div>
-
-    <!-- Feedback on updating the descriptions -->
-    <div class="row" style="margin-top: 20px;">
-      <div class="messages messages--info" *ngIf="showUpdateSuccess === null">
-        {{'general.waitingForServer' | translate}}
-      </div>
-
-      <div class="messages messages--success" *ngIf="showUpdateSuccess === true">
-        {{'management.locationDetails.description.successUpdating' | translate}}
-      </div>
-
-      <div class="messages messages--error" *ngIf="showUpdateSuccess === false">
-        {{'management.locationDetails.description.errorUpdating' | translate}}
-      </div>
-    </div>
-  </div>
 </div>
