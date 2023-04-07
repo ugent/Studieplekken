@@ -46,7 +46,7 @@ export class LocationReminderComponent implements OnInit {
     ) {
 
     }
-    
+
     ngOnInit(): void {
         this.location.subscribe((next) => {
             this.model.dutch = next.reminderDutch? next.reminderDutch : '';
@@ -95,7 +95,7 @@ export class LocationReminderComponent implements OnInit {
         this.model.dutch = this.modelOriginal.dutch;
         this.model.english = this.modelOriginal.english;
     }
-    
+
     isModelUpdatable(): boolean {
         return (
             this.modelOriginal.dutch !== this.model.dutch ||
@@ -103,4 +103,5 @@ export class LocationReminderComponent implements OnInit {
         );
     }
 
+    protected readonly undefined = undefined;
 }

@@ -1,45 +1,35 @@
 <div>
-    <div *ngIf="true">
+    <!-- No location selected message -->
+    <div *ngIf="filteredLocationReservations.length === 0">
         <div class="messages messages--info">
             {{"management.locationDetails.calendar.reservations.table.noLocationReservations" | translate}}
         </div>
     </div>
-    <div *ngIf="filteredLocationReservations.length > 0" class="row">
-        <div
-            *ngIf="noSuchUserFoundWarning"
-            class="messages unregisteredwarning"
-            fxLayoutAlign="center"
-        >
+    <!-- Search and scanning section -->
+    <div *ngIf="filteredLocationReservations.length > 0" class="mb-3">
+        <!-- User not found warning -->
+        <div *ngIf="noSuchUserFoundWarning" class="messages unregisteredwarning">
             <span>{{ "scan.unregistered" | translate }}</span>
         </div>
-
-        <div
-            *ngFor="let user of userAlreadyPresentWarning"
-            class="messages unregisteredwarning"
-            fxLayoutAlign="center"
-        >
+        <!-- User already scanned warning -->
+        <div *ngFor="let user of userAlreadyPresentWarning" class="messages unregisteredwarning">
             <span>{{ "scan.already-present" | translate : {user: user.firstName + ' ' + user.lastName} }}</span>
         </div>
-
-        <div fxLayout="row wrap" fxLayoutGap="15px grid" fxLayoutAlign="center flex-start">
-            <div fxFlex="0 1 80%">
-                <label class="col-md-3 control-label" for="search">
-                    {{
-                    "management.locationDetails.calendar.reservations.searchUser"
-                        | translate
-                    }}
-                </label>
-                <div class="col-sm-10 col-md-7">
+        <!-- User search -->
+        <div class="d-flex justify-content-between align-items-end mb-3">
+            <div>
+                <label for="search">
+                    {{ "management.locationDetails.calendar.reservations.searchUser"| translate }}
                     <input
                         id="search"
                         type="text"
-                        class="form-control"
+                        class="form-control mt-2"
                         [(ngModel)]="searchTerm"
                         (ngModelChange)="updateSearchTerm(scanningError)"
                     />
-                </div>
+                </label>
             </div>
-            <div fxFlex="0 1 15%" fxLayout="column" fxLayoutAlign="flex-end">
+            <div>
                 <button
                     id="finish"
                     class="button button-secondary"
@@ -47,36 +37,25 @@
                     (click)="onFinishScanningClick(finishScanningModal)"
                     data-toggle="tooltip"
                     data-placement="top"
-                    title="{{
-            'management.locationDetails.calendar.reservations.startScanningTooltip'
-              | translate
-          }}"
+                    title="{{ 'management.locationDetails.calendar.reservations.startScanningTooltip' | translate }}"
                 >
-                    {{
-                    "management.locationDetails.calendar.reservations.startScanning"
-                        | translate
-                    }}
+                    {{ "management.locationDetails.calendar.reservations.startScanning" | translate }}
                 </button>
             </div>
         </div>
-        <br/>
-        <app-table *ngIf="currentTableData" [tabularData]="currentTableData"
-                   (action)="onAction($event, scanningError, penaltyManager)"></app-table>
-
-        <button
-            [routerLink]="[
-        '/management/locations/0/timeslot',
-        currentTimeSlot.timeslotSequenceNumber
-      ]"
-            class="button button-primary"
-        >
+        <!-- User table -->
+        <app-table *ngIf="currentTableData"
+                   [tabularData]="currentTableData"
+                   (action)="onAction($event, scanningError, penaltyManager)"
+        ></app-table>
+        <button [routerLink]="['/management/locations/0/timeslot', currentTimeSlot.timeslotSequenceNumber]" class="button button-primary">
             {{ "general.buttons.print" | translate }}
         </button>
     </div>
 </div>
 
 <!-- Modal view to ask whether the user is sure to delete a lockerReservation -->
-<ng-template #deleteLocationReservationModal>
+<ng-template>
     <!-- Header -->
     <div modal-header>
         <h1 class="modal-title" id="deleteLocationModalLabel">

@@ -1,96 +1,76 @@
-<div class="container-fluid" *ngIf="location | async as location">
-  <div class="panel-body" style="padding: 20px">
+<div *ngIf="location | async as location">
     <div>
-      <div class="row messages messages--info">
-        <p>{{'management.locationDetails.tags.activeTagsInformation' | translate}}</p>
-        <p>{{'management.locationDetails.tags.updateTagsInformation' | translate}}</p>
+        <!-- Information -->
+        <div class="d-block messages messages--info mb-4">
+            <p>{{'management.locationDetails.tags.activeTagsInformation' | translate}}</p>
+            <p>{{'management.locationDetails.tags.updateTagsInformation' | translate}}</p>
 
-        <div class="pull-right">
-          <button class="button button-secondary" (click)="prepareUpdateTheTags(updateTagsConfigurationModal)">
-            {{'management.locationDetails.tags.updateTagsButton' | translate}}
-          </button>
+            <button class="button button-secondary mt-3" (click)="prepareUpdateTheTags(updateTagsConfigurationModal)">
+                {{'management.locationDetails.tags.updateTagsButton' | translate}}
+            </button>
         </div>
-      </div>
 
-      <div *ngIf="tagsThatAreSelected && tagsThatAreSelected.length > 0; else noTags">
-        <ul>
-          <li *ngFor="let tag of tagsThatAreSelected">
-            {{currentLang === 'nl' ? tag.dutch : tag.english}}
-          </li>
-        </ul>
-      </div>
+        <!-- Selected tags -->
+        <div *ngIf="tagsThatAreSelected && tagsThatAreSelected.length > 0; else noTags" class="tags">
+            <span *ngFor="let tag of tagsThatAreSelected" class="tag">
+                {{ currentLang === 'nl' ? tag.dutch : tag.english }}
+            </span>
+        </div>
     </div>
-  </div>
 </div>
 
 <ng-template #noTags>
-  <div class="messages messages--warning">
-    {{'management.locationDetails.tags.noTagsSelected' | translate}}
-  </div>
+    <div class="messages messages--warning">
+        {{'management.locationDetails.tags.noTagsSelected' | translate}}
+    </div>
 </ng-template>
 
 <!-- Modal view to update the tags configuration of the location -->
 <ng-template #updateTagsConfigurationModal>
-  <!-- Modal header -->
+    <!-- Modal header -->
+    <app-modal>
+        <h2 modal-header>
+            {{'management.locationDetails.tags.updateTagsConfigurationModal.title' | translate}}
+        </h2>
+        <div modal-body>
+            <p>{{('management.locationDetails.tags.updateTagsConfigurationModal.body' | translate).replace('{locationName}', locationName)}}</p>
+            <mat-form-field class="w-100">
+                <mat-label>{{'management.locationDetails.tags.updateTagsConfigurationModal.comboboxTitle' | translate}}</mat-label>
+                <mat-select multiple (selectionChange)="selectionChanged($event)" [formControl]="tagsFormControl" [compareWith]="compareTagsInSelection">
+                    <mat-option *ngFor="let tag of allTags" [value]="tag">
+                        {{currentLang === 'nl' ? tag.dutch : tag.english}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div modal-footer>
+            <div class="d-flex gap-3">
+                <button type="submit" class="button button-primary"
+                        [disabled]="!tagsSelectionIsUpdatable"
+                        (click)="updateTags()">
+                    {{'general.buttons.update' | translate}}
+                </button>
+                <button type="button" class="button button-secondary"
+                        (click)="closeModal()">
+                    {{'general.buttons.cancel' | translate}}
+                </button>
+            </div>
+        </div>
+        <div modal-message-footer>
+            <!-- Feedback to the user -->
+            <div>
+                <div class="messages messages--info" *ngIf="successUpdatingTagsConfiguration === null">
+                    {{'general.waitingForServer' | translate}}
+                </div>
 
-  <div fxLayout="row" fxLayoutAlign="space-between">
-    <h1>
-      {{'management.locationDetails.tags.updateTagsConfigurationModal.title' | translate}}
-    </h1>
-    <div>
-      <button type="button" class="close" (click)="closeModal()" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>  
-    </div>
-  </div>
+                <div class="messages messages--success" *ngIf="successUpdatingTagsConfiguration === true">
+                    {{('management.locationDetails.tags.updateTagsConfigurationModal.success' | translate).replace('{locationName}', locationName)}}
+                </div>
 
-  <!-- Modal body -->
-  <div class="modal-body">
-    <div class="container-fluid">
-      <div class="row">
-        <p>{{('management.locationDetails.tags.updateTagsConfigurationModal.body' | translate)
-          .replace('{locationName}', locationName)}}</p>
-      </div>
-
-      <div class="row" style="margin-top: 20px;">
-        <mat-form-field>
-          <mat-label>{{'management.locationDetails.tags.updateTagsConfigurationModal.comboboxTitle' | translate}}</mat-label>
-          <mat-select multiple (selectionChange)="selectionChanged($event)"
-                      [formControl]="tagsFormControl" [compareWith]="compareTagsInSelection">
-            <mat-option *ngFor="let tag of allTags" [value]="tag">
-              {{currentLang === 'nl' ? tag.dutch : tag.english}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal footer -->
-  <div class="modal-footer">
-    <button type="submit" class="button button-primary"
-            [disabled]="!tagsSelectionIsUpdatable"
-            (click)="updateTags()">
-      {{'general.buttons.update' | translate}}
-    </button>
-    <button type="button" class="button button-secondary"
-            (click)="closeModal()">
-      {{'general.buttons.cancel' | translate}}
-    </button>
-  </div>
-
-  <!-- Feedback to the user -->
-  <div class="container-fluid">
-    <div class="messages messages--info" *ngIf="successUpdatingTagsConfiguration === null">
-      {{'general.waitingForServer' | translate}}
-    </div>
-
-    <div class="messages messages--success" *ngIf="successUpdatingTagsConfiguration === true">
-      {{('management.locationDetails.tags.updateTagsConfigurationModal.success' | translate).replace('{locationName}', locationName)}}
-    </div>
-
-    <div class="messages messages--error" *ngIf="successUpdatingTagsConfiguration === false">
-      {{('management.locationDetails.tags.updateTagsConfigurationModal.error' | translate).replace('{locationName}', locationName)}}
-    </div>
-  </div>
+                <div class="messages messages--error" *ngIf="successUpdatingTagsConfiguration === false">
+                    {{('management.locationDetails.tags.updateTagsConfigurationModal.error' | translate).replace('{locationName}', locationName)}}
+                </div>
+            </div>
+        </div>
+    </app-modal>
 </ng-template>

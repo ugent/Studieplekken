@@ -1,0 +1,46 @@
+.cdk-overlay-pane {
+    max-width: 100%;
+    width: 800px;
+    border-radius: .5rem;
+
+    .modal-full {
+        .modal-header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid whitesmoke;
+            margin-bottom: 1rem;
+
+            .modal-header {
+                * {
+                    margin: 0;
+                    color: #007db3;
+                }
+            }
+
+            .close {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-width: 40px;
+                min-height: 40px;
+                width: 40px;
+                padding: 0;
+                height: 40px;
+                border-radius: 100%;
+                font-size: 21px;
+            }
+        }
+    }
+
+    .modal-footer {
+        padding-top: 1rem;
+        border-top: 2px solid whitesmoke;
+
+        > div {
+            display: flex;
+            gap: 1rem;
+        }
+    }
+}

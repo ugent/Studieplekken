@@ -1,6 +1,6 @@
 <!-- Default - without header image - not signed in -->
 <header class="header">
-    <div class="content-container" style='flex-wrap: wrap;'>
+    <div class="flex-wrap content-container">
         <a href="https://stad.gent" title="Home" class="site-logo " rel="home">
             Stad Gent
         </a>
@@ -62,7 +62,7 @@
                 </div>
             </app-accordeon>
         </div>
-     
+
     </div>
 
     <nav class="breadcrumb section--default" aria-labelledby="default-header-crumbs">
@@ -73,33 +73,33 @@
                     <li *ngFor="let breadcrumb of (getLinkedBreadcrumbs() | async)">
                       <a [routerLink]="breadcrumb.url" *ngIf="!breadcrumb.external">{{breadcrumb.pageName}}</a>
                       <a [href]="breadcrumb.url" *ngIf="breadcrumb.external">{{breadcrumb.pageName}}</a>
-    
+
                     </li>
                     <li *ngFor="let breadcrumb of (getUnlinkedBreadcrumbs() | async)"><span>{{breadcrumb.pageName}}</span>
                     </li>
                 </ol>
             </div>
         </div>
-        
+
         <div style="float:right" *ngIf="!mobile" class="smaller-text">
             <div class="content-container" fxLayout="row" fxLayoutGap="10px">
                 <a routerLink="/profile/overview" class="read-more margin-right" *ngIf="showLoggedIn"
                     title="{{'header.navigation.profile' | translate}}">
                     {{'header.navigation.profile' | translate}}
                 </a>
-                <a routerLink="/" class="read-more margin-right" 
+                <a routerLink="/" class="read-more margin-right"
                         title="{{'header.navigation.dashboard' | translate}}" >
                         {{'header.navigation.dashboard' | translate}}
                 </a>
-                <a routerLink="/information" class="read-more margin-right" 
+                <a routerLink="/information" class="read-more margin-right"
                         title="{{'header.navigation.information' | translate}}" >
                         {{'header.navigation.information' | translate}}
                 </a>
-                <a routerLink="/scan/locations" class="read-more margin-right" 
+                <a routerLink="/scan/locations" class="read-more margin-right"
                     title="{{'header.navigation.scan' | translate}}" *ngIf="showManagement || showAdmin || showVolunteer">
                     {{'header.navigation.scan' | translate}}
                 </a>
-                <a routerLink="/management/locations" class="read-more margin-right" 
+                <a routerLink="/management/locations" class="read-more margin-right"
                     title="{{'header.navigation.management' | translate}}" *ngIf="showManagement || showAdmin">
                     {{'header.navigation.management' | translate}}
                 </a>

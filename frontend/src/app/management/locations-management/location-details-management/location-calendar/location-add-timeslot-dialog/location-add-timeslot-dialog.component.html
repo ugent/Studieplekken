@@ -7,72 +7,57 @@
     <div modal-body>
         <form>
             <!-- Starts at -->
-            <div class="row form-group">
-                <label class="col-lg-3 control-label" for="startsAt">
-                    {{'management.locationDetails.calendar.form.date' | translate}}
-                </label>
-                <div class="col-lg-8">
-                    <app-moment-date id="startsAt" [(model)]="model.timeslotDate" [type]="'date'" [min]="getMinStartDate()">
-                    </app-moment-date>
-          
+            <div class="row">
+                <div class="col">
+                    <label class="control-label" for="startsAt">
+                        {{'management.locationDetails.calendar.form.date' | translate}}
+                        <app-moment-date id="startsAt" [(model)]="model.timeslotDate" [type]="'date'" [min]="getMinStartDate()"></app-moment-date>
+                    </label>
                 </div>
             </div>
-    
+
             <!-- Opening time -->
-            <div class="row form-group">
-                <label class="col-lg-3 control-label" for="openingTime">
-                    {{'management.locationDetails.calendar.form.openingTime' | translate}}
-                </label>
-                <div class="col-lg-8">
-                    <app-moment-date id="openingTime" [(model)]="model.openingHour" [type]="'time'"></app-moment-date>
+            <div class="row">
+                <div class="col">
+                    <label class="control-label" for="openingTime">
+                        {{'management.locationDetails.calendar.form.openingTime' | translate}}
+                        <app-moment-date id="openingTime" [(model)]="model.openingHour" [type]="'time'"></app-moment-date>
+                    </label>
                 </div>
             </div>
-    
+
             <!-- Closing time -->
-            <div class="row form-group">
-                <label class="col-lg-3 control-label" for="closingTime">
-                    {{'management.locationDetails.calendar.form.closingTime' | translate}}
-                </label>
-                <div class="col-lg-8">
-                    <app-moment-date id="closingTime" [(model)]="model.closingHour" [type]="'time'"
-                        [min]="model.openingHour"></app-moment-date>
+            <div class="row">
+                <div class="col">
+                    <label class="control-label" for="closingTime">
+                        {{'management.locationDetails.calendar.form.closingTime' | translate}}
+                        <app-moment-date id="closingTime" [(model)]="model.closingHour" [type]="'time'"
+                                         [min]="model.openingHour"></app-moment-date>
+                    </label>
                 </div>
             </div>
-    
+
+            <!-- Repeat -->
+            <div class="row">
+                <div class="col">
+                    <input id="repeatable" type="checkbox" [(ngModel)]="model.repeatable" name="repeatable" /> {{'management.locationDetails.calendar.form.repeatable' | translate}}
+                </div>
+            </div>
+
             <!-- Reservable -->
-            <div class="row form-group">
-                <label class="col-lg-3 control-label dotted_ul" for="repeatable"
-                data-toggle="tooltip" data-placement="top"
-                title="{{'management.locationDetails.calendar.form.repeatable-info' | translate}}">
-                    {{'management.locationDetails.calendar.form.repeatable' | translate}}
-                </label>
-                <div class="col-lg-8">
-                    <input id="repeatable" style="height:40px;" type="checkbox" [(ngModel)]="model.repeatable"
-                        name="repeatable" />
+            <div class="row">
+                <div class="col">
+                    <input id="reservable" type="checkbox" [(ngModel)]="model.reservable" name="reservable" /> {{'management.locationDetails.calendar.form.reservable' | translate}}
                 </div>
             </div>
-    
-            <!-- Reservable -->
-            <div class="row form-group">
-                <label class="col-lg-3 control-label" for="reservable">
-                    {{'management.locationDetails.calendar.form.reservable' | translate}}
-                </label>
-                <div class="col-lg-8">
-                    <input id="reservable" style="height:40px;" type="checkbox" [(ngModel)]="model.reservable"
-                        name="reservable" />
-                </div>
-            </div>
-    
+
             <!-- Reservable from -->
-            <div class="row form-group">
-                <label class="col-lg-3 control-label" for="reservableFrom">
-                    {{'management.locationDetails.calendar.form.reservableFrom' | translate}}
-                </label>
-                <div fxLayout="row">
-                    <app-moment-datetime id="reservableFrom" [(model)]="model.reservableFrom" [disabled]="!model.reservable"
-                        [min]="getMinReservableFrom(model)" [max]="model.timeslotDate">
-                    </app-moment-datetime>
-                    <div></div>
+            <div class="row">
+                <div class="col">
+                    <label class="control-label" for="reservableFrom">
+                        {{'management.locationDetails.calendar.form.reservableFrom' | translate}}
+                        <app-moment-datetime id="reservableFrom" [(model)]="model.reservableFrom" [disabled]="!model.reservable" [min]="getMinReservableFrom(model)" [max]="model.timeslotDate"></app-moment-datetime>
+                    </label>
                 </div>
             </div>
         </form>
@@ -87,15 +72,15 @@
         <button class="button button-primary" (click)="confirm()" [disabled]="!model.isValid()" *ngIf="!isUpdating()">
             {{'general.buttons.add' | translate}}
         </button>
-    
+
         <button class="button button-primary" (click)="confirm()" [disabled]="!model.isValid()" *ngIf="isUpdating()">
             {{'general.buttons.update' | translate}}
         </button>
-    
+
         <button type="button" class="button button-secondary" (click)="closeModal()">
             {{'general.buttons.cancel' | translate}}
         </button>
     </div>
-    
+
 </app-modal>
 

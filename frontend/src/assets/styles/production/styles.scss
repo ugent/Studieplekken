@@ -38,14 +38,20 @@ $styleguide-dir: "" !default;
 
 // App components
 @import 'components/forms';
+@import 'components/modals';
+@import 'components/buttons';
+@import 'components/alerts';
+@import 'components/tables';
+@import 'components/calendar';
+@import 'components/tabs';
 
 
 /* You can add global styles to this file, and also import other style files */
-
 body {
     hr {
         border: 1px solid whitesmoke;
         border-radius: 2px;
+        margin-bottom: 1.5rem;
     }
 
     .messages {
@@ -53,19 +59,35 @@ body {
             align-self: center;
         }
     }
-}
 
-/*
- * Class definition for a rotating loader
- */
-.loader {
-    border: 10px solid #f3f3f3;
-    border-radius: 50%;
-    border-top: 10px double #3498db;
-    width: 60px;
-    height: 60px;
-    -webkit-animation: spin 2s linear infinite; /* Safari */
-    animation: spin 2s linear infinite;
+
+    .center {
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 800px;
+    }
+
+    /*
+     * Class definition for a rotating loader
+     */
+    .loader {
+        border: 10px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 10px double #3498db;
+        width: 60px;
+        height: 60px;
+        -webkit-animation: spin 2s linear infinite; /* Safari */
+        animation: spin 2s linear infinite;
+    }
+
+    h2, h3, h4 {
+        margin: 1.5rem 0 .5rem;
+        color: #555;
+    }
+
+    .text-red {
+        color: indianred;
+    }
 }
 
 /* Safari */
@@ -87,63 +109,6 @@ body {
     }
 }
 
-/*
- * Css style for a modal view
- * source: https://www.w3schools.com/howto/howto_css_modals.asp
- */
-/* The Modal (background) */
-.my-modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0, 0, 0); /* Fallback color */
-    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
-}
-
-/* Modal Content/Box */
-.my-modal-content {
-    background-color: #fefefe;
-    margin: 5% auto; /* 15% from the top and centered */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%; /* Could be more or less, depending on screen size */
-}
-
-/* The Close Button */
-.my-close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.my-close:hover,
-.my-close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-/**
- * hover class
- */
-.hover {
-    cursor: pointer;
-}
-
-/**
- * Class to set margin if two buttons are next to each other.
- * This class should be set on the left button.
- */
-.btn-left {
-    margin-right: 10px;
-}
-
 /**
  * Class to make sure that the options of the Material Dropdown inside a
  * Bootstrap Modal is at the foreground.
@@ -156,66 +121,7 @@ body {
     }
 }
 
-.calendar-event-NR * * mwl-calendar-event-title {
-    color: black;
-}
-
-.calendar-event-reserved * * mwl-calendar-event-title {
-    color: #ffffff;
-}
-
-.calendar-event-NR span {
-    white-space: normal !important;
-}
-
-.calendar-event-reserved span {
-    white-space: normal !important;
-}
-
-.blue-text {
-    color: #3498db;
-}
-
-.calendar-event-full-not-reserved * * mwl-calendar-event-title {
-    color: #a32707;
-}
-
-.calendar-event-full-not-reserved span {
-    white-space: normal !important;
-}
-
-.unclickable {
-    opacity: 0.6;
-}
-
-.calendar-event-suggestion {
-    opacity: 0.6;
-}
-
-.float-right {
-    float: right;
-    margin-right: 2.5vw;
-}
-
-.btn-danger.danger {
-    color: #fff;
-    background-color: #d9534f;
-    border-color: #d43f3a;
-}
-
 video {
-    width: 100%;
-}
-
-.bigmodal {
-    min-width: 60vw;
-}
-
-.fullheight {
-    height: 100%;
-}
-
-.fullwidth {
     width: 100%;
 }
 
@@ -234,78 +140,4 @@ video {
             border: 1px solid rgba(128, 128, 128, 0.678) !important;
         }
     }
-}
-
-.alert {
-    padding: 15px;
-    margin-bottom: 20px;
-    border: 1px solid transparent;
-    border-radius: 4px;
-}
-
-.alert-success {
-    background-color: #dff0d8;
-    border-color: #d6e9c6;
-    color: #3c763d;
-}
-
-.alert-info {
-    background-color: #d9edf7;
-    border-color: #bce8f1;
-    color: #31708f;
-}
-
-.alert-warning {
-    background-color: #fcf8e3;
-    border-color: #faebcc;
-    color: #8a6d3b;
-}
-
-.alert-danger {
-    background-color: #f2dede;
-    border-color: #ebccd1;
-    color: #a94442;
-}
-
-// Bootstrap form-control input styling
-.my-form-control {
-    border-radius: .25rem;
-    border: 1px solid #ced4da;
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
-    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-    display: block;
-    padding: .375rem .75rem;
-    line-height: 1.5;
-    color: #495057;
-    background-color: #fff;
-    background-clip: padding-box;
-    width: 100%;
-}
-
-/* Nav Tabs */
-.nav-tabs {
-    display: flex;
-    list-style: none;
-    padding: 0;
-    overflow: hidden;
-    border-bottom: 1px solid #ddd;
-    margin: 0 0 1em;
-}
-
-.nav-tabs li {
-    flex-grow: 1;
-    float: left;
-    border-bottom: none;
-    text-align: center;
-}
-
-.nav-tabs a {
-    display: block;
-    padding: 10px 15px;
-    text-decoration: none;
-}
-
-.nav-tabs a.active {
-    background-color: #f0f9fd;
-    border-bottom: 1px solid #fff;
 }

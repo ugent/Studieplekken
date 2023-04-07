@@ -1,0 +1,27 @@
+/* Nav Tabs */
+.nav-tabs {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    overflow: hidden;
+    border-bottom: 1px solid #ddd;
+    margin: 0 0 1em;
+}
+
+.nav-tabs li {
+    flex-grow: 1;
+    float: left;
+    border-bottom: none;
+    text-align: center;
+}
+
+.nav-tabs a {
+    display: block;
+    padding: 10px 15px;
+    text-decoration: none;
+}
+
+.nav-tabs a.active {
+    background-color: #f0f9fd;
+    border-bottom: 1px solid #fff;
+}

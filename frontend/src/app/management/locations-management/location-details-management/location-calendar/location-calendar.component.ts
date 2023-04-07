@@ -15,8 +15,8 @@ import { AuthenticationService } from 'src/app/services/authentication/authentic
 import {
   ApplicationTypeFunctionalityService
 } from 'src/app/services/functionality/application-type/application-type-functionality.service';
-import { TimeslotGroupService } from "src/app/services/timeslots/timeslot-group/timeslot-group.service";
-import { TimeslotCalendarEventService } from "src/app/services/timeslots/timeslot-calendar-event/timeslot-calendar-event.service";
+import { TimeslotGroupService } from 'src/app/services/timeslots/timeslot-group/timeslot-group.service';
+import { TimeslotCalendarEventService } from 'src/app/services/timeslots/timeslot-calendar-event/timeslot-calendar-event.service';
 
 import { Location } from 'src/app/shared/model/Location';
 import { LocationReservation } from 'src/app/shared/model/LocationReservation';
@@ -65,15 +65,9 @@ export class LocationCalendarComponent implements OnInit {
 
   suggestions: {model: Timeslot, copy: Timeslot}[] = [];
 
-
-  disableFootButtons = true;
-
   showReservations = false;
 
   errorOnRetrievingReservations = false;
-
-  successAddingLocationReservation: boolean = undefined;
-  successUpdatingLocationReservation: boolean = undefined;
   successDeletingLocationReservation: boolean = undefined;
 
   /**
@@ -82,8 +76,6 @@ export class LocationCalendarComponent implements OnInit {
    * will be set.
    */
   showReservationInformation: boolean;
-
-  isAdmin: boolean = this.authenticationService.isAdmin();
 
   currentLang: string;
 
@@ -102,16 +94,14 @@ export class LocationCalendarComponent implements OnInit {
     private locationService: LocationService,
     private timeslotGroupService: TimeslotGroupService,
     private timeslotCalendarEventService: TimeslotCalendarEventService,
-    private breakpointObserver: BreakpointObserver
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.locationId = Number(this.route.snapshot.paramMap.get('locationId'));
 
     // Check if locationId is a Number before proceeding. If NaN, redirect to management locations.
     if (isNaN(this.locationId)) {
-      this.router.navigate(['/management/locations']).catch(console.log);
+      void this.router.navigate(['/management/locations']);
       return;
     }
 
