@@ -1,18 +1,14 @@
-<div class="container-fluid" *ngIf="statsObs | async as stats">
+<div *ngIf="statsObs | async as stats">
     <!-- Title -->
     <h3>{{'management.stats.title' | translate}}</h3>
-
     <hr>
-
     <div *ngIf="loading" class="alert alert-info">
         {{'management.stats.loading' | translate}}
     </div>
-
     <!-- If an error has occurred while fetching the stats, show the error -->
     <div *ngIf="errorOnRetrievingStats" class="alert alert-error">
         {{'management.stats.error' | translate}}
     </div>
-
     <ul class="nav-tabs">
         <li><a href="" [class]="activeTab === 0 ? 'active' : ''"
                (click)="changeTab($event, 0)">{{'management.stats.nav.occupancy' | translate}}</a></li>
@@ -21,63 +17,95 @@
         <li><a href="" [class]="activeTab === 2 ? 'active' : ''"
                (click)="changeTab($event, 2)">{{'management.stats.nav.overviewInstitution' | translate}}</a></li>
     </ul>
-
     <div *ngIf="activeTab === 0">
-        <div>
-            <input type="checkbox" [(ngModel)]="showSpecificDateInsteadOfCurrentOrNext" (change)="onShowChange()"/>
-            {{'management.stats.showSpecificDateInsteadOfCurrentOrNext' | translate}}
-        </div>
-        <div *ngIf="showSpecificDateInsteadOfCurrentOrNext">
-            <input type="date" [(ngModel)]="date" (change)="onDateChange()"/>
-        </div>
-        <br>
-        <div class="alert alert-info">
+        <!-- Info -->
+        <div class="messages messages--info">
+            <i class="icon-info" aria-hidden="true"></i>
+
             {{'management.stats.info' | translate}}
         </div>
-        <br>
-        <p [innerHTML]="('management.stats.summaryOccupancy' | translate).replace('{occupied}', occupancy).replace('{total}', total).replace('{totalNotReservable}', totalNotReservable) + '<br>' + ('management.stats.noteLocationOverview' | translate)"></p>
-        <br>
-        <div *ngIf="!loading && !errorOnRetrievingStats" class="fullwidth">
-            <mat-grid-list cols="4" rowHeight="230px" gutterSize="5px" *ngIf="stats.length > 0; else noLocations">
-                <mat-grid-tile *ngFor="let locationStat of stats">
+
+        <!-- Specific date selector  -->
+        <div class="mb-2">
+            <input type="checkbox" [(ngModel)]="showSpecificDateInsteadOfCurrentOrNext" (change)="onShowChange()"/> {{'management.stats.showSpecificDateInsteadOfCurrentOrNext' | translate}}
+            <div *ngIf="showSpecificDateInsteadOfCurrentOrNext" class="mt-3">
+                <input type="date" [(ngModel)]="date" (change)="onDateChange()"/>
+            </div>
+        </div>
+
+        <!-- Some more info -->
+        <p [innerHTML]="('management.stats.summaryOccupancy' | translate).replace('{occupied}', occupancy).replace('{total}', total).replace('{totalNotReservable}', totalNotReservable)">
+
+        </p>
+        <p>
+            {{'management.stats.noteLocationOverview' | translate}}
+        </p>
+        <!-- Occupancy waffles -->
+        <div *ngIf="!loading && !errorOnRetrievingStats">
+            <div class="row g-3" *ngIf="stats.length > 0; else noLocations">
+                <div class="col-12 col-lg-4" *ngFor="let locationStat of stats">
                     <app-waffle [locationStat]="locationStat" class="waffle-chart"></app-waffle>
-                </mat-grid-tile>
-            </mat-grid-list>
+                </div>
+            </div>
         </div>
     </div>
 
     <div *ngIf="activeTab === 1">
         <div *ngIf="locations | async as locations">
-            <label for="location">{{'management.stats.location' | translate}}</label>
-            <select class="form-control" id="location" [(ngModel)]="selectedLocationId"
-                    (change)="onLocationOverviewChange()">
-                <option *ngFor="let location of locations" [value]="location.locationId">
-                    {{location.name}}
-                </option>
-            </select>
+            <!-- Date and location selector -->
+            <form>
+                <div class="row">
+                    <div class="col">
+                        <label for="location" class="control-label">
+                            {{'management.stats.location' | translate}}
+                            <select class="form-control" id="location" name="location" [(ngModel)]="selectedLocationId" (change)="onLocationOverviewChange()">
+                                <option *ngFor="let location of locations" [value]="location.locationId">
+                                    {{location.name}}
+                                </option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label for="locationOverviewFrom">
+                            {{'management.stats.from' | translate}}
+                            <input class="form-control" id="locationOverviewFrom" name="locationOverviewFrom" type="date" [(ngModel)]="locationOverviewFrom" (change)="onLocationOverviewChange()"/>
+                        </label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label for="locationOverviewFrom">
+                            {{'management.stats.to' | translate}}
+                            <input class="form-control" id="locationOverviewTo" name="locationOverviewTo" type="date" [(ngModel)]="locationOverviewTo" (change)="onLocationOverviewChange()"/>
+                        </label>
+                    </div>
+                </div>
+            </form>
         </div>
-        <div>
-            <label for="locationOverviewFrom">{{'management.stats.from' | translate}}</label>
-            <input id="locationOverviewFrom" type="date" [(ngModel)]="locationOverviewFrom"
-                   (change)="onLocationOverviewChange()"/>
-            <label for="locationOverviewFrom">{{'management.stats.to' | translate}}</label>
-            <input id="locationOverviewTo" type="date" [(ngModel)]="locationOverviewTo"
-                   (change)="onLocationOverviewChange()"/>
-        </div>
-        <br>
         <hr>
         <div *ngIf="locationOverviewStat">
-            <div class="alert alert-info">
+            <!-- Info -->
+            <div class="messages messages--info">
+                <i class="icon-info" aria-hidden="true"></i>
+
                 {{'management.stats.noteLocationOverview' | translate}}
             </div>
-            <h4>{{'management.stats.reservationsTotal' | translate}}</h4>
-            <p>{{('management.stats.reservationsTotalMsg' | translate).replace('{total}', locationOverviewStat.reservationsTotal + '')}}</p>
-            <h4>{{'management.stats.totalPerInstitution' | translate}}</h4>
+            <h4>
+                {{'management.stats.reservationsTotal' | translate}}</h4>
+            <p>
+                {{('management.stats.reservationsTotalMsg' | translate).replace('{total}', locationOverviewStat.reservationsTotal + '')}}
+            </p>
+            <h4>
+                {{'management.stats.totalPerInstitution' | translate}}
+            </h4>
+            <!-- Epico statisticusissus -->
             <app-chart
                 [reservations]="locationOverviewStat.reservationsPerDayPerHOI">
             </app-chart>
             <div class="responsive-table table-wrapper fullwidth">
-                <table style="width: 100%">
+                <table class="w-100">
                     <thead>
                     <tr>
                         <th>{{'management.stats.institution' | translate}}</th>
@@ -115,41 +143,63 @@
     </div>
 
     <div *ngIf="activeTab === 2">
-        <div>
-            <label for="institutionLocations">{{'management.stats.institutionLocations' | translate}}</label>
-            <select class="form-control" id="institutionLocations" [(ngModel)]="selectedInstitutionLocations"
-                    (change)="onInstitutionOverviewChange()">
-                <option *ngFor="let institution of institutionsExtended" [value]="institution">
-                    {{institution}}
-                </option>
-            </select>
-        </div>
-        <div>
-            <label for="institutionStudents">{{'management.stats.institutionStudents' | translate}}</label>
-            <select class="form-control" id="institutionStudents" [(ngModel)]="selectedInstitutionStudents"
-                    (change)="onInstitutionOverviewChange()">
-                <option *ngFor="let institution of institutionsExtended" [value]="institution">
-                    {{institution}}
-                </option>
-            </select>
-        </div>
-        <div>
-            <label for="institutionOverviewFrom">{{'management.stats.from' | translate}}</label>
-            <input id="institutionOverviewFrom" type="date" [(ngModel)]="institutionOverviewFrom"
-                   (change)="onInstitutionOverviewChange()"/>
-            <label for="institutionOverviewFrom">{{'management.stats.to' | translate}}</label>
-            <input id="institutionOverviewTo" type="date" [(ngModel)]="institutionOverviewTo"
-                   (change)="onInstitutionOverviewChange()"/>
-        </div>
-        <br>
+        <form>
+            <div class="row">
+                <div class="col">
+                    <label for="institutionLocations">
+                        {{'management.stats.institutionLocations' | translate}}
+                        <select class="form-control" name="selectedInstitutionLocations" id="institutionLocations" [(ngModel)]="selectedInstitutionLocations"
+                                (change)="onInstitutionOverviewChange()">
+                            <option *ngFor="let institution of institutionsExtended" [value]="institution">
+                                {{institution}}
+                            </option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="institutionStudents">
+                        {{'management.stats.institutionStudents' | translate}}
+                        <select class="form-control" id="institutionStudents" name="selectedInstitutionStudents" [(ngModel)]="selectedInstitutionStudents"
+                                (change)="onInstitutionOverviewChange()">
+                            <option *ngFor="let institution of institutionsExtended" [value]="institution">
+                                {{institution}}
+                            </option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="institutionOverviewFrom">
+                        {{'management.stats.from' | translate}}
+                        <input class="form-control" id="institutionOverviewFrom" type="date" name="institutionOverviewFrom" [(ngModel)]="institutionOverviewFrom" (change)="onInstitutionOverviewChange()"/>
+                    </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="institutionOverviewFrom">
+                        {{'management.stats.to' | translate}}
+                        <input class="form-control" id="institutionOverviewTo" type="date" name="institutionOverviewTo" [(ngModel)]="institutionOverviewTo" (change)="onInstitutionOverviewChange()"/>
+                    </label>
+                </div>
+            </div>
+        </form>
         <hr>
         <div *ngIf="institutionOverviewStat">
-            <div class="alert alert-info">
+            <!-- Info -->
+            <div class="messages messages--info">
+                <i class="icon-info" aria-hidden="true"></i>
+
                 {{'management.stats.noteInstitutionOverview' | translate}}
             </div>
-            <h4>{{('management.stats.outgoingStudentsPerHOI' | translate).replace('{institution}', selectedInstitutionStudents)}}</h4>
+            <h4>
+                {{('management.stats.outgoingStudentsPerHOI' | translate).replace('{institution}', selectedInstitutionStudents)}}
+            </h4>
             <div class="responsive-table table-wrapper fullwidth">
-                <table style="width: 100%">
+                <table class="w-100">
                     <thead>
                     <tr>
                         <th>{{'management.stats.institution' | translate}}</th>
@@ -164,9 +214,11 @@
                     </tbody>
                 </table>
             </div>
-            <h4>{{('management.stats.incomingStudentsPerHOI' | translate).replace('{institution}', selectedInstitutionLocations)}}</h4>
+            <h4>
+                {{('management.stats.incomingStudentsPerHOI' | translate).replace('{institution}', selectedInstitutionLocations)}}
+            </h4>
             <div class="responsive-table table-wrapper fullwidth">
-                <table style="width: 100%">
+                <table class="w-100">
                     <thead>
                     <tr>
                         <th>{{'management.stats.institution' | translate}}</th>
@@ -187,6 +239,7 @@
 
 <ng-template #noLocations>
     <div class="messages messages--info">
+        <i class="icon-info" aria-hidden="true"></i>
         {{'management.stats.noOpenLocations' | translate}}
     </div>
 </ng-template>

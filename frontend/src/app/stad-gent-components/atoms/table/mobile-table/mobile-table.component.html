@@ -1,26 +1,25 @@
 <div class="mobile-container">
-  <div class="mobile-card" *ngFor="let dataPoint of tabularData.data" [ngClass]="getCssClasses(dataPoint)">
-    <h3>{{ nonActionColumns()[0].columnContent(dataPoint) }}</h3>
-
-    <ul>
-      <li *ngFor="let column of nonActionColumns().slice(1)">
-        <b>{{ column.columnHeader | translate }}</b>: {{ column.columnContent(dataPoint) }} {{translateColumnContent(column, dataPoint) | translate}}
-      </li>
-    </ul>
-    <div fxLayoutAlign="flex-end" fxLayoutGap="10px">
-      <ng-container *ngFor="let column of actionColumns(); let i = index">
-        <button
-          *ngIf="column.columnContent(dataPoint) as content"
-          class="button button-primary"
-          [disabled]="column.columnContent(dataPoint).disabled"
-          (click)="onAction(i + nonActionColumns().length, dataPoint)"
-        >
-          {{
-            column.columnContent(dataPoint).fallbackContent ||
-              column.columnContent(dataPoint).actionContent
-          }}
-        </button>
-      </ng-container>
+    <div class="mobile-card" *ngFor="let dataPoint of tabularData.data" [ngClass]="getCssClasses(dataPoint)">
+        <h3 class="mt-0">{{ nonActionColumns()[0].columnContent(dataPoint) }}</h3>
+        <ul>
+            <li *ngFor="let column of nonActionColumns().slice(1)">
+                <b>{{ column.columnHeader | translate }}</b>: {{ column.columnContent(dataPoint) }} {{translateColumnContent(column, dataPoint) | translate}}
+            </li>
+        </ul>
+        <div>
+            <ng-container *ngFor="let column of actionColumns(); let i = index">
+                <button
+                    *ngIf="column.columnContent(dataPoint) as content"
+                    class="button button-secondary"
+                    [disabled]="column.columnContent(dataPoint).disabled"
+                    (click)="onAction(i + nonActionColumns().length, dataPoint)"
+                >
+                    {{
+                    column.columnContent(dataPoint).fallbackContent ||
+                    column.columnContent(dataPoint).actionContent
+                    }}
+                </button>
+            </ng-container>
+        </div>
     </div>
-  </div>
 </div>

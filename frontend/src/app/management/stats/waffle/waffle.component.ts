@@ -1,99 +1,75 @@
-import { AfterViewInit, Component, HostListener, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import {AfterViewInit, Component, HostListener, Input, OnInit, ViewEncapsulation} from '@angular/core';
 import * as d3 from 'd3';
-import { LocationStat } from '../../../shared/model/LocationStat';
-import { TranslateService } from '@ngx-translate/core';
-import { v4 as uuid } from 'uuid';
+import {LocationStat} from '../../../shared/model/LocationStat';
+import {TranslateService} from '@ngx-translate/core';
+import {v4 as uuid} from 'uuid';
 
 @Component({
-  selector: 'app-waffle',
-  encapsulation: ViewEncapsulation.None,
-  templateUrl: './waffle.component.html',
-  styleUrls: ['./waffle.component.scss']
+    selector: 'app-waffle',
+    encapsulation: ViewEncapsulation.None,
+    templateUrl: './waffle.component.html',
+    styleUrls: ['./waffle.component.scss']
 })
 export class WaffleComponent implements AfterViewInit {
+    @Input()
+    locationStat: LocationStat;
 
-  @Input()
-  locationStat: LocationStat;
+    private text: any;
+    public uuid: string = 'd' + uuid(); // make sure the uuid does not start with a digit.
 
-  private text: any;
-  public uuid: string = 'd' + uuid(); // make sure the uuid does not start with a digit.
+    constructor(
+        private translate: TranslateService
+    ) {
+        this.translate.onLangChange.subscribe(() => {
+            this.updateGraphTranslations();
+        });
+    }
 
-  constructor(
-    private translate: TranslateService
-  ) {
-    this.translate.onLangChange.subscribe(() => {
-      this.updateGraphTranslations();
-    });
-  }
+    ngAfterViewInit(): void {
+        this.makeGraph();
+    }
 
-  ngAfterViewInit(): void {
-    this.makeGraph();
-  }
+    private makeGraph(): void {
+        const dataset = Array.from(Array(100).keys());
 
-  private makeGraph(): void {
-    const dataset = Array.from(Array(100).keys());
+        const width = 300;
+        const height = 220;
 
-    const width = 300;
-    const height = 220;
+        const takenSeats = (this.locationStat.numberOfTakenSeats / this.locationStat.numberOfSeats) * 100;
 
-    const takenSeats = (this.locationStat.numberOfTakenSeats / this.locationStat.numberOfSeats) * 100;
+        const graph = d3.select('.' + this.uuid).append('svg').attr('width', width).attr('height', height);
+        const rectangles = graph
+            .selectAll('rect')
+            .data(dataset).enter()
+            .append('rect');
 
-    const div = d3.select('.' + this.uuid).append('div')
-      .attr('class', 'tooltip')
-      .style('opacity', 0);
+        rectangles.attr('x', (d, i) => (i % 10) * 20 + 50)
+            .attr('y', (d, i) => (Math.floor(i / 10) * 20))
+            .attr('width', 15)
+            .attr('height', 15)
+            .attr('fill', d => {
+                if (!this.locationStat.reservable) {
+                    return '#009de0';
+                }
+                if (d >= takenSeats) {
+                    return 'lightgrey';
+                }
+                return '#0071a1';
+            });
 
-    const graph = d3.select('.' + this.uuid).append('svg').attr('width', width).attr('height', height);
-    const rectangles = graph
-      .selectAll('rect')
-      .data(dataset).enter()
-      .append('rect');
+        this.text = graph
+            .append('text')
+            .text(this.locationStat.reservable ? `${this.locationStat.numberOfTakenSeats} / ${this.locationStat.numberOfSeats} ${this.translate.instant('management.stats.occupied')}` : this.translate.instant('management.stats.withoutReservation'))
+            .attr('x', 150)
+            .attr('y', 215)
+            .style('text-anchor', 'middle')
+            .style('margin-top', '1rem')
+            .attr('font-family', 'sans-serif')
+            .attr('font-size', '14px')
+            .attr('fill', 'black');
+    }
 
-    rectangles.attr('x', (d, i) => (i % 10) * 20 + 50)
-      .attr('y', (d, i) => (Math.floor(i / 10) * 20))
-      .attr('width', 15)
-      .attr('height', 15)
-      .attr('fill', d => {
-        if (!this.locationStat.reservable) {
-          return '#009de0';
-        }
-        if (d >= takenSeats) {
-          return 'grey';
-        }
-        if (takenSeats < 80) {
-          return 'green';
-        }
-        if (takenSeats < 95) {
-          return 'orange';
-        }
-        return 'red';
-      })
-      .on('mouseover', (event, d) => {
-        div.transition()
-          .duration(200)
-          .style('opacity', .9);
-        div.html(this.locationStat.reservable ? (d < takenSeats ? this.translate.instant('management.stats.takenSeats')
-          : this.translate.instant('management.stats.freeSeats')) : this.translate.instant('management.stats.unknown'))
-          .style('left', (event.pageX) + 'px')
-          .style('top', (event.pageY - 28) + 'px');
-      })
-      .on('mouseout', (event, d) => {
-        div.transition()
-          .duration(500)
-          .style('opacity', 0);
-      });
-
-    this.text = graph
-      .append('text')
-      .text(this.locationStat.reservable ? `${this.locationStat.numberOfTakenSeats} / ${this.locationStat.numberOfSeats} ${this.translate.instant('management.stats.occupied')}` : this.translate.instant('management.stats.withoutReservation'))
-      .attr('x', 150)
-      .attr('y', 215)
-      .style('text-anchor', 'middle')
-      .attr('font-family', 'sans-serif')
-      .attr('font-size', '14px')
-      .attr('fill', 'black');
-  }
-
-  private updateGraphTranslations(): void {
-    this.text.text(this.locationStat.reservable ? `${this.locationStat.numberOfTakenSeats} / ${this.locationStat.numberOfSeats} ${this.translate.instant('management.stats.occupied')}` : this.translate.instant('management.stats.withoutReservation'));
-  }
+    private updateGraphTranslations(): void {
+        this.text.text(this.locationStat.reservable ? `${this.locationStat.numberOfTakenSeats} / ${this.locationStat.numberOfSeats} ${this.translate.instant('management.stats.occupied')}` : this.translate.instant('management.stats.withoutReservation'));
+    }
 }

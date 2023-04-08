@@ -86,8 +86,6 @@ export class StatsComponent implements OnInit {
     onShowChange(): void {
         if (this.showSpecificDateInsteadOfCurrentOrNext) {
             this.onDateChange();
-        } else {
-            this.ngOnInit();
         }
     }
 
