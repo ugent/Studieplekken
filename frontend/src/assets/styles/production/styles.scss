@@ -44,6 +44,7 @@ $styleguide-dir: "" !default;
 @import 'components/tables';
 @import 'components/calendar';
 @import 'components/tabs';
+@import 'components/material';
 
 
 /* You can add global styles to this file, and also import other style files */
@@ -51,7 +52,7 @@ body {
     hr {
         border: 1px solid whitesmoke;
         border-radius: 2px;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1rem;
     }
 
     .messages {

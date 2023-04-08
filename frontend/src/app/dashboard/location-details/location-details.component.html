@@ -1,16 +1,21 @@
-<div class="container-fluid" *ngIf="location | async as location">
+<div *ngIf="location | async as location">
     <!-- Title -->
-    <h1 class="inline-block">{{location.name}}</h1>
-    <button class="button button-primary float-right" *ngIf="showAdmin"
-            routerLink="/management/locations/{{location.locationId}}">{{'dashboard.locationDetails.buttons.manage' |
-        translate}}</button>
-    <br>
-    <br>
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>
+            {{location.name}}
+        </h1>
+        <button class="button button-primary mt-0" *ngIf="showAdmin"
+                routerLink="/management/locations/{{location.locationId}}">{{'dashboard.locationDetails.buttons.manage' | translate}}</button>
+    </div>
+    <hr>
     <!-- Teaser Wide -->
     <li class="teaser teaser--wide no-space-top">
         <article class="teaser-content">
             <div class="content__second">
-                <h2>{{"dashboard.details" | translate}}</h2>
+                <h2>
+                    {{"dashboard.details" | translate}}
+                </h2>
+                <hr>
                 <div class="tag-list-wrapper">
                     <ul class="tag-list">
                         <li *ngFor="let tag of tags">
@@ -41,8 +46,7 @@
 
                 <ul class="icon-list">
                     <li>
-                        <i class='icon-marker'></i><span><strong> {{location.name}} </strong> &mdash;
-                        {{location.building.address}}</span>
+                        <i class='icon-marker'></i><span><strong> {{location.name}} </strong> &mdash; {{location.building.address}}</span>
                     </li>
                     <li class="entry">
                         <i class="icon-clock" aria-hidden="true"></i>
@@ -74,24 +78,21 @@
                 <div *ngIf="showDescription(description.show)" class="rounded-ck-editor">
                     <h4>{{'dashboard.description' | translate}}</h4>
 
-                    <ckeditor [(ngModel)]="description.show" [editor]="editor" [disabled]="true"
-                              [config]="{toolbar: []}">
-                    </ckeditor>
-
-                    <hr>
+                    <div [innerHTML]="description.show">
+                        {{ description.show }}
+                    </div>
                 </div>
 
                 <div class="messages messages--warning" *ngIf="location.usesPenaltyPoints">
-                    <p [innerHTML]="'dashboard.penaltyWarning' | translate"></p>
+                    <i class="icon-info" aria-hidden="true"></i>
+                    <span [innerHTML]="'dashboard.penaltyWarning' | translate"></span>
                 </div>
 
-                <div class="messages messages--warning" *ngIf="showUgentWarning(location)">
+                <div class="messages messages-info" *ngIf="showUgentWarning(location)">
                     <div markdown *ngIf="currentLanguage() | async as currlan"
                          src="assets/md/corona.{{currlan}}.md">>
                     </div>
-
                 </div>
-
             </div>
 
             <div class="content__first">
@@ -112,19 +113,22 @@
             </div>
         </article>
     </li>
-
     <!-- If clicked on reservationButton, give some feedback -->
-    <div style="margin-top: 10px">
+    <div>
         <div class="messages messages--success" *ngIf="showSuccessDeletion">
+            <i class="icon-info" aria-hidden="true"></i>
             {{'dashboard.locationDetails.calendar.reservation.successGenericMessage' | translate}}
         </div>
         <div class="message messages--success" *ngIf="showSuccessPendingShort">
+            <i class="icon-info" aria-hidden="true"></i>
             {{'dashboard.locationDetails.calendar.reservation.successPendingShortMessage' | translate}}
         </div>
         <div class="message messages--warning" *ngIf="showSuccessPendingLong">
+            <i class="icon-info" aria-hidden="true"></i>
             {{'dashboard.locationDetails.calendar.reservation.successPendingLongMessage' | translate}}
         </div>
         <div class="messages messages--error" *ngIf="showError">
+            <i class="icon-info" aria-hidden="true"></i>
             {{'dashboard.locationDetails.calendar.reservation.errorMessage' | translate}}
         </div>
     </div>
@@ -134,29 +138,30 @@
         {{'dashboard.locationDetails.loginWarning' | translate}}
     </div>
 
-    <div class="margin-bottom messages messages--info center" *ngIf="loggedIn()">
+    <div class="mt-4 messages messages--info center" *ngIf="loggedIn()">
         <i class="icon-info" aria-hidden="true"></i>
         {{'dashboard.locationDetails.refreshWarning' | translate}}
     </div>
 
     <!-- Calendar -->
-    <div class="row">
-        <app-calendar [events]="events" (timeslotPickedEvent)="timeslotPicked($event)"></app-calendar>
-    </div>
+    <app-calendar [events]="events" (timeslotPickedEvent)="timeslotPicked($event)"></app-calendar>
 
-    <div class="row padding-top">
-        <button *ngIf="loggedIn() && (penaltyPointsOk(location) | async)" class="button button-primary float-right"
+    <div class="my-3">
+        <button *ngIf="loggedIn() && (penaltyPointsOk(location) | async)" class="button button-primary"
                 [disabled]="updateReservationIsPossible()"
                 (click)="commitReservations(confirm)">
             {{'reservations.reservationButton' | translate}}
         </button>
 
-        <div *ngIf="loggedIn() && !(penaltyPointsOk(location) | async)" class="messages messages--warning float-right">
+        <div *ngIf="loggedIn() && !(penaltyPointsOk(location) | async)" class="messages messages--warning">
             {{"reservations.tooManyPenalty" | translate}}
         </div>
     </div>
 
-    <div class="responsive-table fullwidth" id="location_reservations">
+
+    <h3>{{'dashboard.reservations' | translate}}</h3>
+    <hr>
+    <div class="responsive-table fullwidth mb-0" id="location_reservations">
         <div class="table-wrapper fullwidth" *ngIf="originalList && originalList.length !== 0">
             <table class="table table-striped" style="width: 100%;">
                 <thead>
@@ -189,14 +194,13 @@
         </div>
     </div>
 
-    <hr>
-
-    <!-- Leaflet map (although the div id=leafletMap must be outside the enclosing div) -->
-    <div class="row">
-        <h1>{{'dashboard.location' | translate}}</h1>
-    </div>
+    <!-- Leaflet map (although the div id=leafletMap must be outside the enclosing div)
+    <h3>{{'dashboard.location' | translate}}</h3>
+    <hr>-->
 </div>
-<div id="leafletMap"></div>
+<!--<div id="leafletMap">
+
+</div>-->
 
 <ng-template #confirm>
     <app-modal>
@@ -205,45 +209,46 @@
         </h2>
 
         <div modal-body>
-            <p>{{'dashboard.locationDetails.calendar.reservation.updateMessage' | translate }}</p>
-            <div *ngIf='newReservations.length !== 0'>
-                <hr>
-                <p>{{'dashboard.locationDetails.calendar.reservation.updateAddMessage' | translate }}</p>
-                <div class="justify-content-center">
-                    <mat-chip-list aria-orientation="vertical">
-                        <mat-chip class="align-center padding-top" *ngFor="let reservation of newReservations" selected>
+            <p>
+                {{'dashboard.locationDetails.calendar.reservation.updateMessage' | translate }}
+            </p>
+            <div class="messages messages--info" *ngIf='newReservations.length !== 0'>
+                <div>
+                    <p>
+                        {{'dashboard.locationDetails.calendar.reservation.updateAddMessage' | translate }}
+                    </p>
+                    <ul class="mb-0">
+                        <li *ngFor="let reservation of newReservations">
                             {{formatReservation(reservation) | async}}
-                        </mat-chip>
-                    </mat-chip-list>
+                        </li>
+                    </ul>
                 </div>
             </div>
-            <div *ngIf='removedReservations.length !== 0'>
-                <hr>
-                <p>{{'dashboard.locationDetails.calendar.reservation.updateDeleteMessage' | translate }}</p>
-                <mat-chip-list class="mat-chip-list-wrapper">
-                    <mat-chip *ngFor="let reservation of removedReservations" selected color="warn" class="padding-top">
-                        {{formatReservation(reservation) | async}}
-                    </mat-chip>
-                </mat-chip-list>
+            <div class="messages messages--warning" *ngIf='removedReservations.length !== 0'>
+                <div>
+                    <p>{{'dashboard.locationDetails.calendar.reservation.updateDeleteMessage' | translate }}</p>
+                    <ul class="mb-0">
+                        <li *ngFor="let reservation of removedReservations">
+                            {{formatReservation(reservation) | async}}
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <hr>
             <p>{{'dashboard.locationDetails.calendar.reservation.updateConfirmMessage' | translate }}</p>
-
-            <div class="messages messages--warning text-center">
-                <i class="icon-exclamation" aria-hidden="true"></i>
-                {{'dashboard.locationDetails.calendar.reservation.updateWarningMessage' | translate}}
-            </div>
-
         </div>
         <div modal-footer>
-            <div>
-                <button type="button" class="button button-primary"
-                        (click)="confirmReservationChange(afterReservationTemplate)">{{ 'general.yes' |
-                    translate
-                    }}</button>
-                <button type="button" class="button button-warning"
-                        (click)="declineReservationChange()">{{ 'general.no' |
-                    translate}}</button>
+            <button type="button" class="button button-primary"
+                    (click)="confirmReservationChange(afterReservationTemplate)">{{ 'general.yes' |
+                translate
+                }}</button>
+            <button type="button" class="button button-secondary"
+                    (click)="declineReservationChange()">{{ 'general.no' |
+                translate}}</button>
+        </div>
+        <div modal-message-footer>
+            <div class="messages messages--warning">
+                <i class="icon-exclamation" aria-hidden="true"></i>
+                {{'dashboard.locationDetails.calendar.reservation.updateWarningMessage' | translate}}
             </div>
         </div>
     </app-modal>

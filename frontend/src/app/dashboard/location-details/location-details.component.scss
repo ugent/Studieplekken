@@ -1,71 +1,65 @@
-.mat-chip-list-wrapper {
-  flex-direction: column;
-  align-items: flex-start;
-  margin: 4px;
-}
-
 .locationStatusBar {
-  height: 8px;
+    height: 8px;
 }
 
 .open {
-  background-color: var(--ck-color-base-action);
+    background-color: var(--ck-color-base-action);
 }
 
 .closed {
-  background-color: var(--ck-color-base-error);
+    background-color: var(--ck-color-base-error);
 }
 
 h1.inline-block {
-  display: inline-block;
+    display: inline-block;
 }
 
 .teaser,
 .no-space-top {
-  margin-top: 0 !important;
-  border-top: 0 !important;
+    margin-top: 0 !important;
+    border-top: 0 !important;
 }
 
 // Hacky way of not displaying box
 ::ng-deep .rounded-ck-editor > * > * > * > .ck.ck-editor__editable_inline {
-  border: none !important;
+    border: none !important;
 }
 
 ::ng-deep .rounded-ck-editor > * > * > .ck-editor__top {
-  display: none;
+    display: none;
 }
 
 ::ng-deep .rounded-ck-editor > * > * > .ck > hr {
-  display: none;
+    display: none;
 }
 
 .center {
-  margin: 0 auto;
+    margin: 0 auto;
 }
 
 #leafletMap {
-  height: 450px;
+    height: 450px;
 }
 
 .padding-top {
-  padding-top: 1em;
+    padding-top: 1em;
 }
 
 .margin-bottom {
-  margin-bottom: 1em;
+    margin-bottom: 1em;
 }
 
 .tooltip {
-  cursor: pointer;
-  text-decoration: underline #000 dotted;
+    cursor: pointer;
+    text-decoration: underline #000 dotted;
 }
 
 .tag-list-wrapper {
-  margin-bottom: 15px;
+    margin-bottom: 15px;
 }
 
-@media screen and (max-width:768px) {
-  h1 {
-    font-size: 1.2rem;
-  }
+@media screen and (max-width: 768px) {
+    h1 {
+        font-size: 1.2rem;
+    }
 }

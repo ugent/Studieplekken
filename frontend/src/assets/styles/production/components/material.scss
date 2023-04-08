@@ -1,0 +1,9 @@
+.mat-chip-list-wrapper {
+    flex-direction: column;
+    align-items: flex-start;
+
+    .mat-chip {
+        padding: .5rem;
+        background: black;
+    }
+}

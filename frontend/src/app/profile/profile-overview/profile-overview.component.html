@@ -67,14 +67,15 @@
                 </div>
             </form>
             <div class="messages messages--info center">
+                <i class="icon-info" aria-hidden="true"></i>
                 {{'profile.overview.qrcode' | translate}}
             </div>
-        </div>
-        <div class="d-flex flex-column align-items-center justify-content-between center">
-            <!-- QR code of userId -->
-            <app-qrcode [userObs]="userObs"></app-qrcode>
-            <!-- Barcode of userId -->
-            <app-barcode [userObs]="userObs"></app-barcode>
+            <div class="d-flex flex-column flex-md-row align-items-center justify-content-center center">
+                <!-- QR code of userId -->
+                <app-qrcode [userObs]="userObs"></app-qrcode>
+                <!-- Barcode of userId -->
+                <app-barcode [userObs]="userObs"></app-barcode>
+            </div>
         </div>
     </div>
 </div>

@@ -1,6 +1,15 @@
-<p class="title">{{ locationStat.locationName }}</p>
-<div *ngIf="locationStat.numberOfSeats !== 0" class="center-text {{ uuid }}" id="{{ uuid }}"></div>
-<span *ngIf="locationStat.timeslotDate !== null && locationStat.numberOfSeats !== 0" class="center-text">{{'management.stats.occupancyOn' | translate}}<br></span>
-<a class="time center-text" routerLink="/management/locations/{{ locationStat.locationId }}"
-   *ngIf="locationStat.timeslotDate !== null && locationStat.numberOfSeats !== 0">{{ locationStat.timeslotDate.format("DD-MM-YYYY HH:mm") }}</a>
-<p *ngIf="locationStat.numberOfSeats === 0" class="center-text">{{'management.stats.notOpen' | translate}}</p>
+<div class="text-center seats" *ngIf="locationStat.timeslotDate !== null">
+    <p>
+        {{ locationStat.locationName }}
+    </p>
+    <p *ngIf="locationStat.numberOfSeats !== 0" class="mb-4">
+        {{'management.stats.occupancyOn' | translate}}
+        <br>
+        <a routerLink="/management/locations/{{ locationStat.locationId }}" *ngIf="locationStat.timeslotDate !== null && locationStat.numberOfSeats !== 0">
+            {{ locationStat.timeslotDate.format("DD-MM-YYYY HH:mm") }}
+        </a>
+    </p>
+    <div *ngIf="locationStat.numberOfSeats !== 0" [class]="uuid" id="{{ uuid }}">
+
+    </div>
+</div>

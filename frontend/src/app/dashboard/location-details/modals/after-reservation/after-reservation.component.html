@@ -1,23 +1,26 @@
 <app-modal>
-  <h1 modal-header>{{'dashboard.locationDetails.calendar.reservation.afterReservationHeader' |translate}}</h1>
-  <div modal-body fxLayout="column" fxLayoutAlign="center center" *ngIf="!loading">
-    <object *ngIf="!failure" class="large-checkmark" type="image/svg+xml" data="/assets/icon/check-mark-green.svg"></object>
-    <object *ngIf="failure" class="large-red-cross" type="image/svg+xml" data="/assets/icon/red-cross.svg"></object>
-    <div class="messages messages--warning" *ngIf="!failure && hasDelayedReservation">
-      {{'dashboard.locationDetails.calendar.reservation.afterReservationPendingMessage' | translate}}
+    <h2 modal-header>
+        {{'dashboard.locationDetails.calendar.reservation.afterReservationHeader' |translate}}
+    </h2>
+    <div modal-body *ngIf="!loading">
+        <div class="messages messages--warning" *ngIf="!failure && hasDelayedReservation">
+            <i class="icon-exclamation" aria-hidden="true"></i>
+            {{'dashboard.locationDetails.calendar.reservation.afterReservationPendingMessage' | translate}}
+        </div>
+        <div class="messages messages--info" *ngIf="!failure && !hasDelayedReservation">
+            <i class="icon-info" aria-hidden="true"></i>
+            {{'dashboard.locationDetails.calendar.reservation.afterReservationConfirmedMessage' | translate}}
+        </div>
+        <div class="messages messages--warning" *ngIf="failure">
+            <i class="icon-exclamation" aria-hidden="true"></i>
+            {{'dashboard.locationDetails.calendar.reservation.afterReservationFailedMessage' | translate}}
+        </div>
     </div>
-    <div class="messages messages--info" *ngIf="!failure && !hasDelayedReservation">
-      {{'dashboard.locationDetails.calendar.reservation.afterReservationConfirmedMessage' | translate}}
-    </div>
-    <div class="messages messages--warning" *ngIf="failure">
-      {{'dashboard.locationDetails.calendar.reservation.afterReservationFailedMessage' | translate}}
-    </div>
-  </div>
 
-  <div modal-body fxLayout="column" fxLayoutAlign="center center" *ngIf="loading">
-    <object class="large-checkmark" type="image/svg+xml" data="/assets/icon/three-dots.svg"></object>
-    <div >
-      {{'dashboard.locationDetails.calendar.reservation.afterReservationLoadingMessage' | translate}}
+    <div modal-body fxLayout="column" fxLayoutAlign="center center" *ngIf="loading">
+        <div class="messages messages--info">
+            <i class="icon-info" aria-hidden="true"></i>
+            {{'dashboard.locationDetails.calendar.reservation.afterReservationLoadingMessage' | translate}}
+        </div>
     </div>
-  </div>
 </app-modal>
