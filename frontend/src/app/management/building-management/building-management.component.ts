@@ -9,11 +9,12 @@ import {MatDialog} from '@angular/material/dialog';
 import {Observable} from 'rxjs';
 import {of} from 'rxjs/internal/observable/of';
 import {map} from 'rxjs/internal/operators/map';
-import {tap} from 'rxjs/operators';
-import {AddressResolverService} from "src/app/services/addressresolver/nomenatim/addressresolver.service";
+import {filter, tap} from 'rxjs/operators';
+import {AddressResolverService} from 'src/app/services/addressresolver/nomenatim/addressresolver.service';
 import {BuildingService} from 'src/app/services/api/buildings/buildings.service';
 import {AuthenticationService} from 'src/app/services/authentication/authentication.service';
 import {Building} from 'src/app/shared/model/Building';
+import {User} from '../../shared/model/User';
 
 @Component({
     selector: 'app-building-management',
@@ -92,18 +93,21 @@ export class BuildingManagementComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.reloadBuildings();
+        this.authenticationService.user.pipe(
+            filter(user => user != null)
+        ).subscribe(user => {
+            this.reloadBuildings();
+            this.fillInstitutionsDependingOnUser(user);
 
-
-        this.buildingsObs.subscribe(
-            () => {
-                this.successGettingBuildings = true;
-            },
-            () => {
-                this.successGettingBuildings = false;
-            }
-        );
-        this.fillInstitutionsDependingOnUser();
+            this.buildingsObs.subscribe(
+                () => {
+                    this.successGettingBuildings = true;
+                },
+                () => {
+                    this.successGettingBuildings = false;
+                }
+            );
+        });
     }
 
     // ********************
@@ -236,11 +240,11 @@ export class BuildingManagementComponent implements OnInit {
         return !this.buildingFormGroup.invalid;
     }
 
-    fillInstitutionsDependingOnUser(): void {
+    fillInstitutionsDependingOnUser(user: User): void {
         if (this.authenticationService.isAdmin()) {
             this.institutionsObs = of(['UGent', 'HoGent', 'Arteveldehogeschool', 'StadGent', 'Luca', 'Odisee', 'Other']);
         } else {
-            this.institutionsObs = of([this.authenticationService.userValue().institution]);
+            this.institutionsObs = of([user.institution]);
         }
     }
 
@@ -291,9 +295,12 @@ export class BuildingManagementComponent implements OnInit {
     }
 
     reloadBuildings(): void {
-        this.buildingsObs = this.buildingService.getAllBuildings().pipe(map(buildings =>
-            buildings.filter(building => building.institution === this.authenticationService.userValue().institution)));
+        this.buildingsObs = this.buildingService.getAllBuildings().pipe(
+            map(buildings =>
+                buildings.filter(building =>
+                    building.institution === this.authenticationService.userValue().institution || this.authenticationService.isAdmin()
+                )
+            )
+        );
     }
-
-    protected readonly undefined = undefined;
 }

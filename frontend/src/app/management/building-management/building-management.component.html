@@ -124,15 +124,18 @@
             </button>
         </div>
         <div modal-message-footer>
-            <div class="alert alert-info" *ngIf="successAddingBuilding === null">
+            <div class="messages messages--info" *ngIf="successAddingBuilding === null">
+                <i class="icon-info" aria-hidden="true"></i>
                 {{'general.waitingForServer' | translate}}
             </div>
 
-            <div class="alert alert-success" *ngIf="successAddingBuilding === true">
+            <div class="messages messages--success" *ngIf="successAddingBuilding === true">
+                <i class="icon-checkmark" aria-hidden="true"></i>
                 {{'management.buildings.addBuildingModal.success' | translate}}
             </div>
 
-            <div class="alert alert-error" *ngIf="successAddingBuilding === false">
+            <div class="messages messages--warning" *ngIf="successAddingBuilding === false">
+                <i class="icon-exclamation" aria-hidden="true"></i>
                 {{'management.buildings.addBuildingModal.error' | translate}}
             </div>
         </div>
