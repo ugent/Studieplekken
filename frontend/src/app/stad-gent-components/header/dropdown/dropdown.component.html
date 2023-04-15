@@ -4,7 +4,7 @@
         <span class="avatar">{{user.firstName[0]}}</span>
         <div class="profile-info">
             <span>{{user.firstName + ' ' + user.lastName}}</span>
-            <a routerLink="/profile" (click)="close()" class="button button-primary button-small">
+            <a routerLink="/profile" (click)="close()" class="button button-primary button-small mt-2">
                 {{"header.navigation.profile" | translate }} </a>
         </div>
     </section>
@@ -24,7 +24,7 @@
             <li><a (click)="close()" *ngIf="showAdmin || showVolunteer" routerLink='/scan'>{{'header.navigation.scan' | translate }}</a></li>
         </ul>
     </section>
-    
+
     <footer *ngIf="isProfile">
         <a (click)='showLoggedIn && logout()' class="button button-small button-secondary">
             {{"header.logOut" | translate}} </a>
