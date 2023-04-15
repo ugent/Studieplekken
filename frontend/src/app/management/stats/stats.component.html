@@ -43,8 +43,10 @@
         <!-- Occupancy waffles -->
         <div *ngIf="!loading && !errorOnRetrievingStats">
             <div class="row g-3" *ngIf="stats.length > 0; else noLocations">
-                <div class="col-12 col-lg-4" *ngFor="let locationStat of stats">
-                    <app-waffle [locationStat]="locationStat" class="waffle-chart"></app-waffle>
+                <div *ngFor="let locationStat of stats">
+                    <div class="col-12 col-lg-4">
+                        <app-waffle [locationStat]="locationStat" class="waffle-chart"></app-waffle>
+                    </div>
                 </div>
             </div>
         </div>
@@ -100,7 +102,7 @@
             <h4>
                 {{'management.stats.totalPerInstitution' | translate}}
             </h4>
-            <!-- Epico statisticusissus -->
+            <!-- Stats -->
             <app-chart
                 [reservations]="locationOverviewStat.reservationsPerDayPerHOI">
             </app-chart>

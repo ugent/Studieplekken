@@ -1,55 +1,73 @@
-<div class="container-fluid">
-
-        <div fxLayout="row wrap" fxLayoutGap="32px" fxLayoutAlign="center" *ngIf="!showLoggedIn">
-                <p>{{'navigation.loginInfo' | translate}}</p>
-                <a routerLink="/login" class="read-more standalone-link"
-                        title="{{'navigation.login' | translate}}">
-                        {{'navigation.login' | translate}}
+<div class="navigation-wrapper">
+    <h2>
+        {{'navigation.page' | translate}}
+    </h2>
+    <hr>
+    <div class="row align-items-stretch gy-3 gx-3">
+        <!-- Login -->
+        <div *ngIf="!showLoggedIn" class="col-12 col-md-6">
+            <div class="navigation-item">
+                {{'navigation.loginInfo' | translate}}
+                <br/>
+                <a routerLink="/login" class="button button-secondary" title="{{'navigation.login' | translate}}">
+                    {{'navigation.login' | translate}}
                 </a>
+            </div>
         </div>
-
-        <!-- Regular users -->
-        <div fxLayout="row wrap" fxLayoutGap="32px" fxLayoutAlign="center" *ngIf="showLoggedIn">
-                <p>{{'navigation.profileInfo' | translate}}</p>
-                <a routerLink="/profile/overview" class="read-more standalone-link"
-                        title="{{'navigation.profile' | translate}}">
-                        {{'navigation.profile' | translate}}
+        <!-- Profile -->
+        <div *ngIf="showLoggedIn" class="col-12 col-md-6">
+            <div class="navigation-item">
+                {{'navigation.profileInfo' | translate}}
+                <br/>
+                <a routerLink="/profile/overview" class="button button-secondary"
+                   title="{{'navigation.profile' | translate}}">
+                    {{'navigation.profile' | translate}}
                 </a>
+            </div>
         </div>
-        <br/>
-        <div fxLayout="row wrap" fxLayoutGap="32px" fxLayoutAlign="center">
-                <p>{{'navigation.dashboardInfo' | translate}}</p>
-                <a routerLink="/" class="read-more standalone-link"
-                        title="{{'navigation.dashboard' | translate}}" >
-                        {{'navigation.dashboard' | translate}}
-                </a><br/>
-        </div>
-        <br/>
-        <div fxLayout="row wrap" fxLayoutGap="32px" fxLayoutAlign="center" *ngIf="showManagement || showAdmin">
-                <p>{{'navigation.informationInfo' | translate}}</p>
-                <a routerLink="/information" class="read-more standalone-link"
-                        title="{{'navigation.information' | translate}}" >
-                        {{'navigation.information' | translate}}
+        <!-- Overview -->
+        <div class="col-12 col-md-6">
+            <div class="navigation-item">
+                {{'navigation.dashboardInfo' | translate}}
+                <br/>
+                <a routerLink="/" class="button button-secondary"
+                   title="{{'navigation.dashboard' | translate}}" >
+                    {{'navigation.dashboard' | translate}}
                 </a>
+            </div>
         </div>
-        <br/>
-
-        <!-- Supervisors -->
-        <div fxLayout="row wrap" fxLayoutGap="32px" fxLayoutAlign="center" *ngIf="showSupervisors || showManagement || showAdmin">
-                <p>{{'navigation.scanInfo' | translate}}</p>
-                <a routerLink="/scan/locations" class="read-more standalone-link"
-                        title="{{'navigation.scan' | translate}}">
-                        {{'navigation.scan' | translate}}
+        <!-- Management -->
+        <div *ngIf="showManagement || showAdmin" class="col-12 col-md-6">
+            <div class="navigation-item">
+                {{'navigation.informationInfo' | translate}}
+                <br/>
+                <a routerLink="/information" class="button button-secondary"
+                   title="{{'navigation.information' | translate}}" >
+                    {{'navigation.information' | translate}}
                 </a>
+            </div>
         </div>
-
-        <br/>
-        <!-- Admins -->
-        <div fxLayout="row wrap" fxLayoutGap="32px" fxLayoutAlign="center" *ngIf="showManagement || showAdmin">
-                <p>{{'navigation.managementInfo' | translate}}</p>
-                <a routerLink="/management/locations" class="read-more standalone-link"
-                        title="{{'navigation.management' | translate}}" >
-                        {{'navigation.management' | translate}}
+        <!-- Scan -->
+        <div *ngIf="showManagement || showAdmin || showSupervisors" class="col-12 col-md-6">
+            <div class="navigation-item">
+                {{'navigation.scanInfo' | translate}}
+                <br/>
+                <a routerLink="/scan/locations" class="button button-secondary"
+                   title="{{'navigation.scan' | translate}}">
+                    {{'navigation.scan' | translate}}
                 </a>
+            </div>
         </div>
+        <!-- Admin -->
+        <div *ngIf="showAdmin" class="col-12 col-md-6">
+            <div class="navigation-item">
+                {{'navigation.managementInfo' | translate}}
+                <br/>
+                <a routerLink="/management/locations" class="button button-secondary"
+                   title="{{'navigation.management' | translate}}" >
+                    {{'navigation.management' | translate}}
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
