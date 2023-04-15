@@ -1,0 +1,19 @@
+.navigation-wrapper {
+    max-width: 100%;
+    width: 1080px;
+    margin: 0 auto;
+}
+
+.navigation-item {
+    padding: 1rem;
+    background: whitesmoke;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    height: 100%;
+
+    .button {
+        display: flex;
+        margin-top: auto;
+    }
+}

@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Observable, of} from 'rxjs';
-import {catchError, tap} from 'rxjs/operators';
+import {catchError, filter, map, tap} from 'rxjs/operators';
 import {StatsService} from '../../services/api/stats/stats.service';
 import {LocationStat} from '../../shared/model/LocationStat';
 import {LocationOverviewStat} from '../../shared/model/LocationOverviewStat';
@@ -48,18 +48,22 @@ export class StatsComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.statsObs = this.statsService.getStats().pipe(
-            tap((x) => {
-                this.loading = false;
-                this.occupancy = x.map(y => y.numberOfTakenSeats).reduce((a, b) => a + b, 0);
-                this.total = x.filter(y => y.reservable).map(y => y.numberOfSeats).reduce((a, b) => a + b, 0);
-                this.totalNotReservable = x.filter(y => !y.reservable).map(y => y.numberOfSeats).reduce((a, b) => a + b, 0);
-            }),
-            catchError((e) => {
-                this.errorOnRetrievingStats = !!e;
-                return of<LocationStat[]>([]);
-            })
-        );
+        this.statsObs = this.statsService.getStats()
+            .pipe(
+                map(stats => {
+                    return stats.filter(stat => stat.timeslotDate !== null);
+                }),
+                tap((x) => {
+                    this.loading = false;
+                    this.occupancy = x.map(y => y.numberOfTakenSeats).reduce((a, b) => a + b, 0);
+                    this.total = x.filter(y => y.reservable).map(y => y.numberOfSeats).reduce((a, b) => a + b, 0);
+                    this.totalNotReservable = x.filter(y => !y.reservable).map(y => y.numberOfSeats).reduce((a, b) => a + b, 0);
+                }),
+                catchError((e) => {
+                    this.errorOnRetrievingStats = !!e;
+                    return of<LocationStat[]>([]);
+                })
+            );
 
         this.locations = this.locationService.getLocations();
     }
