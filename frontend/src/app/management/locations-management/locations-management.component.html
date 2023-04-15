@@ -31,6 +31,7 @@
                             <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
                                 (click)="prepareToApproveLocation(location, addLocationModal)">
                                 <i class="icon-checkmark" aria-hidden="true"></i>
+                                <i class="icon-checkmark" aria-hidden="true"></i>
                             </td>
                             <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
                                 (click)="prepareToDeleteLocation(location, deleteLocationModal)">
@@ -108,135 +109,82 @@
 <!-- Modal view to add a new location -->
 <ng-template #addLocationModal>
     <app-modal>
-        <h1 modal-header>
+        <h2 modal-header>
             {{'management.locations.addLocationModal.title' | translate}}
-        </h1>
+        </h2>
 
         <!-- Modal body -->
         <div modal-body>
             <form [formGroup]="addLocationFormGroup" fxLayoutGap="15px" fxFlex fxLayout="column">
                 <!-- Location name -->
-                <div class="row form-group">
-                    <div class="form-item">
+                <div class="row ">
+                    <div class="col">
                         <label for="name">
                             {{'management.locations.addLocationModal.form.locationName' | translate}}
+                            <input class="form-control" id="name" type="text" formControlName="name" required>
                         </label>
-                        <div class="form-columns">
-                            <div class="form-item-column">
-                                <input class="text" id="name" type="text" formControlName="name" required>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div *ngIf="name.invalid && (name.dirty || name.touched)">
-                        <div *ngIf="name.errors.required" class="messages messages--error">
-                            <i class="icon-cross" aria-hidden="true"></i>
-                            {{'management.locations.addLocationModal.formValidationErrorMessages.locationName' | translate}}
-                        </div>
                     </div>
                 </div>
 
                 <!-- Authority -->
-                <div class="row form-group" *ngIf="authoritiesObs | async as authorities">
-                    <div class="form-item">
-                        <label class="col-lg-3 control-label" for="authority">
+                <div class="row" *ngIf="authoritiesObs | async as authorities">
+                    <div class="col">
+                        <label for="authority">
                             {{'management.locationDetails.form.authority' | translate}}
+                            <select class="form-control" id="authority" formControlName="authority">
+                                <!-- Display empty select for safari -->
+                                <option disabled selected value style="display:none"></option>
+                                <option *ngFor="let authority of authorities" [value]="authority.authorityId">
+                                    {{authority.authorityName + ' (' + authority.description + ')'}}
+                                </option>
+                            </select>
                         </label>
-                        <div class="form-columns">
-                            <div class="form-item-column">
-                                <select class="form-control" id="authority" formControlName="authority">
-                                    <!-- Display empty select for safari -->
-                                    <option disabled selected value style="display:none"></option>
-                                    <option *ngFor="let authority of authorities" [value]="authority.authorityId">
-                                        {{authority.authorityName + ' (' + authority.description + ')'}}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div *ngIf="authority.invalid && (authority.dirty || authority.touched)"
-                         class="messages messages--error">
-                        <div *ngIf="authority.errors.required">
-                            <i class="icon-cross" aria-hidden="true"></i>
-
-                            {{'management.locations.addLocationModal.formValidationErrorMessages.authorityName' | translate}}
-                        </div>
                     </div>
                 </div>
 
                 <!-- Building -->
-                <div class="row form-group" *ngIf="buildingsObs | async as buildings">
-                    <div class="form-item">
-                        <label class="col-lg-3 control-label" for="building">
+                <div class="row" *ngIf="buildingsObs | async as buildings">
+                    <div class="col">
+                        <label for="building">
                             {{'management.locationDetails.form.building' | translate}}
+                            <select class="form-control" id="building" formControlName="building">
+                                <!-- Display empty select for safari -->
+                                <option disabled selected value style="display:none"></option>
+                                <option *ngFor="let building of buildings" [value]="building.buildingId">
+                                    {{building.name + ' (' + building.address + ')'}}
+                                </option>
+                            </select>
                         </label>
-                        <div class="form-columns">
-                            <div class="form-item-column">
-                                <select class="form-control" id="building" formControlName="building">
-                                    <!-- Display empty select for safari -->
-                                    <option disabled selected value style="display:none"></option>
-                                    <option *ngFor="let building of buildings" [value]="building.buildingId">
-                                        {{building.name + ' (' + building.address + ')'}}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div *ngIf="building.invalid && (building.dirty || building.touched)"
-                         class="messages messages--error">
-                        <div *ngIf="building.errors.required">
-                            <i class="icon-cross" aria-hidden="true"></i>
-                            {{'management.locations.addLocationModal.formValidationErrorMessages.buildingName' | translate}}
-                        </div>
                     </div>
                 </div>
 
                 <!-- Number of seats -->
-                <div class="row form-group">
-                    <div class="form-item">
-                        <label class="col-lg-3 control-label" for="numberOfSeats">
-                            {{'management.locations.addLocationModal.form.numberOfSeats' | translate}}</label>
-                        <div class="form-columns">
-                            <div class="form-item-column">
-                                <input class="form-control" id="numberOfSeats" type="number"
-                                       formControlName="numberOfSeats">
-                            </div>
-                        </div>
-
-                    </div>
-                    <div *ngIf="numberOfSeats.invalid && (numberOfSeats.dirty || numberOfSeats.touched)"
-                         class="messages messages--error">
-                        <div *ngIf="numberOfSeats.errors.required">
-                            <i class="icon-cross" aria-hidden="true"></i>
-                            {{'management.locations.addLocationModal.formValidationErrorMessages.numberOfSeats' | translate}}
-                        </div>
+                <div class="row">
+                    <div class="col">
+                        <label for="numberOfSeats">
+                            {{'management.locations.addLocationModal.form.numberOfSeats' | translate}}
+                            <input class="form-control" id="numberOfSeats" type="number"
+                                   formControlName="numberOfSeats">
+                        </label>
                     </div>
                 </div>
 
                 <!-- Uses penalty points -->
-                <div class="row form-group">
-                    <label class="col-lg-3 control-label" for="usesPenaltyPoints">
-                        {{'management.locationDetails.form.usesPenaltyPoints' | translate}}
-                    </label>
-                    <div class="col-lg-8">
+                <div class="row">
+                    <div class="col">
                         <input class="form-control" id="usesPenaltyPoints" type="checkbox"
-                               formControlName="usesPenaltyPoints">
+                               formControlName="usesPenaltyPoints"> {{'management.locationDetails.form.usesPenaltyPoints' | translate}}
                     </div>
                 </div>
 
                 <!-- Image URL -->
-                <div class="row form-group">
-                    <div class="form-item">
-                        <label class="col-lg-3 control-label" for="imageUrl">
-                            {{'management.locations.addLocationModal.form.imageUrl' | translate}}</label>
-                        <div class="form-columns">
-                            <div class="form-item-column">
-                                <input class="form-control" id="imageUrl" type="text" formControlName="imageUrl">
-                            </div>
-                        </div>
+                <div class="row">
+                    <div class="col">
+                        <label for="imageUrl">
+                            {{'management.locations.addLocationModal.form.imageUrl' | translate}}
+
+                            <input class="form-control" id="imageUrl" type="text" formControlName="imageUrl">
+                        </label>
                     </div>
                 </div>
             </form>
@@ -244,9 +192,7 @@
 
         <!-- Modal footer -->
         <div modal-footer>
-            <div class="messages messages--warning" *ngIf="showAddWarning">
-                {{'management.locations.addLocationModal.warning' | translate}}
-            </div>
+            <span *ngIf="showAddWarning">{{'management.locations.addLocationModal.warning' | translate}}</span>
             <button type="submit" class="button button-primary" [disabled]="!validForm()"
                     (click)="addNewLocation(addLocationFormGroup.value)" *ngIf="!editMode">
                 {{'management.locations.addLocationModal.addButton' | translate}}
@@ -255,22 +201,25 @@
                     (click)="approveLocation(addLocationFormGroup.value)" *ngIf="editMode">
                 {{'management.locations.editLocationModal.approveButton' | translate}}
             </button>
-            <button type="button" class="button button-alert" (click)="closeModal()">
+            <button type="button" class="button button-secondary" (click)="closeModal()">
                 {{'management.locations.addLocationModal.cancelButton' | translate}}
             </button>
         </div>
 
         <!-- Feedback to the user -->
-        <div modal-footer-messages>
-            <div class="alert alert-info" *ngIf="addingWasSuccess === null">
+        <div modal-message-footer>
+            <div class="messages messages--info" *ngIf="addingWasSuccess === null">
+                <i class="icon-info" aria-hidden="true"></i>
                 {{'management.locations.addLocationModal.loading' | translate}}
             </div>
 
-            <div class="alert alert-success" *ngIf="addingWasSuccess === true">
+            <div class="messages messages--success" *ngIf="addingWasSuccess === true">
+                <i class="icon-checkmark" aria-hidden="true"></i>
                 {{'management.locations.addLocationModal.success' | translate}}
             </div>
 
-            <div class="alert alert-error" *ngIf="addingWasSuccess === false">
+            <div class="messages messages--warning" *ngIf="addingWasSuccess === false">
+                <i class="icon-exclamation" aria-hidden="true"></i>
                 {{'management.locations.addLocationModal.error' | translate}}
             </div>
         </div>
@@ -283,29 +232,26 @@
 
     <app-modal>
         <!-- Header -->
-        <h1 modal-header>
+        <h2 modal-header>
             {{'management.locations.deleteLocationModal.title' | translate}}
-        </h1>
+        </h2>
 
         <!-- Body -->
         <div modal-body>
             <div>
                 <p>
-                    {{('management.locations.deleteLocationModal.body' | translate).replace('{locationName}',
-                    currentLocationNameToDelete)}}
+                    {{('management.locations.deleteLocationModal.body' | translate).replace('{locationName}', currentLocationNameToDelete)}}
                 </p>
             </div>
-            <div class="alert alert-danger">
-                <p>{{'management.locations.deleteLocationModal.warning' | translate}}</p>
-                <ul>
-                    <div *ngFor="let cp of currentTimeslotsToDelete">
-                        <li *ngIf="isFuture(cp)">
-                            {{cp.timeslotDate | date}} - ({{cp.openingHour | date:'shortTime'}}-{{cp.closingHour |
-                            date:'shortTime'}})
-                        </li>
-                    </div>
-                </ul>
-            </div>
+            <p>{{'management.locations.deleteLocationModal.warning' | translate}}</p>
+            <ul>
+                <div *ngFor="let cp of currentTimeslotsToDelete">
+                    <li *ngIf="isFuture(cp)">
+                        {{cp.timeslotDate | date}} - ({{cp.openingHour | date:'shortTime'}}-{{cp.closingHour |
+                        date:'shortTime'}})
+                    </li>
+                </div>
+            </ul>
         </div>
 
         <!-- Footer -->
@@ -319,15 +265,18 @@
         </div>
 
         <div modal-message-footer>
-            <div class="alert alert-info" *ngIf="deletionWasSuccess === null">
+            <div class="messages messages--info" *ngIf="deletionWasSuccess === null">
+                <i class="icon-info" aria-hidden="true"></i>
                 {{'management.locations.deleteLocationModal.loading' | translate}}
             </div>
 
-            <div class="alert alert-success" *ngIf="deletionWasSuccess === true">
+            <div class="messages messages--success" *ngIf="deletionWasSuccess === true">
+                <i class="icon-checkmark" aria-hidden="true"></i>
                 {{'management.locations.deleteLocationModal.success' | translate}}
             </div>
 
-            <div class="alert alert-error" *ngIf="deletionWasSuccess === false">
+            <div class="messages messages--warning" *ngIf="deletionWasSuccess === false">
+                <i class="icon-exclamation" aria-hidden="true"></i>
                 {{'management.locations.deleteLocationModal.error' | translate}}
             </div>
         </div>
