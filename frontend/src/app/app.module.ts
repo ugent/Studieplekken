@@ -40,7 +40,6 @@ import {UserDetailsManagementComponent} from './management/users-management/user
 // tslint:disable-next-line:max-line-length
 import {UserDetailsFormComponent} from './management/users-management/user-details-management/user-details-form/user-details-form.component';
 import {UserRolesComponent} from './management/users-management/user-details-management/user-roles/user-roles.component';
-import {ApplicationTypeGuardService} from './services/guard/functionality/application-type-guard/application-type-guard.service';
 import {LocationDescriptionComponent} from './management/locations-management/location-details-management/location-description/location-description.component';
 import {CKEditorModule} from '@ckeditor/ckeditor5-angular';
 import {TagsManagementComponent} from './management/tags-management/tags-management.component';
@@ -154,23 +153,19 @@ const routes: Routes = [
             },
             {
                 path: 'reservations',
-                component: ProfileReservationsComponent,
-                canActivate: [ApplicationTypeGuardService],
+                component: ProfileReservationsComponent
             },
             {
                 path: 'calendar',
-                component: ProfileCalendarComponent,
-                canActivate: [ApplicationTypeGuardService],
+                component: ProfileCalendarComponent
             },
             {
                 path: 'password',
-                component: ProfileChangePasswordComponent,
-                canActivate: [ApplicationTypeGuardService],
+                component: ProfileChangePasswordComponent
             },
             {
                 path: 'penalties',
-                component: ProfilePenaltiesComponent,
-                canActivate: [ApplicationTypeGuardService],
+                component: ProfilePenaltiesComponent
             },
         ],
     },
@@ -178,7 +173,7 @@ const routes: Routes = [
     {
         path: 'scan',
         component: ScanComponent,
-        canActivate: [AuthorizationGuardService, ApplicationTypeGuardService],
+        canActivate: [AuthorizationGuardService],
         data:  {
             guards: [['scanner']]
         },

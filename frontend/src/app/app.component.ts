@@ -1,10 +1,10 @@
-import {Component, isDevMode, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
-import {ApplicationTypeFunctionalityService} from './services/functionality/application-type/application-type-functionality.service';
 import {AuthenticationService} from './services/authentication/authentication.service';
 import {UserService} from './services/api/users/user.service';
 import {forkJoin} from 'rxjs';
+
 import * as moment from 'moment';
 
 @Component({
@@ -25,7 +25,6 @@ export class AppComponent implements OnInit {
     constructor(
         private translate: TranslateService,
         private router: Router,
-        private functionalityService: ApplicationTypeFunctionalityService,
         private authenticationService: AuthenticationService,
         private userService: UserService
     ) {
@@ -58,8 +57,6 @@ export class AppComponent implements OnInit {
         // subscribe to the user observable to make sure that the correct information
         // is shown in the application.
         this.authenticationService.user.subscribe((next) => {
-            const scanFunc = this.functionalityService.showScanningFunctionality();
-
             // first, check if the user is logged in
             if (this.authenticationService.isLoggedIn()) {
                 this.loggedIn = true;
@@ -70,11 +67,9 @@ export class AppComponent implements OnInit {
                 this.showInformation = true;
 
                 // if the user is an admin, no extra request to the backend
-                // is required to determine whether or not the user has authorities
+                // is required to determine whether the user has authorities
                 // and thus can be seen as an employee
                 if (next.admin) {
-                    this.showScan = scanFunc && true;
-
                     this.showManagement = true;
                 } else {
                     const obs = {
@@ -84,12 +79,9 @@ export class AppComponent implements OnInit {
 
                     forkJoin(obs)
                         .subscribe(
-                            ({hasAuthorities, hasVolunteered}) => {
+                            ({hasAuthorities}) => {
                                 if (hasAuthorities) {
                                     this.showManagement = true;
-                                }
-                                if (hasAuthorities || hasVolunteered) {
-                                    this.showScan = scanFunc && true;
                                 }
                             }
                         );
@@ -109,30 +101,5 @@ export class AppComponent implements OnInit {
 
     currentLanguage(): string {
         return localStorage.getItem('selectedLanguage');
-    }
-
-    otherSupportedLanguage(): string {
-        return localStorage.getItem('selectedLanguage') === 'nl' ? 'en' : 'nl';
-    }
-
-    changeLanguage(event: Event): void {
-        event.preventDefault();
-        if (localStorage.getItem('selectedLanguage') === 'nl') {
-            localStorage.setItem('selectedLanguage', 'en');
-            this.translate.use('en');
-            moment.locale('en');
-        } else {
-            localStorage.setItem('selectedLanguage', 'nl');
-            this.translate.use('nl');
-            moment.locale('nl');
-        }
-    }
-
-    isActive(path: string): boolean {
-        return this.router.url === path;
-    }
-
-    logout(): void {
-        this.authenticationService.logout();
     }
 }

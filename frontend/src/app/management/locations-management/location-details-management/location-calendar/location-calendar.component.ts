@@ -12,10 +12,7 @@ import {TimeslotsService} from 'src/app/services/api/calendar-periods/timeslot.s
 import {LocationReservationsService} from 'src/app/services/api/location-reservations/location-reservations.service';
 import {LocationService} from 'src/app/services/api/locations/location.service';
 import {AuthenticationService} from 'src/app/services/authentication/authentication.service';
-import {
-    ApplicationTypeFunctionalityService
-} from 'src/app/services/functionality/application-type/application-type-functionality.service';
-import {TimeslotGroupService} from 'src/app/services/timeslots/timeslot-group/timeslot-group.service';
+import {Suggestion, TimeslotGroupService} from 'src/app/services/timeslots/timeslot-group/timeslot-group.service';
 import {
     TimeslotCalendarEventService
 } from 'src/app/services/timeslots/timeslot-calendar-event/timeslot-calendar-event.service';
@@ -23,8 +20,7 @@ import {
 import {Location} from 'src/app/shared/model/Location';
 import {LocationReservation} from 'src/app/shared/model/LocationReservation';
 import {Timeslot} from 'src/app/shared/model/Timeslot';
-import {booleanSorter} from 'src/app/shared/util/Util'
-import {BreakpointObserver} from '@angular/cdk/layout';
+import {booleanSorter} from 'src/app/shared/util/Util';
 
 type TypeOption = {
     date: string;
@@ -43,6 +39,21 @@ type TypeOption = {
     styleUrls: ['./location-calendar.component.scss']
 })
 export class LocationCalendarComponent implements OnInit {
+
+    constructor(
+        private timeslotService: TimeslotsService,
+        private locationReservationService: LocationReservationsService,
+        private dialog: MatDialog,
+        private modalService: MatDialog,
+        private authenticationService: AuthenticationService,
+        private translate: TranslateService,
+        private route: ActivatedRoute,
+        private router: Router,
+        private locationService: LocationService,
+        private timeslotGroupService: TimeslotGroupService,
+        private timeslotCalendarEventService: TimeslotCalendarEventService,
+    ) {
+    }
     locationId: number; // will be set based on the url
 
     timeslotObs: Observable<Timeslot[]>;
@@ -83,21 +94,7 @@ export class LocationCalendarComponent implements OnInit {
 
     calendarViewStyle: CalendarView = CalendarView.Week;
 
-    constructor(
-        private timeslotService: TimeslotsService,
-        private functionalityService: ApplicationTypeFunctionalityService,
-        private locationReservationService: LocationReservationsService,
-        private dialog: MatDialog,
-        private modalService: MatDialog,
-        private authenticationService: AuthenticationService,
-        private translate: TranslateService,
-        private route: ActivatedRoute,
-        private router: Router,
-        private locationService: LocationService,
-        private timeslotGroupService: TimeslotGroupService,
-        private timeslotCalendarEventService: TimeslotCalendarEventService,
-    ) {
-    }
+    protected readonly undefined = undefined;
 
     ngOnInit(): void {
         this.locationId = Number(this.route.snapshot.paramMap.get('locationId'));
@@ -115,8 +112,6 @@ export class LocationCalendarComponent implements OnInit {
         });
 
         this.setup();
-
-        this.showReservationInformation = this.functionalityService.showReservationsFunctionality();
     }
 
 
@@ -133,7 +128,7 @@ export class LocationCalendarComponent implements OnInit {
             ]).pipe(
                 tap(([next, location]) => {
                     // fill the events based on the calendar periods
-                    this.events = next.map(t => this.timeslotCalendarEventService.timeslotToCalendarEvent(t, this.translate.currentLang))
+                    this.events = next.map(t => this.timeslotCalendarEventService.timeslotToCalendarEvent(t, this.translate.currentLang));
 
                     this.suggestions = this.timeslotGroupService.getSuggestions(next, location);
                     const suggestionEvents = this.suggestions.map(
@@ -164,7 +159,7 @@ export class LocationCalendarComponent implements OnInit {
             this.errorOnRetrievingReservations = false;
             return;
         }
-        const timeslot: Timeslot = event['timeslot'] as Timeslot;
+        const timeslot: Timeslot = event.timeslot as Timeslot;
 
         if (timeslot.reservable) {
             this.showReservations = false;
@@ -206,66 +201,61 @@ export class LocationCalendarComponent implements OnInit {
         this.modalService.closeAll();
     }
 
-    open(modal: TemplateRef<any>) {
-        this.modalService.open(modal, {panelClass: ["cs--cyan", "bigmodal"]});
+    open(modal: TemplateRef<any>): void {
+        this.modalService.open(modal, {panelClass: ['cs--cyan', 'bigmodal']});
     }
 
     getLocation(): Observable<Location> {
-        return this.locationService.getLocation(this.locationId)
+        return this.locationService.getLocation(this.locationId);
     }
 
-    newTimeslot(timeslot: Timeslot) {
-        this.timeslotService.addTimeslot(timeslot).subscribe(() => this.setup())
+    newTimeslot(timeslot: Timeslot): void {
+        this.timeslotService.addTimeslot(timeslot).subscribe(() => this.setup());
         this.modalService.closeAll();
     }
-
-
-    prepareUpdate(timeslot: Timeslot, modal: TemplateRef<any>) {
-        this.toUpdateTimeslot = timeslot;
-        this.open(modal);
-    }
-
-    prepareAdd(modal: TemplateRef<any>) {
+    prepareAdd(modal: TemplateRef<any>): void {
         this.toUpdateTimeslot = null;
         this.open(modal);
     }
 
-    prepareDelete(timeslot: Timeslot, modal: TemplateRef<any>) {
+    prepareDelete(timeslot: Timeslot, modal: TemplateRef<any>): void {
         this.toUpdateTimeslot = timeslot;
         this.open(modal);
     }
 
-    prepareCopy(timeslot: Timeslot, modal: TemplateRef<any>) {
+    prepareCopy(timeslot: Timeslot, modal: TemplateRef<any>): void {
         this.toUpdateTimeslot = timeslot;
         this.open(modal);
     }
 
-    delete(timeslot: Timeslot) {
-        this.timeslotService.deleteTimeslot(timeslot).subscribe(() => this.setup())
+    delete(timeslot: Timeslot): void {
+        this.timeslotService.deleteTimeslot(timeslot).subscribe(() => this.setup());
+
         this.modalService.closeAll();
     }
 
 
-    copy(timeslot: Timeslot, weekOffset: string, location: Location, keepReservableFrom: boolean) {
+    copy(timeslot: Timeslot, weekOffset: string, location: Location, keepReservableFrom: boolean): void {
         const newTimeslot = this.timeslotGroupService.copy(timeslot, moment(weekOffset), location, false, !keepReservableFrom);
         this.timeslotService.addTimeslot(newTimeslot).subscribe(() => this.setup());
         this.modalService.closeAll();
     }
 
-    timeslotGroupData(timeslots: Timeslot[]) {
-        if (!timeslots)
-            return []
+    timeslotGroupData(timeslots: Timeslot[]): TypeOption[] {
+        if (!timeslots) {
+            return [];
+        }
 
         const perGroup = this.timeslotGroupService.groupTimeslots(timeslots);
-        const bestPerGroup = this.timeslotGroupService.getOldestTimeslotPerGroup(timeslots)
+        const bestPerGroup = this.timeslotGroupService.getOldestTimeslotPerGroup(timeslots);
 
         const toSort = Array.from(perGroup);
 
         // Sort first on weekday, then on repeatability.
         // The repeatable (=> currently active, used) periods will come first, in a week overview (sorted by day)
         // The non-repeable, old periods are second.
-        toSort.sort((a, b) => bestPerGroup.get(a[0]).timeslotDate.isoWeekday() - bestPerGroup.get(b[0]).timeslotDate.isoWeekday())
-        toSort.sort(booleanSorter(t => bestPerGroup.get(t[0]).repeatable))
+        toSort.sort((a, b) => bestPerGroup.get(a[0]).timeslotDate.isoWeekday() - bestPerGroup.get(b[0]).timeslotDate.isoWeekday());
+        toSort.sort(booleanSorter(t => bestPerGroup.get(t[0]).repeatable));
 
         return toSort.map(([g, t]) => this.getGroupDetails(t, bestPerGroup.get(g)));
     }
@@ -274,113 +264,88 @@ export class LocationCalendarComponent implements OnInit {
      * This function gets the details for the table.
      * Usually, a timeslot group will be on one day, in one time category.
      * However, with migrated timeslots, this might not be the case. We'll group all these together.
-     * @param timeslot
      */
     private getGroupDetails(timeslot: Timeslot[], oldestTimeslot: Timeslot): TypeOption {
-        const days = timeslot.map(t => t.timeslotDate.day())
-        const allOnSameWeekDay = days.every((a) => a == days[0])
+        const days = timeslot.map(t => t.timeslotDate.day());
+        const allOnSameWeekDay = days.every((a) => a === days[0]);
         if (!allOnSameWeekDay) {
             // This shouldn't happen.
             // Only happens with migrated timeslots.
             return {
-                "date": "Varies",
-                "openingHour": "Varies",
-                "closingHour": "Varies",
-                "reservable": true,
-                "reservableFrom": "Varies",
-                "repeatable": false,
-                "seatCount": timeslot[0].seatCount,
-                "timeslots": timeslot
-            }
+                date: 'Varies',
+                openingHour: 'Varies',
+                closingHour: 'Varies',
+                reservable: true,
+                reservableFrom: 'Varies',
+                repeatable: false,
+                seatCount: timeslot[0].seatCount,
+                timeslots: timeslot
+            };
         }
 
-        const allOnSameDay = timeslot.every(t => t.timeslotDate.isSame(timeslot[0].timeslotDate, "day"))
+        const allOnSameDay = timeslot.every(t => t.timeslotDate.isSame(timeslot[0].timeslotDate, 'day'));
 
         return {
-            "date": allOnSameDay ? oldestTimeslot.timeslotDate.format("DD/MM/YYYY") : oldestTimeslot.timeslotDate.format("dddd"),
-            "openingHour": oldestTimeslot.openingHour.format("HH:mm"),
-            "closingHour": oldestTimeslot.closingHour.format("HH:mm"),
-            "reservable": oldestTimeslot.reservable,
-            "reservableFrom": oldestTimeslot.reservable ? allOnSameDay ? oldestTimeslot.reservableFrom.format("DD/MM/YYYY HH:mm") : oldestTimeslot.reservableFrom.format("dddd HH:mm") : "Not reservable",
-            "seatCount": oldestTimeslot.seatCount,
-            "timeslots": timeslot,
-            "repeatable": oldestTimeslot.repeatable
-        }
+            date: allOnSameDay ? oldestTimeslot.timeslotDate.format('DD/MM/YYYY') : oldestTimeslot.timeslotDate.format('dddd'),
+            openingHour: oldestTimeslot.openingHour.format('HH:mm'),
+            closingHour: oldestTimeslot.closingHour.format('HH:mm'),
+            reservable: oldestTimeslot.reservable,
+            reservableFrom: oldestTimeslot.reservable ? allOnSameDay ? oldestTimeslot.reservableFrom.format('DD/MM/YYYY HH:mm') : oldestTimeslot.reservableFrom.format('dddd HH:mm') : 'Not reservable',
+            seatCount: oldestTimeslot.seatCount,
+            timeslots: timeslot,
+            repeatable: oldestTimeslot.repeatable
+        };
 
     }
 
-    hourPickedHandler(date: Moment, modal: TemplateRef<any>) {
-        const openingHour = moment(date.format("HH:mm"), "HH:mm")
+    hourPickedHandler(date: Moment, modal: TemplateRef<any>): void {
+        const openingHour = moment(date.format('HH:mm'), 'HH:mm');
         this.toUpdateTimeslot = new Timeslot(null, date, null, null, null, null, this.locationId, openingHour, null, null, false);
-        this.modalService.open(modal)
+        this.modalService.open(modal);
     }
 
-    generateWeeksOptions(amountOfWeeks: number, startDate: Moment) {
-        const options = []
-        let today = moment(startDate);
-        for (let i = 0; i < amountOfWeeks; i++) {
-            today = today.add(7, "days");
-
-            const firstDayOfWeek = moment(today).startOf("isoWeek")
-            const lastDayOfWeek = moment(today).endOf("isoWeek")
-
-            options.push({
-                id: i,
-                date: moment(today),
-                range: `${firstDayOfWeek.format("DD/MM/YYYY")} - ${lastDayOfWeek.format("DD/MM/YYYY")}`
-            })
-        }
-        return options;
+    showApproveAll(): boolean {
+        return this.getCurrentSuggestions().length > 0;
     }
 
-    trackWeekOption(w: { id: number }) {
-        return w.id;
-    }
-
-    showApproveAll() {
-        return this.getCurrentSuggestions().length > 0
-    }
-
-    approveAll() {
+    approveAll(): void {
         const suggestions = this.getCurrentSuggestions();
-        combineLatest(suggestions.map(t => this.timeslotService.addTimeslot(t.copy))).subscribe(() => this.setup())
+        combineLatest(suggestions.map(t => this.timeslotService.addTimeslot(t.copy))).subscribe(() => this.setup());
     }
 
-    approve(timeslot: Timeslot) {
-        this.timeslotService.addTimeslot(timeslot).subscribe(() => this.setup())
+    approve(timeslot: Timeslot): void {
+        this.timeslotService.addTimeslot(timeslot).subscribe(() => this.setup());
         this.currentTimeSlot = null;
     }
 
-    rejectAll() {
+    rejectAll(): void {
         const suggestions = this.getCurrentSuggestions();
-        combineLatest(suggestions.map(t => this.timeslotService.setRepeatable(t.model, false))).subscribe(() => this.setup())
+        combineLatest(suggestions.map(t => this.timeslotService.setRepeatable(t.model, false))).subscribe(() => this.setup());
     }
 
-    reject(timeslot: Timeslot) {
+    reject(timeslot: Timeslot): void {
         const suggestion = this.getCurrentSuggestions().find(s => s.copy === timeslot);
-        this.timeslotService.setRepeatable(suggestion.model, false).subscribe(() => this.setup())
+        this.timeslotService.setRepeatable(suggestion.model, false).subscribe(() => this.setup());
         this.currentTimeSlot = null;
     }
 
-    private getCurrentSuggestions() {
-        if (this.calendarViewStyle == CalendarView.Day) {
-            return this.timeslotGroupService.filterSuggestionsByMoment(this.suggestions, this.jumpToDate, "day")
+    private getCurrentSuggestions(): Suggestion[] {
+        if (this.calendarViewStyle === CalendarView.Day) {
+            return this.timeslotGroupService.filterSuggestionsByMoment(this.suggestions, this.jumpToDate, 'day');
         }
 
-        if (this.calendarViewStyle == CalendarView.Week) {
-            return this.timeslotGroupService.filterSuggestionsByMoment(this.suggestions, this.jumpToDate, "isoWeek")
+        if (this.calendarViewStyle === CalendarView.Week) {
+            return this.timeslotGroupService.filterSuggestionsByMoment(this.suggestions, this.jumpToDate, 'isoWeek');
         }
 
-        if (this.calendarViewStyle == CalendarView.Month) {
-            return this.timeslotGroupService.filterSuggestionsByMoment(this.suggestions, this.jumpToDate, "month")
+        if (this.calendarViewStyle === CalendarView.Month) {
+            return this.timeslotGroupService.filterSuggestionsByMoment(this.suggestions, this.jumpToDate, 'month');
         }
 
         return [];
     }
 
-    public isSuggestion(timeslot: Timeslot) {
+    public isSuggestion(timeslot: Timeslot): boolean {
         return this.suggestions.map(s => s.copy).includes(timeslot);
     }
-
-    protected readonly undefined = undefined;
 }
