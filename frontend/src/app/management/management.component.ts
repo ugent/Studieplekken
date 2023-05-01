@@ -1,11 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {
-    ApplicationTypeFunctionalityService
-} from '../services/functionality/application-type/application-type-functionality.service';
 import {AuthenticationService} from '../services/authentication/authentication.service';
 import {combineLatest} from 'rxjs';
 import {BreadcrumbService, managementBreadcrumb} from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
-import {LoginRedirectService} from '../services/authentication/login-redirect.service';
 import {environment} from 'src/environments/environment';
 
 @Component({

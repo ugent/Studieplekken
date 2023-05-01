@@ -20,14 +20,9 @@ import {
 import {map} from 'rxjs/internal/operators/map';
 import {LocationReservationsService} from 'src/app/services/api/location-reservations/location-reservations.service';
 import {AuthenticationService} from 'src/app/services/authentication/authentication.service';
-import {
-    ApplicationTypeFunctionalityService
-} from 'src/app/services/functionality/application-type/application-type-functionality.service';
-import {
-    TimeslotCalendarEventService
-} from 'src/app/services/timeslots/timeslot-calendar-event/timeslot-calendar-event.service';
+import {TimeslotCalendarEventService} from 'src/app/services/timeslots/timeslot-calendar-event/timeslot-calendar-event.service';
 import {LocationReservation, LocationReservationState} from 'src/app/shared/model/LocationReservation';
-import {Timeslot, timeslotEquals,} from 'src/app/shared/model/Timeslot';
+import {Timeslot, timeslotEquals} from 'src/app/shared/model/Timeslot';
 import {BreadcrumbService} from 'src/app/stad-gent-components/header/breadcrumbs/breadcrumb.service';
 import {defaultTeaserImages, LocationStatus} from '../../app.constants';
 import {TimeslotsService} from '../../services/api/calendar-periods/timeslot.service';
@@ -83,7 +78,6 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     showSuccessDeletion = false;
 
     isModified = false;
-
     isFirst = true;
 
     description = {
@@ -96,8 +90,6 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     imageUrlErrorOccurred = false;
 
     status: Pair<LocationStatus, string>;
-    statusInCurrentLang: string;
-
     currentLang: string;
 
     modalRef: MatDialogRef<unknown, unknown>;
@@ -134,7 +126,6 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         private authenticationService: AuthenticationService,
         private locationReservationService: LocationReservationsService,
         private modalService: MatDialog,
-        private functionalityService: ApplicationTypeFunctionalityService,
         private router: Router,
         private breadcrumbs: BreadcrumbService,
         private timeslotCalendarEventService: TimeslotCalendarEventService,
@@ -154,6 +145,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         // Check if locationId is a Number before proceeding. If NaN, redirect to dashboard.
         if (isNaN(this.locationId)) {
             this.router.navigate(['/dashboard']).catch(console.log);
+
             return;
         }
 
@@ -161,7 +153,9 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
         combineLatest([this.authenticationService.user, this.location]).subscribe(([user, location]) => {
             if (user != null) {
-                this.showAdmin = this.authenticationService.isAdmin() || user.userAuthorities.map(a => a.authorityId).includes(location.authority.authorityId);
+                this.showAdmin = this.authenticationService.isAdmin() || user.userAuthorities.map(
+                    a => a.authorityId
+                ).includes(location.authority.authorityId);
                 this.updateOwnReservations();
             }
         });
@@ -170,7 +164,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
         this.currentLang = this.translate.currentLang;
 
-        // when the location is loaded, setup the descriptions
+        // when the location is loaded, set up the descriptions
         this.locationSub = this.location.subscribe((next) => {
             this.description.dutch = next.descriptionDutch;
             this.description.english = next.descriptionEnglish;
@@ -193,8 +187,6 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
             this.updateCalendar();
             this.updateOwnReservations();
         }, 60 * 1000); // 1 minute
-
-        this.showLockersManagement = this.functionalityService.showLockersManagementFunctionality();
 
         this.location.pipe().subscribe(location => {
             this.locationSubscribed = location.subscribed;
@@ -222,13 +214,6 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
             this.leafletMap.remove();
         }
     }
-
-    locationStatusColorClass(): string {
-        return this.status && this.status.first === LocationStatus.OPEN
-            ? 'open'
-            : 'closed';
-    }
-
     timeslotPicked(event: Event): void {
         if (!event['timeslot']) {
             // the calendar period is not reservable
@@ -252,26 +237,18 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         }
 
 
-        let reservation: LocationReservation = {
-            state: null, // TODO(ydndonck): Should this be approved? Something else? Currently using database default.
+        const reservation: LocationReservation = {
+            state: null,
             user: this.authenticationService.userValue(),
             timeslot: currentTimeslot,
         };
-        // Check if reservation doesn't already exist in deleted state.
-        /*for (const res of this.selectedSubject.value) {
-          if (res.timeslot.timeslotSequenceNumber == currentTimeslot.timeslotSequenceNumber) {
-            reservation = res;
-            reservation.state = R
-            break;
-          }
-        }*/
 
         const timeslotIsSelected = this.selectedSubject.value.some((r) =>
             timeslotEquals(r.timeslot, reservation.timeslot) && r.state !== LocationReservationState.DELETED &&
             r.state !== LocationReservationState.REJECTED
         );
 
-        // if it is full and you don't have this reservation yet, unselect
+        // if it is full, and you don't have this reservation yet, unselect
         if (
             currentTimeslot.amountOfReservations >=
             currentTimeslot.seatCount &&
@@ -280,7 +257,9 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
             return;
         }
 
-        const oldReservation = this.originalList.find(t => t.timeslot.timeslotSequenceNumber === currentTimeslot.timeslotSequenceNumber);
+        const oldReservation = this.originalList.find(
+            t => t.timeslot.timeslotSequenceNumber === currentTimeslot.timeslotSequenceNumber
+        );
 
         if (timeslotIsSelected && oldReservation.state === LocationReservationState.PRESENT) {
             // If user is already scanned as present, do not allow to unselect.
