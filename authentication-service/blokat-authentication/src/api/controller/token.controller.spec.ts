@@ -7,6 +7,7 @@ import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { sign } from 'jsonwebtoken';
 import { getConfig } from 'src/configModule/config.service';
+import { transactionalIt } from 'test/transactional-it';
 
 const header = () => {
   const jwt = sign({}, getConfig().backendServiceJwtKey)
@@ -16,7 +17,7 @@ const header = () => {
 
 describe('ApiController', () => {
   let app: INestApplication;
-
+  let dbService: DbService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -24,25 +25,21 @@ describe('ApiController', () => {
       imports: [DbModule, ConfigModule]
     }).compile();
 
-    const dbService = module.get<DbService>(DbService);
-    dbService.wipe();
-
+    dbService = module.get<DbService>(DbService);
 
     app = module.createNestApplication();
     await app.init();
   });
   
-
-
   it('should error when no jwt is given', () => {
     return request(app.getHttpServer()).get("/auth/tokens").expect(403)
-  })
+  });
 
   it('should give empty', () => {
     return request(app.getHttpServer()).get("/auth/tokens").set('Authorization', header()).expect({"tokens": []})
-  })
+  });
 
-  it('should reject invalid purpose', () => {
+  transactionalIt(dbService, 'should reject invalid purpose', () => {
     const token = {email: "maxiem@maxiemgeldhof.com", purpose: "wrong purpose"}
     const tokenRequest = request(app.getHttpServer())
                 .post("/auth/tokens")
@@ -53,7 +50,7 @@ describe('ApiController', () => {
     return tokenRequest
   })
 
-  it('should accept token and create', async () => {
+  transactionalIt(dbService, 'should accept token and create', async () => {
     const token = {email: "maxiem@maxiemgeldhof.com", purpose: "PASSWORD_RESET"}
     const postTokenRequest = await request(app.getHttpServer())
                 .post("/auth/tokens")
