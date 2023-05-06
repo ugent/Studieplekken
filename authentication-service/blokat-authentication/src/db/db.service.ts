@@ -25,12 +25,4 @@ export class DbService extends PrismaClient implements OnModuleInit {
     });
   }
 
-  async wipe() {
-    const modelNames = Prisma.dmmf.datamodel.models.map((model) => model.name);
-
-    return Promise.all(
-      // @ts-ignore
-      modelNames.map((modelName) => this[modelName.toLowerCase()].deleteMany()) 
-    );
-  }
 }
