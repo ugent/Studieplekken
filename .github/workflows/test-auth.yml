@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     
     container:
-      image: node:16-stretch
+      image: node:16-buster
       env:
         POSTGRES_DB: db
         
@@ -47,7 +47,7 @@ jobs:
 
       - name: Run tests
         run: |
-          apt-get update -y && apt-get install netcat -y
+          apt-get update -y ; apt-get install bash netcat -y
           bash ./scripts/wait_for_service db 5432
           cd authentication-service/blokat-authentication
           yarn install
