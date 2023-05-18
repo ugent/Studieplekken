@@ -7,6 +7,6 @@ import { BackendServiceGuard } from './internal-auth/service-jwt/backend-service
 @Module({
   controllers: [TokenController],
   providers: [BackendServiceGuard],
-  imports: [ConfigModule, DbModule]
+  imports: [ConfigModule, DbModule],
 })
 export class ApiModule {}

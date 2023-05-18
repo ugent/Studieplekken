@@ -26,6 +26,12 @@ export class AppController {
 
   /******* CAS ENDPOINTS  *********/
 
+  /* 
+  The CAS endpoints are used for authenticating users using CAS. This is used for internal auth within UGent.
+  The CAS endpoints are protected by the CAS strategy (see AuthGuard('cas')).
+  This strategy can be found in auth/auth.module.ts.
+  */
+
   @UseGuards(AuthGuard("cas"))
   @Get("auth/login/cas")
   async casLogin(@Request() req: any, @Res() res: any, @RealIP() ip: string) {
@@ -37,7 +43,11 @@ export class AppController {
 
   @UseGuards(AuthGuard("cas"))
   @Get("auth/login/cas/:callbackURL")
-  async casLoginCallback(@Request() req: any, @Res() res: any, @RealIP() ip: string) {
+  async casLoginCallback(
+    @Request() req: any,
+    @Res() res: any,
+    @RealIP() ip: string,
+  ) {
     const samlUser = req.user;
     if (!isSamlUser(samlUser)) {
       const missingFields = missingSamlUserFields(samlUser);
@@ -72,22 +82,7 @@ export class AppController {
     }
   }
 
-  /******* TEST ENDPOINTS  *********/
-
-  @Get("auth/login/test")
-  @UseGuards(ConfigGuard)
-  async testEndpoint() {
-    const id = randomUUID();
-    const newTestUser: SamlUser = {
-      id,
-      email: `${id}@test.com`,
-      institution: Institution.UGENT,
-      firstName: "test",
-      lastName: "test",
-    };
-
-    return await this.authService.issueToken(newTestUser);
-  }
+  /******* SAML ENDPOINTS  *********/
 
   @UseGuards(AuthGuard("saml"))
   @Get("auth/login/:idp")
@@ -111,7 +106,11 @@ export class AppController {
 
   @UseGuards(AuthGuard("saml"))
   @Post("api/SSO/saml")
-  async loginSamlGet(@Request() req: any, @Res() res: any, @RealIP() ip: string) {
+  async loginSamlGet(
+    @Request() req: any,
+    @Res() res: any,
+    @RealIP() ip: string,
+  ) {
     Logger.debug(`Someone is returning from idp.`);
     Logger.debug(req.body.RelayState);
 
@@ -143,6 +142,23 @@ export class AppController {
     } catch {
       return res.send({ access_token: token });
     }
+  }
+
+  /******* TEST ENDPOINTS  *********/
+
+  @Get("auth/login/test")
+  @UseGuards(ConfigGuard)
+  async testEndpoint() {
+    const id = randomUUID();
+    const newTestUser: SamlUser = {
+      id,
+      email: `${id}@test.com`,
+      institution: Institution.UGENT,
+      firstName: "test",
+      lastName: "test",
+    };
+
+    return await this.authService.issueToken(newTestUser);
   }
 
   @Get()
