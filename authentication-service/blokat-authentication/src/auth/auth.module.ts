@@ -21,4 +21,9 @@ import { SamlStrategy } from './saml/saml.strategy';
   providers: [AuthService, SamlStrategy, CasStrategyService],
   exports: [AuthService],
 })
-export class AuthModule {}
+export class AuthModule {
+  /**
+   * The Auth module is responsible for handling the authentication strategies.
+   * It provides a CAS strategy, and a MultiSaml strategy.
+   */
+}

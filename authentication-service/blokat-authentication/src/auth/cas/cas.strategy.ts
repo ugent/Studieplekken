@@ -13,15 +13,33 @@ export interface CasStrategyOptions {
 }
 
 export class CasStrategy extends Strategy {
+  /**
+   * Authentication strategy to log in for CAS.
+   * CAS is a protocol used for authentication within UGent.
+   * @param options Strategy options.
+   */
+
   constructor(private options: CasStrategyOptions) {
     super();
   }
 
   authenticate(req: Request, options: any): void {
+    /** Entry point of the CAS endpoint.
+     *  CAS flow is as follows:
+     * - This Service will redirect you to the external CAS login page
+     * - You log in to the page, and it redirects you with a ticket
+     * - This app will use the ticket to fetch authentication information from the server.
+     *
+     * In this flow, the app is called twice: once originally by the user, then again with the ticket.
+     * Split up the logic for these two calls in `validateTicket` and `redirectToSso`.
+     */
     const ticket = req.query.ticket as string;
     if (ticket) {
+      // Fetch the user's information from the CAS server using the ticket received from the service.
       this.validateTicket(req, ticket);
     } else {
+      // Redirect the user to the CAS login page to get a ticket.
+      // It will redirect back here to this function, but with a ticket.
       this.redirectToSso(req);
     }
   }
@@ -56,8 +74,8 @@ export class CasStrategy extends Strategy {
     validationUrl.searchParams.set("ticket", ticket);
 
     try {
+      // Retrieve user information
       const result = await got.get(validationUrl, { responseType: "text" });
-
       const parsedJsObject = this.xmlToJs(result.body);
 
       // This is an unexpected error. There should always be a response from the CAS server.
@@ -77,18 +95,23 @@ export class CasStrategy extends Strategy {
           `Failed this authentication: ${responseContent["cas:authenticationFailure"]}`,
         );
         return this.fail("Ticket validation failed", 401);
-      } else if (responseContent.hasOwnProperty("cas:authenticationSuccess")) {
-        // Expected success flow
-        const body = responseContent["cas:authenticationSuccess"];
-        const user = this.validate(body);
-        return this.success(user);
-      } else {
-        // Unexpected error flow
+      }
+
+      if (!responseContent.hasOwnProperty("cas:authenticationSuccess")) {
         throw new Error(
           `This is an unexpected error, body is ${responseContent}`,
         );
       }
+
+      // The request was a success, and contains expected data.
+      // We'll parse out the user information and return it.
+      const body = responseContent["cas:authenticationSuccess"];
+      const user = this.validate(body);
+      return this.success(user);
     } catch (e: any) {
+      // Very unexpected error, and probably a coding error
+      // Should be looked into.
+
       Logger.error("The request to the service endpoint failed.");
       Logger.error(
         `The service URL was ${this.service(

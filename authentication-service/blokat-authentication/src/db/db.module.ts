@@ -10,4 +10,15 @@ import { DbTokenService } from "./db-token/db-token.service";
   providers: [DbUserService, DbService, HashedService, DbTokenService],
   exports: [DbUserService, HashedService, DbTokenService],
 })
-export class DbModule {}
+export class DbModule {
+  /**
+   * This module is responsible for handling the database & tables.
+   * - The base service which instruments this module is the DbService,
+   *   which is responsible for connecting to the database.
+   *   This service is used by the other model-table services.
+   * - The DbUserService is responsible for handling the User table. All related queries on this table
+   *   are handled by this service.
+   * - The DbTokenService is responsible for handling the Token table. All related queries on this table
+   *  are handled by this service.
+   */
+}
