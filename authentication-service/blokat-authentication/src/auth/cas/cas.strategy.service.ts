@@ -49,9 +49,12 @@ export class CasStrategyService extends PassportStrategy(CasStrategy, "cas") {
   }
 
   calculateEAN13UgentStudentID(barcode: string) {
+    // Sometimes CAS returns a Number instead of a String, so we make sure it's a String, so we can use `.length`
+    barcode = String(barcode);
+
     // Check that the barcode is 8 digits long
     if (barcode.length !== 8) {
-      throw new Error("Barcode must be 8 digits long");
+      throw new Error(`Barcode must be 8 digits long, but got ${barcode}`);
     }
 
     // Get the modulo 97 of the digit.
