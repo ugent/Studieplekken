@@ -2,15 +2,19 @@ package blok2.controllers;
 
 import blok2.daos.ITimeslotDao;
 import blok2.helpers.authorization.AuthorizedLocationController;
+import blok2.helpers.exceptions.InvalidRequestParametersException;
 import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.calendar.Timeslot;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
+
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @RestController
 @RequestMapping("locations/timeslots")
@@ -42,15 +46,22 @@ public class TimeslotController extends AuthorizedLocationController {
 
     @PutMapping()
     @PreAuthorize("hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
-    public void updateTimeslot(@Valid @RequestBody Timeslot timeslot) {
+    public ResponseEntity<Object> updateTimeslot(@Valid @RequestBody Timeslot timeslot) {
         Timeslot original = timeslotDAO.getTimeslot(timeslot.getTimeslotSeqnr());
         // Validate original location
         isAuthorized(original.getLocationId());
         // Validate future location
         isAuthorized(timeslot.getLocationId());
 
+        // Check that new number of seats is not less than number of reservations
+        if (timeslot.getSeatCount() < original.getAmountOfReservations()) {
+            return new ResponseEntity<>(new InvalidRequestParametersException("Number of seats cannot be less than number of reservations"), BAD_REQUEST);
+        }
+
         // Execute update
         timeslotDAO.updateTimeslot(timeslot);
+
+        return ResponseEntity.ok(timeslot);
     }
 
 

@@ -63,6 +63,16 @@
                     </label>
                 </div>
             </div>
+
+            <!-- Seat count -->
+            <div class="row">
+                <div class="col">
+                    <label class="control-label" for="seatCount">
+                        {{'management.locationDetails.calendar.form.numberOfSeats' | translate}}
+                        <input id="seatCount" type="number" [(ngModel)]="model.seatCount" [min]="model.amountOfReservations + 30" [disabled]="!model.reservable" name="seatCount" />
+                    </label>
+                </div>
+            </div>
         </form>
     </div>
 
@@ -83,6 +93,11 @@
         <div *ngIf="displayErrorTime">
             <div class="alert alert-warning">
                 {{'management.locationDetails.calendar.form.openingClosingHourError' | translate}}
+            </div>
+        </div>
+        <div *ngIf="displayErrorSeats">
+            <div class="alert alert-warning">
+                {{('management.locationDetails.calendar.form.seatsError' | translate).replace('{amountOfReservations}', model.amountOfReservations) }}
             </div>
         </div>
     </div>

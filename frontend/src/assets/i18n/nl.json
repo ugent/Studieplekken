@@ -329,7 +329,8 @@
                     "approve": "Keur goed",
                     "reject": "Keur af",
                     "rejectAll": "Keur alle suggesties af",
-                    "openingClosingHourError": "De openingstijd moet minstens één minuut voor de sluitingstijd zijn."
+                    "openingClosingHourError": "De openingstijd moet minstens één minuut voor de sluitingstijd zijn.",
+                    "seatsError": "Het aantal plaatsen moet groter zijn dan het huidig aantal reservaties ({amountOfReservations})."
                 },
                 "addModalView": {
                     "title": "Nieuw tijdslot toevoegen",
