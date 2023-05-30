@@ -54,6 +54,13 @@ export class TimeslotsService {
     );
   }
 
+  updateTimeslot(timeslot: Timeslot): Observable<void> {
+    timeslot.sanitize();
+    return this.http.put<void>(
+      api.updateTimeslot,
+      timeslot.toJSON()
+    );
+  }
 
   setRepeatable(timeslot: Timeslot, repeatable: boolean) {
     timeslot.sanitize();

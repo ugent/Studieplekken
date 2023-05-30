@@ -213,8 +213,19 @@ export class LocationCalendarComponent implements OnInit {
         this.timeslotService.addTimeslot(timeslot).subscribe(() => this.setup());
         this.modalService.closeAll();
     }
+
+    updateTimeslot(timeslot: Timeslot): void {
+        this.timeslotService.updateTimeslot(timeslot).subscribe(() => this.setup());
+        this.modalService.closeAll();
+    }
+
     prepareAdd(modal: TemplateRef<any>): void {
         this.toUpdateTimeslot = null;
+        this.open(modal);
+    }
+
+    prepareUpdate(timeslot: Timeslot, modal: TemplateRef<any>): void {
+        this.toUpdateTimeslot = timeslot;
         this.open(modal);
     }
 
