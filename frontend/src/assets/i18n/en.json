@@ -329,7 +329,8 @@
                     "approve": "Approve",
                     "reject": "Reject",
                     "rejectAll": "Reject all suggestions",
-                    "openingClosingHourError": "The opening hour must be at least one minute before the closing hour."
+                    "openingClosingHourError": "The opening hour must be at least one minute before the closing hour.",
+                    "seatsError": "The number of seats must be greater than the current number of reservations ({amountOfReservations})."
                 },
                 "addModalView": {
                     "title": "Add new timeslot",

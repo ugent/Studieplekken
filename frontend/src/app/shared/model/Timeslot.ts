@@ -31,7 +31,7 @@ export class Timeslot {
   ) {
     this.timeslotSequenceNumber = timeslotSequenceNumber;
     this.timeslotDate = timeslotDate;
-    this.amountOfReservations = amountOfReservations;
+    this.amountOfReservations = amountOfReservations || 0;
     this.seatCount = seatCount;
     this.reservable = reservable;
     this.reservableFrom = reservableFrom;
