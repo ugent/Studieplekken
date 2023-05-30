@@ -16,6 +16,11 @@
             <button class="button button-secondary" *ngIf="showApproveAll()" (click)="approveAll()">
                 {{"management.locationDetails.calendar.form.approveAll" | translate}}
             </button>
+            <button class="button button-secondary" [disabled]="!currentTimeSlot"
+                    *ngIf="!isSuggestion(currentTimeSlot)"
+                    (click)="prepareUpdate(currentTimeSlot, addTimeslotModal)">
+                {{"general.buttons.update" | translate}}
+            </button>
             <button class="button button-primary" [disabled]="!currentTimeSlot"
                     *ngIf="!isSuggestion(currentTimeSlot)"
                     (click)="prepareDelete(currentTimeSlot, deleteTimeslotModal)">
@@ -63,7 +68,7 @@
 <!-- Modal view to add a calendar period -->
 <ng-template #addTimeslotModal>
     <app-location-add-timeslot-dialog [location]="getLocation() | async" (onNewTimeslot)="newTimeslot($event)"
-                                      [timeslot]="toUpdateTimeslot">
+                                      [timeslot]="toUpdateTimeslot" (onUpdateTimeslot)="updateTimeslot($event)">
 
     </app-location-add-timeslot-dialog>
 </ng-template>

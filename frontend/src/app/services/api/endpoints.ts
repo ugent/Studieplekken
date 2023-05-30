@@ -15,6 +15,7 @@ export const api = {
   locationStatus: '/api/locations/calendar/{locationId}/status',
   addTimeslots: '/api/locations/timeslots',
   deleteTimeslot: '/api/locations/timeslots',
+  updateTimeslot: '/api/locations/timeslots',
   setRepeatable: '/api/locations/timeslots/{timeslotId}/repeatable',
 
   // TIMESLOTS

@@ -1,7 +1,10 @@
 <!-- Modal header -->
 <app-modal>
-    <h2 modal-header>
+    <h2 modal-header *ngIf="!isUpdating()">
         {{'management.locationDetails.calendar.addModalView.title' | translate}}
+    </h2>
+    <h2 modal-header *ngIf="isUpdating()">
+        {{'management.locationDetails.calendar.updateModalView.title' | translate}}
     </h2>
 
     <div modal-body>
