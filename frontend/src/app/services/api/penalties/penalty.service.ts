@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Penalty } from '../../../shared/model/Penalty';
 import { api } from '../endpoints';
-import { Observable } from 'rxjs';
+import {Observable, of} from 'rxjs';
 import { PenaltyEvent } from '../../../shared/model/PenaltyEvent';
 import { map } from 'rxjs/operators';
 
@@ -19,10 +19,13 @@ export class PenaltyService {
    ****************************************/
 
   getPenaltiesOfUserById(id: string): Observable<PenaltyList> {
-    return this.http.get<any>(api.penaltiesByUserId.replace('{id}', id))
-    .pipe(
-      map(a => ({points: a.currentPoints, penalties: a.penalties.map(Penalty.fromJSON)}))
-      );
+      if (id === '') {
+          return of({points: 0, penalties: []});
+      }
+      return this.http.get<any>(api.penaltiesByUserId.replace('{id}', id))
+          .pipe(
+              map(a => ({points: a.currentPoints, penalties: a.penalties.map(Penalty.fromJSON)}))
+          );
   }
 
   addPenalty(penalty: Penalty): Observable<void> {
