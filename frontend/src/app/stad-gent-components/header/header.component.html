@@ -6,9 +6,9 @@
         </a>
 
         <!-- The user profile / login button -->
-        <div *ngIf="getUser() | async as user">
+        <div *ngIf="getUser() | async as user; else userNotLoggedIn">
             <!-- If user is logged in -->
-            <app-accordeon class="authentication" *ngIf="user != null && user.userId != ''"
+            <app-accordeon class="authentication" *ngIf="user != null && user.userId != ''; else userNotLoggedIn"
                 [controller]="accordionSubject">
 
                 <button accordion-button aria-expanded="false" aria-controls="no-hero_auth-authentication"
@@ -22,12 +22,6 @@
                     <app-header-dropdown [isProfile]="true" [accordion]="accordionSubject"></app-header-dropdown>
                 </div>
             </app-accordeon>
-
-            <!-- If user is not logged in -->
-            <div class="authentication accordion" *ngIf="user == null || user.userId == ''">
-                <a routerLink="/login" class="login-link">
-                    {{"header.navigation.login" | translate}} </a>
-            </div>
         </div>
 
         <!-- Menu for mid sized mobile -->
@@ -109,3 +103,11 @@
 
     <hr />
 </header>
+
+<ng-template #userNotLoggedIn>
+    <!-- If user is not logged in -->
+    <div class="authentication accordion">
+        <a routerLink="/login" class="login-link">
+            {{"header.navigation.login" | translate}} </a>
+    </div>
+</ng-template>
