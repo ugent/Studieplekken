@@ -1,5 +1,7 @@
 package blok2.stadgent.model;
 
+import blok2.daos.ILocationDao;
+import blok2.daos.ITimeslotDao;
 import blok2.daos.services.LocationService;
 import blok2.daos.services.TimeslotService;
 import blok2.model.calendar.Timeslot;
@@ -108,8 +110,8 @@ public class StadGentLocation {
     @JsonProperty("openingsuren")
     public String hours;
 
-    private Double lat;
-    private Double lng;
+    private final Double lat;
+    private final Double lng;
 
     @JsonProperty("coordinates")
     public String getCoordinates() {
@@ -142,6 +144,10 @@ public class StadGentLocation {
 
     public String getGemeente() {
         return gemeente;
+    }
+
+    public String getHours() {
+        return hours;
     }
 
     public Integer getCapacity() {
@@ -181,7 +187,7 @@ public class StadGentLocation {
         this.optionalNextUpcomingReservableTimeslot = optionalNextUpcomingReservableTimeslot;
     }
 
-    public static StadGentLocation fromLocation(Location loc, TimeslotService ts, LocationService ls) {
+    public static StadGentLocation fromLocation(Location loc, ITimeslotDao ts, ILocationDao ls) {
         Integer amountOfReservations = loc.getCurrentTimeslot() == null ? null : loc.getCurrentTimeslot().getAmountOfReservations();
         boolean isReservable = loc.getCurrentTimeslot() != null && loc.getCurrentTimeslot().isReservable();
         boolean hasFutureTimeslots = loc.getCurrentTimeslot() != null;
