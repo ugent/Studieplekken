@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
-import {AuthenticationService} from './services/authentication/authentication.service';
-import {UserService} from './services/api/users/user.service';
+import {AuthenticationService} from './extensions/services/authentication/authentication.service';
+import {UserService} from './extensions/services/api/users/user.service';
 import {forkJoin} from 'rxjs';
 
 import * as moment from 'moment';

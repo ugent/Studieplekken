@@ -2,10 +2,10 @@ import {AfterViewInit, Component, OnInit, HostListener} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {Observable, Subject} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {UserService} from 'src/app/services/api/users/user.service';
-import {AuthenticationService} from 'src/app/services/authentication/authentication.service';
+import {UserService} from 'src/app/extensions/services/api/users/user.service';
+import {AuthenticationService} from 'src/app/extensions/services/authentication/authentication.service';
 import {Breadcrumb, BreadcrumbService} from './breadcrumbs/breadcrumb.service'
-import {User} from '../../shared/model/User';
+import {User} from '../../extensions/model/User';
 
 @Component({
     selector: 'app-header',

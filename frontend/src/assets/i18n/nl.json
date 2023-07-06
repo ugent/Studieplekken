@@ -277,7 +277,8 @@
                 "error": "Er ging iets mis tijdens het wijzigen van de locatie",
                 "numberOfSeatsApplyWarning": "De aangepaste plaatsen worden alleen toegepast op nieuw aangemaakte openingsperiodes.",
                 "numberOfSeatsHelp": "Kan alleen aangepast worden door een admin.",
-                "usesPenaltyPoints": "Gebruikt strafpunten"
+                "usesPenaltyPoints": "Gebruikt strafpunten",
+                "isHidden": "Verbergen op het overzicht"
             },
             "calendar": {
                 "title": "Reservatiebeheer",
