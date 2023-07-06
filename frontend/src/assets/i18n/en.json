@@ -277,7 +277,8 @@
                 "error": "An error occurred while updating the room",
                 "numberOfSeatsApplyWarning": "The changed seats will only be applied to newly created opening periods",
                 "numberOfSeatsHelp": "Can only be updated by an admin.",
-                "usesPenaltyPoints": "Uses penalty points"
+                "usesPenaltyPoints": "Uses penalty points",
+                "isHidden": "Hide in the overview"
             },
             "calendar": {
                 "title": "Reservation Management",

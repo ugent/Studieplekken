@@ -1,0 +1,63 @@
+<div class="panel" *ngIf="locationObs | async as location; else loading">
+    <!--
+     This page has four functionalities, each put into a collapsable panel-group:
+       - overview of the location + possibility to edit the details of the location
+       - calender to show the opening days and a form to add new/series of new opening days
+       - ability to manage the description of the location
+       - form to show current/next locker reservation period
+
+     Such a panel-group consists of two parts:
+       - the heading: panel-heading in which the panel-title is put
+       - the collapsable body: panel-body in which a panel-body resides with the actual content of the panel-group
+     -->
+
+    <h2>
+        {{('management.locationDetails.title' | translate).replace('{locationName}', location.name)}}
+    </h2>
+    <hr>
+    <app-details-form [location]="locationObs"></app-details-form>
+
+    <!-- Calendar with overview of opening days -->
+    <h2>
+        {{'management.locationDetails.calendar.title' | translate}}
+    </h2>
+    <hr/>
+
+    <!-- Body -->
+    <div class="panel-collapse collapse" id="calendarCollapseBody">
+        <app-location-calendar [location]="location"></app-location-calendar>
+    </div>
+
+    <!-- Description of the location -->
+    <h2>
+        {{'management.locationDetails.description.title' | translate}}
+    </h2>
+    <hr/>
+
+    <!-- Body -->
+    <app-location-description [location]="locationObs"></app-location-description>
+
+
+    <!-- Tags of the location -->
+    <h2>
+        {{'management.locationDetails.tags.title' | translate}}
+    </h2>
+    <hr/>
+
+    <!-- Body -->
+    <app-location-tags-management [location]="locationObs"></app-location-tags-management>
+
+    <!-- Tags of the location -->
+    <h2>
+        {{'management.locationDetails.reminder.title' | translate}}
+    </h2>
+    <hr/>
+
+    <!-- Body -->
+    <app-location-reminder [location]="locationObs"></app-location-reminder>
+
+</div>
+
+<ng-template #loading>
+    {{'management.general.loading' | translate}}
+</ng-template>

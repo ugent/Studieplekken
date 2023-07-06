@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import * as moment from 'moment';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { LocationService } from 'src/app/services/api/locations/location.service';
-import { Location } from 'src/app/shared/model/Location';
-import { LocationReservation, LocationReservationState } from 'src/app/shared/model/LocationReservation';
-import { User } from 'src/app/shared/model/User';
+import { LocationService } from 'src/app/extensions/services/api/locations/location.service';
+import { Location } from 'src/app/extensions/model/Location';
+import { LocationReservation, LocationReservationState } from 'src/app/extensions/model/LocationReservation';
+import { User } from 'src/app/extensions/model/User';
 import { ActionColumn, TabularData } from '../tabular-data';
 
 @Injectable({
