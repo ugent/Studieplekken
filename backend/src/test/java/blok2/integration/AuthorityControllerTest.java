@@ -1,15 +1,12 @@
 package blok2.integration;
 
-import blok2.helpers.Base64String;
+import blok2.extensions.helpers.Base64String;
 import blok2.model.Authority;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;

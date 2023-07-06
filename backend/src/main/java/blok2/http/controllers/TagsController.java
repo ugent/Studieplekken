@@ -1,7 +1,7 @@
-package blok2.controllers;
+package blok2.http.controllers;
 
-import blok2.daos.ILocationTagDao;
-import blok2.helpers.authorization.AuthorizedLocationController;
+import blok2.database.daos.ILocationTagDao;
+import blok2.http.security.authorization.AuthorizedLocationController;
 import blok2.model.LocationTag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;

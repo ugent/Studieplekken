@@ -2,6 +2,10 @@ package blok2.daos;
 
 import blok2.BaseTest;
 import blok2.TestSharedMethods;
+import blok2.database.daos.IAuthorityDao;
+import blok2.database.daos.IBuildingDao;
+import blok2.database.daos.ILocationDao;
+import blok2.database.daos.IUserDao;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.reservables.Location;
@@ -22,9 +26,11 @@ public class TestDBAuthorityDaoWithUser extends BaseTest {
     @Autowired
     private IUserDao userDao;
 
-    @Autowired ILocationDao locationDao;
+    @Autowired
+    ILocationDao locationDao;
 
-    @Autowired IBuildingDao buildingDao;
+    @Autowired
+    IBuildingDao buildingDao;
 
     private Authority testAuthority;
     private Authority testAuthority2;

@@ -2,7 +2,7 @@ package blok2.integration;
 
 import blok2.BaseTest;
 import blok2.TestSharedMethods;
-import blok2.daos.*;
+import blok2.database.daos.*;
 import blok2.model.ActionLogEntry;
 import blok2.model.Authority;
 import blok2.model.Building;
@@ -16,7 +16,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.context.annotation.Import;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;

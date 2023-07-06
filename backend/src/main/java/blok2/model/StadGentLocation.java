@@ -1,9 +1,7 @@
-package blok2.stadgent.model;
+package blok2.model;
 
-import blok2.daos.ILocationDao;
-import blok2.daos.ITimeslotDao;
-import blok2.daos.services.LocationService;
-import blok2.daos.services.TimeslotService;
+import blok2.database.daos.ILocationDao;
+import blok2.database.daos.ITimeslotDao;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservables.Location;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -19,9 +17,7 @@ import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 
 import java.text.DecimalFormat;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;

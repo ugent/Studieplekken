@@ -1,8 +1,8 @@
-package blok2.controllers;
+package blok2.http.controllers;
 
-import blok2.daos.IActionLogDao;
-import blok2.daos.IBuildingDao;
-import blok2.helpers.exceptions.NotAuthorizedException;
+import blok2.database.daos.IActionLogDao;
+import blok2.database.daos.IBuildingDao;
+import blok2.extensions.exceptions.NotAuthorizedException;
 import blok2.model.ActionLogEntry;
 import blok2.model.Building;
 import blok2.model.users.User;

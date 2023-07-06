@@ -1,4 +1,4 @@
-package blok2.security.services;
+package blok2.http.security.services;
 
 import blok2.database.daos.IUserDao;
 import blok2.model.users.User;

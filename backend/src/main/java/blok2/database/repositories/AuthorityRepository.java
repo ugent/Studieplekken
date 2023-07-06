@@ -1,4 +1,4 @@
-package blok2.daos.repositories;
+package blok2.database.repositories;
 
 import blok2.model.Authority;
 import org.springframework.data.jpa.repository.JpaRepository;

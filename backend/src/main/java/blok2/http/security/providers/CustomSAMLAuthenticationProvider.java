@@ -1,4 +1,4 @@
-package blok2.security.providers;
+package blok2.http.security.providers;
 
 import blok2.model.users.User;
 import org.springframework.security.core.Authentication;

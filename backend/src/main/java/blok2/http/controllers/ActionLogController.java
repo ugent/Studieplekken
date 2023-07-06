@@ -1,6 +1,6 @@
-package blok2.controllers;
+package blok2.http.controllers;
 
-import blok2.daos.IActionLogDao;
+import blok2.database.daos.IActionLogDao;
 import blok2.model.ActionLogEntry;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;

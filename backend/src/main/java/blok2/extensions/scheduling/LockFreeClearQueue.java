@@ -1,4 +1,4 @@
-package blok2.scheduling;
+package blok2.extensions.scheduling;
 
 import java.util.ArrayList;
 import java.util.List;

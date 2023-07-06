@@ -1,22 +1,14 @@
 package blok2.model.penalty;
 
-import blok2.helpers.Variables;
-import blok2.model.reservables.Location;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.Calendar;
-import java.util.Objects;
 
 @Entity
 @Table(name = "penalty_points")

@@ -1,10 +1,10 @@
-package blok2.daos.services;
+package blok2.database.services;
 
-import blok2.daos.ILocationDao;
-import blok2.daos.ITimeslotDao;
-import blok2.daos.repositories.LocationRepository;
-import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
-import blok2.helpers.orm.LocationNameAndNextReservableFrom;
+import blok2.database.daos.ILocationDao;
+import blok2.database.daos.ITimeslotDao;
+import blok2.database.repositories.LocationRepository;
+import blok2.extensions.exceptions.NoSuchDatabaseObjectException;
+import blok2.extensions.orm.LocationNameAndNextReservableFrom;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservables.Location;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +59,15 @@ public class LocationService implements ILocationDao {
     }
 
     @Override
+    public List<Location> getAllLocations() {
+        List<Location> locs = locationRepository.findAll();
+        locs.forEach(
+                this::initializeCurrentTimeslot
+        );
+        return locs;
+    }
+
+    @Override
     public List<Location> getAllUnapprovedLocations() {
         return locationRepository.findAllByApprovedFalse();
     }
@@ -85,7 +94,7 @@ public class LocationService implements ILocationDao {
         originalLocation.setAuthority(location.getAuthority());
         originalLocation.setNumberOfSeats(location.getNumberOfSeats());
         originalLocation.setForGroup(location.getForGroup());
-        originalLocation.setIsHidden(location.isHidden());
+        originalLocation.setHidden(location.isHidden());
         originalLocation.setImageUrl(location.getImageUrl());
         originalLocation.setDescriptionDutch(location.getDescriptionDutch());
         originalLocation.setDescriptionEnglish((location.getDescriptionEnglish()));

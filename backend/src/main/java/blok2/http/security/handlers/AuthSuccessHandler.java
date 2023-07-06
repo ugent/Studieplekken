@@ -1,4 +1,4 @@
-package blok2.security.handlers;
+package blok2.http.security.handlers;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

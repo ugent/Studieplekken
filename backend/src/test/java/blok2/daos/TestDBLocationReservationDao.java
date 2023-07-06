@@ -2,7 +2,8 @@ package blok2.daos;
 
 import blok2.BaseTest;
 import blok2.TestSharedMethods;
-import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
+import blok2.database.daos.*;
+import blok2.extensions.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.Authority;
 import blok2.model.calendar.Timeslot;
 import blok2.model.Building;

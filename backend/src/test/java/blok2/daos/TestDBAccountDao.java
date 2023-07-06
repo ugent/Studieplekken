@@ -2,11 +2,11 @@ package blok2.daos;
 
 import blok2.BaseTest;
 import blok2.TestSharedMethods;
+import blok2.database.daos.IUserDao;
 import blok2.model.users.User;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 
 import java.util.List;
 

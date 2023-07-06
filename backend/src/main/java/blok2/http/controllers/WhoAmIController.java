@@ -1,4 +1,4 @@
-package blok2.controllers;
+package blok2.http.controllers;
 
 import blok2.model.users.User;
 import org.springframework.security.access.prepost.PreAuthorize;

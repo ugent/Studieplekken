@@ -1,8 +1,8 @@
-package blok2.security.services;
+package blok2.http.security.services;
 
 import blok2.database.daos.IUserDao;
+import blok2.http.security.config.JwtService;
 import blok2.model.users.User;
-import blok2.security.config.JwtService;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;

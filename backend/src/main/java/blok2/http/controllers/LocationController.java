@@ -1,16 +1,15 @@
-package blok2.controllers;
+package blok2.http.controllers;
 
-import blok2.daos.*;
-import blok2.helpers.LocationWithApproval;
-import blok2.helpers.View;
-import blok2.helpers.authorization.AuthorizedLocationController;
-import blok2.helpers.exceptions.AlreadyExistsException;
-import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
-import blok2.helpers.orm.LocationNameAndNextReservableFrom;
-import blok2.mail.MailService;
+import blok2.database.daos.*;
+import blok2.extensions.helpers.LocationWithApproval;
+import blok2.extensions.helpers.View;
+import blok2.http.security.authorization.AuthorizedLocationController;
+import blok2.extensions.exceptions.AlreadyExistsException;
+import blok2.extensions.exceptions.NoSuchDatabaseObjectException;
+import blok2.extensions.orm.LocationNameAndNextReservableFrom;
+import blok2.extensions.mail.MailService;
 import blok2.model.ActionLogEntry;
 import blok2.model.reservables.Location;
-import blok2.model.reservables.UserLocationSubscription;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -71,12 +70,23 @@ public class LocationController extends AuthorizedLocationController {
     @JsonView(View.List.class)
     @GetMapping
     @PreAuthorize("permitAll()")
-    public List<Location> getAllLocations() {
+    public List<Location> getAllActiveLocations() {
         List<Location> locations = locationDao.getAllActiveLocations();
+
         locations.sort(
             Comparator.comparing(Location::getName)
         );
+
         return locations;
+    }
+
+    @JsonView(View.List.class)
+    @GetMapping("/all")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public List<Location> getAllLocations() {
+        return locationDao.getAllLocations().stream().sorted(
+                Comparator.comparing(Location::getName)
+        ).collect(Collectors.toList());
     }
 
     @JsonView(View.List.class)
@@ -123,12 +133,13 @@ public class LocationController extends AuthorizedLocationController {
     @PutMapping("/{locationId}")
     @PreAuthorize("@authorizedInstitutionController.hasAuthorityLocation(authentication.principal, #locationId)")
     public void updateLocation(@AuthenticationPrincipal User user, @PathVariable("locationId") int locationId, @RequestBody Location location) {
-        ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.Type.UPDATE, user, ActionLogEntry.Domain.LOCATION, locationId);
-        actionLogDao.addLogEntry(logEntry);
+        actionLogDao.addLogEntry(new ActionLogEntry(
+                ActionLogEntry.Type.UPDATE, user, ActionLogEntry.Domain.LOCATION, locationId
+        ));
+
         isAuthorized(locationId);
 
         locationDao.updateLocation(location);
-        logger.info(String.format("Location %d updated", locationId));
     }
 
     @PutMapping("/{locationId}/approval")
@@ -137,7 +148,6 @@ public class LocationController extends AuthorizedLocationController {
         ActionLogEntry logEntry = new ActionLogEntry(ActionLogEntry.Type.OTHER, user, ActionLogEntry.Domain.LOCATION, locationId);
         actionLogDao.addLogEntry(logEntry);
         locationDao.approveLocation(landa.getLocation(), landa.isApproval());
-        logger.info(String.format("Location %d approved", locationId));
     }
 
     //authority user

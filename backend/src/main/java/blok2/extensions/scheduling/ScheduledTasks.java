@@ -1,9 +1,9 @@
-package blok2.scheduling;
+package blok2.extensions.scheduling;
 
 import blok2.database.daos.ILocationDao;
 import blok2.database.daos.ILocationReservationDao;
-import blok2.mail.MailReservationData;
-import blok2.mail.MailService;
+import blok2.extensions.mail.MailReservationData;
+import blok2.extensions.mail.MailService;
 import blok2.model.reservables.Location;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;

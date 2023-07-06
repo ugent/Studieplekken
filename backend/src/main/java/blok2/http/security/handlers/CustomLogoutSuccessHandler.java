@@ -1,4 +1,4 @@
-package blok2.security.handlers;
+package blok2.http.security.handlers;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;

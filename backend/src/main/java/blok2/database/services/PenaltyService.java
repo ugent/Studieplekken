@@ -1,7 +1,7 @@
-package blok2.daos.services;
+package blok2.database.services;
 
-import blok2.daos.IPenaltyDao;
-import blok2.daos.repositories.PenaltyRepository;
+import blok2.database.daos.IPenaltyDao;
+import blok2.database.repositories.PenaltyRepository;
 import blok2.model.penalty.Penalty;
 import blok2.model.reservations.LocationReservation;
 import org.springframework.beans.factory.annotation.Autowired;

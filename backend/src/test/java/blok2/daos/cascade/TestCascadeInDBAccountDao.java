@@ -2,13 +2,12 @@ package blok2.daos.cascade;
 
 import blok2.BaseTest;
 import blok2.TestSharedMethods;
-import blok2.daos.*;
-import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
+import blok2.database.daos.*;
+import blok2.extensions.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.calendar.Timeslot;
 import blok2.model.penalty.Penalty;
-import blok2.model.penalty.PenaltyEvent;
 import blok2.model.reservables.Location;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
@@ -17,8 +16,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 
 public class TestCascadeInDBAccountDao extends BaseTest {
@@ -44,7 +41,8 @@ public class TestCascadeInDBAccountDao extends BaseTest {
     @Autowired
     private ITimeslotDao timeslotDAO;
 
-    @Autowired IBuildingDao buildingDao;
+    @Autowired
+    IBuildingDao buildingDao;
 
     // this will be the test user
     private User testUser;

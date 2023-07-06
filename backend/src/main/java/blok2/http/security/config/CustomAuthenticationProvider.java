@@ -1,7 +1,7 @@
-package blok2.security.config;
+package blok2.http.security.config;
 
+import blok2.http.security.services.BackdoorUserDetailService;
 import blok2.model.users.User;
-import blok2.security.services.BackdoorUserDetailService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

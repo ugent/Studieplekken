@@ -1,10 +1,10 @@
-package blok2.controllers;
+package blok2.http.controllers;
 
-import blok2.daos.IActionLogDao;
-import blok2.daos.IAuthorityDao;
-import blok2.helpers.Base64String;
-import blok2.helpers.exceptions.AlreadyExistsException;
-import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
+import blok2.database.daos.IActionLogDao;
+import blok2.database.daos.IAuthorityDao;
+import blok2.extensions.helpers.Base64String;
+import blok2.extensions.exceptions.AlreadyExistsException;
+import blok2.extensions.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.ActionLogEntry;
 import blok2.model.Authority;
 import blok2.model.reservables.Location;

@@ -1,4 +1,4 @@
-package blok2.daos.services;
+package blok2.database.services;
 
 
 import java.net.URI;

@@ -1,6 +1,6 @@
 package blok2.model.stats;
 
-import blok2.helpers.orm.CustomLocalDateTimeSerializer;
+import blok2.extensions.orm.CustomLocalDateTimeSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;

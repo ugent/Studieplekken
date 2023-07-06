@@ -1,4 +1,4 @@
-package blok2.http.authorization;
+package blok2.http.security.authorization;
 
 import blok2.database.daos.IAuthorityDao;
 import blok2.model.Authority;

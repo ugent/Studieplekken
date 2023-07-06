@@ -1,14 +1,14 @@
-package blok2.daos.services;
+package blok2.database.services;
 
-import blok2.daos.ILocationReservationDao;
-import blok2.daos.db.DBLocationReservationDao;
-import blok2.daos.repositories.LocationReservationRepository;
-import blok2.daos.repositories.UserRepository;
-import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
+import blok2.database.daos.ILocationReservationDao;
+import blok2.database.DBLocationReservationDao;
+import blok2.database.repositories.LocationReservationRepository;
+import blok2.database.repositories.UserRepository;
+import blok2.extensions.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
-import blok2.scheduling.ReservationManager;
+import blok2.extensions.scheduling.ReservationManager;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;

@@ -1,7 +1,7 @@
 package blok2.integration;
 
 import blok2.TestSharedMethods;
-import blok2.daos.IUserDao;
+import blok2.database.daos.IUserDao;
 import blok2.model.Authority;
 import blok2.model.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
