@@ -55,15 +55,15 @@ public class StadGentLocation {
     @JsonProperty("bezetting")
     private Integer reserved;
 
-    private boolean isReservable;
-    private boolean hasFutureTimeslots;
+    private final boolean isReservable;
+    private final boolean hasFutureTimeslots;
 
     @JsonProperty("tag_1")
     public String getReservationMethod() {
         return isReservable ? "Reserveerbaar" : (hasFutureTimeslots ? "Geen reservatie nodig" : "");
     }
 
-    private Optional<Timeslot> optionalNextUpcomingReservableTimeslot;
+    private final Optional<Timeslot> optionalNextUpcomingReservableTimeslot;
 
     @JsonProperty("teaser_text")
     public String getStartDateReservation() {
@@ -75,10 +75,10 @@ public class StadGentLocation {
         }
     }
 
-    private boolean tomorrowStillAvailable;
-    private boolean openDuringWeek;
-    private boolean openDuringWeekend;
-    private boolean openDuringEvening;
+    private final boolean tomorrowStillAvailable;
+    private final boolean openDuringWeek;
+    private final boolean openDuringWeekend;
+    private final boolean openDuringEvening;
 
     @JsonProperty("tag_2")
     public String getAvailability() {

@@ -1,6 +1,7 @@
 package blok2.daos.services;
 
 import blok2.daos.ILocationDao;
+import blok2.daos.ITimeslotDao;
 import blok2.daos.repositories.LocationRepository;
 import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
 import blok2.helpers.orm.LocationNameAndNextReservableFrom;
@@ -22,14 +23,12 @@ import java.util.*;
 public class LocationService implements ILocationDao {
 
     private final LocationRepository locationRepository;
+    private final ITimeslotDao timeslotService;
 
     @Autowired
-    @Lazy
-    private TimeslotService timeslotService;
-
-    @Autowired
-    public LocationService(LocationRepository locationRepository) {
+    public LocationService(LocationRepository locationRepository, @Lazy ITimeslotDao timeslotService) {
         this.locationRepository = locationRepository;
+        this.timeslotService = timeslotService;
     }
 
     @Override
