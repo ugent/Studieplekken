@@ -1,9 +1,9 @@
-package blok2.controllers;
+package blok2.http.controllers;
 
-import blok2.daos.ITimeslotDao;
-import blok2.helpers.authorization.AuthorizedLocationController;
-import blok2.helpers.exceptions.InvalidRequestParametersException;
-import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
+import blok2.database.daos.ITimeslotDao;
+import blok2.http.security.authorization.AuthorizedLocationController;
+import blok2.extensions.exceptions.InvalidRequestParametersException;
+import blok2.extensions.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.calendar.Timeslot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

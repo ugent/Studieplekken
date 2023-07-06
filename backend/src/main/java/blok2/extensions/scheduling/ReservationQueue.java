@@ -1,4 +1,4 @@
-package blok2.scheduling;
+package blok2.extensions.scheduling;
 
 import blok2.model.reservations.LocationReservation;
 

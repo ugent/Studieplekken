@@ -1,4 +1,4 @@
-package blok2.security.config;
+package blok2.http.security.config;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 

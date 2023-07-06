@@ -1,6 +1,6 @@
-package blok2.controllers;
+package blok2.http.controllers;
 
-import blok2.daos.services.AuthProxy;
+import blok2.database.services.AuthProxy;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;

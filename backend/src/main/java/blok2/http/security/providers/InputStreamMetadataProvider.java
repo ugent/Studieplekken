@@ -1,4 +1,4 @@
-package blok2.security.providers;
+package blok2.http.security.providers;
 
 import org.opensaml.saml2.metadata.provider.AbstractReloadingMetadataProvider;
 import org.opensaml.saml2.metadata.provider.MetadataProviderException;

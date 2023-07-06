@@ -1,4 +1,4 @@
-package blok2.helpers.orm;
+package blok2.extensions.orm;
 
 import java.util.Date;
 

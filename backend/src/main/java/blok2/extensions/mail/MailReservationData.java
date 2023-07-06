@@ -1,7 +1,6 @@
-package blok2.mail;
+package blok2.extensions.mail;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Objects;
 
 public class MailReservationData {

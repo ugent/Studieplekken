@@ -1,6 +1,5 @@
-package blok2.scheduling;
+package blok2.extensions.scheduling;
 
-import blok2.config.PoolProcessor;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
 

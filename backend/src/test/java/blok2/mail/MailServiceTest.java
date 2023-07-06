@@ -2,7 +2,8 @@ package blok2.mail;
 
 import blok2.BaseTest;
 import blok2.TestSharedMethods;
-import blok2.helpers.Institution;
+import blok2.extensions.helpers.Institution;
+import blok2.extensions.mail.MailService;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.reservables.Location;

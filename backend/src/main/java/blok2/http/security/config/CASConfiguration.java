@@ -1,4 +1,4 @@
-package blok2.security.config;
+package blok2.http.security.config;
 
 
 // TODO: Do we still need this?

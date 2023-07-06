@@ -1,9 +1,9 @@
-package blok2.daos.services;
+package blok2.database.services;
 
-import blok2.daos.IUserDao;
-import blok2.daos.repositories.UserRepository;
-import blok2.daos.repositories.UserSettingsRepository;
-import blok2.helpers.exceptions.NoSuchDatabaseObjectException;
+import blok2.database.daos.IUserDao;
+import blok2.database.repositories.UserRepository;
+import blok2.database.repositories.UserSettingsRepository;
+import blok2.extensions.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.users.User;
 import blok2.model.users.UserSettings;
 import org.springframework.beans.factory.annotation.Autowired;

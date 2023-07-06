@@ -1,4 +1,4 @@
-package blok2.mail;
+package blok2.extensions.mail;
 
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservables.Location;

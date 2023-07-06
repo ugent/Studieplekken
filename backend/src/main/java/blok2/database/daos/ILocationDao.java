@@ -1,6 +1,6 @@
-package blok2.daos;
+package blok2.database.daos;
 
-import blok2.helpers.orm.LocationNameAndNextReservableFrom;
+import blok2.extensions.orm.LocationNameAndNextReservableFrom;
 import blok2.model.reservables.Location;
 
 import java.util.List;
@@ -23,7 +23,15 @@ public interface ILocationDao {
     Location getLocationByName(String locationName);
 
     /**
-     * Get a list of all available locations.
+     * Get a list of all locations.
+     *
+     * @return a list of all locations in the database.
+     */
+    List<Location> getAllLocations();
+
+    /**
+     * Get a list of all available locations,
+     * excluding unapproved and hidden locations.
      */
     List<Location> getAllActiveLocations();
 

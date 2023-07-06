@@ -1,9 +1,9 @@
 package blok2.model.reservables;
 
-import blok2.helpers.Equality;
-import blok2.helpers.LocationStatus;
-import blok2.helpers.Pair;
-import blok2.helpers.View;
+import blok2.extensions.helpers.Equality;
+import blok2.extensions.helpers.LocationStatus;
+import blok2.extensions.helpers.Pair;
+import blok2.extensions.helpers.View;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.LocationTag;
@@ -66,6 +66,9 @@ public class Location implements Cloneable {
     @Column(name = "approved")
     private boolean approved;
 
+    @Column(name = "hidden")
+    private boolean hidden;
+
     @Column(name = "uses_penalty_points")
     private boolean usesPenaltyPoints = false;
 
@@ -119,13 +122,13 @@ public class Location implements Cloneable {
 
     public Location(int locationId, String name, int numberOfSeats, int numberOfLockers, String imageUrl,
                     Authority authority, String descriptionDutch, String descriptionEnglish, Building building,
-                    boolean forGroup, List<LocationTag> assignedTags, Pair<LocationStatus, String> status) {
-        this(locationId, name, numberOfSeats, numberOfLockers, imageUrl, authority, descriptionDutch, descriptionEnglish, building, forGroup, assignedTags, status, null);
+                    boolean forGroup, boolean hidden, List<LocationTag> assignedTags, Pair<LocationStatus, String> status) {
+        this(locationId, name, numberOfSeats, numberOfLockers, imageUrl, authority, descriptionDutch, descriptionEnglish, building, forGroup, hidden, assignedTags, status, null);
     }
 
     public Location(int locationId, String name, int numberOfSeats, int numberOfLockers, String imageUrl,
                     Authority authority, String descriptionDutch, String descriptionEnglish, Building building,
-                    boolean forGroup, List<LocationTag> assignedTags, Pair<LocationStatus, String> status, Timeslot timeslot) {
+                    boolean forGroup, boolean hidden, List<LocationTag> assignedTags, Pair<LocationStatus, String> status, Timeslot timeslot) {
         this.locationId = locationId;
         this.name = name;
         this.numberOfSeats = numberOfSeats;
@@ -139,6 +142,7 @@ public class Location implements Cloneable {
         this.assignedTags = assignedTags;
         this.status = status;
         this.currentTimeslot = timeslot;
+        this.hidden = hidden;
     }
 
     // default constructor necessary for testing purposes
@@ -226,6 +230,7 @@ public class Location implements Cloneable {
                 ", building=" + building +
                 ", authority=" + authority +
                 ", forGroup=" + forGroup +
+                ", hidden=" + hidden +
                 ", approved=" + approved +
                 ", assignedTags=" + assignedTags +
                 // ", volunteers=" + volunteers + // ignore due to lazy loading
@@ -342,6 +347,14 @@ public class Location implements Cloneable {
 
     public boolean isForGroup() {
         return forGroup;
+    }
+
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
     }
 
     public boolean isApproved() {

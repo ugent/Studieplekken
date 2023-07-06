@@ -1,10 +1,8 @@
-package blok2.stadgent.controllers;
+package blok2.http.controllers;
 
-import blok2.daos.ILocationDao;
-import blok2.daos.ITimeslotDao;
-import blok2.daos.services.LocationService;
-import blok2.daos.services.TimeslotService;
-import blok2.stadgent.model.StadGentLocation;
+import blok2.database.daos.ILocationDao;
+import blok2.database.daos.ITimeslotDao;
+import blok2.model.StadGentLocation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,4 +1,4 @@
-package blok2.helpers.orm;
+package blok2.extensions.orm;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;

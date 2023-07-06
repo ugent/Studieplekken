@@ -1,6 +1,5 @@
-package blok2.security.config;
+package blok2.http.security.config;
 
-import blok2.model.users.User;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

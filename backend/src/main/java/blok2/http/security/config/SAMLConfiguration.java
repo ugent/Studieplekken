@@ -1,7 +1,7 @@
-package blok2.security.config;
+package blok2.http.security.config;
 
-import blok2.security.providers.CustomSAMLAuthenticationProvider;
-import blok2.security.providers.InputStreamMetadataProvider;
+import blok2.http.security.providers.CustomSAMLAuthenticationProvider;
+import blok2.http.security.providers.InputStreamMetadataProvider;
 import org.opensaml.saml2.metadata.provider.MetadataProvider;
 import org.opensaml.saml2.metadata.provider.MetadataProviderException;
 import org.opensaml.xml.parse.StaticBasicParserPool;

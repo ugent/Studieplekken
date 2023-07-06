@@ -1,11 +1,10 @@
-package blok2.daos.db;
+package blok2.database;
 
 import blok2.model.reservations.LocationReservation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
-import java.sql.Date;
 
 @Service
 public class DBLocationReservationDao {
@@ -32,7 +31,7 @@ public class DBLocationReservationDao {
                 stmt.setInt(1, reservation.getTimeslot().getTimeslotSeqnr());
                 int change = stmt.executeUpdate();
 
-                // Double checking the change for insurance (and also compiler check)
+                // Double-checking the change for insurance (and also compiler check)
                 if(change != 1) {
                     return false;
                 }

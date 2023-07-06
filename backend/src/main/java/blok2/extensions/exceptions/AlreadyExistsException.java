@@ -1,4 +1,4 @@
-package blok2.helpers.exceptions;
+package blok2.extensions.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

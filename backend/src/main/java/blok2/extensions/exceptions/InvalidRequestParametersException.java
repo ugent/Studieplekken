@@ -1,4 +1,4 @@
-package blok2.helpers.exceptions;
+package blok2.extensions.exceptions;
 
 public class InvalidRequestParametersException extends RuntimeException {
     public InvalidRequestParametersException(String msg) {

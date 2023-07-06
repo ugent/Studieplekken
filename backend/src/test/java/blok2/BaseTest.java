@@ -1,6 +1,6 @@
 package blok2;
 
-import blok2.daos.db.ConnectionProvider;
+import blok2.database.ConnectionProvider;
 import config.CustomFlywayConfig;
 import org.flywaydb.test.FlywayTestExecutionListener;
 import org.flywaydb.test.annotation.FlywayTest;

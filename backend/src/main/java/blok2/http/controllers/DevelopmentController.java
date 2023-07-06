@@ -1,6 +1,6 @@
-package blok2.controllers;
+package blok2.http.controllers;
 
-import blok2.security.services.CustomUserDetailsService;
+import blok2.http.security.services.CustomUserDetailsService;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.authentication.AttributePrincipalImpl;
 import org.jasig.cas.client.validation.Assertion;

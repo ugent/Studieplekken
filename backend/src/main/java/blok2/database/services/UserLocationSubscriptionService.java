@@ -1,7 +1,7 @@
-package blok2.daos.services;
+package blok2.database.services;
 
-import blok2.daos.IUserLocationSubscriptionDao;
-import blok2.daos.repositories.UserLocationSubscriptionRepository;
+import blok2.database.daos.IUserLocationSubscriptionDao;
+import blok2.database.repositories.UserLocationSubscriptionRepository;
 import blok2.model.reservables.Location;
 import blok2.model.reservables.UserLocationSubscription;
 import blok2.model.users.User;
