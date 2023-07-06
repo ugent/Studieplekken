@@ -30,19 +30,36 @@ public class StadGentLocationController {
         this.locationService = locationService;
     }
 
+    /**
+     * Retrieve a list of active locations.
+     *
+     * @return a list of StadGentLocation objects representing the active locations.
+     */
     @GetMapping("/locations")
     public List<StadGentLocation> getLocations() {
-        return this.locationService.getAllActiveLocations().stream().map(
-                // Map each Location to a StadGentLocation.
-                location -> StadGentLocation.fromLocation(location, timeslotService, locationService)
-        ).sorted((location1, location2) -> {
+        return this.locationService.getAllActiveLocations().stream().map(location ->
+                StadGentLocation.fromLocation(location, timeslotService, locationService)
+        ).sorted(new RelevanceComparator()).collect(Collectors.toList());
+    }
+
+    /**
+     * A relevance comparator for locations.
+     */
+    private static class RelevanceComparator implements Comparator<StadGentLocation> {
+        @Override
+        public int compare(StadGentLocation location1, StadGentLocation location2) {
             if (location1 == null || location2 == null) {
                 return 0;
             }
 
             // Compare the availability information of the locations.
-            if (location1.getHours().isEmpty() != location2.getHours().isEmpty()) {
-                return location1.getHours().isEmpty() ? 1 : -1;
+            if (location1.getHours().length() != location2.getHours().length()) {
+                return location2.getHours().length() - location1.getHours().length();
+            }
+
+            // Compare the reservation ability information.
+            if (location1.getStartDateReservation().length() != location2.getStartDateReservation().length()) {
+                return location2.getStartDateReservation().length() - location1.getStartDateReservation().length();
             }
 
             // Compare the amount of free seats.
@@ -50,6 +67,6 @@ public class StadGentLocationController {
             int freeSeats2 = location2.getCapacity() - location2.getReserved();
 
             return freeSeats2 - freeSeats1;
-        }).collect(Collectors.toList());
+        }
     }
 }
