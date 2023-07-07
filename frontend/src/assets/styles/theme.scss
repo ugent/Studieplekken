@@ -11,20 +11,20 @@ $theming-material-components-warn: mat.define-palette(mat.$red-palette);
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as `color` or `typography`.
 $theming-material-components-theme: mat.define-light-theme((
-  color:(
-    primary: $theming-material-components-primary,
-    accent: $theming-material-components-accent,
-    warn: $theming-material-components-warn)
+    color:(
+        primary: $theming-material-components-primary,
+        accent: $theming-material-components-accent,
+        warn: $theming-material-components-warn)
 ));
 
 // 2. Define a custom heading typography config
 $heading-font-family: "'PannoTextMedium',Arial, sans-serif";
 
 $typography: mat.define-typography-config(
-  $display-4: mat.define-typography-level(112px, $font-family: $heading-font-family),
-  $display-3: mat.define-typography-level(56px, $font-family: $heading-font-family),
-  $display-2: mat.define-typography-level(45px, $font-family: $heading-font-family),
-  $display-1: mat.define-typography-level(34px, $font-family: $heading-font-family),
-  $headline: mat.define-typography-level(24px, $font-family: $heading-font-family),
-  $title: mat.define-typography-level(20px, $font-family: $heading-font-family),
+    $display-4: mat.define-typography-level(112px, $font-family: $heading-font-family),
+    $display-3: mat.define-typography-level(56px, $font-family: $heading-font-family),
+    $display-2: mat.define-typography-level(45px, $font-family: $heading-font-family),
+    $display-1: mat.define-typography-level(34px, $font-family: $heading-font-family),
+    $headline: mat.define-typography-level(24px, $font-family: $heading-font-family),
+    $title: mat.define-typography-level(20px, $font-family: $heading-font-family),
 );
