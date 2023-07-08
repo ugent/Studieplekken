@@ -201,7 +201,9 @@
         "stadGentLogin": "Stad Gent Login",
         "kuLeuvenLogin": "KU Leuven Login",
         "otherLogin": "Login voor speciale accounts",
-        "about": "Het digitaal platform voor studieplekken"
+        "about": "Het digitaal platform voor studieplekken",
+        "students": "Voor studenten",
+        "others": "Andere accounts"
     },
     "management": {
         "confirm": "Ben je het zeker?",
