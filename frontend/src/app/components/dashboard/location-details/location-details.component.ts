@@ -8,7 +8,7 @@ import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import * as moment from 'moment';
 import {
     BehaviorSubject,
-    combineLatest,
+    combineLatest, forkJoin,
     merge,
     Observable,
     of,
@@ -66,9 +66,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
 
     editor: unknown = ClassicEditor;
 
-    selectedSubject: BehaviorSubject<LocationReservation[]> = new BehaviorSubject<
-        LocationReservation[]
-    >([]);
+    selectedSubject: BehaviorSubject<LocationReservation[]> = new BehaviorSubject<LocationReservation[]>([]);
     originalList: LocationReservation[];
     subscription: Subscription;
 
@@ -157,7 +155,11 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
             }
         });
 
-        this.ownReservations.subscribe(v => this.selectedSubject.next(v.filter(f => f.timeslot.locationId === this.locationId)))
+        this.ownReservations.subscribe(v =>
+            this.selectedSubject.next(
+                v.filter(f => f.timeslot.locationId === this.locationId)
+            )
+        );
 
         this.currentLang = this.translate.currentLang;
 
@@ -195,7 +197,8 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
             this.leafletMap.off();
             this.leafletMap.remove();
         }
-        // when the location is loaded, setup the Leaflet map
+
+        // when the location is loaded, set up the Leaflet map
         this.locationSub = this.location.subscribe((next) => {
             if (next) {
                 this.setupLeafletMap(next);
@@ -206,20 +209,23 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     ngOnDestroy(): void {
         this.locationSub?.unsubscribe();
         this.calendarSub?.unsubscribe();
+
         if (this.leafletMap) {
             this.leafletMap.off();
             this.leafletMap.remove();
         }
     }
+
     timeslotPicked(event: Event): void {
-        if (!event['timeslot']) {
-            // the calendar period is not reservable
-            return;
-        }
-        const currentTimeslot = event['timeslot'] as Timeslot;
+        const currentTimeslot: Timeslot = event['timeslot'];
 
         if (!this.loggedIn()) {
             // When not logged in, calendar periods are unclickable
+            return;
+        }
+
+        if (!currentTimeslot) {
+            // the calendar period is not reservable
             return;
         }
 
@@ -232,7 +238,6 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         if (currentTimeslot.isInPast()) {
             return;
         }
-
 
         const reservation: LocationReservation = {
             state: null,
@@ -296,7 +301,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
             lang === 'nl' ? this.description.dutch : this.description.english;
     }
 
-    updateCalendar(update_selection = false): void {
+    updateCalendar(updateSelection = false): void {
         // retrieve the calendar periods and map them to calendar events used by Angular Calendar
         if (this.subscription) {
             this.subscription.unsubscribe();
@@ -308,14 +313,14 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
             this.selectedSubject,
         ])
             .subscribe(([timeslots, reservations, proposedReservations]) => {
-                this.originalList = [...reservations.filter(r => r.timeslot.locationId == this.locationId)];
+                this.originalList = [...reservations.filter(r => r.timeslot.locationId === this.locationId)];
                 this.pendingReservations = this.originalList.filter(locres => locres.state === LocationReservationState.PENDING);
                 this.timeouts.forEach(t => clearTimeout(t));
 
                 // Only do this once, when selectedSubject isn't initialized yet.
                 // TODO: Why only the first time? If there is a faulty reservation it'll keep trying (and failing) to make that reservation.
                 // If this line can be removed then this scenario
-                if (this.isFirst || update_selection) {
+                if (this.isFirst || updateSelection) {
                     this.isFirst = false;
                     this.selectedSubject.next([...this.originalList]);
                     return;
@@ -351,17 +356,18 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
                 }
                 const tempList: LocationReservation[] = this.originalList.filter(
                     (reservation) => {
-                        return reservation.user.userId === selected.user.userId && reservation.timeslot.timeslotSequenceNumber === selected.timeslot.timeslotSequenceNumber;
+                        return reservation.user.userId === selected.user.userId &&
+                            reservation.timeslot.timeslotSequenceNumber === selected.timeslot.timeslotSequenceNumber;
                     }
                 );
                 const oldReservation = tempList.length > 0 ? tempList[0] : undefined;
                 if (!oldReservation) {
                     return true;
                 }
-                if (oldReservation && (oldReservation.state === LocationReservationState.DELETED || oldReservation.state == LocationReservationState.REJECTED)) {
-                    return true;
-                }
-                return false;
+
+                return oldReservation && (
+                    oldReservation.state === LocationReservationState.DELETED || oldReservation.state === LocationReservationState.REJECTED
+                );
             }
         );
 
@@ -375,17 +381,15 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
                     (res) => res.timeslot.timeslotSequenceNumber === selected.timeslot.timeslotSequenceNumber
                 );
                 const reservation = tempList.length > 0 ? tempList[0] : undefined;
-                if (!reservation) {
-                    return true;
-                }
-                return false;
+
+                return !reservation;
             });
 
-        this.modalRef = this.modalService.open(template, {panelClass: ["cs--cyan", "bigmodal"]});
+        this.modalRef = this.modalService.open(template, {panelClass: ['cs--cyan', 'bigmodal']});
     }
 
     confirmReservationChange(template: TemplateRef<unknown>): void {
-        this.modalService.open(template, {panelClass: ["cs--cyan", "bigmodal"]});
+        this.modalService.open(template, {panelClass: ['cs--cyan', 'bigmodal']});
         this.newReservationCreator = combineLatest([
             this.locationReservationService.postLocationReservations(
                 this.newReservations
@@ -404,44 +408,6 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
             map(([res]) => res)
         );
 
-        // .subscribe(
-        //   (res) => {
-        //     this.showError = false;
-        //     this.showSuccessDeletion = false;
-        //     this.showSuccessPendingShort = false;
-        //     this.showSuccessPendingLong = false;
-
-        //     const reservationProcessingStart : Moment[] = res[0];
-
-        //     this.updateCalendar();
-        //     if (reservationProcessingStart.length !== 0) {
-        //       const now : Moment = moment();
-        //       const maxMoment : Moment = moment.max(reservationProcessingStart);
-        //       const hasDelayedReservation: boolean = now.isBefore(maxMoment);
-        //       if (hasDelayedReservation) {
-        //         this.showSuccessPendingLong = true;
-        //         const msDelayUntilReservationsStart = moment.duration(maxMoment.diff(now)).asMilliseconds();
-        //         setTimeout(() => (document.querySelector("#location_reservations").scrollIntoView()), 300);
-        //         setTimeout(() => (this.showSuccessPendingLong = false), msDelayUntilReservationsStart);
-        //       } else {
-        //         this.showSuccessPendingShort = true;
-        //         setTimeout(() => (document.querySelector("#location_reservations").scrollIntoView({'behavior': 'smooth'})), 300);
-        //         setTimeout(() => (this.showSuccessPendingShort = false), msToShowFeedback);
-        //       }
-        //     } else {
-        //       this.showSuccessDeletion = true;
-        //       setTimeout(() => (this.showSuccessDeletion = false), msToShowFeedback);
-        //     }
-        //   },
-        //   () => {
-        //     this.showError = true;
-        //     this.showSuccessDeletion = false;
-        //     this.showSuccessPendingShort = false;
-        //     this.showSuccessPendingLong = false;
-        //     this.isModified = true;
-        //     setTimeout(() => (this.showError = false), msToShowFeedback);
-        //   }
-        // );
         this.isModified = false;
         this.modalRef.close();
     }
@@ -462,7 +428,9 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     private updateOwnReservations(): void {
-        this.authenticationService.getLocationReservations().subscribe(next => this.ownReservations.next(next.filter(f => f.timeslot.locationId === this.locationId)));
+        this.authenticationService.getLocationReservations().subscribe(next =>
+            this.ownReservations.next(next.filter(f => f.timeslot.locationId === this.locationId))
+        );
     }
 
     loggedIn(): boolean {
@@ -474,11 +442,8 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     setupLeafletMap(location: Location): void {
-
-        const originalTile = Leaf.tileLayer('https://geo.gent.be/geoserver/gwc/service/wmts?layer=SG-E-Stadsplan%3AStadsplan&style=default&tilematrixset=SG-WEB%20MERCATOR&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=SG-WEB%20MERCATOR%3A{z}&TileCol={x}&TileRow={y}', {
-            tileSize: 512,
-            zoomOffset: -1,
-            maxZoom: 25,
+        const originalTile = Leaf.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19
         });
 
         const coordinates = new Leaf.LatLng(location.building.latitude, location.building.longitude);
@@ -496,12 +461,8 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         return 'profile.reservations.locations.table.attended.' + state;
     }
 
-    needsTooltip(state: LocationReservationState) {
+    needsTooltip(state: LocationReservationState): boolean {
         return state === LocationReservationState.REJECTED;
-    }
-
-    getLinkToElement(id: string): string {
-        return document.location.href.replace(document.location.hash, '') + id;
     }
 
     currentLanguage(): Observable<string> {
@@ -513,19 +474,19 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         ).pipe(map((s) => s.lang));
     }
 
-    showUgentWarning(location: Location) {
-        return location.institution == 'UGent';
+    showUgentWarning(location: Location): boolean {
+        return location.institution === 'UGent';
     }
 
-    futureReservations(reservations: LocationReservation[]) {
+    futureReservations(reservations: LocationReservation[]): LocationReservation[] {
         return reservations.filter((res) => !res.timeslot.isInPast());
     }
 
-    nonDeletedReservation(reservations: LocationReservation[]) {
+    nonDeletedReservation(reservations: LocationReservation[]): LocationReservation[] {
         return reservations.filter((res) => res.state !== LocationReservationState.DELETED);
     }
 
-    sortedLocalReservations(reservations: LocationReservation[]) {
+    sortedLocalReservations(reservations: LocationReservation[]): LocationReservation[] {
         return Array.from(reservations).sort((a, b) => a.timeslot.getStartMoment().isBefore(b.timeslot.getStartMoment()) ? 1 : -1);
     }
 
@@ -534,7 +495,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
             this.authenticationService.penaltyObservable.pipe(map(p => p.points < 100)) : of(true);
     }
 
-    toggleSubscription() {
+    toggleSubscription(): void {
         this.locationSubscribed = !this.locationSubscribed;
 
         // Check if the user is logged in
