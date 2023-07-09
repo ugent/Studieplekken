@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {CalendarEvent} from 'angular-calendar';
 import * as moment from 'moment';
 import {LocationReservation, LocationReservationState} from 'src/app/extensions/model/LocationReservation';
-import {Timeslot, includesTimeslot} from 'src/app/extensions/model/Timeslot';
+import {includesTimeslot, Timeslot} from 'src/app/extensions/model/Timeslot';
 
 @Injectable({
     providedIn: 'root'
@@ -21,15 +21,14 @@ export class TimeslotCalendarEventService {
     timeslotToCalendarEvent = (timeslot: Timeslot, currentLang: string, locationReservations: LocationReservation[] = []) =>
         !timeslot.reservable ? this.nonReservableToCalendarEvent(timeslot, currentLang) :
             timeslot.areReservationsLocked() ? this.notYetReservableTimeslotToCalendarEvent(timeslot, currentLang) :
-                this.reservableTimeslotToCalendarEvent(timeslot, currentLang, locationReservations);
-
+                this.reservableTimeslotToCalendarEvent(timeslot, currentLang, locationReservations)
 
     private nonReservableToCalendarEvent: (timeslot: Timeslot, currentLang: string) => CalendarEvent<{
         timeslot: Timeslot
     }> =
         (timeslot, currentLang) =>
             ({
-                title: currentLang == "nl" ?
+                title: currentLang === 'nl' ?
                     `Geen reservatie nodig <br> ${timeslot.openingHour.format('HH:mm')} - ${timeslot.closingHour.format('HH:mm')}`
                     : `Requires no reservation <br> ${timeslot.openingHour.format('HH:mm')} - ${timeslot.closingHour.format('HH:mm')}`,
                 start: timeslot.getStartMoment().toDate(),
@@ -65,45 +64,68 @@ export class TimeslotCalendarEventService {
             timeslot
         ) && reservation && reservation.state !== LocationReservationState.DELETED;
 
-        const isRandomReservationMoment = timeslot.amountOfReservations === 0 && timeslot.reservableFrom.isAfter(moment().subtract(10, "minutes"));
-        const randomMomentTitle = currentLang == "en" ? "Reservation queue is open" : "Reservatiewachtlijn is open";
+        const isRandomReservationMoment = timeslot.amountOfReservations === 0 && timeslot.reservableFrom.isAfter(moment().subtract(10, 'minutes'));
+        const randomMomentTitle = currentLang === 'en' ? 'Reservation queue is open' : 'Reservatiewachtlijn is open';
+
+        let color;
+
+        if (includedTimeSlot) {
+            if (!locationFull) {
+                // Pending reservation colors.
+                if (reservation.state === LocationReservationState.PENDING) {
+                    color = {
+                        primary: 'white',
+                        secondary: '#feeee6'
+                    };
+                // Approved reservation colors.
+                } else if (reservation.state !== LocationReservationState.REJECTED) {
+                    color = {
+                        primary: 'white',
+                        secondary: '#007db3'
+                    };
+                }
+            } else {
+                // Location is full, therefore the reservation was rejected.
+                if (reservation.state === LocationReservationState.REJECTED) {
+                    color = {
+                        primary: '#c53726',
+                        secondary: '#ed9987'
+                    };
+                // Location is full, but the reservation is still pending.
+                } else if (reservation.state === LocationReservationState.PENDING) {
+                    color = {
+                        primary: 'white',
+                        secondary: '#feeee6'
+                    };
+                } else {
+                    color = {
+                        primary: 'white',
+                        secondary: '#feeee6'
+                    };
+                }
+            }
+        } else if (locationFull) {
+            color = {
+                primary: '#c53726',
+                secondary: '#f4ded9'
+            };
+        }
+
 
         return ({
             title: isRandomReservationMoment ? randomMomentTitle : `${timeslot.amountOfReservations} / ${timeslot.seatCount}`,
             start: timeslot.getStartMoment().toDate(),
             end: timeslot.getEndMoment().toDate(),
             meta: {timeslot},
-            color: includedTimeSlot
-                // reserved -> dark blue, reserved full -> dark red
-                ? (!locationFull ?
-                    (reservation.state === LocationReservationState.PENDING ? {
-                            primary: '#F5512C',
-                            secondary: '#FC8A17'
-                        } :
-                        (reservation.state === LocationReservationState.REJECTED ? null : {
-                            primary: '#007db3',
-                            secondary: '#133E7D'
-                        }))
-                    :
-                    (reservation.state === LocationReservationState.REJECTED ? {
-                        primary: '#c53726',
-                        secondary: '#ed9987'
-                    } : reservation.state === LocationReservationState.PENDING ? {
-                        primary: '#F5512C',
-                        secondary: '#FC8A17'
-                    } : {primary: '#007db3', secondary: '#133E7D'}))
-                // unselected light pink, unselected light blue
-                : (locationFull ? {primary: '#c53726', secondary: '#f4ded9'} : null),
-            cssClass: includedTimeSlot && (reservation.state === LocationReservationState.APPROVED || (locationFull && reservation.state === LocationReservationState.REJECTED))
-                ? 'calendar-event-reserved'
-                : (locationFull ? 'calendar-event-full-not-reserved' : 'blue-text'),
+            color,
+            cssClass: reservation && reservation.isAccepted() ? 'accepted' : ''
         });
     }
 
-    public suggestedTimeslotToCalendarEvent(timeslot: Timeslot, currentLang: string) {
+    public suggestedTimeslotToCalendarEvent(timeslot: Timeslot, currentLang: string): CalendarEvent<{ timeslot: Timeslot }> {
         const calendarEvent = this.timeslotToCalendarEvent(timeslot, currentLang);
 
-        calendarEvent.cssClass = (calendarEvent.cssClass || '') + " calendar-event-suggestion"
+        calendarEvent.cssClass = (calendarEvent.cssClass || '') + ' calendar-event-suggestion';
         return calendarEvent;
     }
 }

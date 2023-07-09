@@ -1,3 +1,32 @@
-.responsive-table {
+div.responsive-table {
     width: 100%;
+    overflow-x: auto;
+
+    thead {
+        tr {
+            th {
+                border-bottom: 0 !important;
+            }
+        }
+    }
+
+    tbody {
+        tr {
+            td {
+                padding: .5rem 1rem;
+                min-width: 150px;
+                vertical-align: middle;
+
+                &:first-of-type {
+                    border-top-left-radius: 3px;
+                    border-bottom-left-radius: 3px;
+                }
+
+                &:last-of-type {
+                    border-top-right-radius: 3px;
+                    border-bottom-right-radius: 3px;
+                }
+            }
+        }
+    }
 }
