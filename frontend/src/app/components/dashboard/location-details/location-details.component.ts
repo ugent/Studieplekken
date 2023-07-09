@@ -239,11 +239,9 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
             return;
         }
 
-        const reservation: LocationReservation = {
-            state: null,
-            user: this.authenticationService.userValue(),
-            timeslot: currentTimeslot,
-        };
+        const reservation: LocationReservation = new LocationReservation(
+            this.authenticationService.userValue(), currentTimeslot, null
+        );
 
         const timeslotIsSelected = this.selectedSubject.value.some((r) =>
             timeslotEquals(r.timeslot, reservation.timeslot) && r.state !== LocationReservationState.DELETED &&

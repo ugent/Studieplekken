@@ -1,55 +1,60 @@
 <div *ngIf="locationObs | async as location; else loadingOrErrorForLocation">
-    <h3>{{('scan.locationDetails.title' | translate).replace('{locationName}', location.name)}}</h3>
+    <div class="d-flex justify-content-between align-items-center">
+        <h3 class="m-0">
+            {{ ('scan.locationDetails.title' | translate).replace('{locationName}', location.name) }}
+        </h3>
+        <div *ngIf="locationReservationObs | async as reservations;">
+            <button class="button button-primary" (click)="openScanner()"  *ngIf="reservations.length > 0">
+                {{'scan.phone' | translate}}
+            </button>
+        </div>
+    </div>
 
-    <div *ngIf="locationReservationObs | async as lr; else loadingOrError">
-        <div *ngIf="lr.length > 0; else noUsers">
+    <div *ngIf="locationReservationObs | async as reservations; else loadingOrError">
+        <div *ngIf="reservations.length > 0; else noUsers">
 
-            <app-accordeon>
-                <a accordion-button data-toggle="collapse" aria-controls="camera"
-                   aria-expanded="false" class="collapsed accordion--button">
-                    <i class="glyphicon glyphicon-plus"></i>
-                    <i class="glyphicon glyphicon-minus"></i>
-                    {{'scan.phone' | translate}}</a>
+            <ng-template #scanner>
+                <app-modal>
+                    <h2 modal-header>
+                        {{ 'scan.phone' | translate }}
+                    </h2>
+                    <div modal-body>
+                        <div *ngIf="!reservation" class="messages messages--info">
+                            <i class="icon-info" aria-hidden="true"></i> {{'scan.mobile-hint' | translate}}
+                        </div>
 
-                <div accordion-content class="accordion--content" id="camera">
+                        <app-scanner [class.hide]="reservation || error" (scanSuccess)="scanUser(reservations, $event)">
 
-                    <div *ngIf="!reservation" style="margin-top: 15px;"
-                         class="messages messages--info">{{'scan.mobile-hint' | translate}}</div>
-
-                    <app-scanner [class.hide]="reservation || error" (scanSuccess)="scanUser(lr, $event)"></app-scanner>
-
-                    <div class="usertag" *ngIf="reservation" fxLayout="column" fxLayoutAlign="center center">
-                        <p>
-                            User: {{reservation.user.firstName}} {{reservation.user.lastName}}
-                        </p>
-                        <p>
-                            AugentID: {{reservation.user.userId}}
-                        </p>
-                        <div fxLayout="row">
-                            <button class="button button-primary" (click)="confirm()">Confirm</button>
-                            <button class="button button-secondary" (click)="cancel()">Cancel</button>
+                        </app-scanner>
+                    </div>
+                    <div modal-footer>
+                        <div class="scanned-user" *ngIf="reservation">
+                            <p>
+                                User: {{reservation.user.firstName}} {{reservation.user.lastName}}
+                            </p>
+                            <p>
+                                ID: {{ reservation.user.userId }}
+                            </p>
+                            <div class="d-flex gap-3">
+                                <button class="button button-primary" (click)="confirm()">Confirm</button>
+                                <button class="button button-secondary" (click)="reservation = null">Cancel</button>
+                            </div>
+                        </div>
+                        <div class="messages messages--error" *ngIf="error">
+                            <i class="icon-info" aria-hidden="true"></i>
+                            <span>This user doesn't have a reservation. Please check in the list below.</span> <button class="button button-primary" (click)="error = null">Confirm</button>
                         </div>
                     </div>
+                </app-modal>
+            </ng-template>
+            <div class="messages messages--info">
+                <i class="icon-info" aria-hidden="true"></i>
+                {{"scan.warn-unattended" | translate}}
+                <br/>
+                {{"scan.handheld-hint" | translate}}
+            </div>
 
-                    <div class="usertag" *ngIf="error" fxLayout="column" fxLayoutAlign="center center">
-                        <span>This user doesn't have a reservation. Please check in the list below.</span>
-                        <div fxLayout="row">
-                            <button class="button button-primary" (click)="clearError()">Confirm</button>
-                        </div>
-                    </div>
-
-
-                </div>
-            </app-accordeon>
-
-            <br>
-
-            <div class="messages messages--warning">{{"scan.warn-unattended" | translate}}</div>
-            <div class="messages messages--info">{{"scan.handheld-hint" | translate}}</div>
-
-            <app-location-reservations [currentTimeSlot]="location.currentTimeslot" [locationReservations]="lr"
-                                       [lastScanned]="lastScanned" [isManagement]="false">
-            </app-location-reservations>
+            <app-location-reservations [currentTimeSlot]="location.currentTimeslot" [locationReservations]="reservations" [lastScanned]="lastScanned" [isManagement]="false"></app-location-reservations>
         </div>
     </div>
 
@@ -80,6 +85,7 @@
 
 <ng-template #noUsers>
     <div class="messages messages--warning">
+        <i class="icon-cross" aria-hidden="true"></i>
         {{'scan.locationDetails.noUsersToScanWarning' | translate}}
     </div>
 </ng-template>

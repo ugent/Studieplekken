@@ -1057,7 +1057,7 @@
             "errorMessageOnLoadingLocation": "De locatie om te scannen, kan niet opgehaald worden.",
             "noUsersToScanWarning": "Op dit moment zijn er geen studenten te scannen voor deze locatie ."
         },
-        "phone": "Scan met GSM-camera",
+        "phone": "Camera",
         "handheld": "Scan met een handscanner",
         "manual": "Checklist",
         "unregistered": "Deze gebruiker is niet geregistreerd.",

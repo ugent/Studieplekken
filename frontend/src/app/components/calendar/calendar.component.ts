@@ -5,8 +5,7 @@ import {
     OnInit,
     Output,
     OnChanges,
-    SimpleChanges,
-    HostListener
+    SimpleChanges
 } from '@angular/core';
 import {CalendarView, CalendarEvent, CalendarDateFormatter} from 'angular-calendar';
 import {BehaviorSubject, merge, Observable, of, Subject} from 'rxjs';
@@ -36,8 +35,6 @@ export class CalendarComponent implements OnInit, OnChanges {
 
     openingHour: number;
     closingHour: number;
-    isMobile: boolean;
-    isHalfScreen: boolean;
 
     @Input() events: CalendarEvent[];
     @Input() refresh: Subject<unknown>;
@@ -48,7 +45,6 @@ export class CalendarComponent implements OnInit, OnChanges {
 
     @Output()
     calendarViewStyle = new EventEmitter<CalendarView>();
-
 
     @Output()
     timeslotPickedEvent: EventEmitter<any> = new EventEmitter<any>();
@@ -62,9 +58,10 @@ export class CalendarComponent implements OnInit, OnChanges {
 
     currentLang: string;
 
-    constructor(private translate: TranslateService,
-                private breakpointObserver: BreakpointObserver) {
-
+    constructor(
+        private translate: TranslateService,
+        private breakpointObserver: BreakpointObserver
+    ) {
         this.translate.onLangChange.subscribe(() => {
             this.currentLang = this.translate.currentLang;
         });
@@ -77,11 +74,9 @@ export class CalendarComponent implements OnInit, OnChanges {
         });
 
         this.setView(this.breakpointObserver.isMatched('(max-width: 500px)') ? CalendarView.Day : CalendarView.Week);
-
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-
         if (changes.events) {
             this.eventsSubj.next(this.events);
         }
