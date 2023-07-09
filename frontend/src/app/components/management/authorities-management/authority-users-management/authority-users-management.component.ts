@@ -23,6 +23,23 @@ import {User} from '../../../../extensions/model/User';
     styleUrls: ['./authority-users-management.component.scss'],
 })
 export class AuthorityUsersManagementComponent implements OnInit {
+
+    constructor(
+        private authoritiesService: AuthoritiesService,
+        private authorityToManageService: AuthorityToManageService,
+        private route: ActivatedRoute,
+        private userService: UserService,
+        private modalService: MatDialog
+    ) {
+    }
+
+    get firstName(): AbstractControl {
+        return this.userSearchFormGroup.get('firstName');
+    }
+
+    get lastName(): AbstractControl {
+        return this.userSearchFormGroup.get('lastName');
+    }
     authority: Authority;
 
     usersInAuthorityObs: Observable<User[]>;
@@ -48,22 +65,7 @@ export class AuthorityUsersManagementComponent implements OnInit {
     addModal: MatDialogRef<unknown>;
     deleteModal: MatDialogRef<unknown>;
 
-    constructor(
-        private authoritiesService: AuthoritiesService,
-        private authorityToManageService: AuthorityToManageService,
-        private route: ActivatedRoute,
-        private userService: UserService,
-        private modalService: MatDialog
-    ) {
-    }
-
-    get firstName(): AbstractControl {
-        return this.userSearchFormGroup.get('firstName');
-    }
-
-    get lastName(): AbstractControl {
-        return this.userSearchFormGroup.get('lastName');
-    }
+    protected readonly undefined = undefined;
 
     // *********************************
     // *   Add user to the authority   *
@@ -101,7 +103,7 @@ export class AuthorityUsersManagementComponent implements OnInit {
         this.selectedUserFormControl.setValue('');
         this.userSearchResult = [];
         this.selectedUserFormControl.disable();
-        this.addModal = this.modalService.open(template, {panelClass: ["cs--cyan", "bigmodal"]});
+        this.addModal = this.modalService.open(template, {panelClass: ['cs--cyan', 'bigmodal']});
 
     }
 
@@ -153,7 +155,7 @@ export class AuthorityUsersManagementComponent implements OnInit {
     ): void {
         this.successDeletingAuthority = undefined;
         this.userPreparedToDelete = user;
-        this.deleteModal = this.modalService.open(template, {panelClass: ["cs--cyan", "bigmodal"]});
+        this.deleteModal = this.modalService.open(template, {panelClass: ['cs--cyan', 'bigmodal']});
 
     }
 
@@ -199,6 +201,4 @@ export class AuthorityUsersManagementComponent implements OnInit {
             }
         );
     }
-
-    protected readonly undefined = undefined;
 }
