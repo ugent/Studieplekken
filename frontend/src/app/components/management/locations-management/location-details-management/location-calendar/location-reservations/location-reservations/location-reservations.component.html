@@ -2,23 +2,16 @@
     <!-- No location selected message -->
     <div *ngIf="filteredLocationReservations.length === 0">
         <div class="messages messages--info">
+            <i aria-hidden="true" class="icon-info"></i>
             {{"management.locationDetails.calendar.reservations.table.noLocationReservations" | translate}}
         </div>
     </div>
     <!-- Search and scanning section -->
     <div *ngIf="filteredLocationReservations.length > 0" class="mb-3">
-        <!-- User not found warning -->
-        <div *ngIf="noSuchUserFoundWarning" class="messages unregisteredwarning">
-            <span>{{ "scan.unregistered" | translate }}</span>
-        </div>
-        <!-- User already scanned warning -->
-        <div *ngFor="let user of userAlreadyPresentWarning" class="messages unregisteredwarning">
-            <span>{{ "scan.already-present" | translate : {user: user.firstName + ' ' + user.lastName} }}</span>
-        </div>
         <!-- User search -->
-        <div class="d-flex justify-content-between align-items-end mb-3">
+        <div class="d-flex justify-content-between align-items-end mb-3 gap-3">
             <div>
-                <label for="search">
+                <label for="search" class="fw-normal">
                     {{ "management.locationDetails.calendar.reservations.searchUser"| translate }}
                     <input
                         id="search"
@@ -43,6 +36,16 @@
                 </button>
             </div>
         </div>
+        <!-- User not found warning -->
+        <div *ngIf="noSuchUserFoundWarning" class="messages messages--error">
+            <i aria-hidden="true" class="icon-cross"></i>
+            <span>{{ "scan.unregistered" | translate }}</span>
+        </div>
+        <!-- User already scanned warning -->
+        <div *ngFor="let user of userAlreadyPresentWarning" class="messages messages--error">
+            <i aria-hidden="true" class="icon-cross"></i>
+            <span>{{ "scan.already-present" | translate : {user: user.firstName + ' ' + user.lastName} }}</span>
+        </div>
         <!-- User table -->
         <app-table *ngIf="currentTableData"
                    [tabularData]="currentTableData"
@@ -56,67 +59,67 @@
 
 <!-- Modal view to ask whether the user is sure to delete a lockerReservation -->
 <ng-template>
-    <!-- Header -->
-    <div modal-header>
-        <h1 class="modal-title" id="deleteLocationModalLabel">
+    <app-modal>
+        <!-- Header -->
+        <h2 class="modal-title" id="deleteLocationModalLabel" modal-header>
             {{ "management.reservations.location.deleteModal.title" | translate }}
-        </h1>
-    </div>
+        </h2>
 
-    <!-- Body -->
-    <div modal-body>
-        <div>
-            <b>{{
-                "management.reservations.location.deleteModal.body" | translate
-                }}</b>
-            <br/><br/>
-            <ul *ngIf="locationReservationToDelete !== undefined">
-                <li>
-                    <b style="margin-right: 5px"
-                    ><i>{{
-                        ("management.locationDetails.calendar.reservations.table.user"
-                            | translate) + ": "
-                        }}</i></b
-                    >{{
-                    locationReservationToDelete.user.firstName +
-                    " " +
-                    locationReservationToDelete.user.lastName
-                    }}
-                </li>
-                <li>
-                    <b style="margin-right: 5px"
-                    ><i>{{
-                        ("management.locationDetails.calendar.reservations.table.attended"
-                            | translate) + ": "
-                        }}</i></b
-                    >{{
-                    (locationReservationToDelete.attended
-                            ? "general.yes"
-                            : "general.no"
-                    ) | translate
-                    }}
-                </li>
-            </ul>
+        <!-- Body -->
+        <div modal-body>
+            <div>
+                <b>{{
+                    "management.reservations.location.deleteModal.body" | translate
+                    }}</b>
+                <br/><br/>
+                <ul *ngIf="locationReservationToDelete !== undefined">
+                    <li>
+                        <b style="margin-right: 5px"
+                        ><i>{{
+                            ("management.locationDetails.calendar.reservations.table.user"
+                                | translate) + ": "
+                            }}</i></b
+                        >{{
+                        locationReservationToDelete.user.firstName +
+                        " " +
+                        locationReservationToDelete.user.lastName
+                        }}
+                    </li>
+                    <li>
+                        <b style="margin-right: 5px"
+                        ><i>{{
+                            ("management.locationDetails.calendar.reservations.table.attended"
+                                | translate) + ": "
+                            }}</i></b
+                        >{{
+                        (locationReservationToDelete.attended
+                                ? "general.yes"
+                                : "general.no"
+                        ) | translate
+                        }}
+                    </li>
+                </ul>
+            </div>
         </div>
-    </div>
 
-    <!-- Footer -->
-    <div modal-footer>
-        <button
-            type="button"
-            class="button button-primary"
-            (click)="deleteLocationReservation()"
-        >
-            {{ "management.reservations.location.deleteModal.yesButton" | translate }}
-        </button>
-        <button
-            type="button"
-            class="button button-secondary"
-            (click)="closeModal()"
-        >
-            {{ "management.reservations.location.deleteModal.noButton" | translate }}
-        </button>
-    </div>
+        <!-- Footer -->
+        <div modal-footer>
+            <button
+                type="button"
+                class="button button-primary"
+                (click)="deleteLocationReservation()"
+            >
+                {{ "management.reservations.location.deleteModal.yesButton" | translate }}
+            </button>
+            <button
+                type="button"
+                class="button button-secondary"
+                (click)="closeModal()"
+            >
+                {{ "management.reservations.location.deleteModal.noButton" | translate }}
+            </button>
+        </div>
+    </app-modal>
 
     <div class="container-fluid">
         <div
@@ -145,14 +148,12 @@
 <ng-template #finishScanningModal>
     <app-modal>
         <!-- Modal header -->
-        <div modal-header>
-            <h1 id="finishScanningModalTitle">
-                {{
-                "management.reservations.location.finishScanningModal.title"
-                    | translate
-                }}
-            </h1>
-        </div>
+        <h2 id="finishScanningModalTitle" modal-header>
+            {{
+            "management.reservations.location.finishScanningModal.title"
+                | translate
+            }}
+        </h2>
 
         <!-- Modal body -->
         <div modal-body>
@@ -202,31 +203,29 @@
 </ng-template>
 
 <ng-template #scanningError>
-    <!-- Modal header -->
-    <div modal-header>
-        <h1 id="scanningErrorModalTitle">
+    <app-modal>
+        <h2 id="scanningErrorModalTitle" modal-header>
             {{
             "management.reservations.location.scanningErrorModal.title" | translate
             }}
-        </h1>
-    </div>
-
-    <!-- Modal body -->
-    <div modal-body>
-        <div class="messages messages--error">
-            {{
-            "management.reservations.location.scanningErrorModal.message"
-                | translate
-            }}
+        </h2>
+        <!-- Modal body -->
+        <div modal-body>
+            <div class="messages messages--error">
+                {{
+                "management.reservations.location.scanningErrorModal.message"
+                    | translate
+                }}
+            </div>
         </div>
-    </div>
 
-    <!-- Modal footer -->
-    <div modal-footer>
-        <button type="button" class="button button-primary" (click)="closeModal()">
-            {{ "general.buttons.close" | translate }}
-        </button>
-    </div>
+        <!-- Modal footer -->
+        <div modal-footer>
+            <button type="button" class="button button-primary" (click)="closeModal()">
+                {{ "general.buttons.close" | translate }}
+            </button>
+        </div>
+    </app-modal>
 </ng-template>
 
 <ng-template #penaltyManager>

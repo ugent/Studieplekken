@@ -28,14 +28,14 @@ import {Timeslot} from '../../../../../../../extensions/model/Timeslot';
     styleUrls: ['./location-reservations.component.scss'],
 })
 export class LocationReservationsComponent implements OnChanges {
+
     @Input() locationReservations: LocationReservation[];
     @Input() currentTimeSlot: Timeslot;
     @Input() lastScanned?: LocationReservation;
 
     @Input() isManagement = true; // enable some functionality that should not be enabled for volunteers in the Scan page
 
-    @Output()
-    reservationChange: EventEmitter<unknown> = new EventEmitter<unknown>();
+    @Output() reservationChange: EventEmitter<unknown> = new EventEmitter<unknown>();
 
     locationReservationToDelete: LocationReservation = undefined;
     successDeletingLocationReservation: boolean = undefined;
@@ -57,16 +57,22 @@ export class LocationReservationsComponent implements OnChanges {
     ) {
     }
 
+    protected readonly undefined = undefined;
+
     ngOnInit(): void {
-        this.currentTableData = this.tabularDataService.reservationsToScanningTable(this.filteredLocationReservations, this.isManagement);
+        this.currentTableData = this.tabularDataService.reservationsToScanningTable(
+            this.filteredLocationReservations, this.isManagement
+        );
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (changes.locationReservations)
-            this.setCurrentReservations(this.locationReservations)
+        if (changes.locationReservations) {
+            this.setCurrentReservations(this.locationReservations);
+        }
 
-        if (this.lastScanned)
-            this.setLastScanned(this.lastScanned)
+        if (this.lastScanned) {
+            this.setLastScanned(this.lastScanned);
+        }
     }
 
     // /***************
@@ -84,7 +90,8 @@ export class LocationReservationsComponent implements OnChanges {
             ? LocationReservationState.PRESENT
             : LocationReservationState.ABSENT;
         if (olds === LocationReservationState.PRESENT && newS === LocationReservationState.PRESENT) {
-            // Trying to set a user as present who was already present. Check if it was the last scanned user. (Maybe request was sent twice)
+            // Trying to set a user as present who was already present.
+            // Check if it was the last scanned user. (Maybe request was sent twice)
             if (!previousScanned || previousScanned.user.userId !== reservation.user.userId) {
                 // Not the last scanned user. Show warning.
                 console.log('Not the last scanned user. Show warning.', previousScanned);
@@ -159,16 +166,6 @@ export class LocationReservationsComponent implements OnChanges {
     // /*************
     // *   DELETE   *
     // **************/
-
-    prepareToDeleteLocationReservation(
-        locationReservation: LocationReservation,
-        template: TemplateRef<unknown>
-    ): void {
-        this.successDeletingLocationReservation = undefined;
-        this.locationReservationToDelete = locationReservation;
-        this.modalService.open(template, {panelClass: ['cs--cyan', 'bigmodal']});
-    }
-
     deleteLocationReservation(): void {
         this.successDeletingLocationReservation = null;
         this.locationReservationService
@@ -185,7 +182,6 @@ export class LocationReservationsComponent implements OnChanges {
     // /******************
     // *   AUXILIARIES   *
     // *******************/
-
     closeModal(): void {
         this.modalService.closeAll();
     }
@@ -193,13 +189,13 @@ export class LocationReservationsComponent implements OnChanges {
     userHasSearchTerm: (u: User) => boolean = (u: User) =>
         u.userId.includes(this.searchTerm) ||
         u.firstName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        u.lastName.toLowerCase().includes(this.searchTerm.toLowerCase());
+        u.lastName.toLowerCase().includes(this.searchTerm.toLowerCase())
 
     updateSearchTerm(errorTemplate: TemplateRef<unknown>): void {
         this.noSuchUserFoundWarning =
             this.searchTerm.length > 0 &&
             this.locationReservations.every((lr) => !this.userHasSearchTerm(lr.user));
-        if (this.noSuchUserFoundWarning) this.delayedSelectInputBox();
+        if (this.noSuchUserFoundWarning) { this.delayedSelectInputBox(); }
 
         const fullyMatchedUser = this.barcodeService.getReservation(
             this.filteredLocationReservations,
@@ -207,7 +203,7 @@ export class LocationReservationsComponent implements OnChanges {
         );
 
         const previousScanned = this.lastScanned;
-        if (this.searchTerm.length > 0) this.setLastScanned(null);
+        if (this.searchTerm.length > 0) { this.setLastScanned(null); }
 
         if (fullyMatchedUser) {
             this.setLastScanned(fullyMatchedUser);
@@ -271,32 +267,32 @@ export class LocationReservationsComponent implements OnChanges {
         {columnIndex, data}: { columnIndex: number; data: LocationReservation },
         errorTemplate: TemplateRef<unknown>,
         penaltyManager: TemplateRef<unknown>
-    ) {
+    ): void {
         const previousScanned = this.lastScanned;
         if (this.isManagement) {
-            console.log(columnIndex);
-            if (columnIndex == 3) {
+            if (columnIndex === 3) {
                 this.lastScanned = data;
                 return this.scanLocationReservation(data, true, errorTemplate, previousScanned);
-            } else if (columnIndex == 4)
+            } else if (columnIndex === 4) {
                 return this.scanLocationReservation(data, false, errorTemplate, previousScanned);
-            else if (columnIndex == 2) {
+            } else if (columnIndex === 2) {
                 return this.openPenaltyBox(data, penaltyManager);
             }
         }
 
-        if (columnIndex == 2) {
+        if (columnIndex === 2) {
             this.lastScanned = data;
             return this.scanLocationReservation(data, true, errorTemplate, previousScanned);
-        } else if (columnIndex == 3)
+        } else if (columnIndex === 3) {
             return this.scanLocationReservation(data, false, errorTemplate, previousScanned);
+        }
     }
 
-    isTimeslotStartInFuture() {
-        return this.currentTimeSlot.getStartMoment().isAfter(moment())
+    isTimeslotStartInFuture(): boolean {
+        return this.currentTimeSlot.getStartMoment().isAfter(moment());
     }
 
-    setCurrentReservations(locationReservations: LocationReservation[]) {
+    setCurrentReservations(locationReservations: LocationReservation[]): void {
         this.filteredLocationReservations = this.filter(locationReservations);
         this.currentTableData = {
             ...this.currentTableData,
@@ -304,22 +300,22 @@ export class LocationReservationsComponent implements OnChanges {
         };
     }
 
-    setLastScanned(lastScanned: LocationReservation) {
+    setLastScanned(lastScanned: LocationReservation): void {
         this.lastScanned = lastScanned;
-        this.filteredLocationReservations = this.filter(this.locationReservations)
+        this.filteredLocationReservations = this.filter(this.locationReservations);
         this.currentTableData = {
             ...this.currentTableData,
             data: this.filteredLocationReservations,
         };
     }
 
-    selectInputBox() {
+    selectInputBox(): void {
         const el = document.getElementById('search') as HTMLInputElement;
         el.focus();
         el.select();
     }
 
-    delayedSelectInputBox() {
+    delayedSelectInputBox(): void {
         if (this.selectionTimeout) {
             clearTimeout(this.selectionTimeout);
         }
@@ -327,7 +323,7 @@ export class LocationReservationsComponent implements OnChanges {
         this.selectionTimeout = setTimeout(() => this.selectInputBox(), 800);
     }
 
-    openPenaltyBox(locres: LocationReservation, modal: TemplateRef<unknown>) {
+    openPenaltyBox(locres: LocationReservation, modal: TemplateRef<unknown>): void {
         this.penaltyManagerUser = locres.user;
         this.modalService.open(modal, {panelClass: ['cs--cyan', 'bigmodal']});
     }

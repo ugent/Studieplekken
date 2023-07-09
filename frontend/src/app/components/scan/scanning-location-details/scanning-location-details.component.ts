@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {LocationService} from '../../../extensions/services/api/locations/location.service';
 import {Observable, Subject} from 'rxjs';
@@ -12,6 +12,7 @@ import {
 import {BarcodeService} from 'src/app/extensions/services/barcode.service';
 import {LocationReservation, LocationReservationState} from 'src/app/extensions/model/LocationReservation';
 import {timer} from 'rxjs';
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
     selector: 'app-scanning-location-details',
@@ -29,13 +30,16 @@ export class ScanningLocationDetailsComponent implements OnInit {
 
     lastScanned?: LocationReservation;
 
+    @ViewChild('scanner') scannerModal: TemplateRef<any>;
+
     constructor(
         private route: ActivatedRoute,
         private locationService: LocationService,
         private scanningService: ScanningService,
         private reservationService: LocationReservationsService,
         private barcodeService: BarcodeService,
-        private router: Router
+        private router: Router,
+        private modalService: MatDialog
     ) {
     }
 
@@ -71,9 +75,14 @@ export class ScanningLocationDetailsComponent implements OnInit {
         }
     }
 
+    openScanner(): void {
+        this.modalService.open(this.scannerModal, {panelClass: 'bigmodal'});
+    }
+
     scanUser(reservations: LocationReservation[], code: string): void {
         this.error = '';
         const res = this.barcodeService.getReservation(reservations, code);
+
         if (res == null) {
             this.error = 'scan.maybe';
         } else {
@@ -82,19 +91,9 @@ export class ScanningLocationDetailsComponent implements OnInit {
     }
 
     confirm(): void {
-        this.reservationService
-            .postLocationReservationAttendance(this.reservation, true)
-            .subscribe({error: () => (this.error = 'scan.error')});
+        this.reservationService.postLocationReservationAttendance(this.reservation, true);
         this.reservation.state = LocationReservationState.PRESENT;
         this.lastScanned = this.reservation;
-        this.reservation = null;
-    }
-
-    clearError(): void {
-        this.error = '';
-    }
-
-    cancel(): void {
         this.reservation = null;
     }
 }
