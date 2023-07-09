@@ -1,10 +1,9 @@
 <div class="responsive-table fullsize">
     <div class="table-wrapped fullsize">
-        <table class="table table-striped" style="table-layout: fixed; width: 100%">
+        <table class="table table-striped w-100">
             <thead> <!-- Table header -->
             <tr>
-                <th *ngFor="let column of this.tabularData.columns; let i = index; trackBy: trackByMethod" scope="col"
-                    style="width: {{ getWidth(column) }}%">
+                <th *ngFor="let column of this.tabularData.columns; let i = index; trackBy: trackByMethod" scope="col">
                     {{ column.columnHeader | translate }}
                 </th>
             </tr>

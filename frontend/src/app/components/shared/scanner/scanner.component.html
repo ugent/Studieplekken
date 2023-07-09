@@ -1,4 +1,11 @@
-<zxing-scanner [torch]="torchEnabled" [device]="deviceCurrent" (deviceChange)="onDeviceChange($event)" (scanSuccess)="onCodeResult($event)"
-    [formats]="formatsEnabled" [tryHarder]="tryHarder" (permissionResponse)="onHasPermission($event)"
-    (camerasFound)="onCamerasFound($event)" (torchCompatible)="onTorchCompatible($event)">
+<zxing-scanner id="scanner"
+    [torch]="torchEnabled"
+    [device]="deviceCurrent"
+    [formats]="formatsEnabled"
+    [tryHarder]="tryHarder"
+    (permissionResponse)="onHasPermission($event)"
+    (deviceChange)="onDeviceChange($event)"
+    (scanSuccess)="onCodeResult($event)"
+    (camerasFound)="onCamerasFound($event)"
+    (torchCompatible)="onTorchCompatible($event)">
 </zxing-scanner>
