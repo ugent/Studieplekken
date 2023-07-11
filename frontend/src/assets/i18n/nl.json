@@ -203,7 +203,9 @@
         "otherLogin": "Login voor speciale accounts",
         "about": "Het digitaal platform voor studieplekken",
         "students": "Voor studenten",
-        "others": "Andere accounts"
+        "others": "Andere accounts",
+        "students-clarification": "Enkel met deze accounttypes kan je als student bloklocaties reserveren.",
+        "others-clarification": "Met deze accounttypes kan je als niet-student bloklocaties beheren."
     },
     "management": {
         "confirm": "Ben je het zeker?",
