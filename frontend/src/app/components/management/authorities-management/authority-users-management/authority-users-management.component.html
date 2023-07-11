@@ -22,6 +22,7 @@
                     <th scope="col">{{'management.users.searchResult.table.id' | translate}}</th>
                     <th scope="col">{{'management.users.searchResult.table.firstName' | translate}}</th>
                     <th scope="col">{{'management.users.searchResult.table.lastName' | translate}}</th>
+                    <th scope="col">{{'management.users.searchResult.table.email' | translate}}</th>
                     <th scope="col">
                         <!-- Delete -->
                     </th>
@@ -30,9 +31,12 @@
 
                 <tbody>
                 <tr *ngFor="let user of users">
-                    <td>{{user.userId}}</td>
-                    <td>{{user.firstName}}</td>
-                    <td>{{user.lastName}}</td>
+                    <td>{{ user.userId }}</td>
+                    <td>{{ user.firstName }}</td>
+                    <td>{{ user.lastName }}</td>
+                    <td>
+                        {{ user.mail.toLowerCase() }}
+                    </td>
                     <td class="hover" (click)="prepareToDeleteUserFromAuthority(user, deleteUserFromAuthorityModal)">
                       <span>
                         <i class="icon-cross" aria-hidden="true"></i>
