@@ -5,6 +5,12 @@
 #login {
     background: #e9f0fa;
 
+    .clarification {
+        max-width: 600px;
+        font-size: 14px;
+        color: #555;
+    }
+
     #image-container {
         height: 400px;
         background-size: cover;
