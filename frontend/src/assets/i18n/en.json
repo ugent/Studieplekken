@@ -570,6 +570,7 @@
                     "lastName": "Last name",
                     "penaltyPoints": "Penalty points",
                     "institution": "Institution",
+                    "email": "Email",
                     "details": "Details"
                 },
                 "neverSearched": "You haven't searched any users yet. Fill in the first and/or last name, or just the barcode to be able to search users.",

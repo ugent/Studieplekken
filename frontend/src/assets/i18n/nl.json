@@ -569,6 +569,7 @@
                     "lastName": "Achternaam",
                     "penaltyPoints": "Strafpunten",
                     "institution": "Institutie",
+                    "email": "E-mail",
                     "details": "Details"
                 },
                 "neverSearched": "Je hebt nog niet gezocht naar een gebruiker. Vul de voor- en/of achternaam, of enkel de barcode in om te kunnen zoeken naar gebruikers.",
