@@ -1,8 +1,7 @@
 import {User, UserConstructor} from './User';
-import {Timeslot} from './Timeslot';
+import {Timeslot, timeslotEquals} from './Timeslot';
 import {Moment} from 'moment';
 import * as moment from 'moment';
-import {LocationReservationsService} from "../services/api/location-reservations/location-reservations.service";
 
 export enum LocationReservationState {
     PENDING = 'PENDING',
@@ -16,20 +15,12 @@ export enum LocationReservationState {
 export class LocationReservation {
 
     constructor(
-        user: User,
-        timeslot: Timeslot,
-        state: string,
-        createdAt?: Moment
+        public user: User,
+        public timeslot: Timeslot,
+        public state?: LocationReservationState,
+        public createdAt?: Moment
     ) {
-        this.user = user;
-        this.timeslot = timeslot;
-        this.state = state as LocationReservationState;
-        this.createdAt = createdAt;
     }
-    user: User;
-    timeslot: Timeslot;
-    state: LocationReservationState;
-    createdAt?: Moment;
 
     static fromJSON(json: LocationReservation): LocationReservation {
         return new LocationReservation(
@@ -45,5 +36,16 @@ export class LocationReservation {
      */
     public isAccepted(): boolean {
         return this.state !== LocationReservationState.PENDING && this.state !== LocationReservationState.REJECTED;
+    }
+
+    /**
+     * Check whether the reservation has been canceled.
+     */
+    public isCanceled(): boolean {
+        return this.state === LocationReservationState.REJECTED || this.state === LocationReservationState.DELETED;
+    }
+
+    public equals(other: LocationReservation): boolean {
+        return timeslotEquals(this.timeslot, other.timeslot) && this.state === other.state;
     }
 }
