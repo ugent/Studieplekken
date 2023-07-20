@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as moment from 'moment';
 import { Moment } from 'moment';
-import { DefaultMap } from 'src/app/extensions/default-map/defaultMap';
+import { DefaultMap } from 'src/app/extensions/util/defaultMap';
 import { Timeslot } from 'src/app/extensions/model/Timeslot';
 import { Location } from 'src/app/extensions/model/Location';
 

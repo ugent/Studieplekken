@@ -26,14 +26,48 @@
     opacity: 0.6;
 }
 
-.cal-time-events {
-    .cal-event {
-        background: #c9e3ee;
-        color: #007db3;
-        border-color: #007db3;
+.cal-week-view, .cal-day-view {
+    .event {
+        .cal-event {
+            background: #c9e3ee;
+            border-color: #007db3;
 
-        .cal-event-title {
-            color: white;
+            .cal-event-title {
+                color: #007db3;
+            }
+        }
+
+        &.pending {
+            .cal-event {
+                background: #ffc966;
+                border-color: #ffc966;
+
+                .cal-event-title {
+                    color: black;
+                }
+            }
+        }
+
+        &.approved, &.selected {
+            .cal-event {
+                background: #007db3;
+                border-color: white;
+
+                .cal-event-title {
+                    color: white;
+                }
+            }
+        }
+
+        &.rejected {
+            .cal-event {
+                background: #feeee6;
+                border-color: indianred;
+
+                .cal-event-title {
+                    color: indianred;
+                }
+            }
         }
     }
 }

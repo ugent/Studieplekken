@@ -1,144 +1,140 @@
-import { CalendarEvent } from 'angular-calendar';
 import * as moment from 'moment';
-import { Moment } from 'moment';
-import { LocationReservation } from './LocationReservation';
+import {Moment} from 'moment';
 
 export class Timeslot {
-  timeslotSequenceNumber: number;
-  timeslotDate: Moment;
-  amountOfReservations: number;
-  seatCount: number;
-  reservable: boolean;
-  reservableFrom: Moment;
-  locationId: number;
-  openingHour: Moment;
-  closingHour: Moment;
-  timeslotGroup: number;
-  repeatable: boolean;
+    timeslotSequenceNumber: number;
+    timeslotDate: Moment;
+    amountOfReservations: number;
+    seatCount: number;
+    reservable: boolean;
+    reservableFrom: Moment;
+    locationId: number;
+    openingHour: Moment;
+    closingHour: Moment;
+    timeslotGroup: number;
+    repeatable: boolean;
 
-  constructor(
-    timeslotSequenceNumber: number,
-    timeslotDate: Moment,
-    amountOfReservations: number,
-    seatCount: number,
-    reservable: boolean,
-    reservableFrom: Moment,
-    locationId: number,
-    openingHour: Moment,
-    closingHour: Moment,
-    timeslotGroup: number,
-    repeatable: boolean
-  ) {
-    this.timeslotSequenceNumber = timeslotSequenceNumber;
-    this.timeslotDate = timeslotDate;
-    this.amountOfReservations = amountOfReservations || 0;
-    this.seatCount = seatCount;
-    this.reservable = reservable;
-    this.reservableFrom = reservableFrom;
-    this.locationId = locationId;
-    this.openingHour = openingHour;
-    this.closingHour = closingHour;
-    this.timeslotGroup = timeslotGroup;
-    this.repeatable = repeatable;
-  }
-
-  static fromJSON(json: Record<string, any>): Timeslot {
-    if (!json) {
-      return null;
-    }
-    const t = new Timeslot(
-      json.timeslotSeqnr,
-      moment(json.timeslotDate),
-      json.amountOfReservations,
-      json.seatCount,
-      json.reservable,
-      moment(json.reservableFrom),
-      json.locationId,
-      moment(json.openingHour, "HH:mm:ss"),
-      moment(json.closingHour, "HH:mm:ss"),
-      json.timeslotGroup,
-      json.repeatable
-    );
-
-    t.sanitize();
-    return t;
-  }
-
-  toJSON(): Record<string, unknown> {
-    return {
-      timeslotSeqnr: this.timeslotSequenceNumber,
-      timeslotDate: this.timeslotDate.format('YYYY-MM-DD'),
-      seatCount: this.seatCount,
-      openingHour: this.openingHour.format("HH:mm"),
-      closingHour: this.closingHour.format("HH:mm"),
-      reservable: this.reservable,
-      reservableFrom: this.reservableFrom ? this.reservableFrom.format("YYYY-MM-DDTHH:mm"):null,
-      locationId: this.locationId,
-      timeslotGroup: this.timeslotGroup,
-      repeatable: this.repeatable
-    };
-  }
-
-  isValid() {
-    if(!this.timeslotDate || !this.openingHour || !this.closingHour) {
-      return false;
+    constructor(
+        timeslotSequenceNumber: number,
+        timeslotDate: Moment,
+        amountOfReservations: number,
+        seatCount: number,
+        reservable: boolean,
+        reservableFrom: Moment,
+        locationId: number,
+        openingHour: Moment,
+        closingHour: Moment,
+        timeslotGroup: number,
+        repeatable: boolean
+    ) {
+        this.timeslotSequenceNumber = timeslotSequenceNumber;
+        this.timeslotDate = timeslotDate;
+        this.amountOfReservations = amountOfReservations || 0;
+        this.seatCount = seatCount;
+        this.reservable = reservable;
+        this.reservableFrom = reservableFrom;
+        this.locationId = locationId;
+        this.openingHour = openingHour;
+        this.closingHour = closingHour;
+        this.timeslotGroup = timeslotGroup;
+        this.repeatable = repeatable;
     }
 
-    if(this.reservable && (!this.reservableFrom || !this.reservableFrom.isValid())) {
-      return false;
+    static fromJSON(json: Record<string, any>): Timeslot {
+        if (!json) {
+            return null;
+        }
+        const t = new Timeslot(
+            json.timeslotSeqnr,
+            moment(json.timeslotDate),
+            json.amountOfReservations,
+            json.seatCount,
+            json.reservable,
+            moment(json.reservableFrom),
+            json.locationId,
+            moment(json.openingHour, 'HH:mm:ss'),
+            moment(json.closingHour, 'HH:mm:ss'),
+            json.timeslotGroup,
+            json.repeatable
+        );
+
+        t.sanitize();
+        return t;
     }
 
-    return true;
-  }
+    toJSON(): Record<string, unknown> {
+        return {
+            timeslotSeqnr: this.timeslotSequenceNumber,
+            timeslotDate: this.timeslotDate.format('YYYY-MM-DD'),
+            seatCount: this.seatCount,
+            openingHour: this.openingHour.format('HH:mm'),
+            closingHour: this.closingHour.format('HH:mm'),
+            reservable: this.reservable,
+            reservableFrom: this.reservableFrom ? this.reservableFrom.format('YYYY-MM-DDTHH:mm') : null,
+            locationId: this.locationId,
+            timeslotGroup: this.timeslotGroup,
+            repeatable: this.repeatable
+        };
+    }
 
-  areReservationsLocked(): boolean {
-    return !this.reservableFrom || this.reservableFrom.isAfter(moment());
-  }
+    isValid(): boolean {
+        if (!this.timeslotDate || !this.openingHour || !this.closingHour) {
+            return false;
+        }
 
-  getStartMoment() {
-    return moment(
-      this.timeslotDate.format('DD-MM-YYYY') +
-      ' ' +
-      this.openingHour.format('HH:mm'),
-      'DD-MM-YYYY HH:mm'
-    )
-  }
+        return !(this.reservable && (!this.reservableFrom || !this.reservableFrom.isValid()));
+    }
 
-  getEndMoment() {
-    return moment(
-      this.timeslotDate.format('DD-MM-YYYY') +
-      ' ' +
-      this.closingHour.format('HH:mm'),
-      'DD-MM-YYYY HH:mm'
-    )
-  }
+    areReservationsLocked(): boolean {
+        return !this.reservableFrom || this.reservableFrom.isAfter(moment());
+    }
 
-  isCurrent() {
-    return this.getStartMoment().isBefore(moment()) && this.getEndMoment().isAfter(moment())
-  }
+    getStartMoment(): Moment {
+        return moment(
+            this.timeslotDate.format('DD-MM-YYYY') +
+            ' ' +
+            this.openingHour.format('HH:mm'),
+            'DD-MM-YYYY HH:mm'
+        );
+    }
 
-  isInPast() {
-    return this.getEndMoment().isBefore(moment());
-  }
+    getEndMoment(): Moment {
+        return moment(
+            this.timeslotDate.format('DD-MM-YYYY') +
+            ' ' +
+            this.closingHour.format('HH:mm'),
+            'DD-MM-YYYY HH:mm'
+        );
+    }
 
-  sanitize() {
-    if(!this.reservableFrom || !this.reservableFrom.isValid())
-      this.reservableFrom = null;
+    isCurrent(): boolean {
+        return this.getStartMoment().isBefore(moment()) && this.getEndMoment().isAfter(moment());
+    }
 
-    if(!this.timeslotDate || !this.timeslotDate.isValid())
-      this.timeslotDate = null;
-  }
+    isInPast(): boolean {
+        return this.getEndMoment().isBefore(moment());
+    }
+
+    sanitize(): void {
+        if (!this.reservableFrom || !this.reservableFrom.isValid()) {
+            this.reservableFrom = null;
+        }
+
+        if (!this.timeslotDate || !this.timeslotDate.isValid()) {
+            this.timeslotDate = null;
+        }
+    }
 
 }
 
 
 export const timeslotEquals: (t1: Timeslot, t2: Timeslot) => boolean = (
-  t1,
-  t2
+    t1,
+    t2
 ) =>
-  t1.timeslotSequenceNumber === t2.timeslotSequenceNumber
+    t1.timeslotSequenceNumber === t2.timeslotSequenceNumber;
 
 export const includesTimeslot: (l: Timeslot[], t: Timeslot) => boolean = (
-  l,
-  t
+    l,
+    t
 ) => l.some((lt) => timeslotEquals(lt, t));

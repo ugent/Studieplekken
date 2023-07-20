@@ -132,6 +132,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
         this.locationId = Number(
             this.route.snapshot.paramMap.get('locationId')
         );
+
         this.breadcrumbs.setCurrentBreadcrumbs([{
             pageName: 'Details', url: `/dashboard/${this.locationId}`
         }]);
@@ -261,7 +262,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
             t => t.timeslot.timeslotSequenceNumber === currentTimeslot.timeslotSequenceNumber
         );
 
-        if (timeslotIsSelected && oldReservation.state === LocationReservationState.PRESENT) {
+        if (timeslotIsSelected && oldReservation?.state === LocationReservationState.PRESENT) {
             // If user is already scanned as present, do not allow to unselect.
             return;
         }

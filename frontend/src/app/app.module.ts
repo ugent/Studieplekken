@@ -49,7 +49,7 @@ import {LoginComponent} from './components/login/login.component';
 import {AuthoritiesManagementComponent} from './components/management/authorities-management/authorities-management.component';
 import {UserAuthoritiesManagementComponent} from './components/management/users-management/user-details-management/user-authorities-management/user-authorities-management.component';
 import {AuthorityUsersManagementComponent} from './components/management/authorities-management/authority-users-management/authority-users-management.component';
-import {registerLocaleData} from '@angular/common';
+import {DatePipe, NgOptimizedImage, registerLocaleData} from '@angular/common';
 import {MatDialogModule} from '@angular/material/dialog';
 import localeNl from '@angular/common/locales/nl-BE';
 import {NgxMatDatetimePickerModule} from '@angular-material-components/datetime-picker';
@@ -108,6 +108,7 @@ import {AuthorizationGuardService} from './extensions/services/guard/authorizati
 import { ChartComponent } from './components/management/stats/chart/chart.component';
 import {BarCodeComponent} from './components/shared/barcode/barcode.component';
 import {NgxBarcodeModule} from 'ngx-barcode';
+import { LocationReservationComponent } from './components/dashboard/location-reservation/location-reservation.component';
 
 
 // AoT requires an exported function for factories
@@ -133,6 +134,10 @@ const routes: Routes = [
     {
         path: 'dashboard/:locationId',
         component: LocationDetailsComponent
+    },
+    {
+        path: 'locations/:locationId',
+        component: LocationReservationComponent
     },
     {
         path: 'profile',
@@ -413,6 +418,7 @@ const routes: Routes = [
         TokensComponent,
         ChartComponent,
         BarCodeComponent,
+        LocationReservationComponent,
     ],
     imports: [
         BrowserModule,
@@ -452,15 +458,15 @@ const routes: Routes = [
         MatTooltipModule,
         QRCodeModule,
         ZXingScannerModule,
-        NgxBarcodeModule
+        NgxBarcodeModule,
+        NgOptimizedImage
     ],
     providers: [
         FormatStatusPipe,
         FormatActionPipe,
+        DatePipe,
         {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true},
         {provide: HTTP_INTERCEPTORS, useClass: ImpersonateInterceptor, multi: true},
-
-
     ],
     bootstrap: [AppComponent],
 })
