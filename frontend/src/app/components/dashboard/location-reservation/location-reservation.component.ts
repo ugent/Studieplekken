@@ -177,7 +177,10 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
         );
 
         const selected = [...this.allReservations, ...this.newReservations].some((other: LocationReservation) =>
-            timeslotEquals(currentReservation.timeslot, other.timeslot) && !other.isCanceled() && !other.timeslot.isInPast()
+            timeslotEquals(currentReservation.timeslot, other.timeslot) && !other.isCanceled() && !other.timeslot.isInPast() &&
+            !this.removedReservations.some(other1 =>
+                timeslotEquals(other1.timeslot, other.timeslot)
+            )
         );
 
         // Only continue if there are free seats or when the slot already was selected.
