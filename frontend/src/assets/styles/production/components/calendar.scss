@@ -48,7 +48,7 @@
             }
         }
 
-        &.approved, &.selected {
+        &.approved, &.selected, &.present {
             .cal-event {
                 background: #007db3;
                 border-color: white;
@@ -66,6 +66,17 @@
 
                 .cal-event-title {
                     color: indianred;
+                }
+            }
+        }
+
+        &.absent {
+            .cal-event {
+                background: indianred;
+                border-color: indianred;
+
+                .cal-event-title {
+                    color: white;
                 }
             }
         }
