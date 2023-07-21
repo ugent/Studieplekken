@@ -7,10 +7,9 @@ div.responsive-table {
     }
 
     thead {
-        tr {
-            th {
-                border-bottom: 0 !important;
-            }
+        th {
+            padding-top: 0;
+            border-bottom: 0 !important;
         }
     }
 

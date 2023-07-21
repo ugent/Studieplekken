@@ -58,7 +58,7 @@
         "details": "Details",
         "tags": "Tags",
         "gotoDashboard": "Please navigate to the dashboard to select a room's details.",
-        "location": "Room",
+        "location": "Location",
         "numberOfLockers": "Number of lockers",
         "numberOfSeats": "Number of seats",
         "noLocations": "Unfortunately, at this moment there are no rooms available.",
@@ -129,8 +129,13 @@
         "terms-of-use": "Terms of use"
     },
     "reservations": {
-        "reservationButton": "Update Reservations",
-        "tooManyPenalty": "You have too many penalty points. Please refer to the information page."
+        "reservationButton": "Confirm changes",
+        "tooManyPenalty": "You have too many penalty points. Please refer to the information page.",
+        "shouldLogin": "You must log in to see your reservations for this location.",
+        "notFound": "The location was not found. Do you think this is an error? Don't hesitate to contact us!",
+        "loading": "Loading the location...",
+        "reservationHelper": "Use the calendar to adjust reservations by clicking on timeslots.",
+        "penaltyError": "You cannot make a reservation because you have too many penalty points"
     },
     "general": {
         "dsa": "Student Activities Office",

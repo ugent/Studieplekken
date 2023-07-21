@@ -453,6 +453,7 @@ export class LocationDetailsComponent implements OnInit, AfterViewInit, OnDestro
             layers: [originalTile],
             crs: Leaf.CRS.EPSG3857
         });
+
         new Leaf.Marker(coordinates).addTo(this.leafletMap);
     }
 
