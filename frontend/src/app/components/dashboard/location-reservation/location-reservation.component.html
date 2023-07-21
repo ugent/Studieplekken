@@ -1,9 +1,10 @@
-<ng-container *ngIf="location; else noLocation">
+<!-- Location found -->
+<ng-container *ngIf="locationSub.value as location">
     <div class="d-flex justify-content-between align-items-center">
         <h1 class="mb-3 mt-0">
-            {{location.name}}
+            {{ location.name }}
         </h1>
-        <button class="button button-primary mt-0 mb-3" *ngIf="user.admin" routerLink="/management/locations/{{ location.locationId }}">
+        <button class="button button-primary mt-0 mb-3" *ngIf="showEdit" routerLink="/management/locations/{{ location.locationId }}">
             {{'dashboard.locationDetails.buttons.manage' | translate}}
         </button>
     </div>
@@ -17,10 +18,10 @@
                 </h2>
                 <hr>
                 <!-- Tags -->
-                <div class="tag-list-wrapper">
-                    <ul class="tag-list">
+                <div class="tag-list-wrapper mb-2">
+                    <ul class="tag-list" *ngIf="languageSub.value as language">
                         <li *ngFor="let tag of location.assignedTags">
-                          <span class="tag ">
+                          <span class="tag">
                               {{ language === 'nl' ? tag.dutch : tag.english }}
                           </span>
                         </li>
@@ -68,17 +69,17 @@
                         <i class="icon-calendar" aria-hidden="true"></i>
                         <span>
                             {{
-                                'dashboard.locationDetails.status.statusReservableFrom' | translate:{
-                                    week: (location.optionalNextUpcomingReservableTimeslot.timeslotDate.toDate() | date:'dd/MM/yyyy'),
-                                    openingDate: (location.optionalNextUpcomingReservableTimeslot.reservableFrom.toDate() | date:'dd/MM/yyyy'),
-                                    openingTime: (location.optionalNextUpcomingReservableTimeslot.reservableFrom.toDate() | date:'HH:mm')
-                                }
+                            'dashboard.locationDetails.status.statusReservableFrom' | translate:{
+                                week: (location.optionalNextUpcomingReservableTimeslot.timeslotDate.toDate() | date:'dd/MM/yyyy'),
+                                openingDate: (location.optionalNextUpcomingReservableTimeslot.reservableFrom.toDate() | date:'dd/MM/yyyy'),
+                                openingTime: (location.optionalNextUpcomingReservableTimeslot.reservableFrom.toDate() | date:'HH:mm')
+                            }
                             }}
                         </span>
                     </li>
                     <li class="entry d-flex align-items-center p-0 gap-2">
                         <span aria-hidden="true">
-                            <input type="checkbox" id="subscribedCheckbox" [checked]="location.subscribed" (change)="toggleSubscription()" [disabled]="!user"/>
+                            <input type="checkbox" id="subscribedCheckbox" [checked]="location.subscribed" (change)="toggleSubscription()" [disabled]="!userSub.value"/>
                         </span>
                         <label for="subscribedCheckbox">
                             {{ 'dashboard.locationDetails.subscribe' | translate }}
@@ -90,17 +91,20 @@
                 </ul>
                 <hr class="my-3">
                 <!-- Description -->
-                <div *ngIf="description" class="rounded-ck-editor">
+                <div *ngIf="languageSub.value as language" class="rounded-ck-editor">
                     <h4 class="mt-0">
                         {{'dashboard.description' | translate}}
                     </h4>
 
-                    <div [innerHTML]="description">
-                        {{ description }}
+                    <div [innerHTML]="location.descriptionEnglish" *ngIf="language === 'en'">
+                        {{ location.descriptionEnglish }}
+                    </div>
+                    <div [innerHTML]="location.descriptionDutch" *ngIf="language === 'nl'">
+                        {{ location.descriptionDutch }}
                     </div>
                 </div>
                 <!-- Info messages -->
-                <div class="mt-0 messages messages--info" *ngIf="user">
+                <div class="mt-0 messages messages--info" *ngIf="userSub.value">
                     <i class="icon-info" aria-hidden="true"></i>
                     {{'dashboard.locationDetails.refreshWarning' | translate}}
                 </div>
@@ -124,44 +128,70 @@
     </app-calendar>
 
     <!-- Update button -->
-    <div class="my-3" *ngIf="user">
-        <button (click)="prepareReservations(confirm)" [disabled]="!isModified" class="button button-primary">
-            {{'reservations.reservationButton' | translate}}
-        </button>
+    <div id="reservationMaker" *ngIf="userSub.value && userSub.value.userId">
+        <span>
+            {{ 'reservations.reservationHelper' | translate }}
+        </span>
+        <div>
+            <button (click)="prepareReservations(confirm)" [disabled]="!isModified() && canMakeReservation" class="button button-primary" *ngIf="canMakeReservation">
+                {{'reservations.reservationButton' | translate}}
+            </button>
+            <span *ngIf="!canMakeReservation" class="text-red">
+                {{ 'reservations.penaltyError' | translate }}
+            </span>
+        </div>
     </div>
 
-    <!-- Own reservations -->
-    <div *ngIf="user && allReservations && allReservations.length">
-        <h3>
-            {{ 'dashboard.reservations' | translate }}
-        </h3>
-        <hr>
-        <div class="responsive-table fullwidth mb-0" id="location_reservations">
-            <div class="table-wrapper fullwidth">
-                <table class="table table-striped w-100">
-                    <thead>
-                    <th scope="col">{{'profile.reservations.locations.table.header.reservationDate' | translate}}</th>
-                    <th scope="col">{{'profile.reservations.locations.table.header.beginHour' | translate}}</th>
-                    <th scope="col">{{'profile.reservations.locations.table.header.state' | translate}}</th>
-                    </thead>
-                    <tbody>
-                    <tr *ngFor="let reservation of allReservations">
-                        <td>
-                            {{ reservation.timeslot.timeslotDate.format("DD/MM/YYYY") }}
-                        </td>
-                        <td>
-                            {{ reservation.timeslot.openingHour.format("HH:mm") }}
-                        </td>
-                        <td *ngIf="!reservation.isCanceled()">
-                            {{ 'profile.reservations.locations.table.attended.' + reservation.state | translate }}
-                        </td>
-                        <td *ngIf="reservation.isCanceled()" data-toggle="tooltip" data-placement="top" class="tooltip" title="{{ 'dashboard.locationDetails.calendar.rejectedMessage' | translate }}">
-                            {{ 'profile.reservations.locations.table.attended.' + reservation.state | translate }}
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+    <div class="row">
+        <div class="col-12 col-lg-6">
+            <!-- Own reservations -->
+            <div>
+                <h3>
+                    {{ 'dashboard.reservations' | translate }}
+                </h3>
+                <hr>
+                <div class="responsive-table fullwidth mb-0" id="location_reservations"  *ngIf="userSub.value && allReservations && allReservations.length; else shouldLogin">
+                    <div class="table-wrapper fullwidth">
+                        <table class="table table-striped w-100">
+                            <thead>
+                            <th scope="col">{{'profile.reservations.locations.table.header.reservationDate' | translate}}</th>
+                            <th scope="col">{{'profile.reservations.locations.table.header.beginHour' | translate}}</th>
+                            <th scope="col">{{'profile.reservations.locations.table.header.state' | translate}}</th>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let reservation of allReservations">
+                                <td>
+                                    {{ reservation.timeslot.timeslotDate.format("DD/MM/YYYY") }}
+                                </td>
+                                <td>
+                                    {{ reservation.timeslot.openingHour.format("HH:mm") }}
+                                </td>
+                                <td *ngIf="!reservation.isCanceled()">
+                                    {{ 'profile.reservations.locations.table.attended.' + reservation.state | translate }}
+                                </td>
+                                <td *ngIf="reservation.isCanceled()" data-toggle="tooltip" data-placement="top" class="tooltip" title="{{ 'dashboard.locationDetails.calendar.rejectedMessage' | translate }}">
+                                    {{ 'profile.reservations.locations.table.attended.' + reservation.state | translate }}
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <ng-template #shouldLogin>
+                    <p>
+                        {{ 'reservations.shouldLogin' | translate }}
+                    </p>
+                    <a class="button button-secondary" routerLink="/login">
+                        {{'navigation.login' | translate}}
+                    </a>
+                </ng-template>
             </div>
+        </div>
+        <div class="col-12 col-lg-6">
+            <!-- Leaflet -->
+            <h3>{{'dashboard.location' | translate}}</h3>
+            <hr>
+            <div #leaflet></div>
         </div>
     </div>
 
@@ -216,10 +246,22 @@
         </app-modal>
     </ng-template>
     <ng-template #afterReservationTemplate>
-        <app-after-reservation [newReservationCreator]="newReservationsCreator"></app-after-reservation>
+        <app-after-reservation [newReservationCreator]="reservationsCreatorObs"></app-after-reservation>
     </ng-template>
 </ng-container>
 
-<ng-template #noLocation>
-    Naur
-</ng-template>
+<!-- Loading location -->
+<ng-container *ngIf="locationSub.value === undefined">
+    <div class="messages messages--info center my-5">
+        <i class="icon-info" aria-hidden="true"></i>
+        {{ 'reservations.loading' | translate }}
+    </div>
+</ng-container>
+
+<!-- Location not found -->
+<ng-container *ngIf="locationSub.value === null">
+    <div class="messages messages--error center my-5">
+        <i class="icon-cross" aria-hidden="true"></i>
+        {{ 'reservations.notFound' | translate }}
+    </div>
+</ng-container>

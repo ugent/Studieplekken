@@ -129,8 +129,13 @@
         "terms-of-use": "Terms of use"
     },
     "reservations": {
-        "reservationButton": "Update Reservaties",
-        "tooManyPenalty": "Je hebt te veel strafpunten. Bekijk de informatiepagina voor meer info."
+        "reservationButton": "Aanpassingen bevestigen",
+        "tooManyPenalty": "Je hebt te veel strafpunten. Bekijk de informatiepagina voor meer info.",
+        "shouldLogin": "Je moet inloggen om je reservaties voor deze locatie te kunnen zien.",
+        "notFound": "De locatie werd niet gevonden. Denk je dat dit een fout is? Aarzel niet ons te contacteren!",
+        "loading": "De locatie wordt geladen...",
+        "reservationHelper": "Gebruik de kalender om reservaties aan te passen door op timeslots te klikken.",
+        "penaltyError": "Je kan geen reservatie maken omdat je teveel strafpunten hebt."
     },
     "general": {
         "dsa": "Dienst StudentenActiviteiten",
