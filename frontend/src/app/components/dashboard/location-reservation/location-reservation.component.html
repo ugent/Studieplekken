@@ -104,7 +104,7 @@
                     </div>
                 </div>
                 <!-- Info messages -->
-                <div class="mt-0 messages messages--info" *ngIf="userSub.value">
+                <div class="mt-4 messages messages--info" *ngIf="userSub.value">
                     <i class="icon-info" aria-hidden="true"></i>
                     {{'dashboard.locationDetails.refreshWarning' | translate}}
                 </div>
@@ -128,17 +128,25 @@
     </app-calendar>
 
     <!-- Update button -->
-    <div id="reservationMaker" *ngIf="userSub.value && userSub.value.userId">
-        <span>
+    <div id="reservationMaker">
+        <span *ngIf="userSub.value && userSub.value.userId">
             {{ 'reservations.reservationHelper' | translate }}
         </span>
-        <div>
+        <span *ngIf="!userSub.value || !userSub.value.userId">
+            {{ 'reservations.shouldLoginMaker' | translate }}
+        </span>
+        <div *ngIf="userSub.value && userSub.value.userId">
             <button (click)="prepareReservations(confirm)" [disabled]="!isModified() && canMakeReservation" class="button button-primary" *ngIf="canMakeReservation">
                 {{'reservations.reservationButton' | translate}}
             </button>
             <span *ngIf="!canMakeReservation" class="text-red">
                 {{ 'reservations.penaltyError' | translate }}
             </span>
+        </div>
+        <div *ngIf="!userSub.value || !userSub.value.userId">
+            <a class="button button-secondary" routerLink="/login">
+                {{'navigation.login' | translate}}
+            </a>
         </div>
     </div>
 
@@ -150,7 +158,7 @@
                     {{ 'dashboard.reservations' | translate }}
                 </h3>
                 <hr>
-                <div class="responsive-table fullwidth mb-0" id="location_reservations"  *ngIf="userSub.value && allReservations && allReservations.length; else shouldLogin">
+                <div class="responsive-table fullwidth mb-0" id="location_reservations"  *ngIf="userSub.value && allReservations && allReservations.length; else reservationsError">
                     <div class="table-wrapper fullwidth">
                         <table class="table table-striped w-100">
                             <thead>
@@ -177,13 +185,18 @@
                         </table>
                     </div>
                 </div>
-                <ng-template #shouldLogin>
-                    <p>
-                        {{ 'reservations.shouldLogin' | translate }}
-                    </p>
-                    <a class="button button-secondary" routerLink="/login">
-                        {{'navigation.login' | translate}}
-                    </a>
+                <ng-template #reservationsError>
+                    <ng-container *ngIf="!userSub?.value.userId">
+                        <p>
+                            {{ 'reservations.shouldLogin' | translate }}
+                        </p>
+                        <a class="button button-secondary" routerLink="/login">
+                            {{'navigation.login' | translate}}
+                        </a>
+                    </ng-container>
+                    <ng-container *ngIf="userSub?.value?.userId">
+                        {{ 'reservations.noReservations' | translate }}
+                    </ng-container>
                 </ng-template>
             </div>
         </div>

@@ -18,7 +18,6 @@ import {InformationComponent} from './components/information/information.compone
 import {NavigationComponent} from './components/navigation/navigation.component';
 import {MarkdownModule} from 'ngx-markdown';
 import {DashboardItemComponent} from './components/dashboard/dashboard-item/dashboard-item.component';
-import {LocationDetailsComponent} from './components/dashboard/location-details/location-details.component';
 import {CalendarComponent} from './components/calendar/calendar.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {CalendarModule, DateAdapter} from 'angular-calendar';
@@ -96,7 +95,7 @@ import {MobileTableComponent} from './stad-gent-components/atoms/table/mobile-ta
 import {EntryComponent} from './components/entry/entry.component';
 import {ImpersonateInterceptor} from './extensions/services/authentication/impersonate.interceptor';
 import {ActionLogComponent} from './components/management/action-log/action-log.component';
-import {AfterReservationComponent} from './components/dashboard/location-details/modals/after-reservation/after-reservation.component';
+import {AfterReservationComponent} from './components/dashboard/location-reservation/after-reservation/after-reservation.component';
 import {PenaltyTableComponent} from './components/penalties/penalty-table/penalty-table.component';
 import {UserPenaltyManagerComponent} from './components/penalties/user-penalty-manager/user-penalty-manager.component';
 import {PenaltiesManagementComponent} from './components/management/penalties-management/penalties-management.component';
@@ -133,10 +132,6 @@ const routes: Routes = [
     },
     {
         path: 'dashboard/:locationId',
-        component: LocationDetailsComponent
-    },
-    {
-        path: 'locations/:locationId',
         component: LocationReservationComponent
     },
     {
@@ -354,7 +349,6 @@ const routes: Routes = [
         InformationComponent,
         NavigationComponent,
         DashboardItemComponent,
-        LocationDetailsComponent,
         CalendarComponent,
         ProfileOverviewComponent,
         ProfileReservationsComponent,

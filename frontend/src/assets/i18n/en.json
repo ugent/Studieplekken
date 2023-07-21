@@ -131,7 +131,9 @@
     "reservations": {
         "reservationButton": "Confirm changes",
         "tooManyPenalty": "You have too many penalty points. Please refer to the information page.",
+        "noReservations": "There were no past reservations for this location.",
         "shouldLogin": "You must log in to see your reservations for this location.",
+        "shouldLoginMaker": "You must log in to make reservations for this location.",
         "notFound": "The location was not found. Do you think this is an error? Don't hesitate to contact us!",
         "loading": "Loading the location...",
         "reservationHelper": "Use the calendar to adjust reservations by clicking on timeslots.",

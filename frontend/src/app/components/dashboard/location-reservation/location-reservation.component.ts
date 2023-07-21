@@ -111,12 +111,7 @@ export class LocationReservationComponent implements OnInit, AfterViewInit, OnDe
                 this.locationSub.next(location);
                 this.userSub.next(user);
 
-                if (user && location) {
-                    this.showEdit = user.admin || user.userAuthorities.some(authority =>
-                        authority.authorityId === location.authority.authorityId
-                    );
-                }
-
+                // Update reservations (and calendar) every 10 seconds.
                 this.subscription.add(
                     timer(0, 10000).subscribe(() => {
                         this.updateReservations();
@@ -202,9 +197,8 @@ export class LocationReservationComponent implements OnInit, AfterViewInit, OnDe
         ]).pipe(
             filter(([_, location]) =>
                 Boolean(location)
-            ),
-            take(1)
-        ).subscribe(([reservations, location]) => {
+            ), take(1)
+        ).subscribe(([reservations , location]) => {
             this.allReservations = reservations.filter(reservation =>
                 reservation.timeslot.locationId === location.locationId
             ).sort((a, b) =>
@@ -239,7 +233,7 @@ export class LocationReservationComponent implements OnInit, AfterViewInit, OnDe
         const currentTimeslot: Timeslot = event.timeslot;
 
         // Only logged-in users can select timeslots.
-        if (!currentUser || !currentTimeslot || !currentTimeslot.reservableFrom) {
+        if (!currentUser.userId || !currentTimeslot || !currentTimeslot.reservableFrom) {
             return;
         }
 
