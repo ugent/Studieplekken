@@ -1,5 +1,5 @@
 import {
-    AfterViewInit,
+    AfterViewInit, ChangeDetectorRef,
     Component,
     ElementRef,
     OnDestroy,
@@ -41,9 +41,7 @@ import {Dir} from '@angular/cdk/bidi';
     templateUrl: './location-reservation.component.html',
     styleUrls: ['./location-reservation.component.scss']
 })
-export class LocationReservationComponent implements OnInit, AfterViewInit, OnDestroy {
-
-    @ViewChildren('leaflet') leafletContainer: QueryList<HTMLDivElement>;
+export class LocationReservationComponent implements OnInit, OnDestroy {
 
     // The current selected language.
     protected languageSub: BehaviorSubject<string> = new BehaviorSubject(
@@ -92,6 +90,7 @@ export class LocationReservationComponent implements OnInit, AfterViewInit, OnDe
         private breadcrumbService: BreadcrumbService,
         private translateService: TranslateService,
         private modalService: MatDialog,
+        private changeDetectorService: ChangeDetectorRef,
         private route: ActivatedRoute
     ) {
     }
@@ -157,37 +156,6 @@ export class LocationReservationComponent implements OnInit, AfterViewInit, OnDe
                 this.translateService.currentLang
             );
         });
-    }
-
-    ngAfterViewInit(): void {
-        this.subscription.add(
-            combineLatest([this.leafletContainer.changes, this.locationSub]).pipe(
-                filter(Boolean)
-            ).subscribe(([changes, location]) => {
-                this.updateLeafletMap(location, changes.first.nativeElement);
-            })
-        );
-    }
-
-    updateLeafletMap(location: Location, container: HTMLDivElement): void {
-        const originalTile = Leaf.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19
-        });
-
-        const coordinates = new Leaf.LatLng(
-            location.building.latitude, location.building.longitude
-        );
-
-        const leafletMap = new Leaf.Map(container, {
-            center: coordinates,
-            zoom: 18,
-            layers: [originalTile],
-            crs: Leaf.CRS.EPSG3857
-        });
-
-        new Leaf.Marker(coordinates).addTo(
-            leafletMap
-        );
     }
 
     updateReservations(reset = false): void {
