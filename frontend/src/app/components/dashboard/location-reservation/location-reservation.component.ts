@@ -43,6 +43,8 @@ import {Dir} from '@angular/cdk/bidi';
 })
 export class LocationReservationComponent implements OnInit, OnDestroy {
 
+    protected readonly LocationReservationState = LocationReservationState;
+
     // The current selected language.
     protected languageSub: BehaviorSubject<string> = new BehaviorSubject(
         this.translateService.currentLang
@@ -229,7 +231,7 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
                 reservation => reservation.timeslot.timeslotSequenceNumber === currentTimeslot.timeslotSequenceNumber
             );
 
-            if (!selected || oldReservation?.state !== LocationReservationState.PRESENT) {
+            if (!selected || !oldReservation?.isCommitted()) {
                  if (selected) {
                      // Deselect already selected timeslots.
                      if (oldReservation && !oldReservation.isCanceled()) {

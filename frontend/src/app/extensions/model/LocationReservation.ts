@@ -45,6 +45,13 @@ export class LocationReservation {
         return this.state === LocationReservationState.REJECTED || this.state === LocationReservationState.DELETED;
     }
 
+    /**
+     * Check whether the reservation is committed.
+     */
+    public isCommitted(): boolean {
+        return this.state === LocationReservationState.PRESENT || this.state === LocationReservationState.ABSENT;
+    }
+
     public equals(other: LocationReservation): boolean {
         return timeslotEquals(this.timeslot, other.timeslot) && this.state === other.state;
     }
