@@ -108,6 +108,7 @@ import { ChartComponent } from './components/management/stats/chart/chart.compon
 import {BarCodeComponent} from './components/shared/barcode/barcode.component';
 import {NgxBarcodeModule} from 'ngx-barcode';
 import { LocationReservationComponent } from './components/dashboard/location-reservation/location-reservation.component';
+import { MapComponent } from './components/dashboard/location-reservation/map/map.component';
 
 
 // AoT requires an exported function for factories
@@ -413,6 +414,7 @@ const routes: Routes = [
         ChartComponent,
         BarCodeComponent,
         LocationReservationComponent,
+        MapComponent,
     ],
     imports: [
         BrowserModule,
