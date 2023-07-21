@@ -131,7 +131,9 @@
     "reservations": {
         "reservationButton": "Aanpassingen bevestigen",
         "tooManyPenalty": "Je hebt te veel strafpunten. Bekijk de informatiepagina voor meer info.",
+        "noReservations": "Geen reservaties gevonden voor deze locatie.",
         "shouldLogin": "Je moet inloggen om je reservaties voor deze locatie te kunnen zien.",
+        "shouldLoginMaker": "Je moet inloggen om reservaties te kunnen maken voor deze locatie.",
         "notFound": "De locatie werd niet gevonden. Denk je dat dit een fout is? Aarzel niet ons te contacteren!",
         "loading": "De locatie wordt geladen...",
         "reservationHelper": "Gebruik de kalender om reservaties aan te passen door op timeslots te klikken.",
