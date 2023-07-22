@@ -1,20 +1,21 @@
-import { HttpException, Injectable, Logger } from "@nestjs/common";
-import { PassportStrategy } from "@nestjs/passport";
-import { assert } from "console";
-import { Request } from "express";
-import * as fs from "fs";
-import { MultiSamlStrategy } from "passport-saml";
-import { MetadataReader, toPassportConfig } from "passport-saml-metadata";
+import { HttpException, Injectable, Logger } from '@nestjs/common';
+import { PassportStrategy } from '@nestjs/passport';
+import { assert } from 'console';
+import { Request } from 'express';
+import * as fs from 'fs';
+import { MultiSamlStrategy } from 'passport-saml';
+import { metadata, MetadataReader, toPassportConfig } from 'passport-saml-metadata';
 import {
   MultiSamlConfig,
   Profile,
   SamlConfig,
-} from "passport-saml/lib/passport-saml/types";
-import * as path from "path";
-import { providerData } from "src/configModule/config";
-import { ConfigService } from "../../configModule/config.service";
+} from 'passport-saml/lib/passport-saml/types';
+import * as path from 'path';
+import { providerData } from 'src/configModule/config';
+import { ConfigService } from '../../configModule/config.service';
 
-const AUTH_CREDENTIALS_DIR = "../../../config/auth/saml/";
+
+const AUTH_CREDENTIALS_DIR = '../../../config/auth/saml/';
 
 @Injectable()
 export class SamlStrategy extends PassportStrategy(MultiSamlStrategy) {
@@ -47,20 +48,18 @@ const getMultiSamlConfig: (a: ConfigService) => MultiSamlConfig = (c) => ({
   passReqToCallback: true,
   // See if the url includes the login url endpoints that are expected
   getSamlOptions: (req, cb) => {
-  // Every request of this service, this function will get called
+    // Every request of this service, this function will get called
     // We need to return the correct SAML options for the requested provider
     // e.g. if the requested IDentity Provider is KULeuven, we need to return the SAML options for KULeuven
 
     const provider = getProviderConfiguration(c, req);
-
+    if (!provider) return cb(new HttpException('Unsupported IDP', 400));
     Logger.debug(`Found provider for idp: ${provider.loginUrl}`);
 
-    if (!provider) cb(new HttpException("Unsupported IDP", 400));
-    else
-      cb(
-          null,
-          createSamlOptionsFromConfig(provider, req.query.callbackUrl as string),
-      );
+    cb(
+      null,
+      createSamlOptionsFromConfig(provider, req.query.callbackUrl as string),
+    );
   },
 });
 
@@ -98,12 +97,8 @@ function createSamlOptionsFromConfig(
   callbackUrl?: string,
 ): SamlConfig {
   assert(!!config, "Config can't be null!");
-  const privateKeyPath = path.join(__dirname, AUTH_CREDENTIALS_DIR, "key.pem");
-  const decryptionPvkPath = path.join(
-    __dirname,
-    AUTH_CREDENTIALS_DIR,
-    "key.pem",
-  );
+  const privateKeyPath = path.join(__dirname, AUTH_CREDENTIALS_DIR, 'key.pem');
+  const decryptionPvkPath = path.join(__dirname, AUTH_CREDENTIALS_DIR, 'key.pem');
   if (!fs.existsSync(privateKeyPath)) {
     Logger.error(`Private key at ${privateKeyPath} not found.`);
     return null;
@@ -148,12 +143,4 @@ export function readMetadata(localP: string) {
     Logger.error(`Failed to parse SAML metadata file of ${localP}.`);
     return null;
   }
-}
-
-export function getSamlMetadata() {
-  // Get metadata from metadata.xml file
-  return fs.readFileSync(
-    path.join(__dirname, AUTH_CREDENTIALS_DIR, "metadata.xml"),
-    "utf-8",
-  );
 }
