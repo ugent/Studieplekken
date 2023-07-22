@@ -1,14 +1,14 @@
-import { Configuration, Institution } from "src/configModule/config";
+import { Configuration, Institution } from 'src/configModule/config';
 
 export const configuration: Configuration = {
   port: 8080,
   auth: {
     providers: [
       {
-        loginUrl: "okta",
-        callbackUrl: "https://localhost:8080/api/SSO/saml",
-        issuer: "https://localhost:8080",
-        metadataFile: "metadata-okta.xml",
+        loginUrl: 'okta',
+        callbackUrl: 'https://localhost:8080/api/SSO/saml',
+        issuer: 'https://localhost:8080',
+        metadataFile: 'metadata-okta.xml',
         toSamlUser: (a: any) => ({
           firstName: a.firstName,
           lastName: a.lastName,
@@ -20,15 +20,15 @@ export const configuration: Configuration = {
     ],
 
     cas: {
-      serverBaseURL: "https://localhost:8080",
+      serverBaseURL: 'https://localhost:8080',
     },
     testEndpoint: true,
     allowedClientCallbacks: [
-      "https://localhost:8086/login",
-      "https://localhost:8080/login",
-      "https://localhost:8087/login",
-      "https://localhost:4200/login",
-      "http://localhost:4200/login",
+      'https://localhost:8086/login',
+      'https://localhost:8080/login',
+      'https://localhost:8087/login',
+      'https://localhost:4200/login',
+      'http://localhost:4200/login',
     ],
   },
 
@@ -37,13 +37,13 @@ export const configuration: Configuration = {
   },
 
   database: {
-    username: "postgres",
-    password: "postgres",
-    url: process.env.POSTGRES_DB || "localhost",
-    port: "5432",
-    database: "studieplekken_users_test",
+    username: 'postgres',
+    password: 'postgres',
+    url: process.env.POSTGRES_DB || 'localhost',
+    port: '5432',
+    database: 'studieplekken_users_test',
   },
 
   jwtKey: "local-key",
-  backendServiceJwtKey: "local-key",
+  backendServiceJwtKey: "local-key"
 };

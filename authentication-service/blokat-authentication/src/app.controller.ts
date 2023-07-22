@@ -19,7 +19,6 @@ import {
 import { ConfigGuard } from "./configModule/config.guard";
 import { getConfig } from "./configModule/config.service";
 import { RealIP } from "nestjs-real-ip";
-import { getSamlMetadata } from "./auth/saml/saml.strategy";
 
 @Controller()
 export class AppController {
@@ -27,7 +26,7 @@ export class AppController {
 
   /******* CAS ENDPOINTS  *********/
 
-  /*
+  /* 
   The CAS endpoints are used for authenticating users using CAS. This is used for internal auth within UGent.
   The CAS endpoints are protected by the CAS strategy (see AuthGuard('cas')).
   This strategy can be found in auth/auth.module.ts.
@@ -160,13 +159,6 @@ export class AppController {
     };
 
     return await this.authService.issueToken(newTestUser);
-  }
-
-  @Get("api/metadata/saml")
-  async getMetadata(@Request() req: any, @Res() res: any) {
-    const metadata = getSamlMetadata();
-    res.type("application/xml");
-    return res.send(metadata);
   }
 
   @Get()
