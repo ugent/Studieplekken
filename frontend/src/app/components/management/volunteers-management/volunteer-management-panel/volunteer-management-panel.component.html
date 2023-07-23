@@ -64,7 +64,7 @@
             {{'management.volunteers.addNewHeader' | translate}}
         </h2>
         <div modal-body>
-            <app-search-user-component [icon]="'icon-plus'" (selectedUser)="addVolunteer($event)"></app-search-user-component>
+            <app-search-user [icon]="'icon-plus'" (selectedUser)="addVolunteer($event)"></app-search-user>
         </div>
     </app-modal>
 </ng-template>
