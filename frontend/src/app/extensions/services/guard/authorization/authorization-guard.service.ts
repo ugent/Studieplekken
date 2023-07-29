@@ -31,11 +31,11 @@ export class AuthorizationGuardService implements CanActivate {
         protected router: Router,
         protected authenticationService: AuthenticationService,
         protected loginRedirect: LoginRedirectService
-    ) {}
+    ) {
+    }
 
     canActivate(
-        route: ActivatedRouteSnapshot,
-        state: RouterStateSnapshot
+        route: ActivatedRouteSnapshot
     ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
         return this.authenticationService.user.pipe(
             // Only run when fetching of the user object is complete.
@@ -73,13 +73,14 @@ export class AuthorizationGuardService implements CanActivate {
      */
     private hasGuard(guard: string): boolean {
         // The custom defined guards.
-        const service = this.authenticationService;
+        const user = this.authenticationService.userValue();
+
         // In this implementation, roles follow a hierarchy.
         const guards = {
-            user: service.isLoggedIn(),
-            scanner: service.isScanner(),
-            authorities: service.isAuthority(),
-            admin: service.isAdmin()
+            user: user.isLoggedIn(),
+            scanner: user.isScanner(),
+            authorities: user.isAuthority(),
+            admin: user.isAdmin()
         };
         return guards[guard];
     }

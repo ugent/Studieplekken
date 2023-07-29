@@ -88,7 +88,7 @@ export class LocationsManagementComponent implements OnInit {
 
     prepareToAddLocation(template: TemplateRef<unknown>): void {
         this.addingWasSuccess = undefined;
-        this.dialog.open(template, {panelClass: "cs--cyan"});
+        this.dialog.open(template, {panelClass: 'cs--cyan'});
         this.editMode = false;
     }
 
@@ -225,7 +225,7 @@ export class LocationsManagementComponent implements OnInit {
      * Set up the locations and authorities depending on whether the user is admin
      */
     setupLocationsAndAuthorities(): void {
-        if (this.authenticationService.isAdmin()) {
+        if (this.authenticationService.userValue().isAdmin()) {
             this.setupLocationsAndAuthoritiesAsAdmin();
         } else {
             this.setupLocationsAndAuthoritiesAsEmployee();

@@ -8,7 +8,7 @@ import {
     ViewChild,
     ViewChildren
 } from '@angular/core';
-import {BehaviorSubject, combineLatest, Observable, Subject, Subscription, throwError} from 'rxjs';
+import {BehaviorSubject, combineLatest, forkJoin, Observable, Subject, Subscription, throwError} from 'rxjs';
 import {LocationService} from '../../../extensions/services/api/locations/location.service';
 import {ActivatedRoute} from '@angular/router';
 import {User} from '../../../extensions/model/User';
@@ -31,10 +31,13 @@ import {
     LocationReservationsService
 } from '../../../extensions/services/api/location-reservations/location-reservations.service';
 import {timer} from 'rxjs';
-import {catchError, filter, shareReplay, take, tap} from 'rxjs/operators';
+import {catchError, filter, first, shareReplay, take, tap} from 'rxjs/operators';
 import {of} from 'rxjs/internal/observable/of';
 import * as Leaf from 'leaflet';
 import {Dir} from '@angular/cdk/bidi';
+import {
+    LocationReservationsComponent
+} from '../../management/locations-management/location-details-management/location-calendar/location-reservations/location-reservations/location-reservations.component';
 
 @Component({
     selector: 'app-location-reservation',
@@ -92,7 +95,6 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
         private breadcrumbService: BreadcrumbService,
         private translateService: TranslateService,
         private modalService: MatDialog,
-        private changeDetectorService: ChangeDetectorRef,
         private route: ActivatedRoute
     ) {
     }
@@ -104,7 +106,9 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
 
         // Fetch the location and logged-in user.
         this.subscription.add(
-            combineLatest([this.locationService.getLocation(locationID), this.authenticationService.user]).pipe(
+            combineLatest([
+                this.locationService.getLocation(locationID), this.authenticationService.user
+            ]).pipe(
                 catchError(() => {
                     return of([null, null]);
                 })
@@ -153,22 +157,23 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
         );
 
         // Listen for language changes.
-        this.translateService.onLangChange.subscribe(() => {
-            this.languageSub.next(
-                this.translateService.currentLang
-            );
-        });
+        this.subscription.add(
+            this.translateService.onLangChange.subscribe(() => {
+                this.languageSub.next(
+                    this.translateService.currentLang
+                );
+            })
+        );
     }
 
     updateReservations(reset = false): void {
-        combineLatest([
-            this.authenticationService.getLocationReservations(),
-            this.locationSub
-        ]).pipe(
-            filter(([_, location]) =>
-                Boolean(location)
-            ), take(1)
-        ).subscribe(([reservations , location]) => {
+        const location: Location = this.locationSub.value;
+
+        // The take(1) automatically unsubscribes after the first emission.
+        this.authenticationService.getLocationReservations().pipe(
+            first()
+        ).subscribe((reservations: LocationReservation[]) => {
+            // Update the reservations list and sort it.
             this.allReservations = reservations.filter(reservation =>
                 reservation.timeslot.locationId === location.locationId
             ).sort((a, b) =>
@@ -185,7 +190,9 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
     }
 
     updateEvents(): void {
-        this.timeslotsService.getTimeslotsOfLocation(this.locationSub.value.locationId).subscribe((timeslots: Timeslot[]) => {
+        this.timeslotsService.getTimeslotsOfLocation(this.locationSub.value.locationId).pipe(
+            first()
+        ).subscribe((timeslots: Timeslot[]) => {
             this.events = timeslots.map(timeslot => this.timeslotCalendarEventService.timeslotToCalendarEvent(
                 timeslot, this.languageSub.value, [
                     ...this.newReservations, ...this.allReservations.filter(res =>
@@ -198,7 +205,7 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
         });
     }
 
-    timeslotPicked(event): void {
+    timeslotPicked(event: { timeslot: Timeslot; }): void {
         const currentUser: User = this.userSub.value;
         const currentTimeslot: Timeslot = event.timeslot;
 
@@ -276,7 +283,7 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
                 this.removedReservations
             )
         ]).pipe(
-            tap(() =>
+            first(), tap(() =>
                 this.updateReservations(true)
             ),
             map(([res]) =>
@@ -304,7 +311,7 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
                 );
             }
 
-            request.subscribe();
+            request.pipe(first()).subscribe();
         }
     }
 

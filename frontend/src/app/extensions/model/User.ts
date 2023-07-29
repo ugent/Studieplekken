@@ -1,21 +1,41 @@
 import {decode} from 'html-entities';
 import {Authority, AuthorityConstructor} from './Authority';
 
-export interface User {
-    userId: string;
-    firstName: string;
-    lastName: string;
-    mail: string;
-    password: string;
-    penaltyPoints: number;
-    institution: string;
-    admin: boolean;
-    calendarId: string;
-    userAuthorities: Authority[];
-    userVolunteer: unknown[];
-    userSettings: UserSettings;
-}
+export class User {
+    constructor(
+        public userId: string = '',
+        public firstName: string = '',
+        public lastName: string = '',
+        public mail: string = '',
+        public password: string = '',
+        public penaltyPoints: number = 0,
+        public institution: string = '',
+        public admin: boolean = false,
+        public calendarId: string = '',
+        public userAuthorities: Authority[] = [],
+        public userVolunteer: unknown[] = [],
+        public userSettings: UserSettings = {
+            receiveMailConfirmation: false
+        }
+    ) {
+    }
 
+    isLoggedIn(): boolean {
+        return !!this.userId;
+    }
+
+    isAdmin(): boolean {
+        return this.isLoggedIn() && this.admin;
+    }
+
+    isAuthority(): boolean {
+        return this.isAdmin() || this.userAuthorities.length > 0;
+    }
+
+    isScanner(): boolean {
+        return this.isAuthority() || this.userVolunteer.length > 0;
+    }
+}
 
 export class UserSettings {
     receiveMailConfirmation: boolean;
@@ -23,22 +43,7 @@ export class UserSettings {
 
 export class UserConstructor {
     static new(): User {
-        return {
-            userId: '',
-            firstName: '',
-            lastName: '',
-            mail: '',
-            password: '',
-            penaltyPoints: 0,
-            institution: '',
-            admin: false,
-            calendarId: '',
-            userAuthorities: [],
-            userVolunteer: [],
-            userSettings: {
-                receiveMailConfirmation: false
-            }
-        };
+        return new User();
     }
 
     static newFromObj(obj: User): User {
@@ -46,19 +51,21 @@ export class UserConstructor {
             return null;
         }
 
-        return {
-            userId: obj.userId,
-            firstName: decode(obj.firstName),
-            lastName: decode(obj.lastName),
-            mail: obj.mail,
-            password: obj.password,
-            penaltyPoints: obj.penaltyPoints,
-            institution: obj.institution,
-            admin: obj.admin,
-            calendarId: obj.calendarId,
-            userAuthorities: obj.userAuthorities.map(v => AuthorityConstructor.newFromObj(v)),
-            userVolunteer: obj.userVolunteer,
-            userSettings: obj.userSettings
-        };
+        return new User(
+            obj.userId,
+            decode(obj.firstName),
+            decode(obj.lastName),
+            obj.mail,
+            obj.password,
+            obj.penaltyPoints,
+            obj.institution,
+            obj.admin,
+            obj.calendarId,
+            obj.userAuthorities.map(v =>
+                AuthorityConstructor.newFromObj(v)
+            ),
+            obj.userVolunteer,
+            obj.userSettings
+        );
     }
 }

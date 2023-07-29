@@ -69,7 +69,7 @@ export class UserDetailsFormComponent implements OnInit {
     }
 
     showImpersonate(): boolean {
-        return this.authenticationService.isAdmin() && !environment.production;
+        return this.authenticationService.userValue().isAdmin() && !environment.production;
     }
 
     impersonate(user): void {
