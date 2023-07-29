@@ -9,7 +9,6 @@ import {MatDialog} from '@angular/material/dialog';
 import {Observable} from 'rxjs';
 import {of} from 'rxjs/internal/observable/of';
 import {map} from 'rxjs/internal/operators/map';
-import {filter, tap} from 'rxjs/operators';
 import {AddressResolverService} from 'src/app/extensions/services/addressresolver/nomenatim/addressresolver.service';
 import {BuildingService} from 'src/app/extensions/services/api/buildings/buildings.service';
 import {AuthenticationService} from 'src/app/extensions/services/authentication/authentication.service';
@@ -22,10 +21,10 @@ import {User} from '../../../extensions/model/User';
     styleUrls: ['./building-management.component.scss'],
 })
 export class BuildingManagementComponent implements OnInit {
-    buildingsObs: Observable<Building[]>;
-    institutionsObs: Observable<string[]>;
+    protected buildingsObs: Observable<Building[]>;
+    protected institutionsObs: Observable<string[]>;
 
-    buildingFormGroup = new UntypedFormGroup({
+    protected buildingFormGroup = new UntypedFormGroup({
         buildingId: new UntypedFormControl({value: '', disabled: true}),
         name: new UntypedFormControl('', Validators.required.bind(this)),
         address: new UntypedFormControl('', Validators.required.bind(this)),
@@ -34,11 +33,10 @@ export class BuildingManagementComponent implements OnInit {
         institution: new UntypedFormControl('', Validators.required.bind(this)),
     });
 
-    successGettingBuildings: boolean = undefined;
-    successAddingBuilding: boolean = undefined;
-    successUpdatingBuilding: boolean = undefined;
-    successDeletingBuilding: boolean = undefined;
-    showDelete: boolean = this.authenticationService.isAdmin();
+    protected successGettingBuildings: boolean = undefined;
+    protected successAddingBuilding: boolean = undefined;
+    protected successUpdatingBuilding: boolean = undefined;
+    protected successDeletingBuilding: boolean = undefined;
 
     isLoadingAddress: boolean;
     isCorrectAddress: boolean;
@@ -93,9 +91,7 @@ export class BuildingManagementComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.authenticationService.user.pipe(
-            filter(user => user != null)
-        ).subscribe(user => {
+        this.authenticationService.user.subscribe(user => {
             this.reloadBuildings();
             this.fillInstitutionsDependingOnUser(user);
 
@@ -153,6 +149,7 @@ export class BuildingManagementComponent implements OnInit {
 
     addBuilding(): void {
         this.successAddingBuilding = null;
+
         this.sendBuildingRequest(true);
     }
 
@@ -241,10 +238,14 @@ export class BuildingManagementComponent implements OnInit {
     }
 
     fillInstitutionsDependingOnUser(user: User): void {
-        if (this.authenticationService.isAdmin()) {
-            this.institutionsObs = of(['UGent', 'HoGent', 'Arteveldehogeschool', 'StadGent', 'Luca', 'Odisee', 'Other']);
+        if (user.isAdmin()) {
+            this.institutionsObs = of([
+                'UGent', 'HoGent', 'Arteveldehogeschool', 'StadGent', 'Luca', 'Odisee', 'Other'
+            ]);
         } else {
-            this.institutionsObs = of([user.institution]);
+            this.institutionsObs = of([
+                user.institution
+            ]);
         }
     }
 
@@ -282,23 +283,17 @@ export class BuildingManagementComponent implements OnInit {
         });
     }
 
-    getAddressIcon(): string {
-        if (this.isLoadingAddress) {
-            return 'icon-update';
-        }
-
-        return this.isCorrectAddress ? 'icon-checkmark-circle ok' : 'icon-exclamation-circle no';
-    }
-
     showAdmin(): boolean {
-        return this.authenticationService.isAdmin();
+        return this.authenticationService.userValue().isAdmin();
     }
 
     reloadBuildings(): void {
+        const user = this.authenticationService.userValue();
+
         this.buildingsObs = this.buildingService.getAllBuildings().pipe(
             map(buildings =>
                 buildings.filter(building =>
-                    building.institution === this.authenticationService.userValue().institution || this.authenticationService.isAdmin()
+                    building.institution === user.institution || user.isAdmin()
                 )
             )
         );

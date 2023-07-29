@@ -53,9 +53,10 @@ export class ProfileReservationsComponent implements OnInit {
 
     setup(): void {
         // don't setup if user is not logged in (or logged in user isn't loaded yet)
-        if (!this.authenticationService.isLoggedIn()) {
+        if (!this.authenticationService.userValue().isLoggedIn()) {
             return;
         }
+
         // let the user know that the location reservations are loading
         this.successGettingLocationReservations = null;
 

@@ -36,7 +36,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
         // is shown in the application.
         this.authenticationService.user.subscribe((user) => {
             // first, check if the user is logged in
-            if (this.authenticationService.isLoggedIn()) {
+            if (user.isLoggedIn()) {
                 this.showLoggedIn = true;
                 if (user.admin) {
                     this.showAdmin = true;

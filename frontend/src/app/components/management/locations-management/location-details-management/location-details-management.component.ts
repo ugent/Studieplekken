@@ -10,7 +10,7 @@ import {LocationService} from '../../../../extensions/services/api/locations/loc
     styleUrls: ['./location-details-management.component.scss'],
 })
 export class LocationDetailsManagementComponent implements OnInit {
-    locationObs: Observable<Location>;
+    protected locationObs: Observable<Location>;
 
     constructor(
         private locationService: LocationService,

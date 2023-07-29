@@ -76,7 +76,7 @@ export class DetailsFormComponent implements OnInit {
         });
 
         // make sure that the correct authorities are retrieved
-        if (this.authenticationService.isAdmin()) {
+        if (this.authenticationService.userValue().isAdmin()) {
             this.authoritiesObs = this.authoritiesService.getAllAuthorities();
         } else {
             this.authoritiesObs = this.authoritiesService.getAuthoritiesOfUser(

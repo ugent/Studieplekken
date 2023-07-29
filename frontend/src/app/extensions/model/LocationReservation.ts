@@ -13,7 +13,6 @@ export enum LocationReservationState {
 }
 
 export class LocationReservation {
-
     constructor(
         public user: User,
         public timeslot: Timeslot,
