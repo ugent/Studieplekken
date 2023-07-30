@@ -1,11 +1,16 @@
 <article class="content">
-    <h2 *ngIf="isProfile">{{"header.navigation.profile" | translate }}</h2>
+    <h2 *ngIf="isProfile">
+        {{ "header.navigation.profile" | translate }}
+    </h2>
     <section *ngIf="isProfile" class="profile">
-        <span class="avatar">{{user.firstName[0]}}</span>
+        <span class="avatar">{{ user.firstName[0] }}</span>
         <div class="profile-info">
-            <span>{{user.firstName + ' ' + user.lastName}}</span>
+            <span>
+                {{ user.firstName + ' ' + user.lastName }}
+            </span>
             <a routerLink="/profile" (click)="close()" class="button button-primary button-small mt-2">
-                {{"header.navigation.profile" | translate }} </a>
+                {{"header.navigation.profile" | translate }}
+            </a>
         </div>
     </section>
 
@@ -27,7 +32,8 @@
 
     <footer *ngIf="isProfile">
         <a (click)='showLoggedIn && logout()' class="button button-small button-secondary">
-            {{"header.logOut" | translate}} </a>
+            {{"header.logOut" | translate}}
+        </a>
     </footer>
 </article>
 

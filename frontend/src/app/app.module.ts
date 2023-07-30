@@ -197,6 +197,9 @@ const routes: Routes = [
     {
         path: 'management',
         component: ManagementComponent,
+        data: {
+            guards: [['authorities']]
+        },
         children: [
             {
                 path: '',

@@ -1,42 +1,53 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AuthenticationService} from '../../extensions/services/authentication/authentication.service';
-import {combineLatest} from 'rxjs';
+import {Subscription} from 'rxjs';
 import {BreadcrumbService, managementBreadcrumb} from '../../stad-gent-components/header/breadcrumbs/breadcrumb.service';
 import {environment} from 'src/environments/environment';
+import {User} from '../../extensions/model/User';
 
 @Component({
     selector: 'app-management',
     templateUrl: './management.component.html',
     styleUrls: ['./management.component.scss'],
 })
-export class ManagementComponent implements OnInit {
-    showTagManagement: boolean;
-    showAdmin: boolean;
-    showVolunteersManagement: boolean;
-    showActionlog: boolean;
-    showStats: boolean;
-    showStagingWarning = environment.showStagingWarning;
+export class ManagementComponent implements OnInit, OnDestroy {
+    protected showTagManagement: boolean;
+    protected showAdmin: boolean;
+    protected showVolunteersManagement: boolean;
+    protected showActionlog: boolean;
+    protected showStats: boolean;
+
+    protected showStagingWarning =
+        environment.showStagingWarning;
+
+    protected subscription: Subscription =
+        new Subscription();
 
     constructor(
         private authenticationService: AuthenticationService,
         private breadcrumbsService: BreadcrumbService
-    ) {}
+    ) {
+    }
 
     ngOnInit(): void {
-        // Show certain functionality depending on the role of the user
-        const authenticatedUserObs = this.authenticationService.user;
-        const hasAuthoritiesObs = this.authenticationService.hasAuthoritiesObs;
-
-        combineLatest([authenticatedUserObs, hasAuthoritiesObs]).subscribe(
-            ([authenticatedUser, hasAuthorities]) => {
-                this.showAdmin = authenticatedUser.admin;
-                this.showTagManagement = authenticatedUser.admin;
-                this.showVolunteersManagement = authenticatedUser.admin || hasAuthorities;
-                this.showActionlog = authenticatedUser.admin;
-                this.showStats = authenticatedUser.admin;
-            }
+        // Show certain functionality depending on the role of the user.
+        this.subscription.add(
+            this.authenticationService.user.subscribe((authenticatedUser: User) => {
+                    this.showAdmin = authenticatedUser.isAdmin();
+                    this.showTagManagement = authenticatedUser.isAdmin();
+                    this.showVolunteersManagement = authenticatedUser.isAdmin() || authenticatedUser.isAuthority();
+                    this.showActionlog = authenticatedUser.isAdmin();
+                    this.showStats = authenticatedUser.isAdmin();
+                }
+            )
         );
 
-        this.breadcrumbsService.setCurrentBreadcrumbs([managementBreadcrumb]);
+        this.breadcrumbsService.setCurrentBreadcrumbs([
+            managementBreadcrumb
+        ]);
+    }
+
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 }

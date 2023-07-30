@@ -1,76 +1,65 @@
-import {AfterViewInit, Component, OnInit, HostListener} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
-import {Observable, Subject} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {UserService} from 'src/app/extensions/services/api/users/user.service';
+import {BehaviorSubject, Observable, Subject} from 'rxjs';
+import {filter, map} from 'rxjs/operators';
 import {AuthenticationService} from 'src/app/extensions/services/authentication/authentication.service';
-import {Breadcrumb, BreadcrumbService} from './breadcrumbs/breadcrumb.service'
-import {User} from '../../extensions/model/User';
+import {Breadcrumb, BreadcrumbService} from './breadcrumbs/breadcrumb.service';
+import {User, UserConstructor} from '../../extensions/model/User';
 
 @Component({
     selector: 'app-header',
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements OnInit, AfterViewInit {
+export class HeaderComponent implements OnInit {
+    protected userSubject: BehaviorSubject<User>;
+    protected accordionSubject: Subject<boolean>;
+    protected languageSubject: Subject<boolean>;
 
-    accordionSubject = new Subject<boolean>();
-    languageSubject = new Subject<boolean>();
-    showAdmin = false;
-    showManagement = false;
-    showLoggedIn = false;
-    showVolunteer = false;
-    MOBILE_SIZE = 800;
+    protected showAdmin = false;
+    protected showManagement = false;
+    protected showLoggedIn = false;
+    protected showVolunteer = false;
 
     constructor(
-        private breadcrumbService: BreadcrumbService, private authenticationService: AuthenticationService,
-        private translationService: TranslateService, private userService: UserService
+        private breadcrumbService: BreadcrumbService,
+        private authenticationService: AuthenticationService,
+        private translationService: TranslateService
     ) {
+        this.userSubject = new BehaviorSubject(
+            UserConstructor.new()
+        );
+        this.accordionSubject = new Subject();
+        this.languageSubject = new Subject();
     }
 
-    mobile: boolean;
-
     ngOnInit(): void {
-        this.mobile = window.innerWidth < this.MOBILE_SIZE;
         // subscribe to the user observable to make sure that the correct information
         // is shown in the application.
         this.authenticationService.user.subscribe((user) => {
-            // first, check if the user is logged in
-            if (user.isLoggedIn()) {
-                this.showLoggedIn = true;
-                if (user.admin) {
-                    this.showAdmin = true;
-                } else {
-                    this.showManagement = user.userAuthorities.length > 0;
-                    this.showVolunteer = user.userVolunteer.length > 0;
-                }
-            } else {
-                this.showManagement = false;
-                this.showLoggedIn = false;
-                this.showVolunteer = false;
-                this.showAdmin = false;
-            }
+            this.userSubject.next(user);
+
+            this.showLoggedIn = user.isLoggedIn();
+            this.showAdmin = user.isAdmin();
+            this.showManagement = user.isAuthority();
+            this.showVolunteer = user.isScanner();
         });
     }
 
-    @HostListener('window:resize', ['$event'])
-    onResize(): void {
-        this.mobile = window.innerWidth < this.MOBILE_SIZE;
-    }
-
-    ngAfterViewInit(): void {
-    }
-
     getLinkedBreadcrumbs(): Observable<Breadcrumb[]> {
-        return this.breadcrumbService.getCurrentBreadcrumbs().pipe(map(v => v.slice(0, -1)))
+        return this.breadcrumbService.getCurrentBreadcrumbs().pipe(
+            map(v =>
+                v.slice(0, -1)
+            )
+        );
     }
 
     getUnlinkedBreadcrumbs(): Observable<Breadcrumb[]> {
-        return this.breadcrumbService.getCurrentBreadcrumbs().pipe(map(v => v.slice(-1)))
-    }
-
-    getUser(): Observable<User> {
-        return this.authenticationService.user;
+        return this.breadcrumbService.getCurrentBreadcrumbs().pipe(
+            map(v =>
+                v.slice(-1)
+            )
+        );
     }
 
     currentLanguage(): string {

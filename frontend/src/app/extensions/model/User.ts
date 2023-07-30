@@ -35,6 +35,16 @@ export class User {
     isScanner(): boolean {
         return this.isAuthority() || this.userVolunteer.length > 0;
     }
+
+    hasGuard(guard: string): boolean {
+        return {
+            user: this.isLoggedIn(),
+            scanner: this.isScanner(),
+            authorities: this.isAuthority(),
+            admin: this.isAdmin()
+        }
+        [guard];
+    }
 }
 
 export class UserSettings {

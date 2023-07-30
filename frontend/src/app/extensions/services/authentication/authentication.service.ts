@@ -8,8 +8,8 @@ import {User, UserConstructor} from '../../model/User';
 import {api} from '../api/endpoints';
 import {LocationReservationsService} from '../api/location-reservations/location-reservations.service';
 import {PenaltyList, PenaltyService} from '../api/penalties/penalty.service';
-import {UserService} from '../api/users/user.service';
 import {LoginRedirectService} from './login-redirect.service';
+import {tap} from 'rxjs/operators';
 
 /**
  * The structure of the authentication service has been based on this article:
@@ -24,20 +24,16 @@ import {LoginRedirectService} from './login-redirect.service';
  */
 @Injectable({
     // Make the service a singleton service.
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class AuthenticationService {
-    private userSubject: BehaviorSubject<User> = new BehaviorSubject<User>(null);
-    public user: Observable<User> = this.userSubject.asObservable();
+    public hasAttemptedLogin = false;
 
-    private hasAuthoritiesSubject: Subject<boolean> = new ReplaySubject<boolean>();
-    public hasAuthoritiesObs: Observable<boolean> = this.hasAuthoritiesSubject.asObservable();
+    private userSubject: BehaviorSubject<User>;
+    public user: Observable<User>;
 
-    private hasVolunteeredSubject: Subject<boolean> = new ReplaySubject<boolean>();
-    public hasVolunteeredObs: Observable<boolean> = this.hasVolunteeredSubject.asObservable();
-
-    private penaltySubject: Subject<PenaltyList> = new ReplaySubject<PenaltyList>();
-    public penaltyObservable = this.penaltySubject.asObservable();
+    private penaltySubject: Subject<PenaltyList>;
+    public penaltyObservable: Observable<PenaltyList>;
 
     constructor(
         private http: HttpClient,
@@ -45,6 +41,13 @@ export class AuthenticationService {
         private router: Router,
         private loginRedirectService: LoginRedirectService,
     ) {
+        // Initialize subjects.
+        this.userSubject = new BehaviorSubject<User>(UserConstructor.new());
+        this.user = this.userSubject.asObservable();
+
+        this.penaltySubject = new ReplaySubject();
+        this.penaltyObservable = this.penaltySubject.asObservable();
+
         // When the access token is modified (e.g. in a different tab),
         // refresh the authentication information.
         window.onstorage = (event: StorageEvent) => {
@@ -84,7 +87,9 @@ export class AuthenticationService {
      *                was set to 'true' by the LoginComponent.
      */
     login(redirect = false): void {
-        this.http.get<User>(api.whoAmI).subscribe(
+        this.http.get<User>(api.whoAmI).pipe(
+            tap(() => this.hasAttemptedLogin = true)
+        ).subscribe(
             (next) => {
                 this.userSubject.next(
                     UserConstructor.newFromObj(next)
@@ -184,7 +189,11 @@ export class AuthenticationService {
 
     substituteLogin(email: string): void {
         localStorage.setItem('impersonate', email);
-        const headers = new HttpHeaders().set('AS-USER', email);
-        this.http.get(api.whoAmI, {headers}).subscribe(() => this.login());
+
+        this.http.get(api.whoAmI, {
+            headers: new HttpHeaders().set('AS-USER', email)
+        }).subscribe(() =>
+            this.login()
+        );
     }
 }
