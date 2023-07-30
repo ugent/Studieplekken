@@ -4,6 +4,7 @@ import {UserService} from '../../extensions/services/api/users/user.service';
 import {AuthenticationService} from '../../extensions/services/authentication/authentication.service';
 import {BreadcrumbService} from '../../stad-gent-components/header/breadcrumbs/breadcrumb.service';
 import {User} from '../../extensions/model/User';
+import {filter} from 'rxjs/operators';
 
 @Component({
     selector: 'app-information',
@@ -30,7 +31,9 @@ export class InformationComponent implements OnInit {
     ngOnInit(): void {
         // subscribe to the user observable to make sure that the correct information
         // is shown in the application.
-        this.authenticationService.user.subscribe((user: User) => {
+        this.authenticationService.user.pipe(
+            filter(user => !!user)
+        ).subscribe((user: User) => {
             this.showManagement = user.isAuthority();
             this.showAdmin = user.isAdmin();
             this.showSupervisors = user.isScanner();

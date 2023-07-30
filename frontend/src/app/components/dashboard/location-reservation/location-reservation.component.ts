@@ -1,14 +1,9 @@
 import {
-    AfterViewInit, ChangeDetectorRef,
     Component,
-    ElementRef,
     OnDestroy,
-    OnInit, QueryList,
-    TemplateRef,
-    ViewChild,
-    ViewChildren
+    OnInit, TemplateRef
 } from '@angular/core';
-import {BehaviorSubject, combineLatest, forkJoin, Observable, Subject, Subscription, throwError} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, Subscription} from 'rxjs';
 import {LocationService} from '../../../extensions/services/api/locations/location.service';
 import {ActivatedRoute} from '@angular/router';
 import {User} from '../../../extensions/model/User';
@@ -18,7 +13,7 @@ import {defaultTeaserImages} from '../../../app.constants';
 import {BreadcrumbService} from '../../../stad-gent-components/header/breadcrumbs/breadcrumb.service';
 import {TranslateService} from '@ngx-translate/core';
 import {TimeslotsService} from '../../../extensions/services/api/calendar-periods/timeslot.service';
-import {LocationReservation, LocationReservationState} from '../../../extensions/model/LocationReservation';
+import {LocationReservation} from '../../../extensions/model/LocationReservation';
 import {map} from 'rxjs/internal/operators/map';
 import {CalendarEvent} from 'angular-calendar';
 import {Timeslot, timeslotEquals} from '../../../extensions/model/Timeslot';
@@ -31,13 +26,8 @@ import {
     LocationReservationsService
 } from '../../../extensions/services/api/location-reservations/location-reservations.service';
 import {timer} from 'rxjs';
-import {catchError, filter, first, shareReplay, take, tap} from 'rxjs/operators';
+import {catchError, filter, first, tap} from 'rxjs/operators';
 import {of} from 'rxjs/internal/observable/of';
-import * as Leaf from 'leaflet';
-import {Dir} from '@angular/cdk/bidi';
-import {
-    LocationReservationsComponent
-} from '../../management/locations-management/location-details-management/location-calendar/location-reservations/location-reservations/location-reservations.component';
 
 @Component({
     selector: 'app-location-reservation',
@@ -46,20 +36,14 @@ import {
 })
 export class LocationReservationComponent implements OnInit, OnDestroy {
 
-    protected readonly LocationReservationState = LocationReservationState;
-
-    // The current selected language.
-    protected languageSub: BehaviorSubject<string> = new BehaviorSubject(
-        this.translateService.currentLang
-    );
     // The current location.
-    protected locationSub: BehaviorSubject<Location> = new BehaviorSubject(
-        undefined
-    );
+    protected locationSub: BehaviorSubject<Location>;
     // The current logged-in user.
-    protected userSub: BehaviorSubject<User> = new BehaviorSubject(
-        undefined
-    );
+    protected userSub: BehaviorSubject<User>;
+    // The current selected language.
+    protected languageSub: BehaviorSubject<string>;
+    // All subjects combined.
+    protected dataSub: Observable<{ user: User, location: Location, language: string }>;
 
     // Whether the edit button should be shown.
     protected showEdit = false;
@@ -97,6 +81,17 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
         private modalService: MatDialog,
         private route: ActivatedRoute
     ) {
+        this.locationSub = new BehaviorSubject<Location>(undefined);
+        this.userSub = new BehaviorSubject<User>(authenticationService.userValue());
+        this.languageSub = new BehaviorSubject<string>(translateService.currentLang);
+
+        this.dataSub = combineLatest([
+            this.locationSub, this.userSub, this.languageSub
+        ]).pipe(
+            map(([location, user, language]) =>
+                ({ location, user, language })
+            )
+        );
     }
 
     ngOnInit(): void {
@@ -138,10 +133,8 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
 
         // Determine whether reservations can be made.
         this.subscription.add(
-            combineLatest([
-                this.locationSub, this.authenticationService.penaltyObservable
-            ]).subscribe(([location, penalties]) => {
-                this.canMakeReservation = !location?.usesPenaltyPoints || penalties.points < 100;
+            combineLatest([this.locationSub, this.userSub]).subscribe(([location, user]) => {
+                this.canMakeReservation = !location?.usesPenaltyPoints || user.penaltyPoints < 100;
             })
         );
 
@@ -151,7 +144,8 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
                 filter(location => Boolean(location))
             ).subscribe((location: Location) => {
                 this.breadcrumbService.setCurrentBreadcrumbs([{
-                    pageName: 'Details', url: `/dashboard/${ location.locationId }`
+                    pageName: 'Details',
+                    url: `/dashboard/${ location.locationId }`
                 }]);
             })
         );
@@ -164,6 +158,10 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
                 );
             })
         );
+    }
+
+    isModified(): boolean {
+        return this.newReservations.length > 0 || this.removedReservations.length > 0;
     }
 
     updateReservations(reset = false): void {
@@ -313,10 +311,6 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
 
             request.pipe(first()).subscribe();
         }
-    }
-
-    isModified(): boolean {
-        return this.newReservations.length > 0 || this.removedReservations.length > 0;
     }
 
     ngOnDestroy(): void {

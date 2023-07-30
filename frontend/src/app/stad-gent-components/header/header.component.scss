@@ -1,4 +1,23 @@
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/mixins';
+
 .header {
+    #desktop {
+        display: block;
+
+        @include media-breakpoint-down(md) {
+            display: none;
+        }
+    }
+
+    #mobile {
+        display: none;
+
+        @include media-breakpoint-down(md) {
+            display: block;
+        }
+    }
 
     .authentication {
         @media(max-width: 500px) {
