@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {BreadcrumbService} from '../../stad-gent-components/header/breadcrumbs/breadcrumb.service';
+import {BreadcrumbService} from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
 
 @Component({
     selector: 'app-profile',

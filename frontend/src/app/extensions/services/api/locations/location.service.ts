@@ -33,9 +33,9 @@ export class LocationService {
         return this.locationCache.getAllValues(api.visible_locations);
     }
 
-    getAllLocations(): Observable<Location[]> {
+    getAllLocations(cached: boolean = true): Observable<Location[]> {
         return this.locationCache.getAllValues(
-            api.all_locations
+            api.all_locations, !cached
         );
     }
 

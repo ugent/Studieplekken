@@ -1,14 +1,14 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
 import {AuthenticationService} from '../../extensions/services/authentication/authentication.service';
 import {Subscription} from 'rxjs';
-import {BreadcrumbService, managementBreadcrumb} from '../../stad-gent-components/header/breadcrumbs/breadcrumb.service';
+import {BreadcrumbService, managementBreadcrumb} from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
 import {environment} from 'src/environments/environment';
 import {User} from '../../extensions/model/User';
 
 @Component({
     selector: 'app-management',
     templateUrl: './management.component.html',
-    styleUrls: ['./management.component.scss'],
+    styleUrls: ['./management.component.scss']
 })
 export class ManagementComponent implements OnInit, OnDestroy {
     protected showTagManagement: boolean;

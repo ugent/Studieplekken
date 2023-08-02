@@ -5,7 +5,7 @@ import {Observable, of, Subject} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {LocationService} from 'src/app/extensions/services/api/locations/location.service';
 import {UserService} from 'src/app/extensions/services/api/users/user.service';
-import {objectExists} from 'src/app/extensions/GeneralFunctions';
+import {objectExists} from 'src/app/extensions/util/GeneralFunctions';
 import {Location} from 'src/app/extensions/model/Location';
 import {User} from 'src/app/extensions/model/User';
 

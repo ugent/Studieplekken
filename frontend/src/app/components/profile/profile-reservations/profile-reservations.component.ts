@@ -9,8 +9,8 @@ import {Observable} from 'rxjs';
 import {LocationService} from 'src/app/extensions/services/api/locations/location.service';
 import {map} from 'rxjs/operators';
 import {MatDialog} from '@angular/material/dialog';
-import {TableDataService} from 'src/app/stad-gent-components/atoms/table/data-service/table-data-service.service';
-import {TabularData} from 'src/app/stad-gent-components/atoms/table/tabular-data';
+import {TableDataService} from 'src/app/components/stad-gent-components/atoms/table/data-service/table-data-service.service';
+import {TabularData} from 'src/app/components/stad-gent-components/atoms/table/tabular-data';
 import {api} from '../../../extensions/services/api/endpoints';
 
 @Component({

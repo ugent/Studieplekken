@@ -1,12 +1,10 @@
-import {Component, OnInit, TemplateRef} from '@angular/core';
+import {Component, OnDestroy, OnInit, TemplateRef} from '@angular/core';
 import {
-    AbstractControl,
-    UntypedFormControl,
-    UntypedFormGroup,
+    AbstractControl, FormControl, FormGroup,
     Validators
 } from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
-import {Observable} from 'rxjs';
+import {BehaviorSubject, combineLatest, ReplaySubject, Subject, Subscription} from 'rxjs';
 import {of} from 'rxjs/internal/observable/of';
 import {map} from 'rxjs/internal/operators/map';
 import {AddressResolverService} from 'src/app/extensions/services/addressresolver/nomenatim/addressresolver.service';
@@ -14,32 +12,26 @@ import {BuildingService} from 'src/app/extensions/services/api/buildings/buildin
 import {AuthenticationService} from 'src/app/extensions/services/authentication/authentication.service';
 import {Building} from 'src/app/extensions/model/Building';
 import {User} from '../../../extensions/model/User';
+import {first, take} from 'rxjs/operators';
+import {DeleteAction, EditAction, ListAction, TableAction, TableMapper} from '../../../extensions/model/Table';
+import {Location} from '../../../extensions/model/Location';
 
 @Component({
     selector: 'app-building-management',
     templateUrl: './building-management.component.html',
     styleUrls: ['./building-management.component.scss'],
 })
-export class BuildingManagementComponent implements OnInit {
-    protected buildingsObs: Observable<Building[]>;
-    protected institutionsObs: Observable<string[]>;
+export class BuildingManagementComponent implements OnInit, OnDestroy {
+    protected userSub: Subject<User>;
+    protected buildingsSub: Subject<Building[]>;
+    protected institutionsSub: Subject<string[]>;
 
-    protected buildingFormGroup = new UntypedFormGroup({
-        buildingId: new UntypedFormControl({value: '', disabled: true}),
-        name: new UntypedFormControl('', Validators.required.bind(this)),
-        address: new UntypedFormControl('', Validators.required.bind(this)),
-        latitude: new UntypedFormControl('', Validators.required.bind(this)),
-        longitude: new UntypedFormControl('', Validators.required.bind(this)),
-        institution: new UntypedFormControl('', Validators.required.bind(this)),
-    });
+    protected isLoading: Subject<boolean>;
+    protected addSuccess: Subject<boolean>;
+    protected deleteSuccess: Subject<boolean>;
+    protected feedbackMessage: Subject<string>;
 
-    protected successGettingBuildings: boolean = undefined;
-    protected successAddingBuilding: boolean = undefined;
-    protected successUpdatingBuilding: boolean = undefined;
-    protected successDeletingBuilding: boolean = undefined;
-
-    isLoadingAddress: boolean;
-    isCorrectAddress: boolean;
+    protected subscription: Subscription;
 
     constructor(
         private buildingService: BuildingService,
@@ -47,77 +39,55 @@ export class BuildingManagementComponent implements OnInit {
         private authenticationService: AuthenticationService,
         private addressResolver: AddressResolverService
     ) {
-        // initial icon should be grey and not wrong icon by default
-        this.isLoadingAddress = true;
-    }
+        this.userSub = new BehaviorSubject(
+            authenticationService.userValue()
+        );
 
-    get buildingId(): AbstractControl {
-        return this.buildingFormGroup.get('buildingId');
-    }
+        this.buildingsSub = new ReplaySubject();
+        this.institutionsSub = new ReplaySubject();
 
-    get name(): AbstractControl {
-        return this.buildingFormGroup.get('name');
-    }
-
-    get address(): AbstractControl {
-        return this.buildingFormGroup.get('address');
-    }
-
-    get latitude(): AbstractControl {
-        return this.buildingFormGroup.get('latitude');
-    }
-
-    get longitude(): AbstractControl {
-        return this.buildingFormGroup.get('longitude');
-    }
-
-    get institution(): AbstractControl {
-        return this.buildingFormGroup.get('institution');
-    }
-
-    // ********************
-    // *   CRUD: Create   *
-    // ********************/
-
-    get building(): Building {
-        return {
-            buildingId: this.buildingId.value as number,
-            name: this.name.value as string,
-            address: this.address.value as string,
-            latitude: this.latitude.value as number,
-            longitude: this.longitude.value as number,
-            institution: this.institution.value as string,
-        };
+        this.subscription = new Subscription();
     }
 
     ngOnInit(): void {
-        this.authenticationService.user.subscribe(user => {
-            this.reloadBuildings();
-            this.fillInstitutionsDependingOnUser(user);
+        this.subscription.add(
+            this.authenticationService.user.subscribe(user => {
+                this.userSub.next(user);
 
-            this.buildingsObs.subscribe(
-                () => {
-                    this.successGettingBuildings = true;
-                },
-                () => {
-                    this.successGettingBuildings = false;
-                }
-            );
+                this.reloadBuildings();
+                this.fillInstitutions();
+            })
+        );
+    }
+
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe();
+    }
+
+    fillInstitutions(): void {
+        this.userSub.pipe(first()).subscribe((user: User) => {
+            if (user.isAdmin()) {
+                // Todo: we should not hardcode institutions.
+                this.institutionsSub.next([
+                    'UGent', 'HoGent', 'Arteveldehogeschool', 'StadGent', 'Luca', 'Odisee', 'Other'
+                ]);
+            } else {
+                this.institutionsSub.next([
+                    user.institution
+                ]);
+            }
         });
     }
 
-    // ********************
-    // *   CRUD: Update   *
-    // ********************/
-
-    prepareFormGroup(building: Building): void {
-        this.buildingFormGroup.setValue({
-            buildingId: building.buildingId,
-            name: building.name,
-            address: building.address,
-            latitude: building.latitude,
-            longitude: building.longitude,
-            institution: building.institution,
+    reloadBuildings(): void {
+        combineLatest([
+            this.userSub, this.buildingService.getAllBuildings()
+        ]).pipe(first()).subscribe(([user, buildings]) => {
+            this.buildingsSub.next(
+                buildings.filter((building: Building) =>
+                    (building.institution === user.institution) || user.isAdmin()
+                )
+            );
         });
     }
 
@@ -125,177 +95,22 @@ export class BuildingManagementComponent implements OnInit {
         this.modalService.closeAll();
     }
 
-    // ********************
-    // *   CRUD: Delete   *
-    // ********************/
-
-    prepareAdd(template: TemplateRef<unknown>): void {
-        // reset the feedback boolean
-        this.successAddingBuilding = undefined;
-
-        // prepare the buildingFormGroup, note that the buildingId won't be shown
-        // because this is automatically added by the database
-        this.buildingFormGroup.setValue({
-            buildingId: -1, // building id must be generated by backend
-            name: '',
-            address: '',
-            latitude: 0,
-            longitude: 0,
-            institution: this.authenticationService.userValue().institution,
-        });
-
-        this.modalService.open(template, {panelClass: ['cs--cyan', 'bigmodal']});
-    }
-
-    addBuilding(): void {
-        this.successAddingBuilding = null;
-
-        this.sendBuildingRequest(true);
-    }
-
-    addBuildingRequest(): void {
-        // add new building
-        this.buildingService.addBuilding(this.building).subscribe(
-            () => {
-                this.successAddingBuilding = true;
-                // reload the buildings
-                this.reloadBuildings();
-                this.modalService.closeAll();
-            },
-            () => {
-                this.successAddingBuilding = false;
-            }
-        );
-    }
-
-    // *****************
-    // *   Auxiliary   *
-    // *****************/
-
-    prepareUpdate(building: Building, template: TemplateRef<unknown>): void {
-
-        // reset the feedback boolean
-        this.successUpdatingBuilding = undefined;
-
-        // prepare the tagFormGroup
-        this.prepareFormGroup(building);
-
-        this.isCorrectAddress = true;
-        this.isLoadingAddress = false;
-
-        this.modalService.open(template, {panelClass: ['cs--cyan', 'bigmodal']});
-    }
-
-    updateBuildingInFormGroup(): void {
-        this.successUpdatingBuilding = null;
-        this.sendBuildingRequest(false);
-    }
-
-    updateBuildingRequest(): void {
-        // update existing building
-        this.buildingService
-            .updateBuilding(this.building.buildingId, this.building)
-            .subscribe(
-                () => {
-                    this.successUpdatingBuilding = true;
-                    // reload the buildings
-                    this.reloadBuildings();
-                    this.modalService.closeAll();
-                },
-                () => {
-                    this.successUpdatingBuilding = false;
-                }
-            );
-    }
-
-    prepareToDelete(building: Building, template: TemplateRef<unknown>): void {
-        // reset the feedback boolean
-        this.successDeletingBuilding = undefined;
-
-        // prepare the tagFormGroup
-        this.prepareFormGroup(building);
-
-        this.modalService.open(template, {panelClass: ['cs--cyan', 'bigmodal']});
-    }
-
-    deleteBuildingInFormGroup(): void {
-        this.successDeletingBuilding = null;
-        this.buildingService.deleteBuilding(this.building.buildingId).subscribe(
-            () => {
-                this.successDeletingBuilding = true;
-                // reload the buildings
-                this.reloadBuildings();
-                this.modalService.closeAll();
-            },
-            () => {
-                this.successDeletingBuilding = false;
-            }
-        );
-    }
-
-    validBuildingFormGroup(): boolean {
-        return !this.buildingFormGroup.invalid;
-    }
-
-    fillInstitutionsDependingOnUser(user: User): void {
-        if (user.isAdmin()) {
-            this.institutionsObs = of([
-                'UGent', 'HoGent', 'Arteveldehogeschool', 'StadGent', 'Luca', 'Odisee', 'Other'
-            ]);
-        } else {
-            this.institutionsObs = of([
-                user.institution
-            ]);
-        }
-    }
-
-    sendBuildingRequest(isAdd: boolean): void {
-        const address = this.address;
-        this.isLoadingAddress = true;
-        this.addressResolver.query(address.value).subscribe(r => {
-            this.isLoadingAddress = false;
-
-            if (r.length >= 1) {
-                this.isCorrectAddress = true;
-                this.buildingFormGroup.setValue(
-                    {
-                        buildingId: this.buildingId.value,
-                        address: this.address.value,
-                        name: this.name.value,
-                        latitude: r[0].lat,
-                        longitude: r[0].lon,
-                        institution: this.institution.value
-                    }
-                );
-                if (isAdd) {
-                    this.addBuildingRequest();
-                } else {
-                    this.updateBuildingRequest();
-                }
-            } else {
-                this.isCorrectAddress = false;
-                if (isAdd) {
-                    this.successAddingBuilding = false;
-                } else {
-                    this.successUpdatingBuilding = false;
-                }
-            }
+    getTableMapper(): TableMapper {
+        return (building: Building) => ({
+            'management.buildings.table.name': building.name,
+            'management.buildings.table.address': building.address,
+            'management.buildings.table.institution': building.institution
         });
     }
 
-    showAdmin(): boolean {
-        return this.authenticationService.userValue().isAdmin();
-    }
-
-    reloadBuildings(): void {
-        const user = this.authenticationService.userValue();
-
-        this.buildingsObs = this.buildingService.getAllBuildings().pipe(
-            map(buildings =>
-                buildings.filter(building =>
-                    building.institution === user.institution || user.isAdmin()
-                )
-            )
-        );
+    getTableActions(): TableAction[] {
+        return [
+            new EditAction((building: Building) => {
+                alert('edit moment');
+            }),
+            new DeleteAction((location: Location) => {
+                alert('delete moment');
+            })
+        ];
     }
 }

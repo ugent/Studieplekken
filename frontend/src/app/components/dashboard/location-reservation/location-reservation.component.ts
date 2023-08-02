@@ -10,7 +10,7 @@ import {User} from '../../../extensions/model/User';
 import {Location} from '../../../extensions/model/Location';
 import {AuthenticationService} from '../../../extensions/services/authentication/authentication.service';
 import {defaultTeaserImages} from '../../../app.constants';
-import {BreadcrumbService} from '../../../stad-gent-components/header/breadcrumbs/breadcrumb.service';
+import {BreadcrumbService} from '../../stad-gent-components/header/breadcrumbs/breadcrumb.service';
 import {TranslateService} from '@ngx-translate/core';
 import {TimeslotsService} from '../../../extensions/services/api/calendar-periods/timeslot.service';
 import {LocationReservation} from '../../../extensions/model/LocationReservation';

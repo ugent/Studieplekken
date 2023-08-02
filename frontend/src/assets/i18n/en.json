@@ -266,7 +266,15 @@
             "noBuildings": "There are no buildings yet, make one using the 'Add Building' button",
             "noTags": "There are no tags yet, make one using the 'Add Tag' button",
             "noAuthorities": "There are no authorities yet, make on using the 'Add Authority' button",
-            "noActions": "There are no actions yet. They will be added automatically when important actions are performed."
+            "noActions": "There are no actions yet. They will be added automatically when important actions are performed.",
+            "noResults": "No results."
+        },
+        "managementTable": {
+            "pagination": {
+                "info": "Showing {{startIndex}} to {{endIndex}} of {{total}} results",
+                "perPage": "Per page"
+            },
+            "actions": "Actions"
         },
         "locationDetails": {
             "title": "Details of {locationName}",

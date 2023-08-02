@@ -4,7 +4,7 @@ import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {filter, map} from 'rxjs/operators';
 import {AuthenticationService} from 'src/app/extensions/services/authentication/authentication.service';
 import {Breadcrumb, BreadcrumbService} from './breadcrumbs/breadcrumb.service';
-import {User, UserConstructor} from '../../extensions/model/User';
+import {User, UserConstructor} from '../../../extensions/model/User';
 
 @Component({
     selector: 'app-header',

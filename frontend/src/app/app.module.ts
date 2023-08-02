@@ -77,21 +77,21 @@ import {ScanningLocationDetailsComponent} from './components/scan/scanning-locat
 import {VolunteersManagementComponent} from './components/management/volunteers-management/volunteers-management.component';
 import {VolunteerManagementPanelComponent} from './components/management/volunteers-management/volunteer-management-panel/volunteer-management-panel.component';
 import {TokenInterceptor} from './extensions/services/authentication/token.interceptor';
-import {HeaderComponent} from './stad-gent-components/header/header.component';
-import {AccordeonComponent} from './stad-gent-components/molecules/accordeon/accordeon.component';
-import {DropdownComponent} from './stad-gent-components/header/dropdown/dropdown.component';
-import {FooterComponent} from './stad-gent-components/footer/footer.component';
+import {HeaderComponent} from './components/stad-gent-components/header/header.component';
+import {AccordeonComponent} from './components/stad-gent-components/molecules/accordeon/accordeon.component';
+import {DropdownComponent} from './components/stad-gent-components/header/dropdown/dropdown.component';
+import {FooterComponent} from './components/stad-gent-components/footer/footer.component';
 import {SearchUserComponentComponent} from './components/shared/search-user/search-user-component.component';
 import {SearchUserFormComponent} from './components/shared/search-user/search-user-form/search-user-form.component';
 import {LocationAddTimeslotDialogComponent} from './components/management/locations-management/location-details-management/location-calendar/location-add-timeslot-dialog/location-add-timeslot-dialog.component';
-import {ModalComponent} from './stad-gent-components/molecules/modal/modal.component';
+import {ModalComponent} from './components/stad-gent-components/molecules/modal/modal.component';
 import {QRCodeModule} from 'angularx-qrcode';
 import {QRCodeComponent} from './components/shared/qrcode/qrcode.component';
 import {ScannerComponent} from './components/shared/scanner/scanner.component';
 import {ZXingScannerModule} from '@zxing/ngx-scanner';
-import {TableComponent} from './stad-gent-components/atoms/table/table.component';
-import {DesktopTableComponent} from './stad-gent-components/atoms/table/desktop-table/desktop-table.component';
-import {MobileTableComponent} from './stad-gent-components/atoms/table/mobile-table/mobile-table.component';
+import {TableComponent} from './components/stad-gent-components/atoms/table/table.component';
+import {DesktopTableComponent} from './components/stad-gent-components/atoms/table/desktop-table/desktop-table.component';
+import {MobileTableComponent} from './components/stad-gent-components/atoms/table/mobile-table/mobile-table.component';
 import {EntryComponent} from './components/entry/entry.component';
 import {ImpersonateInterceptor} from './extensions/services/authentication/impersonate.interceptor';
 import {ActionLogComponent} from './components/management/action-log/action-log.component';
@@ -105,11 +105,11 @@ import {LocationReminderComponent} from './components/management/locations-manag
 import {TokensComponent} from './components/management/tokens/tokens.component';
 import {AuthorizationGuardService} from './extensions/services/guard/authorization/authorization-guard.service';
 import { ChartComponent } from './components/management/stats/chart/chart.component';
-import {BarCodeComponent} from './components/shared/barcode/barcode.component';
-import {NgxBarcodeModule} from 'ngx-barcode';
+import { BarCodeComponent } from './components/shared/barcode/barcode.component';
+import { NgxBarcodeModule } from 'ngx-barcode';
 import { LocationReservationComponent } from './components/dashboard/location-reservation/location-reservation.component';
 import { MapComponent } from './components/dashboard/location-reservation/map/map.component';
-
+import { ManagementTableComponent } from './components/management/shared/management-table/management-table.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -418,6 +418,7 @@ const routes: Routes = [
         BarCodeComponent,
         LocationReservationComponent,
         MapComponent,
+        ManagementTableComponent
     ],
     imports: [
         BrowserModule,
@@ -467,7 +468,7 @@ const routes: Routes = [
         {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true},
         {provide: HTTP_INTERCEPTORS, useClass: ImpersonateInterceptor, multi: true},
     ],
-    bootstrap: [AppComponent],
+    bootstrap: [AppComponent]
 })
 export class AppModule {
 }

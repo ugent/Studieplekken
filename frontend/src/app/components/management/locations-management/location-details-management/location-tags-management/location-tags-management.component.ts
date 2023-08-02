@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 import { LocationService } from '../../../../../extensions/services/api/locations/location.service';
 import { TagsService } from '../../../../../extensions/services/api/tags/tags.service';
 import { LocationDetailsService } from '../../../../../extensions/services/single-point-of-truth/location-details/location-details.service';
-import { matSelectionChanged } from '../../../../../extensions/GeneralFunctions';
+import { matSelectionChanged } from '../../../../../extensions/util/GeneralFunctions';
 import { Location } from '../../../../../extensions/model/Location';
 import { LocationTag } from '../../../../../extensions/model/LocationTag';
 

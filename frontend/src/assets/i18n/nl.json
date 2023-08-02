@@ -268,7 +268,15 @@
             "noBuildings": "Er zijn nog geen beschikbare gebouwen. Maak er een aan met de knop 'Gebouw toevoegen",
             "noTags": "Er zijn nog geen tags. Maak er een aan met de knop 'Tag Toevoegen'",
             "noAuthorities": "Er zijn nog geen autoriteiten aangemaakt. Maak er een aan met de knop 'Autoriteit Toevoegen'",
-            "noActions": "Er zijn nog geen acties. Deze zullen automatisch worden toegevoegd wanneer belangrijke acties worden uitgevoerd."
+            "noActions": "Er zijn nog geen acties. Deze zullen automatisch worden toegevoegd wanneer belangrijke acties worden uitgevoerd.",
+            "noResults": "Geen resultaten."
+        },
+        "managementTable": {
+            "pagination": {
+                "info": "{{startIndex}} tot {{endIndex}} van de {{total}} resultaten",
+                "perPage": "Per pagina"
+            },
+            "actions": "Acties"
         },
         "locationDetails": {
             "title": "Details van {locationName}",

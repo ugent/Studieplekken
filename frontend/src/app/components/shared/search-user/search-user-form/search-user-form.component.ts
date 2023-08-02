@@ -3,7 +3,7 @@ import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { UserService } from 'src/app/extensions/services/api/users/user.service';
-import { objectExists } from '../../../../extensions/GeneralFunctions';
+import { objectExists } from '../../../../extensions/util/GeneralFunctions';
 import { User } from '../../../../extensions/model/User';
 
 @Component({
