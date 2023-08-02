@@ -30,8 +30,8 @@ export const api = {
     deleteCalendarPeriodsForLockers: '/api/locations/lockerCalendar',
 
     // LOCATIONS
-    visible_locations: '/api/locations',
     all_locations: '/api/locations/all',
+    visible_locations: '/api/locations',
     locationsUnapproved: '/api/locations/unapproved',
     location: '/api/locations/{locationId}',
     addLocation: '/api/locations',

@@ -1,110 +1,19 @@
-<div>
-    <div *ngIf="unapprovedLocations | async as locations">
-        <div *ngIf="locations.length> 0">
-            <!-- Title -->
-            <h3>{{'management.locations.unapproved' | translate}}</h3>
-            <hr>
-            <!-- Table with all unapproved locations -->
-            <div class="responsive-table fullwidth">
-                <div class="table-wrapper">
-                    <table style="width: 100%">
-                        <!-- Table header -->
-                        <thead>
-                        <tr>
-                            <th scope="col">{{'management.locations.table.header.name' | translate}}</th>
-                            <th scope="col">{{'management.locations.table.header.authority' | translate}}</th>
-                            <th scope="col">{{'management.locations.table.header.numberOfSeats' | translate}}</th>
-                            <th scope="col">
-                                <!-- Details -->
-                            </th>
-                            <th scope="col">
-                                <!-- Delete -->
-                            </th>
-                        </tr>
-                        </thead>
-                        <!-- Table body -->
-                        <tbody>
-                        <tr *ngFor="let location of locations">
-                            <td>{{location.name}}</td>
-                            <td>{{location.authority.authorityName}}</td>
-                            <td>{{location.numberOfSeats}}</td>
-                            <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
-                                (click)="prepareToApproveLocation(location, addLocationModal)">
-                                <i class="icon-checkmark" aria-hidden="true"></i>
-                                <i class="icon-checkmark" aria-hidden="true"></i>
-                            </td>
-                            <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
-                                (click)="prepareToDeleteLocation(location, deleteLocationModal)">
-                                <i class="icon-cross" aria-hidden="true"></i>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-    <h3>{{'management.locations.title' | translate}}</h3>
-    <hr>
-    <!-- Table with all existing locations, and a button to create a new location -->
-    <div class="responsive-table fullwidth">
-        <div class="table-wrapper fullwidth" *ngIf="locations | async as locations; else loading">
-            <table style="width: 100%" *ngIf="locations.length > 0; else noLocations">
-                <!-- Table header -->
-                <thead>
-                <tr>
-                    <th scope="col">{{'management.locations.table.header.name' | translate}}</th>
-                    <th scope="col">{{'management.locations.table.header.authority' | translate}}</th>
-                    <th scope="col">{{'management.locations.table.header.numberOfSeats' | translate}}</th>
-                    <th scope="col">
-                        <!-- Details -->
-                    </th>
-                    <th scope="col">
-                        <!-- Delete -->
-                    </th>
-                </tr>
-                </thead>
-
-                <!-- Table body -->
-                <tbody>
-                <tr *ngFor="let location of locations">
-                    <td>{{location.name}}</td>
-                    <td>{{location.authority.authorityName}}</td>
-                    <td>{{location.numberOfSeats}}</td>
-                    <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
-                        <i class="icon-hamburger" aria-hidden="true" routerLink="./{{location.locationId}}"></i>
-                    </td>
-                    <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
-                        (click)="prepareToDeleteLocation(location, deleteLocationModal)">
-                        <i class="icon-cross" aria-hidden="true"></i>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
-    </div>
-    <button class="button button-primary" data-toggle="modal" data-target="#addLocationModal"
-            (click)="prepareToAddLocation(addLocationModal)">
+<!-- Title -->
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <h3 class="m-0">
+        {{ 'management.locations.title' | translate }}
+    </h3>
+    <button class="button button-primary" (click)="prepareAdd()">
         {{'management.locations.addNew' | translate}}
     </button>
 </div>
-
-<ng-template #loading>
-    <div class="messages messages--info">
-        <i class="icon-info" aria-hidden="true"></i>
-
-        {{'general.waitingForServer' | translate}}
-    </div>
-</ng-template>
-
-<ng-template #noLocations>
-    <div class="messages messages--warning">
-        <i class="icon-exclamation" aria-hidden="true"></i>
-
-        {{'management.general.noLocations' | translate}}
-    </div>
-</ng-template>
+<!-- List -->
+<app-management-table
+        [loading]="isLoading"
+        [data]="locationsSub"
+        [actions]="getTableActions()"
+        [mapper]="getTableMapper()">
+</app-management-table>
 
 <!-- Modal view to add a new location -->
 <ng-template #addLocationModal>
@@ -115,7 +24,7 @@
 
         <!-- Modal body -->
         <div modal-body>
-            <form [formGroup]="addLocationFormGroup" fxLayoutGap="15px" fxFlex fxLayout="column">
+            <form [formGroup]="formGroup">
                 <!-- Location name -->
                 <div class="row ">
                     <div class="col">
@@ -127,15 +36,15 @@
                 </div>
 
                 <!-- Authority -->
-                <div class="row" *ngIf="authoritiesObs | async as authorities">
+                <div class="row" *ngIf="authoritiesSub | async as authorities">
                     <div class="col">
                         <label for="authority">
                             {{'management.locationDetails.form.authority' | translate}}
                             <select class="form-control" id="authority" formControlName="authority">
                                 <!-- Display empty select for safari -->
-                                <option disabled selected value style="display:none"></option>
+                                <option style="display:none" disabled selected value=""></option>
                                 <option *ngFor="let authority of authorities" [value]="authority.authorityId">
-                                    {{authority.authorityName + ' (' + authority.description + ')'}}
+                                    {{ authority.authorityName + ' (' + authority.description + ')' }}
                                 </option>
                             </select>
                         </label>
@@ -143,13 +52,13 @@
                 </div>
 
                 <!-- Building -->
-                <div class="row" *ngIf="buildingsObs | async as buildings">
+                <div class="row" *ngIf="buildingsSub | async as buildings">
                     <div class="col">
                         <label for="building">
                             {{'management.locationDetails.form.building' | translate}}
                             <select class="form-control" id="building" formControlName="building">
                                 <!-- Display empty select for safari -->
-                                <option disabled selected value style="display:none"></option>
+                                <option style="display:none" disabled selected value=""></option>
                                 <option *ngFor="let building of buildings" [value]="building.buildingId">
                                     {{building.name + ' (' + building.address + ')'}}
                                 </option>
@@ -163,8 +72,7 @@
                     <div class="col">
                         <label for="numberOfSeats">
                             {{'management.locations.addLocationModal.form.numberOfSeats' | translate}}
-                            <input class="form-control" id="numberOfSeats" type="number"
-                                   formControlName="numberOfSeats">
+                            <input class="form-control" id="numberOfSeats" type="number" formControlName="numberOfSeats">
                         </label>
                     </div>
                 </div>
@@ -172,8 +80,8 @@
                 <!-- Uses penalty points -->
                 <div class="row">
                     <div class="col">
-                        <input class="form-control" id="usesPenaltyPoints" type="checkbox"
-                               formControlName="usesPenaltyPoints"> {{'management.locationDetails.form.usesPenaltyPoints' | translate}}
+                        <input class="form-control" id="usesPenaltyPoints" type="checkbox" formControlName="usesPenaltyPoints">
+                        {{'management.locationDetails.form.usesPenaltyPoints' | translate}}
                     </div>
                 </div>
 
@@ -192,14 +100,8 @@
 
         <!-- Modal footer -->
         <div modal-footer>
-            <span *ngIf="showAddWarning">{{'management.locations.addLocationModal.warning' | translate}}</span>
-            <button type="submit" class="button button-primary" [disabled]="!validForm()"
-                    (click)="addNewLocation(addLocationFormGroup.value)" *ngIf="!editMode">
+            <button type="submit" class="button button-primary" [disabled]="!formGroup.valid" (click)="storeAdd(formGroup.value)">
                 {{'management.locations.addLocationModal.addButton' | translate}}
-            </button>
-            <button type="submit" class="button button-primary" [disabled]="!validForm()"
-                    (click)="approveLocation(addLocationFormGroup.value)" *ngIf="editMode">
-                {{'management.locations.editLocationModal.approveButton' | translate}}
             </button>
             <button type="button" class="button button-secondary" (click)="closeModal()">
                 {{'management.locations.addLocationModal.cancelButton' | translate}}
@@ -207,30 +109,26 @@
         </div>
 
         <!-- Feedback to the user -->
-        <div modal-message-footer>
-            <div class="messages messages--info" *ngIf="addingWasSuccess === null">
+        <div *ngIf="{success: addSuccess | async} as success" modal-message-footer>
+            <div class="messages messages--info" *ngIf="success.success === undefined">
                 <i class="icon-info" aria-hidden="true"></i>
                 {{'management.locations.addLocationModal.loading' | translate}}
             </div>
-
-            <div class="messages messages--success" *ngIf="addingWasSuccess === true">
+            <div class="messages messages--success" *ngIf="success.success === true">
                 <i class="icon-checkmark" aria-hidden="true"></i>
                 {{'management.locations.addLocationModal.success' | translate}}
             </div>
-
-            <div class="messages messages--warning" *ngIf="addingWasSuccess === false">
+            <div class="messages messages--warning" *ngIf="success.success === false">
                 <i class="icon-exclamation" aria-hidden="true"></i>
-                {{'management.locations.addLocationModal.error' | translate}}
+                {{'management.locations.addLocationModal.error' | translate}} <ng-container *ngIf="feedbackMessage | async as message">({{ message }})</ng-container>.
             </div>
         </div>
     </app-modal>
-
 </ng-template>
 
 <!-- Modal view to ask whether the user is sure to delete a location -->
 <ng-template #deleteLocationModal>
-
-    <app-modal>
+    <app-modal *ngIf="selectLocationSub | async as location" >
         <!-- Header -->
         <h2 modal-header>
             {{'management.locations.deleteLocationModal.title' | translate}}
@@ -240,23 +138,27 @@
         <div modal-body>
             <div>
                 <p>
-                    {{('management.locations.deleteLocationModal.body' | translate).replace('{locationName}', currentLocationNameToDelete)}}
+                    {{ ('management.locations.deleteLocationModal.body' | translate).replace('{locationName}', location.name) }}
                 </p>
             </div>
-            <p>{{'management.locations.deleteLocationModal.warning' | translate}}</p>
-            <ul>
-                <div *ngFor="let cp of currentTimeslotsToDelete">
-                    <li *ngIf="isFuture(cp)">
-                        {{cp.timeslotDate | date}} - ({{cp.openingHour | date:'shortTime'}}-{{cp.closingHour |
-                        date:'shortTime'}})
+            <ng-container *ngIf="timeslotSub | async as timeslots">
+                <p>
+                    {{'management.locations.deleteLocationModal.warning' | translate}}
+                </p>
+                <ul *ngIf="timeslots.length">
+                    <li *ngFor="let timeslot of timeslots">
+                        {{ timeslot.timeslotDate.toDate() | date }} - ({{ timeslot.openingHour.toDate() | date:'shortTime' }}-{{ timeslot.closingHour.toDate() | date:'shortTime' }})
                     </li>
-                </div>
-            </ul>
+                </ul>
+                <p *ngIf="!timeslots.length">
+                    Geen timeslots gevonden
+                </p>
+            </ng-container>
         </div>
 
         <!-- Footer -->
         <div modal-footer>
-            <button type="button" class="button button-primary" (click)="deleteLocation()">
+            <button type="button" class="button button-primary" (click)="storeDelete(location)">
                 {{'management.locations.deleteLocationModal.yesButton' | translate}}
             </button>
             <button type="button" class="button button-secondary" (click)="closeModal()">
@@ -264,20 +166,20 @@
             </button>
         </div>
 
-        <div modal-message-footer>
-            <div class="messages messages--info" *ngIf="deletionWasSuccess === null">
+        <div *ngIf="{success: deleteSuccess | async} as success" modal-message-footer>
+            <div class="messages messages--info" *ngIf="success.success === undefined">
                 <i class="icon-info" aria-hidden="true"></i>
                 {{'management.locations.deleteLocationModal.loading' | translate}}
             </div>
 
-            <div class="messages messages--success" *ngIf="deletionWasSuccess === true">
+            <div class="messages messages--success" *ngIf="success.success === true">
                 <i class="icon-checkmark" aria-hidden="true"></i>
                 {{'management.locations.deleteLocationModal.success' | translate}}
             </div>
 
-            <div class="messages messages--warning" *ngIf="deletionWasSuccess === false">
+            <div class="messages messages--warning" *ngIf="success.success === false">
                 <i class="icon-exclamation" aria-hidden="true"></i>
-                {{'management.locations.deleteLocationModal.error' | translate}}
+                {{'management.locations.deleteLocationModal.error' | translate}} <ng-container *ngIf="feedbackMessage | async as message">({{ message }})</ng-container>.
             </div>
         </div>
     </app-modal>

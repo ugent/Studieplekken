@@ -13,7 +13,7 @@ import {TagsService} from '../../extensions/services/api/tags/tags.service';
 import {Building} from '../../extensions/model/Building';
 import {Location} from '../../extensions/model/Location';
 import {LocationTag} from '../../extensions/model/LocationTag';
-import {BreadcrumbService} from '../../stad-gent-components/header/breadcrumbs/breadcrumb.service';
+import {BreadcrumbService} from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
 
 @Component({
     selector: 'app-dashboard',

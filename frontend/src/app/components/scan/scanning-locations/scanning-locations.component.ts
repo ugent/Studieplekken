@@ -6,7 +6,7 @@ import { catchError, map } from 'rxjs/operators';
 import { booleanSorter } from 'src/app/extensions/util/Util';
 import { ScanningService } from '../../../extensions/services/api/scan/scanning.service';
 import { Location } from '../../../extensions/model/Location';
-import { TableDataService } from '../../../stad-gent-components/atoms/table/data-service/table-data-service.service';
+import { TableDataService } from '../../stad-gent-components/atoms/table/data-service/table-data-service.service';
 import * as moment from "moment";
 
 @Component({

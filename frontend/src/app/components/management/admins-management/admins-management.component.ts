@@ -1,5 +1,5 @@
 import {Component, OnInit, TemplateRef} from '@angular/core';
-import {objectExists} from '../../../extensions/GeneralFunctions';
+import {objectExists} from '../../../extensions/util/GeneralFunctions';
 import {Observable, of} from 'rxjs';
 import {User, UserConstructor} from '../../../extensions/model/User';
 import {UserService} from '../../../extensions/services/api/users/user.service';

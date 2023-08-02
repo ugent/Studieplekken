@@ -11,8 +11,8 @@ import {MatDialog} from '@angular/material/dialog';
 import * as moment from 'moment';
 import {BarcodeService} from 'src/app/extensions/services/barcode.service';
 import {User} from 'src/app/extensions/model/User';
-import {TableDataService} from 'src/app/stad-gent-components/atoms/table/data-service/table-data-service.service';
-import {TabularData} from 'src/app/stad-gent-components/atoms/table/tabular-data';
+import {TableDataService} from 'src/app/components/stad-gent-components/atoms/table/data-service/table-data-service.service';
+import {TabularData} from 'src/app/components/stad-gent-components/atoms/table/tabular-data';
 import {
     LocationReservationsService
 } from '../../../../../../../extensions/services/api/location-reservations/location-reservations.service';

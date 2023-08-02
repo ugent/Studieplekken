@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { UserService } from '../../extensions/services/api/users/user.service';
 import { AuthenticationService } from '../../extensions/services/authentication/authentication.service';
-import { BreadcrumbService } from '../../stad-gent-components/header/breadcrumbs/breadcrumb.service';
+import { BreadcrumbService } from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
 import { LoginRedirectService } from '../../extensions/services/authentication/login-redirect.service';
 
 @Component({

@@ -129,26 +129,27 @@
         </app-calendar>
 
         <!-- Update button -->
-        <div id="reservationMaker">
-        <span *ngIf="data.user.isLoggedIn()">
-            {{ 'reservations.reservationHelper' | translate }}
-        </span>
-            <span *ngIf="!data.user.isLoggedIn()">
-            {{ 'reservations.shouldLoginMaker' | translate }}
-        </span>
-            <div *ngIf="data.user.isLoggedIn()">
+        <div id="reservationMaker" *ngIf="data.location.currentTimeslot?.reservable">
+            <ng-container *ngIf="data.user.isLoggedIn() && canMakeReservation">
+                {{ 'reservations.reservationHelper' | translate }}
+            </ng-container>
+            <ng-container *ngIf="!data.user.isLoggedIn()">
+                {{ 'reservations.shouldLoginMaker' | translate }}
+            </ng-container>
+
+            <ng-container *ngIf="data.user.isLoggedIn()">
                 <button (click)="prepareReservations(confirm)" [disabled]="!isModified() && canMakeReservation" class="button button-primary" *ngIf="canMakeReservation">
                     {{'reservations.reservationButton' | translate}}
                 </button>
-                <span *ngIf="!canMakeReservation" class="text-red">
-                {{ 'reservations.penaltyError' | translate }}
-            </span>
-            </div>
-            <div *ngIf="!data.user.isLoggedIn()">
+                <span *ngIf="!canMakeReservation">
+                    {{ 'reservations.penaltyError' | translate }}
+                </span>
+            </ng-container>
+            <ng-container *ngIf="!data.user.isLoggedIn()">
                 <a class="button button-secondary" routerLink="/login">
                     {{'navigation.login' | translate}}
                 </a>
-            </div>
+            </ng-container>
         </div>
 
         <div class="row">

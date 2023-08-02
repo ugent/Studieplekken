@@ -43,7 +43,7 @@ export class AppComponent implements OnInit {
     ngOnInit(): void {
         // Upon successful login, the backend redirects the user to /dashboard.
         // Since the user was redirected to the cas-login website, the AppComponent
-        // will be recreated. After the recreation, we try to log in in the frontend.
+        // will be recreated. After the recreation, we try to log-in in the frontend.
         this.authenticationService.login();
     }
 
