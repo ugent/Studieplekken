@@ -125,11 +125,11 @@ export class LocationCalendarComponent implements OnInit {
 
     setupReservations(): void {
         this.selectedSub.pipe(
-            first(), switchMap((timeslot: Timeslot) =>
+            switchMap((timeslot: Timeslot) =>
                 this.locationReservationService.getLocationReservationsOfTimeslot(
                     timeslot.timeslotSequenceNumber
                 )
-            )
+            ), first()
         ).subscribe((next) => {
             this.reservationsSub.next(next);
         });
@@ -151,13 +151,13 @@ export class LocationCalendarComponent implements OnInit {
 
     prepareAdd(): void {
         this.isSuccess.next(null);
-        this.selectedSub.next(null);
+        this.updateSub.next(null);
         this.modifyModal.openModal();
     }
 
     prepareUpdate(timeslot: Timeslot): void {
         this.isSuccess.next(null);
-        this.selectedSub.next(timeslot);
+        this.updateSub.next(timeslot);
         this.modifyModal.openModal();
     }
 

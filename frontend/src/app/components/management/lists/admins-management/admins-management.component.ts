@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {UserService} from '../../../../extensions/services/api/users/user.service';
 import {TableComponent} from '../../../../contracts/table.component.interface';
 import {ListAction, TableAction, TableMapper} from '../../../../model/Table';
-import {Observable} from 'rxjs';
+import {Observable, ReplaySubject, Subject} from 'rxjs';
 import {User} from '../../../../model/User';
 import {Router} from '@angular/router';
 
@@ -13,16 +13,19 @@ import {Router} from '@angular/router';
 })
 export class AdminsManagementComponent implements OnInit, TableComponent {
 
-    protected adminsObs$: Observable<User[]>;
+    protected adminsObs$: Subject<User[]>;
 
     constructor(
         private userService: UserService,
         private router: Router
     ) {
+        this.adminsObs$ = new ReplaySubject();
     }
 
     ngOnInit(): void {
-        this.adminsObs$ = this.userService.getAdmins();
+        this.userService.getAdmins().subscribe(admins =>
+            this.adminsObs$.next(admins)
+        );
     }
 
     getTableActions(): TableAction[] {

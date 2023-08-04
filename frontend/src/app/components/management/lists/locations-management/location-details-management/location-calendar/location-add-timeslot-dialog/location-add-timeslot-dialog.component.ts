@@ -2,23 +2,17 @@ import {
     Component,
     EventEmitter,
     Input,
-    OnChanges,
     OnDestroy,
     OnInit,
     Output,
-    SimpleChanges,
     ViewChild
 } from '@angular/core';
 import * as moment from 'moment';
 import {Moment} from 'moment';
-import {AuthenticationService} from 'src/app/extensions/services/authentication/authentication.service';
 import {Timeslot} from 'src/app/model/Timeslot';
 import {Location} from 'src/app/model/Location';
-import {MatDialog} from '@angular/material/dialog';
 import {ModalComponent} from '../../../../../../stad-gent-components/molecules/modal/modal.component';
 import {BehaviorSubject, combineLatest, Observable, Subject, Subscription} from 'rxjs';
-import {FormGroup} from '@angular/forms';
-import {filter} from 'rxjs/operators';
 
 @Component({
     selector: 'app-location-add-timeslot-dialog',
@@ -101,7 +95,7 @@ export class LocationAddTimeslotDialogComponent implements OnInit, OnDestroy {
                 this.displayErrorSeats.next(true);
             }
         } else {
-            this.displayErrorSeats.next(true);
+            this.displayErrorTime.next(true);
         }
     }
 
