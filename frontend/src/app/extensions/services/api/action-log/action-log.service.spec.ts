@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ActionLogService } from '../action-log.service';
+import { ActionLogService } from '../actions-managament.service';
 
 describe('ActionLogService', () => {
   let service: ActionLogService;

@@ -28,26 +28,26 @@ import {ProfileCalendarComponent} from './components/profile/profile-calendar/pr
 import {ProfilePenaltiesComponent} from './components/profile/profile-penalties/profile-penalties.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ProfileChangePasswordComponent} from './components/profile/profile-change-password/profile-change-password.component';
-import {LocationsManagementComponent} from './components/management/locations-management/locations-management.component';
-import {UsersManagementComponent} from './components/management/users-management/users-management.component';
-import {LocationDetailsManagementComponent} from './components/management/locations-management/location-details-management/location-details-management.component';
-import {DetailsFormComponent} from './components/management/locations-management/location-details-management/details-form/details-form.component';
-import {LocationCalendarComponent} from './components/management/locations-management/location-details-management/location-calendar/location-calendar.component';
+import {LocationsManagementComponent} from './components/management/lists/locations-management/locations-management.component';
+import {UsersManagementComponent} from './components/management/lists/users-management/users-management.component';
+import {LocationDetailsManagementComponent} from './components/management/lists/locations-management/location-details-management/location-details-management.component';
+import {DetailsFormComponent} from './components/management/lists/locations-management/location-details-management/details-form/details-form.component';
+import {LocationCalendarComponent} from './components/management/lists/locations-management/location-details-management/location-calendar/location-calendar.component';
 import {FlatpickrModule} from 'angularx-flatpickr';
-import {LockersTableComponent} from './components/management/locations-management/location-details-management/lockers-table/lockers-table.component';
-import {UserDetailsManagementComponent} from './components/management/users-management/user-details-management/user-details-management.component';
+import {LockersTableComponent} from './components/management/lists/locations-management/location-details-management/lockers-table/lockers-table.component';
+import {UserDetailsManagementComponent} from './components/management/lists/users-management/user-details-management/user-details-management.component';
 // tslint:disable-next-line:max-line-length
-import {UserDetailsFormComponent} from './components/management/users-management/user-details-management/user-details-form/user-details-form.component';
-import {UserRolesComponent} from './components/management/users-management/user-details-management/user-roles/user-roles.component';
-import {LocationDescriptionComponent} from './components/management/locations-management/location-details-management/location-description/location-description.component';
+import {UserDetailsFormComponent} from './components/management/lists/users-management/user-details-management/user-details-form/user-details-form.component';
+import {UserRolesComponent} from './components/management/lists/users-management/user-details-management/user-roles/user-roles.component';
+import {LocationDescriptionComponent} from './components/management/lists/locations-management/location-details-management/location-description/location-description.component';
 import {CKEditorModule} from '@ckeditor/ckeditor5-angular';
-import {TagsManagementComponent} from './components/management/tags-management/tags-management.component';
-import {LocationTagsManagementComponent} from './components/management/locations-management/location-details-management/location-tags-management/location-tags-management.component';
+import {TagsManagementComponent} from './components/management/lists/tags-management/tags-management.component';
+import {LocationTagsManagementComponent} from './components/management/lists/locations-management/location-details-management/location-tags-management/location-tags-management.component';
 import {MatSelectModule} from '@angular/material/select';
 import {LoginComponent} from './components/login/login.component';
-import {AuthoritiesManagementComponent} from './components/management/authorities-management/authorities-management.component';
-import {UserAuthoritiesManagementComponent} from './components/management/users-management/user-details-management/user-authorities-management/user-authorities-management.component';
-import {AuthorityUsersManagementComponent} from './components/management/authorities-management/authority-users-management/authority-users-management.component';
+import {AuthoritiesManagementComponent} from './components/management/lists/authorities-management/authorities-management.component';
+import {UserAuthoritiesManagementComponent} from './components/management/lists/users-management/user-details-management/user-authorities-management/user-authorities-management.component';
+import {AuthorityUsersManagementComponent} from './components/management/lists/authorities-management/authority-users-management/authority-users-management.component';
 import {DatePipe, NgOptimizedImage, registerLocaleData} from '@angular/common';
 import {MatDialogModule} from '@angular/material/dialog';
 import localeNl from '@angular/common/locales/nl-BE';
@@ -60,22 +60,22 @@ import {MomentDateComponent} from './components/shared/inputs/moment-date/moment
 import {FormatStatusPipe} from './extensions/pipes/FormatStatusPipe';
 import {FormatActionPipe} from './extensions/pipes/FormatActionPipe';
 import {MomentDateTimeComponent} from './components/shared/inputs/moment-datetime/moment-datetime.component';
-import {LocationOpeningperiodDialogComponent} from './components/management/locations-management/location-details-management/location-calendar/location-openingperiod-dialog/location-openingperiod-dialog.component';
-import {BuildingManagementComponent} from './components/management/building-management/building-management.component';
+import {LocationOpeningperiodDialogComponent} from './components/management/lists/locations-management/location-details-management/location-calendar/location-openingperiod-dialog/location-openingperiod-dialog.component';
+import {BuildingManagementComponent} from './components/management/lists/building-management/building-management.component';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatTabsModule} from '@angular/material/tabs';
-import {LocationReservationsComponent} from './components/management/locations-management/location-details-management/location-calendar/location-reservations/location-reservations/location-reservations.component';
+import {LocationReservationsComponent} from './components/management/lists/locations-management/location-details-management/location-calendar/location-reservations/location-reservations/location-reservations.component';
 import {MomentTimeslotSizeComponent} from './components/shared/inputs/moment-timeslot-size/moment-timeslot-size.component';
-import {AdminsManagementComponent} from './components/management/admins-management/admins-management.component';
+import {AdminsManagementComponent} from './components/management/lists/admins-management/admins-management.component';
 import {FlexLayoutModule} from '@angular/flex-layout';
 // tslint:disable-next-line:max-line-length
-import {TimeslotTableComponent} from './components/management/locations-management/location-details-management/timeslot-table/timeslot-table.component';
+import {TimeslotTableComponent} from './components/management/lists/locations-management/location-details-management/timeslot-table/timeslot-table.component';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {OpeningHoursOverviewComponent} from './components/shared/opening-hours/opening-hours-overview.component';
 import {ScanningLocationsComponent} from './components/scan/scanning-locations/scanning-locations.component';
 import {ScanningLocationDetailsComponent} from './components/scan/scanning-location-details/scanning-location-details.component';
-import {VolunteersManagementComponent} from './components/management/volunteers-management/volunteers-management.component';
-import {VolunteerManagementPanelComponent} from './components/management/volunteers-management/volunteer-management-panel/volunteer-management-panel.component';
+import {VolunteersManagementComponent} from './components/management/lists/volunteers-management/volunteers-management.component';
+import {VolunteerManagementPanelComponent} from './components/management/lists/volunteers-management/volunteer-management-panel/volunteer-management-panel.component';
 import {TokenInterceptor} from './extensions/services/authentication/token.interceptor';
 import {HeaderComponent} from './components/stad-gent-components/header/header.component';
 import {AccordeonComponent} from './components/stad-gent-components/molecules/accordeon/accordeon.component';
@@ -83,7 +83,7 @@ import {DropdownComponent} from './components/stad-gent-components/header/dropdo
 import {FooterComponent} from './components/stad-gent-components/footer/footer.component';
 import {SearchUserComponentComponent} from './components/shared/search-user/search-user-component.component';
 import {SearchUserFormComponent} from './components/shared/search-user/search-user-form/search-user-form.component';
-import {LocationAddTimeslotDialogComponent} from './components/management/locations-management/location-details-management/location-calendar/location-add-timeslot-dialog/location-add-timeslot-dialog.component';
+import {LocationAddTimeslotDialogComponent} from './components/management/lists/locations-management/location-details-management/location-calendar/location-add-timeslot-dialog/location-add-timeslot-dialog.component';
 import {ModalComponent} from './components/stad-gent-components/molecules/modal/modal.component';
 import {QRCodeModule} from 'angularx-qrcode';
 import {QRCodeComponent} from './components/shared/qrcode/qrcode.component';
@@ -94,15 +94,15 @@ import {DesktopTableComponent} from './components/stad-gent-components/atoms/tab
 import {MobileTableComponent} from './components/stad-gent-components/atoms/table/mobile-table/mobile-table.component';
 import {EntryComponent} from './components/entry/entry.component';
 import {ImpersonateInterceptor} from './extensions/services/authentication/impersonate.interceptor';
-import {ActionLogComponent} from './components/management/action-log/action-log.component';
+import {ActionLogComponent} from './components/management/lists/actions-managament/action-log.component';
 import {AfterReservationComponent} from './components/dashboard/location-reservation/after-reservation/after-reservation.component';
 import {PenaltyTableComponent} from './components/penalties/penalty-table/penalty-table.component';
 import {UserPenaltyManagerComponent} from './components/penalties/user-penalty-manager/user-penalty-manager.component';
-import {PenaltiesManagementComponent} from './components/management/penalties-management/penalties-management.component';
+import {PenaltiesManagementComponent} from './components/management/lists/penalties-management/penalties-management.component';
 import {StatsComponent} from './components/management/stats/stats.component';
 import {WaffleComponent} from './components/management/stats/waffle/waffle.component';
-import {LocationReminderComponent} from './components/management/locations-management/location-details-management/location-reminder/location-reminder.component';
-import {TokensComponent} from './components/management/tokens/tokens.component';
+import {LocationReminderComponent} from './components/management/lists/locations-management/location-details-management/location-reminder/location-reminder.component';
+import {TokensComponent} from './components/management/lists/tokens-management/tokens.component';
 import {AuthorizationGuardService} from './extensions/services/guard/authorization/authorization-guard.service';
 import { ChartComponent } from './components/management/stats/chart/chart.component';
 import { BarCodeComponent } from './components/shared/barcode/barcode.component';
@@ -110,7 +110,7 @@ import { NgxBarcodeModule } from 'ngx-barcode';
 import { LocationReservationComponent } from './components/dashboard/location-reservation/location-reservation.component';
 import { MapComponent } from './components/dashboard/location-reservation/map/map.component';
 import { ManagementTableComponent } from './components/management/shared/management-table/management-table.component';
-
+import { LocationVolunteersManagementComponent } from './components/management/lists/locations-management/location-volunteers-management/location-volunteers-management.component';
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     return new TranslateHttpLoader(http);
@@ -233,6 +233,7 @@ const routes: Routes = [
             {
                 path: 'buildings',
                 component: BuildingManagementComponent,
+                canActivate: [AuthorizationGuardService],
                 data:  {
                     guards: [['authorities']]
                 }
@@ -418,7 +419,8 @@ const routes: Routes = [
         BarCodeComponent,
         LocationReservationComponent,
         MapComponent,
-        ManagementTableComponent
+        ManagementTableComponent,
+        LocationVolunteersManagementComponent
     ],
     imports: [
         BrowserModule,

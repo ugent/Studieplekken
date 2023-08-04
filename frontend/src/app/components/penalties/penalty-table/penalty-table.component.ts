@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { PenaltyList, PenaltyService } from 'src/app/extensions/services/api/penalties/penalty.service';
-import { Penalty } from '../../../extensions/model/Penalty';
+import { Penalty } from '../../../model/Penalty';
 
 @Component({
   selector: 'app-penalty-table',

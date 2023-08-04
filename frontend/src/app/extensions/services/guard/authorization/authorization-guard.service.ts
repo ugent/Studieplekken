@@ -4,7 +4,7 @@ import {Observable} from 'rxjs';
 import {AuthenticationService} from '../../authentication/authentication.service';
 import {LoginRedirectService} from '../../authentication/login-redirect.service';
 import {filter, tap} from 'rxjs/operators';
-import {User} from '../../../model/User';
+import {User} from '../../../../model/User';
 import {map} from 'rxjs/internal/operators/map';
 
 /**

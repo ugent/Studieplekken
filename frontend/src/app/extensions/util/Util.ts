@@ -35,3 +35,7 @@ export function genericSorter(a: any, b: any, direction: OrderDirection): number
     // If the types are not directly comparable, convert them to strings and compare
     return ascending ? String(a).localeCompare(String(b)) : String(b).localeCompare(String(a));
 }
+
+export function escapeRegex(str: string): string {
+    return str.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&');
+}

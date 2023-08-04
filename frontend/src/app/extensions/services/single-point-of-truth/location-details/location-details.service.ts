@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Location } from '../../../model/Location';
+import { Location } from '../../../../model/Location';
 import { LocationService } from '../../api/locations/location.service';
 
 /**

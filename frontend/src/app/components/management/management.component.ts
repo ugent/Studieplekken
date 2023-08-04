@@ -3,7 +3,7 @@ import {AuthenticationService} from '../../extensions/services/authentication/au
 import {Subscription} from 'rxjs';
 import {BreadcrumbService, managementBreadcrumb} from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
 import {environment} from 'src/environments/environment';
-import {User} from '../../extensions/model/User';
+import {User} from '../../model/User';
 
 @Component({
     selector: 'app-management',
@@ -35,7 +35,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
             this.authenticationService.user.subscribe((authenticatedUser: User) => {
                     this.showAdmin = authenticatedUser.isAdmin();
                     this.showTagManagement = authenticatedUser.isAdmin();
-                    this.showVolunteersManagement = authenticatedUser.isAdmin() || authenticatedUser.isAuthority();
+                    this.showVolunteersManagement = authenticatedUser.isAuthority();
                     this.showActionlog = authenticatedUser.isAdmin();
                     this.showStats = authenticatedUser.isAdmin();
                 }

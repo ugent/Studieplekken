@@ -1,5 +1,5 @@
 import {MatSelectChange} from '@angular/material/select';
-import {LocationTag} from '../model/LocationTag';
+import {LocationTag} from '../../model/LocationTag';
 
 export function objectExists(obj: unknown): boolean {
     return obj !== null && obj !== undefined;

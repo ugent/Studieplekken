@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Location, LocationConstructor } from '../../../model/Location';
+import { Location, LocationConstructor } from '../../../../model/Location';
 import { api } from '../endpoints';
 import { map } from 'rxjs/operators';
 

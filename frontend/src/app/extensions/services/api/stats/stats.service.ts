@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {LocationStat, LocationStatConstructor} from '../../../model/LocationStat';
+import {LocationStat, LocationStatConstructor} from '../../../../model/LocationStat';
 import {api} from '../endpoints';
 import {map} from 'rxjs/internal/operators/map';
-import {LocationOverviewStat, LocationOverviewStatConstructor} from '../../../model/LocationOverviewStat';
-import {InstitutionOverviewStat} from '../../../model/InstitutionOverviewStat';
+import {LocationOverviewStat, LocationOverviewStatConstructor} from '../../../../model/LocationOverviewStat';
+import {InstitutionOverviewStat} from '../../../../model/InstitutionOverviewStat';
 
 @Injectable({
     providedIn: 'root',

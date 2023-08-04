@@ -1,11 +1,11 @@
 import {Pipe, PipeTransform} from '@angular/core';
 import {LocationStatus} from '../../app.constants';
-import {Pair} from '../model/helpers/Pair';
+import {Pair} from '../../model/helpers/Pair';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {DatePipe} from '@angular/common';
 import {merge, Observable, of} from 'rxjs';
 import {map, mergeMap} from 'rxjs/operators';
-import {Timeslot} from '../model/Timeslot';
+import {Timeslot} from '../../model/Timeslot';
 import * as moment from 'moment';
 
 @Pipe({name: 'formatStatus'})

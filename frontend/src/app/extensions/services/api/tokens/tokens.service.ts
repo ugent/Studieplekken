@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { api } from '../endpoints';
 import { map } from 'rxjs/internal/operators/map';
-import {Token, TokenConstructor} from '../../../model/Token';
+import {Token, TokenConstructor} from '../../../../model/Token';
 
 @Injectable({
   providedIn: 'root',

@@ -1,8 +1,8 @@
 import {Component, Input, OnChanges, OnInit, TemplateRef} from '@angular/core';
 import { Observable } from 'rxjs';
 import { PenaltyList, PenaltyService } from 'src/app/extensions/services/api/penalties/penalty.service';
-import { Penalty } from '../../../extensions/model/Penalty';
-import { User } from '../../../extensions/model/User';
+import { Penalty } from '../../../model/Penalty';
+import { User } from '../../../model/User';
 import {MatDialog} from "@angular/material/dialog";
 
 @Component({

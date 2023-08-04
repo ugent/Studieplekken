@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Authority } from '../../../model/Authority';
+import { Authority } from '../../../../model/Authority';
 
 @Injectable({
   providedIn: 'root',

@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {api} from '../endpoints';
-import {LocationReservation} from '../../../model/LocationReservation';
+import {LocationReservation} from '../../../../model/LocationReservation';
 import {combineLatest, Observable} from 'rxjs';
-import {Timeslot} from 'src/app/extensions/model/Timeslot';
+import {Timeslot} from 'src/app/model/Timeslot';
 import {map} from 'rxjs/internal/operators/map';
 import {of} from 'rxjs/internal/observable/of';
-import {Pair} from '../../../model/helpers/Pair';
+import {Pair} from '../../../../model/helpers/Pair';
 import * as moment from 'moment';
 import {Moment} from 'moment';
 
