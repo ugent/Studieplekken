@@ -64,9 +64,9 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
         private translateService: TranslateService,
         private route: ActivatedRoute
     ) {
-        this.locationSub$ = new BehaviorSubject<Location>(undefined);
-        this.userSub$ = new ReplaySubject<User>();
-        this.languageSub$ = new ReplaySubject<string>();
+        this.locationSub$ = new BehaviorSubject(undefined);
+        this.languageSub$ = new BehaviorSubject(translateService.currentLang);
+        this.userSub$ = new ReplaySubject();
 
         this.subscription = new Subscription();
     }
