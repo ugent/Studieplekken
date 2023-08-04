@@ -1,204 +1,193 @@
-<div>
+<ng-container *ngIf="locationSub | async as location">
     <div class="panel-body">
         <!-- Add timeslot -->
         <button class="mx-auto button button-secondary pull-center" (click)="prepareAdd(addTimeslotModal)">
             + {{'management.locationDetails.calendar.form.addButton' | translate}}
         </button>
         <!-- Calendar -->
-        <app-calendar [events]="events" [refresh]="refresh" (timeslotPickedEvent)="timeslotPickedHandler($event)"
-                      (hourPickedEvent)="hourPickedHandler($event, addTimeslotModal)" [(currentEventTime)]="jumpToDate"
-                      (calendarViewStyle)="calendarViewStyle">
-        </app-calendar>
+        <ng-container *ngIf="eventsSub | async as events">
+            <app-calendar [events]="events" [refresh]="refresh"
+                          (timeslotPickedEvent)="timeslotPickedHandler($event)"
+                          (hourPickedEvent)="hourPickedHandler(location, $event)"
+                          [(currentEventTime)]="currentTime"
+                          (calendarViewStyle)="calendarViewStyle">
+            </app-calendar>
+        </ng-container>
         <div class="d-flex gap-3 align-items-center my-3">
-            <button class="button button-primary alert" *ngIf="showApproveAll()" (click)="rejectAll()">
+            <button class="button button-primary alert" *ngIf="showApproveAll() | async" (click)="rejectAll()">
                 {{"management.locationDetails.calendar.form.rejectAll" | translate}}
             </button>
-            <button class="button button-secondary" *ngIf="showApproveAll()" (click)="approveAll()">
+            <button class="button button-secondary" *ngIf="showApproveAll() | async" (click)="approveAll()">
                 {{"management.locationDetails.calendar.form.approveAll" | translate}}
             </button>
-            <button class="button button-secondary" [disabled]="!currentTimeSlot"
-                    *ngIf="!isSuggestion(currentTimeSlot)"
-                    (click)="prepareUpdate(currentTimeSlot, addTimeslotModal)">
-                {{"general.buttons.update" | translate}}
-            </button>
-            <button class="button button-primary" [disabled]="!currentTimeSlot"
-                    *ngIf="!isSuggestion(currentTimeSlot)"
-                    (click)="prepareDelete(currentTimeSlot, deleteTimeslotModal)">
-                {{"general.buttons.delete" | translate}}
-            </button>
-            <button class="button button-secondary" [disabled]="!currentTimeSlot" *ngIf="!isSuggestion(currentTimeSlot)"
-                    (click)="prepareCopy(currentTimeSlot, copyTimeslotModal)">
-                {{"general.buttons.copy" | translate}}
-            </button>
-            <button class="button button-primary" [disabled]="!currentTimeSlot"
-                    *ngIf="isSuggestion(currentTimeSlot)"
-                    (click)="reject(currentTimeSlot)">
-                {{"management.locationDetails.calendar.form.reject" | translate}}
-            </button>
-            <button class="button button-secondary" [disabled]="!currentTimeSlot" *ngIf="isSuggestion(currentTimeSlot)"
-                    (click)="approve(currentTimeSlot)">
-                {{"management.locationDetails.calendar.form.approve" | translate}}
-            </button>
+            <ng-container *ngIf="selectedSub | async as timeslot">
+                <ng-container *ngIf="!(isSuggestion(timeslot) | async); else suggestionButtons">
+                    <button class="button button-secondary" (click)="prepareUpdate(timeslot)">
+                        {{"general.buttons.update" | translate}}
+                    </button>
+                    <button class="button button-primary" (click)="prepareDelete(timeslot)">
+                        {{"general.buttons.delete" | translate}}
+                    </button>
+                    <button class="button button-secondary" (click)="prepareCopy(timeslot)">
+                        {{"general.buttons.copy" | translate}}
+                    </button>
+                </ng-container>
+                <ng-template #suggestionButtons>
+                    <button class="button button-primary" (click)="reject(timeslot)">
+                        {{"management.locationDetails.calendar.form.reject" | translate}}
+                    </button>
+                    <button class="button button-secondary" (click)="approve(timeslot)">
+                        {{"management.locationDetails.calendar.form.approve" | translate}}
+                    </button>
+                </ng-template>
+            </ng-container>
         </div>
     </div>
-    <div>
+    <div *ngIf="(selectedSub | async)?.reservable">
         <!-- Title -->
         <h3>
             {{'management.locationDetails.calendar.reservations.title' | translate}}
         </h3>
-        <!-- Show table if user has searched, else show a message instead of an empty table -->
-        <div *ngIf="showReservations === false" class="messages messages--info">
-            {{'management.locationDetails.calendar.reservations.selectSlot' | translate}}
-        </div>
-        <div *ngIf="showReservations === null" class="messages messages--info">
-            {{'management.locationDetails.calendar.reservations.loading' | translate}}
-        </div>
-        <!-- If an error has occurred while fetching the reservations, show the error -->
-        <div *ngIf="errorOnRetrievingReservations" class="messages messages--error">
-            {{'management.locationDetails.calendar.reservations.error' | translate}}
-        </div>
-        <!-- Component showing the location reservations -->
-        <app-location-reservations *ngIf="timeslotGroupData(timeslotObs | async) && showReservations === true && !errorOnRetrievingReservations"
-                                   [locationReservations]="locationReservations"
-                                   [currentTimeSlot]="currentTimeSlot" (reservationChange)="loadReservations()">
-        </app-location-reservations>
+        <ng-container *ngIf="selectedSub | async as timeslot">
+            <div *ngIf="(selectedSub | async) === null" class="messages messages--info">
+                <i class="icon-info"></i>
+                {{'management.locationDetails.calendar.reservations.loading' | translate}}
+            </div>
+            <!-- Component showing the location reservations -->
+            <app-location-reservations *ngIf="timeslotGroupData(timeslotsSub | async)"
+                                       [locationReservations]="reservationsSub | async"
+                                       [currentTimeSlot]="timeslot"
+                                       (reservationChange)="setupReservations()">
+            </app-location-reservations>
+        </ng-container>
     </div>
-</div>
+</ng-container>
 
 <!-- Modal view to add a calendar period -->
-<ng-template #addTimeslotModal>
-    <app-location-add-timeslot-dialog [location]="getLocation() | async" (onNewTimeslot)="newTimeslot($event)"
-                                      [timeslot]="toUpdateTimeslot" (onUpdateTimeslot)="updateTimeslot($event)">
-
-    </app-location-add-timeslot-dialog>
-</ng-template>
+<app-location-add-timeslot-dialog
+    [location]="locationSub"
+    [timeslot]="updateSub"
+    (onNewTimeslot)="storeAdd($event)"
+    (onUpdateTimeslot)="storeUpdate($event)" #addTimeslotModal>
+</app-location-add-timeslot-dialog>
 
 <!-- Modal view to ask whether the user is sure to delete a timeslot -->
-<ng-template #deleteTimeslotModal>
-    <app-modal>
-        <!-- Header -->
-        <h2 modal-header id="deleteCalendarPeriodModalTitle">
-            {{'management.locationDetails.calendar.deleteModalView.title' | translate}}
-        </h2>
-        <!-- Body -->
-        <div modal-body>
-            <p>
-                {{'management.locationDetails.calendar.deleteModalView.body' | translate}}
-            </p>
-            <ul>
-                <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.date' |
-                    translate}}</i></b>{{toUpdateTimeslot.timeslotDate.format('DD/MM/YYYY')}}</li>
-                <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.openingTime' |
-                    translate}}</i></b>{{toUpdateTimeslot.openingHour.format('HH:mm')}}</li>
-                <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.closingTime' |
-                    translate}}</i></b>{{toUpdateTimeslot.closingHour.format('HH:mm')}}</li>
-                <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.reservable' |
-                    translate}}</i></b>{{(toUpdateTimeslot.reservable ? 'general.yes' : 'general.no') |translate}}
-                </li>
-            </ul>
+<app-modal #deleteTimeslotModal>
+    <!-- Header -->
+    <h2 modal-header id="deleteCalendarPeriodModalTitle">
+        {{'management.locationDetails.calendar.deleteModalView.title' | translate}}
+    </h2>
+    <!-- Body -->
+    <div *ngIf="selectedSub | async as timeslot" modal-body>
+        <p>
+            {{'management.locationDetails.calendar.deleteModalView.body' | translate}}
+        </p>
+        <ul *ngIf="timeslot.isValid()">
+            <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.date' |
+                translate}}</i></b>{{timeslot.timeslotDate.format('DD/MM/YYYY')}}</li>
+            <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.openingTime' |
+                translate}}</i></b>{{timeslot.openingHour.format('HH:mm')}}</li>
+            <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.closingTime' |
+                translate}}</i></b>{{timeslot.closingHour.format('HH:mm')}}</li>
+            <li><b style="margin-right: 5px"><i>{{'management.locationDetails.calendar.form.reservable' |
+                translate}}</i></b>{{(timeslot.reservable ? 'general.yes' : 'general.no') |translate}}
+            </li>
+        </ul>
 
-            <div class="messages messages--danger">
-                <p>{{'management.locationDetails.calendar.deleteModalView.warning' | translate}}</p>
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <div modal-footer>
-            <div class="d-flex gap-3">
-                <button type="button" class="button button-primary" (click)="delete(toUpdateTimeslot)">
-                    {{'general.buttons.delete' | translate}}
-                </button>
-                <button type="button" class="button button-secondary" (click)="closeModal()">
-                    {{'general.buttons.cancel' | translate}}
-                </button>
-            </div>
-        </div>
-        <!-- Feedback to the user -->
-        <div modal-message-footer>
-            <div class="messages messages--info" *ngIf="successDeletingLocationReservation === null">
-                {{'general.waitingForServer' | translate}}
-            </div>
-
-            <div class="messages messages--success" *ngIf="successDeletingLocationReservation === true">
-                {{'management.locationDetails.calendar.deleteModalView.success' | translate}}
-            </div>
-
-            <div class="messages messages--error" *ngIf="successDeletingLocationReservation === false">
-                {{'management.locationDetails.calendar.deleteModalView.error' | translate}}
-            </div>
-        </div>
-    </app-modal>
-</ng-template>
-
-<ng-template #noCalendarPeriodsForLocation>
-    <div class="row" style="margin-top: 20px">
-        <div class="messages messages--info">
-            {{'management.locationDetails.calendar.form.noCalendarPeriodsForLocation' | translate}}
+        <div class="messages messages--danger">
+            <p>{{'management.locationDetails.calendar.deleteModalView.warning' | translate}}</p>
         </div>
     </div>
-</ng-template>
 
-<ng-template #loadingOrError>
-    <div class="messages messages--error" *ngIf="errorSubject | async; else loading" style="margin-top: 10px;">
-        {{'management.locationDetails.calendar.errorLoadingCalendarPeriods' | translate}}
-    </div>
-
-    <ng-template #loading>
-        <div class="messages messages--info" style="margin-top: 10px;">
-            {{'general.waitingForServer' | translate}}
-        </div>
-    </ng-template>
-</ng-template>
-
-<ng-template #copyTimeslotModal>
-    <app-modal *ngIf="getLocation() | async as location">
-        <h2 modal-header>
-            {{'management.locationDetails.calendar.copyModalView.title' | translate}}
-        </h2>
-
-        <div modal-body>
-            <div>
-                <p>
-                    {{'management.locationDetails.calendar.copyModalView.body' | translate}}
-                </p>
-                <ul>
-                    <li><b>{{'management.locationDetails.calendar.form.day' |translate}}</b> {{toUpdateTimeslot.timeslotDate.format('dddd')}}</li>
-                    <li><b>{{'management.locationDetails.calendar.form.openingTime' |translate}}</b> {{toUpdateTimeslot.openingHour.format('HH:mm')}}</li>
-                    <li><b>{{'management.locationDetails.calendar.form.closingTime' | translate}}</b> {{toUpdateTimeslot.closingHour.format('HH:mm')}}</li>
-                    <li><b>{{'management.locationDetails.calendar.form.reservable' |translate}}</b> {{(toUpdateTimeslot.reservable ? 'general.yes' : 'general.no') |translate}}
-                    </li>
-                </ul>
-            </div>
-            <hr/>
-            <form>
-                <div class="row">
-                    <div class="col">
-                        <label for="dateCopy">
-                            {{"management.locationDetails.calendar.copyModalView.weekSelect" | translate}}
-                            <input id="dateCopy" type="date" class="form-control input-{{this.model === null}" #weekSelector/>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col">
-                        <input id="reservableCopy" type="checkbox" class="form-control input-{{this.model === null}" #reservableFromSelector
-                               checked/> {{"management.locationDetails.calendar.copyModalView.lockReservableFrom" | translate}}
-                    </div>
-                </div>
-            </form>
-        </div>
-
-        <div modal-footer>
-            <button type="button" class="button button-secondary" (click)="closeModal()">
+    <!-- Footer -->
+    <div *ngIf="selectedSub | async as timeslot" modal-footer>
+        <div class="d-flex gap-3">
+            <button type="button" class="button button-primary" (click)="storeDelete(timeslot)">
+                {{'general.buttons.delete' | translate}}
+            </button>
+            <button type="button" class="button button-secondary" (click)="deleteTimeslotModal.close()">
                 {{'general.buttons.cancel' | translate}}
             </button>
-
-            <button type="button" class="button button-primary"
-                    (click)="copy(toUpdateTimeslot, weekSelector.value, location, reservableFromSelector.checked)">
-                {{'general.buttons.add' | translate}}
-            </button>
         </div>
-    </app-modal>
+    </div>
+    <!-- Feedback to the user -->
+    <div modal-message-footer>
+        <div class="messages messages--info" *ngIf="(isSuccess | async) === undefined">
+            {{'general.waitingForServer' | translate}}
+        </div>
 
-</ng-template>
+        <div class="messages messages--success" *ngIf="(isSuccess | async) === true">
+            {{'management.locationDetails.calendar.deleteModalView.success' | translate}}
+        </div>
+
+        <div class="messages messages--error" *ngIf="(isSuccess | async) === false">
+            {{'management.locationDetails.calendar.deleteModalView.error' | translate}}
+        </div>
+    </div>
+</app-modal>
+
+<app-modal #copyTimeslotModal>
+    <h2 modal-header>
+        {{'management.locationDetails.calendar.copyModalView.title' | translate}}
+    </h2>
+
+    <div modal-body>
+        <div>
+            <p>
+                {{'management.locationDetails.calendar.copyModalView.body' | translate}}
+            </p>
+            <ng-container *ngIf="selectedSub | async as timeslot">
+                <ul *ngIf="timeslot.isValid()">
+                    <li><b>{{'management.locationDetails.calendar.form.day' |translate}}</b> {{ timeslot.timeslotDate.format('dddd') }}</li>
+                    <li><b>{{'management.locationDetails.calendar.form.openingTime' |translate}}</b> {{ timeslot.openingHour.format('HH:mm') }}</li>
+                    <li><b>{{'management.locationDetails.calendar.form.closingTime' | translate}}</b> {{ timeslot.closingHour.format('HH:mm') }}</li>
+                    <li><b>{{'management.locationDetails.calendar.form.reservable' |translate}}</b> {{ (timeslot.reservable ? 'general.yes' : 'general.no') |translate }}
+                    </li>
+                </ul>
+            </ng-container>
+        </div>
+        <hr/>
+        <form>
+            <div class="row">
+                <div class="col">
+                    <label for="dateCopy">
+                        {{"management.locationDetails.calendar.copyModalView.weekSelect" | translate}}
+                        <input id="dateCopy" type="date" class="form-control input-{{this.model === null}" #weekSelector/>
+                    </label>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <input id="reservableCopy" type="checkbox" class="form-control input-{{this.model === null}" #reservableFromSelector checked/>
+                    {{"management.locationDetails.calendar.copyModalView.lockReservableFrom" | translate}}
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div *ngIf="selectedSub | async as timeslot" modal-footer>
+        <button type="button" class="button button-secondary" (click)="copyTimeslotModal.close()">
+            {{'general.buttons.cancel' | translate}}
+        </button>
+
+        <button *ngIf="locationSub | async as location" [disabled]="!weekSelector.value" type="button" class="button button-primary"
+                (click)="storeCopy(timeslot, weekSelector.value, location, reservableFromSelector.checked)">
+            {{'general.buttons.add' | translate}}
+        </button>
+    </div>
+    <!-- Feedback to the user -->
+    <div modal-message-footer>
+        <div class="messages messages--info" *ngIf="(isSuccess | async) === undefined">
+            {{'general.waitingForServer' | translate}}
+        </div>
+
+        <div class="messages messages--success" *ngIf="(isSuccess | async) === true">
+            {{'management.locationDetails.calendar.copyModalView.success' | translate}}
+        </div>
+
+        <div class="messages messages--error" *ngIf="(isSuccess | async) === false">
+            {{'management.locationDetails.calendar.copyModalView.error' | translate}}
+        </div>
+    </div>
+</app-modal>

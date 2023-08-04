@@ -1,70 +1,12 @@
-<div class="container-fluid" *ngIf="adminsObs | async as users">
-    <!-- Title -->
-    <h3>{{'management.users.overview.title' | translate}}</h3>
-
-    <hr>
-
-    <div *ngIf="loading" class="alert alert-info">
-        {{'management.users.searchResult.loading' | translate}}
-    </div>
-
-    <!-- If an error has occurred while fetching the users, show the error -->
-    <div *ngIf="errorOnRetrievingAdmins" class="alert alert-error">
-        {{'management.users.searchResult.error' | translate}}
-    </div>
-
-    <div *ngIf="!loading && !errorOnRetrievingAdmins" class="responsive-table fullwidth">
-        <div class="table-wrapper fullwidth">
-            <table style="width: 100%">
-                <thead>
-                <tr>
-                    <th scope="col">{{'management.users.searchResult.table.id' | translate}}</th>
-                    <th scope="col">{{'management.users.searchResult.table.firstName' | translate}}</th>
-                    <th scope="col">{{'management.users.searchResult.table.lastName' | translate}}</th>
-                    <th scope="col">{{'management.users.searchResult.table.penaltyPoints' |
-                        translate}}</th>
-                    <th scope="col">{{'management.users.searchResult.table.institution' | translate}}</th>
-                    <th scope="col">
-                        <!-- Details -->
-                    </th>
-                </tr>
-                </thead>
-
-                <tbody>
-                <tr *ngFor="let user of users">
-                    <td>{{user.userId}}</td>
-                    <td>{{user.firstName}}</td>
-                    <td>{{user.lastName}}</td>
-                    <td>{{user.penaltyPoints}}</td>
-                    <td>{{user.institution}}</td>
-                    <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px">
-              <span [routerLink]="'../users/' + user.userId" class="glyphicon glyphicon-list-alt">
-                <i class="icon-hamburger" aria-hidden="true"></i>
-              </span>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <button class='button button-primary' (click)="showAdd(confirm)">{{'management.users.admins.addNewButton' |translate}}</button>
+<!-- Title -->
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <h3 class="m-0">
+        {{'management.users.overview.title' | translate}}
+    </h3>
 </div>
-
-<ng-template #confirm>
-    <!-- header -->
-    <div fxLayout="row" fxLayoutAlign="space-between">
-        <h1>
-            {{'management.users.admins.addNewHeader' | translate}}
-        </h1>
-        <div>
-            <button type="button" class="close" (click)="closeModal()" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    </div>
-
-    <!-- body -->
-    <div class="modal-body text-center">
-        <app-search-user-component icon="icon-plus" (selectedUser)="addAdmin($event)"></app-search-user-component>
-    </div>
-</ng-template>
+<!-- List -->
+<app-management-table
+        [data]="adminsObs$"
+        [actions]="getTableActions()"
+        [mapper]="getTableMapper()">
+</app-management-table>

@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
 import {AuthenticationService} from '../../extensions/services/authentication/authentication.service';
-import {Subscription} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import {BreadcrumbService, managementBreadcrumb} from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
 import {environment} from 'src/environments/environment';
 import {User} from '../../model/User';
@@ -10,44 +10,25 @@ import {User} from '../../model/User';
     templateUrl: './management.component.html',
     styleUrls: ['./management.component.scss']
 })
-export class ManagementComponent implements OnInit, OnDestroy {
-    protected showTagManagement: boolean;
-    protected showAdmin: boolean;
-    protected showVolunteersManagement: boolean;
-    protected showActionlog: boolean;
-    protected showStats: boolean;
+export class ManagementComponent implements OnInit {
 
-    protected showStagingWarning =
-        environment.showStagingWarning;
+    protected userObs$: Observable<User>;
 
-    protected subscription: Subscription =
-        new Subscription();
+    protected showStagingWarning: boolean;
 
     constructor(
         private authenticationService: AuthenticationService,
         private breadcrumbsService: BreadcrumbService
     ) {
+        this.showStagingWarning = environment.showStagingWarning;
     }
 
     ngOnInit(): void {
         // Show certain functionality depending on the role of the user.
-        this.subscription.add(
-            this.authenticationService.user.subscribe((authenticatedUser: User) => {
-                    this.showAdmin = authenticatedUser.isAdmin();
-                    this.showTagManagement = authenticatedUser.isAdmin();
-                    this.showVolunteersManagement = authenticatedUser.isAuthority();
-                    this.showActionlog = authenticatedUser.isAdmin();
-                    this.showStats = authenticatedUser.isAdmin();
-                }
-            )
-        );
+        this.userObs$ = this.authenticationService.user;
 
         this.breadcrumbsService.setCurrentBreadcrumbs([
             managementBreadcrumb
         ]);
-    }
-
-    ngOnDestroy(): void {
-        this.subscription.unsubscribe();
     }
 }

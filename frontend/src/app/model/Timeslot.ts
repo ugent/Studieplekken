@@ -2,42 +2,19 @@ import * as moment from 'moment';
 import {Moment} from 'moment';
 
 export class Timeslot {
-    timeslotSequenceNumber: number;
-    timeslotDate: Moment;
-    amountOfReservations: number;
-    seatCount: number;
-    reservable: boolean;
-    reservableFrom: Moment;
-    locationId: number;
-    openingHour: Moment;
-    closingHour: Moment;
-    timeslotGroup: number;
-    repeatable: boolean;
-
     constructor(
-        timeslotSequenceNumber: number,
-        timeslotDate: Moment,
-        amountOfReservations: number,
-        seatCount: number,
-        reservable: boolean,
-        reservableFrom: Moment,
-        locationId: number,
-        openingHour: Moment,
-        closingHour: Moment,
-        timeslotGroup: number,
-        repeatable: boolean
+        public timeslotSequenceNumber: number = 0,
+        public timeslotDate: Moment = moment(),
+        public amountOfReservations: number = 0,
+        public seatCount: number = 0,
+        public reservable: boolean = false,
+        public reservableFrom: Moment = null,
+        public locationId: number = 0,
+        public openingHour: Moment = null,
+        public closingHour: Moment = null,
+        public timeslotGroup?: number,
+        public repeatable: boolean = false
     ) {
-        this.timeslotSequenceNumber = timeslotSequenceNumber;
-        this.timeslotDate = timeslotDate;
-        this.amountOfReservations = amountOfReservations || 0;
-        this.seatCount = seatCount;
-        this.reservable = reservable;
-        this.reservableFrom = reservableFrom;
-        this.locationId = locationId;
-        this.openingHour = openingHour;
-        this.closingHour = closingHour;
-        this.timeslotGroup = timeslotGroup;
-        this.repeatable = repeatable;
     }
 
     static fromJSON(json: Record<string, any>): Timeslot {
@@ -125,6 +102,20 @@ export class Timeslot {
         }
     }
 
+    setDate(date: Moment): Timeslot {
+        this.timeslotDate = date;
+        return this;
+    }
+
+    setLocationId(id: number): Timeslot {
+        this.locationId = id;
+        return this;
+    }
+
+    setOpeningHour(hour: Moment): Timeslot {
+        this.openingHour = hour;
+        return this;
+    }
 }
 
 

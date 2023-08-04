@@ -33,7 +33,14 @@
                     <tr *ngFor="let item of c.items">
                         <ng-container *ngIf="mapper(item) as mappedItem">
                             <td *ngFor="let column of c.columns">
-                                {{ mappedItem[column] }}
+                                <ng-container *ngIf="mappedItem[column] as entry">
+                                    <ng-container *ngIf="!isObservable(entry); else observableEntry">
+                                        {{ entry }}
+                                    </ng-container>
+                                    <ng-template #observableEntry>
+                                        {{ entry | async }}
+                                    </ng-template>
+                                </ng-container>
                             </td>
                             <td *ngIf="actions.length">
                                 <div class="actions">

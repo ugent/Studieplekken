@@ -1,5 +1,26 @@
-<app-management-table
-    [data]="volunteers"
-    [actions]="getTableActions()"
-    [mapper]="getTableMapper()"
-> </app-management-table>
+<ng-container *ngIf="location | async as location">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h3 class="m-0">
+            {{ 'management.volunteers.title' | translate: { locationName: location.name } }}
+        </h3>
+        <button class="button button-secondary" (click)="addModal.open()">
+            {{'management.volunteers.addNewButton' | translate}}
+        </button>
+    </div>
+
+    <app-management-table
+            [stateless]="false"
+            [data]="volunteers"
+            [actions]="getTableActions()"
+            [mapper]="getTableMapper()">
+    </app-management-table>
+
+    <app-modal #addModal>
+        <h2 modal-header>
+            {{'management.volunteers.addNewHeader' | translate}}
+        </h2>
+        <div modal-body>
+            <app-search-user [icon]="'icon-plus'" (selectedUser)="storeAdd($event); addModal.close()"></app-search-user>
+        </div>
+    </app-modal>
+</ng-container>

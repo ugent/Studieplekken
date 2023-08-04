@@ -1,6 +1,6 @@
 import {TableAction, TableMapper} from '../model/Table';
 
-export declare interface HasTableComponent {
+export declare interface TableComponent {
     /**
      * A mapper to map data items to their column representation,
      * where the keys represent the column names (a translation key) and the values the

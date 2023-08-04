@@ -1,4 +1,4 @@
-<div>
+<ng-container *ngIf="userObs$ | async as user">
     <div class="row justify-content-center">
         <!-- Menu for /management -->
         <div class="col-12 col-lg-3">
@@ -9,34 +9,25 @@
                             {{ 'management.aside.title' | translate }}
                         </h2>
                         <div class="d-flex flex-column gap-3 align-items-between">
-                            <a routerLink="./locations" *ngIf="showVolunteersManagement">
+                            <a routerLink="./locations" *ngIf="user.isAuthority()">
                                 {{'management.aside.locations' | translate}}
                             </a>
-                            <a routerLink="./buildings" *ngIf="showVolunteersManagement">
+                            <a routerLink="./buildings" *ngIf="user.isAuthority()">
                                 {{'management.aside.buildings' | translate}}
                             </a>
-                            <a routerLink="./tags" *ngIf="showTagManagement">
+                            <a routerLink="./tags" *ngIf="user.isAdmin()">
                                 {{'management.aside.tags' | translate}}
                             </a>
-                            <a routerLink="./users" *ngIf="showAdmin">
+                            <a routerLink="./users" *ngIf="user.isAdmin()">
                                 {{'management.aside.users' | translate}}
                             </a>
-                            <a routerLink="./volunteers" *ngIf="showVolunteersManagement">
-                                {{'management.aside.volunteers' | translate}}
-                            </a>
-                            <a routerLink="./authorities" *ngIf="showAdmin">
-                                {{'management.aside.authorities' | translate}}
-                            </a>
-                            <a routerLink="./admins" *ngIf="showAdmin">
+                            <a routerLink="./admins" *ngIf="user.isAdmin()">
                                 {{'management.aside.admins' | translate}}
                             </a>
-                            <a routerLink="./penalties" *ngIf="showAdmin">
-                                {{'management.aside.penalties' | translate}}
-                            </a>
-                            <a routerLink="./actionlog" *ngIf="showActionlog">
+                            <a routerLink="./actionlog" *ngIf="user.isAdmin()">
                                 {{'management.aside.actionlog' | translate}}
                             </a>
-                            <a routerLink="./stats" *ngIf="showStats">
+                            <a routerLink="./stats" *ngIf="user.isAdmin()">
                                 {{'management.aside.stats' | translate}}
                             </a>
                         </div>
@@ -57,4 +48,4 @@
             </article>
         </div>
     </div>
-</div>
+</ng-container>

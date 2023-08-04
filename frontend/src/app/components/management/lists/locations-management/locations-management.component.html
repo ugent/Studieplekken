@@ -189,12 +189,11 @@
     <!-- Body -->
     <div modal-body>
         <!-- List -->
-        <app-location-volunteers-management [volunteers]="volunteersSub">
-
+        <app-location-volunteers-management
+                [volunteers]="volunteersSub"
+                [location]="selectedSub"
+                (updatedVolunteers)="setupVolunteers($event)">
         </app-location-volunteers-management>
-        <app-building-management>
-
-        </app-building-management>
     </div>
 
     <!-- Footer -->

@@ -2,20 +2,8 @@ import {ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit} from '@ang
 import {TableAction, TableColumn, TableData, TableMapper} from '../../../../model/Table';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {debounceTime, distinctUntilChanged, filter, first, map} from 'rxjs/operators';
-import {combineLatest, Observable, ReplaySubject, Subject, Subscription} from 'rxjs';
+import {combineLatest, isObservable, Observable, ReplaySubject, Subject, Subscription} from 'rxjs';
 import {escapeRegex, genericSorter, OrderDirection} from '../../../../extensions/util/Util';
-
-type Pagination = {
-    perPage: number;
-    currentPage: number;
-};
-
-type Ordering = {
-    by: string;
-    direction: OrderDirection;
-};
-
-type Search = string;
 
 @Component({
     selector: 'app-management-table',
@@ -36,6 +24,7 @@ export class ManagementTableComponent implements OnInit, OnDestroy {
 
     private subscription: Subscription;
 
+    @Input() stateless = true;
     @Input() data: Observable<TableData[]>;
     @Input() actions: TableAction[] = [];
     @Input() mapper: TableMapper = (item) => item;
@@ -60,7 +49,7 @@ export class ManagementTableComponent implements OnInit, OnDestroy {
         // Filter the columns out of the data observable.
         this.columns = this.data.pipe(
             map(data => {
-                if (data.length) {
+                if (data && data.length) {
                     return Object.keys(
                         this.mapper(data[0])
                     );
@@ -74,11 +63,11 @@ export class ManagementTableComponent implements OnInit, OnDestroy {
             this.data, this.columns, this.search
         ]).pipe(
             map(([data, columns, search]) => {
-                return data.filter(
+                return data ? data.filter(
                     (item: TableData) => columns.some(column => new RegExp(
                         escapeRegex(search), 'i'
                     ).test(this.mapper(item)[column]))
-                );
+                ) : null;
             })
         );
 
@@ -87,7 +76,7 @@ export class ManagementTableComponent implements OnInit, OnDestroy {
             this.searchedData, this.ordering, this.pagination, this.columns
         ]).pipe(
             map(([data, ordering, pagination, columns]) => {
-                return data.sort((a, b) => {
+                return data ? data.sort((a, b) => {
                     if (ordering.by && columns.includes(ordering.by)) {
                         return genericSorter(
                             this.mapper(a)[ordering.by], this.mapper(b)[ordering.by], ordering.direction
@@ -96,45 +85,53 @@ export class ManagementTableComponent implements OnInit, OnDestroy {
                     return 0;
                 }).slice(
                     (pagination.currentPage - 1) * pagination.perPage, pagination.currentPage * pagination.perPage
-                );
+                ) : null;
             })
         );
 
         // Extract the filter data from the query params.
         // We only have to do this once on component load, hence the first() pipe.
-        this.activatedRoute.queryParams.pipe(first()).subscribe(params => {
-            this.searcher.next(params.search ?? '');
+        this.activatedRoute.queryParams.pipe(first()).subscribe(routeParams => {
+            let params = defaultParams;
+
+            if (this.stateless) {
+                params = {...defaultParams, ...routeParams};
+            }
+
+            this.searcher.next(params.search);
             this.pagination.next({
-                currentPage: Number(params.currentPage ?? 1),
-                perPage: Number(params.perPage ?? 15)
+                currentPage: Number(params.currentPage),
+                perPage: Number(params.perPage)
             });
             this.ordering.next({
-                by: params.orderBy ?? '',
-                direction: Number(params.orderDirection ?? OrderDirection.DESC)
+                by: params.orderBy,
+                direction: Number(params.orderDirection)
             });
         });
 
-        // On each filter update, we want to reflect these changes in the current URL.
-        // This way, the component is stateless in the sense that the state can be shared by URL.
-        this.subscription.add(
-            combineLatest([
-                this.search, this.pagination, this.ordering
-            ]).subscribe(([search, pagination, ordering]) => {
-                const params: Params = {
-                    search,
-                    currentPage: pagination.currentPage,
-                    perPage: pagination.perPage,
-                    orderBy: ordering.by,
-                    orderDirection: ordering.direction
-                };
+        if (this.stateless) {
+            // On each filter update, we want to reflect these changes in the current URL.
+            // This way, the component is stateless in the sense that the state can be shared by URL.
+            this.subscription.add(
+                combineLatest([
+                    this.search, this.pagination, this.ordering
+                ]).subscribe(([search, pagination, ordering]) => {
+                    const params: Params = {
+                        search,
+                        currentPage: pagination.currentPage,
+                        perPage: pagination.perPage,
+                        orderBy: ordering.by,
+                        orderDirection: ordering.direction
+                    };
 
-                void this.router.navigate([], {
-                    relativeTo: this.activatedRoute,
-                    queryParams: params,
-                    replaceUrl: true
-                });
-            })
-        );
+                    void this.router.navigate([], {
+                        relativeTo: this.activatedRoute,
+                        queryParams: params,
+                        replaceUrl: true
+                    });
+                })
+            );
+        }
 
         // We also want to reset the pagination number to 1
         // whenever the search or ordering is updated.
@@ -323,7 +320,25 @@ export class ManagementTableComponent implements OnInit, OnDestroy {
         return 'icon-chevron-up';
     }
 
-    protected readonly filter = filter;
+    protected readonly isObservable = isObservable;
 }
 
+type Pagination = {
+    perPage: number;
+    currentPage: number;
+};
 
+type Ordering = {
+    by: string;
+    direction: OrderDirection;
+};
+
+type Search = string;
+
+const defaultParams = {
+    search: '',
+    currentPage: 1,
+    perPage: 15,
+    orderBy: '',
+    orderDirection: OrderDirection.DESC
+};

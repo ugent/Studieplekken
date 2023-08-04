@@ -1,14 +1,15 @@
 import {Injectable} from '@angular/core';
 import {CalendarEvent} from 'angular-calendar';
 import * as moment from 'moment';
-import {LocationReservation, LocationReservationState} from 'src/app/model/LocationReservation';
-import {includesTimeslot, Timeslot} from 'src/app/model/Timeslot';
-import {cs} from 'date-fns/locale';
+import {LocationReservation} from 'src/app/model/LocationReservation';
+import {Timeslot} from 'src/app/model/Timeslot';
 
+export type TimeslotCalendarEvent = CalendarEvent<{
+    timeslot?: Timeslot
+}>;
 @Injectable({
     providedIn: 'root'
 })
-
 export class TimeslotCalendarEventService {
     clicked: boolean;
     initial: boolean;

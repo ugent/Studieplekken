@@ -1,4 +1,4 @@
-<div class="panel" *ngIf="locationObs | async as location; else loading">
+<div class="panel" *ngIf="locationSub | async as location; else loading">
     <!--
      This page has four functionalities, each put into a collapsable panel-group:
        - overview of the location + possibility to edit the details of the location
@@ -15,7 +15,7 @@
         {{('management.locationDetails.title' | translate).replace('{locationName}', location.name)}}
     </h2>
     <hr>
-    <app-details-form [location]="locationObs"></app-details-form>
+    <app-details-form [location]="locationSub"></app-details-form>
 
     <!-- Calendar with overview of opening days -->
     <h2>
@@ -25,7 +25,7 @@
 
     <!-- Body -->
     <div class="panel-collapse collapse" id="calendarCollapseBody">
-        <app-location-calendar [location]="location"></app-location-calendar>
+        <app-location-calendar [locationSub]="locationSub"></app-location-calendar>
     </div>
 
     <!-- Description of the location -->
@@ -35,7 +35,7 @@
     <hr/>
 
     <!-- Body -->
-    <app-location-description [location]="locationObs"></app-location-description>
+    <app-location-description [location]="locationSub"></app-location-description>
 
 
     <!-- Tags of the location -->
@@ -45,7 +45,7 @@
     <hr/>
 
     <!-- Body -->
-    <app-location-tags-management [location]="locationObs"></app-location-tags-management>
+    <app-location-tags-management [location]="locationSub"></app-location-tags-management>
 
     <!-- Tags of the location -->
     <h2>
@@ -54,10 +54,13 @@
     <hr/>
 
     <!-- Body -->
-    <app-location-reminder [location]="locationObs"></app-location-reminder>
+    <app-location-reminder [location]="locationSub"></app-location-reminder>
 
 </div>
 
 <ng-template #loading>
-    {{'management.general.loading' | translate}}
+    <div class="messages messages--info">
+        <i class="icon-info"></i>
+        {{'management.general.loading' | translate}}
+    </div>
 </ng-template>

@@ -2,19 +2,13 @@ import {Directive, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/cor
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, Observable, ReplaySubject, Subject, Subscription } from 'rxjs';
 import { FormGroup } from '@angular/forms';
-import {HasTableComponent} from '../../../contracts/has-table.component.interface';
+import {TableComponent} from '../../../contracts/table.component.interface';
 import {DeleteAction, EditAction, TableAction, TableMapper} from '../../../model/Table';
 import {User} from '../../../model/User';
 import {ModalComponent} from '../../stad-gent-components/molecules/modal/modal.component';
 
 @Directive()
-export abstract class BaseManagementComponent<T extends object> implements OnInit, OnDestroy, HasTableComponent {
-
-    static reloads = 0;
-
-    static getReloads() {
-        return ++this.reloads;
-    }
+export abstract class BaseManagementComponent<T extends object> implements OnInit, OnDestroy, TableComponent {
 
     @ViewChild('modify') modifyModal: ModalComponent;
     @ViewChild('remove') deleteModal: ModalComponent;
@@ -41,9 +35,9 @@ export abstract class BaseManagementComponent<T extends object> implements OnIni
         this.setupItems();
         // Reset the form based on selection.
         this.subscription.add(
-            this.selectedSub.subscribe(building => {
-                if (building) {
-                    return this.setupForm(building);
+            this.selectedSub.subscribe(item => {
+                if (item) {
+                    return this.setupForm(item);
                 }
                 return this.setupForm();
             })
