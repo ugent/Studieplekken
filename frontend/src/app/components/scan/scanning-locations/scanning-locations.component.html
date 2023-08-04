@@ -1,18 +1,5 @@
-<div *ngIf="locationObs | async as locations; else loadingOrError">
-    <app-table [tabularData]="getTableData(locations)" (action)="onAction($event)"></app-table>
-</div>
-<ng-template #loadingOrError>
-    <div *ngIf="loadingError | async; else loading" class="messages messages--error">
-        {{'scan.locations.errorMessageOnLoadingLocations' | translate}}
-    </div>
-    <ng-template #loading>
-        <div class="messages messages--info">
-            {{'general.waitingForServer' | translate}}
-        </div>
-    </ng-template>
-</ng-template>
-<ng-template #noLocations>
-    <div class="messages messages--warning">
-        {{'scan.locations.noLocationsWarning' | translate}}
-    </div>
-</ng-template>
+<app-management-table
+    [data]="locationObs$"
+    [actions]="getTableActions()"
+    [mapper]="getTableMapper()">
+</app-management-table>

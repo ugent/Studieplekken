@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActionLogEntry} from 'src/app/model/ActionLogEntry';
 import {ActionLogService} from 'src/app/extensions/services/api/action-log/action-log.service';
-import {Observable} from 'rxjs';
+import {Observable, ReplaySubject, Subject} from 'rxjs';
 import {TableComponent} from '../../../../contracts/table.component.interface';
 import {TableAction, TableMapper} from '../../../../model/Table';
 import {FormatActionPipe} from '../../../../extensions/pipes/FormatActionPipe';
@@ -14,16 +14,19 @@ import {FormatActionPipe} from '../../../../extensions/pipes/FormatActionPipe';
 })
 export class ActionLogComponent implements OnInit, TableComponent {
 
-    protected actionsObs$: Observable<ActionLogEntry[]>;
+    protected actionsObs$: Subject<ActionLogEntry[]>;
 
     constructor(
         private actionService: ActionLogService,
         private logFormatter: FormatActionPipe,
     ) {
+        this.actionsObs$ = new ReplaySubject();
     }
 
     ngOnInit(): void {
-        this.actionsObs$ = this.actionService.getAllActions();
+        this.actionService.getAllActions().subscribe(actions =>
+            this.actionsObs$.next(actions)
+        );
     }
 
     getTableActions(): TableAction[] {
@@ -36,7 +39,7 @@ export class ActionLogComponent implements OnInit, TableComponent {
             'management.actionlog.table.domain': log.domain,
             'management.actionlog.table.description': this.logFormatter.transform(log),
             'management.actionlog.table.username': log.userFullName,
-            'management.actionlog.table.time': log.time
+            'management.actionlog.table.time': log.time.format('YYYY/MM/DD h:mm:ss')
         });
     }
 }
