@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthenticationService} from '../../../extensions/services/authentication/authentication.service';
-import {User, UserSettings} from '../../../extensions/model/User';
+import {User, UserSettings} from '../../../model/User';
 import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {UserService} from 'src/app/extensions/services/api/users/user.service';

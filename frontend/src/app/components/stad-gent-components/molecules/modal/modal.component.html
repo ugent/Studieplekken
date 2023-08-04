@@ -1,34 +1,36 @@
-<div class="cs--cyan modal-full" >
-    <div class="modal-header-container">
-        <div class="modal-header">
-            <!-- Header -->
-            <ng-content select="[modal-header]" ></ng-content>
+<ng-template #modal>
+    <div class="cs--cyan modal-full">
+        <div class="modal-header-container">
+            <div class="modal-header">
+                <!-- Header -->
+                <ng-content select="[modal-header]" ></ng-content>
+            </div>
+
+            <div>
+                <button type="button" class="close button button-secondary" (click)="close()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
         </div>
 
-        <div>
-            <button type="button" class="close button button-secondary" (click)="closeModal()" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+        <div class="modal-body">
+            <!-- body -->
+            <ng-content select="[modal-message-before]"></ng-content>
+
+            <ng-content select="[modal-body]" class="modal_body"></ng-content>
+
+            <ng-content select="[modal-message-after]"></ng-content>
+        </div>
+
+
+        <div class="d-flex flex-column gap-4">
+            <!-- footer -->
+            <div class="modal-footer">
+                <ng-content select="[modal-footer]"></ng-content>
+            </div>
+            <div class="modal-message-footer">
+                <ng-content select="[modal-message-footer]"></ng-content>
+            </div>
         </div>
     </div>
-
-    <div class="modal-body">
-        <!-- body -->
-        <ng-content select="[modal-message-before]"></ng-content>
-
-        <ng-content select="[modal-body]" class="modal_body"></ng-content>
-
-        <ng-content select="[modal-message-after]"></ng-content>
-    </div>
-
-
-    <div class="d-flex flex-column gap-4">
-        <!-- footer -->
-        <div class="modal-footer">
-            <ng-content select="[modal-footer]"></ng-content>
-        </div>
-        <div class="modal-message-footer">
-            <ng-content select="[modal-message-footer]"></ng-content>
-        </div>
-    </div>
-</div>
+</ng-template>

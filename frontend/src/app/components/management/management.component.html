@@ -9,10 +9,10 @@
                             {{ 'management.aside.title' | translate }}
                         </h2>
                         <div class="d-flex flex-column gap-3 align-items-between">
-                            <a routerLink="./locations">
+                            <a routerLink="./locations" *ngIf="showVolunteersManagement">
                                 {{'management.aside.locations' | translate}}
                             </a>
-                            <a routerLink="./buildings">
+                            <a routerLink="./buildings" *ngIf="showVolunteersManagement">
                                 {{'management.aside.buildings' | translate}}
                             </a>
                             <a routerLink="./tags" *ngIf="showTagManagement">

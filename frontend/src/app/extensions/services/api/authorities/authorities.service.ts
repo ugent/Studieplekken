@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {Authority} from '../../../model/Authority';
+import {Authority} from '../../../../model/Authority';
 import {api} from '../endpoints';
-import {User} from '../../../model/User';
-import {Location} from '../../../model/Location';
+import {User} from '../../../../model/User';
+import {Location} from '../../../../model/Location';
 
 @Injectable({
     providedIn: 'root',

@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Penalty} from '../../../model/Penalty';
+import {Penalty} from '../../../../model/Penalty';
 import {api} from '../endpoints';
 import {Observable, of} from 'rxjs';
-import {PenaltyEvent} from '../../../model/PenaltyEvent';
+import {PenaltyEvent} from '../../../../model/PenaltyEvent';
 import {map} from 'rxjs/operators';
 
 export type PenaltyList = { points: number, penalties: Penalty[] };

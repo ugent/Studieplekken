@@ -1,0 +1,120 @@
+<div class="container-fluid" *ngIf="tokensObs | async as tokens">
+  <!-- Title -->
+  <h3>{{'management.tokens-management.title' | translate}}</h3>
+
+  <hr>
+
+  <div *ngIf="loading" class="alert alert-info">
+    {{'management.tokens-management.loading' | translate}}
+  </div>
+
+  <!-- If an error has occurred while fetching the stats, show the error -->
+  <div *ngIf="errorOnRetrievingTokens" class="alert alert-error">
+    {{'management.tokens-management.error' | translate}}
+  </div>
+
+  <div style="margin-top: 20px">
+    <button class="button button-primary" data-toggle="modal" (click)="prepareAdd(addTokenModal)">
+      {{'management.tokens-management.addNewToken' | translate}}
+    </button>
+  </div>
+
+  <br>
+
+  <div *ngIf="createdToken" class="alert alert-success" role="alert">
+    <input class="my-form-control" value="{{createdToken.purpose === 'REGISTRATION' ? ' https://bloklocaties.stad.gent/auth/local/register?token=' : ' https://bloklocaties.stad.gent/auth/local/password-reset?token=' }}{{ createdToken.token }}">
+  </div>
+
+  <div class="row">
+    <div class="responsive-table fullwidth" *ngIf="!loading && !errorOnRetrievingTokens">
+      <div class="table-wrapper fullwidth">
+        <table style="width: 100%;">
+          <thead>
+          <tr>
+            <th class="clickable" scope="col" (click)="sortOn('token')">{{'management.tokens-management.table.token' | translate}}
+              <img class="order-marker" src="{{'assets/icon/' + orderMarkers['token'] + '.svg'}}"></th>
+            <th class="clickable" scope="col"
+                (click)="sortOn('purpose')">{{'management.tokens-management.table.purpose' | translate}}<img class="order-marker"
+                                                                                                  src="{{'assets/icon/' + orderMarkers['purpose'] + '.svg'}}">
+            </th>
+            <th class="clickable" scope="col" (click)="sortOn('email')">{{'management.tokens-management.table.email' | translate}}
+              <img class="order-marker" src="{{'assets/icon/' + orderMarkers['email'] + '.svg'}}"></th>
+            <th class="clickable" scope="col" (click)="sortOn('isUsed')">{{'management.tokens-management.table.used' | translate}}
+              <img class="order-marker" src="{{'assets/icon/' + orderMarkers['isUsed'] + '.svg'}}"></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let token of doSort(tokens);">
+            <td>{{token.token}}</td>
+            <td>{{token.purpose}}</td>
+            <td>{{token.email}}</td>
+            <td>{{token.isUsed ? ('management.tokens-management.table.yes' | translate) : ('management.tokens-management.table.no') | translate}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal view to add a new token -->
+<ng-template #addTokenModal>
+
+  <app-modal>
+    <h1 modal-header>
+      {{'management.tokens-management.addTokenModal.title' | translate}}
+    </h1>
+
+    <div modal-body>
+      <form [formGroup]="tokenFormGroup">
+        <!-- Purpose of token -->
+        <div class="row form-group">
+          <label class="col-lg-3 control-label" for="purpose">
+            {{'management.tokens-management.table.purpose' | translate}}<span style="color: red; margin-left: 5px;">*</span>
+          </label>
+          <div class="col-lg-8">
+            <select class="form-control" id="purpose" formControlName="purpose">
+              <option value="REGISTRATION">{{'management.tokens-management.addTokenModal.purpose.registration' | translate}}</option>
+              <option value="PASSWORD_RESET">{{'management.tokens-management.addTokenModal.purpose.passwordReset' | translate}}</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- email of token -->
+        <div class="row form-group" *ngIf="purpose.value === 'PASSWORD_RESET'">
+          <label class="col-lg-3 control-label" for="email">
+            {{'management.tokens-management.table.email' | translate}}<span style="color: red; margin-left: 5px;">*</span>
+          </label>
+          <div class="col-lg-8">
+            <input class="form-control" id="email" type="text" formControlName="email">
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div modal-footer>
+      <button type="submit" class="button button-primary" [disabled]="!validTokenFormGroup()" (click)="addToken()">
+        {{'general.buttons.add' | translate}}
+      </button>
+      <button type="button" class="button button-secondary" (click)="closeModal()">
+        {{'general.buttons.close' | translate}}
+      </button>
+    </div>
+
+    <!-- Feedback to the user -->
+    <div modal-message-footer>
+      <div class="messages messages--info" *ngIf="successAddingToken === null">
+        {{'general.waitingForServer' | translate}}
+      </div>
+
+      <div class="messages messages--success" *ngIf="successAddingToken === true">
+        {{'management.tokens-management.addTokenModal.success' | translate}}
+      </div>
+
+      <div class="messages messages--error" *ngIf="successAddingToken === false">
+        {{'management.tokens-management.addTokenModal.error' | translate}}
+      </div>
+    </div>
+
+  </app-modal>
+</ng-template>

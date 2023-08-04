@@ -10,25 +10,29 @@
         </div>
     </div>
     <div class="management-table-body">
-        <ng-container *ngIf="{ loading: loading|async, items: filteredData|async, columns: columns|async, ordering: ordering|async } as data">
-            <div class="responsive-table" *ngIf="!data.loading && data.items && data.items.length > 0">
+        <ng-container *ngIf="{
+            items: filteredData|async,
+            columns: columns|async,
+            ordering: ordering|async
+        } as c">
+            <div class="responsive-table" *ngIf="c.items && c.items.length">
                 <table>
-                    <thead>
+                    <thead *ngIf="c.columns as columns">
                         <tr>
-                            <th *ngFor="let column of data.columns">
+                            <th *ngFor="let column of columns">
                                 <div class="d-flex align-items-center">
-                                    {{ column | translate }} <span class="ms-1" (click)="toggleOrderBy(data.ordering, column)" [ngClass]="getOrderIconClass(data.ordering, column)"></span>
+                                    {{ column | translate }} <span class="ms-1" (click)="toggleOrderBy(c.ordering, column)" [ngClass]="getOrderIconClass(c.ordering, column)"></span>
                                 </div>
                             </th>
                             <th *ngIf="actions.length">
                                 {{ 'management.managementTable.actions' | translate }}
                             </th>
-                        </tr>
+                         </tr>
                     </thead>
                     <tbody>
-                    <tr *ngFor="let item of data.items">
+                    <tr *ngFor="let item of c.items">
                         <ng-container *ngIf="mapper(item) as mappedItem">
-                            <td *ngFor="let column of data.columns">
+                            <td *ngFor="let column of c.columns">
                                 {{ mappedItem[column] }}
                             </td>
                             <td *ngIf="actions.length">
@@ -43,15 +47,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="no-results" *ngIf="!data.loading && data.items && !data.items.length">
-                <div class="icon">
-                    <span class="icon-cross"></span>
-                </div>
-                <p>
-                    {{ 'management.general.noResults' | translate }}
-                </p>
-            </div>
-            <div class="loading" *ngIf="data.loading">
+            <div class="loading" *ngIf="c.items === null">
                 <div class="icon">
                     <span class="icon-clock"></span>
                 </div>
@@ -59,35 +55,50 @@
                     {{ 'management.general.loading' | translate }}
                 </p>
             </div>
+            <div class="no-results" *ngIf="c.items && !c.items.length">
+                <div class="icon">
+                    <span class="icon-cross"></span>
+                </div>
+                <p>
+                    {{ 'management.general.noResults' | translate }}
+                </p>
+            </div>
         </ng-container>
     </div>
-    <ng-container *ngIf="{items: searchedData|async, pagination: pagination|async, loading: loading|async} as data">
-        <div class="management-table-footer" *ngIf="!data.loading && data.items && data.items.length">
-            <div class="pagination-info">
-                {{ 'management.managementTable.pagination.info' | translate: { startIndex: getStartIndex(data.pagination), endIndex: getEndIndex(data.pagination, data.items.length), total: data.items.length } }}
-            </div>
-            <div class="results-picker">
-                <div class="results-picker-container">
-                    <select [ngModel]="data.pagination.perPage" (ngModelChange)="setPerPage($event)">
-                        <option *ngFor="let option of getPerPageOptions(data.pagination)" [value]="option">
-                            {{ option }}
-                        </option>
-                    </select>
+    <ng-container *ngIf="searchedData | async as items">
+        <ng-container *ngIf="pagination | async as pagination">
+            <div class="management-table-footer justify-content-center justify-content-md-start" *ngIf="items && items.length">
+                <div class="pagination-info d-none d-md-flex">
+                    {{ 'management.managementTable.pagination.info' | translate: {
+                        startIndex: getStartIndex(pagination),
+                        endIndex: getEndIndex(pagination, items.length),
+                        total: items.length
+                    } }}
                 </div>
-            </div>
-            <div class="pagination d-none d-md-flex" *ngIf="hasPages(data.pagination, data.items.length)">
-                <div class="pagination-wrapper">
-                    <div class="pagination-item nav" (click)="previousPage(data.pagination)" *ngIf="hasPreviousPage(data.pagination)">
-                        <span class="icon-chevron-left"></span>
-                    </div>
-                    <div class="pagination-item" [ngClass]="{active: isCurrentPage(data.pagination, page)}" *ngFor="let page of getPages(data.pagination, data.items.length)" (click)="setCurrentPage(data.pagination, page)">
-                        {{ page }}
-                    </div>
-                    <div class="pagination-item nav" (click)="nextPage(data.pagination, data.items.length)" *ngIf="hasNextPage(data.pagination, data.items.length)">
-                        <span class="icon-chevron-right"></span>
+                <div class="results-picker">
+                    <div class="results-picker-container">
+                        <select [ngModel]="pagination.perPage" (ngModelChange)="setPerPage($event)">
+                            <option *ngFor="let option of getPerPageOptions(pagination)" [value]="option">
+                                {{ option }}
+                            </option>
+                        </select>
                     </div>
                 </div>
+                <div class="pagination d-none d-md-flex" *ngIf="hasPages(pagination, items.length)">
+                    <div class="pagination-wrapper">
+                        <div class="pagination-item nav" (click)="previousPage(pagination)" *ngIf="hasPreviousPage(pagination)">
+                            <span class="icon-chevron-left"></span>
+                        </div>
+                        <div class="pagination-item" *ngFor="let page of getPages(pagination, items.length)"
+                             [ngClass]="{active: isCurrentPage(pagination, page)}"
+                             (click)="setCurrentPage(pagination, page)"
+                        > {{ page }}</div>
+                        <div class="pagination-item nav" (click)="nextPage(pagination, items.length)" *ngIf="hasNextPage(pagination, items.length)">
+                            <span class="icon-chevron-right"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+        </ng-container>
     </ng-container>
 </div>

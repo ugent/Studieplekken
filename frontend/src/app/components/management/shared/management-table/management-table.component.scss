@@ -67,9 +67,20 @@
                     .action {
                         cursor: pointer;
                         font-size: 18px;
+                        background: white;
+                        border-radius: 100%;
+                        width: 35px;
+                        height: 35px;
+                        border: 2px solid whitesmoke;
+                        text-align: center;
+
+                        &:active {
+                            background: #f0f9fd;
+                            outline: 2px solid #007db3;
+                        }
 
                         &:not(:last-of-type) {
-                            margin-right: .5rem;
+                            margin-right: .75rem;
                         }
                     }
                 }

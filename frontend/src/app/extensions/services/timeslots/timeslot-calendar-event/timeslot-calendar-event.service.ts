@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {CalendarEvent} from 'angular-calendar';
 import * as moment from 'moment';
-import {LocationReservation, LocationReservationState} from 'src/app/extensions/model/LocationReservation';
-import {includesTimeslot, Timeslot} from 'src/app/extensions/model/Timeslot';
+import {LocationReservation, LocationReservationState} from 'src/app/model/LocationReservation';
+import {includesTimeslot, Timeslot} from 'src/app/model/Timeslot';
 import {cs} from 'date-fns/locale';
 
 @Injectable({

@@ -1,10 +1,10 @@
 import {Component, Input, OnInit, TemplateRef} from '@angular/core';
 import {AuthenticationService} from '../../../extensions/services/authentication/authentication.service';
 import {LocationReservationsService} from '../../../extensions/services/api/location-reservations/location-reservations.service';
-import {LocationReservation, LocationReservationState} from '../../../extensions/model/LocationReservation';
-import {Timeslot} from '../../../extensions/model/Timeslot';
+import {LocationReservation, LocationReservationState} from '../../../model/LocationReservation';
+import {Timeslot} from '../../../model/Timeslot';
 import * as moment from 'moment';
-import {User} from '../../../extensions/model/User';
+import {User} from '../../../model/User';
 import {Observable} from 'rxjs';
 import {LocationService} from 'src/app/extensions/services/api/locations/location.service';
 import {map} from 'rxjs/operators';

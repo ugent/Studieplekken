@@ -1,7 +1,7 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
-import {Building} from 'src/app/extensions/model/Building';
+import {Building} from 'src/app/model/Building';
 import {Cache} from '../../../cache/Cache';
 import {api} from '../endpoints';
 

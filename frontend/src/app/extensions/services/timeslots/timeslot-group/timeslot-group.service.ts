@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import * as moment from 'moment';
 import { Moment } from 'moment';
 import { DefaultMap } from 'src/app/extensions/util/defaultMap';
-import { Timeslot } from 'src/app/extensions/model/Timeslot';
-import { Location } from 'src/app/extensions/model/Location';
+import { Timeslot } from 'src/app/model/Timeslot';
+import { Location } from 'src/app/model/Location';
 
 
 export type TimeslotGroups = Map<number, Timeslot[]>;

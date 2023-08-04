@@ -2,13 +2,13 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {api} from '../endpoints';
-import {Location, LocationConstructor} from '../../../model/Location';
-import {LocationTag} from '../../../model/LocationTag';
+import {Location, LocationConstructor} from '../../../../model/Location';
+import {LocationTag} from '../../../../model/LocationTag';
 import {map} from 'rxjs/internal/operators/map';
 import {Cache} from '../../../cache/Cache';
 import {Moment} from 'moment';
-import {Pair} from '../../../model/helpers/Pair';
-import {User} from '../../../model/User';
+import {Pair} from '../../../../model/helpers/Pair';
+import {User} from '../../../../model/User';
 
 type locationOverview = { [locationName: string]: string[] };
 
