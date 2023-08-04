@@ -1,47 +1,12 @@
-<div class="container-fluid">
-    <h3>{{'management.actionlog.title' | translate}}</h3>
-    <hr>
-    <form [formGroup]="formGroup" class="form" (ngSubmit)="ignore()">
-        <div class="search">
-            <input class="form-control sarch inline" type="search" formControlName="searchFilter" (ngModelChange)="filterChanged(formGroup.value)">
-        </div>
-    </form>
-
-    <!--<svg>
-        <use xlink:href="assets/icon/sort-both.svg"></use>
-    </svg>-->
-    <div>
-        <div class="responsive-table fullwidth" *ngIf="allActions">
-            <div class="table-wrapper fullwidth">
-                <table style="width: 100%;" *ngIf="allActions.length > 0 else noActions">
-                    <thead>
-                        <tr>
-                            <th class="clickable" scope="col" (click)="sortOn('type')" >{{'management.actionlog.table.type' | translate}}<img class="order-marker" src="{{'assets/icon/' + orderMarkers['type'] + '.svg'}}"></th>
-                            <th class="clickable" scope="col" (click)="sortOn('domain')">{{'management.actionlog.table.domain' | translate}}<img class="order-marker" src="{{'assets/icon/' + orderMarkers['domain'] + '.svg'}}"></th>
-                            <th scope="col">{{'management.actionlog.table.description' | translate }}</th>
-                            <th class="clickable" scope="col" (click)="sortOn('userFullName')">{{'management.actionlog.table.username' | translate}}<img class="order-marker" src="{{'assets/icon/' + orderMarkers['userFullName'] + '.svg'}}"></th>
-                            <th class="clickable" scope="col" (click)="sortOn('userId')" >{{'management.actionlog.table.userid' | translate}}<img class="order-marker" src="{{'assets/icon/' + orderMarkers['userId'] + '.svg'}}"></th>
-                            <th class="clickable" scope="col" (click)="sortOn('time')" >{{'management.actionlog.table.time' | translate}}<img class="order-marker" src="{{'assets/icon/' + orderMarkers['time'] + '.svg'}}"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let action of doSort(actionFilter(allActions, searchFilter));">
-                            <td>{{'management.actionlog.type.' +  action.type | translate}}</td>
-                            <td>{{'management.actionlog.domain.' + action.domain | translate}}</td>
-                            <td>{{action | formatAction | async}}</td>
-                            <td>{{action.userFullName}}</td>
-                            <td>{{action.user.userId}}</td>
-                            <td>{{action.time.format('DD/MM/YYYY HH:mm:ss')}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+<!-- Title -->
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <h3 class="m-0">
+        {{'management.actionlog.title' | translate}}
+    </h3>
 </div>
-
-<ng-template #noActions>
-    <div class="alert alert-info">
-        {{'management.general.noActions' | translate}}
-    </div>
-</ng-template>
+<!-- List -->
+<app-management-table
+        [data]="actionsObs$"
+        [actions]="getTableActions()"
+        [mapper]="getTableMapper()">
+</app-management-table>

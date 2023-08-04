@@ -1,9 +1,5 @@
-import {
-    Component,
-    OnDestroy,
-    OnInit, TemplateRef
-} from '@angular/core';
-import {BehaviorSubject, combineLatest, Observable, Subscription} from 'rxjs';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject, Subscription, timer} from 'rxjs';
 import {LocationService} from '../../../extensions/services/api/locations/location.service';
 import {ActivatedRoute} from '@angular/router';
 import {User} from '../../../model/User';
@@ -21,13 +17,13 @@ import * as moment from 'moment';
 import {
     TimeslotCalendarEventService
 } from '../../../extensions/services/timeslots/timeslot-calendar-event/timeslot-calendar-event.service';
-import {MatDialog} from '@angular/material/dialog';
 import {
     LocationReservationsService
 } from '../../../extensions/services/api/location-reservations/location-reservations.service';
-import {timer} from 'rxjs';
-import {catchError, filter, first, tap} from 'rxjs/operators';
+import {catchError, filter, first, mergeMap, tap} from 'rxjs/operators';
 import {of} from 'rxjs/internal/observable/of';
+import {ModalComponent} from '../../stad-gent-components/molecules/modal/modal.component';
+import {AfterReservationComponent} from './after-reservation/after-reservation.component';
 
 @Component({
     selector: 'app-location-reservation',
@@ -36,36 +32,24 @@ import {of} from 'rxjs/internal/observable/of';
 })
 export class LocationReservationComponent implements OnInit, OnDestroy {
 
-    // The current location.
-    protected locationSub: BehaviorSubject<Location>;
-    // The current logged-in user.
-    protected userSub: BehaviorSubject<User>;
-    // The current selected language.
-    protected languageSub: BehaviorSubject<string>;
-    // All subjects combined.
-    protected dataSub: Observable<{ user: User, location: Location, language: string }>;
+    @ViewChild('commitModal') commitModal: ModalComponent;
+    @ViewChild('afterModal') afterModal: AfterReservationComponent;
 
-    // Whether the edit button should be shown.
+    protected locationSub$: Subject<Location>;
+    protected userSub$: Subject<User>;
+    protected languageSub$: Subject<string>;
+
     protected showEdit = false;
-    // Whether the user can make reservations.
     protected canMakeReservation = true;
 
-    // All events to be displayed on the calendar.
     protected events: CalendarEvent[] = [];
-    // Already committed reservations.
     protected allReservations: LocationReservation[] = [];
-    // Reservations to be added after selecting.
     protected newReservations: LocationReservation[] = [];
-    // Reservations to be removed after selecting.
     protected removedReservations: LocationReservation[] = [];
 
-    // Main subscription.
-    protected subscription: Subscription = new Subscription();
-
-    // Observable for updating reservations.
+    protected subscription: Subscription;
     protected reservationsCreatorObs: Observable<any>;
 
-    // The default teaser image in case of errors.
     protected readonly defaultTeaserImage = defaultTeaserImages[
         Math.floor(Math.random() * defaultTeaserImages.length)
     ];
@@ -78,20 +62,13 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
         private authenticationService: AuthenticationService,
         private breadcrumbService: BreadcrumbService,
         private translateService: TranslateService,
-        private modalService: MatDialog,
         private route: ActivatedRoute
     ) {
-        this.locationSub = new BehaviorSubject<Location>(undefined);
-        this.userSub = new BehaviorSubject<User>(authenticationService.userValue());
-        this.languageSub = new BehaviorSubject<string>(translateService.currentLang);
+        this.locationSub$ = new BehaviorSubject<Location>(undefined);
+        this.userSub$ = new ReplaySubject<User>();
+        this.languageSub$ = new ReplaySubject<string>();
 
-        this.dataSub = combineLatest([
-            this.locationSub, this.userSub, this.languageSub
-        ]).pipe(
-            map(([location, user, language]) =>
-                ({ location, user, language })
-            )
-        );
+        this.subscription = new Subscription();
     }
 
     ngOnInit(): void {
@@ -102,14 +79,15 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
         // Fetch the location and logged-in user.
         this.subscription.add(
             combineLatest([
-                this.locationService.getLocation(locationID), this.authenticationService.user
+                this.locationService.getLocation(locationID),
+                this.authenticationService.user
             ]).pipe(
                 catchError(() => {
                     return of([null, null]);
                 })
             ).subscribe(([location, user]) => {
-                this.locationSub.next(location);
-                this.userSub.next(user);
+                this.locationSub$.next(location);
+                this.userSub$.next(user);
 
                 // Update reservations (and calendar) every minute.
                 this.subscription.add(
@@ -122,7 +100,7 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
 
         // Determine whether the admin button should be shown.
         this.subscription.add(
-            combineLatest([this.locationSub, this.userSub]).pipe(
+            combineLatest([this.locationSub$, this.userSub$]).pipe(
                 filter(([location, user]) => Boolean(location && user))
             ).subscribe(([location, user]) => {
                 this.showEdit = user.admin || user.userAuthorities.some(authority =>
@@ -133,19 +111,17 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
 
         // Determine whether reservations can be made.
         this.subscription.add(
-            combineLatest([this.locationSub, this.userSub]).subscribe(([location, user]) => {
+            combineLatest([this.locationSub$, this.userSub$]).subscribe(([location, user]) => {
                 this.canMakeReservation = !location?.usesPenaltyPoints || user.penaltyPoints < 100;
             })
         );
 
         // Set up the breadcrumb.
         this.subscription.add(
-            this.locationSub.pipe(
-                filter(location => Boolean(location))
-            ).subscribe((location: Location) => {
+            this.locationSub$.subscribe((location: Location) => {
                 this.breadcrumbService.setCurrentBreadcrumbs([{
                     pageName: 'Details',
-                    url: `/dashboard/${ location.locationId }`
+                    url: `/dashboard/${ location?.locationId }`
                 }]);
             })
         );
@@ -153,7 +129,7 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
         // Listen for language changes.
         this.subscription.add(
             this.translateService.onLangChange.subscribe(() => {
-                this.languageSub.next(
+                this.languageSub$.next(
                     this.translateService.currentLang
                 );
             })
@@ -165,12 +141,10 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
     }
 
     updateReservations(reset = false): void {
-        const location: Location = this.locationSub.value;
-
-        // The take(1) automatically unsubscribes after the first emission.
-        this.authenticationService.getLocationReservations().pipe(
-            first()
-        ).subscribe((reservations: LocationReservation[]) => {
+        combineLatest([
+            this.authenticationService.getLocationReservations(),
+            this.locationSub$
+        ]).pipe(first()).subscribe(([reservations, location]) => {
             // Update the reservations list and sort it.
             this.allReservations = reservations.filter(reservation =>
                 reservation.timeslot.locationId === location.locationId
@@ -188,11 +162,16 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
     }
 
     updateEvents(): void {
-        this.timeslotsService.getTimeslotsOfLocation(this.locationSub.value.locationId).pipe(
-            first()
-        ).subscribe((timeslots: Timeslot[]) => {
+        this.locationSub$.pipe(
+            mergeMap((location: Location) =>
+                combineLatest([
+                    this.timeslotsService.getTimeslotsOfLocation(location.locationId),
+                    this.languageSub$
+                ])
+            ), first()
+        ).subscribe(([timeslots, language]) => {
             this.events = timeslots.map(timeslot => this.timeslotCalendarEventService.timeslotToCalendarEvent(
-                timeslot, this.languageSub.value, [
+                timeslot, language, [
                     ...this.newReservations, ...this.allReservations.filter(res =>
                         !this.removedReservations.some(res2 =>
                             timeslotEquals(res.timeslot, res2.timeslot)
@@ -203,75 +182,67 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
         });
     }
 
-    timeslotPicked(event: { timeslot: Timeslot; }): void {
-        const currentUser: User = this.userSub.value;
-        const currentTimeslot: Timeslot = event.timeslot;
+    timeslotPicked(event: { timeslot: Timeslot }): void {
+        this.userSub$.pipe(first()).subscribe(currentUser => {
+            const currentTimeslot: Timeslot = event.timeslot;
 
-        // Only logged-in users can select timeslots.
-        if (!currentUser.userId || !currentTimeslot || !currentTimeslot.reservableFrom) {
-            return;
-        }
-
-        // The timeslot should be in the future.
-        if (moment().isBefore(currentTimeslot.reservableFrom) || currentTimeslot.isInPast()) {
-            return;
-        }
-
-        const currentReservation: LocationReservation = new LocationReservation(
-            currentUser, currentTimeslot
-        );
-
-        const selected = [...this.allReservations, ...this.newReservations].some((other: LocationReservation) =>
-            timeslotEquals(currentReservation.timeslot, other.timeslot) &&
-            !other.isCanceled() && !other.timeslot.isInPast() &&
-            !this.removedReservations.some(other1 =>
-                timeslotEquals(other1.timeslot, other.timeslot)
-            )
-        );
-
-        // Only continue if there are free seats or when the slot already was selected.
-        if (currentTimeslot.amountOfReservations < currentTimeslot.seatCount || selected) {
-            // Try to find an existing reservation for this timeslot.
-            const oldReservation = this.allReservations.find(
-                reservation => reservation.timeslot.timeslotSequenceNumber === currentTimeslot.timeslotSequenceNumber
-            );
-
-            if (!selected || !oldReservation?.isCommitted()) {
-                 if (selected) {
-                     // Deselect already selected timeslots.
-                     if (oldReservation && !oldReservation.isCanceled()) {
-                         this.removedReservations.push(oldReservation);
-                     }
-                     this.newReservations = this.newReservations.filter(reservation =>
-                         !timeslotEquals(reservation.timeslot, currentReservation.timeslot)
-                     );
-                } else {
-                     // Select unselected timeslots.
-                     if (!oldReservation || oldReservation.isCanceled()) {
-                         this.newReservations.push(currentReservation);
-                     }
-                     this.removedReservations = this.removedReservations.filter(reservation =>
-                        !timeslotEquals(reservation.timeslot, currentReservation.timeslot)
-                     );
-                }
+            // Only logged-in users can select timeslots.
+            if (!currentUser.userId || !currentTimeslot || !currentTimeslot.reservableFrom) {
+                return;
             }
 
-            this.updateEvents();
-        }
+            // The timeslot should be in the future.
+            if (moment().isBefore(currentTimeslot.reservableFrom) || currentTimeslot.isInPast()) {
+                return;
+            }
+
+            const currentReservation: LocationReservation = new LocationReservation(
+                currentUser, currentTimeslot
+            );
+
+            const selected = [...this.allReservations, ...this.newReservations].some((other: LocationReservation) =>
+                timeslotEquals(currentReservation.timeslot, other.timeslot) &&
+                !other.isCanceled() && !other.timeslot.isInPast() &&
+                !this.removedReservations.some(other1 =>
+                    timeslotEquals(other1.timeslot, other.timeslot)
+                )
+            );
+
+            // Only continue if there are free seats or when the slot already was selected.
+            if (currentTimeslot.amountOfReservations < currentTimeslot.seatCount || selected) {
+                // Try to find an existing reservation for this timeslot.
+                const oldReservation = this.allReservations.find(
+                    reservation => reservation.timeslot.timeslotSequenceNumber === currentTimeslot.timeslotSequenceNumber
+                );
+
+                if (!selected || !oldReservation?.isCommitted()) {
+                    if (selected) {
+                        // Deselect already selected timeslots.
+                        if (oldReservation && !oldReservation.isCanceled()) {
+                            this.removedReservations.push(oldReservation);
+                        }
+                        this.newReservations = this.newReservations.filter(reservation =>
+                            !timeslotEquals(reservation.timeslot, currentReservation.timeslot)
+                        );
+                    } else {
+                        // Select unselected timeslots.
+                        if (!oldReservation || oldReservation.isCanceled()) {
+                            this.newReservations.push(currentReservation);
+                        }
+                        this.removedReservations = this.removedReservations.filter(reservation =>
+                            !timeslotEquals(reservation.timeslot, currentReservation.timeslot)
+                        );
+                    }
+                }
+
+                this.updateEvents();
+            }
+        });
     }
 
-    cancelReservations(): void {
-        this.modalService.closeAll();
-    }
-
-    prepareReservations(template: TemplateRef<unknown>): void {
-        this.modalService.open(template);
-    }
-
-    commitReservations(template: TemplateRef<unknown>): void {
-        this.modalService.closeAll();
-
-        this.modalService.open(template);
+    commitReservations(): void {
+        this.commitModal.close();
+        this.afterModal.open();
 
         this.reservationsCreatorObs = combineLatest([
             this.locationReservationsService.postLocationReservations(
@@ -283,8 +254,7 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
         ]).pipe(
             first(), tap(() =>
                 this.updateReservations(true)
-            ),
-            map(([res]) =>
+            ), map(([res]) =>
                 res
             )
         );
@@ -293,13 +263,19 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
     toggleSubscription(): void {
         let request: Observable<void>;
 
-        // Only toggle subscription in case of a logged-in user.
-        if (this.userSub.value) {
-            const location = this.locationSub.value;
+        combineLatest([
+            this.userSub$, this.locationSub$
+        ]).pipe(
+            first(), filter(([user, _]) =>
+                user.isLoggedIn()
+            )
+        ).subscribe(([user, location]) => {
+            this.locationSub$.next({
+                ...location,
+                subscribed: !location.subscribed
+            });
 
-            this.locationSub.value.subscribed = !location.subscribed;
-
-            if (this.locationSub.value.subscribed) {
+            if (!location.subscribed) {
                 request = this.locationService.subscribeToLocation(
                     location.locationId
                 );
@@ -310,14 +286,14 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
             }
 
             request.pipe(first()).subscribe();
-        }
+        });
     }
 
     ngOnDestroy(): void {
         this.subscription.unsubscribe();
 
-        this.locationSub.complete();
-        this.languageSub.complete();
-        this.userSub.complete();
+        this.locationSub$.complete();
+        this.languageSub$.complete();
+        this.userSub$.complete();
     }
 }

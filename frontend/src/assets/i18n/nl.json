@@ -857,7 +857,7 @@
             "errorOnLoadingVolunteers": "De toezichthouders van deze locatie konden niet opgehaald worden.",
             "addNewButton": "Toezichter toevoegen",
             "addNewHeader": "Zoek en voeg toezichter toe",
-            "title": "Bekijk, voeg toe en verwijder toezichters"
+            "title": "Beheer toezichters voor \"{{ locationName }}\""
         },
         "stats": {
             "title": "Statistieken",

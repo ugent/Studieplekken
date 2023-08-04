@@ -8,7 +8,7 @@ import {AuthenticationService} from '../../../../extensions/services/authenticat
 import {AuthoritiesService} from '../../../../extensions/services/api/authorities/authorities.service';
 import {BuildingService} from '../../../../extensions/services/api/buildings/buildings.service';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {first, map, mergeMap} from 'rxjs/operators';
+import {filter, first, map, mergeMap, tap} from 'rxjs/operators';
 import {Authority} from '../../../../model/Authority';
 import {DeleteAction, ListAction, TableAction, TableMapper} from '../../../../model/Table';
 import {Router} from '@angular/router';
@@ -40,6 +40,7 @@ export class LocationsManagementComponent extends BaseManagementComponent<Locati
         private router: Router
     ) {
         super();
+
         this.userSub = new ReplaySubject();
         this.authoritiesSub = new ReplaySubject();
         this.buildingsSub = new ReplaySubject();
@@ -59,12 +60,6 @@ export class LocationsManagementComponent extends BaseManagementComponent<Locati
                 this.setupItems();
                 this.setupBuildings();
                 this.setupAuthorities();
-            })
-        );
-
-        this.subscription.add(
-            this.selectedSub.subscribe(location => {
-                this.setupVolunteers(location);
             })
         );
     }
@@ -98,18 +93,18 @@ export class LocationsManagementComponent extends BaseManagementComponent<Locati
         ).subscribe(({user, locations}) => {
             this.itemsSub.next(
                 locations.filter((location: Location) =>
-                        user.isAdmin() || user.userAuthorities.some((authority: Authority) =>
-                            location.authority.authorityId === authority.authorityId
-                        )
+                    user.isAdmin() || user.userAuthorities.some((authority: Authority) =>
+                        location.authority.authorityId === authority.authorityId
+                    )
                 )
             );
         });
     }
 
     setupVolunteers(location: Location): void {
-        this.locationService.getVolunteers(
-            location.locationId
-        ).subscribe((volunteers: User[]) => {
+        this.volunteersSub.next();
+        this.selectedSub.next(location);
+        this.locationService.getVolunteers(location.locationId).subscribe((volunteers: User[]) => {
             this.volunteersSub.next(volunteers);
         });
     }
@@ -164,8 +159,7 @@ export class LocationsManagementComponent extends BaseManagementComponent<Locati
     }
 
     showVolunteers(location: Location): void {
-        this.selectedSub.next(location);
-
+        this.setupVolunteers(location);
         this.volunteersModal.open();
     }
 

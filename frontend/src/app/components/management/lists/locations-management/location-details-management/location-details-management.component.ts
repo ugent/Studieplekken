@@ -1,6 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Observable} from 'rxjs';
+import {Observable, ReplaySubject, Subject, Subscription} from 'rxjs';
 import {Location} from '../../../../../model/Location';
 import {LocationService} from '../../../../../extensions/services/api/locations/location.service';
 
@@ -9,25 +9,37 @@ import {LocationService} from '../../../../../extensions/services/api/locations/
     templateUrl: './location-details-management.component.html',
     styleUrls: ['./location-details-management.component.scss'],
 })
-export class LocationDetailsManagementComponent implements OnInit {
-    protected locationObs: Observable<Location>;
+export class LocationDetailsManagementComponent implements OnInit, OnDestroy {
+
+    protected locationSub: Subject<Location>;
+    protected subscription: Subscription;
 
     constructor(
         private locationService: LocationService,
         private route: ActivatedRoute,
         private router: Router
-    ) {}
+    ) {
+        this.locationSub = new ReplaySubject();
+        this.subscription = new Subscription();
+    }
 
     ngOnInit(): void {
-        const locationId = Number(this.route.snapshot.paramMap.get('locationId'));
+        const locationId = Number(
+            this.route.snapshot.paramMap.get('locationId')
+        );
 
-        // Check if locationId is a Number before proceeding. If NaN, redirect to management locations.
-        if (isNaN(locationId)) {
-            this.router.navigate(['/management/locations']).catch(console.log);
-            return;
-        }
+        this.subscription.add(
+            this.locationService.getLocation(locationId).subscribe(location => {
+                if (!location) {
+                    return this.router.navigate(['/management/locations']);
+                }
 
-        // Note: invalidating cache in management
-        this.locationObs = this.locationService.getLocation(locationId, true);
+                this.locationSub.next(location);
+            })
+        );
+    }
+
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 }

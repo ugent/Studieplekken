@@ -1,50 +1,69 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {
+    Component,
+    EventEmitter,
+    Input,
+    OnChanges,
+    OnDestroy,
+    OnInit,
+    Output,
+    SimpleChanges,
+    ViewChild
+} from '@angular/core';
 import * as moment from 'moment';
 import {Moment} from 'moment';
 import {AuthenticationService} from 'src/app/extensions/services/authentication/authentication.service';
 import {Timeslot} from 'src/app/model/Timeslot';
 import {Location} from 'src/app/model/Location';
 import {MatDialog} from '@angular/material/dialog';
+import {ModalComponent} from '../../../../../../stad-gent-components/molecules/modal/modal.component';
+import {BehaviorSubject, combineLatest, Observable, Subject, Subscription} from 'rxjs';
+import {FormGroup} from '@angular/forms';
+import {filter} from 'rxjs/operators';
 
 @Component({
     selector: 'app-location-add-timeslot-dialog',
     templateUrl: './location-add-timeslot-dialog.component.html',
     styleUrls: ['./location-add-timeslot-dialog.component.css']
 })
-export class LocationAddTimeslotDialogComponent implements OnInit, OnChanges {
-    public model: Timeslot = new Timeslot(null, null, null, null, true, null, null, null, null, null, false);
+export class LocationAddTimeslotDialogComponent implements OnInit, OnDestroy {
+
+    @ViewChild(ModalComponent) modal: ModalComponent;
+
+    @Input() location: Observable<Location>;
+    @Input() timeslot: Observable<Timeslot>;
     @Output() onNewTimeslot: EventEmitter<Timeslot> = new EventEmitter();
     @Output() onUpdateTimeslot: EventEmitter<Timeslot> = new EventEmitter();
-    @Input() location: Location;
-    @Input() timeslot: Timeslot;
 
-    displayErrorTime = false;
-    displayErrorSeats = false;
+    protected displayErrorTime: Subject<boolean>;
+    protected displayErrorSeats: Subject<boolean>;
 
-    constructor(private authenticationService: AuthenticationService, private modalService: MatDialog) {
+    protected newTimeslot: Timeslot = new Timeslot();
+    protected subscription: Subscription;
+
+    constructor() {
+        this.displayErrorTime = new BehaviorSubject(false);
+        this.displayErrorSeats = new BehaviorSubject(false);
+        this.subscription = new Subscription();
     }
-
 
     ngOnInit(): void {
+        this.subscription.add(
+            combineLatest([
+                this.location, this.timeslot
+            ]).subscribe(([location, timeslot]) => {
+               this.setupForm(timeslot ?? new Timeslot(
+               0, null, 0, location.numberOfSeats, false, null, location.locationId
+               ));
+            })
+        );
     }
 
-    ngOnChanges(changes: SimpleChanges): void {
-        const location: Location = changes.location.currentValue;
-        this.model.locationId = location.locationId;
-        this.model.seatCount = location.numberOfSeats;
+    setupForm(timeslot: Timeslot): void {
+        this.newTimeslot = timeslot;
+    }
 
-        if (changes.timeslot) {
-            const oldTimeslot: Timeslot = changes.timeslot.currentValue;
-            this.model.locationId = oldTimeslot.locationId;
-            this.model.reservable = oldTimeslot.reservable;
-            this.model.closingHour = oldTimeslot.closingHour;
-            this.model.openingHour = oldTimeslot.openingHour;
-            this.model.timeslotDate = oldTimeslot.timeslotDate;
-            this.model.timeslotSequenceNumber = oldTimeslot.timeslotSequenceNumber;
-            this.model.reservableFrom = oldTimeslot.reservableFrom;
-            this.model.seatCount = oldTimeslot.seatCount;
-            this.model.amountOfReservations = oldTimeslot.amountOfReservations;
-        }
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 
     getMinStartDate(): Moment {
@@ -59,38 +78,34 @@ export class LocationAddTimeslotDialogComponent implements OnInit, OnChanges {
         }
     }
 
-    getTimeslotTimeInMinutes(model) {
-        if (!model.closingTime) {
-            return null;
-        }
-
-        return model.openingTime?.diff(model.closingTime, 'minutes');
+    closeModal(): void {
+        this.modal.close();
     }
 
-    closeModal(): void {
-        this.modalService.closeAll();
+    openModal(): void {
+        this.modal.open();
     }
 
     confirm(): void {
-        if (this.model.closingHour.isAfter(this.model.openingHour)) {
-            if (this.model.seatCount >= this.model.amountOfReservations) {
-                this.displayErrorTime = false;
-                this.displayErrorSeats = false;
+        if (this.newTimeslot.closingHour.isAfter(this.newTimeslot.openingHour)) {
+            if (this.newTimeslot.seatCount >= this.newTimeslot.amountOfReservations) {
+                this.displayErrorTime.next(false);
+                this.displayErrorSeats.next(false);
+
                 if (this.isUpdating()) {
-                    this.onUpdateTimeslot.next(this.model);
+                    this.onUpdateTimeslot.next(this.newTimeslot);
                 } else {
-                    this.onNewTimeslot.next(this.model);
+                    this.onNewTimeslot.next(this.newTimeslot);
                 }
             } else {
-                this.displayErrorSeats = true;
+                this.displayErrorSeats.next(true);
             }
         } else {
-            this.displayErrorTime = true;
+            this.displayErrorSeats.next(true);
         }
     }
 
     isUpdating(): boolean {
-        return this.model.timeslotSequenceNumber != null;
+        return !!this.newTimeslot?.timeslotSequenceNumber;
     }
-
 }

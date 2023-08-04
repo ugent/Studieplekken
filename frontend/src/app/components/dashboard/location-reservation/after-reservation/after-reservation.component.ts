@@ -1,24 +1,25 @@
-import {Component, Input, OnChanges, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, ViewChild} from '@angular/core';
 import * as moment from 'moment';
 import {Moment} from 'moment';
 import {Observable} from 'rxjs';
+import {ModalComponent} from '../../../stad-gent-components/molecules/modal/modal.component';
 
 @Component({
     selector: 'app-after-reservation',
     templateUrl: './after-reservation.component.html',
     styleUrls: ['./after-reservation.component.scss']
 })
-export class AfterReservationComponent implements OnInit, OnChanges {
+export class AfterReservationComponent implements OnChanges {
+
+    @ViewChild('modal') modal: ModalComponent;
 
     @Input() newReservationCreator: Observable<Moment[]>;
-    loading: boolean = true;
-    failure: boolean = false;
-    hasDelayedReservation = true;
+
+    protected loading = true;
+    protected failure = false;
+    protected hasDelayedReservation = true;
 
     constructor() {
-    }
-
-    ngOnInit(): void {
     }
 
     ngOnChanges(): void {
@@ -37,4 +38,7 @@ export class AfterReservationComponent implements OnInit, OnChanges {
         }
     }
 
+    open(): void {
+        this.modal.open();
+    }
 }
