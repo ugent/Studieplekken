@@ -95,23 +95,18 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
                         this.updateReservations();
                     })
                 );
-            })
-        );
-
-        // Determine whether the admin button should be shown.
-        this.subscription.add(
-            combineLatest([this.locationSub$, this.userSub$]).pipe(
-                filter(([location, user]) => Boolean(location && user))
-            ).subscribe(([location, user]) => {
-                this.showEdit = user.admin || user.userAuthorities.some(authority =>
-                    authority.authorityId === location.authority.authorityId
-                );
+            }, (_) => {
+                this.locationSub$.next(null);
             })
         );
 
         // Determine whether reservations can be made.
         this.subscription.add(
             combineLatest([this.locationSub$, this.userSub$]).subscribe(([location, user]) => {
+                this.showEdit = user.isAdmin() || user.userAuthorities.some(authority =>
+                    authority.authorityId === location.authority.authorityId
+                );
+
                 this.canMakeReservation = !location?.usesPenaltyPoints || user.penaltyPoints < 100;
             })
         );

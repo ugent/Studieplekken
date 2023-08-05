@@ -265,20 +265,20 @@
             </div>
         </app-modal>
     </ng-container>
-</ng-container>
 
-<!-- Loading location -->
-<ng-container *ngIf="(locationSub$ | async) === undefined">
-    <div class="messages messages--info center my-5">
-        <i class="icon-info" aria-hidden="true"></i>
-        {{ 'reservations.loading' | translate }}
-    </div>
-</ng-container>
+    <!-- Loading location -->
+    <ng-container *ngIf="context.location === undefined">
+        <div class="messages messages--info center my-5">
+            <i class="icon-info" aria-hidden="true"></i>
+            {{ 'reservations.loading' | translate }}
+        </div>
+    </ng-container>
 
-<!-- Location not found -->
-<ng-container *ngIf="(locationSub$ | async) === null">
-    <div class="messages messages--error center my-5">
-        <i class="icon-cross" aria-hidden="true"></i>
-        {{ 'reservations.notFound' | translate }}
-    </div>
+    <!-- Location not found -->
+    <ng-container *ngIf="context.location === null">
+        <div class="messages messages--error center my-5">
+            <i class="icon-cross" aria-hidden="true"></i>
+            {{ 'reservations.notFound' | translate }}
+        </div>
+    </ng-container>
 </ng-container>

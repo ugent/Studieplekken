@@ -1,17 +1,12 @@
-import {Component, Input, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
-import {CalendarEvent, CalendarView} from 'angular-calendar';
+import {CalendarView} from 'angular-calendar';
 import * as moment from 'moment';
 import {Moment} from 'moment';
-import {combineLatest, Observable, ReplaySubject, Subject, timer} from 'rxjs';
-import {of} from 'rxjs/internal/observable/of';
-import {catchError, find, first, map, mergeMap, switchMap, takeUntil, tap} from 'rxjs/operators';
+import {BehaviorSubject, Observable, ReplaySubject, Subject, Subscription} from 'rxjs';
+import {filter, find, first, map, mergeMap, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 import {TimeslotsService} from 'src/app/extensions/services/api/calendar-periods/timeslot.service';
 import {LocationReservationsService} from 'src/app/extensions/services/api/location-reservations/location-reservations.service';
-import {LocationService} from 'src/app/extensions/services/api/locations/location.service';
-import {AuthenticationService} from 'src/app/extensions/services/authentication/authentication.service';
 import {Suggestion, TimeslotGroupService} from 'src/app/extensions/services/timeslots/timeslot-group/timeslot-group.service';
 import {
     TimeslotCalendarEvent,
@@ -26,9 +21,9 @@ import {ModalComponent} from '../../../../../stad-gent-components/molecules/moda
 import {
     LocationAddTimeslotDialogComponent
 } from './location-add-timeslot-dialog/location-add-timeslot-dialog.component';
-import _default from 'chart.js/dist/core/core.layouts';
-import update = _default.update;
+
 import StartOf = moment.unitOfTime.StartOf;
+import {logging} from 'protractor';
 
 type TypeOption = {
     date: string;
@@ -46,7 +41,7 @@ type TypeOption = {
     templateUrl: './location-calendar.component.html',
     styleUrls: ['./location-calendar.component.scss']
 })
-export class LocationCalendarComponent implements OnInit {
+export class LocationCalendarComponent implements OnInit, OnDestroy {
 
     @ViewChild('addTimeslotModal') modifyModal: LocationAddTimeslotDialogComponent;
     @ViewChild('deleteTimeslotModal') deleteModal: ModalComponent;
@@ -57,13 +52,15 @@ export class LocationCalendarComponent implements OnInit {
     protected timeslotsSub: Subject<Timeslot[]>;
     protected suggestionsSub: Subject<Suggestion[]>;
     protected selectedSub: Subject<Timeslot>;
-    protected updateSub: Subject<Timeslot>;
     protected reservationsSub: Subject<LocationReservation[]>;
     protected eventsSub: Subject<TimeslotCalendarEvent[]>;
 
     protected isError: Subject<boolean>;
     protected isSuccess: Subject<boolean>;
+    protected showBulk: Subject<boolean>;
     protected refresh: Subject<unknown>;
+
+    protected unsubscribe: Subject<unknown>;
 
     protected calendarViewStyle: CalendarView = CalendarView.Week;
     protected currentTime = moment();
@@ -77,23 +74,46 @@ export class LocationCalendarComponent implements OnInit {
     ) {
         this.timeslotsSub = new ReplaySubject();
         this.selectedSub = new ReplaySubject();
-        this.updateSub = new ReplaySubject();
         this.suggestionsSub = new ReplaySubject();
         this.reservationsSub = new ReplaySubject();
         this.eventsSub = new ReplaySubject();
 
         this.isError = new ReplaySubject();
         this.isSuccess = new ReplaySubject();
+        this.showBulk = new ReplaySubject();
         this.refresh = new Subject();
+        this.unsubscribe = new Subject();
     }
 
     ngOnInit(): void {
         this.setupTimeslots();
+
+        this.selectedSub.pipe(
+            takeUntil(this.unsubscribe),
+            switchMap(timeslot =>
+                this.isSuggestion(timeslot).pipe(
+                    filter(isSuggestion => !isSuggestion && timeslot.reservable),
+                    switchMap(() =>
+                        this.locationReservationService.getLocationReservationsOfTimeslot(
+                            timeslot.timeslotSequenceNumber
+                        )
+                    )
+                )
+            )
+        ).subscribe(reservations => {
+            this.reservationsSub.next(reservations);
+        });
     }
+
+    ngOnDestroy(): void {
+        this.unsubscribe.next();
+        this.unsubscribe.complete();
+    }
+
 
     setupTimeslots(): void {
         this.locationSub.pipe(
-            first(), switchMap((location: Location) =>
+            filter(location => !!location), first(), switchMap((location: Location) =>
                 this.timeslotService.getTimeslotsOfLocation(location.locationId).pipe(
                     map(timeslots => ({location, timeslots}))
                 )
@@ -123,41 +143,34 @@ export class LocationCalendarComponent implements OnInit {
         });
     }
 
-    setupReservations(): void {
-        this.selectedSub.pipe(
-            switchMap((timeslot: Timeslot) =>
-                this.locationReservationService.getLocationReservationsOfTimeslot(
-                    timeslot.timeslotSequenceNumber
-                )
-            ), first()
-        ).subscribe((next) => {
-            this.reservationsSub.next(next);
-        });
-    }
-
     timeslotPickedHandler(event: { timeslot: Timeslot }): void {
         const timeslot = event.timeslot;
 
         // event is a non-reservable calendar period.
         if (timeslot) {
             this.selectedSub.next(timeslot);
-            this.updateSub.next(timeslot);
-
-            if (timeslot.reservable) {
-                this.setupReservations();
-            }
         }
+    }
+
+    hourPickedHandler(location: Location, date: Moment): void {
+        const openingHour = moment(
+            date?.format('HH:mm'), 'HH:mm'
+        );
+        this.selectedSub.next(
+            new Timeslot().setDate(date).setLocationId(location.locationId).setOpeningHour(openingHour)
+        );
+        this.modifyModal.openModal();
     }
 
     prepareAdd(): void {
         this.isSuccess.next(null);
-        this.updateSub.next(null);
+        this.selectedSub.next(null);
         this.modifyModal.openModal();
     }
 
     prepareUpdate(timeslot: Timeslot): void {
         this.isSuccess.next(null);
-        this.updateSub.next(timeslot);
+        this.selectedSub.next(timeslot);
         this.modifyModal.openModal();
     }
 
@@ -217,13 +230,56 @@ export class LocationCalendarComponent implements OnInit {
         this.copyModal.close();
     }
 
+    approveAll(): void {
+        this.getCurrentSuggestions().subscribe(suggestions =>
+            suggestions.forEach(suggestion => this.approve(suggestion.copy))
+        );
+    }
+
+    approve(timeslot: Timeslot): void {
+        this.timeslotService.addTimeslot(timeslot).subscribe(() =>{
+            this.setupTimeslots();
+            this.selectedSub.next(timeslot);
+        });
+    }
+
+    rejectAll(): void {
+        this.getCurrentSuggestions().subscribe(suggestions =>
+            suggestions.forEach(suggestion => this.reject(suggestion.copy))
+        );
+    }
+
+    reject(timeslot: Timeslot): void {
+        this.getCurrentSuggestions().pipe(
+            mergeMap(suggestions =>
+                suggestions
+            ),
+            find(suggestion =>
+                suggestion.copy === timeslot
+            ),
+            switchMap(suggestion =>
+                this.timeslotService.setRepeatable(
+                    suggestion.model, false
+                )
+            )
+        ).subscribe(() => {
+            this.setupTimeslots();
+            this.selectedSub.next(timeslot);
+        });
+    }
+
+
     timeslotGroupData(timeslots: Timeslot[]): TypeOption[] {
         if (!timeslots) {
             return [];
         }
 
-        const perGroup = this.timeslotGroupService.groupTimeslots(timeslots);
-        const bestPerGroup = this.timeslotGroupService.getOldestTimeslotPerGroup(timeslots);
+        const perGroup = this.timeslotGroupService.groupTimeslots(
+            timeslots
+        );
+        const bestPerGroup = this.timeslotGroupService.getOldestTimeslotPerGroup(
+            timeslots
+        );
 
         const toSort = Array.from(perGroup);
 
@@ -285,82 +341,18 @@ export class LocationCalendarComponent implements OnInit {
         };
     }
 
-    hourPickedHandler(location: Location, date: Moment): void {
-        const openingHour = moment(
-            date?.format('HH:mm'), 'HH:mm'
-        );
-        this.selectedSub.next(null);
-        this.updateSub.next(
-            new Timeslot().setDate(date).setLocationId(location.locationId).setOpeningHour(openingHour)
-        );
-        this.modifyModal.openModal();
-    }
-
-    showApproveAll(): Observable<boolean> {
-        return this.getCurrentSuggestions().pipe(
-            map(suggestions => suggestions.length > 0)
-        );
-    }
-
-    approveAll(): void {
-        this.getCurrentSuggestions().pipe(
-            mergeMap(suggestions => suggestions),
-            map(suggestion =>
-                this.timeslotService.addTimeslot(suggestion.copy)
-            )
-        ).pipe(first()).subscribe(() =>
-            this.setupReservations()
-        );
-    }
-
-    approve(timeslot: Timeslot): void {
-        this.timeslotService.addTimeslot(timeslot).subscribe(() =>
-            this.setupTimeslots()
-        );
-        this.selectedSub.next(null);
-    }
-
-    rejectAll(): void {
-        this.getCurrentSuggestions().pipe(
-            mergeMap(suggestions => suggestions),
-            map(suggestion =>
-                this.timeslotService.setRepeatable(suggestion.model, false)
-            )
-        ).pipe(first()).subscribe(() =>
-            this.setupTimeslots()
-        );
-    }
-
-    reject(timeslot: Timeslot): void {
-        this.getCurrentSuggestions().pipe(
-            mergeMap(suggestions =>
-                suggestions
-            ),
-            find(suggestion =>
-                suggestion.copy === timeslot
-            ),
-            switchMap(suggestion =>
-                this.timeslotService.setRepeatable(suggestion.model, false)
-            )
-        ).subscribe(() =>
-            this.setupTimeslots()
-        );
-
-        this.selectedSub.next(null);
-    }
-
-    public isSuggestion(timeslot: Timeslot): Observable<boolean> {
+    isSuggestion(timeslot: Timeslot): Observable<boolean> {
         return this.suggestionsSub.pipe(
             map((suggestions: any[]) =>
                 suggestions.map(s => s.copy)
             ),
             map((mappedSuggestions: any[]) =>
-                mappedSuggestions.includes(timeslot)
+                mappedSuggestions.some(suggestion => timeslot.timeslotSequenceNumber === suggestion.timeslotSequenceNumber)
             ), first()
         );
     }
 
-    private getCurrentSuggestions(): Observable<Suggestion[]> {
+    getCurrentSuggestions(): Observable<Suggestion[]> {
         return this.suggestionsSub.pipe(
             map(suggestions => {
                 let granularity: StartOf = 'day';

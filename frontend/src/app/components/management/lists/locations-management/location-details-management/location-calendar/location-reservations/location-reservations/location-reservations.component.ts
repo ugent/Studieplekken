@@ -83,7 +83,7 @@ export class LocationReservationsComponent implements OnChanges {
     scanLocationReservation(
         reservation: LocationReservation,
         attended: boolean,
-        errorTemplate: TemplateRef<unknown>,
+        errorTemplate: ModalComponent,
         previousScanned: LocationReservation
     ): void {
         const olds = reservation.state;
@@ -115,7 +115,7 @@ export class LocationReservationsComponent implements OnChanges {
                     reservation.state = olds;
                     this.setLastScanned(reservation);
                     console.error(err);
-                    this.modalService.open(errorTemplate);
+                    errorTemplate.open();
                 }
             );
     }
@@ -184,7 +184,7 @@ export class LocationReservationsComponent implements OnChanges {
         u.firstName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         u.lastName.toLowerCase().includes(this.searchTerm.toLowerCase())
 
-    updateSearchTerm(errorTemplate: TemplateRef<unknown>): void {
+    updateSearchTerm(errorTemplate: ModalComponent): void {
         this.noSuchUserFoundWarning =
             this.searchTerm.length > 0 &&
             this.locationReservations.every((lr) => !this.userHasSearchTerm(lr.user));
@@ -209,6 +209,11 @@ export class LocationReservationsComponent implements OnChanges {
     }
 
     filter(locationReservations: LocationReservation[]): LocationReservation[] {
+        if (!locationReservations) {
+            return [];
+        }
+        console.log('Start of filter: ' + performance.now());
+
         locationReservations = locationReservations.filter(
             (r) => r.state !== LocationReservationState.DELETED && r.state !== LocationReservationState.REJECTED
         );
@@ -258,7 +263,7 @@ export class LocationReservationsComponent implements OnChanges {
 
     onAction(
         {columnIndex, data}: { columnIndex: number; data: LocationReservation },
-        errorTemplate: TemplateRef<unknown>,
+        errorTemplate: ModalComponent,
         penaltyManager: TemplateRef<unknown>
     ): void {
         const previousScanned = this.lastScanned;

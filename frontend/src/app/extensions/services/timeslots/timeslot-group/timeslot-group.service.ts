@@ -58,8 +58,8 @@ export class TimeslotGroupService {
         const suggestions: Suggestion[] = [];
 
         for (let i = 1; i <= amountOfWeeks; i++) {
-            const targetDate = (t: Timeslot) => moment(t.timeslotDate).add(i, "weeks");
-            repeatableTimeslots.filter(t => t.timeslotDate.isBefore(targetDate(t), "day")).forEach(t => suggestions.push({
+            const targetDate = (t: Timeslot) => moment(t.timeslotDate).add(i, 'weeks');
+            repeatableTimeslots.filter(t => t.timeslotDate.isBefore(targetDate(t), 'day')).forEach(t => suggestions.push({
                 model: t,
                 copy: this.copy(t, targetDate(t), location, true)
             }));
