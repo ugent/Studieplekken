@@ -46,9 +46,9 @@
                         </td>
                         <td *ngIf="actions.length">
                             <div class="actions">
-                                    <span class="action" *ngFor="let action of actions" [ngClass]="action.getIcon()" (click)="action.handle(item)">
-
-                                    </span>
+                                <ng-container class="action" *ngFor="let action of actions">
+                                    <span class="action" *ngIf="action.show(item)" [ngClass]="action.getIcon()" (click)="action.handle(item)"></span>
+                                </ng-container>
                             </div>
                         </td>
                     </ng-container>
@@ -56,7 +56,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="loading" *ngIf="context.items === null">
+        <div class="loading" *ngIf="context.items === null || context.items === undefined">
             <div class="icon">
                 <span class="icon-clock"></span>
             </div>

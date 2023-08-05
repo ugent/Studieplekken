@@ -1,160 +1,126 @@
-<div *ngIf="userObs | async as user">
-    <!-- Management of the authorities of the user -->
-    <h3>
-        {{('management.users.userDetails.authorities.title' | translate).replace('{name}', user.firstName + ' ' + user.lastName)}}
-    </h3>
-    <hr>
-    <div>
-        <div class="messages messages--info">
-            <i class="icon-info" aria-hidden="true"></i>
-            {{'management.users.userDetails.authorities.info' | translate}}
+<!-- Title -->
+<ng-container *ngIf="{
+    user: userObs | async,
+    selected: selectedSub | async,
+    addableAuthorities: addableAuthorities$ | async
+} as context">
+    <ng-container *ngIf="context.user as user">
+        <!-- Title-->
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h3 class="m-0">
+                {{ ('management.users.userDetails.authorities.title' | translate).replace('{name}', user.firstName + ' ' + user.lastName) }}
+            </h3>
+            <button class="button button-primary" (click)="prepareAdd()">
+                {{'management.users.userDetails.authorities.addNew' | translate}}
+            </button>
         </div>
-        <div class="row responsive-table" *ngIf="authoritiesOfUser !== undefined">
-            <div class="table-wrapper">
-                <table *ngIf="authoritiesOfUser.length > 0; else noAuthoritiesForUser" style="width: 100%">
-                    <thead>
-                    <tr>
-                        <th scope="col">{{'management.authorities.table.authorityName' | translate}}</th>
-                        <th scope="col">{{'management.authorities.table.description' | translate}}</th>
-                        <th scope="col">
-                            <!-- delete -->
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr *ngFor="let authority of authoritiesOfUser">
-                        <td>{{authority.authorityName}}</td>
-                        <td>{{authority.description}}</td>
-                        <td class="hover" style="padding-left: 10px; padding-right: 10px; padding-top: 10px"
-                            (click)="prepareToDeleteAuthorityForUser(authority, deleteAuthorityFromUserModal)">
-                <span class="glyphicon glyphicon-trash pointerCursor">
-                  <i class="icon-cross" aria-hidden='false'></i>
-                </span>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+        <!-- List -->
+        <app-management-table
+            [stateless]="false"
+            [data]="itemsSub"
+            [actions]="getTableActions()"
+            [mapper]="getTableMapper()">
+        </app-management-table>
+        <!-- Add new -->
+        <app-modal #modify>
+            <h2 modal-header>
+                {{'management.users.userDetails.authorities.addAuthorityToUserModal.title' | translate}}
+            </h2>
+            <div modal-body>
+                <!-- Info -->
+                <p>
+                    {{'management.users.userDetails.authorities.addAuthorityToUserModal.body' | translate}}
+                </p>
+
+                <!-- list of authorities to choose from -->
+                <form [formGroup]="formGroup">
+                    <div class="row" *ngIf="context.addableAuthorities as authorities; else allAuthoritiesAreAssigned">
+                        <div class="col">
+                            <label class="control-label" for="authority">
+                                {{'management.users.userDetails.authorities.addAuthorityToUserModal.selectAuthority' | translate}}
+                                <select class="form-control" id="authority" formControlName="authority">
+                                    <option disabled selected style="display:none"></option>
+                                    <option *ngFor="let authority of authorities" [value]="authority.authorityId">
+                                        {{authority.authorityName + ' (' + authority.description + ')'}}
+                                    </option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+                    <ng-template #allAuthoritiesAreAssigned>
+                        <p>
+                            {{'management.users.userDetails.authorities.allAuthoritiesAreAssigned' | translate}}
+                        </p>
+                    </ng-template>
+                </form>
             </div>
-        </div>
-        <button class="button button-primary" (click)="prepareToAddAnAuthorityToUser(addAuthorityToUserModal)">
-            {{'management.users.userDetails.authorities.addNew' | translate}}
-        </button>
-    </div>
-</div>
 
-<ng-template #noAuthoritiesForUser>
-    <div class="messages messages-warning">
-        {{'management.users.userDetails.authorities.noAuthoritiesForUser' | translate}}
-    </div>
-</ng-template>
+            <!-- Modal footer -->
+            <div modal-footer>
+                <button type="submit" class="button button-primary" [disabled]="!formGroup.valid" (click)="storeAdd(formGroup.value)">
+                    {{'general.buttons.add' | translate}}
+                </button>
+                <button type="button" class="button button-secondary" (click)="modify.close()">
+                    {{'general.buttons.cancel' | translate}}
+                </button>
+            </div>
 
-<ng-template #allAuthoritiesAreAssigned>
-    <div class="messages messages-info">
-        {{'management.users.userDetails.authorities.allAuthoritiesAreAssigned' | translate}}
-    </div>
-</ng-template>
+            <div modal-message-footer>
+                <div class="messages messages--info" *ngIf="(isSuccess | async) === undefined">
+                    {{'general.waitingForServer' | translate}}
+                </div>
 
-<!-- Modal view to add a new authority to the user -->
-<ng-template #addAuthorityToUserModal>
-    <!-- Modal header -->
-    <app-modal>
-        <h2 modal-header>
-            {{'management.users.userDetails.authorities.addAuthorityToUserModal.title' | translate}}
-        </h2>
+                <div class="messages messages--success" *ngIf="(isSuccess | async) === true">
+                    {{'management.users.userDetails.authorities.addAuthorityToUserModal.success' | translate}}
+                </div>
 
-        <form modal-body>
-            <!-- Info -->
-            <p>
-                {{'management.users.userDetails.authorities.addAuthorityToUserModal.body' | translate}}
-            </p>
-
-            <!-- list of authorities to choose from -->
-            <div class="row" *ngIf="authoritiesOfUser !== undefined && allAuthorities !== undefined">
-                <div class="col" *ngIf="addableAuthorities.length > 0; else allAuthoritiesAreAssigned">
-                    <label class="control-label" for="authority">
-                        {{'management.users.userDetails.authorities.addAuthorityToUserModal.selectAuthority' | translate}}
-                        <select class="form-control" id="authority" [formControl]="authoritiesFormControl">
-                            <option disabled selected style="display:none"></option>
-                            <option *ngFor="let authority of addableAuthorities" [value]="authority.authorityId">
-                                {{authority.authorityName + ' (' + authority.description + ')'}}
-                            </option>
-                        </select>
-                    </label>
+                <div class="messages messages--error" *ngIf="(isSuccess | async) === false">
+                    {{'management.users.userDetails.authorities.addAuthorityToUserModal.error' | translate}}
                 </div>
             </div>
-        </form>
+        </app-modal>
+        <!-- Remove -->
+        <app-modal #remove>
+            <!-- Header -->
+            <h2 modal-header>
+                {{'management.users.userDetails.authorities.deleteAuthorityFromUserModal.title' | translate}}
+            </h2>
 
-        <!-- Modal footer -->
-        <div modal-footer>
-            <button type="submit" class="button button-primary" [disabled]="!validForm()"
-                    (click)="addAuthorityFromForm()">
-                {{'general.buttons.add' | translate}}
-            </button>
-            <button type="button" class="button button-secondary" (click)="closeModal()">
-                {{'general.buttons.cancel' | translate}}
-            </button>
-        </div>
+            <!-- Body -->
+            <form *ngIf="context.selected as authority" modal-body>
+                <p>
+                    {{('management.users.userDetails.authorities.deleteAuthorityFromUserModal.body' | translate).replace('{name}', user.firstName + ' ' + user.lastName)}}
+                </p>
 
-        <div modal-message-footer>
-            <div class="messages messages--info" *ngIf="successOnAddingAuthorityToUser === null">
-                {{'general.waitingForServer' | translate}}
+                <ul>
+                    <li><b>{{('management.authorities.table.authorityName' | translate) + ':'}}</b> {{ authority.authorityName }}</li>
+                    <li><b>{{('management.authorities.table.description' |translate)}}</b> {{ authority.description }}</li>
+                </ul>
+            </form>
+
+            <!-- Footer -->
+            <div modal-footer>
+                <button type="button" class="button button-primary" (click)="storeDelete(context.selected)">
+                    {{'general.buttons.delete' | translate}}
+                </button>
+                <button type="button" class="button button-secondary" (click)="remove.close()" aria-label="Close">
+                    {{'general.buttons.cancel' | translate}}
+                </button>
             </div>
 
-            <div class="messages messages--success" *ngIf="successOnAddingAuthorityToUser === true">
-                {{'management.users.userDetails.authorities.addAuthorityToUserModal.success' | translate}}
+            <div class="container-fluid">
+                <div class="messages messages--info" *ngIf="(isSuccess | async) === undefined">
+                    {{'general.waitingForServer' | translate}}
+                </div>
+
+                <div class="messages messages--success" *ngIf="(isSuccess | async) === true">
+                    {{'management.users.userDetails.authorities.deleteAuthorityFromUserModal.success' | translate}}
+                </div>
+
+                <div class="messages messages--error" *ngIf="(isSuccess | async) === false">
+                    {{'management.users.userDetails.authorities.deleteAuthorityFromUserModal.error' | translate}}
+                </div>
             </div>
-
-            <div class="messages messages--error" *ngIf="successOnAddingAuthorityToUser === false">
-                {{'management.users.userDetails.authorities.addAuthorityToUserModal.error' | translate}}
-            </div>
-        </div>
-
-    </app-modal>
-</ng-template>
-
-<!-- Modal to ask whether the manager is sure to remove the authority from the user -->
-<ng-template #deleteAuthorityFromUserModal>
-    <app-modal>
-        <!-- Header -->
-        <h2 modal-header>
-            {{'management.users.userDetails.authorities.deleteAuthorityFromUserModal.title' | translate}}
-        </h2>
-
-        <!-- Body -->
-        <form modal-body>
-            <p>
-                {{('management.users.userDetails.authorities.deleteAuthorityFromUserModal.body' | translate).replace('{name}', userFirstName + ' ' + userLastName)}}
-            </p>
-
-            <ul *ngIf="authorityPreparedToDelete !== undefined">
-                <li><b>{{('management.authorities.table.authorityName' | translate) + ':'}}</b> {{authorityPreparedToDelete.authorityName}}</li>
-                <li><b>{{('management.authorities.table.description' |translate)}}</b> {{authorityPreparedToDelete.description}}</li>
-            </ul>
-        </form>
-
-        <!-- Footer -->
-        <div modal-footer>
-            <button type="button" class="button button-primary"
-                    (click)="deleteAuthorityFromUser(userId, authorityPreparedToDelete.authorityId)">
-                {{'general.buttons.delete' | translate}}
-            </button>
-            <button type="button" class="button button-secondary" (click)="closeModal()" aria-label="Close">
-                {{'general.buttons.cancel' | translate}}
-            </button>
-        </div>
-
-        <div class="container-fluid">
-            <div class="messages messages--info" *ngIf="successOnDeletingAuthorityForUser === null">
-                {{'general.waitingForServer' | translate}}
-            </div>
-
-            <div class="messages messages--success" *ngIf="successOnDeletingAuthorityForUser === true">
-                {{'management.users.userDetails.authorities.deleteAuthorityFromUserModal.success' | translate}}
-            </div>
-
-            <div class="messages messages--error" *ngIf="successOnDeletingAuthorityForUser === false">
-                {{'management.users.userDetails.authorities.deleteAuthorityFromUserModal.error' | translate}}
-            </div>
-        </div>
-    </app-modal>
-</ng-template>
+        </app-modal>
+    </ng-container>
+</ng-container>

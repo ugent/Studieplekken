@@ -13,7 +13,6 @@ export abstract class BaseManagementComponent<T extends object> implements OnIni
     @ViewChild('modify') modifyModal: ModalComponent;
     @ViewChild('remove') deleteModal: ModalComponent;
 
-    protected userSub: Subject<User>;
     protected selectedSub: Subject<T>;
 
     protected isSuccess: Subject<boolean>;
@@ -49,10 +48,6 @@ export abstract class BaseManagementComponent<T extends object> implements OnIni
         this.subscription.unsubscribe();
     }
 
-    abstract setupForm(item?: T): void;
-
-    abstract setupItems(): void;
-
     closeModal(modal: ModalComponent): void {
         modal.close();
     }
@@ -75,12 +70,6 @@ export abstract class BaseManagementComponent<T extends object> implements OnIni
         this.deleteModal.open();
     }
 
-    storeAdd(body: any): void {}
-
-    storeUpdate(item: T, body: any): void {}
-
-    storeDelete(item: T): void {}
-
     sendBackendRequest(request: Observable<any>, onSuccessMessage?: string): void {
         this.isSuccess.next(undefined);
 
@@ -91,8 +80,8 @@ export abstract class BaseManagementComponent<T extends object> implements OnIni
                 this.setupForm();
                 this.setupItems();
 
-                this.deleteModal.close();
-                this.modifyModal.close();
+                this.deleteModal?.close();
+                this.modifyModal?.close();
 
                 if (onSuccessMessage) {
                     this.feedbackMessage.next(onSuccessMessage);
@@ -116,5 +105,15 @@ export abstract class BaseManagementComponent<T extends object> implements OnIni
         ];
     }
 
+    setupForm(item?: T): void {}
+
+    storeAdd(body: any = this.formGroup.value): void {}
+
+    storeUpdate(item: T, body: any = this.formGroup.value): void {}
+
+    storeDelete(item: T): void {}
+
     abstract getTableMapper(): TableMapper;
+
+    abstract setupItems(): void;
 }

@@ -8,7 +8,7 @@ import {AuthenticationService} from '../../../../extensions/services/authenticat
 import {AuthoritiesService} from '../../../../extensions/services/api/authorities/authorities.service';
 import {BuildingService} from '../../../../extensions/services/api/buildings/buildings.service';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {filter, first, map, mergeMap, tap} from 'rxjs/operators';
+import {filter, first, map, mergeMap, switchMap, tap} from 'rxjs/operators';
 import {Authority} from '../../../../model/Authority';
 import {DeleteAction, ListAction, TableAction, TableMapper} from '../../../../model/Table';
 import {Router} from '@angular/router';
@@ -53,11 +53,8 @@ export class LocationsManagementComponent extends BaseManagementComponent<Locati
 
         this.subscription.add(
             this.authenticationService.user.subscribe((user: User) => {
-                this.userSub.next(
-                    user
-                );
+                this.userSub.next(user);
 
-                this.setupItems();
                 this.setupBuildings();
                 this.setupAuthorities();
             })
@@ -79,7 +76,7 @@ export class LocationsManagementComponent extends BaseManagementComponent<Locati
 
     setupItems(): void {
         this.userSub.pipe(
-            mergeMap((user: User) => {
+            switchMap((user: User) => {
                 if (user.isAdmin()) {
                     return this.locationService.getAllLocations(false).pipe(
                         map((locations: Location[]) => ({ user, locations }))

@@ -1,51 +1,63 @@
-<div>
-    <h3>
-        {{ "penalties.management.subheader" | translate }} {{ user.firstName }} {{ user.lastName }}
-    </h3>
-    <hr>
-    <div *ngIf="overview">
-        <app-penalty-table
-            *ngIf="penalties | async as penalties"
-            [penalties]="penalties"
-            [showDelete]="true"
-            [showTitle]="false"
-            (onDelete)="onDelete()"
-        ></app-penalty-table>
-        <button class="button button-primary" (click)="addPenaltyModal.open()">
-            {{ "penalties.management.addButton" | translate }}
+<ng-container *ngIf="{
+    user: userObs$ | async
+} as context">
+    <!-- Title -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h3 class="m-0">
+            {{ 'penalties.management.subheader' | translate }} {{context.user.firstName}} {{context.user.lastName}}
+        </h3>
+        <button class="button button-primary" (click)="prepareAdd()">
+            {{ 'penalties.management.addButton' | translate}}
         </button>
     </div>
-</div>
-
-<app-modal #addPenaltyModal>
-    <h2 modal-header>
-        {{ 'penalties.management.addButton' | translate }}
-    </h2>
-    <div modal-body>
-        <form>
-            <!-- points -->
-            <div class="row">
-                <div class="col">
-                    <label class="control-label" for="points">
-                        {{ "penalties.management.points" | translate }}
-                        <input type="number" class="form-control" min="0" [(ngModel)]="model.points" name="points" id="points" />
-                    </label>
+    <!-- List -->
+    <app-management-table
+        [stateless]="false"
+        [data]="itemsSub"
+        [actions]="getTableActions()"
+        [mapper]="getTableMapper()">
+    </app-management-table>
+    <!-- Add penalty form -->
+    <app-modal #modify>
+        <h2 modal-header>
+            <ng-container>
+                {{ 'penalties.management.addButton' | translate }}
+            </ng-container>
+        </h2>
+        <div modal-body>
+            <form [formGroup]="formGroup">
+                <!-- points -->
+                <div class="row">
+                    <div class="col">
+                        <label class="control-label">
+                            {{ "penalties.management.points" | translate }}
+                            <input type="number" class="form-control" min="0" formControlName="points" />
+                        </label>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Description -->
-            <div class="row">
-                <div class="col">
-                    <label class="control-label" for="description">
-                        {{ "penalties.management.description" | translate }}
-                        <input type="text" class="form-control" [(ngModel)]="model.description" name="description" id="description" />
-                    </label>
+                <!-- Description -->
+                <div class="row">
+                    <div class="col">
+                        <label class="control-label">
+                            {{ "penalties.management.description" | translate }}
+                            <input type="text" class="form-control" formControlName="description" />
+                        </label>
+                    </div>
                 </div>
-            </div>
-        </form>
-    </div>
-    <div modal-footer>
-        <button class="button button-primary" (click)="addPenalty()">{{"penalties.management.confirm" | translate}}</button>
-        <button class="button button-secondary" (click)="addPenaltyModal.close()">{{"penalties.management.cancel" | translate}}</button>
-    </div>
-</app-modal>
+            </form>
+        </div>
+        <!-- Modal footer -->
+        <div modal-footer>
+            <button type="submit" class="button button-primary" [disabled]="!formGroup.valid" (click)="storeAdd()">
+                {{ 'general.buttons.add' | translate}}
+            </button>
+            <button type="button" class="button button-secondary" (click)="closeModal(modify)">
+                {{'general.buttons.close' | translate}}
+            </button>
+        </div>
+        <div modal-message-footer>
+
+        </div>
+    </app-modal>
+</ng-container>

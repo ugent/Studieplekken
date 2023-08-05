@@ -7,6 +7,7 @@ import {UserService} from '../../../../../../extensions/services/api/users/user.
 import {msToShowFeedback} from '../../../../../../app.constants';
 import {MatDialog} from '@angular/material/dialog';
 import {MatDialogRef} from '@angular/material/dialog/dialog-ref';
+import {ModalComponent} from '../../../../../stad-gent-components/molecules/modal/modal.component';
 
 @Component({
     selector: 'app-user-roles',
@@ -23,7 +24,7 @@ export class UserRolesComponent implements OnInit {
         admin: new UntypedFormControl(''),
     });
 
-    modalRef: MatDialogRef<unknown>;
+    modalRef: ModalComponent;
 
     constructor(
         private userDetailsService: UserDetailsService,
@@ -71,12 +72,14 @@ export class UserRolesComponent implements OnInit {
         this.admin.setValue(this.user.admin);
     }
 
-    onAdminClick(event: Event, templateAdd: TemplateRef<unknown>, templateRemove: TemplateRef<unknown>, checkboxValue: boolean): void {
+    onAdminClick(event: Event, templateAdd: ModalComponent, templateRemove: ModalComponent, checkboxValue: boolean): void {
         event.preventDefault();
         if (checkboxValue) {
-            this.modalRef = this.modalService.open(templateRemove);
+            this.modalRef = templateRemove;
+            templateRemove.open();
         } else {
-            this.modalRef = this.modalService.open(templateAdd);
+            this.modalRef = templateAdd;
+            templateAdd.open();
         }
     }
 

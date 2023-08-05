@@ -12,7 +12,6 @@ import {
 import {BarcodeService} from 'src/app/extensions/services/barcode.service';
 import {LocationReservation, LocationReservationState} from 'src/app/model/LocationReservation';
 import {timer} from 'rxjs';
-import {MatDialog} from "@angular/material/dialog";
 
 @Component({
     selector: 'app-scanning-location-details',
@@ -35,11 +34,9 @@ export class ScanningLocationDetailsComponent implements OnInit {
     constructor(
         private route: ActivatedRoute,
         private locationService: LocationService,
-        private scanningService: ScanningService,
         private reservationService: LocationReservationsService,
         private barcodeService: BarcodeService,
-        private router: Router,
-        private modalService: MatDialog
+        private router: Router
     ) {
     }
 
@@ -73,10 +70,6 @@ export class ScanningLocationDetailsComponent implements OnInit {
                 })
             );
         }
-    }
-
-    openScanner(): void {
-        this.modalService.open(this.scannerModal, {panelClass: 'bigmodal'});
     }
 
     scanUser(reservations: LocationReservation[], code: string): void {
