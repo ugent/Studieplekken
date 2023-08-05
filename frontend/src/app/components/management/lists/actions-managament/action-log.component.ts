@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActionLogEntry} from 'src/app/model/ActionLogEntry';
 import {ActionLogService} from 'src/app/extensions/services/api/action-log/action-log.service';
-import {Observable, ReplaySubject, Subject} from 'rxjs';
+import {ReplaySubject, Subject} from 'rxjs';
 import {TableComponent} from '../../../../contracts/table.component.interface';
 import {TableAction, TableMapper} from '../../../../model/Table';
 import {FormatActionPipe} from '../../../../extensions/pipes/FormatActionPipe';
