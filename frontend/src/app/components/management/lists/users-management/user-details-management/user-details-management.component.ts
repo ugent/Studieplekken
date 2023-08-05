@@ -1,9 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {Observable} from 'rxjs';
+import {Observable, ReplaySubject, Subject} from 'rxjs';
 import {User} from '../../../../../model/User';
 import {UserDetailsService} from '../../../../../extensions/services/single-point-of-truth/user-details/user-details.service';
 import {ActivatedRoute} from '@angular/router';
 import {AuthenticationService} from '../../../../../extensions/services/authentication/authentication.service';
+import {UserService} from '../../../../../extensions/services/api/users/user.service';
 
 @Component({
     selector: 'app-user-details-management',
@@ -11,37 +12,38 @@ import {AuthenticationService} from '../../../../../extensions/services/authenti
     styleUrls: ['./user-details-management.component.scss'],
 })
 export class UserDetailsManagementComponent implements OnInit {
-    userObs: Observable<User> = this.userDetailsService.userObs;
 
-    userQueryingError: boolean = undefined;
-    userId: string;
+    protected userSub$: Subject<User>;
 
-    showRolesManagement: boolean;
+    protected showRolesManagement$: Subject<boolean>;
+    protected userId$: Subject<string>;
 
     constructor(
-        private userDetailsService: UserDetailsService,
+        private userService: UserService,
         private route: ActivatedRoute,
         private authenticationService: AuthenticationService,
     ) {
+        this.userSub$ = new ReplaySubject();
+        this.showRolesManagement$ = new ReplaySubject();
+        this.userId$ = new ReplaySubject();
     }
 
     ngOnInit(): void {
-        const id = this.route.snapshot.paramMap.get('id');
-        this.userId = id;
-        this.userDetailsService.loadUser(id);
+        const userId = this.route.snapshot.paramMap.get('id');
 
-        this.userObs.subscribe(
-            () => {
-                this.userQueryingError = false;
-            },
-            () => {
-                this.userQueryingError = true;
-            }
+        this.userService.getUserByAUGentId(
+            userId
+        ).subscribe(user =>
+            this.userSub$.next(user)
         );
+
+        this.userId$.next(userId);
 
         // set show-variables based on authorization
         this.authenticationService.user.subscribe((next) => {
-            this.showRolesManagement = next.admin;
+            this.showRolesManagement$.next(
+                next.isAdmin()
+            );
         });
     }
 }

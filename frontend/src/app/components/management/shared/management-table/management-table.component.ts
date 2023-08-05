@@ -13,6 +13,8 @@ import {escapeRegex, genericSorter, OrderDirection} from '../../../../extensions
 })
 export class ManagementTableComponent implements OnInit, OnDestroy {
 
+    protected readonly isObservable = isObservable;
+
     protected ordering: Subject<Ordering>;
     protected pagination: Subject<Pagination>;
     protected searcher: Subject<Search>;
@@ -293,7 +295,7 @@ export class ManagementTableComponent implements OnInit, OnDestroy {
 
     toggleOrderBy(ordering: Ordering, column: string): void {
         const direction = OrderDirection.ASC === ordering.direction ? OrderDirection.DESC : OrderDirection.ASC;
-        const by = direction === OrderDirection.ASC ? '' : ordering.by;
+        const by = direction === OrderDirection.DESC && !!ordering.by ? '' : ordering.by;
 
         if (column === ordering.by) {
             this.ordering.next({
@@ -314,13 +316,11 @@ export class ManagementTableComponent implements OnInit, OnDestroy {
         }
 
         if (ordering.direction === OrderDirection.DESC) {
-            return 'icon-chevron-down';
+            return 'icon-chevron-up';
         }
 
-        return 'icon-chevron-up';
+        return 'icon-chevron-down';
     }
-
-    protected readonly isObservable = isObservable;
 }
 
 type Pagination = {

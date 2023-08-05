@@ -46,7 +46,6 @@ export class BuildingManagementComponent extends BaseManagementComponent<Buildin
                 this.userSub.next(user);
 
                 this.setupInstitutions();
-                this.setupItems();
             })
         );
     }

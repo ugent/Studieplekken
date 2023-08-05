@@ -1,26 +1,35 @@
-<!-- If querying the user is not successful, show an error -->
-<div class="alert alert-error" *ngIf="userQueryingError">
-    {{('management.users.userDetails.errorQuerying' | translate).replace('{id}', userId)}}
-</div>
+<div *ngIf="userSub$ | async as user; else notFound">
+    <!-- Form with details of the user -->
+    <app-user-details-form [userObs]="userSub$"></app-user-details-form>
 
-<div *ngIf="!userQueryingError">
-    <div *ngIf="userObs | async as user">
-        <!-- Form with details of the user -->
-        <app-user-details-form [userObs]="userObs"></app-user-details-form>
+    <!-- If the user is an EMPLOYEE or ADMIN, show the authorities of the user -->
+    <div class="mt-4">
+        <app-user-authorities-management [userObs]="userSub$">
 
-        <!-- If the user is an EMPLOYEE or ADMIN, show the authorities of the user -->
-        <app-user-authorities-management [userObs]="userObs"></app-user-authorities-management>
+        </app-user-authorities-management>
+    </div>
 
-        <!-- If the user is an ADMIN, then he may change the role of a user -->
-        <div *ngIf="showRolesManagement">
-            <app-user-roles [userObs]="userObs"></app-user-roles>
-        </div>
+    <div class="mt-4">
+        <app-profile-reservations [userObs]="userSub$">
 
-        <!-- Table with all penalty points and the option to add/delete them manually  -->
-        <app-user-penalty-manager [user]="user" [showHeader]="false"></app-user-penalty-manager>
-
-        <app-profile-reservations
-            [userObs]="userObs">
         </app-profile-reservations>
     </div>
+
+    <div class="mt-4">
+        <!-- Table with all penalty points and the option to add/delete them manually  -->
+        <app-user-penalty-manager [userObs$]="userSub$">
+
+        </app-user-penalty-manager>
+    </div>
+
+    <!-- If the user is an ADMIN, then he may change the role of a user -->
+    <div *ngIf="showRolesManagement$ | async">
+        <app-user-roles [userObs]="userSub$"></app-user-roles>
+    </div>
 </div>
+<ng-template #notFound>
+    <!-- If querying the user is not successful, show an error -->
+    <div class="messages messages--error">
+        {{('management.users.userDetails.errorQuerying' | translate).replace('{id}', userId$ | async)}}
+    </div>
+</ng-template>

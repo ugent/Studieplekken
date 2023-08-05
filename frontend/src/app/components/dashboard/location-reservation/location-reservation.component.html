@@ -172,20 +172,18 @@
                                 </thead>
                                 <tbody>
                                 <tr *ngFor="let reservation of allReservations">
-                                    <ng-container *ngIf="!reservation.isCanceled()">
-                                        <td>
-                                            {{ reservation.timeslot.timeslotDate.format("DD/MM/YYYY") }}
-                                        </td>
-                                        <td>
-                                            {{ reservation.timeslot.openingHour.format("HH:mm") }}
-                                        </td>
-                                        <td *ngIf="!reservation.isCanceled()">
-                                            {{ 'profile.reservations.locations.table.attended.' + reservation.state | translate }}
-                                        </td>
-                                        <td *ngIf="reservation.isCanceled()" data-toggle="tooltip" data-placement="top" class="tooltip" title="{{ 'dashboard.locationDetails.calendar.rejectedMessage' | translate }}">
-                                            {{ 'profile.reservations.locations.table.attended.' + reservation.state | translate }}
-                                        </td>
-                                    </ng-container>
+                                    <td>
+                                        {{ reservation.timeslot.timeslotDate.format("DD/MM/YYYY") }}
+                                    </td>
+                                    <td>
+                                        {{ reservation.timeslot.openingHour.format("HH:mm") }}
+                                    </td>
+                                    <td *ngIf="!reservation.isCanceled()">
+                                        {{ 'profile.reservations.locations.table.attended.' + reservation.state | translate }}
+                                    </td>
+                                    <td *ngIf="reservation.isCanceled()" data-toggle="tooltip" data-placement="top" class="tooltip" title="{{ 'dashboard.locationDetails.calendar.rejectedMessage' | translate }}">
+                                        {{ 'profile.reservations.locations.table.attended.' + reservation.state | translate }}
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>

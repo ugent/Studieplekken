@@ -11,12 +11,17 @@ export type TableMapper = (model: any) => TableData;
 export class TableAction {
     constructor(
         private icon: string,
-        private handler: (data: TableData) => void
+        private handler = (_: TableData) => {},
+        private shouldShow = (_: TableData) => true
     ) {
     }
 
     getIcon(): string {
         return this.icon;
+    }
+
+    show(data: TableData): boolean {
+        return this.shouldShow(data);
     }
 
     handle(data: TableData): void {
@@ -34,16 +39,18 @@ export class ListAction extends TableAction {
 
 export class EditAction extends TableAction {
     constructor(
-        handler: (data: TableData) => void
+        handler: (data: TableData) => void,
+        shouldShow = (_: TableData) => true
     ) {
-        super('icon-pencil', handler);
+        super('icon-pencil', handler, shouldShow);
     }
 }
 
 export class DeleteAction extends TableAction {
     constructor(
-        handler: (data: TableData) => void
+        handler: (data: TableData) => void,
+        shouldShow = (_: TableData) => true
     ) {
-        super('icon-trashcan', handler);
+        super('icon-trashcan', handler, shouldShow);
     }
 }

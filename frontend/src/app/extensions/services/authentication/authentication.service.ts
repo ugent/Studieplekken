@@ -10,6 +10,7 @@ import {LocationReservationsService} from '../api/location-reservations/location
 import {PenaltyList, PenaltyService} from '../api/penalties/penalty.service';
 import {LoginRedirectService} from './login-redirect.service';
 import {tap} from 'rxjs/operators';
+import {Penalty} from '../../../model/Penalty';
 
 /**
  * The structure of the authentication service has been based on this article:
@@ -40,6 +41,7 @@ export class AuthenticationService {
         private locationReservationService: LocationReservationsService,
         private router: Router,
         private loginRedirectService: LoginRedirectService,
+        private penaltyService: PenaltyService
     ) {
         // Initialize subjects.
         this.userSubject = new BehaviorSubject<User>(UserConstructor.new());
@@ -93,6 +95,10 @@ export class AuthenticationService {
             (next) => {
                 this.userSubject.next(
                     UserConstructor.newFromObj(next)
+                );
+
+                this.penaltyService.getPenaltiesOfUserById(next.userId).subscribe(penalties =>
+                    this.penaltySubject.next(penalties)
                 );
 
                 if (next.userId && redirect) {

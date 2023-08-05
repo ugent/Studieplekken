@@ -27,7 +27,7 @@
                     id="finish"
                     class="button button-secondary"
                     [disabled]="isTimeslotStartInFuture()"
-                    (click)="onFinishScanningClick(finishScanningModal)"
+                    (click)="finishScanningModal.open()"
                     data-toggle="tooltip"
                     data-placement="top"
                     title="{{ 'management.locationDetails.calendar.reservations.startScanningTooltip' | translate }}"
@@ -56,7 +56,6 @@
         </button>
     </div>
 </div>
-
 <!-- Modal view to ask whether the user is sure to delete a lockerReservation -->
 <ng-template>
     <app-modal>
@@ -145,88 +144,84 @@
     </div>
 </ng-template>
 
-<ng-template #finishScanningModal>
-    <app-modal>
-        <!-- Modal header -->
-        <h2 id="finishScanningModalTitle" modal-header>
+<app-modal #finishScanningModal>
+    <!-- Modal header -->
+    <h2 id="finishScanningModalTitle" modal-header>
+        {{
+        "management.reservations.location.finishScanningModal.title"
+            | translate
+        }}
+    </h2>
+
+    <!-- Modal body -->
+    <div modal-body>
+        <div class="messages messages--warning">
+            <div>
+                <p>
+                    {{
+                    "management.reservations.location.finishScanningModal.message1"
+                        | translate
+                    }}
+                </p>
+                <p>
+                    {{
+                    "management.reservations.location.finishScanningModal.message2"
+                        | translate
+                    }}
+                </p>
+                <p>
+                    {{
+                    "management.reservations.location.finishScanningModal.message3"
+                        | translate
+                    }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal footer -->
+    <div modal-footer>
+        <button
+            type="button"
+            class="button button-primary"
+            (click)="setAllNotScannedToUnattended(scanningError)"
+        >
+            {{ "general.yes" | translate }}
+        </button>
+
+        <button
+            type="button"
+            class="button button-secondary"
+            (click)="closeModal()"
+        >
+            {{ "general.no" | translate }}
+        </button>
+    </div>
+</app-modal>
+
+<app-modal #scanningError>
+    <h2 id="scanningErrorModalTitle" modal-header>
+        {{
+        "management.reservations.location.scanningErrorModal.title" | translate
+        }}
+    </h2>
+    <!-- Modal body -->
+    <div modal-body>
+        <div class="messages messages--error">
             {{
-            "management.reservations.location.finishScanningModal.title"
+            "management.reservations.location.scanningErrorModal.message"
                 | translate
             }}
-        </h2>
-
-        <!-- Modal body -->
-        <div modal-body>
-            <div class="messages messages--warning">
-                <div>
-                    <p>
-                        {{
-                        "management.reservations.location.finishScanningModal.message1"
-                            | translate
-                        }}
-                    </p>
-                    <p>
-                        {{
-                        "management.reservations.location.finishScanningModal.message2"
-                            | translate
-                        }}
-                    </p>
-                    <p>
-                        {{
-                        "management.reservations.location.finishScanningModal.message3"
-                            | translate
-                        }}
-                    </p>
-                </div>
-            </div>
         </div>
+    </div>
 
-        <!-- Modal footer -->
-        <div modal-footer>
-            <button
-                type="button"
-                class="button button-primary"
-                (click)="setAllNotScannedToUnattended(scanningError)"
-            >
-                {{ "general.yes" | translate }}
-            </button>
-
-            <button
-                type="button"
-                class="button button-secondary"
-                (click)="closeModal()"
-            >
-                {{ "general.no" | translate }}
-            </button>
-        </div>
-    </app-modal>
-</ng-template>
-
-<ng-template #scanningError>
-    <app-modal>
-        <h2 id="scanningErrorModalTitle" modal-header>
-            {{
-            "management.reservations.location.scanningErrorModal.title" | translate
-            }}
-        </h2>
-        <!-- Modal body -->
-        <div modal-body>
-            <div class="messages messages--error">
-                {{
-                "management.reservations.location.scanningErrorModal.message"
-                    | translate
-                }}
-            </div>
-        </div>
-
-        <!-- Modal footer -->
-        <div modal-footer>
-            <button type="button" class="button button-primary" (click)="closeModal()">
-                {{ "general.buttons.close" | translate }}
-            </button>
-        </div>
-    </app-modal>
-</ng-template>
+    <!-- Modal footer -->
+    <div modal-footer>
+        <button type="button" class="button button-primary" (click)="closeModal()">
+            {{ "general.buttons.close" | translate }}
+        </button>
+    </div>
+</app-modal>
 
 <ng-template #penaltyManager>
     <app-user-penalty-manager [user]="penaltyManagerUser"></app-user-penalty-manager>

@@ -1,170 +1,94 @@
-import { Component, Input, OnInit, TemplateRef } from '@angular/core';
-import { UntypedFormControl, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
-import { AuthoritiesService } from '../../../../../../extensions/services/api/authorities/authorities.service';
-import { UserDetailsService } from '../../../../../../extensions/services/single-point-of-truth/user-details/user-details.service';
-import { Authority } from '../../../../../../model/Authority';
-import { User } from '../../../../../../model/User';
+import {Component, Input} from '@angular/core';
+import {combineLatest, Observable, ReplaySubject, Subject} from 'rxjs';
+import {Authority, AuthorityConstructor} from '../../../../../../model/Authority';
+import {User} from '../../../../../../model/User';
+import {BaseManagementComponent} from '../../../base-management.component';
+import {DeleteAction, TableAction, TableMapper} from '../../../../../../model/Table';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {AuthoritiesService} from '../../../../../../extensions/services/api/authorities/authorities.service';
+import {filter, first, switchMap, tap} from 'rxjs/operators';
+import {AuthenticationService} from '../../../../../../extensions/services/authentication/authentication.service';
 
 @Component({
-  selector: 'app-user-authorities-management',
-  templateUrl: './user-authorities-management.component.html',
-  styleUrls: ['./user-authorities-management.component.scss'],
+    selector: 'app-user-authorities-management',
+    templateUrl: './user-authorities-management.component.html',
+    styleUrls: ['./user-authorities-management.component.scss'],
 })
-export class UserAuthoritiesManagementComponent implements OnInit {
-  @Input() userObs: Observable<User>;
-  userId: string; // set by subscription on `userObs`
-  userFirstName: string; // set by subscription on `userObs`
-  userLastName: string; // set by subscription on `userObs`
+export class UserAuthoritiesManagementComponent extends BaseManagementComponent<Authority> {
 
-  authoritiesOfUser: Authority[]; // the authorities assigned to a user
-  allAuthorities: Authority[]; // all authorities in the application
-  addableAuthorities: Authority[]; // the authorities in the application, that are not yet assigned to the user
+    @Input() userObs: Observable<User>;
 
-  authoritiesFormControl = new UntypedFormControl('', Validators.required.bind(this));
+    protected addableAuthorities$: Subject<Authority[]>;
 
-  authorityPreparedToDelete: Authority;
+    constructor(
+        private authoritiesService: AuthoritiesService,
+        private authenticationService: AuthenticationService
+    ) {
+        super();
 
-  successOnAddingAuthorityToUser: boolean = undefined;
-  successOnDeletingAuthorityForUser: boolean = undefined;
-
-  constructor(
-    private authoritiesService: AuthoritiesService,
-    private userDetailsService: UserDetailsService,
-    private modalService: MatDialog
-  ) { }
-
-  ngOnInit(): void {
-    this.userObs.subscribe((next) => {
-      // make sure that a request is only sent if the user is valid
-      if (next.userId !== '') {
-        this.userId = next.userId;
-        this.userFirstName = next.firstName;
-        this.userLastName = next.lastName;
-
-        this.authoritiesService
-          .getAuthoritiesOfUser(next.userId)
-          .subscribe((next2) => {
-            this.authoritiesOfUser = next2;
-            this.addableAuthorities = this.calculateAddableAuthorities(
-              this.allAuthorities,
-              this.authoritiesOfUser
-            );
-          });
-      }
-    });
-
-    this.authoritiesService.getAllAuthorities().subscribe((next) => {
-      this.allAuthorities = next;
-      this.addableAuthorities = this.calculateAddableAuthorities(
-        this.allAuthorities,
-        this.authoritiesOfUser
-      );
-    });
-  }
-
-  // *****************************************
-  // *   Adding an authority from the user   *
-  // *****************************************
-
-  prepareToAddAnAuthorityToUser(template: TemplateRef<unknown>): void {
-    this.successOnAddingAuthorityToUser = undefined;
-    this.modalService.open(template, {panelClass: ["cs--cyan" ]});
-  }
-
-  addAuthorityFromForm(): void {
-    this.successOnAddingAuthorityToUser = null;
-
-    const userId = this.userId;
-    const authorityId = this.authoritiesFormControl.value as number;
-
-    this.authoritiesService.addUserToAuthority(userId, authorityId).subscribe(
-      () => {
-        this.successOnAddingAuthorityToUser = true;
-        this.userDetailsService.loadUser(userId);
-        this.modalService.closeAll();
-      },
-      () => {
-        this.successOnAddingAuthorityToUser = false;
-      }
-    );
-  }
-
-  // *******************************************
-  // *   Deleting an authority from the user   *
-  // *******************************************
-
-  prepareToDeleteAuthorityForUser(
-    authority: Authority,
-    template: TemplateRef<unknown>
-  ): void {
-    this.successOnDeletingAuthorityForUser = undefined;
-    this.authorityPreparedToDelete = authority;
-    this.modalService.open(template, { panelClass: ["cs--cyan", "bigmodal"] });
-  }
-
-  deleteAuthorityFromUser(userId: string, authorityId: number): void {
-    this.successOnDeletingAuthorityForUser = null;
-    this.authoritiesService
-      .deleteUserFromAuthority(userId, authorityId)
-      .subscribe(
-        () => {
-          this.successOnDeletingAuthorityForUser = true;
-          this.userDetailsService.loadUser(userId);
-          this.modalService.closeAll();
-        },
-        () => {
-          this.successOnDeletingAuthorityForUser = false;
-        }
-      );
-  }
-
-  // *******************
-  // *   Auxiliaries   *
-  // *******************
-
-  validForm(): boolean {
-    return !this.authoritiesFormControl.invalid;
-  }
-
-  clearForm(): void {
-    this.authoritiesFormControl.setValue('');
-  }
-
-  closeModal(): void {
-    this.modalService.closeAll();
-  }
-
-  /**
-   * Make sure that only authorities that aren't already assigned to the user, are shown
-   * in the addAuthorityToUserModal.
-   */
-  calculateAddableAuthorities(
-    allAuthorities: Authority[],
-    authoritiesOfUser: Authority[]
-  ): Authority[] {
-    if (allAuthorities === undefined || authoritiesOfUser === undefined) {
-      return undefined;
+        this.addableAuthorities$ = new ReplaySubject();
     }
 
-    // If the lengths match, all authorities are already assigned to the user
-    /*if (allAuthorities.length === authoritiesOfUser.length) {
-      return [];
+    ngOnInit(): void {
+        super.ngOnInit();
     }
 
-    // If user has no authorities, all application authorities are assignable
-    if (authoritiesOfUser.length === 0) {
-      return allAuthorities;
-    }*/
+    setupForm(item: Authority = AuthorityConstructor.new()): void {
+        this.formGroup = new FormGroup({
+            authority: new FormControl(item.authorityId, Validators.required)
+        });
+    }
 
-    return allAuthorities.filter((value) => {
-      // if `value` is not included in authoritiesOfUser, add `value` to the return value
-      return (
-        authoritiesOfUser.findIndex(
-          (value2) => value2.authorityId === value.authorityId
-        ) < 0
-      );
-    });
-  }
+    setupItems(): void {
+        combineLatest([this.userObs, this.authenticationService.user]).pipe(
+            switchMap(([user, loggedInUser]) =>
+                combineLatest([
+                    this.authoritiesService.getAuthoritiesOfUser(user.userId),
+                    loggedInUser.isAdmin()
+                        ? this.authoritiesService.getAllAuthorities()
+                        : this.authoritiesService.getAuthoritiesOfUser(loggedInUser.userId)
+                ])
+            ), first()
+        ).subscribe(([userAuthorities, allAuthorities]) => {
+            this.itemsSub.next(userAuthorities);
+            this.addableAuthorities$.next(allAuthorities.filter(authority =>
+                !userAuthorities.some(uAuthority => uAuthority.authorityId === authority.authorityId)
+            ));
+        });
+    }
+
+    storeAdd(body: any): void {
+        this.sendBackendRequest(
+            this.userObs.pipe(
+                switchMap(user =>
+                    this.authoritiesService.addUserToAuthority(user.userId, body.authority)
+                )
+            )
+        );
+    }
+
+    storeDelete(item: Authority): void {
+        this.sendBackendRequest(
+            this.userObs.pipe(
+                switchMap(user =>
+                    this.authoritiesService.deleteUserFromAuthority(user.userId, item.authorityId)
+                )
+            )
+        );
+    }
+
+    getTableActions(): TableAction[] {
+        return [
+            new DeleteAction((authority: Authority) => {
+                this.prepareDelete(authority);
+            })
+        ];
+    }
+
+    getTableMapper(): TableMapper {
+        return (authority: Authority) => ({
+            'management.authorities.table.authorityName': authority.authorityName,
+            'management.authorities.table.description': authority.description
+        });
+    }
 }

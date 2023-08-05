@@ -1,140 +1,73 @@
-import {Component, Input, OnInit, TemplateRef} from '@angular/core';
-import {AuthenticationService} from '../../../extensions/services/authentication/authentication.service';
-import {LocationReservationsService} from '../../../extensions/services/api/location-reservations/location-reservations.service';
+import {Component, Input} from '@angular/core';
+import {
+    LocationReservationsService
+} from '../../../extensions/services/api/location-reservations/location-reservations.service';
 import {LocationReservation, LocationReservationState} from '../../../model/LocationReservation';
-import {Timeslot} from '../../../model/Timeslot';
-import * as moment from 'moment';
 import {User} from '../../../model/User';
 import {Observable} from 'rxjs';
 import {LocationService} from 'src/app/extensions/services/api/locations/location.service';
-import {map} from 'rxjs/operators';
-import {MatDialog} from '@angular/material/dialog';
-import {TableDataService} from 'src/app/components/stad-gent-components/atoms/table/data-service/table-data-service.service';
-import {TabularData} from 'src/app/components/stad-gent-components/atoms/table/tabular-data';
-import {api} from '../../../extensions/services/api/endpoints';
+import {first, map, switchMap} from 'rxjs/operators';
+import {BaseManagementComponent} from '../../management/lists/base-management.component';
+import {DeleteAction, TableAction, TableMapper} from 'src/app/model/Table';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
     selector: 'app-profile-reservations',
     templateUrl: './profile-reservations.component.html',
     styleUrls: ['./profile-reservations.component.scss'],
 })
-export class ProfileReservationsComponent implements OnInit {
-    @Input() userObs?: Observable<User>;
-    user: User;
+export class ProfileReservationsComponent extends BaseManagementComponent<LocationReservation> {
 
-    locationReservations: LocationReservation[] = [];
-
-    locationReservationToDelete: LocationReservation = undefined;
-
-    successGettingLocationReservations: boolean = undefined;
-    successDeletingLocationReservation: boolean = undefined;
+    @Input() userObs: Observable<User>;
+    @Input() isManagement = false;
 
     constructor(
-        private authenticationService: AuthenticationService,
-        private locationReservationService: LocationReservationsService,
-        private modalService: MatDialog,
         private locationService: LocationService,
-        private tableDataService: TableDataService
+        private reservationService: LocationReservationsService,
+        private translateService: TranslateService
     ) {
+        super();
     }
 
-    ngOnInit(): void {
-        if (this.userObs) {
-            this.userObs.subscribe((next) => {
-                if (next.userId) {
-                    this.user = next;
-                    this.setup();
-                }
-            });
-        } else {
-            this.setup();
-        }
+    setupItems(): void {
+        this.userObs.pipe(
+            switchMap(user =>
+                this.reservationService.getLocationReservationsOfUser(user.userId)
+            ), first()
+        ).subscribe(reservations => {
+            this.itemsSub.next(reservations);
+        });
     }
 
-    setup(): void {
-        // don't setup if user is not logged in (or logged in user isn't loaded yet)
-        if (!this.authenticationService.userValue().isLoggedIn()) {
-            return;
-        }
-
-        // let the user know that the location reservations are loading
-        this.successGettingLocationReservations = null;
-
-        // load the location reservations
-        this.locationReservationsAndCalendarPeriodsObservable()
-            .subscribe(
-                (next) => {
-                    this.successGettingLocationReservations = true;
-                    this.locationReservations = next;
-                },
-                () => {
-                    this.successGettingLocationReservations = false;
-                });
+    storeDelete(item: LocationReservation): void {
+        console.log(item);
+        this.sendBackendRequest(
+            this.reservationService.deleteLocationReservation(item)
+        );
     }
 
-    prepareToDeleteLocationReservation(
-        locationReservation: LocationReservation,
-        template: TemplateRef<any>
-    ): void {
-        this.successDeletingLocationReservation = undefined;
-        this.locationReservationToDelete = locationReservation;
-        this.modalService.open(template, {panelClass: ['cs--cyan', 'bigmodal']});
+    getTableMapper(): TableMapper {
+        return (reservation: LocationReservation) => ({
+            'profile.reservations.locations.table.header.locationName': this.locationService.getLocation(
+                reservation.timeslot.locationId
+            ).pipe(
+                map(location => location.name)
+            ),
+            'profile.reservations.locations.table.header.reservationDate': reservation.timeslot.timeslotDate.format('YYYY/MM/DD'),
+            'profile.reservations.locations.table.header.beginHour': reservation.timeslot.openingHour.format('HH:mm'),
+            'profile.reservations.locations.table.header.state': this.translateService.get(
+                'profile.reservations.locations.table.attended.' + reservation.state
+            )
+        });
     }
 
-    deleteLocationReservation(): void {
-        this.successDeletingLocationReservation = null;
-        this.locationReservationService
-            .deleteLocationReservation(this.locationReservationToDelete)
-            .subscribe(
-                () => {
-                    this.successDeletingLocationReservation = true;
-                    this.setup();
-                    this.modalService.closeAll();
-                },
-                () => {
-                    this.successDeletingLocationReservation = false;
-                }
-            );
+    getTableActions(): TableAction[] {
+        return [
+            new DeleteAction((reservation: LocationReservation) => {
+                this.prepareDelete(reservation);
+            }, (reservation: LocationReservation) =>
+                reservation.state === LocationReservationState.APPROVED && !reservation.timeslot.isInPast()
+            )
+        ];
     }
-
-    // /******************
-    // *   AUXILIARIES   *
-    // *******************/
-    closeModal(): void {
-        this.modalService.closeAll();
-    }
-
-    locationReservationsAndCalendarPeriodsObservable(): Observable<LocationReservation[]> {
-        if (this.user === undefined) {
-            return this.authenticationService
-                .getLocationReservations();
-        } else {
-            return this.locationReservationService
-                .getLocationReservationsOfUser(this.user.userId);
-        }
-    }
-
-    getLocation(locationReservation: LocationReservation): Observable<string> {
-        return this.locationService.getLocation(locationReservation.timeslot.locationId).pipe(map(l => l.name));
-    }
-
-    sortedLocationReservations(lres: LocationReservation[]): Array<LocationReservation> {
-        return Array.from(lres).sort((a, b) => a.timeslot.getStartMoment().isBefore(b.timeslot.getStartMoment()) ? 1 : -1);
-    }
-
-    getTabularData(locationReservations: LocationReservation[]): Observable<TabularData<LocationReservation>> {
-        return this.tableDataService.reservationsToProfileTable(this.sortedLocationReservations(locationReservations));
-    }
-
-    getCalendarLink(): string {
-        let user = this.user;
-        if (!user) {
-            this.authenticationService.user.subscribe(u => {
-                user = u;
-            });
-        }
-        return window.location.protocol + '//' +
-            window.location.host + api.calendarLink.replace('{userId}', user.userId).replace('{calendarId}', user.calendarId);
-    }
-
 }

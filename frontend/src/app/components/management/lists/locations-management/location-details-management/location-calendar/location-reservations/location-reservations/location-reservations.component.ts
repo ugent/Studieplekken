@@ -21,6 +21,7 @@ import {
     LocationReservationState,
 } from '../../../../../../../../model/LocationReservation';
 import {Timeslot} from '../../../../../../../../model/Timeslot';
+import {ModalComponent} from '../../../../../../../stad-gent-components/molecules/modal/modal.component';
 
 @Component({
     selector: 'app-location-reservations',
@@ -119,13 +120,7 @@ export class LocationReservationsComponent implements OnChanges {
             );
     }
 
-    onFinishScanningClick(modalTemplate: TemplateRef<unknown>): void {
-        this.modalService.open(modalTemplate, {
-            panelClass: ['cs--cyan', 'bigmodal'],
-        });
-    }
-
-    setAllNotScannedToUnattended(errorTemplate: TemplateRef<unknown>): void {
+    setAllNotScannedToUnattended(errorTemplate: ModalComponent): void {
         // hide finishScanningModal
         this.modalService.closeAll();
 
@@ -156,9 +151,7 @@ export class LocationReservationsComponent implements OnChanges {
                     this.locationReservations = newLocationReservations;
                 },
                 () => {
-                    this.modalService.open(errorTemplate, {
-                        panelClass: ['cs--cyan', 'bigmodal'],
-                    });
+                    errorTemplate.open();
                 }
             );
     }

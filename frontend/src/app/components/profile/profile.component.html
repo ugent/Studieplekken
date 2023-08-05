@@ -1,5 +1,7 @@
 <div>
     <app-profile-overview></app-profile-overview>
-    <app-profile-reservations></app-profile-reservations>
+
+    <app-profile-reservations [userObs]="userSub$"></app-profile-reservations>
+
     <app-profile-penalties></app-profile-penalties>
 </div>

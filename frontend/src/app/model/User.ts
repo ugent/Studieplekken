@@ -24,6 +24,10 @@ export class User {
         return !!this.userId;
     }
 
+    exists(): boolean {
+        return this.isLoggedIn();
+    }
+
     isAdmin(): boolean {
         return this.isLoggedIn() && this.admin;
     }
