@@ -1,5 +1,5 @@
 <app-management-table
-    [data]="locationObs$"
+    [data]="locationObs$ | async"
     [actions]="getTableActions()"
     [mapper]="getTableMapper()">
 </app-management-table>

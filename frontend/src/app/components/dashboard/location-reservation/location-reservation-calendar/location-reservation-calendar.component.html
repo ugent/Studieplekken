@@ -1,0 +1,83 @@
+<ng-container>
+    <!-- Calendar -->
+    <app-calendar
+        [events]="events"
+        (timeslotPickedEvent)="timeslotPicked.emit($event)">
+    </app-calendar>
+
+    <!-- Update button -->
+    <div id="reservationMaker" *ngIf="location.currentTimeslot?.reservable">
+        <ng-container *ngIf="user.isLoggedIn() && canMakeReservation()">
+            {{ 'reservations.reservationHelper' | translate }}
+        </ng-container>
+        <ng-container *ngIf="!user.isLoggedIn()">
+            {{ 'reservations.shouldLoginMaker' | translate }}
+        </ng-container>
+        <ng-container *ngIf="user.isLoggedIn()">
+            <button (click)="commitModal.open()" [disabled]="!modifiedReservations()" class="button button-primary" *ngIf="canMakeReservation()">
+                {{'reservations.reservationButton' | translate}}
+            </button>
+            <span *ngIf="!canMakeReservation()">
+                    {{ 'reservations.penaltyError' | translate }}
+                </span>
+        </ng-container>
+        <ng-container *ngIf="!user.isLoggedIn()">
+            <a class="button button-secondary" routerLink="/login">
+                {{'navigation.login' | translate}}
+            </a>
+        </ng-container>
+    </div>
+
+    <app-after-reservation
+        [newReservationCreator]="creatorObs$" #afterModal>
+    </app-after-reservation>
+
+    <app-modal #commitModal>
+        <h2 modal-header>
+            {{'dashboard.locationDetails.calendar.reservation.header' | translate}}
+        </h2>
+
+        <div modal-body>
+            <p>
+                {{'dashboard.locationDetails.calendar.reservation.updateMessage' | translate }}
+            </p>
+            <div class="messages messages--info" *ngIf='newReservations.length !== 0'>
+                <div>
+                    <p>
+                        {{'dashboard.locationDetails.calendar.reservation.updateAddMessage' | translate }}
+                    </p>
+                    <ul class="mb-0">
+                        <li *ngFor="let reservation of newReservations">
+                            {{ location.name }} ({{ reservation.timeslot.timeslotDate.toDate() | date: 'dd/mm/yyyy' }} {{ reservation.timeslot.openingHour.toDate() | date: 'HH:mm' }})
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="messages messages--warning" *ngIf='removedReservations.length !== 0'>
+                <div>
+                    <p>{{'dashboard.locationDetails.calendar.reservation.updateDeleteMessage' | translate }}</p>
+                    <ul class="mb-0">
+                        <li *ngFor="let reservation of removedReservations">
+                            {{ location.name }} ({{ reservation.timeslot.timeslotDate.toDate() | date: 'dd/mm/yyyy' }} {{ reservation.timeslot.openingHour.toDate() | date: 'HH:mm' }})
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <p>{{'dashboard.locationDetails.calendar.reservation.updateConfirmMessage' | translate }}</p>
+        </div>
+        <div modal-footer>
+            <button type="button" class="button button-primary" (click)="commitReservations()">
+                {{ 'general.yes' | translate}}
+            </button>
+            <button type="button" class="button button-secondary" (click)="commitModal.close()">
+                {{ 'general.no' | translate }}
+            </button>
+        </div>
+        <div modal-message-footer>
+            <div class="messages messages--warning">
+                <i class="icon-exclamation" aria-hidden="true"></i>
+                {{'dashboard.locationDetails.calendar.reservation.updateWarningMessage' | translate}}
+            </div>
+        </div>
+    </app-modal>
+</ng-container>

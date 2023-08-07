@@ -150,7 +150,7 @@ export class BuildingManagementComponent extends BaseManagementComponent<Buildin
         );
     }
 
-    getTableMapper(): TableMapper {
+    getTableMapper(): TableMapper<Building> {
         return (building: Building) => ({
             'management.buildings.table.name': building.name,
             'management.buildings.table.address': building.address,

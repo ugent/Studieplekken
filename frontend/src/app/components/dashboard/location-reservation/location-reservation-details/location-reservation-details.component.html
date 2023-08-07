@@ -1,0 +1,113 @@
+<ng-container>
+    <li class="teaser teaser--wide no-space-top">
+        <article class="teaser-content">
+            <div class="content__second">
+                <h2>
+                    {{ "dashboard.details" | translate }}
+                </h2>
+                <hr>
+                <!-- Tags -->
+                <div class="tag-list-wrapper mb-2">
+                    <ul class="tag-list">
+                        <li *ngFor="let tag of location.assignedTags">
+                          <span class="tag">
+                              {{ language === 'nl' ? tag.dutch : tag.english }}
+                          </span>
+                        </li>
+                        <li
+                            *ngIf="location.optionalNextUpcomingReservableTimeslot !== null && location.optionalNextUpcomingReservableTimeslot.reservable">
+                            <span class="tag">{{'dashboard.locationDetails.tag.reservable' | translate}}</span>
+                        </li>
+                        <li
+                            *ngIf="location.optionalNextUpcomingReservableTimeslot !== null && !location.optionalNextUpcomingReservableTimeslot.reservable">
+                            <span class="tag">{{'dashboard.locationDetails.tag.notReservable' | translate}}</span>
+                        </li>
+                        <li *ngIf="location.tomorrowStillAvailable">
+                            <span
+                                class="tag">{{'dashboard.locationDetails.tag.tomorrowStillAvailable' | translate}}</span>
+                        </li>
+                        <li *ngIf="location.openDuringWeek">
+                            <span class="tag">{{'dashboard.locationDetails.tag.week' | translate}}</span>
+                        </li>
+                        <li *ngIf="location.openDuringWeekend">
+                            <span class="tag">{{'dashboard.locationDetails.tag.weekend' | translate}}</span>
+                        </li>
+                    </ul>
+                </div>
+                <!-- Feature list -->
+                <ul class="icon-list">
+                    <li class="entry">
+                        <i class='icon-marker'></i>
+                        <span>
+                        <strong> {{ location.name }} </strong> &mdash; {{ location.building.address }}
+                    </span>
+                    </li>
+                    <li class="entry">
+                        <i class="icon-clock" aria-hidden="true"></i>
+                        <span>
+                        {{ location.currentTimeslot | formatStatus | async }}
+                    </span>
+                    </li>
+                    <li class="entry">
+                        <i class="icon-user" aria-hidden="true"></i>
+                        <span>
+                        {{ location.numberOfSeats }}
+                    </span>
+                    </li>
+                    <li class="entry" *ngIf="location.optionalNextUpcomingReservableTimeslot">
+                        <i class="icon-calendar" aria-hidden="true"></i>
+                        <span>
+                            {{
+                            'dashboard.locationDetails.status.statusReservableFrom' | translate:{
+                                week: (location.optionalNextUpcomingReservableTimeslot.timeslotDate.toDate() | date:'dd/MM/yyyy'),
+                                openingDate: (location.optionalNextUpcomingReservableTimeslot.reservableFrom.toDate() | date:'dd/MM/yyyy'),
+                                openingTime: (location.optionalNextUpcomingReservableTimeslot.reservableFrom.toDate() | date:'HH:mm')
+                            }
+                            }}
+                        </span>
+                    </li>
+                    <li class="entry d-flex align-items-center p-0 gap-2">
+                        <span aria-hidden="true">
+                            <input type="checkbox" id="subscribedCheckbox" [checked]="location.subscribed" (change)="toggleSubscription()" [disabled]="!user.isLoggedIn()"/>
+                        </span>
+                        <label for="subscribedCheckbox">
+                            {{ 'dashboard.locationDetails.subscribe' | translate }}
+                            <a routerLink="/profile/overview" class="read-more" title="{{ 'dashboard.locationDetails.yourCalendar' | translate }}">
+                                {{ 'dashboard.locationDetails.yourCalendar' | translate }}
+                            </a>
+                        </label>
+                    </li>
+                </ul>
+                <hr class="my-3">
+                <!-- Description -->
+                <div class="rounded-ck-editor">
+                    <h4 class="mt-0">
+                        {{'dashboard.description' | translate}}
+                    </h4>
+                    <div [innerHTML]="location.descriptionEnglish" *ngIf="language === 'en'">
+                        {{ location.descriptionEnglish }}
+                    </div>
+                    <div [innerHTML]="location.descriptionDutch" *ngIf="language === 'nl'">
+                        {{ location.descriptionDutch }}
+                    </div>
+                </div>
+                <!-- Info messages -->
+                <div class="mt-4 messages messages--info" *ngIf="user.isLoggedIn()">
+                    <i class="icon-info" aria-hidden="true"></i>
+                    {{'dashboard.locationDetails.refreshWarning' | translate}}
+                </div>
+            </div>
+            <div class="content__first">
+                <div class="figure-wrapper">
+                    <figure>
+                        <div class="image-wrapper" data-ratio="8:5">
+                            <img *ngIf="location.imageUrl" [src]="location.imageUrl" class="img" alt="Image for {{ location.name }}" (error)="location.imageUrl = defaultTeaserImage">
+                        </div>
+                    </figure>
+                    <div class="accolade-inverse right-top"></div>
+                    <div class="accolade-inverse bottom-left"></div>
+                </div>
+            </div>
+        </article>
+    </li>
+</ng-container>

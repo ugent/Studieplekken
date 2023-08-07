@@ -30,28 +30,39 @@ export class LocationReservation {
         );
     }
 
-    /**
-     * Check whether the reservation has been accepted.
-     */
+    public isApproved(): boolean {
+        return this.state === LocationReservationState.APPROVED;
+    }
+
+    public isRejected(): boolean {
+        return this.state === LocationReservationState.REJECTED;
+    }
+
+    public isAbsent(): boolean {
+        return this.state === LocationReservationState.ABSENT;
+    }
+
+    public isPresent(): boolean {
+        return this.state === LocationReservationState.PRESENT;
+    }
+
+    public isDeleted(): boolean {
+        return this.state === LocationReservationState.DELETED;
+    }
+
+    public isPending(): boolean {
+        return this.state === LocationReservationState.PENDING;
+    }
+
     public isAccepted(): boolean {
-        return this.state !== LocationReservationState.PENDING && this.state !== LocationReservationState.REJECTED;
+        return this.isApproved() || this.isAbsent() || this.isPresent();
     }
 
-    /**
-     * Check whether the reservation has been canceled.
-     */
     public isCanceled(): boolean {
-        return this.state === LocationReservationState.REJECTED || this.state === LocationReservationState.DELETED;
+        return this.isRejected() || this.isDeleted();
     }
 
-    /**
-     * Check whether the reservation is committed.
-     */
     public isCommitted(): boolean {
-        return this.state === LocationReservationState.PRESENT || this.state === LocationReservationState.ABSENT;
-    }
-
-    public equals(other: LocationReservation): boolean {
-        return timeslotEquals(this.timeslot, other.timeslot) && this.state === other.state;
+        return this.isAbsent() || this.isPresent() || this.timeslot.isInPast();
     }
 }

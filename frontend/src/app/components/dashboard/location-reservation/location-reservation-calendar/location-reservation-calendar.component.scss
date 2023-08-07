@@ -1,0 +1,28 @@
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/mixins';
+
+#reservationMaker {
+    position: fixed;
+    background: #f0f9fd;
+    border: 1px solid #d8e0e3;
+    border-radius: 6px;
+    z-index: 1001;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100vw - 2rem);
+    max-width: 800px;
+    padding: .75rem;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    @include media-breakpoint-down(md) {
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        gap: .5rem;
+    }
+}

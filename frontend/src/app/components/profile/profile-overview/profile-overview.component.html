@@ -1,81 +1,82 @@
-<div>
+<ng-container>
     <!-- Page title -->
     <h3>{{'profile.overview.title' | translate}}</h3>
-    <hr>
-    <div class="d-flex flex-column mb-3">
-        <div>
-            <!-- User overview in a form -->
-            <form [formGroup]="formGroup" class="center">
-                <!-- First name -->
-                <div class="row">
-                    <div class="col">
-                        <label class="control-label" for="firstName">
-                            {{'profile.overview.form.firstName' | translate}}
-                            <input class="form-control" id="firstName" type="text" formControlName="firstName">
-                        </label>
-                    </div>
-                </div>
-
-
-                <!-- Last name -->
-                <div class="row">
-                    <div class="col">
-                        <label class="control-label" for="lastName">
-                            {{'profile.overview.form.lastName' | translate}}
-                            <input class="form-control" id="lastName" type="text" formControlName="lastName">
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Penalty Points -->
-                <div class="row">
-                    <div class="col">
-                        <label class="control-label" for="penaltyPoints">
-                            {{'profile.overview.form.penaltyPoints' | translate}}
-                            <input class="form-control" id="penaltyPoints" type="number" formControlName="penaltyPoints">
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Institution -->
-                <div class="row">
-                    <div class="col">
-                        <label class="control-label" for="institution">
-                            {{'profile.overview.form.institution' | translate}}
-                            <input class="form-control" id="institution" type="text" formControlName="institution">
-                        </label>
-
-                    </div>
-                </div>
-
-                <!-- Mail -->
-                <div class="row">
-                    <div class="col">
-                        <label class="control-label" for="mail">
-                            {{'profile.overview.form.mail' | translate}}
-                            <input class="form-control" id="mail" type="email" formControlName="mail">
-                        </label>
-                    </div>
-                </div>
-            </form>
-            <form [formGroup]="settingsFormGroup" class="center">
-                <!-- Receive mail confirming reservations 24hrs -->
-                <div class="row">
-                    <div class="col">
-                        <input class="form-control" id="receiveMailConfirmation" type="checkbox" formControlName="receiveMailConfirmation"> {{'profile.overview.form.receiveMailConfirmation' | translate}}
-                    </div>
-                </div>
-            </form>
-            <div class="messages messages--info center">
-                <i class="icon-info" aria-hidden="true"></i>
-                {{'profile.overview.qrcode' | translate}}
-            </div>
-            <div class="d-flex flex-column flex-md-row align-items-center justify-content-center center">
-                <!-- QR code of userId -->
-                <app-qrcode [userObs]="userObs"></app-qrcode>
-                <!-- Barcode of userId -->
-                <app-barcode [userObs]="userObs"></app-barcode>
+    <hr> <!-- User overview in a form -->
+    <form class="center" disabled>
+        <!-- First name -->
+        <div class="row">
+            <div class="col">
+                <label class="control-label" for="firstName">
+                    {{'profile.overview.form.firstName' | translate}}
+                    <input class="form-control" id="firstName" type="text" [value]="user.firstName" disabled>
+                </label>
             </div>
         </div>
+
+        <!-- Last name -->
+        <div class="row">
+            <div class="col">
+                <label class="control-label" for="lastName">
+                    {{'profile.overview.form.lastName' | translate}}
+                    <input class="form-control" id="lastName" type="text" [value]="user.lastName" disabled>
+                </label>
+            </div>
+        </div>
+
+        <!-- Penalty Points -->
+        <div class="row">
+            <div class="col">
+                <label class="control-label" for="penaltyPoints">
+                    {{'profile.overview.form.penaltyPoints' | translate}}
+                    <input class="form-control" id="penaltyPoints" type="number" [value]="user.penaltyPoints" disabled>
+                </label>
+            </div>
+        </div>
+
+        <!-- Institution -->
+        <div class="row">
+            <div class="col">
+                <label class="control-label" for="institution">
+                    {{'profile.overview.form.institution' | translate}}
+                    <input class="form-control" id="institution" type="text" [value]="user.institution" disabled>
+                </label>
+
+            </div>
+        </div>
+
+        <!-- Mail -->
+        <div class="row">
+            <div class="col">
+                <label class="control-label" for="mail">
+                    {{'profile.overview.form.mail' | translate}}
+                    <input class="form-control" id="mail" type="email" [value]="user.mail" disabled>
+                </label>
+            </div>
+        </div>
+    </form>
+    <form [formGroup]="settingsFormGroup" class="center">
+        <!-- Receive mail confirming reservations 24hrs -->
+        <div class="row">
+            <div class="col">
+                <input class="form-control" id="receiveMailConfirmation" type="checkbox" formControlName="receiveMailConfirmation"
+                       (change)="storeUpdate()"> {{'profile.overview.form.receiveMailConfirmation' | translate}}
+            </div>
+        </div>
+    </form>
+    <div class="card">
+        <div class="messages messages--info m-0">
+            <i class="icon-info" aria-hidden="true"></i>
+            {{'profile.overview.qrcode' | translate}}
+        </div>
+        <div class="d-flex flex-column flex-md-row align-items-center justify-content-center">
+            <!-- QR code of userId -->
+            <app-qrcode
+                [user]="user">
+            </app-qrcode>
+            <!-- Barcode of userId -->
+            <app-barcode
+                [user]="user">
+            </app-barcode>
+        </div>
     </div>
-</div>
+</ng-container>

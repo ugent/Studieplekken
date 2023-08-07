@@ -957,7 +957,8 @@
                 "studentNumber": "Student Number",
                 "receiveMailConfirmation": "Receive e-mail confirmation of reservations"
             },
-            "qrcode": "You can show this QR code at the scanning desk of your study room. If scanned successfully, your attendance will be registered."
+            "qrcode": "You can show this QR code at the scanning desk of your study room. If scanned successfully, your attendance will be registered.",
+            "loading": "Your profile is being loaded..."
         },
         "penalties": {
             "title": "Penalty points",

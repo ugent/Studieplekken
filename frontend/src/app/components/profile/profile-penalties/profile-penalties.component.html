@@ -2,14 +2,11 @@
     <!-- Page title -->
     <h3>{{'profile.penalties.title' | translate}}</h3>
     <hr>
-    <p>
-        <b>{{'profile.penalties.subtitle' | translate}} {{ penalties.points }}</b>
-    </p>
     <!-- Show information about penalty points -->
     <div class="row">
         <div>
-            <markdown *ngIf="currentLanguage() | async as currlan" src="assets/md/information-penalty.{{currlan}}.md"></markdown>
+            <markdown *ngIf="currentLanguage() | async as currlan" src="assets/md/information-penalty.{{ currlan }}.md"></markdown>
         </div>
-        <app-penalty-table [penalties]="penalties" [showDesignee]="false" [showTitle]="true"></app-penalty-table>
+        <app-penalty-table [penalties]="penalties" [showDesignee]="false" [showTitle]="false"></app-penalty-table>
     </div>
 </div>

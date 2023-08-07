@@ -1,8 +1,8 @@
-import {ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {TableAction, TableColumn, TableData, TableMapper} from '../../../../model/Table';
 import {ActivatedRoute, Params, Router} from '@angular/router';
-import {debounceTime, distinctUntilChanged, filter, first, map} from 'rxjs/operators';
-import {combineLatest, isObservable, Observable, ReplaySubject, Subject, Subscription} from 'rxjs';
+import {debounceTime, first, takeUntil} from 'rxjs/operators';
+import {isObservable, ReplaySubject, Subject} from 'rxjs';
 import {escapeRegex, genericSorter, OrderDirection} from '../../../../extensions/util/Util';
 
 @Component({
@@ -11,178 +11,136 @@ import {escapeRegex, genericSorter, OrderDirection} from '../../../../extensions
     styleUrls: ['./management-table.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ManagementTableComponent implements OnInit, OnDestroy {
+export class ManagementTableComponent<T> implements OnInit, OnChanges, OnDestroy {
 
-    protected readonly isObservable = isObservable;
-
-    protected ordering: Subject<Ordering>;
-    protected pagination: Subject<Pagination>;
-    protected searcher: Subject<Search>;
-    protected search: Observable<Search>;
-
-    protected columns: Observable<TableColumn[]>;
-    protected searchedData: Observable<TableData[]>;
-    protected filteredData: Observable<TableData[]>;
-
-    private subscription: Subscription;
-
+    @Input() data: T[];
     @Input() stateless = true;
-    @Input() data: Observable<TableData[]>;
-    @Input() actions: TableAction[] = [];
-    @Input() mapper: TableMapper = (item) => item;
+    @Input() actions: TableAction<T>[] = [];
+
+    protected columns: TableColumn[] = [];
+    protected rawData: TableData<T>[] = [];
+    protected searchedData: TableData<T>[] = [];
+    protected filteredData: TableData<T>[] = [];
+
+    protected ordering: Ordering = {
+        orderBy: '',
+        orderDirection: OrderDirection.DESC
+    };
+
+    protected pagination: Pagination = {
+        currentPage: 1,
+        perPage: 15
+    };
+
+    protected search: Search = '';
+    protected searchSub$ =
+        new ReplaySubject<string>();
+
+    protected unsubscribe$ =
+        new Subject<void>();
 
     constructor(
         private router: Router,
         private activatedRoute: ActivatedRoute
     ) {
-        this.searcher = new ReplaySubject();
-        this.ordering = new ReplaySubject();
-        this.pagination = new ReplaySubject();
-        this.subscription = new Subscription();
-
-        // Debounce search input for better performance.
-        this.search = this.searcher.pipe(
-            debounceTime(250),
-            distinctUntilChanged()
-        );
     }
 
     ngOnInit(): void {
-        // Filter the columns out of the data observable.
-        this.columns = this.data.pipe(
-            map(data => {
-                if (data && data.length) {
-                    return Object.keys(
-                        this.mapper(data[0])
-                    );
-                }
-                return [];
-            })
-        );
-
-        // Filter the data with the search query.
-        this.searchedData = combineLatest([
-            this.data, this.columns, this.search
-        ]).pipe(
-            map(([data, columns, search]) => {
-                return data ? data.filter(
-                    (item: TableData) => columns.some(column => new RegExp(
-                        escapeRegex(search), 'i'
-                    ).test(this.mapper(item)[column]))
-                ) : null;
-            })
-        );
-
-        // Filter the data with the search query, pagination and order.
-        this.filteredData = combineLatest([
-            this.searchedData, this.ordering, this.pagination, this.columns
-        ]).pipe(
-            map(([data, ordering, pagination, columns]) => {
-                return data ? data.sort((a, b) => {
-                    if (ordering.by && columns.includes(ordering.by)) {
-                        return genericSorter(
-                            this.mapper(a)[ordering.by], this.mapper(b)[ordering.by], ordering.direction
-                        );
-                    }
-                    return 0;
-                }).slice(
-                    (pagination.currentPage - 1) * pagination.perPage, pagination.currentPage * pagination.perPage
-                ) : null;
-            })
-        );
-
         // Extract the filter data from the query params.
         // We only have to do this once on component load, hence the first() pipe.
-        this.activatedRoute.queryParams.pipe(first()).subscribe(routeParams => {
-            let params = defaultParams;
-
-            if (this.stateless) {
-                params = {...defaultParams, ...routeParams};
-            }
-
-            this.searcher.next(params.search);
-            this.pagination.next({
-                currentPage: Number(params.currentPage),
-                perPage: Number(params.perPage)
-            });
-            this.ordering.next({
-                by: params.orderBy,
-                direction: Number(params.orderDirection)
-            });
-        });
-
         if (this.stateless) {
-            // On each filter update, we want to reflect these changes in the current URL.
-            // This way, the component is stateless in the sense that the state can be shared by URL.
-            this.subscription.add(
-                combineLatest([
-                    this.search, this.pagination, this.ordering
-                ]).subscribe(([search, pagination, ordering]) => {
-                    const params: Params = {
-                        search,
-                        currentPage: pagination.currentPage,
-                        perPage: pagination.perPage,
-                        orderBy: ordering.by,
-                        orderDirection: ordering.direction
-                    };
+            this.activatedRoute.queryParams.pipe(
+                first()
+            ).subscribe(routeParams => {
+                let params = {
+                    ...this.ordering, ...this.pagination, search: this.search
+                };
 
-                    void this.router.navigate([], {
-                        relativeTo: this.activatedRoute,
-                        queryParams: params,
-                        replaceUrl: true
-                    });
-                })
-            );
+                if (this.stateless) {
+                    params = {...params, ...routeParams};
+                }
+
+                this.search = params.search;
+
+                this.pagination = {
+                    currentPage: Number(params.currentPage),
+                    perPage: Number(params.perPage)
+                };
+
+                this.ordering = {
+                    orderBy: params.orderBy,
+                    orderDirection: Number(params.orderDirection)
+                };
+            });
         }
 
-        // We also want to reset the pagination number to 1
-        // whenever the search or ordering is updated.
-        this.subscription.add(
-            combineLatest([
-                this.search, this.ordering
-            ]).subscribe(() => {
-                this.pagination.pipe(first()).subscribe(pagination => {
-                    this.pagination.next({
-                        ...pagination,
-                        currentPage: 1
-                    });
-                });
-            })
+        this.searchSub$.pipe(
+            takeUntil(this.unsubscribe$),
+            debounceTime(500)
+        ).subscribe(value =>
+            this.setSearch(value)
         );
     }
 
+    ngOnChanges(changes: SimpleChanges): void {
+        // Set up the columns.
+        if (changes.mapper) {
+            this.updateColumns();
+        }
+
+        // Set up the initial data.
+        if (changes.data) {
+            this.updateData();
+        }
+    }
+
     ngOnDestroy(): void {
-        this.subscription.unsubscribe();
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
+    }
+
+    @Input() mapper: TableMapper<T> = (item) => ({});
+
+    isLoading(): boolean {
+        return this.data === undefined || this.data === null;
+    }
+
+    noResults(): boolean {
+        return !this.isLoading() && this.filteredData?.length === 0;
+    }
+
+    isObservable(entry: any): boolean {
+        return isObservable(entry);
     }
 
     /**
      * Get the start index of the displayed items.
      */
-    getStartIndex(pagination: Pagination): number {
-        return (pagination.currentPage - 1) * Number(pagination.perPage) + 1;
+    getStartIndex(): number {
+        return (this.pagination.currentPage - 1) * Number(this.pagination.perPage) + 1;
     }
 
     /**
      * Get the end index of the displayed items.
      */
-    getEndIndex(pagination: Pagination, resultCount: number): number {
+    getEndIndex(): number {
         return Math.min(
-            this.getStartIndex(pagination) + pagination.perPage - 1, resultCount
+            this.getStartIndex() + this.pagination.perPage - 1, this.filteredData.length
         );
     }
 
     /**
      * Get the total pagination count.
      */
-    getPageCount(pagination: Pagination, resultCount: number): number {
-        return Math.ceil(resultCount / pagination.perPage);
+    getPageCount(): number {
+        return Math.ceil(this.searchedData.length / this.pagination.perPage);
     }
 
     /**
      * Get a list of page numbers for pagination.
      */
-    getPages(pagination: Pagination, resultCount: number): number[] {
-        const length = this.getPageCount(pagination, resultCount);
+    getPages(): number[] {
+        const length = this.getPageCount();
         const maxLength = 6;
 
         if (length <= maxLength) {
@@ -191,7 +149,7 @@ export class ManagementTableComponent implements OnInit, OnDestroy {
             );
         }
 
-        const firstPage = Math.max(1, pagination.currentPage - Math.floor(maxLength / 2));
+        const firstPage = Math.max(1, this.pagination.currentPage - Math.floor(maxLength / 2));
         const lastPage = Math.min(length, firstPage + maxLength - 1);
         const pages: number[] = [];
 
@@ -205,11 +163,11 @@ export class ManagementTableComponent implements OnInit, OnDestroy {
     /**
      * Get the possible display per page options.
      */
-    getPerPageOptions(pagination: Pagination): number[] {
+    getPerPageOptions(): number[] {
         const perPage = [15, 25, 50];
 
-        if (!perPage.includes(pagination.perPage)) {
-            perPage.push(pagination.perPage);
+        if (!perPage.includes(this.pagination.perPage)) {
+            perPage.push(this.pagination.perPage);
         }
 
         return perPage.sort();
@@ -218,31 +176,31 @@ export class ManagementTableComponent implements OnInit, OnDestroy {
     /**
      * Checks whether pagination is possible.
      */
-    hasPages(pagination: Pagination, resultCount: number): boolean {
-        return this.getPageCount(pagination, resultCount) > 0;
+    hasPages(): boolean {
+        return this.getPageCount() > 0;
     }
 
     /**
      * Checks whether a next page exists.
      */
-    hasNextPage(pagination: Pagination, resultCount: number): boolean {
-        return pagination.currentPage < this.getPageCount(pagination, resultCount);
+    hasNextPage(): boolean {
+        return this.pagination.currentPage < this.getPageCount();
     }
 
     /**
      * Checks whether a previous page exists.
      */
-    hasPreviousPage(pagination: Pagination): boolean {
-        return pagination.currentPage > 1;
+    hasPreviousPage(): boolean {
+        return this.pagination.currentPage > 1;
     }
 
     /**
      * Go to the next page, if possible.
      */
-    nextPage(pagination: Pagination, resultCount: number): void {
-        if (this.hasNextPage(pagination, resultCount)) {
+    nextPage(): void {
+        if (this.hasNextPage()) {
             this.setCurrentPage(
-                pagination, pagination.currentPage + 1
+                this.pagination.currentPage + 1
             );
         }
     }
@@ -250,10 +208,10 @@ export class ManagementTableComponent implements OnInit, OnDestroy {
     /**
      * Go to the previous page, if possible.
      */
-    previousPage(pagination: Pagination): void {
-        if (this.hasPreviousPage(pagination)) {
+    previousPage(): void {
+        if (this.hasPreviousPage()) {
             this.setCurrentPage(
-                pagination, pagination.currentPage - 1
+                this.pagination.currentPage - 1
             );
         }
     }
@@ -261,24 +219,33 @@ export class ManagementTableComponent implements OnInit, OnDestroy {
     /**
      * Check the current page number against the given.
      *
-     * @param pagination the pagination object.
      * @param page the page number to check.
      */
-    isCurrentPage(pagination: Pagination, page: number): boolean {
-        return pagination.currentPage === page;
+    isCurrentPage(page: number): boolean {
+        return this.pagination.currentPage === page;
+    }
+
+    setSearch(search: string): void {
+        this.search = search;
+
+        this.resetPagination();
+        this.updateData();
+        this.updateQuery();
     }
 
     /**
      * Set the current page to the given page number.
      *
-     * @param pagination the pagination object.
      * @param page the new page number.
      */
-    setCurrentPage(pagination: Pagination, page: number): void {
-        this.pagination.next({
-            ...pagination,
+    setCurrentPage(page: number): void {
+        this.pagination = {
+            ...this.pagination,
             currentPage: Number(page)
-        });
+        };
+
+        this.updateData();
+        this.updateQuery();
     }
 
     /**
@@ -287,35 +254,101 @@ export class ManagementTableComponent implements OnInit, OnDestroy {
      * @param per the amount of results to display.
      */
     setPerPage(per: number): void {
-        this.pagination.next({
+        this.pagination = {
             currentPage: 1,
             perPage: Number(per)
-        });
+        };
+
+        this.resetPagination();
+        this.updateData();
+        this.updateQuery();
     }
 
-    toggleOrderBy(ordering: Ordering, column: string): void {
-        const direction = OrderDirection.ASC === ordering.direction ? OrderDirection.DESC : OrderDirection.ASC;
-        const by = direction === OrderDirection.DESC && !!ordering.by ? '' : ordering.by;
+    toggleOrderBy(column: string): void {
+        const orderDirection = OrderDirection.ASC === this.ordering.orderDirection ?
+            OrderDirection.DESC :
+            OrderDirection.ASC;
+        const orderBy = orderDirection === OrderDirection.DESC && !!this.ordering.orderBy ?
+            '' :
+            this.ordering.orderBy;
 
-        if (column === ordering.by) {
-            this.ordering.next({
-                by,
-                direction
-            });
+        if (column === this.ordering.orderBy) {
+            this.ordering = {
+                orderBy,
+                orderDirection
+            };
         } else {
-            this.ordering.next({
-                ...ordering,
-                by: column
+            this.ordering = {
+                ...this.ordering,
+                orderBy: column
+            };
+        }
+
+        this.updateData();
+        this.updateQuery();
+    }
+
+    updateColumns(): void {
+        this.columns = this.data?.length > 0 ? Object.keys(
+            this.mapper(this.data[0])
+        ) : [];
+    }
+
+    updateData(): void {
+        this.rawData = this.data ? this.data.map(data => ({
+            raw: data,
+            mapped: this.mapper(data)
+        })) : [];
+
+        this.searchedData = this.rawData.filter(
+            (item: TableData<T>) => this.columns.some(column => new RegExp(
+                escapeRegex(this.search), 'i'
+            ).test(item.mapped[column]))
+        );
+
+        this.filteredData = this.searchedData.sort((a, b) => {
+            if (this.ordering.orderBy && this.columns.includes(this.ordering.orderBy)) {
+                return genericSorter(
+                    a.mapped[this.ordering.orderBy], b.mapped[this.ordering.orderBy], this.ordering.orderDirection
+                );
+            }
+            return 0;
+        }).slice(
+            (this.pagination.currentPage - 1) * this.pagination.perPage, this.pagination.currentPage * this.pagination.perPage
+        );
+    }
+
+    resetPagination(): void {
+        this.pagination = {
+            currentPage: 1,
+            ...this.pagination
+        };
+    }
+
+    updateQuery(): void {
+        if (this.stateless) {
+            const params: Params = {
+                search: this.search,
+                currentPage: this.pagination.currentPage,
+                perPage: this.pagination.perPage,
+                orderBy: this.ordering.orderBy,
+                orderDirection: this.ordering.orderDirection
+            };
+
+            void this.router.navigate([], {
+                relativeTo: this.activatedRoute,
+                queryParams: params,
+                replaceUrl: true
             });
         }
     }
 
-    getOrderIconClass(ordering: Ordering, column: string): string {
-        if (column !== ordering.by) {
+    getOrderIconClass(column: string): string {
+        if (column !== this.ordering.orderBy) {
             return 'icon-level';
         }
 
-        if (ordering.direction === OrderDirection.DESC) {
+        if (this.ordering.orderDirection === OrderDirection.DESC) {
             return 'icon-chevron-up';
         }
 
@@ -329,16 +362,8 @@ type Pagination = {
 };
 
 type Ordering = {
-    by: string;
-    direction: OrderDirection;
+    orderBy: string;
+    orderDirection: OrderDirection;
 };
 
 type Search = string;
-
-const defaultParams = {
-    search: '',
-    currentPage: 1,
-    perPage: 15,
-    orderBy: '',
-    orderDirection: OrderDirection.DESC
-};

@@ -1,10 +1,11 @@
-import {Component} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {merge, Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {PenaltyList} from 'src/app/extensions/services/api/penalties/penalty.service';
 import {AuthenticationService} from '../../../extensions/services/authentication/authentication.service';
 import {User} from '../../../model/User';
+import {Penalty} from '../../../model/Penalty';
 
 @Component({
     selector: 'app-profile-penalties',
@@ -12,6 +13,8 @@ import {User} from '../../../model/User';
     styleUrls: ['./profile-penalties.component.scss'],
 })
 export class ProfilePenaltiesComponent {
+
+    @Input() user: User;
 
     protected penalties: Observable<PenaltyList>;
 

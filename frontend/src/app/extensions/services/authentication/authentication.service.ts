@@ -174,6 +174,10 @@ export class AuthenticationService {
         void this.router.navigateByUrl('/login');
     }
 
+    getUserObs(): Observable<User> {
+        return this.userSubject;
+    }
+
     // ********************************************************
     // *   Getters for information about the logged in user   *
     // ********************************************************

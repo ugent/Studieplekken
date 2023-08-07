@@ -1,5 +1,5 @@
-import {ChangeDetectionStrategy, Component, ViewChild} from '@angular/core';
-import {combineLatest, ReplaySubject, Subject} from 'rxjs';
+import {Component, ViewChild} from '@angular/core';
+import {Observable} from 'rxjs';
 import {User} from '../../../../model/User';
 import {Building} from '../../../../model/Building';
 import {Location} from '../../../../model/Location';
@@ -8,56 +8,78 @@ import {AuthenticationService} from '../../../../extensions/services/authenticat
 import {AuthoritiesService} from '../../../../extensions/services/api/authorities/authorities.service';
 import {BuildingService} from '../../../../extensions/services/api/buildings/buildings.service';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {filter, first, map, mergeMap, switchMap, tap} from 'rxjs/operators';
+import {map, mergeMap, switchMap} from 'rxjs/operators';
 import {Authority} from '../../../../model/Authority';
 import {DeleteAction, ListAction, TableAction, TableMapper} from '../../../../model/Table';
 import {Router} from '@angular/router';
 import {Timeslot} from '../../../../model/Timeslot';
 import {BaseManagementComponent} from '../base-management.component';
 import {ModalComponent} from '../../../stad-gent-components/molecules/modal/modal.component';
+import {TimeslotsService} from '../../../../extensions/services/api/calendar-periods/timeslot.service';
 
 @Component({
     selector: 'app-locations-management',
     templateUrl: './locations-management.component.html',
-    styleUrls: ['./locations-management.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    styleUrls: ['./locations-management.component.scss']
 })
 export class LocationsManagementComponent extends BaseManagementComponent<Location> {
 
     @ViewChild('volunteersModal') volunteersModal: ModalComponent;
 
-    protected userSub: Subject<User>;
-    protected authoritiesSub: Subject<Authority[]>;
-    protected buildingsSub: Subject<Building[]>;
-    protected volunteersSub: Subject<User[]>;
-    protected timeslotSub: Subject<Timeslot[]>;
+    protected userObs$: Observable<User>;
+    protected locationsObs$: Observable<Location[]>;
+    protected authoritiesObs$: Observable<Authority[]>;
+    protected buildingsObs$: Observable<Building[]>;
+    protected volunteersObs$: Observable<User[]>;
+    protected timeslotObs$: Observable<Timeslot[]>;
 
     constructor(
         private locationService: LocationService,
         private authenticationService: AuthenticationService,
         private authoritiesService: AuthoritiesService,
         private buildingsService: BuildingService,
+        private timeslotService: TimeslotsService,
         private router: Router
     ) {
         super();
-
-        this.userSub = new ReplaySubject();
-        this.authoritiesSub = new ReplaySubject();
-        this.buildingsSub = new ReplaySubject();
-        this.volunteersSub = new ReplaySubject();
-        this.timeslotSub = new ReplaySubject();
     }
 
     ngOnInit(): void {
         super.ngOnInit();
 
-        this.subscription.add(
-            this.authenticationService.user.subscribe((user: User) => {
-                this.userSub.next(user);
-
-                this.setupBuildings();
-                this.setupAuthorities();
+        this.userObs$ = this.authenticationService.getUserObs();
+        this.buildingsObs$ = this.buildingsService.getAllBuildings();
+        this.locationsObs$ = this.userObs$.pipe(
+            switchMap(user =>
+                this.locationService.getAllLocations().pipe(
+                    map(locations =>
+                        locations.filter(location =>
+                            user.isAdmin() || user.userAuthorities.some(authority =>
+                                authority.authorityId === location.authority.authorityId
+                            )
+                        )
+                    )
+                )
+            )
+        );
+        this.authoritiesObs$ = this.userObs$.pipe(
+            mergeMap((user: User) => {
+                if (user.isAdmin()) {
+                    return this.authoritiesService.getAllAuthorities();
+                } else {
+                    return this.authoritiesService.getAuthoritiesOfUser(user.userId);
+                }
             })
+        );
+        this.volunteersObs$ = this.selectedSub.pipe(
+            switchMap(location =>
+                this.locationService.getVolunteers(location.locationId)
+            )
+        );
+        this.timeslotObs$ = this.selectedSub.pipe(
+            switchMap(location =>
+                this.timeslotService.getTimeslotsOfLocation(location.locationId)
+            )
         );
     }
 
@@ -74,78 +96,19 @@ export class LocationsManagementComponent extends BaseManagementComponent<Locati
         });
     }
 
-    setupItems(): void {
-        this.userSub.pipe(
-            switchMap((user: User) => {
-                if (user.isAdmin()) {
-                    return this.locationService.getAllLocations(false).pipe(
-                        map((locations: Location[]) => ({ user, locations }))
-                    );
-                } else {
-                    return this.authoritiesService.getLocationsInAuthoritiesOfUser(user.userId).pipe(
-                        map((locations: Location[]) => ({ user, locations }))
-                    );
-                }
-            }), first()
-        ).subscribe(({user, locations}) => {
-            this.itemsSub.next(
-                locations.filter((location: Location) =>
-                    user.isAdmin() || user.userAuthorities.some((authority: Authority) =>
-                        location.authority.authorityId === authority.authorityId
-                    )
-                )
-            );
-        });
-    }
-
-    setupVolunteers(location: Location): void {
-        this.volunteersSub.next();
-        this.selectedSub.next(location);
-        this.locationService.getVolunteers(location.locationId).subscribe((volunteers: User[]) => {
-            this.volunteersSub.next(volunteers);
-        });
-    }
-
-    setupAuthorities(): void {
-        this.userSub.pipe(
-            mergeMap((user: User) => {
-                if (user.isAdmin()) {
-                    return this.authoritiesService.getAllAuthorities();
-                } else {
-                    return this.authoritiesService.getAuthoritiesOfUser(user.userId);
-                }
-            }), first()
-        ).subscribe((authorities: Authority[]) => {
-            this.authoritiesSub.next(authorities);
-        });
-    }
-
-    setupBuildings(): void {
-        this.buildingsService.getAllBuildings().pipe(first()).subscribe((buildings: Building[]) => {
-            this.buildingsSub.next(buildings);
-        });
-    }
-
-    storeAdd(location: any): void {
+    storeAdd(authorities: Authority[], buildings: Building[], location: any): void {
+        const authority = authorities.find(a =>
+            a.authorityId === Number(location.authority)
+        );
+        const building = buildings.find(b =>
+            b.buildingId ===  Number(location.building)
+        );
         this.sendBackendRequest(
-            combineLatest([
-                this.authoritiesSub, this.buildingsSub
-            ]).pipe(
-                map(([authorities, buildings]) =>
-                    [authorities.find(authority =>
-                        authority.authorityId === Number(location.authority)
-                    ), buildings.find(building =>
-                        building.buildingId ===  Number(location.building)
-                    )]
-                ),
-                mergeMap(([authority, building]) => {
-                    return this.locationService.addLocation({
-                        ...location,
-                        authority,
-                        building
-                    });
-                })
-            )
+            this.locationService.addLocation({
+                ...location,
+                authority,
+                building
+            })
         );
     }
 
@@ -156,11 +119,11 @@ export class LocationsManagementComponent extends BaseManagementComponent<Locati
     }
 
     showVolunteers(location: Location): void {
-        this.setupVolunteers(location);
+        this.selectedSub.next(location);
         this.volunteersModal.open();
     }
 
-    getTableMapper(): TableMapper {
+    getTableMapper(): TableMapper<Location> {
         return (location: Location) => ({
             'management.locations.table.header.name': location.name,
             'management.locations.table.header.authority': location.authority.authorityName,
@@ -168,7 +131,7 @@ export class LocationsManagementComponent extends BaseManagementComponent<Locati
         });
     }
 
-    getTableActions(): TableAction[] {
+    getTableActions(): TableAction<Location>[] {
         return [
             new TableAction('icon-user', (location: Location) => {
                 this.showVolunteers(location);

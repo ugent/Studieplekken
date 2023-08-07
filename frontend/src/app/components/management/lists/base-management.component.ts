@@ -6,9 +6,10 @@ import {TableComponent} from '../../../contracts/table.component.interface';
 import {DeleteAction, EditAction, TableAction, TableMapper} from '../../../model/Table';
 import {User} from '../../../model/User';
 import {ModalComponent} from '../../stad-gent-components/molecules/modal/modal.component';
+import {error} from 'protractor';
 
 @Directive()
-export abstract class BaseManagementComponent<T extends object> implements OnInit, OnDestroy, TableComponent {
+export abstract class BaseManagementComponent<T extends object> implements OnInit, OnDestroy, TableComponent<T> {
 
     @ViewChild('modify') modifyModal: ModalComponent;
     @ViewChild('remove') deleteModal: ModalComponent;
@@ -30,8 +31,6 @@ export abstract class BaseManagementComponent<T extends object> implements OnIni
     }
 
     ngOnInit(): void {
-        // Set up the table items.
-        this.setupItems();
         // Reset the form based on selection.
         this.subscription.add(
             this.selectedSub.subscribe(item => {
@@ -78,7 +77,6 @@ export abstract class BaseManagementComponent<T extends object> implements OnIni
                 this.isSuccess.next(true);
 
                 this.setupForm();
-                this.setupItems();
 
                 this.deleteModal?.close();
                 this.modifyModal?.close();
@@ -94,7 +92,7 @@ export abstract class BaseManagementComponent<T extends object> implements OnIni
         );
     }
 
-    getTableActions(): TableAction[] {
+    getTableActions(): TableAction<T>[] {
         return [
             new EditAction((item: T) => {
                 this.prepareUpdate(item);
@@ -105,15 +103,7 @@ export abstract class BaseManagementComponent<T extends object> implements OnIni
         ];
     }
 
-    setupForm(item?: T): void {}
+    setupForm(_?: T): void {}
 
-    storeAdd(body: any = this.formGroup.value): void {}
-
-    storeUpdate(item: T, body: any = this.formGroup.value): void {}
-
-    storeDelete(item: T): void {}
-
-    abstract getTableMapper(): TableMapper;
-
-    abstract setupItems(): void;
+    abstract getTableMapper(): TableMapper<T>;
 }

@@ -12,7 +12,7 @@ import {FormatActionPipe} from '../../../../extensions/pipes/FormatActionPipe';
     templateUrl: './action-log.component.html',
     styleUrls: ['./action-log.component.scss']
 })
-export class ActionLogComponent implements OnInit, TableComponent {
+export class ActionLogComponent implements OnInit, TableComponent<ActionLogEntry> {
 
     protected actionsObs$: Subject<ActionLogEntry[]>;
 
@@ -29,11 +29,11 @@ export class ActionLogComponent implements OnInit, TableComponent {
         );
     }
 
-    getTableActions(): TableAction[] {
+    getTableActions(): TableAction<ActionLogEntry>[] {
         return [];
     }
 
-    getTableMapper(): TableMapper {
+    getTableMapper(): TableMapper<ActionLogEntry> {
         return (log: ActionLogEntry) => ({
             'management.actionlog.table.type': log.type,
             'management.actionlog.table.domain': log.domain,
