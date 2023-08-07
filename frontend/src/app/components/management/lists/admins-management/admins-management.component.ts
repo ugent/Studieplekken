@@ -13,19 +13,16 @@ import {Router} from '@angular/router';
 })
 export class AdminsManagementComponent implements OnInit, TableComponent<User> {
 
-    protected adminsObs$: Subject<User[]>;
+    protected adminsObs$: Observable<User[]>;
 
     constructor(
         private userService: UserService,
         private router: Router
     ) {
-        this.adminsObs$ = new ReplaySubject();
     }
 
     ngOnInit(): void {
-        this.userService.getAdmins().subscribe(admins =>
-            this.adminsObs$.next(admins)
-        );
+        this.adminsObs$ = this.userService.getAdmins();
     }
 
     getTableActions(): TableAction<User>[] {

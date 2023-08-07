@@ -1,141 +1,148 @@
-<!-- Title -->
-<div class="d-flex align-items-center justify-content-between mb-4">
-    <h3 class="m-0">
-        {{'management.buildings.title' | translate}}
-    </h3>
-    <button class="button button-primary" (click)="prepareAdd()">
-        {{'management.buildings.addNewBuilding' | translate}}
-    </button>
-</div>
-<!-- List -->
-<app-management-table
-        [data]="itemsSub | async"
-        [actions]="getTableActions()"
-        [mapper]="getTableMapper()">
-</app-management-table>
-<!-- Add/edit building form -->
-<app-modal #modify>
-    <h2 modal-header>
-        <ng-container *ngIf="selectedSub | async; else addTitle">
-            {{'management.buildings.updateBuildingModal.title'  | translate }}
-        </ng-container>
-        <ng-template #addTitle>
-            {{ 'management.buildings.addBuildingModal.title' | translate }}
-        </ng-template>
-    </h2>
-    <div modal-body>
-        <form [formGroup]="formGroup">
-            <!-- Building name -->
-            <div class="row ">
-                <div class="col">
-                    <label class="control-label" for="nameCreate">
-                        {{'management.buildings.table.name' | translate}} <span class="text-red ms-1">*</span>
-                        <input class="form-control" id="nameCreate" type="text" formControlName="name">
-                    </label>
+<ng-container *ngIf="{
+    user: userObs$ | async,
+    buildings: buildingsObs$ | async,
+    institutions: institutionObs$ | async,
+    selected: selectedSub$ | async
+} as context">
+    <!-- Title -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h3 class="m-0">
+            {{'management.buildings.title' | translate}}
+        </h3>
+        <button class="button button-primary" (click)="prepareAdd()">
+            {{'management.buildings.addNewBuilding' | translate}}
+        </button>
+    </div>
+    <!-- List -->
+    <app-management-table
+            [data]="context.buildings"
+            [actions]="getTableActions()"
+            [mapper]="getTableMapper()">
+    </app-management-table>
+    <!-- Add/edit building form -->
+    <app-modal #modify>
+        <h2 modal-header>
+            <ng-container *ngIf="context.selected; else addTitle">
+                {{'management.buildings.updateBuildingModal.title'  | translate }}
+            </ng-container>
+            <ng-template #addTitle>
+                {{ 'management.buildings.addBuildingModal.title' | translate }}
+            </ng-template>
+        </h2>
+        <div modal-body>
+            <form [formGroup]="formGroup">
+                <!-- Building name -->
+                <div class="row ">
+                    <div class="col">
+                        <label class="control-label" for="nameCreate">
+                            {{'management.buildings.table.name' | translate}} <span class="text-red ms-1">*</span>
+                            <input class="form-control" id="nameCreate" type="text" formControlName="name">
+                        </label>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Building address -->
-            <div class="row">
-                <div class="col">
-                    <label class="control-label" for="addressCreate">
-                        {{'management.buildings.table.address' | translate}} <span
+                <!-- Building address -->
+                <div class="row">
+                    <div class="col">
+                        <label class="control-label" for="addressCreate">
+                            {{'management.buildings.table.address' | translate}} <span
+                                class="text-red ms-1">*</span>
+                            <input class="form-control" id="addressCreate" type="text" formControlName="address">
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Institution of building -->
+                <div class="row" *ngIf="context.institutions as institutions">
+                    <label class="control-label" for="instituionCreate">
+                        {{'management.buildings.table.institution' | translate}} <span
                             class="text-red ms-1">*</span>
-                        <input class="form-control" id="addressCreate" type="text" formControlName="address">
+                        <select class="form-control" id="instituionCreate" formControlName="institution">
+                            <option *ngFor="let institution of institutions" [value]="institution">
+                                {{institution | translate}}
+                            </option>
+                        </select>
                     </label>
                 </div>
+            </form>
+        </div>
+        <!-- Modal footer -->
+        <div modal-footer>
+            <ng-container *ngIf="context.selected as building; else addButton">
+                <button type="submit" class="button button-primary" [disabled]="!formGroup.valid" (click)="storeUpdate(building)">
+                    {{ 'general.buttons.update' | translate }}
+                </button>
+            </ng-container>
+            <ng-template #addButton>
+                <button type="submit" class="button button-primary" [disabled]="!formGroup.valid" (click)="storeAdd()">
+                    {{ 'general.buttons.add' | translate}}
+                </button>
+            </ng-template>
+            <button type="button" class="button button-secondary" (click)="closeModal(modify)">
+                {{'general.buttons.close' | translate}}
+            </button>
+        </div>
+        <div modal-message-footer>
+            <div class="messages messages--info" *ngIf="(isSuccess | async) === undefined">
+                <i class="icon-info" aria-hidden="true"></i> {{ 'general.waitingForServer' | translate }}
             </div>
 
-            <!-- Institution of building -->
-            <div class="row" *ngIf="institutionsSub | async as institutions">
-                <label class="control-label" for="instituionCreate">
-                    {{'management.buildings.table.institution' | translate}} <span
-                        class="text-red ms-1">*</span>
-                    <select class="form-control" id="instituionCreate" formControlName="institution">
-                        <option *ngFor="let institution of institutions" [value]="institution">
-                            {{institution | translate}}
-                        </option>
-                    </select>
-                </label>
+            <div class="messages messages--success" *ngIf="(isSuccess | async) === true">
+                <i class="icon-checkmark" aria-hidden="true"></i>
+                <ng-container *ngIf="selectedSub$ | async; else addSuccess">
+                    {{ 'management.buildings.updateBuildingModal.success' | translate }}
+                </ng-container>
+                <ng-template #addSuccess>
+                    {{ 'management.buildings.addBuildingModal.success' | translate }}
+                </ng-template>
             </div>
-        </form>
-    </div>
-    <!-- Modal footer -->
-    <div modal-footer>
-        <ng-container *ngIf="selectedSub | async as building; else addButton">
-            <button type="submit" class="button button-primary" [disabled]="!formGroup.valid" (click)="storeUpdate(building)">
-                {{ 'general.buttons.update' | translate }}
+
+            <div class="messages messages--warning" *ngIf="(isSuccess | async) === false">
+                <i class="icon-exclamation" aria-hidden="true"></i>
+                <ng-container *ngIf="selectedSub$ | async; else addError">
+                    {{ 'management.buildings.updateBuildingModal.error' | translate }}
+                </ng-container>
+                <ng-template #addError>
+                    {{ 'management.buildings.addBuildingModal.error' | translate }}
+                </ng-template>
+            </div>
+        </div>
+    </app-modal>
+
+    <!-- Modal view to ask whether the user is sure to delete the building -->
+    <app-modal #remove>
+        <h2  *ngIf="context.selected as building" modal-header>
+            {{'management.buildings.deleteBuildingModal.title' | translate}} "{{ building.name }}"
+        </h2>
+        <div modal-body>
+            <p>
+                {{'management.buildings.deleteBuildingModal.body' | translate}}
+            </p>
+            <div class="messages messages--warning">
+                <i class="icon-exclamation"></i>
+                {{ 'management.buildings.deleteBuildingModal.warning' | translate }}
+            </div>
+        </div>
+        <div *ngIf="context.selected as building" modal-footer>
+            <button type="button" class="button button-primary" (click)="storeDelete(building)">
+                {{'general.buttons.delete' | translate}}
             </button>
-        </ng-container>
-        <ng-template #addButton>
-            <button type="submit" class="button button-primary" [disabled]="!formGroup.valid" (click)="storeAdd()">
-                {{ 'general.buttons.add' | translate}}
+            <button type="button" class="button button-secondary" (click)="closeModal(remove)">
+                {{'general.buttons.cancel' | translate}}
             </button>
-        </ng-template>
-        <button type="button" class="button button-secondary" (click)="closeModal(modify)">
-            {{'general.buttons.close' | translate}}
-        </button>
-    </div>
-    <div modal-message-footer>
-        <div class="messages messages--info" *ngIf="(isSuccess | async) === undefined">
-            <i class="icon-info" aria-hidden="true"></i> {{ 'general.waitingForServer' | translate }}
         </div>
+        <div modal-message-footer>
+            <div class="messages messages--info" *ngIf="(isSuccess | async) === undefined">
+                <i class="icon-info" aria-hidden="true"></i> {{ 'general.waitingForServer' | translate }}
+            </div>
 
-        <div class="messages messages--success" *ngIf="(isSuccess | async) === true">
-            <i class="icon-checkmark" aria-hidden="true"></i>
-            <ng-container *ngIf="selectedSub | async; else addSuccess">
-                {{ 'management.buildings.updateBuildingModal.success' | translate }}
-            </ng-container>
-            <ng-template #addSuccess>
-                {{ 'management.buildings.addBuildingModal.success' | translate }}
-            </ng-template>
-        </div>
+            <div class="messages messages--success" *ngIf="(isSuccess | async) === true">
+                <i class="icon-checkmark" aria-hidden="true"></i> {{ 'management.buildings.deleteBuildingModal.success' | translate }}
+            </div>
 
-        <div class="messages messages--warning" *ngIf="(isSuccess | async) === false">
-            <i class="icon-exclamation" aria-hidden="true"></i>
-            <ng-container *ngIf="selectedSub | async; else addError">
-                {{ 'management.buildings.updateBuildingModal.error' | translate }}
-            </ng-container>
-            <ng-template #addError>
-                {{ 'management.buildings.addBuildingModal.error' | translate }}
-            </ng-template>
+            <div class="messages messages--error" *ngIf="(isSuccess | async) === false">
+                <i class="icon-cross" aria-hidden="true"></i> {{'management.buildings.deleteBuildingModal.error' | translate}}  <ng-container *ngIf="feedbackMessage | async as message">({{ message }})</ng-container>.
+            </div>
         </div>
-    </div>
-</app-modal>
-
-<!-- Modal view to ask whether the user is sure to delete the building -->
-<app-modal #remove>
-    <h2  *ngIf="selectedSub | async as building" modal-header>
-        {{'management.buildings.deleteBuildingModal.title' | translate}} "{{ building.name }}"
-    </h2>
-    <div modal-body>
-        <p>
-            {{'management.buildings.deleteBuildingModal.body' | translate}}
-        </p>
-        <div class="messages messages--warning">
-            <i class="icon-exclamation"></i>
-            {{ 'management.buildings.deleteBuildingModal.warning' | translate }}
-        </div>
-    </div>
-    <div *ngIf="selectedSub | async as building" modal-footer>
-        <button type="button" class="button button-primary" (click)="storeDelete(building)">
-            {{'general.buttons.delete' | translate}}
-        </button>
-        <button type="button" class="button button-secondary" (click)="closeModal(remove)">
-            {{'general.buttons.cancel' | translate}}
-        </button>
-    </div>
-    <div modal-message-footer>
-        <div class="messages messages--info" *ngIf="(isSuccess | async) === undefined">
-            <i class="icon-info" aria-hidden="true"></i> {{ 'general.waitingForServer' | translate }}
-        </div>
-
-        <div class="messages messages--success" *ngIf="(isSuccess | async) === true">
-            <i class="icon-checkmark" aria-hidden="true"></i> {{ 'management.buildings.deleteBuildingModal.success' | translate }}
-        </div>
-
-        <div class="messages messages--error" *ngIf="(isSuccess | async) === false">
-            <i class="icon-cross" aria-hidden="true"></i> {{'management.buildings.deleteBuildingModal.error' | translate}}  <ng-container *ngIf="feedbackMessage | async as message">({{ message }})</ng-container>.
-        </div>
-    </div>
-</app-modal>
+    </app-modal>
+</ng-container>

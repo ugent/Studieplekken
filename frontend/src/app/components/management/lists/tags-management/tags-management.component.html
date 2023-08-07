@@ -1,132 +1,137 @@
-<!-- Title -->
-<div class="d-flex align-items-center justify-content-between mb-4">
-    <h3 class="m-0">
-        {{'management.tags.title' | translate}}
-    </h3>
-    <button class="button button-primary" (click)="prepareAdd()">
-        {{'management.tags.addNewTag' | translate}}
-    </button>
-</div>
-<!-- List -->
-<app-management-table
-        [data]="itemsSub | async"
-        [actions]="getTableActions()"
-        [mapper]="getTableMapper()">
-</app-management-table>
-<!-- Modal view to add a new tag -->
-<app-modal #modify>
-    <h2 modal-header>
-        <ng-container *ngIf="selectedSub | async; else addTitle">
-            {{ 'management.tags.updateTagModal.title' | translate }}
-        </ng-container>
-        <ng-template #addTitle>
-            {{ 'management.tags.addTagModal.title' | translate }}
-        </ng-template>
-    </h2>
+<ng-container *ngIf="{
+    selected: selectedSub$ | async,
+    tags: tagsObs$ | async
+} as context">
+    <!-- Title -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h3 class="m-0">
+            {{'management.tags.title' | translate}}
+        </h3>
+        <button class="button button-primary" (click)="prepareAdd()">
+            {{'management.tags.addNewTag' | translate}}
+        </button>
+    </div>
+    <!-- List -->
+    <app-management-table
+            [data]="context.tags"
+            [actions]="getTableActions()"
+            [mapper]="getTableMapper()">
+    </app-management-table>
+    <!-- Modal view to add a new tag -->
+    <app-modal #modify>
+        <h2 modal-header>
+            <ng-container *ngIf="context.selected; else addTitle">
+                {{ 'management.tags.updateTagModal.title' | translate }}
+            </ng-container>
+            <ng-template #addTitle>
+                {{ 'management.tags.addTagModal.title' | translate }}
+            </ng-template>
+        </h2>
 
-    <div modal-body>
-        <form [formGroup]="formGroup">
-            <!-- Dutch name of tag -->
-            <div class="row">
-                <div class="col">
-                    <label class="control-label" for="dutchDelete">
-                        {{'management.tags.table.dutch' | translate}} <span class="text-red">*</span>
-                        <input class="form-control" id="dutchDelete" type="text" formControlName="dutch">
-                    </label>
+        <div modal-body>
+            <form [formGroup]="formGroup">
+                <!-- Dutch name of tag -->
+                <div class="row">
+                    <div class="col">
+                        <label class="control-label" for="dutchDelete">
+                            {{'management.tags.table.dutch' | translate}} <span class="text-red">*</span>
+                            <input class="form-control" id="dutchDelete" type="text" formControlName="dutch">
+                        </label>
+                    </div>
                 </div>
+
+                <!-- English name of tag -->
+                <div class="row">
+                    <div class="col">
+                        <label class="control-label" for="englishDelete">
+                            {{'management.tags.table.english' | translate}} <span class="text-red">*</span>
+                            <input class="form-control" id="englishDelete" type="text" formControlName="english">
+                        </label>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div modal-footer>
+            <ng-container *ngIf="context.selected as tag; else addButton">
+                <button type="submit" class="button button-primary" [disabled]="!formGroup.valid" (click)="storeUpdate(tag)">
+                    {{ 'general.buttons.update' | translate }}
+                </button>
+            </ng-container>
+            <ng-template #addButton>
+                <button type="submit" class="button button-primary" [disabled]="!formGroup.valid" (click)="storeAdd()">
+                    {{ 'general.buttons.add' | translate}}
+                </button>
+            </ng-template>
+            <button type="button" class="button button-secondary" (click)="closeModal(modify)">
+                {{'general.buttons.close' | translate}}
+            </button>
+        </div>
+
+        <!-- Feedback to the user -->
+        <div modal-message-footer>
+            <div class="messages messages--info" *ngIf="(isSuccess | async) === undefined">
+                <i class="icon-info"></i>
+                {{'general.waitingForServer' | translate}}
             </div>
 
-            <!-- English name of tag -->
-            <div class="row">
-                <div class="col">
-                    <label class="control-label" for="englishDelete">
-                        {{'management.tags.table.english' | translate}} <span class="text-red">*</span>
-                        <input class="form-control" id="englishDelete" type="text" formControlName="english">
-                    </label>
-                </div>
+            <div class="messages messages--success" *ngIf="(isSuccess | async) === true">
+                <i class="icon-checkmark"></i>
+                <ng-container *ngIf="selectedSub$ | async; else addSuccess">
+                    {{ 'management.tags.updateTagModal.success' | translate }}
+                </ng-container>
+                <ng-template #addSuccess>
+                    {{ 'management.tags.addTagModal.success' | translate }}
+                </ng-template>
             </div>
-        </form>
-    </div>
 
-    <div modal-footer>
-        <ng-container *ngIf="selectedSub | async as tag; else addButton">
-            <button type="submit" class="button button-primary" [disabled]="!formGroup.valid" (click)="storeUpdate(tag)">
-                {{ 'general.buttons.update' | translate }}
+            <div class="messages messages--error" *ngIf="(isSuccess | async) === false">
+                <i class="icon-cross"></i>
+                <ng-container *ngIf="selectedSub$ | async; else addError">
+                    {{ 'management.tags.updateTagModal.error' | translate }}
+                </ng-container>
+                <ng-template #addError>
+                    {{ 'management.tags.addTagModal.error' | translate }}
+                </ng-template>
+            </div>
+        </div>
+
+    </app-modal>
+    <!-- Modal view to ask whether the user is sure to delete a tag -->
+    <app-modal #remove>
+        <h2 modal-header>
+            {{'management.tags.deleteTagModal.title' | translate}}
+        </h2>
+        <div *ngIf="context.selected as tag" modal-body>
+            <p>
+                {{'management.tags.deleteTagModal.body' | translate}}
+            </p>
+            <ul>
+                <li><b>{{('management.tags.table.dutch' | translate)}}</b> {{ tag.dutch }}</li>
+                <li><b>{{('management.tags.table.english' | translate)}}</b> {{ tag.english }}</li>
+            </ul>
+        </div>
+        <div *ngIf="context.selected as tag" modal-footer>
+            <button type="button" class="button button-primary" (click)="storeDelete(tag)">
+                {{'general.buttons.delete' | translate}}
             </button>
-        </ng-container>
-        <ng-template #addButton>
-            <button type="submit" class="button button-primary" [disabled]="!formGroup.valid" (click)="storeAdd()">
-                {{ 'general.buttons.add' | translate}}
+            <button type="button" class="button button-secondary" (click)="closeModal(remove)">
+                {{'general.buttons.cancel' | translate}}
             </button>
-        </ng-template>
-        <button type="button" class="button button-secondary" (click)="closeModal(modify)">
-            {{'general.buttons.close' | translate}}
-        </button>
-    </div>
-
-    <!-- Feedback to the user -->
-    <div modal-message-footer>
-        <div class="messages messages--info" *ngIf="(isSuccess | async) === undefined">
-            <i class="icon-info"></i>
-            {{'general.waitingForServer' | translate}}
         </div>
-
-        <div class="messages messages--success" *ngIf="(isSuccess | async) === true">
-            <i class="icon-checkmark"></i>
-            <ng-container *ngIf="selectedSub | async; else addSuccess">
-                {{ 'management.tags.updateTagModal.success' | translate }}
-            </ng-container>
-            <ng-template #addSuccess>
-                {{ 'management.tags.addTagModal.success' | translate }}
-            </ng-template>
+        <div modal-message-footer>
+            <div class="messages messages--info" *ngIf="(isSuccess | async) === undefined">
+                <i class="icon-info"></i>
+                {{'general.waitingForServer' | translate}}
+            </div>
+            <div class="messages messages--success" *ngIf="(isSuccess | async) === true">
+                <i class="icon-checkmark"></i>
+                {{'management.tags.deleteTagModal.success' | translate}}
+            </div>
+            <div class="messages messages--error" *ngIf="(isSuccess | async) === false">
+                <i class="icon-cross"></i>
+                {{'management.tags.deleteTagModal.error' | translate}}
+            </div>
         </div>
-
-        <div class="messages messages--error" *ngIf="(isSuccess | async) === false">
-            <i class="icon-cross"></i>
-            <ng-container *ngIf="selectedSub | async; else addError">
-                {{ 'management.tags.updateTagModal.error' | translate }}
-            </ng-container>
-            <ng-template #addError>
-                {{ 'management.tags.addTagModal.error' | translate }}
-            </ng-template>
-        </div>
-    </div>
-
-</app-modal>
-<!-- Modal view to ask whether the user is sure to delete a tag -->
-<app-modal #remove>
-    <h2 modal-header>
-        {{'management.tags.deleteTagModal.title' | translate}}
-    </h2>
-    <div *ngIf="selectedSub | async as tag" modal-body>
-        <p>
-            {{'management.tags.deleteTagModal.body' | translate}}
-        </p>
-        <ul>
-            <li><b>{{('management.tags.table.dutch' | translate)}}</b> {{ tag.dutch }}</li>
-            <li><b>{{('management.tags.table.english' | translate)}}</b> {{ tag.english }}</li>
-        </ul>
-    </div>
-    <div *ngIf="selectedSub | async as tag" modal-footer>
-        <button type="button" class="button button-primary" (click)="storeDelete(tag)">
-            {{'general.buttons.delete' | translate}}
-        </button>
-        <button type="button" class="button button-secondary" (click)="closeModal(remove)">
-            {{'general.buttons.cancel' | translate}}
-        </button>
-    </div>
-    <div modal-message-footer>
-        <div class="messages messages--info" *ngIf="(isSuccess | async) === undefined">
-            <i class="icon-info"></i>
-            {{'general.waitingForServer' | translate}}
-        </div>
-        <div class="messages messages--success" *ngIf="(isSuccess | async) === true">
-            <i class="icon-checkmark"></i>
-            {{'management.tags.deleteTagModal.success' | translate}}
-        </div>
-        <div class="messages messages--error" *ngIf="(isSuccess | async) === false">
-            <i class="icon-cross"></i>
-            {{'management.tags.deleteTagModal.error' | translate}}
-        </div>
-    </div>
-</app-modal>
+    </app-modal>
+</ng-container>

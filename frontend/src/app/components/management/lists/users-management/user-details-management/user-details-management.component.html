@@ -1,35 +1,49 @@
-<div *ngIf="userSub$ | async as user; else notFound">
-    <!-- Form with details of the user -->
-    <app-user-details-form [userObs]="userSub$"></app-user-details-form>
+<ng-container *ngIf="{
+    currentUser: currentUserObs$ | async,
+    loggedInUser: userObs$ | async,
+    addedAuthorities: addedAuthoritiesObs$ | async,
+    addableAuthorities: addableAuthoritiesObs$ | async
+} as context;">
+    <ng-container *ngIf="context.currentUser as currentUser; else notFound">
+        <!-- Form with details of the user -->
+        <app-user-details-form
+                [user]="currentUser">
+        </app-user-details-form>
 
-    <!-- If the user is an EMPLOYEE or ADMIN, show the authorities of the user -->
-    <div class="mt-4">
-        <app-user-authorities-management [userObs]="userSub$">
+        <!-- If the user is an EMPLOYEE or ADMIN, show the authorities of the user -->
+        <div class="mt-4">
+            <app-user-authorities-management
+                    [user]="currentUser"
+                    [addedAuthorities]="context.addedAuthorities"
+                    [addableAuthorities]="context.addableAuthorities">
+            </app-user-authorities-management>
+        </div>
 
-        </app-user-authorities-management>
-    </div>
+        <div class="mt-4">
+            <app-profile-reservations
+                    [user]="currentUser">
+            </app-profile-reservations>
+        </div>
 
-    <div class="mt-4">
-        <app-profile-reservations [userObs]="userSub$">
+        <div class="mt-4">
+            <!-- Table with all penalty points and the option to add/delete them manually  -->
+            <app-user-penalty-manager
+                    [user]="currentUser">
+            </app-user-penalty-manager>
+        </div>
 
-        </app-profile-reservations>
-    </div>
-
-    <div class="mt-4">
-        <!-- Table with all penalty points and the option to add/delete them manually  -->
-        <app-user-penalty-manager [userObs$]="userSub$">
-
-        </app-user-penalty-manager>
-    </div>
-
-    <!-- If the user is an ADMIN, then he may change the role of a user -->
-    <div *ngIf="showRolesManagement$ | async">
-        <app-user-roles [userObs]="userSub$"></app-user-roles>
-    </div>
-</div>
-<ng-template #notFound>
-    <!-- If querying the user is not successful, show an error -->
-    <div class="messages messages--error">
-        {{('management.users.userDetails.errorQuerying' | translate).replace('{id}', userId$ | async)}}
-    </div>
-</ng-template>
+        <!-- If the user is an ADMIN, then he may change the role of a user -->
+        <div *ngIf="showRolesManagement">
+            <app-user-roles
+                    [user]="currentUser">
+            </app-user-roles>
+        </div>
+    </ng-container>
+    <ng-template #notFound>
+        <!-- If querying the user is not successful, show an error -->
+        <div class="messages messages--error">
+            <i class="icon-cross"></i>
+            {{('management.users.userDetails.errorQuerying' | translate).replace('{id}', userId$ | async)}}
+        </div>
+    </ng-template>
+</ng-container>

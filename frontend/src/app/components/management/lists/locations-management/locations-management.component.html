@@ -4,7 +4,7 @@
     buildings: buildingsObs$ | async,
     authorities: authoritiesObs$ | async,
     selected: {
-        location: selectedSub | async,
+        location: selectedSub$ | async,
         volunteers: volunteersObs$ | async,
         timeslots: timeslotObs$ | async
     }
@@ -203,7 +203,7 @@
             <app-location-volunteers-management *ngIf="context.selected as selected"
                     [volunteers]="selected.volunteers"
                     [location]="selected.location"
-                    (updatedVolunteers)="selectedSub.next($event)">
+                    (updatedVolunteers)="selectedSub$.next($event)">
             </app-location-volunteers-management>
         </div>
 

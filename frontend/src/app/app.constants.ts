@@ -3,6 +3,7 @@ export const defaultTeaserImages = ['assets/images/teaser/teaser1.jpg', 'assets/
 
 export const userWantsTLogInLocalStorageKey = 'userWantsTLogIn';
 export const authenticationWasExpiredUrlLSKey = 'authenticationWasExpiredUrl';
+
 /*
  * The amount of milliseconds that a feedback div should be shown
  */
@@ -21,7 +22,6 @@ export enum Language {
 }
 
 export const defaultOpeningHour = 8;
-
 export const defaultClosingHour = 17;
 
 /**
@@ -35,3 +35,7 @@ export const HOIColors = {
     Odisee: '#1f416b',
     Luca: '#feb3d2'
 };
+
+export const institutions = [
+    'UGent', 'HoGent', 'Arteveldehogeschool', 'StadGent', 'Luca', 'Odisee', 'Other'
+];

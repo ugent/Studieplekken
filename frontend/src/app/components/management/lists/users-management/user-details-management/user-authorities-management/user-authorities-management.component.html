@@ -1,10 +1,8 @@
 <!-- Title -->
 <ng-container *ngIf="{
-    user: userObs | async,
-    selected: selectedSub | async,
-    addableAuthorities: addableAuthorities$ | async
+    selected: selectedSub$ | async
 } as context">
-    <ng-container *ngIf="context.user as user">
+    <ng-container *ngIf="user">
         <!-- Title-->
         <div class="d-flex align-items-center justify-content-between mb-4">
             <h3 class="m-0">
@@ -17,7 +15,7 @@
         <!-- List -->
         <app-management-table
             [stateless]="false"
-            [data]="itemsSub | async"
+            [data]="addedAuthorities"
             [actions]="getTableActions()"
             [mapper]="getTableMapper()">
         </app-management-table>
@@ -34,7 +32,7 @@
 
                 <!-- list of authorities to choose from -->
                 <form [formGroup]="formGroup">
-                    <div class="row" *ngIf="context.addableAuthorities as authorities; else allAuthoritiesAreAssigned">
+                    <div class="row" *ngIf="addableAuthorities as authorities; else allAuthoritiesAreAssigned">
                         <div class="col">
                             <label class="control-label" for="authority">
                                 {{'management.users.userDetails.authorities.addAuthorityToUserModal.selectAuthority' | translate}}

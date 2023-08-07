@@ -14,18 +14,18 @@ export abstract class BaseManagementComponent<T extends object> implements OnIni
     @ViewChild('modify') modifyModal: ModalComponent;
     @ViewChild('remove') deleteModal: ModalComponent;
 
-    protected selectedSub: Subject<T>;
-
+    protected selectedSub$: Subject<T>;
+    protected refresh$: Subject<void>;
     protected isSuccess: Subject<boolean>;
     protected feedbackMessage: Subject<string>;
 
     protected formGroup: FormGroup;
 
     protected constructor(
-        protected subscription: Subscription = new Subscription(),
-        protected itemsSub: Subject<T[]> = new ReplaySubject()
+        protected subscription: Subscription = new Subscription()
     ) {
-        this.selectedSub = new ReplaySubject();
+        this.refresh$ = new BehaviorSubject(null);
+        this.selectedSub$ = new ReplaySubject();
         this.isSuccess = new ReplaySubject();
         this.feedbackMessage = new ReplaySubject();
     }
@@ -33,7 +33,7 @@ export abstract class BaseManagementComponent<T extends object> implements OnIni
     ngOnInit(): void {
         // Reset the form based on selection.
         this.subscription.add(
-            this.selectedSub.subscribe(item => {
+            this.selectedSub$.subscribe(item => {
                 if (item) {
                     return this.setupForm(item);
                 }
@@ -52,19 +52,19 @@ export abstract class BaseManagementComponent<T extends object> implements OnIni
     }
 
     prepareAdd(): void {
-        this.selectedSub.next(null);
+        this.selectedSub$.next(null);
         this.isSuccess.next(null);
         this.modifyModal.open();
     }
 
     prepareUpdate(item: T): void {
-        this.selectedSub.next(item);
+        this.selectedSub$.next(item);
         this.isSuccess.next(null);
         this.modifyModal.open();
     }
 
     prepareDelete(item: T): void {
-        this.selectedSub.next(item);
+        this.selectedSub$.next(item);
         this.isSuccess.next(null);
         this.deleteModal.open();
     }
@@ -77,6 +77,7 @@ export abstract class BaseManagementComponent<T extends object> implements OnIni
                 this.isSuccess.next(true);
 
                 this.setupForm();
+                this.refresh$.next();
 
                 this.deleteModal?.close();
                 this.modifyModal?.close();
@@ -85,9 +86,9 @@ export abstract class BaseManagementComponent<T extends object> implements OnIni
                     this.feedbackMessage.next(onSuccessMessage);
                 }
             },
-            (error: { message: string; }) => {
+            (err: { message: string; }) => {
                 this.isSuccess.next(false);
-                this.feedbackMessage.next(error.message);
+                this.feedbackMessage.next(err.message);
             }
         );
     }
@@ -103,7 +104,13 @@ export abstract class BaseManagementComponent<T extends object> implements OnIni
         ];
     }
 
-    setupForm(_?: T): void {}
+    getTableMapper(): TableMapper<T> {
+        return (item: T) => ({
+        });
+    }
 
-    abstract getTableMapper(): TableMapper<T>;
+    setupForm(_?: T): void {
+        this.formGroup = new FormGroup({
+        });
+    }
 }
