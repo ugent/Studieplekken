@@ -54,7 +54,7 @@ export class TagsManagementComponent extends BaseManagementComponent<LocationTag
         );
     }
 
-    getTableMapper(): TableMapper {
+    getTableMapper(): TableMapper<LocationTag> {
         return (tag: LocationTag) => ({
             'management.tags.table.dutch': tag.dutch,
             'management.tags.table.english': tag.english

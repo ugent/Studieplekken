@@ -18,7 +18,7 @@ import {TranslateService} from '@ngx-translate/core';
 })
 export class ProfileReservationsComponent extends BaseManagementComponent<LocationReservation> {
 
-    @Input() userObs: Observable<User>;
+    @Input() user: User;
     @Input() isManagement = false;
 
     constructor(
@@ -30,13 +30,11 @@ export class ProfileReservationsComponent extends BaseManagementComponent<Locati
     }
 
     setupItems(): void {
-        this.userObs.pipe(
-            switchMap(user =>
-                this.reservationService.getLocationReservationsOfUser(user.userId)
-            ), first()
-        ).subscribe(reservations => {
-            this.itemsSub.next(reservations);
-        });
+        this.reservationService.getLocationReservationsOfUser(this.user.userId).subscribe(reservations =>
+            this.itemsSub.next(reservations.filter(reservation => !reservation.isDeleted()).sort((a, b) =>
+                b.timeslot.timeslotDate?.diff(a.timeslot.timeslotDate)
+            ))
+        );
     }
 
     storeDelete(item: LocationReservation): void {
@@ -46,7 +44,7 @@ export class ProfileReservationsComponent extends BaseManagementComponent<Locati
         );
     }
 
-    getTableMapper(): TableMapper {
+    getTableMapper(): TableMapper<LocationReservation> {
         return (reservation: LocationReservation) => ({
             'profile.reservations.locations.table.header.locationName': this.locationService.getLocation(
                 reservation.timeslot.locationId
@@ -61,7 +59,7 @@ export class ProfileReservationsComponent extends BaseManagementComponent<Locati
         });
     }
 
-    getTableActions(): TableAction[] {
+    getTableActions(): TableAction<LocationReservation>[] {
         return [
             new DeleteAction((reservation: LocationReservation) => {
                 this.prepareDelete(reservation);

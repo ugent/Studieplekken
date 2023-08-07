@@ -13,7 +13,7 @@
     <!-- List -->
     <app-management-table
         [stateless]="false"
-        [data]="itemsSub"
+        [data]="itemsSub |async"
         [actions]="getTableActions()"
         [mapper]="getTableMapper()">
     </app-management-table>

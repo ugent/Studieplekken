@@ -6,7 +6,7 @@
 </div>
 <!-- List -->
 <app-management-table
-        [data]="adminsObs$"
+        [data]="adminsObs$ | async"
         [actions]="getTableActions()"
         [mapper]="getTableMapper()">
 </app-management-table>

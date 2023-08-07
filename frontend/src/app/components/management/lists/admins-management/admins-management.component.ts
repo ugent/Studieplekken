@@ -11,7 +11,7 @@ import {Router} from '@angular/router';
     templateUrl: './admins-management.component.html',
     styleUrls: ['./admins-management.component.scss'],
 })
-export class AdminsManagementComponent implements OnInit, TableComponent {
+export class AdminsManagementComponent implements OnInit, TableComponent<User> {
 
     protected adminsObs$: Subject<User[]>;
 
@@ -28,7 +28,7 @@ export class AdminsManagementComponent implements OnInit, TableComponent {
         );
     }
 
-    getTableActions(): TableAction[] {
+    getTableActions(): TableAction<User>[] {
         return [
             new ListAction((admin: User) => {
                 void this.router.navigate(['/management/users/' + admin.userId]);
@@ -36,7 +36,7 @@ export class AdminsManagementComponent implements OnInit, TableComponent {
         ];
     }
 
-    getTableMapper(): TableMapper {
+    getTableMapper(): TableMapper<User> {
         return (admin: User) => ({
             'management.users.searchResult.table.firstName': admin.firstName,
             'management.users.searchResult.table.lastName': admin.lastName,

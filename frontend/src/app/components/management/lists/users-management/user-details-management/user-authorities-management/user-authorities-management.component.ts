@@ -77,7 +77,7 @@ export class UserAuthoritiesManagementComponent extends BaseManagementComponent<
         );
     }
 
-    getTableActions(): TableAction[] {
+    getTableActions(): TableAction<Authority>[] {
         return [
             new DeleteAction((authority: Authority) => {
                 this.prepareDelete(authority);
@@ -85,7 +85,7 @@ export class UserAuthoritiesManagementComponent extends BaseManagementComponent<
         ];
     }
 
-    getTableMapper(): TableMapper {
+    getTableMapper(): TableMapper<Authority> {
         return (authority: Authority) => ({
             'management.authorities.table.authorityName': authority.authorityName,
             'management.authorities.table.description': authority.description

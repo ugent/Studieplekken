@@ -9,7 +9,7 @@
 </div>
 <!-- List -->
 <app-management-table
-        [data]="itemsSub"
+        [data]="itemsSub | async"
         [actions]="getTableActions()"
         [mapper]="getTableMapper()">
 </app-management-table>

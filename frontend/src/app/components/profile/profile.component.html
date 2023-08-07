@@ -1,7 +1,23 @@
-<div>
-    <app-profile-overview></app-profile-overview>
+<ng-container *ngIf="userObs$ | async as user; else loadingProfile">
+    <div class="center">
+        <app-profile-overview
+            [user]="user">
+        </app-profile-overview>
 
-    <app-profile-reservations [userObs]="userSub$"></app-profile-reservations>
+        <div class="my-5">
+            <app-profile-reservations
+                [user]="user">
+            </app-profile-reservations>
+        </div>
 
-    <app-profile-penalties></app-profile-penalties>
-</div>
+        <app-profile-penalties
+            [user]="user">
+        </app-profile-penalties>
+    </div>
+</ng-container>
+<ng-template #loadingProfile>
+    <div class="messages messages--info">
+        <i class="icon-info"></i>
+        {{ 'profile.overview.loading' | translate }}
+    </div>
+</ng-template>

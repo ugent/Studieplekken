@@ -1,7 +1,4 @@
-<ng-container *ngIf="{
-    user: userObs | async,
-    selected: selectedSub | async
-} as context">
+<ng-container *ngIf="{selected: selectedSub | async} as context">
     <!-- Title -->
     <div class="d-flex align-items-center justify-content-between mb-4">
         <h3 class="m-0">
@@ -11,7 +8,7 @@
     <!-- List -->
     <app-management-table
         [stateless]="false"
-        [data]="itemsSub"
+        [data]="itemsSub | async"
         [actions]="getTableActions()"
         [mapper]="getTableMapper()">
     </app-management-table>
@@ -25,7 +22,7 @@
         </div>
 
         <!-- Body -->
-        <ng-container *ngIf="context.user as user" modal-body>
+        <ng-container *ngIf="user" modal-body>
             <ng-container *ngIf="context.selected as reservation">
                 <p>
                     {{'management.reservations.location.deleteModal.body' | translate}}

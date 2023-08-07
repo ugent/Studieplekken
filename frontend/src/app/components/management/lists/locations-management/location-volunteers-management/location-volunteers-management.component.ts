@@ -13,10 +13,10 @@ import {of} from 'rxjs/internal/observable/of';
     templateUrl: './location-volunteers-management.component.html',
     styleUrls: ['./location-volunteers-management.component.scss']
 })
-export class LocationVolunteersManagementComponent implements OnInit, TableComponent {
+export class LocationVolunteersManagementComponent implements OnInit, TableComponent<User> {
 
-    @Input() location: Observable<Location>;
-    @Input() volunteers: Observable<User[]>;
+    @Input() location: Location;
+    @Input() volunteers: User[];
 
     @Output() updatedVolunteers: EventEmitter<Location>;
 
@@ -30,30 +30,18 @@ export class LocationVolunteersManagementComponent implements OnInit, TableCompo
     }
 
     storeAdd(user: User): void {
-        this.location.pipe(
-            switchMap(location =>
-                this.locationService.addVolunteer(location.locationId, user.userId).pipe(
-                    map(() => location)
-                )
-            ), first()
-        ).subscribe((location: Location) =>
-            this.updatedVolunteers.emit(location)
+        this.locationService.addVolunteer(this.location.locationId, user.userId).subscribe(() =>
+            this.updatedVolunteers.emit(this.location)
         );
     }
 
     storeDelete(user: User): void {
-        this.location.pipe(
-            switchMap((location: Location) =>
-                this.locationService.deleteVolunteer(location.locationId, user.userId).pipe(
-                    map(() => location)
-                )
-            ), first()
-        ).subscribe((location) =>
-            this.updatedVolunteers.emit(location)
+        this.locationService.deleteVolunteer(this.location.locationId, user.userId).subscribe(() =>
+            this.updatedVolunteers.emit(this.location)
         );
     }
 
-    getTableMapper(): TableMapper {
+    getTableMapper(): TableMapper<User> {
         return (user: User) => ({
             'management.users.searchResult.table.firstName': user.firstName,
             'management.users.searchResult.table.lastName': user.lastName,
@@ -61,7 +49,7 @@ export class LocationVolunteersManagementComponent implements OnInit, TableCompo
         });
     }
 
-    getTableActions(): TableAction[] {
+    getTableActions(): TableAction<User>[] {
         return [
             new DeleteAction((user: User) => {
                 this.storeDelete(user);

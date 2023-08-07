@@ -65,7 +65,7 @@ export class UserPenaltyManagerComponent extends BaseManagementComponent<Penalty
         );
     }
 
-    getTableActions(): TableAction[] {
+    getTableActions(): TableAction<Penalty>[] {
         return [
             new DeleteAction((penalty: Penalty) =>
                 this.storeDelete(penalty)
@@ -73,7 +73,7 @@ export class UserPenaltyManagerComponent extends BaseManagementComponent<Penalty
         ];
     }
 
-    getTableMapper(): TableMapper {
+    getTableMapper(): TableMapper<Penalty> {
         return (penalty: Penalty) => ({
             'profile.penalties.table.header.timestamp': penalty.createdAt.format('DD/MM/YYYY HH:mm'),
             'profile.penalties.table.header.issuer': penalty.issuer ? penalty.issuer.firstName + ' ' + penalty.designee.lastName : '-',

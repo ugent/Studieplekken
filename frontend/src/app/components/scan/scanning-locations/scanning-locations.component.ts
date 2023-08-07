@@ -14,9 +14,9 @@ import * as moment from 'moment/moment';
     templateUrl: './scanning-locations.component.html',
     styleUrls: ['./scanning-locations.component.scss'],
 })
-export class ScanningLocationsComponent implements OnInit, TableComponent {
+export class ScanningLocationsComponent implements OnInit, TableComponent<Location> {
 
-    protected locationObs$: Subject<Location[]>;
+    protected locationObs$: Observable<Location[]>;
 
     constructor(
         private scanningService: ScanningService,
@@ -27,15 +27,13 @@ export class ScanningLocationsComponent implements OnInit, TableComponent {
     }
 
     ngOnInit(): void {
-       this.scanningService.getLocationsToScan().pipe(
+       this.locationObs$ = this.scanningService.getLocationsToScan().pipe(
             map((locations) =>
                 locations.filter(location =>
                     this.isScannable(location)
                 )
             )
-        ).subscribe((locations: Location[]) => {
-            this.locationObs$.next(locations);
-       });
+        );
     }
 
     isScannable(location: Location): boolean {
@@ -44,7 +42,7 @@ export class ScanningLocationsComponent implements OnInit, TableComponent {
         );
     }
 
-    getTableActions(): TableAction[] {
+    getTableActions(): TableAction<Location>[] {
         return [
             new ListAction((location: Location) =>
                 void this.router.navigate(['/scan/locations/' + location.locationId])
@@ -52,7 +50,7 @@ export class ScanningLocationsComponent implements OnInit, TableComponent {
         ];
     }
 
-    getTableMapper(): TableMapper {
+    getTableMapper(): TableMapper<Location> {
         return (location: Location) => ({
             'scan.locations.header.name': location.name,
             'scan.locations.header.building': location.building.name,

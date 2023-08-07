@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {Observable, ReplaySubject, Subject} from 'rxjs';
+import {ReplaySubject, Subject} from 'rxjs';
 import {User} from '../../../../../model/User';
-import {UserDetailsService} from '../../../../../extensions/services/single-point-of-truth/user-details/user-details.service';
 import {ActivatedRoute} from '@angular/router';
 import {AuthenticationService} from '../../../../../extensions/services/authentication/authentication.service';
 import {UserService} from '../../../../../extensions/services/api/users/user.service';

@@ -44,6 +44,7 @@ $styleguide-dir: "" !default;
 @import 'components/calendar';
 @import 'components/tabs';
 @import 'components/material';
+@import 'components/cards';
 @import 'components/scanner';
 
 
@@ -124,10 +125,6 @@ body {
 
 video {
     width: 100%;
-}
-
-.responsive-table {
-    display: inline-block !important;
 }
 
 // Safari specific coloring of input fields

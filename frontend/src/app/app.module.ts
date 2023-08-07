@@ -111,6 +111,10 @@ import { LocationReservationComponent } from './components/dashboard/location-re
 import { MapComponent } from './components/dashboard/location-reservation/map/map.component';
 import { ManagementTableComponent } from './components/management/shared/management-table/management-table.component';
 import { LocationVolunteersManagementComponent } from './components/management/lists/locations-management/location-volunteers-management/location-volunteers-management.component';
+import { LocationReservationDetailsComponent } from './components/dashboard/location-reservation/location-reservation-details/location-reservation-details.component';
+import { LocationReservationCalendarComponent } from './components/dashboard/location-reservation/location-reservation-calendar/location-reservation-calendar.component';
+import { LocationReservationListComponent } from './components/dashboard/location-reservation/location-reservation-list/location-reservation-list.component';
+import { LocationReservationMapComponent } from './components/dashboard/location-reservation/location-reservation-map/location-reservation-map.component';
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     return new TranslateHttpLoader(http);
@@ -420,7 +424,11 @@ const routes: Routes = [
         LocationReservationComponent,
         MapComponent,
         ManagementTableComponent,
-        LocationVolunteersManagementComponent
+        LocationVolunteersManagementComponent,
+        LocationReservationDetailsComponent,
+        LocationReservationCalendarComponent,
+        LocationReservationListComponent,
+        LocationReservationMapComponent
     ],
     imports: [
         BrowserModule,
