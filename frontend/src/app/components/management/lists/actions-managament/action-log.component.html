@@ -1,12 +1,14 @@
-<!-- Title -->
-<div class="d-flex align-items-center justify-content-between mb-4">
-    <h3 class="m-0">
-        {{'management.actionlog.title' | translate}}
-    </h3>
-</div>
-<!-- List -->
-<app-management-table
-        [data]="actionsObs$ | async"
-        [actions]="getTableActions()"
-        [mapper]="getTableMapper()">
-</app-management-table>
+<ng-container *ngIf="{actions: actionsObs$ | async} as context">
+    <!-- Title -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h3 class="m-0">
+            {{'management.actionlog.title' | translate}}
+        </h3>
+    </div>
+    <!-- List -->
+    <app-management-table
+            [data]="context.actions"
+            [actions]="getTableActions()"
+            [mapper]="getTableMapper()">
+    </app-management-table>
+</ng-container>

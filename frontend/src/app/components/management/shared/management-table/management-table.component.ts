@@ -49,9 +49,7 @@ export class ManagementTableComponent<T> implements OnInit, OnChanges, OnDestroy
         // Extract the filter data from the query params.
         // We only have to do this once on component load, hence the first() pipe.
         if (this.stateless) {
-            this.activatedRoute.queryParams.pipe(
-                first()
-            ).subscribe(routeParams => {
+            this.activatedRoute.queryParams.pipe(first()).subscribe(routeParams => {
                 let params = {
                     ...this.ordering, ...this.pagination, search: this.search
                 };
@@ -83,13 +81,9 @@ export class ManagementTableComponent<T> implements OnInit, OnChanges, OnDestroy
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        // Set up the columns.
-        if (changes.mapper) {
-            this.updateColumns();
-        }
-
         // Set up the initial data.
-        if (changes.data) {
+        if (changes.mapper || changes.data) {
+            this.updateColumns();
             this.updateData();
         }
     }
@@ -348,7 +342,7 @@ export class ManagementTableComponent<T> implements OnInit, OnChanges, OnDestroy
             return 'icon-level';
         }
 
-        if (this.ordering.orderDirection === OrderDirection.DESC) {
+        if (this.ordering.orderDirection === OrderDirection.ASC) {
             return 'icon-chevron-up';
         }
 

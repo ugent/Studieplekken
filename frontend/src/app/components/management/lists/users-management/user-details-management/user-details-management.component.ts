@@ -1,9 +1,12 @@
 import {Component, OnInit} from '@angular/core';
-import {ReplaySubject, Subject} from 'rxjs';
+import {combineLatest, Observable, ReplaySubject, Subject} from 'rxjs';
 import {User} from '../../../../../model/User';
 import {ActivatedRoute} from '@angular/router';
 import {AuthenticationService} from '../../../../../extensions/services/authentication/authentication.service';
 import {UserService} from '../../../../../extensions/services/api/users/user.service';
+import {filter, map, switchMap, tap} from 'rxjs/operators';
+import {Authority} from '../../../../../model/Authority';
+import {AuthoritiesService} from '../../../../../extensions/services/api/authorities/authorities.service';
 
 @Component({
     selector: 'app-user-details-management',
@@ -12,37 +15,51 @@ import {UserService} from '../../../../../extensions/services/api/users/user.ser
 })
 export class UserDetailsManagementComponent implements OnInit {
 
-    protected userSub$: Subject<User>;
+    protected currentUserObs$: Observable<User>;
+    protected userObs$: Observable<User>;
+    protected addedAuthoritiesObs$: Observable<Authority[]>;
+    protected addableAuthoritiesObs$: Observable<Authority[]>;
 
-    protected showRolesManagement$: Subject<boolean>;
-    protected userId$: Subject<string>;
+    protected showRolesManagement: boolean;
+    protected userId: string;
 
     constructor(
         private userService: UserService,
         private route: ActivatedRoute,
         private authenticationService: AuthenticationService,
+        private authoritiesService: AuthoritiesService
     ) {
-        this.userSub$ = new ReplaySubject();
-        this.showRolesManagement$ = new ReplaySubject();
-        this.userId$ = new ReplaySubject();
     }
 
     ngOnInit(): void {
-        const userId = this.route.snapshot.paramMap.get('id');
+        this.userId = this.route.snapshot.paramMap.get('id');
 
-        this.userService.getUserByAUGentId(
-            userId
-        ).subscribe(user =>
-            this.userSub$.next(user)
+        this.currentUserObs$ = this.userService.getUserByAUGentId(this.userId);
+        this.userObs$ = this.authenticationService.getUserObs().pipe(
+            tap((user: User) =>
+                this.showRolesManagement = user.isAdmin()
+            )
         );
-
-        this.userId$.next(userId);
-
-        // set show-variables based on authorization
-        this.authenticationService.user.subscribe((next) => {
-            this.showRolesManagement$.next(
-                next.isAdmin()
-            );
-        });
+        this.addedAuthoritiesObs$ = this.currentUserObs$.pipe(
+            switchMap(user =>
+                this.authoritiesService.getAuthoritiesOfUser(user.userId).pipe()
+            )
+        );
+        this.addableAuthoritiesObs$ = combineLatest([this.userObs$, this.addedAuthoritiesObs$]).pipe(
+            switchMap(([user, addedAuthorities]) =>
+                (user.isAdmin() ?
+                    this.authoritiesService.getAllAuthorities() :
+                    this.authoritiesService.getAuthoritiesOfUser(user.userId)
+                ).pipe(
+                    map(allAuthorities =>
+                        allAuthorities.filter(authority =>
+                            !addedAuthorities.some(addedAuthority =>
+                                authority.authorityId === addedAuthority.authorityId
+                            )
+                        )
+                    )
+                )
+            )
+        );
     }
 }

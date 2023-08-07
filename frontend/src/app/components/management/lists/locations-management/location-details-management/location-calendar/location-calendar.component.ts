@@ -51,7 +51,7 @@ export class LocationCalendarComponent implements OnInit, OnDestroy {
 
     protected timeslotsSub: Subject<Timeslot[]>;
     protected suggestionsSub: Subject<Suggestion[]>;
-    protected selectedSub: Subject<Timeslot>;
+    protected selectedSub$: Subject<Timeslot>;
     protected reservationsSub: Subject<LocationReservation[]>;
     protected eventsSub: Subject<TimeslotCalendarEvent[]>;
 
@@ -73,7 +73,7 @@ export class LocationCalendarComponent implements OnInit, OnDestroy {
         private timeslotCalendarEventService: TimeslotCalendarEventService,
     ) {
         this.timeslotsSub = new ReplaySubject();
-        this.selectedSub = new ReplaySubject();
+        this.selectedSub$ = new ReplaySubject();
         this.suggestionsSub = new ReplaySubject();
         this.reservationsSub = new ReplaySubject();
         this.eventsSub = new ReplaySubject();
@@ -88,7 +88,7 @@ export class LocationCalendarComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.setupTimeslots();
 
-        this.selectedSub.pipe(
+        this.selectedSub$.pipe(
             takeUntil(this.unsubscribe),
             switchMap(timeslot =>
                 this.isSuggestion(timeslot).pipe(
@@ -148,7 +148,7 @@ export class LocationCalendarComponent implements OnInit, OnDestroy {
 
         // event is a non-reservable calendar period.
         if (timeslot) {
-            this.selectedSub.next(timeslot);
+            this.selectedSub$.next(timeslot);
         }
     }
 
@@ -156,7 +156,7 @@ export class LocationCalendarComponent implements OnInit, OnDestroy {
         const openingHour = moment(
             date?.format('HH:mm'), 'HH:mm'
         );
-        this.selectedSub.next(
+        this.selectedSub$.next(
             new Timeslot().setDate(date).setLocationId(location.locationId).setOpeningHour(openingHour)
         );
         this.modifyModal.openModal();
@@ -164,25 +164,25 @@ export class LocationCalendarComponent implements OnInit, OnDestroy {
 
     prepareAdd(): void {
         this.isSuccess.next(null);
-        this.selectedSub.next(null);
+        this.selectedSub$.next(null);
         this.modifyModal.openModal();
     }
 
     prepareUpdate(timeslot: Timeslot): void {
         this.isSuccess.next(null);
-        this.selectedSub.next(timeslot);
+        this.selectedSub$.next(timeslot);
         this.modifyModal.openModal();
     }
 
     prepareDelete(timeslot: Timeslot): void {
         this.isSuccess.next(null);
-        this.selectedSub.next(timeslot);
+        this.selectedSub$.next(timeslot);
         this.deleteModal.open();
     }
 
     prepareCopy(timeslot: Timeslot): void {
         this.isSuccess.next(null);
-        this.selectedSub.next(timeslot);
+        this.selectedSub$.next(timeslot);
         this.copyModal.open();
     }
 
@@ -239,7 +239,7 @@ export class LocationCalendarComponent implements OnInit, OnDestroy {
     approve(timeslot: Timeslot): void {
         this.timeslotService.addTimeslot(timeslot).subscribe(() =>{
             this.setupTimeslots();
-            this.selectedSub.next(timeslot);
+            this.selectedSub$.next(timeslot);
         });
     }
 
@@ -264,7 +264,7 @@ export class LocationCalendarComponent implements OnInit, OnDestroy {
             )
         ).subscribe(() => {
             this.setupTimeslots();
-            this.selectedSub.next(timeslot);
+            this.selectedSub$.next(timeslot);
         });
     }
 

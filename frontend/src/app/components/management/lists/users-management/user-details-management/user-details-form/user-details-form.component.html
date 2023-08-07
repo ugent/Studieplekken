@@ -1,16 +1,10 @@
-<div *ngIf="userObs | async as user">
+<ng-container>
     <!-- Overview of the user -->
     <h3>
         {{('management.users.userDetails.form.title' | translate).replace('{name}', user.firstName + ' ' + user.lastName)}}
     </h3>
     <hr>
-
-    <!-- If there was an error while loading the user, show an error message -->
-    <div class="messages messages--error" *ngIf="userQueryingError">
-        {{'management.users.userDetails.form.error' | translate}}
-    </div>
-
-    <form [formGroup]="formGroup">
+    <form [formGroup]="detailsFormGroup">
         <!-- AUGent ID -->
         <div class="row form-group">
             <div class="col">
@@ -84,4 +78,4 @@
             </button>
         </div>
     </div>
-</div>
+</ng-container>

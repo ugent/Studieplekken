@@ -1,5 +1,5 @@
 import {Component, ViewChild} from '@angular/core';
-import {Observable} from 'rxjs';
+import {combineLatest, Observable} from 'rxjs';
 import {User} from '../../../../model/User';
 import {Building} from '../../../../model/Building';
 import {Location} from '../../../../model/Location';
@@ -49,19 +49,6 @@ export class LocationsManagementComponent extends BaseManagementComponent<Locati
 
         this.userObs$ = this.authenticationService.getUserObs();
         this.buildingsObs$ = this.buildingsService.getAllBuildings();
-        this.locationsObs$ = this.userObs$.pipe(
-            switchMap(user =>
-                this.locationService.getAllLocations().pipe(
-                    map(locations =>
-                        locations.filter(location =>
-                            user.isAdmin() || user.userAuthorities.some(authority =>
-                                authority.authorityId === location.authority.authorityId
-                            )
-                        )
-                    )
-                )
-            )
-        );
         this.authoritiesObs$ = this.userObs$.pipe(
             mergeMap((user: User) => {
                 if (user.isAdmin()) {
@@ -71,14 +58,27 @@ export class LocationsManagementComponent extends BaseManagementComponent<Locati
                 }
             })
         );
-        this.volunteersObs$ = this.selectedSub.pipe(
+        this.volunteersObs$ = this.selectedSub$.pipe(
             switchMap(location =>
                 this.locationService.getVolunteers(location.locationId)
             )
         );
-        this.timeslotObs$ = this.selectedSub.pipe(
+        this.timeslotObs$ = this.selectedSub$.pipe(
             switchMap(location =>
                 this.timeslotService.getTimeslotsOfLocation(location.locationId)
+            )
+        );
+        this.locationsObs$ = combineLatest([this.userObs$, this.refresh$]).pipe(
+            switchMap(([user]) =>
+                this.locationService.getAllLocations().pipe(
+                    map(locations =>
+                        locations.filter(location =>
+                            user.isAdmin() || user.userAuthorities.some(authority =>
+                                authority.authorityId === location.authority.authorityId
+                            )
+                        )
+                    )
+                )
             )
         );
     }
@@ -119,7 +119,7 @@ export class LocationsManagementComponent extends BaseManagementComponent<Locati
     }
 
     showVolunteers(location: Location): void {
-        this.selectedSub.next(location);
+        this.selectedSub$.next(location);
         this.volunteersModal.open();
     }
 

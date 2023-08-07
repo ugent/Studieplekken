@@ -4,6 +4,8 @@ import {LocationTag, LocationTagConstructor} from '../../../../model/LocationTag
 import {TableMapper} from '../../../../model/Table';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {BaseManagementComponent} from '../base-management.component';
+import {Observable} from 'rxjs';
+import {switchMap} from 'rxjs/operators';
 
 @Component({
     selector: 'app-tags-management',
@@ -13,10 +15,20 @@ import {BaseManagementComponent} from '../base-management.component';
 })
 export class TagsManagementComponent extends BaseManagementComponent<LocationTag> {
 
+    protected tagsObs$: Observable<LocationTag[]>;
+
     constructor(
         private tagsService: TagsService
     ) {
         super();
+    }
+
+    ngOnInit(): void {
+        super.ngOnInit();
+
+        this.tagsObs$ = this.refresh$.pipe(
+            switchMap(() => this.tagsService.getAllTags())
+        );
     }
 
     setupForm(tag: LocationTag = LocationTagConstructor.new()): void {
@@ -24,12 +36,6 @@ export class TagsManagementComponent extends BaseManagementComponent<LocationTag
             tagId: new FormControl(tag.tagId),
             dutch: new FormControl(tag.dutch, Validators.required),
             english: new FormControl(tag.english, Validators.required)
-        });
-    }
-
-    setupItems(): void {
-        this.tagsService.getAllTags().subscribe((tags: LocationTag[]) => {
-            this.itemsSub.next(tags);
         });
     }
 

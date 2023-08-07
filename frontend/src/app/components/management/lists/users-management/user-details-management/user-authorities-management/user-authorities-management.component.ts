@@ -16,21 +16,14 @@ import {AuthenticationService} from '../../../../../../extensions/services/authe
 })
 export class UserAuthoritiesManagementComponent extends BaseManagementComponent<Authority> {
 
-    @Input() userObs: Observable<User>;
-
-    protected addableAuthorities$: Subject<Authority[]>;
+    @Input() user: User;
+    @Input() addableAuthorities: Authority[];
+    @Input() addedAuthorities: Authority[];
 
     constructor(
-        private authoritiesService: AuthoritiesService,
-        private authenticationService: AuthenticationService
+        private authoritiesService: AuthoritiesService
     ) {
         super();
-
-        this.addableAuthorities$ = new ReplaySubject();
-    }
-
-    ngOnInit(): void {
-        super.ngOnInit();
     }
 
     setupForm(item: Authority = AuthorityConstructor.new()): void {
@@ -39,41 +32,15 @@ export class UserAuthoritiesManagementComponent extends BaseManagementComponent<
         });
     }
 
-    setupItems(): void {
-        combineLatest([this.userObs, this.authenticationService.user]).pipe(
-            switchMap(([user, loggedInUser]) =>
-                combineLatest([
-                    this.authoritiesService.getAuthoritiesOfUser(user.userId),
-                    loggedInUser.isAdmin()
-                        ? this.authoritiesService.getAllAuthorities()
-                        : this.authoritiesService.getAuthoritiesOfUser(loggedInUser.userId)
-                ])
-            ), first()
-        ).subscribe(([userAuthorities, allAuthorities]) => {
-            this.itemsSub.next(userAuthorities);
-            this.addableAuthorities$.next(allAuthorities.filter(authority =>
-                !userAuthorities.some(uAuthority => uAuthority.authorityId === authority.authorityId)
-            ));
-        });
-    }
-
     storeAdd(body: any): void {
         this.sendBackendRequest(
-            this.userObs.pipe(
-                switchMap(user =>
-                    this.authoritiesService.addUserToAuthority(user.userId, body.authority)
-                )
-            )
+            this.authoritiesService.addUserToAuthority(this.user.userId, body.authority)
         );
     }
 
     storeDelete(item: Authority): void {
         this.sendBackendRequest(
-            this.userObs.pipe(
-                switchMap(user =>
-                    this.authoritiesService.deleteUserFromAuthority(user.userId, item.authorityId)
-                )
-            )
+            this.authoritiesService.deleteUserFromAuthority(this.user.userId, item.authorityId)
         );
     }
 

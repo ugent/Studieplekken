@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActionLogEntry} from 'src/app/model/ActionLogEntry';
 import {ActionLogService} from 'src/app/extensions/services/api/action-log/action-log.service';
-import {ReplaySubject, Subject} from 'rxjs';
+import {Observable, ReplaySubject, Subject} from 'rxjs';
 import {TableComponent} from '../../../../contracts/table.component.interface';
 import {TableAction, TableMapper} from '../../../../model/Table';
 import {FormatActionPipe} from '../../../../extensions/pipes/FormatActionPipe';
@@ -14,7 +14,7 @@ import {FormatActionPipe} from '../../../../extensions/pipes/FormatActionPipe';
 })
 export class ActionLogComponent implements OnInit, TableComponent<ActionLogEntry> {
 
-    protected actionsObs$: Subject<ActionLogEntry[]>;
+    protected actionsObs$: Observable<ActionLogEntry[]>;
 
     constructor(
         private actionService: ActionLogService,
@@ -24,9 +24,7 @@ export class ActionLogComponent implements OnInit, TableComponent<ActionLogEntry
     }
 
     ngOnInit(): void {
-        this.actionService.getAllActions().subscribe(actions =>
-            this.actionsObs$.next(actions)
-        );
+        this.actionsObs$ = this.actionService.getAllActions();
     }
 
     getTableActions(): TableAction<ActionLogEntry>[] {

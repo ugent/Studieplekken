@@ -3,7 +3,7 @@
     events: eventsSub | async,
     reservations: reservationsSub | async,
     timeslots: timeslotsSub | async,
-    selectedTimeslot: selectedSub | async
+    selectedTimeslot: selectedSub$ | async
 } as context">
     <ng-container *ngIf="context.location as location">
         <div class="panel-body">
@@ -66,7 +66,7 @@
                 <app-location-reservations *ngIf="timeslotGroupData(context.timeslots)"
                                            [locationReservations]="context.reservations"
                                            [currentTimeSlot]="timeslot"
-                                           (reservationChange)="selectedSub.next(timeslot)">
+                                           (reservationChange)="selectedSub$.next(timeslot)">
                 </app-location-reservations>
             </ng-container>
         </div>
@@ -75,7 +75,7 @@
     <!-- Modal view to add a calendar period -->
     <app-location-add-timeslot-dialog
         [location]="locationSub"
-        [timeslot]="selectedSub"
+        [timeslot]="selectedSub$"
         (onNewTimeslot)="storeAdd($event)"
         (onUpdateTimeslot)="storeUpdate($event)" #addTimeslotModal>
     </app-location-add-timeslot-dialog>

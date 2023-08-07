@@ -3,16 +3,16 @@ import {
     FormControl, FormGroup,
     Validators
 } from '@angular/forms';
-import {MatDialog} from '@angular/material/dialog';
-import {combineLatest, Observable, ReplaySubject, Subject, throwError} from 'rxjs';
+import {combineLatest, Observable, throwError} from 'rxjs';
 import {AddressResolverService} from 'src/app/extensions/services/addressresolver/nomenatim/addressresolver.service';
 import {BuildingService} from 'src/app/extensions/services/api/buildings/buildings.service';
 import {AuthenticationService} from 'src/app/extensions/services/authentication/authentication.service';
 import {Building, BuildingConstructor} from 'src/app/model/Building';
 import {User} from '../../../../model/User';
-import {first, map, mergeMap, tap} from 'rxjs/operators';
+import {first, map, mergeMap, switchMap, tap} from 'rxjs/operators';
 import {TableMapper} from '../../../../model/Table';
 import {BaseManagementComponent} from '../base-management.component';
+import {institutions} from '../../../../app.constants';
 
 @Component({
     selector: 'app-building-management',
@@ -21,10 +21,11 @@ import {BaseManagementComponent} from '../base-management.component';
 })
 export class BuildingManagementComponent extends BaseManagementComponent<Building> {
 
-    protected userSub: Subject<User>;
-    protected institutionsSub: Subject<string[]>;
+    protected userObs$: Observable<User>;
+    protected buildingsObs$: Observable<Building[]>;
+    protected institutionObs$: Observable<string[]>;
 
-    protected isCorrectAddress: Subject<boolean>;
+    protected isCorrectAddress: boolean;
 
     constructor(
         private authenticationService: AuthenticationService,
@@ -32,21 +33,30 @@ export class BuildingManagementComponent extends BaseManagementComponent<Buildin
         private addressResolver: AddressResolverService
     ) {
         super();
-
-        this.institutionsSub = new ReplaySubject();
-        this.userSub = new ReplaySubject();
-        this.isCorrectAddress = new ReplaySubject();
     }
 
     ngOnInit(): void {
         super.ngOnInit();
 
-        this.subscription.add(
-            this.authenticationService.user.subscribe(user => {
-                this.userSub.next(user);
+        this.userObs$ = this.authenticationService.getUserObs();
+        this.institutionObs$ = this.userObs$.pipe(
+            map(user =>
+                user.isAdmin() ? institutions : [user.institution]
+            )
+        );
 
-                this.setupInstitutions();
-            })
+        this.buildingsObs$ = this.refresh$.pipe(
+            switchMap(() =>
+                combineLatest([
+                    this.userObs$, this.buildingService.getAllBuildings(), this.refresh$
+                ]).pipe(
+                    map(([user, buildings]) =>
+                        buildings.filter((building: Building) =>
+                            (building.institution === user.institution) || user.isAdmin()
+                        )
+                    )
+                )
+            )
         );
     }
 
@@ -57,33 +67,6 @@ export class BuildingManagementComponent extends BaseManagementComponent<Buildin
             institution: new FormControl(building.institution, Validators.required),
             latitude: new FormControl(building.latitude),
             longitude: new FormControl(building.longitude)
-        });
-    }
-
-    setupInstitutions(): void {
-        this.userSub.pipe(first()).subscribe((user: User) => {
-            if (user.isAdmin()) {
-                // Todo: we should not hardcode institutions.
-                this.institutionsSub.next([
-                    'UGent', 'HoGent', 'Arteveldehogeschool', 'StadGent', 'Luca', 'Odisee', 'Other'
-                ]);
-            } else {
-                this.institutionsSub.next([
-                    user.institution
-                ]);
-            }
-        });
-    }
-
-    setupItems(): void {
-        combineLatest([
-            this.userSub, this.buildingService.getAllBuildings()
-        ]).pipe(first()).subscribe(([user, buildings]) => {
-            this.itemsSub.next(
-                buildings.filter((building: Building) =>
-                    (building.institution === user.institution) || user.isAdmin()
-                )
-            );
         });
     }
 
