@@ -119,7 +119,7 @@ export class ManagementTableComponent<T> implements OnInit, OnChanges, OnDestroy
      */
     getEndIndex(): number {
         return Math.min(
-            this.getStartIndex() + this.pagination.perPage - 1, this.filteredData.length
+            this.getStartIndex() + this.pagination.perPage - 1, this.searchedData.length
         );
     }
 
