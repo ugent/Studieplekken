@@ -17,7 +17,7 @@ export class TokensService {
   }
 
   /**
-   * Adding a token. Note that token.token will be ignored. The return
+   * Adding a token. Note that token. token will be ignored. The return
    * value will have set the correct token for the added Tag.
    */
   addToken(token: Token): Observable<Token> {
