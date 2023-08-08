@@ -8,7 +8,7 @@ import {AuthenticationService} from '../../../../extensions/services/authenticat
 import {AuthoritiesService} from '../../../../extensions/services/api/authorities/authorities.service';
 import {BuildingService} from '../../../../extensions/services/api/buildings/buildings.service';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {concatAll, map, mergeMap, share, startWith, switchMap} from 'rxjs/operators';
+import {concatAll, filter, map, mergeMap, share, startWith, switchMap} from 'rxjs/operators';
 import {Authority} from '../../../../model/Authority';
 import {DeleteAction, ListAction, TableAction, TableMapper} from '../../../../model/Table';
 import {Router} from '@angular/router';
@@ -53,7 +53,7 @@ export class LocationsManagementComponent extends BaseManagementComponent<Locati
         this.buildingsObs$ = this.buildingsService.getAllBuildings();
 
         this.authoritiesObs$ = this.userObs$.pipe(
-            mergeMap((user: User) => {
+            switchMap((user: User) => {
                 if (user.isAdmin()) {
                     return this.authoritiesService.getAllAuthorities();
                 } else {
@@ -63,13 +63,13 @@ export class LocationsManagementComponent extends BaseManagementComponent<Locati
         );
 
         this.volunteersObs$ = this.selectedSub$.pipe(
-            switchMap(location =>
+            filter(selected => !!selected), switchMap(location =>
                 this.locationService.getVolunteers(location.locationId)
             )
         );
 
         this.timeslotObs$ = this.selectedSub$.pipe(
-            switchMap(location =>
+            filter(selected => !!selected), switchMap(location =>
                 this.timeslotService.getTimeslotsOfLocation(location.locationId)
             )
         );
@@ -78,15 +78,9 @@ export class LocationsManagementComponent extends BaseManagementComponent<Locati
             this.userObs$, this.refresh$.pipe(startWith(EMPTY))
         ]).pipe(
             switchMap(([user]) =>
-                this.locationService.getAllLocations().pipe(
-                    map(locations =>
-                        locations.filter(location =>
-                            user.isAdmin() || user.userAuthorities.some(authority =>
-                                authority.authorityId === location.authority.authorityId
-                            )
-                        )
-                    )
-                )
+                user.isAdmin() ?
+                    this.locationService.getAllLocations() :
+                    this.authoritiesService.getLocationsInAuthoritiesOfUser(user.userId)
             )
         );
     }
