@@ -54,6 +54,7 @@ export abstract class BaseManagementComponent<T extends object> implements OnIni
     }
 
     prepareAdd(): void {
+        this.selectedSub$.next(null);
         this.isSuccess.next(null);
         this.modifyModal.open();
     }

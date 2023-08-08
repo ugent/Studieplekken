@@ -32,6 +32,10 @@ export class UserAuthoritiesManagementComponent extends BaseManagementComponent<
 
     ngOnInit(): void {
         super.ngOnInit();
+
+        this.refresh$.subscribe(() =>
+            this.updatedAuthorities.emit()
+        );
     }
 
     setupForm(item: Authority = AuthorityConstructor.new()): void {

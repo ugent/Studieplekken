@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {combineLatest, Observable, ReplaySubject, Subject} from 'rxjs';
+import {combineLatest, EMPTY, Observable, ReplaySubject, Subject} from 'rxjs';
 import {User} from '../../../../../model/User';
 import {ActivatedRoute} from '@angular/router';
 import {AuthenticationService} from '../../../../../extensions/services/authentication/authentication.service';
 import {UserService} from '../../../../../extensions/services/api/users/user.service';
-import {filter, map, share, shareReplay, switchMap, tap} from 'rxjs/operators';
+import {filter, map, share, shareReplay, startWith, switchMap, tap} from 'rxjs/operators';
 import {Authority} from '../../../../../model/Authority';
 import {AuthoritiesService} from '../../../../../extensions/services/api/authorities/authorities.service';
 import {LocationReservation} from '../../../../../model/LocationReservation';
@@ -47,7 +47,7 @@ export class UserDetailsManagementComponent implements OnInit {
 
         // Query the selected user by ID.
         this.currentUserObs$ = this.refresh$.pipe(
-            switchMap(() =>
+            startWith(EMPTY), switchMap(() =>
                 this.userService.getUserByAUGentId(this.userId).pipe(
                     tap(currentUser => {
                         // Get the added authorities of the user.
@@ -90,8 +90,6 @@ export class UserDetailsManagementComponent implements OnInit {
                 )
             )
         );
-
-        this.refresh();
     }
 
     refresh(): void {

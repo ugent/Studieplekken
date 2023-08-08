@@ -17,7 +17,8 @@
             <app-user-authorities-management
                     [user]="currentUser"
                     [addedAuthorities]="context.addedAuthorities"
-                    [addableAuthorities]="context.addableAuthorities">
+                    [addableAuthorities]="context.addableAuthorities"
+                    (updatedAuthorities)="refresh()">
             </app-user-authorities-management>
         </div>
 
