@@ -62,30 +62,31 @@ export class UserDetailsManagementComponent implements OnInit {
                         this.penaltiesObs$ = this.penaltyService.getPenaltiesOfUserById(
                             currentUser.userId
                         );
-                    })
-                )
-            )
-        );
-        // Query the logged-in user.
-        this.loggedInUserObs$ = this.authenticationService.getUserObs().pipe(
-            tap((user: User) =>
-                // Show roles only for admins.
-                this.showRolesManagement = user.isAdmin()
-            )
-        );
-        this.addableAuthoritiesObs$ = combineLatest([this.loggedInUserObs$, this.addedAuthoritiesObs$]).pipe(
-            switchMap(([user, addedAuthorities]) =>
-                (user.isAdmin() ?
-                    this.authoritiesService.getAllAuthorities() :
-                    this.authoritiesService.getAuthoritiesOfUser(user.userId)
-                ).pipe(
-                    map(allAuthorities =>
-                        allAuthorities.filter(authority =>
-                            !addedAuthorities.some(addedAuthority =>
-                                authority.authorityId === addedAuthority.authorityId
+                        // Query the logged-in user.
+                        this.loggedInUserObs$ = this.authenticationService.getUserObs().pipe(
+                            tap((user: User) =>
+                                // Show roles only for admins.
+                                this.showRolesManagement = user.isAdmin()
                             )
-                        )
-                    )
+                        );
+                        // Query the addable authorities.
+                        this.addableAuthoritiesObs$ = combineLatest([this.loggedInUserObs$, this.addedAuthoritiesObs$]).pipe(
+                            switchMap(([user, addedAuthorities]) =>
+                                (user.isAdmin() ?
+                                        this.authoritiesService.getAllAuthorities() :
+                                        this.authoritiesService.getAuthoritiesOfUser(user.userId)
+                                ).pipe(
+                                    map(allAuthorities =>
+                                        allAuthorities.filter(authority =>
+                                            !addedAuthorities.some(addedAuthority =>
+                                                authority.authorityId === addedAuthority.authorityId
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        );
+                    })
                 )
             )
         );
