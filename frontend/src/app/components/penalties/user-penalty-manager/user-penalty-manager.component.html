@@ -1,10 +1,8 @@
-<ng-container *ngIf="{
-    user: userObs$ | async
-} as context">
+<ng-container>
     <!-- Title -->
     <div class="d-flex align-items-center justify-content-between mb-4">
         <h3 class="m-0">
-            {{ 'penalties.management.subheader' | translate }} {{context.user.firstName}} {{context.user.lastName}}
+            {{ 'penalties.management.subheader' | translate }} {{ currentUser.firstName }} {{ currentUser.lastName }}
         </h3>
         <button class="button button-primary" (click)="prepareAdd()">
             {{ 'penalties.management.addButton' | translate}}
@@ -13,7 +11,7 @@
     <!-- List -->
     <app-management-table
         [stateless]="false"
-        [data]="itemsSub |async"
+        [data]="penalties?.penalties"
         [actions]="getTableActions()"
         [mapper]="getTableMapper()">
     </app-management-table>
@@ -55,9 +53,6 @@
             <button type="button" class="button button-secondary" (click)="closeModal(modify)">
                 {{'general.buttons.close' | translate}}
             </button>
-        </div>
-        <div modal-message-footer>
-
         </div>
     </app-modal>
 </ng-container>

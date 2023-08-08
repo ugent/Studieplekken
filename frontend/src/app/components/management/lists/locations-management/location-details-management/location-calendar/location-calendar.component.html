@@ -1,27 +1,23 @@
-<ng-container *ngIf="{
-    location: locationSub | async,
-    events: eventsSub | async,
-    reservations: reservationsSub | async,
-    timeslots: timeslotsSub | async,
-    selectedTimeslot: selectedSub$ | async
-} as context">
-    <ng-container *ngIf="context.location as location">
+<ng-container>
+    <ng-container *ngIf="location">
         <div class="panel-body">
             <!-- Add timeslot -->
             <button class="mx-auto button button-secondary pull-center" (click)="prepareAdd()">
                 + {{'management.locationDetails.calendar.form.addButton' | translate}}
             </button>
             <!-- Calendar -->
-            <ng-container *ngIf="context.events as events">
-                <app-calendar [events]="events" [refresh]="refresh"
-                              (timeslotPickedEvent)="timeslotPickedHandler($event)"
-                              (hourPickedEvent)="hourPickedHandler(location, $event)"
-                              [(currentEventTime)]="currentTime"
-                              (calendarViewStyle)="calendarViewStyle">
+            <ng-container *ngIf="events">
+                <app-calendar
+                    [events]="events"
+                    [refresh]="refresh"
+                      (timeslotPickedEvent)="timeslotPickedHandler($event)"
+                      (hourPickedEvent)="hourPickedHandler(location, $event)"
+                      [(currentEventTime)]="currentTime"
+                      (calendarViewStyle)="calendarViewStyle">
                 </app-calendar>
             </ng-container>
             <div class="d-flex gap-3 align-items-center my-3">
-                <ng-container *ngIf="(getCurrentSuggestions() | async)?.length">
+                <ng-container *ngIf="getCurrentSuggestions().length">
                     <button class="button button-primary alert" (click)="rejectAll()">
                         {{"management.locationDetails.calendar.form.rejectAll" | translate}}
                     </button>
@@ -29,15 +25,15 @@
                         {{"management.locationDetails.calendar.form.approveAll" | translate}}
                     </button>
                 </ng-container>
-                <ng-container *ngIf="context.selectedTimeslot as timeslot">
-                    <ng-container *ngIf="!(isSuggestion(timeslot) | async); else suggestionButtons">
-                        <button class="button button-secondary" (click)="prepareUpdate(timeslot)">
+                <ng-container *ngIf="selected as timeslot">
+                    <ng-container *ngIf="!isSuggestion(timeslot); else suggestionButtons">
+                        <button class="button button-secondary" (click)="prepareUpdate()">
                             {{"general.buttons.update" | translate}}
                         </button>
-                        <button class="button button-primary" (click)="prepareDelete(timeslot)">
+                        <button class="button button-primary" (click)="prepareDelete()">
                             {{"general.buttons.delete" | translate}}
                         </button>
-                        <button class="button button-secondary" (click)="prepareCopy(timeslot)">
+                        <button class="button button-secondary" (click)="prepareCopy()">
                             {{"general.buttons.copy" | translate}}
                         </button>
                     </ng-container>
@@ -52,21 +48,17 @@
                 </ng-container>
             </div>
         </div>
-        <div *ngIf="context.selectedTimeslot?.reservable">
+        <div *ngIf="selected?.reservable">
             <!-- Title -->
             <h3>
                 {{'management.locationDetails.calendar.reservations.title' | translate}}
             </h3>
-            <ng-container *ngIf="context.selectedTimeslot as timeslot">
-                <div *ngIf="timeslot === null" class="messages messages--info">
-                    <i class="icon-info"></i>
-                    {{'management.locationDetails.calendar.reservations.loading' | translate}}
-                </div>
+            <ng-container *ngIf="selected as timeslot">
                 <!-- Component showing the location reservations -->
-                <app-location-reservations *ngIf="timeslotGroupData(context.timeslots)"
-                                           [locationReservations]="context.reservations"
-                                           [currentTimeSlot]="timeslot"
-                                           (reservationChange)="selectedSub$.next(timeslot)">
+                <app-location-reservations *ngIf="timeslotGroupData()"
+                       [locationReservations]="reservations"
+                       [currentTimeSlot]="timeslot"
+                       (reservationChange)="setupReservations()">
                 </app-location-reservations>
             </ng-container>
         </div>
@@ -74,8 +66,8 @@
 
     <!-- Modal view to add a calendar period -->
     <app-location-add-timeslot-dialog
-        [location]="locationSub"
-        [timeslot]="selectedSub$"
+        [location]="location"
+        [timeslot]="selected"
         (onNewTimeslot)="storeAdd($event)"
         (onUpdateTimeslot)="storeUpdate($event)" #addTimeslotModal>
     </app-location-add-timeslot-dialog>
@@ -87,7 +79,7 @@
             {{'management.locationDetails.calendar.deleteModalView.title' | translate}}
         </h2>
         <!-- Body -->
-        <div *ngIf="context.selectedTimeslot as timeslot" modal-body>
+        <div *ngIf="selected as timeslot" modal-body>
             <p>
                 {{'management.locationDetails.calendar.deleteModalView.body' | translate}}
             </p>
@@ -109,7 +101,7 @@
         </div>
 
         <!-- Footer -->
-        <div *ngIf="context.selectedTimeslot as timeslot" modal-footer>
+        <div *ngIf="selected as timeslot" modal-footer>
             <div class="d-flex gap-3">
                 <button type="button" class="button button-primary" (click)="storeDelete(timeslot)">
                     {{'general.buttons.delete' | translate}}
@@ -121,15 +113,15 @@
         </div>
         <!-- Feedback to the user -->
         <div modal-message-footer>
-            <div class="messages messages--info" *ngIf="(isSuccess | async) === undefined">
+            <div class="messages messages--info" *ngIf="isSuccess === undefined">
                 {{'general.waitingForServer' | translate}}
             </div>
 
-            <div class="messages messages--success" *ngIf="(isSuccess | async) === true">
+            <div class="messages messages--success" *ngIf="isSuccess === true">
                 {{'management.locationDetails.calendar.deleteModalView.success' | translate}}
             </div>
 
-            <div class="messages messages--error" *ngIf="(isSuccess | async) === false">
+            <div class="messages messages--error" *ngIf="isSuccess === false">
                 {{'management.locationDetails.calendar.deleteModalView.error' | translate}}
             </div>
         </div>
@@ -145,7 +137,7 @@
                 <p>
                     {{'management.locationDetails.calendar.copyModalView.body' | translate}}
                 </p>
-                <ng-container *ngIf="context.selectedTimeslot as timeslot">
+                <ng-container *ngIf="selected as timeslot">
                     <ul *ngIf="timeslot.isValid()">
                         <li><b>{{'management.locationDetails.calendar.form.day' |translate}}</b> {{ timeslot.timeslotDate.format('dddd') }}</li>
                         <li><b>{{'management.locationDetails.calendar.form.openingTime' |translate}}</b> {{ timeslot.openingHour.format('HH:mm') }}</li>
@@ -175,27 +167,27 @@
             </form>
         </div>
 
-        <div *ngIf="context.selectedTimeslot as timeslot" modal-footer>
+        <div *ngIf="selected as timeslot" modal-footer>
             <button type="button" class="button button-secondary" (click)="copyTimeslotModal.close()">
                 {{'general.buttons.cancel' | translate}}
             </button>
 
-            <button *ngIf="context.location as location" [disabled]="!weekSelector.value" type="button" class="button button-primary"
+            <button *ngIf="location" [disabled]="!weekSelector.value" type="button" class="button button-primary"
                     (click)="storeCopy(timeslot, weekSelector.value, location, reservableFromSelector.checked)">
                 {{'general.buttons.add' | translate}}
             </button>
         </div>
         <!-- Feedback to the user -->
         <div modal-message-footer>
-            <div class="messages messages--info" *ngIf="(isSuccess | async) === undefined">
+            <div class="messages messages--info" *ngIf="isSuccess === undefined">
                 {{'general.waitingForServer' | translate}}
             </div>
 
-            <div class="messages messages--success" *ngIf="(isSuccess | async) === true">
+            <div class="messages messages--success" *ngIf="isSuccess === true">
                 {{'management.locationDetails.calendar.copyModalView.success' | translate}}
             </div>
 
-            <div class="messages messages--error" *ngIf="(isSuccess | async) === false">
+            <div class="messages messages--error" *ngIf="isSuccess === false">
                 {{'management.locationDetails.calendar.copyModalView.error' | translate}}
             </div>
         </div>

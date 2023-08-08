@@ -1,11 +1,11 @@
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {Penalty} from '../../../model/Penalty';
 import {BaseManagementComponent} from '../../management/lists/base-management.component';
-import {combineLatest, Observable} from 'rxjs';
+import {combineLatest, EMPTY, Observable} from 'rxjs';
 import {User} from '../../../model/User';
 import {DeleteAction, TableAction, TableMapper} from '../../../model/Table';
 import {PenaltyList, PenaltyService} from '../../../extensions/services/api/penalties/penalty.service';
-import {first, mergeMap, switchMap} from 'rxjs/operators';
+import {catchError, first, mergeMap, switchMap, tap} from 'rxjs/operators';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {AuthenticationService} from '../../../extensions/services/authentication/authentication.service';
 
@@ -16,13 +16,24 @@ import {AuthenticationService} from '../../../extensions/services/authentication
 })
 export class UserPenaltyManagerComponent extends BaseManagementComponent<Penalty> {
 
-    @Input() userObs$: Observable<User>;
+    @Input() currentUser: User;
+    @Input() loggedInUser: User;
+    @Input() penalties: PenaltyList;
+
+    @Output() updatedPenalties = new EventEmitter<void>();
 
     constructor(
-        private penaltyService: PenaltyService,
-        private authenticationService: AuthenticationService
+        private penaltyService: PenaltyService
     ) {
         super();
+    }
+
+    ngOnInit(): void {
+        super.ngOnInit();
+
+        this.refresh$.subscribe(() =>
+            this.updatedPenalties.emit()
+        );
     }
 
     setupForm(item: Penalty = new Penalty()): void {
@@ -32,30 +43,13 @@ export class UserPenaltyManagerComponent extends BaseManagementComponent<Penalty
         });
     }
 
-    setupItems(): void {
-        this.userObs$.pipe(
-            switchMap(user =>
-                this.penaltyService.getPenaltiesOfUserById(user.userId)
-            ), first()
-        ).subscribe((penaltyList: PenaltyList) =>
-            this.itemsSub.next(penaltyList.penalties)
-        );
-    }
-
     storeAdd(body: any = this.formGroup.value): void {
+        const penalty = new Penalty();
+        penalty.designee = this.currentUser;
+        penalty.points = body.points;
+        penalty.description = body.description;
         this.sendBackendRequest(
-            combineLatest([
-                this.userObs$, this.authenticationService.user
-            ]).pipe(
-                mergeMap(([user, loggedInUser]) => {
-                    const penalty = new Penalty();
-                    penalty.issuer = loggedInUser;
-                    penalty.designee = user;
-                    penalty.points = body.points;
-                    penalty.description = body.description;
-                    return this.penaltyService.addPenalty(penalty);
-                })
-            )
+            this.penaltyService.addPenalty(penalty)
         );
     }
 
@@ -76,7 +70,7 @@ export class UserPenaltyManagerComponent extends BaseManagementComponent<Penalty
     getTableMapper(): TableMapper<Penalty> {
         return (penalty: Penalty) => ({
             'profile.penalties.table.header.timestamp': penalty.createdAt.format('DD/MM/YYYY HH:mm'),
-            'profile.penalties.table.header.issuer': penalty.issuer ? penalty.issuer.firstName + ' ' + penalty.designee.lastName : '-',
+            'profile.penalties.table.header.issuer': penalty.issuer ? penalty.issuer.firstName + ' ' + penalty.issuer.lastName : '-',
             'profile.penalties.table.header.description': penalty.description ?? '-',
             'profile.penalties.table.header.receivedPoints': penalty.points
         });

@@ -1,4 +1,4 @@
-<div *ngIf="userObs | async as user">
+<ng-container>
     <!-- Management of the roles of the user -->
     <h3>
         {{('management.users.userDetails.roles.title' | translate).replace('{name}', user.firstName + ' ' + user.lastName)}}
@@ -41,7 +41,7 @@
             </button>
         </div>
     </form>
-</div>
+</ng-container>
 
 <app-modal #confirmadd>
     <h2 modal-header>
@@ -68,7 +68,7 @@
         </p>
     </div>
     <div modal-footer>
-        <button type="button" class="button button-default"
+        <button type="button" class="button button-secondary"
                 (click)="confirmAdminChange()">{{ 'general.yes' | translate }}</button>
         <button type="button" class="button button-primary"
                 (click)="declineAdminChange()">{{ 'general.no' | translate}}</button>

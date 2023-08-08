@@ -98,13 +98,13 @@
         </button>
     </div>
     <div modal-message-footer>
-        <div *ngIf="displayErrorTime | async">
+        <div *ngIf="displayErrorTime">
             <div class="messages messages--warning">
                 <i class="icon-exclamation"></i>
                 {{'management.locationDetails.calendar.form.openingClosingHourError' | translate}}
             </div>
         </div>
-        <div *ngIf="displayErrorSeats | async">
+        <div *ngIf="displayErrorSeats">
             <div class="messages messages--warning">
                 <i class="icon-exclamation"></i>
                 {{('management.locationDetails.calendar.form.seatsError' | translate).replace('{amountOfReservations}', newTimeslot.amountOfReservations) }}

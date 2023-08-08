@@ -26,7 +26,7 @@ export class Penalty {
         return penalty;
     }
 
-    toJSON() {
+    toJSON(): object {
         const points = this.points;
         const description = this.description;
         const user_id = this.designee.userId;
@@ -36,6 +36,6 @@ export class Penalty {
             description,
             user_id,
             penaltyId
-        }
+        };
     }
 }

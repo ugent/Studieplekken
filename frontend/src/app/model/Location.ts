@@ -36,7 +36,7 @@ export class LocationConstructor {
         return {
             locationId: -1,
             name: '',
-            numberOfSeats: 0,
+            numberOfSeats: 10,
             numberOfLockers: 0,
             forGroup: false,
             imageUrl: '',

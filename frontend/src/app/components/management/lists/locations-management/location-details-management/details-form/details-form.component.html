@@ -1,6 +1,6 @@
 <!-- Form with information about location -->
-<div *ngIf="location | async as location">
-    <form [formGroup]="locationForm">
+<ng-container>
+    <form [formGroup]="formGroup">
         <!-- Location name -->
         <div class="row">
             <div class="col">
@@ -12,7 +12,7 @@
         </div>
 
         <!-- Authority -->
-        <div class="row" *ngIf="authoritiesObs | async as authorities">
+        <div class="row">
             <div class="col">
                 <div class="form-group">
                     <label class="control-label" for="authority">
@@ -28,7 +28,7 @@
         </div>
 
         <!-- Building -->
-        <div class="row"  *ngIf="buildingsObs | async as buildings">
+        <div class="row">
             <div class="col">
                 <div class="form-group">
                     <label class="control-label" for="building">
@@ -115,7 +115,7 @@
                         <!-- Button to cancel changes -->
                         <button type="button" class="button button-secondary"
                                 [disabled]="disableCancelLocationButton"
-                                (click)="cancelLocationDetailsButtonClick(location)">
+                                (click)="cancelLocationDetailsButtonClick()">
                             {{'management.locationDetails.form.cancel' | translate}}
                         </button>
                     </div>
@@ -125,16 +125,19 @@
 
         <div>
             <div class="messages messages--info" *ngIf="successUpdatingLocation === null">
+                <i class="icon-info"></i>
                 {{'management.locationDetails.form.loading' | translate}}
             </div>
 
             <div class="messages messages--success" *ngIf="successUpdatingLocation === true">
+                <i class="icon-checkmark"></i>
                 {{'management.locationDetails.form.success' | translate}}
             </div>
 
             <div class="messages messages--error" *ngIf="successUpdatingLocation === false">
+                <i class="icon-cross"></i>
                 {{'management.locationDetails.form.error' | translate}}
             </div>
         </div>
     </form>
-</div>
+</ng-container>

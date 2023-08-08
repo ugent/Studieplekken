@@ -3,16 +3,17 @@ import {
     FormControl, FormGroup,
     Validators
 } from '@angular/forms';
-import {combineLatest, Observable, throwError} from 'rxjs';
+import {combineLatest, EMPTY, Observable, throwError} from 'rxjs';
 import {AddressResolverService} from 'src/app/extensions/services/addressresolver/nomenatim/addressresolver.service';
 import {BuildingService} from 'src/app/extensions/services/api/buildings/buildings.service';
 import {AuthenticationService} from 'src/app/extensions/services/authentication/authentication.service';
 import {Building, BuildingConstructor} from 'src/app/model/Building';
 import {User} from '../../../../model/User';
-import {first, map, mergeMap, switchMap, tap} from 'rxjs/operators';
+import {first, map, mergeMap, startWith, switchMap, tap} from 'rxjs/operators';
 import {TableMapper} from '../../../../model/Table';
 import {BaseManagementComponent} from '../base-management.component';
 import {institutions} from '../../../../app.constants';
+import {of} from 'rxjs/internal/observable/of';
 
 @Component({
     selector: 'app-building-management',
@@ -24,8 +25,6 @@ export class BuildingManagementComponent extends BaseManagementComponent<Buildin
     protected userObs$: Observable<User>;
     protected buildingsObs$: Observable<Building[]>;
     protected institutionObs$: Observable<string[]>;
-
-    protected isCorrectAddress: boolean;
 
     constructor(
         private authenticationService: AuthenticationService,
@@ -39,6 +38,7 @@ export class BuildingManagementComponent extends BaseManagementComponent<Buildin
         super.ngOnInit();
 
         this.userObs$ = this.authenticationService.getUserObs();
+
         this.institutionObs$ = this.userObs$.pipe(
             map(user =>
                 user.isAdmin() ? institutions : [user.institution]
@@ -46,9 +46,9 @@ export class BuildingManagementComponent extends BaseManagementComponent<Buildin
         );
 
         this.buildingsObs$ = this.refresh$.pipe(
-            switchMap(() =>
+            startWith(EMPTY), switchMap(() =>
                 combineLatest([
-                    this.userObs$, this.buildingService.getAllBuildings(), this.refresh$
+                    this.userObs$, this.buildingService.getAllBuildings()
                 ]).pipe(
                     map(([user, buildings]) =>
                         buildings.filter((building: Building) =>

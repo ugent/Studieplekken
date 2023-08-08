@@ -6,7 +6,7 @@ export class Timeslot {
         public timeslotSequenceNumber: number = 0,
         public timeslotDate: Moment = moment(),
         public amountOfReservations: number = 0,
-        public seatCount: number = 0,
+        public seatCount: number = 10,
         public reservable: boolean = false,
         public reservableFrom: Moment = null,
         public locationId: number = 0,

@@ -1,12 +1,9 @@
-import {Component, Input, OnInit, TemplateRef} from '@angular/core';
-import {Observable} from 'rxjs';
+import {Component, Input, OnInit} from '@angular/core';
 import {User, UserConstructor} from '../../../../../../model/User';
-import {AbstractControl, UntypedFormControl, UntypedFormGroup} from '@angular/forms';
+import {FormControl, FormGroup, UntypedFormControl, UntypedFormGroup} from '@angular/forms';
 import {UserDetailsService} from '../../../../../../extensions/services/single-point-of-truth/user-details/user-details.service';
 import {UserService} from '../../../../../../extensions/services/api/users/user.service';
 import {msToShowFeedback} from '../../../../../../app.constants';
-import {MatDialog} from '@angular/material/dialog';
-import {MatDialogRef} from '@angular/material/dialog/dialog-ref';
 import {ModalComponent} from '../../../../../stad-gent-components/molecules/modal/modal.component';
 
 @Component({
@@ -15,35 +12,38 @@ import {ModalComponent} from '../../../../../stad-gent-components/molecules/moda
     styleUrls: ['./user-roles.component.scss'],
 })
 export class UserRolesComponent implements OnInit {
-    @Input() userObs: Observable<User>;
-    user: User;
+    @Input() user: User;
 
     userUpdatingSuccess: boolean = undefined;
 
-    roleFormGroup = new UntypedFormGroup({
-        admin: new UntypedFormControl(''),
-    });
+    roleFormGroup: FormGroup;
 
     modalRef: ModalComponent;
 
     constructor(
         private userDetailsService: UserDetailsService,
-        private userService: UserService,
-        private modalService: MatDialog
+        private userService: UserService
     ) {
     }
 
     ngOnInit(): void {
-        this.userObs.subscribe((next) => {
-            this.user = next;
-            this.admin.setValue(this.user.admin);
+        this.setupForm();
+    }
+
+    setupForm(): void {
+       this.roleFormGroup = new FormGroup({
+            admin: new FormControl(this.user.admin),
         });
     }
 
     submitUpdateUser(): void {
-        const clone = UserConstructor.newFromObj(this.user);
-        clone.admin = this.admin.value as boolean;
-        this.userService.updateUser(this.user.userId, clone).subscribe(
+        const user = UserConstructor.newFromObj(
+            this.user
+        );
+
+        user.admin = this.roleFormGroup.value.admin;
+
+        this.userService.updateUser(this.user.userId, user).subscribe(
             () => {
                 this.successUpdatingUserHandler();
             },
@@ -65,15 +65,17 @@ export class UserRolesComponent implements OnInit {
     }
 
     disableRoleUpdateButton(): boolean {
-        return this.admin.value === this.user.admin;
+        return this.roleFormGroup.value.admin === this.user.admin;
     }
 
     resetRolesFormArrayButtonClick(): void {
-        this.admin.setValue(this.user.admin);
+        this.roleFormGroup.value.admin.setValue(
+            this.user.admin
+        );
     }
 
-    onAdminClick(event: Event, templateAdd: ModalComponent, templateRemove: ModalComponent, checkboxValue: boolean): void {
-        event.preventDefault();
+    onAdminClick(e: Event, templateAdd: ModalComponent, templateRemove: ModalComponent, checkboxValue: boolean): void {
+        e.preventDefault();
         if (checkboxValue) {
             this.modalRef = templateRemove;
             templateRemove.open();
@@ -84,18 +86,14 @@ export class UserRolesComponent implements OnInit {
     }
 
     confirmAdminChange(): void {
-        this.admin.setValue(!this.admin.value);
+        this.roleFormGroup.patchValue({
+            admin: !this.roleFormGroup.get('admin').value
+        });
+
         this.modalRef.close();
     }
 
     declineAdminChange(): void {
         this.modalRef.close();
-    }
-
-    // ********************************************
-    // *   Getters for roleFormGroup's controls   *
-    // ********************************************
-    get admin(): AbstractControl {
-        return this.roleFormGroup.get('admin');
     }
 }

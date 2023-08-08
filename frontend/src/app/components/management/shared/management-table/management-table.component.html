@@ -39,7 +39,7 @@
                         <td *ngIf="actions.length">
                             <div class="actions">
                                 <ng-container class="action" *ngFor="let action of actions">
-                                    <span class="action" *ngIf="action.show(item.raw)" [ngClass]="action.getIcon()" (click)="action.handle(item.raw)"></span>
+                                    <button class="action" [ngClass]="action.getIcon()" (click)="action.handle(item.raw)" [disabled]="!action.show(item.raw)"></button>
                                 </ng-container>
                             </div>
                         </td>
@@ -86,10 +86,9 @@
                 <div class="pagination-item nav" (click)="previousPage()" *ngIf="hasPreviousPage()">
                     <span class="icon-chevron-left"></span>
                 </div>
-                <div class="pagination-item" *ngFor="let page of getPages()"
-                     [ngClass]="{active: isCurrentPage(page)}"
-                     (click)="setCurrentPage(page)"
-                > {{ page }}</div>
+                <div class="pagination-item" *ngFor="let page of getPages()" [ngClass]="{active: isCurrentPage(page)}" (click)="setCurrentPage(page)">
+                    {{ page }}
+                </div>
                 <div class="pagination-item nav" (click)="nextPage()" *ngIf="hasNextPage()">
                     <span class="icon-chevron-right"></span>
                 </div>
