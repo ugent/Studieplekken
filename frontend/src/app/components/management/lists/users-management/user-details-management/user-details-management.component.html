@@ -1,6 +1,8 @@
 <ng-container *ngIf="{
     currentUser: currentUserObs$ | async,
-    loggedInUser: userObs$ | async,
+    loggedInUser: loggedInUserObs$ | async,
+    penalties: penaltiesObs$ | async,
+    reservations: reservationsObs$ | async,
     addedAuthorities: addedAuthoritiesObs$ | async,
     addableAuthorities: addableAuthoritiesObs$ | async
 } as context;">
@@ -21,14 +23,19 @@
 
         <div class="mt-4">
             <app-profile-reservations
-                    [user]="currentUser">
+                    [user]="currentUser"
+                    [reservations]="context.reservations"
+                    [isManagement]="true">
             </app-profile-reservations>
         </div>
 
         <div class="mt-4">
             <!-- Table with all penalty points and the option to add/delete them manually  -->
             <app-user-penalty-manager
-                    [user]="currentUser">
+                    [currentUser]="currentUser"
+                    [loggedInUser]="context.loggedInUser"
+                    [penalties]="context.penalties"
+                    (updatedPenalties)="refresh()">
             </app-user-penalty-manager>
         </div>
 
@@ -43,7 +50,7 @@
         <!-- If querying the user is not successful, show an error -->
         <div class="messages messages--error">
             <i class="icon-cross"></i>
-            {{('management.users.userDetails.errorQuerying' | translate).replace('{id}', userId$ | async)}}
+            {{('management.users.userDetails.errorQuerying' | translate).replace('{id}', userId)}}
         </div>
     </ng-template>
 </ng-container>

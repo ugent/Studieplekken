@@ -4,8 +4,8 @@ import {LocationTag, LocationTagConstructor} from '../../../../model/LocationTag
 import {TableMapper} from '../../../../model/Table';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {BaseManagementComponent} from '../base-management.component';
-import {Observable} from 'rxjs';
-import {switchMap} from 'rxjs/operators';
+import {EMPTY, Observable} from 'rxjs';
+import {startWith, switchMap} from 'rxjs/operators';
 
 @Component({
     selector: 'app-tags-management',
@@ -27,7 +27,9 @@ export class TagsManagementComponent extends BaseManagementComponent<LocationTag
         super.ngOnInit();
 
         this.tagsObs$ = this.refresh$.pipe(
-            switchMap(() => this.tagsService.getAllTags())
+            startWith(EMPTY), switchMap(() =>
+                this.tagsService.getAllTags()
+            )
         );
     }
 

@@ -24,7 +24,7 @@ export abstract class BaseManagementComponent<T extends object> implements OnIni
     protected constructor(
         protected subscription: Subscription = new Subscription()
     ) {
-        this.refresh$ = new BehaviorSubject(null);
+        this.refresh$ = new ReplaySubject();
         this.selectedSub$ = new ReplaySubject();
         this.isSuccess = new ReplaySubject();
         this.feedbackMessage = new ReplaySubject();
@@ -40,11 +40,13 @@ export abstract class BaseManagementComponent<T extends object> implements OnIni
                 return this.setupForm();
             })
         );
+
         this.setupForm();
     }
 
     ngOnDestroy(): void {
         this.subscription.unsubscribe();
+        this.refresh$.complete();
     }
 
     closeModal(modal: ModalComponent): void {
@@ -52,7 +54,6 @@ export abstract class BaseManagementComponent<T extends object> implements OnIni
     }
 
     prepareAdd(): void {
-        this.selectedSub$.next(null);
         this.isSuccess.next(null);
         this.modifyModal.open();
     }
@@ -105,12 +106,10 @@ export abstract class BaseManagementComponent<T extends object> implements OnIni
     }
 
     getTableMapper(): TableMapper<T> {
-        return (item: T) => ({
-        });
+        return (item: T) => ({});
     }
 
     setupForm(_?: T): void {
-        this.formGroup = new FormGroup({
-        });
+        this.formGroup = new FormGroup({});
     }
 }

@@ -1,14 +1,12 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Location, LocationConstructor} from '../../../../../../model/Location';
-import {AbstractControl, UntypedFormControl, UntypedFormGroup} from '@angular/forms';
+import {FormControl, FormGroup} from '@angular/forms';
 import {LocationService} from '../../../../../../extensions/services/api/locations/location.service';
-import {Observable} from 'rxjs';
 import {
     LocationDetailsService
 } from '../../../../../../extensions/services/single-point-of-truth/location-details/location-details.service';
 import {Authority} from '../../../../../../model/Authority';
 import {AuthoritiesService} from '../../../../../../extensions/services/api/authorities/authorities.service';
-import {tap} from 'rxjs/operators';
 import {Building} from 'src/app/model/Building';
 import {BuildingService} from 'src/app/extensions/services/api/buildings/buildings.service';
 import {msToShowFeedback} from '../../../../../../app.constants';
@@ -20,116 +18,52 @@ import {AuthenticationService} from '../../../../../../extensions/services/authe
     styleUrls: ['./details-form.component.scss'],
 })
 export class DetailsFormComponent implements OnInit {
-    @Input() location: Observable<Location>;
-    locationObj: Location;
+    @Input() location: Location;
+    @Input() authorities: Authority[];
+    @Input() buildings: Building[];
 
-    authoritiesObs: Observable<Authority[]>;
-    authoritiesMap: Map<number, Authority>; // map the authorityId to the Authority object
+    protected formGroup: FormGroup;
 
-    buildingsObs: Observable<Building[]>;
-    buildingsMap: Map<number, Building>; // map the buildingId to the Building object
+    protected disableEditLocationButton = false;
+    protected disableCancelLocationButton = true;
+    protected disablePersistLocationButton = true;
 
-    locationForm = new UntypedFormGroup({
-        name: new UntypedFormControl({value: '', disabled: true}),
-        authority: new UntypedFormControl({value: '', disabled: true}),
-        building: new UntypedFormControl({value: '', disabled: true}),
-        numberOfSeats: new UntypedFormControl({value: '', disabled: true}),
-        numberOfLockers: new UntypedFormControl({value: '', disabled: true}),
-        forGroup: new UntypedFormControl({value: '', disabled: true}),
-        imageUrl: new UntypedFormControl({value: '', disabled: true}),
-        usesPenaltyPoints: new UntypedFormControl({value: false, disabled: true}),
-        hidden: new UntypedFormControl({value: false, disabled: true})
-    });
-
-    disableEditLocationButton = false;
-    disableCancelLocationButton = true;
-    disablePersistLocationButton = true;
-
-    successUpdatingLocation: boolean = undefined;
+    protected successUpdatingLocation: boolean = undefined;
 
     constructor(
         private locationService: LocationService,
-        private locationDetailsService: LocationDetailsService,
-        private authoritiesService: AuthoritiesService,
-        private buildingsService: BuildingService,
-        private authenticationService: AuthenticationService
+        private locationDetailsService: LocationDetailsService
     ) {
     }
 
-    get authorityInLocationForm(): Authority {
-        return this.authoritiesMap.get(
-            Number(this.locationForm.get('authority').value)
-        );
-    }
-
-    get buildingInLocationForm(): Building {
-        return this.buildingsMap.get(
-            Number(this.locationForm.get('building').value)
-        );
-    }
-
     ngOnInit(): void {
-        // if the location has been retrieved, populate the form group
-        this.location.subscribe((next) => {
-            this.updateFormGroup(next);
-            this.locationObj = next;
-        });
-
-        // make sure that the correct authorities are retrieved
-        if (this.authenticationService.userValue().isAdmin()) {
-            this.authoritiesObs = this.authoritiesService.getAllAuthorities();
-        } else {
-            this.authoritiesObs = this.authoritiesService.getAuthoritiesOfUser(
-                this.authenticationService.userValue().userId
-            );
-        }
-
-        // the authoritiesObs is used in the form, asynchronously
-        // the authoritiesMap is used to set the authority object
-        // when the user wants to change the authority
-        this.authoritiesObs.subscribe((next) => {
-            this.authoritiesMap = new Map<number, Authority>();
-            next.forEach((value) => {
-                this.authoritiesMap.set(value.authorityId, value);
-            });
-        });
-
-        this.buildingsObs = this.buildingsService.getAllBuildings().pipe(
-            tap((next) => {
-                const buildingId = this.locationForm.get('building').value;
-                this.buildingsMap = new Map<number, Building>();
-                next.forEach((value) => {
-                    this.buildingsMap.set(value.buildingId, value);
-                });
-
-                setTimeout(() => this.locationForm.get('building').setValue(buildingId), 100)
-            })
-        );
+        this.setupForm();
     }
 
-    updateFormGroup(location: Location): void {
-        this.locationForm.setValue({
-            name: location.name,
-            authority: location.authority.authorityId,
-            building: `${location.building.buildingId}`,
-            numberOfSeats: location.numberOfSeats,
-            numberOfLockers: 0,
-            forGroup: location.forGroup,
-            imageUrl: location.imageUrl,
-            usesPenaltyPoints: location.usesPenaltyPoints,
-            hidden: location.hidden
+    setupForm(): void {
+        this.formGroup = new FormGroup({
+            name: new FormControl(this.location.name),
+            authority: new FormControl(this.location.authority.authorityId),
+            building: new FormControl(this.location.building.buildingId),
+            numberOfSeats: new FormControl(this.location.numberOfSeats),
+            forGroup: new FormControl(this.location.forGroup),
+            imageUrl: new FormControl(this.location.imageUrl),
+            usesPenaltyPoints: new FormControl(this.location.usesPenaltyPoints),
+            hidden: new FormControl(this.location.hidden)
         });
+
+        this.disableFormGroup();
     }
 
     disableFormGroup(): void {
-        this.locationForm.disable();
+        this.formGroup.disable();
     }
 
     enableFormGroup(): void {
-        this.locationForm.enable();
+        this.formGroup.enable();
     }
 
-    changeEnableDisableLocationDetailsFormButtons(): void {
+    toggleFormButtons(): void {
         this.disableEditLocationButton = !this.disableEditLocationButton;
         this.disableCancelLocationButton = !this.disableCancelLocationButton;
         this.disablePersistLocationButton = !this.disablePersistLocationButton;
@@ -137,22 +71,23 @@ export class DetailsFormComponent implements OnInit {
 
     editLocationDetailsButtonClick(): void {
         this.enableFormGroup();
-
-        this.changeEnableDisableLocationDetailsFormButtons();
+        this.toggleFormButtons();
     }
 
-    cancelLocationDetailsButtonClick(location: Location): void {
-        this.disableFormGroup();
-        this.updateFormGroup(location);
-        this.changeEnableDisableLocationDetailsFormButtons();
+    cancelLocationDetailsButtonClick(): void {
+        this.setupForm();
+        this.toggleFormButtons();
+
         this.successUpdatingLocation = undefined;
     }
 
     persistLocationDetailsButtonClick(): void {
         this.successUpdatingLocation = null; // show 'loading' message
 
-        const from: Location = this.locationObj;
-        const to: Location = this.locationInForm;
+        const from = this.location;
+        const to = this.locationInForm;
+
+        console.log(to);
 
         this.locationService.updateLocation(from.locationId, to).subscribe(
             () => {
@@ -172,72 +107,35 @@ export class DetailsFormComponent implements OnInit {
         );
 
         this.disableFormGroup();
-        this.changeEnableDisableLocationDetailsFormButtons();
-    }
-
-    // /******************
-    // *   AUXILIARIES   *
-    // *******************/
-
-    get name(): AbstractControl {
-        return this.locationForm.get('name');
-    }
-
-    get authority(): AbstractControl {
-        return this.locationForm.get('authority');
-    }
-
-    get building(): AbstractControl {
-        return this.locationForm.get('building');
-    }
-
-    get numberOfSeats(): AbstractControl {
-        return this.locationForm.get('numberOfSeats');
-    }
-
-    get numberOfLockers(): AbstractControl {
-        return this.locationForm.get('numberOfLockers');
-    }
-
-    get forGroup(): AbstractControl {
-        return this.locationForm.get('forGroup');
-    }
-
-    get imageUrl(): AbstractControl {
-        return this.locationForm.get('imageUrl');
-    }
-
-    get usesPenaltyPoints(): AbstractControl {
-        return this.locationForm.get('usesPenaltyPoints');
-    }
-
-    get hidden(): AbstractControl {
-        return this.locationForm.get('hidden');
+        this.toggleFormButtons();
     }
 
     get locationInForm(): Location {
-        const location: Location = LocationConstructor.newFromObj(this.locationObj);
+        const formValue = this.formGroup.value;
+        const location: Location = LocationConstructor.newFromObj(
+            this.location
+        );
 
-        location.name = String(this.name.value);
-        location.authority = this.authorityInLocationForm;
-        location.building = this.buildingInLocationForm;
-
-        // seats must be enabled to read data
-        this.numberOfSeats.enable();
-        location.numberOfSeats = Number(this.numberOfSeats.value);
-
-
-        location.numberOfLockers = Number(this.numberOfLockers.value);
-        location.forGroup = Boolean(this.forGroup.value);
-        location.imageUrl = String(this.imageUrl.value);
-        location.usesPenaltyPoints = Boolean(this.usesPenaltyPoints.value);
-        location.hidden = Boolean(this.hidden.value);
+        location.name = String(formValue.name);
+        location.authority = this.authorities.find(authority =>
+            authority.authorityId === formValue.authority
+        );
+        location.building = this.buildings.find(building =>
+            building.buildingId === formValue.building
+        );
+        location.numberOfSeats = Number(formValue.numberOfSeats);
+        location.numberOfLockers = Number(formValue.numberOfLockers);
+        location.forGroup = Boolean(formValue.forGroup);
+        location.imageUrl = String(formValue.imageUrl);
+        location.usesPenaltyPoints = Boolean(formValue.usesPenaltyPoints);
+        location.hidden = Boolean(formValue.hidden);
 
         return location;
     }
 
     successHandler(): void {
         this.successUpdatingLocation = true;
+
         setTimeout(
             () => (this.successUpdatingLocation = undefined),
             msToShowFeedback
@@ -246,6 +144,7 @@ export class DetailsFormComponent implements OnInit {
 
     errorHandler(): void {
         this.successUpdatingLocation = false;
+
         setTimeout(
             () => (this.successUpdatingLocation = undefined),
             msToShowFeedback

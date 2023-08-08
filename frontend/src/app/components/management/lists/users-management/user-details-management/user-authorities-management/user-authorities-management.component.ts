@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {combineLatest, Observable, ReplaySubject, Subject} from 'rxjs';
 import {Authority, AuthorityConstructor} from '../../../../../../model/Authority';
 import {User} from '../../../../../../model/User';
@@ -20,10 +20,18 @@ export class UserAuthoritiesManagementComponent extends BaseManagementComponent<
     @Input() addableAuthorities: Authority[];
     @Input() addedAuthorities: Authority[];
 
+    @Output() updatedAuthorities: EventEmitter<void>;
+
     constructor(
         private authoritiesService: AuthoritiesService
     ) {
         super();
+
+        this.updatedAuthorities = new EventEmitter();
+    }
+
+    ngOnInit(): void {
+        super.ngOnInit();
     }
 
     setupForm(item: Authority = AuthorityConstructor.new()): void {

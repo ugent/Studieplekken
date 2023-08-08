@@ -1,4 +1,14 @@
-import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {
+    Component,
+    EventEmitter,
+    Input,
+    OnChanges,
+    OnDestroy,
+    OnInit,
+    Output,
+    SimpleChanges,
+    ViewChild
+} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {CalendarView} from 'angular-calendar';
 import * as moment from 'moment';
@@ -41,26 +51,24 @@ type TypeOption = {
     templateUrl: './location-calendar.component.html',
     styleUrls: ['./location-calendar.component.scss']
 })
-export class LocationCalendarComponent implements OnInit, OnDestroy {
+export class LocationCalendarComponent implements OnChanges {
 
     @ViewChild('addTimeslotModal') modifyModal: LocationAddTimeslotDialogComponent;
     @ViewChild('deleteTimeslotModal') deleteModal: ModalComponent;
     @ViewChild('copyTimeslotModal') copyModal: ModalComponent;
 
-    @Input() locationSub: Observable<Location>;
+    @Input() location: Location;
+    @Input() timeslots: Timeslot[];
 
-    protected timeslotsSub: Subject<Timeslot[]>;
-    protected suggestionsSub: Subject<Suggestion[]>;
-    protected selectedSub$: Subject<Timeslot>;
-    protected reservationsSub: Subject<LocationReservation[]>;
-    protected eventsSub: Subject<TimeslotCalendarEvent[]>;
+    @Output() updatedTimeslots: EventEmitter<void>;
 
-    protected isError: Subject<boolean>;
-    protected isSuccess: Subject<boolean>;
-    protected showBulk: Subject<boolean>;
-    protected refresh: Subject<unknown>;
+    protected events: TimeslotCalendarEvent[];
+    protected suggestions: Suggestion[];
+    protected selected: Timeslot;
+    protected reservations: LocationReservation[];
 
-    protected unsubscribe: Subject<unknown>;
+    protected isSuccess: boolean;
+    protected refresh: Subject<void>;
 
     protected calendarViewStyle: CalendarView = CalendarView.Week;
     protected currentTime = moment();
@@ -72,75 +80,54 @@ export class LocationCalendarComponent implements OnInit, OnDestroy {
         private timeslotGroupService: TimeslotGroupService,
         private timeslotCalendarEventService: TimeslotCalendarEventService,
     ) {
-        this.timeslotsSub = new ReplaySubject();
-        this.selectedSub$ = new ReplaySubject();
-        this.suggestionsSub = new ReplaySubject();
-        this.reservationsSub = new ReplaySubject();
-        this.eventsSub = new ReplaySubject();
-
-        this.isError = new ReplaySubject();
-        this.isSuccess = new ReplaySubject();
-        this.showBulk = new ReplaySubject();
-        this.refresh = new Subject();
-        this.unsubscribe = new Subject();
+        this.updatedTimeslots = new EventEmitter();
+        this.refresh = new ReplaySubject();
     }
 
-    ngOnInit(): void {
-        this.setupTimeslots();
+    ngOnChanges(changes: SimpleChanges): void {
+        // Input: location and timeslots.
+        // We calculate the suggestions from the timeslots and current location.
+        if (changes.timeslots || changes.location) {
+            this.setupSuggestions();
+        }
+        // We calculate the events from the timeslots.
+        if (changes.timeslots && this.timeslots) {
+            this.setupEvents();
+        }
+    }
 
-        this.selectedSub$.pipe(
-            takeUntil(this.unsubscribe),
-            switchMap(timeslot =>
-                this.isSuggestion(timeslot).pipe(
-                    filter(isSuggestion => !isSuggestion && timeslot.reservable),
-                    switchMap(() =>
-                        this.locationReservationService.getLocationReservationsOfTimeslot(
-                            timeslot.timeslotSequenceNumber
-                        )
-                    )
-                )
+    setupSuggestions(): void {
+        this.suggestions = this.timeslots ? this.timeslotGroupService.getSuggestions(
+            this.timeslots, this.location
+        ) : [];
+    }
+
+    setupEvents(): void {
+        const language = this.translate.currentLang;
+
+        // Map timeslots and suggested timeslots to calendar events and
+        // concatenate them.
+        this.events = this.timeslots?.map(timeslot =>
+            this.timeslotCalendarEventService.timeslotToCalendarEvent(
+                timeslot, language
             )
-        ).subscribe(reservations => {
-            this.reservationsSub.next(reservations);
-        });
-    }
-
-    ngOnDestroy(): void {
-        this.unsubscribe.next();
-        this.unsubscribe.complete();
-    }
-
-
-    setupTimeslots(): void {
-        this.locationSub.pipe(
-            filter(location => !!location), first(), switchMap((location: Location) =>
-                this.timeslotService.getTimeslotsOfLocation(location.locationId).pipe(
-                    map(timeslots => ({location, timeslots}))
-                )
-            )
-        ).subscribe(({location, timeslots}) => {
-            const suggestions = this.timeslotGroupService.getSuggestions(timeslots, location);
-
-            this.suggestionsSub.next(
-                suggestions
-            );
-
-            const suggestionEvents = suggestions.map(suggestion =>
+        ).concat(
+            this.suggestions.map(suggestion =>
                 this.timeslotCalendarEventService.suggestedTimeslotToCalendarEvent(
-                    suggestion.copy, this.translate.currentLang
+                    suggestion.copy, language
                 )
-            );
+            )
+        ) ?? [];
 
-            // Fill the events based on the calendar periods.
-            this.eventsSub.next(
-                timeslots.map(timeslot =>
-                    this.timeslotCalendarEventService.timeslotToCalendarEvent(timeslot, this.translate.currentLang)
-                ).concat(suggestionEvents)
-            );
+        this.refresh.next();
+    }
 
-            // Refresh the calendar.
-            this.refresh.next();
-        });
+    setupReservations(): void {
+        this.locationReservationService.getLocationReservationsOfTimeslot(
+            this.selected.timeslotSequenceNumber
+        ).subscribe(reservations =>
+            this.reservations = reservations
+        );
     }
 
     timeslotPickedHandler(event: { timeslot: Timeslot }): void {
@@ -148,7 +135,9 @@ export class LocationCalendarComponent implements OnInit, OnDestroy {
 
         // event is a non-reservable calendar period.
         if (timeslot) {
-            this.selectedSub$.next(timeslot);
+            this.selected = timeslot;
+
+            this.setupReservations();
         }
     }
 
@@ -156,120 +145,127 @@ export class LocationCalendarComponent implements OnInit, OnDestroy {
         const openingHour = moment(
             date?.format('HH:mm'), 'HH:mm'
         );
-        this.selectedSub$.next(
-            new Timeslot().setDate(date).setLocationId(location.locationId).setOpeningHour(openingHour)
-        );
+
+        this.selected = new Timeslot().setDate(date).setLocationId(location.locationId).setOpeningHour(openingHour);
+
         this.modifyModal.openModal();
     }
 
     prepareAdd(): void {
-        this.isSuccess.next(null);
-        this.selectedSub$.next(null);
+        this.isSuccess = null;
+        this.selected = null;
         this.modifyModal.openModal();
     }
 
-    prepareUpdate(timeslot: Timeslot): void {
-        this.isSuccess.next(null);
-        this.selectedSub$.next(timeslot);
+    prepareUpdate(): void {
+        this.isSuccess = null;
         this.modifyModal.openModal();
     }
 
-    prepareDelete(timeslot: Timeslot): void {
-        this.isSuccess.next(null);
-        this.selectedSub$.next(timeslot);
+    prepareDelete(): void {
+        this.isSuccess = null;
         this.deleteModal.open();
     }
 
-    prepareCopy(timeslot: Timeslot): void {
-        this.isSuccess.next(null);
-        this.selectedSub$.next(timeslot);
+    prepareCopy(): void {
+        this.isSuccess = null;
         this.copyModal.open();
     }
 
     storeAdd(timeslot: Timeslot): void {
-        this.isSuccess.next(undefined);
-        this.timeslotService.addTimeslot(timeslot).subscribe(() =>
-            this.setupTimeslots()
-        );
+        this.isSuccess = undefined;
+
+        this.timeslotService.addTimeslot(timeslot).subscribe(() => {
+            this.updatedTimeslots.emit();
+            this.isSuccess = true;
+        }, () => {
+            this.isSuccess = false;
+        });
+
         this.modifyModal.closeModal();
     }
 
     storeUpdate(timeslot: Timeslot): void {
-        this.isSuccess.next(undefined);
+        this.isSuccess = undefined;
+
         this.timeslotService.updateTimeslot(timeslot).subscribe(() => {
-            this.setupTimeslots();
-            this.isSuccess.next(true);
+            this.updatedTimeslots.emit();
+            this.isSuccess = true;
         }, () => {
-            this.isSuccess.next(false);
+            this.isSuccess = false;
         });
+
         this.modifyModal.closeModal();
     }
 
     storeDelete(timeslot: Timeslot): void {
-        this.isSuccess.next(undefined);
+        this.isSuccess = undefined;
+        this.selected = null;
+
         this.timeslotService.deleteTimeslot(timeslot).subscribe(() => {
-            this.setupTimeslots();
-            this.isSuccess.next(true);
+            this.updatedTimeslots.emit();
+            this.isSuccess = true;
         }, () => {
-            this.isSuccess.next(false);
+            this.isSuccess = false;
         });
+
         this.deleteModal.close();
     }
 
     storeCopy(timeslot: Timeslot, weekOffset: string, location: Location, keepReservableFrom: boolean): void {
-        this.isSuccess.next(undefined);
+        this.isSuccess = undefined;
+        this.selected = null;
+
         const newTimeslot = this.timeslotGroupService.copy(
             timeslot, moment(weekOffset), location, false, !keepReservableFrom
         );
+
         this.timeslotService.addTimeslot(newTimeslot).subscribe(() => {
-            this.setupTimeslots();
-            this.isSuccess.next(true);
+            this.updatedTimeslots.emit();
+            this.isSuccess = true;
         }, () => {
-            this.isSuccess.next(false);
+            this.isSuccess = false;
         });
+
         this.copyModal.close();
     }
 
     approveAll(): void {
-        this.getCurrentSuggestions().subscribe(suggestions =>
-            suggestions.forEach(suggestion => this.approve(suggestion.copy))
+        this.getCurrentSuggestions().forEach(suggestion =>
+            this.approve(suggestion.copy)
         );
     }
 
     approve(timeslot: Timeslot): void {
-        this.timeslotService.addTimeslot(timeslot).subscribe(() =>{
-            this.setupTimeslots();
-            this.selectedSub$.next(timeslot);
+        this.selected = null;
+        this.timeslotService.addTimeslot(timeslot).subscribe(() => {
+            this.updatedTimeslots.emit();
         });
     }
 
     rejectAll(): void {
-        this.getCurrentSuggestions().subscribe(suggestions =>
-            suggestions.forEach(suggestion => this.reject(suggestion.copy))
+        this.getCurrentSuggestions().forEach(suggestion =>
+            this.reject(suggestion.copy)
         );
     }
 
     reject(timeslot: Timeslot): void {
-        this.getCurrentSuggestions().pipe(
-            mergeMap(suggestions =>
-                suggestions
-            ),
-            find(suggestion =>
-                suggestion.copy === timeslot
-            ),
-            switchMap(suggestion =>
-                this.timeslotService.setRepeatable(
-                    suggestion.model, false
-                )
-            )
+        this.selected = null;
+        const currentSuggestion = this.getCurrentSuggestions().find(suggestion =>
+            suggestion.copy === timeslot
+        );
+
+        this.timeslotService.setRepeatable(
+            currentSuggestion.model, false
         ).subscribe(() => {
-            this.setupTimeslots();
-            this.selectedSub$.next(timeslot);
+            this.updatedTimeslots.emit();
         });
     }
 
 
-    timeslotGroupData(timeslots: Timeslot[]): TypeOption[] {
+    timeslotGroupData(): TypeOption[] {
+        const timeslots = this.timeslots;
+
         if (!timeslots) {
             return [];
         }
@@ -341,32 +337,25 @@ export class LocationCalendarComponent implements OnInit, OnDestroy {
         };
     }
 
-    isSuggestion(timeslot: Timeslot): Observable<boolean> {
-        return this.suggestionsSub.pipe(
-            map((suggestions: any[]) =>
-                suggestions.map(s => s.copy)
-            ),
-            map((mappedSuggestions: any[]) =>
-                mappedSuggestions.some(suggestion => timeslot.timeslotSequenceNumber === suggestion.timeslotSequenceNumber)
-            ), first()
+    isSuggestion(timeslot: Timeslot): boolean {
+        return this.suggestions.some(suggestion =>
+            timeslot.timeslotSequenceNumber === suggestion.copy.timeslotSequenceNumber
         );
     }
 
-    getCurrentSuggestions(): Observable<Suggestion[]> {
-        return this.suggestionsSub.pipe(
-            map(suggestions => {
-                let granularity: StartOf = 'day';
+    getCurrentSuggestions(): Suggestion[] {
+        let granularity: StartOf = 'day';
 
-                if (this.calendarViewStyle === CalendarView.Week) {
-                    granularity = 'isoWeek';
-                }
+        if (this.calendarViewStyle === CalendarView.Week) {
+            granularity = 'isoWeek';
+        }
 
-                if (this.calendarViewStyle === CalendarView.Month) {
-                    granularity = 'month';
-                }
+        if (this.calendarViewStyle === CalendarView.Month) {
+            granularity = 'month';
+        }
 
-                return this.timeslotGroupService.filterSuggestionsByMoment(suggestions, this.currentTime, granularity);
-            }), first()
+        return this.timeslotGroupService.filterSuggestionsByMoment(
+            this.suggestions, this.currentTime, granularity
         );
     }
 }

@@ -1,5 +1,5 @@
 import {Component, ViewChild} from '@angular/core';
-import {combineLatest, Observable} from 'rxjs';
+import {combineLatest, concat, EMPTY, Observable} from 'rxjs';
 import {User} from '../../../../model/User';
 import {Building} from '../../../../model/Building';
 import {Location} from '../../../../model/Location';
@@ -8,7 +8,7 @@ import {AuthenticationService} from '../../../../extensions/services/authenticat
 import {AuthoritiesService} from '../../../../extensions/services/api/authorities/authorities.service';
 import {BuildingService} from '../../../../extensions/services/api/buildings/buildings.service';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {map, mergeMap, switchMap} from 'rxjs/operators';
+import {concatAll, map, mergeMap, share, startWith, switchMap} from 'rxjs/operators';
 import {Authority} from '../../../../model/Authority';
 import {DeleteAction, ListAction, TableAction, TableMapper} from '../../../../model/Table';
 import {Router} from '@angular/router';
@@ -16,6 +16,7 @@ import {Timeslot} from '../../../../model/Timeslot';
 import {BaseManagementComponent} from '../base-management.component';
 import {ModalComponent} from '../../../stad-gent-components/molecules/modal/modal.component';
 import {TimeslotsService} from '../../../../extensions/services/api/calendar-periods/timeslot.service';
+import {of} from 'rxjs/internal/observable/of';
 
 @Component({
     selector: 'app-locations-management',
@@ -48,7 +49,9 @@ export class LocationsManagementComponent extends BaseManagementComponent<Locati
         super.ngOnInit();
 
         this.userObs$ = this.authenticationService.getUserObs();
+
         this.buildingsObs$ = this.buildingsService.getAllBuildings();
+
         this.authoritiesObs$ = this.userObs$.pipe(
             mergeMap((user: User) => {
                 if (user.isAdmin()) {
@@ -58,17 +61,22 @@ export class LocationsManagementComponent extends BaseManagementComponent<Locati
                 }
             })
         );
+
         this.volunteersObs$ = this.selectedSub$.pipe(
             switchMap(location =>
                 this.locationService.getVolunteers(location.locationId)
             )
         );
+
         this.timeslotObs$ = this.selectedSub$.pipe(
             switchMap(location =>
                 this.timeslotService.getTimeslotsOfLocation(location.locationId)
             )
         );
-        this.locationsObs$ = combineLatest([this.userObs$, this.refresh$]).pipe(
+
+        this.locationsObs$ = combineLatest([
+            this.userObs$, this.refresh$.pipe(startWith(EMPTY))
+        ]).pipe(
             switchMap(([user]) =>
                 this.locationService.getAllLocations().pipe(
                     map(locations =>

@@ -1,4 +1,6 @@
-<ng-container *ngIf="{selected: selectedSub$ | async} as context">
+<ng-container *ngIf="{
+    selected: selectedSub$ | async
+} as context">
     <!-- Title -->
     <div class="d-flex align-items-center justify-content-between mb-4">
         <h3 class="m-0">
@@ -8,7 +10,7 @@
     <!-- List -->
     <app-management-table
         [stateless]="false"
-        [data]="itemsSub | async"
+        [data]="reservations"
         [actions]="getTableActions()"
         [mapper]="getTableMapper()">
     </app-management-table>
@@ -43,7 +45,7 @@
         </ng-container>
 
         <!-- Footer -->
-        <div modal-footer fxLayout="row wrap" fxLayoutGap="10px grid">
+        <div modal-footer>
             <div>
                 <button type="button" class="button button-primary" (click)="storeDelete(context.selected)">
                     {{'management.reservations.location.deleteModal.yesButton' | translate}}

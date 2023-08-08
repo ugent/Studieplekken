@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {
     LocationReservationsService
 } from '../../../extensions/services/api/location-reservations/location-reservations.service';
@@ -19,7 +19,10 @@ import {TranslateService} from '@ngx-translate/core';
 export class ProfileReservationsComponent extends BaseManagementComponent<LocationReservation> {
 
     @Input() user: User;
+    @Input() reservations: LocationReservation[];
     @Input() isManagement = false;
+
+    @Output() updatedReservations = new EventEmitter<void>();
 
     constructor(
         private locationService: LocationService,
@@ -29,16 +32,13 @@ export class ProfileReservationsComponent extends BaseManagementComponent<Locati
         super();
     }
 
-    setupItems(): void {
-        this.reservationService.getLocationReservationsOfUser(this.user.userId).subscribe(reservations =>
-            this.itemsSub.next(reservations.filter(reservation => !reservation.isDeleted()).sort((a, b) =>
-                b.timeslot.timeslotDate?.diff(a.timeslot.timeslotDate)
-            ))
+    ngOnInit(): void {
+        this.refresh$.subscribe(() =>
+            this.updatedReservations.emit()
         );
     }
 
     storeDelete(item: LocationReservation): void {
-        console.log(item);
         this.sendBackendRequest(
             this.reservationService.deleteLocationReservation(item)
         );
@@ -53,7 +53,7 @@ export class ProfileReservationsComponent extends BaseManagementComponent<Locati
             ),
             'profile.reservations.locations.table.header.reservationDate': reservation.timeslot.timeslotDate.format('YYYY/MM/DD'),
             'profile.reservations.locations.table.header.beginHour': reservation.timeslot.openingHour.format('HH:mm'),
-            'profile.reservations.locations.table.header.state': this.translateService.get(
+            'profile.reservations.locations.table.header.state': this.translateService.stream(
                 'profile.reservations.locations.table.attended.' + reservation.state
             )
         });

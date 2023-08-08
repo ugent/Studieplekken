@@ -6,7 +6,8 @@
 
         <div class="my-5">
             <app-profile-reservations
-                [user]="user">
+                [user]="user"
+                [reservations]="reservationsObs$ | async">
             </app-profile-reservations>
         </div>
 

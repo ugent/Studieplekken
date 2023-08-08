@@ -1,10 +1,10 @@
 import {
     Component,
     EventEmitter,
-    Input,
+    Input, OnChanges,
     OnDestroy,
     OnInit,
-    Output,
+    Output, SimpleChange, SimpleChanges,
     ViewChild
 } from '@angular/core';
 import * as moment from 'moment';
@@ -19,45 +19,32 @@ import {BehaviorSubject, combineLatest, Observable, Subject, Subscription} from 
     templateUrl: './location-add-timeslot-dialog.component.html',
     styleUrls: ['./location-add-timeslot-dialog.component.css']
 })
-export class LocationAddTimeslotDialogComponent implements OnInit, OnDestroy {
+export class LocationAddTimeslotDialogComponent implements OnChanges {
 
     @ViewChild(ModalComponent) modal: ModalComponent;
 
-    @Input() location: Observable<Location>;
-    @Input() timeslot: Observable<Timeslot>;
-    @Output() onNewTimeslot: EventEmitter<Timeslot> = new EventEmitter();
-    @Output() onUpdateTimeslot: EventEmitter<Timeslot> = new EventEmitter();
+    @Input() location: Location;
+    @Input() timeslot: Timeslot;
 
-    protected displayErrorTime: Subject<boolean>;
-    protected displayErrorSeats: Subject<boolean>;
+    @Output() onNewTimeslot = new EventEmitter<Timeslot>();
+    @Output() onUpdateTimeslot = new EventEmitter<Timeslot>();
+
+    protected displayErrorTime: boolean;
+    protected displayErrorSeats: boolean;
 
     protected newTimeslot: Timeslot = new Timeslot();
-    protected subscription: Subscription;
 
-    constructor() {
-        this.displayErrorTime = new BehaviorSubject(false);
-        this.displayErrorSeats = new BehaviorSubject(false);
-        this.subscription = new Subscription();
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes.location || changes.timeslot) {
+            this.setupForm(this.timeslot ?? new Timeslot(
+                0, null, 0, this.location?.numberOfSeats, false, null, this.location?.locationId
+            ));
+        }
     }
 
-    ngOnInit(): void {
-        this.subscription.add(
-            combineLatest([
-                this.location, this.timeslot
-            ]).subscribe(([location, timeslot]) => {
-               this.setupForm(timeslot ?? new Timeslot(
-               0, null, 0, location.numberOfSeats, false, null, location.locationId
-               ));
-            })
-        );
-    }
-
-    setupForm(timeslot: Timeslot): void {
+    setupForm(timeslot: Timeslot = this.timeslot): void {
         this.newTimeslot = timeslot;
-    }
-
-    ngOnDestroy(): void {
-        this.subscription.unsubscribe();
     }
 
     getMinStartDate(): Moment {
@@ -83,8 +70,8 @@ export class LocationAddTimeslotDialogComponent implements OnInit, OnDestroy {
     confirm(): void {
         if (this.newTimeslot.closingHour.isAfter(this.newTimeslot.openingHour)) {
             if (this.newTimeslot.seatCount >= this.newTimeslot.amountOfReservations) {
-                this.displayErrorTime.next(false);
-                this.displayErrorSeats.next(false);
+                this.displayErrorTime = false;
+                this.displayErrorSeats = false;
 
                 if (this.isUpdating()) {
                     this.onUpdateTimeslot.next(this.newTimeslot);
@@ -92,10 +79,10 @@ export class LocationAddTimeslotDialogComponent implements OnInit, OnDestroy {
                     this.onNewTimeslot.next(this.newTimeslot);
                 }
             } else {
-                this.displayErrorSeats.next(true);
+                this.displayErrorSeats = true;
             }
         } else {
-            this.displayErrorTime.next(true);
+            this.displayErrorTime = true;
         }
     }
 

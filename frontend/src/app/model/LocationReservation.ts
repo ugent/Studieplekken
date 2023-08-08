@@ -22,6 +22,9 @@ export class LocationReservation {
     }
 
     static fromJSON(json: LocationReservation): LocationReservation {
+        if (!json) {
+            return null;
+        }
         return new LocationReservation(
             UserConstructor.newFromObj(json.user),
             Timeslot.fromJSON(json.timeslot),

@@ -1,7 +1,7 @@
 <article class="content">
-    <h2 *ngIf="isProfile">
+    <h3 *ngIf="isProfile">
         {{ "header.navigation.profile" | translate }}
-    </h2>
+    </h3>
     <section *ngIf="isProfile" class="profile">
         <span class="avatar">{{ user.firstName[0] }}</span>
         <div class="profile-info">
@@ -15,23 +15,22 @@
     </section>
 
     <section *ngIf="!isProfile">
-        <h2>{{"header.navigation.general" | translate}}</h2>
+        <h3>{{"header.navigation.general" | translate}}</h3>
         <ul class="links">
             <li><a (click)="close()" routerLink="/">{{"header.navigation.dashboard" | translate }}</a></li>
             <li><a (click)="close()" routerLink="/information">{{"header.navigation.information" | translate }}</a></li>
         </ul>
+        <ng-container *ngIf="user.isAdmin() || user.isScanner()">
+            <h3>{{"header.navigation.management" | translate}}</h3>
+            <ul class="links">
+                <li><a (click)="close()" *ngIf="user.isAuthority()" routerLink="/management">{{'header.navigation.management' | translate }}</a></li>
+                <li><a (click)="close()" *ngIf="user.isScanner()" routerLink='/scan'>{{'header.navigation.scan' | translate }}</a></li>
+            </ul>
+        </ng-container>
     </section>
 
-    <section *ngIf="!isProfile && showLoggedIn">
-        <h2>{{"header.navigation.management" | translate}}</h2>
-        <ul class="links">
-            <li><a (click)="close()" *ngIf="showAdmin || showManagement" routerLink="/management">{{'header.navigation.management' | translate }}</a></li>
-            <li><a (click)="close()" *ngIf="showAdmin || showVolunteer" routerLink='/scan'>{{'header.navigation.scan' | translate }}</a></li>
-        </ul>
-    </section>
-
-    <footer *ngIf="isProfile">
-        <a (click)='showLoggedIn && logout()' class="button button-small button-secondary">
+    <footer class="mt-3" *ngIf="isProfile">
+        <a (click)='user.isLoggedIn() && logout()' class="button button-small button-secondary">
             {{"header.logOut" | translate}}
         </a>
     </footer>
