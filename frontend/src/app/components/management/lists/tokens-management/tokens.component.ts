@@ -54,12 +54,16 @@ export class TokensComponent extends BaseManagementComponent<Token> {
         );
     }
 
+    getTableActions(): TableAction<Token>[] {
+        return [];
+    }
+
     getTableMapper(): TableMapper<Token> {
         return (token: Token) => ({
-            'management.tokens-management.table.token': token.token,
-            'management.tokens-management.table.purpose': token.purpose,
-            'management.tokens-management.table.email': token.email,
-            'management.tokens-management.table.used': token.isUsed
+            'management.tokens.table.token': token.token,
+            'management.tokens.table.purpose': token.purpose,
+            'management.tokens.table.email': token.email,
+            'management.tokens.table.used': token.isUsed
         });
     }
 
