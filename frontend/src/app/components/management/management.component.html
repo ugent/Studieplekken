@@ -15,6 +15,9 @@
                             <a routerLink="./buildings" *ngIf="user.isAuthority()">
                                 {{'management.aside.buildings' | translate}}
                             </a>
+                            <a routerLink="./authorities" *ngIf="user.isAdmin()">
+                                {{'management.aside.authorities' | translate}}
+                            </a>
                             <a routerLink="./tags" *ngIf="user.isAdmin()">
                                 {{'management.aside.tags' | translate}}
                             </a>

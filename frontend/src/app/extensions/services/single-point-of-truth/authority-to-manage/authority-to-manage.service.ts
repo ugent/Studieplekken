@@ -1,17 +1,17 @@
-import { Injectable } from '@angular/core';
-import { Authority } from '../../../../model/Authority';
+import {Injectable} from '@angular/core';
+import {Authority} from '../../../../model/Authority';
 
 @Injectable({
-  providedIn: 'root',
+    providedIn: 'root',
 })
 export class AuthorityToManageService {
-  authorityData: Authority;
+    authorityData: Authority;
 
-  get authority(): Authority {
-    return this.authorityData;
-  }
+    get authority(): Authority {
+        return this.authorityData;
+    }
 
-  set authority(authority: Authority) {
-    this.authorityData = authority;
-  }
+    set authority(authority: Authority) {
+        this.authorityData = authority;
+    }
 }
