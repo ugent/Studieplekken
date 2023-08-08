@@ -137,5 +137,5 @@ export const api = {
     getStatsForInstitution: 'api/stats/institutions/{institutionLocations}/students/{institutionStudents}/from/{from}/to/{to}',
 
     // TOKENS
-    tokens: '/api/tokens-management',
+    tokens: '/api/tokens',
 };
