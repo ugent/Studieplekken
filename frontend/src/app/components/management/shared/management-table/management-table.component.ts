@@ -222,9 +222,9 @@ export class ManagementTableComponent<T> implements OnInit, OnChanges, OnDestroy
     setSearch(search: string): void {
         this.search = search;
 
-        this.resetPagination();
         this.updateData();
         this.updateQuery();
+        this.resetPagination();
     }
 
     /**
@@ -314,8 +314,8 @@ export class ManagementTableComponent<T> implements OnInit, OnChanges, OnDestroy
 
     resetPagination(): void {
         this.pagination = {
-            currentPage: 1,
-            ...this.pagination
+            ...this.pagination,
+            currentPage: 1
         };
     }
 
