@@ -111,9 +111,9 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
                 this.locationSub.next(location);
                 this.userSub.next(user);
 
-                // Update reservations (and calendar) every 10 seconds.
+                // Update reservations (and calendar) every minute.
                 this.subscription.add(
-                    timer(0, 10000).subscribe(() => {
+                    timer(0, 1000 * 60).subscribe(() => {
                         this.updateReservations();
                     })
                 );
