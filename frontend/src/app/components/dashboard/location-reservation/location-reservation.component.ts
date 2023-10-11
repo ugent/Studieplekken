@@ -82,10 +82,11 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
             this.locationService.getLocation(locationID)
         ]).pipe(
             tap(([user, location]) => {
-                this.isNotFound = !!!location;
 
                 this.location = location;
                 this.user = user;
+
+                this.isNotFound = !!!location;
 
                 this.showEdit = user.isAdmin() || user.userAuthorities.some(authority =>
                     authority.authorityId === location.authority.authorityId
@@ -98,10 +99,10 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
                     url: `/dashboard/${ location?.locationId }`
                 }]);
 
+
                 this.updateEvents().then(() => this.updateReservations());
             })
         );
-
         this.setupSubscriptions();
     }
 
