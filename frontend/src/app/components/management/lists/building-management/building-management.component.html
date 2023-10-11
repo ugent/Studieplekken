@@ -1,9 +1,4 @@
-<ng-container *ngIf="{
-    user: userObs$ | async,
-    buildings: buildingsObs$ | async,
-    institutions: institutionObs$ | async,
-    selected: selectedSub$ | async
-} as context">
+<ng-container *ngIf="contextObs$ | async">
     <!-- Title -->
     <div class="d-flex align-items-center justify-content-between mb-4">
         <h3 class="m-0">
@@ -15,14 +10,14 @@
     </div>
     <!-- List -->
     <app-management-table
-            [data]="context.buildings"
+            [data]="buildings"
             [actions]="getTableActions()"
             [mapper]="getTableMapper()">
     </app-management-table>
     <!-- Add/edit building form -->
     <app-modal #modify>
         <h2 modal-header>
-            <ng-container *ngIf="context.selected; else addTitle">
+            <ng-container *ngIf="selectedSub$ | async; else addTitle">
                 {{'management.buildings.updateBuildingModal.title'  | translate }}
             </ng-container>
             <ng-template #addTitle>
@@ -53,7 +48,7 @@
                 </div>
 
                 <!-- Institution of building -->
-                <div class="row" *ngIf="context.institutions as institutions">
+                <div class="row" *ngIf="institutions.length">
                     <label class="control-label" for="instituionCreate">
                         {{'management.buildings.table.institution' | translate}} <span
                             class="text-red ms-1">*</span>
@@ -68,7 +63,7 @@
         </div>
         <!-- Modal footer -->
         <div modal-footer>
-            <ng-container *ngIf="context.selected as building; else addButton">
+            <ng-container *ngIf="selectedSub$ | async as building; else addButton">
                 <button type="submit" class="button button-primary" [disabled]="!formGroup.valid" (click)="storeUpdate(building)">
                     {{ 'general.buttons.update' | translate }}
                 </button>
@@ -111,7 +106,7 @@
 
     <!-- Modal view to ask whether the user is sure to delete the building -->
     <app-modal #remove>
-        <h2  *ngIf="context.selected as building" modal-header>
+        <h2  *ngIf="selectedSub$ | async as building" modal-header>
             {{'management.buildings.deleteBuildingModal.title' | translate}} "{{ building.name }}"
         </h2>
         <div modal-body>
@@ -123,7 +118,7 @@
                 {{ 'management.buildings.deleteBuildingModal.warning' | translate }}
             </div>
         </div>
-        <div *ngIf="context.selected as building" modal-footer>
+        <div *ngIf="selectedSub$ | async as building" modal-footer>
             <button type="button" class="button button-primary" (click)="storeDelete(building)">
                 {{'general.buttons.delete' | translate}}
             </button>

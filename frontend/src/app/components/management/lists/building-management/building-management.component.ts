@@ -22,9 +22,11 @@ import {of} from 'rxjs/internal/observable/of';
 })
 export class BuildingManagementComponent extends BaseManagementComponent<Building> {
 
-    protected userObs$: Observable<User>;
-    protected buildingsObs$: Observable<Building[]>;
-    protected institutionObs$: Observable<string[]>;
+    protected contextObs$: Observable<any>;
+
+    protected user: User;
+    protected buildings: Building[];
+    protected institutions: string[];
 
     constructor(
         private authenticationService: AuthenticationService,
@@ -37,26 +39,18 @@ export class BuildingManagementComponent extends BaseManagementComponent<Buildin
     ngOnInit(): void {
         super.ngOnInit();
 
-        this.userObs$ = this.authenticationService.getUserObs();
-
-        this.institutionObs$ = this.userObs$.pipe(
-            map(user =>
-                user.isAdmin() ? institutions : [user.institution]
-            )
-        );
-
-        this.buildingsObs$ = this.refresh$.pipe(
-            startWith(EMPTY), switchMap(() =>
-                combineLatest([
-                    this.userObs$, this.buildingService.getAllBuildings()
-                ]).pipe(
-                    map(([user, buildings]) =>
-                        buildings.filter((building: Building) =>
-                            (building.institution === user.institution) || user.isAdmin()
-                        )
-                    )
-                )
-            )
+        this.contextObs$ = combineLatest([
+            this.authenticationService.getUserObs(),
+            this.buildingService.getAllBuildings(),
+            this.refresh$.pipe(startWith(EMPTY))
+        ]).pipe(
+            tap(([user, buildings]) => {
+                this.user = user;
+                this.buildings = buildings.filter(building =>
+                    building.institution === user.institution || user.isAdmin()
+                );
+                this.institutions = user.isAdmin() ? institutions : [user.institution];
+            })
         );
     }
 
