@@ -1,28 +1,27 @@
-<ng-container *ngIf="contextObs$ | async as context; else loading">
+<ng-container *ngIf="contextSub$ | async">
     <div class="d-flex justify-content-between align-items-center">
         <h1 class="mb-3 mt-0">
-            {{ context.location.name }}
+            {{ location.name }}
         </h1>
-        <button class="button button-primary mt-0 mb-3" *ngIf="showEdit" routerLink="/management/locations/{{ context.location.locationId }}">
+        <button class="button button-primary mt-0 mb-3" *ngIf="showEdit" routerLink="/management/locations/{{ location.locationId }}">
             {{'dashboard.locationDetails.buttons.manage' | translate}}
         </button>
     </div>
     <hr>
-
     <app-location-reservation-details
-        [user]="context.user"
-        [location]="context.location"
-        [language]="context.language">
+        [user]="user"
+        [language]="language"
+        [location]="location">
     </app-location-reservation-details>
 
     <app-location-reservation-calendar
-        [user]="context.user"
-        [location]="context.location"
+        [user]="user"
+        [location]="location"
         [events]="events"
         [newReservations]="newReservations"
         [removedReservations]="removedReservations"
-        (committedReservations)="setupReservations(context.location, context.language, true)"
-        (timeslotPicked)="timeslotPicked(context.user, context.location, context.language, $event)">
+        (committedReservations)="updateReservations(true)"
+        (timeslotPicked)="timeslotPicked($event)">
     </app-location-reservation-calendar>
 
     <div class="row">
@@ -33,7 +32,7 @@
             <hr>
             <!-- Own reservations -->
             <app-location-reservation-list
-                [user]="context.user"
+                [user]="user"
                 [reservations]="allReservations">
             </app-location-reservation-list>
         </div>
@@ -41,27 +40,27 @@
             <!-- Leaflet -->
             <h3>{{'dashboard.location' | translate}}</h3>
             <hr>
-            <app-map [location]="context.location" class="leaflet-container">
+            <app-map [location]="location" class="leaflet-container">
 
             </app-map>
         </div>
     </div>
+
+    <!-- Loading location -->
+    <ng-template #loading>
+        <ng-container *ngIf="!isNotFound">
+            <div class="messages messages--info center my-5">
+                <i class="icon-info" aria-hidden="true"></i>
+                {{ 'reservations.loading' | translate }}
+            </div>
+        </ng-container>
+
+        <!-- Location not found -->
+        <ng-container *ngIf="isNotFound">
+            <div class="messages messages--error center my-5">
+                <i class="icon-cross" aria-hidden="true"></i>
+                {{ 'reservations.notFound' | translate }}
+            </div>
+        </ng-container>
+    </ng-template>
 </ng-container>
-
-<!-- Loading location -->
-<ng-template #loading>
-    <ng-container *ngIf="!isNotFound">
-        <div class="messages messages--info center my-5">
-            <i class="icon-info" aria-hidden="true"></i>
-            {{ 'reservations.loading' | translate }}
-        </div>
-    </ng-container>
-
-    <!-- Location not found -->
-    <ng-container *ngIf="isNotFound">
-        <div class="messages messages--error center my-5">
-            <i class="icon-cross" aria-hidden="true"></i>
-            {{ 'reservations.notFound' | translate }}
-        </div>
-    </ng-container>
-</ng-template>
