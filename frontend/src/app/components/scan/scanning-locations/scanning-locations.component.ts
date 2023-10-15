@@ -1,54 +1,60 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Observable, Subject } from 'rxjs';
-import { of } from 'rxjs/internal/observable/of';
-import { catchError, map } from 'rxjs/operators';
-import { booleanSorter } from 'src/app/extensions/util/Util';
-import { ScanningService } from '../../../extensions/services/api/scan/scanning.service';
-import { Location } from '../../../extensions/model/Location';
-import { TableDataService } from '../../../stad-gent-components/atoms/table/data-service/table-data-service.service';
-import * as moment from "moment";
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {Observable, ReplaySubject, Subject} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {ScanningService} from '../../../extensions/services/api/scan/scanning.service';
+import {Location} from '../../../model/Location';
+import {TableDataService} from '../../stad-gent-components/atoms/table/data-service/table-data-service.service';
+import {TableComponent} from '../../../contracts/table.component.interface';
+import {ListAction, TableAction, TableMapper} from '../../../model/Table';
+import * as moment from 'moment/moment';
 
 @Component({
-  selector: 'app-scanning-locations',
-  templateUrl: './scanning-locations.component.html',
-  styleUrls: ['./scanning-locations.component.scss'],
+    selector: 'app-scanning-locations',
+    templateUrl: './scanning-locations.component.html',
+    styleUrls: ['./scanning-locations.component.scss'],
 })
-export class ScanningLocationsComponent implements OnInit {
-  locationObs: Observable<Location[]>;
-  loadingError = new Subject<boolean>();
+export class ScanningLocationsComponent implements OnInit, TableComponent<Location> {
 
-  constructor(
-    private scanningService: ScanningService,
-    private tableDataService: TableDataService,
-    private router: Router
-  ) {}
+    protected locationObs$: Observable<Location[]>;
 
-  ngOnInit(): void {
-    this.locationObs = this.scanningService.getLocationsToScan().pipe(
-      catchError((err) => {
-        console.error('Error while loading the locations you could scan.', err);
-        this.loadingError.next(true);
-        return of<Location[]>(null);
-      }),
-      map((l) =>
-        l.sort(
-          booleanSorter((l) => this.tableDataService.isLocationScannable(l))
-        )
-      )
-    );
-  }
-  getTableData(locations: Location[]) {
-    return this.tableDataService.locationsToScannable(locations);
-  }
+    constructor(
+        private scanningService: ScanningService,
+        private tableDataService: TableDataService,
+        private router: Router
+    ) {
+        this.locationObs$ = new ReplaySubject();
+    }
 
-  onAction({ data, columnIndex }: { data: Location; columnIndex: number }) {
-    this.router.navigate([`/scan/locations/${data.locationId}`]);
-  }
+    ngOnInit(): void {
+       this.locationObs$ = this.scanningService.getLocationsToScan().pipe(
+            map((locations) =>
+                locations.filter(location =>
+                    this.isScannable(location)
+                )
+            )
+        );
+    }
 
-  isScannable(location: Location) {
-    return (location.currentTimeslot
-      && location.currentTimeslot.reservable
-      && location.currentTimeslot.getStartMoment().isBefore(moment().add(30, "minutes")))
-  }
+    isScannable(location: Location): boolean {
+        return location.currentTimeslot && location.currentTimeslot.reservable && moment().isAfter(
+            location.currentTimeslot.getStartMoment().subtract(30, 'minutes')
+        );
+    }
+
+    getTableActions(): TableAction<Location>[] {
+        return [
+            new ListAction((location: Location) =>
+                void this.router.navigate(['/scan/locations/' + location.locationId])
+            )
+        ];
+    }
+
+    getTableMapper(): TableMapper<Location> {
+        return (location: Location) => ({
+            'scan.locations.header.name': location.name,
+            'scan.locations.header.building': location.building.name,
+            'scan.locations.header.numberOfSeats': location.numberOfSeats
+        });
+    }
 }

@@ -1,42 +1,34 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
 import {AuthenticationService} from '../../extensions/services/authentication/authentication.service';
-import {combineLatest} from 'rxjs';
-import {BreadcrumbService, managementBreadcrumb} from '../../stad-gent-components/header/breadcrumbs/breadcrumb.service';
+import {Observable, Subscription} from 'rxjs';
+import {BreadcrumbService, managementBreadcrumb} from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
 import {environment} from 'src/environments/environment';
+import {User} from '../../model/User';
 
 @Component({
     selector: 'app-management',
     templateUrl: './management.component.html',
-    styleUrls: ['./management.component.scss'],
+    styleUrls: ['./management.component.scss']
 })
 export class ManagementComponent implements OnInit {
-    showTagManagement: boolean;
-    showAdmin: boolean;
-    showVolunteersManagement: boolean;
-    showActionlog: boolean;
-    showStats: boolean;
-    showStagingWarning = environment.showStagingWarning;
+
+    protected userObs$: Observable<User>;
+
+    protected showStagingWarning: boolean;
 
     constructor(
         private authenticationService: AuthenticationService,
         private breadcrumbsService: BreadcrumbService
-    ) {}
+    ) {
+        this.showStagingWarning = environment.showStagingWarning;
+    }
 
     ngOnInit(): void {
-        // Show certain functionality depending on the role of the user
-        const authenticatedUserObs = this.authenticationService.user;
-        const hasAuthoritiesObs = this.authenticationService.hasAuthoritiesObs;
+        // Show certain functionality depending on the role of the user.
+        this.userObs$ = this.authenticationService.user;
 
-        combineLatest([authenticatedUserObs, hasAuthoritiesObs]).subscribe(
-            ([authenticatedUser, hasAuthorities]) => {
-                this.showAdmin = authenticatedUser.admin;
-                this.showTagManagement = authenticatedUser.admin;
-                this.showVolunteersManagement = authenticatedUser.admin || hasAuthorities;
-                this.showActionlog = authenticatedUser.admin;
-                this.showStats = authenticatedUser.admin;
-            }
-        );
-
-        this.breadcrumbsService.setCurrentBreadcrumbs([managementBreadcrumb]);
+        this.breadcrumbsService.setCurrentBreadcrumbs([
+            managementBreadcrumb
+        ]);
     }
 }

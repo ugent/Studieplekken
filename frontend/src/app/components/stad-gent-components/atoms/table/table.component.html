@@ -1,0 +1,5 @@
+<div *ngIf="copyOfTabData">
+    <div class="desktop">
+        <app-desktop-table [tabularData]="copyOfTabData" (action)="onAction($event)"></app-desktop-table>
+    </div>
+</div>

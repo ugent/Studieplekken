@@ -1,0 +1,57 @@
+<ng-container *ngIf="{
+    currentUser: currentUserObs$ | async,
+    loggedInUser: loggedInUserObs$ | async,
+    penalties: penaltiesObs$ | async,
+    reservations: reservationsObs$ | async,
+    addedAuthorities: addedAuthoritiesObs$ | async,
+    addableAuthorities: addableAuthoritiesObs$ | async
+} as context;">
+    <ng-container *ngIf="context.currentUser as currentUser; else notFound">
+        <!-- Form with details of the user -->
+        <app-user-details-form
+                [user]="currentUser">
+        </app-user-details-form>
+
+        <!-- If the user is an EMPLOYEE or ADMIN, show the authorities of the user -->
+        <div class="mt-4">
+            <app-user-authorities-management
+                    [user]="currentUser"
+                    [addedAuthorities]="context.addedAuthorities"
+                    [addableAuthorities]="context.addableAuthorities"
+                    (updatedAuthorities)="refresh()">
+            </app-user-authorities-management>
+        </div>
+
+        <div class="mt-4">
+            <app-profile-reservations
+                    [user]="currentUser"
+                    [reservations]="context.reservations"
+                    [isManagement]="true">
+            </app-profile-reservations>
+        </div>
+
+        <div class="mt-4">
+            <!-- Table with all penalty points and the option to add/delete them manually  -->
+            <app-user-penalty-manager
+                    [currentUser]="currentUser"
+                    [loggedInUser]="context.loggedInUser"
+                    [penalties]="context.penalties"
+                    (updatedPenalties)="refresh()">
+            </app-user-penalty-manager>
+        </div>
+
+        <!-- If the user is an ADMIN, then he may change the role of a user -->
+        <div *ngIf="showRolesManagement">
+            <app-user-roles
+                    [user]="currentUser">
+            </app-user-roles>
+        </div>
+    </ng-container>
+    <ng-template #notFound>
+        <!-- If querying the user is not successful, show an error -->
+        <div class="messages messages--error">
+            <i class="icon-cross"></i>
+            {{('management.users.userDetails.errorQuerying' | translate).replace('{id}', userId)}}
+        </div>
+    </ng-template>
+</ng-container>

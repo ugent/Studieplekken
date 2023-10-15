@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { merge, Observable, of } from 'rxjs';
-import { ActionLogEntry } from '../model/ActionLogEntry';
+import { ActionLogEntry } from '../../model/ActionLogEntry';
 import { flatMap, map, mergeMap } from 'rxjs/operators';
 
 @Pipe({name: 'formatAction'})

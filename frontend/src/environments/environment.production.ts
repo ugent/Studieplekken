@@ -1,11 +1,5 @@
-export enum APPLICATION_TYPE {
-  BLOK_AT,
-  MINI_THERMIS,
-}
-
 export const environment = {
   production: true,
-  applicationType: APPLICATION_TYPE.MINI_THERMIS,
   casFlowTriggerUrl: 'https://auth.studieplekken.ugent.be/auth/login/cas',
   hoGentFlowTriggerUrl: 'https://auth.studieplekken.ugent.be/auth/login/hogent',
   arteveldeHSFlowTriggerUrl: 'https://auth.studieplekken.ugent.be/auth/login/artevelde',

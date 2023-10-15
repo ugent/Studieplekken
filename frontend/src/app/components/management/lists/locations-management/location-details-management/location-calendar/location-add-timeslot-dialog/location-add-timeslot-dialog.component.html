@@ -1,0 +1,115 @@
+<!-- Modal header -->
+<app-modal #modal>
+    <h2 modal-header *ngIf="!isUpdating()">
+        {{'management.locationDetails.calendar.addModalView.title' | translate}}
+    </h2>
+    <h2 modal-header *ngIf="isUpdating()">
+        {{'management.locationDetails.calendar.updateModalView.title' | translate}}
+    </h2>
+
+    <div modal-body>
+        <form>
+            <!-- Starts at -->
+            <div class="row">
+                <div class="col">
+                    <label class="control-label" for="startsAt">
+                        {{'management.locationDetails.calendar.form.date' | translate}}
+                        <app-moment-date id="startsAt" [(model)]="newTimeslot.timeslotDate" [type]="'date'" [min]="getMinStartDate()"></app-moment-date>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Opening time -->
+            <div class="row">
+                <div class="col">
+                    <label class="control-label" for="openingTime">
+                        {{'management.locationDetails.calendar.form.openingTime' | translate}}
+                        <app-moment-date id="openingTime" [(model)]="newTimeslot.openingHour" [type]="'time'"></app-moment-date>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Closing time -->
+            <div class="row">
+                <div class="col">
+                    <label class="control-label" for="closingTime">
+                        {{'management.locationDetails.calendar.form.closingTime' | translate}}
+                        <app-moment-date id="closingTime" [(model)]="newTimeslot.closingHour" [type]="'time'" [min]="newTimeslot.openingHour"></app-moment-date>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Repeat -->
+            <div class="row">
+                <div class="col">
+                    <input id="repeatable" type="checkbox" [(ngModel)]="newTimeslot.repeatable" name="repeatable" /> {{'management.locationDetails.calendar.form.repeatable' | translate}}
+                </div>
+            </div>
+
+            <!-- Reservable -->
+            <div class="row">
+                <div class="col">
+                    <input id="reservable" type="checkbox" [(ngModel)]="newTimeslot.reservable" name="reservable" /> {{'management.locationDetails.calendar.form.reservable' | translate}}
+                </div>
+            </div>
+
+            <!-- Reservable from -->
+            <div class="row">
+                <div class="col">
+                    <label class="control-label" for="reservableFrom">
+                        {{'management.locationDetails.calendar.form.reservableFrom' | translate}}
+                        <app-moment-datetime id="reservableFrom"
+                                             [(model)]="newTimeslot.reservableFrom"
+                                             [disabled]="!newTimeslot.reservable"
+                                             [min]="getMinReservableFrom(newTimeslot)"
+                                             [max]="newTimeslot.timeslotDate">
+                        </app-moment-datetime>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Seat count -->
+            <div class="row">
+                <div class="col">
+                    <label class="control-label" for="seatCount">
+                        {{'management.locationDetails.calendar.form.numberOfSeats' | translate}}
+                        <input id="seatCount" type="number"
+                               [(ngModel)]="newTimeslot.seatCount"
+                               [min]="newTimeslot.amountOfReservations + 30"
+                               [disabled]="!newTimeslot.reservable" name="seatCount"
+                        />
+                    </label>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div modal-footer>
+        <button class="button button-primary" (click)="confirm()" [disabled]="!newTimeslot.isValid()" *ngIf="!isUpdating()">
+            {{'general.buttons.add' | translate}}
+        </button>
+
+        <button class="button button-primary" (click)="confirm()" [disabled]="!newTimeslot.isValid()" *ngIf="isUpdating()">
+            {{'general.buttons.update' | translate}}
+        </button>
+
+        <button type="button" class="button button-secondary" (click)="closeModal()">
+            {{'general.buttons.cancel' | translate}}
+        </button>
+    </div>
+    <div modal-message-footer>
+        <div *ngIf="displayErrorTime">
+            <div class="messages messages--warning">
+                <i class="icon-exclamation"></i>
+                {{'management.locationDetails.calendar.form.openingClosingHourError' | translate}}
+            </div>
+        </div>
+        <div *ngIf="displayErrorSeats">
+            <div class="messages messages--warning">
+                <i class="icon-exclamation"></i>
+                {{('management.locationDetails.calendar.form.seatsError' | translate).replace('{amountOfReservations}', newTimeslot.amountOfReservations) }}
+            </div>
+        </div>
+    </div>
+</app-modal>
+

@@ -1,13 +1,15 @@
 import {Injectable} from '@angular/core';
 import {CalendarEvent} from 'angular-calendar';
 import * as moment from 'moment';
-import {LocationReservation, LocationReservationState} from 'src/app/extensions/model/LocationReservation';
-import {Timeslot, includesTimeslot} from 'src/app/extensions/model/Timeslot';
+import {LocationReservation} from 'src/app/model/LocationReservation';
+import {Timeslot} from 'src/app/model/Timeslot';
 
+export type TimeslotCalendarEvent = CalendarEvent<{
+    timeslot?: Timeslot
+}>;
 @Injectable({
     providedIn: 'root'
 })
-
 export class TimeslotCalendarEventService {
     clicked: boolean;
     initial: boolean;
@@ -17,26 +19,32 @@ export class TimeslotCalendarEventService {
         this.initial = true;
     }
 
+    timeslotToCalendarEvent(timeslot: Timeslot, currentLang: string, locationReservations: LocationReservation[] = []): CalendarEvent {
+        if (!timeslot.reservable) {
+            return this.nonReservableToCalendarEvent(timeslot, currentLang);
+        }
 
-    timeslotToCalendarEvent = (timeslot: Timeslot, currentLang: string, locationReservations: LocationReservation[] = []) =>
-        !timeslot.reservable ? this.nonReservableToCalendarEvent(timeslot, currentLang) :
-            timeslot.areReservationsLocked() ? this.notYetReservableTimeslotToCalendarEvent(timeslot, currentLang) :
-                this.reservableTimeslotToCalendarEvent(timeslot, currentLang, locationReservations);
+        if (timeslot.areReservationsLocked()) {
+            return this.notYetReservableTimeslotToCalendarEvent(timeslot, currentLang);
+        }
 
+        return this.reservableTimeslotToCalendarEvent(timeslot, currentLang, locationReservations);
+    }
 
     private nonReservableToCalendarEvent: (timeslot: Timeslot, currentLang: string) => CalendarEvent<{
         timeslot: Timeslot
     }> =
         (timeslot, currentLang) =>
             ({
-                title: currentLang == "nl" ?
+                title: currentLang === 'nl' ?
                     `Geen reservatie nodig <br> ${timeslot.openingHour.format('HH:mm')} - ${timeslot.closingHour.format('HH:mm')}`
                     : `Requires no reservation <br> ${timeslot.openingHour.format('HH:mm')} - ${timeslot.closingHour.format('HH:mm')}`,
                 start: timeslot.getStartMoment().toDate(),
                 end: timeslot.getEndMoment().toDate(),
-                meta: {timeslot},
-                color: {primary: 'black', secondary: '#BEBEBE'},
-                cssClass: 'calendar-event-NR',
+                meta: {
+                    timeslot
+                },
+                cssClass: 'event not-reservable',
             })
 
     private notYetReservableTimeslotToCalendarEvent: (timeslot: Timeslot, currentLang: string) => CalendarEvent<{
@@ -50,60 +58,50 @@ export class TimeslotCalendarEventService {
                 start: timeslot.getStartMoment().toDate(),
                 end: timeslot.getEndMoment().toDate(),
                 meta: {timeslot},
-                color: {primary: 'black', secondary: '#BEBEBE'},
-                cssClass: 'calendar-event-NR',
+                cssClass: 'event not-reservable',
             })
 
-    private reservableTimeslotToCalendarEvent(timeslot: Timeslot, currentLang: string, reservedTimeslots: LocationReservation[]): CalendarEvent<{
-        timeslot: Timeslot
-    }> {
+    private reservableTimeslotToCalendarEvent(
+        timeslot: Timeslot,
+        currentLang: string,
+        reservedTimeslots: LocationReservation[]
+    ): CalendarEvent<{ timeslot: Timeslot }> {
+        const reservation = reservedTimeslots.find(
+            t => t.timeslot.timeslotSequenceNumber === timeslot.timeslotSequenceNumber
+        );
 
-        const locationFull = timeslot.amountOfReservations >= timeslot.seatCount;
-        const reservation = reservedTimeslots.find(t => t.timeslot.timeslotSequenceNumber === timeslot.timeslotSequenceNumber);
-        const includedTimeSlot = includesTimeslot(
-            reservedTimeslots.map((s) => s.timeslot),
-            timeslot
-        ) && reservation && reservation.state !== LocationReservationState.DELETED;
+        const isRandomReservationMoment = timeslot.amountOfReservations === 0 && timeslot.reservableFrom.isAfter(
+            moment().subtract(10, 'minutes')
+        );
 
-        const isRandomReservationMoment = timeslot.amountOfReservations === 0 && timeslot.reservableFrom.isAfter(moment().subtract(10, "minutes"));
-        const randomMomentTitle = currentLang == "en" ? "Reservation queue is open" : "Reservatiewachtlijn is open";
+        const randomMomentTitle =
+            currentLang === 'en' ? 'Reservation queue is open' : 'Reservatiewachtlijn is open';
 
-        return ({
+        let cssClass = 'event ';
+
+        if (reservation) {
+            if (!reservation.state) {
+                cssClass += 'selected';
+            } else {
+                cssClass += reservation.state.toLowerCase();
+            }
+        }
+
+        return {
             title: isRandomReservationMoment ? randomMomentTitle : `${timeslot.amountOfReservations} / ${timeslot.seatCount}`,
             start: timeslot.getStartMoment().toDate(),
             end: timeslot.getEndMoment().toDate(),
-            meta: {timeslot},
-            color: includedTimeSlot
-                // reserved -> dark blue, reserved full -> dark red
-                ? (!locationFull ?
-                    (reservation.state === LocationReservationState.PENDING ? {
-                            primary: '#F5512C',
-                            secondary: '#FC8A17'
-                        } :
-                        (reservation.state === LocationReservationState.REJECTED ? null : {
-                            primary: '#007db3',
-                            secondary: '#133E7D'
-                        }))
-                    :
-                    (reservation.state === LocationReservationState.REJECTED ? {
-                        primary: '#c53726',
-                        secondary: '#ed9987'
-                    } : reservation.state === LocationReservationState.PENDING ? {
-                        primary: '#F5512C',
-                        secondary: '#FC8A17'
-                    } : {primary: '#007db3', secondary: '#133E7D'}))
-                // unselected light pink, unselected light blue
-                : (locationFull ? {primary: '#c53726', secondary: '#f4ded9'} : null),
-            cssClass: includedTimeSlot && (reservation.state === LocationReservationState.APPROVED || (locationFull && reservation.state === LocationReservationState.REJECTED))
-                ? 'calendar-event-reserved'
-                : (locationFull ? 'calendar-event-full-not-reserved' : 'blue-text'),
-        });
+            meta: {
+                timeslot
+            },
+            cssClass
+        };
     }
 
-    public suggestedTimeslotToCalendarEvent(timeslot: Timeslot, currentLang: string) {
+    public suggestedTimeslotToCalendarEvent(timeslot: Timeslot, currentLang: string): CalendarEvent<{ timeslot: Timeslot }> {
         const calendarEvent = this.timeslotToCalendarEvent(timeslot, currentLang);
 
-        calendarEvent.cssClass = (calendarEvent.cssClass || '') + " calendar-event-suggestion"
+        calendarEvent.cssClass = (calendarEvent.cssClass || '') + ' calendar-event-suggestion';
         return calendarEvent;
     }
 }

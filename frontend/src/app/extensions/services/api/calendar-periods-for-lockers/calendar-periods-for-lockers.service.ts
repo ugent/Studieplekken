@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CalendarPeriodForLockers } from '../../../model/CalendarPeriodForLockers';
+import { CalendarPeriodForLockers } from '../../../../model/CalendarPeriodForLockers';
 import { api } from '../endpoints';
 
 @Injectable({

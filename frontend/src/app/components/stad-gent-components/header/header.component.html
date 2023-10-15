@@ -1,0 +1,115 @@
+<!-- Default - without header image - not signed in -->
+<header class="header" *ngIf="userSubject | async as user">
+    <div class="flex-wrap content-container">
+        <a href="https://stad.gent" title="Home" class="site-logo " rel="home">
+            Stad Gent
+        </a>
+
+        <!-- The user profile / login button -->
+        <div *ngIf="user.isLoggedIn(); else userNotLoggedIn">
+            <!-- If user is logged in -->
+            <app-accordeon class="authentication" [controller]="accordionSubject">
+                <button accordion-button aria-expanded="false" aria-controls="no-hero_auth-authentication"
+                    class="toggle accordion--button">
+                    <span class="avatar">{{ user.firstName[0] }}</span>
+                    <span>{{ user.firstName }}</span>
+                </button>
+
+                <div accordion-content id="no-hero_auth-authentication" class="accordion--content" aria-hidden="true" hidden>
+                    <app-header-dropdown [isProfile]="true" [accordion]="accordionSubject" [user]="user">
+
+                    </app-header-dropdown>
+                </div>
+            </app-accordeon>
+        </div>
+
+        <!-- Menu for mid sized mobile -->
+        <div id="mobile">
+            <app-accordeon class="authentication" [controller]="accordionSubject">
+                <button accordion-button aria-controls="accordion--single--content--1" aria-expanded="false" class="toggle accordion--button bold" >
+                    {{'header.menu' | translate}}
+                </button>
+
+                <div accordion-content id="accordion--single--content--1" class="accordion--content">
+                    <app-header-dropdown [isProfile]="false" [accordion]="accordionSubject" [user]="user"></app-header-dropdown>
+                </div>
+            </app-accordeon>
+        </div>
+
+        <div>
+            <app-accordeon [classes]="['language-switcher']" [controller]="languageSubject">
+                <button accordion-button aria-controls="seperate_translation_unauth-translate" aria-expanded="false" class="toggle accordion--button">
+                    {{ currentLanguage() }}
+                </button>
+                <div accordion-content id="seperate_translation_unauth-translate" class="accordion--content" aria-hidden="true">
+                    <ul class="content links" >
+                        <li>
+                            <strong>{{ currentLanguage() }}</strong>
+                        </li>
+                        <li>
+                            <a (click)="changeLanguage($event)" hreflang="{{ otherSupportedLanguage() }}" lang="{{ otherSupportedLanguage() }}">
+                                {{ otherSupportedLanguage() }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </app-accordeon>
+        </div>
+
+    </div>
+
+    <nav class="breadcrumb section--default" aria-labelledby="default-header-crumbs">
+        <div style="float:left">
+            <div>
+                <h2 id="default-header-crumbs" class="visually-hidden">Breadcrumb</h2>
+                <ol class="no-style">
+                    <li *ngFor="let breadcrumb of (getLinkedBreadcrumbs() | async)">
+                      <a [routerLink]="breadcrumb.url" *ngIf="!breadcrumb.external">{{breadcrumb.pageName}}</a>
+                      <a [href]="breadcrumb.url" *ngIf="breadcrumb.external">{{breadcrumb.pageName}}</a>
+
+                    </li>
+                    <li *ngFor="let breadcrumb of (getUnlinkedBreadcrumbs() | async)">
+                        <span>{{breadcrumb.pageName}}</span>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Desktop menu -->
+        <div id="desktop" class="smaller-text float-end">
+            <div class="content-container" fxLayout="row" fxLayoutGap="10px">
+                <a routerLink="/profile/overview" class="read-more margin-right" *ngIf="showLoggedIn"
+                    title="{{'header.navigation.profile' | translate}}">
+                    {{'header.navigation.profile' | translate}}
+                </a>
+                <a routerLink="/" class="read-more margin-right"
+                        title="{{'header.navigation.dashboard' | translate}}" >
+                        {{'header.navigation.dashboard' | translate}}
+                </a>
+                <a routerLink="/information" class="read-more margin-right"
+                        title="{{'header.navigation.information' | translate}}" >
+                        {{'header.navigation.information' | translate}}
+                </a>
+                <a routerLink="/scan/locations" class="read-more margin-right"
+                    title="{{'header.navigation.scan' | translate}}" *ngIf="showManagement || showAdmin || showVolunteer">
+                    {{'header.navigation.scan' | translate}}
+                </a>
+                <a routerLink="/management/locations" class="read-more margin-right"
+                    title="{{'header.navigation.management' | translate}}" *ngIf="showManagement || showAdmin">
+                    {{'header.navigation.management' | translate}}
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <hr />
+</header>
+
+<ng-template #userNotLoggedIn>
+    <!-- If user is not logged in -->
+    <div class="authentication accordion">
+        <a routerLink="/login" class="login-link">
+            {{ "header.navigation.login" | translate }}
+        </a>
+    </div>
+</ng-template>

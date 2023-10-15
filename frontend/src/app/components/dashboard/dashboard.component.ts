@@ -10,10 +10,10 @@ import {LocationStatus} from '../../app.constants';
 import {BuildingService} from '../../extensions/services/api/buildings/buildings.service';
 import {LocationService} from '../../extensions/services/api/locations/location.service';
 import {TagsService} from '../../extensions/services/api/tags/tags.service';
-import {Building} from '../../extensions/model/Building';
-import {Location} from '../../extensions/model/Location';
-import {LocationTag} from '../../extensions/model/LocationTag';
-import {BreadcrumbService} from '../../stad-gent-components/header/breadcrumbs/breadcrumb.service';
+import {Building} from '../../model/Building';
+import {Location} from '../../model/Location';
+import {LocationTag} from '../../model/LocationTag';
+import {BreadcrumbService} from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
 
 @Component({
     selector: 'app-dashboard',

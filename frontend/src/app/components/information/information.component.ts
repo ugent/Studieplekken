@@ -2,7 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {UserService} from '../../extensions/services/api/users/user.service';
 import {AuthenticationService} from '../../extensions/services/authentication/authentication.service';
-import {BreadcrumbService} from '../../stad-gent-components/header/breadcrumbs/breadcrumb.service';
+import {BreadcrumbService} from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
+import {User} from '../../model/User';
+import {filter} from 'rxjs/operators';
 
 @Component({
     selector: 'app-information',
@@ -29,15 +31,16 @@ export class InformationComponent implements OnInit {
     ngOnInit(): void {
         // subscribe to the user observable to make sure that the correct information
         // is shown in the application.
-        this.authenticationService.user.subscribe((_) => {
-            // first, check if the user is logged in
-            if (this.authenticationService.isLoggedIn()) {
-                this.showManagement = this.authenticationService.isAuthority();
-                this.showAdmin = this.authenticationService.isAdmin();
-                this.showSupervisors = this.authenticationService.isScanner();
-            }
+        this.authenticationService.user.pipe(
+            filter(user => !!user)
+        ).subscribe((user: User) => {
+            this.showManagement = user.isAuthority();
+            this.showAdmin = user.isAdmin();
+            this.showSupervisors = user.isScanner();
         });
 
-        this.breadcrumbService.setCurrentBreadcrumbs([{pageName: 'Information', url: '/information'}]);
+        this.breadcrumbService.setCurrentBreadcrumbs([{
+            pageName: 'Information', url: '/information'
+        }]);
     }
 }

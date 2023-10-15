@@ -9,7 +9,7 @@
                 <div class="row">
                     <div class="col-12 col-md-6">
                         <h3 class="mb-4">
-                            Voor studenten
+                            {{ 'login.students' | translate }}
                         </h3>
                         <div class="d-flex flex-column align-items-start gap-3">
                             <a href="{{casFlowTriggerUrl}}?callbackUrl={{getCallbackUrl()}}" class="btn btn-secondary"
@@ -39,11 +39,14 @@
                                (click)="loginButtonClicked()">
                                 {{'login.kuLeuvenLogin' | translate}}
                             </a>
+                            <p class="clarification">
+                                {{ 'login.students-clarification' | translate }}
+                            </p>
                         </div>
                     </div>
                     <div class="col-12 col-md-6">
                         <h3 class="mb-4">
-                            Voor beheerders
+                            {{ 'login.others' | translate }}
                         </h3>
                         <div class="d-flex flex-column align-items-start gap-3">
                             <a href="{{stadGentFlowTriggerUrl}}?callbackUrl={{getCallbackUrl()}}"
@@ -55,6 +58,9 @@
                                (click)="loginButtonClicked()">
                                 {{'login.otherLogin' | translate}}
                             </a>
+                            <p class="clarification">
+                                {{ 'login.others-clarification' | translate }}
+                            </p>
                         </div>
                     </div>
                 </div>

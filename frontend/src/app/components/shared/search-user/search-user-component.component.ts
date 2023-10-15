@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {TableDataService} from 'src/app/stad-gent-components/atoms/table/data-service/table-data-service.service';
-import {User} from '../../../extensions/model/User';
-import {TabularData} from '../../../stad-gent-components/atoms/table/tabular-data';
+import {TableDataService} from 'src/app/components/stad-gent-components/atoms/table/data-service/table-data-service.service';
+import {User} from '../../../model/User';
+import {TabularData} from '../../stad-gent-components/atoms/table/tabular-data';
 
 @Component({
     selector: 'app-search-user',

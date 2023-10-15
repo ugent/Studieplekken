@@ -1,0 +1,19 @@
+<ng-container>
+    <app-management-table *ngIf="reservations?.length > 0; else reservationsError"
+        [data]="reservations"
+        [mapper]="getTableMapper()">
+    </app-management-table>
+    <ng-template #reservationsError>
+        <ng-container *ngIf="!user.isLoggedIn()">
+            <p>
+                {{ 'reservations.shouldLogin' | translate }}
+            </p>
+            <a class="button button-secondary" routerLink="/login">
+                {{'navigation.login' | translate}}
+            </a>
+        </ng-container>
+        <ng-container *ngIf="user.isLoggedIn()">
+            {{ 'reservations.noReservations' | translate }}
+        </ng-container>
+    </ng-template>
+</ng-container>

@@ -1,5 +1,4 @@
-.button {
-    min-width: 130px;
+button, .button {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -12,5 +11,17 @@
             background: #b85252;
             border-color: #b85252;
         }
+    }
+
+    &[disabled], &.disabled {
+        background-color: white !important;
+        border: 2px solid lightgrey !important;
+        color: darkgrey !important;
+    }
+}
+
+article {
+    button, .button {
+        min-width: 130px;
     }
 }

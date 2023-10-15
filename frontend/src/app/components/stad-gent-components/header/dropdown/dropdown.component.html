@@ -1,0 +1,38 @@
+<article class="content">
+    <h3 *ngIf="isProfile">
+        {{ "header.navigation.profile" | translate }}
+    </h3>
+    <section *ngIf="isProfile" class="profile">
+        <span class="avatar">{{ user.firstName[0] }}</span>
+        <div class="profile-info">
+            <span>
+                {{ user.firstName + ' ' + user.lastName }}
+            </span>
+            <a routerLink="/profile" (click)="close()" class="button button-primary button-small mt-2">
+                {{"header.navigation.profile" | translate }}
+            </a>
+        </div>
+    </section>
+
+    <section *ngIf="!isProfile">
+        <h3>{{"header.navigation.general" | translate}}</h3>
+        <ul class="links">
+            <li><a (click)="close()" routerLink="/">{{"header.navigation.dashboard" | translate }}</a></li>
+            <li><a (click)="close()" routerLink="/information">{{"header.navigation.information" | translate }}</a></li>
+        </ul>
+        <ng-container *ngIf="user.isAdmin() || user.isScanner()">
+            <h3>{{"header.navigation.management" | translate}}</h3>
+            <ul class="links">
+                <li><a (click)="close()" *ngIf="user.isAuthority()" routerLink="/management">{{'header.navigation.management' | translate }}</a></li>
+                <li><a (click)="close()" *ngIf="user.isScanner()" routerLink='/scan'>{{'header.navigation.scan' | translate }}</a></li>
+            </ul>
+        </ng-container>
+    </section>
+
+    <footer class="mt-3" *ngIf="isProfile">
+        <a (click)='user.isLoggedIn() && logout()' class="button button-small button-secondary">
+            {{"header.logOut" | translate}}
+        </a>
+    </footer>
+</article>
+

@@ -1,57 +1,78 @@
-import {Component, Input, OnChanges, OnInit, TemplateRef} from '@angular/core';
-import { Observable } from 'rxjs';
-import { PenaltyList, PenaltyService } from 'src/app/extensions/services/api/penalties/penalty.service';
-import { Penalty } from '../../../extensions/model/Penalty';
-import { User } from '../../../extensions/model/User';
-import {MatDialog} from "@angular/material/dialog";
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Penalty} from '../../../model/Penalty';
+import {BaseManagementComponent} from '../../management/lists/base-management.component';
+import {combineLatest, EMPTY, Observable} from 'rxjs';
+import {User} from '../../../model/User';
+import {DeleteAction, TableAction, TableMapper} from '../../../model/Table';
+import {PenaltyList, PenaltyService} from '../../../extensions/services/api/penalties/penalty.service';
+import {catchError, first, mergeMap, switchMap, tap} from 'rxjs/operators';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {AuthenticationService} from '../../../extensions/services/authentication/authentication.service';
 
 @Component({
-  selector: 'app-user-penalty-manager',
-  templateUrl: './user-penalty-manager.component.html',
-  styleUrls: ['./user-penalty-manager.component.scss']
+    selector: 'app-user-penalty-manager',
+    templateUrl: './user-penalty-manager.component.html',
+    styleUrls: ['./user-penalty-manager.component.scss']
 })
-export class UserPenaltyManagerComponent implements OnInit, OnChanges {
+export class UserPenaltyManagerComponent extends BaseManagementComponent<Penalty> {
 
-  @Input() user: User;
-  @Input() showHeader = true;
-  penalties: Observable<PenaltyList>;
-  overview = true;
-  addForm = false;
-  model: {points: number, description: string} = {points: 0, description: ""};
+    @Input() currentUser: User;
+    @Input() loggedInUser: User;
+    @Input() penalties: PenaltyList;
 
-  constructor(private penaltiesService: PenaltyService, private modalService: MatDialog) { }
+    @Output() updatedPenalties = new EventEmitter<void>();
 
-  ngOnInit(): void {
-  }
-
-  ngOnChanges(): void {
-    if (this.user && this.user.userId) {
-      this.penalties = this.penaltiesService.getPenaltiesOfUserById(this.user.userId);
+    constructor(
+        private penaltyService: PenaltyService
+    ) {
+        super();
     }
-  }
 
-  addPenaltyButton(template: TemplateRef<any>): void {
-      this.modalService.open(template);
-  }
+    ngOnInit(): void {
+        super.ngOnInit();
 
-  addPenalty(): void {
-    const penalty = new Penalty();
-    penalty.designee = this.user;
-    penalty.points = this.model.points;
-    penalty.description = this.model.description;
-    this.penaltiesService.addPenalty(penalty).subscribe();
+        this.refresh$.subscribe(() =>
+            this.updatedPenalties.emit()
+        );
+    }
 
-    this.addForm = false;
-    this.overview = true;
-    this.penalties = this.penaltiesService.getPenaltiesOfUserById(this.user.userId);
-  }
+    setupForm(item: Penalty = new Penalty()): void {
+        this.formGroup = new FormGroup<any>({
+            points: new FormControl(item.points, Validators.required),
+            description: new FormControl(item.description, Validators.required)
+        });
+    }
 
-  cancelPenalty(): void {
-    this.addForm = false;
-    this.overview = true;
-  }
+    storeAdd(body: any = this.formGroup.value): void {
+        const penalty = new Penalty();
+        penalty.designee = this.currentUser;
+        penalty.points = body.points;
+        penalty.description = body.description;
+        this.sendBackendRequest(
+            this.penaltyService.addPenalty(penalty)
+        );
+    }
 
-  onDelete() {
-    this.penalties = this.penaltiesService.getPenaltiesOfUserById(this.user.userId);
-  }
+    storeDelete(item: Penalty): void {
+        this.sendBackendRequest(
+            this.penaltyService.deletePenalty(item)
+        );
+    }
+
+    getTableActions(): TableAction<Penalty>[] {
+        return [
+            new DeleteAction((penalty: Penalty) =>
+                this.storeDelete(penalty)
+            )
+        ];
+    }
+
+    getTableMapper(): TableMapper<Penalty> {
+        return (penalty: Penalty) => ({
+            'profile.penalties.table.header.timestamp': penalty.createdAt.format('DD/MM/YYYY HH:mm'),
+            'profile.penalties.table.header.issuer': penalty.issuer ? penalty.issuer.firstName + ' ' + penalty.issuer.lastName : '-',
+            'profile.penalties.table.header.description': penalty.description ?? '-',
+            'profile.penalties.table.header.receivedPoints': penalty.points
+        });
+    }
 }

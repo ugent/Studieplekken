@@ -20,8 +20,8 @@ export class Cache<I, V> {
      * @param url the url to get the resource
      * @param id the id of the resource to be updated
      */
-    private updateCache(url: string, id: I): void {
-        this.http
+    private updateCache(url: string, id: I): Observable<V> {
+        return this.http
             .get<V>(url)
             .pipe(
                 map((n) => (this.mapFunction ? this.mapFunction(n) : n)),
@@ -29,18 +29,17 @@ export class Cache<I, V> {
                 tap(() => this.cacheSubject.next(this.cacheMap)),
                 catchError((error) => {
                     this.cacheSubject.error(error);
-                    return of(EMPTY);
+                    return of(null);
                 })
-            )
-            .subscribe();
+            );
     }
 
     /**
      * Perform a cache reload by updating the values in the url
      * @param url the url to fetch the resources from
      */
-    private cacheReload(url: string): void {
-        this.http
+    private cacheReload(url: string): Observable<V[]> {
+        return this.http
             .get<V[]>(url)
             .pipe(
                 map((n) => n.map((v) => (this.mapFunction ? this.mapFunction(v) : v))),
@@ -57,10 +56,9 @@ export class Cache<I, V> {
                 }),
                 catchError((error) => {
                     this.cacheSubject.error(error);
-                    return of(EMPTY);
+                    return of([]);
                 })
-            )
-            .subscribe();
+            );
     }
 
     /**
@@ -76,7 +74,7 @@ export class Cache<I, V> {
         invalidateCache: boolean = false
     ): Observable<V> {
         if (invalidateCache || !this.cacheMap.has(id)) {
-            this.updateCache(url, id);
+            return this.updateCache(url, id);
         }
 
         return this.cacheSubject.pipe(
@@ -94,7 +92,7 @@ export class Cache<I, V> {
     getAllValues(url: string, invalidateCache: boolean = true): Observable<V[]> {
         if (invalidateCache || Object.keys(this.cacheMap).length === 0) {
             // if the cache is being reloaded, the current value can be skipped
-            this.cacheReload(url);
+            return this.cacheReload(url);
         }
         // if the cache is not being reloaded, the current value suffices
         return this.cacheSubject.pipe(

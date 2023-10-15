@@ -1,0 +1,25 @@
+<app-modal #modal>
+    <h2 modal-header>
+        {{'dashboard.locationDetails.calendar.reservation.afterReservationHeader' |translate}}
+    </h2>
+    <div modal-body *ngIf="!loading">
+        <div class="messages messages--warning" *ngIf="!failure && hasDelayedReservation">
+            <i class="icon-exclamation" aria-hidden="true"></i>
+            {{'dashboard.locationDetails.calendar.reservation.afterReservationPendingMessage' | translate}}
+        </div>
+        <div class="messages messages--info" *ngIf="!failure && !hasDelayedReservation">
+            <i class="icon-info" aria-hidden="true"></i>
+            {{'dashboard.locationDetails.calendar.reservation.afterReservationConfirmedMessage' | translate}}
+        </div>
+        <div class="messages messages--warning" *ngIf="failure">
+            <i class="icon-exclamation" aria-hidden="true"></i>
+            {{'dashboard.locationDetails.calendar.reservation.afterReservationFailedMessage' | translate}}
+        </div>
+    </div>
+    <div modal-body *ngIf="loading">
+        <div class="messages messages--info">
+            <i class="icon-info" aria-hidden="true"></i>
+            {{'dashboard.locationDetails.calendar.reservation.afterReservationLoadingMessage' | translate}}
+        </div>
+    </div>
+</app-modal>

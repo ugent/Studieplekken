@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { UserService } from '../../extensions/services/api/users/user.service';
 import { AuthenticationService } from '../../extensions/services/authentication/authentication.service';
-import { BreadcrumbService } from '../../stad-gent-components/header/breadcrumbs/breadcrumb.service';
+import { BreadcrumbService } from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
 import { LoginRedirectService } from '../../extensions/services/authentication/login-redirect.service';
 
 @Component({
@@ -26,12 +26,12 @@ export class NavigationComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.loginRedirectService.registerUrl("/navigation");
+    this.loginRedirectService.registerUrl('/navigation');
     // subscribe to the user observable to make sure that the correct information
     // is shown in the application.
     this.authenticationService.user.subscribe((next) => {
       // first, check if the user is logged in
-      if (this.authenticationService.isLoggedIn()) {
+      if (next.isLoggedIn()) {
         this.showLoggedIn = true;
         if (next.userVolunteer.length > 0){
           this.showSupervisors = true;
@@ -52,7 +52,10 @@ export class NavigationComponent implements OnInit {
       }
     });
 
-    this.breadcrumbService.setCurrentBreadcrumbs([{pageName: "Navigation", url:"/navigation"}])
+    this.breadcrumbService.setCurrentBreadcrumbs([{
+        pageName: 'Navigation',
+        url: '/navigation'
+    }]);
   }
 
   currentLanguage(): string {

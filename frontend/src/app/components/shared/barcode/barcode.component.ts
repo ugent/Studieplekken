@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { User } from 'src/app/extensions/model/User';
+import { User } from 'src/app/model/User';
 
 @Component({
   selector: 'app-barcode',
@@ -9,7 +8,7 @@ import { User } from 'src/app/extensions/model/User';
 })
 export class BarCodeComponent implements OnInit {
 
-  @Input() userObs: Observable<User>
+  @Input() user: User;
 
   constructor() { }
 

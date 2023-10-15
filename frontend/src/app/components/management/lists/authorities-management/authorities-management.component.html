@@ -1,0 +1,127 @@
+<ng-container *ngIf="authoritiesObs$ | async as authorities">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h3 class="m-0">
+            {{'management.authorities.title' | translate}}
+        </h3>
+        <button class="button button-primary" (click)="prepareAdd()">
+            {{'management.authorities.addNewAuthority' | translate}}
+        </button>
+    </div>
+    <app-management-table
+        [data]="authorities"
+        [mapper]="getTableMapper()"
+        [actions]="getTableActions()">
+    </app-management-table>
+</ng-container>
+<app-modal #modify>
+    <h2 modal-header>
+        <ng-container *ngIf="selectedSub$ | async; else addingTitle">
+            {{'management.authorities.updateAuthorityModal.title' | translate}}
+        </ng-container>
+        <ng-template #addingTitle>
+            {{'management.authorities.addAuthorityModal.title' | translate}}
+        </ng-template>
+    </h2>
+    <div modal-body>
+        <form [formGroup]="formGroup">
+            <!-- Name of the authority -->
+            <div class="row">
+                <div class="col">
+                    <label class="control-label" for="authorityNameAdd">
+                        {{'management.authorities.table.authorityName' | translate}} <span class="text-red">*</span>
+                        <input class="form-control" id="authorityNameAdd" type="text" formControlName="authorityName">
+                    </label>
+                </div>
+            </div>
+
+            <!-- Description of the authority -->
+            <div class="row">
+                <label class="control-label" for="descriptionAdd">
+                    {{'management.authorities.table.description' | translate}} <span class="text-red">*</span>
+                    <input class="form-control" id="descriptionAdd" type="text" formControlName="description">
+                </label>
+            </div>
+        </form>
+    </div>
+
+    <!-- Modal footer -->
+    <div modal-footer>
+        <ng-container *ngIf="selectedSub$ | async as authority; else addAuthorityButton">
+            <button type="submit" class="button button-primary" [disabled]="!formGroup.valid" (click)="storeUpdate(authority)">
+                {{'general.buttons.update' | translate}}
+            </button>
+        </ng-container>
+        <ng-template #addAuthorityButton>
+            <button type="submit" class="button button-primary" [disabled]="!formGroup.valid" (click)="storeAdd()">
+                {{'general.buttons.add' | translate}}
+            </button>
+        </ng-template>
+        <button type="button" class="button button-secondary" (click)="closeModal(modify)">
+            {{'general.buttons.close' | translate}}
+        </button>
+    </div>
+
+
+    <div modal-message-footer>
+        <div class="messages messages--info" *ngIf="(isSuccess | async) === undefined">
+            {{'general.waitingForServer' | translate}}
+        </div>
+
+        <div class="messages messages--success" *ngIf="(isSuccess | async) === true">
+            {{'management.authorities.deleteAuthorityModal.success' | translate}}
+        </div>
+
+        <div class="messages messages--error" *ngIf="(isSuccess | async) === false">
+            {{'management.authorities.deleteAuthorityModal.error' | translate}}
+        </div>
+    </div>
+</app-modal>
+
+<!-- Modal view to ask whether the user is sure to delete an authority -->
+<app-modal #remove>
+    <h2 modal-header>
+        {{'management.authorities.deleteAuthorityModal.title' | translate}}
+    </h2>
+
+    <!-- Body -->
+    <div  *ngIf="selectedSub$ | async as authority" modal-body>
+        <div>
+            <p>
+                {{'management.authorities.deleteAuthorityModal.body' | translate}}
+            </p>
+
+            <div class="messages messages--danger">
+                {{'management.authorities.deleteAuthorityModal.warning' | translate}}
+            </div>
+
+            <ul>
+                <li><b>{{('management.authorities.table.authorityName' | translate) + ':'}}</b> {{authority.authorityName}}</li>
+                <li><b>{{('management.authorities.table.description' |translate)}}</b> {{authority.description}}</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div *ngIf="selectedSub$ | async as authority" modal-footer>
+        <button type="button" class="button button-alert" (click)="storeDelete(authority)">
+            {{'general.buttons.delete' | translate}}
+        </button>
+        <button type="button" class="button button-secondary" (click)="closeModal(remove)">
+            {{'general.buttons.cancel' | translate}}
+        </button>
+    </div>
+
+    <div modal-message-footer>
+        <div class="messages messages--info" *ngIf="(isSuccess | async) === undefined">
+            {{'general.waitingForServer' | translate}}
+        </div>
+
+        <div class="messages messages--success" *ngIf="(isSuccess | async) === true">
+            {{'management.authorities.deleteAuthorityModal.success' | translate}}
+        </div>
+
+        <div class="messages messages--error" *ngIf="(isSuccess | async) === false">
+            {{'management.authorities.deleteAuthorityModal.error' | translate}}
+        </div>
+    </div>
+</app-modal>

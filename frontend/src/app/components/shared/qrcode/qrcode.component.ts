@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { User } from 'src/app/extensions/model/User';
+import { User } from 'src/app/model/User';
 
 @Component({
   selector: 'app-qrcode',
@@ -9,9 +8,10 @@ import { User } from 'src/app/extensions/model/User';
 })
 export class QRCodeComponent implements OnInit {
 
-  @Input() userObs: Observable<User>
+  @Input() user: User;
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit(): void {
   }

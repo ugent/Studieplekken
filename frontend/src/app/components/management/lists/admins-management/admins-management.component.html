@@ -1,0 +1,14 @@
+<ng-container *ngIf="{admins: adminsObs$ | async} as context">
+    <!-- Title -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h3 class="m-0">
+            {{'management.users.overview.title' | translate}}
+        </h3>
+    </div>
+    <!-- List -->
+    <app-management-table
+            [data]="context.admins"
+            [actions]="getTableActions()"
+            [mapper]="getTableMapper()">
+    </app-management-table>
+</ng-container>

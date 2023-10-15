@@ -1,6 +1,5 @@
 // Setting up gent_styleguide (cfr. https://stijlgids.stad.gent/v4/index.html)
 $styleguide-dir: "" !default;
-
 @use '../../../../node_modules/@angular/material/index' as mat;
 
 @import "../../../../node_modules/gent_styleguide/build/styleguide/sass/main_cli";
@@ -19,10 +18,10 @@ $styleguide-dir: "" !default;
 @import 'src/assets/styles/theme';
 
 /* angular-cli file: src/styles.css */
-@import '../../../../node_modules/angular-calendar/css/angular-calendar.css';
+@import 'angular-calendar/css/angular-calendar.css';
 
 // import leaflet styling
-@import '../../../../node_modules/leaflet/dist/leaflet.css';
+@import 'leaflet/dist/leaflet.css';
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
@@ -45,6 +44,9 @@ $styleguide-dir: "" !default;
 @import 'components/calendar';
 @import 'components/tabs';
 @import 'components/material';
+@import 'components/cards';
+@import 'components/scanner';
+@import 'components/container';
 
 
 /* You can add global styles to this file, and also import other style files */
@@ -124,10 +126,6 @@ body {
 
 video {
     width: 100%;
-}
-
-.responsive-table {
-    display: inline-block !important;
 }
 
 // Safari specific coloring of input fields

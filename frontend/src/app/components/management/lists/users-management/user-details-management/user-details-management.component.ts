@@ -1,0 +1,98 @@
+import {Component, OnInit} from '@angular/core';
+import {combineLatest, EMPTY, Observable, ReplaySubject, Subject} from 'rxjs';
+import {User} from '../../../../../model/User';
+import {ActivatedRoute} from '@angular/router';
+import {AuthenticationService} from '../../../../../extensions/services/authentication/authentication.service';
+import {UserService} from '../../../../../extensions/services/api/users/user.service';
+import {filter, map, share, shareReplay, startWith, switchMap, tap} from 'rxjs/operators';
+import {Authority} from '../../../../../model/Authority';
+import {AuthoritiesService} from '../../../../../extensions/services/api/authorities/authorities.service';
+import {LocationReservation} from '../../../../../model/LocationReservation';
+import {PenaltyList, PenaltyService} from '../../../../../extensions/services/api/penalties/penalty.service';
+import {
+    LocationReservationsService
+} from '../../../../../extensions/services/api/location-reservations/location-reservations.service';
+
+@Component({
+    selector: 'app-user-details-management',
+    templateUrl: './user-details-management.component.html',
+    styleUrls: ['./user-details-management.component.scss'],
+})
+export class UserDetailsManagementComponent implements OnInit {
+
+    protected currentUserObs$: Observable<User>;
+    protected loggedInUserObs$: Observable<User>;
+    protected reservationsObs$: Observable<LocationReservation[]>;
+    protected penaltiesObs$: Observable<PenaltyList>;
+    protected addedAuthoritiesObs$: Observable<Authority[]>;
+    protected addableAuthoritiesObs$: Observable<Authority[]>;
+    protected refresh$: Subject<void>;
+
+    protected showRolesManagement: boolean;
+    protected userId: string;
+
+    constructor(
+        private userService: UserService,
+        private route: ActivatedRoute,
+        private authenticationService: AuthenticationService,
+        private authoritiesService: AuthoritiesService,
+        private penaltyService: PenaltyService,
+        private reservationService: LocationReservationsService
+    ) {
+        this.refresh$ = new ReplaySubject();
+    }
+
+    ngOnInit(): void {
+        this.userId = this.route.snapshot.paramMap.get('id');
+
+        // Query the selected user by ID.
+        this.currentUserObs$ = this.refresh$.pipe(
+            startWith(EMPTY), switchMap(() =>
+                this.userService.getUserByAUGentId(this.userId).pipe(
+                    tap(currentUser => {
+                        // Get the added authorities of the user.
+                        this.addedAuthoritiesObs$ = this.authoritiesService.getAuthoritiesOfUser(
+                            currentUser.userId
+                        );
+                        // Get the reservations of the user.
+                        this.reservationsObs$ = this.reservationService.getLocationReservationsOfUser(
+                            currentUser.userId
+                        );
+                        // Get the penalties of the user.
+                        this.penaltiesObs$ = this.penaltyService.getPenaltiesOfUserById(
+                            currentUser.userId
+                        );
+                        // Query the logged-in user.
+                        this.loggedInUserObs$ = this.authenticationService.getUserObs().pipe(
+                            tap((user: User) =>
+                                // Show roles only for admins.
+                                this.showRolesManagement = user.isAdmin()
+                            )
+                        );
+                        // Query the addable authorities.
+                        this.addableAuthoritiesObs$ = combineLatest([this.loggedInUserObs$, this.addedAuthoritiesObs$]).pipe(
+                            switchMap(([user, addedAuthorities]) =>
+                                (user.isAdmin() ?
+                                        this.authoritiesService.getAllAuthorities() :
+                                        this.authoritiesService.getAuthoritiesOfUser(user.userId)
+                                ).pipe(
+                                    map(allAuthorities =>
+                                        allAuthorities.filter(authority =>
+                                            !addedAuthorities.some(addedAuthority =>
+                                                authority.authorityId === addedAuthority.authorityId
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        );
+                    })
+                )
+            )
+        );
+    }
+
+    refresh(): void {
+        this.refresh$.next();
+    }
+}

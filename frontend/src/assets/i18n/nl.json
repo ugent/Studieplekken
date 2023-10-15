@@ -129,8 +129,15 @@
         "terms-of-use": "Terms of use"
     },
     "reservations": {
-        "reservationButton": "Update Reservaties",
-        "tooManyPenalty": "Je hebt te veel strafpunten. Bekijk de informatiepagina voor meer info."
+        "reservationButton": "Aanpassingen bevestigen",
+        "tooManyPenalty": "Je hebt te veel strafpunten. Bekijk de informatiepagina voor meer info.",
+        "noReservations": "Geen reservaties gevonden voor deze locatie.",
+        "shouldLogin": "Je moet inloggen om je reservaties voor deze locatie te kunnen zien.",
+        "shouldLoginMaker": "Je moet inloggen om reservaties te kunnen maken voor deze locatie.",
+        "notFound": "De locatie werd niet gevonden. Denk je dat dit een fout is? Aarzel niet ons te contacteren!",
+        "loading": "De locatie wordt geladen...",
+        "reservationHelper": "Gebruik de kalender om reservaties aan te passen door op timeslots te klikken.",
+        "penaltyError": "Je kan geen reservatie maken omdat je teveel strafpunten hebt."
     },
     "general": {
         "dsa": "Dienst StudentenActiviteiten",
@@ -201,7 +208,11 @@
         "stadGentLogin": "Stad Gent Login",
         "kuLeuvenLogin": "KU Leuven Login",
         "otherLogin": "Login voor speciale accounts",
-        "about": "Het digitaal platform voor studieplekken"
+        "about": "Het digitaal platform voor studieplekken",
+        "students": "Voor studenten",
+        "others": "Andere accounts",
+        "students-clarification": "Enkel met deze accounttypes kan je als student bloklocaties reserveren.",
+        "others-clarification": "Met deze accounttypes kan je als niet-student bloklocaties beheren."
     },
     "management": {
         "confirm": "Ben je het zeker?",
@@ -257,7 +268,15 @@
             "noBuildings": "Er zijn nog geen beschikbare gebouwen. Maak er een aan met de knop 'Gebouw toevoegen",
             "noTags": "Er zijn nog geen tags. Maak er een aan met de knop 'Tag Toevoegen'",
             "noAuthorities": "Er zijn nog geen autoriteiten aangemaakt. Maak er een aan met de knop 'Autoriteit Toevoegen'",
-            "noActions": "Er zijn nog geen acties. Deze zullen automatisch worden toegevoegd wanneer belangrijke acties worden uitgevoerd."
+            "noActions": "Er zijn nog geen acties. Deze zullen automatisch worden toegevoegd wanneer belangrijke acties worden uitgevoerd.",
+            "noResults": "Geen resultaten."
+        },
+        "managementTable": {
+            "pagination": {
+                "info": "{{startIndex}} tot {{endIndex}} van de {{total}} resultaten",
+                "perPage": "Per pagina"
+            },
+            "actions": "Acties"
         },
         "locationDetails": {
             "title": "Details van {locationName}",
@@ -567,6 +586,7 @@
                     "lastName": "Achternaam",
                     "penaltyPoints": "Strafpunten",
                     "institution": "Institutie",
+                    "email": "E-mail",
                     "details": "Details"
                 },
                 "neverSearched": "Je hebt nog niet gezocht naar een gebruiker. Vul de voor- en/of achternaam, of enkel de barcode in om te kunnen zoeken naar gebruikers.",
@@ -837,7 +857,7 @@
             "errorOnLoadingVolunteers": "De toezichthouders van deze locatie konden niet opgehaald worden.",
             "addNewButton": "Toezichter toevoegen",
             "addNewHeader": "Zoek en voeg toezichter toe",
-            "title": "Bekijk, voeg toe en verwijder toezichters"
+            "title": "Beheer toezichters voor \"{{ locationName }}\""
         },
         "stats": {
             "title": "Statistieken",
@@ -939,7 +959,8 @@
                 "studentNumber": "Studentennummer",
                 "receiveMailConfirmation": "Ontvang bevestigingsmails van reservaties"
             },
-            "qrcode": "Je kan deze QR- of barcode tonen aan de scanpost van je studieplek. Je aanwezigheid zal geregistreerd worden."
+            "qrcode": "Je kan deze QR- of barcode tonen aan de scanpost van je studieplek. Je aanwezigheid zal geregistreerd worden.",
+            "loading": "Je profiel wordt geladen..."
         },
         "penalties": {
             "title": "Strafpunten",
@@ -1055,7 +1076,7 @@
             "errorMessageOnLoadingLocation": "De locatie om te scannen, kan niet opgehaald worden.",
             "noUsersToScanWarning": "Op dit moment zijn er geen studenten te scannen voor deze locatie ."
         },
-        "phone": "Scan met GSM-camera",
+        "phone": "Camera",
         "handheld": "Scan met een handscanner",
         "manual": "Checklist",
         "unregistered": "Deze gebruiker is niet geregistreerd.",

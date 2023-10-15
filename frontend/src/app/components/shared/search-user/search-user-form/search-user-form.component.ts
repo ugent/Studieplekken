@@ -3,8 +3,8 @@ import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { UserService } from 'src/app/extensions/services/api/users/user.service';
-import { objectExists } from '../../../../extensions/GeneralFunctions';
-import { User } from '../../../../extensions/model/User';
+import { objectExists } from '../../../../extensions/util/GeneralFunctions';
+import { User } from '../../../../model/User';
 
 @Component({
   selector: 'app-search-user-form',

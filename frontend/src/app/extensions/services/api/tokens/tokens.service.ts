@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { api } from '../endpoints';
 import { map } from 'rxjs/internal/operators/map';
-import {Token, TokenConstructor} from '../../../model/Token';
+import {Token, TokenConstructor} from '../../../../model/Token';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +17,7 @@ export class TokensService {
   }
 
   /**
-   * Adding a token. Note that token.token will be ignored. The return
+   * Adding a token. Note that token. token will be ignored. The return
    * value will have set the correct token for the added Tag.
    */
   addToken(token: Token): Observable<Token> {

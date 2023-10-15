@@ -1,9 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {DatePipe} from '@angular/common';
-import {Location} from '../../../extensions/model/Location';
+import {Location} from '../../../model/Location';
 import {LocationService} from '../../../extensions/services/api/locations/location.service';
 import {TranslateService} from '@ngx-translate/core';
-import {LocationTag} from '../../../extensions/model/LocationTag';
+import {LocationTag} from '../../../model/LocationTag';
 import {defaultLocationImage} from '../../../app.constants';
 import {Moment} from 'moment';
 

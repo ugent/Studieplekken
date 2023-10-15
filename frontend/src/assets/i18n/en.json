@@ -58,7 +58,7 @@
         "details": "Details",
         "tags": "Tags",
         "gotoDashboard": "Please navigate to the dashboard to select a room's details.",
-        "location": "Room",
+        "location": "Location",
         "numberOfLockers": "Number of lockers",
         "numberOfSeats": "Number of seats",
         "noLocations": "Unfortunately, at this moment there are no rooms available.",
@@ -129,8 +129,15 @@
         "terms-of-use": "Terms of use"
     },
     "reservations": {
-        "reservationButton": "Update Reservations",
-        "tooManyPenalty": "You have too many penalty points. Please refer to the information page."
+        "reservationButton": "Confirm changes",
+        "tooManyPenalty": "You have too many penalty points. Please refer to the information page.",
+        "noReservations": "There were no past reservations for this location.",
+        "shouldLogin": "You must log in to see your reservations for this location.",
+        "shouldLoginMaker": "You must log in to make reservations for this location.",
+        "notFound": "The location was not found. Do you think this is an error? Don't hesitate to contact us!",
+        "loading": "Loading the location...",
+        "reservationHelper": "Use the calendar to adjust reservations by clicking on timeslots.",
+        "penaltyError": "You cannot make a reservation because you have too many penalty points"
     },
     "general": {
         "dsa": "Student Activities Office",
@@ -201,7 +208,9 @@
         "stadGentLogin": "Stad Gent Login",
         "kuLeuvenLogin": "KU Leuven Login",
         "otherLogin": "Special Accounts Login",
-        "about": "The digital platform for study locations"
+        "about": "The digital platform for study locations",
+        "students": "For students",
+        "others": "Other accounts"
     },
     "management": {
         "confirm": "Are you sure?",
@@ -257,7 +266,15 @@
             "noBuildings": "There are no buildings yet, make one using the 'Add Building' button",
             "noTags": "There are no tags yet, make one using the 'Add Tag' button",
             "noAuthorities": "There are no authorities yet, make on using the 'Add Authority' button",
-            "noActions": "There are no actions yet. They will be added automatically when important actions are performed."
+            "noActions": "There are no actions yet. They will be added automatically when important actions are performed.",
+            "noResults": "No results."
+        },
+        "managementTable": {
+            "pagination": {
+                "info": "Showing {{startIndex}} to {{endIndex}} of {{total}} results",
+                "perPage": "Per page"
+            },
+            "actions": "Actions"
         },
         "locationDetails": {
             "title": "Details of {locationName}",
@@ -568,6 +585,7 @@
                     "lastName": "Last name",
                     "penaltyPoints": "Penalty points",
                     "institution": "Institution",
+                    "email": "Email",
                     "details": "Details"
                 },
                 "neverSearched": "You haven't searched any users yet. Fill in the first and/or last name, or just the barcode to be able to search users.",
@@ -939,7 +957,8 @@
                 "studentNumber": "Student Number",
                 "receiveMailConfirmation": "Receive e-mail confirmation of reservations"
             },
-            "qrcode": "You can show this QR code at the scanning desk of your study room. If scanned successfully, your attendance will be registered."
+            "qrcode": "You can show this QR code at the scanning desk of your study room. If scanned successfully, your attendance will be registered.",
+            "loading": "Your profile is being loaded..."
         },
         "penalties": {
             "title": "Penalty points",

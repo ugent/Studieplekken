@@ -1,0 +1,55 @@
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/mixins';
+
+.header {
+    #desktop {
+        display: block;
+
+        @include media-breakpoint-down(md) {
+            display: none;
+        }
+    }
+
+    #mobile {
+        display: none;
+
+        @include media-breakpoint-down(md) {
+            display: block;
+        }
+    }
+
+    .authentication {
+        @media(max-width: 500px) {
+            position: static;
+        }
+
+        .accordion--content {
+            @media(max-width: 500px) {
+                top: calc(.5rem + 60px);
+                right: 0;
+                left: 0;
+                width: calc(100vw - 2rem);
+            }
+        }
+    }
+
+    nav {
+        max-width: 1280px;
+        margin: 1rem auto auto;
+
+        .smaller-text {
+            font-size: 12px;
+        }
+    }
+
+    .content-container {
+        .authentication {
+            margin-left: 0;
+        }
+
+        > :not(:first-child) {
+            margin-left: .5rem;
+        }
+    }
+}

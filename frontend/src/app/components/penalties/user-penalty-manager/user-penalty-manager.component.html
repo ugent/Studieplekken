@@ -1,35 +1,35 @@
-<div>
-    <h3>
-        {{ "penalties.management.subheader" | translate }} {{ user.firstName }} {{ user.lastName }}
-    </h3>
-    <hr>
-    <div *ngIf="overview">
-        <app-penalty-table
-            *ngIf="penalties | async as penalties"
-            [penalties]="penalties"
-            [showDelete]="true"
-            [showTitle]="false"
-            (onDelete)="onDelete()"
-        ></app-penalty-table>
-        <button class="button button-primary" (click)="addPenaltyButton(addPenaltyModal)">
-            {{ "penalties.management.addButton" | translate }}
+<ng-container>
+    <!-- Title -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h3 class="m-0">
+            {{ 'penalties.management.subheader' | translate }} {{ currentUser.firstName }} {{ currentUser.lastName }}
+        </h3>
+        <button class="button button-primary" (click)="prepareAdd()">
+            {{ 'penalties.management.addButton' | translate}}
         </button>
     </div>
-</div>
-
-<ng-template #addPenaltyModal>
-    <app-modal>
+    <!-- List -->
+    <app-management-table
+        [stateless]="false"
+        [data]="penalties?.penalties"
+        [actions]="getTableActions()"
+        [mapper]="getTableMapper()">
+    </app-management-table>
+    <!-- Add penalty form -->
+    <app-modal #modify>
         <h2 modal-header>
-            {{ 'penalties.management.addButton' | translate }}
+            <ng-container>
+                {{ 'penalties.management.addButton' | translate }}
+            </ng-container>
         </h2>
         <div modal-body>
-            <form>
+            <form [formGroup]="formGroup">
                 <!-- points -->
                 <div class="row">
                     <div class="col">
-                        <label class="control-label" for="points">
+                        <label class="control-label">
                             {{ "penalties.management.points" | translate }}
-                            <input type="number" class="form-control" min="0" [(ngModel)]="model.points" id="points" />
+                            <input type="number" class="form-control" min="0" formControlName="points" />
                         </label>
                     </div>
                 </div>
@@ -37,18 +37,22 @@
                 <!-- Description -->
                 <div class="row">
                     <div class="col">
-                        <label class="control-label" for="description">
+                        <label class="control-label">
                             {{ "penalties.management.description" | translate }}
-                            <input type="text" class="form-control" [(ngModel)]="model.description" id="description" />
+                            <input type="text" class="form-control" formControlName="description" />
                         </label>
                     </div>
                 </div>
             </form>
         </div>
+        <!-- Modal footer -->
         <div modal-footer>
-            <button class="button button-primary" (click)="addPenalty()">{{"penalties.management.confirm" | translate}}</button>
-            <button class="button button-secondary" (click)="cancelPenalty()">{{"penalties.management.cancel" | translate}}</button>
+            <button type="submit" class="button button-primary" [disabled]="!formGroup.valid" (click)="storeAdd()">
+                {{ 'general.buttons.add' | translate}}
+            </button>
+            <button type="button" class="button button-secondary" (click)="closeModal(modify)">
+                {{'general.buttons.close' | translate}}
+            </button>
         </div>
-
     </app-modal>
-</ng-template>
+</ng-container>

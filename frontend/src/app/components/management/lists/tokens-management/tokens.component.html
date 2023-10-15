@@ -1,0 +1,75 @@
+<ng-container *ngIf="tokensObs$ | async as tokens">
+    <!-- Title -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h3 class="m-0">{{'management.tokens.title' | translate}}</h3>
+        <button class="button button-primary" (click)="prepareAdd()">
+            {{'management.tokens.addNewToken' | translate}}
+        </button>
+    </div>
+    <div *ngIf="addedToken" class="messages messages-success">
+        <i class="icon-info"></i>
+        <input class="my-form-control" value="{{ addedToken.purpose === 'REGISTRATION' ? ' https://bloklocaties.stad.gent/auth/local/register?token=' : ' https://bloklocaties.stad.gent/auth/local/password-reset?token=' }} {{ addedToken.token }}">
+    </div>
+    <app-management-table
+        [data]="tokens"
+        [mapper]="getTableMapper()"
+        [actions]="getTableActions()">
+    </app-management-table>
+</ng-container>
+<app-modal #modify>
+    <h3 modal-header>
+        {{'management.tokens.addTokenModal.title' | translate}}
+    </h3>
+    <div modal-body>
+        <form [formGroup]="formGroup">
+            <!-- Purpose of token -->
+            <div class="row form-group">
+                <div class="col">
+                    <label>
+                        {{'management.tokens.table.purpose' | translate}}
+                        <div>
+                            <select class="form-control" formControlName="purpose">
+                                <option value="REGISTRATION">{{'management.tokens.addTokenModal.purpose.registration' | translate}}</option>
+                                <option value="PASSWORD_RESET">{{'management.tokens.addTokenModal.purpose.passwordReset' | translate}}</option>
+                            </select>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- email of token -->
+            <div class="row form-group" *ngIf="formGroup.get('purpose').value === 'PASSWORD_RESET'">
+                <div class="col">
+                    <label>
+                        {{'management.tokens.table.email' | translate}}
+                        <input class="form-control" type="text" formControlName="email">
+                    </label>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div modal-footer>
+        <button type="submit" class="button button-primary" [disabled]="!validTokenFormGroup()" (click)="storeAdd()">
+            {{'general.buttons.add' | translate}}
+        </button>
+        <button type="button" class="button button-secondary" (click)="modify.close()">
+            {{'general.buttons.close' | translate}}
+        </button>
+    </div>
+
+    <!-- Feedback to the user -->
+    <div modal-message-footer>
+        <div class="messages messages--info" *ngIf="(isSuccess | async) === null">
+            {{'general.waitingForServer' | translate}}
+        </div>
+
+        <div class="messages messages--success" *ngIf="(isSuccess | async) === true">
+            {{'management.tokens.addTokenModal.success' | translate}}
+        </div>
+
+        <div class="messages messages--error" *ngIf="(isSuccess | async) === false">
+            {{'management.tokens.addTokenModal.error' | translate}}
+        </div>
+    </div>
+</app-modal>
