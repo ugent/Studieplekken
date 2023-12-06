@@ -6,7 +6,7 @@
     </app-calendar>
 
     <!-- Update button -->
-    <div id="reservationMaker" *ngIf="location.currentTimeslot?.reservable">
+    <div id="reservationMaker" *ngIf="isReservable">
         <ng-container *ngIf="user.isLoggedIn() && canMakeReservation()">
             {{ 'reservations.reservationHelper' | translate }}
         </ng-container>

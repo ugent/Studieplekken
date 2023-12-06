@@ -23,6 +23,7 @@ export class LocationReservationCalendarComponent {
     @ViewChild('commitModal') commitModal: ModalComponent;
     @ViewChild('afterModal') afterModal: ModalComponent;
 
+    @Input() isReservable: boolean;
     @Input() user: User;
     @Input() location: Location;
     @Input() newReservations: LocationReservation[] = [];
