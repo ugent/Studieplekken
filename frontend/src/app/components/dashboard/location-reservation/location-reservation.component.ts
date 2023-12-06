@@ -24,6 +24,8 @@ import {catchError, filter, first, mergeMap, share, tap} from 'rxjs/operators';
 import {of} from 'rxjs/internal/observable/of';
 import {ModalComponent} from '../../stad-gent-components/molecules/modal/modal.component';
 import {AfterReservationComponent} from './after-reservation/after-reservation.component';
+import {Authority} from '../../../model/Authority';
+import {now} from 'd3';
 
 @Component({
     selector: 'app-location-reservation',
@@ -41,7 +43,7 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
 
     protected showEdit = false;
     protected isNotFound = false;
-    protected canMakeReservation = true;
+    protected isReservable = false;
     protected language = '';
 
     protected timeslots: Timeslot[] = [];
@@ -66,50 +68,37 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.setup();
-    }
-
-    setup(): void {
-        this.subscription.unsubscribe();
-
         const locationID = Number(
             this.route.snapshot.paramMap.get('locationId')
         );
 
         // Fetch the context.
+        this.setupSubscriptions();
         this.contextSub$ = combineLatest([
             this.authenticationService.getUserObs(),
             this.locationService.getLocation(locationID)
         ]).pipe(
             tap(([user, location]) => {
-
                 this.location = location;
                 this.user = user;
-
                 this.isNotFound = !!!location;
-
-                this.showEdit = user.isAdmin() || user.userAuthorities.some(authority =>
+                this.showEdit = user.isAdmin() || user.userAuthorities.some((authority: Authority) =>
                     authority.authorityId === location.authority.authorityId
                 );
-
-                this.canMakeReservation = !location?.usesPenaltyPoints || user.penaltyPoints < 100;
-
                 this.breadcrumbService.setCurrentBreadcrumbs([{
                     pageName: 'Details',
                     url: `/dashboard/${ location?.locationId }`
                 }]);
 
-
                 this.updateEvents().then(() => this.updateReservations());
             })
         );
-        this.setupSubscriptions();
     }
 
     setupSubscriptions(): void {
         // Update reservations (and calendar) every minute.
         this.subscription.add(
-            interval(1000 * 60).subscribe(() => {
+            interval(1000).subscribe(() => {
                 this.updateEvents().then(() => this.updateReservations());
             })
         );
@@ -140,12 +129,22 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
         }
     }
 
-    async updateEvents(hard = true): Promise<void> {
+    async updateEvents(fetchTimeslots = true): Promise<void> {
         if (this.location) {
-            if (hard) {
-                this.timeslots = await this.timeslotsService.getTimeslotsOfLocation(this.location.locationId).toPromise();
+            // Fetch and reload the timeslots from the backend.
+            if (fetchTimeslots) {
+                this.timeslots = await this.timeslotsService.getTimeslotsOfLocation(this.location.locationId).pipe(
+                    tap((timeslots: Timeslot[]) =>
+                        this.isReservable = timeslots.some(timeslot =>
+                            timeslot.reservableFrom?.isSameOrAfter(
+                                moment().startOf('day')
+                            )
+                        )
+                    )
+                ).toPromise();
             }
 
+            // Convert the timeslots into calendar events.
             this.events = this.timeslots.map(timeslot => this.timeslotCalendarEventService.timeslotToCalendarEvent(
                 timeslot, this.language, [
                     ...this.newReservations, ...this.allReservations.filter(res =>
@@ -213,7 +212,7 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
                     }
                 }
 
-                this.updateEvents(false);
+                void this.updateEvents(false);
             }
         }
     }
