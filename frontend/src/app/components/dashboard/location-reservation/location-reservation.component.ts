@@ -74,6 +74,7 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
 
         // Fetch the context.
         this.setupSubscriptions();
+
         this.contextSub$ = combineLatest([
             this.authenticationService.getUserObs(),
             this.locationService.getLocation(locationID)
@@ -98,7 +99,7 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
     setupSubscriptions(): void {
         // Update reservations (and calendar) every minute.
         this.subscription.add(
-            interval(1000).subscribe(() => {
+            interval(1000 * 60).subscribe(() => {
                 this.updateEvents().then(() => this.updateReservations());
             })
         );
@@ -135,11 +136,11 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
             if (fetchTimeslots) {
                 this.timeslots = await this.timeslotsService.getTimeslotsOfLocation(this.location.locationId).pipe(
                     tap((timeslots: Timeslot[]) =>
-                        this.isReservable = timeslots.some(timeslot =>
-                            timeslot.reservableFrom?.isSameOrAfter(
+                        this.isReservable = timeslots.some(timeslot => {
+                            return timeslot.reservableFrom?.isSameOrBefore(
                                 moment().startOf('day')
-                            )
-                        )
+                            ) && !timeslot.isInPast();
+                        })
                     )
                 ).toPromise();
             }
