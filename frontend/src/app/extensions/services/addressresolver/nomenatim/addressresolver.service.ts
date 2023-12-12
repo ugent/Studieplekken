@@ -10,7 +10,7 @@ import {now} from 'd3';
     providedIn: 'root'
 })
 export class AddressResolverService {
-    public static readonly ADDRESS_RESOLVER_URL = 'https://geocode.maps.co/search';
+    public static readonly ADDRESS_RESOLVER_URL = 'https://nominatim.openstreetmap.org/search';
 
     private lastSearch = moment();
     private delay = 1000;
@@ -21,11 +21,13 @@ export class AddressResolverService {
     }
 
     query(address: string): Observable<{ lat: string, lon: string }[]> {
-        const params = new HttpParams().append('q', address);
+        const params = new HttpParams()
+            .set('q', address)
+            .set('format', 'json');
+        const headers = new HttpHeaders()
+            .set('Referer', 'https://bloklocaties.stad.gent');
 
-        return this.http.get<{ lat: string, lon: string }[]>(
-            AddressResolverService.ADDRESS_RESOLVER_URL, {params}
-        ).pipe(
+        return this.http.get<{ lat: string, lon: string }[]>(AddressResolverService.ADDRESS_RESOLVER_URL, {params}).pipe(
             delay(
                 Math.max(this.delay - moment().diff(this.lastSearch), 0)
             ),

@@ -9,11 +9,10 @@ import {BuildingService} from 'src/app/extensions/services/api/buildings/buildin
 import {AuthenticationService} from 'src/app/extensions/services/authentication/authentication.service';
 import {Building, BuildingConstructor} from 'src/app/model/Building';
 import {User} from '../../../../model/User';
-import {first, map, mergeMap, startWith, switchMap, tap} from 'rxjs/operators';
+import {concatMap, map, mergeMap, startWith, switchMap, tap} from 'rxjs/operators';
 import {TableMapper} from '../../../../model/Table';
 import {BaseManagementComponent} from '../base-management.component';
 import {institutions} from '../../../../app.constants';
-import {of} from 'rxjs/internal/observable/of';
 
 @Component({
     selector: 'app-building-management',
@@ -39,14 +38,18 @@ export class BuildingManagementComponent extends BaseManagementComponent<Buildin
     ngOnInit(): void {
         super.ngOnInit();
 
-        this.contextObs$ = combineLatest([
-            this.authenticationService.getUserObs(),
-            this.buildingService.getAllBuildings(),
-            this.refresh$.pipe(startWith(EMPTY))
-        ]).pipe(
+        this.contextObs$ = this.refresh$.pipe(
+            startWith(EMPTY),
+            switchMap(() =>
+                combineLatest([
+                    this.authenticationService.getUserObs(),
+                    this.buildingService.getAllBuildings()
+                ])
+            )
+        ).pipe(
             tap(([user, buildings]) => {
                 this.user = user;
-                this.buildings = buildings.filter(building =>
+                this.buildings = buildings.filter((building: Building) =>
                     building.institution === user.institution || user.isAdmin()
                 );
                 this.institutions = user.isAdmin() ? institutions : [user.institution];
@@ -67,7 +70,7 @@ export class BuildingManagementComponent extends BaseManagementComponent<Buildin
     storeAdd(body = this.formGroup.value): void {
         this.sendBackendRequest(
             this.checkAddress(body.address).pipe(
-                mergeMap((coordinates) => {
+                switchMap((coordinates) => {
                     if (coordinates) {
                         const newBuilding = {
                             ...body,
@@ -78,6 +81,7 @@ export class BuildingManagementComponent extends BaseManagementComponent<Buildin
                             newBuilding
                         );
                     }
+
                     return throwError({
                         message: 'The address is incorrect'
                     });
@@ -117,7 +121,6 @@ export class BuildingManagementComponent extends BaseManagementComponent<Buildin
 
     checkAddress(address: string): Observable<{latitude: string, longitude: string}> {
         return this.addressResolver.query(address).pipe(
-            tap(result => console.log(result)),
             map(result =>
                 result.length ? {
                     latitude: result[0].lat,
