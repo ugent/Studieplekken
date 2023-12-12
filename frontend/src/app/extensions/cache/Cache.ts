@@ -94,6 +94,7 @@ export class Cache<I, V> {
             // if the cache is being reloaded, the current value can be skipped
             return this.cacheReload(url);
         }
+
         // if the cache is not being reloaded, the current value suffices
         return this.cacheSubject.pipe(
             map((valueMap) => [...valueMap.values()]),

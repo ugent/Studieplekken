@@ -136,11 +136,11 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
             if (fetchTimeslots) {
                 this.timeslots = await this.timeslotsService.getTimeslotsOfLocation(this.location.locationId).pipe(
                     tap((timeslots: Timeslot[]) =>
-                        this.isReservable = timeslots.some(timeslot => {
-                            return timeslot.reservableFrom?.isSameOrBefore(
+                        this.isReservable = timeslots.some(timeslot =>
+                            timeslot.reservableFrom?.isSameOrBefore(
                                 moment().startOf('day')
-                            ) && !timeslot.isInPast();
-                        })
+                            ) && !timeslot.isInPast()
+                        )
                     )
                 ).toPromise();
             }
