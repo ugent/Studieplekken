@@ -139,7 +139,7 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
                         this.isReservable = timeslots.some(timeslot => {
                             return timeslot.reservableFrom?.isSameOrBefore(
                                 moment().startOf('day')
-                            );
+                            ) && !timeslot.isInPast();
                         })
                     )
                 ).toPromise();
