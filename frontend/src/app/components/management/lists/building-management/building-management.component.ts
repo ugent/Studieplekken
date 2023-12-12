@@ -121,12 +121,12 @@ export class BuildingManagementComponent extends BaseManagementComponent<Buildin
 
     checkAddress(address: string): Observable<{latitude: string, longitude: string}> {
         return this.addressResolver.query(address).pipe(
-            map(result =>
-                result.length ? {
+            map(result => {
+                return result.length ? {
                     latitude: result[0].lat,
                     longitude: result[0].lon
-                } : null
-            )
+                } : null;
+            })
         );
     }
 
