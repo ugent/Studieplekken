@@ -87,8 +87,6 @@ export class DetailsFormComponent implements OnInit {
         const from = this.location;
         const to = this.locationInForm;
 
-        console.log(to);
-
         this.locationService.updateLocation(from.locationId, to).subscribe(
             () => {
                 this.successHandler();
@@ -121,7 +119,7 @@ export class DetailsFormComponent implements OnInit {
             authority.authorityId === formValue.authority
         );
         location.building = this.buildings.find(building =>
-            building.buildingId === formValue.building
+            building.buildingId === Number(formValue.building)
         );
         location.numberOfSeats = Number(formValue.numberOfSeats);
         location.numberOfLockers = Number(formValue.numberOfLockers);
