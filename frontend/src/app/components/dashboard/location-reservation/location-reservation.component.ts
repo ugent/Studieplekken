@@ -138,7 +138,7 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
                     tap((timeslots: Timeslot[]) =>
                         this.isReservable = timeslots.some(timeslot =>
                             timeslot.reservableFrom?.isSameOrBefore(
-                                moment().startOf('day')
+                                moment()
                             ) && !timeslot.isInPast()
                         )
                     )
