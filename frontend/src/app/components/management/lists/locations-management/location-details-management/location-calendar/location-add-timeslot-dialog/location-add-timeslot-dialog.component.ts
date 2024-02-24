@@ -48,7 +48,9 @@ export class LocationAddTimeslotDialogComponent implements OnChanges {
                 input?.reservableFrom ?? null,
                 this.location?.locationId,
                 input?.openingHour ?? null,
-                input?.closingHour ?? null
+                input?.closingHour ?? null,
+                input?.timeslotGroup ?? null,
+                input?.repeatable ?? false
             );
 
             this.setupForm(timeslot);
@@ -56,6 +58,7 @@ export class LocationAddTimeslotDialogComponent implements OnChanges {
     }
 
     setupForm(timeslot: Timeslot = this.timeslot): void {
+        console.log(timeslot);
         this._timeslot = timeslot;
     }
 
