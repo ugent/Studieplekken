@@ -47,19 +47,17 @@ export class TimeslotCalendarEventService {
                 cssClass: 'event not-reservable',
             })
 
-    private notYetReservableTimeslotToCalendarEvent: (timeslot: Timeslot, currentLang: string) => CalendarEvent<{
-        timeslot: Timeslot
-    }> =
-        (timeslot, currentLang) =>
-            ({
-                title: currentLang === 'nl' ?
-                    `${timeslot.openingHour.format('HH:mm')} - ${timeslot.closingHour.format('HH:mm')} <br> Reserveren vanaf ${timeslot.reservableFrom.format('DD/MM/YYYY HH:mm')}`
-                    : `${timeslot.openingHour.format('HH:mm')} - ${timeslot.closingHour.format('HH:mm')} <br> Reservable from ${timeslot.reservableFrom.format('DD/MM/YYYY HH:mm')}`,
-                start: timeslot.getStartMoment().toDate(),
-                end: timeslot.getEndMoment().toDate(),
-                meta: {timeslot},
-                cssClass: 'event not-reservable',
-            })
+    private notYetReservableTimeslotToCalendarEvent(timeslot: Timeslot, currentLang: string): CalendarEvent<{ timeslot: Timeslot }> {
+        return ({
+            title: currentLang === 'nl' ?
+                `${timeslot.openingHour.format('HH:mm')} - ${timeslot.closingHour.format('HH:mm')} <br> Reserveren vanaf ${timeslot.reservableFrom.format('DD/MM/YYYY HH:mm')}`
+                : `${timeslot.openingHour.format('HH:mm')} - ${timeslot.closingHour.format('HH:mm')} <br> Reservable from ${timeslot.reservableFrom.format('DD/MM/YYYY HH:mm')}`,
+            start: timeslot.getStartMoment().toDate(),
+            end: timeslot.getEndMoment().toDate(),
+            meta: {timeslot},
+            cssClass: 'event not-reservable',
+        })
+    }
 
     private reservableTimeslotToCalendarEvent(
         timeslot: Timeslot,
