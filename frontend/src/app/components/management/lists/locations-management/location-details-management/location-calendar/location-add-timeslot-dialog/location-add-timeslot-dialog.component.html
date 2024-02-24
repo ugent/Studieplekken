@@ -107,7 +107,7 @@
         <div *ngIf="_displayErrorSeats">
             <div class="messages messages--warning">
                 <i class="icon-exclamation"></i>
-                {{('management.locationDetails.calendar.form.seatsError' | translate).replace('{amountOfReservations}', newTimeslot.amountOfReservations) }}
+                {{('management.locationDetails.calendar.form.seatsError' | translate).replace('{amountOfReservations}', _timeslot.amountOfReservations) }}
             </div>
         </div>
     </div>
