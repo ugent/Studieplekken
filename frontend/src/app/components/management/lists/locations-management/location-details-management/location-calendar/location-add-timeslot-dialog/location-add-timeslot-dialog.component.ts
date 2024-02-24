@@ -29,22 +29,34 @@ export class LocationAddTimeslotDialogComponent implements OnChanges {
     @Output() onNewTimeslot = new EventEmitter<Timeslot>();
     @Output() onUpdateTimeslot = new EventEmitter<Timeslot>();
 
-    protected displayErrorTime: boolean;
-    protected displayErrorSeats: boolean;
+    protected _displayErrorTime: boolean;
+    protected _displayErrorSeats: boolean;
 
-    protected newTimeslot: Timeslot = new Timeslot();
-
+    protected _timeslot: Timeslot = new Timeslot();
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes.location || changes.timeslot) {
-            this.setupForm(this.timeslot ?? new Timeslot(
-                0, null, 0, this.location?.numberOfSeats, false, null, this.location?.locationId
-            ));
+            // We take a copy of the input timeslot to prevent updating the prop!
+            const input = this.timeslot;
+
+            const timeslot = new Timeslot(
+                input?.timeslotSequenceNumber ?? 0,
+                input?.timeslotDate ?? null,
+                input?.amountOfReservations ?? 0,
+                input?.seatCount ?? this.location.numberOfSeats,
+                input?.reservable ?? false,
+                input?.reservableFrom ?? null,
+                this.location?.locationId,
+                input?.openingHour ?? null,
+                input?.closingHour ?? null
+            );
+
+            this.setupForm(timeslot);
         }
     }
 
     setupForm(timeslot: Timeslot = this.timeslot): void {
-        this.newTimeslot = timeslot;
+        this._timeslot = timeslot;
     }
 
     getMinStartDate(): Moment {
@@ -68,25 +80,27 @@ export class LocationAddTimeslotDialogComponent implements OnChanges {
     }
 
     confirm(): void {
-        if (this.newTimeslot.closingHour.isAfter(this.newTimeslot.openingHour)) {
-            if (this.newTimeslot.seatCount >= this.newTimeslot.amountOfReservations) {
-                this.displayErrorTime = false;
-                this.displayErrorSeats = false;
+        const timeslot = this._timeslot;
+
+        if (timeslot.closingHour.isAfter(timeslot.openingHour)) {
+            if (timeslot.seatCount >= timeslot.amountOfReservations) {
+                this._displayErrorTime = false;
+                this._displayErrorSeats = false;
 
                 if (this.isUpdating()) {
-                    this.onUpdateTimeslot.next(this.newTimeslot);
+                    this.onUpdateTimeslot.next(timeslot);
                 } else {
-                    this.onNewTimeslot.next(this.newTimeslot);
+                    this.onNewTimeslot.next(timeslot);
                 }
             } else {
-                this.displayErrorSeats = true;
+                this._displayErrorSeats = true;
             }
         } else {
-            this.displayErrorTime = true;
+            this._displayErrorTime = true;
         }
     }
 
     isUpdating(): boolean {
-        return !!this.newTimeslot?.timeslotSequenceNumber;
+        return !!this._timeslot?.timeslotSequenceNumber;
     }
 }

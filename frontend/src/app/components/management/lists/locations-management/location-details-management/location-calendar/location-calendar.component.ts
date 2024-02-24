@@ -84,24 +84,35 @@ export class LocationCalendarComponent implements OnChanges {
         this.refresh = new ReplaySubject();
     }
 
+    /**
+     * Set up suggestions and events on input changes.
+     * @param changes
+     */
     ngOnChanges(changes: SimpleChanges): void {
         // Input: location and timeslots.
         // We calculate the suggestions from the timeslots and current location.
         if (changes.timeslots || changes.location) {
             this.setupSuggestions();
         }
+
         // We calculate the events from the timeslots.
         if (changes.timeslots && this.timeslots) {
             this.setupEvents();
         }
     }
 
+    /**
+     * Set up the suggestions for the list of timeslots.
+     */
     setupSuggestions(): void {
         this.suggestions = this.timeslots ? this.timeslotGroupService.getSuggestions(
             this.timeslots, this.location
         ) : [];
     }
 
+    /**
+     * Set up the calendar event for each timeslot.
+     */
     setupEvents(): void {
         const language = this.translate.currentLang;
 
@@ -122,6 +133,9 @@ export class LocationCalendarComponent implements OnChanges {
         this.refresh.next();
     }
 
+    /**
+     * Set up the reservations for the selected timeslot.
+     */
     setupReservations(): void {
         this.locationReservationService.getLocationReservationsOfTimeslot(
             this.selected.timeslotSequenceNumber
@@ -130,6 +144,10 @@ export class LocationCalendarComponent implements OnChanges {
         );
     }
 
+    /**
+     * Handle a calendar event (timeslot) click event.
+     * @param event
+     */
     timeslotPickedHandler(event: { timeslot: Timeslot }): void {
         const timeslot = event.timeslot;
 
@@ -141,6 +159,12 @@ export class LocationCalendarComponent implements OnChanges {
         }
     }
 
+    /**
+     * Handle a calendar hour click event, opening the add modal
+     * with a default start hour.
+     * @param location
+     * @param date
+     */
     hourPickedHandler(location: Location, date: Moment): void {
         const openingHour = moment(
             date?.format('HH:mm'), 'HH:mm'
@@ -151,22 +175,34 @@ export class LocationCalendarComponent implements OnChanges {
         this.modifyModal.openModal();
     }
 
+    /**
+     * Prepare the creation of a timeslot through a modal.
+     */
     prepareAdd(): void {
         this.isSuccess = null;
         this.selected = null;
         this.modifyModal.openModal();
     }
 
+    /**
+     * Prepare the update of a timeslot through a modal.
+     */
     prepareUpdate(): void {
         this.isSuccess = null;
         this.modifyModal.openModal();
     }
 
+    /**
+     * Prepare the deletion of a timeslot through a modal.
+     */
     prepareDelete(): void {
         this.isSuccess = null;
         this.deleteModal.open();
     }
 
+    /**
+     * Prepare the copy of a timeslot through a modal.
+     */
     prepareCopy(): void {
         this.isSuccess = null;
         this.copyModal.open();
