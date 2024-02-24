@@ -48,7 +48,7 @@
                     </p>
                     <ul class="mb-0">
                         <li *ngFor="let reservation of newReservations">
-                            {{ location.name }} ({{ reservation.timeslot.timeslotDate.toDate() | date: 'dd/mm/yyyy' }} {{ reservation.timeslot.openingHour.toDate() | date: 'HH:mm' }})
+                            {{ location.name }} ({{ reservation.timeslot.timeslotDate.toDate() | date: 'd MMMM YYYY' }} {{ reservation.timeslot.openingHour.toDate() | date: 'HH:mm' }})
                         </li>
                     </ul>
                 </div>
@@ -58,7 +58,7 @@
                     <p>{{'dashboard.locationDetails.calendar.reservation.updateDeleteMessage' | translate }}</p>
                     <ul class="mb-0">
                         <li *ngFor="let reservation of removedReservations">
-                            {{ location.name }} ({{ reservation.timeslot.timeslotDate.toDate() | date: 'dd/mm/yyyy' }} {{ reservation.timeslot.openingHour.toDate() | date: 'HH:mm' }})
+                            {{ location.name }} ({{ reservation.timeslot.timeslotDate.toDate() | date: 'd MMMM YYYY' }} {{ reservation.timeslot.openingHour.toDate() | date: 'HH:mm' }})
                         </li>
                     </ul>
                 </div>

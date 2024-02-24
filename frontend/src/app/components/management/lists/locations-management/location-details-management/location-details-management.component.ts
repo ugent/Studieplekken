@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {EMPTY, Observable, ReplaySubject, Subject} from 'rxjs';
-import {Location, LocationConstructor} from '../../../../../model/Location';
+import {Location} from '../../../../../model/Location';
 import {LocationService} from '../../../../../extensions/services/api/locations/location.service';
 import {catchError, filter, startWith, switchMap} from 'rxjs/operators';
 import {Authority} from '../../../../../model/Authority';
