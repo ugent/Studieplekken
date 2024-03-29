@@ -1,6 +1,6 @@
 package blok2.http.controllers;
 
-import blok2.database.daos.ILocationDao;
+import blok2.database.dao.ILocationDao;
 import blok2.http.security.authorization.AuthorizedLocationController;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;

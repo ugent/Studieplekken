@@ -1,4 +1,4 @@
-package blok2.database.daos;
+package blok2.database.dao;
 
 import blok2.model.ActionLogEntry;
 

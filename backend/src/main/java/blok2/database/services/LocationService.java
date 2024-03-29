@@ -1,7 +1,7 @@
 package blok2.database.services;
 
-import blok2.database.daos.ILocationDao;
-import blok2.database.daos.ITimeslotDao;
+import blok2.database.dao.ILocationDao;
+import blok2.database.dao.ITimeslotDao;
 import blok2.database.repositories.LocationRepository;
 import blok2.extensions.exceptions.NoSuchDatabaseObjectException;
 import blok2.extensions.orm.LocationNameAndNextReservableFrom;

@@ -1,6 +1,6 @@
 package blok2.http.controllers;
 
-import blok2.database.daos.IPenaltyDao;
+import blok2.database.dao.IPenaltyDao;
 import blok2.model.penalty.Penalty;
 import blok2.model.users.User;
 import org.springframework.security.access.prepost.PreAuthorize;

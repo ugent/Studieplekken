@@ -1,6 +1,6 @@
 package blok2.http.security.services;
 
-import blok2.database.daos.IUserDao;
+import blok2.database.dao.IUserDao;
 import blok2.http.security.config.JwtService;
 import blok2.model.users.User;
 import io.jsonwebtoken.Claims;

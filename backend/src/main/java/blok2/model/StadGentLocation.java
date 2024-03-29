@@ -1,7 +1,7 @@
 package blok2.model;
 
-import blok2.database.daos.ILocationDao;
-import blok2.database.daos.ITimeslotDao;
+import blok2.database.dao.ILocationDao;
+import blok2.database.dao.ITimeslotDao;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservables.Location;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -1,6 +1,6 @@
 package blok2.http.security.authorization;
 
-import blok2.database.daos.IAuthorityDao;
+import blok2.database.dao.IAuthorityDao;
 import blok2.model.Authority;
 import blok2.model.reservables.Location;
 import blok2.model.users.User;

@@ -1,6 +1,6 @@
 package blok2.database.services;
 
-import blok2.database.daos.IUserDao;
+import blok2.database.dao.IUserDao;
 import blok2.database.repositories.UserRepository;
 import blok2.database.repositories.UserSettingsRepository;
 import blok2.extensions.exceptions.NoSuchDatabaseObjectException;

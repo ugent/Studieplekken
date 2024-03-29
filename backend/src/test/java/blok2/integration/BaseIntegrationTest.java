@@ -2,7 +2,7 @@ package blok2.integration;
 
 import blok2.BaseTest;
 import blok2.TestSharedMethods;
-import blok2.database.daos.*;
+import blok2.database.dao.*;
 import blok2.model.ActionLogEntry;
 import blok2.model.Authority;
 import blok2.model.Building;

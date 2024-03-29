@@ -1,7 +1,7 @@
 package blok2;
 
-import blok2.database.daos.IAuthorityDao;
-import blok2.database.daos.IUserDao;
+import blok2.database.dao.IAuthorityDao;
+import blok2.database.dao.IUserDao;
 import blok2.extensions.helpers.Institution;
 import blok2.helpers.TimeException;
 import blok2.extensions.exceptions.NoSuchDatabaseObjectException;

@@ -1,6 +1,6 @@
 package blok2.database.services;
 
-import blok2.database.daos.IAuthorityDao;
+import blok2.database.dao.IAuthorityDao;
 import blok2.database.repositories.AuthorityRepository;
 import blok2.database.repositories.LocationRepository;
 import blok2.database.repositories.UserRepository;

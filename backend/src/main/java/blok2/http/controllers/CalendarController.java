@@ -1,6 +1,6 @@
 package blok2.http.controllers;
 
-import blok2.database.daos.*;
+import blok2.database.dao.*;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservables.Location;
 import blok2.model.reservations.LocationReservation;

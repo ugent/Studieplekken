@@ -1,6 +1,6 @@
 package blok2.database.services;
 
-import blok2.database.daos.IPenaltyEventsDao;
+import blok2.database.dao.IPenaltyEventsDao;
 import blok2.database.repositories.PenaltyEventRepository;
 import blok2.extensions.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.penalty.PenaltyEvent;

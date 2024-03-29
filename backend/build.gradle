@@ -103,9 +103,3 @@ tasks.register("bootRunDev") {
     }
     finalizedBy("bootRun")
 }
-
-/*gitProperties {
-    gitPropertiesName = "git.properties"
-    gitPropertiesResourceDir = "$buildDir/classes"
-    keys = ['git.commit.id']
-}*/
