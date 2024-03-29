@@ -1,7 +1,7 @@
 package blok2.http.controllers;
 
-import blok2.database.daos.IActionLogDao;
-import blok2.database.daos.IAuthorityDao;
+import blok2.database.dao.IActionLogDao;
+import blok2.database.dao.IAuthorityDao;
 import blok2.extensions.helpers.Base64String;
 import blok2.extensions.exceptions.AlreadyExistsException;
 import blok2.extensions.exceptions.NoSuchDatabaseObjectException;

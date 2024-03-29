@@ -1,6 +1,6 @@
 package blok2.database.services;
 
-import blok2.database.daos.ITimeslotDao;
+import blok2.database.dao.ITimeslotDao;
 import blok2.database.repositories.TimeslotRepository;
 import blok2.extensions.exceptions.InvalidRequestParametersException;
 import blok2.model.calendar.Timeslot;

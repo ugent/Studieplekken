@@ -1,6 +1,6 @@
 package blok2.http.security.services;
 
-import blok2.database.daos.IUserDao;
+import blok2.database.dao.IUserDao;
 import blok2.model.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

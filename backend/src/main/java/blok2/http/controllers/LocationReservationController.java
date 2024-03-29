@@ -1,8 +1,8 @@
 package blok2.http.controllers;
 
-import blok2.database.daos.ILocationDao;
-import blok2.database.daos.ILocationReservationDao;
-import blok2.database.daos.ITimeslotDao;
+import blok2.database.dao.ILocationDao;
+import blok2.database.dao.ILocationReservationDao;
+import blok2.database.dao.ITimeslotDao;
 import blok2.extensions.helpers.Base64String;
 import blok2.http.security.authorization.AuthorizedLocationController;
 import blok2.extensions.exceptions.NoSuchDatabaseObjectException;

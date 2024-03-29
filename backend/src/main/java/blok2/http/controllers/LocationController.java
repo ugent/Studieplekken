@@ -1,6 +1,6 @@
 package blok2.http.controllers;
 
-import blok2.database.daos.*;
+import blok2.database.dao.*;
 import blok2.extensions.helpers.LocationWithApproval;
 import blok2.extensions.helpers.View;
 import blok2.http.security.authorization.AuthorizedLocationController;
@@ -35,11 +35,12 @@ import java.util.stream.Collectors;
 @RequestMapping("locations")
 public class LocationController extends AuthorizedLocationController {
 
-    private final Logger logger = LoggerFactory.getLogger(LocationController.class.getSimpleName());
+    private final Logger logger = LoggerFactory.getLogger(
+        LocationController.class.getSimpleName()
+    );
 
     private final ILocationDao locationDao;
     private final ILocationTagDao locationTagDao;
-    private final IUserDao userDao;
     private final IVolunteerDao volunteerDao;
     private final ILocationReservationDao locationReservationDao;
     private final IActionLogDao actionLogDao;
@@ -50,16 +51,14 @@ public class LocationController extends AuthorizedLocationController {
     // *************************************
     // *   CRUD operations for LOCATIONS   *
     // *************************************
-
     @Autowired
     public LocationController(
-            ILocationDao locationDao, ILocationTagDao locationTagDao, IUserDao userDao,
+            ILocationDao locationDao, ILocationTagDao locationTagDao,
             IVolunteerDao volunteerDao, MailService mailService, ILocationReservationDao locationReservationDao,
             IActionLogDao actionLogDao, IUserLocationSubscriptionDao userLocationSubscriptionDao
     ) {
         this.locationDao = locationDao;
         this.locationTagDao = locationTagDao;
-        this.userDao = userDao;
         this.mailService = mailService;
         this.volunteerDao = volunteerDao;
         this.locationReservationDao = locationReservationDao;

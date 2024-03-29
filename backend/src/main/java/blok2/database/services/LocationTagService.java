@@ -1,6 +1,6 @@
 package blok2.database.services;
 
-import blok2.database.daos.ILocationTagDao;
+import blok2.database.dao.ILocationTagDao;
 import blok2.database.repositories.LocationRepository;
 import blok2.database.repositories.LocationTagRepository;
 import blok2.extensions.exceptions.NoSuchDatabaseObjectException;

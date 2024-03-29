@@ -1,6 +1,6 @@
 package blok2.database.services;
 
-import blok2.database.daos.IActionLogDao;
+import blok2.database.dao.IActionLogDao;
 import blok2.database.repositories.ActionLogRepository;
 import blok2.model.ActionLogEntry;
 import org.springframework.beans.factory.annotation.Autowired;
