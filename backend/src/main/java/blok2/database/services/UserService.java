@@ -3,7 +3,7 @@ package blok2.database.services;
 import blok2.database.dao.IUserDao;
 import blok2.database.repositories.UserRepository;
 import blok2.database.repositories.UserSettingsRepository;
-import blok2.extensions.exceptions.NoSuchDatabaseObjectException;
+import blok2.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.users.User;
 import blok2.model.users.UserSettings;
 import org.springframework.beans.factory.annotation.Autowired;

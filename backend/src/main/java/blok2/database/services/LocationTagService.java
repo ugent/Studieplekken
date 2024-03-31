@@ -3,7 +3,7 @@ package blok2.database.services;
 import blok2.database.dao.ILocationTagDao;
 import blok2.database.repositories.LocationRepository;
 import blok2.database.repositories.LocationTagRepository;
-import blok2.extensions.exceptions.NoSuchDatabaseObjectException;
+import blok2.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.LocationTag;
 import blok2.model.reservables.Location;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -5,7 +5,7 @@ import blok2.database.dao.ILocationReservationDao;
 import blok2.database.dao.ITimeslotDao;
 import blok2.extensions.helpers.Base64String;
 import blok2.http.security.authorization.AuthorizedLocationController;
-import blok2.extensions.exceptions.NoSuchDatabaseObjectException;
+import blok2.exceptions.NoSuchDatabaseObjectException;
 import blok2.extensions.mail.MailService;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
