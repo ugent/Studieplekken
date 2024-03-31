@@ -1,49 +1,33 @@
 package blok2.model.translations;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
-import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 
+@Getter
+@Setter
 @Entity
+@NoArgsConstructor
 @Table(name="translations")
+@IdClass(TranslationId.class)
 public class Translation {
-    @EmbeddedId
-    private TranslationId id;
+    @Id
+    @NotNull
+    @SequenceGenerator(name="translations_id_generator", sequenceName="translations_id_seq", allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "translations_id_generator")
+    @Column(name="id")
+    private Long id;
 
+    @Id
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name="language")
+    private Language language;
+
+    @NotNull
     @Column(name="value")
     private String value;
-
-    public String getValue() {
-        return this.value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    @Embeddable
-    public static class TranslationId implements Serializable {
-        @GeneratedValue
-        @Column(name="id")
-        private Long id;
-
-        @Enumerated(EnumType.STRING)
-        @Column(name="language")
-        private Language language;
-
-        public Long getId() {
-            return id;
-        }
-
-        public void setId(Long id) {
-            this.id = id;
-        }
-
-        public Language getLanguage() {
-            return this.language;
-        }
-
-        public void setLanguage(Language language) {
-            this.language = language;
-        }
-    }
 }
