@@ -7,7 +7,7 @@ import blok2.exceptions.AlreadyExistsException;
 import blok2.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.ActionLogEntry;
 import blok2.model.Authority;
-import blok2.model.reservables.Location;
+import blok2.model.location.Location;
 import blok2.model.users.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

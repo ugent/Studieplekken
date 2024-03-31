@@ -4,7 +4,7 @@ import blok2.database.dao.IBuildingDao;
 import blok2.database.dao.ILocationDao;
 import blok2.model.Authority;
 import blok2.model.Building;
-import blok2.model.reservables.Location;
+import blok2.model.location.Location;
 import blok2.model.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

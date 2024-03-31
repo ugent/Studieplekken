@@ -1,4 +1,4 @@
-package blok2.config;
+package blok2.scheduling;
 
 import blok2.scheduling.ReservationManager;
 import org.springframework.beans.factory.annotation.Autowired;

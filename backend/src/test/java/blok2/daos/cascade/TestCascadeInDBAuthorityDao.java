@@ -9,7 +9,7 @@ import blok2.database.dao.IUserDao;
 import blok2.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.Authority;
 import blok2.model.Building;
-import blok2.model.reservables.Location;
+import blok2.model.location.Location;
 import blok2.model.users.User;
 import org.junit.Assert;
 import org.junit.Test;

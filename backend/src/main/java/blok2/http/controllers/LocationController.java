@@ -9,7 +9,7 @@ import blok2.exceptions.NoSuchDatabaseObjectException;
 import blok2.extensions.orm.LocationNameAndNextReservableFrom;
 import blok2.extensions.mail.MailService;
 import blok2.model.ActionLogEntry;
-import blok2.model.reservables.Location;
+import blok2.model.location.Location;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
 import com.fasterxml.jackson.annotation.JsonView;

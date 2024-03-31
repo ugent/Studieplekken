@@ -1,4 +1,4 @@
-package blok2.config;
+package blok2.scheduling;
 
 import blok2.database.repositories.LocationReservationRepository;
 import blok2.database.repositories.TimeslotRepository;

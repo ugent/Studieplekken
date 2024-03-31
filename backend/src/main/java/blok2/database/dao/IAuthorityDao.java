@@ -1,7 +1,7 @@
 package blok2.database.dao;
 
 import blok2.model.Authority;
-import blok2.model.reservables.Location;
+import blok2.model.location.Location;
 import blok2.model.users.User;
 
 import java.util.List;

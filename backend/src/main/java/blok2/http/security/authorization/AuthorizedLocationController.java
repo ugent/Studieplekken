@@ -2,7 +2,7 @@ package blok2.http.security.authorization;
 
 import blok2.database.dao.IAuthorityDao;
 import blok2.model.Authority;
-import blok2.model.reservables.Location;
+import blok2.model.location.Location;
 import blok2.model.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -1,10 +1,8 @@
 DROP TABLE IF EXISTS translations;
-DROP SEQUENCE IF EXISTS translations_id_seq;
 
-CREATE SEQUENCE translations_id_seq;
 CREATE TABLE translations (
     /* Auto-incrementing ID */
-    id       bigint default nextval('translations_id_seq'),
+    id       bigserial,
     /* 2-letter language code */
     language varchar(2),
     /* Actual content of the translation */

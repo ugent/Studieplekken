@@ -2,7 +2,7 @@ package blok2.http.controllers;
 
 import blok2.database.dao.*;
 import blok2.model.calendar.Timeslot;
-import blok2.model.reservables.Location;
+import blok2.model.location.Location;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
 import net.fortuna.ical4j.model.Calendar;
@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
-import static blok2.config.PoolProcessor.RANDOM_RESERVATION_DURATION_MINS;
+import static blok2.scheduling.PoolProcessor.RANDOM_RESERVATION_DURATION_MINS;
 
 @RestController
 @RequestMapping("/ical")

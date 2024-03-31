@@ -6,7 +6,7 @@ import blok2.http.security.authorization.AuthorizedController;
 import blok2.exceptions.InvalidRequestParametersException;
 import blok2.model.ActionLogEntry;
 import blok2.model.Authority;
-import blok2.model.reservables.Location;
+import blok2.model.location.Location;
 import blok2.model.users.User;
 import blok2.model.users.UserSettings;
 import org.slf4j.Logger;

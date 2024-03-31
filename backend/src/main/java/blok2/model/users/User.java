@@ -4,7 +4,7 @@ import java.util.Objects;
 import java.util.*;
 
 import blok2.model.Authority;
-import blok2.model.reservables.Location;
+import blok2.model.location.Location;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.annotations.Type;

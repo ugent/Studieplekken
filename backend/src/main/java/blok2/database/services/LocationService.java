@@ -6,7 +6,7 @@ import blok2.database.repositories.LocationRepository;
 import blok2.exceptions.NoSuchDatabaseObjectException;
 import blok2.extensions.orm.LocationNameAndNextReservableFrom;
 import blok2.model.calendar.Timeslot;
-import blok2.model.reservables.Location;
+import blok2.model.location.Location;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;

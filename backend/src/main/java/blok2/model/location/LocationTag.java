@@ -1,6 +1,5 @@
-package blok2.model;
+package blok2.model.location;
 
-import blok2.model.reservables.Location;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
