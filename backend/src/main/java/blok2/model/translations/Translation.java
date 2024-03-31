@@ -3,9 +3,12 @@ package blok2.model.translations;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 @Getter
 @Setter
@@ -13,11 +16,18 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Table(name="translations")
 @IdClass(TranslationId.class)
+@GenericGenerator(
+    name = "translation_id_generator",
+    strategy = "blok2.model.generator.NullAwareSequenceStyleGenerator",
+    parameters = {
+        @Parameter(name = "sequence_name", value = "translations_id_seq")
+    }
+)
 public class Translation {
     @Id
     @NotNull
-    @SequenceGenerator(name="translations_id_generator", sequenceName="translations_id_seq", allocationSize=1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "translations_id_generator")
+
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "translation_id_generator")
     @Column(name="id")
     private Long id;
 

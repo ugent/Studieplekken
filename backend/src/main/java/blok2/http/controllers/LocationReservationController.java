@@ -25,7 +25,7 @@ import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static blok2.config.PoolProcessor.RANDOM_RESERVATION_DURATION_MINS;
+import static blok2.scheduling.PoolProcessor.RANDOM_RESERVATION_DURATION_MINS;
 
 /**
  * This controller handles all requests related to location reservations.

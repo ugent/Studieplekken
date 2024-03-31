@@ -1,4 +1,4 @@
-package blok2.model.reservables;
+package blok2.model.location;
 
 import blok2.extensions.helpers.Equality;
 import blok2.extensions.helpers.LocationStatus;
@@ -6,7 +6,6 @@ import blok2.extensions.helpers.Pair;
 import blok2.extensions.helpers.View;
 import blok2.model.Authority;
 import blok2.model.Building;
-import blok2.model.LocationTag;
 import blok2.model.calendar.Timeslot;
 import blok2.model.users.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;

@@ -1,7 +1,7 @@
 package blok2.database.dao;
 
-import blok2.model.LocationTag;
-import blok2.model.reservables.Location;
+import blok2.model.location.LocationTag;
+import blok2.model.location.Location;
 
 import java.util.List;
 

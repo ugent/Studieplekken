@@ -6,7 +6,7 @@ import blok2.extensions.helpers.Institution;
 import blok2.extensions.mail.MailService;
 import blok2.model.Authority;
 import blok2.model.Building;
-import blok2.model.reservables.Location;
+import blok2.model.location.Location;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

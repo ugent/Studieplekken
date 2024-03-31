@@ -1,9 +1,8 @@
-package blok2.model;
+package blok2.model.location;
 
 import blok2.database.dao.ILocationDao;
 import blok2.database.dao.ITimeslotDao;
 import blok2.model.calendar.Timeslot;
-import blok2.model.reservables.Location;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;

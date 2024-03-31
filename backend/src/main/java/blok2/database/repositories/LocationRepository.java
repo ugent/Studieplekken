@@ -1,7 +1,7 @@
 package blok2.database.repositories;
 
 import blok2.extensions.orm.LocationNameAndNextReservableFrom;
-import blok2.model.reservables.Location;
+import blok2.model.location.Location;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

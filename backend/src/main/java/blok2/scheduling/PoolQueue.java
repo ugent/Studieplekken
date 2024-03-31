@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 
-import static blok2.config.PoolProcessor.RANDOM_RESERVATION_DURATION_MINS;
+import static blok2.scheduling.PoolProcessor.RANDOM_RESERVATION_DURATION_MINS;
 
 /**
  * Implements a thread-safe queue of pools. Reservations are added to

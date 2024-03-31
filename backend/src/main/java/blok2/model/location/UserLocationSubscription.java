@@ -1,4 +1,4 @@
-package blok2.model.reservables;
+package blok2.model.location;
 
 import blok2.model.users.User;
 

@@ -10,7 +10,7 @@ import blok2.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.Authority;
 import blok2.model.Building;
 import blok2.model.calendar.Timeslot;
-import blok2.model.reservables.Location;
+import blok2.model.location.Location;
 import org.flywaydb.test.annotation.FlywayTest;
 import org.junit.Assert;
 import org.junit.Test;

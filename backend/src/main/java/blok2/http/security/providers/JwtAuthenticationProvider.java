@@ -1,5 +1,7 @@
-package blok2.http.security.config;
+package blok2.http.security.providers;
 
+import blok2.http.security.config.JwtAuthenticationToken;
+import blok2.http.security.services.JwtService;
 import blok2.http.security.services.JwtUserDetailService;
 import blok2.model.users.User;
 import org.springframework.beans.factory.annotation.Autowired;

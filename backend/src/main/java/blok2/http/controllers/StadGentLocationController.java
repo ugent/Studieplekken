@@ -2,7 +2,7 @@ package blok2.http.controllers;
 
 import blok2.database.dao.ILocationDao;
 import blok2.database.dao.ITimeslotDao;
-import blok2.model.StadGentLocation;
+import blok2.model.location.StadGentLocation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
