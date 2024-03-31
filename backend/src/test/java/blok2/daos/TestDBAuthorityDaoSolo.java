@@ -3,7 +3,7 @@ package blok2.daos;
 import blok2.BaseTest;
 import blok2.TestSharedMethods;
 import blok2.database.dao.IAuthorityDao;
-import blok2.extensions.exceptions.NoSuchDatabaseObjectException;
+import blok2.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.Authority;
 import org.junit.Assert;
 import org.junit.Test;

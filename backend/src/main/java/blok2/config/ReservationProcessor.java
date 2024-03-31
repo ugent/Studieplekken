@@ -1,6 +1,6 @@
 package blok2.config;
 
-import blok2.extensions.scheduling.ReservationManager;
+import blok2.scheduling.ReservationManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -3,7 +3,7 @@ package blok2.database.services;
 import blok2.database.dao.ILocationDao;
 import blok2.database.dao.ITimeslotDao;
 import blok2.database.repositories.LocationRepository;
-import blok2.extensions.exceptions.NoSuchDatabaseObjectException;
+import blok2.exceptions.NoSuchDatabaseObjectException;
 import blok2.extensions.orm.LocationNameAndNextReservableFrom;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservables.Location;

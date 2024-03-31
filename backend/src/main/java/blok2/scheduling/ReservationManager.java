@@ -1,4 +1,4 @@
-package blok2.extensions.scheduling;
+package blok2.scheduling;
 
 import blok2.database.repositories.LocationReservationRepository;
 import blok2.model.calendar.Timeslot;

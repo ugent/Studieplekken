@@ -2,8 +2,8 @@ package blok2.http.controllers;
 
 import blok2.database.dao.ITimeslotDao;
 import blok2.http.security.authorization.AuthorizedLocationController;
-import blok2.extensions.exceptions.InvalidRequestParametersException;
-import blok2.extensions.exceptions.NoSuchDatabaseObjectException;
+import blok2.exceptions.InvalidRequestParametersException;
+import blok2.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.calendar.Timeslot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -89,8 +89,8 @@ public class TimeslotController extends AuthorizedLocationController {
         ts.setRepeatable(rep.repeatable);
         return timeslotDAO.updateTimeslot(ts);
     }
-}
 
-class SetRepeatableBodyDao {
-    public boolean repeatable;
+    public static class SetRepeatableBodyDao {
+        public boolean repeatable;
+    }
 }

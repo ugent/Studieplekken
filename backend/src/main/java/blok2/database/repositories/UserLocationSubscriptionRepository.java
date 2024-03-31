@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import javax.transaction.Transactional;
 import java.util.List;
 
-public interface UserLocationSubscriptionRepository extends JpaRepository<UserLocationSubscription, String> {
+public interface UserLocationSubscriptionRepository extends JpaRepository<UserLocationSubscription, Integer> {
 
     boolean existsByLocationAndUser(Location location, User user);
 

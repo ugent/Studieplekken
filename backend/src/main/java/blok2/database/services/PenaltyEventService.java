@@ -2,7 +2,7 @@ package blok2.database.services;
 
 import blok2.database.dao.IPenaltyEventsDao;
 import blok2.database.repositories.PenaltyEventRepository;
-import blok2.extensions.exceptions.NoSuchDatabaseObjectException;
+import blok2.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.penalty.PenaltyEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
