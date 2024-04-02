@@ -1,7 +1,6 @@
 package blok2.database.services;
 
 import blok2.database.dao.ILocationReservationDao;
-import blok2.database.DBLocationReservationDao;
 import blok2.database.repositories.LocationReservationRepository;
 import blok2.database.repositories.UserRepository;
 import blok2.exceptions.NoSuchDatabaseObjectException;

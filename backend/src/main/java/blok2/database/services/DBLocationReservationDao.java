@@ -1,5 +1,6 @@
-package blok2.database;
+package blok2.database.services;
 
+import blok2.database.ConnectionProvider;
 import blok2.model.reservations.LocationReservation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

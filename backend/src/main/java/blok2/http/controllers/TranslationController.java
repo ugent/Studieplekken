@@ -35,7 +35,7 @@ public class TranslationController extends AuthorizedController {
     @PreAuthorize("permitAll() or hasAuthority('HAS_AUTHORITIES') or hasAuthority('ADMIN')")
     public List<Translation> addTranslations(@RequestBody List<Translation> translations) {
         if (!translations.isEmpty()) {
-            translations = translationDao.saveTranslations(translations);
+            translations = translationDao.addTranslations(translations);
         }
 
         return translations;

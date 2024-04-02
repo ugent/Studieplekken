@@ -22,20 +22,22 @@ public class TranslationService implements ITranslationDao {
     }
 
     @Override
-    public Translation saveTranslation(Translation translation) {
+    public Translation addTranslation(Translation translation) {
         return translationRepository.save(translation);
     }
 
     @Transactional
     @Override
-    public List<Translation> saveTranslations(List<Translation> translations) {
-        // Save a translation base that auto-generates a key.
-        Translation base = translationRepository.save(translations.get(0));
-        translations.get(0).setId(base.getId());
+    public List<Translation> addTranslations(List<Translation> translations) {
+        if (!translations.isEmpty()) {
+            // Save a translation base that auto-generates a key.
+            Translation base = translationRepository.save(translations.get(0));
+            translations.get(0).setId(base.getId());
 
-        for (Translation translation : translations) {
-            translation.setId(base.getId());
-            translationRepository.save(translation);
+            for (Translation translation : translations) {
+                translation.setId(base.getId());
+                translationRepository.save(translation);
+            }
         }
 
         return translations;
