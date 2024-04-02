@@ -4,11 +4,10 @@ import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.enhanced.SequenceStyleGenerator;
 
-import javax.persistence.Entity;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 
-public class NullAwareSequenceStyleGenerator extends SequenceStyleGenerator {
+public class NullAwareGenerator extends SequenceStyleGenerator {
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
         try {
