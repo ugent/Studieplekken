@@ -3,19 +3,29 @@
         <label for="search">
             {{ 'faq.search.title' | translate }}
         </label>
-
-        <input type="search" id="search" name="search" class="search inline" required="true" #searchInput/>
-        <input type="submit" value="Submit" class="" (click)="$searchSubject.next(searchInput.value)" />
+        <input
+            type="search"
+            id="search"
+            name="search"
+            class="search inline"
+            required="true"
+            [ngModel]="$searchSubject | async"
+            (ngModelChange)="$searchSubject.next($event)">
     </form>
     <ng-container *ngIf="$searchItems | async as items">
-        <div class="mb-3" *ngFor="let item of items">
-            <app-teaser
-                [title]="item.title.translations[locale]"
-                [buttonText]="'faq.search.readMore' | translate"
-                [buttonLink]="['/faq', item.id]"
-                [tags]="[item.category.name.translations[locale]]">
-            </app-teaser>
-        </div>
+        <ng-container *ngIf="items.length > 0">
+            <div class="mb-3" *ngFor="let item of items">
+                <app-teaser
+                    [title]="item.title.translations[locale]"
+                    [buttonText]="'faq.search.readMore' | translate"
+                    [buttonLink]="['/faq', item.id]"
+                    [tags]="[item.category.name.translations[locale]]">
+                </app-teaser>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="items.length === 0 && $searchSubject | async">
+            <p>{{ 'faq.search.noResults' | translate }}</p>
+        </ng-container>
     </ng-container>
     <h3 class="mb-4">{{ 'faq.search.popular' | translate }}</h3>
     <ul class="icon-list mb-0" *ngIf="$pinned | async as pinned">

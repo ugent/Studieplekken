@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
-import {FaqCategory} from '../../model/FaqCategory';
-import {FaqService} from '../../services/api/faq/faq.service';
+import {FaqCategory} from '@/model/FaqCategory';
+import {FaqService} from '@/services/api/faq/faq.service';
 import {TranslateService} from '@ngx-translate/core';
-import {FaqItem} from '../../model/FaqItem';
+import {FaqItem} from '@/model/FaqItem';
 
 @Component({
     selector: 'app-faq',

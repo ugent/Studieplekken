@@ -19,7 +19,7 @@
             </div>
             <div class="entry">
                 <i class="icon-calendar" aria-hidden="true"></i>
-                {{nextReservableFrom ? (nextReservableFrom | date:'short') :
+                {{nextReservableFrom ? (nextReservableFrom.toDate() | date:'short') :
                 ('general.notAvailableAbbreviation' | translate)}}
             </div>
 

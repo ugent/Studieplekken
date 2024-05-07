@@ -8,13 +8,13 @@ export class FaqCategory {
         public description: Translatable,
         public createdAt: Date,
         public updatedAt: Date,
-        public items: FaqItem[] = null,
-        public children: FaqCategory[]|null = null,
-        public parent: FaqCategory|null = null,
+        public items?: FaqItem[],
+        public children?: FaqCategory[],
+        public parent?: FaqCategory,
     ) {
     }
 
-    static fromJson(category: FaqCategory) {
+    static fromJson(category: Partial<FaqCategory> = {}) {
         return new FaqCategory(
             category.id,
             category.name,

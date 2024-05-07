@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {FaqCategory} from '../../../model/FaqCategory';
+import {FaqCategory} from '@/model/FaqCategory';
 
 @Component({
     selector: 'app-faq-sidebar',

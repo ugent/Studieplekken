@@ -1,10 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {defaultTeaserImages} from '../../../../app.constants';
-import {User} from '../../../../model/User';
-import {Location} from '../../../../model/Location';
-import {combineLatest, Observable} from 'rxjs';
-import {filter, first} from 'rxjs/operators';
-import {LocationService} from '../../../../services/api/locations/location.service';
+import {defaultTeaserImages} from '@/app.constants';
+import {User} from '@/model/User';
+import {Location} from '@/model/Location';
+import {Observable} from 'rxjs';
+import {LocationService} from '@/services/api/locations/location.service';
 
 @Component({
     selector: 'app-location-reservation-details',

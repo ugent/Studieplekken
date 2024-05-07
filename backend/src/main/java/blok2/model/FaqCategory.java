@@ -1,7 +1,8 @@
 package blok2.model;
 
-import blok2.model.translations.Translation;
+import blok2.model.translations.Translatable;
 import blok2.model.users.User;
+import com.fasterxml.jackson.annotation.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,16 +17,33 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name="faq_categories")
+@Table(name = "faq_categories")
 public class FaqCategory {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @OneToMany(mappedBy="id")
-    @Column(name="name_translation_id")
-    private List<Translation> name;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "name_translatable_id")
+    private Translatable name;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "description_translatable_id")
+    private Translatable description;
+
+    @OneToMany(mappedBy = "category")
+    @JsonIgnoreProperties("category")
+    private List<FaqItem> items;
+
+    @OneToMany(mappedBy = "parent")
+    @JsonIgnoreProperties({"parent", "items"})
+    private List<FaqCategory> children;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    @JsonIgnoreProperties("items")
+    private FaqCategory parent;
 
     @ManyToOne
     @JoinColumn(name = "created_by_user_id")
@@ -33,9 +51,9 @@ public class FaqCategory {
 
     @CreationTimestamp
     @Column(name = "created_at")
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
-    private LocalDateTime updated_at;
+    private LocalDateTime updatedAt;
 }

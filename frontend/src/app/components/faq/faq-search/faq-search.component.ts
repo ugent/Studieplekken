@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {Observable, Subject} from 'rxjs';
-import {FaqItem} from '../../../model/FaqItem';
-import {FaqService} from '../../../services/api/faq/faq.service';
+import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
+import {FaqItem} from '@/model/FaqItem';
+import {FaqService} from '@/services/api/faq/faq.service';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
-import {FaqCategory} from '../../../model/FaqCategory';
-import {map, startWith, withLatestFrom} from 'rxjs/operators';
+import {map, tap} from 'rxjs/operators';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
     selector: 'app-faq-search',
@@ -19,12 +19,14 @@ export class FaqSearchComponent implements OnInit {
     protected $searchItems: Observable<FaqItem[]>;
 
     /* Search form control */
-    protected $searchSubject = new Subject<string>();
+    protected $searchSubject: BehaviorSubject<string>;
 
     /* State */
     protected locale: string;
 
     constructor(
+        private router: Router,
+        private activatedRoute: ActivatedRoute,
         private translateService: TranslateService,
         private faqService: FaqService
     ) {
@@ -33,6 +35,10 @@ export class FaqSearchComponent implements OnInit {
         this.translateService.onLangChange.subscribe((event: LangChangeEvent) => {
             this.locale = event.lang;
         });
+
+        this.$searchSubject = new BehaviorSubject<string>(
+            this.activatedRoute.snapshot.queryParams.search || ''
+        );
     }
 
     /**
@@ -47,13 +53,21 @@ export class FaqSearchComponent implements OnInit {
             )
         );
 
-        this.$searchItems = this.$searchSubject.pipe(
-            startWith(''),
-            withLatestFrom(this.$items),
+        this.$searchItems = combineLatest([
+            this.$searchSubject,
+            this.$items
+        ]).pipe(
+            tap(([search, _]) =>
+                void this.router.navigate([], {
+                    relativeTo: this.activatedRoute,
+                    queryParams: {search},
+                    replaceUrl: true
+                })
+            ),
             map(([search, items]) =>
                 items.filter((item: FaqItem) => {
-                    return item.title.translations[this.locale].toLowerCase().includes(search.toLowerCase()) ||
-                    item.content.translations[this.locale].toLowerCase().includes(search.toLowerCase())
+                    return search && (item.title.translations[this.locale].toLowerCase().includes(search.toLowerCase()) ||
+                    item.content.translations[this.locale].toLowerCase().includes(search.toLowerCase()))
                 })
             )
         );

@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Pair} from '../../../model/helpers/Pair';
-import {Location} from '../../../model/Location';
+import {Pair} from '@/model/helpers/Pair';
+import {Location} from '@/model/Location';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/internal/operators/map';
 import {filter} from 'rxjs/internal/operators/filter';
 import {api} from '../endpoints';
-import {LocationStatus} from '../../../app.constants';
+import {LocationStatus} from '@/app.constants';
 import {Cache} from '../../cache/Cache';
 import {Timeslot} from 'src/app/model/Timeslot';
 

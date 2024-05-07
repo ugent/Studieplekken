@@ -1,7 +1,5 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
-import {ReplaySubject} from 'rxjs';
-import {tap} from 'rxjs/operators';
 import {environment} from 'src/environments/environment';
 
 @Injectable({

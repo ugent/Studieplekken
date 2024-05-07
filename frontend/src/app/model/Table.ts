@@ -1,5 +1,7 @@
 // A table is represented by an object type:
 // The object keys are the table columns, with the values being the data itself.
+import {OrderDirection} from '@/util/Util';
+
 export type TableData<T> = {
     mapped: object,
     raw: T
@@ -57,3 +59,15 @@ export class DeleteAction<T> extends TableAction<T> {
         super('icon-trashcan', handler, shouldShow);
     }
 }
+
+export type Pagination = {
+    perPage: number;
+    currentPage: number;
+};
+
+export type Ordering = {
+    orderBy: string;
+    orderDirection: OrderDirection;
+};
+
+export type Search = string;

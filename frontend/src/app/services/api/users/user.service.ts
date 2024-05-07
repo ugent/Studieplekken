@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable, of} from 'rxjs';
-import {User, UserConstructor, UserSettings} from '../../../model/User';
+import {User, UserConstructor, UserSettings} from '@/model/User';
 import {api} from '../endpoints';
-import {Location, LocationConstructor} from '../../../model/Location';
+import {Location, LocationConstructor} from '@/model/Location';
 import {map} from 'rxjs/internal/operators/map';
 
 @Injectable({

@@ -1,6 +1,6 @@
-import {AfterViewInit, Component, HostListener, Input, OnInit, ViewEncapsulation} from '@angular/core';
+import {AfterViewInit, Component, Input, ViewEncapsulation} from '@angular/core';
 import * as d3 from 'd3';
-import {LocationStat} from '../../../../model/LocationStat';
+import {LocationStat} from '@/model/LocationStat';
 import {TranslateService} from '@ngx-translate/core';
 import {v4 as uuid} from 'uuid';
 

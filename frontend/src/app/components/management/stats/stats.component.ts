@@ -1,12 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {Observable, of} from 'rxjs';
-import {catchError, filter, map, tap} from 'rxjs/operators';
-import {StatsService} from '../../../services/api/stats/stats.service';
-import {LocationStat} from '../../../model/LocationStat';
-import {LocationOverviewStat} from '../../../model/LocationOverviewStat';
-import {Location} from '../../../model/Location';
-import {LocationService} from '../../../services/api/locations/location.service';
-import {InstitutionOverviewStat} from '../../../model/InstitutionOverviewStat';
+import {catchError, map, tap} from 'rxjs/operators';
+import {StatsService} from '@/services/api/stats/stats.service';
+import {LocationStat} from '@/model/LocationStat';
+import {LocationOverviewStat} from '@/model/LocationOverviewStat';
+import {Location} from '@/model/Location';
+import {LocationService} from '@/services/api/locations/location.service';
+import {InstitutionOverviewStat} from '@/model/InstitutionOverviewStat';
 
 @Component({
     selector: 'app-stats',

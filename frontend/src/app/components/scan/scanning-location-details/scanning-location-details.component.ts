@@ -1,9 +1,8 @@
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {LocationService} from '../../../services/api/locations/location.service';
+import {LocationService} from '@/services/api/locations/location.service';
 import {Observable, Subject} from 'rxjs';
-import {Location} from '../../../model/Location';
-import {ScanningService} from '../../../services/api/scan/scanning.service';
+import {Location} from '@/model/Location';
 import {catchError, switchMap} from 'rxjs/operators';
 import {of} from 'rxjs/internal/observable/of';
 import {

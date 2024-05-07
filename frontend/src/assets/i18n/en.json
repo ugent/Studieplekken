@@ -25,7 +25,9 @@
         },
         "search": {
             "title": "Search your question",
-            "popular": "Popular articles"
+            "popular": "Popular articles",
+            "noResults": "No results found",
+            "readMore": "Read more"
         },
         "contact": {
             "title": "Contact us",
@@ -243,6 +245,7 @@
             "buildings": "Buildings",
             "tags": "Tags",
             "users": "Users",
+            "faq": "Frequency Asked Questions",
             "authorities": "Authorities",
             "calendar": "Calendar",
             "penalties": "Penalties",

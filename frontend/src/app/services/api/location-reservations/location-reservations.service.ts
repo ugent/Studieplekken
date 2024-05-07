@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {api} from '../endpoints';
-import {LocationReservation} from '../../../model/LocationReservation';
+import {LocationReservation} from '@/model/LocationReservation';
 import {combineLatest, Observable} from 'rxjs';
 import {Timeslot} from 'src/app/model/Timeslot';
 import {map} from 'rxjs/internal/operators/map';

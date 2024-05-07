@@ -1,13 +1,10 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {Penalty} from '../../../model/Penalty';
-import {BaseManagementComponent} from '../../management/lists/base-management.component';
-import {combineLatest, EMPTY, Observable} from 'rxjs';
-import {User} from '../../../model/User';
-import {DeleteAction, TableAction, TableMapper} from '../../../model/Table';
-import {PenaltyList, PenaltyService} from '../../../services/api/penalties/penalty.service';
-import {catchError, first, mergeMap, switchMap, tap} from 'rxjs/operators';
+import {Penalty} from '@/model/Penalty';
+import {BaseManagementComponent} from '../../management//base-management.component';
+import {User} from '@/model/User';
+import {DeleteAction, TableAction, TableMapper} from '@/model/Table';
+import {PenaltyList, PenaltyService} from '@/services/api/penalties/penalty.service';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {AuthenticationService} from '../../../services/authentication/authentication.service';
 
 @Component({
     selector: 'app-user-penalty-manager',

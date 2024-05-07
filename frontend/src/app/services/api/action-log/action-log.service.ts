@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ActionLogEntry} from '../../../model/ActionLogEntry';
+import { ActionLogEntry} from '@/model/ActionLogEntry';
 import { api } from '../endpoints';
 import { map } from 'rxjs/internal/operators/map';
 

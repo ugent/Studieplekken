@@ -1,11 +1,10 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {FaqCategory} from '../../../model/FaqCategory';
-import {FaqItem} from '../../../model/FaqItem';
+import {FaqCategory} from '@/model/FaqCategory';
+import {FaqItem} from '@/model/FaqItem';
 import {Cache} from '../../cache/Cache';
 import {Observable} from 'rxjs';
 import {api} from '../endpoints';
-import {map} from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
@@ -54,6 +53,27 @@ export class FaqService {
     getCategory(id: number, invalidate: boolean = false): Observable<FaqCategory> {
         const url = api.faq.categories.retrieve.replace('{categoryId}', String(id));
         return this.categoryCache.getValue(id, url, invalidate);
+    }
+
+    /**
+     * Update a faq category.
+     *
+     * @param category the category to update
+     * @returns an observable of the updated category
+     */
+    updateCategory(category: FaqCategory): Observable<FaqCategory> {
+        return this.client.post<FaqCategory>(api.faq.categories.update.replace('{categoryId}', String(category.id)), category);
+    }
+
+
+    /**
+     * Delete a faq category.
+     *
+     * @param category the category to update
+     * @returns an observable of the updated category
+     */
+    deleteCategory(category: FaqCategory): Observable<void> {
+        return this.client.delete<void>(api.faq.categories.delete.replace('{categoryId}', String(category.id)));
     }
 
     /**
@@ -108,6 +128,26 @@ export class FaqService {
     getItem(id: string, invalidate: boolean = false): Observable<FaqItem> {
         const url = api.faq.items.retrieve.replace('{itemId}', String(id));
         return this.itemCache.getValue(id, url, invalidate);
+    }
+
+    /**
+     * Update a faq item.
+     *
+     * @param item the item to update
+     * @returns an observable of the updated item
+     */
+    updateItem(item: FaqItem): Observable<FaqItem> {
+        return this.client.put<FaqItem>(api.faq.items.update.replace('{itemId}', String(item.id)), item);
+    }
+
+    /**
+     * Delete a faq item.
+     *
+     * @param item the item to delete
+     * @returns an observable of the deleted item
+     */
+    deleteItem(item: FaqItem): Observable<void> {
+        return this.client.delete<void>(api.faq.items.delete.replace('{itemId}', String(item.id)));
     }
 
     /**

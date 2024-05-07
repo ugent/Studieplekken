@@ -3,7 +3,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {api} from '../endpoints';
 import {Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {Penalty} from '../../../model/Penalty';
+import {Penalty} from '@/model/Penalty';
 
 export type PenaltyList = { points: number, penalties: Penalty[] };
 
