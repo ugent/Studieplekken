@@ -2,6 +2,18 @@
     <!-- HEADER -->
     <app-header></app-header>
 
+    <div class="messages messages--warning mx-auto" role="alert" aria-atomic="true" *ngIf="shouldShowAlert('thermi')">
+        <i class="icon icon-exclamation"></i>
+        <p [innerHTML]="'layout.notes.thermi' | translate"></p>
+        <span class="ms-2 icon-cross align-self-start" (click)="hideAlert('thermi')"></span>
+    </div>
+
+    <div class="messages messages--info mx-auto" role="alert" aria-atomic="true" *ngIf="shouldShowAlert('volunteers')">
+        <i class="icon icon-info"></i>
+        <p [innerHTML]="'layout.notes.volunteers' | translate"></p>
+        <span class="ms-2 icon-cross align-self-start" (click)="hideAlert('volunteers')"></span>
+    </div>
+
     <!-- CONTENT -->
     <router-outlet></router-outlet>
 

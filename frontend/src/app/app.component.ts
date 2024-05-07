@@ -18,9 +18,6 @@ export class AppComponent implements OnInit {
         private authenticationService: AuthenticationService,
         private translateService: TranslateService
     ) {
-        /******************************
-         *   Language support setup   *
-         ******************************/
         // tries to set the language to the default browser language of the user if 'en' or 'nl' (else en)
         const browserLang = translateService.getBrowserLang();
         const selectedLang = localStorage.getItem('selectedLanguage');
@@ -40,6 +37,9 @@ export class AppComponent implements OnInit {
         }
     }
 
+    /**
+     * Initializes the application.
+     */
     ngOnInit(): void {
         // Upon successful login, the backend redirects the user to /dashboard.
         // Since the user was redirected to the cas-login website, the AppComponent
@@ -47,6 +47,11 @@ export class AppComponent implements OnInit {
         this.authenticationService.login();
     }
 
+    /**
+     * Sets the language of the application.
+     *
+     * @param language
+     */
     setLanguage(language: string): void {
         this.translateService.use(
             language
@@ -56,5 +61,24 @@ export class AppComponent implements OnInit {
         );
 
         localStorage.setItem('selectedLanguage', language);
+    }
+
+    /**
+     * Shows a message to the user.
+     *
+     * @param message
+     * @returns {boolean}
+     */
+    shouldShowAlert(message: string): boolean {
+        return localStorage.getItem(message) === null;
+    }
+
+    /**
+     * Hides the alert message.
+     *
+     * @param message
+     */
+    hideAlert(message: string): void {
+        localStorage.setItem(message, true.toString());
     }
 }
