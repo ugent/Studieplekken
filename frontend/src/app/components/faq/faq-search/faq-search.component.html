@@ -1,0 +1,26 @@
+<ng-container>
+    <form class="form search">
+        <label for="search">
+            {{ 'faq.search.title' | translate }}
+        </label>
+
+        <input type="search" id="search" name="search" class="search inline" required="true" #searchInput/>
+        <input type="submit" value="Submit" class="" (click)="$searchSubject.next(searchInput.value)" />
+    </form>
+    <ng-container *ngIf="$searchItems | async as items">
+        <div class="mb-3" *ngFor="let item of items">
+            <app-teaser
+                [title]="item.title.translations[locale]"
+                [buttonText]="'faq.search.readMore' | translate"
+                [buttonLink]="['/faq', item.id]"
+                [tags]="[item.category.name.translations[locale]]">
+            </app-teaser>
+        </div>
+    </ng-container>
+    <h3 class="mb-4">{{ 'faq.search.popular' | translate }}</h3>
+    <ul class="icon-list mb-0" *ngIf="$pinned | async as pinned">
+        <li *ngFor="let item of pinned">
+            <i class="icon-arrow-right" aria-hidden="true"></i> <a [routerLink]="['/faq', item.id]">{{ item.title.translations[locale] }}</a>
+        </li>
+    </ul>
+</ng-container>

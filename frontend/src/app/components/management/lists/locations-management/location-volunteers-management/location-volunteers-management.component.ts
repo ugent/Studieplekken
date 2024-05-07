@@ -4,7 +4,7 @@ import {User} from '../../../../../model/User';
 import {Location} from '../../../../../model/Location';
 import {Observable} from 'rxjs';
 import {DeleteAction, TableAction, TableMapper} from '../../../../../model/Table';
-import {LocationService} from '../../../../../extensions/services/api/locations/location.service';
+import {LocationService} from '../../../../../services/api/locations/location.service';
 import {first, map, mergeMap, switchMap} from 'rxjs/operators';
 import {of} from 'rxjs/internal/observable/of';
 

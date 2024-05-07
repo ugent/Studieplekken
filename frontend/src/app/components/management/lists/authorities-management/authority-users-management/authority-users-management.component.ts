@@ -9,11 +9,11 @@ import {MatDialog} from '@angular/material/dialog';
 import {MatDialogRef} from '@angular/material/dialog/dialog-ref';
 import {ActivatedRoute} from '@angular/router';
 import {Observable} from 'rxjs';
-import {AuthoritiesService} from '../../../../../extensions/services/api/authorities/authorities.service';
-import {UserService} from '../../../../../extensions/services/api/users/user.service';
+import {AuthoritiesService} from '../../../../../services/api/authorities/authorities.service';
+import {UserService} from '../../../../../services/api/users/user.service';
 import {
     AuthorityToManageService
-} from '../../../../../extensions/services/single-point-of-truth/authority-to-manage/authority-to-manage.service';
+} from '../../../../../services/single-point-of-truth/authority-to-manage/authority-to-manage.service';
 import {Authority} from '../../../../../model/Authority';
 import {User} from '../../../../../model/User';
 

@@ -1,27 +1,21 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {BehaviorSubject, combineLatest, interval, Observable, ReplaySubject, Subject, Subscription, timer} from 'rxjs';
-import {LocationService} from '../../../extensions/services/api/locations/location.service';
+import {combineLatest, interval, Observable, Subscription} from 'rxjs';
+import {LocationService} from '../../../services/api/locations/location.service';
 import {ActivatedRoute} from '@angular/router';
 import {User} from '../../../model/User';
 import {Location} from '../../../model/Location';
-import {AuthenticationService} from '../../../extensions/services/authentication/authentication.service';
-import {defaultTeaserImages} from '../../../app.constants';
+import {AuthenticationService} from '../../../services/authentication/authentication.service';
 import {BreadcrumbService} from '../../stad-gent-components/header/breadcrumbs/breadcrumb.service';
 import {TranslateService} from '@ngx-translate/core';
-import {TimeslotsService} from '../../../extensions/services/api/calendar-periods/timeslot.service';
+import {TimeslotsService} from '../../../services/api/calendar-periods/timeslot.service';
 import {LocationReservation} from '../../../model/LocationReservation';
-import {map} from 'rxjs/internal/operators/map';
 import {CalendarEvent} from 'angular-calendar';
 import {Timeslot, timeslotEquals} from '../../../model/Timeslot';
 import * as moment from 'moment';
 import {
     TimeslotCalendarEventService
-} from '../../../extensions/services/timeslots/timeslot-calendar-event/timeslot-calendar-event.service';
-import {
-    LocationReservationsService
-} from '../../../extensions/services/api/location-reservations/location-reservations.service';
-import {catchError, filter, first, mergeMap, share, tap} from 'rxjs/operators';
-import {of} from 'rxjs/internal/observable/of';
+} from '../../../services/timeslots/timeslot-calendar-event/timeslot-calendar-event.service';
+import {tap} from 'rxjs/operators';
 import {ModalComponent} from '../../stad-gent-components/molecules/modal/modal.component';
 import {AfterReservationComponent} from './after-reservation/after-reservation.component';
 import {Authority} from '../../../model/Authority';
@@ -88,7 +82,7 @@ export class LocationReservationComponent implements OnInit, OnDestroy {
                 );
                 this.breadcrumbService.setCurrentBreadcrumbs([{
                     pageName: 'Details',
-                    url: `/dashboard/${ location?.locationId }`
+                    url: `/dashboard/${location?.locationId}`
                 }]);
 
                 this.updateEvents().then(() => this.updateReservations());

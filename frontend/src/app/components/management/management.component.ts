@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
-import {AuthenticationService} from '../../extensions/services/authentication/authentication.service';
+import {AuthenticationService} from '../../services/authentication/authentication.service';
 import {Observable, Subscription} from 'rxjs';
 import {BreadcrumbService, managementBreadcrumb} from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
 import {environment} from 'src/environments/environment';

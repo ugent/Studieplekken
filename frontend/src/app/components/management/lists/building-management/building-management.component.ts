@@ -4,9 +4,9 @@ import {
     Validators
 } from '@angular/forms';
 import {combineLatest, EMPTY, Observable, throwError} from 'rxjs';
-import {AddressResolverService} from 'src/app/extensions/services/addressresolver/nomenatim/addressresolver.service';
-import {BuildingService} from 'src/app/extensions/services/api/buildings/buildings.service';
-import {AuthenticationService} from 'src/app/extensions/services/authentication/authentication.service';
+import {AddressResolverService} from 'src/app/services/addressresolver/nomenatim/addressresolver.service';
+import {BuildingService} from 'src/app/services/api/buildings/buildings.service';
+import {AuthenticationService} from 'src/app/services/authentication/authentication.service';
 import {Building, BuildingConstructor} from 'src/app/model/Building';
 import {User} from '../../../../model/User';
 import {concatMap, map, mergeMap, startWith, switchMap, tap} from 'rxjs/operators';

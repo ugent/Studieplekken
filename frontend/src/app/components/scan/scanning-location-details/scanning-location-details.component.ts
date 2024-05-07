@@ -1,15 +1,15 @@
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {LocationService} from '../../../extensions/services/api/locations/location.service';
+import {LocationService} from '../../../services/api/locations/location.service';
 import {Observable, Subject} from 'rxjs';
 import {Location} from '../../../model/Location';
-import {ScanningService} from '../../../extensions/services/api/scan/scanning.service';
+import {ScanningService} from '../../../services/api/scan/scanning.service';
 import {catchError, switchMap} from 'rxjs/operators';
 import {of} from 'rxjs/internal/observable/of';
 import {
     LocationReservationsService
-} from 'src/app/extensions/services/api/location-reservations/location-reservations.service';
-import {BarcodeService} from 'src/app/extensions/services/barcode.service';
+} from 'src/app/services/api/location-reservations/location-reservations.service';
+import {BarcodeService} from 'src/app/services/barcode.service';
 import {LocationReservation, LocationReservationState} from 'src/app/model/LocationReservation';
 import {timer} from 'rxjs';
 

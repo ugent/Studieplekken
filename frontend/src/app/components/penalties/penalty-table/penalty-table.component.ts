@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {PenaltyList, PenaltyService} from 'src/app/extensions/services/api/penalties/penalty.service';
+import {PenaltyList, PenaltyService} from 'src/app/services/api/penalties/penalty.service';
 import {Penalty} from '../../../model/Penalty';
 import {TableComponent} from '../../../contracts/table.component.interface';
 import {DeleteAction, TableAction, TableMapper} from '../../../model/Table';

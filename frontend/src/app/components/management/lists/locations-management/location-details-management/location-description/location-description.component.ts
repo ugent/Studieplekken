@@ -4,8 +4,8 @@ import {Location} from '../../../../../../model/Location';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import {
     LocationDetailsService
-} from '../../../../../../extensions/services/single-point-of-truth/location-details/location-details.service';
-import {LocationService} from '../../../../../../extensions/services/api/locations/location.service';
+} from '../../../../../../services/single-point-of-truth/location-details/location-details.service';
+import {LocationService} from '../../../../../../services/api/locations/location.service';
 import {msToShowFeedback} from '../../../../../../app.constants';
 import {switchMap, take} from 'rxjs/operators';
 

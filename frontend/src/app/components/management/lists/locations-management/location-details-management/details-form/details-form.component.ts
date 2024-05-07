@@ -1,16 +1,16 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Location, LocationConstructor} from '../../../../../../model/Location';
 import {FormControl, FormGroup} from '@angular/forms';
-import {LocationService} from '../../../../../../extensions/services/api/locations/location.service';
+import {LocationService} from '../../../../../../services/api/locations/location.service';
 import {
     LocationDetailsService
-} from '../../../../../../extensions/services/single-point-of-truth/location-details/location-details.service';
+} from '../../../../../../services/single-point-of-truth/location-details/location-details.service';
 import {Authority} from '../../../../../../model/Authority';
-import {AuthoritiesService} from '../../../../../../extensions/services/api/authorities/authorities.service';
+import {AuthoritiesService} from '../../../../../../services/api/authorities/authorities.service';
 import {Building} from 'src/app/model/Building';
-import {BuildingService} from 'src/app/extensions/services/api/buildings/buildings.service';
+import {BuildingService} from 'src/app/services/api/buildings/buildings.service';
 import {msToShowFeedback} from '../../../../../../app.constants';
-import {AuthenticationService} from '../../../../../../extensions/services/authentication/authentication.service';
+import {AuthenticationService} from '../../../../../../services/authentication/authentication.service';
 
 @Component({
     selector: 'app-details-form',

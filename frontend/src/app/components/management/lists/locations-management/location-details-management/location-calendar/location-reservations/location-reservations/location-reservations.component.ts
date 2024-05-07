@@ -9,13 +9,13 @@ import {
 } from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import * as moment from 'moment';
-import {BarcodeService} from 'src/app/extensions/services/barcode.service';
+import {BarcodeService} from 'src/app/services/barcode.service';
 import {User} from 'src/app/model/User';
 import {TableDataService} from 'src/app/components/stad-gent-components/atoms/table/data-service/table-data-service.service';
 import {TabularData} from 'src/app/components/stad-gent-components/atoms/table/tabular-data';
 import {
     LocationReservationsService
-} from '../../../../../../../../extensions/services/api/location-reservations/location-reservations.service';
+} from '../../../../../../../../services/api/location-reservations/location-reservations.service';
 import {
     LocationReservation,
     LocationReservationState,

@@ -2,13 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import { TimeslotsService } from 'src/app/extensions/services/api/calendar-periods/timeslot.service';
-import { LocationReservationsService } from 'src/app/extensions/services/api/location-reservations/location-reservations.service';
+import { TimeslotsService } from 'src/app/services/api/calendar-periods/timeslot.service';
+import { LocationReservationsService } from 'src/app/services/api/location-reservations/location-reservations.service';
 import { LocationReservation } from 'src/app/model/LocationReservation';
 import {
   Timeslot
 } from 'src/app/model/Timeslot';
-import { LocationService } from '../../../../../../extensions/services/api/locations/location.service';
+import { LocationService } from '../../../../../../services/api/locations/location.service';
 import { Location } from '../../../../../../model/Location';
 
 @Component({

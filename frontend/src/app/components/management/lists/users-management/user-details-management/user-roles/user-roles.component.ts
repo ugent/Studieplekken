@@ -1,8 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {User, UserConstructor} from '../../../../../../model/User';
 import {FormControl, FormGroup, UntypedFormControl, UntypedFormGroup} from '@angular/forms';
-import {UserDetailsService} from '../../../../../../extensions/services/single-point-of-truth/user-details/user-details.service';
-import {UserService} from '../../../../../../extensions/services/api/users/user.service';
+import {UserDetailsService} from '../../../../../../services/single-point-of-truth/user-details/user-details.service';
+import {UserService} from '../../../../../../services/api/users/user.service';
 import {msToShowFeedback} from '../../../../../../app.constants';
 import {ModalComponent} from '../../../../../stad-gent-components/molecules/modal/modal.component';
 

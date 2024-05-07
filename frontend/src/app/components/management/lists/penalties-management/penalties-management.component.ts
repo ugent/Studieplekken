@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { PenaltyList, PenaltyService } from 'src/app/extensions/services/api/penalties/penalty.service';
+import { PenaltyList, PenaltyService } from 'src/app/services/api/penalties/penalty.service';
 import { Penalty } from 'src/app/model/Penalty';
 
 @Component({

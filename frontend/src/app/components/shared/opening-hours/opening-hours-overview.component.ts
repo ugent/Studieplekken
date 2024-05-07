@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
-import { LocationService } from '../../../extensions/services/api/locations/location.service';
+import { LocationService } from '../../../services/api/locations/location.service';
 import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs/internal/observable/of';
 import * as moment from 'moment';

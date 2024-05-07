@@ -16,6 +16,24 @@
             "cancel": "Annuleer"
         }
     },
+    "faq": {
+        "header": {
+            "title": "Bloklocaties FAQ",
+            "search": "Zoek je vraag"
+        },
+        "sidebar": {
+            "empty": "Geen FAQ items gevonden"
+        },
+        "search": {
+            "title": "Zoek je vraag in de FAQ",
+            "popular": "Populaire vragen",
+            "readMore": "Lees meer"
+        },
+        "contact": {
+            "title": "Contacteer ons",
+            "subtitle": "Als je het antwoord op je vraag niet kunt vinden tussen onze vaak gestelde vragen, aarzel dan niet om contact met ons op te nemen via ons e-mailadres. Houd er echter rekening mee dat vragen die al in de FAQ staan, niet persoonlijk worden beantwoord. We danken je voor je begrip en kijken ernaar uit om je te helpen!"
+        }
+    },
     "calendar": {
         "previous": "Vorige",
         "today": "Vandaag",
@@ -194,7 +212,8 @@
             "management": "Beheer",
             "information": "Help",
             "navigation": "Navigatie",
-            "general": "Algemeen"
+            "general": "Algemeen",
+            "faq": "Veelgestelde vragen"
         }
     },
     "language": {

@@ -1,0 +1,14 @@
+<ng-container *ngIf="$item | async as item;">
+    <div id="faq-item-layout">
+        <div class="faq-item-header">
+            <div class="faq-item-title">
+                <h2>{{ item.title.translations[locale] }}</h2>
+            </div>
+            <div class="tag mb-3">
+                {{ item.category.name.translations[locale] }}
+            </div>
+        </div>
+        <hr>
+        <div class="faq-item-content"[innerHTML]="item.content.translations[locale]"></div>
+    </div>
+</ng-container>

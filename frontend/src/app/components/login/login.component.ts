@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {environment} from '../../../environments/environment';
 import {userWantsTLogInLocalStorageKey} from '../../app.constants';
-import {AuthenticationService} from '../../extensions/services/authentication/authentication.service';
+import {AuthenticationService} from '../../services/authentication/authentication.service';
 
 @Component({
     selector: 'app-login',

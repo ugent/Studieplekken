@@ -18,7 +18,7 @@
         <h3>{{"header.navigation.general" | translate}}</h3>
         <ul class="links">
             <li><a (click)="close()" routerLink="/">{{"header.navigation.dashboard" | translate }}</a></li>
-            <li><a (click)="close()" routerLink="/information">{{"header.navigation.information" | translate }}</a></li>
+            <li><a (click)="close()" routerLink="/faq">{{"header.navigation.faq" | translate }}</a></li>
         </ul>
         <ng-container *ngIf="user.isAdmin() || user.isScanner()">
             <h3>{{"header.navigation.management" | translate}}</h3>

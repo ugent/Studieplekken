@@ -3,8 +3,8 @@ import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms
 import {
   validateConfirmationPassword,
   validPassword,
-} from '../../../extensions/validators/PasswordValidators';
-import { AuthenticationService } from '../../../extensions/services/authentication/authentication.service';
+} from '../../../validators/PasswordValidators';
+import { AuthenticationService } from '../../../services/authentication/authentication.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({

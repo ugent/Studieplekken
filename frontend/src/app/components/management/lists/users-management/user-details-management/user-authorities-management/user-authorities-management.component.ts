@@ -5,9 +5,9 @@ import {User} from '../../../../../../model/User';
 import {BaseManagementComponent} from '../../../base-management.component';
 import {DeleteAction, TableAction, TableMapper} from '../../../../../../model/Table';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {AuthoritiesService} from '../../../../../../extensions/services/api/authorities/authorities.service';
+import {AuthoritiesService} from '../../../../../../services/api/authorities/authorities.service';
 import {filter, first, switchMap, tap} from 'rxjs/operators';
-import {AuthenticationService} from '../../../../../../extensions/services/authentication/authentication.service';
+import {AuthenticationService} from '../../../../../../services/authentication/authentication.service';
 
 @Component({
     selector: 'app-user-authorities-management',

@@ -1,0 +1,13 @@
+<ng-container>
+    <div id="faq-sidebar" class="p-3">
+        <app-faq-sidebar-item
+            *ngFor="let category of categories; index as index"
+            [category]="category"
+            [locale]="locale"
+            [index]="index">
+        </app-faq-sidebar-item>
+        <ng-container *ngIf="categories.length === 0">
+            {{ 'faq.sidebar.empty' | translate }}
+        </ng-container>
+    </div>
+</ng-container>

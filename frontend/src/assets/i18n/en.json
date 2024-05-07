@@ -16,6 +16,22 @@
             "cancel": "Cancel"
         }
     },
+    "faq": {
+        "header": {
+            "title": "Study rooms FAQ"
+        },
+        "sidebar": {
+            "empty": "No questions available"
+        },
+        "search": {
+            "title": "Search your question",
+            "popular": "Popular articles"
+        },
+        "contact": {
+            "title": "Contact us",
+            "subtitle": "If you cannot find the answer to your question among our frequently asked questions, please do not hesitate to contact us via our email address. However, please note that questions already listed in the FAQ will not be answered in person. We thank you for your understanding and look forward to helping you!"
+        }
+    },
     "calendar": {
         "previous": "Previous",
         "today": "Today",
@@ -194,7 +210,8 @@
             "management": "Management",
             "information": "Help",
             "navigation": "Navigation",
-            "general": "General"
+            "general": "General",
+            "faq": "Frequently asked questions"
         }
     },
     "language": {

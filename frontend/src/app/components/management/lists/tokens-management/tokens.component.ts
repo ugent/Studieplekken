@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {EMPTY, Observable, of} from 'rxjs';
-import {TokensService} from '../../../../extensions/services/api/tokens/tokens.service';
+import {TokensService} from '../../../../services/api/tokens/tokens.service';
 import {Token} from '../../../../model/Token';
 import {
     FormControl,
