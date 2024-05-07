@@ -1,4 +1,10 @@
 {
+    "layout": {
+        "notes": {
+            "thermi": "Please note: due to maintenance work, the Therminal is not open as a study place this examination period. Be sure to take a look at the other block locations to find your ideal study spot.",
+            "volunteers": "Looking for a permanent study spot? Would you like free coffee, tea and cookies while studying? Then become a volunteer for our study rooms now via <a href='https://forms.gle/N4iqfWeCH22dKH8C8'>this form</a>."
+        }
+    },
     "penalties": {
         "management": {
             "header": "Manage user penalties",
