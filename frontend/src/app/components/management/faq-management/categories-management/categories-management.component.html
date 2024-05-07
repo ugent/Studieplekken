@@ -1,0 +1,121 @@
+<ng-container>
+    <app-management-table
+        [data]="categories"
+        [actions]="getTableActions()"
+        [mapper]="getTableMapper()">
+    </app-management-table>
+
+    <!-- Modal view to add a new item -->
+    <app-modal #modify>
+        <h2 modal-header>
+            {{'management.faq.categories.modifyModal.title' | translate}}
+        </h2>
+
+        <!-- Modal body -->
+        <div modal-body>
+            <form [formGroup]="formGroup" *ngIf="formGroup">
+                <!-- FAQ title -->
+                <div class="row" formGroupName="name">
+                    <div class="col">
+                        <label for="nameNl">
+                            {{'management.faq.categories.modifyModal.form.nameNl' | translate}}
+                            <input class="form-control" id="nameNl" type="text" formControlName="nl" required>
+                        </label>
+                    </div>
+                    <div class="col">
+                        <label for="nameEn">
+                            {{'management.faq.categories.modifyModal.form.nameEn' | translate}}
+                            <input class="form-control" id="nameEn" type="text" formControlName="en" required>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- FAQ content -->
+                <div class="row gap-3" formGroupName="description">
+                    <div class="col">
+                        <label for="descriptionNl">
+                            {{'management.faq.categories.modifyModal.form.descriptionNl' | translate}}
+                            <textarea class="form-control" id="descriptionNl" formControlName="nl" required></textarea>
+                        </label>
+                    </div>
+                    <div class="col">
+                        <label for="descriptionEn">
+                            {{'management.faq.categories.modifyModal.form.descriptionNl' | translate}}
+                            <textarea class="form-control" id="descriptionEn" formControlName="en" required></textarea>
+                        </label>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Modal footer -->
+        <div modal-footer>
+            <button type="submit" class="button button-primary" [disabled]="!formGroup.valid">
+                {{'management.faq.categories.modifyModal.addButton' | translate}}
+            </button>
+            <button type="button" class="button button-secondary" (click)="closeModal(modify)">
+                {{'management.faq.categories.modifyModal.cancelButton' | translate}}
+            </button>
+        </div>
+
+        <!-- Feedback to the user -->
+        <div modal-message-footer>
+            <div class="messages messages--info" *ngIf="(isSuccess | async) === undefined">
+                <i class="icon-info" aria-hidden="true"></i>
+                {{'management.faq.categories.modifyModal.loading' | translate}}
+            </div>
+            <div class="messages messages--success" *ngIf="(isSuccess | async) === true">
+                <i class="icon-checkmark" aria-hidden="true"></i>
+                {{'management.faq.categories.modifyModal.success' | translate}}
+            </div>
+            <div class="messages messages--warning" *ngIf="(isSuccess | async) === false">
+                <i class="icon-exclamation" aria-hidden="true"></i>
+                {{'management.faq.categories.modifyModal.error' | translate}} <ng-container *ngIf="feedbackMessage | async as message">({{ message }})</ng-container>.
+            </div>
+        </div>
+    </app-modal>
+
+    <!-- Modal view to ask whether the user is sure to delete a location -->
+    <app-modal #remove>
+        <!-- Header -->
+        <h2 modal-header>
+            {{'management.faq.categories.removeModal.title' | translate}}
+        </h2>
+
+        <!-- Body -->
+        <div *ngIf="selectedSub$ | async as selected"  modal-body>
+            <div>
+                <p>
+                    {{ ('management.faq.categories.removeModal.body' | translate).replace('{faqCategory}', selected.name.translations[translateService.currentLang]) }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div *ngIf="selectedSub$ | async as selected"  modal-footer>
+            <button type="button" class="button button-primary">
+                {{'management.faq.categories.removeModal.yesButton' | translate}}
+            </button>
+            <button type="button" class="button button-secondary" (click)="closeModal(remove)">
+                {{'management.faq.categories.removeModal.noButton' | translate}}
+            </button>
+        </div>
+
+        <div modal-message-footer>
+            <div class="messages messages--info" *ngIf="(isSuccess | async) === undefined">
+                <i class="icon-info" aria-hidden="true"></i>
+                {{'management.faq.categories.removeModal.loading' | translate}}
+            </div>
+
+            <div class="messages messages--success" *ngIf="(isSuccess | async) === true">
+                <i class="icon-checkmark" aria-hidden="true"></i>
+                {{'management.faq.categories.removeModal.success' | translate}}
+            </div>
+
+            <div class="messages messages--warning" *ngIf="(isSuccess | async) === false">
+                <i class="icon-exclamation" aria-hidden="true"></i>
+                {{'management.faq.categories.removeModal.error' | translate}} <ng-container *ngIf="feedbackMessage | async as message">({{ message }})</ng-container>.
+            </div>
+        </div>
+    </app-modal>
+</ng-container>

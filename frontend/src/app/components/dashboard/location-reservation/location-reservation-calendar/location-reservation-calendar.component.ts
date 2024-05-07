@@ -1,17 +1,17 @@
 import {Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
-import {User} from '../../../../model/User';
+import {User} from '@/model/User';
 import {CalendarEvent} from 'angular-calendar';
-import {Location} from '../../../../model/Location';
-import {Timeslot, timeslotEquals} from '../../../../model/Timeslot';
+import {Location} from '@/model/Location';
+import {Timeslot} from '@/model/Timeslot';
 import {combineLatest, Observable} from 'rxjs';
 import {first, tap} from 'rxjs/operators';
 import {map} from 'rxjs/internal/operators/map';
 import {Moment} from 'moment/moment';
 import {ModalComponent} from '../../../stad-gent-components/molecules/modal/modal.component';
-import {LocationReservation} from '../../../../model/LocationReservation';
+import {LocationReservation} from '@/model/LocationReservation';
 import {
     LocationReservationsService
-} from '../../../../services/api/location-reservations/location-reservations.service';
+} from '@/services/api/location-reservations/location-reservations.service';
 
 @Component({
     selector: 'app-location-reservation-calendar',

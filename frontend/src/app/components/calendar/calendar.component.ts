@@ -14,7 +14,7 @@ import {defaultOpeningHour, defaultClosingHour} from 'src/app/app.constants';
 import * as moment from 'moment';
 import {BreakpointObserver} from '@angular/cdk/layout';
 import {map} from 'rxjs/operators';
-import {CustomDateFormatter} from '../../util/CustomDateFormatter';
+import {CustomDateFormatter} from '@/util/CustomDateFormatter';
 
 @Component({
     selector: 'app-calendar',

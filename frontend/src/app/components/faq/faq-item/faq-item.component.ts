@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {FaqService} from '../../../services/api/faq/faq.service';
-import {FaqItem} from '../../../model/FaqItem';
+import {FaqService} from '@/services/api/faq/faq.service';
+import {FaqItem} from '@/model/FaqItem';
 import {Observable} from 'rxjs';
 import {ActivatedRoute, ParamMap} from '@angular/router';
 import {switchMap} from 'rxjs/operators';

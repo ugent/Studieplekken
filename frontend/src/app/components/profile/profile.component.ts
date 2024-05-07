@@ -1,13 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import {BreadcrumbService} from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
-import {User} from '../../model/User';
+import {User} from '@/model/User';
 import {Observable} from 'rxjs';
-import {AuthenticationService} from '../../services/authentication/authentication.service';
+import {AuthenticationService} from '@/services/authentication/authentication.service';
 import {
     LocationReservationsService
-} from '../../services/api/location-reservations/location-reservations.service';
+} from '@/services/api/location-reservations/location-reservations.service';
 import {switchMap} from 'rxjs/operators';
-import {LocationReservation} from '../../model/LocationReservation';
+import {LocationReservation} from '@/model/LocationReservation';
 import {map} from 'rxjs/internal/operators/map';
 
 @Component({

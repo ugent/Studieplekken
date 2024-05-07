@@ -30,50 +30,47 @@ import {
 } from './components/profile/profile-change-password/profile-change-password.component';
 import {
     LocationsManagementComponent
-} from './components/management/lists/locations-management/locations-management.component';
-import {UsersManagementComponent} from './components/management/lists/users-management/users-management.component';
+} from '@/components/management/locations-management/locations-management.component';
+import {UsersManagementComponent} from '@/components/management/users-management/users-management.component';
 import {
     LocationDetailsManagementComponent
-} from './components/management/lists/locations-management/location-details-management/location-details-management.component';
+} from '@/components/management/locations-management/location-details-management/location-details-management.component';
 import {
     DetailsFormComponent
-} from './components/management/lists/locations-management/location-details-management/details-form/details-form.component';
+} from '@/components/management/locations-management/location-details-management/details-form/details-form.component';
 import {
     LocationCalendarComponent
-} from './components/management/lists/locations-management/location-details-management/location-calendar/location-calendar.component';
+} from '@/components/management/locations-management/location-details-management/location-calendar/location-calendar.component';
 import {FlatpickrModule} from 'angularx-flatpickr';
 import {
-    LockersTableComponent
-} from './components/management/lists/locations-management/location-details-management/lockers-table/lockers-table.component';
-import {
     UserDetailsManagementComponent
-} from './components/management/lists/users-management/user-details-management/user-details-management.component';
+} from '@/components/management/users-management/user-details-management/user-details-management.component';
 // tslint:disable-next-line:max-line-length
 import {
     UserDetailsFormComponent
-} from './components/management/lists/users-management/user-details-management/user-details-form/user-details-form.component';
+} from '@/components/management/users-management/user-details-management/user-details-form/user-details-form.component';
 import {
     UserRolesComponent
-} from './components/management/lists/users-management/user-details-management/user-roles/user-roles.component';
+} from '@/components/management/users-management/user-details-management/user-roles/user-roles.component';
 import {
     LocationDescriptionComponent
-} from './components/management/lists/locations-management/location-details-management/location-description/location-description.component';
+} from '@/components/management/locations-management/location-details-management/location-description/location-description.component';
 import {CKEditorModule} from '@ckeditor/ckeditor5-angular';
-import {TagsManagementComponent} from './components/management/lists/tags-management/tags-management.component';
+import {TagsManagementComponent} from '@/components/management/tags-management/tags-management.component';
 import {
     LocationTagsManagementComponent
-} from './components/management/lists/locations-management/location-details-management/location-tags-management/location-tags-management.component';
+} from '@/components/management/locations-management/location-details-management/location-tags-management/location-tags-management.component';
 import {MatSelectModule} from '@angular/material/select';
 import {LoginComponent} from './components/login/login.component';
 import {
     AuthoritiesManagementComponent
-} from './components/management/lists/authorities-management/authorities-management.component';
+} from '@/components/management/authorities-management/authorities-management.component';
 import {
     UserAuthoritiesManagementComponent
-} from './components/management/lists/users-management/user-details-management/user-authorities-management/user-authorities-management.component';
+} from '@/components/management/users-management/user-details-management/user-authorities-management/user-authorities-management.component';
 import {
     AuthorityUsersManagementComponent
-} from './components/management/lists/authorities-management/authority-users-management/authority-users-management.component';
+} from '@/components/management/authorities-management/authority-users-management/authority-users-management.component';
 import {DatePipe, NgOptimizedImage, registerLocaleData} from '@angular/common';
 import {MatDialogModule} from '@angular/material/dialog';
 import localeNl from '@angular/common/locales/nl-BE';
@@ -88,24 +85,24 @@ import {FormatActionPipe} from './pipes/FormatActionPipe';
 import {MomentDateTimeComponent} from './components/shared/inputs/moment-datetime/moment-datetime.component';
 import {
     LocationOpeningperiodDialogComponent
-} from './components/management/lists/locations-management/location-details-management/location-calendar/location-openingperiod-dialog/location-openingperiod-dialog.component';
+} from '@/components/management/locations-management/location-details-management/location-calendar/location-openingperiod-dialog/location-openingperiod-dialog.component';
 import {
     BuildingManagementComponent
-} from './components/management/lists/building-management/building-management.component';
+} from '@/components/management/building-management/building-management.component';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatTabsModule} from '@angular/material/tabs';
 import {
     LocationReservationsComponent
-} from './components/management/lists/locations-management/location-details-management/location-calendar/location-reservations/location-reservations/location-reservations.component';
+} from '@/components/management/locations-management/location-details-management/location-calendar/location-reservations/location-reservations/location-reservations.component';
 import {
     MomentTimeslotSizeComponent
 } from './components/shared/inputs/moment-timeslot-size/moment-timeslot-size.component';
-import {AdminsManagementComponent} from './components/management/lists/admins-management/admins-management.component';
+import {AdminsManagementComponent} from '@/components/management/admins-management/admins-management.component';
 import {FlexLayoutModule} from '@angular/flex-layout';
 // tslint:disable-next-line:max-line-length
 import {
     TimeslotTableComponent
-} from './components/management/lists/locations-management/location-details-management/timeslot-table/timeslot-table.component';
+} from '@/components/management/locations-management/location-details-management/timeslot-table/timeslot-table.component';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {OpeningHoursOverviewComponent} from './components/shared/opening-hours/opening-hours-overview.component';
 import {ScanningLocationsComponent} from './components/scan/scanning-locations/scanning-locations.component';
@@ -114,10 +111,10 @@ import {
 } from './components/scan/scanning-location-details/scanning-location-details.component';
 import {
     VolunteersManagementComponent
-} from './components/management/lists/volunteers-management/volunteers-management.component';
+} from '@/components/management/volunteers-management/volunteers-management.component';
 import {
     VolunteerManagementPanelComponent
-} from './components/management/lists/volunteers-management/volunteer-management-panel/volunteer-management-panel.component';
+} from '@/components/management/volunteers-management/volunteer-management-panel/volunteer-management-panel.component';
 import {TokenInterceptor} from './services/authentication/token.interceptor';
 import {HeaderComponent} from './components/stad-gent-components/header/header.component';
 import {AccordeonComponent} from './components/stad-gent-components/molecules/accordeon/accordeon.component';
@@ -127,7 +124,7 @@ import {SearchUserComponentComponent} from './components/shared/search-user/sear
 import {SearchUserFormComponent} from './components/shared/search-user/search-user-form/search-user-form.component';
 import {
     LocationAddTimeslotDialogComponent
-} from './components/management/lists/locations-management/location-details-management/location-calendar/location-add-timeslot-dialog/location-add-timeslot-dialog.component';
+} from '@/components/management/locations-management/location-details-management/location-calendar/location-add-timeslot-dialog/location-add-timeslot-dialog.component';
 import {ModalComponent} from './components/stad-gent-components/molecules/modal/modal.component';
 import {QRCodeModule} from 'angularx-qrcode';
 import {QRCodeComponent} from './components/shared/qrcode/qrcode.component';
@@ -140,7 +137,7 @@ import {
 import {MobileTableComponent} from './components/stad-gent-components/atoms/table/mobile-table/mobile-table.component';
 import {EntryComponent} from './components/entry/entry.component';
 import {ImpersonateInterceptor} from './services/authentication/impersonate.interceptor';
-import {ActionLogComponent} from './components/management/lists/actions-managament/action-log.component';
+import {ActionLogComponent} from '@/components/management/actions-managament/action-log.component';
 import {
     AfterReservationComponent
 } from './components/dashboard/location-reservation/after-reservation/after-reservation.component';
@@ -148,13 +145,13 @@ import {PenaltyTableComponent} from './components/penalties/penalty-table/penalt
 import {UserPenaltyManagerComponent} from './components/penalties/user-penalty-manager/user-penalty-manager.component';
 import {
     PenaltiesManagementComponent
-} from './components/management/lists/penalties-management/penalties-management.component';
+} from '@/components/management/penalties-management/penalties-management.component';
 import {StatsComponent} from './components/management/stats/stats.component';
 import {WaffleComponent} from './components/management/stats/waffle/waffle.component';
 import {
     LocationReminderComponent
-} from './components/management/lists/locations-management/location-details-management/location-reminder/location-reminder.component';
-import {TokensComponent} from './components/management/lists/tokens-management/tokens.component';
+} from '@/components/management/locations-management/location-details-management/location-reminder/location-reminder.component';
+import {TokensComponent} from '@/components/management/tokens-management/tokens.component';
 import {AuthorizationGuardService} from './services/guard/authorization/authorization-guard.service';
 import {ChartComponent} from './components/management/stats/chart/chart.component';
 import {BarCodeComponent} from './components/shared/barcode/barcode.component';
@@ -164,7 +161,7 @@ import {MapComponent} from './components/dashboard/location-reservation/map/map.
 import {ManagementTableComponent} from './components/management/shared/management-table/management-table.component';
 import {
     LocationVolunteersManagementComponent
-} from './components/management/lists/locations-management/location-volunteers-management/location-volunteers-management.component';
+} from '@/components/management/locations-management/location-volunteers-management/location-volunteers-management.component';
 import {
     LocationReservationDetailsComponent
 } from './components/dashboard/location-reservation/location-reservation-details/location-reservation-details.component';
@@ -177,15 +174,17 @@ import {
 import {
     LocationReservationMapComponent
 } from './components/dashboard/location-reservation/location-reservation-map/location-reservation-map.component';
-import { FaqComponent } from './components/faq/faq.component';
-import { FaqSearchComponent } from './components/faq/faq-search/faq-search.component';
-import { FaqItemComponent } from './components/faq/faq-item/faq-item.component';
-import { FaqSidebarComponent } from './components/faq/faq-sidebar/faq-sidebar.component';
-import { FaqSidebarItemComponent } from './components/faq/faq-sidebar/faq-sidebar-item/faq-sidebar-item.component';
-import { LoadingComponent } from './components/status/loading/loading.component';
-import { EmptyComponent } from './components/status/empty/empty.component';
-import { NotFoundComponent } from './components/status/not-found/not-found.component';
-import { TeaserComponent } from './components/stad-gent-components/molecules/teaser/teaser.component';
+import {FaqComponent} from './components/faq/faq.component';
+import {FaqSearchComponent} from './components/faq/faq-search/faq-search.component';
+import {FaqItemComponent} from './components/faq/faq-item/faq-item.component';
+import {FaqSidebarComponent} from './components/faq/faq-sidebar/faq-sidebar.component';
+import {FaqSidebarItemComponent} from './components/faq/faq-sidebar/faq-sidebar-item/faq-sidebar-item.component';
+import {LoadingComponent} from './components/status/loading/loading.component';
+import {EmptyComponent} from './components/status/empty/empty.component';
+import {NotFoundComponent} from './components/status/not-found/not-found.component';
+import {TeaserComponent} from './components/stad-gent-components/molecules/teaser/teaser.component';
+import { FaqManagementComponent } from './components/management/faq-management/faq-management.component';
+import { CategoriesManagementComponent } from './components/management/faq-management/categories-management/categories-management.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -205,11 +204,16 @@ const routes: Routes = [
     },
     {
         path: 'dashboard',
-        component: DashboardComponent
-    },
-    {
-        path: 'dashboard/:locationId',
-        component: LocationReservationComponent
+        children: [
+            {
+                path: '',
+                component: DashboardComponent
+            },
+            {
+                path: ':locationId',
+                component: LocationReservationComponent
+            }
+        ]
     },
     {
         path: 'profile',
@@ -219,7 +223,8 @@ const routes: Routes = [
             guards: [['user']]
         },
         children: [
-            {
+            // These are unused for now
+            /*{
                 path: '',
                 redirectTo: 'overview',
                 pathMatch: 'full',
@@ -243,7 +248,7 @@ const routes: Routes = [
             {
                 path: 'penalties',
                 component: ProfilePenaltiesComponent
-            },
+            },*/
         ],
     },
 
@@ -273,9 +278,6 @@ const routes: Routes = [
     {
         path: 'management',
         component: ManagementComponent,
-        data: {
-            guards: [['authorities']]
-        },
         children: [
             {
                 path: '',
@@ -284,27 +286,24 @@ const routes: Routes = [
             },
             {
                 path: 'locations',
-                component: LocationsManagementComponent,
                 canActivate: [AuthorizationGuardService],
                 data: {
                     guards: [['authorities']]
                 },
-            },
-            {
-                path: 'locations/:locationId',
-                component: LocationDetailsManagementComponent,
-                canActivate: [AuthorizationGuardService],
-                data: {
-                    guards: [['authorities']]
-                },
-            },
-            {
-                path: 'locations/:locationId/timeslot/:seqnr',
-                component: TimeslotTableComponent,
-                canActivate: [AuthorizationGuardService],
-                data: {
-                    guards: [['authorities']]
-                },
+                children: [
+                    {
+                        path: '',
+                        component: LocationsManagementComponent
+                    },
+                    {
+                        path: ':locationId',
+                        component: LocationDetailsManagementComponent
+                    },
+                    {
+                        path: ':locationId/timeslot/:seqnr',
+                        component: TimeslotTableComponent
+                    }
+                ]
             },
             {
                 path: 'buildings',
@@ -312,6 +311,31 @@ const routes: Routes = [
                 canActivate: [AuthorizationGuardService],
                 data: {
                     guards: [['authorities']]
+                }
+            },
+            {
+                path: 'users',
+                canActivate: [AuthorizationGuardService],
+                data: {
+                    guards: [['authorities']]
+                },
+                children: [
+                    {
+                        path: '',
+                        component: UsersManagementComponent
+                    },
+                    {
+                        path: ':id',
+                        component: UserDetailsManagementComponent
+                    }
+                ]
+            },
+            {
+                path: 'faq',
+                component: FaqManagementComponent,
+                canActivate: [AuthorizationGuardService],
+                data: {
+                    guards: [['admin']]
                 }
             },
             {
@@ -323,36 +347,21 @@ const routes: Routes = [
                 }
             },
             {
-                path: 'users',
-                component: UsersManagementComponent,
-                canActivate: [AuthorizationGuardService],
-                data: {
-                    guards: [['authorities']]
-                }
-            },
-            {
-                path: 'users/:id',
-                component: UserDetailsManagementComponent,
-                canActivate: [AuthorizationGuardService],
-                data: {
-                    guards: [['authorities']]
-                }
-            },
-            {
                 path: 'authorities',
-                component: AuthoritiesManagementComponent,
                 canActivate: [AuthorizationGuardService],
                 data: {
                     guards: [['admin']]
-                }
-            },
-            {
-                path: 'authorities/:authorityId',
-                component: AuthorityUsersManagementComponent,
-                canActivate: [AuthorizationGuardService],
-                data: {
-                    guards: [['admin']]
-                }
+                },
+                children: [
+                    {
+                        path: '',
+                        component: AuthoritiesManagementComponent
+                    },
+                    {
+                        path: ':authorityId',
+                        component: AuthorityUsersManagementComponent
+                    }
+                ]
             },
             {
                 path: 'admins',
@@ -407,13 +416,16 @@ const routes: Routes = [
     {
         path: 'faq',
         component: FaqComponent,
-        children: [{
-            path: '',
-            component: FaqSearchComponent
-        }, {
-            path: ':id',
-            component: FaqItemComponent
-        }]
+        children: [
+            {
+                path: '',
+                component: FaqSearchComponent
+            },
+            {
+                path: ':id',
+                component: FaqItemComponent
+            }
+        ]
     },
     {
         path: 'opening/overview/:year/:weekNr',
@@ -424,6 +436,7 @@ const routes: Routes = [
         component: EntryComponent,
         pathMatch: 'full',
     },
+
     // TODO: create PageNotFoundController
 ];
 
@@ -447,7 +460,6 @@ const routes: Routes = [
         LocationDetailsManagementComponent,
         DetailsFormComponent,
         LocationCalendarComponent,
-        LockersTableComponent,
         UserDetailsManagementComponent,
         UserDetailsFormComponent,
         UserRolesComponent,
@@ -515,7 +527,9 @@ const routes: Routes = [
         LoadingComponent,
         EmptyComponent,
         NotFoundComponent,
-        TeaserComponent
+        TeaserComponent,
+        FaqManagementComponent,
+        CategoriesManagementComponent
     ],
     imports: [
         BrowserModule,

@@ -145,13 +145,17 @@ export const api = {
             index: '/api/faq/categories',
             retrieve: '/api/faq/categories/{categoryId}',
             items: '/api/faq/categories/{categoryId}/items',
-            create: '/api/faq/categories'
+            create: '/api/faq/categories',
+            update: '/api/faq/categories/{categoryId}',
+            delete: '/api/faq/categories/{categoryId}',
         },
         items: {
             index: '/api/faq/items',
             pinned: '/api/faq/items/pinned',
             retrieve: '/api/faq/items/{itemId}',
             create: '/api/faq/items',
+            update: '/api/faq/items/{itemId}',
+            delete: '/api/faq/items/{itemId}',
         }
     }
 };

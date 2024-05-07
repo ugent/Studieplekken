@@ -1,12 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {Observable, ReplaySubject, Subject} from 'rxjs';
+import {Observable, ReplaySubject} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {ScanningService} from '../../../services/api/scan/scanning.service';
-import {Location} from '../../../model/Location';
+import {ScanningService} from '@/services/api/scan/scanning.service';
+import {Location} from '@/model/Location';
 import {TableDataService} from '../../stad-gent-components/atoms/table/data-service/table-data-service.service';
-import {TableComponent} from '../../../contracts/table.component.interface';
-import {ListAction, TableAction, TableMapper} from '../../../model/Table';
+import {TableComponent} from '@/contracts/table.component.interface';
+import {ListAction, TableAction, TableMapper} from '@/model/Table';
 import * as moment from 'moment/moment';
 
 @Component({

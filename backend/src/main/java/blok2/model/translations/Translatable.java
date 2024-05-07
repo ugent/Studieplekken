@@ -1,28 +1,31 @@
 package blok2.model.translations;
 
-import blok2.model.FaqItem;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
 @Entity
 @NoArgsConstructor
-@Table(name="translations")
-public class Translation {
+@AllArgsConstructor
+@Table(name="translatables")
+public class Translatable {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long id;
 
     @ElementCollection
     @CollectionTable(name = "translations")
+    @MapKeyEnumerated(EnumType.STRING)
     @MapKeyColumn(name = "language")
     @Column(name = "value")
-    private Map<String, String> values;
+    @NotEmpty
+    private Map<Language, String> translations = new HashMap<>();
 }

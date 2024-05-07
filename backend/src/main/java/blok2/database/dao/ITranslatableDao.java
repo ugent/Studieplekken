@@ -1,25 +1,20 @@
 package blok2.database.dao;
 
-import java.util.List;
-
+import blok2.model.translations.Language;
 import blok2.model.translations.Translatable;
+import blok2.model.translations.Translation;
 
-public interface ITranslationDao {
-    /**
-     * Create a new translation.
-     *
-     * @param translation The translation to create.
-     * @return The created translation.
-     */
-    Translatable addTranslation(Translatable translation);
+import java.util.List;
+import java.util.Map;
 
+public interface ITranslatableDao {
     /**
      * Create multiple linked translations.
      *
-     * @param translation The translations to create.
+     * @param translatable the translatable to create.
      * @return The created translations.
      */
-    List<Translatable> addTranslations(List<Translatable> translation);
+    Translatable addTranslatable(Translatable translatable);
 
     /**
      * Get all translations for a given ID.
@@ -27,5 +22,5 @@ public interface ITranslationDao {
      * @param id The ID of the translation.
      * @return A list of translations for each language.
      */
-    List<Translatable> getTranslations(Long id);
+    Translatable getTranslatable(Long id);
 }

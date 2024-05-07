@@ -7,9 +7,9 @@ import {LocationReservationsService} from '../api/location-reservations/location
 import {PenaltyList, PenaltyService} from '../api/penalties/penalty.service';
 import {LoginRedirectService} from './login-redirect.service';
 import {tap} from 'rxjs/operators';
-import {User, UserConstructor} from '../../model/User';
-import {authenticationWasExpiredUrlLSKey, userWantsTLogInLocalStorageKey} from '../../app.constants';
-import {LocationReservation} from '../../model/LocationReservation';
+import {User, UserConstructor} from '@/model/User';
+import {authenticationWasExpiredUrlLSKey, userWantsTLogInLocalStorageKey} from '@/app.constants';
+import {LocationReservation} from '@/model/LocationReservation';
 
 /**
  * The structure of the authentication service has been based on this article:
@@ -29,7 +29,7 @@ import {LocationReservation} from '../../model/LocationReservation';
 export class AuthenticationService {
     public hasAttemptedLogin = false;
 
-    private userSubject: BehaviorSubject<User>;
+    private readonly userSubject: BehaviorSubject<User>;
     public user: Observable<User>;
 
     private penaltySubject: Subject<PenaltyList>;

@@ -1,10 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
-import {BehaviorSubject, Observable, Subject} from 'rxjs';
-import {map, tap} from 'rxjs/operators';
+import {Observable, Subject} from 'rxjs';
+import {map} from 'rxjs/operators';
 import {AuthenticationService} from 'src/app/services/authentication/authentication.service';
 import {Breadcrumb, BreadcrumbService} from './breadcrumbs/breadcrumb.service';
-import {User, UserConstructor} from '../../../model/User';
+import {User} from '@/model/User';
 
 @Component({
     selector: 'app-header',

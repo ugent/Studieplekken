@@ -1,9 +1,9 @@
 import {ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
-import {TableAction, TableColumn, TableData, TableMapper} from '../../../../model/Table';
+import {TableAction, TableColumn, TableData, TableMapper} from '@/model/Table';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {debounceTime, first, takeUntil} from 'rxjs/operators';
 import {isObservable, ReplaySubject, Subject} from 'rxjs';
-import {escapeRegex, genericSorter, OrderDirection} from '../../../../util/Util';
+import {escapeRegex, genericSorter, OrderDirection} from '@/util/Util';
 
 @Component({
     selector: 'app-management-table',
@@ -13,9 +13,8 @@ import {escapeRegex, genericSorter, OrderDirection} from '../../../../util/Util'
 })
 export class ManagementTableComponent<T> implements OnInit, OnChanges, OnDestroy {
 
-
     @Input() data: T[];
-    @Input() mapper: TableMapper<T> = (item) => ({});
+    @Input() mapper: TableMapper<T> = (_: T) => ({});
     @Input() stateless = true;
     @Input() actions: TableAction<T>[] = [];
 

@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {User, UserSettings} from '../../../model/User';
+import {User, UserSettings} from '@/model/User';
 import {FormControl, FormGroup} from '@angular/forms';
-import {UserService} from '../../../services/api/users/user.service';
+import {UserService} from '@/services/api/users/user.service';
 
 @Component({
     selector: 'app-profile-overview',

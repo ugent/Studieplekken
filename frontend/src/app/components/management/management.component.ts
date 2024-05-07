@@ -1,9 +1,9 @@
-import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
-import {AuthenticationService} from '../../services/authentication/authentication.service';
-import {Observable, Subscription} from 'rxjs';
+import {Component, OnInit} from '@angular/core';
+import {AuthenticationService} from '@/services/authentication/authentication.service';
+import {Observable} from 'rxjs';
 import {BreadcrumbService, managementBreadcrumb} from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
 import {environment} from 'src/environments/environment';
-import {User} from '../../model/User';
+import {User} from '@/model/User';
 
 @Component({
     selector: 'app-management',
@@ -12,8 +12,10 @@ import {User} from '../../model/User';
 })
 export class ManagementComponent implements OnInit {
 
+    /* Observables */
     protected userObs$: Observable<User>;
 
+    /* Local state */
     protected showStagingWarning: boolean;
 
     constructor(

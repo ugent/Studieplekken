@@ -3,7 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {api} from '../endpoints';
-import {LocationTag} from '../../../model/LocationTag';
+import {LocationTag} from '@/model/LocationTag';
 import {Cache} from '../../cache/Cache';
 import {TranslateService} from '@ngx-translate/core';
 

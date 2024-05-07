@@ -18,11 +18,14 @@
                             <a routerLink="./authorities" *ngIf="user.isAdmin()">
                                 {{'management.aside.authorities' | translate}}
                             </a>
-                            <a routerLink="./tags" *ngIf="user.isAdmin()">
-                                {{'management.aside.tags' | translate}}
-                            </a>
                             <a routerLink="./users" *ngIf="user.isAdmin()">
                                 {{'management.aside.users' | translate}}
+                            </a>
+                            <a routerLink="./faq" *ngIf="user.isAdmin()">
+                                {{'management.aside.faq' | translate}}
+                            </a>
+                            <a routerLink="./tags" *ngIf="user.isAdmin()">
+                                {{'management.aside.tags' | translate}}
                             </a>
                             <a routerLink="./admins" *ngIf="user.isAdmin()">
                                 {{'management.aside.admins' | translate}}

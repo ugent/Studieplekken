@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Subject} from 'rxjs';
 import {User} from 'src/app/model/User';
-import {AuthenticationService} from '../../../../services/authentication/authentication.service';
+import {AuthenticationService} from '@/services/authentication/authentication.service';
 
 @Component({
     selector: 'app-header-dropdown',

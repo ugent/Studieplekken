@@ -4,7 +4,7 @@ import {Observable} from 'rxjs';
 import {AuthenticationService} from '../../authentication/authentication.service';
 import {LoginRedirectService} from '../../authentication/login-redirect.service';
 import {filter, tap} from 'rxjs/operators';
-import {User} from '../../../model/User';
+import {User} from '@/model/User';
 import {map} from 'rxjs/internal/operators/map';
 
 /**
@@ -33,6 +33,11 @@ export class AuthorizationGuardService implements CanActivate {
     ) {
     }
 
+    /**
+     * This function is called when the route is being activated.
+     *
+     * @param route
+     */
     canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
         return this.authenticationService.user.pipe(
             // Wait until the user has been fetched from the backend (can be empty).

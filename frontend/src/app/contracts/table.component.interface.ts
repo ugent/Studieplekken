@@ -1,4 +1,4 @@
-import {TableAction, TableMapper} from '../model/Table';
+import {TableAction, TableMapper} from '@/model/Table';
 
 export declare interface TableComponent<T> {
     /**

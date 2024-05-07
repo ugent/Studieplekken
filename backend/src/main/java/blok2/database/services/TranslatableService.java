@@ -2,43 +2,38 @@ package blok2.database.services;
 
 import blok2.database.dao.ITranslatableDao;
 import blok2.database.repositories.TranslatableRepository;
+import blok2.database.repositories.TranslationRepository;
+import blok2.model.translations.Language;
 import blok2.model.translations.Translatable;
+import blok2.model.translations.Translation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
-public class TranslationService implements ITranslatableDao {
-    private final TranslatableRepository translationRepository;
+public class TranslatableService implements ITranslatableDao {
+    private final TranslatableRepository translatableRepository;
 
     @Autowired
-    public TranslationService(TranslatableRepository translationRepository) {
-        this.translationRepository = translationRepository;
+    public TranslatableService(TranslatableRepository translatableRepository) {
+        this.translatableRepository = translatableRepository;
     }
 
     @Override
-    public Translatable addTranslation(Translatable translation) {
-        return translationRepository.save(translation);
+    public Translatable addTranslatable(Translatable translatable) {
+        return translatableRepository.save(translatable);
     }
 
     @Override
-    public List<Translatable> addTranslations(List<Translatable> translations) {
-        if (!translations.isEmpty()) {
-            // Save a translation base that auto-generates a key.
-            Translatable base = translationRepository.save(translations.get(0));
-
-            for (Translatable translation : translations) {
-                translation.setId(base.getId());
-                translationRepository.save(translation);
-            }
-        }
-
-        return translations;
-    }
-
-    @Override
-    public List<Translatable> getTranslations(Long id) {
-        return this.translationRepository.findAllById(id);
+    public Translatable getTranslatable(Long id) {
+        return translatableRepository.findById(id).orElseThrow(() ->
+                new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Translatable not found"
+                )
+        );
     }
 }

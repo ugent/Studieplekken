@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LocationReservation } from '../model/LocationReservation';
+import { LocationReservation } from '@/model/LocationReservation';
 
 @Injectable({
   providedIn: 'root',

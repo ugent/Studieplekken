@@ -2,40 +2,48 @@ package blok2.database.services;
 
 import blok2.database.dao.IFaqItemDao;
 import blok2.database.repositories.FaqItemRepository;
-import blok2.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.FaqItem;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 @Service
 public class FaqItemService implements IFaqItemDao {
     private final FaqItemRepository faqItemRepository;
-    private final TranslationService translationService;
+    private final TranslatableService translatableService;
 
-    public FaqItemService(FaqItemRepository faqItemRepository, TranslationService translationService) {
+    public FaqItemService(FaqItemRepository faqItemRepository, TranslatableService translatableService) {
         this.faqItemRepository = faqItemRepository;
-        this.translationService = translationService;
+        this.translatableService = translatableService;
     }
 
     @Override
     public FaqItem getItemById(Long categoryId) {
         return faqItemRepository.findById(categoryId).orElseThrow(() ->
-                new NoSuchDatabaseObjectException(
-                    String.format("Location with locationId '%d' does not exist.", categoryId)
+                new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "FAQ item not found"
                 )
         );
     }
 
     @Override
-    public List<FaqItem> getAllItems() {
+    public List<FaqItem> searchItems(String query, Pageable pageable) {
         return faqItemRepository.findAll();
     }
 
     @Override
+    public List<FaqItem> getPinnedItems() {
+        return faqItemRepository.findAllByIsPinnedIsTrue();
+    }
+
+    @Override
     public FaqItem addItem(FaqItem item) {
-        translationService.addTranslations(item.getTitle());
-        translationService.addTranslations(item.getContent());
+        translatableService.addTranslatable(item.getTitle());
+        translatableService.addTranslatable(item.getContent());
         return faqItemRepository.save(item);
     }
 

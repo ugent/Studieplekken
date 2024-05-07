@@ -26,7 +26,8 @@
         "search": {
             "title": "Zoek je vraag in de FAQ",
             "popular": "Populaire vragen",
-            "readMore": "Lees meer"
+            "readMore": "Lees meer",
+            "noResults": "Geen resultaten gevonden voor je zoekterm"
         },
         "contact": {
             "title": "Contacteer ons",
@@ -245,6 +246,7 @@
             "locations": "Locaties",
             "buildings": "Gebouwen",
             "tags": "Tags",
+            "faq": "Veelgestelde vragen",
             "users": "Gebruikers",
             "authorities": "Autoriteiten",
             "calendar": "Kalender",
@@ -300,7 +302,9 @@
                 "info": "{{startIndex}} tot {{endIndex}} van de {{total}} resultaten",
                 "perPage": "Per pagina"
             },
-            "actions": "Acties"
+            "actions": "Acties",
+            "true": "Ja",
+            "false": "Nee"
         },
         "locationDetails": {
             "title": "Details van {locationName}",
@@ -530,6 +534,58 @@
                 "error": "Er is iets misgelopen tijdens het verwijderen van de locatie",
                 "yesButton": "Verwijder",
                 "noButton": "Annuleer"
+            }
+        },
+        "faq": {
+            "title": "Veelgestelde vragen",
+            "addNew": "Nieuwe FAQ toevoegen",
+            "table": {
+                "header": {
+                    "title": "Titel",
+                    "category": "Categorie",
+                    "pinned": "Vastgezet"
+                }
+            },
+            "modifyModal": {
+                "title": "FAQ aanpassen",
+                "addButton": "Opslaan",
+                "cancelButton": "Annuleer",
+                "form": {
+                    "titleNl": "Titel in het Nederlands",
+                    "titleEn": "Titel in het Engels",
+                    "contentNl": "Inhoud in het Nederlands",
+                    "contentEn": "Inhoud in het Engels",
+                    "category": "Categorie"
+                }
+            },
+            "removeModal": {
+                "title": "Verwijder FAQ",
+                "body": "Ben je zeker dat je volgende FAQ wilt verwijderen?"
+            },
+            "categories": {
+                "title": "FAQ categorieën",
+                "table": {
+                    "header": {
+                        "title": "Naam"
+                    }
+                },
+                "modifyModal": {
+                    "title": "Categorie aanpassen",
+                    "addButton": "Opslaan",
+                    "cancelButton": "Annuleer",
+                    "form": {
+                        "nameNl": "Naam in het Nederlands",
+                        "nameEn": "Naam in het Engels",
+                        "descriptionNl": "Beschrijving in het Nederlands",
+                        "descriptionEn": "Beschrijving in het Engels",
+                        "addButton": "Opslaan",
+                        "cancelButton": "Annuleer"
+                    }
+                },
+                "removeModal": {
+                    "title": "Verwijder categorie",
+                    "body": "Ben je zeker dat je volgende categorie wilt verwijderen?"
+                }
             }
         },
         "buildings": {

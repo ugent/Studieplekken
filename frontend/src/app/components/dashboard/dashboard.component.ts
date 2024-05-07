@@ -6,13 +6,13 @@ import {Moment} from 'moment';
 import {merge, Observable, of, Subscription} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {environment} from 'src/environments/environment';
-import {LocationStatus} from '../../app.constants';
-import {BuildingService} from '../../services/api/buildings/buildings.service';
-import {LocationService} from '../../services/api/locations/location.service';
-import {TagsService} from '../../services/api/tags/tags.service';
-import {Building} from '../../model/Building';
-import {Location} from '../../model/Location';
-import {LocationTag} from '../../model/LocationTag';
+import {LocationStatus} from '@/app.constants';
+import {BuildingService} from '@/services/api/buildings/buildings.service';
+import {LocationService} from '@/services/api/locations/location.service';
+import {TagsService} from '@/services/api/tags/tags.service';
+import {Building} from '@/model/Building';
+import {Location} from '@/model/Location';
+import {LocationTag} from '@/model/LocationTag';
 import {BreadcrumbService} from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
 
 @Component({

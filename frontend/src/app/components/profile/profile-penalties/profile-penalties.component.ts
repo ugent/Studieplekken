@@ -3,9 +3,8 @@ import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {merge, Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {PenaltyList} from 'src/app/services/api/penalties/penalty.service';
-import {AuthenticationService} from '../../../services/authentication/authentication.service';
-import {User} from '../../../model/User';
-import {Penalty} from '../../../model/Penalty';
+import {AuthenticationService} from '@/services/authentication/authentication.service';
+import {User} from '@/model/User';
 
 @Component({
     selector: 'app-profile-penalties',

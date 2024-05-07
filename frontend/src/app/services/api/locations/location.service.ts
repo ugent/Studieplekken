@@ -3,11 +3,11 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {api} from '../endpoints';
 import {Moment} from 'moment';
-import {LocationConstructor} from '../../../model/Location';
+import {LocationConstructor} from '@/model/Location';
 import {Cache} from '../../cache/Cache';
-import {Location} from '../../../model/Location';
-import {LocationTag} from '../../../model/LocationTag';
-import {User} from '../../../model/User';
+import {Location} from '@/model/Location';
+import {LocationTag} from '@/model/LocationTag';
+import {User} from '@/model/User';
 
 type locationOverview = { [locationName: string]: string[] };
 
