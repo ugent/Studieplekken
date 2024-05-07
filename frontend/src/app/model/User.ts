@@ -20,26 +20,48 @@ export class User {
     ) {
     }
 
+    /**
+     * Check if the user is logged in
+     *
+     * @returns boolean
+     */
     isLoggedIn(): boolean {
         return !!this.userId;
     }
 
-    exists(): boolean {
-        return this.isLoggedIn();
-    }
-
+    /**
+     * Check if the user is an admin
+     *
+     * @returns boolean
+     */
     isAdmin(): boolean {
         return this.isLoggedIn() && this.admin;
     }
 
+    /**
+     * Check if the user has any authority
+     *
+     * @returns boolean
+     */
     isAuthority(): boolean {
         return this.isAdmin() || this.userAuthorities.length > 0;
     }
 
+    /**
+     * Check if the user is a scanner
+     *
+     * @returns boolean
+     */
     isScanner(): boolean {
         return this.isAuthority() || this.userVolunteer.length > 0;
     }
 
+    /**
+     * Check if the user has a certain guard
+     *
+     * @param guard string
+     * @returns boolean
+     */
     hasGuard(guard: string): boolean {
         return {
             user: this.isLoggedIn(),

@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {TagsService} from '../../../../extensions/services/api/tags/tags.service';
+import {TagsService} from '../../../../services/api/tags/tags.service';
 import {LocationTag, LocationTagConstructor} from '../../../../model/LocationTag';
 import {TableMapper} from '../../../../model/Table';
 import {FormControl, FormGroup, Validators} from '@angular/forms';

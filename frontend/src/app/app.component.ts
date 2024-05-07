@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
-import {AuthenticationService} from './extensions/services/authentication/authentication.service';
+import {AuthenticationService} from './services/authentication/authentication.service';
 import {Language} from './app.constants';
 
 import * as moment from 'moment';

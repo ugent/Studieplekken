@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { Location } from '../../../../../../model/Location';
 import { CalendarEvent } from 'angular-calendar';
-import { CalendarPeriodsForLockersService } from '../../../../../../extensions/services/api/calendar-periods-for-lockers/calendar-periods-for-lockers.service';
+import { CalendarPeriodsForLockersService } from '../../../../../../services/api/calendar-periods-for-lockers/calendar-periods-for-lockers.service';
 import {
   CalendarPeriodForLockers,
   CalendarPeriodForLockersConstructor,
@@ -165,7 +165,7 @@ export class LockersCalendarComponent implements OnInit {
     const period: CalendarPeriodForLockers = CalendarPeriodForLockersConstructor.new();
     period.location = location;
 
-    // If the information about reservations may not be shown (configured in environments.ts),
+    // If the faq about reservations may not be shown (configured in environments.ts),
     // then we need to programmatically provide a valid value for 'reservableFrom'.
     // Otherwise, the period will not be addable. Therefore, we just provide the current date-time.
     if (!this.showReservationInformation) {

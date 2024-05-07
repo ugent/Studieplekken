@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { Location } from '../../../../model/Location';
-import { UserService } from '../../../../extensions/services/api/users/user.service';
-import { AuthenticationService } from '../../../../extensions/services/authentication/authentication.service';
+import { UserService } from '../../../../services/api/users/user.service';
+import { AuthenticationService } from '../../../../services/authentication/authentication.service';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs/internal/observable/of';
 

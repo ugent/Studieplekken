@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {UserService} from '../../../../extensions/services/api/users/user.service';
+import {UserService} from '../../../../services/api/users/user.service';
 import {TableComponent} from '../../../../contracts/table.component.interface';
 import {ListAction, TableAction, TableMapper} from '../../../../model/Table';
 import {Observable, ReplaySubject, Subject} from 'rxjs';

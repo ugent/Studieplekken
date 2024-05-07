@@ -7,13 +7,13 @@ import {
 } from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {EMPTY, Observable} from 'rxjs';
-import {AuthoritiesService} from '../../../../extensions/services/api/authorities/authorities.service';
+import {AuthoritiesService} from '../../../../services/api/authorities/authorities.service';
 import {
     AuthorityToManageService
-} from '../../../../extensions/services/single-point-of-truth/authority-to-manage/authority-to-manage.service';
+} from '../../../../services/single-point-of-truth/authority-to-manage/authority-to-manage.service';
 import {Authority, AuthorityConstructor} from '../../../../model/Authority';
 import {BaseManagementComponent} from '../base-management.component';
-import {AuthenticationService} from '../../../../extensions/services/authentication/authentication.service';
+import {AuthenticationService} from '../../../../services/authentication/authentication.service';
 import {startWith, switchMap} from 'rxjs/operators';
 import {TableAction, TableMapper} from '../../../../model/Table';
 

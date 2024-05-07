@@ -1,10 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {isThisISOWeek} from 'date-fns';
-import {Observable, Subject} from 'rxjs';
-import {AuthenticationService} from 'src/app/extensions/services/authentication/authentication.service';
+import {Subject} from 'rxjs';
 import {User} from 'src/app/model/User';
-import {UserService} from 'src/app/extensions/services/api/users/user.service';
-import {TranslateService} from '@ngx-translate/core';
+import {AuthenticationService} from '../../../../services/authentication/authentication.service';
 
 @Component({
     selector: 'app-header-dropdown',

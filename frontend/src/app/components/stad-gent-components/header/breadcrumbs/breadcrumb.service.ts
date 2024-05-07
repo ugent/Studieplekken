@@ -59,4 +59,5 @@ const studerenBreadcrumb = {
 export interface Breadcrumb {
     pageName: string;
     url: string;
+    external?: boolean;
 }

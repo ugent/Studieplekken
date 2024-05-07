@@ -4,12 +4,12 @@ import {MatDialog} from '@angular/material/dialog';
 import {MatSelectChange} from '@angular/material/select';
 import {TranslateService} from '@ngx-translate/core';
 import {Observable} from 'rxjs';
-import {LocationService} from '../../../../../../extensions/services/api/locations/location.service';
-import {TagsService} from '../../../../../../extensions/services/api/tags/tags.service';
+import {LocationService} from '../../../../../../services/api/locations/location.service';
+import {TagsService} from '../../../../../../services/api/tags/tags.service';
 import {
     LocationDetailsService
-} from '../../../../../../extensions/services/single-point-of-truth/location-details/location-details.service';
-import {matSelectionChanged} from '../../../../../../extensions/util/GeneralFunctions';
+} from '../../../../../../services/single-point-of-truth/location-details/location-details.service';
+import {matSelectionChanged} from '../../../../../../util/GeneralFunctions';
 import {Location} from '../../../../../../model/Location';
 import {LocationTag} from '../../../../../../model/LocationTag';
 import {ModalComponent} from '../../../../../stad-gent-components/molecules/modal/modal.component';

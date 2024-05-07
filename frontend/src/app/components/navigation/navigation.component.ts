@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { UserService } from '../../extensions/services/api/users/user.service';
-import { AuthenticationService } from '../../extensions/services/authentication/authentication.service';
+import { UserService } from '../../services/api/users/user.service';
+import { AuthenticationService } from '../../services/authentication/authentication.service';
 import { BreadcrumbService } from '../stad-gent-components/header/breadcrumbs/breadcrumb.service';
-import { LoginRedirectService } from '../../extensions/services/authentication/login-redirect.service';
+import { LoginRedirectService } from '../../services/authentication/login-redirect.service';
 
 @Component({
-  selector: 'app-information',
+  selector: 'app-faq',
   templateUrl: './navigation.component.html',
   styleUrls: ['./navigation.component.scss'],
 })
@@ -27,7 +27,7 @@ export class NavigationComponent implements OnInit {
   ngOnInit(): void {
 
     this.loginRedirectService.registerUrl('/navigation');
-    // subscribe to the user observable to make sure that the correct information
+    // subscribe to the user observable to make sure that the correct faq
     // is shown in the application.
     this.authenticationService.user.subscribe((next) => {
       // first, check if the user is logged in

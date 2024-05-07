@@ -1,11 +1,11 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {
     LocationReservationsService
-} from '../../../extensions/services/api/location-reservations/location-reservations.service';
+} from '../../../services/api/location-reservations/location-reservations.service';
 import {LocationReservation, LocationReservationState} from '../../../model/LocationReservation';
 import {User} from '../../../model/User';
 import {Observable} from 'rxjs';
-import {LocationService} from 'src/app/extensions/services/api/locations/location.service';
+import {LocationService} from 'src/app/services/api/locations/location.service';
 import {first, map, switchMap} from 'rxjs/operators';
 import {BaseManagementComponent} from '../../management/lists/base-management.component';
 import {DeleteAction, TableAction, TableMapper} from 'src/app/model/Table';

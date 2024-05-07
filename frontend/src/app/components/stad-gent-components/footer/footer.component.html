@@ -3,27 +3,20 @@
     <div class="content-container">
         <div class="bottom">
 
-            <div class="contact">
-                <h3 class="mt-0 mb-3">
+            <div class="my-4">
+                <h3 class="mt-3">
                     {{'general.appTitle' | translate}}
                     <ng-container *ngIf="!environment.isProduction()">
                         <span class="text-red" *ngIf="environment.isLocal()">LOCAL</span>
                         <span class="text-red" *ngIf="environment.isStaging()">STAGING</span>
                     </ng-container>
                 </h3>
-
-                <ul class="icon-list ">
-                    <li><i class="icon-envelope" aria-hidden="true"></i><a
-                            href="mailto:studieplekken@gentsestudentenraad.be">studieplekken@gentsestudentenraad.be</a></li>
-                </ul>
-
             </div>
 
         </div>
     </div>
 
     <div class="footer-bottom content-container">
-
         <div class="footer--column">
             <ul class="text-start">
                 <li><a href="https://stad.gent/nl/over-gent-en-het-stadsbestuur/juridische-info/gebruiksvoorwaarden-website-stad-gent">{{"footer.terms-of-use" | translate }}</a></li>
@@ -31,7 +24,6 @@
                 <li><a href="https://stad.gent/nl/responsible-disclosure">{{"footer.responsible-disclosure" | translate}}</a></li>
                 <li><a href="https://stad.gent/nl/over-gent-en-het-stadsbestuur/juridische-info/toegankelijkheidsverklaring-stad-gent">{{'footer.accessibility' | translate}}</a></li>
             </ul>
-
         </div>
 
         <div class="footer--column text-start partnership">

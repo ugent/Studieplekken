@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { Location } from '../../../../../../model/Location';
 import { switchMap, take } from 'rxjs/operators';
-import { LocationService } from 'src/app/extensions/services/api/locations/location.service';
+import { LocationService } from 'src/app/services/api/locations/location.service';
 import { msToShowFeedback } from 'src/app/app.constants';
 
 @Component({

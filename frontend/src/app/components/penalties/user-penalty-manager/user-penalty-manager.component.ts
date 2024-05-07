@@ -4,10 +4,10 @@ import {BaseManagementComponent} from '../../management/lists/base-management.co
 import {combineLatest, EMPTY, Observable} from 'rxjs';
 import {User} from '../../../model/User';
 import {DeleteAction, TableAction, TableMapper} from '../../../model/Table';
-import {PenaltyList, PenaltyService} from '../../../extensions/services/api/penalties/penalty.service';
+import {PenaltyList, PenaltyService} from '../../../services/api/penalties/penalty.service';
 import {catchError, first, mergeMap, switchMap, tap} from 'rxjs/operators';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {AuthenticationService} from '../../../extensions/services/authentication/authentication.service';
+import {AuthenticationService} from '../../../services/authentication/authentication.service';
 
 @Component({
     selector: 'app-user-penalty-manager',

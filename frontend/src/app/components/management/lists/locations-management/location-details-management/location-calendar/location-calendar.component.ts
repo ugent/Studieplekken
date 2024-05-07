@@ -15,18 +15,18 @@ import * as moment from 'moment';
 import {Moment} from 'moment';
 import {BehaviorSubject, Observable, ReplaySubject, Subject, Subscription} from 'rxjs';
 import {filter, find, first, map, mergeMap, switchMap, take, takeUntil, tap} from 'rxjs/operators';
-import {TimeslotsService} from 'src/app/extensions/services/api/calendar-periods/timeslot.service';
-import {LocationReservationsService} from 'src/app/extensions/services/api/location-reservations/location-reservations.service';
-import {Suggestion, TimeslotGroupService} from 'src/app/extensions/services/timeslots/timeslot-group/timeslot-group.service';
+import {TimeslotsService} from 'src/app/services/api/calendar-periods/timeslot.service';
+import {LocationReservationsService} from 'src/app/services/api/location-reservations/location-reservations.service';
+import {Suggestion, TimeslotGroupService} from 'src/app/services/timeslots/timeslot-group/timeslot-group.service';
 import {
     TimeslotCalendarEvent,
     TimeslotCalendarEventService
-} from 'src/app/extensions/services/timeslots/timeslot-calendar-event/timeslot-calendar-event.service';
+} from 'src/app/services/timeslots/timeslot-calendar-event/timeslot-calendar-event.service';
 
 import {Location} from 'src/app/model/Location';
 import {LocationReservation} from 'src/app/model/LocationReservation';
 import {Timeslot} from 'src/app/model/Timeslot';
-import {booleanSorter} from 'src/app/extensions/util/Util';
+import {booleanSorter} from 'src/app/util/Util';
 import {ModalComponent} from '../../../../../stad-gent-components/molecules/modal/modal.component';
 import {
     LocationAddTimeslotDialogComponent

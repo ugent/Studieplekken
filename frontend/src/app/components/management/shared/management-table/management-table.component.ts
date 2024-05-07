@@ -3,7 +3,7 @@ import {TableAction, TableColumn, TableData, TableMapper} from '../../../../mode
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {debounceTime, first, takeUntil} from 'rxjs/operators';
 import {isObservable, ReplaySubject, Subject} from 'rxjs';
-import {escapeRegex, genericSorter, OrderDirection} from '../../../../extensions/util/Util';
+import {escapeRegex, genericSorter, OrderDirection} from '../../../../util/Util';
 
 @Component({
     selector: 'app-management-table',
@@ -13,7 +13,9 @@ import {escapeRegex, genericSorter, OrderDirection} from '../../../../extensions
 })
 export class ManagementTableComponent<T> implements OnInit, OnChanges, OnDestroy {
 
+
     @Input() data: T[];
+    @Input() mapper: TableMapper<T> = (item) => ({});
     @Input() stateless = true;
     @Input() actions: TableAction<T>[] = [];
 
@@ -92,8 +94,6 @@ export class ManagementTableComponent<T> implements OnInit, OnChanges, OnDestroy
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
     }
-
-    @Input() mapper: TableMapper<T> = (item) => ({});
 
     isLoading(): boolean {
         return this.data === undefined || this.data === null;

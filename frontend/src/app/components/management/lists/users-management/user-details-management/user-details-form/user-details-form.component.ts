@@ -1,9 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {User, UserSettings} from '../../../../../../model/User';
 import {FormControl, FormGroup} from '@angular/forms';
-import {AuthenticationService} from 'src/app/extensions/services/authentication/authentication.service';
+import {AuthenticationService} from 'src/app/services/authentication/authentication.service';
 import {environment} from 'src/environments/environment';
-import {UserService} from 'src/app/extensions/services/api/users/user.service';
+import {UserService} from 'src/app/services/api/users/user.service';
 import {Router} from '@angular/router';
 
 @Component({

@@ -11,7 +11,7 @@ import {ModalComponent} from '../../../stad-gent-components/molecules/modal/moda
 import {LocationReservation} from '../../../../model/LocationReservation';
 import {
     LocationReservationsService
-} from '../../../../extensions/services/api/location-reservations/location-reservations.service';
+} from '../../../../services/api/location-reservations/location-reservations.service';
 
 @Component({
     selector: 'app-location-reservation-calendar',

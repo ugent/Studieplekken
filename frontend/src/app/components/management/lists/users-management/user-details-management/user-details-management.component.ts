@@ -2,16 +2,16 @@ import {Component, OnInit} from '@angular/core';
 import {combineLatest, EMPTY, Observable, ReplaySubject, Subject} from 'rxjs';
 import {User} from '../../../../../model/User';
 import {ActivatedRoute} from '@angular/router';
-import {AuthenticationService} from '../../../../../extensions/services/authentication/authentication.service';
-import {UserService} from '../../../../../extensions/services/api/users/user.service';
+import {AuthenticationService} from '../../../../../services/authentication/authentication.service';
+import {UserService} from '../../../../../services/api/users/user.service';
 import {filter, map, share, shareReplay, startWith, switchMap, tap} from 'rxjs/operators';
 import {Authority} from '../../../../../model/Authority';
-import {AuthoritiesService} from '../../../../../extensions/services/api/authorities/authorities.service';
+import {AuthoritiesService} from '../../../../../services/api/authorities/authorities.service';
 import {LocationReservation} from '../../../../../model/LocationReservation';
-import {PenaltyList, PenaltyService} from '../../../../../extensions/services/api/penalties/penalty.service';
+import {PenaltyList, PenaltyService} from '../../../../../services/api/penalties/penalty.service';
 import {
     LocationReservationsService
-} from '../../../../../extensions/services/api/location-reservations/location-reservations.service';
+} from '../../../../../services/api/location-reservations/location-reservations.service';
 
 @Component({
     selector: 'app-user-details-management',

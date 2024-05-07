@@ -3,9 +3,9 @@ import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {Observable, of, Subject} from 'rxjs';
 import {catchError} from 'rxjs/operators';
-import {LocationService} from 'src/app/extensions/services/api/locations/location.service';
-import {UserService} from 'src/app/extensions/services/api/users/user.service';
-import {objectExists} from 'src/app/extensions/util/GeneralFunctions';
+import {LocationService} from 'src/app/services/api/locations/location.service';
+import {UserService} from 'src/app/services/api/users/user.service';
+import {objectExists} from 'src/app/util/GeneralFunctions';
 import {Location} from 'src/app/model/Location';
 import {User} from 'src/app/model/User';
 

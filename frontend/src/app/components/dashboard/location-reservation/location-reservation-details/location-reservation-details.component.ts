@@ -4,7 +4,7 @@ import {User} from '../../../../model/User';
 import {Location} from '../../../../model/Location';
 import {combineLatest, Observable} from 'rxjs';
 import {filter, first} from 'rxjs/operators';
-import {LocationService} from '../../../../extensions/services/api/locations/location.service';
+import {LocationService} from '../../../../services/api/locations/location.service';
 
 @Component({
     selector: 'app-location-reservation-details',

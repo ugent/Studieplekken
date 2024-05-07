@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Location } from '../../../../../../model/Location';
-import { LockersService } from '../../../../../../extensions/services/api/lockers/lockers.service';
+import { LockersService } from '../../../../../../services/api/lockers/lockers.service';
 import { LockerReservation } from '../../../../../../model/LockerReservation';
 import { tap } from 'rxjs/operators';
 import * as moment from 'moment';

@@ -2,15 +2,15 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {EMPTY, Observable, ReplaySubject, Subject} from 'rxjs';
 import {Location} from '../../../../../model/Location';
-import {LocationService} from '../../../../../extensions/services/api/locations/location.service';
+import {LocationService} from '../../../../../services/api/locations/location.service';
 import {catchError, filter, startWith, switchMap} from 'rxjs/operators';
 import {Authority} from '../../../../../model/Authority';
 import {Building} from '../../../../../model/Building';
-import {AuthenticationService} from '../../../../../extensions/services/authentication/authentication.service';
-import {AuthoritiesService} from '../../../../../extensions/services/api/authorities/authorities.service';
-import {BuildingService} from '../../../../../extensions/services/api/buildings/buildings.service';
+import {AuthenticationService} from '../../../../../services/authentication/authentication.service';
+import {AuthoritiesService} from '../../../../../services/api/authorities/authorities.service';
+import {BuildingService} from '../../../../../services/api/buildings/buildings.service';
 import {Timeslot} from '../../../../../model/Timeslot';
-import {TimeslotsService} from '../../../../../extensions/services/api/calendar-periods/timeslot.service';
+import {TimeslotsService} from '../../../../../services/api/calendar-periods/timeslot.service';
 
 @Component({
     selector: 'app-location-details-management',
