@@ -8,11 +8,11 @@ import {AddressResolverService} from 'src/app/services/addressresolver/nomenatim
 import {BuildingService} from 'src/app/services/api/buildings/buildings.service';
 import {AuthenticationService} from 'src/app/services/authentication/authentication.service';
 import {Building, BuildingConstructor} from 'src/app/model/Building';
-import {User} from '../../../../model/User';
-import {concatMap, map, mergeMap, startWith, switchMap, tap} from 'rxjs/operators';
-import {TableMapper} from '../../../../model/Table';
+import {User} from '@/model/User';
+import {map, mergeMap, startWith, switchMap, tap} from 'rxjs/operators';
+import {TableMapper} from '@/model/Table';
 import {BaseManagementComponent} from '../base-management.component';
-import {institutions} from '../../../../app.constants';
+import {institutions} from '@/app.constants';
 
 @Component({
     selector: 'app-building-management',
@@ -92,7 +92,7 @@ export class BuildingManagementComponent extends BaseManagementComponent<Buildin
 
     storeUpdate(building: Building, body = this.formGroup.value): void {
         this.sendBackendRequest(
-            this.checkAddress(building.address).pipe(
+            this.checkAddress(body.address).pipe(
                 mergeMap((coordinates) => {
                     if (coordinates) {
                         const updatedBuilding = {

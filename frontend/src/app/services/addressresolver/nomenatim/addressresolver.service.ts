@@ -22,8 +22,6 @@ export class AddressResolverService {
         const params = new HttpParams()
             .set('q', address)
             .set('format', 'json');
-        const headers = new HttpHeaders()
-            .set('Referer', 'https://bloklocaties.stad.gent');
 
         return this.http.get<{ lat: string, lon: string }[]>(AddressResolverService.ADDRESS_RESOLVER_URL, {params}).pipe(
             delay(
