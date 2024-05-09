@@ -1,0 +1,47 @@
+<ng-container>
+    <li class="teaser">
+        <article class="teaser-content">
+            <div class="content__second">
+                <h3 class="mt-0 mb-3">
+                    {{ title }}
+                </h3>
+
+                <ng-content select="[content]"></ng-content>
+
+                <ul class="teaser-links">
+                    <li>
+                        <ng-content select="[links]"></ng-content>
+                    </li>
+                </ul>
+
+                <a [routerLink]="buttonLink" class="read-more standalone-link" [title]="title">
+                    {{ buttonText }}
+                </a>
+            </div>
+            <div class="content__first">
+                <div class="figure-wrapper" *ngIf="imageUrl">
+                    <figure>
+                        <div class="image-wrapper" data-ratio="8:5">
+                            <img [src]="imageUrl" alt="alt text"/>
+                        </div>
+                    </figure>
+                    <div class="accolade-inverse bottom-left"></div>
+                </div>
+
+                <div class="tag-list-wrapper">
+                    <ul class="tag-list">
+                        <li *ngFor="let tag of tags">
+                        <span class="tag ">
+                            {{ tag }}
+                        </span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </article>
+        <a [routerLink]="buttonLink" class="teaser-overlay-link" tabindex="-1" aria-hidden="true">
+            {{ title }}
+        </a>
+    </li>
+</ng-container>

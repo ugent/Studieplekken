@@ -1,0 +1,27 @@
+.faq-sidebar-item {
+    color: #555;
+    display: block;
+    border: 0;
+    outline: 0;
+
+    &::after, &::before {
+        display: none;
+    }
+
+    .faq-sidebar-item-index {
+        width: 30px;
+        height: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #0071a1;
+        border-radius: 50%;
+        color: white;
+    }
+
+    &:hover{
+        background: #e5f0f5;
+        transition: background .3s ease;
+        cursor: pointer;
+    }
+}

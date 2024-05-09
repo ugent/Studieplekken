@@ -1,8 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {LocationReservation} from '../../../../model/LocationReservation';
-import {User} from '../../../../model/User';
-import {TableComponent} from '../../../../contracts/table.component.interface';
-import {TableAction, TableMapper} from '../../../../model/Table';
+import {LocationReservation} from '@/model/LocationReservation';
+import {User} from '@/model/User';
+import {TableComponent} from '@/contracts/table.component.interface';
+import {TableAction, TableMapper} from '@/model/Table';
 import {TranslateService} from '@ngx-translate/core';
 
 @Component({

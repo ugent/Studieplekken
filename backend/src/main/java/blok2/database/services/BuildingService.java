@@ -1,11 +1,11 @@
 package blok2.database.services;
 
-import blok2.database.daos.IBuildingDao;
+import blok2.database.dao.IBuildingDao;
 import blok2.database.repositories.BuildingRepository;
 import blok2.database.repositories.LocationRepository;
-import blok2.extensions.exceptions.NoSuchDatabaseObjectException;
+import blok2.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.Building;
-import blok2.model.reservables.Location;
+import blok2.model.location.Location;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

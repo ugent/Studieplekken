@@ -1,0 +1,35 @@
+.loading {
+    margin: 0 auto;
+    text-align: center;
+    max-width: 100%;
+    width: 800px;
+    padding: 4rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .icon {
+        background: #f0f9fd;
+        display: flex;
+        align-content: center;
+        justify-content: center;
+        width: 75px;
+        height: 75px;
+        border-radius: 50%;
+
+        .icon-cross, .icon-clock {
+            font-size: 32px;
+            color: #555;
+            display: flex;
+            align-items: center;
+        }
+    }
+
+    p {
+        margin-top: 1rem;
+        font-size: 18px;
+        font-weight: bold;
+        color: #555;
+    }
+}

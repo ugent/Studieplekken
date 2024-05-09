@@ -5,7 +5,7 @@ $styleguide-dir: "" !default;
 @import "../../../../node_modules/gent_styleguide/build/styleguide/sass/main_cli";
 
 // Custom Theming for Angular Material
-// For more information: https://material.angular.io/guide/theming
+// For more faq: https://material.angular.io/guide/theming
 
 // Plus imports for other components in your app.
 
@@ -51,6 +51,8 @@ $styleguide-dir: "" !default;
 
 /* You can add global styles to this file, and also import other style files */
 body {
+    overflow-y: scroll;
+
     hr {
         border: 1px solid whitesmoke;
         border-radius: 2px;

@@ -1,5 +1,5 @@
 import {User, UserConstructor} from './User';
-import {Timeslot, timeslotEquals} from './Timeslot';
+import {Timeslot} from './Timeslot';
 import {Moment} from 'moment';
 import * as moment from 'moment';
 

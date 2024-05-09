@@ -1,7 +1,7 @@
 import {LocationTag} from './LocationTag';
 import {Authority, AuthorityConstructor} from './Authority';
 import {Building, BuildingConstructor} from './Building';
-import {LocationStatus} from '../app.constants';
+import {LocationStatus} from '@/app.constants';
 import {Pair} from './helpers/Pair';
 import {Timeslot} from './Timeslot';
 

@@ -1,6 +1,6 @@
 package blok2.extensions.helpers;
 
-import blok2.model.reservables.Location;
+import blok2.model.location.Location;
 
 import javax.validation.Valid;
 

@@ -1,10 +1,10 @@
 package blok2.http.controllers;
 
-import blok2.database.daos.ILocationDao;
-import blok2.database.daos.ILocationReservationDao;
-import blok2.database.daos.ITimeslotDao;
+import blok2.database.dao.ILocationDao;
+import blok2.database.dao.ILocationReservationDao;
+import blok2.database.dao.ITimeslotDao;
 import blok2.model.calendar.Timeslot;
-import blok2.model.reservables.Location;
+import blok2.model.location.Location;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.stats.InstitutionOverviewStat;
 import blok2.model.stats.LocationOverviewStat;

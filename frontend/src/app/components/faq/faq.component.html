@@ -1,0 +1,51 @@
+<ng-container *ngIf="$categories | async as categories; else loading">
+    <div id="faq">
+        <div id="faq-header" class="d-flex align-items-center justify-content-between px-4 py-2">
+            <span id="faq-header-title" class="fs-6">
+                {{ 'faq.header.title' | translate }}
+            </span>
+            <div [routerLink]="'/faq'" id="faq-header-search" class="d-flex align-items-center gap-2">
+                <span class="icon-search fs-5"></span> {{ 'faq.header.search' | translate }}
+            </div>
+        </div>
+        <div id="faq-content" class="row">
+            <div class="col-12 col-lg-3">
+                <app-faq-sidebar [categories]="categories" [locale]="locale"></app-faq-sidebar>
+            </div>
+            <div class="col-12 col-lg-9">
+                <!-- Content -->
+                <div id="faq-content-container">
+                    <router-outlet></router-outlet>
+                </div>
+
+                <!-- Contact footer -->
+                <section class="highlight contact-details highlight--top">
+                    <div class="highlight__inner">
+                        <h2 class="my-0">
+                            {{ 'faq.contact.title' | translate }}
+                        </h2>
+
+                        <p class="my-4">
+                            {{ 'faq.contact.subtitle' | translate }}
+                        </p>
+
+                        <div class="contact-details-column">
+                            <ul class="icon-list mb-0">
+                                <li><i class="icon-marker" aria-hidden="true"></i><strong>De Therminal</strong> — Hoveniersberg 24, 9000 Gent</li>
+                                <li><i class="icon-envelope" aria-hidden="true"></i><a href="mailto:studieplekken@gentsestudentenraad.be" alt="Person mail link">studieplekken@gentsestudentenraad.be</a></li>
+                                <li><i class="icon-url" aria-hidden="true"></i><a href="https://bloklocaties.stad.gent" alt="Website link">https://bloklocaties.stad.gent</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="contact-details-column"></div>
+
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</ng-container>
+
+<ng-template #loading>
+    <app-loading></app-loading>
+</ng-template>

@@ -1,5 +1,5 @@
-import {AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Location} from '../../../../model/Location';
+import {AfterViewInit, Component, ElementRef, Input, OnDestroy, ViewChild} from '@angular/core';
+import {Location} from '@/model/Location';
 import * as Leaf from 'leaflet';
 
 // Leaflet stuff.

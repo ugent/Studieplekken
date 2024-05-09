@@ -1,0 +1,19 @@
+#faq-header {
+    background: #0071a1;
+    color: white;
+
+    #faq-header-search {
+        cursor: pointer;
+    }
+}
+
+#faq-content-container {
+    padding: 4rem 0 1.5rem;
+    max-width: 100%;
+    width: 960px;
+    margin: 0 auto;
+
+    @media (max-width: 992px) {
+        padding: 2rem 0;
+    }
+}

@@ -1,10 +1,10 @@
 package blok2.database.services;
 
-import blok2.database.daos.IVolunteerDao;
+import blok2.database.dao.IVolunteerDao;
 import blok2.database.repositories.LocationRepository;
 import blok2.database.repositories.UserRepository;
-import blok2.extensions.exceptions.NoSuchDatabaseObjectException;
-import blok2.model.reservables.Location;
+import blok2.exceptions.NoSuchDatabaseObjectException;
+import blok2.model.location.Location;
 import blok2.model.users.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

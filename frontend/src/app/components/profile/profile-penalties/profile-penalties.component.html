@@ -2,7 +2,7 @@
     <!-- Page title -->
     <h3>{{'profile.penalties.title' | translate}}</h3>
     <hr>
-    <!-- Show information about penalty points -->
+    <!-- Show faq about penalty points -->
     <div class="row">
         <div>
             <markdown *ngIf="currentLanguage() | async as currlan" src="assets/md/information-penalty.{{ currlan }}.md"></markdown>

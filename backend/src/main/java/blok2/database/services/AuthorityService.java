@@ -1,12 +1,12 @@
 package blok2.database.services;
 
-import blok2.database.daos.IAuthorityDao;
+import blok2.database.dao.IAuthorityDao;
 import blok2.database.repositories.AuthorityRepository;
 import blok2.database.repositories.LocationRepository;
 import blok2.database.repositories.UserRepository;
-import blok2.extensions.exceptions.NoSuchDatabaseObjectException;
+import blok2.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.Authority;
-import blok2.model.reservables.Location;
+import blok2.model.location.Location;
 import blok2.model.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,6 @@ import java.util.Set;
 
 @Service
 public class AuthorityService implements IAuthorityDao {
-
     private final AuthorityRepository authorityRepository;
     private final LocationRepository locationRepository;
     private final UserRepository userRepository;

@@ -1,9 +1,9 @@
 package blok2.http.security.services;
 
-import blok2.database.daos.IUserDao;
+import blok2.database.dao.IUserDao;
 import blok2.extensions.helpers.Institution;
-import blok2.extensions.exceptions.InvalidRequestParametersException;
-import blok2.extensions.exceptions.NoSuchDatabaseObjectException;
+import blok2.exceptions.InvalidRequestParametersException;
+import blok2.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.users.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

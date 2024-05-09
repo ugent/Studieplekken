@@ -2,13 +2,13 @@ package blok2.daos.cascade;
 
 import blok2.BaseTest;
 import blok2.TestSharedMethods;
-import blok2.database.daos.IAuthorityDao;
-import blok2.database.daos.IBuildingDao;
-import blok2.database.daos.ILocationDao;
-import blok2.extensions.exceptions.NoSuchDatabaseObjectException;
+import blok2.database.dao.IAuthorityDao;
+import blok2.database.dao.IBuildingDao;
+import blok2.database.dao.ILocationDao;
+import blok2.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.Authority;
 import blok2.model.Building;
-import blok2.model.reservables.Location;
+import blok2.model.location.Location;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

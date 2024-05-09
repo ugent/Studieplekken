@@ -14,7 +14,6 @@ RUN ./gradlew clean build --no-daemon > /dev/null 2>&1 || true
 
 
 COPY src src
-COPY database database
 
 RUN ./gradlew bootJar -i --stacktrace --no-daemon
 

@@ -2,6 +2,7 @@ package blok2.http.security.config;
 
 
 // TODO: Do we still need this?
+import lombok.Setter;
 import org.jasig.cas.client.validation.Cas20ServiceTicketValidator;
 import org.jasig.cas.client.validation.TicketValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +26,15 @@ import java.util.Collections;
  *                  Beans for CAS Client Single Sign-On Configuration                      *
  *                                                                                         *
  *    For a more detailed explanation, have a look at                                      *
- *      - https://docs.spring.io/spring-security/site/docs/4.2.x/reference/html/cas.html   *
- *      - https://debbabi-nader.github.io/cas-spring-angular/index.html                    *
+ *      - <a href="https://docs.spring.io/spring-security/site/docs/4.2.x/reference/html/cas.html">...</a>   *
+ *      - <a href="https://debbabi-nader.github.io/cas-spring-angular/index.html">...</a>                    *
  *******************************************************************************************/
 @Configuration
 @ConfigurationProperties(prefix = "cas")
 public class CASConfiguration {
+    @Setter
     private String loginUrl;
+    @Setter
     private String callbackUrl;
 
     private final AuthenticationUserDetailsService<CasAssertionAuthenticationToken> authenticationUserDetailsService;
@@ -100,13 +103,5 @@ public class CASConfiguration {
         filter.setAuthenticationManager(authenticationManager);
 
         return filter;
-    }
-
-    public void setCallbackUrl(String callbackUrl) {
-        this.callbackUrl = callbackUrl;
-    }
-
-    public void setLoginUrl(String loginUrl) {
-        this.loginUrl = loginUrl;
     }
 }

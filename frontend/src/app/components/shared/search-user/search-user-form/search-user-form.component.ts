@@ -2,9 +2,9 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { UserService } from 'src/app/extensions/services/api/users/user.service';
-import { objectExists } from '../../../../extensions/util/GeneralFunctions';
-import { User } from '../../../../model/User';
+import { UserService } from 'src/app/services/api/users/user.service';
+import { objectExists } from '@/util/GeneralFunctions';
+import { User } from '@/model/User';
 
 @Component({
   selector: 'app-search-user-form',

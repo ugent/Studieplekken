@@ -1,9 +1,9 @@
 package blok2.database.services;
 
-import blok2.database.daos.IUserLocationSubscriptionDao;
+import blok2.database.dao.IUserLocationSubscriptionDao;
 import blok2.database.repositories.UserLocationSubscriptionRepository;
-import blok2.model.reservables.Location;
-import blok2.model.reservables.UserLocationSubscription;
+import blok2.model.location.Location;
+import blok2.model.location.UserLocationSubscription;
 import blok2.model.users.User;
 import org.springframework.stereotype.Service;
 

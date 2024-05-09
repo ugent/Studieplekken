@@ -1,6 +1,9 @@
 package blok2.http.security.config;
 
+import blok2.http.security.providers.CustomAuthenticationProvider;
+import blok2.http.security.providers.JwtAuthenticationProvider;
 import blok2.http.security.services.BackdoorUserDetailService;
+import blok2.http.security.services.JwtService;
 import blok2.http.security.services.JwtUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

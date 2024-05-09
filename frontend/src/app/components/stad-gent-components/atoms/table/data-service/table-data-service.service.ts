@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import * as moment from 'moment';
 import {combineLatest, Observable} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
-import {LocationService} from 'src/app/extensions/services/api/locations/location.service';
+import {map} from 'rxjs/operators';
+import {LocationService} from 'src/app/services/api/locations/location.service';
 import {Location} from 'src/app/model/Location';
 import {LocationReservation, LocationReservationState} from 'src/app/model/LocationReservation';
 import {User} from 'src/app/model/User';

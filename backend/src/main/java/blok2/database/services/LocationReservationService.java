@@ -1,14 +1,13 @@
 package blok2.database.services;
 
-import blok2.database.daos.ILocationReservationDao;
-import blok2.database.DBLocationReservationDao;
+import blok2.database.dao.ILocationReservationDao;
 import blok2.database.repositories.LocationReservationRepository;
 import blok2.database.repositories.UserRepository;
-import blok2.extensions.exceptions.NoSuchDatabaseObjectException;
+import blok2.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.calendar.Timeslot;
 import blok2.model.reservations.LocationReservation;
 import blok2.model.users.User;
-import blok2.extensions.scheduling.ReservationManager;
+import blok2.scheduling.ReservationManager;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -30,7 +29,6 @@ public class LocationReservationService implements ILocationReservationDao {
 
 
     private final LocationReservationRepository locationReservationRepository;
-    private final UserRepository userRepository;
     private final ReservationManager reservationManager;
 
     private final DBLocationReservationDao locationReservationDao;
@@ -44,7 +42,6 @@ public class LocationReservationService implements ILocationReservationDao {
                                       PenaltyService pService,
                                       LocationService locationService) {
         this.locationReservationRepository = locationReservationRepository;
-        this.userRepository = userRepository;
         this.reservationManager = reservationManager;
         this.locationReservationDao = locationReservationDao;
         this.penaltyService = pService;

@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, ElementRef, Input, ViewChild} from '@angular/core';
 import {Chart} from "chart.js/auto";
-import {HOIColors} from "../../../../app.constants";
+import {HOIColors} from "@/app.constants";
 
 @Component({
     selector: 'app-chart',

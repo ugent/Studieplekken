@@ -1,9 +1,9 @@
 package blok2.integration;
 
 import blok2.TestSharedMethods;
-import blok2.database.daos.ILocationDao;
-import blok2.database.daos.IVolunteerDao;
-import blok2.model.reservables.Location;
+import blok2.database.dao.ILocationDao;
+import blok2.database.dao.IVolunteerDao;
+import blok2.model.location.Location;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

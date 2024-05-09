@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnChanges, ViewChild} from '@angular/core';
 import * as moment from 'moment';
 import {Moment} from 'moment';
 import {Observable} from 'rxjs';

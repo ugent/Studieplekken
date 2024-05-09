@@ -2,7 +2,7 @@ import { Location, LocationConstructor } from './Location';
 import {
   isStringValidDateForDB,
   isStringValidDateTimeForDB,
-} from '../extensions/validators/DateValidators';
+} from '../validators/DateValidators';
 import { CalendarEvent } from 'calendar-utils';
 
 export interface CalendarPeriodForLockers {

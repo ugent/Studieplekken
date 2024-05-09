@@ -1,13 +1,13 @@
 package blok2.http.controllers;
 
-import blok2.database.daos.IActionLogDao;
-import blok2.database.daos.IAuthorityDao;
+import blok2.database.dao.IActionLogDao;
+import blok2.database.dao.IAuthorityDao;
 import blok2.extensions.helpers.Base64String;
-import blok2.extensions.exceptions.AlreadyExistsException;
-import blok2.extensions.exceptions.NoSuchDatabaseObjectException;
+import blok2.exceptions.AlreadyExistsException;
+import blok2.exceptions.NoSuchDatabaseObjectException;
 import blok2.model.ActionLogEntry;
 import blok2.model.Authority;
-import blok2.model.reservables.Location;
+import blok2.model.location.Location;
 import blok2.model.users.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
