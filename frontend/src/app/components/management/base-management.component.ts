@@ -1,5 +1,5 @@
 import {Directive, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import { Observable, ReplaySubject, Subject, Subscription } from 'rxjs';
+import {BehaviorSubject, EMPTY, Observable, ReplaySubject, Subject, Subscription} from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import {TableComponent} from '@/contracts/table.component.interface';
 import {DeleteAction, EditAction, TableAction, TableMapper} from '@/model/Table';
@@ -21,10 +21,10 @@ export abstract class BaseManagementComponent<T extends object> implements OnIni
     protected constructor(
         protected subscription: Subscription = new Subscription()
     ) {
-        this.refresh$ = new ReplaySubject();
-        this.selectedSub$ = new ReplaySubject();
-        this.isSuccess = new ReplaySubject();
-        this.feedbackMessage = new ReplaySubject();
+        this.refresh$ = new BehaviorSubject(undefined);
+        this.selectedSub$ = new BehaviorSubject(undefined);
+        this.isSuccess = new BehaviorSubject(undefined);
+        this.feedbackMessage = new BehaviorSubject(undefined);
     }
 
     ngOnInit(): void {

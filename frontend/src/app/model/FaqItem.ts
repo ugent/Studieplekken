@@ -19,7 +19,7 @@ export class FaqItem {
             item.isPinned ?? false,
             item.createdAt ?? new Date,
             item.updatedAt ?? new Date,
-            item.category,
+            FaqCategory.fromJson(item.category),
             item.title,
             item.content
         );

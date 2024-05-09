@@ -3,12 +3,13 @@ import {FaqService} from '@/services/api/faq/faq.service';
 import {BaseManagementComponent} from '@/components/management/base-management.component';
 import {FaqItem} from '@/model/FaqItem';
 import {ModalComponent} from '@/components/stad-gent-components/molecules/modal/modal.component';
-import {Observable} from 'rxjs';
+import {EMPTY, Observable} from 'rxjs';
 import {FaqCategory} from '@/model/FaqCategory';
-import {FormBuilder, Validators} from '@angular/forms';
+import {AbstractControl, FormBuilder, Validators} from '@angular/forms';
 import {TableMapper} from '@/model/Table';
 import {TranslateService} from '@ngx-translate/core';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import {startWith, switchMap, tap} from 'rxjs/operators';
 
 @Component({
     selector: 'app-faq-management',
@@ -40,8 +41,14 @@ export class FaqManagementComponent extends BaseManagementComponent<FaqItem> {
      */
     ngOnInit(): void {
         super.ngOnInit();
-        this.$faqCategories = this.faqService.getCategories();
-        this.$faqItems = this.faqService.getItems();
+
+        this.$faqCategories = this.refresh$.pipe(
+            switchMap(() => this.faqService.getCategories())
+        );
+
+        this.$faqItems = this.refresh$.pipe(
+            switchMap(() => this.faqService.getItems())
+        );
     }
 
     /**
@@ -51,15 +58,65 @@ export class FaqManagementComponent extends BaseManagementComponent<FaqItem> {
         this.formGroup = this.formBuilder.group({
             category: [item.category?.id, Validators.required],
             title: this.formBuilder.group({
-                nl: [item.title?.translations.nl, Validators.required],
-                en: [item.title?.translations.en, Validators.required]
+                translations: this.formBuilder.group({
+                    nl: [item.title?.translations.nl, Validators.required],
+                    en: [item.title?.translations.en, Validators.required]
+                })
             }),
             content: this.formBuilder.group({
-                nl: [item.content?.translations.nl, Validators.required],
-                en: [item.content?.translations.en, Validators.required]
+                translations: this.formBuilder.group({
+                    nl: [item.content?.translations.nl, Validators.required],
+                    en: [item.content?.translations.en, Validators.required]
+                })
             }),
             isPinned: [item.isPinned, Validators.required]
         })
+    }
+
+    /**
+     * Store a new faq item.
+     *
+     * @param body
+     */
+    public store(body = this.formGroup.value): void {
+        body.category = {
+            id: body.category
+        };
+
+        this.sendBackendRequest(
+            this.faqService.addItem(
+                FaqItem.fromJson(body)
+            )
+        )
+    }
+
+    /**
+     * Update a faq item.
+     *
+     * @param item
+     * @param body
+     */
+    public update(item: FaqItem, body = this.formGroup.value): void {
+        body.category = {
+            id: body.category
+        };
+
+        this.sendBackendRequest(
+            this.faqService.updateItem(
+                item.id, FaqItem.fromJson(body)
+            )
+        )
+    }
+
+    /**
+     * Delete a faq item.
+     *
+     * @param item
+     */
+    public delete(item: FaqItem): void {
+        this.sendBackendRequest(
+            this.faqService.deleteItem(item.id)
+        );
     }
 
     /**

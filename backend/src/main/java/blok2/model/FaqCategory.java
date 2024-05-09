@@ -32,7 +32,7 @@ public class FaqCategory {
     @JoinColumn(name = "description_translatable_id")
     private Translatable description;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE)
     @JsonIgnoreProperties("category")
     private List<FaqItem> items;
 

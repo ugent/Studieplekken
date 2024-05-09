@@ -555,15 +555,19 @@
                     "titleEn": "Titel in het Engels",
                     "contentNl": "Inhoud in het Nederlands",
                     "contentEn": "Inhoud in het Engels",
-                    "category": "Categorie"
+                    "category": "Categorie",
+                    "isPinned": "Vastgezet"
                 }
             },
             "removeModal": {
                 "title": "Verwijder FAQ",
-                "body": "Ben je zeker dat je volgende FAQ wilt verwijderen?"
+                "body": "Ben je zeker dat je volgende FAQ wilt verwijderen?",
+                "noButton": "Annuleer",
+                "yesButton": "Verwijder"
             },
             "categories": {
                 "title": "FAQ categorieën",
+                "addNew": "Nieuwe categorie toevoegen",
                 "table": {
                     "header": {
                         "title": "Naam"
@@ -584,7 +588,9 @@
                 },
                 "removeModal": {
                     "title": "Verwijder categorie",
-                    "body": "Ben je zeker dat je volgende categorie wilt verwijderen?"
+                    "body": "Ben je zeker dat je volgende categorie wilt verwijderen?",
+                    "noButton": "Annuleer",
+                    "yesButton": "Verwijder"
                 }
             }
         },

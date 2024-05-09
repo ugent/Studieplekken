@@ -3,6 +3,7 @@ package blok2.database.dao;
 import blok2.model.FaqCategory;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IFaqCategoryDao {
     /**
@@ -11,7 +12,7 @@ public interface IFaqCategoryDao {
      * @param categoryId The ID of the FAQ category.
      * @return The FAQ category with the given ID, or null if no such category exists.
      */
-    FaqCategory getCategoryById(Long categoryId);
+    Optional<FaqCategory> getCategoryById(Long categoryId);
 
     /**
      * Get a list of all parent FAQ categories.
@@ -27,6 +28,13 @@ public interface IFaqCategoryDao {
      * @return The added category.
      */
     FaqCategory addCategory(FaqCategory category);
+
+    /**
+     * Delete the category with the given ID.
+     *
+     * @param categoryId The ID of the category to delete.
+     */
+    void deleteCategory(Long categoryId);
 
     /**
      * Update the given FAQ category

@@ -8,24 +8,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FaqCategoryService implements IFaqCategoryDao {
     private final FaqCategoryRepository faqCategoryRepository;
-    private final TranslatableService translatableService;
 
-    public FaqCategoryService(FaqCategoryRepository faqCategoryRepository, TranslatableService translatableService) {
+    public FaqCategoryService(FaqCategoryRepository faqCategoryRepository) {
         this.faqCategoryRepository = faqCategoryRepository;
-        this.translatableService = translatableService;
     }
 
     @Override
-    public FaqCategory getCategoryById(Long categoryId) {
-        return faqCategoryRepository.findById(categoryId).orElseThrow(() ->
-                new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "FAQ category not found"
-                )
-        );
+    public Optional<FaqCategory> getCategoryById(Long categoryId) {
+        return faqCategoryRepository.findById(categoryId);
     }
 
     @Override
@@ -37,6 +32,11 @@ public class FaqCategoryService implements IFaqCategoryDao {
     public FaqCategory addCategory(FaqCategory category) {
         // Create the translations for the category.
         return faqCategoryRepository.save(category);
+    }
+
+    @Override
+    public void deleteCategory(Long categoryId) {
+        faqCategoryRepository.deleteById(categoryId);
     }
 
     @Override
