@@ -19,8 +19,6 @@ import {tap} from 'rxjs/operators';
 import {ModalComponent} from '../../stad-gent-components/molecules/modal/modal.component';
 import {AfterReservationComponent} from './after-reservation/after-reservation.component';
 import {Authority} from '@/model/Authority';
-import {Authority} from '../../../model/Authority';
-import {now} from 'd3';
 
 @Component({
     selector: 'app-location-reservation',
