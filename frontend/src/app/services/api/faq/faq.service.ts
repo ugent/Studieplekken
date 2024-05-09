@@ -12,7 +12,7 @@ import {api} from '../endpoints';
 export class FaqService {
 
     /* Category cache */
-    private categoryCache: Cache<number, FaqCategory> = new Cache(this.client,
+    private categoryCache: Cache<string, FaqCategory> = new Cache(this.client,
         (category: FaqCategory) => category.id,
         (json: FaqCategory) => FaqCategory.fromJson(json)
     );
@@ -50,7 +50,7 @@ export class FaqService {
      * @param invalidate whether to invalidate the cache
      * @returns an observable of the faq category
      */
-    getCategory(id: number, invalidate: boolean = false): Observable<FaqCategory> {
+    getCategory(id: string, invalidate: boolean = false): Observable<FaqCategory> {
         const url = api.faq.categories.retrieve.replace('{categoryId}', String(id));
         return this.categoryCache.getValue(id, url, invalidate);
     }
@@ -58,22 +58,23 @@ export class FaqService {
     /**
      * Update a faq category.
      *
-     * @param category the category to update
+     * @param categoryId the id of the category
+     * @param category the body of the category to update
      * @returns an observable of the updated category
      */
-    updateCategory(category: FaqCategory): Observable<FaqCategory> {
-        return this.client.post<FaqCategory>(api.faq.categories.update.replace('{categoryId}', String(category.id)), category);
+    updateCategory(categoryId: string, category: FaqCategory): Observable<FaqCategory> {
+        return this.client.put<FaqCategory>(api.faq.categories.update.replace('{categoryId}', categoryId), category);
     }
 
 
     /**
      * Delete a faq category.
      *
-     * @param category the category to update
-     * @returns an observable of the updated category
+     * @param categoryId the id of the category to delete
+     * @returns an observable of the deleted category
      */
-    deleteCategory(category: FaqCategory): Observable<void> {
-        return this.client.delete<void>(api.faq.categories.delete.replace('{categoryId}', String(category.id)));
+    deleteCategory(categoryId: string): Observable<void> {
+        return this.client.delete<void>(api.faq.categories.delete.replace('{categoryId}', categoryId));
     }
 
     /**
@@ -133,21 +134,22 @@ export class FaqService {
     /**
      * Update a faq item.
      *
-     * @param item the item to update
+     * @param itemId the id of the item
+     * @param item the new body of the item
      * @returns an observable of the updated item
      */
-    updateItem(item: FaqItem): Observable<FaqItem> {
-        return this.client.put<FaqItem>(api.faq.items.update.replace('{itemId}', String(item.id)), item);
+    updateItem(itemId: string, item: FaqItem): Observable<FaqItem> {
+        return this.client.put<FaqItem>(api.faq.items.update.replace('{itemId}', itemId), item);
     }
 
     /**
      * Delete a faq item.
      *
-     * @param item the item to delete
+     * @param itemId the id of the item to delete.
      * @returns an observable of the deleted item
      */
-    deleteItem(item: FaqItem): Observable<void> {
-        return this.client.delete<void>(api.faq.items.delete.replace('{itemId}', String(item.id)));
+    deleteItem(itemId: string): Observable<void> {
+        return this.client.delete<void>(api.faq.items.delete.replace('{itemId}', itemId));
     }
 
     /**
@@ -157,6 +159,9 @@ export class FaqService {
      * @returns an observable of the created item
      */
     addItem(item: FaqItem): Observable<FaqItem> {
+        console.log(
+            item
+        );
         return this.client.post<FaqItem>(api.faq.items.create, item);
     }
 }

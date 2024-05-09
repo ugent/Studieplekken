@@ -41,6 +41,19 @@ public class FaqItemController extends AuthorizedController {
         return faqItemDao.addItem(item);
     }
 
+    @PutMapping("/{faqItemId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public void updateItem(@PathVariable Long faqItemId, @RequestBody FaqItem item) {
+        item.setId(faqItemId);
+        faqItemDao.updateItem(item);
+    }
+
+    @DeleteMapping("/{faqItemId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public void deleteItem(@PathVariable Long faqItemId) {
+        faqItemDao.deleteItem(faqItemId);
+    }
+
     @GetMapping("/{faqItemId}")
     @PreAuthorize("permitAll()")
     public FaqItem getItem(@PathVariable Long faqItemId) {

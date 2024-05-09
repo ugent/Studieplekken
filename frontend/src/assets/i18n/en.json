@@ -302,6 +302,64 @@
             },
             "actions": "Actions"
         },
+        "faq": {
+            "title": "frequently asked questions",
+            "addNew": "add new FAQ",
+            "table": {
+                "header": {
+                    "title": "title",
+                    "category": "category",
+                    "pinned": "pinned"
+                }
+            },
+            "modifyModal": {
+                "title": "modify FAQ",
+                "addButton": "save",
+                "cancelButton": "cancel",
+                "form": {
+                    "titleNl": "title in Dutch",
+                    "titleEn": "title in English",
+                    "contentNl": "content in Dutch",
+                    "contentEn": "content in English",
+                    "category": "category",
+                    "isPinned": "Pinned"
+                }
+            },
+            "removeModal": {
+                "title": "remove FAQ",
+                "body": "Are you sure you want to remove the following FAQ?",
+                "noButton": "cancel",
+                "yesButton": "delete"
+            },
+            "categories": {
+                "title": "FAQ categories",
+                "addNew": "add new category",
+                "table": {
+                    "header": {
+                        "title": "name"
+                    }
+                },
+                "modifyModal": {
+                    "title": "modify category",
+                    "addButton": "save",
+                    "cancelButton": "cancel",
+                    "form": {
+                        "nameNl": "name in Dutch",
+                        "nameEn": "name in English",
+                        "descriptionNl": "description in Dutch",
+                        "descriptionEn": "description in English",
+                        "addButton": "save",
+                        "cancelButton": "cancel"
+                    }
+                },
+                "removeModal": {
+                    "title": "remove category",
+                    "body": "Are you sure you want to remove next category?",
+                    "noButton": "cancel",
+                    "yesButton": "remove"
+                }
+            }
+        },
         "locationDetails": {
             "title": "Details of {locationName}",
             "form": {

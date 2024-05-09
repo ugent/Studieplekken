@@ -48,6 +48,11 @@ public class FaqItemService implements IFaqItemDao {
     }
 
     @Override
+    public void deleteItem(Long itemId) {
+        faqItemRepository.deleteById(itemId);
+    }
+
+    @Override
     public void updateItem(FaqItem category) {
         faqItemRepository.save(category);
     }

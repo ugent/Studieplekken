@@ -1,4 +1,10 @@
 <ng-container>
+    <div class="d-flex justify-content-end  mb-3">
+        <button class="button button-primary" (click)="prepareAdd()">
+            {{'management.faq.categories.addNew' | translate}}
+        </button>
+    </div>
+
     <app-management-table
         [data]="categories"
         [actions]="getTableActions()"
@@ -15,44 +21,55 @@
         <div modal-body>
             <form [formGroup]="formGroup" *ngIf="formGroup">
                 <!-- FAQ title -->
-                <div class="row" formGroupName="name">
-                    <div class="col">
-                        <label for="nameNl">
-                            {{'management.faq.categories.modifyModal.form.nameNl' | translate}}
-                            <input class="form-control" id="nameNl" type="text" formControlName="nl" required>
-                        </label>
+                <ng-container formGroupName="name">
+                    <div class="row" formGroupName="translations">
+                        <div class="col">
+                            <label for="nameNl">
+                                {{'management.faq.categories.modifyModal.form.nameNl' | translate}}
+                                <input class="form-control" id="nameNl" type="text" formControlName="nl" required>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <label for="nameEn">
+                                {{'management.faq.categories.modifyModal.form.nameEn' | translate}}
+                                <input class="form-control" id="nameEn" type="text" formControlName="en" required>
+                            </label>
+                        </div>
                     </div>
-                    <div class="col">
-                        <label for="nameEn">
-                            {{'management.faq.categories.modifyModal.form.nameEn' | translate}}
-                            <input class="form-control" id="nameEn" type="text" formControlName="en" required>
-                        </label>
-                    </div>
-                </div>
+                </ng-container>
 
                 <!-- FAQ content -->
-                <div class="row gap-3" formGroupName="description">
-                    <div class="col">
-                        <label for="descriptionNl">
-                            {{'management.faq.categories.modifyModal.form.descriptionNl' | translate}}
-                            <textarea class="form-control" id="descriptionNl" formControlName="nl" required></textarea>
-                        </label>
+                <ng-container formGroupName="description">
+                    <div class="row gap-3" formGroupName="translations">
+                        <div class="col">
+                            <label for="descriptionNl">
+                                {{'management.faq.categories.modifyModal.form.descriptionNl' | translate}}
+                                <textarea class="form-control" id="descriptionNl" formControlName="nl" required></textarea>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <label for="descriptionEn">
+                                {{'management.faq.categories.modifyModal.form.descriptionEn' | translate}}
+                                <textarea class="form-control" id="descriptionEn" formControlName="en" required></textarea>
+                            </label>
+                        </div>
                     </div>
-                    <div class="col">
-                        <label for="descriptionEn">
-                            {{'management.faq.categories.modifyModal.form.descriptionNl' | translate}}
-                            <textarea class="form-control" id="descriptionEn" formControlName="en" required></textarea>
-                        </label>
-                    </div>
-                </div>
+                </ng-container>
             </form>
         </div>
 
         <!-- Modal footer -->
         <div modal-footer>
-            <button type="submit" class="button button-primary" [disabled]="!formGroup.valid">
-                {{'management.faq.categories.modifyModal.addButton' | translate}}
-            </button>
+            <ng-container *ngIf="selectedSub$ | async as item; else addButton">
+                <button type="submit" class="button button-primary" [disabled]="!formGroup.valid" (click)="update(item)">
+                    {{'management.faq.categories.modifyModal.addButton' | translate}}
+                </button>
+            </ng-container>
+            <ng-template #addButton>
+                <button type="submit" class="button button-primary" [disabled]="!formGroup.valid" (click)="store()">
+                    {{'management.faq.categories.modifyModal.addButton' | translate}}
+                </button>
+            </ng-template>
             <button type="button" class="button button-secondary" (click)="closeModal(modify)">
                 {{'management.faq.categories.modifyModal.cancelButton' | translate}}
             </button>
@@ -93,7 +110,7 @@
 
         <!-- Footer -->
         <div *ngIf="selectedSub$ | async as selected"  modal-footer>
-            <button type="button" class="button button-primary">
+            <button type="button" class="button button-primary" (click)="delete(selected)">
                 {{'management.faq.categories.removeModal.yesButton' | translate}}
             </button>
             <button type="button" class="button button-secondary" (click)="closeModal(remove)">

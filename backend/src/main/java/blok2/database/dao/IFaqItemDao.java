@@ -33,11 +33,23 @@ public interface IFaqItemDao {
 
     /**
      * Add a new FAQ Item.
+     *
+     * @param Item The FAQ Item to add.
+     * @return The added FAQ Item.
      */
     FaqItem addItem(FaqItem Item);
 
     /**
+     * Delete the given FAQ Item.
+     *
+     * @param itemId The ID of the FAQ Item.
+     */
+    void deleteItem(Long itemId);
+
+    /**
      * Update the given FAQ Item
+     *
+     * @param Item The FAQ Item to update.
      */
     void updateItem(FaqItem Item);
 }

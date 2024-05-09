@@ -3,7 +3,7 @@ import {FaqItem} from './FaqItem';
 
 export class FaqCategory {
     constructor(
-        public id: number,
+        public id: string,
         public name: Translatable,
         public description: Translatable,
         public createdAt: Date,

@@ -31,36 +31,40 @@
         <div modal-body>
             <form [formGroup]="formGroup" *ngIf="formGroup">
                 <!-- FAQ title -->
-                <div class="row" formGroupName="title">
-                    <div class="col">
-                        <label for="titleNl">
-                            {{'management.faq.modifyModal.form.titleNl' | translate}}
-                            <input class="form-control" id="titleNl" type="text" formControlName="nl" required>
-                        </label>
+                <ng-container formGroupName="title">
+                    <div class="row" formGroupName="translations">
+                        <div class="col">
+                            <label for="titleNl">
+                                {{'management.faq.modifyModal.form.titleNl' | translate}}
+                                <input class="form-control" id="titleNl" type="text" formControlName="nl" required>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <label for="titleEn">
+                                {{'management.faq.modifyModal.form.titleEn' | translate}}
+                                <input class="form-control" id="titleEn" type="text" formControlName="en" required>
+                            </label>
+                        </div>
                     </div>
-                    <div class="col">
-                        <label for="titleEn">
-                            {{'management.faq.modifyModal.form.titleNl' | translate}}
-                            <input class="form-control" id="titleEn" type="text" formControlName="en" required>
-                        </label>
-                    </div>
-                </div>
+                </ng-container>
 
                 <!-- FAQ content -->
-                <div class="row gap-3" formGroupName="content">
-                    <div class="col-12">
-                        <label for="contentNl">
-                            {{'management.faq.modifyModal.form.contentNl' | translate}}
-                            <ckeditor id="contentNl" formControlName="nl" [editor]="editor" required></ckeditor>
-                        </label>
+                <ng-container formGroupName="content">
+                    <div class="row gap-3" formGroupName="translations">
+                        <div class="col-12">
+                            <label for="contentNl">
+                                {{'management.faq.modifyModal.form.contentNl' | translate}}
+                                <ckeditor id="contentNl" formControlName="nl" [editor]="editor" required></ckeditor>
+                            </label>
+                        </div>
+                        <div class="col-12">
+                            <label for="contentEn">
+                                {{'management.faq.modifyModal.form.contentEn' | translate}}
+                                <ckeditor id="contentEn" formControlName="en" [editor]="editor" required></ckeditor>
+                            </label>
+                        </div>
                     </div>
-                    <div class="col-12">
-                        <label for="contentEn">
-                            {{'management.faq.modifyModal.form.contentEn' | translate}}
-                            <ckeditor id="contentEn" formControlName="en" [editor]="editor" required></ckeditor>
-                        </label>
-                    </div>
-                </div>
+                </ng-container>
 
                 <!-- FAQ category -->
                 <div class="row" *ngIf="$faqCategories | async as categories">
@@ -77,14 +81,31 @@
                         </label>
                     </div>
                 </div>
+
+                <!-- FAQ is pinned -->
+                <div class="row">
+                    <div class="col">
+                        <label for="isPinned">
+                            <input type="checkbox" class="form-control" id="isPinned" formControlName="isPinned">
+                            {{'management.faq.modifyModal.form.isPinned' | translate}}
+                        </label>
+                    </div>
+                </div>
             </form>
         </div>
 
         <!-- Modal footer -->
         <div modal-footer>
-            <button type="submit" class="button button-primary" [disabled]="!formGroup.valid">
-                {{'management.faq.modifyModal.addButton' | translate}}
-            </button>
+            <ng-container *ngIf="selectedSub$ | async as item; else addButton">
+                <button type="submit" class="button button-primary" [disabled]="!formGroup.valid" (click)="update(item)">
+                    {{'management.faq.modifyModal.addButton' | translate}}
+                </button>
+            </ng-container>
+            <ng-template #addButton>
+                <button type="submit" class="button button-primary" [disabled]="!formGroup.valid" (click)="store()">
+                    {{'management.faq.modifyModal.addButton' | translate}}
+                </button>
+            </ng-template>
             <button type="button" class="button button-secondary" (click)="closeModal(modify)">
                 {{'management.faq.modifyModal.cancelButton' | translate}}
             </button>
@@ -125,7 +146,7 @@
 
         <!-- Footer -->
         <div *ngIf="selectedSub$ | async as selected"  modal-footer>
-            <button type="button" class="button button-primary">
+            <button type="button" class="button button-primary" *ngIf="selectedSub$ | async as selected" (click)="delete(selected)">
                 {{'management.faq.removeModal.yesButton' | translate}}
             </button>
             <button type="button" class="button button-secondary" (click)="closeModal(remove)">
@@ -157,7 +178,10 @@
         </h2>
 
         <div *ngIf="$faqCategories | async as categories" modal-body>
-            <app-categories-management [categories]="categories"></app-categories-management>
+            <app-categories-management
+                (categoriesChange)="refresh$.next()"
+                [categories]="categories">
+            </app-categories-management>
         </div>
     </app-modal>
 </ng-container>
