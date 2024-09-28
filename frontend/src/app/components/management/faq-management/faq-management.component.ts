@@ -1,15 +1,15 @@
-import {Component, ViewChild} from '@angular/core';
-import {FaqService} from '@/services/api/faq/faq.service';
-import {BaseManagementComponent} from '@/components/management/base-management.component';
-import {FaqItem} from '@/model/FaqItem';
-import {ModalComponent} from '@/components/stad-gent-components/molecules/modal/modal.component';
-import {EMPTY, Observable} from 'rxjs';
-import {FaqCategory} from '@/model/FaqCategory';
-import {AbstractControl, FormBuilder, Validators} from '@angular/forms';
-import {TableMapper} from '@/model/Table';
-import {TranslateService} from '@ngx-translate/core';
+import { BaseManagementComponent } from '@/components/management/base-management.component';
+import { ModalComponent } from '@/components/stad-gent-components/molecules/modal/modal.component';
+import { FaqCategory } from '@/model/FaqCategory';
+import { FaqItem } from '@/model/FaqItem';
+import { TableMapper } from '@/model/Table';
+import { FaqService } from '@/services/api/faq/faq.service';
+import { Component, ViewChild } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import {startWith, switchMap, tap} from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
+import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
     selector: 'app-faq-management',

@@ -27,10 +27,17 @@
             <p>{{ 'faq.search.noResults' | translate }}</p>
         </ng-container>
     </ng-container>
-    <h3 class="mb-4">{{ 'faq.search.popular' | translate }}</h3>
-    <ul class="icon-list mb-0" *ngIf="$pinned | async as pinned">
-        <li *ngFor="let item of pinned">
-            <i class="icon-arrow-right" aria-hidden="true"></i> <a [routerLink]="['/faq', item.id]">{{ item.title.translations[locale] }}</a>
-        </li>
-    </ul>
+    <h3 class="mb-4">
+        {{ 'faq.search.popular' | translate }}
+    </h3>
+    <ng-container *ngIf="$pinned | async as pinned">
+        <ul class="icon-list mb-0" *ngIf="pinned.length > 0">
+            <li *ngFor="let item of pinned">
+                <i class="icon-arrow-right" aria-hidden="true"></i> <a [routerLink]="['/faq', item.id]">{{ item.title.translations[locale] }}</a>
+            </li>
+        </ul>
+        <ng-container *ngIf="pinned.length === 0">
+            <p>{{ 'faq.search.noResults' | translate }}</p>
+        </ng-container>
+    </ng-container>
 </ng-container>

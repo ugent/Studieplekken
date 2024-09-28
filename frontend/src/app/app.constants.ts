@@ -39,3 +39,10 @@ export const HOIColors = {
 export const institutions = [
     'UGent', 'HoGent', 'Arteveldehogeschool', 'StadGent', 'Luca', 'Odisee', 'Other'
 ];
+
+export const contact = {
+    'email': 'studieplekken@gentsestudentenraad.be',
+    'address': 'Hoveniersberg 24, 9000 Gent',
+    'building': 'De Therminal',
+    'website': 'https://bloklocaties.stad.gent'
+};
