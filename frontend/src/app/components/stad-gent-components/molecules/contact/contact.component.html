@@ -1,0 +1,33 @@
+<section class="highlight contact-details  highlight--top">
+    <div class="highlight__inner">
+        <h2 class="my-0">
+            {{ title }}
+        </h2>
+
+        <p class="my-4 w-100">
+            {{ content }}
+        </p>
+
+        <div class="contact-details-column">
+            <ul class="icon-list">
+                <li>
+                    <i class="icon-marker" aria-hidden="true"></i>
+                    <strong>{{ contact.building }}</strong> — {{ contact.address }}
+                </li>
+                <li>
+                    <i class="icon-envelope" aria-hidden="true"></i>
+                    <a [href]="contact.email" alt="Person mail link">
+                        {{ contact.email }}
+                    </a>
+                </li>
+                <li>
+                    <i class="icon-url" aria-hidden="true"></i>
+                    <a [href]="contact.website" alt="Website link">
+                        {{ contact.website }}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+

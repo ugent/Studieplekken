@@ -1,120 +1,53 @@
 <section class="messages messages--error" *ngIf="showStagingWarning">
-<div  markdown *ngIf="currentLanguage() | async as currlan"
-src="assets/md/staging-warning.{{currlan}}.md">>
-</div>
+    <div markdown *ngIf="currentLanguage() | async as currlan" src="assets/md/staging-warning.{{currlan}}.md">>
+    </div>
 </section>
 
 <div *ngIf="locations !== undefined && successOnRetrievingLocations === true">
-  <div *ngIf="locations.length > 0; else noLocations">
-    <!-- Provide a panel group for filter -->
-    <!-- <div class="panel-group">
-      <!-- Heading -->
-      <!-- <div class="panel-heading">
-        <h3 class="panel-title">
-          <a data-toggle="collapse" href="#filterBody" aria-expanded="true">
-            <i class="glyphicon glyphicon-plus"></i>
-            <i class="glyphicon glyphicon-minus"></i>
-            {{('dashboard.filter.title' | translate)}}
-          </a>
-        </h3>
-      </div>
-
-      Body
-      <div class="panel-collapse in" id="filterBody" *ngIf="tagObs | async as tags">
-        <div class="panel-body" style="padding: 20px">
-          <div class="row">
-            <div class="col-sm-3">
-              <mat-form-field *ngIf="tags !== undefined" style="width: 100%" [formGroup]="tagFilterFormGroup">
-                <mat-label>{{'dashboard.filter.tagsFilterTitle' | translate}}</mat-label>
-                <mat-select multiple formControlName="filteredTags" [compareWith]="compareTagsInSelection"
-                  (selectionChange)="onTagsSelectionChange($event)">
-                  <mat-option style="border: 0;" *ngFor="let tag of tags" [value]="tag">
-                    {{currentLang === 'nl' ? tag.dutch : tag.english}}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
-
-            <div class="col-sm-3">
-              <mat-form-field *ngIf="tags !== undefined" style="width: 100%" [formGroup]="buildingFilterFormGroup">
-                <mat-label>{{'dashboard.filter.buildingsFilterTitle' | translate}}</mat-label>
-                <mat-select formControlName="filteredBuilding" (selectionChange)="onBuildingSelectionChange($event)">
-                  <mat-option style="border: 0;" *ngFor="let building of buildingObs | async" [value]="building">
-                    {{building.name}}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
-
-            <div class="col-sm-2">
-              <div class="form-group">
-                <input [(ngModel)]="locationSearch" (keyup.enter)="onSearchEnter()" id="search" class="form-control"
-                  type="text" placeholder="{{'dashboard.filter.searchPlaceholder' | translate}}">
-              </div>
-            </div>
-
-            <div class="col-sm-1">
-              <button class="btn btn-primary" (click)="onSearchEnter()">
-                {{'general.buttons.search' | translate}}
-              </button>
-            </div>
-
-            <div class="col-sm-2">
-              <button class="btn btn-primary" (click)="toggleShowOpen()">
-                {{showOpen ? ('dashboard.filter.showAll' | translate) : ('dashboard.filter.showOpen' | translate)}}
-              </button>
-            </div>
-            <div class="col-sm-1">
-              <button class="btn btn-secondary" (click)="onClearSearch()">
-                {{'general.buttons.clear' | translate}}
-              </button>
-            </div>
-          </div>
+    <div *ngIf="locations.length > 0; else noLocations">
+        <div class="dashboard-item-container" fxLayout="row wrap" fxLayoutGap="32px" fxLayoutAlign="flex-start"
+            *ngIf="filteredLocations && filteredLocations.length > 0; else noMatchesFromFilter">
+            <app-dashboard-item fxFlex="0 1 calc(33% - 32px);" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%"
+                *ngFor="let location of filteredLocations" [location]="location"
+                [nextReservableFrom]="locationNextReservableFroms.get(location.name)">
+            </app-dashboard-item>
         </div>
-      </div>
     </div>
-
-    <hr> -->
-
-
-    <div class="dashboard-item-container" fxLayout="row wrap" fxLayoutGap="32px" fxLayoutAlign="flex-start"
-      *ngIf="filteredLocations && filteredLocations.length > 0; else noMatchesFromFilter">
-      <app-dashboard-item fxFlex="0 1 calc(33% - 32px);" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%"
-        *ngFor="let location of filteredLocations" [location]="location"
-        [nextReservableFrom]="locationNextReservableFroms.get(location.name)">
-      </app-dashboard-item>
-    </div>
-  </div>
 </div>
+
+<app-contact
+    title="Hellaur"
+    content="Lorem ipsum dolor sit amet, yappa yappa yappa yappa yappa.">
+</app-contact>
 
 <!-- Feedback to the user when the locations are loading/can't be retrieved -->
 <div class="container-fluid">
-  <div class="alert alert-info" *ngIf="successOnRetrievingLocations === null">
-    {{'general.waitingForServer' | translate}}
-  </div>
+    <div class="alert alert-info" *ngIf="successOnRetrievingLocations === null">
+        {{'general.waitingForServer' | translate}}
+    </div>
 
-  <div class="alert alert-error" *ngIf="successOnRetrievingLocations === false">
-    {{'dashboard.error' | translate}}
-  </div>
+    <div class="alert alert-error" *ngIf="successOnRetrievingLocations === false">
+        {{'dashboard.error' | translate}}
+    </div>
 </div>
 
 <ng-template #noMatchesFromFilter>
-  <div class="alert alert-warning">
-    {{'dashboard.filter.noMatchesFromFilter' | translate}}
-  </div>
+    <div class="alert alert-warning">
+        {{'dashboard.filter.noMatchesFromFilter' | translate}}
+    </div>
 </ng-template>
 
 <ng-template #noLocations>
-  <div class="alert alert-warning">
-    {{'dashboard.noLocations' | translate}}
-  </div>
+    <div class="alert alert-warning">
+        {{'dashboard.noLocations' | translate}}
+    </div>
 </ng-template>
 
 <!-- Label to remove warning, not set -->
 <label for="search"></label>
 
 <section class="highlight highlight--top banner">
-  <div class="highlight__inner" markdown *ngIf="currentLanguage() | async as currlan"
-    src="assets/md/banner.{{currlan}}.md">>
-  </div>
+    <div class="highlight__inner" markdown *ngIf="currentLanguage() | async as currlan"
+        src="assets/md/banner.{{currlan}}.md">>
+    </div>
 </section>
