@@ -181,12 +181,14 @@ import { ModalComponent } from './components/stad-gent-components/molecules/moda
 import { TeaserComponent } from './components/stad-gent-components/molecules/teaser/teaser.component';
 import { EmptyComponent } from './components/status/empty/empty.component';
 import { LoadingComponent } from './components/status/loading/loading.component';
-import { NotFoundComponent } from './components/status/not-found/not-found.component';
 import { ImpersonateInterceptor } from './services/authentication/impersonate.interceptor';
 import { TokenInterceptor } from './services/authentication/token.interceptor';
 import { AuthorizationGuardService } from './services/guard/authorization/authorization-guard.service';
 import { HighlightComponent } from './components/stad-gent-components/molecules/highlight/highlight.component';
 import { ContactComponent } from './components/stad-gent-components/molecules/contact/contact.component';
+import { NotFoundErrorPageComponent } from './components/error-pages/not-found-error-page/not-found-error-page.component';
+import { UnauthorizedErrorPageComponent } from './components/error-pages/unauthorized-error-page/unauthorized-error-page.component';
+import { CallToActionComponent } from './components/stad-gent-components/call-to-action/call-to-action.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -225,32 +227,10 @@ const routes: Routes = [
             guards: [['user']]
         },
         children: [
-            // These are unused for now
-            /*{
-                path: '',
-                redirectTo: 'overview',
-                pathMatch: 'full',
-            },
             {
                 path: 'overview',
                 component: ProfileOverviewComponent,
-            },
-            {
-                path: 'reservations',
-                component: ProfileReservationsComponent
-            },
-            {
-                path: 'calendar',
-                component: ProfileCalendarComponent
-            },
-            {
-                path: 'password',
-                component: ProfileChangePasswordComponent
-            },
-            {
-                path: 'penalties',
-                component: ProfilePenaltiesComponent
-            },*/
+            }
         ],
     },
 
@@ -438,8 +418,11 @@ const routes: Routes = [
         component: EntryComponent,
         pathMatch: 'full',
     },
-
-    // TODO: create PageNotFoundController
+    {
+        path: '**',
+        pathMatch: 'full',
+        component: NotFoundErrorPageComponent
+    }
 ];
 
 @NgModule({
@@ -528,12 +511,14 @@ const routes: Routes = [
         FaqSidebarItemComponent,
         LoadingComponent,
         EmptyComponent,
-        NotFoundComponent,
         TeaserComponent,
         FaqManagementComponent,
         CategoriesManagementComponent,
         HighlightComponent,
         ContactComponent,
+        NotFoundErrorPageComponent,
+        UnauthorizedErrorPageComponent,
+        CallToActionComponent,
     ],
     imports: [
         BrowserModule,

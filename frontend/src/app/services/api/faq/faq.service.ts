@@ -159,9 +159,6 @@ export class FaqService {
      * @returns an observable of the created item
      */
     addItem(item: FaqItem): Observable<FaqItem> {
-        console.log(
-            item
-        );
         return this.client.post<FaqItem>(api.faq.items.create, item);
     }
 }

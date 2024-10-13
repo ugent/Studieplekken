@@ -1,0 +1,32 @@
+<ng-container><!-- Download -->
+    <section class="highlight cta-block link highlight--left">
+        <div class="highlight__inner">
+            <h2>
+                {{ title }}
+            </h2>
+
+            <ng-container *ngIf="descriptionTemplate; else defaultDescription">
+                <ng-container *ngTemplateOutlet="descriptionTemplate"></ng-container>
+            </ng-container>
+
+            <ng-template #defaultDescription>
+                <p *ngIf="description">
+                    {{ description }}
+                </p>
+            </ng-template>
+            
+            <ng-content></ng-content>
+
+            <ng-container *ngIf="footerTemplate; else defaultFooter">
+                <ng-container *ngTemplateOutlet="footerTemplate"></ng-container>
+            </ng-container>
+
+            <ng-template #defaultFooter>
+                <p *nfIf="footer">
+                    {{ footer }}
+                </p>
+            </ng-template>
+    
+        </div>
+    </section>
+</ng-container>
