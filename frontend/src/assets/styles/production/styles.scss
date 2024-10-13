@@ -1,7 +1,6 @@
 // Setting up gent_styleguide (cfr. https://stijlgids.stad.gent/v4/index.html)
 $styleguide-dir: "" !default;
 @use '../../../../node_modules/@angular/material/index' as mat;
-
 @import "../../../../node_modules/gent_styleguide/build/styleguide/sass/main_cli";
 
 // Custom Theming for Angular Material
@@ -16,11 +15,7 @@ $styleguide-dir: "" !default;
 
 // import our custom theme
 @import 'src/assets/styles/theme';
-
-/* angular-cli file: src/styles.css */
 @import 'angular-calendar/css/angular-calendar.css';
-
-// import leaflet styling
 @import 'leaflet/dist/leaflet.css';
 
 // Include theme styles for core and each component used in your app.
@@ -31,7 +26,7 @@ $styleguide-dir: "" !default;
 // Override typography for all Angular Material, including mat-base-typography and all components.
 @include mat.all-component-typographies($typography);
 
-// Bootstrap components
+// Bootstrap utility components
 @import 'bootstrap/dist/css/bootstrap-grid.min.css';
 @import 'bootstrap/dist/css/bootstrap-utilities.min.css';
 
@@ -65,7 +60,6 @@ body {
         }
     }
 
-
     .center {
         margin-left: auto;
         margin-right: auto;
@@ -83,11 +77,6 @@ body {
         height: 60px;
         -webkit-animation: spin 2s linear infinite; /* Safari */
         animation: spin 2s linear infinite;
-    }
-
-    h2, h3, h4 {
-        margin: 1.5rem 0 .5rem;
-        color: #555;
     }
 
     .text-red {

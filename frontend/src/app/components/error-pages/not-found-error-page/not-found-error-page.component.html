@@ -1,0 +1,33 @@
+<div class="center">
+    <h1>
+        {{ 'errorPages.404.title' | translate }}
+    </h1>
+    <p>
+        {{ 'errorPages.404.subtitle' | translate }}
+    </p>
+    <div class="mt-4">
+        <app-call-to-action [title]="'errorPages.404.cta.title' | translate">
+            <ul class="icon-list">
+                <li class="d-none"></li>
+                <li>
+                    <i class="icon-home" aria-hidden="true"></i>
+                    <a routerLink="/" class="">{{ 'errorPages.404.cta.links.overview' | translate }}</a>
+                </li>
+                <li>
+                    <i class="icon-chat-round" aria-hidden="true"></i>
+                    <a routerLink="/faq" class="">{{ 'errorPages.404.cta.links.faq' | translate }}</a>
+                </li>
+                <ng-container *ngIf="$user | async as user">
+                    <li *ngIf="user.isLoggedIn()">
+                        <i class="icon-user" aria-hidden="true"></i>
+                        <a routerLink="/profile/overview" class="">{{ 'errorPages.404.cta.links.profile' | translate }}</a>
+                    </li>
+                    <li *ngIf="!user.isLoggedIn()">
+                        <i class="icon-lock-open" aria-hidden="true"></i>
+                        <a routerLink="/login" class="">{{ 'errorPages.404.cta.links.login' | translate }}</a>
+                    </li>
+                </ng-container>
+            </ul>
+        </app-call-to-action>
+    </div>
+</div>

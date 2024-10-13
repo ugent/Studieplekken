@@ -42,10 +42,11 @@ export class AuthenticationService {
         private loginRedirectService: LoginRedirectService,
         private penaltyService: PenaltyService
     ) {
-        // Initialize subjects.
+        // Initialize user subject.
         this.userSubject = new BehaviorSubject<User>(UserConstructor.new());
         this.user = this.userSubject.asObservable();
 
+        // Initialize penalty subject.
         this.penaltySubject = new ReplaySubject();
         this.penaltyObservable = this.penaltySubject.asObservable();
 
@@ -65,7 +66,7 @@ export class AuthenticationService {
     // **************************************************
     // *   Getters for values of the BehaviorSubjects   *
     // **************************************************
-    userValue(): User {
+    public userValue(): User {
         return this.userSubject.value;
     }
 
@@ -87,7 +88,7 @@ export class AuthenticationService {
      *                get faq about the logged-in user if the variable userWantsToLogIn
      *                was set to 'true' by the LoginComponent.
      */
-    login(redirect = false): void {
+    public login(redirect = false): void {
         this.http.get<User>(api.whoAmI).pipe(
             tap(() => this.hasAttemptedLogin = true)
         ).subscribe(
@@ -103,20 +104,6 @@ export class AuthenticationService {
                 if (next.userId && redirect) {
                     this.loginRedirectService.navigateToLastUrl();
                 }
-
-                /**
-                 *  Spring's authentication ticket of a logged-in user expires before the CAS authentication has expired.
-                 * This results in a lot of 302 HTTP responses triggering the Netdata monitoring tool in production.
-                 * To avoid this, the AuthenticationInterceptor intercepts unknown exceptions and calls this.authExpired()
-                 * so that a new authentication session is started in Spring.
-                 * Since this.authExpired() saves the last visited url, we can redirect the user to the
-                 * last visited url instead of to the dashboard.
-                 */
-                // const getPreviouslyAuthenticatedUrl = localStorage.getItem(authenticationWasExpiredUrlLSKey);
-                // if (getPreviouslyAuthenticatedUrl) {
-                //   localStorage.setItem(authenticationWasExpiredUrlLSKey, '');
-                //   this.router.navigateByUrl(getPreviouslyAuthenticatedUrl).then();
-                // }
             },
             () => {
                 this.userSubject.next(
@@ -137,7 +124,7 @@ export class AuthenticationService {
      *      of the observable connected to the userSubject.
      *   6. frontend: redirects the user to the login page
      */
-    logout(): void {
+    public logout(): void {
         this.http.post(api.logout, {}).subscribe(() => {
             this.userSubject.next(
                 UserConstructor.new()
@@ -160,7 +147,7 @@ export class AuthenticationService {
      * are back where your authentication expired.
      * @param url url to redirect to after refresh.
      */
-    authExpired(url: string): void {
+    public authExpired(url: string): void {
         this.userSubject.next(
             UserConstructor.new()
         );
@@ -173,14 +160,19 @@ export class AuthenticationService {
         void this.router.navigateByUrl('/login');
     }
 
-    getUserObs(): Observable<User> {
+    /**
+     * Get the observable of the logged in user.
+     * 
+     * @returns Observable<User> 
+     */
+    public getUserObs(): Observable<User> {
         return this.userSubject;
     }
 
     // ********************************************************
     // *   Getters for faq about the logged in user   *
     // ********************************************************
-    getLocationReservations(): Observable<LocationReservation[]> {
+    public getLocationReservations(): Observable<LocationReservation[]> {
         return this.locationReservationService.getLocationReservationsOfUser(
             this.userSubject.value.userId
         );
@@ -189,14 +181,19 @@ export class AuthenticationService {
     // *******************
     // *   Auxiliaries   *
     // *******************
-    updatePassword(from: string, to: string): Observable<void> {
+    public updatePassword(from: string, to: string): Observable<void> {
         return this.http.put<void>(api.changePassword, {
             from, to,
             user: this.userValue()
         });
     }
 
-    substituteLogin(email: string): void {
+    /**
+     * Impersonate a user by email.
+     * 
+     * @param email email of the user to impersonate
+     */
+    public substituteLogin(email: string): void {
         localStorage.setItem('impersonate', email);
 
         this.http.get(api.whoAmI, {

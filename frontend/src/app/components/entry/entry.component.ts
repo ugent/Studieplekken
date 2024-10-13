@@ -15,8 +15,9 @@ export class EntryComponent implements OnInit {
         if (!environment.useExternalDashboard) {
             void this.router.navigateByUrl('/dashboard');
         } else {
-            // Simulate an HTTP redirect:
-            window.location.replace(environment.externalDashboardUrl);
+            window.location.replace(
+                environment.externalDashboardUrl
+            );
         }
     }
 }
