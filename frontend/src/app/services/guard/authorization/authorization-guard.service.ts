@@ -42,9 +42,9 @@ export class AuthorizationGuardService implements CanActivate {
         return this.authenticationService.user.pipe(
             // Wait until the user has been fetched from the backend (can be empty).
             filter(() => this.authenticationService.hasAttemptedLogin),
-            // Map the user observable on a boolean.
+            // Map the user observable on a boolean that specifies whether the route can be activated.
             map((user: User) => {
-                const authorizations: string[][] = route.data.guards || [];
+                const authorizations: string[][] = route.data.guards || [];                
 
                 if (authorizations.length > 0) {
                     let authorized = false;
@@ -55,24 +55,31 @@ export class AuthorizationGuardService implements CanActivate {
                         );
                     }
 
-                    return authorized;
+                    return {authorized, user};
                 }
 
-                return true;
+                return {authorized: true, user};
             }),
             // Redirect if necessary.
-            tap((authorized: boolean) => {
-                // We only redirect if the current user isn't logged-in.
-                if (!authorized) {
+            tap(({authorized, user}) => {
+                if (!authorized) {                    
                     this.loginRedirect.registerUrl(
                         this.router.getCurrentNavigation().finalUrl.toString()
                     );
 
-                    void this.router.navigate([
-                        'login'
-                    ]);
+                    if (!user.isLoggedIn()) {
+                        void this.router.navigate([
+                            'login'
+                        ]);
+                    } else {
+                        void this.router.navigate([
+                            'unauthorized'
+                        ]);
+                    }
                 }
-            })
+            }),
+            // Return the authorization status.
+            map(({authorized}) => authorized)
         );
     }
 }

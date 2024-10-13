@@ -63,13 +63,17 @@ export class User {
      * @returns boolean
      */
     hasGuard(guard: string): boolean {
-        return {
-            user: this.isLoggedIn(),
-            scanner: this.isScanner(),
-            authorities: this.isAuthority(),
-            admin: this.isAdmin()
+        switch (guard) {
+            case 'user':
+                return this.isLoggedIn();
+            case 'scanner':
+                return this.isScanner();
+            case 'authorities':
+                return this.isAuthority();
+            case 'admin':
+                return this.isAdmin();
         }
-        [guard];
+        return false;
     }
 }
 

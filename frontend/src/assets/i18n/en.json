@@ -155,6 +155,10 @@
                     "login": "Log in through your institution"
                 }
             }
+        },
+        "405": {
+            "title": "Method not allowed",
+            "subtitle": "The method you are trying to use is not allowed on this page. This can be due to a wrong request or a wrong link."
         }
     },
     "footer": {

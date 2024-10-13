@@ -156,6 +156,10 @@
                     "login": "Log in via je instelling"
                 }
             }
+        },
+        "405": {
+            "title": "This action is not permitted",
+            "subtitle": "It seems that you are trying to perform an action that is not allowed. This could be because you do not have the proper permissions or the action does not exist."
         }
     },
     "footer": {
