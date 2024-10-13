@@ -157,8 +157,8 @@
             }
         },
         "405": {
-            "title": "Method not allowed",
-            "subtitle": "The method you are trying to use is not allowed on this page. This can be due to a wrong request or a wrong link."
+            "title": "This action is not permitted",
+            "subtitle": "It seems that you are trying to perform an action that is not allowed. This could be because you do not have the proper permissions or the action does not exist."
         }
     },
     "footer": {

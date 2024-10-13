@@ -158,8 +158,8 @@
             }
         },
         "405": {
-            "title": "This action is not permitted",
-            "subtitle": "It seems that you are trying to perform an action that is not allowed. This could be because you do not have the proper permissions or the action does not exist."
+            "title": "Deze actie is niet toegestaan",
+            "subtitle": "Het lijkt erop dat je een actie probeert uit te voeren die niet is toegestaan. Dit kan zijn omdat je niet de juiste rechten hebt of omdat de actie niet bestaat."
         }
     },
     "footer": {
