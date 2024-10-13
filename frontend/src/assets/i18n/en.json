@@ -142,6 +142,21 @@
         },
         "error": "Something went wrong while retrieving the rooms."
     },
+    "errorPages": {
+        "404": {
+            "title": "We can't find the page you're looking for",
+            "subtitle": "It seems that the page you are looking for does not exist. Perhaps you ended up here because of an outdated link or the page you are looking for has been moved, deleted or is under development",
+            "cta": {
+                "title": "We are happy to help you get back on track",
+                "links": {
+                    "overview": "Find a study location through our overview",
+                    "faq": "Find answers to your questions",
+                    "profile": "View your profile overview",
+                    "login": "Log in through your institution"
+                }
+            }
+        }
+    },
     "footer": {
         "madeBy": "Proudly made by",
         "privacy": "Privacy & Cookies",

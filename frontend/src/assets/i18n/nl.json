@@ -143,6 +143,21 @@
         },
         "error": "Er is iets misgelopen tijdens het ophalen van de locaties."
     },
+    "errorPages": {
+        "404": {
+            "title": "We kunnen de pagina die je zoekt niet vinden",
+            "subtitle": "Het lijkt erop dat de pagina die je zoekt niet bestaat. Wellicht kom je hier terecht door een verouderde link of is de pagina die je zoekt verplaatst, verwijdered of in ontwikkeling",
+            "cta": {
+                "title": "We helpen je graag weer op weg",
+                "links": {
+                    "overview": "Vind een bloklocatie via ons overzicht",
+                    "faq": "Vind een antwoord op je vragen",
+                    "profile": "Bekijk je profieloverzicht",
+                    "login": "Log in via je instelling"
+                }
+            }
+        }
+    },
     "footer": {
         "madeBy": "Gemaakt met trots door",
         "privacy": "Privacy & Cookies",
