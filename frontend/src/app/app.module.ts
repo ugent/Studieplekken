@@ -419,6 +419,11 @@ const routes: Routes = [
         pathMatch: 'full',
     },
     {
+        path: 'unauthorized',
+        pathMatch: 'full',
+        component: UnauthorizedErrorPageComponent
+    },
+    {
         path: '**',
         pathMatch: 'full',
         component: NotFoundErrorPageComponent

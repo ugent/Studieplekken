@@ -1,1 +1,23 @@
-<p>unauthorized-error-page works!</p>
+<div class="center">
+    <h1>
+        {{ 'errorPages.405.title' | translate }}
+    </h1>
+    <p>
+        {{ 'errorPages.405.subtitle' | translate }}
+    </p>
+    <div class="mt-4">
+        <app-call-to-action [title]="'errorPages.404.cta.title' | translate">
+            <ul class="icon-list">
+                <li class="d-none"></li>
+                <li>
+                    <i class="icon-home" aria-hidden="true"></i>
+                    <a routerLink="/" class="">{{ 'errorPages.404.cta.links.overview' | translate }}</a>
+                </li>
+                <li>
+                    <i class="icon-chat-round" aria-hidden="true"></i>
+                    <a routerLink="/faq" class="">{{ 'errorPages.404.cta.links.faq' | translate }}</a>
+                </li>
+            </ul>
+        </app-call-to-action>
+    </div>
+</div>
